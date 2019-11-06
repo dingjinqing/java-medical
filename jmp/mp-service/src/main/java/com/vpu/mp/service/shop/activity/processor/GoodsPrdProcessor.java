@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsPrdForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsPrdProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsPrdProcessorDao;
 import org.springframework.stereotype.Service;
@@ -31,15 +31,15 @@ public class GoodsPrdProcessor extends GoodsPrdProcessorDao implements ActivityG
     }
 
     @Override
-    public Map<Integer, GoodsPrdForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, GoodsPrdProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
         return getGoodsPrdInfo(param.getGoodsIds());
     }
 
     @Override
-    public void processForList(Map<Integer,? extends ActivityForListInfo> prdInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ProcessorDataInfo> prdInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId= capsule.getGoodsId();
-            GoodsPrdForListInfo prdInfo = (GoodsPrdForListInfo) prdInfos.get(goodsId);
+            GoodsPrdProcessorDataInfo prdInfo = (GoodsPrdProcessorDataInfo) prdInfos.get(goodsId);
             if (prdInfo == null) {
                 return;
             }

@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.FirstSpecialForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.FirstSpecialProcessorDataInfo;
 import org.jooq.Condition;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -33,9 +33,9 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
      * 获取集合内商品的首单特惠信息
      * @param goodsIds 商品id集合
      * @param date 日期
-     * @return key: 商品id，value: {@link FirstSpecialForListInfo}
+     * @return key: 商品id，value: {@link FirstSpecialProcessorDataInfo}
      */
-   public  Map<Integer, FirstSpecialForListInfo> getGoodsFirstSpecialForListInfo(List<Integer> goodsIds, Timestamp date){
+   public  Map<Integer, FirstSpecialProcessorDataInfo> getGoodsFirstSpecialForListInfo(List<Integer> goodsIds, Timestamp date){
        Map<Integer, Result<Record2<Integer, Integer>>> firstSpecials = db().select(FIRST_SPECIAL.ID, FIRST_SPECIAL_GOODS.GOODS_ID).from(FIRST_SPECIAL).innerJoin(FIRST_SPECIAL_GOODS).on(FIRST_SPECIAL.ID.eq(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID))
            .where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
            .and(FIRST_SPECIAL.STATUS.eq(GoodsConstant.USE_STATUS))
@@ -56,11 +56,11 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
            .where(condition)
            .fetch().intoGroups(FIRST_SPECIAL_PRODUCT.GOODS_ID);
 
-       Map<Integer, FirstSpecialForListInfo> returnMap = new HashMap<>();
+       Map<Integer, FirstSpecialProcessorDataInfo> returnMap = new HashMap<>();
        firstSpecialPrds.forEach((key,value)->{
-           FirstSpecialForListInfo info = new FirstSpecialForListInfo();
-           info.setActivityId(value.get(0).get(FIRST_SPECIAL.ID));
-           info.setActivityPrice(value.get(0).get(FIRST_SPECIAL_PRODUCT.PRD_PRICE));
+           FirstSpecialProcessorDataInfo info = new FirstSpecialProcessorDataInfo();
+           info.setDataId(value.get(0).get(FIRST_SPECIAL.ID));
+           info.setDataPrice(value.get(0).get(FIRST_SPECIAL_PRODUCT.PRD_PRICE));
            returnMap.put(key,info);
        });
 

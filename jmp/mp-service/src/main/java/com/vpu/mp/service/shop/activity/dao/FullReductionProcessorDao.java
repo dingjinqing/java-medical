@@ -19,7 +19,7 @@ public class FullReductionProcessorDao extends ShopBaseService {
     /** 全部商品参与活动 */
     private static final byte ACT_TYPE_ALL_GOODS = 0;
     /** 指定条件参与活动 */
-    private static final byte ACT_TYPE_POINT_CONDITINO = 1;
+    private static final byte ACT_TYPE_POINT_CONDITION = 1;
 
     /**
      * 判断根据传入的条件是否存在对应的满折满减活动
@@ -32,7 +32,7 @@ public class FullReductionProcessorDao extends ShopBaseService {
      */
     public boolean getIsFullReductionListInfo(Integer goodsId, Integer catId, Integer sortId, Integer brandId, Timestamp date) {
         Condition condition =MRKING_STRATEGY.ACT_TYPE.eq(ACT_TYPE_ALL_GOODS)
-            .or(MRKING_STRATEGY.ACT_TYPE.eq(ACT_TYPE_POINT_CONDITINO).and(
+            .or(MRKING_STRATEGY.ACT_TYPE.eq(ACT_TYPE_POINT_CONDITION).and(
                 DslPlus.findInSet(goodsId,MRKING_STRATEGY.RECOMMEND_GOODS_ID)
                 .or(DslPlus.findInSet(catId,MRKING_STRATEGY.RECOMMEND_CAT_ID))
                 .or(DslPlus.findInSet(sortId,MRKING_STRATEGY.RECOMMEND_SORT_ID))

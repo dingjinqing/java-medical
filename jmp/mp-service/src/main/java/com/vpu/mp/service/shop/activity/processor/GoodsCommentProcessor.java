@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsCommentForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsCommentProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsCommentProcessorDao;
 import org.springframework.stereotype.Service;
@@ -32,18 +32,18 @@ public class GoodsCommentProcessor extends GoodsCommentProcessorDao implements A
     }
 
     @Override
-    public Map<Integer, GoodsCommentForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, GoodsCommentProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
         Map<Integer, Long> goodsCommentNumInfo = getGoodsCommentNumInfo(param.getGoodsIds());
-        Map<Integer,GoodsCommentForListInfo> returnMap = new HashMap<>();
-        goodsCommentNumInfo.forEach((key,value)-> returnMap.put(key,new GoodsCommentForListInfo(value.intValue())));
+        Map<Integer, GoodsCommentProcessorDataInfo> returnMap = new HashMap<>();
+        goodsCommentNumInfo.forEach((key,value)-> returnMap.put(key,new GoodsCommentProcessorDataInfo(value.intValue())));
         return returnMap;
     }
 
     @Override
-    public void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId = capsule.getGoodsId();
-            GoodsCommentForListInfo comment = (GoodsCommentForListInfo) activityInfos.get(goodsId);
+            GoodsCommentProcessorDataInfo comment = (GoodsCommentProcessorDataInfo) activityInfos.get(goodsId);
             if (comment == null) {
                 return;
             }

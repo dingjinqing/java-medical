@@ -3,11 +3,10 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.FullReductionForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.FullReductionProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.FullReductionProcessorDao;
-import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -51,11 +50,11 @@ public class FullReductionProcessor extends FullReductionProcessorDao implements
     }
 
     @Override
-    public Map<Integer, FullReductionForListInfo> getActivityInfoForList(ActivityGoodsListMpParam activityGoodsListMpParam) {
+    public Map<Integer, FullReductionProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam activityGoodsListMpParam) {
         List<ActivityGoodsListMpParam.AllIdsParam> idsParams = activityGoodsListMpParam.getIdsParams();
         Timestamp date = activityGoodsListMpParam.getDate();
 
-        Map<Integer,FullReductionForListInfo> returnMap = new HashMap<>();
+        Map<Integer, FullReductionProcessorDataInfo> returnMap = new HashMap<>();
 
         for (ActivityGoodsListMpParam.AllIdsParam idsParam : idsParams) {
             boolean isFullReductionListInfo = getIsFullReductionListInfo(idsParam.goodsId, idsParam.catId, idsParam.sortId, idsParam.brandId, date);
@@ -63,17 +62,17 @@ public class FullReductionProcessor extends FullReductionProcessorDao implements
             if (!isFullReductionListInfo)
                 continue;
 
-            FullReductionForListInfo info =new FullReductionForListInfo();
+            FullReductionProcessorDataInfo info =new FullReductionProcessorDataInfo();
             returnMap.put(idsParam.goodsId,info);
         }
         return returnMap;
     }
 
     @Override
-    public void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
        capsules.forEach(capsule->{
            Integer goodsId = capsule.getGoodsId();
-           ActivityForListInfo activity = activityInfos.get(goodsId);
+           ProcessorDataInfo activity = activityInfos.get(goodsId);
            if (activity == null) {
                return;
            }

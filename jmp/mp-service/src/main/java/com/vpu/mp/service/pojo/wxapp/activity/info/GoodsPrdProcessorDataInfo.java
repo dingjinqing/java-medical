@@ -1,6 +1,5 @@
-package com.vpu.mp.service.pojo.wxapp.activity.info.list;
+package com.vpu.mp.service.pojo.wxapp.activity.info;
 
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +11,7 @@ import java.math.BigDecimal;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class GoodsPrdForListInfo extends ActivityForListInfo {
+public class GoodsPrdProcessorDataInfo extends ProcessorDataInfo {
     /**是否是默认规格0否1是*/
     private Boolean defaultPrd;
     /**最小值*/

@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.GradeCardForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
 import org.jooq.Record2;
 import org.jooq.Record3;
 
@@ -51,13 +51,13 @@ public class MemberCardProcessorDao extends ShopBaseService {
      * 获取集合内商品的等价卡价格信息
      * @param userId 用户id
      * @param goodsIds 商品集合id
-     * @return key: 商品id，value {@link GradeCardForListInfo}
+     * @return key: 商品id，value {@link GradeCardProcessorDataInfo}
      */
-    public Map<Integer, GradeCardForListInfo> getGoodsGradeCardForListInfo(Integer userId, List<Integer> goodsIds){
+    public Map<Integer, GradeCardProcessorDataInfo> getGoodsGradeCardForListInfo(Integer userId, List<Integer> goodsIds){
         // 获取会员等级
         Record2<Integer, String> userGradeCard = getUserGradeCard(userId);
 
-        Map<Integer, GradeCardForListInfo> returnMap = new HashMap<>();
+        Map<Integer, GradeCardProcessorDataInfo> returnMap = new HashMap<>();
         if (userGradeCard == null) {
             return returnMap;
         }
@@ -68,8 +68,8 @@ public class MemberCardProcessorDao extends ShopBaseService {
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GRADE_PRD.GOODS_ID)));
 
         goodsGrades.forEach((key,value)->{
-            GradeCardForListInfo info = new GradeCardForListInfo();
-            info.setActivityPrice(value.get(0).get(GRADE_PRD.GRADE_PRICE));
+            GradeCardProcessorDataInfo info = new GradeCardProcessorDataInfo();
+            info.setDataPrice(value.get(0).get(GRADE_PRD.GRADE_PRICE));
             returnMap.put(key,info);
         });
 

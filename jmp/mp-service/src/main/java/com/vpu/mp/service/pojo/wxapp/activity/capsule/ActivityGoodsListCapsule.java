@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsLabelForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -40,7 +40,7 @@ public class ActivityGoodsListCapsule {
     private String goodsImg;
 
     /**关系最紧密的标签信息*/
-    GoodsLabelForListInfo goodsLabel;
+    GoodsLabelProcessorDataInfo goodsLabel;
     /** 平台、商家、品牌分类id */
     private Integer catId;
     private Integer sortId;
@@ -50,5 +50,5 @@ public class ActivityGoodsListCapsule {
     /** 商品已被哪些processor处理过（商品列表里面将处理的营销码值存入） */
     private Set<Byte> processedTypes = new HashSet<>();
     /** 商品拥有的营销信息，由各个processor添加 */
-    private List<ActivityForListInfo> activities = new ArrayList<>(2);
+    private List<ProcessorDataInfo> activities = new ArrayList<>(2);
 }

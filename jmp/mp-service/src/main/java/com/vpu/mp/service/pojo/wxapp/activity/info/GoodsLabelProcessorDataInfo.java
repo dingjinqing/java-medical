@@ -1,6 +1,5 @@
-package com.vpu.mp.service.pojo.wxapp.activity.info.list;
+package com.vpu.mp.service.pojo.wxapp.activity.info;
 
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,7 +9,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class GoodsLabelForListInfo extends ActivityForListInfo {
+public class GoodsLabelProcessorDataInfo extends ProcessorDataInfo {
     private String name;
     private Short listPattern;
 }

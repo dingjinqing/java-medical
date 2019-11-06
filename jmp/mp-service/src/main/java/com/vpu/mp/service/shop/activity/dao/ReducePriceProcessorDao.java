@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.ReducePriceForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ReducePriceProcessorDataInfo;
 import org.jooq.Condition;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -30,9 +30,9 @@ public class ReducePriceProcessorDao extends ShopBaseService {
      * 获取商品的限时降价最低价格信息（正在进行或者将会进行的限时降价信息）
      * @param goodsIds 商品id集合
      * @param date 时间
-     * @return key:商品id value:{@link com.vpu.mp.service.pojo.wxapp.activity.info.list.ReducePriceForListInfo}
+     * @return key:商品id value:{@link ReducePriceProcessorDataInfo}
      */
-    public  Map<Integer, ReducePriceForListInfo> getGoodsReduceListInfo(List<Integer> goodsIds, Timestamp date) {
+    public  Map<Integer, ReducePriceProcessorDataInfo> getGoodsReduceListInfo(List<Integer> goodsIds, Timestamp date) {
         // 获取正在进行或未来有效的限时降价活动
         Map<Integer, List<Record2<Integer, Integer>>> goodsGroup = db().select(REDUCE_PRICE.ID, REDUCE_PRICE_GOODS.GOODS_ID).from(REDUCE_PRICE)
             .innerJoin(REDUCE_PRICE_GOODS).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
@@ -57,13 +57,13 @@ public class ReducePriceProcessorDao extends ShopBaseService {
             .orderBy(REDUCE_PRICE_PRODUCT.PRD_PRICE.asc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(REDUCE_PRICE_PRODUCT.GOODS_ID)));
 
-        Map<Integer, ReducePriceForListInfo> returnMap = new HashMap<>(reducePricesInfos.size());
+        Map<Integer, ReducePriceProcessorDataInfo> returnMap = new HashMap<>(reducePricesInfos.size());
 
         reducePricesInfos.forEach((key,value)->{
-            ReducePriceForListInfo info = new ReducePriceForListInfo();
+            ReducePriceProcessorDataInfo info = new ReducePriceProcessorDataInfo();
             Record3<Integer, Integer, BigDecimal> record3 = value.get(0);
-            info.setActivityPrice(record3.get(REDUCE_PRICE_PRODUCT.PRD_PRICE));
-            info.setActivityId(record3.get(REDUCE_PRICE.ID));
+            info.setDataId(record3.get(REDUCE_PRICE.ID));
+            info.setDataPrice(record3.get(REDUCE_PRICE_PRODUCT.PRD_PRICE));
             returnMap.put(key,info);
         });
 

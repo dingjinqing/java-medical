@@ -1,7 +1,6 @@
-package com.vpu.mp.service.pojo.wxapp.activity.info.list;
+package com.vpu.mp.service.pojo.wxapp.activity.info;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,10 +12,10 @@ import java.math.BigDecimal;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CouponForLsitInfo extends ActivityForListInfo {
-    public CouponForLsitInfo() {
+public class CouponProcessorDataInfo extends ProcessorDataInfo {
+    public CouponProcessorDataInfo() {
         super();
-        activityType = GoodsConstant.ACTIVITY_TYPE_COUPON;
+        dataType = GoodsConstant.ACTIVITY_TYPE_COUPON;
     }
     /**优惠券类型voucher是减金额，discount打折*/
     private String actCode;

@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -22,7 +22,7 @@ public class GoodsListMpVo {
 
     private Boolean defaultPrd;
 
-    private List<ActivityForListInfo> goodsActivity;
+    private List<ProcessorDataInfo> goodsActivity;
     private GoodsLabelMpVo label;
 
     private BigDecimal shopPrice;

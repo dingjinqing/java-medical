@@ -1,7 +1,6 @@
-package com.vpu.mp.service.pojo.wxapp.activity.info.list;
+package com.vpu.mp.service.pojo.wxapp.activity.info;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,12 +11,12 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ExclusiveForListInfo extends ActivityForListInfo {
-    public ExclusiveForListInfo() {
-        activityType = GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE;
+public class ExclusiveProcessorDataInfo extends ProcessorDataInfo {
+    public ExclusiveProcessorDataInfo() {
+        dataType = GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE;
     }
 
-    public ExclusiveForListInfo(Integer gctaId,Byte type){
+    public ExclusiveProcessorDataInfo(Integer gctaId, Byte type){
         this();
         this.gctaId = gctaId;
         this.type = type;

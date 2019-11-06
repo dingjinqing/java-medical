@@ -3,8 +3,8 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsLabelForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsLabelProcessorDao;
 import org.springframework.stereotype.Service;
@@ -47,17 +47,17 @@ public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements Activ
     }
 
     @Override
-    public Map<Integer, GoodsLabelForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
-        Map<Byte, Map<Integer, GoodsLabelForListInfo>> goodsLabelsMap = getGoodsClosestLabelsInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds());
+    public Map<Integer, GoodsLabelProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+        Map<Byte, Map<Integer, GoodsLabelProcessorDataInfo>> goodsLabelsMap = getGoodsClosestLabelsInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds());
         List<ActivityGoodsListMpParam.AllIdsParam> idsParams = param.getIdsParams();
-        Map<Integer,GoodsLabelForListInfo> returnMap = new HashMap<>();
+        Map<Integer, GoodsLabelProcessorDataInfo> returnMap = new HashMap<>();
 
         idsParams.forEach(allIdsParam -> {
             Integer goodsId = allIdsParam.goodsId;
-            Map<Integer, GoodsLabelForListInfo> goodsIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
-            Map<Integer, GoodsLabelForListInfo> catIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
-            Map<Integer, GoodsLabelForListInfo> sortIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
-            Map<Integer, GoodsLabelForListInfo> allGoodsMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
+            Map<Integer, GoodsLabelProcessorDataInfo> goodsIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
+            Map<Integer, GoodsLabelProcessorDataInfo> catIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
+            Map<Integer, GoodsLabelProcessorDataInfo> sortIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
+            Map<Integer, GoodsLabelProcessorDataInfo> allGoodsMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
             if (goodsIdMap.get(allIdsParam.goodsId) != null) {
                 returnMap.put(goodsId,goodsIdMap.get(allIdsParam.goodsId));
             } else if (catIdMap.get(allIdsParam.catId) != null) {
@@ -74,10 +74,10 @@ public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements Activ
     }
 
     @Override
-    public void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId = capsule.getGoodsId();
-            GoodsLabelForListInfo label = (GoodsLabelForListInfo) activityInfos.get(goodsId);
+            GoodsLabelProcessorDataInfo label = (GoodsLabelProcessorDataInfo) activityInfos.get(goodsId);
             if (label == null) {
                 return;
             }

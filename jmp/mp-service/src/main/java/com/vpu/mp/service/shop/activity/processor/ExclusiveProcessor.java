@@ -3,11 +3,10 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.ExclusiveForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
-import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -51,10 +50,10 @@ public class ExclusiveProcessor extends MemberCardProcessorDao implements Activi
     }
 
     @Override
-    public Map<Integer, ExclusiveForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, ExclusiveProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
         // 获取专享会员对应信息
         Map<Byte, List<Integer>> exclusiveInfo = getExclusiveInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds(), param.getBrandIds());
-        Map<Integer, ExclusiveForListInfo> returnMap = new HashMap<>();
+        Map<Integer, ExclusiveProcessorDataInfo> returnMap = new HashMap<>();
 
         Set<Integer> goodsIds = new HashSet<>(exclusiveInfo.get(CardConstant.COUPLE_TP_GOODS));
         Set<Integer> catIds = new HashSet<>(exclusiveInfo.get(CardConstant.COUPLE_TP_PLAT));
@@ -63,15 +62,15 @@ public class ExclusiveProcessor extends MemberCardProcessorDao implements Activi
 
         // 依次判断商品是否是会员专享
         param.getIdsParams().forEach(idsParam->{
-            ExclusiveForListInfo info = null;
+            ExclusiveProcessorDataInfo info = null;
             if (goodsIds.contains(idsParam.goodsId)){
-                info = new ExclusiveForListInfo(idsParam.goodsId,CardConstant.COUPLE_TP_GOODS);
+                info = new ExclusiveProcessorDataInfo(idsParam.goodsId,CardConstant.COUPLE_TP_GOODS);
             } else if (catIds.contains(idsParam.catId)) {
-                info = new ExclusiveForListInfo(idsParam.catId,CardConstant.COUPLE_TP_PLAT);
+                info = new ExclusiveProcessorDataInfo(idsParam.catId,CardConstant.COUPLE_TP_PLAT);
             } else if (sortIds.contains(idsParam.sortId)) {
-                info = new ExclusiveForListInfo(idsParam.sortId,CardConstant.COUPLE_TP_STORE);
+                info = new ExclusiveProcessorDataInfo(idsParam.sortId,CardConstant.COUPLE_TP_STORE);
             } else if (brandIds.contains(idsParam.brandId)) {
-                info = new ExclusiveForListInfo(idsParam.brandId, CardConstant.COUPLE_TP_BRAND);
+                info = new ExclusiveProcessorDataInfo(idsParam.brandId, CardConstant.COUPLE_TP_BRAND);
             } else {
                 return;
             }
@@ -81,10 +80,10 @@ public class ExclusiveProcessor extends MemberCardProcessorDao implements Activi
     }
 
     @Override
-    public void processForList(Map<Integer, ? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer, ? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId = capsule.getGoodsId();
-            ActivityForListInfo activity = activityInfos.get(goodsId);
+            ProcessorDataInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
             }

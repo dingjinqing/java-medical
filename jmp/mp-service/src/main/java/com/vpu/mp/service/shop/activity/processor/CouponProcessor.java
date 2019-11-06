@@ -3,11 +3,10 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.CouponForLsitInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.CouponProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 import com.vpu.mp.service.shop.activity.dao.CouponProcessorDao;
-import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import org.jooq.Record5;
 import org.springframework.stereotype.Service;
 
@@ -53,10 +52,10 @@ public class CouponProcessor extends CouponProcessorDao implements ActivityGoods
     }
 
     @Override
-    public Map<Integer, CouponForLsitInfo> getActivityInfoForList(ActivityGoodsListMpParam activityGoodsListMpParam) {
+    public Map<Integer, CouponProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam activityGoodsListMpParam) {
         List<ActivityGoodsListMpParam.AllIdsParam> idsParams = activityGoodsListMpParam.getIdsParams();
         Timestamp date = activityGoodsListMpParam.getDate();
-        Map<Integer, CouponForLsitInfo> returnMap = new HashMap<>();
+        Map<Integer, CouponProcessorDataInfo> returnMap = new HashMap<>();
 
         idsParams.forEach(idsParam->{
             Record5<Integer, String, BigDecimal, Byte, BigDecimal> closestInfo = getGoodsCouponClosestInfo(idsParam.goodsId, idsParam.catId, idsParam.sortId, date);
@@ -64,8 +63,8 @@ public class CouponProcessor extends CouponProcessorDao implements ActivityGoods
                return;
             }
             Integer goodsId = idsParam.goodsId;
-            CouponForLsitInfo info = new CouponForLsitInfo();
-            info.setActivityId(closestInfo.get(MRKING_VOUCHER.ID));
+            CouponProcessorDataInfo info = new CouponProcessorDataInfo();
+            info.setDataId(closestInfo.get(MRKING_VOUCHER.ID));
             info.setActCode(closestInfo.get(MRKING_VOUCHER.ACT_CODE));
             info.setDenomination(closestInfo.get(MRKING_VOUCHER.DENOMINATION));
             info.setUseConsumeRestrict(closestInfo.get(MRKING_VOUCHER.USE_CONSUME_RESTRICT));
@@ -76,10 +75,10 @@ public class CouponProcessor extends CouponProcessorDao implements ActivityGoods
     }
 
     @Override
-    public void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+    public void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
             Integer goodsId = capsule.getGoodsId();
-            ActivityForListInfo activity = activityInfos.get(goodsId);
+            ProcessorDataInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
                 return;
             }

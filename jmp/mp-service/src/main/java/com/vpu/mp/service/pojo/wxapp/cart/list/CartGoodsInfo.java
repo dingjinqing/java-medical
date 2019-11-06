@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityBaseInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -65,5 +65,5 @@ public class CartGoodsInfo {
     /**
      * 活动类型
      */
-    private List<ActivityBaseInfo> goodsActivity;
+    private List<ProcessorDataInfo> goodsActivity;
 }

@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.GoodsLabelForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
 import org.jooq.Condition;
 import org.jooq.Record4;
 
@@ -35,7 +35,7 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
      * @param sortIds 商家分类集合
      * @return Map {key:标签type码值，value:innerMap},innerMap {key:id值，value:[GoodsLabelForListInfo]}
      */
-    public Map<Byte,Map<Integer, GoodsLabelForListInfo>> getGoodsClosestLabelsInfo(List<Integer> goodsIds,List<Integer> catIds,List<Integer> sortIds){
+    public Map<Byte,Map<Integer, GoodsLabelProcessorDataInfo>> getGoodsClosestLabelsInfo(List<Integer> goodsIds, List<Integer> catIds, List<Integer> sortIds){
 
         Condition goodsIdsCondition =GOODS_LABEL_COUPLE.GTA_ID.in(goodsIds).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
         Condition catIdsCondition = GOODS_LABEL_COUPLE.GTA_ID.in(catIds).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.CATTYPE.getCode()));
@@ -48,13 +48,13 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
             .orderBy(GOODS_LABEL.LEVEL.asc(), GOODS_LABEL.CREATE_TIME)
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GOODS_LABEL_COUPLE.TYPE), Collectors.groupingBy(x -> x.get(GOODS_LABEL_COUPLE.GTA_ID))));
 
-        Map<Byte,Map<Integer, GoodsLabelForListInfo>> returnMap = new HashMap<>();
+        Map<Byte,Map<Integer, GoodsLabelProcessorDataInfo>> returnMap = new HashMap<>();
 
         goodsLabelsMap.forEach((key,value)->{
-            Map<Integer,GoodsLabelForListInfo> innerMap = new HashMap<>();
+            Map<Integer, GoodsLabelProcessorDataInfo> innerMap = new HashMap<>();
             returnMap.put(key,innerMap);
             value.forEach((innerKey,innerValue)->{
-                GoodsLabelForListInfo labelInfo = new GoodsLabelForListInfo();
+                GoodsLabelProcessorDataInfo labelInfo = new GoodsLabelProcessorDataInfo();
                 Record4<String, Short, Byte, Integer> record4 = innerValue.get(0);
                 labelInfo.setListPattern(record4.get(GOODS_LABEL.LIST_PATTERN));
                 labelInfo.setName(record4.get(GOODS_LABEL.NAME));

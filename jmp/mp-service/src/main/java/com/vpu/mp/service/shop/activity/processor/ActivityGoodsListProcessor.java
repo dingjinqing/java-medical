@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ActivityForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public interface ActivityGoodsListProcessor{
         return param;
     }
 
-    Map<Integer,? extends ActivityForListInfo> getActivityInfoForList(ActivityGoodsListMpParam param);
+    Map<Integer,? extends ProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param);
 
-    void processForList(Map<Integer,? extends ActivityForListInfo> activityInfos,List<ActivityGoodsListCapsule> capsules);
+    void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules);
 }

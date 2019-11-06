@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.list.GroupBuyForListInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.GroupBuyProcessorDataInfo;
 import org.jooq.Record3;
 
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ public class GroupBuyProcessorDao extends ShopBaseService {
      * @return key:商品id value:{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GroupBuyActivityVo}
      * @author 李晓冰
      */
-    public Map<Integer, GroupBuyForListInfo> getGoodsGroupBuyListInfo(List<Integer> goodsIds, Timestamp date) {
+    public Map<Integer, GroupBuyProcessorDataInfo> getGoodsGroupBuyListInfo(List<Integer> goodsIds, Timestamp date) {
         // 获取有效拼团规格信息
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> groupsInfos = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.GOODS_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
             .from(GROUP_BUY_DEFINE).innerJoin(GROUP_BUY_PRODUCT_DEFINE).on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
@@ -39,7 +39,7 @@ public class GroupBuyProcessorDao extends ShopBaseService {
         Set<Integer> validGoodsIds = groupsInfos.keySet();
 
 
-        Map<Integer, GroupBuyForListInfo> returnMap = new HashMap<>(validGoodsIds.size());
+        Map<Integer, GroupBuyProcessorDataInfo> returnMap = new HashMap<>(validGoodsIds.size());
 
         validGoodsIds.forEach(goodsId->{
             List<Record3<Integer, Integer, BigDecimal>> groupsInfo = groupsInfos.get(goodsId);
@@ -48,9 +48,9 @@ public class GroupBuyProcessorDao extends ShopBaseService {
             // 获取拼团规格中的最小值
             Record3<Integer, Integer, BigDecimal> group = groupsInfo.get(0);
 
-            GroupBuyForListInfo vo =new GroupBuyForListInfo();
-            vo.setActivityId(group.get(GROUP_BUY_DEFINE.ID));
-            vo.setActivityPrice(group.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE));
+            GroupBuyProcessorDataInfo vo =new GroupBuyProcessorDataInfo();
+            vo.setDataId(group.get(GROUP_BUY_DEFINE.ID));
+            vo.setDataPrice(group.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE));
             returnMap.put(goodsId,vo);
         });
         return returnMap;
