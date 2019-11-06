@@ -547,7 +547,9 @@ public class UserCardService extends ShopBaseService {
 		return inData;
 	}
 
-	// 编辑会员卡详情
+	/**
+	 *  更新会员卡详情
+	 */
 	public int updateUserCardByNo(String cardNo, UserCardRecord record) {
 		return userCardDao.updateUserCardByNo(cardNo, record);
 	}

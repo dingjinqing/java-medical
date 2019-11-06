@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
@@ -17,6 +18,9 @@ import static com.vpu.mp.db.shop.Tables.USER;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VDF_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VSTAT_CHECKING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VSTAT_PASS;
+
+import java.util.List;
 /**
 * @author 黄壮壮
 * @Date: 2019年10月30日
@@ -107,6 +111,39 @@ public class CardVerifyDaoService extends ShopBaseService {
             return !StringUtils.isBlank((String)obj);
         }
         return obj != null;
+	}
+
+
+	public Integer getCountOverDueRecord(ActiveAuditParam param) {
+		SelectJoinStep<?> select = db().selectCount().from(CARD_EXAMINE);
+		buildOptions(select,param);
+		return select.fetchAnyInto(Integer.class);
+	}
+
+
+	public Integer countUndealUser(Integer cardId) {
+		return db().fetchCount(CARD_EXAMINE, CARD_EXAMINE.CARD_ID.eq(cardId).and(CARD_EXAMINE.STATUS.eq(VSTAT_CHECKING)));
+	}
+
+
+	public List<CardExamineRecord> selectUndealVerifyRecord(Integer cardId) {
+		return db().selectFrom(CARD_EXAMINE)
+			.where(CARD_EXAMINE.CARD_ID.eq(cardId))
+			.and(CARD_EXAMINE.STATUS.eq(VSTAT_CHECKING))
+			.fetchInto(CardExamineRecord.class);
+	}
+
+
+	public void updateCardVerify(Integer id) {
+		db().update(CARD_EXAMINE)
+			.set(CARD_EXAMINE.STATUS,VSTAT_PASS)
+			.set(CARD_EXAMINE.PASS_TIME,DateUtil.getLocalDateTime())
+			.where(CARD_EXAMINE.ID.eq(id));
+	}
+
+
+	public CardExamineRecord selectRecordById(Integer id) {
+		return db().selectFrom(CARD_EXAMINE).where(CARD_EXAMINE.ID.eq(id)).fetchAny();
 	}
 	
 }

@@ -69,6 +69,7 @@ import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
+import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
@@ -471,4 +472,9 @@ public class ShopApplication {
 	 */
 	@Autowired
     public FootPrintService footPrintService;
+	/**
+	 * 用户卡审核
+	 */
+	@Autowired
+	public CardVerifyService cardVerifyService;
 }
