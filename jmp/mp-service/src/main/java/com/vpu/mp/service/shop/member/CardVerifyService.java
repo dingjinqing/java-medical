@@ -66,7 +66,9 @@ public class CardVerifyService extends ShopBaseService {
 	private void updateUserDetailAccordToVerifyData(Integer id) {
 		logger().info("更新用户详情");
 		UserDetailRecord userDetailRecord = getUserActiveData(id);
-		userDetailService.updateRow(userDetailRecord);
+		if(userDetailRecord != null) {
+			userDetailService.updateRow(userDetailRecord);
+		}
 	}
 
 	private UserDetailRecord getUserActiveData(Integer id) {
