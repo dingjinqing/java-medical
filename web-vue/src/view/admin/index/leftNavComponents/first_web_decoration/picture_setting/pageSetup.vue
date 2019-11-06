@@ -46,7 +46,7 @@ export default {
     // 图文组件库
     RightPictureNavigation: () => import('./pageSetupModules/graphicAndTextComponents/rightPictureNavigation'), // 右侧图片导航配置页面
     RightCarouselPicture: () => import('./pageSetupModules/graphicAndTextComponents/rightCarouselPicture'), // 右侧轮播图配置页面
-    RiPictureAds: () => import('./pageSetupModules/graphicAndTextComponents/riPictureAds'),
+    RiPictureAds: () => import('./pageSetupModules/graphicAndTextComponents/riPictureAds'), // 右侧图片广告模块
     RiMagicMap: () => import('./pageSetupModules/graphicAndTextComponents/riMagicMap') // 右侧魔方多图模块
   },
   props: {
