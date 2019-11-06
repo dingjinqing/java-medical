@@ -1,0 +1,42 @@
+.act_content{
+  padding: 20rpx 30rpx;
+  display: flex;
+  color: #fff;
+  align-items: center;
+}
+.act_left,.act_right{
+  display: flex;
+  flex: auto;
+}
+.act_left{
+  align-items: center;
+}
+.act_right{
+  flex-direction: column;
+  align-items: flex-end;
+}
+.act_left > .label{
+  border: 2rpx solid #fff;
+  padding: 0 10rpx;
+}
+.act_left > .goods_price{
+  font-size: 26rpx;
+}
+.act_left .price{
+  font-size: 40rpx;
+}
+.act_left > .marking_price{
+  font-size: 24rpx;
+}
+.countdown > text{
+  background: #fff;
+  padding: 0 4rpx;
+  margin:0 6rpx;
+  border-radius: 6rpx;
+}
+.countdown > text:first-child{
+  margin-left: 0
+}
+.countdown > text:last-child{
+  margin-right: 0
+}

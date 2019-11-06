@@ -6,8 +6,7 @@
     </view>
     <v-goods-info>
       <!--轮播图下方，商品信息上方插槽 -->
-      <!-- 限时降价 -->
-      <!-- 秒杀，拼团，砍价 -->
+      <v-act-content />
     </v-goods-info>
     <!-- 发货地 -->
     <view class="flex_outside_box">

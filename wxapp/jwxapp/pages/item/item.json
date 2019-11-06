@@ -5,6 +5,7 @@
     "v-goods-swiper": "/components/item/swiper/index",
     "v-goods-info": "/components/item/goodsInfo/index",
     "v-comment": "/components/item/comment/index",
-    "v-goods-detail": "/components/item/goodsDetail/index"
+    "v-goods-detail": "/components/item/goodsDetail/index",
+    "v-act-content":"/components/item/actContent/index"
   }
 }
