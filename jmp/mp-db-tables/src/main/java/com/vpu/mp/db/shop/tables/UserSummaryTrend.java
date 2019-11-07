@@ -8,27 +8,16 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.UserSummaryTrendRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -44,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserSummaryTrend extends TableImpl<UserSummaryTrendRecord> {
 
-    private static final long serialVersionUID = -1828754378;
+    private static final long serialVersionUID = -1599334030;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_user_summary_trend</code>
@@ -127,17 +116,17 @@ public class UserSummaryTrend extends TableImpl<UserSummaryTrendRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_summary_trend.total_paid_money</code>. 总成交金额
      */
-    public final TableField<UserSummaryTrendRecord, Integer> TOTAL_PAID_MONEY = createField("total_paid_money", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "总成交金额");
+    public final TableField<UserSummaryTrendRecord, BigDecimal> TOTAL_PAID_MONEY = createField("total_paid_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "总成交金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_summary_trend.new_paid_money</code>. 成交新客户支付金额
      */
-    public final TableField<UserSummaryTrendRecord, BigDecimal> NEW_PAID_MONEY = createField("new_paid_money", org.jooq.impl.SQLDataType.DECIMAL(10, 4), this, "成交新客户支付金额");
+    public final TableField<UserSummaryTrendRecord, BigDecimal> NEW_PAID_MONEY = createField("new_paid_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "成交新客户支付金额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_summary_trend.old_paid_money</code>. 成交老客户支付金额
+     * The column <code>mini_shop_471752.b2c_user_summary_trend.old_paid_money</code>. 成交新老客户支付金额
      */
-    public final TableField<UserSummaryTrendRecord, Long> OLD_PAID_MONEY = createField("old_paid_money", org.jooq.impl.SQLDataType.BIGINT, this, "成交老客户支付金额");
+    public final TableField<UserSummaryTrendRecord, BigDecimal> OLD_PAID_MONEY = createField("old_paid_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "成交新老客户支付金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_summary_trend.pay_goods_number</code>. 付款件数
@@ -157,32 +146,32 @@ public class UserSummaryTrend extends TableImpl<UserSummaryTrendRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_user_summary_trend.pay_order_num</code>. 成交订单数
      */
-    public final TableField<UserSummaryTrendRecord, Integer> PAY_ORDER_NUM = createField("pay_order_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "成交订单数");
+    public final TableField<UserSummaryTrendRecord, Integer> PAY_ORDER_NUM = createField("pay_order_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "成交订单数");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_summary_trend.login_pv</code>. 登录pv
      */
-    public final TableField<UserSummaryTrendRecord, Integer> LOGIN_PV = createField("login_pv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "登录pv");
+    public final TableField<UserSummaryTrendRecord, Integer> LOGIN_PV = createField("login_pv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "登录pv");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_summary_trend.order_num</code>. 下单笔数
      */
-    public final TableField<UserSummaryTrendRecord, Integer> ORDER_NUM = createField("order_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "下单笔数");
+    public final TableField<UserSummaryTrendRecord, Integer> ORDER_NUM = createField("order_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "下单笔数");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_summary_trend.order_user_num</code>. 下单人数(生成订单就算)
      */
-    public final TableField<UserSummaryTrendRecord, Integer> ORDER_USER_NUM = createField("order_user_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "下单人数(生成订单就算)");
+    public final TableField<UserSummaryTrendRecord, Integer> ORDER_USER_NUM = createField("order_user_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "下单人数(生成订单就算)");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_summary_trend.create_time</code>.
      */
-    public final TableField<UserSummaryTrendRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<UserSummaryTrendRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_user_summary_trend.update_time</code>. 最后修改时间
      */
-    public final TableField<UserSummaryTrendRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<UserSummaryTrendRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_user_summary_trend</code> table reference

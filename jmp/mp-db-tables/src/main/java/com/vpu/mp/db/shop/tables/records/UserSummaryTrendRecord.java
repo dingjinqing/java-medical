@@ -5,15 +5,13 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.UserSummaryTrend;
+import org.jooq.Record1;
+import org.jooq.impl.UpdatableRecordImpl;
 
+import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
-import org.jooq.Record1;
-import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
@@ -29,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrendRecord> {
 
-    private static final long serialVersionUID = 1704753622;
+    private static final long serialVersionUID = -539002710;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_user_summary_trend.id</code>.
@@ -216,15 +214,15 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
     /**
      * Setter for <code>mini_shop_471752.b2c_user_summary_trend.total_paid_money</code>. 总成交金额
      */
-    public void setTotalPaidMoney(Integer value) {
+    public void setTotalPaidMoney(BigDecimal value) {
         set(13, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_user_summary_trend.total_paid_money</code>. 总成交金额
      */
-    public Integer getTotalPaidMoney() {
-        return (Integer) get(13);
+    public BigDecimal getTotalPaidMoney() {
+        return (BigDecimal) get(13);
     }
 
     /**
@@ -242,17 +240,17 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.old_paid_money</code>. 成交老客户支付金额
+     * Setter for <code>mini_shop_471752.b2c_user_summary_trend.old_paid_money</code>. 成交新老客户支付金额
      */
-    public void setOldPaidMoney(Long value) {
+    public void setOldPaidMoney(BigDecimal value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.old_paid_money</code>. 成交老客户支付金额
+     * Getter for <code>mini_shop_471752.b2c_user_summary_trend.old_paid_money</code>. 成交新老客户支付金额
      */
-    public Long getOldPaidMoney() {
-        return (Long) get(15);
+    public BigDecimal getOldPaidMoney() {
+        return (BigDecimal) get(15);
     }
 
     /**
@@ -407,7 +405,7 @@ public class UserSummaryTrendRecord extends UpdatableRecordImpl<UserSummaryTrend
     /**
      * Create a detached, initialised UserSummaryTrendRecord
      */
-    public UserSummaryTrendRecord(Integer id, Date refDate, Byte type, Integer loginData, Integer userData, Integer couponData, Integer cartData, Integer regUserData, Integer upgradeUserData, Integer chargeUserData, Integer orderUserData, Integer newOrderUserData, Integer oldOrderUserData, Integer totalPaidMoney, BigDecimal newPaidMoney, Long oldPaidMoney, Integer payGoodsNumber, Integer newPayGoodsNumber, Integer oldPayGoodsNumber, Integer payOrderNum, Integer loginPv, Integer orderNum, Integer orderUserNum, Timestamp createTime, Timestamp updateTime) {
+    public UserSummaryTrendRecord(Integer id, Date refDate, Byte type, Integer loginData, Integer userData, Integer couponData, Integer cartData, Integer regUserData, Integer upgradeUserData, Integer chargeUserData, Integer orderUserData, Integer newOrderUserData, Integer oldOrderUserData, BigDecimal totalPaidMoney, BigDecimal newPaidMoney, BigDecimal oldPaidMoney, Integer payGoodsNumber, Integer newPayGoodsNumber, Integer oldPayGoodsNumber, Integer payOrderNum, Integer loginPv, Integer orderNum, Integer orderUserNum, Timestamp createTime, Timestamp updateTime) {
         super(UserSummaryTrend.USER_SUMMARY_TREND);
 
         set(0, id);
