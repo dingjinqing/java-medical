@@ -96,8 +96,8 @@ public class GoodsConstant {
     /*** 会员专享状态：是*/
     public static final Byte CARD_EXCLUSIVE = 1;
 
-    /*** 可在商品列表展示的标签*/
-    public static final Byte GOODS_LIST = 1;
+    /*** 可在商品列表,详情展示时标签该字段的值*/
+    public static final Byte SHOW_LABEL = 1;
     public static final Integer LABEL_GTA_DEFAULT_VALUE = 0;
     /***商品评价状态对应码*/
     public static final Byte NOT_AUDIT = 0;

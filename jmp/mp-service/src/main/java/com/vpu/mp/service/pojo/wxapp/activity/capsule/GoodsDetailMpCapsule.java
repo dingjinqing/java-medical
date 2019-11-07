@@ -33,7 +33,7 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
     private Integer videoHeight;
 
     private String brandName;
-    private List<GoodsLabelProcessorDataInfo> labels = new ArrayList<>();
+    private List<GoodsLabelProcessorDataInfo> labels;
     private Integer limitBuyNum;
     private Integer limitMaxNum;
 }

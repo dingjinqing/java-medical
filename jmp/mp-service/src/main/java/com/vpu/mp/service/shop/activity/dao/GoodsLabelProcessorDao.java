@@ -43,7 +43,7 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
         Condition allGoodsCondition =  GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
 
         Map<Byte, Map<Integer, List<Record4<String, Short, Byte, Integer>>>> goodsLabelsMap = db().select(GOODS_LABEL.NAME, GOODS_LABEL.LIST_PATTERN, GOODS_LABEL_COUPLE.TYPE, GOODS_LABEL_COUPLE.GTA_ID).from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
-            .where(GOODS_LABEL.GOODS_LIST.eq(GoodsConstant.GOODS_LIST)).and(GOODS_LABEL.DEL_FLAG.eq(0))
+            .where(GOODS_LABEL.GOODS_LIST.eq(GoodsConstant.SHOW_LABEL)).and(GOODS_LABEL.DEL_FLAG.eq(0))
             .and(goodsIdsCondition.or(catIdsCondition).or(sortIdsCondition).or(allGoodsCondition))
             .orderBy(GOODS_LABEL.LEVEL.asc(), GOODS_LABEL.CREATE_TIME)
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GOODS_LABEL_COUPLE.TYPE), Collectors.groupingBy(x -> x.get(GOODS_LABEL_COUPLE.GTA_ID))));
@@ -68,5 +68,26 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
         returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode(),new HashMap<>());
 
         return returnMap;
+    }
+
+    /**
+     * 获取商品关联的标签
+     * @param goodsId 商品id
+     * @return {com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo}
+     */
+    public  List<GoodsLabelProcessorDataInfo> getGoodsDetailLabels(Integer goodsId) {
+
+        Condition goodsIdsCondition =GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
+        Condition catIdsCondition = GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.CATTYPE.getCode()));
+        Condition sortIdsCondition = GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()));
+        Condition allGoodsCondition =  GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
+
+        List<GoodsLabelProcessorDataInfo> goodsLabelProcessorDataInfos = db().select(GOODS_LABEL.NAME, GOODS_LABEL.LIST_PATTERN).from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
+            .where(GOODS_LABEL.GOODS_DETAIL.eq(GoodsConstant.SHOW_LABEL).and(GOODS_LABEL.DEL_FLAG.eq(0)))
+            .and(goodsIdsCondition.or(catIdsCondition).or(sortIdsCondition).or(allGoodsCondition))
+            .orderBy(GOODS_LABEL.LEVEL.asc(), GOODS_LABEL.CREATE_TIME)
+            .fetchInto(GoodsLabelProcessorDataInfo.class);
+
+        return goodsLabelProcessorDataInfos;
     }
 }

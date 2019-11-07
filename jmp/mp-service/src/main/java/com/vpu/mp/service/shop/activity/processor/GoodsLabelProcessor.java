@@ -3,9 +3,11 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsLabelProcessorDao;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,9 @@ import java.util.Map;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements ActivityGoodsListProcessor {
+public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements ActivityGoodsListProcessor,
+    GoodsDetailProcessor<GoodsLabelProcessorDataInfo> {
+    /*****************商品列表处理*******************/
     @Override
     public Byte getPriority() {
         return 0;
@@ -83,5 +87,15 @@ public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements Activ
             }
             capsule.setGoodsLabel(label);
         });
+    }
+
+    /*****************商品详情处理******************/
+    @Override
+    public List<GoodsLabelProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
+        return getGoodsDetailLabels(param.getGoodsId());
+    }
+    @Override
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, List<GoodsLabelProcessorDataInfo> dataInfos) {
+        capsule.setLabels(dataInfos);
     }
 }
