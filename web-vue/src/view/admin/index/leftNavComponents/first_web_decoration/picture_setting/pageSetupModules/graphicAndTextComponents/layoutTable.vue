@@ -2,7 +2,8 @@
   <div class="layoutTableMain">
     <table
       class="gridtable"
-      width='100%'
+      width='300px'
+      height='300px'
     >
       <!--rowspan: 1,
        colspan: 1,-->
@@ -10,39 +11,98 @@
         <tr
           v-for="(item,index) in columnData"
           :key="index"
+          :style="'height:'+trHeight"
         >
           <td
-            :style="((item['0IsChecked']||item['0IsSlide'])?'backgroundColor:#eaf0ff;':'')+(item['0IsBorder']?'borderColor:#6e86cc':'')+(item['0Dis']?'display:none':'')"
+            :style="((item['0IsChecked']||item['0IsSlide'])?'backgroundColor:#eaf0ff;':'')+((item['0IsBorder']&&item['0controlClick'])?'borderColor:#6e86cc;':'')+(item['0Dis']?'display:none;':'')"
             @click="handleToClick(index,0)"
             :colspan="item['0Col']"
             :rowspan="item['0Row']"
             @mouseenter="enter(index,0)"
             @mouseleave="leave(index,0)"
-          ><span v-if="!item['0IsBorder']">+</span></td>
+          ><span v-if="!item['0IsBorder']">+</span><span v-else>{{!((item['0Col']==='1')&&(item['0Row']==='1'))?(Number(item['0Col'])*188+'x'+Number(item['0Row'])*188+'像素或同等比例'):''}}<i
+                @click.stop="handleToDelCell(index,0)"
+                :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
+                v-if="(item['0controlClick']&&item['0controlDelIconDis'])"
+              ></i></span></td>
           <td
-            :style="((item['1IsChecked']||item['1IsSlide'])?'backgroundColor:#eaf0ff;':'')+(item['1IsBorder']?'borderColor:#6e86cc':'')+(item['1Dis']?'display:none':'')"
+            :style="((item['1IsChecked']||item['1IsSlide'])?'backgroundColor:#eaf0ff;':'')+((item['1IsBorder']&&item['1controlClick'])?'borderColor:#6e86cc;':'')+(item['1Dis']?'display:none;':'')"
             @click="handleToClick(index,1)"
             :colspan="item['1Col']"
             :rowspan="item['1Row']"
             @mouseenter="enter(index,1)"
             @mouseleave="leave(index,1)"
-          ><span v-if="!item['1IsBorder']">+</span></td>
+          ><span v-if="!item['1IsBorder']">+</span><span v-else>{{!((item['1Col']==='1')&&(item['1Row']==='1'))?(Number(item['1Col'])*188+'x'+Number(item['1Row'])*188+'像素或同等比例'):''}}<i
+                @click.stop="handleToDelCell(index,1)"
+                :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
+                v-if="(item['1controlClick']&&item['1controlDelIconDis'])"
+              ></i></span></td>
           <td
-            :style="((item['2IsChecked']||item['2IsSlide'])?'backgroundColor:#eaf0ff;':'')+(item['2IsBorder']?'borderColor:#6e86cc':'')+(item['2Dis']?'display:none':'')"
+            :style="((item['2IsChecked']||item['2IsSlide'])?'backgroundColor:#eaf0ff;':'')+((item['2IsBorder']&&item['2controlClick'])?'borderColor:#6e86cc;':'')+(item['2Dis']?'display:none;':'')"
             @click="handleToClick(index,2)"
             :colspan="item['2Col']"
             :rowspan="item['2Row']"
             @mouseenter="enter(index,2)"
             @mouseleave="leave(index,2)"
-          ><span v-if="!item['2IsBorder']">+</span></td>
+          ><span v-if="!item['2IsBorder']">+</span><span v-else>{{!((item['2Col']==='1')&&(item['2Row']==='1'))?(Number(item['2Col'])*188+'x'+Number(item['2Row'])*188+'像素或同等比例'):''}}<i
+                @click.stop="handleToDelCell(index,2)"
+                :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
+                v-if="(item['2controlClick']&&item['2controlDelIconDis'])"
+              ></i></span></td>
           <td
-            :style="((item['3IsChecked']||item['3IsSlide'])?'backgroundColor:#eaf0ff;':'')+(item['3IsBorder']?'borderColor:#6e86cc':'')+(item['3Dis']?'display:none':'')"
+            :style="((item['3IsChecked']||item['3IsSlide'])?'backgroundColor:#eaf0ff;':'')+((item['3IsBorder']&&item['3controlClick'])?'borderColor:#6e86cc;':'')+(item['3Dis']?'display:none;':'')"
             @click="handleToClick(index,3)"
             :colspan="item['3Col']"
             :rowspan="item['3Row']"
             @mouseenter="enter(index,3)"
             @mouseleave="leave(index,3)"
-          ><span v-if="!item['3IsBorder']">+</span></td>
+          ><span v-if="!item['3IsBorder']">+</span><span v-else>{{!((item['3Col']==='1')&&(item['3Row']==='1'))?(Number(item['3Col'])*188+'x'+Number(item['3Row'])*188+'像素或同等比例'):''}}<i
+                @click.stop="handleToDelCell(index,3)"
+                :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
+                v-if="(item['3controlClick']&&item['3controlDelIconDis'])"
+              ></i></span></td>
+
+          <td
+            v-if="density===1||density===2||density===3"
+            :style="((item['4IsChecked']||item['4IsSlide'])?'backgroundColor:#eaf0ff;':'')+((item['4IsBorder']&&item['4controlClick'])?'borderColor:#6e86cc;':'')+(item['4Dis']?'display:none;':'')"
+            @click="handleToClick(index,4)"
+            :colspan="item['4Col']"
+            :rowspan="item['4Row']"
+            @mouseenter="enter(index,4)"
+            @mouseleave="leave(index,4)"
+          ><span v-if="!item['4IsBorder']">+</span><span v-else>{{!((item['4Col']==='1')&&(item['4Row']==='1'))?(Number(item['4Col'])*188+'x'+Number(item['4Row'])*188+'像素或同等比例'):''}}<i
+                @click.stop="handleToDelCell(index,4)"
+                :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
+                v-if="(item['4controlClick']&&item['4controlDelIconDis'])"
+              ></i></span></td>
+
+          <td
+            v-if="density===2||density===3"
+            :style="((item['5IsChecked']||item['5IsSlide'])?'backgroundColor:#eaf0ff;':'')+((item['5IsBorder']&&item['5controlClick'])?'borderColor:#6e86cc;':'')+(item['5Dis']?'display:none;':'')"
+            @click="handleToClick(index,5)"
+            :colspan="item['5Col']"
+            :rowspan="item['5Row']"
+            @mouseenter="enter(index,5)"
+            @mouseleave="leave(index,5)"
+          ><span v-if="!item['5IsBorder']">+</span><span v-else>{{!((item['5Col']==='1')&&(item['5Row']==='1'))?(Number(item['5Col'])*188+'x'+Number(item['5Row'])*188+'像素或同等比例'):''}}<i
+                @click.stop="handleToDelCell(index,5)"
+                :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
+                v-if="(item['5controlClick']&&item['5controlDelIconDis'])"
+              ></i></span></td>
+
+          <td
+            v-if="density===3"
+            :style="((item['6IsChecked']||item['6IsSlide'])?'backgroundColor:#eaf0ff;':'')+((item['6IsBorder']&&item['6controlClick'])?'borderColor:#6e86cc;':'')+(item['6Dis']?'display:none;':'')"
+            @click="handleToClick(index,6)"
+            :colspan="item['6Col']"
+            :rowspan="item['6Row']"
+            @mouseenter="enter(index,6)"
+            @mouseleave="leave(index,6)"
+          ><span v-if="!item['6IsBorder']">+</span><span v-else>{{!((item['6Col']==='1')&&(item['6Row']==='1'))?(Number(item['6Col'])*188+'x'+Number(item['6Row'])*188+'像素或同等比例'):''}}<i
+                @click.stop="handleToDelCell(index,6)"
+                :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
+                v-if="(item['6controlClick']&&item['6controlDelIconDis'])"
+              ></i></span></td>
         </tr>
       </tbody>
     </table>
@@ -60,7 +120,7 @@ export default {
     return {
       timesNumber: [4, 5, 6, 7], // 行布局类型尺寸
       columnData: [], // 表格数据
-      arrFour: [0, 1, 2, 3], // 4X4数据
+      arrFour: [0, 1, 2, 3, 4, 5, 6], // 4X4数据
       isOpenLayout: false, // 是否开始布局
       nowCheckedArr: [], // 当前选中的项集合
       firstClickRowIndex: null, // 第一次选中的项所在的行
@@ -68,18 +128,54 @@ export default {
       firstClickColindex: null, // 第一次选中的项在的列
       lastClickColindex: null, // 最后一次选中的项所在的列
       choiseCellNumber: 1, // 点击次数标识
-      isOpenSlide: false
+      isOpenSlide: false, // 是否开启滑动flag
+      nowCheckedCell: [null, null], // 当前高亮单元格坐标坐标
+      trHeight: null // tr动态行高
+    }
+  },
+  watch: {
+    nowCheckedCell: {// 获取当前高亮单元格坐标
+      handler (newData) {
+        console.log(newData)
+      },
+      deep: true
+    },
+    density: {
+      handler (newData) {
+        console.log(newData)
+        this.columnData = []
+        switch (newData) {
+          case 0:
+            this.arrFour = [0, 1, 2, 3]
+            this.trHeight = '75px'
+            break
+          case 1:
+            this.arrFour = [0, 1, 2, 3, 4]
+            this.trHeight = '60px'
+            break
+          case 2:
+            this.arrFour = [0, 1, 2, 3, 4, 5]
+            this.trHeight = '50px'
+            break
+          case 3:
+            this.arrFour = [0, 1, 2, 3, 4, 5, 6]
+            this.trHeight = '42px'
+        }
+        //  初始化数据
+        this.defaultData()
+      },
+      immediate: true
     }
   },
   mounted () {
-    //  初始化数据
-    this.defaultData()
+
   },
   methods: {
     // 初始化数据
     defaultData () {
       // 4X4
       let obj1 = {}
+      console.log(this.density)
       this.arrFour.forEach((item, index) => {
         obj1[`${item}Row`] = '1' // 控制行合并
         obj1[`${item}Col`] = '1' // 控制列合并
@@ -87,6 +183,8 @@ export default {
         obj1[`${item}IsChecked`] = false // 控制背景色
         obj1[`${item}IsBorder`] = false // 控制高亮
         obj1[`${item}IsSlide`] = false // 控制滑动显示背景色
+        obj1[`${item}controlClick`] = true // 控制点击切换高亮
+        obj1[`${item}controlDelIconDis`] = false // 控制删除icon鼠标滑过的显示隐藏
       })
       this.arrFour.forEach((item, index) => {
         let obj = JSON.parse(JSON.stringify(obj1))
@@ -96,6 +194,9 @@ export default {
     },
     // 点击表格单元
     handleToClick (index, item) {
+      // 判断点击的是不是已合并的单元格单元格
+      let JudgeHighet = this.handleToJudgeHighet(index, item)
+      if (!JudgeHighet) return
       this.handleToScreen() // 首次筛选判断当前点击是不是首次点击
       if (this.choiseCellNumber === 1) {
         this.columnData[index][`${item}IsChecked`] = true
@@ -105,7 +206,6 @@ export default {
         this.firstClickRowIndex = index//  记录第一次点击的行
         this.firstClickColindex = item //  记录第一次点击的列
       } else {
-        this.isOpenSlide = false
         this.lastClickRowIndex = index // 记录最后一次点击的行
         this.lastClickColindex = item // 记录最后一次点击的列
         if (this.firstClickRowIndex === index) { // 判断第二次点击是否点击的还是同行
@@ -115,8 +215,15 @@ export default {
           if (this.firstClickColindex === item) { // 判断第二次点击的是否是同一个单元格
             // 处理两次点击同行同一单元格事件
             console.log(item)
+            this.handleToResetAttr('controlClick') // 重置全局controlClick
             this.columnData[index][`${item}IsBorder`] = true // 若点击的是同一个则其高亮
+            this.columnData[index][`${item}controlClick`] = true
+            // 记录当前高亮坐标
+            this.nowCheckedCell = []
+            this.nowCheckedCell[0] = index
+            this.nowCheckedCell[1] = item
             console.log(this.columnData)
+            this.isOpenSlide = false
             this.nowCheckedArr = []
             console.log(this.nowCheckedArr)
           } else {
@@ -124,10 +231,12 @@ export default {
             // 处理两次点击同行不同单元格事件
             let flag = this.handleToSameRowDifferentCell(index, item)
             if (!flag) return
+            this.isOpenSlide = false
           }
         } else { // 若第二次点击的是不同行的单元格
           let flag = this.handleToDiffRowDiffCell(index, item)
           if (!flag) return
+          this.isOpenSlide = false
         }
         this.choiseCellNumber = 1
       }
@@ -170,7 +279,13 @@ export default {
       }
       console.log(index, item, this.firstClickColindex)
       this.columnData[index][`${startingPoint}Col`] = (Math.abs(NumItem - firstClickColindex) + 1) // 第一次点击的单元格合并的列数
+      this.handleToResetAttr('controlClick') // 重置全局controlClick
       this.columnData[index][`${startingPoint}IsBorder`] = true // 第一次点击的单元格高亮
+      this.columnData[index][`${startingPoint}controlClick`] = true
+      // 记录当前高亮坐标
+      this.nowCheckedCell = []
+      this.nowCheckedCell[0] = index
+      this.nowCheckedCell[1] = startingPoint
       console.log((NumItem - firstClickColindex))
       let total = Math.abs(NumItem - firstClickColindex)
       let i = 1
@@ -201,7 +316,13 @@ export default {
         })
         return false
       }
+      this.handleToResetAttr('controlClick') // 重置全局controlClick
       this.columnData[startRow][`${startCol}IsBorder`] = true // 起点单元格高亮
+      this.columnData[startRow][`${startCol}controlClick`] = true
+      // 记录当前高亮坐标
+      this.nowCheckedCell = []
+      this.nowCheckedCell[0] = startRow
+      this.nowCheckedCell[1] = startCol
       this.columnData[startRow][`${startCol}IsChecked`] = true // 起始单元格高亮
       let startRowCopy = JSON.parse(JSON.stringify(startRow)) // 起始行原始保存
       let lastRowCopy = JSON.parse(JSON.stringify(lastRow)) // 起始行最后点行原始保存
@@ -274,14 +395,15 @@ export default {
     // 鼠标移入
     enter (row, col) {
       if (this.isOpenSlide) {
-        // this.columnData[row][`${col}IsSlide`] = true
+        this.handleToHoverEnter(row, col)
       }
+      // 控制删除icon显示隐藏的其中一个flag
+      this.columnData[row][`${col}controlDelIconDis`] = true
     },
-    // 鼠标移出
+    // 鼠标移出  滑出事件只服务于删除icon的显示隐藏
     leave (row, col) {
-      if (this.isOpenSlide) {
-        // this.columnData[row][`${col}IsSlide`] = false
-      }
+      // 控制删除icon显示隐藏的其中一个flag
+      this.columnData[row][`${col}controlDelIconDis`] = false
     },
     // 筛选出所选区域左上点和右下点坐标
     handleToScreenPoints (index, item) {
@@ -313,6 +435,96 @@ export default {
         firstClickColindex,
         firstClickRowIndex
       }
+    },
+    // 处理第一次点中单元格后鼠标移入单元格事件
+    handleToHoverEnter (index, item) {
+      this.handleToResetAttr('IsSlide') // 重置滑动flag
+      console.log(index, item)
+      let { startRow, startCol, lastRow, lastCol } = this.handleToScreenPoints(index, item)
+      console.log(startRow, startCol, lastRow, lastCol)
+      for (startRow; startRow <= lastRow; startRow++) { // 循环行
+        console.log(startRow)
+        let startColCopy = JSON.parse(JSON.stringify(startCol))
+        console.log(startColCopy, lastCol)
+        for (startColCopy; startColCopy <= lastCol; startColCopy++) { // 列循环
+          console.log(startRow, startCol)
+          this.columnData[startRow][`${startColCopy}IsSlide`] = true
+        }
+      }
+    },
+    // 处理第一次点中单元格后鼠标移出单元格事件
+    handleToHoverLeave (index, item) {
+      let { startRow, startCol, lastRow, lastCol } = this.handleToScreenPoints(index, item)
+      if ((index > lastRow) || (index < startRow) || (index < startCol) || (index > lastCol)) {
+        this.columnData[index][`${item}IsSlide`] = false
+      }
+    },
+    // 重置全局表格数据某个属性
+    handleToResetAttr (attr) {
+      this.columnData.forEach((item, index) => {
+        this.arrFour.forEach((itemC, indexC) => {
+          item[`${itemC}${attr}`] = false
+        })
+      })
+    },
+    // 判断首次点击的是不是已经高亮的模块
+    handleToJudgeHighet (row, col) {
+      if (this.columnData[row][`${col}IsBorder`]) {
+        this.handleToResetAttr('controlClick') // 重置全局controlClick
+        this.columnData[row][`${col}controlClick`] = true //  激活当前点击的单元格的controlClick
+        return false
+      } else {
+        return true
+      }
+    },
+    // 删除已选中并合并的单元格 即重置合并单元格
+    handleToDelCell (row, col) {
+      console.log(row, col)
+      let mergeRowNum = this.columnData[row][`${col}Row`]
+      let mergeColNum = this.columnData[row][`${col}Col`]
+      this.columnData[row][`${col}IsChecked`] = false
+      this.columnData[row][`${col}IsBorder`] = false
+      this.columnData[row][`${col}controlClick`] = true
+      this.columnData[row][`${col}IsSlide`] = false
+      this.columnData[row][`${col}controlDelIconDis`] = false
+      console.log(mergeRowNum, mergeColNum)
+      this.handleToResetMergeCell(mergeRowNum, mergeColNum, row, col)
+    },
+    // 重置合并单元格
+    handleToResetMergeCell (mergeRowNum, mergeColNum, startRow, startCol) {
+      // 重置行、列合并数
+      this.columnData[startRow][`${startCol}Row`] = '1'
+      this.columnData[startRow][`${startCol}Col`] = '1'
+      /*
+     *循环重置每行隐藏列
+     */
+      let mergeRowi = 0
+      let timesRowStart = JSON.parse(JSON.stringify(startRow))
+      let coli = null
+      for (mergeRowi; mergeRowi < mergeRowNum; mergeRowi++) { // 循环每行
+        if (timesRowStart === startRow) {
+          coli = 1
+        } else {
+          coli = 0
+        }
+        let timesColStart = JSON.parse(JSON.stringify(startCol))
+        // 列循环
+
+        for (coli; coli <= (mergeColNum - 1); coli++) {
+          if (timesRowStart === startRow) {
+            timesColStart++
+            this.columnData[timesRowStart][`${timesColStart}Dis`] = false
+            this.columnData[timesRowStart][`${timesColStart}IsChecked`] = false
+            this.columnData[timesRowStart][`${timesColStart}IsSlide`] = false
+          } else {
+            this.columnData[timesRowStart][`${timesColStart}Dis`] = false
+            this.columnData[timesRowStart][`${timesColStart}IsChecked`] = false
+            this.columnData[timesRowStart][`${timesColStart}IsSlide`] = false
+            timesColStart++
+          }
+        }
+        timesRowStart++
+      }
     }
   }
 }
@@ -320,18 +532,33 @@ export default {
 <style lang="scss" scoped>
 .layoutTableMain {
   border: none !important;
+  background-color: #f8f8f8 !important;
   .gridtable {
+    border-collapse: separate;
     table-layout: fixed;
+    border: 1px solid #dddddd;
     tr {
-      height: 75px;
+      // height: 75px;
       td {
         cursor: pointer;
         background-color: #fff;
         border: 1px solid #dddddd;
         padding-bottom: none;
         vertical-align: middle !important;
+        position: relative;
         span {
           display: inline-block;
+          word-break: break-all;
+          i {
+            width: 15px;
+            height: 15px;
+            display: block;
+            position: absolute;
+            right: -7px;
+            top: -8px;
+            background-size: 100%;
+            z-index: 99;
+          }
         }
       }
     }
