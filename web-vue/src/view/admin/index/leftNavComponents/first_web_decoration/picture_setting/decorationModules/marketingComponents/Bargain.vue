@@ -25,7 +25,10 @@
             </div>
             <div class="bargain_default_info">
               <div class="bargain_info_head">
-                <span class="bargain_price new_price">￥<span style="font-size: 18px;">0</span></span>
+                <span
+                  class="bargain_price new_price"
+                  :style="'color:' + bgColor"
+                >￥<span style="font-size: 18px;">0</span></span>
                 <span class="bargain_old">￥0</span>
               </div>
               <div class="bargain_info_name"></div>
@@ -33,7 +36,7 @@
                 <span class="bargain_num">{{$t('bargain.onlyLeft')}}10{{$t('bargain.pieces')}}</span>
                 <span
                   class="bargin_free_btn"
-                  :class="'new_back'"
+                  :style="'background: ' + bgColor"
                 >{{$t('bargain.goPrice')}}</span>
               </div>
             </div>
@@ -61,7 +64,10 @@
             </div>
             <div class="bargain_default_info">
               <div class="bargain_info_head">
-                <span class="bargain_price new_price">￥<span style="font-size: 18px;">{{good.expectation_price}}</span></span>
+                <span
+                  class="bargain_price"
+                  :style="'color: '+ bgColor"
+                >￥<span style="font-size: 18px;">{{good.expectation_price}}</span></span>
                 <span
                   v-if="data.goods_price"
                   class="bargain_old"
@@ -73,7 +79,7 @@
                 <span
                   v-if="data.free_btn"
                   class="bargin_free_btn"
-                  :class="'new_back'"
+                  :style="'background:' + bgColor"
                 >{{$t('bargain.goPrice')}}</span>
               </div>
             </div>
@@ -98,12 +104,15 @@
               </div>
               <div class="bargain_info_bottom">
                 <div class="bargain_price_wrap">
-                  <span class="bargain_price new_price">￥<span style="font-size: 18px;">0</span></span>
+                  <span
+                    class="bargain_price"
+                    :style="'color:' + bgColor"
+                  >￥<span style="font-size: 18px;">0</span></span>
                   <span class="bargain_old">￥0</span>
                 </div>
                 <span
                   class="bargin_free_btn"
-                  :class="'new_back'"
+                  :style="'background:'+bgColor"
                 >{{$t('bargain.goPrice')}}</span>
               </div>
             </div>
@@ -136,7 +145,10 @@
               </div>
               <div class="bargain_info_bottom">
                 <div class="bargain_price_wrap">
-                  <span class="bargain_price new_price">￥<span style="font-size: 18px;">{{good.expectation_price}}</span></span>
+                  <span
+                    class="bargain_price"
+                    :style="'color:'+bgColor"
+                  >￥<span style="font-size: 18px;">{{good.expectation_price}}</span></span>
                   <span
                     v-if="data.goods_price"
                     class="bargain_old"
@@ -145,7 +157,7 @@
                 <span
                   v-if="data.free_btn"
                   class="bargin_free_btn"
-                  :class="'new_back'"
+                  :style="'background:'+bgColor"
                 >{{$t('bargain.goPrice')}}</span>
               </div>
             </div>
@@ -212,7 +224,8 @@ export default {
         goods_count_down: true,
         free_btn: true,
         bargain_goods: []
-      }
+      },
+      bgColor: '' // 主题色
     }
   },
   filters: {
@@ -276,6 +289,8 @@ export default {
     this.langDefault() // 模块公共
     // 初始化数据
     this.defaultData() // 模块公共
+
+    this.bgColor = localStorage.getItem('V-backgroundColor') || '#f66'
   },
   methods: {
     defaultData () { // 模块公共
