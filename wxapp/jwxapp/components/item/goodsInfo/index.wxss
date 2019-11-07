@@ -1,3 +1,5 @@
+@import "/css/iconfont.wxss";
+@import '/css/item.wxss';
 .goods-info{
   padding: 30rpx;
   background-color: #fff;
@@ -42,22 +44,6 @@
 }
 .marking_price{
   color: #999;
-}
-.label-content{
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: -16rpx;
-  margin-bottom:-12rpx;
-}
-.label-content_style{
-  line-height: 56rpx;
-  padding: 0 20rpx;
-  color: #f66;
-  background-color: #fcf0f0;
-  width: auto;
-  border-radius: 40rpx;
-  margin-left: 16rpx;
-  margin-bottom: 12rpx
 }
 .flex-wrap{
   display: flex;

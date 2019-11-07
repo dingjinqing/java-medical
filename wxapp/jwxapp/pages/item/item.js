@@ -23,11 +23,19 @@ global.wxPage({
 
   },
   backHome() {
-    util.jumpLink('pages/index/index', 'navigateTo')
+    util.jumpLink('pages/index/index', 'redirectTo')
   },
-  showCouponDialog() {
-    this.setData({
-      show_recommend_coupons:true
+  getActStatus(e){
+    let second = e.detail
+    console.log(second)
+  },
+  // 添加购物车
+  addCart(){
+    util.api('/api/admin/cart/add',res=>{
+      console.log(res)
+    },{
+        goodsNumber: 1,
+        prdId: 5126
     })
   },
   /**

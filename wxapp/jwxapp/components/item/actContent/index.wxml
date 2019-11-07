@@ -7,7 +7,18 @@
   <view class="act_right">
     <text>距结束仅剩</text>
     <view class="countdown">
-        <text style='color:{{main_setting.comColor}}'>01</text>天<text style='color:{{main_setting.comColor}}'>02</text>:<text style='color:{{main_setting.comColor}}'>03</text>
+      <block wx:for="{{clock}}" wx:key="index">
+        <!-- <text style='color:{{main_setting.comColor}}'>01</text>天<text style='color:{{main_setting.comColor}}'>02</text>:<text style='color:{{main_setting.comColor}}'>03</text>:<text style='color:{{main_setting.comColor}}'>00</text> -->
+        <block wx:if="{{index === 0 && clock.length === 4}}">
+          <text class="count" style='color:{{main_setting.comColor}}'>{{item}}</text><text>天</text>
+        </block>
+        <block wx:elif="{{index === clock.length - 1}}">
+          <text class="count"  style='color:{{main_setting.comColor}}'>{{item}}</text>
+        </block>
+        <block wx:else>
+          <text class="count" style='color:{{main_setting.comColor}}'>{{item}}</text><text>:</text>
+        </block>
+      </block>
     </view>
   </view>
 </view>

@@ -6,7 +6,7 @@
     </view>
     <v-goods-info>
       <!--轮播图下方，商品信息上方插槽 -->
-      <v-act-content />
+      <v-act-content bindactStatus="getActStatus"/>
     </v-goods-info>
     <!-- 发货地 -->
     <view class="flex_outside_box">
@@ -15,28 +15,10 @@
         <view class="item_middle">北京</view>
       </view>
     </view>
-    <!-- 优惠券 -->
-    <view class="flex_outside_box" bindtap="showCouponDialog">
-      <view class="flex_box">
-        <view class="item_left">优惠券</view>
-        <view class="item_middle goods_coupon_list">
-          <view class="goods_coupon_item" style='background:{{somColor}};color:{{comColor}};border-color:{{borColor}}'>满￥600减50</view>
-          <view class="goods_coupon_item" style='background:{{somColor}};color:{{comColor}};border-color:{{borColor}}'>领券减￥10</view>
-        </view>
-        <view class="item_right">></view>
-      </view>
-      <view class="item_line"></view>
-      <view class="flex_box">
-        <view class="item_left">促销</view>
-        <view class="item_middle">
-          TODO
-        </view>
-        <view class="item_right">></view>
-      </view>
-    </view>
+    <!-- 优惠券&促销信息-->
+    <v-coupon-promotion />
     <!-- 需提取组件  服务|选择规格-->
-    <view class="flex_outside_box">
-      <!-- 服务 -->
+    <!-- <view class="flex_outside_box">
       <view class="flex_box">
         <view class="item_left">
           服务
@@ -45,7 +27,6 @@
         <view class="item_right"></view>
       </view>
       <view class="item_line"></view>
-      <!-- 选择规格 -->
       <view class="flex_box">
         <view class="item_left">
           选择
@@ -53,7 +34,10 @@
         <view class="item_middle"></view>
         <view class="item_right"></view>
       </view>
-    </view>
+    </view> -->
+    <!--  选择规格（包含无规格情况）  -->
+        <!-- <v-sel-spec gd="{{gd}}" show="{{show_spec}}" exchang_block="{{exchang_block}}" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
+        </v-sel-spec> -->
     <!-- 用户评价 -->
     <v-comment />
 
@@ -71,7 +55,7 @@
       <text>购物车</text>
       <view class="cart_goods_num" style="color:{{comColor}};border-color:{{comColor}}">0</view>
     </view>
-    <view class="footer_flex_view" style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}}'>
+    <view class="footer_flex_view" bindtap="addCart" style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}}'>
       <text>加入购物车</text>
     </view>
     <view class="footer_flex_view" style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{comColor}};' >
@@ -79,6 +63,4 @@
     </view>
   </view>
   <include src="../common/footer.wxml" />
-  <!-- 优惠券选择弹窗 -->
-  <v-popup-coupon show="{{show_recommend_coupons}}" coupon_list="{{goodsInfo.recommend_coupons}}" />
 </view>

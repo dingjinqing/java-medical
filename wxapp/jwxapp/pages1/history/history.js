@@ -1,4 +1,4 @@
-// pages1/history/history.js
+const util = require('../../utils/util.js');
 global.wxPage({
 
   /**
@@ -21,8 +21,18 @@ global.wxPage({
         page_name: "历史购买"
       })
     }
+    this.requestList()
   },
-
+  requestList(){
+    let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
+    util.api('/api/wxapp/footprint/list',(res)=>{
+      console.log(res)
+    },{
+        currentPage: currentPage,
+        pageRows: 2,
+        action:1
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

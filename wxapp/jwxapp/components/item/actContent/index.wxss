@@ -28,7 +28,13 @@
 .act_left > .marking_price{
   font-size: 24rpx;
 }
+.countdown{
+  font-size: 0;
+}
 .countdown > text{
+  font-size: 26rpx;
+}
+.countdown > .count{
   background: #fff;
   padding: 0 4rpx;
   margin:0 6rpx;
