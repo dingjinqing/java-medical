@@ -118,6 +118,10 @@ import {
 import {
   cn as pictureAds
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/pictureAdsCn'
+// 小程序页面装修图片导航模块国际化
+import {
+  cn as shopRecruit
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/shopRecruitCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -903,7 +907,8 @@ const cn = {
   bargain, // 小程序装修砍价模块
   coupon, // 小程序页面装修优惠卷模块
   commodity, //  小程序页面装修商品模块
-  pictureAds //  小程序页面装修图片广告模块
+  pictureAds, //  小程序页面装修图片广告模块
+  shopRecruit // 小程序页面装修店招设置模块
 }
 
 export default cn

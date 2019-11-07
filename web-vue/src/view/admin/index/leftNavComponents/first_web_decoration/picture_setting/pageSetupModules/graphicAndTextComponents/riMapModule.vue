@@ -26,7 +26,10 @@
                 size="small"
               >地图定位</el-button>
             </div>
-            <div class="mapContent">
+            <div
+              class="mapContent"
+              id="riMapContainer"
+            >
 
             </div>
           </div>
@@ -94,6 +97,10 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         this.data = this.modulesData
+        // 初始化地图
+        // this.$nextTick(() => {
+        //   this.initMap()
+        // })
       },
       immediate: true
     },
@@ -114,6 +121,15 @@ export default {
       // this.data.city_code = data.city
       // this.data.area_code = data.district
     },
+    // 加载地图
+    initMap () {
+      // 定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
+      // var map = new qq.maps.Map(document.getElementById('riMapContainer'), {
+      //   center: new qq.maps.LatLng(39.916527, 116.397128), // 地图的中心地理坐标。
+      //   zoom: 8 // 地图的中心地理坐标。
+      // })
+    },
+
     // 点击重置
     handleToReset (index) {
       switch (index) {

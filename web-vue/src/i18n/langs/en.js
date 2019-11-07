@@ -143,6 +143,10 @@ import {
 import {
   en as commodity
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/commodityComponents/commodityEn'
+// 小程序页面装修店招设置模块国际化
+import {
+  en as shopRecruit
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/shopRecruitEn'
 
 // 营销管理系列模块化
 // 营销管理通用词汇
@@ -899,6 +903,7 @@ const en = {
   bargain, // 小程序装修砍价模块
   coupon, // 小程序页面装修优惠卷模块
   commodity, // 小程序页面装修商品模块
-  pictureAds // 小程序页面装修图片广告模块
+  pictureAds, // 小程序页面装修图片广告模块
+  shopRecruit // 小程序页面装修店招设置模块
 }
 export default en

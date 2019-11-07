@@ -1,30 +1,30 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>店招模块<span style="margin-left: 3%;color: #9a9a9a;">背景图片建议尺寸：640*300</span></h2>
+      <h2>{{ $t('shopRecruit.shopTitle') }}<span style="margin-left: 3%;color: #9a9a9a;">{{ $t('shopRecruit.titleTip') }}</span></h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="container">
-          <span>店铺名称：</span>
+          <span>{{ $t('shopRecruit.shopName') }}：</span>
           <el-input
             :maxlength="20"
             v-model="data.shop_name"
           ></el-input>
-          <span class="tip">最多20个字</span>
+          <span class="tip">{{ $t('shopRecruit.nameTip') }}</span>
         </div>
         <div class="container">
-          <span>店铺公告：</span>
+          <span>{{ $t('shopRecruit.shopNotice') }}：</span>
           <el-input
             :maxlength="30"
             v-model="data.shop_notice"
           ></el-input>
-          <span class="tip">最多30个字</span>
+          <span class="tip">{{ $t('shopRecruit.noticeTip') }}</span>
         </div>
         <div class="container">
-          <div class="label">背景图片：</div>
+          <div class="label">{{ $t('shopRecruit.shopBg') }}：</div>
 
           <div class="defaultBg">
-            <span>默认背景选择：</span>
+            <span>{{ $t('shopRecruit.defaultBg') }}：</span>
             <el-select
               v-model="value"
               @change="selectChange"
@@ -39,7 +39,7 @@
           </div>
 
           <div class="customBg">
-            <span>上传背景图片：</span>
+            <span>{{ $t('shopRecruit.customBg') }}：</span>
             <!--添加图片占位-->
             <div @click="handleToCallImgDialog()">
               <img

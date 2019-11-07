@@ -14,7 +14,11 @@
           <div class="titleIcon"><i class="el-icon-location"></i></div>
           <div class="titleWord">显示地址</div>
         </div>
-        <div class="mapContent">
+        <div
+          v-show="data.map_show === '1'"
+          class="mapContent"
+          id="mapContainer"
+        >
 
         </div>
       </div>
@@ -23,7 +27,6 @@
         class="item_module_title"
         :style="hoverTips?'width:140px':''"
       >
-        <!-- <span>{{$t('commoditySearch.commodity')}}</span> -->
         <span>地图模块</span>
       </div>
       <div class="item_operation">
@@ -125,8 +128,20 @@ export default {
     this.langDefault() // 模块公共
     // 初始化数据
     this.defaultData() // 模块公共
+    // 初始化地图
+    this.initMap()
   },
   methods: {
+    // 加载地图
+    initMap () {
+      // 定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
+      // var map = new qq.maps.Map(document.getElementById('mapContainer'), {
+      //   center: new qq.maps.LatLng(39.916527, 116.397128), // 地图的中心地理坐标。
+      //   zoom: 8, // 地图的中心地理坐标。
+      //   disableDefaultUI: true // 禁止所有控件
+      // })
+    },
+
     defaultData () { // 模块公共
       // 点击各模块触发事件
       this.$http.$on('modulesClick', res => {
