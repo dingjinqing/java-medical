@@ -1,10 +1,13 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsPrdProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsPrdProcessorDao;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +20,11 @@ import java.util.stream.Collectors;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsPrdProcessor implements ActivityGoodsListProcessor{
+public class GoodsPrdProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor<GoodsPrdProcessorDataInfo>{
     @Autowired
     GoodsPrdProcessorDao goodsPrdProcessorDao;
 
+    /*****************商品列表处理*******************/
     @Override
     public Byte getPriority() {
         return 0;
@@ -50,5 +54,21 @@ public class GoodsPrdProcessor implements ActivityGoodsListProcessor{
             capsule.setPrdMaxPrice(prdInfo.getMaxPrice());
             capsule.setDefaultPrd(prdInfo.getDefaultPrd());
         });
+    }
+
+    /*****************商品详情处理******************/
+    @Override
+    public List<GoodsPrdProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
+        return goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());
+    }
+
+    @Override
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, List<GoodsPrdProcessorDataInfo> dataInfo) {
+        capsule.setProducts(dataInfo);
+        if (dataInfo.size() == 1 && StringUtils.isBlank(dataInfo.get(0).getPrdDesc())) {
+            capsule.setDefaultPrd(true);
+        } else {
+            capsule.setDefaultPrd(false);
+        }
     }
 }
