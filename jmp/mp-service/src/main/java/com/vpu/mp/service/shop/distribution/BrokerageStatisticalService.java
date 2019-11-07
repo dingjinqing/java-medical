@@ -1,25 +1,19 @@
 package com.vpu.mp.service.shop.distribution;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_GROUP;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS_REBATE;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static org.jooq.impl.DSL.sum;
-
-import java.util.List;
-
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.BrokerageListParam;
 import com.vpu.mp.service.pojo.shop.distribution.BrokerageListVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * 佣金统计
@@ -35,7 +29,7 @@ public class BrokerageStatisticalService extends ShopBaseService{
 		SelectJoinStep<? extends Record> select = db().select(USER.as(INVITE).USERNAME .as("distributorName"),USER.as(INVITE).MOBILE.as("distributorMobile"),
 				USER.USERNAME.as("orderUserName"),USER.MOBILE.as("userMobile"),USER_DETAIL.REAL_NAME,ORDER_GOODS_REBATE.ORDER_SN,ORDER_INFO.ORDER_AMOUNT,
 				ORDER_INFO.MOBILE,USER.USERNAME,ORDER_GOODS_REBATE.REBATE_LEVEL,DISTRIBUTOR_GROUP.GROUP_NAME,
-				ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("realRebateMoney"))
+				ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("realRebateMoney"),ORDER_INFO.CREATE_TIME)
 				.from(ORDER_GOODS_REBATE
 				.leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
 				.leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID))
