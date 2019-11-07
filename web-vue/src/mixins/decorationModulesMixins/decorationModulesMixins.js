@@ -282,52 +282,54 @@ export default {
         })
         return false
       }
+      let flag = true
       //  模块私有校验
       data.forEach((item, index) => {
         switch (item.module_name) {
           case 'm_card': // 会员卡相关校验
             console.log(item)
             if (!item.card_id) {
+              flag = false
               this.$message.error({
                 message: '请选择会员卡',
                 showClose: true
               })
-              return false
             }
             break
           case 'm_image_guide': // 图片导航相关校验
             item.nav_group.forEach((item, index) => {
               if (!item.nav_src) {
+                flag = false
                 this.$message.error({
                   message: '请上传图片导航模块图片',
                   showClose: true
                 })
-                return false
               }
             })
             break
           case 'm_scroll_image': // 轮播图相关校验
             console.log(item)
             if (item.img_items.length <= 0) {
+              flag = false
               this.$message.error({
                 message: '请添加轮播图片',
                 showClose: true
               })
-              return false
             }
             break
           case 'm_image_adver':
             console.log(item.image_list)
             if (!item.image_list.length) {
+              flag = false
               this.$message.error({
                 message: '请添加图片广告',
                 showClose: true
               })
-              return false
             }
         }
       })
-      return true
+      console.log(flag)
+      return flag
     },
     // 处理保存数据
     handleToSaveModulesData (data, pageSetData) {
