@@ -202,8 +202,8 @@ appoint-name-btm::after{
 .appoint-service-cont {
   color: #353535;
   width: 100%;
-  padding-top: 20rpx;
   font-size: 24rpx;
+  padding: 20rpx;
 }
 .appoint-service-cont image{
   display: block;
@@ -654,6 +654,10 @@ contact-button{
   border-radius: 100%;
   margin-right: 20rpx;
   float: left;
+}
+.user_avatar {
+  width: 50rpx;
+  height: 50rpx;
 }
 .comment_list_top .fr image{
   width: 200rpx;

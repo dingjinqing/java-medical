@@ -1,5 +1,6 @@
-<!-- pages/storelist/storelist.wxml
+<!-- 
   同城配送，扫码购未开发
+  pages/storelist/storelist.wxml
  -->
 <include src="../common/header.wxml" />
 <view class="main-container">
