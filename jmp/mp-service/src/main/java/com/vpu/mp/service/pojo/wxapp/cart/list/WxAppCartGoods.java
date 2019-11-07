@@ -18,7 +18,7 @@ public class WxAppCartGoods {
     /**
      * 购物车;id
      */
-    private Integer recId;
+    private Long recId;
     /**
      * 购物车数量
      */
@@ -39,7 +39,7 @@ public class WxAppCartGoods {
     /**
      * 规格id
      */
-    private Integer productId;
+    private Integer prdId;
     /**
      * 商家分类
      */

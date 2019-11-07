@@ -93,8 +93,8 @@ public class CartService extends ShopBaseService {
                 GOODS.LIMIT_MAX_NUM, GOODS.GOODS_TYPE, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,GOODS.IS_CARD_EXCLUSIVE,
                 GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_IMG)
                 .from(CART)
-                .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
-                .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(CART.PRODUCT_ID))
+                .innerJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
+                .innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(CART.PRODUCT_ID))
                 .where(CART.USER_ID.eq(userId)).orderBy(CART.CREATE_TIME.asc()).fetch();
         List<WxAppCartGoods> cartGoodsList = records.into(WxAppCartGoods.class);
         List<Integer> productIdList = records.getValues(GOODS_SPEC_PRODUCT.PRD_ID);
@@ -124,16 +124,15 @@ public class CartService extends ShopBaseService {
         List<WxAppCartGoods> invalidCartList;
         List<WxAppCartGoods> validCartList;
         // 在售的,未删除的
-        validCartList = cartGoodsList.stream().filter(cartGoods -> cartGoods.getDelFlag().equals(DelFlag.NORMAL_VALUE)&& cartGoods.getIsOnSale().equals(Integer.valueOf(1).byteValue())).collect(Collectors.toList());
+        validCartList = cartGoodsList.stream().filter(cartGoods ->
+                cartGoods.getDelFlag().equals(DelFlag.NORMAL_VALUE)&& cartGoods.getIsOnSale().equals(Integer.valueOf(1).byteValue()))
+                .collect(Collectors.toList());
         // 不存在,已下架
         invalidCartList = cartGoodsList.stream().filter(cartGoods -> {
-            if (cartGoods.getGoodsId() == null || cartGoods.getProductId() == null) {
+            if (cartGoods.getGoodsId() == null || cartGoods.getPrdId() == null) {
                 return true;
             }
-            if (cartGoods.getDelFlag() == 1 || cartGoods.getIsOnSale() == 0) {
-                return true;
-            }
-            return false;
+            return cartGoods.getDelFlag() == 1 || cartGoods.getIsOnSale() == 0;
         }).collect(Collectors.toList());
         // 会员相关
         List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(userId, productIdList);
@@ -143,7 +142,7 @@ public class CartService extends ShopBaseService {
             //会员专享
             if (cartGoods.getIsCardExclusive().equals(GoodsConstant.CARD_EXCLUSIVE)){
                 if (!userCardExclusive.contains(cartGoods.getGoodsId())){
-                    removeCartProductById(userId,cartGoods.getProductId());
+                    removeCartProductById(userId,cartGoods.getRecId());
                     validCartList.remove(cartGoods);
                     i--;
                     continue;
@@ -155,7 +154,7 @@ public class CartService extends ShopBaseService {
             }
             // 会员等级
             userCartGradePrice.forEach(gradePrice -> {
-                if (cartGoods.getProductId().equals(gradePrice.getPrdId())) {
+                if (cartGoods.getPrdId().equals(gradePrice.getPrdId())) {
                     cartGoods.setActivityPrice(gradePrice.getGradePrice());
                     cartGoods.setActivityType((byte) 1);
                 }
@@ -268,8 +267,8 @@ public class CartService extends ShopBaseService {
      * @param recId
      * @return
      */
-    public int removeCartProductById(Integer userId, Integer recId) {
-        return db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.REC_ID.eq(recId.longValue())).execute();
+    public int removeCartProductById(Integer userId, Long recId) {
+        return db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.REC_ID.eq(recId)).execute();
     }
 
     /**
