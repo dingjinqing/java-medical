@@ -1,0 +1,23 @@
+<view class="flex_outside_box">
+  <view class="flex_box" bindtap="showCouponDialog">
+    <view class="item_left">优惠券</view>
+    <view class="item_middle goods_coupon_list">
+      <view class="goods_coupon_item" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}};border-color:{{main_setting.borColor}}'>满￥600减50</view>
+      <view class="goods_coupon_item" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}};border-color:{{main_setting.borColor}}'>领券减￥10</view>
+    </view>
+    <view class="item_right">></view>
+  </view>
+  <view class="item_line"></view>
+  <view class="flex_box">
+    <view class="item_left">促销</view>
+    <view class="item_middle">
+      TODO
+    </view>
+    <view class="item_right">></view>
+  </view>
+</view>
+
+
+<!-- 优惠券选择弹窗 -->
+<v-popup-coupon show="{{show_recommend_coupons}}" coupon_list="{{goodsInfo.recommend_coupons}}" />
+

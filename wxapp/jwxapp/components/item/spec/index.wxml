@@ -1,0 +1,117 @@
+<view class='goods-act' wx:if="{{!hide_cell}}">
+  <view class='goods-spc clearfix goods-services' bindtap="" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;' wx:if="{{pledge_switch == 1 && pledge_list != ''}}" bindtap='jumpLink'>
+    <view class='goods_act_title'>服务</view>
+    <view class='goods_cuxiao_info van-ellipsis'>
+      <block wx:for="{{pledge_list}}" wx:key='key'>
+       <view class='pledge' wx:if='{{index <= 2}}'>
+        <image src='{{imageUrl}}{{item.pledge_logo}}'></image>
+        <text>{{item.pledge_name}}</text>
+       </view>
+      </block>
+    </view>
+  </view>
+  <block wx:if="{{has_spec}}">
+    <view class='goods-spc clearfix' bindtap="bindClickCell" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+      <view class='goods_act_title'>选择</view>
+      <view class='goods_cuxiao_info van-ellipsis'>
+        <text>{{ prd_desc ? '已选："'+prd_desc+'"' : unselect_spec_names }}</text>
+      </view>
+    </view>
+  </block>
+  <block wx:else>
+    <view wx:if='{{show_buy_number}}' class='goods-spc clearfix' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
+      <include src="./buy-number.wxml" />
+    </view>
+  </block>
+</view>
+
+<v-popup bind:close="bindClose" click_back_close="{{true}}" vertical="bottom" horizon="fill" show="{{show}}" close_pos="inner">
+  <view class='modal_spec' class="drawer_box">
+    <view class='modal_spec_top'>
+      <view class='modal_top_img'>
+        <image src='{{ select_prd && select_prd.prd_img ? select_prd.prd_img : gd.goods_img }}'  bindtap='preview' data-src='{{ select_prd && select_prd.prd_img ? select_prd.prd_img : gd.goods_img }}'/>
+      </view>
+      <view class='modal_top_center {{item_type}}'>
+        <block wx:if="{{ item_type=='integral' }}">
+          <text style='color:{{comColor}}' wx:if="{{goods_money>0}}">{{goods_money}}元+</text>
+          <text style='color:{{comColor}}'>{{ goods_price }}积分</text>
+        </block>
+        <block wx:else>
+          <text style='color:{{comColor}}'>￥{{ goods_price }}</text>
+          <text class="mark_price" wx:if='{{market_price != "0.00" && market_price > 0}}'>￥{{ market_price }}</text>
+        </block>
+
+        <block wx:if="{{ has_spec }}">
+          <view wx:if="{{ !select_prd }}">请选择 {{ unselect_spec_names }}</view>
+          <view wx:else>{{stock_name}}: {{ select_prd_number }}</view>
+        </block>
+
+        <block wx:if="{{ item_type == 'presale' }}">
+          <view class='presake_prices'>
+            <view style='color:{{comColor}}'>定金:￥{{select_prd ? select_prd.presale_money : (gd.presale_money || '0.00')}}</view>
+            <view style='color:{{comColor}}' wx:if='{{gd.preSale.presale_type == 0}}' class='kedi_money'>(可抵￥{{select_prd ? select_prd.pre_discount_money : (gd.pre_discount_money || '0.00')}})</view>
+          </view>
+        </block>
+      </view>
+    </view>
+    <view class='modal_spec_info' style='max-height:500rpx;overflow-y:scroll'>
+
+      <block wx:if="{{exchang_block == 1}}">
+        <view class="exchang_card_info" wx:if="{{gd.exchang_card.length > 1}}">
+          <view class="clearfix choose_card_title" bindtap='bindShowCard'>
+            <view>限次卡</view>
+            <view>
+              <text>{{select_card.card_name}}</text>
+              <text class="exchang_arrow {{show_exchang == 0 ? 'right' : 'down'}}"></text>
+            </view>
+          </view>
+          <view class="clearfix exchang_card_box" wx:if="{{show_exchang == 1}}">
+            <view class="exchang_card_list" wx:for="{{gd.exchang_card}}" wx:key="index">
+              <view class="btn_check" bindtap='bindCheckCard' data-keys="{{index}}">
+                <image src='{{imageUrl}}/image/wxapp/icon_rectangle.png' wx:if="{{item.card_no != select_card.card_no}}"></image>
+                <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:35rpx' wx:if="{{item.card_no == select_card.card_no}}"></text>
+              </view>
+              <view class="exchang_card_name">
+                <view>{{item.card_name}} （{{item.star_card_no}})</view>
+                <view>剩余兑换：{{item.exchang_surplus}}/{{item.exchange_num + item.exchang_surplus}} 件</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <block wx:for="{{ spec_list }}" wx:key="spec_id" wx:for-index="spec_id" wx:for-item="spec">
+        <view class='modal_spec_list'>
+          <view class='modal_spec_name'>{{ spec.spec_name }}：</view>
+          <view class='modal_spec_other'>
+            <block wx:for="{{ spec.vals }}" wx:key="val_id" wx:for-index="val_id" wx:for-item="item">
+              <text wx:if="{{!item.gray}}" data-spec_id="{{spec_id}}" data-val_id="{{ item.val_id }}" bindtap="bindClickSpec" style="border-color:{{ item.checked == 1?comColor:'#ccc'}};color:{{ item.checked == 1?comColor:'#333' }};background:#fff;">{{ item.name }}</text>
+              <text wx:else style="border-color:#f5f5f5;color:#ccc;background:#f5f5f5;">{{ item.name }}</text>
+            </block>
+            <slot name="select-spec-tips" />
+          </view>
+        </view>
+      </block>
+    </view>
+    <slot name="body-content" />
+    <block wx:if="{{show_buy_number}}">
+      <include src="./buy-number.wxml" />
+    </block>
+    <block wx:if="{{has_buy_btn}}">
+      <view class='modal_footer' style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+        <form report-submit='true' wx:if="{{gd.is_card_exclusive == 0 || gd.card_can == true}}" bindsubmit='bindAddCart'>
+          <button class='modal_footer_add' formType='submit' style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}}'>加入购物车</button>
+        </form>
+        <form wx:if="{{(gd.is_card_exclusive == 0 || gd.card_can == true) }}">
+          <view class='modal_footer_now' bindtap="bindOneClickBuy" style='background:{{comColor}}'>立即购买</view>
+        </form>
+        <form wx:if="{{gd.is_card_exclusive == 1 && gd.card_can == false}}">
+          <view class='modal_footer_exclusive' bindtap='bindTopMore' data-id="{{gd.goods_id}}" style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}}'>开通会员</view>
+        </form>
+      </view>
+    </block>
+    <block wx:else>
+      <slot name="footer-nav" />
+    </block>
+  </view>
+</v-popup>

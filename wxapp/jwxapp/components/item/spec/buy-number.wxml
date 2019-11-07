@@ -1,0 +1,20 @@
+<view class='modal_spec_sum clearfix'>
+  <view class='fl'>购买数量：
+    <block wx:if="{{use_gd_limit}}">
+      <block wx:if="{{gd.limit_buy_num > 0 && !gd.limit_max_num}}">
+        (最少{{gd.limit_buy_num}}{{gd.unit}})
+      </block>
+      <block wx:if="{{gd.limit_max_num > 0 && !gd.limit_buy_num}}">
+        (最多{{gd.limit_max_num}}{{gd.unit}})
+      </block>
+      <block wx:if="{{gd.limit_max_num > 0 && gd.limit_buy_num > 0}}">
+        (最少{{gd.limit_buy_num}}{{gd.unit}}，最多{{gd.limit_max_num}}{{gd.unit}})
+      </block>
+    </block>
+  </view>
+  <view class='fr goods_fr'>
+    <text class="btn_minus" bindtap="bindMinus" style='background:{{is_min ? "#eee" : "#fff"}};color:{{is_min ? "#ccc" : "#666"}}'>-</text>
+    <input type="number" class="btn_buy_number" value="{{goods_number}}" bindblur='bindGoodsNumBlur' />
+    <text class="btn_plus" bindtap="bindPlus" style='background:{{is_max ? "#eee" : "#fff"}};color:{{is_max ? "#ccc" : "#666"}}'>+</text>
+  </view>
+</view>
