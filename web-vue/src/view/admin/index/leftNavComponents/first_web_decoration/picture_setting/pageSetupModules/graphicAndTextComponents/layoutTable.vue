@@ -150,27 +150,7 @@ export default {
     // 处理点击同行不同单元格函数
     handleToSameRowDifferentCell (index, item) {
       // 判断是否有效
-      let firstClickRowIndex = Number(this.firstClickRowIndex)
-      let firstClickColindex = Number(this.firstClickColindex)
-      let startRow = null // 起点行
-      let startCol = null // 起点列
-      let lastRow = null // 终点行
-      let lastCol = null // 终点列
-      if (firstClickRowIndex > index) {
-        startRow = index
-        lastRow = firstClickRowIndex
-      } else {
-        startRow = firstClickRowIndex
-        lastRow = index
-      }
-      if (firstClickColindex > item) {
-        startCol = item
-        lastCol = firstClickColindex
-      } else {
-        startCol = firstClickColindex
-        lastCol = item
-      }
-      // 判断区域是否有效
+      let { startRow, startCol, lastRow, lastCol, firstClickColindex } = this.handleToScreenPoints(index, item)
       let isEffective = this.handleToJudgeIsEffective(startRow, startCol, lastRow, lastCol)
       if (!isEffective) {
         this.$message.error({
@@ -209,26 +189,7 @@ export default {
     // 处理点击不同行不同单元格函数
     handleToDiffRowDiffCell (index, item) {
       console.log(this.firstClickRowIndex, this.firstClickColindex, index, item)
-      let firstClickRowIndex = Number(this.firstClickRowIndex)
-      let firstClickColindex = Number(this.firstClickColindex)
-      let startRow = null // 起点行
-      let startCol = null // 起点列
-      let lastRow = null // 终点行
-      let lastCol = null // 终点列
-      if (firstClickRowIndex > index) {
-        startRow = index
-        lastRow = firstClickRowIndex
-      } else {
-        startRow = firstClickRowIndex
-        lastRow = index
-      }
-      if (firstClickColindex > item) {
-        startCol = item
-        lastCol = firstClickColindex
-      } else {
-        startCol = firstClickColindex
-        lastCol = item
-      }
+      let { startRow, startCol, lastRow, lastCol } = this.handleToScreenPoints(index, item)
       console.log(startRow, startCol, lastRow, lastCol)
       // 判断区域是否有效
       let isEffective = this.handleToJudgeIsEffective(startRow, startCol, lastRow, lastCol)
@@ -294,11 +255,18 @@ export default {
       // 判断是所选区域内是否有已经隐藏的模块
       for (startRow; startRow <= lastRow; startRow++) { // 循环行
         for (startCol; startCol <= lastCol; startCol++) { // 列循环
-          if (this.columnData[startRow][`${startCol}Dis`] || this.columnData[startRow][`${startCol}IsBorder`]) {
+          if (this.columnData[startRow][`${startCol}Dis`]) { // 若区域中间有隐藏的单元格则说明不合法
             flag = false
+            console.log(111)
             this.columnData[this.lastClickRowIndex][`${this.lastClickColindex}IsChecked`] = false
           }
+          if (this.columnData[startRow][`${startCol}IsBorder`]) {
+            flag = false
+          }
         }
+      }
+      if (this.columnData[this.lastClickRowIndex][`${this.lastClickColindex}IsBorder`]) { // 如果第二次点中的单元格高亮则恢复其背景色
+        this.columnData[this.lastClickRowIndex][`${this.lastClickColindex}IsChecked`] = true
       }
       console.log(flag)
       return flag
@@ -306,13 +274,44 @@ export default {
     // 鼠标移入
     enter (row, col) {
       if (this.isOpenSlide) {
-        this.columnData[row][`${col}IsSlide`] = true
+        // this.columnData[row][`${col}IsSlide`] = true
       }
     },
     // 鼠标移出
     leave (row, col) {
       if (this.isOpenSlide) {
-        this.columnData[row][`${col}IsSlide`] = false
+        // this.columnData[row][`${col}IsSlide`] = false
+      }
+    },
+    // 筛选出所选区域左上点和右下点坐标
+    handleToScreenPoints (index, item) {
+      let firstClickRowIndex = Number(this.firstClickRowIndex)
+      let firstClickColindex = Number(this.firstClickColindex)
+      let startRow = null // 起点行
+      let startCol = null // 起点列
+      let lastRow = null // 终点行
+      let lastCol = null // 终点列
+      if (firstClickRowIndex > index) {
+        startRow = index
+        lastRow = firstClickRowIndex
+      } else {
+        startRow = firstClickRowIndex
+        lastRow = index
+      }
+      if (firstClickColindex > item) {
+        startCol = item
+        lastCol = firstClickColindex
+      } else {
+        startCol = firstClickColindex
+        lastCol = item
+      }
+      return {
+        startRow,
+        startCol,
+        lastRow,
+        lastCol,
+        firstClickColindex,
+        firstClickRowIndex
       }
     }
   }
