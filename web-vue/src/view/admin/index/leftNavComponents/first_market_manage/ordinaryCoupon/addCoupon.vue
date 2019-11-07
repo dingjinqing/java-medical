@@ -51,9 +51,9 @@
               <div class="clearfix">
                 <span class="sub_title">有效日期</span>
                 <span class="date">
-                  <span v-if="param.validity_type === 0 && param.couponDate === ''">xxxx-xx-xx xx:xx:xx-xxxx-xx-xx xx:xx:xx</span>
-                  <span v-if="param.validity_type === 0 && param.couponDate !== ''">{{param.couponDate[0]}} - {{param.couponDate[1]}}</span>
-                  <span v-if="param.validity_type === 1">领券日开始{{param.validity}}<span v-if="param.validity === ''">X</span>天{{param.validity_hour}}<span v-if="param.validity_hour === ''">X</span>小时{{param.validity_minute}}<span v-if="param.validity_minute === ''">X</span>分钟内有效</span>
+                  <span v-if="param.validityType === 0 && param.couponDate === ''">xxxx-xx-xx xx:xx:xx-xxxx-xx-xx xx:xx:xx</span>
+                  <span v-if="param.validityType === 0 && param.couponDate !== ''">{{param.couponDate[0]}} - {{param.couponDate[1]}}</span>
+                  <span v-if="param.validityType === 1">领券日开始{{param.validity}}<span v-if="param.validity === ''">X</span>天{{param.validityHour}}<span v-if="param.validityHour === ''">X</span>小时{{param.validityMinute}}<span v-if="param.validityMinute === ''">X</span>分钟内有效</span>
                   <!-- <span v-if="param.validity_type === '0'">{{coupon_date_datetimerange}}</span> -->
                   <!-- <span v-else>{{coupon_date_info}}</span> -->
                 </span>
@@ -153,13 +153,13 @@
                   <div>
                     <p>
                       <el-radio
-                        v-model="param.validity_type"
+                        v-model="param.validityType"
                         :label='0'
                       >固定日期</el-radio>
                     </p>
                     <p style="margin:15px 0;">
                       <el-date-picker
-                        :disabled="param.validity_type===0?false:true"
+                        :disabled="param.validityType===0?false:true"
                         v-model="param.couponDate"
                         type="datetimerange"
                         value-format="yyyy-MM-dd HH:mm:ss"
@@ -173,29 +173,29 @@
                     </p>
                     <p>
                       <el-radio
-                        v-model="param.validity_type"
+                        v-model="param.validityType"
                         :label='1'
                         style="margin-right: 25px;"
                       >领券开始</el-radio>
                       <span>
                         <el-input
-                          :disabled="param.validity_type===1?false:true"
+                          :disabled="param.validityType===1?false:true"
                           @blur="checkNum"
                           v-model="param.validity"
                           placeholder=""
                           size="small"
                           class="small_input"
                         ></el-input> 天 <el-input
-                          :disabled="param.validity_type===1?false:true"
+                          :disabled="param.validityType===1?false:true"
                           @blur="checkNum"
-                          v-model="param.validity_hour"
+                          v-model="param.validityHour"
                           placeholder=""
                           size="small"
                           class="small_input"
                         ></el-input> 小时 <el-input
-                          :disabled="param.validity_type===1?false:true"
+                          :disabled="param.validityType===1?false:true"
                           @blur="checkNum"
-                          v-model="param.validity_minute"
+                          v-model="param.validityMinute"
                           placeholder=""
                           size="small"
                           class="small_input"
@@ -647,16 +647,16 @@ export default {
         useConsumeRestrict: 0, // 使用限制
         isRandom: 0, // 是否需要积分
         receivePerPerson: 0,
-        card_id: [],
-        validity_type: 0, // 有效期
+        // card_id: [],
+        validityType: 0, // 有效期
         couponDate: '', // 总时间
         startTime: '', // 生效时间
         endTime: '', // 到期时间
         surplus: 0, // 初始库存
         remainAmount: null, // num发行量
         validity: '',
-        validity_hour: '',
-        validity_minute: '',
+        validityHour: '',
+        validityMinute: '',
         totalAmount: null, // 发放总量
         validationCode: '',
         recommendGoodsId: '', // 指定商品
@@ -741,19 +741,19 @@ export default {
           this.param.type = data.type
           this.param.actName = data.actName
           // this.param.actCode = data.actCode
-          this.param.validity_type = data.validationCode
-          if (this.param.validity_type === 0) {
+          this.param.validityType = data.validationCode
+          if (this.param.validityType === 0) {
             this.param.startTime = data.createTime
             this.param.endTime = data.updateTime
             this.param.validity = null
-            this.param.validity_hour = null
-            this.param.validity_minute = null
+            this.param.validityHour = null
+            this.param.validityMinute = null
           } else {
             this.param.startTime = data.createTime
             this.param.endTime = data.updateTime
             this.param.validity = data.validity
-            this.param.validity_hour = data.validityHour
-            this.param.validity_minute = data.validityMinute
+            this.param.validityHour = data.validityHour
+            this.param.validityMinute = data.validityMinute
           }
         }
 
@@ -810,25 +810,27 @@ export default {
         this.param.aliasCode = 'discount'
         this.param.denomination = this.param.denomination2
       }
+
       this.param.aliasCode = this.param.aliasCode
-      this.param.card_id = this.param.card_id.join()
+      // this.param.card_id = this.param.card_id.join()
       this.param.startTime = this.param.couponDate[0]
       this.param.endTime = this.param.couponDate[1]
 
       let paramsData = {}
       paramsData.type = this.param.type
       paramsData.actName = this.param.actName
-      paramsData.validity_type = this.param.validity_type
+      paramsData.validityType = this.param.validityType
       paramsData.startTime = this.param.startTime
       paramsData.endTime = this.param.endTime
       paramsData.validity = this.param.validity
-      paramsData.validity_hour = this.param.validity_hour
-      paramsData.validity_minute = this.param.validity_minute
-      paramsData.surplus = this.param.surplus
-      paramsData.remainAmount = this.param.remainAmount
+      paramsData.validityHour = this.param.validityHour
+      paramsData.validityMinute = this.param.validityMinute
+      paramsData.surplus = this.param.remainAmount
+      paramsData.totalAmount = this.param.remainAmount
       paramsData.denomination = this.param.denomination
       paramsData.isRandom = this.param.isRandom
       paramsData.userScore = this.param.userScore
+      paramsData.leastConsume = this.param.leastConsume
       paramsData.receivePerPerson = this.param.receivePerPerson
       paramsData.card_id = this.param.card_id
       // paramsData.validation_code = this.param.validation_code
@@ -838,7 +840,7 @@ export default {
       paramsData.recommendGoodsId = this.param.recommendGoodsId
       paramsData.recommendCatId = this.param.recommendCatId
       paramsData.recommendSortId = this.param.recommendSortId
-
+      console.log(paramsData)
       saveCoupon(paramsData).then(res => {
         if (res.error === 0) {
           this.$message.success({
@@ -856,8 +858,8 @@ export default {
   },
   computed: {
     coupon_date_info () {
-      if (this.param.validity || this.param.validity_hour || this.param.validity_minute) {
-        return `领券日开始${this.param.validity ? this.param.validity + '天' : ''}${this.param.validity_hour ? this.param.validity_hour + '时' : ''}${this.param.validity_minute ? this.param.validity_minute + '分' : ''}内有效`
+      if (this.param.validity || this.param.validityHour || this.param.validityMinute) {
+        return `领券日开始${this.param.validity ? this.param.validity + '天' : ''}${this.param.validityHour ? this.param.validityHour + '时' : ''}${this.param.validityMinute ? this.param.validityMinute + '分' : ''}内有效`
       } else {
         return `领券日开始X天X时X分内有效`
       }
