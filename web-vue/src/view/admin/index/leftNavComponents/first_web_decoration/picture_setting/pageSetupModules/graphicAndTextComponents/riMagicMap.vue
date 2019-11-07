@@ -364,11 +364,46 @@
                 <LayoutTable :density='Number(density)' />
 
               </div>
-
             </div>
+
             <!--end-->
           </div>
 
+        </div>
+        <div class="selectTemplate">
+          <span></span>
+          <div style="margin-top:10px;color:#666">
+            选定布局区域，在下方添加图片
+          </div>
+
+        </div>
+        <!--选择图片-->
+        <div class="selectTemplate addPicContainer">
+          <span>选择图片：</span>
+          <div>
+            <div class="addPic">
+              <div
+                class="iconZb"
+                :style="'background:url('+$imageHost+'/image/admin/shop_beautify/add_decorete.png'+') center center / 65% 65% no-repeat'"
+              >
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--图片跳转链接-->
+        <div class="selectTemplate linkPathContainer">
+          <span>图片跳转链接：</span>
+          <div class="linkPathDiv">
+            <el-input
+              size="small"
+              v-model="linkInput"
+            ></el-input>
+            <el-button size="small">选择链接</el-button>
+          </div>
+        </div>
+        <div style="color:#999;margin:10px 0 0 10px">
+          魔方图片比例与要求的不一致会被裁剪
         </div>
       </div>
       <!--end-->
@@ -564,6 +599,7 @@ export default {
         }
       ],
       nowTemplateClickIndex: 0, // 当前选中的模板index
+      linkInput: '', // 图片跳转链接input
       moduleSaveData: { // 模块保存数据
 
       }
@@ -793,6 +829,33 @@ export default {
         margin-bottom: 10px;
         /deep/ .el-input {
           width: 50%;
+        }
+      }
+      .addPicContainer {
+        margin-top: 10px;
+        span {
+          height: 70px;
+          line-height: 70px;
+        }
+        .addPic {
+          cursor: pointer;
+          .iconZb {
+            width: 70px;
+            height: 70px;
+            border: 1px solid #e5e5e5;
+          }
+        }
+      }
+      .linkPathContainer {
+        margin-top: 10px;
+        span {
+          height: 32px;
+          line-height: 32px;
+        }
+        .linkPathDiv {
+          /deep/ .el-input {
+            width: 200px;
+          }
         }
       }
     }
