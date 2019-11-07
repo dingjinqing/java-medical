@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
+ * The type Reservation detail vo.
+ *
  * @author liufei
- * @date 11/5/19
+ * @date 11 /5/19
  */
 @Data
 @Builder

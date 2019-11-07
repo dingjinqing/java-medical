@@ -8,8 +8,10 @@ import java.time.LocalTime;
 import java.util.List;
 
 /**
+ * The type Reservation time.
+ *
  * @author liufei
- * @date 11/6/19
+ * @date 11 /6/19
  */
 @Data
 @Builder

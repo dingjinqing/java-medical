@@ -555,11 +555,9 @@ public class StoreWxService extends ShopBaseService {
      * Reservation detail reservation detail vo.门店服务预约详情
      *
      * @param serviceId the service id
-     * @param userId    the user id
      * @return the reservation detail vo
      */
-    public ReservationDetailVo reservationDetail(Integer serviceId, Integer userId) {
-        Integer shopId = getShopId();
+    public ReservationDetailVo reservationDetail(Integer serviceId) {
         // 门店服务信息
         StoreServiceParam service = storeService.getStoreService(serviceId);
         Assert.notNull(service, JsonResultCode.CODE_STORE_SERVICE_NOT_EXIST);
@@ -611,19 +609,17 @@ public class StoreWxService extends ShopBaseService {
      * @param serviceInfo     the service info
      * @return the reservation info
      */
-    public ReservationInfo createReservationInfo(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, int serviceDuration, StoreServiceParam serviceInfo) {
-        if (date.isEqual(LocalDate.now())) {
-            LocalTime localTime = LocalTime.now();
-            if (localTime.isAfter(startPeriod)) {
+    private ReservationInfo createReservationInfo(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, int serviceDuration, StoreServiceParam serviceInfo) {
+        LocalTime localTime = LocalTime.now();
+        if (date.isEqual(LocalDate.now()) && localTime.isAfter(startPeriod)) {
                 // 如果可服务日期是当天, 获取当天距离当前时间最近的一次可服务时间段
                 startPeriod = startPeriod.plus((((localTime.toSecondOfDay() / 60 - startPeriod.toSecondOfDay() / 60) / serviceDuration + 1) * serviceDuration), ChronoUnit.MINUTES);
-            }
         }
         List<ReservationTime> reservationTimeList = new ArrayList<>();
-        for (LocalTime i = startPeriod; i.isBefore(endPeriod) && (i.plusMinutes(serviceDuration).isBefore(endPeriod) || i.plusMinutes(serviceDuration).equals(endPeriod)); i = i.plus(serviceDuration, ChronoUnit.MINUTES)) {
-            LocalTime start = i;
-            LocalTime end = start.plusMinutes(serviceDuration);
-            ReservationTime reservationTime = createReservationTime(date, start, end, serviceInfo);
+        for (LocalTime i = startPeriod;
+             i.isBefore(endPeriod) && (i.plusMinutes(serviceDuration).isBefore(endPeriod) || i.plusMinutes(serviceDuration).equals(endPeriod)) && i.plusMinutes(serviceDuration).isAfter(i);
+             i = i.plus(serviceDuration, ChronoUnit.MINUTES)) {
+            ReservationTime reservationTime = createReservationTime(date, i, i.plusMinutes(serviceDuration), serviceInfo);
             if (reservationTime != null) {
                 reservationTimeList.add(reservationTime);
             }
@@ -643,7 +639,7 @@ public class StoreWxService extends ShopBaseService {
      * @param serviceInfo the service info
      * @return the reservation time
      */
-    public ReservationTime createReservationTime(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, StoreServiceParam serviceInfo) {
+    private ReservationTime createReservationTime(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, StoreServiceParam serviceInfo) {
         Integer serviceId = serviceInfo.getId();
         int serviceNum = Objects.nonNull(serviceInfo.getServicesNumber()) ? serviceInfo.getServicesNumber() : 0;
         int tecServiceNum = Objects.nonNull(serviceInfo.getTechServicesNumber()) ? serviceInfo.getTechServicesNumber() : 0;
@@ -667,8 +663,8 @@ public class StoreWxService extends ShopBaseService {
                     return true;
                 }
                 if (BYTE_ONE.equals(serviceType)) {
-                    return Util.json2Object(e.getServiceList(), new TypeReference<List<Integer>>() {
-                    }, false).contains(serviceId);
+                    return Objects.requireNonNull(Util.json2Object(e.getServiceList(), new TypeReference<List<Integer>>() {
+                    }, false)).contains(serviceId);
                 }
                 return false;
             }).filter((e) -> {

@@ -3,8 +3,10 @@ package com.vpu.mp.service.pojo.shop.store.technician;
 import lombok.Data;
 
 /**
+ * The type Technician info.
+ *
  * @author liufei
- * @date 11/5/19
+ * @date 11 /5/19
  */
 @Data
 public class TechnicianInfo {

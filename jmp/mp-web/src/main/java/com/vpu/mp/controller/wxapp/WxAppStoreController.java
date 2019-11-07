@@ -51,6 +51,6 @@ public class WxAppStoreController extends WxAppBaseController{
      */
     @GetMapping("/service/reservation/{serviceId}")
     public JsonResult reservation(@PathVariable Integer serviceId) {
-        return this.success(shop().store.wxService.reservationDetail(serviceId, null));
+        return this.success(shop().store.wxService.reservationDetail(serviceId));
     }
 }
