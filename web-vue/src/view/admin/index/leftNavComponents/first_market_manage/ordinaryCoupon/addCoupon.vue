@@ -555,7 +555,7 @@
   </div>
 </template>
 <script>
-import { saveCoupon, updateCoupon } from '@/api/admin/marketManage/couponList.js'
+import { saveCoupon, updateCoupon, updateSaveCoupon } from '@/api/admin/marketManage/couponList.js'
 import { allCardApi } from '@/api/admin/marketManage/messagePush'
 export default {
   components: {
@@ -702,24 +702,6 @@ export default {
           }
           console.log(this.param)
         }
-
-        // this.param = res.content[0]
-        // console.log(this.param)
-        // if (this.param.startTime != null) {
-        //   this.param.validityType = 0
-        //   this.param.couponDate = [
-        //     this.param.startTime, this.param.startTime
-        //   ]
-        // }
-        // if (this.param.aliasCode === 'discount') {
-        //   this.param.preferentialType = 0
-        // } else {
-        //   this.param.preferentialType = 1
-        //   this.param.denomination2 = this.param.denomination
-        //   this.param.denomination = null
-        // }
-
-        // console.log(this.param)
       })
     },
     // 点击指定商品出现的添加类弹窗汇总
@@ -773,24 +755,24 @@ export default {
     },
     // 保存优惠券
     saveCoupon () {
+      // 面额/折
+      if (this.param.preferentialType === 1) {
+        this.param.denomination = this.param.denomination2
+      }
+      // 发放的总数量
+      if (this.param.surplus === 0) {
+        this.param.totalAmount = 0
+      }
+      // 使用门槛
+      if (this.param.useConsumeRestrict === 0) {
+        this.param.leastConsume = 0
+      }
+      this.param.recommendGoodsId = this.goodsInfo
+      this.param.recommendCatId = this.busClass
+      this.param.recommendSortId = this.platClass
       if (this.editType === false) {
         // 添加保存
         // alert('添加保存')
-        // 面额/折
-        if (this.param.preferentialType === 1) {
-          this.param.denomination = this.param.denomination2
-        }
-        // 发放的总数量
-        if (this.param.surplus === 0) {
-          this.param.totalAmount = 0
-        }
-        // 使用门槛
-        if (this.param.useConsumeRestrict === 0) {
-          this.param.leastConsume = 0
-        }
-        this.param.recommendGoodsId = this.goodsInfo
-        this.param.recommendCatId = this.busClass
-        this.param.recommendSortId = this.platClass
         console.log(this.param)
         saveCoupon(this.param).then((res) => {
           if (res.error === 0) {
@@ -799,14 +781,15 @@ export default {
           }
         })
       } else {
-        // alert('编辑保存')
         // 编辑保存
-        // let paramsData = {}
-        // updateSaveCoupon(paramsData).then((res) => {
-        //   if (res.error === 0) {
-
-        //   }
-        // })
+        // alert('编辑保存')
+        console.log(this.param)
+        updateSaveCoupon(this.param).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: '修改成功' })
+            this.$router.push({ 'name': 'ordinary_coupon' })
+          }
+        })
       }
     },
     // 选择商品弹窗回调显示

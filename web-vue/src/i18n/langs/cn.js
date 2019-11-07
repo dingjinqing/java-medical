@@ -122,6 +122,10 @@ import {
 import {
   cn as shopRecruit
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/shopRecruitCn'
+// 小程序页面装修地图模块国际化
+import {
+  cn as mapModule
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/mapModuleCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -908,7 +912,8 @@ const cn = {
   coupon, // 小程序页面装修优惠卷模块
   commodity, //  小程序页面装修商品模块
   pictureAds, //  小程序页面装修图片广告模块
-  shopRecruit // 小程序页面装修店招设置模块
+  shopRecruit, // 小程序页面装修店招设置模块
+  mapModule // 小程序页面装修地图模块
 }
 
 export default cn

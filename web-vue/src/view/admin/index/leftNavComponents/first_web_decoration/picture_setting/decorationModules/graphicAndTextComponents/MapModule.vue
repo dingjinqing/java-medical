@@ -12,7 +12,7 @@
       <div class="mapModule">
         <div class="mapTitle">
           <div class="titleIcon"><i class="el-icon-location"></i></div>
-          <div class="titleWord">显示地址</div>
+          <div class="titleWord">{{ $t('mapModule.mapAddress') }}</div>
         </div>
         <div
           v-show="data.map_show === '1'"
@@ -60,7 +60,6 @@
   </div>
 </template>
 <script>
-
 export default {
   props: {
     flag: Number, // 模块公共
@@ -81,7 +80,8 @@ export default {
         sort_bg_color: '',
         back_color: '',
         search_sort: ''
-      }
+      },
+      map: null
     }
   },
   watch: {
@@ -133,14 +133,15 @@ export default {
   },
   methods: {
     // 加载地图
-    initMap (latitude, longitude) {
-      // 中心坐标
+    initMap () {
       // 定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
-      // var map = new qq.maps.Map(document.getElementById('mapContainer'), {
-      //   center: new qq.maps.LatLng(39.916527, 116.397128), // 地图的中心地理坐标。
-      //   zoom: 8, // 地图的中心地理坐标。
-      //   disableDefaultUI: true // 禁止所有控件
-      // })
+      // eslint-disable-next-line no-undef
+      this.map = new qq.maps.Map(document.getElementById('mapContainer'), {
+        // eslint-disable-next-line no-undef
+        center: new qq.maps.LatLng(39.916527, 116.397128), // 地图的中心地理坐标。
+        zoom: 13, // 地图的中心地理坐标。
+        disableDefaultUI: true // 禁止所有控件
+      })
     },
 
     defaultData () { // 模块公共

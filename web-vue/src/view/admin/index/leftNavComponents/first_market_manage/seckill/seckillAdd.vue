@@ -205,9 +205,9 @@
               @change="selectChange"
             >
               <el-option
-                v-for="item in card_list"
+                v-for="item in cardList"
                 :key="item.id"
-                :label="item.card_name"
+                :label="item.cardName"
                 :value="item.id"
               ></el-option>
             </el-select>
@@ -255,6 +255,7 @@ import { mapActions } from 'vuex'
 import choosingGoods from '@/components/admin/choosingGoods'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
 import { addSeckillList, updateSeckillList } from '@/api/admin/marketManage/seckill.js'
+import { allCardApi } from '@/api/admin/marketManage/messagePush'
 export default {
 
   components: {
@@ -276,13 +277,7 @@ export default {
       goodsIds: [],
       // 会员专享
       showMember: false,
-      card_list: [
-        { id: '1', card_name: 'list1' },
-        { id: '2', card_name: 'list2' },
-        { id: '3', card_name: 'list3' },
-        { id: '4', card_name: 'list4' },
-        { id: '5', card_name: 'list5' }
-      ],
+      cardList: [], // 会员卡列表
       // 表单
       form: {
         name: '', // 活动名称
@@ -333,6 +328,12 @@ export default {
   mounted () {
     // 初始化
     this.editSeckillInit()
+    // 会员卡数据
+    allCardApi().then((res) => {
+      if (res.error === 0) {
+        this.cardList = res.content
+      }
+    })
   },
   // watch: {
   //   editData (val) {

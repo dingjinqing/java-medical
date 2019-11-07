@@ -1,14 +1,14 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>地图模块</h2>
+      <h2>{{ $t('mapModule.mapTitle') }}</h2>
       <!--模块私有区域-->
       <div class="main">
         <div
           class="container"
           style="overflow: hidden;"
         >
-          <div class="leftContent">显示地址：</div>
+          <div class="leftContent">{{ $t('mapModule.mapAddress') }}：</div>
           <div class="rightContent">
             <div class="areaContent">
               <areaLinkage
@@ -24,7 +24,8 @@
               <el-button
                 type="primary"
                 size="small"
-              >地图定位</el-button>
+                @click="getLocation()"
+              >{{ $t('mapModule.mapLocation') }}</el-button>
             </div>
             <div
               class="mapContent"
@@ -36,10 +37,10 @@
 
         </div>
         <div class="container">
-          <span style="display: inline-block;width: 70px;text-align: right;">地图：</span>
+          <span style="display: inline-block;width: 70px;text-align: right;">{{ $t('mapModule.map') }}：</span>
           <el-radio-group v-model="data.map_show">
-            <el-radio label="0">不显示</el-radio>
-            <el-radio label="1">显示</el-radio>
+            <el-radio label="0">{{ $t('mapModule.mapNotShow') }}</el-radio>
+            <el-radio label="1">{{ $t('mapModule.mapShow') }}</el-radio>
           </el-radio-group>
         </div>
 
@@ -48,6 +49,8 @@
     </div>
   </div>
 </template>
+<!-- 腾讯地图 -->
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=YPOBZ-DNIKF-Y6KJM-NDW7D-VYIFZ-QEBIO"></script>
 <script>
 import vcolorpicker from 'vcolorpicker'
 import Vue from 'vue'
@@ -59,7 +62,7 @@ export default {
     modulesData: Object, // 模块公共
     sortIndex: Number // 模块公共
   },
-  data () {
+  data() {
     return {
       predefineColors: [ // 颜色选择器预定义颜色池
         '#ff4500',
@@ -88,13 +91,16 @@ export default {
       },
       defaultColorBorder: '#eee',
       defaultColorBorderBg: '#fff',
-      defaultColorBorderIcon: '#666666'
+      defaultColorBorderIcon: '#666666',
+      geocoder: null,
+      marker: null,
+      map: null
     }
   },
   watch: {
     // 中间模块当前高亮index
     sortIndex: { // 模块公共
-      handler (newData) {
+      handler(newData) {
         console.log(newData, this.modulesData)
         this.data = this.modulesData
         // 初始化地图
@@ -106,7 +112,7 @@ export default {
     },
     // 监听数据变换
     data: { // 模块公共
-      handler (newData) {
+      handler(newData) {
         console.log(newData)
         this.$emit('handleToBackData', newData)
       },
@@ -115,23 +121,41 @@ export default {
   },
   methods: {
     // 省市区
-    handleAreaData (data) {
+    handleAreaData(data) {
       console.log(data)
       // this.data.province_code = data.province
       // this.data.city_code = data.city
       // this.data.area_code = data.district
     },
     // 加载地图
-    initMap (latitude, longitude) {
+    initMap(latitude, longitude) {
       // 定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
-      // var map = new qq.maps.Map(document.getElementById('riMapContainer'), {
-      //   center: new qq.maps.LatLng(latitude, longitude), // 地图的中心地理坐标。
-      //   zoom: 8 // 地图的中心地理坐标。
-      // })
+      this.map = new qq.maps.Map(document.getElementById('riMapContainer'), {
+        center: new qq.maps.LatLng(latitude, longitude), // 地图的中心地理坐标。
+        zoom: 13 // 缩放等级
+      })
+      // 调用地址解析类
+      let that = this
+      this.geocoder = new qq.maps.Geocoder({
+        complete: function (result) {
+          that.map.setCenter(result.detail.location)
+          that.marker = new qq.maps.Marker({
+            map: that.map,
+            position: result.detail.location
+          })
+        }
+      })
+    },
+
+    // 点击查询地址
+    getLocation() {
+      var fullAddress = this.data.province + ',' + this.data.city + ',' + this.data.area + ',' + this.data.address
+      // 通过getLocation();方法获取位置信息值
+      this.geocoder.getLocation(fullAddress)
     },
 
     // 点击重置
-    handleToReset (index) {
+    handleToReset(index) {
       switch (index) {
         case 0:
           this.data.box_color = '#eee'
