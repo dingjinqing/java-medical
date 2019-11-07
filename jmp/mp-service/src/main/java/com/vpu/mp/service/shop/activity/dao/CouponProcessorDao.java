@@ -133,7 +133,7 @@ public class CouponProcessorDao extends ShopBaseService {
             .or(DslPlus.findInSet(catId,MRKING_VOUCHER.RECOMMEND_CAT_ID)).or(DslPlus.findInSet(sortId,MRKING_VOUCHER.RECOMMEND_SORT_ID)));
 
         Condition baseCondition = MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(MRKING_VOUCHER.ENABLED.eq(GoodsConstant.USE_STATUS))
-            .and(MRKING_VOUCHER.TYPE.eq(COUPON_TYPE_NORMAL));
+            .and(MRKING_VOUCHER.TYPE.eq(COUPON_TYPE_NORMAL)).and(MRKING_VOUCHER.SUIT_GOODS.eq((byte) 0));
 
         return baseCondition.and(timeCondition).and(surplusCondition).and(usableTargetCondition);
     }

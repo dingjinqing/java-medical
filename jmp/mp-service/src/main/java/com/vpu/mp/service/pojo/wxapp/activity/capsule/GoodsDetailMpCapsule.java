@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 
+import com.vpu.mp.service.pojo.wxapp.activity.info.CouponProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +34,9 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
     private Integer videoHeight;
 
     private String brandName;
-    private List<GoodsLabelProcessorDataInfo> labels;
     private Integer limitBuyNum;
     private Integer limitMaxNum;
+
+    private List<GoodsLabelProcessorDataInfo> labels;
+    private List<CouponProcessorDataInfo> coupons;
 }

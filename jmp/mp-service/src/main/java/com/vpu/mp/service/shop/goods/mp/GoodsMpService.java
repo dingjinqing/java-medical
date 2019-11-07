@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
+import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
@@ -195,10 +196,14 @@ public class GoodsMpService extends ShopBaseService {
         return goodsListMpVos;
     }
 
-
+    /**
+     * 小程序端获取商品详情信息
+     * @param param {@link com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpParam}
+     */
     public void getGoodsDetailMp(GoodsDetailMpParam param){
-        GoodsDetailMpCapsule GoodsDetailMpCapsule = getGoodsDetailMpInfoDao(param.getGoodsId());
-
+        GoodsDetailMpCapsule goodsDetailMpCapsule = getGoodsDetailMpInfoDao(param.getGoodsId());
+        GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
+        processorFactory.doProcess(goodsDetailMpCapsule,param.getUserId());
     }
     /**
      * 将相对路劲修改为全路径

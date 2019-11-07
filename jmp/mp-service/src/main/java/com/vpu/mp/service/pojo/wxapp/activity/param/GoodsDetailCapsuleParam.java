@@ -11,6 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GoodsDetailCapsuleParam extends GoodsBaseCapsuleParam{
-    private Integer goodsId;
     private Integer userId;
+    public Integer goodsId;
+    public Integer catId;
+    public Integer sortId;
 }

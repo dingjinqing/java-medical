@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * @author 李晓冰
@@ -40,20 +39,18 @@ public class CouponProcessorDataInfo extends ProcessorDataInfo {
     private Integer validityHour;
     private Integer validityMinute;
     /**优惠券兑换码*/
-    private String aliasCode;
+    private String validationCode;
     /**是否使用积分*/
     private Byte useScore;
     /**积分兑换量*/
     private Integer scoreNumber;
-    /**会员专享卡数量*/
-    private List<Integer> cardIds;
-    private String cardId;
     /**是否限制剩余数量*/
     private Byte limitSurplusFlag;
     /**剩余数量*/
     private Integer surplus;
     /**是否会员专享优惠券*/
     private Boolean isCardExclusive;
-    /**当前用户是否可以购买*/
-    private Boolean canBuy;
+    /**当前用户是否可以领取*/
+    private Boolean canFetch;
+    private Integer receivePerPerson;
 }

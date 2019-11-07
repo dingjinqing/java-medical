@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 
@@ -95,11 +96,28 @@ public class CouponProcessor implements ActivityGoodsListProcessor,GoodsDetailPr
     /*****************商品详情处理******************/
     @Override
     public List<CouponProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
-        return null;
+        List<CouponProcessorDataInfo> goodsCouponForDetail = couponProcessorDao.getGoodsCouponForDetail(param.getGoodsId(), param.getCatId(), param.getSortId(), DateUtil.getLocalDateTime());
+        List<Integer> couponIds = goodsCouponForDetail.stream().map(CouponProcessorDataInfo::getId).collect(Collectors.toList());
+        Map<Integer, Integer> userCouponsAlreadyNum = couponProcessorDao.getUserCouponsAlreadyNum(param.getUserId(), couponIds);
+        goodsCouponForDetail.forEach(coupon->{
+            int receivePer = coupon.getReceivePerPerson();
+            int already = userCouponsAlreadyNum.get(coupon.getId());
+
+            if (receivePer == 0) {
+                coupon.setCanFetch(true);
+            } else {
+                if (receivePer>already) {
+                    coupon.setCanFetch(true);
+                } else {
+                    coupon.setCanFetch(false);
+                }
+            }
+        });
+        return goodsCouponForDetail;
     }
 
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, List<CouponProcessorDataInfo> dataInfo) {
-
+        capsule.setCoupons(dataInfo);
     }
 }
