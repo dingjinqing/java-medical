@@ -1,10 +1,13 @@
 package com.vpu.mp.service.pojo.wxapp.footprint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 我的足迹列表
@@ -13,11 +16,20 @@ import java.sql.Timestamp;
  */
 @Getter
 @Setter
-public class FootprintListVo extends GoodsListMpVo {
+public class FootprintListVo {
 
+    /**
+     * 商品id
+     */
+    @JsonIgnore
+    private Integer goodsId;
     /**
      * 时间 yyyy-MM-dd
      */
-    private Timestamp creatTime;
+    private Timestamp date;
+    /**
+     * 商品列表
+     */
+    private List<GoodsListMpVo> goodsList;
 
 }

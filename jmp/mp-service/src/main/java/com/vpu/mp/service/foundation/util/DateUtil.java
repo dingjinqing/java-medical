@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -218,7 +217,7 @@ public final class DateUtil {
 	 * @param unit  使用ChronoUnit类 单位  SECONDS秒 ,MINUTES分钟, HOURS小时, DAYS天, WEEKS星期, MONTHS月, YEARS年
 	 * @return
 	 */
-	public static Timestamp geTimeStampPlus(int addNum, ChronoUnit unit) {
+	public static Timestamp getTimeStampPlus(int addNum, ChronoUnit unit) {
 		return  Timestamp.valueOf(LocalDateTime.now().plus(addNum,unit));
 	}
 }

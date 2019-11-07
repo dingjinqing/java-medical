@@ -19,4 +19,5 @@ public class GoodsCommentProcessorDataInfo extends ProcessorDataInfo {
     }
 
     private Integer commentNum;
+
 }
