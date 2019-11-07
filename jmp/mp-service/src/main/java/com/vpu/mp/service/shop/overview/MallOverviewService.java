@@ -1,9 +1,11 @@
 package com.vpu.mp.service.shop.overview;
 
 import com.vpu.mp.db.shop.tables.*;
+import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
+import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.overview.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.WxShoppingListConfigService;
@@ -11,6 +13,8 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.distribution.DistributorCheckService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.member.CardVerifyService;
+import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,14 +24,15 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.DeliverFeeTemplate.DELIVER_FEE_TEMPLATE;
 import static com.vpu.mp.db.shop.tables.RecommendGoods.RECOMMEND_GOODS;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
+import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import static org.jooq.impl.DSL.count;
@@ -61,6 +66,12 @@ public class MallOverviewService extends ShopBaseService {
 
     @Autowired
     public GoodsService goodsService;
+
+    @Autowired
+    public CardVerifyService cardVerifyService;
+
+    @Autowired
+    public CardDaoService cardDaoService;
 
     public static final List<Byte> RECENT_DATE = new ArrayList<Byte>() {{
         add(Byte.valueOf("1"));
@@ -212,42 +223,33 @@ public class MallOverviewService extends ShopBaseService {
         return AssiDataMarket.builder()
             //  分销审核超时
             .examine(distributorCheckService.distributionReviewTimeout(param.getApplyOver()))
-            // todo 会员卡激活审核 等那边接口写完直接调用
-            .member(null)
-            //  优惠券
+            // 会员卡激活审核超时
+            .member(buildMemberVo(param.getExamineOver()))
+            //  优惠券库存不足
             .voucher(couponService.getSmallInventoryCoupon(param.getCouponSizeNum()))
             .build().ruleHandler();
-
-        /*Map<String,String> memberMap = new HashMap<>(4);
-        CardExamineRecord cardExamineRecord = new CardExamineRecord();
-        List<CardExamine> cardExamineList = db().select(CardExamine.CARD_EXAMINE.CARD_ID)
-                    .from(CardExamine.CARD_EXAMINE)
-                    .where(CardExamine.CARD_EXAMINE.STATUS.eq((byte)1))
-                    .and(CardExamine.CARD_EXAMINE.DEL_FLAG.eq((byte)0))
-                    .and(CardExamine.CARD_EXAMINE.CREATE_TIME.lessThan(Util.getEarlyTimeStamp(new Date(),-param.getExamineOver())))
-                    .orderBy(CardExamine.CARD_EXAMINE.CREATE_TIME.asc())
-                    .fetchInto(CardExamine.class);
-        if (CollectionUtils.isNotEmpty(cardExamineList)) {*/
-            /*int lastRecordCardId = cardExamineList.get(0).CARD_ID.get(cardExamineRecord);
-
-            int cardNum = db().fetchCount(CardExamine.CARD_EXAMINE,CardExamine.CARD_EXAMINE.CARD_ID.eq(lastRecordCardId));
-            List<MemberCard> memberCards = db().select(MemberCard.MEMBER_CARD.CARD_NAME)
-                    .from(MemberCard.MEMBER_CARD)
-                    .where(MemberCard.MEMBER_CARD.ID.eq(lastRecordCardId))
-                    .fetchInto(MemberCard.class);
-            String cardName = memberCards!=null&&!memberCards.isEmpty() ? memberCards.get(0).CARD_NAME.get(new MemberCardRecord()) : null;
-            memberMap.put("card_id",String.valueOf(lastRecordCardId));
-            memberMap.put("card_name",cardName);
-            memberMap.put("card_num",String.valueOf(cardNum));
-            dataMarket.setMember(memberMap);
-            vo.totalPendingIncr();*/
-        /*}else{
-            memberMap.put("card_num","0");
-            dataMarket.setMember(memberMap);
-        }*/
     }
 
-    // 店铺首页 0：已完成店铺首页装修，否未装修店铺首页
+    private Map<String, String> buildMemberVo(int examineOver) {
+        CardExamineRecord cardExamineRecord = cardVerifyService.getLastRecord(new ActiveAuditParam() {{
+            setExamineOver(Timestamp.valueOf(LocalDateTime.now().minusDays(examineOver)));
+        }});
+        if (Objects.isNull(cardExamineRecord)) {
+            return new HashMap<String, String>(3) {{
+                put("card_num", STRING_ZERO);
+            }};
+        }
+        Integer cardId = cardExamineRecord.getCardId();
+        return new HashMap<String, String>(3) {{
+            put("card_id", cardExamineRecord.getCardId().toString());
+            put("card_name", cardDaoService.getCardById(cardId).toString());
+            put("card_num", cardVerifyService.getUndealUserNum(cardId).toString());
+        }};
+    }
+
+    /**
+     * 店铺首页 0：已完成店铺首页装修，否未装修店铺首页
+     */
     private Byte shopPageConfig() {
         String shopPage = db().select(DSL.concat(XCX_CUSTOMER_PAGE.PAGE_CONTENT, XCX_CUSTOMER_PAGE.PAGE_PUBLISH_CONTENT)).from(XCX_CUSTOMER_PAGE)
             .where(XCX_CUSTOMER_PAGE.PAGE_TYPE.eq(BYTE_ONE))
