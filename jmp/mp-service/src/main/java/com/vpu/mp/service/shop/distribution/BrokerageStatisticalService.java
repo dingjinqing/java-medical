@@ -29,7 +29,7 @@ public class BrokerageStatisticalService extends ShopBaseService{
 		SelectJoinStep<? extends Record> select = db().select(USER.as(INVITE).USERNAME .as("distributorName"),USER.as(INVITE).MOBILE.as("distributorMobile"),
 				USER.USERNAME.as("orderUserName"),USER.MOBILE.as("userMobile"),USER_DETAIL.REAL_NAME,ORDER_GOODS_REBATE.ORDER_SN,ORDER_INFO.ORDER_AMOUNT,
 				ORDER_INFO.MOBILE,USER.USERNAME,ORDER_GOODS_REBATE.REBATE_LEVEL,DISTRIBUTOR_GROUP.GROUP_NAME,
-				ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("realRebateMoney"),ORDER_INFO.CREATE_TIME)
+				ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,ORDER_INFO.CREATE_TIME,sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("realRebateMoney"))
 				.from(ORDER_GOODS_REBATE
 				.leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
 				.leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID))
@@ -42,11 +42,11 @@ public class BrokerageStatisticalService extends ShopBaseService{
 		return list;
 		
 	}
-	
+
 	/**
-	 * 佣金统计列表条件查询
-	 * @return 
-	 * @return 
+	 * 佣金统计条件查询
+	 * @param select
+	 * @param param
 	 */
 	public void buildoptions(SelectJoinStep<? extends Record> select,BrokerageListParam param) {
 		
@@ -82,7 +82,7 @@ public class BrokerageStatisticalService extends ShopBaseService{
 		}
 		select.groupBy(ORDER_GOODS_REBATE.ORDER_SN,ORDER_GOODS_REBATE.REBATE_LEVEL,ORDER_GOODS_REBATE.REBATE_USER_ID,
 				USER.as(INVITE).USERNAME,USER.as(INVITE).MOBILE,USER_DETAIL.REAL_NAME,ORDER_INFO.ORDER_AMOUNT,ORDER_INFO.MOBILE,USER.USERNAME,ORDER_GOODS_REBATE.REBATE_LEVEL,
-				ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,USER.USERNAME,USER.MOBILE,DISTRIBUTOR_GROUP.GROUP_NAME);
+				ORDER_GOODS_REBATE.TOTAL_REBATE_MONEY,USER.USERNAME,USER.MOBILE,DISTRIBUTOR_GROUP.GROUP_NAME,ORDER_INFO.CREATE_TIME);
 		select.orderBy(ORDER_GOODS_REBATE.CREATE_TIME);
 	}
 	
