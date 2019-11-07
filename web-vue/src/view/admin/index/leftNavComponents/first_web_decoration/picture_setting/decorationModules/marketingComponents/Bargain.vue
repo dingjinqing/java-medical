@@ -10,7 +10,10 @@
     >
       <!-- 模块编辑区 -->
       <div class="bargain_content">
-        <ul class="bargain_default_ul double_column">
+        <ul
+          v-if="data.list_style == 0"
+          class="bargain_default_ul double_column"
+        >
           <li
             class="bargain_default_li"
             v-show="data.bargain_goods.length === 0"
@@ -28,7 +31,7 @@
               <div class="bargain_info_name"></div>
               <div class="bargain_info_bottom">
                 <span class="bargain_num">仅剩10件</span>
-                <span class="bargin_free_btn"></span>
+                <span class="bargin_free_btn">去砍价</span>
               </div>
             </div>
           </li>
@@ -45,7 +48,10 @@
                 :src="$imageHost + '/' + good.goods_img"
                 style="width: 100%; height: 150px;"
               ></el-image>
-              <div class="bargain_time_down">
+              <div
+                v-if="data.goods_count_down"
+                class="bargain_time_down"
+              >
                 <div>距结束还剩</div>
                 <p>{{good.act_end_time | endTimeFmt}}</p>
               </div>
@@ -53,17 +59,26 @@
             <div class="bargain_default_info">
               <div class="bargain_info_head">
                 <span class="bargain_price new_price">￥<span style="font-size: 18px;">{{good.expectation_price}}</span></span>
-                <span class="bargain_old">￥{{good.goods_price}}</span>
+                <span
+                  v-if="data.goods_price"
+                  class="bargain_old"
+                >￥{{good.goods_price}}</span>
               </div>
               <div class="bargain_info_name">{{good.goods_name}}</div>
               <div class="bargain_info_bottom">
                 <span class="bargain_num">仅剩{{good.bargain_num}}件</span>
-                <span class="bargin_free_btn">去砍价</span>
+                <span
+                  v-if="data.free_btn"
+                  class="bargin_free_btn"
+                >去砍价</span>
               </div>
             </div>
           </li>
         </ul>
-        <ul class="bargain_default_ul single_column">
+        <ul
+          v-else
+          class="bargain_default_ul single_column"
+        >
           <li
             class="bargain_default_li"
             v-show="data.bargain_goods.length === 0"
@@ -105,16 +120,25 @@
               </div>
             </div>
             <div class="bargain_default_info">
-              <div class="bargain_info_head">
+              <div
+                v-if="data.goods_count_down"
+                class="bargain_info_head"
+              >
                 <div class="bargain_info_name">{{good.goods_name}}</div>
                 <span class="bargain_num">仅剩{{good.bargain_num}}件</span>
               </div>
               <div class="bargain_info_bottom">
                 <div class="bargain_price_wrap">
                   <span class="bargain_price">￥<span style="font-size: 18px;">{{good.expectation_price}}</span></span>
-                  <span class="bargain_old">￥{{good.goods_price}}</span>
+                  <span
+                    v-if="data.goods_price"
+                    class="bargain_old"
+                  >￥{{good.goods_price}}</span>
                 </div>
-                <span class="bargin_free_btn">去砍价</span>
+                <span
+                  v-if="data.free_btn"
+                  class="bargin_free_btn"
+                >去砍价</span>
               </div>
             </div>
           </li>
@@ -212,13 +236,11 @@ export default {
       }
     },
     activeSetHere (newData) { // 模块公共
-      console.log(newData)
       if (newData) {
         this.$emit('middleDragData', this.flag)
       }
     },
     activeBorder (newData) { // 模块公共
-      console.log(newData, this.index)
       if (newData) {
         this.$http.$emit('nowHightLightModules', this.flag)
       }
@@ -236,7 +258,6 @@ export default {
         if (newData) {
           this.data = newData
         }
-        console.log(newData)
       },
       immediate: true,
       deep: true

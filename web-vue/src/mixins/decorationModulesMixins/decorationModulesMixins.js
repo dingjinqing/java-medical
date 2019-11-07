@@ -326,6 +326,16 @@ export default {
                 showClose: true
               })
             }
+            break
+          case 'm_bargain':
+            if (item.bargain_goods && item.bargain_goods.length === 0) {
+              this.$message.error({
+                message: '请选择砍价活动商品',
+                showClose: true
+              })
+              flag = false
+            }
+            break
         }
       })
       console.log(flag)

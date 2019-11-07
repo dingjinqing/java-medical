@@ -72,8 +72,15 @@
         </div>
       </div>
       <div slot="footer">
-        <el-button @click="confirmSelect">确定</el-button>
-        <el-button @click="cancelSelect">取消</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="confirmSelect"
+        >确定</el-button>
+        <el-button
+          size="small"
+          @click="cancelSelect"
+        >取消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -118,7 +125,9 @@ export default {
   methods: {
     initData () {
       let that = this
-      let params = Object.assign({}, this.queryParams, this.pageParams)
+      let params = Object.assign({
+        state: [1]
+      }, this.queryParams, this.pageParams)
       getDialogBargainList(params).then(res => {
         console.log('content:', res.content)
         if (res.error === 0) {
