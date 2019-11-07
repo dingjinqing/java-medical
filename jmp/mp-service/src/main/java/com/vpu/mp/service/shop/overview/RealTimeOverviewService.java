@@ -12,8 +12,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.jooq.Condition;
+import org.jooq.Record;
 import org.jooq.Record2;
-import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -146,7 +146,7 @@ public class RealTimeOverviewService extends ShopBaseService {
         return indicatorVo;
     }
 
-    private SelectConditionStep<Record8<java.sql.Date, Integer, Integer, Integer, Integer, Integer, Double, Double>> getConditionSelect(){
+    private SelectConditionStep<? extends Record> getConditionSelect(){
         UserSummaryTrend us = UserSummaryTrend.USER_SUMMARY_TREND.as("us");
         return db().select(us.REF_DATE.as("date")
                 ,us.LOGIN_DATA.as("uv")

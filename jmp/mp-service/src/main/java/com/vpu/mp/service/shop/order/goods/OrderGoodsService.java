@@ -283,7 +283,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @author kdc
 	 */
     public Result<? extends Record> buyingHistoryGoodsList(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
-		Timestamp timestamp = DateUtil.geTimeStampPlus(-3, ChronoUnit.MONTHS);
+		Timestamp timestamp = DateUtil.getTimeStampPlus(-3, ChronoUnit.MONTHS);
 		SelectConditionStep<? extends Record> select = db().select(TABLE.GOODS_ID,TABLE.CREATE_TIME)
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))

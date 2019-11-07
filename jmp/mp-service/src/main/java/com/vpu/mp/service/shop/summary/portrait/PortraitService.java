@@ -168,7 +168,7 @@ public class PortraitService extends ShopBaseService {
     	Result<DictCityRecord> cityList = saas.region.city.getCityList(province.getProvinceId());
     	return cityList.intoMap(DICT_CITY.CITY_ID, DICT_CITY.NAME);
     }
-    
+
     /**
      * 根据类型显示开始时间和结束时间
      * @param type
@@ -179,15 +179,15 @@ public class PortraitService extends ShopBaseService {
 		switch (type) {
 		case 0:
 			// 昨天
-			time = DateUtil.geTimeStampPlus(-1, ChronoUnit.DAYS);
+			time = DateUtil.getTimeStampPlus(-1, ChronoUnit.DAYS);
 			break;
 		case 1:
 			// 最近七天
-			time = DateUtil.geTimeStampPlus(-7, ChronoUnit.DAYS);
+			time = DateUtil.getTimeStampPlus(-7, ChronoUnit.DAYS);
 			break;
 		case 2:
 			// 最近三十天
-			time = DateUtil.geTimeStampPlus(-30, ChronoUnit.DAYS);
+			time = DateUtil.getTimeStampPlus(-30, ChronoUnit.DAYS);
 			break;
 		default:
 			time = Timestamp.valueOf(LocalDateTime.now());
