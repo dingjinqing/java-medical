@@ -3,9 +3,11 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.CouponProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.CouponProcessorDao;
 import org.jooq.Record5;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,8 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
  * @date 2019年10月30日
  */
 @Service
-public class CouponProcessor extends CouponProcessorDao implements ActivityGoodsListProcessor {
+public class CouponProcessor extends CouponProcessorDao implements ActivityGoodsListProcessor,GoodsDetailProcessor<CouponProcessorDataInfo> {
+    /*****************商品列表处理*******************/
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_COUPON_PRIORITY;
@@ -84,5 +87,16 @@ public class CouponProcessor extends CouponProcessorDao implements ActivityGoods
             }
             capsule.getActivities().add(activity);
         });
+    }
+
+    /*****************商品详情处理******************/
+    @Override
+    public List<CouponProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
+        return null;
+    }
+
+    @Override
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, List<CouponProcessorDataInfo> dataInfo) {
+
     }
 }

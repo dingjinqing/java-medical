@@ -32,10 +32,11 @@ public class CouponProcessorDataInfo extends ProcessorDataInfo {
     /********商品详情*********/
     private Integer id;
     private String actName;
-    private Timestamp actStartTime;
-    private Timestamp actEndTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
     /**优惠券使用时间类型 1领取后开始指定时间段内有效，0固定时间段有效*/
     private Byte validityType;
+    private Integer validity;
     private Integer validityHour;
     private Integer validityMinute;
     /**优惠券兑换码*/
@@ -46,6 +47,7 @@ public class CouponProcessorDataInfo extends ProcessorDataInfo {
     private Integer scoreNumber;
     /**会员专享卡数量*/
     private List<Integer> cardIds;
+    private String cardId;
     /**是否限制剩余数量*/
     private Byte limitSurplusFlag;
     /**剩余数量*/
