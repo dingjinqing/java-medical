@@ -25,14 +25,17 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
+import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.StoreConfigService;
+import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
+import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
@@ -172,6 +175,24 @@ public class StoreWxService extends ShopBaseService {
      */
     @Autowired
     public ServiceTechnicianService technicianService;
+
+    /**
+     * The Payment service.支付
+     */
+    @Autowired
+    public PaymentService paymentService;
+
+    /**
+     * The Trade service.交易服务配置
+     */
+    @Autowired
+    public TradeService tradeService;
+
+    /**
+     * The Shop service.店铺
+     */
+    @Autowired
+    public ShopService shopService;
 
     /**
      * The constant BYTE_TWO.
@@ -415,8 +436,8 @@ public class StoreWxService extends ShopBaseService {
         payOrderVo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
         // 获取有效用户会员卡列表
         List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
-            .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
-            }, false).contains(storeId))
+            .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
+            }, false)).contains(storeId))
             .collect(Collectors.toList());
         log.debug("有效用户会员卡列表:{}", cardList);
         payOrderVo.setMemberCardList(cardList);
@@ -592,6 +613,7 @@ public class StoreWxService extends ShopBaseService {
                 reservationList.add(reservationInfo);
             }
         }
+        // TODO 服务评价
         return ReservationDetailVo.builder()
             .storeInfo(storePojo)
             .serviceInfo(service)
@@ -688,5 +710,49 @@ public class StoreWxService extends ShopBaseService {
             .endTime(endPeriod)
             .technicianFlag(technicianFlag)
             .technicianPojoList(result).build();
+    }
+
+    /**
+     * Submit reservation.创建门店服务预约订单
+     */
+    public ReservationOrder createReservation(Integer serviceId, Integer userId) {
+        // 门店服务信息
+        StoreServiceParam service = storeService.getStoreService(serviceId);
+        Assert.notNull(service, JsonResultCode.CODE_STORE_SERVICE_NOT_EXIST);
+        // 门店信息
+        Integer storeId = service.getStoreId();
+        StorePojo storePojo = store.getStore(storeId);
+        Assert.notNull(storePojo, JsonResultCode.CODE_STORE_NOT_EXIST);
+
+        // 获取有效用户会员卡列表
+        List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
+            .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
+            }, false)).contains(storeId))
+            .collect(Collectors.toList());
+
+        return ReservationOrder.builder()
+            // 获取用户余额account
+            .account(userService.getUserByUserId(userId).getAccount())
+            // 获取支付开关配置, 会员卡余额支付,余额支付
+            .balanceFirst(tradeService.getBalanceFirst())
+            .cardFirst(tradeService.getCardFirst())
+            // 获取支持的支付方式
+            .paymentVoList(paymentService.getSupportPayment().into(PaymentVo.class))
+            // 获取指定用户最近的一个服务预约订单信息(主要是获取用户的名称和手机号;没有就算了)
+            .recentOrderInfo(serviceOrderService.getRecentOrderInfo(userId))
+            // 获取门店职称配置
+            .technicianTitle(storeConfigService.getTechnicianTitle())
+            // 获取店铺logo
+            .shopAvatar(shopService.getShopById(getShopId()).getShopAvatar())
+            .cardList(cardList)
+            .storePojo(storePojo)
+            .service(service)
+            .build();
+    }
+
+    /**
+     * Submit reservation.提交确认门店服务预约订单
+     */
+    public void submitReservation() {
     }
 }

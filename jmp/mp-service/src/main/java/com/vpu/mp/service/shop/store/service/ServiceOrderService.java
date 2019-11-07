@@ -363,4 +363,14 @@ public class ServiceOrderService extends ShopBaseService{
             return LocalTime.parse(periodTime[0], HH_MM_FORMATTER).isBefore(endPeriod) && LocalTime.parse(periodTime[1], HH_MM_FORMATTER).isAfter(startPeriod);
         }).count();
     }
+
+    /**
+     * Gets recent order info.获取指定用户最近的一个服务预约订单信息
+     *
+     * @param userId the user id
+     */
+    public RecentOrderInfo getRecentOrderInfo(Integer userId) {
+        return db().select(SERVICE_ORDER.USER_ID, SERVICE_ORDER.SUBSCRIBER, SERVICE_ORDER.MOBILE).from(SERVICE_ORDER)
+            .where(SERVICE_ORDER.USER_ID.eq(userId)).orderBy(SERVICE_ORDER.CREATE_TIME.desc()).fetchOneInto(RecentOrderInfo.class);
+    }
 }
