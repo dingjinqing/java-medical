@@ -14,4 +14,6 @@ public class PortraitVo {
     private PortraitSum activeUserSum;
     private Portrait newAddUser;
     private PortraitSum newAddUserSum;
+    private String startDate;
+    private String endDate;
 }

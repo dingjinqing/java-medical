@@ -6,6 +6,9 @@ import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +23,7 @@ import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import com.vpu.mp.service.pojo.shop.summary.portrait.Portrait;
@@ -55,6 +59,8 @@ public class PortraitService extends ShopBaseService {
         PortraitSum newAddUserSum = portraitSumObject(visitUvNew);
         vo.setActiveUserSum(activeUserSum);
         vo.setNewAddUserSum(newAddUserSum);
+        vo.setStartDate(showDate(type));
+        vo.setEndDate(showDate(0));
         return vo;
     }
 
@@ -162,4 +168,35 @@ public class PortraitService extends ShopBaseService {
     	Result<DictCityRecord> cityList = saas.region.city.getCityList(province.getProvinceId());
     	return cityList.intoMap(DICT_CITY.CITY_ID, DICT_CITY.NAME);
     }
+    
+    /**
+     * 根据类型显示开始时间和结束时间
+     * @param type
+     * @return
+     */
+	private static String showDate(Integer type) {
+		Timestamp time = null;
+		switch (type) {
+		case 0:
+			// 昨天
+			time = DateUtil.geTimeStampPlus(-1, ChronoUnit.DAYS);
+			break;
+		case 1:
+			// 最近七天
+			time = DateUtil.geTimeStampPlus(-7, ChronoUnit.DAYS);
+			break;
+		case 2:
+			// 最近三十天
+			time = DateUtil.geTimeStampPlus(-30, ChronoUnit.DAYS);
+			break;
+		default:
+			time = Timestamp.valueOf(LocalDateTime.now());
+			break;
+		}
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDateTime localDateTime2=time.toLocalDateTime();
+		String format2 = df.format(localDateTime2);
+		return format2;
+
+	}
 }
