@@ -1,116 +1,118 @@
 <template>
   <div class="payContent">
-    <div>
-      <el-form
-        size="mini"
-        :inline="true"
-        class="demo-form-inline"
-      >
-        <el-form-item :label="$t('actionRecord.userName')">
-          <el-input
-            v-model="userName"
-            :placeholder="$t('actionRecord.userName')"
-          ></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('actionRecord.actionType')">
-          <el-select
-            v-model="actionType"
-            :placeholder="$t('actionRecord.all')"
-            size="small"
-            clearable
+    <div class="payContent_main">
+      <div>
+        <el-form
+          size="mini"
+          :inline="true"
+          class="demo-form-inline"
+        >
+          <el-form-item :label="$t('actionRecord.userName')">
+            <el-input
+              v-model="userName"
+              :placeholder="$t('actionRecord.userName')"
+            ></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('actionRecord.actionType')">
+            <el-select
+              v-model="actionType"
+              :placeholder="$t('actionRecord.all')"
+              size="small"
+              clearable
+            >
+              <el-option
+                v-for="item in actionTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item :label="$t('actionRecord.optionTime')">
+            <div class="block">
+              <el-date-picker
+                v-model="startCreateTime"
+                type="date"
+                value-format="yyyy-MM-dd 00:00:00"
+                :placeholder="$t('actionRecord.startTime')"
+              >
+              </el-date-picker>
+              <el-date-picker
+                v-model="endCreateTime"
+                type="date"
+                value-format="yyyy-MM-dd 00:00:00"
+                :placeholder="$t('actionRecord.endTime')"
+              >
+              </el-date-picker>
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              @click="search"
+            >{{$t('actionRecord.search')}}</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="table_box">
+        <el-table
+          :data="tableData"
+          border
+          stripe
+          style="width: 100%"
+          :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+        >
+          <el-table-column
+            prop="userName"
+            :label="$t('actionRecord.userName')"
+            align="center"
+            min-width="20%"
           >
-            <el-option
-              v-for="item in actionTypes"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('actionRecord.optionTime')">
-          <div class="block">
-            <el-date-picker
-              v-model="startCreateTime"
-              type="date"
-              value-format="yyyy-MM-dd 00:00:00"
-              :placeholder="$t('actionRecord.startTime')"
-            >
-            </el-date-picker>
-            <el-date-picker
-              v-model="endCreateTime"
-              type="date"
-              value-format="yyyy-MM-dd 00:00:00"
-              :placeholder="$t('actionRecord.endTime')"
-            >
-            </el-date-picker>
-          </div>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="search"
-          >{{$t('actionRecord.search')}}</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="table_box">
-      <el-table
-        :data="tableData"
-        border
-        stripe
-        style="width: 100%"
-        :header-cell-style="{background:'#eef1f6',color:'#606266'}"
-      >
-        <el-table-column
-          prop="userName"
-          :label="$t('actionRecord.userName')"
-          align="center"
-          min-width="20%"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="accountType"
-          :label="$t('actionRecord.accountTypeLL')"
-          align="center"
-          :formatter="bindFormatter"
-          min-width="10%"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="actionType"
-          :label="$t('actionRecord.actionType')"
-          align="center"
-          min-width="10%"
-          :formatter="actionTypeFormatter"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="createTime"
-          :label="$t('actionRecord.optionTime')"
-          align="center"
-          min-width="15%"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="content"
-          :label="$t('actionRecord.content')"
-          align="center"
-          min-width="55%"
-        >
+          </el-table-column>
+          <el-table-column
+            prop="accountType"
+            :label="$t('actionRecord.accountTypeLL')"
+            align="center"
+            :formatter="bindFormatter"
+            min-width="10%"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="actionType"
+            :label="$t('actionRecord.actionType')"
+            align="center"
+            min-width="10%"
+            :formatter="actionTypeFormatter"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="createTime"
+            :label="$t('actionRecord.optionTime')"
+            align="center"
+            min-width="15%"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="content"
+            :label="$t('actionRecord.content')"
+            align="center"
+            min-width="55%"
+          >
 
-        </el-table-column>
+          </el-table-column>
 
-      </el-table>
-      <div class="footer">
-        <span>{{$t('authRoleList.everyPage')}}{{this.pageRows}}{{$t('authRoleList.record')}}，{{$t('authRoleList.currentPage')}}：{{this.currentPage}}，{{$t('authRoleList.pageCount')}}：{{this.pageCount}}，{{$t('authRoleList.totalRows')}}：{{this.totalRows}}</span>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          layout="prev, pager, next, jumper"
-          :page-count="pageCount"
-          :small="pagination_b"
-        >
-        </el-pagination>
+        </el-table>
+        <div class="footer">
+          <span>{{$t('authRoleList.everyPage')}}{{this.pageRows}}{{$t('authRoleList.record')}}，{{$t('authRoleList.currentPage')}}：{{this.currentPage}}，{{$t('authRoleList.pageCount')}}：{{this.pageCount}}，{{$t('authRoleList.totalRows')}}：{{this.totalRows}}</span>
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            layout="prev, pager, next, jumper"
+            :page-count="pageCount"
+            :small="pagination_b"
+          >
+          </el-pagination>
+        </div>
       </div>
     </div>
   </div>
@@ -224,12 +226,14 @@ export default {
 </script>
 <style lang="scss" scoped>
 .payContent {
-  margin: 10px;
-  padding: 10px 20px 0 20px;
-  min-width: 1000px;
+  padding: 10px;
+  min-width: 100%;
   font-size: 14px;
   height: 100%;
-  background: #fff;
+}
+.payContent_main {
+  background-color: #fff;
+  padding: 10px 20px;
 }
 .footer {
   display: flex;

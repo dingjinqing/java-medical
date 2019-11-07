@@ -37,15 +37,17 @@
             <el-button
               type="primary"
               @click="changeTabValue"
+              size="small"
             >+{{$t('pledge.addButton')}}</el-button>
             <span class="mid-text">{{$t('pledge.addTip')}}</span>
           </div>
           <!-- 列表信息 -->
-          <div class="bot">
+          <div class="table_list">
             <!-- 表格数据 -->
             <el-table
               class="table"
               :data="tableData"
+              header-row-class-name="tableClss"
               border
               style="width:100%"
             >
@@ -474,10 +476,21 @@ export default {
         font-size: 14px;
       }
     }
-    .bot {
-      // background-color: #f2f2f2;
-      height: 800px;
-      width: 100%;
+    /deep/ .tableClss th {
+      background-color: #f5f5f5;
+      border: none;
+      height: 36px;
+      color: #000;
+      padding: 8px 10px;
+    }
+    .table_list {
+      position: relative;
+      background-color: #fff;
+      padding: 0 0 10px;
+      // /deep/.el-table__row {
+      //   height: 45px;
+      //   line-height: 45px;
+      // }
     }
     .footer {
       position: fixed;
@@ -508,7 +521,5 @@ export default {
   width: 50px;
   height: 50px;
   border: 1px solid #ccc;
-  // margin: 5px 5px;
-  // position: relative;
 }
 </style>

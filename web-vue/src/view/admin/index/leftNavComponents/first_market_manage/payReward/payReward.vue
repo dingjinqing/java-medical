@@ -102,7 +102,10 @@
                 content="编辑"
                 placement="top"
               >
-                <span class="el-icon-edit-outline"></span>
+                <span
+                  class="el-icon-edit-outline"
+                  @click="handleEdit"
+                ></span>
               </el-tooltip>
               <el-tooltip
                 content="分享"
@@ -206,7 +209,7 @@ export default {
       tableData: [],
       pageParams: {},
       param: {
-        'navType': 1,
+        'navType': 0,
         'currentPage': 1,
         'pageRows': 20
       },
@@ -221,6 +224,12 @@ export default {
       this.$router.push({
         name: 'addPayRewardAct'
         // name: 'activityDetails'
+      })
+    },
+    // 点击编辑按钮跳转到编辑支付有礼活动
+    handleEdit () {
+      this.$router.push({
+        name: 'activityDetails'
       })
     },
 
@@ -315,10 +324,13 @@ export default {
     },
 
     // 活动明细
-    actDetails (val) {
-      console.log(val)
+    actDetails (id) {
+      console.log(id)
       this.$router.push({
-        name: 'activityDetails'
+        name: 'activityDetails',
+        query: {
+          id: id
+        }
       })
     }
   },
