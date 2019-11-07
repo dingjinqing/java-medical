@@ -1,46 +1,12 @@
 package com.vpu.mp.service.shop.member.dao;
 
-import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
-
-import java.sql.Timestamp;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectSeekStep3;
-import org.jooq.SelectSelectStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
-import com.vpu.mp.db.shop.tables.records.CardUpgradeRecord;
-import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
-import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
-import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
@@ -49,6 +15,19 @@ import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.shop.member.UserCardService;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
 * @author 黄壮壮
@@ -60,10 +39,9 @@ public class UserCardDaoService extends ShopBaseService{
 	final static Byte CARD_ONLINE = 0;
 	final static Byte CARD_OFFLINE = 1;
 	@Autowired private  UserCardService userCardService;
-	
-	
-	
-	/**
+
+
+    /**
 	 * 获取用户持有的等级卡
 	 */
 	public MemberCardRecord getUserGradeCard(Integer userId) {
@@ -73,7 +51,7 @@ public class UserCardDaoService extends ShopBaseService{
 				.and(USER_CARD.USER_ID.eq(userId))
 				.fetchAnyInto(MemberCardRecord.class);
 	}
-	
+
 	/**
 	 * 获取会员卡
 	 * @param cardId 会员卡Id
@@ -81,7 +59,7 @@ public class UserCardDaoService extends ShopBaseService{
 	public MemberCardRecord getMemberCardById(Integer cardId) {
 		  return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAny();
 	}
-	
+
 	/**
 	 * 更新userCard
 	 */
@@ -92,15 +70,15 @@ public class UserCardDaoService extends ShopBaseService{
 			.and(USER_CARD.USER_ID.eq(userId))
 			.execute();
 	}
-	
+
 	/**
 	 * 插入会员持卡升级记录
 	 */
 	public void insertIntoCardUpGrade(CardUpgradeRecord r) {
-		
+
 		db().executeInsert(r);
 	}
-	
+
 	/**
 	 * 获取店铺的积分限制配置信息
 	 */
@@ -112,9 +90,9 @@ public class UserCardDaoService extends ShopBaseService{
 		}else {
 			return null;
 		}
-		
-	}
-	
+
+    }
+
 
 	public void updateCardFlag(List<Integer> cardIdList, List<String> cardNoList) {
 		db().update(USER_CARD)
@@ -123,7 +101,7 @@ public class UserCardDaoService extends ShopBaseService{
 			.and(USER_CARD.CARD_NO.notIn(cardNoList))
 			.execute();
 	}
-	
+
 	/**
 	 * 获取可用的用户卡
 	 */
@@ -135,10 +113,10 @@ public class UserCardDaoService extends ShopBaseService{
 		if(StringUtils.isBlank(card.getCardName())) {
 			sql.and((USER_CARD.EXPIRE_TIME.isNull()).or(USER_CARD.EXPIRE_TIME.ge(DateUtil.getLocalDateTime())));
 		}
-		
+
 		 return sql.fetchAny();
 	}
-	
+
 	/**
 	 * 获取有效用户会员卡列表
 	 * @param cardType -1所有可用卡  卡类型
@@ -147,7 +125,7 @@ public class UserCardDaoService extends ShopBaseService{
 	public List<ValidUserCardBean> getValidCardList(Integer userId){
 		return getValidCardList(userId,MCARD_TP_ALL,CARD_ONLINE);
 	}
-	
+
 	public List<ValidUserCardBean> getValidCardList(Integer userId,Byte cardType,Byte type){
 		if(MCARD_TP_ALL.equals(cardType)) {
 			return getAllValidCardList(userId);
@@ -155,29 +133,43 @@ public class UserCardDaoService extends ShopBaseService{
 			return getValidCardList(userId,new Byte[] {cardType},type);
 		}
 	}
-	
+
+    /**
+     * Gets store valid card list.获取门店有效用户会员卡列表
+     *
+     * @param userId  the user id
+     * @param storeId the store id
+     * @return the store valid card list
+     */
+    public List<ValidUserCardBean> getStoreValidCardList(Integer userId, Integer storeId) {
+        return getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
+            .stream().filter((c) -> org.jooq.tools.StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
+            }, false)).contains(storeId))
+            .collect(Collectors.toList());
+    }
+
 	public List<ValidUserCardBean> getValidCardList(Integer userId,Byte[] cardType,Byte type) {
 		logger().info("获取有效会员卡");
 		assert cardType != null : "card type should not be null";
 		if(cardType.length==1 && MCARD_TP_ALL.equals(cardType[0])) {
 			// 所有可用卡
-			 return getAllValidCardList(userId);	
+            return getAllValidCardList(userId);
 		}
 		if(CARD_OFFLINE.equals(type)) {
 			// 线下处理
-			return getOfflineValidCardList(userId, cardType);	
+            return getOfflineValidCardList(userId, cardType);
 		}
 		// 线上
 		return getOnlineValidCardList(userId, cardType);
 	}
-	
-	private List<ValidUserCardBean> getOnlineValidCardList(Integer userId, Byte[] cardType){
+
+    private List<ValidUserCardBean> getOnlineValidCardList(Integer userId, Byte[] cardType){
 		return selectValidCardCondition(userId, cardType)
 				.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.GRADE.desc())
 				.fetchInto(ValidUserCardBean.class);
 	}
-	
-	private List<ValidUserCardBean> getOfflineValidCardList(Integer userId, Byte[] cardType) {
+
+    private List<ValidUserCardBean> getOfflineValidCardList(Integer userId, Byte[] cardType) {
 		return selectValidCardCondition(userId, cardType)
 							.and(MEMBER_CARD.STORE_USE_SWITCH.eq(AVAILABLE_IN_STORE))
 							.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.GRADE.desc())
@@ -211,23 +203,23 @@ public class UserCardDaoService extends ShopBaseService{
 	 * 获取用户所有的可用卡列表
 	 */
 	private List<ValidUserCardBean> getAllValidCardList(Integer userId) {
-		
-		return selectValidCardSQL()
+
+        return selectValidCardSQL()
 			.where(USER_CARD.USER_ID.eq(userId))
 			.and(USER_CARD.FLAG.eq(MCARD_DF_NO))
 			.and(
 					(USER_CARD.EXPIRE_TIME.isNull())
 					.or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
 				)
-			.and(	
+            .and(
 					((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
 					.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING,MCARD_ET_FOREVER))
 				)
 			.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.GRADE.desc())
 			.fetchInto(ValidUserCardBean.class);
 	}
-	
-	/**
+
+    /**
 	 * 查询用户有效卡的信息
 	 */
 	private SelectJoinStep<Record> selectValidCardSQL() {
@@ -236,8 +228,8 @@ public class UserCardDaoService extends ShopBaseService{
 				MEMBER_CARD.DATE_TYPE,MEMBER_CARD.STORE_USE_SWITCH,MEMBER_CARD.STORE_LIST,MEMBER_CARD.ACTIVATION,MEMBER_CARD.GRADE)
 			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)));
 	}
-	
-	/**
+
+    /**
 	 * 获取用户持有会员卡的等级
 	 */
 	public String getUserCardGrade(Integer userId) {
@@ -251,32 +243,32 @@ public class UserCardDaoService extends ShopBaseService{
 	/**
 	 * 计算用户等级
 	 */
-	public String calcUserGrade(Integer userId) { 
+    public String calcUserGrade(Integer userId) {
 		return db().select(MEMBER_CARD.GRADE)
 				.from(USER_CARD.leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)))
 				.where(USER_CARD.FLAG.eq(UCARD_FG_USING))
 				.and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
 				.and(USER_CARD.USER_ID.eq(userId))
 				.and((MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO)).or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
-				.fetchAnyInto(String.class); 
-	}
-	
+            .fetchAnyInto(String.class);
+    }
+
 	/**
 	 * 根据id获取用户名
 	 */
 	public String getUserName(Integer id) {
 		return db().select(USER.USERNAME).from(USER).where(USER.USER_ID.eq(id)).fetchAnyInto(String.class);
 	}
-	
-	/**
+
+    /**
 	 * 更新会员卡详情
 	 */
 	public int updateUserCardByNo(String cardNo,UserCardRecord record) {
 		return  db().update(USER_CARD).set(record).where(USER_CARD.CARD_NO.eq(cardNo)).execute();
 	}
-	
-	
-	/**
+
+
+    /**
 	 * 获取会员卡详情
 	 */
 	public UserCardParam getUserCardInfo(String cardNo) {
@@ -285,12 +277,12 @@ public class UserCardDaoService extends ShopBaseService{
 				.where(USER_CARD.CARD_NO.eq(cardNo))
 				.fetchAnyInto(WxAppUserCardVo.class);
 	}
-	
-	public int getHasSend(Integer cardId){
+
+    public int getHasSend(Integer cardId){
 		return db().selectCount().from(USER_CARD).where(USER_CARD.CARD_ID.eq(cardId)).execute();
 	}
-	
-	/**
+
+    /**
 	 * 升级卡
 	 */
 	public void updateUserRankCard(MemberCardRecord cardInfo,Integer userId) {
@@ -303,9 +295,9 @@ public class UserCardDaoService extends ShopBaseService{
 			.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 			.execute();
 	}
-	
-	
-	/**
+
+
+    /**
 	 * 更新卡余额
 	 */
 	public int updateUserCardMoney(UserCardConsumeBean data, UserCardParam userInfo) {
@@ -323,8 +315,8 @@ public class UserCardDaoService extends ShopBaseService{
 			.where(USER_CARD.CARD_NO.eq(data.getCardNo()))
 			.execute();
 	}
-	
-	/**
+
+    /**
 	 * 更新卡剩余兑换次数
 	 */
 	public int updateUserCardExchangePlus(UserCardConsumeBean data, UserCardParam userInfo) {
@@ -333,8 +325,8 @@ public class UserCardDaoService extends ShopBaseService{
 			.where(USER_CARD.CARD_NO.eq(data.getCardNo()))
 			.execute();
 	}
-	
-	/**
+
+    /**
 	 * 消费记录
 	 */
 	public void insertIntoCharge(UserCardConsumeBean data) {
@@ -350,22 +342,22 @@ public class UserCardDaoService extends ShopBaseService{
 		FieldsUtil.assignNotNull(data, cardConsumer);
 		cardConsumer.insert();
 	}
-	
-	/**
+
+    /**
 	 * 获取用户会员卡列表
 	 */
 	public PageResult<WxAppUserCardVo> getCardList(SearchCardParam param) {
-		
-		SelectSeekStep3<Record, String, Byte, Timestamp> select = wxUserCardSelectSql()
+
+        SelectSeekStep3<Record, String, Byte, Timestamp> select = wxUserCardSelectSql()
 				.from(USER_CARD)
 				.leftJoin(MEMBER_CARD)
 				.on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
 				.where(USER_CARD.USER_ID.eq(param.getUserId()))
 				.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 				.orderBy(MEMBER_CARD.GRADE.desc(),USER_CARD.IS_DEFAULT.desc(),USER_CARD.CREATE_TIME.desc());
-		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), WxAppUserCardVo.class);		
-	}
-	
+        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), WxAppUserCardVo.class);
+    }
+
 	private SelectSelectStep<Record> wxUserCardSelectSql(){
 		return db().select(
 			 	USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.FLAG.as("userCardFlag"),USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,
@@ -373,8 +365,8 @@ public class UserCardDaoService extends ShopBaseService{
 			 	USER_CARD.CREATE_TIME.as("userCardCreateTime"),USER_CARD.UPDATE_TIME.as("userCardUpdateTime"),
 			 MEMBER_CARD.asterisk());
 	}
-	
-	/**
+
+    /**
 	 * get card type
 	 * @param cardNo
 	 */
@@ -384,8 +376,8 @@ public class UserCardDaoService extends ShopBaseService{
 			.where(USER_CARD.CARD_NO.eq(cardNo))
 			.fetchAnyInto(Byte.class);
 	}
-	
-	public int calcNumCardById(Integer cardId) {
+
+    public int calcNumCardById(Integer cardId) {
 		return db().fetchCount(USER_CARD, USER_CARD.CARD_ID.eq(cardId));
 	}
 

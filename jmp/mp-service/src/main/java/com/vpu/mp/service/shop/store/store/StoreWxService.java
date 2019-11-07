@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -64,9 +65,12 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ONE;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_NAME_WAIT_SERVICE;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_WAIT_SERVICE;
 import static java.math.BigDecimal.ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
@@ -724,12 +728,6 @@ public class StoreWxService extends ShopBaseService {
         StorePojo storePojo = store.getStore(storeId);
         Assert.notNull(storePojo, JsonResultCode.CODE_STORE_NOT_EXIST);
 
-        // 获取有效用户会员卡列表
-        List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
-            .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
-            }, false)).contains(storeId))
-            .collect(Collectors.toList());
-
         return ReservationOrder.builder()
             // 获取用户余额account
             .account(userService.getUserByUserId(userId).getAccount())
@@ -744,7 +742,8 @@ public class StoreWxService extends ShopBaseService {
             .technicianTitle(storeConfigService.getTechnicianTitle())
             // 获取店铺logo
             .shopAvatar(shopService.getShopById(getShopId()).getShopAvatar())
-            .cardList(cardList)
+            // 获取有效用户会员卡列表
+            .cardList(userCardDaoService.getStoreValidCardList(userId, storeId))
             .storePojo(storePojo)
             .service(service)
             .build();
@@ -753,6 +752,82 @@ public class StoreWxService extends ShopBaseService {
     /**
      * Submit reservation.提交确认门店服务预约订单
      */
-    public void submitReservation() {
+    public void submitReservation(SubmitReservationParam param) {
+        Integer serviceId = param.getServiceId();
+        if (!serviceOrderService.checkReservationNum(serviceId, param.getTechnicianId())) {
+            // todo 预约人数已达上限
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
+        ServiceOrderRecord serviceOrder = new ServiceOrderRecord() {{
+            setStoreId(param.getStoreId());
+            setUserId(param.getUserId());
+            setSubscriber(param.getSubscriber());
+            setMobile(param.getMobile());
+            setServiceId(serviceId);
+            setTechnicianId(param.getTechnicianId());
+            setTechnicianName(param.getTechnicianName());
+            setServiceDate(param.getServiceDate());
+            setServicePeriod(param.getServicePeriod());
+            setAddMessage(param.getAddMessage());
+//            setMoneyPaid();
+            // todo 预留新增字段
+//            setServiceDate();
+//            setServiceDate();
+//            setServiceDate();
+        }};
+        log.debug("门店服务订单即将创建: {}", serviceOrder);
+        serviceOrderService.createServiceOrder(serviceOrder);
+
+/*        // 会员余额变动
+        if (serviceOrder.getUseAccount().compareTo(ZERO) > 0) {
+            try {
+                accountService.addUserAccount(new AccountParam() {{
+                    setUserId(userId);
+                    setAccount(userRecord.getAccount());
+                    setOrderSn(storeOrderRecord.getOrderSn());
+                    setAmount(storeOrderRecord.getUseAccount());
+                    setPayment("balance");
+                    setIsPaid(BYTE_ONE);
+                    setRemark(storeOrderRecord.getOrderSn());
+                }}, 0, CONDITION_TWO, BYTE_ZERO, "zh");
+            } catch (MpException e) {
+                log.error("会员余额变动失败,原因如下:{}", e.getMessage());
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
+        }
+        // 创建用户积分记录
+        if (storeOrderRecord.getScoreDiscount().compareTo(ZERO) > 0) {
+            scoreService.addUserScore(new UserScoreVo() {{
+                setScoreDis(userRecord.getScore());
+                setUserId(userId);
+                setScore(storeOrderRecord.getScoreDiscount().multiply(HUNDRED).intValue());
+                setOrderSn(storeOrderRecord.getOrderSn());
+                setShopId(getShopId());
+                setRemark(storeOrderRecord.getOrderSn());
+            }}, "0", BYTE_ONE, BYTE_ZERO);
+        }
+        // 增加会员卡消费记录
+        if (storeOrderRecord.getMemberCardBalance().compareTo(ZERO) > 0) {
+            UserCardParam userCardParam = userCardDaoService.getUserCardInfo(storeOrderRecord.getMemberCardNo());
+            userCardService.cardConsumer(new UserCardConsumeBean() {{
+                setMoneyDis(storeOrderRecord.getMemberCardBalance());
+                setUserId(userId);
+                setMoney(storeOrderRecord.getMemberCardBalance());
+                setCardNo(storeOrderRecord.getMemberCardNo());
+                setCardId(userCardParam.getCardId());
+                setReason(storeOrderRecord.getOrderSn());
+                setType(BYTE_ZERO);
+            }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
+        }*/
+
+        if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
+            //TODO 支付接口
+
+            // 跟新门店订单支付状态
+            serviceOrderService.updateServiceOrderStatus("", ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
+        } else {
+            // 发送模板消息
+        }
+
     }
 }

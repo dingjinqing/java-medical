@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.store.service;
 
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -17,6 +19,7 @@ import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -33,6 +36,7 @@ import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.service.shop.store.store.StoreWxService.HH_MM_FORMATTER;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 
 /**
  * @author 王兵兵
@@ -44,6 +48,11 @@ import static com.vpu.mp.service.shop.store.store.StoreWxService.HH_MM_FORMATTER
 @Service
 
 public class ServiceOrderService extends ShopBaseService{
+    /**
+     * 门店服务
+     */
+    @Autowired
+    public StoreServiceService storeService;
 
 	/**
 	 * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
@@ -52,6 +61,14 @@ public class ServiceOrderService extends ShopBaseService{
 	public static final Byte ORDER_STATUS_CANCELED = 1;
 	public static final Byte ORDER_STATUS_FINISHED = 2;
 	public static final Byte ORDER_STATUS_WAIT_PAY = 3;
+
+    /**
+     * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
+     */
+    public static final String ORDER_STATUS_NAME_WAIT_SERVICE = "待服务";
+    public static final String ORDER_STATUS_NAME_CANCELED = "已取消";
+    public static final String ORDER_STATUS_NAME_FINISHED = "已完成";
+    public static final String ORDER_STATUS_NAME_WAIT_PAY = "待付款";
 
 	/**
 	 * 预约订单创建创建类型 0用户创建 1后台
@@ -224,6 +241,20 @@ public class ServiceOrderService extends ShopBaseService{
 	}
 
     /**
+     * Create service order.创建门店服务预约订单
+     *
+     * @param param the param
+     */
+    public void createServiceOrder(ServiceOrderRecord param) {
+        param.setOrderSn(generateOrderSn());
+        param.setVerifyCode(generateVerifyCode());
+        param.setOrderStatus(ORDER_STATUS_WAIT_PAY);
+        param.setOrderStatusName(ORDER_STATUS_NAME_WAIT_PAY);
+        param.setMoneyPaid(getServiceMoneyPaid(param.getServiceId()));
+        db().executeInsert(param);
+    }
+
+    /**
 	 * 校验核销码
 	 * @param orderSn
 	 * @param verifyCode
@@ -247,6 +278,13 @@ public class ServiceOrderService extends ShopBaseService{
 	    assign(param, record);
 	    return db().executeUpdate(record) > 0 ? true : false;
 	}
+
+    /**
+     * 更新服务预约订单状态
+     */
+    public void updateServiceOrderStatus(String orderSn, Byte status, String statusName) {
+        db().update(SERVICE_ORDER).set(SERVICE_ORDER.ORDER_STATUS, status).set(SERVICE_ORDER.ORDER_STATUS_NAME, statusName).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).execute();
+    }
 
     /**
      * 使用会员卡核销预约服务订单
@@ -362,6 +400,21 @@ public class ServiceOrderService extends ShopBaseService{
             String[] periodTime = e.getServicePeriod().split(REGEX);
             return LocalTime.parse(periodTime[0], HH_MM_FORMATTER).isBefore(endPeriod) && LocalTime.parse(periodTime[1], HH_MM_FORMATTER).isAfter(startPeriod);
         }).count();
+    }
+
+    /**
+     * Check reservation num boolean.
+     *
+     * @param serviceId    the service id
+     * @param technicianId the technician id
+     * @return the boolean true表示可以继续接收预约订单, 否表示预约人数已达上限
+     */
+    public boolean checkReservationNum(Integer serviceId, Integer technicianId) {
+        // 门店服务信息
+        StoreServiceParam service = storeService.getStoreService(serviceId);
+        Assert.notNull(service, JsonResultCode.CODE_STORE_SERVICE_NOT_EXIST);
+        Integer num = BYTE_ONE.equals(service.getServiceType()) ? service.getTechServicesNumber() : service.getServicesNumber();
+        return checkMaxNumOfReservations(serviceId, technicianId, LocalDate.now(), LocalTime.parse(service.getStartPeriod(), HH_MM_FORMATTER), LocalTime.parse(service.getEndPeriod(), HH_MM_FORMATTER)) < num;
     }
 
     /**
