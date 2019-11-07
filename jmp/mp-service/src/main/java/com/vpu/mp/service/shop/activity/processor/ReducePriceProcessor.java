@@ -5,7 +5,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ReducePriceProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
 import org.springframework.stereotype.Service;
 
@@ -25,18 +25,18 @@ public class ReducePriceProcessor extends ReducePriceProcessorDao implements Act
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
+    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
         // 优惠券和满减活动外，未被其他活动处理
         List<Integer> goodsIds = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(x.getGoodsType()) && x.getProcessedTypes().size() == 0)
             .map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
-        ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
+        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
         param.setGoodsIds(goodsIds);
         param.setDate(DateUtil.getLocalDateTime());
         return param;
     }
 
     @Override
-    public Map<Integer, ReducePriceProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, ReducePriceProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
         return getGoodsReduceListInfo(param.getGoodsIds(),param.getDate());
     }
 

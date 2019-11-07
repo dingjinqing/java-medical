@@ -6,7 +6,8 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -16,7 +17,8 @@ import java.util.*;
  * @author 李晓冰
  * @date 2019年10月29日
  */
-@Data
+@Getter
+@Setter
 public class ActivityGoodsListCapsule extends GoodsBaseCapsule{
     private Integer goodsId;
     private String goodsName;
@@ -30,10 +32,6 @@ public class ActivityGoodsListCapsule extends GoodsBaseCapsule{
 
     /**评价数量*/
     private Integer commentNum;
-
-    /**商品主图*/
-    private String goodsImg;
-
     /**关系最紧密的标签信息*/
     GoodsLabelProcessorDataInfo goodsLabel;
 

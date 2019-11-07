@@ -5,7 +5,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsLabelProcessorDao;
 import org.springframework.stereotype.Service;
 
@@ -26,17 +26,17 @@ public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements Activ
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
+    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
+        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
         List<Integer> goodsIds = new ArrayList<>();
         List<Integer> sortIds = new ArrayList<>();
         List<Integer> catIds = new ArrayList<>();
-        List<ActivityGoodsListMpParam.AllIdsParam> idsParams = new ArrayList<>();
+        List<GoodsBaseCapsuleParam.AllIdsParam> idsParams = new ArrayList<>();
         capsules.forEach(capsule->{
             goodsIds.add(capsule.getGoodsId());
             sortIds.add(capsule.getSortId());
             catIds.add(capsule.getCatId());
-            idsParams.add(new ActivityGoodsListMpParam.AllIdsParam(capsule.getGoodsId(),capsule.getCatId(),capsule.getSortId(),null));
+            idsParams.add(new GoodsBaseCapsuleParam.AllIdsParam(capsule.getGoodsId(),capsule.getCatId(),capsule.getSortId(),null));
         });
 
         param.setGoodsIds(goodsIds);
@@ -47,9 +47,9 @@ public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements Activ
     }
 
     @Override
-    public Map<Integer, GoodsLabelProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, GoodsLabelProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
         Map<Byte, Map<Integer, GoodsLabelProcessorDataInfo>> goodsLabelsMap = getGoodsClosestLabelsInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds());
-        List<ActivityGoodsListMpParam.AllIdsParam> idsParams = param.getIdsParams();
+        List<GoodsBaseCapsuleParam.AllIdsParam> idsParams = param.getIdsParams();
         Map<Integer, GoodsLabelProcessorDataInfo> returnMap = new HashMap<>();
 
         idsParams.forEach(allIdsParam -> {

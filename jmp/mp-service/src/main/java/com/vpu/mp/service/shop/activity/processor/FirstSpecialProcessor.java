@@ -5,7 +5,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.FirstSpecialProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class FirstSpecialProcessor extends FirstSpecialProcessorDao implements A
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
+    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
         if (userId == null || orderInfoService.isNewUser(userId, true)) {
             return filterParamForList(capsules);
         }else {
@@ -39,8 +39,8 @@ public class FirstSpecialProcessor extends FirstSpecialProcessorDao implements A
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
+    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
+        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
         param.setDate(DateUtil.getLocalDateTime());
 
         List<Integer> goodsIds = new ArrayList<>();
@@ -56,7 +56,7 @@ public class FirstSpecialProcessor extends FirstSpecialProcessorDao implements A
     }
 
     @Override
-    public Map<Integer, FirstSpecialProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, FirstSpecialProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
         return getGoodsFirstSpecialForListInfo(param.getGoodsIds(),param.getDate());
     }
 

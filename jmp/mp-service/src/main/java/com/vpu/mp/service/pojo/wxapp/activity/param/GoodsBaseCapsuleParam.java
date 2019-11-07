@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2019年10月29日
  */
 @Data
-public class ActivityGoodsListMpParam{
+public class GoodsBaseCapsuleParam {
     /** 用户id*/
     private Integer userId;
     private List<Integer> goodsIds;

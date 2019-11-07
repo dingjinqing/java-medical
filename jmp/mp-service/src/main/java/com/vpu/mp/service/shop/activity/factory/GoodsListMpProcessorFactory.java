@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.activity.factory;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.processor.ActivityGoodsListProcessor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class GoodsListMpProcessorFactory extends AbstractProcessorFactory<Activi
     @Override
     public void doProcess(List<ActivityGoodsListCapsule> capsules,Integer userId) {
         for (ActivityGoodsListProcessor processor : processors) {
-            ActivityGoodsListMpParam param = processor.filterParamForList(capsules, userId);
+            GoodsBaseCapsuleParam param = processor.filterParamForList(capsules, userId);
             Map<Integer, ? extends ProcessorDataInfo> activityInfoForList = processor.getActivityInfoForList(param);
             processor.processForList(activityInfoForList,capsules);
         }

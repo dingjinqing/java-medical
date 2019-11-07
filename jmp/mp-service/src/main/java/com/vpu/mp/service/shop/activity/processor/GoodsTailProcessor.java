@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor {
     }
 
     @Override
-    public Map<Integer, ProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, ProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
         return null;
     }
 

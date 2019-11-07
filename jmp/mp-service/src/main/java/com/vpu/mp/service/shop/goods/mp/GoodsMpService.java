@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @author 李晓冰
@@ -192,6 +193,11 @@ public class GoodsMpService extends ShopBaseService {
         }
         return goodsListMpVos;
     }
+
+
+    private void getGoodsDetailMp(Integer goodsId,Integer userId){
+
+    }
     /**
      * 将相对路劲修改为全路径
      * @param relativePath 相对路径
@@ -250,7 +256,26 @@ public class GoodsMpService extends ShopBaseService {
         } else {
             returnList = select.fetchInto(ActivityGoodsListCapsule.class);
         }
-
         return returnList;
+    }
+
+    /**
+     * 获取商品基本信息详情
+     * @param goodsId 商品id（该商品可能已删除或下架）
+     * @return {@link com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule}
+     */
+    public GoodsDetailMpCapsule getGoodsDetailMpInfoDao(Integer goodsId) {
+        GoodsDetailMpCapsule capsule = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
+            GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
+            GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
+            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM)
+            .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
+            .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny().into(GoodsDetailMpCapsule.class);
+        // 图片处理
+        List<String> imgs = db().select().from(GOODS_IMG).where(GOODS_IMG.IMG_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
+        capsule.getGoodsImgs().add(capsule.getGoodsImg());
+        capsule.getGoodsImgs().addAll(imgs);
+
+        return capsule;
     }
 }

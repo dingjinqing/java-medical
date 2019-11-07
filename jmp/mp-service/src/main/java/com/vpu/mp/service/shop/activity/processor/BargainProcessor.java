@@ -5,7 +5,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.BargainProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import org.springframework.stereotype.Service;
 
@@ -25,17 +25,17 @@ public class BargainProcessor extends BargainProcessorDao implements ActivityGoo
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
+    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
         List<Integer> goodsIds = capsules.stream().filter(x->GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(x.getGoodsType()))
             .map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
-        ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
+        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
         param.setDate(DateUtil.getLocalDateTime());
         param.setGoodsIds(goodsIds);
         return param;
     }
 
     @Override
-    public Map<Integer, BargainProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, BargainProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
         return getGoodsBargainListInfo(param.getGoodsIds(),param.getDate());
     }
 

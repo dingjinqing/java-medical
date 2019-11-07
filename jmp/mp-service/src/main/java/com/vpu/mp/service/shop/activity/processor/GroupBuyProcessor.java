@@ -5,7 +5,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GroupBuyProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import org.springframework.stereotype.Service;
 
@@ -26,17 +26,17 @@ public class GroupBuyProcessor extends GroupBuyProcessorDao implements ActivityG
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
+    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
         List<Integer> goodsIds = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(x.getGoodsType()))
             .map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
-        ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
+        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
         param.setGoodsIds(goodsIds);
         param.setDate(DateUtil.getLocalDateTime());
         return param;
     }
 
     @Override
-    public Map<Integer, GroupBuyProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, GroupBuyProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
         return getGoodsGroupBuyListInfo(param.getGoodsIds(),param.getDate());
     }
 

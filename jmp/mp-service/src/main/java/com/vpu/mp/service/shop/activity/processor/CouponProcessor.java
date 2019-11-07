@@ -5,7 +5,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.CouponProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.CouponProcessorDao;
 import org.jooq.Record5;
 import org.springframework.stereotype.Service;
@@ -31,17 +31,17 @@ public class CouponProcessor extends CouponProcessorDao implements ActivityGoods
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
+    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
+        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
         param.setDate(DateUtil.getLocalDateTime());
 
-        List<ActivityGoodsListMpParam.AllIdsParam> idParams = new ArrayList<>();
+        List<GoodsBaseCapsuleParam.AllIdsParam> idParams = new ArrayList<>();
         for (ActivityGoodsListCapsule capsule : capsules) {
             // 这几种活动的商品可以不考虑
             if (GoodsConstant.isGoodsTypeIn13510(capsule.getGoodsType())) {
                 continue;
             }
-            ActivityGoodsListMpParam.AllIdsParam allIds = new ActivityGoodsListMpParam.AllIdsParam();
+            GoodsBaseCapsuleParam.AllIdsParam allIds = new GoodsBaseCapsuleParam.AllIdsParam();
             allIds.goodsId = capsule.getGoodsId();
             allIds.catId = capsule.getCatId();
             allIds.sortId = capsule.getSortId();
@@ -52,9 +52,9 @@ public class CouponProcessor extends CouponProcessorDao implements ActivityGoods
     }
 
     @Override
-    public Map<Integer, CouponProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam activityGoodsListMpParam) {
-        List<ActivityGoodsListMpParam.AllIdsParam> idsParams = activityGoodsListMpParam.getIdsParams();
-        Timestamp date = activityGoodsListMpParam.getDate();
+    public Map<Integer, CouponProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
+        List<GoodsBaseCapsuleParam.AllIdsParam> idsParams = param.getIdsParams();
+        Timestamp date = param.getDate();
         Map<Integer, CouponProcessorDataInfo> returnMap = new HashMap<>();
 
         idsParams.forEach(idsParam->{

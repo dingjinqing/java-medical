@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 李晓冰
@@ -17,6 +19,7 @@ public class CouponProcessorDataInfo extends ProcessorDataInfo {
         super();
         dataType = GoodsConstant.ACTIVITY_TYPE_COUPON;
     }
+    /***************多处公用：详情，列表******************/
     /**优惠券类型voucher是减金额，discount打折*/
     private String actCode;
     /**优惠券面额*/
@@ -25,4 +28,30 @@ public class CouponProcessorDataInfo extends ProcessorDataInfo {
     private Byte useConsumeRestrict;
     /** 满多少可用*/
     private BigDecimal leastConsume;
+
+    /********商品详情*********/
+    private Integer id;
+    private String actName;
+    private Timestamp actStartTime;
+    private Timestamp actEndTime;
+    /**优惠券使用时间类型 1领取后开始指定时间段内有效，0固定时间段有效*/
+    private Byte validityType;
+    private Integer validityHour;
+    private Integer validityMinute;
+    /**优惠券兑换码*/
+    private String aliasCode;
+    /**是否使用积分*/
+    private Byte useScore;
+    /**积分兑换量*/
+    private Integer scoreNumber;
+    /**会员专享卡数量*/
+    private List<Integer> cardIds;
+    /**是否限制剩余数量*/
+    private Byte limitSurplusFlag;
+    /**剩余数量*/
+    private Integer surplus;
+    /**是否会员专享优惠券*/
+    private Boolean isCardExclusive;
+    /**当前用户是否可以购买*/
+    private Boolean canBuy;
 }

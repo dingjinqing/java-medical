@@ -26,4 +26,6 @@ public class GoodsBaseCapsule {
 
     /**是否是使用默认规格*/
     protected Boolean defaultPrd;
+    /**商品主图*/
+    protected String goodsImg;
 }

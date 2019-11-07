@@ -4,7 +4,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +25,8 @@ public class GradeCardProcessor extends MemberCardProcessorDao implements Activi
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
+    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
+        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
         List<Integer> goodsIds = new ArrayList<>();
 
         capsules.forEach(capsule -> {
@@ -42,7 +42,7 @@ public class GradeCardProcessor extends MemberCardProcessorDao implements Activi
     }
 
     @Override
-    public Map<Integer, GradeCardProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, GradeCardProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
         return getGoodsGradeCardForListInfo(param.getUserId(), param.getGoodsIds());
     }
 

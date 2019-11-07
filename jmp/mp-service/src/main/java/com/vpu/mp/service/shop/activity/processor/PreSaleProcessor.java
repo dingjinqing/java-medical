@@ -5,7 +5,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.PreSaleProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import org.springframework.stereotype.Service;
 
@@ -25,17 +25,17 @@ public class PreSaleProcessor extends PreSaleProcessorDao implements ActivityGoo
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
+    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
         List<Integer> goodsIds = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_PRE_SALE.equals(x.getGoodsType()))
             .map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
-        ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
+        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
         param.setGoodsIds(goodsIds);
         param.setDate(DateUtil.getLocalDateTime());
         return param;
     }
 
     @Override
-    public Map<Integer, PreSaleProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, PreSaleProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
         return getGoodsPreSaleListInfo(param.getGoodsIds(),param.getDate());
     }
 

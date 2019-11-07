@@ -5,7 +5,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.ActivityGoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +23,13 @@ public class ExclusiveProcessor extends MemberCardProcessorDao implements Activi
     }
 
     @Override
-    public ActivityGoodsListMpParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        ActivityGoodsListMpParam param = new ActivityGoodsListMpParam();
+    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
+        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
         List<Integer> goodsIds = new ArrayList<>();
         List<Integer> sortIds = new ArrayList<>();
         List<Integer> catIds = new ArrayList<>();
         List<Integer> brandIds = new ArrayList<>();
-        List<ActivityGoodsListMpParam.AllIdsParam> idsParams = new ArrayList<>();
+        List<GoodsBaseCapsuleParam.AllIdsParam> idsParams = new ArrayList<>();
         capsules.forEach(capsule->{
             if (GoodsConstant.isGoodsTypeIn13510(capsule.getGoodsType())) {
                 return;
@@ -38,7 +38,7 @@ public class ExclusiveProcessor extends MemberCardProcessorDao implements Activi
             sortIds.add(capsule.getSortId());
             catIds.add(capsule.getCatId());
             brandIds.add(capsule.getBrandId());
-           idsParams.add(new ActivityGoodsListMpParam.AllIdsParam(capsule.getGoodsId(),capsule.getCatId(),capsule.getSortId(),capsule.getBrandId()));
+           idsParams.add(new GoodsBaseCapsuleParam.AllIdsParam(capsule.getGoodsId(),capsule.getCatId(),capsule.getSortId(),capsule.getBrandId()));
         });
 
         param.setGoodsIds(goodsIds);
@@ -50,7 +50,7 @@ public class ExclusiveProcessor extends MemberCardProcessorDao implements Activi
     }
 
     @Override
-    public Map<Integer, ExclusiveProcessorDataInfo> getActivityInfoForList(ActivityGoodsListMpParam param) {
+    public Map<Integer, ExclusiveProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
         // 获取专享会员对应信息
         Map<Byte, List<Integer>> exclusiveInfo = getExclusiveInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds(), param.getBrandIds());
         Map<Integer, ExclusiveProcessorDataInfo> returnMap = new HashMap<>();
