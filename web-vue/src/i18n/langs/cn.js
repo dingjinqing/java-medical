@@ -102,6 +102,10 @@ import {
 import {
   cn as membershipCard
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/membershipCardCn'
+// 小程序装修砍价
+import {
+  cn as bargain
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/bargainCn'
 // 小程序页面装修优惠卷模块国际化
 import {
   cn as coupon
@@ -896,6 +900,7 @@ const cn = {
   pictureNavigation, // 页面装修图片导航模块
   commoditySearch, // 小程序页面装修搜索模块
   membershipCard, // 小程序页面装修会员卡模块
+  bargain, // 小程序装修砍价模块
   coupon, // 小程序页面装修优惠卷模块
   commodity, //  小程序页面装修商品模块
   pictureAds //  小程序页面装修图片广告模块

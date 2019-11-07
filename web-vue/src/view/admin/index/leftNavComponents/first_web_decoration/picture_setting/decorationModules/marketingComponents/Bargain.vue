@@ -16,7 +16,7 @@
         >
           <li
             class="bargain_default_li"
-            v-show="data.bargain_goods.length === 0"
+            v-show="data.bargain_goods && data.bargain_goods.length === 0"
           >
             <div
               class="bargain_default_img"
@@ -30,8 +30,11 @@
               </div>
               <div class="bargain_info_name"></div>
               <div class="bargain_info_bottom">
-                <span class="bargain_num">仅剩10件</span>
-                <span class="bargin_free_btn">去砍价</span>
+                <span class="bargain_num">{{$t('bargain.onlyLeft')}}10{{$t('bargain.pieces')}}</span>
+                <span
+                  class="bargin_free_btn"
+                  :class="'new_back'"
+                >{{$t('bargain.goPrice')}}</span>
               </div>
             </div>
           </li>
@@ -52,7 +55,7 @@
                 v-if="data.goods_count_down"
                 class="bargain_time_down"
               >
-                <div>距结束还剩</div>
+                <div>{{$t('bargain.endOfLeft')}}</div>
                 <p>{{good.act_end_time | endTimeFmt}}</p>
               </div>
             </div>
@@ -66,11 +69,12 @@
               </div>
               <div class="bargain_info_name">{{good.goods_name}}</div>
               <div class="bargain_info_bottom">
-                <span class="bargain_num">仅剩{{good.bargain_num}}件</span>
+                <span class="bargain_num">{{$t('bargain.onlyLeft')}}{{good.bargain_num}}{{$t('bargain.pieces')}}</span>
                 <span
                   v-if="data.free_btn"
                   class="bargin_free_btn"
-                >去砍价</span>
+                  :class="'new_back'"
+                >{{$t('bargain.goPrice')}}</span>
               </div>
             </div>
           </li>
@@ -81,7 +85,7 @@
         >
           <li
             class="bargain_default_li"
-            v-show="data.bargain_goods.length === 0"
+            v-show="data.bargain_goods && data.bargain_goods.length === 0"
           >
             <div
               class="bargain_default_img"
@@ -90,14 +94,17 @@
             </div>
             <div class="bargain_default_info">
               <div class="bargain_info_head">
-                <span class="bargain_num">仅剩10件</span>
+                <span class="bargain_num">{{$t('bargain.onlyLeft')}}10{{$t('bargain.pieces')}}</span>
               </div>
               <div class="bargain_info_bottom">
                 <div class="bargain_price_wrap">
-                  <span class="bargain_price">￥<span style="font-size: 18px;">0</span></span>
+                  <span class="bargain_price new_price">￥<span style="font-size: 18px;">0</span></span>
                   <span class="bargain_old">￥0</span>
                 </div>
-                <span class="bargin_free_btn">去砍价</span>
+                <span
+                  class="bargin_free_btn"
+                  :class="'new_back'"
+                >{{$t('bargain.goPrice')}}</span>
               </div>
             </div>
           </li>
@@ -115,7 +122,7 @@
                 style="width: 100%; height: 100%;"
               ></el-image>
               <div class="bargain_time_down">
-                <div>距结束还剩</div>
+                <div>{{$t('bargain.endOfLeft')}}</div>
                 <p>{{good.act_end_time | endTimeFmt}}</p>
               </div>
             </div>
@@ -125,11 +132,11 @@
                 class="bargain_info_head"
               >
                 <div class="bargain_info_name">{{good.goods_name}}</div>
-                <span class="bargain_num">仅剩{{good.bargain_num}}件</span>
+                <span class="bargain_num">{{$t('bargain.onlyLeft')}}{{good.bargain_num}}{{$t('bargain.pieces')}}</span>
               </div>
               <div class="bargain_info_bottom">
                 <div class="bargain_price_wrap">
-                  <span class="bargain_price">￥<span style="font-size: 18px;">{{good.expectation_price}}</span></span>
+                  <span class="bargain_price new_price">￥<span style="font-size: 18px;">{{good.expectation_price}}</span></span>
                   <span
                     v-if="data.goods_price"
                     class="bargain_old"
@@ -138,7 +145,8 @@
                 <span
                   v-if="data.free_btn"
                   class="bargin_free_btn"
-                >去砍价</span>
+                  :class="'new_back'"
+                >{{$t('bargain.goPrice')}}</span>
               </div>
             </div>
           </li>
@@ -150,7 +158,7 @@
         class="item_module_title"
         :style="hoverTips?'width:140px':''"
       >
-        <span>砍价</span>
+        <span>{{$t('bargain.bargain')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -213,7 +221,7 @@ export default {
       let now = new Date()
       let time1 = date - now // 相差毫秒数
       if (time1 <= 0) {
-        return '已结束'
+        return this.$t('bargain.over')
       }
       let oneDay = 24 * 60 * 60 * 1000
       let days = Math.floor(time1 / oneDay)
@@ -224,7 +232,7 @@ export default {
       let time4 = time3 - minutes * 60 * 1000
       let seconds = Math.floor(time4 / 1000)
       console.log('date:', val, days, hours, minutes, seconds)
-      return days + '天' + hours + '时' + minutes + '分'
+      return days + this.$t('bargain.day') + hours + this.$t('bargain.hour') + minutes + this.$t('bargain.minute')
     }
   },
   watch: {
@@ -389,8 +397,8 @@ export default {
           .bargin_free_btn {
             background: linear-gradient(
               to right,
-              rgba(91, 158, 164, 0.8),
-              rgb(91, 158, 164)
+              rgba(241, 35, 55, 0.8),
+              rgb(241, 35, 55)
             );
             width: 60px;
             height: 25px;
@@ -401,6 +409,13 @@ export default {
             color: #fff;
             font-size: 12px;
             border-radius: 25px;
+          }
+          .new_back {
+            background: linear-gradient(
+              to right,
+              rgba(91, 158, 164, 0.8),
+              rgb(91, 158, 164)
+            );
           }
         }
       }
@@ -457,10 +472,13 @@ export default {
           display: flex;
           justify-content: space-between;
           .bargain_price_wrap {
-            color: rgb(91, 158, 164);
             line-height: 25px;
             .bargain_price {
+              color: #f66;
               vertical-align: bottom;
+            }
+            .new_price {
+              color: rgb(91, 158, 164);
             }
             .bargain_old {
               color: #999999;
@@ -478,8 +496,8 @@ export default {
           .bargin_free_btn {
             background: linear-gradient(
               to right,
-              rgba(91, 158, 164, 0.8),
-              rgb(91, 158, 164)
+              rgba(241, 35, 55, 0.8),
+              rgb(241, 35, 55)
             );
             width: 60px;
             height: 25px;
@@ -490,6 +508,13 @@ export default {
             color: #fff;
             font-size: 12px;
             border-radius: 25px;
+          }
+          .new_back {
+            background: linear-gradient(
+              to right,
+              rgba(91, 158, 164, 0.8),
+              rgb(91, 158, 164)
+            );
           }
         }
       }

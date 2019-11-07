@@ -131,6 +131,10 @@ import {
 import {
   en as membershipCard
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/membershipCardEn'
+// 小程序页面装修砍价
+import {
+  en as bargain
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/bargainEn'
 // 小程序页面装修优惠卷模块国际化
 import {
   en as coupon
@@ -892,6 +896,7 @@ const en = {
   actionRecord, // 操作记录
   commoditySearch, // 小程序页面装修商品搜索模块
   membershipCard, // 小程序页面装修会员卡模块
+  bargain, // 小程序装修砍价模块
   coupon, // 小程序页面装修优惠卷模块
   commodity, // 小程序页面装修商品模块
   pictureAds // 小程序页面装修图片广告模块

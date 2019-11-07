@@ -1,7 +1,7 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>砍价模块</h2>
+      <h2>{{$t('bargain.bargainingModule')}}</h2>
       <!-- 模块私有区域 -->
       <div class="main">
         <el-form
@@ -9,30 +9,25 @@
           label-width="85px"
           size="small"
         >
-          <el-form-item label="列表样式：">
+          <el-form-item :label="$t('bargain.listStyle') + '：'">
             <el-radio
               v-model="data.list_style"
               label="0"
-            >双列</el-radio>
+            >{{$t('bargain.doubleCol')}}</el-radio>
             <el-radio
               v-model="data.list_style"
               label="1"
-            >单列</el-radio>
+            >{{$t('bargain.doubleCol')}}</el-radio>
           </el-form-item>
-          <el-form-item label="选择活动：">
+          <el-form-item :label="$t('bargain.chooseEvent') + '：'">
             <el-button
               @click="selectBargainHandle"
               size="small"
-            >+ 添加活动</el-button>
+            >+ {{$t('bargain.addEvent')}}</el-button>
             <el-tooltip effect="light">
               <img :src="$imageHost+ '/image/admin/analysis_tishi.png'">
               <div slot="content">
-                仅可以选择进行中以及未开始的砍<br />
-                价活动，将以活动商品形式展示在<br />
-                小程序前端，每个“砍价活动“组件<br />
-                最多可添加6个砍价活动。对砍价<br />
-                活动中商品进行更换时，当前组件<br />
-                商品将同步更新。
+                {{$t('bargain.addEventTip')}}
               </div>
             </el-tooltip>
           </el-form-item>
@@ -43,7 +38,7 @@
               size="mini"
             >
               <el-table-column
-                label="商品名称"
+                :label="$t('bargain.productName')"
                 prop="goods_name"
                 width="80px"
               >
@@ -58,22 +53,22 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="开始时间"
+                :label="$t('bargain.startTime')"
                 width="90px"
                 prop="act_begin_time"
               ></el-table-column>
               <el-table-column
-                label="底价"
+                :label="$t('bargain.bottomPrice')"
                 width="50px"
                 prop="expectation_price"
               ></el-table-column>
               <el-table-column
-                label="砍价库存"
+                :label="$t('bargain.bargainingStock')"
                 width="70px"
                 prop="bargain_num"
               ></el-table-column>
               <el-table-column
-                label="商品状态"
+                :label="$t('bargain.productStatus')"
                 width="70px"
                 prop="act_status"
               >
@@ -84,7 +79,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="操作"
+                :label="$t('bargain.operate')"
                 width="70px"
               >
                 <template slot-scope="{row, $index}">
@@ -92,27 +87,27 @@
                     <span
                       @click="edit('moveUp', row, $index)"
                       class="iconfont iconshangyi"
-                      title="上移"
+                      :title="$t('bargain.moveUp')"
                     ></span>
                     <span
                       @click="edit('moveDown', row, $index)"
                       class="iconfont iconxiayi"
-                      title="下移"
+                      :title="$t('bargain.moveDown')"
                     ></span>
                     <span
                       @click="edit('delete', row, $index)"
                       class="iconfont iconshanchu2"
-                      title="删除"
+                      :title="$t('bargain.delete')"
                     ></span>
                   </div>
                 </template>
               </el-table-column>
             </el-table>
           </div>
-          <el-form-item label="显示内容：">
-            <el-checkbox v-model="data.goods_price">商品原价</el-checkbox>
-            <el-checkbox v-model="data.goods_count_down">活动倒计时</el-checkbox>
-            <el-checkbox v-model="data.free_btn">去砍价按钮</el-checkbox>
+          <el-form-item :label="$t('bargain.productStatus') + '：'">
+            <el-checkbox v-model="data.goods_price">{{$t('bargain.originalPrice')}}</el-checkbox>
+            <el-checkbox v-model="data.goods_count_down">{{$t('bargain.activityCountdown')}}</el-checkbox>
+            <el-checkbox v-model="data.free_btn">{{$t('bargain.bargainBtn')}}</el-checkbox>
           </el-form-item>
         </el-form>
       </div>
@@ -127,6 +122,7 @@
 </template>
 
 <script>
+import vm from '@/main'
 export default {
   components: {
     addBargainGoodsDialog: () => import('@/components/admin/picture_setting/addBargainGoodsDialog')
@@ -180,9 +176,9 @@ export default {
   filters: {
     fmtStatus: function (val) {
       if (val === 1) {
-        return '正常'
+        return vm.$t('bargain.normal')
       } else if (val === 0) {
-        return '停用'
+        return vm.$t('bargain.deactivate')
       }
       return val
     }
@@ -204,6 +200,9 @@ export default {
       },
       deep: true
     }
+  },
+  mounted () {
+    this.langDefault()
   },
   methods: {
     selectBargainHandle () {
