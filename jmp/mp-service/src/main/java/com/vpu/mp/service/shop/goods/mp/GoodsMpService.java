@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
@@ -195,7 +196,8 @@ public class GoodsMpService extends ShopBaseService {
     }
 
 
-    private void getGoodsDetailMp(Integer goodsId,Integer userId){
+    public void getGoodsDetailMp(GoodsDetailMpParam param){
+        GoodsDetailMpCapsule GoodsDetailMpCapsule = getGoodsDetailMpInfoDao(param.getGoodsId());
 
     }
     /**
