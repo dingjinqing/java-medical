@@ -24,7 +24,7 @@ public class GroupBuyProcessorDao extends ShopBaseService {
      * 获取集合内商品所参与的拼团信息
      * @param goodsIds 待查询商品id集合
      * @param date 限制时间
-     * @return key:商品id value:{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GroupBuyActivityVo}
+     * @return key:商品id value:{@link com.vpu.mp.service.pojo.wxapp.activity.info.GroupBuyProcessorDataInfo}
      * @author 李晓冰
      */
     public Map<Integer, GroupBuyProcessorDataInfo> getGoodsGroupBuyListInfo(List<Integer> goodsIds, Timestamp date) {

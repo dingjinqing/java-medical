@@ -5,7 +5,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
@@ -187,22 +186,8 @@ public class GoodsMpService extends ShopBaseService {
         }
 
         for (ActivityGoodsListCapsule t : goodsListCapsules) {
-            GoodsListMpVo vo = new GoodsListMpVo();
-            vo.setGoodsId(t.getGoodsId());
-            vo.setGoodsName(t.getGoodsName());
-            vo.setGoodsImg(getImgFullUrlUtil(t.getGoodsImg()));
-            vo.setGoodsNumber(t.getGoodsNumber());
-            vo.setGoodsSaleNum(t.getGoodsSaleNum() + t.getBaseSale());
-            vo.setCommentNum(t.getCommentNum());
-            vo.setDefaultPrd(t.getDefaultPrd());
-            vo.setShopPrice(t.getShopPrice());
-            vo.setLinePrice(t.getLinePrice());
-            vo.setRealPrice(t.getRealPrice());
-
-            if (t.getGoodsLabel() != null) {
-                vo.setLabel(new GoodsLabelMpVo(t.getGoodsLabel().getName(),t.getGoodsLabel().getListPattern()));
-            }
-            t.setActivities(vo.getGoodsActivity());
+            GoodsListMpVo vo = t.convertToGoodsListMpVo();
+            vo.setGoodsImg(getImgFullUrlUtil(vo.getGoodsImg()));
             goodsListMpVos.add(vo);
         }
         return goodsListMpVos;

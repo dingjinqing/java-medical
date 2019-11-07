@@ -10,7 +10,6 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
@@ -25,21 +24,22 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.SecKillActivityVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.*;
-import java.util.Comparator;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
@@ -219,37 +219,6 @@ public class SeckillService extends ShopBaseService {
             .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
             .groupBy(SEC_KILL_DEFINE.GOODS_ID)
             .fetchMap(SEC_KILL_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE);
-    }
-
-    /**
-     * 获取商品集合内的秒杀活动信息
-     * @param goodsIds 商品id集合
-     * @param date 限制时间
-     * @return key:商品id，value:{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.SecKillActivityVo}
-     */
-    public Map<Integer, SecKillActivityVo> getGoodsSecKillInfo(List<Integer> goodsIds, Timestamp date){
-        Map<Integer, List<Record5<Integer,Integer,Timestamp, Timestamp, BigDecimal>>> secKillInfos = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.GOODS_ID, SEC_KILL_DEFINE.START_TIME, SEC_KILL_DEFINE.END_TIME, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
-            .from(SEC_KILL_DEFINE).innerJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
-            .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
-            .and(SEC_KILL_DEFINE.END_TIME.gt(date))
-            .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
-            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(SEC_KILL_DEFINE.GOODS_ID)));
-
-        Map<Integer, SecKillActivityVo> returnMap = new HashMap<>();
-
-        secKillInfos.forEach((goodsId,secKillPrds)->{
-            secKillPrds.sort(Comparator.comparing(x->x.get(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)));
-            Record5<Integer,Integer,Timestamp, Timestamp, BigDecimal> secKillPrd = secKillPrds.get(0);
-            SecKillActivityVo vo = new SecKillActivityVo();
-            vo.setActivityId(secKillPrd.get(SEC_KILL_DEFINE.SK_ID));
-            vo.setActivityPrice(secKillPrd.get(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE));
-            vo.setStartTime(secKillPrd.get(SEC_KILL_DEFINE.START_TIME));
-            vo.setEndTime(secKillPrd.get(SEC_KILL_DEFINE.END_TIME));
-            returnMap.put(goodsId,vo);
-        });
-
-        return returnMap;
     }
 
     /**

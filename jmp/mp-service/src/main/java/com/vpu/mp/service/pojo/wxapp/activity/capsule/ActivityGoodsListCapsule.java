@@ -1,14 +1,15 @@
 package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.wxapp.activity.info.CouponProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 小程序-商品列表信息存储对象
@@ -16,7 +17,7 @@ import java.util.Set;
  * @date 2019年10月29日
  */
 @Data
-public class ActivityGoodsListCapsule {
+public class ActivityGoodsListCapsule extends GoodsBaseCapsule{
     private Integer goodsId;
     private String goodsName;
     private Byte goodsType;
@@ -27,28 +28,51 @@ public class ActivityGoodsListCapsule {
     private BigDecimal realPrice;
     private BigDecimal linePrice;
 
-    /**商品销售数量*/
-    private Integer goodsSaleNum;
-    /**商品初始销量*/
-    private Integer baseSale;
     /**评价数量*/
     private Integer commentNum;
-    /**商品数量*/
-    private Integer goodsNumber;
 
     /**商品主图*/
     private String goodsImg;
 
     /**关系最紧密的标签信息*/
     GoodsLabelProcessorDataInfo goodsLabel;
-    /** 平台、商家、品牌分类id */
-    private Integer catId;
-    private Integer sortId;
-    private Integer brandId;
-    /**是否是使用默认规格*/
-    private Boolean defaultPrd;
+
     /** 商品已被哪些processor处理过（商品列表里面将处理的营销码值存入） */
     private Set<Byte> processedTypes = new HashSet<>();
     /** 商品拥有的营销信息，由各个processor添加 */
     private List<ProcessorDataInfo> activities = new ArrayList<>(2);
+
+    public GoodsListMpVo convertToGoodsListMpVo(){
+        GoodsListMpVo vo = new GoodsListMpVo();
+        vo.setGoodsId(this.goodsId);
+        vo.setGoodsName(this.goodsName);
+        // 地址是相对路径
+        vo.setGoodsImg(this.goodsImg);
+        vo.setGoodsNumber(this.goodsNumber);
+        vo.setGoodsSaleNum(this.goodsSaleNum + this.baseSale);
+        vo.setCommentNum(this.commentNum);
+        vo.setDefaultPrd(this.defaultPrd);
+        vo.setShopPrice(this.shopPrice);
+        vo.setLinePrice(this.linePrice);
+        vo.setRealPrice(this.realPrice);
+        if (this.goodsLabel != null) {
+            vo.setLabel(new GoodsLabelMpVo(goodsLabel.getName(),goodsLabel.getListPattern()));
+        }
+
+        activities.forEach(processorDataInfo -> {
+            Map<String, Object> map = new HashMap<>(3);
+            map.put("activityId",processorDataInfo.getDataId());
+            map.put("activityType",processorDataInfo.getDataType());
+
+            if (GoodsConstant.ACTIVITY_TYPE_COUPON.equals(processorDataInfo.getDataType())) {
+                CouponProcessorDataInfo info = (CouponProcessorDataInfo) processorDataInfo;
+                map.put("actCode", info.getActCode());
+                map.put("denomination",info.getDenomination());
+                map.put("useConsumeRestrict",info.getUseConsumeRestrict());
+                map.put("leastConsume",info.getLeastConsume());
+            }
+        });
+
+        return vo;
+    }
 }

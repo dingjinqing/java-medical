@@ -69,4 +69,6 @@ public class ReducePriceProcessorDao extends ShopBaseService {
 
         return returnMap;
     }
+
+    // ps:商品详情页限时降价处理方法看 ReducePriceService#getGoodsReducePriceInfo
 }

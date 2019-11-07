@@ -1,25 +1,5 @@
 package com.vpu.mp.service.shop.market.bargain;
 
-import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.vpu.mp.db.shop.tables.Bargain;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.BargainActivityVo;
-import org.bouncycastle.util.Times;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -32,11 +12,7 @@ import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.*;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisDataVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisTotalVo;
@@ -46,6 +22,24 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 
 /**
  * @author 王兵兵
@@ -325,36 +319,6 @@ public class BargainService extends ShopBaseService  {
             .fetchInto(BARGAIN)
             .stream()
             .collect(Collectors.groupingBy(BargainRecord::getGoodsId));
-    }
-
-    /**
-     * 获取集合内商品的砍价信息
-     * @param goodsIds 商品id集合
-     * @param date 限制时间
-     * @return key: 商品id，value:{@link com.vpu.mp.service.pojo.wxapp.goods.goods.activity.BargainActivityVo}
-     */
-    public Map<Integer,BargainActivityVo> getGoodsBargainInfo(List<Integer> goodsIds, Timestamp date){
-        List<BargainRecord> bargainRecords = db().select(BARGAIN.ID, BARGAIN.GOODS_ID, BARGAIN.BARGAIN_TYPE, BARGAIN.FLOOR_PRICE, BARGAIN.EXPECTATION_PRICE,BARGAIN.START_TIME,BARGAIN.END_TIME)
-            .from(BARGAIN)
-            .where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(BARGAIN.STATUS.eq(STATUS_NORMAL))
-            .and(BARGAIN.GOODS_ID.in(goodsIds))
-            .and(BARGAIN.START_TIME.lt(date))
-            .and(BARGAIN.END_TIME.gt(date))
-            .fetchInto(BARGAIN)
-            .stream().collect(Collectors.toList());
-
-        Map<Integer,BargainActivityVo> returnMap = new HashMap<>(bargainRecords.size());
-        bargainRecords.forEach(bargainRecord->{
-            BargainActivityVo vo = new BargainActivityVo();
-            vo.setActivityId(bargainRecord.getId());
-            vo.setStartTime(bargainRecord.getStartTime());
-            vo.setEndTime(bargainRecord.getEndTime());
-            vo.setActivityPrice(BARGAIN_TYPE_FIXED == bargainRecord.getBargainType()?bargainRecord.getExpectationPrice():bargainRecord.getFloorPrice());
-            returnMap.put(bargainRecord.getGoodsId(),vo);
-        });
-
-        return returnMap;
     }
     /**
      * 获取小程序码

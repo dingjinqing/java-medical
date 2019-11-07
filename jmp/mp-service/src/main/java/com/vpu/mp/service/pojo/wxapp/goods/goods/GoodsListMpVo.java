@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 李晓冰
@@ -21,8 +22,8 @@ public class GoodsListMpVo {
     private Integer commentNum;
 
     private Boolean defaultPrd;
-
-    private List<ProcessorDataInfo> goodsActivity;
+    //商品所拥有的活动处理信息
+    private List<Map<String,Object>> goodsActivity = new ArrayList<>();
     private GoodsLabelMpVo label;
 
     private BigDecimal shopPrice;
