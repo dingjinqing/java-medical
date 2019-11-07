@@ -133,7 +133,8 @@ export default {
   },
   methods: {
     // 加载地图
-    initMap () {
+    initMap (latitude, longitude) {
+      // 中心坐标
       // 定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
       // var map = new qq.maps.Map(document.getElementById('mapContainer'), {
       //   center: new qq.maps.LatLng(39.916527, 116.397128), // 地图的中心地理坐标。

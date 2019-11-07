@@ -366,9 +366,9 @@
                         size="small"
                       >
                         <el-option
-                          v-for="item in card_list"
+                          v-for="item in cardList"
                           :key="item.id"
-                          :label="item.card_name"
+                          :label="item.cardName"
                           :value="item.id"
                         ></el-option>
                       </el-select>
@@ -556,6 +556,7 @@
 </template>
 <script>
 import { saveCoupon, updateCoupon } from '@/api/admin/marketManage/couponList.js'
+import { allCardApi } from '@/api/admin/marketManage/messagePush'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
@@ -608,14 +609,7 @@ export default {
       currentPage: 1,
       get_limit: ['不限制', 1, 2, 3, 4, 5, 8, 10, 20],
 
-      card_list: [
-        { id: 1, card_name: '翻车现场' },
-        { id: 2, card_name: '翻车现场2' },
-        { id: 3, card_name: '翻车现场3' },
-        { id: 4, card_name: '翻车现场4' },
-        { id: 5, card_name: '翻车现场5' },
-        { id: 6, card_name: '翻车现场6' }
-      ],
+      cardList: [], // 会员卡列表
 
       noneBlockDiscArr: [
         {
@@ -677,6 +671,12 @@ export default {
         } else {
           this.param.recommendCatId = res.join()
           this.noneBlockDiscArr[2].num = res.length
+        }
+      })
+      // 会员卡数据
+      allCardApi().then((res) => {
+        if (res.error === 0) {
+          this.cardList = res.content
         }
       })
     },
