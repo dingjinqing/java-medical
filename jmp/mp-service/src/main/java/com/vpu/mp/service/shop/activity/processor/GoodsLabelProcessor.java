@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsLabelProcessorDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,8 +22,12 @@ import java.util.Map;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements ActivityGoodsListProcessor,
+public class GoodsLabelProcessor implements ActivityGoodsListProcessor,
     GoodsDetailProcessor<GoodsLabelProcessorDataInfo> {
+
+    @Autowired
+    GoodsLabelProcessorDao goodsLabelProcessorDao;
+
     /*****************商品列表处理*******************/
     @Override
     public Byte getPriority() {
@@ -52,7 +57,7 @@ public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements Activ
 
     @Override
     public Map<Integer, GoodsLabelProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        Map<Byte, Map<Integer, GoodsLabelProcessorDataInfo>> goodsLabelsMap = getGoodsClosestLabelsInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds());
+        Map<Byte, Map<Integer, GoodsLabelProcessorDataInfo>> goodsLabelsMap = goodsLabelProcessorDao.getGoodsClosestLabelsInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds());
         List<GoodsBaseCapsuleParam.AllIdsParam> idsParams = param.getIdsParams();
         Map<Integer, GoodsLabelProcessorDataInfo> returnMap = new HashMap<>();
 
@@ -92,8 +97,9 @@ public class GoodsLabelProcessor extends GoodsLabelProcessorDao implements Activ
     /*****************商品详情处理******************/
     @Override
     public List<GoodsLabelProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
-        return getGoodsDetailLabels(param.getGoodsId());
+        return goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId());
     }
+
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, List<GoodsLabelProcessorDataInfo> dataInfos) {
         capsule.setLabels(dataInfos);

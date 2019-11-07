@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.PreSaleProcessorDataInfo;
 import org.jooq.Condition;
 import org.jooq.Record3;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -21,6 +22,7 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
  * @author 李晓冰
  * @date 2019年11月01日
  */
+@Service
 public class PreSaleProcessorDao extends ShopBaseService {
 
     /**

@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.FullReductionProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.FullReductionProcessorDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -20,7 +21,10 @@ import java.util.Map;
  * @date 2019年10月30日
  */
 @Service
-public class FullReductionProcessor extends FullReductionProcessorDao implements ActivityGoodsListProcessor {
+public class FullReductionProcessor implements ActivityGoodsListProcessor {
+
+    @Autowired
+    FullReductionProcessorDao fullReductionProcessorDao;
 
     @Override
     public Byte getPriority() {
@@ -57,7 +61,7 @@ public class FullReductionProcessor extends FullReductionProcessorDao implements
         Map<Integer, FullReductionProcessorDataInfo> returnMap = new HashMap<>();
 
         for (GoodsBaseCapsuleParam.AllIdsParam idsParam : idsParams) {
-            boolean isFullReductionListInfo = getIsFullReductionListInfo(idsParam.goodsId, idsParam.catId, idsParam.sortId, idsParam.brandId, date);
+            boolean isFullReductionListInfo = fullReductionProcessorDao.getIsFullReductionListInfo(idsParam.goodsId, idsParam.catId, idsParam.sortId, idsParam.brandId, date);
 
             if (!isFullReductionListInfo)
                 continue;

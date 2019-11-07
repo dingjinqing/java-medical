@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.SecKillProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,9 @@ import java.util.stream.Collectors;
  * @date 2019年11月01日
  */
 @Service
-public class SecKillProcessor extends SecKillProcessorDao implements ActivityGoodsListProcessor {
+public class SecKillProcessor implements ActivityGoodsListProcessor {
+    @Autowired
+    SecKillProcessorDao secKillProcessorDao;
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_SEC_KILL_PRIORITY;
@@ -36,7 +39,7 @@ public class SecKillProcessor extends SecKillProcessorDao implements ActivityGoo
 
     @Override
     public Map<Integer, SecKillProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return getGoodsSecKillListInfo(param.getGoodsIds(),param.getDate());
+        return secKillProcessorDao.getGoodsSecKillListInfo(param.getGoodsIds(),param.getDate());
     }
 
     @Override

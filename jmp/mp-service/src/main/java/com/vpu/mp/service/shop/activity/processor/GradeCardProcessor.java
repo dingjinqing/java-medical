@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +19,11 @@ import java.util.stream.Collectors;
  * @date 2019年10月31日
  */
 @Service
-public class GradeCardProcessor extends MemberCardProcessorDao implements ActivityGoodsListProcessor {
+public class GradeCardProcessor implements ActivityGoodsListProcessor {
+
+    @Autowired
+    MemberCardProcessorDao memberCardProcessorDao;
+
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_MEMBER_GRADE_PRIORITY;
@@ -43,7 +48,7 @@ public class GradeCardProcessor extends MemberCardProcessorDao implements Activi
 
     @Override
     public Map<Integer, GradeCardProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return getGoodsGradeCardForListInfo(param.getUserId(), param.getGoodsIds());
+        return memberCardProcessorDao.getGoodsGradeCardForListInfo(param.getUserId(), param.getGoodsIds());
     }
 
     @Override

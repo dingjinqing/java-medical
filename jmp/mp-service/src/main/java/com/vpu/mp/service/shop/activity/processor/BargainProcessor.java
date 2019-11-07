@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.BargainProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,10 @@ import java.util.stream.Collectors;
  * @date 2019年11月01日
  */
 @Service
-public class BargainProcessor extends BargainProcessorDao implements ActivityGoodsListProcessor {
+public class BargainProcessor implements ActivityGoodsListProcessor {
+    @Autowired
+    BargainProcessorDao bargainProcessorDao;
+
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_BARGAIN_PRIORITY;
@@ -36,7 +40,7 @@ public class BargainProcessor extends BargainProcessorDao implements ActivityGoo
 
     @Override
     public Map<Integer, BargainProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return getGoodsBargainListInfo(param.getGoodsIds(),param.getDate());
+        return bargainProcessorDao.getGoodsBargainListInfo(param.getGoodsIds(),param.getDate());
     }
 
     @Override

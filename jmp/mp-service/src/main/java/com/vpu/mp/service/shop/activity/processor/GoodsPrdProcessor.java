@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsPrdProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsPrdProcessorDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,10 @@ import java.util.stream.Collectors;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsPrdProcessor extends GoodsPrdProcessorDao implements ActivityGoodsListProcessor{
+public class GoodsPrdProcessor implements ActivityGoodsListProcessor{
+    @Autowired
+    GoodsPrdProcessorDao goodsPrdProcessorDao;
+
     @Override
     public Byte getPriority() {
         return 0;
@@ -32,7 +36,7 @@ public class GoodsPrdProcessor extends GoodsPrdProcessorDao implements ActivityG
 
     @Override
     public Map<Integer, GoodsPrdProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return getGoodsPrdInfo(param.getGoodsIds());
+        return goodsPrdProcessorDao.getGoodsPrdInfo(param.getGoodsIds());
     }
 
     @Override

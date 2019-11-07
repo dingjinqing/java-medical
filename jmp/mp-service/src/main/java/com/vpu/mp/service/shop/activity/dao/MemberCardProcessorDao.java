@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
 import org.jooq.Record2;
 import org.jooq.Record3;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import static com.vpu.mp.db.shop.Tables.*;
  * @author 李晓冰
  * @date 2019年10月31日
  */
+@Service
 public class MemberCardProcessorDao extends ShopBaseService {
 
     /**

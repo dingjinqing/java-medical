@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.CouponProcessorDao;
 import org.jooq.Record5;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,7 +27,9 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
  * @date 2019年10月30日
  */
 @Service
-public class CouponProcessor extends CouponProcessorDao implements ActivityGoodsListProcessor,GoodsDetailProcessor<CouponProcessorDataInfo> {
+public class CouponProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor<CouponProcessorDataInfo> {
+    @Autowired
+    CouponProcessorDao couponProcessorDao;
     /*****************商品列表处理*******************/
     @Override
     public Byte getPriority() {
@@ -61,7 +64,7 @@ public class CouponProcessor extends CouponProcessorDao implements ActivityGoods
         Map<Integer, CouponProcessorDataInfo> returnMap = new HashMap<>();
 
         idsParams.forEach(idsParam->{
-            Record5<Integer, String, BigDecimal, Byte, BigDecimal> closestInfo = getGoodsCouponClosestInfo(idsParam.goodsId, idsParam.catId, idsParam.sortId, date);
+            Record5<Integer, String, BigDecimal, Byte, BigDecimal> closestInfo = couponProcessorDao.getGoodsCouponClosestInfo(idsParam.goodsId, idsParam.catId, idsParam.sortId, date);
             if (closestInfo == null) {
                return;
             }

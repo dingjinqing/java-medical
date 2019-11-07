@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.SecKillProcessorDataInfo;
 import org.jooq.Record3;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -20,6 +21,7 @@ import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DE
  * @author 李晓冰
  * @date 2019年11月01日
  */
+@Service
 public class SecKillProcessorDao extends ShopBaseService {
 
     /**

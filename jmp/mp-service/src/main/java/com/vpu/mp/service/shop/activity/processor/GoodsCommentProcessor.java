@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsCommentProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsCommentProcessorDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,7 +18,10 @@ import java.util.stream.Collectors;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsCommentProcessor extends GoodsCommentProcessorDao implements ActivityGoodsListProcessor{
+public class GoodsCommentProcessor implements ActivityGoodsListProcessor{
+    @Autowired
+    GoodsCommentProcessorDao goodsCommentProcessorDao;
+
     @Override
     public Byte getPriority() {
         return 0;
@@ -33,7 +37,7 @@ public class GoodsCommentProcessor extends GoodsCommentProcessorDao implements A
 
     @Override
     public Map<Integer, GoodsCommentProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        Map<Integer, Long> goodsCommentNumInfo = getGoodsCommentNumInfo(param.getGoodsIds());
+        Map<Integer, Long> goodsCommentNumInfo = goodsCommentProcessorDao.getGoodsCommentNumInfo(param.getGoodsIds());
         Map<Integer, GoodsCommentProcessorDataInfo> returnMap = new HashMap<>();
         goodsCommentNumInfo.forEach((key,value)-> returnMap.put(key,new GoodsCommentProcessorDataInfo(value.intValue())));
         return returnMap;

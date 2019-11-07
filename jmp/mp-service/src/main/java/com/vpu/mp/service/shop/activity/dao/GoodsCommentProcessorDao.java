@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import static com.vpu.mp.db.shop.Tables.COMMENT_GOODS;
  * @author 李晓冰
  * @date 2019年11月04日
  */
+@Service
 public class GoodsCommentProcessorDao extends BaseShopConfigService {
 
     final public static String K_COMMENT = "comment";

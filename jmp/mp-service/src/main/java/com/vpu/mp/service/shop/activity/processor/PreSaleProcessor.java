@@ -3,10 +3,11 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.PreSaleProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,10 @@ import java.util.stream.Collectors;
  * @date 2019年11月01日
  */
 @Service
-public class PreSaleProcessor extends PreSaleProcessorDao implements ActivityGoodsListProcessor {
+public class PreSaleProcessor implements ActivityGoodsListProcessor {
+    @Autowired
+    PreSaleProcessorDao preSaleProcessorDao;
+
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_PRE_SALE_PRIORITY;
@@ -36,7 +40,7 @@ public class PreSaleProcessor extends PreSaleProcessorDao implements ActivityGoo
 
     @Override
     public Map<Integer, PreSaleProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return getGoodsPreSaleListInfo(param.getGoodsIds(),param.getDate());
+        return preSaleProcessorDao.getGoodsPreSaleListInfo(param.getGoodsIds(),param.getDate());
     }
 
     @Override

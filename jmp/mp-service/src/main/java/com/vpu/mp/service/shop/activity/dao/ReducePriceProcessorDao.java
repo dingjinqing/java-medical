@@ -8,6 +8,7 @@ import org.jooq.Condition;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -24,6 +25,7 @@ import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
  * @author 李晓冰
  * @date 2019年11月01日
  */
+@Service
 public class ReducePriceProcessorDao extends ShopBaseService {
 
     /**

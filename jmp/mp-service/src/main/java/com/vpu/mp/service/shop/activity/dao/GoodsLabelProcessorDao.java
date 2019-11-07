@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
 import org.jooq.Condition;
 import org.jooq.Record4;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
  * @author 李晓冰
  * @date 2019年11月04日
  */
+@Service
 public class GoodsLabelProcessorDao extends ShopBaseService {
 
     /**

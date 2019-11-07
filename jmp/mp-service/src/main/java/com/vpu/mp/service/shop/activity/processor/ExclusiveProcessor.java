@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,7 +17,9 @@ import java.util.*;
  * @date 2019年10月31日
  */
 @Service
-public class ExclusiveProcessor extends MemberCardProcessorDao implements ActivityGoodsListProcessor {
+public class ExclusiveProcessor implements ActivityGoodsListProcessor {
+    @Autowired
+    MemberCardProcessorDao memberCardProcessorDao;
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_CARD_EXCLUSIVE_PRIORITY;
@@ -52,7 +55,7 @@ public class ExclusiveProcessor extends MemberCardProcessorDao implements Activi
     @Override
     public Map<Integer, ExclusiveProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
         // 获取专享会员对应信息
-        Map<Byte, List<Integer>> exclusiveInfo = getExclusiveInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds(), param.getBrandIds());
+        Map<Byte, List<Integer>> exclusiveInfo = memberCardProcessorDao.getExclusiveInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds(), param.getBrandIds());
         Map<Integer, ExclusiveProcessorDataInfo> returnMap = new HashMap<>();
 
         Set<Integer> goodsIds = new HashSet<>(exclusiveInfo.get(CardConstant.COUPLE_TP_GOODS));

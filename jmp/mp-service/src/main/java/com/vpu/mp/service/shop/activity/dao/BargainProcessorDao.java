@@ -6,12 +6,13 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.BargainProcessorDataInfo;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 
@@ -19,6 +20,7 @@ import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
  * @author 李晓冰
  * @date 2019年11月01日
  */
+@Service
 public class BargainProcessorDao extends ShopBaseService {
 
     /**
@@ -28,15 +30,14 @@ public class BargainProcessorDao extends ShopBaseService {
      * @return key:商品id，value:{@link BargainProcessorDataInfo}
      */
     public Map<Integer, BargainProcessorDataInfo> getGoodsBargainListInfo(List<Integer> goodsIds, Timestamp date){
-        List<BargainRecord> bargainRecords = db().select(BARGAIN.ID, BARGAIN.GOODS_ID, BARGAIN.BARGAIN_TYPE, BARGAIN.FLOOR_PRICE, BARGAIN.EXPECTATION_PRICE)
+        List<BargainRecord> bargainRecords = new ArrayList<>(db().select(BARGAIN.ID, BARGAIN.GOODS_ID, BARGAIN.BARGAIN_TYPE, BARGAIN.FLOOR_PRICE, BARGAIN.EXPECTATION_PRICE)
             .from(BARGAIN)
             .where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(BARGAIN.STATUS.eq(GoodsConstant.USE_STATUS))
             .and(BARGAIN.GOODS_ID.in(goodsIds))
             .and(BARGAIN.START_TIME.lt(date))
             .and(BARGAIN.END_TIME.gt(date))
-            .fetchInto(BARGAIN)
-            .stream().collect(Collectors.toList());
+            .fetchInto(BARGAIN));
 
         Map<Integer, BargainProcessorDataInfo> returnMap = new HashMap<>(bargainRecords.size());
         bargainRecords.forEach(bargainRecord->{

@@ -3,8 +3,8 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.FirstSpecialProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -20,7 +20,10 @@ import java.util.Map;
  * @date 2019年11月01日
  */
 @Service
-public class FirstSpecialProcessor extends FirstSpecialProcessorDao implements ActivityGoodsListProcessor {
+public class FirstSpecialProcessor implements ActivityGoodsListProcessor {
+
+    @Autowired
+    FirstSpecialProcessorDao firstSpecialProcessorDao;
 
     @Autowired OrderInfoService orderInfoService;
 
@@ -57,7 +60,7 @@ public class FirstSpecialProcessor extends FirstSpecialProcessorDao implements A
 
     @Override
     public Map<Integer, FirstSpecialProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return getGoodsFirstSpecialForListInfo(param.getGoodsIds(),param.getDate());
+        return firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(param.getGoodsIds(),param.getDate());
     }
 
     @Override

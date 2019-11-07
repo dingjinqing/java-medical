@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsPrdProcessorDataInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record3;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
  * @author 李晓冰
  * @date 2019年11月04日
  */
+@Service
 public class GoodsPrdProcessorDao extends ShopBaseService {
 
     /**

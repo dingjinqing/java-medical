@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ReducePriceProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,9 @@ import java.util.stream.Collectors;
  * @date 2019年11月01日
  */
 @Service
-public class ReducePriceProcessor extends ReducePriceProcessorDao implements ActivityGoodsListProcessor {
+public class ReducePriceProcessor implements ActivityGoodsListProcessor {
+    @Autowired
+    ReducePriceProcessorDao reducePriceProcessorDao;
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_REDUCE_PRICE_PRIORITY;
@@ -37,7 +40,7 @@ public class ReducePriceProcessor extends ReducePriceProcessorDao implements Act
 
     @Override
     public Map<Integer, ReducePriceProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return getGoodsReduceListInfo(param.getGoodsIds(),param.getDate());
+        return reducePriceProcessorDao.getGoodsReduceListInfo(param.getGoodsIds(),param.getDate());
     }
 
     @Override
