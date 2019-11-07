@@ -21,49 +21,72 @@
           :label="$t('recommend.addingGoods')"
           prop="name"
         >
-          <el-radio-group v-model="paramsData.recommendType">
+          <el-radio-group v-model="paramsData.chooseType">
             <el-radio :label="0">{{$t('recommend.generalRecommendation')}}</el-radio>
             <el-radio :label="1">{{$t('recommend.intelligentRecommendation')}}</el-radio>
           </el-radio-group>
           <p
             class="tips"
-            v-if="paramsData.recommendType === 1"
+            v-if="paramsData.chooseType === 1"
           >{{$t('recommend.recommendTips')}}</p>
           <p>{{$t('recommend.recommendGoodsNum')}}：<el-input-number
-              v-model="paramsData.recommendGoodsNum"
+              v-model="paramsData.recommendNumber"
               :min="0"
               :controls="false"
               size="small"
             ></el-input-number> <span class="tips">{{$t('recommend.maxGoods')}}</span></p>
           <p
             class="tips"
-            v-if="paramsData.recommendType === 0"
+            v-if="paramsData.chooseType === 0"
           >{{$t('recommend.maxGoodsTips')}}</p>
           <div
-            v-if="paramsData.recommendType === 0"
+            v-if="paramsData.chooseType === 0"
             class="choose_goods_content"
           >
-            <el-radio-group v-model="paramsData.chooseGoodsType">
+            <el-radio-group v-model="paramsData.recommendType">
               <el-radio :label="0">{{$t('recommend.allProducts')}}</el-radio>
               <el-radio :label="1">{{$t('recommend.designatedProduct')}}</el-radio>
             </el-radio-group>
             <div
-              v-if="paramsData.chooseGoodsType === 1"
+              v-if="paramsData.recommendType === 1"
               class="goods_content"
             >
               <div class="choose_item">
-                <span class="item_button">
+                <span
+                  class="item_button"
+                  @click="showGoods"
+                >
                   + 选择商品
                 </span>
+                <span
+                  class="count"
+                  v-if="paramsData.recommendGoods.length > 0"
+                >已选择商品{{paramsData.recommendGoods.length}}件</span>
               </div>
               <div class="choose_item">
-                <span class="item_button">
+                <span
+                  class="item_button"
+                  @click="showSort(1)"
+                >
                   + 选择商家分类
                 </span>
+                <span
+                  class="count"
+                  v-if="paramsData.recommendSortIds.length > 0"
+                >已选择商家分类{{paramsData.recommendSortIds.length}}个</span>
               </div>
               <div class="choose_item">
-                <span class="item_button">
+                <span
+                  class="item_button"
+                  @click="showSort(2)"
+                >
                   + 选择平台分类
+                </span>
+                <span
+                  class="count"
+                  v-if="paramsData.recommendCatIds.length > 0"
+                >
+                  已选择平台分类{{paramsData.recommendCatIds.length}}个
                 </span>
               </div>
             </div>
@@ -116,21 +139,39 @@
         size="small"
       >{{$t('recommend.save')}}</el-button>
     </div>
+    <chooseGoods
+      :tuneUpChooseGoods="showGoodsDialog"
+      :chooseGoodsBack="paramsData.recommendGoods"
+      @result="getSelectGoods"
+    />
+    <sortDialog
+      :dialogVisible.sync="showSortDialog"
+      :classFlag="sortType"
+      :backDataArr="sortType === 1 ? paramsData.recommendSortIds : paramsData.recommendCatIds"
+      @BusClassTrueArr="getSortIds"
+    />
   </div>
 </template>
 
 <script>
-import { addRecommend } from '@/api/admin/goodsManage/goodsRecommend/goodsRecommend'
+import { addRecommend, getRecommendInfo, updateRecommend } from '@/api/admin/goodsManage/goodsRecommend/goodsRecommend'
 export default {
+  components: {
+    chooseGoods: () => import('@/components/admin/choosingGoods'),
+    sortDialog: () => import('@/components/admin/addingBusClassDialog')
+  },
   data () {
     return {
       paramsData: {
         recommendName: null,
         recommendType: 0,
-        recommendGoodsNum: 6,
-        chooseGoodsType: 0,
+        recommendNumber: 6,
+        chooseType: 0,
         status: 0,
-        recommendUsePage: []
+        recommendUsePage: [],
+        recommendGoods: [],
+        recommendSortIds: [],
+        recommendCatIds: []
       },
       pageData: [
         { mark: 'cart', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_cart.png` },
@@ -142,28 +183,84 @@ export default {
         { mark: 'order_complete', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_order_complete.jpg` },
         { mark: 'new_search', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_search.jpg` },
         { mark: 'item', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_item.jpg` }
-      ]
+      ],
+      showGoodsDialog: false,
+      showSortDialog: false,
+      sortType: 1
     }
+  },
+  mounted () {
+    this.requestInfo()
   },
   methods: {
     submit () {
       let obj = {
-        ...this.paramsData,
-        recommendType: this.paramsData.chooseGoodsType
+        ...this.paramsData
       }
-      addRecommend(obj).then(res => {
-        console.log(res)
+      if (this.$route.query.id) {
+        updateRecommend(obj).then(res => {
+          if (res.error === 0) {
+            if (res.content === 'CODE_SUCCESS') {
+              this.$message.success({
+                message: '商品推荐修改成功！',
+                duration: 2000,
+                onClose: () => {
+                  this.$router.push({
+                    name: 'recommend'
+                  })
+                }
+              })
+            }
+          }
+        })
+      } else {
+        addRecommend(obj).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            if (res.content === 'CODE_SUCCESS') {
+              this.$message.success({
+                message: '商品推荐添加成功！',
+                duration: 2000,
+                onClose: () => {
+                  this.$router.push({
+                    name: 'recommend'
+                  })
+                }
+              })
+            }
+          }
+        })
+      }
+    },
+    showGoods () {
+      this.showGoodsDialog = !this.showGoodsDialog
+    },
+    showSort (type) {
+      this.sortType = type
+      this.showSortDialog = true
+    },
+    getSelectGoods (data) {
+      this.paramsData.recommendGoods = data
+    },
+    getSortIds (data) {
+      switch (this.sortType) {
+        case 2:
+          this.paramsData.recommendCatIds = data
+          break
+        default:
+          this.paramsData.recommendSortIds = data
+          break
+      }
+    },
+    requestInfo () {
+      if (!this.$route.query.id) return false
+      getRecommendInfo(this.$route.query.id).then(res => {
         if (res.error === 0) {
-          if (res.content === 'CODE_SUCCESS') {
-            this.$message.success({
-              message: '商品推荐添加成功！',
-              duration: 2000,
-              onClose: () => {
-                this.$router.push({
-                  name: 'recommend'
-                })
-              }
-            })
+          this.paramsData = {
+            ...res.content,
+            recommendGoods: res.content.recommendGoods ? res.content.recommendGoods.map(item => { return item.goodsId }) : [],
+            recommendSortIds: res.content.recommendSortIds ? res.content.recommendSortIds : [],
+            recommendCatIds: res.content.recommendCatIds ? res.content.recommendCatIds : []
           }
         }
       })
@@ -193,6 +290,10 @@ export default {
           border: 1px solid #ccc;
           background: #fff;
           cursor: pointer;
+          color: #5a8bff;
+        }
+        .count {
+          margin-left: 15px;
           color: #5a8bff;
         }
       }

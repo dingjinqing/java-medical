@@ -142,8 +142,13 @@ export default {
         name: 'addRecommend'
       })
     },
-    edit () {
-
+    edit (id) {
+      this.$router.push({
+        name: 'addRecommend',
+        query: {
+          id: id
+        }
+      })
     },
     del (id) {
       this.$confirm('确认删除此条商品推荐吗？', '提示', {

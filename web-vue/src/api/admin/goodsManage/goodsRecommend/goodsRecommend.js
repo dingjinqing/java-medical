@@ -31,3 +31,10 @@ export function updateRecommend (data) {
     data: data
   })
 }
+// 查找指定商品推荐
+export function getRecommendInfo (data) {
+  return service({
+    url: `/api/admin/goods/recommend/select/${data}`,
+    method: 'get'
+  })
+}
