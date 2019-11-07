@@ -51,7 +51,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	@PostMapping("/card/add")
 	public JsonResult createMemberCard(@RequestBody CardParam card) {
 		logger.info("创建会员卡");
-		shop().member.card.addMemberCard(card);
+		shop().member.card.createMemberCard(card);
 		return this.success();
 	}
 	

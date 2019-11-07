@@ -147,7 +147,7 @@ import com.vpu.mp.service.shop.store.service.ServiceOrderService;
  *
  * @author 黄壮壮
  * @Date: 2019年7月30日
- * @Description:
+ * @Description: 
  */
 @Service
 public class MemberCardService extends ShopBaseService {
@@ -163,8 +163,6 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public JsonResultCode createMemberCard(CardParam card) {
 		MemberCardRecord cardRecord = initMembercardRecordByCfgData(card);
-
-		/** 插入数据库 */
 		insertIntoMemberCard(cardRecord);
 		return null;
 	}
@@ -271,28 +269,6 @@ public class MemberCardService extends ShopBaseService {
 			/** 是否专属购买商品 0不是 1是 */
 			payOwnGood = (byte) (BUTTON_ON.equals(card.getPowerPayOwnGood()) ? 1 : 0);
 			cardRecord.setPayOwnGood(payOwnGood);
-//
-//			if(payOwnGood == PAY_OWN_GOOD_ON) {
-//				Integer cardId = card.getId();
-//				/** -处理专享商品 ownGoodsId */
-//				List<Integer> ownGoodsId = card.getOwnGoodsId();
-//				if(ownGoodsId != null && ownGoodsId.size()>0) {
-//					addGoodsCardCouple(cardId,ownGoodsId,GOODS_TYPE);
-//				}
-//
-//				/** -处理专享商品商家分类 */
-//				List<Integer> ownStoreCategoryIds = card.getOwnStoreCategoryIds();
-//				if(ownStoreCategoryIds != null && ownStoreCategoryIds.size()>0) {
-//					addGoodsCardCouple(cardId,ownStoreCategoryIds,STORE_CATEGORY_TYPE);
-//				}
-//
-//				/** -处理专享商品平台分类 */
-//				List<Integer> ownPlatFormCategoryIds = card.getOwnPlatFormCategoryIds();
-//				if(ownPlatFormCategoryIds != null && ownPlatFormCategoryIds.size()>0) {
-//					addGoodsCardCouple(cardId,ownPlatFormCategoryIds,PLATFORM_CATEGORY_TYPE);
-//				}
-//			}
-//
 
 			/** 1. 会员折扣 */
 			if (CHECKED.equals(card.getPowerCount())) {
@@ -1033,8 +1009,7 @@ public class MemberCardService extends ShopBaseService {
 		logger().info("成功添加： " + execute + " 行记录");
 
 		/** add record */
-		// List<String> userNameList =
-		// db().select(USER.USERNAME).from(USER).where(USER.USER_ID.in(userIdList)).fetch().into(String.class);
+
 		Map<Integer, String> userNameMap = db().select(USER.USER_ID, USER.USERNAME).from(USER)
 				.where(USER.USER_ID.in(userIdList)).fetch().intoMap(USER.USER_ID, USER.USERNAME);
 		List<String> tmpData = new ArrayList<>();

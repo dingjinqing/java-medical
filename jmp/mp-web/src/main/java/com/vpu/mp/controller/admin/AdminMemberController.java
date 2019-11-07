@@ -36,6 +36,7 @@ import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
+import com.vpu.mp.service.shop.member.CardVerifyService;
 /**
  * 会员管理
  * @author 黄壮壮
@@ -217,6 +218,9 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping(value="/api/card/test/detail")
 	public JsonResult getUserCardDetail(@RequestBody UserCardParam param) {
 		logger().info("WxAppCardController: request for card detail");
+		shop().cardVerifyService.passCardVerify(param.getUserId(), "");
+		return success("");
+		/**
 		WxAppUserCardVo userCardDetail;
 		try {
 			userCardDetail = shop().user.userCard.getUserCardDetail(param);
@@ -224,5 +228,6 @@ public class AdminMemberController extends AdminBaseController{
 			return fail(e.getErrorCode());
 		}
 		return success(userCardDetail);
+		*/
 	}
 }
