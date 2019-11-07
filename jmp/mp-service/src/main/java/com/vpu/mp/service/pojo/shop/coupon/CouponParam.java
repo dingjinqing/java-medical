@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.coupon;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * 创建优惠券
@@ -121,6 +121,10 @@ public class CouponParam {
      * 指定商家分类可用
      */
     private String     recommendSortId;
+    /**
+     * 优惠券有效期类型
+     */
+    private Integer    validityType;
     /**
      * 优惠券有效天数
      */
