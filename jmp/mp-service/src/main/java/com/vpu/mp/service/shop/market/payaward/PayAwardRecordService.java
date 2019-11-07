@@ -30,7 +30,7 @@ public class PayAwardRecordService  extends ShopBaseService {
                 PAY_AWARD_RECORD.ORDER_SN,PAY_AWARD_RECORD.GIFT_TYPE,PAY_AWARD_RECORD.CREATE_TIME)
                 .from(PAY_AWARD_RECORD)
                 .leftJoin(USER).on(USER.USER_ID.eq(PAY_AWARD_RECORD.USER_ID))
-                .where(PAY_AWARD_RECORD.ID.eq(param.getId()));
+                .where(PAY_AWARD_RECORD.AWARD_ID.eq(param.getId()));
         buildOptions(where,param);
         return getPageResult(where,param.getCurrentPage(),param.getPageRows(), PayAwardRecordListVo.class);
     }
