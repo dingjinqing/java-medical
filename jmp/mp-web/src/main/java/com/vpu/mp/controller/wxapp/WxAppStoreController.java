@@ -2,12 +2,12 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.wxapp.store.StoreInfoParam;
-import com.vpu.mp.service.pojo.wxapp.store.StoreListParam;
-import com.vpu.mp.service.pojo.wxapp.store.StorePayOrder;
-import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderVo;
+import com.vpu.mp.service.pojo.wxapp.store.*;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author 王兵兵
@@ -49,8 +49,8 @@ public class WxAppStoreController extends WxAppBaseController{
     /**
      * 门店服务预约
      */
-    @GetMapping("/service/reservation/{serviceId}")
-    public JsonResult reservation(@PathVariable Integer serviceId) {
-        return this.success(shop().store.wxService.reservationDetail(serviceId));
+    @PostMapping("/service/reservation")
+    public JsonResult reservation(@RequestBody @Validated ReservationParam param) {
+        return this.success(shop().store.wxService.reservationDetail(param.getServiceId()));
     }
 }
