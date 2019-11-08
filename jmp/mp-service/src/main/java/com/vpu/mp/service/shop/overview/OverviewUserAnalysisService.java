@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -212,7 +213,7 @@ public class OverviewUserAnalysisService extends ShopBaseService {
         b = BigDecimal.valueOf(NumberUtils.DOUBLE_ZERO);
       }
       // 除数为0，令结果为100%
-      if (a.compareTo(BigDecimal.ZERO)==0) {
+      if (a.compareTo(BigDecimal.ZERO) == 0) {
         return NumberUtils.DOUBLE_ONE;
       } else {
         // 公式计算结果
@@ -294,7 +295,7 @@ public class OverviewUserAnalysisService extends ShopBaseService {
       return NumberUtils.DOUBLE_ZERO;
     } else {
       // 公式计算结果
-      return (double) Math.round(((double)a/(double) b * 10000))/ 10000;
+      return (double) Math.round(((double) a / (double) b * 10000)) / 10000;
     }
   }
   /**
@@ -443,14 +444,14 @@ public class OverviewUserAnalysisService extends ShopBaseService {
     OrderChangeRateVo changeRateVo =
         new OrderChangeRateVo() {
           {
-              //客户数
+            // 客户数
             setOrderUserDataTrend(
                 getChangeRate(beforeVo.getOrderUserData(), afterVo.getOldOrderUserData()));
             setNewOrderUserDataTrend(
                 getChangeRate(beforeVo.getNewOrderUserData(), afterVo.getNewOrderUserData()));
             setOldOrderUserDataTrend(
                 getChangeRate(beforeVo.getOldOrderUserData(), afterVo.getOldOrderUserData()));
-            //客户数占比
+            // 客户数占比
             setOrderUserDataRateTrend(
                 getChangeRate(beforeVo.getOrderUserDataRate(), afterVo.getOrderUserDataRate()));
             setNewOrderUserDataRateTrend(
@@ -459,20 +460,20 @@ public class OverviewUserAnalysisService extends ShopBaseService {
             setOldOrderUserDataRateTrend(
                 getChangeRate(
                     beforeVo.getOldOrderUserDataRate(), afterVo.getOldOrderUserDataRate()));
-            //客单价
+            // 客单价
             setUnitPriceTrend(getChangeRate(beforeVo.getUnitPrice(), afterVo.getUnitPrice()));
             setNewUnitPriceTrend(
                 getChangeRate(beforeVo.getNewUnitPrice(), afterVo.getNewUnitPrice()));
             setOldUnitPriceTrend(
                 getChangeRate(beforeVo.getOldUnitPrice(), afterVo.getOldUnitPrice()));
-            //付款金额
+            // 付款金额
             setTotalPaidMoneyTrend(
                 getChangeRate(beforeVo.getTotalPaidMoney(), afterVo.getTotalPaidMoney()));
             setNewPaidMoneyTrend(
                 getChangeRate(beforeVo.getNewPaidMoney(), afterVo.getNewPaidMoney()));
             setOldPaidMoneyTrend(
                 getChangeRate(beforeVo.getOldPaidMoney(), afterVo.getOldPaidMoney()));
-            //转化率
+            // 转化率
             setTransRateTrend(getChangeRate(beforeVo.getTransRate(), afterVo.getTransRate()));
             setNewTransRateTrend(
                 getChangeRate(beforeVo.getNewTransRate(), afterVo.getNewTransRate()));
@@ -495,15 +496,13 @@ public class OverviewUserAnalysisService extends ShopBaseService {
     newVo.remove(0);
     Iterator<OrderDailyVo> tempNewVo = newVo.iterator();
     while (tempNewVo.hasNext()) {
-        OrderDailyVo newDailyVo = tempNewVo.next();
+      OrderDailyVo newDailyVo = tempNewVo.next();
       // 计算客单价
-      BigDecimal unitPrice =
-          getUnitPrice(newDailyVo.getPaidMoney(), newDailyVo.getOrderUserData());
-        newDailyVo.setUnitPrice(unitPrice);
+      BigDecimal unitPrice = getUnitPrice(newDailyVo.getPaidMoney(), newDailyVo.getOrderUserData());
+      newDailyVo.setUnitPrice(unitPrice);
       // 计算转化率
-      Double transRate =
-          getRate(newDailyVo.getOrderUserData(), newDailyVo.getLoginData());
-        newDailyVo.setTransRate(transRate);
+      Double transRate = getRate(newDailyVo.getOrderUserData(), newDailyVo.getLoginData());
+      newDailyVo.setTransRate(transRate);
     }
     // 老成交客户数每日数据
     List<OrderDailyVo> oldVo =
@@ -520,15 +519,13 @@ public class OverviewUserAnalysisService extends ShopBaseService {
     oldVo.remove(0);
     Iterator<OrderDailyVo> tempOldVo = oldVo.iterator();
     while (tempOldVo.hasNext()) {
-        OrderDailyVo oldDailyVo = tempOldVo.next();
+      OrderDailyVo oldDailyVo = tempOldVo.next();
       // 计算客单价
-      BigDecimal unitPrice =
-          getUnitPrice(oldDailyVo.getPaidMoney(), oldDailyVo.getOrderUserData());
-        oldDailyVo.setUnitPrice(unitPrice);
+      BigDecimal unitPrice = getUnitPrice(oldDailyVo.getPaidMoney(), oldDailyVo.getOrderUserData());
+      oldDailyVo.setUnitPrice(unitPrice);
       // 计算转化率
-      Double transRate =
-          getRate(oldDailyVo.getOrderUserData(), oldDailyVo.getLoginData());
-        oldDailyVo.setTransRate(transRate);
+      Double transRate = getRate(oldDailyVo.getOrderUserData(), oldDailyVo.getLoginData());
+      oldDailyVo.setTransRate(transRate);
     }
     // 最终出参
     OrderVo orderVo =
@@ -567,70 +564,106 @@ public class OverviewUserAnalysisService extends ShopBaseService {
   /**
    * 客户复购趋势
    *
-   * @param param
-   * @return List<OverviewUserAnalysisRebuyVo>
+   * @param param 周数和周日时间
+   * @return 四周复购率
    */
-  public List<RebuyVo> getRebuyTrend(RebuyParam param) {
+  public RebuyVo getRebuyTrend(RebuyParam param) {
+    try {
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      // 周日转date型
+      java.util.Date sunday =  dateFormat.parse(param.getSunday());
+      param.setFourthDate(sunday);
+      // 周一转date型
+      java.util.Date monday = dateFormat.parse(param.getMonday());
+      // 得到今天
+      Calendar c = Calendar.getInstance();
+      java.util.Date time = c.getTime();
+      String today = dateFormat.format(time);
 
-    List<RebuyLastVo> lastVo =
-        db().select(
-                DSL.sum(USER_SUMMARY_TREND.OLD_ORDER_USER_DATA).as("oldOrderUserData"),
-                DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("orderUserData"))
-            .from(USER_SUMMARY_TREND)
-            .where(
-                USER_SUMMARY_TREND.REF_DATE.between(
-                    new Date(param.getStartTime().getTime()),
-                    new Date(param.getEndTime().getTime())))
-            .fetchInto(RebuyLastVo.class);
-    List<RebuyThirdVo> thirdVo =
-        db().select(
-                DSL.sum(USER_SUMMARY_TREND.OLD_ORDER_USER_DATA).as("oldOrderUserData"),
-                DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("orderUserData"))
-            .from(USER_SUMMARY_TREND)
-            .where(
-                USER_SUMMARY_TREND.REF_DATE.between(
-                    new Date(param.getThirdStartTime().getTime()),
-                    new Date(param.getThirdEndTime().getTime())))
-            .fetchInto(RebuyThirdVo.class);
-
-    List<SecondVo> secondVo =
-        db().select(
-                DSL.sum(USER_SUMMARY_TREND.OLD_ORDER_USER_DATA).as("oldOrderUserData"),
-                DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("orderUserData"))
-            .from(USER_SUMMARY_TREND)
-            .where(
-                USER_SUMMARY_TREND.REF_DATE.between(
-                    new Date(param.getSecondStartTime().getTime()),
-                    new Date(param.getSecondEndTime().getTime())))
-            .fetchInto(SecondVo.class);
-
-    List<RebuyFirstVo> firstVo =
-        db().select(
-                DSL.sum(USER_SUMMARY_TREND.OLD_ORDER_USER_DATA).as("oldOrderUserData"),
-                DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("orderUserData"))
-            .from(USER_SUMMARY_TREND)
-            .where(
-                USER_SUMMARY_TREND.REF_DATE.between(
-                    new Date(param.getFirstStartTime().getTime()),
-                    new Date(param.getFirstEndTime().getTime())))
-            .fetchInto(RebuyFirstVo.class);
-
-    List<RebuyVo> rebuyVos = new ArrayList<>(4);
-
-    double lastRebuyRate =
-        (double) lastVo.get(0).getOldOrderUserData() / (double) lastVo.get(0).getOrderUserData();
-    rebuyVos.add(new RebuyVo(param.getStartTime(), param.getEndTime(), lastRebuyRate));
-    double thirdRebuyRate =
-        (double) thirdVo.get(0).getOldOrderUserData() / (double) thirdVo.get(0).getOrderUserData();
-    rebuyVos.add(new RebuyVo(param.getThirdStartTime(), param.getThirdEndTime(), thirdRebuyRate));
-    double secondRebuyRate =
-        (double) secondVo.get(0).getOldOrderUserData()
-            / (double) secondVo.get(0).getOrderUserData();
-    rebuyVos.add(
-        new RebuyVo(param.getSecondStartTime(), param.getSecondEndTime(), secondRebuyRate));
-    double firstRebuyRate =
-        (double) firstVo.get(0).getOldOrderUserData() / (double) firstVo.get(0).getOrderUserData();
-    rebuyVos.add(new RebuyVo(param.getFirstStartTime(), param.getFirstEndTime(), firstRebuyRate));
-    return rebuyVos;
+      // 得到前三周时间（date型）
+      param.setThirdDate(
+          new java.util.Date(param.getFourthDate().getTime() - (1000 * 60 * 60 * 24 * 7)));
+      param.setSecondDate(
+          new java.util.Date(param.getThirdDate().getTime() - (1000 * 60 * 60 * 24 * 7)));
+      param.setFirstDate(
+          new java.util.Date(param.getSecondDate().getTime() - (1000 * 60 * 60 * 24 * 7)));
+      // 得到第四周的数据
+      RebuyWeekVo fourthVo = new RebuyWeekVo();
+      // 今天是周日
+      if (param.getMonday().equals(today)) {
+        fourthVo.setOldOrderUserData(NumberUtils.INTEGER_ZERO);
+        fourthVo.setOrderUserData(NumberUtils.INTEGER_ZERO);
+      }
+      //
+      else {
+        fourthVo =
+            db().select(
+                DSL.sum(USER_SUMMARY_TREND.OLD_ORDER_USER_DATA).as("old_order_user_data"),
+                DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("order_user_data"))
+                .from(USER_SUMMARY_TREND)
+                .where(USER_SUMMARY_TREND.REF_DATE.between(new Date(monday.getTime()),new Date(time.getTime()- (1000 * 60 * 60 * 24 ))))
+                .and(USER_SUMMARY_TREND.TYPE.eq(NumberUtils.BYTE_ONE))
+                .fetchOneInto(RebuyWeekVo.class);
+      }
+      // 得到当前周
+      fourthVo.setWeekNum(param.getWeekNum());
+      // 得到当前复购率
+      fourthVo.setRebuyRate(getRate(fourthVo.getOldOrderUserData(), fourthVo.getOrderUserData()));
+      // 得到第三周的数据
+      RebuyWeekVo thirdVo =
+          db().select(USER_SUMMARY_TREND.OLD_ORDER_USER_DATA, USER_SUMMARY_TREND.ORDER_USER_DATA)
+              .from(USER_SUMMARY_TREND)
+              .where(USER_SUMMARY_TREND.REF_DATE.eq(new Date(param.getThirdDate().getTime())))
+              .and(USER_SUMMARY_TREND.TYPE.eq(param.getType()))
+              .fetchOneInto(RebuyWeekVo.class);
+      // 得到当前周
+      thirdVo.setWeekNum(param.getWeekNum() - NumberUtils.INTEGER_ONE);
+      // 得到当前复购率
+      thirdVo.setRebuyRate(getRate(thirdVo.getOldOrderUserData(), thirdVo.getOrderUserData()));
+      // 得到第二周的数据
+      RebuyWeekVo secondVo =
+          db().select(USER_SUMMARY_TREND.OLD_ORDER_USER_DATA, USER_SUMMARY_TREND.ORDER_USER_DATA)
+              .from(USER_SUMMARY_TREND)
+              .where(USER_SUMMARY_TREND.REF_DATE.eq(new Date(param.getSecondDate().getTime())))
+              .and(USER_SUMMARY_TREND.TYPE.eq(param.getType()))
+              .fetchOneInto(RebuyWeekVo.class);
+      // 得到当前周
+      secondVo.setWeekNum(thirdVo.getWeekNum() - NumberUtils.INTEGER_ONE);
+      // 得到当前复购率
+      secondVo.setRebuyRate(getRate(secondVo.getOldOrderUserData(), secondVo.getOrderUserData()));
+      // 得到第一周的数据
+      RebuyWeekVo firstVo =
+          db().select(USER_SUMMARY_TREND.OLD_ORDER_USER_DATA, USER_SUMMARY_TREND.ORDER_USER_DATA)
+              .from(USER_SUMMARY_TREND)
+              .where(USER_SUMMARY_TREND.REF_DATE.eq(new Date(param.getFirstDate().getTime())))
+              .and(USER_SUMMARY_TREND.TYPE.eq(param.getType()))
+              .fetchOneInto(RebuyWeekVo.class);
+      // 得到当前周
+      firstVo.setWeekNum(secondVo.getWeekNum() - NumberUtils.INTEGER_ONE);
+      // 得到当前复购率
+      firstVo.setRebuyRate(getRate(firstVo.getOldOrderUserData(), firstVo.getOrderUserData()));
+      // 整合在一个集合里
+        RebuyWeekVo finalFourthVo = fourthVo;
+        List<RebuyWeekVo> rebuyWeekVo =
+          new ArrayList<RebuyWeekVo>() {
+            {
+              add(firstVo);
+              add(secondVo);
+              add(thirdVo);
+              add(finalFourthVo);
+            }
+          };
+      // 返回集合
+      RebuyVo rebuyVo =
+          new RebuyVo() {
+            {
+              setRebuyWeekVo(rebuyWeekVo);
+            }
+          };
+      return rebuyVo;
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
-}
+  }

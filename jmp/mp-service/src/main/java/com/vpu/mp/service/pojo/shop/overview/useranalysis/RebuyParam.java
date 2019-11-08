@@ -11,15 +11,20 @@ import java.util.Date;
  */
 @Data
 public class RebuyParam {
-
+    /** 7天 */
+    private Byte type = 7;
+    /** 当前周数 */
 	private Integer weekNum;
-	private Date startTime;
-	private Date endTime;
-	private Date thirdStartTime;
-	private Date thirdEndTime;
-	private Date secondStartTime;
-	private Date secondEndTime;
-	private Date firstStartTime;
-	private Date firstEndTime;
-	
+    /** 传入的日期-周一 */
+    private String monday;
+	/** 传入的日期-周日 */
+    private String sunday;
+	/** 第一个自然周 */
+	private Date firstDate;
+    /** 第二个自然周 */
+	private Date secondDate;
+    /** 第三个自然周 */
+	private Date thirdDate;
+	/** 第四个自然周 */
+	private Date fourthDate;
 }

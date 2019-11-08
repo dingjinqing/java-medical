@@ -8,9 +8,13 @@ import lombok.Data;
  * @date 2019年7月22日
  */
 @Data
-public class RebuyLastVo {
-
+public class RebuyWeekVo {
+    /** 老成交用户数 */
 	private Integer oldOrderUserData;
+    /** 成交 */
 	private Integer orderUserData;
-	
+    /** 当前周 */
+    private Integer weekNum;
+    /** 复购率 */
+    private Double rebuyRate;
 }
