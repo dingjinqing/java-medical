@@ -10,19 +10,19 @@ import java.util.List;
  * @date 2019年7月18日
  */
 @Data
-public class OverviewUserAnalysisActiveTotalVo {
+public class ActiveTotalVo {
     /** 每日数据 */
-    List<OverviewUserAnalysisActiveVo> activeVo;
+    List<ActiveDailyVo> activeDailyVo;
     /** 访问会员数 */
-	private Integer loginDataTotal;
+	private Integer loginData;
     /** 领券会员数 */
-	private Integer couponDataTotal;
+	private Integer couponData;
     /** 加购会员数 */
-	private Integer cartDataTotal;
+	private Integer cartData;
     /** 成交会员数 */
-	private Integer orderUserDataTotal;
+	private Integer orderUserData;
     /** 累计用户数 */
-	private Integer userDataTotal;
+	private Integer userData;
 	/** 访问会员数占比 */
     private Double loginDataRate;
     /** 领券会员数占比 */

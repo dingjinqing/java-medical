@@ -10,9 +10,9 @@ import java.util.List;
  * @date 2019年11月4日
  */
 @Data
-public class OverviewUserAnalysisTrendTotalVo {
+public class TrendVo {
     /** 最近N天每天的数据 */
-	List<OverviewUserAnalysisTrendVo> trendVo;
+	List<TrendDailyVo> trendDailyVo;
 
 	/** 总访问量 */
 	private Integer loginDataTotal;

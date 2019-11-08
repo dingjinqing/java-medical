@@ -30,11 +30,9 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	 * @return 相关数量及趋势
 	 */
 	@PostMapping("/trend")
-	public JsonResult getTrend(@RequestBody OverviewUserAnalysisDateParam param) {
-		//通过引用传递 得到段时间对应的开始日期和结束日期
-	    getDateParam(param);
+	public JsonResult getTrend(@RequestBody DateParam param) {
 	    //得到客户概况和变化趋势
-		OverviewUserAnalysisTrendTotalVo result = shop().overview.overviewUserAnalysisService.getTrend(param);
+		TrendVo result = shop().overview.overviewUserAnalysisService.getTrend(param);
         //返回计算结果
 		return success(result);
 
@@ -47,11 +45,9 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	 * @return 不同类型用户数据
 	 */
 	@PostMapping("/active")
-	public JsonResult getActive(@RequestBody OverviewUserAnalysisDateParam param) {
-        //通过引用传递 得到段时间对应的开始日期和结束日期
-        getDateParam(param);
+	public JsonResult getActive(@RequestBody DateParam param) {
         //得到用户活跃情况
-	    OverviewUserAnalysisActiveTotalVo result = shop().overview.overviewUserAnalysisService
+	    ActiveTotalVo result = shop().overview.overviewUserAnalysisService
 				.getActive(param);
         //返回计算结果
 		return success(result);
@@ -61,15 +57,13 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	/**
 	 * 会员统计
 	 * 
-	 * @Param param
-	 * @return
+	 * @Param param 查看最近N天的数据(默认N=1) 1：一天，7：一周，30：一个月
+	 * @return 会员数变化率
 	 */
 	@PostMapping("/vip")
-	public JsonResult getVip(@RequestBody OverviewUserAnalysisDateParam param) {
-        //通过引用传递 得到段时间对应的开始日期和结束日期
-        getDateParam(param);
+	public JsonResult getVip(@RequestBody DateParam param) {
         //得到会员统计情况
-		OverviewUserAnalysisVipVo result = shop().overview.overviewUserAnalysisService
+		VipVo result = shop().overview.overviewUserAnalysisService
 				.getVip(param);
 
 		return success(result);
@@ -79,19 +73,15 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	/**
 	 * 成交用户分析
 	 * 
-	 * @Param param
-	 * @return
+	 * @Param param 查看最近N天的数据(默认N=1) 1：一天，7：一周，30：一个月
+	 * @return 成交用户变化率占比等
 	 */
 	@PostMapping("/order")
-	public JsonResult getOrder(@RequestBody OverviewUserAnalysisDateParam param) {
-        //通过引用传递 得到段时间对应的开始日期和结束日期
-        getDateParam(param);
+	public JsonResult getOrder(@RequestBody DateParam param) {
         //得到成交用户情况
-		List<OverviewUserAnalysisOrderVo> overviewUserAnalysisOrderVos = shop().overview.overviewUserAnalysisService
+		OrderVo result = shop().overview.overviewUserAnalysisService
 				.getOrder(param);
-
-		return success((Object)overviewUserAnalysisOrderVos);
-
+		return success(result);
 	}
 
 	/**
@@ -101,7 +91,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/rebuy")
-	public JsonResult getRebuyTrend(@RequestBody OverviewUserAnalysisRebuyParam param) {
+	public JsonResult getRebuyTrend(@RequestBody RebuyParam param) {
 		try {
         Calendar calendar = Calendar.getInstance();
         /** 设置星期一为一周开始的第一天 */
@@ -167,57 +157,13 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		List<OverviewUserAnalysisRebuyVo> overviewUserAnalysisRebuyVos = shop().overview.overviewUserAnalysisService
+		List<RebuyVo> rebuyVos = shop().overview.overviewUserAnalysisService
 				.getRebuyTrend(param);
 
-		return success(overviewUserAnalysisRebuyVos);
+		return success(rebuyVos);
 
 	}
 
-    /**
-     * 通用方法-得到N天前的日期
-     * @param days N天前
-     * @return 对应日期(String型)
-     */
-    private String getDate(String days) {
-        //设置日期格式
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        Calendar c = Calendar.getInstance();
-        //Calendar.DATE=5 代表对日期操作，减去N，得到N天前
-        c.add(Calendar.DATE, -Integer.parseInt(days));
-        //转换成Date型
-        Date time = c.getTime();
-        //转换并返回指定时间格式的String型时间
-        return sdf.format(time);
-    }
-
-    /**
-     * 通用方法-得到段时间对应的开始日期和结束日期
-     *
-     * @param param 时间段 1:最近一天，7:最近一周，30:最近一月
-     */
-    private void getDateParam(OverviewUserAnalysisDateParam param){
-        try {
-            //得到昨天日期(date型)
-            Date yesterday = new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24);
-            //默认查询最近一天数据
-            String lastNum = "1";
-            //N天前为开始日期
-            String tempStartTime = param.getLastNum();
-            //判断N天前为几天前，最后得到一个String类型的yyyyMMdd格式的日期
-            lastNum = "1".equals(tempStartTime) ? getDate("1") : lastNum;
-            lastNum = "7".equals(tempStartTime) ? getDate("7") : lastNum;
-            lastNum = "30".equals(tempStartTime) ? getDate("30") : lastNum;
-            //将String日期转为yyyyMMdd格式的Date型日期
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            Date startTime = sdf.parse(lastNum);
-            //将设置好的Date型日期放入param，进行db操作
-            param.setStartTime(startTime);
-            param.setEndTime(yesterday);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
 	private static void backSeven(Calendar calendar) {
 	    int day = calendar.get(Calendar.DATE);
 	    calendar.set(Calendar.DATE, day - 7);

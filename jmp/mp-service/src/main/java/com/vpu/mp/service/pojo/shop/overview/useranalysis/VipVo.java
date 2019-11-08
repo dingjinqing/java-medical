@@ -8,7 +8,7 @@ import lombok.Data;
  * @date 2019年7月18日
  */
 @Data
-public class OverviewUserAnalysisVipVo {
+public class VipVo {
     /** 累计会员数 */
 	private Integer userData;
     /** 新增会员数 */

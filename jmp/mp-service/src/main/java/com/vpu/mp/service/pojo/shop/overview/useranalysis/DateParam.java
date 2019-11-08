@@ -10,12 +10,12 @@ import java.util.Date;
  * @date 2019年7月18日
  */
 @Data
-public class OverviewUserAnalysisDateParam {
+public class DateParam {
 	/** 时间段 1:最近一天，7:最近一周，30:最近一月 */
 	@NotNull
-	private String lastNum;
+	private Byte type;
 	/** 当前时间段的开始时间 */
-	private Date startTime;
+	private Date oldTime;
 	/** 当前时间段的结束时间 */
-	private Date endTime;
+	private Date newTime;
 }

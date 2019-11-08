@@ -10,7 +10,7 @@ import java.util.Date;
  * @date 2019年7月18日
  */
 @Data
-public class OverviewUserAnalysisActiveVo {
+public class ActiveDailyVo {
     /** 日期 */
 	private Date refDate;
     /** 访问会员数 */
