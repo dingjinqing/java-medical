@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 /**
  *  足迹
  * @author 孔德成
@@ -25,9 +23,9 @@ public class WxAppFootprintController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/list")
-    private List<FootprintListVo> getFootprintList(@RequestBody FootprintListParam param){
+    private FootprintListVo getFootprintList(@RequestBody FootprintListParam param){
         Integer userId = wxAppAuth.user().getUserId();
-        List<FootprintListVo> footprintPage = shop().footPrintService.getFootprintPage(userId, param.getKeyword(), param.getCurrentPage(), param.getPageRows());
+        FootprintListVo footprintPage = shop().footPrintService.getFootprintPage(userId, param.getKeyword(), param.getCurrentPage(), param.getPageRows());
         return footprintPage;
     }
 

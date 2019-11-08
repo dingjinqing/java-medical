@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GroupBuyProcessorDataInfo;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import org.jooq.Record3;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,8 @@ import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
  * @author 李晓冰
  * @date 2019年10月29日
  */
-@Service
-public class GroupBuyProcessorDao extends ShopBaseService {
+@Service()
+public class GroupBuyProcessorDao extends GroupBuyService {
 
     /**
      * 获取集合内商品所参与的拼团信息

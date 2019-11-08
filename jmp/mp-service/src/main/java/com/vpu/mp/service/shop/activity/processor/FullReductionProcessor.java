@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.FullReductionProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.FullReductionProcessorDao;
+import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

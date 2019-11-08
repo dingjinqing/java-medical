@@ -27,6 +27,7 @@ import com.vpu.mp.service.shop.order.OrderReadService;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -45,6 +46,7 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 
 @Service
+@Primary
 public class GroupBuyService extends ShopBaseService {
 
     private static final byte USE_STATUS = 1;

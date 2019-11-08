@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @date 2019年10月31日
  */
 @Service
-public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor{
+public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy{
 
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
@@ -83,10 +83,19 @@ public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetai
         });
     }
 
+
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
         List<GradeCardProcessorDataInfo> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
         capsule.setGradeCard(goodsGradeGradePrice);
     }
+    /**
+     * 购物车
+     */
+    @Override
+    public void doCartOperation() {
+
+    }
+
 }

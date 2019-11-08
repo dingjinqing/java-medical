@@ -15,11 +15,12 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
+ *  会员专享
  * @author 李晓冰
  * @date 2019年10月31日
  */
 @Service
-public class ExclusiveProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor {
+public class ExclusiveProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy {
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
 
@@ -101,6 +102,14 @@ public class ExclusiveProcessor implements ActivityGoodsListProcessor,GoodsDetai
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+
+    }
+
+    /**
+     * 购物车
+     */
+    @Override
+    public void doCartOperation() {
 
     }
 }
