@@ -47,6 +47,8 @@
                 :legend-visible="false"
                 :data="chartDataSex"
                 :settings="chartSettings"
+                :visual-map="visualMap"
+                :extend="chartExtend"
                 ref="chart1"
               ></ve-map>
             </div>
@@ -178,8 +180,56 @@ export default {
         }
       },
       aspectScale: 0.75,
-      selectData: 'true',
       zoom: 1.2
+    }
+    this.visualMap = {
+      inverse: true,
+      show: true,
+      type: 'continuous', // 'piecewise',
+      realtime: false, // 拖拽是否实施更新
+      min: 0,
+      max: 34,
+      calculable: false,
+      text: ['高', '低'],
+      inRange: {
+        color: ['#afe8ff', '#2a99c9']
+      },
+      align: 'top',
+      orient: 'horizontal'
+    }
+    this.chartExtend = {
+      legend: {
+        show: false // 图例展示
+      },
+      series: {
+        showLegendSymbol: false, // 去掉地图小圆点
+        silent: false, // 详情展示
+        itemStyle: {
+          normal: {
+            areaColor: '#cde1f5',
+            borderColor: '#fff'
+          },
+          emphasis: {
+            areaColor: '#fde166'
+          }
+        },
+        label: {
+          normal: {
+            show: false,
+            position: 'inside',
+            textStyle: {
+              color: 'rgba(0, 0, 0, 0)'
+            }
+          },
+          emphasis: {
+            show: false,
+            textStyle: {
+              color: 'rgb(249, 249, 249)'
+            }
+          }
+        },
+        zoom: 1.2
+      }
     }
     return {
       type: 0,
