@@ -1,0 +1,16 @@
+<view class="recommend_content">
+  <view class="reco_title">
+    <image src="{{imageUrl}}/image/wxapp/re_l.png"></image>
+    <text>猜你喜欢</text>
+    <image src="{{imageUrl}}/image/wxapp/re_r.png"></image>
+  </view>
+  <view class="goods_content">
+    <v-doubleColumnGoods />
+    <v-doubleColumnGoods />
+    <v-doubleColumnGoods />
+    <v-doubleColumnGoods />
+    <v-doubleColumnGoods />
+    <v-doubleColumnGoods />
+    <v-doubleColumnGoods />
+  </view>
+</view>
