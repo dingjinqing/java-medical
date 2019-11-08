@@ -61,6 +61,11 @@ import {
   cn as tradesStatistics
 } from './views/admin_new/cn/index/overview/tradesStatistics/tradesStatisticsCn'
 
+// 用户画像
+import {
+  cn as userportrait
+} from './views/admin_new/cn/index/overview/userportrait/userportraitCn'
+
 // 小程序管理系列国际化
 // 小程序管理 -> 页面装修
 import {
@@ -812,6 +817,8 @@ const cn = {
   tradesStatistics, // 交易统计
   // 商城概况 - 店铺助手
   taskList,
+  // 用户画像
+  userportrait,
 
   // 小程序管理
   pictureSetting,

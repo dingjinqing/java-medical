@@ -82,6 +82,11 @@ import {
   en as tradesStatistics
 } from './views/admin_new/en/index/overview/tradesStatistics/tradesStatisticsEn'
 
+// 用户画像
+import {
+  en as userportrait
+} from './views/admin_new/en/index/overview/userportrait/userportraitEn'
+
 // 小程序管理系列国际化
 // 页面装修
 import {
@@ -809,6 +814,8 @@ const en = {
   tradesStatistics, // 交易统计
   // 概况-店铺助手
   taskList,
+  // 用户画像
+  userportrait,
 
   // 小程序管理
   pictureSetting,

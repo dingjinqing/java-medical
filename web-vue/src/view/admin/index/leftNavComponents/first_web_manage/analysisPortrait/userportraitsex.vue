@@ -5,10 +5,10 @@
         label-position="top"
         label-width="80px"
       >
-        <el-form-item label="性别及年龄分布">
+        <el-form-item :label="$t('userportrait.title2')">
           <el-select
             v-model="userNum"
-            placeholder="请选择"
+            :placeholder="$t('userportrait.please')"
             size="mini"
             style="width:160px"
             @change="changeUserNum"
@@ -24,7 +24,7 @@
 
           <el-select
             v-model="type"
-            placeholder="请选择"
+            :placeholder="$t('userportrait.please')"
             size="mini"
             style="width:160px"
             @change="search"
@@ -49,7 +49,7 @@
               :data="chartDataSex"
               ref="chart1"
             ></ve-ring>
-            <span class="buttomTitle">性别分布</span>
+            <span class="buttomTitle">{{$t('userportrait.genderDistribution')}}</span>
           </div>
         </el-col>
         <el-col :span="12">
@@ -60,7 +60,7 @@
               :settings="chartSettings"
               ref="chart2"
             ></ve-histogram>
-            <span class="buttomTitle">年龄分布</span>
+            <span class="buttomTitle">{{$t('userportrait.ageDistribution')}}</span>
           </div>
         </el-col>
       </el-row>
@@ -78,7 +78,7 @@ export default {
   data () {
     this.chartSettings = {
       labelMap: {
-        'value': '数量'
+        'value': this.$t('userportrait.quantity')
       }
     }
     return {
@@ -97,24 +97,8 @@ export default {
       },
       rows1: [],
       rows2: [],
-      userNumOptions: [{
-        value: 1,
-        label: '活跃用户'
-      }, {
-        value: 2,
-        label: '新增用户'
-      }],
-      visitTrendOptions: [
-        {
-          value: 0,
-          label: '昨天'
-        }, {
-          value: 1,
-          label: '最近七天'
-        }, {
-          value: 2,
-          label: '最近三十天'
-        }]
+      userNumOptions: this.$t('userportrait.userNumOptions'),
+      visitTrendOptions: this.$t('userportrait.visitTrendOptions')
     }
   },
   mounted () {
@@ -125,6 +109,8 @@ export default {
   watch: {
     lang () {
       this.defaluteData()
+      this.userNumOptions = this.$t('userportrait.userNumOptions')
+      this.visitTrendOptions = this.$t('userportrait.visitTrendOptions')
     },
     rows1 (data) {
       // 在一个初始宽度未知的容器内绘制图表时，因为无法获取宽度，所以图表会绘制出问题

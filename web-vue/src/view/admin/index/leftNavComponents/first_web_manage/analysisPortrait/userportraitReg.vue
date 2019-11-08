@@ -3,10 +3,10 @@
     <div>
       <div class="sexAndAge">
         <el-form label-position="top">
-          <el-form-item label="地区">
+          <el-form-item :label="$t('userportrait.area')">
             <el-select
               v-model="userNum"
-              placeholder="请选择"
+              :placeholder="$t('userportrait.please')"
               size="mini"
               style="width:160px"
               @change="changeUserNum"
@@ -22,7 +22,7 @@
 
             <el-select
               v-model="type"
-              placeholder="请选择"
+              :placeholder="$t('userportrait.please')"
               size="mini"
               style="width:160px"
               @change="search"
@@ -62,13 +62,13 @@
               >
                 <el-table-column
                   prop="name"
-                  label="省份"
+                  :label="$t('userportrait.province')"
                   width="180"
                 >
                 </el-table-column>
                 <el-table-column
                   prop="value"
-                  label="用户数"
+                  :label="$t('userportrait.userNumber')"
                   sortable
                 >
                   <template slot-scope="scope">
@@ -106,9 +106,9 @@
             size="small"
             @change="choseProvince"
             v-model="values.province"
-            placeholder="全国"
+            :placeholder="$t('userportrait.all')"
           >
-            <el-option value="">全国</el-option>
+            <el-option value="">{{$t('userportrait.all')}}</el-option>
             <el-option
               v-for="item in province"
               :key="item.provinceId"
@@ -129,13 +129,13 @@
         >
           <el-table-column
             prop="name"
-            label="城市"
+            :label="$t('userportrait.city')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="value"
-            label="用户数"
+            :label="$t('userportrait.userNumber')"
             sortable
           >
             <template slot-scope="scope">
@@ -169,7 +169,7 @@ export default {
   data () {
     this.chartSettings = {
       labelMap: {
-        'value': '数量'
+        'value': this.$t('userportrait.quantity')
       },
       label: false,
       itemStyle: {
@@ -194,24 +194,8 @@ export default {
       },
       rows1: [],
       chartDataCity: [],
-      userNumOptions: [{
-        value: 1,
-        label: '活跃用户'
-      }, {
-        value: 2,
-        label: '新增用户'
-      }],
-      visitTrendOptions: [
-        {
-          value: 0,
-          label: '昨天'
-        }, {
-          value: 1,
-          label: '最近七天'
-        }, {
-          value: 2,
-          label: '最近三十天'
-        }],
+      userNumOptions: this.$t('userportrait.userNumOptions'),
+      visitTrendOptions: this.$t('userportrait.visitTrendOptions'),
       province: [],
       values: {
         province: ``
@@ -226,6 +210,8 @@ export default {
   watch: {
     lang () {
       this.defaluteData()
+      this.userNumOptions = this.$t('userportrait.userNumOptions')
+      this.visitTrendOptions = this.$t('userportrait.visitTrendOptions')
     },
     rows1 (data) {
       this.$nextTick(_ => {

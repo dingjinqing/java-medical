@@ -5,10 +5,10 @@
         label-position="top"
         label-width="80px"
       >
-        <el-form-item label="性别分布">
+        <el-form-item :label="$t('userportrait.title4')">
           <el-select
             v-model="userNum"
-            placeholder="请选择"
+            :placeholder="$t('userportrait.please')"
             size="mini"
             style="width:160px"
             @change="changeUserNum"
@@ -24,7 +24,7 @@
 
           <el-select
             v-model="type"
-            placeholder="请选择"
+            :placeholder="$t('userportrait.please')"
             size="mini"
             style="width:160px"
             @change="search"
@@ -50,19 +50,19 @@
       >
         <el-table-column
           prop="name"
-          label="性别"
+          :label="$t('userportrait.gender')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="value"
-          label="活跃用户数"
+          :label="label1"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="percentage"
-          label="占比"
+          :label="$t('userportrait.proportion')"
           sortable
         >
         </el-table-column>
@@ -86,25 +86,10 @@ export default {
       endDate: null,
       tableData: null,
       chartDataSex: null,
-      userNumOptions: [{
-        value: 1,
-        label: '活跃用户'
-      }, {
-        value: 2,
-        label: '新增用户'
-      }],
-      visitTrendOptions: [
-        {
-          value: 0,
-          label: '昨天'
-        }, {
-          value: 1,
-          label: '最近七天'
-        }, {
-          value: 2,
-          label: '最近三十天'
-        }],
-      sum: 0
+      userNumOptions: this.$t('userportrait.userNumOptions'),
+      visitTrendOptions: this.$t('userportrait.visitTrendOptions'),
+      sum: 0,
+      label1: this.$t('userportrait.activeUser')
     }
   },
   mounted () {
@@ -115,6 +100,8 @@ export default {
   watch: {
     lang () {
       this.defaluteData()
+      this.userNumOptions = this.$t('userportrait.userNumOptions')
+      this.visitTrendOptions = this.$t('userportrait.visitTrendOptions')
     }
   },
   methods: {
@@ -172,8 +159,10 @@ export default {
       if (this.userNum === 1) {
         // 活跃用户
         needData = this.tableData.activeUser
+        this.label1 = this.$t('userportrait.activeUser')
       } if (this.userNum === 2) {
         // 新增用户
+        this.label1 = this.$t('userportrait.newUsers')
         needData = this.tableData.newAddUser
       }
       var chartData = needData.genders
