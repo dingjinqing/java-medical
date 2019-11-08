@@ -53,10 +53,13 @@ public class PortraitService extends ShopBaseService {
         visitUv.setAgesFirst(activeUser);
         visitUvNew.setAgesFirst(activeUserNew);
         PortraitVo vo = new PortraitVo();
-        vo.setActiveUser(visitUv);
-        vo.setNewAddUser(visitUvNew);
         PortraitSum activeUserSum = portraitSumObject(visitUv);
         PortraitSum newAddUserSum = portraitSumObject(visitUvNew);
+        //移除省字
+        visitUv.setProvince(remove(visitUv));
+        visitUvNew.setProvince(remove(visitUvNew));
+        vo.setActiveUser(visitUv);
+        vo.setNewAddUser(visitUvNew);
         vo.setActiveUserSum(activeUserSum);
         vo.setNewAddUserSum(newAddUserSum);
         vo.setStartDate(showDate(type));
@@ -198,5 +201,23 @@ public class PortraitService extends ShopBaseService {
 		String format2 = df.format(localDateTime2);
 		return format2;
 
+	}
+	
+	//移除省份中的省字，地图匹配用
+	private List<PortraitItem> remove(Portrait portrait) {
+		List<PortraitItem> provinceList = portrait.getProvince();
+		Boolean flag = true;
+		for (PortraitItem item : provinceList) {
+			if (item.getName().contains("省")) {
+				item.setName(item.getName().replace("省", ""));
+			}
+			if (item.getName().contains("西藏")) {
+				flag = false;
+			}
+		}
+		if (!flag) {
+			provinceList.add(new PortraitItem(666, "西藏", 0));
+		}
+		return provinceList;
 	}
 }
