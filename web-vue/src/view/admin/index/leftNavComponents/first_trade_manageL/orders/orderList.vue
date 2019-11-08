@@ -567,7 +567,7 @@
                     <template v-if="orderItem.goodsTypeArray.indexOf('17') != -1">
                       <span>
                         {{currencyPool[orderItem.currency][lang][1]}}
-                        TODO需加sub goods price 字段
+                        {{childOrder.subGoodsPrice.toFixed(2)}}
                       </span>
                       <br />
                       <span>
@@ -722,7 +722,7 @@
                     >
                       <span>
                         {{currencyPool[orderItem.currency][lang][1]}}
-                        TODO需加sub goods price 字段
+                        {{childOrder.subGoodsPrice.toFixed(2)}}
                       </span>
                       <br />
                       <span>
