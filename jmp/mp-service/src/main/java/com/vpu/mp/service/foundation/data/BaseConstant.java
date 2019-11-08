@@ -5,7 +5,7 @@ package com.vpu.mp.service.foundation.data;
  *
  * @date 2019/10/24 16:42
  */
-public  class  BaseConstant {
+public final  class  BaseConstant {
 
     //******************** 营销活动活动*******************/
 

@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -13,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +51,15 @@ public class SeckillListService extends ShopBaseService {
             select.where(ORDER_INFO.GOODS_AMOUNT.le(param.getMaxGoodsAmount()));
         }
         return select;
+    }
+
+    /**
+     *
+     * @param skId
+     * @param userId
+     * @return 已对该活动秒杀下单的数量
+     */
+    public Integer getUserSeckilledGoodsNumber(Integer skId,Integer userId) {
+        return db().select(DSL.sum(ORDER_INFO.GOODS_AMOUNT)).from(SEC_KILL_LIST).leftJoin(ORDER_INFO).on(SEC_KILL_LIST.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).where(SEC_KILL_LIST.SK_ID.eq(skId).and(SEC_KILL_LIST.USER_ID.eq(userId)).and(SEC_KILL_LIST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).groupBy(ORDER_INFO.USER_ID).fetchOne().into(Integer.class);
     }
 }

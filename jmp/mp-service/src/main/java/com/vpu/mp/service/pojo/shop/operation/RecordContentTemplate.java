@@ -30,7 +30,11 @@ public enum   RecordContentTemplate {
     /** 会员-会员卡 */
 	MEMBER_CARD_SEND(4001,RecordContentMessage.MSG_MEMBER_CARD_SEND),
 	/** 会员-余额*/
-	MEMBER_ACCOUNT(4002,RecordContentMessage.MSG_MEMBER_ACCOUNT);
+	MEMBER_ACCOUNT(4002,RecordContentMessage.MSG_MEMBER_ACCOUNT),
+
+    /** 营销-秒杀 */
+    MARKET_SECKILL_ADD(5001,RecordContentMessage.MARKET_SECKILL_ADD);
+
     /**
      * 得到返回码
 	 */

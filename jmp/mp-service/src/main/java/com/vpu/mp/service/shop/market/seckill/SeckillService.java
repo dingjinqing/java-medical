@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.market.seckill;
 
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -19,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisParam
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisTotalVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
@@ -28,18 +30,17 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.Record3;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
@@ -59,15 +60,6 @@ public class SeckillService extends ShopBaseService {
 
     @Autowired
     private QrCodeService qrCode;
-
-    /**
-     * 启用状态
-     */
-    public static final byte STATUS_NORMAL = 1;
-    /**
-     * 停用状态
-     */
-    public static final byte STATUS_DISABLED = 0;
 
     /**
      * 秒杀活动列表分页查询
@@ -103,16 +95,16 @@ public class SeckillService extends ShopBaseService {
             Timestamp now = DateUtil.getLocalDateTime();
             for(byte state : param.getState()){
                 if(state == 1){
-                    stateCondition = stateCondition.or((SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(now)).and(SEC_KILL_DEFINE.END_TIME.gt(now)));
+                    stateCondition = stateCondition.or((SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(now)).and(SEC_KILL_DEFINE.END_TIME.gt(now)));
                 }
                 if(state == 2){
-                    stateCondition = stateCondition.or((SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.gt(now)));
+                    stateCondition = stateCondition.or((SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.gt(now)));
                 }
                 if(state == 3){
-                    stateCondition = stateCondition.or((SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL)).and(SEC_KILL_DEFINE.END_TIME.lt(now)));
+                    stateCondition = stateCondition.or((SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.END_TIME.lt(now)));
                 }
                 if(state == 4){
-                    stateCondition = stateCondition.or(SEC_KILL_DEFINE.STATUS.eq(STATUS_DISABLED));
+                    stateCondition = stateCondition.or(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                 }
             }
             select.where(stateCondition);
@@ -152,6 +144,8 @@ public class SeckillService extends ShopBaseService {
                 db().executeInsert(productRecord);
             }
         });
+        /** 操作记录 */
+        saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.MARKET_SECKILL_ADD.code }), new String[] {param.getName()});
     }
 
     /**
@@ -214,7 +208,7 @@ public class SeckillService extends ShopBaseService {
         return db().select(SEC_KILL_DEFINE.GOODS_ID, DSL.min(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE).as(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE))
             .from(SEC_KILL_DEFINE).innerJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
             .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
+            .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(SEC_KILL_DEFINE.END_TIME.gt(date))
             .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
             .groupBy(SEC_KILL_DEFINE.GOODS_ID)
@@ -269,7 +263,7 @@ public class SeckillService extends ShopBaseService {
             .where(SEC_KILL_DEFINE.START_TIME.lessThan(date))
             .and(SEC_KILL_DEFINE.END_TIME.greaterThan(date))
             .and(SEC_KILL_DEFINE.GOODS_ID.eq(goodsId))
-            .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
+            .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .fetchOne(SEC_KILL_DEFINE.SK_ID);
     }
     /**
@@ -284,7 +278,7 @@ public class SeckillService extends ShopBaseService {
             .where(SEC_KILL_DEFINE.START_TIME.lessThan(date))
             .and(SEC_KILL_DEFINE.END_TIME.greaterThan(date))
             .and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds))
-            .and(SEC_KILL_DEFINE.STATUS.eq(STATUS_NORMAL))
+            .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .fetchMap(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID);
     }
 
@@ -364,6 +358,7 @@ public class SeckillService extends ShopBaseService {
         return null;
     }
 
+    //用户数
     private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
         for (OrderActivityUserNum activityUserNum : list) {
             if (activityUserNum.getDate().equals(timestamp)) {
@@ -374,10 +369,58 @@ public class SeckillService extends ShopBaseService {
     }
 
     /**
-     *
-     * @param goodsId
-     * @param nowDate
+     * 判断是否已经有有进行中的商品
+     * @param goodsId       商品ID
+     * @param startTime     起始时间
+     * @param endTime       终止时间
+     * @return bool
      */
-    public void isOnGoingSecKill(Integer goodsId, Timestamp nowDate) {
+    public boolean isOnGoingSecKill(int goodsId,Timestamp startTime,Timestamp endTime){
+        Record r = db().select(SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.GOODS_ID.eq(goodsId)).and(isConflictingActTime(startTime,endTime))).fetchOne();
+        return r == null ? false : true;
     }
+
+    /**
+     * 判断是否已经有有进行中的商品
+     * @param skId       秒杀活动ID
+     * @return bool
+     */
+    public boolean isOnGoingSecKill(int skId){
+        Record3<Integer, Timestamp, Timestamp> seckill = db().select(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne();
+
+        Record r = db().select(SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.GOODS_ID.eq(seckill.value1())).and(isConflictingActTime(seckill.value2(),seckill.value3()))).fetchOne();
+        return r == null ? false : true;
+    }
+
+    private Condition isConflictingActTime(Timestamp startTime,Timestamp endTime){
+        return (SEC_KILL_DEFINE.START_TIME.gt(startTime).and(SEC_KILL_DEFINE.START_TIME.lt(endTime))).or(SEC_KILL_DEFINE.END_TIME.gt(startTime).and(SEC_KILL_DEFINE.END_TIME.lt(endTime))).or(SEC_KILL_DEFINE.START_TIME.lt(startTime).and(SEC_KILL_DEFINE.END_TIME.gt(endTime)));
+    }
+
+    /**
+     *
+     * @param skId
+     * @param goodsNumber goods表的库存
+     * @return 1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;0正常
+     */
+    public Integer canApplySecKill(Integer skId,Integer goodsNumber) {
+        SecKillDefineRecord secKill = (SecKillDefineRecord) db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne();
+        if(secKill == null){
+            return 1;
+        }
+        if(secKill.getStatus() == BaseConstant.ACTIVITY_STATUS_DISABLE){
+            return 2;
+        }
+        if(secKill.getStartTime().after(DateUtil.getLocalDateTime())){
+            return 3;
+        }
+        if(secKill.getEndTime().before(DateUtil.getLocalDateTime())){
+            return 4;
+        }
+        int minStock = goodsNumber < secKill.getStock() ? goodsNumber : secKill.getStock();
+        if(minStock <= 0){
+            return 5;
+        }
+        return 0;
+    }
+
 }

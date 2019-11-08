@@ -43,6 +43,11 @@ public class RecordContentMessage {
     public static final String MSG_MEMBER_CARD_SEND = "发放给'ID：%d；昵称：%s'的会员卡:  %s";
     /** 会员余额更新变动 */
 	public static final String MSG_MEMBER_ACCOUNT = "修改\"ID: %d  昵称: %s \"的余额 %s";
-    
+
+    /**
+     * 	营销
+     */
+    /** 秒杀活动添加 */
+    public static final String MARKET_SECKILL_ADD = "market.seckill.add";
 
 }
