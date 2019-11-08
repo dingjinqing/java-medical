@@ -702,7 +702,6 @@ export default {
           if (this.param.leastConsume === 0) {
             this.param.useConsumeRestrict = 0
           }
-          console.log(this.param)
         }
       })
     },
@@ -794,6 +793,7 @@ export default {
         this.param.recommendSortId = this.platClass.toString()
         this.param.startTime = this.param.couponDate[0]
         this.param.endTime = this.param.couponDate[1]
+        this.param.cardId = this.param.cardId.toString()
         saveCoupon(this.param).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: '添加成功' })
