@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.activity.info;
 
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,4 +13,11 @@ import lombok.EqualsAndHashCode;
 public class GoodsLabelProcessorDataInfo extends ProcessorDataInfo {
     private String name;
     private Short listPattern;
+
+    public GoodsLabelMpVo convertToGoodsLabelMpVo(){
+        GoodsLabelMpVo vo =new GoodsLabelMpVo();
+        vo.setName(this.name);
+        vo.setListPattern(this.listPattern);
+        return vo;
+    }
 }

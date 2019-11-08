@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods.mp;
 
+import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -7,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
@@ -47,6 +49,9 @@ public class GoodsMpService extends ShopBaseService {
 
     @Autowired
     ProcessorFactoryBuilder processorFactoryBuilder;
+
+    @Autowired
+    protected UpYunConfig upYunConfig;
 
     /**
      * 装修页面 商品列表模块中获取配置后的商品集合数据
@@ -200,10 +205,31 @@ public class GoodsMpService extends ShopBaseService {
      * 小程序端获取商品详情信息
      * @param param {@link com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpParam}
      */
-    public void getGoodsDetailMp(GoodsDetailMpParam param){
+    public GoodsDetailMpVo getGoodsDetailMp(GoodsDetailMpParam param){
         GoodsDetailMpCapsule goodsDetailMpCapsule = getGoodsDetailMpInfoDao(param.getGoodsId());
         GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
         processorFactory.doProcess(goodsDetailMpCapsule,param.getUserId());
+        return convertGoodsDetailCapsuleTGoodsDetailMpVo(goodsDetailMpCapsule);
+    }
+
+    /**
+     * GoodsDetailMpCapsule 转换为 GoodsDetailMpVo
+     * @param goodsDetailMpCapsule
+     * @return
+     */
+    private GoodsDetailMpVo convertGoodsDetailCapsuleTGoodsDetailMpVo(GoodsDetailMpCapsule goodsDetailMpCapsule){
+        GoodsDetailMpVo goodsDetailMpVo = goodsDetailMpCapsule.convertToGoodsDetailMpVo();
+
+        List<String> goodsImgs = goodsDetailMpVo.getGoodsImgs();
+        List<String> fullImgs = new ArrayList<>();
+        goodsImgs.forEach(img->fullImgs.add(getImgFullUrlUtil(img)));
+        goodsDetailMpVo.setGoodsImgs(fullImgs);
+
+        goodsDetailMpVo.setGoodsVideoImg(getVideoFullUrlUtil(goodsDetailMpVo.getGoodsVideoImg(),false));
+
+        goodsDetailMpVo.setGoodsVideo(getVideoFullUrlUtil(goodsDetailMpVo.getGoodsVideo(),true));
+
+        return goodsDetailMpVo;
     }
     /**
      * 将相对路劲修改为全路径
@@ -215,6 +241,20 @@ public class GoodsMpService extends ShopBaseService {
             return null;
         } else {
             return imageService.imageUrl(relativePath);
+        }
+    }
+
+    /**
+     *  商品视频和快照图片相对路径转换全路径
+     * @param relativePath 相对路径
+     * @param videoOrSnapShop true: 视频，false: 快照
+     * @return 全路径
+     */
+    private String getVideoFullUrlUtil(String relativePath,boolean videoOrSnapShop){
+        if (StringUtils.isBlank(relativePath)) {
+            return null;
+        } else {
+            return videoOrSnapShop ? upYunConfig.videoUrl(relativePath) : upYunConfig.imageUrl(relativePath);
         }
     }
 
@@ -282,7 +322,15 @@ public class GoodsMpService extends ShopBaseService {
         List<String> imgs = db().select().from(GOODS_IMG).where(GOODS_IMG.IMG_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
         capsule.getGoodsImgs().add(capsule.getGoodsImg());
         capsule.getGoodsImgs().addAll(imgs);
-
+        //处理视频长度和宽度
+        if (capsule.getGoodsVideoId() != null) {
+            Record2<Integer, Integer> record = db().select(UPLOADED_VIDEO.VIDEO_HEIGHT, UPLOADED_VIDEO.VIDEO_WIDTH).from(UPLOADED_VIDEO)
+                .where(UPLOADED_VIDEO.VIDEO_ID.eq(capsule.getGoodsVideoId()).and(UPLOADED_VIDEO.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))).fetchAny();
+            if (record != null) {
+                capsule.setVideoHeight(record.get(UPLOADED_VIDEO.VIDEO_HEIGHT));
+                capsule.setVideoWidth(record.get(UPLOADED_VIDEO.VIDEO_WIDTH));
+            }
+        }
         return capsule;
     }
 }

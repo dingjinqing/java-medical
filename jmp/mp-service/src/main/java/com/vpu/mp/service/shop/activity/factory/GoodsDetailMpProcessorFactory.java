@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.processor.GoodsDetailProcessor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ import java.util.List;
 public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<GoodsDetailProcessor, GoodsDetailMpCapsule>{
     @Override
     public void sortProcessors() {
+        processors.sort(Comparator.comparing(GoodsDetailProcessor::getPriorityForDetail));
     }
 
     @Override
@@ -25,7 +27,6 @@ public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<Good
         doProcess(capsules.get(0),userId);
     }
 
-    @SuppressWarnings("unchecked")
     public void doProcess(GoodsDetailMpCapsule goods, Integer userId) {
 
         GoodsDetailCapsuleParam param  = new GoodsDetailCapsuleParam();
@@ -34,6 +35,9 @@ public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<Good
         param.setSortId(goods.getSortId());
         param.setCatId(goods.getCatId());
 
+        for (GoodsDetailProcessor processor : processors) {
+            processor.processGoodsDetail(goods,param);
+        }
 
     }
 }

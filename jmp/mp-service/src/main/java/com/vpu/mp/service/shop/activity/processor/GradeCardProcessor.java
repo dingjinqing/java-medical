@@ -83,16 +83,20 @@ public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetai
         });
     }
 
-
     /*****************商品详情处理******************/
+
+    @Override
+    public Byte getPriorityForDetail() {
+        return 0;
+    }
+
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
         List<GradeCardProcessorDataInfo> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
         capsule.setGradeCardPrice(goodsGradeGradePrice);
     }
-    /**
-     * 购物车
-     */
+
+    /*****************购物车处理（请以后都加上不同模块的华丽分隔符）******************/
     @Override
     public void doCartOperation() {
 

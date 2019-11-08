@@ -107,7 +107,14 @@ public class ExclusiveProcessor implements ActivityGoodsListProcessor,GoodsDetai
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
         });
     }
+
     /*****************商品详情处理******************/
+
+    @Override
+    public Byte getPriorityForDetail() {
+        return 0;
+    }
+
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
 

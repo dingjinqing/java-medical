@@ -116,6 +116,11 @@ public class CouponProcessor implements ActivityGoodsListProcessor,GoodsDetailPr
     }
 
     @Override
+    public Byte getPriorityForDetail() {
+        return 0;
+    }
+
+    @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
         List<CouponProcessorDataInfo> coupon = getGoodsDetailData(param);
         capsule.setCoupons(coupon);

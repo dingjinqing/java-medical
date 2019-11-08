@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.activity.info;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.CouponMpVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -55,4 +56,26 @@ public class CouponProcessorDataInfo extends ProcessorDataInfo {
     /**当前用户是否可以领取*/
     private Boolean canFetch;
     private Integer receivePerPerson;
+
+    public CouponMpVo convertToCouponMpVo(){
+        CouponMpVo vo =new CouponMpVo();
+        vo.setActCode(this.actCode);
+        vo.setDenomination(this.denomination);
+        vo.setUseConsumeRestrict(this.useConsumeRestrict);
+        vo.setLeastConsume(this.leastConsume);
+        vo.setId(this.id);
+        vo.setType(this.type);
+        vo.setActName(this.actName);
+        vo.setStartTime(this.startTime);
+        vo.setEndTime(this.endTime);
+        vo.setValidityType(this.validityType);
+        vo.setValidity(this.validity);
+        vo.setValidityHour(this.validityHour);
+        vo.setValidityMinute(this.validityMinute);
+        vo.setUseScore(this.useScore);
+        vo.setScoreNumber(this.scoreNumber);
+        vo.setIsCardExclusive(this.isCardExclusive);
+        vo.setCanFetch(this.canFetch);
+        return vo;
+    }
 }

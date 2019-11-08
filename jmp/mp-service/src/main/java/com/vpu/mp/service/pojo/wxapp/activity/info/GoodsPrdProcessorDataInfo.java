@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.activity.info;
 
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsPrdMpVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,8 +25,22 @@ public class GoodsPrdProcessorDataInfo extends ProcessorDataInfo {
     private Integer prdId;
     private Integer prdNumber;
     private BigDecimal prdPrice;
+    private BigDecimal prdRealPrice;
+    private BigDecimal prdLinePrice;
     private BigDecimal prdMarketPrice;
     private String prdSpecs;
     private String prdDesc;
     private String prdImg;
+
+    public GoodsPrdMpVo convertToGoodsPrdMpVo(){
+        GoodsPrdMpVo vo = new GoodsPrdMpVo();
+        vo.setPrdId(this.prdId);
+        vo.setPrdNumber(this.prdNumber);
+        vo.setPrdRealPrice(this.prdRealPrice);
+        vo.setPrdLinePrice(this.prdLinePrice);
+        vo.setPrdSpecs(this.prdSpecs);
+        vo.setPrdDesc(this.prdDesc);
+        vo.setPrdImg(this.prdImg);
+        return vo;
+    }
 }

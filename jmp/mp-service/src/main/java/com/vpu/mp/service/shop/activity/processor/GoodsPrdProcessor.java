@@ -56,7 +56,14 @@ public class GoodsPrdProcessor implements ActivityGoodsListProcessor,GoodsDetail
         });
     }
 
+
     /*****************商品详情处理******************/
+
+    @Override
+    public Byte getPriorityForDetail() {
+        return 0;
+    }
+
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
         List<GoodsPrdProcessorDataInfo> prdInfos = goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());

@@ -1,12 +1,18 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsPrdProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 小程序-商品列表-处理最终价格信息
@@ -14,7 +20,7 @@ import java.util.Map;
  * @date 2019年11月01日
  */
 @Service
-public class GoodsTailProcessor implements ActivityGoodsListProcessor {
+public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor {
     @Override
     public Byte getPriority() {
         return Byte.MAX_VALUE;
@@ -36,5 +42,21 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor {
                 capsule.setLinePrice(capsule.getPrdMaxPrice());
             }
         });
+    }
+
+    @Override
+    public Byte getPriorityForDetail() {
+        return Byte.MAX_VALUE;
+    }
+
+    @Override
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+        List<GradeCardProcessorDataInfo> gradeCardPrice = capsule.getGradeCardPrice();
+        if (gradeCardPrice == null || gradeCardPrice.size() == 0) {
+            return;
+        }
+        List<GoodsPrdProcessorDataInfo> products = capsule.getProducts();
+        Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GradeCardProcessorDataInfo::getPrdId, GradeCardProcessorDataInfo::getGradePrice));
+        products.forEach(prd-> prd.setPrdRealPrice(gradePriceMap.get(prd.getPrdId())));
     }
 }

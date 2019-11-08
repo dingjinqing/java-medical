@@ -1,6 +1,10 @@
 package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 
 import com.vpu.mp.service.pojo.wxapp.activity.info.*;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.CouponMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsPrdMpVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,4 +49,38 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
     private Boolean userCanBuy;
     /**商品会员专享卡信息*/
     private List<ExclusiveProcessorDataInfo> exclusiveCards;
+
+    public GoodsDetailMpVo convertToGoodsDetailMpVo(){
+        GoodsDetailMpVo vo =new GoodsDetailMpVo();
+        vo.setGoodsId(this.goodsId);
+        vo.setGoodsName(this.goodsName);
+        vo.setGoodsType(this.goodsType);
+        vo.setGoodsSaleNum(this.goodsSaleNum);
+        vo.setGoodsNumber(this.goodsNumber);
+        vo.setDefaultPrd(this.defaultPrd);
+        vo.setGoodsImgs(this.goodsImgs);
+        vo.setGoodsVideo(this.goodsVideo);
+        vo.setGoodsVideoImg(this.goodsVideoImg);
+        vo.setVideoWidth(this.videoWidth);
+        vo.setVideoHeight(this.videoHeight);
+
+        if (this.labels != null) {
+            List<GoodsLabelMpVo> labels = new ArrayList<>();
+            this.labels.forEach(label-> labels.add(label.convertToGoodsLabelMpVo()));
+            vo.setLabels(labels);
+        }
+
+        if (this.coupons != null) {
+            List<CouponMpVo> couponMpVos = new ArrayList<>();
+            this.coupons.forEach(coupon-> couponMpVos.add(coupon.convertToCouponMpVo()));
+            vo.setCoupons(couponMpVos);
+        }
+
+        if (this.products != null) {
+            List<GoodsPrdMpVo> prdMpVos = new ArrayList<>();
+            this.products.forEach(prd-> prdMpVos.add(prd.convertToGoodsPrdMpVo()));
+            vo.setProducts(prdMpVos);
+        }
+        return vo;
+    }
 }

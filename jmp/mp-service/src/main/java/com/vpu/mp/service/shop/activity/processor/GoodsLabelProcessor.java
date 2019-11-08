@@ -93,6 +93,11 @@ public class GoodsLabelProcessor implements ActivityGoodsListProcessor,GoodsDeta
         });
     }
 
+    @Override
+    public Byte getPriorityForDetail() {
+        return 0;
+    }
+
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
