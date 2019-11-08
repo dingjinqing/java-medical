@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.CouponProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.CouponProcessorDao;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -99,6 +100,11 @@ public class CouponProcessor implements ActivityGoodsListProcessor,GoodsDetailPr
         List<Integer> couponIds = goodsCouponForDetail.stream().map(CouponProcessorDataInfo::getId).collect(Collectors.toList());
         Map<Integer, Integer> userCouponsAlreadyNum = couponProcessorDao.getUserCouponsAlreadyNum(param.getUserId(), couponIds);
         goodsCouponForDetail.forEach(coupon->{
+            if (StringUtils.isNotBlank(coupon.getCardId())) {
+                coupon.setIsCardExclusive(true);
+            } else {
+                coupon.setIsCardExclusive(false);
+            }
             int receivePer = coupon.getReceivePerPerson();
             int already = userCouponsAlreadyNum.get(coupon.getId());
 

@@ -51,6 +51,7 @@ public class CouponProcessorDataInfo extends ProcessorDataInfo {
     private Byte limitSurplusFlag;
     /**剩余数量*/
     private Integer surplus;
+    private String cardId;
     /**是否会员专享优惠券*/
     private Boolean isCardExclusive;
     /**当前用户是否可以领取*/

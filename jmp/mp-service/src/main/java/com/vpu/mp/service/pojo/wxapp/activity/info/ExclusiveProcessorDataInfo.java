@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.activity.info;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.MemberCardMpVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -49,4 +50,14 @@ public class ExclusiveProcessorDataInfo extends ProcessorDataInfo {
     private String grade;
     /**用户对本卡的使用状态：0 待领取，1已领取，2待激活，3待续费，4已过期*/
     private Byte status;
+
+    public MemberCardMpVo convertToMemberCardMpVo(){
+        MemberCardMpVo vo =new MemberCardMpVo();
+        vo.setId(this.id);
+        vo.setCardName(this.cardName);
+        vo.setIsPay(this.isPay);
+        vo.setPayFee(this.payFee);
+        vo.setStatus(this.status);
+        return vo;
+    }
 }

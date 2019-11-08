@@ -1,10 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 
 import com.vpu.mp.service.pojo.wxapp.activity.info.*;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.CouponMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,12 +54,15 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
         vo.setGoodsType(this.goodsType);
         vo.setGoodsSaleNum(this.goodsSaleNum);
         vo.setGoodsNumber(this.goodsNumber);
+        vo.setBrandId(this.brandId);
+        vo.setBrandName(this.brandName);
         vo.setDefaultPrd(this.defaultPrd);
         vo.setGoodsImgs(this.goodsImgs);
         vo.setGoodsVideo(this.goodsVideo);
         vo.setGoodsVideoImg(this.goodsVideoImg);
         vo.setVideoWidth(this.videoWidth);
         vo.setVideoHeight(this.videoHeight);
+        vo.setUserCanBuy(this.userCanBuy);
 
         if (this.labels != null) {
             List<GoodsLabelMpVo> labels = new ArrayList<>();
@@ -81,6 +81,14 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
             this.products.forEach(prd-> prdMpVos.add(prd.convertToGoodsPrdMpVo()));
             vo.setProducts(prdMpVos);
         }
+
+        if (this.exclusiveCards != null) {
+            List<MemberCardMpVo> cardVos =new ArrayList<>();
+            this.exclusiveCards.forEach(card->cardVos.add(card.convertToMemberCardMpVo()));
+            vo.setMemberCards(cardVos);
+        }
+
+
         return vo;
     }
 }

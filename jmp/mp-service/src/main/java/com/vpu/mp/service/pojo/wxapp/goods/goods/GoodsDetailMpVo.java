@@ -21,8 +21,11 @@ public class GoodsDetailMpVo extends GoodsBaseMpVo{
     private Integer videoWidth;
     private Integer videoHeight;
 
+    private Integer brandId;
+    private String brandName;
+    private Boolean userCanBuy;
     List<GoodsLabelMpVo> labels;
     List<CouponMpVo> coupons;
     List<GoodsPrdMpVo> products;
-
+    List<MemberCardMpVo> memberCards;
 }
