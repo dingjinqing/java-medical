@@ -21,4 +21,6 @@ public class EsFiledTypeConstant {
 
     public static final String SCALED_FLOAT = "scaled_float";
 
+    public static final String DATE = "date";
+
 }
