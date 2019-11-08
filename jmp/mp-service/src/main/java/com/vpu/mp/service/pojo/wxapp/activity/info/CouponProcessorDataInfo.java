@@ -30,6 +30,8 @@ public class CouponProcessorDataInfo extends ProcessorDataInfo {
 
     /********商品详情*********/
     private Integer id;
+    /**优惠券类型0普通，1分裂*/
+    private Byte type;
     private String actName;
     private Timestamp startTime;
     private Timestamp endTime;
