@@ -178,7 +178,8 @@ export default {
         }
       },
       aspectScale: 0.75,
-      selectData: 'true'
+      selectData: 'true',
+      zoom: 1.2
     }
     return {
       type: 0,
