@@ -141,6 +141,22 @@ export default {
       handler (newData) {
         console.log('newData:', newData, this.modulesData)
         this.data = this.modulesData
+        this.tableData = this.modulesData.seckill_goods.map(function (row) {
+          return {
+            goodsId: row.goods_id,
+            skid: row.act_id,
+            secPrice: row.sec_price,
+            goodsImg: row.goods_img,
+            goodsName: row.goods_name,
+            shopPrice: row.goods_price,
+            stock: row.seckill_num,
+            startTime: row.act_begin_time,
+            status: row.act_status,
+            isOnSale: row.is_on_sale,
+            isDelete: row.is_delete,
+            endTime: row.act_end_time
+          }
+        })
       },
       immediate: true
     },

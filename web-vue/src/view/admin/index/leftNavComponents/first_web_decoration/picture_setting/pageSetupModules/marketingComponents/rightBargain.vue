@@ -195,6 +195,22 @@ export default {
       handler (newData) {
         console.log('newData:', newData, this.modulesData)
         this.data = this.modulesData
+        this.tableData = this.modulesData.bargain_goods.map(function (row) {
+          return {
+            goodsId: row.goods_id,
+            id: row.act_id,
+            goodsImg: row.goods_img,
+            goodsName: row.goods_name,
+            shopPrice: row.goods_price,
+            expectationPrice: row.expectation_price,
+            stock: row.bargain_num,
+            startTime: row.act_begin_time,
+            status: row.act_status,
+            isOnSale: row.is_on_sale,
+            isDelete: row.is_delete,
+            endTime: row.act_end_time
+          }
+        })
       },
       immediate: true
     },
