@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.annotation.EsFiled;
+import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -68,6 +69,9 @@ public class EsDataInitService implements InitializingBean {
                 xContentBuilder.startObject(a.name().getEsName());
                 xContentBuilder.field("type",a.type());
                 xContentBuilder.field("index",a.index());
+                if( EsFiledTypeConstant.DATE.equals(a.type()) ){
+                    xContentBuilder.field("format","yyyy-MM-dd HH:mm:ss");
+                }
                 if(StringUtils.isNotBlank(a.analyzer()) ){
                     xContentBuilder.field("analyzer",a.analyzer());
                 }
@@ -104,7 +108,7 @@ public class EsDataInitService implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         try {
             if( !assertIndex(ES_GOODS) ){
-//                createIndex(ES_GOODS);
+                createIndex(ES_GOODS);
             }
         } catch (IOException e) {
             e.printStackTrace();
