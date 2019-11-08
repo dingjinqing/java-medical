@@ -26,7 +26,7 @@ public class MemberCardControllerTest extends AdminBaseControllerTest{
 		this.login();
 		param = new CardParam();
 		param.setId(825);
-		param.setGoodsId(new Integer[] {1,2,6});
+		//param.setGoodsId(new Integer[] {1,2,6});
 		//等级会员卡更新v2
 		param.setCardName(null);
 	}

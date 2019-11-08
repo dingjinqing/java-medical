@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreCfgVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontVo;
