@@ -79,11 +79,28 @@ public class MemberCardProcessorDao extends ShopBaseService {
     }
 
     /**
+     * 查询商品不同规格的规格价格
+     * @param userId 用户id
+     * @param goodsId 商品id
+     */
+    public List<GradeCardProcessorDataInfo> getGoodsGradeGradePrice(Integer userId,Integer goodsId){
+        // 获取会员等级
+        Record2<Integer, String> userGradeCard = getUserGradeCard(userId);
+        if (userGradeCard == null) {
+            return null;
+        }
+        // 获取商品规格等级信息
+        return db().select(GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE).from(GRADE_PRD).where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(GRADE_PRD.GRADE.eq(userGradeCard.get(MEMBER_CARD.GRADE))).and(GRADE_PRD.GOODS_ID.eq(goodsId))
+            .fetchInto(GradeCardProcessorDataInfo.class);
+    }
+
+    /**
      * 获取用户的等级卡
      * @param userId 用户id值
      * @return Record2 :MEMBER_CARD.ID, MEMBER_CARD.GRADE
      */
-    public Record2<Integer, String> getUserGradeCard(Integer userId) {
+    private Record2<Integer, String> getUserGradeCard(Integer userId) {
         Record2<Integer, String> gradeCard = db().select(MEMBER_CARD.ID, MEMBER_CARD.GRADE).from(USER_CARD).join(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
             .where(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(USER_CARD.USER_ID.eq(userId)).and(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE))

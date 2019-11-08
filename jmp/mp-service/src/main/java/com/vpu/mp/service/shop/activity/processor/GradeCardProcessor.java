@@ -2,9 +2,11 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +21,12 @@ import java.util.stream.Collectors;
  * @date 2019年10月31日
  */
 @Service
-public class GradeCardProcessor implements ActivityGoodsListProcessor {
+public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor<GradeCardProcessorDataInfo>{
 
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
 
+    /*****************商品列表处理*******************/
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_MEMBER_GRADE_PRIORITY;
@@ -78,5 +81,16 @@ public class GradeCardProcessor implements ActivityGoodsListProcessor {
             }
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
         });
+    }
+
+    /*****************商品详情处理******************/
+    @Override
+    public List<GradeCardProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
+        return memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(),param.getGoodsId());
+    }
+
+    @Override
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, List<GradeCardProcessorDataInfo> dataInfo) {
+        capsule.setGradeCard(dataInfo);
     }
 }

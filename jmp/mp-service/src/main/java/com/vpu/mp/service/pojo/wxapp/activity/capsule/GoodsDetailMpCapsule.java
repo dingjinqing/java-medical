@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.CouponProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsPrdProcessorDataInfo;
+import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,4 +42,5 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
     private List<GoodsLabelProcessorDataInfo> labels;
     private List<CouponProcessorDataInfo> coupons;
     private List<GoodsPrdProcessorDataInfo> products;
+    private List<GradeCardProcessorDataInfo> gradeCard;
 }
