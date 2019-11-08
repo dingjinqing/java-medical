@@ -6,9 +6,9 @@ import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppCartListParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductsParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
-import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,6 +75,18 @@ public class WxAppCartController extends WxAppBaseController {
         if (!resultMessage.getFlag()){
             return fail(resultMessage);
         }
+        return success();
+    }
+
+    /**
+     * 从购物车删除商品
+     * @param param
+     * @return
+     */
+    @PostMapping("/removes")
+    public JsonResult close(@RequestBody WxAppRemoveCartProductsParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        shop().cart.removeCartProductByIds(user.getUserId(),param.getRecIds());
         return success();
     }
 

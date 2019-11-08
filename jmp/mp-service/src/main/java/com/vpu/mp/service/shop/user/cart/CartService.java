@@ -271,6 +271,10 @@ public class CartService extends ShopBaseService {
         return db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.REC_ID.eq(recId)).execute();
     }
 
+    public int removeCartProductByIds(Integer userId, List<Integer> recIds) {
+        return db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.REC_ID.in(recIds)).execute();
+    }
+
     /**
      * 改变购物车商品数量
      *

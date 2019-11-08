@@ -6,6 +6,7 @@ import static org.jooq.tools.StringUtils.abbreviate;
 
 import java.util.Arrays;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Configuration;
 import org.jooq.ExecuteContext;
 import org.jooq.ExecuteType;
@@ -20,13 +21,14 @@ import org.jooq.impl.DefaultVisitListener;
 import org.jooq.impl.DefaultVisitListenerProvider;
 import org.jooq.tools.JooqLogger;
 import org.jooq.tools.StringUtils;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
-
+@Slf4j
 public class SqlExcuteListener extends DefaultExecuteListener {
 
 	private static final JooqLogger LOGGER = JooqLogger.getLogger(SqlExcuteListener.class);
