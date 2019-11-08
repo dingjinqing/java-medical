@@ -381,13 +381,30 @@
         <div class="selectTemplate addPicContainer">
           <span>选择图片：</span>
           <div>
-            <div class="addPic">
+            <div
+              class="addPic"
+              @click="handlrToCallAddImgDialog()"
+            >
               <div
+                v-if="!imgUrl"
                 class="iconZb"
                 :style="'background:url('+$imageHost+'/image/admin/shop_beautify/add_decorete.png'+') center center / 65% 65% no-repeat'"
               >
 
               </div>
+              <img
+                v-if="imgUrl"
+                :src="imgUrl"
+              >
+              <div
+                class="bottomTips"
+                v-if="imgUrl"
+                style="background: rgba(0, 0, 0, 0.5)"
+              >
+                <span :style="'background:url('+$imageHost+'/image/admin/shop_beautify/add_decorete.png'+') center center / 65% 65% no-repeat'"></span>
+                <i>修改</i>
+              </div>
+
             </div>
           </div>
         </div>
@@ -399,7 +416,10 @@
               size="small"
               v-model="linkInput"
             ></el-input>
-            <el-button size="small">选择链接</el-button>
+            <el-button
+              size="small"
+              @click="handleToCallSelectLink()"
+            >选择链接</el-button>
           </div>
         </div>
         <div style="color:#999;margin:10px 0 0 10px">
@@ -408,12 +428,25 @@
       </div>
       <!--end-->
     </div>
+    <!--选择图片弹窗-->
+    <ImageDalog
+      pageIndex='pictureSpace'
+      :tuneUp='addImgTuneUp'
+      @handleSelectImg='handleSelectImg'
+    />
+    <!--选择链接弹窗-->
+    <SelectLinks
+      :tuneUpSelectLink='tuneUpSelectLink'
+      @selectLinkPath='selectLinkPath'
+    />
   </div>
 </template>
 <script>
 export default {
   components: {
-    LayoutTable: () => import('./layoutTable')
+    LayoutTable: () => import('./layoutTable'), // 自定义布局表格组件
+    ImageDalog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
+    SelectLinks: () => import('@/components/admin/selectLinks') //  选择链接弹窗
   },
   props: {
     modulesData: Object,
@@ -478,11 +511,21 @@ export default {
           styleData: [
             {
               size: '375',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 1,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '375',
-              isChecked: true
+              isChecked: true,
+              'x': 1,
+              'y': 3,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             }
           ]
         },
@@ -490,15 +533,30 @@ export default {
           styleData: [
             {
               size: '250',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 1,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '250',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 3,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '250',
-              isChecked: true
+              isChecked: true,
+              'x': 1,
+              'y': 5,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             }
           ]
         },
@@ -506,19 +564,39 @@ export default {
           styleData: [
             {
               size: '188',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 1,
+              'rows': 1,
+              'cols': 1,
+              'img_url': ''
             },
             {
               size: '188',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 2,
+              'rows': 1,
+              'cols': 1,
+              'img_url': ''
             },
             {
               size: '188',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 3,
+              'rows': 1,
+              'cols': 1,
+              'img_url': ''
             },
             {
               size: '188',
-              isChecked: true
+              isChecked: true,
+              'x': 1,
+              'y': 4,
+              'rows': 1,
+              'cols': 1,
+              'img_url': ''
             }
           ]
         },
@@ -526,19 +604,39 @@ export default {
           styleData: [
             {
               size: '375',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 1,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '375',
-              isChecked: false
+              isChecked: false,
+              'x': 3,
+              'y': 1,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '375',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 3,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '375',
-              isChecked: true
+              isChecked: true,
+              'x': 3,
+              'y': 3,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             }
           ]
         },
@@ -546,15 +644,30 @@ export default {
           styleData: [
             {
               size: '375X750',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 1,
+              'rows': 4,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '375',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 3,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '375',
-              isChecked: true
+              isChecked: true,
+              'x': 3,
+              'y': 3,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             }
           ]
         },
@@ -562,15 +675,30 @@ export default {
           styleData: [
             {
               size: '750X375',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 1,
+              'rows': 2,
+              'cols': 4,
+              'img_url': ''
             },
             {
               size: '375',
-              isChecked: false
+              isChecked: false,
+              'x': 3,
+              'y': 1,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '375',
-              isChecked: true
+              isChecked: true,
+              'x': 3,
+              'y': 3,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             }
           ]
         },
@@ -578,19 +706,39 @@ export default {
           styleData: [
             {
               size: '375X750',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 1,
+              'rows': 4,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '375X375',
-              isChecked: false
+              isChecked: false,
+              'x': 1,
+              'y': 3,
+              'rows': 2,
+              'cols': 2,
+              'img_url': ''
             },
             {
               size: '188X375',
-              isChecked: false
+              isChecked: false,
+              'x': 3,
+              'y': 3,
+              'rows': 2,
+              'cols': 1,
+              'img_url': ''
             },
             {
               size: '188X375',
-              isChecked: true
+              isChecked: true,
+              'x': 3,
+              'y': 4,
+              'rows': 2,
+              'cols': 1,
+              'img_url': ''
             }
           ]
         },
@@ -599,7 +747,11 @@ export default {
         }
       ],
       nowTemplateClickIndex: 0, // 当前选中的模板index
+      nowLayutIndex: null, //  当前选中的布局单元格
       linkInput: '', // 图片跳转链接input
+      addImgTuneUp: false, // 添加图片弹窗flag
+      imgUrl: null, // 当前显示的图片路径
+      tuneUpSelectLink: false, // 选择链接弹窗调起flag
       moduleSaveData: { // 模块保存数据
 
       }
@@ -622,6 +774,12 @@ export default {
         this.$emit('handleToBackData', newData)
       },
       deep: true
+    },
+    // 监听当前选中模板类型
+    nowTemplateClickIndex (newData) {
+      console.log(newData)
+      // 处理保存数据中的data字段数据 即图片坐标路径信息
+      this.handleToSaveDataImgInfo(newData)
     }
   },
   methods: {
@@ -640,6 +798,63 @@ export default {
         item.isChecked = false
       })
       this.layoutData[flag].styleData[index].isChecked = true
+    },
+    // 调起添加图片弹窗
+    handlrToCallAddImgDialog () {
+      this.addImgTuneUp = !this.addImgTuneUp
+    },
+    // 图片弹窗选中图片后回传
+    handleSelectImg (data) {
+      console.log(data)
+      this.imgUrl = data.imgUrl
+    },
+    // 调起选择链接弹窗
+    handleToCallSelectLink () {
+      this.tuneUpSelectLink = !this.tuneUpSelectLink
+    },
+    // 选择链接弹窗选中链接路径回传
+    selectLinkPath (path) {
+      console.log(path)
+      this.linkInput = path
+    },
+    // 处理保存数据中的data字段数据 即图片坐标路径信息
+    handleToSaveDataImgInfo (type) {
+      let num = null
+      switch (type) {
+        case 0:
+          num = 2
+          break
+        case 1:
+          num = 3
+          break
+        case 2:
+          num = 4
+          break
+        case 3:
+          num = 4
+          break
+        case 4:
+          num = 3
+          break
+        case 5:
+          num = 3
+          break
+        case 6:
+          num = 4
+          break
+      }
+      let obj = {}
+      for (let index = 0; index < num; index++) {
+        obj[`block_${index}`] = {
+          'name': `block_${index}`,
+          'x': this.layoutData[type].styleData[index]['x'],
+          'y': this.layoutData[type].styleData[index]['y'],
+          'rows': this.layoutData[type].styleData[index]['rows'],
+          'cols': this.layoutData[type].styleData[index]['cols'],
+          'img_url': ''
+        }
+      }
+      console.log(obj)
     }
   }
 }
@@ -838,11 +1053,36 @@ export default {
           line-height: 70px;
         }
         .addPic {
+          position: relative;
           cursor: pointer;
           .iconZb {
             width: 70px;
             height: 70px;
             border: 1px solid #e5e5e5;
+          }
+          img {
+            max-width: 70px;
+            max-height: 70px;
+          }
+          .bottomTips {
+            width: 100%;
+            height: 20px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+
+            span {
+              display: inline-block;
+              width: 100%;
+              height: 100%;
+              z-index: 100;
+            }
+            i {
+              position: absolute;
+              left: 30%;
+              bottom: 15%;
+              color: #fff;
+            }
           }
         }
       }

@@ -368,7 +368,9 @@ export default {
     pageSet: {
       handler (newData) {
         console.log(newData)
-        this.ruleForm = newData
+        if (newData) {
+          this.ruleForm = newData
+        }
       },
       immediate: true,
       deep: true
