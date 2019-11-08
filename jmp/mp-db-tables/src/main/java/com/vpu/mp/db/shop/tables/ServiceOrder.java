@@ -8,26 +8,15 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -43,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceOrder extends TableImpl<ServiceOrderRecord> {
 
-    private static final long serialVersionUID = -1306533475;
+    private static final long serialVersionUID = -1540731324;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_order</code>
@@ -181,17 +170,17 @@ public class ServiceOrder extends TableImpl<ServiceOrderRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_service_order.pay_time</code>. 支付时间
      */
-    public final TableField<ServiceOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "支付时间");
+    public final TableField<ServiceOrderRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "支付时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_order.cancelled_time</code>. 取消时间
      */
-    public final TableField<ServiceOrderRecord, Timestamp> CANCELLED_TIME = createField("cancelled_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "取消时间");
+    public final TableField<ServiceOrderRecord, Timestamp> CANCELLED_TIME = createField("cancelled_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "取消时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_order.finished_time</code>. 订单完成时间
      */
-    public final TableField<ServiceOrderRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "订单完成时间");
+    public final TableField<ServiceOrderRecord, Timestamp> FINISHED_TIME = createField("finished_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "订单完成时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_order.prepay_id</code>. 微信支付id，用于发送模板消息
@@ -237,6 +226,21 @@ public class ServiceOrder extends TableImpl<ServiceOrderRecord> {
      * The column <code>mini_shop_471752.b2c_service_order.update_time</code>. 最后修改时间
      */
     public final TableField<ServiceOrderRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_service_order.member_card_no</code>. 会员卡NO
+     */
+    public final TableField<ServiceOrderRecord, String> MEMBER_CARD_NO = createField("member_card_no", org.jooq.impl.SQLDataType.VARCHAR(32).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员卡NO");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_service_order.member_card_balance</code>. 会员卡消费金额
+     */
+    public final TableField<ServiceOrderRecord, BigDecimal> MEMBER_CARD_BALANCE = createField("member_card_balance", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡消费金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_service_order.use_account</code>. 用户消费余额
+     */
+    public final TableField<ServiceOrderRecord, BigDecimal> USE_ACCOUNT = createField("use_account", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "用户消费余额");
 
     /**
      * Create a <code>mini_shop_471752.b2c_service_order</code> table reference

@@ -5,14 +5,12 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.ServiceOrder;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 
 /**
@@ -28,7 +26,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> {
 
-    private static final long serialVersionUID = 421509062;
+    private static final long serialVersionUID = 1584525313;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_order.order_id</code>. 订单id
@@ -534,6 +532,48 @@ public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> 
         return (Timestamp) get(35);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_service_order.member_card_no</code>. 会员卡NO
+     */
+    public void setMemberCardNo(String value) {
+        set(36, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_service_order.member_card_no</code>. 会员卡NO
+     */
+    public String getMemberCardNo() {
+        return (String) get(36);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_service_order.member_card_balance</code>. 会员卡消费金额
+     */
+    public void setMemberCardBalance(BigDecimal value) {
+        set(37, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_service_order.member_card_balance</code>. 会员卡消费金额
+     */
+    public BigDecimal getMemberCardBalance() {
+        return (BigDecimal) get(37);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_service_order.use_account</code>. 用户消费余额
+     */
+    public void setUseAccount(BigDecimal value) {
+        set(38, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_service_order.use_account</code>. 用户消费余额
+     */
+    public BigDecimal getUseAccount() {
+        return (BigDecimal) get(38);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -560,7 +600,7 @@ public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> 
     /**
      * Create a detached, initialised ServiceOrderRecord
      */
-    public ServiceOrderRecord(Integer orderId, Integer storeId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, String subscriber, String mobile, Integer serviceId, Integer technicianId, String technicianName, String serviceDate, String servicePeriod, String addMessage, String adminMessage, String verifyCode, String verifyAdmin, String payCode, String payName, String paySn, BigDecimal moneyPaid, BigDecimal discount, Integer couponId, BigDecimal orderAmount, Timestamp payTime, Timestamp cancelledTime, Timestamp finishedTime, String prepayId, Byte delFlag, Byte verifyType, String cancelReason, Byte type, Byte verifyPay, String aliTradeNo, Timestamp createTime, Timestamp updateTime) {
+    public ServiceOrderRecord(Integer orderId, Integer storeId, String orderSn, Integer userId, Byte orderStatus, String orderStatusName, String subscriber, String mobile, Integer serviceId, Integer technicianId, String technicianName, String serviceDate, String servicePeriod, String addMessage, String adminMessage, String verifyCode, String verifyAdmin, String payCode, String payName, String paySn, BigDecimal moneyPaid, BigDecimal discount, Integer couponId, BigDecimal orderAmount, Timestamp payTime, Timestamp cancelledTime, Timestamp finishedTime, String prepayId, Byte delFlag, Byte verifyType, String cancelReason, Byte type, Byte verifyPay, String aliTradeNo, Timestamp createTime, Timestamp updateTime, String memberCardNo, BigDecimal memberCardBalance, BigDecimal useAccount) {
         super(ServiceOrder.SERVICE_ORDER);
 
         set(0, orderId);
@@ -599,5 +639,8 @@ public class ServiceOrderRecord extends UpdatableRecordImpl<ServiceOrderRecord> 
         set(33, aliTradeNo);
         set(34, createTime);
         set(35, updateTime);
+        set(36, memberCardNo);
+        set(37, memberCardBalance);
+        set(38, useAccount);
     }
 }

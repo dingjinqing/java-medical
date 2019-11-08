@@ -1105,3 +1105,9 @@ MODIFY COLUMN `old_paid_money` DECIMAL(10,2) DEFAULT NULL COMMENT '成交新老�
 ALTER TABLE b2c_comment_service
 drop KEY `shop_id`,
 add KEY `service_id` (`service_id`) USING BTREE ;
+
+-- 门店服务订单添加字段
+ALTER TABLE b2c_service_order
+ADD  COLUMN  `member_card_no` varchar(32)  DEFAULT '0' COMMENT '会员卡NO',
+ADD  COLUMN  `member_card_balance` decimal(10,2) DEFAULT '0.00' COMMENT '会员卡消费金额',
+ADD  COLUMN   `use_account` decimal(10,2) DEFAULT '0.00' COMMENT '用户消费余额';
