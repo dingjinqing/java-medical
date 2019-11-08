@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,6 +53,9 @@ public class PortraitService extends ShopBaseService {
         KeyValueChart activeUserNew = getChart(visitUvNew);
         visitUv.setAgesFirst(activeUser);
         visitUvNew.setAgesFirst(activeUserNew);
+        //删除省市中value为0的数据
+        removeZero(visitUv);
+        removeZero(visitUvNew);
         PortraitVo vo = new PortraitVo();
         PortraitSum activeUserSum = portraitSumObject(visitUv);
         PortraitSum newAddUserSum = portraitSumObject(visitUvNew);
@@ -219,5 +223,20 @@ public class PortraitService extends ShopBaseService {
 			provinceList.add(new PortraitItem(666, "西藏", 0));
 		}
 		return provinceList;
+	}
+	//删除省市中数量为0的值
+	private void removeZero(Portrait portrait) {
+		Iterator<PortraitItem> iterator =  portrait.getProvince().iterator();
+		while(iterator.hasNext()) {
+			if(iterator.next().getValue().equals(0)) {
+				iterator.remove();
+			}
+		}
+		Iterator<PortraitItem> iterator2 = portrait.getCity().iterator();
+		while(iterator2.hasNext()) {
+			if(iterator2.next().getValue().equals(0)) {
+				iterator2.remove();
+			}
+		}
 	}
 }
