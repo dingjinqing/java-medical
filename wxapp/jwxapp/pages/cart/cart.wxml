@@ -27,11 +27,11 @@
                                     </view>
                                 </view>
                                 <view class="goods_price">
-                                    <view class="price" style="color:{{comColor}}">￥500.00</view>
+                                    <view class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
                                     <view class="num_cfg">
-                                      <view class="num_minus {{item.prdNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.prdNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-rec_id="{{item.recId}}" data-type="minus">-</view>
-                                      <input type="number" value="{{item.prdNumber}}"></input>
-                                      <view class="num_plus {{item.prdNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.prdNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-rec_id="{{item.recId}}" data-type="add">+</view>
+                                      <view class="num_minus {{item.goodsNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.goodsNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-rec_id="{{item.recId}}" data-type="minus">-</view>
+                                      <input type="number" value="{{item.goodsNumber}}"></input>
+                                      <view class="num_plus {{item.goodsNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.goodsNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-rec_id="{{item.recId}}" data-type="add">+</view>
                                     </view>
                                 </view>
                             </view>
@@ -46,7 +46,7 @@
             </view>
         </view>
 
-        <view class="list_box" wx:if="{{invalidGoodsList}}">
+        <view class="list_box" wx:if="{{invalidGoodsList.length > 0}}">
           <view class="invalid_title">
             <text class="title_left">失效商品 <text class="invalid_num" style="color:{{comColor}}">{{invalidGoodsList.length}}</text> 件</text>
             <text class="title_right" style="color:{{comColor}}" bindtap="clearCart">清空</text>
@@ -93,5 +93,6 @@
             </view>
         </view>
     </view>
+    <v-recommend />
     <include src="../common/footer.wxml" />
 </view>

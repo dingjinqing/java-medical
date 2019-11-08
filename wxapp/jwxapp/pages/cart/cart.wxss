@@ -1,4 +1,7 @@
 @import '../../css/iconfont.wxss';
+.body{
+  padding-bottom: 160rpx;
+}
 .flex_goods {
   display: flex;
   align-items: center;

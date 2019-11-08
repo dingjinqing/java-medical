@@ -1,25 +1,26 @@
 var util = require("../../../utils/util.js");
-let time = null;
 global.wxComponent({
   /**
    * 组件的属性列表
    */
   properties: {
-
+    
   },
 
   /**
    * 组件的初始数据
    */
   data: {
-    total_micro_second: 1579824000 - 1573101288
+    total_micro_second: 1579824000,
+    time:null
   },
   lifetimes: {
     ready(){
+      if ('限时降价TODO' == '限时降价') return
       this.countdown(this.data.total_micro_second)
     },
     detached(){
-      clearTimeout(time)
+      clearTimeout(this.data.time)
     }
   },
   /**
@@ -33,11 +34,13 @@ global.wxComponent({
       })
       this.triggerEvent('actStatus', total_micro_second)
       if (total_micro_second <= 0) return;
-      time = setTimeout( () => {
-        // 放在最后--
-        total_micro_second -= 1;
-        this.countdown(total_micro_second);
-      }, 1000)
+      this.setData({
+        time: setTimeout(() => {
+          // 放在最后--
+          total_micro_second -= 1;
+          this.countdown(total_micro_second);
+        }, 1000)
+      })
     }
   }
 })

@@ -29,8 +29,7 @@ global.wxPage({
       console.log(res)
     },{
         currentPage: currentPage,
-        pageRows: 2,
-        action:1
+        pageRows: 2
     })
   },
   /**

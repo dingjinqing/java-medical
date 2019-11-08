@@ -38,6 +38,9 @@ global.wxPage({
         prdId: 5126
     })
   },
+  test(){
+    util.jumpLink('pages/item/item', 'navigateTo')
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
