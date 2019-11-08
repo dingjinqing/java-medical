@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsPrdProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor<GoodsPrdProcessorDataInfo>{
+public class GoodsPrdProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     GoodsPrdProcessorDao goodsPrdProcessorDao;
 
@@ -58,14 +58,11 @@ public class GoodsPrdProcessor implements ActivityGoodsListProcessor,GoodsDetail
 
     /*****************商品详情处理******************/
     @Override
-    public List<GoodsPrdProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
-        return goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());
-    }
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+        List<GoodsPrdProcessorDataInfo> prdInfos = goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());
 
-    @Override
-    public void processGoodsDetail(GoodsDetailMpCapsule capsule, List<GoodsPrdProcessorDataInfo> dataInfo) {
-        capsule.setProducts(dataInfo);
-        if (dataInfo.size() == 1 && StringUtils.isBlank(dataInfo.get(0).getPrdDesc())) {
+        capsule.setProducts(prdInfos);
+        if (prdInfos.size() == 1 && StringUtils.isBlank(prdInfos.get(0).getPrdDesc())) {
             capsule.setDefaultPrd(true);
         } else {
             capsule.setDefaultPrd(false);

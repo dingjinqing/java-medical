@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @date 2019年10月31日
  */
 @Service
-public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor<GradeCardProcessorDataInfo>{
+public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor{
 
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
@@ -85,12 +85,8 @@ public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetai
 
     /*****************商品详情处理******************/
     @Override
-    public List<GradeCardProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
-        return memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(),param.getGoodsId());
-    }
-
-    @Override
-    public void processGoodsDetail(GoodsDetailMpCapsule capsule, List<GradeCardProcessorDataInfo> dataInfo) {
-        capsule.setGradeCard(dataInfo);
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+        List<GradeCardProcessorDataInfo> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
+        capsule.setGradeCard(goodsGradeGradePrice);
     }
 }

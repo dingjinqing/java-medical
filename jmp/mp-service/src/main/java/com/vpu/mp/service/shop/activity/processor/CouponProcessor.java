@@ -28,7 +28,7 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
  * @date 2019年10月30日
  */
 @Service
-public class CouponProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor<CouponProcessorDataInfo> {
+public class CouponProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     CouponProcessorDao couponProcessorDao;
     /*****************商品列表处理*******************/
@@ -94,8 +94,7 @@ public class CouponProcessor implements ActivityGoodsListProcessor,GoodsDetailPr
     }
 
     /*****************商品详情处理******************/
-    @Override
-    public List<CouponProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
+    private List<CouponProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
         List<CouponProcessorDataInfo> goodsCouponForDetail = couponProcessorDao.getGoodsCouponForDetail(param.getGoodsId(), param.getCatId(), param.getSortId(), DateUtil.getLocalDateTime());
         List<Integer> couponIds = goodsCouponForDetail.stream().map(CouponProcessorDataInfo::getId).collect(Collectors.toList());
         Map<Integer, Integer> userCouponsAlreadyNum = couponProcessorDao.getUserCouponsAlreadyNum(param.getUserId(), couponIds);
@@ -117,7 +116,8 @@ public class CouponProcessor implements ActivityGoodsListProcessor,GoodsDetailPr
     }
 
     @Override
-    public void processGoodsDetail(GoodsDetailMpCapsule capsule, List<CouponProcessorDataInfo> dataInfo) {
-        capsule.setCoupons(dataInfo);
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+        List<CouponProcessorDataInfo> coupon = getGoodsDetailData(param);
+        capsule.setCoupons(coupon);
     }
 }

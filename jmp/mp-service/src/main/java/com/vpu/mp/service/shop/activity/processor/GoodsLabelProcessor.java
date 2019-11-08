@@ -22,8 +22,7 @@ import java.util.Map;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsLabelProcessor implements ActivityGoodsListProcessor,
-    GoodsDetailProcessor<GoodsLabelProcessorDataInfo> {
+public class GoodsLabelProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor {
 
     @Autowired
     GoodsLabelProcessorDao goodsLabelProcessorDao;
@@ -96,12 +95,8 @@ public class GoodsLabelProcessor implements ActivityGoodsListProcessor,
 
     /*****************商品详情处理******************/
     @Override
-    public List<GoodsLabelProcessorDataInfo> getGoodsDetailData(GoodsDetailCapsuleParam param) {
-        return goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId());
-    }
-
-    @Override
-    public void processGoodsDetail(GoodsDetailMpCapsule capsule, List<GoodsLabelProcessorDataInfo> dataInfos) {
-        capsule.setLabels(dataInfos);
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+        List<GoodsLabelProcessorDataInfo> labels = goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId());
+        capsule.setLabels(labels);
     }
 }

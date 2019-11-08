@@ -3,7 +3,9 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
+import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.springframework.stereotype.Service;
@@ -50,7 +52,37 @@ public class MemberCardProcessorDao extends ShopBaseService {
     }
 
     /**
-     * 获取集合内商品的等价卡价格信息
+     * 获取商品的所有专享卡信息
+     * @param goodsId 商品id
+     * @param catId 平台分类
+     * @param sortId 商家分类
+     * @param brandId 品牌分类
+     * @return {@link com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo}
+     */
+    public List<ExclusiveProcessorDataInfo> getExclusiveInfo(Integer goodsId, Integer catId, Integer sortId, Integer brandId) {
+       return db().selectDistinct(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.ACTIVATION,MEMBER_CARD.IS_PAY,
+            MEMBER_CARD.PAY_FEE,MEMBER_CARD.GRADE)
+            .from(GOODS_CARD_COUPLE).innerJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(GOODS_CARD_COUPLE.CARD_ID))
+            .where(GOODS_CARD_COUPLE.GCTA_ID.in(goodsId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_GOODS)))
+            .or(GOODS_CARD_COUPLE.GCTA_ID.in(catId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_PLAT)))
+            .or(GOODS_CARD_COUPLE.GCTA_ID.in(sortId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_STORE)))
+            .or(GOODS_CARD_COUPLE.GCTA_ID.in(brandId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_BRAND)))
+            .fetchInto(ExclusiveProcessorDataInfo.class);
+    }
+
+    /**
+     * 获取用户拥有的所有会员卡，包含已过期的
+     * @param userId 用户id
+     * @return 会员卡集合
+     */
+    public List<Record>  getUserAllCard(Integer userId){
+        return new ArrayList<>(db().select().from(USER_CARD)
+            .where(USER_CARD.FLAG.eq(DelFlag.NORMAL.getCode())).and(USER_CARD.USER_ID.eq(userId))
+            .fetch());
+    }
+
+    /**
+     * 获取集合内商品的等级卡价格信息
      * @param userId 用户id
      * @param goodsIds 商品集合id
      * @return key: 商品id，value {@link GradeCardProcessorDataInfo}

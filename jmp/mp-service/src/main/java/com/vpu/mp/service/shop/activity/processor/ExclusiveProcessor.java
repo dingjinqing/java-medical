@@ -3,9 +3,11 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,9 +19,11 @@ import java.util.*;
  * @date 2019年10月31日
  */
 @Service
-public class ExclusiveProcessor implements ActivityGoodsListProcessor {
+public class ExclusiveProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor {
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
+
+    /*****************商品列表处理*******************/
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_CARD_EXCLUSIVE_PRIORITY;
@@ -93,5 +97,10 @@ public class ExclusiveProcessor implements ActivityGoodsListProcessor {
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
         });
+    }
+    /*****************商品详情处理******************/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+
     }
 }
