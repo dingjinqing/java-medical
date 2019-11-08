@@ -511,7 +511,13 @@ public class ShopMpDecorationService extends ShopBaseService {
      */
     public Object getPageModuleInfo(WxAppPageModuleParam param) {
         UserRecord userRecord = user.getUserByUserId(param.getUserId());
-        XcxCustomerPageRecord pageRecord = this.getPageById(param.getPageId());
+        XcxCustomerPageRecord pageRecord;
+        if (param.getPageId() == null || param.getPageId() == 0) {
+            pageRecord =this.getIndex();
+        } else {
+            pageRecord= this.getPageById(param.getPageId());
+        }
+
         String pageContent = param.getSceneId()!=null&&param.getSceneId()>0?pageRecord.getPageContent():pageRecord.getPagePublishContent();
         DistributionParam distributionCfg = config.distributionCfg.getDistributionCfg();
         // 是否是分销员
