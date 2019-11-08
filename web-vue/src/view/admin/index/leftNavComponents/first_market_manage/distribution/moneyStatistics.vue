@@ -183,21 +183,21 @@
         </el-table-column>
 
         <el-table-column
-          prop="distributorGroup"
+          prop="groupName"
           label="分销员分组"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="ordersn"
+          prop="orderSn"
           label="返利订单号"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop="totalOrderMoney"
+          prop="orderAmount"
           label="订单总金额"
           align="center"
         >
@@ -282,9 +282,21 @@ export default {
   methods: {
     list () {
       brokerageList(this.pageParams).then(res => {
+        console.log(res)
         if (res.error === 0) {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
+          this.tableData.map(item => {
+            if (item.rebateLevel === 0) {
+              item.rebateLevel = '自购返利'
+            }
+            if (item.rebateLevel === 1) {
+              item.rebateLevel = '一级返利'
+            }
+            if (item.rebateLevel === 2) {
+              item.rebateLevel = '二级返利'
+            }
+          })
         }
       })
     }
