@@ -156,7 +156,7 @@
             :label="0"
           >{{ $t('seckill.template') }}</el-radio>
         </el-form-item>
-        <el-form-item
+        <!-- <el-form-item
           :label="$t('seckill.stock')"
           prop="stock"
         >
@@ -167,7 +167,7 @@
             :min="0"
           ></el-input-number>
           <span>{{ $t('seckill.initTip') }}</span>
-        </el-form-item>
+        </el-form-item> -->
 
         <!-- 收起、展开更多配置 -->
         <div
@@ -293,7 +293,7 @@ export default {
           stock: '' // 秒杀库存
         }], // 秒杀价格表格数据
         freeFreight: 0, // 运费设置
-        stock: 0, // 活动初始数量
+        stock: 0, // 活动总库存
         cardId: '', // 会员卡id
         shareConfig: {
           share_action: 1,
@@ -378,7 +378,7 @@ export default {
         this.form.limitPaytime = val.limitPaytime
         this.form.secKillProduct = val.secKillProduct // 秒杀初始数量
         this.form.freeFreight = val.freeFreight
-        this.form.stock = 10 // 秒杀初始数量
+        this.form.stock = 0 // 总库存
         this.tableContent[0].goodsName = val.goods.goodsName
         this.tableContent[0].shopPrice = val.goods.shopPrice
         // this.tableContent[0].goodsNumber = val.goods.goodsNumber
@@ -398,8 +398,14 @@ export default {
         if (valid) {
           this.form.startTime = this.form.validity[0]
           this.form.endTime = this.form.validity[1]
-          this.form.secKillProduct[0].secKillPrice = Number(this.tableContent[0].prdPrice)
-          this.form.secKillProduct[0].stock = Number(this.tableContent[0].prdNumber)
+          let stock = 0
+          this.tableContent.map((item, index) => {
+            this.form.secKillProduct[index].secKillPrice = Number(this.tableContent[index].prdPrice)
+            this.form.secKillProduct[index].stock = Number(this.tableContent[index].prdNumber)
+            stock += Number(this.tableContent[index].prdNumber)
+          })
+          this.form.stock = stock
+
           if (this.isEdite) {
             this.form.secKillProduct[0].productId = this.form.secKillProduct[0].skproId
             updateSeckillList({
