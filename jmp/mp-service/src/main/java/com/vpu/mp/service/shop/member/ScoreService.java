@@ -5,6 +5,9 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
@@ -113,7 +116,6 @@ public class ScoreService extends ShopBaseService {
 		UserRecord dbUser = member.getUserRecordById(userId);
 
 		if (dbUser == null) {
-			//throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
 			throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
 		}
 
@@ -122,13 +124,6 @@ public class ScoreService extends ShopBaseService {
 		
 		/** -目前会员存在数据录中的积分 */
 		Integer dbScore = dbUser.getScore();
-		/** -校验数据库中的积分与目前从前前端传入的积分是否一致 */
-		/** -不进行校验积分于数据库中一致 */
-//		if (dbScore < scoreDis) {
-//			//throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME);
-//
-//			throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_NOT_SAME);
-//		}
 
 		/** 3. 准备数据  */
 
@@ -447,7 +442,6 @@ public class ScoreService extends ShopBaseService {
 				select.where(USER.USER_ID.eq(param.getUserId()));
 			}
 		}
-		
 	}
 
 	
@@ -568,11 +562,11 @@ public class ScoreService extends ShopBaseService {
 			
 			LocalDateTime localDateTime=LocalDateTime.now();
 			
-			if(scorePeriod==1) {
+			if(DAY.equals(scorePeriod)) {
 				localDateTime.plusDays(scoreLimitNumber);
-			}else if(scorePeriod==7) {
+			}else if(WEEK.equals(scorePeriod)) {
 				localDateTime.plusWeeks(scoreLimitNumber);
-			}else if(scorePeriod==30) {
+			}else if(MONTH.equals(scorePeriod)) {
 				localDateTime.plusMonths(scoreLimitNumber);
 			}
 			expireTime = Timestamp.valueOf(localDateTime);

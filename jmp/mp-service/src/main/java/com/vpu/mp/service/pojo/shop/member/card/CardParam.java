@@ -37,15 +37,15 @@ public class CardParam {
 	/** 会员折扣: 全部商品；1代表全部商品，0代表指定商品 */
 	private Byte discountIsAll;
 
-	/** 会员折扣商品 */
-	/** 添加的商品Id */
-	private Integer[] goodsId;
-	/** 添加的商家分类Id */
-	private Integer[] shopCategoryIds;
-	/** 添加的平台分类Id */
-	private Integer[] platformCategoryIds;
-	/** 添加商品品牌id */
-	private Integer[] discountBrandId;
+
+	/** 折扣商品Id */
+	private List<Integer> goodsId;
+	/** 折扣商家Id */
+	private List<Integer> shopCategoryIds;
+	/** 折扣平台Id */
+	private List<Integer> platformCategoryIds;
+	/** 折扣品牌id */
+	private List<Integer> discountBrandId;
 
 	
 	/** 专享商品 */
@@ -97,9 +97,9 @@ public class CardParam {
 	/**
 	 * 使用门店类型 0：全部门店；1：部分门店；-1：不可在门店使用
 	 */
-	private String storeListType;
+	private Byte storeListType;
 	/** 门店Id */
-	private String[] storeList;
+	private List<String> storeList;
 
 	/**
 	 * 领取类型 0：直接领取；1：需要购买；2：需要领取码
@@ -113,6 +113,10 @@ public class CardParam {
 	private BigDecimal payMoney;
 	/** 积分购买金额 */
 	private BigDecimal payScore;
+	// 领取码类型  1: 领取码 ； 2： 卡号+密码
+	private Byte receiveAction;
+	private List<Integer> batchIdList;
+	
 
 	/** 使用须知 */
 
@@ -131,7 +135,7 @@ public class CardParam {
 	/** 运费策略 0: 免运费 ; 1: 使用商品运费策略 */
 	private Byte exchangFreight;
 	/** 可兑换商品id */
-	private String[] exchangGoods;
+	private List<Integer> exchangGoods;
 	/**
 	 * 限次会员卡允许使用时间 1：工作日； 2：双休 0：不限制
 	 */
@@ -158,8 +162,17 @@ public class CardParam {
 	 */
 	private Byte activation;
 	/** 激活需要填写的信息 */
-	private String[] activationCfgBox;
+	private List<String> activationCfgBox;
 
 	/** 是否审核 0： 否；1： 是 */
 	private Byte examine;
+	
+	// 发送会员卡开关
+	private String sendCoupon;
+	// 优惠券类型
+	private Byte couponType;
+	// 赠送优惠券id
+	private List<Integer> couponIds;
+	// 赠送优惠礼包id
+	private Integer couponPackage;
 }

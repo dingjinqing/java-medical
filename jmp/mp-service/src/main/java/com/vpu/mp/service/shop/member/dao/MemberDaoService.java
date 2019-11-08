@@ -24,10 +24,8 @@ import org.jooq.SelectSeekStep3;
 import org.springframework.stereotype.Service;
 import org.jooq.tools.StringUtils;
 
-import com.rabbitmq.http.client.domain.UserInfo;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;

@@ -303,9 +303,9 @@ public class StoreOrderService extends ShopBaseService {
                     log.debug("支付完成送积分:会员卡[{}],每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", cardNo, scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), totalMoney, sendScore);
                 }
             } else if (BYTE_ZERO.equals(scoreJson.getOffset())) {
-                BigDecimal fullMoney = Arrays.stream(scoreJson.getGoodsMoney()).filter(e -> e.compareTo(totalMoney) < 0).max(Comparators.comparable()).orElse(BIGDECIMAL_ZERO);
+                BigDecimal fullMoney = scoreJson.getGoodsMoney().stream().filter(e -> e.compareTo(totalMoney) < 0).max(Comparators.comparable()).orElse(BIGDECIMAL_ZERO);
                 int index = Arrays.asList(scoreJson.getGoodsMoney()).indexOf(fullMoney);
-                sendScore = index < scoreJson.getGetScores().length ? scoreJson.getGetScores()[index].intValue() : NumberUtils.INTEGER_ZERO;
+                sendScore = index < scoreJson.getGetScores().size() ? scoreJson.getGetScores().get(index).intValue() : NumberUtils.INTEGER_ZERO;
                 log.debug("支付完成送积分:会员卡[{}],满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", cardNo, scoreJson.getGoodsMoney(), scoreJson.getPerGetScores(), totalMoney, sendScore);
             }
             // 送积分

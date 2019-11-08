@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.Data;
 
@@ -17,9 +18,9 @@ public class ScoreJson {
 	 */
 	private Byte offset;
 	/** 购物满多少 */
-	private BigDecimal[] goodsMoney;
+	private List<BigDecimal> goodsMoney;
 	/** 购物满多少送多少积分 */
-	private BigDecimal[] getScores;
+	private List<BigDecimal> getScores;
 	/** 购物每满多少 */
 	private BigDecimal perGoodsMoney;
 	/** 购物每满多少送多少积分 */

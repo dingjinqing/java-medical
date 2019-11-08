@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.shop.member.builder;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 
 /**
@@ -12,266 +11,284 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
  * @Description:
  */
 
+
 public class MemberCardRecordBuilder {
-	private MemberCardRecord record;
-
-	private MemberCardRecordBuilder() {
-		record = new MemberCardRecord();
+	private MemberCardRecord memberCardRecord;
+	
+	private MemberCardRecordBuilder(){
+		memberCardRecord = new MemberCardRecord();
 	}
-
-	private MemberCardRecordBuilder(MemberCardRecord record) {
-		this.record = record;
+	private MemberCardRecordBuilder(MemberCardRecord memberCardRecord) {
+		this.memberCardRecord = memberCardRecord;
 	}
-
+	
+	
 	public static MemberCardRecordBuilder create() {
 		return new MemberCardRecordBuilder();
 	}
-
-	public static MemberCardRecordBuilder create(MemberCardRecord record) {
-		return new MemberCardRecordBuilder(record);
+	
+	
+	public static MemberCardRecordBuilder create(MemberCardRecord memberCardRecord) {
+		return new MemberCardRecordBuilder(memberCardRecord);
 	}
 
-	public MemberCardRecordBuilder id(Integer id) {
-		record.setId(id);
+	public MemberCardRecordBuilder id (Integer id) {
+		memberCardRecord.setId(id);
 		return this;
 	}
 
-	public MemberCardRecordBuilder cardName(String cardName) {
-		record.setCardName(cardName);
+	public MemberCardRecordBuilder cardName (String cardName) {
+		memberCardRecord.setCardName(cardName);
 		return this;
 	}
 
-	public MemberCardRecordBuilder cardType(Byte cardType) {
-		record.setCardType(cardType);
+	public MemberCardRecordBuilder cardType (Byte cardType) {
+		memberCardRecord.setCardType(cardType);
 		return this;
 	}
 
-	public MemberCardRecordBuilder bgType(Byte bgType) {
-		record.setBgType(bgType);
+	public MemberCardRecordBuilder bgType (Byte bgType) {
+		memberCardRecord.setBgType(bgType);
 		return this;
 	}
 
-	public MemberCardRecordBuilder bgColor(String bgColor) {
-		record.setBgColor(bgColor);
+	public MemberCardRecordBuilder bgColor (String bgColor) {
+		memberCardRecord.setBgColor(bgColor);
 		return this;
 	}
 
-	public MemberCardRecordBuilder bgImg(String bgImg) {
-		record.setBgImg(bgImg);
+	public MemberCardRecordBuilder bgImg (String bgImg) {
+		memberCardRecord.setBgImg(bgImg);
 		return this;
 	}
 
-	public MemberCardRecordBuilder discount(BigDecimal discount) {
-		record.setDiscount(discount);
+	public MemberCardRecordBuilder discount (BigDecimal discount) {
+		memberCardRecord.setDiscount(discount);
 		return this;
 	}
 
-	public MemberCardRecordBuilder sorce(Integer sorce) {
-		record.setSorce(sorce);
+	public MemberCardRecordBuilder sorce (Integer sorce) {
+		memberCardRecord.setSorce(sorce);
 		return this;
 	}
 
-	public MemberCardRecordBuilder buyScore(String buyScore) {
-		record.setBuyScore(buyScore);
+	public MemberCardRecordBuilder buyScore (String buyScore) {
+		memberCardRecord.setBuyScore(buyScore);
 		return this;
 	}
 
-	public MemberCardRecordBuilder expireType(Byte expireType) {
-		record.setExpireType(expireType);
+	public MemberCardRecordBuilder expireType (Byte expireType) {
+		memberCardRecord.setExpireType(expireType);
 		return this;
 	}
 
-	public MemberCardRecordBuilder startTime(Timestamp startTime) {
-		record.setStartTime(startTime);
+	public MemberCardRecordBuilder startTime (Timestamp startTime) {
+		memberCardRecord.setStartTime(startTime);
 		return this;
 	}
 
-	public MemberCardRecordBuilder endTime(Timestamp endTime) {
-		record.setEndTime(endTime);
+	public MemberCardRecordBuilder endTime (Timestamp endTime) {
+		memberCardRecord.setEndTime(endTime);
 		return this;
 	}
 
-	public MemberCardRecordBuilder receiveDay(Integer receiveDay) {
-		record.setReceiveDay(receiveDay);
+	public MemberCardRecordBuilder receiveDay (Integer receiveDay) {
+		memberCardRecord.setReceiveDay(receiveDay);
 		return this;
 	}
 
-	public MemberCardRecordBuilder dateType(Byte dateType) {
-		record.setDateType(dateType);
+	public MemberCardRecordBuilder dateType (Byte dateType) {
+		memberCardRecord.setDateType(dateType);
 		return this;
 	}
 
-	public MemberCardRecordBuilder activation(Byte activation) {
-		record.setActivation(activation);
+	public MemberCardRecordBuilder activation (Byte activation) {
+		memberCardRecord.setActivation(activation);
 		return this;
 	}
 
-	public MemberCardRecordBuilder receiveCode(String receiveCode) {
-		record.setReceiveCode(receiveCode);
+	public MemberCardRecordBuilder receiveCode (String receiveCode) {
+		memberCardRecord.setReceiveCode(receiveCode);
 		return this;
 	}
 
-	public MemberCardRecordBuilder desc(String desc) {
-		record.setDesc(desc);
+	public MemberCardRecordBuilder desc (String desc) {
+		memberCardRecord.setDesc(desc);
 		return this;
 	}
 
-	public MemberCardRecordBuilder mobile(String mobile) {
-		record.setMobile(mobile);
+	public MemberCardRecordBuilder mobile (String mobile) {
+		memberCardRecord.setMobile(mobile);
 		return this;
 	}
 
-	public MemberCardRecordBuilder createTime(Timestamp createTime) {
-		record.setCreateTime(createTime);
+	public MemberCardRecordBuilder createTime (Timestamp createTime) {
+		memberCardRecord.setCreateTime(createTime);
 		return this;
 	}
 
-	public MemberCardRecordBuilder updateTime(Timestamp updateTime) {
-		record.setUpdateTime(updateTime);
+	public MemberCardRecordBuilder updateTime (Timestamp updateTime) {
+		memberCardRecord.setUpdateTime(updateTime);
 		return this;
 	}
 
-	public MemberCardRecordBuilder flag(Byte flag) {
-		record.setFlag(flag);
+	public MemberCardRecordBuilder flag (Byte flag) {
+		memberCardRecord.setFlag(flag);
 		return this;
 	}
 
-	public MemberCardRecordBuilder sendMoney(Integer sendMoney) {
-		record.setSendMoney(sendMoney);
+	public MemberCardRecordBuilder sendMoney (Integer sendMoney) {
+		memberCardRecord.setSendMoney(sendMoney);
 		return this;
 	}
 
-	public MemberCardRecordBuilder chargeMoney(String chargeMoney) {
-		record.setChargeMoney(chargeMoney);
+	public MemberCardRecordBuilder chargeMoney (String chargeMoney) {
+		memberCardRecord.setChargeMoney(chargeMoney);
 		return this;
 	}
 
-	public MemberCardRecordBuilder useTime(Integer useTime) {
-		record.setUseTime(useTime);
+	public MemberCardRecordBuilder useTime (Integer useTime) {
+		memberCardRecord.setUseTime(useTime);
 		return this;
 	}
 
-	public MemberCardRecordBuilder storeList(String storeList) {
-		record.setStoreList(storeList);
+	public MemberCardRecordBuilder storeList (String storeList) {
+		memberCardRecord.setStoreList(storeList);
 		return this;
 	}
 
-	public MemberCardRecordBuilder count(Integer count) {
-		record.setCount(count);
+	public MemberCardRecordBuilder count (Integer count) {
+		memberCardRecord.setCount(count);
 		return this;
 	}
 
-	public MemberCardRecordBuilder delFlag(Byte delFlag) {
-		record.setDelFlag(delFlag);
+	public MemberCardRecordBuilder delFlag (Byte delFlag) {
+		memberCardRecord.setDelFlag(delFlag);
 		return this;
 	}
 
-	public MemberCardRecordBuilder grade(String grade) {
-		record.setGrade(grade);
+	public MemberCardRecordBuilder grade (String grade) {
+		memberCardRecord.setGrade(grade);
 		return this;
 	}
 
-	public MemberCardRecordBuilder gradeCondition(String gradeCondition) {
-		record.setGradeCondition(gradeCondition);
+	public MemberCardRecordBuilder gradeCondition (String gradeCondition) {
+		memberCardRecord.setGradeCondition(gradeCondition);
 		return this;
 	}
 
-	public MemberCardRecordBuilder activationCfg(String activationCfg) {
-		record.setActivationCfg(activationCfg);
+	public MemberCardRecordBuilder activationCfg (String activationCfg) {
+		memberCardRecord.setActivationCfg(activationCfg);
 		return this;
 	}
 
-	public MemberCardRecordBuilder examine(Byte examine) {
-		record.setExamine(examine);
+	public MemberCardRecordBuilder examine (Byte examine) {
+		memberCardRecord.setExamine(examine);
 		return this;
 	}
 
-	public MemberCardRecordBuilder discountGoodsId(String discountGoodsId) {
-		record.setDiscountGoodsId(discountGoodsId);
+	public MemberCardRecordBuilder discountGoodsId (String discountGoodsId) {
+		memberCardRecord.setDiscountGoodsId(discountGoodsId);
 		return this;
 	}
 
-	public MemberCardRecordBuilder discountCatId(String discountCatId) {
-		record.setDiscountCatId(discountCatId);
+	public MemberCardRecordBuilder discountCatId (String discountCatId) {
+		memberCardRecord.setDiscountCatId(discountCatId);
 		return this;
 	}
 
-	public MemberCardRecordBuilder discountSortId(String discountSortId) {
-		record.setDiscountSortId(discountSortId);
+	public MemberCardRecordBuilder discountSortId (String discountSortId) {
+		memberCardRecord.setDiscountSortId(discountSortId);
 		return this;
 	}
 
-	public MemberCardRecordBuilder discountIsAll(Byte discountIsAll) {
-		record.setDiscountIsAll(discountIsAll);
+	public MemberCardRecordBuilder discountIsAll (Byte discountIsAll) {
+		memberCardRecord.setDiscountIsAll(discountIsAll);
 		return this;
 	}
 
-	public MemberCardRecordBuilder isPay(Byte isPay) {
-		record.setIsPay(isPay);
+	public MemberCardRecordBuilder isPay (Byte isPay) {
+		memberCardRecord.setIsPay(isPay);
 		return this;
 	}
 
-	public MemberCardRecordBuilder payType(Byte payType) {
-		record.setPayType(payType);
+	public MemberCardRecordBuilder payType (Byte payType) {
+		memberCardRecord.setPayType(payType);
 		return this;
 	}
 
-	public MemberCardRecordBuilder payFee(BigDecimal payFee) {
-		record.setPayFee(payFee);
+	public MemberCardRecordBuilder payFee (BigDecimal payFee) {
+		memberCardRecord.setPayFee(payFee);
 		return this;
 	}
 
-	public MemberCardRecordBuilder payOwnGood(Byte payOwnGood) {
-		record.setPayOwnGood(payOwnGood);
+	public MemberCardRecordBuilder payOwnGood (Byte payOwnGood) {
+		memberCardRecord.setPayOwnGood(payOwnGood);
 		return this;
 	}
 
-	public MemberCardRecordBuilder receiveAction(Byte receiveAction) {
-		record.setReceiveAction(receiveAction);
+	public MemberCardRecordBuilder receiveAction (Byte receiveAction) {
+		memberCardRecord.setReceiveAction(receiveAction);
 		return this;
 	}
 
-	public MemberCardRecordBuilder isExchang(Byte isExchang) {
-		record.setIsExchang(isExchang);
+	public MemberCardRecordBuilder isExchang (Byte isExchang) {
+		memberCardRecord.setIsExchang(isExchang);
 		return this;
 	}
 
-	public MemberCardRecordBuilder storeUseSwitch(Byte storeUseSwitch) {
-		record.setStoreUseSwitch(storeUseSwitch);
+	public MemberCardRecordBuilder storeUseSwitch (Byte storeUseSwitch) {
+		memberCardRecord.setStoreUseSwitch(storeUseSwitch);
 		return this;
 	}
 
-	public MemberCardRecordBuilder exchangGoods(String exchangGoods) {
-		record.setExchangGoods(exchangGoods);
+	public MemberCardRecordBuilder exchangGoods (String exchangGoods) {
+		memberCardRecord.setExchangGoods(exchangGoods);
 		return this;
 	}
 
-	public MemberCardRecordBuilder exchangFreight(Byte exchangFreight) {
-		record.setExchangFreight(exchangFreight);
+	public MemberCardRecordBuilder exchangFreight (Byte exchangFreight) {
+		memberCardRecord.setExchangFreight(exchangFreight);
 		return this;
 	}
 
-	public MemberCardRecordBuilder exchangCount(Integer exchangCount) {
-		record.setExchangCount(exchangCount);
+	public MemberCardRecordBuilder exchangCount (Integer exchangCount) {
+		memberCardRecord.setExchangCount(exchangCount);
 		return this;
 	}
 
-	public MemberCardRecordBuilder stock(Integer stock) {
-		record.setStock(stock);
+	public MemberCardRecordBuilder stock (Integer stock) {
+		memberCardRecord.setStock(stock);
 		return this;
 	}
 
-	public MemberCardRecordBuilder limit(Integer limit) {
-		record.setLimit(limit);
+	public MemberCardRecordBuilder limit (Integer limit) {
+		memberCardRecord.setLimit(limit);
 		return this;
 	}
 
-	public MemberCardRecordBuilder discountBrandId(String discountBrandId) {
-		record.setDiscountBrandId(discountBrandId);
+	public MemberCardRecordBuilder discountBrandId (String discountBrandId) {
+		memberCardRecord.setDiscountBrandId(discountBrandId);
+		return this;
+	}
+
+	public MemberCardRecordBuilder sendCouponSwitch (Byte sendCouponSwitch) {
+		memberCardRecord.setSendCouponSwitch(sendCouponSwitch);
+		return this;
+	}
+
+	public MemberCardRecordBuilder sendCouponType (Byte sendCouponType) {
+		memberCardRecord.setSendCouponType(sendCouponType);
+		return this;
+	}
+
+	public MemberCardRecordBuilder sendCouponIds (String sendCouponIds) {
+		memberCardRecord.setSendCouponIds(sendCouponIds);
 		return this;
 	}
 
 	public MemberCardRecord build() {
-		return record;
+		return memberCardRecord;
 	}
 }
+

@@ -886,12 +886,11 @@ public class OrderInfoService extends ShopBaseService {
 				.and(TABLE.MAIN_ORDER_SN.eq(mainOrderSn)).fetchOne().component1();
 	}
 
-    @SuppressWarnings("deprecation")
-	public UserCenterNumBean getUserCenterNum(Integer userId,Integer orderSort,Integer[] orderStatus,Integer[] refundStatus) {
-    	SelectConditionStep<Record3<BigDecimal, Integer, Timestamp>> select = db().select(sum(ORDER_INFO.ORDER_AMOUNT).as("orderAmount"),count().as("count"),ORDER_INFO.CREATE_TIME).from(ORDER_INFO)
-    		.where(ORDER_INFO.USER_ID.eq(userId))
-    		.and(ORDER_INFO.DEL_FLAG.equals(0));
 
+	public UserCenterNumBean getUserCenterNum(Integer userId,Integer orderSort,Integer[] orderStatus,Integer[] refundStatus) {
+
+		SelectConditionStep<? extends Record> select = db().select(sum(ORDER_INFO.ORDER_AMOUNT).as("orderAmount"),count().as("count"),ORDER_INFO.CREATE_TIME).from(ORDER_INFO)
+				.where(ORDER_INFO.USER_ID.eq(userId));
 
     	List<Byte> orderStatusList = new ArrayList<>(Arrays.asList(ORDER_FINISHED,ORDER_RETURN_FINISHED,ORDER_REFUND_FINISHED));
 
@@ -904,7 +903,7 @@ public class OrderInfoService extends ShopBaseService {
     			select.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_DEFAULT_STATUS));
     		}
     	}
-
+    	select.and(ORDER_INFO.DEL_FLAG.eq((byte)0));
     	select.orderBy(ORDER_INFO.CREATE_TIME.desc());
 
     	 return select.fetchAnyInto(UserCenterNumBean.class);

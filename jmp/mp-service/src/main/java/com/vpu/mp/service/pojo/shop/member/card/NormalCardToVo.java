@@ -72,7 +72,7 @@ public class NormalCardToVo extends NormalCardVo {
 	/**
 	 * 使用门店类型 0：全部门店；1：部分门店；-1：不可在门店使用
 	 */
-	private String storeListType;
+	private Byte storeListType;
 	/** 门店Id */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String storeList;
@@ -148,7 +148,7 @@ public class NormalCardToVo extends NormalCardVo {
 			storeListArray = storeList.split(",");
 			/** 门店类型 */
 			if (MCARD_STP_BAN.equals(storeListArray[0]) || MCARD_STP_ALL.equals(storeListArray[0])) {
-				storeListType = storeListArray[0];
+				storeListType = Byte.valueOf(storeListArray[0]);
 			} else {
 				storeListType = MCARD_STP_PART;
 			}

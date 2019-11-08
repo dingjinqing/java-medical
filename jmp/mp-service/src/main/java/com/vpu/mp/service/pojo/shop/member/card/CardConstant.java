@@ -26,7 +26,11 @@ public class CardConstant {
 	public static final Byte MCARD_ISP_BUY = 1;
 	/** is_pay 需要领取码 */
 	public static final Byte MCARD_ISP_CODE = 2;
-
+	/** receive_action 领取码 1*/
+	public static final Byte MCARD_REA_CODE = 1;
+	/** receive_action 卡号+密码 2*/
+	public static final Byte MCARD_REA_PWD = 2;
+	
 	/** 过期类型  */
 	/** expire_type固定日期 */
 	public static final Byte MCARD_ET_FIX = 0;
@@ -49,11 +53,11 @@ public class CardConstant {
 	 * 门店类型 全部门店，部分门店，不可在门店使用
 	 */
 	// 全部门店
-	public static final String MCARD_STP_ALL= "0";
+	public static final Byte MCARD_STP_ALL= 0;
 	// 部分门店
-	public static final String MCARD_STP_PART = "1";
+	public static final Byte MCARD_STP_PART = 1;
 	//不可在门店使用
-	public static final String MCARD_STP_BAN = "-1";
+	public static final Byte MCARD_STP_BAN = -1;
 	/** 
 	 * store_use_switch 可否在门店使用  0不可以 1可以
 	 */
@@ -101,12 +105,20 @@ public class CardConstant {
 	/** del_flag 删除状态： 1：确定删除 */
 	public static final Byte MCARD_DF_YES = 1;
 
-	/** 会员卡已经过期 */
-	public static final Byte MCARD_EXPIRED = 3;
+
 
 	/** member_card表flag 1正常使用，2停止使用 */
 	public static final Byte MCARD_FLAG_USING = 1;
 	public static final Byte MCARD_FLAG_STOP = 2;
+	/** -会员卡已经过期 */
+	public static final Byte MCARD_EXPIRED = 3;
+	/** send_coupon_type 送惠类型：0优惠券 */
+	public static final Byte MCARD_CTP_COUPON = 0;
+	/** send_coupon_type 送惠类型：1优惠券礼包 */
+	public static final Byte MCARD_CTP_PACKAGE = 1;
+	
+	
+	// 是否专属购买商品 0 不是 1 是
 
 	/** -专享商品:标签关联类型  */
 	// 1：关联商品  
@@ -122,9 +134,9 @@ public class CardConstant {
 
 
 	/** 天数 */
-	public static final Byte DAY = 1;
-	public static final Byte WEEK = 7;
-	public static final Byte MONTH = 30;
+	public static final Integer DAY = 1;
+	public static final Integer WEEK = 7;
+	public static final Integer MONTH = 30;
 
 	/** 勾选 */
 	public static final Byte CHECKED = 1;

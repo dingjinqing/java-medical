@@ -542,9 +542,9 @@ public class Util {
 
     /**
      * List 转 String
-     */
-    public static String listToString(List<Integer> stringValue) {
-        if (null == stringValue) {
+     */    
+    public static <T> String listToString(List<T> stringValue){
+    	if (null == stringValue) {
             return null;
         }
         return stringValue.stream().map(String::valueOf).collect(Collectors.joining(","));
