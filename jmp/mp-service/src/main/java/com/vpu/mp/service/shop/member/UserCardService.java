@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.member;
 
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -341,7 +342,7 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 添加会员卡
-	 * @param isActive 是否直接激活  {@link com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO}
+	 * @param isActive 是否直接激活  {@link UCARD_ACT_NO}
 	 */
 	public void addUserCard(Integer userId, List<UserCardParam> cardList, boolean isActivate) throws MpException {
 
@@ -789,33 +790,31 @@ public class UserCardService extends ShopBaseService {
     /**
      * 筛选会员专享商品
      * @param userId          用户id
-     * @param cartGoodsIdList 需要筛选的商品
+     * @param cartGoodsList 需要筛选的商品
      * @return 反回会员卡绑定商品
      */
-    public Set<Integer> getUserCardExclusiveGoodsIds(Integer userId, List<Integer> cartGoodsIdList) {
-        cartGoodsIdList = cartGoodsIdList.stream().distinct().collect(Collectors.toList());
+    public Set<Integer> getUserCardExclusiveGoodsIds(Integer userId, List<WxAppCartGoods> cartGoodsList) {
+		cartGoodsList = cartGoodsList.stream().distinct().collect(Collectors.toList());
         Set<Integer> resGoodsIds = new HashSet<>();
         // 获取关联商品
         Map<Byte, List<Integer>> goodsCardCouple = goodsCardCoupleService.getGoodsCardCouple(userId);
-        cartGoodsIdList.forEach(cartGoodsId -> {
-            // 商品
-            if (goodsCardCouple.get(CardConstant.COUPLE_TP_GOODS).contains(cartGoodsId)) {
-                resGoodsIds.add(cartGoodsId);
-                return;
-            }
-            // 商品分类
-            if (goodsCardCouple.get(CardConstant.COUPLE_TP_STORE).contains(cartGoodsId)) {
-                resGoodsIds.add(cartGoodsId);
-                return;
-            }
-            // 商品商家分类
-            if (goodsCardCouple.get(CardConstant.COUPLE_TP_GOODS).contains(cartGoodsId)) {
-                resGoodsIds.add(cartGoodsId);
-            }
-            //品牌
-            if (goodsCardCouple.get(CardConstant.COUPLE_TP_BRAND).contains(cartGoodsId)) {
-                resGoodsIds.add(cartGoodsId);
-            }
+		cartGoodsList.forEach(cartGoods -> {
+			goodsCardCouple.forEach((k,v)->{
+				if (v!=null){
+					if (CardConstant.COUPLE_TP_GOODS.equals(k)){
+						resGoodsIds.add(cartGoods.getGoodsId());
+					}
+					if (CardConstant.COUPLE_TP_STORE.equals(k)){
+						resGoodsIds.add(cartGoods.getSortId());
+					}
+					if (CardConstant.COUPLE_TP_PLAT.equals(k)){
+						resGoodsIds.add(cartGoods.getCartId());
+					}
+					if (CardConstant.COUPLE_TP_BRAND.equals(k)){
+						resGoodsIds.add(cartGoods.getBrandId());
+					}
+				}
+			});
         });
         return resGoodsIds;
 
