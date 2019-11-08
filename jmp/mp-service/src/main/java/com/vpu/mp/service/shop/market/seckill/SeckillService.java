@@ -33,7 +33,6 @@ import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

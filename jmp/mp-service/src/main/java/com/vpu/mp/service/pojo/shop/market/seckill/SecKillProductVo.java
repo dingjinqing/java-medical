@@ -13,6 +13,9 @@ public class SecKillProductVo {
     /** 秒杀商品规格id */
     private Integer skproId;
 
+    /** 规格ID */
+    private Integer productId;
+
     /** 规格描述 */
     private String prdDesc;
 

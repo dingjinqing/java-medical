@@ -14,8 +14,14 @@ import java.util.List;
  **/
 @Data
 public class SeckillVo {
+    /** 活动id*/
+    private Integer skId;
+
     /** 活动名称*/
     private String name;
+
+    /** 商品ID*/
+    private Integer goodsId;
 
     /** 商品信息*/
     private GoodsView goods;
@@ -28,6 +34,9 @@ public class SeckillVo {
 
     /** 每人限购数量*/
     private Short limitAmount;
+
+    /** 秒杀当前库存*/
+    private Integer stock;
 
     /** 规定的有效支付时间 单位：分钟*/
     private Short limitPaytime;

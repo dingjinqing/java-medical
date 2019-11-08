@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
@@ -46,6 +47,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -1575,5 +1577,13 @@ public class GoodsService extends ShopBaseService {
      */
     public Integer smallCommodityInventory(Integer num) {
         return db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_NUMBER.lessThan(num)));
+    }
+
+    /**
+     * 批量将活动商品改回普通商品
+     * @param goodsIds
+     */
+    public void changeToNormalType(List<Integer> goodsIds){
+        db().update(GOODS).set(GOODS.GOODS_TYPE, BaseConstant.GOODS_TYPE_GENERAL).where(GOODS.GOODS_ID.in(goodsIds));
     }
 }
