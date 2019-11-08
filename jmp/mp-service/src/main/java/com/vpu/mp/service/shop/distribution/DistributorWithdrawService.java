@@ -1,19 +1,16 @@
 package com.vpu.mp.service.shop.distribution;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_WITHDRAW;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawDetailVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListVo;
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
+import org.springframework.stereotype.Service;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 分销提现相关
@@ -29,7 +26,8 @@ public class DistributorWithdrawService extends ShopBaseService{
 	 */
 	public PageResult<DistributorWithdrawListVo> getWithdrawList(DistributorWithdrawListParam param) {
 		SelectJoinStep<? extends Record> select = db().select(DISTRIBUTION_WITHDRAW.ID,USER.USERNAME,USER.MOBILE,USER_DETAIL.REAL_NAME,DISTRIBUTION_WITHDRAW.CREATE_TIME,DISTRIBUTION_WITHDRAW.ORDER_SN,
-					DISTRIBUTION_WITHDRAW.WITHDRAW_CASH,DISTRIBUTION_WITHDRAW.CHECK_TIME,DISTRIBUTION_WITHDRAW.STATUS,DISTRIBUTION_WITHDRAW.REFUSE_DESC,DISTRIBUTION_WITHDRAW.DESC)
+					DISTRIBUTION_WITHDRAW.WITHDRAW_CASH,DISTRIBUTION_WITHDRAW.CHECK_TIME,DISTRIBUTION_WITHDRAW.STATUS,DISTRIBUTION_WITHDRAW.REFUSE_DESC,DISTRIBUTION_WITHDRAW.DESC,DISTRIBUTION_WITHDRAW.TYPE,
+					DISTRIBUTION_WITHDRAW.WITHDRAW_NUM,DISTRIBUTION_WITHDRAW.WITHDRAW_USER_NUM)
 				.from(DISTRIBUTION_WITHDRAW
 				.leftJoin(USER).on(DISTRIBUTION_WITHDRAW.USER_ID.eq(USER.USER_ID)))
 				.leftJoin(USER_DETAIL).on(DISTRIBUTION_WITHDRAW.USER_ID.eq(USER_DETAIL.USER_ID));
@@ -80,13 +78,13 @@ public class DistributorWithdrawService extends ShopBaseService{
 	
 	/**
 	 * 提现审核详情
-	 * @param orderSn
+	 * @param id
 	 * @return
 	 */
 	public DistributorWithdrawDetailVo getWithdrawDetail(Integer id) {
 		DistributorWithdrawDetailVo detail = db().select(USER.USER_ID,USER.USERNAME,USER.MOBILE,USER_DETAIL.REAL_NAME,DISTRIBUTION_WITHDRAW.CREATE_TIME,DISTRIBUTION_WITHDRAW.ORDER_SN,
 				DISTRIBUTION_WITHDRAW.WITHDRAW_CASH,DISTRIBUTION_WITHDRAW.CHECK_TIME,DISTRIBUTION_WITHDRAW.STATUS,DISTRIBUTION_WITHDRAW.REFUSE_DESC,DISTRIBUTION_WITHDRAW.DESC,
-				DISTRIBUTION_WITHDRAW.TYPE,DISTRIBUTION_WITHDRAW.WITHDRAW_USER_NUM,DISTRIBUTION_WITHDRAW.WITHDRAW_NUM)
+				DISTRIBUTION_WITHDRAW.TYPE,DISTRIBUTION_WITHDRAW.WITHDRAW_USER_NUM,DISTRIBUTION_WITHDRAW.WITHDRAW_NUM,DISTRIBUTION_WITHDRAW.WITHDRAW,DISTRIBUTION_WITHDRAW.UPDATE_TIME)
 			.from(DISTRIBUTION_WITHDRAW
 			.leftJoin(USER).on(DISTRIBUTION_WITHDRAW.USER_ID.eq(USER.USER_ID)))
 			.leftJoin(USER_DETAIL).on(DISTRIBUTION_WITHDRAW.USER_ID.eq(USER_DETAIL.USER_ID))
@@ -94,14 +92,12 @@ public class DistributorWithdrawService extends ShopBaseService{
 			.fetchOne().into(DistributorWithdrawDetailVo.class);
 		//获取当前用户ID
 		int userId = db().select(DISTRIBUTION_WITHDRAW.USER_ID).from(DISTRIBUTION_WITHDRAW).where(DISTRIBUTION_WITHDRAW.ID.eq(id)).fetchOne().into(Integer.class);
-		
+
 		DistributorWithdrawListParam param = new DistributorWithdrawListParam();
 		param.setUserId(userId);
 		//当前用户其他提现记录
 		PageResult<DistributorWithdrawListVo> otherWithdrawRecord = this.getWithdrawList(param);
-		
-		DistributorWithdrawDetailVo detailVo = new DistributorWithdrawDetailVo();
-		detailVo.setUserWithdrawList(otherWithdrawRecord);
+		detail.setUserWithdrawList(otherWithdrawRecord);
 		return detail;
 	}
 	

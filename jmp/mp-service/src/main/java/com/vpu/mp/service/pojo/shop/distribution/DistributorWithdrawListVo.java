@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.distribution;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * 返利提现审核列表出参
@@ -54,4 +54,12 @@ public class DistributorWithdrawListVo {
 	 * 备注
 	 */
 	private String desc;
+	/**
+	 * 流水号
+	 */
+	private String withdrawNum;
+	/**
+	 * 提现序号
+	 */
+	private String withdrawUserNum;
 }
