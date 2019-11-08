@@ -111,6 +111,10 @@ import {
 import {
   cn as bargain
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/bargainCn'
+// 小程序装修秒杀
+import {
+  cn as spike
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeCn'
 // 小程序页面装修优惠卷模块国际化
 import {
   cn as coupon
@@ -916,6 +920,7 @@ const cn = {
   commoditySearch, // 小程序页面装修搜索模块
   membershipCard, // 小程序页面装修会员卡模块
   bargain, // 小程序装修砍价模块
+  spike, // 小程序装修秒杀模块
   coupon, // 小程序页面装修优惠卷模块
   commodity, //  小程序页面装修商品模块
   pictureAds, //  小程序页面装修图片广告模块

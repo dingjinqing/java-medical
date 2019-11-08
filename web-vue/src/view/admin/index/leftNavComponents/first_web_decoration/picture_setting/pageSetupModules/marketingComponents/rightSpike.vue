@@ -1,7 +1,7 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>秒杀模块</h2>
+      <h2>{{$t('spike.secondKillModule')}}</h2>
       <div class="main">
         <el-form>
           <el-form-item :label="$t('bargain.listStyle') + '：'">
@@ -56,7 +56,7 @@
                 prop="act_begin_time"
               ></el-table-column>
               <el-table-column
-                label="秒杀库存"
+                :label="$t('spike.secondaryInventory')"
                 width="70px"
                 prop="seckill_num"
               ></el-table-column>
@@ -97,7 +97,7 @@
               </el-table-column>
             </el-table>
           </div>
-          <el-form-item label="显示内容：">
+          <el-form-item :label="$t('spike.displayContent') +'：'">
             <el-checkbox v-model="data.goods_count_down">{{$t('bargain.activityCountdown')}}</el-checkbox>
             <el-checkbox v-model="data.goods_price">{{$t('bargain.originalPrice')}}</el-checkbox>
           </el-form-item>

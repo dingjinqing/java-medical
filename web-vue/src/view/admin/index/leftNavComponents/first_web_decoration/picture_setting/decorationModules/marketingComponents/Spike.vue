@@ -24,12 +24,12 @@
             >
             </div>
             <div class="spike_bottom">
-              <h3>秒杀商品名称1</h3>
+              <h3>{{$t('spike.spikeName')}}</h3>
               <div>
                 <span
                   class="spike_mark"
                   :style="'border:1px solid '+themeColor + ';color:'+themeColor+';'"
-                >秒杀</span>
+                >{{$t('spike.secondKill')}}</span>
                 <span
                   class="spike_price"
                   :style="'color:'+themeColor"
@@ -56,7 +56,7 @@
                 v-if="data.goods_count_down"
                 class="spike_countdown"
               >
-                <p>距结束还剩</p>
+                <p>{{$t('bargain.endOfLeft')}}</p>
                 <p>{{good.act_end_time | endTimeFmt}}</p>
               </div>
             </div>
@@ -66,7 +66,7 @@
                 <span
                   class="spike_mark"
                   :style="'border:1px solid '+themeColor + ';color:'+themeColor+';'"
-                >秒杀</span>
+                >{{$t('spike.secondKill')}}</span>
                 <span
                   class="spike_price"
                   :style="'color:'+themeColor"
@@ -93,12 +93,12 @@
             >
             </div>
             <div class="spike_right">
-              <h3>秒杀商品名称1</h3>
+              <h3>{{$t('spike.spikeName')}}</h3>
               <div>
                 <span
                   class="spike_mark"
                   :style="'border:1px solid '+themeColor + ';color:'+themeColor+';'"
-                >秒杀</span>
+                >{{$t('spike.secondKill')}}</span>
               </div>
               <p
                 class="spike_price"
@@ -109,9 +109,9 @@
                 class="spike_old_price"
               >￥<span>0</span></p>
               <div class="spike_right_bottom">
-                <span class="spike_to">去抢购</span>
+                <span class="spike_to">{{$t('spike.goToBuy')}}</span>
                 <div class="spike_to_tip">
-                  <div class="spike_to_info">已售50%</div>
+                  <div class="spike_to_info">{{$t('spike.sold')}}50%</div>
                   <el-progress
                     class="spike_progress"
                     :style="'color:' + themeColor"
@@ -150,7 +150,7 @@
                 <span
                   class="spike_mark"
                   :style="'border:1px solid '+themeColor + ';color:'+themeColor+';'"
-                >秒杀</span>
+                >{{$t('spike.secondKill')}}</span>
               </div>
               <p
                 class="spike_price"
@@ -158,9 +158,9 @@
               >￥<span style="font-size:18px;">{{good.sec_price}}</span></p>
               <p class="spike_old_price">￥<span>{{good.goods_price}}</span></p>
               <div class="spike_right_bottom">
-                <span class="spike_to">去抢购</span>
+                <span class="spike_to">{{$t('spike.goToBuy')}}</span>
                 <div class="spike_to_tip">
-                  <div class="spike_to_info">已售{{good.salePercent}}%</div>
+                  <div class="spike_to_info">{{$t('spike.sold')}}{{good.salePercent}}%</div>
                   <el-progress
                     class="spike_progress"
                     :style="'color:' + themeColor"
@@ -179,7 +179,7 @@
         class="item_module_title"
         :style="hoverTips?'width:140px':''"
       >
-        <span>秒杀</span>
+        <span>{{$t('spike.secondKill')}}</span>
       </div>
       <div class="item_operation">
         <img
