@@ -226,7 +226,6 @@ export default {
     },
     // 查看提现详情
     withdrawDetail (id) {
-      alert(id)
       this.$router.push({
         path: '/admin/home/main/distribution/withdraw/detail',
         query: {

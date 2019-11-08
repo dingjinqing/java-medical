@@ -30,30 +30,30 @@
       <div class="table_info">
         <table>
           <tr>
-            <td>提现单号：{{tableData.orderSn}}</td>
-            <td>申请时间：{{tableData.createTime}}</td>
+            <td>提现单号：{{tableData[0].orderSn}}</td>
+            <td>申请时间：{{tableData[0].createTime}}</td>
           </tr>
           <tr>
             <td>出账类型：小程序账户出账</td>
-            <td>申请金额：{{tableData.withdrawCash}}</td>
+            <td>申请金额：{{tableData[0].withdrawCash}}</td>
           </tr>
           <tr>
-            <td>用户ID：{{tableData.withdrawCash}}</td>
-            <td>注册时间：{{tableData.orderSn}}</td>
+            <td>用户ID：{{tableData[0].withdrawCash}}</td>
+            <td>注册时间：{{tableData[0].orderSn}}</td>
           </tr>
           <tr>
-            <td>用户昵称：{{tableData.username}}</td>
-            <td>真实姓名：{{tableData.realName}}</td>
+            <td>用户昵称：{{tableData[0].username}}</td>
+            <td>真实姓名：{{tableData[0].realName}}</td>
           </tr>
           <tr>
-            <td>手机号：{{tableData.mobile}}</td>
-            <td>处理状态：{{tableData.status}}</td>
+            <td>手机号：{{tableData[0].mobile}}</td>
+            <td>处理状态：{{tableData[0].status}}</td>
           </tr>
           <tr>
-            <td colspan="2">备注信息：（{{tableData.desc}}）</td>
+            <td colspan="2">备注信息：（{{tableData[0].desc}}）</td>
           </tr>
           <tr>
-            <td colspan="2">驳回申请原因：（{{tableData.refuseDesc}}）</td>
+            <td colspan="2">驳回申请原因：（{{tableData[0].refuseDesc}}）</td>
           </tr>
         </table>
       </div>
@@ -73,35 +73,35 @@
           >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="withdrawNum"
             label="流水号"
             width="180"
           >
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="withdrawUserNum"
             label="用户提现序号"
           >
           </el-table-column>
           <el-table-column
-            prop="date"
+            prop="type"
             label="出账类型"
             width="180"
           >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="withdraw"
             label="可提现金额"
             width="180"
           >
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="withdrawCash"
             label="申请提现金额"
           >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="updateTime"
             label="操作时间"
             width="180"
           >
@@ -110,6 +110,7 @@
             prop="address"
             label="操作"
           >
+            <span>查看关联订单</span>
           </el-table-column>
         </el-table>
       </div>
@@ -118,52 +119,52 @@
         <el-table
           class="version-manage-table"
           header-row-class-name="tableClss"
-          :data="tableData"
+          :data="otherRecord"
           border
           style="width: 100%"
         >
           <el-table-column
-            prop="date"
+            prop="orderSn"
             label="提现单号"
             width="180"
           >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="withdrawNum"
             label="流水号"
             width="180"
           >
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="withdrawUserNum"
             label="提现序号"
           >
           </el-table-column>
           <el-table-column
-            prop="date"
+            prop="type"
             label="出账类型"
             width="180"
           >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="withdrawCash"
             label="申请提现金额"
             width="180"
           >
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="createTime"
             label="申请时间"
           >
           </el-table-column>
           <el-table-column
-            prop="date"
+            prop="status"
             label="处理状态"
             width="180"
           >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="desc"
             label="处理备注"
             width="180"
           >
@@ -172,6 +173,12 @@
             prop="address"
             label="操作"
           >
+            <template slot-scope="scope">
+              <div class="opt">
+                <p @click="withdrawDetail(scope.row.id)">查看详情</p>
+
+              </div>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -186,6 +193,7 @@ export default {
   data () {
     return {
       tableData: [],
+      otherRecord: [],
       id: ''
     }
   },
@@ -199,8 +207,43 @@ export default {
     detail () {
       withdrawDetail(this.id).then(res => {
         console.log(res)
+        let data = res.content
         if (res.error === 0) {
-          this.tableData = res.content
+          let arr = []
+          arr.push(data)
+          this.tableData = arr
+
+          if (this.tableData.type === 1) {
+            this.tableData.type = '公众号出账'
+          } else {
+            this.tableData.type = '小程序出账'
+          }
+
+          // 当前用户提现记录
+          this.otherRecord = res.content.userWithdrawList.dataList
+          this.otherRecord.map(item => {
+            if (item.status === 1) {
+              item.status = '待审核'
+            } else if (item.status === 2) {
+              item.status = '拒绝'
+            } else if (item.status === 3) {
+              item.status = '以审核待出账'
+            } else if (item.status === 4) {
+              item.status = '出账成功'
+            } else {
+              item.status = '失败'
+            }
+          })
+        }
+        console.log(this.otherRecord)
+      })
+    },
+    // 查看提现详情
+    withdrawDetail (id) {
+      this.$router.push({
+        path: '/admin/home/main/distribution/withdraw/detail',
+        query: {
+          id: id
         }
       })
     }
