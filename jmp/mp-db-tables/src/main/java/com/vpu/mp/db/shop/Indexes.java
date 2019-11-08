@@ -93,7 +93,7 @@ public class Indexes {
     public static final Index COMMENT_GOODS_ANSWER_COMMENT_ID = Indexes0.COMMENT_GOODS_ANSWER_COMMENT_ID;
     public static final Index COMMENT_GOODS_ANSWER_PRIMARY = Indexes0.COMMENT_GOODS_ANSWER_PRIMARY;
     public static final Index COMMENT_SERVICE_PRIMARY = Indexes0.COMMENT_SERVICE_PRIMARY;
-    public static final Index COMMENT_SERVICE_SHOP_ID = Indexes0.COMMENT_SERVICE_SHOP_ID;
+    public static final Index COMMENT_SERVICE_SERVICE_ID = Indexes0.COMMENT_SERVICE_SERVICE_ID;
     public static final Index COUPON_ACTIVITY_PRIMARY = Indexes0.COUPON_ACTIVITY_PRIMARY;
     public static final Index COUPON_ACTIVITY_RECORD_PRIMARY = Indexes0.COUPON_ACTIVITY_RECORD_PRIMARY;
     public static final Index COUPON_PACK_PRIMARY = Indexes0.COUPON_PACK_PRIMARY;
@@ -528,7 +528,7 @@ public class Indexes {
         public static Index COMMENT_GOODS_ANSWER_COMMENT_ID = Internal.createIndex("comment_id", CommentGoodsAnswer.COMMENT_GOODS_ANSWER, new OrderField[] { CommentGoodsAnswer.COMMENT_GOODS_ANSWER.COMMENT_ID }, false);
         public static Index COMMENT_GOODS_ANSWER_PRIMARY = Internal.createIndex("PRIMARY", CommentGoodsAnswer.COMMENT_GOODS_ANSWER, new OrderField[] { CommentGoodsAnswer.COMMENT_GOODS_ANSWER.ANSWER_ID }, true);
         public static Index COMMENT_SERVICE_PRIMARY = Internal.createIndex("PRIMARY", CommentService.COMMENT_SERVICE, new OrderField[] { CommentService.COMMENT_SERVICE.ID }, true);
-        public static Index COMMENT_SERVICE_SHOP_ID = Internal.createIndex("shop_id", CommentService.COMMENT_SERVICE, new OrderField[] { CommentService.COMMENT_SERVICE.SHOP_ID }, false);
+        public static Index COMMENT_SERVICE_SERVICE_ID = Internal.createIndex("service_id", CommentService.COMMENT_SERVICE, new OrderField[]{CommentService.COMMENT_SERVICE.SERVICE_ID}, false);
         public static Index COUPON_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", CouponActivity.COUPON_ACTIVITY, new OrderField[] { CouponActivity.COUPON_ACTIVITY.ID }, true);
         public static Index COUPON_ACTIVITY_RECORD_PRIMARY = Internal.createIndex("PRIMARY", CouponActivityRecord.COUPON_ACTIVITY_RECORD, new OrderField[] { CouponActivityRecord.COUPON_ACTIVITY_RECORD.ID }, true);
         public static Index COUPON_PACK_PRIMARY = Internal.createIndex("PRIMARY", CouponPack.COUPON_PACK, new OrderField[] { CouponPack.COUPON_PACK.ID }, true);

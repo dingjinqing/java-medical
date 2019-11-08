@@ -1751,7 +1751,7 @@ create table `b2c_comment_service`
     `flag`          tinyint(1)   not null default '0' comment '0:未审批,1:审批通过,2:审批未通过',
     `del_flag`      tinyint(1)   not null default '0' comment '1:删除',
     primary key (`id`),
-    index `shop_id` (`shop_id`)
+    key `service_id` (`service_id`) USING BTREE
 );
 
 -- -- 门店买单订单表

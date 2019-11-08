@@ -1100,3 +1100,8 @@ ALTER TABLE b2c_user_summary_trend
 MODIFY COLUMN `total_paid_money` DECIMAL(10,2) DEFAULT NULL COMMENT '总成交金额',
 MODIFY COLUMN `new_paid_money` DECIMAL(10,2) DEFAULT NULL COMMENT '成交新客户支付金额',
 MODIFY COLUMN `old_paid_money` DECIMAL(10,2) DEFAULT NULL COMMENT '成交新老客户支付金额';
+
+-- 修改门店服务评价
+ALTER TABLE b2c_comment_service
+drop KEY `shop_id`,
+add KEY `service_id` (`service_id`) USING BTREE ;
