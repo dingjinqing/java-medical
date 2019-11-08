@@ -90,6 +90,8 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.GoodsCardCouple;
+import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
@@ -112,6 +114,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
@@ -130,7 +133,6 @@ import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
-import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
@@ -164,34 +166,45 @@ public class MemberCardService extends ShopBaseService {
 	@Autowired private ServiceOrderService serviceOrderDao;
 	@Autowired private UserCardService userCardService;
 	@Autowired private CardVerifyService cardVerifyService;
-
+	@Autowired private CardReceiveCode cardReceiveCode;
+	@Autowired private GoodsCardCoupleService goodsCardCoupleService;
 	/**
 	 * 添加会员卡
 	 */
-	public JsonResultCode createMemberCard(CardParam card) {
+	public void createMemberCard(CardParam card) {
+		logger().info("添加会员卡");
 		MemberCardRecord mCard = initMembercardRecordByCfgData(card);
-		int cardId = addMemberCardAndGetCardId(mCard);
-		card.setId(cardId);
-		
-		//  会员专享商品
-		initOwncfg(card);
-		// TODO 领取码
-		
-		
-		return null;
+		this.transaction(()->{
+			int cardId = addMemberCardAndGetCardId(mCard);
+			card.setId(cardId);
+			initOwncfg(card);
+			initCardBatchCfg(card);
+		});
 	}
 
 	/**
 	 * 更新会员卡
 	 */
 	public void updateMemberCard(CardParam card) {
+		logger().info("更新会员卡");
 		MemberCardRecord cardRecord = initMembercardRecordByCfgData(card);
-
-		// TODO 如果Record的属性值设置为null,会跟新数据库信息为null吗
-		/** 更新数据 */
-		updateMemberCardById(cardRecord, card.getId());
+		transaction(()->{
+			updateMemberCardById(cardRecord, card.getId());
+			initOwncfg(card);
+			initCardBatchCfg(card);
+		});
 	}
 
+	
+	/**
+	 *  初始化会员卡领取批次
+	 */
+	private void initCardBatchCfg(CardParam card) {
+		logger().info("初始化会员领取批次");
+		cardReceiveCode.updateCardBatch(card.getId(),card.getBatchIdList());
+	}
+
+	
 	/**
 	 * 用配置信息初始化MemberCardRecord
 	 */
@@ -206,9 +219,6 @@ public class MemberCardService extends ShopBaseService {
 			initGradeCardCfg(param, cardBuilder);
 		}
 		return cardBuilder.build();
-		
-		/** 设置限次与等级会员卡的公共属性 */
-		//setLimitAndRankCard(param, cardBuilder);	
 	}
 	
 	/**
@@ -381,7 +391,6 @@ public class MemberCardService extends ShopBaseService {
 			if(isNotNull(card.getOwnBrandId())) {
 				cfgOwnBrandId(card.getOwnBrandId(),card.getId());
 			}
-
 		}
 	}
 	
@@ -444,7 +453,6 @@ public class MemberCardService extends ShopBaseService {
 		Integer id = card.getId();
 
 		/** 准备更新数据 */
-		// TODO 取消注释
 		initDiscountPartGoods(card, cardBuilder);
 
 		/** 更新到数据库 */
@@ -798,17 +806,14 @@ public class MemberCardService extends ShopBaseService {
 	 * 将数据放入到数据库
 	 */
 	private int addMemberCardAndGetCardId(MemberCardRecord cardRecord) {
-		MemberCardRecord c = db().insertInto(MEMBER_CARD).set(cardRecord).returning(MEMBER_CARD.ID).fetchOne();
-		logger().info("新成功新的会员卡，id: "+c.getId());
-		return c.getId();
+		return cardDao.addMemberCardAndGetCardId(cardRecord);
 	}
 
 	/**
 	 * 会员卡数据更新
 	 */
 	private void updateMemberCardById(MemberCardRecord cardRecord, Integer id) {
-		int num = db().executeUpdate(cardRecord, MEMBER_CARD.ID.eq(id));
-		logger().info("成功更新： " + num + " 行数据");
+		cardDao.updateMemberCardById(cardRecord, id);
 	}
 
 	/**
@@ -927,43 +932,110 @@ public class MemberCardService extends ShopBaseService {
 				.where(MEMBER_CARD.ID.eq(param.getId())).execute();
 		logger().info("删除会员卡成功，受影响行： " + result);
 	}
-
+	
+	/**
+	 * 获取会员卡基本信息
+	 */
 	public MemberCardRecord getCardById(Integer cardId) {
+		logger().info("获取会员卡基本信息");
 		MemberCardRecord card = cardDao.getCardById(cardId);
 		return card != null ? card : new MemberCardRecord();
 	}
 
 	/**
 	 * 根据ID获取该会员卡的详细信息
-     *
-	 * @param param
-	 * @return
 	 */
 	public BaseCardVo getCardDetailById(CardIdParam param) {
 		MemberCardRecord card = getCardById(param.getId());
-		if(card != null) {
-			Byte cardType = card.getCardType();
-			if (MCARD_TP_NORMAL.equals(cardType)) {
-				return changeToNormalCardDetail(card);
-			} else if (MCARD_TP_LIMIT.equals(cardType)) {
-				return changeToLimitCardDetail(card);
-			} else if (MCARD_TP_GRADE.equals(cardType)) {
-				return changeToGradeCardDetail(card);
-			}
+		
+		if (isNormalCard(card.getCardType())) {
+			return changeToNormalCardDetail(card);
+		} else if (isLimitCard(card.getCardType())) {
+			return changeToLimitCardDetail(card);
+		} else if (isGradeCard(card.getCardType())) {
+			return changeToGradeCardDetail(card);
 		}
 		return null;
 	}
+	
+	/**
+	 * 装配会员卡批次信息
+	 * @param card
+	 */
+	private void assignCardBatch(BaseCardVo card) {
+		if(isNormalOrLimitCard(card.getCardType())) {
+			logger().info("正在获取批次信息");
+			List<CardBatchRecord> batchList = cardReceiveCode.getAvailableCardBatchByCardId(card.getId());
+			List<CardBatchVo> res = new ArrayList<>();
+			for(CardBatchRecord b: batchList) {
+				res.add(CardBatchVoBuilder
+						.create()
+						.id(b.getId())
+						.name(b.getName())
+						.build());
+			}
+			card.setBatchList(res);
+		}
+	}
+	
+	/**
+	 * 装配专享商品
+	 */
+	private void assignPayOwnGoods(BaseCardVo card) {
+		if(isNormalOrGradeCard(card.getCardType())) {
+			logger().info("正在获取专享商品");
+			card.setOwnGoodsId(getOwnGoodsId(card.getId()));
+			card.setOwnStoreCategoryIds(getOwnStoreCategory(card.getId()));
+			card.setOwnPlatFormCategoryIds(getOwnPlatformCategory(card.getId()));
+			card.setOwnBrandId(getOwnBrandId(card.getId()));
+		}
+	}
+	
+	/**
+	 * 获取专享商品id
+	 */
+	public List<Integer> getOwnGoodsId(Integer cardId){
+		List<GoodsCardCoupleRecord> list = goodsCardCoupleService.getOwnGoods(cardId);
+		return list.stream().map(GoodsCardCoupleRecord::getGctaId).collect(Collectors.toList());
+	}
+	
+	/**
+	 * 获取专享平家id
+	 */
+	public List<Integer> getOwnStoreCategory(Integer cardId){
+		List<GoodsCardCoupleRecord> list = goodsCardCoupleService.getOwnStoreCategory(cardId);
+		return list.stream().map(GoodsCardCoupleRecord::getGctaId).collect(Collectors.toList());
+	}
+	
+	/**
+	 * 获取专享平台id
+	 */
+	public List<Integer> getOwnPlatformCategory(Integer cardId){
+		List<GoodsCardCoupleRecord> list = goodsCardCoupleService.getOwnPlatformCategory(cardId);
+		return list.stream().map(GoodsCardCoupleRecord::getGctaId).collect(Collectors.toList());
+	}
+	
+	/**
+	 * 获取专享品牌id
+	 */
+	public List<Integer> getOwnBrandId(Integer cardId){
+		List<GoodsCardCoupleRecord> list = goodsCardCoupleService.getOwnBrandId(cardId);
+		return list.stream().map(GoodsCardCoupleRecord::getGctaId).collect(Collectors.toList());
+	}
 
 	private NormalCardToVo changeToNormalCardDetail(MemberCardRecord card) {
-		logger().info("正在处理普通会员卡");
+		logger().info("正在获取普通会员卡");
 		NormalCardToVo normalCard = card.into(NormalCardToVo.class);
+		assignPayOwnGoods(normalCard);
+		assignCardBatch(normalCard);
 		normalCard.changeJsonCfg();
 		return normalCard;
 	}
 
 	private LimitNumCardToVo changeToLimitCardDetail(MemberCardRecord card) {
-		logger().info("正在处理出限次会员卡");
+		logger().info("正在获取限次会员卡");
 		LimitNumCardToVo limitCard = card.into(LimitNumCardToVo.class);
+		assignCardBatch(limitCard);
 		int numOfSendCard = getNumSendCardById(limitCard.getId());
 		limitCard.setHasSend(numOfSendCard);
 		limitCard.changeJsonCfg();
@@ -971,16 +1043,15 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	private RankCardToVo changeToGradeCardDetail(MemberCardRecord card) {
-		logger().info("正在处理等级会员卡");
+		logger().info("获取等级会员卡");
 		RankCardToVo gradeCard = card.into(RankCardToVo.class);
+		assignPayOwnGoods(gradeCard);
 		gradeCard.changeJsonCfg();
 		return gradeCard;
 	}
 
 	/**
 	 * 获取已经发放的卡的数量
-	 * @param cardId
-	 * @return
 	 */
 	public int getNumSendCardById(Integer cardId) {
 		return userCardService.getNumCardsWithSameId(cardId);
@@ -989,7 +1060,6 @@ public class MemberCardService extends ShopBaseService {
 
     /**
 	 * 根据会员卡ID字符串（逗号分隔）取会员卡信息列表
-     *
 	 */
 	public List<SimpleMemberCardVo> getMemberCardByCardIdsString(String cardIdsString) {
 		return db().select(MEMBER_CARD.ID, MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
@@ -1055,7 +1125,6 @@ public class MemberCardService extends ShopBaseService {
 
 		Result<MemberCardRecord> cardRecords = selectAllMemberCard();
 		MemberCardVo vo = new MemberCardVo();
-		/** 分类 普通 | 限次 | 等级 会员卡 */
 		logger().info("正在分类处理");
 		for (MemberCardRecord card : cardRecords) {
 			Byte cardType = card.getCardType();
@@ -1563,13 +1632,18 @@ public class MemberCardService extends ShopBaseService {
     }
 	/**
 	 * 返回会员卡所有批次信息
-	 * @param cardId
-	 * @return
 	 */
 	public List<CardBatchVo> getCardBatchList(Integer cardId) {
-		Result<?> cardBatchList = cardDao.getCardBatchList(cardId);
+		List<CardBatchRecord> cardBatchList = cardReceiveCode.getAvailableCardBatchByCardId(cardId);
 		if(cardBatchList != null) {
-			return cardBatchList.into(CardBatchVo.class);
+			List<CardBatchVo> res = new ArrayList<>();
+			for(CardBatchRecord cb: cardBatchList) {
+				CardBatchVo vo = new CardBatchVo();
+				vo.setId(cb.getId());
+				vo.setName(cb.getName());
+				res.add(vo);
+			}
+			return res;
 		}else {
 			return null;
 		}

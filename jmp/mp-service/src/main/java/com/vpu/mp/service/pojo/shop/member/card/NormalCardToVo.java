@@ -1,12 +1,17 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.foundation.util.Util;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import org.apache.commons.dbcp2.Utils;
+
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_PART;
@@ -29,24 +34,25 @@ public class NormalCardToVo extends NormalCardVo {
 	/** 联系方式 */
 	private String mobile;
 
-	/** 会员折扣: 全部商品；1代表全部商品，0代表指定商品 */
+	/** -会员折扣: 全部商品；1代表全部商品，0代表指定商品 */
 	private Byte discountIsAll;
-	/** 指定商品时的： 商品id */
+	/** -折扣： 商品id */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String discountGoodsId;
 	private String[] goodsId;
-	/** 指定商品时的： 商家分类id */
+	/** -折扣： 商家分类id */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String discountSortId;
 	private String[] shopCategoryIds;
-	/** 指定商品时的: 平台分类id */
+	/** -折扣: 平台分类id */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String discountCatId;
 	private String[] platformCategoryIds;
-	/** 指定商品时的 : 品牌分类id */
+	/** -折扣 : 品牌分类id */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String discountBrandId;
 	private String[] brandId;
+	
 	/**
 	 * 积分具体详情
 	 */
@@ -92,6 +98,14 @@ public class NormalCardToVo extends NormalCardVo {
 	/** 激活需要的信息 */
 	private String[] activationCfgBox;
 	
+	// 是否开卡送券：0不是，1是
+	private Byte sendCouponSwitch;
+	// 送惠类型：0优惠券，1优惠券礼包
+	private Byte sendCouponType;
+	//赠送优惠券或礼包id，字符串逗号隔开
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String sendCouponIds;
+	private List<Integer> couponIds;
 	/**
 	 * 处理策略
 	 */
@@ -167,6 +181,7 @@ public class NormalCardToVo extends NormalCardVo {
 			payScore = payFee;
 		}
 		
-		
+		// 优惠券
+		couponIds = Util.stringToList(sendCouponIds);
 	}
 }

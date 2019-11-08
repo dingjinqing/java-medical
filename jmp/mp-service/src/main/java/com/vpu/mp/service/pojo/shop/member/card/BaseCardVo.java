@@ -1,12 +1,11 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
-
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 /**
  * 
@@ -23,6 +22,8 @@ public abstract class BaseCardVo {
 	 */
 	/** 会员卡id */
 	private Integer id;
+	// 会员卡类型
+	private Byte cardType;
 	/** 会员卡头像 */
 	private String avatar;
 	/** 会员卡名称 */
@@ -34,8 +35,7 @@ public abstract class BaseCardVo {
 	private String bgColor;
 	/** 背景图 */
 	private String bgImg;
-	
-	
+
 	/**
 	 * 领取设置
 	 */
@@ -49,9 +49,22 @@ public abstract class BaseCardVo {
 	private Byte activation;
 	/** 是否审核 0： 否；1： 是 */
 	private Byte examine;
-	
-	/** 激活需要的信息*/
+
+	/** 激活需要的信息 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String activationCfg;
+	// 专享商品
+	private List<Integer> ownGoodsId;
+	// 专享商家
+	private List<Integer> ownStoreCategoryIds;
+	// 专享平台
+	private List<Integer> ownPlatFormCategoryIds;
+	// 专享品牌
+	private List<Integer> ownBrandId;
+
+	// 批次
+	private List<CardBatchVo> batchList;
+
 	public abstract void changeJsonCfg();
+
 }

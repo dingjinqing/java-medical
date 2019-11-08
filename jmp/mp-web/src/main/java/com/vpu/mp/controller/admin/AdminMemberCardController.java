@@ -253,8 +253,6 @@ public class AdminMemberCardController extends AdminBaseController {
 
 	/**
 	 * 查询会员卡订单
-	 * @param param
-	 * @return
 	 */
 	@PostMapping("/card/order/list")
 	public JsonResult getCardConsumeOrderList(@RequestBody CardConsumeParam param) {
@@ -262,6 +260,9 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success(results);
 	}
 	
+	/**
+	 * 添加领取批次
+	 */
 	@PostMapping("/card/generatecode")
 	public JsonResult generateCardCode(@RequestBody CardBatchParam param) {
 		shop().member.card.generateCardCode(param);
