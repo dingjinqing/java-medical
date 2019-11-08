@@ -55,7 +55,7 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="addConfirm"
+          @click="confirm"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -87,14 +87,17 @@
           align="center"
         >
         </el-table-column>
-
         <el-table-column
           prop="isDefault"
           label="是否为默认分组"
           align="center"
         >
+          <template slot-scope="scope">
+            <div class="opt">
+              <span @click="setDefault(scope.row.id,scope.row.isDefault)">{{scope.row.isDefault}}</span>
+            </div>
+          </template>
         </el-table-column>
-
         <el-table-column
           prop=""
           label="操作"
@@ -277,7 +280,7 @@
 import {
   distributionGroup, distributionGroupDel, distributionGroupAdd,
   distributionGroupEdit, distributionGroupSave, distributorList,
-  distributorLevelList, distributorGroupList, addDistributor
+  distributorLevelList, distributorGroupList, addDistributor, setDefaultGroup, cancleDefaultGroup
 } from '@/api/admin/marketManage/distribution.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
@@ -376,8 +379,7 @@ export default {
       }).then(() => {
         distributionGroupDel(id).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: '删除成功!'
             })
             this.groupList()
@@ -391,15 +393,16 @@ export default {
       this.dialogVisible = true
       this.param.groupName = ''
     },
+    // 添加分组
     confirm () {
       this.dialogVisible = false
       if (this.opt === 0) {
         distributionGroupAdd(this.param).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: '添加成功!'
             })
+            this.groupList()
           }
         })
       } else {
@@ -407,14 +410,13 @@ export default {
         distributionGroupSave(this.param).then(res => {
           if (res.error === 0) {
             console.log(res)
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: '编辑成功!'
             })
+            this.groupList()
           }
         })
       }
-      this.groupList()
     },
     // 编辑分组
     edit (id) {
@@ -485,8 +487,7 @@ export default {
       })
       addDistributor(this.addData).then(res => {
         if (res.error === 0) {
-          this.$message({
-            type: 'success',
+          this.$message.success({
             message: '添加成功'
           })
           this.groupList()
@@ -494,7 +495,30 @@ export default {
       })
 
       this.centerDialogVisible = false
+    },
+    // 设置默认分组
+    setDefault (id, v) {
+      if (v === '否 设为默认') {
+        setDefaultGroup(id).then(res => {
+          if (res.error === 0) {
+            this.$message.success({
+              message: '设置成功!'
+            })
+            this.groupList()
+          }
+        })
+      } else { // 取消默认分组
+        cancleDefaultGroup(id).then(res => {
+          if (res.error === 0) {
+            this.$message.success({
+              message: '取消成功!'
+            })
+            this.groupList()
+          }
+        })
+      }
     }
+
   }
 }
 

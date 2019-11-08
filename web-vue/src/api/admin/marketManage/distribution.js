@@ -205,3 +205,20 @@ export function withdrawDetail (data) {
     data: data
   })
 }
+
+// 设置默认分组
+export function setDefaultGroup (data) {
+  return service({
+    url: `/api/admin/distribution/group/default?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+// 取消默认分组
+export function cancleDefaultGroup (data) {
+  return service({
+    url: `/api/admin/distribution/group/cancle?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
