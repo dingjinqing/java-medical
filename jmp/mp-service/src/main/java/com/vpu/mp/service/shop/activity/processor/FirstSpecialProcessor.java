@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +61,11 @@ public class FirstSpecialProcessor implements ActivityGoodsListProcessor {
 
     @Override
     public Map<Integer, FirstSpecialProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(param.getGoodsIds(),param.getDate());
+        if (param.getGoodsIds().size() == 0) {
+            return new HashMap<>();
+        } else {
+            return firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(param.getGoodsIds(),param.getDate());
+        }
     }
 
     @Override
