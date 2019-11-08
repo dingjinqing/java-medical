@@ -238,6 +238,8 @@ export default {
           if (!flag) return
           this.isOpenSlide = false
         }
+        // 处理全部数据  构造自定义布局保存数据
+        this.handleToSaveData()
         this.choiseCellNumber = 1
       }
       console.log(this.nowCheckedArr)
@@ -525,6 +527,10 @@ export default {
         }
         timesRowStart++
       }
+    },
+    // 处理全部数据  构造自定义布局保存数据
+    handleToSaveData () {
+      console.log(this.columnData)
     }
   }
 }

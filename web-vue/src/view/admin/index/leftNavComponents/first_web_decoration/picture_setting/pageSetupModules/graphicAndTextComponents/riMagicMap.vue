@@ -167,12 +167,18 @@
             >
               <div
                 @click="handleToClickLayout(index,0)"
-                :style="'height:152px;width:152px;line-height:152px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
-              >宽度{{item.styleData[0].size}}像素</div>
+                :style="(item.styleData[0].img_url?'background:url('+item.styleData[0].img_url+') no-repeat;background-size:cover;':'')+';height:152px;width:152px;line-height:152px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+              ><span
+                  v-if="!(item.styleData[0].img_url)"
+                  style="width:auto"
+                >宽度{{item.styleData[0].size}}像素</span></div>
               <div
                 @click="handleToClickLayout(index,1)"
-                :style="'height:152px;width:152px;line-height:152px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')"
-              >宽度{{item.styleData[1].size}}像素</div>
+                :style="(item.styleData[1].img_url?'background:url('+item.styleData[1].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')"
+              ><span
+                  v-if="!(item.styleData[1].img_url)"
+                  style="width:auto"
+                >宽度{{item.styleData[1].size}}像素</span></div>
             </div>
             <div
               class="layoutDiv layoutSecond"
@@ -181,16 +187,25 @@
             >
               <div
                 @click="handleToClickLayout(index,0)"
-                :style="'height:102px;width:102px;line-height:102px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
-              >宽度{{item.styleData[0].size}}像素</div>
+                :style="(item.styleData[0].img_url?'background:url('+item.styleData[0].img_url+') no-repeat;background-size:cover;':'')+'height:102px;width:102px;line-height:102px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+              ><span
+                  v-if="!(item.styleData[0].img_url)"
+                  style="width:auto"
+                >宽度{{item.styleData[0].size}}像素</span></div>
               <div
                 @click="handleToClickLayout(index,1)"
-                :style="'height:102px;width:102px;line-height:102px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
-              >宽度{{item.styleData[1].size}}像素</div>
+                :style="(item.styleData[1].img_url?'background:url('+item.styleData[1].img_url+') no-repeat;background-size:cover;':'')+'height:102px;width:102px;line-height:102px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
+              ><span
+                  v-if="!(item.styleData[1].img_url)"
+                  style="width:auto"
+                >宽度{{item.styleData[1].size}}像素</span></div>
               <div
                 @click="handleToClickLayout(index,2)"
-                :style="'height:102px;width:102px;line-height:102px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')"
-              >宽度{{item.styleData[2].size}}像素</div>
+                :style="(item.styleData[2].img_url?'background:url('+item.styleData[2].img_url+') no-repeat;background-size:cover;':'')+'height:102px;width:102px;line-height:102px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')"
+              ><span
+                  v-if="!(item.styleData[2].img_url)"
+                  style="width:auto"
+                >宽度{{item.styleData[2].size}}像素</span></div>
             </div>
             <div
               class="layoutDiv layoutSecond"
@@ -199,20 +214,32 @@
             >
               <div
                 @click="handleToClickLayout(index,0)"
-                :style="'height:77px;width:77px;line-height:77px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
-              >宽度{{item.styleData[0].size}}像素</div>
+                :style="(item.styleData[0].img_url?'background:url('+item.styleData[0].img_url+') no-repeat;background-size:cover;':'')+'height:77px;width:77px;line-height:77px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+              ><span
+                  v-if="!(item.styleData[0].img_url)"
+                  style="width:auto"
+                >宽度{{item.styleData[0].size}}像素</span></div>
               <div
                 @click="handleToClickLayout(index,1)"
-                :style="'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
-              >宽度{{item.styleData[1].size}}像素</div>
+                :style="(item.styleData[1].img_url?'background:url('+item.styleData[1].img_url+') no-repeat;background-size:cover;':'')+'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
+              ><span
+                  v-if="!(item.styleData[1].img_url)"
+                  style="width:auto"
+                >宽度{{item.styleData[1].size}}像素</span></div>
               <div
                 @click="handleToClickLayout(index,2)"
-                :style="'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')"
-              >宽度{{item.styleData[2].size}}像素</div>
+                :style="(item.styleData[2].img_url?'background:url('+item.styleData[2].img_url+') no-repeat;background-size:cover;':'')+'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')"
+              ><span
+                  v-if="!(item.styleData[2].img_url)"
+                  style="width:auto"
+                >宽度{{item.styleData[2].size}}像素</span></div>
               <div
                 @click="handleToClickLayout(index,3)"
-                :style="'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
-              >宽度{{item.styleData[3].size}}像素</div>
+                :style="(item.styleData[3].img_url?'background:url('+item.styleData[3].img_url+') no-repeat;background-size:cover;':'')+'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
+              ><span
+                  v-if="!(item.styleData[3].img_url)"
+                  style="width:auto"
+                >宽度{{item.styleData[3].size}}像素</span></div>
             </div>
 
             <div
@@ -222,31 +249,55 @@
             >
               <div
                 @click="handleToClickLayout(index,0)"
-                :style="'height:152px;width:152px;line-height:152px;margin-bottom:-1px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+                :style="(item.styleData[0].img_url?'background:url('+item.styleData[0].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;margin-bottom:-1px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
               >
-                <p style="height:12px">{{item.styleData[0].size}}像素</p>
-                <p style="height:12px;margin-top:5px">或同等比例</p>
+                <p
+                  v-if="!(item.styleData[0].img_url)"
+                  style="height:12px"
+                >{{item.styleData[0].size}}像素</p>
+                <p
+                  v-if="!(item.styleData[0].img_url)"
+                  style="height:12px;margin-top:5px"
+                >或同等比例</p>
               </div>
               <div
                 @click="handleToClickLayout(index,1)"
-                :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;margin-bottom:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
+                :style="(item.styleData[1].img_url?'background:url('+item.styleData[1].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;margin-left:-1px;margin-bottom:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
               >
-                <p style="height:12px">{{item.styleData[1].size}}像素</p>
-                <p style="height:12px;margin-top:5px">或同等比例</p>
+                <p
+                  v-if="!(item.styleData[1].img_url)"
+                  style="height:12px"
+                >{{item.styleData[1].size}}像素</p>
+                <p
+                  v-if="!(item.styleData[1].img_url)"
+                  style="height:12px;margin-top:5px"
+                >或同等比例</p>
               </div>
               <div
                 @click="handleToClickLayout(index,2)"
-                :style="'height:152px;width:152px;line-height:152px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-top:1px solid #6e86cc':'')"
+                :style="(item.styleData[2].img_url?'background:url('+item.styleData[2].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-top:1px solid #6e86cc':'')"
               >
-                <p style="height:12px">{{item.styleData[2].size}}像素</p>
-                <p style="height:12px;margin-top:5px">或同等比例</p>
+                <p
+                  v-if="!(item.styleData[2].img_url)"
+                  style="height:12px"
+                >{{item.styleData[2].size}}像素</p>
+                <p
+                  v-if="!(item.styleData[2].img_url)"
+                  style="height:12px;margin-top:5px"
+                >或同等比例</p>
               </div>
               <div
                 @click="handleToClickLayout(index,3)"
-                :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
+                :style="(item.styleData[3].img_url?'background:url('+item.styleData[3].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
               >
-                <p style="height:12px">{{item.styleData[3].size}}像素</p>
-                <p style="height:12px;margin-top:5px">或同等比例</p>
+                <p
+                  v-if="!(item.styleData[3].img_url)"
+                  style="height:12px"
+                >{{item.styleData[3].size}}像素</p>
+                <p
+                  v-if="!(item.styleData[3].img_url)"
+                  style="height:12px;margin-top:5px"
+                >或同等比例</p>
               </div>
             </div>
 
@@ -257,25 +308,43 @@
             >
               <div
                 @click="handleToClickLayout(index,0)"
-                :style="'height:302px;width:152px;line-height:302px;display:flex;flex-direction: column;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+                :style="(item.styleData[0].img_url?'background:url('+item.styleData[0].img_url+') no-repeat;background-size:cover;':'')+'height:302px;width:152px;line-height:302px;display:flex;flex-direction: column;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
               >
-                <p style="height:12px">{{item.styleData[0].size}}像素</p>
-                <p style="height:12px;margin-top:5px">或同等比例</p>
+                <p
+                  v-if="!(item.styleData[0].img_url)"
+                  style="height:12px"
+                >{{item.styleData[0].size}}像素</p>
+                <p
+                  v-if="!(item.styleData[0].img_url)"
+                  style="height:12px;margin-top:5px"
+                >或同等比例</p>
               </div>
               <div style="border:none;">
                 <div
                   @click="handleToClickLayout(index,1)"
-                  :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
+                  :style="(item.styleData[1].img_url?'background:url('+item.styleData[1].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
                 >
-                  <p style="height:12px">{{item.styleData[1].size}}像素</p>
-                  <p style="height:12px;margin-top:5px">或同等比例</p>
+                  <p
+                    v-if="!(item.styleData[1].img_url)"
+                    style="height:12px"
+                  >{{item.styleData[1].size}}像素</p>
+                  <p
+                    v-if="!(item.styleData[1].img_url)"
+                    style="height:12px;margin-top:5px"
+                  >或同等比例</p>
                 </div>
                 <div
                   @click="handleToClickLayout(index,2)"
-                  :style="'height:152px;width:152px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc':'')"
+                  :style="(item.styleData[2].img_url?'background:url('+item.styleData[2].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc':'')"
                 >
-                  <p style="height:12px">{{item.styleData[2].size}}像素</p>
-                  <p style="height:12px;margin-top:5px">或同等比例</p>
+                  <p
+                    v-if="!(item.styleData[2].img_url)"
+                    style="height:12px"
+                  >{{item.styleData[2].size}}像素</p>
+                  <p
+                    v-if="!(item.styleData[2].img_url)"
+                    style="height:12px;margin-top:5px"
+                  >或同等比例</p>
                 </div>
               </div>
 
@@ -288,25 +357,43 @@
             >
               <div
                 @click="handleToClickLayout(index,0)"
-                :style="'height:152px;width:302px;line-height:152px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+                :style="(item.styleData[0].img_url?'background:url('+item.styleData[0].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:302px;line-height:152px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
               >
-                <p style="height:12px">{{item.styleData[0].size}}像素</p>
-                <p style="height:12px;margin-top:5px">或同等比例</p>
+                <p
+                  v-if="!(item.styleData[0].img_url)"
+                  style="height:12px"
+                >{{item.styleData[0].size}}像素</p>
+                <p
+                  v-if="!(item.styleData[0].img_url)"
+                  style="height:12px;margin-top:5px"
+                >或同等比例</p>
               </div>
               <div style="border:none;display:flex;background:#fff">
                 <div
                   @click="handleToClickLayout(index,1)"
-                  :style="'height:152px;width:152px;line-height:152px;margin-top:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-top:1px solid #6e86cc;':'')"
+                  :style="(item.styleData[1].img_url?'background:url('+item.styleData[1].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;margin-top:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-top:1px solid #6e86cc;':'')"
                 >
-                  <p style="height:12px">{{item.styleData[1].size}}像素</p>
-                  <p style="height:12px;margin-top:5px">或同等比例</p>
+                  <p
+                    v-if="!(item.styleData[1].img_url)"
+                    style="height:12px"
+                  >{{item.styleData[1].size}}像素</p>
+                  <p
+                    v-if="!(item.styleData[1].img_url)"
+                    style="height:12px;margin-top:5px"
+                  >或同等比例</p>
                 </div>
                 <div
                   @click="handleToClickLayout(index,2)"
-                  :style="'height:152px;width:152px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-top:1px solid #6e86cc':'')"
+                  :style="(item.styleData[2].img_url?'background:url('+item.styleData[2].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-top:1px solid #6e86cc':'')"
                 >
-                  <p style="height:12px">{{item.styleData[2].size}}像素</p>
-                  <p style="height:12px;margin-top:5px">或同等比例</p>
+                  <p
+                    v-if="!(item.styleData[2].img_url)"
+                    style="height:12px"
+                  >{{item.styleData[2].size}}像素</p>
+                  <p
+                    v-if="!(item.styleData[2].img_url)"
+                    style="height:12px;margin-top:5px"
+                  >或同等比例</p>
                 </div>
               </div>
 
@@ -319,33 +406,57 @@
             >
               <div
                 @click="handleToClickLayout(index,0)"
-                :style="'height:302px;width:152px;line-height:302px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
+                :style="(item.styleData[0].img_url?'background:url('+item.styleData[0].img_url+') no-repeat;background-size:cover;':'')+'height:302px;width:152px;line-height:302px;'+(item.styleData[0].isChecked?'border:1px solid #6e86cc;':'')"
               >
-                <p style="height:12px">{{item.styleData[0].size}}像素</p>
-                <p style="height:12px;margin-top:5px">或同等比例</p>
+                <p
+                  v-if="!(item.styleData[0].img_url)"
+                  style="height:12px"
+                >{{item.styleData[0].size}}像素</p>
+                <p
+                  v-if="!(item.styleData[0].img_url)"
+                  style="height:12px;margin-top:5px"
+                >或同等比例</p>
               </div>
               <div style="border:none;background:#fff">
                 <div
                   @click="handleToClickLayout(index,1)"
-                  :style="'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
+                  :style="(item.styleData[1].img_url?'background:url('+item.styleData[1].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
                 >
-                  <p style="height:12px">{{item.styleData[1].size}}像素</p>
-                  <p style="height:12px;margin-top:5px">或同等比例</p>
+                  <p
+                    v-if="!(item.styleData[1].img_url)"
+                    style="height:12px"
+                  >{{item.styleData[1].size}}像素</p>
+                  <p
+                    v-if="!(item.styleData[1].img_url)"
+                    style="height:12px;margin-top:5px"
+                  >或同等比例</p>
                 </div>
                 <div style="display:flex;border:none">
                   <div
                     @click="handleToClickLayout(index,2)"
-                    :style="'height:152px;width:77px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc;':'')"
+                    :style="(item.styleData[2].img_url?'background:url('+item.styleData[2].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:77px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc;':'')"
                   >
-                    <p style="height:12px">{{item.styleData[2].size}}像素</p>
-                    <p style="height:12px;margin-top:5px">或同等比例</p>
+                    <p
+                      v-if="!(item.styleData[2].img_url)"
+                      style="height:12px"
+                    >{{item.styleData[2].size}}像素</p>
+                    <p
+                      v-if="!(item.styleData[2].img_url)"
+                      style="height:12px;margin-top:5px"
+                    >或同等比例</p>
                   </div>
                   <div
                     @click="handleToClickLayout(index,3)"
-                    :style="'height:152px;width:77px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
+                    :style="(item.styleData[3].img_url?'background:url('+item.styleData[3].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:77px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
                   >
-                    <p style="height:12px">{{item.styleData[3].size}}像素</p>
-                    <p style="height:12px;margin-top:5px">或同等比例</p>
+                    <p
+                      v-if="!(item.styleData[3].img_url)"
+                      style="height:12px"
+                    >{{item.styleData[3].size}}像素</p>
+                    <p
+                      v-if="!(item.styleData[3].img_url)"
+                      style="height:12px;margin-top:5px"
+                    >或同等比例</p>
                   </div>
                 </div>
 
@@ -763,7 +874,9 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
-        this.moduleSaveData = this.modulesData
+        if (newData) {
+          this.moduleSaveData = this.modulesData
+        }
       },
       immediate: true
     },
@@ -782,6 +895,12 @@ export default {
       this.handleToSaveDataImgInfo(newData)
     }
   },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+    // 初始选择模板
+    this.handleToSaveDataImgInfo(0)
+  },
   methods: {
     // 点击选择模板子项触发事件
     handleToClickTemplate (index) {
@@ -798,6 +917,8 @@ export default {
         item.isChecked = false
       })
       this.layoutData[flag].styleData[index].isChecked = true
+      this.nowLayutIndex = index
+      this.imgUrl = this.layoutData[flag].styleData[index].img_url
     },
     // 调起添加图片弹窗
     handlrToCallAddImgDialog () {
@@ -807,6 +928,8 @@ export default {
     handleSelectImg (data) {
       console.log(data)
       this.imgUrl = data.imgUrl
+      // this.nowTemplateClickIndex  this.nowLayutIndex
+      this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].img_url = data.imgUrl
     },
     // 调起选择链接弹窗
     handleToCallSelectLink () {
@@ -843,6 +966,17 @@ export default {
           num = 4
           break
       }
+      console.log(this.layoutData)
+      // 清空imgUrl 数据
+      this.layoutData.forEach((item, index) => {
+        console.log(item)
+        if (index === 7) return
+        item['styleData'].forEach((itemC, indexC) => {
+          itemC.img_url = ''
+        })
+      })
+      this.imgUrl = null
+      // 重新填入数据
       let obj = {}
       for (let index = 0; index < num; index++) {
         obj[`block_${index}`] = {
@@ -855,6 +989,7 @@ export default {
         }
       }
       console.log(obj)
+      this.modulesData.data = obj
     }
   }
 }

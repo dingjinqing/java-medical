@@ -368,7 +368,7 @@ export default {
     pageSet: {
       handler (newData) {
         console.log(newData)
-        if (newData) {
+        if (JSON.stringify(newData) !== '{}') {
           this.ruleForm = newData
         }
       },
