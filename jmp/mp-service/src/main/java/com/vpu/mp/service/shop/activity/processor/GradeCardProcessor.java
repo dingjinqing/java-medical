@@ -88,7 +88,7 @@ public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetai
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
         List<GradeCardProcessorDataInfo> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
-        capsule.setGradeCard(goodsGradeGradePrice);
+        capsule.setGradeCardPrice(goodsGradeGradePrice);
     }
     /**
      * 购物车

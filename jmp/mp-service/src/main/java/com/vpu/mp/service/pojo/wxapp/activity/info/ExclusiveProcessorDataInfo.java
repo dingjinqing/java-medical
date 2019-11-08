@@ -32,7 +32,7 @@ public class ExclusiveProcessorDataInfo extends ProcessorDataInfo {
     private Integer id;
     private String cardName;
     /**卡的类型0普通，1限次，2等级*/
-    private String cardType;
+    private Byte cardType;
     /**是否需要激活*/
     private Byte activation;
     /**激活时间*/
@@ -49,7 +49,4 @@ public class ExclusiveProcessorDataInfo extends ProcessorDataInfo {
     private String grade;
     /**用户对本卡的使用状态：0 待领取，1已领取，2待激活，3待续费，4已过期*/
     private Byte status;
-    /**卡号*/
-    private String  cardNo;
-
 }

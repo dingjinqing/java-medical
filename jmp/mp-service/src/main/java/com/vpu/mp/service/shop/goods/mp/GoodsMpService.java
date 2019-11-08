@@ -275,7 +275,7 @@ public class GoodsMpService extends ShopBaseService {
         GoodsDetailMpCapsule capsule = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
             GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
             GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
-            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM)
+            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM,GOODS.IS_CARD_EXCLUSIVE)
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny().into(GoodsDetailMpCapsule.class);
         // 图片处理

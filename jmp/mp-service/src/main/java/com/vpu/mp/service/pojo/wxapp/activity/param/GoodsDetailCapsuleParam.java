@@ -15,4 +15,5 @@ public class GoodsDetailCapsuleParam extends GoodsBaseCapsuleParam{
     public Integer goodsId;
     public Integer catId;
     public Integer sortId;
+    public Integer brandId;
 }

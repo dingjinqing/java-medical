@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
@@ -9,10 +10,17 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
+import org.jooq.Record;
+import org.jooq.Record2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 
 /**
  *  会员专享
@@ -102,6 +110,69 @@ public class ExclusiveProcessor implements ActivityGoodsListProcessor,GoodsDetai
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+
+        if (!GoodsConstant.CARD_EXCLUSIVE.equals(capsule.getIsExclusive())) {
+            capsule.setUserCanBuy(true);
+            return;
+        }
+
+        capsule.setUserCanBuy(false);
+        // 获取商品所有专享卡（包含普通卡和等级卡）
+        List<ExclusiveProcessorDataInfo> exclusiveInfo = memberCardProcessorDao.getExclusiveInfo(param.getGoodsId(), param.getCatId(), param.getSortId(), param.getBrandId());
+        Map<Byte, List<ExclusiveProcessorDataInfo>> map = exclusiveInfo.stream().collect(Collectors.groupingBy(ExclusiveProcessorDataInfo::getCardType));
+
+        // 普通卡
+        List<ExclusiveProcessorDataInfo> normalCards = map.getOrDefault(CardConstant.MCARD_TP_NORMAL, new ArrayList<>(0));
+        // 等级卡
+        List<ExclusiveProcessorDataInfo> gradeCards = map.getOrDefault(CardConstant.MCARD_TP_GRADE, new ArrayList<>(0));
+
+        // 获取当前用户拥有的所有会员卡信息
+        List<Record> userAllCard = memberCardProcessorDao.getUserAllCard(param.getUserId());
+        // 获取用户等级
+        Record2<Integer, String> userGrade = memberCardProcessorDao.getUserGradeCard(param.getUserId());
+        Map<Integer, Record> userAllCardMap = userAllCard.stream().collect(Collectors.toMap(x -> x.get(USER_CARD.CARD_ID), x -> x));
+
+        Timestamp now = DateUtil.getLocalDateTime();
+
+        // 判断用户和专享普通卡的状态关系
+        normalCards.forEach(normalCard->{
+            Record record = userAllCardMap.get(normalCard.getId());
+            if (record == null) {
+                // 用户待领取
+                normalCard.setStatus(CardConstant.USER_CARD_STATUS_NOT_HAS);
+            } else {
+                // 是否需要激活
+                Byte isNeedActive = normalCard.getActivation();
+                // 激活时间
+                Timestamp activeTime = record.get(USER_CARD.ACTIVATION_TIME);
+                // 卡有效时间，为null表示永久型
+                Timestamp expireTime = record.get(USER_CARD.EXPIRE_TIME);
+
+                // 已激活或不需要激活
+                if ((CardConstant.MCARD_ACT_NO.equals(isNeedActive) || (CardConstant.MCARD_ACT_YES.equals(isNeedActive) && activeTime != null))) {
+                    if (expireTime == null || expireTime.compareTo(now) > 0) {
+                        // 未过期可使用
+                        normalCard.setStatus(CardConstant.USER_CARD_STATUS_HAS);
+                        capsule.setUserCanBuy(true);
+                    } else {
+                        // 已过期
+                        normalCard.setStatus(CardConstant.USER_CARD_STATUS_OUT_OF_EXPIRE);
+                    }
+                } else {
+                    // 需要激活
+                    normalCard.setStatus(CardConstant.USER_CARD_STATUS_NEED_ACTVATION);
+                }
+            }
+        });
+
+        if (gradeCards.size() == 0||userGrade == null) {
+            return;
+        }
+
+        ExclusiveProcessorDataInfo minGradeCard = gradeCards.get(0);
+        if (userGrade.get(MEMBER_CARD.GRADE).compareTo(minGradeCard.getGrade()) > 0) {
+            capsule.setUserCanBuy(true);
+        }
 
     }
 

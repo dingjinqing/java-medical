@@ -2,15 +2,18 @@ package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
+import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,11 +39,19 @@ public class MemberCardProcessorDao extends ShopBaseService {
      * @return key:代表value值的类型 1 商品id，2 商家分类id，3 平台分类id， 4 品牌id  value: 对应类型的内容值
      */
     public  Map<Byte, List<Integer>> getExclusiveInfo(List<Integer> goodsIds,List<Integer> catIds,List<Integer> sortIds,List<Integer> brandIds){
-        Map<Byte, List<Integer>> typeMap = db().select(GOODS_CARD_COUPLE.GCTA_ID, GOODS_CARD_COUPLE.TYPE).from(GOODS_CARD_COUPLE)
-            .where(GOODS_CARD_COUPLE.GCTA_ID.in(goodsIds).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_GOODS)))
-            .or(GOODS_CARD_COUPLE.GCTA_ID.in(catIds).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_PLAT)))
-            .or(GOODS_CARD_COUPLE.GCTA_ID.in(sortIds).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_STORE)))
-            .or(GOODS_CARD_COUPLE.GCTA_ID.in(brandIds).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_BRAND)))
+
+        Timestamp now = DateUtil.getLocalDateTime();
+
+        Condition condition = (GOODS_CARD_COUPLE.GCTA_ID.in(goodsIds).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_GOODS)))
+                                .or(GOODS_CARD_COUPLE.GCTA_ID.in(catIds).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_PLAT)))
+                                .or(GOODS_CARD_COUPLE.GCTA_ID.in(sortIds).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_STORE)))
+                                .or(GOODS_CARD_COUPLE.GCTA_ID.in(brandIds).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_BRAND)));
+        // 时间上有效的会员卡,不是指定时间范围的卡或者是指定时间的卡且时间有效
+        Condition expireCondition =MEMBER_CARD.EXPIRE_TYPE.ne(CardConstant.MCARD_ET_FIX)
+            .or(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(now).and(MEMBER_CARD.END_TIME.gt(now))));
+
+        Map<Byte, List<Integer>> typeMap = db().select(GOODS_CARD_COUPLE.GCTA_ID, GOODS_CARD_COUPLE.TYPE).from(GOODS_CARD_COUPLE).innerJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(GOODS_CARD_COUPLE.CARD_ID))
+            .where(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(expireCondition).and(condition)
             .fetchGroups(GOODS_CARD_COUPLE.TYPE, GOODS_CARD_COUPLE.GCTA_ID);
         // 方便处理null问题
         typeMap.computeIfAbsent(CardConstant.COUPLE_TP_GOODS, k -> new ArrayList<>());
@@ -60,13 +71,20 @@ public class MemberCardProcessorDao extends ShopBaseService {
      * @return {@link com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo}
      */
     public List<ExclusiveProcessorDataInfo> getExclusiveInfo(Integer goodsId, Integer catId, Integer sortId, Integer brandId) {
+        Timestamp now =DateUtil.getLocalDateTime();
+
+        Condition condition = (GOODS_CARD_COUPLE.GCTA_ID.eq(goodsId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_GOODS)))
+                .or(GOODS_CARD_COUPLE.GCTA_ID.eq(catId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_PLAT)))
+                .or(GOODS_CARD_COUPLE.GCTA_ID.eq(sortId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_STORE)))
+                .or(GOODS_CARD_COUPLE.GCTA_ID.eq(brandId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_BRAND)));
+        // 时间上有效的会员卡,不是指定时间范围的卡或者是指定时间的卡且时间有效
+        Condition expireCondition =MEMBER_CARD.EXPIRE_TYPE.ne(CardConstant.MCARD_ET_FIX)
+            .or(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(now).and(MEMBER_CARD.END_TIME.gt(now))));
+
        return db().selectDistinct(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.ACTIVATION,MEMBER_CARD.IS_PAY,
             MEMBER_CARD.PAY_FEE,MEMBER_CARD.GRADE)
             .from(GOODS_CARD_COUPLE).innerJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(GOODS_CARD_COUPLE.CARD_ID))
-            .where(GOODS_CARD_COUPLE.GCTA_ID.in(goodsId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_GOODS)))
-            .or(GOODS_CARD_COUPLE.GCTA_ID.in(catId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_PLAT)))
-            .or(GOODS_CARD_COUPLE.GCTA_ID.in(sortId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_STORE)))
-            .or(GOODS_CARD_COUPLE.GCTA_ID.in(brandId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_BRAND)))
+            .where(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(expireCondition).and(condition).orderBy(MEMBER_CARD.GRADE.asc())
             .fetchInto(ExclusiveProcessorDataInfo.class);
     }
 
@@ -132,7 +150,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
      * @param userId 用户id值
      * @return Record2 :MEMBER_CARD.ID, MEMBER_CARD.GRADE
      */
-    private Record2<Integer, String> getUserGradeCard(Integer userId) {
+    public Record2<Integer, String> getUserGradeCard(Integer userId) {
         Record2<Integer, String> gradeCard = db().select(MEMBER_CARD.ID, MEMBER_CARD.GRADE).from(USER_CARD).join(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
             .where(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(USER_CARD.USER_ID.eq(userId)).and(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE))

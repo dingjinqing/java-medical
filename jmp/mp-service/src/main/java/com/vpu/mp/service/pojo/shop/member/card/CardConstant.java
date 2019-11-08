@@ -1,8 +1,9 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
@@ -206,4 +207,14 @@ public class CardConstant {
 	public static final Byte COUNT_TYPE = 2;
 
 	public static final String NUM_LETTERS = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+	/**用户未领取会员卡*/
+	public static final Byte USER_CARD_STATUS_NOT_HAS = 0;
+	/**用户已领取会员卡且可使用*/
+	public static final Byte USER_CARD_STATUS_HAS = 1;
+	/**用户需要激活会员卡*/
+	public static final Byte USER_CARD_STATUS_NEED_ACTVATION = 2;
+    /**用户会员卡已过期*/
+	public static final Byte USER_CARD_STATUS_OUT_OF_EXPIRE = 4;
+
 }
