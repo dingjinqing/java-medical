@@ -1,14 +1,14 @@
 <template>
   <div>
     <el-dialog
-      title="选择砍价活动"
+      :title="$t('addSeckillDialog.chooseBargain')"
       :visible.sync="dialogVisible"
       :append-to-body="true"
       width="825px"
     >
       <div class="dialog_content">
         <div class="bargain_header">
-          <span>关键词</span>
+          <span>{{$t('addSeckillDialog.keyWords')}}</span>
           <el-input
             size="small"
             style="width: 180px;"
@@ -18,7 +18,7 @@
             type="primary"
             size="small"
             @click="initData"
-          >搜索</el-button>
+          >{{$t('addSeckillDialog.search')}}</el-button>
         </div>
         <el-table
           ref="addBargainTable"
@@ -29,10 +29,10 @@
         >
           <el-table-column type="selection"></el-table-column>
           <el-table-column
-            label="活动名称"
+            :label="$t('addSeckillDialog.eventName')"
             prop="bargainName"
           ></el-table-column>
-          <el-table-column label="商品信息">
+          <el-table-column :label="$t('addSeckillDialog.productInfo')">
             <template slot-scope="{row}">
               <div>
                 <el-image
@@ -44,23 +44,23 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="售价"
+            :label="$t('addSeckillDialog.price')"
             prop="shopPrice"
           ></el-table-column>
           <el-table-column
-            label="底价"
+            :label="$t('addSeckillDialog.bottomPrice')"
             prop="expectationPrice"
           ></el-table-column>
           <el-table-column
-            label="活动库存"
+            :label="$t('addSeckillDialog.activityInventory')"
             prop="stock"
           ></el-table-column>
           <el-table-column
-            label="开始时间"
+            :label="$t('addSeckillDialog.startTime')"
             prop="startTime"
           ></el-table-column>
           <el-table-column
-            label="结束时间"
+            :label="$t('addSeckillDialog.endTime')"
             prop="endTime"
           ></el-table-column>
         </el-table>
@@ -76,11 +76,11 @@
           size="small"
           type="primary"
           @click="confirmSelect"
-        >确定</el-button>
+        >{{$t('addSeckillDialog.determine')}}</el-button>
         <el-button
           size="small"
           @click="cancelSelect"
-        >取消</el-button>
+        >{{$t('addSeckillDialog.cancel')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -120,6 +120,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.initData()
   },
   methods: {

@@ -141,6 +141,9 @@ import {
   en as bargain
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/bargainEn'
 import {
+  en as addSeckillDialog
+} from './views/admin_new/en/components/picture_setting/addSeckillDialogEn'
+import {
   en as spike
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeEn'
 // 小程序页面装修优惠卷模块国际化
@@ -915,6 +918,7 @@ const en = {
   commoditySearch, // 小程序页面装修商品搜索模块
   membershipCard, // 小程序页面装修会员卡模块
   bargain, // 小程序装修砍价模块
+  addSeckillDialog, // 选择砍价活动商品弹窗
   spike, // 小程序装修秒杀模块
   coupon, // 小程序页面装修优惠卷模块
   commodity, // 小程序页面装修商品模块

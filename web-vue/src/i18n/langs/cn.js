@@ -111,6 +111,9 @@ import {
 import {
   cn as bargain
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/bargainCn'
+import {
+  cn as addSeckillDialog
+} from './views/admin_new/cn/components/picture_setting/addSeckillDialogCn'
 // 小程序装修秒杀
 import {
   cn as spike
@@ -920,6 +923,7 @@ const cn = {
   commoditySearch, // 小程序页面装修搜索模块
   membershipCard, // 小程序页面装修会员卡模块
   bargain, // 小程序装修砍价模块
+  addSeckillDialog, // 添加砍价活动商品弹窗
   spike, // 小程序装修秒杀模块
   coupon, // 小程序页面装修优惠卷模块
   commodity, //  小程序页面装修商品模块
