@@ -15,6 +15,9 @@ export const en = {
   // 概况 用户统计
   user_summary: ['Overview', 'User Statistics'],
 
+  // 概况 用户画像
+  analysis_portrait: ['Overview', 'User portrait'],
+
   // 会员管理 持卡会员
   Cardholder: ['Membership management'],
 

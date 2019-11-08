@@ -99,12 +99,12 @@ const routes = [{
         path: '/admin/home/main/userportrait',
         name: 'analysis_portrait',
         meta: {
-          crumbTitle: '',
+          crumbTitle: 'router.analysis_portrait',
           meta: 'first_web_manage'
         },
         component: () =>
               import(
-                '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics'
+                '@/view/admin/index/leftNavComponents/first_web_manage/analysisPortrait/userportrait'
               )
       },
       // 概况 - 交易统计

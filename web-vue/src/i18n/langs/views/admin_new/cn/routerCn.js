@@ -11,6 +11,9 @@ export const cn = {
   // 概况 用户统计
   user_summary: ['概况', '用户统计'],
 
+  // 概况 用户画像
+  analysis_portrait: ['概况', '用户画像'],
+
   // 小程序管理 页面分类
   pageClassification: ['小程序管理', '页面分类'],
   // 小程序管理 图片空间
