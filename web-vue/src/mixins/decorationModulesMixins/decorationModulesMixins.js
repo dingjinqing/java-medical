@@ -43,12 +43,21 @@ export default {
           break
         case 3: // 砍价
           obj = {
-            'module_name': 'm_bargain',
-            'list_style': '0',
-            'goods_price': true,
-            'goods_count_down': true,
-            'free_btn': true,
-            'bargain_goods': []
+            module_name: 'm_bargain',
+            list_style: '0',
+            goods_price: true,
+            goods_count_down: true,
+            free_btn: true,
+            bargain_goods: []
+          }
+          break
+        case 5: // 秒杀
+          obj = {
+            module_name: 'm_seckill',
+            list_style: '0',
+            goods_price: true,
+            goods_count_down: true,
+            seckill_goods: []
           }
           break
         case 8: // 商品模块
@@ -331,6 +340,15 @@ export default {
             if (item.bargain_goods && item.bargain_goods.length === 0) {
               this.$message.error({
                 message: '请选择砍价活动商品',
+                showClose: true
+              })
+              flag = false
+            }
+            break
+          case 'm_seckill':
+            if (item.seckill_goods && item.seckill_goods.length === 0) {
+              this.$message.error({
+                message: '请选择秒杀活动商品',
                 showClose: true
               })
               flag = false

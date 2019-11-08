@@ -4,7 +4,9 @@
       <div class="navBox">
         <el-button
           type="primary"
+          size="small"
           @click="add()"
+          style="margin-top: 10px;"
         >{{$t('storeList.addStore')}}</el-button>
       </div>
       <div class="table_box">

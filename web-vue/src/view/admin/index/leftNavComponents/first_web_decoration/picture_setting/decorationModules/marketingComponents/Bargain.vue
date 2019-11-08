@@ -204,6 +204,7 @@
 </template>
 
 <script>
+import vm from '@/main'
 export default {
   props: {
     flag: Number, // 模块公共
@@ -234,7 +235,7 @@ export default {
       let now = new Date()
       let time1 = date - now // 相差毫秒数
       if (time1 <= 0) {
-        return this.$t('bargain.over')
+        return vm.$t('bargain.over')
       }
       let oneDay = 24 * 60 * 60 * 1000
       let days = Math.floor(time1 / oneDay)
@@ -245,7 +246,7 @@ export default {
       let time4 = time3 - minutes * 60 * 1000
       let seconds = Math.floor(time4 / 1000)
       console.log('date:', val, days, hours, minutes, seconds)
-      return days + this.$t('bargain.day') + hours + this.$t('bargain.hour') + minutes + this.$t('bargain.minute')
+      return days + vm.$t('bargain.day') + hours + vm.$t('bargain.hour') + minutes + vm.$t('bargain.minute')
     }
   },
   watch: {
@@ -343,6 +344,7 @@ export default {
   }
   .double_column {
     display: flex;
+    flex-wrap: wrap;
     .bargain_default_li {
       flex-basis: 50%;
       width: 50%;

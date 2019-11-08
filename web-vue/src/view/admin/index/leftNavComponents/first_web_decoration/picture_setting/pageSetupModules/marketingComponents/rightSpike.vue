@@ -1,14 +1,9 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>{{$t('bargain.bargainingModule')}}</h2>
-      <!-- 模块私有区域 -->
+      <h2>秒杀模块</h2>
       <div class="main">
-        <el-form
-          ref="bargainForm"
-          label-width="85px"
-          size="small"
-        >
+        <el-form>
           <el-form-item :label="$t('bargain.listStyle') + '：'">
             <el-radio
               v-model="data.list_style"
@@ -21,32 +16,29 @@
           </el-form-item>
           <el-form-item :label="$t('bargain.chooseEvent') + '：'">
             <el-button
-              @click="selectBargainHandle"
+              @click="selectSpikeHandle"
               size="small"
             >+ {{$t('bargain.addEvent')}}</el-button>
             <el-tooltip effect="light">
               <img :src="$imageHost+ '/image/admin/analysis_tishi.png'">
-              <div
-                slot="content"
-                style="width:200px;"
-              >
+              <div slot="content">
                 {{$t('bargain.addEventTip')}}
               </div>
             </el-tooltip>
           </el-form-item>
           <div
-            v-show="tableData && tableData.length > 0"
+            v-show="spikeTableData && spikeTableData.length > 0"
             style="margin-bottom:15px;"
           >
             <el-table
-              :data="bargainTableData"
+              :data="spikeTableData"
               border
               size="mini"
             >
               <el-table-column
                 :label="$t('bargain.productName')"
                 prop="goods_name"
-                width="80px"
+                width="120px"
               >
                 <template slot-scope="{row}">
                   <div>
@@ -64,14 +56,9 @@
                 prop="act_begin_time"
               ></el-table-column>
               <el-table-column
-                :label="$t('bargain.bottomPrice')"
-                width="50px"
-                prop="expectation_price"
-              ></el-table-column>
-              <el-table-column
-                :label="$t('bargain.bargainingStock')"
+                label="秒杀库存"
                 width="70px"
-                prop="bargain_num"
+                prop="seckill_num"
               ></el-table-column>
               <el-table-column
                 :label="$t('bargain.productStatus')"
@@ -110,19 +97,17 @@
               </el-table-column>
             </el-table>
           </div>
-          <el-form-item :label="$t('bargain.productStatus') + '：'">
-            <el-checkbox v-model="data.goods_price">{{$t('bargain.originalPrice')}}</el-checkbox>
+          <el-form-item label="显示内容：">
             <el-checkbox v-model="data.goods_count_down">{{$t('bargain.activityCountdown')}}</el-checkbox>
-            <el-checkbox v-model="data.free_btn">{{$t('bargain.bargainBtn')}}</el-checkbox>
+            <el-checkbox v-model="data.goods_price">{{$t('bargain.originalPrice')}}</el-checkbox>
           </el-form-item>
         </el-form>
       </div>
-      <!-- 模块私有区域end -->
-      <!-- 弹窗选择砍价活动商品 -->
-      <addBargainGoodsDialog
-        :visible.sync="addBargainDialogVisible"
-        @select="selectBargainGoodsHandle"
-      ></addBargainGoodsDialog>
+      <!-- 弹窗选择秒杀活动商品 -->
+      <addSpikeGoodsDialog
+        :visible.sync="spikeDialogVisible"
+        @select="selectSpikeGoodsHandle"
+      ></addSpikeGoodsDialog>
     </div>
   </div>
 </template>
@@ -131,7 +116,7 @@
 import vm from '@/main'
 export default {
   components: {
-    addBargainGoodsDialog: () => import('@/components/admin/picture_setting/addBargainGoodsDialog')
+    addSpikeGoodsDialog: () => import('@/components/admin/picture_setting/addSeckillGoodsDialog')
   },
   props: {
     modulesData: Object, // 模块公共
@@ -140,53 +125,14 @@ export default {
   data () {
     return {
       data: {
-        module_name: 'm_bargain',
+        module_name: 'm_seckill',
         list_style: '0',
         goods_price: true,
         goods_count_down: true,
-        free_btn: true,
-        bargain_goods: []
+        seckill_goods: []
       },
-      addBargainDialogVisible: false,
-      tableData: []
-    }
-  },
-  computed: {
-    bargainTableData: {
-      get: function () {
-        let datas = this.tableData.map(function (row, i) {
-          return {
-            goods_id: row.goodsId,
-            act_id: row.id,
-            goods_img: row.goodsImg,
-            goods_name: row.goodsName,
-            goods_price: row.shopPrice,
-            expectation_price: row.expectationPrice,
-            bargain_num: row.stock,
-            act_begin_time: row.startTime,
-            act_status: row.status,
-            is_on_sale: row.isOnSale,
-            is_delete: row.isDelete,
-            act_end_time: row.endTime
-          }
-        })
-        this.$set(this.data, 'bargain_goods', datas)
-        return datas
-      },
-      set: function (val) {
-        console.log('set', val)
-        this.$set(this.data, 'bargain_goods', val)
-      }
-    }
-  },
-  filters: {
-    fmtStatus: function (val) {
-      if (val === 1) {
-        return vm.$t('bargain.normal')
-      } else if (val === 0) {
-        return vm.$t('bargain.deactivate')
-      }
-      return val
+      tableData: [],
+      spikeDialogVisible: false
     }
   },
   watch: {
@@ -207,19 +153,57 @@ export default {
       deep: true
     }
   },
+  computed: {
+    spikeTableData: {
+      get: function () {
+        let datas = this.tableData.map(function (row, i) {
+          return {
+            goods_id: row.goodsId,
+            act_id: row.skid,
+            sec_price: row.secPrice,
+            sale_num: row.saleNum,
+            goods_img: row.goodsImg,
+            goods_name: row.goodsName,
+            goods_price: row.shopPrice,
+            seckill_num: row.stock,
+            act_begin_time: row.startTime,
+            act_status: row.status,
+            is_on_sale: row.isOnSale,
+            is_delete: row.isDelete,
+            act_end_time: row.endTime
+          }
+        })
+        this.$set(this.data, 'seckill_goods', datas)
+        return datas
+      },
+      set: function (val) {
+        this.$set(this.data, 'seckill_goods', val)
+      }
+    }
+  },
+  filters: {
+    fmtStatus: function (val) {
+      if (val === 1) {
+        return vm.$t('bargain.normal')
+      } else if (val === 0) {
+        return vm.$t('bargain.deactivate')
+      }
+      return val
+    }
+  },
   mounted () {
     this.langDefault()
   },
   methods: {
-    selectBargainHandle () {
-      this.addBargainDialogVisible = true
+    selectSpikeHandle () {
+      this.spikeDialogVisible = true
     },
-    selectBargainGoodsHandle (goods) {
-      console.log(goods)
+    selectSpikeGoodsHandle (goods) {
+      console.log('goods:', goods)
       this.tableData = goods
     },
     edit (operate, row, $index) {
-      let datas = this.bargainTableData
+      let datas = this.spikeTableData
       let len = datas.length
       let index = $index
       console.log('editxxx', index, len, datas)
@@ -238,7 +222,7 @@ export default {
           datas.splice(index, 1)
           break
       }
-      this.bargainTableData = datas
+      this.spikeTableData = datas
     }
   }
 }
@@ -258,11 +242,11 @@ export default {
       border-bottom: 1px solid #eee;
       padding-bottom: 10px;
     }
+    .edits_wrap .iconfont {
+      font-size: 13px;
+      color: #5a8bff;
+      cursor: pointer;
+    }
   }
-}
-.edits_wrap .iconfont {
-  font-size: 13px;
-  color: #5a8bff;
-  cursor: pointer;
 }
 </style>
