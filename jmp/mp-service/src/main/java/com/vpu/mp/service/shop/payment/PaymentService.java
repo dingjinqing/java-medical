@@ -4,7 +4,9 @@ import static com.vpu.mp.db.shop.tables.Payment.PAYMENT;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Map;
 
+import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,14 +61,14 @@ public class PaymentService extends ShopBaseService {
 	 * 
 	 * @return
 	 */
-	public Result<PaymentRecord> getSupportPayment() {
+	public Map<String, PaymentVo> getSupportPayment() {
 		String[] payCodes = { PayCode.PAY_CODE_WX_PAY, PayCode.PAY_CODE_COD };
-		return db().selectFrom(PAYMENT)
-				.where(PAYMENT.ENABLED.eq(PayCode.PAY_CODE_ENABLED)
-						.and(PAYMENT.PAY_CODE.in(payCodes)))
-				.orderBy(PAYMENT.PAY_CODE.desc())
-				.fetch();
-	}
+        return db().selectFrom(PAYMENT)
+            .where(PAYMENT.ENABLED.eq(PayCode.PAY_CODE_ENABLED)
+                .and(PAYMENT.PAY_CODE.in(payCodes)))
+            .orderBy(PAYMENT.PAY_CODE.desc())
+            .fetchMap(PAYMENT.PAY_CODE, PaymentVo.class);
+    }
 
 	/**
 	 * 统一订单支付回调
@@ -171,5 +173,4 @@ public class PaymentService extends ShopBaseService {
 		 */
 
 	}
-
 }

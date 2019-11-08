@@ -12,7 +12,7 @@ public class ServiceOrderListQueryVo {
 	
 	private Integer storeId;
 	
-	private String order_sn;
+	private String orderSn;
 	
 	/**
 	 *预约人ID 

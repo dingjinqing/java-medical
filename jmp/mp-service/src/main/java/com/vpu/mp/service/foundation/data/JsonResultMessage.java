@@ -436,8 +436,11 @@ public class JsonResultMessage {
 	public static final String MSG_ORDER_GOODS_NO_SALE = "order_goods_no_sale";
 	public static final String MSG_ORDER_GOODS_OUT_OF_STOCK = "order_goods_out_of_stock";
     public static final String MSG_ORDER_GOODS_NO_ZERO = "order_goods_no_zero";
+    public static final String MSG_ORDER_CALCULATE_SHIPPING_FEE_ERROR = "order_calculate_shipping_fee_error";
+    public static final String MSG_ORDER_PAY_WAY_NO_NULL = "ORDER_PAY_WAY_NO_NULL";
+    public static final String MSG_ORDER_ADDRESS_NO_NULL = "order_address_no_null";
 
-	public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
+    public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
 	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";
 	public static final String REFUND_ACCOUNT_LARGER_THAN_ACCOUNT_PAID = "order.refund.account_larger_than_paid";

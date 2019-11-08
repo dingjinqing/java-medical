@@ -133,6 +133,17 @@ public class OrderConstant {
 	@Deprecated
 	public final static String PAY_CODE_ALI_MINI_PAY = "ali_mini_pay";
 
+    /**
+     * 小程序支付方式编码
+     */
+    /**微信*/
+    public final static Byte MP_PAY_CODE_WX_PAY = 0;
+    /**货到付款*/
+    public final static Byte MP_PAY_CODE_COD = 1;
+
+    /**小程序支付方式编码->string*/
+    public final static String MP_PAY_CODE_TO_STRING[] ={PAY_CODE_WX_PAY , PAY_CODE_COD};
+
 	/**
 	 *	 配送方式
 	 *
@@ -410,10 +421,70 @@ public class OrderConstant {
 	/** no */
 	public static final byte no = 0;
 	/**奖品订单类型*/
-	public static final ImmutableSet<Byte> AWARD_ORDER = ImmutableSet.<Byte>builder()
-			.add(GOODS_TYPE_LOTTERY_PRESENT)
-			.add(GOODS_TYPE_PROMOTE_ORDER)
-			.add(GOODS_TYPE_PAY_AWARD)
-			.add(GOODS_TYPE_ASSESS_ORDER)
-			.build();
+	public static final ImmutableSet<Byte> AWARD_ORDER;
+
+    static{
+        AWARD_ORDER = ImmutableSet.<Byte>builder()
+            .add(GOODS_TYPE_LOTTERY_PRESENT)
+            .add(GOODS_TYPE_PROMOTE_ORDER)
+            .add(GOODS_TYPE_PAY_AWARD)
+            .add(GOODS_TYPE_ASSESS_ORDER)
+            .build();
+    }
+    /**
+     * 订单折扣类型 Discount Type
+     */
+    /**会员卡*/
+    public static final Byte D_T_MEMBER_CARD = 0;
+    /**会员卡*/
+    public static final Byte D_T_COUPON = 1;
+
+    /**
+     * table : b2c_customer_avail_coupons type 1为减价，2为打折
+     */
+    public static final byte T_CAC_TYPE_REDUCTION = 1;
+    public static final byte T_CAC_TYPE_DISCOUNT = 2;
+
+    /**
+     *  默认运费模板 0：统一运费，1：满额包邮，
+     */
+    public static final Integer DEFAULT_SHIPPING_FEE_TEMPLATE_UNITY = 0;
+    public static final Integer DEFAULT_SHIPPING_FEE_TEMPLATE_FREE_LIMIT = 1;
+
+    /**
+     *  运费模板分类：0：普通运费模板；1：重量运费模板
+     */
+    public static final Integer SHIPPING_FEE_TEMPLATE_NUMBER = 0;
+    public static final Integer SHIPPING_FEE_TEMPLATE_WEIGHT = 1;
+
+    /**
+     *  会员卡 type 0线上 1线下
+     */
+    public static final Byte MEMBER_CARD_ONLINE = 0;
+    public static final Byte MEMBER_CARD_OFFLINE = 1;
+
+    /** 指定条件包邮（可选） 0:关闭，1:开启 */
+    public static final Integer S_HAS_FEE_CONDITION_OPEN = 1;
+    public static final Integer S_HAS_FEE_CONDITION_CLOSE = 0;
+
+    /**
+     * 除可配送区域外，其他不可配送开关
+     * 0:不限制;1:限制
+     */
+    public static final Integer S_LIMIT_DELIVER_AREA_OPEN = 1;
+    public static final Integer S_LIMIT_DELIVER_AREA_CLOSE = 0;
+
+    /**
+     * 计算运费->包邮地区规则
+     * CALCULATE_FREE_SHIPPING_FEE_RULE_TYPE -> CFSFRT
+     * 包邮类型（1:件数/公斤,2:金额,3:件数+金额/公斤+金额）
+     */
+    public static final Integer CFSFRT_NUMBER_OR_WEIGHT = 1;
+    public static final Integer CFSFRT_AMOUNT = 2;
+    public static final Integer CFSFRT_MIXING = 3;
+
+    /**
+     * 前端默认优惠卷号
+     */
+    public static final String DEFAULT_COUPON_OR_ORDER_SN = "0";
 }

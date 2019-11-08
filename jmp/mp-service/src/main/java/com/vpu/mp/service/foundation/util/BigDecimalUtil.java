@@ -12,7 +12,7 @@ import java.math.RoundingMode;
  */
 public class BigDecimalUtil {
     public static final BigDecimal BIGDECIMAL_ZERO = new BigDecimal(0);
-	static public enum Operator {
+	public enum Operator {
 		//加
 		add,
 		//减
@@ -25,8 +25,8 @@ public class BigDecimalUtil {
 	/**
 	 * 	比较左右值,如为null默认取0,比较的是数学上的有效数字
 	 * eg:(0,1)->-1;(1,1)->0;(1,0)->1
-	 * @param left
-	 * @param right
+	 * @param left left
+	 * @param right right
 	 * @return int[result] = {-1,0,1}
 	 */
 	static public int compareTo(BigDecimal left , BigDecimal right) {
@@ -37,8 +37,8 @@ public class BigDecimalUtil {
 
 	/**
 	 * 加法,如为null默认取0
-	 * @param left
-	 * @param right
+     * @param left left
+     * @param right right
 	 * @return result left+right
 	 */
 	static public BigDecimal add(BigDecimal left , BigDecimal right) {
@@ -49,8 +49,8 @@ public class BigDecimalUtil {
 
 	/**
 	 * 减法,如为null默认取0
-	 * @param left
-	 * @param right
+     * @param left left
+     * @param right right
 	 * @return result left-+right
 	 */
 	static public BigDecimal subtrac(BigDecimal left , BigDecimal right) {
@@ -63,7 +63,7 @@ public class BigDecimalUtil {
 	 * BigDecimal乘法：精度保留小数点后两位，采取四舍五入
 	 * @param left	null->zero
 	 * @param right null->zero
-	 * @return
+	 * @return value
 	 */
 	static public BigDecimal multiply(BigDecimal left , BigDecimal right) {
         left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
@@ -75,7 +75,7 @@ public class BigDecimalUtil {
 	 * BigDecimal除法：精度保留小数点后两位，采取四舍五入
 	 * @param left=null->zero
      * @param right=null throw Exception
-	 * @return
+	 * @return value
 	 */
 	static public BigDecimal divide(BigDecimal left , BigDecimal right) throws ArithmeticException{
         left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
@@ -86,10 +86,37 @@ public class BigDecimalUtil {
         return left.divide(right, 2, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
     }
 
+    /**
+     * BigDecimal乘法：精度保留小数点后两位，采取RoundingMode
+     * @param left	null->zero
+     * @param right null->zero
+     * @return value
+     */
+    static public BigDecimal multiply(BigDecimal left , BigDecimal right , RoundingMode roundingMode) {
+        left = left == null ? BigDecimal.ZERO.setScale(2, roundingMode) : left;
+        right = right == null ? BigDecimal.ZERO.setScale(2, roundingMode) : right;
+        return left.multiply(right).setScale(2, roundingMode);
+    }
+
+    /**
+     * BigDecimal除法：精度保留小数点后两位，采取RoundingMode
+     * @param left=null->zero
+     * @param right=null throw Exception
+     * @return value
+     */
+    static public BigDecimal divide(BigDecimal left , BigDecimal right , RoundingMode roundingMode) throws ArithmeticException{
+        left = left == null ? BigDecimal.ZERO.setScale(2, roundingMode) : left;
+        if(right == null || compareTo(right, null) < 1) {
+            throw new ArithmeticException("Division by zero");
+        }
+        right = right.setScale(2, roundingMode);
+        return left.divide(right, 2, roundingMode).setScale(2, roundingMode);
+    }
+
 	/**
 	 * 	支持按照bigDecimals数组顺序进行加减运算，精度保留小数点后两位
 	 * @param bigDecimals BigDecimalPlus类属性为value（值）与operator（该值与其后一位的运算符）
-	 * @return
+	 * @return value
 	 */
 	static public BigDecimal addOrSubtrac(BigDecimalPlus...bigDecimals) {
 		if(bigDecimals == null || bigDecimals.length < 2) {
@@ -106,7 +133,7 @@ public class BigDecimalUtil {
     /**
 	 * 	支持按照bigDecimals数组顺序进行乘除运算，精度保留小数点后两位，采取四舍五入
 	 * @param bigDecimals BigDecimalPlus类属性为value（值）与operator（该值与其后一位的运算符）
-	 * @return
+	 * @return value
 	 */
 	static public BigDecimal multiplyOrDivide(BigDecimalPlus...bigDecimals) {
 		if(bigDecimals == null || bigDecimals.length < 2) {
@@ -121,7 +148,7 @@ public class BigDecimalUtil {
 	}
 
     /**
-	 * 	四则运算增强（目前仅支持乘除法）
+	 * 	四则运算增强（目前仅支持乘除法或加减法，不支持加减乘除同时运算）
 	 * @author 王帅
 	 *
 	 */
@@ -135,14 +162,14 @@ public class BigDecimalUtil {
 		}
 		/**
 		 * 	静态构造器
-		 * @param bigDecimal
-		 * @param operator
-		 * @return
+		 * @param bigDecimal bigDecimal
+		 * @param operator 操作符
+		 * @return BigDecimalPlus
 		 */
 		public static BigDecimalPlus create(BigDecimal bigDecimal , Operator operator) {
 			return new BigDecimalPlus(bigDecimal,operator);
 		}
-		public BigDecimalPlus toOperator(BigDecimalPlus bigDecimalPlus) {
+		private BigDecimalPlus toOperator(BigDecimalPlus bigDecimalPlus) {
 			if(operator == null) {
 				throw new IllegalArgumentException("non-last parameter must be input operator");
 			}

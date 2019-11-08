@@ -5,21 +5,38 @@ import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.coupon.*;
+import com.vpu.mp.service.pojo.shop.coupon.CouponAllVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
-import org.jooq.*;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
+import jodd.util.StringUtil;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +61,15 @@ public class CouponService extends ShopBaseService {
     public CouponHoldService couponHold;
 
     private String aliasCode;
+
+    /**可用会员卡*/
+    public static final byte COUPON_IS_USED_STATUS_AVAIL = 0;
+
+    /**普通优惠券*/
+    public static final byte COUPON_TYPE_NORMAL = 0;
+
+    /**优惠类型 0:减价;1打折*/
+    public static final byte COUPON_TYPE_ = 0;
 
     /**
      * 创建优惠券
@@ -372,6 +398,76 @@ public class CouponService extends ShopBaseService {
                 .and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte) 1).or(MRKING_VOUCHER.SURPLUS.gt(0))).fetchInto(CouponAllVo.class);
         return couponAllVos;
 
+    }
+
+    /**
+     * 获取用户可用优惠券列表
+     * 王帅
+     * @param userId
+     * @return 当前用户可用优惠卷
+     */
+    public List<OrderCouponVo> getValidCoupons(Integer userId){
+        Timestamp now = DateUtil.getSqlTimestamp();
+        return db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
+            CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT,
+            MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.RECOMMEND_GOODS_ID, MRKING_VOUCHER.RECOMMEND_CAT_ID, MRKING_VOUCHER.RECOMMEND_PRODUCT_ID, MRKING_VOUCHER.RECOMMEND_SORT_ID).
+            from(CUSTOMER_AVAIL_COUPONS).
+            leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)).
+            where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((COUPON_IS_USED_STATUS_AVAIL)).and(CUSTOMER_AVAIL_COUPONS.START_TIME.le(now)).and(CUSTOMER_AVAIL_COUPONS.END_TIME.greaterThan(now)))).
+            orderBy(CUSTOMER_AVAIL_COUPONS.END_TIME.desc()).
+            fetchInto(OrderCouponVo.class);
+    }
+
+    /**
+     * 判断该product是否可以使用该优惠卷
+     * 王帅
+     * @param coupon 优惠卷
+     * @param bo bo
+     * @return 是否可以使用
+     */
+    public boolean isContainsProduct(OrderCouponVo coupon, OrderGoodsBo bo){
+        //全部为空为全部商品
+        if(StringUtil.isNotBlank(new StringBuilder().append(coupon.getRecommendGoodsId()).append(coupon.getRecommendCatId()).append(coupon.getRecommendSortId()).append(coupon.getRecommendProductId()).toString())){
+            return true;
+        }
+        if(StringUtil.isNotBlank(coupon.getRecommendGoodsId())){
+            return Arrays.asList(coupon.getRecommendGoodsId().split(",")).contains(bo.getGoodsId().toString());
+        }
+        if(StringUtil.isNotBlank(coupon.getRecommendCatId())){
+            return Arrays.asList(coupon.getRecommendCatId().split(",")).contains(bo.getCatId().toString());
+        }
+        if(StringUtil.isNotBlank(coupon.getRecommendSortId())){
+            return Arrays.asList(coupon.getRecommendSortId().split(",")).contains(bo.getSortId().toString());
+        }
+        //crm相关
+        if(StringUtil.isNotBlank(coupon.getRecommendProductId())){
+            return Arrays.asList(coupon.getRecommendProductId().split(",")).contains(bo.getProductId().toString());
+        }
+        return true;
+    }
+
+    /**
+     * 王帅
+     * @param coupon 优惠卷
+     * @param totalPrice 商品总价
+     * @return 折扣价格
+     */
+    public BigDecimal getDiscountAmount(OrderCouponVo coupon, BigDecimal totalPrice){
+        if(OrderConstant.T_CAC_TYPE_REDUCTION == coupon.getType()){
+            //代金券
+            return BigDecimalUtil.compareTo(coupon.getLimitOrderAmount(), totalPrice) < 1 ? coupon.getAmount() : BigDecimal.ZERO;
+        }else if(OrderConstant.T_CAC_TYPE_DISCOUNT == coupon.getType()){
+            //打折券 return = totalPrice * (1 - coupon.getAmount /10)
+            return BigDecimalUtil.compareTo(coupon.getLimitOrderAmount(), totalPrice) < 1 ?
+                BigDecimalUtil.multiplyOrDivide(
+                    BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
+                    BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.addOrSubtrac(BigDecimalUtil.BigDecimalPlus.create(BigDecimal.ONE, BigDecimalUtil.Operator.subtrac),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.multiplyOrDivide(BigDecimalUtil.BigDecimalPlus.create(coupon.getAmount(), BigDecimalUtil.Operator.Divide),
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)), null)
+                    ), null))
+            : BigDecimal.ZERO;
+        }
+        return BigDecimal.ZERO;
     }
 
     /**

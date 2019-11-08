@@ -12,10 +12,14 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 
@@ -24,8 +28,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Byte activityType;
+    @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_ADDRESS_NO_NULL)
 	private Integer addressId;
 	private List<Goods> goods;
     private Byte deliverType;
@@ -38,9 +44,24 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
      * 0:默认选第一张；null：不选；其他：卡号
      */
     private String couponSn;
+    /**积分抵扣金额*/
+    private BigDecimal scoreDiscount;
+    /**余额抵扣金额*/
+    private BigDecimal balance;
+    /**会员卡抵扣金额*/
+    private BigDecimal cardBalance;
+    /**支付方式*/
+    @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_PAY_WAY_NO_NULL)
+    private Byte orderPayWay;
 	@JsonIgnore
 	/**方便查找*/
 	private Map<Integer, Goods> goodsMap;
+    @JsonIgnore
+    /**方便查找*/
+    private Map<String, WxAppUserCardVo> cards;
+    @JsonIgnore
+    /**方便查找*/
+    private List<OrderGoodsBo> bos;
 	/**
 	 * 商品参数
 	 * @author 王帅
@@ -75,7 +96,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		@JsonIgnore
 		private GoodsSpecProductRecord productInfo;
 	}
-	
+
 	/**
 	 * 获取当前购买商品ids
 	 * @return
@@ -83,7 +104,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	public List<Integer> getGoodsIds() {
 		return goods == null ? Collections.emptyList() : goods.stream().map(Goods::getGoodsId).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * 获取当前购买商品规格ids
 	 * @return
@@ -91,7 +112,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	public List<Integer> getProductIds() {
 		return goods == null ? Collections.emptyList() : goods.stream().map(Goods::getProductId).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * 获取goodsMap
 	 * @return k->proId,v->goods
@@ -106,4 +127,15 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 			return goods.stream().collect(Collectors.toMap(Goods::getProductId, Function.identity()));
 		}
 	}
+
+    /**
+     * 获取当前默认会员卡
+     * @return 当前会员卡
+     */
+    public WxAppUserCardVo getDefaultCard() {
+        if(cards == null || cards.size() == 0 || memberCardNo == null){
+            return null;
+        }
+        return cards.get(memberCardNo);
+    }
 }

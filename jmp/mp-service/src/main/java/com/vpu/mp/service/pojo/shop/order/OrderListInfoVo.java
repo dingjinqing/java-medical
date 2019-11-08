@@ -28,7 +28,7 @@ public class OrderListInfoVo {
 	 * 拆单子订单LogicMainOrderSn=mainOrderSn
 	 */
 	@JsonIgnore
-	private String LogicMainOrderSn;
+	private String logicMainOrderSn;
 	private String mainOrderSn;
 	private String goodsType;
 	private List<? extends OrderListInfoVo> childOrders;
@@ -63,8 +63,6 @@ public class OrderListInfoVo {
 	/**会员卡消费金额*/
 	/**918*/
 	private BigDecimal memberCardBalance;
-	/**TODO 数据库没字段子单金额*/
-	@JsonIgnore
 	private BigDecimal subGoodsPrice;
 	/**退款/退货状态*/
 	private Byte refundStatus;

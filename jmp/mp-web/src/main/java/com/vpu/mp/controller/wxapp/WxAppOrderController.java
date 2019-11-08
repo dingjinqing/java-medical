@@ -2,8 +2,11 @@ package com.vpu.mp.controller.wxapp;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryVo;
+import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +34,32 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/wxapp/order")
 public class WxAppOrderController extends WxAppBaseController{
+
+    /**
+     * 	结算页面
+     */
+    @PostMapping("")
+    public JsonResult order(@RequestBody @Valid OrderBeforeParam param) {
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
+        try {
+            return success(shop().orderActionFactory.orderQuery(param));
+        } catch (MpException e) {
+            return fail(e.getErrorCode());
+        }
+    }
+
+    /**
+     * 	结算页面
+     */
+    @PostMapping("/pay")
+    public JsonResult pay(@RequestBody @Validated(CreateOrderValidatedGroup.class) CreateParam param) {
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
+        JsonResultCode code = shop().orderActionFactory.orderOperate(param);
+        return code == null ? success() : fail(code);
+
+    }
 
 	/**
 	 * 	退款、退货创建

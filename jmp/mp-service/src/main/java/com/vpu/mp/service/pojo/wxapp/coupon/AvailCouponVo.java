@@ -43,7 +43,7 @@ public class AvailCouponVo {
 	/**
 	 * 使用条件
 	 */
-	public BigDecimal limit_order_amount;
+	public BigDecimal limitOrderAmount;
 	/**
 	 * 是否已使用 0 未使用 1 已使用 2过期吧 3 废除
 	 */

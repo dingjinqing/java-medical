@@ -1486,7 +1486,7 @@ public class GoodsService extends ShopBaseService {
 
             Sort sort = saas.getShopApp(getShopId()).goods.goodsSort.getSort(goods.getSortId());
             if(sort != null){
-                if(sort.getParentId() == Sort.NO_PARENT_CODE){
+                if(Sort.NO_PARENT_CODE.equals(sort.getParentId())){
                     //parent_id 是0，表示该分类是一级节点
                     goods.setSortNameParent(sort.getSortName());
                 }else{
@@ -1530,7 +1530,7 @@ public class GoodsService extends ShopBaseService {
      * @throws MpException
      */
     public Map<Integer, Byte> getGoodsType(List<Integer> goodsIds) throws MpException {
-        Map<Integer, Byte> goodsTypes = db().select(GOODS.GOODS_TYPE).from(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).fetchMap(GOODS.GOODS_ID, Byte.class);
+        Map<Integer, Byte> goodsTypes = db().select(GOODS.GOODS_ID, GOODS.GOODS_TYPE).from(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).fetchMap(GOODS.GOODS_ID, GOODS.GOODS_TYPE);
         if(goodsTypes.size() != goodsIds.size()) {
         	throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST);
         }

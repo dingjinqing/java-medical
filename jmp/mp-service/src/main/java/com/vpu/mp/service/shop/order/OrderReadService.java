@@ -933,10 +933,10 @@ public class OrderReadService extends ShopBaseService {
             }
             if(columns.contains(OrderExportVo.USER_SOURCE)){
                 //下单用户来源
-                if(order.getUserSource() == BACK_STAGE.getCode()){
+                if(BACK_STAGE.getCode().equals(order.getUserSource())){
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_ADMIN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
-                if(order.getUserSource() == NOT_ACQUIRED.getCode() && order.getInviteSource() != null && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
+                if(NOT_ACQUIRED.getCode().equals(order.getUserSource()) && order.getInviteSource() != null && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_UNKNOWN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
                 if(order.getUserSource() != null && order.getUserSource() > BACK_STAGE.getCode()){

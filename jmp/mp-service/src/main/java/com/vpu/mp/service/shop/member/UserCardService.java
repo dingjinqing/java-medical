@@ -1,6 +1,13 @@
 package com.vpu.mp.service.shop.member;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.shop.order.action.base.Calculate;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
+import org.apache.commons.collections4.CollectionUtils;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import org.apache.commons.lang3.StringUtils;
 
@@ -113,6 +120,8 @@ public class UserCardService extends ShopBaseService {
 	private GoodsCardCoupleService goodsCardCoupleService;
 	@Autowired
 	private CardUpgradeService cardUpgradeService;
+    @Autowired
+    private Calculate calculate;
 	public static final String DEFAULT_ADMIN = "0";
 
 	public static final String OPTIONINFO = OPEN_CARD_SEND;
@@ -768,6 +777,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
+     * 王帅
 	 * get card type
 	 */
 	public Byte getCardType(String cardNo) {
@@ -827,6 +837,110 @@ public class UserCardService extends ShopBaseService {
 	public int getNumCardsWithSameId(Integer cardId) {
 		return userCardDao.calcNumCardById(cardId);
 	}
+
+    /**
+     * 王帅
+     * 得到用户可用会员卡
+     * @param userId
+     * @param bos
+     * @param storeId
+     * @param defaultCards
+     * @return cards
+     */
+	public List<OrderMemberVo> getValidCardList(Integer userId, List<OrderGoodsBo> bos, Integer storeId, List<OrderMemberVo> defaultCards) {
+        List<OrderMemberVo> cards = new ArrayList<OrderMemberVo>();
+        if(CollectionUtils.isEmpty(defaultCards)){
+	        //初始化
+            defaultCards = userCardDao.getOrderMembers(userId, new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, OrderConstant.MEMBER_CARD_ONLINE);
+        }
+        if(CollectionUtils.isEmpty(defaultCards)){
+            //校验
+            return Lists.newArrayList();
+        }
+        for (Iterator<OrderMemberVo> iterator = defaultCards.iterator(); iterator.hasNext() ; ) {
+            OrderMemberVo card = iterator.next();
+            cards.add(card);
+            //当前会员卡适用商品
+            BigDecimal[] tolalNumberAndPrice = calculate.getTolalNumberAndPriceByType(bos, OrderConstant.D_T_MEMBER_CARD, DefaultMarketingProcess.builder().card(card).type(OrderConstant.D_T_MEMBER_CARD).build());
+            //折扣金额
+            BigDecimal discountAmount = null;
+            //判断门店（无门店||全部门店||部分门店）
+            if(storeId == null || CardConstant.MCARD_STP_ALL.equals(card.getStoreList()) ||
+                (CardConstant.MCARD_SUSE_OK.equals(card.getStoreUseSwitch()) && Arrays.asList(card.getStoreList().split(",")).contains(storeId.toString()))) {
+                //折扣金额
+                discountAmount = getDiscountAmount(card, tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
+            }else{
+                iterator.remove();
+            }
+            card.setBos(bos);
+            card.setTotalPrice(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
+            card.setTotalGoodsNumber(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER]);
+            card.setTotalDiscount(discountAmount);
+            card.setIdentity(card.getCardNo());
+        }
+        return cards;
+    }
+
+    /**
+     * 王帅
+     * 校验该商品是否可以打折
+     * @param cardId 卡
+     * @param bo 商品
+     * @return boolean
+     */
+    public boolean checkGoodsDiscount(Integer cardId, OrderGoodsBo bo){
+        MemberCardRecord card = userCardDao.getMemberCardById(cardId);
+        if(card == null){
+            return false;
+        }
+        if(CardConstant.MCARD_DIS_ALL.equals(card.getDiscountIsAll())){
+            return true;
+        }
+        if(StringUtil.isNotBlank(card.getDiscountGoodsId())){
+            //商品id
+            return Arrays.asList(card.getDiscountGoodsId().split(",")).contains(bo.getGoodsId());
+        }
+        if(StringUtil.isNotBlank(card.getDiscountCatId())){
+            //平台分类id
+            return Arrays.asList(card.getDiscountCatId().split(",")).contains(bo.getCatId());
+        }
+        if(StringUtil.isNotBlank(card.getDiscountSortId())){
+            //商家分类id
+            return Arrays.asList(card.getDiscountSortId().split(",")).contains(bo.getSortId());
+        }
+        if(StringUtil.isNotBlank(card.getDiscountBrandId())){
+            //商品品牌id
+            return Arrays.asList(card.getDiscountBrandId().split(",")).contains(bo.getBrandId());
+        }
+        return false;
+    }
+
+    /**
+     * 王帅
+     * 获取该卡打折金额
+     * @param card 会员卡
+     * @param totalPrice 折前总价
+     * @return 折后总价
+     */
+    public BigDecimal getDiscountAmount(OrderMemberVo card, BigDecimal totalPrice){
+        if(CardConstant.MCARD_TP_LIMIT.equals(card.getCardType())){
+            //限次卡
+            card.setTotalDiscount(totalPrice);
+        }else if(BigDecimalUtil.compareTo(card.getDiscount(), BigDecimal.ZERO) == -1){
+            //如果没有打折权益则为十折
+            card.setTotalDiscount(BigDecimal.ZERO);
+        }else{
+            //正常打折
+            card.setTotalDiscount(
+                BigDecimalUtil.multiplyOrDivide(
+                    BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
+                    BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.addOrSubtrac(BigDecimalUtil.BigDecimalPlus.create(BigDecimal.ONE, BigDecimalUtil.Operator.subtrac),
+                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.multiplyOrDivide(BigDecimalUtil.BigDecimalPlus.create(card.getDiscount(), BigDecimalUtil.Operator.Divide),
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)), null)
+                    ), null)));
+        }
+        return card.getDiscount();
+    }
 
 
 }

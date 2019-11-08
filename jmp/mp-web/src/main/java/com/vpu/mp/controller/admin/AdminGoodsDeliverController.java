@@ -22,7 +22,7 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 
 	/**
 	 * 返回所有地区代码及名称
-	 * 
+	 *
 	 * @return JsonResult
 	 */
 	@GetMapping("/select")

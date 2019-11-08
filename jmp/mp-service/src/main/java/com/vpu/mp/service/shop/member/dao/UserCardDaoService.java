@@ -1,5 +1,46 @@
 package com.vpu.mp.service.shop.member.dao;
 
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.collect.Lists;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectSeekStep3;
+import org.jooq.SelectSelectStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
+import com.vpu.mp.db.shop.tables.records.CardUpgradeRecord;
+import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
+import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -405,4 +446,45 @@ public class UserCardDaoService extends ShopBaseService{
 				.and(GRADE_PRD.PRD_ID.in(prdIdList)).fetchInto(UserCardGradePriceBo.class);
 
 	}
+
+    /**
+     * 王帅
+     * 获取会员卡
+     * @param cardNo
+     * @return
+     */
+	public OrderMemberVo getValidByCardNo(String cardNo){
+        return selectValidCardSQL().
+            where(USER_CARD.CARD_NO.eq(cardNo))
+            .fetchAnyInto(OrderMemberVo.class);
+    }
+
+    /**
+     * 王帅
+     * 获取等级卡
+     * @param userId id
+     * @return result
+     */
+    public OrderMemberVo getOrderGradeCard(Integer userId){
+         return selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId)).fetchOneInto(OrderMemberVo.class);
+    }
+
+    /**
+     * 获取营销会员卡（转化）
+     * @param userId 用户id
+     * @param cardType 卡类型
+     * @param type 0线上 1线下
+     * @return result
+     */
+    public List<OrderMemberVo> getOrderMembers(Integer userId,Byte[] cardType,Byte type) {
+        List<ValidUserCardBean> validCardList = getValidCardList(userId, cardType, type);
+        if(CollectionUtils.isEmpty(validCardList)){
+            return Lists.newArrayList();
+        }
+        List<OrderMemberVo> result = new ArrayList<>(validCardList.size());
+        for (ValidUserCardBean card : validCardList) {
+            result.add(new OrderMemberVo().init(card));
+        }
+        return result;
+    }
 }

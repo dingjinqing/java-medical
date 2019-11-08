@@ -150,6 +150,8 @@ public enum JsonResultCode {
 	CODE_ORDER_GOODS_OUT_OF_STOCK(120062, JsonResultMessage.MSG_ORDER_GOODS_OUT_OF_STOCK),
 	/**商品数量为0*/
 	CODE_ORDER_GOODS_NO_ZERO(120063, JsonResultMessage.MSG_ORDER_GOODS_NO_ZERO),
+    /**计算运费时运费模板,未找到可配送的区域*/
+    CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR(120064, JsonResultMessage.MSG_ORDER_CALCULATE_SHIPPING_FEE_ERROR),
 
 
     // 商品

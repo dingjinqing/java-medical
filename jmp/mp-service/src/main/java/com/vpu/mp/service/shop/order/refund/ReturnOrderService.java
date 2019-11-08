@@ -99,7 +99,7 @@ public class ReturnOrderService extends ShopBaseService{
 	 */
 	public SelectWhereStep<?> buildOptionsReturn(SelectJoinStep<?> select, OrderPageListQueryParam param) {
 		// 自增id排序
-		select.orderBy(TABLE.RET_ID);
+		select.orderBy(TABLE.RET_ID.desc());
 
 		if (!StringUtils.isEmpty(param.getOrderSn())) {
 			select.where(TABLE.ORDER_SN.eq(param.getOrderSn()));

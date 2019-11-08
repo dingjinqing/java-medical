@@ -25,7 +25,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_BR
 
 /**
  * 会员卡商品(分类,商家分类...)关联类
- * 
+ *
  * @author 孔德成
  * @date 2019/10/30 15:31
  */
@@ -40,7 +40,7 @@ public class GoodsCardCoupleService extends ShopBaseService {
 	/**
 	 *
 	 * 根据会员卡等级获取会员卡关联表
-	 * 
+	 *
 	 * @param grade
 	 * @return
 	 */
@@ -56,7 +56,7 @@ public class GoodsCardCoupleService extends ShopBaseService {
 
 	/**
 	 * 获取普通会员卡关联表
-	 * 
+	 *
 	 * @param userId
 	 * @return type为key, id为value
 	 */
@@ -75,7 +75,7 @@ public class GoodsCardCoupleService extends ShopBaseService {
 
 	/**
 	 * 获取用户的会员关联商品表数据
-	 * 
+	 *
 	 * @param userId
 	 * @return
 	 */
@@ -99,7 +99,7 @@ public class GoodsCardCoupleService extends ShopBaseService {
 		return cardCoupleGoods;
 	}
 
-	
+
 	/**
 	 * 获取专享商品
 	 */
@@ -123,7 +123,7 @@ public class GoodsCardCoupleService extends ShopBaseService {
 
 	/**
 	 * 获取专享品牌
-	 * @return 
+	 * @return
 	 */
 	public List<GoodsCardCoupleRecord> getOwnBrandId(Integer cardId) {
 		return getGoodsCardCoupleRecord(cardId,COUPLE_TP_BRAND);
@@ -133,5 +133,5 @@ public class GoodsCardCoupleService extends ShopBaseService {
 		 return goodsCardDao.selectGoodsCardCouple(cardId, type);
 	}
 
-	
+
 }

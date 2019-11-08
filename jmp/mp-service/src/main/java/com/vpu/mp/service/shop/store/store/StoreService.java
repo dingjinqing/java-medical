@@ -376,6 +376,8 @@ public class StoreService extends ShopBaseService {
     }
 
     /**
+     * 王帅
+     * 过滤门店
      * @param expressList    配送方式list
      * @param productIds     规格ids
      * @param address        地址

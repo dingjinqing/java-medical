@@ -69,7 +69,7 @@ public class OrderGoodsService extends ShopBaseService{
 	public Result<OrderGoodsRecord> getByOrderId(Integer orderId) {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetch();
 	}
-
+	
 	/**
 	 * 单个订单商品
 	 * @param orderId
@@ -233,7 +233,7 @@ public class OrderGoodsService extends ShopBaseService{
             productSn(goods.getProductInfo().getPrdSn()).
             goodsNumber(goods.getGoodsNumber()).
             marketPrice(goodsRecord.getMarketPrice()).
-            goodsPrice(goods.getGoodsPrice()).
+            goodsPrice(goods.getProductInfo().getPrdPrice()).
             goodsAttr(goods.getProductInfo().getPrdDesc()).
             //TODO 需要考虑
             goodsAttrId("").
@@ -249,17 +249,19 @@ public class OrderGoodsService extends ShopBaseService{
             //TODO 需要考虑 商品成长值
             goodsGrowth(0).
             goodsType(goods.getGoodsType()).
-            discountedGoodsPrice(goods.getProductPrice()).
-            discountedTotalPrice(BigDecimalUtil.multiply(goods.getProductPrice(), BigDecimal.valueOf(goods.getGoodsNumber()))).
+            discountedGoodsPrice(goods.getProductInfo().getPrdPrice()).
+            discountedTotalPrice(BigDecimalUtil.multiply(goods.getProductInfo().getPrdPrice(), BigDecimal.valueOf(goods.getGoodsNumber()))).
             costPrice(goods.getProductInfo().getPrdCostPrice()).
             //TODO 逐级计算折扣
             discountDetail("").
             deliverTemplateId(goodsRecord.getDeliverTemplateId()).
+            //TODO 规格质量
             goodsWeight(goodsRecord.getGoodsWeight()).
             //TODO 后续处理
             userCoupon(null).
             catId(goodsRecord.getCatId()).
             sortId(goodsRecord.getSortId()).
+            brandId(goodsRecord.getBrandId()).
             goodsPriceAction(goods.getGoodsPriceAction()).
             purchasePriceId(null).
             purchasePriceRuleId(null).

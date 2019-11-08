@@ -67,7 +67,6 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
  * Table:order_info
  *
  * @author 王帅
- * @param <V>
  *
  */
 @Primary
@@ -291,8 +290,8 @@ public class OrderInfoService extends ShopBaseService {
 	 * TODO 去* 通过传入的field获取对应记录
 	 *
 	 * @param <T>
-	 * @param userId
-	 * @param field
+	 * @param where
+	 * @param clz
 	 * @return
 	 */
 	public <T> List<T> getOrdersByCondition(Condition where, Class<T> clz) {
@@ -301,8 +300,7 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 按照主订单分组，正常订单的key为orderSn
-	 * @param <T>
-	 * @param arrayToSearch
+	 * @param orderSn
 	 * @return
 	 */
 	public Map<String, List<OrderListInfoVo>> getOrders(List<String> orderSn) {
@@ -329,11 +327,12 @@ public class OrderInfoService extends ShopBaseService {
 		return result;
 	}
 
-	/**
-	 * 过滤子订单数量>0时,过滤主订单下已被拆除的商品行（通过减小数量为0则不展示）
-	 * @param OrderListInfoVo主订单（已经在主订单下添加了子订单及其商品）, goods主订单商品行
-	 * @return  OrderListInfoVo 订单
-	 */
+    /**
+     * 过滤子订单数量>0时,过滤主订单下已被拆除的商品行（通过减小数量为0则不展示）
+     * @param order 主订单（已经在主订单下添加了子订单及其商品）, goods主订单商品行
+     * @param goods 商品
+     * @return
+     */
 	public OrderListInfoVo filterMainOrderGoods(OrderListInfoVo order , List<OrderGoodsVo> goods) {
 		List<? extends OrderListInfoVo> cOrders = order.getChildOrders();
 		//构造Map<Integer(子订单规格号), Integer(数量)>
@@ -425,7 +424,7 @@ public class OrderInfoService extends ShopBaseService {
 	}
 	/**
 	 * 	通过主订单号获取orders
-	 * @param MainOrderSn
+	 * @param currentOrder
 	 * @param isMain
 	 * @return List<OrderListInfoVo>
 	 */
@@ -638,23 +637,17 @@ public class OrderInfoService extends ShopBaseService {
 	 */
 	public UserAddressVo getLastOrderAddress(Integer userId) {
 		return db().
-				select(TABLE.CONSIGNEE,
-				TABLE.PROVINCE_NAME,
-				TABLE.PROVINCE_CODE,
-				TABLE.CITY_NAME,
-				TABLE.CITY_CODE,
-				TABLE.DISTRICT_NAME,
-				TABLE.DISTRICT_CODE,
-				TABLE.CONSIGNEE,
-				TABLE.ADDRESS,
-				TABLE.MOBILE,
-				TABLE.ADDRESS_ID).
+				select(TABLE.CONSIGNEE, TABLE.PROVINCE_NAME, TABLE.PROVINCE_CODE, TABLE.CITY_NAME, TABLE.CITY_CODE, TABLE.DISTRICT_NAME, TABLE.DISTRICT_CODE, TABLE.CONSIGNEE, TABLE.ADDRESS, TABLE.MOBILE, TABLE.ADDRESS_ID).
 				from(TABLE).
 				where(TABLE.USER_ID.eq(userId)).
 				orderBy(TABLE.ORDER_ID.desc()).
 				limit(1).
 				fetchAnyInto(UserAddressVo.class);
 	}
+
+	public void addOrder(){
+
+    }
 	/**
 	 * 根据用户id获取累计消费金额
 	 */

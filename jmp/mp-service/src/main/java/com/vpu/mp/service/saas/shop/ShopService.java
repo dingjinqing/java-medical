@@ -310,7 +310,7 @@ public class ShopService extends MainBaseService {
 	public Integer getShopAccessRoleId(Integer sysId, Integer shopId, Integer subAccountId) {
 		if (subAccountId == 0) {
 			ShopRecord shop = this.getShopById(shopId);
-			if (shop != null && shop.getSysId() == sysId) {
+			if (shop != null && shop.getSysId().equals(sysId)) {
 				return 0;
 			}
 			return -1;

@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.order.goods;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,7 +14,9 @@ import lombok.Data;
 @Builder
 @Data
 public class OrderGoodsBo {
+    @JsonIgnore
 	private Integer orderId;
+    @JsonIgnore
 	private String orderSn;
 	private Integer goodsId;
 	private String goodsName;
@@ -41,8 +44,8 @@ public class OrderGoodsBo {
 	/**对接CRM 商品推广*/
 	private String promoteInfo;
 	/***/
-	private Short sendNumber;
-	private Short returnNumber;
+	private Integer sendNumber;
+	private Integer returnNumber;
 	private Byte isReal;
 	private Byte refundStatus;
 	private Byte commentFlag;
@@ -54,7 +57,7 @@ public class OrderGoodsBo {
 	private BigDecimal fanliPercent;
 	private Integer giftId;
 	private Byte isCanReturn;
-	private Short reducePriceNum;
+	private Integer reducePriceNum;
 	private Byte activityType;
 	private Integer activityId;
 	private Integer activityRule;
@@ -69,6 +72,8 @@ public class OrderGoodsBo {
 	private Integer catId;
 	/**商家分类*/
 	private Integer sortId;
+	/**品牌*/
+	private Integer brandId;
 	private Byte isCardExclusive;
 	/**
 	 * 非Table

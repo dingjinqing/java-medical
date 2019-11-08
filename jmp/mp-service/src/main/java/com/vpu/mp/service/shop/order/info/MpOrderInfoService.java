@@ -1,14 +1,8 @@
 package com.vpu.mp.service.shop.order.info;
 
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
@@ -34,6 +28,8 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
  */
 @Service
 public class MpOrderInfoService extends OrderInfoService{
+
+
 	/**
 	 * 个人中心订单状态数量展示
 	 * @param userId
@@ -162,10 +158,4 @@ public class MpOrderInfoService extends OrderInfoService{
 		}
 		return select;
 	}
-
-	public void calculatedAmount(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos){
-        BigDecimal scoreDiscount;
-        BigDecimal useAccount;
-        BigDecimal $cardBalance;
-    }
 }

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -18,7 +19,9 @@ public abstract class AbstractOrderOperateQueryParam implements IOrderBase {
     private Byte action;
     /**区分前后台操作 */
     private Byte isMp;
+    @JsonIgnore
     private AdminTokenAuthInfo adminInfo;
+    @JsonIgnore
     private WxAppSessionUser wxUserInfo;
     @Override
     public OrderServiceCode getServiceCode() {
