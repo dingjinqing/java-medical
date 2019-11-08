@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.net.ConnectException;
 
 /**
  * es config
@@ -32,13 +33,12 @@ import java.io.IOException;
 */
 @Slf4j
 @Configuration
-@ConditionalOnProperty(prefix="es",name = "open", havingValue = "on")
 public class EsConfig implements FactoryBean<RestHighLevelClient>, InitializingBean, DisposableBean {
 
-    @Value("${spring.elasticsearch.host}")
+    @Value("${spring.elasticsearch.host:localhost}")
     private String host;
 
-    @Value("${spring.elasticsearch.port}")
+    @Value("${spring.elasticsearch.port:9200}")
     private Integer port;
 
 
@@ -46,7 +46,7 @@ public class EsConfig implements FactoryBean<RestHighLevelClient>, InitializingB
     private RestHighLevelClient restHighLevelClient;
 
     public RestHighLevelClient restHighLevelClient(){
-        log.debug("ES初始化完成...");
+        log.debug("ES开始初始化...");
         final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 
         RestClientBuilder builder = RestClient
@@ -63,8 +63,8 @@ public class EsConfig implements FactoryBean<RestHighLevelClient>, InitializingB
                 .setSocketTimeout(30000)
                 .setConnectionRequestTimeout(0)
         );
-//        restHighLevelClient = new RestHighLevelClient(builder);
-        return new RestHighLevelClient(builder);
+        restHighLevelClient = new RestHighLevelClient(builder);
+        return restHighLevelClient;
     }
 
     @Override
