@@ -18,6 +18,8 @@ public class FootprintListParam {
      */
     private String keyword;
 
+    private Integer userId;
+
     /**
      * 	分页信息
      */

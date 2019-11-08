@@ -24,8 +24,8 @@ public class WxAppFootprintController extends WxAppBaseController {
      */
     @PostMapping("/list")
     private FootprintListVo getFootprintList(@RequestBody FootprintListParam param){
-        Integer userId = wxAppAuth.user().getUserId();
-        FootprintListVo footprintPage = shop().footPrintService.getFootprintPage(userId, param.getKeyword(), param.getCurrentPage(), param.getPageRows());
+//        Integer userId = wxAppAuth.user().getUserId();
+        FootprintListVo footprintPage = shop().footPrintService.getFootprintPage(param.getUserId(), param.getKeyword(), param.getCurrentPage(), param.getPageRows());
         return footprintPage;
     }
 
