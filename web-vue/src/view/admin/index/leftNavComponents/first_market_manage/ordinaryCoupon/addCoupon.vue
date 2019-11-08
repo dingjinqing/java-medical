@@ -774,11 +774,13 @@ export default {
       this.param.recommendSortId = this.platClass
       if (this.editType === false) {
         // 添加保存
-        // alert('添加保存')
         // 面额/折
         if (this.param.preferentialType === 1) {
           this.param.actCode = 'discount'
           this.param.denomination = this.param.denomination2
+        } else {
+          this.param.actCode = 'voucher'
+          this.param.denomination = this.param.denomination
         }
         // 发放的总数量
         if (this.param.surplus === 0) {
@@ -793,7 +795,9 @@ export default {
         this.param.recommendSortId = this.platClass.toString()
         this.param.startTime = this.param.couponDate[0]
         this.param.endTime = this.param.couponDate[1]
-        this.param.cardId = this.param.cardId.toString()
+        if (this.param.cardId !== undefined && this.param.cardId.length > 0) {
+          this.param.cardId = this.param.cardId.toString()
+        }
         saveCoupon(this.param).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: '添加成功' })
