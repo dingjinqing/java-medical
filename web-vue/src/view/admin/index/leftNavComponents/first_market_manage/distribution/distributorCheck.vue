@@ -100,23 +100,23 @@
         <el-tab-pane
           label="待审核分销员"
           name="first"
-        >用户管理</el-tab-pane>
+        ></el-tab-pane>
         <el-tab-pane
           label="审核通过"
           name="second"
-        >配置管理</el-tab-pane>
+        ></el-tab-pane>
         <el-tab-pane
           label="未通过"
           name="third"
-        >角色管理</el-tab-pane>
+        ></el-tab-pane>
       </el-tabs>
       <div>
         <table class="checkList">
           <tr class='title'>
             <td colspan="6">ID:</td>
-            <td>11</td>
-            <td>11</td>
-            <td>11</td>
+            <td>分销员分组</td>
+            <td>审核状态</td>
+            <td>操作</td>
           </tr>
           <tr>
             <td>真实姓名</td>
@@ -125,9 +125,22 @@
             <td>13716024041</td>
             <td>身份证号</td>
             <td>214423452232561</td>
-            <td rowspan="5">22</td>
-            <td rowspan="5">22</td>
-            <td rowspan="5">22</td>
+            <td rowspan="5"><span style="margin-top:45%">北京一区</span></td>
+            <td rowspan="5">未审核</td>
+            <td rowspan="5">
+
+              <el-button
+                size="small"
+                type="primary"
+                plain
+              >通过</el-button>
+
+              <el-button
+                size="small"
+                type="info"
+                plain
+              >不通过</el-button>
+            </td>
           </tr>
           <tr>
             <td>性别</td>

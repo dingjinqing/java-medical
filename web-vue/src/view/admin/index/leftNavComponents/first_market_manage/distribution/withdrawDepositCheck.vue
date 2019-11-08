@@ -4,9 +4,10 @@
       <ul>
         <li class="li">
           <div class="liNav">
-            <span class="labelClass">申请人昵称</span>
+            <span>申请人昵称</span>
             <el-input
-              placeholder="请填写手机号"
+              v-model="param.username"
+              placeholder="请填写昵称"
               size="small"
             ></el-input>
           </div>
@@ -16,13 +17,15 @@
           >
             <span class="labelClass">手机号</span>
             <el-input
-              placeholder="请填写微信昵称"
+              v-model="param.mobile"
+              placeholder="请填写手机号"
               size="small"
             ></el-input>
           </div>
           <div class="liNav">
             <span class="labelClass">真实姓名</span>
             <el-input
+              v-model="param.realName"
               placeholder="请填写真实姓名"
               size="small"
             >
@@ -33,7 +36,8 @@
           <div class="liNav">
             <span class="labelClass">提现单号</span>
             <el-input
-              placeholder="请填写手机号"
+              v-model="param.orderSn"
+              placeholder="请填写提现单号"
               size="small"
             ></el-input>
           </div>
@@ -43,6 +47,7 @@
           >
             <span class="labelClass">申请时间</span>
             <el-date-picker
+              v-model="param.startTime"
               class="timeInput"
               type="datetime"
               size="small"
@@ -50,6 +55,7 @@
             >
             </el-date-picker>至
             <el-date-picker
+              v-model="param.endTime"
               class="timeInput"
               type="datetime"
               size="small"
@@ -63,7 +69,8 @@
           <div class="liNav">
             <span class="labelClass">提现金额</span>
             <el-input
-              placeholder="请填写手机号"
+              v-model="param.withdrawCash"
+              placeholder="请填写提现金额"
               size="small"
             ></el-input>
           </div>
@@ -203,10 +210,30 @@ export default {
   data () {
     return {
       tableData: [],
-      options: {
-        value: '',
-        label: ''
+      param: {
+        username: '',
+        mobile: '',
+        realName: '',
+        withdrawCash: '',
+        startTime: '',
+        endTime: '',
+        orderSn: ''
+
       },
+      options: [
+        {
+          value: '1',
+          label: '待返利'
+        },
+        {
+          value: '2',
+          label: '已返利'
+        },
+        {
+          value: '3',
+          label: '不返利'
+        }
+      ],
       value: '',
       pageParams: {}
     }

@@ -807,6 +807,14 @@ export default {
       } else {
         // 编辑保存
         // alert('编辑保存')
+        this.param.recommendGoodsId = this.goodsInfo.toString()
+        this.param.recommendCatId = this.busClass.toString()
+        this.param.recommendSortId = this.platClass.toString()
+        this.param.startTime = this.param.couponDate[0]
+        this.param.endTime = this.param.couponDate[1]
+        if (this.param.cardId !== undefined && this.param.cardId.length > 0) {
+          this.param.cardId = this.param.cardId.toString()
+        }
         console.log(this.param)
         updateSaveCoupon(this.param).then((res) => {
           if (res.error === 0) {
