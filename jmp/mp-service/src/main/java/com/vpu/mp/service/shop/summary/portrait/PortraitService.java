@@ -56,6 +56,9 @@ public class PortraitService extends ShopBaseService {
         //删除省市中value为0的数据
         removeZero(visitUv);
         removeZero(visitUvNew);
+        //删除设备中value为0的
+        removeZeroByDevices(visitUv);
+        removeZeroByDevices(visitUvNew);
         PortraitVo vo = new PortraitVo();
         PortraitSum activeUserSum = portraitSumObject(visitUv);
         PortraitSum newAddUserSum = portraitSumObject(visitUvNew);
@@ -226,16 +229,26 @@ public class PortraitService extends ShopBaseService {
 	}
 	//删除省市中数量为0的值
 	private void removeZero(Portrait portrait) {
-		Iterator<PortraitItem> iterator =  portrait.getProvince().iterator();
-		while(iterator.hasNext()) {
-			if(iterator.next().getValue().equals(0)) {
+		Iterator<PortraitItem> iterator = portrait.getProvince().iterator();
+		while (iterator.hasNext()) {
+			if (iterator.next().getValue().equals(0)) {
 				iterator.remove();
 			}
 		}
 		Iterator<PortraitItem> iterator2 = portrait.getCity().iterator();
-		while(iterator2.hasNext()) {
-			if(iterator2.next().getValue().equals(0)) {
+		while (iterator2.hasNext()) {
+			if (iterator2.next().getValue().equals(0)) {
 				iterator2.remove();
+			}
+		}
+	}
+
+	// 删除设备中数量为0的值
+	private void removeZeroByDevices(Portrait portrait) {
+		Iterator<PortraitDeviceItem> iterator = portrait.getDevices().iterator();
+		while (iterator.hasNext()) {
+			if (iterator.next().getValue().equals(0)) {
+				iterator.remove();
 			}
 		}
 	}
