@@ -51,12 +51,17 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
 
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
-        List<GradeCardProcessorDataInfo> gradeCardPrice = capsule.getGradeCardPrice();
-        if (gradeCardPrice == null || gradeCardPrice.size() == 0) {
-            return;
-        }
         List<GoodsPrdProcessorDataInfo> products = capsule.getProducts();
-        Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GradeCardProcessorDataInfo::getPrdId, GradeCardProcessorDataInfo::getGradePrice));
-        products.forEach(prd-> prd.setPrdRealPrice(gradePriceMap.get(prd.getPrdId())));
+        List<GradeCardProcessorDataInfo> gradeCardPrice = capsule.getGradeCardPrice();
+
+        if (gradeCardPrice == null || gradeCardPrice.size() == 0) {
+            products.forEach(prd->{
+                prd.setPrdRealPrice(prd.getPrdPrice());
+                prd.setPrdLinePrice(prd.getPrdMarketPrice());
+            });
+        } else {
+            Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GradeCardProcessorDataInfo::getPrdId, GradeCardProcessorDataInfo::getGradePrice));
+            products.forEach(prd-> prd.setPrdRealPrice(gradePriceMap.get(prd.getPrdId())));
+        }
     }
 }

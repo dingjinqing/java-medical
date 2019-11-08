@@ -77,11 +77,11 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
      * @param goodsId 商品id
      * @return {com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo}
      */
-    public  List<GoodsLabelProcessorDataInfo> getGoodsDetailLabels(Integer goodsId) {
+    public  List<GoodsLabelProcessorDataInfo> getGoodsDetailLabels(Integer goodsId,Integer catId,Integer sortId) {
 
         Condition goodsIdsCondition =GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
-        Condition catIdsCondition = GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.CATTYPE.getCode()));
-        Condition sortIdsCondition = GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()));
+        Condition catIdsCondition = GOODS_LABEL_COUPLE.GTA_ID.eq(catId).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.CATTYPE.getCode()));
+        Condition sortIdsCondition = GOODS_LABEL_COUPLE.GTA_ID.eq(sortId).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()));
         Condition allGoodsCondition =  GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
 
         List<GoodsLabelProcessorDataInfo> goodsLabelProcessorDataInfos = db().select(GOODS_LABEL.NAME, GOODS_LABEL.LIST_PATTERN).from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))

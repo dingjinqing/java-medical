@@ -101,7 +101,7 @@ public class GoodsLabelProcessor implements ActivityGoodsListProcessor,GoodsDeta
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
-        List<GoodsLabelProcessorDataInfo> labels = goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId());
+        List<GoodsLabelProcessorDataInfo> labels = goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId(),param.getCatId(),param.getSortId());
         capsule.setLabels(labels);
     }
 }
