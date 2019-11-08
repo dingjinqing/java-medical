@@ -568,13 +568,14 @@ export default {
       couponInfo: {},
       param: {
         type: 0, // 优惠券类型
+        actCode: '',
         actName: '', // 优惠券名
-        aliasCode: '', // 唯一活动代码
+        // aliasCode: '', // 唯一活动代码
         preferentialType: 0,
         useConsumeRestrict: 0, // 使用限制
         isRandom: 0, // 是否需要积分
         receivePerPerson: 0,
-        cardId: [],
+        // cardId: [],
         validityType: 0, // 有效期
         couponDate: '', // 总时间
         startTime: '', // 生效时间
@@ -693,9 +694,10 @@ export default {
             this.param.denomination2 = this.param.denomination
           }
           // 发放的总数量
-          if (this.param.totalAmount === 0) {
-            this.param.surplus = 0
-          }
+          // if (this.param.totalAmount === 0) {
+          //   this.param.surplus = 0
+          // }
+          this.param.surplus = this.param.totalAmount
           // 使用门槛
           if (this.param.leastConsume === 0) {
             this.param.useConsumeRestrict = 0
@@ -760,9 +762,10 @@ export default {
         this.param.denomination = this.param.denomination2
       }
       // 发放的总数量
-      if (this.param.surplus === 0) {
-        this.param.totalAmount = 0
-      }
+      // if (this.param.surplus === 0) {
+      //   this.param.totalAmount = 0
+      // }
+      this.param.surplus = this.param.totalAmount
       // 使用门槛
       if (this.param.useConsumeRestrict === 0) {
         this.param.leastConsume = 0
@@ -773,7 +776,24 @@ export default {
       if (this.editType === false) {
         // 添加保存
         // alert('添加保存')
-        console.log(this.param)
+        // 面额/折
+        if (this.param.preferentialType === 1) {
+          this.param.actCode = 'discount'
+          this.param.denomination = this.param.denomination2
+        }
+        // 发放的总数量
+        if (this.param.surplus === 0) {
+          this.param.totalAmount = 0
+        }
+        // 使用门槛
+        if (this.param.useConsumeRestrict === 0) {
+          this.param.leastConsume = 0
+        }
+        this.param.recommendGoodsId = this.goodsInfo.toString()
+        this.param.recommendCatId = this.busClass.toString()
+        this.param.recommendSortId = this.platClass.toString()
+        this.param.startTime = this.param.couponDate[0]
+        this.param.endTime = this.param.couponDate[1]
         saveCoupon(this.param).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: '添加成功' })
