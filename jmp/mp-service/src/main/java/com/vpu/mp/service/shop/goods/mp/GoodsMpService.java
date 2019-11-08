@@ -226,8 +226,9 @@ public class GoodsMpService extends ShopBaseService {
         goodsDetailMpVo.setGoodsImgs(fullImgs);
 
         goodsDetailMpVo.setGoodsVideoImg(getVideoFullUrlUtil(goodsDetailMpVo.getGoodsVideoImg(),false));
-
         goodsDetailMpVo.setGoodsVideo(getVideoFullUrlUtil(goodsDetailMpVo.getGoodsVideo(),true));
+
+        goodsDetailMpVo.getProducts().forEach(prd->prd.setPrdImg(getImgFullUrlUtil(prd.getPrdImg())));
 
         return goodsDetailMpVo;
     }
