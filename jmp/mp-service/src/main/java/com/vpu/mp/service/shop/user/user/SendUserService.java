@@ -184,7 +184,7 @@ public class SendUserService extends ShopBaseService {
             .from(MP_TEMPLATE_FORM_ID)
             .where(MP_TEMPLATE_FORM_ID.USER_ID.in(userIds))
             .and(MP_TEMPLATE_FORM_ID.USE_STATE.eq((byte)0))
-            .groupBy(MP_TEMPLATE_FORM_ID.USER_ID,count(MP_TEMPLATE_FORM_ID.USER_ID).as("numbers"))
+            .groupBy(MP_TEMPLATE_FORM_ID.USER_ID)
             .orderBy(MP_TEMPLATE_FORM_ID.CREATE_TIME.desc())
             .fetch()
             .stream()

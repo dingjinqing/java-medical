@@ -21,7 +21,7 @@ public class EsGoods  {
     private Integer goodsId;
     @EsFiled(name = EsSearchName.SHOP_ID,type = EsFiledTypeConstant.INTEGER)
     private Integer shopId;
-    @EsFiled(name = EsSearchName.GOODS_NAME,type = EsFiledTypeConstant.TEXT,searchAnalyzer = "ik_max_word",analyzer = "standard")
+    @EsFiled(name = EsSearchName.GOODS_NAME,type = EsFiledTypeConstant.TEXT,searchAnalyzer = "ik_max_word",analyzer = "ik_max_word")
     private String goodsName;
     /**
      * 商品广告词
@@ -242,11 +242,11 @@ public class EsGoods  {
     @EsFiled(name = EsSearchName.CAT_NAME,type = EsFiledTypeConstant.TEXT)
     private String catName;
 
-    @EsFiled(name = EsSearchName.FIRST_CAT_ID,type = EsFiledTypeConstant.INTEGER)
+    @EsFiled(name = EsSearchName.FIRST_CAT_ID,type = EsFiledTypeConstant.INTEGER,copyTo = EsSearchName.FULL_CAT_ID)
     private Integer firstCatId;
-    @EsFiled(name = EsSearchName.SECOND_CAT_ID,type = EsFiledTypeConstant.INTEGER)
+    @EsFiled(name = EsSearchName.SECOND_CAT_ID,type = EsFiledTypeConstant.INTEGER,copyTo = EsSearchName.FULL_CAT_ID)
     private Integer secondCatId;
-    @EsFiled(name = EsSearchName.THIRD_CAT_ID,type = EsFiledTypeConstant.INTEGER)
+    @EsFiled(name = EsSearchName.THIRD_CAT_ID,type = EsFiledTypeConstant.INTEGER,copyTo = EsSearchName.FULL_CAT_ID)
     private Integer thirdCatId;
     @EsFiled(name = EsSearchName.FULL_CAT_ID,type = EsFiledTypeConstant.INTEGER)
     private Integer fullCatId;
@@ -256,9 +256,9 @@ public class EsGoods  {
     @EsFiled(name = EsSearchName.SORT_NAME,type = EsFiledTypeConstant.TEXT)
     private String sortName;
 
-    @EsFiled(name = EsSearchName.FIRST_SORT_ID,type = EsFiledTypeConstant.INTEGER)
+    @EsFiled(name = EsSearchName.FIRST_SORT_ID,type = EsFiledTypeConstant.INTEGER,copyTo = EsSearchName.FULL_SORT_ID)
     private Integer firstSortId;
-    @EsFiled(name = EsSearchName.SECOND_SORT_ID,type = EsFiledTypeConstant.INTEGER)
+    @EsFiled(name = EsSearchName.SECOND_SORT_ID,type = EsFiledTypeConstant.INTEGER,copyTo = EsSearchName.FULL_SORT_ID)
     private Integer secondSortId;
     @EsFiled(name = EsSearchName.FULL_SORT_ID,type = EsFiledTypeConstant.INTEGER)
     private Integer fullSortId;

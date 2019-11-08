@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.goods.*;
+import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
@@ -71,6 +72,8 @@ public class EsGoodsCreateService extends BaseShopConfigService {
     private GoodsPriceService goodsPriceService;
     @Autowired
     private GoodsLabelService goodsLabelService;
+    @Autowired
+    private ImageService imageService;
 
     public void batchCreateEsGoodsIndex( List<Integer> goodsIds,Integer shopId){
         List<EsGoods> esGoodsList = new ArrayList<>(goodsIds.size());
@@ -97,17 +100,18 @@ public class EsGoodsCreateService extends BaseShopConfigService {
         Map<Integer,List<SysCatevo>> goodsCatInfoMap = getCatInfoByGoodsIds(goodsCatMap);
         Map<Integer,Sort> sortMap =  batchAssemblySortInfo(goodsSortIdSet);
         Map<Integer, GoodsBrandVo> brandMap =  batchAssemblyBrandAndSale(goodsBrandIdSet);
-        Map<Integer,Map<Byte,Object>> goodsLabelFilterMap = new HashMap<>(goodsIds.size());
+        Map<Integer,Map<Byte,List<Integer>>> goodsLabelFilterMap = new HashMap<>(goodsIds.size());
         for( Integer goodsId: goodsIds ){
             if( !goodsMap.containsKey(goodsId) ){
                 log.error("\n+批量建立索引--->商品【{}】未找到无法建立索引",goodsId);
                 break;
             }
-            Map<Byte,Object> goodsLabelFilter = new HashMap<>();
-            goodsLabelFilter.put(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(),goodsId);
+            Map<Byte,List<Integer>> goodsLabelFilter = new HashMap<>();
+            goodsLabelFilter.put(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(),Collections.singletonList(goodsId));
             GoodsRecord goods = goodsMap.get(goodsId);
             EsGoods esGoods = new EsGoods();
             BeanUtils.copyProperties(goods,esGoods);
+            esGoods.setGoodsImg(imageService.imageUrl(goods.getGoodsImg()));
             esGoods.setShopId(shopId);
             if( validationMap(goodsGradePrdMap,goodsId) ){
                 assemblyVipPriceImp(esGoods,goodsGradePrdMap.get(goodsId));
@@ -130,6 +134,7 @@ public class EsGoodsCreateService extends BaseShopConfigService {
                 int length = specPrdPrices.size();
                 esGoods.setMaxSpecPrdPrices(specPrdPrices.get(length-1));
                 esGoods.setMinSpecPrdPrices(specPrdPrices.get(0));
+
             }
             if( validationMap(goodsCatInfoMap,goodsId) ){
                 List<SysCatevo> list = goodsCatInfoMap.get(goodsId);
@@ -206,7 +211,7 @@ public class EsGoodsCreateService extends BaseShopConfigService {
         return goodsSortService.getParentSortsByChildId(new ArrayList<>(sortIds));
     }
     private void getSort(Integer sortId,List<Sort> result,Map<Integer,Sort> allSortMap){
-        if( allSortMap.containsKey(sortId) ){
+        if( !allSortMap.containsKey(sortId) ){
             return ;
         }
         Sort sort = allSortMap.get(sortId);
@@ -431,21 +436,11 @@ public class EsGoodsCreateService extends BaseShopConfigService {
     }
 
     public static void main(String[] args) {
-        Map<Integer,List<Integer>> m = new HashMap<>();
-        List<Integer> l = new ArrayList<>();
-        l.add(1);
-        l.add(2);
-        List<Integer> i = new ArrayList<>();
-        i.add(3);
-        i.add(4);
-        m.put(1,l);
-        m.put(2,i);
-        new ArrayList<>(m.values()).forEach(System.out::println);
     }
     private void assemblyGoodsLabelMap(Map<Integer,List<GoodsLabelCoupleRecord>> sortForLabelMap){
 
     }
-    private Map<Integer,List<Integer>> assemblyGoodsLabel(Map<Integer,Map<Byte,Object>> goodsLabelFilterMap,List<Integer> goodsIds,
+    private Map<Integer,List<Integer>> assemblyGoodsLabel(Map<Integer,Map<Byte,List<Integer>>> goodsLabelFilterMap,List<Integer> goodsIds,
                                     Map<Integer,List<SysCatevo>> categoryMap,Map<Integer,Sort> sortMap){
         Map<Integer,List<Integer>> resultMap = new HashMap<>();
         Set<Integer> categoryIdSet = new HashSet<>(categoryMap.size()*3);
@@ -475,20 +470,20 @@ public class EsGoodsCreateService extends BaseShopConfigService {
             List<GoodsLabelAndCouple> list= new ArrayList<>();
             filterMap.forEach((type,ids)->{
                 if( type.equals(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()) ){
-                    Integer id = Integer.parseInt(ids.toString());
-                    if( goodsForLabelMap.containsKey(id) ){
-                        list.addAll(goodsForLabelMap.get(id));
-                    }
+
+                    ids.forEach(x->{
+                        if( goodsForLabelMap.containsKey(x) ){
+                            list.addAll(goodsForLabelMap.get(x));
+                        }
+                    });
                 }else if( type.equals(GoodsLabelCoupleTypeEnum.CATTYPE.getCode()) ){
-                    List catIds = (List)ids;
-                    catIds.forEach(x->{
+                    ids.forEach(x->{
                         if( categoryForLabelMap.containsKey(x) ){
                             list.addAll(categoryForLabelMap.get(x));
                         }
                     });
                 }else if( type.equals(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()) ){
-                    List sIds = (List)ids;
-                    sIds.forEach(x->{
+                    ids.forEach(x->{
                         if( sortForLabelMap.containsKey(x) ){
                             list.addAll(sortForLabelMap.get(x));
                         }
@@ -511,4 +506,5 @@ public class EsGoodsCreateService extends BaseShopConfigService {
         return resultMap;
 
     }
+
 }

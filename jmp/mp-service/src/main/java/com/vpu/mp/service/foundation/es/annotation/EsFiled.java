@@ -29,7 +29,7 @@ public @interface EsFiled {
     /**
      * @return es中对应的类型
      */
-    String type() default "";
+    String type() ;
 
     /**
      * @return 启用分词器并指定使用的分词器
@@ -53,7 +53,7 @@ public @interface EsFiled {
     /**
      * @return 复制字段
      */
-    String copyTo() default "";
+    EsSearchName copyTo() default EsSearchName.NULL ;
 
 
 }

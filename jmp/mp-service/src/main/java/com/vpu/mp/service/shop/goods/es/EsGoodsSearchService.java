@@ -39,17 +39,12 @@ public class EsGoodsSearchService extends EsSearchService{
 
     /**
      * admin平台商品搜索
-     * @param builder 搜索条件
-     * @param from  查询从第几条开始
-     * @param size 查询的条数
+     * @param sourceBuilder  SearchSourceBuilder
      * @return SearchResponse
      */
-    public SearchRequest assemblySearchRequest(QueryBuilder builder,Integer from,Integer size) {
+    public SearchRequest assemblySearchRequest(SearchSourceBuilder sourceBuilder) {
         //TODO 到时候再考虑索引名称要不要写死
         SearchRequest searchRequest = new SearchRequest("es_goods");
-        SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(builder,null,GOODS_SEARCH_STR);
-        sourceBuilder.from(from);
-        sourceBuilder.size(size);
         return searchRequest.source(sourceBuilder);
     }
     public PageResult<GoodsPageListVo> searchGoodsPageByParam(GoodsPageListParam goodsPageListParam) throws IOException {
@@ -73,17 +68,13 @@ public class EsGoodsSearchService extends EsSearchService{
     }
 
     private PageResult<EsGoods> searchGoodsPageByParam(EsSearchParam param) throws IOException {
+        Integer pageRows = param.getPageRows();
+        Integer currentPage= param.getCurrentPage();
         PageResult<EsGoods> result = new PageResult<>();
         BoolQueryBuilder searchBuilder = assemblySearchBuilder(param);
-        Integer totalRow = getAllCount(searchBuilder).intValue();
-        Page esPage = Page.getPage(totalRow,param.getCurrentPage(),param.getPageRows());
-
-        Integer size = esPage.getPageRows();
-        Integer from = (esPage.getCurrentPage()-1)*size;
-        if( from > totalRow ){
-            from = totalRow;
-        }
-        SearchResponse searchResponse = esManager.searchResponse(assemblySearchRequest(searchBuilder,from,size));
+        SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(searchBuilder,null,null);
+        Page esPage =  assemblyPage(sourceBuilder,pageRows,currentPage);
+        SearchResponse searchResponse = esManager.searchResponse(assemblySearchRequest(sourceBuilder));
         SearchHit[] hits = searchResponse.getHits().getHits();
         List<EsGoods> data = new LinkedList<>();
         for( SearchHit hit:hits){
@@ -93,9 +84,36 @@ public class EsGoodsSearchService extends EsSearchService{
         result.setPage(esPage);
         return result;
     }
+    private Page assemblyPage(SearchSourceBuilder sourceBuilder,Integer pageRows,Integer currentPage) throws IOException {
+        Integer totalRow = getAllCount(sourceBuilder).intValue();
+        Integer size = pageRows;
+        Integer from = (currentPage-1)*size;
+        if( from > totalRow ){
+            from = totalRow;
+        }
+        sourceBuilder.fetchSource(GOODS_SEARCH_STR,null);
+        //from  查询从第几条开始
+        sourceBuilder.from(from);
+        //size 查询的条数
+        sourceBuilder.size(size);
+        return Page.getPage(totalRow,currentPage,pageRows);
+    }
 
-    private Long getAllCount(QueryBuilder queryBuilder) throws IOException {
+    /**
+     * SearchSourceBuilder
+     * @param builder 搜索条件
+
+     * @return
+     */
+    private SearchSourceBuilder assemblySearchSourceBuilder(QueryBuilder builder){
+        SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(builder,null,GOODS_SEARCH_STR);
+
+        return sourceBuilder;
+    }
+
+    private Long getAllCount(SearchSourceBuilder queryBuilder) throws IOException {
         CountRequest countRequest = new CountRequest("es_goods");
+        countRequest.source(queryBuilder);
         CountResponse countResponse = esManager.getCount(countRequest);
         return countResponse.getCount();
     }

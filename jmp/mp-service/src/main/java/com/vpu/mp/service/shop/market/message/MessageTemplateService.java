@@ -8,10 +8,7 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -83,8 +80,8 @@ public class MessageTemplateService extends ShopBaseService {
 
     public SendUserVo getSendUsersSize(UserInfoQuery query){
         SendUserVo vo = new SendUserVo();
-        String key = StringUtils.isNotBlank(query.getRedisKey())?
-            query.getRedisKey():sendUserService.getKeyWithRedisBySendUser();
+        String key = StringUtils.isNotBlank(query.getUserKey())?
+            query.getUserKey():sendUserService.getKeyWithRedisBySendUser();
         vo.setUserKey(key);
         vo.setUserNumber(sendUserService.getSendUserByQuery(query,key));
         return vo;
@@ -131,11 +128,13 @@ public class MessageTemplateService extends ShopBaseService {
     }
 
     public void insertMessageTemplate(MessageTemplateParam param){
-//        String userIdStr = sendUserService.getAndDeleteSendUserIdByRedisKey(param.getUserKey())
-//            .stream().map(Object::toString)
-//            .collect(Collectors.joining(","));
+        String userIdStr = sendUserService.getAndDeleteSendUserIdByRedisKey(param.getUserKey())
+            .stream()
+            .map(UserInfoByRedis::getUserId)
+            .map(Objects::toString)
+            .collect(Collectors.joining(","));
         Integer shopId = getShopId();
-        String userIdStr = "12,";
+//        String userIdStr = "12,";
         String sendConditionStr = Util.toJson(param.getUserInfo());
         TemplateConfigRecord record = db().newRecord(TEMPLATE_CONFIG,param);
         record.setToUser(userIdStr);

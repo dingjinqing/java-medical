@@ -2,7 +2,6 @@ package com.vpu.mp.service.foundation.es;
 
 import com.vpu.mp.service.foundation.es.annotation.EsFiledSerializer;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.shop.goods.es.EsGoods;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.ActionListener;
@@ -23,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -48,7 +48,7 @@ public class EsManager {
      * @return 查询响应
      * @throws IOException 连接异常
      */
-    public SearchResponse searchResponse(SearchRequest searchRequest) throws IOException {
+    public SearchResponse searchResponse(@NotNull SearchRequest searchRequest) throws IOException {
         log.info("\n本次搜索条件【{}】",searchRequest.source().toString());
         return restHighLevelClient.search(searchRequest,RequestOptions.DEFAULT);
     }
@@ -58,7 +58,8 @@ public class EsManager {
      * @return 查询响应
      * @throws IOException 连接异常
      */
-    public CountResponse getCount(CountRequest countRequest) throws IOException {
+    public CountResponse getCount(@NotNull CountRequest countRequest) throws IOException {
+        log.info("\n本次统计数量的搜索条件【{}】",countRequest.source().toString());
         return restHighLevelClient.count(countRequest,RequestOptions.DEFAULT);
     }
 
@@ -68,10 +69,9 @@ public class EsManager {
      */
     public boolean esState(){
         try {
-//            return restHighLevelClient.ping(RequestOptions.DEFAULT);
-            return false;
+            return restHighLevelClient.ping(RequestOptions.DEFAULT);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("ElasticSearch can't use");
             return false;
         }
     }
@@ -81,7 +81,7 @@ public class EsManager {
      * @param indexName 索引名称
      * @param object 对应的索引对象
      */
-    public void createIndexAsync(String indexName,Object object)  {
+    public void createIndexAsync(@NotNull String indexName,Object object)  {
         IndexRequest request = assemblyRequest(indexName,object);
         log.error("ES_INDEX:{}", Util.toJson(object,ES_FILED_SERIALIZER));
         ActionListener<IndexResponse> listener = new ActionListener<IndexResponse>() {
@@ -104,7 +104,7 @@ public class EsManager {
      * @param object 对应的索引对象
      * @return IndexRequest
      */
-    public IndexRequest assemblyRequest(String indexName,Object object){
+    public IndexRequest assemblyRequest(@NotNull String indexName,Object object){
         IndexRequest request = new IndexRequest(indexName);
         //商品索引ID设为shopId+goodsId
         if( object instanceof EsGoods ){
@@ -125,10 +125,6 @@ public class EsManager {
         if( response.hasFailures() ){
             log.error("EEOR");
         }
-    }
-
-    public void testSearch(String indexName,EsSearchParam param){
-        SearchRequest searchRequest = new SearchRequest(indexName);
     }
 
     /**

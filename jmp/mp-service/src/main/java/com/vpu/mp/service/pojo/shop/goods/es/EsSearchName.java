@@ -11,6 +11,10 @@ import lombok.Getter;
 
 public enum EsSearchName {
     /**
+     * 空
+     */
+    NULL("null"),
+    /**
      * 商品名称
      */
     GOODS_NAME("goods_name"),

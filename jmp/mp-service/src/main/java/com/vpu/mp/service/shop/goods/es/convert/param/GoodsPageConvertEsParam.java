@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.shop.goods.es.convert.param.EsParamConvertInterface;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,7 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         if( null != param.getGoodsType() ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_TYPE,param.getGoodsType()));
         }
-        if( null != param.getGoodsName() ){
+        if(StringUtils.isNotBlank(param.getGoodsName()) ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_NAME,param.getGoodsName()));
         }
         if( null != param.getIsOnSale() ){

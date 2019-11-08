@@ -34,6 +34,10 @@ import static com.vpu.mp.service.pojo.shop.goods.es.EsSearchName.*;
 @Service
 public class EsSearchService extends ShopBaseService {
 
+    public static void main(String[] args) {
+        System.out.println(Boolean.TRUE.equals(Byte.valueOf("1")));
+        System.out.println(Boolean.TRUE.equals(Byte.valueOf("0")));
+    }
 
     private static final EsSearchName[] DEFAULT = {GOODS_ID,SHOP_ID,IS_ON_SALE,GOODS_NUMBER};
 
@@ -166,7 +170,7 @@ public class EsSearchService extends ShopBaseService {
         List<MatchQueryBuilder> matchQueryBuilders = assemblyMatchQueryBuilder(propertyList);
         List<RangeQueryBuilder> rangeQueryBuilders = assemblyRangeQueryBuilder(propertyList);
         if( matchQueryBuilders != null && !matchQueryBuilders.isEmpty() ){
-            resultQueryBuilder.must(assemblyDisMaxQueryBuilder(matchQueryBuilders));
+            matchQueryBuilders.forEach(resultQueryBuilder::must);
         }
         if( rangeQueryBuilders != null && !rangeQueryBuilders.isEmpty() ){
             rangeQueryBuilders.forEach(resultQueryBuilder::filter);
