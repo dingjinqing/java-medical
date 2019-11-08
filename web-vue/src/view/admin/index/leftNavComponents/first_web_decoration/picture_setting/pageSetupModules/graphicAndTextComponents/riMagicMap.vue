@@ -472,7 +472,11 @@
                 style="border:none"
                 :style="density==='0'?'width:308px':''"
               >
-                <LayoutTable :density='Number(density)' />
+                <LayoutTable
+                  @handleToGetTabelData='handleToGetTabelData'
+                  :density='Number(density)'
+                  :jumpLink='linkInput'
+                />
 
               </div>
             </div>
@@ -627,7 +631,8 @@ export default {
               'y': 1,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '375',
@@ -636,7 +641,8 @@ export default {
               'y': 3,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             }
           ]
         },
@@ -649,7 +655,8 @@ export default {
               'y': 1,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '250',
@@ -658,7 +665,8 @@ export default {
               'y': 3,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '250',
@@ -667,7 +675,8 @@ export default {
               'y': 5,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             }
           ]
         },
@@ -680,7 +689,8 @@ export default {
               'y': 1,
               'rows': 1,
               'cols': 1,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '188',
@@ -689,7 +699,8 @@ export default {
               'y': 2,
               'rows': 1,
               'cols': 1,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '188',
@@ -698,7 +709,8 @@ export default {
               'y': 3,
               'rows': 1,
               'cols': 1,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '188',
@@ -707,7 +719,8 @@ export default {
               'y': 4,
               'rows': 1,
               'cols': 1,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             }
           ]
         },
@@ -720,7 +733,8 @@ export default {
               'y': 1,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '375',
@@ -729,7 +743,8 @@ export default {
               'y': 1,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '375',
@@ -738,7 +753,8 @@ export default {
               'y': 3,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '375',
@@ -747,7 +763,8 @@ export default {
               'y': 3,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             }
           ]
         },
@@ -760,7 +777,8 @@ export default {
               'y': 1,
               'rows': 4,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '375',
@@ -769,7 +787,8 @@ export default {
               'y': 3,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '375',
@@ -778,7 +797,8 @@ export default {
               'y': 3,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             }
           ]
         },
@@ -791,7 +811,8 @@ export default {
               'y': 1,
               'rows': 2,
               'cols': 4,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '375',
@@ -800,7 +821,8 @@ export default {
               'y': 1,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '375',
@@ -809,7 +831,8 @@ export default {
               'y': 3,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             }
           ]
         },
@@ -822,7 +845,8 @@ export default {
               'y': 1,
               'rows': 4,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '375X375',
@@ -831,7 +855,8 @@ export default {
               'y': 3,
               'rows': 2,
               'cols': 2,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '188X375',
@@ -840,7 +865,8 @@ export default {
               'y': 3,
               'rows': 2,
               'cols': 1,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             },
             {
               size: '188X375',
@@ -849,7 +875,8 @@ export default {
               'y': 4,
               'rows': 2,
               'cols': 1,
-              'img_url': ''
+              'img_url': '',
+              'jump_link': ''
             }
           ]
         },
@@ -930,6 +957,9 @@ export default {
       this.imgUrl = data.imgUrl
       // this.nowTemplateClickIndex  this.nowLayutIndex
       this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].img_url = data.imgUrl
+      if (this.nowTemplateClickIndex !== 7) {
+        this.handleToSaveDataImgInfo(this.nowTemplateClickIndex, data.imgUrl)
+      }
     },
     // 调起选择链接弹窗
     handleToCallSelectLink () {
@@ -939,6 +969,10 @@ export default {
     selectLinkPath (path) {
       console.log(path)
       this.linkInput = path
+      this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link = path
+      if (this.nowTemplateClickIndex !== 7) {
+        this.handleToSaveDataImgInfo(this.nowTemplateClickIndex)
+      }
     },
     // 处理保存数据中的data字段数据 即图片坐标路径信息
     handleToSaveDataImgInfo (type) {
@@ -973,9 +1007,11 @@ export default {
         if (index === 7) return
         item['styleData'].forEach((itemC, indexC) => {
           itemC.img_url = ''
+          itemC.jump_link = ''
         })
       })
       this.imgUrl = null
+      this.linkInput = null
       // 重新填入数据
       let obj = {}
       for (let index = 0; index < num; index++) {
@@ -985,11 +1021,18 @@ export default {
           'y': this.layoutData[type].styleData[index]['y'],
           'rows': this.layoutData[type].styleData[index]['rows'],
           'cols': this.layoutData[type].styleData[index]['cols'],
-          'img_url': ''
+          'img_url': this.layoutData[type].styleData[index]['img_url'],
+          'jump_link': this.layoutData[type].styleData[index]['jump_link']
         }
       }
       console.log(obj)
       this.modulesData.data = obj
+    },
+    // 获取自定义布局操作回传的数据
+    handleToGetTabelData ({ obj, isAllCheckFull }) {
+      console.log(obj, isAllCheckFull)
+      this.moduleSaveData.data = obj
+      this.moduleSaveData.isAllCheckFull = isAllCheckFull
     }
   }
 }

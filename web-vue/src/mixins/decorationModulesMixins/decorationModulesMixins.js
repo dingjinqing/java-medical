@@ -216,7 +216,8 @@ export default {
                   'http://mpdevimg2.weipubao.cn/upload/0/image/20191024/crop_WyZbpaHeYoNcF8d6.jpeg',
                 jump_link: 'pages/auth/auth'
               }
-            }
+            },
+            isAllCheckFull: true
           }
           break
         case 27: // 店招设置

@@ -114,7 +114,8 @@ export default {
     density: { // 控制布局类型flag
       type: Number,
       default: () => 0
-    }
+    },
+    jumpLink: String || Number // 传来的跳转链接路径
   },
   data () {
     return {
@@ -165,6 +166,13 @@ export default {
         this.defaultData()
       },
       immediate: true
+    },
+    jumpLink (newData) { // 监听跳转路径变化
+      console.log(this.nowCheckedCell)
+      if (this.nowCheckedCell[0] !== null && this.nowCheckedCell[1] !== null) {
+        this.columnData[this.nowCheckedCell[0]][`${this.nowCheckedCell[1]}jump_link`] = newData
+        console.log(newData)
+      }
     }
   },
   mounted () {
@@ -185,10 +193,15 @@ export default {
         obj1[`${item}IsSlide`] = false // 控制滑动显示背景色
         obj1[`${item}controlClick`] = true // 控制点击切换高亮
         obj1[`${item}controlDelIconDis`] = false // 控制删除icon鼠标滑过的显示隐藏
+        obj1[`${item}y`] = item + 1 // 保存数据使用
+        obj1[`${item}jump_link`] = '' // 保存数据使用
       })
       this.arrFour.forEach((item, index) => {
         let obj = JSON.parse(JSON.stringify(obj1))
         this.columnData.push(obj)
+        this.arrFour.forEach((itemC, indexC) => {
+          this.columnData[item][`${itemC}x`] = item + 1 // 保存数据使用
+        })
       })
       console.log(this.columnData)
     },
@@ -527,10 +540,38 @@ export default {
         }
         timesRowStart++
       }
+      // 构造自定义布局保存数据
+      this.handleToSaveData()
     },
     // 处理全部数据  构造自定义布局保存数据
     handleToSaveData () {
       console.log(this.columnData)
+      // this.arrFour
+      let obj = {}
+      let blockNum = 0 // block计数
+      let isAllCheckFull = true // 是否全部填满
+      this.columnData.forEach((item, index) => {
+        this.arrFour.forEach((itemC, indexC) => {
+          console.log(this.columnData[index], itemC)
+          if (this.columnData[index][`${itemC}IsBorder`]) {
+            obj[`block_${blockNum}`] = {
+              'name': `block_${blockNum}`,
+              'x': this.columnData[index][`${itemC}x`],
+              'y': this.columnData[index][`${itemC}y`],
+              'rows': this.columnData[index][`${itemC}Row`],
+              'cols': this.columnData[index][`${itemC}Col`],
+              'img_url': '',
+              'jump_link': this.columnData[index][`${itemC}jump_link`]
+            }
+            blockNum++
+          } else if (!this.columnData[index][`${itemC}Dis`]) {
+            console.log(this.columnData[index][`${itemC}x`], this.columnData[index][`${itemC}y`])
+            isAllCheckFull = false // 表格未填满则为flag
+          }
+        })
+      })
+      console.log(obj, isAllCheckFull)
+      this.$emit('handleToGetTabelData', { obj, isAllCheckFull })
     }
   }
 }

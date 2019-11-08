@@ -779,7 +779,7 @@ export default {
       console.log(this.showModulesList, this.nowRightShowIndex)
       this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
       console.log(this.nowRightShowMoudlesIndex)
-      console.log(this.insertModulesId)
+      console.log(this.modulesData, this.nowRightShowIndex)
       this.nowRightModulesData = this.modulesData[this.nowRightShowIndex]
       // this.$store.commit('TOCHANGE_SENDMODULESDATA', this.modulesData[this.nowRightShowIndex])
       console.log(this.showModulesList, this.modulesData)
