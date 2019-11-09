@@ -474,8 +474,10 @@
               >
                 <LayoutTable
                   @handleToGetTabelData='handleToGetTabelData'
+                  @handleToGetLinkpathImgUrl='handleToGetLinkpathImgUrl'
                   :density='Number(density)'
                   :jumpLink='linkInput'
+                  :imgUrl='imgUrl'
                 />
 
               </div>
@@ -885,7 +887,7 @@ export default {
         }
       ],
       nowTemplateClickIndex: 0, // 当前选中的模板index
-      nowLayutIndex: null, //  当前选中的布局单元格
+      nowLayutIndex: 1, //  当前选中的布局单元格
       linkInput: '', // 图片跳转链接input
       addImgTuneUp: false, // 添加图片弹窗flag
       imgUrl: null, // 当前显示的图片路径
@@ -903,12 +905,13 @@ export default {
         console.log(newData, this.modulesData)
         if (newData) {
           this.moduleSaveData = this.modulesData
+          this.nowTemplateClickIndex = this.modulesData.table_type - 1
         }
       },
       immediate: true
     },
     // 监听数据变换
-    data: {
+    moduleSaveData: {
       handler (newData) {
         console.log(newData)
         this.$emit('handleToBackData', newData)
@@ -919,14 +922,22 @@ export default {
     nowTemplateClickIndex (newData) {
       console.log(newData)
       // 处理保存数据中的data字段数据 即图片坐标路径信息
-      this.handleToSaveDataImgInfo(newData)
+      this.handleToSaveDataImgInfo(newData, true)
+    },
+    // 监听图片跳转路径值变化
+    linkInput (newData) {
+      this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link = newData
+      console.log(this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link)
+      if (this.nowTemplateClickIndex !== 7) {
+        this.handleToSaveDataImgInfo(this.nowTemplateClickIndex, false)
+      }
     }
   },
   mounted () {
     // 初始化语言
     this.langDefault()
     // 初始选择模板
-    this.handleToSaveDataImgInfo(0)
+    this.handleToSaveDataImgInfo(0, true)
   },
   methods: {
     // 点击选择模板子项触发事件
@@ -935,8 +946,16 @@ export default {
         item.isChecked = false
       })
       this.nowTemplateClickIndex = index
+      console.log(index, this.layoutData[index].styleData)
+      if (index !== 7) {
+        this.nowLayutIndex = this.layoutData[index].styleData.length - 1
+      }
+
       console.log(this.nowTemplateClickIndex)
       this.selectTemplateList[0].list[index].isChecked = true
+      this.moduleSaveData.table_type = index + 1
+      // 处理保存数据中 table_size 字段
+      this.handleToTableSize(index)
     },
     // 点击布局模块子项
     handleToClickLayout (flag, index) {
@@ -946,6 +965,9 @@ export default {
       this.layoutData[flag].styleData[index].isChecked = true
       this.nowLayutIndex = index
       this.imgUrl = this.layoutData[flag].styleData[index].img_url
+      console.log(flag, index)
+      console.log(this.layoutData[flag].styleData[index].jump_link)
+      this.linkInput = this.layoutData[flag].styleData[index].jump_link
     },
     // 调起添加图片弹窗
     handlrToCallAddImgDialog () {
@@ -958,7 +980,7 @@ export default {
       // this.nowTemplateClickIndex  this.nowLayutIndex
       this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].img_url = data.imgUrl
       if (this.nowTemplateClickIndex !== 7) {
-        this.handleToSaveDataImgInfo(this.nowTemplateClickIndex, data.imgUrl)
+        this.handleToSaveDataImgInfo(this.nowTemplateClickIndex, false)
       }
     },
     // 调起选择链接弹窗
@@ -969,13 +991,9 @@ export default {
     selectLinkPath (path) {
       console.log(path)
       this.linkInput = path
-      this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link = path
-      if (this.nowTemplateClickIndex !== 7) {
-        this.handleToSaveDataImgInfo(this.nowTemplateClickIndex)
-      }
     },
     // 处理保存数据中的data字段数据 即图片坐标路径信息
-    handleToSaveDataImgInfo (type) {
+    handleToSaveDataImgInfo (type, flag) {
       let num = null
       switch (type) {
         case 0:
@@ -1002,16 +1020,19 @@ export default {
       }
       console.log(this.layoutData)
       // 清空imgUrl 数据
-      this.layoutData.forEach((item, index) => {
-        console.log(item)
-        if (index === 7) return
-        item['styleData'].forEach((itemC, indexC) => {
-          itemC.img_url = ''
-          itemC.jump_link = ''
+      if (flag) {
+        this.layoutData.forEach((item, index) => {
+          console.log(item)
+          if (index === 7) return
+          item['styleData'].forEach((itemC, indexC) => {
+            itemC.img_url = ''
+            itemC.jump_link = ''
+          })
         })
-      })
-      this.imgUrl = null
-      this.linkInput = null
+        this.imgUrl = null
+        this.linkInput = null
+      }
+
       // 重新填入数据
       let obj = {}
       for (let index = 0; index < num; index++) {
@@ -1028,11 +1049,96 @@ export default {
       console.log(obj)
       this.modulesData.data = obj
     },
+    // 自定义布局中当前高亮单元格的跳转链接路径和图片信息回传
+    handleToGetLinkpathImgUrl (res) {
+      this.linkInput = res.jump_link
+      this.imgUrl = res.img_url
+      console.log(res)
+    },
     // 获取自定义布局操作回传的数据
     handleToGetTabelData ({ obj, isAllCheckFull }) {
       console.log(obj, isAllCheckFull)
       this.moduleSaveData.data = obj
       this.moduleSaveData.isAllCheckFull = isAllCheckFull
+    },
+    // 处理保存数据中table_size字段
+    handleToTableSize (index) {
+      switch (index) {
+        case 0:
+          this.moduleSaveData.table_size = {
+            rows: 2,
+            cols: 4
+          }
+          break
+        case 1:
+          this.moduleSaveData.table_size = {
+            rows: 1,
+            cols: 3
+          }
+          break
+        case 2:
+          this.moduleSaveData.table_size = {
+            rows: 1,
+            cols: 4
+          }
+          break
+        case 3:
+          this.moduleSaveData.table_size = {
+            rows: 4,
+            cols: 4
+          }
+          break
+        case 4:
+          this.moduleSaveData.table_size = {
+            rows: 4,
+            cols: 4
+          }
+          break
+        case 5:
+          this.moduleSaveData.table_size = {
+            rows: 4,
+            cols: 4
+          }
+          break
+        case 6:
+          this.moduleSaveData.table_size = {
+            rows: 4,
+            cols: 4
+          }
+          break
+        case 7:
+          this.handleToSelectLastTemplate()
+          break
+      }
+    },
+    // 选中自定义布局处理table_size字段
+    handleToSelectLastTemplate () {
+      switch (Number(this.density)) {
+        case 0:
+          this.moduleSaveData.table_size = {
+            rows: 4,
+            cols: 4
+          }
+          break
+        case 1:
+          this.moduleSaveData.table_size = {
+            rows: 5,
+            cols: 5
+          }
+          break
+        case 2:
+          this.moduleSaveData.table_size = {
+            rows: 6,
+            cols: 6
+          }
+          break
+        case 3:
+          this.moduleSaveData.table_size = {
+            rows: 7,
+            cols: 7
+          }
+          break
+      }
     }
   }
 }

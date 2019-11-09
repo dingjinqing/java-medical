@@ -191,7 +191,7 @@ export default {
         case 14: // 魔方多图
           obj = {
             module_name: 'm_magic_cube',
-            table_type: '1',
+            table_type: 1,
             table_size: {
               rows: 2,
               cols: 4
