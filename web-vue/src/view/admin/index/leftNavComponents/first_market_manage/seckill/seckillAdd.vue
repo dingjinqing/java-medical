@@ -264,6 +264,12 @@ export default {
   },
   props: ['isEdite', 'editId', 'editData'],
   data () {
+    // 自定义校验商品名称
+    var validateGoodsId = (rule, value, callback) => {
+      if (this.form.goodsId === '') {
+        callback(new Error('请选择商品!'))
+      }
+    }
     return {
       ArrowArr: [{
         img_1: this.$imageHost + '/image/admin/show_more.png'
@@ -305,7 +311,7 @@ export default {
       // 校验表单
       fromRules: {
         name: [{ required: true, message: '请填写活动名称', trigger: 'blur' }],
-        goodsId: [{ required: true }],
+        goodsId: [{ required: true, validator: validateGoodsId, trigger: 'change' }],
         validity: [{ required: true, message: '请填写有效期', trigger: 'blur' }],
         limitAmount: [{ required: true, message: '请填写限购数量', trigger: 'blur' }],
         limitPaytime: [{ required: true, message: '请填写支付时间', trigger: 'blur' }],

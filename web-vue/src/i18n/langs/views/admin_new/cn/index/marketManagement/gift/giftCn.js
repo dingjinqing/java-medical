@@ -2,7 +2,7 @@ export const cn = {
   // tabs
   tabInfo: [
     {
-      title: '全部秒杀活动',
+      title: '全部赠品活动',
       name: '0'
     },
     {

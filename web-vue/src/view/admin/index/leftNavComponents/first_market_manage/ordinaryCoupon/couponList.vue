@@ -42,7 +42,6 @@
           label="优惠券名称"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           prop="scoreNumber"
@@ -62,7 +61,6 @@
           label="最低消费"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           prop="surplus"
@@ -70,42 +68,36 @@
           align="center"
           width="80"
         >
-
         </el-table-column>
         <el-table-column
           prop="receivePerPerson"
           label="领取限制"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           prop="vaildDate"
           label="有效期"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           prop="receivePerson"
           label="领取人/次"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           prop="giveOutPerson"
           label="发放人/次"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           prop="used"
           label="已使用"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           label="操作"
@@ -114,11 +106,70 @@
         >
           <template slot-scope="scope">
             <div class="opt">
-              <span @click="updateCoupon(scope.row.id)">编辑</span>
+              <el-tooltip
+                content="编辑"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-edit-outline"
+                  @click="updateCoupon(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="分享"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-share"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="停用"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-circle-close"
+                  @click="puaseCoupon(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="启用"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-circle-check"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="领取明细"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-tickets"
+                  @click="receiveDetails(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="删除"
+                placement="top"
+                v-if="nav !== 1"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-delete"
+                  @click="delCoupon(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <!-- <span @click="updateCoupon(scope.row.id)">编辑</span>
               <span>分享</span>
               <span @click="puaseCoupon(scope.row.id)">停用</span>
               <span @click="receiveDetails(scope.row.id)">领取明细</span>
-              <span @click="delCoupon(scope.row.id)">删除</span>
+              <span @click="delCoupon(scope.row.id)">删除</span> -->
             </div>
           </template>
         </el-table-column>
@@ -210,7 +261,7 @@ export default {
     },
     // 停用优惠券
     puaseCoupon (id) {
-      this.$confirm('此操作将永久删除该优惠券活动, 是否继续?', '提示', {
+      this.$confirm('此操作将永久停用该优惠券活动, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -218,14 +269,14 @@ export default {
         pauseCoupon(id).then(res => {
           if (res.error === 0) {
             this.$message.success({
-              message: '删除成功!'
+              message: '停用成功!'
             })
             this.handleClick()
           }
         })
       }).catch(() => {
         this.$message.info({
-          message: '已取消删除'
+          message: '已取消停用'
         })
       })
     },

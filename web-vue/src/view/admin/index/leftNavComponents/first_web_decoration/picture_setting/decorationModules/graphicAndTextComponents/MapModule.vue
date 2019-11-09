@@ -138,7 +138,8 @@ export default {
       // eslint-disable-next-line no-undef
       this.map = new qq.maps.Map(document.getElementById('mapContainer'), {
         // eslint-disable-next-line no-undef
-        center: new qq.maps.LatLng(39.916527, 116.397128), // 地图的中心地理坐标。
+        center: new qq.maps.LatLng(this.data.latitude, this.data.longitude), // 地图的中心地理坐标。
+        // center: new qq.maps.LatLng(39.916527, 116.397128), // 地图的中心地理坐标。
         zoom: 13, // 地图的中心地理坐标。
         disableDefaultUI: true // 禁止所有控件
       })

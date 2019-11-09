@@ -94,13 +94,19 @@
             </div>
           </div>
           <div class="content_right">
-            <div class="coupon_info">
-              <div class="coupon_info_title">优惠券类型</div>
-              <ul>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
-                    <em>*</em>优惠券类型：
-                  </div>
+            <el-form
+              :rules="paramRules"
+              ref="param"
+              :model="param"
+              label-width="130px"
+              style="margin-top: 20px;"
+            >
+              <div class="coupon_info">
+                <div class="coupon_info_title">优惠券类型</div>
+                <el-form-item
+                  label="优惠券类型："
+                  prop="type"
+                >
                   <div>
                     <el-radio
                       v-model="param.type"
@@ -118,38 +124,34 @@
                       </el-tooltip>
                     </el-radio>
                   </div>
-                </li>
-              </ul>
-            </div>
-            <div class="coupon_info">
-              <div
-                class="coupon_info_title"
-                v-if="param.type===0"
-              >优惠券基础信息</div>
-              <div
-                class="coupon_info_title"
-                v-if="param.type===1"
-              >分裂优惠券信息 <span style="color: #999;margin-left: 15px;">用户将优惠券分享到微信，有好友领取后自己可获得一张优惠券</span></div>
-              <ul>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
-                    <em>*</em>优惠券名称：
-                  </div>
-                  <div class="ft">
-                    <el-input
-                      prop="actName"
-                      size="small"
-                      class="coupon_name_input"
-                      placeholder="最多输入10个字"
-                      v-model="param.actName"
-                      maxlength="10"
-                    ></el-input>
-                  </div>
-                </li>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
-                    <em>*</em>有效期：
-                  </div>
+                </el-form-item>
+              </div>
+
+              <div class="coupon_info">
+                <div
+                  class="coupon_info_title"
+                  v-if="param.type===0"
+                >优惠券基础信息</div>
+                <div
+                  class="coupon_info_title"
+                  v-if="param.type===1"
+                >分裂优惠券信息 <span style="color: #999;margin-left: 15px;">用户将优惠券分享到微信，有好友领取后自己可获得一张优惠券</span></div>
+
+                <el-form-item
+                  label="优惠券名称："
+                  prop="actName"
+                >
+                  <el-input
+                    size="small"
+                    class="coupon_name_input"
+                    placeholder="最多输入10个字"
+                    v-model="param.actName"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item
+                  label="有效期："
+                  prop="validityType"
+                >
                   <div>
                     <p>
                       <el-radio
@@ -202,11 +204,11 @@
                       </span>
                     </p>
                   </div>
-                </li>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
-                    <em>*</em>初始库存：
-                  </div>
+                </el-form-item>
+                <el-form-item
+                  label="初始库存："
+                  prop="surplus"
+                >
                   <div>
                     <div>
                       <el-radio
@@ -232,16 +234,17 @@
                     </div>
 
                   </div>
-                </li>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
-                    <em>*</em>优惠类型：
-                  </div>
-                  <div class="to_choose">
+                </el-form-item>
+                <el-form-item
+                  label="优惠类型："
+                  prop="preferentialType"
+                >
+                  <div>
                     <p v-if="param.type==1">
                       <el-radio
                         v-model="param.preferentialType"
                         :label='2'
+                        v-if="param.type==1"
                       >随机金额</el-radio>
                       <el-input
                         :disabled="param.preferentialType==2?false:true"
@@ -264,7 +267,7 @@
                     <p>
                       <el-radio
                         v-model="param.preferentialType"
-                        :label='0'
+                        :label=0
                       >指定金额</el-radio>
                       <span>
                         面值：
@@ -281,7 +284,7 @@
                     <p>
                       <el-radio
                         v-model="param.preferentialType"
-                        :label='1'
+                        :label=1
                       >折扣</el-radio>
                       <el-input
                         :disabled="param.preferentialType==1?false:true"
@@ -293,11 +296,11 @@
                     </p>
 
                   </div>
-                </li>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
-                    <em>*</em>是否需要兑换：
-                  </div>
+                </el-form-item>
+                <el-form-item
+                  label="是否需要兑换："
+                  prop="isRandom"
+                >
                   <div>
                     <el-radio
                       v-model="param.isRandom"
@@ -309,7 +312,7 @@
                     >需要兑换</el-radio>
                     <p v-if="param.isRandom== 1">
                       <el-input
-                        v-model.number="param.userScore"
+                        v-model="param.userScore"
                         @blur="checkNum"
                         class="small_input"
                         size="small"
@@ -317,40 +320,35 @@
                       积分兑换
                     </p>
                   </div>
-                </li>
-              </ul>
-            </div>
-            <div class="coupon_info">
-              <div class="coupon_info_title">基本规则</div>
-              <ul>
-                <li
-                  class="content_right_li clearfix"
+                </el-form-item>
+              </div>
+
+              <div class="coupon_info">
+                <div class="coupon_info_title">基本规则</div>
+
+                <el-form-item
+                  label="每人限领："
+                  prop="receivePerPerson"
                   v-if="param.type===0"
                 >
-                  <div class="content_left_title">
-                    <em>*</em>每人限领：
-                  </div>
                   <div class="ft">
                     <el-select
                       v-model="param.receivePerPerson"
                       size="small"
                     >
                       <el-option
-                        v-for="(item, index) in get_limit"
+                        v-for="(item, index) in getLimit"
                         :key="index"
-                        :value="index"
-                        :label="item"
+                        :value="item.value"
+                        :label="item.label"
                       ></el-option>
                     </el-select>
                   </div>
-                </li>
-                <li
-                  class="content_right_li clearfix"
+                </el-form-item>
+                <el-form-item
+                  label="会员专享："
                   v-if="param.type===0"
                 >
-                  <div class="content_left_title">
-                    会员专享：
-                  </div>
                   <div>
                     <p>
                       <el-checkbox
@@ -379,30 +377,22 @@
                       </span>
                     </div>
                   </div>
-                </li>
-                <li
-                  class="content_right_li clearfix"
+                </el-form-item>
+                <el-form-item
+                  label="领取码："
                   v-if="param.type===0"
                 >
-                  <div class="content_left_title">
-                    领取码：
-                  </div>
-                  <div>
-                    <el-input
-                      v-model="param.validationCode"
-                      @blur="checkCode"
-                      size="small"
-                      class="small_input"
-                    ></el-input>
-                  </div>
-                </li>
-                <li
-                  class="content_right_li clearfix"
+                  <el-input
+                    v-model="param.validationCode"
+                    @blur="checkCode"
+                    size="small"
+                    class="small_input"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item
+                  label="领券人数："
                   v-if="param.type===1"
                 >
-                  <div class="content_left_title">
-                    <em>*</em>领券人数：
-                  </div>
                   <div>
                     <el-radio
                       v-model="param.couponNum"
@@ -420,19 +410,16 @@
                       style="margin-left: -30px;"
                     ></el-input>名(包括送券人)用户可以领取此优惠券，最少2人
                   </div>
-                </li>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
-                    是否隐藏：
-                  </div>
+                </el-form-item>
+                <el-form-item label="是否隐藏：">
                   <div style="display:flex">
                     <div>
                       <el-radio
-                        v-model="param.isHide"
+                        v-model="param.enabled"
                         :label="0"
                       >否</el-radio>
                       <el-radio
-                        v-model="param.isHide"
+                        v-model="param.enabled"
                         :label="1"
                       >是</el-radio>
                     </div>
@@ -440,11 +427,11 @@
                       隐藏则不显示在前端商品详情页。否则显示到前端商品详情页可以供用户领取。
                     </span>
                   </div>
-                </li>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
-                    <em>*</em>使用门槛：
-                  </div>
+                </el-form-item>
+                <el-form-item
+                  label="使用门槛："
+                  prop="useConsumeRestrict"
+                >
                   <div>
                     <p>
                       <el-radio
@@ -467,11 +454,11 @@
                       </el-radio>
                     </p>
                   </div>
-                </li>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
-                    <em>*</em>可使用商品：
-                  </div>
+                </el-form-item>
+                <el-form-item
+                  label="可使用商品："
+                  prop="suitGoods"
+                >
                   <div>
                     <p>
                       <el-radio
@@ -499,30 +486,22 @@
                         <div v-if="index === 0">已选{{ goodsInfo.length > 0 ? goodsInfo.length : 0 }}件商品</div>
                         <div v-if="index === 1">已选{{ busClass.length > 0 ? busClass.length : 0 }}个商家</div>
                         <div v-if="index === 2">已选{{ platClass.length > 0 ? platClass.length : 0 }}个平台</div>
-                        <!-- <div
-                          v-if="item.num"
-                          class="noneBlockRight"
-                        >已选择{{index === 0 ? '商品':'分类'}}：{{item.num}}个{{index === 0 ? '商品':'分类'}}</div> -->
                       </div>
                     </div>
                   </div>
-                </li>
-                <li class="content_right_li clearfix">
-                  <div class="content_left_title">
-                    使用说明：
-                  </div>
-                  <div>
-                    <el-input
-                      type="textarea"
-                      :rows="5"
-                      v-model="param.useExplain"
-                      placeholder="请输入使用说明"
-                      resize="none"
-                    ></el-input>
-                  </div>
-                </li>
-              </ul>
-            </div>
+                </el-form-item>
+                <el-form-item label="使用说明：">
+                  <el-input
+                    type="textarea"
+                    :rows="5"
+                    v-model="param.useExplain"
+                    placeholder="请输入使用说明"
+                    resize="none"
+                  ></el-input>
+                </el-form-item>
+              </div>
+            </el-form>
+
           </div>
         </div>
       </div>
@@ -531,14 +510,9 @@
       <el-button
         type="primary"
         size="small"
-        @click="saveCoupon"
+        @click="saveCoupon()"
       >保存</el-button>
     </div>
-    <!--选择商品弹窗-->
-    <!-- <ChoosingGoods
-      :tuneUpChooseGoods="tuneUpChooseGoods"
-      :chooseGoodsBack="goodsIdsList"
-    /> -->
     <!--选择商品弹窗-->
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
@@ -563,19 +537,77 @@ export default {
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog')
   },
   data () {
+    // 自定义校验有效期
+    var validateTime = (rule, value, callback) => {
+      if (value === 0 && this.param.couponDate === '') {
+        callback(new Error('请选择固定日期!'))
+      } else if (value === 1 && (this.param.validity === '' || this.param.validityHour === '' || this.param.validityMinute === '')) {
+        callback(new Error('请填写完整填写日期!'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验初始库存
+    var validateSurplus = (rule, value, callback) => {
+      if (value === 1 && this.param.totalAmount === null) {
+        callback(new Error('请填写初始库存!'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验优惠类型
+    var validatePreferentialType = (rule, value, callback) => {
+      if (value === 0 && this.param.denomination === null) {
+        callback(new Error('请填写优惠面值!'))
+      } else if (value === 1 && this.param.denomination2 === null) {
+        callback(new Error('请填写优惠折扣!'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验积分兑换
+    var validateisRandom = (rule, value, callback) => {
+      if (value === 1 && this.param.userScore === null) {
+        callback(new Error('请填写积分兑换!'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验使用门槛
+    var validateuseConsumeRestrict = (rule, value, callback) => {
+      if (value === 1 && this.param.leastConsume === null) {
+        callback(new Error('请填写使用门槛!'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验可使用商品
+    var validatesuitGoods = (rule, value, callback) => {
+      if (value === 1 && this.goodsInfo.length === 0) {
+        callback(new Error('请选择可使用商品!'))
+      } else if (value === 1 && this.busClass.length === 0) {
+        callback(new Error('请选择指定商品分类!'))
+      } else if (value === 1 && this.platClass.length === 0) {
+        callback(new Error('请选择指定平台分类!'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       editType: false, // 编辑保存状态
       couponInfo: {},
+      id: '',
       param: {
         type: 0, // 优惠券类型
         actCode: '',
         actName: '', // 优惠券名
         // aliasCode: '', // 唯一活动代码
         preferentialType: 0,
-        useConsumeRestrict: 0, // 使用限制
+        useConsumeRestrict: 0, // 使用门槛
         isRandom: 0, // 是否需要积分
-        receivePerPerson: 0,
-        // cardId: [],
+        receivePerPerson: 0, // 每人限领
+        cardId: '',
         validityType: 0, // 有效期
         couponDate: '', // 总时间
         startTime: '', // 生效时间
@@ -585,7 +617,6 @@ export default {
         validityMinute: '',
         surplus: 0, // 初始库存
         totalAmount: null, // num发行量
-        // totalAmount: null, // 发放总量
         validationCode: '',
         recommendGoodsId: '', // 指定商品
         recommendCatId: '', // 指定平台分类
@@ -594,7 +625,7 @@ export default {
         randomNum2: null, // 随机金额2
         couponNum: 0, // 领券人数
         humanNum: null, // 人数
-        isHide: 0,
+        enabled: 0,
         suitGoods: 0, // 适用商品
         useExplain: '',
         denomination: null, // num面额
@@ -604,11 +635,50 @@ export default {
         AtreeType: null,
         isExclusive: false
       },
+      paramRules: {
+        type: { required: true, message: '请选择优惠券类型', trigger: 'change' },
+        actName: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { max: 10, message: '长度在不能超过10个字符', trigger: 'blur' }
+        ],
+        validityType: { required: true, validator: validateTime, trigger: 'change' },
+        surplus: { required: true, validator: validateSurplus, trigger: 'change' },
+        preferentialType: { required: true, validator: validatePreferentialType, trigger: 'change' },
+        isRandom: { required: true, validator: validateisRandom, trigger: 'change' },
+        receivePerPerson: { required: true, message: '请选择每人限领张数', trigger: 'change' },
+        useConsumeRestrict: { required: true, validator: validateuseConsumeRestrict, trigger: 'change' },
+        suitGoods: { required: true, validator: validatesuitGoods, trigger: 'change' }
+      },
       couponId: '',
       AtreeType: null,
       activeName: 'second',
       currentPage: 1,
-      get_limit: ['不限制', 1, 2, 3, 4, 5, 8, 10, 20],
+      getLimit: [
+        {
+          label: '不限制',
+          value: 0
+        }, {
+          label: '1',
+          value: 0
+        }, {
+          label: '2',
+          value: 1
+        }, {
+          label: '3',
+          value: 3
+        }, {
+          label: '4',
+          value: 4
+        }, {
+          label: '5',
+          value: 5
+        }, {
+          label: '10',
+          value: 10
+        }, {
+          label: '20',
+          value: 20
+        }],
 
       cardList: [], // 会员卡列表
 
@@ -652,8 +722,8 @@ export default {
 
     this.dataDefalut()
     if (this.couponId) {
-      this.getOneInfo()
       this.editType = true
+      this.getOneInfo()
     }
   },
   methods: {
@@ -685,23 +755,119 @@ export default {
     getOneInfo () {
       updateCoupon(this.couponId).then(res => {
         if (res.error === 0) {
-          this.param = res.content[0]
+          console.log(res.content[0])
+          var data = res.content[0]
+          this.id = data.id
+          this.param.type = data.type
+          this.param.actCode = data.actCode
+          this.param.actName = data.actName
+          this.param.aliasCode = data.aliasCode
           // 有效期
-          this.param.couponDate = [this.param.startTime, this.param.endTime]
-          // 面额/折
-          if (this.param.denomination < 10) {
+          this.param.validityType = data.validityType
+          this.param.couponDate = [data.startTime, data.endTime]
+          this.param.startTime = data.startTime
+          this.param.endTime = data.endTime
+          this.param.validity = data.validity
+          this.param.validityHour = data.validityHour
+          this.param.validityMinute = data.validityMinute
+          // 初始库存
+          this.param.totalAmount = data.totalAmount
+          if (this.param.totalAmount === 0) {
+            this.param.surplus = 0
+          } else {
+            this.param.surplus = 1
+          }
+          // 优惠类型 (面额/折)
+          this.param.denomination = data.denomination
+          this.param.denomination2 = null
+          if (this.param.denomination > 10) {
+            this.param.preferentialType = 0
+            this.param.denomination2 = null
+          } else {
             this.param.preferentialType = 1
             this.param.denomination2 = this.param.denomination
+            this.param.denomination = null
           }
-          // 发放的总数量
-          // if (this.param.totalAmount === 0) {
-          //   this.param.surplus = 0
-          // }
-          this.param.surplus = this.param.totalAmount
+          // 积分兑换
+          this.param.userScore = data.useScore
+          if (this.param.userScore > 0) {
+            this.param.isRandom = 1
+          } else {
+            this.param.isRandom = 0
+          }
+          // 每人限领
+          this.param.receivePerPerson = data.receivePerson
+          // 会员专享
+          this.param.cardId = data.cardId
+          if (this.param.cardId === '') {
+            this.param.isExclusive = false
+          } else {
+            this.param.isExclusive = true
+            this.param.cardId = this.param.cardId.split(',')
+            this.param.cardId = this.param.cardId.map(Number)
+          }
+          // 领取码
+          this.param.validationCode = data.validationCode
+          // 是否隐藏
+          this.param.enabled = data.enabled
           // 使用门槛
+          this.param.leastConsume = data.leastConsume
           if (this.param.leastConsume === 0) {
             this.param.useConsumeRestrict = 0
+          } else {
+            this.param.useConsumeRestrict = 1
           }
+          // 可使用商品
+          this.param.suitGoods = data.suitGoods
+          this.goodsInfo = data.recommendGoodsId.split(',')
+          this.goodsInfo = this.goodsInfo.map(Number)
+
+          this.busClass = data.recommendCatId.split(',')
+          this.busClass = this.busClass.map(Number)
+
+          this.platClass = data.recommendSortId.split(',')
+          this.platClass = this.platClass.map(Number)
+          // 说明
+          this.param.useExplain = data.useExplain
+
+          // this.param = res.content[0]
+          // console.log(this.param)
+          // // 有效期
+          // this.param.couponDate = [this.param.startTime, this.param.endTime]
+          // // 初始库存
+          // if (this.param.totalAmount === 0) {
+          //   this.param.surplus = 0
+          // } else {
+          //   this.param.surplus = 1
+          // }
+          // // 优惠类型 (面额/折)
+          // if (this.param.denomination !== null) {
+          //   this.param.preferentialType = 0
+          // } else {
+          //   this.param.preferentialType = 1
+          // }
+          // // 积分兑换
+          // this.param.userScore = this.param.useScore
+          // if (this.param.userScore === 0) {
+          //   this.param.isRandom = 1
+          // } else {
+          //   this.param.isRandom = 0
+          // }
+          // // 会员专享
+          // if (this.param.cardId === '') {
+          //   this.param.cardId = []
+          //   this.param.isExclusive = false
+          // } else {
+          //   this.param.cardId = this.param.cardId.split(',')
+          //   this.param.cardId = this.param.cardId.map(Number)
+          //   this.param.isExclusive = true
+          // }
+          // // 使用门槛
+          // if (this.param.leastConsume === 0) {
+          //   this.param.useConsumeRestrict = 0
+          // } else {
+          //   this.param.useConsumeRestrict = 1
+          // }
         }
       })
     },
@@ -717,18 +883,12 @@ export default {
           this.classFlag = 1
           this.flag = 1
           this.commInfo = this.busClass
-          // this.AtreeType = 1
-          // console.log(this.param.recommendSortId)
-          // this.$http.$emit('addingBusClassDialog', this.param.recommendSortId ? this.param.recommendSortId.split(',') : null)
           break
         case 2:
           this.tuneUpBusClassDialog = !this.tuneUpBusClassDialog
           this.classFlag = 2
           this.flag = 2
           this.commInfo = this.platClass
-          // this.AtreeType = 2
-          // console.log(this.param.recommendCatId)
-          // this.$http.$emit('addingBusClassDialog', this.param.recommendCatId ? this.param.recommendCatId.split(',') : null, this.AtreeType)
           break
       }
     },
@@ -756,73 +916,62 @@ export default {
     },
     // 保存优惠券
     saveCoupon () {
+      console.log(this.param.cardId)
       // 面额/折
       if (this.param.preferentialType === 1) {
+        this.param.actCode = 'discount'
         this.param.denomination = this.param.denomination2
+      } else {
+        this.param.actCode = 'voucher'
+        this.param.denomination = this.param.denomination
       }
       // 发放的总数量
-      // if (this.param.surplus === 0) {
-      //   this.param.totalAmount = 0
-      // }
-      this.param.surplus = this.param.totalAmount
+      if (this.param.surplus === 0) {
+        this.param.totalAmount = 0
+      }
       // 使用门槛
       if (this.param.useConsumeRestrict === 0) {
         this.param.leastConsume = 0
       }
-      this.param.recommendGoodsId = this.goodsInfo
-      this.param.recommendCatId = this.busClass
-      this.param.recommendSortId = this.platClass
-      if (this.editType === false) {
-        // 添加保存
-        // 面额/折
-        if (this.param.preferentialType === 1) {
-          this.param.actCode = 'discount'
-          this.param.denomination = this.param.denomination2
-        } else {
-          this.param.actCode = 'voucher'
-          this.param.denomination = this.param.denomination
-        }
-        // 发放的总数量
-        if (this.param.surplus === 0) {
-          this.param.totalAmount = 0
-        }
-        // 使用门槛
-        if (this.param.useConsumeRestrict === 0) {
-          this.param.leastConsume = 0
-        }
-        this.param.recommendGoodsId = this.goodsInfo.toString()
-        this.param.recommendCatId = this.busClass.toString()
-        this.param.recommendSortId = this.platClass.toString()
-        this.param.startTime = this.param.couponDate[0]
-        this.param.endTime = this.param.couponDate[1]
-        if (this.param.cardId !== undefined && this.param.cardId.length > 0) {
-          this.param.cardId = this.param.cardId.toString()
-        }
-        saveCoupon(this.param).then((res) => {
-          if (res.error === 0) {
-            this.$message.success({ message: '添加成功' })
-            this.$router.push({ 'name': 'ordinary_coupon' })
-          }
-        })
+      this.param.userScore = Number(this.param.userScore)
+      this.param.recommendGoodsId = this.goodsInfo.toString()
+      this.param.recommendCatId = this.busClass.toString()
+      this.param.recommendSortId = this.platClass.toString()
+      this.param.startTime = this.param.couponDate[0]
+      this.param.endTime = this.param.couponDate[1]
+      if (this.param.cardId !== undefined && this.param.cardId.length > 0) {
+        this.param.cardId = this.param.cardId.toString()
       } else {
-        // 编辑保存
-        // alert('编辑保存')
-        this.param.recommendGoodsId = this.goodsInfo.toString()
-        this.param.recommendCatId = this.busClass.toString()
-        this.param.recommendSortId = this.platClass.toString()
-        this.param.startTime = this.param.couponDate[0]
-        this.param.endTime = this.param.couponDate[1]
-        if (this.param.cardId !== undefined && this.param.cardId.length > 0) {
-          this.param.cardId = this.param.cardId.toString()
-        }
-        console.log(this.param)
-        updateSaveCoupon(this.param).then((res) => {
-          if (res.error === 0) {
-            this.$message.success({ message: '修改成功' })
-            this.$router.push({ 'name': 'ordinary_coupon' })
-          }
-        })
+        this.param.cardId = ''
       }
+
+      this.$refs['param'].validate((valid) => {
+        if (valid) {
+          if (this.editType === false) {
+            // 添加保存
+            saveCoupon(this.param).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({ message: '添加成功' })
+                this.$router.push({ 'name': 'ordinary_coupon' })
+              }
+            })
+          } else {
+            // 编辑保存
+            var obj = this.param
+            obj.id = this.id
+            console.log(obj)
+            updateSaveCoupon(obj).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({ message: '修改成功' })
+                this.$router.push({ 'name': 'ordinary_coupon' })
+              }
+            })
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
@@ -885,13 +1034,6 @@ export default {
     crlfFormat () {
       return this.param.useExplain.replace(/\n/g, '<br />')
     }
-    // 商品回调函数
-    // goodsIdsList () {
-    //   if (!this.param.recommendGoodsId) return null
-    //   return this.param.recommendGoodsId.split(',').map(item => {
-    //     return Number(item)
-    //   })
-    // }
   }
 }
 </script>
@@ -916,7 +1058,11 @@ export default {
     padding: 10px 0;
     background-color: #fff;
     text-align: center;
+    z-index: 99;
   }
+}
+.el-form-item {
+  margin: 15px 0 !important;
 }
 .main_coupon {
   padding: 0 20px 20px;
@@ -933,6 +1079,7 @@ export default {
   height: 510px;
   border: 1px solid #ccc;
   background: #eee;
+  margin-top: 20px;
 }
 .fl_title {
   height: 55px;
@@ -1044,7 +1191,8 @@ export default {
 .coupon_info {
   border: 1px solid #e5e5e5;
   background: #f8f8f8;
-  padding: 0 12px 22px;
+  // padding: 0 12px 22px;
+  padding: 0 12px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
