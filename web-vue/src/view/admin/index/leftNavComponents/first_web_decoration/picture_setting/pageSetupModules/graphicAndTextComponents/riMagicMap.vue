@@ -903,14 +903,14 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
-        if (newData) {
-          this.moduleSaveData = this.modulesData
-          this.nowTemplateClickIndex = this.modulesData.table_type - 1
-        }
+        console.log(newData)
+        this.moduleSaveData = this.modulesData
+        console.log(this.moduleSaveData)
+        this.nowTemplateClickIndex = this.modulesData.table_type - 1
       },
       immediate: true
     },
-    // 监听数据变换
+    // 监听数据变化
     moduleSaveData: {
       handler (newData) {
         console.log(newData)
@@ -1075,6 +1075,7 @@ export default {
             rows: 1,
             cols: 3
           }
+          console.log(this.moduleSaveData)
           break
         case 2:
           this.moduleSaveData.table_size = {
