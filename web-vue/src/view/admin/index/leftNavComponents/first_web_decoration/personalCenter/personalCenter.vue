@@ -1744,15 +1744,15 @@ export default {
           }
         }
       }
-      for (var m = 0; m < this.leftData.length; m++) {
-        if (this.leftData[m].module_name === title) {
-          for (var n = 0; n < this.leftData[m].content.length; j++) {
-            if (this.leftData[m].content[n].icon_name === name) {
-              this.leftData[m].content[n].icon = value
-            }
-          }
-        }
-      }
+      // for (var m = 0; m < this.leftData.length; m++) {
+      //   if (this.leftData[m].module_name === title) {
+      //     for (var n = 0; n < this.leftData[m].content.length; j++) {
+      //       if (this.leftData[m].content[n].icon_name === name) {
+      //         this.leftData[m].content[n].icon = value
+      //       }
+      //     }
+      //   }
+      // }
     },
 
     // 商品图片点击回调函数
