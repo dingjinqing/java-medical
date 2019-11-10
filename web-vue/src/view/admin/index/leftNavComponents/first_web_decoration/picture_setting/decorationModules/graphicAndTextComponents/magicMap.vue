@@ -69,7 +69,7 @@
               </td>
 
               <td
-                v-if="density===1||density===2||density===3"
+                v-if="density===1||density===2||density===3||density===10"
                 :style="(item['4Dis']?'display:none;':'')"
                 :colspan="item['4Col']"
                 :rowspan="item['4Row']"
@@ -80,7 +80,7 @@
               </td>
 
               <td
-                v-if="density===2||density===3"
+                v-if="density===2||density===3||density===10"
                 :style="(item['5Dis']?'display:none;':'')"
                 :colspan="item['5Col']"
                 :rowspan="item['5Row']"
@@ -327,7 +327,7 @@ export default {
         })
         // 处理需要隐藏的模块
         this.handleToNeedHideCells(newData)
-        console.log(this.columnData)
+        console.log(this.columnData, this.density)
       })
     },
     handleToNeedHideCells (newData) {
@@ -400,6 +400,7 @@ export default {
       this.density = 0
       if (newData.table_type === 2) {
         arr2 = [0, 1, 2, 4, 5, 6]
+        this.density = 10
         this.trHeight = '102px'
       } else {
         this.trHeight = '77px'
