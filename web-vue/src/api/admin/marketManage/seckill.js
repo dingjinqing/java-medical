@@ -9,7 +9,7 @@ export function seckillList (data) {
   })
 }
 
-// 添加秒杀活动
+// 添加保存秒杀活动
 export function addSeckillList (data) {
   return service({
     url: '/api/admin/market/seckill/add',
@@ -18,7 +18,7 @@ export function addSeckillList (data) {
   })
 }
 
-// 编辑详情
+// 获取编辑详情
 export function getSeckillList (data) {
   return service({
     url: '/api/admin/market/seckill/get',
@@ -27,7 +27,7 @@ export function getSeckillList (data) {
   })
 }
 
-// 更新秒杀活动
+// 编辑保存秒杀活动
 export function updateSeckillList (data) {
   return service({
     url: '/api/admin/market/seckill/update',
@@ -50,6 +50,15 @@ export function shareSeckillList (data) {
   return service({
     url: `/api/admin/market/seckill/share?id=${data}`,
     method: 'get',
+    data: data
+  })
+}
+
+// 更新秒杀活动
+export function replaceSeckillList (data) {
+  return service({
+    url: '/api/admin/market/seckill/update',
+    method: 'post',
     data: data
   })
 }

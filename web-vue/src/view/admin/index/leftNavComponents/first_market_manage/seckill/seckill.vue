@@ -26,7 +26,6 @@
 
     <!-- 添加 / 编辑 -->
     <addSeckill
-      :editData="editData"
       :isEdite="isEdite"
       :editId="editId"
       @addSeckillSubmit="addSeckillSubmit"
@@ -252,7 +251,7 @@
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
 import addSeckill from './seckillAdd.vue'
-import { seckillList, deleteSeckillList, shareSeckillList, getSeckillList, updateSeckillList } from '@/api/admin/marketManage/seckill.js'
+import { seckillList, deleteSeckillList, shareSeckillList, replaceSeckillList } from '@/api/admin/marketManage/seckill.js'
 export default {
 
   components: {
@@ -271,7 +270,6 @@ export default {
       shareDialog: false, // 分享弹窗
       shareImg: '',
       sharePath: '',
-      editData: {}, // 编辑数据
       editId: '', // 编辑的活动id
       isEdite: true // 编辑状态
     }
@@ -318,12 +316,7 @@ export default {
     editHandler (id, row) {
       this.editId = id
       this.isEdite = true
-      getSeckillList({ skId: id }).then((res) => {
-        if (res.error === 0) {
-          this.editData = res.content
-          this.showTabAddGroup(this.$t('seckill.editSeckill'))
-        }
-      })
+      this.showTabAddGroup(this.$t('seckill.editSeckill'))
     },
 
     showTabAddGroup (title) {
@@ -402,7 +395,7 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        updateSeckillList({
+        replaceSeckillList({
           skId: id,
           status: 0
         }).then((res) => {
@@ -423,7 +416,7 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        updateSeckillList({
+        replaceSeckillList({
           skId: id,
           status: 1
         }).then((res) => {

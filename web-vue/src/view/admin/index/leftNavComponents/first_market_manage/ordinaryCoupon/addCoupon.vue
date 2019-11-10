@@ -829,45 +829,6 @@ export default {
           this.platClass = this.platClass.map(Number)
           // 说明
           this.param.useExplain = data.useExplain
-
-          // this.param = res.content[0]
-          // console.log(this.param)
-          // // 有效期
-          // this.param.couponDate = [this.param.startTime, this.param.endTime]
-          // // 初始库存
-          // if (this.param.totalAmount === 0) {
-          //   this.param.surplus = 0
-          // } else {
-          //   this.param.surplus = 1
-          // }
-          // // 优惠类型 (面额/折)
-          // if (this.param.denomination !== null) {
-          //   this.param.preferentialType = 0
-          // } else {
-          //   this.param.preferentialType = 1
-          // }
-          // // 积分兑换
-          // this.param.userScore = this.param.useScore
-          // if (this.param.userScore === 0) {
-          //   this.param.isRandom = 1
-          // } else {
-          //   this.param.isRandom = 0
-          // }
-          // // 会员专享
-          // if (this.param.cardId === '') {
-          //   this.param.cardId = []
-          //   this.param.isExclusive = false
-          // } else {
-          //   this.param.cardId = this.param.cardId.split(',')
-          //   this.param.cardId = this.param.cardId.map(Number)
-          //   this.param.isExclusive = true
-          // }
-          // // 使用门槛
-          // if (this.param.leastConsume === 0) {
-          //   this.param.useConsumeRestrict = 0
-          // } else {
-          //   this.param.useConsumeRestrict = 1
-          // }
         }
       })
     },
