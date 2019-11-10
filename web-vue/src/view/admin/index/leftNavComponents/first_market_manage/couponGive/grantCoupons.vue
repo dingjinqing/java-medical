@@ -602,7 +602,8 @@ export default {
       addActivity(param).then(res => {
         console.log(res)
         if (res.error === 0) {
-          alert(`${this.$t('couponGive.operationSuccess')}`)
+          // alert(`${this.$t('couponGive.operationSuccess')}`)
+          this.$message.success({ message: this.$t('couponGive.operationSuccess') })
           this.$router.push({
             path: `/admin/home/main/couponGive`
           })
@@ -704,23 +705,23 @@ export default {
       this.fetchUserList(this.params)
     },
     // 选择商品
-    // handleChooseGoods () {
-    //   if (this.params.onClickGoods === false) {
-    //     return
-    //   }
-    //   this.tuneUpChooseGoods = !this.tuneUpChooseGoods
-    // },
-    // getRes (ids, urls) {
-    //   if (ids.length > 3) {
-    //     this.$message.warning('最多选择3个商品')
-    //   } else {
-    //     this.params.goodsIdList = ids
-    //     this.imgsList = urls
-    //     console.log('数据库存储：', this.params.goodsIdList.toString())
-    //     // 发送获取人数
-    //     this.fetchUserList(this.params)
-    //   }
-    // },
+    handleChooseGoods () {
+      if (this.params.onClickGoods === false) {
+        return
+      }
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    getRes (ids, urls) {
+      if (ids.length > 3) {
+        this.$message.warning('最多选择3个商品')
+      } else {
+        this.params.goodsIdList = ids
+        this.imgsList = urls
+        console.log('数据库存储：', this.params.goodsIdList.toString())
+        // 发送获取人数
+        this.fetchUserList(this.params)
+      }
+    },
     // 删除图片
     handleDelImg (id) {
       if (this.params.onClickGoods === false) {
