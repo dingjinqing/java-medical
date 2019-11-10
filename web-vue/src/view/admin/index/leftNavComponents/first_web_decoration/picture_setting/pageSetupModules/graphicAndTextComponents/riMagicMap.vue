@@ -954,6 +954,8 @@ export default {
       console.log(this.nowTemplateClickIndex)
       this.selectTemplateList[0].list[index].isChecked = true
       this.moduleSaveData.table_type = index + 1
+      this.moduleSaveData.data = {}
+      // this.handleToSaveDataImgInfo(index, true)
       // 处理保存数据中 table_size 字段
       this.handleToTableSize(index)
     },
@@ -1060,6 +1062,7 @@ export default {
       console.log(obj, isAllCheckFull)
       this.moduleSaveData.data = obj
       this.moduleSaveData.isAllCheckFull = isAllCheckFull
+      this.handleToSelectLastTemplate()
     },
     // 处理保存数据中table_size字段
     handleToTableSize (index) {

@@ -150,7 +150,7 @@ export default {
     return {
       timesNumber: [4, 5, 6, 7], // 行布局类型尺寸
       columnData: [], // 表格数据
-      arrFour: [0, 1, 2, 3, 4, 5, 6], // 4X4数据
+      arrFour: [0, 1, 2, 3, 4, 5, 6],
       isOpenLayout: false, // 是否开始布局
       nowCheckedArr: [], // 当前选中的项集合
       firstClickRowIndex: null, // 第一次选中的项所在的行
@@ -206,15 +206,15 @@ export default {
       console.log(this.nowCheckedCell)
       if (this.nowCheckedCell[0] !== null && this.nowCheckedCell[1] !== null) {
         this.columnData[this.nowCheckedCell[0]][`${this.nowCheckedCell[1]}jump_link`] = newData
-
+        this.handleToSaveData()
         console.log(newData)
       }
     },
     imgUrl (newData) {
       if (this.nowCheckedCell[0] !== null && this.nowCheckedCell[1] !== null) {
         this.columnData[this.nowCheckedCell[0]][`${this.nowCheckedCell[1]}img_url`] = newData
-
-        console.log(newData)
+        this.handleToSaveData()
+        console.log(this.columnData[this.nowCheckedCell[0]][`${this.nowCheckedCell[1]}img_url`])
       }
     }
   },
@@ -246,6 +246,7 @@ export default {
           this.columnData[item][`${itemC}x`] = item + 1 // 保存数据使用
         })
       })
+      this.handleToSaveData()
       console.log(this.columnData)
     },
     // 点击表格单元

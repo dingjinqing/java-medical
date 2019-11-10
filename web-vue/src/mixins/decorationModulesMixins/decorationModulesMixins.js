@@ -197,25 +197,25 @@ export default {
               cols: 4
             },
             data: {
-              block_0: {
-                name: 'block_0',
-                x: 1,
-                y: 1,
-                rows: 2,
-                cols: 2,
-                img_url:
-                  'http://mpdevimg2.weipubao.cn/upload/0/image/20191028/crop_NBaCqTWlYNcQkz9I.jpeg'
-              },
-              block_1: {
-                name: 'block_1',
-                x: 1,
-                y: 3,
-                rows: 2,
-                cols: 2,
-                img_url:
-                  'http://mpdevimg2.weipubao.cn/upload/0/image/20191024/crop_WyZbpaHeYoNcF8d6.jpeg',
-                jump_link: 'pages/auth/auth'
-              }
+              // block_0: {
+              //   name: 'block_0',
+              //   x: 1,
+              //   y: 1,
+              //   rows: 2,
+              //   cols: 2,
+              //   img_url:
+              //     'http://mpdevimg2.weipubao.cn/upload/0/image/20191028/crop_NBaCqTWlYNcQkz9I.jpeg'
+              // },
+              // block_1: {
+              //   name: 'block_1',
+              //   x: 1,
+              //   y: 3,
+              //   rows: 2,
+              //   cols: 2,
+              //   img_url:
+              //     'http://mpdevimg2.weipubao.cn/upload/0/image/20191024/crop_WyZbpaHeYoNcF8d6.jpeg',
+              //   jump_link: 'pages/auth/auth'
+              // }
             },
             isAllCheckFull: true
           }
