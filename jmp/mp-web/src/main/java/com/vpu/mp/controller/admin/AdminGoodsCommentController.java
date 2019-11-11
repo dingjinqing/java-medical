@@ -1,20 +1,9 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddCommParam;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAddListVo;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentAnswerParam;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentCheckListVo;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentConfigParam;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentIdParam;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.comment.GoodsCommentVo;
+import com.vpu.mp.service.pojo.shop.goods.comment.*;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 商品评论控制器
@@ -135,7 +124,22 @@ public class AdminGoodsCommentController extends AdminBaseController {
 
 		return success();
 	}
-	
+
+    /**
+     * 获取审核配置
+     *
+     * @param
+     * @return
+     *
+     */
+    @GetMapping("/getconfig")
+    public JsonResult getConfig() {
+
+        Byte commentConfig = shop().config.commentConfigService.getCommentConfig();
+
+        return success(commentConfig);
+    }
+
 	/**
 	 * 修改开关配置
 	 * 

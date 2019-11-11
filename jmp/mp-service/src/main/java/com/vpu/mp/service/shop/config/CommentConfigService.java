@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.foundation.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class CommentConfigService extends BaseShopConfigService{
      * 获取评价审核状态
      * @return 默认为0
      */
-	public Byte geCommentConfig() {
+	public Byte getCommentConfig() {
         String s = this.get(K_COMMENT);
         return StringUtils.isBlank(s)? 0 : Byte.valueOf(s);
     }

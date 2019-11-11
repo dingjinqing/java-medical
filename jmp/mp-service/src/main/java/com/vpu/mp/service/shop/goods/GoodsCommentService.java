@@ -17,7 +17,6 @@ import com.vpu.mp.service.shop.member.ScoreService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
-import org.jooq.Record10;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -281,18 +280,7 @@ public class GoodsCommentService extends ShopBaseService {
    */
   public PageResult<GoodsCommentAddListVo> getAddList(GoodsCommentPageListParam param) {
 
-    SelectConditionStep<
-            Record10<
-                Integer,
-                String,
-                String,
-                String,
-                String,
-                BigDecimal,
-                Integer,
-                Integer,
-                Integer,
-                Integer>>
+    SelectConditionStep<?extends Record>
         selectFrom =
             db().select(
                     GOODS.GOODS_ID,
@@ -305,9 +293,10 @@ public class GoodsCommentService extends ShopBaseService {
                     GOODS.GOODS_SALE_NUM,
                     GOODS_SUMMARY.UV,
                     GOODS_SUMMARY.PV)
-                .from(GOODS, SORT, GOODS_SUMMARY)
-                .where(GOODS.SORT_ID.eq(SORT.SORT_ID))
-                .and(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID));
+                .from(GOODS)
+                .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
+                .leftJoin(GOODS_SUMMARY).on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID))
+                .where(GOODS.DEL_FLAG.eq(BYTE_ZERO));
 
     SelectConditionStep<?> select = this.buildAddOptions(selectFrom, param);
 
@@ -326,18 +315,7 @@ public class GoodsCommentService extends ShopBaseService {
    * @return
    */
   private SelectConditionStep<?> buildAddOptions(
-      SelectConditionStep<
-              Record10<
-                  Integer,
-                  String,
-                  String,
-                  String,
-                  String,
-                  BigDecimal,
-                  Integer,
-                  Integer,
-                  Integer,
-                  Integer>>
+      SelectConditionStep<?extends Record>
           selectFrom,
       GoodsCommentPageListParam param) {
     SelectConditionStep<?> scs =
