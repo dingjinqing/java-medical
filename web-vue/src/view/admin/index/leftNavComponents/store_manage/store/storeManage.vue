@@ -46,12 +46,14 @@ export default {
     return {
       id: null, // 门店id
       businessHours: null, // 营业时间
+      businessType: 1, // 工作日还是每天
       activeName: 'first'
     }
   },
   created () {
     this.id = this.$route.query.id
     this.businessHours = this.$route.query.businessHours
+    this.businessType = this.$route.query.businessType
     this.langDefault()
     this.initStatus()
   },
@@ -72,7 +74,8 @@ export default {
             name: 'store_storemanage_service_list',
             query: {
               id: this.id,
-              businessHours: this.businessHours
+              businessHours: this.businessHours,
+              businessType: this.businessType
             }
           })
           break
@@ -81,7 +84,8 @@ export default {
             name: 'store_storemanage_technician_list',
             query: {
               id: this.id,
-              businessHours: this.businessHours
+              businessHours: this.businessHours,
+              businessType: this.businessType
             }
           })
           break

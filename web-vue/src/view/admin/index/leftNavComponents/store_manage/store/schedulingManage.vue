@@ -6,7 +6,7 @@
           :businessHours="businessHours"
           :storeId="storeId"
         ></addSheduling>
-        <span class="tips">{{$t('schedulingManage.businessHoursTip')}} {{businessHours}}</span>
+        <span class="tips">{{businessType == 1? $t('schedulingManage.businessHoursTip') : '工作日'}} {{businessHours}}</span>
       </div>
       <div class="order_content">
         <div class="week_picker_wrap">
@@ -125,6 +125,7 @@
                   :storeId="storeId"
                   :technicianId="technicianId"
                   :beginTime="queryParams.beginTime"
+                  :businessType="businessType"
                   :datas="tableData[0]"
                   @change="initDataList"
                 ></editTechnicianscheduling>
@@ -149,6 +150,7 @@ export default {
     return {
       storeId: '',
       businessHours: '', // 营业时间
+      businessType: 1, // 工作日0，还是每天1
       technicianId: null, // 技师id
       technicianName: '', // 技师名称
       queryParams: {
@@ -184,6 +186,7 @@ export default {
   created () {
     this.storeId = this.$route.query.id
     this.businessHours = this.$route.query.businessHours
+    this.businessType = this.$route.query.businessType
     this.technicianId = this.$route.query.technicianId
     this.technicianName = this.$route.query.technicianName
     this.langDefault()

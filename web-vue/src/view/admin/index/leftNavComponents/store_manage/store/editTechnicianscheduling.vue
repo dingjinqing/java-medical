@@ -63,6 +63,7 @@ export default {
     storeId: [Number, String],
     technicianId: [Number, String],
     beginTime: [String, Date],
+    businessType: [String, Number],
     datas: Object
   },
   data () {
@@ -105,6 +106,9 @@ export default {
     this.langDefault()
     this.initSelectData()
     this.initSelectsDate()
+    if (this.businessType === 0) {
+      this.schedulingDatas.splice(5, 2)
+    }
     if (this.datas) {
       this.initData(this.datas)
     }

@@ -49,7 +49,8 @@ export default {
             name: 'store_storemanage_technician_list',
             query: {
               id: this.id,
-              businessHours: this.$route.query.businessHours
+              businessHours: this.$route.query.businessHours,
+              businessType: this.$route.query.businessType
             }
           })
           break

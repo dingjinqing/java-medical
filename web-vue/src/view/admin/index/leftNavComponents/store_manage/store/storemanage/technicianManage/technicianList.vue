@@ -165,6 +165,7 @@ export default {
             query: {
               id: this.queryParams.storeId,
               businessHours: this.$route.query.businessHours,
+              businessType: this.$route.query.businessType,
               technicianId: row.id,
               technicianName: row.technicianName
             }

@@ -345,7 +345,8 @@ export default {
             path: '/admin/home/main/store/storemanage',
             query: {
               id: id,
-              businessHours: row.businessHours
+              businessHours: row.businessHours,
+              businessType: row.businessType
             }
           })
       }
