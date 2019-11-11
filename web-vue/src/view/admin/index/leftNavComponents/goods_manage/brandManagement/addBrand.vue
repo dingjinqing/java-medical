@@ -2,57 +2,59 @@
   <div class="addBrand">
     <div class="addBrandContent">
       <div class="addBrandMain">
-        <ul>
-          <li>
+        <el-form
+          :model="ruleForm"
+          :rules="rules"
+          ref="ruleForm"
+        >
+          <el-form-item
+            label="品牌名称："
+            prop="name"
+          >
+            <el-input
+              size="small"
+              v-model="ruleForm.name"
+              placeholder="请输入内容"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="品牌英文名称："
+            prop="NameEnlishInput"
+          >
+            <el-input
+              size="small"
+              v-model="ruleForm.NameEnlishInput"
+              placeholder="请输入内容"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="品牌Logo："
+            prop="logoImgUrl"
+          >
             <div class="brand_title">
-              <span style="color:red">*</span>
-              <span class="nameClass">品牌名称：</span>
-              <el-input
-                v-model="NameInput"
-                placeholder="请输入内容"
-                size="mini"
-              ></el-input>
-            </div>
-          </li>
-          <li>
-            <div
-              class="brand_title"
-              style="margin-left:-27px"
-            >
-              <span style="color:red">*</span>
-              <span class="nameClass">品牌英文名称：</span>
-              <el-input
-                v-model="NameEnlishInput"
-                placeholder="请输入内容"
-                size="mini"
-              ></el-input>
-            </div>
-          </li>
-          <li>
-            <div class="brand_title">
-              <span style="color:red">*</span>
-              <span class="nameClass">品牌Logo：</span>
               <span
                 @click="handleImgDailog()"
                 class="addImgClass"
-                v-if="logoImgUrl?false:true"
+                v-if="this.ruleForm.logoImgUrl?false:true"
               ></span>
               <img
                 v-else
-                :src="logoImgUrl"
+                :src="this.ruleForm.logoImgUrl"
                 @click="handleImgDailog()"
                 class="addImgClass"
               >
             </div>
-          </li>
-          <li>
+          </el-form-item>
+          <el-form-item
+            label="品牌分类："
+            prop="classSelectValue"
+          >
             <div
               class="brand_title"
               style="margin-left:10px"
             >
-              <span class="nameClass">品牌分类：</span>
               <el-select
-                v-model="classSelectValue"
+                v-model="ruleForm.classSelectValue"
                 placeholder="请选择"
                 size="mini"
               >
@@ -70,45 +72,47 @@
                 <span @click="handleTurnManClassPage()">管理品牌分类</span>
               </div>
             </div>
-          </li>
-          <li>
+          </el-form-item>
+          <el-form-item
+            label="品牌优先级："
+            prop="firstInput"
+          >
             <div
               class="brand_title"
               style="margin-left:-2px"
             >
-              <span class="nameClass">品牌优先级：</span>
               <el-input
-                v-model="firstInput"
+                v-model="ruleForm.firstInput"
                 placeholder="请输入内容"
                 size="mini"
               ></el-input>
               <span style="color:#999;margin-left:3px">请填写正整数，数值越大，优先级越高，在小程序前端展示位置越靠前</span>
             </div>
-          </li>
-          <li>
+          </el-form-item>
+          <el-form-item
+            label="设为推荐品牌："
+            prop="radio"
+          >
             <div
               class="brand_title"
               style="margin-left:-19px"
             >
-              <span style="color:red">*</span>
-              <span class="nameClass">设为推荐品牌：</span>
               <el-radio
-                v-model="radio"
+                v-model="ruleForm.radio"
                 label="1"
               >是</el-radio>
               <el-radio
-                v-model="radio"
+                v-model="ruleForm.radio"
                 label="2"
               >否</el-radio>
               <span style="color:#999">设为推荐品牌，将展示在小程序推荐品牌中列表中</span>
             </div>
-          </li>
-          <li>
+          </el-form-item>
+          <el-form-item label="添加商品：">
             <div
               class="brand_title"
               style="margin-left:16px"
             >
-              <span class="nameClass">添加商品：</span>
               <div
                 class="choiseDivClass"
                 @click="handleClickChoiseGood()"
@@ -118,8 +122,8 @@
               </div>
               <span style="color:#5a8bff;margin-left:20px">已选择商品数量：{{selectgoodsNum}}</span>
             </div>
-          </li>
-        </ul>
+          </el-form-item>
+        </el-form>
       </div>
     </div>
     <!--保存-->
@@ -187,7 +191,44 @@ export default {
     ChoosingGoods: () => import('@/components/admin/choosingGoods')
   },
   data () {
+    var validatePassLogoImgUrl = (rule, value, callback) => { // 自定义校验品牌Logo
+      if (value === '') {
+        callback(new Error('请选择品牌Logo'))
+      } else {
+        callback()
+      }
+    }
+    var validatePassRadio = (rule, value, callback) => { // 自定义校验设为推荐品牌
+      if (value === '') {
+        callback(new Error('请推荐品牌'))
+      } else {
+        callback()
+      }
+    }
     return {
+      ruleForm: { // 表单数据
+        name: '', // 品牌名称
+        NameEnlishInput: '', // 品牌英文名称
+        logoImgUrl: '', // 品牌Logo imgUrl
+        classSelectValue: '', // 品牌分类
+        firstInput: '', // 品牌优先级
+        radio: '1', // 设为推荐品牌
+        goodsIdsArr: [] // 添加商品id
+      },
+      rules: { // 校验规则
+        name: [
+          { required: true, message: '请输入品牌名称名称', trigger: 'blur' }
+        ],
+        NameEnlishInput: [
+          { required: true, message: '请输入品牌名称名称', trigger: 'blur' }
+        ],
+        logoImgUrl: [
+          { required: true, validator: validatePassLogoImgUrl, trigger: 'blur' }
+        ],
+        radio: [
+          { required: true, validator: validatePassRadio, trigger: 'change' }
+        ]
+      },
       tuneUpChooseGoods: false, // 添加商品弹窗flag
       tuneUp: false, // 调起图片弹窗flag
       pageCount: 1,
@@ -372,9 +413,9 @@ export default {
     },
     goodsIds_: {
       handler (newData, oldData) {
-        this.goodsIdsArr = [...new Set(newData)]
-        this.selectgoodsNum = this.goodsIdsArr.length
-        console.log(this.goodsIdsArr)
+        this.ruleForm.goodsIdsArr = [...new Set(newData)]
+        this.selectgoodsNum = this.ruleForm.goodsIdsArr.length
+        console.log(this.ruleForm.goodsIdsArr)
       },
       immediate: true
     }
@@ -398,13 +439,14 @@ export default {
         if (!this.editGoodsId) return
         queryGoodsIdRequest(obj).then((res) => {
           console.log(res)
-          this.NameInput = res.content.brandName
-          this.NameEnlishInput = res.content.ename
-          this.logoImgUrl = res.content.logo
-          this.classSelectValue = res.content.classifyId
-          this.firstInput = res.content.first
+          this.ruleForm.name = res.content.brandName
+          this.ruleForm.NameEnlishInput = res.content.ename
+          this.ruleForm.logoImgUrl = res.content.logo
+
+          this.ruleForm.classSelectValue = res.content.classifyId
+          this.ruleForm.firstInput = res.content.first
           console.log(res.content.isRecommend)
-          this.radio = res.content.isRecommend.toString()
+          this.ruleForm.radio = res.content.isRecommend.toString()
           this.hxgoodsIds = res.content.goodsIds
           this.selectgoodsNum = res.content.goodsIds.length
         })
@@ -475,7 +517,7 @@ export default {
     },
     // 选择商品弹窗确定
     handleChoiseGooddialog () {
-      this.transmitGoodsIds(this.goodsIdsArr)
+      this.transmitGoodsIds(this.ruleForm.goodsIdsArr)
       this.choiseGooddialogVisible = false
     },
     // 调用图片弹窗
@@ -485,7 +527,7 @@ export default {
     // 图片弹窗选中
     handleSelectImg (res) {
       console.log(res)
-      this.logoImgUrl = res.imgUrl
+      this.ruleForm.logoImgUrl = res.imgUrl
     },
     // 刷新
     handleRefresh () {
@@ -494,27 +536,31 @@ export default {
     },
     // 保存
     saveShopStyle () {
-      let obj = {
-        'brandName': this.NameInput,
-        'ename': this.NameEnlishInput,
-        'logo': this.logoImgUrl,
-        'first': this.firstInput,
-        'desc': '',
-        'isRecommend': this.radio,
-        'classifyId': this.classSelectValue,
-        'goodsIds': this.goodsIdsArr
-      }
-      brandAddRequest(obj).then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.$message.success({
-            message: '保存成功',
-            type: 'success'
-          })
-        } else if (res.error === 131001) {
-          this.$message.error({
-            message: '品牌名称已存在',
-            type: 'success'
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          let obj = {
+            'brandName': this.ruleForm.name,
+            'ename': this.ruleForm.NameEnlishInput,
+            'logo': this.ruleForm.logoImgUrl,
+            'first': this.ruleForm.firstInput,
+            'desc': '',
+            'isRecommend': this.ruleForm.radio,
+            'classifyId': this.ruleForm.classSelectValue,
+            'goodsIds': this.ruleForm.goodsIdsArr
+          }
+          brandAddRequest(obj).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$message.success({
+                message: '保存成功',
+                type: 'success'
+              })
+            } else if (res.error === 131001) {
+              this.$message.error({
+                message: '品牌名称已存在',
+                type: 'success'
+              })
+            }
           })
         }
       })
@@ -749,9 +795,9 @@ img {
 }
 </style>
 <style>
-.addBrand .el-input {
+/* .addBrand .el-input {
   width: auto !important;
-}
+} */
 .table_container label {
   display: flex;
   align-items: center;
@@ -808,6 +854,14 @@ img {
       display: flex;
       align-items: center;
     }
+  }
+}
+.addBrandMain {
+  /deep/ .el-form-item__label {
+    width: 122px;
+  }
+  /deep/ .el-input {
+    width: 140px;
   }
 }
 </style>
