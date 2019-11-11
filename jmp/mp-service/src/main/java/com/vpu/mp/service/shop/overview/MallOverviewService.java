@@ -242,7 +242,7 @@ public class MallOverviewService extends ShopBaseService {
         Integer cardId = cardExamineRecord.getCardId();
         return new HashMap<String, String>(3) {{
             put("card_id", cardExamineRecord.getCardId().toString());
-            put("card_name", cardDaoService.getCardById(cardId).toString());
+            put("card_name", cardDaoService.getCardById(cardId).getCardName());
             put("card_num", cardVerifyService.getUndealUserNum(cardId).toString());
         }};
     }
