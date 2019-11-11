@@ -737,11 +737,12 @@ public class StoreWxService extends ShopBaseService {
         // 门店服务信息
         StoreServiceParam service = storeService.getStoreService(serviceId);
         Assert.notNull(service, JsonResultCode.CODE_STORE_SERVICE_NOT_EXIST);
+        log.debug(",门店服务信息:{}", service);
         // 门店信息
         Integer storeId = service.getStoreId();
         StorePojo storePojo = store.getStore(storeId);
         Assert.notNull(storePojo, JsonResultCode.CODE_STORE_NOT_EXIST);
-
+        log.debug(",门店信息:{}", storePojo);
         return ReservationOrder.builder()
             // 获取用户余额account
             .account(Optional.ofNullable(userService.getUserByUserId(userId)).orElseThrow(() -> new BusinessException(CODE_DATA_NOT_EXIST, "userId:" + userId)).getAccount())
@@ -749,13 +750,13 @@ public class StoreWxService extends ShopBaseService {
             .balanceFirst(tradeService.getBalanceFirst())
             .cardFirst(tradeService.getCardFirst())
             // 获取支持的支付方式
-            .paymentVoList(new ArrayList<>(paymentService.getSupportPayment().values()))
+            .paymentVoList(new ArrayList<>(Optional.ofNullable(paymentService.getSupportPayment()).orElse(new HashMap<>()).values()))
             // 获取指定用户最近的一个服务预约订单信息(主要是获取用户的名称和手机号;没有就算了)
             .recentOrderInfo(serviceOrderService.getRecentOrderInfo(userId))
             // 获取门店职称配置
             .technicianTitle(storeConfigService.getTechnicianTitle())
             // 获取店铺logo
-            .shopAvatar(shopService.getShopById(getShopId()).getShopAvatar())
+            .shopAvatar(Optional.ofNullable(shopService.getShopById(getShopId())).orElseThrow(() -> new BusinessException(CODE_DATA_NOT_EXIST, "shopId:" + getShopId())).getShopAvatar())
             // 获取有效用户会员卡列表
             .cardList(userCardDaoService.getStoreValidCardList(userId, storeId))
             .storePojo(storePojo)
