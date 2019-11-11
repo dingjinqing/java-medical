@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 /**
  * @author 黄荣刚
@@ -130,7 +131,7 @@ public class ServiceCommentService extends ShopBaseService {
 	}
 
     /**
-     * Gets comment by service id.获取服务所有评论
+     * Gets comment by service id.获取服务所有评论(只选择评审通过的)
      *
      * @param serviceId the service id
      * @return the comment by service id
@@ -138,12 +139,13 @@ public class ServiceCommentService extends ShopBaseService {
     public List<ServiceCommentVo> getCommentByServiceId(Integer serviceId) {
         return db().select(COMMENT_SERVICE.asterisk()).from(COMMENT_SERVICE)
             .where(COMMENT_SERVICE.SERVICE_ID.eq(serviceId))
+            .and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE))
             .and(COMMENT_SERVICE.DEL_FLAG.eq(BYTE_ZERO))
             .fetchInto(ServiceCommentVo.class);
     }
 
     /**
-     * Gets newestcomment.获取服务的最新评论
+     * Gets newestcomment.获取服务的最新评论(只选择评审通过的)
      *
      * @param serviceId the service id
      * @return the newestcomment
@@ -152,6 +154,7 @@ public class ServiceCommentService extends ShopBaseService {
         return db().select(COMMENT_SERVICE.asterisk()).from(COMMENT_SERVICE)
             .where(COMMENT_SERVICE.SERVICE_ID.eq(serviceId))
             .and(COMMENT_SERVICE.DEL_FLAG.eq(BYTE_ZERO))
+            .and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE))
             .orderBy(COMMENT_SERVICE.CREATE_TIME.desc())
             .fetchOneInto(ServiceCommentVo.class);
     }

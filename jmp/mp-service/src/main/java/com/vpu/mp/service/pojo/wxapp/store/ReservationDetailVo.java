@@ -33,8 +33,4 @@ public class ReservationDetailVo {
      * 门店职称配置
      */
     private String technicianTitle;
-    /**
-     * 店铺营业状态
-     */
-    private Byte businessState;
 }

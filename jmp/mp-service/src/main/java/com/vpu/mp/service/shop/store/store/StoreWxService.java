@@ -29,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.config.ShopMsgTemplateConfigService;
 import com.vpu.mp.service.shop.config.StoreConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -212,6 +213,12 @@ public class StoreWxService extends ShopBaseService {
      */
     @Autowired
     public ShopCommonConfigService commonConfigService;
+
+    /**
+     * The Msg template config service.消息模板配置
+     */
+    @Autowired
+    public ShopMsgTemplateConfigService msgTemplateConfigService;
 
     /**
      * The constant BYTE_TWO.
@@ -642,8 +649,6 @@ public class StoreWxService extends ShopBaseService {
             .isBindMobile(commonConfigService.getBindMobile())
             // 获取门店职称配置
             .technicianTitle(storeConfigService.getTechnicianTitle())
-            // 获取店铺营业状态
-            .businessState(shopService.getShopById(getShopId()).getBusinessState())
             .build();
     }
 
@@ -820,6 +825,8 @@ public class StoreWxService extends ShopBaseService {
             // 更新门店订单支付状态
             serviceOrderService.updateServiceOrderStatus(serviceOrder.getOrderSn(), ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
         });
+        // 队列前置校验
+        prefixCheck(serviceOrder);
         // TODO 发送模板消息; 1. 预约订单支付成功模板消息; 2. 定时提醒预约服务过期模板消息
         saas.taskJobMainService.dispatchImmediately(
             serviceOrder,
@@ -857,5 +864,22 @@ public class StoreWxService extends ShopBaseService {
             // TODO 用户 openid not found!
         }
         // TODO 判定是使用公众号发送模板消息还是小程序发送
+    }
+
+    /**
+     * Prefix check boolean.发送队列之前的一些前置校验
+     *
+     * @param serviceOrder the service order
+     * @return the boolean
+     */
+    public boolean prefixCheck(ServiceOrderRecord serviceOrder) {
+        if (Objects.isNull(storeService.getStoreService(serviceOrder.getServiceId()))) {
+            // todo 未找到与订单对应的服务id(service_id not found!)
+        }
+        UserRecord userInfo = userService.getUserByUserId(serviceOrder.getUserId());
+        if (Objects.isNull(userInfo.getWxOpenid())) {
+            // TODO 用户 openid not found!
+        }
+        return true;
     }
 }
