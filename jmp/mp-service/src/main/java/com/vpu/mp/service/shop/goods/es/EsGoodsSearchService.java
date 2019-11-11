@@ -71,7 +71,7 @@ public class EsGoodsSearchService extends EsSearchService{
         Integer pageRows = param.getPageRows();
         Integer currentPage= param.getCurrentPage();
         PageResult<EsGoods> result = new PageResult<>();
-        BoolQueryBuilder searchBuilder = assemblySearchBuilder(param);
+        BoolQueryBuilder searchBuilder = assemblySearchBuilder(param.getSearchList());
         SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(searchBuilder,null,null);
         Page esPage =  assemblyPage(sourceBuilder,pageRows,currentPage);
         SearchResponse searchResponse = esManager.searchResponse(assemblySearchRequest(sourceBuilder));

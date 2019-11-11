@@ -102,7 +102,10 @@ public class EsSearchService extends ShopBaseService {
         if( param.getFactList() == null || param.getFactList().isEmpty() ){
             throw new Exception("elasticSearch search Aggregations... but FactList is null");
         }
-        return search(assemblySearchRequest(assemblySearchBuilder(param),
+        if( param.getSearchList() == null || param.getSearchList().isEmpty() ){
+            throw new Exception("elasticSearch search query filters... but FactList is null");
+        }
+        return search(assemblySearchRequest(assemblySearchBuilder(param.getSearchList()),
             assemblyTermsAggregationBuilder(param.getFactList())));
     }
     /**
@@ -133,7 +136,7 @@ public class EsSearchService extends ShopBaseService {
      * @throws IllegalAccessException
      */
     private SearchRequest assemblySearchRequestForAdmin(EsSearchParam param) throws IllegalAccessException {
-        return assemblySearchRequest(assemblySearchBuilder(param),null);
+        return assemblySearchRequest(assemblySearchBuilder(param.getSearchList()),null);
     }
     /**
      * admin平台商品搜索
@@ -164,8 +167,7 @@ public class EsSearchService extends ShopBaseService {
         }
         return sourceBuilder;
     }
-    protected BoolQueryBuilder assemblySearchBuilder(EsSearchParam param) {
-        List<FieldProperty> propertyList = param.getSearchList();
+    protected BoolQueryBuilder assemblySearchBuilder(List<FieldProperty> propertyList ) {
         BoolQueryBuilder resultQueryBuilder = QueryBuilders.boolQuery();
         List<MatchQueryBuilder> matchQueryBuilders = assemblyMatchQueryBuilder(propertyList);
         List<RangeQueryBuilder> rangeQueryBuilders = assemblyRangeQueryBuilder(propertyList);
