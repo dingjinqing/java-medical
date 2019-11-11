@@ -627,7 +627,7 @@ public class MemberCardService extends ShopBaseService {
 	private void initGradeBasicCfg(CardParam card, MemberCardRecordBuilder cardBuilder) {
 		logger().info("初始化等级卡的升级条件，等级，是否启用等信息");
 		cardBuilder
-			.flag(card.getFlag())
+			.flag(card.getFlag()!=null?card.getFlag():MCARD_FLAG_USING)
 			.expireType(MCARD_ET_FOREVER)
 			.gradeCondition(Util.toJson(card.getGradeConditionJson()))
 			.grade(card.getGrade());
