@@ -1,13 +1,6 @@
 package com.vpu.mp.config.mq;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitBootstrapConfiguration;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -19,6 +12,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * rabbitMq相关配置
@@ -57,7 +53,11 @@ public class RabbitConfig {
     public static final String QUEUE_BATCH_UPLOAD="batch.upload.queue";
     /** ES的路由 */
     public static final String QUEUE_ES_GOODS = "es.goods";
-    
+    /**
+     * 订单支付发送消息模板默认存放队列, 这里指门店服务预约订单
+     */
+    public static final String QUEUE_RESERVATION_ORDER_MESSAGE = "reservation.message";
+
 
     /** 发送失败队列存储的路由 */
     public static final String EXCHANGE_ERROR = "direct.error";
@@ -69,9 +69,11 @@ public class RabbitConfig {
     public static final String EXCHANGE_MA_MAP_BIND="direct.bind.mamp";
     /**批量提交小程序 */
     public static final String EXCHANGE_BATCH_UPLOAD="direct.batch.upload";
+    /**
+     * 订单支付发送消息模板功能的路由
+     */
+    public static final String EXCHANGE_ORDER_MESSAGE = "direct.order.message";
 
-
-    
     /** 发送失败路由键 */
     public static final String BINDING_EXCHANGE_ERROR_KEY = "direct.error.send";
     /** 处理失败路由键 */
@@ -85,7 +87,12 @@ public class RabbitConfig {
     /** 批量提交小程序*/
     public static final String BINDING_BATCH_UPLOAD_KEY="bind.batch.upload";
     /** 批量提交小程序*/
-    public static final String BINDING_ES_GOODS_KEY="bind.es.goods";
+    public static final String BINDING_ES_GOODS_KEY = "bind.es.goods";
+    /**
+     * 发送门店服务预约订单支付成功模板消息路由键
+     */
+    public static final String BINDING_EXCHANGE_RESERVATION_KEY = "direct.order.reservation";
+
     @Bean
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory connectionFactory =
@@ -162,8 +169,17 @@ public class RabbitConfig {
      */
     @Bean
     public Queue sendCouponWithQueue() {
-        return new Queue(QUEUE_COUPON_SEND,true,false,false);
+        return new Queue(QUEUE_COUPON_SEND, true, false, false);
     }
+
+    /**
+     * @return 发送预约订单支付成功模板消息队列
+     */
+    @Bean
+    public Queue sendReservationWithQueue() {
+        return new Queue(QUEUE_RESERVATION_ORDER_MESSAGE,true,false,false);
+    }
+
     /**
      * @return 发送优惠券队列
      */
@@ -171,7 +187,7 @@ public class RabbitConfig {
     public Queue sendEsGoodsWithQueue() {
         return new Queue(QUEUE_ES_GOODS,true,false,false);
     }
-    
+
     /**
      * @return 获取关注公众号的用户信息
      */
@@ -179,7 +195,7 @@ public class RabbitConfig {
     public Queue sendMpMABindQueue() {
     	return new Queue(QUEUE_MA_MAP_BIND,true);
     }
-    
+
     /**
      * @return 批量提交小程序和公众号
      */
@@ -187,7 +203,7 @@ public class RabbitConfig {
     public Queue batchUploadQueue() {
     	return new Queue(QUEUE_BATCH_UPLOAD,true);
     }
-    
+
     /**
      * 1.交换机名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
@@ -210,19 +226,27 @@ public class RabbitConfig {
      */
     @Bean
     public DirectExchange marketingExchange(){
-        return new DirectExchange(EXCHANGE_MARKETING,true,false);
+        return new DirectExchange(EXCHANGE_MARKETING, true, false);
     }
-    
+
+    /**
+     * @return 订单支付模板消息路由
+     */
+    @Bean
+    public DirectExchange orderExchange() {
+        return new DirectExchange(EXCHANGE_ORDER_MESSAGE,true,false);
+    }
+
     @Bean
     public DirectExchange mpTemplateExchange() {
-    	return new DirectExchange(EXCHANGE_MA_MAP_BIND,true,false);    
+        return new DirectExchange(EXCHANGE_MA_MAP_BIND,true,false);
     }
-    
+
     @Bean
     public DirectExchange batchUploadExchange() {
-    	return new DirectExchange(EXCHANGE_BATCH_UPLOAD,true,false);    
+        return new DirectExchange(EXCHANGE_BATCH_UPLOAD,true,false);
     }
-    
+
     /**
      * @return 路由和队列绑定
      */
@@ -242,6 +266,12 @@ public class RabbitConfig {
     public Binding bindingCouponSend(){
         return BindingBuilder.bind(sendCouponWithQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_COUPON_KEY);
     }
+
+    @Bean
+    public Binding bindingReservation() {
+        return BindingBuilder.bind(sendReservationWithQueue()).to(orderExchange()).with(BINDING_EXCHANGE_RESERVATION_KEY);
+    }
+
     @Bean
     public Binding bindingMessageSend(){
         return BindingBuilder.bind(sendMessageQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_MESSAGE_KEY);
@@ -254,12 +284,12 @@ public class RabbitConfig {
     public Binding bindingTemplateSend() {
     	return BindingBuilder.bind(sendMpMABindQueue()).to(mpTemplateExchange()).with(BINDING_MA_MAP_BIND_KEY);
     }
-    
-    
+
+
     @Bean
     public Binding batchUpload() {
     	return BindingBuilder.bind(batchUploadQueue()).to(batchUploadExchange()).with(BINDING_BATCH_UPLOAD_KEY);
     }
-    
+
 
 }

@@ -1,16 +1,5 @@
 package com.vpu.mp.service.shop.payment;
 
-import static com.vpu.mp.db.shop.tables.Payment.PAYMENT;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Map;
-
-import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
-import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
@@ -19,7 +8,17 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.payment.PayCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
+import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.jooq.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.tables.Payment.PAYMENT;
 
 @Service
 public class PaymentService extends ShopBaseService {
@@ -39,7 +38,7 @@ public class PaymentService extends ShopBaseService {
 
 	/**
 	 * 设置支付方式开启状态
-	 * 
+     *
 	 * @param payCode 支付方式
 	 * @param enabled 是否开启
 	 */
@@ -49,7 +48,7 @@ public class PaymentService extends ShopBaseService {
 
 	/**
 	 * 得到所有支付方式
-	 * 
+     *
 	 * @return
 	 */
 	public Result<PaymentRecord> getPayment() {
@@ -58,7 +57,7 @@ public class PaymentService extends ShopBaseService {
 
 	/**
 	 * 得到支持的支付方式
-	 * 
+     *
 	 * @return
 	 */
 	public Map<String, PaymentVo> getSupportPayment() {
@@ -78,7 +77,7 @@ public class PaymentService extends ShopBaseService {
 	}
 
 	/**
-	 * 
+     *
 	 * @param param
 	 * @throws WxPayException
 	 */

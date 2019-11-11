@@ -47,7 +47,11 @@ public class TaskJobsConstant {
     	/**批量提交小程序*/
     	BATCH_UPLOAD(1003, RabbitConfig.EXCHANGE_BATCH_UPLOAD, RabbitConfig.BINDING_BATCH_UPLOAD_KEY),
     	/**定向发券*/
-    	GIVE_COUPON(1004,RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_COUPON_KEY);
+        GIVE_COUPON(1004, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_COUPON_KEY),
+        /**
+         * 服务预约订单支付成功发送模板消息
+         */
+        RESERVATION_PAY(1005, RabbitConfig.EXCHANGE_ORDER_MESSAGE, RabbitConfig.BINDING_EXCHANGE_RESERVATION_KEY);
         private Integer executionType;
         private String exchangeName;
         private String routingKey;

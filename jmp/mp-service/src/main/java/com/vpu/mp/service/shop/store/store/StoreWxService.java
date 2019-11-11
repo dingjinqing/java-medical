@@ -12,6 +12,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
@@ -37,6 +38,7 @@ import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
@@ -197,6 +199,18 @@ public class StoreWxService extends ShopBaseService {
      */
     @Autowired
     public ShopService shopService;
+
+    /**
+     * The Comment service.服务评论
+     */
+    @Autowired
+    public ServiceCommentService commentService;
+
+    /**
+     * The Common config service.服务评论配置
+     */
+    @Autowired
+    public ShopCommonConfigService commonConfigService;
 
     /**
      * The constant BYTE_TWO.
@@ -617,11 +631,18 @@ public class StoreWxService extends ShopBaseService {
                 reservationList.add(reservationInfo);
             }
         }
-        // TODO 服务评价
         return ReservationDetailVo.builder()
             .storeInfo(storePojo)
             .serviceInfo(service)
+            // 获取服务的最新评论
+            .commentInfo(commentService.getNewestcomment(service.getId()))
             .reservationInfoList(reservationList)
+            // 是否强制用户绑定手机号
+            .isBindMobile(commonConfigService.getBindMobile())
+            // 获取门店职称配置
+            .technicianTitle(storeConfigService.getTechnicianTitle())
+            // 获取店铺营业状态
+            .businessState(shopService.getShopById(getShopId()).getBusinessState())
             .build();
     }
 
@@ -735,7 +756,7 @@ public class StoreWxService extends ShopBaseService {
             .balanceFirst(tradeService.getBalanceFirst())
             .cardFirst(tradeService.getCardFirst())
             // 获取支持的支付方式
-            .paymentVoList(paymentService.getSupportPayment().into(PaymentVo.class))
+//            .paymentVoList(paymentService.getSupportPayment().into(PaymentVo.class))
             // 获取指定用户最近的一个服务预约订单信息(主要是获取用户的名称和手机号;没有就算了)
             .recentOrderInfo(serviceOrderService.getRecentOrderInfo(userId))
             // 获取门店职称配置
@@ -755,79 +776,85 @@ public class StoreWxService extends ShopBaseService {
     public void submitReservation(SubmitReservationParam param) {
         Integer serviceId = param.getServiceId();
         if (!serviceOrderService.checkReservationNum(serviceId, param.getTechnicianId())) {
-            // todo 预约人数已达上限
-            throw new BusinessException(JsonResultCode.CODE_FAIL);
+            // 预约人数已达上限
+            throw new BusinessException(JsonResultCode.CODE_RESERVATION_UPPER_LIMIT);
         }
-        ServiceOrderRecord serviceOrder = new ServiceOrderRecord() {{
-            setStoreId(param.getStoreId());
-            setUserId(param.getUserId());
-            setSubscriber(param.getSubscriber());
-            setMobile(param.getMobile());
-            setServiceId(serviceId);
-            setTechnicianId(param.getTechnicianId());
-            setTechnicianName(param.getTechnicianName());
-            setServiceDate(param.getServiceDate());
-            setServicePeriod(param.getServicePeriod());
-            setAddMessage(param.getAddMessage());
-//            setMoneyPaid();
-            // todo 预留新增字段
-//            setServiceDate();
-//            setServiceDate();
-//            setServiceDate();
-        }};
+        ServiceOrderRecord serviceOrder = new ServiceOrderRecord();
+        FieldsUtil.assignNotNull(param, serviceOrder);
         log.debug("门店服务订单即将创建: {}", serviceOrder);
-        serviceOrderService.createServiceOrder(serviceOrder);
-
-/*        // 会员余额变动
-        if (serviceOrder.getUseAccount().compareTo(ZERO) > 0) {
-            try {
-                accountService.addUserAccount(new AccountParam() {{
-                    setUserId(userId);
-                    setAccount(userRecord.getAccount());
-                    setOrderSn(storeOrderRecord.getOrderSn());
-                    setAmount(storeOrderRecord.getUseAccount());
-                    setPayment("balance");
-                    setIsPaid(BYTE_ONE);
-                    setRemark(storeOrderRecord.getOrderSn());
-                }}, 0, CONDITION_TWO, BYTE_ZERO, "zh");
-            } catch (MpException e) {
-                log.error("会员余额变动失败,原因如下:{}", e.getMessage());
-                throw new BusinessException(JsonResultCode.CODE_FAIL);
+        this.transaction(() -> {
+            serviceOrderService.createServiceOrder(serviceOrder);
+            // 会员余额变动
+            if (serviceOrder.getUseAccount().compareTo(ZERO) > 0) {
+                try {
+                    accountService.addUserAccount(new AccountParam() {{
+                        setUserId(serviceOrder.getUserId());
+                        setAccount(serviceOrder.getUseAccount());
+                        setOrderSn(serviceOrder.getOrderSn());
+                        setPayment("balance");
+                        setIsPaid(BYTE_ONE);
+                        setRemark(serviceOrder.getOrderSn());
+                    }}, 0, CONDITION_TWO, BYTE_ZERO, "zh");
+                } catch (MpException e) {
+                    log.error("会员余额变动失败,原因如下:{}", e.getMessage());
+                    throw new BusinessException(JsonResultCode.CODE_FAIL);
+                }
             }
-        }
-        // 创建用户积分记录
-        if (storeOrderRecord.getScoreDiscount().compareTo(ZERO) > 0) {
-            scoreService.addUserScore(new UserScoreVo() {{
-                setScoreDis(userRecord.getScore());
-                setUserId(userId);
-                setScore(storeOrderRecord.getScoreDiscount().multiply(HUNDRED).intValue());
-                setOrderSn(storeOrderRecord.getOrderSn());
-                setShopId(getShopId());
-                setRemark(storeOrderRecord.getOrderSn());
-            }}, "0", BYTE_ONE, BYTE_ZERO);
-        }
-        // 增加会员卡消费记录
-        if (storeOrderRecord.getMemberCardBalance().compareTo(ZERO) > 0) {
-            UserCardParam userCardParam = userCardDaoService.getUserCardInfo(storeOrderRecord.getMemberCardNo());
-            userCardService.cardConsumer(new UserCardConsumeBean() {{
-                setMoneyDis(storeOrderRecord.getMemberCardBalance());
-                setUserId(userId);
-                setMoney(storeOrderRecord.getMemberCardBalance());
-                setCardNo(storeOrderRecord.getMemberCardNo());
-                setCardId(userCardParam.getCardId());
-                setReason(storeOrderRecord.getOrderSn());
-                setType(BYTE_ZERO);
-            }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
-        }*/
+            // 增加会员卡消费记录
+            if (serviceOrder.getMemberCardBalance().compareTo(ZERO) > 0) {
+                UserCardParam userCardParam = userCardDaoService.getUserCardInfo(serviceOrder.getMemberCardNo());
+                userCardService.cardConsumer(new UserCardConsumeBean() {{
+                    setMoneyDis(userCardParam.getMoney());
+                    setUserId(serviceOrder.getUserId());
+                    setMoney(serviceOrder.getMemberCardBalance());
+                    setCardNo(serviceOrder.getMemberCardNo());
+                    setCardId(userCardParam.getCardId());
+                    setReason(serviceOrder.getOrderSn());
+                    setType(BYTE_ZERO);
+                }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
+            }
+            if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
+                //TODO 支付接口
+            }
+            // 更新门店订单支付状态
+            serviceOrderService.updateServiceOrderStatus(serviceOrder.getOrderSn(), ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
+        });
+        // TODO 发送模板消息; 1. 预约订单支付成功模板消息; 2. 定时提醒预约服务过期模板消息
+        saas.taskJobMainService.dispatchImmediately(
+            serviceOrder,
+            ServiceOrderRecord.class.getName(),
+            getShopId(),
+            TaskJobsConstant.TaskJobEnum.RESERVATION_PAY.getExecutionType());
+    }
 
-        if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
-            //TODO 支付接口
-
-            // 跟新门店订单支付状态
-            serviceOrderService.updateServiceOrderStatus("", ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
-        } else {
-            // 发送模板消息
+    /**
+     * Send reservation pay success message.服务预约支付发送模板消息
+     *
+     * @param serviceOrder the service order
+     */
+    public void sendReservationPaySuccessMessage(ServiceOrderRecord serviceOrder) {
+        if (Objects.isNull(storeService.getStoreService(serviceOrder.getServiceId()))) {
+            // todo 未找到与订单对应的服务id(service_id not found!)
         }
-
+        // todo 处理省市区地理位置信息,code转汉字
+/*        $store = $this->store->getRow($service->store_id);
+        $page = "pages/appointinfo/appointinfo?order_sn=" . $serviceOrder->order_sn; // 跳转到服务预约信息页
+        if ($store) {
+            $province = saas()->region->province->getRow($store->province_code);
+            $city = saas()->region->city->getRow($store->city_code);
+            $district = saas()->region->district->getRow($store->district_code);
+            $address = ($province ? $province->name : "") . " " . ($city ? $city->name : "") . " "
+                . ($district ? $district->name : "") . " " . ($store ? $store->address : "");
+        }
+        $keywordsValues = [
+        $service->service_name, $store ? $store->store_name : "", $address ?? "",
+            $serviceOrder->service_date . " " . $serviceOrder->service_period,
+            $serviceOrder->mobile, $serviceOrder->subscriber
+        ];*/
+        UserRecord userInfo = userService.getUserByUserId(serviceOrder.getUserId());
+        if (Objects.isNull(userInfo.getWxOpenid())) {
+            // TODO 用户 openid not found!
+        }
+        // TODO 判定是使用公众号发送模板消息还是小程序发送
     }
 }

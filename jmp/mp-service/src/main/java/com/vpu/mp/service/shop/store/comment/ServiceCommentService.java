@@ -1,23 +1,21 @@
 package com.vpu.mp.service.shop.store.comment;
 
-import static com.vpu.mp.db.shop.Tables.COMMENT_SERVICE;
-import static com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
-
-import java.util.List;
-
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectOnConditionStep;
-import org.jooq.tools.StringUtils;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.comment.CommentFlagEnum;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectOnConditionStep;
+import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 /**
  * @author 黄荣刚
  * @date 2019年7月18日
@@ -26,7 +24,7 @@ import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 @Service
 
 public class ServiceCommentService extends ShopBaseService {
-	
+
 	/**
 	 * 分页查询服务评价列表
 	 * @param param
@@ -48,8 +46,8 @@ public class ServiceCommentService extends ShopBaseService {
 
 	/**
 	 * @param selectFrom
-	 * @param param 
-	 * @return 
+     * @param param
+     * @return
 	 */
 	private SelectConditionStep<?> buildOptions(SelectOnConditionStep<?> selectFrom, ServiceCommentPageListParam param) {
 		SelectConditionStep<?> select = selectFrom.where(COMMENT_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
@@ -112,8 +110,8 @@ public class ServiceCommentService extends ShopBaseService {
 		});
 		return 0;
 	}
-	
-	/**
+
+    /**
 	 * 批量将传入ID的评论置为拒绝通过状态
 	 * @param commentIdList
 	 * @return
@@ -130,4 +128,31 @@ public class ServiceCommentService extends ShopBaseService {
 		});
 		return 0;
 	}
+
+    /**
+     * Gets comment by service id.获取服务所有评论
+     *
+     * @param serviceId the service id
+     * @return the comment by service id
+     */
+    public List<ServiceCommentVo> getCommentByServiceId(Integer serviceId) {
+        return db().select(COMMENT_SERVICE.asterisk()).from(COMMENT_SERVICE)
+            .where(COMMENT_SERVICE.SERVICE_ID.eq(serviceId))
+            .and(COMMENT_SERVICE.DEL_FLAG.eq(BYTE_ZERO))
+            .fetchInto(ServiceCommentVo.class);
+    }
+
+    /**
+     * Gets newestcomment.获取服务的最新评论
+     *
+     * @param serviceId the service id
+     * @return the newestcomment
+     */
+    public ServiceCommentVo getNewestcomment(Integer serviceId) {
+        return db().select(COMMENT_SERVICE.asterisk()).from(COMMENT_SERVICE)
+            .where(COMMENT_SERVICE.SERVICE_ID.eq(serviceId))
+            .and(COMMENT_SERVICE.DEL_FLAG.eq(BYTE_ZERO))
+            .orderBy(COMMENT_SERVICE.CREATE_TIME.desc())
+            .fetchOneInto(ServiceCommentVo.class);
+    }
 }

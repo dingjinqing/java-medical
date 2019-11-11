@@ -426,4 +426,5 @@ public class ServiceOrderService extends ShopBaseService{
         return db().select(SERVICE_ORDER.USER_ID, SERVICE_ORDER.SUBSCRIBER, SERVICE_ORDER.MOBILE).from(SERVICE_ORDER)
             .where(SERVICE_ORDER.USER_ID.eq(userId)).orderBy(SERVICE_ORDER.CREATE_TIME.desc()).fetchOneInto(RecentOrderInfo.class);
     }
+
 }

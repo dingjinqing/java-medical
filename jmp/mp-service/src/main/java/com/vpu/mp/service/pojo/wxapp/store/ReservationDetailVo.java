@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.store;
 
+import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import lombok.AllArgsConstructor;
@@ -23,4 +24,17 @@ public class ReservationDetailVo {
     private StoreServiceParam serviceInfo;
     private StorePojo storeInfo;
     private List<ReservationInfo> reservationInfoList;
+    private ServiceCommentVo commentInfo;
+    /**
+     * 是否强制用户绑定手机号
+     */
+    private Byte isBindMobile;
+    /**
+     * 门店职称配置
+     */
+    private String technicianTitle;
+    /**
+     * 店铺营业状态
+     */
+    private Byte businessState;
 }
