@@ -48,8 +48,8 @@
             <ve-ring
               :data="chartDataSex"
               ref="chart1"
+              :title="chartTitle"
             ></ve-ring>
-            <span class="buttomTitle">{{$t('userportrait.terminalDistribution')}}</span>
           </div>
         </el-col>
         <el-col :span="12">
@@ -58,8 +58,8 @@
               :legend-visible="false"
               :data="chartDataSexHis"
               ref="chart2"
+              :title="chartTitle2"
             ></ve-ring>
-            <span class="buttomTitle">{{$t('userportrait.modelDistribution')}}</span>
           </div>
         </el-col>
       </el-row>
@@ -75,6 +75,16 @@ export default {
     VCharts
   },
   data () {
+    this.chartTitle = {
+      text: this.$t('userportrait.terminalDistribution'),
+      top: 'bottom',
+      left: 'center'
+    }
+    this.chartTitle2 = {
+      text: this.$t('userportrait.modelDistribution'),
+      top: 'bottom',
+      left: 'center'
+    }
     return {
       type: 0,
       userNum: 1,
@@ -105,6 +115,8 @@ export default {
       this.defaluteData()
       this.userNumOptions = this.$t('userportrait.userNumOptions')
       this.visitTrendOptions = this.$t('userportrait.visitTrendOptions')
+      this.chartTitle.text = this.$t('userportrait.terminalDistribution')
+      this.chartTitle2.text = this.$t('userportrait.modelDistribution')
     },
     rows1 (data) {
       this.$nextTick(_ => {

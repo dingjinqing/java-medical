@@ -48,8 +48,8 @@
             <ve-ring
               :data="chartDataSex"
               ref="chart1"
+              :title="chartTitle"
             ></ve-ring>
-            <span class="buttomTitle">{{$t('userportrait.genderDistribution')}}</span>
           </div>
         </el-col>
         <el-col :span="12">
@@ -58,9 +58,9 @@
               :legend-visible="false"
               :data="chartDataSexHis"
               :settings="chartSettings"
+              :title="chartTitle2"
               ref="chart2"
             ></ve-histogram>
-            <span class="buttomTitle">{{$t('userportrait.ageDistribution')}}</span>
           </div>
         </el-col>
       </el-row>
@@ -80,6 +80,16 @@ export default {
       labelMap: {
         'value': this.$t('userportrait.quantity')
       }
+    }
+    this.chartTitle = {
+      text: this.$t('userportrait.genderDistribution'),
+      top: 'bottom',
+      left: 'center'
+    }
+    this.chartTitle2 = {
+      text: this.$t('userportrait.ageDistribution'),
+      top: 'bottom',
+      left: 'center'
     }
     return {
       type: 0,
@@ -111,6 +121,8 @@ export default {
       this.defaluteData()
       this.userNumOptions = this.$t('userportrait.userNumOptions')
       this.visitTrendOptions = this.$t('userportrait.visitTrendOptions')
+      this.chartTitle.text = this.$t('userportrait.genderDistribution')
+      this.chartTitle2.text = this.$t('userportrait.ageDistribution')
     },
     rows1 (data) {
       // 在一个初始宽度未知的容器内绘制图表时，因为无法获取宽度，所以图表会绘制出问题
