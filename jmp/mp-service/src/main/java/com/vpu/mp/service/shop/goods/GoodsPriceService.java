@@ -12,6 +12,7 @@ import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Record;
 import org.jooq.Record2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -147,7 +148,11 @@ public class GoodsPriceService extends ShopBaseService {
         if(prdId == null || prdId <= 0){
             return BigDecimal.ZERO;
         }
-        return db().select(GOODS_SPEC_PRODUCT.PRD_COST_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId).and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne().into(BigDecimal.class);
+        Record record =  db().select(GOODS_SPEC_PRODUCT.PRD_COST_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId).and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne();
+        if(record == null){
+            return null;
+        }
+        return record.into(BigDecimal.class);
     }
 
     private void outPutLog(Timestamp now,Integer goodsId,Byte goodsType){
