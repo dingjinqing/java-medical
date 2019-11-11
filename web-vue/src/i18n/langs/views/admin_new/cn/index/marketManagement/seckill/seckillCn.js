@@ -79,6 +79,7 @@ export const cn = {
   // 分享
   shareTitle: '扫一扫，分享给好友吧~',
   downLoad: '下载二维码',
+  downLoadFail: '获取二维码失败',
   copy: '复制',
   copySuccess: '复制成功',
   cancel: '取消',

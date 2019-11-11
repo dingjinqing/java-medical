@@ -150,12 +150,9 @@
               v-if="storeList.dataMarket.member !== null"
               style="border-bottom: none;"
             >
-              <div
-                v-for="(val, key, index) in storeList.dataMarket.member"
-                :key="index"
-              >
-                <span class="tips">{{ $t('overview.storeTip') }}</span>
-                <span class=" task_list_desc">{{ val }} {{ $t('overview.unMarketTip2') }}</span>
+              <div class="task_list_item">
+                <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                <span class="task_list_desc">{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip6') }}</span>
                 <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
               </div>
             </div>
@@ -304,7 +301,7 @@
           >
             <div v-if="storeList.dataMarket.examine === 0">
               <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
-              <span class=" task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.enMarketTip1') }}</span>
+              <span class="task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.enMarketTip1') }}</span>
               <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
             </div>
             <div
@@ -313,7 +310,7 @@
             >
               <div>
                 <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
-                <span class=" task_list_desc">{{ $t('overview.enMarketTip2') }}</span>
+                <span class="task_list_desc">{{ $t('overview.enMarketTip2') }}</span>
                 <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
               </div>
             </div>
@@ -323,7 +320,7 @@
             >
               <div>
                 <span class="tips_finish">{{ $t('overview.storeTask') }}</span>
-                <span class=" task_list_desc">{{ $t('overview.enMarketTip3') }}</span>
+                <span class="task_list_desc">{{ $t('overview.enMarketTip3') }}</span>
                 <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
               </div>
             </div>

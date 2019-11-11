@@ -217,10 +217,16 @@
         </div>
         <div style="margin: 20px; 0">
           <a
+            v-if="shareImg !== null"
             :href="shareImg"
             download
             style="color: #999;text-decoration: none;"
           >{{ $t('seckill.downLoad') }}</a>
+          <a
+            v-if="shareImg === null"
+            href="javaScript:void(0);"
+            style="color: #999;text-decoration: none;"
+          >{{ $t('seckill.downLoadFail') }}</a>
         </div>
       </div>
       <div>
@@ -251,7 +257,7 @@
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
 import addSeckill from './seckillAdd.vue'
-import { seckillList, deleteSeckillList, shareSeckillList, replaceSeckillList } from '@/api/admin/marketManage/seckill.js'
+import { seckillList, deleteSeckillList, shareSeckillList, updateSeckillList } from '@/api/admin/marketManage/seckill.js'
 export default {
 
   components: {
@@ -395,7 +401,7 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        replaceSeckillList({
+        updateSeckillList({
           skId: id,
           status: 0
         }).then((res) => {
@@ -416,7 +422,7 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        replaceSeckillList({
+        updateSeckillList({
           skId: id,
           status: 1
         }).then((res) => {

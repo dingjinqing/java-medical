@@ -777,15 +777,17 @@ export default {
           } else {
             this.param.surplus = 1
           }
-          // 优惠类型 (面额/折)
-          this.param.denomination = data.denomination
-          this.param.denomination2 = null
-          if (this.param.denomination > 10) {
+          // 优惠类型
+          this.param.actCode = data.actCode
+          if (this.param.actCode === 'voucher') {
+            // 面额
             this.param.preferentialType = 0
+            this.param.denomination = data.denomination
             this.param.denomination2 = null
-          } else {
+          } else if (this.param.actCode === 'discount') {
+            // 折扣
             this.param.preferentialType = 1
-            this.param.denomination2 = this.param.denomination
+            this.param.denomination2 = data.denomination
             this.param.denomination = null
           }
           // 积分兑换

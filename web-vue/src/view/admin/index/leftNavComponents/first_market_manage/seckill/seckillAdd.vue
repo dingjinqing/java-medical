@@ -221,6 +221,7 @@
       <!--添加商品弹窗-->
       <choosingGoods
         :singleElection="true"
+        :loadProduct="true"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :chooseGoodsBack="[form.goodsId]"
         @resultGoodsRow="choosingGoodsResult"
@@ -361,10 +362,12 @@ export default {
     // 商品弹窗的回调函数
     choosingGoodsResult (row) {
       this.form.goodsId = row.goodsId
-      this.form.secKillProduct[0].productId = row.goodsId
+      this.form.secKillProduct[0].productId = row.prdId
       this.tableContent[0].goodsName = row.goodsName
-      this.tableContent[0].shopPrice = row.shopPrice
-      this.tableContent[0].goodsNumber = row.goodsNumber
+      this.tableContent[0].shopPrice = row.prdPrice
+      this.tableContent[0].prdPrice = null
+      this.tableContent[0].goodsNumber = row.prdNumber
+      this.tableContent[0].prdNumber = null
       // 可编辑状态
       this.disabledFlag = false
     },
@@ -388,21 +391,22 @@ export default {
           this.form.limitPaytime = data.limitPaytime
           // 秒杀价格设置
           this.tableContent[0].goodsName = data.goods.goodsName
-          this.tableContent[0].shopPrice = data.goods.shopPrice
-          this.tableContent[0].prdPrice = 0
-          this.tableContent[0].goodsNumber = data.goods.goodsNumber
-          this.tableContent[0].prdNumber = 0
+          this.tableContent[0].shopPrice = data.secKillProduct[0].prdPrice
+          this.tableContent[0].prdPrice = data.secKillProduct[0].secKillPrice
+          this.tableContent[0].goodsNumber = data.secKillProduct[0].prdNumber
+          this.tableContent[0].prdNumber = data.secKillProduct[0].stock
           this.form.freeFreight = data.freeFreight
           // 展开设置
           this.arrorFlag = false
           // 会员卡
-          this.form.cardId = data.memberCard
-          if (this.form.cardId === '') {
+          this.form.cardId = []
+          data.memberCard.map((item, index) => {
+            this.form.cardId.push(item.id)
+          })
+          if (this.form.cardId.length > 0) {
             this.showMember = true
           } else {
             this.showMember = false
-            // this.form.cardId = this.form.cardId.split(',')
-            // this.form.cardId = this.form.cardId.map(Number)
           }
           // 活动分享
           this.form.shareConfig = data.shareConfig
@@ -462,9 +466,13 @@ export default {
             })
           } else {
             // 编辑秒杀
-            var obj = this.form
-            obj.id = this.editId
-            updateSeckillList(obj).then((res) => {
+            // var obj = this.form
+            // obj.skId = this.editId
+            updateSeckillList({
+              skId: this.editId,
+              name: this.form.name,
+              cardId: this.form.cardId
+            }).then((res) => {
               if (res.error === 0) {
                 this.$message.success({ message: '修改成功' })
                 this.$emit('addSeckillSubmit')

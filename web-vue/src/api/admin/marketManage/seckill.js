@@ -27,15 +27,6 @@ export function getSeckillList (data) {
   })
 }
 
-// 编辑保存秒杀活动
-export function updateSeckillList (data) {
-  return service({
-    url: '/api/admin/market/seckill/update',
-    method: 'post',
-    data: data
-  })
-}
-
 // 删除秒杀活动
 export function deleteSeckillList (data) {
   return service({
@@ -55,7 +46,7 @@ export function shareSeckillList (data) {
 }
 
 // 更新秒杀活动
-export function replaceSeckillList (data) {
+export function updateSeckillList (data) {
   return service({
     url: '/api/admin/market/seckill/update',
     method: 'post',

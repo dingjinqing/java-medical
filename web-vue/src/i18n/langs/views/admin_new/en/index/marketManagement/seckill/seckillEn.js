@@ -81,6 +81,7 @@ export const en = {
   // 分享
   shareTitle: 'Share With Friends~',
   downLoad: 'Download QR code',
+  downLoadFail: 'Failed to get QR code',
   copy: 'Copy',
   copySuccess: 'Copy Success',
   cancel: 'Cancel',

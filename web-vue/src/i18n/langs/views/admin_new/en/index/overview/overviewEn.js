@@ -244,6 +244,8 @@ export const en = {
     'Membership card activation application has not been processed for more than 2 days',
   unMarketTip3: 'Coupon',
   unMarketTip4: 'Soon to be completed',
+  unMarketTip5: 'over',
+  unMarketTip6: 'days not handled',
   // 已完成
   tabInfo: [
     {

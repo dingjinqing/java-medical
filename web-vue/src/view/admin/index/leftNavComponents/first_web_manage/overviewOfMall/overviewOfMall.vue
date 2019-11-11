@@ -452,13 +452,9 @@
                     <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div v-if="storeList.dataMarket.member !== null">
-                    <div
-                      class="task_list_item"
-                      v-for="(val, key, index) in storeList.dataMarket.member"
-                      :key="index"
-                    >
+                    <div class="task_list_item">
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                      <span class="task_list_desc">{{ val }} {{ $t('overview.unMarketTip2') }}</span>
+                      <span class="task_list_desc">{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip6') }}</span>
                       <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
                     </div>
                   </div>
@@ -642,13 +638,18 @@
                     <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div v-if="storeList.dataMarket.member !== null">
-                    <div
+                    <!-- <div
                       class="task_list_item"
                       v-for="(val, key, index) in storeList.dataMarket.member"
                       :key="index"
                     >
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                       <span class="task_list_desc">{{ val }} {{ $t('overview.unMarketTip2') }}</span>
+                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    </div> -->
+                    <div class="task_list_item">
+                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                      <span class="task_list_desc">{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip6') }}</span>
                       <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
                     </div>
                   </div>
@@ -817,10 +818,12 @@
 </template>
 <script>
 // 引入组件
+import VCharts from 'v-charts'
 import bindAccount from './overviewBindAccount.vue'
 import { getAllOverview, shopShareRequest, toDoItemRequest, dataRequest, shopInfoRequest } from '@/api/admin/survey.js'
 export default {
   components: {
+    VCharts,
     bindAccount
   },
   data () {
