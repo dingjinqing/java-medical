@@ -741,8 +741,8 @@ export default {
             {
               size: '375',
               isChecked: false,
-              'x': 3,
-              'y': 1,
+              'x': 1,
+              'y': 3,
               'rows': 2,
               'cols': 2,
               'img_url': '',
@@ -751,8 +751,8 @@ export default {
             {
               size: '375',
               isChecked: false,
-              'x': 1,
-              'y': 3,
+              'x': 3,
+              'y': 1,
               'rows': 2,
               'cols': 2,
               'img_url': '',
@@ -892,6 +892,7 @@ export default {
       addImgTuneUp: false, // 添加图片弹窗flag
       imgUrl: null, // 当前显示的图片路径
       tuneUpSelectLink: false, // 选择链接弹窗调起flag
+      firstInitNotEliminate: false, // 首次切换不清除当前模板数据
       moduleSaveData: { // 模块保存数据
 
       }
@@ -904,16 +905,28 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         console.log(newData)
+
         this.moduleSaveData = this.modulesData
         console.log(this.moduleSaveData)
-        this.nowTemplateClickIndex = this.modulesData.table_type - 1
+        this.$nextTick(() => {
+          if (this.$route.query.pageId === -1) {
+            console.log('sssss')
+            this.handleToSaveDataImgInfo(0, true)
+          } else {
+            // 回显处理
+            console.log(this.modulesData)
+            this.handleToEchoDisplay(this.modulesData)
+          }
+        })
+
+        console.log(this.nowTemplateClickIndex)
       },
       immediate: true
     },
     // 监听数据变化
     moduleSaveData: {
       handler (newData) {
-        console.log(newData)
+        console.log(newData, '触发')
         this.$emit('handleToBackData', newData)
       },
       deep: true
@@ -922,13 +935,17 @@ export default {
     nowTemplateClickIndex (newData) {
       console.log(newData)
       // 处理保存数据中的data字段数据 即图片坐标路径信息
-      this.handleToSaveDataImgInfo(newData, true)
+      let flag = this.firstInitNotEliminate
+
+      this.handleToSaveDataImgInfo(newData, flag)
     },
     // 监听图片跳转路径值变化
     linkInput (newData) {
+      console.log(this.layoutData, this.nowTemplateClickIndex, this.nowLayutIndex)
       this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link = newData
       console.log(this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link)
       if (this.nowTemplateClickIndex !== 7) {
+        console.log(this.nowTemplateClickIndex)
         this.handleToSaveDataImgInfo(this.nowTemplateClickIndex, false)
       }
     }
@@ -937,7 +954,13 @@ export default {
     // 初始化语言
     this.langDefault()
     // 初始选择模板
-    this.handleToSaveDataImgInfo(0, true)
+    console.log(this.$route.query.pageId)
+    // if (this.$route.query.pageId === -1) {
+    //   this.handleToSaveDataImgInfo(0, true)
+    // } else {
+    //   // 回显处理
+    //   this.handleToEchoDisplay(this.modulesData)
+    // }
   },
   methods: {
     // 点击选择模板子项触发事件
@@ -996,6 +1019,7 @@ export default {
     },
     // 处理保存数据中的data字段数据 即图片坐标路径信息
     handleToSaveDataImgInfo (type, flag) {
+      console.log(type, flag)
       let num = null
       switch (type) {
         case 0:
@@ -1034,7 +1058,7 @@ export default {
         this.imgUrl = null
         this.linkInput = null
       }
-
+      this.firstInitNotEliminate = true
       // 重新填入数据
       let obj = {}
       for (let index = 0; index < num; index++) {
@@ -1143,6 +1167,24 @@ export default {
           }
           break
       }
+    },
+    // 编辑回显处理
+    handleToEchoDisplay (backData) {
+      console.log(backData)
+      if (backData.table_type !== 8) { // 当回显的模板不是最后一个模板
+        console.log(backData.data)
+        Object.keys(backData.data).forEach((item, index) => {
+          console.log((backData.table_type - 1), index, backData.data[item].img_url)
+          this.layoutData[(backData.table_type - 1)].styleData[index].img_url = backData.data[item].img_url
+          this.layoutData[(backData.table_type - 1)].styleData[index].jump_link = backData.data[item].jump_link
+          console.log(this.layoutData[(backData.table_type - 1)].styleData[index].img_url)
+        })
+        console.log((backData.table_type - 1))
+        console.log(this.layoutData[3])
+      } else {
+
+      }
+      this.handleToClickTemplate((this.modulesData.table_type - 1))
     }
   }
 }

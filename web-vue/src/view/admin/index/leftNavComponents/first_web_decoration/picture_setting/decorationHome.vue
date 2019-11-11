@@ -386,6 +386,9 @@ export default {
         case 'm_image_adver':
           moduleNameId = 13
           break
+        case 'm_magic_cube':
+          moduleNameId = 14
+          break
         case 'm_shop':
           moduleNameId = 27
           break
