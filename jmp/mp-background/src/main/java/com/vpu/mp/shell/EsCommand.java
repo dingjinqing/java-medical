@@ -36,7 +36,7 @@ public class EsCommand {
     @Autowired
     private SshShellHelper helper;
 
-    @ShellMethod("ElasticSearch Index . --all[false|true]default true --shopId<shopId>")
+    @ShellMethod("ElasticSearch Index . --all[false|true]default true --shop-id<shopId>")
     @ShellMethodAvailability("argsAvailability")
     public void es(@ShellOption(arity = 1, defaultValue = "true") boolean all,@ShellOption( defaultValue = "0")int shopId) {
 

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -109,22 +110,31 @@ public class EsManager {
         //商品索引ID设为shopId+goodsId
         if( object instanceof EsGoods ){
             EsGoods goods = (EsGoods)object;
-            request.id(goods.getSortId().toString()+goods.getGoodsId().toString());
+            request.id(goods.getShopId().toString()+goods.getGoodsId().toString());
         }
         request.source(Objects.requireNonNull(Util.toJson(object, ES_FILED_SERIALIZER)), XContentType.JSON);
         return request;
     }
 
     /**
-     * 批量建立索引（同步）
+     * 批量处理索引（同步）
      * @param request 批量索引的请求
      * @throws IOException 索引失败的异常（自己捕获处理）
      */
-    public void batchCreateDocuments(BulkRequest request) throws IOException {
+    public void batchDocuments(BulkRequest request) throws IOException {
         BulkResponse response =  restHighLevelClient.bulk(request,RequestOptions.DEFAULT);
         if( response.hasFailures() ){
-            log.error("EEOR");
+            log.error("ERROR");
         }
+    }
+    /**
+     * 单个建立索引（同步）
+     * @param request 批量索引的请求
+     * @throws IOException 索引失败的异常（自己捕获处理）
+     */
+    public void createDocuments(IndexRequest request) throws IOException {
+        IndexResponse response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
+
     }
 
     /**
@@ -146,9 +156,21 @@ public class EsManager {
      * @param id documentId
      * @throws IOException 连接错误
      */
-    private void deleteIndexById(String indexName,String id) throws IOException {
+    public void deleteIndexById(String indexName,String id) throws IOException {
         DeleteRequest request = new DeleteRequest(indexName,id);
         restHighLevelClient.delete(request,RequestOptions.DEFAULT);
-
+    }
+    /**
+     * 根据索引名称和documentID删除索引
+     * @param indexName 索引名称
+     * @param ids documentId List
+     * @throws IOException 连接错误
+     */
+    public void deleteIndexById(String indexName, List<String> ids) throws IOException {
+        BulkRequest request = new BulkRequest();
+        ids.forEach(x->{
+            request.add(new DeleteRequest(indexName,x));
+        });
+        batchDocuments(request);
     }
 }

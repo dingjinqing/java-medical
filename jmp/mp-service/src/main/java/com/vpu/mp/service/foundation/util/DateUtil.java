@@ -41,6 +41,16 @@ public final class DateUtil {
 		LocalDateTime localDateTime = convertLocalDate(date);
 		return  localDateTime.format(DateTimeFormatter.ofPattern(format));
 	}
+    /**
+     * 转换日期格式输出
+     * @param format
+     * @param date
+     * @return
+     */
+    public static String dateFormat(String format, Timestamp date) {
+        LocalDateTime localDateTime = convertLocalDate(date);
+        return  localDateTime.format(DateTimeFormatter.ofPattern(format));
+    }
 
 	/**
 	 * Date 转为 LocalDateTime
@@ -74,6 +84,13 @@ public final class DateUtil {
 		return LocalDate.now();
 	}
 
+    /**
+     * 获取本地日期
+     * @return
+     */
+    public static String getLocalDateFormat() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_FULL));
+    }
 
 	/**
 	 * 转为LocalDateTime类型
@@ -183,7 +200,6 @@ public final class DateUtil {
 
 	/**
 	 * 获取本地的时间
-	 * @return yyyy-MM-dd
 	 */
 	public static Timestamp getLocalTimeDate() {
 		return Timestamp.valueOf(dateFormat(DATE_FORMAT_SIMPLE));
@@ -220,4 +236,8 @@ public final class DateUtil {
 	public static Timestamp getTimeStampPlus(int addNum, ChronoUnit unit) {
 		return  Timestamp.valueOf(LocalDateTime.now().plus(addNum,unit));
 	}
+
+	public static LocalDate getBeforLocalFor(int day){
+	    return LocalDate.now().minusDays(day);
+    }
 }

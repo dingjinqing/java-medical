@@ -284,4 +284,10 @@ public class EsGoods  {
      */
     @EsFiled(name = EsSearchName.MIN_SPEC_PRD_PRICE,type = EsFiledTypeConstant.SCALED_FLOAT)
     private BigDecimal minSpecPrdPrices;
+
+    @EsFiled(name=EsSearchName.UPDATE_TIME,type = EsFiledTypeConstant.DATE)
+    private String updateDate;
+
+    @EsFiled(name=EsSearchName.ADD_ES_TIME,type = EsFiledTypeConstant.DATE)
+    private String addEsDate;
 }

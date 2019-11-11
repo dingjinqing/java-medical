@@ -35,6 +35,7 @@ public class SysCatServiceHelper  implements ApplicationListener<ContextRefreshe
         return catId.stream().map(x->allMap.get(x)).collect(Collectors.toList());
     }
     public static List<SysCatevo> getSysCateVosByCatId(Integer catId){
+
         List<SysCatevo> result = new ArrayList<>(3);
         SysCatServiceHelper.getSysCateVo(catId,result);
         result.sort(Comparator.comparing(SysCatevo::getLevel));

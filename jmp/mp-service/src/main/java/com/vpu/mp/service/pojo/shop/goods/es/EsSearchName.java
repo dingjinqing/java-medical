@@ -72,7 +72,10 @@ public enum EsSearchName {
     BRAND_NAME("brand_name"),
     GOODS_LABEL("goods_label"),
     MAX_SPEC_PRD_PRICE("max_spec_prd_price"),
-    MIN_SPEC_PRD_PRICE("min_spec_prd_price");
+    MIN_SPEC_PRD_PRICE("min_spec_prd_price"),
+    UPDATE_TIME("update_time"),
+    ADD_ES_TIME("add_es_time");
+
     @Getter
     private String esName;
     EsSearchName(String esName){
