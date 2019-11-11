@@ -1438,7 +1438,11 @@ public class GoodsService extends ShopBaseService {
      * 通过商品id查询商品重量
      */
     public BigDecimal getGoodsWeightById(Integer goodsId) {
-        return db().select(GOODS.GOODS_WEIGHT).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne().into(BigDecimal.class);
+        Record record =  db().select(GOODS.GOODS_WEIGHT).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne();
+        if(record != null){
+            return record.into(BigDecimal.class);
+        }
+        return null;
     }
 
     /**
