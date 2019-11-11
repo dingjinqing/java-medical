@@ -9,7 +9,10 @@ import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
+import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,10 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
 public class ExclusiveProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy {
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
+    @Autowired
+    UserCardService userCardService;
+    @Autowired
+    CartService cartService;
 
     /*****************商品列表处理*******************/
     @Override
@@ -183,11 +190,19 @@ public class ExclusiveProcessor implements ActivityGoodsListProcessor,GoodsDetai
 
     }
 
+    //**********************购物车********************************
     /**
      * 购物车
+     * @param cartBo
      */
     @Override
-    public void doCartOperation() {
-
+    public void doCartOperation(WxAppCartBo cartBo) {
+        Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(cartBo.getUserId(), cartBo.getCartGoodsList());
+        cartBo.getCartGoodsList().forEach(goods->{
+            if (goods.getIsCardExclusive().equals(GoodsConstant.CARD_EXCLUSIVE)&&!userCardExclusive.contains(goods.getGoodsId())){
+                cartService.removeCartProductById(cartBo.getUserId(),goods.getRecId());
+                goods.setActivityType(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
+            }
+        });
     }
 }

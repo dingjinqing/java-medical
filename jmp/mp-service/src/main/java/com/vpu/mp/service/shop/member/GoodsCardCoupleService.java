@@ -88,12 +88,12 @@ public class GoodsCardCoupleService extends ShopBaseService {
 		}
 		// 获取普通会员卡
 		Map<Byte, List<Integer>> cardCoupleGoods = getGeneralCardCoupleGoodsList(userId);
-		gradeCoupleGoods.forEach((key, vaule) -> {
+		gradeCoupleGoods.forEach((key, value) -> {
 			if (cardCoupleGoods.containsKey(key)) {
-				vaule.addAll(cardCoupleGoods.get(key));
-				cardCoupleGoods.put(key, vaule);
+				value.addAll(cardCoupleGoods.get(key));
+				cardCoupleGoods.put(key, value);
 			} else {
-				cardCoupleGoods.put(key, vaule);
+				cardCoupleGoods.put(key, value);
 			}
 		});
 		return cardCoupleGoods;

@@ -68,4 +68,24 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
 
        return returnMap;
    }
+
+    /**
+     * 获取首单特惠--规格活动信息
+     * @param productIdList 规格Id
+     * @return  firstSpecialsPrdIdList
+     */
+    public List<FirstSpecialProcessorDataInfo> getGoodsFirstSpecialPrdId(List<Integer> productIdList, Timestamp date) {
+        return db().select(FIRST_SPECIAL_PRODUCT.PRD_ID,FIRST_SPECIAL_PRODUCT.PRD_PRICE)
+                .from(FIRST_SPECIAL_PRODUCT)
+                .leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL.ID.eq(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID))
+                .where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .and(FIRST_SPECIAL.STATUS.eq(GoodsConstant.USE_STATUS))
+                .and(FIRST_SPECIAL_PRODUCT.PRD_ID.in(productIdList))
+                .and(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_YES)
+                        .or(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_NO).and(FIRST_SPECIAL.START_TIME.lt(date)
+                                .and(FIRST_SPECIAL.END_TIME.gt(date)))))
+                .orderBy(FIRST_SPECIAL.FIRST.desc())
+                .fetch().into(FirstSpecialProcessorDataInfo.class);
+    }
+
 }

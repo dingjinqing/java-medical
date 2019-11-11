@@ -1,27 +1,22 @@
 package com.vpu.mp.service.shop.user.cart;
 
-import com.vpu.mp.db.shop.tables.UserRebatePrice;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppCartListParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
-import com.vpu.mp.service.shop.config.FirstSpecialConfigService;
+import com.vpu.mp.service.shop.activity.factory.CartProcessorContext;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
-import com.vpu.mp.service.shop.market.firstspecial.FirstSpecialService;
-import com.vpu.mp.service.shop.market.presale.PreSaleService;
-import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.UserCardService;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -30,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,38 +43,17 @@ import static com.vpu.mp.db.shop.tables.Cart.CART;
 public class CartService extends ShopBaseService {
 
     @Autowired
-    private UserCartService userCartService;
-    @Autowired
     private GoodsSpecProductService goodsSpecProductService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private CartProcessorContext cartProcessor;
     /**
      * 用户会员卡
      */
     @Autowired
     private UserCardService userCardService;
-    @Autowired
-    private OrderInfoService orderInfoService;
-    /**
-     * 首单特惠
-     */
-    @Autowired
-    private FirstSpecialService firstSpecialService;
-    /**
-     * 秒杀
-     */
-    @Autowired
-    private SeckillService seckillService;
-    /**
-     * 预售
-     */
-    @Autowired
-    private PreSaleService preSaleService;
-    /**
-     * 首单特惠
-     */
-    @Autowired
-    private FirstSpecialConfigService firstSpecialConfigService;
+
 
     public WxAppCartListVo getCartList(Integer userId) {
         WxAppCartListVo cartListVo;
@@ -96,15 +67,17 @@ public class CartService extends ShopBaseService {
                 .innerJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
                 .innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(CART.PRODUCT_ID))
                 .where(CART.USER_ID.eq(userId)).orderBy(CART.CREATE_TIME.asc()).fetch();
+
         List<WxAppCartGoods> cartGoodsList = records.into(WxAppCartGoods.class);
         List<Integer> productIdList = records.getValues(GOODS_SPEC_PRODUCT.PRD_ID);
         List<Integer> goodsIdList = records.getValues(GOODS.GOODS_ID).stream().distinct().collect(Collectors.toList());
-
-        // 数据校验计算
-        cartListVo = cartProductToGroup(cartGoodsList,productIdList, goodsIdList,userId);
-
-
-        return cartListVo;
+        WxAppCartBo cartBo =WxAppCartBo.builder()
+                .userId(userId).date(DateUtil.getLocalDateTime())
+                .productIdList(productIdList).goodsIdList(goodsIdList)
+                .cartGoodsList(cartGoodsList).build();
+        cartProcessor.executeCart(cartBo);
+        cartProductToGroup(cartGoodsList,productIdList, goodsIdList,userId);
+        return cartBo.getCartListVo();
 
     }
 
@@ -265,10 +238,9 @@ public class CartService extends ShopBaseService {
      *
      * @param userId
      * @param recId
-     * @return
      */
-    public int removeCartProductById(Integer userId, Long recId) {
-        return db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.REC_ID.eq(recId)).execute();
+    public void removeCartProductById(Integer userId, Long recId) {
+        db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.REC_ID.eq(recId)).execute();
     }
 
     public int removeCartProductByIds(Integer userId, List<Integer> recIds) {

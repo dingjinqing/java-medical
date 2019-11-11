@@ -1,13 +1,16 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
+import com.vpu.mp.service.shop.member.UserCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ *  等级价格
  * @author 李晓冰
  * @date 2019年10月31日
  */
@@ -25,6 +29,8 @@ public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetai
 
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
+    @Autowired
+    private UserCardService userCardService;
 
     /*****************商品列表处理*******************/
     @Override
@@ -96,10 +102,23 @@ public class GradeCardProcessor implements ActivityGoodsListProcessor,GoodsDetai
         capsule.setGradeCardPrice(goodsGradeGradePrice);
     }
 
-    /*****************购物车处理（请以后都加上不同模块的华丽分隔符）******************/
+    //*****************购物车处理************************
+    /**
+     * 会员等级价
+     * @param cartBo 业务数据类
+     */
     @Override
-    public void doCartOperation() {
-
+    public void doCartOperation(WxAppCartBo cartBo) {
+        List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(cartBo.getUserId(), cartBo.getProductIdList());
+        cartBo.getCartGoodsList().forEach(goods->{
+            // 会员等级
+            userCartGradePrice.forEach(gradePrice -> {
+                if (goods.getPrdId().equals(gradePrice.getPrdId())) {
+                    goods.setMemberPrice(gradePrice.getGradePrice());
+                    goods.setMemberPriceType(GoodsConstant.ACTIVITY_TYPE_MEMBER_GRADE);
+                }
+            });
+        });
     }
 
 }

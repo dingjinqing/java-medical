@@ -6,8 +6,12 @@ import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.FirstSpecialProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.user.UserService;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +25,15 @@ import java.util.Map;
  * @date 2019年11月01日
  */
 @Service
-public class FirstSpecialProcessor implements ActivityGoodsListProcessor {
+public class FirstSpecialProcessor implements ActivityGoodsListProcessor, ActivityCartListStrategy {
 
     @Autowired
     FirstSpecialProcessorDao firstSpecialProcessorDao;
 
-    @Autowired OrderInfoService orderInfoService;
+    @Autowired
+    OrderInfoService orderInfoService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public Byte getPriority() {
@@ -37,7 +44,7 @@ public class FirstSpecialProcessor implements ActivityGoodsListProcessor {
     public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
         if (userId == null || orderInfoService.isNewUser(userId, true)) {
             return filterParamForList(capsules);
-        }else {
+        } else {
             return null;
         }
     }
@@ -48,9 +55,9 @@ public class FirstSpecialProcessor implements ActivityGoodsListProcessor {
         param.setDate(DateUtil.getLocalDateTime());
 
         List<Integer> goodsIds = new ArrayList<>();
-        capsules.forEach(capsule->{
+        capsules.forEach(capsule -> {
             if (GoodsConstant.isGoodsTypeIn13510(capsule.getGoodsType()) ||
-                capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
+                    capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
                 return;
             }
             goodsIds.add(capsule.getGoodsId());
@@ -64,13 +71,13 @@ public class FirstSpecialProcessor implements ActivityGoodsListProcessor {
         if (param.getGoodsIds().size() == 0) {
             return new HashMap<>();
         } else {
-            return firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(param.getGoodsIds(),param.getDate());
+            return firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(param.getGoodsIds(), param.getDate());
         }
     }
 
     @Override
-    public void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
-        capsules.forEach(capsule->{
+    public void processForList(Map<Integer, ? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
+        capsules.forEach(capsule -> {
             Integer goodsId = capsule.getGoodsId();
             ProcessorDataInfo activity = activityInfos.get(goodsId);
             if (activity == null) {
@@ -80,5 +87,26 @@ public class FirstSpecialProcessor implements ActivityGoodsListProcessor {
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
         });
+    }
+
+    //**********************购物车********************
+    /**
+     * 购物车首单特惠
+     * @param cartBo 业务数据类
+     */
+    @Override
+    public void doCartOperation(WxAppCartBo cartBo) {
+        boolean isNewUser = orderInfoService.isNewUser(cartBo.getUserId());
+        cartBo.setIsNewUser(isNewUser);
+        if (isNewUser) {
+            List<FirstSpecialProcessorDataInfo> specialPrdIdList = firstSpecialProcessorDao.getGoodsFirstSpecialPrdId(cartBo.getProductIdList(), cartBo.getDate());
+            specialPrdIdList.forEach(specialPrdId -> {
+                cartBo.getCartGoodsList().forEach(goods -> {
+                    if (specialPrdId.getPrdId().equals(goods.getGoodsId())) {
+                        goods.getActivityList().add(specialPrdId);
+                    }
+                });
+            });
+        }
     }
 }

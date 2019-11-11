@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+
 /**
  * 购物车策略
  *
@@ -9,7 +11,8 @@ package com.vpu.mp.service.shop.activity.processor;
 public interface ActivityCartListStrategy {
 
     /**
-     *
+     * 执行业务的处理方法
+     * @param cartBo 业务数据类
      */
-    public void doCartOperation();
+    public void doCartOperation(WxAppCartBo cartBo);
 }

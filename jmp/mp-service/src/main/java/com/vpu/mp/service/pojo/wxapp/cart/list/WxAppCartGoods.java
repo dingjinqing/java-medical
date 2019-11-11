@@ -1,8 +1,10 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
+import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -10,9 +12,6 @@ import java.math.BigDecimal;
  */
 @Data
 public class WxAppCartGoods {
-
-    public static String IS_DELETE = "isDelete";
-    public static String CART_GOODS_PRICE = "cart_goods_price";
 
     //***** 购物车 *************
     /**
@@ -93,6 +92,10 @@ public class WxAppCartGoods {
      */
     private String goodsImg;
     /**
+     * 商品状态 1 在售 2 下架 3 删除 4 售罄
+     */
+    private Byte goodsStatus;
+    /**
      * 是否在售 默认 1
      */
     private Byte isOnSale;
@@ -101,7 +104,7 @@ public class WxAppCartGoods {
      */
     private Byte delFlag;
     //***** 活动属性 **************
-
+    private List<ProcessorDataInfo> activityList;
     /**
      *  活动价格后
      */
@@ -110,6 +113,12 @@ public class WxAppCartGoods {
      * 活动类型  1 会员等级价格
      */
     private Byte activityType;
+
+    /**
+     * 会员价 1 会员等级价
+     */
+    private Byte memberPriceType;
+    private BigDecimal memberPrice;
     /**
      * 商品活动类型  1：加价购主商品， 2： 满折满减
      */
