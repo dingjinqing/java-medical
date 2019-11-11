@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.coupon;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * 优惠券列表出参
@@ -33,4 +33,5 @@ public class CouponListVo {
 	    private Byte       useScore;
 	    private Integer    scoreNumber;
 	    private Integer    used;
+	    private Integer enabled;
 }

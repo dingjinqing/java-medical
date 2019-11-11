@@ -124,7 +124,7 @@ public class CouponParam {
     /**
      * 优惠券有效期类型
      */
-    private Integer    validityType;
+    private Byte    validityType;
     /**
      * 优惠券有效天数
      */
