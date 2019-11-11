@@ -34,4 +34,9 @@ public class StorePageListVo {
      * The Auto pick.是否自提设置，0否，1是
      */
     public Byte autoPick;
+
+    /**
+     * The Business type.营业时间1：每天，0：工作日
+     */
+    public Byte businessType;
 }

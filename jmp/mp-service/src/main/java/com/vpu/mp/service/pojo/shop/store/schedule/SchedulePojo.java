@@ -16,4 +16,8 @@ public class SchedulePojo {
 	private String scheduleName;
 	private String begcreateTime;
 	private String endTime;
+    /**
+     * The Business type.门店营业时间1：每天，0：工作日
+     */
+    public Byte businessType;
 }

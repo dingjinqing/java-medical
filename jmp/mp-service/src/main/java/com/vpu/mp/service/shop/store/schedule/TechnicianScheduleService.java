@@ -1,21 +1,5 @@
 package com.vpu.mp.service.shop.store.schedule;
 
-import static com.vpu.mp.db.shop.Tables.SERVICE_SCHEDULE;
-import static  com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN;
-import static  com.vpu.mp.db.shop.Tables.SERVICE_TECHNICIAN_SCHEDULE;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianScheduleRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -23,6 +7,14 @@ import com.vpu.mp.service.pojo.shop.store.schedule.SchedulePojo;
 import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleParam;
 import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleSaveParam;
 import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleVo;
+import org.springframework.stereotype.Service;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @author 黄荣刚
@@ -32,14 +24,15 @@ import com.vpu.mp.service.pojo.shop.store.schedule.TechnicianScheduleVo;
 @Service
 
 public class TechnicianScheduleService extends ShopBaseService {
-	
+
 	/**
 	 * 根据店铺ID查全部班次表
 	 * @param storeId
 	 * @return
 	 */
 	public List<SchedulePojo> getScheduleList(Integer storeId){
-		List<SchedulePojo> list = db().selectFrom(SERVICE_SCHEDULE)
+        List<SchedulePojo> list = db().select(SERVICE_SCHEDULE.asterisk(), STORE.BUSINESS_TYPE).from(SERVICE_SCHEDULE)
+            .leftJoin(STORE).on(SERVICE_SCHEDULE.STORE_ID.eq(STORE.STORE_ID))
 				.where(SERVICE_SCHEDULE.STORE_ID.eq(storeId))
 				.and(SERVICE_SCHEDULE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
 				.fetchInto(SchedulePojo.class);
@@ -51,10 +44,10 @@ public class TechnicianScheduleService extends ShopBaseService {
 	 * @return
 	 */
 	public int insertSchedule(SchedulePojo schedule) {
-		int result = db().insertInto(SERVICE_SCHEDULE, 
+        int result = db().insertInto(SERVICE_SCHEDULE,
 				SERVICE_SCHEDULE.SCHEDULE_NAME, SERVICE_SCHEDULE.STORE_ID,
 				SERVICE_SCHEDULE.BEGCREATE_TIME, SERVICE_SCHEDULE.END_TIME,SERVICE_SCHEDULE.DEL_FLAG)
-		.values(schedule.getScheduleName(), schedule.getStoreId(), 
+            .values(schedule.getScheduleName(), schedule.getStoreId(),
 				schedule.getBegcreateTime(), schedule.getEndTime(),DelFlag.NORMAL_VALUE)
 		.execute();
 		return result;
@@ -99,8 +92,8 @@ public class TechnicianScheduleService extends ShopBaseService {
 				.fetchOneInto(SchedulePojo.class);
 		return pojo;
 	}
-	
-	public List<TechnicianScheduleVo>selectTechnicianSchedule(TechnicianScheduleParam param) {
+
+    public List<TechnicianScheduleVo>selectTechnicianSchedule(TechnicianScheduleParam param) {
 		if(param == null) {
 			return null;
 		}
@@ -118,8 +111,8 @@ public class TechnicianScheduleService extends ShopBaseService {
 				.fetchInto(TechnicianScheduleVo.class);
 		return technicianScheduleVo;
 	}
-	
-	public int saveTechnicianSchedule(TechnicianScheduleSaveParam param) {
+
+    public int saveTechnicianSchedule(TechnicianScheduleSaveParam param) {
 		Map<String, Byte> scheduleMap = param.getScheduleMap();
 		Integer storeId = param.getStoreId();
 		Integer technicianId = param.getTechnicianId();
@@ -139,10 +132,10 @@ public class TechnicianScheduleService extends ShopBaseService {
 		});
 		return 0;
 	}
-	
-	  /**
+
+    /**
      * 获取两个日期之间的所有日期
-     * 
+     *
      * @param startTime
      *            开始日期
      * @param endTime

@@ -32,12 +32,11 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.Store.STORE;
-import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
+import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 
 
 /**
@@ -115,7 +114,7 @@ public class StoreService extends ShopBaseService {
     public PageResult<StorePageListVo> getPageList(StoreListQueryParam param) {
         SelectWhereStep<? extends Record> select = db().select(
             STORE.STORE_ID, STORE.STORE_NAME, STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,
-            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK
+            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE
         ).from(STORE)
             .leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
 
@@ -319,8 +318,8 @@ public class StoreService extends ShopBaseService {
                 .execute();
         });
     }
-	
-	public List<StoreBasicVo> getStoreListByStoreIds(List<Integer> storeId) {
+
+    public List<StoreBasicVo> getStoreListByStoreIds(List<Integer> storeId) {
 		logger().info("正在根据门店id数组查询门店基本信息");
 		return db().select(STORE.STORE_ID,STORE.STORE_NAME)
 				.from(STORE)
@@ -328,7 +327,7 @@ public class StoreService extends ShopBaseService {
 				.and(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetchInto(StoreBasicVo.class);
 	}
-	
+
     /**
      * 获取所有门店id和名称
      *
