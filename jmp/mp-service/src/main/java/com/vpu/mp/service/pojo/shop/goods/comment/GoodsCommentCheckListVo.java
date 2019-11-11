@@ -18,10 +18,10 @@ public class GoodsCommentCheckListVo {
     private String mobile;
     private Byte commstar;
     private String commNote;
-    private String lotteryAward;
     private String content;
     private Timestamp createTime;
     private Byte anonymousflag;
     private Byte flag;
+    private Integer awardType;
     
 }

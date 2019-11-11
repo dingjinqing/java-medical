@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods.comment;
 
 import com.vpu.mp.service.foundation.util.Page;
-
 import lombok.Data;
 
 
@@ -13,7 +12,7 @@ import lombok.Data;
 @Data
 public class GoodsCommentPageListParam {
 	/** 审核状态默认值 */
-	public static final int FLAG_DEFAULT_VALUE =3;
+	public static final int FLAG_DEFAULT_VALUE =-1;
 	/** 审核通过 置1 */
 	public static final int FLAG_PASS_VALUE =1;
 	/** 审核拒绝 置2 */
