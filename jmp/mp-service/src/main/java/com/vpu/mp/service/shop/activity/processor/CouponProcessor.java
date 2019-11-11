@@ -100,13 +100,17 @@ public class CouponProcessor implements ActivityGoodsListProcessor,GoodsDetailPr
         List<Integer> couponIds = goodsCouponForDetail.stream().map(CouponProcessorDataInfo::getId).collect(Collectors.toList());
         Map<Integer, Integer> userCouponsAlreadyNum = couponProcessorDao.getUserCouponsAlreadyNum(param.getUserId(), couponIds);
         goodsCouponForDetail.forEach(coupon->{
+            // 通过cardId自动判断是否是会员专享券
             if (StringUtils.isNotBlank(coupon.getCardId())) {
                 coupon.setIsCardExclusive(true);
             } else {
                 coupon.setIsCardExclusive(false);
             }
             int receivePer = coupon.getReceivePerPerson();
+            //获取用户已拥有该券的数量，0表示未领取
             int already = userCouponsAlreadyNum.get(coupon.getId());
+
+            coupon.setAlreadyHas(already);
 
             if (receivePer == 0) {
                 coupon.setCanFetch(true);

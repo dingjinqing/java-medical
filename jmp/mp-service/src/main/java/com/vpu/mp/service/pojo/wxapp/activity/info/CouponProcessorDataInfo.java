@@ -56,7 +56,10 @@ public class CouponProcessorDataInfo extends ProcessorDataInfo {
     private Boolean isCardExclusive;
     /**当前用户是否可以领取*/
     private Boolean canFetch;
+    /**单人最多领取量*/
     private Integer receivePerPerson;
+    /**优惠券已拥有量*/
+    private Integer alreadyHas;
 
     public CouponMpVo convertToCouponMpVo(){
         CouponMpVo vo =new CouponMpVo();
@@ -73,10 +76,11 @@ public class CouponProcessorDataInfo extends ProcessorDataInfo {
         vo.setValidity(this.validity);
         vo.setValidityHour(this.validityHour);
         vo.setValidityMinute(this.validityMinute);
-        vo.setUseScore(this.useScore);
+        vo.setUseScore(GoodsConstant.USE_SCORE.equals(this.useScore));
         vo.setScoreNumber(this.scoreNumber);
         vo.setIsCardExclusive(this.isCardExclusive);
         vo.setCanFetch(this.canFetch);
+        vo.setAlreadyHas(this.alreadyHas>0);
         return vo;
     }
 }

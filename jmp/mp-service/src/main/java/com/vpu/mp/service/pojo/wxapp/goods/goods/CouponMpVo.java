@@ -12,6 +12,30 @@ import java.sql.Timestamp;
  */
 @Data
 public class CouponMpVo {
+    private Integer id;
+    /**优惠券类型0普通，1分裂*/
+    private Byte type;
+    private String actName;
+    /**优惠券使用时间类型 1领取后开始指定时间段内有效，0固定时间段有效*/
+    private Byte validityType;
+
+    private Timestamp startTime;
+    private Timestamp endTime;
+
+    private Integer validity;
+    private Integer validityHour;
+    private Integer validityMinute;
+    /**是否使用积分*/
+    private Boolean useScore;
+    /**积分兑换量*/
+    private Integer scoreNumber;
+    /**是否会员专享优惠券*/
+    private Boolean isCardExclusive;
+    /**当前用户是否可以领取*/
+    private Boolean canFetch;
+    /**是否已有用优惠券*/
+    private Boolean alreadyHas;
+
     /**优惠券类型voucher是减金额，discount打折*/
     private String actCode;
     /**优惠券面额*/
@@ -20,24 +44,4 @@ public class CouponMpVo {
     private Byte useConsumeRestrict;
     /** 满多少可用*/
     private BigDecimal leastConsume;
-
-    private Integer id;
-    /**优惠券类型0普通，1分裂*/
-    private Byte type;
-    private String actName;
-    private Timestamp startTime;
-    private Timestamp endTime;
-    /**优惠券使用时间类型 1领取后开始指定时间段内有效，0固定时间段有效*/
-    private Byte validityType;
-    private Integer validity;
-    private Integer validityHour;
-    private Integer validityMinute;
-    /**是否使用积分*/
-    private Byte useScore;
-    /**积分兑换量*/
-    private Integer scoreNumber;
-    /**是否会员专享优惠券*/
-    private Boolean isCardExclusive;
-    /**当前用户是否可以领取*/
-    private Boolean canFetch;
 }
