@@ -6,6 +6,7 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -299,4 +300,14 @@ public class OrderGoodsService extends ShopBaseService{
 		}
 		return select.orderBy(ORDER_GOODS.CREATE_TIME.desc()).limit(currentPages - 1, pageRows).fetch();
 	}
+
+	public List<Integer> getZhixiaoGoodsIds(){
+        Timestamp local = Timestamp.valueOf(LocalDate.now().minusDays(30).atStartOfDay());
+
+        return db().selectDistinct()
+            .from(TABLE)
+            .where(TABLE.CREATE_TIME.greaterThan(local))
+            .fetch()
+            .getValues(TABLE.GOODS_ID,Integer.class);
+    }
 }
