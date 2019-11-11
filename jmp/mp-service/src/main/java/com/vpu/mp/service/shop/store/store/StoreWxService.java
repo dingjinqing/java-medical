@@ -67,7 +67,6 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_DATA_NOT_EXIST;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ONE;
@@ -744,9 +743,9 @@ public class StoreWxService extends ShopBaseService {
 
         return ReservationOrder.builder()
             // 获取用户余额account
-            .account(Optional.ofNullable(userService.getUserByUserId(userId)).orElseThrow(() -> {
-                throw new BusinessException(CODE_DATA_NOT_EXIST, "userId:" + userId);
-            }).getAccount())
+//            .account(Optional.ofNullable(userService.getUserByUserId(userId)).orElseThrow(() -> {
+//                throw new BusinessException(CODE_DATA_NOT_EXIST, "userId:" + userId);
+//            }).getAccount())
             // 获取支付开关配置, 会员卡余额支付,余额支付
             .balanceFirst(tradeService.getBalanceFirst())
             .cardFirst(tradeService.getCardFirst())
