@@ -1,25 +1,12 @@
 package com.vpu.mp.service.shop.user.message;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
-import static com.vpu.mp.db.shop.tables.User.USER;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.RegexUtil;
+import com.vpu.mp.service.pojo.shop.config.ShopMsgTempConfig;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
@@ -30,12 +17,26 @@ import com.vpu.mp.service.pojo.shop.user.user.WxUserInfo;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
+import com.vpu.mp.service.shop.config.ShopMsgTemplateConfigService;
 import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import com.vpu.mp.service.shop.user.user.UserService;
-
-import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.shop.tables.MpTemplateFormId.MP_TEMPLATE_FORM_ID;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant.MSG_TEMP_CONFIG;
 
 
 /**
@@ -52,6 +53,12 @@ public class WechatMessageTemplateService extends ShopBaseService {
 
     @Autowired
     private UserService userService;
+
+    /**
+     * The Msg template config service.消息模板配置
+     */
+    @Autowired
+    public ShopMsgTemplateConfigService msgTemplateConfigService;
 
     private MpOfficialAccountMessageService accountMessageService;
 
@@ -221,5 +228,42 @@ public class WechatMessageTemplateService extends ShopBaseService {
             return resultList;
         }
         return resultList;
+    }
+
+    /**
+     * 是否使用公众号发送模板消息
+     *
+     * @param unionId     the union id
+     * @param openId      the open id
+     * @param templateNoA the template no a
+     * @param templateNoB the template no b
+     * @return bool
+     */
+    public void chooseMessageTemplate(Integer unionId, Integer openId, String templateNoA, String templateNoB) {
+        ShopMsgTempConfig messageLibrary = Optional.ofNullable(msgTemplateConfigService.getShopTempConfig()).orElse(MSG_TEMP_CONFIG);
+        MpAuthShopRecord mpAuthShop = mpAuthShopService.getAuthShopByShopId(getShopId());
+
+        /*$mp = saas()->shop->mp->getMpFromShopId($this->getShopId());
+        if ($mp && $mp->app_id) {
+            if (!env('SUBSCRIBE_MESSAGE', false) && $this->canUseFormIdCount($openId) > 0) {
+                if (array_search($templateNoA, $messageLibrary['A'] ?? []) !== false ||
+                    $this->mpIsCanSend($templateNoA, $messageLibrary['A'] ?? [])
+                    ) {
+                    // 小程序模板库
+                    return ['send_action' => 'A', 'data' => []];
+                }
+            }
+            $officialAccount = saas()->shop->officialAccount->getRow($mp->link_official_app_id);
+            if ($officialAccount && $officialAccount->is_auth_ok) {
+                $officialAccountUser = saas()->shop->officialAccountUser->getUserByUnionId($mp->link_official_app_id, $unionId);
+                if ($officialAccountUser && $officialAccountUser->subscribe == 1) {
+                    $officialAccountUser->mp_app_id = $mp->app_id;
+                    if (array_search($templateNoB, $messageLibrary['B'] ?? []) !== false) {
+                        // 公众号模板库
+                        return ['send_action' => 'B', 'data' => $officialAccountUser];
+                    }
+                }
+            }
+        }*/
     }
 }

@@ -12,4 +12,6 @@ import javax.validation.constraints.PositiveOrZero;
 public class ReservationParam {
     @PositiveOrZero
     private Integer serviceId;
+    @PositiveOrZero(groups = ConfirmReservation.class)
+    private Integer userId;
 }

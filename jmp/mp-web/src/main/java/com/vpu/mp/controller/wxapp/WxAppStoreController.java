@@ -47,10 +47,18 @@ public class WxAppStoreController extends WxAppBaseController{
     }
 
     /**
-     * 门店服务预约
+     * 门店服务预约详情
      */
     @PostMapping("/service/reservation")
     public JsonResult reservation(@RequestBody @Validated ReservationParam param) {
         return this.success(shop().store.wxService.reservationDetail(param.getServiceId()));
+    }
+
+    /**
+     * 门店服务预约订单确认
+     */
+    @PostMapping("/service/confirmReservation")
+    public JsonResult confirmReservation(@RequestBody @Validated(ConfirmReservation.class) ReservationParam param) {
+        return this.success(shop().store.wxService.createReservation(param.getServiceId(), param.getUserId()));
     }
 }

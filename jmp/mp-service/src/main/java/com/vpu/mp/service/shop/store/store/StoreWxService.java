@@ -29,7 +29,6 @@ import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
-import com.vpu.mp.service.shop.config.ShopMsgTemplateConfigService;
 import com.vpu.mp.service.shop.config.StoreConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -213,12 +212,6 @@ public class StoreWxService extends ShopBaseService {
      */
     @Autowired
     public ShopCommonConfigService commonConfigService;
-
-    /**
-     * The Msg template config service.消息模板配置
-     */
-    @Autowired
-    public ShopMsgTemplateConfigService msgTemplateConfigService;
 
     /**
      * The constant BYTE_TWO.
@@ -619,13 +612,6 @@ public class StoreWxService extends ShopBaseService {
         LocalDate endDate = service.getEndDate().toLocalDate().compareTo(twoMonthsLater) <= 0 ? service.getEndDate().toLocalDate() : twoMonthsLater;
         log.debug("服务有效预约日期为:{} - {}", startDate, endDate);
 
-/*        Assert.dataAbnormal((s)->{
-            String[] str = s.split(":");
-            if (str.length != 2){
-                return false;
-            }else if(str[0].length() != 2 || str[1])
-            return true;
-        }, JsonResultCode.CODE_DB_DATA_ABNORMAL, service.getStartPeriod(), service.getEndPeriod());*/
         // 服务可预约时段, 用服务时长(单位/分钟)切分成当前可预约的分段服务
         LocalTime startPeriod = LocalTime.parse(service.getStartPeriod(), HH_MM_FORMATTER);
         LocalTime endPeriod = LocalTime.parse(service.getEndPeriod(), HH_MM_FORMATTER);
