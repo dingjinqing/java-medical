@@ -24,6 +24,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -32,6 +33,7 @@ import static com.vpu.mp.db.shop.tables.DeliverFeeTemplate.DELIVER_FEE_TEMPLATE;
 import static com.vpu.mp.db.shop.tables.RecommendGoods.RECOMMEND_GOODS;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
+import static com.vpu.mp.service.foundation.util.BigDecimalUtil.divideWithOutCheck;
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
@@ -110,12 +112,12 @@ public class MallOverviewService extends ShopBaseService {
                 .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
                 .execute());
 
-        double orderNum = vo.getOrderNum();
-        double userVisitNum = vo.getUserVisitNum();
-        double paidNum = vo.getPaidOrderNum();
-        vo.setUv2order(userVisitNum!=0&&orderNum!=0 ? orderNum/userVisitNum : 0.0);
-        vo.setUv2paid(userVisitNum!=0&&paidNum!=0 ? paidNum/userVisitNum : 0.0);
-        vo.setOrder2paid(paidNum!=0&&orderNum!=0 ? paidNum/orderNum : 0.0);
+        BigDecimal orderNum = new BigDecimal(vo.getOrderNum());
+        BigDecimal userVisitNum = new BigDecimal(vo.getUserVisitNum());
+        BigDecimal paidNum = new BigDecimal(vo.getPaidOrderNum());
+        vo.setUv2order(divideWithOutCheck(orderNum, userVisitNum));
+        vo.setUv2paid(divideWithOutCheck(paidNum, userVisitNum));
+        vo.setOrder2paid(divideWithOutCheck(paidNum, orderNum));
         return vo;
     }
 

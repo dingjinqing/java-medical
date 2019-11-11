@@ -87,6 +87,23 @@ public class BigDecimalUtil {
     }
 
     /**
+     * BigDecimal除法：精度保留小数点后两位，采取四舍五入
+     *
+     * @param left  left
+     * @param right right
+     * @return value left/right为null,为0直接返回0.00
+     */
+    static public BigDecimal divideWithOutCheck(BigDecimal left, BigDecimal right) {
+        if (left == null || left.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+        if (right == null || right.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+        return left.divide(right, 2, RoundingMode.HALF_UP);
+    }
+
+    /**
      * BigDecimal乘法：精度保留小数点后两位，采取RoundingMode
      * @param left	null->zero
      * @param right null->zero

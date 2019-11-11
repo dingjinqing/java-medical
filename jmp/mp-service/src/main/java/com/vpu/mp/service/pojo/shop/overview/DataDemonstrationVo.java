@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.overview;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 /**
  * @Author:liufei
  * @Date:2019/7/15
@@ -24,9 +26,9 @@ public class DataDemonstrationVo {
     /** 支付用户数 */
     private int paidUserNum;
     /** 访问下单转化率 */
-    private double uv2order;
+    private BigDecimal uv2order;
     /** 访问支付转化率*/
-    private double uv2paid;
+    private BigDecimal uv2paid;
     /** 下单支付转化率*/
-    private double order2paid;
+    private BigDecimal order2paid;
 }
