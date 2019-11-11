@@ -20,6 +20,9 @@ public class GoodsDetailMpVo extends GoodsBaseMpVo{
     private Double goodsVideoSize;
     private Integer videoWidth;
     private Integer videoHeight;
+    private Integer limitBuyNum;
+    private Integer limitMaxNum;
+    private Byte isExclusive;
 
     private Integer brandId;
     private String brandName;

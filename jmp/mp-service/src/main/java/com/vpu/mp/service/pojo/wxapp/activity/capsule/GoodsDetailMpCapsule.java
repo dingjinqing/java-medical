@@ -60,10 +60,14 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
         vo.setGoodsImgs(this.goodsImgs);
         vo.setGoodsVideo(this.goodsVideo);
         vo.setGoodsVideoImg(this.goodsVideoImg);
+        vo.setGoodsVideoSize(this.goodsVideoSize);
         vo.setVideoWidth(this.videoWidth);
         vo.setVideoHeight(this.videoHeight);
-        vo.setUserCanBuy(this.userCanBuy);
+        vo.setLimitBuyNum(this.limitBuyNum);
+        vo.setLimitMaxNum(this.limitMaxNum);
+        vo.setIsExclusive(this.isExclusive);
 
+        vo.setUserCanBuy(this.userCanBuy);
         if (this.labels != null) {
             List<GoodsLabelMpVo> labels = new ArrayList<>();
             this.labels.forEach(label-> labels.add(label.convertToGoodsLabelMpVo()));
@@ -87,8 +91,6 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
             this.exclusiveCards.forEach(card->cardVos.add(card.convertToMemberCardMpVo()));
             vo.setMemberCards(cardVos);
         }
-
-
         return vo;
     }
 }

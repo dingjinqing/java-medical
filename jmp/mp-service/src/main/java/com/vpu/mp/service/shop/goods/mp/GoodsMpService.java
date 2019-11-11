@@ -325,11 +325,12 @@ public class GoodsMpService extends ShopBaseService {
         capsule.getGoodsImgs().addAll(imgs);
         //处理视频长度和宽度
         if (capsule.getGoodsVideoId() != null) {
-            Record2<Integer, Integer> record = db().select(UPLOADED_VIDEO.VIDEO_HEIGHT, UPLOADED_VIDEO.VIDEO_WIDTH).from(UPLOADED_VIDEO)
+            Record3<Integer, Integer,Integer> record = db().select(UPLOADED_VIDEO.VIDEO_HEIGHT, UPLOADED_VIDEO.VIDEO_WIDTH,UPLOADED_VIDEO.VIDEO_SIZE).from(UPLOADED_VIDEO)
                 .where(UPLOADED_VIDEO.VIDEO_ID.eq(capsule.getGoodsVideoId()).and(UPLOADED_VIDEO.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))).fetchAny();
             if (record != null) {
                 capsule.setVideoHeight(record.get(UPLOADED_VIDEO.VIDEO_HEIGHT));
                 capsule.setVideoWidth(record.get(UPLOADED_VIDEO.VIDEO_WIDTH));
+                capsule.setGoodsVideoSize(record.get(UPLOADED_VIDEO.VIDEO_SIZE) *1.0/1024/1024);
             }
         }
         return capsule;
