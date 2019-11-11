@@ -17,6 +17,7 @@ export const en = {
   orderAmount: 'number of payment orders',
   userAmount: 'number of payment users',
   paymentTotalAmount: 'total amount of payment',
-  orderDetail: 'order detail'
+  orderDetail: 'order detail',
+  save: 'save settings'
 
 }
