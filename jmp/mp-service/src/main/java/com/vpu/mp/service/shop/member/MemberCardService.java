@@ -1077,6 +1077,7 @@ public class MemberCardService extends ShopBaseService {
 		Timestamp localDateTime = DateUtil.getLocalDateTime();
 		List<CardBasicVo> cardList = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
 			.where(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
+            .and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
 			.and(
 					(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)
 			                .and(MEMBER_CARD.END_TIME.ge(localDateTime))
