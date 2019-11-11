@@ -1,6 +1,6 @@
 {
   "component": true,
   "usingComponents": {
-    "v-doubleColGoods": "/components/item/doubleColGoods/index"
+    "v-double-col-goods": "/components/item/double_col_goods/index"
   }
 }

@@ -5,12 +5,12 @@
     <image src="{{imageUrl}}/image/wxapp/re_r.png"></image>
   </view>
   <view class="goods_content">
-    <v-doubleColGoods />
-    <v-doubleColGoods />
-    <v-doubleColGoods />
-    <v-doubleColGoods />
-    <v-doubleColGoods />
-    <v-doubleColGoods />
-    <v-doubleColGoods />
+    <v-double-col-goods />
+    <v-double-col-goods />
+    <v-double-col-goods />
+    <v-double-col-goods />
+    <v-double-col-goods />
+    <v-double-col-goods />
+    <v-double-col-goods />
   </view>
 </view>
