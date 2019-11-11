@@ -16,4 +16,6 @@ public class PortraitVo {
     private PortraitSum newAddUserSum;
     private String startDate;
     private String endDate;
+    private PortraitMaxAndMin activeProRange;
+    private PortraitMaxAndMin newAddUserProRange;
 }

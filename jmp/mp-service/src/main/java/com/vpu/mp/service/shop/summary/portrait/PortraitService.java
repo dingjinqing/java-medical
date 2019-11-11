@@ -30,6 +30,7 @@ import com.vpu.mp.service.pojo.shop.summary.KeyValueChart;
 import com.vpu.mp.service.pojo.shop.summary.portrait.Portrait;
 import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitDeviceItem;
 import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitItem;
+import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitMaxAndMin;
 import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitParam;
 import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitSum;
 import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitVo;
@@ -71,6 +72,8 @@ public class PortraitService extends ShopBaseService {
         vo.setNewAddUserSum(newAddUserSum);
         vo.setStartDate(showDate(type));
         vo.setEndDate(showDate(0));
+        vo.setActiveProRange(setMaxAndMin(visitUv));
+        vo.setNewAddUserProRange(setMaxAndMin(visitUvNew));
         return vo;
     }
 
@@ -251,5 +254,29 @@ public class PortraitService extends ShopBaseService {
 				iterator.remove();
 			}
 		}
+	}
+	
+	/**
+	 * 获取最大值
+	 * @param items
+	 * @return
+	 */
+    private Integer portraitMax(List<PortraitItem> items) {
+        return items.parallelStream().mapToInt(PortraitItem::getValue).max().getAsInt();
+    }
+
+    
+	/**
+	 * 获取最小值
+	 * @param items
+	 * @return
+	 */
+    private Integer portraitMin(List<PortraitItem> items) {
+        return items.parallelStream().mapToInt(PortraitItem::getValue).min().getAsInt();
+    }
+    
+	private PortraitMaxAndMin setMaxAndMin(Portrait portrait) {
+		List<PortraitItem> province = portrait.getProvince();
+		return new PortraitMaxAndMin(portraitMax(province), portraitMin(province));
 	}
 }
