@@ -325,7 +325,7 @@ public class GoodsCommentService extends ShopBaseService {
       scs = scs.and(GOODS.GOODS_NAME.like(this.likeValue(param.getGoodsName())));
     }
 
-    if (param.getSortName() != GoodsCommentPageListParam.SORTNAME_DEFAULT_VALUE) {
+    if (!StringUtils.isBlank(param.getSortName())) {
       scs = scs.and(SORT.SORT_NAME.eq(param.getSortName()));
     }
 

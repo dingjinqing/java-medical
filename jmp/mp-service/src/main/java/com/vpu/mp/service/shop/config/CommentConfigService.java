@@ -36,7 +36,14 @@ public class CommentConfigService extends BaseShopConfigService{
      * @return 
      */
 	public int setSwitchConfig(String value) {
-		return this.set(K_COMMENT_STATE,value);
+	    return this.set(K_COMMENT_STATE,value);
 	}
-
+    /**
+     * 获取评价审核状态
+     * @return 默认为0
+     */
+    public Byte getSwitchConfig() {
+        String s = this.get(K_COMMENT_STATE);
+        return StringUtils.isBlank(s)? 0 : Byte.valueOf(s);
+    }
 }

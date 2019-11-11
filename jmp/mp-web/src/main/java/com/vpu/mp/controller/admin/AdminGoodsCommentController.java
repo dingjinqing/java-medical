@@ -154,6 +154,22 @@ public class AdminGoodsCommentController extends AdminBaseController {
 
 		return success();
 	}
+
+    /**
+     * 获取开关配置
+     *
+     * @param
+     * @return
+     *
+     */
+    @GetMapping("/getswitch")
+    public JsonResult getSwitch() {
+
+        Byte switchConfig = shop().config.commentConfigService.getSwitchConfig();
+
+        return success(switchConfig);
+    }
+
 	/**
 	 * 添加评论分页查询
 	 *
