@@ -74,6 +74,7 @@ import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_NAME_WAIT_SERVICE;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_WAIT_SERVICE;
 import static java.math.BigDecimal.ZERO;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
@@ -274,7 +275,7 @@ public class StoreWxService extends ShopBaseService {
         log.debug("开启“扫码购”功能的门店ID列表配置项:{}", storeScanIds.toString());
         // 筛掉不支持扫码购的门店或者添加是否支持扫码购的标示位
         if (param.getScanStores().equals(BYTE_ONE)) {
-            storeList = storeList.stream().filter(s -> storeScanIds.contains(s.getStoreId())).collect(Collectors.toList());
+            storeList = storeList.stream().filter(s -> storeScanIds.contains(s.getStoreId())).collect(toList());
         } else {
             storeList.forEach(s -> {
                 s.setScanBuy(storeScanIds.contains(s.getStoreId()) ? BYTE_ONE : BYTE_ZERO);
@@ -456,7 +457,7 @@ public class StoreWxService extends ShopBaseService {
         List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
             .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
             }, false)).contains(storeId))
-            .collect(Collectors.toList());
+            .collect(toList());
         log.debug("有效用户会员卡列表:{}", cardList);
         payOrderVo.setMemberCardList(cardList);
         // 门店营业状态和删除标示
@@ -725,7 +726,7 @@ public class StoreWxService extends ShopBaseService {
                     return true;
                 }
                 return serviceOrderService.checkMaxNumOfReservations(serviceId, e.getId(), date, startPeriod, endPeriod) < tecServiceNum;
-            }).collect(Collectors.toList());
+            }).collect(toList());
             if (CollectionUtils.isEmpty(result)) {
                 return null;
             }
@@ -756,7 +757,7 @@ public class StoreWxService extends ShopBaseService {
             .balanceFirst(tradeService.getBalanceFirst())
             .cardFirst(tradeService.getCardFirst())
             // 获取支持的支付方式
-//            .paymentVoList(paymentService.getSupportPayment().into(PaymentVo.class))
+            .paymentVoList(new ArrayList<>(paymentService.getSupportPayment().values()))
             // 获取指定用户最近的一个服务预约订单信息(主要是获取用户的名称和手机号;没有就算了)
             .recentOrderInfo(serviceOrderService.getRecentOrderInfo(userId))
             // 获取门店职称配置

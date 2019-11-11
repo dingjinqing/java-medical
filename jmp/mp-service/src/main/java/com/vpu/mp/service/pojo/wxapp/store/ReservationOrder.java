@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.store;
 
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.RecentOrderInfo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
