@@ -124,7 +124,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     @Override
-    public CreateParam execute(CreateParam param) {
+    public JsonResultCode execute(CreateParam param) {
         initBo(param);
         return null;
     }

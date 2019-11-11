@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.action.base;
 
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 /**
@@ -20,5 +21,5 @@ public interface IorderOperate<T extends AbstractOrderOperateQueryParam,E extend
 	 * @param obj 参数
 	 * @return 执行结果
 	 */
-    Object execute(E obj);
+    JsonResultCode execute(E obj);
 }
