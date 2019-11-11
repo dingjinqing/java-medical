@@ -180,7 +180,8 @@ page{
     top: 105rpx;
   }
   .right .time_canuse{
-    top: 160rpx;
+    /* top: 160rpx; */
+    top: 110rpx;
   }
 }
 .left .coupon_xian{
@@ -231,4 +232,9 @@ page{
 }
 .time_canuse .time_square:first-of-type{
   margin-left: 0
+}
+
+.cou_area {
+   margin-top: 110rpx;
+   padding: 0 25rpx;
 }
