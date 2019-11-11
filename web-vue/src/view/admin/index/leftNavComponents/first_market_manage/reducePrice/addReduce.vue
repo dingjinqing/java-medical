@@ -617,16 +617,14 @@ export default {
 
       addReducePrice(this.reduceData).then((res) => {
         if (res.error === 0) {
-          this.$message({
-            type: 'success',
+          this.$message.success({
             message: this.$t('marketCommon.successfulOperation')
           })
           this.$router.push({
             name: 'reduce'
           })
         } else {
-          this.$message({
-            type: 'fail',
+          this.$message.fail({
             message: this.$t('marketCommon.failureOperation')
           })
         }

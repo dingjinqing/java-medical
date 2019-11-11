@@ -12,25 +12,25 @@
     <view class="content" style="margin-top:{{margin_top_nav * 2 + 116}}rpx">
      <text class="date">2019-10-17</text>
      <view class="goods_content">
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
-      <v-doubleColumnGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
+      <v-doubleColGoods />
      </view>
     </view>
   </view>

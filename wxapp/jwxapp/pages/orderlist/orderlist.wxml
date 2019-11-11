@@ -36,7 +36,7 @@
                 {{i18n.$t(localePack,"pages.order.deliveryType")}}：
                 <text>部分发货</text>
               </view>
-              <view class="order_status" style="color:{{comColor}}">订单完成</view>
+              <view class="order_status" style="color:{{comColor}}">{{item.orderStatusName}}</view>
             </view>
           </view>
           <view wx:for="{{item.goods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="recId" class="goods_item">

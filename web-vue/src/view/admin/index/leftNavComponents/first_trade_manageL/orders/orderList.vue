@@ -895,6 +895,7 @@ export default {
     },
     arrayToMap () {
       this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
+      console.log(this.orderStatusMap)
       this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
       this.deliverTypeMap = new Map(this.$t('order.deliverTypeList'))
       this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))

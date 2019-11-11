@@ -21,7 +21,7 @@ global.wxPage({
       if(res.error === 0){
         let orderInfo = this.formatData(res.content)
         orderInfo.deliverType = 0
-        orderInfo.orderStatusName = this.getOrderStatus(orderInfo)
+        orderInfo.orderStatusName = orderEvent.getOrderStatus(orderInfo)
         orderInfo.deliverTypeName = orderInfo.deliverType === 0 ? '快递' : orderInfo.deliverType === 1 ? '自提' : '同城配送'
         this.setData({
           orderInfo: orderInfo
@@ -31,40 +31,40 @@ global.wxPage({
   },
 
   // 订单状态
-  getOrderStatus(orderInfo){
-    let str = '已发货'
-    if (orderInfo.orderPayWay === 0 || orderInfo.orderPayWay === 2){
-      if (orderInfo.orderStatus === 0){
-        str = '待付款'
-      } else {
-        if (orderInfo.deliverType == 1 && orderInfo.orderStatus == 3) {
-          str = "待核销";
-        }
-        if (orderInfo.deliverType != 1 && orderInfo.orderStatus == 3) {
-          str = "待发货";
-        }
-        if (orderInfo.deliverType == 1 && orderInfo.orderStatus == 5) {
-          str = "已自提";
-        }
-        if (orderInfo.deliverType != 1 && orderInfo.orderStatus == 5) {
-          str = "已收货";
-        }
-        if (orderInfo.orderSn === orderInfo.mainOrderSn && orderInfo.orderStatus >= 3 && orderInfo.orderStatus < 13){
-          str = '进行中'
-        } 
-      }
+  // getOrderStatus(orderInfo){
+  //   let str = '已发货'
+  //   if (orderInfo.orderPayWay === 0 || orderInfo.orderPayWay === 2){
+  //     if (orderInfo.orderStatus === 0){
+  //       str = '待付款'
+  //     } else {
+  //       if (orderInfo.deliverType == 1 && orderInfo.orderStatus == 3) {
+  //         str = "待核销";
+  //       }
+  //       if (orderInfo.deliverType != 1 && orderInfo.orderStatus == 3) {
+  //         str = "待发货";
+  //       }
+  //       if (orderInfo.deliverType == 1 && orderInfo.orderStatus == 5) {
+  //         str = "已自提";
+  //       }
+  //       if (orderInfo.deliverType != 1 && orderInfo.orderStatus == 5) {
+  //         str = "已收货";
+  //       }
+  //       if (orderInfo.orderSn === orderInfo.mainOrderSn && orderInfo.orderStatus >= 3 && orderInfo.orderStatus < 13){
+  //         str = '进行中'
+  //       } 
+  //     }
 
-    } else if (orderInfo.orderPayWay === 1){
-      if (orderInfo.orderStatus === 0){
-        if (orderInfo.bkOrderPaid === 0){
-          str = '待付定金'
-        } else if (orderInfo.bkOrderPaid === 1){
-          str = '待付尾款'
-        }
-      }
-    }
-    return str;
-  },
+  //   } else if (orderInfo.orderPayWay === 1){
+  //     if (orderInfo.orderStatus === 0){
+  //       if (orderInfo.bkOrderPaid === 0){
+  //         str = '待付定金'
+  //       } else if (orderInfo.bkOrderPaid === 1){
+  //         str = '待付尾款'
+  //       }
+  //     }
+  //   }
+  //   return str;
+  // },
   itemPage(e){
     console.log(e)
     util.jumpLink(`pages/item/item?goodsId=${e.currentTarget.dataset.goods_id}`,'navigateTo')

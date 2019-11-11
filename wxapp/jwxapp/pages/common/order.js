@@ -1,4 +1,21 @@
 var util = require('../../utils/util.js');
+const orderStatusList = [
+  [null, '全部订单'],
+  [0, '待付款'],
+  [1, '订单取消'],
+  [2, '订单关闭'],
+  [3, '待发货/待核销'],
+  [4, '已发货'],
+  [5, '已收货/已自提'],
+  [6, '订单完成'],
+  [7, '退货中'],
+  [8, '退货完成'],
+  [9, '退款中'],
+  [10, '退款完成'],
+  [11, '拼团中'],
+  [12, '已成团'],
+  [13, '送礼完成']
+]
 var order = {
   // 好友代付
   // 退货中心
@@ -141,6 +158,36 @@ var order = {
     } else {
       optionList[operate_info](e.currentTarget.dataset.order_sn, e.currentTarget.dataset.order_id);
     }
+  },
+  getOrderStatus(orderData) {
+    let typeArray = orderData.orderType
+    if (typeArray.indexOf('17') != -1 && orderData.orderSn == orderData.mainOrderSn && [8, 10, 13].indexOf(orderData.orderStatus)) {
+      return '等待领取'
+    } else {
+      if (orderData.orderStatus != 3 && orderData.partShipFlag != 5) {
+        if (orderData.orderStatus == 0 && typeArray.indexOf('10') != -1) {
+          if (orderData.bkOrderPaid == 0) {
+            return '代付定金'
+          } else {
+            return '代付尾款'
+          }
+        } else {
+          let orderStatusMap = new Map(orderStatusList)
+          return orderStatusMap.get(orderData.orderStatus)
+        }
+      } else {
+        if (orderData.deliverType == 1 && orderData.orderStatus == 3) {
+          return '待核销'
+        } else if (orderItem.deliverType == 0 && orderItem.orderStatus == 3) {
+          return '待发货'
+        } else if (orderData.deliverType == 1 && orderData.orderStatus == 5) {
+          return '已自提'
+        } else if (orderData.deliverType == 0 && orderData.orderStatus == 5) {
+          return '已收货'
+        }
+      }
+    }
+    return '待发货'
   }
 }
 

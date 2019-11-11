@@ -1,5 +1,6 @@
 var util = require('../../utils/util.js');
 var orderEvent = require('../common/order.js');
+
 global.wxPage({
   /**
    * 页面的初始数据
@@ -56,6 +57,7 @@ global.wxPage({
     let formatOrderItem = order.map(item=>{
       const filterArr = ['isShowPay', 'isPayEndPayment', 'isExtendReceive', 'isShowAgainBuy', 'isRemindShip', 'isShowCommentType', 'isDelete','isCancel']
       item.operate = orderEvent.filterObj(item, filterArr);
+      item.orderStatusName = orderEvent.getOrderStatus(item);
       return item
     })
     console.log(formatOrderItem)
