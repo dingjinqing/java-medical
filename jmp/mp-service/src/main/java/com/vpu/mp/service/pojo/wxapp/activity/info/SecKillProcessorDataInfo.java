@@ -8,6 +8,8 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
  * @date 2019年11月01日
  */
 public class SecKillProcessorDataInfo extends ProcessorDataInfo {
+
+
     public SecKillProcessorDataInfo() {
         super();
         dataType = GoodsConstant.ACTIVITY_TYPE_SEC_KILL;

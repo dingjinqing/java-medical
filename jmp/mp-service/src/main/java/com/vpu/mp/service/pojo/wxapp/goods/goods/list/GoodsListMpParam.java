@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.wxapp.goods.goods;
+package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

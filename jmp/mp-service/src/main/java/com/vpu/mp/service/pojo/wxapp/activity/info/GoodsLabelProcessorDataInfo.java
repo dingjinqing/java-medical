@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.activity.info;
 
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

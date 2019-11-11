@@ -400,31 +400,4 @@ public class SeckillService extends ShopBaseService {
         return (SEC_KILL_DEFINE.START_TIME.gt(startTime).and(SEC_KILL_DEFINE.START_TIME.lt(endTime))).or(SEC_KILL_DEFINE.END_TIME.gt(startTime).and(SEC_KILL_DEFINE.END_TIME.lt(endTime))).or(SEC_KILL_DEFINE.START_TIME.lt(startTime).and(SEC_KILL_DEFINE.END_TIME.gt(endTime)));
     }
 
-    /**
-     *
-     * @param skId
-     * @param goodsNumber goods表的库存
-     * @return 1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;0正常
-     */
-    public Integer canApplySecKill(Integer skId,Integer goodsNumber) {
-        SecKillDefineRecord secKill = (SecKillDefineRecord) db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne();
-        if(secKill == null){
-            return 1;
-        }
-        if(secKill.getStatus() == BaseConstant.ACTIVITY_STATUS_DISABLE){
-            return 2;
-        }
-        if(secKill.getStartTime().after(DateUtil.getLocalDateTime())){
-            return 3;
-        }
-        if(secKill.getEndTime().before(DateUtil.getLocalDateTime())){
-            return 4;
-        }
-        int minStock = goodsNumber < secKill.getStock() ? goodsNumber : secKill.getStock();
-        if(minStock <= 0){
-            return 5;
-        }
-        return 0;
-    }
-
 }

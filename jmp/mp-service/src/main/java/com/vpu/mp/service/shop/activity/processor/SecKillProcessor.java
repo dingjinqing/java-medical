@@ -3,9 +3,11 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.SecKillProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
  * @date 2019年11月01日
  */
 @Service
-public class SecKillProcessor implements ActivityGoodsListProcessor {
+public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor {
     @Autowired
     SecKillProcessorDao secKillProcessorDao;
     @Override
@@ -54,5 +56,15 @@ public class SecKillProcessor implements ActivityGoodsListProcessor {
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_SEC_KILL);
         });
+    }
+
+    @Override
+    public Byte getPriorityForDetail() {
+        return GoodsConstant.ACTIVITY_SEC_KILL_PRIORITY;
+    }
+
+    @Override
+    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+
     }
 }

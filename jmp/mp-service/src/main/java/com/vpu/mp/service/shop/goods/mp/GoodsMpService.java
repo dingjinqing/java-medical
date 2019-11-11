@@ -7,10 +7,10 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpParam;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
@@ -158,7 +158,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param userId 用户id
      * @param currentPages 当前页
      * @param pagesRows 查询数据条数
-     * @return {@link com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpParam}集
+     * @return {@link GoodsListMpParam}集
      */
     public List<GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds,Integer userId,Integer currentPages,Integer pagesRows) {
         if (goodsIds == null) {
@@ -206,7 +206,7 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 小程序端获取商品详情信息
-     * @param param {@link com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsDetailMpParam}
+     * @param param {@link GoodsDetailMpParam}
      */
     public GoodsDetailMpVo getGoodsDetailMp(GoodsDetailMpParam param){
         GoodsDetailMpCapsule goodsDetailMpCapsule = getGoodsDetailMpInfoDao(param.getGoodsId());

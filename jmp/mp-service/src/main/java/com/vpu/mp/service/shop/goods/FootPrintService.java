@@ -7,7 +7,7 @@ import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import org.apache.commons.lang3.StringUtils;

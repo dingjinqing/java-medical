@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.activity.info;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.CouponMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CouponMpVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

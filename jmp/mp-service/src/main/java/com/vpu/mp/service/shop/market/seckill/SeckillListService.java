@@ -56,16 +56,6 @@ public class SeckillListService extends ShopBaseService {
     /**
      *
      * @param skId
-     * @param userId
-     * @return 已对该活动秒杀下单的数量
-     */
-    public Integer getUserSeckilledGoodsNumber(Integer skId,Integer userId) {
-        return db().select(DSL.sum(ORDER_INFO.GOODS_AMOUNT)).from(SEC_KILL_LIST).leftJoin(ORDER_INFO).on(SEC_KILL_LIST.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).where(SEC_KILL_LIST.SK_ID.eq(skId).and(SEC_KILL_LIST.USER_ID.eq(userId)).and(SEC_KILL_LIST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).groupBy(ORDER_INFO.USER_ID).fetchOne().into(Integer.class);
-    }
-
-    /**
-     *
-     * @param skId
      * @param productId
      * @return 某活动待付款订单占用的库存
      */

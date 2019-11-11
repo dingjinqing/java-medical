@@ -4,8 +4,8 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.CouponProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
 import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsLabelMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order.history;
 
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import lombok.Getter;
 import lombok.Setter;
 

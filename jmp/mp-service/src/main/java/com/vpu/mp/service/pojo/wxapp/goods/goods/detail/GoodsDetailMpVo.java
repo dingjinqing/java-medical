@@ -1,5 +1,7 @@
-package com.vpu.mp.service.pojo.wxapp.goods.goods;
+package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +13,7 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class GoodsDetailMpVo extends GoodsBaseMpVo{
+public class GoodsDetailMpVo extends GoodsBaseMpVo {
 
     private List<String> goodsImgs;
     private Integer goodsVideoId;

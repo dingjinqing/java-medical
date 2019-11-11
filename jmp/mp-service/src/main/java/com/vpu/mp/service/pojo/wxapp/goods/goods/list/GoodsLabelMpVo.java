@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.wxapp.goods.goods;
+package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

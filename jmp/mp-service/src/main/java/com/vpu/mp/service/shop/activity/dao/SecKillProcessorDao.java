@@ -1,10 +1,14 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.info.SecKillProcessorDataInfo;
 import org.jooq.Record3;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,7 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
+import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
@@ -50,5 +56,42 @@ public class SecKillProcessorDao extends ShopBaseService {
             returnMap.put(goodsId,info);
         });
         return returnMap;
+    }
+
+    /**
+     *
+     * @param skId
+     * @param goodsNumber goods表的库存
+     * @return 1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;0正常
+     */
+    public Integer canApplySecKill(Integer skId,Integer goodsNumber) {
+        SecKillDefineRecord secKill = (SecKillDefineRecord) db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne();
+        if(secKill == null){
+            return 1;
+        }
+        if(secKill.getStatus() == BaseConstant.ACTIVITY_STATUS_DISABLE){
+            return 2;
+        }
+        if(secKill.getStartTime().after(DateUtil.getLocalDateTime())){
+            return 3;
+        }
+        if(secKill.getEndTime().before(DateUtil.getLocalDateTime())){
+            return 4;
+        }
+        int minStock = goodsNumber < secKill.getStock() ? goodsNumber : secKill.getStock();
+        if(minStock <= 0){
+            return 5;
+        }
+        return 0;
+    }
+
+    /**
+     *
+     * @param skId
+     * @param userId
+     * @return 已对该活动秒杀下单的数量
+     */
+    public Integer getUserSeckilledGoodsNumber(Integer skId,Integer userId) {
+        return db().select(DSL.sum(ORDER_INFO.GOODS_AMOUNT)).from(SEC_KILL_LIST).leftJoin(ORDER_INFO).on(SEC_KILL_LIST.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).where(SEC_KILL_LIST.SK_ID.eq(skId).and(SEC_KILL_LIST.USER_ID.eq(userId)).and(SEC_KILL_LIST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).groupBy(ORDER_INFO.USER_ID).fetchOne().into(Integer.class);
     }
 }

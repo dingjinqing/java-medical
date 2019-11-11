@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryVo;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import org.apache.commons.collections4.CollectionUtils;

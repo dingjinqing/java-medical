@@ -1,7 +1,11 @@
 package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 
 import com.vpu.mp.service.pojo.wxapp.activity.info.*;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.*;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CouponMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.MemberCardMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
 import lombok.Getter;
 import lombok.Setter;
 
