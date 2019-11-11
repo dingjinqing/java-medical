@@ -186,10 +186,10 @@ export default {
       inverse: true,
       show: true,
       type: 'continuous', // 'piecewise',
-      realtime: false, // 拖拽是否实施更新
+      realtime: true, // 拖拽是否实施更新
       min: 0,
-      max: 34,
-      calculable: false,
+      max: 1,
+      calculable: true,
       text: ['高', '低'],
       inRange: {
         color: ['#afe8ff', '#2a99c9']
@@ -207,7 +207,7 @@ export default {
         itemStyle: {
           normal: {
             areaColor: '#cde1f5',
-            borderColor: '#fff'
+            borderColor: '#ccc'
           },
           emphasis: {
             areaColor: '#fde166'
@@ -288,12 +288,15 @@ export default {
           this.startDate = res.content.startDate
           this.endDate = res.content.endDate
           var needData = null
+          var needMaxAndMin = null
           if (this.userNum === 1) {
             // 活跃用户
             needData = res.content.activeUser
+            needMaxAndMin = res.content.activeProRange
           } if (this.userNum === 2) {
             // 新增用户
             needData = res.content.newAddUser
+            needMaxAndMin = res.content.newAddUserProRange
           }
           var chartData = needData.province
           var cityData = needData.city
@@ -302,6 +305,8 @@ export default {
           this.chartDataCity = chartData
           this.cityTableData = cityData
           this.cityTableData2 = cityData
+          this.visualMap.min = needMaxAndMin.min
+          this.visualMap.max = needMaxAndMin.max
           console.log('chartDataSex')
           console.log(this.chartDataSex)
           console.log('chartDataCity')
@@ -315,12 +320,15 @@ export default {
     // 性别及年龄分布 用户变化
     changeUserNum () {
       var needData = null
+      var needMaxAndMin = null
       if (this.userNum === 1) {
         // 活跃用户
         needData = this.tableData.activeUser
+        needMaxAndMin = this.tableData.activeProRange
       } if (this.userNum === 2) {
         // 新增用户
         needData = this.tableData.newAddUser
+        needMaxAndMin = this.tableData.newAddUserProRange
       }
       var chartData = needData.province
       var cityData = needData.city
@@ -328,6 +336,8 @@ export default {
       this.chartDataCity = chartData
       this.cityTableData = cityData
       this.cityTableData2 = cityData
+      this.visualMap.min = needMaxAndMin.min
+      this.visualMap.max = needMaxAndMin.max
       this.showCity()
     },
     getData () {
