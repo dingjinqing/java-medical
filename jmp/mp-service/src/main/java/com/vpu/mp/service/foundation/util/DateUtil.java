@@ -237,7 +237,7 @@ public final class DateUtil {
 		return  Timestamp.valueOf(LocalDateTime.now().plus(addNum,unit));
 	}
 
-	public static LocalDate getBeforLocalFor(int day){
+	public static LocalDate getBeforeLocalFor(int day){
 	    return LocalDate.now().minusDays(day);
     }
 }
