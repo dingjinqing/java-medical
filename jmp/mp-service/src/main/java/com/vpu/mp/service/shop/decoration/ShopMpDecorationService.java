@@ -654,7 +654,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         Integer userId = user.getUserId();
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(moduleGoods.getRecommendType());
-        param.setGoodsItems(moduleGoods.getGoodsItems());
+        param.convertStringToGoodsItems(moduleGoods.getGoodsItems());
         param.setKeywords(moduleGoods.getKeywords());
         param.setMinPrice(moduleGoods.getMinPrice());
         param.setMaxPrice(moduleGoods.getMaxPrice());

@@ -24,7 +24,7 @@ public class GoodsListMpParam {
     @JsonProperty("goods_items")
     private List<Integer> goodsItems;
 
-    public void setGoodsItems(String goodsIds) {
+    public void convertStringToGoodsItems(String goodsIds) {
         goodsItems = goodsIds==null? null:
         Arrays.stream(goodsIds.split(",")).map(Integer::parseInt).collect(Collectors.toList());
     }

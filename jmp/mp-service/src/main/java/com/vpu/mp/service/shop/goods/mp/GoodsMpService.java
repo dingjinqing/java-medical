@@ -272,7 +272,7 @@ public class GoodsMpService extends ShopBaseService {
     public List<ActivityGoodsListCapsule>  findActivityGoodsListCapsulesDao(Condition condition, List<SortField<?>> orderFields,Integer offset,Integer limit, List<Integer> goodsIds){
 
         if (condition != null) {
-            condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode());
+            condition = condition.and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         }
 
         if (orderFields == null || orderFields.size() == 0) {
@@ -299,7 +299,7 @@ public class GoodsMpService extends ShopBaseService {
 
         if (goodsIds != null) {
             Map<Integer, ActivityGoodsListCapsule> map = select.fetchMap(GOODS.GOODS_ID, ActivityGoodsListCapsule.class);
-            returnList = goodsIds.stream().filter(id -> map.get(id) != null).map(id -> map.remove(id)).collect(Collectors.toList());
+            returnList = goodsIds.stream().filter(id -> map.get(id) != null).map(map::remove).collect(Collectors.toList());
             returnList.addAll(map.values());
         } else {
             returnList = select.fetchInto(ActivityGoodsListCapsule.class);
