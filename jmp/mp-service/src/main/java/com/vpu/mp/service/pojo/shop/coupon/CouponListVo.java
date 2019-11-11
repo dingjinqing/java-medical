@@ -34,4 +34,20 @@ public class CouponListVo {
 	    private Integer    scoreNumber;
 	    private Integer    used;
 	    private Integer enabled;
+		/**
+		 * 优惠券有效期类型
+		 */
+		private Byte    validityType;
+		/**
+		 * 优惠券有效天数
+		 */
+		private Integer    validity;
+		/**
+		 * 优惠券有效小时
+		 */
+		private Integer validityHour;
+		/**
+		 * 优惠券有效分钟数
+		 */
+		private Integer validityMinute;
 }
