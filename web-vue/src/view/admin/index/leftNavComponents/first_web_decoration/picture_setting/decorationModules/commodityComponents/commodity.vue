@@ -270,6 +270,7 @@ export default {
     // 右侧模块点击传回中间当前高亮模块的数据
     backData: {
       handler (newData) {
+        console.log(newData)
         if (newData) {
           this.data = newData
           console.log(newData)

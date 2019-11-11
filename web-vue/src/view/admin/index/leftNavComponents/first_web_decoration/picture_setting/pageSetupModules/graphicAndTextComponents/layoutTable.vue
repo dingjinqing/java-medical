@@ -198,6 +198,8 @@ export default {
             this.arrFour = [0, 1, 2, 3, 4, 5, 6]
             this.trHeight = '42px'
         }
+        console.log(this.customModulesBackData)
+
         //  初始化数据
         this.defaultData()
       },
@@ -217,9 +219,6 @@ export default {
         this.handleToSaveData()
         console.log(this.columnData[this.nowCheckedCell[0]][`${this.nowCheckedCell[1]}img_url`])
       }
-    },
-    customModulesBackData (newData) {
-      console.log(newData)
     }
   },
   mounted () {
@@ -250,6 +249,9 @@ export default {
           this.columnData[item][`${itemC}x`] = item + 1 // 保存数据使用
         })
       })
+      if (this.customModulesBackData) { // 初始回显
+        this.handleToEchoDisplay()
+      }
       this.handleToSaveData()
       console.log(this.columnData)
     },
@@ -627,6 +629,55 @@ export default {
       })
       console.log(obj, isAllCheckFull)
       this.$emit('handleToGetTabelData', { obj, isAllCheckFull }) // 传递整体数据
+    },
+    // 处理回显
+    handleToEchoDisplay () {
+      console.log(this.customModulesBackData)
+      // 将具体数据回显到对应的单元格中
+      Object.keys(this.customModulesBackData).forEach((item, index) => {
+        console.log(this.customModulesBackData[item])
+        console.log((this.customModulesBackData[item].x - 1), (this.customModulesBackData[item].y - 1))
+        this.columnData[(this.customModulesBackData[item].x - 1)][`${(this.customModulesBackData[item].y - 1)}Dis`] = false
+        this.columnData[(this.customModulesBackData[item].x - 1)][`${(this.customModulesBackData[item].y - 1)}IsBorder`] = true
+        this.columnData[(this.customModulesBackData[item].x - 1)][`${(this.customModulesBackData[item].y - 1)}Row`] = this.customModulesBackData[item].rows
+        this.columnData[(this.customModulesBackData[item].x - 1)][`${(this.customModulesBackData[item].y - 1)}Col`] = this.customModulesBackData[item].cols
+        this.columnData[(this.customModulesBackData[item].x - 1)][`${(this.customModulesBackData[item].y - 1)}img_url`] = this.customModulesBackData[item].img_url
+      })
+      this.handleToEchoDisplayMerge(this.customModulesBackData)
+    },
+    handleToEchoDisplayMerge (initData) {
+      Object.keys(initData).forEach((item, index) => {
+        let mergeRowNum = initData[item].rows // 合并行数
+
+        let mergeRowi = 0
+        let colTotal = initData[item].cols // 合并列数
+        let timesRowStart = JSON.parse(JSON.stringify((initData[item].x - 1)))
+        let coli = null
+        for (mergeRowi; mergeRowi < mergeRowNum; mergeRowi++) { // 行循环
+          if (timesRowStart === (initData[item].x - 1)) {
+            coli = 1
+          } else {
+            coli = 0
+          }
+          console.log(this.columnData)
+          let timesColStart = JSON.parse(JSON.stringify((initData[item].y - 1)))
+          console.log(timesRowStart, colTotal)
+          for (coli; coli <= (colTotal - 1); coli++) { // 列循环
+            console.log(coli)
+            if (timesRowStart === (initData[item].x - 1)) {
+              timesColStart++
+              console.log(timesRowStart, timesColStart)
+              this.columnData[timesRowStart][`${timesColStart}Dis`] = true
+            } else {
+              console.log(this.columnData, timesRowStart, timesColStart, coli, colTotal)
+              this.columnData[timesRowStart][`${timesColStart}Dis`] = true
+              timesColStart++
+            }
+          }
+          timesRowStart++
+        }
+      })
+      console.log(this.columnData)
     }
   }
 }

@@ -522,7 +522,10 @@
   </div>
 </template>
 <script>
+import vcolorpicker from 'vcolorpicker'
+import Vue from 'vue'
 import { queryDataList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+Vue.use(vcolorpicker)
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'), // 图片弹窗组件
@@ -765,6 +768,7 @@ export default {
     // 监控该模块右边数据操作
     copyData: {
       handler (newData, oldData) {
+        console.log('触发')
         // 判断是否是模块推荐中的数据改变
         let judgeChangeFlag = this.handleToJudgeDataChange(newData, oldData)
         // 转换选择商品范围字段数据
@@ -849,6 +853,7 @@ export default {
         'goods_items': goodsId // 商品列表数据
       }
       queryDataList(obj).then((res) => {
+        console.log(res)
         if (res.error === 0) {
           console.log(res.content)
           this.goodsListData = res.content
@@ -1099,6 +1104,7 @@ export default {
           this.data.goods_items.push(obj)
         }
       })
+      console.log(this.data)
     },
     // 商品范围选中后显示添加按钮点击统一处理
     handleToClickRangeBtn (index) {

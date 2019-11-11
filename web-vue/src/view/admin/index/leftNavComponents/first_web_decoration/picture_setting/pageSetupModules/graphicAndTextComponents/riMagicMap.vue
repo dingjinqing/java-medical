@@ -944,11 +944,14 @@ export default {
     // 监听图片跳转路径值变化
     linkInput (newData) {
       console.log(this.layoutData, this.nowTemplateClickIndex, this.nowLayutIndex)
-      this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link = newData
+
       console.log(this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link)
       if (this.nowTemplateClickIndex !== 7) {
         console.log(this.nowTemplateClickIndex)
         this.handleToSaveDataImgInfo(this.nowTemplateClickIndex, false)
+        this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link = newData
+      } else {
+        this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link = newData
       }
     }
   },
