@@ -13,24 +13,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Result;
-import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.shopMoment.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
@@ -420,4 +420,22 @@ public class GoodsSpecProductService extends ShopBaseService {
         }
         return goodsSpecproduct;
     }
+    
+    
+	/**
+	 * 转化规格商品格式 好物圈用
+	 * 
+	 * @param prdDesc
+	 * @return
+	 */
+	public List<SkuAttrList> getSkuAttrList(String prdDesc) {
+		List<SkuAttrList> list = new ArrayList<SkuAttrList>();
+		if (StringUtils.isEmpty(prdDesc)) {
+			list.add(new SkuAttrList("", ""));
+		} else {
+			String[] split = prdDesc.split(PRD_VAL_DELIMITER);
+			list.add(new SkuAttrList(split[0], split[1]));
+		}
+		return list;
+	}
 }

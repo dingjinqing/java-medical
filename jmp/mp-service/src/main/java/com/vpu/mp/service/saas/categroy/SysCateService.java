@@ -1,5 +1,6 @@
 package com.vpu.mp.service.saas.categroy;
 
+import com.vpu.mp.db.main.tables.records.CategoryRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
@@ -208,5 +209,25 @@ public class SysCateService extends MainBaseService {
     	SysCatevo cateInfo = db().select().from(CATEGORY)
     			.where(CATEGORY.CAT_ID.eq(catId)).fetchOne().into(SysCatevo.class);
     	return cateInfo;
+    }
+    
+    /**
+     * 得到商品层级类目
+     * @param catId
+     * @return
+     */
+    public List<String> getCategories(Integer catId) {
+    	List<String> list=new LinkedList<String>();
+    	while(catId!=0) {
+    		CategoryRecord cat = db().selectFrom(CATEGORY).where(CATEGORY.CAT_ID.eq(catId)).fetchAny();
+    		if(cat==null) {
+    			break;
+    		}
+    		list.add(cat.getCatName());
+    		catId=cat.getParentId();
+    	}
+    	Collections.reverse(list);
+    	return list;
+    	
     }
 }

@@ -1610,4 +1610,19 @@ public class GoodsService extends ShopBaseService {
     public void changeToNormalType(List<Integer> goodsIds){
         db().update(GOODS).set(GOODS.GOODS_TYPE, BaseConstant.GOODS_TYPE_GENERAL).where(GOODS.GOODS_ID.in(goodsIds)).execute();
     }
+    
+    /**
+     * 商品图片列表
+     * @param goodsId
+     * @return
+     */
+    public List<String> getGoodsImageList(Integer goodsId){
+    	Result<GoodsImgRecord> fetch = db().selectFrom(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).orderBy(GOODS_IMG.IMG_DESC.desc()).fetch();
+    	List<String> list=new ArrayList<String>();
+    	for(GoodsImgRecord item:fetch) {
+    		list.add(getImgFullUrlUtil(item.getImgUrl()));
+    	}
+		return list;
+    	
+    }
 }
