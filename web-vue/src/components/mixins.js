@@ -102,6 +102,7 @@ const myMixin = {
         this.guideCircleClass = 'guideCircleClass'
 
         this.specialLi = 'specialLi'
+        this.magic = 'magic'
       } else {
         // this.$i18n.locale = 'cn'
         this.Recommend_class = ''
@@ -168,7 +169,7 @@ const myMixin = {
         this.bgColorClass = ''
         this.hoverTips = null
         this.guideCircleClass = ''
-
+        this.magic = false
         this.specialLi = ''
       }
     },

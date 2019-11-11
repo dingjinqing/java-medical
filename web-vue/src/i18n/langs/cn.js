@@ -138,6 +138,8 @@ import {
 import {
   cn as mapModule
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/mapModuleCn'
+// 小程序页面装修魔方多图国际化
+import { cn as magicMap } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/magicMapCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -929,7 +931,8 @@ const cn = {
   commodity, //  小程序页面装修商品模块
   pictureAds, //  小程序页面装修图片广告模块
   shopRecruit, // 小程序页面装修店招设置模块
-  mapModule // 小程序页面装修地图模块
+  mapModule, // 小程序页面装修地图模块
+  magicMap // 小程序页面装修魔方多图模块
 }
 
 export default cn

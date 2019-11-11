@@ -1,16 +1,16 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>魔方多图模块</h2>
+      <h2>{{$t('magicMap.rightTitle')}}</h2>
       <!--模块私有区域-->
       <div class="main">
         <!--选择模板-->
         <div class="selectTemplate">
-          <span>选择模板：</span>
+          <span :class="magic">{{$t('magicMap.selectTemplate')}}：</span>
           <div class="templateDiv">
             <div
               class="img_list"
-              v-for="(item,index) in selectTemplateList"
+              v-for="(item,index) in $t('magicMap.selectTemplateList')"
               :key="index"
             >
               <div
@@ -130,9 +130,9 @@
         <!--选择模板中的自定义显示的魔方密度隐藏模块-->
         <div
           class="selectTemplate density"
-          v-if="selectTemplateList[0].list[7].isChecked"
+          v-if="$t('magicMap.selectTemplateList')[0].list[7].isChecked"
         >
-          <span style="height:32px;line-height:32px;display:inline-block">魔方密度：</span>
+          <span style="height:32px;line-height:32px;display:inline-block">{{$t('magicMap.cubeDensity')}}：</span>
           <div>
             <el-select
               v-model="density"
@@ -159,7 +159,7 @@
             class="layout"
             v-if='nowTemplateClickIndex===index'
           >
-            <span>布局：</span>
+            <span>{{$t('magicMap.layout')}}：</span>
             <div
               class="layoutDiv"
               style="display:flex;"
@@ -171,14 +171,14 @@
               ><span
                   v-if="!(item.styleData[0].img_url)"
                   style="width:auto"
-                >宽度{{item.styleData[0].size}}像素</span></div>
+                >{{$t('magicMap.width')}}{{item.styleData[0].size}}{{$t('magicMap.pixel')}}</span></div>
               <div
                 @click="handleToClickLayout(index,1)"
                 :style="(item.styleData[1].img_url?'background:url('+item.styleData[1].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:152px;line-height:152px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')"
               ><span
                   v-if="!(item.styleData[1].img_url)"
                   style="width:auto"
-                >宽度{{item.styleData[1].size}}像素</span></div>
+                >{{$t('magicMap.width')}}{{item.styleData[1].size}}{{$t('magicMap.pixel')}}</span></div>
             </div>
             <div
               class="layoutDiv layoutSecond"
@@ -191,21 +191,21 @@
               ><span
                   v-if="!(item.styleData[0].img_url)"
                   style="width:auto"
-                >宽度{{item.styleData[0].size}}像素</span></div>
+                >{{$t('magicMap.width')}}{{item.styleData[0].size}}{{$t('magicMap.pixel')}}</span></div>
               <div
                 @click="handleToClickLayout(index,1)"
                 :style="(item.styleData[1].img_url?'background:url('+item.styleData[1].img_url+') no-repeat;background-size:cover;':'')+'height:102px;width:102px;line-height:102px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
               ><span
                   v-if="!(item.styleData[1].img_url)"
                   style="width:auto"
-                >宽度{{item.styleData[1].size}}像素</span></div>
+                >{{$t('magicMap.width')}}{{item.styleData[1].size}}{{$t('magicMap.pixel')}}</span></div>
               <div
                 @click="handleToClickLayout(index,2)"
                 :style="(item.styleData[2].img_url?'background:url('+item.styleData[2].img_url+') no-repeat;background-size:cover;':'')+'height:102px;width:102px;line-height:102px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')"
               ><span
                   v-if="!(item.styleData[2].img_url)"
                   style="width:auto"
-                >宽度{{item.styleData[2].size}}像素</span></div>
+                >{{$t('magicMap.width')}}{{item.styleData[2].size}}{{$t('magicMap.pixel')}}</span></div>
             </div>
             <div
               class="layoutDiv layoutSecond"
@@ -218,28 +218,28 @@
               ><span
                   v-if="!(item.styleData[0].img_url)"
                   style="width:auto"
-                >宽度{{item.styleData[0].size}}像素</span></div>
+                >{{$t('magicMap.width')}}{{item.styleData[0].size}}{{$t('magicMap.pixel')}}</span></div>
               <div
                 @click="handleToClickLayout(index,1)"
                 :style="(item.styleData[1].img_url?'background:url('+item.styleData[1].img_url+') no-repeat;background-size:cover;':'')+'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[1].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')"
               ><span
                   v-if="!(item.styleData[1].img_url)"
                   style="width:auto"
-                >宽度{{item.styleData[1].size}}像素</span></div>
+                >{{$t('magicMap.width')}}{{item.styleData[1].size}}{{$t('magicMap.pixel')}}</span></div>
               <div
                 @click="handleToClickLayout(index,2)"
                 :style="(item.styleData[2].img_url?'background:url('+item.styleData[2].img_url+') no-repeat;background-size:cover;':'')+'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-left:1px solid #6e86cc':'')"
               ><span
                   v-if="!(item.styleData[2].img_url)"
                   style="width:auto"
-                >宽度{{item.styleData[2].size}}像素</span></div>
+                >{{$t('magicMap.width')}}{{item.styleData[2].size}}{{$t('magicMap.pixel')}}</span></div>
               <div
                 @click="handleToClickLayout(index,3)"
                 :style="(item.styleData[3].img_url?'background:url('+item.styleData[3].img_url+') no-repeat;background-size:cover;':'')+'height:77px;width:77px;line-height:77px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
               ><span
                   v-if="!(item.styleData[3].img_url)"
                   style="width:auto"
-                >宽度{{item.styleData[3].size}}像素</span></div>
+                >{{$t('magicMap.width')}}{{item.styleData[3].size}}{{$t('magicMap.pixel')}}</span></div>
             </div>
 
             <div
@@ -254,11 +254,11 @@
                 <p
                   v-if="!(item.styleData[0].img_url)"
                   style="height:12px"
-                >{{item.styleData[0].size}}像素</p>
+                >{{item.styleData[0].size}}{{$t('magicMap.pixel')}}</p>
                 <p
                   v-if="!(item.styleData[0].img_url)"
                   style="height:12px;margin-top:5px"
-                >或同等比例</p>
+                >{{$t('magicMap.orEquivalent')}}</p>
               </div>
               <div
                 @click="handleToClickLayout(index,1)"
@@ -267,11 +267,11 @@
                 <p
                   v-if="!(item.styleData[1].img_url)"
                   style="height:12px"
-                >{{item.styleData[1].size}}像素</p>
+                >{{item.styleData[1].size}}{{$t('magicMap.pixel')}}</p>
                 <p
                   v-if="!(item.styleData[1].img_url)"
                   style="height:12px;margin-top:5px"
-                >或同等比例</p>
+                >{{$t('magicMap.orEquivalent')}}</p>
               </div>
               <div
                 @click="handleToClickLayout(index,2)"
@@ -280,11 +280,11 @@
                 <p
                   v-if="!(item.styleData[2].img_url)"
                   style="height:12px"
-                >{{item.styleData[2].size}}像素</p>
+                >{{item.styleData[2].size}}{{$t('magicMap.pixel')}}</p>
                 <p
                   v-if="!(item.styleData[2].img_url)"
                   style="height:12px;margin-top:5px"
-                >或同等比例</p>
+                >{{$t('magicMap.orEquivalent')}}</p>
               </div>
               <div
                 @click="handleToClickLayout(index,3)"
@@ -293,11 +293,11 @@
                 <p
                   v-if="!(item.styleData[3].img_url)"
                   style="height:12px"
-                >{{item.styleData[3].size}}像素</p>
+                >{{item.styleData[3].size}}{{$t('magicMap.pixel')}}</p>
                 <p
                   v-if="!(item.styleData[3].img_url)"
                   style="height:12px;margin-top:5px"
-                >或同等比例</p>
+                >{{$t('magicMap.orEquivalent')}}</p>
               </div>
             </div>
 
@@ -313,11 +313,11 @@
                 <p
                   v-if="!(item.styleData[0].img_url)"
                   style="height:12px"
-                >{{item.styleData[0].size}}像素</p>
+                >{{item.styleData[0].size}}{{$t('magicMap.pixel')}}</p>
                 <p
                   v-if="!(item.styleData[0].img_url)"
                   style="height:12px;margin-top:5px"
-                >或同等比例</p>
+                >{{$t('magicMap.orEquivalent')}}</p>
               </div>
               <div style="border:none;">
                 <div
@@ -327,11 +327,11 @@
                   <p
                     v-if="!(item.styleData[1].img_url)"
                     style="height:12px"
-                  >{{item.styleData[1].size}}像素</p>
+                  >{{item.styleData[1].size}}{{$t('magicMap.pixel')}}</p>
                   <p
                     v-if="!(item.styleData[1].img_url)"
                     style="height:12px;margin-top:5px"
-                  >或同等比例</p>
+                  >{{$t('magicMap.orEquivalent')}}</p>
                 </div>
                 <div
                   @click="handleToClickLayout(index,2)"
@@ -340,11 +340,11 @@
                   <p
                     v-if="!(item.styleData[2].img_url)"
                     style="height:12px"
-                  >{{item.styleData[2].size}}像素</p>
+                  >{{item.styleData[2].size}}{{$t('magicMap.pixel')}}</p>
                   <p
                     v-if="!(item.styleData[2].img_url)"
                     style="height:12px;margin-top:5px"
-                  >或同等比例</p>
+                  >{{$t('magicMap.orEquivalent')}}</p>
                 </div>
               </div>
 
@@ -362,11 +362,11 @@
                 <p
                   v-if="!(item.styleData[0].img_url)"
                   style="height:12px"
-                >{{item.styleData[0].size}}像素</p>
+                >{{item.styleData[0].size}}{{$t('magicMap.pixel')}}</p>
                 <p
                   v-if="!(item.styleData[0].img_url)"
                   style="height:12px;margin-top:5px"
-                >或同等比例</p>
+                >{{$t('magicMap.orEquivalent')}}</p>
               </div>
               <div style="border:none;display:flex;background:#fff">
                 <div
@@ -376,11 +376,11 @@
                   <p
                     v-if="!(item.styleData[1].img_url)"
                     style="height:12px"
-                  >{{item.styleData[1].size}}像素</p>
+                  >{{item.styleData[1].size}}{{$t('magicMap.pixel')}}</p>
                   <p
                     v-if="!(item.styleData[1].img_url)"
                     style="height:12px;margin-top:5px"
-                  >或同等比例</p>
+                  >{{$t('magicMap.orEquivalent')}}</p>
                 </div>
                 <div
                   @click="handleToClickLayout(index,2)"
@@ -389,11 +389,11 @@
                   <p
                     v-if="!(item.styleData[2].img_url)"
                     style="height:12px"
-                  >{{item.styleData[2].size}}像素</p>
+                  >{{item.styleData[2].size}}{{$t('magicMap.pixel')}}</p>
                   <p
                     v-if="!(item.styleData[2].img_url)"
                     style="height:12px;margin-top:5px"
-                  >或同等比例</p>
+                  >{{$t('magicMap.orEquivalent')}}</p>
                 </div>
               </div>
 
@@ -411,11 +411,11 @@
                 <p
                   v-if="!(item.styleData[0].img_url)"
                   style="height:12px"
-                >{{item.styleData[0].size}}像素</p>
+                >{{item.styleData[0].size}}{{$t('magicMap.pixel')}}</p>
                 <p
                   v-if="!(item.styleData[0].img_url)"
                   style="height:12px;margin-top:5px"
-                >或同等比例</p>
+                >{{$t('magicMap.orEquivalent')}}</p>
               </div>
               <div style="border:none;background:#fff">
                 <div
@@ -425,38 +425,38 @@
                   <p
                     v-if="!(item.styleData[1].img_url)"
                     style="height:12px"
-                  >{{item.styleData[1].size}}像素</p>
+                  >{{item.styleData[1].size}}{{$t('magicMap.pixel')}}</p>
                   <p
                     v-if="!(item.styleData[1].img_url)"
                     style="height:12px;margin-top:5px"
-                  >或同等比例</p>
+                  >{{$t('magicMap.orEquivalent')}}</p>
                 </div>
                 <div style="display:flex;border:none">
                   <div
                     @click="handleToClickLayout(index,2)"
-                    :style="(item.styleData[2].img_url?'background:url('+item.styleData[2].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:77px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc;':'')"
+                    :style="(item.styleData[2].img_url?'background:url('+item.styleData[2].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:77px;line-height:152px;margin-top:-1px;margin-left:-1px;display: flex;flex-direction: column;justify-content: center;'+(item.styleData[2].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[0].isChecked?'border-left:1px solid #6e86cc;':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc;':'')"
                   >
                     <p
                       v-if="!(item.styleData[2].img_url)"
-                      style="height:12px"
-                    >{{item.styleData[2].size}}像素</p>
+                      style="height:12px;line-height: 12px"
+                    >{{item.styleData[2].size}}{{$t('magicMap.pixel')}}</p>
                     <p
                       v-if="!(item.styleData[2].img_url)"
-                      style="height:12px;margin-top:5px"
-                    >或同等比例</p>
+                      style="height:12px;margin-top:5px;line-height: 12px"
+                    >{{$t('magicMap.orEquivalent')}}</p>
                   </div>
                   <div
                     @click="handleToClickLayout(index,3)"
-                    :style="(item.styleData[3].img_url?'background:url('+item.styleData[3].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:77px;line-height:152px;margin-top:-1px;margin-left:-1px;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
+                    :style="(item.styleData[3].img_url?'background:url('+item.styleData[3].img_url+') no-repeat;background-size:cover;':'')+'height:152px;width:77px;line-height:152px;margin-top:-1px;margin-left:-1px;display: flex;flex-direction: column;justify-content: center;'+(item.styleData[3].isChecked?'border:1px solid #6e86cc':'')+(item.styleData[1].isChecked?'border-top:1px solid #6e86cc':'')+(item.styleData[2].isChecked?'border-left:1px solid #6e86cc':'')"
                   >
                     <p
                       v-if="!(item.styleData[3].img_url)"
-                      style="height:12px"
-                    >{{item.styleData[3].size}}像素</p>
+                      style="height:12px;line-height: 12px"
+                    >{{item.styleData[3].size}}{{$t('magicMap.pixel')}}</p>
                     <p
                       v-if="!(item.styleData[3].img_url)"
-                      style="height:12px;margin-top:5px"
-                    >或同等比例</p>
+                      style="height:12px;margin-top:5px;line-height: 12px"
+                    >{{$t('magicMap.orEquivalent')}}</p>
                   </div>
                 </div>
 
@@ -491,13 +491,13 @@
         <div class="selectTemplate">
           <span></span>
           <div style="margin-top:10px;color:#666">
-            选定布局区域，在下方添加图片
+            {{$t('magicMap.tableTips')}}
           </div>
 
         </div>
         <!--选择图片-->
         <div class="selectTemplate addPicContainer">
-          <span>选择图片：</span>
+          <span :class="magic">{{$t('magicMap.selectPictures')}}：</span>
           <div>
             <div
               class="addPic"
@@ -520,15 +520,20 @@
                 style="background: rgba(0, 0, 0, 0.5)"
               >
                 <span :style="'background:url('+$imageHost+'/image/admin/shop_beautify/add_decorete.png'+') center center / 65% 65% no-repeat'"></span>
-                <i>修改</i>
+                <i>{{$t('magicMap.modify')}}</i>
               </div>
 
             </div>
           </div>
+          <span
+            class="sizeTips"
+            style="font-size:12px;color:#333;margin-left:10px;"
+            v-if="sizeTipsText"
+          >{{$t('magicMap.recommendeDimensions')}}：{{sizeTipsText}}{{$t('magicMap.pixelEquivalent')}}</span>
         </div>
         <!--图片跳转链接-->
         <div class="selectTemplate linkPathContainer">
-          <span>图片跳转链接：</span>
+          <span :class="magic">{{$t('magicMap.linkTitle')}}：</span>
           <div class="linkPathDiv">
             <el-input
               size="small"
@@ -537,11 +542,11 @@
             <el-button
               size="small"
               @click="handleToCallSelectLink()"
-            >选择链接</el-button>
+            >{{$t('magicMap.selectLink')}}</el-button>
           </div>
         </div>
         <div style="color:#999;margin:10px 0 0 10px">
-          魔方图片比例与要求的不一致会被裁剪
+          {{$t('magicMap.bottomTips')}}
         </div>
       </div>
       <!--end-->
@@ -572,44 +577,44 @@ export default {
   },
   data () {
     return {
-      selectTemplateList: [// 选择模板数据
-        {
-          list: [
-            {
-              isChecked: true,
-              text: '1行2个'
-            },
-            {
-              isChecked: false,
-              text: '1行3个'
-            },
-            {
-              isChecked: false,
-              text: '1行4个'
-            },
-            {
-              isChecked: false,
-              text: '2行2个'
-            },
-            {
-              isChecked: false,
-              text: '1左2右'
-            },
-            {
-              isChecked: false,
-              text: '1上2下'
-            },
-            {
-              isChecked: false,
-              text: '1左3右'
-            },
-            {
-              isChecked: false,
-              text: '自定义'
-            }
-          ]
-        }
-      ],
+      // selectTemplateList: [// 选择模板数据
+      //   {
+      //     list: [
+      //       {
+      //         isChecked: true,
+      //         text: '1行2个'
+      //       },
+      //       {
+      //         isChecked: false,
+      //         text: '1行3个'
+      //       },
+      //       {
+      //         isChecked: false,
+      //         text: '1行4个'
+      //       },
+      //       {
+      //         isChecked: false,
+      //         text: '2行2个'
+      //       },
+      //       {
+      //         isChecked: false,
+      //         text: '1左2右'
+      //       },
+      //       {
+      //         isChecked: false,
+      //         text: '1上2下'
+      //       },
+      //       {
+      //         isChecked: false,
+      //         text: '1左3右'
+      //       },
+      //       {
+      //         isChecked: false,
+      //         text: '自定义'
+      //       }
+      //     ]
+      //   }
+      // ],
       density: '0', // 魔方密度select value数据
       densitySelectData: [{ // 魔方密度select数据
         value: '0',
@@ -895,6 +900,8 @@ export default {
       tuneUpSelectLink: false, // 选择链接弹窗调起flag
       firstInitNotEliminate: false, // 首次切换不清除当前模板数据
       customModulesBackData: null, // 自定义模块回显
+      magic: 'magic', // 英文适配
+      sizeTipsText: '', // 图片建议尺寸
       moduleSaveData: { // 模块保存数据
 
       }
@@ -928,7 +935,7 @@ export default {
     // 监听数据变化
     moduleSaveData: {
       handler (newData) {
-        console.log(newData, '触发')
+        console.log(newData, '触发', this.nowTemplateClickIndex)
         this.$emit('handleToBackData', newData)
       },
       deep: true
@@ -940,12 +947,18 @@ export default {
       let flag = this.firstInitNotEliminate
 
       this.handleToSaveDataImgInfo(newData, flag)
+      // 处理尺寸提示文本
+
+      console.log(newData)
+      if (newData !== 7) {
+        let len = this.layoutData[newData].styleData.length - 1
+        this.sizeTipsText = this.layoutData[newData].styleData[len].size
+      } else {
+        this.sizeTipsText = ''
+      }
     },
     // 监听图片跳转路径值变化
     linkInput (newData) {
-      console.log(this.layoutData, this.nowTemplateClickIndex, this.nowLayutIndex)
-
-      console.log(this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link)
       if (this.nowTemplateClickIndex !== 7) {
         console.log(this.nowTemplateClickIndex)
         this.handleToSaveDataImgInfo(this.nowTemplateClickIndex, false)
@@ -960,6 +973,13 @@ export default {
     this.langDefault()
     // 初始选择模板
     console.log(this.$route.query.pageId)
+
+    console.log(this.nowTemplateClickIndex)
+    if (this.nowTemplateClickIndex === 0) {
+      this.sizeTipsText = '375'
+      console.log(this.sizeTipsText)
+    }
+
     // if (this.$route.query.pageId === -1) {
     //   this.handleToSaveDataImgInfo(0, true)
     // } else {
@@ -970,7 +990,7 @@ export default {
   methods: {
     // 点击选择模板子项触发事件
     handleToClickTemplate (index) {
-      this.selectTemplateList[0].list.forEach((item, index) => {
+      this.$t('magicMap.selectTemplateList')[0].list.forEach((item, index) => {
         item.isChecked = false
       })
       this.nowTemplateClickIndex = index
@@ -980,7 +1000,7 @@ export default {
       }
 
       console.log(this.nowTemplateClickIndex)
-      this.selectTemplateList[0].list[index].isChecked = true
+      this.$t('magicMap.selectTemplateList')[0].list[index].isChecked = true
       this.moduleSaveData.table_type = index + 1
       this.moduleSaveData.data = {}
       // this.handleToSaveDataImgInfo(index, true)
@@ -995,7 +1015,8 @@ export default {
       this.layoutData[flag].styleData[index].isChecked = true
       this.nowLayutIndex = index
       this.imgUrl = this.layoutData[flag].styleData[index].img_url
-      console.log(flag, index)
+      console.log(this.layoutData[flag].styleData[index].size)
+      this.sizeTipsText = this.layoutData[flag].styleData[index].size
       console.log(this.layoutData[flag].styleData[index].jump_link)
       this.linkInput = this.layoutData[flag].styleData[index].jump_link
     },
@@ -1084,6 +1105,10 @@ export default {
     handleToGetLinkpathImgUrl (res) {
       this.linkInput = res.jump_link
       this.imgUrl = res.img_url
+      // 计算建议图片尺寸
+      let w = res.cols * 188
+      let h = res.rows * 188
+      this.sizeTipsText = w + 'x' + h
       console.log(res)
     },
     // 获取自定义布局操作回传的数据
@@ -1401,6 +1426,14 @@ export default {
           height: 70px;
           line-height: 70px;
         }
+        .sizeTips {
+          width: 195px;
+          word-break: break-all;
+          line-height: 15px;
+          text-align: left;
+          display: flex;
+          align-items: center;
+        }
         .addPic {
           position: relative;
           cursor: pointer;
@@ -1428,7 +1461,8 @@ export default {
             }
             i {
               position: absolute;
-              left: 30%;
+              text-align: center;
+              left: 0;
               bottom: 15%;
               color: #fff;
             }
@@ -1446,6 +1480,11 @@ export default {
             width: 200px;
           }
         }
+      }
+      .magic {
+        line-height: 20px !important;
+        text-align: center !important;
+        padding-left: 23px !important;
       }
     }
     //end

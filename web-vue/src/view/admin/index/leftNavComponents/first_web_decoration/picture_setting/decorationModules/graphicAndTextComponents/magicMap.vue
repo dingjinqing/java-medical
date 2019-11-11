@@ -15,7 +15,7 @@
           class="seizeASeat"
           v-if="!isHaveImgUrlAll"
         >
-          点击编辑魔方
+          {{$t('magicMap.middleTips')}}
         </div>
         <!--右侧配置有数据-->
         <!---->
@@ -107,9 +107,9 @@
       <!--模块编辑区结束-->
       <div
         class="item_module_title"
-        :style="hoverTips?'width:140px':''"
+        :style="hoverTips?'width:170px':''"
       >
-        <span>魔方多图</span>
+        <span>{{$t('magicMap.middleHaverText')}}</span>
       </div>
       <div class="item_operation">
         <img

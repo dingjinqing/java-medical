@@ -22,7 +22,7 @@
             @mouseleave="leave(index,0)"
           >
             <div :style="item['0img_url']&&item['0IsBorder']?'background:url('+item['0img_url']+') no-repeat;background-size:cover;':''">
-              <span v-if="!item['0IsBorder']&&!item['0img_url']">+</span><span v-else>{{!((item['0Col']==='1')&&(item['0Row']==='1')||item['0img_url'])?(Number(item['0Col'])*188+'x'+Number(item['0Row'])*188+'像素或同等比例'):''}}<i
+              <span v-if="!item['0IsBorder']&&!item['0img_url']">+</span><span v-else>{{!((item['0Col']==='1')&&(item['0Row']==='1')||item['0img_url'])?(Number(item['0Col'])*188+'x'+Number(item['0Row'])*188+$t('magicMap.pixelEquivalent')):''}}<i
                   @click.stop="handleToDelCell(index,0)"
                   :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
                   v-if="(item['0controlClick']&&item['0controlDelIconDis'])"
@@ -38,7 +38,7 @@
             @mouseleave="leave(index,1)"
           >
             <div :style="item['1img_url']&&item['1IsBorder']?'background:url('+item['1img_url']+') no-repeat;background-size:cover;':''">
-              <span v-if="!item['1IsBorder']&&!item['1img_url']">+</span><span v-else>{{!((item['1Col']==='1')&&(item['1Row']==='1')||item['1img_url'])?(Number(item['1Col'])*188+'x'+Number(item['1Row'])*188+'像素或同等比例'):''}}<i
+              <span v-if="!item['1IsBorder']&&!item['1img_url']">+</span><span v-else>{{!((item['1Col']==='1')&&(item['1Row']==='1')||item['1img_url'])?(Number(item['1Col'])*188+'x'+Number(item['1Row'])*188+$t('magicMap.pixelEquivalent')):''}}<i
                   @click.stop="handleToDelCell(index,1)"
                   :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
                   v-if="(item['1controlClick']&&item['1controlDelIconDis'])"
@@ -54,7 +54,7 @@
             @mouseleave="leave(index,2)"
           >
             <div :style="item['2img_url']&&item['2IsBorder']?'background:url('+item['2img_url']+') no-repeat;background-size:cover;':''">
-              <span v-if="!item['2IsBorder']&&!item['2img_url']">+</span><span v-else>{{!((item['2Col']==='1')&&(item['2Row']==='1')||item['2img_url'])?(Number(item['2Col'])*188+'x'+Number(item['2Row'])*188+'像素或同等比例'):''}}<i
+              <span v-if="!item['2IsBorder']&&!item['2img_url']">+</span><span v-else>{{!((item['2Col']==='1')&&(item['2Row']==='1')||item['2img_url'])?(Number(item['2Col'])*188+'x'+Number(item['2Row'])*188+$t('magicMap.pixelEquivalent')):''}}<i
                   @click.stop="handleToDelCell(index,2)"
                   :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
                   v-if="(item['2controlClick']&&item['2controlDelIconDis'])"
@@ -70,7 +70,7 @@
             @mouseleave="leave(index,3)"
           >
             <div :style="item['3img_url']&&item['3IsBorder']?'background:url('+item['3img_url']+') no-repeat;background-size:cover;':''">
-              <span v-if="!item['3IsBorder']&&!item['3img_url']">+</span><span v-else>{{!((item['3Col']==='1')&&(item['3Row']==='1')||item['3img_url'])?(Number(item['3Col'])*188+'x'+Number(item['3Row'])*188+'像素或同等比例'):''}}<i
+              <span v-if="!item['3IsBorder']&&!item['3img_url']">+</span><span v-else>{{!((item['3Col']==='1')&&(item['3Row']==='1')||item['3img_url'])?(Number(item['3Col'])*188+'x'+Number(item['3Row'])*188+$t('magicMap.pixelEquivalent')):''}}<i
                   @click.stop="handleToDelCell(index,3)"
                   :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
                   v-if="(item['3controlClick']&&item['3controlDelIconDis'])"
@@ -88,7 +88,7 @@
             @mouseleave="leave(index,4)"
           >
             <div :style="item['4img_url']&&item['4IsBorder']?'background:url('+item['4img_url']+') no-repeat;background-size:cover;':''">
-              <span v-if="!item['4IsBorder']&&!item['4img_url']">+</span><span v-else>{{!((item['4Col']==='1')&&(item['4Row']==='1')||item['4img_url'])?(Number(item['4Col'])*188+'x'+Number(item['4Row'])*188+'像素或同等比例'):''}}<i
+              <span v-if="!item['4IsBorder']&&!item['4img_url']">+</span><span v-else>{{!((item['4Col']==='1')&&(item['4Row']==='1')||item['4img_url'])?(Number(item['4Col'])*188+'x'+Number(item['4Row'])*188+$t('magicMap.pixelEquivalent')):''}}<i
                   @click.stop="handleToDelCell(index,4)"
                   :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
                   v-if="(item['4controlClick']&&item['4controlDelIconDis'])"
@@ -106,7 +106,7 @@
             @mouseleave="leave(index,5)"
           >
             <div :style="item['5img_url']&&item['5IsBorder']?'background:url('+item['5img_url']+') no-repeat;background-size:cover;':''">
-              <span v-if="!item['5IsBorder']&&!item['5img_url']">+</span><span v-else>{{!((item['5Col']==='1')&&(item['5Row']==='1')||item['5img_url'])?(Number(item['5Col'])*188+'x'+Number(item['5Row'])*188+'像素或同等比例'):''}}<i
+              <span v-if="!item['5IsBorder']&&!item['5img_url']">+</span><span v-else>{{!((item['5Col']==='1')&&(item['5Row']==='1')||item['5img_url'])?(Number(item['5Col'])*188+'x'+Number(item['5Row'])*188+$t('magicMap.pixelEquivalent')):''}}<i
                   @click.stop="handleToDelCell(index,5)"
                   :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
                   v-if="(item['5controlClick']&&item['5controlDelIconDis'])"
@@ -124,7 +124,7 @@
             @mouseleave="leave(index,6)"
           >
             <div :style="item['6img_url']&&item['6IsBorder']?'background:url('+item['6img_url']+') no-repeat;background-size:cover;':''">
-              <span v-if="!item['6IsBorder']&&!item['6img_url']">+</span><span v-else>{{!((item['6Col']==='1')&&(item['6Row']==='1')||item['6img_url'])?(Number(item['6Col'])*188+'x'+Number(item['6Row'])*188+'像素或同等比例'):''}}<i
+              <span v-if="!item['6IsBorder']&&!item['6img_url']">+</span><span v-else>{{!((item['6Col']==='1')&&(item['6Row']==='1')||item['6img_url'])?(Number(item['6Col'])*188+'x'+Number(item['6Row'])*188+$t('magicMap.pixelEquivalent')):''}}<i
                   @click.stop="handleToDelCell(index,6)"
                   :style="'background:url('+$imageHost+'/image/admin/icon_delete.png)'"
                   v-if="(item['6controlClick']&&item['6controlDelIconDis'])"
@@ -171,7 +171,9 @@ export default {
         console.log(this.columnData[newData[0]][`${newData[1]}jump_link`])
         let obj = {
           jump_link: this.columnData[newData[0]][`${newData[1]}jump_link`],
-          img_url: this.columnData[newData[0]][`${newData[1]}img_url`]
+          img_url: this.columnData[newData[0]][`${newData[1]}img_url`],
+          cols: this.columnData[newData[0]][`${newData[1]}Col`],
+          rows: this.columnData[newData[0]][`${newData[1]}Row`]
         }
         this.$emit('handleToGetLinkpathImgUrl', obj)
       },
@@ -222,7 +224,8 @@ export default {
     }
   },
   mounted () {
-
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 初始化数据
