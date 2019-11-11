@@ -750,7 +750,7 @@ public class StoreWxService extends ShopBaseService {
             .balanceFirst(tradeService.getBalanceFirst())
             .cardFirst(tradeService.getCardFirst())
             // 获取支持的支付方式
-            .paymentVoList(new ArrayList<>(Optional.ofNullable(paymentService.getSupportPayment()).orElse(new HashMap<>()).values()))
+            .paymentVoList(new ArrayList<>(Optional.ofNullable(paymentService.getSupportPayment()).orElse(new HashMap<>(8)).values()))
             // 获取指定用户最近的一个服务预约订单信息(主要是获取用户的名称和手机号;没有就算了)
             .recentOrderInfo(serviceOrderService.getRecentOrderInfo(userId))
             // 获取门店职称配置
