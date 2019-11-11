@@ -598,7 +598,7 @@ export default {
       pagingBrandUpdateRequest(obj).then((res) => {
         if (res.error === 0) {
           this.defaultPageingGrand()
-          this.$message({
+          this.$message.success({
             message: '修改成功',
             type: 'success'
           })
@@ -631,7 +631,7 @@ export default {
       }
       saveShowBrandgetRequest(obj).then((res) => {
         if (res.error === 0) {
-          this.$message({
+          this.$message.success({
             message: '保存成功',
             type: 'success'
           })

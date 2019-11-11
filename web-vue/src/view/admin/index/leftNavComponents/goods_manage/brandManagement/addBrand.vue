@@ -163,29 +163,27 @@
         >确 定</el-button>
       </span>
     </el-dialog>
-    <!--选择商品弹窗-->
+
+    <!--选择图片弹窗 -->
+    <ImageDalog
+      pageIndex='pictureSpace'
+      :tuneUp='tuneUp'
+      :imageSize=[100,100]
+      @handleSelectImg='handleSelectImg'
+    />
     <!--选择商品弹窗-->
     <ChoosingGoods
       @resultGoodsDatas='handleToGetGoods'
       :tuneUpChooseGoods='tuneUpChooseGoods'
     />
-    <!--选择图片弹窗 -->
-    <div class="specialDialog">
-      <ImageDalog
-        pageIndex='pictureSpace'
-        :tuneUp='tuneUp'
-        :imageSize=[100,100]
-        @handleSelectImg='handleSelectImg'
-      />
-    </div>
   </div>
 </template>
 <script>
 import { queryGoodsIdRequest, classificationSelectRequest, addGrandClassRequest, brandAddRequest } from '@/api/admin/brandManagement.js'
 import { mapActions, mapGetters } from 'vuex'
-import ImageDalog from '@/components/admin/imageDalog'
 export default {
-  components: { ImageDalog,
+  components: {
+    ImageDalog: () => import('@/components/admin/imageDalog'),
     ChoosingGoods: () => import('@/components/admin/choosingGoods')
   },
   data () {
@@ -412,8 +410,10 @@ export default {
         })
       }
       classificationSelectRequest().then((res) => {
-        this.options = res.content
         console.log(res)
+        if (res.error === 0) {
+          this.options = res.content
+        }
       })
     },
     // 新建品牌分类弹窗
@@ -427,14 +427,21 @@ export default {
         'first': this.classificationName
       }
       addGrandClassRequest(obj).then((res) => {
+        console.log(res)
         if (res.error === 0) {
-          this.$message({
+          this.$message.success({
             message: '添加品牌分类成功',
             type: 'success'
           })
           this.defaultGrandClass()
         }
         console.log(res)
+      }).catch((res) => {
+        console.log(res)
+        this.$message.success({
+          message: '添加品牌失败',
+          type: 'success'
+        })
       })
 
       this.dialogVisible = false
@@ -499,6 +506,17 @@ export default {
       }
       brandAddRequest(obj).then((res) => {
         console.log(res)
+        if (res.error === 0) {
+          this.$message.success({
+            message: '保存成功',
+            type: 'success'
+          })
+        } else if (res.error === 131001) {
+          this.$message.error({
+            message: '品牌名称已存在',
+            type: 'success'
+          })
+        }
       })
     }
   }
