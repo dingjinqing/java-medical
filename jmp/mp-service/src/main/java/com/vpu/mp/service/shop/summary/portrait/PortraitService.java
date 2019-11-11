@@ -54,6 +54,8 @@ public class PortraitService extends ShopBaseService {
         KeyValueChart activeUserNew = getChart(visitUvNew);
         visitUv.setAgesFirst(activeUser);
         visitUvNew.setAgesFirst(activeUserNew);
+        PortraitMaxAndMin setMaxAndMin = setMaxAndMin(visitUv);
+        PortraitMaxAndMin setMaxAndMin2 = setMaxAndMin(visitUvNew);
         //删除省市中value为0的数据
         removeZero(visitUv);
         removeZero(visitUvNew);
@@ -72,8 +74,8 @@ public class PortraitService extends ShopBaseService {
         vo.setNewAddUserSum(newAddUserSum);
         vo.setStartDate(showDate(type));
         vo.setEndDate(showDate(0));
-        vo.setActiveProRange(setMaxAndMin(visitUv));
-        vo.setNewAddUserProRange(setMaxAndMin(visitUvNew));
+        vo.setActiveProRange(setMaxAndMin);
+        vo.setNewAddUserProRange(setMaxAndMin2);
         return vo;
     }
 
