@@ -17,10 +17,7 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import jodd.util.StringUtil;
@@ -292,7 +289,7 @@ public class CouponService extends ShopBaseService {
     	MpBuildOptions(select, param);
     	SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
     	PageResult<AvailCouponVo> list = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
-        return list;
+    	return list;
     }
 
     /**
@@ -302,16 +299,12 @@ public class CouponService extends ShopBaseService {
      */
     public void MpBuildOptions(SelectJoinStep<? extends Record> select, AvailCouponParam param) {
     	Byte isUsed = param.getNav();
-    	  Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+    	Timestamp now = Timestamp.valueOf(LocalDateTime.now());
     	if(isUsed == 0 || isUsed == 1) {  //未使用、已使用状态
-    		select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) isUsed).and(MRKING_VOUCHER.END_TIME.ge(now)));
+    		select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq(isUsed).and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(now)));
     	}else {  //已过期状态
-    		//根据开始时间、结束时间判断
-            Condition dateCondition = MRKING_VOUCHER.END_TIME.le(now).and(MRKING_VOUCHER.VALIDITY_TYPE.eq((byte) 0));
-           //根据有效天数判断
-            Condition limitTimeCondition = MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0));
-            Condition timeCondition = dateCondition.or(limitTimeCondition);
-            select.where(timeCondition);
+    		//根据有效 开始时间、结束时间判断
+            select.where(CUSTOMER_AVAIL_COUPONS.END_TIME.le(now));
     	}
     }
 
@@ -328,6 +321,31 @@ public class CouponService extends ShopBaseService {
             .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(param.couponSn))
             .fetchOne().into(AvailCouponDetailVo.class);
         return detail;
+    }
+
+    /**
+     * 获取各状态下优惠券数量
+     * @param userId
+     */
+    public AvailCouponListVo getEachStatusNum(Integer userId,AvailCouponListVo red){
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        System.out.println(userId);
+        //未使用
+        Integer unused = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0)
+                .and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(now))))
+                .fetch().get(0).into(Integer.class);
+        //已使用
+        Integer used = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1)
+                .and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(now))))
+                .fetch().get(0).into(Integer.class);
+        //已过期
+        Integer expire = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.END_TIME.le(now)))
+                .fetch().get(0).into(Integer.class);
+
+        red.setUnusedNum(unused);
+        red.setUsedNum(used);
+        red.setExpiredNum(expire);
+        return red;
     }
 
 

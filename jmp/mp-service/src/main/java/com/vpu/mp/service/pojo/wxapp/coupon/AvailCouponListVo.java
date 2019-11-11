@@ -1,8 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.coupon;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vpu.mp.service.foundation.util.PageResult;
 import lombok.Data;
 
 /**
@@ -12,21 +10,9 @@ import lombok.Data;
  */
 @Data
 public class AvailCouponListVo {
-	/**
-	 * 未使用
-	 */
-	public List<AvailCouponVo> unused = new ArrayList<AvailCouponVo>();
-	/**
-	 * 已使用
-	 */
-	public List<AvailCouponVo> used = new ArrayList<AvailCouponVo>();
-	/**
-	 * 已过期
-	 */
-	public List<AvailCouponVo> expired = new ArrayList<AvailCouponVo>();
-	
 	public Integer unusedNum;
 	public Integer usedNum;
 	public Integer expiredNum;
+	public PageResult<AvailCouponVo> couponList;
 	
 }

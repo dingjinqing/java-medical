@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.coupon;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * 用户优惠券列表出参
