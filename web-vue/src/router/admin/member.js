@@ -114,12 +114,40 @@ const routes = [
         '@/view/admin/index/leftNavComponents/user_manger/membershipCard/membershipCard'
       )
   },
-  // 会员卡详情页
+  // 普通会员卡详情页
   {
-    path: '/admin/home/main/membershipCardDetail',
-    name: 'membershipCardDetail',
+    path: '/admin/home/main/normalCardDetail',
+    name: 'normalCardDetail',
     meta: {
       crumbTitle: 'router.userCard',
+      meta: 'user_manger',
+      category: 'user_card'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/membershipCardDetail'
+      )
+  },
+  // 限次会员卡详情页
+  {
+    path: '/admin/home/main/limitCardDetail',
+    name: 'limitCardDetail',
+    meta: {
+      crumbTitle: 'router.limitTimes',
+      meta: 'user_manger',
+      category: 'user_card'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/membershipCardDetail'
+      )
+  },
+  // 等级会员卡详情页
+  {
+    path: '/admin/home/main/gradeCardDetail',
+    name: 'gradeCardDetail',
+    meta: {
+      crumbTitle: 'router.GradeCard',
       meta: 'user_manger',
       category: 'user_card'
     },

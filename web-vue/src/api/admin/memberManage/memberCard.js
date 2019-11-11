@@ -170,3 +170,21 @@ export function updateCardRequest (data) {
     data
   })
 }
+
+// 停止或启动会员卡状态
+export function changeCardStatueRequest (data) {
+  return service({
+    url: '/api/admin/member/card/power',
+    method: 'post',
+    data
+  })
+}
+
+// 删除会员卡
+export function deleteCardRequest (data) {
+  return service({
+    url: '/api/admin/member/card/delete',
+    method: 'post',
+    data
+  })
+}

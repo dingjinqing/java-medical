@@ -342,7 +342,7 @@
             <div
               class="new_card"
               @click="handleToCardDetail(2)"
-              v-show="!addStatus"
+              v-show="addStatus"
             >
               <img :src="new_card_img">
               <span style="color: #9e9e9e;font-size: 15px;padding: 12px 0">{{ $t('memberCard.addMemberCard') }}</span>
@@ -356,7 +356,7 @@
   </div>
 </template>
 <script>
-import { getAllMemberCardRequest } from '@/api/admin/memberManage/memberCard.js'
+import { deleteCardRequest, getAllMemberCardRequest, changeCardStatueRequest } from '@/api/admin/memberManage/memberCard.js'
 export default {
   components: {
     ShareCodeDialog: () => import('@/components/admin/shareCodeDialog')
@@ -457,11 +457,13 @@ export default {
         default:
           break
       }
-
       // 准备数据
       let obj = {
+        'currentPage': 0,
+        'pageRows': 100,
         'cardType': this.currentCardType
       }
+      console.log(obj)
       // 请求后台api
       this.getBackEndData(obj)
     },
@@ -575,6 +577,60 @@ export default {
       this.cardDataThird = []
     },
 
+    // 删除会员卡
+    deleteCard (id) {
+      this.$confirm('确认要删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteCardReq(id)
+        this.$message.success('删除成功!')
+      }).catch(() => {
+        this.$message.info(
+          '已取消删除'
+        )
+      })
+    },
+    deleteCardReq (id) {
+      deleteCardRequest({ id }).then(res => {
+        if (res.error === 0) {
+          console.log('删除成功')
+          this.getBackEndData({ 'currentPage': 0,
+            'pageRows': 100,
+            'cardType': this.currentCardType })
+        }
+      })
+    },
+    // 停止或启动会员卡
+    stopCardStatus (id) {
+      let data = {
+        id,
+        'flag': 2
+      }
+      changeCardStatueRequest(data).then(res => {
+        if (res.error === 0) {
+          console.log('停止成功')
+
+          this.loadAllPageData()
+        }
+      })
+    },
+
+    powerCardStatus (id) {
+      let data = {
+        id,
+        'flag': 1
+      }
+      changeCardStatueRequest(data).then(res => {
+        if (res.error === 0) {
+          console.log('启动成功')
+
+          this.loadAllPageData()
+        }
+      })
+    },
+
     // 7- 请求后台数据
     getBackEndData (obj) {
       getAllMemberCardRequest(obj).then(res => {
@@ -604,36 +660,27 @@ export default {
             this.dealWithMemCardExtralRight(item)
             console.log(item)
           })
-          console.log(cardData)
-          return new Promise((resolve, reject) => {
-            resolve(cardData)
-          })
-        } else {
-          // 错误的捕捉500等，都在前端全局捕捉了
-          return new Promise((resolve, reject) => {
-            resolve(null)
-          })
-        }
-      }).then(data => {
-        // 会员卡
-        switch (Number(this.currentCardType)) {
-          case 0:
-            // 普通会员卡
-            this.cardData = data
-            break
-          case 1:
-            // 限次会员卡
-            this.cardDataSecond = data
-            console.log(this.cardDataSecond)
-            break
-          case 2:
-            // 等级会员卡
-            this.cardDataThird = data
-            // 等级会员卡添加按钮样式控制
-            this.changeAddStatus()
-            break
-          default:
-            break
+          // 会员卡
+          console.log(this.currentCardType)
+          switch (Number(this.currentCardType)) {
+            case 0:
+              // 普通会员卡
+              this.cardData = cardData
+              break
+            case 1:
+              // 限次会员卡
+              this.cardDataSecond = cardData
+              console.log(this.cardDataSecond)
+              break
+            case 2:
+              // 等级会员卡
+              this.cardDataThird = cardData
+              // 等级会员卡添加按钮样式控制
+              this.changeAddStatus()
+              break
+            default:
+              break
+          }
         }
       })
     },
@@ -651,6 +698,9 @@ export default {
     },
     // 动态改变行间样式
     getStyle (item, index) {
+      if (item.id === 864) {
+        console.log(item)
+      }
       /** 会员卡状态 flag 1:使用中，2:停止使用 ,3：过期 */
       if ([2, 3].includes(item.flag)) {
         // 停止状态灰色
@@ -661,62 +711,96 @@ export default {
       if (item.bgType === 0) {
         return 'background-color:' + item.bgColor
       } else {
-        return 'backgroundImage:url(' + this.$imageHost + item.bgImg + ')'
+        return 'backgroundImage:url(' + this.$imageHost + '/' + item.bgImg + ')' + ';backgroundRepeat:no-repeat;background-size: 100% 100%;'
       }
     },
     // 跳转到会员卡详情页
-    handleToCardDetail (type) {
-      this.$router.push({
-        name: 'membershipCardDetail',
-        query: {
-          'cardType': type
-        }
-      })
+    handleToCardDetail (type, cardId) {
+      let obj = { query: { 'cardType': type, cardId } }
+      if (type === 0) {
+        obj.name = 'normalCardDetail'
+      } else if (type === 1) {
+        obj.name = 'limitCardDetail'
+      } else if (type === 2) {
+        obj.name = 'gradeCardDetail'
+      }
+      console.log(obj)
+      this.$router.push(obj)
     },
     // tips系列点击
     handleToTips (flag, item, index, type) {
-      console.log(flag)
+      console.log(flag, type)
       switch (flag) {
         case 0:
-          this.$router.push({
-            name: 'membershipCardDetail',
-            query: {
-              cardType: this.currentCardType,
-              cardId: item.id
-            }
-          })
+          this.handleToCardDetail(type, item.id)
           break
         case 1:
-          console.log('q')
-          if (item.flag === 0) {
-            if (!item.isStop) {
+          // 删除或分享
+          console.log('删除或分享')
+          if (type === 0) {
+            if (item.flag === 1) {
+              // 分享
               this.$http.$emit('shareCodeDialog', item)
             } else {
-              this.cardData.splice(index, 1)
+              // 删除
+              this.deleteCard(item.id)
             }
-          } else if (item.flag === 1) {
-            if (!item.isStop) {
+          } else if (type === 1) {
+            if (item.flag === 1) {
+              // 分享
               this.$http.$emit('shareCodeDialog', item)
             } else {
-              this.cardDataSecond.splice(index, 1)
+              // 删除
+              this.deleteCard(item.id)
             }
-          } else if (item.flag === 2) {
-            if (!item.isStop) {
+          } else if (type === 2) {
+            if (item.flag === 1) {
+              // 分享
               this.$http.$emit('shareCodeDialog', item)
             } else {
-              this.cardDataThird.splice(index, 1)
+              // 删除
+              this.deleteCard(item.id)
             }
           }
 
           break
         case 2:
+          // 停用-启动
+          console.log(item)
           console.log(item.flag)
-          if (item.flag === 0) {
-            this.cardData[index].isStop = !this.cardData[index].isStop
+          if (type === 0) {
+            // 普通卡
+            if (item.flag === 1) {
+              // 使用中转化成停用
+              this.stopCardStatus(item.id)
+              this.cardData[index].flag = 2
+            } else {
+              // 停止使用转化成使用
+              this.powerCardStatus(item.id)
+              this.cardData[index].flag = 1
+            }
           } else if (item.flag === 1) {
-            this.cardDataSecond[index].isStop = !this.cardData[index].isStop
+            // 限次卡
+            if (item.flag === 1) {
+              // 使用中转化成停用
+              this.stopCardStatus(item.id)
+              this.cardDataSecond[index].flag = 2
+            } else {
+              // 停止使用转化成使用
+              this.powerCardStatus(item.id)
+              this.cardDataSecond[index].flag = 1
+            }
           } else if (item.flag === 2) {
-            this.cardDataThird[index].isStop = !this.cardData[index].isStop
+            console.log('等级卡')
+            if (item.flag === 1) {
+              // 使用中转化成停用
+              this.stopCardStatus(item.id)
+              this.cardDataThird[index].flag = 2
+            } else {
+              // 停止使用转化成使用
+              this.powerCardStatus(item.id)
+              this.cardDataThird[index].flag = 1
+            }
           }
       }
     },

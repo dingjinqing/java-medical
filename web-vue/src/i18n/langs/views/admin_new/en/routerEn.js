@@ -17,7 +17,12 @@ export const en = {
 
   // 概况 用户画像
   analysis_portrait: ['Overview', 'User portrait'],
-
+  // 会员管理 会员卡
+  userCard: ['Membership', 'Normal Card'],
+  // 会员管理 限次
+  limitTimes: ['Membership', 'Limit Card'],
+  // 会员管理 等级
+  GradeCard: ['Membership', 'Grade Card'],
   // 会员管理 持卡会员
   Cardholder: ['Membership management'],
 

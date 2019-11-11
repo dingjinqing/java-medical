@@ -6,7 +6,7 @@
         <div class="left_middle">
           <div
             class="example_card"
-            :style="bgStyleComputed"
+            :style="`${bgStyleComputed}`"
           >
             <div class="card_detail">
               <img :src="$imageHost+'/image/admin/img_home/testImg.jpeg'">
@@ -69,7 +69,7 @@
           >
             <el-form-item
               :label="$t('memberCard.memberCardName')"
-              prop="ruleForm.name"
+              prop="name"
               class="userCardName first"
             >
               <el-input
@@ -99,8 +99,16 @@
                     v-model="ruleForm.bgFlag"
                     label="1"
                   >{{ $t('memberCard.backImg') }}</el-radio>
+
                   <img
-                    :src="baImgUrl"
+                    v-if="ruleForm.bgFlag===1"
+                    :src="$imageHost+'/'+baImgUrl"
+                    class="bgImgDiv"
+                    @click="handleToAddImg()"
+                    :style="`backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`"
+                  />
+                  <img
+                    v-else
                     class="bgImgDiv"
                     @click="handleToAddImg()"
                     :style="`backgroundImage:url(${$imageHost}/image/admin/add_img.png);backgroundRepeat:no-repeat`"
@@ -196,14 +204,19 @@
                 class="discountDiv equity"
                 v-if="cardType!==2"
               >
-                <el-checkbox v-model="ruleForm.intGet">{{ $t('memberCard.getScore') }}&nbsp;&nbsp;&nbsp;&nbsp;</el-checkbox>{{ $t('memberCard.openCardSend') }}
-                <el-input
-                  v-model="ruleForm.IntegralInput"
-                  size="small"
-                ></el-input>
-                &nbsp;&nbsp;{{ $t('memberCard.score') }}
+                <el-form-item prop="integralInputOne">
+                  <el-checkbox v-model="ruleForm.intGet">{{ $t('memberCard.getScore') }}&nbsp;&nbsp;{{$t('memberCard.openCardSend')}}</el-checkbox>
+                  <el-input
+                    v-model="ruleForm.integralInputOne"
+                    size="small"
+                  ></el-input>
+                  &nbsp;&nbsp;{{ $t('memberCard.score') }}
+                </el-form-item>
+                <div style="margin-bottom: 22px;"></div>
               </div>
               <!--积分获取下方子模块-->
+              <div style="margin-bottom: 22px;"></div>
+              <div style="margin-bottom: 22px;"></div>
               <div
                 class="shoppingFull"
                 v-if="cardType!==2"
@@ -268,18 +281,22 @@
 
                 </div>
               </div>
+              <div style="margin-bottom: 22px;"></div>
               <!--卡充值-->
               <div
                 class="cardRecharge"
                 v-if="cardType!==2"
               >
-                <el-checkbox v-model="ruleForm.cardRechargeFlag">{{ $t('memberCard.powerCard') }}&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('memberCard.openCardSend') }}</el-checkbox>
-                <el-input
-                  v-model="ruleForm.cardRechargeInput"
-                  size="small"
-                ></el-input>
-                &nbsp;&nbsp;{{ $t('memberCard.yuan') }}
+                <el-form-item prop="cardRechargeInput">
+                  <el-checkbox v-model="ruleForm.cardRechargeFlag">{{ $t('memberCard.powerCard') }}&nbsp;&nbsp;{{ $t('memberCard.openCardSend') }}</el-checkbox>
+                  <el-input
+                    v-model="ruleForm.cardRechargeInput"
+                    size="small"
+                  ></el-input>
+                  &nbsp;{{ $t('memberCard.yuan') }}
+                </el-form-item>
               </div>
+              <div style="margin-bottom: 22px;"></div>
               <!--卡充值下方子模块-->
               <div
                 class="shoppingFull"
@@ -357,7 +374,7 @@
                 class="sendingPaper"
                 v-if="cardType!==2"
               >
-                <el-checkbox v-model="ruleForm.sendingPaperFlag">{{ $t('memberCard.openCardSendVolume') }}&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('memberCard.volumeActiveInfo') }}</el-checkbox>
+                <el-checkbox v-model="ruleForm.sendingPaperFlag">{{ $t('memberCard.openCardSendVolume') }}</el-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('memberCard.volumeActiveInfo') }}
               </div>
               <!--开卡送卷子模块-->
               <div
@@ -368,7 +385,7 @@
                   <el-radio
                     v-model="ruleForm.couponDiv"
                     label="1"
-                  >{{ $t('memberCard.offerVolume') }}&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('memberCard.offerInfo') }}</el-radio>
+                  >{{ $t('memberCard.offerVolume') }}</el-radio>&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('memberCard.offerInfo') }}
                   <div
                     class="couponList"
                     v-if="ruleForm.couponDiv==='1'"
@@ -436,9 +453,9 @@
                   :range-separator="$t('memberCard.to')"
                   :start-placeholder="$t('memberCard.startDate')"
                   :end-placeholder="$t('memberCard.overDate')"
-                  size="small"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   :default-time="['00:00:00','23:59:59']"
+                  size="large"
                 >
                 </el-date-picker>
               </div>
@@ -686,7 +703,7 @@
                       label="1"
                     >{{ $t('memberCard.scoreBuy') }}</el-radio>
                     <el-input
-                      v-model="ruleFormBottom.integralInput"
+                      v-model="ruleFormBottom.integralInputTwo"
                       :placeholder="$t('memberCard.pleaseInput')"
                       size="small"
                     ></el-input>&nbsp;&nbsp;{{ $t('memberCard.unitM') }}
@@ -860,6 +877,31 @@ export default {
     AddBrandDialog: () => import('@/components/admin/addBrandDialog')
   },
   data () {
+    var validName = (rule, value, callback) => {
+      console.log(value)
+      if (value === '') {
+        callback(new Error('请输入会员卡名称'))
+      }
+      callback()
+    }
+    // 积分验证
+    var validScore = (rule, value, callback) => {
+      let reg = /^[+]?\d+$/
+      let flag = reg.test(value)
+      if (!flag) {
+        callback(new Error('请输入大于等于0的整数'))
+      }
+      callback()
+    }
+    var validCharge = (rule, value, callback) => {
+      const reg = /^[+]?\d+(\.\d+)?$/
+      let flag = reg.test(value)
+      if (!flag) {
+        callback(new Error('请输入大于等于0的数值'))
+      }
+      callback()
+    }
+
     var validiscount = (rule, value, callback) => {
       console.log(rule, value, callback)
       let reg = /^\d{0,1}$/
@@ -890,14 +932,12 @@ export default {
     }
     var validatorDateInput = (rule, value, callback) => {
       console.log(this.ruleForm.dateRadio)
-      if (this.ruleForm.dateRadio !== '1') {
-        callback()
-        return
-      }
-      if (value === '') {
-        callback(new Error('请输入有效期'))
-      } else {
-        callback()
+      if (this.ruleForm.dateRadio === '1') {
+        if (value === '') {
+          callback(new Error('请输入有效期'))
+        } else {
+          callback()
+        }
       }
     }
     return {
@@ -935,11 +975,11 @@ export default {
       ],
       ruleForm: {
         name: '',
-        bgFlag: '0',
+        bgFlag: 0,
         discount: true,
         discountInput: '',
-        allGoods: '1',
-        IntegralInput: '',
+        allGoods: 1,
+        integralInputOne: '', // 开卡赠送积分
         vipFlag: false,
         shoppingFull: '0',
         intGet: true,
@@ -983,8 +1023,10 @@ export default {
         phoneNuminput: ''
       },
       rules: {
-        name: [{ required: true, message: '请输入会员卡名称', trigger: 'blur' }],
+        name: [{ validator: validName, required: true, trigger: 'blur' }],
         discountInput: [{ validator: validiscount, required: true, trigger: 'blur' }],
+        integralInputOne: [{ validator: validScore, trigger: 'blur' }],
+        cardRechargeInput: [{ validator: validCharge, trigger: 'blur' }],
         fixedDate: [{ type: 'date', validator: validatorDate, required: true, trigger: 'change' }],
         fromDateInput: [{ validator: validatorDateInput, trigger: 'blur' }]
       },
@@ -996,7 +1038,7 @@ export default {
         cashRadio: '0',
         cashInput: '',
         integralRadio: '',
-        integralInput: '',
+        integralInputTwo: '',
         needGetRadio: '1',
         pcNameinput: '',
         activation: {
@@ -1067,7 +1109,7 @@ export default {
       shopCategoryIds: null, // 指定商品-商家分类
       platformCategoryIds: null, // 指定商品-平台分类
       addBrandDialogDataFlag2: '', // 会员专享-添加品牌弹窗选中数据
-      choosingGoodsDateFlag1: '', // 指定商品-选择商品选中数据,
+      choosingGoodsDateFlag1: [], // 指定商品-选择商品选中数据,
       ownGoodsId: null, // 会员专享商品: 添加的商品Id
       ownStoreCategoryIds: null, // 会员专享商品:添加的商家分类Id
       ownPlatFormCategoryIds: null, // 会员专享商品:平台分类id
@@ -1106,9 +1148,12 @@ export default {
       if (this.ruleForm.bgFlag === '0') {
         bg = `background-color:${this.colorLeft_}`
       } else {
-        bg = `backgroundImage:url(${this.baImgUrl})`
+        bg = `backgroundImage:url(${this.$imageHost}/${this.baImgUrl})`
+        bg = `backgroundImage:url(${this.$imageHost}/${this.baImgUrl});backgroundRepeat:no-repeat;background-size: 100% 100%;`
       }
+      console.log(this.$imageHost)
       console.log(this.ruleForm.bgFlag, bg)
+
       return bg
     }
   },
@@ -1120,10 +1165,10 @@ export default {
     'ruleForm.dateRadio' (newData) {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          // alert('submit!')
+          alert('submit!')
           this.$refs['ruleForm'].resetFields()
         } else {
-          //   console.log('error submit!!')
+          console.log('error submit!!')
           return false
         }
       })
@@ -1142,9 +1187,9 @@ export default {
     },
     'ruleForm.shoppingFull' (newData) {
       if (newData === '1') {
-        this.leftNavData[1].children = ['购物满100宋100积分']
+        this.leftNavData[1].children = ['购物满100送100积分']
       } else {
-        this.leftNavData[1].children = ['购物每满100宋100积分']
+        this.leftNavData[1].children = ['购物每满100送100积分']
       }
     },
     'ruleForm.rechargeInput' (newData) {
@@ -1249,7 +1294,7 @@ export default {
         'ownPlatFormCategoryIds': this.ownPlatFormCategoryIds,
         'ownBrandId': this.ownBrandId,
         'powerScore': this.ruleForm.intGet ? 1 : 0,
-        'score': this.ruleForm.IntegralInput,
+        'score': this.ruleForm.integralInputOne,
         'scoreJson': {
           'offset': this.ruleForm.shoppingFull,
           'goodsMoney': this.goodsMoney,
@@ -1270,7 +1315,7 @@ export default {
         'isPay': this.ruleFormBottom.isBuyRadio,
         'payType': this.ruleFormBottom.cashRadio,
         'payMoney': this.ruleFormBottom.cashInput,
-        'payScore': this.ruleFormBottom.integralInput,
+        'payScore': this.ruleFormBottom.integralInputTwo,
         'activation': this.ruleFormBottom.activationRadio,
         'activationCfgBox': this.ruleFormBottom.checkList,
         'examine': this.ruleFormBottom.examineRadio
@@ -1301,8 +1346,15 @@ export default {
     },
     // 3- 点击保存
     handleToSave (formName) {
+      console.log(formName)
+      this.prepareCardData()
+      /**
       this.$refs[formName].validate((valid) => {
+
+        console.log(valid)
         if (valid) {
+
+          console.log(valid)
           this.prepareCardData()
           this.$refs['ruleForm'].resetFields()
         } else {
@@ -1311,6 +1363,7 @@ export default {
           return false
         }
       })
+       */
     },
 
     // 4- 清空数据
@@ -1356,6 +1409,7 @@ export default {
 
     // 7- 绑定数据
     bindBackAndFrontEndData (data) {
+      console.log(data)
       this.ruleForm.name = data.cardName
       this.ruleForm.bgFlag = String(data.bgType)
       console.log('Hello World', this.ruleForm.bgFlag)
@@ -1363,7 +1417,7 @@ export default {
       this.baImgUrl = data.bgImg
       this.ruleForm.discount = data.powerCount === 1
       this.ruleForm.discountInput = data.disCount
-      this.ruleForm.allGoods = String(data.discountIsAll)
+      this.ruleForm.allGoods = data.discountIsAll
       this.ruleForm.vipFlag = data.powerPayOwnGood === 'on'
       // 指定商品 - 商品id
       if (data.goodsId.length > 0) {
@@ -1386,6 +1440,9 @@ export default {
         this.chioseSureData = data.brandId
         this.noneBlockDiscArr[3].num = data.brandId.length
       }
+
+      this.shopCategoryIds = data.ownBrandId
+      this.noneBlockDiscArr[1].num = data.ownBrandId.length
       /** 待处理
         'shopCategoryIds': [],
         'platformCategoryIds': [],
@@ -1393,7 +1450,7 @@ export default {
         'activationCfgBox': [],
       */
       this.ruleForm.intGet = data.powerScore === 1
-      this.ruleForm.IntegralInput = data.score
+      this.ruleForm.integralInputOne = data.score
       this.ruleForm.shoppingFull = String(data.scoreJson.offset)
       this.goodsMoney = data.scoreJson.goodsMoney
       this.getScores = data.scoreJson.getScores
@@ -1421,7 +1478,7 @@ export default {
       this.ruleFormBottom.isBuyRadio = String(data.isPay)
       this.ruleFormBottom.cashRadio = String(data.payType)
       this.ruleFormBottom.cashInput = String(data.payMoney)
-      this.ruleFormBottom.integralInput = data.payScore
+      this.ruleFormBottom.integralInputTwo = data.payScore
       this.ruleFormBottom.activationRadio = String(data.activation)
       this.ruleFormBottom.examineRadio = String(data.examine)
       this.ruleFormBottom.checkList = data.activationCfgBox ? data.activationCfgBox : []
@@ -1610,8 +1667,9 @@ export default {
     },
     // 图片选中
     handleSelectImg (res) {
-      this.baImgUrl = res
       console.log(res)
+      this.baImgUrl = res.imgPath
+      console.log(res.imgPath)
     },
     // 增加购物满积分模块
     handleToAddIntegral () {
@@ -1770,6 +1828,33 @@ export default {
     // 商品分类和平台分类弹窗选中回传数据
     BusClassTrueArr (data) {
       // 根据this.AtreeType 的值判断是指定商品里面的弹窗还是会员专享里面的弹窗   backDataArr字段是回显wiki应该有写
+      if (this.userDialogFlag === '1') {
+        // 折扣
+        if (this.AtreeType === 1) {
+          // 商家分类
+          this.shopCategoryIds = data
+          this.noneBlockDiscArr[1].num = data.length
+        }
+
+        if (this.AtreeType === 2) {
+          // 平台分类
+          this.platformCategoryIds = data
+          this.noneBlockDiscArr[2].num = data.length
+        }
+      } else {
+        // 专享
+        if (this.AtreeType === 1) {
+          // 商家分类
+          this.ownStoreCategoryIds = data
+          this.noneBlockVipArr[1].num = data.length
+        }
+
+        if (this.AtreeType === 2) {
+          // 平台分类
+          this.ownPlatFormCategoryIds = data
+          this.noneBlockVipArr[2].num = data.length
+        }
+      }
     },
     // 限次会员卡中显示的适用商品里面的选择商品调起事件
     handleToCallGoodsDialog (flag) {
