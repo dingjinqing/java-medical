@@ -53,7 +53,8 @@
         "appointment/appointment",
         "scancode/scancode",
         "comment/comment",
-        "history/history"
+        "history/history",
+        "appointorder/appointorder"
       ]
     }
   ],

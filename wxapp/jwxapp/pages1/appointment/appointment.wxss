@@ -555,6 +555,13 @@ contact-button{
 .choose_btn image{
   width: 40rpx;
 }
+.choose_radio {
+  float:left;
+  width: 50rpx;
+  height: 120rpx;
+  line-height: 120rpx;
+  margin-right: 20rpx;
+}
 .choose_info{
   float: left;
   font-size: 26rpx;
