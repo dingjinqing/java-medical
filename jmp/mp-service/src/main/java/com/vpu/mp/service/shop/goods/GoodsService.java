@@ -26,6 +26,7 @@ import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
 import com.vpu.mp.service.shop.goods.es.EsFactSearchService;
+import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -100,6 +101,8 @@ public class GoodsService extends ShopBaseService {
     private EsFactSearchService esFactSearchService;
     @Autowired
     private EsGoodsSearchService esGoodsSearchService;
+    @Autowired
+    private EsGoodsCreateService esGoodsCreateService;
 
     /**
      * 全部商品页面各个下拉框的数据初始化
@@ -640,7 +643,8 @@ public class GoodsService extends ShopBaseService {
 
             //插入商品分销改价信息
             insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
-
+            //更新es
+            esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
         });
     }
 
@@ -940,6 +944,10 @@ public class GoodsService extends ShopBaseService {
         }
         db().batchUpdate(goodsSpecProductRecords).execute();
         db().batchUpdate(goodsRecords).execute();
+
+        //更新es
+        List<Integer> goodsIds = goodsRecords.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
+        esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
     }
 
 
@@ -959,6 +967,8 @@ public class GoodsService extends ShopBaseService {
         List<GoodsLabelCouple> goodsLabelCouples = goodsLabelCouple.calculateGtaLabelDiffer(goodsIds, goodsLabels, GoodsLabelCoupleTypeEnum.GOODSTYPE);
 
         goodsLabelCouple.batchInsert(goodsLabelCouples);
+        //更新es
+        esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
     }
 
     /**
@@ -1007,6 +1017,10 @@ public class GoodsService extends ShopBaseService {
         transaction(() -> {
             db().batchUpdate(goodsRecordsForUpdate).execute();
             db().batchUpdate(specProductRecordsForUpdate).execute();
+
+            //更新es
+            List<Integer> goodsIds = goodsRecordsForUpdate.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
+            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
         });
     }
 
@@ -1039,6 +1053,9 @@ public class GoodsService extends ShopBaseService {
             memberCardService.deleteOwnEnjoyGoodsByGcta(goodsIds, CardConstant.COUPLE_TP_GOODS);
             //删除商品规格分销信息
             deleteGoodsRebatePrices(goodsIds);
+
+            //更新es
+            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
         });
     }
 
@@ -1097,6 +1114,9 @@ public class GoodsService extends ShopBaseService {
 
             //修改分销改价
             updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+
+            //es更新
+            esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
         });
     }
 
