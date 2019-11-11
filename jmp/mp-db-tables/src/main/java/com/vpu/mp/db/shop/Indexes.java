@@ -312,8 +312,10 @@ public class Indexes {
     public static final Index SEARCH_HISTORY_HOT_WORDS = Indexes0.SEARCH_HISTORY_HOT_WORDS;
     public static final Index SEARCH_HISTORY_USER_ID = Indexes0.SEARCH_HISTORY_USER_ID;
     public static final Index SEC_KILL_DEFINE_PRIMARY = Indexes0.SEC_KILL_DEFINE_PRIMARY;
+    public static final Index SEC_KILL_DEFINE_GOODS_ID = Indexes0.SEC_KILL_DEFINE_GOODS_ID;
     public static final Index SEC_KILL_LIST_PRIMARY = Indexes0.SEC_KILL_LIST_PRIMARY;
     public static final Index SEC_KILL_PRODUCT_DEFINE_PRIMARY = Indexes0.SEC_KILL_PRODUCT_DEFINE_PRIMARY;
+    public static final Index SEC_KILL_PRODUCT_DEFINE_SK_ID = Indexes0.SEC_KILL_PRODUCT_DEFINE_SK_ID;
     public static final Index SERVICE_MESSAGE_RECORD_USER_REQUEST = Indexes0.SERVICE_MESSAGE_RECORD_USER_REQUEST;
     public static final Index SERVICE_ORDER_PRIMARY = Indexes0.SERVICE_ORDER_PRIMARY;
     public static final Index SERVICE_REQUEST_PRIMARY = Indexes0.SERVICE_REQUEST_PRIMARY;
@@ -747,8 +749,10 @@ public class Indexes {
         public static Index SEARCH_HISTORY_HOT_WORDS = Internal.createIndex("hot_words", SearchHistory.SEARCH_HISTORY, new OrderField[] { SearchHistory.SEARCH_HISTORY.HOT_WORDS }, false);
         public static Index SEARCH_HISTORY_USER_ID = Internal.createIndex("user_id", SearchHistory.SEARCH_HISTORY, new OrderField[] { SearchHistory.SEARCH_HISTORY.USER_ID }, false);
         public static Index SEC_KILL_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", SecKillDefine.SEC_KILL_DEFINE, new OrderField[] { SecKillDefine.SEC_KILL_DEFINE.SK_ID }, true);
+        public static Index SEC_KILL_DEFINE_GOODS_ID = Internal.createIndex("goods_id", SecKillDefine.SEC_KILL_DEFINE, new OrderField[] { SecKillDefine.SEC_KILL_DEFINE.GOODS_ID }, false);
         public static Index SEC_KILL_LIST_PRIMARY = Internal.createIndex("PRIMARY", SecKillList.SEC_KILL_LIST, new OrderField[] { SecKillList.SEC_KILL_LIST.SKLOG_ID }, true);
         public static Index SEC_KILL_PRODUCT_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE, new OrderField[] { SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE.SKPRO_ID }, true);
+        public static Index SEC_KILL_PRODUCT_DEFINE_SK_ID = Internal.createIndex("sk_id", SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE, new OrderField[] { SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE.SK_ID }, false);
         public static Index SERVICE_MESSAGE_RECORD_USER_REQUEST = Internal.createIndex("user_request", ServiceMessageRecord.SERVICE_MESSAGE_RECORD, new OrderField[] { ServiceMessageRecord.SERVICE_MESSAGE_RECORD.USER_ID, ServiceMessageRecord.SERVICE_MESSAGE_RECORD.REQUEST_ACTION, ServiceMessageRecord.SERVICE_MESSAGE_RECORD.TEMPLATE_PLATFORM }, false);
         public static Index SERVICE_ORDER_PRIMARY = Internal.createIndex("PRIMARY", ServiceOrder.SERVICE_ORDER, new OrderField[] { ServiceOrder.SERVICE_ORDER.ORDER_ID }, true);
         public static Index SERVICE_REQUEST_PRIMARY = Internal.createIndex("PRIMARY", ServiceRequest.SERVICE_REQUEST, new OrderField[] { ServiceRequest.SERVICE_REQUEST.ID }, true);

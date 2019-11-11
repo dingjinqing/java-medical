@@ -1111,3 +1111,17 @@ ALTER TABLE b2c_service_order
 ADD  COLUMN  `member_card_no` varchar(32)  DEFAULT '0' COMMENT '会员卡NO',
 ADD  COLUMN  `member_card_balance` decimal(10,2) DEFAULT '0.00' COMMENT '会员卡消费金额',
 ADD  COLUMN   `use_account` decimal(10,2) DEFAULT '0.00' COMMENT '用户消费余额';
+
+-- 修改秒杀表库存类型 2019-11-11
+ALTER TABLE b2c_sec_kill_define
+MODIFY COLUMN `stock` int(11) NOT NULL DEFAULT '0' COMMENT '总库存',
+MODIFY COLUMN `sale_num` int(11) NOT NULL DEFAULT '0' COMMENT '销量';
+
+-- 修改秒杀商品规格表库存类型 2019-11-11
+ALTER TABLE b2c_sec_kill_product_define
+MODIFY COLUMN `stock` int(11) NOT NULL DEFAULT '0' COMMENT '总库存',
+MODIFY COLUMN `sale_num` int(11) NOT NULL DEFAULT '0' COMMENT '销量',
+MODIFY COLUMN `total_stock` int(11) NOT NULL DEFAULT '0' COMMENT '总库存';
+
+ALTER TABLE b2c_sec_kill_product_define add index sk_id(`sk_id`);
+ALTER TABLE b2c_sec_kill_define add index goods_id(`goods_id`);

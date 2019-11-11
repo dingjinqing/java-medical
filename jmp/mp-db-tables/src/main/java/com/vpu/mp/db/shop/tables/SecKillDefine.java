@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
 
-    private static final long serialVersionUID = -1785150335;
+    private static final long serialVersionUID = 24216065;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sec_kill_define</code>
@@ -95,12 +95,12 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.stock</code>. 总库存
      */
-    public final TableField<SecKillDefineRecord, Short> STOCK = createField("stock", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "总库存");
+    public final TableField<SecKillDefineRecord, Integer> STOCK = createField("stock", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总库存");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.sale_num</code>. 销量
      */
-    public final TableField<SecKillDefineRecord, Short> SALE_NUM = createField("sale_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "销量");
+    public final TableField<SecKillDefineRecord, Integer> SALE_NUM = createField("sale_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "销量");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.del_flag</code>.

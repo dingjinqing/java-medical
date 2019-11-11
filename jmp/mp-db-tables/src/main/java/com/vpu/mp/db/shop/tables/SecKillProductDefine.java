@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillProductDefine extends TableImpl<SecKillProductDefineRecord> {
 
-    private static final long serialVersionUID = -1470960751;
+    private static final long serialVersionUID = 935951080;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sec_kill_product_define</code>
@@ -79,29 +79,29 @@ public class SecKillProductDefine extends TableImpl<SecKillProductDefineRecord> 
     public final TableField<SecKillProductDefineRecord, BigDecimal> SEC_KILL_PRICE = createField("sec_kill_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "秒杀价");
 
     /**
-     * The column <code>mini_shop_471752.b2c_sec_kill_product_define.stock</code>. 库存
+     * The column <code>mini_shop_471752.b2c_sec_kill_product_define.stock</code>. 总库存
      */
-    public final TableField<SecKillProductDefineRecord, Short> STOCK = createField("stock", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "库存");
+    public final TableField<SecKillProductDefineRecord, Integer> STOCK = createField("stock", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总库存");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_product_define.sale_num</code>. 销量
      */
-    public final TableField<SecKillProductDefineRecord, Short> SALE_NUM = createField("sale_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "销量");
+    public final TableField<SecKillProductDefineRecord, Integer> SALE_NUM = createField("sale_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "销量");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_product_define.total_stock</code>. 总库存
      */
-    public final TableField<SecKillProductDefineRecord, Short> TOTAL_STOCK = createField("total_stock", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "总库存");
+    public final TableField<SecKillProductDefineRecord, Integer> TOTAL_STOCK = createField("total_stock", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总库存");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_product_define.create_time</code>.
      */
-    public final TableField<SecKillProductDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<SecKillProductDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_product_define.update_time</code>. 最后修改时间
      */
-    public final TableField<SecKillProductDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<SecKillProductDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_sec_kill_product_define</code> table reference
@@ -149,7 +149,7 @@ public class SecKillProductDefine extends TableImpl<SecKillProductDefineRecord> 
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SEC_KILL_PRODUCT_DEFINE_PRIMARY);
+        return Arrays.<Index>asList(Indexes.SEC_KILL_PRODUCT_DEFINE_PRIMARY, Indexes.SEC_KILL_PRODUCT_DEFINE_SK_ID);
     }
 
     /**

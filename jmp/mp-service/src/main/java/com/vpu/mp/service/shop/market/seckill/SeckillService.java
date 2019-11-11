@@ -143,6 +143,11 @@ public class SeckillService extends ShopBaseService {
                 db().executeInsert(productRecord);
             }
         });
+        if(param.getStartTime().before(DateUtil.getLocalDateTime()) && param.getEndTime().after(DateUtil.getLocalDateTime())){
+            //活动已生效
+            saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
+        }
+
         /** 操作记录 */
         saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.MARKET_SECKILL_ADD.code }), new String[] {param.getName()});
     }

@@ -2594,8 +2594,8 @@ create table `b2c_sec_kill_define`
     `limit_paytime` smallint(6)  not null comment '规定的有效支付时间',
     `start_time`    timestamp    null     default null comment '开始时间',
     `end_time`      timestamp    null     default null comment '结束时间',
-    `stock`         smallint(6)  not null default '0' comment '总库存',
-    `sale_num`      smallint(6)  not null default '0' comment '销量',
+    `stock`         int(11)  not null default '0' comment '总库存',
+    `sale_num`      int(11)  not null default '0' comment '销量',
     `del_flag`      tinyint(1)            default '0',
     `status`        tinyint(1)            default '1' comment '状态： 1：启用  0： 禁用',
     `free_freight`  tinyint(1)            default '1' comment '是否免运费： 1：免运费  0： 原先商品的运费',
@@ -2604,7 +2604,8 @@ create table `b2c_sec_kill_define`
     `update_time`   timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
     `card_id`       text comment '专属会员卡',
     `share_config`  text comment '分享配置',
-    primary key (`sk_id`)
+    primary key (`sk_id`),
+    key `goods_id`(`goods_id`)
 );
 
 --  参与秒杀活动记录
@@ -2631,12 +2632,13 @@ create table `b2c_sec_kill_product_define`
     `sk_id`          int(11)        not null comment '秒杀活动定义id',
     `product_id`     int(11)        not null comment '商品规格id',
     `sec_kill_price` decimal(10, 2) not null default '0.00' comment '秒杀价',
-    `stock`          smallint(6)    not null default '0' comment '库存',
-    `sale_num`       smallint(6)    not null default '0' comment '销量',
-    `total_stock`    smallint(6)    not null default '0' comment '总库存',
+    `stock`          int(11)    not null default '0' comment '库存',
+    `sale_num`       int(11)    not null default '0' comment '销量',
+    `total_stock`    int(11)    not null default '0' comment '总库存',
     `create_time`    timestamp               default current_timestamp,
     `update_time`    timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
-    primary key (`skpro_id`)
+    primary key (`skpro_id`),
+    key `sk_id` (`sk_id`)
 );
 
 -- -- 用户访问商品记录表

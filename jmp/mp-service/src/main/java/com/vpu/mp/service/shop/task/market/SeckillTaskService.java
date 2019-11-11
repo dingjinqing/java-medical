@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.task.market;
 
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
@@ -12,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
+import org.jooq.Record1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,16 +50,19 @@ public class SeckillTaskService  extends ShopBaseService {
         }
         List<Integer> pastSeckillGoodsIdListCopy = new ArrayList<>();
         pastSeckillGoodsIdListCopy.addAll(pastSeckillGoodsIdList);
-
         pastSeckillGoodsIdList.removeAll(currentSeckillGoodsIdList);
+
         if(pastSeckillGoodsIdList != null && pastSeckillGoodsIdList.size() > 0){
+            //活动已失效，将goodsType改回去
             goodsService.changeToNormalType(pastSeckillGoodsIdList);
             //TODO 记录变动
         }
 
         currentSeckillGoodsIdList.removeAll(pastSeckillGoodsIdListCopy);
         if(currentSeckillGoodsIdList != null && currentSeckillGoodsIdList.size() > 0){
-            this.changeToSeckillType(pastSeckillGoodsIdList);
+            //有新的活动生效，商品goodsType标记活动类型
+            this.changeToSeckillType(currentSeckillGoodsIdList);
+            this.updateSeckillProcudtStock(currentSeckillGoodsIdList);
             //TODO 记录变动
         }
 
@@ -77,6 +82,19 @@ public class SeckillTaskService  extends ShopBaseService {
     }
 
     /**
+     * 当前有效的进行中秒杀
+     * @return
+     */
+    private List<SeckillVo> getSecKillWithMonitor(List<Integer> goodsIds){
+        List<SeckillVo> res = db().select(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime())).and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))).and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds)).fetchInto(SeckillVo.class);
+        for(SeckillVo seckill : res){
+            List<SecKillProductVo> seckillProduct = db().select(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID,SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(seckill.getSkId())).fetchInto(SecKillProductVo.class);
+            seckill.setSecKillProduct(seckillProduct);
+        }
+        return res;
+    }
+
+    /**
      * 当前所有goodsType还是秒杀的商品ID（某些商品可能已经过期，需要更新回普通商品）
      * @return
      */
@@ -89,6 +107,23 @@ public class SeckillTaskService  extends ShopBaseService {
      * @param goodsIds
      */
     private void changeToSeckillType(List<Integer> goodsIds){
-        db().update(GOODS).set(GOODS.GOODS_TYPE, BaseConstant.GOODS_TYPE_SECKILL).where(GOODS.GOODS_ID.in(goodsIds));
+        db().update(GOODS).set(GOODS.GOODS_TYPE, BaseConstant.GOODS_TYPE_SECKILL).where(GOODS.GOODS_ID.in(goodsIds)).execute();
+    }
+
+    /**
+     * 检查规格库存，保证秒杀库存不大于规格库存
+     * @param goodsIds
+     */
+    private void updateSeckillProcudtStock(List<Integer> goodsIds){
+        List<SeckillVo> activeSeckillList = getSecKillWithMonitor(goodsIds);
+        for(SeckillVo  seckill : activeSeckillList){
+            for(SecKillProductVo secKillProduct : seckill.getSecKillProduct()){
+                Record1<Integer> prdNumberRecord = db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(secKillProduct.getProductId())).fetchOne();
+                int prdNumber;
+                if(prdNumberRecord != null && (prdNumber = prdNumberRecord.into(Integer.class)) < secKillProduct.getStock()){
+                    db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,prdNumber).set(SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,secKillProduct.getTotalStock()-(secKillProduct.getStock()-prdNumber)).execute();
+                }
+            }
+        }
     }
 }
