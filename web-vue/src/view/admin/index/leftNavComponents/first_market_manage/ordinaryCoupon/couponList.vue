@@ -250,7 +250,7 @@ export default {
           item.denomination = `打${item.denomination}折`
         }
         if (item.validityType === 1) {
-          item.vaildDate = `领取开始${item.validity}天${item.validityHour}小时${item.Minute}分内有效`
+          item.vaildDate = `领取开始${item.validity}天${item.validityHour}小时${item.validityMinute}分内有效`
         } else {
           item.vaildDate = `${item.startTime} 至${item.endTime} `
         }

@@ -312,7 +312,7 @@
                     >需要兑换</el-radio>
                     <p v-if="param.isRandom== 1">
                       <el-input
-                        v-model="param.userScore"
+                        v-model="param.scoreNumber"
                         @blur="checkNum"
                         class="small_input"
                         size="small"
@@ -567,7 +567,7 @@ export default {
     }
     // 自定义校验积分兑换
     var validateisRandom = (rule, value, callback) => {
-      if (value === 1 && this.param.userScore === null) {
+      if (value === 1 && this.param.scoreNumber === null) {
         callback(new Error('请填写积分兑换!'))
       } else {
         callback()
@@ -631,7 +631,7 @@ export default {
         denomination: null, // num面额
         denomination2: null,
         leastConsume: null,
-        userScore: null, // num积分数
+        scoreNumber: null, // num积分数
         AtreeType: null,
         isExclusive: false
       },
@@ -789,8 +789,8 @@ export default {
             this.param.denomination = null
           }
           // 积分兑换
-          this.param.userScore = data.useScore
-          if (this.param.userScore > 0) {
+          this.param.scoreNumber = data.scoreNumber
+          if (this.param.scoreNumber > 0) {
             this.param.isRandom = 1
           } else {
             this.param.isRandom = 0
@@ -889,12 +889,14 @@ export default {
       // 发放的总数量
       if (this.param.surplus === 0) {
         this.param.totalAmount = 0
+      } else {
+        this.param.surplus = this.param.totalAmount
       }
       // 使用门槛
       if (this.param.useConsumeRestrict === 0) {
         this.param.leastConsume = 0
       }
-      this.param.userScore = Number(this.param.userScore)
+      this.param.scoreNumber = Number(this.param.scoreNumber)
       this.param.recommendGoodsId = this.goodsInfo.toString()
       this.param.recommendCatId = this.busClass.toString()
       this.param.recommendSortId = this.platClass.toString()
