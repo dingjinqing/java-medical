@@ -65,7 +65,7 @@ public class AdminSeckillController extends AdminBaseController {
      */
     @PostMapping(value = "/api/admin/market/seckill/update")
     public JsonResult updateSeckill(@RequestBody @Validated SeckillUpdateParam param) {
-        if(param.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL) && shop().seckill.isOnGoingSecKill(param.getSkId())){
+        if(param.getStatus() != null && param.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL) && shop().seckill.isOnGoingSecKill(param.getSkId())){
             /** 启用时判断是否有时间冲突的秒杀活动 */
             return fail(JsonResultCode.SECKILL_CONFLICTING_ACT_TIME);
         }
