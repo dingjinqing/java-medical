@@ -144,7 +144,8 @@ export default {
       default: () => 0
     },
     jumpLink: String || Number, // 传来的跳转链接路径
-    imgUrl: String // 传来的图片路径
+    imgUrl: String, // 传来的图片路径
+    customModulesBackData: Object // 回显数据
   },
   data () {
     return {
@@ -216,6 +217,9 @@ export default {
         this.handleToSaveData()
         console.log(this.columnData[this.nowCheckedCell[0]][`${this.nowCheckedCell[1]}img_url`])
       }
+    },
+    customModulesBackData (newData) {
+      console.log(newData)
     }
   },
   mounted () {

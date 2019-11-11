@@ -478,6 +478,7 @@
                   :density='Number(density)'
                   :jumpLink='linkInput'
                   :imgUrl='imgUrl'
+                  :customModulesBackData='customModulesBackData'
                 />
 
               </div>
@@ -893,6 +894,7 @@ export default {
       imgUrl: null, // 当前显示的图片路径
       tuneUpSelectLink: false, // 选择链接弹窗调起flag
       firstInitNotEliminate: false, // 首次切换不清除当前模板数据
+      customModulesBackData: null, // 自定义模块回显
       moduleSaveData: { // 模块保存数据
 
       }
@@ -1019,7 +1021,7 @@ export default {
     },
     // 处理保存数据中的data字段数据 即图片坐标路径信息
     handleToSaveDataImgInfo (type, flag) {
-      console.log(type, flag)
+      console.log(type, flag, '触发')
       let num = null
       switch (type) {
         case 0:
@@ -1182,7 +1184,7 @@ export default {
         console.log((backData.table_type - 1))
         console.log(this.layoutData[3])
       } else {
-
+        this.customModulesBackData = backData.data
       }
       this.handleToClickTemplate((this.modulesData.table_type - 1))
     }
