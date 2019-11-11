@@ -2,7 +2,7 @@
 <view class="goods-info">
   <view class="goods-info_top">
     <view class="goods_name">
-    卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣卫衣
+    {{goodsInfo.goodsName}}
     </view>
     <view class="goods_operate">
       <view class="goods_share">
@@ -13,31 +13,22 @@
       </view>
     </view>
   </view>
-  <view class="goods_ad">带上你的美，闪亮你的世界</view>
+  <view class="goods_ad" >带上你的美，闪亮你的世界</view>
   <view class="goods_price_info">
     <view class="goods_price" style='color:{{main_setting.comColor}}'>
       <text>￥</text><text>100~800</text>
     </view>
-    <view class="marking_price">￥100~800</view>
+    <view class="marking_price">￥<text>100~800</text></view>
   </view>
-  <view class="label-content" >
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>人气爆款</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>人款</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>人爆款</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>人气爆款</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>人爆款</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>人款</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>人气爆款</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>款</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>人款</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>人气爆款</text>
+  <view class="label-content" wx:if="{{goodsInfo.labels && goodsInfo.labels.length > 0}}">
+    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">{{item.name}}</text>
   </view>
   <view class="flex-wrap">
-    <view class="flex-item">库存：100个</view>
-    <view class="flex-item">销量：100</view>
+    <view class="flex-item">库存：{{goodsInfo.goodsNumber}}个</view>
+    <view class="flex-item">销量：{{goodsInfo.goodsSaleNum}}</view>
     <view class="flex-item">运费：3</view>
   </view>
-  <view class="flex-wrap">
+  <view class="flex-wrap" wx:if="TODO">
     <view class="flex-item">配送：快递</view>
     <view class="flex-item">门店自提 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
     <view class="flex-item">同城配送 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>

@@ -88,3 +88,17 @@ export function delAnswer (data) {
     data: data
   })
 }
+// 获得评价审核配置
+export function getCommentConfig () {
+  return service({
+    url: `/api/admin/goods/comment/getconfig`,
+    method: 'get'
+  })
+}
+// 获得评价开关配置
+export function getCommentSwitch () {
+  return service({
+    url: `/api/admin/goods/comment/getswitch`,
+    method: 'get'
+  })
+}

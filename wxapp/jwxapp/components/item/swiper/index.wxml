@@ -1,7 +1,11 @@
 <swiper class="swiper" autoplay="true" circular="true" indicator-dots='true' indicator-active-color="#fff">
-  <block wx:for="{{goodsImage}}" wx:key="index" wx:for-index="index">
+  <swiper-item wx:if="{{goodsMedia.goodsVideoImg}}" class="video-content">
+    <image src="{{imageUrl}}image/wxapp/play_btn.png" class="playBtn"></image>
+    <image src="{{goodsMedia.goodsVideoImg}}" class="slide-image" mode="aspectFit" bindtap="playVideo"></image>
+  </swiper-item>
+  <block wx:for="{{goodsMedia.goodsImgs}}" wx:key="index" wx:for-index="index">
     <swiper-item>
-      <image src="{{imageUrl}}{{item}}" class="slide-image" mode="aspectFit" bindtap="preview" data-src='{{imageUrl}}{{item}}'></image>
+      <image src="{{item}}" class="slide-image" mode="aspectFit" bindtap="preview" data-src='{{item}}'></image>
       <view>
         {{index+1}}
       </view>

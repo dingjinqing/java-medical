@@ -2,9 +2,9 @@
   <include src="../common/header.wxml" /> 
   <view class="main-container">
     <view class="goods-image">
-      <v-goods-swiper goods-image="{{imgUrls}}" />
+      <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
-    <v-goods-info>
+    <v-goods-info goods-info="{{goodsInfo}}">
       <!--轮播图下方，商品信息上方插槽 -->
       <v-act-content bindactStatus="getActStatus"/>
     </v-goods-info>
@@ -16,7 +16,7 @@
       </view>
     </view>
     <!-- 优惠券&促销信息-->
-    <v-coupon-promotion />
+    <v-coupon-promotion coupon-list="{{couponList}}"/>
     <!-- 需提取组件  服务|选择规格-->
     <!-- <view class="flex_outside_box">
       <view class="flex_box">

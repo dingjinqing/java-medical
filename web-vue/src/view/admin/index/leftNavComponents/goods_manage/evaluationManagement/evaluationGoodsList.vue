@@ -143,44 +143,7 @@ export default {
       loading: false,
       pageParams: {
       },
-      dataList: [
-        {
-          'goodsId': 29,
-          'goodsImg': '/image/admin/head_icon.png',
-          'goodsName': '风扇',
-          'goodsSn': 'G101010577',
-          'sortName': '生活用品',
-          'shopPrice': 599.99,
-          'goodsNumber': 10,
-          'goodsSaleNum': 8,
-          'uv': 69,
-          'pv': 50
-        },
-        {
-          'goodsId': 2,
-          'goodsImg': '/image/admin/head_icon.png',
-          'goodsName': '风扇',
-          'goodsSn': 'G101010577',
-          'sortName': '生活用品',
-          'shopPrice': 599.99,
-          'goodsNumber': 10,
-          'goodsSaleNum': 8,
-          'uv': 69,
-          'pv': 50
-        },
-        {
-          'goodsId': 3,
-          'goodsImg': '/image/admin/head_icon.png',
-          'goodsName': '风扇',
-          'goodsSn': 'G101010577',
-          'sortName': '生活用品',
-          'shopPrice': 599.99,
-          'goodsNumber': 10,
-          'goodsSaleNum': 8,
-          'uv': 69,
-          'pv': 50
-        }
-      ]
+      dataList: null
     }
   },
   mounted () {
@@ -197,10 +160,9 @@ export default {
         page: { ...this.pageParams }
       }
       CommentGoodsList(obj).then(res => {
-        console.log(res)
         if (res.error === 0) {
           this.pageParams = res.content.page
-          // this.dataList = res.content.dataList
+          this.dataList = res.content.dataList
         }
       })
     },

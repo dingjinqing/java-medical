@@ -4,10 +4,13 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    goodsImage:{
+    goodsMedia:{
       type:Object,
       optionalTypes:[Number]
     }
+  },
+  data:{
+    showVideo:false
   },
   /**
    * 组件的方法列表
@@ -15,13 +18,14 @@ global.wxComponent({
   methods: {
     preview(e) {
       var d = this.eventData(e);
-      let previewImage = this.data.goodsImage.map(item=>{
-        let imgUrl = `${this.data.imageUrl}${item}`
-        return imgUrl
-      })
       wx.previewImage({
         current: d.src,
-        urls: previewImage
+        urls: this.data.goodsMedia.goodsImgs
+      })
+    },
+    playVideo(){
+      this.setData({
+        showVideo: true
       })
     }
   }

@@ -29,12 +29,12 @@
 </template>
 
 <script>
-import { CommentCheckConfig, CommentSwitchConfig } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
+import { CommentCheckConfig, CommentSwitchConfig, getCommentConfig, getCommentSwitch } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
   data () {
     return {
-      reviewStatus: 0,
-      hideEvaluation: 0,
+      reviewStatus: null,
+      hideEvaluation: null,
       viewReload: true
     }
   },
@@ -43,6 +43,17 @@ export default {
   },
   methods: {
     initDataList () {
+      getCommentConfig().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.reviewStatus = res.content
+        }
+      })
+      getCommentSwitch().then(res => {
+        if (res.error === 0) {
+          this.hideEvaluation = !!res.content
+        }
+      })
     },
     changeReviewStatus (val) {
       CommentCheckConfig({ v: val }).then(res => {

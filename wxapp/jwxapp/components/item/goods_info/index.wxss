@@ -45,6 +45,9 @@
 .marking_price{
   color: #999;
 }
+.marking_price > text{
+  text-decoration: line-through;
+}
 .flex-wrap{
   display: flex;
   margin-top: 20rpx;
@@ -69,4 +72,7 @@
   width: 26rpx;
   height: 26rpx;
   margin-left: 6rpx;
+}
+.goods-info > .label-content{
+  margin-top: 20rpx;
 }

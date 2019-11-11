@@ -1,9 +1,10 @@
 <view class="flex_outside_box">
-  <view class="flex_box" bindtap="showCouponDialog">
+  <view class="flex_box" bindtap="showCouponDialog" wx:if="{{couponList && couponList.length>0}}">
     <view class="item_left">优惠券</view>
     <view class="item_middle goods_coupon_list">
-      <view class="goods_coupon_item" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}};border-color:{{main_setting.borColor}}'>满￥600减50</view>
-      <view class="goods_coupon_item" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}};border-color:{{main_setting.borColor}}'>领券减￥10</view>
+      <block wx:for="{{couponList}}" wx:key="index">
+        <view wx:if="{{index <= 1}}" class="goods_coupon_item" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}};border-color:{{main_setting.borColor}}'>{{item.actName}}</view>
+      </block>
     </view>
     <view class="item_right">></view>
   </view>
@@ -19,5 +20,5 @@
 
 
 <!-- 优惠券选择弹窗 -->
-<v-popup-coupon show="{{show_recommend_coupons}}" coupon_list="{{goodsInfo.recommend_coupons}}" />
+<v-popup-coupon show="{{show_recommend_coupons}}" coupon_list="{{couponList}}" />
 

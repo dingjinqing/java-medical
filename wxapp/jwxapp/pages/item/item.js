@@ -6,21 +6,21 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    imgUrls:[
-      'image/wxapp/close_icon.png',
-      'image/wxapp/close_icon.png',
-      'image/wxapp/close_icon.png',
-      'image/wxapp/close_icon.png',
-      'image/wxapp/close_icon.png',
-      'image/wxapp/close_icon.png'
-    ],
-    goodsInfo:{}
+    goodsId:null,
+    goodsMediaInfo:null,
+    goodsInfo:null,
+    couponList:null
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    options.goods_id = 32;
+    if (!options.goods_id) return;
+    this.setData({
+      goodsId : options.goods_id
+    })
+    this.requestGoodsInfo()
   },
   backHome() {
     util.jumpLink('pages/index/index', 'redirectTo')
@@ -40,6 +40,38 @@ global.wxPage({
   },
   test(){
     util.jumpLink('pages/item/item', 'navigateTo')
+  },
+  requestGoodsInfo(){
+    util.api('/api/wxapp/goods/detail',res=>{
+      if(res.error === 0){
+        this.getMediaInfo(res.content)
+        this.getGoodsInfo(res.content)
+        this.getCouponInfo(res.content)
+      }
+    },{
+        goodsId: this.data.goodsId,
+        userId: util.getCache('user_id')
+    })
+  },
+  getMediaInfo(goodsInfo){
+    let { goodsImgs, goodsVideo, goodsVideoImg } = goodsInfo
+    this.setData({
+      goodsMediaInfo: { goodsImgs, goodsVideo, goodsVideoImg }
+    })
+    console.log(this.data.goodsMediaInfo)
+  },
+  getGoodsInfo(goodsInfo){
+    let { goodsName, goodsSaleNum, labels, defaultPrd, products, goodsNumber } = goodsInfo
+    let info = { goodsName, goodsSaleNum, labels, defaultPrd, products, goodsNumber }
+    this.setData({
+      goodsInfo: info
+    })
+  },
+  getCouponInfo(goodsInfo){
+    let { coupons } = goodsInfo;
+    this.setData({
+      couponList:coupons
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
