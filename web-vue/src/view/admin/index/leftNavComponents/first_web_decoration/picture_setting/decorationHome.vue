@@ -308,6 +308,7 @@ export default {
     this.langDefault()
     console.log(this.$route)
     if (Number(this.$route.query.pageId) !== -1) { // 判断是否是页面列表配置页面点击编辑跳转而来
+      this.isEditSave = true
       pageEdit({ pageId: this.$route.query.pageId }).then((res) => {
         console.log(res)
         if (res.error === 0) {
@@ -320,11 +321,14 @@ export default {
           this.isEditSave = true
           console.log(res.content.page_content)
           let content = JSON.parse(res.content.page_content)
+          this.editPageData = content
           console.log(JSON.parse(res.content.page_content))
           this.pageSetData.page_name = res.content.page_name
           this.pageSetData.cat_id = res.content.cat_id
+          content.page_cfg.cat_id = JSON.stringify(content.page_cfg.cat_id)
+          this.pageSetData = content.page_cfg
           console.log(content)
-          this.editPageData = content
+
           let moduleDataCopy = JSON.parse(JSON.stringify(content))
           delete moduleDataCopy.page_cfg
           console.log(moduleDataCopy)
@@ -338,7 +342,26 @@ export default {
         }
       })
     } else {
-      this.isEditSave = false
+      this.pageSetData = {
+        'is_ok': 1,
+        'cat_id': '',
+        'page_name': '',
+        'bg_types': '0',
+        'has_bottom': '0',
+        'page_bg_color': '#ffffff',
+        'page_bg_image': '',
+        'show_margin': '1',
+        'margin_val': '0',
+        'last_cur_idx': this.cur_idx,
+        'pictorial': {
+          'is_add': '0',
+          'user_visibility': '0',
+          'share_btn_name': '',
+          'share_desc': '',
+          'share_img_path': '',
+          'name_length': 0
+        }
+      }
     }
   },
   methods: {
@@ -408,35 +431,6 @@ export default {
           this.nowShowLeftModules = this.marketingTextConArr
       }
     },
-    // 初始化页面配置
-    handleToSenPageSetData () {
-      console.log(this.editPageData, this.isEditSave)
-      if (this.isEditSave) {
-        this.pageSetData = this.editPageData.page_cfg
-      } else {
-        let pageSetData = {
-          'is_ok': 1,
-          'cat_id': '',
-          'page_name': '',
-          'bg_types': '0',
-          'has_bottom': '0',
-          'page_bg_color': '#ffffff',
-          'page_bg_image': '',
-          'show_margin': '1',
-          'margin_val': '0',
-          'last_cur_idx': this.cur_idx,
-          'pictorial': {
-            'is_add': '0',
-            'user_visibility': '0',
-            'share_btn_name': '',
-            'share_desc': '',
-            'share_img_path': '',
-            'name_length': 0
-          }
-        }
-        this.pageSetData = pageSetData
-      }
-    },
     // 页面设置回显
     hanelToPageSet (res) {
       console.log(res)
@@ -444,8 +438,6 @@ export default {
     },
     // 初始化拖拽事件
     init_drag_event () {
-      // 初始化页面设置
-      this.handleToSenPageSetData()
       let this_ = this
       // 左侧模块向中间区域拖拽
       $('.third_drag').draggable({
