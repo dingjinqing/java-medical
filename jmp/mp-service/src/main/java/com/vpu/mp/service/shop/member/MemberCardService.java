@@ -1063,7 +1063,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public List<SimpleMemberCardVo> getMemberCardByCardIdsString(String cardIdsString) {
 		return db().select(MEMBER_CARD.ID, MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
-				.where(DslPlus.findInSet(cardIdsString, MEMBER_CARD.ID))
+				.where(DslPlus.findInSet(MEMBER_CARD.ID,cardIdsString))
 				.and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(SimpleMemberCardVo.class);
 	}
 

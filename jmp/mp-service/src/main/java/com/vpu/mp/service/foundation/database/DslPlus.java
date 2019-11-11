@@ -69,6 +69,16 @@ public class DslPlus {
      * @param field
      * @return
      */
+    public static Condition findInSet(Field<?> field, String format) {
+        return DSL.condition("FIND_IN_SET({0}, {1})", field,DSL.inline(format));
+    }
+
+    /**
+     *  FIND_IN_SET 函数
+     * @param format
+     * @param field
+     * @return
+     */
     public static Condition findInSet(Byte format, Field<?> field) {
         return DSL.condition("FIND_IN_SET({0}, {1})", DSL.inline(format),field);
     }
