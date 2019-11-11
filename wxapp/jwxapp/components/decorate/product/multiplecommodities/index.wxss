@@ -1,4 +1,4 @@
-@import "../goodscommon/goodslabel.wxss";
+@import "../../goodscommon/goodslabel.wxss";
 .mul_column {
     white-space: nowrap;
     height: 444rpx;

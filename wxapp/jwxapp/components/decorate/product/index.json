@@ -1,10 +1,10 @@
 {
   "component": true,
   "usingComponents": {
-    "v-singleRowGoods": "../singleRowGoods/index",
-    "v-doubleRowGoods": "../doubleRowGoods/index",
-    "v-threeCommodities": "../threeCommodities/index",
-    "v-multipleCommodities": "../multipleCommodities/index",
-    "v-bigPictureGoods": "../bigPictureGoods/index"
+    "v-single-colGoods": "./singlecolgoods/index",
+    "v-double-colGoods": "./doublecolgoods/index",
+    "v-three-commodities": "./threecommodities/index",
+    "v-multiple-pommodities": "./multiplecommodities/index",
+    "v-big-pictureGoods": "./bigpicturegoods/index"
   }
 }
