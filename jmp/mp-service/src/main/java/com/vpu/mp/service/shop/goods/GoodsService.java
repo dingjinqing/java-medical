@@ -644,7 +644,7 @@ public class GoodsService extends ShopBaseService {
             //插入商品分销改价信息
             insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
             //更新es
-            esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
+//            esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
         });
     }
 
@@ -1055,7 +1055,7 @@ public class GoodsService extends ShopBaseService {
             deleteGoodsRebatePrices(goodsIds);
 
             //更新es
-            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+//            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
         });
     }
 
@@ -1116,7 +1116,7 @@ public class GoodsService extends ShopBaseService {
             updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
 
             //es更新
-            esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
+//            esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
         });
     }
 

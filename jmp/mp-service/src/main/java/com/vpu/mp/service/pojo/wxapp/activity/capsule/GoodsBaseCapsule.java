@@ -2,6 +2,9 @@ package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author 李晓冰
  * @date 2019年11月06日
@@ -28,4 +31,8 @@ public class GoodsBaseCapsule {
     protected Boolean defaultPrd;
     /**商品主图*/
     protected String goodsImg;
+
+
+    /** 商品已被哪些processor处理过（商品列表里面将处理的营销码值存入） */
+    private Set<Byte> processedTypes = new HashSet<>();
 }

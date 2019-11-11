@@ -35,8 +35,6 @@ public class ActivityGoodsListCapsule extends GoodsBaseCapsule{
     /**关系最紧密的标签信息*/
     GoodsLabelProcessorDataInfo goodsLabel;
 
-    /** 商品已被哪些processor处理过（商品列表里面将处理的营销码值存入） */
-    private Set<Byte> processedTypes = new HashSet<>();
     /** 商品拥有的营销信息，由各个processor添加 */
     private List<ProcessorDataInfo> activities = new ArrayList<>(2);
 
