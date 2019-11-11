@@ -1187,6 +1187,20 @@ export default {
         console.log((backData.table_type - 1))
         console.log(this.layoutData[3])
       } else {
+        switch (backData.table_size.rows) {
+          case 4:
+            this.density = '0'
+            break
+          case 5:
+            this.density = '1'
+            break
+          case 6:
+            this.density = '2'
+            break
+          case 7:
+            this.density = '3'
+            break
+        }
         this.customModulesBackData = backData.data
       }
       this.handleToClickTemplate((this.modulesData.table_type - 1))
