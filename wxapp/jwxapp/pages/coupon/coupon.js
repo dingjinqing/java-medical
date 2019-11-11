@@ -37,12 +37,13 @@ global.wxPage({
     var _this = this;
     var page_id = 1;
     _this.dataList(page_id);
+    console.log(_this.allCoupon)
   },
 
   /**
    * 优惠券列表
    */
-  dataList: function (page_id){
+  dataList: function (page_id=0,nav){
     var _this = this;
     wx.showLoading({
       title: '加载中···',
@@ -54,44 +55,50 @@ global.wxPage({
           unusedNum: res.content.unusedNum,
           usedNum: res.content.usedNum,
           expiredNum: res.content.expiredNum,
-          allCoupon: res.content
+          allCoupon: res.content.couponList.dataList
         }) 
         wx.hideLoading();
         _this.setData({
           cou_list: res.content.unused,
         })
+        
       } else {
         util.showModal("提示", res.message, function () {
           util.jumpLink("pages/index/index", 'redirectTo');
         }, false);
         return false;
       }
-    }, {page: page_id});
+    }, {page: page_id,nav:nav});
   },
 
   /**
    * 优惠券状态tab切换
    */
   change: function (e) {
+   
     var _this = this;
     var name = e.target.dataset.name;
+    console.log(name)
     if (name == 'can') {
       _this.setData({
         this_type: 1,
         cou_list: this.data.allCoupon.unused
       }) 
+      this.dataList(0,0)
     }
     if (name == 'used') {
       _this.setData({
         this_type:2,
         cou_list: this.data.allCoupon.used
       }) 
+      this.dataList(0,1)
     }
     if (name == 'time') {
       _this.setData({
         this_type: 3,
         cou_list: this.data.allCoupon.expired
-      }) 
+      })
+      this.dataList(0,2)
     }
     _this.data.page = 1;
   },
