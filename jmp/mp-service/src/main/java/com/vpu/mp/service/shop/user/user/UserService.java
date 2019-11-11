@@ -688,6 +688,7 @@ public class UserService extends ShopBaseService {
 	 * @return
 	 */
 	public Boolean isNoticeUserActivation(Integer userId) {
+		logger().info("是否展示激活公告");
 		Boolean isEnable = checkModuleIsShow("service", "user_activate");
 		if(!isEnable) {
 			return false;
@@ -698,6 +699,9 @@ public class UserService extends ShopBaseService {
 		}
 		
 		UserImportDetailRecord importUser = userCard.scoreService.member.getUserByMobile(user.getMobile());
+		if(importUser==null) {
+			return true;
+		}
 		if(importUser!=null||importUser.getIsActivate()==1) {
 			return false;
 		}
