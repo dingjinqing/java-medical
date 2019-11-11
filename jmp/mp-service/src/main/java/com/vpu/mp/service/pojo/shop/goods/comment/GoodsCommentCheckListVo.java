@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  */
 @Data
 public class GoodsCommentCheckListVo {
-
+    private Integer id;
     private String orderSn;
     private String goodsImg;
     private String goodsName;

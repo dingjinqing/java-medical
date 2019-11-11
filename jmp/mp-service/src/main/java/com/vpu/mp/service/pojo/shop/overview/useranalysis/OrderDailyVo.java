@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.overview.useranalysis;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 成交用户分析
@@ -11,6 +12,8 @@ import java.math.BigDecimal;
  */
 @Data
 public class OrderDailyVo {
+    /** 日期 */
+    private Date refDate;
     /** 客户数 */
     private Integer orderUserData;
 

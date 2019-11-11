@@ -484,6 +484,7 @@ public class OverviewUserAnalysisService extends ShopBaseService {
     // 新成交客户数每日数据
     List<OrderDailyVo> newVo =
         db().select(
+                USER_SUMMARY_TREND.REF_DATE,
                 USER_SUMMARY_TREND.NEW_ORDER_USER_DATA.as("order_user_data"),
                 USER_SUMMARY_TREND.NEW_PAID_MONEY.as("paid_money"),
                 USER_SUMMARY_TREND.LOGIN_DATA)
@@ -507,6 +508,7 @@ public class OverviewUserAnalysisService extends ShopBaseService {
     // 老成交客户数每日数据
     List<OrderDailyVo> oldVo =
         db().select(
+                USER_SUMMARY_TREND.REF_DATE,
                 USER_SUMMARY_TREND.OLD_ORDER_USER_DATA.as("order_user_data"),
                 USER_SUMMARY_TREND.OLD_PAID_MONEY.as("paid_money"),
                 USER_SUMMARY_TREND.LOGIN_DATA)
