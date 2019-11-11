@@ -33,6 +33,7 @@
         </div>
       </div>
       <!-- 左侧内容end  -->
+
       <section class="right_main">
         <!-- 活动信息部分 -->
         <div class="contentRight">

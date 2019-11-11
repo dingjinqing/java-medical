@@ -1,3 +1,6 @@
+<!--
+***  支付有礼列表页面
+-->
 <template>
   <div class="payReward">
     <div class="mainContent">
@@ -104,16 +107,9 @@
               >
                 <span
                   class="el-icon-edit-outline"
-                  @click="handleEdit"
+                  @click="handleEdit(scope.row.id)"
                 ></span>
               </el-tooltip>
-              <el-tooltip
-                content="分享"
-                placement="top"
-              >
-                <span class="el-icon-share"></span>
-              </el-tooltip>
-
               <el-tooltip
                 content="启用"
                 placement="top"
@@ -144,18 +140,6 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="获取新用户明细"
-                placement="top"
-              >
-                <span class="el-icon-user-solid"></span>
-              </el-tooltip>
-              <el-tooltip
-                content=""
-                placement="top"
-              >
-                <span class="el-icon-s-unfold"></span>
-              </el-tooltip>
-              <el-tooltip
                 content="删除"
                 placement="top"
               >
@@ -163,12 +147,6 @@
                   class="el-icon-delete"
                   @click="delPayRewardAct(scope.row.id)"
                 ></span>
-              </el-tooltip>
-              <el-tooltip
-                content="活动效果"
-                placement="top"
-              >
-                <span class="el-icon-s-data"></span>
               </el-tooltip>
             </div>
           </template>
@@ -223,13 +201,26 @@ export default {
     addActivity () {
       this.$router.push({
         name: 'addPayRewardAct'
-        // name: 'activityDetails'
       })
     },
+
     // 点击编辑按钮跳转到编辑支付有礼活动
-    handleEdit () {
+    handleEdit (id) {
       this.$router.push({
-        name: 'activityDetails'
+        name: 'addPayRewardAct',
+        query: {
+          id: id
+        }
+      })
+    },
+
+    // 点击活动明细跳转到活动明细页面
+    actDetails (id) {
+      this.$router.push({
+        name: 'activityDetails',
+        query: {
+          id: id
+        }
       })
     },
 
@@ -244,6 +235,7 @@ export default {
         }
       })
     },
+    // 处理列表数据
     handleData (data) {
       console.log(data)
       this.tableData = data.dataList
@@ -266,10 +258,6 @@ export default {
         this.$message.info({ message: '删除成功' })
       })
     },
-
-    // actSwitch () {
-
-    // },
 
     // 停用
     closeSwitch (row) {
@@ -321,17 +309,6 @@ export default {
           break
       }
       return row.status
-    },
-
-    // 活动明细
-    actDetails (id) {
-      console.log(id)
-      this.$router.push({
-        name: 'activityDetails',
-        query: {
-          id: id
-        }
-      })
     }
   },
 
@@ -395,7 +372,7 @@ export default {
     background-color: #fff;
     padding: 10px 15px 20px;
     .opt {
-      text-align: left;
+      text-align: center;
       color: #5a8bff;
       span {
         cursor: pointer;

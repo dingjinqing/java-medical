@@ -12,3 +12,21 @@ export function customerTrend (data) {
     data: data
   })
 }
+
+// 用户活跃
+export function userActive (data) {
+  return service({
+    url: '/api/admin/overview/user/analysis/active',
+    method: 'post',
+    data: data
+  })
+}
+
+// 会员统计
+export function menberStatistics (data) {
+  return service({
+    url: '/api/admin/overview/user/analysis/vip',
+    method: 'post',
+    data: data
+  })
+}

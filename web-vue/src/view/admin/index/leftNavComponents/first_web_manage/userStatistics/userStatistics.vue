@@ -1,257 +1,38 @@
 <template>
   <div class="userStatistics">
     <div class="userContainer">
-      <section class="label overviewAndTrend">
-        <div class="labelItem">地域分布</div>
-        <el-select
-          v-model="timeSelect"
-          size="small"
-          clearable
-          @change="dateChangeHandler"
-          class="timeSelect"
-        >
-          <el-option
-            v-for="item in timeRange"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-        <span>2019年10月02日 - 2019年11月01日</span>
-
-        <!-- 表格数据部分 -->
-        <div class="fromWrapper">
-          <div class="fromItem">
-            <div
-              class="fromInfo"
-              style="display: flex;"
-            >
-              <div class="title">访客数</div>
-              <el-tooltip
-                class="item"
-                effect="light"
-                content="访客数"
-                placement="top"
-              >
-                <i class="el-icon-warning-outline icons"></i>
-              </el-tooltip>
-            </div>
-            <div
-              class="num"
-              style="color: #5A8BFF"
-            >352</div>
-            <div>较前一月 ↑ 23.5%</div>
-          </div>
-          <div class="fromItem">
-            <div
-              class="fromInfo"
-              style="display: flex;"
-            >
-              <div class="title">累积用户数</div>
-              <el-tooltip
-                class="item"
-                effect="light"
-                content="累积用户数"
-                placement="top"
-              >
-                <i class="el-icon-warning-outline icons"></i>
-              </el-tooltip>
-            </div>
-            <div
-              class="num"
-              style="color: #fc6181;"
-            >3362</div>
-            <div>较前一月 ↑ 8.55%</div>
-          </div>
-          <div
-            class="fromItem"
-            style="display: flex;"
-          >
-            <div
-              class="fromInfo"
-              style="display: flex;"
-            >
-              <div class="title">用户成交数</div>
-              <el-tooltip
-                class="item"
-                effect="light"
-                content="用户成交数"
-                placement="top"
-              >
-                <i class="el-icon-warning-outline icons"></i>
-              </el-tooltip>
-            </div>
-            <div
-              class="num"
-              style="color: #fdb64a;"
-            >28</div>
-            <div>较前一月 ↓ 22.22%</div>
-          </div>
-        </div>
-
-        <!-- echarts图表部分 -->
-        <div id="charts"></div>
-
-      </section>
+      <overviewAndTrend style="margin-bottom: 10px;" />
+      <userActive style="margin-bottom: 10px;" />
+      <member style="margin-bottom: 10px;" />
+      <userAnalysis />
     </div>
   </div>
 </template>
 
 <script>
-import echarts from 'echarts'
-import { customerTrend } from '@/api/admin/firstWebManage/userStatistics/userStatistics.js'
+import overviewAndTrend from './overviewAndTrend'
+import userActive from './userActive'
+import member from './member'
+import userAnalysis from './userAnalysis'
 
 export default {
-  created () {
-    this.initData()
-  },
-
-  mounted () {
-    this.langDefault()
-    this.myChart = echarts.init(document.getElementById('charts'))
-  },
-
+  components: { overviewAndTrend, userActive, member, userAnalysis },
   data () {
     return {
-      timeSelect: '',
-      timeRange: [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' }
-      ],
-      originalData: {},
-      myChart: {}
+
     }
-  },
-
-  methods: {
-    dateChangeHandler (value) {
-      // this.queryParams.screeningTime = value
-      this.initData()
-    },
-
-    initData () {
-      customerTrend({ 'lastNum': '1' }).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          let originalData = JSON.parse(JSON.stringify(this.originalData))
-          this.handleData(originalData)
-        }
-      }).catch(err => console.log(err))
-    },
-
-    handleData (data) {
-      // 顶部数据部分
-      this.totalNumbers = data.total
-      // echarts数据渲染
-      this.echartsData.tooltip = { trigger: 'axis' }
-      this.echartsData.legend = { name: [this.$t('bargainList.bargainRecordNumber'), this.$t('bargainList.helpCutPeople'), this.$t('bargainList.actOrderNumber'), this.$t('bargainList.sourceUserNumber')] }
-      this.echartsData.grid = { left: '3%', right: '4%', bottom: '3%', containLabel: true }
-      this.echartsData.xAxis = [
-        {
-          type: 'category',
-          data: data.dateList,
-          boundaryGap: false
-        }
-      ]
-      this.echartsData.yAxis = [
-        {
-          type: 'value'
-        }
-      ]
-      this.echartsData.series = [
-        {
-          name: '111',
-          type: 'line',
-          stack: this.$t('marketCommon.totalAmount'),
-          data: 100
-        },
-        {
-          name: '222',
-          type: 'line',
-          stack: this.$t('marketCommon.totalAmount'),
-          data: 200
-        },
-        {
-          name: '333',
-          type: 'line',
-          stack: this.$t('marketCommon.totalAmount'),
-          data: 300
-        },
-        {
-          name: '444',
-          type: 'line',
-          stack: this.$t('marketCommon.totalAmount'),
-          data: 400
-        }
-      ]
-
-      this.myChart.setOption(this.echartsData)
-    }
-
   }
 }
 
 </script>
 <style lang="scss" scoped>
 .userStatistics {
-  padding: 10px;
   font-size: 14px;
   .userContainer {
     padding: 10px;
     position: relative;
-    background: #fff;
-    .label {
-      .labelItem {
-        height: 50px;
-        line-height: 50px;
-        color: #333;
-      }
-      .timeSelect {
-        width: 140px;
-        margin: 0 10px 0 2px;
-      }
-    }
-    .fromWrapper {
-      border: 1px solid #eee;
-      height: 130px;
-      width: 85%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 30px auto 50px;
-      .fromItem {
-        flex: 1;
-        height: 130px;
-        position: relative;
-        border-right: 1px solid #eee;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        // .fomrInfo {
-        // display: flex;
-        // .item {
-        .icons {
-          margin-left: 10px;
-          position: relative;
-        }
-        // }
-        .num {
-          margin-top: 15px;
-          font-size: 30px;
-        }
-        :nth-of-type(3) {
-          margin-top: 10px;
-        }
-        // }
-      }
-    }
-
-    #charts {
-      width: 100%;
-      height: 500px;
-      left: -30px;
+    .top {
+      margin-bottom: 10px;
     }
   }
 }

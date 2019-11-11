@@ -23,9 +23,18 @@ export function addPayRewardAct (data) {
 }
 
 // 更新支付有礼活动
-export function addPayRewardUpdate (data) {
+export function updatePayReward (data) {
   return service({
     url: '/api/admin/market/payaward/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取单个活动信息
+export function getPayRewardInfo (data) {
+  return service({
+    url: '/api/admin/market/payaward/get',
     method: 'post',
     data: data
   })

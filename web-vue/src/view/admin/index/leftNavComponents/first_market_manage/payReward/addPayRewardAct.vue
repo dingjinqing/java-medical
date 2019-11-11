@@ -57,7 +57,7 @@
               <div>
                 <el-radio
                   v-model="params.timeType"
-                  label="1"
+                  :label="1"
                   style="margin-right: 20px;"
                 >固定时间</el-radio>
                 <el-date-picker
@@ -82,7 +82,7 @@
                 <div>
                   <el-radio
                     v-model="params.timeType"
-                    label="2"
+                    :label="2"
                   >永久有效</el-radio>
                 </div>
               </div>
@@ -105,12 +105,12 @@
               <div>
                 <span>商品条件：</span>
                 <el-radio-group v-model="params.goodsAreaType">
-                  <el-radio label="1">全部商品</el-radio>
-                  <el-radio label="2">部分商品</el-radio>
+                  <el-radio :label="1">全部商品</el-radio>
+                  <el-radio :label="2">部分商品</el-radio>
                 </el-radio-group>
                 <div
                   class="noneBlock"
-                  v-if="params.goodsAreaType === '2'"
+                  v-if="params.goodsAreaType === 2"
                 >
                   <div
                     class="noneBlockList"
@@ -217,7 +217,7 @@
             >
               <div class="middleContainer">
                 <div
-                  v-for="(item,index) in mrkingVoucherObjs"
+                  v-for="(item,index) in item.ordinaryCoupon"
                   :key="index"
                   class="addInfo"
                   style="margin-right: 5px;"
@@ -231,6 +231,7 @@
                       <span class="number">{{item.denomination}}</span>
                     </div>
                     <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                    <!-- <div class="coupon_center_limit">{{item.couponCenterLimit}}</div> -->
                     <div class="coupon_center_number">剩余{{item.surplus}}张</div>
                     <div
                       class="coupon_list_bottom"
@@ -246,7 +247,7 @@
                 <div
                   class="addInfo"
                   @click="handleToCallDialog1()"
-                  v-if="mrkingVoucherObjs.length < 5"
+                  v-if="true"
                   style="line-height: normal"
                 >
                   <el-image
@@ -266,7 +267,7 @@
             >
               <div class="middleContainer">
                 <div
-                  v-for="(item,index) in rewardCouponObjs"
+                  v-for="(item,index) in splitCoupon"
                   :key="index"
                   class="addInfo"
                   style="margin-right: 5px;"
@@ -295,7 +296,7 @@
                 <div
                   class="addInfo"
                   @click="handleToCallDialog2()"
-                  v-if="rewardCouponObjs.length < 1"
+                  v-if="splitCoupon.length < 1"
                   style="line-height: normal"
                 >
                   <el-image
@@ -425,7 +426,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="item.giftType ==='8'"
+              v-if="item.giftType === '8' "
               label="活动图片："
             >
               <div style="display: flex">
@@ -459,7 +460,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="params.awardList.giftType !== '1'"
+              v-if="item.giftType !== '1'"
               label="奖品份数："
             >
               <div>
@@ -482,7 +483,7 @@
         <el-button
           size="small"
           type="primary"
-          @click="submitData"
+          @click="addActSave"
         >保存
         </el-button>
       </div>
@@ -530,18 +531,26 @@
       :loadProduct="true"
     />
 
-    <!--添加优惠卷-->
+    <!--添加普通优惠卷-->
     <AddCouponDialog
       @handleToCheck="handleToCheck"
       :tuneUpCoupon="showCouponDialog"
       :couponBack="couponIdList"
+    />
+
+    <!--添加分裂优惠卷-->
+    <AddCouponDialog
+      @handleToCheck="handleToCheck1"
+      :tuneUpCoupon="showCouponDialog2"
+      :couponBack="couponIdList"
+      :singleElection="true"
     />
   </div>
 
 </template>
 
 <script>
-import { addPayRewardAct } from '@/api/admin/marketManage/payReward.js'
+import { addPayRewardAct, updatePayReward, getPayRewardInfo } from '@/api/admin/marketManage/payReward.js'
 
 export default {
   components: {
@@ -552,11 +561,11 @@ export default {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
-  created () {
-    // this.initData()
-  },
   mounted () {
-    // this.dataDefalut()
+    if (this.$route.query.id > 0) {
+      this.idInfo = this.$route.query.id
+      this.fetchData()
+    }
   },
   filters: {
     formatLeastConsume (useConsumeRestrict, leastConsume) {
@@ -569,17 +578,27 @@ export default {
   },
   data () {
     return {
+      idInfo: null,
       carouselList: [
         { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift1.jpg' },
         { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift2.jpg' },
         { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift3.jpg' }
       ],
       options: [{
-        value: '选项1',
+        value: 1,
         label: '黄金糕'
       }, {
-        value: '选项2',
+        value: 2,
         label: '双皮奶'
+      }, {
+        value: 3,
+        label: '巧克力'
+      }, {
+        value: 4,
+        label: '冰淇淋'
+      }, {
+        value: 5,
+        label: '奶酪'
       }],
       noneBlockDiscArr: [
         { name: '添加商品', num: '' },
@@ -597,17 +616,16 @@ export default {
       ownBrandId: null,
       GoodsBrandDateArr: '',
       callAddBrand: false,
-      shareRules: [{}],
       tuneUpSelectLink: false,
       tuneUp: false,
       isShowChoosingGoodsDialog: false,
-      storeImgs: [],
       showCouponDialog: false,
+      showCouponDialog2: false,
       couponIdList: [],
-      // 普通优惠券
-      mrkingVoucherObjs: [],
-      // 分裂优惠券
-      rewardCouponObjs: [],
+      // // 普通优惠券
+      // ordinaryCoupon: [],
+      // // 分裂优惠券
+      // splitCoupon: [],
       // 优惠券弹窗区分，1普通优惠券，0分裂优惠券
       currentPage1: 1,
       totalRows: null,
@@ -617,17 +635,19 @@ export default {
         activityNames: '',
         startTime: '',
         endTime: '',
-        actFirst: '',
-        timeType: '1',
-        goodsAreaType: '1', // 商品范围类型
+        actFirst: '', //  优先级
+        timeType: 1, // 时间类型
+        goodsAreaType: 1, // 商品范围类型
         goodsIds: '1003,1002', // 商品id
         goodsCatIds: '229,230,233,235,329', // 商品平台分类
         goodsSortIds: '225,226', // 商品商家分类
         minPayMoney: '', // 最少支付金额
         limitTimes: '', // 每个用户参与次数
         lotteryId: '', // 下拉框
+
         awardList: [
           {
+            flag: null,
             giftType: '1',
             productId: 5473,
             keepDays: '',
@@ -636,21 +656,25 @@ export default {
             awardNumber: '',
             customLink: '',
             image: 'image/admin/btn_add.png',
+            // 普通优惠券
+            ordinaryCoupon: [],
+            // 分裂优惠券
+            splitCoupon: [],
             couponList: [
-              {
-                actCode: 'voucher',
-                denomination: 50,
-                id: 470,
-                randomMin: 0,
-                randomMax: 0,
-                couponCenterLimit: '满100使用',
-                couponCenterNumber: '剩余196张'
-              }
-            ],
-            couponIds: [
-              479,
-              476
+              // {
+              //   actCode: 'voucher',
+              //   denomination: 50,
+              //   id: 470,
+              //   randomMin: 0,
+              //   randomMax: 0,
+              //   couponCenterLimit: '满100使用',
+              //   couponCenterNumber: '111'
+              // }
             ]
+            // couponIds: [
+            //   479,
+            //   476
+            // ]
           }
         ]
       }
@@ -660,10 +684,28 @@ export default {
     // 添加奖励 - 增加对应的支付奖励次数
     addItem () {
       let obj = {
-        coupon: ''
+        'flag': null,
+        'giftType': '',
+        'productId': '',
+        'keepDays': '',
+        'accountNumber': '',
+        'scoreNumber': '',
+        'awardNumber': '',
+        'couponList': [
+          {
+            'actCode': '',
+            'denomination': '',
+            'id': '',
+            'randomMin': '',
+            'randomMax': '',
+            'couponCenterLimit': '',
+            'couponCenterNumber': ''
+          }
+        ]
       }
       if (this.params.awardList.length < 5) {
         this.params.awardList.push(obj)
+        console.log(this.params.awardList)
       } else {
         alert('最多可添加5个规则！')
       }
@@ -679,46 +721,69 @@ export default {
     // 普通优惠券弹窗调起
     handleToCallDialog1 () {
       this.dialogFlag = 0
-      this.couponIdList = this.getCouponIdsArray(this.mrkingVoucherObjs)
+      console.log(this.params.awardList[0].ordinaryCoupon)
+      this.couponIdList = this.getCouponIdsArray(this.params.awardList[0].ordinaryCoupon)
       this.showCouponDialog = !this.showCouponDialog
     },
     // 分裂优惠券弹窗调起
     handleToCallDialog2 () {
       this.dialogFlag = 1
-      this.couponIdList = this.getCouponIdsArray(this.rewardCouponObjs)
-      this.showCouponDialog = !this.showCouponDialog
+      this.couponIdList = this.getCouponIdsArray(this.splitCoupon)
+      this.showCouponDialog2 = !this.showCouponDialog2
     },
-    // 删除优惠券
-    handleToCheck (data, index) {
+
+    // handleToCheck (data, index) {
+    //   console.log(data)
+    //   if (this.dialogFlag === 1) {
+    //     // console.log(this.splitCoupon)
+    //     if (this.splitCoupon.length === 1) {
+    //       return
+    //     }
+    //     this.splitCoupon = data
+    //     console.log(this.splitCoupon)
+    //   } else {
+    //     if (this.ordinaryCoupon.length >= 5) {
+    //       return
+    //     }
+    //     this.ordinaryCoupon = data
+    //     console.log(this.ordinaryCoupon)
+    //   }
+    // },
+    // 普通优惠券处理
+    handleToCheck (data) {
       console.log(data)
-      console.log(this.rewardCouponObjs)
-      if (this.dialogFlag === 1) {
-        // console.log(this.rewardCouponObjs)
-        if (this.rewardCouponObjs.length === 1) {
-          return
-        }
-        this.rewardCouponObjs = data
+      console.log(this.params.awardList.ordinaryCoupon)
+      if (this.params.awardList[0].ordinaryCoupon.length >= 5) {
       } else {
-        if (this.mrkingVoucherObjs.length >= 5) {
-          return
-        }
-        this.mrkingVoucherObjs = data
+        this.params.awardList.ordinaryCoupon[0] = data
       }
     },
-    // 删除好友砍价优惠券图片
+
+    // 分裂优惠券处理
+    handleToCheck1 (data, index) {
+      console.log(data, index)
+      if (this.splitCoupon.length === 1) {
+      } else {
+        this.splitCoupon = data
+      }
+    },
+
+    // 删除普通优惠券
     deleteCouponImg (index) {
-      this.mrkingVoucherObjs.splice(index, 1)
+      this.params.awardList.ordinaryCoupon.splice(index, 1)
+      // console.log(this.orderordinaryCoupon)
     },
-    // 删除鼓励奖优惠券图片
+    // 删除分裂优惠券
     deleteCouponImg2 (index) {
-      this.rewardCouponObjs.splice(index, 1)
+      this.splitCoupon.splice(index, 1)
     },
+
+    // 获取选中优惠券的 id 和 index
     getCouponIdsArray (data) {
       let res = []
       data.forEach((item, index) => {
-        res.push(item.id)
+        res.push(item.id, index)
       })
-      return res
     },
 
     // 点击会员专享商品出现的添加类弹窗汇总
@@ -754,7 +819,6 @@ export default {
 
     // 11- 获取会员权益选择商品弹窗的商品id
     getGoodsIdFromChoosingGoods (data) {
-      console.log(data)
       // 添加商品id
       if (this.userDialogFlag === '1') {
         this.choosingGoodsDateFlag1 = data
@@ -821,11 +885,46 @@ export default {
       this.$forceUpdate()
     },
 
-    submitData () {
+    // 点击编辑按钮跳转过来获取对应的信息
+    fetchData () {
+      getPayRewardInfo({ id: this.idInfo }).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.handleData(res.content)
+        }
+      }).catch(err => console.log(err))
+    },
+
+    // 对获取到的信息进行处理
+    handleData (data) {
+      this.params.activityNames = data.activityNames
+      this.params.startTime = data.startTime
+      this.params.endTime = data.endTime
+      this.params.timeType = data.timeType //  缺少时间类型字段
+      this.params.actFirst = data.actFirst
+      this.params.goodsAreaType = data.goodsAreaType
+      // this.params.goodsIds = data.goodsIds
+      // this.params.goodsCatIds = data.goodsCatIds
+      // this.params.goodsSortIds = data.goodsSortIds
+      this.params.minPayMoney = data.minPayMoney
+      this.params.limitTimes = data.limitTimes
+      // this.params.lotteryId = data.lotteryId
+    },
+
+    // 添加支付有礼活动接口调用
+    addActSave () {
       addPayRewardAct(this.params).then(res => {
         console.log(res)
       }).catch(err => console.log(err))
+    },
+
+    // 更新支付有礼活动接口调用
+    updateActSave () {
+      updatePayReward(this.params).then(res => {
+        console.log(res)
+      }).catch(err => console.log(err))
     }
+
   }
 }
 
