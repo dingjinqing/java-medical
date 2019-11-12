@@ -61,4 +61,13 @@ public class WxAppStoreController extends WxAppBaseController{
     public JsonResult confirmReservation(@RequestBody @Validated(ConfirmReservation.class) ReservationParam param) {
         return this.success(shop().store.wxService.createReservation(param.getServiceId(), param.getUserId()));
     }
+
+    /**
+     * 门店服务预约订单提交
+     */
+    @PostMapping("/service/submitReservation")
+    public JsonResult submitReservation(@RequestBody @Validated SubmitReservationParam param) {
+        shop().store.wxService.submitReservation(param);
+        return this.success("Done");
+    }
 }

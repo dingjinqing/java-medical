@@ -231,7 +231,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
     }
 
     /**
-     * 是否使用公众号发送模板消息
+     * TODO 是否使用公众号发送模板消息
      *
      * @param unionId     the union id
      * @param openId      the open id
@@ -239,31 +239,9 @@ public class WechatMessageTemplateService extends ShopBaseService {
      * @param templateNoB the template no b
      * @return bool
      */
-    public void chooseMessageTemplate(Integer unionId, Integer openId, String templateNoA, String templateNoB) {
+    public boolean chooseMessageTemplate(Integer unionId, Integer openId, String templateNoA, String templateNoB) {
         ShopMsgTempConfig messageLibrary = Optional.ofNullable(msgTemplateConfigService.getShopTempConfig()).orElse(MSG_TEMP_CONFIG);
         MpAuthShopRecord mpAuthShop = mpAuthShopService.getAuthShopByShopId(getShopId());
-
-        /*$mp = saas()->shop->mp->getMpFromShopId($this->getShopId());
-        if ($mp && $mp->app_id) {
-            if (!env('SUBSCRIBE_MESSAGE', false) && $this->canUseFormIdCount($openId) > 0) {
-                if (array_search($templateNoA, $messageLibrary['A'] ?? []) !== false ||
-                    $this->mpIsCanSend($templateNoA, $messageLibrary['A'] ?? [])
-                    ) {
-                    // 小程序模板库
-                    return ['send_action' => 'A', 'data' => []];
-                }
-            }
-            $officialAccount = saas()->shop->officialAccount->getRow($mp->link_official_app_id);
-            if ($officialAccount && $officialAccount->is_auth_ok) {
-                $officialAccountUser = saas()->shop->officialAccountUser->getUserByUnionId($mp->link_official_app_id, $unionId);
-                if ($officialAccountUser && $officialAccountUser->subscribe == 1) {
-                    $officialAccountUser->mp_app_id = $mp->app_id;
-                    if (array_search($templateNoB, $messageLibrary['B'] ?? []) !== false) {
-                        // 公众号模板库
-                        return ['send_action' => 'B', 'data' => $officialAccountUser];
-                    }
-                }
-            }
-        }*/
+        return false;
     }
 }

@@ -27,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
+import com.vpu.mp.service.saas.region.ProvinceService;
 import com.vpu.mp.service.saas.shop.ShopService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.StoreConfigService;
@@ -42,6 +43,7 @@ import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
+import com.vpu.mp.service.shop.user.message.WechatMessageTemplateService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.wechat.WxPayment;
 import lombok.extern.slf4j.Slf4j;
@@ -213,6 +215,18 @@ public class StoreWxService extends ShopBaseService {
      */
     @Autowired
     public ShopCommonConfigService commonConfigService;
+
+    /**
+     * The Message template service.
+     */
+    @Autowired
+    public WechatMessageTemplateService messageTemplateService;
+
+    /**
+     * The Province service.省市区
+     */
+    @Autowired
+    public ProvinceService provinceService;
 
     /**
      * The constant BYTE_TWO.
@@ -829,29 +843,14 @@ public class StoreWxService extends ShopBaseService {
      * @param serviceOrder the service order
      */
     public void sendReservationPaySuccessMessage(ServiceOrderRecord serviceOrder) {
-        if (Objects.isNull(storeService.getStoreService(serviceOrder.getServiceId()))) {
-            // todo 未找到与订单对应的服务id(service_id not found!)
-        }
-        // todo 处理省市区地理位置信息,code转汉字
-/*        $store = $this->store->getRow($service->store_id);
-        $page = "pages/appointinfo/appointinfo?order_sn=" . $serviceOrder->order_sn; // 跳转到服务预约信息页
-        if ($store) {
-            $province = saas()->region->province->getRow($store->province_code);
-            $city = saas()->region->city->getRow($store->city_code);
-            $district = saas()->region->district->getRow($store->district_code);
-            $address = ($province ? $province->name : "") . " " . ($city ? $city->name : "") . " "
-                . ($district ? $district->name : "") . " " . ($store ? $store->address : "");
-        }
-        $keywordsValues = [
-        $service->service_name, $store ? $store->store_name : "", $address ?? "",
-            $serviceOrder->service_date . " " . $serviceOrder->service_period,
-            $serviceOrder->mobile, $serviceOrder->subscriber
-        ];*/
-        UserRecord userInfo = userService.getUserByUserId(serviceOrder.getUserId());
-        if (Objects.isNull(userInfo.getWxOpenid())) {
-            // TODO 用户 openid not found!
-        }
         // TODO 判定是使用公众号发送模板消息还是小程序发送
+        if (messageTemplateService.chooseMessageTemplate(null, null, null, null)) {
+            //  发送小程序模版消息
+            messageTemplateService.sendMaMessage(null, null, null);
+        } else {
+            //发送公众号模版消息
+            messageTemplateService.sendMpMessage(null, null);
+        }
     }
 
     /**
@@ -862,12 +861,23 @@ public class StoreWxService extends ShopBaseService {
      */
     public boolean prefixCheck(ServiceOrderRecord serviceOrder) {
         if (Objects.isNull(storeService.getStoreService(serviceOrder.getServiceId()))) {
-            // todo 未找到与订单对应的服务id(service_id not found!)
+            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, "ServiceId: " + serviceOrder.getServiceId());
         }
         UserRecord userInfo = userService.getUserByUserId(serviceOrder.getUserId());
         if (Objects.isNull(userInfo.getWxOpenid())) {
-            // TODO 用户 openid not found!
+            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, "WxOpenid: " + userInfo.getWxOpenid());
         }
+        // todo 构造发送消息模板的入参数据
+        StorePojo storePojo = store.getStore(serviceOrder.getStoreId());
+        // 拼接地址信息
+        String address = provinceService.getFullAddressById(Integer.parseInt(storePojo.getProvinceCode()), Integer.parseInt(storePojo.getCityCode()), Integer.parseInt(storePojo.getDistrictCode())) + storePojo.getAddress();
+        /*
+        $keywordsValues = [
+        $service->service_name, $store ? $store->store_name : "", $address ?? "",
+            $serviceOrder->service_date . " " . $serviceOrder->service_period,
+            $serviceOrder->mobile, $serviceOrder->subscriber
+        ];*/
+        ServiceOrderTemplate serviceOrderTemplate = new ServiceOrderTemplate();
         return true;
     }
 }
