@@ -1,5 +1,27 @@
 import service from '@/util/request.js'
 
+// 分销配置
+// 获取分销配置
+
+// 设置分销配置
+
+// 分销员等级配置
+
+// 返利策略配置
+// 获取返利策略列表
+
+// 删除返利策略
+
+// 停用返利策略
+
+// 启用返利策略
+
+// 添加返利策略
+
+// 获取单个返利策略
+
+// 编辑返利策略
+
 // 分销推广语列表
 export function advertisementList (data) {
   return service({

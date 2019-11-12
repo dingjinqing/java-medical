@@ -119,6 +119,7 @@ export default {
     position: relative;
     background-color: #fff;
     padding: 10px 20px 10px 20px;
+    margin-bottom: 20px;
   }
 }
 </style>

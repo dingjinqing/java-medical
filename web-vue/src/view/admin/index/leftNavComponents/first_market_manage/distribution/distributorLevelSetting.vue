@@ -94,7 +94,10 @@
               v-if="scope.row.rule === 2 && (scope.row.level === '2' || scope.row.level === '3')"
               style="margin: 15px 0;"
             >
-              <el-button size="mini"><i class="el-icon-plus"></i> 添加分销员</el-button>
+              <el-button
+                size="mini"
+                @click="addDistributor(scope.row.id)"
+              ><i class="el-icon-plus"></i> 添加分销员</el-button>
             </div>
           </template>
         </el-table-column>
@@ -130,14 +133,191 @@
         </el-table-column>
       </el-table>
     </div>
+
+    <div class="listFooter">
+      <el-button
+        type="primary"
+        size="small"
+      >保存</el-button>
+    </div>
+
+    <!-- 添加分销员弹窗 -->
+    <el-dialog
+      title="添加分销员"
+      :visible.sync="addDialogVisible"
+      :close-on-click-modal="false"
+      width="70%"
+      center
+    >
+      <el-form label-width="140px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="分销员手机号：">
+              <el-input
+                size="small"
+                placeholder="请输入手机号"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="分销员昵称：">
+              <el-input
+                size="small"
+                placeholder="请输入昵称"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="真实姓名：">
+              <el-input
+                size="small"
+                placeholder="请输入姓名"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="分销员ID：">
+              <el-input
+                size="small"
+                placeholder="请输入分销员ID"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="分销员等级：">
+              <el-select
+                class="optionInput"
+                size="small"
+                v-model="valueLevel"
+                placeholder="请选择等级"
+              >
+                <el-option
+                  v-for="level in groupLevelList"
+                  :key="level.levelId"
+                  :label="level.label"
+                  :value="level.levelName"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="分销员分组：">
+              <el-select
+                class="optionInput"
+                size="small"
+                v-model="valueGroup"
+                placeholder="请选择分组"
+              >
+                <el-option
+                  v-for="group in groupNameList"
+                  :key="group.id"
+                  :label="group.groupName"
+                  :value="group.groupName"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row style="text-align: center;">
+          <el-button
+            type="primary"
+            size="small"
+          >筛选</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            plain
+          >重置</el-button>
+        </el-row>
+      </el-form>
+
+      <el-table
+        :data="distributorList"
+        border
+        style="margin-top: 20px;"
+      >
+        <el-table-column
+          type="selection"
+          width="55"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="userId"
+          label="分销员ID"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="mobile"
+          label="分销员手机号"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="username"
+          label="分销员昵称"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="realName"
+          label="真实姓名"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="nextNumber"
+          label="下级用户数"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="totalFanliMoney"
+          label="累计获得佣金金额"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="groupName"
+          label="分销员组"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="levelName"
+          label="当前等级"
+          align="center"
+        >
+        </el-table-column>
+      </el-table>
+      <Pagination
+        :page-params.sync="pageParams"
+        @pagination="addDistributor"
+      />
+      <span slot="footer">
+        <el-button @click="cancelHandler()">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="addHandler()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-
+import { distributorList, distributorLevelList, distributorGroupList } from '@/api/admin/marketManage/distribution.js'
 export default {
+  components: {
+    Pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
+      // 表格数据
       tableData: [{
         level: '1',
         levelName: '分销员测试',
@@ -168,12 +348,51 @@ export default {
         rule: 2,
         num: '2',
         status: 0
-      }], // 表格数据
-      centerDialogVisible: false // dialog
+      }],
+      centerDialogVisible: false, // 规则弹框
+      addDialogVisible: false, // 添加分销员弹框
+      pageParams: {}, // 分页
+      valueLevel: '',
+      valueGroup: '',
+      groupLevelList: [], // 分销员等级
+      groupNameList: [], // 分销员分组
+      distributorList: [] // 表格
     }
   },
   methods: {
+    // 显示分销员弹窗
+    addDistributor (id) {
+      this.addDialogVisible = true
+      // 等级下拉框
+      distributorLevelList().then(res => {
+        if (res.error === 0) {
+          this.groupLevelList = res.content
+        }
+      })
+      // 分组下拉框
+      distributorGroupList().then(res => {
+        if (res.error === 0) {
+          this.groupNameList = res.content
+        }
+      })
+      // 表格
+      distributorList(this.pageParams).then(res => {
+        if (res.error === 0) {
+          this.distributorList = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
+    },
 
+    // 取消
+    cancelHandler () {
+      this.addDialogVisible = false
+    },
+
+    // 添加分销员
+    addHandler () {
+      this.addDialogVisible = false
+    }
   }
 
 }
@@ -228,5 +447,22 @@ a {
       line-height: 32px;
     }
   }
+}
+
+.el-input {
+  width: 180px;
+}
+
+.listFooter {
+  position: fixed;
+  bottom: 0;
+  right: 27px;
+  width: 87.8%;
+  margin: 0 auto;
+  height: 50px;
+  line-height: 50px;
+  background: #fff;
+  text-align: center;
+  z-index: 99;
 }
 </style>

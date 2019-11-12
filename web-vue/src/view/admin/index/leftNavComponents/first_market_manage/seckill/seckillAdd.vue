@@ -211,10 +211,92 @@
         </el-form-item>
 
         <!-- 活动分享 -->
-        <actShare
+        <!-- <actShare
           :shareConfig="form.shareConfig"
           v-if="!arrorFlag"
-        />
+        /> -->
+
+        <!-- 活动分享 -->
+        <el-form-item
+          prop="shareConfig"
+          label="活动分享"
+          v-if="!arrorFlag"
+        >
+          <div class="shareContent">
+            <el-radio
+              v-model="form.shareConfig.share_action"
+              :label="1"
+            >默认样式</el-radio>
+            <el-popover
+              placement="right-start"
+              width="220"
+              trigger="hover"
+            >
+              <el-image :src="srcList.src1"></el-image>
+              <el-button
+                slot="reference"
+                type="text"
+                style="margin: 0 20 0 0px"
+              >查看示例</el-button>
+            </el-popover>
+            <el-popover
+              placement="right-start"
+              width="220"
+              trigger="hover"
+            >
+              <el-image :src="srcList.src2"></el-image>
+              <el-button
+                slot="reference"
+                type="text"
+              >下载海报</el-button>
+            </el-popover>
+          </div>
+          <div>
+            <el-radio
+              v-model="form.shareConfig.share_action"
+              :label="2"
+            >自定义样式</el-radio>
+            <div v-if="form.shareConfig.share_action === 2">
+              <span>文案：</span>
+              <el-input
+                v-model="form.shareConfig.share_doc"
+                size="small "
+                style="width: 180px;"
+              ></el-input>
+            </div>
+            <div v-if="form.shareConfig.share_action === 2">
+              <span>分享图：</span>
+              <el-radio
+                v-model="form.shareConfig.share_img_action"
+                :label="1"
+              >活动商品信息图</el-radio>
+              <div style="margin-left: 60px;">
+                <el-radio
+                  v-model="form.shareConfig.share_img_action"
+                  :label="2"
+                >自定义图片</el-radio>
+              </div>
+              <div
+                class="imgContent"
+                v-if="form.shareConfig.share_img_action === 2"
+                @click="addGoodsImg"
+              >
+                <img
+                  v-if="form.shareConfig.share_img === ''"
+                  src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
+                  alt=""
+                >
+                <img
+                  v-if="form.shareConfig.share_img !== ''"
+                  :src="form.shareConfig.share_img"
+                  alt=""
+                  class="shareImg"
+                >
+              </div>
+            </div>
+          </div>
+
+        </el-form-item>
 
       </el-form>
 
@@ -227,6 +309,13 @@
         @resultGoodsRow="choosingGoodsResult"
       />
     </div>
+
+    <!-- 选择图片弹框 -->
+    <ImageDalog
+      pageIndex='pictureSpace'
+      :tuneUp="showImageDialog"
+      @handleSelectImg='handleSelectImg'
+    />
 
     <!-- 底部 -->
     <div class="footer">
@@ -244,13 +333,15 @@
 // 引入组件
 import choosingGoods from '@/components/admin/choosingGoods'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
+import ImageDalog from '@/components/admin/imageDalog'
 import { addSeckillList, getSeckillList, updateSeckillList } from '@/api/admin/marketManage/seckill.js'
 import { allCardApi } from '@/api/admin/marketManage/messagePush'
 export default {
 
   components: {
     choosingGoods,
-    actShare
+    actShare,
+    ImageDalog
   },
   props: ['isEdite', 'editId'],
   data () {
@@ -331,7 +422,14 @@ export default {
         prdTypeNum: ''
       }],
       disabledFlag: true,
-      submitStatus: false
+      submitStatus: false,
+
+      // 分享
+      showImageDialog: false,
+      srcList: {
+        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
+      }
     }
   },
   mounted () {
@@ -377,6 +475,18 @@ export default {
       this.arrorFlag = !this.arrorFlag
     },
 
+    // 图片弹窗
+    addGoodsImg () {
+      this.showImageDialog = !this.showImageDialog
+    },
+
+    // 图片点击回调函数
+    handleSelectImg (res) {
+      if (res != null) {
+        this.form.shareConfig.share_img = res.imgUrl
+      }
+    },
+
     // 编辑初始化
     editSeckillInit () {
       getSeckillList({ skId: this.editId }).then((res) => {
@@ -409,7 +519,10 @@ export default {
             this.showMember = false
           }
           // 活动分享
-          this.form.shareConfig = data.shareConfig
+          this.form.shareConfig.share_action = data.shopShareConfig.share_action
+          this.form.shareConfig.share_doc = data.shopShareConfig.share_doc
+          this.form.shareConfig.share_img_action = data.shopShareConfig.share_img_action
+          this.form.shareConfig.share_img = data.shopShareConfig.share_img
           // 总库存
           this.form.stock = 0
 
@@ -436,6 +549,11 @@ export default {
         this.form.cardId = ''
       }
       // 活动分享
+      if (this.form.shareConfig.share_action === 1) {
+        this.form.shareConfig.share_doc = ''
+        this.form.shareConfig.share_img_action = 1
+        this.form.shareConfig.share_img = ''
+      }
 
       console.log(this.form)
       if (this.tableContent[0].goodsName === '') {
@@ -471,7 +589,8 @@ export default {
             updateSeckillList({
               skId: this.editId,
               name: this.form.name,
-              cardId: this.form.cardId
+              cardId: this.form.cardId,
+              shareConfig: this.form.shareConfig
             }).then((res) => {
               if (res.error === 0) {
                 this.$message.success({ message: '修改成功' })
@@ -504,5 +623,27 @@ export default {
   text-align: center;
   border-top: 1px solid #eee;
   z-index: 99;
+}
+.shareContent a {
+  text-decoration: none;
+  color: #409eff;
+}
+.shareContent a:first-child {
+  margin-right: 10px;
+}
+.imgContent {
+  width: 80px;
+  height: 80px;
+  text-align: center;
+  line-height: 65px;
+  margin-left: 60px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.imgContent .shareImg {
+  width: 100%;
+  height: 100%;
 }
 </style>

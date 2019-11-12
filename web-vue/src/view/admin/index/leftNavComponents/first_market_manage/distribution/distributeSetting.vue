@@ -148,7 +148,7 @@
         label="自定义内容："
         v-if="form.value1 === true"
       >
-        <el-button><i class="el-icon-plus"></i> 选择模板</el-button>
+        <el-button @click="chooseSelect"><i class="el-icon-plus"></i> 选择模板</el-button>
         <a
           href="javascript:void(0);"
           style="margin: 0 20px;"
@@ -305,6 +305,13 @@
       </div>
     </el-form>
 
+    <div class="footer">
+      <el-button
+        type="primary"
+        size="small"
+      >保存</el-button>
+    </div>
+
     <!--选择商品弹窗-->
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
@@ -322,9 +329,8 @@
       :imageSize='imageSize'
       @handleSelectImg='handleSelectImg'
     />
-  </div>
 
-  <!-- 图片弹窗 -->
+  </div>
 </template>
 
 <script>
@@ -412,6 +418,7 @@ export default {
         label: '背景图4',
         value: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_4.jpg'
       }],
+      tuneUpSelectLink: false, // 自定义模板
       tuneUp: false, //  调起添加图片弹窗flag
       imageSize: [640, 640], // 调起添加图片宽高
       isDraggable: false, // 添加商品弹窗是否开启多选底部可拖拽状态
@@ -446,6 +453,11 @@ export default {
       this.goodsInfo.splice(index, 1)
     },
 
+    // 调起链接弹窗
+    chooseSelect () {
+      this.tuneUpSelectLink = !this.tuneUpSelectLink
+    },
+
     // 显示图片弹窗
     handleToCallImgDialog () {
       this.tuneUp = !this.tuneUp
@@ -471,6 +483,19 @@ export default {
 a {
   text-decoration: none;
   color: #5a8bff;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  right: 27px;
+  width: 87.8%;
+  margin: 0 auto;
+  height: 50px;
+  line-height: 50px;
+  background: #fff;
+  text-align: center;
+  z-index: 99;
 }
 
 .text {
