@@ -19,19 +19,15 @@ public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<Good
         if (capsules == null || capsules.size() == 0) {
             return;
         }
-        doProcess(capsules.get(0),userId);
+        GoodsDetailCapsuleParam param = new GoodsDetailCapsuleParam();
+        param.setUserId(userId);
+        doProcess(capsules.get(0),param);
     }
 
-    public void doProcess(GoodsDetailMpCapsule goods, Integer userId) {
-
-        GoodsDetailCapsuleParam param  = new GoodsDetailCapsuleParam();
-        param.setUserId(userId);
+    public void doProcess(GoodsDetailMpCapsule goods,GoodsDetailCapsuleParam param) {
         param.setGoodsId(goods.getGoodsId());
         param.setSortId(goods.getSortId());
         param.setCatId(goods.getCatId());
-        param.setActivityId(goods.getActivity().getActivityId());
-        param.setActivityType(goods.getActivity().getActivityType());
-
         for (GoodsDetailProcessor processor : processors) {
             processor.processGoodsDetail(goods,param);
         }

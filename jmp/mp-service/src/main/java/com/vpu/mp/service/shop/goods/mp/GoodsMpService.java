@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
+import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
@@ -211,7 +212,13 @@ public class GoodsMpService extends ShopBaseService {
     public GoodsDetailMpVo getGoodsDetailMp(GoodsDetailMpParam param){
         GoodsDetailMpCapsule goodsDetailMpCapsule = getGoodsDetailMpInfoDao(param.getGoodsId());
         GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
-        processorFactory.doProcess(goodsDetailMpCapsule,param.getUserId());
+
+        GoodsDetailCapsuleParam capsuleParam = new GoodsDetailCapsuleParam();
+        capsuleParam.setUserId(param.getUserId());
+        capsuleParam.setActivityId(param.getActivityId());
+        capsuleParam.setActivityType(param.getActivityType());
+
+        processorFactory.doProcess(goodsDetailMpCapsule,capsuleParam);
         return convertGoodsDetailCapsuleTGoodsDetailMpVo(goodsDetailMpCapsule);
     }
 
@@ -272,7 +279,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param goodsIds 指定的商品id顺序
      * @return {@link com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule}
      */
-    public List<ActivityGoodsListCapsule>  findActivityGoodsListCapsulesDao(Condition condition, List<SortField<?>> orderFields,Integer offset,Integer limit, List<Integer> goodsIds){
+    private List<ActivityGoodsListCapsule>  findActivityGoodsListCapsulesDao(Condition condition, List<SortField<?>> orderFields,Integer offset,Integer limit, List<Integer> goodsIds){
 
         if (condition != null) {
             condition = condition.and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
@@ -315,7 +322,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param goodsId 商品id（该商品可能已删除或下架）
      * @return {@link com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule}
      */
-    public GoodsDetailMpCapsule getGoodsDetailMpInfoDao(Integer goodsId) {
+    private GoodsDetailMpCapsule getGoodsDetailMpInfoDao(Integer goodsId) {
         GoodsDetailMpCapsule capsule = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
             GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
             GOODS.GOODS_IMG,GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,

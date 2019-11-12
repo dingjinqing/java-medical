@@ -16,7 +16,6 @@ import java.util.List;
 public class GoodsDetailMpVo extends GoodsBaseMpVo {
 
     private List<String> goodsImgs;
-    private Integer goodsVideoId;
     private String goodsVideo;
     private String goodsVideoImg;
     private Double goodsVideoSize;

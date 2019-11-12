@@ -91,6 +91,8 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
 
         if (!GoodsConstant.CARD_EXCLUSIVE.equals(capsule.getIsExclusive())) {
             capsule.setUserCanBuy(true);
+            capsule.setExclusiveCards(new ArrayList<>());
+            capsule.setIsExclusive(GoodsConstant.NOT_CARD_EXCLUSIVE);
             return;
         }
 
@@ -148,6 +150,7 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
         });
 
         capsule.setExclusiveCards(cardsLis);
+        capsule.setIsExclusive(GoodsConstant.CARD_EXCLUSIVE);
 
         if (gradeCards.size() == 0||userGrade == null) {
             return;
