@@ -1,5 +1,5 @@
 var util = require("../../../../utils/util.js");
-var base = require("../../../popup/base/base.js")
+var base = require("../../../popup/base/base.js");
 global.wxComponent({
   mixins: [base],
   properties: {
@@ -15,7 +15,7 @@ global.wxComponent({
       coupon.disableds = true;
       this.$set();
 
-      this.getCoupon(d, function (content) {
+      this.getCoupon(d, function(content) {
         coupon.can_fetch = 0;
         coupon.disableds = false;
         _this.$set();
@@ -23,4 +23,4 @@ global.wxComponent({
       });
     }
   }
-})
+});

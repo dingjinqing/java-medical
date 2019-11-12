@@ -1,38 +1,38 @@
-.flex_outside_box{
+.flex_outside_box {
   margin-top: 10px;
   background: #fff;
 }
-.flex_box{
+.flex_box {
   padding: 10px 15px;
   color: #353535;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.item_left{
+.item_left {
   color: #888;
   margin-right: 5px;
   width: auto;
 }
-.item_middle{
+.item_middle {
   flex: 1;
 }
-.item_right{
+.item_right {
   width: auto;
 }
-.item_line{
+.item_line {
   height: 2rpx;
   background-color: #eee;
   width: 700rpx;
   margin: 0 auto;
 }
-.label-content{
+.label-content {
   display: flex;
   flex-wrap: wrap;
   margin-left: -16rpx;
-  margin-bottom:-12rpx;
+  margin-bottom: -12rpx;
 }
-.label-content_style{
+.label-content_style {
   line-height: 56rpx;
   padding: 0 20rpx;
   color: #f66;
@@ -40,5 +40,5 @@
   width: auto;
   border-radius: 40rpx;
   margin-left: 16rpx;
-  margin-bottom: 12rpx
+  margin-bottom: 12rpx;
 }

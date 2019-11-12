@@ -1,16 +1,16 @@
-@import '/css/item.wxss';
-.goods_coupon_list{
+@import "/css/item.wxss";
+.goods_coupon_list {
   display: flex;
 }
-.goods_coupon_list .goods_coupon_item{
+.goods_coupon_list .goods_coupon_item {
   width: auto;
   line-height: 62rpx;
   text-align: center;
   position: relative;
   overflow: hidden;
   margin-right: 20rpx;
-  border: 2rpx solid rgba(255,102,102,0.4);
-  background: rgba(255,102,102,0.2);
+  border: 2rpx solid rgba(255, 102, 102, 0.4);
+  background: rgba(255, 102, 102, 0.2);
   color: #ff6666;
   border-radius: 8rpx;
   padding: 0 16rpx;

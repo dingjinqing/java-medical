@@ -1,14 +1,12 @@
-
 global.wxComponent({
   /**
    * 组件的属性列表
    */
   properties: {
-    productsInfo:{
-      type:Object,
-      value:null,
-      observer(val){
-      }
+    productsInfo: {
+      type: Object,
+      value: null,
+      observer(val) {}
     }
   },
 
@@ -16,22 +14,22 @@ global.wxComponent({
    * 组件的初始数据
    */
   data: {
-    showSpec:false
+    showSpec: false
   },
 
   /**
    * 组件的方法列表
    */
-  lifetimes:{
-    ready(){
-      console.log(this)
+  lifetimes: {
+    ready() {
+      console.log(this);
     }
   },
   methods: {
-    specDialogShow(){
+    specDialogShow() {
       this.setData({
-        showSpec:true
-      })
+        showSpec: true
+      });
     }
   }
-})
+});

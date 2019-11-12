@@ -4,18 +4,16 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    couponList:{
-      type:Array,
-      value:null
+    couponList: {
+      type: Array,
+      value: null
     }
   },
 
   /**
    * 组件的初始数据
    */
-  data: {
-
-  },
+  data: {},
 
   /**
    * 组件的方法列表
@@ -24,7 +22,7 @@ global.wxComponent({
     showCouponDialog() {
       this.setData({
         show_recommend_coupons: true
-      })
-    },
+      });
+    }
   }
-})
+});

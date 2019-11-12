@@ -1,20 +1,20 @@
-const base = require("../../../popup/base/base.js")
+const base = require("../../../popup/base/base.js");
 global.wxComponent({
   mixins: [base],
   /**
    * 组件的属性列表
    */
   properties: {
-    productsInfo:{
-      type:Object,
-      value:null,
-      observer(val){
-        this.formatSpec(val.products)
+    productsInfo: {
+      type: Object,
+      value: null,
+      observer(val) {
+        this.formatSpec(val.products);
       }
     }
   },
-  lifetimes:{
-    ready(){
+  lifetimes: {
+    ready() {
       // let arr = [
       //   { prdDesc: "鞋码:40;颜色:红色;规格:abc"},
       //   { prdDesc: "鞋码:41;颜色:黄色;规格:abc"},
@@ -36,8 +36,8 @@ global.wxComponent({
    * 组件的初始数据
    */
   data: {
-    specList:null,
-    checkedProduct:null
+    specList: null,
+    checkedProduct: null
   },
 
   /**
@@ -45,45 +45,58 @@ global.wxComponent({
    */
   methods: {
     // 格式化规格信息
-    formatSpec(spec){
-      let specList = {}
-      let specAggregation = spec.map(item=>item.prdDesc.split(';'))
-      specAggregation.map(item=>{
-        item.map(d =>{
-          let specItem =  d.split(':')
-          if (!specList[specItem[0]]){
-            specList[specItem[0]] = [{ specName: specItem[1],isChecked:true}]
+    formatSpec(spec) {
+      let specList = {};
+      let specAggregation = spec.map(item => item.prdDesc.split(";"));
+      specAggregation.map(item => {
+        item.map(d => {
+          let specItem = d.split(":");
+          if (!specList[specItem[0]]) {
+            specList[specItem[0]] = [
+              { specName: specItem[1], isChecked: true }
+            ];
           } else {
-            specList[specItem[0]] = [...specList[specItem[0]], { specName: specItem[1], isChecked: false }] 
+            specList[specItem[0]] = [
+              ...specList[specItem[0]],
+              { specName: specItem[1], isChecked: false }
+            ];
           }
-        })
-      })
+        });
+      });
       this.setData({
         specList: specList
-      })
-      this.getCheckedProduct(this.data.specList)
+      });
+      this.getCheckedProduct(this.data.specList);
     },
     // 切换规格按钮
-    tapSpec(e){
-      let d = this.eventData(e)
-      let pastIndex = this.data.specList[d.key].findIndex(item=>item.isChecked === true)
+    tapSpec(e) {
+      let d = this.eventData(e);
+      let pastIndex = this.data.specList[d.key].findIndex(
+        item => item.isChecked === true
+      );
       this.setData({
-        [`specList.${d.key}[${pastIndex !== -1 ? pastIndex : 0}].isChecked`]: false,
+        [`specList.${d.key}[${
+          pastIndex !== -1 ? pastIndex : 0
+        }].isChecked`]: false,
         [`specList.${d.key}[${d.index}].isChecked`]: true
-      })
-      this.getCheckedProduct(this.data.specList)
+      });
+      this.getCheckedProduct(this.data.specList);
     },
     // 获取选中组合后规格信息
-    getCheckedProduct(specList){
-      let str = ''
-      for (let i in specList){
-        str += `;${i}:${specList[i].filter(item => item.isChecked)[0].specName}`
+    getCheckedProduct(specList) {
+      let str = "";
+      for (let i in specList) {
+        str += `;${i}:${
+          specList[i].filter(item => item.isChecked)[0].specName
+        }`;
       }
-      str = str.substring(1)
-      let productTarget = this.data.productsInfo.products.filter(item=>item.prdDesc === str)[0]
+      str = str.substring(1);
+      let productTarget = this.data.productsInfo.products.filter(
+        item => item.prdDesc === str
+      )[0];
       this.setData({
         checkedProduct: productTarget
-      })
+      });
     }
   }
-})
+});

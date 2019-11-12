@@ -1,5 +1,5 @@
-var util = require('../../utils/util.js');
-var orderEvent = require('../common/order.js');
+var util = require("../../utils/util.js");
+var orderEvent = require("../common/order.js");
 
 global.wxPage({
   /**
@@ -7,94 +7,113 @@ global.wxPage({
    */
   data: {
     searchInput: null,
-    scrollIntoId : null,
-    currentPage:1,
-    pageParams:null,
-    navType:{
-      'ALL':0,
-      'WAIT_PAY':1,
-      'WAIT_DELIVERY':2,
-      'SHIPPED':3,
-      'RETURNING':4
+    scrollIntoId: null,
+    currentPage: 1,
+    pageParams: null,
+    navType: {
+      ALL: 0,
+      WAIT_PAY: 1,
+      WAIT_DELIVERY: 2,
+      SHIPPED: 3,
+      RETURNING: 4
     },
-    dataList:[]
+    dataList: []
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-    let scrollIntoId = options && options.datas && JSON.parse(options.datas) && JSON.parse(options.datas).type
+    let scrollIntoId =
+      options &&
+      options.datas &&
+      JSON.parse(options.datas) &&
+      JSON.parse(options.datas).type;
     this.setData({
-      scrollIntoId: scrollIntoId ? scrollIntoId : 'ALL'
-    })
+      scrollIntoId: scrollIntoId ? scrollIntoId : "ALL"
+    });
     this.requestList();
   },
   requestList() {
-    let currentPage = this.data.pageParams ? this.data.pageParams.currentPage : 1;
-    console.log(parseInt(currentPage) - 1)
-    util.api('/api/wxapp/order/statistic',(res)=>{
+    let currentPage = this.data.pageParams
+      ? this.data.pageParams.currentPage
+      : 1;
+    console.log(parseInt(currentPage) - 1);
+    util.api("/api/wxapp/order/statistic", res => {
       this.setData({
-        navStatusNum:res.content
-      })
-    })
-    util.api('/api/wxapp/order/list', (res) => {
-      if(res.error === 0){
-        let dataList = this.formatData(res.content.dataList);
-        this.setData({
-          pageParams: res.content.page,
-          ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
-        })
-      }
-    }, {
+        navStatusNum: res.content
+      });
+    });
+    util.api(
+      "/api/wxapp/order/list",
+      res => {
+        if (res.error === 0) {
+          let dataList = this.formatData(res.content.dataList);
+          this.setData({
+            pageParams: res.content.page,
+            ["dataList[" + (parseInt(currentPage) - 1) + "]"]: dataList
+          });
+        }
+      },
+      {
         currentPage: currentPage,
         pageRows: 2,
         type: this.data.navType[this.data.scrollIntoId],
         search: this.data.searchInput
-    });
+      }
+    );
   },
-  formatData(order){
-    let formatOrderItem = order.map(item=>{
-      const filterArr = ['isShowPay', 'isPayEndPayment', 'isExtendReceive', 'isShowAgainBuy', 'isRemindShip', 'isShowCommentType', 'isDelete','isCancel']
+  formatData(order) {
+    let formatOrderItem = order.map(item => {
+      const filterArr = [
+        "isShowPay",
+        "isPayEndPayment",
+        "isExtendReceive",
+        "isShowAgainBuy",
+        "isRemindShip",
+        "isShowCommentType",
+        "isDelete",
+        "isCancel"
+      ];
       item.operate = orderEvent.filterObj(item, filterArr);
       item.orderStatusName = orderEvent.getOrderStatus(item);
-      return item
-    })
-    console.log(formatOrderItem)
-    return formatOrderItem
+      return item;
+    });
+    console.log(formatOrderItem);
+    return formatOrderItem;
   },
   // 清空搜索栏
-  clearSearchInput(){
+  clearSearchInput() {
     this.setData({
-      searchInput:null
-    })
+      searchInput: null
+    });
   },
-  getSearchInput(e){
+  getSearchInput(e) {
     this.setData({
       searchInput: e.detail.value
-    })
+    });
   },
   handleSearch(e) {
     this.setData({
       pageParams: null,
       dataList: [],
-      scrollIntoId:'ALL',
+      scrollIntoId: "ALL",
       searchInput: e.detail.value ? e.detail.value : this.data.searchInput
-    })
-    this.requestList()
+    });
+    this.requestList();
   },
   // 切换导航
-  handleChangeNav(e){
+  handleChangeNav(e) {
     this.setData({
-      scrollIntoId:e.currentTarget.id,
+      scrollIntoId: e.currentTarget.id,
       pageParams: null,
-      dataList:[]
-    })
-    this.requestList()
+      dataList: []
+    });
+    this.requestList();
   },
   // 订单下按钮事件集合
   handleOperate(e) {
-    orderEvent.handleBtnEvent(e)
+    orderEvent.handleBtnEvent(e);
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -125,11 +144,15 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function() {
-    if (this.data.pageParams && this.data.pageParams.currentPage === this.data.pageParams.lastPage) return;
+    if (
+      this.data.pageParams &&
+      this.data.pageParams.currentPage === this.data.pageParams.lastPage
+    )
+      return;
     this.setData({
-      'pageParams.currentPage': this.data.pageParams.currentPage + 1
-    })
-    this.requestList()
+      "pageParams.currentPage": this.data.pageParams.currentPage + 1
+    });
+    this.requestList();
   },
 
   /**

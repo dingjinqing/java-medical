@@ -1,23 +1,24 @@
-@import '/css/item.wxss';
-.num_minus,.num_plus{
+@import "/css/item.wxss";
+.num_minus,
+.num_plus {
   line-height: 50rpx;
   text-align: center;
   width: 50rpx;
   box-sizing: border-box;
 }
-.num_minus{
+.num_minus {
   border-right: 2rpx solid #eee;
 }
-.num_plus{
+.num_plus {
   border-left: 2rpx solid #eee;
 }
-.num_cfg{
+.num_cfg {
   width: 160rpx;
   display: flex;
   border: 2rpx solid #eee;
   box-sizing: border-box;
 }
-.num_cfg input{
+.num_cfg input {
   flex: 1;
   text-align: center;
 }

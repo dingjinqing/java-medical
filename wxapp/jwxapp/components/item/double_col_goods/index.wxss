@@ -1,51 +1,51 @@
-@import '../../../css/iconfont.wxss';
-.goods_item{
+@import "../../../css/iconfont.wxss";
+.goods_item {
   display: flex;
   width: 346rpx;
   background-color: #fff;
   flex-direction: column;
   margin-top: 20rpx;
 }
-.goods_image{
+.goods_image {
   height: 346rpx;
 }
-.goods_image > image{
+.goods_image > image {
   width: 100%;
   height: 100%;
 }
-.goods_bottom{
+.goods_bottom {
   padding: 10rpx;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 116rpx;
 }
-.one_line{
+.one_line {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.two_lines{
+.two_lines {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
   word-break: break-all;
 }
-.goods_coupon{
+.goods_coupon {
   display: flex;
 }
-.coupon_item{
+.coupon_item {
   padding: 0 10rpx;
   border-radius: 6rpx;
   border: 2rpx solid;
-  font-size: 24rpx; 
+  font-size: 24rpx;
 }
-.goods_price{
+.goods_price {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.goods_price > .price{
+.goods_price > .price {
   font-weight: 600;
 }

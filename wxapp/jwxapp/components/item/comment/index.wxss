@@ -1,9 +1,9 @@
-@import '/css/item.wxss';
-.comment_box{
+@import "/css/item.wxss";
+.comment_box {
   padding: 12rpx 20rpx;
-  margin-bottom:0;
+  margin-bottom: 0;
 }
-.comment_box .label-content_style{
+.comment_box .label-content_style {
   flex: 1;
   padding: 0;
   text-align: center;

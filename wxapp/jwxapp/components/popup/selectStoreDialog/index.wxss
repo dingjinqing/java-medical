@@ -1,24 +1,24 @@
-@import '/css/iconfont.wxss';
-.dialog_content{
-  background-color:#fff;
+@import "/css/iconfont.wxss";
+.dialog_content {
+  background-color: #fff;
   width: 750rpx;
   height: 600rpx;
 }
-.dialog_title{
+.dialog_title {
   text-align: center;
   position: relative;
   padding: 20rpx;
   border-bottom: 2rpx solid #eee;
   background-color: #fff;
 }
-.dialog_title > image{
+.dialog_title > image {
   width: 37rpx;
   height: 37rpx;
   position: absolute;
   top: 20rpx;
   right: 20rpx;
 }
-.dialog_bottom{
+.dialog_bottom {
   color: #fff;
   line-height: 80rpx;
   text-align: center;
@@ -26,46 +26,46 @@
   position: fixed;
   bottom: 0;
 }
-.dialog_info{
+.dialog_info {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
-.store_item{
+.store_item {
   display: flex;
   flex-shrink: 0;
   padding: 16rpx 16rpx 16rpx 0;
   border-bottom: 2rpx solid #eee;
 }
-.store_item:last-of-type{
+.store_item:last-of-type {
   margin-bottom: 156rpx;
 }
-.store_info{
+.store_info {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
 }
-.store_address{
+.store_address {
   display: flex;
   align-items: center;
   color: #999;
 }
-.store_address > image{
+.store_address > image {
   width: 35rpx;
   height: 35rpx;
 }
-.store_address > .distance{
+.store_address > .distance {
   text-align: right;
   flex: 1;
 }
-.store_name{
+.store_name {
   margin-bottom: 20rpx;
 }
-.radio_box{
+.radio_box {
   padding: 0 10rpx;
 }
-.radio_box > .iconfont{
+.radio_box > .iconfont {
   font-size: 40rpx;
   color: #888;
 }

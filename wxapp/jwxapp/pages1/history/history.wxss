@@ -1,4 +1,4 @@
-.filter{
+.filter {
   height: 100rpx;
   background-color: #fff;
   display: flex;
@@ -7,7 +7,7 @@
   position: fixed;
   width: 100%;
 }
-.input_box{
+.input_box {
   line-height: 60rpx;
   border: 2rpx solid #eee;
   width: 700rpx;
@@ -16,22 +16,22 @@
   align-items: center;
   border-radius: 10rpx;
 }
-.input_box  icon{
+.input_box icon {
   padding: 0 20rpx;
   line-height: 1;
   vertical-align: middle;
 }
-.input_box > input{
+.input_box > input {
   flex: 1;
 }
-.content{
+.content {
   padding: 0 20rpx;
 }
-.date{
+.date {
   line-height: 60rpx;
   color: #666;
 }
-.goods_content{
+.goods_content {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

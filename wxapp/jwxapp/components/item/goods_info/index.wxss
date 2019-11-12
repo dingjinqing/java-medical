@@ -1,14 +1,14 @@
 @import "/css/iconfont.wxss";
-@import '/css/item.wxss';
-.goods-info{
+@import "/css/item.wxss";
+.goods-info {
   padding: 30rpx;
   background-color: #fff;
   font-size: 26rpx;
 }
-.goods-info_top{
+.goods-info_top {
   display: flex;
 }
-.goods_name{
+.goods_name {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -17,38 +17,38 @@
   -webkit-box-orient: vertical;
   word-break: break-all;
 }
-.goods_operate{
+.goods_operate {
   display: flex;
   margin-left: -6rpx;
 }
-.goods_operate > view{
+.goods_operate > view {
   margin-left: 6rpx;
 }
-.goods_operate text{
+.goods_operate text {
   font-size: 36rpx;
 }
-.goods_ad{
+.goods_ad {
   color: #888;
   font-size: 24rpx;
   margin-top: 20rpx;
 }
-.goods_price_info{
+.goods_price_info {
   margin-top: 26rpx;
   color: #ff6666;
 }
-.goods_price > text:first-child{
+.goods_price > text:first-child {
   font-size: 26rpx;
 }
-.goods_price > text:last-child{
+.goods_price > text:last-child {
   font-size: 46rpx;
 }
-.marking_price{
+.marking_price {
   color: #999;
 }
-.marking_price > text{
+.marking_price > text {
   text-decoration: line-through;
 }
-.flex-wrap{
+.flex-wrap {
   display: flex;
   margin-top: 20rpx;
 }
@@ -56,23 +56,22 @@
   flex: 1;
   color: #999;
   font-size: 26rpx;
-  
 }
-.flex-wrap .flex-item{
+.flex-wrap .flex-item {
   display: flex;
   align-items: center;
 }
-.flex-wrap > .flex-item:nth-of-type(2){
-  justify-content: center
+.flex-wrap > .flex-item:nth-of-type(2) {
+  justify-content: center;
 }
-.flex-wrap > .flex-item:last-of-type{
+.flex-wrap > .flex-item:last-of-type {
   justify-content: flex-end;
 }
-.flex-wrap .flex-item > image{
+.flex-wrap .flex-item > image {
   width: 26rpx;
   height: 26rpx;
   margin-left: 6rpx;
 }
-.goods-info > .label-content{
+.goods-info > .label-content {
   margin-top: 20rpx;
 }

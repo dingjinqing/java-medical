@@ -1,5 +1,5 @@
-@import '/css/item.wxss';
-.goods_detail{
+@import "/css/item.wxss";
+.goods_detail {
   padding: 20rpx 0;
   color: #333;
   font-size: 24rpx;
