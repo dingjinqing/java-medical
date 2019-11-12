@@ -28,9 +28,11 @@ import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
 import com.vpu.mp.service.shop.goods.es.EsFactSearchService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
+import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.*;
@@ -66,7 +68,7 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 @Service
 // TODO:1.所有操作添加操作记录
 // TODO:2.自定义商品上架时间的时候在新增删除修改的时候修改定时任务
-
+@Slf4j
 public class GoodsService extends ShopBaseService {
 
     @Autowired
@@ -103,6 +105,8 @@ public class GoodsService extends ShopBaseService {
     private EsGoodsSearchService esGoodsSearchService;
     @Autowired
     private EsGoodsCreateService esGoodsCreateService;
+    @Autowired
+    private EsUtilSearchService searchService;
 
     /**
      * 全部商品页面各个下拉框的数据初始化
@@ -1585,12 +1589,16 @@ public class GoodsService extends ShopBaseService {
      * @return the integer
      */
     public Integer unsalableGoods() {
-        // todo 走ES
-        Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
-        Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
-            .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
-            .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
-        return db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime)));
+        try {
+            return searchService.getZhiXiaoGoodsNumbers();
+        } catch (Exception e) {
+            log.error("ES查询滞销商品数量失败, 原因如下: {}", e.getMessage());
+            Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
+            Select<? extends Record1<Integer>> select = db().select(ORDER_GOODS.GOODS_ID).from(ORDER_GOODS).leftJoin(ORDER_INFO)
+                .on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
+                .where(ORDER_INFO.CREATE_TIME.greaterOrEqual(fixedTime));
+            return db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(BYTE_ZERO).and(GOODS.GOODS_ID.notIn(select)).and(GOODS.UPDATE_TIME.lessOrEqual(fixedTime)));
+        }
     }
 
     /**
@@ -1610,7 +1618,7 @@ public class GoodsService extends ShopBaseService {
     public void changeToNormalType(List<Integer> goodsIds){
         db().update(GOODS).set(GOODS.GOODS_TYPE, BaseConstant.GOODS_TYPE_GENERAL).where(GOODS.GOODS_ID.in(goodsIds)).execute();
     }
-    
+
     /**
      * 商品图片列表
      * @param goodsId
@@ -1623,6 +1631,6 @@ public class GoodsService extends ShopBaseService {
     		list.add(getImgFullUrlUtil(item.getImgUrl()));
     	}
 		return list;
-    	
+
     }
 }
