@@ -36,8 +36,8 @@
       </view>
     </view> -->
     <!--  选择规格（包含无规格情况）  -->
-        <!-- <v-sel-spec gd="{{gd}}" show="{{show_spec}}" exchang_block="{{exchang_block}}" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
-        </v-sel-spec> -->
+        <v-sel-spec products-info="{{goodsInfo}}">
+        </v-sel-spec>
     <!-- 用户评价 -->
     <v-comment />
 

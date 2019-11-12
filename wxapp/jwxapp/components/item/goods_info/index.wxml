@@ -16,9 +16,9 @@
   <view class="goods_ad" >带上你的美，闪亮你的世界</view>
   <view class="goods_price_info">
     <view class="goods_price" style='color:{{main_setting.comColor}}'>
-      <text>￥</text><text>100~800</text>
+      <text>￥</text><text>{{goodsPrice}}</text>
     </view>
-    <view class="marking_price">￥<text>100~800</text></view>
+    <view class="marking_price">￥<text>{{markingPrice}}</text></view>
   </view>
   <view class="label-content" wx:if="{{goodsInfo.labels && goodsInfo.labels.length > 0}}">
     <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">{{item.name}}</text>

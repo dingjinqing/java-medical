@@ -15,7 +15,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    options.goods_id = 32;
+    options.goods_id = 66;
     if (!options.goods_id) return;
     this.setData({
       goodsId : options.goods_id
@@ -58,7 +58,6 @@ global.wxPage({
     this.setData({
       goodsMediaInfo: { goodsImgs, goodsVideo, goodsVideoImg }
     })
-    console.log(this.data.goodsMediaInfo)
   },
   getGoodsInfo(goodsInfo){
     let { goodsName, goodsSaleNum, labels, defaultPrd, products, goodsNumber } = goodsInfo

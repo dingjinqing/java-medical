@@ -7,11 +7,11 @@
       <block wx:for="{{coupon_list}}" wx:key="index">
         <view class="coupon_list_item">
           <view class="coupon_detail">
-            <view class="coupon_left" catchtouchmove='bindPreventTouch' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+            <view class="coupon_left" catchtouchmove='bindPreventTouch' style='background:-webkit-linear-gradient(left,{{main_setting.linColor}},{{main_setting.comColor1}})'>
               <view class="vip_exclusive" wx:if="{{item.is_exclusive}}">会员</view>
-              <view style='padding-right:20rpx'>{{item.act_name}}</view>
+              <view style='padding-right:20rpx'>{{item.actName}}</view>
               <view class="coupon_left_text">
-                <text wx:if="{{item.act_code=='voucher'}}">￥<text>{{item.denomination}}</text></text>
+                <text wx:if="{{item.actCode=='voucher'}}">￥<text>{{item.denomination}}</text></text>
                 <text wx:else><text>{{item.denomination}}</text>折</text>
               </view>
               <view class='coupon_xian'>
@@ -20,23 +20,23 @@
             </view>
 
             <view class="coupon_right">
-              <text class="coupon_condition" wx:if="{{item.least_consume == null}}">使用条件：无门槛</text>
-              <text class="coupon_condition" wx:else>使用条件：满{{item.least_consume}}元可用</text>
-              <block wx:if="{{ item.start_time != null }}">
+              <text class="coupon_condition" wx:if="{{item.leastConsume}}">使用条件：无门槛</text>
+              <text class="coupon_condition" wx:else>使用条件：满{{item.leastConsume}}元可用</text>
+              <block wx:if="{{ item.validityType === 0 }}">
                 <view class="coupon_time">有效时间：
-                  <text>{{item.start_time}}</text>
-                  <text class='end_time_r'> — {{item.end_time}}</text>
+                  <text>{{item.startTime}}</text>
+                  <text class='end_time_r'> — {{item.endTime}}</text>
                 </view>
               </block>
               <block wx:else>
                 <view class="coupon_time">
                   有效时间：领取后<block wx:if='{{item.validity > 0}}'>{{item.validity}}天</block>
-                  <block wx:if='{{item.validity_hour > 0}}'>{{item.validity_hour}}小时</block>
-                  <block wx:if='{{item.validity_minute > 0}}'>{{item.validity_minute}}分钟</block>内有效
+                  <block wx:if='{{item.validityHour > 0}}'>{{item.validityHour}}小时</block>
+                  <block wx:if='{{item.validityMinute > 0}}'>{{item.validityMinute}}分钟</block>内有效
                 </view>
               </block>
-              <form report-submit='true' class="get_new_coupon" wx:if="{{item.can_fetch == 1}}" bindsubmit="bindGetCoupon" data-coupon="{{index}}" data-exclusive="{{item.is_exclusive}}" data-code="{{item.alias_code}}" data-vali="{{item.validation_code}}" data-use_score="{{item.use_score}}">
-                <button form-type='submit' plain="false" disabled='{{item.disableds}}' style='background:{{somColor}};color:{{comColor}}'>立即领取</button>
+              <form report-submit='true' class="get_new_coupon" wx:if="{{item.canFetch}}" bindsubmit="bindGetCoupon" data-coupon="{{index}}" data-exclusive="{{item.isCardExclusive}}" data-use_score="{{item.useScore}}">
+                <button form-type='submit' plain="false" disabled='{{item.disableds}}' style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>立即领取</button>
               </form>
               <view class="get_new_coupon got_coupon" wx:else>
                 已领取
