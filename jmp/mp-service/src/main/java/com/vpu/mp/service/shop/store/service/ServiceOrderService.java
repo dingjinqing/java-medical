@@ -245,13 +245,15 @@ public class ServiceOrderService extends ShopBaseService{
      *
      * @param param the param
      */
-    public void createServiceOrder(ServiceOrderRecord param) {
-        param.setOrderSn(generateOrderSn());
+    public String createServiceOrder(ServiceOrderRecord param) {
+        String orderSn = generateOrderSn();
+        param.setOrderSn(orderSn);
         param.setVerifyCode(generateVerifyCode());
         param.setOrderStatus(ORDER_STATUS_WAIT_PAY);
         param.setOrderStatusName(ORDER_STATUS_NAME_WAIT_PAY);
         param.setMoneyPaid(getServiceMoneyPaid(param.getServiceId()));
         db().executeInsert(param);
+        return orderSn;
     }
 
     /**

@@ -25,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
@@ -788,7 +789,8 @@ public class StoreWxService extends ShopBaseService {
      *
      * @param param the param
      */
-    public void submitReservation(SubmitReservationParam param) {
+    public ServiceOrderDetailVo submitReservation(SubmitReservationParam param) {
+        AtomicReference<String> orderSn = new AtomicReference<>();
         Integer serviceId = param.getServiceId();
         if (!serviceOrderService.checkReservationNum(serviceId, param.getTechnicianId())) {
             // 预约人数已达上限
@@ -798,7 +800,7 @@ public class StoreWxService extends ShopBaseService {
         FieldsUtil.assignNotNull(param, serviceOrder);
         log.debug("门店服务订单即将创建: {}", serviceOrder);
         this.transaction(() -> {
-            serviceOrderService.createServiceOrder(serviceOrder);
+            orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
             // 会员余额变动
             if (serviceOrder.getUseAccount().compareTo(ZERO) > 0) {
                 try {
@@ -842,6 +844,8 @@ public class StoreWxService extends ShopBaseService {
             ServiceOrderRecord.class.getName(),
             getShopId(),
             TaskJobsConstant.TaskJobEnum.RESERVATION_PAY.getExecutionType());
+        // 返回支付成功后的预约订单详情
+        return serviceOrderService.getServiceOrderDetail(orderSn.get());
     }
 
     /**
