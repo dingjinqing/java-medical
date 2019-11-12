@@ -9,7 +9,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.MemberCardDetailMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.user.cart.CartService;
@@ -77,7 +77,7 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
             Integer brandId = capsule.getBrandId();
 
             if (goodsIds.contains(goodsId) || catIds.contains(catId) || sortIds.contains(sortId) || brandIds.contains(brandId)) {
-                GoodsActivityBaseMpVo activity = new GoodsActivityBaseMpVo();
+                GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
                 activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
                 capsule.getActivities().add(activity);
                 capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);

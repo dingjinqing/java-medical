@@ -11,7 +11,6 @@ import lombok.Data;
 public class GoodsBaseMpVo {
     protected Integer goodsId;
     protected String goodsName;
-    protected Byte goodsType;
     /**商品销售数量*/
     protected Integer goodsSaleNum;
     /**商品数量*/

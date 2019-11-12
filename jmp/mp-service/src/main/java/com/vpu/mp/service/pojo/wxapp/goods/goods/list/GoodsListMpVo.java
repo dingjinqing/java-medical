@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMpVo;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +8,6 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 李晓冰
@@ -22,10 +22,15 @@ public class GoodsListMpVo extends GoodsBaseMpVo {
 
     private Boolean defaultPrd;
     //商品所拥有的活动处理信息
-    private List<Map<String,Object>> goodsActivity = new ArrayList<>();
+    private List<GoodsActivityBaseMp> goodsActivity = new ArrayList<>();
     private GoodsLabelMpVo label;
 
     private BigDecimal shopPrice;
     private BigDecimal linePrice;
     private BigDecimal realPrice;
+
+    /** 指定该商品的详情页营销活动id */
+    private Integer activityId;
+    /**指定该商品的详情页营销活动类型*/
+    private Byte activityType;
 }

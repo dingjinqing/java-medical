@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 
 /**
@@ -43,7 +44,8 @@ public class PreSaleProcessor implements ProcessorPriority,ActivityGoodsListProc
             }
             Record3<Integer, Integer, BigDecimal> record3 = goodsPreSaleListInfo.get(capsule.getGoodsId()).get(0);
             capsule.setRealPrice(record3.get(PRESALE_PRODUCT.PRESALE_PRICE));
-            GoodsActivityBaseMpVo activity = new GoodsActivityBaseMpVo();
+            GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
+            activity.setActivityId(record3.get(PRESALE.ID));
             activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_PRE_SALE);
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_PRE_SALE);

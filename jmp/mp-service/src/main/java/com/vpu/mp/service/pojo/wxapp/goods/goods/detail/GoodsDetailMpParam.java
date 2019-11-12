@@ -12,4 +12,9 @@ public class GoodsDetailMpParam {
     private Integer goodsId;
 
     private Integer userId;
+
+    /** 指定该商品的详情页营销活动id */
+    private Integer activityId;
+    /**指定该商品的详情页营销活动类型*/
+    private Byte activityType;
 }

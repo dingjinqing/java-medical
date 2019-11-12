@@ -5,7 +5,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserService;
@@ -64,7 +64,7 @@ public class FirstSpecialProcessor implements ProcessorPriority,ActivityGoodsLis
                 return;
             }
             capsule.setRealPrice(result.get(0).get(FIRST_SPECIAL_PRODUCT.PRD_PRICE));
-            GoodsActivityBaseMpVo activity = new GoodsActivityBaseMpVo();
+            GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
             activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
             activity.setActivityId(result.get(0).get(FIRST_SPECIAL.ID));
             capsule.getActivities().add(activity);

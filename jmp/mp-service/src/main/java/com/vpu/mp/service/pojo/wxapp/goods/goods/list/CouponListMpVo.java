@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
  */
 @Getter
 @Setter
-public class CouponListMpVo extends GoodsActivityBaseMpVo{
+public class CouponListMpVo extends GoodsActivityBaseMp {
     public CouponListMpVo() {
         activityType = GoodsConstant.ACTIVITY_TYPE_COUPON;
     }

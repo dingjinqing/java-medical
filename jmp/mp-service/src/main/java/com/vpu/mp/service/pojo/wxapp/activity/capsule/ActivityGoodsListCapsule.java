@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 小程序-商品列表信息存储对象
@@ -38,12 +40,12 @@ public class ActivityGoodsListCapsule extends GoodsBaseCapsule {
     /**
      * 关系最紧密的标签信息
      */
-    GoodsLabelMpVo goodsLabel;
+    private GoodsLabelMpVo goodsLabel;
 
     /**
      * 商品拥有的营销信息，由各个processor添加
      */
-    private List<GoodsActivityBaseMpVo> activities = new ArrayList<>(2);
+    private List<GoodsActivityBaseMp> activities = new ArrayList<>(2);
 
     public GoodsListMpVo convertToGoodsListMpVo() {
         GoodsListMpVo vo = new GoodsListMpVo();
@@ -59,20 +61,13 @@ public class ActivityGoodsListCapsule extends GoodsBaseCapsule {
         vo.setLinePrice(this.linePrice);
         vo.setRealPrice(this.realPrice);
         vo.setLabel(this.goodsLabel);
-
-//        activities.forEach(processorDataInfo -> {
-//            Map<String, Object> map = new HashMap<>(3);
-//            map.put("activityId", processorDataInfo.getDataId());
-//            map.put("activityType", processorDataInfo.getDataType());
-//
-//            if (GoodsConstant.ACTIVITY_TYPE_COUPON.equals(processorDataInfo.getDataType())) {
-//                CouponProcessorDataInfo info = (CouponProcessorDataInfo) processorDataInfo;
-//                map.put("actCode", info.getActCode());
-//                map.put("denomination", info.getDenomination());
-//                map.put("useConsumeRestrict", info.getUseConsumeRestrict());
-//                map.put("leastConsume", info.getLeastConsume());
-//            }
-//        });
+        vo.setGoodsActivity(this.activities);
+        Optional<GoodsActivityBaseMp> first = this.activities.stream().filter(x -> GoodsConstant.isNeedReturnActivity(x.getActivityType())).findFirst();
+        if (first.isPresent()) {
+            GoodsActivityBaseMp activity = first.get();
+            vo.setActivityType(activity.getActivityType());
+            vo.setActivityId(activity.getActivityId());
+        }
 
         return vo;
     }

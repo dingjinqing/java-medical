@@ -52,7 +52,6 @@ public class CouponProcessor implements ProcessorPriority,ActivityGoodsListProce
             info.setDenomination(couponInfo.get(MRKING_VOUCHER.DENOMINATION));
             info.setUseConsumeRestrict(couponInfo.get(MRKING_VOUCHER.USE_CONSUME_RESTRICT));
             info.setLeastConsume(couponInfo.get(MRKING_VOUCHER.LEAST_CONSUME));
-
             capsule.getActivities().add(info);
         });
     }

@@ -5,7 +5,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CouponDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.MemberCardDetailMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -54,13 +54,12 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
     /**
      * 指定该商品的营销活动
      */
-    private GoodsActivityBaseMpVo activity;
+    private GoodsActivityBaseMp activity;
 
     public GoodsDetailMpVo convertToGoodsDetailMpVo(){
         GoodsDetailMpVo vo =new GoodsDetailMpVo();
         vo.setGoodsId(this.goodsId);
         vo.setGoodsName(this.goodsName);
-        vo.setGoodsType(this.goodsType);
         vo.setGoodsSaleNum(this.goodsSaleNum);
         vo.setGoodsNumber(this.goodsNumber);
         vo.setBrandId(this.brandId);

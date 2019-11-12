@@ -4,7 +4,7 @@ import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,9 @@ public class BargainProcessor implements ProcessorPriority,ActivityGoodsListProc
             }
             BargainRecord bargainRecord = goodsBargainInfo.get(capsule.getGoodsId());
             capsule.setRealPrice(BargainService.BARGAIN_TYPE_FIXED == bargainRecord.getBargainType()?bargainRecord.getExpectationPrice():bargainRecord.getFloorPrice());
-            GoodsActivityBaseMpVo activity = new GoodsActivityBaseMpVo();
+            GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
+
+            activity.setActivityId(bargainRecord.getId());
             activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_BARGAIN);
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_BARGAIN);

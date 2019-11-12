@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
 import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
 
 /**
@@ -45,7 +46,8 @@ public class ReducePriceProcessor implements ProcessorPriority,ActivityGoodsList
             Record3<Integer, Integer, BigDecimal> record3 = goodsReduceListInfo.get(capsule.getGoodsId()).get(0);
 
             capsule.setRealPrice(record3.get(REDUCE_PRICE_PRODUCT.PRD_PRICE));
-            GoodsActivityBaseMpVo activity = new GoodsActivityBaseMpVo();
+            GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
+            activity.setActivityId(record3.get(REDUCE_PRICE.ID));
             activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE);
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE);

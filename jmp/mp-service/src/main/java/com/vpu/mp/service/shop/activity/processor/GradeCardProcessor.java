@@ -7,7 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import org.jooq.Record3;
@@ -60,7 +60,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
                 // 会员价比限时降价价格低则将限时降价的处理信息删除
                 if (record3.get(GRADE_PRD.GRADE_PRICE).compareTo(capsule.getRealPrice()) < 0) {
                     capsule.getProcessedTypes().remove(GoodsConstant.ACTIVITY_REDUCE_PRICE_PRIORITY);
-                    List<GoodsActivityBaseMpVo> activities = capsule.getActivities().stream().filter(x -> !GoodsConstant.ACTIVITY_REDUCE_PRICE_PRIORITY.equals(x.getActivityType())).collect(Collectors.toList());
+                    List<GoodsActivityBaseMp> activities = capsule.getActivities().stream().filter(x -> !GoodsConstant.ACTIVITY_REDUCE_PRICE_PRIORITY.equals(x.getActivityType())).collect(Collectors.toList());
                     capsule.setActivities(activities);
                 } else {// 没有限时降价的价格低,则按照直接返回不加入会员价信息
                     return;
@@ -71,7 +71,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
             capsule.setRealPrice(record3.get(GRADE_PRD.GRADE_PRICE));
             // 如果商品是会员专享的话则价格显示会员价的价格，但是提示信息显示会员专享（ps:filterParam处已经过滤掉了首单特惠）
             if (!capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
-                GoodsActivityBaseMpVo activity = new GoodsActivityBaseMpVo();
+                GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
                 activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_MEMBER_GRADE);
                 capsule.getActivities().add(activity);
             }

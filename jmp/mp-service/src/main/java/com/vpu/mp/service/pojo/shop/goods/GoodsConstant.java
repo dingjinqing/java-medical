@@ -135,4 +135,15 @@ public class GoodsConstant {
         return GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType)|| GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)
             || GoodsConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || GoodsConstant.ACTIVITY_TYPE_PRE_SALE .equals(goodsType);
     }
+
+    /**
+     *  是否是需要告知前端活动id的活动,目前有 1,3,5,6,10，18
+     * @param goodsType 活动类型
+     */
+    public static boolean isNeedReturnActivity(Byte goodsType){
+        return GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType)|| GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)
+            || GoodsConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || GoodsConstant.ACTIVITY_TYPE_PRE_SALE .equals(goodsType)
+            || GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodsType) || GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(goodsType);
+
+    }
 }
