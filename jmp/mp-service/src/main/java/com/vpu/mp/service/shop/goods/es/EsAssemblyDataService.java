@@ -182,7 +182,15 @@ public class EsAssemblyDataService extends ShopBaseService {
 
     private void assemblyBrandAndSale(EsGoods esGoods) {
         Integer brandId = esGoods.getBrandId();
-        esGoods.setBrandName(goodsBrandService.listGoodsBrandNameByIds(Collections.singletonList(brandId)).get(brandId).getBrandName());
+        if (brandId == null) {
+            log.error("商品【{}】没有设置商家分类", esGoods.getGoodsId());
+            return;
+        }
+        esGoods.setBrandName(
+            goodsBrandService.listGoodsBrandNameByIds(Collections.singletonList(brandId))
+                .get(brandId)
+                .getBrandName()
+        );
     }
 
     private Map<Integer, GoodsBrandVo> batchAssemblyBrandAndSale(Set<Integer> brandIds) {
