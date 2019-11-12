@@ -59,7 +59,7 @@ public class SecKillProcessorDao extends ShopBaseService {
     }
 
     /**
-     *
+     * 判断秒杀活动的可用状态
      * @param skId
      * @param goodsNumber goods表的库存
      * @return 1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;0正常

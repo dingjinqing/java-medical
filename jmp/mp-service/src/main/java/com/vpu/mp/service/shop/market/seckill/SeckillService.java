@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.seckill;
 
+import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -28,10 +29,7 @@ import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,6 +138,7 @@ public class SeckillService extends ShopBaseService {
                 SecKillProductDefineRecord productRecord = new SecKillProductDefineRecord();
                 assign(secKillProduct,productRecord);
                 productRecord.setSkId(skId);
+                productRecord.setTotalStock(productRecord.getStock());
                 db().executeInsert(productRecord);
             }
         });
@@ -398,6 +397,36 @@ public class SeckillService extends ShopBaseService {
 
     private Condition isConflictingActTime(Timestamp startTime,Timestamp endTime){
         return (SEC_KILL_DEFINE.START_TIME.gt(startTime).and(SEC_KILL_DEFINE.START_TIME.lt(endTime))).or(SEC_KILL_DEFINE.END_TIME.gt(startTime).and(SEC_KILL_DEFINE.END_TIME.lt(endTime))).or(SEC_KILL_DEFINE.START_TIME.lt(startTime).and(SEC_KILL_DEFINE.END_TIME.gt(endTime)));
+    }
+
+    /**
+     * 检查规格库存，更新秒杀规格库存以保证秒杀库存不大于规格库存
+     * @param goodsIds
+     */
+    public void updateSeckillProcudtStock(List<Integer> goodsIds){
+        List<SeckillVo> activeSeckillList = getSecKillWithMonitor(goodsIds);
+        for(SeckillVo  seckill : activeSeckillList){
+            for(SecKillProductVo secKillProduct : seckill.getSecKillProduct()){
+                Record1<Integer> prdNumberRecord = db().select(Tables.GOODS_SPEC_PRODUCT.PRD_NUMBER).from(Tables.GOODS_SPEC_PRODUCT).where(Tables.GOODS_SPEC_PRODUCT.PRD_ID.eq(secKillProduct.getProductId())).fetchOne();
+                int prdNumber;
+                if(prdNumberRecord != null && (prdNumber = prdNumberRecord.into(Integer.class)) < secKillProduct.getStock()){
+                    db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,prdNumber).set(SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,secKillProduct.getTotalStock()-(secKillProduct.getStock()-prdNumber)).execute();
+                }
+            }
+        }
+    }
+
+    /**
+     * 当前有效的进行中秒杀
+     * @return
+     */
+    private List<SeckillVo> getSecKillWithMonitor(List<Integer> goodsIds){
+        List<SeckillVo> res = db().select(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime())).and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))).and(SEC_KILL_DEFINE.GOODS_ID.in(goodsIds)).fetchInto(SeckillVo.class);
+        for(SeckillVo seckill : res){
+            List<SecKillProductVo> seckillProduct = db().select(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID,SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(seckill.getSkId())).fetchInto(SecKillProductVo.class);
+            seckill.setSecKillProduct(seckillProduct);
+        }
+        return res;
     }
 
 }

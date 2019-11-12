@@ -16,5 +16,5 @@ public class SeckillProductAddParam {
     @NotNull
     private BigDecimal secKillPrice;
     @NotNull
-    private Short      stock;
+    private Integer      stock;
 }
