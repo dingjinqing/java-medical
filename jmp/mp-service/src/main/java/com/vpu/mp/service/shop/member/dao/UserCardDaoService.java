@@ -236,7 +236,7 @@ public class UserCardDaoService extends ShopBaseService{
 							.and(
 									(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull()))
 									.or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
-									.or(MEMBER_CARD.ACTIVATION.isNull())
+									.or(MEMBER_CARD.ACTIVATION_CFG.isNull())
 								);
 	}
 
