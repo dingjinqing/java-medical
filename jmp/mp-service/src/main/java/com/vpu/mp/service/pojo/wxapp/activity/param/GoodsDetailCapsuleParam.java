@@ -16,4 +16,8 @@ public class GoodsDetailCapsuleParam{
     public Integer catId;
     public Integer sortId;
     public Integer brandId;
+
+    /** 指定该商品的详情页营销活动 */
+    private Integer activityId;
+    private Byte activityType;
 }

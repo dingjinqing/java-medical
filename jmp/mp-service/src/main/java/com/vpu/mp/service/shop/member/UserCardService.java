@@ -840,7 +840,7 @@ public class UserCardService extends ShopBaseService {
 
     /**
      * 王帅
-     * 得到用户可用会员卡
+     * 得到订单下的用户可用会员卡
      * @param userId
      * @param bos
      * @param storeId

@@ -29,6 +29,8 @@ public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<Good
         param.setGoodsId(goods.getGoodsId());
         param.setSortId(goods.getSortId());
         param.setCatId(goods.getCatId());
+        param.setActivityId(goods.getActivity().getActivityId());
+        param.setActivityType(goods.getActivity().getActivityType());
 
         for (GoodsDetailProcessor processor : processors) {
             processor.processGoodsDetail(goods,param);
