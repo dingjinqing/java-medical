@@ -19,8 +19,6 @@ import java.util.List;
 public class GoodsListMpVo extends GoodsBaseMpVo {
     private String goodsImg;
     private Integer commentNum;
-
-    private Boolean defaultPrd;
     //商品所拥有的活动处理信息
     private List<GoodsActivityBaseMp> goodsActivity = new ArrayList<>();
     private GoodsLabelMpVo label;
