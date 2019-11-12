@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "v-spec-dialog": "/components/item/popup/spec_dialog/index"
+  }
+}

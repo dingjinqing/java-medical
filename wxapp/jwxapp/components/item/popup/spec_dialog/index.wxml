@@ -1,0 +1,27 @@
+<v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="bottom" bindtap='bindClose'>
+  <view class="dialog-box">
+    <view class="desc-box">
+      <image class="prd-img" src="{{checkedProduct.prdImg}}"></image>
+      <view class="desc-info">
+        <view class="info">
+          <text class="price" style="color:{{main_setting.comColor}};">￥{{checkedProduct.prdRealPrice}}</text>
+          <text class="marking-price">￥{{checkedProduct.prdLinePrice}}</text>
+          <text>库存：{{checkedProduct.prdNumber}}</text>
+        </view>
+        <image class="close-img" src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="bindClose"></image>
+      </view>
+      
+      
+    </view>
+    <view class="all-spec">
+      <view class="spec-info" wx:for="{{specList}}" wx:for-item="specItem" wx:for-index="key" wx:key="key">
+        <view class="spec-title">
+          {{key}}：
+        </view>
+        <view class="spec-content">
+          <text class="spec-item" style="border-color:{{item.isChecked ? main_setting.comColor : ''}}" wx:for="{{specItem}}" wx:key="index" bindtap="tapSpec" data-key="{{key}}" data-index="{{index}}">{{item.specName}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</v-popup>
