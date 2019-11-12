@@ -630,6 +630,12 @@ export default {
           }
         })
       })
+      Object.keys(obj).forEach((item, index) => {
+        console.log(obj[item].img_url)
+        if (!obj[item].img_url) {
+          isAllCheckFull = false
+        }
+      })
       console.log(obj, isAllCheckFull)
       this.$emit('handleToGetTabelData', { obj, isAllCheckFull }) // 传递整体数据
     },

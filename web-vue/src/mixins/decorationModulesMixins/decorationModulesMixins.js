@@ -365,6 +365,35 @@ export default {
               flag = false
             }
             break
+          case 'm_magic_cube':
+            if (item.table_type === 8) {
+              if (!item.isAllCheckFull) {
+                this.$message.error({
+                  message: '请选择上传图片',
+                  showClose: true
+                })
+                flag = false
+              }
+            } else {
+              Object.keys(item.data).forEach((itemC, indexC) => {
+                if (!(item.data[itemC].img_url)) {
+                  this.$message.error({
+                    message: '请上传图片',
+                    showClose: true
+                  })
+                  flag = false
+                }
+              })
+            }
+            break
+          case 'm_text_image':
+            if (!item.img_url) {
+              this.$message.error({
+                message: '请上传图片',
+                showClose: true
+              })
+              flag = false
+            }
         }
       })
       console.log(flag)
