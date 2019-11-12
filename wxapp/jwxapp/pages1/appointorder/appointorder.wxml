@@ -1,17 +1,18 @@
-<!-- pages1/appointorder/appointorder.wxml -->
+<!-- 提交预约：pages1/appointorder/appointorder.wxml -->
 <include src="/pages/common/header.wxml" />
 <view class="main-container">
   <view class="container" wx:if="delFlag != 1">
+    <!-- 预约人和手机号 -->
     <view class="appoint-detail">
       <view class="appoint-main">
         <view style="width:8%;">
-          <image src="{{img_person}}" class="img_pre"></image>
+          <image class="img_pre" src="{{img_person}}"></image>
         </view>
         <view class="left-tips">
           <text>预约人</text>
         </view>
         <view class="right-tips">
-          <input placeholder="请输入预约人" value="{{name ||''}}" bindblur="nameInput"></input>
+          <input placeholder="请输入预约人" value="{{recentOrderInfo.subscriber ||''}}" bindblur="nameInput"></input>
         </view>
         <view>
           <image src="{{img_cancel}}" class="img_cancel" bindtap='cancelName'></image>
@@ -25,44 +26,150 @@
           <text>手机号</text>
         </view>
         <view class="right-tips">
-          <input placeholder="请输入联系电话" value="{{mobile ||''}}" bindblur="mobileInput" type="number"></input>
+          <input placeholder="请输入联系电话" value="{{recentOrderInfo.mobile ||''}}" bindblur="mobileInput" type="number"></input>
         </view>
         <view>
           <image src="{{img_cancel}}" class="img_cancel" bindtap='cancelMobile'></image>
         </view>
       </view>
     </view>
+    <!-- 预约时间 -->
     <view class="appoint-time">
       <view style="width:8%;text-align:left;">
         <image class="img_pre" src="{{img_time}}"></image>
       </view>
       <text class="tips" style="width:36%;">预约时间</text>
       <view style="width:50%;">
-        <text style="color:{{comColor}};">{{date}} {{time}}</text>
+        <text style="color:{{comColor}};">
+          {{reserveInfo.date}} {{reserveInfo.startTime}} - {{reserveInfo.endTime}}
+        </text>
       </view>
     </view>
-    <block wx:if="{{ reserveInfo.service_type == 1 }}">
+    <!-- 服务人员 -->
+    <block wx:if="{{ serviceInfo.serviceType == 1 }}">
       <view class="appoint-time" style='border-top:1px solid #eee;'>
         <view style="width:8%;text-align:left;">
           <image class="img_pre" src="{{img_man}}"></image>
         </view>
-        <text class="tips" style="width:36%;">{{reserveInfo.technician_title}}</text>
+        <text class="tips" style="width:36%;">{{technicianTitle}}</text>
         <view style="width:50%;">
-          <text>{{tech_name}}</text>
+          <text>{{reserveInfo.tech_name}}</text>
         </view>
       </view>
     </block>
-    <!-- 列表详情 -->
-    <view class="appointlist-box"></view>
-    <!-- 列表详情 -->
-    <view class="pay-type"></view>
+    <!-- 服务列表详情 -->
+    <view class="appointlist-box">
+      <view class="appoint-top" bindtap="toStore" data-id="{{storeInfo.storeId}}">
+        <view class="top-center">
+          <image src="{{storeInfo.storeImgs[0]}}" style="width:50rpx;height:50rpx;"></image>
+          <text>{{storeInfo.storeName}}</text>
+        </view>
+        <view class="top-right">
+          <image src="{{img_arrow}}" style="width:16rpx;" mode="widthFix"></image>
+        </view>
+      </view>
+      <view class="appoint-content" bindtap="toService" data-id="{{serviceInfo.id}}">
+        <div class="content-img">
+          <image src="{{serviceInfo.serviceImg[0]}}" style="width:152rpx;height:152rpx;"></image>
+        </div>
+        <div class="content-center">
+          <text class="van-two-ellipsis" style="color:#353535;font-size:13px;">
+            <text>{{serviceInfo.serviceName}}</text>
+          </text>
+          <block wx:if="{{serviceInfo.serviceSubsist > 0}}">
+            <view class='appoine_bottom'>
+              <view class="appoint-price" style="text-align:center;color:{{linColor}};border-color:{{linColor}}">
+                <text>订金</text>
+              </view>
+              <view class="appoint-money" style='color:{{comColor}}'>
+                <text style='font-size:28rpx;color:{{comColor}}'>￥</text>
+                <text>{{serviceInfo.serviceSubsist}}</text>
+              </view>
+              <view class='all-price' wx:if='{{serviceInfo.servicePrice!=0}}'>
+                <text>服务总价：￥{{service.servicePrice}}</text>
+              </view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class='appoine_bottom'>
+              <view class="appoint-price" wx:if='{{service.servicePrice!=0}}' style="color:{{comColor}};border-color:{{comColor}}">
+                <text>总价</text>
+              </view>
+              <view class="appoint-money" wx:if='{{service.servicePrice!=0}}' style="color:{{comColor}};">
+                <text>￥{{service.servicePrice}}</text>
+              </view>
+            </view>
+          </block>
+        </div>
+      </view>
+    </view>
+    <!-- 选择会员卡 -->
+    <view class="pay_type">
+      <block wx:if="{{cardList && cardList.length > 0}}">
+        <view class='choose_coupon' bindtap='cardClick' style='padding:24rpx 0;'>
+          <view>会员卡</view>
+          <view style='margin:0;'>
+            <block wx:if="{{ userCard.cardName }}">
+              <text style='margin-right:10rpx;'>{{ userCard.cardName }}</text>
+            </block>
+            <block wx:else>
+              <text style='margin-right:30rpx;'>选择会员卡</text>
+            </block>
+            <image src='{{img_right}}'></image>
+          </view>
+        </view>
+        <view class='hr' wx:if="{{cardList.length != 0}}"></view>
+        <view class='yue_pay' wx:if="{{userCard.money > 0}}">
+          <view>会员卡余额支付:</view>
+          <view class='pay_focus'>
+            <text style='color:{{comColor}}' wx:if='{{pay_card == 1}}'>
+              减{{create_order.member_card_balance}}元
+            </text>
+          </view>
+          <view class='pay_check' bindtap='{{pay_card == 1 ? "" : "payClick"}}' data-type='card'>
+            <image src="{{ checkbox_no }}" mode='widthFix' wx:if='{{pay_card == 0}}' />
+            <text class='iconfont iconduoxuan' style='font-size:42rpx;color:{{comColor}}' bindtap='checkCancelCard' wx:else></text>
+          </view>
+        </view>
+        <view class='hr' wx:if="{{userCard.money > 0}}"></view>
+      </block>
+      <view class="yue_pay" wx:if="{{account > 0}}">
+        <view>余额支付:</view>
+        <view class='pay_focus'>
+          <text style='color:{{comColor}}' wx:if='{{pay_yue == 1}}'>
+            <text>减{{create_order.account_discount}}元</text>
+          </text>
+        </view>
+        <view class='pay_check' bindtap='{{pay_yue == 1 ? "" : "payClick"}}' data-type='yue'>
+          <image src="{{ checkbox_no }}" mode='widthFix' wx:if='{{pay_yue == 0}}' />
+          <text class='iconfont iconduoxuan' style='font-size:42rpx;color:{{comColor}}' bindtap='checkCancelYue' wx:else></text>
+        </view>
+      </view>
+    </view>
     <!-- 备注 -->
-    <view class="appoint-service"></view>
-    <view class="checkout-detail"></view>
+    <view class="appoint-service">
+      <label for="beizhu">备注</label>
+      <input type="text" placeholder="选填，可输入您的喜好" id="beizhu" bindinput="msgInput" value="{{add_message}}" />
+    </view>
+    <!-- 金额信息 -->
+    <view class='checkout_detail' wx:if="{{post_type != 'integral'}}">
+      <view class='price_amount'>
+        <view>订单总计</view>
+        <view style='color:{{comColor}}'>￥{{serviceInfo.serviceSubsist}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.member_card_balance > 0 && pay_card == 1}}">
+        <view>会员卡余额</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.member_card_balance}}</view>
+      </view>
+      <view class='pay_nums' wx:if="{{create_order.account_discount > 0 && pay_yue == 1}}">
+        <view>余额支付</view>
+        <view style='color:{{comColor}}'>-￥{{create_order.account_discount}}</view>
+      </view>
+    </view>
   </view>
   <!-- 底部提交订单 -->
-  <view class="appoint-btm" wx:if="{{is_delete != 1}}" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
-    <block wx:if="{{reserveInfo.service_subsist>0}}">
+  <view class="appoint-btm" style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
+    <block wx:if="{{serviceInfo.serviceSubsist > 0}}">
       <view class="all-money">
         <text style='color:{{comColor}}'>应付总额：￥{{create_order.money_paid}}</text>
       </view>
@@ -78,25 +185,25 @@
   </view>
 </view>
 <!-- 会员卡弹框 -->
-<action-sheet hidden="{{ cardMode }}">
+<action-sheet hidden="{{ !cardMode }}">
   <view class='action_title'>
     会员卡
-    <image src='{{ imageUrl }}/image/wxapp/close_icon.png' mode="widthFix" bindtap="cardCancel" class='pro_close' />
+    <image src='{{ img_close }}' mode="widthFix" bindtap="cardCancel" class='pro_close' />
   </view>
   <view style='height:800rpx;overflow-y:scroll;{{isIpx == 1 ? "margin-bottom:110rpx;padding-bottom:50rpx;" : "margin-bottom:80rpx;"}}'>
-    <block wx:if="{{ card_array.length != 0 }}" wx:for="{{card_array}}" wx:key="index">
-      <view class="card_list clearfix" data-id="{{ index }}" bindtap='chooseCard' data-name="{{ item.card_name }}" data-card_no="{{ item.card_no }}">
+    <block wx:if="{{ cardList.length != 0 }}" wx:for="{{cardList}}" wx:key="index">
+      <view class="card_list clearfix" data-id="{{ index }}" bindtap='chooseCard' data-name="{{ item.cardName }}" data-cardNo="{{ item.cardNo }}">
         <view class="card_choose">
           <image src="{{ item.card_src }}" wx:if='{{item.card_src != 1}}' mode="widthFix" />
           <text class='iconfont icondanxuan' style='font-size:40rpx;color:{{comColor}}' wx:if='{{item.card_src == 1}}'></text>
         </view>
         <view class='card_info'>
           <view style='background:{{ item.bg }};background-size:cover;' class='card_new_de'>
-            <image src="{{ item.shop_logo }}" mode="widthFix" />
+            <image src="{{ shopAvatar }}" mode="widthFix" />
             <view class='card_infos'>
-              <view class='car_names' style='font-weight:bold;'>{{ item.card_name }}</view>
+              <view class='car_names' style='font-weight:bold;'>{{ item.cardName }}</view>
               <view class='shjjian' wx:if="{{item.card_type==0}}">
-                过期时间: {{item.expire_time == null ? '永久有效' : item.expire_time}}
+                过期时间: {{item.expireTime == null ? '永久有效' : item.expireTime}}
               </view>
             </view>
           </view>
@@ -105,11 +212,11 @@
     </block>
   </view>
   <view class='card_sure' bindtap='cardConfirm' style='background:{{comColor}};bottom:{{isIpx == 1?"80rpx":"0"}}'>
-    确定
+    <text>确定</text>
   </view>
 </action-sheet>
-<!-- 支付弹框 -->
-<action-sheet hidden="{{ payMode}}">
+<!-- 会员卡余额支付，余额支付弹框 -->
+<action-sheet hidden="{{ !payMode}}">
   <view class='action_title' style='margin-bottom:0rpx;'>
     <text wx:if='{{pay_click_type == 2}}'>余额支付</text>
     <text wx:else>会员卡余额支付</text>
@@ -117,26 +224,26 @@
   </view>
   <view class='pay_content'>
     <view class='pro_tips'>
-      <image src='{{imageUrl}}/image/wxapp/main_goods_notice.png' mode='widthFix'></image>
+      <image src='{{main_goods_notice}}' mode='widthFix'></image>
       <view wx:if='{{pay_click_type == 2}}'>
-        本单可支付￥{{ create_order.money_paid - user_money.account > 0 ? user_money.account : create_order.money_paid }}，可编辑支付余额数量。
+        本单可支付￥{{ create_order.money_paid - account > 0 ? account : create_order.money_paid }}，可编辑支付余额数量。
       </view>
       <view wx:else='{{pay_click_type == 2}}'>
-        本单可支付￥{{ create_order.money_paid - user_money.member_card_money > 0 ? user_money.member_card_money : create_order.money_paid }}，可编辑支付余额数量。
+        本单可支付￥{{ create_order.money_paid - userCard.money > 0 ? userCard.money : create_order.money_paid }}，可编辑支付余额数量。
       </view>
     </view>
     <view class=' action_pay '>
       <view class='pay_title '>支付余额</view>
       <view class='pay_prompt '>{{prompt_message}}</view>
       <view class='contain_input '>
-        <input class='input_num ' bindblur="user_account" bindfocus='yue_fo' blur='true ' value="{{account_pay_control == 0 ? (create_order.money_paid - user_money.account > 0 ? user_money.account : create_order.money_paid): user_account_input}}" wx:if='{{pay_click_type == 2}}' type='digit' />
-        <input class='input_num ' bindblur="member_card" bindfocus='mem_fo' blur='true ' value="{{card_account_pay_control == 0 ? (create_order.money_paid - user_money.member_card_money > 0 ? user_money.member_card_money : create_order.money_paid) : member_card_input}}" wx:else type='digit' />
+        <input class='input_num ' bindblur="user_account" bindfocus='yue_fo' blur='true ' value="{{account_pay_control == 0 ? (create_order.money_paid - account > 0 ? account : create_order.money_paid): user_account_input}}" wx:if='{{pay_click_type == 2}}' type='digit' />
+        <input class='input_num ' bindblur="member_card" bindfocus='mem_fo' blur='true ' value="{{card_account_pay_control == 0 ? (create_order.money_paid - userCard.money > 0 ? userCard.money : create_order.money_paid) : member_card_input}}" wx:else type='digit' />
       </view>
     </view>
     <view class='price_show '>
-      <view wx:if="{{pay_click_type == 2 }}">我的余额：￥{{user_money.account}}</view>
+      <view wx:if="{{pay_click_type == 2 }}">我的余额：￥{{account}}</view>
       <view wx:if='{{pay_click_type == 3}}'>{{card_choose_name}}</view>
-      <view wx:if='{{pay_click_type == 3}}'>会员卡余额：￥{{user_money.member_card_money}}</view>
+      <view wx:if='{{pay_click_type == 3}}'>会员卡余额：￥{{userCard.money}}</view>
     </view>
     <view class='card_sure ' bindtap='payConfirm' style='background:{{ canClick == true ? comColor : "#999"}};bottom:{{isIpx==1 ? "80rpx": "0"}} '>
       确定

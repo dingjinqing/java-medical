@@ -40,6 +40,8 @@ Page({
     tech_id: '',
     tech_name: '', // 技师名称
 
+    technicianTitle: '', // 职称
+
     mobile: ''
   },
 
@@ -256,7 +258,8 @@ Page({
         that.setData({
           reservationInfoList: reservationInfoList,
           storeInfo: storeInfo,
-          serviceInfo: serviceInfo
+          serviceInfo: serviceInfo,
+          technicianTitle: res.content.technicianTitle
         })
       } else {
         that.toBack()

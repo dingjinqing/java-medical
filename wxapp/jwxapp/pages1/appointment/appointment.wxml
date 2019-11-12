@@ -82,7 +82,7 @@
         <!-- 技师 -->
         <block wx:if="{{serviceInfo.serviceType == 1}}">
           <view class="appoint_tech" bindtap="techShow">
-            <view class="app_tips appoint-text">技师</view>
+            <view class="app_tips appoint-text">{{technicianTitle}}</view>
             <view class="app_times">
               <text class="app_text" wx:if="{{tech_name}}" style='color:{{comColor}}'>
                 <text>{{tech_name}}</text>
