@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin-bottom: 60px;">
     <el-form
       ref="form"
       :model="form"
@@ -493,7 +493,7 @@ a {
   margin: 0 auto;
   height: 50px;
   line-height: 50px;
-  background: #fff;
+  background: #f8f8f8;
   text-align: center;
   z-index: 99;
 }

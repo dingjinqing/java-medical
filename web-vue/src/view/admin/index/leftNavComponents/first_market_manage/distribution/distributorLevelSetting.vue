@@ -1,5 +1,8 @@
 <template>
-  <div class="content">
+  <div
+    class="content"
+    style="margin-bottom: 60px;"
+  >
     <div class="main">
       <div class="mainInfo">
         <i
@@ -461,7 +464,7 @@ a {
   margin: 0 auto;
   height: 50px;
   line-height: 50px;
-  background: #fff;
+  background: #f8f8f8;
   text-align: center;
   z-index: 99;
 }
