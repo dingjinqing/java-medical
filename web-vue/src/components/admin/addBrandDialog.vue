@@ -148,24 +148,24 @@ export default {
       classValue: '',
       classOptions: [{
         value: '选项1',
-        label: '黄金糕'
+        label: '111'
       }, {
         value: '选项2',
-        label: '双皮奶'
+        label: '222'
       }, {
         value: '选项3',
-        label: '蚵仔煎'
+        label: '333'
       }],
       fromValue: '',
       fromOptions: [{
         value: '选项1',
-        label: '黄金糕'
+        label: '444'
       }, {
         value: '选项2',
-        label: '双皮奶'
+        label: '555'
       }, {
         value: '选项3',
-        label: '蚵仔煎'
+        label: '666'
       }],
       tableData: [],
       backFlag: false

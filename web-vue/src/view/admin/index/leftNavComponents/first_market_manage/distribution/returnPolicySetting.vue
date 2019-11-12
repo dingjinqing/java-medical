@@ -3,7 +3,7 @@
     <div class="main">
       <el-tabs
         v-model="tabSwitch"
-        @tab-click="handleClick"
+        @tab-click="initDataList"
       >
         <el-tab-pane
           v-for="item in tabInfo"
@@ -13,14 +13,27 @@
         >
           <el-button
             type="primary"
-            class="barginBtn"
-          >添加返利策略活动</el-button>
+            size="medium"
+            v-if="tableListView"
+            @click="addPolicy"
+          >添加返利策略</el-button>
         </el-tab-pane>
       </el-tabs>
     </div>
-    <div class="table_list">
+
+    <!-- 添加 / 编辑 -->
+    <addPolicy
+      :isEdite="isEdite"
+      :editId="editId"
+      v-if="tableListView===false"
+      @addPolicySubmit="addPolicySubmit"
+    />
+
+    <div
+      class="table_list"
+      v-if="tableListView"
+    >
       <el-table
-        class="version-manage-table"
         header-row-class-name="tableClss"
         :data="tableData"
         border
@@ -73,30 +86,36 @@
           label="操作"
           align="center"
         >
+          <template slot-scope="scope">
+            <span @click="editHandler(scope.row.id)">编辑</span>
+            <span @click="deleteHandler(scope.row.id)">删除</span>
+            <span @click="stopHandler(scope.row.id)">停用</span>
+            <span @click="startHandler(scope.row.id)">启用</span>
+          </template>
         </el-table-column>
       </el-table>
-      <div class="footer_right">
-        <span>当前页面1/1，总记录4条</span>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-size="20"
-          layout="prev, pager, next, jumper"
-          :total="4"
-        >
-        </el-pagination>
-      </div>
+
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
     </div>
   </div>
 </template>
 
 <script>
-
+// 引入组件
+import pagination from '@/components/admin/pagination/pagination.vue'
+import addPolicy from './policyAdd.vue'
 export default {
+  components: {
+    pagination,
+    addPolicy
+  },
   data () {
     return {
-      item: '',
-      value: '',
+      // tabs
+      tableListView: true, // tab显示隐藏
       tabSwitch: '2',
       tabInfo: [{
         title: '全部策略',
@@ -114,18 +133,86 @@ export default {
         title: '已停用',
         name: '5'
       }],
-      tabIndex: 2,
-      currentPage: 1,
-      tableData: null
+      tableData: [], // 表格数据
+      pageParams: {}, // 分页
+      requestParams: {},
+      editId: '', // 编辑的活动id
+      isEdite: true // 编辑状态
     }
   },
+  mounted () {
+    // 初始化数据
+    this.langDefault()
+    this.initDataList()
+  },
   methods: {
-    handleClick (tab) {
-      // console.log(tab.index)
+    // 返利列表
+    initDataList () {
+
     },
-    handleCurrentChange () {
-      console.log(111)
+
+    // 添加
+    addPolicy () {
+      this.isEdite = false
+      this.showTabAddGroup('添加返利策略')
+    },
+
+    // 编辑
+    editHandler (id) {
+      this.editId = id
+      this.isEdite = true
+      this.showTabAddGroup('返利编辑策略')
+    },
+
+    // 保存
+    addPolicySubmit () {
+
+    },
+
+    // 删除
+    deleteHandler () {
+
+    },
+
+    // 启用
+    startHandler () {
+
+    },
+
+    // 停用
+    stopHandler () {
+
+    },
+
+    showTabAddGroup (title) {
+      if (this.tabSwitch === '6' || this.tabInfo.length > 5) {
+        this.closeTabAddGroup()
+      }
+      this.tabInfo.push({
+        title: title,
+        name: '6'
+      })
+      this.tabSwitch = '6'
+      this.tableListView = false
+    },
+
+    closeTabAddGroup () {
+      // 新增标签
+      if (this.tabSwitch === '6') {
+        return
+      }
+      // 不是新增
+      if (this.tabInfo.length > 5) {
+        this.tableListView = true
+        this.tabInfo.pop({
+          title: '编辑返利策略',
+          name: '6'
+        })
+        console.log('closeTabAddGroup', this.tabInfo)
+      }
+      return this.tabInfo
     }
+
   }
 
 }
