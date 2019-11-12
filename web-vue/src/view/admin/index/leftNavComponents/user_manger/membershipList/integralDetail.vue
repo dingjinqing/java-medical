@@ -187,8 +187,9 @@ export default {
 
       console.log(obj)
       scoreDetailRequest(obj).then(res => {
+        debugger
         console.log((res.content.dataList))
-        if (res) {
+        if (res.error === 0) {
           // 装载数据
           this.trList = res.content.dataList
           // 表格可视化
