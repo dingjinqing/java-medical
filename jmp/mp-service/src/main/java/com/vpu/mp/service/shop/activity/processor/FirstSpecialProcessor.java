@@ -71,6 +71,7 @@ public class FirstSpecialProcessor implements ActivityGoodsListProcessor, Activi
 
     @Override
     public Map<Integer, FirstSpecialProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
+        System.out.println( Util.toJson(param.toString()));
         log.info("方法 FirstSpecialProcessorDataInfo->GoodsBaseCapsuleParam"+ Util.toJson(param.toString()));
         if (param.getGoodsIds().size() == 0) {
             return new HashMap<>();
