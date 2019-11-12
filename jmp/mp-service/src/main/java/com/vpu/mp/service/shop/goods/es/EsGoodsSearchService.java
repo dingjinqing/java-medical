@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.goods.es;
 
-import com.vpu.mp.service.foundation.es.annotation.EsFiledSerializer;
 import com.vpu.mp.service.foundation.es.EsManager;
+import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -9,16 +9,11 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.shop.goods.es.convert.EsConvertFactory;
-import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertByAdmin;
-import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertInterface;
+import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsPageListVoConverter;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.core.CountRequest;
-import org.elasticsearch.client.core.CountResponse;
-import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,22 +26,9 @@ import java.util.*;
  *
 */
 @Service
-public class EsGoodsSearchService extends EsSearchService{
-
-    @Autowired
-    private EsManager esManager;
+public class EsGoodsSearchService extends EsBaseSearchService{
 
 
-    /**
-     * admin平台商品搜索
-     * @param sourceBuilder  SearchSourceBuilder
-     * @return SearchResponse
-     */
-    public SearchRequest assemblySearchRequest(SearchSourceBuilder sourceBuilder) {
-        //TODO 到时候再考虑索引名称要不要写死
-        SearchRequest searchRequest = new SearchRequest("es_goods");
-        return searchRequest.source(sourceBuilder);
-    }
     public PageResult<GoodsPageListVo> searchGoodsPageByParam(GoodsPageListParam goodsPageListParam) throws IOException {
 
         Integer shopId = getShopId();
@@ -61,7 +43,7 @@ public class EsGoodsSearchService extends EsSearchService{
         List<EsGoods> esGoodsList = esPage.getDataList();
         List<GoodsPageListVo> voList = new ArrayList<>(esGoodsList.size());
         esGoodsList.forEach(x->{
-            voList.add(EsConvertFactory.getGoodsConvert(EsGoodsConvertByAdmin.class).convertToGoodsPageListVo(x));
+            voList.add(EsConvertFactory.getGoodsConvert(GoodsPageListVoConverter.class).convertToGoodsPageListVo(x));
         });
         result.setDataList(voList);
         return result;
@@ -71,52 +53,41 @@ public class EsGoodsSearchService extends EsSearchService{
         Integer pageRows = param.getPageRows();
         Integer currentPage= param.getCurrentPage();
         PageResult<EsGoods> result = new PageResult<>();
-        BoolQueryBuilder searchBuilder = assemblySearchBuilder(param.getSearchList());
-        SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(searchBuilder,null,null);
-        Page esPage =  assemblyPage(sourceBuilder,pageRows,currentPage);
-        SearchResponse searchResponse = esManager.searchResponse(assemblySearchRequest(sourceBuilder));
-        SearchHit[] hits = searchResponse.getHits().getHits();
-        List<EsGoods> data = new LinkedList<>();
-        for( SearchHit hit:hits){
-            data.add(Util.parseJson(hit.getSourceAsString(),EsGoods.class,EsManager.ES_FILED_SERIALIZER));
+
+        EsSearchSourceBuilderParam searchParam =  EsSearchSourceBuilderParam.builder()
+            .queryBuilder(assemblySearchBuilder(param.getSearchList()))
+            .build();
+
+
+
+        Page esPage =  assemblyPage(searchParam,pageRows,currentPage);
+        Integer size = esPage.getPageRows();
+        Integer from = (currentPage-1)*size;
+        if( from > esPage.getTotalRows() ){
+            from = esPage.getTotalRows();
         }
-        result.setDataList(data);
+        searchParam.setIncludeSource(GOODS_SEARCH_STR);
+        searchParam.setFrom(from);
+        searchParam.setSize(size);
+        SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(searchParam);
+
+        result.setDataList(searchEsGoods(assemblySearchRequest(sourceBuilder,EsDataInitService.ES_GOODS)));
         result.setPage(esPage);
         return result;
     }
-    private Page assemblyPage(SearchSourceBuilder sourceBuilder,Integer pageRows,Integer currentPage) throws IOException {
-        Integer totalRow = getAllCount(sourceBuilder).intValue();
-        Integer size = pageRows;
-        Integer from = (currentPage-1)*size;
-        if( from > totalRow ){
-            from = totalRow;
-        }
-        sourceBuilder.fetchSource(GOODS_SEARCH_STR,null);
-        //from  查询从第几条开始
-        sourceBuilder.from(from);
-        //size 查询的条数
-        sourceBuilder.size(size);
-        return Page.getPage(totalRow,currentPage,pageRows);
-    }
-
     /**
-     * SearchSourceBuilder
-     * @param builder 搜索条件
-
+     * 根据搜索请求返回List<EsGoods>
+     * @param searchRequest
      * @return
+     * @throws IOException
      */
-    private SearchSourceBuilder assemblySearchSourceBuilder(QueryBuilder builder){
-        SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(builder,null,GOODS_SEARCH_STR);
-
-        return sourceBuilder;
+    private List<EsGoods> searchEsGoods(SearchRequest searchRequest) throws IOException {
+        SearchResponse searchResponse = search(searchRequest);
+        SearchHit[] hits = searchResponse.getHits().getHits();
+        List<EsGoods> data = new LinkedList<>();
+        for( SearchHit hit:hits){
+            data.add(Util.parseJson(hit.getSourceAsString(),EsGoods.class, EsManager.ES_FILED_SERIALIZER));
+        }
+        return data;
     }
-
-    private Long getAllCount(SearchSourceBuilder queryBuilder) throws IOException {
-        CountRequest countRequest = new CountRequest("es_goods");
-        countRequest.source(queryBuilder);
-        CountResponse countResponse = esManager.getCount(countRequest);
-        return countResponse.getCount();
-    }
-
-
 }

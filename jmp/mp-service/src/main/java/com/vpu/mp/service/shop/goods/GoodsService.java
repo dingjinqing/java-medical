@@ -106,7 +106,7 @@ public class GoodsService extends ShopBaseService {
     @Autowired
     private EsGoodsCreateService esGoodsCreateService;
     @Autowired
-    private EsUtilSearchService searchService;
+    private EsUtilSearchService esUtilSearchService;
 
     /**
      * 全部商品页面各个下拉框的数据初始化
@@ -114,7 +114,7 @@ public class GoodsService extends ShopBaseService {
      */
     public GoodsInitialVo pageInitValue(GoodsPageListParam goodsPageListParam) throws Exception {
         GoodsInitialVo goodsInitialVo = new GoodsInitialVo();
-        if( esFactSearchService.esState() ){
+        if( esUtilSearchService.esState() ){
             esFactSearchService.assemblyFactByAdminGoodsListInit(goodsInitialVo,goodsPageListParam);
         }else{
             Condition condition = this.buildOptions(goodsPageListParam);
@@ -172,7 +172,7 @@ public class GoodsService extends ShopBaseService {
      */
     public PageResult<GoodsPageListVo> getPageList(GoodsPageListParam goodsPageListParam)  {
         PageResult<GoodsPageListVo> pageResult;
-        if( esFactSearchService.esState() ){
+        if( esUtilSearchService.esState() ){
             try {
                 pageResult =  esGoodsSearchService.searchGoodsPageByParam(goodsPageListParam);
             } catch (IOException e) {
@@ -1590,7 +1590,7 @@ public class GoodsService extends ShopBaseService {
      */
     public Integer unsalableGoods() {
         try {
-            return searchService.getZhiXiaoGoodsNumbers();
+            return esUtilSearchService.getZhiXiaoGoodsNumbers();
         } catch (Exception e) {
             log.error("ES查询滞销商品数量失败, 原因如下: {}", e.getMessage());
             Timestamp fixedTime = Timestamp.valueOf(LocalDateTime.now().minus(30, ChronoUnit.DAYS));

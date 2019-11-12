@@ -53,16 +53,7 @@ public class EsManager {
         log.info("\n本次搜索条件【{}】",searchRequest.source().toString());
         return restHighLevelClient.search(searchRequest,RequestOptions.DEFAULT);
     }
-    /**
-     * 通用搜索方法
-     * @param countRequest 查询参数
-     * @return 查询响应
-     * @throws IOException 连接异常
-     */
-    public CountResponse getCount(@NotNull CountRequest countRequest) throws IOException {
-        log.info("\n本次统计数量的搜索条件【{}】",countRequest.source().toString());
-        return restHighLevelClient.count(countRequest,RequestOptions.DEFAULT);
-    }
+
 
     /**
      * 判断ES服务是否可用
@@ -172,5 +163,16 @@ public class EsManager {
             request.add(new DeleteRequest(indexName,x));
         });
         batchDocuments(request);
+    }
+
+    /**
+     * 通用搜索方法
+     * @param countRequest 查询参数
+     * @return 查询响应
+     * @throws IOException 连接异常
+     */
+    public CountResponse getDocumentCount(@NotNull CountRequest countRequest) throws IOException {
+        log.info("\n本次统计数量的搜索条件【{}】",countRequest.source().toString());
+        return restHighLevelClient.count(countRequest,RequestOptions.DEFAULT);
     }
 }

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods.es;
 
+import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo;
@@ -7,7 +8,9 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -23,17 +26,23 @@ import java.util.*;
  *
 */
 @Service
-public class EsFactSearchService extends EsSearchService{
+public class EsFactSearchService extends EsBaseSearchService{
     @Autowired
     private GoodsSortService goodsSortService;
 
-    public void assemblyFactByAdminGoodsListInit(GoodsInitialVo goodsInitialVo,GoodsPageListParam param) throws Exception {
-        EsSearchParam searchParam = getFactSearchParamByAdminGoodsListInit(param,getShopId());
-
+    public void assemblyFactByAdminGoodsListInit(GoodsInitialVo goodsInitialVo,GoodsPageListParam goodsPageListParam) throws Exception {
+        EsSearchParam param = getFactSearchParamByAdminGoodsListInit(goodsPageListParam,getShopId());
+        EsSearchSourceBuilderParam searchParam = EsSearchSourceBuilderParam.builder()
+            .queryBuilder(assemblySearchBuilder(param.getSearchList()))
+            .aggregations(assemblyAggregationBuilder(param.getFactList()))
+            .build();
         //es查询
-        SearchResponse response = getEsGoodsAggregationsByParam(searchParam);
+        SearchRequest searchRequest = assemblySearchRequest(
+            assemblySearchSourceBuilder(searchParam)
+            ,EsDataInitService.ES_GOODS
+        );
 
-        assemblyGoodsInitialVo(goodsInitialVo,response);
+        assemblyGoodsInitialVo(goodsInitialVo,search(searchRequest));
 
     }
 
@@ -134,6 +143,4 @@ public class EsFactSearchService extends EsSearchService{
             EsGoodsConstant.EsGoodsSearchFact.GOODS_SORT_SECOND_FACT)
         );
     }
-    private void assemblyFactSearchParam(EsSearchParam searchParam){}
-
 }

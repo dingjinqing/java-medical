@@ -5,7 +5,13 @@ import com.vpu.mp.service.shop.goods.es.EsGoods;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
-public class EsGoodsConvertByAdmin implements EsGoodsConvertInterface {
+/**
+ * es
+ * @author 卢光耀
+ * @date 2019/11/12 11:01 上午
+ *
+*/
+public class GoodsPageListVoConverter implements EsGoodsConvertInterface {
     @Override
     public GoodsPageListVo convertToGoodsPageListVo(EsGoods esGoods) {
         GoodsPageListVo vo = new GoodsPageListVo();
