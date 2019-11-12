@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import echarts from 'echarts'
+// import echarts from 'echarts'
 import { menberStatistics } from '@/api/admin/firstWebManage/userStatistics/userStatistics.js'
 
 export default {
@@ -128,7 +128,7 @@ export default {
 
   mounted () {
     this.langDefault()
-    this.myUserChart = echarts.init(document.getElementById('memberCharts'))
+    // this.myUserChart = echarts.init(document.getElementById('memberCharts'))
   },
 
   data () {

@@ -30,3 +30,12 @@ export function menberStatistics (data) {
     data: data
   })
 }
+
+// 用户成交分析
+export function userAnalysis (data) {
+  return service({
+    url: '/api/admin/overview/user/analysis/order',
+    method: 'post',
+    data: data
+  })
+}
