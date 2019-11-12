@@ -230,6 +230,29 @@ export default {
             'rich_text': '' // 文本内容
           }
           break
+        case 17: // 文本模块
+          obj = {
+            'module_name': 'm_text', // 模块名称
+            'title': '', // 文本
+            'fonts_size': '1', // 字体大小
+            'fonts_color': '#333333', // 字体颜色
+            'bgs_color': '#ffffff', // 背景颜色
+            'show_pos': '1', // 显示位置
+            'title_link': '' // 链接
+          }
+          break
+        case 18: // 富文本
+          obj = {
+            'module_name': 'm_rich_text', // 模块名称
+            'rich_text': '' // 富文本内容
+          }
+          break
+        case 19: // 辅助空白
+          obj = {
+            'module_name': 'm_blank', // 模块名称
+            'blank_height': '10' // 空白高度
+          }
+          break
         case 27: // 店招设置
           obj = {
             module_name: 'm_shop',

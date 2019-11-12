@@ -51,7 +51,10 @@ export default {
     RiMagicMap: () => import('./pageSetupModules/graphicAndTextComponents/riMagicMap'), // 右侧魔方多图模块
     RiShopRecruit: () => import('./pageSetupModules/graphicAndTextComponents/riShopRecruit'), // 右侧店招设置模块
     RiMapModule: () => import('./pageSetupModules/graphicAndTextComponents/riMapModule'), // 右侧地图模块
-    RiLeftWingRightPicture: () => import('./pageSetupModules/graphicAndTextComponents/riLeftWingRightPicture') // 右侧左文右图配置模块
+    RiLeftWingRightPicture: () => import('./pageSetupModules/graphicAndTextComponents/riLeftWingRightPicture'), // 右侧左文右图配置模块\
+    RiTextModule: () => import('./pageSetupModules/graphicAndTextComponents/riTextModule'), // 右侧文本模块配置页面
+    RiRichText: () => import('./pageSetupModules/graphicAndTextComponents/riRichText'), // 右侧富文本模块
+    RiAuxiliaryBlank: () => import('./pageSetupModules/graphicAndTextComponents/riAuxiliaryBlank') // 右侧辅助空白配置页面
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -113,6 +116,18 @@ export default {
         {
           id: 16,
           name: 'RiLeftWingRightPicture'
+        },
+        {
+          id: 17,
+          name: 'RiTextModule'
+        },
+        {
+          id: 18,
+          name: 'RiRichText'
+        },
+        {
+          id: 19,
+          name: 'RiAuxiliaryBlank'
         },
         {
           id: 27,

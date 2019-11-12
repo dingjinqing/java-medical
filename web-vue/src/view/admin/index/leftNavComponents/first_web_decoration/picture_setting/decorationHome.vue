@@ -211,14 +211,17 @@ export default {
     MagicMap: () => import('./decorationModules/graphicAndTextComponents/magicMap'), // 魔方多图
     ShopRecruit: () => import('./decorationModules/graphicAndTextComponents/ShopRecruit'), // 店招设置
     MapModule: () => import('./decorationModules/graphicAndTextComponents/MapModule'), // 地图模块
-    LeftWingRightPicture: () => import('./decorationModules/graphicAndTextComponents/leftWingRightPicture') // 左图右文模块
+    LeftWingRightPicture: () => import('./decorationModules/graphicAndTextComponents/leftWingRightPicture'), // 左图右文模块
+    TextModule: () => import('./decorationModules/graphicAndTextComponents/textModule'), // 文本模块
+    RichText: () => import('./decorationModules/graphicAndTextComponents/richText'), // 富文本
+    AuxiliaryBlank: () => import('./decorationModules/graphicAndTextComponents/auxiliaryBlank') // 辅助空白
   },
   data () {
     return {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -418,6 +421,16 @@ export default {
           break
         case 'm_text_image':
           moduleNameId = 16
+          break
+        case 'm_text':
+          moduleNameId = 17
+          break
+        case 'm_rich_text':
+          moduleNameId = 18
+          break
+        case 'm_blank':
+          moduleNameId = 19
+          break
       }
       return moduleNameId
     },
@@ -563,6 +576,15 @@ export default {
               break
             case 16:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 16)
+              break
+            case 17:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 17)
+              break
+            case 18:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 18)
+              break
+            case 19:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 19)
               break
             case 27:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 27)
