@@ -9,8 +9,5 @@ import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
  * @date 2019年11月07日
  */
 public interface GoodsDetailProcessor {
-
-    Byte getPriorityForDetail();
-
     void processGoodsDetail(GoodsDetailMpCapsule capsule,GoodsDetailCapsuleParam param);
 }

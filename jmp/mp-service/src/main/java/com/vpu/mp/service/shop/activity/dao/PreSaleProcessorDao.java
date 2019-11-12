@@ -3,14 +3,12 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.PreSaleProcessorDataInfo;
 import org.jooq.Condition;
 import org.jooq.Record3;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,14 +27,14 @@ public class PreSaleProcessorDao extends ShopBaseService {
      * 获取商品集合内的预售信息
      * @param goodsIds 商品id集合
      * @param date 日期
-     * @return key:商品id，value:{@link PreSaleProcessorDataInfo}
+     * @return key:商品id，value:List<Record3<Integer, Integer, BigDecimal>> PRESALE.ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE
      */
-    public Map<Integer, PreSaleProcessorDataInfo> getGoodsPreSaleListInfo(List<Integer> goodsIds, Timestamp date) {
+    public Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> getGoodsPreSaleListInfo(List<Integer> goodsIds, Timestamp date) {
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
         Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.gt(date).and(PRESALE.PRE_END_TIME_2.lt(date)));
 
-        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> preSaleInfos = db().select(PRESALE.ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
+        return db().select(PRESALE.ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
             .from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
             .where(PRESALE.GOODS_ID.in(goodsIds))
             .and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
@@ -44,17 +42,6 @@ public class PreSaleProcessorDao extends ShopBaseService {
             .and(condition)
             .orderBy(PRESALE_PRODUCT.PRESALE_PRICE.asc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE.GOODS_ID)));
-
-        Map<Integer, PreSaleProcessorDataInfo> returnMap=new HashMap<>();
-
-        preSaleInfos.forEach((key,value)->{
-            PreSaleProcessorDataInfo info =new PreSaleProcessorDataInfo();
-            Record3<Integer, Integer, BigDecimal> record3 = value.get(0);
-            info.setDataId(record3.get(PRESALE.ID));
-            info.setDataPrice(record3.get(PRESALE_PRODUCT.PRESALE_PRICE));
-            returnMap.put(key,info);
-        });
-        return returnMap;
     }
 
 //    /**

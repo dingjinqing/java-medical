@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -11,7 +13,7 @@ import java.sql.Timestamp;
  * @date 2019年11月08日
  */
 @Data
-public class CouponMpVo {
+public class CouponDetailMpVo {
     private Integer id;
     /**优惠券类型0普通，1分裂*/
     private Byte type;
@@ -44,4 +46,26 @@ public class CouponMpVo {
     private Byte useConsumeRestrict;
     /** 满多少可用*/
     private BigDecimal leastConsume;
+
+    public CouponDetailMpVo() {
+    }
+
+    public CouponDetailMpVo(MrkingVoucherRecord record){
+        this.setId(record.getId());
+        this.setType(record.getType());
+        this.setActCode(record.getActCode());
+        this.setValidityType(record.getValidityType());
+        this.setStartTime(record.getStartTime());
+        this.setEndTime(record.getEndTime());
+        this.setValidity(record.getValidity());
+        this.setValidityHour(record.getValidityHour());
+        this.setValidityMinute(record.getValidityMinute());
+        this.setUseScore(record.getUseScore()==1);
+        this.setScoreNumber(record.getScoreNumber());
+        this.setIsCardExclusive(StringUtils.isNotEmpty(record.getCardId()));
+        this.setActCode(record.getActCode());
+        this.setDenomination(record.getDenomination());
+        this.setUseConsumeRestrict(record.getUseConsumeRestrict());
+        this.setLeastConsume(record.getLeastConsume());
+    }
 }

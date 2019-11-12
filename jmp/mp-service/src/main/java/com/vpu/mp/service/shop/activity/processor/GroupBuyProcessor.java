@@ -3,56 +3,49 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.GroupBuyProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
+import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 
 /**
  * @author 李晓冰
  * @date 2019年10月29日
  */
 @Service
-public class GroupBuyProcessor implements ActivityGoodsListProcessor {
+public class GroupBuyProcessor implements ProcessorPriority,ActivityGoodsListProcessor {
 
     @Autowired
     GroupBuyProcessorDao groupBuyProcessorDao;
 
+    /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_GROUP_BUY_PRIORITY;
     }
-
+    /*****************商品列表处理*******************/
     @Override
-    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        List<Integer> goodsIds = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(x.getGoodsType()))
-            .map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
-        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
-        param.setGoodsIds(goodsIds);
-        param.setDate(DateUtil.getLocalDateTime());
-        return param;
-    }
+    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
+        List<ActivityGoodsListCapsule> availableCapsules = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(x.getGoodsType())).collect(Collectors.toList());
+        List<Integer> goodsIds = availableCapsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(goodsIds, DateUtil.getLocalDateTime());
 
-    @Override
-    public Map<Integer, GroupBuyProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return groupBuyProcessorDao.getGoodsGroupBuyListInfo(param.getGoodsIds(),param.getDate());
-    }
-
-    @Override
-    public void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
-        capsules.forEach(capsule->{
-            Integer goodsId = capsule.getGoodsId();
-            ProcessorDataInfo activity = activityInfos.get(goodsId);
-            if (activity == null) {
+        availableCapsules.forEach(capsule->{
+            if (goodsGroupBuyListInfo.get(capsule.getGoodsId()) == null) {
                 return;
             }
-            capsule.setRealPrice(activity.getDataPrice());
+            Record3<Integer, Integer, BigDecimal> record3 = goodsGroupBuyListInfo.get(capsule.getGoodsId()).get(0);
+            capsule.setRealPrice(record3.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE));
+            GoodsActivityBaseMpVo activity = new GoodsActivityBaseMpVo();
+            activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
         });

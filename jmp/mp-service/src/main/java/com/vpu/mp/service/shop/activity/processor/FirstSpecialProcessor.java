@@ -1,34 +1,33 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.db.shop.tables.records.FirstSpecialProductRecord;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.FirstSpecialProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserService;
-import lombok.extern.slf4j.Slf4j;
-import org.jooq.Record;
+import org.jooq.Record3;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.FirstSpecial.FIRST_SPECIAL;
+import static com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUCT;
 
 /**
  * @author 李晓冰
  * @date 2019年11月01日
  */
 @Service
-@Slf4j
-public class FirstSpecialProcessor implements ActivityGoodsListProcessor, ActivityCartListStrategy {
+public class FirstSpecialProcessor implements ProcessorPriority,ActivityGoodsListProcessor, ActivityCartListStrategy {
 
     @Autowired
     FirstSpecialProcessorDao firstSpecialProcessorDao;
@@ -38,57 +37,36 @@ public class FirstSpecialProcessor implements ActivityGoodsListProcessor, Activi
     @Autowired
     private UserService userService;
 
+    /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_FIRST_SPECIAL_PRIORITY;
     }
-
+    /*****************商品列表处理*******************/
     @Override
-    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
-        if (userId == null || orderInfoService.isNewUser(userId, true)) {
-            return filterParamForList(capsules);
-        } else {
-            return null;
+    /**
+     * 商品装修列表-首单特惠
+     */
+    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
+        if (userId != null && !orderInfoService.isNewUser(userId, true)) {
+            return;
         }
-    }
+        List<ActivityGoodsListCapsule> availabelCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getGoodsType()) && !x.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE))
+            .collect(Collectors.toList());
 
-    @Override
-    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
-        param.setDate(DateUtil.getLocalDateTime());
+        List<Integer> gooodsIds = availabelCapsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
+        Map<Integer, Result<Record3<Integer, Integer, BigDecimal>>> firstSpecialPrds = firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(gooodsIds,DateUtil.getLocalDateTime());
 
-        List<Integer> goodsIds = new ArrayList<>();
-        capsules.forEach(capsule -> {
-            if (GoodsConstant.isGoodsTypeIn13510(capsule.getGoodsType()) ||
-                    capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
-                return;
-            }
-            goodsIds.add(capsule.getGoodsId());
-        });
-        param.setGoodsIds(goodsIds);
-        return param;
-    }
-
-    @Override
-    public Map<Integer, FirstSpecialProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        System.out.println( Util.toJson(param.toString()));
-        log.info("方法 FirstSpecialProcessorDataInfo->GoodsBaseCapsuleParam"+ Util.toJson(param.toString()));
-        if (param.getGoodsIds().size() == 0) {
-            return new HashMap<>();
-        } else {
-            return firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(param.getGoodsIds(), param.getDate());
-        }
-    }
-
-    @Override
-    public void processForList(Map<Integer, ? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
-        capsules.forEach(capsule -> {
+        availabelCapsules.forEach(capsule->{
             Integer goodsId = capsule.getGoodsId();
-            ProcessorDataInfo activity = activityInfos.get(goodsId);
-            if (activity == null) {
+            Result<Record3<Integer, Integer, BigDecimal>> result = firstSpecialPrds.get(goodsId);
+            if (result == null) {
                 return;
             }
-            capsule.setRealPrice(activity.getDataPrice());
+            capsule.setRealPrice(result.get(0).get(FIRST_SPECIAL_PRODUCT.PRD_PRICE));
+            GoodsActivityBaseMpVo activity = new GoodsActivityBaseMpVo();
+            activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+            activity.setActivityId(result.get(0).get(FIRST_SPECIAL.ID));
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
         });
@@ -104,11 +82,11 @@ public class FirstSpecialProcessor implements ActivityGoodsListProcessor, Activi
         boolean isNewUser = orderInfoService.isNewUser(cartBo.getUserId());
         cartBo.setIsNewUser(isNewUser);
         if (isNewUser) {
-            List<FirstSpecialProcessorDataInfo> specialPrdIdList = firstSpecialProcessorDao.getGoodsFirstSpecialPrdId(cartBo.getProductIdList(), cartBo.getDate());
+            List<FirstSpecialProductRecord> specialPrdIdList = firstSpecialProcessorDao.getGoodsFirstSpecialPrdId(cartBo.getProductIdList(), cartBo.getDate());
             specialPrdIdList.forEach(specialPrdId -> {
                 cartBo.getCartGoodsList().forEach(goods -> {
                     if (specialPrdId.getPrdId().equals(goods.getGoodsId())) {
-                        goods.getActivityList().add(specialPrdId);
+
                     }
                 });
             });

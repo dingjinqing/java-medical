@@ -1,11 +1,10 @@
 package com.vpu.mp.service.pojo.wxapp.activity.capsule;
 
-import com.vpu.mp.service.pojo.wxapp.activity.info.*;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CouponMpVo;
+import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CouponDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.MemberCardMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.MemberCardDetailMpVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,14 +41,14 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
     private Integer limitMaxNum;
     private Byte isExclusive;
 
-    private List<GoodsLabelProcessorDataInfo> labels;
-    private List<CouponProcessorDataInfo> coupons;
-    private List<GoodsPrdProcessorDataInfo> products;
-    private List<GradeCardProcessorDataInfo> gradeCardPrice;
+    private List<String> labels;
+    private List<CouponDetailMpVo> coupons;
+    private List<GoodsPrdMpVo> products;
+    private List<GradePrdRecord> gradeCardPrice;
     /**当前用户是否可以购买该商品*/
     private Boolean userCanBuy;
     /**商品会员专享卡信息*/
-    private List<ExclusiveProcessorDataInfo> exclusiveCards;
+    private List<MemberCardDetailMpVo> exclusiveCards;
 
     public GoodsDetailMpVo convertToGoodsDetailMpVo(){
         GoodsDetailMpVo vo =new GoodsDetailMpVo();
@@ -72,29 +71,10 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
         vo.setIsExclusive(this.isExclusive);
 
         vo.setUserCanBuy(this.userCanBuy);
-        if (this.labels != null) {
-            List<GoodsLabelMpVo> labels = new ArrayList<>();
-            this.labels.forEach(label-> labels.add(label.convertToGoodsLabelMpVo()));
-            vo.setLabels(labels);
-        }
-
-        if (this.coupons != null) {
-            List<CouponMpVo> couponMpVos = new ArrayList<>();
-            this.coupons.forEach(coupon-> couponMpVos.add(coupon.convertToCouponMpVo()));
-            vo.setCoupons(couponMpVos);
-        }
-
-        if (this.products != null) {
-            List<GoodsPrdMpVo> prdMpVos = new ArrayList<>();
-            this.products.forEach(prd-> prdMpVos.add(prd.convertToGoodsPrdMpVo()));
-            vo.setProducts(prdMpVos);
-        }
-
-        if (this.exclusiveCards != null) {
-            List<MemberCardMpVo> cardVos =new ArrayList<>();
-            this.exclusiveCards.forEach(card->cardVos.add(card.convertToMemberCardMpVo()));
-            vo.setMemberCards(cardVos);
-        }
+        vo.setLabels(this.labels);
+        vo.setCoupons(coupons);
+        vo.setProducts(this.products);
+        vo.setMemberCards(exclusiveCards);
         return vo;
     }
 }

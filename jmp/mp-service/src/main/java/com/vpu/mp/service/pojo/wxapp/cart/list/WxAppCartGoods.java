@@ -1,10 +1,8 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * @author 孔德成
@@ -104,7 +102,6 @@ public class WxAppCartGoods {
      */
     private Byte delFlag;
     //***** 活动属性 **************
-    private List<ProcessorDataInfo> activityList;
     /**
      *  活动价格后
      */

@@ -1,11 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * 购物车商品信息
@@ -62,8 +60,5 @@ public class CartGoodsInfo {
      */
     private BigDecimal oldPrice;
     //*******活动**********
-    /**
-     * 活动类型
-     */
-    private List<ProcessorDataInfo> goodsActivity;
+
 }

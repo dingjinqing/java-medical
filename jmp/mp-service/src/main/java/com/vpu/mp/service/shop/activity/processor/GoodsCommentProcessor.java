@@ -1,14 +1,10 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsCommentProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.shop.activity.dao.GoodsCommentProcessorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,40 +14,28 @@ import java.util.stream.Collectors;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsCommentProcessor implements ActivityGoodsListProcessor{
+public class GoodsCommentProcessor implements ProcessorPriority,ActivityGoodsListProcessor{
     @Autowired
     GoodsCommentProcessorDao goodsCommentProcessorDao;
 
+    /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
         return 0;
     }
-
+    /*****************商品列表处理*******************/
     @Override
-    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
+    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
         List<Integer> goodsIds = capsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
-        param.setGoodsIds(goodsIds);
-        return param;
-    }
+        Map<Integer, Long> goodsCommentNumInfo = goodsCommentProcessorDao.getGoodsCommentNumInfo(goodsIds);
 
-    @Override
-    public Map<Integer, GoodsCommentProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        Map<Integer, Long> goodsCommentNumInfo = goodsCommentProcessorDao.getGoodsCommentNumInfo(param.getGoodsIds());
-        Map<Integer, GoodsCommentProcessorDataInfo> returnMap = new HashMap<>();
-        goodsCommentNumInfo.forEach((key,value)-> returnMap.put(key,new GoodsCommentProcessorDataInfo(value.intValue())));
-        return returnMap;
-    }
-
-    @Override
-    public void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
-            Integer goodsId = capsule.getGoodsId();
-            GoodsCommentProcessorDataInfo comment = (GoodsCommentProcessorDataInfo) activityInfos.get(goodsId);
-            if (comment == null) {
-                return;
+            Long commentNum = goodsCommentNumInfo.get(capsule.getGoodsId());
+            if (commentNum != null) {
+                capsule.setCommentNum(commentNum.intValue());
+            } else {
+                capsule.setCommentNum(0);
             }
-            capsule.setCommentNum(comment.getCommentNum());
         });
     }
 }

@@ -3,55 +3,50 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ReducePriceProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
+import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
+
 /**
  * @author 李晓冰
  * @date 2019年11月01日
+ * 限时降价 返利
  */
 @Service
-public class ReducePriceProcessor implements ActivityGoodsListProcessor {
+public class ReducePriceProcessor implements ProcessorPriority,ActivityGoodsListProcessor {
     @Autowired
     ReducePriceProcessorDao reducePriceProcessorDao;
+
+    /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_REDUCE_PRICE_PRIORITY;
     }
-
+    /*****************商品列表处理*******************/
     @Override
-    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        // 优惠券和满减活动外，未被其他活动处理
-        List<Integer> goodsIds = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(x.getGoodsType()) && x.getProcessedTypes().size() == 0)
-            .map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
-        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
-        param.setGoodsIds(goodsIds);
-        param.setDate(DateUtil.getLocalDateTime());
-        return param;
-    }
+    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
+        List<ActivityGoodsListCapsule> availableCapsule = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(x.getGoodsType()) && x.getProcessedTypes().size() == 0).collect(Collectors.toList());
+        List<Integer> goodsIds = availableCapsule.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsReduceListInfo(goodsIds, DateUtil.getLocalDateTime());
 
-    @Override
-    public Map<Integer, ReducePriceProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return reducePriceProcessorDao.getGoodsReduceListInfo(param.getGoodsIds(),param.getDate());
-    }
-
-    @Override
-    public void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
-        capsules.forEach(capsule->{
-            Integer goodsId = capsule.getGoodsId();
-            ProcessorDataInfo activity = activityInfos.get(goodsId);
-            if (activity == null) {
+        availableCapsule.forEach(capsule->{
+            if (goodsReduceListInfo.get(capsule.getGoodsId()) == null) {
                 return;
             }
-            capsule.setRealPrice(activity.getDataPrice());
+            Record3<Integer, Integer, BigDecimal> record3 = goodsReduceListInfo.get(capsule.getGoodsId()).get(0);
+
+            capsule.setRealPrice(record3.get(REDUCE_PRICE_PRODUCT.PRD_PRICE));
+            GoodsActivityBaseMpVo activity = new GoodsActivityBaseMpVo();
+            activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE);
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE);
         });

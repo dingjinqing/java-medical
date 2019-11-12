@@ -4,16 +4,13 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.GoodsLabelProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
 import com.vpu.mp.service.shop.activity.dao.GoodsLabelProcessorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,86 +19,52 @@ import java.util.Map;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsLabelProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor {
+public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor {
 
     @Autowired
     GoodsLabelProcessorDao goodsLabelProcessorDao;
-
-    /*****************商品列表处理*******************/
+    /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
         return 0;
     }
-
+    /*****************商品列表处理*******************/
     @Override
-    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
+    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
         List<Integer> goodsIds = new ArrayList<>();
-        List<Integer> sortIds = new ArrayList<>();
         List<Integer> catIds = new ArrayList<>();
-        List<GoodsBaseCapsuleParam.AllIdsParam> idsParams = new ArrayList<>();
+        List<Integer> sortIds = new ArrayList<>();
         capsules.forEach(capsule->{
             goodsIds.add(capsule.getGoodsId());
-            sortIds.add(capsule.getSortId());
             catIds.add(capsule.getCatId());
-            idsParams.add(new GoodsBaseCapsuleParam.AllIdsParam(capsule.getGoodsId(),capsule.getCatId(),capsule.getSortId(),null));
+            sortIds.add(capsule.getSortId());
         });
 
-        param.setGoodsIds(goodsIds);
-        param.setSortIds(sortIds);
-        param.setCatIds(catIds);
-        param.setIdsParams(idsParams);
-        return param;
-    }
+        Map<Byte, Map<Integer, GoodsLabelMpVo>> goodsLabelsMap = goodsLabelProcessorDao.getGoodsClosestLabelsInfo(goodsIds, catIds, sortIds);
 
-    @Override
-    public Map<Integer, GoodsLabelProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        Map<Byte, Map<Integer, GoodsLabelProcessorDataInfo>> goodsLabelsMap = goodsLabelProcessorDao.getGoodsClosestLabelsInfo(param.getGoodsIds(), param.getCatIds(), param.getSortIds());
-        List<GoodsBaseCapsuleParam.AllIdsParam> idsParams = param.getIdsParams();
-        Map<Integer, GoodsLabelProcessorDataInfo> returnMap = new HashMap<>();
-
-        idsParams.forEach(allIdsParam -> {
-            Integer goodsId = allIdsParam.goodsId;
-            Map<Integer, GoodsLabelProcessorDataInfo> goodsIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
-            Map<Integer, GoodsLabelProcessorDataInfo> catIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
-            Map<Integer, GoodsLabelProcessorDataInfo> sortIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
-            Map<Integer, GoodsLabelProcessorDataInfo> allGoodsMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
-            if (goodsIdMap.get(allIdsParam.goodsId) != null) {
-                returnMap.put(goodsId,goodsIdMap.get(allIdsParam.goodsId));
-            } else if (catIdMap.get(allIdsParam.catId) != null) {
-                returnMap.put(goodsId,catIdMap.get(allIdsParam.catId));
-            } else if (sortIdMap.get(allIdsParam.sortId) != null) {
-                returnMap.put(goodsId, sortIdMap.get(allIdsParam.sortId));
-            } else if (allGoodsMap.size() > 0) {
-                returnMap.put(goodsId, allGoodsMap.get(GoodsConstant.LABEL_GTA_DEFAULT_VALUE));
-            } else {
-                return ;
-            }
-        });
-        return returnMap;
-    }
-
-    @Override
-    public void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
         capsules.forEach(capsule->{
-            Integer goodsId = capsule.getGoodsId();
-            GoodsLabelProcessorDataInfo label = (GoodsLabelProcessorDataInfo) activityInfos.get(goodsId);
-            if (label == null) {
-                return;
+            Map<Integer, GoodsLabelMpVo> goodsIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
+            Map<Integer, GoodsLabelMpVo> catIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
+            Map<Integer, GoodsLabelMpVo> sortIdMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
+            Map<Integer, GoodsLabelMpVo> allGoodsMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
+
+            if (goodsIdMap.get(capsule.getGoodsId()) != null) {
+                capsule.setGoodsLabel(goodsIdMap.get(capsule.getGoodsId()));
+            } else if (catIdMap.get(capsule.getCatId()) != null) {
+                capsule.setGoodsLabel(goodsIdMap.get(capsule.getCatId()));
+            } else if (sortIdMap.get(capsule.getSortId()) != null) {
+                capsule.setGoodsLabel(goodsIdMap.get(capsule.getSortId()));
+            } else if (allGoodsMap.size() > 0) {
+                capsule.setGoodsLabel(allGoodsMap.get(GoodsConstant.LABEL_GTA_DEFAULT_VALUE));
             }
-            capsule.setGoodsLabel(label);
         });
-    }
 
-    @Override
-    public Byte getPriorityForDetail() {
-        return 0;
     }
-
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
-        List<GoodsLabelProcessorDataInfo> labels = goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId(),param.getCatId(),param.getSortId());
+        List<String> labels = goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId(),param.getCatId(),param.getSortId());
         capsule.setLabels(labels);
     }
+
 }

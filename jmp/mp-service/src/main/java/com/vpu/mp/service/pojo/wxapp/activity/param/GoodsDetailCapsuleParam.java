@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.activity.param;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,9 +9,8 @@ import lombok.Setter;
  * @author 李晓冰
  * @date 2019年11月07日
  */
-@Getter
-@Setter
-public class GoodsDetailCapsuleParam extends GoodsBaseCapsuleParam{
+@Data
+public class GoodsDetailCapsuleParam{
     private Integer userId;
     public Integer goodsId;
     public Integer catId;

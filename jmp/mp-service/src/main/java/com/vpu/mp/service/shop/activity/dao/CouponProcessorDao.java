@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.CouponProcessorDataInfo;
 import org.jooq.Condition;
 import org.jooq.Record5;
 import org.springframework.stereotype.Service;
@@ -64,21 +64,21 @@ public class CouponProcessorDao extends ShopBaseService {
      * @param date 时间
      * @return 优惠券信息
      */
-    public List<CouponProcessorDataInfo> getGoodsCouponForDetail(Integer goodsId,Integer catId,Integer sortId,Timestamp date) {
+    public List<MrkingVoucherRecord> getGoodsCouponForDetail(Integer goodsId,Integer catId,Integer sortId,Timestamp date) {
 
         Condition condition =buildCondition(goodsId,catId,sortId,date,true);
 
-        List<CouponProcessorDataInfo> couponProcessorDataInfos = db().select()
+        List<MrkingVoucherRecord> mrkingVoucherRecords = db().select()
             .from(MRKING_VOUCHER).where(condition)
             .orderBy(MRKING_VOUCHER.ACT_CODE.desc(), MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.CREATE_TIME.desc())
-            .fetchInto(CouponProcessorDataInfo.class);
+            .fetchInto(MrkingVoucherRecord.class);
 
-        Map<String, List<CouponProcessorDataInfo>> collects = couponProcessorDataInfos.stream().collect(Collectors.groupingBy(CouponProcessorDataInfo::getActCode, Collectors.toList()));
+        Map<String, List<MrkingVoucherRecord>> collects = mrkingVoucherRecords.stream().collect(Collectors.groupingBy(MrkingVoucherRecord::getActCode, Collectors.toList()));
 
-        List<CouponProcessorDataInfo> vouchers = collects.get(ACT_CODE_VOUCHER);
-        List<CouponProcessorDataInfo> discounts = collects.get(ACT_CODE_DISCOUNT);
+        List<MrkingVoucherRecord> vouchers = collects.get(ACT_CODE_VOUCHER);
+        List<MrkingVoucherRecord> discounts = collects.get(ACT_CODE_DISCOUNT);
 
-        List<CouponProcessorDataInfo> datas = new ArrayList<>();
+        List<MrkingVoucherRecord> datas = new ArrayList<>();
         if (vouchers != null) {
             datas.addAll(vouchers);
         }

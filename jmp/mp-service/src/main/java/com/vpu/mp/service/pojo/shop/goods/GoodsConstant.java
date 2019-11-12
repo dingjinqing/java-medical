@@ -89,9 +89,6 @@ public class GoodsConstant {
     public final static Byte STOP_STATUS = 0;
     /**************** 结束 *****************/
 
-    /********商品优惠券常量**********/
-    public final static Byte USE_SCORE = 1;
-
     /*** 销售状态：在售*/
     public static final Byte ON_SALE = 1;
 

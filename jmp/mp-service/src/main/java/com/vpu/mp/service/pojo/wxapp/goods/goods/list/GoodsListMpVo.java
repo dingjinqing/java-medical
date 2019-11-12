@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
 import lombok.Getter;
 import lombok.Setter;
 

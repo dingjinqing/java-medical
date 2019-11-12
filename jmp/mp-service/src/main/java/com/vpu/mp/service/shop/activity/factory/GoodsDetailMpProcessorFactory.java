@@ -2,10 +2,8 @@ package com.vpu.mp.service.shop.activity.factory;
 
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
-import com.vpu.mp.service.shop.activity.processor.GoodsDetailProcessor;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -13,11 +11,7 @@ import java.util.List;
  * @date 2019年11月07日
  */
 @Service
-public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<GoodsDetailProcessor, GoodsDetailMpCapsule>{
-    @Override
-    public void sortProcessors() {
-        processors.sort(Comparator.comparing(GoodsDetailProcessor::getPriorityForDetail));
-    }
+public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<String, GoodsDetailMpCapsule>{
 
     @Override
     public void doProcess(List<GoodsDetailMpCapsule> capsules, Integer userId) {
@@ -35,9 +29,9 @@ public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<Good
         param.setSortId(goods.getSortId());
         param.setCatId(goods.getCatId());
 
-        for (GoodsDetailProcessor processor : processors) {
-            processor.processGoodsDetail(goods,param);
-        }
+//        for (GoodsDetailProcessor processor : processors) {
+//            processor.processGoodsDetail(goods,param);
+//        }
 
     }
 }

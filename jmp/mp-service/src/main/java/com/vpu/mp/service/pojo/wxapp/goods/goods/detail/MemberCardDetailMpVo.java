@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -9,7 +10,7 @@ import java.math.BigDecimal;
  * @date 2019年11月08日
  */
 @Data
-public class MemberCardMpVo {
+public class MemberCardDetailMpVo {
     private Integer id;
     private String cardName;
     /**
@@ -20,4 +21,13 @@ public class MemberCardMpVo {
     private BigDecimal payFee;
     /**用户对本卡的使用状态：0 待领取，1已领取，2待激活，3待续费，4已过期*/
     private Byte status;
+
+    public MemberCardDetailMpVo() {
+    }
+    public MemberCardDetailMpVo(MemberCardRecord record) {
+        this.id = record.getId();
+        this.cardName = record.getCardName();
+        this.isPay = record.getIsPay();
+        this.payFee = record.getPayFee();
+    }
 }

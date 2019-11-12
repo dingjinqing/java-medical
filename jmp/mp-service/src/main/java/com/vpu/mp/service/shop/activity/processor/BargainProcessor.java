@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.BargainProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsBaseCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsActivityBaseMpVo;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
+import com.vpu.mp.service.shop.market.bargain.BargainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,39 +19,30 @@ import java.util.stream.Collectors;
  * @date 2019年11月01日
  */
 @Service
-public class BargainProcessor implements ActivityGoodsListProcessor {
+public class BargainProcessor implements ProcessorPriority,ActivityGoodsListProcessor {
     @Autowired
     BargainProcessorDao bargainProcessorDao;
-
+    /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_BARGAIN_PRIORITY;
     }
 
+    /*****装修商品列表*****/
     @Override
-    public GoodsBaseCapsuleParam filterParamForList(List<ActivityGoodsListCapsule> capsules) {
-        List<Integer> goodsIds = capsules.stream().filter(x->GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(x.getGoodsType()))
-            .map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
-        GoodsBaseCapsuleParam param = new GoodsBaseCapsuleParam();
-        param.setDate(DateUtil.getLocalDateTime());
-        param.setGoodsIds(goodsIds);
-        return param;
-    }
+    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
+        List<ActivityGoodsListCapsule> availableCapsules = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(x.getGoodsType())).collect(Collectors.toList());
+        List<Integer> goodsIds = availableCapsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
+        Map<Integer, BargainRecord> goodsBargainInfo = bargainProcessorDao.getGoodsBargainListInfo(goodsIds, DateUtil.getLocalDateTime());
 
-    @Override
-    public Map<Integer, BargainProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
-        return bargainProcessorDao.getGoodsBargainListInfo(param.getGoodsIds(),param.getDate());
-    }
-
-    @Override
-    public void processForList(Map<Integer,? extends ProcessorDataInfo> activityInfos, List<ActivityGoodsListCapsule> capsules) {
-        capsules.forEach(capsule->{
-            Integer goodsId = capsule.getGoodsId();
-            ProcessorDataInfo activity = activityInfos.get(goodsId);
-            if (activity == null) {
+        availableCapsules.forEach(capsule->{
+            if (goodsBargainInfo.get(capsule.getGoodsId()) == null) {
                 return;
             }
-            capsule.setRealPrice(activity.getDataPrice());
+            BargainRecord bargainRecord = goodsBargainInfo.get(capsule.getGoodsId());
+            capsule.setRealPrice(BargainService.BARGAIN_TYPE_FIXED == bargainRecord.getBargainType()?bargainRecord.getExpectationPrice():bargainRecord.getFloorPrice());
+            GoodsActivityBaseMpVo activity = new GoodsActivityBaseMpVo();
+            activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_BARGAIN);
             capsule.getActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_BARGAIN);
         });

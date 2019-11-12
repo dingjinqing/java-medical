@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMpVo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,8 +28,8 @@ public class GoodsDetailMpVo extends GoodsBaseMpVo {
     private Integer brandId;
     private String brandName;
     private Boolean userCanBuy;
-    List<GoodsLabelMpVo> labels;
-    List<CouponMpVo> coupons;
+    List<String> labels;
+    List<CouponDetailMpVo> coupons;
     List<GoodsPrdMpVo> products;
-    List<MemberCardMpVo> memberCards;
+    List<MemberCardDetailMpVo> memberCards;
 }

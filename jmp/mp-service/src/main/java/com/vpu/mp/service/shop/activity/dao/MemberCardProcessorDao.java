@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo;
-import com.vpu.mp.service.pojo.wxapp.activity.info.GradeCardProcessorDataInfo;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -68,9 +68,9 @@ public class MemberCardProcessorDao extends ShopBaseService {
      * @param catId 平台分类
      * @param sortId 商家分类
      * @param brandId 品牌分类
-     * @return {@link com.vpu.mp.service.pojo.wxapp.activity.info.ExclusiveProcessorDataInfo}
+     * @return  List<MemberCardRecord>
      */
-    public List<ExclusiveProcessorDataInfo> getExclusiveInfo(Integer goodsId, Integer catId, Integer sortId, Integer brandId) {
+    public List<MemberCardRecord> getExclusiveInfo(Integer goodsId, Integer catId, Integer sortId, Integer brandId) {
         Timestamp now =DateUtil.getLocalDateTime();
 
         Condition condition = (GOODS_CARD_COUPLE.GCTA_ID.eq(goodsId).and(GOODS_CARD_COUPLE.TYPE.eq(CardConstant.COUPLE_TP_GOODS)))
@@ -85,7 +85,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
             MEMBER_CARD.PAY_FEE,MEMBER_CARD.GRADE)
             .from(GOODS_CARD_COUPLE).innerJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(GOODS_CARD_COUPLE.CARD_ID))
             .where(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(expireCondition).and(condition).orderBy(MEMBER_CARD.GRADE.asc())
-            .fetchInto(ExclusiveProcessorDataInfo.class);
+            .fetchInto(MemberCardRecord.class);
     }
 
     /**
@@ -103,29 +103,21 @@ public class MemberCardProcessorDao extends ShopBaseService {
      * 获取集合内商品的等级卡价格信息
      * @param userId 用户id
      * @param goodsIds 商品集合id
-     * @return key: 商品id，value {@link GradeCardProcessorDataInfo}
+     * @return key: 商品id，value List<Record3<Integer, Integer, BigDecimal>> GRADE_PRD.GOODS_ID, GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE
      */
-    public Map<Integer, GradeCardProcessorDataInfo> getGoodsGradeCardForListInfo(Integer userId, List<Integer> goodsIds){
+    public Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> getGoodsGradeCardForListInfo(Integer userId, List<Integer> goodsIds){
         // 获取会员等级
         Record2<Integer, String> userGradeCard = getUserGradeCard(userId);
 
-        Map<Integer, GradeCardProcessorDataInfo> returnMap = new HashMap<>();
         if (userGradeCard == null) {
-            return returnMap;
+            return new HashMap<>();
         }
         // 获取商品等级信息，按价格从小到大正序排序
-        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGrades = db().select(GRADE_PRD.GOODS_ID, GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE).from(GRADE_PRD).where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+        return db().select(GRADE_PRD.GOODS_ID, GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE).from(GRADE_PRD).where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(GRADE_PRD.GRADE.eq(userGradeCard.get(MEMBER_CARD.GRADE))).and(GRADE_PRD.GOODS_ID.in(goodsIds))
             .orderBy(GRADE_PRD.GRADE_PRICE.asc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GRADE_PRD.GOODS_ID)));
 
-        goodsGrades.forEach((key,value)->{
-            GradeCardProcessorDataInfo info = new GradeCardProcessorDataInfo();
-            info.setDataPrice(value.get(0).get(GRADE_PRD.GRADE_PRICE));
-            returnMap.put(key,info);
-        });
-
-        return returnMap;
     }
 
     /**
@@ -133,7 +125,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
      * @param userId 用户id
      * @param goodsId 商品id
      */
-    public List<GradeCardProcessorDataInfo> getGoodsGradeGradePrice(Integer userId,Integer goodsId){
+    public List<GradePrdRecord> getGoodsGradeGradePrice(Integer userId,Integer goodsId){
         // 获取会员等级
         Record2<Integer, String> userGradeCard = getUserGradeCard(userId);
         if (userGradeCard == null) {
@@ -142,7 +134,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
         // 获取商品规格等级信息
         return db().select(GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE).from(GRADE_PRD).where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(GRADE_PRD.GRADE.eq(userGradeCard.get(MEMBER_CARD.GRADE))).and(GRADE_PRD.GOODS_ID.eq(goodsId))
-            .fetchInto(GradeCardProcessorDataInfo.class);
+            .fetchInto(GradePrdRecord.class);
     }
 
     /**
