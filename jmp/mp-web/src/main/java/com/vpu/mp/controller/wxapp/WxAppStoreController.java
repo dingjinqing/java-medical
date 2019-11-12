@@ -47,6 +47,14 @@ public class WxAppStoreController extends WxAppBaseController{
     }
 
     /**
+     * 门店买单支付
+     */
+    @PostMapping("/confirmPay")
+    public JsonResult confirmPay(@RequestBody @Validated StoreInfoParam param) {
+        return this.success(shop().store.wxService.storePay(param));
+    }
+
+    /**
      * 门店服务预约详情
      */
     @PostMapping("/service/reservation")

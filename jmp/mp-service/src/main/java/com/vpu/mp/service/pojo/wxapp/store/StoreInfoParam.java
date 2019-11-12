@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 import org.hibernate.validator.constraints.ScriptAssert;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
@@ -26,8 +27,9 @@ public class StoreInfoParam {
      * "{"store_id":"55","card_no":"47481606403254132","order_amount":"0.01","card_dis":"0.01","invoice":62,"score_dis":0,"total_price":"0.00",
      * "openid":"o-2MM5ANXgJHG_NBG5G-WX-KPjKI","form_id":"the formId is a mock one"}"
      */
-    public String orderInfo;
-    public String openId;
+    @Valid
+    @NotNull
+    public StorePayOrderInfo orderInfo;
     /**
      * The Applet request source.小程序请求来源; 0:微信小程序 ,1:支付宝小程序...
      */

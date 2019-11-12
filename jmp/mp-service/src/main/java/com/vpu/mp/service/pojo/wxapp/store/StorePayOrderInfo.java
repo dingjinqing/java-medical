@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.store;
 
 import lombok.Data;
 
+import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 /**
@@ -24,6 +25,7 @@ public class StorePayOrderInfo {
      * openid : o-2MM5ANXgJHG_NBG5G-WX-KPjKI
      * form_id : the formId is a mock one
      */
+    @PositiveOrZero
     public Integer storeId;
     /**
      * The Card no.
@@ -44,7 +46,7 @@ public class StorePayOrderInfo {
     /**
      * The Invoice.发票
      */
-    public int invoice;
+    public int invoiceId;
     /**
      * The Score dis.积分抵扣金额
      */

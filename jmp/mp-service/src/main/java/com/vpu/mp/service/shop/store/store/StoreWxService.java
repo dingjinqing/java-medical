@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
+import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
@@ -63,6 +64,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Store.STORE;
@@ -72,7 +74,6 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_DATA_NOT_EXIST;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
-import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ONE;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_NAME_WAIT_SERVICE;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_WAIT_SERVICE;
@@ -490,14 +491,16 @@ public class StoreWxService extends ShopBaseService {
      * @param param the param 门店订单信息
      * @return the string 订单编号
      */
-    public String storePay(StoreInfoParam param) {
+    public StoreOrderInfoVo storePay(StoreInfoParam param) {
+        // 订单编号, 创建支付订单时生成,支付成功后用来获取订单详情
+        AtomicReference<String> orderSn = new AtomicReference<>();
         int userId = param.getUserId();
         // 用户信息
         UserRecord userRecord = db().selectFrom(USER).where(USER.USER_ID.eq(userId)).fetchOneInto(USER);
-        // 发票信息
-        InvoiceVo invoiceVo = invoiceService.get(1);
         // 门店订单信息
-        StorePayOrderInfo orderInfo = Util.json2Object(param.getOrderInfo(), StorePayOrderInfo.class, false);
+        StorePayOrderInfo orderInfo = param.getOrderInfo();
+        // 发票信息
+        InvoiceVo invoiceVo = invoiceService.get(orderInfo.getInvoiceId());
         this.transaction(() -> {
             // 创建门店订单
             StoreOrderRecord storeOrderRecord = storeOrderService.createStoreOrder(userRecord, invoiceVo, orderInfo);
@@ -505,6 +508,7 @@ public class StoreWxService extends ShopBaseService {
                 log.error("创建门店订单失败,原因如下");
                 throw new BusinessException(JsonResultCode.CODE_FAIL);
             }
+            orderSn.set(storeOrderRecord.getOrderSn());
             if (storeOrderRecord.getMoneyPaid().compareTo(ZERO) > 0) {
                 String openId = orderInfo.getOpenid();
                 switch (param.getAppletRequestSource()) {
@@ -559,19 +563,20 @@ public class StoreWxService extends ShopBaseService {
                         setType(BYTE_ZERO);
                     }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
                 }
-                // 跟新门店订单支付状态
-                storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(storeOrderRecord.getOrderSn()), new StoreOrderRecord() {{
-                    setPayTime(Timestamp.valueOf(LocalDateTime.now()));
-                    setOrderStatus(BYTE_ONE);
-                    setOrderStatusName("已支付");
-                }});
-                // 支付完成送积分; 门店买单支付是否返送积分开关 on 1
-                if (STRING_ONE.equals(scoreCfgService.getStoreScore())) {
-                    storeOrderService.sendScoreAfterPayDone(storeOrderRecord);
-                }
+            }
+            // 跟新门店订单支付状态
+            storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(storeOrderRecord.getOrderSn()), new StoreOrderRecord() {{
+                setPayTime(Timestamp.valueOf(LocalDateTime.now()));
+                setOrderStatus(BYTE_ONE);
+                setOrderStatusName("已支付");
+            }});
+            // 支付完成送积分; 门店买单支付是否返送积分开关 on 1
+            if (BYTE_ONE.equals(scoreCfgService.getStoreScore())) {
+                storeOrderService.sendScoreAfterPayDone(storeOrderRecord);
             }
         });
-        return "";
+        // 返回支付完成订单详情
+        return storeOrderService.get(orderSn.get());
     }
 
     /**
@@ -666,8 +671,8 @@ public class StoreWxService extends ShopBaseService {
     private ReservationInfo createReservationInfo(LocalDate date, LocalTime startPeriod, LocalTime endPeriod, int serviceDuration, StoreServiceParam serviceInfo) {
         LocalTime localTime = LocalTime.now();
         if (date.isEqual(LocalDate.now()) && localTime.isAfter(startPeriod)) {
-                // 如果可服务日期是当天, 获取当天距离当前时间最近的一次可服务时间段
-                startPeriod = startPeriod.plus((((localTime.toSecondOfDay() / 60 - startPeriod.toSecondOfDay() / 60) / serviceDuration + 1) * serviceDuration), ChronoUnit.MINUTES);
+            // 如果可服务日期是当天, 获取当天距离当前时间最近的一次可服务时间段
+            startPeriod = startPeriod.plus((((localTime.toSecondOfDay() / 60 - startPeriod.toSecondOfDay() / 60) / serviceDuration + 1) * serviceDuration), ChronoUnit.MINUTES);
         }
         List<ReservationTime> reservationTimeList = new ArrayList<>();
         for (LocalTime i = startPeriod;
@@ -780,6 +785,8 @@ public class StoreWxService extends ShopBaseService {
 
     /**
      * Submit reservation.提交确认门店服务预约订单
+     *
+     * @param param the param
      */
     public void submitReservation(SubmitReservationParam param) {
         Integer serviceId = param.getServiceId();
