@@ -50,7 +50,8 @@ export default {
     RiPictureAds: () => import('./pageSetupModules/graphicAndTextComponents/riPictureAds'), // 右侧图片广告模块
     RiMagicMap: () => import('./pageSetupModules/graphicAndTextComponents/riMagicMap'), // 右侧魔方多图模块
     RiShopRecruit: () => import('./pageSetupModules/graphicAndTextComponents/riShopRecruit'), // 右侧店招设置模块
-    RiMapModule: () => import('./pageSetupModules/graphicAndTextComponents/riMapModule') // 右侧地图模块
+    RiMapModule: () => import('./pageSetupModules/graphicAndTextComponents/riMapModule'), // 右侧地图模块
+    RiLeftWingRightPicture: () => import('./pageSetupModules/graphicAndTextComponents/riLeftWingRightPicture') // 右侧左文右图配置模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -108,6 +109,10 @@ export default {
         {
           id: 14,
           name: 'RiMagicMap'
+        },
+        {
+          id: 16,
+          name: 'RiLeftWingRightPicture'
         },
         {
           id: 27,

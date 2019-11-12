@@ -162,7 +162,10 @@ import {
 import {
   en as mapModule
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/mapModuleEn'
+// 小程序页面装修魔方多图模块国际化
 import { en as magicMap } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/magicMapEn'
+// 小程序页面装修左文右图模块国际化
+import { en as leftWingRightPicture } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/leftWingRightPictureEn'
 
 // 营销管理系列模块化
 // 营销管理通用词汇
@@ -926,6 +929,7 @@ const en = {
   pictureAds, // 小程序页面装修图片广告模块
   shopRecruit, // 小程序页面装修店招设置模块
   mapModule, // 小程序页面装修地图模块
-  magicMap // 小程序页面装修魔方多图模块
+  magicMap, // 小程序页面装修魔方多图模块
+  leftWingRightPicture // 小程序页面装修左文右图模块
 }
 export default en

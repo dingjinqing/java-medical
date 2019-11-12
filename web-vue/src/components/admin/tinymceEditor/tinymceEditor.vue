@@ -1,5 +1,8 @@
 <template>
-  <div class="tinymceEditor">
+  <div
+    class="tinymceEditor"
+    :class="special"
+  >
     <editor
       v-model="myValue"
       :init="init"
@@ -41,7 +44,11 @@ export default {
     },
     toolbar: {
       type: [String, Array],
-      default: ' forecolor  |undo redo |  formatselect  | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists image media table | removeformat'
+      default: ' forecolor  |undo redo   | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists image media table | removeformat'
+    },
+    height: {
+      type: Number,
+      default: 450
     }
   },
   data () {
@@ -63,7 +70,9 @@ export default {
           success(img)
         }
       },
-      myValue: this.value
+      myValue: this.value,
+      special: '', // 装修内的左文右图特定高度
+      langName: 'zh_CN'
     }
   },
   created () {
@@ -72,7 +81,16 @@ export default {
     // this.init.language_url = `${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`
     // this.init.skin_url = `${window.location.host}/static/tinymce/skins/ui/oxide`
     console.log(window.location.host)
-    tinymce.init({})
+    // 初始化语言
+    this.langDefault()
+
+    // this.myHeight = this.height
+    console.log(this.height)
+    if (this.height === 100) {
+      this.special = 'special'
+    } else {
+      this.special = ''
+    }
     this.$forceUpdate()
   },
   methods: {
@@ -96,5 +114,10 @@ export default {
   }
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
+.special {
+  /deep/ .tox-tinymce {
+    height: 205px !important;
+  }
+}
 </style>

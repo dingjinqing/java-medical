@@ -190,9 +190,9 @@ export default {
           break
         case 14: // 魔方多图
           obj = {
-            module_name: 'm_magic_cube',
-            table_type: 1,
-            table_size: {
+            module_name: 'm_magic_cube', // 模块名称
+            table_type: 1, // 模板类型
+            table_size: { // 布局尺寸
               rows: 2,
               cols: 4
             },
@@ -217,7 +217,17 @@ export default {
               //   jump_link: 'pages/auth/auth'
               // }
             },
-            isAllCheckFull: true
+            isAllCheckFull: true // 布局是否填充完毕
+          }
+          break
+        case 16: // 左图右文
+          obj = {
+            'module_name': 'm_text_image', // 模块名称
+            'ti_type': '0', // 文本样式类型
+            'img_style': '0', // 图片样式类型
+            'img_url': '', // 图片路径
+            'title_link': '', // 链接
+            'rich_text': '' // 文本内容
           }
           break
         case 27: // 店招设置

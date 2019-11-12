@@ -140,6 +140,8 @@ import {
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/mapModuleCn'
 // 小程序页面装修魔方多图国际化
 import { cn as magicMap } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/magicMapCn'
+// 小程序页面装修左文右图国际化
+import { cn as leftWingRightPicture } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/leftWingRightPictureCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -932,7 +934,8 @@ const cn = {
   pictureAds, //  小程序页面装修图片广告模块
   shopRecruit, // 小程序页面装修店招设置模块
   mapModule, // 小程序页面装修地图模块
-  magicMap // 小程序页面装修魔方多图模块
+  magicMap, // 小程序页面装修魔方多图模块
+  leftWingRightPicture // 小程序页面装修左文右图国际化
 }
 
 export default cn

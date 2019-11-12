@@ -210,14 +210,15 @@ export default {
     PictureAds: () => import('./decorationModules/graphicAndTextComponents/pictureAds'), //  图片广告
     MagicMap: () => import('./decorationModules/graphicAndTextComponents/magicMap'), // 魔方多图
     ShopRecruit: () => import('./decorationModules/graphicAndTextComponents/ShopRecruit'), // 店招设置
-    MapModule: () => import('./decorationModules/graphicAndTextComponents/MapModule') // 地图模块
+    MapModule: () => import('./decorationModules/graphicAndTextComponents/MapModule'), // 地图模块
+    LeftWingRightPicture: () => import('./decorationModules/graphicAndTextComponents/leftWingRightPicture') // 左图右文模块
   },
   data () {
     return {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -415,6 +416,8 @@ export default {
         case 'm_shop':
           moduleNameId = 27
           break
+        case 'm_text_image':
+          moduleNameId = 16
       }
       return moduleNameId
     },
@@ -557,6 +560,9 @@ export default {
               break
             case 14:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 14)
+              break
+            case 16:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 16)
               break
             case 27:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 27)
