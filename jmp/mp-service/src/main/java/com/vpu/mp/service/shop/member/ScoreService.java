@@ -437,7 +437,7 @@ public class ScoreService extends ShopBaseService {
 		}
 		
 		/**类型 */
-		if(param.getType().equals("wxapp")) {
+		if("wxapp".equals(param.getType())) {
 			if(param.getUserId()!=null) {
 				select.where(USER.USER_ID.eq(param.getUserId()));
 			}
