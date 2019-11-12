@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.info.FirstSpecialProcessorDataInfo;
@@ -10,6 +11,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import java.util.Map;
  * @date 2019年11月01日
  */
 @Service
+@Slf4j
 public class FirstSpecialProcessor implements ActivityGoodsListProcessor, ActivityCartListStrategy {
 
     @Autowired
@@ -68,6 +71,7 @@ public class FirstSpecialProcessor implements ActivityGoodsListProcessor, Activi
 
     @Override
     public Map<Integer, FirstSpecialProcessorDataInfo> getActivityInfoForList(GoodsBaseCapsuleParam param) {
+        log.info("方法 FirstSpecialProcessorDataInfo->GoodsBaseCapsuleParam"+ Util.toJson(param.toString()));
         if (param.getGoodsIds().size() == 0) {
             return new HashMap<>();
         } else {
