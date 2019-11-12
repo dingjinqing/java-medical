@@ -12,6 +12,8 @@ import java.sql.Timestamp;
  */
 @Data
 public class CouponDetailsVo {
+  /** 优惠券库存 */
+  private Integer surplus;
   /** voucher：减价；discount:打折 */
   private String actCode;
   /** 优惠券名称 */

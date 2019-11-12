@@ -50,6 +50,8 @@ public class CouponGiveService extends ShopBaseService {
 
   private static final MrkingVoucher MV = MrkingVoucher.MRKING_VOUCHER.as("MV");
 
+  /** 获取方式，0：发放 */
+  private static final byte ACCESS_MODE = 0;
   /** 活动类型 定向发券 值为9 */
   private static final byte GET_SOURCE = 9;
 
@@ -178,7 +180,7 @@ public class CouponGiveService extends ShopBaseService {
   public void insertGrant(CouponGiveGrantParam param) {
 
     try {
-      /* 完成一次发券活动 */
+      // 完成一次发券活动
       ObjectMapper objectMapper = new ObjectMapper();
       String condition = objectMapper.writeValueAsString(param.getCouponGiveGrantInfoParams());
 
@@ -221,11 +223,10 @@ public class CouponGiveService extends ShopBaseService {
               .limit(1)
               .fetchOptionalInto(Integer.class)
               .orElse(0);
-      //      log.debug("活动id:{}",actId);
       Set<Integer> userIds = new HashSet<Integer>();
-      /* 将发券活动写入用户-优惠券对应表 */
+      // 将发券活动写入用户-优惠券对应表
 
-      /* 加购人群 */
+      // 加购人群
       Date today = new Date();
       Timestamp cartDay = Util.getEarlyTimeStamp(today, -30);
       if (param.getCouponGiveGrantInfoParams().getCartBox().equals(1)) {
@@ -239,7 +240,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* 购买指定商品人群 */
+      // 购买指定商品人群
       if (param.getCouponGiveGrantInfoParams().getGoodsBox().equals(1)) {
         String goodsIds = param.getCouponGiveGrantInfoParams().getGoodsIds();
         String[] goodArray = goodsIds.split(",");
@@ -262,7 +263,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* 持有会员卡人群 */
+      // 持有会员卡人群
       if (param.getCouponGiveGrantInfoParams().getCardBox().equals(1)) {
         String cardIds = param.getCardId();
         String[] cardArray = cardIds.split(",");
@@ -279,7 +280,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* 属于标签人群 */
+      // 属于标签人群
       if (param.getCouponGiveGrantInfoParams().getTagBox().equals(1)) {
         String tagIds = param.getTagId();
         String[] tagArray = tagIds.split(",");
@@ -295,7 +296,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* 选择指定的会员 */
+      // 选择指定的会员
       if (param.getCouponGiveGrantInfoParams().getMemberBox().equals(1)) {
         String memberIds = param.getUser();
         String[] memberArray = memberIds.split(",");
@@ -304,7 +305,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* N天内有交易记录 */
+      // N天内有交易记录
       if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
         if (param.getHavePay() != null) {
           Timestamp havePayDay = Util.getEarlyTimeStamp(today, -param.getHavePay());
@@ -320,7 +321,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* N天内无交易记录 */
+      // N天内无交易记录
       if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
         if (param.getNoPay() != null) {
           Timestamp noPayDay = Util.getEarlyTimeStamp(today, -param.getNoPay());
@@ -343,7 +344,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* 累计购买次数大于N次 min */
+      // 累计购买次数大于N次 min
       if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
         if (param.getMinCount() != null) {
           List<Record1<Integer>> minCountUserIds =
@@ -359,7 +360,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* 累计购买次数小于N次 max */
+      // 累计购买次数小于N次 max
       if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
         if (param.getMaxCount() != null) {
           List<Record1<Integer>> maxCountUserIds =
@@ -375,7 +376,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* 购买商品均价大于N元 min */
+      // 购买商品均价大于N元 min
       if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
         if (param.getMinAvePrice() != null) {
           List<Record1<Integer>> minAvePriceUserIds =
@@ -393,7 +394,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* 购买商品均价小于N元 max */
+      // 购买商品均价小于N元 max
       if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
         if (param.getMaxAvePrice() != null) {
           List<Record1<Integer>> maxAvePriceUserIds =
@@ -411,7 +412,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* 指定时间内有登陆记录 */
+      //指定时间内有登陆记录
       if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
         if (param.getCouponGiveGrantInfoParams().getPointStartTime() != null
             && param.getCouponGiveGrantInfoParams().getPointEndTme() != null) {
@@ -429,14 +430,16 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      /* 队列 */
+      // 队列
       List<Integer> userIdList = new ArrayList<Integer>(userIds);
       String couponIds = param.getCouponGiveGrantInfoParams().getCouponIds().toString();
       String[] couponArray = couponIds.split(",");
+
       //            rabbitmqSendService.sendMessage(RabbitConfig.EXCHANGE_MARKETING,
       // RabbitConfig.BINDING_EXCHANGE_COUPON_KEY, TaskJobEnum.GIVE_COUPON);
       CouponGiveQueueParam newParam =
-          new CouponGiveQueueParam(getShopId(), userIdList, actId, couponArray);
+          new CouponGiveQueueParam(
+              getShopId(), userIdList, actId, couponArray, ACCESS_MODE, GET_SOURCE);
       if (param.getSendAction() == 0) {
         saas.taskJobMainService.dispatchImmediately(
             newParam,
@@ -449,6 +452,12 @@ public class CouponGiveService extends ShopBaseService {
             getShopId(), newParam, param.getStartTime());
       }
 
+      // 一次发券活动完成后，将发放状态修改为已发放
+      db().update(GIVE_VOUCHER)
+          .set(GIVE_VOUCHER.SEND_STATUS, NumberUtils.BYTE_ONE)
+          .where(GIVE_VOUCHER.ID.eq(actId))
+          .execute();
+
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
@@ -459,13 +468,14 @@ public class CouponGiveService extends ShopBaseService {
    *
    * @param param
    */
-  public List<Integer> handlerGouonGive(CouponGiveQueueParam param) {
-    List<Integer> failList = new ArrayList<>();
-    /* 插入user-coupon关联表 */
+  public List<Integer> handlerCouponGive(CouponGiveQueueParam param) {
+    List<Integer> successList = new ArrayList<>();
+    // 插入user-coupon关联表
     for (String couponId : param.getCouponArray()) {
       // 得当当前优惠券信息
       CouponDetailsVo couponDetails =
           db().select(
+                  MRKING_VOUCHER.SURPLUS,
                   MRKING_VOUCHER.ACT_CODE,
                   MRKING_VOUCHER.ACT_NAME,
                   MRKING_VOUCHER.DENOMINATION,
@@ -490,41 +500,53 @@ public class CouponGiveService extends ShopBaseService {
       Map<String, Timestamp> timeMap = getCouponTime(couponDetails);
       // 发券入库
       for (Integer userId : param.getUserIds()) {
-        Integer rows =
-            db().insertInto(
-                    CUSTOMER_AVAIL_COUPONS,
-                    CUSTOMER_AVAIL_COUPONS.TYPE,
-                    CUSTOMER_AVAIL_COUPONS.GET_SOURCE,
-                    CUSTOMER_AVAIL_COUPONS.ACT_ID,
-                    CUSTOMER_AVAIL_COUPONS.USER_ID,
-                    CUSTOMER_AVAIL_COUPONS.ACT_DESC,
-                    CUSTOMER_AVAIL_COUPONS.AMOUNT,
-                    CUSTOMER_AVAIL_COUPONS.COUPON_SN,
-                    CUSTOMER_AVAIL_COUPONS.ACCESS_ID,
-                    CUSTOMER_AVAIL_COUPONS.START_TIME,
-                    CUSTOMER_AVAIL_COUPONS.END_TIME)
-                .values(
-                    type,
-                    GET_SOURCE,
-                    Integer.valueOf(couponId),
-                    userId,
-                    couponDetails.getActName(),
-                    couponDetails.getDenomination(),
-                    getCouponSn(),
-                    param.getActId(),
-                    timeMap.get("startTime"),
-                    timeMap.get("endTime"))
-                .execute();
-        // 得到失败条数
-        failList.add(rows);
+        // 如果库存为0，返回信息库存不足
+        if (couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
+          logger().info("所选优惠券库存不足");
+          break;
+        }
+        // 库存足够，发券
+        else {
+          Integer rows =
+              db().insertInto(
+                      CUSTOMER_AVAIL_COUPONS,
+                      CUSTOMER_AVAIL_COUPONS.TYPE,
+                      CUSTOMER_AVAIL_COUPONS.ACT_ID,
+                      CUSTOMER_AVAIL_COUPONS.USER_ID,
+                      CUSTOMER_AVAIL_COUPONS.ACT_DESC,
+                      CUSTOMER_AVAIL_COUPONS.AMOUNT,
+                      CUSTOMER_AVAIL_COUPONS.COUPON_SN,
+                      CUSTOMER_AVAIL_COUPONS.ACCESS_ID,
+                      CUSTOMER_AVAIL_COUPONS.START_TIME,
+                      CUSTOMER_AVAIL_COUPONS.END_TIME,
+                      CUSTOMER_AVAIL_COUPONS.ACCESS_MODE,
+                      CUSTOMER_AVAIL_COUPONS.GET_SOURCE)
+                  .values(
+                      type,
+                      Integer.valueOf(couponId),
+                      userId,
+                      couponDetails.getActName(),
+                      couponDetails.getDenomination(),
+                      getCouponSn(),
+                      param.getActId(),
+                      timeMap.get("startTime"),
+                      timeMap.get("endTime"),
+                      param.getAccessMode(),
+                      param.getGetSource())
+                  .execute();
+          // 得到成功条数
+          successList.add(rows);
+          // 优惠券库存-1
+          db().update(MRKING_VOUCHER)
+              .set(MRKING_VOUCHER.SURPLUS, (couponDetails.getSurplus() - 1))
+              .where(MRKING_VOUCHER.ID.eq(Integer.parseInt(couponId)))
+              .execute();
+          // 当前对象中优惠券剩余量-1
+          couponDetails.setSurplus(couponDetails.getSurplus() - 1);
+        }
       }
     }
-    // 一次发券活动完成后，将发放状态修改为已发放
-    db().update(GIVE_VOUCHER)
-        .set(GIVE_VOUCHER.SEND_STATUS, NumberUtils.BYTE_ONE)
-        .where(GIVE_VOUCHER.ID.eq(param.getActId()))
-        .execute();
-    return failList;
+    return successList;
   }
 
   /**

@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponDetailsVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
@@ -769,7 +770,17 @@ public class GoodsCommentService extends ShopBaseService {
       // 活动奖励2：赠送优惠券
       else if (param.getAwardType().equals(NumberUtils.INTEGER_TWO)) {
         // 给当前用户赠送优惠券
-        giveCouponByAct(param);
+          Integer shopId = getShopId();
+          CouponGiveQueueParam giveCoupon = new CouponGiveQueueParam(){{
+              setShopId(shopId);
+              setActId(1);
+              setGetSource(GET_SOURCE);
+              setAccessMode(BYTE_ZERO);
+              setCouponArray(new String[] {param.getAward()});
+              setUserIds(new ArrayList<Integer>(){{add(param.getUserId());}});
+          }};
+          //调用定向发券中抽取出来的公共方法
+          couponGiveService.handlerCouponGive(giveCoupon);
       }
       // 活动奖励3：赠送用户余额
       else if (param.getAwardType().equals(THREE)) {

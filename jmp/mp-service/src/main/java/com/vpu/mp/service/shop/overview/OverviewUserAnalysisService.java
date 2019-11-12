@@ -393,12 +393,12 @@ public class OverviewUserAnalysisService extends ShopBaseService {
         getUnitPrice(beforeVo.getOldPaidMoney(), beforeVo.getOldOrderUserData()));
     // 计算访问付款转化率
     // 全部成交客户转化率
-    beforeVo.setOrderUserDataRate(getRate(beforeVo.getOrderUserData(), beforeVo.getLoginData()));
+    beforeVo.setTransRate(getRate(beforeVo.getOrderUserData(), beforeVo.getLoginData()));
     // 新成交转化率
-    beforeVo.setNewOrderUserDataRate(
+    beforeVo.setNewTransRate(
         getRate(beforeVo.getNewOrderUserData(), beforeVo.getLoginData()));
     // 老成交转化率
-    beforeVo.setOldOrderUserDataRate(
+    beforeVo.setOldTransRate(
         getRate(beforeVo.getOldOrderUserData(), beforeVo.getLoginData()));
 
     // 计算下一段时间数据
@@ -446,7 +446,7 @@ public class OverviewUserAnalysisService extends ShopBaseService {
           {
             // 客户数
             setOrderUserDataTrend(
-                getChangeRate(beforeVo.getOrderUserData(), afterVo.getOldOrderUserData()));
+                getChangeRate(beforeVo.getOrderUserData(), afterVo.getOrderUserData()));
             setNewOrderUserDataTrend(
                 getChangeRate(beforeVo.getNewOrderUserData(), afterVo.getNewOrderUserData()));
             setOldOrderUserDataTrend(
