@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMpVo;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,4 +33,7 @@ public class GoodsDetailMpVo extends GoodsBaseMpVo {
     List<CouponDetailMpVo> coupons;
     List<GoodsPrdMpVo> products;
     List<MemberCardDetailMpVo> memberCards;
+
+    /** 详情页所指定的营销活动 */
+    private GoodsActivityBaseMp activity;
 }

@@ -80,6 +80,8 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
         vo.setCoupons(coupons);
         vo.setProducts(this.products);
         vo.setMemberCards(exclusiveCards);
+
+        vo.setActivity(this.activity);
         return vo;
     }
 }
