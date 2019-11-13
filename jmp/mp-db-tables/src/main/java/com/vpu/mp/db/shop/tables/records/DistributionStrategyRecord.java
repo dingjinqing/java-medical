@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionStrategyRecord extends UpdatableRecordImpl<DistributionStrategyRecord> {
 
-    private static final long serialVersionUID = -1172619719;
+    private static final long serialVersionUID = -1187763621;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.id</code>.
@@ -268,143 +268,227 @@ public class DistributionStrategyRecord extends UpdatableRecordImpl<Distribution
     }
 
     /**
+     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.first_rebate</code>. 邀请新用户下首单返利
+     */
+    public void setFirstRebate(Byte value) {
+        set(17, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.first_rebate</code>. 邀请新用户下首单返利
+     */
+    public Byte getFirstRebate() {
+        return (Byte) get(17);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.first_ratio</code>. 首单返利金额
+     */
+    public void setFirstRatio(Double value) {
+        set(18, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.first_ratio</code>. 首单返利金额
+     */
+    public Double getFirstRatio() {
+        return (Double) get(18);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_2</code>. 首单返利金额
+     */
+    public void setFirstRatio_2(Double value) {
+        set(19, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_2</code>. 首单返利金额
+     */
+    public Double getFirstRatio_2() {
+        return (Double) get(19);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_3</code>. 首单返利金额
+     */
+    public void setFirstRatio_3(Double value) {
+        set(20, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_3</code>. 首单返利金额
+     */
+    public Double getFirstRatio_3() {
+        return (Double) get(20);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_4</code>. 首单返利金额
+     */
+    public void setFirstRatio_4(Double value) {
+        set(21, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_4</code>. 首单返利金额
+     */
+    public Double getFirstRatio_4() {
+        return (Double) get(21);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_5</code>. 首单返利金额
+     */
+    public void setFirstRatio_5(Double value) {
+        set(22, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_5</code>. 首单返利金额
+     */
+    public Double getFirstRatio_5() {
+        return (Double) get(22);
+    }
+
+    /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.recommend_type</code>. 0:全部商品1:部分商品
      */
     public void setRecommendType(Byte value) {
-        set(17, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.recommend_type</code>. 0:全部商品1:部分商品
      */
     public Byte getRecommendType() {
-        return (Byte) get(17);
+        return (Byte) get(23);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.recommend_goods_id</code>. 返利商品ids
      */
     public void setRecommendGoodsId(String value) {
-        set(18, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.recommend_goods_id</code>. 返利商品ids
      */
     public String getRecommendGoodsId() {
-        return (String) get(18);
+        return (String) get(24);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.recommend_cat_id</code>. 返利分类ids
      */
     public void setRecommendCatId(String value) {
-        set(19, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.recommend_cat_id</code>. 返利分类ids
      */
     public String getRecommendCatId() {
-        return (String) get(19);
+        return (String) get(25);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.status</code>. 1停用
      */
     public void setStatus(Byte value) {
-        set(20, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.status</code>. 1停用
      */
     public Byte getStatus() {
-        return (Byte) get(20);
+        return (Byte) get(26);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.del_flag</code>. 1删除
      */
     public void setDelFlag(Byte value) {
-        set(21, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.del_flag</code>. 1删除
      */
     public Byte getDelFlag() {
-        return (Byte) get(21);
+        return (Byte) get(27);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.del_time</code>. 删除时间
      */
     public void setDelTime(Timestamp value) {
-        set(22, value);
+        set(28, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.del_time</code>. 删除时间
      */
     public Timestamp getDelTime() {
-        return (Timestamp) get(22);
+        return (Timestamp) get(28);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.recommend_sort_id</code>. 返利商家分类ids
      */
     public void setRecommendSortId(String value) {
-        set(23, value);
+        set(29, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.recommend_sort_id</code>. 返利商家分类ids
      */
     public String getRecommendSortId() {
-        return (String) get(23);
+        return (String) get(29);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.send_coupon</code>. 赠送优惠券
      */
     public void setSendCoupon(Byte value) {
-        set(24, value);
+        set(30, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.send_coupon</code>. 赠送优惠券
      */
     public Byte getSendCoupon() {
-        return (Byte) get(24);
+        return (Byte) get(30);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(25, value);
+        set(31, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(25);
+        return (Timestamp) get(31);
     }
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(26, value);
+        set(32, value);
     }
 
     /**
      * Getter for <code>mini_shop_471752.b2c_distribution_strategy.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(26);
+        return (Timestamp) get(32);
     }
 
     // -------------------------------------------------------------------------
@@ -433,7 +517,7 @@ public class DistributionStrategyRecord extends UpdatableRecordImpl<Distribution
     /**
      * Create a detached, initialised DistributionStrategyRecord
      */
-    public DistributionStrategyRecord(Integer id, String strategyName, Byte strategyLevel, Timestamp startTime, Timestamp endTime, Byte selfPurchase, Byte costProtection, Double fanliRatio, Double rebateRatio, Double fanliRatio_2, Double rebateRatio_2, Double fanliRatio_3, Double rebateRatio_3, Double fanliRatio_4, Double rebateRatio_4, Double fanliRatio_5, Double rebateRatio_5, Byte recommendType, String recommendGoodsId, String recommendCatId, Byte status, Byte delFlag, Timestamp delTime, String recommendSortId, Byte sendCoupon, Timestamp createTime, Timestamp updateTime) {
+    public DistributionStrategyRecord(Integer id, String strategyName, Byte strategyLevel, Timestamp startTime, Timestamp endTime, Byte selfPurchase, Byte costProtection, Double fanliRatio, Double rebateRatio, Double fanliRatio_2, Double rebateRatio_2, Double fanliRatio_3, Double rebateRatio_3, Double fanliRatio_4, Double rebateRatio_4, Double fanliRatio_5, Double rebateRatio_5, Byte firstRebate, Double firstRatio, Double firstRatio_2, Double firstRatio_3, Double firstRatio_4, Double firstRatio_5, Byte recommendType, String recommendGoodsId, String recommendCatId, Byte status, Byte delFlag, Timestamp delTime, String recommendSortId, Byte sendCoupon, Timestamp createTime, Timestamp updateTime) {
         super(DistributionStrategy.DISTRIBUTION_STRATEGY);
 
         set(0, id);
@@ -453,15 +537,21 @@ public class DistributionStrategyRecord extends UpdatableRecordImpl<Distribution
         set(14, rebateRatio_4);
         set(15, fanliRatio_5);
         set(16, rebateRatio_5);
-        set(17, recommendType);
-        set(18, recommendGoodsId);
-        set(19, recommendCatId);
-        set(20, status);
-        set(21, delFlag);
-        set(22, delTime);
-        set(23, recommendSortId);
-        set(24, sendCoupon);
-        set(25, createTime);
-        set(26, updateTime);
+        set(17, firstRebate);
+        set(18, firstRatio);
+        set(19, firstRatio_2);
+        set(20, firstRatio_3);
+        set(21, firstRatio_4);
+        set(22, firstRatio_5);
+        set(23, recommendType);
+        set(24, recommendGoodsId);
+        set(25, recommendCatId);
+        set(26, status);
+        set(27, delFlag);
+        set(28, delTime);
+        set(29, recommendSortId);
+        set(30, sendCoupon);
+        set(31, createTime);
+        set(32, updateTime);
     }
 }

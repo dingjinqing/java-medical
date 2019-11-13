@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> {
 
-    private static final long serialVersionUID = -1982034126;
+    private static final long serialVersionUID = -621178150;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distribution_strategy</code>
@@ -143,6 +143,36 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     public final TableField<DistributionStrategyRecord, Double> REBATE_RATIO_5 = createField("rebate_ratio_5", org.jooq.impl.SQLDataType.FLOAT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "间接");
 
     /**
+     * The column <code>mini_shop_471752.b2c_distribution_strategy.first_rebate</code>. 邀请新用户下首单返利
+     */
+    public final TableField<DistributionStrategyRecord, Byte> FIRST_REBATE = createField("first_rebate", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "邀请新用户下首单返利");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_strategy.first_ratio</code>. 首单返利金额
+     */
+    public final TableField<DistributionStrategyRecord, Double> FIRST_RATIO = createField("first_ratio", org.jooq.impl.SQLDataType.FLOAT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "首单返利金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_2</code>. 首单返利金额
+     */
+    public final TableField<DistributionStrategyRecord, Double> FIRST_RATIO_2 = createField("first_ratio_2", org.jooq.impl.SQLDataType.FLOAT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "首单返利金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_3</code>. 首单返利金额
+     */
+    public final TableField<DistributionStrategyRecord, Double> FIRST_RATIO_3 = createField("first_ratio_3", org.jooq.impl.SQLDataType.FLOAT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "首单返利金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_4</code>. 首单返利金额
+     */
+    public final TableField<DistributionStrategyRecord, Double> FIRST_RATIO_4 = createField("first_ratio_4", org.jooq.impl.SQLDataType.FLOAT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "首单返利金额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_strategy.first_ratio_5</code>. 首单返利金额
+     */
+    public final TableField<DistributionStrategyRecord, Double> FIRST_RATIO_5 = createField("first_ratio_5", org.jooq.impl.SQLDataType.FLOAT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.FLOAT)), this, "首单返利金额");
+
+    /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.recommend_type</code>. 0:全部商品1:部分商品
      */
     public final TableField<DistributionStrategyRecord, Byte> RECOMMEND_TYPE = createField("recommend_type", org.jooq.impl.SQLDataType.TINYINT, this, "0:全部商品1:部分商品");
@@ -185,12 +215,12 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.create_time</code>.
      */
-    public final TableField<DistributionStrategyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<DistributionStrategyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.update_time</code>. 最后修改时间
      */
-    public final TableField<DistributionStrategyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<DistributionStrategyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_distribution_strategy</code> table reference
