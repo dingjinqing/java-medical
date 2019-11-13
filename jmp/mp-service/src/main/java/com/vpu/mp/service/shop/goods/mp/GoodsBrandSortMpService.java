@@ -57,10 +57,10 @@ public class GoodsBrandSortMpService extends ShopBaseService{
             menuVo.add(item);
         }
         // 推荐品牌
-        if (GoodsBrandConfig.SHOW_RECOMMEND_LIST.equals(goodsBrandConfig.getShowRcommendBrandType())||GoodsBrandConfig.SHOW_RECOMMEND_CLASSIFY.equals(goodsBrandConfig.getShowRcommendBrandType())) {
+        if (GoodsBrandConfig.SHOW_RECOMMEND_LIST.equals(goodsBrandConfig.getShowRecommendBrandType())||GoodsBrandConfig.SHOW_RECOMMEND_CLASSIFY.equals(goodsBrandConfig.getShowRecommendBrandType())) {
             GoodsSortMenuVo item =new GoodsSortMenuVo();
             item.setMenuType(GoodsConstant.RECOMMEND_BRAND_TYPE);
-            item.setMenuName(goodsBrandConfig.getRecomTitle());
+            item.setMenuName(goodsBrandConfig.getRecommendTitle());
             if (menuVo.size()==0) {
                 GoodsSortMenuContentVo recommendBrandContent = getRecommendBrandContent(goodsBrandConfig);
                 item.setMenuContent(recommendBrandContent);
@@ -153,7 +153,7 @@ public class GoodsBrandSortMpService extends ShopBaseService{
      */
     private GoodsSortMenuContentVo getRecommendBrandContent(GoodsBrandConfig goodsBrandConfig){
         GoodsSortMenuContentVo content = new GoodsSortMenuContentVo();
-        if (GoodsBrandConfig.SHOW_RECOMMEND_LIST.equals(goodsBrandConfig.getShowRcommendBrandType())) {
+        if (GoodsBrandConfig.SHOW_RECOMMEND_LIST.equals(goodsBrandConfig.getShowRecommendBrandType())) {
             content.setContentList(goodsBrandService.getAllRecommendBrandMp());
             content.setMenuContentType(GoodsConstant.RECOMMEND_BRAND_LIST_TYPE);
         } else {

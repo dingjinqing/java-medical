@@ -1,9 +1,8 @@
 package com.vpu.mp.service.shop.config;
 
-import org.springframework.stereotype.Service;
-
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandConfig;
-import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 李晓冰
@@ -12,21 +11,15 @@ import com.vpu.mp.service.shop.config.BaseShopConfigService;
 @Service
 public class GoodsBrandConfigService extends BaseShopConfigService {
     /** 1显示 0不显示*/
-    private final static String K_ALL_BRAND = "show_all_brand";
-    private final static String K_RECOM_BRAND_NAME = "recom_title";
-    /**0不显示推荐分类 2按品牌展示推荐分类 3按分类展示推荐分类*/
-    private final static String K_RECOM_BRAND_SHOW_TYPE = "show_rcommend_brand";
+    private final static String GOODS_BRAND_CONFIG = "goods_brand_config";
+
 
     /**
      * 配置商品品牌展示
      * @param config
      */
     public void setGoodsBrandConfig(GoodsBrandConfig config) {
-        transaction(() -> {
-            this.set(K_ALL_BRAND, config.getShowAllBrand());
-            this.set(K_RECOM_BRAND_NAME, config.getRecomTitle());
-            this.set(K_RECOM_BRAND_SHOW_TYPE, config.getShowRcommendBrandType());
-        });
+        this.set(GOODS_BRAND_CONFIG, Util.toJson(config));
     }
 
     /**
@@ -35,9 +28,10 @@ public class GoodsBrandConfigService extends BaseShopConfigService {
      */
     public GoodsBrandConfig getGoodsBrandConfig() {
         GoodsBrandConfig brandConfig = new GoodsBrandConfig();
-        brandConfig.setShowAllBrand(this.get(K_ALL_BRAND));
-        brandConfig.setRecomTitle(this.get(K_RECOM_BRAND_NAME));
-        brandConfig.setShowRcommendBrandType(this.get(K_RECOM_BRAND_SHOW_TYPE));
-        return brandConfig;
+        String s = this.get(GOODS_BRAND_CONFIG);
+        if (s != null) {
+            brandConfig=  Util.parseJson(s,GoodsBrandConfig.class);
+        }
+       return brandConfig;
     }
 }
