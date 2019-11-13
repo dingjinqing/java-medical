@@ -131,9 +131,8 @@ export const getAllGoodsProductList = goodsId => {
 // 根据id查询品牌
 export function queryGoodsIdRequest (data) {
   return service({
-    url: '/api/admin/goods/brand/select',
-    method: 'post',
-    data: data
+    url: `/api/admin/goods/brand/select/${data}`,
+    method: 'get'
   })
 }
 

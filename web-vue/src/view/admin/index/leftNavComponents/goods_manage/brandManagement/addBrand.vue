@@ -177,7 +177,7 @@
     />
     <!--选择商品弹窗-->
     <ChoosingGoods
-      @resultGoodsDatas='handleToGetGoods'
+      @result='handleToGetGoods'
       :tuneUpChooseGoods='tuneUpChooseGoods'
     />
   </div>
@@ -392,7 +392,8 @@ export default {
       NameEnlishInput: '',
       goodsIdsArr: [],
       selectgoodsNum: 0,
-      hxgoodsIds: []
+      hxgoodsIds: [],
+      saveImgUrl: ''
 
     }
   },
@@ -433,15 +434,12 @@ export default {
     defaultGrandClass () {
       console.log(this.editGoodsId)
       if (this.editGoodsId !== 'add') {
-        let obj = {
-          'id': this.editGoodsId
-        }
         if (!this.editGoodsId) return
-        queryGoodsIdRequest(obj).then((res) => {
+        queryGoodsIdRequest(this.editGoodsId).then((res) => {
           console.log(res)
           this.ruleForm.name = res.content.brandName
           this.ruleForm.NameEnlishInput = res.content.ename
-          this.ruleForm.logoImgUrl = res.content.logo
+          this.ruleForm.logoImgUrl = res.content.fullUrlLogo
 
           this.ruleForm.classSelectValue = res.content.classifyId
           this.ruleForm.firstInput = res.content.first
@@ -507,13 +505,7 @@ export default {
     },
     handleToGetGoods (data) { // 商品弹窗选中数据回传函数
       console.log(data)
-      let arr = []
-      data.forEach((item, index) => {
-        arr.push(item.goodsId)
-      })
-      console.log(arr)
-      this.selectgoodsNum = arr.length
-      this.transmitGoodsIds(arr)
+      this.ruleForm.goodsIdsArr = data
     },
     // 选择商品弹窗确定
     handleChoiseGooddialog () {
@@ -526,7 +518,8 @@ export default {
     },
     // 图片弹窗选中
     handleSelectImg (res) {
-      console.log(res)
+      console.log(res, this.saveImgUrl)
+      this.saveImgUrl = res.imgPath
       this.ruleForm.logoImgUrl = res.imgUrl
     },
     // 刷新
@@ -538,30 +531,37 @@ export default {
     saveShopStyle () {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          let obj = {
-            'brandName': this.ruleForm.name,
-            'ename': this.ruleForm.NameEnlishInput,
-            'logo': this.ruleForm.logoImgUrl,
-            'first': this.ruleForm.firstInput,
-            'desc': '',
-            'isRecommend': this.ruleForm.radio,
-            'classifyId': this.ruleForm.classSelectValue,
-            'goodsIds': this.ruleForm.goodsIdsArr
-          }
-          brandAddRequest(obj).then((res) => {
-            console.log(res)
-            if (res.error === 0) {
-              this.$message.success({
-                message: '保存成功',
-                type: 'success'
-              })
-            } else if (res.error === 131001) {
-              this.$message.error({
-                message: '品牌名称已存在',
-                type: 'success'
-              })
+          if (!(this.ruleForm.firstInput >= 1 && this.ruleForm.firstInput <= 100)) {
+            this.$message.error({
+              message: '品牌优先级必须在1~100之间',
+              type: 'success'
+            })
+          } else {
+            console.log(this.saveImgUrl)
+            let obj = {
+              'brandName': this.ruleForm.name,
+              'ename': this.ruleForm.NameEnlishInput,
+              'logo': this.saveImgUrl,
+              'first': this.ruleForm.firstInput,
+              'isRecommend': this.ruleForm.radio,
+              'classifyId': this.ruleForm.classSelectValue,
+              'goodsIds': this.ruleForm.goodsIdsArr
             }
-          })
+            brandAddRequest(obj).then((res) => {
+              console.log(res)
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '保存成功',
+                  type: 'success'
+                })
+              } else if (res.error === 131001) {
+                this.$message.error({
+                  message: '品牌名称已存在',
+                  type: 'success'
+                })
+              }
+            })
+          }
         }
       })
     }

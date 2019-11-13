@@ -30,15 +30,32 @@
               <div class="block">
                 <span class="demonstration">创建时间：</span>
                 <el-date-picker
-                  v-model="value9"
-                  type="daterange"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  default-value="2019-10-01"
-                  value-format="yyyy-MM-dd"
+                  v-model="brandStartTime"
+                  type="date"
                   size="small"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期"
                 >
                 </el-date-picker>
+                至
+                <el-date-picker
+                  v-model="brandEndTime"
+                  type="date"
+                  size="small"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期"
+                >
+                </el-date-picker>
+                <!-- <el-date-picker
+                  v-model="value9"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  value-format="yyyy-MM-dd"
+                  end-placeholder="结束日期"
+                  size="small"
+                >
+                </el-date-picker> -->
               </div>
             </li>
             <li>
@@ -96,7 +113,12 @@
           <ul class="topUl">
             <li>
               分类名称：
-              <el-autocomplete
+              <el-input
+                v-model="classifyName"
+                size="small"
+                placeholder="请输入内容"
+              ></el-input>
+              <!-- <el-autocomplete
                 popper-class="my-autocomplete"
                 v-model="state3"
                 :fetch-suggestions="querySearch"
@@ -107,18 +129,26 @@
                 <template slot-scope="props">
                   <div class="name">{{ props.item.value }}</div>
                 </template>
-              </el-autocomplete>
+              </el-autocomplete> -->
             </li>
             <li>
               <div class="block">
                 <span class="demonstration">创建时间：</span>
                 <el-date-picker
-                  v-model="value9"
-                  type="daterange"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  default-value="2010-10-01"
+                  v-model="classifyBrandStartTime"
+                  type="date"
                   size="small"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期"
+                >
+                </el-date-picker>
+                至
+                <el-date-picker
+                  v-model="classifyBrandEndTime"
+                  type="date"
+                  size="small"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期"
                 >
                 </el-date-picker>
               </div>
@@ -127,6 +157,7 @@
               <el-button
                 type="primary"
                 size="small"
+                @click="handleToScreen()"
               >筛选</el-button>
             </li>
           </ul>
@@ -369,7 +400,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import { saveShowBrandgetRequest, showBrandgetRequest, pagingBrandUpdateRequest, pagingBrandDelRequest, pagingBrandQueryRequest, brandAllGetRequest, brandDeleteGetRequest, classificationSelectRequest } from '@/api/admin/brandManagement.js'
+import { saveShowBrandgetRequest, showBrandgetRequest, pagingBrandUpdateRequest, pagingBrandDelRequest, pagingBrandQueryRequest, brandAllGetRequest, brandDeleteGetRequest, classificationSelectRequest, addGrandClassRequest } from '@/api/admin/brandManagement.js'
 export default {
   data () {
     return {
@@ -380,13 +411,17 @@ export default {
       value9: '',
       optionsClss: [],
       valueClss: '',
-      optionsIsClss: [{
-        value: '1',
-        label: '是'
-      }, {
-        value: '0',
-        label: '否'
-      }],
+      optionsIsClss: [
+        {
+          value: '',
+          label: '全部'
+        }, {
+          value: '1',
+          label: '是'
+        }, {
+          value: '0',
+          label: '否'
+        }],
       valueIsClss: '',
       trList: [
       ],
@@ -416,7 +451,15 @@ export default {
       showFlag_two: false,
       hiddenOverFlag: false,
       hiddle_containerFlag: false,
-      grandTitle: ''
+      grandTitle: '',
+      classifyName: '', //  分类名称
+      createTime: '', // 创建时间
+      timeValue2: '', // 分类名称页面中的时间
+      addClassOrEdit: true, // 分类名称tap里面区分是添加商品分类还是编辑
+      brandStartTime: '', // 全部品牌tap起始时间
+      brandEndTime: '', // 全部品牌tap终止时间
+      classifyBrandStartTime: '', // 分类名称tap页面初始时间
+      classifyBrandEndTime: '' // 分类名称tap页面终止时间
     }
   },
   props: ['turnIndex'],
@@ -442,6 +485,9 @@ export default {
           this.hiddle_containerFlag = false
           break
       }
+    },
+    createTime (newData) {
+      console.log(newData)
     }
   },
   mounted () {
@@ -483,7 +529,12 @@ export default {
       })
       // 品牌分类下拉框数据请求
       classificationSelectRequest().then((res) => {
-        this.optionsClss = res.content
+        if (res.error === 0) {
+          console.log(res.content)
+          res.content.unshift({ classifyName: '全部', classifyId: '' })
+          this.optionsClss = res.content
+        }
+
         console.log(res)
       })
 
@@ -498,6 +549,7 @@ export default {
           this.hiddle_1 = true
           this.bottomDivFlag = true
           this.secondGrandName = '品牌名称'
+          this.trList = []
           this.defaultAllBrandData()
           this.hiddenOverFlag = false
           break
@@ -505,6 +557,7 @@ export default {
           this.hiddle_1 = false
           this.bottomDivFlag = true
           this.secondGrandName = '分类名称'
+          this.trList = []
           // 初始化品牌分类页数据
           this.defaultPageingGrand()
           this.hiddenOverFlag = false
@@ -518,10 +571,21 @@ export default {
       }
     },
     defaultPageingGrand () {
+      let start = ''
+      let end = ''
+      console.log(this.classifyBrandStartTime, this.classifyBrandEndTime)
+      if (this.classifyBrandStartTime) {
+        start = this.classifyBrandStartTime + ' 00:00:00'
+      }
+      if (this.classifyBrandEndTime) {
+        end = this.classifyBrandEndTime + ' 00:00:00'
+      }
+      console.log(start, end)
+      console.log(this.timeValue2[0], this.timeValue2[1])
       let obj = {
-        classifyName: '',
-        startCreateTime: '',
-        endCreateTime: '',
+        classifyName: this.classifyName,
+        startAddTime: start,
+        endAddTime: end,
         currentPge: 1,
         pageRows: 20
       }
@@ -531,12 +595,11 @@ export default {
           this.trList = res.content.dataList
           this.totalRows = res.content.page.totalRows
           this.tbodyFlag = true
+          if (res.content.page.totalRows === 0) {
+            console.log(1)
+            this.tbodyFlag = false
+          }
         }
-        if (res.content.page.totalRows === 0) {
-          console.log(1)
-          this.tbodyFlag = false
-        }
-        console.log(res.content.dataList)
       })
     },
     // 品牌分类展示设置
@@ -567,6 +630,7 @@ export default {
     // 品牌分类tap页品牌分类编辑
     handlePagingEditGoods (data) {
       console.log(data)
+      this.addClassOrEdit = false
       this.upDateClassifyId = data.classifyId
       this.brandName = data.classifyName
       this.classificationName = data.first
@@ -590,22 +654,41 @@ export default {
     // 品牌分类弹窗确定事件
     handleUpdateGrandClass () {
       console.log(this.classificationName)
-      let obj = {
-        classifyId: this.upDateClassifyId,
-        classifyName: this.brandName,
-        first: Number(this.classificationName)
-      }
-      pagingBrandUpdateRequest(obj).then((res) => {
-        if (res.error === 0) {
-          this.defaultPageingGrand()
-          this.$message.success({
-            message: '修改成功',
-            type: 'success'
-          })
-          this.dialogVisibleAddBrand = false
+      let obj = {}
+      if (this.addClassOrEdit) {
+        obj = {
+          classifyName: this.brandName,
+          first: Number(this.classificationName)
         }
-        console.log(res)
-      })
+        addGrandClassRequest(obj).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success({
+              message: '添加成功',
+              type: 'success'
+            })
+            this.defaultPageingGrand()
+            this.dialogVisibleAddBrand = false
+          }
+        })
+      } else {
+        obj = {
+          classifyId: this.upDateClassifyId,
+          classifyName: this.brandName,
+          first: Number(this.classificationName)
+        }
+        pagingBrandUpdateRequest(obj).then((res) => {
+          if (res.error === 0) {
+            this.defaultPageingGrand()
+            this.$message.success({
+              message: '修改成功',
+              type: 'success'
+            })
+            this.dialogVisibleAddBrand = false
+          }
+          console.log(res)
+        })
+      }
     },
     // tap3保存事件
     handleSaveTapThree () {
@@ -719,6 +802,7 @@ export default {
     },
     // 调用添加品牌分类弹窗
     handleBrandDialog () {
+      this.addClassOrEdit = true
       this.grandTitle = '添加品牌分类'
       this.brandName = ''
       this.classificationName = ''
@@ -733,16 +817,27 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.handleCurrentChange()
+          this.defaultPageingGrand()
         }
       })
     },
     // 筛选
     handleSXevent () {
       // console.log(this.valueClss)
+      console.log(this.value9)
+      let start = ''
+      let end = ''
+      if (this.brandStartTime) {
+        start = this.brandStartTime + ' 00:00:00'
+      } else if (this.brandEndTime) {
+        end = this.brandEndTime + ' 00:00:00'
+      }
+
+      console.log(this.brandStartTime, this.brandEndTime)
       let obj = {
         'brandName': this.state3,
-        'startAddTime': this.value9[0],
-        'endAddTime': this.value9[1],
+        'startAddTime': start,
+        'endAddTime': end,
         'classifyId': this.valueClss,
         'isRecommend': this.valueIsClss,
         'currentPage': 1,
@@ -754,12 +849,12 @@ export default {
           this.trList = res.content.dataList
           this.totalRows = res.content.page.totalRows
           this.tbodyFlag = true
+          if (res.content.page.totalRows === 0) {
+            console.log(1)
+            this.tbodyFlag = false
+          }
         }
         console.log(res)
-        if (res.content.page.totalRows === 0) {
-          console.log(1)
-          this.tbodyFlag = false
-        }
       })
     },
     // 点击编辑
@@ -774,6 +869,10 @@ export default {
         turnIndex: null
       }
       this.$emit('turnComponents', obj)
+    },
+    // 品牌分类点击筛选
+    handleToScreen () {
+      this.defaultPageingGrand()
     }
 
   }
