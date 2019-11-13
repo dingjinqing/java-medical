@@ -865,7 +865,7 @@ public class UserCardService extends ShopBaseService {
             //折扣金额
             BigDecimal discountAmount = null;
             //判断门店（无门店||全部门店||部分门店）
-            if(storeId == null || CardConstant.MCARD_STP_ALL.equals(card.getStoreList()) ||
+            if(storeId == null || CardConstant.MCARD_STP_ALL.equals(Byte.valueOf(card.getStoreList())) ||
                 (CardConstant.MCARD_SUSE_OK.equals(card.getStoreUseSwitch()) && Arrays.asList(card.getStoreList().split(",")).contains(storeId.toString()))) {
                 //折扣金额
                 discountAmount = getDiscountAmount(card, tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);

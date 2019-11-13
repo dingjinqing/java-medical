@@ -725,7 +725,7 @@ public class GoodsCommentService extends ShopBaseService {
               .from(COMMENT_AWARD)
               .where(COMMENT_AWARD.ID.eq(param.getId()))
               .fetchOneInto(AwardConditionVo.class);
-      if (awardCondition.getCommentType().equals(NumberUtils.INTEGER_TWO)) {
+      if (awardCondition.getCommentType().equals((byte)2)) {
         // 心得超过规定字数
         if (param.getCommNote().length() < awardCondition.getCommentWords()) {
           return;

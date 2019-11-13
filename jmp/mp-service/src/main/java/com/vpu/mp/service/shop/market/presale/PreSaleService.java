@@ -541,7 +541,7 @@ public class PreSaleService extends ShopBaseService {
                 ).or(
                         TABLE.PRE_PAY_STEP.eq((byte) 1).and(TABLE.PRE_START_TIME.lt(nowDate).and(TABLE.PRE_END_TIME.gt(nowDate)))
                 )).fetchOne();
-        return buyType!=null&&buyType.component1().equals(1);
+        return buyType!=null&&buyType.component1().equals((byte)1);
     }
 
     public Optional<Record2<Integer,BigDecimal>> getPresaleProductRecordByGoodsId(Integer goodsId, Timestamp date){

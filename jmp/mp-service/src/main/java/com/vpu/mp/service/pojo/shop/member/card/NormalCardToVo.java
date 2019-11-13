@@ -159,7 +159,7 @@ public class NormalCardToVo extends NormalCardVo {
 			storeList = storeList.replaceAll("\\s+", "");
 			storeListArray = storeList.split(",");
 			/** 门店类型 */
-			if (MCARD_STP_BAN.equals(storeListArray[0]) || MCARD_STP_ALL.equals(storeListArray[0])) {
+			if (MCARD_STP_BAN.equals(Byte.valueOf(storeListArray[0])) || MCARD_STP_ALL.equals(Byte.valueOf(storeListArray[0]))) {
 				storeListType = Byte.valueOf(storeListArray[0]);
 			} else {
 				storeListType = MCARD_STP_PART;
