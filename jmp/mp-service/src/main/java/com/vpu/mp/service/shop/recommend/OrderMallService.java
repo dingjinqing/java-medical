@@ -141,7 +141,7 @@ public class OrderMallService extends ShopBaseService {
 		list.add(orderList);
 		JsonRootBean jsonRootBean=new JsonRootBean(list);
 		String jsonNotNull = Util.toJsonNotNull(jsonRootBean);
-		System.out.println(jsonNotNull);
+		log.info("发送的报文",jsonNotNull);
 		WxOpenResult importOrder = importOrder(jsonRootBean);
 		return importOrder;
 	}
