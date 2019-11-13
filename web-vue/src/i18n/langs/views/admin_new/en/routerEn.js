@@ -209,6 +209,8 @@ export const en = {
   group_draw: ['Marketing management', 'raffle draw'],
   // 营销管理 分销
   distribution_info: ['Marketing management', 'distribution'],
+  // 营销管理 分销 推广测试
+  distribution_copyWriting: ['Marketing management', 'distribution', 'Promotion of copywriting'],
   // 营销管理 瓜分积分
   pin_integration: [
     'Marketing management',
@@ -325,6 +327,8 @@ export const en = {
   presale_order_detail: ['Marketing Management', 'View Pre Sale Order Detail'],
   // 营销管理 定金膨胀活动明细
   presale_detail: ['Marketing Management', 'View Pre Sale Detail'],
+  // 营销活动 普通优惠券
+  ordinaryCoupon: ['Marketing Management', 'General Coupons'],
   // 营销管理 秒杀
   seckill: ['Marketing Management', 'Seckill'],
   // 营销管理 秒杀-添加

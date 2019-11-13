@@ -162,6 +162,8 @@ export const cn = {
   group_draw: ['营销管理', '拼团抽奖'],
   // 营销管理 分销
   distribution_info: ['营销管理', '分销'],
+  // 营销管理 分销 推广测试
+  distribution_copyWriting: ['营销管理', '分销', '推广文案配置'],
   // 营销管理 瓜分积分
   pin_integration: ['营销管理', '组团瓜分积分'],
   // 营销管理 瓜分积分 创建瓜分积分活动
@@ -218,6 +220,8 @@ export const cn = {
   presale_order_detail: ['营销管理', '查看活动订单'],
   // 营销管理 定金膨胀活动明细
   presale_detail: ['营销管理', '活动明细'],
+  // 营销活动 普通优惠券
+  ordinaryCoupon: ['营销管理', '普通优惠券'],
   // 营销管理 秒杀
   seckill: ['营销管理', '秒杀'],
   // 营销管理 秒杀-添加

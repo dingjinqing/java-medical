@@ -2,8 +2,31 @@ import service from '@/util/request.js'
 
 // 分销配置
 // 获取分销配置
+export function getDistribution (data) {
+  return service({
+    url: '/api/admin/distribution/get',
+    method: 'get',
+    data: data
+  })
+}
+
+// 分销配置模板弹窗表格接口
+export function shopDecorateList (data) {
+  return service({
+    url: '/api/admin/decorate/list',
+    method: 'post',
+    data: data
+  })
+}
 
 // 设置分销配置
+export function setDistribution (data) {
+  return service({
+    url: '/api/admin/distribution/set',
+    method: 'post',
+    data: data
+  })
+}
 
 // 分销员等级配置
 

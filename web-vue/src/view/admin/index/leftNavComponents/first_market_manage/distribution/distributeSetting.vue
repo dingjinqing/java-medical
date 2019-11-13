@@ -6,7 +6,11 @@
       label-width="140px"
     >
       <el-form-item label="分销开关：">
-        <el-switch v-model="form.value1"></el-switch>
+        <el-switch
+          v-model="form.status"
+          :active-value='1'
+          :inactive-value='0'
+        ></el-switch>
         <div class="text">
           开关默认关闭，开启开关，则用户可以申请为店铺分销员，分销员邀请用户注册产生订单，购买者邀请人可获得佣金奖励。关闭开关，手机端个人中心”分销中心“菜单隐藏，用户下单，邀请人不再产生佣金奖励，系统分销机制关闭，邀请不再记录邀请关系。
         </div>
@@ -14,40 +18,54 @@
 
       <el-form-item
         label="分销员审核："
-        v-if="form.value1 === true"
+        v-if="form.status === 1"
       >
-        <el-switch v-model="form.value2"></el-switch>
+        <el-switch
+          v-model="form.judge_status"
+          :active-value='1'
+          :inactive-value='0'
+        ></el-switch>
         <span>若开启审核，您需要配置推广文案内容）
           <a href="javascript:void(0);">推广文案配置</a></span>
         <div class="text">
           开启分销员审核功能后，普通用户申请成为分销员时需要经过商家审核。关闭则成为店铺分销员不需要申请审核，全部用户均默认为店铺分销员。
         </div>
-        <template v-if="form.value2 === true">
+        <template v-if="form.judge_status === 1">
           <el-checkbox v-model="form.checked1">用户申请成为分销员时，需要填写邀请码</el-checkbox>
           <p>勾选后，系统自动生成分销员邀请码。 <a
               href="javascript:void(0);"
               style="color: red;"
             >注：店铺中至少有一个分销员时，可开启此功能。</a> 如需修改邀请码，请到 <a href="javascript:void(0);">分销员列表</a> 中进行设置</p>
-          <el-checkbox v-model="form.checked2">用户申请成为分销员时，需要提交个人信息</el-checkbox>
+          <el-checkbox
+            v-model="form.activation"
+            :true-label='1'
+            :false-label="0"
+          >用户申请成为分销员时，需要提交个人信息</el-checkbox>
 
           <div
-            v-if="form.checked2 === true"
+            v-if="form.activation === 1"
             style="width: 900px;"
           >
-            <el-checkbox
-              v-for="(item, index) in checkedList"
-              :key="index"
-              :model="item.checked"
-            >{{ item.label }}</el-checkbox>
+            <el-checkbox-group v-model="form.activation_cfg">
+              <el-checkbox
+                v-for="(item, index) in checkedList"
+                :key="index"
+                :label="item"
+              >{{ item }}</el-checkbox>
+            </el-checkbox-group>
           </div>
         </template>
       </el-form-item>
 
       <el-form-item
         label="分销员排名："
-        v-if="form.value1 === true"
+        v-if="form.status === 1"
       >
-        <el-switch v-model="form.value3"></el-switch>
+        <el-switch
+          v-model="form.rank_status"
+          :active-value='1'
+          :inactive-value='0'
+        ></el-switch>
         <div class="text">
           开关默认关闭，开启开关，且拥有返利数据的分销员数大于等于3位时分销员中心显示分销员佣金排名。关闭则不显示分销员佣金排名页面。
         </div>
@@ -55,57 +73,59 @@
 
       <el-form-item
         label="返利有效期："
-        v-if="form.value1 === true"
+        v-if="form.status === 1"
       >
-        <el-radio-group v-model="form.radio1">
+        <el-radio-group v-model="form.vaild">
           <el-radio :label="1">
             <el-input
               style="width: 100px;"
-              :disabled="form.radio1 === 2"
+              v-model.number="form.vaildDate"
+              :disabled="form.vaild === 0"
             ></el-input> 天
           </el-radio>
-          <el-radio :label="2">永久</el-radio>
+          <el-radio :label="0">永久</el-radio>
         </el-radio-group>
         <div class="text">用户被分销员邀请注册开始计算，在该天数限制内该用户购买分销商品给分销员计算佣金返利，一旦超过该天数，则不再给分销员佣金返利，默认为空，为空表示不限制。</div>
       </el-form-item>
 
       <el-form-item
         label="分销员保护期："
-        v-if="form.value1 === true"
+        v-if="form.status === 1"
       >
-        <el-radio-group v-model="form.radio2">
+        <el-radio-group v-model="form.protect_date">
           <el-radio :label="1">
             <el-input
               style="width: 100px;"
-              :disabled="form.radio2 === 2"
+              v-model.number="form.protectDate"
+              :disabled="form.protect_date === 0"
             ></el-input> 天
           </el-radio>
-          <el-radio :label="2">永久</el-radio>
+          <el-radio :label="0">永久</el-radio>
         </el-radio-group>
         <div class="text">在保护期内，分销员发展的客户不会变更绑定关系，保护期过后可通过分享链接重新绑定邀请关系。 超过保护期若未重新建立邀请关系，则原绑定关系仍然有效，可依据返利配置条件返利。若保护期设置为0天，则用户可随时通过他人分享进入小程序实现其邀请人的变更。</div>
       </el-form-item>
 
       <el-form-item
         label="分销中心页面名称："
-        v-if="form.value1 === true"
+        v-if="form.status === 1"
       >
         <el-input
           style="width: 200px"
-          v-model="form.pageName"
+          v-model="form.desc"
         ></el-input>
       </el-form-item>
 
       <el-form-item
         label="推荐商品："
-        v-if="form.value1 === true"
+        v-if="form.status === 1"
       >
-        <el-radio-group v-model="form.recommend">
-          <el-radio :label="1">不显示</el-radio>
-          <el-radio :label="2">默认</el-radio>
-          <el-radio :label="3">自定义</el-radio>
+        <el-radio-group v-model="form.distribution_goods_type">
+          <el-radio :label="0">不显示</el-radio>
+          <el-radio :label="1">默认</el-radio>
+          <el-radio :label="2">自定义</el-radio>
         </el-radio-group>
 
-        <div v-if="form.recommend === 3">
+        <div v-if="form.distribution_goods_type === 2">
           <p>将从已选商品中随机抽取10个展示在小程序端“分销中心”，引导分销员推广商品</p>
           <el-button @click="hanldeToAddGoodS"><i class="el-icon-plus"></i> 选择商品</el-button>
           <el-table
@@ -146,9 +166,21 @@
 
       <el-form-item
         label="自定义内容："
-        v-if="form.value1 === true"
+        v-if="form.status === 1"
       >
-        <el-button @click="chooseSelect"><i class="el-icon-plus"></i> 选择模板</el-button>
+        <div
+          v-if="tamplateFlag === true && this.templateRow.name !== ''"
+          style="display: inline-block;"
+        >
+          {{ this.templateRow.name }}
+          <i
+            class="el-icon-error"
+            style="color: #ccc;font-size: 16px;"
+            @click="clearClickHandler()"
+          ></i>
+        </div>
+
+        <el-button @click="chooseTemplate"><i class="el-icon-plus"></i> 选择模板</el-button>
         <a
           href="javascript:void(0);"
           style="margin: 0 20px;"
@@ -158,7 +190,7 @@
 
       <!-- 展开更多配置 -->
       <div
-        v-if="form.value1 === true"
+        v-if="form.status === 1"
         @click="handleToChangeArror"
         class="arrorContent"
       >
@@ -176,51 +208,41 @@
         </div>
       </div>
 
-      <div v-if="form.value1 === true && arrorFlag">
+      <div v-if="form.status === 1 && arrorFlag">
         <p class="titleContent">返利提现设置</p>
         <el-form-item label="返利提现开关：">
           <el-switch
-            v-model="form.value4"
+            v-model="form.withdraw_status"
+            :active-value='1'
+            :inactive-value='0'
             style="width: 60px;"
           ></el-switch>
           <span style="color: red;">注：开启提现功能开关前，请阅读 <a href="javascript:void(0);">《返利提现配置操作说明》</a></span>
           <div class="text">
             开关开启，分销员推广返利获得的佣金可提现到微信钱包，分销员在小程序发起返利申请，需后台审核通过才可提现到账
           </div>
-          <el-radio
-            v-model="form.radio3"
-            :label="1"
-          >小程序</el-radio>
-          <p class="text">注意：使用返利提现功能，请确保小程序已开通微信支付，否则不可提现 <a href="javascript:void(0);">去配置</a></p>
-          <el-radio
-            v-model="form.radio3"
-            :label="2"
-          >公众号</el-radio>
-          <p class="text">注意：使用返利提现功能，请确保小程序已绑定认证服务号并配置相关支付信息，否则不可提现，未关注公众号的用户将会提现失败 <a href="javascript:void(0);">去配置</a></p>
-        </el-form-item>
-
-        <el-form-item label="返利最小提现金额：">
-          <el-input style="width: 100px;"></el-input> 元
-          <div class="text">
-            分销员发起返利提现，单次申请最小提现金额。为防止分销员提现过于频繁，请设置单次最小提现金额。
+          <div v-if="form.withdraw_status === 1">
+            <el-radio
+              v-model="form.withdraw_source"
+              label="wx_mini"
+            >小程序</el-radio>
+            <p class="text">注意：使用返利提现功能，请确保小程序已开通微信支付，否则不可提现 <a href="javascript:void(0);">去配置</a></p>
+            <el-radio
+              v-model="form.withdraw_source"
+              label="wx_open"
+            >公众号</el-radio>
+            <p class="text">注意：使用返利提现功能，请确保小程序已绑定认证服务号并配置相关支付信息，否则不可提现，未关注公众号的用户将会提现失败 <a href="javascript:void(0);">去配置</a></p>
           </div>
         </el-form-item>
 
-        <el-form-item label="返利到账结算时间：">
-          <el-radio
-            v-model="form.radio4"
-            :label="1"
-            style="width: 100%;"
-          >订单完成即到账</el-radio>
-          <el-radio
-            v-model="form.radio4"
-            :label="2"
-            style="width: 100%;"
-          >自定义</el-radio>
-          <span>每月 <el-input
-              :disabled="form.radio4 === 1"
-              style="width: 60px;"
-            ></el-input> 日00:00:00结算该周期内对应到账金额</span>
+        <el-form-item label="返利最小提现金额：">
+          <el-input
+            style="width: 100px;"
+            v-model.number="form.withdraw_cash"
+          ></el-input> 元
+          <div class="text">
+            分销员发起返利提现，单次申请最小提现金额。为防止分销员提现过于频繁，请设置单次最小提现金额。
+          </div>
         </el-form-item>
 
         <p class="titleContent">分销中心推广海报背景图</p>
@@ -229,7 +251,7 @@
           <div class="leftContent">
             <div
               class="leftTop"
-              :style="{ 'backgroundImage' : this.imgData !== '' ? 'url(' + this.imgData + ')' : 'url(' + this.defaultValue +  ')' }"
+              :style="{ 'backgroundImage' : this.form.bg_img !== '' ? 'url(' + this.form.bg_img + ')' : 'url(' + this.defaultValue +  ')' }"
             >
               <div class="userInfo">
                 <div class="leftInfo">
@@ -240,7 +262,7 @@
                 </div>
                 <div class="rightInfo">
                   <p>昵称</p>
-                  <p> {{ this.name }} </p>
+                  <p> {{ this.form.rebate_center_name }} </p>
                 </div>
               </div>
             </div>
@@ -257,7 +279,7 @@
             <div>
               <span class="rightLabel">邀请文案：</span>
               <el-input
-                v-model="name"
+                v-model="form.rebate_center_name"
                 style="width: 300px;"
               ></el-input>
             </div>
@@ -284,13 +306,13 @@
                   @click="handleToCallImgDialog"
                 >
                   <img
-                    v-if="imgData === ''"
+                    v-if="form.bg_img === ''"
                     src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
                     alt=""
                   >
                   <img
-                    v-if="imgData !== ''"
-                    :src="imgData"
+                    v-if="form.bg_img !== ''"
+                    :src="form.bg_img"
                     alt=""
                     class="customImg"
                   >
@@ -309,6 +331,7 @@
       <el-button
         type="primary"
         size="small"
+        @click="addDistribution()"
       >保存</el-button>
     </div>
 
@@ -320,6 +343,95 @@
     />
 
     <!-- 选择模板弹窗 -->
+    <el-dialog
+      title="选择页面"
+      :visible.sync="templateDialog"
+      width="50%"
+      :close-on-click-modal="false"
+      center
+    >
+      <div style="width: 100%; text-align: center;">
+        <el-form
+          ref="formDialog"
+          :model="formDialog"
+          label-width="90px"
+        >
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="页面名称：">
+                <el-input
+                  style="width: 150px;"
+                  size="small"
+                  placeholder="请输入页面名称"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="页面分类：">
+                <el-input
+                  style="width: 150px;"
+                  size="small"
+                  placeholder="请选择页面分类"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="4">
+              <el-button
+                type="primary"
+                size="small"
+                style="margin-top: 5px;"
+              >搜索</el-button>
+            </el-col>
+          </el-row>
+
+        </el-form>
+
+        <el-table
+          ref="templateData"
+          :data="templateData"
+          border
+          highlight-current-row
+          @current-change="handleCurrentChange"
+          height="300px"
+          style="width: 100%;"
+        >
+          <el-table-column
+            prop="pageName"
+            label="页面名称"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="创建时间"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="pageType"
+            label="是否首页"
+            align="center"
+          ></el-table-column>
+        </el-table>
+        <Pagination
+          :page-params.sync="pageParams"
+          @pagination="getTemplateData"
+        />
+      </div>
+
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="small"
+          @click="templateDialog = false"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureClickHandler()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
 
     <!-- 选择图片弹窗 -->
     <ImageDalog
@@ -334,63 +446,43 @@
 </template>
 
 <script>
+// 引入组件
+import { setDistribution, getDistribution, shopDecorateList } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
-    ImageDalog: () => import('@/components/admin/imageDalog') // 选择图片弹窗
+    ImageDalog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
+    Pagination: () => import('@/components/admin/pagination/pagination.vue') // 分页
   },
-  data () {
+  data() {
     return {
       imageHost: 'http://jmpdevimg.weipubao.cn/',
       form: {
-        value1: true, // 分销开关
-        value2: true, // 分销员审核开关
+        status: 1, // 分销开关
+        judge_status: 1, // 分销员审核开关
         checked1: true,
-        checked2: true,
-        value3: false, // 分销员排名开关
-        radio1: 1, // 返利有效期
-        radio2: 1, // 分销员保护期
-        pageName: '分销中心', // 分销中心页面名称
-        recommend: 3, // 推荐商品
-        value4: true, // 返利体现开关
-        radio3: 1,
-        radio4: 1 // 返利到账结算时间
+        activation: 1, // 是否需要提交个人信息
+        activation_cfg: [], // 个人信息内容
+        rank_status: 1, // 分销员排名开关
+        vaild: 0, // 返利有效期
+        vaildDate: 0, // 有效期天数
+        protect_date: 0, // 分销员保护期
+        protectDate: 0, // 保护期天数
+        desc: '分销中心', // 分销中心页面名称
+        distribution_goods_type: 2, // 推荐商品(自定义)
+        recommend_goods_id: '', // 推荐商品ID
+
+        rebate_page_id: '', // 推广模版文案id
+
+        withdraw_status: 1, // 返利体现开关
+        // withdraw_source: 1, // 返利方式
+        withdraw_source: 'wx_mini', // 返利方式
+        withdraw_cash: 0, // 返利最小提现金额
+        rebate_center_name: '分享给你一个好物店铺快来购物吧！', // 邀请文案
+        bg_img: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg' // 海报背景图
       },
       // 分销员信息
-      checkedList: [{
-        label: '真实姓名',
-        checked: true
-      }, {
-        label: '手机号',
-        checked: true
-      }, {
-        label: '身份证号码',
-        checked: true
-      }, {
-        label: '性别',
-        checked: true
-      }, {
-        label: '生日',
-        checked: true
-      }, {
-        label: '婚姻状况',
-        checked: true
-      }, {
-        label: '教育程度',
-        checked: true
-      }, {
-        label: '所在行业',
-        checked: true
-      }, {
-        label: '所在地',
-        checked: true
-      }, {
-        label: '备注',
-        checked: true
-      }, {
-        label: '图片上传',
-        checked: true
-      }],
+      checkedList: ['真实姓名', '手机号', '身份证号码', '性别', '生日', '婚姻状况', '教育程度', '所在行业', '所在地', '备注', '图片上传'],
       // 推荐商品表格
       tableData: [],
       arrorFlag: true, // 展开更多配置
@@ -402,7 +494,6 @@ export default {
       }],
       tuneUpChooseGoods: false, // 商品弹窗
       goodsInfo: [], // 商品弹窗回调数据
-      name: '分享给你一个好物店铺快来购物吧！', // 邀请文案
       // 默认背景图
       defaultValue: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg',
       options: [{
@@ -418,27 +509,67 @@ export default {
         label: '背景图4',
         value: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_4.jpg'
       }],
-      tuneUpSelectLink: false, // 自定义模板
       tuneUp: false, //  调起添加图片弹窗flag
       imageSize: [640, 640], // 调起添加图片宽高
       isDraggable: false, // 添加商品弹窗是否开启多选底部可拖拽状态
       isAddImgOrChangeFlga: false, // true为添加图片  false为更换列表项中的图片
-      imgData: '' // 图片的回调函数
+      templateDialog: false, // 模板弹窗
+      templateRow: {}, // 模板弹窗回调函数
+      formDialog: {
+
+      },
+      pageParams: {}, // 分页
+      templateData: [], // 模板表格
+      tamplateFlag: false // 模板数据显示
     }
   },
+  mounted() {
+    // 初始化数据
+    this.getDistribution()
+  },
   methods: {
+    // 获取分销配置
+    getDistribution() {
+      // getDistribution().then((res) => {
+      //   if (res.error === 0) {
+
+      //   }
+      // })
+    },
+
+    // 保存分销配置
+    addDistribution() {
+      // 有效期
+      if (this.form.vaild === 1) {
+        this.form.vaild = this.form.vaildDate
+      }
+      // 保护期
+      if (this.form.protect_date === 1) {
+        this.form.protect_date = this.form.protectDate
+      }
+      this.form.recommend_goods_id = this.goodsInfo.toString()
+      this.form.activation_cfg = this.form.activation_cfg.toString()
+
+      console.log(this.form)
+      // setDistribution().then((res) => {
+      //   if (res.error === 0) {
+
+      //   }
+      // })
+    },
+
     // 展开更多配置
-    handleToChangeArror () {
+    handleToChangeArror() {
       this.arrorFlag = !this.arrorFlag
     },
 
     // 显示商品弹窗
-    hanldeToAddGoodS () {
+    hanldeToAddGoodS() {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
 
     // 选择商品弹窗回调显示
-    choosingGoodsResult (row) {
+    choosingGoodsResult(row) {
       console.log('选择商品弹窗回调显示:', row)
       this.tableData = row
       this.goodsInfo = []
@@ -448,30 +579,62 @@ export default {
     },
 
     // 删除推荐商品
-    deleteTable (index) {
+    deleteTable(index) {
       this.tableData.splice(index, 1)
       this.goodsInfo.splice(index, 1)
     },
 
-    // 调起链接弹窗
-    chooseSelect () {
-      this.tuneUpSelectLink = !this.tuneUpSelectLink
+    // 调起模板弹窗
+    chooseTemplate() {
+      this.templateDialog = !this.templateDialog
+      this.getTemplateData()
+      if (this.form.rebate_page_id === '') {
+        // this.$refs.templateData.setCurrentRow()
+      }
+    },
+
+    // 获取模板弹窗表格数据
+    getTemplateData() {
+      shopDecorateList(this.pageParams).then((res) => {
+        if (res.error === 0) {
+          this.pageParams = res.content.page
+          this.templateData = res.content.dataList
+        }
+      })
+    },
+
+    // 选中表格数据
+    handleCurrentChange(val) {
+      this.templateRow = val
+      this.form.rebate_page_id = val.id
+    },
+
+    // 模板数据回显
+    sureClickHandler() {
+      this.templateDialog = false
+      this.tamplateFlag = true
+    },
+
+    // 删除模板
+    clearClickHandler() {
+      this.templateRow = {}
+      this.form.rebate_page_id = ''
+      this.tamplateFlag = false
     },
 
     // 显示图片弹窗
-    handleToCallImgDialog () {
+    handleToCallImgDialog() {
       this.tuneUp = !this.tuneUp
     },
 
     // 添加图片弹窗选中图片数据回传
-    handleSelectImg (imgData) {
-      console.log(imgData)
-      this.imgData = imgData.imgUrl
+    handleSelectImg(imgData) {
+      this.form.bg_img = imgData.imgUrl
     },
 
     // 切换背景图
-    selectChange (val) {
-      this.imgData = val
+    selectChange(val) {
+      this.form.bg_img = val
     }
 
   }
@@ -620,6 +783,7 @@ a {
 .rightContent .customBg {
   margin-left: 90px;
   margin-top: 20px;
+  cursor: pointer;
 }
 
 .rightContent .customBg .custom {

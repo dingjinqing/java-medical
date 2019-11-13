@@ -243,6 +243,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distribution'
       )
   },
+  // 分销推广测试
+  {
+    path: '/admin/home/main/distribution/copyWriting',
+    name: 'distribution_copyWriting',
+    meta: {
+      crumbTitle: 'router.distribution_copyWriting',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/distribution/copyWriting'
+      )
+  },
   // 分销员已邀请的用户
   {
     path: '/admin/home/main/distribution/inviteUserList',
@@ -477,7 +490,7 @@ const routes = [
     path: '/admin/home/main/addyCoupon',
     name: 'add_coupon',
     meta: {
-      crumbTitle: 'router.ordinary_coupon',
+      crumbTitle: 'router.ordinaryCoupon',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },

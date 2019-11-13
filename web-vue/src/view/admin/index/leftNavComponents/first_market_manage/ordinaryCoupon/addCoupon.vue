@@ -1,94 +1,68 @@
 <template>
   <div class="content">
     <div class="main">
-      <!-- <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick"
-      >
-        <el-tab-pane
-          label="全部优惠券"
-          name="first"
-        ></el-tab-pane>
-        <el-tab-pane
-          label="进行中"
-          name="second"
-        ></el-tab-pane>
-        <el-tab-pane
-          label="未开始"
-          name="third"
-        ></el-tab-pane>
-        <el-tab-pane
-          label="已过期"
-          name="fourth"
-        ></el-tab-pane>
-        <el-tab-pane
-          label="已停用"
-          name="fifth"
-        ></el-tab-pane>
-      </el-tabs> -->
+
       <div class="add_coupon_content">
         <div class="coupon_content">
           <div class="fl content_left">
             <div class="fl_title">
-              <div>优惠券</div>
+              <div>{{ $t('ordinaryCoupon.coupon') }}</div>
             </div>
             <div class="info">
               <div class="info_top">
                 <div
                   class="vip_exclusive"
                   style="display:none;"
-                >会员专享</div>
-                <div class="coupon_name">{{param.actName ? param.actName : '优惠券名称'}}</div>
+                >{{ $t('ordinaryCoupon.member') }}</div>
+                <div class="coupon_name">{{param.actName ? param.actName : $t('ordinaryCoupon.couponName') }}</div>
                 <div class="coupon_vou">
                   <span v-if="param.preferentialType === 2">￥{{param.randomNum1 && param.randomNum2 ? param.randomNum1 + '-' + param.randomNum2 : '0.00 - 0.00'}}</span>
                   <span v-if="param.preferentialType === 0">￥{{param.denomination ? param.denomination : '0.00'}}</span>
-                  <span v-if="param.preferentialType === 1">{{param.denomination2?param.denomination2:'0'}}折</span>
+                  <span v-if="param.preferentialType === 1">{{param.denomination2?param.denomination2:'0'}} {{ $t('ordinaryCoupon.typeTip5') }}</span>
                 </div>
                 <div class="coupon_dis"></div>
               </div>
             </div>
             <div class="info_mid">
               <div class="clearfix">
-                <span class="sub_title">有效日期</span>
+                <span class="sub_title">{{ $t('ordinaryCoupon.validityType') }}</span>
                 <span class="date">
                   <span v-if="param.validityType === 0 && param.couponDate === ''">xxxx-xx-xx xx:xx:xx-xxxx-xx-xx xx:xx:xx</span>
                   <span v-if="param.validityType === 0 && param.couponDate !== ''">{{param.couponDate[0]}} - {{param.couponDate[1]}}</span>
-                  <span v-if="param.validityType === 1">领券日开始{{param.validity}}<span v-if="param.validity === ''">X</span>天{{param.validityHour}}<span v-if="param.validityHour === ''">X</span>小时{{param.validityMinute}}<span v-if="param.validityMinute === ''">X</span>分钟内有效</span>
-                  <!-- <span v-if="param.validityType === '0'">{{coupon_date_datetimerange}}</span> -->
-                  <!-- <span v-else>{{coupon_date_info}}</span> -->
+                  <span v-if="param.validityType === 1">{{ $t('ordinaryCoupon.appoint') }} {{param.validity}}<span v-if="param.validity === ''">X</span> {{ $t('ordinaryCoupon.appointDay') }} {{param.validityHour}}<span v-if="param.validityHour === ''">X</span> {{ $t('ordinaryCoupon.appointHour') }} {{param.validityMinute}}<span v-if="param.validityMinute === ''">X</span> {{ $t('ordinaryCoupon.appointMinute') }}</span>
                 </span>
               </div>
               <div>
-                <span class="sub_title">使用限制</span>
+                <span class="sub_title">{{ $t('ordinaryCoupon.restrict2') }}</span>
                 <span
                   class="all"
                   v-if="param.useConsumeRestrict===0"
-                >无限制</span>
-                <span v-else>订单满{{param.leastConsume?param.leastConsume:'0'}}<span v-if="param.leastConsume === ''">X</span>元可用</span>
+                >{{ $t('ordinaryCoupon.restrictRadio1') }}</span>
+                <span v-else>{{ $t('ordinaryCoupon.restrictRadio2') }} {{param.leastConsume?param.leastConsume:'0'}}<span v-if="param.leastConsume === ''">X</span> {{ $t('ordinaryCoupon.restrictTip') }}</span>
                 <span
                   class="part"
                   v-if="param.suitGoods === 1"
-                >部分商品可用</span>
+                >{{ $t('ordinaryCoupon.leftTip1') }}</span>
               </div>
             </div>
             <div class="info_bot">
               <div
                 class="code"
                 v-if="param.validationCode != ''"
-              >请输入领取码</div>
+              >{{ $t('ordinaryCoupon.leftTip2') }}</div>
               <div
                 class="use"
                 v-if="this.param.type==0"
-              >立即使用</div>
+              >{{ $t('ordinaryCoupon.leftTip3') }}</div>
               <div
                 class="use"
                 v-if="this.param.type==1"
-              >立即分享</div>
+              >{{ $t('ordinaryCoupon.leftTip4') }}</div>
               <div>
-                <span class="sub_title">使用说明</span>
+                <span class="sub_title">{{ $t('ordinaryCoupon.useExplain') }}</span>
                 <div
                   class="instruction"
-                  v-html="crlfFormat ? crlfFormat : '暂无使用说明'"
+                  v-html="crlfFormat ? crlfFormat : $t('ordinaryCoupon.useExplainTip2')"
                 ></div>
               </div>
             </div>
@@ -98,26 +72,26 @@
               :rules="paramRules"
               ref="param"
               :model="param"
-              label-width="130px"
+              label-width="180px"
               style="margin-top: 20px;"
             >
               <div class="coupon_info">
-                <div class="coupon_info_title">优惠券类型</div>
+                <div class="coupon_info_title">{{ $t('ordinaryCoupon.couponType') }}</div>
                 <el-form-item
-                  label="优惠券类型："
+                  :label="$t('ordinaryCoupon.couponType') + '：'"
                   prop="type"
                 >
                   <div>
                     <el-radio
                       v-model="param.type"
                       :label=0
-                    >普通优惠券</el-radio>
+                    >{{ $t('ordinaryCoupon.generalCoupons') }}</el-radio>
                     <el-radio
                       v-model="param.type"
                       :label=1
-                    >分裂优惠券 <el-tooltip
+                    >{{ $t('ordinaryCoupon.splitCoupon') }} <el-tooltip
                         effect="dark"
-                        content="买家领取到优惠券之后分享给好友, 自己和好友都可以获得一张优惠券"
+                        :content="$t('ordinaryCoupon.splitTip')"
                         placement="top"
                       >
                         <i class="el-icon-warning-outline"></i>
@@ -131,25 +105,25 @@
                 <div
                   class="coupon_info_title"
                   v-if="param.type===0"
-                >优惠券基础信息</div>
+                >{{ $t('ordinaryCoupon.couponInfo') }}</div>
                 <div
                   class="coupon_info_title"
                   v-if="param.type===1"
-                >分裂优惠券信息 <span style="color: #999;margin-left: 15px;">用户将优惠券分享到微信，有好友领取后自己可获得一张优惠券</span></div>
+                >{{ $t('ordinaryCoupon.splitInfo') }} <span style="color: #999;margin-left: 15px;">{{ $t('ordinaryCoupon.splitInfoTip') }}</span></div>
 
                 <el-form-item
-                  label="优惠券名称："
+                  :label="$t('ordinaryCoupon.couponName') + '：'"
                   prop="actName"
                 >
                   <el-input
                     size="small"
                     class="coupon_name_input"
-                    placeholder="最多输入10个字"
+                    :placeholder="$t('ordinaryCoupon.nameTip')"
                     v-model="param.actName"
                   ></el-input>
                 </el-form-item>
                 <el-form-item
-                  label="有效期："
+                  :label="$t('ordinaryCoupon.validityType') + '：'"
                   prop="validityType"
                 >
                   <div>
@@ -157,7 +131,7 @@
                       <el-radio
                         v-model="param.validityType"
                         :label='0'
-                      >固定日期</el-radio>
+                      >{{ $t('ordinaryCoupon.fixedDate') }}</el-radio>
                     </p>
                     <p style="margin:15px 0;">
                       <el-date-picker
@@ -167,8 +141,8 @@
                         value-format="yyyy-MM-dd HH:mm:ss"
                         format="yyyy-MM-dd HH:mm:ss"
                         range-separator="-"
-                        start-placeholder="生效时间"
-                        end-placeholder="过期时间"
+                        :start-placeholder="$t('ordinaryCoupon.startTime')"
+                        :end-placeholder="$t('ordinaryCoupon.endTime')"
                         size="small"
                       >
                       </el-date-picker>
@@ -178,7 +152,7 @@
                         v-model="param.validityType"
                         :label='1'
                         style="margin-right: 25px;"
-                      >领券开始</el-radio>
+                      >{{ $t('ordinaryCoupon.appoint') }}</el-radio>
                       <span>
                         <el-input
                           :disabled="param.validityType===1?false:true"
@@ -186,27 +160,27 @@
                           v-model="param.validity"
                           size="small"
                           class="small_input"
-                        ></el-input> 天
+                        ></el-input> {{ $t('ordinaryCoupon.appointDay') }}
                         <el-input
                           :disabled="param.validityType===1?false:true"
                           @blur="checkNum"
                           v-model="param.validityHour"
                           size="small"
                           class="small_input"
-                        ></el-input> 小时
+                        ></el-input> {{ $t('ordinaryCoupon.appointHour') }}
                         <el-input
                           :disabled="param.validityType===1?false:true"
                           @blur="checkNum"
                           v-model="param.validityMinute"
                           size="small"
                           class="small_input"
-                        ></el-input> 分钟内有效
+                        ></el-input> {{ $t('ordinaryCoupon.appointMinute') }}
                       </span>
                     </p>
                   </div>
                 </el-form-item>
                 <el-form-item
-                  label="初始库存："
+                  :label="$t('ordinaryCoupon.surplus') + '：'"
                   prop="surplus"
                 >
                   <div>
@@ -214,7 +188,7 @@
                       <el-radio
                         v-model="param.surplus"
                         :label='1'
-                      >库存数量</el-radio>
+                      >{{ $t('ordinaryCoupon.surplusRadio1') }}</el-radio>
                       <span>
                         <el-input
                           :disabled="param.surplus===1?false:true"
@@ -222,21 +196,21 @@
                           v-model.number="param.totalAmount"
                           size="small"
                           class="small_input"
-                        ></el-input>张
-                        <span style="color: #999;">优惠券可发放的总数量</span>
+                        ></el-input>{{ $t('ordinaryCoupon.surplusTip1') }}
+                        <span style="color: #999;">{{ $t('ordinaryCoupon.surplusTip2') }}</span>
                       </span>
                     </div>
                     <div>
                       <el-radio
                         v-model="param.surplus"
                         :label='0'
-                      >不限制库存</el-radio>
+                      >{{ $t('ordinaryCoupon.surplusRadio2') }}</el-radio>
                     </div>
 
                   </div>
                 </el-form-item>
                 <el-form-item
-                  label="优惠类型："
+                  :label="$t('ordinaryCoupon.preferentialType') + '：'"
                   prop="preferentialType"
                 >
                   <div>
@@ -245,7 +219,7 @@
                         v-model="param.preferentialType"
                         :label='2'
                         v-if="param.type==1"
-                      >随机金额</el-radio>
+                      >{{ $t('ordinaryCoupon.typeRadio1') }}</el-radio>
                       <el-input
                         :disabled="param.preferentialType==2?false:true"
                         v-model="param.randomNum1"
@@ -253,7 +227,7 @@
                         size="small"
                         class="small_input"
                       ></el-input>
-                      至
+                      {{ $t('ordinaryCoupon.typeTip1') }}
                       <el-input
                         :disabled="param.preferentialType==2?false:true"
                         v-model="param.randomNum2"
@@ -261,23 +235,23 @@
                         size="small"
                         class="small_input"
                       ></el-input>
-                      <span style="color: #999;display: block;">优惠金额将在指定范围内随机</span>
+                      <span style="color: #999;display: block;">{{ $t('ordinaryCoupon.typeTip2') }}</span>
                     </p>
 
                     <p>
                       <el-radio
                         v-model="param.preferentialType"
                         :label=0
-                      >指定金额</el-radio>
+                      >{{ $t('ordinaryCoupon.typeRadio2') }}</el-radio>
                       <span>
-                        面值：
+                        {{ $t('ordinaryCoupon.typeTip3') }}
                         <el-input
                           :disabled="param.preferentialType==0?false:true"
                           v-model.number="param.denomination"
                           @blur="checkNum"
                           size="small"
                           class="small_input"
-                        ></el-input> 元
+                        ></el-input> {{ $t('ordinaryCoupon.typeTip4') }}
                       </span>
                     </p>
 
@@ -285,31 +259,31 @@
                       <el-radio
                         v-model="param.preferentialType"
                         :label=1
-                      >折扣</el-radio>
+                      >{{ $t('ordinaryCoupon.typeRadio3') }}</el-radio>
                       <el-input
                         :disabled="param.preferentialType==1?false:true"
-                        v-model.number="param.denomination2"
+                        v-model="param.denomination2"
                         @blur="checkDiscount"
                         size="small"
                         class="small_input"
-                      ></el-input>折
+                      ></el-input> {{ $t('ordinaryCoupon.typeTip5') }}
                     </p>
 
                   </div>
                 </el-form-item>
                 <el-form-item
-                  label="是否需要兑换："
+                  :label="$t('ordinaryCoupon.isRandom') + '：'"
                   prop="isRandom"
                 >
                   <div>
                     <el-radio
                       v-model="param.isRandom"
                       :label='0'
-                    >不需要</el-radio>
+                    >{{ $t('ordinaryCoupon.randomRadio1') }}</el-radio>
                     <el-radio
                       v-model="param.isRandom"
                       :label='1'
-                    >需要兑换</el-radio>
+                    >{{ $t('ordinaryCoupon.randomRadio2') }}</el-radio>
                     <p v-if="param.isRandom== 1">
                       <el-input
                         v-model="param.scoreNumber"
@@ -317,17 +291,17 @@
                         class="small_input"
                         size="small"
                       ></el-input>
-                      积分兑换
+                      {{ $t('ordinaryCoupon.randomTip') }}
                     </p>
                   </div>
                 </el-form-item>
               </div>
 
               <div class="coupon_info">
-                <div class="coupon_info_title">基本规则</div>
+                <div class="coupon_info_title">{{ $t('ordinaryCoupon.couponRule') }}</div>
 
                 <el-form-item
-                  label="每人限领："
+                  :label="$t('ordinaryCoupon.receivePerPerson') + '：'"
                   prop="receivePerPerson"
                   v-if="param.type===0"
                 >
@@ -346,20 +320,20 @@
                   </div>
                 </el-form-item>
                 <el-form-item
-                  label="会员专享："
+                  :label="$t('ordinaryCoupon.member') + '：'"
                   v-if="param.type===0"
                 >
                   <div>
                     <p>
                       <el-checkbox
                         v-model="param.isExclusive"
-                        label="用户持有会员卡才可以参与活动"
+                        :label="$t('ordinaryCoupon.memberTip1')"
                       ></el-checkbox>
                     </p>
                     <div v-if="param.isExclusive">
                       <el-select
                         v-model="param.cardId"
-                        placeholder="请选择会员卡"
+                        :label="$t('ordinaryCoupon.memberTip2')"
                         multiple
                         size="small"
                       >
@@ -371,65 +345,65 @@
                         ></el-option>
                       </el-select>
                       <span class="card_links">
-                        <a>刷新</a><span> | </span>
-                        <a>新建会员卡</a><span> | </span>
-                        <a>管理会员卡</a>
+                        <a>{{ $t('ordinaryCoupon.memberTip3') }}</a><span> | </span>
+                        <a>{{ $t('ordinaryCoupon.memberTip4') }}</a><span> | </span>
+                        <a>{{ $t('ordinaryCoupon.memberTip5') }}</a>
                       </span>
                     </div>
                   </div>
                 </el-form-item>
                 <el-form-item
-                  label="领取码："
+                  :label="$t('ordinaryCoupon.validationCode') + '：'"
                   v-if="param.type===0"
                 >
                   <el-input
                     v-model="param.validationCode"
                     @blur="checkCode"
                     size="small"
-                    class="small_input"
+                    class="coupon_name_input"
                   ></el-input>
                 </el-form-item>
                 <el-form-item
-                  label="领券人数："
+                  :label="$t('ordinaryCoupon.couponNum') + '：'"
                   v-if="param.type===1"
                 >
                   <div>
                     <el-radio
                       v-model="param.couponNum"
                       :label="0"
-                    >不限制</el-radio>
+                    >{{ $t('ordinaryCoupon.numRadio1') }}</el-radio>
                     <el-radio
                       v-model="param.couponNum"
                       :label="1"
-                    >分享后</el-radio>
+                    >{{ $t('ordinaryCoupon.numRadio2') }}</el-radio>
                     <el-input
                       :disabled="param.couponNum==1?false:true"
                       v-model="param.humanNum"
                       size="small"
                       class="small_input"
                       style="margin-left: -30px;"
-                    ></el-input>名(包括送券人)用户可以领取此优惠券，最少2人
+                    ></el-input>{{ $t('ordinaryCoupon.numTip') }}
                   </div>
                 </el-form-item>
-                <el-form-item label="是否隐藏：">
+                <el-form-item :label="$t('ordinaryCoupon.enabled') + '：'">
                   <div style="display:flex">
                     <div>
                       <el-radio
                         v-model="param.enabled"
                         :label="0"
-                      >否</el-radio>
+                      >{{ $t('ordinaryCoupon.enabledRadio1') }}</el-radio>
                       <el-radio
                         v-model="param.enabled"
                         :label="1"
-                      >是</el-radio>
+                      >{{ $t('ordinaryCoupon.enabledRadio2') }}</el-radio>
                     </div>
                     <span style="flex:1;padding-left:15px;color:red;">
-                      隐藏则不显示在前端商品详情页。否则显示到前端商品详情页可以供用户领取。
+                      {{ $t('ordinaryCoupon.enabledTip') }}
                     </span>
                   </div>
                 </el-form-item>
                 <el-form-item
-                  label="使用门槛："
+                  :label="$t('ordinaryCoupon.restrict') + '：'"
                   prop="useConsumeRestrict"
                 >
                   <div>
@@ -437,26 +411,26 @@
                       <el-radio
                         v-model="param.useConsumeRestrict"
                         :label='0'
-                      >不限制</el-radio>
+                      >{{ $t('ordinaryCoupon.restrictRadio1') }}</el-radio>
                     </p>
                     <p>
                       <el-radio
                         v-model="param.useConsumeRestrict"
                         :label='1'
-                      >满<el-input
+                      >{{ $t('ordinaryCoupon.restrictRadio2') }}<el-input
                           :disabled="param.useConsumeRestrict === 0"
                           size="small"
                           v-model.number="param.leastConsume"
                           @blur="checkNum"
                           class="small_input"
                         ></el-input>
-                        元可用
+                        {{ $t('ordinaryCoupon.restrictTip') }}
                       </el-radio>
                     </p>
                   </div>
                 </el-form-item>
                 <el-form-item
-                  label="可使用商品："
+                  :label="$t('ordinaryCoupon.suitGoods') + '：'"
                   prop="suitGoods"
                 >
                   <div>
@@ -464,13 +438,13 @@
                       <el-radio
                         v-model="param.suitGoods"
                         :label='0'
-                      >全部商品</el-radio>
+                      >{{ $t('ordinaryCoupon.suitGoodsRadio1') }}</el-radio>
                     </p>
                     <p>
                       <el-radio
                         v-model="param.suitGoods"
                         :label='1'
-                      >指定商品</el-radio>
+                      >{{ $t('ordinaryCoupon.suitGoodsRadio2') }}</el-radio>
                     </p>
                     <div v-if="param.suitGoods === 1">
                       <div
@@ -483,19 +457,19 @@
                           <img :src="$imageHost+'/image/admin/icon_jia.png'">
                           {{item.name}}
                         </div>
-                        <div v-if="index === 0">已选{{ goodsInfo.length > 0 ? goodsInfo.length : 0 }}件商品</div>
-                        <div v-if="index === 1">已选{{ busClass.length > 0 ? busClass.length : 0 }}个商家</div>
-                        <div v-if="index === 2">已选{{ platClass.length > 0 ? platClass.length : 0 }}个平台</div>
+                        <div v-if="index === 0">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip2') }}</div>
+                        <div v-if="index === 1">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip3') }}</div>
+                        <div v-if="index === 2">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip4') }}</div>
                       </div>
                     </div>
                   </div>
                 </el-form-item>
-                <el-form-item label="使用说明：">
+                <el-form-item :label="$t('ordinaryCoupon.useExplain') + '：'">
                   <el-input
                     type="textarea"
                     :rows="5"
                     v-model="param.useExplain"
-                    placeholder="请输入使用说明"
+                    :placeholder="$t('ordinaryCoupon.useExplainTip')"
                     resize="none"
                   ></el-input>
                 </el-form-item>
@@ -511,7 +485,7 @@
         type="primary"
         size="small"
         @click="saveCoupon()"
-      >保存</el-button>
+      >{{ $t('ordinaryCoupon.save') }}</el-button>
     </div>
     <!--选择商品弹窗-->
     <ChoosingGoods
@@ -540,9 +514,9 @@ export default {
     // 自定义校验有效期
     var validateTime = (rule, value, callback) => {
       if (value === 0 && this.param.couponDate === '') {
-        callback(new Error('请选择固定日期!'))
+        callback(new Error(this.$t('ordinaryCoupon.validateTime1')))
       } else if (value === 1 && (this.param.validity === '' || this.param.validityHour === '' || this.param.validityMinute === '')) {
-        callback(new Error('请填写完整填写日期!'))
+        callback(new Error(this.$t('ordinaryCoupon.validateTime2')))
       } else {
         callback()
       }
@@ -550,7 +524,7 @@ export default {
     // 自定义校验初始库存
     var validateSurplus = (rule, value, callback) => {
       if (value === 1 && this.param.totalAmount === null) {
-        callback(new Error('请填写初始库存!'))
+        callback(new Error(this.$t('ordinaryCoupon.validateSurplus')))
       } else {
         callback()
       }
@@ -558,9 +532,9 @@ export default {
     // 自定义校验优惠类型
     var validatePreferentialType = (rule, value, callback) => {
       if (value === 0 && this.param.denomination === null) {
-        callback(new Error('请填写优惠面值!'))
+        callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType1')))
       } else if (value === 1 && this.param.denomination2 === null) {
-        callback(new Error('请填写优惠折扣!'))
+        callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType2')))
       } else {
         callback()
       }
@@ -568,7 +542,7 @@ export default {
     // 自定义校验积分兑换
     var validateisRandom = (rule, value, callback) => {
       if (value === 1 && this.param.scoreNumber === null) {
-        callback(new Error('请填写积分兑换!'))
+        callback(new Error(this.$t('ordinaryCoupon.validateisRandom')))
       } else {
         callback()
       }
@@ -576,7 +550,7 @@ export default {
     // 自定义校验使用门槛
     var validateuseConsumeRestrict = (rule, value, callback) => {
       if (value === 1 && this.param.leastConsume === null) {
-        callback(new Error('请填写使用门槛!'))
+        callback(new Error(this.$t('ordinaryCoupon.validateuseConsumeRestrict')))
       } else {
         callback()
       }
@@ -584,11 +558,11 @@ export default {
     // 自定义校验可使用商品
     var validatesuitGoods = (rule, value, callback) => {
       if (value === 1 && this.goodsInfo.length === 0) {
-        callback(new Error('请选择可使用商品!'))
+        callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods1')))
       } else if (value === 1 && this.busClass.length === 0) {
-        callback(new Error('请选择指定商品分类!'))
+        callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods2')))
       } else if (value === 1 && this.platClass.length === 0) {
-        callback(new Error('请选择指定平台分类!'))
+        callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods3')))
       } else {
         callback()
       }
@@ -636,16 +610,16 @@ export default {
         isExclusive: false
       },
       paramRules: {
-        type: { required: true, message: '请选择优惠券类型', trigger: 'change' },
+        type: { required: true, message: this.$t('ordinaryCoupon.validateType'), trigger: 'change' },
         actName: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { max: 10, message: '长度在不能超过10个字符', trigger: 'blur' }
+          { required: true, message: this.$t('ordinaryCoupon.validateactName1'), trigger: 'blur' },
+          { max: 10, message: this.$t('ordinaryCoupon.validateactName2'), trigger: 'blur' }
         ],
         validityType: { required: true, validator: validateTime, trigger: 'change' },
         surplus: { required: true, validator: validateSurplus, trigger: 'change' },
         preferentialType: { required: true, validator: validatePreferentialType, trigger: 'change' },
         isRandom: { required: true, validator: validateisRandom, trigger: 'change' },
-        receivePerPerson: { required: true, message: '请选择每人限领张数', trigger: 'change' },
+        receivePerPerson: { required: true, message: this.$t('ordinaryCoupon.validatereceivePerPerson'), trigger: 'change' },
         useConsumeRestrict: { required: true, validator: validateuseConsumeRestrict, trigger: 'change' },
         suitGoods: { required: true, validator: validatesuitGoods, trigger: 'change' }
       },
@@ -682,23 +656,7 @@ export default {
 
       cardList: [], // 会员卡列表
 
-      noneBlockDiscArr: [
-        {
-          name: '添加商品',
-          value: '1',
-          num: ''
-        },
-        {
-          name: '添加商品分类',
-          value: '2',
-          num: ''
-        },
-        {
-          name: '添加平台分类',
-          value: '3',
-          num: ''
-        }
-      ],
+      noneBlockDiscArr: [], // 指定商品
       tuneUpChooseGoods: false, // 商品弹窗
       tuneUpBusClassDialog: false, // 商家/平台弹窗
       classFlag: 0, // 商家/平台类型
@@ -725,6 +683,7 @@ export default {
       this.editType = true
       this.getOneInfo()
     }
+    this.noneBlockDiscArr = this.$t('ordinaryCoupon.noneBlockDiscArr')
   },
   methods: {
     handleClick () {
@@ -860,19 +819,19 @@ export default {
       // 非0正整数
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (!re.test(e.target.value)) {
-        this.$message.warning({ message: '请输入0或者正整数！' })
+        this.$message.warning({ message: this.$t('ordinaryCoupon.validateNum') })
       }
     },
     // 校验打折
     checkDiscount (e) {
-      // var re = /^((0\.[1-9]{1})|(([1-9]{1})(\.\d{1})?))$/
-      // if (!re.test(e.target.value)) {
-      //   this.$message.warning({ message: '请输入正确的数字！' })
-      // }
+      var re = /^((0\.[1-9]{1})|(([1-9]{1})(\.\d{1})?))$/
+      if (!re.test(e.target.value)) {
+        this.$message.warning({ message: this.$t('ordinaryCoupon.validateDiscount') })
+      }
     },
     // 校验领取码
     checkCode (e) {
-      // var re = /^(0|\+?[1-9][0-9]*)$/
+      // var re = /^$/
       // if (!re.test(e.target.value)) {
       //   this.$message.warning({ message: '请输入正确的领取码！' })
       // }
@@ -916,8 +875,10 @@ export default {
             // 添加保存
             saveCoupon(this.param).then((res) => {
               if (res.error === 0) {
-                this.$message.success({ message: '添加成功' })
+                this.$message.success({ message: this.$t('ordinaryCoupon.addSuccess') })
                 this.$router.push({ 'name': 'ordinary_coupon' })
+              } else {
+                this.$message.warning({ message: this.$t('ordinaryCoupon.addDefault') })
               }
             })
           } else {
@@ -927,8 +888,10 @@ export default {
             console.log(obj)
             updateSaveCoupon(obj).then((res) => {
               if (res.error === 0) {
-                this.$message.success({ message: '修改成功' })
+                this.$message.success({ message: this.$t('ordinaryCoupon.editSuccess') })
                 this.$router.push({ 'name': 'ordinary_coupon' })
+              } else {
+                this.$message.warning({ message: this.$t('ordinaryCoupon.editDefault') })
               }
             })
           }
@@ -940,7 +903,6 @@ export default {
     },
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
-      console.log('选择商品弹窗回调显示:', row)
       this.goodsInfoRow = row
       this.goodsInfo = []
       this.goodsInfoRow.map((item, index) => {
@@ -949,7 +911,6 @@ export default {
     },
     // 选择商家分类/平台分类弹窗回调显示
     busClassDialogResult (row) {
-      console.log('选择商家分类/平台分类弹窗回调显示:', row)
       if (this.flag === 1) {
         // 商家分类
         this.busClassRow = row

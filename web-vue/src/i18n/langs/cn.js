@@ -26,7 +26,6 @@ import {
 import {
   cn as router
 } from './views/admin_new/cn/routerCn'
-// import { cn as ordinaryCoupon } from './views/ordinaryCoupon'
 import {
   cn as ShopConfiguration
 } from './views/ShopConfiguration'
@@ -213,6 +212,10 @@ import {
 import {
   cn as addBargainAct
 } from './views/admin_new/cn/index/marketManagement/bargain/addBargainActCn'
+// 普通优惠券
+import {
+  cn as ordinaryCoupon
+} from './views/admin_new/cn/index/marketManagement/ordinaryCouponCn'
 // 好友助力
 import {
   cn as promoteList
@@ -864,7 +867,7 @@ const cn = {
   // 营销
   marketManage, // 营销管理
   marketCommon, // 营销管理通用词汇
-  // ordinaryCoupon, // 普通优惠券
+  ordinaryCoupon, // 普通优惠券
   groupBuy, // 多人拼团
   couponPackage, // 优惠券礼包
   addCouponPackage, // 优惠券礼包-活动创建页
