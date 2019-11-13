@@ -24,6 +24,8 @@ public class GoodsDetailMpVo extends GoodsBaseMpVo {
     private Integer limitBuyNum;
     private Integer limitMaxNum;
     private Byte isExclusive;
+    private Byte isPageUp;
+    private String goodsDesc;
 
     private Integer brandId;
     private String brandName;

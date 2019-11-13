@@ -41,6 +41,8 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
     private Integer limitBuyNum;
     private Integer limitMaxNum;
     private Byte isExclusive;
+    private Byte isPageUp;
+    private String goodsDesc;
 
     private List<String> labels;
     private List<CouponDetailMpVo> coupons;
@@ -74,6 +76,8 @@ public class GoodsDetailMpCapsule extends GoodsBaseCapsule{
         vo.setLimitBuyNum(this.limitBuyNum);
         vo.setLimitMaxNum(this.limitMaxNum);
         vo.setIsExclusive(this.isExclusive);
+        vo.setIsPageUp(this.isPageUp);
+        vo.setGoodsDesc(this.goodsDesc);
 
         vo.setUserCanBuy(this.userCanBuy);
         vo.setLabels(this.labels);
