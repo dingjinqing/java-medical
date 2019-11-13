@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.FootprintRecordRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
@@ -89,11 +90,11 @@ public class FootPrintService extends ShopBaseService {
 	 * 获取足迹记录
 	 * @param userId  用户id1
 	 * @param keyWord 关键字
-	 * @param currentPages 翻页信息
+	 * @param currentPage 翻页信息
 	 * @param pageRows
 	 * @return FootprintListVo
 	 */
-	public FootprintListVo getFootprintPage(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
+	public FootprintListVo getFootprintPage(Integer userId, String keyWord, Integer currentPage, Integer pageRows){
 		FootprintListVo footprintListVo =new FootprintListVo();
 		List<FootprintDayVo> footprintDaylist =new ArrayList<>();
 		footprintListVo.setFootprintDay(footprintDaylist);
@@ -107,10 +108,14 @@ public class FootPrintService extends ShopBaseService {
 		if (!StringUtils.isBlank(keyWord)){
 			select.and(GOODS.GOODS_NAME.like(likeValue(keyWord)));
 		}
-		Result<? extends Record> records = select.orderBy(FOOTPRINT_RECORD.UPDATE_TIME.desc()).limit(currentPages - 1, pageRows).fetch();
+		// 总页数
+		Integer totalRows = db().fetchCount(select);
+		Page page = Page.getPage(totalRows, currentPage, pageRows);
+		footprintListVo.setPage(page);
+		Result<? extends Record> records = select.orderBy(FOOTPRINT_RECORD.UPDATE_TIME.desc()).limit(currentPage - 1, pageRows).fetch();
 		List<Integer> goodsIdList = Arrays.asList(records.intoArray(GOODS.GOODS_ID));
 		List<FootprintDayVo> footprintList =records.into(FootprintDayVo.class);
-        List<GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId, currentPages, pageRows);
+        List<GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId, currentPage, pageRows);
 		Map<Integer, GoodsListMpVo> goodsListMpVoMap = goodsListMpVos.stream().collect(Collectors.toMap(GoodsListMpVo::getGoodsId, goods->goods));
 		footprintList.forEach(footprintGoods->{
 			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(footprintGoods.getGoodsId());

@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,16 +58,17 @@ public class CartService extends ShopBaseService {
 
     /**
      * 购物车列表
+     *
      * @param userId 用户id
-     * @return  购物车列表
+     * @return 购物车列表
      */
     public WxAppCartListVo getCartList(Integer userId) {
         WxAppCartListVo cartListVo;
         // 查询购物车记录
         Result<? extends Record> records = db().select(CART.REC_ID, CART.GOODS_NAME, CART.IS_CHECKED, CART.GOODS_SPECS,
                 CART.IDENTITY_ID, CART.GOODS_PRICE, CART.EXTEND_ID, CART.GOODS_NUMBER,
-                GOODS.GOODS_ID,GOODS.SORT_ID,GOODS.CAT_ID,GOODS.BRAND_ID, GOODS.GOODS_IMG, GOODS.LIMIT_BUY_NUM,
-                GOODS.LIMIT_MAX_NUM, GOODS.GOODS_TYPE, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,GOODS.IS_CARD_EXCLUSIVE,
+                GOODS.GOODS_ID, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS.GOODS_IMG, GOODS.LIMIT_BUY_NUM,
+                GOODS.LIMIT_MAX_NUM, GOODS.GOODS_TYPE, GOODS.DEL_FLAG, GOODS.IS_ON_SALE, GOODS.IS_CARD_EXCLUSIVE,
                 GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_IMG)
                 .from(CART)
                 .innerJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
@@ -76,15 +78,17 @@ public class CartService extends ShopBaseService {
         List<WxAppCartGoods> cartGoodsList = records.into(WxAppCartGoods.class);
         List<Integer> productIdList = records.getValues(GOODS_SPEC_PRODUCT.PRD_ID);
         List<Integer> goodsIdList = records.getValues(GOODS.GOODS_ID).stream().distinct().collect(Collectors.toList());
-        WxAppCartBo cartBo =WxAppCartBo.builder()
+        WxAppCartBo cartBo = WxAppCartBo.builder()
                 .userId(userId).date(DateUtil.getLocalDateTime())
                 .productIdList(productIdList).goodsIdList(goodsIdList)
-                .cartGoodsList(cartGoodsList).build();
+                .cartGoodsList(cartGoodsList).invalidCartList(new ArrayList<>()).build();
+        if (0 == cartGoodsList.size()) {
+            return null;
+        }
         cartProcessor.executeCart(cartBo);
         return cartBo.getCartListVo();
 
     }
-
 
 
     public int setCartGoodsFail(Integer recId) {

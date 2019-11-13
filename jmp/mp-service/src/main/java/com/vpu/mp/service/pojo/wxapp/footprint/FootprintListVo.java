@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.footprint;
 
+import com.vpu.mp.service.foundation.util.Page;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +20,6 @@ public class FootprintListVo {
     /**
      * 	分页信息
      */
-    private Integer currentPage;
-    private Integer pageRows;
+    Page page;
 
 }

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
@@ -26,13 +27,8 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("doCartOperation",cartBo);
+        log.info("doCartOperation", Util.toJson(cartBo));
         //删除的,下架的--移动到失效列表
-        for (WxAppCartGoods cartGoods: cartBo.getCartGoodsList()){
-            if (cartGoods.getGoodsId() == null || cartGoods.getPrdId() == null) {
-
-            }
-        }
         List<WxAppCartGoods> invalidGoodsList = cartBo.getCartGoodsList().stream().filter(goods -> {
             if (goods.getGoodsId() == null || goods.getPrdId() == null|| goods.getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_DELETE);
