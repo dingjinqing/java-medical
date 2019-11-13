@@ -28,24 +28,10 @@
         <div class="p_top_right">
           <div class="topRightDiv">
             <span>页面名称</span>
-            <el-autocomplete
-              popper-class="my-autocomplete"
-              v-model="statePage"
-              :fetch-suggestions="querySearch"
+            <el-input
+              v-model="inputPageName"
               placeholder="请输入页面名称"
-              size='small'
-              @keyup.enter.native="handlePageName()"
-            >
-              <i
-                class="el-icon-search el-input__icon"
-                slot="suffix"
-              >
-              </i>
-              <template slot-scope="props">
-                <div class="name">{{ props.item.value }}</div>
-                <span class="addr">{{ props.item.address }}</span>
-              </template>
-            </el-autocomplete>
+            ></el-input>
           </div>
           <div class="topRightDiv">
             <span>页面分类</span>
@@ -67,7 +53,7 @@
             <el-button
               type="primary"
               size="small"
-              @click="handleQuery()"
+              @click="list()"
             >查询</el-button>
           </div>
         </div>
@@ -295,9 +281,10 @@ export default {
   components: { SelectTemplateDialog: () => import('./selectTemplateDialog'), pagination },
   data () {
     return {
+      inputPageName: null,
       iconUrl: this.$imageHost + '/image/admin/system_icon.png',
       pageNameInput: '',
-      currentPage: null,
+      currentPage: '',
       restaurants: [],
       statePage: '',
       selectValue: null,
@@ -314,7 +301,10 @@ export default {
       pathInput: '',
       flag: true,
       tuneUpMiniPage: false,
-      pageParams: {},
+      pageParams: {
+        inputPageName: '',
+        selectValue: ''
+      },
       param: {},
       pageId: '',
       cateId: '',
@@ -364,6 +354,7 @@ export default {
     // 初始化语言
     this.langDefault()
     this.list()
+    this.getPageCate(-1)
   },
   methods: {
     querySearch (queryString, cb) {
@@ -378,16 +369,18 @@ export default {
       }
     },
     loadAll () {
-      return [
-        { 'value': '三全鲜食（北新泾店）', 'address': '长宁区新渔路144号' },
-        { 'value': 'Hot honey 首尔炸鸡（仙霞路）', 'address': '上海市长宁区淞虹路661号' },
-        { 'value': '新旺角茶餐厅', 'address': '上海市普陀区真北路988号创邑金沙谷6号楼113' },
-        { 'value': '泷千家(天山西路店)', 'address': '天山西路438号' }
+      // return [
+      //   { 'value': '三全鲜食（北新泾店）', 'address': '长宁区新渔路144号' },
+      //   { 'value': 'Hot honey 首尔炸鸡（仙霞路）', 'address': '上海市长宁区淞虹路661号' },
+      //   { 'value': '新旺角茶餐厅', 'address': '上海市普陀区真北路988号创邑金沙谷6号楼113' },
+      //   { 'value': '泷千家(天山西路店)', 'address': '天山西路438号' }
 
-      ]
+      // ]
     },
     // 页面列表
     list () {
+      this.pageParams.inputPageName = this.inputPageName
+      this.pageParams.selectValue = this.selectValue
       console.log(this.pageParams)
       pageList(this.pageParams).then((res) => {
         if (res.error === 0) {
@@ -501,7 +494,9 @@ export default {
           this.pageSetoptions = res.content
         }
       })
-      this.pageSetdialogVisible = true
+      if (pageId > -1) {
+        this.pageSetdialogVisible = true
+      }
     },
     // 装修页面设置页面分类
     savePageCate () {
