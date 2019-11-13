@@ -1,5 +1,10 @@
 package com.vpu.mp.service.pojo.shop.decoration.module;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;

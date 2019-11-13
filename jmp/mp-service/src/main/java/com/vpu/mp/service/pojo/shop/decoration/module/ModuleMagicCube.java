@@ -8,6 +8,11 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Getter
 @Setter
 public class ModuleMagicCube extends ModuleBase {

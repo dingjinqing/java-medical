@@ -9,6 +9,11 @@ import com.vpu.mp.service.pojo.wxapp.coupon.ShopCollectInfo;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Data
 public class WxAppPageVo {
 	@JsonProperty(value = "page_info")

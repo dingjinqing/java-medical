@@ -14,7 +14,11 @@ import org.springframework.stereotype.Component;
 import com.vpu.mp.support.SpringUtil;
 
 import lombok.extern.slf4j.Slf4j;
-
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Component
 @Slf4j
 public class CommandKernel implements ApplicationRunner,ApplicationContextAware {

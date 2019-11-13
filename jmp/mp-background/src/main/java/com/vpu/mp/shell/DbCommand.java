@@ -26,6 +26,11 @@ import com.vpu.mp.service.saas.SaasApplication;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Slf4j
 @SshShellComponent
 @ShellCommandGroup("Database Commands")

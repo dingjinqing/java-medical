@@ -6,6 +6,11 @@ import org.springframework.boot.ApplicationArguments;
 
 import com.vpu.mp.service.foundation.util.Util;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 public interface CommandRunner {
 
 	String description();

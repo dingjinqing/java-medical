@@ -7,6 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 public class ModuleHotArea extends ModuleBase {
 	/**
 	 * 背景图片

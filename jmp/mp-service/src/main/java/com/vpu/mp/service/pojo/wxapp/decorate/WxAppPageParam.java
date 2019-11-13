@@ -6,6 +6,11 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppCommonParam;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 
+ * @author lixinguo
+ *
+ */
 @Getter
 @Setter
 public class WxAppPageParam extends WxAppCommonParam {
