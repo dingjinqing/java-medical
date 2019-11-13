@@ -467,6 +467,8 @@ public class Indexes {
     public static final Index USER_COLLECTION_PRIMARY = Indexes0.USER_COLLECTION_PRIMARY;
     public static final Index USER_COLLECTION_SHOP_ID = Indexes0.USER_COLLECTION_SHOP_ID;
     public static final Index USER_COLLECTION_GOODS_ID = Indexes0.USER_COLLECTION_GOODS_ID;
+    public static final Index USER_RFM_SUMMARY_PRIMARY = Indexes0.USER_RFM_SUMMARY_PRIMARY;
+    public static final Index USER_RFM_SUMMARY_REF_DATE = Indexes0.USER_RFM_SUMMARY_REF_DATE;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -911,5 +913,7 @@ public class Indexes {
         public static Index USER_COLLECTION_PRIMARY = Internal.createIndex("PRIMARY", UserCollection.USER_COLLECTION, new OrderField[] { UserCollection.USER_COLLECTION.ID }, true);
         public static Index USER_COLLECTION_SHOP_ID = Internal.createIndex("shop_id", UserCollection.USER_COLLECTION, new OrderField[] { UserCollection.USER_COLLECTION.SHOP_ID }, false);
         public static Index USER_COLLECTION_GOODS_ID = Internal.createIndex("goods_id", UserCollection.USER_COLLECTION, new OrderField[] { UserCollection.USER_COLLECTION.GOODS_ID }, false);
+        public static Index USER_RFM_SUMMARY_PRIMARY = Internal.createIndex("PRIMARY", UserRfmSummary.USER_RFM_SUMMARY, new OrderField[] { UserRfmSummary.USER_RFM_SUMMARY.ID }, true);
+        public static Index USER_RFM_SUMMARY_REF_DATE = Internal.createIndex("ref_date", UserRfmSummary.USER_RFM_SUMMARY, new OrderField[] { UserRfmSummary.USER_RFM_SUMMARY.REF_DATE }, false);
     }
 }

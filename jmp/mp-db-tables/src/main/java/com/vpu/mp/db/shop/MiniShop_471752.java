@@ -4,18 +4,15 @@
 package com.vpu.mp.db.shop;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
-import com.vpu.mp.db.shop.tables.records.ShareAwardRecord;
+import com.vpu.mp.db.shop.tables.*;
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
-import com.vpu.mp.db.shop.tables.*;
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -1061,6 +1058,10 @@ public class MiniShop_471752 extends SchemaImpl {
      * 基础配置-模版管理
      */
     public final MessageTemplateConfig MESSAGE_TEMPLATE_CONFIG = com.vpu.mp.db.shop.tables.MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG;
+    /**
+     * The table <code>mini_shop_471752.b2c_user_rfm_summary</code>.
+     */
+    public final UserRfmSummary USER_RFM_SUMMARY = com.vpu.mp.db.shop.tables.UserRfmSummary.USER_RFM_SUMMARY;
 
     /**
      * No further instances allowed
@@ -1288,6 +1289,7 @@ public class MiniShop_471752 extends SchemaImpl {
             ShareAward.SHARE_AWARD,
             com.vpu.mp.db.shop.tables.ShareAwardRecord.SHARE_AWARD_RECORD,
             ShareAwardReceive.SHARE_AWARD_RECEIVE,
-            AttendShareUser.ATTEND_SHARE_USER);
+            AttendShareUser.ATTEND_SHARE_USER,
+            UserRfmSummary.USER_RFM_SUMMARY);
     }
 }

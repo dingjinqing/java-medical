@@ -4,9 +4,9 @@
 package com.vpu.mp.db.shop;
 
 
-import javax.annotation.Generated;
-
 import com.vpu.mp.db.shop.tables.*;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -1045,4 +1045,8 @@ public class Tables {
      * The table <code>mini_shop674625.b2c_message_template_config</code>.
      */
     public static final MessageTemplateConfig MESSAGE_TEMPLATE_CONFIG = com.vpu.mp.db.shop.tables.MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG;
+    /**
+     * The table <code>mini_shop_471752.b2c_user_rfm_summary</code>.
+     */
+    public static final UserRfmSummary USER_RFM_SUMMARY = com.vpu.mp.db.shop.tables.UserRfmSummary.USER_RFM_SUMMARY;
 }

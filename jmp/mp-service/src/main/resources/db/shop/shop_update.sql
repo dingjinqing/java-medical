@@ -1125,3 +1125,19 @@ MODIFY COLUMN `total_stock` int(11) NOT NULL DEFAULT '0' COMMENT '总库存';
 
 ALTER TABLE b2c_sec_kill_product_define add index sk_id(`sk_id`);
 ALTER TABLE b2c_sec_kill_define add index goods_id(`goods_id`);
+
+-- 新增 用户统计-rfm统计表
+drop table if exists `b2c_user_rfm_summary`;
+CREATE TABLE `b2c_user_rfm_summary` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ref_date` date NOT NULL COMMENT '统计日期，如2018-09-04，按照下单时间',
+  `recency_type` tinyint(2) NOT NULL COMMENT '最近一次消费时间类型（小达顺序，左闭右开）：1最近5天内，2最近5到10天，3最近10到30天，4最近30到90天，5最近90到180天，6最近180到365天，7最近365天以上',
+  `frequency_type` tinyint(2) NOT NULL COMMENT '最近时间范围内用户消费频次类型：1，2，3，4，5大于等于5次',
+  `total_paid_money` decimal(10,2) DEFAULT NULL COMMENT '总成交金额',
+  `pay_user_num` int(11) DEFAULT '0' COMMENT '下单人数（已付款订单人数）',
+  `create_time` timestamp    default current_timestamp,
+  `update_time` timestamp    default current_timestamp on update current_timestamp comment '最后修改时间',
+  `order_num` int(11) DEFAULT '0' COMMENT '订单数量（已付款订单数）',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `ref_date` (`ref_date`) USING BTREE
+);

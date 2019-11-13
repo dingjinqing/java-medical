@@ -244,6 +244,7 @@ public class Keys {
     public static final Identity<UserCollectionRecord, Integer> IDENTITY_USER_COLLECTION = Identities0.IDENTITY_USER_COLLECTION;
     public static final Identity<PayAwardRecord, Integer> IDENTITY_PAY_AWARD = Identities0.IDENTITY_PAY_AWARD;
     public static final Identity<PayAwardRecordRecord, Integer> IDENTITY_PAY_AWARD_RECORD = Identities0.IDENTITY_PAY_AWARD_RECORD;
+    public static final Identity<UserRfmSummaryRecord, Integer> IDENTITY_USER_RFM_SUMMARY = Identities0.IDENTITY_USER_RFM_SUMMARY;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -484,6 +485,8 @@ public class Keys {
     public static final UniqueKey<UploadedVideoCategoryRecord> KEY_B2C_UPLOADED_VIDEO_CATEGORY_PRIMARY =  UniqueKeys0.KEY_B2C_UPLOADED_VIDEO_CATEGORY_PRIMARY;
     public static final Identity<UploadedVideoCategoryRecord, Integer> IDENTITY_UPLOADED_VIDEO_CATEGORY = Identities0.IDENTITY_UPLOADED_VIDEO_CATEGORY;
     public static final UniqueKey<UserCollectionRecord> KEY_B2C_USER_COLLECTION_PRIMARY = UniqueKeys0.KEY_B2C_USER_COLLECTION_PRIMARY;
+    public static final UniqueKey<UserRfmSummaryRecord> KEY_B2C_USER_RFM_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_USER_RFM_SUMMARY_PRIMARY;
+
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -701,6 +704,7 @@ public class Keys {
         public static Identity<AttendShareUserRecord, Integer> IDENTITY_ATTEND_SHARE_USER = Internal.createIdentity(AttendShareUser.ATTEND_SHARE_USER, AttendShareUser.ATTEND_SHARE_USER.ID);
         public static Identity<MpOfficialAccountUserRecord, Integer> IDENTITY_MP_OFFICIAL_ACCOUNT_USER = Internal.createIdentity(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.REC_ID);
         public static final Identity<UserCollectionRecord, Integer> IDENTITY_USER_COLLECTION = Identities0.IDENTITY_USER_COLLECTION;
+        public static Identity<UserRfmSummaryRecord, Integer> IDENTITY_USER_RFM_SUMMARY = Internal.createIdentity(UserRfmSummary.USER_RFM_SUMMARY, UserRfmSummary.USER_RFM_SUMMARY.ID);
     }
 
     private static class UniqueKeys0 {
@@ -939,5 +943,6 @@ public class Keys {
         public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_PRIMARY = Internal.createUniqueKey(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, "KEY_b2c_mp_official_account_user_PRIMARY", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.REC_ID);
         public static final UniqueKey<MpOfficialAccountUserRecord> KEY_B2C_MP_OFFICIAL_ACCOUNT_USER_OPENID = Internal.createUniqueKey(MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER, "KEY_b2c_mp_official_account_user_openid", MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.OPENID, MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER.APP_ID);
         public static final UniqueKey<UserCollectionRecord> KEY_B2C_USER_COLLECTION_PRIMARY = Internal.createUniqueKey(UserCollection.USER_COLLECTION, "KEY_b2c_user_collection_PRIMARY", UserCollection.USER_COLLECTION.ID);
+        public static final UniqueKey<UserRfmSummaryRecord> KEY_B2C_USER_RFM_SUMMARY_PRIMARY = Internal.createUniqueKey(UserRfmSummary.USER_RFM_SUMMARY, "KEY_b2c_user_rfm_summary_PRIMARY", UserRfmSummary.USER_RFM_SUMMARY.ID);
     }
 }
