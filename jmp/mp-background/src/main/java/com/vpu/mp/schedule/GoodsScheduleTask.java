@@ -4,6 +4,7 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.saas.SaasApplication;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableScheduling
 @EnableAsync
-
+@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
 public class GoodsScheduleTask {
 
     @Autowired
