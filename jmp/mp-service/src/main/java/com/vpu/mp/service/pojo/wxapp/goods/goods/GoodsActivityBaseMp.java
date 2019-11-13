@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
-import lombok.Data;
+        import lombok.Data;
 
 /**
  * @author 李晓冰

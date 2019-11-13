@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.wxapp.cart.list;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -21,9 +23,13 @@ public class WxAppCartGoods {
      */
     private Integer goodsNumber;
     /**
-     * 购物车商品价格(规格原价)
+     * 购物车商品价格(添加购物车是价格)
      */
     private BigDecimal goodsPrice;
+    /**
+     * 商品规格价格(最后价格)
+     */
+    private BigDecimal prdPrice;
     /**
      * 是否选中
      */
@@ -74,14 +80,6 @@ public class WxAppCartGoods {
      */
     private Integer limitMaxNum;
     /**
-     * 商品规格价格
-     */
-    private BigDecimal prdPrice;
-    /**
-     * 市场价
-     */
-    private BigDecimal marketPrice;
-    /**
      * 图片
      */
     private String prdImg;
@@ -90,7 +88,7 @@ public class WxAppCartGoods {
      */
     private String goodsImg;
     /**
-     * 商品状态 1 在售 2 下架 3 删除 4 售罄
+     * 商品状态 1 在售 2 下架 3 删除 4 售罄 5
      */
     private Byte goodsStatus;
     /**
@@ -103,19 +101,17 @@ public class WxAppCartGoods {
     private Byte delFlag;
     //***** 活动属性 **************
     /**
-     *  活动价格后
+     * 活动列表
+     */
+    private List<CartActivityInfo> cartActivityInfos;
+    /**
+     * 活动价格后
      */
     private BigDecimal activityPrice;
     /**
      * 活动类型  1 会员等级价格
      */
     private Byte activityType;
-
-    /**
-     * 会员价 1 会员等级价
-     */
-    private Byte memberPriceType;
-    private BigDecimal memberPrice;
     /**
      * 商品活动类型  1：加价购主商品， 2： 满折满减
      */
@@ -125,7 +121,7 @@ public class WxAppCartGoods {
      */
     private Integer goodsType;
     /**
-     *  1会员卡 2限时降价 3,4 首单特惠
+     * 1会员卡 2限时降价 3,4 首单特惠
      */
     private Byte goodsPriceAction;
     /**
@@ -136,4 +132,29 @@ public class WxAppCartGoods {
      * 扩展字段: 如：换购挡位ID
      */
     private Integer extendId;
+
+    /**
+     * 转化为info 页面展示格式
+     * @return   CartGoodsInfo
+     */
+    public CartGoodsInfo toInfo() {
+        CartGoodsInfo cartGoodsInfo = new CartGoodsInfo();
+        cartGoodsInfo.setRecId(recId);
+        cartGoodsInfo.setGoodsId(getGoodsId());
+        cartGoodsInfo.setPrdId(prdId);
+        cartGoodsInfo.setGoodsStatus(goodsStatus);
+        cartGoodsInfo.setCartNumber(goodsNumber);
+        cartGoodsInfo.setIsChecked(isChecked);
+        cartGoodsInfo.setCartPrice(getPrdPrice());
+        cartGoodsInfo.setPrdPrice(prdPrice);
+        cartGoodsInfo.setPrdNumber(prdNumber);
+        cartGoodsInfo.setLimitBuyNum(limitBuyNum);
+        cartGoodsInfo.setLimitMaxNum(limitMaxNum);
+        cartGoodsInfo.setPrdImg(prdImg);
+        cartGoodsInfo.setGoodsImg(goodsImg);
+        cartGoodsInfo.setGoodsName(goodsName);
+        cartGoodsInfo.setGoodsSpecs(goodsSpecs);
+        cartGoodsInfo.setActivityInfos(cartActivityInfos);
+        return cartGoodsInfo;
+    }
 }

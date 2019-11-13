@@ -1,14 +1,20 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartGoodsInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,6 +65,30 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
+        WxAppCartListVo cartListVo = cartBo.getCartListVo();
+        List<CartGoodsInfo> cartGoodsInfoList =cartGoodsToInfo(cartBo.getCartGoodsList());
+        List<CartGoodsInfo> invalidCartGoodsInfoList =cartGoodsToInfo(cartBo.getInvalidCartList());
 
+        BigDecimal totalPrice  =new BigDecimal(0);
+        byte isAllCheck  = 1;
+        for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
+            if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
+                totalPrice = totalPrice.add(goods.getPrdPrice());
+            }
+            isAllCheck =0;
+        }
+        cartListVo.setTotalPrice(totalPrice);
+        cartListVo.setIsAllCheck(isAllCheck);
+        cartListVo.setCartGoodsList(cartGoodsInfoList);
+        cartListVo.setInvalidCartList(invalidCartGoodsInfoList);
     }
+
+    private  List<CartGoodsInfo> cartGoodsToInfo( List<WxAppCartGoods> cartGoodsList){
+        List<CartGoodsInfo> cartGoodsInfoList =new ArrayList<>();
+        cartGoodsList.forEach(goods->{
+            cartGoodsInfoList.add(goods.toInfo());
+        });
+        return cartGoodsInfoList;
+    }
+
 }

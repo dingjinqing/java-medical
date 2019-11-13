@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
@@ -97,8 +98,9 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
             // 会员等级
             userCartGradePrice.forEach(gradePrice -> {
                 if (goods.getPrdId().equals(gradePrice.getPrdId())) {
-                    goods.setMemberPrice(gradePrice.getGradePrice());
-                    goods.setMemberPriceType(GoodsConstant.ACTIVITY_TYPE_MEMBER_GRADE);
+                    CartActivityInfo gradePriceInfo =new CartActivityInfo();
+                    gradePriceInfo.setActivityType(GoodsConstant.ACTIVITY_TYPE_MEMBER_GRADE);
+                    gradePriceInfo.setMemberPriceType(gradePrice.getGradePrice());
                 }
             });
         });

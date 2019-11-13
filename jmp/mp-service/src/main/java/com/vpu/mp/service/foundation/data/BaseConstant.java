@@ -74,15 +74,16 @@ public final  class  BaseConstant {
     public final static byte GOODS_TYPE_HAS_FULL_REDUCTION = 121;
 
 
-    //*******************购物车*****************************/
+    //*************************首单特惠 超出限购数量后，买家不可继续添加购买该商品 0可以 1不可以
     /**
-     * 购物车选中状态
+     * 继续购买
      */
-    public final static byte CART_IS_CHECKED = 1;
+    public final static byte FIRST_SPECIAL_LIMIT_FLAG_CONTINUE =0;
     /**
-     * 购物车没选中
+     * 限制购买
      */
-    public final static byte CART_NO_CHECKED = 0;
+    public final static byte FIRST_SPECIAL_LIMIT_FLAG_CONFINE =1;
+
 
 
 }

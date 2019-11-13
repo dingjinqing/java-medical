@@ -76,67 +76,11 @@ public class CartService extends ShopBaseService {
                 .productIdList(productIdList).goodsIdList(goodsIdList)
                 .cartGoodsList(cartGoodsList).build();
         cartProcessor.executeCart(cartBo);
-        cartProductToGroup(cartGoodsList,productIdList, goodsIdList,userId);
         return cartBo.getCartListVo();
 
     }
 
 
-    /**
-     * 拼装购物车数据
-     *
-     *
-     * @param cartGoodsList
-     * @param productIdList
-     * @param goodsIdList
-     * @param userId        用户id
-     * @return
-     */
-    private WxAppCartListVo cartProductToGroup(List<WxAppCartGoods> cartGoodsList, List<Integer> productIdList, List<Integer> goodsIdList, Integer userId) {
-        WxAppCartListVo cartListVo = new WxAppCartListVo();
-        List<WxAppCartGoods> invalidCartList;
-        List<WxAppCartGoods> validCartList;
-        // 在售的,未删除的
-        validCartList = cartGoodsList.stream().filter(cartGoods ->
-                cartGoods.getDelFlag().equals(DelFlag.NORMAL_VALUE)&& cartGoods.getIsOnSale().equals(Integer.valueOf(1).byteValue()))
-                .collect(Collectors.toList());
-        // 不存在,已下架
-        invalidCartList = cartGoodsList.stream().filter(cartGoods -> {
-            if (cartGoods.getGoodsId() == null || cartGoods.getPrdId() == null) {
-                return true;
-            }
-            return cartGoods.getDelFlag() == 1 || cartGoods.getIsOnSale() == 0;
-        }).collect(Collectors.toList());
-        // 会员相关
-        List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(userId, productIdList);
-        Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(userId, cartGoodsList);
-        for (int i=0 ;i<validCartList.size();i++){
-            WxAppCartGoods cartGoods =validCartList.get(i);
-            //会员专享
-            if (cartGoods.getIsCardExclusive().equals(GoodsConstant.CARD_EXCLUSIVE)){
-                if (!userCardExclusive.contains(cartGoods.getGoodsId())){
-                    removeCartProductById(userId,cartGoods.getRecId());
-                    validCartList.remove(cartGoods);
-                    i--;
-                    continue;
-                }
-            }
-            // 已售罄
-            if (cartGoods.getPrdNumber() < cartGoods.getLimitBuyNum() || cartGoods.getPrdNumber() <= 0 || cartGoods.getIsOnSale() == 0) {
-                cartGoods.setIsChecked((byte) 0);
-            }
-            // 会员等级
-            userCartGradePrice.forEach(gradePrice -> {
-                if (cartGoods.getPrdId().equals(gradePrice.getPrdId())) {
-                    cartGoods.setActivityPrice(gradePrice.getGradePrice());
-                    cartGoods.setActivityType((byte) 1);
-                }
-            });
-        }
-        cartListVo.setCartGoodsList(validCartList);
-        cartListVo.setInvalidCartList(invalidCartList);
-        return cartListVo;
-    }
 
     public int setCartGoodsFail(Integer recId) {
         return db().update(CART).set(CART.ACTION, (byte) 0).set(CART.IDENTITY_ID, 0).set(CART.EXTEND_ID, 0).set(CART.IS_CHECKED, (byte) 0)

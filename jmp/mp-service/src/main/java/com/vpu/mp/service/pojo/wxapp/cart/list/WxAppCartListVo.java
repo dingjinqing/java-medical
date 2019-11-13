@@ -33,10 +33,10 @@ public class WxAppCartListVo {
     /**
      * 购物车一般商品
      */
-    private List<WxAppCartGoods> cartGoodsList;
+    private List<CartGoodsInfo> cartGoodsList;
     /**
      * 购物车 - 失效商品
      */
-    private List<WxAppCartGoods> invalidCartList;
+    private List<CartGoodsInfo> invalidCartList;
 
 }

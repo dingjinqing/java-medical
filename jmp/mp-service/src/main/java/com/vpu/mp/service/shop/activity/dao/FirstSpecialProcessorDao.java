@@ -6,8 +6,10 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 
 import org.jooq.Condition;
+import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -64,8 +66,8 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
      * @param productIdList 规格Id
      * @return  firstSpecialsPrdIdList
      */
-    public List<FirstSpecialProductRecord> getGoodsFirstSpecialPrdId(List<Integer> productIdList, Timestamp date) {
-        return db().select(FIRST_SPECIAL_PRODUCT.PRD_ID,FIRST_SPECIAL_PRODUCT.PRD_PRICE)
+    public Result<?extends Record> getGoodsFirstSpecialPrdId(List<Integer> productIdList, Timestamp date) {
+        return db().select(FIRST_SPECIAL_PRODUCT.PRD_ID, FIRST_SPECIAL_PRODUCT.PRD_PRICE, FIRST_SPECIAL.LIMIT_AMOUNT, FIRST_SPECIAL.LIMIT_FLAG)
                 .from(FIRST_SPECIAL_PRODUCT)
                 .leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL.ID.eq(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID))
                 .where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
@@ -75,7 +77,7 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
                         .or(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_NO).and(FIRST_SPECIAL.START_TIME.lt(date)
                                 .and(FIRST_SPECIAL.END_TIME.gt(date)))))
                 .orderBy(FIRST_SPECIAL.FIRST.desc())
-                .fetchInto(FirstSpecialProductRecord.class);
+                .fetch();
     }
 
 }

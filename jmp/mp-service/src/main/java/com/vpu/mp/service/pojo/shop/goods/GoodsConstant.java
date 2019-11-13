@@ -91,7 +91,7 @@ public class GoodsConstant {
 
     /*** 销售状态：在售*/
     public static final Byte ON_SALE = 1;
-    public static final Byte OFF_SALE = 1;
+    public static final Byte OFF_SALE = 0;
 
     /*** 会员专享状态：是*/
     public static final Byte CARD_EXCLUSIVE = 1;

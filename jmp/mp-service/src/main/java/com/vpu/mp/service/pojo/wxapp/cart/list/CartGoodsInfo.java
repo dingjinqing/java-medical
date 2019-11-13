@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 购物车商品信息
@@ -13,36 +14,42 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 public class CartGoodsInfo {
-
-    //**********基础信息***************
     /**
-     * 是否选中
+     * 购物车;id
      */
-    private Byte isChecked;
+    private Long recId;
     /**
      * 商品id
      */
     private Integer goodsId;
     /**
-     * 商品图片
-     */
-    private String goodsImg;
-    /**
      * 规格id
      */
-    private Integer productId;
+    private Integer prdId;
     /**
-     * 图片
+     * 商品状态 1 在售 2 下架 3 删除 4 售罄 5专享
      */
-    private String prdImg;
+    private Byte goodsStatus;
     /**
      * 购物车数量
      */
-    private Integer prdNumber;
+    private Integer cartNumber;
     /**
-     * 商品规格
+     * 是否选中
      */
-    private String goodsSpecs;
+    private Byte isChecked;
+    /**
+     * 购物车商品价格(规格原价)
+     */
+    private BigDecimal cartPrice;
+    /**
+     * 商品规格价格
+     */
+    private BigDecimal prdPrice;
+    /**
+     * 商品规格数量
+     */
+    private Integer prdNumber;
     /**
      * 商品最大购买数量
      */
@@ -52,13 +59,24 @@ public class CartGoodsInfo {
      */
     private Integer limitMaxNum;
     /**
-     * 商品规格价格现价
+     * 图片
      */
-    private BigDecimal prdPrice;
+    private String prdImg;
     /**
-     * 添加到购物车时的价格
+     * 商品图片
      */
-    private BigDecimal oldPrice;
-    //*******活动**********
+    private String goodsImg;
+    /**
+     * 商品名称
+     */
+    private String goodsName;
+    /**
+     * 商品规格
+     */
+    private String goodsSpecs;
+    /**
+     * 活动类型
+     */
+    private List<CartActivityInfo> activityInfos;
 
 }

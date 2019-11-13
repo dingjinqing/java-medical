@@ -7,6 +7,8 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.MemberCardDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
@@ -164,16 +166,25 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
 
     //**********************购物车********************************
     /**
-     * 购物车
+     * 专享
      * @param cartBo
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
         Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(cartBo.getUserId(), cartBo.getCartGoodsList());
-        cartBo.getCartGoodsList().forEach(goods->{
-            if (goods.getIsCardExclusive().equals(GoodsConstant.CARD_EXCLUSIVE)&&!userCardExclusive.contains(goods.getGoodsId())){
-                cartService.removeCartProductById(cartBo.getUserId(),goods.getRecId());
-                goods.setActivityType(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
+        cartBo.getCartGoodsList().forEach(goods -> {
+            if (goods.getIsCardExclusive().equals(GoodsConstant.CARD_EXCLUSIVE)) {
+                // 会员专享商品
+                if (!userCardExclusive.contains(goods.getGoodsId())) {
+                    //没有资格
+                    goods.setGoodsStatus(CartConstant.GOODS_STATUS_EXCLUSIVE);
+                    goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                    // todo 专享会员等级
+                }else {
+                    CartActivityInfo exclusiveGrade =new CartActivityInfo();
+                    exclusiveGrade.setActivityType(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+                    goods.getCartActivityInfos().add(exclusiveGrade);
+                }
             }
         });
     }
