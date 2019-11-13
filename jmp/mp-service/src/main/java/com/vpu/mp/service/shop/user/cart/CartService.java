@@ -55,6 +55,11 @@ public class CartService extends ShopBaseService {
     private UserCardService userCardService;
 
 
+    /**
+     * 购物车列表
+     * @param userId 用户id
+     * @return  购物车列表
+     */
     public WxAppCartListVo getCartList(Integer userId) {
         WxAppCartListVo cartListVo;
         // 查询购物车记录

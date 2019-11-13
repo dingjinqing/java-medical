@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
@@ -11,6 +12,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
  * @date 2019年11月01日
  */
 @Service
+@Slf4j
 public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority{
     /*****处理器优先级*****/
     @Override
@@ -34,6 +37,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
+        log.info("GoodsTailProcessor->", Util.toJson(capsules));
         capsules.forEach(capsule->{
             // 被活动处理了的话商品价就是活动价（已被活动设置），否则就是商品的规格最低价(新增商品时该字段存的就是最低价)
             if (capsule.getProcessedTypes().size() == 0) {

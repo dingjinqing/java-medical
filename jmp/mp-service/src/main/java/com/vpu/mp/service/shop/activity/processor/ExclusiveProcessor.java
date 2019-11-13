@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
@@ -15,6 +16,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.user.cart.CartService;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
  * @date 2019年10月31日
  */
 @Service
+@Slf4j
 public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy {
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
@@ -171,6 +174,7 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
+        log.info("ExclusiveProcessor->", Util.toJson(cartBo));
         Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(cartBo.getUserId(), cartBo.getCartGoodsList());
         cartBo.getCartGoodsList().forEach(goods -> {
             if (goods.getIsCardExclusive().equals(GoodsConstant.CARD_EXCLUSIVE)) {

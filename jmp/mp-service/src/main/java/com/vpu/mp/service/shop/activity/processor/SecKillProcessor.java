@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillProductBo;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
@@ -10,6 +11,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Result;
@@ -32,6 +34,7 @@ import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DE
  * 秒杀
  */
 @Service
+@Slf4j
 public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority{
     @Autowired
     SecKillProcessorDao secKillProcessorDao;
@@ -81,6 +84,7 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
+        log.info("SecKillProcessor->", Util.toJson(cartBo));
         List<Integer> secProductList = new ArrayList<>();
         //秒杀商品
         cartBo.getCartGoodsList().forEach(goods->{

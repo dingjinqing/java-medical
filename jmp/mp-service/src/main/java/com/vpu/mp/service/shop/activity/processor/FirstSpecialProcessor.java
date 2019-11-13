@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialProductBo;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
@@ -13,6 +14,7 @@ import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.config.FirstSpecialConfigService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import static com.vpu.mp.db.shop.tables.FirstSpecialProduct.FIRST_SPECIAL_PRODUC
  * @date 2019年11月01日
  */
 @Service
+@Slf4j
 public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsListProcessor, ActivityCartListStrategy {
 
     @Autowired
@@ -89,6 +92,7 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
+        log.info("FirstSpecialProcessor->", Util.toJson(cartBo));
         boolean isNewUser = orderInfoService.isNewUser(cartBo.getUserId());
         cartBo.setIsNewUser(isNewUser);
         if (isNewUser) {

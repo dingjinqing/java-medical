@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
@@ -11,6 +12,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
  * @date 2019年10月31日
  */
 @Service
+@Slf4j
 public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy{
 
     @Autowired
@@ -93,6 +96,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
+        log.info("GradeCardProcessor->", Util.toJson(cartBo));
         List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(cartBo.getUserId(), cartBo.getProductIdList());
         cartBo.getCartGoodsList().forEach(goods->{
             // 会员等级
