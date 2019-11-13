@@ -1032,16 +1032,16 @@ public class MemberCardService extends ShopBaseService {
 		NormalCardToVo normalCard = card.into(NormalCardToVo.class);
 		assignPayOwnGoods(normalCard);
 		assignCardBatch(normalCard);
-		assignCoupon(normalCard);
 		normalCard.changeJsonCfg();
+		assignCoupon(normalCard);
 		return normalCard;
 	}
 	
 	private void assignCoupon(NormalCardToVo card) {
 		logger().info("处理优惠券信息");
 		List<CouponGivePopVo>  couponList = couponGiveService.popWindows(new CouponGivePopParam());
-		if(couponList != null && couponList.size()>0) {
-			List<Integer> couponIds = card.getCouponIds();
+		List<Integer> couponIds = card.getCouponIds();
+		if(isListAvailable(couponList) && isListAvailable(couponIds)) {
 			List<CouponGivePopVo> res = 
 							couponList
 								.stream()
@@ -1049,6 +1049,9 @@ public class MemberCardService extends ShopBaseService {
 								.collect(Collectors.toList());
 			card.setCouponList(res);
 		}
+	}
+	private <T> boolean isListAvailable(List<T> list) {
+		return list != null && list.size()>0;
 	}
 
 	private LimitNumCardToVo changeToLimitCardDetail(MemberCardRecord card) {
