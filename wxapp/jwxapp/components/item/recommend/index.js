@@ -1,4 +1,3 @@
-// components/item/recommend/index.js
 global.wxComponent({
   /**
    * 组件的属性列表

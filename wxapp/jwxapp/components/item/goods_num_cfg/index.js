@@ -34,15 +34,6 @@ global.wxComponent({
         goodsNum = prdNumber <= 0 ? 0 : prdNumber;
         canPlus = false;
       }
-      // else {
-      //     if( limitBuyNum === 0 ){
-      //         goodsNum = 1,
-      //         buyNum = 1
-      //     }
-      //     goodsNum = limitBuyNum;
-      //     buyNum = limitBuyNum;
-      //     MaxNum = prdNumber < limitMaxNum ? prdNumber : limitMaxNum;
-      //   }
       this.setData({
         goodsNum,
         canMinus,

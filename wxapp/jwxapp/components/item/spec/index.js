@@ -54,6 +54,11 @@ global.wxComponent({
         productInfo: { ...this.data.product, ...this.data.goodsNum }
       });
       this.triggerEvent("getProductInfo", this.data.productInfo);
+    },
+    bindClose(){
+      this.setData({
+        showSpec:false
+      })
     }
   }
 });

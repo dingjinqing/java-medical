@@ -1,7 +1,7 @@
 .dialog-box {
   width: 750rpx;
   background-color: #fff;
-  padding-bottom: 140rpx;
+  padding-bottom: 100rpx;
 }
 .desc-box {
   padding: 0 30rpx 20rpx;

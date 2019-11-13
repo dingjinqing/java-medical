@@ -26,31 +26,10 @@ global.wxPage({
       this.requestPledge(res);
     });
   },
-  // 返回首页
-  backHome() {
-    util.jumpLink("pages/index/index", "redirectTo");
-  },
   // 获取活动倒计时
   getActStatus(e) {
     let second = e.detail;
     // console.log(second);
-  },
-  // 添加购物车
-  addCart() {
-    let { goodsNum: goodsNumber, prdId } = this.data.productInfo;
-    util.api(
-      "/api/wxapp/cart/add",
-      res => {
-        console.log(res);
-      },
-      {
-        goodsNumber: goodsNumber,
-        prdId: prdId
-      }
-    );
-  },
-  test() {
-    util.jumpLink("pages/item/item", "navigateTo");
   },
   // 商品详情请求
   requestGoodsInfo() {

@@ -1,14 +1,14 @@
 <view class="goods_item">
   <view class="goods_image">
-    <image src="{{imageUrl}}upload/245547/image/20190716/dnjTgj2BUl3e9XAUQAck.jpeg"></image>
+    <image src="{{goodsData.goodsImg}}"></image>
   </view>
   <view class="goods_bottom">
-    <view class="goods_name two_lines">测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测测</view>
-    <!-- <view class="goods_coupon">
+    <view class="goods_name {{goodsData.coupons.length > 0 ? 'one_line' : 'two_lines'}}">{{goodsData.goodsName}}</view>
+    <view class="goods_coupon" wx:if="goodsData.coupons.length > 0">
       <view class="coupon_item" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">领券减￥10</view>
-    </view> -->
+    </view>
     <view class="goods_price">
-      <text class="price" style="color:{{main_setting.comColor}};">￥800</text>
+      <text class="price" style="color:{{main_setting.comColor}};">￥{{goodsData.realPrice}}</text>
       <text class="iconfont icongouwuche1" style="color:{{main_setting.comColor}};"></text>
     </view>
   </view>

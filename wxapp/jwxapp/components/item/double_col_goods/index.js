@@ -5,7 +5,10 @@ global.wxComponent({
   properties: {
     goodsData: {
       type: Object,
-      value: null
+      value: null,
+      observer(val){
+        console.log(val)
+      }
     }
   },
   /**

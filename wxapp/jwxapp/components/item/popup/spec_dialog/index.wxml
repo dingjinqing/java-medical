@@ -21,6 +21,7 @@
         </view>
       </view>
     </view>
-    <slot name="num-cfg"/>
+    <slot name="num-cfg" />
+    <slot name="footer" />
   </view>
 </v-popup>

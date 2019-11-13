@@ -77,7 +77,7 @@
             </view>
         </view>
 
-        <view class="flex_footer" style="{{show_bottom ? 'bottom:110rpx;' :''}}">
+        <view class="flex_footer" style="{{!isIpx ? 'bottom:110rpx;' :'bottom:160rpx'}}">
             <view class="footer_left">
                 <text class="iconfont {{allChecked ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}}" bindtap="changeAllChecked"></text>
                 <text>全选</text>

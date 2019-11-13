@@ -41,24 +41,7 @@
 
     <!-- 商品详情 -->
     <v-goods-detail />
-    
   </view>
-  <view class="footer">
-    <view class="small_view" bindtap="backHome">
-      <image mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
-      <text>首页</text>
-    </view>
-    <view class="small_view">
-      <image mode="widthFix" src="{{imageUrl}}image/wxapp/cart_icon.png"></image>
-      <text>购物车</text>
-      <view class="cart_goods_num" style="color:{{comColor}};border-color:{{comColor}}">0</view>
-    </view>
-    <view class="footer_flex_view" bindtap="addCart" style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}}'>
-      <text>加入购物车</text>
-    </view>
-    <view class="footer_flex_view" bindtap="test" style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{comColor}};' >
-      <text>立即购买</text>
-    </view>
-  </view>
+  <v-item-footer product-info="{{productInfo}}"/>
   <include src="../common/footer.wxml" />
 </view>

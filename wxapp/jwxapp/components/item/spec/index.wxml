@@ -13,4 +13,5 @@
 
 <v-spec-dialog wx:if="{{!productsInfo.defaultPrd}}" show="{{showSpec}}" products-info="{{productsInfo}}" bindproductData="getProductData">
   <v-goods-num-cfg slot="num-cfg" origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
+  <v-item-footer slot="footer" origin="spec" product-info="{{productInfo}}" bind:close="bindClose"/>
 </v-spec-dialog>

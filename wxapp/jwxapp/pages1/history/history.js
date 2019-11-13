@@ -3,7 +3,10 @@ global.wxPage({
   /**
    * 页面的初始数据
    */
-  data: {},
+  data: {
+    dataList: null,
+    pageParams: null
+  },
 
   /**
    * 生命周期函数--监听页面加载
@@ -26,11 +29,16 @@ global.wxPage({
     util.api(
       "/api/wxapp/footprint/list",
       res => {
-        console.log(res);
+        if(res.error === 0){
+          this.setData({
+            pageParams: res.content.page,
+            ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.footprintDay
+          });
+        }
       },
       {
         currentPage: currentPage,
-        pageRows: 2,
+        pageRows: 20,
         userId: util.getCache('user_id')
       }
     );
@@ -63,7 +71,17 @@ global.wxPage({
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function() {},
+  onReachBottom: function() {
+    if (
+      this.data.pageParams &&
+      this.data.pageParams.currentPage === this.data.pageParams.lastPage
+    )
+      return;
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    });
+    this.requestList();
+  },
 
   /**
    * 用户点击右上角分享

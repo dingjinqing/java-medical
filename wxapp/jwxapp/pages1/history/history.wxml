@@ -10,28 +10,16 @@
       </view>
     </view>
     <view class="content" style="margin-top:{{margin_top_nav * 2 + 116}}rpx">
-     <text class="date">2019-10-17</text>
-     <view class="goods_content">
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-      <v-double-col-goods />
-     </view>
+      <block wx:if="{{dataList[0].length}}" wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+        <block wx:for="{{pageItem}}" wx:key="cardNo" wx:for-index="itemIndex">
+          <text class="date">{{item.date}}</text>
+          <view class="goods_content">
+          <block wx:for="{{item.goodsList}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">
+            <v-double-col-goods goods-data="{{goodsItem}}"/>
+          </block>
+          </view>
+        </block>
+      </block>
     </view>
   </view>
   <include src="/pages/common/footer.wxml"/>
