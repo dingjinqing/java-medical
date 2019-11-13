@@ -27,7 +27,7 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("doCartOperation", Util.toJson(cartBo));
+        log.info("doCartOperation->WxAppCartBo:"+ Util.toJson(cartBo));
         //删除的,下架的--移动到失效列表
         List<WxAppCartGoods> invalidGoodsList = cartBo.getCartGoodsList().stream().filter(goods -> {
             if (goods.getGoodsId() == null || goods.getPrdId() == null|| goods.getDelFlag().equals(DelFlag.DISABLE_VALUE)) {

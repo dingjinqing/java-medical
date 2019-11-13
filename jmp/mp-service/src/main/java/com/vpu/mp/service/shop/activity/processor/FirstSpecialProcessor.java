@@ -92,7 +92,7 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("FirstSpecialProcessor->", Util.toJson(cartBo));
+        log.info("FirstSpecialProcessor->WxAppCartBo:"+ Util.toJson(cartBo));
         boolean isNewUser = orderInfoService.isNewUser(cartBo.getUserId());
         cartBo.setIsNewUser(isNewUser);
         if (isNewUser) {

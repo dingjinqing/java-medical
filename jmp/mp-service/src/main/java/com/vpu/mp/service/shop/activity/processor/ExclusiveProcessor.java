@@ -174,7 +174,7 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("ExclusiveProcessor->", Util.toJson(cartBo));
+        log.info("ExclusiveProcessor->WxAppCartBo:"+ Util.toJson(cartBo));
         Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(cartBo.getUserId(), cartBo.getCartGoodsList());
         cartBo.getCartGoodsList().forEach(goods -> {
             if (goods.getIsCardExclusive().equals(GoodsConstant.CARD_EXCLUSIVE)) {

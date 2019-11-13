@@ -84,7 +84,7 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("SecKillProcessor->", Util.toJson(cartBo));
+        log.info("SecKillProcessor->WxAppCartBo:"+ Util.toJson(cartBo));
         List<Integer> secProductList = new ArrayList<>();
         //秒杀商品
         cartBo.getCartGoodsList().forEach(goods->{

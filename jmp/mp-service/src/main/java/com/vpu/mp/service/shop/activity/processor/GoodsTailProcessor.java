@@ -69,7 +69,8 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        WxAppCartListVo cartListVo = cartBo.getCartListVo();
+        log.info("GoodsTailProcessor->WxAppCartBo:"+Util.toJson(cartBo));
+        WxAppCartListVo cartListVo = new WxAppCartListVo();
         List<CartGoodsInfo> cartGoodsInfoList =cartGoodsToInfo(cartBo.getCartGoodsList());
         List<CartGoodsInfo> invalidCartGoodsInfoList =cartGoodsToInfo(cartBo.getInvalidCartList());
 
@@ -85,6 +86,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
         cartListVo.setIsAllCheck(isAllCheck);
         cartListVo.setCartGoodsList(cartGoodsInfoList);
         cartListVo.setInvalidCartList(invalidCartGoodsInfoList);
+        cartBo.setCartListVo(cartListVo);
     }
 
     private  List<CartGoodsInfo> cartGoodsToInfo( List<WxAppCartGoods> cartGoodsList){

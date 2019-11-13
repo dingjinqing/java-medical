@@ -96,7 +96,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("GradeCardProcessor->", Util.toJson(cartBo));
+        log.info("GradeCardProcessor->WxAppCartBo:"+ Util.toJson(cartBo));
         List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(cartBo.getUserId(), cartBo.getProductIdList());
         cartBo.getCartGoodsList().forEach(goods->{
             // 会员等级
