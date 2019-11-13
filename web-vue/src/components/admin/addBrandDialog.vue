@@ -189,6 +189,17 @@ export default {
     callAddBrand (newData) {
       if (!newData) {
         this.$emit('update:callAddBrand', false)
+      } else {
+        this.tableData.forEach(item => {
+          item.ischeck = false
+          if (this.brandBackData.length > 0) {
+            this.brandBackData.forEach(itemC => {
+              if (item.id === itemC) {
+                item.ischeck = true
+              }
+            })
+          }
+        })
       }
     },
     input () {

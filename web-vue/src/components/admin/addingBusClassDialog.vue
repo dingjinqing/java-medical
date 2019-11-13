@@ -103,7 +103,8 @@ export default {
   },
   watch: {
     dialogVisible (newData) {
-      console.log(newData)
+      console.log(newData, this.backDataArr)
+      console.log()
       if (newData) {
         this.dialogVisible = true
         this.loading = true

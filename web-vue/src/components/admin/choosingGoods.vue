@@ -348,6 +348,7 @@ export default {
   },
   watch: {
     chooseGoodsBack (newData) {
+      console.log(newData)
       console.log('chooseGoodsBack')
       this.checkedIdList = this.chooseGoodsBack
     },
@@ -356,7 +357,7 @@ export default {
       this.choiseGooddialogVisible = true
       this.selectGoodsData()
       if (this.loadProduct) {
-        getProductListByIds({productId: this.chooseGoodsBack}).then(res => {
+        getProductListByIds({ productId: this.chooseGoodsBack }).then(res => {
           console.log('getGoodslistByIds', res)
           this.clearCheckedRow()
           res.content.forEach(item => {

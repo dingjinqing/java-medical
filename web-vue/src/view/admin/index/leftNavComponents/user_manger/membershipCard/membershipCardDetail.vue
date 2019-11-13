@@ -99,9 +99,8 @@
                     v-model="ruleForm.bgFlag"
                     label="1"
                   >{{ $t('memberCard.backImg') }}</el-radio>
-
                   <img
-                    v-if="ruleForm.bgFlag===1"
+                    v-if="ruleForm.bgFlag==='1'"
                     :src="$imageHost+'/'+baImgUrl"
                     class="bgImgDiv"
                     @click="handleToAddImg()"
@@ -326,7 +325,7 @@
                     @click="handleToAddRecharge()"
                   >
                 </div>
-                <block
+                <div
                   v-for="(item,index) in ruleForm.addrechargeArr"
                   :key="index"
                 >
@@ -348,7 +347,7 @@
                       @click="handleToDelRecharge(index)"
                     >
                   </div>
-                </block>
+                </div>
                 <div
                   class="shoppingFullBottom"
                   v-if="cardType!==2"
@@ -402,10 +401,10 @@
                         :src="$imageHost +'/image/admin/sign_del.png'"
                       >
                       <div class="coupon_list_top">
-                        ￥<span>{{item.price}}</span>
+                        {{item.actCode==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'折':''}}</i></span>
                       </div>
                       <div class="coupon_list_center">
-                        <div class="coupon_center_limit">{{item.isLimit?`$t('memberCard.enough') ${item.nolimitPrice}$t('memberCard.usage')`:'$t(\'memberCard.unlimit\')'}}</div>
+                        <div class="coupon_center_limit">{{item.useConsumeRestrict>0?`${$t('memberCard.enough')} ${item.leastConsume}${$t('memberCard.usage')}`:`${$t('memberCard.unlimit')}`}}</div>
                         <div class="coupon_center_number">{{ $t('memberCard.remaining') }}<span>{{item.surplus}}</span>{{ $t('memberCard.unitZhang') }}</div>
                         <div
                           class="coupon_list_bottom"
@@ -845,16 +844,22 @@
     <ChoosingGoods
       @resultGoodsIds='getGoodsIdFromChoosingGoods'
       :tuneUpChooseGoods='controlChoosingGoodsDialog'
+      :chooseGoodsBack='choosingGoodsDateTmpContainer'
     />
-    <!--选择商家分类弹窗-->
+    <!--选择商家,平台分类弹窗-->
     <AddingBusClassDialog
       :dialogVisible.sync="businessDialogVisible"
       :classFlag="classFlag"
-      @BusClassTrueArr="BusClassTrueArr()"
+      :backDataArr="shopAndPlatformBackDataArr"
+      @BusClassTrueArr="BusClassTrueArr"
     />
 
     <!--添加品牌弹窗-->
-    <AddBrandDialog />
+    <AddBrandDialog
+      :callAddBrand.sync="callAddBrandDialogSignal"
+      :brandBackData="chooseBrandDataTmpContainer"
+      @handleToGetBackData="handleBrandResult"
+    />
     <!--添加门店弹窗-->
     <ChioseStoreDialog />
     <!--领取码弹窗-->
@@ -1097,6 +1102,7 @@ export default {
       ],
       couponDialogFlag: false,
       couponList: [],
+      couponIds: null,
       clickArr: [],
       treeType: null,
       AtreeType: null,
@@ -1106,15 +1112,19 @@ export default {
       chioseSureData: [],
       userDialogFlag: null,
       addBrandDialogDataFlag1: '', // 指定商品-添加品牌弹窗选中数据
+      shopAndPlatformBackDataArr: null, // 商家，平台弹窗的数据传输载体
       shopCategoryIds: null, // 指定商品-商家分类
       platformCategoryIds: null, // 指定商品-平台分类
       addBrandDialogDataFlag2: '', // 会员专享-添加品牌弹窗选中数据
       choosingGoodsDateFlag1: [], // 指定商品-选择商品选中数据,
+      choosingGoodsDateTmpContainer: null,
+      chooseBrandDataTmpContainer: [], // 品牌临时容器
       ownGoodsId: null, // 会员专享商品: 添加的商品Id
       ownStoreCategoryIds: null, // 会员专享商品:添加的商家分类Id
       ownPlatFormCategoryIds: null, // 会员专享商品:平台分类id
       ownBrandId: null, // 会员专享商品:品牌分类id
-      controlChoosingGoodsDialog: false,
+      controlChoosingGoodsDialog: false, // 商品弹窗显示标记
+      callAddBrandDialogSignal: false, // 品牌弹窗显示信号标记
       choosingGoodsDateFlag2: '', // 会员专享-选择商品选中数据
       tuneUp: false,
       couponBack: '',
@@ -1302,6 +1312,10 @@ export default {
           'perGoodsMoney': this.ruleForm.shopingInputLeftM,
           'perGetScores': this.ruleForm.shopingInputReftM
         },
+        'sendCoupon': this.ruleForm.sendingPaperFlag ? 'on' : '',
+        'couponType': Number(this.ruleForm.couponDiv) - 1,
+        'couponIds': this.couponIds,
+        'couponPackage': null,
         'sendMoney': this.ruleForm.cardRechargeInput,
         'expiredType': this.ruleForm.dateRadio,
         'startTime': this.ruleForm.fixedDate ? this.ruleForm.fixedDate[0] : null,
@@ -1348,22 +1362,6 @@ export default {
     handleToSave (formName) {
       console.log(formName)
       this.prepareCardData()
-      /**
-      this.$refs[formName].validate((valid) => {
-
-        console.log(valid)
-        if (valid) {
-
-          console.log(valid)
-          this.prepareCardData()
-          this.$refs['ruleForm'].resetFields()
-        } else {
-          this.$message.error(this.$t('memberCard.cardCreateFailed'))
-          //  console.log('error submit!!')
-          return false
-        }
-      })
-       */
     },
 
     // 4- 清空数据
@@ -1417,7 +1415,7 @@ export default {
       this.baImgUrl = data.bgImg
       this.ruleForm.discount = data.powerCount === 1
       this.ruleForm.discountInput = data.disCount
-      this.ruleForm.allGoods = data.discountIsAll
+      this.ruleForm.allGoods = String(data.discountIsAll)
       this.ruleForm.vipFlag = data.powerPayOwnGood === 'on'
       // 指定商品 - 商品id
       if (data.goodsId.length > 0) {
@@ -1435,20 +1433,27 @@ export default {
         this.noneBlockDiscArr[2].num = data.platformCategoryIds.length
       }
 
-      // 指定商品 - 品牌id
+      // 指定品牌 - 品牌id
       if (data.brandId.length > 0) {
-        this.chioseSureData = data.brandId
+        this.chioseSureData = data.brandId.map(item => Number(item))
         this.noneBlockDiscArr[3].num = data.brandId.length
       }
 
-      this.shopCategoryIds = data.ownBrandId
-      this.noneBlockDiscArr[1].num = data.ownBrandId.length
-      /** 待处理
-        'shopCategoryIds': [],
-        'platformCategoryIds': [],
-        'storeList': [],
-        'activationCfgBox': [],
-      */
+      this.ownGoodsId = data.ownGoodsId
+      this.noneBlockDiscArr[1].num = data.brandId.length
+
+      this.ownGoodsId = data.ownGoodsId
+      this.noneBlockVipArr[0].num = data.ownGoodsId.length ? data.ownGoodsId.length : 0
+
+      this.ownStoreCategoryIds = data.ownStoreCategoryIds
+      this.noneBlockVipArr[1].num = data.ownStoreCategoryIds.length ? data.ownStoreCategoryIds.length : 0
+
+      this.ownPlatFormCategoryIds = data.ownPlatFormCategoryIds
+      this.noneBlockVipArr[2].num = data.ownPlatFormCategoryIds.length ? data.ownPlatFormCategoryIds.length : 0
+
+      this.ownBrandId = data.ownBrandId
+      this.noneBlockVipArr[3].num = data.ownBrandId.length ? data.ownBrandId.length : 0
+
       this.ruleForm.intGet = data.powerScore === 1
       this.ruleForm.integralInputOne = data.score
       this.ruleForm.shoppingFull = String(data.scoreJson.offset)
@@ -1482,7 +1487,10 @@ export default {
       this.ruleFormBottom.activationRadio = String(data.activation)
       this.ruleFormBottom.examineRadio = String(data.examine)
       this.ruleFormBottom.checkList = data.activationCfgBox ? data.activationCfgBox : []
-
+      // 优惠券
+      this.ruleForm.sendingPaperFlag = data.sendCouponSwitch === 1
+      this.ruleForm.couponDiv = String(data.sendCouponType + 1)
+      this.couponList = data.couponList
       // 处理json数据
       this.dealWithDataFromBackEnd()
     },
@@ -1501,9 +1509,12 @@ export default {
           this.getScores.push(item.rightInput)
         }
       }
+
       console.log(this.goodsMoney, this.getScores)
       // 充值
       if (this.ruleForm.rechargeInput === '0') {
+        this.money = []
+        this.getMoney = []
         this.money.push(this.ruleForm.rechargeInputLeft)
         this.getMoney.push(this.ruleForm.rechargeInputReft)
         for (let item of this.ruleForm.addrechargeArr) {
@@ -1511,6 +1522,9 @@ export default {
           this.getMoney.push(item.rightInput)
         }
       }
+      console.log(this.money, this.getMoney)
+      // 优惠券
+      this.couponIds = this.couponList.map(({ id }) => id)
     },
     // 8-1 处理从后端获取的数据
     dealWithDataFromBackEnd () {
@@ -1567,11 +1581,12 @@ export default {
     // 11- 获取会员权益选择商品弹窗的商品id
     getGoodsIdFromChoosingGoods (data) {
       console.log(data)
-      // 添加商品id
       if (this.userDialogFlag === '1') {
+        // 折扣商品
         this.choosingGoodsDateFlag1 = data
         this.noneBlockDiscArr[0].num = data.length
       } else {
+        // 专享商品
         this.ownGoodsId = data
         this.noneBlockVipArr[0].num = data.length
       }
@@ -1587,17 +1602,6 @@ export default {
           this.noneBlockVipArr[0].num = res.length
         }
         console.log(res)
-      })
-      // 品牌分类
-      this.$http.$on('chioseSureData', res => {
-        console.log(res)
-        if (this.userDialogFlag === '1') {
-          this.chioseSureData = res.map(({ id }) => id)
-          this.noneBlockDiscArr[3].num = res.length
-        } else {
-          this.ownBrandId = res.map(({ id }) => id)
-          this.noneBlockVipArr[3].num = res.length
-        }
       })
       // 商家,平台分类
       this.$http.$on('BusClassTrueArr', res => {
@@ -1694,6 +1698,7 @@ export default {
         rightInput: ''
       }
       this.ruleForm.addrechargeArr.push(obj)
+      console.log(this.ruleForm.addrechargeArr)
     },
     // 删除充值满模块
     handleToDelRecharge (index) {
@@ -1720,30 +1725,34 @@ export default {
     hanldeToAddGoodS (index) {
       console.log('指定商品')
       this.userDialogFlag = '1'
-      // let arr = ['21']
       console.log(index)
       switch (index) {
         case 0:
           // 商品弹窗显示
           this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
+          this.choosingGoodsDateTmpContainer = this.choosingGoodsDateFlag1
           break
         case 1:
           this.AtreeType = 1
           console.log('商家分类')
           this.businessDialogVisible = true
           this.classFlag = 1
-          // this.$http.$emit('addingBusClassDialog', this.shopCategoryIds)
+          this.shopAndPlatformBackDataArr = this.shopCategoryIds
+
           break
         case 2:
           this.AtreeType = 2
           console.log('平台分类')
           this.businessDialogVisible = true
           this.classFlag = 2
-          // this.$http.$emit('addingBusClassDialog', this.platformCategoryIds, this.AtreeType)
+          this.shopAndPlatformBackDataArr = this.platformCategoryIds
           break
         case 3:
-          console.log('detail', index, this.addBrandDialogDataFlag1)
-          this.$http.$emit('CallAddBrand', this.chioseSureData, this.addBrandDialogDataFlag1)
+
+          console.log(this.chioseSureData)
+          this.callAddBrandDialogSignal = true
+          this.chooseBrandDataTmpContainer = this.chioseSureData
+          console.log(this.chooseBrandDataTmpContainer)
       }
     },
     // 点击会员专享商品出现的添加类弹窗汇总
@@ -1755,22 +1764,26 @@ export default {
         case 0:
           // 商品弹窗显示
           this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
+          this.choosingGoodsDateTmpContainer = this.ownGoodsId
           break
         case 1:
           this.AtreeType = 1
           this.businessDialogVisible = true
           this.classFlag = 1
-          // this.$http.$emit('addingBusClassDialog', this.ownStoreCategoryIds, this.AtreeType)
+          this.shopAndPlatformBackDataArr = this.ownStoreCategoryIds
           break
         case 2:
           this.AtreeType = 2
           this.businessDialogVisible = true
           this.classFlag = 2
-          // this.$http.$emit('addingBusClassDialog', this.ownPlatFormCategoryIds, this.AtreeType)
+          this.shopAndPlatformBackDataArr = this.ownPlatFormCategoryIds
           break
         case 3:
-          this.$http.$emit('CallAddBrand', this.ownBrandId, this.addBrandDialogDataFlag1)
-        // this.$http.$emit('CallAddBrand', index, this.addBrandDialogDataFlag2)
+
+          console.log(this.ownBrandId)
+          this.callAddBrandDialogSignal = true
+          this.chooseBrandDataTmpContainer = this.ownBrandId
+          console.log(this.chooseBrandDataTmpContainer)
       }
       console.log(index)
     },
@@ -1854,6 +1867,17 @@ export default {
           this.ownPlatFormCategoryIds = data
           this.noneBlockVipArr[2].num = data.length
         }
+      }
+    },
+
+    handleBrandResult (res) {
+      console.log(res)
+      if (this.userDialogFlag === '1') {
+        this.chioseSureData = res.map(({ id }) => id)
+        this.noneBlockDiscArr[3].num = res.length
+      } else {
+        this.ownBrandId = res.map(({ id }) => id)
+        this.noneBlockVipArr[3].num = res.length
       }
     },
     // 限次会员卡中显示的适用商品里面的选择商品调起事件
