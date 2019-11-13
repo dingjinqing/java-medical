@@ -13,10 +13,14 @@ import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryPar
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author: 王兵兵
@@ -61,5 +65,19 @@ public class SeckillListService extends ShopBaseService {
      */
     public int getUnpaidSeckillNumberByPrd(int skId,int productId){
         return db().select(DSL.sum(ORDER_INFO.GOODS_AMOUNT)).from(SEC_KILL_LIST).leftJoin(ORDER_INFO).on(SEC_KILL_LIST.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).where(SEC_KILL_LIST.SK_ID.eq(skId).and(SEC_KILL_LIST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)).and(ORDER_GOODS.PRODUCT_ID.eq(productId))).fetchOptional().ofNullable(0).get();
+    }
+
+    /**
+     * 校验该用户是否有待支付的秒杀订单
+     * @param skId
+     * @param userId
+     * @return
+     */
+    public String checkSeckillOrderWaitPay(Integer skId,Integer userId){
+        List<Record1<String>> orderSns = db().select(ORDER_INFO.ORDER_SN).from(SEC_KILL_LIST).leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(SEC_KILL_LIST.ORDER_SN)).where(SEC_KILL_LIST.SK_ID.eq(skId).and(SEC_KILL_LIST.USER_ID.eq(userId)).and(SEC_KILL_LIST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY))).fetch();
+        if(orderSns != null && orderSns.size() > 0){
+            return orderSns.get(0).into(String.class);
+        }
+        return null;
     }
 }

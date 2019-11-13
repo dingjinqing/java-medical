@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisParam
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisTotalVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
@@ -30,6 +31,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.market.seckill.SecKillProductParam;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
+import jodd.util.StringUtil;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -39,10 +41,13 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
+import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
@@ -431,14 +436,96 @@ public class SeckillService extends ShopBaseService{
     }
 
     /**
-     * 校验该秒杀规格是否还有库存 返回1为还有库存
-     * @param param
+     * 校验该秒杀规格是否还有库存
+     * @param skId
+     * @param productId 规格ID
      * @return
      */
-    public int checkSeckillProductStock(SecKillProductParam param){
-        int seckillStock = db().select(SEC_KILL_PRODUCT_DEFINE.STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(param.getSkId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(param.getProductId()))).fetchOne().into(Integer.class);
-        int goodsNumber = db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(param.getProductId())).fetchOne().into(Integer.class);
-        return seckillStock > 0 && goodsNumber > 0 ? 1 :0;
+    private boolean checkSeckillProductStock(int skId,int productId){
+        int seckillStock = db().select(SEC_KILL_PRODUCT_DEFINE.STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(productId))).fetchOne().into(Integer.class);
+        int prdNumber = db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOne().into(Integer.class);
+        return seckillStock > 0 && prdNumber > 0;
     }
+
+    /**
+     * 判断秒杀规格的可用状态
+     * @param skId 秒杀ID
+     * @param productId 规格ID
+     * @param userId
+     * @return 0正常可用;1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;6该用户已达到限购数量上限;
+     *          7该秒杀为会员专属，该用户没有对应会员卡；8该规格无库存；9有待支付的秒杀订单
+     */
+    public Byte canApplySecKill(Integer skId,Integer productId,Integer userId) {
+        SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne().into(SecKillDefineRecord.class);
+        int goodsNumber = saas.getShopApp(getShopId()).goods.getGoodsView(secKill.getGoodsId()).getGoodsNumber();
+        byte res = this.canApplySecKill(secKill,goodsNumber,userId);
+        if(res == 0){
+            if(!this.checkSeckillProductStock(skId,productId)){
+                return 8;
+            }
+            if(seckillList.checkSeckillOrderWaitPay(skId,userId) != null){
+                return 9;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 判断秒杀活动的可用状态
+     * @param secKill 秒杀基本信息
+     * @param goodsNumber goods表的库存
+     * @return 0正常;1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;6该用户已达到限购数量上限;7该秒杀为会员专属，该用户没有对应会员卡
+     */
+    public Byte canApplySecKill(SecKillDefineRecord secKill,Integer goodsNumber,Integer userId) {
+        if(secKill == null){
+            return 1;
+        }
+        if(secKill.getStatus() == BaseConstant.ACTIVITY_STATUS_DISABLE){
+            return 2;
+        }
+        if(secKill.getStartTime().after(DateUtil.getLocalDateTime())){
+            return 3;
+        }
+        if(secKill.getEndTime().before(DateUtil.getLocalDateTime())){
+            return 4;
+        }
+        int minStock = goodsNumber < secKill.getStock() ? goodsNumber : secKill.getStock();
+        if(minStock <= 0){
+            return 5;
+        }
+        if(getUserSeckilledGoodsNumber(secKill.getSkId(),userId) >= secKill.getLimitAmount()){
+            return 6;
+        }
+        if(StringUtil.isNotEmpty(secKill.getCardId()) && !userCardExclusiveSeckillIsValid(secKill.getCardId(),userId)){
+            return 7;
+        }
+
+        return 0;
+    }
+
+    /**
+     * 已对该活动秒杀下单的数量
+     * @param skId
+     * @param userId
+     * @return
+     */
+    private Integer getUserSeckilledGoodsNumber(Integer skId,Integer userId) {
+        return db().select(DSL.sum(ORDER_INFO.GOODS_AMOUNT)).from(SEC_KILL_LIST).leftJoin(ORDER_INFO).on(SEC_KILL_LIST.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).where(SEC_KILL_LIST.SK_ID.eq(skId).and(SEC_KILL_LIST.USER_ID.eq(userId)).and(SEC_KILL_LIST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).groupBy(ORDER_INFO.USER_ID).fetchOne().into(Integer.class);
+    }
+
+    /**
+     * 判断会员专享的秒杀活动该用户是否可参与
+     * @param cardIds 会员卡ID字符串，逗号隔开
+     * @param userId
+     * @return true是可参与
+     */
+    private Boolean userCardExclusiveSeckillIsValid(String cardIds,Integer userId) {
+        List<ValidUserCardBean> cards = saas.getShopApp(getShopId()).userCard.userCardDao.getValidCardList(userId);
+        List<Integer> validCardIds = cards.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
+        List<Integer> seckillCardIds = Util.splitValueToList(cardIds);
+        validCardIds.removeAll(seckillCardIds);
+        return (validCardIds != null && validCardIds.size() > 0) ? true : false;
+    }
+
 
 }

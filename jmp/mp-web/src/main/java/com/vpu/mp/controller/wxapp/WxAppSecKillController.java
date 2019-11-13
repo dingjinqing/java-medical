@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class WxAppSecKillController extends WxAppBaseController {
 
     /**
-     * 	校验秒杀规格当前库存
+     * 	校验秒杀规格当前可用状态
      */
-    @PostMapping("/api/wxapp/seckill/check/stock")
+    @PostMapping("/api/wxapp/seckill/check")
     public JsonResult checkSeckillProductStock(@RequestBody @Validated SecKillProductParam param) {
-        return success(shop().seckill.checkSeckillProductStock(param));
+        return success(shop().seckill.canApplySecKill(param.getSkId(),param.getProductId(),wxAppAuth.user().getUserId()));
     }
 }
