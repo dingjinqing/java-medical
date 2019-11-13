@@ -604,13 +604,17 @@ export default {
     },
     // 品牌分类展示设置
     defaulttapThreeData () {
-      let obj = {
-
-      }
-      showBrandgetRequest(obj).then((res) => {
+      console.log('初始化品牌展示设置测试')
+      showBrandgetRequest().then((res) => {
         if (res.error === 0) {
           this.hiddleValTop = res.content.recomTitle
-          this.switchValue = res.content.showAllBrand
+          switch (res.content.showAllBrand) {
+            case 0:
+              this.switchValue = false
+              break
+            case 1:
+              this.switchValue = true
+          }
           switch (res.content.showRcommendBrandType) {
             case 0:
               this.switchValueBottom = false

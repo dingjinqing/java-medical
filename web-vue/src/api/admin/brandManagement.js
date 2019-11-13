@@ -164,11 +164,10 @@ export function pagingBrandUpdateRequest (data) {
 }
 
 // 品牌展示设置回显
-export function showBrandgetRequest (data) {
+export function showBrandgetRequest () {
   return service({
     url: '/api/admin/goods/brand/config/get',
-    method: 'post',
-    data: data
+    method: 'get'
   })
 }
 
