@@ -27,7 +27,7 @@ public class WxAppFootprintController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/list")
-    private JsonResult getFootprintList(@RequestBody FootprintListParam param){
+    public JsonResult getFootprintList(@RequestBody FootprintListParam param){
         WxAppSessionUser user = wxAppAuth.user();
         if (user!=null){
            param.setUserId(user.getUserId());

@@ -140,9 +140,10 @@ public class WxAppOrderController extends WxAppBaseController{
 		return null;
 	}
 	@PostMapping("/goods/history")
-	public List<OrderGoodsHistoryVo> getHistoryGoodsList(@RequestBody @Valid OrderGoodsHistoryListParam param){
+	public JsonResult getHistoryGoodsList(@RequestBody @Valid OrderGoodsHistoryListParam param){
 		Integer userId = wxAppAuth.user().getUserId();
-		return shop().readOrder.buyingHistoryGoodsList(userId,param.getKeyword(),param.getCurrentPage(),param.getPageRows());
+		List<OrderGoodsHistoryVo> historyVos = shop().readOrder.buyingHistoryGoodsList(userId, param.getKeyword(), param.getCurrentPage(), param.getPageRows());
+		return success(historyVos);
 	}
 	
 	@PostMapping("/addtest")
