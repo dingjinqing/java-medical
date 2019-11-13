@@ -97,6 +97,12 @@ global.wxComponent({
       this.setData({
         checkedProduct: productTarget
       });
+      let { limitBuyNum, limitMaxNum } = this.data.productsInfo;
+      this.triggerEvent("productData", {
+        ...productTarget,
+        limitBuyNum,
+        limitMaxNum
+      });
     }
   }
 });

@@ -1,0 +1,14 @@
+<view class="flex_box {{origin}}">
+    <view class="item_left">
+    购买数量：
+    </view>
+    <view class="item_middle"></view>
+    <view class="item_right num_cfg">
+    <view class="num_minus {{!canMinus ? 'not-tap':''}}" data-type="minus" bindtap="{{canMinus ? 'setNum' :''}}">-</view>
+    <input type="number" value="{{goodsNum}}"></input>
+    <view class="num_plus {{!canPlus ? 'not-tap':''}}" data-type="plus" bindtap="{{canPlus ? 'setNum' : ''}}">+</view>
+    </view>
+</view>
+<view class="line_item">
+    
+</view>

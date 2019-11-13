@@ -5,8 +5,11 @@ global.wxComponent({
   properties: {
     productsInfo: {
       type: Object,
-      value: null,
-      observer(val) {}
+      value: null
+    },
+    limitInfo: {
+      type: Object,
+      value: null
     }
   },
 
@@ -14,7 +17,10 @@ global.wxComponent({
    * 组件的初始数据
    */
   data: {
-    showSpec: false
+    showSpec: false,
+    product: null,
+    goodsNum: null,
+    product: null
   },
 
   /**
@@ -30,6 +36,24 @@ global.wxComponent({
       this.setData({
         showSpec: true
       });
+    },
+    getProductData(data) {
+      this.setData({
+        product: data.detail
+      });
+      this.triggerEvent("product", data.detail);
+    },
+    getGoodsNum(data) {
+      this.setData({
+        goodsNum: data.detail
+      });
+      this.setProductInfo();
+    },
+    setProductInfo() {
+      this.setData({
+        productInfo: { ...this.data.product, ...this.data.goodsNum }
+      });
+      this.triggerEvent("getProductInfo", this.data.productInfo);
     }
   }
 });

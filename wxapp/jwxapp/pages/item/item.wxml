@@ -1,6 +1,6 @@
 <view class="body">
   <include src="../common/header.wxml" /> 
-  <view class="main-container">
+  <view class="main-container" wx:if="{{goodsInfo}}">
     <view class="goods-image">
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
@@ -17,27 +17,25 @@
     </view>
     <!-- 优惠券&促销信息-->
     <v-coupon-promotion coupon-list="{{couponList}}"/>
-    <!-- 需提取组件  服务|选择规格-->
-    <!-- <view class="flex_outside_box">
-      <view class="flex_box">
-        <view class="item_left">
-          服务
-        </view>
-        <view class="item_middle"></view>
-        <view class="item_right"></view>
-      </view>
-      <view class="item_line"></view>
-      <view class="flex_box">
-        <view class="item_left">
-          选择
-        </view>
-        <view class="item_middle"></view>
-        <view class="item_right"></view>
-      </view>
-    </view> -->
     <!--  选择规格（包含无规格情况）  -->
-        <v-sel-spec products-info="{{goodsInfo}}">
-        </v-sel-spec>
+      <v-sel-spec products-info="{{goodsInfo}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}">
+        <!--  服务信息  -->
+        <view class="flex_box" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
+          <view class="item_left">
+            服务
+          </view>
+          <view class="item_middle pledge-content">
+            <block wx:for="{{pledgeInfo.pledgeListVo}}" wx:for-item="pledgeItem" wx:key="index">
+              <view class="pledge-item" wx:if="{{index <= 2}}">
+                <image src="{{pledgeItem.pledgeLogo}}" />
+                <text>{{pledgeItem.pledgeName}}</text>
+              </view>
+            </block>
+          </view>
+          <view class="item_right">></view>
+        </view>
+        <view class="item_line" slot="service-promises"></view>
+      </v-sel-spec>
     <!-- 用户评价 -->
     <v-comment />
 

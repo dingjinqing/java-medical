@@ -1,6 +1,7 @@
 {
   "component": true,
   "usingComponents": {
-    "v-spec-dialog": "/components/item/popup/spec_dialog/index"
+    "v-spec-dialog": "/components/item/popup/spec_dialog/index",
+    "v-goods-num-cfg": "/components/item/goods_num_cfg/index"
   }
 }

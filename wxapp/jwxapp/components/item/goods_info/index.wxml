@@ -21,7 +21,7 @@
     <view class="marking_price">￥<text>{{markingPrice}}</text></view>
   </view>
   <view class="label-content" wx:if="{{goodsInfo.labels && goodsInfo.labels.length > 0}}">
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">{{item.name}}</text>
+    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">{{item}}</text>
   </view>
   <view class="flex-wrap">
     <view class="flex-item">库存：{{goodsInfo.goodsNumber}}个</view>

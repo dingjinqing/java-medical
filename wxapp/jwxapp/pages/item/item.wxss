@@ -1,8 +1,23 @@
-@import '/css/item.wxss';
-.body{
+@import "/css/item.wxss";
+.body {
   padding-bottom: 200rpx;
 }
-.footer{
+.pledge-content {
+  display: flex;
+}
+.pledge-content .pledge-item {
+  margin-right: 16rpx;
+}
+.pledge-content .pledge-item > image {
+  width: 30rpx;
+  height: 30rpx;
+  margin-right: 10rpx;
+  vertical-align: middle;
+}
+.pledge-content .pledge-item > text {
+  vertical-align: middle;
+}
+.footer {
   position: fixed;
   width: 100%;
   bottom: 0;
@@ -12,7 +27,7 @@
   height: 100rpx;
   display: flex;
 }
-.small_view{
+.small_view {
   width: 112rpx;
   display: flex;
   flex-direction: column;
@@ -22,7 +37,7 @@
   align-items: center;
   position: relative;
 }
-.small_view .cart_goods_num{
+.small_view .cart_goods_num {
   position: absolute;
   line-height: 26rpx;
   text-align: center;
@@ -34,10 +49,10 @@
   right: 20rpx;
   top: 2rpx;
 }
-.small_view image{
+.small_view image {
   width: 44rpx;
 }
-.footer_flex_view{
+.footer_flex_view {
   flex: 1;
   display: flex;
   align-items: center;

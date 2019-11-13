@@ -1,32 +1,16 @@
 <!--components/item/spec/index.wxml-->
 <view class="flex_outside_box">
-  <!-- <view class="flex_box">
-    <view class="item_left">
-      服务
-    </view>
-    <view class="item_middle"></view>
-    <view class="item_right"></view>
-  </view> -->
-  <!-- <view class="item_line"></view> -->
-  <view class="flex_box" wx:if="{{productsInfo.defaultPrd}}">
-    <view class="item_left">
-      购买数量：
-    </view>
-    <view class="item_middle"></view>
-    <view class="item_right num_cfg">
-      <view class="num_minus" data-type="minus">-</view>
-      <input type="number" value="1"></input>
-      <view class="num_plus" data-type="plus">+</view>
-    </view>
-  </view>
+  <slot name="service-promises" />
+  <v-goods-num-cfg wx:if="{{productsInfo.defaultPrd}}"  limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
   <view class="flex_box" wx:else bindtap="specDialogShow">
     <view class="item_left">
       选择
     </view>
-    <view class="item_middle"></view>
+    <view class="item_middle">{{product.prdDesc}}</view>
     <view class="item_right">></view>
   </view>
 </view>
 
-
-<v-spec-dialog wx:if="{{!productsInfo.defaultPrd}}" show="{{showSpec}}" products-info="{{productsInfo}}" />
+<v-spec-dialog wx:if="{{!productsInfo.defaultPrd}}" show="{{showSpec}}" products-info="{{productsInfo}}" bindproductData="getProductData">
+  <v-goods-num-cfg slot="num-cfg" origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
+</v-spec-dialog>

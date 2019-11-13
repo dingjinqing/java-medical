@@ -1,7 +1,7 @@
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="bottom" bindtap='bindClose'>
   <view class="dialog-box">
     <view class="desc-box">
-      <image class="prd-img" src="{{checkedProduct.prdImg}}"></image>
+      <image class="prd-img" src="{{checkedProduct.prdImg ? checkedProduct.prdImg : productsInfo.goodsImgs[0]}}"></image>
       <view class="desc-info">
         <view class="info">
           <text class="price" style="color:{{main_setting.comColor}};">￥{{checkedProduct.prdRealPrice}}</text>
@@ -10,8 +10,6 @@
         </view>
         <image class="close-img" src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="bindClose"></image>
       </view>
-      
-      
     </view>
     <view class="all-spec">
       <view class="spec-info" wx:for="{{specList}}" wx:for-item="specItem" wx:for-index="key" wx:key="key">
@@ -23,5 +21,6 @@
         </view>
       </view>
     </view>
+    <slot name="num-cfg"/>
   </view>
 </v-popup>
