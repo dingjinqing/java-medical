@@ -86,23 +86,37 @@ public class OrderMallService extends ShopBaseService {
 	private SysCateService sysCateService;
 	@Autowired
 	private ShipInfoService shipInfo;
+	
+	private static final Byte one=1;
+	private static final String FORTYONE="41";
 
 	private String get(String key) {
 		return db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchAny(SHOP_CFG.V);
 	}
 
-	// 添加好物圈订单
-	public WxOpenResult addCommonOrders(Integer userId, List<String> orderSns) {
+	/**
+	 * 添加好物圈订单
+	 * @param userId
+	 * @param orderSns
+	 * @return
+	 */
+	public Boolean addCommonOrders(Integer userId, List<String> orderSns) {
 		String cfg = get("wx_shopping_list_enbaled");
 		if (StringUtils.isEmpty(cfg)) {
 			// 返回失败
+			log.info("wx_shopping_list_enbaled是空的");
+			return false;
 		} else {
 			if (cfg.equals("0")) {
 				// 返回失败
+				log.info("wx_shopping_list_enbaled为0");
+				return false;
 			}
 		}
 		if (!hasShoppingListAuthority()) {
 			// return false;
+			log.info("没有微信购物单授权权限");
+			return false;
 		}
 		UserRecord user = userService.getUserByUserId(userId);
 		String openId = user.getWxOpenid();
@@ -141,8 +155,13 @@ public class OrderMallService extends ShopBaseService {
 		list.add(orderList);
 		JsonRootBean jsonRootBean=new JsonRootBean(list);
 		WxOpenResult importOrder = importOrder(jsonRootBean);
-		return importOrder;
+		return importOrder.isSuccess();
 	}
+	
+	public void updateCommonOrders() {
+		
+	}
+	
 	
 	private WxOpenResult importOrder(JsonRootBean jsonRootBean) {
 		WxOpenMaServiceExtraImpl maService = open.getMaExtService();
@@ -347,18 +366,22 @@ public class OrderMallService extends ShopBaseService {
 	public boolean hasShoppingListAuthority() {
 		MpAuthShopRecord mp = saas().shop.mp.getAuthShopByShopId(getShopId());
 		if (null == mp) {
+			log.info("MpAuthShop是空的");
 			return false;
 		}
-		if (!mp.getIsAuthOk().equals(1)) {
+		if (!mp.getIsAuthOk().equals(one)) {
+			log.info("IsAuthOk不为1，为"+mp.getIsAuthOk());
 			return false;
 		}
 		String funcInfo = mp.getFuncInfo();
+		log.info("权限有"+funcInfo);
 		String[] funcInfoList = funcInfo.split(",");
 		for (String str : funcInfoList) {
-			if (str.equals(41)) {
+			if (str.equals(FORTYONE)) {
 				return true;
 			}
 		}
+		log.info("没有41权限");
 		return false;
 	}
 
