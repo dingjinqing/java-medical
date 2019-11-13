@@ -9,6 +9,4 @@
     <view class="num_plus {{!canPlus ? 'not-tap':''}}" data-type="plus" bindtap="{{canPlus ? 'setNum' : ''}}">+</view>
     </view>
 </view>
-<view class="line_item">
-    
-</view>
+<view class="line_item"></view>

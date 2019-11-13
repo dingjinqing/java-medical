@@ -22,16 +22,16 @@
                                     <view class="goods_name">
                                         {{item.goodsName}}
                                     </view>
-                                    <view class="goods_spec">
+                                    <view class="goods_spec" wx:if="{{item.goodsSpecs}}">
                                         {{item.goodsSpecs}}
                                     </view>
                                 </view>
                                 <view class="goods_price">
                                     <view class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
                                     <view class="num_cfg">
-                                      <view class="num_minus {{item.goodsNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.goodsNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-rec_id="{{item.recId}}" data-type="minus">-</view>
-                                      <input type="number" value="{{item.goodsNumber}}"></input>
-                                      <view class="num_plus {{item.goodsNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.goodsNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-rec_id="{{item.recId}}" data-type="add">+</view>
+                                      <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.cartNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-rec_id="{{item.recId}}" data-type="minus">-</view>
+                                      <input type="number" value="{{item.cartNumber}}"></input>
+                                      <view class="num_plus {{item.cartNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.cartNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-rec_id="{{item.recId}}" data-type="add">+</view>
                                     </view>
                                 </view>
                             </view>

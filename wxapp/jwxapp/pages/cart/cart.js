@@ -27,7 +27,7 @@ global.wxPage({
     this.requestEditGoodsNum(
       {
         productId: target.prdId,
-        goodsNumber: type === 'add' ? target.goodsNumber + 1 : target.goodsNumber - 1
+        goodsNumber: type === 'add' ? target.cartNumber + 1 : target.cartNumber - 1
       }
     )
     // this.setData({

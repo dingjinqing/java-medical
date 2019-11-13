@@ -10,7 +10,8 @@ global.wxPage({
     couponList: null,
     product: null,
     pledgeInfo: null,
-    limitInfo: null
+    limitInfo: null,
+    productInfo: null
   },
   /**
    * 生命周期函数--监听页面加载
@@ -36,14 +37,15 @@ global.wxPage({
   },
   // 添加购物车
   addCart() {
+    let { goodsNum: goodsNumber, prdId } = this.data.productInfo;
     util.api(
-      "/api/admin/cart/add",
+      "/api/wxapp/cart/add",
       res => {
         console.log(res);
       },
       {
-        goodsNumber: 1,
-        prdId: 5126
+        goodsNumber: goodsNumber,
+        prdId: prdId
       }
     );
   },
