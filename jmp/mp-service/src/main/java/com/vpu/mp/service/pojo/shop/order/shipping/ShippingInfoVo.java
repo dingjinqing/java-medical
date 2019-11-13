@@ -35,6 +35,8 @@ public class ShippingInfoVo extends BaseShippingInfoVo{
 		private String sendNumber;
 		private String goodsImg;
 		private BigDecimal goodsPrice;
+		private Integer goodsId;
+		private Integer productId;
 	}
 	/*
 	 * 以下属性不参与pojo->json
@@ -52,6 +54,10 @@ public class ShippingInfoVo extends BaseShippingInfoVo{
 	private String sendNumber;
 	@JsonIgnore
 	private Integer orderGoodsId;
+	@JsonIgnore
+	private Integer goodsId;
+	@JsonIgnore
+	private Integer productId;
 	@Override
 	public boolean equals(Object obj) {
 		return ((ShippingInfoVo)obj).getBatchNo().equals(batchNo) ? true : false;
