@@ -721,8 +721,7 @@ public class UserCardService extends ShopBaseService {
 		}
 		dealWithUserCardDetailInfo(card);
 
-		// TODO 累计消费 等王帅的接口 orderSerive.getTotalSpend
-		// card.setCumulativeConsumptionAmounts();
+		// TODO 累计消费 等王帅的接口 
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
 		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
 
