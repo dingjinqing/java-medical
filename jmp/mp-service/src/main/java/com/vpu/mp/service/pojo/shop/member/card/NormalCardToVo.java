@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.member.card;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -105,6 +106,8 @@ public class NormalCardToVo extends NormalCardVo {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String sendCouponIds;
 	private List<Integer> couponIds;
+	// 优惠券详细信息裂变
+	private List<CouponGivePopVo> couponList;
 	/**
 	 * 处理策略
 	 */

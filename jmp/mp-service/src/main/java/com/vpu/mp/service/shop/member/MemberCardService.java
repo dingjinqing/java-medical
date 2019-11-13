@@ -108,6 +108,8 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum;
@@ -147,6 +149,7 @@ import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
+import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -168,6 +171,7 @@ public class MemberCardService extends ShopBaseService {
 	@Autowired private CardVerifyService cardVerifyService;
 	@Autowired private CardReceiveCode cardReceiveCode;
 	@Autowired private GoodsCardCoupleService goodsCardCoupleService;
+	@Autowired private CouponGiveService couponGiveService;
 	/**
 	 * 添加会员卡
 	 */
@@ -1028,8 +1032,23 @@ public class MemberCardService extends ShopBaseService {
 		NormalCardToVo normalCard = card.into(NormalCardToVo.class);
 		assignPayOwnGoods(normalCard);
 		assignCardBatch(normalCard);
+		assignCoupon(normalCard);
 		normalCard.changeJsonCfg();
 		return normalCard;
+	}
+	
+	private void assignCoupon(NormalCardToVo card) {
+		logger().info("处理优惠券信息");
+		List<CouponGivePopVo>  couponList = couponGiveService.popWindows(new CouponGivePopParam());
+		if(couponList != null && couponList.size()>0) {
+			List<Integer> couponIds = card.getCouponIds();
+			List<CouponGivePopVo> res = 
+							couponList
+								.stream()
+								.filter(coupon->couponIds.contains(coupon.getId()))
+								.collect(Collectors.toList());
+			card.setCouponList(res);
+		}
 	}
 
 	private LimitNumCardToVo changeToLimitCardDetail(MemberCardRecord card) {
