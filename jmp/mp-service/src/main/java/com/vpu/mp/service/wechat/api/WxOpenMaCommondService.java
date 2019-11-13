@@ -1,6 +1,5 @@
 package com.vpu.mp.service.wechat.api;
 
-import com.google.gson.JsonObject;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -32,9 +31,7 @@ public interface WxOpenMaCommondService extends WxOpenMaMpHttpBase {
      *              {@value LOGISTICS_GET_ALL_DELIVERY}
      */
     default WxOpenResult importorder(String appId,String orderList) throws WxErrorException {
-		JsonObject param = new JsonObject();
-		param.addProperty("order_list", orderList);
-    	String json = post(appId, WX_COMMOND_IMPORTORDER_TEST, param.toString());
+    	String json = post(appId, WX_COMMOND_IMPORTORDER_TEST, orderList);
     	return WxOpenGetResult.fromJson(json);
     }
 
