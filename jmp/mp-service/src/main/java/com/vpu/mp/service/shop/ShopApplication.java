@@ -88,6 +88,7 @@ import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
 import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.recommend.OrderMallService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -477,4 +478,9 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public CardVerifyService cardVerifyService;
+	/**
+	 * 好物圈订单相关
+	 */
+	@Autowired
+	public OrderMallService orderMallService;
 }
