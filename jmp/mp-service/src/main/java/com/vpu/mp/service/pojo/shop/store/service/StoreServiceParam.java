@@ -4,7 +4,7 @@ import com.vpu.mp.service.pojo.shop.config.pledge.group.DeleteGroup;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -16,7 +16,7 @@ import java.sql.Timestamp;
  */
 @Data
 public class StoreServiceParam {
-    @NotBlank(groups = {UpdateGroup.class, DeleteGroup.class})
+    @PositiveOrZero(groups = {UpdateGroup.class, DeleteGroup.class})
     private Integer    id;
     private Integer    storeId;
     private String     serviceName;
