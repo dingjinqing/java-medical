@@ -6,6 +6,9 @@ import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryVo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
+
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +27,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -139,5 +143,23 @@ public class WxAppOrderController extends WxAppBaseController{
 	public List<OrderGoodsHistoryVo> getHistoryGoodsList(@RequestBody @Valid OrderGoodsHistoryListParam param){
 		Integer userId = wxAppAuth.user().getUserId();
 		return shop().readOrder.buyingHistoryGoodsList(userId,param.getKeyword(),param.getCurrentPage(),param.getPageRows());
+	}
+	
+	@PostMapping("/addtest")
+	public JsonResult test(){
+		List<String> list=new ArrayList<String>();
+		list.add("P201900000000000000");
+		list.add("P201900000000000001");
+		list.add("P201900000000000002");
+		list.add("P201900000000000003");
+		list.add("P201900000000000004");
+		list.add("P201900000000000005");
+		list.add("P201900000000000006");
+		list.add("P201900000000000007");
+		list.add("P201900000000000008");
+		list.add("P201900000000000009");
+		WxOpenResult addCommonOrders = shop().orderMallService.addCommonOrders(wxAppAuth.user().getUserId(), list);
+		return success(addCommonOrders.getErrmsg());
+		
 	}
 }
