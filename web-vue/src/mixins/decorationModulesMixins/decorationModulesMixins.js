@@ -253,6 +253,26 @@ export default {
             'blank_height': '10' // 空白高度
           }
           break
+        case 20: // 辅助线
+          obj = {
+            'module_name': 'm_dashed_line' // 模块名称
+          }
+          break
+        case 21: // 标题模块
+          obj = {
+            'module_name': 'm_title', // 模块名称
+            'title': '', // 标题
+            'title_model': '1', // 标题模板
+            'title_link': '', // 链接
+            'tit_center': '1', // 显示位置
+            'color': '#333333', // 字体颜色
+            'bg_color': '#ffffff', // 背景颜色
+            'title_date': '', // 日期
+            'title_author': '', // 作者
+            'link_title': '', // 链接标题
+            'img_url': '' // 图标
+          }
+          break
         case 27: // 店招设置
           obj = {
             module_name: 'm_shop',

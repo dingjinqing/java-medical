@@ -9,15 +9,15 @@
       :class="activeBorder?'activeBorder':''"
     >
       <!--模块编辑区-->
-      <div
-        class="auxiliaryBlank"
-        :style="'height:'+moduleSaveData.blank_height+'px'"
-      >
-
+      <div class="guide">
+        <!--右侧无文本输入时占位-->
+        <div class="guideMain">
+          <hr>
+        </div>
       </div>
       <!--模块编辑区结束-->
       <div class="item_module_title">
-        <span>{{$t('textModule.auxiliaryBlank')}}</span>
+        <span>{{$t('textModule.guide')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -156,4 +156,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/style/admin/decorationModules.scss"; // 模块公共
+.guide {
+  .guideMain {
+    hr {
+      border-color: #dddddd;
+    }
+  }
+}
 </style>

@@ -214,14 +214,16 @@ export default {
     LeftWingRightPicture: () => import('./decorationModules/graphicAndTextComponents/leftWingRightPicture'), // 左图右文模块
     TextModule: () => import('./decorationModules/graphicAndTextComponents/textModule'), // 文本模块
     RichText: () => import('./decorationModules/graphicAndTextComponents/richText'), // 富文本
-    AuxiliaryBlank: () => import('./decorationModules/graphicAndTextComponents/auxiliaryBlank') // 辅助空白
+    AuxiliaryBlank: () => import('./decorationModules/graphicAndTextComponents/auxiliaryBlank'), // 辅助空白
+    Guide: () => import('./decorationModules/graphicAndTextComponents/guide'), // 辅助线
+    TitleModule: () => import('./decorationModules/graphicAndTextComponents/titleModule') // 标题模块
   },
   data () {
     return {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'zb', 'zb', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -431,6 +433,11 @@ export default {
         case 'm_blank':
           moduleNameId = 19
           break
+        case 'm_dashed_line':
+          moduleNameId = 20
+          break
+        case 'm_title':
+          moduleNameId = 21
       }
       return moduleNameId
     },
@@ -585,6 +592,12 @@ export default {
               break
             case 19:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 19)
+              break
+            case 20:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 20)
+              break
+            case 21:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 21)
               break
             case 27:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 27)

@@ -1,15 +1,15 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>辅助空白模块<i style="color:#999;display:inline-block;margin-left:30px">空白高度最高为60像素,最低10像素</i></h2>
+      <h2>{{$t('textModule.auxiliaryBlankTitle')}}<i style="color:#999;display:inline-block;margin-left:30px">{{$t('textModule.auxiliaryBlankTitleTips')}}</i></h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="content">
-          <span>空白高度：</span>
+          <span>{{$t('textModule.blankHeight')}}：</span>
           <el-input
             v-model="moduleSaveData.blank_height"
             size="small"
-          ></el-input><i>像素</i>
+          ></el-input><i>{{$t('textModule.pixel')}}</i>
         </div>
       </div>
       <!--模块私有end-->

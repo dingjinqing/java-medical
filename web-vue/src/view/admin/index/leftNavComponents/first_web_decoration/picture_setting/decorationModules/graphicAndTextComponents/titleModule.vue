@@ -9,15 +9,41 @@
       :class="activeBorder?'activeBorder':''"
     >
       <!--模块编辑区-->
-      <div
-        class="auxiliaryBlank"
-        :style="'height:'+moduleSaveData.blank_height+'px'"
-      >
+      <div class="titleModule">
+        <!--右侧无文本输入时占位-->
+        <div class="titleModuleMain">
+          <div
+            class="zbDiv"
+            :style="(moduleSaveData.title_model==='1')?('backgroundColor:'+moduleSaveData.bg_color):''"
+          >
+            <div
+              class="titleContent"
+              :style="(moduleSaveData.tit_center==='1'?'justify-content: flex-start':'justify-content: center')+(moduleSaveData.title_model==='2'?';flex-direction: column':'')"
+            >
+              <img
+                v-if="moduleSaveData.img_url&&(moduleSaveData.title_model==='1')"
+                style="width:25px;height:25px;margin-right:5px"
+                :src="moduleSaveData.img_url"
+              >
+              <span :style="(moduleSaveData.title_model==='1')?('color:'+moduleSaveData.color):''">{{$t('titleModule.middleZb')}}</span>
+              <div v-if="moduleSaveData.title_model==='2'">
+                <i style="color:#999;font-size:12px;margin-top:5px">{{moduleSaveData.title_date}}</i>
+                <i style="color:#999;font-size:12px;margin-top:5px;margin-left:10px">{{moduleSaveData.title_author}}</i>
+                <i style="color:#999;font-size:12px;margin-top:5px;margin-left:10px;color:#607fa6">{{moduleSaveData.link_title}}</i>
+              </div>
 
+            </div>
+
+            <div>
+              <span>{{$t('titleModule.more')}}</span>
+              <img :src="$imageHost+'/image/admin/shop_beautify/gt.png'">
+            </div>
+          </div>
+        </div>
       </div>
       <!--模块编辑区结束-->
       <div class="item_module_title">
-        <span>{{$t('textModule.auxiliaryBlank')}}</span>
+        <span>{{$t('titleModule.middleTitle')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -156,4 +182,32 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/style/admin/decorationModules.scss"; // 模块公共
+.titleModule {
+  .titleModuleMain {
+    .zbDiv {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 8px;
+      .titleContent {
+        flex: 1;
+        display: flex;
+        span {
+          color: #333;
+          display: flex;
+          align-items: center;
+        }
+      }
+      div {
+        display: flex;
+        span {
+          color: #999;
+        }
+        img {
+          height: 13px;
+          width: 7px;
+        }
+      }
+    }
+  }
+}
 </style>

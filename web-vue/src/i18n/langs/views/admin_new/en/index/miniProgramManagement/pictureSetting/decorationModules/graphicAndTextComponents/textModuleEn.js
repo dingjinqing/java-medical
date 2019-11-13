@@ -17,5 +17,11 @@ export const en = {
   middle: 'middle',
   small: 'small',
   richText: 'Rich text',
-  rightTextTips: 'Rich text module (upload 30 modules at most)'
+  rightTextTips: 'Rich text module (upload 30 modules at most)',
+  auxiliaryBlank: 'Auxiliary blank',
+  auxiliaryBlankTitle: 'Auxiliary blank module',
+  auxiliaryBlankTitleTips: 'The blank height is 60 pixels at most and 10 pixels at least',
+  blankHeight: 'Blank height',
+  pixel: 'pixel',
+  guide: 'Guide'
 }

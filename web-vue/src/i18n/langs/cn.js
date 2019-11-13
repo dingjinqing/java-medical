@@ -144,6 +144,8 @@ import { cn as magicMap } from './views/admin_new/cn/index/miniProgramManagement
 import { cn as leftWingRightPicture } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/leftWingRightPictureCn'
 // 小程序页面装修文本模块国际化
 import { cn as textModule } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/textModuleCn'
+// 小程序页面装修标题模块国际化
+import { cn as titleModule } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/titleModuleCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -938,7 +940,8 @@ const cn = {
   mapModule, // 小程序页面装修地图模块
   magicMap, // 小程序页面装修魔方多图模块
   leftWingRightPicture, // 小程序页面装修左文右图国际化
-  textModule // 小程序文本模块国际化
+  textModule, // 小程序文本模块国际化 以及下面简单模块的国际化
+  titleModule // 小程序标题模块国际化
 }
 
 export default cn

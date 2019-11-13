@@ -18,5 +18,11 @@ export const cn = {
   middle: '中',
   small: '小',
   richText: '富文本',
-  rightTextTips: '富文本模块(最多上传30个此模块)'
+  rightTextTips: '富文本模块(最多上传30个此模块)',
+  auxiliaryBlank: '辅助空白',
+  auxiliaryBlankTitle: '辅助空白模块',
+  auxiliaryBlankTitleTips: '空白高度最高为60像素,最低10像素',
+  blankHeight: '空白高度',
+  pixel: '像素',
+  guide: '辅助线'
 }

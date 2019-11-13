@@ -54,7 +54,8 @@ export default {
     RiLeftWingRightPicture: () => import('./pageSetupModules/graphicAndTextComponents/riLeftWingRightPicture'), // 右侧左文右图配置模块\
     RiTextModule: () => import('./pageSetupModules/graphicAndTextComponents/riTextModule'), // 右侧文本模块配置页面
     RiRichText: () => import('./pageSetupModules/graphicAndTextComponents/riRichText'), // 右侧富文本模块
-    RiAuxiliaryBlank: () => import('./pageSetupModules/graphicAndTextComponents/riAuxiliaryBlank') // 右侧辅助空白配置页面
+    RiAuxiliaryBlank: () => import('./pageSetupModules/graphicAndTextComponents/riAuxiliaryBlank'), // 右侧辅助空白配置页面
+    RiTitleModule: () => import('./pageSetupModules/graphicAndTextComponents/riTitleModule') // 标题模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -128,6 +129,10 @@ export default {
         {
           id: 19,
           name: 'RiAuxiliaryBlank'
+        },
+        {
+          id: 21,
+          name: 'RiTitleModule'
         },
         {
           id: 27,

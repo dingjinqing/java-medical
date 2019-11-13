@@ -147,7 +147,7 @@ export default {
       immediate: true
     },
     // 监听数据变换
-    data: { // 模块公共
+    moduleSaveData: { // 模块公共
       handler (newData) {
         console.log(newData)
         this.$emit('handleToBackData', newData)
