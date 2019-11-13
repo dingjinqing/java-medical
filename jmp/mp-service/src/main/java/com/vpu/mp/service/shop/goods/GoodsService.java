@@ -882,7 +882,7 @@ public class GoodsService extends ShopBaseService {
     private SelectConditionStep<?> buildGoodsSpecPrdColumnExistOption(SelectJoinStep<?> select,
                                                                       GoodsColumnCheckExistParam goodsColumnExistParam) {
         //判断del_flag应该可以去掉，目前删除商品的时候会把sku备份到bak里面，prd表内是真删除
-        SelectConditionStep<?> scs = select.where(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        SelectConditionStep<?> scs = select.where(DSL.noCondition());
 
         if (goodsColumnExistParam.getPrdSn() != null) {
             scs = scs.and(GOODS_SPEC_PRODUCT.PRD_SN.eq(goodsColumnExistParam.getPrdSn()));

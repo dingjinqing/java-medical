@@ -187,7 +187,6 @@ public class IntegralConvertService extends ShopBaseService {
 
 		List<IntegralConvertGoodsVo> sql = db().select().from(GOODS_SPEC_PRODUCT)
 				.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
-				.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertConstant.NOT_DELETE))
 				.fetchInto(IntegralConvertGoodsVo.class);
 
 		return sql;
@@ -215,7 +214,6 @@ public class IntegralConvertService extends ShopBaseService {
 			/* 查找指定商品的所有规格 */
 			List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
 					.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
-					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertConstant.NOT_DELETE))
 					.fetchInto(Integer.class);
 			/* 添加数据-活动规格信息表 */
 			for (int i = 0; i < productIds.size(); i++) {
@@ -249,7 +247,6 @@ public class IntegralConvertService extends ShopBaseService {
 
 		List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
 				.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodId))
-				.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertConstant.NOT_DELETE))
 				.fetchInto(Integer.class);
 
 		List<IntegralConvertProductVo> productList = new ArrayList<IntegralConvertProductVo>(1024);
@@ -261,7 +258,6 @@ public class IntegralConvertService extends ShopBaseService {
 
 			String prdDesc = db().select(GOODS_SPEC_PRODUCT.PRD_DESC).from(GOODS_SPEC_PRODUCT)
 					.where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productIds.get(i)))
-					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertConstant.NOT_DELETE))
 					.fetchOptionalInto(String.class).orElse(null);
 
 			listVo.setPrdDesc(prdDesc);
@@ -297,7 +293,6 @@ public class IntegralConvertService extends ShopBaseService {
 			/* 查找指定商品的所有规格 */
 			List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
 					.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
-					.and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq((byte) IntegralConvertConstant.NOT_DELETE))
 					.fetchInto(Integer.class);
 			/* 修改数据-活动规格信息表 */
 			for (int i = 0; i < productIds.size(); i++) {

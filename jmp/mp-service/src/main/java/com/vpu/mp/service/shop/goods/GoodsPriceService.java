@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -19,11 +18,14 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 商品获取展示价格通用service
@@ -148,7 +150,7 @@ public class GoodsPriceService extends ShopBaseService {
         if(prdId == null || prdId <= 0){
             return BigDecimal.ZERO;
         }
-        Record record =  db().select(GOODS_SPEC_PRODUCT.PRD_COST_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId).and(GOODS_SPEC_PRODUCT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOne();
+        Record record =  db().select(GOODS_SPEC_PRODUCT.PRD_COST_PRICE).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId)).fetchOne();
         if(record == null){
             return null;
         }

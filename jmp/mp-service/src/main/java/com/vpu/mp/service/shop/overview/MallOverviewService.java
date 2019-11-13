@@ -140,8 +140,7 @@ public class MallOverviewService extends ShopBaseService {
                 .from(gsp)
                 .leftJoin(g)
                 .on(gsp.GOODS_ID.eq(g.GOODS_ID))
-                .where(gsp.DEL_FLAG.eq((byte)0))
-                .and(g.DEL_FLAG.eq((byte)0))
+                .where(g.DEL_FLAG.eq((byte)0))
                 .and(gsp.PRD_NUMBER.eq(0))
                 .and(g.SOURCE.eq((byte)0)).execute());
         toDoItemVo.setProductEvaluationPr(db().fetchCount(CommentGoods.COMMENT_GOODS,CommentGoods.COMMENT_GOODS.DEL_FLAG.eq((byte)0)
