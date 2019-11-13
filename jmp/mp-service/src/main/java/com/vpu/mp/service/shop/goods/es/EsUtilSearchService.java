@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +62,7 @@ public class EsUtilSearchService extends EsBaseSearchService{
     }
     @Override
     public boolean esState(){
-        return esState();
+        return super.esState();
+
     }
 }
