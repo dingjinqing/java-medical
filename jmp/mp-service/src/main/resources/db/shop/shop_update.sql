@@ -1144,3 +1144,11 @@ CREATE TABLE `b2c_user_rfm_summary` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `ref_date` (`ref_date`) USING BTREE
 );
+
+--11月13日 常乐-返利策略添加首单返利
+ALTER TABLE `b2c_distribution_strategy` ADD COLUMN `first_rebate` TINYINT(1) DEFAULT 0  NOT NULL   COMMENT '邀请新用户下首单返利';
+ALTER TABLE `b2c_distribution_strategy` ADD COLUMN `first_ratio` FLOAT DEFAULT 0  NULL   COMMENT '首单返利金额';
+ALTER TABLE `b2c_distribution_strategy` ADD COLUMN `first_ratio_2` FLOAT DEFAULT 0  NULL   COMMENT '首单返利金额';
+ALTER TABLE `b2c_distribution_strategy` ADD COLUMN `first_ratio_3` FLOAT DEFAULT 0  NULL   COMMENT '首单返利金额';
+ALTER TABLE `b2c_distribution_strategy` ADD COLUMN `first_ratio_4` FLOAT DEFAULT 0  NULL   COMMENT '首单返利金额';
+ALTER TABLE `b2c_distribution_strategy` ADD COLUMN `first_ratio_5` FLOAT DEFAULT 0  NULL   COMMENT '首单返利金额';
