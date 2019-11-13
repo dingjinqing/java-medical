@@ -32,14 +32,13 @@
         </div>
         <div class="container color">
           <span>{{$t('commoditySearch.frameColor')}}：</span>
-          <span class="colorSelect">
-            <el-color-picker
-              v-model="data.box_color"
-              show-alpha
-              :predefine="predefineColors"
-            >
-            </el-color-picker>
-          </span>
+          <el-color-picker
+            v-model="data.box_color"
+            show-alpha
+            :predefine="predefineColors"
+            size="small"
+          >
+          </el-color-picker>
           <span style="margin-left:5px">
             <el-button
               plain
@@ -51,14 +50,13 @@
         </div>
         <div class="container color">
           <span>{{$t('commoditySearch.backgroundColor')}}：</span>
-          <span class="colorSelect">
-            <el-color-picker
-              v-model="data.back_color"
-              show-alpha
-              :predefine="predefineColors"
-            >
-            </el-color-picker>
-          </span>
+          <el-color-picker
+            v-model="data.back_color"
+            show-alpha
+            :predefine="predefineColors"
+            size="small"
+          >
+          </el-color-picker>
           <span style="margin-left:5px">
             <el-button
               plain

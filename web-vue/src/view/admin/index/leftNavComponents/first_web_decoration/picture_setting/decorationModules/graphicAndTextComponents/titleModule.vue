@@ -25,7 +25,7 @@
                 style="width:25px;height:25px;margin-right:5px"
                 :src="moduleSaveData.img_url"
               >
-              <span :style="(moduleSaveData.title_model==='1')?('color:'+moduleSaveData.color):''">{{$t('titleModule.middleZb')}}</span>
+              <span :style="(moduleSaveData.title_model==='1')?('color:'+moduleSaveData.color):''">{{moduleSaveData.title?moduleSaveData.title:$t('titleModule.middleZb')}}</span>
               <div v-if="moduleSaveData.title_model==='2'">
                 <i style="color:#999;font-size:12px;margin-top:5px">{{moduleSaveData.title_date}}</i>
                 <i style="color:#999;font-size:12px;margin-top:5px;margin-left:10px">{{moduleSaveData.title_author}}</i>

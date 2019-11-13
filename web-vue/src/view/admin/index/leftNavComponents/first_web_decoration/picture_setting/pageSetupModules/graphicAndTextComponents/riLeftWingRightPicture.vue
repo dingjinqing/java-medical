@@ -103,6 +103,7 @@
     <ImageDalog
       :tuneUp='tuneUp'
       @handleSelectImg='handleSelectImg'
+      :imageSize='[360,360]'
       pageIndex='pictureSpace'
     />
     <!--选择链接弹窗-->

@@ -284,12 +284,14 @@
                     label="1"
                   >{{$t('commodity.custom')}}</el-radio>
                   <span class="colorSelect">
-                    <colorPicker
+                    <el-color-picker
+                      size="small"
                       v-model="data.goods_bg_color"
-                      :defaultColor="defaultColorright"
-                      :disabled="data.goods_module_bg==='0'?true:false"
-                      style="width:60px;height:30px;"
-                    />
+                      show-alpha
+                      :predefine="predefineColors"
+                      :disabled="data.goods_module_bg==='0'"
+                    >
+                    </el-color-picker>
                   </span>
                   <div style="margin-left:10px;margin-top:-1px">
                     <el-button
@@ -541,6 +543,22 @@ export default {
   },
   data () {
     return {
+      predefineColors: [ // 颜色选择器预设颜色池
+        '#ff4500',
+        '#ff8c00',
+        '#ffd700',
+        '#90ee90',
+        '#00ced1',
+        '#1e90ff',
+        '#c71585',
+        'rgba(255, 69, 0, 0.68)',
+        'rgb(255, 120, 0)',
+        'hsv(51, 100, 98)',
+        'hsva(120, 40, 94, 0.5)',
+        'hsl(181, 100%, 37%)',
+        'hsla(209, 100%, 56%, 0.73)',
+        '#c7158577'
+      ],
       classFlag: null, // 区分商家分类和平台分类flag
       dialogVisible: false, // 商家分类和平台分类弹窗调起flag
       imageSize: [], // 模块标题图标点击宽高限制
@@ -1040,7 +1058,7 @@ export default {
     },
     // 商品模块颜色自定义重置点击
     handleToReset () {
-      this.commodityModule.bgColor = this.defaultColorright
+      this.data.goods_bg_color = '#f5f5f5'
     },
     // 模块推荐商品列表icon点击统一处理
     handleToClickOpera (index, flag) {
@@ -1446,7 +1464,7 @@ export default {
                 .colorSelect {
                   display: inline-block;
                   height: 32px;
-                  width: 62px;
+                  width: 34px;
                   margin-left: 5px;
                   background-color: #fff;
                   border: 1px solid #ccc;
