@@ -27,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.market.seckill.SecKillProductParam;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.*;
@@ -427,6 +428,17 @@ public class SeckillService extends ShopBaseService{
             seckill.setSecKillProduct(seckillProduct);
         }
         return res;
+    }
+
+    /**
+     * 校验该秒杀规格是否还有库存 返回1为还有库存
+     * @param param
+     * @return
+     */
+    public int checkSeckillProductStock(SecKillProductParam param){
+        int seckillStock = db().select(SEC_KILL_PRODUCT_DEFINE.STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(param.getSkId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(param.getProductId()))).fetchOne().into(Integer.class);
+        int goodsNumber = db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(param.getProductId())).fetchOne().into(Integer.class);
+        return seckillStock > 0 && goodsNumber > 0 ? 1 :0;
     }
 
 }
