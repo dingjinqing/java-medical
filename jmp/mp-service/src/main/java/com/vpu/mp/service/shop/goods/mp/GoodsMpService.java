@@ -53,9 +53,6 @@ public class GoodsMpService extends ShopBaseService {
 
     @Autowired
     protected UpYunConfig upYunConfig;
-    
-    @Autowired
-    public GoodsRecommend goodsRecommend;
 
     /**
      * 装修页面 商品列表模块中获取配置后的商品集合数据
