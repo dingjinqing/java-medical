@@ -6,9 +6,8 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * @Author:liufei
- * @Date:2019/7/22
- * @Description: 商品概览
+ * author liufei
+ * date 2019/7/22
  */
 @Data
 public class ProductOverviewParam {

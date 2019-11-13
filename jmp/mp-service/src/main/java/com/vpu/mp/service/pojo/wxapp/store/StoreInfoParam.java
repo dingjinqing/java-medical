@@ -28,7 +28,7 @@ public class StoreInfoParam {
      * "openid":"o-2MM5ANXgJHG_NBG5G-WX-KPjKI","form_id":"the formId is a mock one"}"
      */
     @Valid
-    @NotNull
+    @NotNull(groups = {StoreConfirmPay.class})
     public StorePayOrderInfo orderInfo;
     /**
      * The Applet request source.小程序请求来源; 0:微信小程序 ,1:支付宝小程序...

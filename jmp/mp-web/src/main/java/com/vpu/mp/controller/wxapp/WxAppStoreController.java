@@ -50,7 +50,7 @@ public class WxAppStoreController extends WxAppBaseController{
      * 门店买单支付
      */
     @PostMapping("/confirmPay")
-    public JsonResult confirmPay(@RequestBody @Validated StoreInfoParam param) {
+    public JsonResult confirmPay(@RequestBody @Validated({StoreConfirmPay.class}) StoreInfoParam param) {
         return this.success(shop().store.wxService.storePay(param));
     }
 

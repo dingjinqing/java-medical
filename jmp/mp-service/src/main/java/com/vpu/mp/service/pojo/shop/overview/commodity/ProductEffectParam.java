@@ -4,9 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @Author:liufei
- * @Date:2019/7/22
- * @Description:
+ * author liufei
+ * date 2019/7/22
  */
 @Getter
 @Setter

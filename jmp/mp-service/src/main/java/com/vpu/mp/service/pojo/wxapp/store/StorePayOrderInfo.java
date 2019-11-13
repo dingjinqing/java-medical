@@ -25,7 +25,7 @@ public class StorePayOrderInfo {
      * openid : o-2MM5ANXgJHG_NBG5G-WX-KPjKI
      * form_id : the formId is a mock one
      */
-    @PositiveOrZero
+    @PositiveOrZero(groups = {StoreConfirmPay.class})
     public Integer storeId;
     /**
      * The Card no.
