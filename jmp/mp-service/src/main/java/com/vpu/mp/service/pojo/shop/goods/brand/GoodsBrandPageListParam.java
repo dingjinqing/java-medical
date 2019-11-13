@@ -12,8 +12,8 @@ import java.sql.Timestamp;
 @Data
 public class GoodsBrandPageListParam {
     private String brandName;
-    private Timestamp startCreateTime;
-    private Timestamp endCreateTime;
+    private Timestamp startAddTime;
+    private Timestamp endAddTime;
     private Integer classifyId ;
     private Byte isRecommend ;
 
