@@ -57,6 +57,10 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
         });
     }
 
+    /**
+     * 商品详情页-秒杀
+     * @param
+     */
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
         if(param.getActivityId() != null && param.getActivityType().equals(GoodsConstant.ACTIVITY_TYPE_SEC_KILL)){

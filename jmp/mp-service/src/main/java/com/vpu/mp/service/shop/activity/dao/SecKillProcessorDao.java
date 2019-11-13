@@ -6,8 +6,10 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SecKillPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SeckillMpVo;
 import jodd.util.StringUtil;
 import org.jooq.Record;
@@ -61,7 +63,10 @@ public class SecKillProcessorDao extends ShopBaseService {
     public SeckillMpVo getDetailSeckillInfo(Integer skId,Integer userId,Integer goodsNumber){
         SeckillMpVo seckillVo = new SeckillMpVo();
 
-        SecKillDefineRecord secKill = (SecKillDefineRecord) db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne();
+        SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne().into(SecKillDefineRecord.class);
+
+        seckillVo.setActivityId(skId);
+        seckillVo.setActivityType(GoodsConstant.ACTIVITY_TYPE_SEC_KILL);
 
         seckillVo.setActState(this.canApplySecKill(secKill,goodsNumber,userId));
         seckillVo.setStock(secKill.getStock());
@@ -70,7 +75,8 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setStartTime(secKill.getStartTime());
         seckillVo.setEndTime(secKill.getEndTime());
         seckillVo.setCardId(secKill.getCardId());
-        //TODO prd
+        seckillVo.setShareConfig(Util.parseJson(secKill.getShareConfig(), ShopShareConfig.class));
+        seckillVo.setSecKillPrds(this.getSecKillPrd(secKill.getSkId()));
         return seckillVo;
     }
 
@@ -149,5 +155,14 @@ public class SecKillProcessorDao extends ShopBaseService {
                 .and(SEC_KILL_DEFINE.START_TIME.lt(date))
                 .and(SEC_KILL_DEFINE.END_TIME.gt(date))
                 .fetch();
+    }
+
+    /**
+     * 取秒杀下的规格
+     * @param skId
+     * @return
+     */
+    private List<SecKillPrdMpVo> getSecKillPrd(Integer skId){
+        return db().select(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchInto(SecKillPrdMpVo.class);
     }
 }

@@ -1,11 +1,11 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
+import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -13,7 +13,8 @@ import java.util.List;
  * @author: 王兵兵
  * @create: 2019-11-12 11:35
  **/
-@Data
+@Getter
+@Setter
 public class SeckillMpVo extends GoodsActivityBaseMp {
     /** 0正常;1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;6该用户已达到限购数量上限;7该秒杀为会员专属，该用户没有对应会员卡; */
     private Byte actState;
@@ -36,22 +37,9 @@ public class SeckillMpVo extends GoodsActivityBaseMp {
     /** 专属会员卡ID串，逗号隔开 */
     private String cardId;
 
+    /** 分享配置 */
+    private ShopShareConfig shareConfig;
+
     /** 秒杀规格 */
-    private List<SecKillPrd> secKillPrds;
-
-    @Getter
-    @Setter
-    private class SecKillPrd{
-        /** 规格ID */
-        private Integer productId;
-
-        /** 规格秒杀价 */
-        private BigDecimal seckillPrice;
-
-        /** 规格秒杀库存 */
-        private Integer stock;
-
-        /** 规格秒杀总库存 */
-        private Integer totalStock;
-    }
+    private List<SecKillPrdMpVo> secKillPrds;
 }
