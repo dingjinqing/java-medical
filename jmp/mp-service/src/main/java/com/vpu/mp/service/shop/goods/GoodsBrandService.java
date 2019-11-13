@@ -8,14 +8,15 @@ import com.vpu.mp.service.foundation.util.ChineseToPinYinUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.brand.*;
-import com.vpu.mp.service.pojo.wxapp.goods.brand.*;
+import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandClassifyNameMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
+import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.ls.LSInput;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -41,78 +42,72 @@ public class GoodsBrandService extends ShopBaseService {
 
     /**
      * 分页获取品牌信息
-     *
-     * @param param
-     * @return
+     * @param param 分页参数
+     * @return 分页信息
      */
-    public PageResult<GoodsBrand> getPageList(GoodsBrandPageListParam param) {
-        String goodsNumFieldName = "goods_num";
-        String classifyNameFieldName = "classify_name";
-        Field<Object> goodsNumField = db().selectCount().from(GOODS)
-            .where(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .asField(goodsNumFieldName);
+    public PageResult<GoodsBrandPageListVo> getPageList(GoodsBrandPageListParam param) {
+        Condition condition = buildOptions(param);
 
-        Field<Object> classifyNameField = db().select(BRAND_CLASSIFY.CLASSIFY_NAME).from(BRAND_CLASSIFY)
-            .where(BRAND_CLASSIFY.CLASSIFY_ID.eq(GOODS_BRAND.CLASSIFY_ID)).asField(classifyNameFieldName);
+        SelectSeekStep2<Record7<Integer, String, String, Byte, Timestamp, String, Short>, Byte, Timestamp> select = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME,
+            BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.FIRST.as("calssify_first"))
+            .from(GOODS_BRAND).leftJoin(BRAND_CLASSIFY).on(GOODS_BRAND.CLASSIFY_ID.eq(BRAND_CLASSIFY.CLASSIFY_ID))
+            .where(condition).and(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).or(BRAND_CLASSIFY.DEL_FLAG.isNull()))
+            .orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.CREATE_TIME.desc());
 
-        SelectJoinStep<Record11<Integer, String, String, String, Byte, Timestamp, String, Byte, Integer, Object, Object>> selectFrom = db().select(GOODS_BRAND.ID,
-            GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID,
-            goodsNumField, classifyNameField).from(GOODS_BRAND);
+        PageResult<GoodsBrandPageListVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsBrandPageListVo.class);
 
-        SelectConditionStep<?> select = this.buildOptions(selectFrom, param);
-
-        select.orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.CREATE_TIME.desc());
-
-        PageResult<GoodsBrand> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsBrand.class);
-
-        pageResult.dataList.forEach(goodsBrand -> {
-            goodsBrand.setLogoUrl(getImgFullUrlUtil(goodsBrand.getLogo()));
-        });
+        List<GoodsBrandPageListVo> dataList = pageResult.dataList;
+        // 处理商品数量和图片路径
+        if (dataList != null && dataList.size() > 0) {
+            List<Integer> brandIds = dataList.stream().map(GoodsBrandPageListVo::getId).collect(Collectors.toList());
+            Map<Integer, Long> goodsMap = db().select(GOODS_BRAND.ID, GOODS.GOODS_ID).from(GOODS).innerJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
+                .where(GOODS_BRAND.ID.in(brandIds)).fetch().stream().collect(Collectors.groupingBy(x -> x.get(GOODS_BRAND.ID), Collectors.counting()));
+            dataList.forEach(brand-> {
+                brand.setGoodsNum(goodsMap.getOrDefault(brand.getId(),0L).intValue());
+                brand.setLogo(getImgFullUrlUtil(brand.getLogo()));
+            });
+        }
 
         return pageResult;
     }
 
     /**
      * 根据过滤条件构造对应的sql语句
-     *
-     * @param select
-     * @param param
-     * @return
+     * @param param 分页参数
+     * @return 分页过滤条件
      */
-    private SelectConditionStep<?> buildOptions(SelectWhereStep<?> select, GoodsBrandPageListParam param) {
-        SelectConditionStep<?> scs = select.where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+    private Condition buildOptions(GoodsBrandPageListParam param) {
+        Condition condition = GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode());
 
         if (!StringUtils.isBlank(param.getBrandName())) {
-            scs = scs.and(GOODS_BRAND.BRAND_NAME.like(this.likeValue(param.getBrandName())));
+            condition = condition.and(GOODS_BRAND.BRAND_NAME.like(this.likeValue(param.getBrandName())));
         }
 
-        if (param.getStartCreateTime() != null) {
-            scs = scs.and(GOODS_BRAND.CREATE_TIME.ge(param.getStartCreateTime()));
+        if (param.getStartAddTime() != null) {
+            condition = condition.and(GOODS_BRAND.CREATE_TIME.ge(param.getStartAddTime()));
         }
 
-        if (param.getEndCreateTime() != null) {
-            scs = scs.and(GOODS_BRAND.CREATE_TIME.le(param.getEndCreateTime()));
+        if (param.getEndAddTime() != null) {
+            condition = condition.and(GOODS_BRAND.CREATE_TIME.le(param.getEndAddTime()));
         }
 
         if (param.getClassifyId() != null) {
-            scs = scs.and(GOODS_BRAND.CLASSIFY_ID.eq(param.getClassifyId()));
+            condition = condition.and(GOODS_BRAND.CLASSIFY_ID.eq(param.getClassifyId()));
         }
 
         if (param.getIsRecommend() != null) {
-            scs = scs.and(GOODS_BRAND.IS_RECOMMEND.eq(param.getIsRecommend()));
+            condition = condition.and(GOODS_BRAND.IS_RECOMMEND.eq(param.getIsRecommend()));
         }
 
-        return scs;
+        return condition;
     }
 
     /**
      * 添加品牌
-     *
      * @param goodsBrand
      * @return 数据库受影响行数
      */
-    public void insert(GoodsBrand goodsBrand) {
-
+    public void insert(GoodsBrandAddParam goodsBrand) {
         transaction(() -> {
             GoodsBrandRecord goodsBrandRecord = db().newRecord(GOODS_BRAND);
             assign(goodsBrand, goodsBrandRecord);
@@ -123,19 +118,15 @@ public class GoodsBrandService extends ShopBaseService {
                     .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
                     .execute();
             }
-
         });
-
     }
 
     /**
      * 假删除指定品牌
-     *
-     * @param goodsBrand
-     * @return 数据库受影响行数
+     * @param brandId
      */
-    public void delete(GoodsBrand goodsBrand) {
-        transaction(() -> deleteGoodsBrand(Arrays.asList(goodsBrand.getId())));
+    public void delete(Integer brandId) {
+        transaction(() -> deleteGoodsBrand(Collections.singletonList(brandId)));
     }
 
     private void deleteGoodsBrand(List<Integer> brandIds) {
@@ -155,17 +146,22 @@ public class GoodsBrandService extends ShopBaseService {
 
     /**
      * 更新指定商品
-     *
      * @param goodsBrand
      * @return
      */
-    public void update(GoodsBrand goodsBrand) {
-        GoodsBrandRecord goodsBrandRecord = new GoodsBrandRecord();
-        assign(goodsBrand, goodsBrandRecord);
+    public void update(GoodsBrandUpdateParam goodsBrand) {
         transaction(() -> {
-            db().executeUpdate(goodsBrandRecord);
+            GoodsBrandRecord goodsBrandRecord = db().newRecord(GOODS_BRAND);
+            assign(goodsBrand, goodsBrandRecord);
+            goodsBrandRecord.update();
+            if (goodsBrand.getOldGoodsIds() != null && goodsBrand.getOldGoodsIds().size() > 0) {
+                db().update(GOODS).set(GOODS.BRAND_ID,DEFAULT_GOODS_BRAND_ID)
+                    .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.GOODS_ID.in(goodsBrand.getOldGoodsIds()))
+                    .execute();
+            }
+
             if (goodsBrand.getGoodsIds() != null && goodsBrand.getGoodsIds().size() > 0) {
-                db().update(GOODS).set(GOODS.BRAND_ID, goodsBrandRecord.getId())
+                db().update(GOODS).set(GOODS.BRAND_ID, goodsBrand.getId())
                     .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
                     .execute();
             }
@@ -174,39 +170,38 @@ public class GoodsBrandService extends ShopBaseService {
 
     /**
      * 查询单个
-     *
-     * @param goodsBrand
+     * @param id
      * @return
      */
-    public GoodsBrand select(GoodsBrand goodsBrand) {
+    public GoodsBrandSelectVo select(Integer id) {
+        GoodsBrandSelectVo brand = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME,
+            GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CLASSIFY_ID, GOODS_BRAND.IS_RECOMMEND)
+            .from(GOODS_BRAND).where(GOODS_BRAND.ID.eq(id)).fetchAny().into(GoodsBrandSelectVo.class);
 
-        GoodsBrand gb = db().select(GOODS_BRAND.ID,
-            GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CREATE_TIME, GOODS_BRAND.DESC, GOODS_BRAND.IS_RECOMMEND, GOODS_BRAND.CLASSIFY_ID)
-            .from(GOODS_BRAND).where(GOODS_BRAND.ID.eq(goodsBrand.getId()))
-            .fetchOne().into(GoodsBrand.class);
-
-        List<Integer> goodsIds = db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.BRAND_ID.eq(goodsBrand.getId()))
+        if (brand == null) {
+            return null;
+        }
+        List<Integer> goodsIds = db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.BRAND_ID.eq(id)).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .fetch().into(Integer.class);
 
-        gb.setGoodsIds(goodsIds);
+        brand.setGoodsIds(goodsIds);
 
-        gb.setLogoUrl(getImgFullUrlUtil(gb.getLogo()));
-        return gb;
+        brand.setFullUrlLogo(getImgFullUrlUtil(brand.getLogo()));
+        return brand;
     }
 
     /**
      * 判断商品名称是否存在，新增使用
-     *
-     * @param goodsBrand
      * @return
      */
-    public boolean isBrandNameExist(GoodsBrand goodsBrand) {
+    public boolean isBrandNameExist(Integer brandId,String brandName) {
 
-        Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
-            .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
-            .and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .fetchOne();
-        Integer count = countRecord.getValue(0, Integer.class);
+        Condition condition= GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS_BRAND.BRAND_NAME.eq(brandName));
+
+        if (brandId != null) {
+            condition = condition.and(GOODS_BRAND.ID.ne(brandId));
+        }
+        int count = db().fetchCount(GOODS_BRAND, condition);
         if (count > 0) {
             return true;
         } else {
@@ -214,25 +209,6 @@ public class GoodsBrandService extends ShopBaseService {
         }
     }
 
-    /**
-     * 判断其他商品名称是否存在同名，修改使用
-     *
-     * @param goodsBrand
-     * @return
-     */
-    public boolean isOtherBrandNameExist(GoodsBrand goodsBrand) {
-        Record1<Integer> countRecord = db().selectCount().from(GOODS_BRAND)
-            .where(GOODS_BRAND.BRAND_NAME.eq(goodsBrand.getBrandName()))
-            .and(GOODS_BRAND.ID.ne(goodsBrand.getId()))
-            .and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .fetchOne();
-        Integer count = countRecord.getValue(0, Integer.class);
-        if (count > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     /**
      * 根据brandId列出所有品牌
      *
@@ -281,38 +257,38 @@ public class GoodsBrandService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageResult<GoodsBrandClassifyVo> getBrandClassifyList(GoodsBrandClassifyParam param) {
+    public PageResult<GoodsBrandClassifyPageListVo> getBrandClassifyPageList(GoodsBrandClassifyPageListParam param) {
+        Condition condition = buildBrandClassifyCondition(param);
+        SelectSeekStep2<Record, Short, Timestamp> select = db().select().from(BRAND_CLASSIFY).where(condition).orderBy(BRAND_CLASSIFY.FIRST.desc(), BRAND_CLASSIFY.CREATE_TIME.desc());
 
-        SelectOnConditionStep<Record5<Integer, String, Timestamp, Short, Integer>> selectFrom = db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.CREATE_TIME,
-            BRAND_CLASSIFY.FIRST,
-            DSL.count(GOODS_BRAND.ID).as(BRAND_NUM))
-            .from(BRAND_CLASSIFY).leftJoin(GOODS_BRAND).on(BRAND_CLASSIFY.CLASSIFY_ID.eq(GOODS_BRAND.CLASSIFY_ID));
+        PageResult<GoodsBrandClassifyPageListVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsBrandClassifyPageListVo.class);
 
-        SelectConditionStep<?> select = this.buildBrandClassifyCondition(selectFrom, param);
-
-        select.groupBy(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME, BRAND_CLASSIFY.FIRST, BRAND_CLASSIFY.CREATE_TIME);
-        select.orderBy(BRAND_CLASSIFY.FIRST.desc(), BRAND_CLASSIFY.CREATE_TIME.desc());
-
-        PageResult<GoodsBrandClassifyVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsBrandClassifyVo.class);
-
-        return pageResult;
+        List<GoodsBrandClassifyPageListVo> dataList = pageResult.dataList;
+        if (dataList != null && dataList.size() > 0) {
+            List<Integer> classifyIds = dataList.stream().map(GoodsBrandClassifyPageListVo::getClassifyId).collect(Collectors.toList());
+            Map<Integer, Long> brandNumMap = db().select(GOODS_BRAND.CLASSIFY_ID, GOODS_BRAND.ID).from(GOODS_BRAND)
+                .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS_BRAND.CLASSIFY_ID.in(classifyIds))
+                .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GOODS_BRAND.CLASSIFY_ID), Collectors.counting()));
+            dataList.forEach(x-> x.setBrandNum(brandNumMap.getOrDefault(x.getClassifyId(),0L).intValue()));
+        }
+        return  pageResult;
     }
 
-    private SelectConditionStep<?> buildBrandClassifyCondition(SelectOnConditionStep<?> selectFrom, GoodsBrandClassifyParam param) {
-        SelectConditionStep<?> scs = selectFrom.where(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+    private Condition buildBrandClassifyCondition(GoodsBrandClassifyPageListParam param) {
+        Condition condition = BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode());
 
         if (!StringUtils.isBlank(param.getClassifyName())) {
-            scs = scs.and(BRAND_CLASSIFY.CLASSIFY_NAME.like(this.likeValue(param.getClassifyName())));
+            condition = condition.and(BRAND_CLASSIFY.CLASSIFY_NAME.like(this.likeValue(param.getClassifyName())));
         }
 
-        if (param.getStartCreateTime() != null) {
-            scs = scs.and(BRAND_CLASSIFY.CREATE_TIME.ge(param.getStartCreateTime()));
+        if (param.getStartAddTime() != null) {
+            condition = condition.and(BRAND_CLASSIFY.CREATE_TIME.ge(param.getStartAddTime()));
         }
 
-        if (param.getEndCreateTime() != null) {
-            scs = scs.and(BRAND_CLASSIFY.CREATE_TIME.le(param.getStartCreateTime()));
+        if (param.getEndAddTime() != null) {
+            condition = condition.and(BRAND_CLASSIFY.CREATE_TIME.le(param.getEndAddTime()));
         }
-        return scs;
+        return condition;
     }
 
 
