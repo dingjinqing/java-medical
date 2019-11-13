@@ -187,7 +187,6 @@ export default {
 
       console.log(obj)
       scoreDetailRequest(obj).then(res => {
-        debugger
         console.log((res.content.dataList))
         if (res.error === 0) {
           // 装载数据
@@ -248,14 +247,14 @@ export default {
 }
 .top > div {
   display: flex;
-  width: 280px;
+  min-width: 220px;
 }
-.top > div:nth-of-type(2) {
-  margin: 0 100px;
+.top > div:nth-of-type(3) {
+  margin-right: 100px;
 }
 .top > div > span {
   display: inline-block;
-  width: 80px;
+  min-width: 90px;
   line-height: 30px;
   line-height: 30px;
   text-align: right;
