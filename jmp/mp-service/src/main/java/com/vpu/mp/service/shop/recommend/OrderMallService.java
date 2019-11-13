@@ -156,7 +156,6 @@ public class OrderMallService extends ShopBaseService {
 			log.info(result.getErrmsg(),result.getErrcode());
 		} catch (WxErrorException e) {
 			log.error(e.getMessage(),e);
-			e.printStackTrace();
 		}
 		return result;
 	}
