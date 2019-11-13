@@ -88,7 +88,8 @@ global.wxPage({
     let _this = this
     let params = {
       serviceId: this.data.reserveInfo.serviceId,
-      userId: this.data.userId
+      // userId: this.data.userId
+      userId: 190
     }
     util.api('/api/wxapp/store/service/confirmReservation', function (res) {
       console.log(res)
@@ -99,8 +100,10 @@ global.wxPage({
         // 会员卡列表
         let cardList = content.cardList.map(function (card) {
           card.card_src = _this.data.imageUrl + 'image/wxapp/icon_rectangle.png'
-          if (content.shopAvatar) {
+          if (!content.shopAvatar) {
             content.shopAvatar = _this.data.imageUrl + 'image/wxapp/shop_logo_default.png'
+          } else {
+            content.shopAvatar = _this.data.imageUrl + content.shopAvatar
           }
           if (card.bgType == 1) {
             card.bg = 'url(' + _this.data.imageUrl + card.bgImg + ') no-repeat'
@@ -112,6 +115,11 @@ global.wxPage({
           }
           return card
         })
+        let userCard = {}
+        if (cardList && cardList.length > 0) {
+          userCard = cardList[0]
+          userCard.card_src = 1
+        }
         // 初始化应付金额
         _this.setData({
           serviceInfo: content.service,
@@ -234,6 +242,33 @@ global.wxPage({
       cardMode: false
     })
   },
+  chooseCard(e) {
+    let that = this
+    let dataset = e.currentTarget.dataset
+    let cardNo = dataset.cardNo
+    let id = dataset.id
+    let cardList = this.data.cardList
+    cardList.forEach(function (item, i) {
+      if (item.cardNo === cardNo) {
+        item.card_src = 1
+        that.setData({
+          userCard: item
+        })
+      } else {
+        item.card_src = that.data.imageUrl + 'image/wxapp/icon_rectangle.png'
+      }
+    })
+    that.setData({
+      cardList: cardList
+    })
+  },
+  cardConfirm(e) {
+    this.setData({
+      cardMode: false
+    })
+    this.checkCancelCard()
+    this.checkCancelYue()
+  },
   // 支付弹窗
   payClick(e) {
     let _this = this
@@ -343,8 +378,7 @@ global.wxPage({
       'create_order.money_paid': new_money_paid,
       'create_order.account_discount': 0,
       pay_yue: 0,
-      prompt_message: '',
-      user_account_input: ''
+      prompt_message: ''
     })
   },
   yue_fo(e) {
