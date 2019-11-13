@@ -21,14 +21,5 @@ public class WxAppGoodsController extends WxAppBaseController {
 		return success(shop().goodsMp.getGoodsDetailMp(param));
 	}
 
-	/**
-	 * 好物圈分享，测试用
-	 * @param param
-	 * @return
-	 */
-	@PostMapping("/api/wxapp/goods/commend")
-	public JsonResult shippingRecommendGoods(@RequestBody GoodsCommendParam param) {
-		return success(shop().goodsMp.goodsRecommend.shippingRecommendGoods(param.getList()));
-	}
 
 }
