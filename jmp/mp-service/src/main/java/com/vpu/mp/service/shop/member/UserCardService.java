@@ -91,11 +91,13 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.MEMBER_MONEY;
  */
 @Service
 public class UserCardService extends ShopBaseService {
-	// 升级
+	/** 升级 */
 	final static Byte UPGRADE = 1;
-	// 检测有卡领取
-	final static Byte CHECK = 0;
-
+	/** 检测有卡领取 */
+	final static Byte TP_CHECK = 0;
+	/** 领取 */
+	final static Byte TP_RECEIVE_ONE = 1;
+	final static Byte TP_RECEIVE_TWO = 2;
 	@Autowired
 	public UserCardDaoService userCardDao;
 	@Autowired
@@ -206,10 +208,10 @@ public class UserCardService extends ShopBaseService {
 				// 直接升级
 				updateUserGradeCard(userId, cardId);
 		}else{
-				if(type==1 || type==2) {
+				if(TP_RECEIVE_ONE.equals(type) || TP_RECEIVE_TWO.equals(type)) {
 					// 检测升级
 					cardId = checkAndUpgradeUserCard(userId);
-				}else if(type==CHECK) {
+				}else if(TP_CHECK.equals(type)) {
 					// 检测可升级到的卡
 					cardId = checkCardCanUpgrade(userId);
 				}
@@ -330,11 +332,13 @@ public class UserCardService extends ShopBaseService {
 	 * 用户卡升级
 	 */
 	private void updateUserGradeCard(Integer userId, Integer cardId) throws MemberCardNullException {
-		if (isHasAvailableGradeCard(userId)) { // 等级卡升级
+		// 等级卡升级
+		if (isHasAvailableGradeCard(userId)) { 
 			MemberCardRecord oldGradeCard = getUserGradeCard(userId);
 			MemberCardRecord newGradeCard = memberCardService.getCardById(cardId);
 			changeUserGradeCard(userId, oldGradeCard, newGradeCard);
-		} else { // 发放等级卡
+		} else { 
+			// 发放等级卡
 			sendCard(userId, cardId);
 		}
 	}
@@ -440,13 +444,17 @@ public class UserCardService extends ShopBaseService {
 
 	private void addChargeMoney(MemberCardRecord card, UserCardRecord userCard) {
 		logger().info("正在充值卡数据");
-		ChargeMoneyRecordBuilder builder = ChargeMoneyRecordBuilder.create(db().newRecord(CHARGE_MONEY))
+		ChargeMoneyRecordBuilder builder = 
+				ChargeMoneyRecordBuilder
+				.create(db().newRecord(CHARGE_MONEY))
 				.userId(userCard.getUserId()).cardId(userCard.getCardId()).type(card.getCardType())
-				.cardNo(userCard.getCardNo()).payment("store.payment") // TODO 门店支付国际化
+				.cardNo(userCard.getCardNo()).payment("store.payment") 
 				.createTime(DateUtil.getLocalDateTime());
-
+		// TODO 门店支付国际化
 		if (isNormalCard(card) && card.getSendMoney() != null) {
-			builder.charge(new BigDecimal(card.getSendMoney())).reason("member.card.admin.send.card") // TODO 管理员发卡
+			// TODO 管理员发卡
+			builder.charge(new BigDecimal(card.getSendMoney()))
+					.reason("member.card.admin.send.card") 
 					.build().insert();
 
 		}
@@ -880,6 +888,8 @@ public class UserCardService extends ShopBaseService {
         }
         return cards;
     }
+	
+	
 
     /**
      * 王帅
