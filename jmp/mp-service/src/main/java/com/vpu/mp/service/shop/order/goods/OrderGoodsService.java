@@ -218,6 +218,15 @@ public class OrderGoodsService extends ShopBaseService{
 				.from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetch();
 		return record6s;
 	}
+	
+	/**
+	 * 根据订单号查询商品
+	 * @param orderSn
+	 * @return
+	 */
+	public Result<OrderGoodsRecord> getOrderGoods(String orderSn) {
+		return db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetch();
+	}
 
     /**
      * 初始化数据
