@@ -1085,12 +1085,15 @@ export default {
                   color: #666;
                   justify-content: space-between;
                   > span {
-                    width: 207px;
+                    width:190px;
                     text-align: left;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     cursor: pointer;
+                    &:first-of-type {
+                      width: 260px;
+                    }
                     &.paymentType {
                       img {
                         vertical-align: middle;
