@@ -78,7 +78,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
         byte isAllCheck  = 1;
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
-                totalPrice = totalPrice.add(goods.getPrdPrice());
+                totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getGoodsNumber())));
             }
             isAllCheck =0;
         }

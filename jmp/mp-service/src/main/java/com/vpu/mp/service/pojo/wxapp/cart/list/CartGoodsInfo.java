@@ -29,7 +29,7 @@ public class CartGoodsInfo {
     /**
      * 商品状态 1 在售 2 下架 3 删除 4 售罄 5专享
      */
-    private Byte goodsStatus;
+    private Byte goodsStatus =1;
     /**
      * 购物车数量
      */
