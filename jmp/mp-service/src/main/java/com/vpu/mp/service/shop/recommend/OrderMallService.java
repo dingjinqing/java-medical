@@ -140,8 +140,6 @@ public class OrderMallService extends ShopBaseService {
 		List<OrderList> list=new ArrayList<OrderList>();
 		list.add(orderList);
 		JsonRootBean jsonRootBean=new JsonRootBean(list);
-		String jsonNotNull = Util.toJsonNotNull(jsonRootBean);
-		log.info("发送的报文",jsonNotNull);
 		WxOpenResult importOrder = importOrder(jsonRootBean);
 		return importOrder;
 	}
@@ -151,7 +149,9 @@ public class OrderMallService extends ShopBaseService {
 		MpAuthShopRecord shop = saas.shop.mp.getAuthShopByShopId(getShopId());
 		WxOpenResult result=null;
 		try {
-			result = maService.importorder(shop.getAppId(),Util.toJsonNotNull(jsonRootBean));
+			String jsonNotNull = Util.toJsonNotNull(jsonRootBean);
+			log.info("发送的报文"+jsonNotNull);
+			result = maService.importorder(shop.getAppId(),jsonNotNull);
 			log.info(" 添加好物圈订单");
 			log.info(result.getErrmsg(),result.getErrcode());
 		} catch (WxErrorException e) {
