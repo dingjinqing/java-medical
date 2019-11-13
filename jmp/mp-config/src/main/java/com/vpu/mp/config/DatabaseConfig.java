@@ -49,4 +49,10 @@ public class DatabaseConfig {
 	protected String driver = "com.mysql.cj.jdbc.Driver";
 	protected String dialect = "MYSQL";
 
+	@Value(value = "${db.pool.max-pool-size:-1}")
+	protected int maxPoolSize;
+	
+	@Value(value = "${db.pool.min-idle:-1}")
+	protected int minIdle;
+
 }

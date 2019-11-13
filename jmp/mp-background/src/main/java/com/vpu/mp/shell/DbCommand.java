@@ -1,15 +1,32 @@
 package com.vpu.mp.shell;
 
+import java.io.IOException;
+import java.security.SecureRandom;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jline.terminal.Attributes.LocalFlag;
+import org.jline.utils.AttributedString;
+import org.jline.utils.AttributedStringBuilder;
+import org.jline.utils.AttributedStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellCommandGroup;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import com.github.fonimus.ssh.shell.PromptColor;
+import com.github.fonimus.ssh.shell.SshShellCommandFactory;
 import com.github.fonimus.ssh.shell.SshShellHelper;
 import com.github.fonimus.ssh.shell.commands.SshShellComponent;
+import com.github.fonimus.ssh.shell.interactive.Interactive;
+import com.github.fonimus.ssh.shell.interactive.KeyBinding;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.saas.SaasApplication;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @SshShellComponent
 @ShellCommandGroup("Database Commands")
 public class DbCommand {
@@ -49,16 +66,15 @@ public class DbCommand {
 	
 	@ShellMethod("Test Command")
 	public void test() {
-		for(int i=0;i<1000;i++) {
-			String info = this.helper.progress(i, 1000);
-			this.log(info);
-			try {
+		 for(int i=0;i<1000;i++) {
+			 this.log("number:"+i);
+			 try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+		 }
 	}
 	
 	protected void log(String message) {
@@ -68,7 +84,6 @@ public class DbCommand {
 	protected void log(String message, PromptColor color) {
 		this.helper.print(message, color);
 		this.helper.terminalWriter().flush();
-		this.helper.terminalWriter().checkError();
 	}
 
 }

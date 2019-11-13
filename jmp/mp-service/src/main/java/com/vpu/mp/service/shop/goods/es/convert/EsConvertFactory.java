@@ -14,11 +14,11 @@ import java.util.Map;
 */
 public class EsConvertFactory {
 
-    private static final Map<Class, EsParamConvertInterface> param_map = new HashMap<>();
+    private static final Map<Class<?>, EsParamConvertInterface> param_map = new HashMap<>();
 
-    private static final Map<Class, EsGoodsConvertInterface> goods_map = new HashMap<>();
+    private static final Map<Class<?>, EsGoodsConvertInterface> goods_map = new HashMap<>();
 
-    public static EsParamConvertInterface getParamConvert(Class clz){
+    public static EsParamConvertInterface getParamConvert(Class<?> clz){
         EsParamConvertInterface imp = param_map.get(clz);
         if( imp == null ){
             try {
@@ -30,7 +30,7 @@ public class EsConvertFactory {
         }
         return imp;
     }
-    public static EsGoodsConvertInterface getGoodsConvert(Class clz){
+    public static EsGoodsConvertInterface getGoodsConvert(Class<?> clz){
         EsGoodsConvertInterface imp = goods_map.get(clz);
         if( imp == null ){
             try {

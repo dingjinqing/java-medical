@@ -5,7 +5,6 @@ import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -33,6 +32,7 @@ import com.vpu.mp.config.DatabaseConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.service.QueryFilter;
 import com.vpu.mp.service.foundation.util.Util;
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * 数据库管理，单例。需要考虑多线程互斥情况
@@ -45,10 +45,9 @@ public class DatabaseManager {
 
 	@Autowired
 	protected DatabaseConfig databaseConfig;
-	
+
 	@Autowired
 	protected DatasourceManager datasourceManager;
-
 
 	Logger loger = LoggerFactory.getLogger(DatabaseManager.class);
 
@@ -68,8 +67,8 @@ public class DatabaseManager {
 	public DefaultDSLContext mainDb() {
 		MpDefaultDslContext db = mainDsl.get();
 		if (db == null) {
-			BasicDataSource ds = datasourceManager.getMainDbDatasource();
-			db = this.getDsl(ds, datasourceManager.getMainDbConfig(),0);
+			HikariDataSource ds = datasourceManager.getMainDbDatasource();
+			db = this.getDsl(ds, datasourceManager.getMainDbConfig(), 0);
 		}
 		mainDsl.remove();
 		mainDsl.set(db);
@@ -83,26 +82,25 @@ public class DatabaseManager {
 	 * @return
 	 */
 	public DatabaseManager switchShopDb(Integer shopId) {
-		loger.debug("switchShopDb==="+shopId);
+		loger.debug("switchShopDb===" + shopId);
 		MpDefaultDslContext db = shopDsl.get();
-		if(db == null ||  !db.getShopId().equals(shopId)) {
+		if (db == null || !db.getShopId().equals(shopId)) {
 			ShopRecord shop = mainDb().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 			if (shop != null) {
 				DbConfig dbConfig = Util.parseJson(shop.getDbConfig(), DbConfig.class);
 				if (dbConfig == null) {
-					throw new RuntimeException("ShopId "+shopId+" Db not found") ;
+					throw new RuntimeException("ShopId " + shopId + " Db not found");
 				}
-				BasicDataSource ds = datasourceManager.getDatasource(dbConfig);
-				db = getDsl(ds, dbConfig,shopId);
+				HikariDataSource ds = datasourceManager.getDatasource(dbConfig);
+				db = getDsl(ds, dbConfig, shopId);
 				shopDsl.remove();
 				shopDsl.set(db);
 			} else {
-				throw new RuntimeException("ShopId "+shopId+" Db not found") ;
+				throw new RuntimeException("ShopId " + shopId + " Db not found");
 			}
-		}		
+		}
 		return this;
 	}
-
 
 	/**
 	 * 得到当前数据库店铺ID
@@ -111,7 +109,7 @@ public class DatabaseManager {
 	 */
 	public Integer getCurrentShopId() {
 		MpDefaultDslContext db = shopDsl.get();
-		assert (db != null):"DB NULL";
+		assert (db != null) : "DB NULL";
 		return db.getShopId();
 	}
 
@@ -127,7 +125,7 @@ public class DatabaseManager {
 	/**
 	 * 从数据源获取一个连接
 	 */
-	protected MpDefaultDslContext getDsl(BasicDataSource ds, DbConfig dbConfig,Integer shopId) {
+	protected MpDefaultDslContext getDsl(HikariDataSource ds, DbConfig dbConfig, Integer shopId) {
 		MpDefaultDslContext db = new MpDefaultDslContext(configuration(ds, dbConfig.getDatabase()));
 		db.setShopId(shopId);
 		db.setDbConfig(dbConfig);
@@ -142,8 +140,8 @@ public class DatabaseManager {
 	public boolean installShopDb(DbConfig dbConfig) {
 		try {
 			String sql = "create database " + dbConfig.database + " default charset utf8mb4 collate utf8mb4_unicode_ci";
-			BasicDataSource ds = datasourceManager.getToCreateShopDbDatasource();
-			getDsl(ds, dbConfig,0).execute(sql);
+			HikariDataSource ds = datasourceManager.getToCreateShopDbDatasource();
+			getDsl(ds, dbConfig, 0).execute(sql);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
 			return false;
@@ -197,7 +195,7 @@ public class DatabaseManager {
 		try {
 			executer.execute();
 		} catch (BuildException e) {
-			loger.debug(e.getMessage(),e);
+			loger.debug(e.getMessage(), e);
 			e.printStackTrace();
 			return false;
 		}
@@ -266,12 +264,12 @@ public class DatabaseManager {
 	 * @param dataSource
 	 * @return
 	 */
-	protected DefaultConfiguration configuration(BasicDataSource dataSource, String databaseName) {
+	protected DefaultConfiguration configuration(HikariDataSource dataSource, String databaseName) {
 
 		String jooqMainSchema = "mini_main";
 		String jooqShopSchema = "mini_shop_471752";
 
-		ConnectionProvider connectionProvider =  new DataSourceConnectionProvider(dataSource);
+		ConnectionProvider connectionProvider = new DataSourceConnectionProvider(dataSource);
 		TransactionProvider transactionProvider = new DefaultTransactionProvider(connectionProvider);
 		DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
 		jooqConfiguration.set(connectionProvider);
@@ -292,8 +290,8 @@ public class DatabaseManager {
 		settings.withRenderCatalog(false);
 		jooqConfiguration.setSettings(settings);
 		// 不安全操作拦截器
-        QueryFilter queryFilter = new QueryFilter();
-        jooqConfiguration.set(queryFilter);
+		QueryFilter queryFilter = new QueryFilter();
+		jooqConfiguration.set(queryFilter);
 		return jooqConfiguration;
 	}
 

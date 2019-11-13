@@ -4,11 +4,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.config.DatabaseConfig;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import lombok.Data;
 
@@ -27,8 +28,8 @@ public class DatasourceManager {
 	/**
 	 * 数据源列表，多线程共用。
 	 */
-	protected Map<String, BasicDataSource> datasources = Collections
-			.synchronizedMap(new HashMap<String, BasicDataSource>());
+	protected Map<String, HikariDataSource> datasources = Collections
+			.synchronizedMap(new HashMap<String, HikariDataSource>());
 
 	/**
 	 * 得到主数据库配置
@@ -43,14 +44,14 @@ public class DatasourceManager {
 	/**
 	 * 得到主库数据源
 	 */
-	public BasicDataSource getMainDbDatasource() {
+	public HikariDataSource getMainDbDatasource() {
 		return this.getDatasource(getMainDbConfig());
 	}
 
 	/**
 	 * 得到即将创建店铺库的数据源
 	 */
-	public BasicDataSource getToCreateShopDbDatasource() {
+	public HikariDataSource getToCreateShopDbDatasource() {
 		return this.getDatasource(new DbConfig(databaseConfig.getShopHost(), databaseConfig.getShopPort(), "",
 				databaseConfig.getShopUsername(), databaseConfig.getShopPassword()));
 	}
@@ -58,7 +59,7 @@ public class DatasourceManager {
 	/**
 	 * 得到数据源
 	 */
-	protected BasicDataSource getDatasource(DbConfig dbConfig) {
+	protected HikariDataSource getDatasource(DbConfig dbConfig) {
 		String key = dbConfig.getDatasourceKey();
 		if (!datasources.containsKey(key)) {
 			datasources.put(key,
@@ -76,13 +77,18 @@ public class DatasourceManager {
 	 * @param driver
 	 * @return
 	 */
-	protected BasicDataSource dataSource(String url, String username, String password) {
-		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setUrl(url);
+	protected HikariDataSource dataSource(String url, String username, String password) {
+		HikariDataSource dataSource = new HikariDataSource();
+		dataSource.setJdbcUrl(url);
 		dataSource.setUsername(username);
 		dataSource.setPassword(password);
 		dataSource.setDriverClassName(databaseConfig.getDriver());
-		// TODO：设置数据源其他参数，可以在配置里读取
+		if (databaseConfig.getMaxPoolSize() > 0) {
+			dataSource.setMaximumPoolSize(databaseConfig.getMaxPoolSize());
+		}
+		if (databaseConfig.getMinIdle() > 0) {
+			dataSource.setMinimumIdle(databaseConfig.getMinIdle());
+		}
 		return dataSource;
 	}
 

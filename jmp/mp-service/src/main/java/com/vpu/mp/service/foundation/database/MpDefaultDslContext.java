@@ -4,12 +4,13 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.jooq.Configuration;
 import org.jooq.ConnectionProvider;
 import org.jooq.SQLDialect;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DefaultDSLContext;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,10 +22,15 @@ import lombok.Setter;
  */
 public class MpDefaultDslContext extends DefaultDSLContext {
 
-	@Getter @Setter protected DbConfig dbConfig;
-	@Getter @Setter protected Integer shopId = 0;
-	@Getter @Setter protected BasicDataSource ds;
-
+	@Getter
+	@Setter
+	protected DbConfig dbConfig;
+	@Getter
+	@Setter
+	protected Integer shopId = 0;
+	@Getter
+	@Setter
+	protected HikariDataSource ds;
 
 	/**
 	 * 
