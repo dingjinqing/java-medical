@@ -42,6 +42,7 @@ import com.vpu.mp.service.pojo.shop.recommend.order.InvoiceDetailPage;
 import com.vpu.mp.service.pojo.shop.recommend.order.InvoiceInfo;
 import com.vpu.mp.service.pojo.shop.recommend.order.ItemDetailPage;
 import com.vpu.mp.service.pojo.shop.recommend.order.ItemList;
+import com.vpu.mp.service.pojo.shop.recommend.order.JsonRootBean;
 import com.vpu.mp.service.pojo.shop.recommend.order.OrderDetailPage;
 import com.vpu.mp.service.pojo.shop.recommend.order.OrderList;
 import com.vpu.mp.service.pojo.shop.recommend.order.ProductInfo;
@@ -136,17 +137,21 @@ public class OrderMallService extends ShopBaseService {
 			extInfo.setOrderDetailPage(new OrderDetailPage("/pages/orderinfo/orderinfo?order_sn="+order.getOrderSn()));
 			orderList.setExtInfo(extInfo);
 		}
-	
-		WxOpenResult importOrder = importOrder(orderList);
+		List<OrderList> list=new ArrayList<OrderList>();
+		list.add(orderList);
+		JsonRootBean jsonRootBean=new JsonRootBean(list);
+		String jsonNotNull = Util.toJsonNotNull(jsonRootBean);
+		System.out.println(jsonNotNull);
+		WxOpenResult importOrder = importOrder(jsonRootBean);
 		return importOrder;
 	}
 	
-	private WxOpenResult importOrder(OrderList orderList) {
+	private WxOpenResult importOrder(JsonRootBean jsonRootBean) {
 		WxOpenMaServiceExtraImpl maService = open.getMaExtService();
 		MpAuthShopRecord shop = saas.shop.mp.getAuthShopByShopId(getShopId());
 		WxOpenResult result=null;
 		try {
-			result = maService.importorder(shop.getAppId(),Util.toJsonNotNull(orderList));
+			result = maService.importorder(shop.getAppId(),Util.toJsonNotNull(jsonRootBean));
 			log.info(" 添加好物圈订单");
 			log.info(result.getErrmsg(),result.getErrcode());
 		} catch (WxErrorException e) {
