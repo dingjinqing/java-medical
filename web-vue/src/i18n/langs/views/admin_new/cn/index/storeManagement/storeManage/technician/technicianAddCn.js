@@ -18,5 +18,7 @@ export const cn = {
   nameValid: '请输入技师名称',
   phoneValid: '请输入技师的电话号码',
   successSave: '保存成功',
-  updated: '更新成功'
+  updated: '更新成功',
+  failSave: '添加失败',
+  failUpdated: '更新失败'
 }

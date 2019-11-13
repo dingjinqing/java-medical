@@ -285,7 +285,7 @@
         :tuneUp="imgDialogShow"
         :isDraggable='isDraggable'
         pageIndex='pictureSpace'
-        :imageSize="imageSize"
+        :imageSize="[800, 800]"
         @handleSelectImg='imgDialogSelectedCallback'
       />
       <div class="footer">
@@ -318,7 +318,6 @@ export default {
       storeId: '',
       businessHours: '', // 营业时间
       serviceCats: [], // 服务分类下拉
-      imageSize: [800, 800], // 图片宽高
       imgLists: [], // 服务主图列表
       imgDialogShow: false, // 添加图片组件
       isDraggable: true, // 是否支持多选

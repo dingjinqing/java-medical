@@ -18,5 +18,7 @@ export const en = {
   nameValid: 'Please enter the name of the technician',
   phoneValid: 'Please enter the technician\'s phone number',
   successSave: 'Successfully saved',
-  updated: 'update completed'
+  updated: 'update completed',
+  failSave: 'add failed',
+  failUpdated: 'Update failed'
 }

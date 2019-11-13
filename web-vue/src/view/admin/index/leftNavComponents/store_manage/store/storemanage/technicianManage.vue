@@ -39,6 +39,11 @@ export default {
     this.langDefault()
     this.initStatus()
   },
+  watch: {
+    $route: function (val) {
+      this.initStatus()
+    }
+  },
   methods: {
     tabClickHandle (tab) {
       let tabName = tab.name
@@ -66,7 +71,9 @@ export default {
           this.$router.push({
             name: 'store_storemanage_technician_add',
             query: {
-              id: this.id
+              id: this.id,
+              businessHours: this.$route.query.businessHours,
+              businessType: this.$route.query.businessType
             }
           })
           break

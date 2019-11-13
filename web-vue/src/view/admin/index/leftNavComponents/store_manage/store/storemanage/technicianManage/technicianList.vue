@@ -176,7 +176,9 @@ export default {
             name: 'store_storemanage_technician_add',
             query: {
               id: this.queryParams.storeId,
-              technicianId: row.id
+              technicianId: row.id,
+              businessHours: this.$route.query.businessHours,
+              businessType: this.$route.query.businessType
             }
           })
           break

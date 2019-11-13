@@ -240,8 +240,13 @@ export default {
   },
   filters: {
     formatImgUrl (serviceImg) {
-      const imgs = JSON.parse(serviceImg)
-      return imgs[0]
+      if (serviceImg !== '') {
+        const imgs = JSON.parse(serviceImg)
+        let img = imgs ? imgs[0] : ''
+        return img
+      } else {
+        return ''
+      }
     }
   },
   methods: {

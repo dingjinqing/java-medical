@@ -153,6 +153,7 @@
         <el-button
           size="small"
           class="footer-btn"
+          @click="cancelTechnicianInfo"
         >{{$t('technicianAdd.cancel')}}</el-button>
       </div>
     </div>
@@ -254,6 +255,7 @@ export default {
       this.form.bgImgPath = imgObj.imgUrl
     },
     saveTechnicianInfo () {
+      let _this = this
       this.form.serviceList = this.selects.map(function (item, index) {
         return item.id
       })
@@ -263,17 +265,47 @@ export default {
           if (!this.$route.query.technicianId) {
             addTechnicianApi(params).then(res => {
               if (res.error === 0) {
-                this.$message.success(this.$t('technicianAdd.successSave'))
+                _this.$message.success(this.$t('technicianAdd.successSave'))
+                _this.$router.push({
+                  name: 'store_storemanage_technician_list',
+                  query: {
+                    id: _this.form.storeId,
+                    businessHours: _this.$route.query.businessHours,
+                    businessType: _this.$route.query.businessType
+                  }
+                })
+              } else {
+                _this.$message.error('添加失败')
               }
             })
           } else {
             params.id = this.$route.query.technicianId
             updateTechnicianApi(params).then(res => {
               if (res.error === 0) {
-                this.$message.success(this.$t('technicianAdd.updated'))
+                _this.$message.success(this.$t('technicianAdd.updated'))
+                _this.$router.push({
+                  name: 'store_storemanage_technician_list',
+                  query: {
+                    id: _this.form.storeId,
+                    businessHours: _this.$route.query.businessHours,
+                    businessType: _this.$route.query.businessType
+                  }
+                })
+              } else {
+                _this.$message.error('更新失败')
               }
             })
           }
+        }
+      })
+    },
+    cancelTechnicianInfo () {
+      this.$router.push({
+        name: 'store_storemanage_technician_list',
+        query: {
+          id: this.form.storeId,
+          businessHours: this.$route.query.businessHours,
+          businessType: this.$route.query.businessType
         }
       })
     }
