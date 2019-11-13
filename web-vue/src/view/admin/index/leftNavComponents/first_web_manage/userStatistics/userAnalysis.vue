@@ -153,7 +153,10 @@
           <tr>
             <td>趋势指标选择</td>
             <td colspan="5">
-              <el-radio-group v-model="trendIndicator">
+              <el-radio-group
+                v-model="trendIndicator"
+                @change="handleSelect"
+              >
                 <el-radio :label="1">客户数</el-radio>
                 <el-radio :label="2">客单价</el-radio>
                 <el-radio :label="3">付款金额</el-radio>
@@ -201,49 +204,135 @@ export default {
       table_oldUser: {},
       trendIndicator: 1,
       myUserChart: {},
-      // 新用户
-      newUserNumber: {},
-      newUserPrice: {},
-      newUserPay: {},
-      newUserTransform: {},
-      // 老用户
-      oldUserNumber: {},
-      oldUserPrice: {},
-      oldUserPay: {},
-      oldUserTransform: {}
+      userDate: [],
+      series: [],
+      newUserPriceRenderList: [],
+      newUserNumberRenderList: [],
+      newUserPayRenderList: [],
+      newUserTransformRenderList: [],
+      oldUserPriceRenderList: [],
+      oldUserNumberRenderList: [],
+      oldUserPayRenderList: [],
+      oldUserTransformRenderList: []
     }
   },
 
   methods: {
     dateChangeHandler (time) {
+      this.userDate = []
       this.params = time
-      // console.log(this.params)
       this.initData()
     },
 
     initData () {
       userAnalysis({ 'type': this.params }).then(res => {
-        console.log(res)
         if (res.error === 0) {
           this.originalData = res.content
           this.handleData(this.originalData)
+          this.handleSelect(this.trendIndicator)
         }
       }).catch(err => console.log(err))
     },
 
-    numberChange (point) {
+    numberChange (number) {
       let str
-      if (point > 0) {
-        str = '↑' + Number(point * 100).toFixed(2) + '%'
-      } else if (point < 0) {
-        str = '↓' + Math.abs(Number(point * 100)).toFixed(2) + '%'
+      if (number > 0) {
+        str = '↑' + Number(number * 100).toFixed(2) + '%'
+      } else if (number < 0) {
+        str = '↓' + Math.abs(Number(number * 100)).toFixed(2) + '%'
       } else {
         str = '--'
       }
       return str
     },
 
-    // 处理返回来的数据
+    handleSelect (index) {
+      let series = []
+      switch (index) {
+        case 1:
+          series = [{
+            name: '新成交客户数',
+            type: 'line',
+            stack: '总量',
+            data: this.newUserNumberRenderList
+          }, {
+            name: '老成交客户数',
+            type: 'line',
+            stack: '总量',
+            data: this.oldUserNumberRenderList
+          }]
+          break
+        case 2:
+          series = [{
+            name: '新成交客单价',
+            type: 'line',
+            stack: '总量',
+            data: this.newUserPriceRenderList
+          }, {
+            name: '老成交客单价',
+            type: 'line',
+            stack: '总量',
+            data: this.oldUserPriceRenderList
+          }]
+          break
+        case 3:
+          series = [{
+            name: '新成交付款金额',
+            type: 'line',
+            stack: '总量',
+            data: this.newUserPayRenderList
+          }, {
+            name: '老成交付款金额',
+            type: 'line',
+            stack: '总量',
+            data: this.oldUserPayRenderList
+          }]
+          break
+        case 4:
+          series = [{
+            name: '新成交访问-付款转化率',
+            type: 'line',
+            stack: '总量',
+            data: this.newUserTransformRenderList
+          }, {
+            name: '老成交访问-付款转化率',
+            type: 'line',
+            stack: '总量',
+            data: this.oldUserTransformRenderList
+          }]
+      }
+      this.drawEcharts(series)
+    },
+
+    drawEcharts (series) {
+      // // 折线图数据部分
+      this.echartsData = {
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+        },
+        grid: {
+          left: '7%',
+          right: '4%',
+          bottom: '4%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: this.userDate
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series
+      }
+
+      this.myUserChart.setOption(this.echartsData)
+    },
+
+    // 处理表格数据
     handleData (data) {
       console.log(data)
       console.log(data.dataVo)
@@ -283,7 +372,7 @@ export default {
       this.table_newUser = newUser
 
       let oldUser = {
-        // 整数
+        // 整数部分数据
         oldOrderUserData: data.dataVo.oldOrderUserData,
         oldOrderUserDataRate: this.numberChange(data.dataVo.oldOrderUserDataRate),
         oldUnitPrice: data.dataVo.oldUnitPrice,
@@ -299,110 +388,26 @@ export default {
       this.table_oldUser = oldUser
 
       // 新成交
-      data.dailyNewVo.map(item => {
+      data.dailyNewVo.forEach(item => {
         // 日期
-        // this.newUserNumber.push(item.refDate)
-        // 客户数
-        this.newUserNumber.push(item.orderUserData)
-        // 客单价
-        this.newUserPrice.push(item.unitPrice)
-        // 付款金额
-        this.newUserPay.push(item.paidMoney)
-        // 转化率
-        this.newUserTransform.push(item.transRate)
-      })
-
-      // 新成交
-      data.dailyNewVo.map(item => {
-        // 日期
-        // this.newUserNumber.push(item.refDate)
-        // 客户数
-        this.newUserNumber.push(item.orderUserData)
-        // 客单价
-        this.newUserNumber.push(item.unitPrice)
-        // 付款金额
-        this.newUserNumber.push(item.paidMoney)
-        // 转化率
-        this.newUserNumber.push(item.transRate)
+        this.userDate.push(item.refDate)
+        // 新客户数据
+        this.newUserPriceRenderList.push(item.unitPrice)
+        this.newUserNumberRenderList.push(item.orderUserData)
+        this.newUserPayRenderList.push(item.paidMoney)
+        this.newUserTransformRenderList.push(item.transRate)
       })
 
       // 老成交
-      data.dailyOldVo.map(item => {
-        // 日期
-        // this.oldUserNumber.push(item.refDate)
-        // 客户数
-        this.oldUserNumber.push(item.orderUserData)
-        // 客单价
-        this.oldUserPrice.push(item.unitPrice)
-        // 付款金额
-        this.oldUserPay.push(item.paidMoney)
-        // 转化率
-        this.oldUserTransform.push(item.transRate)
+      data.dailyOldVo.forEach(item => {
+        // 老客户数据
+        this.oldUserPriceRenderList.push(item.unitPrice)
+        this.oldUserNumberRenderList.push(item.orderUserData)
+        this.oldUserPayRenderList.push(item.paidMoney)
+        this.oldUserTransformRenderList.push(item.transRate)
       })
 
-      // handleTrendIndicator() {
-      //   switch (trendIndicator) {
-      //     case 1:
-      //       let arr = ['新成交客户数', '老成交客户数']
-      //   }
-      // }
-
-      // // 折线图数据部分
-      this.echartsData = {
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: ['访问会员数 ', '领券会员数', '加购会员数', '成交会员数']
-        },
-        grid: {
-          left: '7%',
-          right: '4%',
-          bottom: '4%',
-          containLabel: true
-        },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          // data: this.chartDateList
-          data: ['周一', '周2', '周3', '周4', '周5', '周6', '周7']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            name: '访问会员数 ',
-            type: 'line',
-            stack: '总量',
-            // data: this.chartAccessNumber
-            data: [34, 27, 33, 31, 42, 19, 11]
-          },
-          {
-            name: '领券会员数',
-            type: 'line',
-            stack: '总量',
-            // data: this.chartGetCouponNumber
-            data: [3404, 3410, 3423, 3435, 3441, 3450, 3456]
-          },
-          {
-            name: '加购会员数',
-            type: 'line',
-            stack: '总量',
-            // data: this.chartAddBuyNumber
-            data: [4, 3, 5, 4, 11, 0, 0]
-          },
-          {
-            name: '成交会员数',
-            type: 'line',
-            stack: '总量',
-            // data: this.chartSuccessNumber
-            data: [4, 3, 5, 44, 113, 45, 89]
-          }
-        ]
-      }
-
-      this.myUserChart.setOption(this.echartsData)
+      this.userPrice = []
     }
 
   }

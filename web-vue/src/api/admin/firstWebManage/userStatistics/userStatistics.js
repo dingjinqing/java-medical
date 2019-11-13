@@ -39,3 +39,12 @@ export function userAnalysis (data) {
     data: data
   })
 }
+
+// 客户复购趋势
+export function userReBuy (data) {
+  return service({
+    url: '/api/admin/overview/user/analysis/rebuy',
+    method: 'post',
+    data: data
+  })
+}

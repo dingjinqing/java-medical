@@ -4,7 +4,8 @@
       <overviewAndTrend style="margin-bottom: 10px;" />
       <userActive style="margin-bottom: 10px;" />
       <member style="margin-bottom: 10px;" />
-      <userAnalysis />
+      <userAnalysis style="margin-bottom: 10px;" />
+      <userBuy />
     </div>
   </div>
 </template>
@@ -14,9 +15,10 @@ import overviewAndTrend from './overviewAndTrend'
 import userActive from './userActive'
 import member from './member'
 import userAnalysis from './userAnalysis'
+import userBuy from './userBuy'
 
 export default {
-  components: { overviewAndTrend, userActive, member, userAnalysis },
+  components: { overviewAndTrend, userActive, member, userAnalysis, userBuy },
   data () {
     return {
 
