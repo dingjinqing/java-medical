@@ -62,4 +62,8 @@ public class DistributorWithdrawListVo {
 	 * 提现序号
 	 */
 	private String withdrawUserNum;
+	/**
+	 * 出账类型
+	 */
+	private int type;
 }

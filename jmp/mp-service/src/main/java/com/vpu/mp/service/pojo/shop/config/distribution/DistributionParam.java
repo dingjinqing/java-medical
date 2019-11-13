@@ -1,9 +1,10 @@
 package com.vpu.mp.service.pojo.shop.config.distribution;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * 分销配置出入参
@@ -36,7 +37,13 @@ public class DistributionParam {
 	 */
 	@JsonProperty(value = "vaild")
 	public Byte vaild;
-	
+
+	/**
+	 * 推广模版文案id
+	 */
+	@JsonProperty(value = "rebate_page_id")
+	public int rebatePageId;
+
 	/**
 	 * 分销员保护期
 	 */
@@ -47,19 +54,19 @@ public class DistributionParam {
 	 * 分销中心页面名称
 	 */
 	@JsonProperty(value = "desc")
-	public Byte desc;
+	public String desc;
 	
 	/**
 	 * 海报背景图
 	 */
 	@JsonProperty(value = "bg_img")
-	public Byte bgImg;
+	public String bgImg;
 	
 	/**
 	 * 邀请文案
 	 */
 	@JsonProperty(value = "rebate_center_name")
-	public Byte rebateCenterName;
+	public String rebateCenterName;
 	
 	/**
 	 * 提现开关
@@ -77,7 +84,7 @@ public class DistributionParam {
 	 * 返利方式
 	 */
 	@JsonProperty(value = "withdraw_source")
-	public Byte withdrawSource;
+	public String withdrawSource;
 	
 	/**
 	 * 分销员审核开关开启后，是否需要提个人信息
@@ -89,6 +96,24 @@ public class DistributionParam {
 	 * 个人信息容
 	 */
 	@JsonProperty(value = "activation_cfg")
-	public Byte activationCfg;
-	
+	public List<String> activationCfg;
+
+
+	/**
+	 * 推荐商品 0：不限时；1：默认；2：自定义
+	 */
+	@JsonProperty(value = "distribution_goods_type")
+	public byte distributionGoodsType;
+
+	/**
+	 * 推荐商品ID
+	 */
+	@JsonProperty(value = "recommend_goods_id")
+	public String recommendGoodsId;
+
+	/**
+	 * 邀请码
+	 */
+	@JsonProperty(value = "invitation_code")
+	public String invitationCode;
 }
