@@ -4,7 +4,10 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.shop.activity.processor.ActivityCartListStrategy;
 import com.vpu.mp.service.shop.activity.processor.ExclusiveProcessor;
 import com.vpu.mp.service.shop.activity.processor.FirstSpecialProcessor;
+import com.vpu.mp.service.shop.activity.processor.GoodsBeginProcessor;
+import com.vpu.mp.service.shop.activity.processor.GoodsTailProcessor;
 import com.vpu.mp.service.shop.activity.processor.GradeCardProcessor;
+import com.vpu.mp.service.shop.activity.processor.SecKillProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +20,17 @@ public class CartProcessorContext {
 
 
     @Autowired
+    private GoodsBeginProcessor goodsBegin;
+    @Autowired
+    private GoodsTailProcessor goodsTail;
+    @Autowired
     private GradeCardProcessor gradeCard;
     @Autowired
     private ExclusiveProcessor exclusive;
     @Autowired
     private FirstSpecialProcessor firstSpecial;
+    @Autowired
+    private SecKillProcessor seckill;
 
 
     /**
@@ -29,9 +38,13 @@ public class CartProcessorContext {
      * @param cartBo
      */
     public void executeCart(WxAppCartBo cartBo){
+        // 数据初始化
+        executeStrategy(goodsBegin,cartBo);
+        executeStrategy(seckill,cartBo);
         executeStrategy(exclusive,cartBo);
-        executeStrategy(gradeCard,cartBo);
         executeStrategy(firstSpecial,cartBo);
+        executeStrategy(gradeCard,cartBo);
+        executeStrategy(goodsTail,cartBo);
     }
 
 

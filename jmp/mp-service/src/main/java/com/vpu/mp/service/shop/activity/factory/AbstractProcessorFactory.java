@@ -45,8 +45,8 @@ public abstract class AbstractProcessorFactory<P,T> {
                     if (clazz.isAssignableFrom(processorPriority.getClass())) {
                         processors.add((P) processorPriority);
                     }
-                }catch (Exception e){
-
+                }catch (Throwable e){
+                    e.printStackTrace();
                 }
             });
             LoggerFactory.getLogger(this.getClass()).debug(processors.toString());

@@ -6,12 +6,13 @@ import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,12 +21,13 @@ import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
+ * 秒杀
  * @author 李晓冰
  * @date 2019年11月01日
  * 秒杀
  */
 @Service
-public class SecKillProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor {
+public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority{
     @Autowired
     SecKillProcessorDao secKillProcessorDao;
     /*****处理器优先级*****/
@@ -57,9 +59,27 @@ public class SecKillProcessor implements ProcessorPriority,ActivityGoodsListProc
 
     @Override
     public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
-        if(param.getActivityId() != null && param.getActivityType() == GoodsConstant.ACTIVITY_TYPE_SEC_KILL){
+        if(param.getActivityId() != null && param.getActivityType().equals(GoodsConstant.ACTIVITY_TYPE_SEC_KILL)){
             //处理之前capsule中需要有商品的基本信息
             capsule.setActivity(secKillProcessorDao.getDetailSeckillInfo(param.getActivityId(),param.getUserId(),capsule.getGoodsNumber()));
         }
+    }
+    //*********************************购物车
+
+    /**
+     * 购物车-秒杀
+     * @param cartBo 业务数据类
+     */
+    @Override
+    public void doCartOperation(WxAppCartBo cartBo) {
+        List<Integer> secProductList = new ArrayList<>();
+        //秒杀商品
+        cartBo.getCartGoodsList().forEach(goods->{
+            if (goods.getGoodsStatus().equals(GoodsConstant.ACTIVITY_TYPE_SEC_KILL)){
+                secProductList.add(goods.getPrdId());
+            }
+        });
+        //活动信息
+        secKillProcessorDao.getSecKillInfoList(secProductList,cartBo.getDate());
     }
 }

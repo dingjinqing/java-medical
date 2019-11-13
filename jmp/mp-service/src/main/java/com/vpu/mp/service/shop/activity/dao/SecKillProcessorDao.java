@@ -10,7 +10,9 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SeckillMpVo;
 import jodd.util.StringUtil;
+import org.jooq.Record;
 import org.jooq.Record3;
+import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
@@ -128,5 +130,24 @@ public class SecKillProcessorDao extends ShopBaseService {
         List<Integer> seckillCardIds = Util.splitValueToList(cardIds);
         validCardIds.removeAll(seckillCardIds);
         return (validCardIds != null && validCardIds.size() > 0) ? true : false;
+    }
+
+    /**
+     * 获取秒杀活动信息
+     * @param secProductList 规格ids
+     * @param date 时间
+     * @return
+     */
+    public Result<? extends Record> getSecKillInfoList(List<Integer> secProductList, Timestamp date) {
+         return db().select(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.CARD_ID
+         ,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
+                .from(SEC_KILL_DEFINE)
+                .leftJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(SEC_KILL_DEFINE.SK_ID))
+                .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.in(secProductList))
+                .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+                .and(SEC_KILL_DEFINE.START_TIME.lt(date))
+                .and(SEC_KILL_DEFINE.END_TIME.gt(date))
+                .fetch();
     }
 }

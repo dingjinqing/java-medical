@@ -77,7 +77,7 @@ public class GoodsCardCoupleService extends ShopBaseService {
 	 * 获取用户的会员关联商品表数据
 	 *
 	 * @param userId
-	 * @return
+	 * @return k 商品,分类,商家分类,品牌  v id
 	 */
 	public Map<Byte, List<Integer>> getGoodsCardCouple(Integer userId) {
 		// 获取会员等级

@@ -50,7 +50,7 @@ import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DE
  * 2019年8月5日
  */
 @Service
-public class SeckillService extends ShopBaseService {
+public class SeckillService extends ShopBaseService{
 
     @Autowired
     public SeckillListService seckillList;

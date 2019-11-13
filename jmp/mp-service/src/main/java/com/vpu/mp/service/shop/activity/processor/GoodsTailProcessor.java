@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,7 @@ import java.util.stream.Collectors;
  * @date 2019年11月01日
  */
 @Service
-public class GoodsTailProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor {
-
+public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority{
     /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
@@ -51,4 +51,14 @@ public class GoodsTailProcessor implements ProcessorPriority,ActivityGoodsListPr
         }
     }
 
+
+    //**********************GWC********************************
+    /**
+     * 购物车
+     * @param cartBo 业务数据类
+     */
+    @Override
+    public void doCartOperation(WxAppCartBo cartBo) {
+
+    }
 }

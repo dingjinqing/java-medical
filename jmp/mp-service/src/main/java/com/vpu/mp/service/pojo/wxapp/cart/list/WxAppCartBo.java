@@ -28,7 +28,9 @@ public class WxAppCartBo {
      * 商品列表
      */
     List<WxAppCartGoods> cartGoodsList;
-
-
+    /**
+     * 购物车 - 失效商品
+     */
+    private List<WxAppCartGoods> invalidCartList;
     private WxAppCartListVo cartListVo;
 }

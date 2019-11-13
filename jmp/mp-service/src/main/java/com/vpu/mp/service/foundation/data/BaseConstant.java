@@ -72,4 +72,17 @@ public final  class  BaseConstant {
     /** 商品存在满减活动 */
     @Deprecated
     public final static byte GOODS_TYPE_HAS_FULL_REDUCTION = 121;
+
+
+    //*******************购物车*****************************/
+    /**
+     * 购物车选中状态
+     */
+    public final static byte CART_IS_CHECKED = 1;
+    /**
+     * 购物车没选中
+     */
+    public final static byte CART_NO_CHECKED = 0;
+
+
 }
