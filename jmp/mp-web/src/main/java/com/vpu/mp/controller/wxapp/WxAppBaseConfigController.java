@@ -1,6 +1,5 @@
 package com.vpu.mp.controller.wxapp;
 
-import com.vpu.mp.controller.admin.AdminBaseController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.config.pledge.PledgeListParam;
 import com.vpu.mp.service.pojo.wxapp.config.pledge.PledgeListVo;
@@ -20,7 +19,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/wxapp/config/pledge")
-public class WxAppBaseConfigController extends AdminBaseController {
+public class WxAppBaseConfigController extends WxAppBaseController {
 
   /**
    * 小程序-服务承诺列表
