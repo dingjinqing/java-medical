@@ -120,8 +120,8 @@ public class OrderMallService extends ShopBaseService {
 				continue;
 			}
 			orderList.setOrderId(orderSn);
-			orderList.setCreateTime(order.getCreateTime().getTime());
-			orderList.setPayFinishTime(null == order.getPayTime() ? order.getCreateTime().getTime() : order.getPayTime().getTime());
+			orderList.setCreateTime(order.getCreateTime().getTime()/1000L);
+			orderList.setPayFinishTime(null == order.getPayTime() ? order.getCreateTime().getTime()/1000L : order.getPayTime().getTime()/1000L);
 			orderList.setDesc(order.getAddMessage());
 			orderList.setFee(order.getMoneyPaid().multiply(new BigDecimal(100)));
 			orderList.setTransId(getTransId(order));
@@ -254,6 +254,7 @@ public class OrderMallService extends ShopBaseService {
 			param.setExpressCompanyId(expressCompany.getCode());
 			param.setExpress_companyName(expressCompany.getName());
 			param.setExpressCode(partShip.getShippingNo());
+			param.setShipTime(partShip.getShippingTime().getTime()/1000L);
 			param.setExpressPage(new ExpressPage(
 					"/pages/express/express?order_sn=" + order.getOrderSn() + "&ex_no=" + order.getShippingNo()));
 			expressInfo.add(param);
