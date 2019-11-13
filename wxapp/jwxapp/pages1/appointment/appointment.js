@@ -2,7 +2,6 @@
 let util = require('../../utils/util')
 let app = getApp()
 let imageUrl = app.globalData.imageUrl;
-let a = require('../../utils/test')
 
 Page({
   /**
@@ -239,12 +238,6 @@ Page({
         }
         if (reservationInfoList) {
           reservationInfoList = reservationInfoList
-          // 模拟数据
-          if (a) {
-            a = JSON.parse(JSON.stringify(a))
-            console.log(a)
-            reservationInfoList = a.a.content.reservationInfoList
-          }
           // 格式化预约时间数据和技师数据
           reservationInfoList.forEach(function (info) {
             info.reservationTimeList.forEach(function (time) {

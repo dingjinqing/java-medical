@@ -236,8 +236,8 @@
       <view class='pay_title '>支付余额</view>
       <view class='pay_prompt '>{{prompt_message}}</view>
       <view class='contain_input '>
-        <input class='input_num ' bindblur="user_account" bindfocus='yue_fo' blur='true ' value="{{account_pay_control == 0 ? (create_order.money_paid - account > 0 ? account : create_order.money_paid): user_account_input}}" wx:if='{{pay_click_type == 2}}' type='digit' />
-        <input class='input_num ' bindblur="member_card" bindfocus='mem_fo' blur='true ' value="{{card_account_pay_control == 0 ? (create_order.money_paid - userCard.money > 0 ? userCard.money : create_order.money_paid) : member_card_input}}" wx:else type='digit' />
+        <input class='input_num ' bindblur="user_account_blur" bindfocus='yue_fo' blur='true ' value="{{user_account_input}}" wx:if='{{pay_click_type == 2}}' type='digit' />
+        <input class='input_num ' bindblur="member_card_blur" bindfocus='mem_fo' blur='true ' value="{{member_card_input}}" wx:else type='digit' />
       </view>
     </view>
     <view class='price_show '>

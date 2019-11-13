@@ -54,7 +54,8 @@
         "scancode/scancode",
         "comment/comment",
         "history/history",
-        "appointorder/appointorder"
+        "appointorder/appointorder",
+        "appointinfo/appointinfo"
       ]
     }
   ],
