@@ -6,7 +6,7 @@
   </div>
   <div>
     <el-table :data="goodsSortData" class="tableClass" border style="width: 100%">
-      <el-table-column align="center" :label="$t('goodsSorts.goodsSortName')">
+      <el-table-column align="left" :label="$t('goodsSorts.goodsSortName')">
         <template slot-scope="{row,$index}">
           <template v-if="row.level === 0">
             <span v-if="!row.open" class="collapseIcon el-icon-folder-add" @click="collapseIconClicked(row,$index)"></span>
@@ -21,7 +21,7 @@
       </el-table-column>
       <el-table-column align="center" :label="$t('goodsSorts.goodsSortImg')">
         <template slot-scope="{row}">
-          <img :src="row.sortImg" style="height: 50px;min-width: 160px;"/>
+          <img :src="row.sortImgUrl" style="height: 50px;min-width: 160px;"/>
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('goodsSorts.goodsSortImgLink')" prop="imgLink"/>
@@ -163,6 +163,7 @@ export default {
   .collapseIcon{
     font-size: 20px;
     margin-right: 4px;
+    margin-left: 20px;
     color: #5a8bff;
     cursor: pointer !important;
   }

@@ -71,7 +71,7 @@
             @click="chooseImgLink"
             size="small"
             style="margin-left: 5px;color: #666666;"
-          >{{$t('goodsSorts.addImgLink')}}</el-button>
+          >{{$t('goodsSorts.addHeadImgLink')}}</el-button>
         </el-form-item>
       </el-form>
       <!-- 二级分类表单 -->
