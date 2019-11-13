@@ -13,7 +13,7 @@ public class GoodsBrandConfig {
      */
     public static String SHOW_ALL_BRAND = "1";
     /**
-     * 按品牌展示推荐品牌
+     * 按品牌展示推荐品牌,0不显示推荐分类
      */
     public static String SHOW_RECOMMEND_LIST = "2";
     /**

@@ -140,14 +140,14 @@ public class AdminGoodsBrandController extends AdminBaseController {
     }
 
     @PostMapping("/api/admin/goods/brand/classify/add")
-    public JsonResult insertBrandClassify(@RequestBody  GoodsBrandClassifyParam param) {
+    public JsonResult insertBrandClassify(@RequestBody GoodsBrandClassifyAddUpdateParam param) {
 
         if (param.getClassifyName() == null) {
             return fail(JsonResultCode.GOODS_BRAND_CALSSIFY_NAME_IS_NULL);
         }
 
         GoodsBrandService goodsBrand = shop().goods.goodsBrand;
-        boolean exist = goodsBrand.isClassifyNameExist(param);
+        boolean exist = goodsBrand.isClassifyNameExist(null,param.getClassifyName());
         if (exist) {
             return fail(JsonResultCode.GOODS_BRAND_CALSSIFY_NAME_EXIST);
         }
@@ -157,26 +157,15 @@ public class AdminGoodsBrandController extends AdminBaseController {
         return success();
     }
 
-    @PostMapping("/api/admin/goods/brand/classify/select")
-    public JsonResult selectBrandClassify(@RequestBody GoodsBrandClassifyParam param){
-        if (param.getClassifyId() == null) {
-            return fail(JsonResultCode.GOODS_BRAND_CALSSIFY_ID_IS_NULL);
-        }
-
-        GoodsBrandClassifyVo vo = shop().goods.goodsBrand.selectBrandClassify(param);
-
-        return success(vo);
-    }
-
     @PostMapping("/api/admin/goods/brand/classify/update")
-    public JsonResult updateBrandClassify(@RequestBody GoodsBrandClassifyParam param){
+    public JsonResult updateBrandClassify(@RequestBody GoodsBrandClassifyAddUpdateParam param){
 
         if (param.getClassifyId() == null) {
             return fail(JsonResultCode.GOODS_BRAND_CALSSIFY_ID_IS_NULL);
         }
         GoodsBrandService goodsBrand = shop().goods.goodsBrand;
 
-        if (goodsBrand.isOtherClassifyNameExist(param)) {
+        if (goodsBrand.isClassifyNameExist(param.getClassifyId(),param.getClassifyName())) {
             return fail(JsonResultCode.GOODS_BRAND_NAME_EXIST);
         }
 
@@ -185,14 +174,12 @@ public class AdminGoodsBrandController extends AdminBaseController {
         return success();
     }
 
-    @PostMapping("/api/admin/goods/brand/classify/delete")
-    public JsonResult deleteBrandClassify(@RequestBody GoodsBrandClassifyParam param) {
-        if (param.getClassifyId() == null) {
+    @GetMapping("/api/admin/goods/brand/classify/delete/{classifyId}")
+    public JsonResult deleteBrandClassify(@PathVariable Integer classifyId) {
+        if (classifyId == null) {
             return fail(JsonResultCode.GOODS_BRAND_CALSSIFY_ID_IS_NULL);
         }
-
-        shop().goods.goodsBrand.deleteBrandClassify(param);
-
+        shop().goods.goodsBrand.deleteBrandClassify(classifyId);
         return success();
     }
 
