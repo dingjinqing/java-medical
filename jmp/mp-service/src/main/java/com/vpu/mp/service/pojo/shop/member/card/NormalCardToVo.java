@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.Util;
 
 import lombok.Getter;
@@ -157,10 +158,12 @@ public class NormalCardToVo extends NormalCardVo {
 		/** 门店策略处理 */
 		if (storeList != null) {
 			storeList = storeList.replaceAll("\\s+", "");
-			storeListArray = storeList.split(",");
+			List<Integer> storeListArray = Util.json2Object(storeList, new TypeReference<List<Integer>>() {
+            }, false);
+			
 			/** 门店类型 */
-			if (MCARD_STP_BAN.equals(Byte.valueOf(storeListArray[0])) || MCARD_STP_ALL.equals(Byte.valueOf(storeListArray[0]))) {
-				storeListType = Byte.valueOf(storeListArray[0]);
+			if (MCARD_STP_BAN.equals(storeListArray.get(0).byteValue()) || MCARD_STP_ALL.equals(storeListArray.get(0).byteValue())) {
+				storeListType = storeListArray.get(0).byteValue();
 			} else {
 				storeListType = MCARD_STP_PART;
 			}
