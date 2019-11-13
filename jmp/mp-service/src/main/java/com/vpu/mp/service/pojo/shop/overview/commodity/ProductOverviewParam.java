@@ -3,7 +3,7 @@ package com.vpu.mp.service.pojo.shop.overview.commodity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * author liufei

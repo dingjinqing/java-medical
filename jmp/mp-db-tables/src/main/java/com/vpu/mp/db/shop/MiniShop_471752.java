@@ -412,7 +412,7 @@ public class MiniShop_471752 extends SchemaImpl {
     /**
      * The table <code>mini_shop_471752.b2c_goods_user_summary</code>.
      */
-    public final GoodsUserSummary GOODS_USER_SUMMARY = GoodsUserSummary.GOODS_USER_SUMMARY;
+    public final GoodsOverviewSummary GOODS_OVERVIEW_SUMMARY = com.vpu.mp.db.shop.tables.GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY;
 
     /**
      * The table <code>mini_shop_471752.b2c_grade_prd</code>.
@@ -1155,7 +1155,7 @@ public class MiniShop_471752 extends SchemaImpl {
             GoodsSpecProduct.GOODS_SPEC_PRODUCT,
             GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK,
             GoodsSummary.GOODS_SUMMARY,
-            GoodsUserSummary.GOODS_USER_SUMMARY,
+            GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY,
             GradePrd.GRADE_PRD,
             GroupBuyDefine.GROUP_BUY_DEFINE,
             GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE,

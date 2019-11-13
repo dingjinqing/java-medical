@@ -2700,26 +2700,26 @@ create table `b2c_user_cart_record`
 );
 
 -- 商品概览
--- drop table if exists `b2c_goods_user_summary`;
-create table `b2c_goods_user_summary`
+-- drop table if exists `b2c_goods_overview_summary`;
+create table `b2c_goods_overview_summary`
 (
     `id`                int(11) not null auto_increment,
     `ref_date`          date       default null comment '2018-09-04',
     `type`              tinyint(1) default null comment '1,7,30',
-    `goods_id_number`   int(11)    default null comment '在售商品数',
-    `prd_id_number`     int(11)    default null comment '在售规格数',
-    `goods_id_visit`    int(11)    default null comment '访问商品数',
-    `goods_user_visit`  int(11)    default null comment 'uv',
-    `goods_visit`       int(11)    default null comment 'goods pv',
-    `cart_user_number`  int(11)    default null comment '加购人数',
-    `cart_goods_number` int(11)    default null comment '加购件数',
-    `paid_goods_number` int(11)    default null comment '付款商品数',
-    `paid_user_number`  int(11)    default null comment '付费用户数',
-    `create_time`       timestamp  default current_timestamp,
+    `on_shelf_goods_num`   int(11)    default 0 comment '在架商品数',
+    `sold_goods_num`   int(11)    default 0 comment '动销商品数(统计时间内，销量不为0的商品数量)',
+    `visited_goods_num`    int(11)    default 0 comment '被访问商品数',
+    `goods_user_visit`  int(11)    default 0 comment 'uv(商品访客数)',
+    `goods_pageviews`       int(11)    default 0 comment 'pv(商品浏览量)',
+    `purchase_num`  int(11)    default 0 comment '加购人数',
+    `purchase_quantity` int(11)    default 0 comment '加购件数',
+    `paid_goods_num` int(11)    default 0 comment '付款商品数',
+    `order_goods_num`  int(11)    default 0 comment '下单商品数',
+    `create_time`       timestamp  default current_timestamp comment '创建时间',
     `update_time`       timestamp  default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
     key `ref_type` (`ref_date`, `type`) using btree
-);
+) comment '商品概览统计表' ;
 
 -- 商品概览-效果
 -- drop table if exists `b2c_goods_summary`;
@@ -2730,7 +2730,7 @@ create table `b2c_goods_summary`
     `type`              tinyint(2) default null comment '1,7,30',
     `goods_id`          int(11)    default null,
     `new_user_number`   int(11)    default null comment '新成交客户数',
-    `old_user_number`   int(11)    default null,
+    `old_user_number`   int(11)    default null comment '老成交客户数',
     `pv`                int(11)    default null comment '浏览量',
     `uv`                int(11)    default null comment '访客数',
     `cart_uv`           int(11)    default null comment '加购人数',

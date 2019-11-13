@@ -240,4 +240,16 @@ public final class DateUtil {
 	public static LocalDate getBeforeLocalFor(int day){
 	    return LocalDate.now().minusDays(day);
     }
+
+    public static final DateTimeFormatter YYYY_MM_DD_FORMATTER = DateTimeFormatter.ofPattern("yyyy-mm-dd");
+
+    /**
+     * Yyyy mm dd date java . sql . date.获取yyyy-mm-dd格式的date
+     *
+     * @param date the date
+     * @return the java . sql . date
+     */
+    public static java.sql.Date yyyyMmDdDate(LocalDate date) {
+        return java.sql.Date.valueOf(date.format(YYYY_MM_DD_FORMATTER));
+    }
 }

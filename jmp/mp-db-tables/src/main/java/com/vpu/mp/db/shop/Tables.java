@@ -395,9 +395,9 @@ public class Tables {
     public static final GoodsSummary GOODS_SUMMARY = GoodsSummary.GOODS_SUMMARY;
 
     /**
-     * The table <code>mini_shop_471752.b2c_goods_user_summary</code>.
+     * The table <code>mini_shop_471752.b2c_goods_overview_summary</code>.
      */
-    public static final GoodsUserSummary GOODS_USER_SUMMARY = GoodsUserSummary.GOODS_USER_SUMMARY;
+    public static final GoodsOverviewSummary GOODS_OVERVIEW_SUMMARY = com.vpu.mp.db.shop.tables.GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY;
 
     /**
      * The table <code>mini_shop_471752.b2c_grade_prd</code>.

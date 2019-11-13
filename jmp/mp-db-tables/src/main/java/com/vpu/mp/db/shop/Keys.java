@@ -117,7 +117,7 @@ public class Keys {
     public static final Identity<GoodsSpecProductRecord, Integer> IDENTITY_GOODS_SPEC_PRODUCT = Identities0.IDENTITY_GOODS_SPEC_PRODUCT;
     public static final Identity<GoodsSpecProductBakRecord, Integer> IDENTITY_GOODS_SPEC_PRODUCT_BAK = Identities0.IDENTITY_GOODS_SPEC_PRODUCT_BAK;
     public static final Identity<GoodsSummaryRecord, Integer> IDENTITY_GOODS_SUMMARY = Identities0.IDENTITY_GOODS_SUMMARY;
-    public static final Identity<GoodsUserSummaryRecord, Integer> IDENTITY_GOODS_USER_SUMMARY = Identities0.IDENTITY_GOODS_USER_SUMMARY;
+    public static final Identity<GoodsOverviewSummaryRecord, Integer> IDENTITY_GOODS_OVERVIEW_SUMMARY = Identities0.IDENTITY_GOODS_OVERVIEW_SUMMARY;
     public static final Identity<GradePrdRecord, Integer> IDENTITY_GRADE_PRD = Identities0.IDENTITY_GRADE_PRD;
     public static final Identity<GroupDrawRecord, Integer> IDENTITY_GROUP_DRAW = Identities0.IDENTITY_GROUP_DRAW;
     public static final Identity<GroupDrawInviteRecord, Integer> IDENTITY_GROUP_DRAW_INVITE = Identities0.IDENTITY_GROUP_DRAW_INVITE;
@@ -334,7 +334,7 @@ public class Keys {
     public static final UniqueKey<GoodsSpecProductRecord> KEY_B2C_GOODS_SPEC_PRODUCT_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_SPEC_PRODUCT_PRIMARY;
     public static final UniqueKey<GoodsSpecProductBakRecord> KEY_B2C_GOODS_SPEC_PRODUCT_BAK_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_SPEC_PRODUCT_BAK_PRIMARY;
     public static final UniqueKey<GoodsSummaryRecord> KEY_B2C_GOODS_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_SUMMARY_PRIMARY;
-    public static final UniqueKey<GoodsUserSummaryRecord> KEY_B2C_GOODS_USER_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_USER_SUMMARY_PRIMARY;
+    public static final UniqueKey<GoodsOverviewSummaryRecord> KEY_B2C_GOODS_OVERVIEW_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_OVERVIEW_SUMMARY_PRIMARY;
     public static final UniqueKey<GradePrdRecord> KEY_B2C_GRADE_PRD_PRIMARY = UniqueKeys0.KEY_B2C_GRADE_PRD_PRIMARY;
     public static final UniqueKey<GroupDrawRecord> KEY_B2C_GROUP_DRAW_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_DRAW_PRIMARY;
     public static final UniqueKey<GroupDrawInviteRecord> KEY_B2C_GROUP_DRAW_INVITE_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_DRAW_INVITE_PRIMARY;
@@ -577,7 +577,7 @@ public class Keys {
         public static Identity<GoodsSpecProductRecord, Integer> IDENTITY_GOODS_SPEC_PRODUCT = Internal.createIdentity(GoodsSpecProduct.GOODS_SPEC_PRODUCT, GoodsSpecProduct.GOODS_SPEC_PRODUCT.PRD_ID);
         public static Identity<GoodsSpecProductBakRecord, Integer> IDENTITY_GOODS_SPEC_PRODUCT_BAK = Internal.createIdentity(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_BAK_ID);
         public static Identity<GoodsSummaryRecord, Integer> IDENTITY_GOODS_SUMMARY = Internal.createIdentity(GoodsSummary.GOODS_SUMMARY, GoodsSummary.GOODS_SUMMARY.ID);
-        public static Identity<GoodsUserSummaryRecord, Integer> IDENTITY_GOODS_USER_SUMMARY = Internal.createIdentity(GoodsUserSummary.GOODS_USER_SUMMARY, GoodsUserSummary.GOODS_USER_SUMMARY.ID);
+        public static Identity<GoodsOverviewSummaryRecord, Integer> IDENTITY_GOODS_OVERVIEW_SUMMARY = Internal.createIdentity(GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY, GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY.ID);
         public static Identity<GradePrdRecord, Integer> IDENTITY_GRADE_PRD = Internal.createIdentity(GradePrd.GRADE_PRD, GradePrd.GRADE_PRD.ID);
         public static Identity<GroupDrawRecord, Integer> IDENTITY_GROUP_DRAW = Internal.createIdentity(GroupDraw.GROUP_DRAW, GroupDraw.GROUP_DRAW.ID);
         public static Identity<GroupDrawInviteRecord, Integer> IDENTITY_GROUP_DRAW_INVITE = Internal.createIdentity(GroupDrawInvite.GROUP_DRAW_INVITE, GroupDrawInvite.GROUP_DRAW_INVITE.ID);
@@ -793,7 +793,7 @@ public class Keys {
         public static final UniqueKey<GoodsSpecProductRecord> KEY_B2C_GOODS_SPEC_PRODUCT_PRIMARY = Internal.createUniqueKey(GoodsSpecProduct.GOODS_SPEC_PRODUCT, "KEY_b2c_goods_spec_product_PRIMARY", GoodsSpecProduct.GOODS_SPEC_PRODUCT.PRD_ID);
         public static final UniqueKey<GoodsSpecProductBakRecord> KEY_B2C_GOODS_SPEC_PRODUCT_BAK_PRIMARY = Internal.createUniqueKey(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, "KEY_b2c_goods_spec_product_bak_PRIMARY", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_BAK_ID);
         public static final UniqueKey<GoodsSummaryRecord> KEY_B2C_GOODS_SUMMARY_PRIMARY = Internal.createUniqueKey(GoodsSummary.GOODS_SUMMARY, "KEY_b2c_goods_summary_PRIMARY", GoodsSummary.GOODS_SUMMARY.ID);
-        public static final UniqueKey<GoodsUserSummaryRecord> KEY_B2C_GOODS_USER_SUMMARY_PRIMARY = Internal.createUniqueKey(GoodsUserSummary.GOODS_USER_SUMMARY, "KEY_b2c_goods_user_summary_PRIMARY", GoodsUserSummary.GOODS_USER_SUMMARY.ID);
+        public static final UniqueKey<GoodsOverviewSummaryRecord> KEY_B2C_GOODS_OVERVIEW_SUMMARY_PRIMARY = Internal.createUniqueKey(GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY, "KEY_b2c_goods_overview_summary_PRIMARY", GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY.ID);
         public static final UniqueKey<GradePrdRecord> KEY_B2C_GRADE_PRD_PRIMARY = Internal.createUniqueKey(GradePrd.GRADE_PRD, "KEY_b2c_grade_prd_PRIMARY", GradePrd.GRADE_PRD.ID);
         public static final UniqueKey<GroupDrawRecord> KEY_B2C_GROUP_DRAW_PRIMARY = Internal.createUniqueKey(GroupDraw.GROUP_DRAW, "KEY_b2c_group_draw_PRIMARY", GroupDraw.GROUP_DRAW.ID);
         public static final UniqueKey<GroupDrawInviteRecord> KEY_B2C_GROUP_DRAW_INVITE_PRIMARY = Internal.createUniqueKey(GroupDrawInvite.GROUP_DRAW_INVITE, "KEY_b2c_group_draw_invite_PRIMARY", GroupDrawInvite.GROUP_DRAW_INVITE.ID);
