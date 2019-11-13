@@ -158,8 +158,11 @@ public class WxAppOrderController extends WxAppBaseController{
 		list.add("P201900000000000007");
 		list.add("P201900000000000008");
 		list.add("P201900000000000009");
-		WxOpenResult addCommonOrders = shop().orderMallService.addCommonOrders(wxAppAuth.user().getUserId(), list);
-		return success(addCommonOrders.getErrmsg());
+		Boolean addCommonOrders = shop().orderMallService.addCommonOrders(wxAppAuth.user().getUserId(), list);
+		if(addCommonOrders) {
+			return success();
+		}
+		return fail();
 		
 	}
 }
