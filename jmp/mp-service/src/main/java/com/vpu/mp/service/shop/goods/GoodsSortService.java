@@ -9,9 +9,9 @@ import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.SortGroupByParentParam;
 import com.vpu.mp.service.shop.image.ImageService;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -579,7 +579,7 @@ public class GoodsSortService extends ShopBaseService {
      * @return null或全路径
      */
     private String getImgFullUrlUtil(String relativePath) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(relativePath)) {
+        if (StringUtils.isBlank(relativePath)) {
             return null;
         } else {
             return imageService.imageUrl(relativePath);
