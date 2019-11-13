@@ -158,6 +158,25 @@ public class SecKillProcessorDao extends ShopBaseService {
     }
 
     /**
+     * 获取秒杀活动信息
+     * @param productId 规格id
+     * @param date 时间
+     * @return
+     */
+    public Result<? extends Record> getSecKillInfoList(Integer productId, Timestamp date) {
+         return db().select(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.CARD_ID
+         ,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
+                .from(SEC_KILL_DEFINE)
+                .leftJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(SEC_KILL_DEFINE.SK_ID))
+                .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(productId))
+                .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+                .and(SEC_KILL_DEFINE.START_TIME.lt(date))
+                .and(SEC_KILL_DEFINE.END_TIME.gt(date))
+                .fetch();
+    }
+
+    /**
      * 取秒杀下的规格
      * @param skId
      * @return

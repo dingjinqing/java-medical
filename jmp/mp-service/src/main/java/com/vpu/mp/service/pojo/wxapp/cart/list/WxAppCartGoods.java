@@ -105,6 +105,10 @@ public class WxAppCartGoods {
      */
     private List<CartActivityInfo> cartActivityInfos;
     /**
+     * 商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品
+     */
+    private Byte goodsType;
+    /**
      * 活动价格后
      */
     private BigDecimal activityPrice;
@@ -116,10 +120,6 @@ public class WxAppCartGoods {
      * 商品活动类型  1：加价购主商品， 2： 满折满减
      */
     private Byte action;
-    /**
-     * 商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品
-     */
-    private Integer goodsType;
     /**
      * 1会员卡 2限时降价 3,4 首单特惠
      */

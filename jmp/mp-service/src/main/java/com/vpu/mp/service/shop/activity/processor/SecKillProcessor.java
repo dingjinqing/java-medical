@@ -2,15 +2,20 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillProductBo;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
 import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
+import org.jooq.Record;
 import org.jooq.Record3;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,11 +84,18 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
         List<Integer> secProductList = new ArrayList<>();
         //秒杀商品
         cartBo.getCartGoodsList().forEach(goods->{
-            if (goods.getGoodsStatus().equals(GoodsConstant.ACTIVITY_TYPE_SEC_KILL)){
+            if (goods.getGoodsType().equals(GoodsConstant.ACTIVITY_TYPE_SEC_KILL)){
                 secProductList.add(goods.getPrdId());
+                //查询商品的秒杀活动,获取活动id
+                Result<? extends Record> secKillInfoList = secKillProcessorDao.getSecKillInfoList(secProductList, cartBo.getDate());
+                if (secKillInfoList!=null&&secKillInfoList.size()>0){
+                    SeckillProductBo seckillProductBo = secKillInfoList.into(SeckillProductBo.class).get(0);
+                    CartActivityInfo seckillProductInfo =new CartActivityInfo();
+                    seckillProductInfo.setActivityType(GoodsConstant.ACTIVITY_TYPE_SEC_KILL);
+                    seckillProductInfo.setActivityId(seckillProductBo.getSkId());
+                    goods.getCartActivityInfos().add(seckillProductInfo);
+                }
             }
         });
-        //活动信息
-        secKillProcessorDao.getSecKillInfoList(secProductList,cartBo.getDate());
     }
 }
