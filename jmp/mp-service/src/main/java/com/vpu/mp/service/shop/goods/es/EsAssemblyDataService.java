@@ -24,6 +24,7 @@ import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.beans.BeanUtils;
@@ -421,9 +422,11 @@ public class EsAssemblyDataService extends ShopBaseService {
     private void assemblyVipPriceImp(EsGoods esGoods, List<GoodsGradePrd> goodsGradePrdList) {
         if (!goodsGradePrdList.isEmpty()) {
             for (GoodsGradePrd goodsGradePrd : goodsGradePrdList) {
-                Field v;
+                if(StringUtils.isBlank(goodsGradePrd.getGrade())){
+                    break ;
+                }
                 try {
-                    v = esGoods.getClass().getDeclaredField(goodsGradePrd.getGrade());
+                    Field v = esGoods.getClass().getDeclaredField(goodsGradePrd.getGrade());
                     v.setAccessible(true);
                     v.set(esGoods, goodsGradePrd.getGradePrice());
                 } catch (NoSuchFieldException | IllegalAccessException e) {

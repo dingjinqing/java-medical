@@ -28,8 +28,6 @@ public class EsSearchSourceBuilderHandler {
         String[] excludeSource = param.getExcludeSource();
         if( includeSource != null || excludeSource != null ){
             sourceBuilder.fetchSource(includeSource,excludeSource);
-        }else{
-            sourceBuilder.fetchSource( Boolean.FALSE);
         }
         if( param.getFrom() != null && param.getSize() != null ){
             sourceBuilder

@@ -1,6 +1,10 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.*;
+import com.vpu.mp.service.foundation.es.handler.EsAggregationHandler;
+import com.vpu.mp.service.foundation.es.handler.EsQueryBuilderHandler;
+import com.vpu.mp.service.foundation.es.handler.EsRequestHandler;
+import com.vpu.mp.service.foundation.es.handler.EsSearchSourceBuilderHandler;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
@@ -15,7 +19,6 @@ import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -120,7 +123,7 @@ public class EsBaseSearchService extends ShopBaseService {
      * @return {@link Page}
      * @throws IOException 连接异常
      */
-    protected Page assemblyPage(EsSearchSourceBuilderParam searchParam , Integer pageRows, Integer currentPage) throws IOException {
+    Page assemblyPage(EsSearchSourceBuilderParam searchParam, Integer pageRows, Integer currentPage) throws IOException {
         SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(searchParam);
         CountRequest countRequest = assemblyCountRequest(sourceBuilder,searchParam.getIndexName());
         CountResponse countResponse = esManager.getDocumentCount(countRequest);
@@ -156,7 +159,7 @@ public class EsBaseSearchService extends ShopBaseService {
      * @param indexName 索引名称
      * @return SearchRequest
      */
-    protected SearchRequest assemblySearchRequest(SearchSourceBuilder sourceBuilder,String indexName)  {
+    SearchRequest assemblySearchRequest(SearchSourceBuilder sourceBuilder, String indexName)  {
         return esRequestHandler.assemblySearchRequest(indexName,sourceBuilder);
     }
     /**
@@ -174,7 +177,7 @@ public class EsBaseSearchService extends ShopBaseService {
      * @param param es对应的查询
      * @return {@link SearchSourceBuilder}
      */
-    protected SearchSourceBuilder assemblySearchSourceBuilder(EsSearchSourceBuilderParam param){
+    SearchSourceBuilder assemblySearchSourceBuilder(EsSearchSourceBuilderParam param){
         return esSearchSourceBuilderHandler.assemblySearchSourceBuilder(param);
     }
 

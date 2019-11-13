@@ -56,6 +56,7 @@ public class EsGoodsSearchService extends EsBaseSearchService{
 
         EsSearchSourceBuilderParam searchParam =  EsSearchSourceBuilderParam.builder()
             .queryBuilder(assemblySearchBuilder(param.getSearchList()))
+            .indexName(EsDataInitService.ES_GOODS)
             .build();
 
 

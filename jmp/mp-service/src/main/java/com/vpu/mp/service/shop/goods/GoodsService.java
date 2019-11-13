@@ -1496,7 +1496,11 @@ public class GoodsService extends ShopBaseService {
     }
 
     public List<Integer> getAllGoodsId(){
-        return db().select(GOODS.GOODS_ID).from(GOODS).fetch().getValues(GOODS.GOODS_ID);
+        return db().select(GOODS.GOODS_ID)
+            .from(GOODS)
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .fetch()
+            .getValues(GOODS.GOODS_ID);
     }
 
     /**
