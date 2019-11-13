@@ -1,4 +1,4 @@
-package com.vpu.mp.service.foundation.es;
+package com.vpu.mp.service.foundation.es.handler;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.core.CountRequest;

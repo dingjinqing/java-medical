@@ -1,4 +1,4 @@
-package com.vpu.mp.service.foundation.es;
+package com.vpu.mp.service.foundation.es.handler;
 
 import com.vpu.mp.service.pojo.shop.goods.es.Fact;
 import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;

@@ -1,4 +1,4 @@
-package com.vpu.mp.service.foundation.es;
+package com.vpu.mp.service.foundation.es.handler;
 
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;

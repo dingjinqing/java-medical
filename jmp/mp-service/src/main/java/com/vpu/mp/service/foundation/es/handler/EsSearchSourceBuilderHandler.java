@@ -1,5 +1,6 @@
-package com.vpu.mp.service.foundation.es;
+package com.vpu.mp.service.foundation.es.handler;
 
+import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
 
