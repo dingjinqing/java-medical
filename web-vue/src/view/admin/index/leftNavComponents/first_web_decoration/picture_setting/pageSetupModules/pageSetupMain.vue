@@ -12,7 +12,7 @@
       <div>
         <span :class="pageClassification">{{$t('pageSetUp.pageClassification')}}：</span>
         <el-select
-          v-model="ruleForm.cat_id"
+          v-model="pageClassify"
           :placeholder="$t('pageSetUp.pleaseChoose')"
           size="small"
         >
@@ -20,7 +20,7 @@
             v-for="item in classificationOptions"
             :key="item.value"
             :label="item.name"
-            :value="item.id"
+            :value="item.name"
           >
           </el-option>
         </el-select>
@@ -371,14 +371,12 @@ export default {
       handler (newData) {
         console.log(newData)
         if (JSON.stringify(newData) !== '{}') {
-          // let name = ''
-          // this.classificationOptions.forEach((res) => {
-          //   if(res.id === newData.cat_id){
-          //       name = res.name
-          //   }
-
-          // })
-
+          this.classificationOptions.forEach((res) => {
+            if (res.id === Number(newData.cat_id)) {
+              this.pageClassify = res.name
+            }
+          })
+          console.log(this.pageClassify)
           this.ruleForm = newData
         }
       },
@@ -392,11 +390,21 @@ export default {
         this.$emit('hanelToPageSet', newData)
       },
       deep: true
+    },
+    pageClassify (newData) {
+      console.log(newData)
+      // this.classificationOptions.forEach((res) => {
+      //       if(res.id === newData.cat_id){
+      //           this.pageClassify = res.name
+      //       }
+
+      //     })
+      this.classificationOptions.forEach((res) => {
+        if (res.name === newData) {
+          this.ruleForm.cat_id = res.id
+        }
+      })
     }
-    // pageClassify (newData) {
-    //   console.log(newData)
-    //   this.ruleForm.cat_id = newData
-    // }
   },
   mounted () {
     // 初始化语言
