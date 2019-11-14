@@ -20,7 +20,9 @@ public class ShopAccountOnePojo {
 
     private Integer   sysId;
     private String    userName;
-	/* private String password; */
+	/**
+	 * private String password;
+	 */
     private Byte      state;
     private Byte      businessState;
     private Byte      shopGrade;

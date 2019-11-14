@@ -8,7 +8,12 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import lombok.Data;
-
+/**
+ * 
+ * @author zhaojianqiang
+ *
+ * 2019年11月14日 上午10:27:37
+ */
 @Data
 public class ShopPojo{
 

@@ -8,7 +8,12 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+/**
+ * 
+ * @author zhaojianqiang
+ *
+ * 2019年11月14日 上午10:29:34
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
