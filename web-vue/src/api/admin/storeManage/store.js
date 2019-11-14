@@ -61,3 +61,30 @@ export function batchUpdateStore (data) {
     data: data
   })
 }
+
+// 门店分组新增
+export function addStoreGroup (data) {
+  return service({
+    url: '/api/admin/store/group/add',
+    method: 'post',
+    data: data
+  })
+}
+
+// 门店分组删除
+export function delStoreGroup (data) {
+  return service({
+    url: '/api/admin/store/group/del',
+    method: 'post',
+    data: data
+  })
+}
+
+// 门店分组编辑
+export function updateStoreGroup (data) {
+  return service({
+    url: '/api/admin/store/group/update',
+    method: 'post',
+    data: data
+  })
+}

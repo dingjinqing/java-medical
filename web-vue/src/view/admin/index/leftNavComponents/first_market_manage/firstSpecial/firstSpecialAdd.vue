@@ -793,7 +793,7 @@ export default {
         that.$message.warning(this.$t('firstSpecialAdd.selectGoodsTip'))
         return false
       }
-      that.$confirm(this.$t('firstSpecialAdd.tipDelete'), this.$t('firstSpecialAdd.remind'), {
+      that.$confirm(this.$t('firstSpecialAdd.tipRound'), this.$t('firstSpecialAdd.remind'), {
         confirmButtonText: this.$t('firstSpecialAdd.determine'),
         cancelButtonText: this.$t('firstSpecialAdd.cancel'),
         type: 'warning'

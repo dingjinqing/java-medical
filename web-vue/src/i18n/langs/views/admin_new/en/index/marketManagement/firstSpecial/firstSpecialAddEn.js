@@ -57,6 +57,7 @@ export const en = {
   validIsForver: 'Please select the expiration date',
   validFirst: 'Please fill in the activity priority',
   tipDelete: 'You sure you want to delete it?',
+  tipRound: 'Are you sure you want to make a bulk price rounding?',
   remind: 'remind',
   cancel: 'cancel',
   selectGoodsTip: 'Please select the item and then operate it',

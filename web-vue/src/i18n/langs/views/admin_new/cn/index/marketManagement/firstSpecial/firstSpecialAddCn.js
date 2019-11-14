@@ -57,6 +57,7 @@ export const cn = {
   validIsForver: '请选择有效期',
   validFirst: '请填写活动优先级',
   tipDelete: '确定要删除吗？',
+  tipRound: '确定要进行批量价格取整吗？',
   remind: '提醒',
   cancel: '取消',
   selectGoodsTip: '请选择商品后再进行操作',

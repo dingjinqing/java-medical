@@ -5,6 +5,7 @@ export const cn = {
   ok: '确定',
   cancel: '取消',
   orderSn: '订单号',
+  add: '新建分组',
   filter: '筛选',
   operate: '操作',
   actName: '活动名称',

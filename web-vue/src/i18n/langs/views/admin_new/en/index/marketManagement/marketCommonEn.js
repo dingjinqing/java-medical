@@ -6,6 +6,7 @@ export const en = {
   ok: 'OK',
   cancel: 'cancel',
   orderSn: 'orderSn',
+  add: 'new grouping',
   filter: 'filter',
   operate: 'operate',
   actName: 'activity name',

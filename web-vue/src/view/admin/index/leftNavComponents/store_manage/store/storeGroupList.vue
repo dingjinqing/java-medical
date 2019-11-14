@@ -4,8 +4,9 @@
       <div class="navBox">
         <el-button
           type="primary"
-          @click="add()"
-        >{{$t('marketCommon.filter')}}</el-button>
+          size="small"
+          @click="addGroup"
+        >{{$t('marketCommon.add')}}</el-button>
       </div>
       <div class="table_box">
         <div class="filters">
@@ -64,7 +65,7 @@
                   :content="$t('storeCommon.edit')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">{{$t('storeCommon.edit')}}</a>
+                  <a @click="edit(scope.row.id, 'edit', row)">{{$t('storeCommon.edit')}}</a>
                 </el-tooltip>
 
                 <el-tooltip
@@ -73,7 +74,7 @@
                   :content="$t('storeCommon.delete')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">{{$t('storeCommon.delete')}}</a>
+                  <a @click="edit(scope.row.id, 'delete', row)">{{$t('storeCommon.delete')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -93,11 +94,63 @@
         />
       </div>
     </div>
+    <!-- 添加分组 -->
+    <el-dialog
+      title="新建分组"
+      :visible.sync="addGroupVisible"
+      :close-on-click-modal="false"
+      width="330px"
+    >
+      <div>
+        <p style="margin-bottom:15px">分组名称</p>
+        <el-input
+          size="small"
+          v-model="groupName"
+        ></el-input>
+      </div>
+      <span slot="footer">
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmAddGroup"
+        >确定</el-button>
+        <el-button
+          size="small"
+          @click="cancelAddGroup"
+        >取消</el-button>
+      </span>
+    </el-dialog>
+    <!-- 编辑分组 -->
+    <el-dialog
+      title="编辑分组"
+      :visible.sync="editGroupVisible"
+      :close-on-click-modal="false"
+      width="330px"
+    >
+      <div>
+        <p style="margin-bottom:15px">分组名称</p>
+        <el-input
+          size="small"
+          v-model="groupName"
+        ></el-input>
+      </div>
+      <span slot="footer">
+        <el-button
+          type="primary"
+          size="small"
+          @click="confirmAddGroup"
+        >确定</el-button>
+        <el-button
+          size="small"
+          @click="cancelAddGroup"
+        >取消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { storeGroupList } from '@/api/admin/storeManage/store'
+import { storeGroupList, addStoreGroup, delStoreGroup, updateStoreGroup } from '@/api/admin/storeManage/store'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
@@ -105,13 +158,18 @@ export default {
     return {
       loading: false,
       langDefaultFlag: false,
+      addGroupVisible: false,
+      editGroupVisible: false,
 
       pageParams: {},
       queryParams: {},
       tableData: [],
 
       // 表格原始数据
-      originalData: []
+      originalData: [],
+      groupName: '', // 添加的分组名
+      editGroupName: '', // 编辑分组名
+      editGroupId: '' // 编辑分组ID
     }
   },
   methods: {
@@ -133,8 +191,63 @@ export default {
       this.tableData = data
       this.langDefaultFlag = true
     },
-    edit (id) {
-
+    edit (id, operate, row) {
+      let that = this
+      let params = {
+        groupId: id
+      }
+      switch (operate) {
+        case 'edit':
+          that.editGroupVisible = !that.editGroupVisible
+          break
+        case 'delete':
+          delStoreGroup(params).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              that.$message.success('删除成功')
+              that.initDataList()
+            } else {
+              that.$$message.error('删除失败')
+            }
+          })
+          break
+      }
+    },
+    addGroup () {
+      this.addGroupVisible = !this.addGroupVisible
+    },
+    confirmAddGroup () {
+      let params = {
+        groupName: this.groupName
+      }
+      addStoreGroup(params).then(res => {
+        if (res.error) {
+          this.$message.success('添加分组成功')
+          this.initDataList()
+        } else {
+          this.$message.error('添加分组失败')
+        }
+      })
+    },
+    cancelAddGroup () {
+      this.groupName = ''
+      this.addGroupVisible = false
+    },
+    confirmEditGroup () {
+      let that = this
+      let params = {
+        groupName: that.editGroupName,
+        groupId: that.editGroupId
+      }
+      updateStoreGroup(params).then(res => {
+        if (res.error === 0) {
+          console.log(res)
+        }
+      })
+    },
+    cancelEditGroup () {
+      this.groupName = ''
+      this.editGroupVisible = false
     }
   },
   watch: {
@@ -160,7 +273,7 @@ export default {
   padding: 10px;
   .navBox {
     background-color: #fff;
-    padding: 0 15px 14px;
+    padding: 14px 15px 14px;
     margin-bottom: 10px;
   }
   .btn {
