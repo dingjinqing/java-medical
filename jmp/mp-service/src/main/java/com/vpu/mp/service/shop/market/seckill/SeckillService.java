@@ -480,7 +480,7 @@ public class SeckillService extends ShopBaseService{
         if(secKill == null){
             return 1;
         }
-        if(secKill.getStatus() == BaseConstant.ACTIVITY_STATUS_DISABLE){
+        if(BaseConstant.ACTIVITY_STATUS_DISABLE.equals(secKill.getStatus())){
             return 2;
         }
         if(secKill.getStartTime().after(DateUtil.getLocalDateTime())){
