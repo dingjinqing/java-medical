@@ -1,24 +1,30 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartGoodsInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.shop.image.ImageService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +35,11 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority{
+    @Autowired
+    ImageService imageService;
+    @Autowired
+    protected UpYunConfig upYunConfig;
+
     /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
@@ -36,8 +47,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
     }
     /*****************商品列表处理*******************/
     @Override
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
-        log.info("GoodsTailProcessor->", Util.toJson(capsules));
+    public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         capsules.forEach(capsule->{
             // 被活动处理了的话商品价就是活动价（已被活动设置），否则就是商品的规格最低价(新增商品时该字段存的就是最低价)
             if (capsule.getProcessedTypes().size() == 0) {
@@ -46,21 +56,70 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
             } else {
                 capsule.setLinePrice(capsule.getPrdMaxPrice());
             }
+            // 销量处理
+            capsule.setGoodsSaleNum(capsule.getGoodsSaleNum()+capsule.getBaseSale());
+            // 图片处理
+            capsule.setGoodsImg(getImgFullUrlUtil(capsule.getGoodsImg()));
+            // 商品最后活动信息设置
+            Optional<GoodsActivityBaseMp> first = capsule.getGoodsActivities().stream().filter(x -> GoodsConstant.isNeedReturnActivity(x.getActivityType())).findFirst();
+            if (first.isPresent()) {
+                GoodsActivityBaseMp activity = first.get();
+                capsule.setActivityType(activity.getActivityType());
+                capsule.setActivityId(activity.getActivityId());
+            }
         });
     }
     /*****************商品详情处理******************/
     @Override
-    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
         List<GoodsPrdMpVo> products = capsule.getProducts();
 
         List<GradePrdRecord> gradeCardPrice = capsule.getGradeCardPrice();
 
-        if (gradeCardPrice != null && gradeCardPrice.size() > 0) {
-            Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GradePrdRecord::getPrdId, GradePrdRecord::getGradePrice));
-            products.forEach(prd-> prd.setPrdRealPrice(gradePriceMap.get(prd.getPrdId())));
+        Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GradePrdRecord::getPrdId, GradePrdRecord::getGradePrice));
+
+        // 规格会员价和图片路径处理
+        products.forEach(prd->{
+            if (gradePriceMap.get(prd.getPrdId()) != null) {
+                prd.setPrdRealPrice(gradePriceMap.get(prd.getPrdId()));
+            }
+            prd.setPrdImg(getImgFullUrlUtil(prd.getPrdImg()));
+        });
+        // 商品图片路径地址处理
+        List<String> goodsImgs = new ArrayList<>(capsule.getGoodsImgs().size());
+        capsule.getGoodsImgs().forEach(img-> goodsImgs.add(getImgFullUrlUtil(img)));
+        capsule.setGoodsImgs(goodsImgs);
+
+        capsule.setGoodsVideo(getVideoFullUrlUtil(capsule.getGoodsVideo(),true));
+        capsule.setGoodsVideoImg(getVideoFullUrlUtil(capsule.getGoodsVideoImg(),false));
+    }
+
+    /**
+     * 将相对路劲修改为全路径
+     * @param relativePath 相对路径
+     * @return null或全路径
+     */
+    private String getImgFullUrlUtil(String relativePath) {
+        if (StringUtils.isBlank(relativePath)) {
+            return null;
+        } else {
+            return imageService.imageUrl(relativePath);
         }
     }
 
+    /**
+     *  商品视频和快照图片相对路径转换全路径
+     * @param relativePath 相对路径
+     * @param videoOrSnapShop true: 视频，false: 快照
+     * @return 全路径
+     */
+    private String getVideoFullUrlUtil(String relativePath,boolean videoOrSnapShop){
+        if (StringUtils.isBlank(relativePath)) {
+            return null;
+        } else {
+            return videoOrSnapShop ? upYunConfig.videoUrl(relativePath) : upYunConfig.imageUrl(relativePath);
+        }
+    }
 
     //**********************GWC********************************
     /**

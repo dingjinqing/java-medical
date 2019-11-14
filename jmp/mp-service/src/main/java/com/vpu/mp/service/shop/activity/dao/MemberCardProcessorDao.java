@@ -129,7 +129,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
         // 获取会员等级
         Record2<Integer, String> userGradeCard = getUserGradeCard(userId);
         if (userGradeCard == null) {
-            return null;
+            return new ArrayList<>();
         }
         // 获取商品规格等级信息
         return db().select(GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE).from(GRADE_PRD).where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))

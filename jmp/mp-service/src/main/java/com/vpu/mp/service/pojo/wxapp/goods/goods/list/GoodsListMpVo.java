@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,23 +12,26 @@ import java.util.List;
 /**
  * @author 李晓冰
  * @date 2019年10月12日
- * 小程序和装修商品模块返回实体类
+ * 小程序和装修商品模块返回实体Vo类
  */
 @Setter
 @Getter
-public class GoodsListMpVo extends GoodsBaseMpVo {
-    private String goodsImg;
-    private Integer commentNum;
-    //商品所拥有的活动处理信息
-    private List<GoodsActivityBaseMp> goodsActivity = new ArrayList<>();
-    private GoodsLabelMpVo label;
+public class GoodsListMpVo extends GoodsBaseMp {
 
-    private BigDecimal shopPrice;
-    private BigDecimal linePrice;
-    private BigDecimal realPrice;
+    /**商品关联最紧密标签*/
+    protected GoodsLabelMpVo label;
+    /**商品主图*/
+    protected String goodsImg;
 
-    /** 指定该商品的详情页营销活动id */
-    private Integer activityId;
-    /**指定该商品的详情页营销活动类型*/
-    private Byte activityType;
+    /**商品装修列表前端展示划线价*/
+    protected BigDecimal linePrice;
+    /**商品装修列表前端最终显示价格*/
+    protected BigDecimal realPrice;
+
+    /**商品所拥有的活动处理信息*/
+    protected List<GoodsActivityBaseMp> goodsActivities = new ArrayList<>(2);
+    /**指定该商品的详情页营销活动id*/
+    protected Integer activityId;
+    /**初始值可设置为商品表goods_type字段，指定该商品的详情页营销活动类型*/
+    protected Byte activityType;
 }

@@ -2,9 +2,9 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
 import com.vpu.mp.service.shop.activity.dao.GoodsLabelProcessorDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
     }
     /*****************商品列表处理*******************/
     @Override
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
+    public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         List<Integer> goodsIds = new ArrayList<>();
         List<Integer> catIds = new ArrayList<>();
         List<Integer> sortIds = new ArrayList<>();
@@ -49,20 +49,20 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
             Map<Integer, GoodsLabelMpVo> allGoodsMap = goodsLabelsMap.get(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
 
             if (goodsIdMap.get(capsule.getGoodsId()) != null) {
-                capsule.setGoodsLabel(goodsIdMap.get(capsule.getGoodsId()));
+                capsule.setLabel(goodsIdMap.get(capsule.getGoodsId()));
             } else if (catIdMap.get(capsule.getCatId()) != null) {
-                capsule.setGoodsLabel(goodsIdMap.get(capsule.getCatId()));
+                capsule.setLabel(goodsIdMap.get(capsule.getCatId()));
             } else if (sortIdMap.get(capsule.getSortId()) != null) {
-                capsule.setGoodsLabel(goodsIdMap.get(capsule.getSortId()));
+                capsule.setLabel(goodsIdMap.get(capsule.getSortId()));
             } else if (allGoodsMap.size() > 0) {
-                capsule.setGoodsLabel(allGoodsMap.get(GoodsConstant.LABEL_GTA_DEFAULT_VALUE));
+                capsule.setLabel(allGoodsMap.get(GoodsConstant.LABEL_GTA_DEFAULT_VALUE));
             }
         });
 
     }
     /*****************商品详情处理******************/
     @Override
-    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
         List<String> labels = goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId(),param.getCatId(),param.getSortId());
         capsule.setLabels(labels);
     }

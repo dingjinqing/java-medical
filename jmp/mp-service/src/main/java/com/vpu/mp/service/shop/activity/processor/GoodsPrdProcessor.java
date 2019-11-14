@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.activity.dao.GoodsPrdProcessorDao;
 import org.apache.commons.lang3.StringUtils;
@@ -34,8 +34,8 @@ public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListPro
     }
     /*****************商品列表处理*******************/
     @Override
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
-        List<Integer> goodsIds = capsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
+    public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
+        List<Integer> goodsIds = capsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, List<Record3<Integer, BigDecimal, String>>> goodsPrdInfos = goodsPrdProcessorDao.getGoodsPrdInfo(goodsIds);
 
         capsules.forEach(capsule->{
@@ -47,7 +47,7 @@ public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListPro
     }
     /*****************商品详情处理******************/
     @Override
-    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
         List<GoodsSpecProductRecord> prdInfos = goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());
 
         List<GoodsPrdMpVo> prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());

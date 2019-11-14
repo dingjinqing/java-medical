@@ -4,9 +4,9 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillProductBo;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
@@ -45,9 +45,9 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
     }
     /*****************商品列表处理*******************/
     @Override
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
-        List<ActivityGoodsListCapsule> availableCapsules = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_SEC_KILL.equals(x.getGoodsType())).collect(Collectors.toList());
-        List<Integer> goodsIds = availableCapsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
+    public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
+        List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_SEC_KILL.equals(x.getActivityType())).collect(Collectors.toList());
+        List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsSecKillListInfo = secKillProcessorDao.getGoodsSecKillListInfo(goodsIds, DateUtil.getLocalDateTime());
 
         availableCapsules.forEach(capsule->{
@@ -60,7 +60,7 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
             activity.setActivityId(record3.get(SEC_KILL_DEFINE.SK_ID));
             activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_SEC_KILL);
-            capsule.getActivities().add(activity);
+            capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_SEC_KILL);
         });
     }
@@ -70,7 +70,7 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
      * @param
      */
     @Override
-    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
         if(param.getActivityId() != null && param.getActivityType().equals(GoodsConstant.ACTIVITY_TYPE_SEC_KILL)){
             //处理之前capsule中需要有商品的基本信息
             capsule.setActivity(secKillProcessorDao.getDetailSeckillInfo(param.getActivityId(),param.getUserId(),capsule.getGoodsNumber()));

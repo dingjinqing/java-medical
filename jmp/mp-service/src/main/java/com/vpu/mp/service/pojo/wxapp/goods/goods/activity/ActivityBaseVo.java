@@ -9,6 +9,7 @@ import java.sql.Timestamp;
  * @author 李晓冰
  * @date 2019年10月23日
  */
+@Deprecated
 @Data
 public class ActivityBaseVo {
     /**活动在各自活动表内的id值*/

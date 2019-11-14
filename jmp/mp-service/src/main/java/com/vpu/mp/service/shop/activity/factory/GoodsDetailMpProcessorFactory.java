@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.activity.factory;
 
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.shop.activity.processor.GoodsDetailProcessor;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +12,10 @@ import java.util.List;
  * @date 2019年11月07日
  */
 @Service
-public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<GoodsDetailProcessor, GoodsDetailMpCapsule>{
+public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<GoodsDetailProcessor, GoodsDetailMpBo>{
 
     @Override
-    public void doProcess(List<GoodsDetailMpCapsule> capsules, Integer userId) {
+    public void doProcess(List<GoodsDetailMpBo> capsules, Integer userId) {
         if (capsules == null || capsules.size() == 0) {
             return;
         }
@@ -24,7 +24,7 @@ public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<Good
         doProcess(capsules.get(0),param);
     }
 
-    public void doProcess(GoodsDetailMpCapsule goods,GoodsDetailCapsuleParam param) {
+    public void doProcess(GoodsDetailMpBo goods, GoodsDetailCapsuleParam param) {
         param.setGoodsId(goods.getGoodsId());
         param.setSortId(goods.getSortId());
         param.setCatId(goods.getCatId());

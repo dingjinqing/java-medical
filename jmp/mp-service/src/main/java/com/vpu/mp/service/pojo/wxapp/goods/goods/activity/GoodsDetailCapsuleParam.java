@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.wxapp.activity.param;
+package com.vpu.mp.service.pojo.wxapp.goods.goods.activity;
 
 import lombok.Data;
 

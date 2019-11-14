@@ -3,7 +3,7 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
@@ -30,9 +30,9 @@ public class BargainProcessor implements ProcessorPriority,ActivityGoodsListProc
 
     /*****装修商品列表*****/
     @Override
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
-        List<ActivityGoodsListCapsule> availableCapsules = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(x.getGoodsType())).collect(Collectors.toList());
-        List<Integer> goodsIds = availableCapsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
+    public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
+        List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(x.getActivityType())).collect(Collectors.toList());
+        List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, BargainRecord> goodsBargainInfo = bargainProcessorDao.getGoodsBargainListInfo(goodsIds, DateUtil.getLocalDateTime());
 
         availableCapsules.forEach(capsule->{
@@ -45,7 +45,7 @@ public class BargainProcessor implements ProcessorPriority,ActivityGoodsListProc
 
             activity.setActivityId(bargainRecord.getId());
             activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_BARGAIN);
-            capsule.getActivities().add(activity);
+            capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_BARGAIN);
         });
     }

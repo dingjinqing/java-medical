@@ -139,7 +139,7 @@ public class GoodsConstant {
     }
 
     /**
-     *  是否是需要告知前端活动id的活动,目前有 1,3,5,6,10，18
+     *  是否是需要告知前端活动id的活动,目前有 1,3,5,6,10,18
      * @param goodsType 活动类型
      */
     public static boolean isNeedReturnActivity(Byte goodsType){

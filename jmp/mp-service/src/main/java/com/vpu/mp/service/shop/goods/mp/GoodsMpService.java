@@ -5,9 +5,9 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
@@ -57,17 +57,17 @@ public class GoodsMpService extends ShopBaseService {
     /**
      * 装修页面 商品列表模块中获取配置后的商品集合数据
      * @param param  装修页面配置的商品获取过滤条件
-     * @param userId
+     * @param userId 用户id值
      * @return 对应的商品集合信息
      */
-    public List<GoodsListMpVo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId) {
+    public List<? extends GoodsListMpVo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId) {
         // 手动推荐展示但是未指定商品数据
         if (0 != param.getRecommendType()&&(param.getGoodsItems() == null || param.getGoodsItems().size() == 0)) {
             return new ArrayList<>();
         }
         Condition condition =buildPageIndexCondition(param);
 
-        List<ActivityGoodsListCapsule> goodsListCapsules;
+        List<GoodsListMpBo> goodsListCapsules;
         // 自动推荐拼接排序条件
         if (0 != param.getRecommendType()) {
             goodsListCapsules = findActivityGoodsListCapsulesDao(condition,null,null,null,param.getGoodsItems());
@@ -84,9 +84,7 @@ public class GoodsMpService extends ShopBaseService {
         }
         disposeGoodsList(goodsListCapsules,userId);
 
-        List<GoodsListMpVo> goodsListMpVos = convertGoodsCapsuleTGoodsListMpVo(goodsListCapsules);
-
-        return goodsListMpVos;
+        return goodsListCapsules;
     }
 
     /**
@@ -122,20 +120,22 @@ public class GoodsMpService extends ShopBaseService {
         // TODO: PHP 处理category参数字段，目前阶段未使用到
 
         // 指定商品范围选项过滤数据
-        if (GoodsListMpParam.SORT_AREA.equals(param.getGoodsArea())) {
-            condition = condition.and(GOODS.SORT_ID.in(param.getGoodsAreaData()));
-        } else if (GoodsListMpParam.CAT_AREA.equals(param.getGoodsArea())) {
-            condition = condition.and(GOODS.CAT_ID.in(param.getGoodsAreaData()));
-        } else if (GoodsListMpParam.BRAND_AREA.equals(param.getGoodsArea())) {
-            condition = condition.and(GOODS.BRAND_ID.in(param.getGoodsAreaData()));
-        } else if (GoodsListMpParam.LABEL_AREA.equals(param.getGoodsArea())) {
-            List<Integer> allIds = goodsLabelMpService.getGoodsLabelCouple(param.getGoodsAreaData(), GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
-            // 如果存在关联所有商品的标签则就不用再进行过滤了
-            if (allIds.size() == 0) {
-                List<Integer> catIds = goodsLabelMpService.getGoodsLabelCouple(param.getGoodsAreaData(), GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
-                List<Integer> sortIds = goodsLabelMpService.getGoodsLabelCouple(param.getGoodsAreaData(), GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
-                List<Integer> goodsIds = goodsLabelMpService.getGoodsLabelCouple(param.getGoodsAreaData(), GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
-                condition = condition.and(GOODS.CAT_ID.in(catIds).or(GOODS.SORT_ID.in(sortIds)).or(GOODS.GOODS_ID.in(goodsIds)));
+        if (param.getGoodsAreaData() != null && param.getGoodsAreaData().size() > 0) {
+            if (GoodsListMpParam.SORT_AREA.equals(param.getGoodsArea())) {
+                condition = condition.and(GOODS.SORT_ID.in(param.getGoodsAreaData()));
+            } else if (GoodsListMpParam.CAT_AREA.equals(param.getGoodsArea())) {
+                condition = condition.and(GOODS.CAT_ID.in(param.getGoodsAreaData()));
+            } else if (GoodsListMpParam.BRAND_AREA.equals(param.getGoodsArea())) {
+                condition = condition.and(GOODS.BRAND_ID.in(param.getGoodsAreaData()));
+            } else if (GoodsListMpParam.LABEL_AREA.equals(param.getGoodsArea())) {
+                List<Integer> allIds = goodsLabelMpService.getGoodsLabelCouple(param.getGoodsAreaData(), GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
+                // 如果存在关联所有商品的标签则就不用再进行过滤了
+                if (allIds.size() == 0) {
+                    List<Integer> catIds = goodsLabelMpService.getGoodsLabelCouple(param.getGoodsAreaData(), GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
+                    List<Integer> sortIds = goodsLabelMpService.getGoodsLabelCouple(param.getGoodsAreaData(), GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
+                    List<Integer> goodsIds = goodsLabelMpService.getGoodsLabelCouple(param.getGoodsAreaData(), GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode());
+                    condition = condition.and(GOODS.CAT_ID.in(catIds).or(GOODS.SORT_ID.in(sortIds)).or(GOODS.GOODS_ID.in(goodsIds)));
+                }
             }
         }
         // 商品活动过滤
@@ -158,7 +158,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param pagesRows 查询数据条数
      * @return {@link GoodsListMpParam}集
      */
-    public List<GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds,Integer userId,Integer currentPages,Integer pagesRows) {
+    public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds,Integer userId,Integer currentPages,Integer pagesRows) {
         if (goodsIds == null) {
             return new ArrayList<>();
         }
@@ -166,10 +166,9 @@ public class GoodsMpService extends ShopBaseService {
             currentPages-=1;
         }
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.GOODS_ID.in(goodsIds));
-        List<ActivityGoodsListCapsule> goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, currentPages, pagesRows, goodsIds);
+        List<GoodsListMpBo> goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, currentPages, pagesRows, goodsIds);
         disposeGoodsList(goodsListCapsules,userId);
-        List<GoodsListMpVo> goodsListMpVos = convertGoodsCapsuleTGoodsListMpVo(goodsListCapsules);
-        return goodsListMpVos;
+        return goodsListCapsules;
     }
 
     /**
@@ -177,29 +176,10 @@ public class GoodsMpService extends ShopBaseService {
      * @param goodsListCapsules 通过过滤条件获取的商品信息
      * @param userId            用户id 可为null(在admin页面装修的时候传入的就是null)
      */
-    private void disposeGoodsList(List<ActivityGoodsListCapsule> goodsListCapsules, Integer userId) {
+    private void disposeGoodsList(List<GoodsListMpBo> goodsListCapsules, Integer userId) {
         GoodsListMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsListMpProcessorFactory.class);
         // 处理规格，评价，标签，活动tag,最终划线价和商品价格
         processorFactory.doProcess(goodsListCapsules, userId);
-    }
-
-    /**
-     * ActivityGoodsListCapsule 转换为 GoodsListMpVo
-     * @param goodsListCapsules 待转换数据
-     * @return 转换后的数据
-     */
-    private List<GoodsListMpVo> convertGoodsCapsuleTGoodsListMpVo(List<ActivityGoodsListCapsule> goodsListCapsules) {
-        List<GoodsListMpVo> goodsListMpVos = new ArrayList<>();
-        if (goodsListCapsules == null || goodsListCapsules.size() == 0) {
-            return goodsListMpVos;
-        }
-
-        for (ActivityGoodsListCapsule t : goodsListCapsules) {
-            GoodsListMpVo vo = t.convertToGoodsListMpVo();
-            vo.setGoodsImg(getImgFullUrlUtil(vo.getGoodsImg()));
-            goodsListMpVos.add(vo);
-        }
-        return goodsListMpVos;
     }
 
     /**
@@ -207,7 +187,7 @@ public class GoodsMpService extends ShopBaseService {
      * @param param {@link GoodsDetailMpParam}
      */
     public GoodsDetailMpVo getGoodsDetailMp(GoodsDetailMpParam param){
-        GoodsDetailMpCapsule goodsDetailMpCapsule = getGoodsDetailMpInfoDao(param.getGoodsId());
+        GoodsDetailMpBo goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
         GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
 
         GoodsDetailCapsuleParam capsuleParam = new GoodsDetailCapsuleParam();
@@ -215,30 +195,10 @@ public class GoodsMpService extends ShopBaseService {
         capsuleParam.setActivityId(param.getActivityId());
         capsuleParam.setActivityType(param.getActivityType());
 
-        processorFactory.doProcess(goodsDetailMpCapsule,capsuleParam);
-        return convertGoodsDetailCapsuleTGoodsDetailMpVo(goodsDetailMpCapsule);
+        processorFactory.doProcess(goodsDetailMpBo,capsuleParam);
+        return goodsDetailMpBo;
     }
 
-    /**
-     * GoodsDetailMpCapsule 转换为 GoodsDetailMpVo
-     * @param goodsDetailMpCapsule
-     * @return
-     */
-    private GoodsDetailMpVo convertGoodsDetailCapsuleTGoodsDetailMpVo(GoodsDetailMpCapsule goodsDetailMpCapsule){
-        GoodsDetailMpVo goodsDetailMpVo = goodsDetailMpCapsule.convertToGoodsDetailMpVo();
-
-        List<String> goodsImgs = goodsDetailMpVo.getGoodsImgs();
-        List<String> fullImgs = new ArrayList<>();
-        goodsImgs.forEach(img->fullImgs.add(getImgFullUrlUtil(img)));
-        goodsDetailMpVo.setGoodsImgs(fullImgs);
-
-        goodsDetailMpVo.setGoodsVideoImg(getVideoFullUrlUtil(goodsDetailMpVo.getGoodsVideoImg(),false));
-        goodsDetailMpVo.setGoodsVideo(getVideoFullUrlUtil(goodsDetailMpVo.getGoodsVideo(),true));
-
-        goodsDetailMpVo.getProducts().forEach(prd->prd.setPrdImg(getImgFullUrlUtil(prd.getPrdImg())));
-
-        return goodsDetailMpVo;
-    }
     /**
      * 将相对路劲修改为全路径
      * @param relativePath 相对路径
@@ -274,9 +234,9 @@ public class GoodsMpService extends ShopBaseService {
      * @param offset 分页开始位置 如果limit为null则不会进行分页，如果offset为null,则默认为从0开始
      * @param limit 分页数量为null表示不进行分页
      * @param goodsIds 指定的商品id顺序
-     * @return {@link com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule}
+     * @return {@link GoodsListMpBo}
      */
-    private List<ActivityGoodsListCapsule>  findActivityGoodsListCapsulesDao(Condition condition, List<SortField<?>> orderFields,Integer offset,Integer limit, List<Integer> goodsIds){
+    private List<GoodsListMpBo>  findActivityGoodsListCapsulesDao(Condition condition, List<SortField<?>> orderFields, Integer offset, Integer limit, List<Integer> goodsIds){
 
         if (condition != null) {
             condition = condition.and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
@@ -302,14 +262,14 @@ public class GoodsMpService extends ShopBaseService {
             select = record12.limit(offset,limit);
         }
 
-        List<ActivityGoodsListCapsule> returnList;
+        List<GoodsListMpBo> returnList;
 
         if (goodsIds != null) {
-            Map<Integer, ActivityGoodsListCapsule> map = select.fetchMap(GOODS.GOODS_ID, ActivityGoodsListCapsule.class);
+            Map<Integer, GoodsListMpBo> map = select.fetchMap(GOODS.GOODS_ID, GoodsListMpBo.class);
             returnList = goodsIds.stream().filter(id -> map.get(id) != null).map(map::remove).collect(Collectors.toList());
             returnList.addAll(map.values());
         } else {
-            returnList = select.fetchInto(ActivityGoodsListCapsule.class);
+            returnList = select.fetchInto(GoodsListMpBo.class);
         }
         return returnList;
     }
@@ -317,15 +277,15 @@ public class GoodsMpService extends ShopBaseService {
     /**
      * 获取商品基本信息详情
      * @param goodsId 商品id（该商品可能已删除或下架）
-     * @return {@link com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule}
+     * @return {@link GoodsDetailMpBo}
      */
-    private GoodsDetailMpCapsule getGoodsDetailMpInfoDao(Integer goodsId) {
-        GoodsDetailMpCapsule capsule = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
+    private GoodsDetailMpBo getGoodsDetailMpInfoDao(Integer goodsId) {
+        GoodsDetailMpBo capsule = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
             GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
             GOODS.GOODS_IMG,GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
             GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_PAGE_UP,GOODS.GOODS_DESC)
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
-            .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny().into(GoodsDetailMpCapsule.class);
+            .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny().into(GoodsDetailMpBo.class);
         // 图片处理
         List<String> imgs = db().select().from(GOODS_IMG).where(GOODS_IMG.IMG_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
         capsule.getGoodsImgs().add(capsule.getGoodsImg());

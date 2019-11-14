@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.shop.activity.dao.GoodsCommentProcessorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,8 @@ public class GoodsCommentProcessor implements ProcessorPriority,ActivityGoodsLis
     }
     /*****************商品列表处理*******************/
     @Override
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
-        List<Integer> goodsIds = capsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
+    public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
+        List<Integer> goodsIds = capsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, Long> goodsCommentNumInfo = goodsCommentProcessorDao.getGoodsCommentNumInfo(goodsIds);
 
         capsules.forEach(capsule->{

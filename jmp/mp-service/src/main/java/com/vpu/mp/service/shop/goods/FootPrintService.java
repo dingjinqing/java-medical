@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.FootprintRecordRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
@@ -18,9 +19,6 @@ import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.tables.FootprintRecord.FOOTPRINT_RECORD;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -30,7 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.service.foundation.service.ShopBaseService;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.tables.FootprintRecord.FOOTPRINT_RECORD;
 
 /**
  * 足迹
@@ -115,7 +114,7 @@ public class FootPrintService extends ShopBaseService {
 		Result<? extends Record> records = select.orderBy(FOOTPRINT_RECORD.UPDATE_TIME.desc()).limit(currentPage - 1, pageRows).fetch();
 		List<Integer> goodsIdList = Arrays.asList(records.intoArray(GOODS.GOODS_ID));
 		List<FootprintDayVo> footprintList =records.into(FootprintDayVo.class);
-        List<GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId, currentPage, pageRows);
+        List<? extends GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId, currentPage, pageRows);
 		Map<Integer, GoodsListMpVo> goodsListMpVoMap = goodsListMpVos.stream().collect(Collectors.toMap(GoodsListMpVo::getGoodsId, goods->goods));
 		footprintList.forEach(footprintGoods->{
 			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(footprintGoods.getGoodsId());

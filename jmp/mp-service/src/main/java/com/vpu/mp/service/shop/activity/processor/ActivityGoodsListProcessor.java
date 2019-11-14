@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface ActivityGoodsListProcessor{
 
-    void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId);
+    void processForList(List<GoodsListMpBo> capsules, Integer userId);
 }

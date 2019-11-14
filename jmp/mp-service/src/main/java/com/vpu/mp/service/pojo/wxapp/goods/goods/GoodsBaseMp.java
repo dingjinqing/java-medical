@@ -8,7 +8,7 @@ import lombok.Data;
  * @date 2019年11月08日
  */
 @Data
-public class GoodsBaseMpVo {
+public class GoodsBaseMp {
     protected Integer goodsId;
     protected String goodsName;
     /**商品销售数量*/
@@ -17,4 +17,6 @@ public class GoodsBaseMpVo {
     protected Integer goodsNumber;
     /**是否是使用默认规格*/
     protected Boolean defaultPrd;
+    /**商品评价数量*/
+    private Integer commentNum;
 }

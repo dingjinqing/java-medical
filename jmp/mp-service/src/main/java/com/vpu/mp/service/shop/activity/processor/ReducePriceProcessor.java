@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
 import org.jooq.Record3;
@@ -34,9 +34,9 @@ public class ReducePriceProcessor implements ProcessorPriority,ActivityGoodsList
     }
     /*****************商品列表处理*******************/
     @Override
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
-        List<ActivityGoodsListCapsule> availableCapsule = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(x.getGoodsType()) && x.getProcessedTypes().size() == 0).collect(Collectors.toList());
-        List<Integer> goodsIds = availableCapsule.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
+    public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
+        List<GoodsListMpBo> availableCapsule = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(x.getActivityType()) && x.getProcessedTypes().size() == 0).collect(Collectors.toList());
+        List<Integer> goodsIds = availableCapsule.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsReduceListInfo(goodsIds, DateUtil.getLocalDateTime());
 
         availableCapsule.forEach(capsule->{
@@ -49,7 +49,7 @@ public class ReducePriceProcessor implements ProcessorPriority,ActivityGoodsList
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
             activity.setActivityId(record3.get(REDUCE_PRICE.ID));
             activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE);
-            capsule.getActivities().add(activity);
+            capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE);
         });
     }

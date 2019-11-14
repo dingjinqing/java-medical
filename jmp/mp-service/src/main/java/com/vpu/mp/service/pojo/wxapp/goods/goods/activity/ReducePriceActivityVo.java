@@ -11,6 +11,7 @@ import java.sql.Timestamp;
  * @date 2019年10月24日
  * 小程序-拼团活动返回信息类 activityType=6
  */
+@Deprecated
 public class ReducePriceActivityVo extends ActivityBaseVo{
     public ReducePriceActivityVo() {
         activityType = GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE;

@@ -5,9 +5,9 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.GoodsDetailMpCapsule;
-import com.vpu.mp.service.pojo.wxapp.activity.param.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
@@ -52,7 +52,7 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
 
     /*****************商品列表处理*******************/
     @Override
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
+    public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
 
         List<Integer> goodsIdParams = new ArrayList<>();
         List<Integer> sortIdParams = new ArrayList<>();
@@ -73,7 +73,7 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
         Set<Integer> brandIds = new HashSet<>(exclusiveInfo.get(CardConstant.COUPLE_TP_BRAND));
 
         capsules.forEach(capsule->{
-            if (GoodsConstant.isGoodsTypeIn13510(capsule.getGoodsType())) {
+            if (GoodsConstant.isGoodsTypeIn13510(capsule.getActivityType())) {
                 return;
             }
             Integer goodsId = capsule.getGoodsId();
@@ -84,7 +84,7 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
             if (goodsIds.contains(goodsId) || catIds.contains(catId) || sortIds.contains(sortId) || brandIds.contains(brandId)) {
                 GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
                 activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
-                capsule.getActivities().add(activity);
+                capsule.getGoodsActivities().add(activity);
                 capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
             }
         });
@@ -92,11 +92,11 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
     }
     /*****************商品详情处理******************/
     @Override
-    public void processGoodsDetail(GoodsDetailMpCapsule capsule, GoodsDetailCapsuleParam param) {
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
 
         if (!GoodsConstant.CARD_EXCLUSIVE.equals(capsule.getIsExclusive())) {
             capsule.setUserCanBuy(true);
-            capsule.setExclusiveCards(new ArrayList<>());
+            capsule.setMemberCards(new ArrayList<>());
             capsule.setIsExclusive(GoodsConstant.NOT_CARD_EXCLUSIVE);
             return;
         }
@@ -154,7 +154,7 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
             cardsLis.add(card);
         });
 
-        capsule.setExclusiveCards(cardsLis);
+        capsule.setMemberCards(cardsLis);
         capsule.setIsExclusive(GoodsConstant.CARD_EXCLUSIVE);
 
         if (gradeCards.size() == 0||userGrade == null) {

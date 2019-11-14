@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.shop.activity.dao.FullReductionProcessorDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,8 @@ public class FullReductionProcessor implements ProcessorPriority,ActivityGoodsLi
     }
     /*****************商品列表处理*******************/
     @Override
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
-        List<ActivityGoodsListCapsule> availableCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getGoodsType())).collect(Collectors.toList());
+    public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
+        List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getActivityType())).collect(Collectors.toList());
 
         Timestamp now =DateUtil.getLocalDateTime();
         availableCapsules.forEach(capsule->{
@@ -38,7 +38,7 @@ public class FullReductionProcessor implements ProcessorPriority,ActivityGoodsLi
             if (has) {
                 GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
                 activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_FULL_REDUCTION);
-                capsule.getActivities().add(activity);
+                capsule.getGoodsActivities().add(activity);
             }
         });
     }

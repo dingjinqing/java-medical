@@ -72,8 +72,8 @@ public class GoodsListMpParam {
     private Byte goodsType;
 
     public static final Byte ADD_TIME_SORT=1;
-    public static final Byte SALE_NUM_SORT=1;
-    public static final Byte SHOP_PRICE_SORT=1;
+    public static final Byte SALE_NUM_SORT=2;
+    public static final Byte SHOP_PRICE_SORT=3;
      /**
      * 排序：1 按商品上新时间倒序排列（goodsId排序），2 按商品销量倒序排列,3 按商品价格正序排列（由低到高）
      */
@@ -81,7 +81,7 @@ public class GoodsListMpParam {
     private Byte sortType;
 
     /**
-     * 需要展示的商品最大数量
+     * 需要取的商品最大数量
      */
     @JsonProperty("goods_num")
     private Integer goodsNum;

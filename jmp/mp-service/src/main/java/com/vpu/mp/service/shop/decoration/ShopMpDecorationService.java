@@ -642,14 +642,13 @@ public class ShopMpDecorationService extends ShopBaseService {
 	}
 
     /**
-     *
      * @param objectMapper
      * @param node
      * @param user
      * @return
      * @throws IOException
      */
-    public List<GoodsListMpVo> convertGoods(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+    public List<? extends GoodsListMpVo> convertGoods(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
         Integer userId = user.getUserId();
         GoodsListMpParam param = new GoodsListMpParam();
@@ -663,7 +662,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         param.setSortType(moduleGoods.getSortType());
         param.setGoodsNum(moduleGoods.getGoodsNum());
         // 转换实时信息
-        List<GoodsListMpVo> pageIndexGoodsList = goodsMpService.getPageIndexGoodsList(param, userId);
+        List<? extends GoodsListMpVo> pageIndexGoodsList = goodsMpService.getPageIndexGoodsList(param, userId);
 
         return pageIndexGoodsList;
     }

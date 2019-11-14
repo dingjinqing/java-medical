@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -5,7 +5,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialProductBo;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
@@ -58,17 +58,17 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
     /**
      * 商品装修列表-首单特惠
      */
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
+    public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         if (userId != null && !orderInfoService.isNewUser(userId, true)) {
             return;
         }
-        List<ActivityGoodsListCapsule> availabelCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getGoodsType()) && !x.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE))
+        List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getActivityType()) && !x.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE))
                 .collect(Collectors.toList());
 
-        List<Integer> gooodsIds = availabelCapsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
-        Map<Integer, Result<Record3<Integer, Integer, BigDecimal>>> firstSpecialPrds = firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(gooodsIds, DateUtil.getLocalDateTime());
+        List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
+        Map<Integer, Result<Record3<Integer, Integer, BigDecimal>>> firstSpecialPrds = firstSpecialProcessorDao.getGoodsFirstSpecialForListInfo(goodsIds, DateUtil.getLocalDateTime());
 
-        availabelCapsules.forEach(capsule -> {
+        availableCapsules.forEach(capsule -> {
             Integer goodsId = capsule.getGoodsId();
             Result<Record3<Integer, Integer, BigDecimal>> result = firstSpecialPrds.get(goodsId);
             if (result == null) {
@@ -78,7 +78,7 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
             activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
             activity.setActivityId(result.get(0).get(FIRST_SPECIAL.ID));
-            capsule.getActivities().add(activity);
+            capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
         });
     }

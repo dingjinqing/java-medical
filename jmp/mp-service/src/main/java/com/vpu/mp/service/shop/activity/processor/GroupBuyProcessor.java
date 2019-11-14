@@ -2,8 +2,8 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.activity.capsule.ActivityGoodsListCapsule;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GroupBuyListMpVo;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,23 +34,24 @@ public class GroupBuyProcessor implements ProcessorPriority,ActivityGoodsListPro
     }
     /*****************商品列表处理*******************/
     @Override
-    public void processForList(List<ActivityGoodsListCapsule> capsules, Integer userId) {
-        List<ActivityGoodsListCapsule> availableCapsules = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(x.getGoodsType())).collect(Collectors.toList());
-        List<Integer> goodsIds = availableCapsules.stream().map(ActivityGoodsListCapsule::getGoodsId).collect(Collectors.toList());
+    public void processForList(List<GoodsListMpBo> bos, Integer userId) {
+        List<GoodsListMpBo> availableBos = bos.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(x.getActivityType())).collect(Collectors.toList());
+        List<Integer> goodsIds = availableBos.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(goodsIds, DateUtil.getLocalDateTime());
 
-        availableCapsules.forEach(capsule->{
-            if (goodsGroupBuyListInfo.get(capsule.getGoodsId()) == null) {
+        availableBos.forEach(bo->{
+            if (goodsGroupBuyListInfo.get(bo.getGoodsId()) == null) {
                 return;
             }
-            Record3<Integer, Integer, BigDecimal> record3 = goodsGroupBuyListInfo.get(capsule.getGoodsId()).get(0);
-            capsule.setRealPrice(record3.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE));
-            GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
+            Record3<Integer, Integer, BigDecimal> record3 = goodsGroupBuyListInfo.get(bo.getGoodsId()).get(0);
+            bo.setRealPrice(record3.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE));
+            GroupBuyListMpVo activity = new GroupBuyListMpVo();
 
             activity.setActivityId(record3.get(GROUP_BUY_DEFINE.ID));
             activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
-            capsule.getActivities().add(activity);
-            capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
+            activity.setOriginalPrice(bo.getShopPrice());
+            bo.getGoodsActivities().add(activity);
+            bo.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
         });
     }
 }
