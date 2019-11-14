@@ -47,7 +47,7 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
     /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
-        return GoodsConstant.ACTIVITY_COUPON_PRIORITY;
+        return GoodsConstant.ACTIVITY_CARD_EXCLUSIVE_PRIORITY;
     }
 
     /*****************商品列表处理*******************/
