@@ -86,9 +86,9 @@ public class OrderMallService extends ShopBaseService {
 	private SysCateService sysCateService;
 	@Autowired
 	private ShipInfoService shipInfo;
-	
-	private static final Byte one=1;
-	private static final String FORTYONE="41";
+
+	private static final Byte one = 1;
+	private static final String FORTYONE = "41";
 
 	private String get(String key) {
 		return db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchAny(SHOP_CFG.V);
@@ -96,34 +96,17 @@ public class OrderMallService extends ShopBaseService {
 
 	/**
 	 * 添加好物圈订单
+	 * 
 	 * @param userId
 	 * @param orderSns
 	 * @return
 	 */
 	public Boolean addCommonOrders(Integer userId, List<String> orderSns) {
-		String cfg = get("wx_shopping_list_enbaled");
-		if (StringUtils.isEmpty(cfg)) {
-			// 返回失败
-			log.info("wx_shopping_list_enbaled是空的");
-			return false;
-		} else {
-			if (cfg.equals("0")) {
-				// 返回失败
-				log.info("wx_shopping_list_enbaled为0");
-				return false;
-			}
-		}
-		if (!hasShoppingListAuthority()) {
-			// return false;
-			log.info("没有微信购物单授权权限");
-			return false;
-		}
-		UserRecord user = userService.getUserByUserId(userId);
-		String openId = user.getWxOpenid();
-		if (StringUtils.isEmpty(openId)) {
-			// return false;
-		}
 
+		String openId = check(userId);
+		if (null == openId) {
+			return false;
+		}
 		OrderList orderList = new OrderList();
 		for (String orderSn : orderSns) {
 			OrderInfoRecord order = orderInfo.getOrderByOrderSn(orderSn);
@@ -134,8 +117,9 @@ public class OrderMallService extends ShopBaseService {
 				continue;
 			}
 			orderList.setOrderId(orderSn);
-			orderList.setCreateTime(order.getCreateTime().getTime()/1000L);
-			orderList.setPayFinishTime(null == order.getPayTime() ? order.getCreateTime().getTime()/1000L : order.getPayTime().getTime()/1000L);
+			orderList.setCreateTime(order.getCreateTime().getTime() / 1000L);
+			orderList.setPayFinishTime(null == order.getPayTime() ? order.getCreateTime().getTime() / 1000L
+					: order.getPayTime().getTime() / 1000L);
 			orderList.setDesc(order.getAddMessage());
 			orderList.setFee(order.getMoneyPaid().multiply(new BigDecimal(100)));
 			orderList.setTransId(getTransId(order));
@@ -146,76 +130,177 @@ public class OrderMallService extends ShopBaseService {
 			extInfo.setPromotionInfo(getPromotionInfo(orderGoods));
 			extInfo.setBrandInfo(getBrandInfo());
 			extInfo.setInvoiceInfo(getInvoiceInfo(order));
-			extInfo.setPaymentMethod(order.getPayCode().equals(PayCode.PAY_CODE_WX_PAY)?1:2);
+			extInfo.setPaymentMethod(order.getPayCode().equals(PayCode.PAY_CODE_WX_PAY) ? 1 : 2);
 			extInfo.setUserOpenId(openId);
-			extInfo.setOrderDetailPage(new OrderDetailPage("/pages/orderinfo/orderinfo?order_sn="+order.getOrderSn()));
+			extInfo.setOrderDetailPage(
+					new OrderDetailPage("/pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn()));
 			orderList.setExtInfo(extInfo);
 		}
-		List<OrderList> list=new ArrayList<OrderList>();
+		List<OrderList> list = new ArrayList<OrderList>();
 		list.add(orderList);
-		JsonRootBean jsonRootBean=new JsonRootBean(list);
-		WxOpenResult importOrder = importOrder(jsonRootBean);
+		JsonRootBean jsonRootBean = new JsonRootBean(list);
+		WxOpenResult importOrder = importOrderAdd(jsonRootBean);
 		return importOrder.isSuccess();
 	}
-	
-	public void updateCommonOrders() {
-		
+
+
+	/**
+	 * 更新订单信息，商家可以对“已购订单”中的订单信息进行更新，如订单状态改变等
+	 * @param userId
+	 * @param orderSns
+	 * @return
+	 */
+	public Boolean updateCommonOrders(Integer userId, List<String> orderSns) {
+		String openId = check(userId);
+		if (null == openId) {
+			return false;
+		}
+		OrderList orderList = new OrderList();
+		for (String orderSn : orderSns) {
+			OrderInfoRecord order = orderInfo.getOrderByOrderSn(orderSn);
+			Result<OrderGoodsRecord> orderGoods = orderGoodsService.getOrderGoods(orderSn);
+			Byte orderStatus = order.getOrderStatus();
+			Integer status = getStatus(orderStatus);
+			if (status == null) {
+				continue;
+			}
+			orderList.setOrderId(orderSn);
+			orderList.setTransId(getTransId(order));
+			orderList.setStatus(status);
+			ExtInfo extInfo = new ExtInfo();
+			extInfo.setInvoiceInfo(getInvoiceInfo(order));
+			extInfo.setUserOpenId(openId);
+			extInfo.setOrderDetailPage(
+					new OrderDetailPage("/pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn()));
+			// 退款时，如果没有快递号，则把快递信息删除掉,否则会出错。
+			if (!(status == 5 && StringUtils.isEmpty(order.getShippingNo()))) {
+				extInfo.setExpressInfo(getExpressInfo(order));
+			}
+			orderList.setExtInfo(extInfo);
+
+		}
+		List<OrderList> list = new ArrayList<OrderList>();
+		list.add(orderList);
+		JsonRootBean jsonRootBean = new JsonRootBean(list);
+		WxOpenResult importOrder = importOrderUpdate(jsonRootBean);
+		return importOrder.isSuccess();
 	}
-	
-	
-	private WxOpenResult importOrder(JsonRootBean jsonRootBean) {
+
+	/**
+	 * 校验
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	private String check(Integer userId) {
+		String cfg = get("wx_shopping_list_enbaled");
+		if (StringUtils.isEmpty(cfg)) {
+			log.info("wx_shopping_list_enbaled是空的");
+			return null;
+		} else {
+			if (cfg.equals("0")) {
+				log.info("wx_shopping_list_enbaled为0");
+				return null;
+			}
+		}
+		if (!hasShoppingListAuthority()) {
+			log.info("没有微信购物单授权权限");
+			return null;
+		}
+		UserRecord user = userService.getUserByUserId(userId);
+		String openId = user.getWxOpenid();
+		if (StringUtils.isEmpty(openId)) {
+			log.info("userId为" + userId + "用户openid为空");
+			return null;
+		}
+		return openId;
+	}
+
+	/**
+	 * 更新商品
+	 * 
+	 * @param jsonRootBean
+	 * @return
+	 */
+	private WxOpenResult importOrderUpdate(JsonRootBean jsonRootBean) {
 		WxOpenMaServiceExtraImpl maService = open.getMaExtService();
 		MpAuthShopRecord shop = saas.shop.mp.getAuthShopByShopId(getShopId());
-		WxOpenResult result=null;
+		WxOpenResult result = null;
 		try {
 			String jsonNotNull = Util.toJsonNotNull(jsonRootBean);
-			log.info("发送的报文"+jsonNotNull);
-			result = maService.importorder(shop.getAppId(),jsonNotNull);
+			log.info("发送的报文" + jsonNotNull);
+			result = maService.importorderAdd(shop.getAppId(), jsonNotNull);
 			log.info(" 添加好物圈订单");
-			log.info(result.getErrmsg(),result.getErrcode());
+			log.info(result.getErrmsg(), result.getErrcode());
 		} catch (WxErrorException e) {
-			log.error(e.getMessage(),e);
+			log.error(e.getMessage(), e);
 		}
 		return result;
 	}
+
+	/**
+	 * 导入商品
+	 * 
+	 * @param jsonRootBean
+	 * @return
+	 */
+	private WxOpenResult importOrderAdd(JsonRootBean jsonRootBean) {
+		WxOpenMaServiceExtraImpl maService = open.getMaExtService();
+		MpAuthShopRecord shop = saas.shop.mp.getAuthShopByShopId(getShopId());
+		WxOpenResult result = null;
+		try {
+			String jsonNotNull = Util.toJsonNotNull(jsonRootBean);
+			log.info("发送的报文" + jsonNotNull);
+			result = maService.importorderAdd(shop.getAppId(), jsonNotNull);
+			log.info(" 添加好物圈订单");
+			log.info(result.getErrmsg(), result.getErrcode());
+		} catch (WxErrorException e) {
+			log.error(e.getMessage(), e);
+		}
+		return result;
+	}
+
 	/**
 	 * 得到商家信息
+	 * 
 	 * @return
 	 */
 	private BrandInfo getBrandInfo() {
 		ShopRecord shop = saas().shop.getShopById(getShopId());
-		return new BrandInfo(shop.getMobile(),new ContactDetailPage("/pages/index/index",1));
+		return new BrandInfo(shop.getMobile(), new ContactDetailPage("/pages/index/index", 1));
 	}
-	
-	
+
 	/**
 	 * 得到优惠信息
+	 * 
 	 * @param orderGoods
 	 * @return
 	 */
 	private PromotionInfo getPromotionInfo(Result<OrderGoodsRecord> orderGoods) {
-		BigDecimal totalDiscountFee=new BigDecimal(0);
+		BigDecimal totalDiscountFee = new BigDecimal(0);
 		for (OrderGoodsRecord orderGood : orderGoods) {
-			BigDecimal multiply = orderGood.getGoodsPrice().multiply(new BigDecimal(orderGood.getGoodsNumber()).subtract(orderGood.getDiscountedTotalPrice()));
-			totalDiscountFee=totalDiscountFee.add(multiply.multiply(new BigDecimal(100)));
+			BigDecimal multiply = orderGood.getGoodsPrice()
+					.multiply(new BigDecimal(orderGood.getGoodsNumber()).subtract(orderGood.getDiscountedTotalPrice()));
+			totalDiscountFee = totalDiscountFee.add(multiply.multiply(new BigDecimal(100)));
 		}
 		return new PromotionInfo(totalDiscountFee);
 	}
-	
+
 	/**
 	 * 得到发票信息
+	 * 
 	 * @param order
 	 * @return
 	 */
 	private InvoiceInfo getInvoiceInfo(OrderInfoRecord order) {
 		String invoiceTitle = order.getInvoiceTitle();
-		if(StringUtils.isEmpty(invoiceTitle)) {
+		if (StringUtils.isEmpty(invoiceTitle)) {
 			return null;
 		}
 		InvoiceVo invoice = Util.parseJson(invoiceTitle, InvoiceVo.class);
-		InvoiceInfo info=new InvoiceInfo();
+		InvoiceInfo info = new InvoiceInfo();
 		FieldsUtil.assignNotNull(invoice, info);
-		info.setInvoiceDetailPage(new InvoiceDetailPage("/pages/orderinfo/orderinfo?order_sn="+order.getOrderSn()));
+		info.setInvoiceDetailPage(new InvoiceDetailPage("/pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn()));
 		return info;
 	}
 
@@ -252,7 +337,7 @@ public class OrderMallService extends ShopBaseService {
 		}
 		Map<String, List<ShippingInfoVo>> shippingByOrderSn = shipInfo.getShippingByOrderSn(order.getOrderSn());
 		List<ShippingInfoVo> partShips = shippingByOrderSn.get(order.getOrderSn());
-		if (partShips==null||partShips.size() == 0) {
+		if (partShips == null || partShips.size() == 0) {
 			return null;
 		}
 		List<ExpressPackageInfoList> expressInfo = new ArrayList<ExpressPackageInfoList>();
@@ -272,7 +357,7 @@ public class OrderMallService extends ShopBaseService {
 			param.setExpressCompanyId(expressCompany.getCode());
 			param.setExpress_companyName(expressCompany.getName());
 			param.setExpressCode(partShip.getShippingNo());
-			param.setShipTime(partShip.getShippingTime().getTime()/1000L);
+			param.setShipTime(partShip.getShippingTime().getTime() / 1000L);
 			param.setExpressPage(new ExpressPage(
 					"/pages/express/express?order_sn=" + order.getOrderSn() + "&ex_no=" + order.getShippingNo()));
 			expressInfo.add(param);
@@ -361,6 +446,7 @@ public class OrderMallService extends ShopBaseService {
 
 	/**
 	 * 是否有微信购物单授权权限
+	 * 
 	 * @return
 	 */
 	public boolean hasShoppingListAuthority() {
@@ -370,11 +456,11 @@ public class OrderMallService extends ShopBaseService {
 			return false;
 		}
 		if (!mp.getIsAuthOk().equals(one)) {
-			log.info("IsAuthOk不为1，为"+mp.getIsAuthOk());
+			log.info("IsAuthOk不为1，为" + mp.getIsAuthOk());
 			return false;
 		}
 		String funcInfo = mp.getFuncInfo();
-		log.info("权限有"+funcInfo);
+		log.info("权限有" + funcInfo);
 		String[] funcInfoList = funcInfo.split(",");
 		for (String str : funcInfoList) {
 			if (str.equals(FORTYONE)) {
