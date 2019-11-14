@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 
@@ -28,7 +27,6 @@ public class OrderOperateFactory implements ApplicationContextAware {
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		// 获取实现IorderOperate接口并加入ioc管理的实例
-		@SuppressWarnings("rawtypes")
 		Map<String, IorderOperate> map = applicationContext.getBeansOfType(IorderOperate.class);
 		orderOperateMap = new HashMap<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam, AbstractOrderOperateQueryParam>>();
 		map.forEach((key, value) -> {
@@ -41,18 +39,18 @@ public class OrderOperateFactory implements ApplicationContextAware {
 	/**
 	 * 通过传出param取其ServiceCode并调用execute
 	 *
-	 * @param IOrderBase
+	 * @param info 执行参数
 	 * @return 执行结果
 	 * @throws MpException
 	 */
-	public JsonResultCode orderOperate(AbstractOrderOperateQueryParam info) {
+	public ExecuteResult orderOperate(AbstractOrderOperateQueryParam info) {
 		return getService(info.getServiceCode()).execute(info);
 	}
 
 	/**
 	 * 通过传出param取其ServiceCode并调用query
 	 *
-	 * @param OrderOperateQueryParam
+	 * @param param 查询参数
 	 * @return 执行结果
 	 * @throws MpException
 	 */
@@ -60,12 +58,11 @@ public class OrderOperateFactory implements ApplicationContextAware {
 		return getService(param.getServiceCode()).query(param);
 	}
 
-	/**
-	 * 根据传入的code获得处理该业务的service
-	 *
-	 * @param OrderServiceCode
-	 * @return IorderOperate的实现类
-	 */
+    /**
+     * 根据传入的code获得处理该业务的service
+     * @param code OrderServiceCode
+     * @return IorderOperate的实现类
+     */
 	public IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam> getService(OrderServiceCode code) {
 		return orderOperateMap.get(code);
 	}

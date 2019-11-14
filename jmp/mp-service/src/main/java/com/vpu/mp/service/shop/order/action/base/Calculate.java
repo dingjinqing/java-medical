@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.action.base;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -20,6 +21,7 @@ import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.order.OrderReadService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,6 +32,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -200,12 +203,12 @@ public class Calculate extends ShopBaseService {
             if(OrderConstant.DEFAULT_COUPON_OR_ORDER_SN.equals(param.getCouponSn())){
                 //默认选择
                 vo.setCouponSn(coupons.get(0).getCouponSn());
-                vo.setCurrentCoupon(coupons.get(0));
+                vo.setDefaultCoupon(coupons.get(0));
             }else{
                 coupons.forEach(x->{
                     if(x.getCouponSn().equals(param.getCouponSn())){
                         vo.setCouponSn(param.getCouponSn());
-                        vo.setCurrentCoupon(x);
+                        vo.setDefaultCoupon(x);
                     }
                 });
             }
@@ -229,7 +232,7 @@ public class Calculate extends ShopBaseService {
             if(card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getCardType())){
                 //限次卡
                 List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(card));
-                vo.setCurrentMemberCard(card);
+                vo.setDefaultMemberCard(card);
                 vo.setMemberCards(validCardList);
             }else{
                 //普通卡、等级卡（或者没有传入cardNo）
@@ -239,7 +242,7 @@ public class Calculate extends ShopBaseService {
                 }
                 List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), null);
                 defaultCard = defaultCard != null ? defaultCard : (CollectionUtils.isEmpty(validCardList) ? null : validCardList.get(0));
-                vo.setCurrentMemberCard(defaultCard);
+                vo.setDefaultMemberCard(defaultCard);
                 vo.setMemberCards(validCardList);
             }
         }else{
@@ -304,14 +307,14 @@ public class Calculate extends ShopBaseService {
      * @param noCalculateGoods 不参与计算的商品
      * @return 运费
      */
-    public BigDecimal calculateShippingFee(Integer districtCode, List<OrderGoodsBo> bos, Integer storeId, List<Integer> noCalculateGoods) throws MpException {
+    public BigDecimal calculateShippingFee(Integer districtCode, List<OrderGoodsBo> bos, Integer storeId, List<Integer> noCalculateGoods) {
         BigDecimal result = BigDecimal.ZERO;
         //处理过程中局部内部类
         @NoArgsConstructor
         @Getter
         @Setter
         class Total{
-            private List<Integer> productIds = Lists.newArrayList();
+            private List<OrderGoodsBo> bos = Lists.newArrayList();
             private Integer totalNumber = 0;
             private BigDecimal totalPrice = BigDecimal.ONE;
             private BigDecimal totalWeight = BigDecimal.ZERO.setScale(3);
@@ -324,6 +327,7 @@ public class Calculate extends ShopBaseService {
                 totalMaps.put(bo.getDeliverTemplateId(), new Total());
             }
             Total total = totalMaps.get(bo.getDeliverTemplateId());
+            total.getBos().add(bo);
             total.setTotalNumber(total.getTotalNumber() + bo.getGoodsNumber());
             total.setTotalPrice(total.getTotalPrice().add(bo.getGoodsPrice()));
             total.setTotalWeight(total.getTotalWeight().add(bo.getGoodsWeight()));
@@ -333,8 +337,15 @@ public class Calculate extends ShopBaseService {
         for (Map.Entry<Integer, Total> entry : totalMaps.entrySet()){
             Integer templateId = entry.getKey();
             Total total = entry.getValue();
-            BigDecimal shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId, total.getTotalNumber(), total.getTotalPrice(), total.getTotalWeight());
-            result = BigDecimalUtil.add(result, shippingFeeByTemplate);
+            BigDecimal shippingFeeByTemplate = null;
+            try {
+                shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId, total.getTotalNumber(), total.getTotalPrice(), total.getTotalWeight());
+                result = BigDecimalUtil.add(result, shippingFeeByTemplate);
+            } catch (MpException e) {
+                total.getBos().forEach(x->{
+                    x.setIsShipping(OrderConstant.no);
+                });
+            }
         }
         return result;
     }
@@ -344,7 +355,7 @@ public class Calculate extends ShopBaseService {
      * @param orderGoods goods
      * @return
      */
-    public OrderMustVo checkGoodsCfg(List<OrderGoodsBo> orderGoods){
+    public OrderMustVo getOrderMust(List<OrderGoodsBo> orderGoods){
         OrderMustVo must = new OrderMustVo();
         //初始化赋值
         must.init(trade);
@@ -390,6 +401,37 @@ public class Calculate extends ShopBaseService {
             }
         }
         return must.hide();
+    }
+
+    /**
+     * 获取商品退款退货配置
+     * @param orderGoods 商品
+     * @return map<goodsid , no/ys>
+     */
+    public Map<Integer , Byte> getGoodsReturnCfg(List<OrderGoodsBo> orderGoods){
+        return Maps.newHashMap();
+    }
+
+    /**
+     * 设置商品退款退货配置
+     * @param orderGoods 商品
+     * @param goodsType 商品类型
+     * @param posFlag pos标识
+     */
+    public void setGoodsReturnCfg(List<OrderGoodsBo> orderGoods, String goodsType, Byte posFlag){
+        Byte isCanReturn = null;
+        Map<Integer, Byte> goodsReturnCfg = null;
+        if(Lists.newArrayList(OrderReadService.orderTypeToArray(goodsType)).contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)){
+            isCanReturn = OrderConstant.IS_CAN_RETURN_N;
+        }else if(posFlag != null && OrderConstant.yes == posFlag) {
+            isCanReturn = OrderConstant.IS_CAN_RETURN_Y;
+        }
+        if(isCanReturn == null){
+            goodsReturnCfg = getGoodsReturnCfg(orderGoods);
+        }
+        for (OrderGoodsBo bo : orderGoods) {
+            bo.setIsCanReturn(isCanReturn != null ? isCanReturn : goodsReturnCfg.get(bo.getGoodsId()));
+        }
     }
 
 }

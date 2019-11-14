@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.action;
 
 import java.util.Arrays;
 
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,21 +45,21 @@ public class RemindService extends ShopBaseService implements IorderOperate<Orde
 	}
 
 	@Override
-	public JsonResultCode execute(OrderOperateQueryParam param) {
+	public ExecuteResult execute(OrderOperateQueryParam param) {
 		OrderInfoMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoMpVo.class);
 		if(order == null) {
-			return JsonResultCode.CODE_ORDER_NOT_EXIST;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		if(!OrderOperationJudgment.isShowRemindShip(order)) {
-			return JsonResultCode.CODE_ORDER_REMIND_OPERATION_NOT_SUPPORTED;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_NOT_SUPPORTED);
 		}
 		if(order.getOrderRemind() == 3) {
 			//限制三次
-			return JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT);
 		}
 		if(order.getOrderRemindTime() != null && DateUtil.TimestampIsNowDay(order.getOrderRemindTime())) {
 			//限制一天一次
-			return JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT_TODAY;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_REMIND_OPERATION_LIMIT_TODAY);
 		}
 		//提醒
 		orderInfo.remind(order);

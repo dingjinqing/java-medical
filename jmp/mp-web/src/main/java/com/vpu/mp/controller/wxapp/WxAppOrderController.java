@@ -6,9 +6,7 @@ import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryVo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
-
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
-
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -60,8 +57,11 @@ public class WxAppOrderController extends WxAppBaseController{
     public JsonResult pay(@RequestBody @Validated(CreateOrderValidatedGroup.class) CreateParam param) {
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
-        JsonResultCode code = shop().orderActionFactory.orderOperate(param);
-        return code == null ? success() : fail(code);
+        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+        if(executeResult.IsSuccess()){
+            return success();
+        };
+        return fail(executeResult.getErrorCode());
 
     }
 
@@ -85,8 +85,11 @@ public class WxAppOrderController extends WxAppBaseController{
 	public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
 		param.setIsMp(OrderConstant.IS_MP_Y);
 		param.setWxUserInfo(wxAppAuth.user());
-		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
-		return code == null ? success() : fail(code);
+        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+        if(executeResult.IsSuccess()){
+            return success();
+        };
+        return fail(executeResult.getErrorCode());
 	}
 
 	/**
@@ -96,8 +99,11 @@ public class WxAppOrderController extends WxAppBaseController{
 	public JsonResult cancel(@RequestBody @Valid OrderOperateQueryParam param) {
 		param.setIsMp(OrderConstant.IS_MP_Y);
 		param.setWxUserInfo(wxAppAuth.user());
-		JsonResultCode code = shop().orderActionFactory.orderOperate(param);
-		return code == null ? success() : fail(code);
+        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+        if(executeResult.IsSuccess()){
+            return success();
+        };
+        return fail(executeResult.getErrorCode());
 	}
 
 	/**

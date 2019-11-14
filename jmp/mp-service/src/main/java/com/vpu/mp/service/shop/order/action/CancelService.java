@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -74,15 +75,13 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 	}
 
 	@Override
-	public JsonResultCode execute(OrderOperateQueryParam param) {
-
-		
+	public ExecuteResult execute(OrderOperateQueryParam param) {
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
-			return JsonResultCode.CODE_ORDER_NOT_EXIST;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		if(!OrderOperationJudgment.mpIsCancel(order)) {
-			return JsonResultCode.CODE_ORDER_CANCEL_NOT_CANCEL;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_NOT_CANCEL);
 		}
 		try {
 			transaction(()->{
@@ -96,7 +95,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 				//库存更新
 			});
 		} catch (Exception e) {
-			return JsonResultCode.CODE_ORDER_CANCEL_FAIL;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_FAIL);
 		}
 		//订单状态记录
 		orderAction.addRecord(order, param, order.getOrderStatus() , "买家取消订单");

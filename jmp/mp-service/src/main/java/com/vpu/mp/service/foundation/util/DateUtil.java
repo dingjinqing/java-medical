@@ -228,7 +228,7 @@ public final class DateUtil {
 	}
 
 	/**
-	 * 获取{i}年后的时间时间
+	 * 获取addNum(unit)后的时间时间
 	 * @param addNum 该单位添加到结果的数量，可能是负数
 	 * @param unit  使用ChronoUnit类 单位  SECONDS秒 ,MINUTES分钟, HOURS小时, DAYS天, WEEKS星期, MONTHS月, YEARS年
 	 * @return

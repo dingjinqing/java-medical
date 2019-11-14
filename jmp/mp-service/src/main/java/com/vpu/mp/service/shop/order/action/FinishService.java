@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order.action;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +54,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 	}
 
 	@Override
-	public JsonResultCode execute(OrderOperateQueryParam param) {
+	public ExecuteResult execute(OrderOperateQueryParam param) {
 
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		
@@ -61,7 +62,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 		Map<Integer, Integer> returningCount = returnOrder.getOrderCount(new Integer[] {order.getOrderId()}, OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		
 		if (!OrderOperationJudgment.mpIsFinish(order , returningCount.get(order.getOrderId()))) {
-			return JsonResultCode.CODE_ORDER_FINISH_OPERATION_NOT_SUPPORTED;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_FINISH_OPERATION_NOT_SUPPORTED);
 		}
 
 		

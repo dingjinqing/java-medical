@@ -437,6 +437,23 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
+     * 获取优惠券列
+     * 王帅
+     * @param couponSn no
+     * @return 优惠卷
+     */
+    public OrderCouponVo getValidCoupons(String couponSn){
+        Timestamp now = DateUtil.getSqlTimestamp();
+        return db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
+            CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT,
+            MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.RECOMMEND_GOODS_ID, MRKING_VOUCHER.RECOMMEND_CAT_ID, MRKING_VOUCHER.RECOMMEND_PRODUCT_ID, MRKING_VOUCHER.RECOMMEND_SORT_ID).
+            from(CUSTOMER_AVAIL_COUPONS).
+            leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)).
+            where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(couponSn).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((COUPON_IS_USED_STATUS_AVAIL)).and(CUSTOMER_AVAIL_COUPONS.START_TIME.le(now)).and(CUSTOMER_AVAIL_COUPONS.END_TIME.greaterThan(now)))).
+            fetchOneInto(OrderCouponVo.class);
+    }
+
+    /**
      * 判断该product是否可以使用该优惠卷
      * 王帅
      * @param coupon 优惠卷

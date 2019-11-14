@@ -31,9 +31,10 @@ import lombok.ToString;
 @ToString
 public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Byte activityType;
-    @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_ADDRESS_NO_NULL)
+    private Integer activityId;
 	private Integer addressId;
 	private List<Goods> goods;
+    @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_DELIVER_TYPE_NO_NULL)
     private Byte deliverType;
 	private Integer storeId;
     /**

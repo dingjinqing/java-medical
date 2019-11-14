@@ -32,8 +32,8 @@ public class PaymentService extends ShopBaseService {
 	@Autowired
 	public MpPaymentService mpPay;
 
-	public PaymentRecord getPaymentInfo(String payCode) {
-		return db().fetchAny(PAYMENT, PAYMENT.PAY_CODE.eq(payCode));
+	public PaymentVo getPaymentInfo(String payCode) {
+		return db().select(PAYMENT.asterisk()).from(PAYMENT).where(PAYMENT.PAY_CODE.eq(payCode)).fetchOneInto(PaymentVo.class);
 	}
 
 	/**
@@ -61,10 +61,8 @@ public class PaymentService extends ShopBaseService {
 	 * @return
 	 */
 	public Map<String, PaymentVo> getSupportPayment() {
-		String[] payCodes = { PayCode.PAY_CODE_WX_PAY, PayCode.PAY_CODE_COD };
         return db().selectFrom(PAYMENT)
-            .where(PAYMENT.ENABLED.eq(PayCode.PAY_CODE_ENABLED)
-                .and(PAYMENT.PAY_CODE.in(payCodes)))
+            .where(PAYMENT.ENABLED.eq(PayCode.PAY_CODE_ENABLED))
             .orderBy(PAYMENT.PAY_CODE.desc())
             .fetchMap(PAYMENT.PAY_CODE, PaymentVo.class);
     }

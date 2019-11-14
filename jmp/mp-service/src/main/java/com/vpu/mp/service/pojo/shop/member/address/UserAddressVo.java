@@ -14,6 +14,8 @@ public class UserAddressVo {
 	private String address;
 	private String mobile;
 	private String consignee;
+    private String completeAddress;
+    private String zipcode;
 	private String provinceName;
 	private Integer provinceCode;
 	private Integer cityCode;

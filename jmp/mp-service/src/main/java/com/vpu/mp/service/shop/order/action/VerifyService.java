@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -60,16 +61,16 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 	}
 
 	@Override
-	public JsonResultCode execute(verifyParam param) {
+	public ExecuteResult execute(verifyParam param) {
 		
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		
 		if (!OrderOperationJudgment.isVerify(order)) {
-			return JsonResultCode.CODE_ORDER_VERIFY_OPERATION_NOT_SUPPORTED;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_VERIFY_OPERATION_NOT_SUPPORTED);
 		}
 		
 		if(!order.getVerifyCode().equals(param.getVerifyCode()) && param.getIsCheck()) {
-			return JsonResultCode.CODE_ORDER_VERIFY_CODE_ERROR;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_VERIFY_CODE_ERROR);
 		}
 		//发货批次号,同一批次为同一快递
 		String batchNo = order.getOrderSn() + "_" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE);

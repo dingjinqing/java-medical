@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -48,7 +47,6 @@ public class ReturnMethodService extends ShopBaseService{
 	 * 	退款统一入口（微信、余额、积分、卡余额等）
 	 * @param methodName 
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @return
 	 * @throws MpException 
@@ -76,7 +74,6 @@ public class ReturnMethodService extends ShopBaseService{
 	/**
 	 * 	补款退款
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @return
 	 * @throws MpException
@@ -87,7 +84,6 @@ public class ReturnMethodService extends ShopBaseService{
 	/**
 	 * 	退会员卡余额
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @throws MpException 
 	 */
@@ -119,7 +115,6 @@ public class ReturnMethodService extends ShopBaseService{
 	/**
 	 * 	退余额
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @throws MpException 
 	 */
@@ -151,7 +146,6 @@ public class ReturnMethodService extends ShopBaseService{
 	/**
 	 * 	积分退款
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @return
 	 * @throws MpException
@@ -189,7 +183,6 @@ public class ReturnMethodService extends ShopBaseService{
 	/**
 	 * 	微信退款
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @return
 	 * @throws MpException
@@ -215,7 +208,6 @@ public class ReturnMethodService extends ShopBaseService{
 	/**
 	 * 虚拟订单微信退款
 	 * @param order
-	 * @param retId
 	 * @param money
 	 * @throws MpException 
 	 */

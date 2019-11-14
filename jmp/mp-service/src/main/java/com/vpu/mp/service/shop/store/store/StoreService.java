@@ -396,7 +396,7 @@ public class StoreService extends ShopBaseService {
         return result;
     }
 
-    /**
+    /**王帅
      * @param productIds  规格ids
      * @param express     配送方式
      * @param address     地址

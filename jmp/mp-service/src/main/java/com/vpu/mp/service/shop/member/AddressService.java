@@ -32,8 +32,18 @@ public class AddressService extends ShopBaseService {
 		addressList.forEach(logger()::info);
 		return addressList;
 	}
-	
+
+    /**
+     * 王帅
+     * 获取地址
+     * @param addressId 地址id
+     * @param userId 用户id
+     * @return 地址
+     */
 	public UserAddressVo get(Integer addressId, Integer userId){
+	    if(addressId == null || userId== null){
+	        return null;
+        }
 		UserAddressVo address = db().select().from(USER_ADDRESS).where(USER_ADDRESS.ADDRESS_ID.eq(addressId).and(USER_ADDRESS.USER_ID.eq(userId))).fetchAnyInto(UserAddressVo.class);
 		if(address != null && (StringUtil.isBlank(address.getLat()) || StringUtil.isBlank(address.getLng()))){
 			//TODO 经纬度

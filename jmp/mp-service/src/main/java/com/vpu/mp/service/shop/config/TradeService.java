@@ -206,7 +206,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the drawback days
      */
     public Integer getDrawbackDays() {
-        return this.get(K_DRAWBACK_DAYS, Integer.class, 0);
+        return this.get(K_DRAWBACK_DAYS, Integer.class, 7);
     }
 
     /**
@@ -225,7 +225,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the order timeout days
      */
     public Integer getOrderTimeoutDays() {
-        return this.get(K_ORDER_TIMEOUT_DAYS, Integer.class, 0);
+        return this.get(K_ORDER_TIMEOUT_DAYS, Integer.class, 5);
     }
 
     /**
@@ -304,7 +304,7 @@ public class TradeService extends BaseShopConfigService {
      * @return the cancel time
      */
     public Integer getCancelTime() {
-        return this.get(K_CANCEL_TIME, Integer.class, 0);
+        return this.get(K_CANCEL_TIME, Integer.class, 30);
     }
 
     /**

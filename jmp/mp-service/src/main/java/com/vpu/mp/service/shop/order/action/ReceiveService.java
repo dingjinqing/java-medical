@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.action;
 
 import java.util.Arrays;
 
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -55,13 +56,13 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 	 * 	订单收货目前支持已发货状态下商品全部收货（不支持部分收货）
 	 */
 	@Override
-	public JsonResultCode execute(OrderOperateQueryParam param) {
+	public ExecuteResult execute(OrderOperateQueryParam param) {
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
-			return JsonResultCode.CODE_ORDER_NOT_EXIST;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		if(!OrderOperationJudgment.isReceive(order)) {
-			return JsonResultCode.CODE_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED);
 		}
 		
 		transaction(()->{

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 	}
 
 	@Override
-	public JsonResultCode execute(ShipParam param) {
+	public ExecuteResult execute(ShipParam param) {
 		logger.info("发货参数为:"+param.toString());
 		//是否存在可发货数>当前发货数的标识
 		boolean flag = false;
@@ -75,7 +76,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		if(canBeShipped == null || canBeShipped.size() == 0) {
 			//无可发货信息
 			logger.error("发货时无可发货商品");
-			return JsonResultCode.CODE_ORDER;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER);
 		}
 		Map<Integer, OrderGoodsVo> cbsMap = canBeShipped.stream().collect(Collectors.toMap(OrderGoodsVo::getRecId, Function.identity()));
 		ShipGoods[] shipGoods = param.getShipGoods();
@@ -99,11 +100,11 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 			if(cbsMap.get(recId) == null) {
 				logger.error("商品不可发货或已发货,order_goods_rec_id:"+recId);
 				//该商品不可发货或已发货
-				return JsonResultCode.CODE_ORDER;
+				return ExecuteResult.create(JsonResultCode.CODE_ORDER);
 			}else if(cbsMap.get(recId).getGoodsNumber() < sendNumber ) {
 				logger.error("商品发货数量大于可发货数量,order_goods_rec_id:"+recId);
 				//发货数量大于可发货数量
-				return JsonResultCode.CODE_ORDER;
+				return ExecuteResult.create(JsonResultCode.CODE_ORDER);
 			}else if(cbsMap.get(recId).getGoodsNumber() > sendNumber ) {
 				flag = true;
 			}

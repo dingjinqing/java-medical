@@ -441,6 +441,21 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_CALCULATE_SHIPPING_FEE_ERROR = "order_calculate_shipping_fee_error";
     public static final String MSG_ORDER_PAY_WAY_NO_NULL = "ORDER_PAY_WAY_NO_NULL";
     public static final String MSG_ORDER_ADDRESS_NO_NULL = "order_address_no_null";
+    public static final String MSG_ORDER_CARD_INVALID = "order_card_invalid";
+    public static final String MSG_ORDER_COUPON_INVALID = "order_coupon_invalid";
+    public static final String MSG_ORDER_DELIVER_TYPE_NO_NULL = "order_deliver_type_no_null";
+    public static final String MSG_ORDER_SCORE_NOT_ENOUGH = "order_score_not_enough";
+    public static final String MSG_ORDER_ACCOUNT_NOT_ENOUGH = "order_account_not_enough";
+    public static final String MSG_ORDER_CARD_NOT_ENOUGH = "order_card_not_enough";
+    public static final String MSG_ORDER_AMOUNT_CHANGE = "order_amount_change";
+    public static final String MSG_ORDER_SCORE_LIMIT = "order_score_limit";
+    public static final String MSG_ORDER_MCARD_TP_LIMIT_LIMIT = "order_mcard_tp_limit_limit";
+    public static final String MSG_ORDER_DELIVER_TYPE_NO_SUPPORT = "order_deliver_type_no_support";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_WX = "order_pay_way_no_support_wx";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_COD = "order_pay_way_no_support_cod" ;
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_ACCOUNT = "order_pay_way_no_support_account";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_SCORE = "order_pay_way_no_support_score";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_CARD = "order_pay_way_no_support_card";
 
     public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";

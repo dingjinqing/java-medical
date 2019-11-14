@@ -449,14 +449,30 @@ public class UserCardDaoService extends ShopBaseService{
 
     /**
      * 王帅
-     * 获取会员卡
+     * 获取有效会员卡
      * @param cardNo
      * @return
      */
 	public OrderMemberVo getValidByCardNo(String cardNo){
-        return selectValidCardSQL().
-            where(USER_CARD.CARD_NO.eq(cardNo))
-            .fetchAnyInto(OrderMemberVo.class);
+        return selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
+            .and(USER_CARD.FLAG.eq(MCARD_DF_NO))
+            .and(
+                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
+                    .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
+            )
+            .and(
+                (MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
+                    .or(MEMBER_CARD.USE_TIME.isNull())
+            )
+            .and(
+                ((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+                    .or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING,MCARD_ET_FOREVER))
+            )
+            .and(
+                (MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull()))
+                    .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
+                    .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
+            ).fetchAnyInto(OrderMemberVo.class);
     }
 
     /**

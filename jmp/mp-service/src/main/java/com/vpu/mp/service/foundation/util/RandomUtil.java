@@ -1,9 +1,10 @@
 package com.vpu.mp.service.foundation.util;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomUtil {
-	private final static Random random = new Random();
+    private static ThreadLocalRandom random = ThreadLocalRandom.current();
 	/**随机数上限9999*/
 	public final static int MAX_RANDOM_9999 = 9999;
 	/**随机数下限1000*/

@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +16,15 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.shop.order.OrderReadService;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -282,6 +286,29 @@ public class OrderGoodsService extends ShopBaseService{
             build();
         logger().info("initOrderGoods初始化数据结束，参数为：",bo.toString());
         return bo;
+    }
+
+    /**
+     * 商品入库
+     * @param order 订单
+     * @param bos 商品
+     */
+    public void addRecord(OrderInfoRecord order, List<OrderGoodsBo> bos){
+        boolean isAllNotReturn = true;
+        List<OrderGoodsRecord> records = new ArrayList<>(bos.size());
+        for (OrderGoodsBo bo : bos) {
+            bo.setOrderId(order.getOrderId());
+            bo.setOrderSn(order.getOrderSn());
+            if(bo.getIsCanReturn() == OrderConstant.yes){
+                isAllNotReturn = false;
+            }
+            records.add(db().newRecord(TABLE, bo));
+        }
+        if(isAllNotReturn){
+            order.setReturnTypeCfg(OrderConstant.CFG_RETURN_TYPE_N);
+            order.store();
+        }
+        db().batchInsert(records).execute();
     }
 
 

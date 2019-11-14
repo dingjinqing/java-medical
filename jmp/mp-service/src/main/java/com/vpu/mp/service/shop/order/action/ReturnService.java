@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Result;
 import org.jooq.exception.DataAccessException;
@@ -99,11 +100,11 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	 * @throws MpException 
 	 */
 	@Override
-	public JsonResultCode execute(RefundParam param) {
+	public ExecuteResult execute(RefundParam param) {
 		//获取订单详情
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
-			return JsonResultCode.CODE_ORDER_NOT_EXIST;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		try {
 			transaction(()->{
@@ -189,13 +190,13 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		} catch (DataAccessException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof MpException) {
-				return ((MpException) cause).getErrorCode();
+				return ExecuteResult.create(((MpException) cause).getErrorCode());
 			} else {
-				return JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION;
+				return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION);
 			}
 		} catch (Exception e) {
 			logger.error("退款捕获mp异常", e);
-			return JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION;
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION);
 		}
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RETURN.code }), new String[] {param.getOrderSn()});

@@ -487,4 +487,9 @@ public class OrderConstant {
      * 前端默认优惠卷号
      */
     public static final String DEFAULT_COUPON_OR_ORDER_SN = "0";
+
+    /**
+     * 订单待支付自动取消默认时间(默认30minutes)
+     */
+    public static final int DEFAULT_AUTO_CANCEL_TIME = 30;
 }

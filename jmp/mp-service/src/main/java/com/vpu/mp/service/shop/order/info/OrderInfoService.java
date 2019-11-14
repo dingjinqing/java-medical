@@ -30,11 +30,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
+import com.vpu.mp.service.foundation.util.RandomUtil;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Record3;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
@@ -271,6 +277,30 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		return sbr.deleteCharAt(sbr.length() - 1).toString();
 	}
+
+    /**
+     * 订单goodsType insert构造
+     * @param orderType 订单类型
+     */
+    public static String getGoodsTypeToInsert(List<Byte> orderType) {
+        if(CollectionUtils.isNotEmpty(orderType)){
+            orderType.add(OrderConstant.GOODS_TYPE_GENERAL);
+        }
+        //distinct
+        orderType = orderType.stream().distinct().collect(Collectors.toList());
+        //sort A->Z
+        orderType.sort(Byte::compareTo);
+        StringBuilder sbr = new StringBuilder();
+        for (Byte one : orderType) {
+            //Prefix
+            sbr.append("\\[");
+            //查找条件
+            sbr.append(one);
+            //suffix
+            sbr.append("\\]");
+        }
+        return sbr.toString();
+    }
 
 	/**
 	 *	 构造营销订查询条件
@@ -644,9 +674,65 @@ public class OrderInfoService extends ShopBaseService {
 				limit(1).
 				fetchAnyInto(UserAddressVo.class);
 	}
+    /**
+     * 生成订单号
+     * @return 订单号
+     */
+    public String generateOrderSn() {
+        while(true) {
+            String orderSn = "P" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE) + RandomUtil.getIntRandom();
+            if(db().fetchCount(TABLE,TABLE.ORDER_SN.eq(orderSn)) < 1){
+                return orderSn;
+            }
+        }
+    }
 
-	public void addOrder(){
+    /**
+     * 创建订单
+     */
+	public OrderInfoRecord addRecord(CreateParam param, CreateOrderBo orderBo, List<OrderGoodsBo> goodsBos, OrderBeforeVo beforeVo){
+        OrderInfoRecord order = db().newRecord(TABLE);
+        //基础信息
+        order.setOrderSn(generateOrderSn());
+        order.setShopId(getShopId());
+        //param赋值
+        param.intoRecord(order);
+        //before order赋值
+        beforeVo.intoRecord(order);
+        //orderBo赋值
+        orderBo.intoRecord(order);
+        //订单类型
+        order.setGoodsType(getGoodsTypeToInsert(orderBo.getOrderType()));
+        //TODO 活动id
+        order.setActivityId(0);
+        //TODO 补款状态
+        order.setBkOrderPaid((byte)0);
+        //TODO 代付人数
+        order.setInsteadPayNum((short)0);
+        //TODO 推广信息
+        order.setIsPromote((byte)0);
+        //主订单号
+        if(orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)){
+            order.setMainOrderSn(order.getOrderSn());
+        }
+        //会员卡
+        if(beforeVo.getDefaultMemberCard() != null){
+            order.setMemberCardId(beforeVo.getDefaultMemberCard().getCardId());
+            order.setCardNo(beforeVo.getDefaultMemberCard().getCardNo());
+        }
+        //门店
+        if (orderBo.getStore() != null) {
+            order.setStoreId(orderBo.getStore().getStoreId());
+            order.setStoreName(orderBo.getStore().getStoreName());
+            //TODO
+            order.setVerifyCode("");
+        }
+        //支付方式
 
+        if(Boolean.FALSE){
+
+        }
+        return order;
     }
 	/**
 	 * 根据用户id获取累计消费金额

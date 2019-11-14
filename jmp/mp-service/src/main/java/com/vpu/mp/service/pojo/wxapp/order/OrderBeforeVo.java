@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -33,12 +34,12 @@ public class OrderBeforeVo {
 	private Byte deliverType;
 	private String memberCardNo;
     private String couponSn;
-    private OrderCouponVo currentCoupon;
+    private OrderCouponVo defaultCoupon;
     private List<OrderCouponVo> coupons;
     /**TODO goodstype*/
     private Byte goodsType;
     private List<StorePojo> storeList;
-    private OrderMemberVo currentMemberCard;
+    private OrderMemberVo defaultMemberCard;
     private List<OrderMemberVo> memberCards;
     private Map<String, PaymentVo> paymentList;
     /**必填信息*/
@@ -62,9 +63,9 @@ public class OrderBeforeVo {
     /**积分抵扣*/
     private BigDecimal scoreDiscount;
     /**余额抵扣金额*/
-    private BigDecimal useAccount;
+    private BigDecimal accountDiscount;
     /**会员卡抵扣金额*/
-    private BigDecimal memberCardBalance;
+    private BigDecimal memberCardDiscount;
     /**会员卡折扣金额*/
     private BigDecimal memberCardReduce;
     /**折扣（优惠卷折扣）*/
@@ -76,7 +77,7 @@ public class OrderBeforeVo {
     /**用户积分*/
     private Integer userScore;
     /**用户余额*/
-    private BigDecimal userBalance;
+    private BigDecimal userAccount;
     /**会员卡余额*/
     private BigDecimal memberCardMoney;
     /**折后订单金额*/
@@ -112,11 +113,13 @@ public class OrderBeforeVo {
     private Timestamp bkShippingTime;
     /**???*/
     private Byte bkReturnType;
-    /**???*/
+    /*TODO 代付金额*/
     private BigDecimal insteadPayMoney;
-    /***/
+    /**默认支付配置->会员卡余额*/
     private Byte isCardPay;
+    /**默认支付配置->余额*/
     private Byte isBalancePay;
+    /**默认支付配置->积分*/
     private Byte isScorePay;
 
     /**
@@ -130,5 +133,31 @@ public class OrderBeforeVo {
             }
         }
         return null;
+    }
+
+    public void intoRecord(OrderInfoRecord orderRecord){
+        //支付方式
+        orderRecord.setGoodsAmount(getTotalGoodsNumber().shortValue());
+        orderRecord.setShippingFee(getShippingFee());
+        orderRecord.setMoneyPaid(getMoneyPaid());
+        orderRecord.setOrderAmount(getOrderAmount());
+        orderRecord.setGrouperCheapReduce(getGrouperCheapReduce());
+        orderRecord.setMemberCardReduce(getMemberCardReduce());
+        orderRecord.setPromotionReduce(getPromotionReduce());
+        orderRecord.setDiscount(getDiscount());
+        orderRecord.setScoreDiscount(getScoreDiscount());
+        orderRecord.setUseAccount(getAccountDiscount());
+        orderRecord.setMemberCardBalance(getMemberCardDiscount());
+        orderRecord.setPackageDiscount(getPackageDiscount());
+        orderRecord.setPreSaleDiscount(getPreSaleDiscount());
+        orderRecord.setOrderPayWay(getOrderPayWay());
+        orderRecord.setBkOrderMoney(getBkOrderMoney());
+        orderRecord.setBkShippingTime(getBkShippingTime());
+        orderRecord.setBkReturnType(getBkReturnType());
+        orderRecord.setInsteadPayMoney(getInsteadPayMoney());
+        orderRecord.setExchang(getExchang());
+        //orderRecord.setFreeShip(getFreeShip());
+        //orderRecord.setFreeDetail(getFreeDetail());
+        //orderRecord.setPosOrderAction(getPosOrderAction());
     }
 }
