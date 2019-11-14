@@ -79,4 +79,30 @@ public class Assert {
             }
         }
     }
+
+    /**
+     * Is true.
+     *
+     * @param boo  the boo
+     * @param code the code
+     * @param args the args
+     */
+    public static void isTrue(boolean boo, JsonResultCode code, Object... args) {
+        isFalse(!boo, code, args);
+    }
+
+    /**
+     * Is false.
+     *
+     * @param boo  the boo
+     * @param code the code
+     * @param args the args
+     */
+    public static void isFalse(boolean boo, JsonResultCode code, Object... args) {
+        if (boo) {
+            if (args != null && args.length > 0)
+                throw new BusinessException(code, args);
+            throw new BusinessException(code);
+        }
+    }
 }

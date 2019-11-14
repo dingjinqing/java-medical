@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -24,6 +25,7 @@ import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderInfo;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -98,6 +100,11 @@ public class StoreOrderService extends ShopBaseService {
      */
     @Autowired
     public ScoreCfgService scoreCfgService;
+    /**
+     * The User card dao service.
+     */
+    @Autowired
+    public UserCardDaoService userCardDaoService;
 
     public final StoreOrder TABLE = STORE_ORDER;
     public static final BigDecimal HUNDRED = new BigDecimal(100);
@@ -185,6 +192,8 @@ public class StoreOrderService extends ShopBaseService {
         }
         String cardNo = orderInfo.getCardNo();
         if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo)) {
+            // 验证会员卡有效性
+            Assert.isTrue(userCardDaoService.checkStoreValidCard(userInfo.getUserId(), orderInfo.getStoreId(), cardNo), JsonResultCode.CODE_FAIL);
             Record2<BigDecimal, BigDecimal> record2 = db().select(USER_CARD.MONEY, MEMBER_CARD.DISCOUNT).from(USER_CARD).leftJoin(MEMBER_CARD)
                 .on(Tables.USER_CARD.CARD_ID.eq(Tables.MEMBER_CARD.ID)).where(USER_CARD.CARD_NO.eq(cardNo)).fetchAny();
             // 会员卡折扣

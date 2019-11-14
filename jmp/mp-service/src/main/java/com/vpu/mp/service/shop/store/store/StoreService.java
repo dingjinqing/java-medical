@@ -106,6 +106,12 @@ public class StoreService extends ShopBaseService {
     public StoreWxService wxService;
 
     /**
+     * The Reservation.小程序端门店服务预约
+     */
+    @Autowired
+    public StoreReservation reservation;
+
+    /**
      * 门店列表分页查询
      *
      * @param param

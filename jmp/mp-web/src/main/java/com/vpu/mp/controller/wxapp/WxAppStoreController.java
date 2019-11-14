@@ -59,7 +59,7 @@ public class WxAppStoreController extends WxAppBaseController{
      */
     @PostMapping("/service/reservation")
     public JsonResult reservation(@RequestBody @Validated ReservationParam param) {
-        return this.success(shop().store.wxService.reservationDetail(param.getServiceId()));
+        return this.success(shop().store.reservation.reservationDetail(param.getServiceId()));
     }
 
     /**
@@ -67,7 +67,7 @@ public class WxAppStoreController extends WxAppBaseController{
      */
     @PostMapping("/service/confirmReservation")
     public JsonResult confirmReservation(@RequestBody @Validated(ConfirmReservation.class) ReservationParam param) {
-        return this.success(shop().store.wxService.createReservation(param.getServiceId(), param.getUserId()));
+        return this.success(shop().store.reservation.createReservation(param.getServiceId(), param.getUserId()));
     }
 
     /**
@@ -75,7 +75,6 @@ public class WxAppStoreController extends WxAppBaseController{
      */
     @PostMapping("/service/submitReservation")
     public JsonResult submitReservation(@RequestBody @Validated SubmitReservationParam param) {
-        shop().store.wxService.submitReservation(param);
-        return this.success("Done");
+        return this.success(shop().store.reservation.submitReservation(param));
     }
 }

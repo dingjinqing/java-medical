@@ -1,9 +1,11 @@
 package com.vpu.mp.service.shop.store.service;
 
+import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.Assert;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -14,10 +16,10 @@ import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.*;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
+import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
+import com.vpu.mp.service.shop.user.user.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,16 +29,17 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
+import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
-import static com.vpu.mp.service.shop.store.store.StoreWxService.HH_MM_FORMATTER;
+import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
+import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
+import static com.vpu.mp.service.shop.store.store.StoreReservation.HH_MM_FORMATTER;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * @author 王兵兵
@@ -46,13 +49,25 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
  * 预约（门店服务订单）
  */
 @Service
-
+@Slf4j
 public class ServiceOrderService extends ShopBaseService{
     /**
      * 门店服务
      */
     @Autowired
     public StoreServiceService storeService;
+
+    /**
+     * The User service.
+     */
+    @Autowired
+    public UserService userService;
+
+    /**
+     * The User card dao service.
+     */
+    @Autowired
+    public UserCardDaoService userCardDaoService;
 
 	/**
 	 * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
@@ -246,12 +261,60 @@ public class ServiceOrderService extends ShopBaseService{
      * @param param the param
      */
     public String createServiceOrder(ServiceOrderRecord param) {
+        // 二次验证前端计算的应付金额是否正确,
+        BigDecimal moneyPaidSecondCheck = BIGDECIMAL_ZERO;
+        // 订单总金额
+        BigDecimal orderAmount = param.getOrderAmount();
+        // 余额抵扣金额
+        BigDecimal balance = param.getUseAccount();
+        // 会员卡抵扣金额
+        BigDecimal cardDis = param.getMemberCardBalance();
+        // 优惠券抵扣金额
+        BigDecimal couponDis = param.getDiscount();
+        if (balance.compareTo(BIGDECIMAL_ZERO) > 0) {
+            // 用户余额校验
+            BigDecimal userBalance = Optional.ofNullable(userService.getUserByUserId(param.getUserId()))
+                .orElseThrow(() -> new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, "User: " + param.getUserId())).getAccount();
+            if (userBalance.compareTo(balance) < 0) {
+                // 余额不足，无法下单
+                log.error("用户余额[{}]不足(实际抵扣金额[{}])，无法下单", balance, userBalance);
+                throw new BusinessException(JsonResultCode.CODE_BALANCE_INSUFFICIENT);
+            }
+            log.debug("用户余额[{}]抵扣(实际抵扣金额[{}])成功!", balance, userBalance);
+        }
+        String cardNo = param.getMemberCardNo();
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo)) {
+            // 验证会员卡有效性
+            Assert.isTrue(userCardDaoService.checkStoreValidCard(param.getUserId(), param.getStoreId(), cardNo), JsonResultCode.CODE_FAIL);
+            Record2<BigDecimal, BigDecimal> record2 = db().select(USER_CARD.MONEY, MEMBER_CARD.DISCOUNT).from(USER_CARD).leftJoin(MEMBER_CARD)
+                .on(Tables.USER_CARD.CARD_ID.eq(Tables.MEMBER_CARD.ID)).where(USER_CARD.CARD_NO.eq(cardNo)).fetchAny();
+            // 会员卡余额
+            BigDecimal money = record2.getValue(USER_CARD.MONEY);
+            // 会员卡抵扣金额
+            if (cardDis.compareTo(money) > 0) {
+                // 会员卡余额不足
+                log.error("会员卡余额[{}]不足(实际抵扣金额[{}])，无法下单", money, cardDis);
+                throw new BusinessException(JsonResultCode.CODE_USER_CARD_BALANCE_INSUFFICIENT);
+            }
+            log.debug("会员卡余额[{}]抵扣(实际抵扣金额[{}])成功!", money, cardDis);
+        }
+        if (!INTEGER_ZERO.equals(param.getCouponId())) {
+            // todo 根据优惠券规则计算优惠券抵扣金额
+        }
+        moneyPaidSecondCheck = orderAmount.subtract(balance).subtract(cardDis).subtract(couponDis);
+        if (moneyPaidSecondCheck.compareTo(param.getMoneyPaid()) != 0) {
+            // 应付金额计算错误
+            log.error("应付金额[{}]计算错误(前端计算的应付金额为[{}])", moneyPaidSecondCheck, param.getMoneyPaid());
+            throw new BusinessException(JsonResultCode.CODE_AMOUNT_PAYABLE_CALCULATION_FAILED);
+        }
+        log.debug("应付金额[{}]校验成功(前端计算的应付金额为[{}])", moneyPaidSecondCheck, param.getMoneyPaid());
         String orderSn = generateOrderSn();
         param.setOrderSn(orderSn);
         param.setVerifyCode(generateVerifyCode());
         param.setOrderStatus(ORDER_STATUS_WAIT_PAY);
         param.setOrderStatusName(ORDER_STATUS_NAME_WAIT_PAY);
-        param.setMoneyPaid(getServiceMoneyPaid(param.getServiceId()));
+        param.setMoneyPaid(moneyPaidSecondCheck);
+        log.debug("创建门店服务订单: {}", param);
         db().executeInsert(param);
         return orderSn;
     }
@@ -405,7 +468,7 @@ public class ServiceOrderService extends ShopBaseService{
     }
 
     /**
-     * Check reservation num boolean.
+     * Check reservation num boolean.检测该服务已预约数量是否达到上限
      *
      * @param serviceId    the service id
      * @param technicianId the technician id

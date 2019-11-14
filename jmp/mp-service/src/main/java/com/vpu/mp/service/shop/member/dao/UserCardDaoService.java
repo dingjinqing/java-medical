@@ -1,47 +1,7 @@
 package com.vpu.mp.service.shop.member.dao;
 
-import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.AVAILABLE_IN_STORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_STOP;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectSeekStep3;
-import org.jooq.SelectSelectStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
-import com.vpu.mp.db.shop.tables.records.CardUpgradeRecord;
-import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
-import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
-import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -55,13 +15,16 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.shop.member.UserCardService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -187,6 +150,18 @@ public class UserCardDaoService extends ShopBaseService{
             .stream().filter((c) -> org.jooq.tools.StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
             }, false)).contains(storeId))
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Check store valid card boolean.校验会员卡的有效性
+     *
+     * @param userId  the user id
+     * @param storeId the store id
+     * @param cardNo  the card no
+     * @return the boolean
+     */
+    public boolean checkStoreValidCard(Integer userId, Integer storeId, String cardNo) {
+        return getStoreValidCardList(userId, storeId).stream().anyMatch((e) -> cardNo.equals(e.getCardNo()));
     }
 
 	public List<ValidUserCardBean> getValidCardList(Integer userId,Byte[] cardType,Byte type) {

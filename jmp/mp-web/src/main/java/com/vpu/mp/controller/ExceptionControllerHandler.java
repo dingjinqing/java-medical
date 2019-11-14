@@ -87,7 +87,7 @@ public class ExceptionControllerHandler extends BaseController {
     @ExceptionHandler(BusinessException.class)
     public JsonResult businessException(BusinessException e){
         if (e.getCode() != null) {
-            if (e.getArgs().length != 0) {
+            if (e.getArgs() != null && e.getArgs().length != 0) {
                 return fail(e.getCode(), e.getArgs());
             }
             return fail(e.getCode());
