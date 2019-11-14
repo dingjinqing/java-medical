@@ -29,7 +29,9 @@ public class UserScoreVo {
 	private Timestamp createTime;
 	private Timestamp expireTime;
 	private String adminUser;
-	// 入参用
+	/**
+	 * 入参用
+	 */
 	private Boolean isFromCrm = false;
 	private Boolean isFromOverdue = false;
 	private Boolean isFromRefund=false;

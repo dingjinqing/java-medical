@@ -4,7 +4,12 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import lombok.Data;
-
+/**
+ * 
+ * @author zhaojianqiang
+ *
+ * 2019年11月14日 上午10:29:49
+ */
 @Data
 public class MpOfficeAccountListVo {
 	private String appId;

@@ -27,6 +27,7 @@ import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
 @Service
 public class MpOfficialAccountMessageService extends MainBaseService {
 
+	private static final int _40037 = 40037;
 	protected static final String NEED_INDUSTRY_ID_1 = "1";
 	protected static final String NEED_INDUSTRY_ID_2 = "2";
 	protected static final String INDUSTRY_FIRST = "IT科技";
@@ -116,7 +117,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 			service.sendTemplateMsg(messageBuilder.build());
 		} catch (WxErrorException e) {
 			// template_id不正确，移除缓存，重新发送模板消息
-			if (e.getError().getErrorCode() == 40037) {
+			if (e.getError().getErrorCode() == _40037) {
 				jedis.delete(key);
 				sendMpTemplateMessage(appId, toUser, keywordValues, templateConfig, maAppId, page, url);
 			}else {

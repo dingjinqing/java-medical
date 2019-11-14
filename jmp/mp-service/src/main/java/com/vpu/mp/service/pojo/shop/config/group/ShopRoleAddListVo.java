@@ -19,7 +19,6 @@ public class ShopRoleAddListVo {
 	private String mobile;
 	private Integer roleId;
 	private String roleName;
-	//TODO 加公众号绑定相关字段
 	private Byte isBind;
 	/**
 	 * 公众号openid

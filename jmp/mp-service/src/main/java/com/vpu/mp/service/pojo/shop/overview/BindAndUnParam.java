@@ -10,8 +10,12 @@ import lombok.Data;
  */
 @Data
 public class BindAndUnParam {
-	//操作类型
+	/**
+	 * 操作类型
+	 */
 	private String act;
-	//子账户id
+	/**
+	 * 子账户id
+	 */
 	private Integer accountId=0;
 }
