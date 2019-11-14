@@ -24,7 +24,8 @@
     "pages/lotterygift/lotterygift",
     "pages/storelist/storelist",
     "pages/storeinfo/storeinfo",
-    "pages/checkout/checkout"
+    "pages/checkout/checkout",
+    "pages/servicecomment/servicecomment"
   ],
   "window": {
     "backgroundTextStyle": "dark",
