@@ -766,8 +766,15 @@ export default {
 
       console.log(newArr3, flag)
       newArr3.splice(flag, 1)
-      this.modulesData.splice(flag, 1)
+      if (this.modulesData[flag].module_name === 'm_image_guide') {
+        this.modulesData[flag].nav_group.forEach((item, index) => {
+          item.nav_link = ''
+          item.nav_src = ''
+        })
+      }
+
       // this.modulesData.splice(flag, 1)
+      this.modulesData.splice(flag, 1)
       console.log(this.modulesData)
       // 如果数组为空就重置当前插入模块id
       if (!newArr3.length) {
