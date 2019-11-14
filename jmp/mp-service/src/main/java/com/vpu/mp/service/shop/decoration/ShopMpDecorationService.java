@@ -98,7 +98,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 		select.where(XCX_CUSTOMER_PAGE.PAGE_ENABLED.eq(enabled));
 		// 页面内容
 		if (param.getPageName() != null) {
-			select.where(XCX_CUSTOMER_PAGE.PAGE_NAME.eq(param.getPageName()));
+			select.where(XCX_CUSTOMER_PAGE.PAGE_NAME.contains(param.getPageName()));
 		}
 
 		// 页面分类
