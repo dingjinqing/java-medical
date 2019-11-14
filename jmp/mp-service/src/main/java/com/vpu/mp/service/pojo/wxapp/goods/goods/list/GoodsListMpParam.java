@@ -1,9 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.pojo.shop.base.BasePageParam;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
