@@ -299,6 +299,7 @@ export default {
             longitude: '116.41637'
           }
       }
+      console.log(obj)
       return obj
     },
     // 对保存模块数据进行校验

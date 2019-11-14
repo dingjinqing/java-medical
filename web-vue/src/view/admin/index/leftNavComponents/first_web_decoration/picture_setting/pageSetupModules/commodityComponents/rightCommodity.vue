@@ -786,11 +786,12 @@ export default {
     // 监控该模块右边数据操作
     copyData: {
       handler (newData, oldData) {
+        console.log(newData)
         console.log('触发')
         // 判断是否是模块推荐中的数据改变
         let judgeChangeFlag = this.handleToJudgeDataChange(newData, oldData)
         // 转换选择商品范围字段数据
-        let d = this.handleToTransformationRangeData(1, newData.goods_area)
+        let d = this.handleToTransformationRangeData(newData.goods_area)
         console.log(d)
         let callBackData = JSON.parse(JSON.stringify(newData))
         callBackData.goods_area = d
@@ -1000,16 +1001,16 @@ export default {
         case 0:
           d = 'all'
           break
-        case 1:
+        case '1':
           d = 'sort'
           break
-        case 2:
+        case '2':
           d = 'cat'
           break
-        case 3:
+        case '3':
           d = 'brand'
           break
-        case 4:
+        case '4':
           d = 'label'
       }
       console.log(d)

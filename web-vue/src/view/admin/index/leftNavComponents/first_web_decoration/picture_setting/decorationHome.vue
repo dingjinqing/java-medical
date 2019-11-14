@@ -752,6 +752,7 @@ export default {
     },
     // 中间模块是否删除弹窗点击确定事件
     handleToSureDelete (flag) {
+      console.log(this.modulesData)
       let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
       console.log(this.nowRightShowIndex)
       console.log(this.nowRightShowIndex, flag)
@@ -766,10 +767,13 @@ export default {
       console.log(newArr3, flag)
       newArr3.splice(flag, 1)
       this.modulesData.splice(flag, 1)
+      // this.modulesData.splice(flag, 1)
+      console.log(this.modulesData)
       // 如果数组为空就重置当前插入模块id
       if (!newArr3.length) {
         this.insertModulesId = -1
       }
+
       console.log(newArr3)
       this.showModulesList = newArr3
       this.deleteVisible = false
