@@ -395,7 +395,7 @@ export default {
           moduleNameId = 3
           break
         case 'm_seckill':
-          moduleNameId = 4
+          moduleNameId = 5
           break
         case 'm_goods':
           moduleNameId = 8
