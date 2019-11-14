@@ -316,7 +316,7 @@
               <td v-if="hiddle_1">{{ item.brandName }}</td>
               <td v-if="hiddle_1"><img :src="item.logo" /></td>
               <td v-if="hiddle_1">{{ item.first }}</td>
-              <td v-if="hiddle_1">{{ item.classifyId }}</td>
+              <td v-if="hiddle_1">{{ item.classifyName }}</td>
               <td v-if="hiddle_1">{{ item.goodsNum }}</td>
               <td v-if="!hiddle_1">{{ item.brandNum }}</td>
               <td>{{ item.first }}</td>
@@ -644,12 +644,13 @@ export default {
     },
     // 品牌分类tap页品牌分类删除
     delePagingGrand (classifyId) {
-      let obj = {
-        classifyId: classifyId
-      }
-      pagingBrandDelRequest(obj).then((res) => {
+      pagingBrandDelRequest(classifyId).then((res) => {
         console.log(res)
         if (res.error === 0) {
+          this.$message.success({
+            message: '删除成功',
+            type: 'success'
+          })
           this.defaultPageingGrand()
         }
       })
@@ -673,6 +674,12 @@ export default {
             })
             this.defaultPageingGrand()
             this.dialogVisibleAddBrand = false
+          }
+          if (res.error === 131004) {
+            this.$message.error({
+              message: '品牌分类名称已存在',
+              type: 'success'
+            })
           }
         })
       } else {
@@ -814,14 +821,15 @@ export default {
     },
     // 删除品牌
     deleGrand (id) {
-      let obj = {
-        id: id
-      }
-      brandDeleteGetRequest(obj).then((res) => {
+      console.log(id)
+      brandDeleteGetRequest(id).then((res) => {
         console.log(res)
         if (res.error === 0) {
-          this.handleCurrentChange()
-          this.defaultPageingGrand()
+          this.$message.success({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.handleSXevent()
         }
       })
     },
@@ -915,7 +923,7 @@ export default {
 .brandManagementContent {
   padding: 10px;
   // padding-right: 23px;
-  min-width: 1400px;
+  min-width: 1000px;
   font-size: 14px;
   // height: 100%;
   position: relative;
@@ -995,25 +1003,25 @@ thead td {
   vertical-align: middle !important;
 }
 .brandTr td:nth-of-type(1) {
-  width: 398px;
+  width: 20%;
 }
 .brandTr td:nth-of-type(2) {
-  width: 132px;
+  width: 10%;
 }
 .brandTr td:nth-of-type(3) {
-  width: 132px;
+  width: 10%;
 }
 .brandTr td:nth-of-type(4) {
-  width: 132px;
+  width: 10%;
 }
 .brandTr td:nth-of-type(5) {
-  width: 132px;
+  width: 10%;
 }
 .brandTr td:nth-of-type(6) {
-  width: 132px;
+  width: 10%;
 }
 .brandTr td:nth-of-type(7) {
-  width: 200px;
+  width: 15%;
 }
 
 tbody td {

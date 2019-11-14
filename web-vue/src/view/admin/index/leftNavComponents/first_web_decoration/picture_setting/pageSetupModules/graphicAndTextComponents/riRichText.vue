@@ -59,7 +59,7 @@ export default {
     // 获取富文本编译器输入的内容
     handleToGetText (res) {
       this.moduleSaveData.rich_text = res
-      console.log(res)
+      console.log(this.moduleSaveData.rich_text)
     }
   }
 }

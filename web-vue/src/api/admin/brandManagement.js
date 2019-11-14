@@ -21,9 +21,8 @@ export function brandAddRequest (data) {
 // 商品品牌删除
 export function brandDeleteGetRequest (data) {
   return service({
-    url: '/api/admin/goods/brand/delete',
-    method: 'post',
-    data: data
+    url: `/api/admin/goods/brand/delete/${data}`,
+    method: 'get'
   })
 }
 
@@ -148,9 +147,8 @@ export function pagingBrandQueryRequest (data) {
 // 品牌分类页品牌删除接口
 export function pagingBrandDelRequest (data) {
   return service({
-    url: '/api/admin/goods/brand/classify/delete',
-    method: 'post',
-    data: data
+    url: `/api/admin/goods/brand/classify/delete/${data}`,
+    method: 'get'
   })
 }
 

@@ -376,7 +376,6 @@ export default {
 }
 .shopStyleContent_main {
   background-color: #fff;
-  height: 100%;
 }
 .color_title {
   width: 1120px;
@@ -620,7 +619,7 @@ export default {
   background: #f8f8fa;
   border-top: 1px solid #f2f2f2;
   text-align: center;
-  position: absolute;
+  position: fixed;
   z-index: 2;
   bottom: 0;
   padding: 10px 0;

@@ -433,6 +433,14 @@ export default {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
     defaultGrandClass () {
       console.log(this.editGoodsId)
+      // 品牌分类下拉框数据获取
+      classificationSelectRequest().then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          this.options = res.content
+        }
+      })
+      // 是否是编辑判断
       if (this.editGoodsId !== 'add') {
         if (!this.editGoodsId) return
         queryGoodsIdRequest(this.editGoodsId).then((res) => {
@@ -445,16 +453,11 @@ export default {
           this.ruleForm.firstInput = res.content.first
           console.log(res.content.isRecommend)
           this.ruleForm.radio = res.content.isRecommend.toString()
+          this.ruleForm.goodsIdsArr = res.content.goodsIds
           this.hxgoodsIds = res.content.goodsIds
           this.selectgoodsNum = res.content.goodsIds.length
         })
       }
-      classificationSelectRequest().then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.options = res.content
-        }
-      })
     },
     // 新建品牌分类弹窗
     handleNewBuild () {
@@ -506,6 +509,7 @@ export default {
     handleToGetGoods (data) { // 商品弹窗选中数据回传函数
       console.log(data)
       this.ruleForm.goodsIdsArr = data
+      this.selectgoodsNum = data.length
     },
     // 选择商品弹窗确定
     handleChoiseGooddialog () {
@@ -672,10 +676,10 @@ ul li:nth-of-type(1) {
   margin-top: 0;
 }
 .choiseDialog ul li:nth-of-type(2) {
-  margin: 0 30px;
+  margin: 0 10px;
 }
 .choiseDialog ul li:nth-of-type(3) {
-  margin-right: 30px;
+  margin-right: 10px;
 }
 .middleBbtnDiv {
   padding: 10px 30px;
@@ -862,6 +866,11 @@ img {
   }
   /deep/ .el-input {
     width: 140px;
+  }
+}
+.dialogMain {
+  /deep/ .el-input {
+    width: 150px;
   }
 }
 </style>

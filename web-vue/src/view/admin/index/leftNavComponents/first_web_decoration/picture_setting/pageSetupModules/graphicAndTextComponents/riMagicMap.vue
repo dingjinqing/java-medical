@@ -1462,7 +1462,7 @@ export default {
             i {
               position: absolute;
               text-align: center;
-              left: 0;
+              left: 14px;
               bottom: 15%;
               color: #fff;
             }

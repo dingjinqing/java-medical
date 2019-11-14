@@ -63,7 +63,7 @@
     <el-dialog
       title="选择会员卡"
       :visible.sync="dialogVisible"
-      width="45%"
+      width="46%"
       :append-to-body="true"
     >
       <div class="dialogMain">
