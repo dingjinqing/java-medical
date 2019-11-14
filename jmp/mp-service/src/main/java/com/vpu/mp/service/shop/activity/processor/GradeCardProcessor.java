@@ -1,15 +1,16 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +47,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
-        List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getActivityType()) && !x.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL))
+        List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getActivityType()) && !x.getProcessedTypes().contains(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL))
             .collect(Collectors.toList());
         List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
 
@@ -74,12 +75,12 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
             // 不存在限时降价，或者会员价格比限时降价低则加入会员价活动信息
             capsule.setRealPrice(record3.get(GRADE_PRD.GRADE_PRICE));
             // 如果商品是会员专享的话则价格显示会员价的价格，但是提示信息显示会员专享（ps:filterParam处已经过滤掉了首单特惠）
-            if (!capsule.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
+            if (!capsule.getProcessedTypes().contains(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
                 GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
-                activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_MEMBER_GRADE);
+                activity.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
                 capsule.getGoodsActivities().add(activity);
             }
-            capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
+            capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
         });
     }
     /*****************商品详情处理******************/
@@ -103,7 +104,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
             userCartGradePrice.forEach(gradePrice -> {
                 if (goods.getPrdId().equals(gradePrice.getPrdId())) {
                     CartActivityInfo gradePriceInfo =new CartActivityInfo();
-                    gradePriceInfo.setActivityType(GoodsConstant.ACTIVITY_TYPE_MEMBER_GRADE);
+                    gradePriceInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
                     gradePriceInfo.setMemberPriceType(gradePrice.getGradePrice());
                 }
             });

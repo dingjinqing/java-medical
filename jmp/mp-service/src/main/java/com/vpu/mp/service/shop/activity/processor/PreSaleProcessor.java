@@ -1,9 +1,10 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class PreSaleProcessor implements ProcessorPriority,ActivityGoodsListProc
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
-        List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_PRE_SALE.equals(x.getActivityType())).collect(Collectors.toList());
+        List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(x.getActivityType())).collect(Collectors.toList());
         List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsPreSaleListInfo = preSaleProcessorDao.getGoodsPreSaleListInfo(goodsIds, DateUtil.getLocalDateTime());
 
@@ -46,9 +47,9 @@ public class PreSaleProcessor implements ProcessorPriority,ActivityGoodsListProc
             capsule.setRealPrice(record3.get(PRESALE_PRODUCT.PRESALE_PRICE));
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
             activity.setActivityId(record3.get(PRESALE.ID));
-            activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_PRE_SALE);
+            activity.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
             capsule.getGoodsActivities().add(activity);
-            capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_PRE_SALE);
+            capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
 
         });
     }

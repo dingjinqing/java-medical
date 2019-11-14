@@ -1,10 +1,5 @@
 package com.vpu.mp.service.shop.task.market;
 
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
-
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -13,12 +8,15 @@ import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
-import org.jooq.Record1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
+import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
  * 监控秒杀活动导致的goods表goodsType变化
@@ -86,7 +84,7 @@ public class SeckillTaskService  extends ShopBaseService {
      * @return
      */
     private List<Integer> getPastSeckillGoodsId(){
-        return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.GOODS_TYPE.eq(BaseConstant.GOODS_TYPE_SECKILL)).fetchInto(Integer.class);
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.GOODS_TYPE.eq(BaseConstant.ACTIVITY_TYPE_SEC_KILL)).fetchInto(Integer.class);
     }
 
     /**
@@ -94,6 +92,6 @@ public class SeckillTaskService  extends ShopBaseService {
      * @param goodsIds
      */
     private void changeToSeckillType(List<Integer> goodsIds){
-        db().update(GOODS).set(GOODS.GOODS_TYPE, BaseConstant.GOODS_TYPE_SECKILL).where(GOODS.GOODS_ID.in(goodsIds)).execute();
+        db().update(GOODS).set(GOODS.GOODS_TYPE, BaseConstant.ACTIVITY_TYPE_SEC_KILL).where(GOODS.GOODS_ID.in(goodsIds)).execute();
     }
 }

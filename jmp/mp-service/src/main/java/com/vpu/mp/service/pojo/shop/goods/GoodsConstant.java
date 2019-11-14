@@ -1,65 +1,13 @@
 package com.vpu.mp.service.pojo.shop.goods;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
+
 /**
  * @author 李晓冰
  * @date 2019年10月14日
  * 商品及相关类的通用常量对应类
  */
 public class GoodsConstant {
-    /****** 商品活动类型对应码 *****/
-    /** 普通商品 */
-    public final static Byte ACTIVITY_TYPE_GENERAL = 0;
-    /** 拼团商品 */
-    public final static Byte ACTIVITY_TYPE_GROUP_BUY = 1;
-    /** 返利商品 */
-    public final static Byte ACTIVITY_TYPE_REBATE = 2;
-    /** 砍价商品 */
-    public final static Byte ACTIVITY_TYPE_BARGAIN = 3;
-
-    /** 积分兑换商品 */
-    public final static Byte ACTIVITY_TYPE_INTEGRAL = 4;
-    /** 秒杀商品 */
-    public final static Byte ACTIVITY_TYPE_SEC_KILL = 5;
-    /** 限时降价 返利 */
-    public final static Byte ACTIVITY_TYPE_REDUCE_PRICE = 6;
-    /** 加价购 返利 */
-    public final static Byte ACTIVITY_TYPE_PURCHASE_PRICE = 7;
-    /** 拼团抽奖 */
-    public final static Byte ACTIVITY_TYPE_GROUP_DRAW = 8;
-    /** 一口价 */
-    public final static Byte ACTIVITY_TYPE_PACKAGE_SALE = 9;
-    /** 定金膨胀 */
-    public final static Byte ACTIVITY_TYPE_PRE_SALE = 10;
-    /** 赠品 */
-    public final static Byte ACTIVITY_TYPE_GIFT = 11;
-    /** 幸运大抽奖 */
-    public final static Byte ACTIVITY_TYPE_LOTTERY_PRESENT = 12;
-    /** 限次卡兑换 */
-    public final static Byte ACTIVITY_TYPE_EXCHANG_ORDER = 13;
-    /** 好友助力 */
-    public final static Byte ACTIVITY_TYPE_PROMOTE_ORDER = 14;
-    /** 满包邮 */
-    public final static Byte ACTIVITY_TYPE_FREESHIP_ORDER = 15;
-    /** 测评 */
-    public final static Byte ACTIVITY_TYPE_ASSESS_ORDER = 16;
-    /** 送礼 */
-    public final static Byte ACTIVITY_TYPE_GIVE_GIFT = 17;
-    /** 首单特惠 */
-    public final static Byte ACTIVITY_TYPE_FIRST_SPECIAL = 18;
-    /** 优惠券活动 */
-    public final static Byte ACTIVITY_TYPE_COUPON = 19;
-    /** 满折满减*/
-    public final static Byte ACTIVITY_TYPE_FULL_REDUCTION = 20;
-    /** 等级会员特殊照顾（不是营销活动）*/
-    public final static Byte ACTIVITY_TYPE_MEMBER_GRADE = 21;
-    /** 会员专享型（不是营销活动）*/
-    public final static Byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 22;
-    /** 代付订单 */
-    public final static Byte ACTIVITY_TYPE_PAY_FOR_ANOTHER = 99;
-    /** 扫码购订单 */
-    public final static Byte ACTIVITY_TYPE_SWEEP_CODE_BUY = 100;
-    /**************** 结束 *****************/
-
     /****** 商品列表各种活动的处理优先级 *****/
     /**秒杀*/
     public final static Byte ACTIVITY_SEC_KILL_PRIORITY = 1;
@@ -134,8 +82,8 @@ public class GoodsConstant {
     public static final Byte GOODS_TYPE  = 7;
 
     public static boolean isGoodsTypeIn13510(Byte goodsType) {
-        return GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType)|| GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)
-            || GoodsConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || GoodsConstant.ACTIVITY_TYPE_PRE_SALE .equals(goodsType);
+        return BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType)|| BaseConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)
+            || BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_PRE_SALE .equals(goodsType);
     }
 
     /**
@@ -143,9 +91,9 @@ public class GoodsConstant {
      * @param goodsType 活动类型
      */
     public static boolean isNeedReturnActivity(Byte goodsType){
-        return GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType)|| GoodsConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)
-            || GoodsConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || GoodsConstant.ACTIVITY_TYPE_PRE_SALE .equals(goodsType)
-            || GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodsType) || GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(goodsType);
+        return BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(goodsType)|| BaseConstant.ACTIVITY_TYPE_BARGAIN.equals(goodsType)
+            || BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_PRE_SALE .equals(goodsType)
+            || BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodsType) || BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(goodsType);
 
     }
 }

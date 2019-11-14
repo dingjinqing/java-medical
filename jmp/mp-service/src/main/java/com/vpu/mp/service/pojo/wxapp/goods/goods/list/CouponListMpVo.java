@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
-import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Setter
 public class CouponListMpVo extends GoodsActivityBaseMp {
     public CouponListMpVo() {
-        activityType = GoodsConstant.ACTIVITY_TYPE_COUPON;
+        activityType = BaseConstant.ACTIVITY_TYPE_COUPON;
     }
     /**优惠券类型voucher是减金额，discount打折*/
     private String actCode;

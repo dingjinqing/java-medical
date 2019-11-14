@@ -62,7 +62,7 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
         if (userId != null && !orderInfoService.isNewUser(userId, true)) {
             return;
         }
-        List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getActivityType()) && !x.getProcessedTypes().contains(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE))
+        List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> !GoodsConstant.isGoodsTypeIn13510(x.getActivityType()) && !x.getProcessedTypes().contains(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE))
                 .collect(Collectors.toList());
 
         List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
@@ -76,10 +76,10 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
             }
             capsule.setRealPrice(result.get(0).get(FIRST_SPECIAL_PRODUCT.PRD_PRICE));
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
-            activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+            activity.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
             activity.setActivityId(result.get(0).get(FIRST_SPECIAL.ID));
             capsule.getGoodsActivities().add(activity);
-            capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+            capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
         });
     }
 
@@ -106,7 +106,7 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                     cartBo.getCartGoodsList().forEach(goods -> {
                         if (goods.getPrdId().equals(firstSpecial.getPrdId())) {
                             CartActivityInfo firstActivityInfo = new CartActivityInfo();
-                            firstActivityInfo.setActivityType(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+                            firstActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
                             firstActivityInfo.setFirstSpecialPrice(firstSpecial.getPrdPrice());
                             if (firstSpecial.getLimitAmount() > 0 && goods.getGoodsNumber() > firstSpecial.getLimitAmount()) {
                                 //超出限购数量后，买家不可继续添加购买该商品

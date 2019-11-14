@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.activity;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import java.sql.Timestamp;
 @Deprecated
 public class ReducePriceActivityVo extends ActivityBaseVo{
     public ReducePriceActivityVo() {
-        activityType = GoodsConstant.ACTIVITY_TYPE_REDUCE_PRICE;
+        activityType = BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE;
     }
 
     /**

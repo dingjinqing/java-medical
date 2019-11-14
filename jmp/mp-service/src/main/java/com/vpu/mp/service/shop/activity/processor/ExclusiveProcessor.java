@@ -1,18 +1,19 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.MemberCardDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.MemberCardDetailMpVo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.user.cart.CartService;
@@ -83,9 +84,9 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
 
             if (goodsIds.contains(goodsId) || catIds.contains(catId) || sortIds.contains(sortId) || brandIds.contains(brandId)) {
                 GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
-                activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
+                activity.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
                 capsule.getGoodsActivities().add(activity);
-                capsule.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
+                capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
             }
         });
 
@@ -185,7 +186,7 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
                 // todo 专享会员等级
             } else {
                 CartActivityInfo exclusiveGrade = new CartActivityInfo();
-                exclusiveGrade.setActivityType(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+                exclusiveGrade.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
                 goods.getCartActivityInfos().add(exclusiveGrade);
             }
         });

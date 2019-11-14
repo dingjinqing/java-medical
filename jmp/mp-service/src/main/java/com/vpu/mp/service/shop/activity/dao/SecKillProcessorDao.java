@@ -4,19 +4,15 @@ import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SecKillPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SeckillMpVo;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
-import jodd.util.StringUtil;
 import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Result;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
-import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
@@ -71,7 +65,7 @@ public class SecKillProcessorDao extends ShopBaseService {
         SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne().into(SecKillDefineRecord.class);
 
         seckillVo.setActivityId(skId);
-        seckillVo.setActivityType(GoodsConstant.ACTIVITY_TYPE_SEC_KILL);
+        seckillVo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
 
         seckillVo.setActState(this.canApplySecKill(secKill,goodsNumber,userId));
         seckillVo.setStock(secKill.getStock());

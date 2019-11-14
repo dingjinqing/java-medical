@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -35,7 +36,7 @@ public class GroupBuyProcessor implements ProcessorPriority,ActivityGoodsListPro
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> bos, Integer userId) {
-        List<GoodsListMpBo> availableBos = bos.stream().filter(x -> GoodsConstant.ACTIVITY_TYPE_GROUP_BUY.equals(x.getActivityType())).collect(Collectors.toList());
+        List<GoodsListMpBo> availableBos = bos.stream().filter(x -> BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(x.getActivityType())).collect(Collectors.toList());
         List<Integer> goodsIds = availableBos.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(goodsIds, DateUtil.getLocalDateTime());
 
@@ -48,10 +49,10 @@ public class GroupBuyProcessor implements ProcessorPriority,ActivityGoodsListPro
             GroupBuyListMpVo activity = new GroupBuyListMpVo();
 
             activity.setActivityId(record3.get(GROUP_BUY_DEFINE.ID));
-            activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
+            activity.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
             activity.setDiscountPrice(bo.getShopPrice().subtract(bo.getRealPrice()));
             bo.getGoodsActivities().add(activity);
-            bo.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
+            bo.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
         });
     }
 }

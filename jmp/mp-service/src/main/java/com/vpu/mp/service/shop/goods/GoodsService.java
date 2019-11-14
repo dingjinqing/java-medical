@@ -1620,7 +1620,7 @@ public class GoodsService extends ShopBaseService {
      * @param goodsIds
      */
     public void changeToNormalType(List<Integer> goodsIds){
-        db().update(GOODS).set(GOODS.GOODS_TYPE, BaseConstant.GOODS_TYPE_GENERAL).where(GOODS.GOODS_ID.in(goodsIds)).execute();
+        db().update(GOODS).set(GOODS.GOODS_TYPE, BaseConstant.ACTIVITY_TYPE_GENERAL).where(GOODS.GOODS_ID.in(goodsIds)).execute();
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -37,7 +38,7 @@ public class FullReductionProcessor implements ProcessorPriority,ActivityGoodsLi
             boolean has = fullReductionProcessorDao.getIsFullReductionListInfo(capsule.getGoodsId(), capsule.getCatId(), capsule.getSortId(), capsule.getBrandId(), now);
             if (has) {
                 GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
-                activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_FULL_REDUCTION);
+                activity.setActivityType(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION);
                 capsule.getGoodsActivities().add(activity);
             }
         });
