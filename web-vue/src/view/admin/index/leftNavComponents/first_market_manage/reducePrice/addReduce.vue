@@ -4,7 +4,7 @@
       <div class="set_box">
         <div class="set_item">
           <div class="item_title">
-            <em>*</em> {{$t('marketCommon.actName')}}:
+            <em>*</em> {{$t('marketCommon.actName')}}：
           </div>
           <div class="item_right">
             <el-input
@@ -19,7 +19,7 @@
         </div>
         <div class="set_item">
           <div class="item_title">
-            <em>*</em> {{$t('marketCommon.validDate')}}:
+            <em>*</em> {{$t('marketCommon.validDate')}}：
           </div>
           <div class="item_right">
             <el-date-picker
@@ -41,7 +41,7 @@
         </div>
         <div class="set_item">
           <div class="item_title">
-            <em>*</em> {{$t('reducePriceList.purchaseQuantity')}}:
+            <em>*</em> {{$t('reducePriceList.purchaseQuantity')}}：
           </div>
           <div class="item_right">
             <el-radio
@@ -72,7 +72,7 @@
         </div>
         <div class="set_item">
           <div class="item_title">
-            <em>*</em> {{$t('marketCommon.activityGoods')}}:
+            <em>*</em> {{$t('marketCommon.activityGoods')}}：
           </div>
           <div class="item_right">
             <div class="choose_list">
@@ -91,7 +91,7 @@
         <div v-if="pageShowGoodsList.length">
           <div class="set_item batch_item">
             <div class="item_title">
-              <em>*</em> {{$t('reducePriceList.setDiscount')}}:
+              <em>*</em> {{$t('reducePriceList.setDiscount')}}：
             </div>
             <div class="item_right">
               <el-radio-group v-model="batchFlag">

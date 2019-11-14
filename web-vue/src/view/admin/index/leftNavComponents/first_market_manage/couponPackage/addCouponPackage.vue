@@ -70,7 +70,7 @@
             <p class="set_title">{{$t('addCouponPackage.basicSettings')}}</p>
             <div class="set_item">
               <div class="item_title">
-                <em>*</em> {{$t('addCouponPackage.activityName')}}:
+                <em>*</em> {{$t('addCouponPackage.activityName')}}：
               </div>
               <div class="item_right">
                 <el-input
