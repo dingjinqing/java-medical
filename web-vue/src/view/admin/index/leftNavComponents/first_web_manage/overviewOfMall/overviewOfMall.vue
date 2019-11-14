@@ -275,14 +275,13 @@
           <div class="task_content clearfix">
             <div class="task_left">
               <div class="progress_content">
-                <div class="progress_wrapper"></div>
-                <svg class="progress-inner">
-                  <circle
-                    cx="70"
-                    cy="70"
-                    style="stroke: rgb(214, 231, 255); stroke-width: 20; stroke-dasharray: 380; stroke-dashoffset: 149px; transition: stroke-dashoffset 0.4s cubic-bezier(0.08, 0.82, 0.17, 1) 0s;"
-                  ></circle>
-                </svg>
+                <el-progress
+                  type="circle"
+                  stroke-width=15
+                  width=140
+                  :percentage="percentage"
+                  :show-text="false"
+                ></el-progress>
                 <div class="progress-info">
                   <div class="status-text">
                     <p><span class="status-text_count">{{ storeList.totalPending }}</span>{{ this.$t('overview.storeItems') }}</p>
@@ -800,7 +799,6 @@
       <p style="color: #999;font-size: 14px;">{{ this.$t('overview.agencyTip') }}</p>
       <el-checkbox-group
         v-model="checkData"
-        @change="changeCheck"
         :max='5'
         style="margin-top: 20px;width: 100%;"
       >
@@ -844,6 +842,7 @@ export default {
       functionList: this.$t('overview.functionList'),
       tabSwitch: '1',
       // 店铺列表
+      percentage: '',
       storeList: {},
       storeTabs: this.$t('overview.storeTabs'),
       // 公告列表
@@ -1010,13 +1009,6 @@ export default {
     // 自定义事项弹框
     customizeHandler () {
       this.dataDialog = true
-    },
-
-    // 切换代办事项
-    changeCheck (val) {
-      if (val.length !== 5) {
-        this.$message.warning({ message: this.$t('overview.agencyTip') })
-      }
     },
 
     // 关闭弹窗
@@ -1611,36 +1603,6 @@ img {
   margin: auto;
   position: relative;
   margin-top: 50px;
-}
-
-.progress_wrapper {
-  width: 100%;
-  height: 100%;
-  border-radius: 140px;
-  border-width: 19px;
-  border-color: #5a8bff;
-  border-style: solid;
-  box-sizing: border-box;
-}
-
-svg:not(:root) {
-  overflow: hidden;
-}
-
-.progress-inner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.progress-inner circle {
-  stroke-linecap: butt;
-  fill: none;
-  transition: stroke-dashoffset 0.4s cubic-bezier(0.08, 0.82, 0.17, 1) 0s;
-  transform: rotate(-90deg);
-  transform-origin: center center;
 }
 
 .progress-info {

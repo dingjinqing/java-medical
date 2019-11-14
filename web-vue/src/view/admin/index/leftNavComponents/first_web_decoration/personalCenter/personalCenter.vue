@@ -1304,7 +1304,7 @@ export default {
       linkIndex: -1, // 链接
       isShowOrder: '1', // 模块样式
       isShowCustomize: '1', // 自定义模板内容
-      customValue: 1, // 自定义模板个数
+      // customValue: 1, // 自定义模板个数
       templateTitle: '', // 自定义模板标题
       imageSize: [], // 图片大小
       isDraggable: false, // 是否支持多选
@@ -1822,11 +1822,12 @@ export default {
     // 添加自定义模板
     addTemplate () {
       // 右侧添加
+      // icon_name: 'custom_icon' + this.customValue,
       for (let i = 0; i < this.rightData.length; i++) {
         if (this.rightData[i].module_name === 'service') {
           this.rightData[i].content.push({
             is_show: '1',
-            icon_name: 'custom_icon' + this.customValue,
+            icon_name: 'custom_icon',
             icon: '/image/admin/uc_config/icon_ownset.png',
             title: '我的服务',
             link: '',
@@ -1838,7 +1839,7 @@ export default {
       //   if (this.leftData[i].module_name === 'service') {
       //     this.leftData[i].content.push({
       //       is_show: '1',
-      //       icon_name: 'custom_icon' + this.customValue,
+      //       icon_name: 'custom_icon',
       //       icon: '/image/admin/uc_config/icon_ownset.png',
       //       title: '我的服务',
       //       link: '',
@@ -1846,7 +1847,7 @@ export default {
       //     })
       //   }
       // }
-      this.customValue++
+      // this.customValue++
     }
   }
 }

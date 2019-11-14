@@ -31,7 +31,11 @@
           开启分销员审核功能后，普通用户申请成为分销员时需要经过商家审核。关闭则成为店铺分销员不需要申请审核，全部用户均默认为店铺分销员。
         </div>
         <template v-if="form.judge_status === 1">
-          <el-checkbox v-model="form.checked1">用户申请成为分销员时，需要填写邀请码</el-checkbox>
+          <el-checkbox
+            v-model="form.invitationCode"
+            :true-label='1'
+            :false-label="0"
+          >用户申请成为分销员时，需要填写邀请码</el-checkbox>
           <p>勾选后，系统自动生成分销员邀请码。 <a
               href="javascript:void(0);"
               style="color: red;"
@@ -465,7 +469,7 @@ export default {
       form: {
         status: 1, // 分销开关
         judge_status: 1, // 分销员审核开关
-        // checked1: true,
+        invitationCode: 1, // 邀请码
         activation: 1, // 是否需要提交个人信息
         activation_cfg: [], // 个人信息内容
         rank_status: 1, // 分销员排名开关
