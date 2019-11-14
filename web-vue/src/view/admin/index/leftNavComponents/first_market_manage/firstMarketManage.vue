@@ -127,7 +127,7 @@
         <!-- 我要送礼 -->
         <div
           class="voucher box_style"
-          @click="to('giveGift')"
+          @click="giveGift"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/wysl.png'"
@@ -500,6 +500,15 @@ export default {
       this.$router.push({
         name: routerName
       })
+    },
+    // 我要送礼
+    giveGift () {
+      this.$router.push(
+        {
+          name: 'giveGift',
+          params: { tabSwitch: 'inProgress' }
+        }
+      )
     }
   }
 }
