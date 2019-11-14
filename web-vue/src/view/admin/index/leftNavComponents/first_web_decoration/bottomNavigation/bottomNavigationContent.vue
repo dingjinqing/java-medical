@@ -45,14 +45,14 @@
                 >{{$t('bottomNavigation.modify')}}</span></div>
               <div class="nav_icon">
                 <div class="icon_box">
-                  <img :src="item.normal">
+                  <img :src="item.hover">
                   <span @click="handleChangeIcon(index,0)">{{$t('bottomNavigation.changeIcons')}}</span>
                 </div>
                 <div class="tip">{{$t('bottomNavigation.clickStatus')}}</div>
               </div>
               <div class="nav_icon">
                 <div class="icon_box">
-                  <img :src="item.hover">
+                  <img :src="item.normal">
                   <span @click="handleChangeIcon(index,1)">{{$t('bottomNavigation.changeIcons')}}</span>
                 </div>
                 <div class="tip">{{$t('bottomNavigation.unclickedStatus')}}</div>
@@ -305,14 +305,15 @@ export default {
       console.log(this.firstNavIndex, this.secondNavIndex, this.contentList)
       let first = this.firstNavIndex
       let second = this.secondNavIndex
-      console.log(second)
+      console.log(first, second)
+      console.log(res)
       if (second === 0) {
         // this.ulDataList[first].img = res
-        this.contentList[first].normal = res.imgUrl
+        this.contentList[first].hover = res.imgUrl
         console.log(this.contentList)
       } else {
         // this.ulDataList[first].imgActive = res
-        this.contentList[first].hover = res.imgUrl
+        this.contentList[first].normal = res.imgUrl
       }
       this.$forceUpdate()
     },

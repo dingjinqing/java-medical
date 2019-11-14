@@ -420,6 +420,7 @@ export default {
   display: flex;
   justify-content: space-around;
   margin-top: 10px;
+  margin-bottom: 50px;
 }
 .shop_img {
   width: 265px;
