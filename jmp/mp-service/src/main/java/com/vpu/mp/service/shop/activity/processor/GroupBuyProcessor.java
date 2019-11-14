@@ -49,7 +49,7 @@ public class GroupBuyProcessor implements ProcessorPriority,ActivityGoodsListPro
 
             activity.setActivityId(record3.get(GROUP_BUY_DEFINE.ID));
             activity.setActivityType(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
-            activity.setOriginalPrice(bo.getShopPrice());
+            activity.setDiscountPrice(bo.getShopPrice().subtract(bo.getRealPrice()));
             bo.getGoodsActivities().add(activity);
             bo.getProcessedTypes().add(GoodsConstant.ACTIVITY_TYPE_GROUP_BUY);
         });

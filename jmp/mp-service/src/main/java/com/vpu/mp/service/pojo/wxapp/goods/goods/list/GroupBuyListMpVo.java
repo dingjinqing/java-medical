@@ -14,5 +14,5 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class GroupBuyListMpVo extends GoodsActivityBaseMp {
-    private BigDecimal originalPrice;
+    private BigDecimal discountPrice;
 }
