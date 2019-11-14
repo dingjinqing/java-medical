@@ -14,7 +14,9 @@ public class GiveGiftListParam {
      */
     private Byte navType;
 
-    /* 分页信息 */
+    /**
+     *  分页信息
+     *  */
     private Integer currentPage;
     private Integer pageRows;
 }

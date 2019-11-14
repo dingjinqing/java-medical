@@ -96,7 +96,7 @@ public class FootPrintService extends ShopBaseService {
 	public FootprintListVo getFootprintPage(Integer userId, String keyWord, Integer currentPage, Integer pageRows){
 		FootprintListVo footprintListVo =new FootprintListVo();
 		List<FootprintDayVo> footprintDaylist =new ArrayList<>();
-		footprintListVo.setFootprintDay(footprintDaylist);
+		footprintListVo.setDay(footprintDaylist);
 		Timestamp timestamp = DateUtil.getTimeStampPlus(-3, ChronoUnit.MONTHS);
 		SelectConditionStep<? extends Record> select = db().select(GOODS.GOODS_ID, DslPlus.dateFormatDay(FOOTPRINT_RECORD.CREATE_TIME).as("date"))
 				.from(FOOTPRINT_RECORD)
@@ -111,7 +111,7 @@ public class FootPrintService extends ShopBaseService {
 		Integer totalRows = db().fetchCount(select);
 		Page page = Page.getPage(totalRows, currentPage, pageRows);
 		footprintListVo.setPage(page);
-		Result<? extends Record> records = select.orderBy(FOOTPRINT_RECORD.UPDATE_TIME.desc()).limit((currentPage - 1)*pageRows, pageRows).fetch();
+		Result<? extends Record> records = select.orderBy(FOOTPRINT_RECORD.CREATE_TIME.desc()).limit((currentPage - 1)*pageRows, pageRows).fetch();
 		List<Integer> goodsIdList = Arrays.asList(records.intoArray(GOODS.GOODS_ID));
 		List<FootprintDayVo> footprintList =records.into(FootprintDayVo.class);
         List<? extends GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId, null, null);

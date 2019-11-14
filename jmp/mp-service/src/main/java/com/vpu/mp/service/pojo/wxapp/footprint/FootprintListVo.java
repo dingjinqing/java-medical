@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 public class FootprintListVo {
 
-    List<FootprintDayVo> footprintDay;
+    List<FootprintDayVo> day;
 
     /**
      * 	分页信息

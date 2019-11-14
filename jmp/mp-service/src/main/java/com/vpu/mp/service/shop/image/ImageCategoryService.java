@@ -39,7 +39,6 @@ public class ImageCategoryService extends ShopBaseService {
         UploadedImageCategoryRecord record = db().newRecord(UPLOADED_IMAGE_CATEGORY, cat);
         record.setShopId(getShopId());
         record.insert();
-//        record.refresh();
         //父节点不是顶节点，查询父节点的ids
         if (!cat.getImgCatParentId().equals(0)) {
             UploadedImageCategoryRecord parent = this.getCategoryById(cat.getImgCatParentId());

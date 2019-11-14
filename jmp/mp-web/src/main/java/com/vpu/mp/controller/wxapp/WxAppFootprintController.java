@@ -2,9 +2,11 @@ package com.vpu.mp.controller.wxapp;
 
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/wxapp/footprint")
+@Slf4j
 public class WxAppFootprintController extends WxAppBaseController {
 
 
@@ -31,6 +34,8 @@ public class WxAppFootprintController extends WxAppBaseController {
         WxAppSessionUser user = wxAppAuth.user();
         if (user!=null){
            param.setUserId(user.getUserId());
+        }else {
+            log.info("user:"+ Util.toJson(user));
         }
         FootprintListVo footprintPage = shop().footPrintService.getFootprintPage(param.getUserId(), param.getKeyword(), param.getCurrentPage(), param.getPageRows());
         return  success(footprintPage);

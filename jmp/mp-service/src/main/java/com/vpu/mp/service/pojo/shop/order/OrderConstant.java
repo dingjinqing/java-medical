@@ -18,7 +18,7 @@ import java.util.List;
 public class OrderConstant {
     /** 语言包放在excel相关properties里 */
     private final static String LANGUAGE_TYPE_EXCEL = "excel";
-    
+
 	/** 订单状态order_status */
 	/** 待付款 可进行操作：关闭订单 */
 	public final static byte ORDER_WAIT_PAY = 0;
@@ -142,7 +142,7 @@ public class OrderConstant {
     public final static Byte MP_PAY_CODE_COD = 1;
 
     /**小程序支付方式编码->string*/
-    public final static String MP_PAY_CODE_TO_STRING[] ={PAY_CODE_WX_PAY , PAY_CODE_COD};
+    public final static String[] MP_PAY_CODE_TO_STRING ={PAY_CODE_WX_PAY , PAY_CODE_COD};
 
 	/**
 	 *	 配送方式
@@ -235,7 +235,7 @@ public class OrderConstant {
 	public final static byte IS_MP_Y = 1;
 	public final static byte IS_MP_ADMIN = 0;
 	public final static byte IS_MP_AUTO = 2;
-	
+
 	/**
 	 * 订单退款退货流程操作
 	 */
@@ -369,7 +369,7 @@ public class OrderConstant {
 	 */
 	public static final Integer IS_GIFT_Y = 1;
 	public static final Integer IS_GIFT_N = 0;
-	
+
 	/**
 	 * 	前端搜索退款订单的returnStatus与sql对应的关系
 	 */
@@ -381,7 +381,7 @@ public class OrderConstant {
 	public static final byte SEARCH_RETURNSTATUS_61 = 61;
 	/**商家拒绝退款申请*/
 	public static final byte SEARCH_RETURNSTATUS_60 = 60;
-	
+
 	/**
 	 * 买单订单状态
 	 */
@@ -391,7 +391,7 @@ public class OrderConstant {
 	public static final byte STORE_STATUS_PAY = 1;
 	/**退款*/
 	public static final byte STORE_STATUS_RETURN = 2;
-	
+
 	/**order status code */
 	public static final byte All = 0;
 	public static final byte WAIT_PAY = 1;

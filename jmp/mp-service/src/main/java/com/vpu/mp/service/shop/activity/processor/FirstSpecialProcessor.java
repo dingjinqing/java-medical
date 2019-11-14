@@ -127,8 +127,6 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                         }
                     });
                 });
-
-
             }
         }
     }
