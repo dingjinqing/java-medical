@@ -58,6 +58,15 @@ export default {
       centerDialogVisible: false
     }
   },
+  watch: {
+    centerDialogVisible (newData) {
+      console.log('centerDialogVisible的值' + newData)
+      if (newData === false) {
+        console.log('刷新' + newData)
+        this.defaluteData()
+      }
+    }
+  },
   mounted () {
     // 初始化数据
     this.defaluteData()
