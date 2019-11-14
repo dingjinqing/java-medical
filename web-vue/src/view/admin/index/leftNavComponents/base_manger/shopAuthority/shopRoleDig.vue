@@ -32,6 +32,7 @@
             v-if="showFlagTwo"
             :faClick="haveClick"
             @privilegePassInfo="sendPwdList"
+            @faClickChange="faChange"
             :isEdit="edit"
           />
         </el-tab-pane>
@@ -188,6 +189,8 @@ export default {
           this.centerDialogVisible = false
           this.sendFa()
         } else {
+          console.log('错误，重新赋值可点击')
+          this.haveClick = false
           this.$message.error(res.message)
         }
       })
@@ -201,6 +204,7 @@ export default {
           this.centerDialogVisible = false
           this.sendFa()
         } else {
+          this.haveClick = false
           this.$message.error(res.message)
         }
       })

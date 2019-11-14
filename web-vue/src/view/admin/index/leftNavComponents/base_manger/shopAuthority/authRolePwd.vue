@@ -198,6 +198,7 @@ export default {
   },
   watch: {
     faClick (newData) {
+      console.log('点点滴滴' + newData)
       if (newData === true) {
         this.submitInfo()
       }
@@ -330,12 +331,10 @@ export default {
         if (this.isEmpty(this.loginPass)) {
           this.$message.error('请输入登录密码')
           this.toFath()
-          return false
         }
         if (this.isEmpty(this.rolePass)) {
           this.$message.error('请设置密码')
           this.toFath()
-          return false
         }
       }
       var pList = this.privilegePass.join(',')
@@ -354,6 +353,7 @@ export default {
       this.$emit('privilegePassInfo', param)
     },
     toFath () {
+      console.log('toFath')
       let params = {
         'faClick': false
       }
