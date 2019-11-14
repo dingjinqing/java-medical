@@ -35,3 +35,11 @@ export function editSave (data) {
     data: data
   })
 }
+
+// 获取页面装修页面分类数据
+export function getClassifyData (data) {
+  return service({
+    url: '/api/admin/decorate/cate/page',
+    method: 'post'
+  })
+}

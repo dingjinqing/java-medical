@@ -3,7 +3,15 @@
     <div class="rightCommodityMain">
       <!--模块私有区域-->
       <div class="main">
-
+        <el-date-picker
+          ref='time'
+          v-model="value1"
+          type="week"
+          format="yyyy 第 WW 周"
+          placeholder="选择周"
+        >
+        </el-date-picker>
+        <el-button @click="handleToGet()">测试</el-button>
       </div>
       <!--模块私有end-->
     </div>
@@ -17,6 +25,7 @@ export default {
   },
   data () {
     return {
+      value1: ''
     }
   },
   watch: {
@@ -27,8 +36,18 @@ export default {
         this.data = this.modulesData
       },
       immediate: true
+    },
+    value1 (newData) {
+      this.$nextTick(() => {
+        console.log(this.$refs['time'].$el.children[0].value.split(' ')[2])
+      })
     }
     // 监听数据变换
+  },
+  methods: {
+    handleToGet () {
+      console.log(this.$refs['time'].$el.children[0].value.split(' ')[2])
+    }
   }
 }
 </script>

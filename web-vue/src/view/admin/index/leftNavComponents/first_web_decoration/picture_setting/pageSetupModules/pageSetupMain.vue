@@ -19,8 +19,8 @@
           <el-option
             v-for="item in classificationOptions"
             :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :label="item.name"
+            :value="item.id"
           >
           </el-option>
         </el-select>
@@ -263,6 +263,7 @@
   </div>
 </template>
 <script>
+import { getClassifyData } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting.js'
 export default {
   props: {
     pageSet: Object
@@ -298,7 +299,7 @@ export default {
       defaultColorright: '#fff',
       cat_id: '',
       classificationOptions: [{
-        value: null,
+        value: 'null',
         label: '请选择页面分类'
       }, {
         value: '0',
@@ -343,6 +344,7 @@ export default {
           { required: true, message: '页面分享图不能为空', trigger: 'change' }
         ]
       },
+      pageClassify: '请选择页面分类',
       picFlag: null
       // pageData: {
       //   'is_ok': 1,
@@ -369,6 +371,14 @@ export default {
       handler (newData) {
         console.log(newData)
         if (JSON.stringify(newData) !== '{}') {
+          // let name = ''
+          // this.classificationOptions.forEach((res) => {
+          //   if(res.id === newData.cat_id){
+          //       name = res.name
+          //   }
+
+          // })
+
           this.ruleForm = newData
         }
       },
@@ -383,10 +393,25 @@ export default {
       },
       deep: true
     }
+    // pageClassify (newData) {
+    //   console.log(newData)
+    //   this.ruleForm.cat_id = newData
+    // }
   },
   mounted () {
     // 初始化语言
     this.langDefault()
+    getClassifyData().then((res) => {
+      console.log(res)
+      if (res.error === 0) {
+        let obj = {
+          id: null,
+          name: '请选择页面分类'
+        }
+        res.content.unshift(obj)
+        this.classificationOptions = res.content
+      }
+    })
   },
   methods: {
     // 点击重置
