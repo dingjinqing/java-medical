@@ -1178,3 +1178,14 @@ create table `b2c_goods_overview_summary`
     primary key (`id`),
     key `ref_type` (`ref_date`, `type`) using btree
 ) comment '商品概览统计表' ;
+
+-- 修改秒杀表库存类型 2019-11-11
+ALTER TABLE b2c_service_technician
+MODIFY COLUMN    `bg_img_path`          varchar(191)  default '' comment '技师头像地址',
+MODIFY COLUMN    `technician_introduce` varchar(200)  default '' comment '技师简介',
+MODIFY COLUMN    `group_id`             int(11)   default 0 comment '技师分组',
+MODIFY COLUMN    `service_type`         tinyint(2)  default 0 comment '技师服务项目：0所有，1部分',
+MODIFY COLUMN    `service_list`         varchar(191)  default '[]' comment '当type=1是服务项目id数组',
+MODIFY COLUMN    `remarks`              varchar(1024) default '' comment '备注',
+MODIFY COLUMN    `del_flag`             tinyint(1)  default 0 comment '0正常，1删除';
+

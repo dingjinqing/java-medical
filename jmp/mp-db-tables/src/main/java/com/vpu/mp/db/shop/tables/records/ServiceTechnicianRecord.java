@@ -5,16 +5,14 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.ServiceTechnician;
-
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record13;
 import org.jooq.Row13;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.sql.Timestamp;
 
 
 /**
@@ -30,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnicianRecord extends UpdatableRecordImpl<ServiceTechnicianRecord> implements Record13<Integer, Integer, String, String, String, String, Integer, Byte, String, String, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1380463645;
+    private static final long serialVersionUID = -1041388541;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_service_technician.id</code>. 技师id
@@ -145,14 +143,14 @@ public class ServiceTechnicianRecord extends UpdatableRecordImpl<ServiceTechnici
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_service_technician.service_list</code>. 当type=0是服务项目详情：array()
+     * Setter for <code>mini_shop_471752.b2c_service_technician.service_list</code>. 当type=1是服务项目id数组
      */
     public void setServiceList(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_service_technician.service_list</code>. 当type=0是服务项目详情：array()
+     * Getter for <code>mini_shop_471752.b2c_service_technician.service_list</code>. 当type=1是服务项目id数组
      */
     public String getServiceList() {
         return (String) get(8);

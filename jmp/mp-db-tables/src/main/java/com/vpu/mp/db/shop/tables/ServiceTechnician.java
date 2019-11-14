@@ -8,25 +8,14 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ServiceTechnician extends TableImpl<ServiceTechnicianRecord> {
 
-    private static final long serialVersionUID = -1267950243;
+    private static final long serialVersionUID = -1661958114;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_service_technician</code>
@@ -80,37 +69,37 @@ public class ServiceTechnician extends TableImpl<ServiceTechnicianRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.bg_img_path</code>. 技师头像地址
      */
-    public final TableField<ServiceTechnicianRecord, String> BG_IMG_PATH = createField("bg_img_path", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "技师头像地址");
+    public final TableField<ServiceTechnicianRecord, String> BG_IMG_PATH = createField("bg_img_path", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "技师头像地址");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.technician_introduce</code>. 技师简介
      */
-    public final TableField<ServiceTechnicianRecord, String> TECHNICIAN_INTRODUCE = createField("technician_introduce", org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "技师简介");
+    public final TableField<ServiceTechnicianRecord, String> TECHNICIAN_INTRODUCE = createField("technician_introduce", org.jooq.impl.SQLDataType.VARCHAR(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "技师简介");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.group_id</code>. 技师分组
      */
-    public final TableField<ServiceTechnicianRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "技师分组");
+    public final TableField<ServiceTechnicianRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "技师分组");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.service_type</code>. 技师服务项目：0所有，1部分
      */
-    public final TableField<ServiceTechnicianRecord, Byte> SERVICE_TYPE = createField("service_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "技师服务项目：0所有，1部分");
+    public final TableField<ServiceTechnicianRecord, Byte> SERVICE_TYPE = createField("service_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "技师服务项目：0所有，1部分");
 
     /**
-     * The column <code>mini_shop_471752.b2c_service_technician.service_list</code>. 当type=0是服务项目详情：array()
+     * The column <code>mini_shop_471752.b2c_service_technician.service_list</code>. 当type=1是服务项目id数组
      */
-    public final TableField<ServiceTechnicianRecord, String> SERVICE_LIST = createField("service_list", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("{}", org.jooq.impl.SQLDataType.VARCHAR)), this, "当type=0是服务项目详情：array()");
+    public final TableField<ServiceTechnicianRecord, String> SERVICE_LIST = createField("service_list", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "当type=1是服务项目id数组");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.remarks</code>. 备注
      */
-    public final TableField<ServiceTechnicianRecord, String> REMARKS = createField("remarks", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
+    public final TableField<ServiceTechnicianRecord, String> REMARKS = createField("remarks", org.jooq.impl.SQLDataType.VARCHAR(1024).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.del_flag</code>. 0正常，1删除
      */
-    public final TableField<ServiceTechnicianRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0正常，1删除");
+    public final TableField<ServiceTechnicianRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0正常，1删除");
 
     /**
      * The column <code>mini_shop_471752.b2c_service_technician.create_time</code>.

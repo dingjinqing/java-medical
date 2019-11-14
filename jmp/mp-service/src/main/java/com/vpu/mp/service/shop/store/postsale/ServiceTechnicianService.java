@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.technician.*;
@@ -98,17 +99,10 @@ public class ServiceTechnicianService extends ShopBaseService {
 		if(SERVICE_TYPE_PART.equals(technicianParam.getServiceType())) {
 			serviceList = Util.toJson(technicianParam.getServiceList());
 		}
-        int result = db().insertInto(SERVICE_TECHNICIAN,
-				SERVICE_TECHNICIAN.STORE_ID, SERVICE_TECHNICIAN.TECHNICIAN_NAME,
-            SERVICE_TECHNICIAN.TECHNICIAN_MOBILE, SERVICE_TECHNICIAN.BG_IMG_PATH,
-            SERVICE_TECHNICIAN.TECHNICIAN_INTRODUCE, SERVICE_TECHNICIAN.GROUP_ID,
-            SERVICE_TECHNICIAN.SERVICE_TYPE, SERVICE_TECHNICIAN.SERVICE_LIST,
-				SERVICE_TECHNICIAN.REMARKS).values(technicianParam.getStoreId(), technicianParam.getTechnicianName(),
-						technicianParam.getTechnicianMobile(), technicianParam.getBgImgPath(),
-            technicianParam.getTechnicianIntroduce(), technicianParam.getGroupId(),
-						technicianParam.getServiceType(), serviceList,
-						technicianParam.getRemarks()).execute();
-		return result;
+        ServiceTechnicianRecord record = new ServiceTechnicianRecord();
+        FieldsUtil.assignNotNull(technicianParam, record);
+        record.setServiceList(serviceList != null ? serviceList : "[]");
+        return db().executeInsert(record);
 	}
 	/**
 	 * 编辑售后
