@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record;
@@ -35,7 +36,7 @@ import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DE
  */
 @Service
 @Slf4j
-public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority{
+public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority,OrderBeforeProcessor{
     @Autowired
     SecKillProcessorDao secKillProcessorDao;
     /*****处理器优先级*****/
@@ -101,5 +102,12 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
                 }
             }
         });
+    }
+
+    @Override
+    public void processOrderBefore(OrderBeforeParam orderBeforeParam) {
+        if(orderBeforeParam.getActivityId() != null && orderBeforeParam.getActivityType().equals(GoodsConstant.ACTIVITY_TYPE_SEC_KILL)){
+            //TODO
+        }
     }
 }

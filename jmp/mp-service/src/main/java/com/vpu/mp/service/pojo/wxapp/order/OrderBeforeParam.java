@@ -30,8 +30,12 @@ import lombok.ToString;
 @Setter
 @ToString
 public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
+
+    /** 指定本次结算所参加的唯一营销活动类型 {@link com.vpu.mp.service.pojo.shop.goods.GoodsConstant} 下的ACTIVITY_TYPE**/
     private Byte activityType;
+    /** 指定本次结算所参加的唯一营销活动类型 ID */
     private Integer activityId;
+
 	private Integer addressId;
 	private List<Goods> goods;
     @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_DELIVER_TYPE_NO_NULL)

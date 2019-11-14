@@ -16,6 +16,8 @@ import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.shop.activity.factory.OrderBeforeMpProcessorFactory;
+import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -117,6 +119,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private OrderPayService orderPay;
+
+    @Autowired
+    private ProcessorFactoryBuilder processorFactoryBuilder;
 
     @Override
     public OrderServiceCode getServiceCode() {
@@ -300,8 +305,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     public void processParam(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
-        if (Boolean.FALSE) {
-            // 营销
+        if (param.getActivityId() != null && param.getActivityType() != null) {
+            // 唯一并互斥的商品营销处理
+            // 可能的ActivityType ：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力
+            List<OrderBeforeParam> capsules = new ArrayList<>();
+            capsules.add(param);
+            OrderBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderBeforeMpProcessorFactory.class);
+            processorFactory.doProcess(capsules,param.getWxUserInfo().getUserId());
+            logger().info(param.toString());
         } else {
             // 未参与营销时进入
             if (Boolean.TRUE) {

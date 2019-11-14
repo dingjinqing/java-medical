@@ -1,0 +1,27 @@
+package com.vpu.mp.service.shop.activity.factory;
+
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.shop.activity.processor.OrderBeforeProcessor;
+
+import java.util.List;
+
+/**
+ * 跳转结算页所需要的营销数据处理
+ * @author: 王兵兵
+ * @create: 2019-11-14 17:24
+ **/
+public class OrderBeforeMpProcessorFactory extends AbstractProcessorFactory<OrderBeforeProcessor, OrderBeforeParam> {
+    @Override
+    public void doProcess(List<OrderBeforeParam> capsules, Integer userId) {
+        if (capsules == null || capsules.size() == 0) {
+            return;
+        }
+        this.doProcess(capsules.get(0));
+    }
+
+    private void doProcess(OrderBeforeParam orderBeforeParam) {
+        for (OrderBeforeProcessor processor : processors) {
+            processor.processOrderBefore(orderBeforeParam);
+        }
+    }
+}
