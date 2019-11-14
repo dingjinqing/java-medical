@@ -82,7 +82,8 @@ public class GoodsCommentService extends ShopBaseService {
                 .leftJoin(USER)
                 .on(USER.USER_ID.eq(COMMENT_GOODS.USER_ID))
                 .leftJoin(COMMENT_AWARD)
-                .on(COMMENT_GOODS.COMMENT_AWARD_ID.eq(COMMENT_AWARD.ID));
+                .on(COMMENT_GOODS.COMMENT_AWARD_ID.eq(COMMENT_AWARD.ID))
+        .where(COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO));
     this.buildOptions(select, param);
     select.orderBy(COMMENT_GOODS.CREATE_TIME.desc());
 
