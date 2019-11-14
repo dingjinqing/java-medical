@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
@@ -169,11 +170,11 @@ public class CartService extends ShopBaseService {
             cartRecord.setGoodsNumber(goodsNumber.shortValue());
             cartRecord.setGoodsId(goodsRecord.getGoodsId());
             cartRecord.setGoodsName(goodsRecord.getGoodsName());
-            cartRecord.setGoodsNumber(goodsRecord.getGoodsNumber().shortValue());
+            cartRecord.setGoodsSpecs(productRecord.getPrdSpecs());
             cartRecord.setProductId(prdId);
             cartRecord.setMarketPrice(productRecord.getPrdMarketPrice());
             cartRecord.setGoodsPrice(productRecord.getPrdPrice());
-            cartRecord.setIsChecked((byte) 1);
+            cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);
             cartRecord.insert();
         } else {
             cartRecord.setGoodsNumber((short) (goodsNumber + cartRecord.getGoodsNumber()));

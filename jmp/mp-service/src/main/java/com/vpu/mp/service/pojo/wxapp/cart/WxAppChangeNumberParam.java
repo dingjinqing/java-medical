@@ -10,5 +10,5 @@ import lombok.Data;
 public class WxAppChangeNumberParam {
 
     private Integer productId;
-    private Integer goodsNumber;
+    private Integer cartNumber;
 }
