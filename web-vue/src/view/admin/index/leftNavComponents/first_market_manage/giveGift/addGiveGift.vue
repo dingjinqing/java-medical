@@ -135,20 +135,17 @@
             </el-row>
         </el-form>
         <!--添加商品弹窗-->
-        <choosingGoods @resultGoodsIds="choosingGoodsResult" :tuneUpChooseGoods='isShowChoosingGoodsDialog'/>
+        <choosingGoods @resultGoodsIds="choosingGoodsResult" :tuneUpChooseGoods='isShowChoosingGoodsDialog' :chooseGoodsBack="goodsIdArr"/>
     </wrapper>
 </template>
 
 <script>
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
-import { mapActions } from 'vuex'
+import {mapActions} from 'vuex'
 
-import {
-  getGiveGiftById,
-  addGiveGift,
-  updateGiveGift
-} from '@/api/admin/marketManage/giveGift'
+import {addGiveGift, getGiveGiftById, updateGiveGift} from '@/api/admin/marketManage/giveGift'
+
 export default {
   components: {
     wrapper,
@@ -220,7 +217,8 @@ export default {
       add: true,
       submitStatus: false,
       isShowChoosingGoodsDialog: false,
-      goodsNum: null
+      goodsNum: null,
+      goodsIdArr: []
     }
   },
   mounted () {
@@ -311,11 +309,7 @@ export default {
     // 初始化商品弹窗
     showChoosingGoods () {
       console.log('初始化商品弹窗', this.requestParams.recommendGoodsId)
-      let goodsIdArr = []
-      if (this.requestParams.recommendGoodsId !== null) {
-        goodsIdArr = this.requestParams.recommendGoodsId.split(',')
-      }
-      this.transmitEditGoodsId(goodsIdArr)
+      // this.transmitEditGoodsId(goodsIdArr)
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
     // 接收商品弹窗放回数据
@@ -323,6 +317,7 @@ export default {
       console.log('接收商品弹窗放回数据', row)
       console.log('接收商品弹窗放回数据', row.toString())
       this.requestParams.recommendGoodsId = row.toString()
+      this.goodsIdArr = row
       this.goodsNum = row.length
     }
   }
