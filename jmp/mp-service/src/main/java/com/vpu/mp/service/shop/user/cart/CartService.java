@@ -229,4 +229,13 @@ public class CartService extends ShopBaseService {
                 .and(CART.STORE_ID.eq(storeId)).and(CART.USER_ID.eq(user)).fetchOne().component1();
         return goodsNum.intValue();
     }
+    
+    /**
+     * 根据recid获取所有信息
+     * @param recid
+     * @return
+     */
+    public CartRecord getInfoByRecid(Long recid) {
+    	return db().selectFrom(CART).where(CART.REC_ID.eq(recid)).fetchAny();
+    }
 }
