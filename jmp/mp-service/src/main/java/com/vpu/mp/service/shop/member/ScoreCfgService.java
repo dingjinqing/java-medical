@@ -127,8 +127,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
 	/**
 	 * 更新设置签到积分
-	 * @param enable
-	 * @param signScore
 	 */
 	private void setSignScore(Byte enable,String[] signScore) {
 	
@@ -140,9 +138,9 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			userScore = getScoreValueThird(SIGN_IN_SCORE);
 			if(userScore != null){
 				userScore.setEnable(enable);
-				value = Util.toJson(userScore);
 			}
-		}
+		}	
+		value = Util.toJson(userScore);
 		deleteRecord(SIGN_IN_SCORE);
 		setSignInScore(userScore);
 		setJsonObject(SIGN_IN_SCORE,enable,value);
@@ -166,9 +164,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	}
 	/**
 	 * 插入到数据库
-	 * @param scoreName
-	 * @param status
-	 * @param value
 	 */
 	private void setJsonObject(String scoreName,Byte status,String value) {
 		this.db().insertInto(USER_SCORE_SET,USER_SCORE_SET.SCORE_NAME,USER_SCORE_SET.STATUS,USER_SCORE_SET.SET_VAL3)

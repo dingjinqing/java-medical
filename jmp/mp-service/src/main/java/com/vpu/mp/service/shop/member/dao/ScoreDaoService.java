@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
@@ -64,8 +65,6 @@ public class ScoreDaoService extends ShopBaseService {
 	/**
 	 * 计算从现在到指定时间的可用积分
 	 * @param endTime 指定的时间
-	 * @param userId
-	 * @return
 	 */
 	public Integer calculateWillExpireSoonScore(Timestamp endTime,Integer userId) {
 		Integer willExpireSoonScore = db().select(sum(USER_SCORE.USABLE_SCORE))
@@ -74,14 +73,13 @@ public class ScoreDaoService extends ShopBaseService {
 			.and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
 			.and(USER_SCORE.EXPIRE_TIME.between(DateUtil.getLocalDateTime(), endTime))
 			.fetchAnyInto(Integer.class);
+	
 		logger().info("计算在指定时间 "+endTime+" 所有可用积分为： "+willExpireSoonScore);
-		return willExpireSoonScore;
+		return isNotNull(willExpireSoonScore)?willExpireSoonScore:NumberUtils.INTEGER_ZERO;
 	}
 	
 	/**
 	 * 获取一条用户可用的最早积分记录
-	 * @param userId
-	 * @return
 	 */
 	public UserScoreRecord getTheEarliestUsableUserScoreRecord(Integer userId) {
 		return db().selectFrom(USER_SCORE)
@@ -92,4 +90,7 @@ public class ScoreDaoService extends ShopBaseService {
 			.fetchAny();
 	}
 
+	private boolean isNotNull(Object obj) {
+		return obj!=null;
+	}
 }

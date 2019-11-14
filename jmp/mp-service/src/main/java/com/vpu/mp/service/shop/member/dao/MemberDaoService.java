@@ -52,8 +52,6 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 * 获取会员用户的详细信息
-	 * @param userId
-	 * @return
 	 */
 	public MemberBasicInfoVo getMemberInfo(Integer userId) {
 		User a = USER.as("a");
@@ -87,10 +85,7 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/** 
 	 * 获取一张会员卡信息,此会员卡为等级会员，限次会员卡再到普通会员卡
-	 * @param localDateTime
 	 * @param inData 工作日，休息，或 无限制
-	 * @param userId
-	 * @return
 	 */
 	public Record getOneMemberCard(List<Integer> inData, Integer userId) {
 			//.limit(1).fetchAny();
@@ -163,9 +158,6 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 * 获取指定范围内最高次数
-	 * @param hight 
-	 * @param param
-	 * @return
 	 */
 	public Result<Record1<Integer>> getBuyCountHight(Integer hight) {
 		return db().select(ORDER_INFO.USER_ID)
@@ -177,8 +169,6 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 * 获取指定范围内最低次数
-	 * @param low
-	 * @return
 	 */
 	public Result<Record1<Integer>> getBuyCountLow(Integer low) {
 		return db().select(ORDER_INFO.USER_ID)
@@ -190,8 +180,6 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 * 时间内有交易记录-开始时间
-	 * @param startTime
-	 * @return
 	 */
 	public Result<Record1<Integer>> getBuyStartTime(String startTime) {
 		return db().select(ORDER_INFO.USER_ID)
@@ -204,8 +192,6 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 * 时间内有交易记录-结束时间
-	 * @param startTime
-	 * @return
 	 */
 	public Result<Record1<Integer>> getBuyEndTime(String endTime) {
 		return db().select(ORDER_INFO.USER_ID)
@@ -273,8 +259,6 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 * 更新用户的邀请人id
-	 * @param userId
-	 * @param invitedId
 	 */
 	public void updateMemberInviteId(Integer userId,Integer invitedId) {
 		db().update(USER).set(USER.INVITE_ID, invitedId).where(USER.USER_ID.eq(userId)).execute();
@@ -282,7 +266,6 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 * 更新用户信息
-	 * @param param
 	 */
 	public void updateMemberInfoSql(MemberParam param) {
 		logger().info("正在更新用户信息");
@@ -293,8 +276,6 @@ public class MemberDaoService extends ShopBaseService {
 
 	/**
 	 * 构建更新字段
-	 * @param param
-	 * @param record
 	 */
 	private void buildMemberInfoOptions(MemberParam param, UserDetailRecord record) {
 		/** -生日-年 */
@@ -343,8 +324,6 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 *  会员持有会员卡详情
-	 * @param userId
-	 * @return
 	 */
 	public Result<Record> getAllUserCardDetailSql(UserCardDetailParam param) {
 		SelectOnConditionStep<Record> select = db().select(USER_CARD.asterisk(),MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,USER.USERNAME)
@@ -356,8 +335,6 @@ public class MemberDaoService extends ShopBaseService {
 	}
 	/**
 	 * 构建查询会员持有会员卡详情的参数
-	 * @param select
-	 * @param param
 	 */
 	private void buildOptionsForUserCard(SelectOnConditionStep<Record> select, UserCardDetailParam param) {
 		/** - 用户id */
@@ -392,7 +369,4 @@ public class MemberDaoService extends ShopBaseService {
 			select.where(MEMBER_CARD.CARD_TYPE.eq(param.getCardType()));
 		}
 	}
-	
-	
-	
 }
