@@ -302,8 +302,8 @@ export default {
       flag: true,
       tuneUpMiniPage: false,
       pageParams: {
-        inputPageName: '',
-        selectValue: ''
+        pageName: '',
+        catId: ''
       },
       param: {},
       pageId: '',
@@ -379,19 +379,15 @@ export default {
     },
     // 页面列表
     list () {
-      this.pageParams.inputPageName = this.inputPageName
-      this.pageParams.selectValue = this.selectValue
-      console.log(this.pageParams)
+      this.pageParams.pageName = this.inputPageName
+      this.pageParams.catId = this.selectValue
       pageList(this.pageParams).then((res) => {
         if (res.error === 0) {
-          console.log(res.content.dataList)
-
           res.content.dataList.forEach(item => {
             item.ischeck = false
           })
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
-          console.log(this.pageParams)
         }
       })
     },
