@@ -406,7 +406,7 @@
             align="center"
           ></el-table-column>
           <el-table-column
-            prop="pageType"
+            prop="typeText"
             label="是否首页"
             align="center"
           ></el-table-column>
@@ -447,14 +447,15 @@
 
 <script>
 // 引入组件
-import { setDistribution, getDistribution, shopDecorateList } from '@/api/admin/marketManage/distribution.js'
+// setDistribution, getDistribution,
+import { shopDecorateList } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
     ImageDalog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
     Pagination: () => import('@/components/admin/pagination/pagination.vue') // 分页
   },
-  data() {
+  data () {
     return {
       imageHost: 'http://jmpdevimg.weipubao.cn/',
       form: {
@@ -523,13 +524,13 @@ export default {
       tamplateFlag: false // 模板数据显示
     }
   },
-  mounted() {
+  mounted () {
     // 初始化数据
     this.getDistribution()
   },
   methods: {
     // 获取分销配置
-    getDistribution() {
+    getDistribution () {
       // getDistribution().then((res) => {
       //   if (res.error === 0) {
 
@@ -538,7 +539,7 @@ export default {
     },
 
     // 保存分销配置
-    addDistribution() {
+    addDistribution () {
       // 有效期
       if (this.form.vaild === 1) {
         this.form.vaild = this.form.vaildDate
@@ -559,17 +560,17 @@ export default {
     },
 
     // 展开更多配置
-    handleToChangeArror() {
+    handleToChangeArror () {
       this.arrorFlag = !this.arrorFlag
     },
 
     // 显示商品弹窗
-    hanldeToAddGoodS() {
+    hanldeToAddGoodS () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
 
     // 选择商品弹窗回调显示
-    choosingGoodsResult(row) {
+    choosingGoodsResult (row) {
       console.log('选择商品弹窗回调显示:', row)
       this.tableData = row
       this.goodsInfo = []
@@ -579,13 +580,13 @@ export default {
     },
 
     // 删除推荐商品
-    deleteTable(index) {
+    deleteTable (index) {
       this.tableData.splice(index, 1)
       this.goodsInfo.splice(index, 1)
     },
 
     // 调起模板弹窗
-    chooseTemplate() {
+    chooseTemplate () {
       this.templateDialog = !this.templateDialog
       this.getTemplateData()
       if (this.form.rebate_page_id === '') {
@@ -594,46 +595,57 @@ export default {
     },
 
     // 获取模板弹窗表格数据
-    getTemplateData() {
+    getTemplateData () {
       shopDecorateList(this.pageParams).then((res) => {
         if (res.error === 0) {
           this.pageParams = res.content.page
           this.templateData = res.content.dataList
+          for (var i in this.templateData) {
+            if (i === 'pageType') {
+
+            }
+            if (this.templateData.pageType === 1) {
+              this.templateData.typeText = '是'
+            } else {
+              this.templateData.typeText = '否'
+            }
+          }
+          console.log(this.templateData)
         }
       })
     },
 
     // 选中表格数据
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       this.templateRow = val
       this.form.rebate_page_id = val.id
     },
 
     // 模板数据回显
-    sureClickHandler() {
+    sureClickHandler () {
       this.templateDialog = false
       this.tamplateFlag = true
     },
 
     // 删除模板
-    clearClickHandler() {
+    clearClickHandler () {
       this.templateRow = {}
       this.form.rebate_page_id = ''
       this.tamplateFlag = false
     },
 
     // 显示图片弹窗
-    handleToCallImgDialog() {
+    handleToCallImgDialog () {
       this.tuneUp = !this.tuneUp
     },
 
     // 添加图片弹窗选中图片数据回传
-    handleSelectImg(imgData) {
+    handleSelectImg (imgData) {
       this.form.bg_img = imgData.imgUrl
     },
 
     // 切换背景图
-    selectChange(val) {
+    selectChange (val) {
       this.form.bg_img = val
     }
 
