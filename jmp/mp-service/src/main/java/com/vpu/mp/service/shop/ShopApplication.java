@@ -87,6 +87,7 @@ import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
 import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.recommend.CollectionMallService;
 import com.vpu.mp.service.shop.recommend.OrderMallService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
@@ -482,4 +483,10 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public OrderMallService orderMallService;
+	
+	/**
+	 * 好物圈购物车相关
+	 */
+	@Autowired
+	public CollectionMallService collectionMallService;
 }
