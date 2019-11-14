@@ -3,6 +3,8 @@ package com.vpu.mp.service.shop.store.postsale;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -95,6 +97,10 @@ public class ServiceTechnicianService extends ShopBaseService {
 		if(technicianParam == null) {
 			return 0;
 		}
+        if (db().fetchExists(SERVICE_TECHNICIAN, SERVICE_TECHNICIAN.TECHNICIAN_NAME.eq(technicianParam.getTechnicianName())
+            .and(SERVICE_TECHNICIAN.TECHNICIAN_MOBILE.eq(technicianParam.getTechnicianMobile())))) {
+            throw new BusinessException(JsonResultCode.CODE_DATA_ALREADY_EXIST, "技师 " + technicianParam.getTechnicianName() + "-" + technicianParam.getTechnicianMobile());
+        }
 		String serviceList = null;
 		if(SERVICE_TYPE_PART.equals(technicianParam.getServiceType())) {
 			serviceList = Util.toJson(technicianParam.getServiceList());
