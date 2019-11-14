@@ -53,7 +53,7 @@
         </view>
       </view>
     </view>
-    <view class="shipping_info">
+    <!-- <view class="shipping_info">
       <navigator>
         <view class="logistics" style='background:url({{imageUrl}}image/wxapp/right_into.png) 95% center no-repeat;background-size:16rpx 32rpx;'>
           <image mode="widthFix" src="{{imageUrl}}image/wxapp/icon_get.png"></image>
@@ -98,7 +98,7 @@
           <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
         </view>
       </view>
-    </view>
+    </view> -->
     <view class="pay_info">
       <view class="pay_item">
         <text>{{i18n.$t(localePack,"pages.order.total")}}</text>

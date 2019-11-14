@@ -30,6 +30,7 @@ global.wxPage({
       "/api/wxapp/footprint/list",
       res => {
         if(res.error === 0){
+          let dataList = this.setDataList(res.content.footprintDay)
           this.setData({
             pageParams: res.content.page,
             ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.footprintDay
@@ -38,10 +39,34 @@ global.wxPage({
       },
       {
         currentPage: currentPage,
-        pageRows: 20,
+        pageRows: 2,
         userId: util.getCache('user_id')
       }
     );
+  },
+  setDataList(dataList){
+    if(!this.data.dataList){
+      return dataList
+    } else {
+      let newData = dataList.map(item=>{return item.date})
+      let oldData = []
+      this.data.dataList.forEach((pageItem,pageIndex)=>{
+        pageItem.forEach((dateItem, dateIndex) => {
+          let { date } = dateItem
+          oldData.push({
+            date,
+            dateIndex,
+            pageIndex
+          })
+        })
+      })
+      let repeatDate = newData.map(newItem=>{
+        return oldData.find(oldItem => oldItem.date === newItem)
+      }).filter(item => item!==undefined)
+      console.log(repeatDate)
+
+        //  console.log(dataList.filter((newData, newDataIndex) => oldData.data === newData.data)) 
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

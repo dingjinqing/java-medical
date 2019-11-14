@@ -230,6 +230,7 @@ export default {
     addNodes (orderSn) {
       this.showNodes = true
       this.notesOrderSn = orderSn
+      console.log(this.notesOrderSn)
     },
     // 获取来源
     getAllStore () {

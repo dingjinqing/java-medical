@@ -1,10 +1,10 @@
 <view class="goods_item">
-  <view class="goods_image">
+  <view class="goods_image" bindtap="toItem">
     <image src="{{goodsData.goodsImg}}"></image>
   </view>
   <view class="goods_bottom">
     <view class="goods_name {{goodsData.coupons.length > 0 ? 'one_line' : 'two_lines'}}">{{goodsData.goodsName}}</view>
-    <view class="goods_coupon" wx:if="goodsData.coupons.length > 0">
+    <view class="goods_coupon" wx:if="{{goodsData.coupons.length > 0}}">
       <view class="coupon_item" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">领券减￥10</view>
     </view>
     <view class="goods_price">

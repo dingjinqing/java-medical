@@ -27,7 +27,7 @@ global.wxPage({
     this.requestEditGoodsNum(
       {
         productId: target.prdId,
-        goodsNumber: type === 'add' ? target.cartNumber + 1 : target.cartNumber - 1
+        cartNumber: type === 'add' ? target.cartNumber + 1 : target.cartNumber - 1
       }
     )
     // this.setData({
@@ -133,7 +133,7 @@ global.wxPage({
   getCartPrice(){
     const canBuyList = this.data.canBuyGoodsList.filter(item => { return item.isChecked === 1 })
     let totalPrice = canBuyList.reduce((accumulator, currentValue)=>{
-      return accumulator += currentValue.prdPrice * currentValue.prdNumber
+      return accumulator += currentValue.cartPrice * currentValue.cartNumber
     },0)
     let realPrice = totalPrice.toFixed(3)
     this.setData({

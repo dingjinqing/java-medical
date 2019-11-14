@@ -1,3 +1,4 @@
+const util = require("../../../utils/util.js");
 global.wxComponent({
   /**
    * 组件的属性列表
@@ -5,10 +6,7 @@ global.wxComponent({
   properties: {
     goodsData: {
       type: Object,
-      value: null,
-      observer(val){
-        console.log(val)
-      }
+      value: null
     }
   },
   /**
@@ -19,5 +17,9 @@ global.wxComponent({
   /**
    * 组件的方法列表
    */
-  methods: {}
+  methods: {
+    toItem(){
+      util.jumpLink(`pages/item/item?goodsId=${this.data.goodsData.goodsId}`,'navigateTo')
+    }
+  }
 });

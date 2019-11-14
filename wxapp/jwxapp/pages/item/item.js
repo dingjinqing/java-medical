@@ -17,10 +17,9 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-    options.goods_id = 66; //测试数据
-    if (!options.goods_id) return;
+    if (!options.goodsId) return;
     this.setData({
-      goodsId: options.goods_id
+      goodsId: options.goodsId
     });
     this.requestGoodsInfo().then(res => {
       this.requestPledge(res);
