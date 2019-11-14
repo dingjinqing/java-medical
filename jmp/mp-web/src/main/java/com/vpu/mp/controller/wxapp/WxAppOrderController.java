@@ -166,4 +166,24 @@ public class WxAppOrderController extends WxAppBaseController{
 		return fail();
 		
 	}
+	
+	@PostMapping("/cart/addtest")
+	public JsonResult test2(){
+		List<Long> list=new ArrayList<Long>();
+		list.add(1L);
+		list.add(3L);
+		list.add(4L);
+		list.add(5L);
+		list.add(6L);
+		list.add(7L);
+		list.add(8L);
+		list.add(9L);
+		list.add(10L);
+		Boolean addCommonOrders = shop().collectionMallService.addCartRows(wxAppAuth.user().getUserId(), list);
+		if(addCommonOrders) {
+			return success();
+		}
+		return fail();
+		
+	}
 }
