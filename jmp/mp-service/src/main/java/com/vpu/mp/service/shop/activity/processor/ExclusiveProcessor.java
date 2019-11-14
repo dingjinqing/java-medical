@@ -176,19 +176,17 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
     public void doCartOperation(WxAppCartBo cartBo) {
         log.info("ExclusiveProcessor->WxAppCartBo:"+ Util.toJson(cartBo));
         Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(cartBo.getUserId(), cartBo.getCartGoodsList());
-        cartBo.getCartGoodsList().forEach(goods -> {
-            if (goods.getIsCardExclusive().equals(GoodsConstant.CARD_EXCLUSIVE)) {
-                // 会员专享商品
-                if (!userCardExclusive.contains(goods.getGoodsId())) {
-                    //没有资格
-                    goods.setGoodsStatus(CartConstant.GOODS_STATUS_EXCLUSIVE);
-                    goods.setIsChecked(CartConstant.CART_NO_CHECKED);
-                    // todo 专享会员等级
-                }else {
-                    CartActivityInfo exclusiveGrade =new CartActivityInfo();
-                    exclusiveGrade.setActivityType(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
-                    goods.getCartActivityInfos().add(exclusiveGrade);
-                }
+        // 会员专享商品
+        cartBo.getCartGoodsList().stream().filter(goods -> GoodsConstant.CARD_EXCLUSIVE.equals(goods.getIsCardExclusive())).forEach(goods -> {
+            if (!userCardExclusive.contains(goods.getGoodsId())) {
+                //没有资格0
+                goods.setGoodsStatus(CartConstant.GOODS_STATUS_EXCLUSIVE);
+                goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                // todo 专享会员等级
+            } else {
+                CartActivityInfo exclusiveGrade = new CartActivityInfo();
+                exclusiveGrade.setActivityType(GoodsConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+                goods.getCartActivityInfos().add(exclusiveGrade);
             }
         });
     }
