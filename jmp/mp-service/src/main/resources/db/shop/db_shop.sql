@@ -1648,7 +1648,7 @@ create table `b2c_service_technician`
      `service_type`         tinyint(2)  default 0 comment '技师服务项目：0所有，1部分',
      `service_list`         varchar(191)  default '[]' comment '当type=1是服务项目id数组',
      `remarks`              varchar(1024) default '' comment '备注',
-     `del_flag`             tinyint(1)  default 0 comment '0正常，1删除';
+     `del_flag`             tinyint(1)  default 0 comment '0正常，1删除',
     `create_time`          timestamp              default current_timestamp,
     `update_time`          timestamp              default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
