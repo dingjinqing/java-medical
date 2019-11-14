@@ -532,10 +532,10 @@ export default {
         return
       }
       if (this.update) {
-        this.param.gifts.map((item, index) => {
-          item.productId = item.prdId
-          item.productNumber = Number(item.productNumber)
-        })
+        // this.param.gifts.map((item, index) => {
+        //   item.productId = item.prdId
+        //   item.productNumber = Number(item.productNumber)
+        // })
         // 编辑保存
         updateGift(this.param).then((res) => {
           if (res.error === 0) {
