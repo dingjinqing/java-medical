@@ -1,5 +1,27 @@
 package com.vpu.mp.service.shop.goods;
 
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
+import static com.vpu.mp.db.shop.Tables.SORT;
+import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Record3;
+import org.jooq.Record4;
+import org.jooq.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -10,21 +32,9 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
-import com.vpu.mp.service.pojo.shop.recommend.goods.SkuAttrList;
+import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
 import com.vpu.mp.service.shop.store.store.StoreGoodsService;
-import org.jooq.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @author 李晓冰
