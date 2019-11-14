@@ -30,7 +30,7 @@ global.wxPage({
       "/api/wxapp/footprint/list",
       res => {
         if(res.error === 0){
-          let dataList = this.setDataList(res.content.footprintDay)
+          let dataList = this.setDataList(res.content.day)
           this.setData({
             pageParams: res.content.page,
             ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList

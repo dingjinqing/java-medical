@@ -1,3 +1,6 @@
+.main-container{
+  height: 1500rpx;
+}
 .filter {
   height: 100rpx;
   background-color: #fff;

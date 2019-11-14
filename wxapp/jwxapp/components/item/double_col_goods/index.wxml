@@ -3,9 +3,11 @@
     <image src="{{goodsData.goodsImg}}"></image>
   </view>
   <view class="goods_bottom">
-    <view class="goods_name {{goodsData.coupons.length > 0 ? 'one_line' : 'two_lines'}}">{{goodsData.goodsName}}</view>
-    <view class="goods_coupon" wx:if="{{goodsData.coupons.length > 0}}">
-      <view class="coupon_item" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">领券减￥10</view>
+    <view class="goods_name {{coupons.length > 0 ? 'one_line' : 'two_lines'}}">{{goodsData.goodsName}}</view>
+    <view class="goods_coupon" wx:if="{{coupons.length > 0}}">
+      <block wx:for="{{coupons}}" wx:for-item="couponItem" wx:key="index">
+        <view class="coupon_item" wx:if="index < 2" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">{{couponItem.couponDesc}}</view>
+      </block>
     </view>
     <view class="goods_price">
       <text class="price" style="color:{{main_setting.comColor}};">￥{{goodsData.realPrice}}</text>
