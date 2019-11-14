@@ -69,29 +69,29 @@
                       <!--限时降价图形-->
                       <div
                         class="labelStyle1"
-                        v-if="(item.label?item.label.listPattern:-1)==='1'&&data.hide_label==='1'"
+                        v-if="(item.label?item.label.listPattern:-1)===1&&data.hide_label==='1'"
                       >
-                        <span style="display: inline;">{{$t('commodity.limitedPriceReduction')}}</span>
+                        <span style="display: inline;">{{item.label.name}}</span>
                       </div>
                       <div
                         class="labelStyle2"
-                        v-if="(item.label?item.label.listPattern:-1)==='2'&&data.hide_label==='1'"
+                        v-if="(item.label?item.label.listPattern:-1)===2&&data.hide_label==='1'"
                         style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
                       >
-                        <span style="display: inline;">{{$t('commodity.newProductsStart')}}</span>
+                        <span style="display: inline;">{{item.label.name}}</span>
                       </div>
                       <div
                         class="label newGoods"
-                        v-if="(item.label?item.label.listPattern:-1)==='3'&&data.hide_label==='1'"
+                        v-if="(item.label?item.label.listPattern:-1)===3&&data.hide_label==='1'"
                       >
-                        <span>{{$t('commodity.newProducts')}}</span>
+                        <span>{{item.label.name}}</span>
                       </div>
                       <div
                         class="labelStyle3"
-                        v-if="(item.label?item.label.listPattern:-1)==='4'&&data.hide_label==='1'"
+                        v-if="(item.label?item.label.listPattern:-1)===4&&data.hide_label==='1'"
                         style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
                       >
-                        <span style="display: inline-block;">{{$t('commodity.newProductsStart')}}</span>
+                        <span style="display: inline-block;">{{item.label.name}}</span>
                       </div>
                     </div>
                     <img
@@ -372,10 +372,10 @@ export default {
               width: 60px;
             }
             .labelStyle1 {
+              white-space: nowrap;
               position: absolute;
               left: 0px;
               top: 0px;
-              width: 41.74px;
               height: 42.16px;
               background: url("../../../../../../../../assets/adminImg/label-three.png")
                 no-repeat;
