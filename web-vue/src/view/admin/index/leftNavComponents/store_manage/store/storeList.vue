@@ -5,7 +5,7 @@
         <el-button
           type="primary"
           size="small"
-          @click="add()"
+          @click="addStoreHandle"
           style="margin-top: 10px;"
         >{{$t('storeList.addStore')}}</el-button>
       </div>
@@ -298,6 +298,12 @@ export default {
           })
           this.initDataList()
         }
+      })
+    },
+    // 新增门店
+    addStoreHandle () {
+      this.$router.push({
+        path: '/admin/home/main/store/addStore'
       })
     },
     // 删除门店

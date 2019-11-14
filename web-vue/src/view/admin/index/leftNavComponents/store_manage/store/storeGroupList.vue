@@ -206,6 +206,7 @@ export default {
               groupId: row.groupId
             }
             delStoreGroup(params).then(res => {
+              console.log(res)
               if (res.error === 0) {
                 that.$message.success('删除成功')
                 that.initDataList()
@@ -262,6 +263,7 @@ export default {
       }
       updateStoreGroup(params).then(res => {
         if (res.error === 0) {
+          console.log(res)
           that.$message.success('更新成功')
           that.initDataList()
           that.editGroupVisible = false

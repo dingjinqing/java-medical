@@ -199,7 +199,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/store_manage/store/addStoreGroup'
+        '@/view/admin/index/leftNavComponents/store_manage/store/addStore'
       )
   },
   //   门店服务配置
