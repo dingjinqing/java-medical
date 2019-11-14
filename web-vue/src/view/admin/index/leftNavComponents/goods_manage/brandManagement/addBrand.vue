@@ -183,7 +183,7 @@
   </div>
 </template>
 <script>
-import { queryGoodsIdRequest, classificationSelectRequest, addGrandClassRequest, brandAddRequest } from '@/api/admin/brandManagement.js'
+import { brandUpdateGetRequest, queryGoodsIdRequest, classificationSelectRequest, addGrandClassRequest, brandAddRequest } from '@/api/admin/brandManagement.js'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   components: {
@@ -393,7 +393,8 @@ export default {
       goodsIdsArr: [],
       selectgoodsNum: 0,
       hxgoodsIds: [],
-      saveImgUrl: ''
+      saveImgUrl: '',
+      oldGoodsIds: [] // 编辑来的旧的商品id集合
 
     }
   },
@@ -456,6 +457,11 @@ export default {
           this.ruleForm.goodsIdsArr = res.content.goodsIds
           this.hxgoodsIds = res.content.goodsIds
           this.selectgoodsNum = res.content.goodsIds.length
+          this.oldGoodsIds = res.content.goodsIds // 将旧的的商品id集合保存
+          console.log(res.content.fullUrlLogo.split('cn')[1])
+          let imgUrl = res.content.fullUrlLogo.split('cn')[1].substr(1)
+          console.log(imgUrl)
+          this.saveImgUrl = imgUrl
         })
       }
     },
@@ -542,29 +548,58 @@ export default {
             })
           } else {
             console.log(this.saveImgUrl)
-            let obj = {
-              'brandName': this.ruleForm.name,
-              'ename': this.ruleForm.NameEnlishInput,
-              'logo': this.saveImgUrl,
-              'first': this.ruleForm.firstInput,
-              'isRecommend': this.ruleForm.radio,
-              'classifyId': this.ruleForm.classSelectValue,
-              'goodsIds': this.ruleForm.goodsIdsArr
-            }
-            brandAddRequest(obj).then((res) => {
-              console.log(res)
-              if (res.error === 0) {
-                this.$message.success({
-                  message: '保存成功',
-                  type: 'success'
-                })
-              } else if (res.error === 131001) {
-                this.$message.error({
-                  message: '品牌名称已存在',
-                  type: 'success'
-                })
+            console.log(this.editGoodsId)
+            if (this.editGoodsId !== 'add') {
+              let obj = {
+                'id': this.editGoodsId,
+                'brandName': this.ruleForm.name,
+                'logo': this.saveImgUrl,
+                'first': this.ruleForm.firstInput,
+                'classifyId': this.ruleForm.classSelectValue,
+                'isRecommend': this.ruleForm.radio,
+                'goodsIds': this.ruleForm.goodsIdsArr,
+                'oldGoodsIds': this.oldGoodsIds,
+                'ename': this.ruleForm.NameEnlishInput
               }
-            })
+              brandUpdateGetRequest(obj).then((res) => {
+                console.log(res)
+                if (res.error === 0) {
+                  this.$message.success({
+                    message: '保存成功',
+                    type: 'success'
+                  })
+                } else if (res.error === 131001) {
+                  this.$message.error({
+                    message: '品牌名称已存在',
+                    type: 'success'
+                  })
+                }
+              })
+            } else {
+              let obj = {
+                'brandName': this.ruleForm.name,
+                'ename': this.ruleForm.NameEnlishInput,
+                'logo': this.saveImgUrl,
+                'first': this.ruleForm.firstInput,
+                'isRecommend': this.ruleForm.radio,
+                'classifyId': this.ruleForm.classSelectValue,
+                'goodsIds': this.ruleForm.goodsIdsArr
+              }
+              brandAddRequest(obj).then((res) => {
+                console.log(res)
+                if (res.error === 0) {
+                  this.$message.success({
+                    message: '保存成功',
+                    type: 'success'
+                  })
+                } else if (res.error === 131001) {
+                  this.$message.error({
+                    message: '品牌名称已存在',
+                    type: 'success'
+                  })
+                }
+              })
+            }
           }
         }
       })
