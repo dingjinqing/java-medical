@@ -1,7 +1,11 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.list;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -13,8 +17,9 @@ import java.util.stream.Collectors;
  * @date 2019年10月12日
  * 装修组件中商品组件相关请求参数类
  */
-@Data
-public class GoodsListMpParam {
+@Getter
+@Setter
+public class GoodsListMpParam extends BasePageParam{
     /**
      * 0 自动推荐 1手动推荐
      */
