@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.recommend.goods;
+package com.vpu.mp.service.pojo.shop.recommend;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
