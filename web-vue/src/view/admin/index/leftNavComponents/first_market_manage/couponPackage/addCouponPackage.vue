@@ -532,16 +532,14 @@ export default {
       this.param.endTime = this.effectiveDate[1]
       addCouponPackage(this.param).then((res) => {
         if (res.error === 0) {
-          this.$message({
-            type: 'success',
+          this.$message.success({
             message: '保存成功!'
           })
           this.$router.push({
             name: 'coupon_package'
           })
         } else {
-          this.$message({
-            type: 'fail',
+          this.$message.fail({
             message: '保存失败!'
           })
         }
@@ -554,16 +552,14 @@ export default {
       this.param.endTime = this.effectiveDate[1]
       updateCouponPackage(this.param).then((res) => {
         if (res.error === 0) {
-          this.$message({
-            type: 'success',
+          this.$message.success({
             message: '更新成功!'
           })
           this.$router.push({
             name: 'coupon_package'
           })
         } else {
-          this.$message({
-            type: 'fail',
+          this.$message.fail({
             message: '更新失败!'
           })
         }
