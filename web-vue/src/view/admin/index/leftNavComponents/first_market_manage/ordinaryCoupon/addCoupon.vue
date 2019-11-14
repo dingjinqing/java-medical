@@ -599,7 +599,7 @@ export default {
         randomNum2: null, // 随机金额2
         couponNum: 0, // 领券人数
         humanNum: null, // 人数
-        enabled: 0,
+        enabled: 1,
         suitGoods: 0, // 适用商品
         useExplain: '',
         denomination: null, // num面额
