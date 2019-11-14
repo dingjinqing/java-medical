@@ -363,6 +363,9 @@ export default {
     }
   },
   mounted () {
+    if (this.$route.query.groupId) {
+      this.$set(this.queryParams, 'groupId', Number(this.$route.query.groupId))
+    }
     this.langDefault()
     this.initGroupList()
     this.initDataList()

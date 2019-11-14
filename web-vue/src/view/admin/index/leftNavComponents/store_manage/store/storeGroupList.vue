@@ -57,7 +57,7 @@
             :label="$t('marketCommon.operate')"
             width="230px"
           >
-            <template slot-scope="scope">
+            <template slot-scope="{row}">
               <div class="operation">
                 <el-tooltip
                   class="item"
@@ -65,7 +65,7 @@
                   :content="$t('storeCommon.edit')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id, 'edit', row)">{{$t('storeCommon.edit')}}</a>
+                  <a @click="edit(row.id, 'edit', row)">{{$t('storeCommon.edit')}}</a>
                 </el-tooltip>
 
                 <el-tooltip
@@ -74,7 +74,7 @@
                   :content="$t('storeCommon.delete')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id, 'delete', row)">{{$t('storeCommon.delete')}}</a>
+                  <a @click="edit(row.id, 'delete', row)">{{$t('storeCommon.delete')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -82,7 +82,7 @@
                   :content="$t('storeList.checkStores')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.id)">{{$t('storeList.checkStores')}}</a>
+                  <a @click="edit(row.id, 'dark', row)">{{$t('storeList.checkStores')}}</a>
                 </el-tooltip>
               </div>
             </template>
@@ -125,24 +125,25 @@
       title="编辑分组"
       :visible.sync="editGroupVisible"
       :close-on-click-modal="false"
+      :before-close="handleClose"
       width="330px"
     >
       <div>
         <p style="margin-bottom:15px">分组名称</p>
         <el-input
           size="small"
-          v-model="groupName"
+          v-model="editGroupName"
         ></el-input>
       </div>
       <span slot="footer">
         <el-button
           type="primary"
           size="small"
-          @click="confirmAddGroup"
+          @click="confirmEditGroup"
         >确定</el-button>
         <el-button
           size="small"
-          @click="cancelAddGroup"
+          @click="cancelEditGroup"
         >取消</el-button>
       </span>
     </el-dialog>
@@ -193,21 +194,37 @@ export default {
     },
     edit (id, operate, row) {
       let that = this
-      let params = {
-        groupId: id
-      }
       switch (operate) {
         case 'edit':
           that.editGroupVisible = !that.editGroupVisible
+          that.editGroupName = row.groupName
+          that.editGroupId = row.groupId
           break
         case 'delete':
-          delStoreGroup(params).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              that.$message.success('删除成功')
-              that.initDataList()
-            } else {
-              that.$$message.error('删除失败')
+          that.$confirm('删除此分组，已有此分组的用户将失去该分组，是否确认删除？', '提醒').then(() => {
+            let params = {
+              groupId: row.groupId
+            }
+            delStoreGroup(params).then(res => {
+              if (res.error === 0) {
+                that.$message.success('删除成功')
+                that.initDataList()
+              } else {
+                that.$message.error('删除失败')
+              }
+            })
+          }).catch(() => {
+            that.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+          break
+        case 'dark':
+          that.$router.push({
+            path: '/admin/home/main/store/list',
+            query: {
+              groupId: row.groupId
             }
           })
           break
@@ -217,15 +234,19 @@ export default {
       this.addGroupVisible = !this.addGroupVisible
     },
     confirmAddGroup () {
+      let that = this
       let params = {
         groupName: this.groupName
       }
       addStoreGroup(params).then(res => {
-        if (res.error) {
-          this.$message.success('添加分组成功')
-          this.initDataList()
+        if (res.error === 0) {
+          that.$message.success('添加分组成功')
+          that.initDataList()
+          that.addGroupVisible = false
+        } else if (res.error === 180001) {
+          that.$message.error(res.message)
         } else {
-          this.$message.error('添加分组失败')
+          that.$message.error('添加分组失败')
         }
       })
     },
@@ -241,12 +262,19 @@ export default {
       }
       updateStoreGroup(params).then(res => {
         if (res.error === 0) {
-          console.log(res)
+          that.$message.success('更新成功')
+          that.initDataList()
+          that.editGroupVisible = false
+        } else {
+          that.$message.error('更新失败')
         }
       })
     },
+    handleClose () {
+      this.editGroupId = ''
+      this.editGroupName = ''
+    },
     cancelEditGroup () {
-      this.groupName = ''
       this.editGroupVisible = false
     }
   },
