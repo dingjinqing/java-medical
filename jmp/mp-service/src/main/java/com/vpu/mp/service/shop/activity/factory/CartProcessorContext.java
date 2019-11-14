@@ -49,6 +49,11 @@ public class CartProcessorContext {
 
 
     private void executeStrategy(ActivityCartListStrategy strategy, WxAppCartBo cartBo){
-        strategy.doCartOperation(cartBo);
+        try {
+
+            strategy.doCartOperation(cartBo);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
