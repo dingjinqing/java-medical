@@ -40,9 +40,7 @@
       </view>
       <text class="tips" style="width:36%;">预约时间</text>
       <view style="width:50%;">
-        <text style="color:{{comColor}};">
-          {{reserveInfo.date}} {{reserveInfo.startTime}} - {{reserveInfo.endTime}}
-        </text>
+        <text style="color:{{comColor}};">{{reserveInfo.date}} {{reserveInfo.startTime}} - {{reserveInfo.endTime}}</text>
       </view>
     </view>
     <!-- 服务人员 -->
@@ -192,7 +190,7 @@
   </view>
   <view style='height:800rpx;overflow-y:scroll;{{isIpx == 1 ? "margin-bottom:110rpx;padding-bottom:50rpx;" : "margin-bottom:80rpx;"}}'>
     <block wx:if="{{ cardList.length != 0 }}" wx:for="{{cardList}}" wx:key="index">
-      <view class="card_list clearfix" data-id="{{ index }}" bindtap='chooseCard' data-name="{{ item.cardName }}" data-cardNo="{{ item.cardNo }}">
+      <view class="card_list clearfix" data-id="{{ index }}" bindtap='chooseCard' data-name="{{ item.cardName }}" data-card_no="{{ item.cardNo }}">
         <view class="card_choose">
           <image src="{{ item.card_src }}" wx:if='{{item.card_src != 1}}' mode="widthFix" />
           <text class='iconfont icondanxuan' style='font-size:40rpx;color:{{comColor}}' wx:if='{{item.card_src == 1}}'></text>

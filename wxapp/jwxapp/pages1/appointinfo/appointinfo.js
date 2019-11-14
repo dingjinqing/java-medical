@@ -7,7 +7,6 @@ var order_info = [];
 var lat;
 var lon;
 global.wxPage({
-
   /**
    * 页面的初始数据
    */
@@ -26,22 +25,58 @@ global.wxPage({
     if (!util.check_setting(options)) return;
     var that = this;
     var order_sn = options.order_sn;
-    util.api('api/wxapp/service/orderdetail', function (e) {
-      order_info = e.content;
-      lat = Number(order_info.latitude);
-      lon = Number(order_info.longitude);
-      order_info.service_img = JSON.parse(order_info.service_img);
-      order_info.main_imgs = order_info.service_img[1];
-      order_info.store_img = JSON.parse(order_info.store_img);
-      if (order_info.store_img != null)
-        order_info.main_imgss = order_info.store_img[0];
-      order_info.verify_code_img = qrcode.createQrCodeImg(order_info.verify_code, { 'size': 300 });
-      that.setData({
-        order_info: order_info
-      })
-    }, { order_sn: order_sn })
+    // util.api('api/wxapp/service/orderdetail', function (e) {
+    // order_info = e.content;
+    let order_info = {
+      order_sn: 1,
+      add_time: '2019-11-14 10:28:00',
+      service_img: '["http://jmpdevimg.weipubao.cn/upload/245547/image/20191106/Cw7hweKwF9TZTt3M0JBZ.jpg","http://jmpdevimg.weipubao.cn/upload/245547/image/20191106/piHajXgTBcS0EwFv5LyK.jpg","http://jmpdevimg.weipubao.cn/upload/245547/image/20191106/6zQd7CS4Briz5NWQ4OH6.jpg"]',
+      service_name: "辅导功课",
+      service_id: '1',
+      servicePrice: 100,
+      serviceShelf: 1,
+      serviceSn: "G101011239",
+      serviceSubsist: 20,
+      serviceType: 0,
+      servicesNumber: 10,
+      startDate: "2019-11-07",
+      startPeriod: "09:00",
+      techServicesNumber: null,
+      updateTime: "2019-11-13 16:34:06",
+      shopAvatar: "upload/1/image/20190903/8quev7YQPROAdfBXQiIx.jpg",
+      storePojo: { storeId: 6, storeName: "牡丹园门店", manager: "zzz", mobile: "15010607187" },
+      store_img: '["http://mpdevimg2.weipubao.cn/upload/0/image/20190927/crop_krznocD6sNDo1zIQ.jpeg"]',
+      technicianTitle: "伏虎罗汉",
+      verify_code: 'http://baidu.com',
+      technician_title: '伏虎罗汉',
+      technician_name: '小手张',
+      service_date: '2019-11-07',
+      service_period: '09:00-19:00',
+      address: "北京南站",
+      latitude: "39.865078",
+      longitude: "116.378929",
+      order_status: 0,
+      money_paid: 10,
+      service_price: 100,
+      store_id: 6,
+      store_name: '牡丹园门店',
+      error: 0,
+      language: "zh_CN",
+      message: "成功"
+    }
+    lat = Number(order_info.latitude);
+    lon = Number(order_info.longitude);
+    order_info.service_img = JSON.parse(order_info.service_img);
+    order_info.main_imgs = order_info.service_img[1];
+    order_info.store_img = JSON.parse(order_info.store_img);
+    if (order_info.store_img != null) order_info.main_imgss = order_info.store_img[0];
+    order_info.verify_code_img = qrcode.createQrCodeImg(order_info.verify_code, { 'size': 300 });
+    that.setData({
+      order_info: order_info
+    })
+    // }, { order_sn: order_sn })
   },
-
+  // 预约评价
   ser_comment: function (e) {
     var order_sn = e.currentTarget.dataset.order_sn;
     var store_id = e.currentTarget.dataset.store_id;
@@ -58,6 +93,7 @@ global.wxPage({
       name: address
     })
   },
+  // 取消预约
   toTrueCancel: function (e) {
     var order_sn = e.currentTarget.dataset.order_sn;
     var form_id = e.detail.formId;
@@ -77,6 +113,7 @@ global.wxPage({
     }, true);
 
   },
+  // 取消预约
   toCancel: function (e) {
     var mobile = e.currentTarget.dataset.mobile;
     util.showModal('提示', '请与商家联系后，由商家取消', function () {
@@ -85,6 +122,7 @@ global.wxPage({
       })
     }, true, '取消', '直接联系');
   },
+  // 确认完成
   toConfirm: function (e) {
     var that = this;
     var form_id = e.detail.formId;
@@ -112,7 +150,7 @@ global.wxPage({
       url: '/pages/appointment/appointment?service_id=' + service_id
     })
   },
-  //去支付
+  // 去支付
   toPay: function (e) {
     var order_sn = e.currentTarget.dataset.order_sn;
     var openid = util.getCache('openid');

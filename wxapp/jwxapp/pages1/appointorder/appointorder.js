@@ -245,7 +245,7 @@ global.wxPage({
   chooseCard(e) {
     let that = this
     let dataset = e.currentTarget.dataset
-    let cardNo = dataset.cardNo
+    let cardNo = dataset.card_no
     let id = dataset.id
     let cardList = this.data.cardList
     cardList.forEach(function (item, i) {

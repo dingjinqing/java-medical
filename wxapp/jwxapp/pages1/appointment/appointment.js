@@ -81,7 +81,7 @@ Page({
    * 选择预约时间
    */
   timeShow() {
-    if (this.data.reservationInfoList) {
+    if (this.data.reservationInfoList && this.data.reservationInfoList.length > 0) {
       this.setData({
         timeMode: true
       })
@@ -182,7 +182,7 @@ Page({
       this.timeShow()
       return false
     }
-    if (!reserveInfo.tech_name) {
+    if (this.data.serviceInfo.serviceType === 1 && !reserveInfo.tech_name) {
       this.techShow()
       return false
     }
