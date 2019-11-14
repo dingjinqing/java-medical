@@ -33,7 +33,7 @@ global.wxPage({
           let dataList = this.setDataList(res.content.footprintDay)
           this.setData({
             pageParams: res.content.page,
-            ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.footprintDay
+            ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
           });
         }
       },
@@ -63,9 +63,23 @@ global.wxPage({
       let repeatDate = newData.map(newItem=>{
         return oldData.find(oldItem => oldItem.date === newItem)
       }).filter(item => item!==undefined)
-      console.log(repeatDate)
-
-        //  console.log(dataList.filter((newData, newDataIndex) => oldData.data === newData.data)) 
+      repeatDate.forEach(repeatItem=>{
+        let concatData = dataList.find(item=>{
+          return repeatItem.date === item.date
+        })
+        let target = `dataList[${repeatItem.pageIndex}][${repeatItem.dateIndex}].goodsList`
+        let dataTarget = this.data.dataList[repeatItem.pageIndex][repeatItem.dateIndex].goodsList
+        this.setData({
+          [target]: dataTarget.concat(concatData.goodsList)
+        })
+        let repeatIndex = dataList.findIndex(item => {
+          return repeatItem.date === item.date
+        })
+        if (repeatIndex !== -1){
+          dataList.splice(repeatIndex,1)
+        }
+      })
+      return dataList
     }
   },
   /**
