@@ -37,6 +37,8 @@ import com.vpu.mp.service.saas.image.SystemImageService;
 @Service
 
 public class ShopAccountService extends MainBaseService {
+	private static final String _1 = "1";
+	private static final int _3 = 3;
 	@Autowired
 	protected JedisManager jedis;
 	@Autowired
@@ -222,12 +224,12 @@ public class ShopAccountService extends MainBaseService {
 		//生成在ShopOfficialAccount.generateThirdPartCode方法
 		logger().debug("eventKey"+eventKey);
 		String[] split = eventKey.split("&");
-		if(split.length==3) {
+		if(split.length==_3) {
 			Integer shopId=Integer.parseInt(split[0].replace("qrscene_", ""));
 			Integer accountId=Integer.parseInt(split[2]);
 			Record shopInfo = saas.shop.getShop(shopId);
 			if(shopInfo!=null) {
-				if(split[1].equals("1")) {
+				if(_1.equals(split[1])) {
 					//主账户
 					if(getAccountInfoForId(accountId)!=null) {
 						//数据存在

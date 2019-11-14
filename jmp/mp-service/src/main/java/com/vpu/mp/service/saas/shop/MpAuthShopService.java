@@ -1305,7 +1305,11 @@ public class MpAuthShopService extends MainBaseService {
 	}
 
 
-	// 小程序有审核结果通知
+	/**
+	 * 小程序有审核结果通知
+	 * @param inMessage
+	 * @param appId
+	 */
 	public void WebAppAudit(WxMpXmlMessage inMessage,String appId) {
 		processAuditEvent(inMessage, appId);
 	}
@@ -1496,7 +1500,11 @@ public class MpAuthShopService extends MainBaseService {
 	}
 
 
-	//消息都转发给客服
+	/**
+	 * 消息都转发给客服
+	 * @param inMessage
+	 * @return
+	 */
 	public WxMpXmlOutMessage MessageTrans(WxMpXmlMessage inMessage) {
 		WxMpXmlOutTextMessage build = WxMpXmlOutMessage.TEXT().build();
 		build.setToUserName(inMessage.getFromUser());

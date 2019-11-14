@@ -57,6 +57,8 @@ import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 @Service
 public class ShopOfficialAccount extends MainBaseService {
 
+	private static final String EN_US = "en_US";
+
 	@Autowired
 	protected SystemImageService image;
 
@@ -331,7 +333,7 @@ public class ShopOfficialAccount extends MainBaseService {
 	public void batchGetUsers(String appId, String language, Integer sysId) {
 		// https://developers.weixin.qq.com/doc/offiaccount/User_Management/Getting_a_User_List.html
 		// https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
-		if (language != null && language.equals("en_US")) {
+		if (language != null && language.equals(EN_US)) {
 			language = "en";
 		}
 		try {

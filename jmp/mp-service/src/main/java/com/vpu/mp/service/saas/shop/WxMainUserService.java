@@ -14,7 +14,12 @@ import com.vpu.mp.db.main.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.wxapp.account.UserDetailMainVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserMainVo;
-
+/**
+ * 
+ * @author zhaojianqiang
+ *
+ * 2019年11月14日 上午10:31:02
+ */
 @Service
 public class WxMainUserService extends MainBaseService {
 	public static final Byte SYCUPDATE = 1;

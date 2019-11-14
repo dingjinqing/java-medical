@@ -34,7 +34,11 @@ public class MpJumpVersionService extends MainBaseService {
 		return result.value1();
 	}
 
-	// 最新提交审核的记录为已发布
+	/**
+	 *  最新提交审核的记录为已发布
+	 * @param shopId
+	 * @return
+	 */
 	public int updateMpJumpVersion(Integer shopId) {
 		return db().update(MP_JUMP_VERSION).set(MP_JUMP_VERSION.FLAG, (byte) 1)
 				.where(MP_JUMP_VERSION.SHOP_ID.eq(shopId.toString())).execute();

@@ -23,7 +23,9 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
  */
 @Service
 public class MpBackProcessService extends MainBaseService {
-	//0初始，1执行中，2完成，3失败,4终止
+	/**
+	 * 0初始，1执行中，2完成，3失败,4终止
+	 */
     private static final byte  STATE_RUN_INIT = 0;
     private static final byte  STATE_RUN_EXEC = 1;
     private static final byte  STATE_RUN_FINISH = 2;
