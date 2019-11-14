@@ -252,7 +252,7 @@
             <div
               class="indoor_area_raidus"
               :class="styleChoose=='1'? 'widthActive' : ''"
-              v-if="item.module_name=='useRecord' && item.is_show=='1'"
+              v-if="item.module_name=='use_record' && item.is_show=='1'"
             >
               <div class="orderTitle">
                 <div class="titleLeft">{{ item.title }}</div>

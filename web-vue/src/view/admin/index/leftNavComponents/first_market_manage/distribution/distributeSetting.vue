@@ -79,7 +79,7 @@
           <el-radio :label="1">
             <el-input
               style="width: 100px;"
-              v-model.number="form.vaildDate"
+              v-model.number="vaildDate"
               :disabled="form.vaild === 0"
             ></el-input> 天
           </el-radio>
@@ -96,7 +96,7 @@
           <el-radio :label="1">
             <el-input
               style="width: 100px;"
-              v-model.number="form.protectDate"
+              v-model.number="protectDate"
               :disabled="form.protect_date === 0"
             ></el-input> 天
           </el-radio>
@@ -168,11 +168,12 @@
         label="自定义内容："
         v-if="form.status === 1"
       >
+
         <div
-          v-if="tamplateFlag === true && this.templateRow.name !== ''"
+          v-if="tamplateFlag === true && this.templateRow.pageName !== ''"
           style="display: inline-block;"
         >
-          {{ this.templateRow.name }}
+          {{ this.templateRow.pageName }}
           <i
             class="el-icon-error"
             style="color: #ccc;font-size: 16px;"
@@ -360,6 +361,7 @@
             <el-col :span="8">
               <el-form-item label="页面名称：">
                 <el-input
+                  v-model="formDialog.pageName"
                   style="width: 150px;"
                   size="small"
                   placeholder="请输入页面名称"
@@ -369,6 +371,7 @@
             <el-col :span="8">
               <el-form-item label="页面分类：">
                 <el-input
+                  v-model="formDialog.catId"
                   style="width: 150px;"
                   size="small"
                   placeholder="请选择页面分类"
@@ -447,8 +450,7 @@
 
 <script>
 // 引入组件
-// setDistribution, getDistribution,
-import { shopDecorateList } from '@/api/admin/marketManage/distribution.js'
+import { setDistribution, getDistribution, shopDecorateList, getSelectGoods, getSelectTemplate } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
@@ -458,25 +460,22 @@ export default {
   data () {
     return {
       imageHost: 'http://jmpdevimg.weipubao.cn/',
+      vaildDate: 0, // 有效期天数
+      protectDate: 0, // 保护期天数
       form: {
         status: 1, // 分销开关
         judge_status: 1, // 分销员审核开关
-        checked1: true,
+        // checked1: true,
         activation: 1, // 是否需要提交个人信息
         activation_cfg: [], // 个人信息内容
         rank_status: 1, // 分销员排名开关
         vaild: 0, // 返利有效期
-        vaildDate: 0, // 有效期天数
         protect_date: 0, // 分销员保护期
-        protectDate: 0, // 保护期天数
         desc: '分销中心', // 分销中心页面名称
         distribution_goods_type: 2, // 推荐商品(自定义)
         recommend_goods_id: '', // 推荐商品ID
-
         rebate_page_id: '', // 推广模版文案id
-
         withdraw_status: 1, // 返利体现开关
-        // withdraw_source: 1, // 返利方式
         withdraw_source: 'wx_mini', // 返利方式
         withdraw_cash: 0, // 返利最小提现金额
         rebate_center_name: '分享给你一个好物店铺快来购物吧！', // 邀请文案
@@ -517,9 +516,11 @@ export default {
       templateDialog: false, // 模板弹窗
       templateRow: {}, // 模板弹窗回调函数
       formDialog: {
-
+        pageName: '',
+        catId: ''
       },
       pageParams: {}, // 分页
+      requestParams: {},
       templateData: [], // 模板表格
       tamplateFlag: false // 模板数据显示
     }
@@ -527,36 +528,96 @@ export default {
   mounted () {
     // 初始化数据
     this.getDistribution()
+    this.getTemplateData()
   },
   methods: {
     // 获取分销配置
     getDistribution () {
-      // getDistribution().then((res) => {
-      //   if (res.error === 0) {
+      getDistribution().then((res) => {
+        if (res.error === 0) {
+          this.form = res.content
+          // 有效期
+          if (this.form.vaild === 0) {
+            this.vaildDate = null
+          } else {
+            this.vaildDate = this.form.vaild
+            this.form.vaild = 1
+          }
+          // 保护期
+          if (this.form.protect_date === 0) {
+            this.protectDate = null
+          } else {
+            this.protectDate = this.form.protect_date
+            this.form.protect_date = 1
+          }
+          // 推荐商品ID
+          this.form.recommend_goods_id = this.form.recommend_goods_id.split(',')
+          this.form.recommend_goods_id = this.form.recommend_goods_id.map(Number)
+          // 推荐商品数据回显
+          this.goodsInfo = this.form.recommend_goods_id
+          let that = this
+          for (var j = 0; j < this.goodsInfo.length; j++) {
+            that.getSelectGoods(this.goodsInfo[j])
+          }
+          // 选择模板数据回显
+          if (this.form.rebate_page_id !== '') {
+            that.getSelectTemplate(this.form.rebate_page_id)
+          }
 
-      //   }
-      // })
+          // 默认背景图
+          for (var i = 0; i < this.options.length; i++) {
+            if (this.form.bg_img === this.options[i].value) {
+              this.defaultValue = this.form.bg_img
+            }
+          }
+        }
+      })
+    },
+
+    // 获取已选择的商品
+    getSelectGoods (id) {
+      this.tableData = []
+      getSelectGoods({
+        goodsId: id
+      }).then((res) => {
+        if (res.error === 0) {
+          this.tableData.push(res.content)
+        }
+      })
+    },
+
+    // 获取已选择的模板
+    getSelectTemplate (id) {
+      getSelectTemplate({
+        pageId: id
+      }).then((res) => {
+        if (res.error === 0) {
+          this.tamplateFlag = true
+          this.templateRow.pageId = res.content.page_id
+          this.templateRow.pageName = res.content.page_name
+          this.templateRow.createTime = res.content.create_time
+          this.templateRow.pageType = res.content.page_type
+        }
+      })
     },
 
     // 保存分销配置
     addDistribution () {
       // 有效期
       if (this.form.vaild === 1) {
-        this.form.vaild = this.form.vaildDate
+        this.form.vaild = this.vaildDate
       }
       // 保护期
       if (this.form.protect_date === 1) {
-        this.form.protect_date = this.form.protectDate
+        this.form.protect_date = this.protectDate
       }
       this.form.recommend_goods_id = this.goodsInfo.toString()
-      this.form.activation_cfg = this.form.activation_cfg.toString()
-
-      console.log(this.form)
-      // setDistribution().then((res) => {
-      //   if (res.error === 0) {
-
-      //   }
-      // })
+      this.form.tableData = this.tableData
+      setDistribution(this.form).then((res) => {
+        if (res.error === 0) {
+          this.$message.success({ message: '保存成功!' })
+        }
+      })
     },
 
     // 展开更多配置
@@ -588,29 +649,26 @@ export default {
     // 调起模板弹窗
     chooseTemplate () {
       this.templateDialog = !this.templateDialog
-      this.getTemplateData()
-      if (this.form.rebate_page_id === '') {
-        // this.$refs.templateData.setCurrentRow()
-      }
     },
 
     // 获取模板弹窗表格数据
     getTemplateData () {
-      shopDecorateList(this.pageParams).then((res) => {
+      this.requestParams.pageName = this.formDialog.pageName
+      this.requestParams.catId = this.formDialog.catId
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      shopDecorateList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.pageParams = res.content.page
           this.templateData = res.content.dataList
-          for (var i in this.templateData) {
-            if (i === 'pageType') {
-
-            }
-            if (this.templateData.pageType === 1) {
-              this.templateData.typeText = '是'
+          // 表格数据处理
+          this.templateData.map((item, index) => {
+            if (item.pageType === 1) {
+              item.typeText = '是'
             } else {
-              this.templateData.typeText = '否'
+              item.typeText = '否'
             }
-          }
-          console.log(this.templateData)
+          })
         }
       })
     },
@@ -618,7 +676,7 @@ export default {
     // 选中表格数据
     handleCurrentChange (val) {
       this.templateRow = val
-      this.form.rebate_page_id = val.id
+      this.form.rebate_page_id = val.pageId
     },
 
     // 模板数据回显

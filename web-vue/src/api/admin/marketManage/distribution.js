@@ -19,6 +19,24 @@ export function shopDecorateList (data) {
   })
 }
 
+// 查询商品
+export function getSelectGoods (data) {
+  return service({
+    url: '/api/admin/goods/select',
+    method: 'post',
+    data: data
+  })
+}
+
+// 查询模板
+export function getSelectTemplate (data) {
+  return service({
+    url: '/api/admin/decorate/page/edit',
+    method: 'post',
+    data: data
+  })
+}
+
 // 设置分销配置
 export function setDistribution (data) {
   return service({
