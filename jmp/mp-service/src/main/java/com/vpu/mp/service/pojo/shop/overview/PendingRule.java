@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.*;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * The interface Pending rule.
@@ -58,7 +59,7 @@ public interface PendingRule<R> {
      * Reset pending.
      */
     default void resetPending() {
-        PENDING_TEMP.set(ATOMIC_INTEGER_ZERO);
+        PENDING_TEMP.get().set(INTEGER_ZERO);
     }
 
     /**

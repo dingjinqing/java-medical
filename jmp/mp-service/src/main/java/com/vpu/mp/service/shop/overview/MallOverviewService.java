@@ -232,7 +232,7 @@ public class MallOverviewService extends ShopBaseService {
     }
 
     private Map<String, String> buildMemberVo(int examineOver) {
-        CardExamineRecord cardExamineRecord = cardVerifyService.getLastRecord(new ActiveAuditParam() {{
+        CardExamineRecord cardExamineRecord = cardVerifyService.getLastRecordCanNull(new ActiveAuditParam() {{
             setExamineOver(Timestamp.valueOf(LocalDateTime.now().minusDays(examineOver)));
         }});
         if (Objects.isNull(cardExamineRecord)) {
@@ -242,7 +242,7 @@ public class MallOverviewService extends ShopBaseService {
         }
         Integer cardId = cardExamineRecord.getCardId();
         return new HashMap<String, String>(3) {{
-            put("card_id", cardExamineRecord.getCardId().toString());
+            put("card_id", String.valueOf(cardId));
             put("card_name", cardDaoService.getCardById(cardId).getCardName());
             put("card_num", cardVerifyService.getUndealUserNum(cardId).toString());
         }};

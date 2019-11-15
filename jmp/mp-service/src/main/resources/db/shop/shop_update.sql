@@ -1179,7 +1179,7 @@ create table `b2c_goods_overview_summary`
     key `ref_type` (`ref_date`, `type`) using btree
 ) comment '商品概览统计表' ;
 
--- 修改秒杀表库存类型 2019-11-11
+-- 技师表
 ALTER TABLE b2c_service_technician
 MODIFY COLUMN    `bg_img_path`          varchar(191)  default '' comment '技师头像地址',
 MODIFY COLUMN    `technician_introduce` varchar(200)  default '' comment '技师简介',
