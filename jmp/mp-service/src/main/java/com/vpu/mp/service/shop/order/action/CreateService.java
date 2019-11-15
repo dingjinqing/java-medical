@@ -294,11 +294,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         // TODO 以下参数为模拟参数
         for (Goods temp : goods) {
             // 商品参与的促销活动id
-            temp.setStraId(0);
+            temp.setStraId(null);
             // 购买价格id
-            temp.setPurchasePriceId(0);
+            temp.setPurchasePriceId(null);
             // 购买规则id
-            temp.setPurchasePriceRuleId(0);
+            temp.setPurchasePriceRuleId(null);
             // ?crm?
             temp.setPromoteInfo(null);
         }
@@ -307,14 +307,16 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public void processParam(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
         if (param.getActivityId() != null && param.getActivityType() != null) {
             // 唯一并互斥的商品营销处理
-            // 可能的ActivityType ：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力
+            // 可能的ActivityType ：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
             List<OrderBeforeParam> capsules = new ArrayList<>();
             capsules.add(param);
             OrderBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderBeforeMpProcessorFactory.class);
             processorFactory.doProcess(capsules,param.getWxUserInfo().getUserId());
-            logger().info(param.toString());
+
+            //营销购买
+            purchaseForMarket(param, param.getWxUserInfo().getUserId(), param.getStoreId(), vo);
         } else {
-            // 未参与营销时进入
+            // 普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
             if (Boolean.TRUE) {
                 // 非购物车
                 if (Boolean.FALSE) {
@@ -327,7 +329,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
-    public void purchase(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
+    private void purchase(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
         //TODO 返利信息
         Boolean isNewUser = orderInfo.isNewUser(userId, true);
         //规格信息,key proId
@@ -357,6 +359,53 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 temp.setIsFirstSpecial(no);
             }
         }
+        this.setOrderBeforeVoInfo(param,userId,storeId,vo);
+    }
+
+    /**
+     * 唯一性的营销活动下单
+     * @param param
+     * @param userId
+     * @param storeId
+     * @param vo
+     * @throws MpException
+     */
+    private void purchaseForMarket(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
+        //规格信息,key proId
+        Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(param.getProductIds(), storeId);
+        //goods type,key goodsId
+        Map<Integer, Byte> goodsTypes = goodsService.getGoodsType(param.getGoodsIds());
+        //赋值
+        for (Goods temp : param.getGoods()) {
+            GoodsSpecProductRecord product = productInfo.get(temp.getProductId());
+            Byte goodsType = goodsTypes.get(temp.getGoodsId());
+            if (product == null || goodsType == null) {
+                //商品规格不存在（逻辑上不会出现）
+                logger().info("下单商品规格不存在");
+                throw new MpException(JsonResultCode.CODE_ORDER);
+            }
+            //方便计算，临时存储
+            temp.setProductInfo(product);
+            //规格价格(经过营销活动处理的规格价格)
+            temp.setProductPrice(temp.getProductPrice());
+            //规格原价
+            temp.setMarketPrice(temp.getMarketPrice());
+            //规格数量（库存）
+            temp.setProductNumbers(product.getPrdNumber());
+            //商品goodsType
+            temp.setGoodsType(goodsType);
+        }
+        this.setOrderBeforeVoInfo(param,userId,storeId,vo);
+    }
+
+    /**
+     * 根据处理过的param和其他信息填充下单确认页返回信息
+     * @param param
+     * @param userId
+     * @param storeId
+     * @param vo
+     */
+    private void setOrderBeforeVoInfo(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
         // 初始化
         List<OrderGoodsBo> orderGoodsBos = initOrderGoods(param, param.getGoods(), userId, param.getMemberCardNo(), storeId);
         //默认选择
@@ -426,6 +475,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //TODO temp goodsprice 取规格
             boList.add(orderGoods.initOrderGoods(temp, goodsRecord));
         }
+        param.setBos(boList);
         return boList;
     }
 
@@ -510,9 +560,17 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //处理当前优惠卷
         BigDecimal couponDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultCoupon(), bos, OrderConstant.D_T_COUPON);
         //计算运费
-        vo.setShippingFee(calculate.calculateShippingFee(vo.getAddress().getDistrictCode(), bos, param.getStoreId(), null));
-        //判断是否可以发货
-        vo.setCanShipping(isShipping(bos));
+        if(vo.getAddress() != null){
+            //没有可用地址的用户
+            vo.setShippingFee(calculate.calculateShippingFee(vo.getAddress().getDistrictCode(), bos, param.getStoreId(), null));
+            //判断是否可以发货
+            vo.setCanShipping(isShipping(bos));
+        }else{
+            vo.setShippingFee(BigDecimal.ZERO);
+            //判断是否可以发货
+            vo.setCanShipping(no);
+        }
+
         //TODO 包邮策略
         //freeDeliveryLogic();
         //折扣金额

@@ -31,7 +31,7 @@ import lombok.ToString;
 @ToString
 public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 
-    /** 指定本次结算所参加的唯一营销活动类型 {@link com.vpu.mp.service.pojo.shop.goods.GoodsConstant} 下的ACTIVITY_TYPE**/
+    /** 指定本次结算所参加的唯一营销活动类型 {@link com.vpu.mp.service.foundation.data.BaseConstant} 下的ACTIVITY_TYPE**/
     private Byte activityType;
     /** 指定本次结算所参加的唯一营销活动类型 ID */
     private Integer activityId;
@@ -93,7 +93,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private Integer purchasePriceRuleId;
 		private String promoteInfo;
 		/**以下为后台产生逻辑值directPurchase*/
-		private BigDecimal productPrice;
+		/** 规格原价（b2c_goods_spec_product记录的价格）*/
+		private BigDecimal marketPrice;
+        /** 规格当前价（处理优惠之后的价格） */
+        private BigDecimal productPrice;
 		private Integer productNumbers;
 		private Byte goodsType;
 		private Byte isFirstSpecial;

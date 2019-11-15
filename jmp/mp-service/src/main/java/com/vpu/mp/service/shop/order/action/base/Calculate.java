@@ -124,7 +124,7 @@ public class Calculate extends ShopBaseService {
         for (OrderGoodsBo bo : bos) {
             //会员卡 或 优惠卷-> one
             if(OrderConstant.D_T_MEMBER_CARD.equals(discountType) || OrderConstant.D_T_COUPON.equals(discountType)){
-                //加价购 或 满折满减 与 one 不共存
+                 //加价购 或 满折满减 与 one 不共存
                 if(bo.getPurchasePriceId() != null || bo.getStraId() != null){
                     continue;
                 }
@@ -236,11 +236,11 @@ public class Calculate extends ShopBaseService {
                 vo.setMemberCards(validCardList);
             }else{
                 //普通卡、等级卡（或者没有传入cardNo）
-                OrderMemberVo defaultCard = null;
+                OrderMemberVo defaultCard = card;
                 if(OrderConstant.DEFAULT_COUPON_OR_ORDER_SN.equals(param.getMemberCardNo())){
                     defaultCard = userCard.userCardDao.getOrderGradeCard(param.getWxUserInfo().getUserId());
                 }
-                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), null);
+                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(defaultCard));
                 defaultCard = defaultCard != null ? defaultCard : (CollectionUtils.isEmpty(validCardList) ? null : validCardList.get(0));
                 vo.setDefaultMemberCard(defaultCard);
                 vo.setMemberCards(validCardList);

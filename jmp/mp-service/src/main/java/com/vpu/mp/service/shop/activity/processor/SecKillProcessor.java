@@ -107,8 +107,8 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
 
     @Override
     public void processOrderBefore(OrderBeforeParam orderBeforeParam) {
-        if(orderBeforeParam.getActivityId() != null && orderBeforeParam.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_SEC_KILL)){
-            //TODO
+        if(orderBeforeParam.getActivityId() != null && orderBeforeParam.getActivityType() != null && BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(orderBeforeParam.getActivityType())){
+            secKillProcessorDao.setOrderPrdSeckillPrice(orderBeforeParam);
         }
     }
 }

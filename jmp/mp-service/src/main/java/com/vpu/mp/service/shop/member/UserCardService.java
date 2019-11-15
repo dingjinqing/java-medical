@@ -967,7 +967,7 @@ public class UserCardService extends ShopBaseService {
                             BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)), null)
                     ), null)));
         }
-        return card.getDiscount();
+        return card.getTotalDiscount();
     }
     
     /**

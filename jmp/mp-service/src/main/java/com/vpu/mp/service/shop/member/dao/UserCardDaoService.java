@@ -429,7 +429,7 @@ public class UserCardDaoService extends ShopBaseService{
      * @return
      */
 	public OrderMemberVo getValidByCardNo(String cardNo){
-        return selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
+        ValidUserCardBean validUserCardBean = selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
             .and(USER_CARD.FLAG.eq(MCARD_DF_NO))
             .and(
                 (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
@@ -441,13 +441,17 @@ public class UserCardDaoService extends ShopBaseService{
             )
             .and(
                 ((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
-                    .or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING,MCARD_ET_FOREVER))
+                    .or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER))
             )
             .and(
                 (MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull()))
                     .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
                     .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
-            ).fetchAnyInto(OrderMemberVo.class);
+            ).fetchAnyInto(ValidUserCardBean.class);
+        if(validUserCardBean != null) {
+            return new OrderMemberVo().init(validUserCardBean);
+        }
+        return null;
     }
 
     /**
