@@ -375,6 +375,7 @@ export default {
   position: relative;
 }
 .shopStyleContent_main {
+  height: 100%;
   background-color: #fff;
 }
 .color_title {

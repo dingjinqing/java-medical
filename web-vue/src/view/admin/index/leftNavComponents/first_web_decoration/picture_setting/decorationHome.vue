@@ -766,6 +766,7 @@ export default {
 
       console.log(newArr3, flag)
       newArr3.splice(flag, 1)
+      console.log(this.modulesData[flag])
       if (this.modulesData[flag].module_name === 'm_image_guide') {
         this.modulesData[flag].nav_group.forEach((item, index) => {
           item.nav_link = ''
@@ -774,7 +775,8 @@ export default {
       }
 
       // this.modulesData.splice(flag, 1)
-      this.modulesData.splice(flag, 1)
+
+      this.modulesData = this.modulesData.splice(flag, 1)
       console.log(this.modulesData)
       // 如果数组为空就重置当前插入模块id
       if (!newArr3.length) {
@@ -901,6 +903,8 @@ export default {
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
       if (!judgeFlag) return
       console.log(saveMosulesData)
+      console.log(this.pageSetData, this.cur_idx)
+      this.pageSetData.last_cur_idx = this.cur_idx
       let data = this.handleToSaveModulesData(saveMosulesData, this.pageSetData)
       console.log(data)
       console.log(saveMosulesData, this.modulesData, this.pageSetData)

@@ -110,7 +110,6 @@ export default {
           break
         case 10: // 商品分组模块
           obj = {
-            cur_idx: 102,
             module_name: 'm_goods_group',
             sort_group_arr: [],
             menu_style: '0',
