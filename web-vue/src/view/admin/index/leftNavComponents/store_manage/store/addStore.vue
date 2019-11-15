@@ -22,7 +22,7 @@
 
       <!-- 主要内容区 -->
       <el-form
-        v-if="this.stepData.currentStep == 0"
+        v-show="this.stepData.currentStep == 0"
         ref="storeForm"
         :model="storeFormInfo"
         :rules="storeFormRules"
@@ -121,22 +121,19 @@
         </el-form-item>
         <el-form-item
           label="地理位置："
-          prop="storeSite"
+          prop="provinceCode"
         >
           <div>
-            <areaLinkage
-              @areaData="handleAreaData"
-              @areaChange="areaChangeHandle"
-            />
+            <areaLinkage @areaChange="areaChangeHandle" />
           </div>
         </el-form-item>
         <el-form-item
           label="地图定位："
-          prop="storePosition"
+          prop="address"
         >
           <el-input
             placeholder="输入详细的位置信息，请勿重复填写省市区"
-            v-model="storeFormInfo.storePosition"
+            v-model="storeFormInfo.address"
           ></el-input>
           <el-button
             type="text"
@@ -171,7 +168,7 @@
         </el-form-item>
         <el-form-item
           label="店面宣传照："
-          prop="storePhoto"
+          prop="storeImgs"
         >
           <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
             <div
@@ -222,7 +219,7 @@
       />
 
       <div
-        v-if="this.stepData.currentStep == 1"
+        v-show="this.stepData.currentStep == 1"
         class="create_content"
         style="display: block;"
       >
@@ -240,12 +237,14 @@
             <div class="line3">
               <el-switch
                 :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude)"
-                v-model="switchLeft"
+                v-model="storeFormInfo.autoPick"
                 active-color="#E6A23C"
                 inactive-color="#ccc"
+                :active-value="1"
+                :inactive-value="0"
               ></el-switch>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span v-if="this.switchLeft == true">已开启</span>
-              <span v-if="this.switchLeft == false">已关闭</span>
+              <span v-if="this.storeFormInfo.autoPick == 1">已开启</span>
+              <span v-if="this.storeFormInfo.autoPick == 0">已关闭</span>
             </div>
           </div>
           <div class="content_right">
@@ -273,7 +272,7 @@
       </div>
       <!-- 同城配送信息 -->
       <el-form
-        v-if="this.stepData.currentStep == 1 && this.switchRight == true"
+        v-show="this.stepData.currentStep == 1 && this.switchRight == true"
         ref="deliveryForm"
         :model="deliveryMessage"
         :rules="deliveryFormRules"
@@ -282,8 +281,8 @@
         size="small"
       >
         <el-form-item label="取货地址：">
-          <span>{{address}}</span><br />
-          <span style="color: #999; font-size: 14px;margin-left: 6%;">用户下单后自提商品以及同城配送业务骑手取货地点，如需修改，请到【门店基础信息】页面进行编辑</span>
+          <span>{{address + storeFormInfo.address}}</span><br />
+          <span style="color: #999; font-size: 14px; ">用户下单后自提商品以及同城配送业务骑手取货地点，如需修改，请到【门店基础信息】页面进行编辑</span>
         </el-form-item>
         <el-form-item
           label="配送区域："
@@ -362,6 +361,19 @@ export default {
     TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
   },
   data() {
+    let that = this
+    let validateArea = function (rule, value, callback) {
+      if (!value) {
+        callback(new Error('省不能为空'))
+      }
+      if (!that.storeFormInfo.cityCode) {
+        callback(new Error('市不能为空'))
+      }
+      if (!that.storeFormInfo.districtCode) {
+        callback(new Error('区不能为空'))
+      }
+      callback()
+    }
     return {
       reload: true,
       stepData: {
@@ -373,24 +385,23 @@ export default {
         storeName: '',
         manager: '',
         mobile: '',
-        businessState: '',
-        businessType: '',
+        businessState: 0,
+        businessType: 0,
         openingTime: '',
         closeTime: '',
         storeGroups: [],
         storeNum: '',
-        storeSite: '',
-        storePosition: '',// 地图定位详细地址
+        address: '',// 地图定位详细地址
         storeServe: [],
         service: '',
-        storePhoto: '',
         storeImgs: [],
         storeDetail: '',
         provinceCode: '',
         cityCode: '',
         districtCode: '',
         latitude: '',
-        longitude: ''
+        longitude: '',
+        autoPick: 0 // 设定自提
       },
       storeFormRules: {
         storeName: [{ required: true, message: '请输入门店名称', trigger: 'blur' }],
@@ -398,9 +409,9 @@ export default {
         mobile: [{ required: true, message: '请输入联系电话', trigger: 'blur' }],
         businessType: [{ required: true, message: '请选择营业时间', trigger: 'change' }],
         storeNum: [{ required: true, message: '请输入门店编号', trigger: 'blur' }],
-        storeSite: [{ required: true, message: '请输入门店编号', trigger: 'blur' }],
-        storePosition: [{ required: true, message: '请输入定位信息', trigger: 'blur' }],
-        storePhoto: [{ required: true, message: '请选择店面宣传照' }]
+        provinceCode: [{ validator: validateArea, trigger: 'blur' }],
+        address: [{ required: true, message: '请输入定位信息', trigger: 'blur' }],
+        storeImgs: [{ required: true, message: '请选择店面宣传照' }]
       },
       selfImgDialogShow: false,
       // 特色服务列表
@@ -422,7 +433,7 @@ export default {
       }],
       imgHost: `${this.$imageHost}`,
       // 配送信息按钮
-      switchLeft: false, // 门店自提
+      // switchLeft: false, // 门店自提
       switchRight: false, // 同城配送
       // 同城配送信息
       deliveryMessage: {
@@ -444,13 +455,6 @@ export default {
       address: ''
     }
   },
-  // watch: {
-  //   'stepData.currentStep': function (val) {
-  //     if (val === 0) {
-  //       this.initMap(this.storeFormInfo.latitude, this.storeFormInfo.longitude)
-  //     }
-  //   }
-  // },
   mounted() {
     this.initMap()
     console.log(this.$refs)
@@ -478,10 +482,6 @@ export default {
         })
       }
       this.storeFormInfo.service = ''
-    },
-    // 区域选择
-    handleAreaData(data) {
-      console.log(data)
     },
     // 区域选择
     areaChangeHandle(data) {
@@ -549,7 +549,7 @@ export default {
         this.$message.warning('请选择地区')
         return false
       }
-      let address = this.address + this.storeFormInfo.storePosition
+      let address = this.address + this.storeFormInfo.address
       if (this.marker) {
         this.marker.setMap(null)
       }
@@ -574,12 +574,13 @@ export default {
     },
     // 下一步
     nextClickHandler() {
+      let that = this
       // 校验 form
-      // this.$refs.storeForm.validate(function (valid) {
-      //   if (valid) {
-      this.stepData.currentStep = 1
-      //   }
-      // })
+      this.$refs.storeForm.validate(function (valid) {
+        if (valid) {
+          that.stepData.currentStep = 1
+        }
+      })
     },
     // 上一步
     prevClickHandler() {
@@ -587,13 +588,17 @@ export default {
     },
     // 保存
     saveClickHandler() {
-      let params = Object.assign({}, this.storeFormInfo)
+      let params = Object.assign({}, this.storeFormInfo, this.deliveryMessage)
+      params.storeImgs = JSON.stringify(params.storeImgs)
+      params.storeServe = JSON.stringify(params.storeServe)
       addStore(params).then((res) => {
         if (res.error === 0) {
           this.$message.success({
             message: res.message
           })
           this.$router.push({ name: 'store_list' })
+        } else {
+          this.$message.error('添加失败')
         }
       })
     }
