@@ -287,10 +287,10 @@ public class DistributorLevelService extends ShopBaseService{
 		//门店预约
 		BigDecimal serviceMoneyPaid = db().select(sum(SERVICE_ORDER.MONEY_PAID)).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_STATUS.eq((byte)2)).and(SERVICE_ORDER.PAY_CODE.in("balance","wxpay")).and(SERVICE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
 		logger().info("门店预约"+serviceMoneyPaid);
-		BigDecimal card = memeberCardBalance.add(storeMemeberCardBalance);
-		BigDecimal paid = moneyPaid.add(storeMoneyPaid);
-		BigDecimal account = useAccount.add(storeUseAccount);
-		BigDecimal total = card.add(paid.add(account).add(serviceMoneyPaid));
+		BigDecimal card = check(memeberCardBalance).add(check(storeMemeberCardBalance));
+		BigDecimal paid = check(moneyPaid).add(check(storeMoneyPaid));
+		BigDecimal account = check(useAccount).add(check(storeUseAccount));
+		BigDecimal total = check(card).add(check(paid).add(check(account)).add(check(serviceMoneyPaid)));
 		
 		DistributorSpendVo spendInfo = new DistributorSpendVo();
 		spendInfo.setCard(card);
@@ -299,6 +299,13 @@ public class DistributorLevelService extends ShopBaseService{
 		spendInfo.setTotal(total);
 		
 		return spendInfo;
+		
+	}
+	private BigDecimal check(BigDecimal bigDecimal) {
+		if(null==bigDecimal) {
+			return new BigDecimal(0);
+		}
+		return bigDecimal;
 		
 	}
 
