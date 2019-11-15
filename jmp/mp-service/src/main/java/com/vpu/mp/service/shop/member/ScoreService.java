@@ -447,8 +447,7 @@ public class ScoreService extends ShopBaseService {
 	
 	/**
 	 * 累计积分
-	 * @param userId
-	 * @return
+	 * @return 返回用户累计积分，没有则为0
 	 */
 	public Integer getAccumulationScore(Integer userId) {
 		logger().info("获取用户的所有累积积分");
@@ -704,11 +703,8 @@ public class ScoreService extends ShopBaseService {
 	
 	/**
 	 * 获取即将过期积分
-	 * @param userId
-	 * @param time
-	 * @return
 	 */
-	public int getExpireScore(Integer userId,Timestamp endTime) {
+	public Integer getExpireScore(Integer userId,Timestamp endTime) {
 		logger().info("获取即将过期积分");
 
 		if(endTime == null) {		

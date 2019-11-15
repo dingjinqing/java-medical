@@ -26,8 +26,6 @@ import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 public class AdminMemberScoreController extends AdminBaseController {
 	/**
 	 * 获取积分明细
-	 * @param param
-	 * @return
 	 */
 	@PostMapping("/api/admin/member/score/list")
 	public JsonResult getScoreDetails(@RequestBody @Valid ScorePageListParam param) {
@@ -89,4 +87,17 @@ public class AdminMemberScoreController extends AdminBaseController {
 		}
 		return success(param.toString());
 	}
+	
+	@PostMapping("/api/admin/member/score/test")
+	public JsonResult testScoreMethod() {
+		logger().info("测试用户可用积分");
+		try {
+			shop().member.userCardService.updateGrade(6,null,(byte)1);
+		} catch (MpException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return success();
+	}
+	
 }

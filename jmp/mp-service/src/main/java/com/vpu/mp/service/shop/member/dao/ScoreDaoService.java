@@ -41,13 +41,11 @@ public class ScoreDaoService extends ShopBaseService {
 									 	.and(USER_SCORE.SCORE.greaterThan(0))
 									 	.fetchAnyInto(Integer.class);
 		 logger().info("计算用户累积积分为： "+accumulationScore);
-		 return accumulationScore;
+		 return isNotNull(accumulationScore)?accumulationScore:NumberUtils.INTEGER_ZERO;
 	}
 	
 	/**
 	 * 计算用户的所有可使用的积分
-	 * @param userId
-	 * @return
 	 */
 	public Integer calculateAvailableScore(Integer userId) {
 	
@@ -59,7 +57,7 @@ public class ScoreDaoService extends ShopBaseService {
 									.and(USER_SCORE.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_SCORE.EXPIRE_TIME.isNull()))
 									.fetchAnyInto(Integer.class);
 		logger().info("计算所有可用积分为： "+availableScore);
-		return availableScore;
+		return isNotNull(availableScore)?availableScore:NumberUtils.INTEGER_ZERO;
 	} 
 	
 	/**

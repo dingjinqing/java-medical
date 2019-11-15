@@ -25,6 +25,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
@@ -246,19 +247,21 @@ public class UserCardService extends ShopBaseService {
 
 		// 获取用户累积获得积分和累积消费总额
 		Integer userTotalScore = scoreService.getAccumulationScore(userId);
-		BigDecimal amount = distributorLevelService.getTotalSpend(userId).getTotal();
+		BigDecimal amount = getUserTotalSpendAmount(userId);
 
 		for (MemberCardRecord gCard : gCardList) {
-			// 升级条件
-			GradeConditionJson gradeCondition = getGradeCondition(userTotalScore, amount, gCard);
-			// 等级卡的等级高于用户卡等级或者用户目前等级为空
-			if (isCardGradeGtUserGrade(uGrade, gCard)) {
-				if (isSatisfyUpgradeCondition(userTotalScore, amount, gradeCondition)) {
-						cardId = gCard.getId();
-						MemberCardRecord oldGradeCard = getUserGradeCard(userId);
-						changeUserGradeCard(userId, oldGradeCard, gCard);
-				}else {
-					break;
+			if(!StringUtils.isBlank(gCard.getGradeCondition())) {
+				// 升级条件
+				GradeConditionJson gradeCondition = getGradeCondition(userTotalScore, amount, gCard);
+				// 等级卡的等级高于用户卡等级或者用户目前等级为空
+				if (isCardGradeGtUserGrade(uGrade, gCard)) {
+					if (isSatisfyUpgradeCondition(userTotalScore, amount, gradeCondition)) {
+							cardId = gCard.getId();
+							MemberCardRecord oldGradeCard = getUserGradeCard(userId);
+							changeUserGradeCard(userId, oldGradeCard, gCard);
+					}else {
+						break;
+					}
 				}
 			}
 		}
@@ -302,8 +305,10 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	private GradeConditionJson getGradeCondition(Integer userTotalScore, BigDecimal amount, MemberCardRecord gCard) {
+		
 		GradeConditionJson gradeCondition = Util.parseJson(gCard.getGradeCondition(),
 				GradeConditionJson.class);
+		
 		if (BigDecimalUtil.compareTo(gradeCondition.getGradeScore(), BigDecimal.ZERO) < 1) {
 			gradeCondition.setGradeScore(new BigDecimal(userTotalScore + 1000));
 		}
@@ -692,7 +697,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 通过用户id，获取用户所有的会员卡列表 php: getUserCard
+	 * 通过用户id，获取用户所有的会员卡列表
 	 *
 	 * @param userId
 	 * @return
@@ -964,6 +969,14 @@ public class UserCardService extends ShopBaseService {
         }
         return card.getDiscount();
     }
-
+    
+    /**
+     * 获取用户累积消费总额
+     * @return 消费总额,默认为0
+     */
+    private BigDecimal getUserTotalSpendAmount(Integer userId) {
+    	DistributorSpendVo distributorSpendVo = distributorLevelService.getTotalSpend(userId);
+    	return distributorSpendVo.getTotal()!=null?distributorSpendVo.getTotal():BigDecimal.ZERO;
+    }
 
 }

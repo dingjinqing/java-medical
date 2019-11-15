@@ -754,8 +754,7 @@ public class OrderInfoService extends ShopBaseService {
 									.where(ORDER_INFO.USER_ID.eq(userId))
 									.and(ORDER_INFO.ORDER_STATUS.eq(ORDER_FINISHED))
 									.and(ORDER_INFO.PAY_CODE.in(PAY_CODE_BALANCE_PAY,PAY_CODE_WX_PAY))
-									.fetchOne()
-									.into(BigDecimal.class);
+									.fetchAnyInto(BigDecimal.class);
 		logger().info("余额，微信订单应付金额: " + moneyPaid);
 		if(moneyPaid != null) {
 			totalConsumpAmount = totalConsumpAmount.add(moneyPaid);
@@ -767,8 +766,7 @@ public class OrderInfoService extends ShopBaseService {
 				.from(ORDER_INFO)
 				.where(ORDER_INFO.USER_ID.eq(userId))
 				.and(ORDER_INFO.ORDER_STATUS.eq(ORDER_FINISHED))
-				.fetchOne()
-				.into(BigDecimal.class);
+				.fetchAnyInto(BigDecimal.class);
 		logger().info("用户消费余额 "+useAccount);
 		if(useAccount != null) {
 			totalConsumpAmount = totalConsumpAmount.add(useAccount);
