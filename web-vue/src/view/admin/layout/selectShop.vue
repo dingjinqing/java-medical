@@ -107,7 +107,7 @@ export default {
             item.tipStatus = 1
             item.imgUrl = this.$imageHost + '/image/admin/no_use.png'
             item.bgColor = true
-          } else if (item.businessState) {
+          } else if (!item.businessState) {
             item.tipStatus = 2
             item.imgUrl = this.$imageHost + '/image/admin/no_business.png'
             item.bgColor = true
