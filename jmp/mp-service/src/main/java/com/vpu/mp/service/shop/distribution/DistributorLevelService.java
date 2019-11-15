@@ -17,11 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record4;
 import org.jooq.Result;
-import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingStep;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
@@ -291,7 +289,7 @@ public class DistributorLevelService extends ShopBaseService{
 		BigDecimal paid = check(moneyPaid).add(check(storeMoneyPaid));
 		BigDecimal account = check(useAccount).add(check(storeUseAccount));
 		BigDecimal total = check(card).add(check(paid).add(check(account)).add(check(serviceMoneyPaid)));
-		
+		logger().info("card:"+card+"paid:"+paid+"account"+account+"total"+total);
 		DistributorSpendVo spendInfo = new DistributorSpendVo();
 		spendInfo.setCard(card);
 		spendInfo.setPaid(paid);
