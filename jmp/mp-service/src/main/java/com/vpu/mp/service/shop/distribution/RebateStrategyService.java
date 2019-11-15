@@ -1,20 +1,19 @@
 package com.vpu.mp.service.shop.distribution;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
-
-import java.sql.Timestamp;
-import java.util.List;
-
-import org.jooq.Record8;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.DistributionStrategyRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
 
 /**
  *返利策略配置
@@ -41,10 +40,10 @@ public class RebateStrategyService extends ShopBaseService{
 	 * @return
 	 */
 	public PageResult<DistributionStrategyVo> getStrategyList(DistributionStrategyParam param) {
-		SelectJoinStep<Record8<String, Timestamp, Timestamp, Double, Byte, Timestamp, Byte, Byte>> select = db()
-				.select(DISTRIBUTION_STRATEGY.STRATEGY_NAME,DISTRIBUTION_STRATEGY.START_TIME,DISTRIBUTION_STRATEGY.END_TIME,DISTRIBUTION_STRATEGY.FANLI_RATIO,DISTRIBUTION_STRATEGY.STRATEGY_LEVEL,DISTRIBUTION_STRATEGY.CREATE_TIME,DISTRIBUTION_STRATEGY.STATUS,DISTRIBUTION_STRATEGY.DEL_FLAG)
+		SelectJoinStep<? extends Record> select = db()
+				.select(DISTRIBUTION_STRATEGY.ID,DISTRIBUTION_STRATEGY.STRATEGY_NAME,DISTRIBUTION_STRATEGY.START_TIME,DISTRIBUTION_STRATEGY.END_TIME,DISTRIBUTION_STRATEGY.FANLI_RATIO,DISTRIBUTION_STRATEGY.STRATEGY_LEVEL,DISTRIBUTION_STRATEGY.CREATE_TIME,DISTRIBUTION_STRATEGY.STATUS,DISTRIBUTION_STRATEGY.DEL_FLAG)
 				.from(DISTRIBUTION_STRATEGY);
-		SelectConditionStep<Record8<String,Timestamp,Timestamp,Double,Byte,Timestamp,Byte,Byte>> sql = buildOptions(select,param);
+		SelectConditionStep<? extends Record> sql = buildOptions(select,param);
 		PageResult<DistributionStrategyVo> list = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(),DistributionStrategyVo.class);
 		return list;
 	}
@@ -55,8 +54,8 @@ public class RebateStrategyService extends ShopBaseService{
 	 * @param param
 	 * @return
 	 */
-	public SelectConditionStep<Record8<String,Timestamp,Timestamp,Double,Byte,Timestamp,Byte,Byte>> buildOptions(SelectJoinStep<Record8<String, Timestamp, Timestamp, Double, Byte, Timestamp, Byte, Byte>> select,DistributionStrategyParam param) {
-		SelectConditionStep<Record8<String,Timestamp,Timestamp,Double,Byte,Timestamp,Byte,Byte>> sql = select.where(DISTRIBUTION_STRATEGY.DEL_FLAG.eq((byte) 0));
+	public SelectConditionStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select,DistributionStrategyParam param) {
+		SelectConditionStep<? extends Record> sql = select.where(DISTRIBUTION_STRATEGY.DEL_FLAG.eq((byte) 0));
 		
 		Timestamp nowDate = new Timestamp(System.currentTimeMillis());
 		

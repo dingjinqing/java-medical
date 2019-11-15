@@ -1,42 +1,14 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
-import com.vpu.mp.service.pojo.shop.distribution.BrokerageListParam;
-import com.vpu.mp.service.pojo.shop.distribution.BrokerageListVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelCfgVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawDetailVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListVo;
-import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageAddParam;
-import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListParam;
-import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListVo;
-import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailParam;
-import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailVo;
-import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsParam;
-import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
-import com.vpu.mp.service.pojo.shop.distribution.addDistributorToGroupParam;
+import com.vpu.mp.service.pojo.shop.distribution.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 分销模块
@@ -98,7 +70,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/admin/distribution/rebate/list")
-	public JsonResult rebateStrategyList(DistributionStrategyParam param) {
+	public JsonResult rebateStrategyList(@RequestBody DistributionStrategyParam param) {
 		PageResult<DistributionStrategyVo> list = shop().rebateStrategy.getStrategyList(param);
 		return this.success(list);
 	}
@@ -109,7 +81,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @return
 	 */
 	@GetMapping("/admin/distribution/rebate/edit")
-	public JsonResult oneRebateStrategyInfo(@RequestBody Integer id) {
+	public JsonResult oneRebateStrategyInfo(Integer id) {
 		List<DistributionStrategyParam> result = shop().rebateStrategy.getOneInfo(id);
 		return this.success(result);
 	}
@@ -131,7 +103,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @return
 	 */
 	@GetMapping("/admin/distribution/rebate/pause")
-	public JsonResult pauseRebateStrategy(@RequestBody Integer id) {
+	public JsonResult pauseRebateStrategy(Integer id) {
 		boolean result = shop().rebateStrategy.pauseRebate(id);
 		if(result) {
 			return this.success(result);
@@ -146,7 +118,7 @@ public class AdminDistributionController extends AdminBaseController{
 	 * @return
 	 */
 	@GetMapping("/admin/distribution/rebate/delete")
-	public JsonResult deleteRebateStrategy(@RequestBody Integer id) {
+	public JsonResult deleteRebateStrategy(Integer id) {
 		boolean result = shop().rebateStrategy.deleteRebate(id);
 		if(result) { 
 			return this.success(result);
