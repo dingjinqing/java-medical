@@ -57,9 +57,8 @@ public class PortraitService extends ShopBaseService {
         PortraitMaxAndMin setMaxAndMin = setMaxAndMin(visitUv);
         PortraitMaxAndMin setMaxAndMin2 = setMaxAndMin(visitUvNew);
         //删除省市中value为0的数据
-		/*
-		 * removeZero(visitUv); removeZero(visitUvNew);
-		 */
+        removeZero(visitUv);
+        removeZero(visitUvNew);
         //删除设备中value为0的
         removeZeroByDevices(visitUv);
         removeZeroByDevices(visitUvNew);
