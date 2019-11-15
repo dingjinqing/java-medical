@@ -82,7 +82,7 @@ public class RecordAdminActionService extends ShopBaseService {
 						RECORD_ADMIN_ACTION.TEMPLATE_ID, RECORD_ADMIN_ACTION.TEMPLATE_DATA,RECORD_ADMIN_ACTION.ACCOUNT_TYPE)
 				.from(RECORD_ADMIN_ACTION);
 		buildParams(select, param);
-		select.orderBy(RECORD_ADMIN_ACTION.CREATE_TIME.asc());
+		select.orderBy(RECORD_ADMIN_ACTION.CREATE_TIME.desc());
 		if (null != param.getCurrentPage()) {
 			pgPojo = getPageResult(select, param.getCurrentPage(), param.getPageRows(), RecordAdminActionPojo.class);
 		} else {
