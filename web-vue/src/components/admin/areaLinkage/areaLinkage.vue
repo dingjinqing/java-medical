@@ -72,6 +72,11 @@ export default {
         city: ``,
         district: ``
       },
+      areas: {
+        province: {},
+        city: {},
+        district: {}
+      },
       province: [],
       city: [],
       areaDistrict: []
@@ -98,28 +103,72 @@ export default {
     },
     // 选择省份
     choseProvince (val) {
-      if (val === ``) return
-      // console.log(this.province)
-      // console.log(val)
+      // if (val === ``) return
       this.values.city = ``
       this.values.district = ``
-      this.city = this.province.find((item, index) => val === item['provinceId'])['areaCity']
+      if (val) {
+        this.city = this.province.find((item, index) => val === item['provinceId'])['areaCity']
+      } else {
+        this.city = []
+      }
+      let province = this.province.find(data => val === data.provinceId)
+      if (province) {
+        this.areas.province = {
+          id: province.provinceId,
+          name: province.provinceName
+        }
+      } else {
+        this.areas.province = {
+          id: '',
+          name: ''
+        }
+      }
+      this.areas.city = {}
+      this.areas.district = {}
       this.$emit('areaData', this.area)
+      this.$emit('areaChange', this.areas)
     },
     // 选择市
     choseCity (val) {
-      // console.log(val)
-      // console.log(this.city)
-      if (val === ``) return
-      this.areaDistrict = this.city.find((item, index) => val === item['cityId'])['areaDistrict']
-      // console.log(this.areaDistrict)
+      // if (val === ``) return
+      if (val) {
+        this.areaDistrict = this.city.find((item, index) => val === item['cityId'])['areaDistrict']
+      } else {
+        this.areaDistrict = []
+      }
+      let city = this.city.find(data => val === data.cityId)
+      if (city) {
+        this.areas.city = {
+          id: city.cityId,
+          name: city.cityName
+        }
+      } else {
+        this.areas.city = {
+          id: '',
+          name: ''
+        }
+      }
+      this.areas.district = {}
       this.$emit('areaData', this.area)
+      this.$emit('areaChange', this.areas)
     },
-    choseDistrict () {
+    choseDistrict (val) {
+      let district = this.areaDistrict.find(data => val === data.districtId)
+      if (district) {
+        this.areas.district = {
+          id: district.districtId,
+          name: district.districtName
+        }
+      } else {
+        this.areas.district = {
+          id: '',
+          name: ''
+        }
+      }
       this.$emit('areaData', this.area)
+      this.$emit('areaChange', this.areas)
     }
   }
-
 }
 </script>
 <style lang="scss" scoped>

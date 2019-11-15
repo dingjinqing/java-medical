@@ -85,7 +85,7 @@
             placeholder="结束时间"
             style="width: 12%;"
           ></el-time-picker>
-          <p>24小时制，如 9:00-21:00</p>
+          <p style="margin-left: 172px; color: #a0a0a0;">24小时制，如 9:00-21:00</p>
         </el-form-item>
         <el-form-item
           label="所属分组："
@@ -124,48 +124,28 @@
           prop="storeSite"
         >
           <div>
-            <areaLinkage @areaData="handleAreaData" />
+            <areaLinkage
+              @areaData="handleAreaData"
+              @areaChange="areaChangeHandle"
+            />
           </div>
-          <!-- <el-select
-            v-model="storeFormInfo.provinceCode"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in provinceOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-          <el-select
-            v-model="storeFormInfo.cityCode"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in cityOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-          <el-select
-            v-model="storeFormInfo.districtCode"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in districtOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select> -->
         </el-form-item>
         <el-form-item
           label="地图定位："
           prop="storePosition"
         >
-          <el-input placeholder="输入详细的位置信息，请勿重复填写省市区"></el-input>
-          <el-button type="text">地图定位</el-button>
+          <el-input
+            placeholder="输入详细的位置信息，请勿重复填写省市区"
+            v-model="storeFormInfo.storePosition"
+          ></el-input>
+          <el-button
+            type="text"
+            @click="codeAddress"
+          >地图定位</el-button>
+          <div
+            class="store-map"
+            ref="storemap"
+          ></div>
         </el-form-item>
         <el-form-item
           label="特色服务："
@@ -361,6 +341,8 @@
     </div>
   </div>
 </template>
+<!-- 腾讯地图 -->
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=YPOBZ-DNIKF-Y6KJM-NDW7D-VYIFZ-QEBIO"></script>
 <script>
 import { addStore } from '@/api/admin/storeManage/store'
 /* 组件导入 */
@@ -371,7 +353,7 @@ export default {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     TinymceEditor: () => import('@/components/admin/imageDalog')
   },
-  data () {
+  data() {
     return {
       reload: true,
       stepData: {
@@ -390,7 +372,7 @@ export default {
         storeGroups: [],
         storeNum: '',
         storeSite: '',
-        storePosition: '',
+        storePosition: '',// 地图定位详细地址
         storeServe: [],
         service: '',
         storePhoto: '',
@@ -425,22 +407,6 @@ export default {
         label: '包厢',
         checked: false
       }],
-      // 省市区
-      siteList: [{
-
-      }],
-      provinceOptions: [{
-        value: 'province1',
-        label: '北京市'
-      }, {
-        value: 'province2',
-        label: '天津市'
-      }, {
-        value: 'province3',
-        label: '河北省'
-      }],
-      cityOptions: [],
-      districtOptions: [],
       imgHost: `${this.$imageHost}`,
       // 配送信息按钮
       switchLeft: false,
@@ -457,20 +423,29 @@ export default {
         deliveryArea: [{ required: true, message: '请输入配送区域', trigger: 'blur' }],
         deliveryPrice: [{ required: true, message: '请输入配送价格', trigger: 'blur' }],
         deliveryType: [{ required: true, message: '请选择配送方式', trigger: 'change' }]
-      }
+      },
+      map: null,
+      geocoder: null,
+      marker: null,
+      markersArray: [],
+      address: ''
     }
+  },
+  mounted() {
+    this.initMap()
+    console.log(this.$refs)
   },
   methods: {
     // 刷新分组
-    refreshGroups () {
+    refreshGroups() {
 
     },
     // 添加新分组
-    addGroups () {
+    addGroups() {
       this.$router.push({ name: 'group_manage' })
     },
     // 添加特色服务
-    addServeHandler () {
+    addServeHandler() {
       if (this.storeFormInfo.service === '') {
         this.$message.error({
           message: '请输入有效的字符！'
@@ -485,35 +460,98 @@ export default {
       this.storeFormInfo.service = ''
     },
     // 区域选择
-    handleAreaData (data) {
+    handleAreaData(data) {
       console.log(data)
     },
+    areaChangeHandle(data) {
+      console.log(data)
+      let address = ''
+      if (data.province) {
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            const area = data[key];
+            if (area.name) {
+              address += area.name
+            }
+          }
+        }
+      }
+      console.log(address)
+      this.address = address
+    },
+    // 初始化地图
+    initMap() {
+      let that = this
+      let center = new qq.maps.LatLng(39.916527, 116.397128)
+      this.map = new qq.maps.Map(this.$refs.storemap, {
+        center: center, // 地图的中心地理坐标
+        zoom: 13 // 缩放等级
+        // minZoom: 13,
+        // maxZoom: 13,
+        // zoomControl: false
+      })
+      // 地址解析
+      this.geocoder = new qq.maps.Geocoder({
+        complete: function (result) {
+          console.log('2222', result)
+          that.map.setCenter(result.detail.location)
+          that.marker = new qq.maps.Marker({
+            map: that.map,
+            position: result.detail.location
+          })
+        }
+      })
+      console.log(this.geocoder)
+      qq.maps.event.addListener(this.map, 'click', function (e) {
+        if (that.marker) {
+          that.marker.setMap(null)
+        }
+        that.marker = new qq.maps.Marker({
+          position: e.latLng,
+          map: that.map
+        })
+      })
+    },
+    // 点击地图定位
+    codeAddress() {
+      if (!this.address) {
+        this.$message.warning('请选择地区')
+        return false
+      }
+      let address = this.address + this.storeFormInfo.storePosition
+      console.log(address)
+      console.log(this.marker)
+      if (this.marker) {
+        this.marker.setMap(null)
+      }
+      this.geocoder.getLocation(address)
+    },
     //  添加图片点击事件，弹出图片选择组件
-    addStoreImg () {
+    addStoreImg() {
       this.selfImgDialogShow = !this.selfImgDialogShow
       this.$nextTick(() => this.$http.$emit('dtVisible'))
     },
     // 商品图片点击回调函数
-    imgDialogSelectedCallback (imgObj) {
+    imgDialogSelectedCallback(imgObj) {
       if (this.storeFormInfo.storeImgs.length >= 5) {
         return
       }
       this.storeFormInfo.storeImgs.push({ imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl })
     },
     // 删除店面图片
-    deleteStoreImg (index) {
+    deleteStoreImg(index) {
       this.storeFormInfo.storeImgs.splice(index, 1)
     },
     // 下一步
-    nextClickHandler () {
+    nextClickHandler() {
       this.stepData.currentStep = 1
     },
     // 上一步
-    prevClickHandler () {
+    prevClickHandler() {
       this.stepData.currentStep = 0
     },
     // 保存
-    saveClickHandler () {
+    saveClickHandler() {
       let params = Object.assign({}, this.storeFormInfo)
       addStore(params).then((res) => {
         if (res.error === 0) {
@@ -649,5 +687,12 @@ export default {
 }
 .deliveryMsg .el-form-item {
   margin-bottom: 10px;
+}
+.store-map {
+  width: 600px;
+  height: 400px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  margin-bottom: 20px;
 }
 </style>
