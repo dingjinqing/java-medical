@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.goods;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.FootprintRecord.FOOTPRINT_RECORD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 import java.math.BigDecimal;
@@ -16,15 +17,14 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import com.vpu.mp.service.shop.order.OrderReadService;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -74,7 +74,7 @@ public class OrderGoodsService extends ShopBaseService{
 	public Result<OrderGoodsRecord> getByOrderId(Integer orderId) {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetch();
 	}
-	
+
 	/**
 	 * 单个订单商品
 	 * @param orderId
@@ -222,7 +222,7 @@ public class OrderGoodsService extends ShopBaseService{
 				.from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetch();
 		return record6s;
 	}
-	
+
 	/**
 	 * 根据订单号查询商品
 	 * @param orderSn
@@ -323,7 +323,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 */
     public Result<? extends Record> buyingHistoryGoodsList(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
 		Timestamp timestamp = DateUtil.getTimeStampPlus(-3, ChronoUnit.MONTHS);
-		SelectConditionStep<? extends Record> select = db().select(TABLE.GOODS_ID,TABLE.CREATE_TIME)
+		SelectConditionStep<? extends Record> select = db().select(TABLE.GOODS_ID, DslPlus.dateFormatDay(TABLE.CREATE_TIME).as("date"))
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
 				.leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(TABLE.ORDER_SN))
@@ -334,9 +334,29 @@ public class OrderGoodsService extends ShopBaseService{
 		if (!org.apache.commons.lang3.StringUtils.isBlank(keyWord)){
 			select.and(GOODS.GOODS_NAME.like(likeValue(keyWord)));
 		}
-		return select.orderBy(ORDER_GOODS.CREATE_TIME.desc()).limit(currentPages - 1, pageRows).fetch();
+		return select.orderBy(ORDER_GOODS.CREATE_TIME.desc()).limit(pageRows*(currentPages - 1), pageRows).fetch();
 	}
 
+	/**
+	 *  购买商品记录(三个月内)
+	 * @param userId  用户ID
+	 * @param keyWord 关键字
+	 * @return Record
+	 * @author kdc
+	 */
+	public Integer buyingHistoryGoodsCount(Integer userId, String keyWord){
+		Timestamp timestamp = DateUtil.getTimeStampPlus(-3, ChronoUnit.MONTHS);
+		SelectConditionStep<Record1<Integer>> select = db().selectCount()
+				.from(TABLE)
+				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
+				.leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(TABLE.ORDER_SN))
+				.where(ORDER_INFO.USER_ID.eq(userId))
+				.and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+				.and(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY))
+				.and(ORDER_INFO.CREATE_TIME.gt(timestamp));
+
+		return select.fetchOne().value1();
+	}
 	public List<Integer> getZhixiaoGoodsIds(){
         Timestamp local = Timestamp.valueOf(LocalDate.now().minusDays(30).atStartOfDay());
 

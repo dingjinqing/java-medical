@@ -120,6 +120,11 @@ public class FootPrintService extends ShopBaseService {
 			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(footprintGoods.getGoodsId());
 			footprintGoods.getGoodsList().add(goodsListMpVo);
 		});
+
+        return footprintListVo;
+	}
+
+	public void byDateGroup(List<FootprintDayVo> footprintList,List<FootprintDayVo> footprintDaylist){
 		// 安装日期分组
 		footprintList.forEach(footprint->{
 			FootprintDayVo footprintDay = null;
@@ -135,7 +140,6 @@ public class FootPrintService extends ShopBaseService {
 				footprintDaylist.add(footprintDay);
 			}
 			footprintDay.getGoodsList().addAll(footprint.getGoodsList());
-        });
-        return footprintListVo;
+		});
 	}
 }

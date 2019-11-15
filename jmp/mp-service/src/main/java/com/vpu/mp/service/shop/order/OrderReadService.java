@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
@@ -34,6 +35,8 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
+import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
+import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
@@ -42,6 +45,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryVo;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
+import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
@@ -138,6 +142,8 @@ public class OrderReadService extends ShopBaseService {
     private GoodsCommentService goodsComment;
     @Autowired
     private GoodsMpService goodsMpService;
+    @Autowired
+    private FootPrintService footPrintService;
 	/**
 	 * 订单查询
 	 * @param param
@@ -957,16 +963,24 @@ public class OrderReadService extends ShopBaseService {
 	 * @return OrderGoodsHistoryBo
 	 * @author kdc
 	 */
-	public List<OrderGoodsHistoryVo> buyingHistoryGoodsList(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
+	public FootprintListVo buyingHistoryGoodsList(Integer userId, String keyWord, Integer currentPages, Integer pageRows){
+		FootprintListVo footprintListVo =new FootprintListVo();
+		List<FootprintDayVo> footprintDaylist =new ArrayList<>();
+		footprintListVo.setDay(footprintDaylist);
 		Result<? extends Record> records = orderGoods.buyingHistoryGoodsList(userId, keyWord, currentPages, pageRows);
+		Integer totalRows = orderGoods.buyingHistoryGoodsCount(userId, keyWord);
 		List<Integer> goodsIdList = Arrays.asList(records.intoArray(ORDER_GOODS.GOODS_ID));
-		List<OrderGoodsHistoryVo> orderGoodsHistoryVos =records.into(OrderGoodsHistoryVo.class);
-		List<? extends GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId, currentPages, pageRows);
+		List<FootprintDayVo> orderGoodsHistoryVos =records.into(FootprintDayVo.class);
+		Page page = Page.getPage(totalRows, currentPages, pageRows);
+		footprintListVo.setPage(page);
+		List<? extends GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId, null, null);
 		Map<Integer, GoodsListMpVo> goodsListMpVoMap = goodsListMpVos.stream().collect(Collectors.toMap(GoodsListMpVo::getGoodsId, goods->goods));
 		orderGoodsHistoryVos.forEach(orderGoods->{
 			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(orderGoods.getGoodsId());
 			FieldsUtil.assignNotNull(goodsListMpVo, orderGoods);
 		});
-		return orderGoodsHistoryVos;
+		// 安装日期分组
+		footPrintService.byDateGroup(orderGoodsHistoryVos,footprintDaylist);
+		return footprintListVo;
 	}
 }

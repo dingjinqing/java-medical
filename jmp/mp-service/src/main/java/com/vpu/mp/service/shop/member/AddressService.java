@@ -4,6 +4,8 @@ import static com.vpu.mp.db.shop.Tables.USER_ADDRESS;
 
 import java.util.List;
 
+import com.vpu.mp.db.shop.tables.UserAddress;
+import com.vpu.mp.service.pojo.shop.member.address.AddressParam;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -17,8 +19,8 @@ import jodd.util.StringUtil;
 */
 @Service
 public class AddressService extends ShopBaseService {
-	
-	/** 
+
+	/**
 	 * 获取id用户的详细地址信息
 	 */
 	public List<String> getUserAddressById(Integer userId) {
@@ -28,7 +30,7 @@ public class AddressService extends ShopBaseService {
 			.where(USER_ADDRESS.USER_ID.eq(userId))
 			.fetch()
 			.into(String.class);
-		
+
 		addressList.forEach(logger()::info);
 		return addressList;
 	}
@@ -50,4 +52,15 @@ public class AddressService extends ShopBaseService {
 		}
 		return address;
 	}
+
+	/**
+	 */
+	public void addAddress(AddressParam param){
+
+
+	}
+
+
+
+
 }

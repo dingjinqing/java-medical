@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryVo;
@@ -145,13 +146,19 @@ public class WxAppOrderController extends WxAppBaseController{
 		param.setWxUserInfo(wxAppAuth.user());
 		return null;
 	}
+
+	/**
+	 * 历史购买
+	 * @param param
+	 * @return
+	 */
 	@PostMapping("/goods/history")
 	public JsonResult getHistoryGoodsList(@RequestBody @Valid OrderGoodsHistoryListParam param){
 		Integer userId = wxAppAuth.user().getUserId();
-		List<OrderGoodsHistoryVo> historyVos = shop().readOrder.buyingHistoryGoodsList(userId, param.getKeyword(), param.getCurrentPage(), param.getPageRows());
+		FootprintListVo historyVos = shop().readOrder.buyingHistoryGoodsList(userId, param.getKeyword(), param.getCurrentPage(), param.getPageRows());
 		return success(historyVos);
 	}
-	
+
 	@PostMapping("/addtest")
 	public JsonResult test(){
 		List<String> list=new ArrayList<String>();
@@ -170,9 +177,9 @@ public class WxAppOrderController extends WxAppBaseController{
 			return success();
 		}
 		return fail();
-		
+
 	}
-	
+
 	@PostMapping("/cart/addtest")
 	public JsonResult test2(){
 		List<Long> list=new ArrayList<Long>();
@@ -190,6 +197,6 @@ public class WxAppOrderController extends WxAppBaseController{
 			return success();
 		}
 		return fail();
-		
+
 	}
 }
