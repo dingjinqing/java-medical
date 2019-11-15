@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.USER_RFM_SUMMARY;
 import static com.vpu.mp.db.shop.Tables.USER_SUMMARY_TREND;
 
 /**
@@ -395,11 +396,9 @@ public class OverviewUserAnalysisService extends ShopBaseService {
     // 全部成交客户转化率
     beforeVo.setTransRate(getRate(beforeVo.getOrderUserData(), beforeVo.getLoginData()));
     // 新成交转化率
-    beforeVo.setNewTransRate(
-        getRate(beforeVo.getNewOrderUserData(), beforeVo.getLoginData()));
+    beforeVo.setNewTransRate(getRate(beforeVo.getNewOrderUserData(), beforeVo.getLoginData()));
     // 老成交转化率
-    beforeVo.setOldTransRate(
-        getRate(beforeVo.getOldOrderUserData(), beforeVo.getLoginData()));
+    beforeVo.setOldTransRate(getRate(beforeVo.getOldOrderUserData(), beforeVo.getLoginData()));
 
     // 计算下一段时间数据
     OrderTotalVo afterVo =
@@ -573,7 +572,7 @@ public class OverviewUserAnalysisService extends ShopBaseService {
     try {
       DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
       // 周日转date型
-      java.util.Date sunday =  dateFormat.parse(param.getSunday());
+      java.util.Date sunday = dateFormat.parse(param.getSunday());
       param.setFourthDate(sunday);
       // 周一转date型
       java.util.Date monday = dateFormat.parse(param.getMonday());
@@ -600,10 +599,13 @@ public class OverviewUserAnalysisService extends ShopBaseService {
       else {
         fourthVo =
             db().select(
-                DSL.sum(USER_SUMMARY_TREND.OLD_ORDER_USER_DATA).as("old_order_user_data"),
-                DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("order_user_data"))
+                    DSL.sum(USER_SUMMARY_TREND.OLD_ORDER_USER_DATA).as("old_order_user_data"),
+                    DSL.sum(USER_SUMMARY_TREND.ORDER_USER_DATA).as("order_user_data"))
                 .from(USER_SUMMARY_TREND)
-                .where(USER_SUMMARY_TREND.REF_DATE.between(new Date(monday.getTime()),new Date(time.getTime()- (1000 * 60 * 60 * 24 ))))
+                .where(
+                    USER_SUMMARY_TREND.REF_DATE.between(
+                        new Date(monday.getTime()),
+                        new Date(time.getTime() - (1000 * 60 * 60 * 24))))
                 .and(USER_SUMMARY_TREND.TYPE.eq(NumberUtils.BYTE_ONE))
                 .fetchOneInto(RebuyWeekVo.class);
       }
@@ -645,8 +647,8 @@ public class OverviewUserAnalysisService extends ShopBaseService {
       // 得到当前复购率
       firstVo.setRebuyRate(getRate(firstVo.getOldOrderUserData(), firstVo.getOrderUserData()));
       // 整合在一个集合里
-        RebuyWeekVo finalFourthVo = fourthVo;
-        List<RebuyWeekVo> rebuyWeekVo =
+      RebuyWeekVo finalFourthVo = fourthVo;
+      List<RebuyWeekVo> rebuyWeekVo =
           new ArrayList<RebuyWeekVo>() {
             {
               add(firstVo);
@@ -668,4 +670,134 @@ public class OverviewUserAnalysisService extends ShopBaseService {
     }
     return null;
   }
+    /**
+     * RFM数据判断
+     *
+     * @param param 时间
+     * @return 是否有数据 true or false
+     */
+    public Boolean getRFMData(RFMParam param) {
+        try {
+            //格式化日期格式
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date refDate = sdf.parse(param.getRefDate());
+            //判断当前日期是否有数据
+            Integer num = db().select(DSL.count(USER_RFM_SUMMARY.ID))
+                .from(USER_RFM_SUMMARY)
+                .where(USER_RFM_SUMMARY.REF_DATE.eq(new Date(refDate.getTime())))
+                .fetchOneInto(Integer.class);
+            if (num.equals(NumberUtils.INTEGER_ZERO)){
+                return false;
+            }else {
+                return true;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+  /**RFM-消费时间类型*/
+    public static final Byte RECENCY_TYPE_SEVEN = 7;
+  /**
+   * RFM模型分析
+   *
+   * @param param 时间
+   * @return 数据
+   */
+  public List<RFMVo> getRFMAnalysis(RFMParam param) {
+    try {
+        //格式化日期格式
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+      java.util.Date refDate = sdf.parse(param.getRefDate());
+      //出参
+      List<RFMVo> result = new ArrayList<>();
+      //先得到用户总数
+        Integer userData =
+            db().select(DSL.sum(USER_RFM_SUMMARY.PAY_USER_NUM))
+                .from(USER_RFM_SUMMARY)
+                .where(USER_RFM_SUMMARY.REF_DATE.eq(new Date(refDate.getTime())))
+                .fetchOptionalInto(Integer.class)
+                .orElse(-1);
+      //循环遍历不同消费时间
+      for (Byte i = NumberUtils.BYTE_ONE;i <= RECENCY_TYPE_SEVEN;i++ ){
+          //查库
+          List<RFMTableVo> tableVo =
+              db().select(USER_RFM_SUMMARY.FREQUENCY_TYPE,
+                  USER_RFM_SUMMARY.TOTAL_PAID_MONEY,
+                  USER_RFM_SUMMARY.PAY_USER_NUM,
+                  USER_RFM_SUMMARY.ORDER_NUM)
+              .from(USER_RFM_SUMMARY)
+              .where(USER_RFM_SUMMARY.REF_DATE.eq(new Date(refDate.getTime())))
+              .and(USER_RFM_SUMMARY.RECENCY_TYPE.eq(i))
+              .fetchInto(RFMTableVo.class);
+          //数据处理
+          List<RFMRowVo> rfmRowVo = new ArrayList<>();
+          for (RFMTableVo tempTableVo: tableVo) {
+              RFMRowVo tempRFMRowVo = new RFMRowVo(){{
+                  setFrequencyType(tempTableVo.getFrequencyType());
+                  setPayUserNum(tempTableVo.getPayUserNum());
+                  setUserRate(getRate(tempTableVo.getPayUserNum(),userData));
+                  setTotalPaidMoney(tempTableVo.getTotalPaidMoney());
+                  setPrice(getUnitPrice(tempTableVo.getTotalPaidMoney(),tempTableVo.getOrderNum()));
+              }};
+              rfmRowVo.add(tempRFMRowVo);
+          }
+          //行总和
+          Integer rowUserNum = 0;
+          Double rowUserRate = 0.0000;
+          BigDecimal rowMoney = BigDecimal.valueOf(0.00);
+          BigDecimal rowPrice = BigDecimal.valueOf(0.00);
+          for (RFMRowVo rowTotalVo : rfmRowVo) {
+              rowUserNum += rowTotalVo.getPayUserNum();
+              rowUserRate += rowTotalVo.getUserRate();
+              rowMoney = rowMoney.add(rowTotalVo.getTotalPaidMoney());
+              rowPrice = rowPrice.add(rowTotalVo.getPrice());
+          }
+          RFMRowVo rowTotalVo = new RFMRowVo();
+          rowTotalVo.setPayUserNum(rowUserNum);
+          rowTotalVo.setUserRate(rowUserRate);
+          rowTotalVo.setTotalPaidMoney(rowMoney);
+          rowTotalVo.setPrice(rowPrice);
+          rfmRowVo.add(rowTotalVo);
+          //当前行作为一个对象
+          Byte finalI = i;
+          RFMVo rfmVo = new RFMVo(){{
+              setRecencyType(finalI);
+              setRfmRowVo(rfmRowVo);
+          }};
+          result.add(rfmVo);
+      }
+      //列总和
+        RFMVo columnRFMVo = new RFMVo();
+
+
+        List<RFMRowVo> columnRFMRowVo = new ArrayList<>();
+        for (int j = 0;j<=5;j++){
+            Integer columnUserNum = 0;
+            Double columnUserRate = 0.0000;
+            BigDecimal columnMoney = BigDecimal.valueOf(0.00);
+            BigDecimal columnPrice = BigDecimal.valueOf(0.00);
+            for (int k = 0;k<=6;k++){
+               columnUserNum += result.get(k).getRfmRowVo().get(j).getPayUserNum();
+               columnUserRate += result.get(k).getRfmRowVo().get(j).getUserRate();
+               columnMoney = columnMoney.add(result.get(k).getRfmRowVo().get(j).getTotalPaidMoney());
+               columnPrice = columnPrice.add(result.get(k).getRfmRowVo().get(j).getPrice());
+            }
+            RFMRowVo columnTotalVo = new RFMRowVo();
+            columnTotalVo.setPayUserNum(columnUserNum);
+            columnTotalVo.setUserRate(columnUserRate);
+            columnTotalVo.setTotalPaidMoney(columnMoney);
+            columnTotalVo.setPrice(columnPrice);
+            columnRFMRowVo.add(columnTotalVo);
+        }
+
+        columnRFMVo.setRfmRowVo(columnRFMRowVo);
+
+        result.add(columnRFMVo);
+      return result;
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
+}
