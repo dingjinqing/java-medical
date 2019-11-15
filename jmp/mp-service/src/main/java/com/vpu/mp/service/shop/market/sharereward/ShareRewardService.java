@@ -305,7 +305,7 @@ public class ShareRewardService extends ShopBaseService {
                 log.debug("分享有礼活动奖励规则，奖励奖项优惠券[id:{}]所剩库存为：{}", shareRule.getCoupon(), couponView.getSurplus());
                 // 校验活动定义的奖励数量是否满足奖品的库存数量
                 if(couponView.getSurplus() < shareRule.getCouponNum()){
-                    log.error("优惠券[id:{}]库存数量小于分享有礼活动定义的奖励数量！",couponView.getId());
+                    log.error("优惠券[id:{}]库存数量 {} 小于分享有礼活动定义的奖励数量 {}！", couponView.getId(), couponView.getSurplus(), shareRule.getCouponNum());
                     com.vpu.mp.service.foundation.exception.Assert.isTrue(false, JsonResultCode.SHARE_REWARD_COUPON_NUM_LIMIT);
                 }
                 return shareRule.getCouponNum();
