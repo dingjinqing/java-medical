@@ -269,24 +269,24 @@ public class DistributorLevelService extends ShopBaseService{
 	 */
 	public DistributorSpendVo getTotalSpend(int user_id) {
 		//会员卡支付
-		Record1<BigDecimal> memeberCardBalance = db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE)).from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchAny();
+		BigDecimal memeberCardBalance = db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE)).from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
 		//微信实际支付
-		Record1<BigDecimal> moneyPaid = db().select(sum(ORDER_INFO.MONEY_PAID)).from(ORDER_INFO).where(ORDER_INFO.PAY_CODE.in("balance","wxpay")).and(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchAny();
+		BigDecimal moneyPaid = db().select(sum(ORDER_INFO.MONEY_PAID)).from(ORDER_INFO).where(ORDER_INFO.PAY_CODE.in("balance","wxpay")).and(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
 		//余额支付
-		Record1<BigDecimal> useAccount = db().select(sum(ORDER_INFO.USE_ACCOUNT)).from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchAny();
+		BigDecimal useAccount = db().select(sum(ORDER_INFO.USE_ACCOUNT)).from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
 		
 		//门店消费
-		Record1<BigDecimal> storeMemeberCardBalance = db().select(sum(STORE_ORDER.MEMBER_CARD_BALANCE)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchAny();
-		Record1<BigDecimal> storeMoneyPaid = db().select(sum(STORE_ORDER.MONEY_PAID)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchAny();;
-		Record1<BigDecimal> storeUseAccount = db().select(sum(STORE_ORDER.USE_ACCOUNT)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchAny();
+		BigDecimal storeMemeberCardBalance = db().select(sum(STORE_ORDER.MEMBER_CARD_BALANCE)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
+		BigDecimal storeMoneyPaid = db().select(sum(STORE_ORDER.MONEY_PAID)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
+		BigDecimal storeUseAccount = db().select(sum(STORE_ORDER.USE_ACCOUNT)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
 		
 		//门店预约
-		Record1<BigDecimal> serviceMoneyPaid = db().select(sum(SERVICE_ORDER.MONEY_PAID)).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_STATUS.eq((byte)2)).and(SERVICE_ORDER.PAY_CODE.in("balance","wxpay")).and(SERVICE_ORDER.USER_ID.eq(user_id)).fetchAny();
+		BigDecimal serviceMoneyPaid = db().select(sum(SERVICE_ORDER.MONEY_PAID)).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_STATUS.eq((byte)2)).and(SERVICE_ORDER.PAY_CODE.in("balance","wxpay")).and(SERVICE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
 		
-		BigDecimal card = (memeberCardBalance.value1()).add(storeMemeberCardBalance.value1());
-		BigDecimal paid = (moneyPaid.value1()).add(storeMoneyPaid.value1());
-		BigDecimal account = (useAccount.value1()).add(storeUseAccount.value1());
-		BigDecimal total = card.add(paid.add(account).add(serviceMoneyPaid.value1()));
+		BigDecimal card = (memeberCardBalance).add(storeMemeberCardBalance);
+		BigDecimal paid = (moneyPaid).add(storeMoneyPaid);
+		BigDecimal account = (useAccount).add(storeUseAccount);
+		BigDecimal total = card.add(paid.add(account).add(serviceMoneyPaid));
 		
 		DistributorSpendVo spendInfo = new DistributorSpendVo();
 		spendInfo.setCard(card);
