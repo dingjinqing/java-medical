@@ -5,6 +5,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -41,6 +42,8 @@ public interface PendingRule<R> {
 
     /**
      * addNum.
+     *
+     * @param num the num
      */
     default void addNum(int num) {
         PENDING_TEMP.get().addAndGet(num);
@@ -63,7 +66,7 @@ public interface PendingRule<R> {
     }
 
     /**
-     * Handler 1.规则一
+     * Handler 1.规则一(0已完成, 非0未完成)
      *
      * @param <T> the type parameter
      * @param t   the t
@@ -77,21 +80,21 @@ public interface PendingRule<R> {
     }
 
     /**
-     * Handler 2.规则二
+     * Handler 2.规则二(非0已完成, 0未完成)
      *
      * @param <T> the type parameter
      * @param t   the t
      */
     default <T> void handler2(T... t) {
         Arrays.stream(t).filter(Objects::nonNull).forEach(e -> {
-            if (!STRING_ONE.equals(e.toString())) {
+            if (STRING_ZERO.equals(e.toString())) {
                 increase();
             }
         });
     }
 
     /**
-     * Handler 3.规则三
+     * Handler 3.规则三(微信配置（授权和支付）,决定了五个完成项)
      *
      * @param <T> the type parameter
      * @param t   the t
@@ -107,16 +110,25 @@ public interface PendingRule<R> {
     }
 
     /**
-     * Handler 4.规则四
+     * Handler 4.规则四(集合为空已完成, 非空未完成)
      *
      * @param <T> the type parameter
      * @param t   the t
      */
     default <T> void handler4(Collection<T>... t) {
         Arrays.stream(t).forEach(e -> {
-            if (CollectionUtils.isNotEmpty(e)) {
-                addNum(1);
-            }
+            addNum(e.size());
         });
+    }
+
+    /**
+     * Handler 5.(针对会员卡审核逾期计算规则)
+     *
+     * @param map the map
+     */
+    default void handler5(Map<String, String> map) {
+        if (CollectionUtils.isNotEmpty(map.values()) && !STRING_ZERO.equals(map.get("card_num"))) {
+            addNum(1);
+        }
     }
 }

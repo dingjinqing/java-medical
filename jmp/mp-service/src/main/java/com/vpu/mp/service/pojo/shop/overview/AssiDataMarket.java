@@ -35,7 +35,8 @@ public class AssiDataMarket implements PendingRule<AssiDataMarket> {
     @Override
     public AssiDataMarket ruleHandler() {
         handler1(examine);
-        handler4(voucher.values());
+        handler4(voucher.keySet());
+        handler5(member);
         return this;
     }
 }
