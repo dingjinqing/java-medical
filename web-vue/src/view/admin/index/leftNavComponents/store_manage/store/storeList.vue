@@ -141,7 +141,7 @@
                   :content="$t('storeCommon.edit')"
                   placement="top"
                 >
-                  <a @click="edit(scope.row.storeId)">{{$t('storeCommon.edit')}}</a>
+                  <a @click="edit('edit', scope.row.storeId, scope.row)">{{$t('storeCommon.edit')}}</a>
                 </el-tooltip>
                 <el-tooltip
                   class="item"
@@ -329,6 +329,15 @@ export default {
     edit (param, id, row) {
       console.log(param, id, row)
       switch (param) {
+        case 'edit':
+          console.log('edit', row)
+          this.$router.push({
+            path: '/admin/home/main/store/addStore',
+            query: {
+              id: id
+            }
+          })
+          break
         case 'goodsManage':
           this.$router.push({
             path: '/admin/home/main/store/goods/list',

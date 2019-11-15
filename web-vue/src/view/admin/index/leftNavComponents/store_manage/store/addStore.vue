@@ -351,7 +351,7 @@
 <!-- 腾讯地图 -->
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=YPOBZ-DNIKF-Y6KJM-NDW7D-VYIFZ-QEBIO"></script>
 <script>
-import { addStore } from '@/api/admin/storeManage/store'
+import { addStore, getStore, updateStore } from '@/api/admin/storeManage/store'
 /* 组件导入 */
 
 export default {
@@ -456,10 +456,30 @@ export default {
     }
   },
   mounted() {
+    if (this.$route.query.id) {
+      this.id = this.$route.query.id
+      this.initStore(this.id)
+    }
     this.initMap()
-    console.log(this.$refs)
   },
   methods: {
+    initStore(id) {
+      let that = this
+      let params = {
+        storeId: id
+      }
+      getStore(params).then(res => {
+        if (res.error === 0) {
+          if (res.content.storeImgs) {
+            res.content.storeImgs = JSON.parse(res.content.storeImgs)
+          }
+          if (res.content.storeServe) {
+            res.content.storeServe = JSON.parse(res.content.storeServe)
+          }
+          that.storeFormInfo = Object.assign({}, that.storeFormInfo, res.content)
+        }
+      })
+    },
     // 刷新分组
     refreshGroups() {
 

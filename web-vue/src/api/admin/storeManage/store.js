@@ -44,6 +44,15 @@ export function delStore (data) {
   })
 }
 
+// 获取门店信息
+export function getStore (data) {
+  return service({
+    url: '/api/admin/store/get',
+    method: 'post',
+    data: data
+  })
+}
+
 // 门店更新
 export function updateStore (data) {
   return service({
