@@ -14,20 +14,20 @@ global.wxPage({
   onLoad: function(options) {
     console.log(options);
     let action = options.action ? options.action : 1;
-
-    if (parseInt(action) === 1) {
+    let page_name = parseInt(action) === 1 ? '历史购买' : '我的足迹'
       this.setData({
-        page_name: "历史购买"
+        page_name,
+        action
       });
-    }
     this.requestList();
   },
   requestList() {
     let currentPage = this.data.pageParams
       ? this.data.pageParams.currentPage
       : 1;
+    let api = parseInt(this.data.action) === 1 ? '/api/wxapp/order/goods/history' : 'api/wxapp/footprint/list'
     util.api(
-      "/api/wxapp/footprint/list",
+      api,
       res => {
         if(res.error === 0){
           let dataList = this.setDataList(res.content.day)

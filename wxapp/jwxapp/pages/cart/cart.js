@@ -22,18 +22,13 @@ global.wxPage({
     const type = e.currentTarget.dataset.type;
     const recId = e.currentTarget.dataset.rec_id;
     let target = this.data.canBuyGoodsList.find(item => {return item.recId === recId})
-    // let prdNum = this.data.canBuyGoodsList[idx].prdNumber;
-    // let target = `canBuyGoodsList[${idx}].prdNumber`;
-    this.requestEditGoodsNum(
-      {
+    util.api('/api/wxapp/cart/change', res => {
+      console.log(res)
+      this.requestCartList()
+    }, {
         productId: target.prdId,
         cartNumber: type === 'add' ? target.cartNumber + 1 : target.cartNumber - 1
-      }
-    )
-    // this.setData({
-    //   [target]: type === 'add' ? prdNum + 1 : prdNum - 1
-    // })
-    // this.getCartPrice()
+      })
   },
   // 请求购物车列表
   requestCartList(){
@@ -67,8 +62,15 @@ global.wxPage({
   // },
   // 清除无效购物车列表
   clearCart(){
-    let clearIds = this.data.invalidGoodsList.map(item => {
-      return item.productId
+    let recIds = this.data.invalidGoodsList.map(item => {
+      return item.recId
+    })
+    util.api('/api/wxapp/cart/removes',res=>{
+      console.log(res)
+      if(res.error === 0){
+      }
+    },{
+        recIds
     })
   },
   // 删除购物车商品
@@ -139,13 +141,6 @@ global.wxPage({
     this.setData({
       totalPrice: realPrice.substring(0, realPrice.length - 1)
     })
-  },
-  // 修改商品数量请求
-  requestEditGoodsNum(goodsData){
-    util.api('/api/wxapp/cart/change',res=>{
-      console.log(res)
-      this.requestCartList()
-    }, { ...goodsData})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

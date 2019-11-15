@@ -1,4 +1,3 @@
-<!--components/item/spec/index.wxml-->
 <view class="flex_outside_box">
   <slot name="service-promises" />
   <v-goods-num-cfg wx:if="{{productsInfo.defaultPrd}}"  limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
@@ -11,7 +10,7 @@
   </view>
 </view>
 
-<v-spec-dialog wx:if="{{!productsInfo.defaultPrd}}" show="{{showSpec}}" products-info="{{productsInfo}}" bindproductData="getProductData">
+<v-spec-dialog show="{{showSpec}}" bind:close="bindClose" products-info="{{productsInfo}}" bindproductData="getProductData">
   <v-goods-num-cfg slot="num-cfg" origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
-  <v-item-footer slot="footer" origin="spec" product-info="{{productInfo}}" bind:close="bindClose"/>
+  <v-item-footer slot="footer" origin="spec" product-info="{{productInfo}}" trigger-button="{{triggerButton}}"/>
 </v-spec-dialog>

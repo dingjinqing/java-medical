@@ -125,6 +125,19 @@ global.wxPage({
       couponList: coupons
     });
   },
+  showSpecDialog(trigger){
+    console.log(trigger)
+    this.setData({
+      showSpec:true,
+      triggerButton: trigger.detail
+    })
+  },
+  bindCloseSpec(){
+    this.setData({
+      showSpec: false,
+      triggerButton:''
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

@@ -18,7 +18,7 @@
     <!-- 优惠券&促销信息-->
     <v-coupon-promotion coupon-list="{{couponList}}"/>
     <!--  选择规格（包含无规格情况）  -->
-      <v-sel-spec products-info="{{goodsInfo}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}">
+      <v-sel-spec products-info="{{goodsInfo}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
         <!--  服务信息  -->
         <view class="flex_box" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
           <view class="item_left">
@@ -42,6 +42,6 @@
     <!-- 商品详情 -->
     <v-goods-detail />
   </view>
-  <v-item-footer product-info="{{productInfo}}"/>
+  <v-item-footer product-info="{{productInfo}}" isDefaultPrd="{{goodsInfo.defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
   <include src="../common/footer.wxml" />
 </view>

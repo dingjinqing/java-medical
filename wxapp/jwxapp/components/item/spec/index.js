@@ -10,6 +10,22 @@ global.wxComponent({
     limitInfo: {
       type: Object,
       value: null
+    },
+    show:{
+      type: Boolean,
+      value: false,
+      observer(val){
+        if(val === true){
+          this.specDialogShow()
+        }
+      }
+    },
+    triggerButton:{
+      type:String,
+      value:'',
+      observer(val){
+        console.log(val)
+      }
     }
   },
 
@@ -59,6 +75,7 @@ global.wxComponent({
       this.setData({
         showSpec:false
       })
+      this.triggerEvent('close')
     }
   }
 });
