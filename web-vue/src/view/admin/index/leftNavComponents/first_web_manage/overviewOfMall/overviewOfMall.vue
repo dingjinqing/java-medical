@@ -277,8 +277,8 @@
               <div class="progress_content">
                 <el-progress
                   type="circle"
-                  stroke-width=15
-                  width=140
+                  :stroke-width="15"
+                  :width="140"
                   :percentage="percentage"
                   :show-text="false"
                 ></el-progress>
@@ -289,7 +289,10 @@
                   </div>
                 </div>
               </div>
-              <button class="task_test_btn">{{ this.$t('overview.storeRefresh') }}</button>
+              <button
+                class="task_test_btn"
+                @click="storeRefresh"
+              >{{ this.$t('overview.storeRefresh') }}</button>
             </div>
             <div class="task_right">
               <div class="task_type clearfix">
@@ -842,7 +845,8 @@ export default {
       functionList: this.$t('overview.functionList'),
       tabSwitch: '1',
       // 店铺列表
-      percentage: '',
+      flag: 1, // 进度条状态
+      percentage: 0,
       storeList: {},
       storeTabs: this.$t('overview.storeTabs'),
       // 公告列表
@@ -866,6 +870,7 @@ export default {
       serveList: this.$t('overview.serveList'),
       shopInfo: {},
       avatarImage: this.$imageHost + '/image/admin/ad_img.png'
+
     }
   },
   created () {
@@ -876,6 +881,8 @@ export default {
   },
   mounted () {
     this.langDefault()
+    // 定时器
+    clearInterval(this.timer)
   },
   watch: {
     lang () {
@@ -952,6 +959,7 @@ export default {
           this.storeList = res.content.shopAssistantVo
           // 公告
           this.noticeList = res.content.announcementVoList
+          this.percentage = 45
         }
       })
     },
@@ -1084,8 +1092,33 @@ export default {
           }
         }
       })
+    },
+
+    // 刷新
+    storeRefresh () {
+      let _this = this
+      _this.timer = setInterval(() => {
+        if (_this.flag === 1) {
+          _this.percentage += 10
+          if (_this.percentage > 100) {
+            _this.percentage = 100
+            _this.flag = 0
+          }
+        } else {
+          _this.percentage -= 10
+          if (_this.percentage < 45) {
+            _this.percentage = 45
+            _this.flag = 1
+            clearInterval(_this.timer)
+          }
+        }
+      }, 250)
     }
 
+  },
+  beforeDestroy () {
+    // 清除定时器
+    clearInterval(this.timer)
   }
 }
 </script>
@@ -1729,6 +1762,7 @@ img {
   background-color: #fff;
   color: #5a8bff;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .over-right {
