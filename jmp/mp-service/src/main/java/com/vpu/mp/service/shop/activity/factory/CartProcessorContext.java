@@ -8,6 +8,7 @@ import com.vpu.mp.service.shop.activity.processor.GoodsBeginProcessor;
 import com.vpu.mp.service.shop.activity.processor.GoodsTailProcessor;
 import com.vpu.mp.service.shop.activity.processor.GradeCardProcessor;
 import com.vpu.mp.service.shop.activity.processor.SecKillProcessor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
  * @date 2019/11/7 18:32
  */
 @Component
+@Slf4j
 public class CartProcessorContext {
 
 
@@ -50,9 +52,9 @@ public class CartProcessorContext {
 
     private void executeStrategy(ActivityCartListStrategy strategy, WxAppCartBo cartBo){
         try {
-
             strategy.doCartOperation(cartBo);
         }catch (Exception e){
+            log.error("商品规格策略失败"+strategy.getClass()+e.getMessage());
             e.printStackTrace();
         }
     }
