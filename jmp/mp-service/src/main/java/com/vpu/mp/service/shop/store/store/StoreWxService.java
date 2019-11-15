@@ -477,6 +477,7 @@ public class StoreWxService extends ShopBaseService {
             }
             orderSn.set(storeOrderRecord.getOrderSn());
             if (storeOrderRecord.getMoneyPaid().compareTo(ZERO) > 0) {
+                // todo 支付预留接口
                 String openId = orderInfo.getOpenid();
                 switch (param.getAppletRequestSource()) {
                     case CONDITION_ZERO:
@@ -488,37 +489,37 @@ public class StoreWxService extends ShopBaseService {
                     default:
                         break;
                 }
-            } else {
-                // 会员余额变动
-                if (storeOrderRecord.getUseAccount().compareTo(ZERO) > 0) {
-                    try {
-                        accountService.addUserAccount(new AccountParam() {{
-                            setUserId(userId);
-                            setAccount(userRecord.getAccount());
-                            setOrderSn(storeOrderRecord.getOrderSn());
-                            setAmount(storeOrderRecord.getUseAccount());
-                            setPayment("balance");
-                            setIsPaid(BYTE_ONE);
-                            setRemark(storeOrderRecord.getOrderSn());
-                        }}, 0, CONDITION_TWO, BYTE_ZERO, "zh");
-                    } catch (MpException e) {
-                        log.error("会员余额变动失败,原因如下:{}", e.getMessage());
-                        throw new BusinessException(JsonResultCode.CODE_FAIL);
-                    }
-                }
-                // 创建用户积分记录
-                if (storeOrderRecord.getScoreDiscount().compareTo(ZERO) > 0) {
-                    scoreService.addUserScore(new UserScoreVo() {{
-                        setScoreDis(userRecord.getScore());
+            }
+            // 会员余额变动
+            if (storeOrderRecord.getUseAccount().compareTo(ZERO) > 0) {
+                try {
+                    accountService.addUserAccount(new AccountParam() {{
                         setUserId(userId);
-                        setScore(storeOrderRecord.getScoreDiscount().multiply(HUNDRED).intValue());
+                        setAccount(userRecord.getAccount());
                         setOrderSn(storeOrderRecord.getOrderSn());
-                        setShopId(getShopId());
+                        setAmount(storeOrderRecord.getUseAccount());
+                        setPayment("balance");
+                        setIsPaid(BYTE_ONE);
                         setRemark(storeOrderRecord.getOrderSn());
-                    }}, "0", BYTE_ONE, BYTE_ZERO);
+                    }}, 0, CONDITION_TWO, BYTE_ZERO, "zh");
+                } catch (MpException e) {
+                    log.error("会员余额变动失败,原因如下:{}", e.getMessage());
+                    throw new BusinessException(JsonResultCode.CODE_FAIL);
                 }
-                // 增加会员卡消费记录
-                if (storeOrderRecord.getMemberCardBalance().compareTo(ZERO) > 0) {
+            }
+            // 创建用户积分记录
+            if (storeOrderRecord.getScoreDiscount().compareTo(ZERO) > 0) {
+                scoreService.addUserScore(new UserScoreVo() {{
+                    setScoreDis(userRecord.getScore());
+                    setUserId(userId);
+                    setScore(storeOrderRecord.getScoreDiscount().multiply(HUNDRED).intValue());
+                    setOrderSn(storeOrderRecord.getOrderSn());
+                    setShopId(getShopId());
+                    setRemark(storeOrderRecord.getOrderSn());
+                }}, "0", BYTE_ONE, BYTE_ZERO);
+            }
+            // 增加会员卡消费记录
+            if (storeOrderRecord.getMemberCardBalance().compareTo(ZERO) > 0) {
                     UserCardParam userCardParam = userCardDaoService.getUserCardInfo(storeOrderRecord.getMemberCardNo());
                     userCardService.cardConsumer(new UserCardConsumeBean() {{
                         setMoneyDis(storeOrderRecord.getMemberCardBalance());
@@ -530,7 +531,6 @@ public class StoreWxService extends ShopBaseService {
                         setType(BYTE_ZERO);
                     }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
                 }
-            }
             // 跟新门店订单支付状态
             storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(storeOrderRecord.getOrderSn()), new StoreOrderRecord() {{
                 setPayTime(Timestamp.valueOf(LocalDateTime.now()));

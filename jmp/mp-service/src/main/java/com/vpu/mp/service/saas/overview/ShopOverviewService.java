@@ -27,6 +27,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.vpu.mp.db.main.tables.Article.ARTICLE;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
@@ -211,8 +212,8 @@ public class ShopOverviewService extends MainBaseService {
         shopNav(param, vo, shopId, sysId);
     }
 
-    public ShopAssistantVo shopNav(ShopAssistantParam param, ShopAssistantVo vo, Integer shopId, Integer sysId) {
-        AssiDataShop dataShop = new AssiDataShop();
+    private ShopAssistantVo shopNav(ShopAssistantParam param, ShopAssistantVo vo, Integer shopId, Integer sysId) {
+        AssiDataShop dataShop = Objects.nonNull(vo.getDataShop()) ? vo.getDataShop() : new AssiDataShop();
         // 微信配置（授权和支付）
         MpAuthShopRecord authShopRecord = mpAuthShopService.getAuthShopByShopId(shopId);
         /* 微信配置（授权和支付）,决定了五个完成项
