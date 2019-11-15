@@ -284,7 +284,7 @@
                 ></el-progress>
                 <div class="progress-info">
                   <div class="status-text">
-                    <p><span class="status-text_count">{{ storeList.totalPending }}</span>{{ this.$t('overview.storeItems') }}</p>
+                    <p><span class="status-text_count">{{ storeList.totalNum }}</span>{{ this.$t('overview.storeItems') }}</p>
                     <p>{{ this.$t('overview.storePending') }}</p>
                   </div>
                 </div>
