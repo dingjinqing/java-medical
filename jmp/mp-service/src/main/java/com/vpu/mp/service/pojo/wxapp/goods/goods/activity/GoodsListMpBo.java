@@ -21,7 +21,7 @@ import java.util.Set;
 public class GoodsListMpBo extends GoodsListMpVo {
     /**是否从ES获取数据*/
     @JsonIgnore
-    private Boolean isDisposedByEs;
+    private Boolean isDisposedByEs = false;
     /** 平台、商家、品牌分类id */
     @JsonIgnore
     private Integer catId;

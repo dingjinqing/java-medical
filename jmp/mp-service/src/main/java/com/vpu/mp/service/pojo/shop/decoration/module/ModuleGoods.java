@@ -5,11 +5,13 @@ package com.vpu.mp.service.pojo.shop.decoration.module;
  * @author lixinguo
  *
  */
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,7 +32,7 @@ public class ModuleGoods extends ModuleBase {
      * 范围集合
      */
     @JsonProperty("goods_area_data")
-    private String goodsAreaData;
+    private List<String> goodsAreaData;
 
     @JsonProperty("goods_bg_color")
     private String goodsBgColor;
@@ -39,7 +41,7 @@ public class ModuleGoods extends ModuleBase {
     private Byte goodsDisplay;
 
     @JsonProperty("goods_items")
-    private String goodsItems;
+    private List<Integer> goodsItems;
 
     @JsonProperty("goods_module_bg")
     private Byte goodsModuleBg;

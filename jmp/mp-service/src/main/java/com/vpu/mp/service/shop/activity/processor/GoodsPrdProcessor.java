@@ -35,7 +35,7 @@ public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListPro
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
-        if (capsules.get(0).getIsDisposedByEs()) {
+        if (capsules.size()==0||capsules.get(0).getIsDisposedByEs()) {
             return;
         }
 

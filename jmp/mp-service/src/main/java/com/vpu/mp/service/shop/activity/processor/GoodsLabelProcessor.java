@@ -32,7 +32,7 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         // 已从从es获取数据
-        if (capsules.get(0).getIsDisposedByEs()) {
+        if (capsules.size()==0||capsules.get(0).getIsDisposedByEs()) {
             return;
         }
 
