@@ -270,22 +270,26 @@ public class DistributorLevelService extends ShopBaseService{
 	public DistributorSpendVo getTotalSpend(int user_id) {
 		//会员卡支付
 		BigDecimal memeberCardBalance = db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE)).from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
+		logger().info("会员卡支付"+memeberCardBalance);
 		//微信实际支付
 		BigDecimal moneyPaid = db().select(sum(ORDER_INFO.MONEY_PAID)).from(ORDER_INFO).where(ORDER_INFO.PAY_CODE.in("balance","wxpay")).and(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
+		logger().info("微信实际支付"+moneyPaid);
 		//余额支付
 		BigDecimal useAccount = db().select(sum(ORDER_INFO.USE_ACCOUNT)).from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
-		
+		logger().info("余额支付"+useAccount);
 		//门店消费
 		BigDecimal storeMemeberCardBalance = db().select(sum(STORE_ORDER.MEMBER_CARD_BALANCE)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
 		BigDecimal storeMoneyPaid = db().select(sum(STORE_ORDER.MONEY_PAID)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
 		BigDecimal storeUseAccount = db().select(sum(STORE_ORDER.USE_ACCOUNT)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
-		
+		logger().info("门店消费"+storeMemeberCardBalance);
+		logger().info("门店消费"+storeMoneyPaid);
+		logger().info("门店消费"+storeUseAccount);
 		//门店预约
 		BigDecimal serviceMoneyPaid = db().select(sum(SERVICE_ORDER.MONEY_PAID)).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_STATUS.eq((byte)2)).and(SERVICE_ORDER.PAY_CODE.in("balance","wxpay")).and(SERVICE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
-		
-		BigDecimal card = (memeberCardBalance).add(storeMemeberCardBalance);
-		BigDecimal paid = (moneyPaid).add(storeMoneyPaid);
-		BigDecimal account = (useAccount).add(storeUseAccount);
+		logger().info("门店预约"+serviceMoneyPaid);
+		BigDecimal card = memeberCardBalance.add(storeMemeberCardBalance);
+		BigDecimal paid = moneyPaid.add(storeMoneyPaid);
+		BigDecimal account = useAccount.add(storeUseAccount);
 		BigDecimal total = card.add(paid.add(account).add(serviceMoneyPaid));
 		
 		DistributorSpendVo spendInfo = new DistributorSpendVo();
