@@ -32,9 +32,9 @@ public class Assert {
      * @param o    the o
      * @param code the code
      */
-    public static void notNull(Object o, JsonResultCode code) {
+    public static void notNull(Object o, JsonResultCode code, Object... args) {
         if (Objects.isNull(o)) {
-            throw new BusinessException(code);
+            commonFunc(code, args);
         }
     }
 
@@ -104,5 +104,11 @@ public class Assert {
                 throw new BusinessException(code, args);
             throw new BusinessException(code);
         }
+    }
+
+    private static void commonFunc(JsonResultCode code, Object... args) {
+        if (args != null && args.length > 0)
+            throw new BusinessException(code, args);
+        throw new BusinessException(code);
     }
 }

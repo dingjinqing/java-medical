@@ -1,9 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.sharereward;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.sql.Timestamp;
 
 /**
@@ -16,6 +18,7 @@ public class ShareRewardAddParam {
     /**
      * 活动id
      */
+    @PositiveOrZero(groups = UpdateGroup.class)
     private Integer id;
     /**
      * 活动名称

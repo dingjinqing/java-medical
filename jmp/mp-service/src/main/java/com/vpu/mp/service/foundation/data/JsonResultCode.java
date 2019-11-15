@@ -242,6 +242,8 @@ public enum JsonResultCode {
      * 营销-秒杀
      */
     SECKILL_CONFLICTING_ACT_TIME(144001,JsonResultMessage.SECKILL_CONFLICTING_ACT_TIME),
+    // 分享有礼
+    SHARE_REWARD_COUPON_NUM_LIMIT(145001, JsonResultMessage.SHARE_REWARD_COUPON_NUM_LIMIT),
 
 	//会员用户
     CODE_MEMBER_TAG_ADD_SUCCESS(0,JsonResultMessage.MSG_MEMBER_TAG_ADD_SUCCESS),

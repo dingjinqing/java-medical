@@ -56,6 +56,9 @@ public class Util {
 	final protected static String UNDEER_LINE = "_";
 
 	public static String toJson(Object o) {
+        if (Objects.isNull(o)) {
+            return StringUtils.EMPTY;
+        }
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return mapper.writeValueAsString(o);
@@ -542,7 +545,7 @@ public class Util {
 
     /**
      * List 转 String
-     */    
+     */
     public static <T> String listToString(List<T> stringValue){
     	if (null == stringValue) {
             return null;

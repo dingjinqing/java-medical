@@ -1,20 +1,15 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.HashMap;
-
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareReceiveDetailParam;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardAddParam;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardShowParam;
 import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardStatusParam;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 /**
  * @author liufei
@@ -59,7 +54,7 @@ public class AdminShareRewardController extends AdminBaseController {
      * 更新分享有礼活动
      */
     @PostMapping("/updatesharereward")
-    public JsonResult updateShareReward(@RequestBody @Validated ShareRewardAddParam param) {
+    public JsonResult updateShareReward(@RequestBody @Validated(UpdateGroup.class) ShareRewardAddParam param) {
         shop().shareRewardService.updateShareReward(param);
         return success();
     }

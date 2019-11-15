@@ -1,65 +1,37 @@
 package com.vpu.mp.service.shop.market.sharereward;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ONE;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.FLAG_ONE;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.FLAG_ZERO;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_ALL;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_EXPIRED;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_PREPARE;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_PROCESSING;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_TERMINATED;
-import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.DAILY_SHARE_AWARD;
-import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.REWARD_TYPE;
-import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.SCORE;
-
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Record11;
-import org.jooq.Record12;
-import org.jooq.SelectConditionStep;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.shop.tables.AttendShareUser;
 import com.vpu.mp.db.shop.tables.ShareAward;
 import com.vpu.mp.db.shop.tables.ShareAwardReceive;
 import com.vpu.mp.db.shop.tables.ShareAwardRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareReceiveDetailParam;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareReceiveDetailVo;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardAddParam;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardInfoVo;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardShowParam;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardShowVo;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRewardStatusParam;
-import com.vpu.mp.service.pojo.shop.market.sharereward.ShareRule;
+import com.vpu.mp.service.pojo.shop.market.sharereward.*;
 import com.vpu.mp.service.shop.coupon.CouponService;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.sharereward.ShareConstant.*;
 
 /**
  * @author liufei
@@ -174,7 +146,7 @@ public class ShareRewardService extends ShopBaseService {
         if (rules.length == 0) {
             return null;
         }
-        return Arrays.stream(rules).filter(StringUtils::isNotEmpty).map(rule -> {
+        return Arrays.stream(rules).filter(StringUtils::isNotBlank).map(rule -> {
             try {
                 JsonNode node = MAPPER.readTree(rule);
                 return Byte.valueOf(node.get(REWARD_TYPE).asText());
@@ -260,78 +232,81 @@ public class ShareRewardService extends ShopBaseService {
      * @return {@link com.vpu.mp.db.shop.tables.records.ShareAwardRecord}
      */
     private com.vpu.mp.db.shop.tables.records.ShareAwardRecord buildOptions(ShareRewardAddParam param) {
-        try {
-            com.vpu.mp.db.shop.tables.records.ShareAwardRecord awardRecord = new com.vpu.mp.db.shop.tables.records.ShareAwardRecord();
-            if (FLAG_ONE.equals(param.getIsForever())) {
-                param.setStartTime(null);
-                param.setEndTime(null);
-            }
-            if (CONDITION_ONE == param.getCondition()) {
-                param.setGoodsIds(null);
-                param.setGoodsPv(null);
-            }
-            if (CONDITION_TWO == param.getCondition()) {
-                param.setGoodsPv(null);
-            }
-            if (CONDITION_THREE == param.getCondition()) {
-                param.setGoodsIds(null);
-            }
-            param.setFirstAwardNum(param.getFirstRule() !=null ? getAwardNum(param.getFirstRule()) : 0);
-            // 奖励规则不为空时进行校验，为空奖励奖品数量直接置为0
-            param.setSecondAwardNum(param.getSecondRule()!=null ? getAwardNum(param.getSecondRule()) : 0);
-            param.setThirdAwardNum(param.getThirdRule() !=null ? getAwardNum(param.getThirdRule()) : 0);
-
-            param.setFirstLevelRule(param.getFirstRule() !=null ? MAPPER.writeValueAsString(dataClean(param.getFirstRule())) : null);
-            param.setSecondLevelRule(param.getSecondRule()!=null ? MAPPER.writeValueAsString(dataClean(param.getSecondRule())): null);
-            param.setThirdLevelRule(param.getThirdRule() !=null ? MAPPER.writeValueAsString(dataClean(param.getThirdRule())) : null);
-
-            FieldsUtil.assignNotNull(param, awardRecord);
-
-            return awardRecord;
-        } catch (JsonProcessingException e) {
-            log.debug(e.getMessage());
-            throw new RuntimeException("Serialization Exception !");
+        com.vpu.mp.db.shop.tables.records.ShareAwardRecord awardRecord = new com.vpu.mp.db.shop.tables.records.ShareAwardRecord();
+        // 有效期为永久有效时, 将有效起止时间置为null
+        if (FLAG_ONE.equals(param.getIsForever())) {
+            param.setStartTime(null);
+            param.setEndTime(null);
         }
+        // 根据不同的触发条件, 清理冗余数据
+        if (CONDITION_ONE == param.getCondition()) {
+            // 全部商品
+            param.setGoodsIds(null);
+            param.setGoodsPv(null);
+        }
+        if (CONDITION_TWO == param.getCondition()) {
+            // 部分商品
+            param.setGoodsPv(null);
+        }
+        if (CONDITION_THREE == param.getCondition()) {
+            // 指定访问量低于N的商品
+            param.setGoodsIds(null);
+        }
+        // 奖励规则不为空时进行校验，为空奖励奖品数量直接置为0
+        param.setFirstAwardNum(getAwardNum(param.getFirstRule()));
+        param.setSecondAwardNum(getAwardNum(param.getSecondRule()));
+        param.setThirdAwardNum(getAwardNum(param.getThirdRule()));
+
+        param.setFirstLevelRule(Util.toJson(dataClean(param.getFirstRule())));
+        param.setSecondLevelRule(Util.toJson(dataClean(param.getSecondRule())));
+        param.setThirdLevelRule(Util.toJson(dataClean(param.getThirdRule())));
+
+        FieldsUtil.assignNotNull(param, awardRecord);
+        return awardRecord;
     }
     // ShareRule奖励规则数据清洗
     private ShareRule dataClean(ShareRule shareRule){
-        Assert.notNull(shareRule,"分享有礼奖励规则为空！");
+        if (Objects.isNull(shareRule))
+            return null;
         switch (shareRule.getRewardType()){
             case CONDITION_ONE :
                 shareRule.setCoupon(null);
                 shareRule.setCouponNum(null);
                 shareRule.setLottery(null);
                 shareRule.setLotteryNum(null);
-                return shareRule;
+                break;
             case CONDITION_TWO :
                 shareRule.setScore(null);
                 shareRule.setScoreNum(null);
                 shareRule.setLottery(null);
                 shareRule.setLotteryNum(null);
-                return shareRule;
+                break;
             case CONDITION_THREE :
                 shareRule.setCoupon(null);
                 shareRule.setCouponNum(null);
                 shareRule.setScore(null);
                 shareRule.setScoreNum(null);
-                return shareRule;
+                break;
             default:
-                return shareRule;
+                break;
         }
+        return shareRule;
     }
     private Integer getAwardNum(ShareRule shareRule){
-        Assert.notNull(shareRule,"分享有礼奖励规则为空！");
+        if (Objects.isNull(shareRule))
+            return 0;
         switch (shareRule.getRewardType()){
             case CONDITION_ONE :
                 return shareRule.getScoreNum();
             case CONDITION_TWO :
                 CouponView couponView = couponService.getCouponViewById(shareRule.getCoupon());
-                log.debug("分享有礼活动奖励规则，奖励奖项优惠券[id:{}]所剩库存为：{}",couponView.getId(),couponView.getSurplus());
-                Assert.notNull(couponView,"优惠券不存在");
+                // 校验优惠券是否存在
+                com.vpu.mp.service.foundation.exception.Assert.notNull(couponView, JsonResultCode.CODE_DATA_NOT_EXIST, "优惠券 " + shareRule.getCoupon());
+                log.debug("分享有礼活动奖励规则，奖励奖项优惠券[id:{}]所剩库存为：{}", shareRule.getCoupon(), couponView.getSurplus());
                 // 校验活动定义的奖励数量是否满足奖品的库存数量
                 if(couponView.getSurplus() < shareRule.getCouponNum()){
                     log.error("优惠券[id:{}]库存数量小于分享有礼活动定义的奖励数量！",couponView.getId());
-                    throw new RuntimeException("优惠券库存数量小于活动定义的奖励数量！");
+                    com.vpu.mp.service.foundation.exception.Assert.isTrue(false, JsonResultCode.SHARE_REWARD_COUPON_NUM_LIMIT);
                 }
                 return shareRule.getCouponNum();
             case CONDITION_THREE :

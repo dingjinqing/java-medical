@@ -209,6 +209,8 @@ public class JsonResultMessage {
      */
     public static final String SECKILL_CONFLICTING_ACT_TIME="seckill.conflicting.act.time";
 
+    public static final String SHARE_REWARD_COUPON_NUM_LIMIT = "share.reward.coupon.num.limit";
+
 
     /**
      * 文章_分类
