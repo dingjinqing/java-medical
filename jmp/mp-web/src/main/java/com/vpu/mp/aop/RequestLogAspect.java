@@ -1,12 +1,13 @@
 package com.vpu.mp.aop;
 
 
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.common.base.Stopwatch;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.RequestUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,12 +18,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.google.common.base.Stopwatch;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.RequestUtil;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * controller所有请求日志记录
@@ -39,7 +37,7 @@ public class RequestLogAspect {
     public void controllerLogAspect(){}
 
     @Around(value = "controllerLogAspect()")
-    public JsonResult beforeRequest(ProceedingJoinPoint point){
+    public JsonResult beforeRequest(ProceedingJoinPoint point) throws Throwable {
         StringBuilder logAfterStr = new StringBuilder();
         JsonResult result;
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
@@ -90,6 +88,10 @@ public class RequestLogAspect {
             logErrorStr.append("Exception    :").append(e.getMessage()).append("\n");
             e.printStackTrace();
             log.error(logErrorStr.toString());
+            // 如果是自定义的业务异常, 继续抛出让ExceptionControllerHandler去捕获, 这样可以回显前端详细的错误信息, 而不是简单的"操作失败"
+            if (e instanceof BusinessException) {
+                throw e;
+            }
             return new JsonResult().fail("zh_CN", JsonResultCode.CODE_FAIL);
         }
         return result;
