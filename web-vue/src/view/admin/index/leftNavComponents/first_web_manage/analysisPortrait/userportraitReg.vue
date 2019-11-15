@@ -213,6 +213,16 @@ export default {
             areaColor: '#fde166'
           }
         },
+        tooltip: {
+          trigger: 'item',
+          formatter: function (params) {
+            if (params.value) {
+              return params.name + '<br/>' + params.seriesName + ' : ' + params.value
+            } else {
+              return params.name + '<br/>' + params.seriesName + ' : ' + '0'
+            }
+          }
+        },
         label: {
           normal: {
             show: false,
