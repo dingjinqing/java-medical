@@ -9,7 +9,7 @@
           :label="$t('distribution.distributionCfg')"
           name="first"
         >
-          <distributeSetting />
+          <distributeSetting @tabChange="tabChange" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.distributorLevelCfg')"
@@ -103,6 +103,9 @@ export default {
     handleClick () {
       // console.log(tab)
 
+    },
+    tabChange () {
+      this.activeName = 'fouth'
     }
     // advertisementList()
   }

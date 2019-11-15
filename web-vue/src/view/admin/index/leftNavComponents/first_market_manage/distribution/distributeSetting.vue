@@ -42,7 +42,11 @@
           <p>勾选后，系统自动生成分销员邀请码。 <a
               href="javascript:void(0);"
               style="color: red;"
-            >注：店铺中至少有一个分销员时，可开启此功能。</a> 如需修改邀请码，请到 <a href="javascript:void(0);">分销员列表</a> 中进行设置</p>
+            >注：店铺中至少有一个分销员时，可开启此功能。</a> 如需修改邀请码，请到
+            <a
+              href="javascript:void(0);"
+              @click="listClickHandler"
+            >分销员列表</a> 中进行设置</p>
           <el-checkbox
             v-model="form.activation"
             :true-label='1'
@@ -193,7 +197,10 @@
           href="javascript:void(0);"
           style="margin: 0 20px;"
         >刷新</a>
-        <a href="javascript:void(0);">添加模板</a>
+        <a
+          href="javascript:void(0);"
+          @click="templateHandler"
+        >添加模板</a>
       </el-form-item>
 
       <!-- 展开更多配置 -->
@@ -225,7 +232,10 @@
             :inactive-value='0'
             style="width: 60px;"
           ></el-switch>
-          <span style="color: red;">注：开启提现功能开关前，请阅读 <a href="javascript:void(0);">《返利提现配置操作说明》</a></span>
+          <span style="color: red;">注：开启提现功能开关前，请阅读 <a
+              href="javascript:void(0);"
+              @click="optionHandler"
+            >《返利提现配置操作说明》</a></span>
           <div class="text">
             开关开启，分销员推广返利获得的佣金可提现到微信钱包，分销员在小程序发起返利申请，需后台审核通过才可提现到账
           </div>
@@ -234,19 +244,26 @@
               v-model="form.withdraw_source"
               label="wx_mini"
             >小程序</el-radio>
-            <p class="text">注意：使用返利提现功能，请确保小程序已开通微信支付，否则不可提现 <a href="javascript:void(0);">去配置</a></p>
+            <p class="text">注意：使用返利提现功能，请确保小程序已开通微信支付，否则不可提现 <a
+                href="javascript:void(0);"
+                @click="dealClickHandler"
+              >去配置</a></p>
             <el-radio
               v-model="form.withdraw_source"
               label="wx_open"
             >公众号</el-radio>
-            <p class="text">注意：使用返利提现功能，请确保小程序已绑定认证服务号并配置相关支付信息，否则不可提现，未关注公众号的用户将会提现失败 <a href="javascript:void(0);">去配置</a></p>
+            <p class="text">注意：使用返利提现功能，请确保小程序已绑定认证服务号并配置相关支付信息，否则不可提现，未关注公众号的用户将会提现失败
+              <a
+                href="javascript:void(0);"
+                @click="officialHandler"
+              >去配置</a></p>
           </div>
         </el-form-item>
 
         <el-form-item label="返利最小提现金额：">
           <el-input
             style="width: 100px;"
-            v-model.number="form.withdraw_cash"
+            v-model="form.withdraw_cash"
           ></el-input> 元
           <div class="text">
             分销员发起返利提现，单次申请最小提现金额。为防止分销员提现过于频繁，请设置单次最小提现金额。
@@ -467,8 +484,8 @@ export default {
   data () {
     return {
       imageHost: 'http://jmpdevimg.weipubao.cn/',
-      vaildDate: 0, // 有效期天数
-      protectDate: 0, // 保护期天数
+      vaildDate: null, // 有效期天数
+      protectDate: null, // 保护期天数
       form: {
         status: 1, // 分销开关
         judge_status: 1, // 分销员审核开关
@@ -484,7 +501,7 @@ export default {
         rebate_page_id: '', // 推广模版文案id
         withdraw_status: 1, // 返利体现开关
         withdraw_source: 'wx_mini', // 返利方式
-        withdraw_cash: 0, // 返利最小提现金额
+        withdraw_cash: null, // 返利最小提现金额
         rebate_center_name: '分享给你一个好物店铺快来购物吧！', // 邀请文案
         bg_img: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg' // 海报背景图
       },
@@ -620,9 +637,11 @@ export default {
       }
       this.form.recommend_goods_id = this.goodsInfo.toString()
       this.form.tableData = this.tableData
+
       setDistribution(this.form).then((res) => {
         if (res.error === 0) {
           this.$message.success({ message: '保存成功!' })
+          this.getDistribution()
         }
       })
     },
@@ -717,6 +736,39 @@ export default {
     // 跳转推广文案配置
     copyWritingHandler () {
       this.$router.push({ name: 'distribution_copyWriting' })
+    },
+
+    // 跳转分销员列表
+    listClickHandler () {
+      this.$emit('tabChange')
+    },
+
+    // 跳转添加模板
+    templateHandler () {
+      this.$router.push({
+        path: '/admin/home/main/decorationHome',
+        query: {
+          pageId: -1
+        }
+      })
+    },
+
+    // 跳转返利提现配置
+    optionHandler () {
+      window.open('http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=686&fromuid=1')
+    },
+
+    // 跳转交易配置
+    dealClickHandler () {
+      this.$router.push({ name: 'pay' })
+    },
+
+    // 跳转授权公众号
+    officialHandler () {
+      this.$router.push({
+        path: '/admin/home/shopMain',
+        query: { change_components: '3' }
+      })
     }
 
   }
