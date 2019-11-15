@@ -94,6 +94,53 @@
                         <span style="display: inline-block;">{{item.label.name}}</span>
                       </div>
                     </div>
+                    <!--活动类型标签-->
+                    <div
+                      class="goodsActivities"
+                      :style="data.col_type==='2'?'width:100%':data.col_type==='0'?'width:100%;':data.col_type==='4'?'width:145px':data.col_type==='1'?'width:163px':data.col_type==='3'?'width:128px':''"
+                    >
+                      <!--多人开团`````````````````-->
+                      <div
+                        class="activity"
+                        v-if="item.noShowActFlag === 1"
+                      >
+                        {{$t('commodity.setuProvince')}}{{item.discountPrice}}{{$t('commodity.element')}}
+                      </div>
+                      <!---->
+                      <!--砍价````````````````````-->
+                      <div
+                        class="activity"
+                        style="width:85px"
+                        v-if="item.noShowActFlag === 3"
+                      >
+                        {{item.realPrice}}{{$t('commodity.yuanChopAway')}}
+                      </div>
+                      <!--限时降价`````````````````-->
+                      <div
+                        class="activity"
+                        style="width:100%;border-radius:0"
+                        v-if="item.noShowActFlag === 6"
+                      >
+                        {{$t('commodity.timeLimitedPrice')}}
+                      </div>
+                      <!--首单特惠-->
+                      <div
+                        class="activity"
+                        style="width:100%;border-radius:0"
+                        v-if="item.noShowActFlag === 18"
+                      >
+                        {{$t('commodity.newRecruitsExclusive')}}
+                      </div>
+                      <!--会员专享-->
+                      <div
+                        class="activity"
+                        style="width:100%;border-radius:0;background: -webkit-linear-gradient(left,#eed9ad,#e7c38a)"
+                        v-if="item.noShowActFlag === 22"
+                      >
+                        {{$t('commodity.memberExclusive')}}
+                      </div>
+                    </div>
+                    <!--end-->
                     <img
                       :style="data.col_type==='2'?'width:100%;height:auto':data.col_type==='0'?'width:100%;height:auto;':data.col_type==='4'?'width:145px;height:145px;max-height:145px':data.col_type==='1'?'width:163px;height:163px;max-height:163px':data.col_type==='3'?'width:128px':''"
                       :src="item.goodsImg"
@@ -108,8 +155,13 @@
                         class="goodsNameClass"
                         v-if="data.hide_name==='1'"
                       >{{item.goodsName}}</div>
-                      <div :style="data.col_type!=='4'?'margin-top:10px':''">
-                        <span>{{$t('commodity.couponReduction')}}￥100</span>
+                      <div
+                        :style="data.col_type!=='4'?'margin-top:10px':''"
+                        v-for="(itemC,indexC) in item.goodsActivities"
+                        :key="indexC"
+                        class="activitySpan"
+                      >
+                        <span :style="(data.col_type==='2'||data.col_type==='0')?'max-width:100%':data.col_type==='4'?'max-width:145px':data.col_type==='1'?'max-width:163px':data.col_type==='3'?'max-width:128px':''">{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):(itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===20?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===21?$t('commodity.membershipPrice'):itemC.activityType===22?$t('commodity.membershipExclusive'):''}}</span>
                       </div>
                     </div>
                     <div
@@ -233,6 +285,7 @@ export default {
       ],
       goodsFlag: false,
       bgColor: '',
+      noShowActFlag: null, // 当前图片底部显示的活动
       // 显示数据
       data: {
         goodsListData: []
@@ -273,6 +326,9 @@ export default {
         console.log(newData)
         if (newData) {
           this.data = newData
+          // 处理显示活动
+          this.handleToActivity(newData)
+
           console.log(newData)
           if (newData.goodsListData.length) {
             this.goodsFlag = true
@@ -330,6 +386,37 @@ export default {
     // 模块划过
     mouseOver () {
       this.$emit('middleDragData', this.flag)
+    },
+    // 处理显示活动
+    handleToActivity (newData) {
+      let goodSData = newData.goodsListData
+      goodSData.forEach((item, index) => {
+        // 处理每一个商品当前要显示的活动
+        this.handleToEveryGoods(item, index, goodSData)
+      })
+    },
+    // 处理每一个商品中要显示的活动
+    handleToEveryGoods (item, index, goodSData) {
+      // 秒杀 、一口价、支付有礼、加价购均不显示
+      item.goodsActivities.forEach((itemC, indeC) => {
+        console.log(itemC)
+        switch (itemC.activityType) {
+          case 1:
+            this.data.goodsListData[index]['noShowActFlag'] = 1
+            break
+          case 3:
+            this.data.goodsListData[index]['noShowActFlag'] = 3
+            break
+          case 6:
+            this.data.goodsListData[index]['noShowActFlag'] = 6
+            break
+          case 18:
+            this.data.goodsListData[index]['noShowActFlag'] = 18
+            break
+          case 22:
+            this.data.goodsListData[index]['noShowActFlag'] = 22
+        }
+      })
     }
   }
 }
@@ -436,6 +523,27 @@ export default {
               }
             }
           }
+          .goodsActivities {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            .activity {
+              width: 120px;
+              font-size: 12px;
+              text-align: center;
+              border-radius: 0 80px 80px 0;
+              padding: 5px 0;
+              // height: 25px;
+              // line-height: 25px;
+              background: -webkit-linear-gradient(
+                left,
+                rgba(91, 158, 164, 0.8),
+                rgba(91, 158, 164, 1)
+              );
+              color: #fff;
+            }
+          }
           .newGoods {
             position: absolute;
             left: 2px;
@@ -478,6 +586,7 @@ export default {
             div {
               white-space: nowrap;
             }
+
             div:nth-of-type(2) {
               font-size: 12px;
               margin-top: 5px;
@@ -489,6 +598,22 @@ export default {
                 border: 1px solid rgb(64, 128, 128);
                 color: rgb(64, 128, 128);
               }
+            }
+            div:nth-of-type(3) {
+              font-size: 12px;
+              margin-top: 5px !important;
+              span {
+                padding: 1px 4px;
+                border-radius: 2px;
+                border: 1px solid rgb(64, 128, 128);
+                color: rgb(64, 128, 128);
+              }
+            }
+            span {
+              display: inline-block;
+              height: auto;
+              word-break: break-all;
+              white-space: pre-wrap;
             }
           }
           .bottomFooter {
