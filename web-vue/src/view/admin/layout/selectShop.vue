@@ -26,9 +26,9 @@
                 :style="item.tipStatus===1||item.tipStatus===2?'color:#f7931e':''"
               >
                 <img :src="item.imgUrl">
-                <span v-if="item.tipStatus===1">已禁用</span>
-                <span v-if="item.tipStatus===2">未营业</span>
-                <span v-if="item.tipStatus===3">已过期</span>
+                <span v-if="item.tipStatus===1">{{$t('selectShop.prohibited')}}</span>
+                <span v-if="item.tipStatus===2">{{$t('selectShop.notopen')}}</span>
+                <span v-if="item.tipStatus===3">{{$t('selectShop.expired')}}</span>
               </div>
               <div class="shop_logo">
                 <img
@@ -38,7 +38,24 @@
               </div>
               <div class="title">{{item.shopName}}</div>
               <p>{{$t('selectShop.data')}}：{{item.created}} ~ {{item.expireTime}}</p>
-              <span class="title_type">{{item.shopType}}</span>
+              <span class="title_type">
+                <span
+                  class="shopType"
+                  v-if="item.shopType==='v1'"
+                >{{$t('selectShop.trial')}}</span>
+                <span
+                  class="shopType"
+                  v-if="item.shopType==='v2'"
+                >{{$t('selectShop.basic')}}</span>
+                <span
+                  class="shopType"
+                  v-if="item.shopType==='v3'"
+                >{{$t('selectShop.advanced')}}</span>
+                <span
+                  class="shopType"
+                  v-if="item.shopType==='v4'"
+                >{{$t('selectShop.ultimate')}}</span>
+              </span>
             </div>
           </li>
         </ul>
@@ -64,7 +81,8 @@ export default {
       shop_list: [],
       shop_list_index: '',
       fullscreenLoading: false,
-      loading: ''
+      loading: '',
+      shopData: null
     }
   },
   created () {
@@ -76,6 +94,8 @@ export default {
     })
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     this.getAllshopsData()
   },
   methods: {
@@ -86,23 +106,10 @@ export default {
           this.loading.close()
           return
         }
-        res.content.dataList.map((item, index) => {
+        this.shopData = res.content.dataList
+        this.shopData.map((item, index) => {
           if (item.created) item.created = item.created.split(' ')[0]
           if (item.expireTime) item.expireTime = item.expireTime.split(' ')[0]
-          switch (item.shopType) {
-            case 'v1':
-              item.shopType = '体验版'
-              break
-            case 'v2':
-              item.shopType = '基础版'
-              break
-            case 'v3':
-              item.shopType = '高级版'
-              break
-            case 'v4':
-              item.shopType = '旗舰版'
-              break
-          }
           if (item.isEnabled) {
             item.tipStatus = 1
             item.imgUrl = this.$imageHost + '/image/admin/no_use.png'
@@ -235,8 +242,6 @@ export default {
   background: #457bf9;
   color: #fff;
   font-size: 14px;
-  width: 54px;
-  height: 20px;
   line-height: 20px;
   text-align: center;
   border-radius: 3px;
@@ -254,6 +259,8 @@ export default {
 .shop_container .noUse {
   background-color: #fef4e8;
 }
-
+.shopType {
+  padding: 5px;
+}
 /* :class="shop_list_index == index?'shop_li_style':''" */
 </style>

@@ -138,13 +138,21 @@ import {
   cn as mapModule
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/mapModuleCn'
 // 小程序页面装修魔方多图国际化
-import { cn as magicMap } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/magicMapCn'
+import {
+  cn as magicMap
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/magicMapCn'
 // 小程序页面装修左文右图国际化
-import { cn as leftWingRightPicture } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/leftWingRightPictureCn'
+import {
+  cn as leftWingRightPicture
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/leftWingRightPictureCn'
 // 小程序页面装修文本模块国际化
-import { cn as textModule } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/textModuleCn'
+import {
+  cn as textModule
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/textModuleCn'
 // 小程序页面装修标题模块国际化
-import { cn as titleModule } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/titleModuleCn'
+import {
+  cn as titleModule
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/titleModuleCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -614,7 +622,14 @@ const cn = {
   // admin选择店铺页面数据
   selectShop: {
     allShop: '全部店铺',
-    data: '有效期'
+    data: '有效期',
+    prohibited: '已禁止',
+    notopen: '未营业',
+    expired: '已过期',
+    trial: '体验版',
+    basic: '基础版',
+    advanced: '高级版',
+    ultimate: '旗舰版'
   },
   // admin  账户设置数据
   accountSetting: {

@@ -162,13 +162,21 @@ import {
   en as mapModule
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/mapModuleEn'
 // 小程序页面装修魔方多图模块国际化
-import { en as magicMap } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/magicMapEn'
+import {
+  en as magicMap
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/magicMapEn'
 // 小程序页面装修左文右图模块国际化
-import { en as leftWingRightPicture } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/leftWingRightPictureEn'
+import {
+  en as leftWingRightPicture
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/leftWingRightPictureEn'
 // 小城页面装修文本模块国际化
-import { en as textModule } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/textModuleEn'
+import {
+  en as textModule
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/textModuleEn'
 // 小程序页面装修标题模块国际化
-import { en as titleModule } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/titleModuleEn'
+import {
+  en as titleModule
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/titleModuleEn'
 
 // 营销管理系列模块化
 // 营销管理通用词汇
@@ -610,7 +618,14 @@ const en = {
   // admin选择店铺页面数据
   selectShop: {
     allShop: 'All stores',
-    data: 'Term of validity'
+    data: 'Term of validity',
+    prohibited: 'Prohibited',
+    notopen: 'Not Open',
+    expired: 'Expired',
+    trial: 'Trial Version',
+    basic: 'Basic Version',
+    advanced: 'Advanced Version',
+    ultimate: 'Ultimate Version'
   },
   // admin  账户设置数据
   accountSetting: {
