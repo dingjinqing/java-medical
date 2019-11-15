@@ -1,10 +1,10 @@
 <template>
   <div class="userStatistics">
     <div class="userContainer">
-      <overviewAndTrend style="margin-bottom: 10px;" />
-      <userActive style="margin-bottom: 10px;" />
-      <member style="margin-bottom: 10px;" />
-      <userAnalysis style="margin-bottom: 10px;" />
+      <overviewAndTrend class="distance" />
+      <userActive class="distance" />
+      <member class="distance" />
+      <userAnalysis class="distance" />
       <userBuy />
     </div>
   </div>
@@ -33,7 +33,7 @@ export default {
   .userContainer {
     padding: 10px;
     position: relative;
-    .top {
+    .distance {
       margin-bottom: 10px;
     }
   }

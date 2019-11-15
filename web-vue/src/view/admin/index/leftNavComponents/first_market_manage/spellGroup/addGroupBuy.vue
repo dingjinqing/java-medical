@@ -108,14 +108,14 @@
               prop="groupPrice"
               :label="$t('groupBuy.groupBuyPrice')"
             >
-              <!-- <template slot="append">
+              <template slot="append">
                 <span>{{$t('groupBuy.groupBuyPrice')}}</span>
                 <el-button
                   @click="setCurrent(1)"
                   size="mini"
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}</el-button>
-              </template> -->
+              </template>
               <template slot-scope="scope">
                 <el-input v-model="scope.row.groupPrice" />
               </template>
@@ -126,14 +126,14 @@
               prop="grouperPrice"
               :label="$t('groupBuy.commanderPrice')"
             >
-              <!-- <template slot="append">
+              <template slot="append">
                 <span>{{$t('groupBuy.commanderPrice')}}</span>
                 <el-button
                   @click="setCurrent(2)"
                   size="mini"
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}</el-button>
-              </template> -->
+              </template>
               <template slot-scope="scope">
                 <el-input v-model="scope.row.grouperPrice" />
               </template>
@@ -149,14 +149,14 @@
               prop="stock"
               :label="$t('groupBuy.groupBuyStock')"
             >
-              <!-- <template slot="append">
+              <template slot="append">
                 <span>{{$t('groupBuy.groupBuyStock')}}</span>
                 <el-button
                   @click="setCurrent(3)"
                   size="mini"
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}</el-button>
-              </template> -->
+              </template>
               <template slot-scope="scope">
                 <el-input v-model="scope.row.stock" />
               </template>
@@ -677,16 +677,16 @@ export default {
         this.form.product = data.productList
         console.log(this.form)
       }
-    },
-    arraySpanMethod ({ row, column, rowIndex, columnIndex }) {
-      if (rowIndex % 2 === 0) {
-        if (columnIndex === 0) {
-          return [1, 2]
-        } else if (columnIndex === 1) {
-          return [0, 0]
-        }
-      }
     }
+    // arraySpanMethod ({ row, column, rowIndex, columnIndex }) {
+    //   if (rowIndex % 2 === 0) {
+    //     if (columnIndex === 0) {
+    //       return [1, 2]
+    //     } else if (columnIndex === 1) {
+    //       return [0, 0]
+    //     }
+    //   }
+    // }
   }
 }
 </script>

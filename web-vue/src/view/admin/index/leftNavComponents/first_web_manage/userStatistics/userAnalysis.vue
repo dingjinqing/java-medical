@@ -16,7 +16,7 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <span>2019年10月02日 - 2019年11月01日</span>
+      <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
 
       <!-- 表格数据部分 -->
       <table class="table_list">
@@ -192,13 +192,23 @@ export default {
 
   data () {
     return {
-      timeSelect: '',
+      timeSelect: 1,
       timeRange: [
         { value: 1, label: '最新1天' },
         { value: 7, label: '最新7天' },
         { value: 30, label: '最新30天' }
       ],
-      params: 7,
+      params: 1,
+      startDate: {
+        year: '',
+        month: '',
+        day: ''
+      },
+      endDate: {
+        year: '',
+        month: '',
+        day: ''
+      },
       table_allUser: {},
       table_newUser: {},
       table_oldUser: {},
@@ -334,9 +344,13 @@ export default {
 
     // 处理表格数据
     handleData (data) {
-      console.log(data)
-      console.log(data.dataVo)
-      console.log(data.changeRateVo)
+      this.startDate.year = data.startTime.split('-')[0]
+      this.startDate.month = data.startTime.split('-')[1]
+      this.startDate.day = data.startTime.split('-')[2]
+
+      this.endDate.year = data.endTime.split('-')[0]
+      this.endDate.month = data.endTime.split('-')[1]
+      this.endDate.day = data.endTime.split('-')[2]
 
       let allUser = {
         // 整数

@@ -1,7 +1,5 @@
 <template>
-  <!-- <div class="userStatistics">
-    <div class="userContainer"> -->
-  <section class="label overviewAndTrend">
+  <section class="label">
     <div class="labelItem">客户概况及趋势</div>
     <el-select
       v-model="timeSelect"
@@ -17,75 +15,38 @@
         :value="item.value"
       ></el-option>
     </el-select>
-    <span>2019年10月02日 - 2019年11月01日</span>
+    <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
 
     <!-- 表格数据部分 -->
     <div class="fromWrapper">
-      <div class="fromItem">
+      <div
+        class="fromItem"
+        v-for="item in table"
+        :key="item.number"
+      >
         <div
           class="fromInfo"
           style="display: flex;"
         >
-          <div class="title">访客数</div>
+          <div>{{item.name}}</div>
           <el-tooltip
-            class="item"
             effect="light"
-            content="访客数"
             placement="top"
           >
+            <div
+              slot="content"
+              style="width: 250px;line-height: 30px;font-size: 14px"
+            >
+              {{item.content}}
+            </div>
             <i class="el-icon-warning-outline icons"></i>
           </el-tooltip>
         </div>
         <div
           class="num"
           style="color: #5A8BFF"
-        >{{this.originalData.visitorsNumber}}</div>
-        <div>较前一月 {{this.originalData.visitorsNumberRate}}</div>
-      </div>
-      <div class="fromItem">
-        <div
-          class="fromInfo"
-          style="display: flex;"
-        >
-          <div class="title">累积用户数</div>
-          <el-tooltip
-            class="item"
-            effect="light"
-            content="累积用户数"
-            placement="top"
-          >
-            <i class="el-icon-warning-outline icons"></i>
-          </el-tooltip>
-        </div>
-        <div
-          class="num"
-          style="color: #fc6181;"
-        >{{this.originalData.userNumber}}</div>
-        <div>较前一月{{this.originalData.userNumberRate}}</div>
-      </div>
-      <div
-        class="fromItem"
-        style="display: flex;"
-      >
-        <div
-          class="fromInfo"
-          style="display: flex;"
-        >
-          <div class="title">用户成交数</div>
-          <el-tooltip
-            class="item"
-            effect="light"
-            content="用户成交数"
-            placement="top"
-          >
-            <i class="el-icon-warning-outline icons"></i>
-          </el-tooltip>
-        </div>
-        <div
-          class="num"
-          style="color: #fdb64a;"
-        >{{this.originalData.tradeNumber}}</div>
-        <div>较前一月{{this.originalData.tradeNumberRate}}</div>
+        >{{item.number}}</div>
+        <div>较前一月 {{item.rate}}</div>
       </div>
     </div>
 
@@ -111,12 +72,13 @@ export default {
 
   data () {
     return {
-      timeSelect: '',
+      timeSelect: 1,
       timeRange: [
         { value: 1, label: '最新1天' },
         { value: 7, label: '最新7天' },
         { value: 30, label: '最新30天' }
       ],
+      value: 1,
       params: '1',
       originalData: {
         visitorsNumber: '', // 访客数
@@ -126,23 +88,41 @@ export default {
         tradeNumber: '', // 成交用户数
         tradeNumberRate: ''
       },
-      chartDateList: [],
-      chartVisitorsNumber: [], // 图表访客数
-      chartUserNumber: [], // 图表累积用户访客数
-      chartTradeNumber: [], // 图表成交用户数
-      myChart: {}
+      chartChange: {
+        date: [],
+        visitorsNumber: [], // 图表访客数
+        userNumber: [], // 图表累积用户访客数
+        tradeNumber: [] // 图表成交用户数
+      },
+      myChart: {},
+      table: [],
+      startDate: {
+        year: '',
+        month: '',
+        day: ''
+      },
+      endDate: {
+        year: '',
+        month: '',
+        day: ''
+      }
     }
   },
 
   methods: {
     dateChangeHandler (time) {
+      this.chartChange = {
+        date: [],
+        visitorsNumber: [],
+        userNumber: [],
+        tradeNumber: []
+      }
       this.params = time
       this.initData()
     },
 
     initData () {
       customerTrend({ 'type': this.params }).then(res => {
-        console.log(res)
         if (res.error === 0) {
           this.originalData = res.content
           this.handleData(this.originalData)
@@ -150,48 +130,75 @@ export default {
       }).catch(err => console.log(err))
     },
 
+    numberChange (number) {
+      let str
+      if (number > 0) {
+        str = '↑' + Number(number * 100).toFixed(2) + '%'
+      } else if (number < 0) {
+        str = '↓' + Math.abs(Number(number * 100)).toFixed(2) + '%'
+      } else {
+        str = '--'
+      }
+      return str
+    },
     handleData (data) {
-      console.log(data)
+      this.startDate.year = data.startTime.split('-')[0]
+      this.startDate.month = data.startTime.split('-')[1]
+      this.startDate.day = data.startTime.split('-')[2]
+
+      this.endDate.year = data.endTime.split('-')[0]
+      this.endDate.month = data.endTime.split('-')[1]
+      this.endDate.day = data.endTime.split('-')[2]
+
       // 访客数
       this.originalData.visitorsNumber = data.loginDataTotal
-      if (data.loginDataRate > 0) {
-        this.originalData.visitorsNumberRate = '  ↑ ' + (data.loginDataRate * 100).toFixed(2) + '%'
-      } else {
-        this.originalData.visitorsNumberRate = '↓' + Math.abs((data.loginDataRate * 100)).toFixed(2) + '%'
-      }
+      this.originalData.visitorsNumberRate = this.numberChange(data.loginDataRate)
       // 累积用户数
       this.originalData.userNumber = data.userDataTotal
-      if (data.userDataRate > 0) {
-        this.originalData.userNumberRate = ' ↑' + (data.userDataRate * 100).toFixed(2) + '%'
-      } else {
-        this.originalData.userNumberRate = '↓' + Math.abs((data.userDataRate * 100)).toFixed(2) + '%'
-      }
+      this.originalData.userNumberRate = this.numberChange(data.userDataRate)
       // 用户成交数
       this.originalData.tradeNumber = data.orderUserDataTotal
-      if (data.orderUserDataRate > 0) {
-        this.originalData.tradeNumberRate = ' ↑' + (data.orderUserDataRate * 100).toFixed(2) + '%'
-      } else {
-        this.originalData.tradeNumberRate = '↓' + Math.abs((data.orderUserDataRate * 100)).toFixed(2) + '%'
-      }
+      this.originalData.tradeNumberRate = this.numberChange(data.orderUserDataRate)
 
       data.trendDailyVo.map(item => {
-        this.chartDateList.push(item.refDate)
-        this.chartVisitorsNumber.push(item.loginData)
-        this.chartUserNumber.push(item.userData)
-        this.chartTradeNumber.push(item.orderUserData)
-        // console.log(this.chartDateList)
-        // console.log(this.chartVisitorsNumber)
-        // console.log(this.chartUserNumber)
-        // console.log(this.chartTradeNumber)
+        this.chartChange.date.push(item.refDate)
+        console.log(this.chartChange.date)
+        this.chartChange.visitorsNumber.push(item.loginData)
+        console.log(this.chartChange.visitorsNumber)
+        this.chartChange.userNumber.push(item.userData)
+        console.log(this.chartChange.userNumber)
+        this.chartChange.tradeNumber.push(item.orderUserData)
+        console.log(this.chartChange.tradeNumber)
       })
 
-      // // 折线图数据部分
+      this.table = [
+        {
+          name: '访问会员数',
+          content: '筛选时间内，店铺所有页面被访问的去重人数，一个人在筛选时间范围内访问多次只记为一个',
+          number: this.originalData.visitorsNumber,
+          rate: this.originalData.visitorsNumberRate
+        },
+        {
+          name: '累积用户数',
+          content: '截至到筛选时间的最后一天，店铺的会员累积人数',
+          number: this.originalData.userNumber,
+          rate: this.originalData.userNumberRate
+        },
+        {
+          name: '用户成交数',
+          content: '筛选时间内，在店铺中付款成功的去重客户数，一个人在筛选时间范围内付款多次只记为一个',
+          number: this.originalData.tradeNumber,
+          rate: this.originalData.tradeNumberRate
+        }
+      ]
+
+      // 折线图数据部分
       this.echartsData = {
         tooltip: {
           trigger: 'axis'
         },
         legend: {
-          data: ['访客数', '累积用户数', '成交用户数']
+          // data: ['访客数', '累积用户数', '成交用户数']
         },
         grid: {
           left: '7%',
@@ -202,32 +209,34 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: this.chartDateList
+          data: this.chartChange.date
         },
         yAxis: {
           type: 'value'
         },
         series: [
+
           {
             name: '访客数',
             type: 'line',
             stack: '总量',
-            data: this.chartVisitorsNumber
-            // data: [34, 27, 33, 31, 42, 19, 11]
+            data: this.chartChange.visitorsNumber,
+            color: 'orange'
           },
           {
             name: '累积用户数',
             type: 'line',
             stack: '总量',
-            data: this.chartUserNumber
-            // data: [3404, 3410, 3423, 3435, 3441, 3450, 3456]
+            data: this.chartChange.userNumber,
+            color: 'green',
+            width: 10
           },
           {
             name: '成交用户数',
             type: 'line',
             stack: '总量',
-            data: this.chartTradeNumber
-            // data: [4, 3, 5, 4, 11, 0, 0]
+            data: this.chartChange.tradeNumber,
+            color: 'red'
           }
         ]
       }
@@ -240,13 +249,6 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-// .userStatistics {
-//   padding: 10px;
-//   font-size: 14px;
-//   .userContainer {
-//     padding: 10px;
-//     position: relative;
-//     background: #fff;
 .label {
   background: #fff;
   padding: 10px;
@@ -277,14 +279,10 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    // .fomrInfo {
-    // display: flex;
-    // .item {
     .icons {
       margin-left: 10px;
       position: relative;
     }
-    // }
     .num {
       margin-top: 15px;
       font-size: 30px;
@@ -292,7 +290,6 @@ export default {
     :nth-of-type(3) {
       margin-top: 10px;
     }
-    // }
   }
 }
 
@@ -300,6 +297,4 @@ export default {
   width: 90%;
   height: 500px;
 }
-//   }
-// }
 </style>
