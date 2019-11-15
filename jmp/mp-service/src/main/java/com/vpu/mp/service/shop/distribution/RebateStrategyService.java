@@ -118,6 +118,19 @@ public class RebateStrategyService extends ShopBaseService{
 				.execute();
 		return res > 0 ? true : false;
 	}
+
+	/**
+	 * 返利策略启用
+	 * @param id
+	 * @return
+	 */
+	public boolean openRebate(Integer id) {
+		int res = db().update(DISTRIBUTION_STRATEGY)
+				.set(DISTRIBUTION_STRATEGY.STATUS,(byte) 0)
+				.where(DISTRIBUTION_STRATEGY.ID.eq(id))
+				.execute();
+		return res > 0 ? true : false;
+	}
 	
 	/**
 	 * 返利策略删除

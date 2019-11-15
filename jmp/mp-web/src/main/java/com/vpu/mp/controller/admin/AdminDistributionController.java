@@ -15,10 +15,6 @@ import java.util.List;
  * @author 常乐
  * 2019年7月17日
  */
-/**
- * @author 常乐
- * 2019年7月30日
- */
 @RestController
 @RequestMapping("/api")
 public class AdminDistributionController extends AdminBaseController{
@@ -105,6 +101,21 @@ public class AdminDistributionController extends AdminBaseController{
 	@GetMapping("/admin/distribution/rebate/pause")
 	public JsonResult pauseRebateStrategy(Integer id) {
 		boolean result = shop().rebateStrategy.pauseRebate(id);
+		if(result) {
+			return this.success(result);
+		}else {
+			return this.fail();
+		}
+	}
+
+	/**
+	 * 返利策略启用
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/rebate/open")
+	public JsonResult openRebateStrategy(Integer id) {
+		boolean result = shop().rebateStrategy.openRebate(id);
 		if(result) {
 			return this.success(result);
 		}else {
