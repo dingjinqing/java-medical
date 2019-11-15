@@ -394,8 +394,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             temp.setProductNumbers(product.getPrdNumber());
             //商品goodsType
             temp.setGoodsType(goodsType);
+
         }
         this.setOrderBeforeVoInfo(param,userId,storeId,vo);
+        //这些营销不允许使用积分支付
+        vo.setScoreMaxDiscount(BigDecimal.ZERO);
     }
 
     /**
@@ -474,6 +477,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
             //TODO temp goodsprice 取规格
             boList.add(orderGoods.initOrderGoods(temp, goodsRecord));
+
         }
         param.setBos(boList);
         return boList;
