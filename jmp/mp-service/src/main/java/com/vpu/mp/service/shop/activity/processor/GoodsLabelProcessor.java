@@ -31,6 +31,11 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
+        // 已从从es获取数据
+        if (capsules.get(0).getIsDisposedByEs()) {
+            return;
+        }
+
         List<Integer> goodsIds = new ArrayList<>();
         List<Integer> catIds = new ArrayList<>();
         List<Integer> sortIds = new ArrayList<>();

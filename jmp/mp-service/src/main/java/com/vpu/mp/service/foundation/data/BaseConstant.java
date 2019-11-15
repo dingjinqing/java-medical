@@ -4,6 +4,7 @@ package com.vpu.mp.service.foundation.data;
  * 基础静态常量存放处
  *
  * @date 2019/10/24 16:42
+ * @author kongdecheng
  */
 public final  class  BaseConstant {
 

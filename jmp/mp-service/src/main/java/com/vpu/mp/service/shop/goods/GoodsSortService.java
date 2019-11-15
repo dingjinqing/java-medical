@@ -108,7 +108,7 @@ public class GoodsSortService extends ShopBaseService {
         if( idResult.isNotEmpty() ){
             return getSort(getIdListByRecord3(idResult));
         }
-        return new HashMap<Integer,Sort>();
+        return new HashMap<>(0);
     }
     private List<Integer> getIdListByRecord3(Result<Record3<Integer,Integer,Integer>> idResult){
         List<Integer> result = new ArrayList<>(idResult.size()*3);

@@ -400,7 +400,7 @@ public class GoodsBrandService extends ShopBaseService {
         });
 
         // 处理#符合的问题
-        if (retList.peek() != null&&ChineseToPinYinUtil.OHTER_CHARACTER.equals(retList.peek().getCharacter())) {
+        if (retList.peek() != null&&ChineseToPinYinUtil.OTHER_CHARACTER.equals(retList.peek().getCharacter())) {
             GoodsBrandMpPinYinVo t = retList.removeFirst();
             retList.addLast(t);
         }

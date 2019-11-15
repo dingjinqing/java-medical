@@ -11,7 +11,7 @@ import java.util.Set;
 
 /**
  * 小程序-商品列表信息存储Bo类，
- * 继承自{@com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo}，
+ * 继承自{@link com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo}，
  * 本类内的字段不会返回到前端，所有属性都要加@JsonIgnore注解
  * @author 李晓冰
  * @date 2019年10月29日
@@ -19,7 +19,9 @@ import java.util.Set;
 @Getter
 @Setter
 public class GoodsListMpBo extends GoodsListMpVo {
-
+    /**是否从ES获取数据*/
+    @JsonIgnore
+    private Boolean isDisposedByEs;
     /** 平台、商家、品牌分类id */
     @JsonIgnore
     private Integer catId;

@@ -51,7 +51,7 @@ public class GoodsListMpParam extends BasePageParam{
     private String category;
 
 
-    public static final String All_AREA="all";
+    public static final String ALL_AREA ="all";
     public static final String SORT_AREA = "sort";
     public static final String CAT_AREA = "cat";
     public static final String BRAND_AREA = "brand";

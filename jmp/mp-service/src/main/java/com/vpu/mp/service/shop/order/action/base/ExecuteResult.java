@@ -15,13 +15,13 @@ public class ExecuteResult {
     /**返回参数*/
     private Object result;
     /**errorCode参数*/
-    private String errorParam[];
+    private String[] errorParam;
 
     /**
      * 是否成功
-     * @return
+     * @return true成功 false否
      */
-    public boolean IsSuccess(){
+    public boolean isSuccess(){
         if(errorCode == null){
             return true;
         }

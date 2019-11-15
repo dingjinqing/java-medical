@@ -100,7 +100,7 @@ public class CouponProcessorDao extends ShopBaseService {
             .and(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId)).and(CUSTOMER_AVAIL_COUPONS.ACT_ID.in(couponIds))
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(CUSTOMER_AVAIL_COUPONS.ACT_ID), Collectors.counting()));
 
-        Map<Integer,Integer> retMp = new HashMap<>();
+        Map<Integer,Integer> retMp = new HashMap<>(couponIds.size());
         couponIds.forEach(actId->{
             Long num = couponAlreadyNum.getOrDefault(actId, 0L);
             retMp.put(actId,num.intValue());

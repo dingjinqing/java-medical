@@ -110,14 +110,13 @@ public class MemberCardProcessorDao extends ShopBaseService {
         Record2<Integer, String> userGradeCard = getUserGradeCard(userId);
 
         if (userGradeCard == null) {
-            return new HashMap<>();
+            return new HashMap<>(0);
         }
         // 获取商品等级信息，按价格从小到大正序排序
         return db().select(GRADE_PRD.GOODS_ID, GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE).from(GRADE_PRD).where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(GRADE_PRD.GRADE.eq(userGradeCard.get(MEMBER_CARD.GRADE))).and(GRADE_PRD.GOODS_ID.in(goodsIds))
             .orderBy(GRADE_PRD.GRADE_PRICE.asc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GRADE_PRD.GOODS_ID)));
-
     }
 
     /**

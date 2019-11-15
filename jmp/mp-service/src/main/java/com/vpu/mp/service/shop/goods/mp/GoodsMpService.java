@@ -55,14 +55,26 @@ public class GoodsMpService extends ShopBaseService {
     protected UpYunConfig upYunConfig;
 
     /**
-     * 装修页面 商品列表模块中获取配置后的商品集合数据
+     * 从es或者数据库内获取数据，并交给处理器进行处理
      * @param param  装修页面配置的商品获取过滤条件
-     * @param userId 用户id值
+     * @param userId 用户id
      * @return 对应的商品集合信息
      */
     public List<? extends GoodsListMpVo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId) {
+        List<GoodsListMpBo> goodsListCapsules;
+        goodsListCapsules = getPageIndexGoodsListFromDb(param);
+        disposeGoodsList(goodsListCapsules,userId);
+        return goodsListCapsules;
+    }
+    /**
+     * 装修页面 商品列表模块中获取配置后的商品集合数据
+     * @param param  装修页面配置的商品获取过滤条件
+     * @return 对应的商品集合信息
+     */
+    private List<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param) {
         // 手动推荐展示但是未指定商品数据
-        if (0 != param.getRecommendType()&&(param.getGoodsItems() == null || param.getGoodsItems().size() == 0)) {
+        boolean specifiedNoContent = 0 != param.getRecommendType()&&(param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
+        if (specifiedNoContent) {
             return new ArrayList<>();
         }
         Condition condition =buildPageIndexCondition(param);
@@ -82,8 +94,6 @@ public class GoodsMpService extends ShopBaseService {
             }
             goodsListCapsules = findActivityGoodsListCapsulesDao(condition,orderFields,null,param.getGoodsNum(),null);
         }
-        disposeGoodsList(goodsListCapsules,userId);
-
         return goodsListCapsules;
     }
 
@@ -150,15 +160,24 @@ public class GoodsMpService extends ShopBaseService {
         return condition;
     }
 
+
+    public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds,Integer userId,Integer currentPages,Integer pagesRows){
+        List<GoodsListMpBo> goodsListCapsules;
+
+        goodsListCapsules = getGoodsListNormalFromDb(goodsIds,currentPages,pagesRows);
+
+        disposeGoodsList(goodsListCapsules,userId);
+
+        return goodsListCapsules;
+    }
     /**
      * 通过商品id集合回去对应的数据信息
      * @param goodsIds 商品id集合
-     * @param userId 用户id
      * @param currentPages 当前页
      * @param pagesRows 查询数据条数
      * @return {@link GoodsListMpParam}集
      */
-    public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds,Integer userId,Integer currentPages,Integer pagesRows) {
+    private List<GoodsListMpBo> getGoodsListNormalFromDb(List<Integer> goodsIds,Integer currentPages,Integer pagesRows) {
         if (goodsIds == null) {
             return new ArrayList<>();
         }
@@ -166,15 +185,13 @@ public class GoodsMpService extends ShopBaseService {
             currentPages-=1;
         }
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.GOODS_ID.in(goodsIds));
-        List<GoodsListMpBo> goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, currentPages, pagesRows, goodsIds);
-        disposeGoodsList(goodsListCapsules,userId);
-        return goodsListCapsules;
+        return findActivityGoodsListCapsulesDao(condition, null, currentPages, pagesRows, goodsIds);
     }
 
     /**
      * 处理获取的推荐商品规格，评价，标签，活动tag,最终划线价和商品价格
      * @param goodsListCapsules 通过过滤条件获取的商品信息
-     * @param userId            用户id 可为null(在admin页面装修的时候传入的就是null)
+     * @param userId  用户id 可为null(在admin页面装修的时候传入的就是null)
      */
     private void disposeGoodsList(List<GoodsListMpBo> goodsListCapsules, Integer userId) {
         GoodsListMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsListMpProcessorFactory.class);

@@ -138,7 +138,8 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
                 Timestamp expireTime = record.get(USER_CARD.EXPIRE_TIME);
 
                 // 已激活或不需要激活
-                if ((CardConstant.MCARD_ACT_NO.equals(isNeedActive) || (CardConstant.MCARD_ACT_YES.equals(isNeedActive) && activeTime != null))) {
+                boolean activatedOrNotNeed = (CardConstant.MCARD_ACT_NO.equals(isNeedActive) || (CardConstant.MCARD_ACT_YES.equals(isNeedActive) && activeTime != null));
+                if (activatedOrNotNeed) {
                     if (expireTime == null || expireTime.compareTo(now) > 0) {
                         // 未过期可使用
                         card.setStatus(CardConstant.USER_CARD_STATUS_HAS);

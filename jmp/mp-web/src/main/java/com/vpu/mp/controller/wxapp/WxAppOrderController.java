@@ -5,7 +5,6 @@ import javax.validation.Valid;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
-import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryVo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.springframework.validation.annotation.Validated;
@@ -59,7 +58,7 @@ public class WxAppOrderController extends WxAppBaseController{
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.IsSuccess()){
+        if(executeResult.isSuccess()){
             return success();
         };
         return fail(executeResult.getErrorCode());
@@ -87,7 +86,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		param.setIsMp(OrderConstant.IS_MP_Y);
 		param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.IsSuccess()){
+        if(executeResult.isSuccess()){
             return success();
         };
         return fail(executeResult.getErrorCode());
@@ -101,7 +100,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		param.setIsMp(OrderConstant.IS_MP_Y);
 		param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.IsSuccess()){
+        if(executeResult.isSuccess()){
             return success();
         };
         return fail(executeResult.getErrorCode());

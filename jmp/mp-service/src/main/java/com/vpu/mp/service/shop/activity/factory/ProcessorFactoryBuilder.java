@@ -17,7 +17,9 @@ public class ProcessorFactoryBuilder {
     @Autowired(required = false)
     List<AbstractProcessorFactory> factories;
 
-    // 不可以手动创建
+    /**
+     * 不可以手动创建
+     */
     private ProcessorFactoryBuilder(){}
 
     @PostConstruct
@@ -35,6 +37,7 @@ public class ProcessorFactoryBuilder {
      * @param <T> 目标工厂的泛型信息
      * @return 目标工厂对象
      */
+    @SuppressWarnings("unchecked")
     public <T> T getProcessorFactory(Class<T> factoryClazz) {
         for (AbstractProcessorFactory factory : factories) {
             if (factory.getClass().equals(factoryClazz)){

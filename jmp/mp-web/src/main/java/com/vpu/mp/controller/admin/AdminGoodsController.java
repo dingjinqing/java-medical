@@ -514,16 +514,16 @@ public class AdminGoodsController extends AdminBaseController {
                     return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
                 }
 
-                String specK=s[0],specV=s[1];
+                String speck =s[0],specv=s[1];
 
                 //检查规格名称是否存在
-                List<GoodsSpecVal> goodsSpecVals = specs.get(specK);
+                List<GoodsSpecVal> goodsSpecVals = specs.get(speck);
                 //规格名称不存在
                 if (goodsSpecVals == null) {
                     return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
                 }
 
-                boolean b = goodsSpecVals.stream().anyMatch(goodsSpecVal -> StringUtils.equals(specV,goodsSpecVal.getSpecValName()));
+                boolean b = goodsSpecVals.stream().anyMatch(goodsSpecVal -> StringUtils.equals(specv,goodsSpecVal.getSpecValName()));
 
                 if (!b) {
                     return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);

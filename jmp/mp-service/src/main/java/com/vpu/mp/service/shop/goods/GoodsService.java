@@ -177,14 +177,14 @@ public class GoodsService extends ShopBaseService {
                 pageResult =  esGoodsSearchService.searchGoodsPageByParam(goodsPageListParam);
             } catch (IOException e) {
                 logger().info("es");
-                pageResult = getGoodsPageByDB(goodsPageListParam);
+                pageResult = getGoodsPageByDb(goodsPageListParam);
             }
         }else{
-            pageResult = getGoodsPageByDB(goodsPageListParam);
+            pageResult = getGoodsPageByDb(goodsPageListParam);
         }
         return pageResult;
     }
-    private PageResult<GoodsPageListVo> getGoodsPageByDB(GoodsPageListParam goodsPageListParam){
+    private PageResult<GoodsPageListVo> getGoodsPageByDb(GoodsPageListParam goodsPageListParam){
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
 

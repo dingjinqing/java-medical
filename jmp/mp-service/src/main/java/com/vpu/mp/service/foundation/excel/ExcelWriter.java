@@ -1,29 +1,16 @@
 package com.vpu.mp.service.foundation.excel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.RegionUtil;
-
 import com.vpu.mp.service.foundation.excel.bean.ClassList;
 import com.vpu.mp.service.foundation.excel.bean.ExcelColumnBean;
 import com.vpu.mp.service.foundation.excel.bean.ExcelSheetBean;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelDataException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelHeaderException;
 import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionException;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
+
+import java.util.*;
 
 /**
  * @author 李晓冰
@@ -305,7 +292,6 @@ public class ExcelWriter extends AbstractExcelDisposer {
 							columnList.get(e));
 					sheet.addMergedRegion(region);
 					// 考虑是否合并单元格，
-					// sheet.autoSizeColumn(1);
 					sheet.autoSizeColumn(columnList.get(e), true);
 					// 格式化后设置边框
 					setBorderStyle(BorderStyle.THIN, region, sheet);

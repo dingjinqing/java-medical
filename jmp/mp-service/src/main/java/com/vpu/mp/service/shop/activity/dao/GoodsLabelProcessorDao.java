@@ -50,7 +50,7 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
             .orderBy(GOODS_LABEL.LEVEL.asc(), GOODS_LABEL.CREATE_TIME)
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GOODS_LABEL_COUPLE.TYPE), Collectors.groupingBy(x -> x.get(GOODS_LABEL_COUPLE.GTA_ID))));
 
-        Map<Byte,Map<Integer, GoodsLabelMpVo>> returnMap = new HashMap<>();
+        Map<Byte,Map<Integer, GoodsLabelMpVo>> returnMap = new HashMap<>(4);
 
         goodsLabelsMap.forEach((key,value)->{
             Map<Integer, GoodsLabelMpVo> innerMap = new HashMap<>();
@@ -64,10 +64,10 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
             });
         });
 
-        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(),new HashMap<>());
-        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.CATTYPE.getCode(),new HashMap<>());
-        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode(),new HashMap<>());
-        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode(),new HashMap<>());
+        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(),new HashMap<>(0));
+        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.CATTYPE.getCode(),new HashMap<>(0));
+        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode(),new HashMap<>(0));
+        returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode(),new HashMap<>(0));
 
         return returnMap;
     }
