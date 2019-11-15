@@ -40,57 +40,72 @@
         style="width: 100%"
       >
         <el-table-column
-          prop=""
+          prop="strategyName"
           label="返利策略名称"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="validity"
           label="有效期"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
-          label="返利比列"
+          prop="fanliRatioRate"
+          label="返利比例"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="strategyLevel"
           label="优先级"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="createTime"
           label="创建时间"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
+          prop="statusText"
           label="状态"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
           label="操作"
           align="center"
         >
           <template slot-scope="scope">
-            <span @click="editHandler(scope.row.id)">编辑</span>
-            <span @click="deleteHandler(scope.row.id)">删除</span>
-            <span @click="stopHandler(scope.row.id)">停用</span>
-            <span @click="startHandler(scope.row.id)">启用</span>
+            <span
+              @click="editHandler(scope.row.id)"
+              v-if="tabSwitch == '1' || tabSwitch == '2'"
+              class="option"
+            >编辑</span>
+            <span
+              @click="deleteHandler(scope.row.id)"
+              v-if="tabSwitch !== '1'"
+              class="option"
+            >删除</span>
+            <span
+              @click="stopHandler(scope.row.id)"
+              v-if="tabSwitch == '1' || tabSwitch == '2'"
+              class="option"
+            >停用</span>
+            <span
+              @click="startHandler(scope.row.id)"
+              v-if="tabSwitch === '4'"
+              class="option"
+            >启用</span>
           </template>
         </el-table-column>
       </el-table>
@@ -107,6 +122,7 @@
 // 引入组件
 import pagination from '@/components/admin/pagination/pagination.vue'
 import addPolicy from './policyAdd.vue'
+import { getPolicyList, deletePolicy, stopPolicy, startPolicy } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     pagination,
@@ -116,22 +132,22 @@ export default {
     return {
       // tabs
       tableListView: true, // tab显示隐藏
-      tabSwitch: '2',
+      tabSwitch: '1',
       tabInfo: [{
         title: '全部策略',
-        name: '1'
+        name: '0'
       }, {
         title: '进行中',
-        name: '2'
+        name: '1'
       }, {
         title: '未开始',
-        name: '3'
+        name: '2'
       }, {
         title: '已过期',
-        name: '4'
+        name: '3'
       }, {
         title: '已停用',
-        name: '5'
+        name: '4'
       }],
       tableData: [], // 表格数据
       pageParams: {}, // 分页
@@ -148,7 +164,27 @@ export default {
   methods: {
     // 返利列表
     initDataList () {
-
+      this.requestParams.nav = Number(this.tabSwitch)
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      this.closeTabAddGroup()
+      getPolicyList(this.requestParams).then((res) => {
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+          // 表格数据处理
+          this.tableData.map((item, index) => {
+            item.validity = `${item.startTime}` + `至` + `${item.endTime}`
+            if (item.status === 0) {
+              item.status = 1
+            } else {
+              item.status = 0
+            }
+            item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+            item.fanliRatioRate = `${item.fanliRatio}` + `%`
+          })
+        }
+      })
     },
 
     // 添加
@@ -161,27 +197,67 @@ export default {
     editHandler (id) {
       this.editId = id
       this.isEdite = true
-      this.showTabAddGroup('返利编辑策略')
+      this.showTabAddGroup('编辑返利策略')
     },
 
     // 保存
     addPolicySubmit () {
-
+      this.tabSwitch = '1'
+      this.initDataList()
     },
 
     // 删除
-    deleteHandler () {
-
+    deleteHandler (id) {
+      this.$confirm(this.$t('seckill.deleteTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
+        type: 'warning'
+      }).then(() => {
+        deletePolicy(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: '删除成功!' })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+        this.$message.warning({ message: '删除失败!' })
+      })
     },
 
     // 启用
-    startHandler () {
-
+    startHandler (id) {
+      this.$confirm(this.$t('seckill.startTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
+        type: 'warning'
+      }).then(() => {
+        startPolicy(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.startSuccess') })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('seckill.startFail') })
+      })
     },
 
     // 停用
-    stopHandler () {
-
+    stopHandler (id) {
+      this.$confirm(this.$t('seckill.stopTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
+        type: 'warning'
+      }).then(() => {
+        stopPolicy(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.stopSuccess') })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('seckill.stopFail') })
+      })
     },
 
     showTabAddGroup (title) {
@@ -219,6 +295,10 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+.option {
+  color: #5a8bff;
+  cursor: pointer;
+}
 .content {
   padding: 10px;
   min-width: 100%;

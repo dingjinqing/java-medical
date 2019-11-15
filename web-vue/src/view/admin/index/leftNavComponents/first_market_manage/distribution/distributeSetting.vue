@@ -26,7 +26,10 @@
           :inactive-value='0'
         ></el-switch>
         <span>若开启审核，您需要配置推广文案内容）
-          <a href="javascript:void(0);">推广文案配置</a></span>
+          <a
+            href="javascript:void(0);"
+            @click="copyWritingHandler"
+          >推广文案配置</a></span>
         <div class="text">
           开启分销员审核功能后，普通用户申请成为分销员时需要经过商家审核。关闭则成为店铺分销员不需要申请审核，全部用户均默认为店铺分销员。
         </div>
@@ -709,6 +712,11 @@ export default {
     // 切换背景图
     selectChange (val) {
       this.form.bg_img = val
+    },
+
+    // 跳转推广文案配置
+    copyWritingHandler () {
+      this.$router.push({ name: 'distribution_copyWriting' })
     }
 
   }

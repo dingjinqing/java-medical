@@ -1099,20 +1099,20 @@ export default {
       let _this = this
       _this.timer = setInterval(() => {
         if (_this.flag === 1) {
-          _this.percentage += 10
+          _this.percentage += 15
           if (_this.percentage > 100) {
             _this.percentage = 100
             _this.flag = 0
           }
         } else {
-          _this.percentage -= 10
+          _this.percentage -= 15
           if (_this.percentage < 45) {
             _this.percentage = 45
             _this.flag = 1
             clearInterval(_this.timer)
           }
         }
-      }, 250)
+      }, 300)
     }
 
   },

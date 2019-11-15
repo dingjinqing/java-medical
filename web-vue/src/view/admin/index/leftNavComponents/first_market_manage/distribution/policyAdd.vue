@@ -12,23 +12,28 @@
       >
         <el-form-item
           label="返利策略名称："
-          prop="name"
+          prop="strategyName"
         >
-          <el-input placeholder="请输入返利策略名称"></el-input>
+          <el-input
+            v-model="form.strategyName"
+            placeholder="请输入返利策略名称"
+          ></el-input>
         </el-form-item>
         <el-form-item
           label="返利策略优先级："
-          prop=""
+          prop="strategyLevel"
         >
-          <el-input placeholder="请输入返利策略优先级"></el-input>
+          <el-input
+            v-model.number="form.strategyLevel"
+            placeholder="请输入返利策略优先级"
+          ></el-input>
           <div class="text">当一个商品被添加到多个策略时，执行优先级最高的，可填写1到100间的整数。允许优先级重复，若重复则返利商品执行最新创建的返利策略。</div>
         </el-form-item>
         <el-form-item
           label="有效期："
-          prop=""
+          prop="validity"
         >
           <el-date-picker
-            :disabled="this.isEdite"
             v-model="form.validity"
             type="datetimerange"
             :range-separator="$t('seckill.to')"
@@ -39,16 +44,16 @@
         </el-form-item>
         <el-form-item
           label="分销员自购返利："
-          prop=""
+          prop="selfPurchase"
         >
-          <el-radio-group v-model="form.radio1">
+          <el-radio-group v-model="form.selfPurchase">
             <el-radio :label="1">开启</el-radio>
             <el-radio :label="0">关闭</el-radio>
           </el-radio-group>
           <span class="tips">开启后，分销员购买商品也会获得返利，返利比例为分销员当前等级的直接邀请返利比例。</span>
           <div class="text">注：当自购返利开关开启，若下单人是分销员，则该下单人的间接邀请人不会获得返利，其直接邀请人可获得返利，返利比例为直接邀请人所在等级的间接邀请返利比例</div>
         </el-form-item>
-        <el-form-item prop="">
+        <el-form-item prop="costProtection">
           <template slot="label">
             <el-tooltip
               effect="dark"
@@ -66,7 +71,7 @@
             <span>成本价保护：</span>
 
           </template>
-          <el-radio-group v-model="form.radio2">
+          <el-radio-group v-model="form.costProtection">
             <el-radio :label="1">开启</el-radio>
             <el-radio :label="0">关闭</el-radio>
           </el-radio-group>
@@ -75,7 +80,7 @@
           label="邀请新用户下首单返利配置："
           prop=""
         >
-          <el-radio-group v-model="form.radio3">
+          <el-radio-group v-model="form.firstRebate">
             <el-radio :label="1">开启</el-radio>
             <el-radio :label="0">关闭</el-radio>
           </el-radio-group>
@@ -90,7 +95,7 @@
             :data="tableData"
           >
             <el-table-column
-              prop="level"
+              prop="levelText"
               label="等级"
               align="center"
               width="200px"
@@ -107,10 +112,7 @@
                 ></el-input>
               </template>
             </el-table-column>
-            <el-table-column
-              prop=""
-              align="center"
-            >
+            <el-table-column align="center">
               <template slot="header">
                 <span>返利佣金比例</span>
                 <el-tooltip
@@ -130,12 +132,14 @@
                   <div style="width:50%;float: left;">
                     <div>直接邀请返利比例
                       <el-input
+                        v-model.number="scope.row.fanliRatio"
                         size="mini"
                         style="width: 50px;"
                       ></el-input> %
                     </div>
                     <div style="margin-top: 10px;">间接邀请返利比例
                       <el-input
+                        v-model.number="scope.row.rebateRatio"
                         size="mini"
                         style="width: 50px;"
                       ></el-input> %
@@ -149,10 +153,11 @@
                   </div>
                 </div>
                 <div
-                  v-if="form.radio3 === 1"
+                  v-if="form.firstRebate === 1"
                   style="width: 100%;"
                 >直接邀请新用户下首单返利比例
                   <el-input
+                    v-model="scope.row.firstRatio"
                     size="mini"
                     style="width: 50px;"
                   ></el-input> %
@@ -170,18 +175,22 @@
           label="分销员权限："
           prop=""
         >
-          <el-checkbox v-model="form.checked">推广赠送优惠券</el-checkbox>
+          <el-checkbox
+            v-model="form.sendCoupon"
+            :true-label='1'
+            :false-label="0"
+          >推广赠送优惠券</el-checkbox>
           <span class="tips">允许分销员分销商品时赠送优惠券</span>
         </el-form-item>
         <el-form-item
           label="分销商品："
           prop=""
         >
-          <el-radio-group v-model="form.radio4">
-            <el-radio :label="1">全部商品</el-radio>
-            <el-radio :label="0">指定商品</el-radio>
+          <el-radio-group v-model="form.recommendType">
+            <el-radio :label="0">全部商品</el-radio>
+            <el-radio :label="1">指定商品</el-radio>
           </el-radio-group>
-          <div v-if="form.radio4 === 0">
+          <div v-if="form.recommendType === 1">
             <div
               v-for="(item,index) in storeArr"
               :key="index"
@@ -207,7 +216,7 @@
         size="small"
         type="primary"
         :disabled="submitStatus"
-        @click="saveClickHandler(form)"
+        @click="saveClickHandler()"
       >保存</el-button>
     </div>
 
@@ -229,8 +238,8 @@
 </template>
 <script>
 // 引入组件
+import { addPolicy, getPolicyDetail, editPolicy } from '@/api/admin/marketManage/distribution.js'
 export default {
-
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog')
@@ -240,20 +249,26 @@ export default {
     return {
       // 表单
       form: {
-        name: '', //  返利策略名称
-        level: '', //  返利策略优先级
+        strategyName: '', //  返利策略名称
+        strategyLevel: '', //  返利策略优先级
         validity: '', // 有效期
         startTime: '',
         endTime: '',
-        radio1: 1, // 分销员自购返利
-        radio2: 1, // 成本价保护
-        radio3: 1, // 邀请新用户下首单返利配置
-        checked: true, // 分销员权限
-        radio4: 1 // 分销商品
+        selfPurchase: 1, // 分销员自购返利
+        costProtection: 1, // 成本价保护
+        firstRebate: 1, // 邀请新用户下首单返利配置
+        sendCoupon: 1, // 分销员权限
+        recommendType: 0, // 分销商品
+        recommendGoodsId: [], // 商品ID
+        recommendCatId: [], // 分类ID
+        recommendSortId: [] // 商家ID
       },
       // 校验表单
       fromRules: {
-        name: { required: true, message: '请填写活动名称', trigger: 'blur' }
+        strategyName: { required: true, message: '请填写返利策略名称', trigger: 'blur' },
+        strategyLevel: { required: true, message: '请填写返利策略优先级', trigger: 'blur' },
+        validity: { required: true, message: '请填写有效期', trigger: 'change' },
+        selfPurchase: { required: true, message: '请选择是否开启自购返利', trigger: 'change' }
       },
       tipContent: `
         <p>成本价保护：</p>
@@ -262,54 +277,56 @@ export default {
         <p>注：</p>
         <p>未设置成本价的商品无效</p>
       `,
-      // 表格数据
+      // 佣金比例表格数据
       tableData: [{
         level: '1',
+        levelText: '一级',
         levelName: '分销员测试',
-        rule: 1,
-        num: '36',
-        status: 0
+        fanliRatio: 0, // 直接比例
+        rebateRatio: 0, // 间接比例
+        firstRatio: null // 首单返利
       }, {
         level: '2',
+        levelText: '二级',
         levelName: 'v2',
-        rule: 1,
-        num: '22',
-        status: 0
+        fanliRatio: null, // 直接比例
+        rebateRatio: null, // 间接比例
+        firstRatio: null // 首单返利
       }, {
         level: '3',
+        levelText: '三级',
         levelName: '分销员组3',
-        rule: 2,
-        num: '2',
-        status: 1
+        fanliRatio: null, // 直接比例
+        rebateRatio: null, // 间接比例
+        firstRatio: null // 首单返利
       }, {
         level: '4',
+        levelText: '四级',
         levelName: '分销员组4',
-        rule: 2,
-        num: '2',
-        status: 1
+        fanliRatio: null, // 直接比例
+        rebateRatio: null, // 间接比例
+        firstRatio: null // 首单返利
       }, {
         level: '5',
+        levelText: '五级',
         levelName: '分销员组5',
-        rule: 2,
-        num: '2',
-        status: 0
+        fanliRatio: null, // 直接比例
+        rebateRatio: null, // 间接比例
+        firstRatio: null // 首单返利
       }],
       // 分销商品
       storeArr: [
         {
           name: '添加商品',
-          value: '1',
-          num: ''
+          value: '1'
         },
         {
           name: '添加商品分类',
-          value: '2',
-          num: ''
+          value: '2'
         },
         {
           name: '添加平台分类',
-          value: '3',
-          num: ''
+          value: '3'
         }
       ],
       tuneUpChooseGoods: false, // 商品弹窗
@@ -335,17 +352,120 @@ export default {
   mounted () {
     // 编辑初始化
     if (this.isEdite === true) {
-      this.editSeckillInit()
+      this.editSeckillInit(this.editId)
     }
   },
   methods: {
     // 编辑初始化
-    editSeckillInit () {
+    editSeckillInit (id) {
+      getPolicyDetail(id).then((res) => {
+        if (res.error === 0) {
+          var data = res.content[0]
+          this.form.strategyName = data.strategyName
+          this.form.strategyLevel = data.strategyLevel
+          // 有效期
+          this.form.validity = [data.startTime, data.endTime]
+          this.form.selfPurchase = data.selfPurchase
+          this.form.costProtection = data.costProtection
+          this.form.firstRebate = data.firstRebate
+          this.form.sendCoupon = data.sendCoupon
+          this.form.recommendType = data.recommendType
+          // 直接返利
+          this.tableData[0].fanliRatio = data.fanliRatio
+          this.tableData[1].fanliRatio = data.fanliRatio_2
+          this.tableData[2].fanliRatio = data.fanliRatio_3
+          this.tableData[3].fanliRatio = data.fanliRatio_4
+          this.tableData[4].fanliRatio = data.fanliRatio_5
 
+          // 间接返利
+          this.tableData[0].rebateRatio = data.rebateRatio
+          this.tableData[1].rebateRatio = data.rebateRatio_2
+          this.tableData[2].rebateRatio = data.rebateRatio_3
+          this.tableData[3].rebateRatio = data.rebateRatio_4
+          this.tableData[4].rebateRatio = data.rebateRatio_5
+
+          // 首单返利
+          this.tableData[0].firstRatio = data.firstRatio
+          this.tableData[1].firstRatio = data.firstRatio_2
+          this.tableData[2].firstRatio = data.firstRatio_3
+          this.tableData[3].firstRatio = data.firstRatio_4
+          this.tableData[4].firstRatio = data.firstRatio_5
+
+          // 返利商品
+          this.goodsInfo = data.recommendGoodsId.split(',')
+          this.goodsInfo = this.goodsInfo.map(Number)
+
+          this.busClass = data.recommendCatId.split(',')
+          this.busClass = this.busClass.map(Number)
+
+          this.platClass = data.recommendSortId.split(',')
+          this.platClass = this.platClass.map(Number)
+        }
+      })
     },
 
-    // 保存秒杀活动
+    // 保存返利策略
     saveClickHandler () {
+      this.submitStatus = true
+
+      // 有效期
+      this.form.startTime = this.form.validity[0]
+      this.form.endTime = this.form.validity[1]
+
+      // 直接返利
+      this.form.fanliRatio = this.tableData[0].fanliRatio
+      this.form.fanliRatio_2 = this.tableData[1].fanliRatio
+      this.form.fanliRatio_3 = this.tableData[2].fanliRatio
+      this.form.fanliRatio_4 = this.tableData[3].fanliRatio
+      this.form.fanliRatio_5 = this.tableData[4].fanliRatio
+
+      // 间接返利
+      this.form.rebateRatio = this.tableData[0].rebateRatio
+      this.form.rebateRatio_2 = this.tableData[1].rebateRatio
+      this.form.rebateRatio_3 = this.tableData[2].rebateRatio
+      this.form.rebateRatio_4 = this.tableData[3].rebateRatio
+      this.form.rebateRatio_5 = this.tableData[4].rebateRatio
+
+      // 首单返利
+      this.form.firstRatio = this.tableData[0].firstRatio
+      this.form.firstRatio_2 = this.tableData[1].firstRatio
+      this.form.firstRatio_3 = this.tableData[2].firstRatio
+      this.form.firstRatio_4 = this.tableData[3].firstRatio
+      this.form.firstRatio_5 = this.tableData[4].firstRatio
+
+      // 返利商品
+      this.form.recommendGoodsId = this.goodsInfo.toString() // 商品
+      this.form.recommendSortId = this.busClass.toString() // 商家
+      this.form.recommendCatId = this.platClass.toString() // 平台
+
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          if (this.isEdite === false) {
+            // 添加返利
+            addPolicy(this.form).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({ message: '添加成功!' })
+                this.$emit('addPolicySubmit')
+              } else {
+                this.$message.warning({ message: '添加失败!' })
+              }
+            })
+          } else {
+            // 编辑返利
+            var obj = this.form
+            obj.id = this.editId
+            editPolicy(obj).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({ message: '编辑成功!' })
+                this.$emit('addPolicySubmit')
+              } else {
+                this.$message.warning({ message: '编辑失败!' })
+              }
+            })
+          }
+        }
+      })
+      this.submitStatus = false
     },
 
     // 点击指定商品出现的添加类弹窗汇总

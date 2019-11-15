@@ -50,18 +50,67 @@ export function setDistribution (data) {
 
 // 返利策略配置
 // 获取返利策略列表
-
-// 删除返利策略
-
-// 停用返利策略
-
-// 启用返利策略
+export function getPolicyList (data) {
+  return service({
+    url: '/api/admin/distribution/rebate/list',
+    method: 'post',
+    data: data
+  })
+}
 
 // 添加返利策略
+export function addPolicy (data) {
+  return service({
+    url: '/api/admin/distribution/rebate/set',
+    method: 'post',
+    data: data
+  })
+}
 
 // 获取单个返利策略
+export function getPolicyDetail (data) {
+  return service({
+    url: `/api/admin/distribution/rebate/edit?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
 
 // 编辑返利策略
+export function editPolicy (data) {
+  return service({
+    url: '/api/admin/distribution/rebate/save',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除返利策略
+export function deletePolicy (data) {
+  return service({
+    url: `/api/admin/distribution/rebate/delete?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
+// 停用返利策略
+export function stopPolicy (data) {
+  return service({
+    url: `/api/admin/distribution/rebate/pause?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
+// 启用返利策略
+export function startPolicy (data) {
+  return service({
+    url: `/api/admin/distribution/rebate/open?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
 
 // 分销推广语列表
 export function advertisementList (data) {

@@ -538,7 +538,7 @@ export default {
       this.form.goodsId = Number(this.form.goodsId)
       // 有效期
       this.form.startTime = this.form.validity[0]
-      this.form.endTime = this.form.validity[0]
+      this.form.endTime = this.form.validity[1]
       // 秒杀价格规格
       this.form.secKillProduct[0].secKillPrice = Number(this.tableContent[0].prdPrice)
       this.form.secKillProduct[0].stock = Number(this.tableContent[0].prdNumber)
