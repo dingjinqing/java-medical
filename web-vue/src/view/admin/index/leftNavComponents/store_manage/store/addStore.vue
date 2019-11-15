@@ -197,17 +197,19 @@
               <el-image
                 fit="scale-down"
                 :src="imgHost+'/image/admin/add_img.png'"
-                style="width: 78px; height: 78px;cursor: pointer;"
+                style="width: 78px; height: 78px; cursor: pointer;"
               />
             </div>
-            <span style="color: #999;">最多可上传6张图，每张大小不可超过5M，格式要求为jpg，png</span>
+            <p style="width:100%; color: #999;margin-bottom:15px;">最多可上传6张图，每张大小不可超过5M，格式要求为jpg，png</p>
           </div>
         </el-form-item>
         <el-form-item
           label="店面详情："
           prop="storeDetail"
         >
-          <TinymceEditor />
+          <div class="edit-wrap">
+            <TinymceEditor ref="tinymceEditor" />
+          </div>
         </el-form-item>
       </el-form>
       <!--图片dialog-->
@@ -215,6 +217,8 @@
         :tuneUp="selfImgDialogShow"
         pageIndex='pictureSpace'
         @handleSelectImg='imgDialogSelectedCallback'
+        isDraggable
+        :imageSize="[750, 520]"
       />
 
       <div
@@ -235,6 +239,7 @@
             <div class="line2">开启后，用户在商城购买该门店的商品，可选择到当前门店自提。</div>
             <div class="line3">
               <el-switch
+                :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude)"
                 v-model="switchLeft"
                 active-color="#E6A23C"
                 inactive-color="#ccc"
@@ -255,6 +260,7 @@
             <div class="line2">开启后，用户在商城购买该门店的商品，可选择同城配送，由商家（或第三方同城配送平台）提供上门配送服务。</div>
             <div class="line3">
               <el-switch
+                :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude)"
                 v-model="switchRight"
                 active-color="#E6A23C"
                 inactive-color="#ccc"
@@ -272,9 +278,11 @@
         :model="deliveryMessage"
         :rules="deliveryFormRules"
         class="deliveryMsg"
+        label-width="120px"
+        size="small"
       >
         <el-form-item label="取货地址：">
-          <span>北京市北京市石景山区石景山</span><br />
+          <span>{{address}}</span><br />
           <span style="color: #999; font-size: 14px;margin-left: 6%;">用户下单后自提商品以及同城配送业务骑手取货地点，如需修改，请到【门店基础信息】页面进行编辑</span>
         </el-form-item>
         <el-form-item
@@ -351,7 +359,7 @@ export default {
   components: {
     areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue'),
     ImageDalog: () => import('@/components/admin/imageDalog'),
-    TinymceEditor: () => import('@/components/admin/imageDalog')
+    TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
   },
   data() {
     return {
@@ -377,7 +385,12 @@ export default {
         service: '',
         storePhoto: '',
         storeImgs: [],
-        storeDetail: ''
+        storeDetail: '',
+        provinceCode: '',
+        cityCode: '',
+        districtCode: '',
+        latitude: '',
+        longitude: ''
       },
       storeFormRules: {
         storeName: [{ required: true, message: '请输入门店名称', trigger: 'blur' }],
@@ -387,7 +400,7 @@ export default {
         storeNum: [{ required: true, message: '请输入门店编号', trigger: 'blur' }],
         storeSite: [{ required: true, message: '请输入门店编号', trigger: 'blur' }],
         storePosition: [{ required: true, message: '请输入定位信息', trigger: 'blur' }],
-        storePhoto: [{ required: true }]
+        storePhoto: [{ required: true, message: '请选择店面宣传照' }]
       },
       selfImgDialogShow: false,
       // 特色服务列表
@@ -409,8 +422,8 @@ export default {
       }],
       imgHost: `${this.$imageHost}`,
       // 配送信息按钮
-      switchLeft: false,
-      switchRight: false,
+      switchLeft: false, // 门店自提
+      switchRight: false, // 同城配送
       // 同城配送信息
       deliveryMessage: {
         deliveryArea: '',
@@ -431,6 +444,13 @@ export default {
       address: ''
     }
   },
+  // watch: {
+  //   'stepData.currentStep': function (val) {
+  //     if (val === 0) {
+  //       this.initMap(this.storeFormInfo.latitude, this.storeFormInfo.longitude)
+  //     }
+  //   }
+  // },
   mounted() {
     this.initMap()
     console.log(this.$refs)
@@ -463,8 +483,8 @@ export default {
     handleAreaData(data) {
       console.log(data)
     },
+    // 区域选择
     areaChangeHandle(data) {
-      console.log(data)
       let address = ''
       if (data.province) {
         for (const key in data) {
@@ -476,11 +496,14 @@ export default {
           }
         }
       }
-      console.log(address)
+      this.storeFormInfo.provinceCode = data.province.id
+      this.storeFormInfo.cityCode = data.city.id
+      this.storeFormInfo.districtCode = data.district.id
+      this.storeFormInfo = this.storeFormInfo
       this.address = address
     },
     // 初始化地图
-    initMap() {
+    initMap(latitude, longitude) {
       let that = this
       let center = new qq.maps.LatLng(39.916527, 116.397128)
       this.map = new qq.maps.Map(this.$refs.storemap, {
@@ -493,15 +516,16 @@ export default {
       // 地址解析
       this.geocoder = new qq.maps.Geocoder({
         complete: function (result) {
-          console.log('2222', result)
+          console.log('result:', result)
           that.map.setCenter(result.detail.location)
           that.marker = new qq.maps.Marker({
             map: that.map,
             position: result.detail.location
           })
+          that.$set(that.storeFormInfo, 'latitude', result.detail.location.lat)
+          that.$set(that.storeFormInfo, 'longitude', result.detail.location.lng)
         }
       })
-      console.log(this.geocoder)
       qq.maps.event.addListener(this.map, 'click', function (e) {
         if (that.marker) {
           that.marker.setMap(null)
@@ -511,6 +535,13 @@ export default {
           map: that.map
         })
       })
+      if (latitude && longitude) {
+        that.map.panTo(new qq.maps.LatLng(latitude, longitude))
+        that.marker = new qq.maps.Marker({
+          position: { lat: latitude, lng: longitude },
+          map: that.map
+        })
+      }
     },
     // 点击地图定位
     codeAddress() {
@@ -519,8 +550,6 @@ export default {
         return false
       }
       let address = this.address + this.storeFormInfo.storePosition
-      console.log(address)
-      console.log(this.marker)
       if (this.marker) {
         this.marker.setMap(null)
       }
@@ -533,10 +562,11 @@ export default {
     },
     // 商品图片点击回调函数
     imgDialogSelectedCallback(imgObj) {
-      if (this.storeFormInfo.storeImgs.length >= 5) {
+      if (this.storeFormInfo.storeImgs.length + imgObj.length > 5) {
+        this.$message.warning('最多选5张')
         return
       }
-      this.storeFormInfo.storeImgs.push({ imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl })
+      this.storeFormInfo.storeImgs = this.storeFormInfo.storeImgs.concat(imgObj)
     },
     // 删除店面图片
     deleteStoreImg(index) {
@@ -544,7 +574,12 @@ export default {
     },
     // 下一步
     nextClickHandler() {
+      // 校验 form
+      // this.$refs.storeForm.validate(function (valid) {
+      //   if (valid) {
       this.stepData.currentStep = 1
+      //   }
+      // })
     },
     // 上一步
     prevClickHandler() {
@@ -589,10 +624,6 @@ export default {
 .el-date-editor {
   width: 45%;
 }
-.tinymceEditor {
-  width: 70% !important;
-}
-
 .storeImgWrap {
   width: 80px;
   height: 80px;
@@ -693,6 +724,9 @@ export default {
   height: 400px;
   border: 1px solid #ccc;
   margin-top: 5px;
-  margin-bottom: 20px;
+}
+.edit-wrap {
+  width: 600px;
+  height: 400px;
 }
 </style>
