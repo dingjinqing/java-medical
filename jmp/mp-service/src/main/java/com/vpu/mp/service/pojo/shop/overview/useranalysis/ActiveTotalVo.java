@@ -31,4 +31,8 @@ public class ActiveTotalVo {
     private Double cartDataRate;
     /** 成交会员数占比 */
     private Double orderUserDataRate;
+    /** 开始时间 */
+    private String startTime;
+    /** 结束时间 */
+    private String endTime;
 }

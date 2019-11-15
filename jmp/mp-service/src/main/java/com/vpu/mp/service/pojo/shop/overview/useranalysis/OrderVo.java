@@ -19,4 +19,8 @@ public class OrderVo {
     OrderTotalVo dataVo;
     /** 累积数据变化率 */
     OrderChangeRateVo changeRateVo;
+    /** 开始时间 */
+    private String startTime;
+    /** 结束时间 */
+    private String endTime;
 }

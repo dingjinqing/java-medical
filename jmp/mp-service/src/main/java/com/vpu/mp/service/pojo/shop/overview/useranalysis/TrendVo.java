@@ -27,5 +27,9 @@ public class TrendVo {
 	private Double userDataRate;
     /** 成交用户数变化率 */
 	private Double orderUserDataRate;
-	
+
+	/** 开始时间 */
+	private String startTime;
+	/** 结束时间 */
+    private String endTime;
 }

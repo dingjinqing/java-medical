@@ -15,8 +15,6 @@ public class RebuyParam {
     private Byte type = 7;
     /** 当前周数 */
 	private Integer weekNum;
-    /** 传入的日期-周一 */
-    private String monday;
 	/** 传入的日期-周日 */
     private String sunday;
 	/** 第一个自然周 */
