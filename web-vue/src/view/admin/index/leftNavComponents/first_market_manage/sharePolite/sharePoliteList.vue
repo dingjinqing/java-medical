@@ -144,12 +144,12 @@
                   class="el-icon-s-cooperation iconSpn"
                 ></span>
               </el-tooltip>
-              <el-tooltip
+<!--              <el-tooltip
                 :content="$t('sharePolite.share')"
                 placement="top"
               >
                 <span class="el-icon-share iconSpn"></span>
-              </el-tooltip>
+              </el-tooltip>-->
             </div>
           </template>
         </el-table-column>
@@ -307,18 +307,12 @@ export default {
       }).then(() => {
         updateDailyLimit(this.dailyLimit).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '更新成功！'
-            })
+            this.$message.success('更新成功！')
             this.seacherList()
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+        this.$message.info('已取消删除！')
       })
     },
     // 添加分享有礼活动
@@ -340,18 +334,12 @@ export default {
       }).then(() => {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '停用成功!'
-            })
+            this.$message.success('停用成功！')
             this.seacherList()
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消停用'
-        })
+        this.$message.info('已取消停用！')
       })
     },
     // 启用分享有礼活动
@@ -367,18 +355,12 @@ export default {
       }).then(() => {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '启用成功!'
-            })
+            this.$message.success('启用成功！')
             this.seacherList()
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消启用'
-        })
+        this.$message.info('已取消启用！')
       })
     },
     // 删除分享有礼活动
@@ -394,18 +376,12 @@ export default {
       }).then(() => {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
+            this.$message.success('删除成功！')
             this.seacherList()
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+        this.$message.info('已取消删除！')
       })
     }
   }

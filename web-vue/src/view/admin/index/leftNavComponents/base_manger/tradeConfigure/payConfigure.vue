@@ -11,7 +11,7 @@
         <el-switch
           v-model="item.enabled"
           active-color="#13ce66"
-          inactive-color="#ff4949"
+          inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span>{{item.enabled?$t('payConfiguration.activated'):$t('payConfiguration.inactived')}}</span>

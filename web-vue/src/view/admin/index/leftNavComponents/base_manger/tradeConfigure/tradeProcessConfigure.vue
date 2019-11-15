@@ -11,7 +11,7 @@
         <el-switch
           v-model="item.value"
           active-color="#13ce66"
-          inactive-color="#ff4949"
+          inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span>{{item.value?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -91,7 +91,7 @@
         <el-switch
           v-model="extenReceiveGoods"
           active-color="#13ce66"
-          inactive-color="#ff4949"
+          inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{this.extenReceiveGoods?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -118,7 +118,7 @@
         <el-switch
           v-model="invoice"
           active-color="#13ce66"
-          inactive-color="#ff4949"
+          inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{this.invoice?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -136,7 +136,7 @@
         <el-switch
           v-model="serviceTerms"
           active-color="#13ce66"
-          inactive-color="#ff4949"
+          inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{this.serviceTerms?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -186,7 +186,7 @@
         <el-switch
           v-model="item.value"
           active-color="#13ce66"
-          inactive-color="#ff4949"
+          inactive-color="#f7931e"
           style="margin:0 10px;height:60px;line-height:60px"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{item.value?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -269,7 +269,7 @@
         <el-switch
           v-model="shippingExpress"
           active-color="#13ce66"
-          inactive-color="#ff4949"
+          inactive-color="#f7931e"
           style="margin: 17px 10px 0;"
         ></el-switch>
         <div class="switchText">
@@ -389,7 +389,7 @@
               <el-switch
                 v-model="scope.row.autoPick"
                 active-color="#13ce66"
-                inactive-color="#ff4949"
+                inactive-color="#f7931e"
                 style="margin: 0 10px;"
               ></el-switch>
               <span style="font-size: 14px; color:#333;">{{scope.row.autoPick?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>

@@ -319,18 +319,12 @@ export default {
       }).then(() => {
         updatePriority(obj).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '修改成功!'
-            })
+            this.$message.success('修改成功！')
             this.initDateList()
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消修改'
-        })
+        this.$message.info('已取消修改！')
       })
     },
     // 换购订单跳转
@@ -391,18 +385,12 @@ export default {
       }).then(() => {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '停用成功!'
-            })
+            this.$message.success('停用成功！')
             this.initDateList()
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消停用'
-        })
+        this.$message.info('已取消停用！')
       })
     },
     // 启用
@@ -418,18 +406,12 @@ export default {
       }).then(() => {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '启用成功!'
-            })
+            this.$message.success('启用成功！')
             this.initDateList()
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消启用'
-        })
+        this.$message.info('已取消启用！')
       })
     },
     // 删除
@@ -445,18 +427,12 @@ export default {
       }).then(() => {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
+            this.$message.success('删除成功！')
             this.initDateList()
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+        this.$message.info('已取消删除！')
       })
     }
   }
