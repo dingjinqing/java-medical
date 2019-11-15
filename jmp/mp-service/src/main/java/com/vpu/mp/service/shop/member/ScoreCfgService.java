@@ -18,7 +18,7 @@ import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
@@ -36,9 +36,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
 	@Autowired
 	public ShopMpDecorationService mpDecoration;
-	final public static byte ZERO = 0;
-	final public static byte ONE = 1;
-	final public static byte TWO = 2;
 
 	/**
 	 * 购物送积分
@@ -49,35 +46,19 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
     // 积分国际化信息
 	final public static String SCORE_CFG_TITLE="member.score.cfg.title";
-
+	final public static Byte ZERO = NumberUtils.BYTE_ZERO;
+	final public static Byte ONE = NumberUtils.BYTE_ONE;
 	public int setShopCfg(ShopCfgParam param) {
 
-		// 设置积分有效规则
 		int result = 1;
-		Byte scoreLimit = param.getScoreLimit();
-		if (scoreLimit == ZERO) {
-			// 永久积分
-			setScoreLimit(scoreLimit);
-
-		} else if ( scoreLimit == ONE) {
-			// 截止日期
-			setScoreLimit(scoreLimit);
-			setScoreDay(param.getScoreDay());
-			setScoreMonth(param.getScoreMonth());
-			setScoreYear(param.getScoreYear());
-		} else if (scoreLimit == TWO) {
-			// 时间度量
-			setScoreLimit(scoreLimit);
-			setScoreLimitNumber(param.getScoreLimitNumber());
-			setScorePeriod(param.getScorePeriod());
-		}
+		cfgScoreEffectiveRule(param);
 
 		// 积分支付限制
 		Byte scorePayLimit = param.getScorePayLimit();
-		if (ZERO == scorePayLimit) {
+		if (NumberUtils.BYTE_ZERO == scorePayLimit) {
 			// 不限制
 			setScorePayLimit(scorePayLimit);
-		} else if (ONE == scorePayLimit) {
+		} else if (NumberUtils.BYTE_ONE == scorePayLimit) {
 			// 自定义积分
 			setScorePayLimit(scorePayLimit);
 			setScorePayNum(param.getScorePayNum());
@@ -125,6 +106,50 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		return result;
 	}
 
+	
+	
+	
+	
+	
+	/**
+	 * 配置积分有效规则
+	 */
+	private void cfgScoreEffectiveRule(ShopCfgParam param) {
+		Byte type = param.getScoreLimit();
+		assert isEffectiveForever(type) || isEffectiveUtilToYMD(type) ||isEffectiveFromCurrentDay(type)
+			: "配置积分有效规则错误";
+		setScoreLimit(type);
+		if ( isEffectiveUtilToYMD(type)) {	
+			setScoreDay(param.getScoreDay());
+			setScoreMonth(param.getScoreMonth());
+			setScoreYear(param.getScoreYear());
+		} else if (isEffectiveFromCurrentDay(type)) {
+			setScoreLimitNumber(param.getScoreLimitNumber());
+			setScorePeriod(param.getScorePeriod());
+		}
+	}
+
+	/**
+	 * 是否永久有效
+	 */
+	private boolean isEffectiveForever(Byte effectiveType) {
+		return NumberUtils.BYTE_ZERO.equals(effectiveType);
+	}
+	/**
+	 * 是否有效为： 从获得开始至某年某月某日
+	 */
+	private boolean isEffectiveUtilToYMD(Byte effectiveType) {
+		return NumberUtils.BYTE_ONE.equals(effectiveType);
+	}
+	/**
+	 * 是否有效为：从获得积分当天起
+	 */
+	private boolean isEffectiveFromCurrentDay(Byte effectiveType) {
+		return Byte.valueOf((byte) 2).equals(effectiveType);
+	}
+	
+	
+	
 	/**
 	 * 更新设置签到积分
 	 */
@@ -148,8 +173,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
 	/**
 	 * 获取数据库中set_val3的值
-	 * @param scoreName
-	 * @return
 	 */
 	public UserScoreSetValue getScoreValueThird(String scoreName) {
 		UserScoreSetRecord  record = this.db()

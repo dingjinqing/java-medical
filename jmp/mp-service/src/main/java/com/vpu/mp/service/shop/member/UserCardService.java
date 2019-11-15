@@ -469,8 +469,13 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	private UserCardRecord createNewUserCard(Integer userId, MemberCardRecord card, boolean isActivate) {
-		UserCardRecordBuilder cardBuilder = UserCardRecordBuilder.create(db().newRecord(USER_CARD)).userId(userId)
-				.cardId(card.getId()).cardNo(getRandomCardNo(card.getId())).createTime(DateUtil.getLocalDateTime())
+		UserCardRecordBuilder cardBuilder = 
+				UserCardRecordBuilder
+				.create(db().newRecord(USER_CARD))
+				.userId(userId)
+				.cardId(card.getId())
+				.cardNo(getRandomCardNo(card.getId()))
+				.createTime(DateUtil.getLocalDateTime())
 				.expireTime(calcCardExpireTime(card));
 
 		if (isLimitCard(card)) {
@@ -483,6 +488,7 @@ public class UserCardService extends ShopBaseService {
 				cardBuilder.money(new BigDecimal(card.getSendMoney()));
 			}
 		} else if (isGradeCard(card) && isHasAvailableGradeCard(userId)) {
+			logger().info("即将更改用户的等级");
 			MemberCardRecord oldGradeCard = getUserGradeCard(userId);
 			MemberCardRecord newGradeCard = memberCardService.getCardById(card.getId());
 			changeUserGradeCard(userId, oldGradeCard, newGradeCard);
@@ -491,7 +497,15 @@ public class UserCardService extends ShopBaseService {
 		if (isActivate || isActivateNow(card)) {
 			cardBuilder.activationTime(DateUtil.getLocalDateTime());
 		}
-		int result = cardBuilder.build().insert();
+		
+		int result = 0;
+		if(isGradeCard(card) && !isHasAvailableGradeCard(userId)) {
+			logger().info("用户目前没有等级卡，设置一个等级卡: "+card.getGrade());
+			result = cardBuilder.build().insert();
+		}else {
+			logger().info("发送普通或者限次卡：" + card.getCardName());
+			result = cardBuilder.build().insert();
+		}
 		logger().info(String.format("成功向ID为%d的用户，发送了%d张会员卡", userId, result));
 		return cardBuilder.build();
 	}

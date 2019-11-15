@@ -185,7 +185,7 @@ public class CardConstant {
 
 	/** 是否专属购买商品 0不是 1是 */
 	public static final Byte PAY_OWN_GOOD_YES=1;
-	public static final String LOWEST_GRADE = "v1";
+	public static final String LOWEST_GRADE = "v0";
 	public static final Byte SUPPORT_PAY_BY_CASH = 1;
 	public static final Byte NOT_SUPPORT_PAY_BY_CASH = 0;
 

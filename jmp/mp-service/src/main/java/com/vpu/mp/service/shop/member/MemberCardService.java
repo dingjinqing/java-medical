@@ -1273,6 +1273,7 @@ public class MemberCardService extends ShopBaseService {
 				tmpData.stream().toArray(String[]::new));
 	}
 
+	
 	/**
 	 * 生成会员卡号
 	 */
