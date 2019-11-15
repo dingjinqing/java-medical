@@ -93,6 +93,7 @@ export default {
       })
     },
     handleSubmit () {
+      this.defaluteData()
       if (this.act === null) {
         getOfficialQrCode().then((res) => {
           console.log(res)
