@@ -453,6 +453,9 @@ export default {
         case 'third':
           this.nowShowLeftModules = this.marketingTextConArr
       }
+      this.$nextTick(() => {
+        this.init_drag_event()
+      })
     },
     // 页面设置回显
     hanelToPageSet (res) {
