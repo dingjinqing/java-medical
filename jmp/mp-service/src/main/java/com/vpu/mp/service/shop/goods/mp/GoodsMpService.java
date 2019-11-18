@@ -232,8 +232,12 @@ public class GoodsMpService extends ShopBaseService {
      */
     public GoodsDetailMpVo getGoodsDetailMp(GoodsDetailMpParam param){
         GoodsDetailMpBo goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
-        GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
 
+        if (DelFlag.DISABLE_VALUE.equals(goodsDetailMpBo.getDelFlag())) {
+            return goodsDetailMpBo;
+        }
+
+        GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
         GoodsDetailCapsuleParam capsuleParam = new GoodsDetailCapsuleParam();
         capsuleParam.setUserId(param.getUserId());
         capsuleParam.setActivityType(param.getActivityType());
@@ -298,7 +302,7 @@ public class GoodsMpService extends ShopBaseService {
      */
     private GoodsDetailMpBo getGoodsDetailMpInfoDao(Integer goodsId) {
         GoodsDetailMpBo capsule = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
-            GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
+            GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME,GOODS.DELIVER_TEMPLATE_ID,GOODS.DELIVER_PLACE,GOODS.GOODS_WEIGHT, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
             GOODS.GOODS_IMG,GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
             GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_PAGE_UP,GOODS.GOODS_DESC)
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))

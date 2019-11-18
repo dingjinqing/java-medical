@@ -4,15 +4,15 @@ import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartGoodsInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
@@ -97,9 +97,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
         goodsDetailMpBo.setGoodsVideoImg(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideoImg(),false));
 
         Integer defaultNum  = goodsDetailMpBo.getLimitBuyNum() == 0? 1:goodsDetailMpBo.getLimitBuyNum();
-        BigDecimal totalPrice = goodsDetailMpBo.getProducts().get(0).getPrdRealPrice().multiply(BigDecimal.valueOf(defaultNum));
-        BigDecimal totalWeight = goodsDetailMpBo.getGoodsWeight().multiply(BigDecimal.valueOf(defaultNum));
-        BigDecimal deliverPrice = calculate.calculateShippingFee(param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getTemplateId(), defaultNum, totalPrice, totalWeight);
+        BigDecimal deliverPrice = calculate.calculateShippingFee(param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
         goodsDetailMpBo.setDeliverPrice(deliverPrice);
     }
 

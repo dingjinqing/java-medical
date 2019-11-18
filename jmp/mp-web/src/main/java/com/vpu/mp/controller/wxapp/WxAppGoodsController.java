@@ -16,9 +16,7 @@ public class WxAppGoodsController extends WxAppBaseController {
 	@PostMapping("/api/wxapp/goods/detail")
 	public JsonResult getGoodsDetailInfo(@RequestBody GoodsDetailMpParam param) {
         Integer userId = wxAppAuth.user().getUserId();
-		param.setUserId(userId);
+        param.setUserId(userId);
 		return success(shop().goodsMp.getGoodsDetailMp(param));
 	}
-
-
 }

@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.order.action.base;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -34,7 +33,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -360,16 +358,19 @@ public class Calculate extends ShopBaseService {
      * @param lng 纬度
      * @param goodsId 商品id
      * @param templateId 模板
-     * @param totalNumber
-     * @param totalPrice
-     * @param totalWeight
+     * @param totalNumber 要购买的商品数量
+     * @param goodsPrice  单个商品价格
+     * @param goodWeight 单个商品重量
      * @return 运费
      * @author kdc
      */
-    public BigDecimal calculateShippingFee(String lat,String lng,Integer goodsId,Integer templateId,Integer totalNumber,BigDecimal totalPrice,BigDecimal totalWeight){
+    public BigDecimal calculateShippingFee(String lat,String lng,Integer goodsId,Integer templateId,Integer totalNumber,BigDecimal goodsPrice,BigDecimal goodWeight){
         AddressInfo userAddress = addressService.getAddressInfo(lat, lng);
         Integer districtCode = addressService.getUserAddressDistrictId(userAddress);
         BigDecimal shippingFeeByTemplate =BigDecimal.ZERO;
+
+        BigDecimal totalPrice = BigDecimalUtil.multiply(goodsPrice,BigDecimal.valueOf(totalNumber));
+        BigDecimal totalWeight = BigDecimalUtil.multiply(goodWeight,BigDecimal.valueOf(totalNumber));
         try {
             shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId,totalNumber , totalPrice, totalWeight);
         }catch (MpException e){

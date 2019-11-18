@@ -72,9 +72,7 @@ public class CouponProcessorDao extends ShopBaseService {
             .from(MRKING_VOUCHER).where(condition)
             .orderBy(MRKING_VOUCHER.ACT_CODE.desc(), MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.CREATE_TIME.desc())
             .fetchInto(MrkingVoucherRecord.class);
-
         Map<String, List<MrkingVoucherRecord>> collects = mrkingVoucherRecords.stream().collect(Collectors.groupingBy(MrkingVoucherRecord::getActCode, Collectors.toList()));
-
         List<MrkingVoucherRecord> vouchers = collects.get(ACT_CODE_VOUCHER);
         List<MrkingVoucherRecord> discounts = collects.get(ACT_CODE_DISCOUNT);
 
