@@ -1,8 +1,8 @@
 package com.vpu.mp.controller.admin;
 
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUTCOME;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUT;
 
 import javax.validation.Valid;
 
@@ -49,12 +49,12 @@ public class AdminMemberAccountController extends AdminBaseController {
 	@PostMapping("/api/admin/member/account/update")
 	public JsonResult updateMemberAccount(@RequestBody AccountParam param) {
 		int adminUser = 0;
-		Byte tradeType = ACCOUNT_DEFAULT.getValue();
+		Byte tradeType = TYPE_DEFAULT.val();
 		Byte tradeFlow = null;
 		if(BigDecimalUtil.compareTo(param.getAmount(), null)==-1) {
-			tradeFlow = TRADE_FLOW_OUTCOME.getValue();
+			tradeFlow = TRADE_FLOW_OUT.val();
 		}else {
-			tradeFlow = TRADE_FLOW_INCOME.getValue();
+			tradeFlow = TRADE_FLOW_IN.val();
 		}
 		
 		/** 获取语言 用于国际化 */
