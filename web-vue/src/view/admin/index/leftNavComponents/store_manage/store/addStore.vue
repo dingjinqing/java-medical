@@ -78,26 +78,36 @@
             v-model="storeFormInfo.openingTime"
             placeholder="开始时间"
             style="width: 12%;margin-left: 20px;"
+            format="HH:mm"
+            value-format="HH:mm"
           ></el-time-picker>
           <span>-</span>
           <el-time-picker
             v-model="storeFormInfo.closeTime"
             placeholder="结束时间"
             style="width: 12%;"
+            format="HH:mm"
+            value-format="HH:mm"
           ></el-time-picker>
           <p style="margin-left: 172px; color: #a0a0a0;">24小时制，如 9:00-21:00</p>
         </el-form-item>
         <el-form-item
           label="所属分组："
-          prop="storeGroups"
+          prop="group"
         >
           <el-select
-            v-model="storeFormInfo.storeGroups"
+            v-model="storeFormInfo.group"
             placeholder="请选择分组"
           >
             <el-option
               label="请选择所属分组"
               value=""
+            ></el-option>
+            <el-option
+              v-for="item in storeGroups"
+              :key="item.groupId"
+              :label="item.groupName"
+              :value="item.groupId"
             ></el-option>
           </el-select>
           <el-button
@@ -112,11 +122,11 @@
         </el-form-item>
         <el-form-item
           label="门店编号："
-          prop="storeNum"
+          prop="posShopId"
         >
           <el-input
-            v-model="storeFormInfo.storeNum"
-            placeholder="请输入门店编号"
+            v-model.number="storeFormInfo.posShopId"
+            placeholder="请输入门店编号(数字)"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -124,7 +134,12 @@
           prop="provinceCode"
         >
           <div>
-            <areaLinkage @areaChange="areaChangeHandle" />
+            <areaLinkage
+              :provinceCode="storeFormInfo.provinceCode"
+              :cityCode="storeFormInfo.cityCode"
+              :districtCode="storeFormInfo.districtCode"
+              @areaChange="areaChangeHandle"
+            />
           </div>
         </el-form-item>
         <el-form-item
@@ -146,25 +161,25 @@
         </el-form-item>
         <el-form-item
           label="特色服务："
-          prop="storeServe"
+          prop="storeService"
         >
-          <el-checkbox-group v-model="storeFormInfo.storeServe">
+          <el-checkbox-group v-model="storeService">
             <el-checkbox
               v-for="(item, index) in serveList"
               :key="index"
               :label="item.label"
               name="type"
-              :checked="item.checked"
             ></el-checkbox>
           </el-checkbox-group>
           <el-input
             placeholder="添加多个服务，用逗号隔开"
-            v-model="storeFormInfo.service"
+            v-model="addService"
           ></el-input>
           <el-button
             type="text"
             @click="addServeHandler"
           >添加</el-button>
+          <span>{{storeFormInfo.service}}</span>
         </el-form-item>
         <el-form-item
           label="店面宣传照："
@@ -178,7 +193,7 @@
             >
               <el-image
                 fit="cover"
-                :src="item.imgUrl"
+                :src="item"
                 style="width: 78px; height: 78px;"
               ></el-image>
               <span
@@ -344,7 +359,6 @@
           @click="saveClickHandler"
         >保存</el-button>
       </div>
-
     </div>
   </div>
 </template>
@@ -374,6 +388,12 @@ export default {
       }
       callback()
     }
+    let validateAddress = function (rule, value, callback) {
+      if (!that.storeFormInfo.latitude && !that.storeFormInfo.longitude) {
+        callback(new Error('没有点击定位'))
+      }
+      callback()
+    }
     return {
       reload: true,
       stepData: {
@@ -389,11 +409,10 @@ export default {
         businessType: 0,
         openingTime: '',
         closeTime: '',
-        storeGroups: [],
-        storeNum: '',
+        group: '',
+        posShopId: '',
         address: '',// 地图定位详细地址
-        storeServe: [],
-        service: '',
+        service: '', // 填写的服务
         storeImgs: [],
         storeDetail: '',
         provinceCode: '',
@@ -408,12 +427,14 @@ export default {
         manager: [{ required: true, message: '请输入负责人', trigger: 'blur' }],
         mobile: [{ required: true, message: '请输入联系电话', trigger: 'blur' }],
         businessType: [{ required: true, message: '请选择营业时间', trigger: 'change' }],
-        storeNum: [{ required: true, message: '请输入门店编号', trigger: 'blur' }],
-        provinceCode: [{ validator: validateArea, trigger: 'blur' }],
-        address: [{ required: true, message: '请输入定位信息', trigger: 'blur' }],
+        posShopId: [{ required: true, message: '请输入门店编号', trigger: 'blur' }, { type: 'number', message: '年龄必须为数字值' }],
+        provinceCode: [{ required: true, message: '请选择区域' }, { validator: validateArea, trigger: 'blur' }],
+        address: [{ required: true, message: '请输入定位信息', trigger: 'blur' }, { validator: validateAddress }],
         storeImgs: [{ required: true, message: '请选择店面宣传照' }]
       },
       selfImgDialogShow: false,
+      storeGroups: [],
+      addService: '', // 添加的特色服务
       // 特色服务列表
       serveList: [{
         label: 'WIFI',
@@ -455,14 +476,67 @@ export default {
       address: ''
     }
   },
+  computed: {
+    storeService: {
+      get: function () {
+        let services = []
+        if (this.storeFormInfo.service) {
+          services = JSON.parse(this.storeFormInfo.service)
+          console.log(services)
+        }
+        return services
+      },
+      set: function (val) {
+        if (val) {
+          this.$set(this.storeFormInfo, 'service', JSON.stringify(val))
+        } else {
+          this.$set(this.storeFormInfo, 'service', '')
+        }
+      }
+    }
+  },
+  watch: {
+    '$route.query.id': function (newVal) {
+      if (newVal) {
+        this.id = this.$route.query.id
+        this.initStore(this.id)
+      } else {
+        this.initData()
+      }
+    }
+  },
   mounted() {
     if (this.$route.query.id) {
       this.id = this.$route.query.id
       this.initStore(this.id)
+    } else {
+      this.initMap()
     }
-    this.initMap()
   },
   methods: {
+    initData() {
+      this.storeFormInfo = {
+        storeName: '',
+        manager: '',
+        mobile: '',
+        businessState: 0,
+        businessType: 0,
+        openingTime: '',
+        closeTime: '',
+        group: '',
+        posShopId: '',
+        address: '',// 地图定位详细地址
+        service: '', // 填写的服务
+        storeImgs: [],
+        storeDetail: '',
+        provinceCode: '',
+        cityCode: '',
+        districtCode: '',
+        latitude: '',
+        longitude: '',
+        autoPick: 0 // 设定自提
+      }
+    },
     initStore(id) {
       let that = this
       let params = {
@@ -473,8 +547,19 @@ export default {
           if (res.content.storeImgs) {
             res.content.storeImgs = JSON.parse(res.content.storeImgs)
           }
-          if (res.content.storeServe) {
-            res.content.storeServe = JSON.parse(res.content.storeServe)
+          if (res.content.service) {
+            let services = JSON.parse(res.content.service)
+            let servicesMap = services.map(item => {
+              return {
+                label: item,
+                checked: true
+              }
+            })
+            that.serveList = that.uniqObj(that.serveList.concat(servicesMap))
+            that.storeService = services
+          }
+          if (res.content.latitude && res.content.longitude) {
+            that.initMap(res.content.latitude, res.content.longitude)
           }
           that.storeFormInfo = Object.assign({}, that.storeFormInfo, res.content)
         }
@@ -490,18 +575,35 @@ export default {
     },
     // 添加特色服务
     addServeHandler() {
-      if (this.storeFormInfo.service === '') {
+      if (this.addService === '') {
         this.$message.error({
           message: '请输入有效的字符！'
         })
       } else {
-        console.log(this.storeFormInfo.service)
-        this.serveList.push({
-          label: this.storeFormInfo.service,
-          checked: true
+        let services = this.addService.split(',')
+        let servicesMap = services.map(item => {
+          return {
+            label: item,
+            checked: true
+          }
         })
+        this.storeService = this.storeService.concat(services)
+        this.serveList = this.uniqObj(this.serveList.concat(servicesMap))
       }
-      this.storeFormInfo.service = ''
+      this.addService = ''
+    },
+    // 数组对象去重
+    uniqObj(items) {
+      var temp = [];
+      items.forEach((item, i) => {
+        var tag = temp.find(el => {
+          return el.label === item.label
+        })
+        if (!tag) {
+          temp.push(item)
+        }
+      })
+      return temp;
     },
     // 区域选择
     areaChangeHandle(data) {
@@ -557,8 +659,11 @@ export default {
       })
       if (latitude && longitude) {
         that.map.panTo(new qq.maps.LatLng(latitude, longitude))
+        if (that.marker) {
+          that.marker.setMap(null)
+        }
         that.marker = new qq.maps.Marker({
-          position: { lat: latitude, lng: longitude },
+          position: new qq.maps.LatLng(latitude, longitude),
           map: that.map
         })
       }
@@ -586,7 +691,8 @@ export default {
         this.$message.warning('最多选5张')
         return
       }
-      this.storeFormInfo.storeImgs = this.storeFormInfo.storeImgs.concat(imgObj)
+      let imgs = imgObj.map(item => item.imgUrl)
+      this.storeFormInfo.storeImgs = this.storeFormInfo.storeImgs.concat(imgs)
     },
     // 删除店面图片
     deleteStoreImg(index) {
@@ -610,17 +716,29 @@ export default {
     saveClickHandler() {
       let params = Object.assign({}, this.storeFormInfo, this.deliveryMessage)
       params.storeImgs = JSON.stringify(params.storeImgs)
-      params.storeServe = JSON.stringify(params.storeServe)
-      addStore(params).then((res) => {
-        if (res.error === 0) {
-          this.$message.success({
-            message: res.message
-          })
-          this.$router.push({ name: 'store_list' })
-        } else {
-          this.$message.error('添加失败')
-        }
-      })
+      if (!this.id) {
+        addStore(params).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({
+              message: res.message
+            })
+            this.$router.push({ name: 'store_list' })
+          } else {
+            this.$message.error('添加失败')
+          }
+        })
+      } else {
+        updateStore(params).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({
+              message: res.message
+            })
+            this.$router.push({ name: 'store_list' })
+          } else {
+            this.$message.error('添加失败')
+          }
+        })
+      }
     }
   }
 }
