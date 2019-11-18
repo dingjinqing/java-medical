@@ -64,15 +64,18 @@ public class RebateStrategyService extends ShopBaseService{
 				//进行中
 				case 1:
 					sql = sql.and(DISTRIBUTION_STRATEGY.START_TIME.le(nowDate))
-							  .and(DISTRIBUTION_STRATEGY.END_TIME.ge(nowDate));
+							  .and(DISTRIBUTION_STRATEGY.END_TIME.ge(nowDate))
+							  .and(DISTRIBUTION_STRATEGY.STATUS.ne((byte) 1));
 					break;
 				//未开始
 				case 2:
-					sql = sql.and(DISTRIBUTION_STRATEGY.START_TIME.ge(nowDate));
+					sql = sql.and(DISTRIBUTION_STRATEGY.START_TIME.ge(nowDate))
+							.and(DISTRIBUTION_STRATEGY.STATUS.ne((byte) 1));
 					break;
 				//已过期
 				case 3:
-					sql = sql.and(DISTRIBUTION_STRATEGY.END_TIME.le(nowDate));
+					sql = sql.and(DISTRIBUTION_STRATEGY.END_TIME.le(nowDate))
+							.and(DISTRIBUTION_STRATEGY.STATUS.ne((byte) 1));
 					break;
 				//已停用
 				case 4:
