@@ -1,21 +1,14 @@
 package com.vpu.mp.service.shop.goods.es;
 
-import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
-import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.shop.goods.es.convert.EsConvertFactory;
 import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsListMpBoConverter;
-import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsPageListVoConverter;
-import com.vpu.mp.service.shop.goods.es.convert.param.EsParamConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.param.GoodsListMpConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -40,7 +33,7 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
 //        integrface1.convert(null,123);
 //    }
 
-    public PageResult<GoodsListMpBo> queryGoodsByParam(GoodsListMpParam mpParam){
+    public PageResult<GoodsListMpBo> queryGoodsByParam(GoodsListMpParam mpParam) throws IOException {
         Integer shopId = getShopId();
         EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);
         try {
@@ -48,8 +41,8 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
             return esPageConvertVoPage(esGoodsPage);
         } catch (IOException e) {
             log.error("EsGoodsSearchMpService-->queryGoodsByParam ElasticSearch connection error when querying");
+            throw e;
         }
-        return null;
     }
     private PageResult<GoodsListMpBo> esPageConvertVoPage(PageResult<EsGoods> esPage){
 

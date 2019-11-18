@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.goods.mp;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
@@ -16,12 +17,14 @@ import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +57,9 @@ public class GoodsMpService extends ShopBaseService {
     @Autowired
     protected UpYunConfig upYunConfig;
 
+    @Autowired
+    protected EsGoodsSearchMpService esGoodsSearchMpService;
+
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
      * @param param  装修页面配置的商品获取过滤条件
@@ -62,12 +68,27 @@ public class GoodsMpService extends ShopBaseService {
      */
     public List<? extends GoodsListMpVo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId) {
         List<GoodsListMpBo> goodsListCapsules;
-        goodsListCapsules = getPageIndexGoodsListFromDb(param);
+        try {
+            // 从es获取
+            goodsListCapsules=  getPageIndexGoodsListFromEs(param);
+        } catch (Exception e) {
+            goodsListCapsules = getPageIndexGoodsListFromDb(param);
+        }
         disposeGoodsList(goodsListCapsules,userId);
         return goodsListCapsules;
     }
+
     /**
-     * 装修页面 商品列表模块中获取配置后的商品集合数据
+     * 装修页面 商品列表模块中获取配置后的商品集合数据 Es获取
+     * @param param  装修页面配置的商品获取过滤条件
+     * @return 对应的商品集合信息
+     */
+    private List<GoodsListMpBo> getPageIndexGoodsListFromEs(GoodsListMpParam param) throws IOException {
+        PageResult<GoodsListMpBo> goodsListMpBoPageResult = esGoodsSearchMpService.queryGoodsByParam(param);
+        return goodsListMpBoPageResult.dataList;
+    }
+    /**
+     * 装修页面 商品列表模块中获取配置后的商品集合数据 Db获取
      * @param param  装修页面配置的商品获取过滤条件
      * @return 对应的商品集合信息
      */
@@ -214,33 +235,6 @@ public class GoodsMpService extends ShopBaseService {
 
         processorFactory.doProcess(goodsDetailMpBo,capsuleParam);
         return goodsDetailMpBo;
-    }
-
-    /**
-     * 将相对路劲修改为全路径
-     * @param relativePath 相对路径
-     * @return null或全路径
-     */
-    private String getImgFullUrlUtil(String relativePath) {
-        if (StringUtils.isBlank(relativePath)) {
-            return null;
-        } else {
-            return imageService.imageUrl(relativePath);
-        }
-    }
-
-    /**
-     *  商品视频和快照图片相对路径转换全路径
-     * @param relativePath 相对路径
-     * @param videoOrSnapShop true: 视频，false: 快照
-     * @return 全路径
-     */
-    private String getVideoFullUrlUtil(String relativePath,boolean videoOrSnapShop){
-        if (StringUtils.isBlank(relativePath)) {
-            return null;
-        } else {
-            return videoOrSnapShop ? upYunConfig.videoUrl(relativePath) : upYunConfig.imageUrl(relativePath);
-        }
     }
 
     /**
