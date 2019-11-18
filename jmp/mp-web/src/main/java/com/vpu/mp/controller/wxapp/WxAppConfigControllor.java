@@ -27,7 +27,6 @@ public class WxAppConfigControllor extends WxAppBaseController {
 	}
 	
 	/**
-	 * 
 	 * @param param
 	 * @return
 	 */
