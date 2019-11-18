@@ -296,6 +296,7 @@ create table `b2c_goods_spec_product`
     `prd_codes`        varchar(500)   not null default '' comment '商品条码',
     `prd_specs`        varchar(1024)  not null default '',
     `prd_desc`         varchar(1024)  not null default '' comment '规格描述，格式例子：颜色:红色 尺码:s',
+    `del_flag`         tinyint(1)     NOT NULL DEFAULT '0',
     `self_flag`        tinyint(1)     not null default '0' comment '1:商家自己添加商品，其他没用',
     `low_shop_price`   varchar(1024)  not null default '0.00' comment '最低售出价格',
     `prd_img`          varchar(1024)  not null default '' comment '图片地址',

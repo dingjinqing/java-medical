@@ -1199,3 +1199,7 @@ ALTER TABLE `b2c_comment_goods`
 ADD COLUMN `rec_id` int(9) DEFAULT '0' COMMENT 'order_goods的rec_id',
 ADD COLUMN `prd_id` int(9) DEFAULT '0' COMMENT '商品规格id';
 
+-- 商品规格表 添加字段
+ALTER TABLE `b2c_goods_spec_product`
+ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT '0';
+
