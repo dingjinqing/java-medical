@@ -51,7 +51,14 @@ public class TaskJobsConstant {
         /**
          * 服务预约订单支付成功发送模板消息
          */
-        RESERVATION_PAY(1005, RabbitConfig.EXCHANGE_ORDER_MESSAGE, RabbitConfig.BINDING_EXCHANGE_RESERVATION_KEY);
+        RESERVATION_PAY(1005, RabbitConfig.EXCHANGE_ORDER_MESSAGE, RabbitConfig.BINDING_EXCHANGE_RESERVATION_KEY),
+        
+    	/**订单 */
+    	WX_IMPORTORDER(1006, RabbitConfig.EXCHANGE_WX_IMPORTORDER, RabbitConfig.BINDING_EXCHANGE_IMPORTORDER_KEY),
+    	/**收藏 */
+    	WX_ADDSHOPPINGLIST(1007, RabbitConfig.EXCHANGE_WX_IMPORTORDER, RabbitConfig.BINDING_EXCHANGE_ADDSHOPPINGLIST_KEY),
+    	/**物品信息 */
+    	WX_IMPORTPRODUCT(1008, RabbitConfig.EXCHANGE_WX_IMPORTORDER, RabbitConfig.BINDING_EXCHANGE_IMPORTPRODUCT_KEY);
         private Integer executionType;
         private String exchangeName;
         private String routingKey;
