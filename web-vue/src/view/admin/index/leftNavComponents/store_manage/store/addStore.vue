@@ -364,7 +364,7 @@
 <!-- 腾讯地图 -->
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=YPOBZ-DNIKF-Y6KJM-NDW7D-VYIFZ-QEBIO"></script>
 <script>
-import { addStore, getStore, updateStore } from '@/api/admin/storeManage/store'
+import { addStore, getStore, updateStore, allStoreGroup } from '@/api/admin/storeManage/store'
 /* 组件导入 */
 
 export default {
@@ -511,6 +511,7 @@ export default {
     } else {
       this.initMap()
     }
+    this.initGroup()
     this.langDefault()
   },
   methods: {
@@ -565,9 +566,17 @@ export default {
         }
       })
     },
+    initGroup() {
+      let that = this
+      allStoreGroup().then(res => {
+        if (res.error === 0) {
+          that.storeGroups = res.content
+        }
+      })
+    },
     // 刷新分组
     refreshGroups() {
-
+      this.initGroup()
     },
     // 添加新分组
     addGroups() {
