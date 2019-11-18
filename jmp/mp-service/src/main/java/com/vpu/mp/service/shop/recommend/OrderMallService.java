@@ -1,7 +1,5 @@
 package com.vpu.mp.service.shop.recommend;
 
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,15 +17,15 @@ import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo.Goods;
 import com.vpu.mp.service.pojo.shop.payment.PayCode;
+import com.vpu.mp.service.pojo.shop.recommend.SendOrderBean;
 import com.vpu.mp.service.pojo.shop.recommend.order.AttrName;
 import com.vpu.mp.service.pojo.shop.recommend.order.AttrValue;
 import com.vpu.mp.service.pojo.shop.recommend.order.BrandInfo;
@@ -59,7 +57,6 @@ import com.vpu.mp.service.wechat.api.impl.WxOpenMaServiceExtraImpl;
 
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
@@ -71,7 +68,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
  */
 @Service
 @Slf4j
-public class OrderMallService extends ShopBaseService {
+public class OrderMallService extends ShopMallBaseService {
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -86,13 +83,6 @@ public class OrderMallService extends ShopBaseService {
 	private SysCateService sysCateService;
 	@Autowired
 	private ShipInfoService shipInfo;
-
-	private static final Byte one = 1;
-	private static final String FORTYONE = "41";
-
-	private String get(String key) {
-		return db().select().from(SHOP_CFG).where(SHOP_CFG.K.eq(key)).fetchAny(SHOP_CFG.V);
-	}
 
 	/**
 	 * 添加好物圈订单
@@ -139,8 +129,11 @@ public class OrderMallService extends ShopBaseService {
 		List<OrderList> list = new ArrayList<OrderList>();
 		list.add(orderList);
 		JsonRootBean jsonRootBean = new JsonRootBean(list);
-		WxOpenResult importOrder = importOrderAdd(jsonRootBean);
-		return importOrder.isSuccess();
+		SendOrderBean bean=new SendOrderBean(1, jsonRootBean,getShopId());
+		saas.taskJobMainService.dispatchImmediately(bean,SendOrderBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTORDER.getExecutionType());
+//		WxOpenResult importOrder = importOrderAdd(jsonRootBean);
+//		return importOrder.isSuccess();
+		return true;
 	}
 
 
@@ -182,39 +175,13 @@ public class OrderMallService extends ShopBaseService {
 		List<OrderList> list = new ArrayList<OrderList>();
 		list.add(orderList);
 		JsonRootBean jsonRootBean = new JsonRootBean(list);
-		WxOpenResult importOrder = importOrderUpdate(jsonRootBean);
-		return importOrder.isSuccess();
+		SendOrderBean bean=new SendOrderBean(2, jsonRootBean,getShopId());
+		saas.taskJobMainService.dispatchImmediately(bean,SendOrderBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTORDER.getExecutionType());
+//		WxOpenResult importOrder = importOrderUpdate(jsonRootBean);
+//		return importOrder.isSuccess();
+		return true;
 	}
 
-	/**
-	 * 校验
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	private String check(Integer userId) {
-		String cfg = get("wx_shopping_list_enbaled");
-		if (StringUtils.isEmpty(cfg)) {
-			log.info("wx_shopping_list_enbaled是空的");
-			return null;
-		} else {
-			if (cfg.equals("0")) {
-				log.info("wx_shopping_list_enbaled为0");
-				return null;
-			}
-		}
-		if (!hasShoppingListAuthority()) {
-			log.info("没有微信购物单授权权限");
-			return null;
-		}
-		UserRecord user = userService.getUserByUserId(userId);
-		String openId = user.getWxOpenid();
-		if (StringUtils.isEmpty(openId)) {
-			log.info("userId为" + userId + "用户openid为空");
-			return null;
-		}
-		return openId;
-	}
 
 	/**
 	 * 更新商品
@@ -222,7 +189,7 @@ public class OrderMallService extends ShopBaseService {
 	 * @param jsonRootBean
 	 * @return
 	 */
-	private WxOpenResult importOrderUpdate(JsonRootBean jsonRootBean) {
+	public WxOpenResult importOrderUpdate(JsonRootBean jsonRootBean) {
 		WxOpenMaServiceExtraImpl maService = open.getMaExtService();
 		MpAuthShopRecord shop = saas.shop.mp.getAuthShopByShopId(getShopId());
 		WxOpenResult result = null;
@@ -244,7 +211,7 @@ public class OrderMallService extends ShopBaseService {
 	 * @param jsonRootBean
 	 * @return
 	 */
-	private WxOpenResult importOrderAdd(JsonRootBean jsonRootBean) {
+	public WxOpenResult importOrderAdd(JsonRootBean jsonRootBean) {
 		WxOpenMaServiceExtraImpl maService = open.getMaExtService();
 		MpAuthShopRecord shop = saas.shop.mp.getAuthShopByShopId(getShopId());
 		WxOpenResult result = null;
@@ -444,32 +411,6 @@ public class OrderMallService extends ShopBaseService {
 		}
 	}
 
-	/**
-	 * 是否有微信购物单授权权限
-	 * 
-	 * @return
-	 */
-	public boolean hasShoppingListAuthority() {
-		MpAuthShopRecord mp = saas().shop.mp.getAuthShopByShopId(getShopId());
-		if (null == mp) {
-			log.info("MpAuthShop是空的");
-			return false;
-		}
-		if (!mp.getIsAuthOk().equals(one)) {
-			log.info("IsAuthOk不为1，为" + mp.getIsAuthOk());
-			return false;
-		}
-		String funcInfo = mp.getFuncInfo();
-		log.info("权限有" + funcInfo);
-		String[] funcInfoList = funcInfo.split(",");
-		for (String str : funcInfoList) {
-			if (str.equals(FORTYONE)) {
-				return true;
-			}
-		}
-		log.info("没有41权限");
-		return false;
-	}
 
 	/**
 	 * 得到微信已购订单状态
