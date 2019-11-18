@@ -230,6 +230,9 @@ Page({
     if (info.content != null) {
       that.setData({ content: util.filterRichText(info.content) })
     }
+    if (info.service) {
+      info.service = JSON.parse(info.service)
+    }
     // 后端返回服务列表，及服务分类下的服务列表
     if (info.serviceCat && info.serviceCat.length > 0) {
       let allServiceCat = {

@@ -5,7 +5,7 @@
     <view class="container" style="padding-bottom:{{ bot_main === 1? '110rpx': '0rpx'}}">
       <!-- 轮播图 -->
       <view class="swiper-top">
-        <swiper class="storeinfo_swiper" indicator-dots="true" autoplay='true' interval="5000" duration="500" indicator-active-color="#fff">
+        <swiper class="storeinfo_swiper" style="height:446rpx;" indicator-dots="true" autoplay='true' interval="5000" duration="500" indicator-active-color="#fff">
           <block wx:for="{{info.storeImgs}}" wx:key="*this">
             <swiper-item wx:if="{{item != null}}">
               <image class="slide-image" src="{{item}}" bindload="imageLoad" style="height:100%!important" data-src="{{item}}" bindtap="preview"></image>
