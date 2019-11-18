@@ -210,13 +210,13 @@
         class="arrorContent"
       >
         <div
-          v-if="arrorFlag"
+          v-if="!arrorFlag"
           class="arror"
         >
           {{ $t('seckill.openConfigure') }}&nbsp;<img :src="arrowArr[0].img_1">
         </div>
         <div
-          v-if="!arrorFlag"
+          v-if="arrorFlag"
           class="arror"
         >
           {{ $t('seckill.closeConfigure') }}&nbsp;<img :src="arrowArr[1].img_2">
