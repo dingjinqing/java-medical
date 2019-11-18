@@ -11,13 +11,13 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.shop.activity.factory.OrderBeforeMpProcessorFactory;
+import com.vpu.mp.service.shop.activity.factory.OrderCreatePayBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -180,10 +180,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         db().transaction(()->{
             //初始化订单（赋值部分数据）
             OrderInfoRecord order = orderInfo.addRecord(param, orderBo, goodsBos, orderBeforeVo);
+            //普通营销活动处理
+            processNormalActivity(order, orderBo, orderBeforeVo);
+            if(null != order.getActivityId()){
+                //指定的排他性营销活动处理，orderBeforeVo里activityId指定
+                processExclusiveActivity(orderBo, orderBeforeVo,param.getWxUserInfo().getUserId());
+            }
             //计算其他数据（需关联去其他模块）
             setOtherValue(order, orderBo, orderBeforeVo);
-            //TODO 活动相关处理
-            processActivityid();
             //订单入库
             order.store();
             order.refresh();
@@ -199,7 +203,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             orderBo.setOrderId(order.getOrderId());
 
             //货到付款或者余额积分付款，生成订单时加销量减库存
-
         });
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         OrderInfoRecord record = orderInfo.getRecord(orderBo.getOrderId());
@@ -417,6 +420,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         this.setOrderBeforeVoInfo(param,userId,storeId,vo);
         //这些营销不允许使用积分支付
         vo.setScoreMaxDiscount(BigDecimal.ZERO);
+        vo.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
     }
 
     /**
@@ -653,6 +657,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setInvoiceSwitch(tradeCfg.getInvoice());
         vo.setCancelTime(tradeCfg.getCancelTime());
         vo.setActivityType(param.getActivityType());
+        vo.setActivityId(param.getActivityId());
         vo.setIsCardPay(tradeCfg.getCardFirst());
         vo.setIsScorePay(tradeCfg.getScoreFirst());
         vo.setIsBalancePay(tradeCfg.getBalanceFirst());
@@ -771,13 +776,37 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         order.setOrderTimeoutDays(tradeCfg.getOrderTimeoutDays().shortValue());
     }
 
-    private void processActivityid(){
+    /**
+     * 处理普通的营销活动（下单时以普通商品下单，不指定营销活动的）
+     * eg 首单特惠、限时降价、会员价、赠品、满折满减
+     * @param order
+     * @param orderBo
+     * @param beforeVo
+     */
+    private void processNormalActivity(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         //TODO 分销
         //TODO 使用优惠券使用, CRM核销
         //TODO 送赠品
         // 拼接活动类型
 
     }
+
+    /**
+     * 处理普通的营销活动（下单时以普通商品下单，不指定营销活动的）
+     *  eg 我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
+     * @param orderBo
+     * @param beforeVo
+     */
+    private void processExclusiveActivity(CreateOrderBo orderBo,OrderBeforeVo beforeVo,int userId){
+        List<OrderBeforeVo> capsules = new ArrayList<>();
+        capsules.add(beforeVo);
+        OrderCreatePayBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderCreatePayBeforeMpProcessorFactory.class);
+        processorFactory.doProcess(capsules,userId);
+
+        //拼接活动类型
+        orderBo.getOrderType().add(beforeVo.getActivityType());
+    }
+
     /**
      * 设置服务条款
      * @param vo vo

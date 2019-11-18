@@ -287,7 +287,7 @@ public class OrderInfoService extends ShopBaseService {
      * 订单goodsType insert构造
      * @param orderType 订单类型
      */
-    public static String getGoodsTypeToInsert(List<Byte> orderType) {
+    private static String getGoodsTypeToInsert(List<Byte> orderType) {
         if(CollectionUtils.isNotEmpty(orderType)){
             orderType.add(OrderConstant.GOODS_TYPE_GENERAL);
         }
@@ -708,8 +708,6 @@ public class OrderInfoService extends ShopBaseService {
         orderBo.intoRecord(order);
         //订单类型
         order.setGoodsType(getGoodsTypeToInsert(orderBo.getOrderType()));
-        //TODO 活动id
-        order.setActivityId(0);
         //TODO 补款状态
         order.setBkOrderPaid((byte)0);
         //TODO 代付人数

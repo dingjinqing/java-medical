@@ -28,7 +28,12 @@ import java.util.Map;
 public class OrderBeforeVo {
     /**商品*/
     private List<OrderGoodsBo> orderGoods;
+
+    /** 指定本次结算所参加的唯一营销活动类型 {@link com.vpu.mp.service.foundation.data.BaseConstant} 下的ACTIVITY_TYPE**/
     private Byte activityType;
+    /** 指定本次结算所参加的唯一营销活动类型 ID */
+    private Integer activityId;
+
 	private UserAddressVo address;
 	private byte[] expressList;
 	private Byte deliverType;
@@ -159,5 +164,9 @@ public class OrderBeforeVo {
         //orderRecord.setFreeShip(getFreeShip());
         //orderRecord.setFreeDetail(getFreeDetail());
         //orderRecord.setPosOrderAction(getPosOrderAction());
+        if(getActivityId() != null && getActivityType() != null){
+            //营销活动订单
+            orderRecord.setActivityId(getActivityId());
+        }
     }
 }

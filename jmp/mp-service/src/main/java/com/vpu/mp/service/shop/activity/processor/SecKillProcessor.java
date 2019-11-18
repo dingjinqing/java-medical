@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record;
@@ -37,7 +38,7 @@ import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DE
  */
 @Service
 @Slf4j
-public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority,OrderBeforeProcessor{
+public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority,OrderBeforeProcessor,OrderCreatePayBeforeProcessor{
     @Autowired
     SecKillProcessorDao secKillProcessorDao;
     /*****处理器优先级*****/
@@ -105,10 +106,25 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
         });
     }
 
+    /**
+     * 订单确认页-秒杀下单处理
+     * @param orderBeforeParam
+     */
     @Override
     public void processOrderBefore(OrderBeforeParam orderBeforeParam) {
         if(orderBeforeParam.getActivityId() != null && orderBeforeParam.getActivityType() != null && BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(orderBeforeParam.getActivityType())){
             secKillProcessorDao.setOrderPrdSeckillPrice(orderBeforeParam);
+        }
+    }
+
+    /**
+     * 下单时的秒杀处理
+     * @param order
+     */
+    @Override
+    public void processPayBefore(OrderBeforeVo order) {
+        if(order.getActivityId() != null && order.getActivityType() != null && BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(order.getActivityType())){
+            secKillProcessorDao.processSeckillStock(order);
         }
     }
 }

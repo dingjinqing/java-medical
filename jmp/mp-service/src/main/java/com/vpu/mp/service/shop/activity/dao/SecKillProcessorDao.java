@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SecKillPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SeckillMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,5 +151,13 @@ public class SecKillProcessorDao extends ShopBaseService {
             prd.setMarketPrice(record.value2());
         }
 
+    }
+
+    /**
+     * 秒杀下单-库存处理
+     * @param order
+     */
+    public void processSeckillStock(OrderBeforeVo order){
+        //TODO
     }
 }
