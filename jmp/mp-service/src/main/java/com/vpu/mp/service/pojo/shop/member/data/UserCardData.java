@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.member.data;
 
 import java.math.BigDecimal;
 
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,19 +17,16 @@ import lombok.Setter;
 @Setter
 @Builder(builderMethodName = "newBuilder")
 public class UserCardData extends BasicData {
+	/** 交易操作数据 */
+	protected TradeOptParam tradeOpt;
+	
 	/** 国际化语言 */
 	private String language;
 	
 	/** 用户Id */
 	protected Integer userId;
-	/** 操作员id */
-	protected Integer adminUser;
 	/** 备注 */
 	protected String remark;
-	/** 交易类型 */
-	protected Byte tradeType;
-	/** 资金流向 */
-	protected Byte tradeFlow;
 	/** 会员卡id */
 	private Integer cardId;
 	/** 会员卡号 */

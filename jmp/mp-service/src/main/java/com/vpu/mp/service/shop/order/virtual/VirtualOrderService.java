@@ -9,10 +9,12 @@ import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+import com.vpu.mp.service.pojo.shop.operation.builder.TradeOptParamBuilder;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
-import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
 
 import org.jooq.exception.DataAccessException;
@@ -32,7 +34,7 @@ import static com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_R
 public class VirtualOrderService extends ShopBaseService {
 	
 	@Autowired
-	private RecordMemberTradeService recordMemberTrade;
+	private RecordTradeService recordMemberTrade;
 	
 	@Autowired
 	private ReturnMethodService returnMethod;
@@ -75,29 +77,35 @@ public class VirtualOrderService extends ShopBaseService {
     				amount(param.getAccount()).remark(String.format("虚拟订单退款:%s", payInfo.getOrderSn()))
     						.payment(OrderConstant.PAY_CODE_BALANCE_PAY).
     				// 支付类型
-    				isPaid(RecordTradeEnum.RECHARGE.getValue()).
+    				isPaid(RecordTradeEnum.RECHARGE.val()).
     				// 后台处理时为操作人id为0
     				adminUser(0).
     				// 用户余额退款
-    				tradeType(RecordTradeEnum.MEMBER_ACCOUNT_REFUND.getValue()).
+    				tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
     				// 资金流量-支出
-    				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).build();
+    				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
     				// 调用退余额接口
     				recordMemberTrade.updateUserEconomicData(accountData);
     			}
 
     			if (param.getMemberCardBalance().compareTo(BigDecimal.ZERO) > 0) {
+    				
+    				/**
+    				 * 交易记录信息
+    				 */
+    				TradeOptParam tradeOpt = TradeOptParamBuilder
+    						.create()
+    						.adminUserId(0)
+    						.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
+    						.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
+    						.build();
+    				
     				/** TODO 会员卡余额退款服务 */
     				UserCardData userCardData = UserCardData.newBuilder().userId(payInfo.getUserId())
     						.cardNo(payInfo.getCardNo()).money(param.getMemberCardBalance()).reason("虚拟订单退款").
     				// 普通会员卡
     				type(CardConstant.MCARD_TP_NORMAL).orderSn(param.getOrderSn()).
-    				// 后台处理时为操作人id为0
-    				adminUser(0).
-    				// 用户会员卡余额退款
-    				tradeType(RecordTradeEnum.MEMBER_CARD_ACCOUNT_REFUND.getValue()).
-    				// 资金流量-支出
-    				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).build();
+    				tradeOpt(tradeOpt).build();
     				// 调用退会员卡接口
     				recordMemberTrade.updateUserEconomicData(userCardData);
     			}
@@ -111,11 +119,11 @@ public class VirtualOrderService extends ShopBaseService {
     				// 后台处理时为操作人id为0
     				adminUser(0).
     				// 用户余额充值
-    				tradeType(RecordTradeEnum.POWER_MEMBER_ACCOUNT.getValue()).
+    				tradeType(RecordTradeEnum.TYPE_CRASH_POWER_MACCOUNT.val()).
     				// 资金流量-支出
-    				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).
+    				tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
     				// 积分变动是否来自退款
-    				isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.getValue()).build();
+    				isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.val()).build();
     				// 调用退积分接口
     				recordMemberTrade.updateUserEconomicData(scoreData);
     			}

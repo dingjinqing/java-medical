@@ -59,10 +59,10 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.ZERO;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.POWER_MEMBER_CARD_ACCOUNT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_POWER_MCARD_ACCOUNT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
@@ -147,11 +147,13 @@ import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+import com.vpu.mp.service.pojo.shop.operation.builder.TradeOptParamBuilder;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
-import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 
@@ -163,7 +165,7 @@ import com.vpu.mp.service.shop.store.service.ServiceOrderService;
  */
 @Service
 public class MemberCardService extends ShopBaseService {
-	@Autowired private RecordMemberTradeService tradeService;
+	@Autowired private RecordTradeService tradeService;
 	@Autowired private CardDaoService cardDao;
 	@Autowired private OrderGoodsService orderGoodsDao;
 	@Autowired private ServiceOrderService serviceOrderDao;
@@ -1304,21 +1306,17 @@ public class MemberCardService extends ShopBaseService {
     /**
 	 * 更新用户会员卡余额
      * @param data 用户卡相关数据
-	 * @param adminUser 操作员
-	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
-	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
 	 * @throws MpException
 	 */
-	public void updateMemberCardAccount(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,String language) throws MpException {
+	public void updateMemberCardAccount(CardConsumpData data,TradeOptParam tradeOpt,String language) throws MpException {
 
         /** 1.-获取数据库中的存储的信息 */
 		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
 
         /** 2-判断会员卡余额是属于充值还是消费 */
-		int compare = data.getMoney().compareTo(ZERO);
-		if(compare<0) {
+		if(isConsump(data)) {
 			/** 2.1-如果消费余额超出用户会员卡现有余额，则抛出异常 */
-			if((data.getMoney().add(userCard.getMoney())).compareTo(ZERO) == -1) {
+			if((data.getMoney().add(userCard.getMoney())).compareTo(BigDecimal.ZERO) == -1) {
 				throw new MpException(JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 			}
 			/** -消费会员卡余额 */
@@ -1331,25 +1329,26 @@ public class MemberCardService extends ShopBaseService {
 
         /** 3-更新user_card用户会员卡的余额 */
 		updateUserCard(data, userCard,MEMBER_CARD_ACCOUNT);
+		
+		insertCardAccountTradesRecord(data, tradeOpt);
 		//TODO模板消息
-		/**
-		 * 4-记录交易明细
-		 */
-		insertTradesRecord(data, tradeType, tradeFlow);
-
 
     }
+
+	private boolean isConsump(CardConsumpData data) {
+		if(data.getMoney()==null) {
+			return false;
+		}
+		return BigDecimal.ZERO.compareTo(data.getMoney())>0;
+	}
 
 
     /**
 	 * 更新用户卡且为限次会员卡的消费次数（门店）
      * @param data 用户卡相关数据
-	 * @param adminUser 操作员
-	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
-	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
      * @throws MpException
 	 */
-	public void updateMemberCardSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,String language) throws MpException {
+	public void updateMemberCardSurplus(CardConsumpData data,TradeOptParam tradeOpt,String language)  throws MpException {
 		/** 1-判断是不是限次会员卡则结束 */
 		if(!data.getType().equals(MCARD_TP_LIMIT)) {
 		    throw new MpException(JsonResultCode.CODE_PARAM_ERROR);
@@ -1378,19 +1377,16 @@ public class MemberCardService extends ShopBaseService {
 		/**
 		 * 5-记录交易明细
 		 */
-		insertTradesRecord(data, tradeType, tradeFlow);
+		insertCardAccountTradesRecord(data, tradeOpt);
 	}
 
 
     /**
 	 * 更新用户卡且为限次会员卡的卡剩余兑换次数
      * @param data 用户卡相关数据
-	 * @param adminUser 操作员
-	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
-	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
      * @throws MpException
 	 */
-	public void updateMemberCardExchangeSurplus(CardConsumpData data,Integer adminUser,Byte tradeType,Byte tradeFlow,String language) throws MpException {
+	public void updateMemberCardExchangeSurplus(CardConsumpData data,TradeOptParam tradeOpt,String language) throws MpException {
 		/** 1-判断是不是限次会员卡则结束 */
 		if(!MCARD_TP_LIMIT.equals(data.getType())) {
 			return;
@@ -1419,7 +1415,7 @@ public class MemberCardService extends ShopBaseService {
 		/**
 		 * 5-记录交易明细
 		 */
-		insertTradesRecord(data, tradeType, tradeFlow);
+		insertCardAccountTradesRecord(data,tradeOpt);
 	}
 
 
@@ -1490,31 +1486,32 @@ public class MemberCardService extends ShopBaseService {
 
     /**
 	 * 记录会员余额交易明细
-	 * @param data
-	 * @param tradeType  交易类型说明 如  微信支付类型{@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.WX_PAY }
-	 * @param tradeFlow  资金流向类型  如收入 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME}
 	 */
-	private void insertTradesRecord(CardConsumpData data, Byte tradeType, Byte tradeFlow) {
-		/** 交易明细 */
-		TradesRecordRecord record = new TradesRecordRecord();
-		/** 是否为余额充值 */
-		BigDecimal tradeNum = tradeType==POWER_MEMBER_CARD_ACCOUNT.getValue()?data.getMoney():data.getMoney().abs();
-		record.setTradeNum(tradeNum);
-
-        String tradeSn = data.getOrderSn()==null?"":data.getOrderSn();
-		record.setTradeSn(tradeSn);
-
-        record.setUserId(data.getUserId());
-		record.setTradeContent(ACCOUNT_DEFAULT.getValue());
-		record.setTradeType(tradeType);
-		record.setTradeFlow(tradeFlow);
-		if(tradeFlow == TRADE_FLOW_TO_BE_CONFIRMED.getValue()) {
-			tradeFlow = TRADE_FLOW_INCOME.getValue();
-		}
-		record.setTradeStatus(tradeFlow);
-		tradeService.insertRecord(record);
+	private void insertCardAccountTradesRecord(CardConsumpData data, TradeOptParam param) {
+		
+		logger().info("记录用户会员卡余额交易记录");
+		TradeOptParam tradeOpt = TradeOptParamBuilder
+			.create()
+			.userId(data.getUserId())
+			.tradeNum(data.getMoney().abs())
+			.tradeSn(data.getOrderSn())
+			.tradeContent(TRADE_CONTENT_CASH.val())
+			.tradeType(param.getTradeType())
+			.tradeFlow(param.getTradeFlow())
+			.tradeStatus(getTradeStatus(param.getTradeFlow()))
+			.build();
+		
+		tradeService.insertTradeRecord(tradeOpt);
 	}
-
+	
+	
+	private Byte getTradeStatus(Byte tradeFlow) {
+		return isTradeFlowToBeConfirm(tradeFlow)?TRADE_FLOW_IN.val():tradeFlow;
+	}
+	
+	private boolean isTradeFlowToBeConfirm(Byte tradeFlow) {
+		return TRADE_FLOW_TO_BE_CONFIRMED.val().equals(tradeFlow);
+	}
 
     /**
 	 * 会员卡充值记录添加到charge_money
@@ -1968,7 +1965,11 @@ public class MemberCardService extends ShopBaseService {
 	}
 	
 	private boolean isNotNull(Object obj) {
-		return obj != null;
+		return !isNull(obj);
+	}
+	
+	private boolean isNull(Object obj) {
+		return obj==null;
 	}
 	
 	

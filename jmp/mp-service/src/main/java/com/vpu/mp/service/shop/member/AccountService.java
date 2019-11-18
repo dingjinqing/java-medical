@@ -9,8 +9,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYP
 import static com.vpu.mp.service.pojo.shop.operation.RecordContentMessage.MSG_MEMBER_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.CONSUMPTION;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.RECHARGE;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_CASH;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -37,7 +37,7 @@ import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+import com.vpu.mp.service.shop.operation.RecordTradeService;
 /**
  * 余额管理
  * @author 黄壮壮
@@ -48,7 +48,7 @@ import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
 
 public class AccountService extends ShopBaseService {
 	@Autowired private MemberService memberService;
-	@Autowired private RecordMemberTradeService tradeService;
+	@Autowired private RecordTradeService tradeService;
 	
 	/**
 	 * 会员余额变动
@@ -60,23 +60,19 @@ public class AccountService extends ShopBaseService {
 	 * @return
 	 */
 	public void  addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow,String language) throws MpException {
-		/** 鲁棒性检查 &*/
-		if (param.getUserId() == null || param.getAmount() == null) {
+		
+		if (isNull(param.getUserId()) || isNull(param.getAmount())) {
+			logger().info("用户id或用户卡余额不能为空");
 			throw new MpException(CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
+		
 		UserRecord user = memberService.getUserRecordById(param.getUserId());
 
 		/** 1-用户是否存在 是否有账户余额 */
 		if (user == null || user.getAccount() == null) {
 			throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
-		/** 2-检查提交的account与数据库中的account是否相等 */
-		/** -因为余额变动的基数是基于数据库的account
-		int ret = user.getAccount().compareTo(param.getAccount());
-		if (ret != 0) {
-			throw new MpException(CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
-		}
-		*/
+
 		/** 3.备注默认-处理国际化 */
 		final String remark ;
 		if (StringUtils.isEmpty(param.getRemark())) {
@@ -93,10 +89,10 @@ public class AccountService extends ShopBaseService {
 		/** -支付类型  */
 		if(BigDecimalUtil.compareTo(param.getAmount(), BigDecimal.ZERO)>0) {
 			/** -充值 */
-			param.setIsPaid(RECHARGE.getValue());
+			param.setIsPaid(RECHARGE.val());
 		}else {
 			/** -消费 */
-			param.setIsPaid(CONSUMPTION.getValue());
+			param.setIsPaid(CONSUMPTION.val());
 		}
 		
 		/** -支付类型 不能为null */
@@ -128,22 +124,15 @@ public class AccountService extends ShopBaseService {
 	private void addTradeRecord(AccountParam param, Byte tradeType, Byte tradeFlow) {
 		String tradeSn = param.getOrderSn() == null ? "" : param.getOrderSn();
 		
-//		Byte zero = 0;
-//		db().insertInto(TRADES_RECORD, TRADES_RECORD.TRADE_TIME, TRADES_RECORD.TRADE_NUM, TRADES_RECORD.TRADE_SN,
-//				TRADES_RECORD.USER_ID, TRADES_RECORD.TRADE_TYPE, TRADES_RECORD.TRADE_FLOW, TRADES_RECORD.TRADE_STATUS,
-//				TRADES_RECORD.TRADE_STATUS)
-//				.values(DateUtil.getLocalDateTime(), param.getAmount(), tradeSn, param.getUserId(), zero, tradeType,
-//						tradeFlow, tradeFlow == 2 ? zero : tradeFlow)
-//				.execute();
 		TradesRecordRecord record = new TradesRecordRecord();
 		record.setTradeTime(DateUtil.getLocalDateTime());
 		record.setTradeNum(param.getAmount());
 		record.setTradeSn(tradeSn);
 		record.setUserId(param.getUserId());
-		record.setTradeContent(TRADE_CONTENT_BY_CASH.getValue());
+		record.setTradeContent(TRADE_CONTENT_CASH.val());
 		record.setTradeType(tradeType);
 		record.setTradeFlow(tradeFlow);
-		tradeFlow = tradeFlow == 2 ? TRADE_FLOW_INCOME.getValue() : tradeFlow;
+		tradeFlow = tradeFlow == 2 ? TRADE_FLOW_IN.val() : tradeFlow;
 		record.setTradeStatus(tradeFlow);
 		tradeService.insertRecord(record);
 		
@@ -275,6 +264,9 @@ public class AccountService extends ShopBaseService {
 		}
 	}
 
+	private boolean isNull(Object obj) {
+		return obj == null;
+	}
 
 
 }

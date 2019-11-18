@@ -13,7 +13,7 @@ import lombok.Data;
 public class AccountParam {
 	/** 原有金额 */
 	private BigDecimal account;
-	/** 增加的金额 */
+	/** 更新金额  区分正负号 */
 	private BigDecimal amount;
 	/** 用户id */
 	private Integer userId;

@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.*;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
@@ -358,8 +359,8 @@ public class ServiceOrderService extends ShopBaseService{
         MemberCardPojo memberCard = saas.getShopApp(getShopId()).member.card.getMemberCardInfoById(param.getCardId());
 
         /** 会员卡核销的门店服务订单，交易类型认为是会员卡支付 */
-        Byte tradeType = RecordTradeEnum.MEMBER_CARD_PAY.getValue();
-        Byte tradeFlow = RecordTradeEnum.TRADE_FLOW_INCOME.getValue();
+        Byte tradeType = RecordTradeEnum.TYPE_CRASH_MEMBER_CARD_PAY.val();
+        Byte tradeFlow = RecordTradeEnum.TRADE_FLOW_IN.val();
 
         /** 会员卡交易的参数 */
         CardConsumpData cardConsumpData = new CardConsumpData();
@@ -372,14 +373,20 @@ public class ServiceOrderService extends ShopBaseService{
         cardConsumpData.setUserId(adminUser);
         /** 国际化语言 */
         String language="";
+        
+        TradeOptParam tradeOpt = new TradeOptParam();
+        tradeOpt.setAdminUserId(adminUser);
+        tradeOpt.setTradeType(tradeType);
+        tradeOpt.setTradeFlow(tradeFlow);
+        
         if(CardConstant.MCARD_TP_LIMIT.equals(memberCard.getCardType())){
             /** 负数为消费次数 */
             cardConsumpData.setCount(-param.getReduce().intValue());
-            saas.getShopApp(getShopId()).member.card.updateMemberCardSurplus(cardConsumpData,adminUser,tradeType,tradeFlow,language);
+            saas.getShopApp(getShopId()).member.card.updateMemberCardSurplus(cardConsumpData,tradeOpt,language);
         }else if(CardConstant.MCARD_TP_NORMAL.equals(memberCard.getCardType())){
             /** 负数为消费金额 */
             cardConsumpData.setMoney(param.getReduce().negate());
-            saas.getShopApp(getShopId()).member.card.updateMemberCardAccount(cardConsumpData,adminUser,tradeType,tradeFlow,language);
+            saas.getShopApp(getShopId()).member.card.updateMemberCardAccount(cardConsumpData,tradeOpt,language);
         }
     }
 
@@ -388,8 +395,8 @@ public class ServiceOrderService extends ShopBaseService{
      */
     public void accountServiceOrderCharge(ServiceOrderChargeParam param,int adminUser) throws MpException{
         /** 余额核销的门店服务订单，交易类型认为是余额支付 */
-        Byte tradeType = RecordTradeEnum.ACCOUNT_PAY.getValue();
-        Byte tradeFlow = RecordTradeEnum.TRADE_FLOW_INCOME.getValue();
+        Byte tradeType = RecordTradeEnum.TYPE_CRASH_ACCOUNT_PAY.val();
+        Byte tradeFlow = RecordTradeEnum.TRADE_FLOW_IN.val();
 
         AccountParam accountData = new AccountParam();
         accountData.setAccount(param.getAccount());

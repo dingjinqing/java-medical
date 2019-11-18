@@ -75,7 +75,7 @@ import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
-import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.OrderWriteService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateFactory;
@@ -440,7 +440,7 @@ public class ShopApplication {
      * 交易明细
      */
     @Autowired
-    public RecordMemberTradeService tradeService;
+    public RecordTradeService tradeService;
 
     /**
      * 店铺库的公众号用户

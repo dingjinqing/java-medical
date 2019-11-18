@@ -19,12 +19,14 @@ import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+import com.vpu.mp.service.pojo.shop.operation.builder.TradeOptParamBuilder;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
-import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -42,7 +44,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 	private OrderInfoService orderInfo;
 	
 	@Autowired
-	private RecordMemberTradeService recordMemberTrade;
+	private RecordTradeService recordMemberTrade;
 	
 	@Autowired
 	public RecordAdminActionService record;
@@ -115,6 +117,20 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		if(BigDecimalUtil.compareTo(money, null) == 0) {
 			return;
 		}
+		
+		/**
+		 * 交易记录信息
+		 */
+		TradeOptParam tradeOpt = TradeOptParamBuilder
+				.create()
+				.adminUserId(0)
+				.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
+				.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
+				.build();
+				
+				
+				
+		
 		UserCardData userCardData = UserCardData.newBuilder().
 		userId(order.getUserId()).
 		cardId(order.getCardId()).
@@ -124,12 +140,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		//普通会员卡
 		type(CardConstant.MCARD_TP_NORMAL).
 		orderSn(order.getOrderSn()).
-		//后台处理时为操作人id为0
-		adminUser(0).
-		//用户会员卡余额退款
-		tradeType(RecordTradeEnum.MEMBER_CARD_ACCOUNT_REFUND.getValue()).
-		//资金流量-支出
-		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).build();
+		tradeOpt(tradeOpt).build();
 		//调用退会员卡接口
 		recordMemberTrade.updateUserEconomicData(userCardData);
 	}
@@ -153,13 +164,13 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		remark("订单关闭："+order.getOrderSn()+"余额退款").
 		payment(order.getPayCode()).
 		//支付类型
-		isPaid(RecordTradeEnum.RECHARGE.getValue()).
+		isPaid(RecordTradeEnum.RECHARGE.val()).
 		//后台处理时为操作人id为0
 		adminUser(0).
 		//用户余额退款
-		tradeType(RecordTradeEnum.MEMBER_ACCOUNT_REFUND.getValue()).
+		tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
 		//资金流量-支出
-		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).build();
+		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
 		//调用退余额接口
 		recordMemberTrade.updateUserEconomicData(accountData);
 	}
@@ -191,11 +202,11 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		//后台处理时为操作人id为0
 		adminUser(0).
 		//用户余额充值 
-		tradeType(RecordTradeEnum.POWER_MEMBER_ACCOUNT.getValue()).
+		tradeType(RecordTradeEnum.TYPE_CRASH_POWER_MACCOUNT.val()).
 		//资金流量-支出
-		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).
+		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
 		//积分变动是否来自退款
-		isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.getValue()).build();
+		isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.val()).build();
 		//调用退积分接口
 		recordMemberTrade.updateUserEconomicData(scoreData);
 	}

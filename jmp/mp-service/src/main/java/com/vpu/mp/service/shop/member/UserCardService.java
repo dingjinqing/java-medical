@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
+import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,6 +25,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
@@ -54,9 +56,9 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 import jodd.util.StringUtil;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.SEND_SCORE_BY_CREATE_CARD;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_INCOME;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.ACCOUNT_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -112,7 +114,7 @@ public class UserCardService extends ShopBaseService {
 	@Autowired
 	public DistributorLevelService distributorLevelService;
 	@Autowired
-	public TradesRecordDaoService tradesRecord;
+	public TradesRecordService tradesRecord;
 	@Autowired
 	public StoreService storeService;
 	@Autowired
@@ -193,8 +195,8 @@ public class UserCardService extends ShopBaseService {
 				.scoreDis(memberService.getUserScore(userId)).desc("score_open_card").remark("open.card.send.score")
 				.expireTime(scoreService.getScoreExpireTime()).shopId(getShopId()).build();
 
-		scoreService.addUserScore(userScore, DEFAULT_ADMIN, SEND_SCORE_BY_CREATE_CARD.getValue(),
-				TRADE_FLOW_INCOME.getValue());
+		scoreService.addUserScore(userScore, DEFAULT_ADMIN, TYPE_SCORE_CREATE_CARD.val(),
+				TRADE_FLOW_IN.val());
 	}
 
 	/**
@@ -452,8 +454,11 @@ public class UserCardService extends ShopBaseService {
 		ChargeMoneyRecordBuilder builder = 
 				ChargeMoneyRecordBuilder
 				.create(db().newRecord(CHARGE_MONEY))
-				.userId(userCard.getUserId()).cardId(userCard.getCardId()).type(card.getCardType())
-				.cardNo(userCard.getCardNo()).payment("store.payment") 
+				.userId(userCard.getUserId())
+				.cardId(userCard.getCardId())
+				.type(card.getCardType())
+				.cardNo(userCard.getCardNo())
+				.payment("store.payment") 
 				.createTime(DateUtil.getLocalDateTime());
 		// TODO 门店支付国际化
 		if (isNormalCard(card) && card.getSendMoney() != null) {
@@ -599,7 +604,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	public void cardConsumer(UserCardConsumeBean data) {
-		cardConsumer(data, 0, ACCOUNT_DEFAULT.getValue(), TRADE_FLOW_INCOME.getValue(), (byte) 0, true);
+		cardConsumer(data, 0, TYPE_DEFAULT.val(), TRADE_FLOW_IN.val(), (byte) 0, true);
 	}
 
 	/**
@@ -687,9 +692,11 @@ public class UserCardService extends ShopBaseService {
 			}
 		} else {
 			ret = userCardDao.updateUserCardMoney(data, userInfo);
-			if (tradeType > ACCOUNT_DEFAULT.getValue()) {
+			if (tradeType > TYPE_DEFAULT.val()) {
 				// 插入交易记录
-				tradesRecord.insertTradesRecord(data, tradeType, tradeFlow);
+				TradeOptParam param = new TradeOptParam();
+				// TODO
+				//tradesRecord.insertTradesRecord(data, tradeType, tradeFlow);
 			}
 			// TODO 模板消息
 		}
@@ -989,6 +996,8 @@ public class UserCardService extends ShopBaseService {
     	DistributorSpendVo distributorSpendVo = distributorLevelService.getTotalSpend(userId);
     	return distributorSpendVo.getTotal()!=null?distributorSpendVo.getTotal():BigDecimal.ZERO;
     }
+    
+    
 
     /**
      * 王帅

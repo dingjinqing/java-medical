@@ -11,7 +11,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_BY_SCORE;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_SCORE;
 import static com.vpu.mp.service.shop.member.UserCardService.UPGRADE;
 
 
@@ -184,7 +184,7 @@ public class ScoreService extends ShopBaseService {
 				userScoreRecord.setExpireTime(param.getExpiredTime());
 				
 				/** -判断是否为退款积分 */
-				if(param.getIsFromRefund() !=null && param.getIsFromRefund()==IS_FROM_REFUND_Y.getValue()) {
+				if(param.getIsFromRefund() !=null && param.getIsFromRefund()==IS_FROM_REFUND_Y.val()) {
 					userScoreRecord.setStatus(REFUND_SCORE_STATUS);
 					UserScoreRecord userScore = getScoreRecordByOrderSn(userId,orderSn);
 					userScoreRecord.setExpireTime(userScore.getExpireTime());
@@ -212,7 +212,7 @@ public class ScoreService extends ShopBaseService {
 				tradesRecord.setTradeSn(orderSn);
 				tradesRecord.setUserId(userId);
 				/** -这是更新积分的明细所以交易内容为积分 */
-				tradesRecord.setTradeContent(TRADE_CONTENT_BY_SCORE.getValue());
+				tradesRecord.setTradeContent(TRADE_CONTENT_SCORE.val());
 				tradesRecord.setTradeType(tradeType);
 				tradesRecord.setTradeFlow(tradeFlow);
 				tradesRecord.setTradeStatus(tradeFlow);

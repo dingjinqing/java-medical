@@ -1,5 +1,8 @@
 package com.vpu.mp.service.shop.operation;
 
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_POWER_MCARD_ACCOUNT;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +17,11 @@ import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.BasicData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.operation.dao.TradesRecordDaoService;
 
 /**
 * @author 黄壮壮
@@ -24,10 +29,11 @@ import com.vpu.mp.service.shop.member.ScoreService;
 * @Description: 
 */
 @Service
-public class RecordMemberTradeService extends ShopBaseService{
+public class RecordTradeService extends ShopBaseService{
 	@Autowired private ScoreService scoreService;
 	@Autowired private MemberCardService memberCardService;
 	@Autowired private AccountService accountService;
+	@Autowired private TradesRecordDaoService tradeRecDao;
 	/**
 	 * 统一更细用户的余额，积分，会员卡余额入口
 	 * 
@@ -39,14 +45,14 @@ public class RecordMemberTradeService extends ShopBaseService{
 	 * @param data
 	 * @throws MpException 
 	 */
-	public void updateUserEconomicData(BasicData data) throws MpException {
+ 	public void updateUserEconomicData(BasicData data) throws MpException {
 		if(data instanceof AccountData) {
 			logger().info("余额变动");
 			/** 余额变动 */
 			AccountData accountData = (AccountData)data;
 			AccountParam accountParam = new AccountParam();
 			FieldsUtil.assignNotNull(accountData, accountParam);
-			
+
 			accountService.addUserAccount(accountParam, accountData.getAdminUser(), accountData.getTradeType(), accountData.getTradeFlow(),accountData.getLanguage());
 		}else if(data instanceof ScoreData) {
 			logger().info("积分变动");
@@ -63,8 +69,9 @@ public class RecordMemberTradeService extends ShopBaseService{
 			UserCardData userCardData = (UserCardData)data;
 			CardConsumpData cardConsumpData = new CardConsumpData();
 			FieldsUtil.assignNotNull(userCardData, cardConsumpData);
+			
 			String language = userCardData.getLanguage();
-			memberCardService.updateMemberCardAccount(cardConsumpData, userCardData.getAdminUser(), userCardData.getTradeType(), userCardData.getTradeFlow(),language);
+			memberCardService.updateMemberCardAccount(cardConsumpData,userCardData.getTradeOpt(),language);
 			
 		}
 			
@@ -72,7 +79,6 @@ public class RecordMemberTradeService extends ShopBaseService{
 	
 	/**
 	 * 交易明细
-	 * @param oldRecord
 	 */
 	public void insertRecord(TradesRecordRecord oldRecord) {
 		logger().info("开始插入trades_record表");
@@ -81,4 +87,19 @@ public class RecordMemberTradeService extends ShopBaseService{
 		FieldsUtil.assignNotNull(oldRecord,newRecord);
 		newRecord.insert();
 	}
+	
+	public void insertTradeRecord(TradeOptParam tradeOpt) {
+		
+		if(isTradeSnNull(tradeOpt.getTradeSn())) {
+			tradeOpt.setTradeSn("");
+		}
+		
+		tradeRecDao.insertTradesRecord(tradeOpt);
+	}
+	
+
+	private boolean isTradeSnNull(String sn) {
+		return StringUtils.isBlank(sn);
+	}
+	
 }

@@ -19,10 +19,12 @@ import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+import com.vpu.mp.service.pojo.shop.operation.builder.TradeOptParamBuilder;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
-import com.vpu.mp.service.shop.operation.RecordMemberTradeService;
+import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
@@ -36,7 +38,7 @@ public class ReturnMethodService extends ShopBaseService{
 	
 	private static String RETURN_METHOD_PREFIX = "refund_";
 	@Autowired
-	private RecordMemberTradeService recordMemberTrade;
+	private RecordTradeService recordMemberTrade;
 	@Autowired
 	private RefundAmountRecordService refundAmountRecord;
 	@Autowired
@@ -91,6 +93,17 @@ public class ReturnMethodService extends ShopBaseService{
 		if(BigDecimalUtil.compareTo(money, null) == 0) {
 			return;
 		}
+		
+		/**
+		 * 交易记录信息
+		 */
+		TradeOptParam tradeOpt = TradeOptParamBuilder
+				.create()
+				.adminUserId(0)
+				.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
+				.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
+				.build();
+		
 		UserCardData userCardData = UserCardData.newBuilder().
 		userId(order.getUserId()).
 		cardId(order.getCardId()).
@@ -100,12 +113,8 @@ public class ReturnMethodService extends ShopBaseService{
 		//普通会员卡
 		type(CardConstant.MCARD_TP_NORMAL).
 		orderSn(order.getOrderSn()).
-		//后台处理时为操作人id为0
-		adminUser(0).
-		//用户会员卡余额退款
-		tradeType(RecordTradeEnum.MEMBER_CARD_ACCOUNT_REFUND.getValue()).
-		//资金流量-支出
-		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).build();
+		tradeOpt(tradeOpt).build();
+		
 		//调用退会员卡接口
 		recordMemberTrade.updateUserEconomicData(userCardData);
 		//记录
@@ -130,13 +139,13 @@ public class ReturnMethodService extends ShopBaseService{
 		remark("订单："+order.getOrderSn()+"余额退款").
 		payment(order.getPayCode()).
 		//支付类型
-		isPaid(RecordTradeEnum.RECHARGE.getValue()).
+		isPaid(RecordTradeEnum.RECHARGE.val()).
 		//后台处理时为操作人id为0
 		adminUser(0).
 		//用户余额退款
-		tradeType(RecordTradeEnum.MEMBER_ACCOUNT_REFUND.getValue()).
+		tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
 		//资金流量-支出
-		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).build();
+		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
 		//调用退余额接口
 		recordMemberTrade.updateUserEconomicData(accountData);
 		//记录
@@ -169,11 +178,11 @@ public class ReturnMethodService extends ShopBaseService{
 		//后台处理时为操作人id为0
 		adminUser(0).
 		//用户余额充值 
-		tradeType(RecordTradeEnum.POWER_MEMBER_ACCOUNT.getValue()).
+		tradeType(RecordTradeEnum.TYPE_CRASH_POWER_MACCOUNT.val()).
 		//资金流量-支出
-		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue()).
+		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
 		//积分变动是否来自退款
-		isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.getValue()).build();
+		isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.val()).build();
 		//调用退积分接口
 		recordMemberTrade.updateUserEconomicData(scoreData);
 		//记录
@@ -200,7 +209,7 @@ public class ReturnMethodService extends ShopBaseService{
 			
 		}
 		//交易记录
-		tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.CASH_REFUND.getValue(),RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue(),TradesRecordService.TRADE_STATUS_ARRIVAL);	
+		tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);	
 		//记录
 		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.MONEY_PAID, money, retId);
 	}
@@ -216,6 +225,6 @@ public class ReturnMethodService extends ShopBaseService{
 			orderRefundRecord.wxPayRefund(order , money);
 		}
 		//交易记录
-		tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.CASH_REFUND.getValue(),RecordTradeEnum.TRADE_FLOW_OUTCOME.getValue(),TradesRecordService.TRADE_STATUS_ARRIVAL);	
+		tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);	
 	}
 }
