@@ -792,12 +792,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 处理普通的营销活动（下单时以普通商品下单，不指定营销活动的）
+     * 处理特殊的营销活动（下单时通过activityId和activityType指定）
      *  eg 我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
      * @param orderBo
      * @param beforeVo
      */
-    private void processExclusiveActivity(CreateOrderBo orderBo,OrderBeforeVo beforeVo,int userId){
+    private void processExclusiveActivity(CreateOrderBo orderBo,OrderBeforeVo beforeVo,int userId) throws MpException {
         List<OrderBeforeVo> capsules = new ArrayList<>();
         capsules.add(beforeVo);
         OrderCreatePayBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderCreatePayBeforeMpProcessorFactory.class);

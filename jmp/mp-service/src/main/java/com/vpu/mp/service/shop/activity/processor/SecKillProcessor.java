@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -124,7 +125,7 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
      * @param order
      */
     @Override
-    public void processPayBefore(OrderBeforeVo order) {
+    public void processPayBefore(OrderBeforeVo order) throws MpException {
         if(order.getActivityId() != null && order.getActivityType() != null && BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(order.getActivityType())){
             secKillProcessorDao.processSeckillStock(order);
         }

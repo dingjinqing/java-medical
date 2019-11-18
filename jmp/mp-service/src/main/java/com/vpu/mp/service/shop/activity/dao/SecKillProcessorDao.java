@@ -3,6 +3,8 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
@@ -11,6 +13,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SecKillPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SeckillMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,7 +160,23 @@ public class SecKillProcessorDao extends ShopBaseService {
      * 秒杀下单-库存处理
      * @param order
      */
-    public void processSeckillStock(OrderBeforeVo order){
-        //TODO
+    public void processSeckillStock(OrderBeforeVo order) throws MpException {
+        for(OrderGoodsBo goods : order.getOrderGoods()){
+            int seckillStock = db().select(SEC_KILL_DEFINE.STOCK).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).fetchSingle().into(Integer.class);
+            if(seckillStock - goods.getGoodsNumber() < 0){
+                //秒杀库存不足
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+            }
+
+            int seckillPrdStock = db().select(SEC_KILL_PRODUCT_DEFINE.STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).fetchSingle().into(Integer.class);
+            if(seckillPrdStock - goods.getGoodsNumber() < 0){
+                //秒杀规格库存不足
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+            }
+
+            db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,seckillStock - goods.getGoodsNumber()).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).execute();
+            db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,seckillPrdStock - goods.getGoodsNumber()).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).execute();
+        }
+
     }
 }
