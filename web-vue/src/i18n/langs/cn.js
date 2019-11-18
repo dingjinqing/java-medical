@@ -338,6 +338,10 @@ import {
 import {
   cn as storeList
 } from './views/admin_new/cn/index/storeManagement/store/storeListCn'
+// 门店列表-添加门店
+import {
+  cn as addStore
+} from './views/admin_new/cn/index/storeManagement/store/addStoreCn'
 // 门店列表-商品管理
 import {
   cn as storeGoodsList
@@ -917,6 +921,7 @@ const cn = {
   // 门店
   storeCommon, // 门店通用
   storeList, // 门店列表
+  addStore, // 门店列表-添加门店
   storeGoodsList, // 门店列表-商品管理
   verifierManage, // 门店列表-核销员管理
   storeManage, // 门店列表-门店管理

@@ -331,6 +331,9 @@ import {
 import {
   en as storeList
 } from './views/admin_new/en/index/storeManagement/store/storeListEn'
+import {
+  en as addStore
+} from './views/admin_new/en/index/storeManagement/store/addStoreEn'
 // 门店列表-商品管理
 import {
   en as storeGoodsList
@@ -912,6 +915,7 @@ const en = {
   // 门店
   storeCommon, // 门店通用
   storeList, // 门店列表
+  addStore, // 门店列表-添加门店
   storeGoodsList, // 门店列表-商品管理
   verifierManage, // 门店列表-核销员管理
   storeManage, // 门店列表-门店管理

@@ -31,52 +31,52 @@
         size="small"
       >
         <el-form-item
-          label="门店名称："
+          :label="$t('addStore.storeName') + '：'"
           prop="storeName"
         >
           <el-input
             v-model="storeFormInfo.storeName"
-            placeholder="请输入门店名称"
+            :placeholder="$t('addStore.storeNameTip')"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="负责人："
+          :label="$t('addStore.principal') + '：'"
           prop="manager"
         >
           <el-input
             v-model="storeFormInfo.manager"
-            placeholder="请输入负责人"
+            :placeholder="$t('addStore.principalTip')"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="联系电话："
+          :label="$t('addStore.contactNum') + '：'"
           prop="mobile"
         >
           <el-input
             v-model="storeFormInfo.mobile"
-            placeholder="请输入联系电话"
+            :placeholder="$t('addStore.contactNumTip')"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="营业状态："
+          :label="$t('addStore.businessStatus') + '：'"
           prop="businessState"
         >
           <el-radio-group v-model="storeFormInfo.businessState">
-            <el-radio :label="1">营业中</el-radio>
-            <el-radio :label="0">关店</el-radio>
+            <el-radio :label="1">{{$t('addStore.open')}}</el-radio>
+            <el-radio :label="0">{{$t('addStore.close')}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          label="营业时间："
+          :label="$t('addStore.BusinessHours') + '：'"
           prop="businessType"
         >
           <el-radio-group v-model="storeFormInfo.businessType">
-            <el-radio :label="1">每天</el-radio>
-            <el-radio :label="0">工作日</el-radio>
+            <el-radio :label="1">{{$t('addStore.everyDay')}}</el-radio>
+            <el-radio :label="0">{{$t('addStore.workDay')}}</el-radio>
           </el-radio-group>
           <el-time-picker
             v-model="storeFormInfo.openingTime"
-            placeholder="开始时间"
+            :placeholder="$t('addStore.startTime')"
             style="width: 12%;margin-left: 20px;"
             format="HH:mm"
             value-format="HH:mm"
@@ -84,23 +84,23 @@
           <span>-</span>
           <el-time-picker
             v-model="storeFormInfo.closeTime"
-            placeholder="结束时间"
+            :placeholder="$t('addStore.endTime')"
             style="width: 12%;"
             format="HH:mm"
             value-format="HH:mm"
           ></el-time-picker>
-          <p style="margin-left: 172px; color: #a0a0a0;">24小时制，如 9:00-21:00</p>
+          <p style="margin-left: 172px; color: #a0a0a0;">{{$t('addStore.timeTip')}} 9:00-21:00</p>
         </el-form-item>
         <el-form-item
-          label="所属分组："
+          :label="$t('addStore.ownedGroup') + '：'"
           prop="group"
         >
           <el-select
             v-model="storeFormInfo.group"
-            placeholder="请选择分组"
+            :placeholder="$t('addStore.groupTip')"
           >
             <el-option
-              label="请选择所属分组"
+              :label="$t('addStore.selectGroup')"
               value=""
             ></el-option>
             <el-option
@@ -113,24 +113,24 @@
           <el-button
             type="text"
             @click="refreshGroups"
-          >刷新</el-button>
+          >{{$t('addStore.refresh')}}</el-button>
           <span>|</span>
           <el-button
             type="text"
             @click="addGroups"
-          >添加新分组</el-button>
+          >{{$t('addStore.addNewGroup')}}</el-button>
         </el-form-item>
         <el-form-item
-          label="门店编号："
+          :label="$t('addStore.storeNum') + '：'"
           prop="posShopId"
         >
           <el-input
             v-model.number="storeFormInfo.posShopId"
-            placeholder="请输入门店编号(数字)"
+            :placeholder="$t('addStore.storeNumTip')"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="地理位置："
+          :label="$t('addStore.location') + '：'"
           prop="provinceCode"
         >
           <div>
@@ -143,24 +143,24 @@
           </div>
         </el-form-item>
         <el-form-item
-          label="地图定位："
+          :label="$t('addStore.mapLocation') + '：'"
           prop="address"
         >
           <el-input
-            placeholder="输入详细的位置信息，请勿重复填写省市区"
+            :placeholder="$t('addStore.locationTip')"
             v-model="storeFormInfo.address"
           ></el-input>
           <el-button
             type="text"
             @click="codeAddress"
-          >地图定位</el-button>
+          >{{$t('addStore.mapLocation')}}</el-button>
           <div
             class="store-map"
             ref="storemap"
           ></div>
         </el-form-item>
         <el-form-item
-          label="特色服务："
+          :label="$t('addStore.specialService') + '：'"
           prop="storeService"
         >
           <el-checkbox-group v-model="storeService">
@@ -172,17 +172,16 @@
             ></el-checkbox>
           </el-checkbox-group>
           <el-input
-            placeholder="添加多个服务，用逗号隔开"
+            :placeholder="$t('addStore.serviceTip')"
             v-model="addService"
           ></el-input>
           <el-button
             type="text"
             @click="addServeHandler"
-          >添加</el-button>
-          <span>{{storeFormInfo.service}}</span>
+          >{{$t('addStore.add')}}</el-button>
         </el-form-item>
         <el-form-item
-          label="店面宣传照："
+          :label="$t('addStore.storePhoto') + '：'"
           prop="storeImgs"
         >
           <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
@@ -212,11 +211,11 @@
                 style="width: 78px; height: 78px; cursor: pointer;"
               />
             </div>
-            <p style="width:100%; color: #999;margin-bottom:15px;">最多可上传6张图，每张大小不可超过5M，格式要求为jpg，png</p>
+            <p style="width:100%; color: #999;margin-bottom:15px;">{{$t('addStore.storePhotoTip')}}</p>
           </div>
         </el-form-item>
         <el-form-item
-          label="店面详情："
+          :label="$t('addStore.storeDetails') + '：'"
           prop="storeDetail"
         >
           <div class="edit-wrap">
@@ -245,10 +244,10 @@
               alt=""
             >
             <div class="line1">
-              <span>门店自提</span>
-              <a href="javascript:void(0);">查看门店自提功能使用教程</a>
+              <span>{{$t('addStore.storeSelfRaising')}}</span>
+              <a href="javascript:void(0);">{{$t('addStore.viewSelfRaisingTip')}}</a>
             </div>
-            <div class="line2">开启后，用户在商城购买该门店的商品，可选择到当前门店自提。</div>
+            <div class="line2">{{$t('addStore.selfopenTip')}}</div>
             <div class="line3">
               <el-switch
                 :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude)"
@@ -258,8 +257,8 @@
                 :active-value="1"
                 :inactive-value="0"
               ></el-switch>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span v-if="this.storeFormInfo.autoPick == 1">已开启</span>
-              <span v-if="this.storeFormInfo.autoPick == 0">已关闭</span>
+              <span v-if="this.storeFormInfo.autoPick == 1">{{$t('addStore.turnedOn')}}</span>
+              <span v-if="this.storeFormInfo.autoPick == 0">{{$t('addStore.closed')}}</span>
             </div>
           </div>
           <div class="content_right">
@@ -268,10 +267,10 @@
               alt=""
             >
             <div class="line1">
-              <span>同城配送</span>
-              <a href="javascript:void(0);">查看门店同城配送使用教程</a>
+              <span>{{$t('addStore.Town')}}</span>
+              <a href="javascript:void(0);">{{$t('addStore.viewTownLan')}}</a>
             </div>
-            <div class="line2">开启后，用户在商城购买该门店的商品，可选择同城配送，由商家（或第三方同城配送平台）提供上门配送服务。</div>
+            <div class="line2">{{$t('addStore.townOpenTip')}}</div>
             <div class="line3">
               <el-switch
                 :disabled="!(storeFormInfo.latitude && storeFormInfo.longitude)"
@@ -279,8 +278,8 @@
                 active-color="#E6A23C"
                 inactive-color="#ccc"
               ></el-switch>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span v-if="this.switchRight == true">已开启</span>
-              <span v-if="this.switchRight == false">已关闭</span>
+              <span v-if="this.switchRight == true">{{$t('addStore.turnedOn')}}</span>
+              <span v-if="this.switchRight == false">{{$t('addStore.closed')}}</span>
             </div>
           </div>
         </div>
@@ -295,47 +294,47 @@
         label-width="120px"
         size="small"
       >
-        <el-form-item label="取货地址：">
+        <el-form-item :label="$t('addStore.receiptAddress') + '：'">
           <span>{{address + storeFormInfo.address}}</span><br />
-          <span style="color: #999; font-size: 14px; ">用户下单后自提商品以及同城配送业务骑手取货地点，如需修改，请到【门店基础信息】页面进行编辑</span>
+          <span style="color: #999; font-size: 14px; ">{{$t('addStore.pickUpTip')}}</span>
         </el-form-item>
         <el-form-item
-          label="配送区域："
+          :label="$t('addStore.deliveryArea') + '：'"
           prop="deliveryArea"
         >
-          门店周边&nbsp;&nbsp;<el-input
+          {{$t('addStore.aroundTheStore')}}&nbsp;&nbsp;<el-input
             v-model="deliveryMessage.deliveryArea"
             style="width: 80px;"
-          ></el-input>&nbsp;&nbsp;公里内可配送
+          ></el-input>&nbsp;&nbsp;{{$t('addStore.withinKilo')}}
         </el-form-item>
         <el-form-item
-          label="配送价格："
+          :label="$t('addStore.distributionPrice') + '：'"
           prop="deliveryPrice"
         >
           <el-input
             v-model="deliveryMessage.deliveryPrice"
             style="width: 80px;"
-          ></el-input>&nbsp;&nbsp;元
+          ></el-input>&nbsp;&nbsp;{{$t('addStore.yuan')}}
         </el-form-item>
         <el-form-item
-          label="包邮策略："
+          :label="$t('addStore.mailStrategy') + '：'"
           prop="deliveryPolicy"
         >
-          订单付款金额满&nbsp;&nbsp;<el-input
+          {{$t('addStore.fullPayTip')}}&nbsp;&nbsp;<el-input
             v-model="deliveryMessage.deliveryPolicy"
             style="width: 80px;"
-          ></el-input>&nbsp;&nbsp;元包邮
+          ></el-input>&nbsp;&nbsp;{{$t('addStore.fullPayTip2')}}
         </el-form-item>
         <el-form-item
-          label="配送方式："
+          :label="$t('addStore.deliveryMethod') + '：'"
           prop="deliveryType"
         >
           <el-checkbox-group v-model="deliveryMessage.deliveryType">
-            <el-checkbox name="deliveryType">商家自配送&nbsp;&nbsp;<span style="color: #999;">(由商家自行配送，系统无法追踪物流动态并及时同步给用户)</span></el-checkbox><br />
+            <el-checkbox name="deliveryType">{{$t('addStore.businessSelfDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.bs_Tip')}})</span></el-checkbox><br />
             <el-checkbox
               name="deliveryType"
               style="margin-left: 7%;"
-            >第三方同城配送&nbsp;&nbsp;<span style="color: #999;">(前提：商家需先和配送公司已达成合作关系，已签约账号才可使用第三方同城配送服务)</span></el-checkbox>
+            >{{$t('addStore.thridDelivery')}}&nbsp;&nbsp;<span style="color: #999;">({{$t('addStore.thridPremise')}})</span></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -346,18 +345,18 @@
           size="small"
           v-if="this.stepData.currentStep == 0"
           @click="nextClickHandler"
-        >下一步</el-button>
+        >{{$t('addStore.next')}}</el-button>
         <el-button
           size="small"
           v-if="this.stepData.currentStep == 1"
           @click="prevClickHandler"
-        >上一步</el-button>
+        >{{$t('addStore.previous')}}</el-button>
         <el-button
           type="primary"
           size="small"
           v-if="this.stepData.currentStep == 1"
           @click="saveClickHandler"
-        >保存</el-button>
+        >{{$t('addStore.save')}}</el-button>
       </div>
     </div>
   </div>
@@ -378,19 +377,19 @@ export default {
     let that = this
     let validateArea = function (rule, value, callback) {
       if (!value) {
-        callback(new Error('省不能为空'))
+        callback(new Error(that.$t('addStore.provinceValid')))
       }
       if (!that.storeFormInfo.cityCode) {
-        callback(new Error('市不能为空'))
+        callback(new Error(that.$t('addStore.cityValid')))
       }
       if (!that.storeFormInfo.districtCode) {
-        callback(new Error('区不能为空'))
+        callback(new Error(that.$t('addStore.zoneValid')))
       }
       callback()
     }
     let validateAddress = function (rule, value, callback) {
       if (!that.storeFormInfo.latitude && !that.storeFormInfo.longitude) {
-        callback(new Error('没有点击定位'))
+        callback(new Error(that.$t('addStore.targetingValid')))
       }
       callback()
     }
@@ -399,8 +398,8 @@ export default {
       stepData: {
         currentStep: 0
       },
-      step1: '门店基础信息',
-      step2: '门店配送信息',
+      step1: this.$t('addStore.storeBasic'),
+      step2: this.$t('addStore.storeDisInfo'),
       storeFormInfo: {
         storeName: '',
         manager: '',
@@ -423,14 +422,14 @@ export default {
         autoPick: 0 // 设定自提
       },
       storeFormRules: {
-        storeName: [{ required: true, message: '请输入门店名称', trigger: 'blur' }],
-        manager: [{ required: true, message: '请输入负责人', trigger: 'blur' }],
-        mobile: [{ required: true, message: '请输入联系电话', trigger: 'blur' }],
-        businessType: [{ required: true, message: '请选择营业时间', trigger: 'change' }],
-        posShopId: [{ required: true, message: '请输入门店编号', trigger: 'blur' }, { type: 'number', message: '年龄必须为数字值' }],
-        provinceCode: [{ required: true, message: '请选择区域' }, { validator: validateArea, trigger: 'blur' }],
-        address: [{ required: true, message: '请输入定位信息', trigger: 'blur' }, { validator: validateAddress }],
-        storeImgs: [{ required: true, message: '请选择店面宣传照' }]
+        storeName: [{ required: true, message: this.$t('addStore.enterStoreName'), trigger: 'blur' }],
+        manager: [{ required: true, message: this.$t('addStore.enterPersoninCharge'), trigger: 'blur' }],
+        mobile: [{ required: true, message: this.$t('addStore.enterphone'), trigger: 'blur' }],
+        businessType: [{ required: true, message: this.$t('addStore.enterHours'), trigger: 'change' }],
+        posShopId: [{ required: true, message: this.$t('addStore.enterStoreNum'), trigger: 'blur' }, { type: 'number', message: '门店编码必须为数字值' }],
+        provinceCode: [{ required: true, message: this.$t('addStore.selectArea') }, { validator: validateArea, trigger: 'blur' }],
+        address: [{ required: true, message: this.$t('addStore.enterArea'), trigger: 'blur' }, { validator: validateAddress }],
+        storeImgs: [{ required: true, message: this.$t('addStore.selectPhoto') }]
       },
       selfImgDialogShow: false,
       storeGroups: [],
@@ -440,16 +439,16 @@ export default {
         label: 'WIFI',
         checked: false
       }, {
-        label: '停车位',
+        label: this.$t('addStore.parkingSpace'),
         checked: false
       }, {
-        label: '无烟区',
+        label: this.$t('addStore.smokingArea'),
         checked: false
       }, {
-        label: '茶水小食',
+        label: this.$t('addStore.teaSnacks'),
         checked: false
       }, {
-        label: '包厢',
+        label: this.$t('addStore.box'),
         checked: false
       }],
       imgHost: `${this.$imageHost}`,
@@ -465,9 +464,9 @@ export default {
       },
       // 同城配置信息校验
       deliveryFormRules: {
-        deliveryArea: [{ required: true, message: '请输入配送区域', trigger: 'blur' }],
-        deliveryPrice: [{ required: true, message: '请输入配送价格', trigger: 'blur' }],
-        deliveryType: [{ required: true, message: '请选择配送方式', trigger: 'change' }]
+        deliveryArea: [{ required: true, message: this.$t('addStore.enterDeliveryArea'), trigger: 'blur' }],
+        deliveryPrice: [{ required: true, message: this.$t('addStore.enterDeliveryPrice'), trigger: 'blur' }],
+        deliveryType: [{ required: true, message: this.$t('addStore.selectDeliveryMethod'), trigger: 'change' }]
       },
       map: null,
       geocoder: null,
@@ -577,7 +576,7 @@ export default {
     addServeHandler() {
       if (this.addService === '') {
         this.$message.error({
-          message: '请输入有效的字符！'
+          message: this.$t('addStore.enterValidCharacter')
         })
       } else {
         let services = this.addService.split(',')
@@ -671,7 +670,7 @@ export default {
     // 点击地图定位
     codeAddress() {
       if (!this.address) {
-        this.$message.warning('请选择地区')
+        this.$message.warning(this.$t('addStore.selectRegion'))
         return false
       }
       let address = this.address + this.storeFormInfo.address
@@ -688,7 +687,7 @@ export default {
     // 商品图片点击回调函数
     imgDialogSelectedCallback(imgObj) {
       if (this.storeFormInfo.storeImgs.length + imgObj.length > 5) {
-        this.$message.warning('最多选5张')
+        this.$message.warning(this.$t('addStore.max5'))
         return
       }
       let imgs = imgObj.map(item => item.imgUrl)
@@ -724,7 +723,7 @@ export default {
             })
             this.$router.push({ name: 'store_list' })
           } else {
-            this.$message.error('添加失败')
+            this.$message.error(this.$t('addStore.addFaild'))
           }
         })
       } else {
@@ -735,7 +734,7 @@ export default {
             })
             this.$router.push({ name: 'store_list' })
           } else {
-            this.$message.error('添加失败')
+            this.$message.error(this.$t('addStore.addFaild'))
           }
         })
       }
