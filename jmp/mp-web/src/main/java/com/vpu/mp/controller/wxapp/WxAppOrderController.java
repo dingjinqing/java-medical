@@ -171,7 +171,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		list.add("P201900000000000007");
 		list.add("P201900000000000008");
 		list.add("P201900000000000009");
-		Boolean addCommonOrders = shop().orderMallService.addCommonOrders(wxAppAuth.user().getUserId(), list);
+		Boolean addCommonOrders = shop().recommendService.orderMallService.addCommonOrders(wxAppAuth.user().getUserId(), list);
 		if(addCommonOrders) {
 			return success();
 		}
@@ -191,7 +191,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		list.add(8L);
 		list.add(9L);
 		list.add(10L);
-		Boolean addCommonOrders = shop().collectionMallService.addCartRows(wxAppAuth.user().getUserId(), list);
+		Boolean addCommonOrders = shop().recommendService.collectionMallService.addCartRows(wxAppAuth.user().getUserId(), list);
 		if(addCommonOrders) {
 			return success();
 		}
