@@ -16,5 +16,14 @@ export const cn = {
   reset: '重置',
   backgroundColor: '背景颜色',
   link: '链接',
-  selectLink: '选择链接'
+  selectLink: '选择链接',
+  video: '视频',
+  videoModule: '视频模块',
+  videoTips: '上传视频仅支持MP4格式。为保障无线端各种网络环境下正常播放，只支持上传大小不超过10M，时长不超过3分钟的视频。',
+  videoTitle: '视频标题',
+  maxLength: '最多20个字',
+  coverMap: '封面图',
+  originalCover: '原视频封面(视频第一帧)',
+  customCover: '自定义封面',
+  uploadCover: '上传封面'
 }

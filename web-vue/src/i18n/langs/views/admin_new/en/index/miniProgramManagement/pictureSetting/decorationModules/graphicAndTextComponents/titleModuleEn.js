@@ -15,5 +15,14 @@ export const en = {
   reset: 'Reset',
   backgroundColor: 'background color',
   link: 'link',
-  selectLink: 'Select link'
+  selectLink: 'Select link',
+  video: 'video',
+  videoModule: 'Video module',
+  videoTips: 'Upload video only supports MP4 format. In order to ensure normal playback in various network environments of wireless terminal, only videos with upload size no more than 10m and duration no more than 3 minutes are supported.',
+  videoTitle: 'Video title',
+  maxLength: 'Up to 20 Zi',
+  coverMap: 'Cover map',
+  originalCover: 'Original video cover (first frame of video)',
+  customCover: 'Custom cover',
+  uploadCover: 'Upload cover'
 }

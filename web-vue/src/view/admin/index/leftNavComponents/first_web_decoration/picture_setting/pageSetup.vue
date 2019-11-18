@@ -57,7 +57,8 @@ export default {
     RiRichText: () => import('./pageSetupModules/graphicAndTextComponents/riRichText'), // 右侧富文本模块
     RiAuxiliaryBlank: () => import('./pageSetupModules/graphicAndTextComponents/riAuxiliaryBlank'), // 右侧辅助空白配置页面
     RiTitleModule: () => import('./pageSetupModules/graphicAndTextComponents/riTitleModule'), // 标题模块
-    RiGuide: () => import('./pageSetupModules/graphicAndTextComponents/riGuide') // 辅助线占位
+    RiGuide: () => import('./pageSetupModules/graphicAndTextComponents/riGuide'), // 辅助线占位
+    RiVideoModule: () => import('./pageSetupModules/graphicAndTextComponents/riVideoModule') // 视频模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -143,6 +144,10 @@ export default {
         {
           id: 21,
           name: 'RiTitleModule'
+        },
+        {
+          id: 22,
+          name: 'RiVideoModule'
         },
         {
           id: 27,

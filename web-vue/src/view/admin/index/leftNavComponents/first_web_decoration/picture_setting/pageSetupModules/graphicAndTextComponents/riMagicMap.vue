@@ -914,10 +914,9 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         console.log(newData)
-
-        this.moduleSaveData = this.modulesData
         console.log(this.moduleSaveData)
         this.$nextTick(() => {
+          this.moduleSaveData = this.modulesData
           if (this.$route.query.pageId === -1) {
             console.log('sssss')
             this.handleToSaveDataImgInfo(0, true)
@@ -994,7 +993,7 @@ export default {
         item.isChecked = false
       })
       this.nowTemplateClickIndex = index
-      console.log(index, this.layoutData[index].styleData)
+      // console.log(index, this.layoutData[index].styleData)
       if (index !== 7) {
         this.nowLayutIndex = this.layoutData[index].styleData.length - 1
       }
@@ -1203,12 +1202,15 @@ export default {
       console.log(backData)
       if (backData.table_type !== 8) { // 当回显的模板不是最后一个模板
         console.log(backData.data)
-        Object.keys(backData.data).forEach((item, index) => {
-          console.log((backData.table_type - 1), index, backData.data[item].img_url)
-          this.layoutData[(backData.table_type - 1)].styleData[index].img_url = backData.data[item].img_url
-          this.layoutData[(backData.table_type - 1)].styleData[index].jump_link = backData.data[item].jump_link
-          console.log(this.layoutData[(backData.table_type - 1)].styleData[index].img_url)
+        this.$nextTick(() => {
+          Object.keys(backData.data).forEach((item, index) => {
+            console.log((backData.table_type - 1), index, backData.data[item].img_url)
+            this.layoutData[(backData.table_type - 1)].styleData[index].img_url = backData.data[item].img_url
+            this.layoutData[(backData.table_type - 1)].styleData[index].jump_link = backData.data[item].jump_link
+            console.log(this.layoutData[(backData.table_type - 1)].styleData[index].img_url)
+          })
         })
+
         console.log((backData.table_type - 1))
         console.log(this.layoutData[3])
       } else {

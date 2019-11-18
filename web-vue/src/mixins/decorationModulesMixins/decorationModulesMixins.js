@@ -284,6 +284,22 @@ export default {
             'img_url': '' // 图标
           }
           break
+        case 22: // 视频模块
+          obj = {
+            'module_name': 'm_video', // 模块名称
+            'video_url': '', // 视频路径
+            'video_img': '', // 封面图片路径
+            'video_size': '', // 视频大小
+            'video_width': '', // 视频宽度
+            'video_height': '', // 视频高度
+            'video_title': '', // 视频标题
+            'video_poster': '1', //   1 为使用原视频封面    2 为使用自定义封面
+            'video_showurl': '', // 当前显示的视频完整路径
+            'video_showpath': '', // 当前显示的封面完整路径
+            'custom_url': '', // 自定义封面保存路径
+            'custom_path': '' // 自定义封面显示完整路径
+          }
+          break
         case 27: // 店招设置
           obj = {
             module_name: 'm_shop',

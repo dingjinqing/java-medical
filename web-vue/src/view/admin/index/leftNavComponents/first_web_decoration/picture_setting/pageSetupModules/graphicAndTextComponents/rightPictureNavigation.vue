@@ -224,10 +224,10 @@ export default {
       guideCircleClass: 'guideCircleClass', // 图片导航导航样式英文适配
       // 模块保存数据
       data: {
-        nav_style: '1',
-        font_color: '#92b0e4',
-        bg_color: '#ffffff',
-        nav_group: []
+        'nav_style': '1',
+        'font_color': '#92b0e4',
+        'bg_color': '#ffffff',
+        'nav_group': []
       }
     }
   },

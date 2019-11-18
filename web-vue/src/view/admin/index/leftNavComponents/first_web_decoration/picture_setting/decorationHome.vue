@@ -217,7 +217,8 @@ export default {
     RichText: () => import('./decorationModules/graphicAndTextComponents/richText'), // 富文本
     AuxiliaryBlank: () => import('./decorationModules/graphicAndTextComponents/auxiliaryBlank'), // 辅助空白
     Guide: () => import('./decorationModules/graphicAndTextComponents/guide'), // 辅助线
-    TitleModule: () => import('./decorationModules/graphicAndTextComponents/titleModule') // 标题模块
+    TitleModule: () => import('./decorationModules/graphicAndTextComponents/titleModule'), // 标题模块
+    VideoModule: () => import('./decorationModules/graphicAndTextComponents/videoModule') // 视频模块
   },
   data () {
     return {
@@ -324,7 +325,6 @@ export default {
           this.page_enabled = res.content.page_enabled
           this.page_tpl_type = res.content.page_tpl_type
 
-          this.cur_idx = res.content.last_cur_idx
           this.isEditSave = true
           console.log(res.content.page_content)
           let content = JSON.parse(res.content.page_content)
@@ -335,7 +335,8 @@ export default {
           content.page_cfg.cat_id = JSON.stringify(content.page_cfg.cat_id)
           this.pageSetData = content.page_cfg
           console.log(content)
-
+          this.cur_idx = content.page_cfg.last_cur_idx
+          console.log(this.cur_idx)
           let moduleDataCopy = JSON.parse(JSON.stringify(content))
           delete moduleDataCopy.page_cfg
           console.log(moduleDataCopy)
@@ -442,6 +443,9 @@ export default {
           break
         case 'm_title':
           moduleNameId = 21
+          break
+        case 'm_video':
+          moduleNameId = 22
       }
       return moduleNameId
     },
@@ -609,6 +613,9 @@ export default {
             case 21:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 21)
               break
+            case 22:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 22)
+              break
             case 27:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 27)
               break
@@ -622,8 +629,8 @@ export default {
     // 左侧模块拖入中间区域后，中间区域数据处理函数
     handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
-      console.log(typeof insertModulesId, index)
-      if (insertModulesId === -1 || insertModulesId === undefined) {
+      console.log(insertModulesId, index)
+      if (insertModulesId === -1) {
         this.MoveWhiteFlag = true
         this.handleToClickLeftModule(index)
         // setTimeout(() => {
@@ -631,10 +638,17 @@ export default {
         // }, 100)
       } else {
         this.MoveWhiteFlag = false
-        this.showModulesList.splice(insert, 0, index)
-        if (this.nowRightShowIndex === insert) {
-          this.handleToModuleHight()
+        console.log(this.nowRightShowIndex, insert, index)
+        if (insert === 0) {
+          insert = this.showModulesList.length
         }
+        this.showModulesList.splice(insert, 0, index)
+        this.$nextTick(() => {
+          if (this.nowRightShowIndex === insert) {
+            this.handleToModuleHight()
+          }
+        })
+
         // this_.handleToModuleHight()
       }
     },
@@ -836,9 +850,7 @@ export default {
       console.log(flag)
       if (!flag) return
       // this.nowRightShowIndex 当前高亮模块在模块数组池中的index
-
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
-
       console.log(this.showModulesList, this.modulesData)
       this.handleToSaveModules(this.showModulesList, this.modulesData)
       this.$nextTick(() => {
@@ -865,7 +877,7 @@ export default {
       if (this.showModulesList.length > this.modulesData.length) {
         console.log(this.showModulesList[this.nowRightShowIndex])
         let obj = this.handleToAddModules(this.showModulesList[this.nowRightShowIndex])
-        console.log(obj)
+        console.log(this.cur_idx)
         this.cur_idx = this.cur_idx + 1
         console.log(this.cur_idx)
         obj.cur_idx = this.cur_idx
@@ -946,8 +958,8 @@ export default {
         pageContent: JSON.stringify(data),
         pagePublishContent: JSON.stringify(data),
         pageState: '',
-        catId: this.pageSetData.cat_id
-
+        catId: this.pageSetData.cat_id,
+        last_cur_idx: this.cur_idx
       }
       console.log(this.isEditSave)
       // cat_id: 0
@@ -988,7 +1000,8 @@ export default {
             'pageContent': JSON.stringify(data),
             'pagePublishContent': JSON.stringify(data),
             'pageState': pageState,
-            'catId': this.pageSetData.cat_id
+            'catId': this.pageSetData.cat_id,
+            'last_cur_idx': this.cur_idx
           }
           editSave(editParams).then((res) => {
             console.log(res)

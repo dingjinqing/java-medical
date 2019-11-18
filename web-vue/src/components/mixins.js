@@ -103,6 +103,8 @@ const myMixin = {
 
         this.specialLi = 'specialLi'
         this.magic = 'magic'
+
+        this.columnFlag = true
       } else {
         // this.$i18n.locale = 'cn'
         this.Recommend_class = ''
@@ -171,6 +173,8 @@ const myMixin = {
         this.guideCircleClass = ''
         this.magic = false
         this.specialLi = ''
+
+        this.columnFlag = false
       }
     },
     // 取营销活动状态字符串（进行中、已过期、未开始、已停用），status==0代表停用，status==1代表启用
