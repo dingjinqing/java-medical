@@ -19,9 +19,7 @@ public class GoodsBaseMp {
     protected Boolean defaultPrd;
     /**商品评价数量*/
     private Integer commentNum;
-    //************ElasticSearch中的数据**************end
-
-
     /**商品数量*/
     protected Integer goodsNumber;
+    //************ElasticSearch中的数据**************end
 }
