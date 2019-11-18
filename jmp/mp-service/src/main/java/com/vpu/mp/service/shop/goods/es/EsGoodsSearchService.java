@@ -4,7 +4,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
-import com.vpu.mp.service.shop.goods.es.convert.EsConvertFactory;
 import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsPageListVoConverter;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * es搜索相关
+ * es搜索相关(Admin)
  * @author 卢光耀
  * @date 2019/10/25 2:04 下午
  *

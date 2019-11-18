@@ -196,20 +196,17 @@ public class EsBaseSearchService extends ShopBaseService {
         return assemblySearchSourceBuilder(searchParam);
     }
     /**
-     * assembly search didn't need Page SearchSourceBuilder
-     * @return {@link SearchSourceBuilder}
+     * 从ElasticSearch中获取数据
+     * @param param ElasticSearch搜索条件
+     * @return {@link PageResult<EsGoods>}
      */
-
     protected PageResult<EsGoods> searchGoodsPageByParam(EsSearchParam param) throws IOException {
-        Page esPage;
         SearchSourceBuilder sourceBuilder;
-        Integer pageRows = param.getPageRows();
-        Integer currentPage= param.getCurrentPage();
 
         PageResult<EsGoods> result = new PageResult<>();
         //isQueryByPage == false代表ES搜索不需要进行分页
         if( !param.isQueryByPage() ){
-            esPage = Page.getPage(1,1,1);
+            Page esPage = Page.getPage(1,1,1);
             EsSearchSourceBuilderParam searchParam = assemblySourceBuilderParam(param,esPage,GOODS_SEARCH_STR,null);
             sourceBuilder = assemblySearchSourceBuilder(searchParam);
             result.setPage(esPage);
@@ -265,7 +262,14 @@ public class EsBaseSearchService extends ShopBaseService {
         return data;
     }
 
-
+    /**
+     * 封装处理ElasticSearch的查询配置条件
+     * @param param 存储大部分的查询配置
+     * @param esPage 处理分页所需的数据
+     * @param include ElasticSearch返回的查询字段
+     * @param exclude ElasticSearch不返回的查询字段
+     * @return ElasticSearch的查询配置条件
+     */
     EsSearchSourceBuilderParam assemblySourceBuilderParam(EsSearchParam param, Page esPage,
                                                           String[] include, String[] exclude) {
         EsSearchSourceBuilderParamBuilder builder = EsSearchSourceBuilderParamBuilder.builder();
@@ -292,5 +296,21 @@ public class EsBaseSearchService extends ShopBaseService {
             builder.excludeSource(exclude);
         }
         return builder.build();
+    }
+
+    /**
+     * 根据ElasticSearch的_id查询对应的数据
+     * @param goodsId 商品Id
+     * @param shopId 店铺Id
+     * @return 单条商品的信息
+     * @throws IOException ElasticSearch连接异常
+     */
+    EsGoods getEsGoodsById(Integer goodsId,Integer shopId) throws IOException {
+        QueryBuilder queryBuilder = QueryBuilders.termQuery("_id",shopId.toString()+goodsId);
+        SearchSourceBuilder sourceBuilder = SearchSourceBuilder.searchSource()
+            .query(queryBuilder)
+            .fetchSource(new String[]{},null);
+        List<EsGoods> list = searchEsGoods(assemblySearchRequest(sourceBuilder,EsDataInitService.ES_GOODS));
+        return list.size()>0?list.get(0):null;
     }
 }
