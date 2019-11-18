@@ -1,15 +1,5 @@
 package com.vpu.mp.service.shop.coupon;
 
-import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.USER;
-
-import java.sql.Timestamp;
-
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
-import org.springframework.stereotype.Service;
-
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.db.shop.tables.CustomerAvailCoupons;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
@@ -18,6 +8,13 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 用户持有的优惠券

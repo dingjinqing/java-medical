@@ -1189,3 +1189,8 @@ MODIFY COLUMN    `service_list`         varchar(191)  default '[]' comment '当t
 MODIFY COLUMN    `remarks`              varchar(1024) default '' comment '备注',
 MODIFY COLUMN    `del_flag`             tinyint(1)  default 0 comment '0正常，1删除';
 
+--添加分裂优惠券相关字端
+alter table `b2c_mrking_voucher` add column `random_min` int(11) not null default 0    COMMENT '分裂优惠卷随机金额最低';
+alter table `b2c_mrking_voucher` add column `random_max` int(11) not null default 0    COMMENT '分裂优惠卷随机金额最高';
+alter table `b2c_mrking_voucher` add column `receive_per_num` smallint(3) not null default 0    COMMENT '分裂优惠券领券人数是否限制 0不限制 1限制';
+alter table `b2c_mrking_voucher` add column `receive_num` int(11) not null default 0    COMMENT '分裂优惠券可领券人数';

@@ -64,7 +64,7 @@ public class CouponProcessorDao extends ShopBaseService {
      * @param date 时间
      * @return 优惠券信息
      */
-    public List<MrkingVoucherRecord> getGoodsCouponForDetail(Integer goodsId,Integer catId,Integer sortId,Timestamp date) {
+    public List<MrkingVoucherRecord> getGoodsCouponForDetail(Integer goodsId, Integer catId, Integer sortId, Timestamp date) {
 
         Condition condition =buildCondition(goodsId,catId,sortId,date,true);
 

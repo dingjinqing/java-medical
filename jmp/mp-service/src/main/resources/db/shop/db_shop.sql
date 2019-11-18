@@ -757,6 +757,10 @@ create table `b2c_mrking_voucher`
     `create_time`          timestamp               default current_timestamp,
     `update_time`          timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
      `limit_surplus_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否限制库存：0限制，1不限制',
+     `random_min`           int(11)          not null      default 0 comment '分裂优惠卷随机金额最低',
+      `random_max`          int(11)          not null      default 0 comment '分裂优惠卷随机金额最高',
+      `receive_per_num`     smallint(3)      not null      default 0 comment '分裂优惠券领券人数是否限制 0不限制 1限制',
+      `receive_num`         int(11)          not null      default 0 comment '分裂优惠券可领券人数',
     primary key (`id`),
     unique key `alias_code` (`alias_code`),
     key `act_name` (`act_name`)

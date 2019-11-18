@@ -50,4 +50,21 @@ public class CouponListVo {
 		 * 优惠券有效分钟数
 		 */
 		private Integer validityMinute;
+
+		/**
+		 * 分裂优惠卷随机金额最低
+		 */
+		private Integer randomMin;
+		/**
+		 * 分裂优惠卷随机金额最高
+		 */
+		private Integer randomMax;
+		/**
+		 * 分裂优惠券领券人数是否限制 0不限制 1限制
+		 */
+		private Integer receivePerNum;
+		/**
+		 * 分裂优惠券可领券人数
+		 */
+		private Integer receiveNum;
 }
