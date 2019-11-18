@@ -5,19 +5,19 @@
       :model="form"
       label-width="140px"
     >
-      <el-form-item label="分销开关：">
+      <el-form-item :label="$t('distribution.switch')">
         <el-switch
           v-model="form.status"
           :active-value='1'
           :inactive-value='0'
         ></el-switch>
         <div class="text">
-          开关默认关闭，开启开关，则用户可以申请为店铺分销员，分销员邀请用户注册产生订单，购买者邀请人可获得佣金奖励。关闭开关，手机端个人中心”分销中心“菜单隐藏，用户下单，邀请人不再产生佣金奖励，系统分销机制关闭，邀请不再记录邀请关系。
+          {{ $t('distribution.switchTip') }}
         </div>
       </el-form-item>
 
       <el-form-item
-        label="分销员审核："
+        :label="$t('distribution.reviewed')"
         v-if="form.status === 1"
       >
         <el-switch
@@ -25,33 +25,33 @@
           :active-value='1'
           :inactive-value='0'
         ></el-switch>
-        <span>若开启审核，您需要配置推广文案内容）
+        <span class="text">({{ $t('distribution.reviewedTip1') }}）
           <a
             href="javascript:void(0);"
             @click="copyWritingHandler"
-          >推广文案配置</a></span>
+          >{{ $t('distribution.reviewedTip2') }}</a></span>
         <div class="text">
-          开启分销员审核功能后，普通用户申请成为分销员时需要经过商家审核。关闭则成为店铺分销员不需要申请审核，全部用户均默认为店铺分销员。
+          {{ $t('distribution.reviewedTip3') }}
         </div>
         <template v-if="form.judge_status === 1">
           <el-checkbox
             v-model="form.invitationCode"
             :true-label='1'
             :false-label="0"
-          >用户申请成为分销员时，需要填写邀请码</el-checkbox>
-          <p>勾选后，系统自动生成分销员邀请码。 <a
+          >{{ $t('distribution.reviewedInvitation') }}</el-checkbox>
+          <p>{{ $t('distribution.invitationTip1') }} <a
               href="javascript:void(0);"
               style="color: red;"
-            >注：店铺中至少有一个分销员时，可开启此功能。</a> 如需修改邀请码，请到
+            >{{ $t('distribution.invitationTip2') }}</a> {{ $t('distribution.invitationTip3') }}
             <a
               href="javascript:void(0);"
               @click="listClickHandler"
-            >分销员列表</a> 中进行设置</p>
+            >{{ $t('distribution.invitationTip4') }}</a> {{ $t('distribution.invitationTip5') }}</p>
           <el-checkbox
             v-model="form.activation"
             :true-label='1'
             :false-label="0"
-          >用户申请成为分销员时，需要提交个人信息</el-checkbox>
+          >{{ $t('distribution.reviewedInfo') }}</el-checkbox>
 
           <div
             v-if="form.activation === 1"
@@ -69,7 +69,7 @@
       </el-form-item>
 
       <el-form-item
-        label="分销员排名："
+        :label="$t('distribution.ranking')"
         v-if="form.status === 1"
       >
         <el-switch
@@ -78,12 +78,12 @@
           :inactive-value='0'
         ></el-switch>
         <div class="text">
-          开关默认关闭，开启开关，且拥有返利数据的分销员数大于等于3位时分销员中心显示分销员佣金排名。关闭则不显示分销员佣金排名页面。
+          {{ $t('distribution.rankingTip') }}
         </div>
       </el-form-item>
 
       <el-form-item
-        label="返利有效期："
+        :label="$t('distribution.validity')"
         v-if="form.status === 1"
       >
         <el-radio-group v-model="form.vaild">
@@ -92,15 +92,15 @@
               style="width: 100px;"
               v-model.number="vaildDate"
               :disabled="form.vaild === 0"
-            ></el-input> 天
+            ></el-input> {{ $t('distribution.validityDay') }}
           </el-radio>
-          <el-radio :label="0">永久</el-radio>
+          <el-radio :label="0">{{ $t('distribution.validityForever') }}</el-radio>
         </el-radio-group>
-        <div class="text">用户被分销员邀请注册开始计算，在该天数限制内该用户购买分销商品给分销员计算佣金返利，一旦超过该天数，则不再给分销员佣金返利，默认为空，为空表示不限制。</div>
+        <div class="text">{{ $t('distribution.validityTip') }}</div>
       </el-form-item>
 
       <el-form-item
-        label="分销员保护期："
+        :label="$t('distribution.protection')"
         v-if="form.status === 1"
       >
         <el-radio-group v-model="form.protect_date">
@@ -109,15 +109,15 @@
               style="width: 100px;"
               v-model.number="protectDate"
               :disabled="form.protect_date === 0"
-            ></el-input> 天
+            ></el-input> {{ $t('distribution.validityDay') }}
           </el-radio>
-          <el-radio :label="0">永久</el-radio>
+          <el-radio :label="0">{{ $t('distribution.validityForever') }}</el-radio>
         </el-radio-group>
-        <div class="text">在保护期内，分销员发展的客户不会变更绑定关系，保护期过后可通过分享链接重新绑定邀请关系。 超过保护期若未重新建立邀请关系，则原绑定关系仍然有效，可依据返利配置条件返利。若保护期设置为0天，则用户可随时通过他人分享进入小程序实现其邀请人的变更。</div>
+        <div class="text">{{ $t('distribution.protectionTip') }}</div>
       </el-form-item>
 
       <el-form-item
-        label="分销中心页面名称："
+        :label="$t('distribution.pageName')"
         v-if="form.status === 1"
       >
         <el-input
@@ -127,40 +127,40 @@
       </el-form-item>
 
       <el-form-item
-        label="推荐商品："
+        :label="$t('distribution.recommendShop')"
         v-if="form.status === 1"
       >
         <el-radio-group v-model="form.distribution_goods_type">
-          <el-radio :label="0">不显示</el-radio>
-          <el-radio :label="1">默认</el-radio>
-          <el-radio :label="2">自定义</el-radio>
+          <el-radio :label="0">{{ $t('distribution.recommendRadio1') }}</el-radio>
+          <el-radio :label="1">{{ $t('distribution.recommendRadio2') }}</el-radio>
+          <el-radio :label="2">{{ $t('distribution.recommendRadio3') }}</el-radio>
         </el-radio-group>
 
         <div v-if="form.distribution_goods_type === 2">
-          <p>将从已选商品中随机抽取10个展示在小程序端“分销中心”，引导分销员推广商品</p>
-          <el-button @click="hanldeToAddGoodS"><i class="el-icon-plus"></i> 选择商品</el-button>
+          <p class="text">{{ $t('distribution.recommendTip') }}</p>
+          <el-button @click="hanldeToAddGoodS"><i class="el-icon-plus"></i> {{ $t('distribution.chooseCommodity') }}</el-button>
           <el-table
             :data="tableData"
             border
             style="width: 500px;margin-top: 20px;"
           >
             <el-table-column
-              label="商品名称"
+              :label="$t('distribution.commodityName')"
               prop="goodsName"
               align="center"
             ></el-table-column>
             <el-table-column
-              label="价格"
+              :label="$t('distribution.commodityPrice')"
               prop="shopPrice"
               align="center"
             ></el-table-column>
             <el-table-column
-              label="库存"
+              :label="$t('distribution.commodityStock')"
               prop="goodsNumber"
               align="center"
             ></el-table-column>
             <el-table-column
-              label="操作"
+              :label="$t('distribution.commodityOption')"
               align="center"
             >
               <template slot-scope="scope">
@@ -168,7 +168,7 @@
                   type="primary"
                   size="mini"
                   @click="deleteTable(scope.$index)"
-                >删除</el-button>
+                >{{ $t('distribution.commodityDelete') }}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -176,7 +176,7 @@
       </el-form-item>
 
       <el-form-item
-        label="自定义内容："
+        :label="$t('distribution.customContent')"
         v-if="form.status === 1"
       >
 
@@ -192,15 +192,15 @@
           ></i>
         </div>
 
-        <el-button @click="chooseTemplate"><i class="el-icon-plus"></i> 选择模板</el-button>
+        <el-button @click="chooseTemplate"><i class="el-icon-plus"></i> {{ $t('distribution.selectTemplate') }}</el-button>
         <a
           href="javascript:void(0);"
           style="margin: 0 20px;"
-        >刷新</a>
+        >{{ $t('distribution.refresh') }}</a>
         <a
           href="javascript:void(0);"
           @click="templateHandler"
-        >添加模板</a>
+        >{{ $t('distribution.addTemplate') }}</a>
       </el-form-item>
 
       <!-- 展开更多配置 -->

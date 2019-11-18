@@ -33,6 +33,45 @@ export const en = {
   distributorAudit: 'distributor Audit',
   advertisement: 'advertisement',
 
+  // ---------------------分销配置----------------
+  switch: 'Distribution Switch：',
+  switchTip: 'The switch is off by default and on by default. Then the user can apply for the store distributor. The distributor invites the user to register to generate an order, and the buyer invitee can get commission reward. Turn off the switch. The menu of "distribution center" in the personal center of mobile phone is hidden. When the user places an order, the invitee will no longer generate Commission reward. The system distribution mechanism is closed, and the invitation relationship will no longer be recorded.',
+  reviewed: 'Reviewed By Distributor：',
+  reviewedTip1: 'If the audit is enabled, you need to configure the promotion copy content',
+  reviewedTip2: 'Promotion of copywriting',
+  reviewedTip3: 'After the function of distributor approval is enabled, the application of ordinary users to become distributors needs to be approved by merchants. If you close, you do not need to apply for approval to become a store distributor. All users are store distributors by default.',
+  reviewedInvitation: 'When a user applies to become a distributor, he / she needs to fill in the invitation code',
+  invitationTip1: 'After checking, the system will automatically generate the distributor invitation code.',
+  invitationTip2: 'Note: this function can be enabled when there is at least one distributor in the store.',
+  invitationTip3: 'To change the invitation code, please go to',
+  invitationTip4: 'List of distributors',
+  invitationTip5: 'Set up',
+  reviewedInfo: 'When users apply to become distributors, they need to submit personal information',
+  ranking: 'Distributor Ranking：',
+  rankingTip: 'By default, the switch is off and on. When the number of distributors with rebate data is greater than or equal to 3, the distributor center displays the distributor Commission ranking. If it is closed, the distributor Commission ranking page will not be displayed.',
+  validity: 'Validity Of Rebate：',
+  validityDay: 'Days',
+  validityForever: 'Permanent',
+  validityTip: 'When a user is invited by a distributor to register and start calculation, the user purchases the distributed goods and calculates commission rebate to the distributor within the limit of the number of days. Once the number of days is exceeded, no commission rebate will be given to the distributor. The default value is blank, which means there is no limit.',
+  protection: 'Distributor Protection Period：',
+  protectionTip: 'During the protection period, the customers developed by the distributor will not change the binding relationship. After the protection period, they can rebind the invitation relationship through the sharing link If the invitation relationship is not re established after the protection period, the original binding relationship is still valid. Rebate can be configured according to rebate conditions. If the protection period is set to 0 days, users can enter the applet through sharing at any time to realize the change of their invitee.',
+  pageName: 'Distribution Center Page Name：',
+  recommendShop: 'Pick Of The Week：',
+  recommendRadio1: 'No display',
+  recommendRadio2: 'default',
+  recommendRadio3: 'custom',
+  recommendTip: '10 selected products will be randomly selected and displayed in the "distribution center" of the applet to guide the distributors to promote the products',
+  chooseCommodity: 'Choose commodity',
+  commodityName: 'Commodity Name',
+  commodityPrice: 'Price',
+  commodityStock: 'Stock',
+  commodityOption: 'Option',
+  commodityDelete: 'delete',
+  customContent: 'Custom Content：',
+  selectTemplate: 'Select Template',
+  refresh: 'refresh',
+  addTemplate: 'Add Template',
+
   // ---------------------分销推广语----------------
   // 列表搜索框
   endModifyTime: 'Last modified time',
@@ -52,4 +91,6 @@ export const en = {
   addNote: 'Please enter the distribution promotion language to help the distributor to promote the circle of friends：',
   cancleBtn: 'cancle',
   confirmBt: 'confirm'
+
+  // ---------------------分销配置----------------
 }

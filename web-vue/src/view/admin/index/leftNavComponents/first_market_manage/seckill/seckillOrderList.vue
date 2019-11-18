@@ -2,118 +2,11 @@
   <div class="content">
 
     <div class="main">
-      <!-- <el-form label-width="100px">
-        <el-row :gutter=24>
-          <el-col :span="6">
-            <el-form-item label="商品名称">
-              <el-input
-                placeholder="商品名称"
-                v-model="requestParams.goodsName"
-                size="small"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="订单号">
-              <el-input
-                placeholder="订单号"
-                v-model="requestParams.orderSn"
-                size="small"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="订单状态">
-              <el-select
-                size="small"
-                v-model="requestParams.orderStatus"
-                class="inputWidth"
-              >
-                <el-option
-                  v-for="(item,key) in orderStatusArr"
-                  :key="key"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter=24>
-          <el-col :span="6">
-            <el-form-item label="收件人姓名">
-              <el-input
-                placeholder="收件人姓名"
-                v-model="requestParams.consignee"
-                size="small"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="收件人手机号">
-              <el-input
-                placeholder="收件人手机号"
-                v-model="requestParams.mobile"
-                size="small"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="6"
-            :offset="0"
-          >
-            <el-form-item label="下单时间">
-              <el-date-picker
-                type="datetime"
-                placeholder="下单时间"
-                v-model="requestParams.createTimeStart"
-                size="small"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                class="date_picker inputWidth"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter=24>
-          <el-col :span="10">
-            <el-form-item label="收货地址">
-              <areaLinkage
-                @areaData="handleAreaData"
-                style="width:380px;"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="4"
-            style="margin:4px 0 0 -50px"
-          >
-            <el-button
-              type="primary"
-              size="small"
-              @click="initDataList"
-            >筛选</el-button>
-            <el-button
-              type="default"
-              size="small"
-            >导出数据</el-button>
-          </el-col>
-        </el-row>
-      </el-form> -->
-
       <marketOrderSearchTab
         :requestParams="requestParams"
         @filter="initDataList"
         @export="exportDataList"
       />
-
     </div>
 
     <div class="table_list">

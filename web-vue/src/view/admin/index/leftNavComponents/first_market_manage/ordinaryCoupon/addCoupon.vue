@@ -156,21 +156,18 @@
                       <span>
                         <el-input
                           :disabled="param.validityType===1?false:true"
-                          @blur="checkNum"
                           v-model="param.validity"
                           size="small"
                           class="small_input"
                         ></el-input> {{ $t('ordinaryCoupon.appointDay') }}
                         <el-input
                           :disabled="param.validityType===1?false:true"
-                          @blur="checkNum"
                           v-model="param.validityHour"
                           size="small"
                           class="small_input"
                         ></el-input> {{ $t('ordinaryCoupon.appointHour') }}
                         <el-input
                           :disabled="param.validityType===1?false:true"
-                          @blur="checkNum"
                           v-model="param.validityMinute"
                           size="small"
                           class="small_input"
@@ -192,7 +189,6 @@
                       <span>
                         <el-input
                           :disabled="param.surplus===1?false:true"
-                          @blur="checkNum"
                           v-model.number="param.totalAmount"
                           size="small"
                           class="small_input"
@@ -223,7 +219,6 @@
                       <el-input
                         :disabled="param.preferentialType==2?false:true"
                         v-model="param.randomNum1"
-                        @blur="checkNum"
                         size="small"
                         class="small_input"
                       ></el-input>
@@ -231,7 +226,6 @@
                       <el-input
                         :disabled="param.preferentialType==2?false:true"
                         v-model="param.randomNum2"
-                        @blur="checkNum"
                         size="small"
                         class="small_input"
                       ></el-input>
@@ -248,7 +242,6 @@
                         <el-input
                           :disabled="param.preferentialType==0?false:true"
                           v-model.number="param.denomination"
-                          @blur="checkNum"
                           size="small"
                           class="small_input"
                         ></el-input> {{ $t('ordinaryCoupon.typeTip4') }}
@@ -263,7 +256,6 @@
                       <el-input
                         :disabled="param.preferentialType==1?false:true"
                         v-model="param.denomination2"
-                        @blur="checkDiscount"
                         size="small"
                         class="small_input"
                       ></el-input> {{ $t('ordinaryCoupon.typeTip5') }}
@@ -273,21 +265,20 @@
                 </el-form-item>
                 <el-form-item
                   :label="$t('ordinaryCoupon.isRandom') + '：'"
-                  prop="isRandom"
+                  prop="useScore"
                 >
                   <div>
                     <el-radio
-                      v-model="param.isRandom"
+                      v-model="param.useScore"
                       :label='0'
                     >{{ $t('ordinaryCoupon.randomRadio1') }}</el-radio>
                     <el-radio
-                      v-model="param.isRandom"
+                      v-model="param.useScore"
                       :label='1'
                     >{{ $t('ordinaryCoupon.randomRadio2') }}</el-radio>
-                    <p v-if="param.isRandom== 1">
+                    <p v-if="param.useScore== 1">
                       <el-input
                         v-model="param.scoreNumber"
-                        @blur="checkNum"
                         class="small_input"
                         size="small"
                       ></el-input>
@@ -358,7 +349,6 @@
                 >
                   <el-input
                     v-model="param.validationCode"
-                    @blur="checkCode"
                     size="small"
                     class="coupon_name_input"
                   ></el-input>
@@ -421,7 +411,6 @@
                           :disabled="param.useConsumeRestrict === 0"
                           size="small"
                           v-model.number="param.leastConsume"
-                          @blur="checkNum"
                           class="small_input"
                         ></el-input>
                         {{ $t('ordinaryCoupon.restrictTip') }}
@@ -513,44 +502,62 @@ export default {
   data () {
     // 自定义校验有效期
     var validateTime = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
       if (value === 0 && this.param.couponDate === '') {
         callback(new Error(this.$t('ordinaryCoupon.validateTime1')))
       } else if (value === 1 && (this.param.validity === '' || this.param.validityHour === '' || this.param.validityMinute === '')) {
         callback(new Error(this.$t('ordinaryCoupon.validateTime2')))
+      } else if (value === 1 && (!re.test(this.param.validity) || !re.test(this.param.validityHour) || !re.test(this.param.validityMinute))) {
+        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
       }
     }
     // 自定义校验初始库存
     var validateSurplus = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
       if (value === 1 && this.param.totalAmount === null) {
         callback(new Error(this.$t('ordinaryCoupon.validateSurplus')))
+      } else if (value === 1 && !re.test(this.param.totalAmount)) {
+        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
       }
     }
     // 自定义校验优惠类型
     var validatePreferentialType = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re2 = /^((0\.[1-9]{1})|(([1-9]{1})(\.\d{1})?))$/
       if (value === 0 && this.param.denomination === null) {
         callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType1')))
       } else if (value === 1 && this.param.denomination2 === null) {
         callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType2')))
+      } else if (value === 0 && !re.test(this.param.denomination)) {
+        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
+      } else if (value === 1 && !re2.test(this.param.denomination2)) {
+        callback(new Error(this.$t('ordinaryCoupon.validateDiscount')))
       } else {
         callback()
       }
     }
     // 自定义校验积分兑换
     var validateisRandom = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
       if (value === 1 && this.param.scoreNumber === null) {
         callback(new Error(this.$t('ordinaryCoupon.validateisRandom')))
+      } else if (value === 1 && !re.test(this.param.scoreNumber)) {
+        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
       }
     }
     // 自定义校验使用门槛
     var validateuseConsumeRestrict = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
       if (value === 1 && this.param.leastConsume === null) {
         callback(new Error(this.$t('ordinaryCoupon.validateuseConsumeRestrict')))
+      } else if (value === 1 && !re.test(this.param.leastConsume)) {
+        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
       }
@@ -579,7 +586,7 @@ export default {
         // aliasCode: '', // 唯一活动代码
         preferentialType: 0,
         useConsumeRestrict: 0, // 使用门槛
-        isRandom: 0, // 是否需要积分
+        useScore: 0, // 是否需要积分
         receivePerPerson: 0, // 每人限领
         cardId: '',
         validityType: 0, // 有效期
@@ -618,7 +625,7 @@ export default {
         validityType: { required: true, validator: validateTime, trigger: 'change' },
         surplus: { required: true, validator: validateSurplus, trigger: 'change' },
         preferentialType: { required: true, validator: validatePreferentialType, trigger: 'change' },
-        isRandom: { required: true, validator: validateisRandom, trigger: 'change' },
+        useScore: { required: true, validator: validateisRandom, trigger: 'change' },
         receivePerPerson: { required: true, message: this.$t('ordinaryCoupon.validatereceivePerPerson'), trigger: 'change' },
         useConsumeRestrict: { required: true, validator: validateuseConsumeRestrict, trigger: 'change' },
         suitGoods: { required: true, validator: validatesuitGoods, trigger: 'change' }
@@ -686,9 +693,6 @@ export default {
     this.noneBlockDiscArr = this.$t('ordinaryCoupon.noneBlockDiscArr')
   },
   methods: {
-    handleClick () {
-
-    },
     dataDefalut () {
       this.$http.$on('result', res => {
         this.param.recommendGoodsId = res.join()
@@ -752,9 +756,9 @@ export default {
           // 积分兑换
           this.param.scoreNumber = data.scoreNumber
           if (this.param.scoreNumber > 0) {
-            this.param.isRandom = 1
+            this.param.useScore = 1
           } else {
-            this.param.isRandom = 0
+            this.param.useScore = 0
           }
           // 每人限领
           this.param.receivePerPerson = data.receivePerson
@@ -813,28 +817,6 @@ export default {
           this.commInfo = this.platClass
           break
       }
-    },
-    // 校验文本框
-    checkNum (e) {
-      // 非0正整数
-      var re = /^(0|\+?[1-9][0-9]*)$/
-      if (!re.test(e.target.value)) {
-        this.$message.warning({ message: this.$t('ordinaryCoupon.validateNum') })
-      }
-    },
-    // 校验打折
-    checkDiscount (e) {
-      var re = /^((0\.[1-9]{1})|(([1-9]{1})(\.\d{1})?))$/
-      if (!re.test(e.target.value)) {
-        this.$message.warning({ message: this.$t('ordinaryCoupon.validateDiscount') })
-      }
-    },
-    // 校验领取码
-    checkCode (e) {
-      // var re = /^$/
-      // if (!re.test(e.target.value)) {
-      //   this.$message.warning({ message: '请输入正确的领取码！' })
-      // }
     },
     // 保存优惠券
     saveCoupon () {

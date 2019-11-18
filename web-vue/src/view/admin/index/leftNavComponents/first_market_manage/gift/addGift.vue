@@ -23,15 +23,20 @@
 
       <!-- 设置赠品规则 -->
       <div v-if="step===1">
-        <el-row style="margin-bottom:20px;">
-          <el-col :span="2">
-            <span class="label">{{ $t('gift.stepsUp') }}</span>
-          </el-col>
-          <el-col :span="20">
-            <el-form label-width="120px">
+        <el-form
+          ref="param"
+          :rules="paramRules"
+          :model="param"
+          label-width="120px"
+        >
+          <el-row style="margin-bottom:20px;">
+            <el-col :span="2">
+              <span class="label">{{ $t('gift.stepsUp') }}</span>
+            </el-col>
+            <el-col :span="20">
               <el-form-item
                 :label="$t('gift.activityName') + '：'"
-                :rules="[{required: true}]"
+                prop="name"
               >
                 <el-input
                   size="small"
@@ -42,7 +47,7 @@
               </el-form-item>
               <el-form-item
                 :label="$t('gift.activityLevel') + '：'"
-                :rules="[{required: true}]"
+                prop="level"
               >
                 <el-input
                   size="small"
@@ -54,12 +59,14 @@
               </el-form-item>
               <el-form-item
                 :label="$t('gift.activityTime') + '：'"
-                :rules="[{required: true}]"
+                prop="dateRange"
               >
                 <el-date-picker
                   size="small"
-                  v-model="dateRange"
+                  v-model="param.dateRange"
                   type="datetimerange"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  format="yyyy-MM-dd HH:mm:ss"
                   :range-separator="$t('gift.to')"
                   :start-placeholder="$t('gift.startTime')"
                   :end-placeholder="$t('gift.endTime')"
@@ -67,40 +74,38 @@
                 >
                 </el-date-picker>
               </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row>
-        <el-row style="margin-bottom:20px">
-          <el-col :span="2">
-            <span class="label">{{ $t('gift.stepsDown') }}</span>
-          </el-col>
-          <el-col :span="20">
-            <el-form label-width="120px">
+            </el-col>
+          </el-row>
+          <el-row style="margin-bottom:20px">
+            <el-col :span="2">
+              <span class="label">{{ $t('gift.stepsDown') }}</span>
+            </el-col>
+            <el-col :span="20">
               <el-form-item
                 :label="$t('gift.commodity') + '：'"
-                :rules="[{required: true}]"
+                prop="goodsRange"
               >
                 <el-radio
                   v-for="(item, index) in goodsRanges"
                   :key="index"
-                  v-model="goodsRange"
+                  v-model="param.goodsRange"
                   :label="index"
                   :disabled="ongoing"
                 >{{item}}</el-radio>
                 <el-button
                   size="small"
-                  v-show="goodsRange===1"
+                  v-show="param.goodsRange===1"
                   @click="showChoosingGoods"
                 >{{goodsBtnName}}</el-button>
-                <span v-show="goodsRange===1">{{ $t('gift.selected') }}：{{goodslength}} {{ $t('gift.selectedNUm') }}</span>
+                <span v-show="param.goodsRange===1">{{ $t('gift.selected') }}：{{goodslength}} {{ $t('gift.selectedNUm') }}</span>
               </el-form-item>
               <el-form-item
                 :label="$t('gift.giftConditions') + '：'"
-                :rules="[{required: true}]"
+                prop="selectedRules"
               >
                 <el-select
                   size="small"
-                  v-model="selectedRules"
+                  v-model="param.selectedRules"
                   multiple
                   :multiple-limit="3"
                   :disabled="ongoing"
@@ -116,7 +121,7 @@
                 </el-select>
                 <span style="color: #999;">{{ this.$t('gift.conditionsTip') }}</span>
               </el-form-item>
-              <div style="background:rgb(245,245,245);margin-bottom:22px;">
+              <div style="background:rgb(245,245,245);margin-bottom:22px;padding: 20px;">
                 <el-form-item
                   :label="$t('gift.conditions1')"
                   v-show="contains(0)"
@@ -246,7 +251,7 @@
               </div>
               <el-form-item
                 :label="$t('gift.ruleDescription') + '：'"
-                :rules="[{required: true}]"
+                prop="explain"
               >
                 <el-input
                   type="textarea"
@@ -268,9 +273,10 @@
                   >{{ this.$t('gift.forExample') }}</el-button>
                 </el-popover>
               </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row>
+            </el-col>
+          </el-row>
+        </el-form>
+
       </div>
 
       <!-- 设置赠品 -->
@@ -353,8 +359,9 @@
                     type="primary"
                     size="medium"
                     v-show="!ongoing"
-                    @click="tableData.splice(tableData.findIndex(r=>r.productId===scope.row.productId),1)"
+                    @click="deleteHandler(scope.$index, scope.row)"
                   >{{ $t('gift.delete') }}</el-button>
+
                 </template>
               </el-table-column>
             </el-table>
@@ -410,7 +417,7 @@ import wrapper from '@/components/admin/wrapper/wrapper'
 import inputEdit from '@/components/admin/inputEdit'
 import choosingGoods from '@/components/admin/choosingGoods'
 import status from '@/components/admin/marketManage/status/status'
-import { format, range } from '@/util/date'
+// import { format, range } from '@/util/date'
 // import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
 
@@ -421,18 +428,43 @@ export default {
     choosingGoods
   },
   data () {
+    var validatelevel = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('请填写活动优先级'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写0或者正整数'))
+      } else {
+        callback()
+      }
+    }
+    var validategoodsRange = (rule, value, callback) => {
+      if (value === 1 && this.goodslength === 0) {
+        callback(new Error('请选择指定活动商品'))
+      } else {
+        callback()
+      }
+    }
+    var validateselectedRules = (rule, value, callback) => {
+      if (value.length === 0) {
+        callback(new Error('请选择赠品条件'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       id: null,
       step: 1,
       steps: this.$t('gift.steps'),
       // 活动时间范围
-      dateRange: [],
+      // dateRange: [],
       // 支付时间范围
       payDateRange: [],
       tags: [],
       cards: [],
       // 0：全部商品，1：指定商品
-      goodsRange: 0,
+      // goodsRange: 0,
       goodsRanges: this.$t('gift.goodsRanges'),
       // 当前页为编辑页
       update: false,
@@ -441,9 +473,12 @@ export default {
       param: {
         name: '',
         level: '',
+        dateRange: '', // 活动时间范围
         startTime: '',
         endTime: '',
+        goodsRange: 0, // 0：全部商品，1：指定商品
         goodsIds: [],
+        selectedRules: [], // 当前已选规则序号
         explain: '',
         rules: {
           fullPrice: null,
@@ -459,11 +494,20 @@ export default {
         },
         gifts: []
       },
+      // 校验
+      paramRules: {
+        name: { required: true, message: '请填写活动名称', trigger: 'blur' },
+        level: { required: true, validator: validatelevel, trigger: 'blur' },
+        dateRange: { required: true, message: '请填写活动时间', trigger: 'change' },
+        goodsRange: { required: true, validator: validategoodsRange, trigger: 'change' },
+        selectedRules: { required: true, validator: validateselectedRules, trigger: 'change', type: 'array' },
+        explain: { required: true, message: '请填写赠品规则说明', trigger: 'blur' }
+      },
       userAction: this.$t('gift.userAction'),
       // 系统中的全部赠品规则
       rules: this.$t('gift.rules'),
       // 当前已选规则序号
-      selectedRules: [],
+      // selectedRules: [],
       // 赠品表格
       tableData: [],
       // 选中商品id
@@ -500,6 +544,7 @@ export default {
   },
   mounted () {
     this.langDefault()
+    this.param.selectedRules = []
     const { id } = this.$route.params
     this.update = !!id
     this.id = id || null
@@ -513,14 +558,20 @@ export default {
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
+    // 下一步
     nextStep () {
       this.formatParam()
       if (!this.validateParam()) {
         return
       }
-      this.step++
+      this.$refs['param'].validate((valid) => {
+        if (valid) {
+          this.step++
+        }
+      })
       // this.transmitEditGoodsId(this.tmpGiftGoodsIds)
     },
+    // 上一步
     lastStep () {
       this.step--
       // this.transmitEditGoodsId(this.tmpGoodsIds)
@@ -532,12 +583,11 @@ export default {
         return
       }
       if (this.update) {
-        // this.param.gifts.map((item, index) => {
-        //   item.productId = item.prdId
-        //   item.productNumber = Number(item.productNumber)
-        // })
+        var obj = {}
+        obj = this.param
+        obj.id = this.id
         // 编辑保存
-        updateGift(this.param).then((res) => {
+        updateGift(obj).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: this.$t('gift.editSuccess') })
             this.$router.replace('/admin/home/main/gift')
@@ -551,6 +601,7 @@ export default {
           item.productId = item.prdId
           item.productNumber = Number(item.productNumber)
         })
+
         addGift(this.param).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: this.$t('gift.saveSuccess') })
@@ -568,19 +619,22 @@ export default {
     },
     // 格式化入参时间
     formatTime () {
-      const { dateRange, payDateRange } = this
-      let startTime = range(dateRange).v1
-      let endTime = range(dateRange).v2
-      this.param.startTime = format(startTime)
-      this.param.endTime = format(endTime)
-      startTime = range(payDateRange).v1
-      endTime = range(payDateRange).v2
-      this.param.rules.payStartTime = format(startTime)
-      this.param.rules.payEndTime = format(endTime)
+      this.param.startTime = this.param.dateRange[0]
+      this.param.endTime = this.param.dateRange[1]
+
+      // const { dateRange, payDateRange } = this
+      // let startTime = range(dateRange).v1
+      // let endTime = range(dateRange).v2
+      // this.param.startTime = format(startTime)
+      // this.param.endTime = format(endTime)
+      // startTime = range(payDateRange).v1
+      // endTime = range(payDateRange).v2
+      // this.param.rules.payStartTime = format(startTime)
+      // this.param.rules.payEndTime = format(endTime)
     },
     // 处理商品规则
     formatRules () {
-      const { selectedRules } = this
+      const { selectedRules } = this.param
       // 将 param.rules 中，不在已选规则序号中的属性赋值 null
       Object.keys(this.param.rules).forEach(key => {
         const index = this.rules.findIndex(rule => undefined !== rule.keys.find(k => k === key))
@@ -588,6 +642,15 @@ export default {
           this.param.rules[key] = null
         }
       })
+
+      // const { selectedRules } = this
+      // // 将 param.rules 中，不在已选规则序号中的属性赋值 null
+      // Object.keys(this.param.rules).forEach(key => {
+      //   const index = this.rules.findIndex(rule => undefined !== rule.keys.find(k => k === key))
+      //   if (undefined === selectedRules.find(rule => rule === index)) {
+      //     this.param.rules[key] = null
+      //   }
+      // })
     },
     // 处理活动商品和赠品
     formatGoods () {
@@ -604,8 +667,21 @@ export default {
       var id = this.$route.params.id
       getGiftDetail(id).then((res) => {
         if (res.error === 0) {
-          this.param = res.content
-          this.loadTime(res.content)
+          // this.param = res.content
+          // this.loadTime(res.content)
+          // this.loadRules(res.content)
+          // this.loadGoods(res.content)
+          // this.loadGifts(res.content.gifts)
+          // this.loadStatus(res.content)
+
+          var data = res.content
+          this.param.name = data.name
+          this.param.level = data.level
+          this.param.dateRange = [data.startTime, data.endTime]
+          this.param.startTime = data.startTime
+          this.param.endTime = data.endTime
+          this.param.rules = data.rules
+          this.param.explain = data.explain
           this.loadRules(res.content)
           this.loadGoods(res.content)
           this.loadGifts(res.content.gifts)
@@ -618,7 +694,7 @@ export default {
       const { rules } = content
       const { payStartTime, payEndTime } = rules
       if (payStartTime && payEndTime) {
-        this.payDateRange.push(payStartTime, payEndTime)
+        this.payDateRange = [payStartTime, payEndTime]
       }
       this.param.rules.payStartTime = payStartTime || null
       this.param.rules.payEndTime = payEndTime || null
@@ -626,8 +702,8 @@ export default {
       Object.keys(rules).forEach(key => {
         if (rules[key] !== null) {
           const index = this.rules.findIndex(rule => undefined !== rule.keys.find(k => k === key))
-          if (this.selectedRules.findIndex(rule => rule === index) === -1) {
-            this.selectedRules.push(index)
+          if (this.param.selectedRules.findIndex(rule => rule === index) === -1) {
+            this.param.selectedRules.push(index)
           }
         }
       })
@@ -637,10 +713,10 @@ export default {
       let { goodsIds } = content
       if (!goodsIds || goodsIds.length === 0) {
         // 全部商品
-        this.goodsRange = 0
+        this.param.goodsRange = 0
       } else {
         // 指定商品
-        this.goodsRange = 1
+        this.param.goodsRange = 1
         this.goodslength = goodsIds.length
         // this.tmpGoodsIds = goodsIds
         // this.transmitEditGoodsId(goodsIds)
@@ -660,8 +736,8 @@ export default {
     },
     loadTime (content) {
       const { startTime, endTime } = content
-      this.dateRange.push(startTime)
-      this.dateRange.push(endTime)
+      this.param.dateRange.push(startTime)
+      this.param.dateRange.push(endTime)
     },
     loadGifts (gifts) {
       gifts.forEach(row => {
@@ -682,7 +758,7 @@ export default {
     },
     // 已选赠品规则中是否包含某个规则序号
     contains (ruleIndex) {
-      return this.selectedRules.find(i => i === ruleIndex) !== undefined
+      return this.param.selectedRules.find(i => i === ruleIndex) !== undefined
     },
     // 查找规则
     findRule (key) {
@@ -727,6 +803,15 @@ export default {
       console.log(data)
     },
 
+    // 规格表格删除
+    deleteHandler (index) {
+      this.tableData.splice(index, 1)
+      this.specsIds = []
+      this.tableData.forEach(row => {
+        this.specsIds.push(row.prdId)
+      })
+    },
+
     // 添加一行赠品商品
     addProductRow (productId) {
       getProductDetail(this.id, productId).then(({ content }) => {
@@ -747,38 +832,9 @@ export default {
     },
     // 参数校验
     validateParam () {
-      const { param: { name, level, explain }, dateRange, goodsRange, selectedRules } = this
-      // const { tmpGoodsIds } = this
-      if (!name) {
-        this.fail('请输入活动名称')
-        return false
-      }
-      if (!level) {
-        this.fail('请输入活动优先级')
-        return false
-      }
-      if (!dateRange || dateRange.length < 2) {
-        this.fail('请选择活动时间')
-        return false
-      }
-      // if (goodsRange === 1 && (!tmpGoodsIds || tmpGoodsIds.length === 0)) {
-      //   this.fail('请选择活动商品')
-      //   return false
-      // }
-      if (goodsRange === 1 && this.goodslength === 0) {
-        this.fail('请选择活动商品')
-        return false
-      }
-      if (selectedRules.length < 1) {
-        this.fail('请选择赠品规则')
-        return false
-      }
-      if (!explain) {
-        this.fail('请输入规则说明')
-        return false
-      }
       let result = true
-      selectedRules.forEach(index => {
+
+      this.param.selectedRules.forEach(index => {
         const { label, keys } = this.rules[index]
         keys.forEach(key => {
           const value = this.param.rules[key]
@@ -788,8 +844,53 @@ export default {
           }
         })
       })
+
       return result
     },
+    // validateParam () {
+    //   const { param: { name, level, explain }, dateRange, goodsRange, selectedRules } = this
+    //   // const { tmpGoodsIds } = this
+    //   if (!name) {
+    //     this.fail('请输入活动名称')
+    //     return false
+    //   }
+    //   if (!level) {
+    //     this.fail('请输入活动优先级')
+    //     return false
+    //   }
+    //   if (!dateRange || dateRange.length < 2) {
+    //     this.fail('请选择活动时间')
+    //     return false
+    //   }
+    //   // if (goodsRange === 1 && (!tmpGoodsIds || tmpGoodsIds.length === 0)) {
+    //   //   this.fail('请选择活动商品')
+    //   //   return false
+    //   // }
+    //   if (goodsRange === 1 && this.goodslength === 0) {
+    //     this.fail('请选择活动商品')
+    //     return false
+    //   }
+    //   if (selectedRules.length < 1) {
+    //     this.fail('请选择赠品规则')
+    //     return false
+    //   }
+    //   if (!explain) {
+    //     this.fail('请输入规则说明')
+    //     return false
+    //   }
+    //   let result = true
+    //   selectedRules.forEach(index => {
+    //     const { label, keys } = this.rules[index]
+    //     keys.forEach(key => {
+    //       const value = this.param.rules[key]
+    //       if (!value || (typeof value === 'object' && value.length < 1)) {
+    //         this.fail(`请输入${label}`)
+    //         result = false
+    //       }
+    //     })
+    //   })
+    //   return result
+    // },
     // 校验赠品参数
     validateGiftParam () {
       let result = true
@@ -830,7 +931,18 @@ export default {
      * @param offerNumber 已赠送商品数
      */
     checkProductNumber (prdNumber, productNumber, offerNumber) {
+      console.log(productNumber)
       productNumber = Number(productNumber)
+      console.log(productNumber)
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (productNumber === null) {
+        this.fail('请填写赠品库存')
+        return false
+      }
+      if (!re.test(productNumber)) {
+        this.fail('赠品库存只能是0或者正整数')
+        return false
+      }
       if (prdNumber < productNumber) {
         this.fail('赠品库存不能大于商品当前库存')
         return false

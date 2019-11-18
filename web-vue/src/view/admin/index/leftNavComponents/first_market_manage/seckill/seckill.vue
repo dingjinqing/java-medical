@@ -356,7 +356,7 @@ export default {
 
     // 保存
     addSeckillSubmit () {
-      this.tabSwitch = '2'
+      this.tabSwitch = '1'
       this.initDataList()
     },
 
@@ -518,7 +518,7 @@ export default {
   width: 220px;
 }
 .opt {
-  text-align: left;
+  text-align: center;
   color: #5a8bff;
   span {
     cursor: pointer;

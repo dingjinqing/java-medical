@@ -133,6 +133,7 @@ export default {
   },
   mounted () {
     if (this.$route.query.id > 0) {
+      // 初始化数据
       this.initDataList()
     }
   },
