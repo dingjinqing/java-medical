@@ -459,6 +459,9 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_ACCOUNT = "order_pay_way_no_support_account";
     public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_SCORE = "order_pay_way_no_support_score";
     public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_CARD = "order_pay_way_no_support_card";
+    public static final String MSG_ORDER_GOODS_NO_EXIST = "MSG_ORDER_GOODS_NO_EXIST";
+    public static final String MSG_ORDER_GOODS_LOW_STOCK = "MSG_ORDER_GOODS_LOW_STOCK";
+
 
     public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";

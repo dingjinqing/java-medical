@@ -4,6 +4,9 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.order.action.*;
 
 /**
+ * ************************************************
+ * **以下枚举不可调换顺序，param与处理类依赖顺序关联 **
+ * ************************************************
  * 订单状态操作标识service枚举类;此类中的clz只是为了方便查找业务的对于service；
  * 具体关联是IOrderBase实现类与其getServiceCode里的OrderServiceCode对应
  * @author 王帅
@@ -32,5 +35,5 @@ public enum OrderServiceCode {
 	DELETE(DeleteService.class),
     //10:下单
     CREATE(CreateService.class);
-	private OrderServiceCode(Class<? extends ShopBaseService> clz){}
+	OrderServiceCode(Class<? extends ShopBaseService> clz){}
 }

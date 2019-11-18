@@ -340,7 +340,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
      * 王帅
      * 计算订单商品单个运费模板运费
      * @param districtCode 区县
-     * @param templateId 模板id
+     * @param templateId 模板id（no null）
      * @param totalNumber 总数量
      * @param totalPrice 总价
      * @param totalWeight 总重

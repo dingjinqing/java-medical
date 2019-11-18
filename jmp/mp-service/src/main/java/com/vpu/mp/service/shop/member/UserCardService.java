@@ -305,10 +305,10 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	private GradeConditionJson getGradeCondition(Integer userTotalScore, BigDecimal amount, MemberCardRecord gCard) {
-		
+
 		GradeConditionJson gradeCondition = Util.parseJson(gCard.getGradeCondition(),
 				GradeConditionJson.class);
-		
+
 		if (BigDecimalUtil.compareTo(gradeCondition.getGradeScore(), BigDecimal.ZERO) < 1) {
 			gradeCondition.setGradeScore(new BigDecimal(userTotalScore + 1000));
 		}
@@ -474,7 +474,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	private UserCardRecord createNewUserCard(Integer userId, MemberCardRecord card, boolean isActivate) {
-		UserCardRecordBuilder cardBuilder = 
+		UserCardRecordBuilder cardBuilder =
 				UserCardRecordBuilder
 				.create(db().newRecord(USER_CARD))
 				.userId(userId)
@@ -502,7 +502,7 @@ public class UserCardService extends ShopBaseService {
 		if (isActivate || isActivateNow(card)) {
 			cardBuilder.activationTime(DateUtil.getLocalDateTime());
 		}
-		
+
 		int result = 0;
 		if(isGradeCard(card) && !isHasAvailableGradeCard(userId)) {
 			logger().info("用户目前没有等级卡，设置一个等级卡: "+card.getGrade());
@@ -813,6 +813,17 @@ public class UserCardService extends ShopBaseService {
 		return userCardDao.getCardType(cardNo);
 	}
 
+    /**
+     * 王帅
+     * get card type
+     */
+    public Byte getCardByCardNo(String cardNo) {
+        if (StringUtil.isBlank(cardNo)) {
+            return null;
+        }
+        return userCardDao.getCardType(cardNo);
+    }
+
 	/**
 	 * 获取商品的等级会员价
 	 *
@@ -969,7 +980,7 @@ public class UserCardService extends ShopBaseService {
         }
         return card.getTotalDiscount();
     }
-    
+
     /**
      * 获取用户累积消费总额
      * @return 消费总额,默认为0
@@ -977,6 +988,17 @@ public class UserCardService extends ShopBaseService {
     private BigDecimal getUserTotalSpendAmount(Integer userId) {
     	DistributorSpendVo distributorSpendVo = distributorLevelService.getTotalSpend(userId);
     	return distributorSpendVo.getTotal()!=null?distributorSpendVo.getTotal():BigDecimal.ZERO;
+    }
+
+    /**
+     * 王帅
+     * get card
+     */
+    public UserCardParam getCard(String cardNo) {
+        if (StringUtil.isBlank(cardNo)) {
+            return null;
+        }
+        return userCardDao.getUserCardInfo(cardNo);
     }
 
 }

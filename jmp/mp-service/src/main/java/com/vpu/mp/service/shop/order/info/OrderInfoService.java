@@ -99,16 +99,21 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**like通配符*/
 	public final static char LIKE = '%';
+
 	/**
-	 * @param <T> <? extends OrderListVo>
 	 * @param orderId 订单id
-	 * @param clz
+	 * @param clz class
 	 * @return oneOrder
 	 */
 	public <T> T getByOrderId(Integer orderId , Class<T> clz){
 		T order = db().select(TABLE.asterisk()).from(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(clz);
 		return order;
 	}
+
+
+    public OrderInfoRecord getRecord(Integer orderId){
+        return db().selectFrom(TABLE).where(TABLE.ORDER_ID.eq(orderId)).fetchOne();
+    }
 
 	/**
 	 * @param <T> <? extends OrderListVo>

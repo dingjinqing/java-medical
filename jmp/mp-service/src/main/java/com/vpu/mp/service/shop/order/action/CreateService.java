@@ -11,6 +11,7 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
@@ -186,16 +187,25 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //订单入库
             order.store();
             order.refresh();
-            //计算系统金额
-            orderPay.payMethodInSystem(order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
+            //支付系统金额
+            orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
             //商品退款退货配置
             calculate.setGoodsReturnCfg(goodsBos, order.getGoodsType(), order.getPosFlag());
             orderGoods.addRecord(order, goodsBos);
             //必填信息
             must.addRecord(param.getMust());
             //TODO exchang、好友助力
+
+            orderBo.setOrderId(order.getOrderId());
+
+            //货到付款或者余额积分付款，生成订单时加销量减库存
+
         });
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
+        OrderInfoRecord record = orderInfo.getRecord(orderBo.getOrderId());
+
+        orderPay.isContinuePay(record);
+
         return null;
     }
 
@@ -329,7 +339,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
-    private void purchase(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
+    /**
+     *
+     * @param param
+     * @param userId
+     * @param storeId
+     * @param vo
+     * @throws MpException
+     */
+    public void purchase(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
         //TODO 返利信息
         Boolean isNewUser = orderInfo.isNewUser(userId, true);
         //规格信息,key proId
@@ -477,7 +495,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
             //TODO temp goodsprice 取规格
             boList.add(orderGoods.initOrderGoods(temp, goodsRecord));
-
         }
         param.setBos(boList);
         return boList;

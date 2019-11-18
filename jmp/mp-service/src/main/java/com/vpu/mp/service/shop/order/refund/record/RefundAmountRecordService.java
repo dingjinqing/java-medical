@@ -33,7 +33,7 @@ public class RefundAmountRecordService extends ShopBaseService{
 	public static String MEMBER_CARD_BALANCE = "member_card_balance";
 	/**余额退款*/
 	public static String USE_ACCOUNT = "use_account";
-	/**余额退款*/
+	/**积分退款*/
 	public static String SCORE_DISCOUNT = "score_discount";	
 	/**微信退款*/
 	public static String MONEY_PAID = "money_paid";	
@@ -78,12 +78,15 @@ public class RefundAmountRecordService extends ShopBaseService{
 		Map<String, Result<Record2<String, BigDecimal>>> map = where.fetchGroups(TABLE.REFUND_FIELD);
 		return map;
 	}
-	/**
-	 * 	退款动作完成记录留痕
-	 * @param order
-	 * @param returnOrder
-	 * @param money
-	 */
+
+    /**
+     * 退款动作完成记录留痕
+     * @param orderSn 订单号
+     * @param userId 用户id
+     * @param refundField 类型
+     * @param money 金额
+     * @param retId 退款订单id
+     */
 	public void addRecord(String orderSn , Integer userId ,String refundField ,BigDecimal money ,Integer retId) {
 		RefundAmountRecordRecord record = db().newRecord(TABLE);
 		record.setOrderSn(orderSn);

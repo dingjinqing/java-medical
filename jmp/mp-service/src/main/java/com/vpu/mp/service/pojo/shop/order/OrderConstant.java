@@ -120,7 +120,6 @@ public class OrderConstant {
 	/**微信*/
 	public final static String PAY_CODE_WX_PAY = "wxpay";
 	/**积分*/
-	@Deprecated
 	public final static String PAY_CODE_SCORE_PAY = "score";
 	/**余额*/
 	public final static String PAY_CODE_BALANCE_PAY = "balance";

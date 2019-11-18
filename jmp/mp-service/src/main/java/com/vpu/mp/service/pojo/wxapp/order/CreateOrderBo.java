@@ -39,6 +39,7 @@ public class CreateOrderBo {
     private OrderMemberVo currencyMember;
     private OrderCouponVo currencyCupon;
     private List<OrderGoodsBo> orderGoodsBo;
+    private Integer orderId;
 
     public void intoRecord(OrderInfoRecord orderRecord){
         if(address != null && !orderType.contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)){
