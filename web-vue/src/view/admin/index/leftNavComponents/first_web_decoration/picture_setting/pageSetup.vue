@@ -40,6 +40,7 @@ export default {
     RightCoupon: () => import('./pageSetupModules/marketingComponents/rightCoupon'), // 右侧优惠卷配置页面
     RightBargain: () => import('./pageSetupModules/marketingComponents/rightBargain'), // 右侧砍价配置页面
     RightSpike: () => import('./pageSetupModules/marketingComponents/rightSpike'), // 右侧秒杀配置页面
+    RightFightGroup: () => import('./pageSetupModules/marketingComponents/rightFightGroup'), // 右侧拼团抽奖配置页面
     // 商品组件库
     RightCommodity: () => import('./pageSetupModules/commodityComponents/rightCommodity'), // 右侧商品配置页面
     RightCommoditySearch: () => import('./pageSetupModules/commodityComponents/rightCommoditySearch'), // 右侧页面商品搜索配置页面
@@ -86,6 +87,10 @@ export default {
         {
           id: 5,
           name: 'RightSpike'
+        },
+        {
+          id: 6,
+          name: 'RightFightGroup'
         },
         {
           id: 8,

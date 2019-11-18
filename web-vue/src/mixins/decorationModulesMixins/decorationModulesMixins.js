@@ -60,6 +60,18 @@ export default {
             seckill_goods: []
           }
           break
+        case 6: // 拼团抽奖
+          obj = {
+            module_name: 'm_group_draw',
+            group_draw_id: '',
+            name_set: 0,
+            group_draw_name: '',
+            show_clock: 0,
+            font_color: '#ffffff',
+            module_bg: 0,
+            module_img: 'http://mpdevimg2.weipubao.cn/upload/0/image/20191106/crop_tRlGaiaf0WQx5Raj.jpeg'
+          }
+          break
         case 8: // 商品模块
           obj = {
             module_name: 'm_goods', // 模块名称

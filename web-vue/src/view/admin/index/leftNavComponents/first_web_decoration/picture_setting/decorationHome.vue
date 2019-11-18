@@ -198,6 +198,7 @@ export default {
     Coupon: () => import('./decorationModules/marketingComponents/Coupon'), // 优惠券
     Bargain: () => import('./decorationModules/marketingComponents/Bargain'), // 砍价
     Spike: () => import('./decorationModules/marketingComponents/Spike'), // 秒杀
+    FightGroup: () => import('./decorationModules/marketingComponents/fightGroup'), // 拼团抽奖
     // 右侧显示出口组件
     PageSetup: () => import('./pageSetup'),
     // 商品组件库
@@ -223,7 +224,7 @@ export default {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'zb', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'zb', 'zb', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'FightGroup', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'zb', 'zb', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -397,6 +398,9 @@ export default {
         case 'm_seckill':
           moduleNameId = 5
           break
+        case 'm_group_draw':
+          moduleNameId = 6
+          break
         case 'm_goods':
           moduleNameId = 8
           break
@@ -562,6 +566,9 @@ export default {
               break
             case 5:
               this_.handleToMiddleAcceptData(this._insertModulesId, this._showModulesList, insert, 5)
+              break
+            case 6:
+              this_.handleToMiddleAcceptData(this._insertModulesId, this._showModulesList, insert, 6)
               break
             case 8:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 8)
