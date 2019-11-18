@@ -38,6 +38,12 @@ public interface WxOpenMaMallService extends WxOpenMaMpHttpBase {
      * 删除收藏
      */
     static final String WX_ADDSHOPPINGLIST_DEL = "https://api.weixin.qq.com/mall/deleteshoppinglist";
+    
+    
+    /**
+     * 更新或导入物品信息
+     */
+    static final String WX_IMPORTPRODUCT_UPDATE = "https://api.weixin.qq.com/mall/importproduct";
 
     /**
      * 导入订单
@@ -83,6 +89,17 @@ public interface WxOpenMaMallService extends WxOpenMaMpHttpBase {
      */
     default WxOpenResult addshoppinglistDel(String appId,String orderList) throws WxErrorException {
     	String json = post(appId, WX_ADDSHOPPINGLIST_DEL, orderList);
+    	return WxOpenGetResult.fromJson(json);
+    }
+    
+    /**
+     * 删除收藏
+     *
+     * @param appId https调用凭证
+     *              {@value LOGISTICS_GET_ALL_DELIVERY}
+     */
+    default WxOpenResult importProductUpdate(String appId,String orderList) throws WxErrorException {
+    	String json = post(appId, WX_IMPORTPRODUCT_UPDATE, orderList);
     	return WxOpenGetResult.fromJson(json);
     }
 }
