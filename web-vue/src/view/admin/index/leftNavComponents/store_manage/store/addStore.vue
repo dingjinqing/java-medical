@@ -511,6 +511,7 @@ export default {
     } else {
       this.initMap()
     }
+    this.langDefault()
   },
   methods: {
     initData() {
