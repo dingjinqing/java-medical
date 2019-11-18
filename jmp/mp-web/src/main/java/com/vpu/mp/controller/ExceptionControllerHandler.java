@@ -32,7 +32,7 @@ public class ExceptionControllerHandler extends BaseController {
             BindingResult result = ((MethodArgumentNotValidException) e).getBindingResult();
             logger.error("valid msg:"+result.getFieldError().getDefaultMessage());
             if( result.hasErrors() ){
-                return this.fail(result.getFieldError().getDefaultMessage());
+                return this.fail(result.getFieldError().getField() + result.getFieldError().getDefaultMessage());
             }
         return null;
     }
@@ -40,7 +40,7 @@ public class ExceptionControllerHandler extends BaseController {
     public Object validExceptionHandler(BindException e){
         BindingResult result = e.getBindingResult();
         if( result.hasErrors() ){
-            return this.fail(result.getFieldError().getDefaultMessage());
+            return this.fail(result.getFieldError().getField() + result.getFieldError().getDefaultMessage());
         }
         return null;
     }
