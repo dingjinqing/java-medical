@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.config.UpYunConfig;
-import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
@@ -77,9 +76,9 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
         List<GoodsPrdMpVo> products = goodsDetailMpBo.getProducts();
 
-        List<GradePrdRecord> gradeCardPrice = goodsDetailMpBo.getGradeCardPrice();
+        List<GoodsDetailMpBo.GradePrd> gradeCardPrice = goodsDetailMpBo.getGradeCardPrice();
 
-        Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GradePrdRecord::getPrdId, GradePrdRecord::getGradePrice));
+        Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GoodsDetailMpBo.GradePrd::getPrdId, GoodsDetailMpBo.GradePrd::getGradePrice));
 
         // 规格会员价和图片路径处理
         products.forEach(prd->{

@@ -12,13 +12,18 @@ import java.math.BigDecimal;
  */
 @Data
 public class GoodsPrdMpVo {
+    //************ElasticSearch中的数据**************start
+    /**规格id*/
     private Integer prdId;
     private Integer prdNumber;
+    /** 规格最终价格，数据库取prd_price*/
     private BigDecimal prdRealPrice;
-    private BigDecimal prdLinePrice;
     private String prdSpecs;
     private String prdDesc;
     private String prdImg;
+    //************ElasticSearch中的数据**************start
+    /**规格划线价*/
+    private BigDecimal prdLinePrice;
 
     public GoodsPrdMpVo() {
     }

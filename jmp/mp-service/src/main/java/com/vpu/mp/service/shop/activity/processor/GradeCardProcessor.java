@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -87,7 +88,16 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
         List<GradePrdRecord> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
-        capsule.setGradeCardPrice(goodsGradeGradePrice);
+        List<GoodsDetailMpBo.GradePrd> list = new ArrayList<>();
+        goodsGradeGradePrice.forEach(record -> {
+            GoodsDetailMpBo.GradePrd gradePrd = new GoodsDetailMpBo.GradePrd();
+            gradePrd.setPrdId(record.getPrdId());
+            gradePrd.setGradePrice(record.getGradePrice());
+            gradePrd.setGrade(record.getGrade());
+            list.add(gradePrd);
+        });
+
+        capsule.setGradeCardPrice(list);
     }
 
     //*****************购物车处理************************

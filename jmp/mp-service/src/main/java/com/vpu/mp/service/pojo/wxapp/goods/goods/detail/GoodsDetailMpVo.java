@@ -16,6 +16,8 @@ import java.util.List;
 @Setter
 @Getter
 public class GoodsDetailMpVo extends GoodsBaseMp {
+
+    //************ElasticSearch中的数据**************start
     /**商品主图和幅图集合*/
     private List<String> goodsImgs = new ArrayList<>();
     private String goodsVideo;
@@ -33,8 +35,6 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private Byte isPageUp;
     /**商品详情描述*/
     private String goodsDesc;
-    /**是否已删除*/
-    private Byte delFlag;
     private Integer brandId;
     private String brandName;
     /**商品使用的运费模板id*/
@@ -43,19 +43,22 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private String deliverPlace;
     /**商品重量*/
     private BigDecimal goodsWeight;
-    /**商品购买时需要的运费，详情展示时的默认运费*/
-    private BigDecimal deliverPrice;
-    /**商品初始运费*/
-    /**用户是否可以购买本商品*/
-    private Boolean userCanBuy;
+    /**商品所关联的标签（包含通过catId,sortId，allId关联的）*/
     List<String> labels;
-    /**相关优惠券*/
-    List<CouponDetailMpVo> coupons;
     /**商品规格信息*/
     List<GoodsPrdMpVo> products;
+    //************ElasticSearch中的数据**************end
+
+    /**用户是否可以购买本商品*/
+    private Boolean userCanBuy;
+    /**商品购买时需要的运费，详情展示时的默认运费*/
+    private BigDecimal deliverPrice;
+    /**是否已删除*/
+    private Byte delFlag;
+    /**相关优惠券*/
+    List<CouponDetailMpVo> coupons;
     /**商品专享会员卡*/
     List<MemberCardDetailMpVo> memberCards;
-
     /** 详情页所指定的营销活动 */
     private GoodsActivityBaseMp activity;
 }
