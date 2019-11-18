@@ -60,6 +60,11 @@
 import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 export default {
   name: 'areaLinkage',
+  props: {
+    provinceCode: [String, Number],
+    cityCode: [String, Number],
+    districtCode: [String, Number]
+  },
   data () {
     return {
       placeholder: {
@@ -93,11 +98,24 @@ export default {
   methods: {
     // 获取省市区弹窗
     getData () {
+      let that = this
       getAreaSelect().then(res => {
         // console.log(res)
         const { error, content } = res
         if (error === 0) {
           this.province = content
+          if (that.provinceCode) {
+            that.$set(that.values, 'province', Number(that.provinceCode))
+            that.choseProvince(Number(that.provinceCode))
+            that.choseCity(Number(that.cityCode))
+            if (that.cityCode) {
+              that.$set(that.values, 'city', Number(that.cityCode))
+            }
+            that.choseDistrict(Number(that.districtCode))
+            if (that.districtCode) {
+              that.$set(that.values, 'district', Number(that.districtCode))
+            }
+          }
         }
       }).catch(err => console.log(err))
     },
