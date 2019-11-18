@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
+import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -20,6 +21,7 @@ import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
+import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import lombok.Getter;
@@ -55,6 +57,8 @@ public class Calculate extends ShopBaseService {
 
     @Autowired
     private TradeService trade;
+    @Autowired
+    private AddressService addressService;
 
     /**
      * 计算订单商品折扣金额
@@ -350,6 +354,29 @@ public class Calculate extends ShopBaseService {
         return result;
     }
 
+    /**
+     *  计算运费
+     * @param lat 经度
+     * @param lng 纬度
+     * @param goodsId 商品id
+     * @param templateId 模板
+     * @param totalNumber
+     * @param totalPrice
+     * @param totalWeight
+     * @return 运费
+     * @author kdc
+     */
+    public BigDecimal calculateShippingFee(String lat,String lng,Integer goodsId,Integer templateId,Integer totalNumber,BigDecimal totalPrice,BigDecimal totalWeight){
+        AddressInfo userAddress = addressService.getAddressInfo(lat, lng);
+        Integer districtCode = addressService.getUserAddressDistrictId(userAddress);
+        BigDecimal shippingFeeByTemplate =BigDecimal.ZERO;
+        try {
+            shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId,totalNumber , totalPrice, totalWeight);
+        }catch (MpException e){
+            e.printStackTrace();
+        }
+        return shippingFeeByTemplate;
+    }
     /**
      * 下单校验必填信息
      * @param orderGoods goods

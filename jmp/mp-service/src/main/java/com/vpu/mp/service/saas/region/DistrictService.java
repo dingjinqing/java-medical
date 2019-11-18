@@ -12,7 +12,7 @@ import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -22,7 +22,7 @@ public class DistrictService extends MainBaseService {
 
 	/**
 	 * 得到城市的区县列表
-	 * 
+	 *
 	 * @param cityId
 	 * @return
 	 */
@@ -53,8 +53,38 @@ public class DistrictService extends MainBaseService {
 	}
 
 	/**
+	 * 获取区县id
+	 * @param districtName 区县名称
+	 * @param cityId 城市di
+	 * @return districtId 可能为NUll
+	 */
+	public Integer getDistrictIdByNameAndCityId(Integer cityId,String districtName){
+		return db().select(DICT_DISTRICT.DISTRICT_ID).from(DICT_DISTRICT)
+				.where(DICT_DISTRICT.CITY_ID.eq(cityId))
+				.and(DICT_DISTRICT.NAME.like(likeValue(districtName)))
+				.fetchOne(DICT_DISTRICT.DISTRICT_ID);
+	}
+
+	/**
+	 * 获取区县id
+	 * @param provinceNAME
+	 * @param cityName
+	 * @param districtName
+	 * @return
+	 */
+	public Integer getDistrictIdByNames(String provinceNAME,String cityName,String districtName ){
+		return db().select(DICT_DISTRICT.DISTRICT_ID).from(DICT_DISTRICT)
+				.leftJoin(DICT_CITY).on(DICT_CITY.CITY_ID.eq(DICT_DISTRICT.CITY_ID))
+				.leftJoin(DICT_PROVINCE).on(DICT_DISTRICT.DISTRICT_ID.eq(DICT_CITY.PROVINCE_ID))
+				.where(DICT_PROVINCE.NAME.like(likeValue(provinceNAME)))
+				.and(DICT_CITY.NAME.like(likeValue(cityName)))
+				.and(DICT_DISTRICT.NAME.like(likeValue(districtName)))
+				.fetchOne(DICT_DISTRICT.DISTRICT_ID);
+	}
+
+	/**
 	 * 根据省市区名称得到详细信息
-	 * 
+	 *
 	 * @param provinceName
 	 * @param cityName
 	 * @param districtName
@@ -76,7 +106,7 @@ public class DistrictService extends MainBaseService {
 
 	/**
 	 * 添加新区
-	 * 
+	 *
 	 * @param cityId
 	 * @param districtName
 	 * @return

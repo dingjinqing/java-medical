@@ -9,7 +9,7 @@ import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -19,7 +19,7 @@ public class CityService extends MainBaseService {
 
 	/**
 	 * 得到省的城市列表
-	 * 
+	 *
 	 * @param provinceId
 	 * @return
 	 */
@@ -35,6 +35,18 @@ public class CityService extends MainBaseService {
 		return db().selectFrom(DICT_CITY)
 				.where(DICT_CITY.NAME.like(this.likeValue(cityName)).and(DICT_CITY.PROVINCE_ID.eq(provinceId)))
 				.fetchAny();
+	}
+
+	/**
+	 * 获取城市id
+	 * @param name 城市名字
+	 * @param provinceId 省id
+	 * @return 城市id
+	 */
+	public Integer getCityIdByNameAndProvinceId(Integer provinceId,String name){
+		return db().select(DICT_CITY.CITY_ID).from(DICT_CITY)
+				.where(DICT_CITY.NAME.like(likeValue(name)))
+				.and(DICT_CITY.PROVINCE_ID.eq(provinceId)).fetchOne(DICT_CITY.CITY_ID);
 	}
 
 	public int addNewCity(Integer provinceId, String cityName) {

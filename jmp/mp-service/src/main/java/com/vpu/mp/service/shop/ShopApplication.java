@@ -1,9 +1,11 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.db.shop.tables.UserAddress;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsService;
 import com.vpu.mp.service.shop.market.payaward.PayAwardService;
+import com.vpu.mp.service.shop.member.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -483,10 +485,15 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public OrderMallService orderMallService;
-	
+
 	/**
 	 * 好物圈购物车相关
 	 */
 	@Autowired
 	public CollectionMallService collectionMallService;
+	/**
+	 * 用户地址
+	 */
+	@Autowired
+	public AddressService addressService;
 }

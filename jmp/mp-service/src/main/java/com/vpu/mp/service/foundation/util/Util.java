@@ -181,7 +181,7 @@ public class Util {
             }
             return t;
         } catch (IOException e) {
-            log.error("数据 [{}] 反序列化失败", json);
+			log.error("数据 ->{}<- 反序列化失败", json);
             throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
         }
     }
@@ -200,7 +200,7 @@ public class Util {
             }
             return t;
         } catch (IOException e) {
-            log.error("数据 [{}] 反序列化失败", json);
+            log.error("数据 ->{}<- 反序列化失败", json);
             throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
         }
     }

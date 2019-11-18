@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.market.groupdraw;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.NonNull;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,16 +21,16 @@ public class GroupDrawAddParam {
     @NotEmpty
     private String name;
     /** 活动开始时间 **/
-    @NonNull
+    @NotNull
     private Timestamp startTime;
     /** 活动结束时间 **/
-    @NonNull
+    @NotNull
     private Timestamp endTime;
     /** 奖池最少人数 **/
     @NotNull
     private Short minJoinNum;
     /** 商品金额 **/
-    @NonNull
+    @NotNull
     private BigDecimal payMoney;
     /** 最大参团数量 **/
     @NotNull
@@ -43,7 +42,7 @@ public class GroupDrawAddParam {
     @NotNull
     private Short limitAmount;
     /** 最小展示人数 **/
-    @NonNull
+    @NotNull
     private Short toNumShow;
     /** 鼓励奖优惠券 **/
     private List<Integer> rewardCouponIds;

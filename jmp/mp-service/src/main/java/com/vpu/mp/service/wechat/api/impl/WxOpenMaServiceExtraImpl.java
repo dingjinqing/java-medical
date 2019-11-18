@@ -14,7 +14,7 @@ import me.chanjar.weixin.open.api.WxOpenService;
  * @author lixinguo
  *
  */
-public class WxOpenMaServiceExtraImpl implements WxOpenMaMpHttpBase, WxOpenAccountService, WxOpenMaLogisticsService,WxOpenMaMallService {
+public class WxOpenMaServiceExtraImpl implements  WxOpenAccountService, WxOpenMaLogisticsService,WxOpenMaMallService {
 
 	protected WxOpenService openService;
 

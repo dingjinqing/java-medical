@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.payaward.record;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Setter
 public class PayAwardRecordListParam {
 
-    @NonNull
+    @NotNull
     private Integer id;
     /**
      * 领取时间

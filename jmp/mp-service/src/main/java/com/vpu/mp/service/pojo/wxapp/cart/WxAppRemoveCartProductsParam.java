@@ -1,8 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.cart;
 
 import lombok.Data;
-import lombok.NonNull;
 
+
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -12,6 +13,6 @@ import java.util.List;
 @Data
 public class WxAppRemoveCartProductsParam {
 
-    @NonNull
+    @NotNull
     private List<Integer> recIds;
 }

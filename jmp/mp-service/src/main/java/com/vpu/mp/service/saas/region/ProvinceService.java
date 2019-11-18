@@ -39,10 +39,27 @@ public class ProvinceService extends MainBaseService {
 		return db().selectFrom(DICT_PROVINCE).where(DICT_PROVINCE.NAME.like(this.likeValue(provinceName))).fetchAny();
 	}
 
-	public  int updateProvinceName(String provinceName)
+    /**
+     * 通过名字查询省id
+     * @param provinceName 名称
+     * @return provinceId ro null 没有查到放回null
+     */
+	public Integer getProvinceIdByName(String provinceName){
+	    return db().select(DICT_PROVINCE.PROVINCE_ID).from(DICT_PROVINCE)
+                .where(DICT_PROVINCE.NAME.like(likeValue(provinceName)))
+                .fetchOne(DICT_PROVINCE.PROVINCE_ID);
+    }
+
+    /**
+     * 根据provinceId跟新微信地址名称
+     * @param provinceId
+     * @param provinceName
+     * @return
+     */
+	public  int updateProvinceName(Integer provinceId,String provinceName)
     {
         return db().update(DICT_PROVINCE)
-    	.set(DICT_PROVINCE.NAME,provinceName).where(DICT_PROVINCE.NAME.like(this.likeValue(provinceName))).execute();
+    	.set(DICT_PROVINCE.NAME,provinceName).where(DICT_PROVINCE.PROVINCE_ID.eq(provinceId)).execute();
     }
 
     /**

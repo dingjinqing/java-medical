@@ -1,40 +1,20 @@
 package com.vpu.mp.service.pojo.shop.member.address;
 
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+
 /**
  *
  * @author 孔德成
  * @date 2019/11/15 9:56
  */
+@Data
 public class AddressParam {
-
-    private Integer userId;
     /**
-     * 地址名称
+     * 微信地址
      */
-    private String addressName;
-    /**
-     * 收件人
-     */
-    private String consignee;
-    /**
-     * 电话
-     */
-    private String mobile;
-    /**
-     * 省
-     */
-    private Integer provinceId;
-    /**
-     * 市
-     */
-    private Integer cityId;
-    /**
-     * 区
-     */
-    private Integer districtId;
-    /**
-     * 地址
-     */
-    private String address;
+    @NotNull
+   public WxAddress wxAddress;
 
 }
