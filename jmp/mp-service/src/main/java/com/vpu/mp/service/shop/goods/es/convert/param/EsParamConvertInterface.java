@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.goods.es.convert.param;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.Fact;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 
 /**
  * param转换接口
@@ -16,15 +17,15 @@ public interface EsParamConvertInterface {
      * GoodsPageListParam实现
      * @param shopId 门店id
      * @param param {@link GoodsPageListParam}
-     * @return
+     * @return {@link EsSearchParam}
      */
-   EsSearchParam goodsPageConvert(GoodsPageListParam param,Integer shopId);
+    EsSearchParam convert(Object param,Integer shopId);
 
 
     /**
      * fact转化
      * @param name {@link com.vpu.mp.service.pojo.shop.goods.es.Fact}
-     * @return
+     * @return {@link Fact}
      */
     default Fact getFactByName(String name){
         return Fact.builder().name(name)

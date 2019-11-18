@@ -26,4 +26,6 @@ public class EsSearchParam {
      */
     private List<Fact> factList;
 
+    private boolean queryByPage;
+
 }

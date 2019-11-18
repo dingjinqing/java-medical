@@ -14,33 +14,19 @@ import java.util.Map;
 */
 public class EsConvertFactory {
 
-    private static final Map<Class<?>, EsParamConvertInterface> param_map = new HashMap<>();
+    private static final Map<Class<?>, EsParamConvertInterface> PARAM_MAP = new HashMap<>();
 
-    private static final Map<Class<?>, EsGoodsConvertInterface> goods_map = new HashMap<>();
 
     public static EsParamConvertInterface getParamConvert(Class<?> clz){
-        EsParamConvertInterface imp = param_map.get(clz);
+        EsParamConvertInterface imp = PARAM_MAP.get(clz);
         if( imp == null ){
             try {
                 imp = (EsParamConvertInterface)clz.newInstance();
-                param_map.put(clz,imp);
+                PARAM_MAP.put(clz,imp);
             }catch (IllegalAccessException | InstantiationException e) {
                 e.printStackTrace();
             }
         }
         return imp;
     }
-    public static EsGoodsConvertInterface getGoodsConvert(Class<?> clz){
-        EsGoodsConvertInterface imp = goods_map.get(clz);
-        if( imp == null ){
-            try {
-                imp = (EsGoodsConvertInterface)clz.newInstance();
-                goods_map.put(clz,imp);
-            }catch (IllegalAccessException | InstantiationException e) {
-                e.printStackTrace();
-            }
-        }
-        return imp;
-    }
-
 }

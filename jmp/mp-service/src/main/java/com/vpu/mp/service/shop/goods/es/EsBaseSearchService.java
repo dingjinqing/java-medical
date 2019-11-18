@@ -7,6 +7,8 @@ import com.vpu.mp.service.foundation.es.handler.EsRequestHandler;
 import com.vpu.mp.service.foundation.es.handler.EsSearchSourceBuilderHandler;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.shop.goods.es.convert.EsConvertFactory;
@@ -17,6 +19,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.index.query.*;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -24,8 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.service.pojo.shop.goods.es.EsSearchName.*;
@@ -112,23 +114,18 @@ public class EsBaseSearchService extends ShopBaseService {
      */
     protected EsSearchParam goodsParamConvertEsGoodsParam(GoodsPageListParam param,Integer shopId){
         EsParamConvertInterface convert = EsConvertFactory.getParamConvert(GoodsPageConvertEsParam.class);
-        return convert.goodsPageConvert(param,shopId);
+        return convert.convert(param,shopId);
     }
 
     /**
      * ElasticSearch assembly page
-     * @param searchParam 查询条件
-     * @param pageRows 单页条数
-     * @param currentPage 当前页数
      * @return {@link Page}
      * @throws IOException 连接异常
      */
-    Page assemblyPage(EsSearchSourceBuilderParam searchParam, Integer pageRows, Integer currentPage) throws IOException {
-        SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(searchParam);
-        CountRequest countRequest = assemblyCountRequest(sourceBuilder,searchParam.getIndexName());
+    Integer assemblyPage(SearchSourceBuilder sourceBuilder,String indexName) throws IOException {
+        CountRequest countRequest = assemblyCountRequest(sourceBuilder,indexName);
         CountResponse countResponse = esManager.getDocumentCount(countRequest);
-        Integer totalRow = Long.valueOf(countResponse.getCount()).intValue();
-        return Page.getPage(totalRow,currentPage,pageRows);
+        return Long.valueOf(countResponse.getCount()).intValue();
     }
 
 
@@ -173,12 +170,127 @@ public class EsBaseSearchService extends ShopBaseService {
     }
 
     /**
-     * 封装SearchSourceBuilder
+     * 封装SearchSourceBuilder(通常是封装用来getCount所需的SearchSourceBuilder)
      * @param param es对应的查询
      * @return {@link SearchSourceBuilder}
      */
     SearchSourceBuilder assemblySearchSourceBuilder(EsSearchSourceBuilderParam param){
         return esSearchSourceBuilderHandler.assemblySearchSourceBuilder(param);
     }
+    /**
+     * assembly search SearchSourceBuilder
+     * @param esPage 分页
+     * @param searchParam EsSearchSourceBuilderParam
+     * @return {@link SearchSourceBuilder}
+     */
+    SearchSourceBuilder assemblyPageSearchSourceBuilder(Page esPage,EsSearchSourceBuilderParam searchParam){
 
+        Integer size = esPage.getPageRows();
+        Integer from = (esPage.getCurrentPage()-1)*size;
+        if( from > esPage.getTotalRows() ){
+            from = esPage.getTotalRows();
+        }
+        searchParam.setIncludeSource(GOODS_SEARCH_STR);
+        searchParam.setFrom(from);
+        searchParam.setSize(size);
+        return assemblySearchSourceBuilder(searchParam);
+    }
+    /**
+     * assembly search didn't need Page SearchSourceBuilder
+     * @return {@link SearchSourceBuilder}
+     */
+
+    protected PageResult<EsGoods> searchGoodsPageByParam(EsSearchParam param) throws IOException {
+        Page esPage;
+        SearchSourceBuilder sourceBuilder;
+        Integer pageRows = param.getPageRows();
+        Integer currentPage= param.getCurrentPage();
+
+        PageResult<EsGoods> result = new PageResult<>();
+        //isQueryByPage == false代表ES搜索不需要进行分页
+        if( !param.isQueryByPage() ){
+            esPage = Page.getPage(1,1,1);
+            EsSearchSourceBuilderParam searchParam = assemblySourceBuilderParam(param,esPage,GOODS_SEARCH_STR,null);
+            sourceBuilder = assemblySearchSourceBuilder(searchParam);
+            result.setPage(esPage);
+        }else{
+            sourceBuilder =  getSearchSourceBuilderAndPage(result,EsDataInitService.ES_GOODS,param,GOODS_SEARCH_STR,null);
+        }
+        result.setDataList(searchEsGoods(assemblySearchRequest(sourceBuilder,EsDataInitService.ES_GOODS)));
+        return result;
+    }
+    SearchSourceBuilder getSearchSourceBuilderAndPage(PageResult<EsGoods> result,String indexName,EsSearchParam param,
+                                                      String[] includeSource,String[] excludeSource) throws IOException {
+        SearchSourceBuilder sourceBuilder = SearchSourceBuilder.searchSource();
+        if( param == null ){
+            return sourceBuilder;
+        }
+        QueryBuilder queryBuilder = assemblySearchBuilder(param.getSearchList());
+        sourceBuilder.query(queryBuilder);
+        if( param.isQueryByPage() ){
+            Integer totalRow =  assemblyPage(sourceBuilder,indexName);
+            Page page = Page.getPage(totalRow,param.getCurrentPage(),param.getPageRows());
+            Integer size = page.getPageRows();
+            Integer from = (page.getCurrentPage()-1)*size;
+            if( from > page.getTotalRows() ){
+                from = page.getTotalRows();
+            }
+            sourceBuilder
+                .from( from )
+                .size( size );
+        }
+        if( param.getFactList() != null ){
+            assemblyAggregationBuilder(param.getFactList()).forEach(sourceBuilder::aggregation);
+        }
+        if( includeSource != null || excludeSource != null ){
+            sourceBuilder.fetchSource(includeSource,excludeSource);
+        }
+
+        return sourceBuilder;
+    }
+
+    /**
+     * 根据搜索请求返回List<EsGoods>
+     * @param searchRequest
+     * @return
+     * @throws IOException
+     */
+    private List<EsGoods> searchEsGoods(SearchRequest searchRequest) throws IOException {
+        SearchResponse searchResponse = search(searchRequest);
+        SearchHit[] hits = searchResponse.getHits().getHits();
+        List<EsGoods> data = new LinkedList<>();
+        for( SearchHit hit:hits){
+            data.add(Util.parseJson(hit.getSourceAsString(),EsGoods.class, EsManager.ES_FILED_SERIALIZER));
+        }
+        return data;
+    }
+
+
+    EsSearchSourceBuilderParam assemblySourceBuilderParam(EsSearchParam param, Page esPage,
+                                                          String[] include, String[] exclude) {
+        EsSearchSourceBuilderParamBuilder builder = EsSearchSourceBuilderParamBuilder.builder();
+        if( param.getSearchList() != null && !param.getSearchList().isEmpty()){
+            builder.queryBuilder(assemblySearchBuilder(param.getSearchList()));
+        }
+        if( param.getFactList() != null && !param.getFactList().isEmpty() ){
+            builder.aggregations(assemblyAggregationBuilder(param.getFactList()));
+        }
+        if( !param.isQueryByPage() ){
+            return builder.build();
+        }
+        Integer size = esPage.getPageRows();
+        Integer from = (esPage.getCurrentPage()-1)*size;
+        if( from > esPage.getTotalRows() ){
+            from = esPage.getTotalRows();
+        }
+        builder.from(from);
+        builder.size(size);
+        if( include != null ){
+            builder.includeSource(include);
+        }
+        if( exclude != null){
+            builder.excludeSource(exclude);
+        }
+        return builder.build();
+    }
 }

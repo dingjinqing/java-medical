@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
+import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParamBuilder;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo;
@@ -32,7 +33,7 @@ public class EsFactSearchService extends EsBaseSearchService{
 
     public void assemblyFactByAdminGoodsListInit(GoodsInitialVo goodsInitialVo,GoodsPageListParam goodsPageListParam) throws Exception {
         EsSearchParam param = getFactSearchParamByAdminGoodsListInit(goodsPageListParam,getShopId());
-        EsSearchSourceBuilderParam searchParam = EsSearchSourceBuilderParam.builder()
+        EsSearchSourceBuilderParam searchParam = EsSearchSourceBuilderParamBuilder.builder()
             .queryBuilder(assemblySearchBuilder(param.getSearchList()))
             .aggregations(assemblyAggregationBuilder(param.getFactList()))
             .build();

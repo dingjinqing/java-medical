@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
+import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParamBuilder;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
@@ -41,7 +42,7 @@ public class EsUtilSearchService extends EsBaseSearchService{
         propertyList.add(new FieldProperty(EsSearchName.SHOP_ID,getShopId()));
         propertyList.add(new FieldProperty(EsSearchName.UPDATE_TIME, DateUtil.getBeforeLocalFor(30), Operator.LT));
         BoolQueryBuilder searchBuilder = assemblySearchBuilder(propertyList);
-        EsSearchSourceBuilderParam param = EsSearchSourceBuilderParam.builder()
+        EsSearchSourceBuilderParam param = EsSearchSourceBuilderParamBuilder.builder()
             .queryBuilder(searchBuilder)
             .build();
         SearchSourceBuilder sourceBuilder = assemblySearchSourceBuilder(param);

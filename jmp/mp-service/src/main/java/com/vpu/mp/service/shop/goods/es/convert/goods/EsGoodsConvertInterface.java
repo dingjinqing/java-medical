@@ -9,11 +9,13 @@ import com.vpu.mp.service.shop.goods.es.EsGoods;
  * @date 2019/11/6 2:32 下午
  *
 */
-public interface EsGoodsConvertInterface {
+public interface EsGoodsConvertInterface<T> {
+
     /**
      * admin列表页vo
      * @param esGoods es查询出来的结果
      * @return
      */
-    GoodsPageListVo convertToGoodsPageListVo(EsGoods esGoods);
+    T convert(EsGoods esGoods);
+
 }

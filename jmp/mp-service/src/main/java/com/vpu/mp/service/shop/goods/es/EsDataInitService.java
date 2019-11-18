@@ -35,7 +35,7 @@ public class EsDataInitService implements InitializingBean {
     @Qualifier("esConfig")
     private RestHighLevelClient restHighLevelClient;
 
-    public final static String ES_GOODS = "es_goods";
+    final static String ES_GOODS = "es_goods";
 
     private void createIndex(String indexName) throws IOException {
         CreateIndexRequest createIndexRequest = new CreateIndexRequest(indexName);
@@ -90,7 +90,7 @@ public class EsDataInitService implements InitializingBean {
         xContentBuilder.endObject().endObject();
         return xContentBuilder;
     }
-    private boolean assertIndex(String indexName) throws IOException {
+    private boolean assertIndex(String indexName){
         boolean result ;
         GetIndexRequest getIndexRequest = new GetIndexRequest(indexName);
         getIndexRequest.humanReadable(true);
@@ -106,12 +106,8 @@ public class EsDataInitService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        try {
-            if( !assertIndex(ES_GOODS) ){
-                createIndex(ES_GOODS);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if( !assertIndex(ES_GOODS) ){
+            createIndex(ES_GOODS);
         }
     }
 }

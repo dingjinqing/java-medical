@@ -11,9 +11,9 @@ import org.springframework.beans.BeanUtils;
  * @date 2019/11/12 11:01 上午
  *
 */
-public class GoodsPageListVoConverter implements EsGoodsConvertInterface {
+public class GoodsPageListVoConverter implements EsGoodsConvertInterface<GoodsPageListVo> {
     @Override
-    public GoodsPageListVo convertToGoodsPageListVo(EsGoods esGoods) {
+    public GoodsPageListVo convert(EsGoods esGoods) {
         GoodsPageListVo vo = new GoodsPageListVo();
         BeanUtils.copyProperties(esGoods,vo);
         if( null != esGoods.getMaxSpecPrdPrices() ){

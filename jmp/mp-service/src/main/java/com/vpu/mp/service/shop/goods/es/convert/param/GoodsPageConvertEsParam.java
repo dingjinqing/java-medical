@@ -5,7 +5,8 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
-import com.vpu.mp.service.shop.goods.es.convert.param.EsParamConvertInterface;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
+import com.vpu.mp.service.shop.goods.es.convert.exception.ParamConvertException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -19,8 +20,19 @@ import java.util.stream.Collectors;
  *
 */
 public class GoodsPageConvertEsParam implements EsParamConvertInterface {
+
+    private GoodsPageListParam param;
     @Override
-    public EsSearchParam goodsPageConvert(GoodsPageListParam param,Integer shopId){
+    public EsSearchParam convert(Object object,Integer shopId){
+        if( object instanceof GoodsPageListParam){
+            param = (GoodsPageListParam)object;
+            return assemblyEsSearchParam(shopId);
+        }else{
+            throw new ParamConvertException("object is not instanceof GoodsPageListParam,can't convert");
+        }
+    }
+
+    private EsSearchParam assemblyEsSearchParam(Integer shopId){
         EsSearchParam searchParam = new EsSearchParam();
         List<FieldProperty> propertyList = new ArrayList<>();
         if( param.getIsFactQuery() && param.getFactNameList() != null ){

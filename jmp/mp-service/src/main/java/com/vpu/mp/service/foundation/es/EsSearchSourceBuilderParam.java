@@ -13,7 +13,6 @@ import java.util.List;
  * @date 2019/11/12 2:08 下午
 */
 @Data
-@Builder
 public class EsSearchSourceBuilderParam {
 
     private String indexName;
@@ -29,4 +28,5 @@ public class EsSearchSourceBuilderParam {
     private Integer from;
 
     private Integer size;
+
 }
