@@ -59,8 +59,7 @@ public class CouponParam {
      */
     private String     useExplain;
     private Byte       enabled;
-    
-    private Byte       isRandom;
+
     /**
      * 每人限领张数 0:不限制
      */

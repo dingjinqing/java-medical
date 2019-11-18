@@ -22,7 +22,6 @@ public class CouponListVo {
 	    private Integer    surplus;
 	    private Byte       useConsumeRestrict;
 	    private BigDecimal    leastConsume;
-	    private Byte       isRandom;
 	    private Short      receivePerPerson;
 	    private Short      giveoutAmount;
 	    private Short      giveoutPerson;
