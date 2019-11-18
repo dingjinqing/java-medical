@@ -1,11 +1,5 @@
 package com.vpu.mp.service.shop;
 
-import com.vpu.mp.db.shop.tables.UserAddress;
-import com.vpu.mp.service.shop.goods.FootPrintService;
-import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
-import com.vpu.mp.service.shop.goods.es.EsGoodsService;
-import com.vpu.mp.service.shop.market.payaward.PayAwardService;
-import com.vpu.mp.service.shop.member.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +24,12 @@ import com.vpu.mp.service.shop.distribution.MpDistributionService;
 import com.vpu.mp.service.shop.distribution.PromotionLanguageService;
 import com.vpu.mp.service.shop.distribution.RebateGoodsService;
 import com.vpu.mp.service.shop.distribution.RebateStrategyService;
+import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
+import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
+import com.vpu.mp.service.shop.goods.es.EsGoodsService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -65,11 +62,13 @@ import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
+import com.vpu.mp.service.shop.market.payaward.PayAwardService;
 import com.vpu.mp.service.shop.market.presale.PreSaleOrderService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
+import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
@@ -89,8 +88,7 @@ import com.vpu.mp.service.shop.overview.OverviewService;
 import com.vpu.mp.service.shop.overview.RealTimeOverviewService;
 import com.vpu.mp.service.shop.overview.TransactionStatisticsService;
 import com.vpu.mp.service.shop.payment.PaymentService;
-import com.vpu.mp.service.shop.recommend.CollectionMallService;
-import com.vpu.mp.service.shop.recommend.OrderMallService;
+import com.vpu.mp.service.shop.recommend.RecommendService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
 import com.vpu.mp.service.shop.summary.visit.AmountService;
@@ -480,20 +478,17 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public CardVerifyService cardVerifyService;
-	/**
-	 * 好物圈订单相关
-	 */
-	@Autowired
-	public OrderMallService orderMallService;
 
 	/**
-	 * 好物圈购物车相关
+	 * 好物圈相关接口
 	 */
 	@Autowired
-	public CollectionMallService collectionMallService;
+	public RecommendService recommendService;
+	
 	/**
 	 * 用户地址
 	 */
 	@Autowired
 	public AddressService addressService;
+	
 }
