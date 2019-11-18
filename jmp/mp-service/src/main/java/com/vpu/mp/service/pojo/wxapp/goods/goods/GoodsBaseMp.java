@@ -9,14 +9,19 @@ import lombok.Data;
  */
 @Data
 public class GoodsBaseMp {
+    //************ElasticSearch中的数据**************start
+    /**商品ID*/
     protected Integer goodsId;
     protected String goodsName;
     /**商品销售数量*/
     protected Integer goodsSaleNum;
-    /**商品数量*/
-    protected Integer goodsNumber;
     /**是否是使用默认规格*/
     protected Boolean defaultPrd;
     /**商品评价数量*/
     private Integer commentNum;
+    //************ElasticSearch中的数据**************end
+
+
+    /**商品数量*/
+    protected Integer goodsNumber;
 }

@@ -22,6 +22,8 @@ public class GoodsListMpBo extends GoodsListMpVo {
     /**是否从ES获取数据*/
     @JsonIgnore
     private Boolean isDisposedByEs = false;
+
+    //************ElasticSearch中的数据**************start
     /** 平台、商家、品牌分类id */
     @JsonIgnore
     private Integer catId;
@@ -29,14 +31,9 @@ public class GoodsListMpBo extends GoodsListMpVo {
     private Integer sortId;
     @JsonIgnore
     private Integer brandId;
-
     /**商品初始销量*/
     @JsonIgnore
     private Integer baseSale;
-    /** 商品已被哪些processor处理过（商品列表里面将处理的营销码值存入） */
-    @JsonIgnore
-    private Set<Byte> processedTypes = new HashSet<>();
-
     /**商品主表内存储的价格*/
     @JsonIgnore
     private BigDecimal shopPrice;
@@ -46,5 +43,14 @@ public class GoodsListMpBo extends GoodsListMpVo {
     /**商品最大规格价格（用于活动商品的划线价）*/
     @JsonIgnore
     private BigDecimal prdMaxPrice;
+    //************ElasticSearch中的数据**************end
+
+
+    /** 商品已被哪些processor处理过（商品列表里面将处理的营销码值存入） */
+    @JsonIgnore
+    private Set<Byte> processedTypes = new HashSet<>();
+
+
+
 
 }
