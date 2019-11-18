@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentGoods extends TableImpl<CommentGoodsRecord> {
 
-    private static final long serialVersionUID = 1556844738;
+    private static final long serialVersionUID = 506261517;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_comment_goods</code>
@@ -94,7 +94,7 @@ public class CommentGoods extends TableImpl<CommentGoodsRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_comment_goods.comm_note</code>. 评论内容
      */
-    public final TableField<CommentGoodsRecord, String> COMM_NOTE = createField("comm_note", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "评论内容");
+    public final TableField<CommentGoodsRecord, String> COMM_NOTE = createField("comm_note", org.jooq.impl.SQLDataType.VARCHAR(255), this, "评论内容");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_goods.comm_img</code>. 评论图片
@@ -140,6 +140,16 @@ public class CommentGoods extends TableImpl<CommentGoodsRecord> {
      * The column <code>mini_shop_471752.b2c_comment_goods.update_time</code>. 最后修改时间
      */
     public final TableField<CommentGoodsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods.rec_id</code>. order_goods的rec_id
+     */
+    public final TableField<CommentGoodsRecord, Integer> REC_ID = createField("rec_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "order_goods的rec_id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods.prd_id</code>. 商品规格id
+     */
+    public final TableField<CommentGoodsRecord, Integer> PRD_ID = createField("prd_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品规格id");
 
     /**
      * Create a <code>mini_shop_471752.b2c_comment_goods</code> table reference

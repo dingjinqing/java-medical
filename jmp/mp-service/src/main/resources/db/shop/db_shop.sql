@@ -1121,6 +1121,8 @@ create table `b2c_comment_goods`
     `bogus_user_avatar` varchar(100) not null default '' comment '用户头像：商家添加时使用',
     `create_time`       timestamp             default current_timestamp,
     `update_time`       timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
+    `rec_id`            int(9)                DEFAULT '0' COMMENT 'order_goods的rec_id',
+    `prd_id`            int(9)                DEFAULT '0' COMMENT '商品规格id',
     primary key (`id`),
     KEY `shop_id` (`shop_id`)
 );

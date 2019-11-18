@@ -1194,3 +1194,8 @@ alter table `b2c_mrking_voucher` add column `random_min` int(11) not null defaul
 alter table `b2c_mrking_voucher` add column `random_max` int(11) not null default 0    COMMENT '分裂优惠卷随机金额最高';
 alter table `b2c_mrking_voucher` add column `receive_per_num` smallint(3) not null default 0    COMMENT '分裂优惠券领券人数是否限制 0不限制 1限制';
 alter table `b2c_mrking_voucher` add column `receive_num` int(11) not null default 0    COMMENT '分裂优惠券可领券人数';
+-- 商品评价表 添加字段
+ALTER TABLE `b2c_comment_goods`
+ADD COLUMN `rec_id` int(9) DEFAULT '0' COMMENT 'order_goods的rec_id',
+ADD COLUMN `prd_id` int(9) DEFAULT '0' COMMENT '商品规格id';
+
