@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +35,15 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private String goodsDesc;
     /**是否已删除*/
     private Byte delFlag;
-
     private Integer brandId;
     private String brandName;
+    /**商品使用的运费模板id*/
+    private String templateId;
+    /**商品重量*/
+    private BigDecimal goodsWeight;
+    /**商品购买时需要的运费，详情展示时的默认运费*/
+    private BigDecimal deliverPrice;
+    /**商品初始运费*/
     /**用户是否可以购买本商品*/
     private Boolean userCanBuy;
     List<String> labels;

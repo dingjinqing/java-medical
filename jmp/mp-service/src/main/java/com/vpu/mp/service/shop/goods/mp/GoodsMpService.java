@@ -237,6 +237,8 @@ public class GoodsMpService extends ShopBaseService {
         return goodsDetailMpBo;
     }
 
+
+
     /**
      * 根据过滤条件获取商品列表中的商品信息，
      * 返回结果的顺序和goodsIds的顺序一致,若果查询的结果在goodsId中不存在则默认添加至返回列表的末尾

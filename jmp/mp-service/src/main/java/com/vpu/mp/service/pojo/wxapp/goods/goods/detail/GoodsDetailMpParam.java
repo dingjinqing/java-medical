@@ -13,6 +13,10 @@ public class GoodsDetailMpParam {
 
     private Integer userId;
 
+    /**用户当前位置经纬度*/
+    private String lon;
+    private String lat;
+
     /** 指定该商品的详情页营销活动id */
     private Integer activityId;
     /**指定该商品的详情页营销活动类型*/
