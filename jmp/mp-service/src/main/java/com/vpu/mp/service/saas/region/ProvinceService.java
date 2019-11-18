@@ -52,9 +52,9 @@ public class ProvinceService extends MainBaseService {
 
     /**
      * 根据provinceId跟新微信地址名称
-     * @param provinceId
-     * @param provinceName
-     * @return
+     * @param provinceId  省id
+     * @param provinceName 新名称
+     * @return 1 or 0
      */
 	public  int updateProvinceName(Integer provinceId,String provinceName)
     {

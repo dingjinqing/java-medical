@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
+import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -23,6 +24,8 @@ import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.OrderReadService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,17 +49,19 @@ public class Calculate extends ShopBaseService {
 
     @Autowired
     private GoodsDeliverTemplateService shippingFeeTemplate;
-
     @Autowired
     private CouponService coupon;
-
     @Autowired
     private UserCardService userCard;
-
     @Autowired
     private TradeService trade;
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private OrderInfoService orderInfoService;
+    @Autowired
+    private UserLoginRecordService userLoginRecordService;
+
 
     /**
      * 计算订单商品折扣金额
@@ -354,6 +359,7 @@ public class Calculate extends ShopBaseService {
 
     /**
      *  计算运费
+     * @param userId 用户id
      * @param lat 经度
      * @param lng 纬度
      * @param goodsId 商品id
@@ -364,11 +370,21 @@ public class Calculate extends ShopBaseService {
      * @return 运费
      * @author kdc
      */
-    public BigDecimal calculateShippingFee(String lat,String lng,Integer goodsId,Integer templateId,Integer totalNumber,BigDecimal goodsPrice,BigDecimal goodWeight){
-        AddressInfo userAddress = addressService.getAddressInfo(lat, lng);
+    public BigDecimal calculateShippingFee(Integer userId,String lat,String lng,Integer goodsId,Integer templateId,Integer totalNumber,BigDecimal goodsPrice,BigDecimal goodWeight){
+        AddressInfo userAddress = addressService.getGeocoderAddressInfo(lat, lng);
         Integer districtCode = addressService.getUserAddressDistrictId(userAddress);
+        if(districtCode==null){
+            UserAddressVo lastOrderAddress = orderInfoService.getLastOrderAddress(userId);
+            if (lastOrderAddress==null){
+                Integer userLoginRecordDistrictCode = userLoginRecordService.getUserLoginRecordDistrictCode(userId);
+                if (userLoginRecordDistrictCode!=null){
+                    districtCode = userLoginRecordDistrictCode;
+                }
+            }else {
+                districtCode =lastOrderAddress.getDistrictCode();
+            }
+        }
         BigDecimal shippingFeeByTemplate =BigDecimal.ZERO;
-
         BigDecimal totalPrice = BigDecimalUtil.multiply(goodsPrice,BigDecimal.valueOf(totalNumber));
         BigDecimal totalWeight = BigDecimalUtil.multiply(goodWeight,BigDecimal.valueOf(totalNumber));
         try {

@@ -107,9 +107,9 @@ public class DistrictService extends MainBaseService {
 	/**
 	 * 添加新区
 	 *
-	 * @param cityId
-	 * @param districtName
-	 * @return
+	 * @param cityId id
+	 * @param districtName 修改name
+	 * @return 0 or 1
 	 */
 	public int addNewDistrict(Integer cityId, String districtName) {
 		DictDistrictRecord record = db().selectFrom(DICT_DISTRICT)

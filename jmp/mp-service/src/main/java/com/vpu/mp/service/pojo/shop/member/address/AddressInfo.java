@@ -13,6 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddressInfo {
+    public static final Integer STATUS_OK = 0;
 
 
     /**
@@ -45,7 +46,7 @@ public class AddressInfo {
         }
         @Getter
         @Setter
-        public class AddressComponent {
+        public class AddressComponent extends Result {
             private String nation;
             private String province;
             private String city;

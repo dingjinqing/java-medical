@@ -33,4 +33,9 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      */
     private BigDecimal memberPriceType;
 
+    /**
+     * 秒杀价格
+     */
+    private BigDecimal secKillPrice;
+
 }

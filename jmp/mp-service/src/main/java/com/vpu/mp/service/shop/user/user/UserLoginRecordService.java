@@ -11,7 +11,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
 
 /**
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年10月10日 下午3:32:40
@@ -39,6 +39,19 @@ public class UserLoginRecordService extends ShopBaseService {
 			int update = res.update();
 			logger().info("更新小程序登录"+update);
 		}
+	}
+
+
+	/**
+	 * 获取用户登录记录的地址信息
+	 * @param userId  用户id
+	 * @return district
+	 */
+	public Integer getUserLoginRecordDistrictCode(Integer userId){
+		return db().select(USER_LOGIN_RECORD.DISTRICT_CODE).from(USER_LOGIN_RECORD)
+				.where(USER_LOGIN_RECORD.USER_ID.eq(userId))
+				.and(USER_LOGIN_RECORD.DISTRICT_CODE.notEqual("").or(USER_LOGIN_RECORD.DISTRICT_CODE.isNotNull()))
+				.orderBy(USER_LOGIN_RECORD.CREATE_TIME.desc()).fetchOneInto(Integer.class);
 	}
 
 }

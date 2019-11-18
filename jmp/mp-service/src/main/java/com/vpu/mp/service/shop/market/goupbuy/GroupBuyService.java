@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
@@ -22,7 +23,9 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -60,6 +63,8 @@ public class GroupBuyService extends ShopBaseService {
     @Autowired
     private CouponService couponService;
 
+    @Autowired
+    private QrCodeService qrCode;
     /**
      * 添加拼团活动
      *
@@ -135,7 +140,18 @@ public class GroupBuyService extends ShopBaseService {
 
     }
 
-    public void shareGroupBuy() {
+    /**
+     * 分享拼团链接
+     * @param id 活动Id
+     * @return 二维码信息
+     */
+    public ShareQrCodeVo shareGroupBuy(Integer id) {
+        String pathParam="paramId="+id;
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GROUP_BOOKING, pathParam);
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.GROUP_BOOKING.getPathUrl(pathParam));
+        return vo;
     }
 
     /**

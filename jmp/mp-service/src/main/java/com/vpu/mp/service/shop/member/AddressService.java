@@ -5,12 +5,16 @@ import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.address.AddressCode;
 import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
 import com.vpu.mp.service.pojo.shop.member.address.AddressLocation;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.address.WxAddress;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +37,7 @@ public class AddressService extends ShopBaseService {
 
     @Autowired
     private TxMapLBSConfig txMapLBSConfig;
+
 
     /**
      * 获取id用户的详细地址信息
@@ -100,7 +105,7 @@ public class AddressService extends ShopBaseService {
                 .and(USER_ADDRESS.ADDRESS.like(likeValue(wxAddress.getDetailInfo())))
                 .fetchOne();
         if (addressRecord != null && (addressRecord.getLat() == null || addressRecord.getLng() == null)) {
-            AddressLocation addressLocation = getAddressLocation(wxAddress.getCompleteAddress());
+            AddressLocation addressLocation = getGeocoderAddressLocation(wxAddress.getCompleteAddress());
             addressRecord.setLat(addressLocation.getResult().getLocation().getLat());
             addressRecord.setLng(addressLocation.getResult().getLocation().getLng());
             addressRecord.update();
@@ -109,16 +114,27 @@ public class AddressService extends ShopBaseService {
     }
 
     /**
-     * 获取库中的地址信息
+     * 根据微信地图定位获取库中的区县code
      *
-     * @param addressInfo
+     * @param addressInfo 微信放回的地址信息
+     * @return DistrictId 可以为null
      */
     public Integer getUserAddressDistrictId(AddressInfo addressInfo) {
-        String province = addressInfo.getResult().getAddressComponent().getProvince();
-        String city = addressInfo.getResult().getAddressComponent().getCity();
-        String district = addressInfo.getResult().getAddressComponent().getDistrict();
-        Integer districtId = saas.region.district.getDistrictIdByNames(province, city, district);
-        return districtId;
+        if (addressInfo == null) {
+            return null;
+        } else if (!AddressInfo.STATUS_OK.equals(addressInfo.getStatus())) {
+            return null;
+        }
+        AddressInfo.Result.AddressComponent address = addressInfo.getResult().getAddressComponent();
+        if (StringUtils.isEmpty(address.getCity())||StringUtils.isEmpty(address.getDistrict())
+                ||StringUtils.isEmpty(address.getProvince())||StringUtils.isEmpty(address.getNation())){
+            return null;
+        }
+        AddressCode addressCode = checkAndUpdateAddress(address.getProvince(), address.getCity(), address.getDistrict());
+        if (addressCode==null){
+            return null;
+        }
+        return addressCode.getDistrictId();
     }
 
     /**
@@ -128,33 +144,13 @@ public class AddressService extends ShopBaseService {
      * @return
      */
     public UserAddressRecord addWxAddress(Integer userId, WxAddress wxAddress) {
-        Integer provinceId = saas.region.province.getProvinceIdByName(wxAddress.getProvinceName());
-        if (provinceId == null) {
-            provinceId = saas.region.province.getProvinceIdByName(wxAddress.getProvinceName().substring(0, 2));
-            if (provinceId == null) {
-                log.error("微信地址[province:" + wxAddress.getProvinceName() + "] 在库中未找到!");
-                return null;
-            } else {
-                log.info("根据微信地址,跟新[provinceId:" + provinceId + ",province:" + wxAddress.getProvinceName() + "]");
-                saas.region.province.updateProvinceName(provinceId, wxAddress.getProvinceName());
-            }
-        }
-        Integer cityId = saas.region.city.getCityIdByNameAndProvinceId(provinceId, wxAddress.getCityName());
-        if (cityId == null) {
-            log.info("新增库中没有的微信地址城市[cityName:" + wxAddress.getCityName() + "]");
-            cityId = saas.region.city.addNewCity(provinceId, wxAddress.getCityName());
-        }
-        Integer districtId = saas.region.district.getDistrictIdByNameAndCityId(cityId, wxAddress.getCountyName());
-        if (districtId == null) {
-            log.info("新增库中没有的微信地址区县[district:" + wxAddress.getCountyName() + "]");
-            districtId = saas.region.district.addNewDistrict(cityId, wxAddress.getCountyName());
-        }
+        AddressCode addressCode = checkAndUpdateAddress(wxAddress.getProvinceName(),wxAddress.getCityName(),wxAddress.getCountyName());
         UserAddressRecord address = db().newRecord(USER_ADDRESS);
-        address.setProvinceCode(provinceId);
+        address.setProvinceCode(addressCode.getPostalId());
         address.setProvinceName(wxAddress.getProvinceName());
-        address.setCityCode(cityId);
+        address.setCityCode(addressCode.getCityId());
         address.setCityName(wxAddress.getCityName());
-        address.setDistrictCode(districtId);
+        address.setDistrictCode(addressCode.getDistrictId());
         address.setDistrictName(wxAddress.getCountyName());
         address.setConsignee(wxAddress.getUserName());
         address.setAddressName(wxAddress.getNationalCode());
@@ -166,13 +162,47 @@ public class AddressService extends ShopBaseService {
         address.insert();
         return address;
     }
-
+    /**
+     * 检查并跟新获取库中地址
+     * @param provinceName 省
+     * @param cityName 市
+     * @param districtNmae 区县
+     * @return  AddressCode 省市区的本地code 可能null
+     */
+    public AddressCode checkAndUpdateAddress(String provinceName,String cityName,String districtNmae){
+        Integer provinceId = saas.region.province.getProvinceIdByName(provinceName);
+        AddressCode addressCode =new AddressCode();
+        if (provinceId == null) {
+            provinceId = saas.region.province.getProvinceIdByName(provinceName.substring(0, 2));
+            if (provinceId == null) {
+                log.error("微信地址[province:" +provinceName + "] 在库中未找到!");
+                return null;
+            } else {
+                log.info("根据微信地址,跟新[provinceId:" + provinceId + ",province:" + provinceName + "]");
+                saas.region.province.updateProvinceName(provinceId, provinceName);
+            }
+        }
+        Integer cityId = saas.region.city.getCityIdByNameAndProvinceId(provinceId, cityName);
+        if (cityId == null) {
+            log.info("新增库中没有的微信地址城市[cityName:" + cityName + "]");
+            cityId = saas.region.city.addNewCity(provinceId, cityName);
+        }
+        Integer districtId = saas.region.district.getDistrictIdByNameAndCityId(cityId, districtNmae);
+        if (districtId == null) {
+            log.info("新增库中没有的微信地址区县[district:" + districtNmae + "]");
+            districtId = saas.region.district.addNewDistrict(cityId, districtNmae);
+        }
+        addressCode.setPostalId(provinceId);
+        addressCode.setCityId(cityId);
+        addressCode.setDistrictId(districtId);
+        return addressCode;
+    }
     /**
      * 地址解析获取定位
      *
      * @return
      */
-    public AddressLocation getAddressLocation(String address) {
+    public AddressLocation getGeocoderAddressLocation(String address) {
         Map<String, Object> param = new HashMap<>();
         param.put("address", address);
         param.put("key", txMapLBSConfig.getKey());
@@ -186,7 +216,7 @@ public class AddressService extends ShopBaseService {
      * @param lng
      * @return
      */
-    public AddressInfo getAddressInfo(String lat, String lng) {
+    public AddressInfo getGeocoderAddressInfo(String lat, String lng) {
         Map<String, Object> param = new HashMap<>();
         param.put("location", lat + "," + lng);
         param.put("key", txMapLBSConfig.getKey());

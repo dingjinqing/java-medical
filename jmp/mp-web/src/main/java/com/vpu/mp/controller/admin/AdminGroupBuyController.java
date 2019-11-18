@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,7 +45,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/list")
-    public JsonResult getListGroupBuy(@RequestBody GroupBuyListParam param) {
+    public JsonResult getListGroupBuy(@RequestBody @Valid GroupBuyListParam param) {
         return success(shop().groupBuy.getListGroupBuy(param));
     }
 
@@ -57,12 +58,6 @@ public class AdminGroupBuyController extends AdminBaseController {
      */
     @PostMapping("/admin/market/groupbuy/add")
     public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
-
-        //校验参数
-        if (param == null || param.getProduct() == null
-                || param.getProduct().size() == 0 || param.getGoodsId() == null) {
-            return fail(JsonResultCode.CODE_PARAM_ERROR);
-        }
         //校验活动商品是否叠加 (并发不安全)
         Boolean flag = shop().groupBuy.validGroupGoods(null,param.getGoodsId(),param.getStartTime(),param.getEndTime());
         if (!flag){
@@ -130,13 +125,13 @@ public class AdminGroupBuyController extends AdminBaseController {
     /**
      * 分享拼团
      *
-     * @param param GroupBuyParam
-     * @return JsonResult
+     * @param param GroupBuyIdParam  活动Id
+     * @return JsonResult qrCodeVo 二维码信息
      */
     @PostMapping("/admin/market/groupbuy/share")
-    public JsonResult shareGroupBuy(@RequestBody GroupBuyParam param) {
-        shop().groupBuy.shareGroupBuy();
-        return success();
+    public JsonResult shareGroupBuy(@RequestBody GroupBuyIdParam param) {
+        ShareQrCodeVo qrCodeVo = shop().groupBuy.shareGroupBuy(param.getId());
+        return success(qrCodeVo);
     }
 
     /**

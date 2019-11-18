@@ -983,4 +983,8 @@ public class OrderReadService extends ShopBaseService {
 		footPrintService.byDateGroup(orderGoodsHistoryVos,footprintDaylist);
 		return footprintListVo;
 	}
+
+	public void getUserDistrictCode(Integer userId){
+
+	}
 }
