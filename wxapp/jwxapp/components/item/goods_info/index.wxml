@@ -5,7 +5,7 @@
     {{goodsInfo.goodsName}}
     </view>
     <view class="goods_operate">
-      <view class="goods_share">
+      <view class="goods_share" bindtap="share">
         <text class="iconfont iconfenxiang"></text>
       </view>
       <view class="goods_collect">
@@ -34,3 +34,5 @@
     <view class="flex-item">同城配送 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
   </view>
 </view>
+ 
+<v-share show="{{showShareDialog}}" shareMoments="shareMoments"/>

@@ -18,7 +18,8 @@ global.wxComponent({
    */
   data: {
     goodsPrice: null,
-    markingPrice: null
+    markingPrice: null,
+    showShareDialog:false
   },
 
   /**
@@ -50,6 +51,14 @@ global.wxComponent({
     // 获取最大值
     getMin(arr) {
       return Math.max(...arr);
+    },
+    share(){
+      this.setData({
+        showShareDialog:true
+      })
+    },
+    shareMoments(){
+      this.triggerEvent('shareMoments')
     }
   }
 });

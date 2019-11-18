@@ -4,7 +4,7 @@
     <view class="goods-image">
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
-    <v-goods-info goods-info="{{goodsInfo}}">
+    <v-goods-info goods-info="{{goodsInfo}}" bindshareMoments="onShareAppMessage">
       <!--轮播图下方，商品信息上方插槽 -->
       <v-act-content bindactStatus="getActStatus"/>
     </v-goods-info>

@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "v-popup": "/components/popup/popup/index",
+    "v-poster": "/components/item/popup/poster/index"
+  }
+}

@@ -45,7 +45,9 @@ global.wxPage({
         },
         {
           goodsId: this.data.goodsId,
-          userId: util.getCache("user_id")
+          userId: util.getCache("user_id"),
+          lon:null,
+          lat:null
         }
       );
     });
@@ -171,5 +173,7 @@ global.wxPage({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function() {}
+  onShareAppMessage: function() {
+    console.log(1)
+  }
 });

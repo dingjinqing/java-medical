@@ -1,4 +1,4 @@
-<v-popup bind:close="bindClose" show="{{show}}" vertical="bottom" close_pos="inner">
+<v-popup bind:close="bindClose" show="{{show}}" vertical="bottom" close_pos="inner" bindtap='bindClose'>
   <view style='background:#fff;'>
     <view class='pro_title'>
       优惠券

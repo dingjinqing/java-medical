@@ -202,7 +202,7 @@ var order = {
       } else {
         if (orderData.deliverType == 1 && orderData.orderStatus == 3) {
           return "待核销";
-        } else if (orderItem.deliverType == 0 && orderItem.orderStatus == 3) {
+        } else if (orderData.deliverType == 0 && orderData.orderStatus == 3) {
           return "待发货";
         } else if (orderData.deliverType == 1 && orderData.orderStatus == 5) {
           return "已自提";

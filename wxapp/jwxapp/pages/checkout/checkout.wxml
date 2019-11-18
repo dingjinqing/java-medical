@@ -98,6 +98,9 @@
           <view class="pay_type_item"> <text class="iconfont icondanxuan" style="color:{{comColor}}"></text> 货到付款</view>
           <view class="pay_type_item"> <text class="iconfont icondanxuanbiankuang"></text> 好友代付</view> -->
         </view>
+        <view class="pay-type-tips">
+          温馨提示：24小时内未完成支付，订单将会自动取消，所有款项将自动退回到付款人账户
+        </view>
       </view>
 
       <view class="pay_content">

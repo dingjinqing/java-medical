@@ -1,0 +1,24 @@
+<v-popup bind:close="bindClose" show="{{show}}" vertical="bottom" hide_close="{{true}}" close_pos="inner" bindtap='bindClose'>
+  <view class="share_goods_box">
+    <view class="popup_title">
+      分享
+      <image src="{{ imageUrl }}image/wxapp/close_icon.png" mode='widthFix' bindtap='bindClose'></image>
+    </view>
+    <view class="content_box">
+      <button bindtap='share' open-type='share'>
+        <image src="{{ imageUrl }}image/wxapp/share_friends.png" mode='widthFix'></image>
+        <text>分享给朋友</text>
+      </button>
+      <view bindtap='downloadPoster'>
+        <image src="{{ imageUrl }}image/wxapp/download_img.png" mode='widthFix'></image>
+        <text>下载海报</text>
+      </view>
+      <view bindtap='downloadPoster' data-is-multiple>
+        <image src="{{ imageUrl }}image/wxapp/get_imgs_item.png" mode='widthFix'></image>
+        <text>下载多图</text>
+      </view>
+    </view>
+  </view>
+</v-popup>
+
+<v-poster is-multiple="{{isMultiple}}" poster-image="{{posterImage}}" show="{{showPoster}}" />
