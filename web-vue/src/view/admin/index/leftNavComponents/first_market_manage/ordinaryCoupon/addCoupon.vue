@@ -16,7 +16,7 @@
                 >{{ $t('ordinaryCoupon.member') }}</div>
                 <div class="coupon_name">{{param.actName ? param.actName : $t('ordinaryCoupon.couponName') }}</div>
                 <div class="coupon_vou">
-                  <span v-if="param.preferentialType === 2">￥{{param.randomNum1 && param.randomNum2 ? param.randomNum1 + '-' + param.randomNum2 : '0.00 - 0.00'}}</span>
+                  <span v-if="param.preferentialType === 2">￥{{param.randomMin && param.randomMax ? param.randomMin + '-' + param.randomMax : '0.00 - 0.00'}}</span>
                   <span v-if="param.preferentialType === 0">￥{{param.denomination ? param.denomination : '0.00'}}</span>
                   <span v-if="param.preferentialType === 1">{{param.denomination2?param.denomination2:'0'}} {{ $t('ordinaryCoupon.typeTip5') }}</span>
                 </div>
@@ -218,14 +218,14 @@
                       >{{ $t('ordinaryCoupon.typeRadio1') }}</el-radio>
                       <el-input
                         :disabled="param.preferentialType==2?false:true"
-                        v-model="param.randomNum1"
+                        v-model="param.randomMin"
                         size="small"
                         class="small_input"
                       ></el-input>
                       {{ $t('ordinaryCoupon.typeTip1') }}
                       <el-input
                         :disabled="param.preferentialType==2?false:true"
-                        v-model="param.randomNum2"
+                        v-model="param.randomMax"
                         size="small"
                         class="small_input"
                       ></el-input>
@@ -266,6 +266,7 @@
                 <el-form-item
                   :label="$t('ordinaryCoupon.isRandom') + '：'"
                   prop="useScore"
+                  v-if="param.type==0"
                 >
                   <div>
                     <el-radio
@@ -355,6 +356,7 @@
                 </el-form-item>
                 <el-form-item
                   :label="$t('ordinaryCoupon.couponNum') + '：'"
+                  prop="couponNum"
                   v-if="param.type===1"
                 >
                   <div>
@@ -368,7 +370,7 @@
                     >{{ $t('ordinaryCoupon.numRadio2') }}</el-radio>
                     <el-input
                       :disabled="param.couponNum==1?false:true"
-                      v-model="param.humanNum"
+                      v-model="param.receiveNum"
                       size="small"
                       class="small_input"
                       style="margin-left: -30px;"
@@ -536,6 +538,12 @@ export default {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else if (value === 1 && !re2.test(this.param.denomination2)) {
         callback(new Error(this.$t('ordinaryCoupon.validateDiscount')))
+      } else if (value === 2 && (this.param.randomMin === null || this.param.randomMax === null)) {
+        callback(new Error('请填写随机金额'))
+      } else if (!re.test(this.param.randomMin) || !re.test(this.param.randomMax)) {
+        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
+      } else if (this.param.randomMin > this.param.randomMax) {
+        callback(new Error('最大金额不能比最小金额小'))
       } else {
         callback()
       }
@@ -546,6 +554,17 @@ export default {
       if (value === 1 && this.param.scoreNumber === null) {
         callback(new Error(this.$t('ordinaryCoupon.validateisRandom')))
       } else if (value === 1 && !re.test(this.param.scoreNumber)) {
+        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
+      } else {
+        callback()
+      }
+    }
+    // 自定义领券人数
+    var validateCouponNum = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (value === 1 && this.param.receiveNum === null) {
+        callback(new Error('请填写领券人数'))
+      } else if (value === 1 && !re.test(this.param.receiveNum)) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
@@ -602,10 +621,10 @@ export default {
         recommendGoodsId: '', // 指定商品
         recommendCatId: '', // 指定平台分类
         recommendSortId: '', // 指定商家分类
-        randomNum1: null, // 随机金额1
-        randomNum2: null, // 随机金额2
+        randomMin: null, // 随机金额1
+        randomMax: null, // 随机金额2
         couponNum: 0, // 领券人数
-        humanNum: null, // 人数
+        receiveNum: null, // 人数
         enabled: 1,
         suitGoods: 0, // 适用商品
         useExplain: '',
@@ -627,6 +646,7 @@ export default {
         preferentialType: { required: true, validator: validatePreferentialType, trigger: 'change' },
         useScore: { required: true, validator: validateisRandom, trigger: 'change' },
         receivePerPerson: { required: true, message: this.$t('ordinaryCoupon.validatereceivePerPerson'), trigger: 'change' },
+        couponNum: { required: true, validator: validateCouponNum, trigger: 'change' },
         useConsumeRestrict: { required: true, validator: validateuseConsumeRestrict, trigger: 'change' },
         suitGoods: { required: true, validator: validatesuitGoods, trigger: 'change' }
       },
@@ -752,7 +772,12 @@ export default {
             this.param.preferentialType = 1
             this.param.denomination2 = data.denomination
             this.param.denomination = null
+          } else if (this.param.actCode === 'random') {
+            // 随机金额
+            this.param.preferentialType = 2
           }
+          this.param.randomMin = data.randomMin
+          this.param.randomMax = data.randomMax
           // 积分兑换
           this.param.scoreNumber = data.scoreNumber
           if (this.param.scoreNumber > 0) {
@@ -762,6 +787,13 @@ export default {
           }
           // 每人限领
           this.param.receivePerPerson = data.receivePerson
+          // 领券人数
+          this.param.receiveNum = data.receiveNum
+          if (this.param.receiveNum === 0) {
+            this.param.couponNum = 0
+          } else {
+            this.param.couponNum = 1
+          }
           // 会员专享
           this.param.cardId = data.cardId
           if (this.param.cardId === '') {
@@ -805,13 +837,13 @@ export default {
           this.tuneUpChooseGoods = !this.tuneUpChooseGoods
           break
         case 1:
-          this.tuneUpBusClassDialog = !this.tuneUpBusClassDialog
+          this.tuneUpBusClassDialog = true
           this.classFlag = 1
           this.flag = 1
           this.commInfo = this.busClass
           break
         case 2:
-          this.tuneUpBusClassDialog = !this.tuneUpBusClassDialog
+          this.tuneUpBusClassDialog = true
           this.classFlag = 2
           this.flag = 2
           this.commInfo = this.platClass
@@ -820,39 +852,44 @@ export default {
     },
     // 保存优惠券
     saveCoupon () {
-      console.log(this.param.cardId)
-      // 面额/折
-      if (this.param.preferentialType === 1) {
-        this.param.actCode = 'discount'
-        this.param.denomination = this.param.denomination2
-      } else {
-        this.param.actCode = 'voucher'
-        this.param.denomination = this.param.denomination
-      }
-      // 发放的总数量
-      if (this.param.surplus === 0) {
-        this.param.totalAmount = 0
-      } else {
-        this.param.surplus = this.param.totalAmount
-      }
-      // 使用门槛
-      if (this.param.useConsumeRestrict === 0) {
-        this.param.leastConsume = 0
-      }
-      this.param.scoreNumber = Number(this.param.scoreNumber)
-      this.param.recommendGoodsId = this.goodsInfo.toString()
-      this.param.recommendCatId = this.busClass.toString()
-      this.param.recommendSortId = this.platClass.toString()
-      this.param.startTime = this.param.couponDate[0]
-      this.param.endTime = this.param.couponDate[1]
-      if (this.param.cardId !== undefined && this.param.cardId.length > 0) {
-        this.param.cardId = this.param.cardId.toString()
-      } else {
-        this.param.cardId = ''
-      }
-
       this.$refs['param'].validate((valid) => {
         if (valid) {
+          // 面额/折
+          if (this.param.preferentialType === 1) {
+            this.param.actCode = 'discount'
+            this.param.denomination = this.param.denomination2
+          } else if (this.param.preferentialType === 0) {
+            this.param.actCode = 'voucher'
+            this.param.denomination = this.param.denomination
+          } else if (this.param.preferentialType === 2) {
+            this.param.actCode = 'random'
+          }
+          // 领券人数
+          if (this.param.couponNum === 0) {
+            this.param.receiveNum = 0
+          }
+          // 发放的总数量
+          if (this.param.surplus === 0) {
+            this.param.totalAmount = null
+          } else {
+            this.param.surplus = this.param.totalAmount
+          }
+          // 使用门槛
+          if (this.param.useConsumeRestrict === 0) {
+            this.param.leastConsume = 0
+          }
+          this.param.scoreNumber = Number(this.param.scoreNumber)
+          this.param.recommendGoodsId = this.goodsInfo.toString()
+          this.param.recommendCatId = this.busClass.toString()
+          this.param.recommendSortId = this.platClass.toString()
+          this.param.startTime = this.param.couponDate[0]
+          this.param.endTime = this.param.couponDate[1]
+          if (this.param.cardId !== undefined && this.param.cardId.length > 0) {
+            this.param.cardId = this.param.cardId.toString()
+          } else {
+            this.param.cardId = ''
+          }
+
           if (this.editType === false) {
             // 添加保存
             saveCoupon(this.param).then((res) => {
@@ -867,7 +904,6 @@ export default {
             // 编辑保存
             var obj = this.param
             obj.id = this.id
-            console.log(obj)
             updateSaveCoupon(obj).then((res) => {
               if (res.error === 0) {
                 this.$message.success({ message: this.$t('ordinaryCoupon.editSuccess') })

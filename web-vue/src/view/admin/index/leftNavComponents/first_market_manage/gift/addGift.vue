@@ -583,8 +583,7 @@ export default {
         return
       }
       if (this.update) {
-        var obj = {}
-        obj = this.param
+        var obj = this.param
         obj.id = this.id
         // 编辑保存
         updateGift(obj).then((res) => {
