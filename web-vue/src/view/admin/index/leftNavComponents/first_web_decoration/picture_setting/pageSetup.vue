@@ -176,9 +176,16 @@ export default {
     },
     nowRightShowIndex: {
       handler (newData) {
-        console.log(newData, this.nowRightModulesData)
-        this.modulesData = this.nowRightModulesData
-        this.sortIndex = newData
+        this.$nextTick(() => {
+          console.log(newData, this.nowRightModulesData)
+          // this.modulesData = this.nowRightModulesData
+          // this.sortIndex = newData
+        })
+        setTimeout(() => {
+          console.log(newData, this.nowRightModulesData)
+          this.modulesData = this.nowRightModulesData
+          this.sortIndex = newData
+        }, 50)
       },
       immediate: true
     },

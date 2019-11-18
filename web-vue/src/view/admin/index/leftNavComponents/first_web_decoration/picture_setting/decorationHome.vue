@@ -615,8 +615,8 @@ export default {
     // 左侧模块拖入中间区域后，中间区域数据处理函数
     handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
-      console.log(insertModulesId, index)
-      if (insertModulesId === -1) {
+      console.log(typeof insertModulesId, index)
+      if (insertModulesId === -1 || insertModulesId === undefined) {
         this.MoveWhiteFlag = true
         this.handleToClickLeftModule(index)
         // setTimeout(() => {
@@ -759,36 +759,44 @@ export default {
       let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
       console.log(this.nowRightShowIndex)
       console.log(this.nowRightShowIndex, flag)
-      if (this.nowRightShowIndex > flag) {
-        this.nowRightShowIndex--
-      } else if (this.nowRightShowIndex === flag) {
-        this.nowRightShowIndex = null
-      }
 
       console.log(this.nowRightShowIndex)
 
       console.log(newArr3, flag)
       newArr3.splice(flag, 1)
       console.log(this.modulesData[flag])
-      if (this.modulesData[flag].module_name === 'm_image_guide') {
-        this.modulesData[flag].nav_group.forEach((item, index) => {
-          item.nav_link = ''
-          item.nav_src = ''
-        })
-      }
+      // if (this.modulesData[flag].module_name === 'm_image_guide') {
+      //   this.modulesData[flag].nav_group.forEach((item, index) => {
+      //     item.nav_link = ''
+      //     item.nav_src = ''
+      //   })
+      // }
 
       // this.modulesData.splice(flag, 1)
+      console.log(flag)
 
-      this.modulesData = this.modulesData.splice(flag, 1)
+      // this.modulesData = modulesData
       console.log(this.modulesData)
       // 如果数组为空就重置当前插入模块id
       if (!newArr3.length) {
         this.insertModulesId = -1
       }
-
       console.log(newArr3)
+      this.modulesData.splice(flag, 1)
       this.showModulesList = newArr3
+      this.$nextTick(() => {
+        if (this.nowRightShowIndex > flag) {
+          this.nowRightShowIndex--
+        } else if (this.nowRightShowIndex === flag) {
+          // 如果删除的是当前高亮模块, 则清空右侧传递数据
+          this.nowRightModulesData = {}
+          console.log(this.nowRightModulesData)
+          this.nowRightShowIndex = null
+        }
+      })
+      console.log(this.modulesData)
       this.deleteVisible = false
+      console.log(this.showModulesList, this.modulesData)
     },
     // 中间区域拖拽插入数据处理
     middleDragData (res) {
@@ -826,18 +834,27 @@ export default {
 
       console.log(this.showModulesList, this.modulesData)
       this.handleToSaveModules(this.showModulesList, this.modulesData)
+      this.$nextTick(() => {
+        this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
+        console.log(this.nowRightShowIndex, this.modulesData)
+        // this.nowRightModulesData = null
+        this.nowRightModulesData = this.modulesData[this.nowRightShowIndex]
+      })
 
+      console.log(this.nowRightModulesData, this.modulesData[this.nowRightShowIndex])
+      // this.$forceUpdate()
       // this.nowRightShowMoudlesIndex  当前高亮模块类型的index
       console.log(this.showModulesList, this.nowRightShowIndex)
-      this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
+
       console.log(this.nowRightShowMoudlesIndex)
       console.log(this.modulesData, this.nowRightShowIndex)
-      this.nowRightModulesData = this.modulesData[this.nowRightShowIndex]
+
       // this.$store.commit('TOCHANGE_SENDMODULESDATA', this.modulesData[this.nowRightShowIndex])
       console.log(this.showModulesList, this.modulesData)
     },
     // 当中间模块数组showModulesList被插入新的数据时、保存数组处理函数
     handleToSaveModules (showModulesList, modulesData) {
+      console.log(this.showModulesList, this.modulesData)
       if (this.showModulesList.length > this.modulesData.length) {
         console.log(this.showModulesList[this.nowRightShowIndex])
         let obj = this.handleToAddModules(this.showModulesList[this.nowRightShowIndex])
@@ -863,8 +880,9 @@ export default {
       }
       console.log(this.oldIndex, this.nowRightShowIndex)
       let newArr = JSON.parse(JSON.stringify(this.modulesData))
-      this.modulesData = []
+      this.modulesData = null
       this.modulesData = newArr
+
       console.log(this.modulesData)
       // this.$nextTick(() => {
       //   this.$forceUpdate()
