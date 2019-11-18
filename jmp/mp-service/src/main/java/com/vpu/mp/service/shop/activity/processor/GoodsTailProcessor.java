@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.order.action.base.Calculate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,9 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
     @Autowired
     ImageService imageService;
     @Autowired
-    protected UpYunConfig upYunConfig;
+    private UpYunConfig upYunConfig;
+    @Autowired
+    private Calculate calculate;
 
     /*****处理器优先级*****/
     @Override
@@ -71,10 +74,10 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
     }
     /*****************商品详情处理******************/
     @Override
-    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        List<GoodsPrdMpVo> products = capsule.getProducts();
+    public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
+        List<GoodsPrdMpVo> products = goodsDetailMpBo.getProducts();
 
-        List<GradePrdRecord> gradeCardPrice = capsule.getGradeCardPrice();
+        List<GradePrdRecord> gradeCardPrice = goodsDetailMpBo.getGradeCardPrice();
 
         Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GradePrdRecord::getPrdId, GradePrdRecord::getGradePrice));
 
@@ -86,12 +89,18 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
             prd.setPrdImg(getImgFullUrlUtil(prd.getPrdImg()));
         });
         // 商品图片路径地址处理
-        List<String> goodsImgs = new ArrayList<>(capsule.getGoodsImgs().size());
-        capsule.getGoodsImgs().forEach(img-> goodsImgs.add(getImgFullUrlUtil(img)));
-        capsule.setGoodsImgs(goodsImgs);
+        List<String> goodsImgs = new ArrayList<>(goodsDetailMpBo.getGoodsImgs().size());
+        goodsDetailMpBo.getGoodsImgs().forEach(img-> goodsImgs.add(getImgFullUrlUtil(img)));
+        goodsDetailMpBo.setGoodsImgs(goodsImgs);
 
-        capsule.setGoodsVideo(getVideoFullUrlUtil(capsule.getGoodsVideo(),true));
-        capsule.setGoodsVideoImg(getVideoFullUrlUtil(capsule.getGoodsVideoImg(),false));
+        goodsDetailMpBo.setGoodsVideo(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideo(),true));
+        goodsDetailMpBo.setGoodsVideoImg(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideoImg(),false));
+
+        Integer defaultNum  = goodsDetailMpBo.getLimitBuyNum() == 0? 1:goodsDetailMpBo.getLimitBuyNum();
+        BigDecimal totalPrice = goodsDetailMpBo.getProducts().get(0).getPrdRealPrice().multiply(BigDecimal.valueOf(defaultNum));
+        BigDecimal totalWeight = goodsDetailMpBo.getGoodsWeight().multiply(BigDecimal.valueOf(defaultNum));
+        BigDecimal deliverPrice = calculate.calculateShippingFee(param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getTemplateId(), defaultNum, totalPrice, totalWeight);
+        goodsDetailMpBo.setDeliverPrice(deliverPrice);
     }
 
     /**

@@ -19,6 +19,7 @@ import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.order.action.base.Calculate;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,8 @@ public class GoodsMpService extends ShopBaseService {
 
     @Autowired
     protected UpYunConfig upYunConfig;
-
+    @Autowired
+    protected Calculate calculate;
     @Autowired
     protected EsGoodsSearchMpService esGoodsSearchMpService;
 
@@ -85,6 +87,10 @@ public class GoodsMpService extends ShopBaseService {
      */
     private List<GoodsListMpBo> getPageIndexGoodsListFromEs(GoodsListMpParam param) throws IOException {
         PageResult<GoodsListMpBo> goodsListMpBoPageResult = esGoodsSearchMpService.queryGoodsByParam(param);
+        List<GoodsListMpBo> dataList = goodsListMpBoPageResult.dataList;
+        if (dataList != null) {
+            dataList.forEach(x->x.setIsDisposedByEs(true));
+        }
         return goodsListMpBoPageResult.dataList;
     }
     /**
@@ -230,14 +236,12 @@ public class GoodsMpService extends ShopBaseService {
 
         GoodsDetailCapsuleParam capsuleParam = new GoodsDetailCapsuleParam();
         capsuleParam.setUserId(param.getUserId());
-        capsuleParam.setActivityId(param.getActivityId());
         capsuleParam.setActivityType(param.getActivityType());
-
+        capsuleParam.setLat(param.getLat());
+        capsuleParam.setLon(param.getLon());
         processorFactory.doProcess(goodsDetailMpBo,capsuleParam);
         return goodsDetailMpBo;
     }
-
-
 
     /**
      * 根据过滤条件获取商品列表中的商品信息，

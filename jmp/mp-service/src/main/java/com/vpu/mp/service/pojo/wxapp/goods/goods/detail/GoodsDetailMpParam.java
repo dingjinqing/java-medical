@@ -13,8 +13,9 @@ public class GoodsDetailMpParam {
 
     private Integer userId;
 
-    /**用户当前位置经纬度*/
+    /**用户当前位置经度*/
     private String lon;
+    /**用户当前位置纬度*/
     private String lat;
 
     /** 指定该商品的详情页营销活动id */
