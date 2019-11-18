@@ -48,3 +48,12 @@ export function userReBuy (data) {
     data: data
   })
 }
+
+// RFM模型分析
+export function RFMmodelAnalysis (data) {
+  return service({
+    url: '/api/admin/overview/user/analysis/rfm',
+    method: 'post',
+    data: data
+  })
+}

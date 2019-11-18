@@ -14,10 +14,10 @@
         :value="item.value"
       ></el-option>
     </el-select>
-    {{value}}
+    {{defaultWeek}}
     <el-date-picker
       ref='time'
-      v-model="value"
+      v-model="defaultWeek"
       type="week"
       format="yyyy 第 WW 周"
       value-format="yyyy-MM-dd"
@@ -46,6 +46,7 @@ export default {
   mounted () {
     this.langDefault()
     this.initData()
+    this.getDefaultWeek()
     this.myChart = echarts.init(document.getElementById('userBuyCharts'))
   },
   computed: {
@@ -58,7 +59,7 @@ export default {
       timeRange: [
         { value: 1, label: '自然周' }
       ],
-      value: '',
+      defaultWeek: new Date(),
       paramsObject: {
         weekNum: '',
         sunday: ''
@@ -80,7 +81,7 @@ export default {
     }
   },
   watch: {
-    value (newData) {
+    defaultWeek (newData) {
       this.$nextTick(() => {
         this.paramsObject.weekNum = Number(this.$refs['time'].$el.children[0].value.split(' ')[2])
         console.log(this.$refs['time'].$el.children[0].value)
@@ -107,6 +108,12 @@ export default {
       return num
     },
 
+    getDefaultWeek () {
+      var date = new Date()
+      console.log(date)
+      console.log(date.getTime())
+    },
+
     handleWeek (val) {
       console.log(val)
       const TuesdayDate = new Date(val).getTime()
@@ -116,10 +123,16 @@ export default {
     },
 
     initData () {
+      // this.$nextTick(()=>{
+
+      // })
+      // console.log(this.$refs['time'].$el.children[0].value)
+
       console.log(this.paramsObject)
       userReBuy(
         this.paramsObject
       ).then(res => {
+        console.log(res)
         if (res.error === 0) {
           this.originalData = res.content
           this.handleData(this.originalData)

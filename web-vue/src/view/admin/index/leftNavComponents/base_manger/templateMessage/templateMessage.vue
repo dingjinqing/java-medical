@@ -18,7 +18,6 @@
           @change="handleChange"
         >
           <el-collapse-item
-            style="color:red"
             :title="$t('templateMessage.tradingRemind')"
             name="1"
           >

@@ -1,27 +1,33 @@
 <template>
   <div class="userStatistics">
-    <div class="userContainer">
-      <overviewAndTrend class="distance" />
-      <userActive class="distance" />
-      <member class="distance" />
-      <userAnalysis class="distance" />
-      <userBuy />
+    <div class="userStatistics_content">
+      <el-tabs v-model="userStatistics">
+        <el-tab-pane
+          label="用户概况"
+          name="first"
+        >
+          <userOverview />
+        </el-tab-pane>
+        <el-tab-pane
+          label="RFM模型分析"
+          name="second"
+        >
+          <RFMModelAnalysis />
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
 
 <script>
-import overviewAndTrend from './overviewAndTrend'
-import userActive from './userActive'
-import member from './member'
-import userAnalysis from './userAnalysis'
-import userBuy from './userBuy'
+import userOverview from './userOverview'
+import RFMModelAnalysis from './RFMModelAnalysis'
 
 export default {
-  components: { overviewAndTrend, userActive, member, userAnalysis, userBuy },
+  components: { userOverview, RFMModelAnalysis },
   data () {
     return {
-
+      userStatistics: 'second'
     }
   }
 }
@@ -29,13 +35,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .userStatistics {
-  font-size: 14px;
-  .userContainer {
-    padding: 10px;
-    position: relative;
-    .distance {
-      margin-bottom: 10px;
-    }
+  padding: 10px;
+  .userStatistics_content {
+    background: #fff;
+    padding-left: 10px;
   }
 }
 </style>
