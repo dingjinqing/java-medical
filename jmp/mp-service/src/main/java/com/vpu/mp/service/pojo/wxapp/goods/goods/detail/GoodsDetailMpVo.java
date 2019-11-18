@@ -38,7 +38,7 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private Integer brandId;
     private String brandName;
     /**商品使用的运费模板id*/
-    private String templateId;
+    private Integer templateId;
     /**商品重量*/
     private BigDecimal goodsWeight;
     /**商品购买时需要的运费，详情展示时的默认运费*/
