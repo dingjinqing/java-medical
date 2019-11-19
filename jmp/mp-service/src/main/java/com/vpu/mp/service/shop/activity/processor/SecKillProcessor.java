@@ -109,16 +109,16 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
         }
     }
 
-    /**
-     * 订单确认页-秒杀下单处理
-     * @param orderBeforeParam
-     */
-    @Override
-    public void processOrderBefore(OrderBeforeParam orderBeforeParam) {
-        if(orderBeforeParam.getActivityId() != null && orderBeforeParam.getActivityType() != null && BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(orderBeforeParam.getActivityType())){
-            secKillProcessorDao.setOrderPrdSeckillPrice(orderBeforeParam);
-        }
-    }
+//    /**
+//     * 订单确认页-秒杀下单处理
+//     * @param orderBeforeParam
+//     */
+//    @Override
+//    public void processOrderBefore(OrderBeforeParam orderBeforeParam) {
+//        if(orderBeforeParam.getActivityId() != null && orderBeforeParam.getActivityType() != null && BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(orderBeforeParam.getActivityType())){
+//            secKillProcessorDao.setOrderPrdSeckillPrice(orderBeforeParam);
+//        }
+//    }
 
     /**
      * 下单时的秒杀处理
@@ -129,5 +129,10 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
         if(order.getActivityId() != null && order.getActivityType() != null && BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(order.getActivityType())){
             secKillProcessorDao.processSeckillStock(order);
         }
+    }
+
+    @Override
+    public void processOrderBefore(OrderBeforeParam orderBeforeParam, OrderBeforeVo vo) {
+
     }
 }
