@@ -172,6 +172,7 @@ export default {
     width: 100%;
     height: 100%;
     max-height: 317px;
+    min-height: 150px;
   }
   .contain_circle {
     position: absolute;

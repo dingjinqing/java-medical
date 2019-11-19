@@ -36,7 +36,7 @@
         class="item_module_title"
         :style="hoverTips?'width:140px':''"
       >
-        <span>{{$t('rightGroup.puzzleDraw')}}</span>
+        <span>{{$t('fightGroup.puzzleDraw')}}</span>
       </div>
       <div class="item_operation">
         <img

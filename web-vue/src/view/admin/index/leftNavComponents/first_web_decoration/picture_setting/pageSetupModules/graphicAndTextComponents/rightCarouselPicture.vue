@@ -146,7 +146,10 @@ export default {
     // 中间模块当前高亮index
     sortIndex: {
       handler (newData) {
-        this.data = this.modulesData
+        console.log('newData: ', newData)
+        if (this.modulesData) {
+          this.data = this.modulesData
+        }
       },
       immediate: true
     },
