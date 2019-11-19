@@ -18,7 +18,7 @@ import java.util.List;
 public class GoodsDetailMpVo extends GoodsBaseMp {
 
     //************ElasticSearch中的数据**************start
-    /**商品主图和幅图集合*/
+    /**幅图集合*/
     private List<String> goodsImgs = new ArrayList<>();
     private String goodsVideo;
     private String goodsVideoImg;
@@ -43,16 +43,18 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private String deliverPlace;
     /**商品重量*/
     private BigDecimal goodsWeight;
-    /**商品所关联的标签（包含通过catId,sortId，allId关联的）*/
-    List<String> labels;
+
     /**商品规格信息*/
     List<GoodsPrdMpVo> products;
     //************ElasticSearch中的数据**************end
 
     /**用户是否可以购买本商品*/
     private Boolean userCanBuy;
+    /**商品所关联的标签（包含通过catId,sortId，allId关联的）*/
+    List<String> labels;
     /**商品购买时需要的运费，详情展示时的默认运费*/
     private BigDecimal deliverPrice;
+
     /**是否已删除*/
     private Byte delFlag;
     private Boolean isCollected;
