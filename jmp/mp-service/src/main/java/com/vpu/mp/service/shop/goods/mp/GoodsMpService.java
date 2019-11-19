@@ -64,6 +64,7 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
+     *
      * @param param  装修页面配置的商品获取过滤条件
      * @param userId 用户id
      * @return 对应的商品集合信息
@@ -72,44 +73,47 @@ public class GoodsMpService extends ShopBaseService {
         List<GoodsListMpBo> goodsListCapsules;
         try {
             // 从es获取
-            goodsListCapsules=  getPageIndexGoodsListFromEs(param);
+            goodsListCapsules = getPageIndexGoodsListFromEs(param);
         } catch (Exception e) {
             goodsListCapsules = getPageIndexGoodsListFromDb(param);
         }
-        disposeGoodsList(goodsListCapsules,userId);
+        disposeGoodsList(goodsListCapsules, userId);
         return goodsListCapsules;
     }
 
     /**
      * 装修页面 商品列表模块中获取配置后的商品集合数据 Es获取
-     * @param param  装修页面配置的商品获取过滤条件
+     *
+     * @param param 装修页面配置的商品获取过滤条件
      * @return 对应的商品集合信息
      */
     private List<GoodsListMpBo> getPageIndexGoodsListFromEs(GoodsListMpParam param) throws IOException {
         PageResult<GoodsListMpBo> goodsListMpBoPageResult = esGoodsSearchMpService.queryGoodsByParam(param);
         List<GoodsListMpBo> dataList = goodsListMpBoPageResult.dataList;
         if (dataList != null) {
-            dataList.forEach(x->x.setIsDisposedByEs(true));
+            dataList.forEach(x -> x.setIsDisposedByEs(true));
         }
         return goodsListMpBoPageResult.dataList;
     }
+
     /**
      * 装修页面 商品列表模块中获取配置后的商品集合数据 Db获取
-     * @param param  装修页面配置的商品获取过滤条件
+     *
+     * @param param 装修页面配置的商品获取过滤条件
      * @return 对应的商品集合信息
      */
     private List<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param) {
         // 手动推荐展示但是未指定商品数据
-        boolean specifiedNoContent = 0 != param.getRecommendType()&&(param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
+        boolean specifiedNoContent = 0 != param.getRecommendType() && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
         if (specifiedNoContent) {
             return new ArrayList<>();
         }
-        Condition condition =buildPageIndexCondition(param);
+        Condition condition = buildPageIndexCondition(param);
 
         List<GoodsListMpBo> goodsListCapsules;
         // 自动推荐拼接排序条件
         if (0 != param.getRecommendType()) {
-            goodsListCapsules = findActivityGoodsListCapsulesDao(condition,null,null,null,param.getGoodsItems());
+            goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, null, null, param.getGoodsItems());
         } else {
             List<SortField<?>> orderFields = new ArrayList<>();
             if (GoodsListMpParam.SALE_NUM_SORT.equals(param.getSortType())) {
@@ -119,13 +123,14 @@ public class GoodsMpService extends ShopBaseService {
             } else {
                 orderFields.add(GOODS.GOODS_ID.desc());
             }
-            goodsListCapsules = findActivityGoodsListCapsulesDao(condition,orderFields,null,param.getGoodsNum(),null);
+            goodsListCapsules = findActivityGoodsListCapsulesDao(condition, orderFields, null, param.getGoodsNum(), null);
         }
         return goodsListCapsules;
     }
 
     /**
      * 创建自动推荐商品过滤条件
+     *
      * @param param 过滤参数
      * @return 拼接后的条件
      */
@@ -188,28 +193,30 @@ public class GoodsMpService extends ShopBaseService {
     }
 
 
-    public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds,Integer userId,Integer currentPages,Integer pagesRows){
+    public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds, Integer userId, Integer currentPages, Integer pagesRows) {
         List<GoodsListMpBo> goodsListCapsules;
 
-        goodsListCapsules = getGoodsListNormalFromDb(goodsIds,currentPages,pagesRows);
+        goodsListCapsules = getGoodsListNormalFromDb(goodsIds, currentPages, pagesRows);
 
-        disposeGoodsList(goodsListCapsules,userId);
+        disposeGoodsList(goodsListCapsules, userId);
 
         return goodsListCapsules;
     }
+
     /**
      * 通过商品id集合回去对应的数据信息
-     * @param goodsIds 商品id集合
+     *
+     * @param goodsIds     商品id集合
      * @param currentPages 当前页
-     * @param pagesRows 查询数据条数
+     * @param pagesRows    查询数据条数
      * @return {@link GoodsListMpParam}集
      */
-    private List<GoodsListMpBo> getGoodsListNormalFromDb(List<Integer> goodsIds,Integer currentPages,Integer pagesRows) {
+    private List<GoodsListMpBo> getGoodsListNormalFromDb(List<Integer> goodsIds, Integer currentPages, Integer pagesRows) {
         if (goodsIds == null) {
             return new ArrayList<>();
         }
         if (currentPages != null) {
-            currentPages-=1;
+            currentPages -= 1;
         }
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.GOODS_ID.in(goodsIds));
         return findActivityGoodsListCapsulesDao(condition, null, currentPages, pagesRows, goodsIds);
@@ -217,8 +224,9 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 处理获取的推荐商品规格，评价，标签，活动tag,最终划线价和商品价格
+     *
      * @param goodsListCapsules 通过过滤条件获取的商品信息
-     * @param userId  用户id 可为null(在admin页面装修的时候传入的就是null)
+     * @param userId            用户id 可为null(在admin页面装修的时候传入的就是null)
      */
     private void disposeGoodsList(List<GoodsListMpBo> goodsListCapsules, Integer userId) {
         GoodsListMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsListMpProcessorFactory.class);
@@ -228,11 +236,23 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 小程序端获取商品详情信息
+     *
      * @param param {@link GoodsDetailMpParam}
      */
-    public GoodsDetailMpVo getGoodsDetailMp(GoodsDetailMpParam param){
-        GoodsDetailMpBo goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
-
+    public GoodsDetailMpVo getGoodsDetailMp(GoodsDetailMpParam param) {
+        GoodsDetailMpBo goodsDetailMpBo;
+        try {
+            goodsDetailMpBo = esGoodsSearchMpService.queryGoodsById(param.getGoodsId());
+            // 商品已删除，在es内不存在
+            if (goodsDetailMpBo == null) {
+                goodsDetailMpBo = new GoodsDetailMpBo();
+                goodsDetailMpBo.setDelFlag(DelFlag.NORMAL_VALUE);
+                return goodsDetailMpBo;
+            }
+        } catch (Exception e) {
+            goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
+        }
+        // 商品从数据库内查询，但是数据已经被删除
         if (DelFlag.DISABLE_VALUE.equals(goodsDetailMpBo.getDelFlag())) {
             return goodsDetailMpBo;
         }
@@ -243,21 +263,22 @@ public class GoodsMpService extends ShopBaseService {
         capsuleParam.setActivityType(param.getActivityType());
         capsuleParam.setLat(param.getLat());
         capsuleParam.setLon(param.getLon());
-        processorFactory.doProcess(goodsDetailMpBo,capsuleParam);
+        processorFactory.doProcess(goodsDetailMpBo, capsuleParam);
         return goodsDetailMpBo;
     }
 
     /**
      * 根据过滤条件获取商品列表中的商品信息，
      * 返回结果的顺序和goodsIds的顺序一致,若果查询的结果在goodsId中不存在则默认添加至返回列表的末尾
-     * @param condition 过滤条件
+     *
+     * @param condition   过滤条件
      * @param orderFields 排序结合
-     * @param offset 分页开始位置 如果limit为null则不会进行分页，如果offset为null,则默认为从0开始
-     * @param limit 分页数量为null表示不进行分页
-     * @param goodsIds 指定的商品id顺序
+     * @param offset      分页开始位置 如果limit为null则不会进行分页，如果offset为null,则默认为从0开始
+     * @param limit       分页数量为null表示不进行分页
+     * @param goodsIds    指定的商品id顺序
      * @return {@link GoodsListMpBo}
      */
-    private List<GoodsListMpBo>  findActivityGoodsListCapsulesDao(Condition condition, List<SortField<?>> orderFields, Integer offset, Integer limit, List<Integer> goodsIds){
+    private List<GoodsListMpBo> findActivityGoodsListCapsulesDao(Condition condition, List<SortField<?>> orderFields, Integer offset, Integer limit, List<Integer> goodsIds) {
 
         if (condition != null) {
             condition = condition.and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
@@ -268,19 +289,19 @@ public class GoodsMpService extends ShopBaseService {
             orderFields.add(GOODS.GOODS_ID.asc());
         }
 
-        Select<?> select =null;
+        Select<?> select = null;
 
         SelectSeekStepN<Record12<Integer, String, Byte, BigDecimal, BigDecimal, Integer, Integer, String, Integer, Integer, Integer, Integer>> record12 =
             db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
-            GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
-            GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
-            .from(GOODS).where(condition).orderBy(orderFields);
+                GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
+                GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
+                .from(GOODS).where(condition).orderBy(orderFields);
         select = record12;
 
         // 拼接分页
         if (limit != null) {
-            offset = offset==null?0:offset;
-            select = record12.limit(offset,limit);
+            offset = offset == null ? 0 : offset;
+            select = record12.limit(offset, limit);
         }
 
         List<GoodsListMpBo> returnList;
@@ -297,14 +318,15 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 获取商品基本信息详情
+     *
      * @param goodsId 商品id（该商品可能已删除或下架）
      * @return {@link GoodsDetailMpBo}
      */
     private GoodsDetailMpBo getGoodsDetailMpInfoDao(Integer goodsId) {
         GoodsDetailMpBo capsule = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
-            GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME,GOODS.DELIVER_TEMPLATE_ID,GOODS.DELIVER_PLACE,GOODS.GOODS_WEIGHT, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
-            GOODS.GOODS_IMG,GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
-            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_PAGE_UP,GOODS.GOODS_DESC)
+            GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DELIVER_TEMPLATE_ID, GOODS.DELIVER_PLACE, GOODS.GOODS_WEIGHT, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
+            GOODS.GOODS_IMG, GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
+            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_DESC)
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny().into(GoodsDetailMpBo.class);
         // 图片处理
@@ -313,12 +335,12 @@ public class GoodsMpService extends ShopBaseService {
         capsule.getGoodsImgs().addAll(imgs);
         //处理视频长度和宽度
         if (capsule.getGoodsVideoId() != null) {
-            Record3<Integer, Integer,Integer> record = db().select(UPLOADED_VIDEO.VIDEO_HEIGHT, UPLOADED_VIDEO.VIDEO_WIDTH,UPLOADED_VIDEO.VIDEO_SIZE).from(UPLOADED_VIDEO)
+            Record3<Integer, Integer, Integer> record = db().select(UPLOADED_VIDEO.VIDEO_HEIGHT, UPLOADED_VIDEO.VIDEO_WIDTH, UPLOADED_VIDEO.VIDEO_SIZE).from(UPLOADED_VIDEO)
                 .where(UPLOADED_VIDEO.VIDEO_ID.eq(capsule.getGoodsVideoId()).and(UPLOADED_VIDEO.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))).fetchAny();
             if (record != null) {
                 capsule.setVideoHeight(record.get(UPLOADED_VIDEO.VIDEO_HEIGHT));
                 capsule.setVideoWidth(record.get(UPLOADED_VIDEO.VIDEO_WIDTH));
-                capsule.setGoodsVideoSize(record.get(UPLOADED_VIDEO.VIDEO_SIZE) *1.0/1024/1024);
+                capsule.setGoodsVideoSize(record.get(UPLOADED_VIDEO.VIDEO_SIZE) * 1.0 / 1024 / 1024);
             }
         }
         return capsule;

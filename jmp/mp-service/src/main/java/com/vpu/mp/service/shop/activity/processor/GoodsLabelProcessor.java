@@ -67,9 +67,13 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
     }
     /*****************商品详情处理******************/
     @Override
-    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+    public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
+        if (goodsDetailMpBo.getLabels() != null) {
+            return;
+        }
+
         List<String> labels = goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId(),param.getCatId(),param.getSortId());
-        capsule.setLabels(labels);
+        goodsDetailMpBo.setLabels(labels);
     }
 
 }

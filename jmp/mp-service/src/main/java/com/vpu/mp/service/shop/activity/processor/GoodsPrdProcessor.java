@@ -51,16 +51,18 @@ public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListPro
     }
     /*****************商品详情处理******************/
     @Override
-    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        List<GoodsSpecProductRecord> prdInfos = goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());
+    public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
+        List<GoodsPrdMpVo> prdMpVos =goodsDetailMpBo.getProducts();
+        if (prdMpVos == null) {
+            List<GoodsSpecProductRecord> prdInfos = goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());
+            prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());
+            goodsDetailMpBo.setProducts(prdMpVos);
+        }
 
-        List<GoodsPrdMpVo> prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());
-
-        capsule.setProducts(prdMpVos);
         if (prdMpVos.size() == 1 && StringUtils.isBlank(prdMpVos.get(0).getPrdDesc())) {
-            capsule.setDefaultPrd(true);
+            goodsDetailMpBo.setDefaultPrd(true);
         } else {
-            capsule.setDefaultPrd(false);
+            goodsDetailMpBo.setDefaultPrd(false);
         }
     }
 
