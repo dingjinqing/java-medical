@@ -246,7 +246,7 @@ public class OrderGoodsService extends ShopBaseService{
             productId(goods.getProductId()).
             productSn(goods.getProductInfo().getPrdSn()).
             goodsNumber(goods.getGoodsNumber()).
-            marketPrice(goods.getMarketPrice()).
+            marketPrice(goodsRecord.getMarketPrice()).
             goodsPrice(goods.getProductInfo().getPrdPrice()).
             goodsAttr(goods.getProductInfo().getPrdDesc()).
             //TODO 需要考虑
@@ -263,8 +263,8 @@ public class OrderGoodsService extends ShopBaseService{
             //TODO 需要考虑 商品成长值
             goodsGrowth(0).
             goodsType(goods.getGoodsType()).
-            discountedGoodsPrice(goods.getProductPrice()).
-            discountedTotalPrice(BigDecimalUtil.multiply(goods.getProductPrice(), BigDecimal.valueOf(goods.getGoodsNumber()))).
+            discountedGoodsPrice(goods.getProductInfo().getPrdPrice()).
+            discountedTotalPrice(BigDecimalUtil.multiply(goods.getProductInfo().getPrdPrice(), BigDecimal.valueOf(goods.getGoodsNumber()))).
             costPrice(goods.getProductInfo().getPrdCostPrice()).
             //TODO 逐级计算折扣
             discountDetail("").

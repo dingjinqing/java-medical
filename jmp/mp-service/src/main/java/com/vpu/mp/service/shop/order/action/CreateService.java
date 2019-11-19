@@ -203,6 +203,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             orderBo.setOrderId(order.getOrderId());
 
             //货到付款或者余额积分付款，生成订单时加销量减库存
+
         });
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         OrderInfoRecord record = orderInfo.getRecord(orderBo.getOrderId());
@@ -340,6 +341,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 }
             }
         }
+        this.setOrderBeforeVoInfo(param,param.getWxUserInfo().getUserId(), param.getStoreId(),vo);
     }
 
     /**
@@ -380,7 +382,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 temp.setIsFirstSpecial(no);
             }
         }
-        this.setOrderBeforeVoInfo(param,userId,storeId,vo);
+        // 初始化
+        List<OrderGoodsBo> orderGoodsBos = initOrderGoods(param, param.getGoods(), userId, param.getMemberCardNo(), storeId);
+        vo.setOrderGoods(orderGoodsBos);
     }
 
     /**
@@ -417,7 +421,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             temp.setGoodsType(goodsType);
 
         }
-        this.setOrderBeforeVoInfo(param,userId,storeId,vo);
         //这些营销不允许使用积分支付
         vo.setScoreMaxDiscount(BigDecimal.ZERO);
         vo.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
@@ -431,8 +434,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param vo
      */
     private void setOrderBeforeVoInfo(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
-        // 初始化
-        List<OrderGoodsBo> orderGoodsBos = initOrderGoods(param, param.getGoods(), userId, param.getMemberCardNo(), storeId);
         //默认选择
         vo.setDeliverType(Objects.isNull(param.getDeliverType()) ? vo.getDefaultDeliverType() : param.getDeliverType());
         //配送方式支持的门店列表（自提、同城配送）
@@ -440,7 +441,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //处理配送方式及门店信息;设置门店列表
         processExpressList(storeLists, vo);
         //计算金额相关、vo赋值
-        processOrderBeforeVo( param, vo, orderGoodsBos);
+        processOrderBeforeVo( param, vo, vo.getOrderGoods());
         //支付方式
         vo.setPaymentList(getSupportPayment());
         //服务条款
