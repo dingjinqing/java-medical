@@ -477,7 +477,7 @@ export default {
     let that = this
     // 验证时间
     let validateTime = function (rule, value, callback) {
-      if (that.form.isForever === 0 && (!that.form.timeInterval[0] || !that.form.timeInterval[1])) {
+      if (that.form.isForever === 0 && (!that.form.timeInterval || !that.form.timeInterval[0] || !that.form.timeInterval[1])) {
         callback(new Error(that.$t('firstSpecialAdd.validityPeriodTip')))
       }
       callback()
@@ -522,7 +522,7 @@ export default {
         name: { required: true, message: this.$t('firstSpecialAdd.validName'), trigger: 'blur' },
         isForever: [
           { required: true, message: this.$t('firstSpecialAdd.validIsForver') },
-          { validator: validateTime, trigger: 'blur' }
+          { validator: validateTime }
         ],
         first: { required: true, message: this.$t('firstSpecialAdd.validFirst') }
       }
@@ -550,6 +550,9 @@ export default {
             if (_this.form.hasOwnProperty(key)) {
               _this.form[key] = datas[key]
             }
+          }
+          if (datas.startTime && datas.endTime) {
+            _this.form.timeInterval = [new Date(datas.startTime), new Date(datas.endTime)]
           }
           _this.tableData = datas.firstSpecialGoods.map(function (item, i) {
             item.firstSpecialProduct.forEach(function (d) {

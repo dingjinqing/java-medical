@@ -18,6 +18,7 @@
             :model="form"
             :rules="rules"
             label-width="180px"
+            size="small"
           >
             <el-form-item
               :label="$t('serviceAdd.serviceName')+ '：'"
@@ -147,8 +148,9 @@
             <el-form-item
               :label="$t('serviceAdd.serviceableDate')+ '：'"
               required
+              prop="dateInterval"
             >
-              <el-form-item
+              <!-- <el-form-item
                 style="display:inline-block;"
                 inline-message
                 prop="startDate"
@@ -174,7 +176,15 @@
                   :placeholder="$t('serviceAdd.selectDate')"
                   value-format="yyyy-MM-dd HH:mm:ss"
                 ></el-date-picker>
-              </el-form-item>
+              </el-form-item> -->
+              <el-date-picker
+                v-model="form.dateInterval"
+                type="daterange"
+                :range-separator="$t('serviceAdd.to')"
+                :start-placeholder="$t('serviceAdd.selectDate')"
+                :end-placeholder="$t('serviceAdd.selectDate')"
+                value-format="yyyy-MM-dd HH:mm:ss"
+              ></el-date-picker>
               <p
                 class="tips"
                 style="margin-top:10px;"
@@ -324,6 +334,7 @@ export default {
       serviceHour: '', // 服务时长-时
       serviceMinute: '', // 服务时长-分
       form: {
+        dateInterval: [],
         id: '', // 编辑时传
         storeId: '',
         serviceName: '',
@@ -368,6 +379,17 @@ export default {
       }
     }
   },
+  watch: {
+    'form.dateInterval': function (val) {
+      if (val && Array.isArray(val) && val.length === 2) {
+        this.form.startDate = val[0]
+        this.form.endDate = val[1]
+      } else {
+        this.form.startDate = ''
+        this.form.endDate = ''
+      }
+    }
+  },
   created () {
     this.langDefault()
     this.initStatus()
@@ -396,8 +418,6 @@ export default {
           serviceId: serviceId
         }
         editService(query).then(res => {
-          console.log('res...', res)
-          // this.form = Object.assign({}, res.content)
           const content = res.content
           for (const key in content) {
             if (this.form.hasOwnProperty(key)) {
@@ -410,6 +430,7 @@ export default {
               }
             }
           }
+          this.form.dateInterval = [new Date(this.form.startDate), new Date(this.form.endDate)]
           // 初始化图片列表
           let serviceImg = JSON.parse(this.form.serviceImg)
           this.imgLists = serviceImg.map(function (item, index) {
