@@ -316,6 +316,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     public void processParam(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
+
+        //初始化所有可选支付方式
+        vo.setPaymentList(getSupportPayment());
+
         if (param.getActivityId() != null && param.getActivityType() != null) {
             // 唯一并互斥的商品营销处理
             // 可能的ActivityType ：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
@@ -323,7 +327,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             processorFactory.doProcess(param,vo);
 
             //营销购买
-            purchaseForMarket(param, param.getWxUserInfo().getUserId(), param.getStoreId(), vo);
+            purchaseForMarket(param, param.getStoreId(), vo);
         } else {
             // 普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
             if (Boolean.TRUE) {
@@ -382,12 +386,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     /**
      * 唯一性的营销活动下单
      * @param param
-     * @param userId
      * @param storeId
      * @param vo
      * @throws MpException
      */
-    private void purchaseForMarket(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
+    private void purchaseForMarket(OrderBeforeParam param, Integer storeId, OrderBeforeVo vo) throws MpException {
         //规格信息,key proId
         Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(param.getProductIds(), storeId);
         //goods type,key goodsId
@@ -413,9 +416,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             temp.setGoodsType(goodsType);
 
         }
-        //这些营销不允许使用积分支付
-        vo.setScoreMaxDiscount(BigDecimal.ZERO);
-        vo.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
     }
 
     /**
@@ -436,8 +436,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         processExpressList(storeLists, vo);
         //计算金额相关、vo赋值
         processOrderBeforeVo( param, vo, vo.getOrderGoods());
-        //支付方式
-        vo.setPaymentList(getSupportPayment());
         //服务条款
         setServiceTerms(vo);
         // 积分使用规则

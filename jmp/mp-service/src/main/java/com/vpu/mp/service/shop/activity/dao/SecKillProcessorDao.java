@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -145,13 +147,16 @@ public class SecKillProcessorDao extends ShopBaseService {
      * 订单确认页--处理秒杀下单前的价格
      * @param orderBeforeParam
      */
-    public void setOrderPrdSeckillPrice(OrderBeforeParam orderBeforeParam){
+    public void setOrderPrdSeckillPrice(OrderBeforeParam orderBeforeParam,OrderBeforeVo vo){
         for(OrderBeforeParam.Goods prd : orderBeforeParam.getGoods()){
             Record2<BigDecimal, BigDecimal> record = db().select(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,GOODS_SPEC_PRODUCT.PRD_PRICE).from(SEC_KILL_PRODUCT_DEFINE).leftJoin(GOODS_SPEC_PRODUCT).on(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(orderBeforeParam.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(prd.getProductId()))).fetchSingle();
+
             //秒杀价
             prd.setProductPrice(record.value1());
             //原价
             //prd.setMarketPrice(record.value2());
+            logger().info(orderBeforeParam.toString());
+            logger().info(vo.toString());
         }
 
     }

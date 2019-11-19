@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.processor.OrderBeforeProcessor;
+import com.vpu.mp.service.shop.activity.processor.SecKillProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class OrderBeforeMpProcessorFactory extends AbstractProcessorFactory<Orde
 
     }
 
-    protected Map<Class<? extends OrderBeforeProcessor>,OrderBeforeProcessor> processorMap;
+    public Map<Class<? extends OrderBeforeProcessor>,OrderBeforeProcessor> processorMap;
 
     @Override
     @PostConstruct
@@ -40,12 +41,11 @@ public class OrderBeforeMpProcessorFactory extends AbstractProcessorFactory<Orde
 
     public void doProcess(OrderBeforeParam orderBeforeParam, OrderBeforeVo vo) {
         if(orderBeforeParam.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_SEC_KILL)){
-            //processors.get
-        }
+            //秒杀
+            processorMap.get(SecKillProcessor.class).processOrderBefore(orderBeforeParam,vo);
+        }else if(orderBeforeParam.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_BARGAIN)){
+            //砍价
 
-
-        for (OrderBeforeProcessor processor : processors) {
-            processor.processOrderBefore(orderBeforeParam,vo);
         }
     }
 }

@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillProductBo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
@@ -109,17 +110,6 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
         }
     }
 
-//    /**
-//     * 订单确认页-秒杀下单处理
-//     * @param orderBeforeParam
-//     */
-//    @Override
-//    public void processOrderBefore(OrderBeforeParam orderBeforeParam) {
-//        if(orderBeforeParam.getActivityId() != null && orderBeforeParam.getActivityType() != null && BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(orderBeforeParam.getActivityType())){
-//            secKillProcessorDao.setOrderPrdSeckillPrice(orderBeforeParam);
-//        }
-//    }
-
     /**
      * 下单时的秒杀处理
      * @param order
@@ -131,8 +121,15 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
         }
     }
 
+    /**
+     * 订单确认页-秒杀下单处理
+     * @param orderBeforeParam
+     */
     @Override
     public void processOrderBefore(OrderBeforeParam orderBeforeParam, OrderBeforeVo vo) {
-
+        secKillProcessorDao.setOrderPrdSeckillPrice(orderBeforeParam,vo);
+        //这些营销不允许使用积分支付
+        vo.setScoreMaxDiscount(BigDecimal.ZERO);
+        vo.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
     }
 }
