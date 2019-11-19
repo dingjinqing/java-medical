@@ -253,7 +253,12 @@ public class AdminDistributionController extends AdminBaseController{
 		DistributorLevelCfgVo levelCfg = shop().distributorLevel.levelConfig();
 		return this.success(levelCfg);
 	}
-	
+
+	/**
+	 * 分销员等级配置设置
+	 * @param levelData
+	 * @return
+	 */
 	@PostMapping("/admin/distribution/level/save")
 	public JsonResult saveDistributorLevel(@RequestBody DistributorLevelParam[] levelData) {
 		for(DistributorLevelParam level : levelData) {
@@ -305,6 +310,7 @@ public class AdminDistributionController extends AdminBaseController{
 					shop().distributorLevel.updateLevel(level);
 				}
 			}else {//没有数据，插入数据
+				System.out.println(level);
 				shop().distributorLevel.saveLevel(level);
 			}
 			//受影响的等级用户重新定级
@@ -314,8 +320,39 @@ public class AdminDistributionController extends AdminBaseController{
 		}
 		return this.success();
 	}
-	
-	
+
+	/**
+	 * 获取分销员等级配置信息
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/level/list")
+	public JsonResult DistributorLevelList(){
+		DistributorLevelListVo res = shop().distributorLevel.distributorLevelList();
+		return this.success(res);
+	}
+
+	/**
+	 * 分销员等级配置停用
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/level/pause")
+	public JsonResult pauseDistributorLevel(Integer id){
+		int res = shop().distributorLevel.pauseDistributorLevel(id);
+		return this.success(res);
+	}
+
+	/**
+	 * 分销员等级配置启用
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/level/open")
+	public JsonResult openDistributorLevel(Integer id){
+		int res = shop().distributorLevel.openDistributorLevel(id);
+		return this.success(res);
+	}
+
 	/**
 	 * 分销员列表
 	 * @param param

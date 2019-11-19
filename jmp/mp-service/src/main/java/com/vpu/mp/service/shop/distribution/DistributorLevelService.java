@@ -1,37 +1,20 @@
 package com.vpu.mp.service.shop.distribution;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL_RECORD;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.SERVICE_ORDER;
-import static com.vpu.mp.db.shop.Tables.STORE_ORDER;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
-import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
+import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.distribution.*;
+import org.jooq.*;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Record4;
-import org.jooq.Result;
-import org.jooq.SelectHavingStep;
-import org.jooq.SelectWhereStep;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelCfgVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelUserNumVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
+import static com.vpu.mp.db.shop.Tables.*;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * 分销员等级配置
@@ -88,16 +71,20 @@ public class DistributorLevelService extends ShopBaseService{
 		List<DistributorLevelUserNumVo> res = sql.fetch().into(DistributorLevelUserNumVo.class);
 		return res;
 	}
-	
+
 	/**
-	 * 获取单个等级信息
-	 * @param (int)levelId
+	 * 获得单个等级信息
+	 * @param levelId
 	 * @return
 	 */
 	public DistributorLevelVo getOneLevelInfo(Byte levelId) {
-		DistributorLevelVo levelInfo = db().select().from(DISTRIBUTOR_LEVEL)
-				.where(DISTRIBUTOR_LEVEL.LEVEL_ID.eq(levelId)).fetchOne().into(DistributorLevelVo.class);
-		return levelInfo;
+		DistributorLevelVo res = null;
+		Record levelInfo = db().select().from(DISTRIBUTOR_LEVEL)
+				.where(DISTRIBUTOR_LEVEL.LEVEL_ID.eq(levelId)).fetchOne();
+		if(levelInfo != null){
+			res = levelInfo.into(DistributorLevelVo.class);
+		}
+		return res;
 	}
 	
 	/**
@@ -108,6 +95,44 @@ public class DistributorLevelService extends ShopBaseService{
 	public boolean updateLevel(DistributorLevelParam level) {
 		DistributorLevelRecord record = db().newRecord(DISTRIBUTOR_LEVEL,level);
 		return record.update() > 0 ? true : false;
+	}
+
+	/**
+	 * 获取分销员等级配置信息
+	 * @return
+	 */
+	public DistributorLevelListVo distributorLevelList(){
+		List<DistributorLevelParam> lists = db().select(DISTRIBUTOR_LEVEL.ID, DISTRIBUTOR_LEVEL.LEVEL_ID, DISTRIBUTOR_LEVEL.LEVEL_NAME,
+				DISTRIBUTOR_LEVEL.LEVEL_STATUS, DISTRIBUTOR_LEVEL.TOTAL_BUY_MONEY, DISTRIBUTOR_LEVEL.TOTAL_DISTRIBUTION_MONEY,
+				DISTRIBUTOR_LEVEL.INVITE_NUMBER, DISTRIBUTOR_LEVEL.LEVEL_UP_ROUTE)
+				.from(DISTRIBUTOR_LEVEL).fetch().into(DistributorLevelParam.class);
+		DistributorLevelListVo level = new DistributorLevelListVo();
+		for(DistributorLevelParam list : lists){
+			int userNum = db().selectCount().from(USER).where(USER.DISTRIBUTOR_LEVEL.eq(list.getLevelId())).fetchOne().into(Integer.class);
+			list.setUsers(userNum);
+		}
+		level.setLevelList(lists);
+		return level;
+	}
+
+	/**
+	 * 停用分销员等级配置
+	 * @param id
+	 * @return
+	 */
+	public int pauseDistributorLevel(Integer id){
+		int res = db().update(DISTRIBUTOR_LEVEL).set(DISTRIBUTOR_LEVEL.LEVEL_STATUS,(byte)0).where(DISTRIBUTOR_LEVEL.ID.eq(id)).execute();
+		return res;
+	}
+
+	/**
+	 * 启用分销员等级配置
+	 * @param id
+	 * @return
+	 */
+	public int openDistributorLevel(Integer id){
+		int res = db().update(DISTRIBUTOR_LEVEL).set(DISTRIBUTOR_LEVEL.LEVEL_STATUS,(byte)1).where(DISTRIBUTOR_LEVEL.ID.eq(id)).execute();
+		return res;
 	}
 	
 	/**

@@ -12,4 +12,6 @@ public class DistributorLevelParam {
 	private String totalDistributionMoney;
 	private String totalBuyMoney;
 	private String levelUserIds;
+	private Integer users;
+	private Integer levelStatus;
 }
