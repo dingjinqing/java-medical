@@ -55,6 +55,7 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private BigDecimal deliverPrice;
     /**是否已删除*/
     private Byte delFlag;
+    private Boolean isCollected;
     /**相关优惠券*/
     List<CouponDetailMpVo> coupons;
     /**商品专享会员卡*/
