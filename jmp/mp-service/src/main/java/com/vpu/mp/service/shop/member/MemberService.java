@@ -714,16 +714,12 @@ public class MemberService extends ShopBaseService {
 	/**
 	 * 处理会员用户的底本信息
 	 * 
-	 * @param userId
-	 * @param transStatistic
-	 * @return
 	 * @throws MpException 
 	 */
 	private MemberBasicInfoVo dealWithUserBasicInfo(Integer userId, MemberTransactionStatisticsVo transStatistic,String language){
 		/** 会员用户基本信息 */
 		logger().info("正在处理会员基本信息");
 
-		
 		MemberBasicInfoVo memberBasicInfoVo = getMemberInfo(userId);
 		if(memberBasicInfoVo == null) {
 			return memberBasicInfoVo;

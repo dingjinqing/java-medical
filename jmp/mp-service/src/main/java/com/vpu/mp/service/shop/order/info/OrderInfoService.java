@@ -793,8 +793,7 @@ public class OrderInfoService extends ShopBaseService {
 			.from(STORE_ORDER)
 			.where(STORE_ORDER.USER_ID.eq(userId))
 			.and(STORE_ORDER.ORDER_STATUS.eq(OrderConstant.STORE_STATUS_PAY))
-			.fetchOne()
-			.into(BigDecimal.class);
+			.fetchAnyInto(BigDecimal.class);
 
 		logger().info("门店-订单应付金额"+storeMoneyPaid);
 		if(storeMoneyPaid != null) {

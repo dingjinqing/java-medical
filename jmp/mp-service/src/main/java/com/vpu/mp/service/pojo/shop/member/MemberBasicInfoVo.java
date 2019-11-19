@@ -17,7 +17,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MemberBasicInfoVo {
-	/** b2c_user*/
 	private Integer userId;
 	/** 昵称 */
 	private String username;
@@ -48,10 +47,10 @@ public class MemberBasicInfoVo {
 	/** 邀请人id */
 	private String inviteId;
 	
-	/** b2c_user_detail */
 	/** 真实姓名 */
 	private String realName;
-	
+	/** 用户头像 */
+	private String userAvatar;
 	
 	/** b2c_user_login_record */
 	/** 最近浏览时间 */

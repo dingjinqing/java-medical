@@ -1773,8 +1773,9 @@ public class MemberCardService extends ShopBaseService {
 		return serviceOrderDao.getServiceOrderDetail(orderSn);
 	}
 
-	public void generateCardCode(CardBatchParam param) {
+	public CardBatchVo generateCardCode(CardBatchParam param) {
 		logger().info("正在添加添加领取码");
+		System.out.println(param.getBatchId());
 		this.transaction(() -> {
 			// 插入并获取批次Id
 			Integer batchId = cardDao.createCardBatch(param);
@@ -1796,7 +1797,10 @@ public class MemberCardService extends ShopBaseService {
 			}
 
 		});
-
+		CardBatchVo vo = new CardBatchVo();
+		vo.setId(param.getBatchId());
+		vo.setName(param.getBatchName());
+		return vo;
 	}
 
 	/**
