@@ -107,7 +107,7 @@
             >
               <el-button
                 size="mini"
-                @click="addDistributor(scope.row.id)"
+                @click="addDistributor(scope.row.levelId)"
               ><i class="el-icon-plus"></i> 添加分销员</el-button>
             </div>
           </template>
@@ -185,7 +185,7 @@ export default {
   },
   data () {
     return {
-      id: null,
+      levelId: null,
       // 表格数据
       tableData: [{
         levelId: 1,
@@ -341,11 +341,12 @@ export default {
     },
 
     // 显示等级弹窗
-    addDistributor (id) {
-      if (id === 2) {
-        this.turnUpDialogTwo = true
-      } else if (id === 3) {
-        this.turnUpDialogThree = true
+    addDistributor (levelId) {
+      this.levelId = levelId
+      if (levelId === 2) {
+        this.turnUpDialogTwo = !this.turnUpDialogTwo
+      } else if (levelId === 3) {
+        this.turnUpDialogThree = !this.turnUpDialogThree
       }
     },
 

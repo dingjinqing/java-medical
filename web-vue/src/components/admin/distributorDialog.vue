@@ -1,9 +1,10 @@
 <template>
-  <div>
+  <div v-if="dialogTableVisible">
     <el-dialog
       title="添加分销员"
-      :visible.sync="addDialogVisible"
+      :visible.sync="dialogTableVisible"
       :close-on-click-modal="false"
+      :append-to-body='true'
       width="70%"
       center
     >
@@ -154,17 +155,20 @@
         >
         </el-table-column>
       </el-table>
+
       <Pagination
         :page-params.sync="pageParams"
         @pagination="initDataList"
       />
+
       <span slot="footer">
-        <el-button @click="cancelHandler()">取 消</el-button>
+        <el-button @click="dialogTableVisible = false">取 消</el-button>
         <el-button
           type="primary"
           @click="sureHandler()"
         >确 定</el-button>
       </span>
+
     </el-dialog>
   </div>
 </template>
@@ -178,12 +182,12 @@ export default {
   props: {
     turnUp: { // 调起弹窗
       type: Boolean,
-      default: () => true
+      default: () => false
     }
   },
   data () {
     return {
-      addDialogVisible: false, // 添加分销员弹框
+      dialogTableVisible: false, // 分销员弹框
       pageParams: {}, // 分页
       valueLevel: '',
       valueGroup: '',
@@ -195,11 +199,12 @@ export default {
   },
   watch: {
     turnUp (newData) {
-      this.addDialogVisible = true
-      this.initDataList()
+      this.dialogTableVisible = true
     }
   },
   mounted () {
+    // 初始化数据
+    this.initDataList()
   },
   methods: {
     initDataList () {
@@ -231,13 +236,8 @@ export default {
 
     // 确定添加
     sureHandler () {
-      this.addDialogVisible = false
       this.$emit('handleSelect', this.multipleData)
-    },
-
-    // 取消添加
-    cancelHandler () {
-      this.addDialogVisible = false
+      this.dialogTableVisible = false
     }
   }
 }
