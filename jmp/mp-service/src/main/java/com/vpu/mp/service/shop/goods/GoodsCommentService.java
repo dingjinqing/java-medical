@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponDetailsVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
@@ -12,7 +13,7 @@ import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.comment.*;
-import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.comment.CommentSwitch;
 import com.vpu.mp.service.shop.config.CommentConfigService;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
@@ -46,6 +47,7 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  */
 @Service
 public class GoodsCommentService extends ShopBaseService {
+    @Autowired private SysCateService sysCateService;
     @Autowired private CommentConfigService commentConfigService;
     @Autowired private CommentSwitch commentSwitch;
   @Autowired private CouponGiveService couponGiveService;
@@ -265,7 +267,8 @@ public class GoodsCommentService extends ShopBaseService {
             selectFrom, param.getCurrentPage(), param.getPageRows(), GoodsCommentAddListVo.class);
     for ( GoodsCommentAddListVo vo: pageResult.dataList) {
         //平台分类名称
-        vo.setCatName(SysCatServiceHelper.getSysCateVoByCatId(vo.getCatId()).getCatName());
+        SysCatevo sysCatevo = sysCateService.getOneCateInfo(vo.getCatId());
+        vo.setCatName(sysCatevo.getCatName());
         //真实评论数
         Integer realCommNum = db().select(DSL.count(COMMENT_GOODS.ID).as("real_comm_num"))
             .from(COMMENT_GOODS)
@@ -325,7 +328,7 @@ public class GoodsCommentService extends ShopBaseService {
    */
   public int addComment(GoodsCommentAddCommParam goodsCommentAddComm) {
       //有权限
-      if (Boolean.valueOf(commentSwitch.getAddCommentSwitch(getSysId()).toString())){
+      if (commentSwitch.getAddCommentSwitch(getSysId()).equals(NumberUtils.INTEGER_ONE)){
           //查询审核配置
           Byte commSwitch = commentConfigService.getCommentConfig();
           Byte flag;
