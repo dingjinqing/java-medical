@@ -10,10 +10,17 @@
           size="small"
         >
           <el-form-item label="活动标题：">
-            <el-radio-group v-model="modulesSaveData.name_set">
-              <el-radio label="0">默认：拼团抽奖</el-radio>
-              <el-radio label="1">自定义：<el-input
-                  v-model="modulesSaveData.group_draw_name"
+            <el-radio-group v-model="data.name_set">
+              <el-radio
+                class="block"
+                label="0"
+              >默认：拼团抽奖</el-radio>
+              <el-radio
+                class="block"
+                label="1"
+              >自定义：<el-input
+                  v-model="data.group_draw_name"
+                  :disabled="data.name_set !== '1'"
                   style="width:150px;"
                 ></el-input>
               </el-radio>
@@ -21,30 +28,37 @@
             <p class="tip">最多可输入8个字，为空则不显示</p>
           </el-form-item>
           <el-form-item label="活动有效期：">
-            <el-radio-group v-model="modulesSaveData.show_clock">
+            <el-radio-group v-model="data.show_clock">
               <el-radio label="0">隐藏</el-radio>
               <el-radio label="1">显示</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="活动底图：">
-            <el-radio-group v-model="modulesSaveData.module_bg">
+            <el-radio-group
+              v-model="data.module_bg"
+              @change="moduleBgChange"
+            >
               <el-radio label="0">默认底图</el-radio>
               <el-radio label="1">自定义</el-radio>
             </el-radio-group>
-            <div class="add-bgs">
-              <div v-if="!modulesSaveData.module_img">
+            <div
+              v-if="data.module_bg === '1'"
+              class="add-bgs"
+              @click="tuneUp = !tuneUp"
+            >
+              <div v-if="!data.module_img">
                 <p class="add-bgs-text">+添加一个背景图</p>
                 <p class="add-bgs-tip">建议宽度720像素以内，高度260像素以内</p>
               </div>
               <el-image
-                v-if="modulesSaveData.module_img"
-                :src="modulesSaveData.module_img"
+                v-if="data.module_img"
+                :src="data.module_img"
               ></el-image>
             </div>
           </el-form-item>
-          <el-form-item label="字体颜色">
+          <el-form-item label="字体颜色：">
             <el-color-picker
-              v-model="modulesSaveData.font_color"
+              v-model="data.font_color"
               show-alpha
               :predefine="predefineColors"
             >
@@ -58,11 +72,11 @@
             label="添加拼团抽奖活动"
             required
           >
-            <el-select v-model="modulesSaveData.group_draw_id">
-              <el-option
-                label="请选择拼团抽奖活动"
-                value=""
-              ></el-option>
+            <el-select
+              v-model="data.group_draw_id"
+              placeholder="请选择拼团抽奖活动"
+              @change="fightGroupActivityChange"
+            >
               <el-option
                 v-for="item in fightGroupSelects"
                 :key="item.id"
@@ -75,6 +89,13 @@
       </div>
       <!-- 模块私有区域End -->
     </div>
+    <!--图片弹窗-->
+    <ImageDialog
+      :tuneUp='tuneUp'
+      pageIndex='pictureSpace'
+      :imageSize='[720, 260]'
+      @handleSelectImg='handleToGetImgUrl'
+    />
   </div>
 </template>
 
@@ -82,13 +103,16 @@
 import { getFightGroup } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 export default {
   name: 'RightFightGroup',
+  components: {
+    ImageDialog: () => import('@/components/admin/imageDalog')
+  },
   props: {
     modulesData: Object, // 模块公共
     sortIndex: Number // 模块公共
   },
   data () {
     return {
-      modulesSaveData: {
+      data: {
         module_name: 'm_group_draw',
         group_draw_id: '',
         name_set: '0',
@@ -96,7 +120,8 @@ export default {
         show_clock: '1',
         font_color: '#ffffff',
         module_bg: '0',
-        module_img: ''
+        module_img: '',
+        group_draw_endtime: ''
       },
       predefineColors: [ // 颜色选择器预定义颜色池
         '#ff4500',
@@ -115,7 +140,8 @@ export default {
         '#c7158577'
       ],
       default_module_img: this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
-      fightGroupSelects: []
+      fightGroupSelects: [],
+      tuneUp: false
     }
   },
   watch: {
@@ -129,7 +155,7 @@ export default {
             flag = true
           })
           if (flag) {
-            this.modulesSaveData = this.modulesData
+            this.data = this.modulesData
           }
           console.log(this.modulesData)
         }
@@ -147,6 +173,7 @@ export default {
   },
   mounted () {
     this.langDefault()
+    this.initFightGroup()
   },
   methods: {
     resetFontColor () {
@@ -158,8 +185,22 @@ export default {
         if (res.error === 0) {
           console.log(res.content)
           that.fightGroupSelects = res.content
+          if (!that.fightGroupSelects) {
+            that.$message.warning('抱歉，没有拼团抽奖活动，不能创建拼团抽奖')
+          }
         }
       })
+    },
+    handleToGetImgUrl (img) {
+      this.$set(this.data, 'module_img', img.imgUrl)
+    },
+    moduleBgChange (val) {
+      this.$set(this.data, 'module_img', '')
+    },
+    fightGroupActivityChange (select) {
+      console.log('select:', select)
+      let data = this.fightGroupSelects.find(item => item.id === select)
+      this.$set(this.data, 'group_draw_endtime', data.endTime)
     }
   }
 }
@@ -181,8 +222,10 @@ export default {
   }
 }
 .right-fight-group-module {
-  .el-radio {
+  .block {
     display: block;
+  }
+  .el-radio {
     line-height: 30px;
   }
   .tip {

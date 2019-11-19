@@ -19,8 +19,14 @@
             class="pin-draw"
             :style="'color:'+ data.font_color"
           >
-            <p class="group-name">拼团抽奖</p>
-            <p class="group-time">活动01天08时33分结束</p>
+            <p class="group-name">{{module_name}}</p>
+            <p
+              v-show="data.show_clock === '1'"
+              class="group-time"
+            >
+              <span v-show="data.group_draw_endtime">距活动结束仅剩：{{lastTime}}</span>
+              <span v-show="!data.group_draw_endtime">抱歉，未获取到结束时间</span>
+            </p>
           </div>
         </div>
       </div>
@@ -64,6 +70,7 @@
 </template>
 
 <script>
+import vm from '@/main'
 export default {
   name: 'FightGroup',
   props: {
@@ -97,6 +104,35 @@ export default {
       } else {
         return this.default_module_img
       }
+    },
+    module_name: function () {
+      if (this.data.name_set === '1') {
+        if (this.data.group_draw_name) {
+          return this.data.group_draw_name
+        }
+      }
+      return '拼团抽奖'
+    },
+    lastTime: function () {
+      if (this.data.group_draw_endtime) {
+        let date = new Date(this.data.group_draw_endtime)
+        let now = new Date()
+        let time1 = date - now // 相差毫秒数
+        if (time1 <= 0) {
+          return vm.$t('bargain.over')
+        }
+        let oneDay = 24 * 60 * 60 * 1000
+        let days = Math.floor(time1 / oneDay)
+        let time2 = time1 - days * oneDay // 1天，相差毫秒数
+        let hours = Math.floor(time2 / (60 * 60 * 1000))
+        let time3 = time2 - hours * (60 * 60 * 1000) // 1 小时，相差毫秒数
+        let minutes = Math.floor(time3 / (60 * 1000))
+        let time4 = time3 - minutes * 60 * 1000
+        let seconds = Math.floor(time4 / 1000)
+        console.log('date:', date, days, hours, minutes, seconds)
+        return days + vm.$t('bargain.day') + hours + vm.$t('bargain.hour') + minutes + vm.$t('bargain.minute')
+      }
+      return ''
     }
   },
   watch: {

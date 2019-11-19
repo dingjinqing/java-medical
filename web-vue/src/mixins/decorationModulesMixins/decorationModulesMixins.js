@@ -66,7 +66,7 @@ export default {
             group_draw_id: '',
             name_set: '0',
             group_draw_name: '',
-            show_clock: '0',
+            show_clock: '1',
             font_color: '#ffffff',
             module_bg: '0',
             module_img: ''
@@ -444,6 +444,15 @@ export default {
                 showClose: true
               })
               flag = false
+            }
+            break
+          case 'm_group_draw':
+            if (item.group_draw_id === '') {
+              this.$message.error({
+                message: '请选择拼团抽奖活动',
+                showClose: true
+              })
+              flag = true
             }
             break
           case 'm_magic_cube':
