@@ -8,11 +8,13 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.transaction.*;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.*;
 
@@ -61,6 +63,8 @@ public class TransactionStatisticsService extends ShopBaseService {
         for (GeographicalVo vo : voList) {
             vo.setUv(getDistrictUv(startTime, endTime, vo.getProvinceCode()));
             vo.setUv2paid(div(vo.getOrderUserNum(), vo.getUv()));
+            // 省份格式化，去掉省字后缀
+            vo.setProvince(formatterProvince(vo.getProvince()));
         }
         double maxMoney = voList.stream().max(Comparator.comparing(GeographicalVo::getTotalDealMoney)).orElse(new GeographicalVo()).getTotalDealMoney();
         double minMoney = voList.stream().min(Comparator.comparing(GeographicalVo::getTotalDealMoney)).orElse(new GeographicalVo()).getTotalDealMoney();
@@ -90,6 +94,12 @@ public class TransactionStatisticsService extends ShopBaseService {
         }
         collVo.setVos(voList.stream().sorted(comparator).collect(toList()));
         return collVo;
+    }
+
+    private static final String SHENG = "省";
+
+    public String formatterProvince(String name) {
+        return name.replace(SHENG, StringUtils.EMPTY);
     }
 
     /**
@@ -126,6 +136,16 @@ public class TransactionStatisticsService extends ShopBaseService {
         }else {
             return customerLabelAnalysis(param);
         }
+    }
+
+    private static final String START_TIME = "startTime";
+    private static final String END_TIME = "endTime";
+
+    public Map<String, java.sql.Date> createDate(LabelAnalysisParam param) {
+        return new HashMap<String, java.sql.Date>(2) {{
+            put(START_TIME, DateUtil.yyyyMmDdDate(LocalDate.now().minusDays(param.getScreeningTime())));
+            put(END_TIME, DateUtil.yyyyMmDdDate(LocalDate.now()));
+        }};
     }
 
     /**
