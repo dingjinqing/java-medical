@@ -32,7 +32,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsSpecProduct extends TableImpl<GoodsSpecProductRecord> {
 
-    private static final long serialVersionUID = 932553091;
+    private static final long serialVersionUID = 1616150505;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_spec_product</code>
@@ -101,11 +101,6 @@ public class GoodsSpecProduct extends TableImpl<GoodsSpecProductRecord> {
      * The column <code>mini_shop_471752.b2c_goods_spec_product.prd_desc</code>. 规格描述，格式例子：颜色:红色 尺码:s
      */
     public final TableField<GoodsSpecProductRecord, String> PRD_DESC = createField("prd_desc", org.jooq.impl.SQLDataType.VARCHAR(1024).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "规格描述，格式例子：颜色:红色 尺码:s");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_spec_product.del_flag</code>.
-     */
-    public final TableField<GoodsSpecProductRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_spec_product.self_flag</code>. 1:商家自己添加商品，其他没用
