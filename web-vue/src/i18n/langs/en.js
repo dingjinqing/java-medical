@@ -145,6 +145,9 @@ import {
 import {
   en as spike
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeEn'
+import {
+  en as fightGroup
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/fightGroupEn'
 // 小程序页面装修优惠卷模块国际化
 import {
   en as coupon
@@ -952,6 +955,7 @@ const en = {
   bargain, // 小程序装修砍价模块
   addSeckillDialog, // 选择砍价活动商品弹窗
   spike, // 小程序装修秒杀模块
+  fightGroup, // 小程序装修拼团抽奖模块
   coupon, // 小程序页面装修优惠卷模块
   commodity, // 小程序页面装修商品模块
   pictureAds, // 小程序页面装修图片广告模块

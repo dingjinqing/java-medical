@@ -2,44 +2,44 @@
   <!-- 拼团抽奖设置 -->
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>拼团抽奖</h2>
+      <h2>{{$t('fightGroup.puzzleDraw')}}</h2>
       <!-- 模块私有区域 -->
       <div class="main right-fight-group-module">
         <el-form
           label-width="140px"
           size="small"
         >
-          <el-form-item label="活动标题：">
+          <el-form-item :label="$t('fightGroup.eventTitle')">
             <el-radio-group v-model="data.name_set">
               <el-radio
                 class="block"
                 label="0"
-              >默认：拼团抽奖</el-radio>
+              >{{$t('fightGroup.default')}}</el-radio>
               <el-radio
                 class="block"
                 label="1"
-              >自定义：<el-input
+              >{{$t('fightGroup.customize')}}<el-input
                   v-model="data.group_draw_name"
                   :disabled="data.name_set !== '1'"
                   style="width:150px;"
                 ></el-input>
               </el-radio>
             </el-radio-group>
-            <p class="tip">最多可输入8个字，为空则不显示</p>
+            <p class="tip">{{$t('fightGroup.emitEnter')}}</p>
           </el-form-item>
-          <el-form-item label="活动有效期：">
+          <el-form-item :label="$t('fightGroup.validity')">
             <el-radio-group v-model="data.show_clock">
-              <el-radio label="0">隐藏</el-radio>
-              <el-radio label="1">显示</el-radio>
+              <el-radio label="0">{{$t('fightGroup.hide')}}</el-radio>
+              <el-radio label="1">{{$t('fightGroup.display')}}</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="活动底图：">
+          <el-form-item :label="$t('fightGroup.baseMap')">
             <el-radio-group
               v-model="data.module_bg"
               @change="moduleBgChange"
             >
-              <el-radio label="0">默认底图</el-radio>
-              <el-radio label="1">自定义</el-radio>
+              <el-radio label="0">{{$t('fightGroup.defaultBaseMap')}}</el-radio>
+              <el-radio label="1">{{$t('fightGroup.customize')}}</el-radio>
             </el-radio-group>
             <div
               v-if="data.module_bg === '1'"
@@ -47,8 +47,8 @@
               @click="tuneUp = !tuneUp"
             >
               <div v-if="!data.module_img">
-                <p class="add-bgs-text">+添加一个背景图</p>
-                <p class="add-bgs-tip">建议宽度720像素以内，高度260像素以内</p>
+                <p class="add-bgs-text">+{{$t('fightGroup.addBg')}}</p>
+                <p class="add-bgs-tip">{{$t('fightGroup.recommended')}}</p>
               </div>
               <el-image
                 v-if="data.module_img"
@@ -56,7 +56,7 @@
               ></el-image>
             </div>
           </el-form-item>
-          <el-form-item label="字体颜色：">
+          <el-form-item :label="$t('fightGroup.fontColor')">
             <el-color-picker
               v-model="data.font_color"
               show-alpha
@@ -66,15 +66,15 @@
             <el-button
               class="reset-btn"
               @click="resetFontColor"
-            >重置</el-button>
+            >{{$t('fightGroup.reset')}}</el-button>
           </el-form-item>
           <el-form-item
-            label="添加拼团抽奖活动"
+            :label="$t('fightGroup.addEvent')"
             required
           >
             <el-select
               v-model="data.group_draw_id"
-              placeholder="请选择拼团抽奖活动"
+              :placeholder="$t('fightGroup.selectEvent')"
               @change="fightGroupActivityChange"
             >
               <el-option
@@ -116,7 +116,7 @@ export default {
         module_name: 'm_group_draw',
         group_draw_id: '',
         name_set: '0',
-        group_draw_name: '拼团抽奖',
+        group_draw_name: this.$t('fightGroup.puzzleDraw'),
         show_clock: '1',
         font_color: '#ffffff',
         module_bg: '0',
@@ -186,7 +186,7 @@ export default {
           console.log(res.content)
           that.fightGroupSelects = res.content
           if (!that.fightGroupSelects) {
-            that.$message.warning('抱歉，没有拼团抽奖活动，不能创建拼团抽奖')
+            that.$message.warning(this.$t('fightGroup.noGroupDraw'))
           }
         }
       })

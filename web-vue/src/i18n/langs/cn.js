@@ -117,6 +117,10 @@ import {
 import {
   cn as spike
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeCn'
+// 小程序装修拼团抽奖
+import {
+  cn as fightGroup
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/fightGroupCn'
 // 小程序页面装修优惠卷模块国际化
 import {
   cn as coupon
@@ -958,6 +962,7 @@ const cn = {
   bargain, // 小程序装修砍价模块
   addSeckillDialog, // 添加砍价活动商品弹窗
   spike, // 小程序装修秒杀模块
+  fightGroup, // 小程序装修拼团抽奖模块
   coupon, // 小程序页面装修优惠卷模块
   commodity, //  小程序页面装修商品模块
   pictureAds, //  小程序页面装修图片广告模块

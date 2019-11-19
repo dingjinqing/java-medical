@@ -24,8 +24,8 @@
               v-show="data.show_clock === '1'"
               class="group-time"
             >
-              <span v-show="data.group_draw_endtime">距活动结束仅剩：{{lastTime}}</span>
-              <span v-show="!data.group_draw_endtime">抱歉，未获取到结束时间</span>
+              <span v-show="data.group_draw_endtime">{{$t('fightGroup.letEnd')}}{{lastTime}}</span>
+              <span v-show="!data.group_draw_endtime">{{$t('fightGroup.sorryLetEnd')}}</span>
             </p>
           </div>
         </div>
@@ -36,7 +36,7 @@
         class="item_module_title"
         :style="hoverTips?'width:140px':''"
       >
-        <span>拼团抽奖</span>
+        <span>{{$t('rightGroup.puzzleDraw')}}</span>
       </div>
       <div class="item_operation">
         <img
@@ -88,7 +88,7 @@ export default {
       data: {
         group_draw_id: '',
         name_set: '0',
-        group_draw_name: '拼团抽奖',
+        group_draw_name: this.$t('fightGroup.puzzleDraw'),
         show_clock: '0',
         font_color: '#ffffff',
         module_bg: '0',
@@ -111,7 +111,7 @@ export default {
           return this.data.group_draw_name
         }
       }
-      return '拼团抽奖'
+      return this.$t('fightGroup.puzzleDraw')
     },
     lastTime: function () {
       if (this.data.group_draw_endtime) {
