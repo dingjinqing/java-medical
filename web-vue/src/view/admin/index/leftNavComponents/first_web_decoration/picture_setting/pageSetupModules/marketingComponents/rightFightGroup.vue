@@ -10,27 +10,37 @@
           size="small"
         >
           <el-form-item label="活动标题：">
-            <el-radio-group>
-              <el-radio>默认：拼团抽奖</el-radio>
-              <el-radio>自定义：<el-input
+            <el-radio-group v-model="data.name_set">
+              <el-radio label="0">默认：拼团抽奖</el-radio>
+              <el-radio label="1">自定义：<el-input
                   v-model="data.group_draw_name"
-                  style="width:100px;"
+                  style="width:150px;"
                 ></el-input>
               </el-radio>
             </el-radio-group>
             <p class="tip">最多可输入8个字，为空则不显示</p>
           </el-form-item>
           <el-form-item label="活动有效期：">
-            <el-radio-group>
-              <el-radio>隐藏</el-radio>
-              <el-radio>显示</el-radio>
+            <el-radio-group v-model="data.show_clock">
+              <el-radio label="0">隐藏</el-radio>
+              <el-radio label="1">显示</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="活动底图：">
-            <el-radio-group>
-              <el-radio>默认底图</el-radio>
-              <el-radio>自定义</el-radio>
+            <el-radio-group v-model="data.module_bg">
+              <el-radio label="0">默认底图</el-radio>
+              <el-radio label="1">自定义</el-radio>
             </el-radio-group>
+            <div class="add-bgs">
+              <div v-if="!data.module_img">
+                <p class="add-bgs-text">+添加一个背景图</p>
+                <p class="add-bgs-tip">建议宽度720像素以内，高度260像素以内</p>
+              </div>
+              <el-image
+                v-if="data.module_img"
+                :src="data.module_img"
+              ></el-image>
+            </div>
           </el-form-item>
           <el-form-item label="字体颜色">
             <el-color-picker
@@ -44,11 +54,20 @@
               @click="resetFontColor"
             >重置</el-button>
           </el-form-item>
-          <el-form-item label="添加拼团抽奖活动">
+          <el-form-item
+            label="添加拼团抽奖活动"
+            required
+          >
             <el-select v-model="data.group_draw_id">
               <el-option
-                label="请选择"
+                label="请选择拼团抽奖活动"
                 value=""
+              ></el-option>
+              <el-option
+                v-for="item in fightGroupSelects"
+                :key="item.id"
+                :label="item.actName"
+                :value="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -60,9 +79,7 @@
 </template>
 
 <script>
-import vcolorpicker from 'vcolorpicker'
-import Vue from 'vue'
-Vue.use(vcolorpicker)
+import { getFightGroup } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 export default {
   name: 'RightFightGroup',
   props: {
@@ -72,13 +89,14 @@ export default {
   data () {
     return {
       data: {
+        module_name: 'm_group_draw',
         group_draw_id: '',
-        name_set: 0,
+        name_set: '0',
         group_draw_name: '拼团抽奖',
-        show_clock: 0,
+        show_clock: '1',
         font_color: '#ffffff',
-        module_bg: 0,
-        module_img: this.default_module_img
+        module_bg: '0',
+        module_img: ''
       },
       predefineColors: [ // 颜色选择器预定义颜色池
         '#ff4500',
@@ -96,7 +114,8 @@ export default {
         'hsla(209, 100%, 56%, 0.73)',
         '#c7158577'
       ],
-      default_module_img: this.$imageHost + '/image/admin/fighting_group_draw1.jpg'
+      default_module_img: this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
+      fightGroupSelects: []
     }
   },
   watch: {
@@ -104,7 +123,9 @@ export default {
     sortIndex: { // 模块公共
       handler (newData) {
         console.log('newData:', newData, this.modulesData)
-        this.data = this.modulesData
+        this.$nextTick(() => {
+          this.data = this.modulesData
+        })
       },
       immediate: true
     },
@@ -123,6 +144,15 @@ export default {
   methods: {
     resetFontColor () {
       this.$set(this.data, 'font_color', '#ffffff')
+    },
+    initFightGroup () {
+      let that = this
+      getFightGroup().then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+          that.fightGroupSelects = res.content
+        }
+      })
     }
   }
 }
@@ -153,6 +183,23 @@ export default {
   }
   .reset-btn {
     vertical-align: top;
+  }
+  .add-bgs {
+    width: 300px;
+    height: 100px;
+    line-height: 1;
+    text-align: center;
+    background: #fff;
+    border: 1px dashed #e5e5e5;
+    position: relative;
+    .add-bgs-text {
+      color: #5a8bff;
+      margin: 27px 0 5px 0;
+    }
+    .add-bgs-tip {
+      color: #999;
+      font-size: 12px;
+    }
   }
 }
 </style>

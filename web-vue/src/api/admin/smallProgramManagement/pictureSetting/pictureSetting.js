@@ -43,3 +43,11 @@ export function getClassifyData (data) {
     method: 'post'
   })
 }
+
+// 拼团抽奖活动下拉
+export function getFightGroup (data) {
+  return service({
+    url: '/api/admin/decorate/pin/list',
+    method: 'get'
+  })
+}

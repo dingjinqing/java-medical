@@ -13,7 +13,7 @@
       <div class="fight-group-module">
         <div
           class="center-pin-draw"
-          :style="'background:url('+ data.module_img +')0% 0% / 100% 100%'"
+          :style="'background:url('+ module_img +')0% 0% / 100% 100%'"
         >
           <div
             class="pin-draw"
@@ -80,14 +80,23 @@ export default {
       bgColor: '', // 主题色
       data: {
         group_draw_id: '',
-        name_set: 0,
+        name_set: '0',
         group_draw_name: '拼团抽奖',
-        show_clock: 0,
+        show_clock: '0',
         font_color: '#ffffff',
-        module_bg: 0,
-        module_img: this.default_module_img
+        module_bg: '0',
+        module_img: ''
       },
       default_module_img: this.$imageHost + '/image/admin/fighting_group_draw1.jpg'
+    }
+  },
+  computed: {
+    module_img: function () {
+      if (this.data.module_img) {
+        return this.data.module_img
+      } else {
+        return this.default_module_img
+      }
     }
   },
   watch: {

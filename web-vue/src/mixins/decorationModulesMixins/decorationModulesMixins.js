@@ -64,12 +64,12 @@ export default {
           obj = {
             module_name: 'm_group_draw',
             group_draw_id: '',
-            name_set: 0,
+            name_set: '0',
             group_draw_name: '',
-            show_clock: 0,
+            show_clock: '0',
             font_color: '#ffffff',
-            module_bg: 0,
-            module_img: 'http://mpdevimg2.weipubao.cn/upload/0/image/20191106/crop_tRlGaiaf0WQx5Raj.jpeg'
+            module_bg: '0',
+            module_img: ''
           }
           break
         case 8: // 商品模块
