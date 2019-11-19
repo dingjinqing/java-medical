@@ -310,6 +310,17 @@ export default {
             'announce_position': '0' // 显示位置
           }
           break
+        case 24: // 公众号
+          obj = {
+            'module_name': 'm_official_accounts' // 模块名称
+          }
+          break
+        case 25: // 客服模块
+          obj = {
+            'module_name': 'm_service',
+            'service': '1'
+          }
+          break
         case 27: // 店招设置
           obj = {
             module_name: 'm_shop',

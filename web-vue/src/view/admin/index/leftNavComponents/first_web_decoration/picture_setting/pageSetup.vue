@@ -59,7 +59,9 @@ export default {
     RiTitleModule: () => import('./pageSetupModules/graphicAndTextComponents/riTitleModule'), // 标题模块
     RiGuide: () => import('./pageSetupModules/graphicAndTextComponents/riGuide'), // 辅助线占位
     RiVideoModule: () => import('./pageSetupModules/graphicAndTextComponents/riVideoModule'), // 视频模块
-    RiShopNotices: () => import('./pageSetupModules/graphicAndTextComponents/riShopNotices') // 店铺公告测试
+    RiShopNotices: () => import('./pageSetupModules/graphicAndTextComponents/riShopNotices'), // 店铺公告
+    RiOfficialAccount: () => import('./pageSetupModules/graphicAndTextComponents/riOfficialAccount'), // 公众号模块
+    RiCustomerServiceModule: () => import('./pageSetupModules/graphicAndTextComponents/riCustomerServiceModule') // 客服模块
   },
   props: {
     nowRightShowMoudlesIndex: Number,
@@ -154,6 +156,14 @@ export default {
           id: 23,
           name: 'RiShopNotices'
         },
+        {
+          id: 24,
+          name: 'RiOfficialAccount'
+        },
+        // {
+        //   id: 25,
+        //   name: 'RiCustomerServiceModule'
+        // },
         {
           id: 27,
           name: 'RiShopRecruit'

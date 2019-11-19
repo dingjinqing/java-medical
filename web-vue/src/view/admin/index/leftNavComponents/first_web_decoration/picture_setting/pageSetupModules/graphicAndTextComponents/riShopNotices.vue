@@ -57,7 +57,7 @@
           >{{$t('shopNotices.selectLink')}}</el-button>
         </div>
         <div class="content">
-          <span>{{$t('shopNotices.displayPosition')}}：</span>
+          <span :style="columnFlag?'line-height:32px':'line-height:16px'">{{$t('shopNotices.displayPosition')}}：</span>
           <el-radio
             v-model="moduleSaveData.announce_position"
             label="0"

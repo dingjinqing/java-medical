@@ -90,8 +90,20 @@ export default {
       surplus: '', // 剩余  文字
       zhang: '', // 张 文字
       data: {
-
-      }
+        coupon_arr: [
+          // 选中的优惠卷数组
+          // {
+          //   'act_code': 'voucher', // 是否是打折卷  discount：打折卷   voucher不是打折卷
+          //   'denomination': '5', // 面额
+          //   'consume_text': '无门槛', // 使用门槛
+          //   'receive_text': '剩余93张', // 卡卷剩余数
+          //   'coupon_id': -1, // 优惠卷id
+          //   'use_score': '0', // 是否可以积分兑换
+          //   'score_number': '' // 需要积分数
+          // }
+        ]
+      },
+      hoverTips: 'hoverTips'
     }
   },
   watch: {
@@ -99,12 +111,25 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
-        if (this.modulesData.coupon_arr.length) {
-          if (this.modulesData.coupon_arr[0].coupon_id === -1) {
-            this.modulesData.coupon_arr = []
+        let flag = false
+        if (this.modulesData) {
+          console.log(this.modulesData)
+          Object.keys(this.modulesData).forEach((item, index) => {
+            console.log(11)
+            flag = true
+          })
+          console.log(flag)
+          if (flag) {
+            console.log(typeof this.modulesData.coupon_arr.length)
+            if (this.modulesData.coupon_arr.length !== 0) {
+              if (this.modulesData.coupon_arr[0].coupon_id === -1) {
+                this.modulesData.coupon_arr = []
+              }
+            }
+            this.data = this.modulesData
           }
+          console.log(this.modulesData)
         }
-        this.data = this.modulesData
       },
       immediate: true
     },

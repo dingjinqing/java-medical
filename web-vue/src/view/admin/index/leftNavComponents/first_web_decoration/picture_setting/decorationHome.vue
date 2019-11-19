@@ -219,14 +219,16 @@ export default {
     Guide: () => import('./decorationModules/graphicAndTextComponents/guide'), // 辅助线
     TitleModule: () => import('./decorationModules/graphicAndTextComponents/titleModule'), // 标题模块
     VideoModule: () => import('./decorationModules/graphicAndTextComponents/videoModule'), // 视频模块
-    ShopNotices: () => import('./decorationModules/graphicAndTextComponents/ShopNotices') // 店铺公告模块
+    ShopNotices: () => import('./decorationModules/graphicAndTextComponents/ShopNotices'), // 店铺公告模块
+    OfficialAccount: () => import('./decorationModules/graphicAndTextComponents/officialAccount'), // 公众号模块
+    CustomerServiceModule: () => import('./decorationModules/graphicAndTextComponents/customerServiceModule') // 客服模块
   },
   data () {
     return {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'FightGroup', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'FightGroup', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'OfficialAccount', 'CustomerServiceModule', 'zb', 'ShopRecruit', 'MapModule'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -447,6 +449,12 @@ export default {
           break
         case 'm_shop_announce':
           moduleNameId = 23
+          break
+        case 'm_official_accounts':
+          moduleNameId = 24
+          break
+        case 'm_service':
+          moduleNameId = 25
       }
       return moduleNameId
     },
@@ -621,6 +629,12 @@ export default {
             case 23:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 23)
               break
+            case 24:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 24)
+              break
+            // case 25:
+            //   this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 25)
+            //   break
             case 27:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 27)
               break
@@ -853,7 +867,7 @@ export default {
       if (!flag) return
       // this.nowRightShowIndex 当前高亮模块在模块数组池中的index
       console.log(this.nowRightShowIndex, this.activeName, this.showModulesList)
-      console.log(this.showModulesList, this.modulesData)
+      console.log(this.nowRightShowIndex, this.showModulesList, this.modulesData)
       this.handleToSaveModules(this.showModulesList, this.modulesData)
       this.$nextTick(() => {
         this.nowRightShowMoudlesIndex = this.showModulesList[this.nowRightShowIndex]
@@ -1142,6 +1156,7 @@ export default {
           min-height: 530px;
           background: #fff;
           position: relative;
+          overflow-x: hidden;
           // padding-bottom: 30px;
           // .zwHeight {
           //   padding-bottom: 30px;
