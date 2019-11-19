@@ -81,12 +81,14 @@ public class CommodityStatisticsService extends ShopBaseService {
         LocalDate now = LocalDate.now();
         LocalDate prefix = now.minusDays(type);
         ProductOverviewVo nowData = getGoodsOverviewSummary(DateUtil.yyyyMmDdDate(now), type);
-        if (Objects.isNull(nowData))
+        if (Objects.isNull(nowData)) {
             return ProductOverviewVo.builder().build();
+        }
         nowData.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(nowData.getPaidGoodsNum()), BigDecimal.valueOf(nowData.getVisitedGoodsNum())));
         ProductOverviewVo prefixData = getGoodsOverviewSummary(DateUtil.yyyyMmDdDate(prefix), type);
-        if (Objects.isNull(prefixData))
+        if (Objects.isNull(prefixData)) {
             return nowData;
+        }
         prefixData.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(prefixData.getPaidGoodsNum()), BigDecimal.valueOf(prefixData.getVisitedGoodsNum())));
         // 获取变化率数据
         nowData.setChangeRate(getChangeRateData(nowData, prefixData));
@@ -132,8 +134,9 @@ public class CommodityStatisticsService extends ShopBaseService {
      * 计算统计数据变化率公式 (now-prefix)/prefix
      */
     private BigDecimal getRate(Object now, Object prefix) {
-        if (Objects.isNull(now) || Objects.isNull(prefix))
+        if (Objects.isNull(now) || Objects.isNull(prefix)) {
             return BIGDECIMAL_ZERO;
+        }
         BigDecimal n = BigDecimal.valueOf(Double.parseDouble(now.toString()));
         BigDecimal p = BigDecimal.valueOf(Double.parseDouble(prefix.toString()));
         return BigDecimalUtil.divideWithOutCheck(n.subtract(p), p);
@@ -162,12 +165,14 @@ public class CommodityStatisticsService extends ShopBaseService {
         LocalDate prefixStart = start.minusDays(days);
 
         ProductOverviewVo data = getCustomizeGoodsOverviewSummary(start, end);
-        if (Objects.isNull(data))
+        if (Objects.isNull(data)) {
             return ProductOverviewVo.builder().build();
+        }
         data.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(data.getPaidGoodsNum()), BigDecimal.valueOf(data.getVisitedGoodsNum())));
         ProductOverviewVo prefixData = getCustomizeGoodsOverviewSummary(prefixStart, start);
-        if (Objects.isNull(prefixData))
+        if (Objects.isNull(prefixData)) {
             return data;
+        }
         data.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(data.getPaidGoodsNum()), BigDecimal.valueOf(data.getVisitedGoodsNum())));
         // 获取变化率数据
         data.setChangeRate(getChangeRateData(data, prefixData));
@@ -213,8 +218,9 @@ public class CommodityStatisticsService extends ShopBaseService {
             .paidGoodsNum(goodsTaskService.paidGoodsNum(param))
             .orderGoodsNum(goodsTaskService.getPayOrderGoodsNum(param))
             .build();
-        if (Objects.isNull(data))
+        if (Objects.isNull(data)) {
             return ProductOverviewVo.builder().build();
+        }
         data.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(data.getPaidGoodsNum()), BigDecimal.valueOf(data.getVisitedGoodsNum())));
 
         LocalDate start = param.getStartTime().toLocalDate();
@@ -236,8 +242,9 @@ public class CommodityStatisticsService extends ShopBaseService {
             .paidGoodsNum(goodsTaskService.paidGoodsNum(param))
             .orderGoodsNum(goodsTaskService.getPayOrderGoodsNum(param))
             .build();
-        if (Objects.isNull(prefixData))
+        if (Objects.isNull(prefixData)) {
             return data;
+        }
         prefixData.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(prefixData.getPaidGoodsNum()), BigDecimal.valueOf(prefixData.getVisitedGoodsNum())));
 
         data.setChangeRate(getChangeRateData(data, prefixData));

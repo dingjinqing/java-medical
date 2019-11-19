@@ -266,8 +266,9 @@ public class ShareRewardService extends ShopBaseService {
     }
     // ShareRule奖励规则数据清洗
     private ShareRule dataClean(ShareRule shareRule){
-        if (Objects.isNull(shareRule))
+        if (Objects.isNull(shareRule)) {
             return null;
+        }
         switch (shareRule.getRewardType()){
             case CONDITION_ONE :
                 shareRule.setCoupon(null);
@@ -293,8 +294,9 @@ public class ShareRewardService extends ShopBaseService {
         return shareRule;
     }
     private Integer getAwardNum(ShareRule shareRule){
-        if (Objects.isNull(shareRule))
+        if (Objects.isNull(shareRule)) {
             return 0;
+        }
         switch (shareRule.getRewardType()){
             case CONDITION_ONE :
                 return shareRule.getScoreNum();

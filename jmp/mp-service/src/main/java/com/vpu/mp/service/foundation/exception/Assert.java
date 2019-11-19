@@ -100,15 +100,17 @@ public class Assert {
      */
     public static void isFalse(boolean boo, JsonResultCode code, Object... args) {
         if (boo) {
-            if (args != null && args.length > 0)
+            if (args != null && args.length > 0) {
                 throw new BusinessException(code, args);
+            }
             throw new BusinessException(code);
         }
     }
 
     private static void commonFunc(JsonResultCode code, Object... args) {
-        if (args != null && args.length > 0)
+        if (args != null && args.length > 0) {
             throw new BusinessException(code, args);
+        }
         throw new BusinessException(code);
     }
 }
