@@ -69,7 +69,7 @@ public class MpOrderInfoService extends OrderInfoService{
 		fetchOneInto(Integer.class);
 		//初始化不可变map
 		Map<Byte,Integer> result = ImmutableMap.<Byte,Integer>builder()
-				.put(OrderConstant.All,
+				.put(OrderConstant.ALL,
 						countMap.values().stream().reduce(0, Integer::sum) + (returning == null ? Integer.valueOf(0) : returning) + (returnFinish == null ? Integer.valueOf(0) : returnFinish))
 				.put(OrderConstant.WAIT_PAY,
 						mapDefaultValue(countMap , OrderConstant.ORDER_WAIT_PAY))
@@ -134,7 +134,7 @@ public class MpOrderInfoService extends OrderInfoService{
 		}
 		select.orderBy(TABLE.ORDER_ID.desc());
 		switch (param.getType()) {
-		case OrderConstant.All:
+		case OrderConstant.ALL:
 			break;
 		case OrderConstant.WAIT_PAY:
 			select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)));

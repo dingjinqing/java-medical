@@ -244,7 +244,7 @@ public class StoreServiceService extends ShopBaseService{
      * @param serviceIds 服务id集合
      * @param serviceShelf 上下架状态值:1:上架，0:下架
      */
-    public void batchOnOrOFFStoreService(Integer[] serviceIds, Byte serviceShelf) {
+    public void batchOnOrOffStoreService(Integer[] serviceIds, Byte serviceShelf) {
         db().update(STORE_SERVICE).set(STORE_SERVICE.SERVICE_SHELF, serviceShelf).where(STORE_SERVICE.ID.in(serviceIds)).execute();
     }
 

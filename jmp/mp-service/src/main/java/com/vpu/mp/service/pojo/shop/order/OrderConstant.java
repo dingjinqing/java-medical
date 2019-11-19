@@ -392,7 +392,7 @@ public class OrderConstant {
 	public static final byte STORE_STATUS_RETURN = 2;
 
 	/**order status code */
-	public static final byte All = 0;
+	public static final byte ALL = 0;
 	public static final byte WAIT_PAY = 1;
 	public static final byte WAIT_DELIVERY = 2;
 	public static final byte SHIPPED = 3;

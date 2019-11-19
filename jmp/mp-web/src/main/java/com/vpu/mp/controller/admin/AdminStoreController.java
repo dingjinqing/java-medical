@@ -395,7 +395,7 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/service/batch/on")
     public JsonResult batchOnStoreService(@RequestBody @Valid @Size(min = 1, max = Integer.MAX_VALUE - 1) Integer[] serviceIds) {
-        shop().store.storeService.batchOnOrOFFStoreService(serviceIds, BYTE_ONE);
+        shop().store.storeService.batchOnOrOffStoreService(serviceIds, BYTE_ONE);
         return success();
     }
 
@@ -404,7 +404,7 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/service/batch/off")
     public JsonResult batchOffStoreService(@RequestBody @Validated @Size(min = 1, max = Integer.MAX_VALUE - 1) Integer[] serviceIds) {
-        shop().store.storeService.batchOnOrOFFStoreService(serviceIds, BYTE_ZERO);
+        shop().store.storeService.batchOnOrOffStoreService(serviceIds, BYTE_ZERO);
         return success();
     }
 

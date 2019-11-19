@@ -52,12 +52,12 @@ public class StoreService extends ShopBaseService {
     /**
      * 营业
      */
-    private byte BUSINESS_STATE_ON = 1;
+    private static byte BUSINESS_STATE_ON = 1;
 
     /**
      * 关店
      */
-    private byte BUSINESS_STATE_OFF = 1;
+    private static byte BUSINESS_STATE_OFF = 1;
     /**
      * 核销员
      */
