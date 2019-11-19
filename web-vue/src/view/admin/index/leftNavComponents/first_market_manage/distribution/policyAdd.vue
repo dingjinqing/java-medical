@@ -238,7 +238,7 @@
 </template>
 <script>
 // 引入组件
-import { addPolicy, getPolicyDetail, editPolicy } from '@/api/admin/marketManage/distribution.js'
+import { addPolicy, getPolicyDetail, editPolicy, getDistributionLevel } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
@@ -279,36 +279,31 @@ export default {
       `,
       // 佣金比例表格数据
       tableData: [{
-        level: '1',
-        levelText: '一级',
+        levelId: 1,
         levelName: '分销员测试',
         fanliRatio: 0, // 直接比例
         rebateRatio: 0, // 间接比例
         firstRatio: null // 首单返利
       }, {
-        level: '2',
-        levelText: '二级',
+        levelId: 2,
         levelName: 'v2',
         fanliRatio: null, // 直接比例
         rebateRatio: null, // 间接比例
         firstRatio: null // 首单返利
       }, {
-        level: '3',
-        levelText: '三级',
+        levelId: 3,
         levelName: '分销员组3',
         fanliRatio: null, // 直接比例
         rebateRatio: null, // 间接比例
         firstRatio: null // 首单返利
       }, {
-        level: '4',
-        levelText: '四级',
+        levelId: 4,
         levelName: '分销员组4',
         fanliRatio: null, // 直接比例
         rebateRatio: null, // 间接比例
         firstRatio: null // 首单返利
       }, {
-        level: '5',
-        levelText: '五级',
+        levelId: 5,
         levelName: '分销员组5',
         fanliRatio: null, // 直接比例
         rebateRatio: null, // 间接比例
@@ -350,12 +345,50 @@ export default {
     }
   },
   mounted () {
+    this.initDataList()
     // 编辑初始化
     if (this.isEdite === true) {
       this.editSeckillInit(this.editId)
     }
   },
   methods: {
+    // 获取分销员等级
+    initDataList () {
+      getDistributionLevel().then((res) => {
+        if (res.error === 0) {
+          this.handleData(res.content.levelList)
+        }
+      })
+    },
+
+    // 表格数据处理
+    handleData (data) {
+      debugger
+      console.log(this.tableData)
+      this.tableData.map((item, index) => {
+        item.levelId = data[index].levelId
+        item.levelName = data[index].levelName
+        switch (item.levelId) {
+          case 1:
+            item.levelText = '一级'
+            break
+          case 2:
+            item.levelText = '二级'
+            break
+          case 3:
+            item.levelText = '三级'
+            break
+          case 4:
+            item.levelText = '四级'
+            break
+          case 5:
+            item.levelText = '五级'
+            break
+        }
+      })
+      console.log(this.tableData)
+    },
+
     // 编辑初始化
     editSeckillInit (id) {
       getPolicyDetail(id).then((res) => {
