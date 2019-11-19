@@ -113,7 +113,7 @@ public class GoodsCommentService extends ShopBaseService {
             select, param.getCurrentPage(), param.getPageRows(), GoodsCommentVo.class);
     //遍历当前分页结果，查询优惠券名称
     for (GoodsCommentVo vo : pageResult.dataList) {
-        if (vo.getAwardType().equals(NumberUtils.INTEGER_TWO)){
+        if (vo.getAwardType()!=null&&vo.getAwardType().equals(NumberUtils.INTEGER_TWO)){
             Integer activityId = db().select(COMMENT_AWARD.ACTIVITY_ID)
                 .from(COMMENT_AWARD)
                 .where(COMMENT_AWARD.ID.eq(vo.getCommentAwardId()))
@@ -344,6 +344,7 @@ public class GoodsCommentService extends ShopBaseService {
           //手动添加评价
           return db().insertInto(
               COMMENT_GOODS,
+              COMMENT_GOODS.USER_ID,
               COMMENT_GOODS.SHOP_ID,
               COMMENT_GOODS.GOODS_ID,
               COMMENT_GOODS.BOGUS_USERNAME,
@@ -357,6 +358,7 @@ public class GoodsCommentService extends ShopBaseService {
               COMMENT_GOODS.PRD_ID,
               COMMENT_GOODS.FLAG)
               .values(
+                  NumberUtils.INTEGER_ZERO,
                   getShopId(),
                   goodsCommentAddComm.getGoodsId(),
                   goodsCommentAddComm.getBogusUsername(),
