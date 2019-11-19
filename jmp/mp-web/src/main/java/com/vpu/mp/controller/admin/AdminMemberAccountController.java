@@ -33,10 +33,8 @@ public class AdminMemberAccountController extends AdminBaseController {
 	 */
 	@PostMapping("/api/admin/member/account/list")
 	public JsonResult getAccountDetails(@RequestBody @Valid AccountPageListParam param) {
-		logger().info("正在查询会员用户的余额明细");
-		logger().info(param.getOrderSn());
-		
-		PageResult<AccountPageListVo> pageList = shop().member.account.getPageListOfAccountDetails(param);
+		logger().info("正在查询会员用户的余额明细");		
+		PageResult<AccountPageListVo> pageList = shop().member.account.getPageListOfAccountDetails(param,getLang());
 		return success(pageList);
 	}
 	
