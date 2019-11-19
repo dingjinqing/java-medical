@@ -24,6 +24,8 @@
                     :label="item.accountName"
                     :value="item.accountId"
                   >
+                    <span style="float: left">{{ item.accountName }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.mobile }}</span>
                   </el-option>
                 </el-select>
               </el-form-item>
