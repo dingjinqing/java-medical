@@ -3,22 +3,25 @@ package com.vpu.mp.service.shop.config;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+/**
+ * 评价配置
+ * @author liangchen
+ */
 @Service
 
 public class CommentConfigService extends BaseShopConfigService{
 	
-	final public static String K_COMMENT = "comment";
-	final public static String K_COMMENT_STATE = "comment_state";
+	private final static String K_COMMENT = "comment";
+	private final static String K_COMMENT_STATE = "comment_state";
 	
 	 /**
      * 修改评价审核配置
      *
      * @param value
-     * @return 
-     */
-	public int setCheckConfig(String value) {
-		return this.set(K_COMMENT,value);
-	}
+      */
+	public void setCheckConfig(String value) {
+        this.set(K_COMMENT, value);
+    }
 
     /**
      * 获取评价审核状态
@@ -33,11 +36,10 @@ public class CommentConfigService extends BaseShopConfigService{
      * 修改开关配置
      *
      * @param value
-     * @return 
      */
-	public int setSwitchConfig(String value) {
-	    return this.set(K_COMMENT_STATE,value);
-	}
+	public void setSwitchConfig(String value) {
+        this.set(K_COMMENT_STATE, value);
+    }
     /**
      * 获取评价审核状态
      * @return 默认为0

@@ -1,9 +1,12 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 商品评论控制器
@@ -30,25 +33,21 @@ public class AdminGoodsCommentController extends AdminBaseController {
 		return success(pageResult);
 	}
 
-	/**
-	 * 评论审核分页查询
-	 *
-	 * @param param
-	 * @return
-	 */
-	@PostMapping("/checklist")
-	public JsonResult getCheckPageList(@RequestBody GoodsCommentPageListParam param) {
-
-		PageResult<GoodsCommentCheckListVo> pageResult = shop().goods.goodsComment.getCheckPageList(param);
-
-		return success(pageResult);
-	}
+    /**
+     * 获得所有评价有礼奖励
+     * @return 评价有礼奖励id和name
+     */
+    @GetMapping("/award")
+    public JsonResult getCommentAward(){
+        List<CommentAwardVo> result = shop().goods.goodsComment.getCommentAward();
+        return success(result);
+    }
 
 	/**
 	 * 评论回复
 	 * 
-	 * @param goodsCommentAnswer
-	 * @return
+	 * @param goodsCommentAnswer 评价id和回复内容
+	 * @return 结果信息
 	 *
 	 */
 	@PostMapping("/answer")
@@ -62,8 +61,8 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	/**
 	 * 删除回复
 	 *
-	 * @param goodsCommentId
-	 * @return
+	 * @param goodsCommentId 评论id
+	 * @return 结果信息
 	 */
 	@PostMapping("/delAnswer")
 	public JsonResult delAnswer(@RequestBody GoodsCommentIdParam goodsCommentId) {
@@ -76,8 +75,8 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	/**
 	 * 删除评论
 	 *
-	 * @param goodsCommentId
-	 * @return
+	 * @param goodsCommentId 评论id
+	 * @return 结果信息
 	 */
 	@PostMapping("/delete")
 	public JsonResult delete(@RequestBody GoodsCommentIdParam goodsCommentId) {
@@ -90,8 +89,8 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	/**
 	 * 修改审核状态
 	 *
-	 * @param goodsCommentId
-	 * @return
+	 * @param goodsCommentId 评论id
+	 * @return 结果信息
 	 */
 
 	@PostMapping("/passflag")
@@ -101,8 +100,13 @@ public class AdminGoodsCommentController extends AdminBaseController {
 
 		return success();
 	}
-	
-	@PostMapping("/refuseflag")
+    /**
+     * 修改审核状态
+     *
+     * @param goodsCommentId 评论id
+     * @return 结果信息
+     */
+    @PostMapping("/refuseflag")
 	public JsonResult refuseflag(@RequestBody GoodsCommentIdParam goodsCommentId) {
 
 		shop().goods.goodsComment.refuseflag(goodsCommentId);
@@ -113,8 +117,8 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	/**
 	 * 修改审核配置
 	 * 
-	 * @param goodsCommentConfig
-	 * @return
+	 * @param goodsCommentConfig 配置信息
+	 * @return 结果信息
 	 *
 	 */
 	@PostMapping("/checkconfig")
@@ -128,8 +132,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
     /**
      * 获取审核配置
      *
-     * @param
-     * @return
+     * @return 审核配置信息
      *
      */
     @GetMapping("/getconfig")
@@ -143,8 +146,8 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	/**
 	 * 修改开关配置
 	 * 
-	 * @param goodsCommentConfig
-	 * @return
+	 * @param goodsCommentConfig 配置value
+	 * @return 结果信息
 	 *
 	 */
 	@PostMapping("/switchconfig")
@@ -158,8 +161,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
     /**
      * 获取开关配置
      *
-     * @param
-     * @return
+     * @return 开关配置信息
      *
      */
     @GetMapping("/getswitch")
@@ -193,9 +195,10 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	 */
 	@PostMapping("/addcomm")
 	public JsonResult addComment(@RequestBody GoodsCommentAddCommParam goodsCommentAddComm) {
-
-		shop().goods.goodsComment.addComment(goodsCommentAddComm);
-
+        //没有添加权限
+        if ((-1)==shop().goods.goodsComment.addComment(goodsCommentAddComm)){
+            return fail(JsonResultMessage.GOODS_COMMENT_NO_PERMISSION);
+        }
 		return success();
 	}
 	

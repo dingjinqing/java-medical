@@ -12,11 +12,15 @@ import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.comment.*;
+import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import com.vpu.mp.service.saas.comment.CommentSwitch;
+import com.vpu.mp.service.shop.config.CommentConfigService;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.ScoreService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -31,6 +35,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
@@ -41,41 +46,49 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  */
 @Service
 public class GoodsCommentService extends ShopBaseService {
+    @Autowired private CommentConfigService commentConfigService;
+    @Autowired private CommentSwitch commentSwitch;
   @Autowired private CouponGiveService couponGiveService;
   @Autowired private ScoreService scoreService;
   @Autowired private AccountService accountService;
   @Autowired protected HttpServletRequest request;
-  public static final int THREE = 3;
-  public static final int FOUR = 4;
-  public static final int FIVE = 5;
-  public static final byte GET_SOURCE = 3;
+  private static final int THREE = 3;
+  private static final int FOUR = 4;
+  private static final int FIVE = 5;
+  private static final byte GET_SOURCE = 3;
+
+  public static final Condition TRUE_CONDITION = DSL.trueCondition();
 
   /**
    * 分页获取评价信息
    *
-   * @param param
-   * @return
+   * @param param 条件查询参数
+   * @return 商品评价信息
    */
   public PageResult<GoodsCommentVo> getPageList(GoodsCommentPageListParam param) {
-
+    //查询内容
     SelectConditionStep<? extends Record> select =
-        (SelectConditionStep<? extends Record>)
             db().select(
                     COMMENT_GOODS.ID,
                     COMMENT_GOODS.ORDER_SN,
                     COMMENT_GOODS.COMMSTAR,
                     COMMENT_GOODS.COMM_NOTE,
+                    COMMENT_GOODS.COMM_IMG,
                     COMMENT_GOODS.CREATE_TIME,
                     COMMENT_GOODS.ANONYMOUSFLAG,
                     COMMENT_GOODS.BOGUS_USERNAME,
+                    COMMENT_GOODS.COMMENT_AWARD_ID,
                     GOODS.GOODS_NAME,
                     GOODS.GOODS_IMG,
+                    USER.USER_ID,
                     USER.USERNAME,
                     USER.MOBILE,
-                    COMMENT_AWARD.NAME,
                     COMMENT_AWARD.AWARD_TYPE,
                     COMMENT_AWARD.SCORE,
-                    COMMENT_AWARD.ACCOUNT)
+                    COMMENT_AWARD.ACCOUNT,
+                    COMMENT_GOODS_ANSWER.CONTENT,
+                    COMMENT_GOODS.FLAG,
+                    GOODS_SPEC_PRODUCT.PRD_DESC)
                 .from(COMMENT_GOODS)
                 .leftJoin(GOODS)
                 .on(GOODS.GOODS_ID.eq(COMMENT_GOODS.GOODS_ID))
@@ -83,24 +96,32 @@ public class GoodsCommentService extends ShopBaseService {
                 .on(USER.USER_ID.eq(COMMENT_GOODS.USER_ID))
                 .leftJoin(COMMENT_AWARD)
                 .on(COMMENT_GOODS.COMMENT_AWARD_ID.eq(COMMENT_AWARD.ID))
-        .where(COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO));
+                .leftJoin(COMMENT_GOODS_ANSWER)
+                .on(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID))
+                .leftJoin(GOODS_SPEC_PRODUCT)
+                .on(COMMENT_GOODS.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+                .where(COMMENT_GOODS.DEL_FLAG.eq(GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
+    //添加查询条件
     this.buildOptions(select, param);
+    //从新到旧排序
     select.orderBy(COMMENT_GOODS.CREATE_TIME.desc());
-
+    //整合分页信息
     PageResult<GoodsCommentVo> pageResult =
         this.getPageResult(
             select, param.getCurrentPage(), param.getPageRows(), GoodsCommentVo.class);
+    //遍历当前分页结果，查询优惠券名称
     for (GoodsCommentVo vo : pageResult.dataList) {
-      String content =
-          db().select(COMMENT_GOODS_ANSWER.CONTENT)
-              .from(COMMENT_GOODS_ANSWER)
-              .where(COMMENT_GOODS_ANSWER.COMMENT_ID.eq(vo.getId()))
-              .and(
-                  COMMENT_GOODS_ANSWER.DEL_FLAG.eq(
-                      (byte) GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE))
-              .fetchOptionalInto(String.class)
-              .orElse(null);
-      vo.setContent(content);
+        if (vo.getAwardType().equals(NumberUtils.INTEGER_TWO)){
+            Integer activityId = db().select(COMMENT_AWARD.ACTIVITY_ID)
+                .from(COMMENT_AWARD)
+                .where(COMMENT_AWARD.ID.eq(vo.getCommentAwardId()))
+                .fetchOneInto(Integer.class);
+            String actName = db().select(MRKING_VOUCHER.ACT_NAME)
+                .from(MRKING_VOUCHER)
+                .where(MRKING_VOUCHER.ID.eq(activityId))
+                .fetchOneInto(String.class);
+            vo.setActName(actName);
+        }
     }
     return pageResult;
   }
@@ -108,119 +129,57 @@ public class GoodsCommentService extends ShopBaseService {
   /**
    * 根据过滤条件构造对应的sql语句
    *
-   * @param select
-   * @param param
+   * @param select 查询语句
    */
-  private SelectConditionStep<?> buildOptions(
+  private void buildOptions(
       SelectConditionStep<? extends Record> select, GoodsCommentPageListParam param) {
-    SelectConditionStep<?> scs =
-        select.and(
-            COMMENT_GOODS.DEL_FLAG.eq((byte) GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
-
+    //根据订单编号查询
     if (!StringUtils.isBlank(param.getOrderSn())) {
-      scs = scs.and(COMMENT_GOODS.ORDER_SN.like(this.likeValue(param.getOrderSn())));
+         select.and(COMMENT_GOODS.ORDER_SN.like(this.likeValue(param.getOrderSn())));
     }
-
+    //根据商品名称查询
     if (!StringUtils.isBlank(param.getGoodsName())) {
-      scs = scs.and(ORDER_GOODS.GOODS_NAME.like(this.likeValue(param.getGoodsName())));
+        select.and(GOODS.GOODS_NAME.like(this.likeValue(param.getGoodsName())));
     }
-
+    //根据手机号查询
     if (!StringUtils.isBlank(param.getMobile())) {
-      scs = scs.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
+        select.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
     }
-
-    if (param.getCommstar() != GoodsCommentPageListParam.COMMSTAR_DEFAULT_VALUE) {
-      scs = scs.and(COMMENT_GOODS.COMMSTAR.eq(param.getCommstar()));
+    //根据评价星级查询
+    if (!GoodsCommentPageListParam.COMMSTAR_DEFAULT_VALUE.equals(param.getCommstar())) {
+        select.and(COMMENT_GOODS.COMMSTAR.eq(param.getCommstar()));
     }
-    if (param.getAwardActivityId() != null) {
-      scs.and(COMMENT_GOODS.COMMENT_AWARD_ID.eq(param.getAwardActivityId()));
+    //根据奖励查询
+    if (param.getAwardActivityId()!=null) {
+        select.and(COMMENT_GOODS.COMMENT_AWARD_ID.eq(param.getAwardActivityId()));
     }
-    return scs;
+    //根据审核状态查询
+    if (!GoodsCommentPageListParam.FLAG_DEFAULT_VALUE.equals(param.getFlag())) {
+        select.and(COMMENT_GOODS.FLAG.eq(param.getFlag()));
+    }
   }
 
-  /**
-   * 分页获取评价审核信息
-   *
-   * @param param
-   * @return
-   */
-  public PageResult<GoodsCommentCheckListVo> getCheckPageList(GoodsCommentPageListParam param) {
-      SelectConditionStep<? extends Record> selectFrom = db().select(
-          COMMENT_GOODS.ID,
-          COMMENT_GOODS.ORDER_SN,
-          GOODS.GOODS_IMG,
-          GOODS.GOODS_NAME,
-          USER.USERNAME,
-          USER.MOBILE,
-          COMMENT_GOODS.COMMSTAR,
-          COMMENT_GOODS.COMM_NOTE,
-          COMMENT_GOODS_ANSWER.CONTENT,
-          COMMENT_GOODS.CREATE_TIME,
-          COMMENT_GOODS.ANONYMOUSFLAG,
-          COMMENT_GOODS.FLAG,
-          COMMENT_AWARD.AWARD_TYPE)
-          .from(COMMENT_GOODS)
-          .leftJoin(GOODS).on(COMMENT_GOODS.GOODS_ID.eq(GOODS.GOODS_ID))
-          .leftJoin(USER).on(COMMENT_GOODS.USER_ID.eq(USER.USER_ID))
-          .leftJoin(COMMENT_GOODS_ANSWER).on(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID))
-          .leftJoin(COMMENT_AWARD).on(COMMENT_GOODS.COMMENT_AWARD_ID.eq(COMMENT_AWARD.ID))
-          .where(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
-
-      SelectConditionStep<?> select = this.buildCheckOptions(selectFrom, param);
-
-    select.orderBy(COMMENT_GOODS.CREATE_TIME.desc());
-
-    PageResult<GoodsCommentCheckListVo> pageResult =
-        this.getPageResult(
-            select, param.getCurrentPage(), param.getPageRows(), GoodsCommentCheckListVo.class);
-
-    return pageResult;
-  }
-
-  /**
-   * 根据过滤条件构造对应的sql语句
-   *
-   * @param selectFrom
-   * @param param
-   * @return
-   */
-  private SelectConditionStep<?> buildCheckOptions(SelectConditionStep<? extends Record> selectFrom,GoodsCommentPageListParam param) {
-    SelectConditionStep<?> scs =
-        selectFrom.and(
-            COMMENT_GOODS.DEL_FLAG.eq((byte) GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
-
-    if (!StringUtils.isBlank(param.getOrderSn())) {
-      scs = scs.and(COMMENT_GOODS.ORDER_SN.like(this.likeValue(param.getOrderSn())));
-    }
-
-    if (!StringUtils.isBlank(param.getGoodsName())) {
-      scs = scs.and(ORDER_GOODS.GOODS_NAME.like(this.likeValue(param.getGoodsName())));
-    }
-
-    if (!StringUtils.isBlank(param.getMobile())) {
-      scs = scs.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
-    }
-
-    if (param.getCommstar() != GoodsCommentPageListParam.COMMSTAR_DEFAULT_VALUE) {
-      scs = scs.and(COMMENT_GOODS.COMMSTAR.eq(param.getCommstar()));
-    }
-
-    if (param.getFlag() != GoodsCommentPageListParam.FLAG_DEFAULT_VALUE) {
-      scs = scs.and(COMMENT_GOODS.FLAG.eq(param.getFlag()));
-    }
-
-    return scs;
+    /**
+     * 获得所有的评价有礼奖励
+     * @return 评价有礼奖励id和name
+     */
+  public List<CommentAwardVo> getCommentAward(){
+      List<CommentAwardVo> result =
+          db().select(COMMENT_AWARD.ID,COMMENT_AWARD.NAME)
+          .from(COMMENT_AWARD)
+          .where(COMMENT_AWARD.DEL_FLAG.eq(BYTE_ZERO))
+          .fetchInto(CommentAwardVo.class);
+      return result;
   }
 
   /**
    * 假删除指定评价
    *
-   * @param goodsCommentId
-   * @return 数据库受影响行数
+   * @param goodsCommentId 评论id
    */
-  public int delete(GoodsCommentIdParam goodsCommentId) {
-    return db().update(COMMENT_GOODS)
-        .set(COMMENT_GOODS.DEL_FLAG, (byte) 1)
+  public void delete(GoodsCommentIdParam goodsCommentId) {
+      db().update(COMMENT_GOODS)
+        .set(COMMENT_GOODS.DEL_FLAG, NumberUtils.BYTE_ONE)
         .where(COMMENT_GOODS.ID.eq(goodsCommentId.getId()))
         .execute();
   }
@@ -228,48 +187,47 @@ public class GoodsCommentService extends ShopBaseService {
   /**
    * 评价回复
    *
-   * @param goodsCommentAnswer
-   * @return 数据库受影响行数
+   * @param goodsCommentAnswer 评价id和回复内容
    */
-  public int insertAnswer(GoodsCommentAnswerParam goodsCommentAnswer) {
-    int result =
+  public void insertAnswer(GoodsCommentAnswerParam goodsCommentAnswer) {
         db().insertInto(
                 COMMENT_GOODS_ANSWER, COMMENT_GOODS_ANSWER.COMMENT_ID, COMMENT_GOODS_ANSWER.CONTENT)
             .values(goodsCommentAnswer.getCommentId(), goodsCommentAnswer.getContent())
             .execute();
-    return result;
   }
 
   /**
    * 删除评价回复
    *
-   * @param goodsCommentId
-   * @return
+   * @param goodsCommentId 评论id
    */
   public void delAnswer(GoodsCommentIdParam goodsCommentId) {
     db().update(COMMENT_GOODS_ANSWER)
-        .set(COMMENT_GOODS_ANSWER.DEL_FLAG, (byte) 1)
+        .set(COMMENT_GOODS_ANSWER.DEL_FLAG, NumberUtils.BYTE_ONE)
         .where(COMMENT_GOODS_ANSWER.COMMENT_ID.eq(goodsCommentId.getId()))
-        .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq((byte) 0))
+        .and(COMMENT_GOODS_ANSWER.DEL_FLAG.eq(BYTE_ZERO))
         .execute();
   }
 
   /**
    * 修改评价审核状态
    *
-   * @param goodsCommentId
-   * @return
+   * @param goodsCommentId 评论id
    */
-  public int passflag(GoodsCommentIdParam goodsCommentId) {
-    return db().update(COMMENT_GOODS)
-        .set(COMMENT_GOODS.FLAG, (byte) GoodsCommentPageListParam.FLAG_PASS_VALUE)
+  public void passflag(GoodsCommentIdParam goodsCommentId) {
+     db().update(COMMENT_GOODS)
+        .set(COMMENT_GOODS.FLAG, GoodsCommentPageListParam.FLAG_PASS_VALUE)
         .where(COMMENT_GOODS.ID.eq(goodsCommentId.getId()))
         .execute();
   }
-
-  public int refuseflag(GoodsCommentIdParam goodsCommentId) {
-    return db().update(COMMENT_GOODS)
-        .set(COMMENT_GOODS.FLAG, (byte) GoodsCommentPageListParam.FLAG_REFUSE_VALUE)
+    /**
+     * 修改评价审核状态
+     *
+     * @param goodsCommentId 评论id
+     */
+  public void refuseflag(GoodsCommentIdParam goodsCommentId) {
+     db().update(COMMENT_GOODS)
+        .set(COMMENT_GOODS.FLAG, GoodsCommentPageListParam.FLAG_REFUSE_VALUE)
         .where(COMMENT_GOODS.ID.eq(goodsCommentId.getId()))
         .execute();
   }
@@ -277,98 +235,143 @@ public class GoodsCommentService extends ShopBaseService {
   /**
    * 分页查询添加评论列表
    *
-   * @param param
-   * @return
+   * @param param 商品名称、商家分类筛选信息
+   * @return 商品信息
    */
   public PageResult<GoodsCommentAddListVo> getAddList(GoodsCommentPageListParam param) {
 
     SelectConditionStep<?extends Record>
         selectFrom =
             db().select(
-                    GOODS.GOODS_ID,
+                    GOODS_SPEC_PRODUCT.PRD_ID,
+                    GOODS_SPEC_PRODUCT.PRD_DESC,
+                    GOODS_SPEC_PRODUCT.GOODS_ID,
                     GOODS.GOODS_IMG,
                     GOODS.GOODS_NAME,
                     GOODS.GOODS_SN,
-                    SORT.SORT_NAME,
+                    GOODS.CAT_ID,
                     GOODS.SHOP_PRICE,
-                    GOODS.GOODS_NUMBER,
-                    GOODS.GOODS_SALE_NUM,
-                    GOODS_SUMMARY.UV,
-                    GOODS_SUMMARY.PV)
-                .from(GOODS)
-                .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID))
-                .leftJoin(GOODS_SUMMARY).on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID))
-                .where(GOODS.DEL_FLAG.eq(BYTE_ZERO));
-
-    SelectConditionStep<?> select = this.buildAddOptions(selectFrom, param);
-
+                    GOODS.GOODS_NUMBER)
+                .from(GOODS_SPEC_PRODUCT)
+                .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+                .where(TRUE_CONDITION);
+    //构造查询条件
+    this.buildAddOptions(selectFrom, param);
+    //从新到旧排序
+      selectFrom.orderBy(GOODS_SPEC_PRODUCT.CREATE_TIME.desc());
+      //整合分页信息
     PageResult<GoodsCommentAddListVo> pageResult =
         this.getPageResult(
-            select, param.getCurrentPage(), param.getPageRows(), GoodsCommentAddListVo.class);
-
+            selectFrom, param.getCurrentPage(), param.getPageRows(), GoodsCommentAddListVo.class);
+    for ( GoodsCommentAddListVo vo: pageResult.dataList) {
+        //平台分类名称
+        vo.setCatName(SysCatServiceHelper.getSysCateVoByCatId(vo.getCatId()).getCatName());
+        //真实评论数
+        Integer realCommNum = db().select(DSL.count(COMMENT_GOODS.ID).as("real_comm_num"))
+            .from(COMMENT_GOODS)
+            .where(COMMENT_GOODS.GOODS_ID.eq(vo.getGoodsId()))
+            .and(COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO))
+            .and(COMMENT_GOODS.IS_SHOP_ADD.eq(BYTE_ZERO))
+            .fetchOneInto(Integer.class);
+        vo.setRealCommNum(realCommNum);
+        //店铺添加评论数
+        Integer shopCommNum = db().select(DSL.count(COMMENT_GOODS.ID).as("shop_comm_num"))
+            .from(COMMENT_GOODS)
+            .where(COMMENT_GOODS.GOODS_ID.eq(vo.getGoodsId()))
+            .and(COMMENT_GOODS.DEL_FLAG.eq(BYTE_ZERO))
+            .and(COMMENT_GOODS.IS_SHOP_ADD.eq(BYTE_ONE))
+            .fetchOneInto(Integer.class);
+        vo.setShopCommNum(shopCommNum);
+        //访问量
+        Integer uv = db().select(DSL.count(FOOTPRINT_RECORD.ID).as("uv"))
+            .from(FOOTPRINT_RECORD)
+            .where(FOOTPRINT_RECORD.GOODS_ID.eq(vo.getGoodsId()))
+            .fetchOneInto(Integer.class);
+        vo.setUv(uv);
+        //浏览量
+        Integer pv = db().select(DSL.sum(FOOTPRINT_RECORD.COUNT).as("pv"))
+            .from(FOOTPRINT_RECORD)
+            .where(FOOTPRINT_RECORD.GOODS_ID.eq(vo.getGoodsId()))
+            .fetchOneInto(Integer.class);
+        vo.setPv(pv);
+    }
     return pageResult;
   }
 
   /**
    * 根据过滤条件构造对应的sql语句
    *
-   * @param selectFrom
-   * @param param
-   * @return
+   * @param selectFrom sql语句
+   * @param param 筛选条件
    */
-  private SelectConditionStep<?> buildAddOptions(
+  private void buildAddOptions(
       SelectConditionStep<?extends Record>
           selectFrom,
       GoodsCommentPageListParam param) {
-    SelectConditionStep<?> scs =
-        selectFrom.and(GOODS.DEL_FLAG.eq((byte) GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
-
+    //根据商品名称搜索
     if (!StringUtils.isBlank(param.getGoodsName())) {
-      scs = scs.and(GOODS.GOODS_NAME.like(this.likeValue(param.getGoodsName())));
+       selectFrom.and(GOODS.GOODS_NAME.like(this.likeValue(param.getGoodsName())));
     }
-
-    if (!StringUtils.isBlank(param.getSortName())) {
-      scs = scs.and(SORT.SORT_NAME.eq(param.getSortName()));
+    //根据平台分类搜索
+    if (!GoodsCommentPageListParam.CAT_DEFAULT_VALUE.equals(param.getCatId())) {
+      selectFrom.and(GOODS.CAT_ID.eq(param.getCatId()));
     }
-
-    return scs;
   }
 
   /**
    * 商家手动添加评价
    *
-   * @param goodsCommentAddComm
-   * @return 数据库受影响行数
+   * @param goodsCommentAddComm 评论内容
    */
   public int addComment(GoodsCommentAddCommParam goodsCommentAddComm) {
+      //有权限
+      if (Boolean.valueOf(commentSwitch.getAddCommentSwitch(getSysId()).toString())){
+          //查询审核配置
+          Byte commSwitch = commentConfigService.getCommentConfig();
+          Byte flag;
+          //不用审核 先发后审
+          if (commSwitch.equals(BYTE_ONE)||commSwitch.equals(BYTE_ZERO)){
+              flag = 1;
+          }
+          //先审后发
+          else {
+              flag = 0;
+          }
 
-    int result =
-        db().insertInto(
-                COMMENT_GOODS,
-                COMMENT_GOODS.SHOP_ID,
-                COMMENT_GOODS.GOODS_ID,
-                COMMENT_GOODS.BOGUS_USERNAME,
-                COMMENT_GOODS.BOGUS_USER_AVATAR,
-                COMMENT_GOODS.CREATE_TIME,
-                COMMENT_GOODS.COMMSTAR,
-                COMMENT_GOODS.COMM_NOTE,
-                COMMENT_GOODS.COMM_IMG,
-                COMMENT_GOODS.ANONYMOUSFLAG,
-                COMMENT_GOODS.IS_SHOP_ADD)
-            .values(
-                getShopId(),
-                goodsCommentAddComm.getGoodsId(),
-                goodsCommentAddComm.getBogusUsername(),
-                goodsCommentAddComm.getBogusUserAvatar(),
-                goodsCommentAddComm.getCreateTime(),
-                goodsCommentAddComm.getCommstar(),
-                goodsCommentAddComm.getCommNote(),
-                goodsCommentAddComm.getCommImg(),
-                goodsCommentAddComm.getAnonymousFlag(),
-                NumberUtils.BYTE_ONE)
-            .execute();
-
-    return result;
+          //手动添加评价
+          return db().insertInto(
+              COMMENT_GOODS,
+              COMMENT_GOODS.SHOP_ID,
+              COMMENT_GOODS.GOODS_ID,
+              COMMENT_GOODS.BOGUS_USERNAME,
+              COMMENT_GOODS.BOGUS_USER_AVATAR,
+              COMMENT_GOODS.CREATE_TIME,
+              COMMENT_GOODS.COMMSTAR,
+              COMMENT_GOODS.COMM_NOTE,
+              COMMENT_GOODS.COMM_IMG,
+              COMMENT_GOODS.ANONYMOUSFLAG,
+              COMMENT_GOODS.IS_SHOP_ADD,
+              COMMENT_GOODS.PRD_ID,
+              COMMENT_GOODS.FLAG)
+              .values(
+                  getShopId(),
+                  goodsCommentAddComm.getGoodsId(),
+                  goodsCommentAddComm.getBogusUsername(),
+                  goodsCommentAddComm.getBogusUserAvatar(),
+                  goodsCommentAddComm.getCreateTime(),
+                  goodsCommentAddComm.getCommstar(),
+                  goodsCommentAddComm.getCommNote(),
+                  goodsCommentAddComm.getCommImg(),
+                  goodsCommentAddComm.getAnonymousFlag(),
+                  NumberUtils.BYTE_ONE,
+                  goodsCommentAddComm.getPrdId(),
+                  flag)
+              .execute();
+      }
+      //没有权限
+        else {
+            return -1;
+      }
   }
 
   /**

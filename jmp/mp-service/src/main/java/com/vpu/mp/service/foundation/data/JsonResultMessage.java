@@ -136,6 +136,10 @@ public class JsonResultMessage {
     public static final String GOODS_EXPORT_COLUMN_UNIT = "goods.export.column.unit";
     public static final String GOODS_EXPORT_COLUMN_GOODS_IMG = "goods.export.column.goods_img";
 
+    /**
+     * 商品评价
+     */
+    public static final String GOODS_COMMENT_NO_PERMISSION = "goods.comment.no_permission";
 
     /**
      * 营销

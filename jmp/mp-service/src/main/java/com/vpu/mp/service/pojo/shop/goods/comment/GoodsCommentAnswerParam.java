@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 public class GoodsCommentAnswerParam {
 	
-	private Integer answerId;
 	private Integer commentId;
     private String content;
 }
