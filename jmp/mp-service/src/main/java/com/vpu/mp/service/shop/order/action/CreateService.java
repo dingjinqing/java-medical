@@ -573,7 +573,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         calculate.calculateCardInfo(param, vo);
         //处理当前会员卡
         BigDecimal memberDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultMemberCard(), bos, OrderConstant.D_T_MEMBER_CARD);
-        //计算优惠卷折扣
+        //处理优惠卷
         calculate.calculateCoupon(param, vo);
         //处理当前优惠卷
         BigDecimal couponDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultCoupon(), bos, OrderConstant.D_T_COUPON);

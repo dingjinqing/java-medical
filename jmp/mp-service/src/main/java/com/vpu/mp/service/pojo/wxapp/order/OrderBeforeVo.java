@@ -55,7 +55,7 @@ public class OrderBeforeVo {
     private Byte serviceChoose;
     /**服务条款_服务条款名称*/
     private String serviceName;
-    /**积分支付规则_是否限时*/
+    /**积分支付规则_是否限制*/
     private Byte scorePayLimit;
     /**积分支付规则_每单支付的积分数量少于 score_pay_num 积分，不可使用积分支付*/
     private Integer scorePayNum;

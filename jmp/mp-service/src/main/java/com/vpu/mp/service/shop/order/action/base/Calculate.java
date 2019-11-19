@@ -30,6 +30,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -157,7 +158,7 @@ public class Calculate extends ShopBaseService {
      * @param vo vo
      */
     public void calculateCoupon(OrderBeforeParam param, OrderBeforeVo vo) {
-        if(param.getDefaultCard() != null && !CardConstant.MCARD_TP_LIMIT.equals(param.getDefaultCard().getCardType()) && param.getCouponSn() != null){
+        if(!StringUtils.isBlank(param.getCouponSn()) && (vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType()))){
             //可用优惠卷
             List<OrderCouponVo> coupons = coupon.getValidCoupons(param.getWxUserInfo().getUserId());
             if(CollectionUtils.isEmpty(coupons)){
@@ -233,7 +234,7 @@ public class Calculate extends ShopBaseService {
     public void calculateCardInfo(OrderBeforeParam param, OrderBeforeVo vo) {
         logger().info("计算会员卡折扣开始");
         //会员卡折扣
-        if(param.getMemberCardNo() != null){
+        if(!StringUtils.isBlank(param.getMemberCardNo())){
             /**使用会员卡，其中cardNo==0为使用默认会员卡*/
             OrderMemberVo card = userCard.userCardDao.getValidByCardNo(param.getMemberCardNo());
             if(card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getCardType())){
@@ -247,7 +248,7 @@ public class Calculate extends ShopBaseService {
                 if(OrderConstant.DEFAULT_COUPON_OR_ORDER_SN.equals(param.getMemberCardNo())){
                     defaultCard = userCard.userCardDao.getOrderGradeCard(param.getWxUserInfo().getUserId());
                 }
-                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(defaultCard));
+                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), defaultCard ==  null ? Lists.newArrayList() :Lists.newArrayList(defaultCard));
                 defaultCard = defaultCard != null ? defaultCard : (CollectionUtils.isEmpty(validCardList) ? null : validCardList.get(0));
                 vo.setDefaultMemberCard(defaultCard);
                 vo.setMemberCards(validCardList);

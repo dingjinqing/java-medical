@@ -63,9 +63,6 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	private Map<Integer, Goods> goodsMap;
     @JsonIgnore
     /**方便查找*/
-    private Map<String, WxAppUserCardVo> cards;
-    @JsonIgnore
-    /**方便查找*/
     private List<OrderGoodsBo> bos;
 	/**
 	 * 商品参数
@@ -133,15 +130,4 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 			return goods.stream().collect(Collectors.toMap(Goods::getProductId, Function.identity()));
 		}
 	}
-
-    /**
-     * 获取当前默认会员卡
-     * @return 当前会员卡
-     */
-    public WxAppUserCardVo getDefaultCard() {
-        if(cards == null || cards.size() == 0 || memberCardNo == null){
-            return null;
-        }
-        return cards.get(memberCardNo);
-    }
 }
