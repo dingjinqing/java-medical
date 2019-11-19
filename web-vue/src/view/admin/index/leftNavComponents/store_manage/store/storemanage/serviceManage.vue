@@ -60,7 +60,8 @@ export default {
             name: 'store_storemanage_service_list',
             query: {
               id: this.id,
-              businessHours: this.businessHours
+              businessHours: this.$route.query.businessHours,
+              businessType: this.$route.query.businessType
             }
           })
           break
@@ -68,7 +69,9 @@ export default {
           this.$router.push({
             name: 'store_storemanage_service_classify',
             query: {
-              id: this.id
+              id: this.id,
+              businessHours: this.$route.query.businessHours,
+              businessType: this.$route.query.businessType
             }
           })
           break
@@ -77,7 +80,8 @@ export default {
             name: 'store_storemanage_service_add',
             query: {
               id: this.id,
-              businessHours: this.businessHours
+              businessHours: this.$route.query.businessHours,
+              businessType: this.$route.query.businessType
             }
           })
           break

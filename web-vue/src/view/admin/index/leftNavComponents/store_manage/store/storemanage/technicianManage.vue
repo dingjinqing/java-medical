@@ -63,7 +63,9 @@ export default {
           this.$router.push({
             name: 'store_storemanage_technician_classify',
             query: {
-              id: this.id
+              id: this.id,
+              businessHours: this.$route.query.businessHours,
+              businessType: this.$route.query.businessType
             }
           })
           break
