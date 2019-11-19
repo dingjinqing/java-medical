@@ -5,9 +5,12 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CommentDetailVo;
 import com.vpu.mp.service.shop.activity.dao.GoodsCommentProcessorDao;
+import com.vpu.mp.service.shop.image.ImageService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +23,8 @@ import java.util.stream.Collectors;
 public class GoodsCommentProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     GoodsCommentProcessorDao goodsCommentProcessorDao;
+    @Autowired
+    ImageService imageService;
 
     /*****处理器优先级*****/
     @Override
@@ -47,5 +52,23 @@ public class GoodsCommentProcessor implements ProcessorPriority,ActivityGoodsLis
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
         CommentDetailVo goodsCommentInfoForDetail = goodsCommentProcessorDao.getGoodsCommentInfoForDetail(param.getGoodsId());
        goodsDetailMpBo.setComment(goodsCommentInfoForDetail);
+        CommentDetailVo.CommentInfo commentInfo = goodsCommentInfoForDetail.getCommentInfo();
+        commentInfo.setUserAvatar(getImgFullUrlUtil(commentInfo.getUserAvatar()));
+        List<String> fullImgs = new ArrayList<>();
+        commentInfo.getCommImgs().forEach(img->fullImgs.add(getImgFullUrlUtil(img)));
+        commentInfo.setCommImgs(fullImgs);
+    }
+
+    /**
+     * 将相对路劲修改为全路径
+     * @param relativePath 相对路径
+     * @return null或全路径
+     */
+    private String getImgFullUrlUtil(String relativePath) {
+        if (StringUtils.isBlank(relativePath)) {
+            return null;
+        } else {
+            return imageService.imageUrl(relativePath);
+        }
     }
 }
