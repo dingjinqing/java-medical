@@ -142,9 +142,15 @@ public class TransactionStatisticsService extends ShopBaseService {
     private static final String END_TIME = "endTime";
 
     public Map<String, java.sql.Date> createDate(LabelAnalysisParam param) {
+        if (param.getScreeningTime() > 0) {
+            return new HashMap<String, java.sql.Date>(2) {{
+                put(START_TIME, DateUtil.yyyyMmDdDate(LocalDate.now().minusDays(param.getScreeningTime())));
+                put(END_TIME, DateUtil.yyyyMmDdDate(LocalDate.now()));
+            }};
+        }
         return new HashMap<String, java.sql.Date>(2) {{
-            put(START_TIME, DateUtil.yyyyMmDdDate(LocalDate.now().minusDays(param.getScreeningTime())));
-            put(END_TIME, DateUtil.yyyyMmDdDate(LocalDate.now()));
+            put(START_TIME, DateUtil.yyyyMmDdDate(param.getStartTime().toLocalDateTime().toLocalDate()));
+            put(END_TIME, DateUtil.yyyyMmDdDate(param.getEndTime().toLocalDateTime().toLocalDate()));
         }};
     }
 

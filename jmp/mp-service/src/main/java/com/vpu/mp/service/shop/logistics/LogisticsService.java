@@ -46,6 +46,20 @@ public class LogisticsService extends ShopBaseService {
      *     }
      *   ]
      * @throws WxErrorException 微信api调用异常
+     *
+     * TODO 微信接口更新，数据格式变动
+     * {
+     *     "delivery_id": "ZTO",
+     *     "delivery_name": "中通快递",
+     *     "can_use_cash": 0,
+     *     "can_get_quservice_type": [
+     *         {
+     *             "service_type": 0,
+     *             "service_name": "标准快件"
+     *         }
+     *     ],
+     *     "cash_biz_id": ""
+     * }
      */
     public List<Map<String, String>> getAllDelivery() throws WxErrorException {
         WxOpenMaServiceExtraImpl maService = open.getMaExtService();
