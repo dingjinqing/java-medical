@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.activity.factory;
 
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.shop.activity.processor.ProcessorPriority;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;

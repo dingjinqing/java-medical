@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 
 /**
@@ -8,5 +9,6 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
  * @author wangbingbing
  */
 public interface OrderCreatePayBeforeProcessor {
-    void processPayBefore(OrderBeforeVo order) throws MpException;
+    void initMarketOrderCreateParam(CreateParam param);
+    void processAfterOrderCreate(OrderBeforeVo order) throws MpException;
 }

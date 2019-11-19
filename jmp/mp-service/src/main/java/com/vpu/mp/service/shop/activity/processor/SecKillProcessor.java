@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
@@ -111,25 +112,34 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
     }
 
     /**
-     * 下单时的秒杀处理
-     * @param order
-     */
-    @Override
-    public void processPayBefore(OrderBeforeVo order) throws MpException {
-        if(order.getActivityId() != null && order.getActivityType() != null && BaseConstant.ACTIVITY_TYPE_SEC_KILL.equals(order.getActivityType())){
-            secKillProcessorDao.processSeckillStock(order);
-        }
-    }
-
-    /**
      * 订单确认页-秒杀下单处理
      * @param orderBeforeParam
      */
     @Override
     public void processOrderBefore(OrderBeforeParam orderBeforeParam, OrderBeforeVo vo) {
-        secKillProcessorDao.setOrderPrdSeckillPrice(orderBeforeParam,vo);
-        //这些营销不允许使用积分支付
+        secKillProcessorDao.setOrderPrdSeckillPrice(orderBeforeParam);
+        //秒杀不允许使用积分支付
         vo.setScoreMaxDiscount(BigDecimal.ZERO);
         vo.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+    }
+
+    /**
+     * 订单生成前，重新计算秒杀价格
+     * @param param
+     */
+    @Override
+    public void initMarketOrderCreateParam(CreateParam param) {
+        secKillProcessorDao.setOrderPrdSeckillPrice(param);
+    }
+
+    /**
+     * 秒杀下单后锁库存处理
+     * 抛出异常：库存不足
+     * @param order
+     * @throws MpException
+     */
+    @Override
+    public void processAfterOrderCreate(OrderBeforeVo order) throws MpException {
+        secKillProcessorDao.processSeckillStock(order);
     }
 }

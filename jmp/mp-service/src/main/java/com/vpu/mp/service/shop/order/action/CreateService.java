@@ -157,8 +157,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //order before data ready
         try {
             //TODO 营销相关
-            if(Boolean.FALSE) {
-
+            if(null != param.getActivityId() && null != param.getActivityType()) {
+                //初始化param里营销相关的内容（活动价格等）
+                OrderCreatePayBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderCreatePayBeforeMpProcessorFactory.class);
+                processorFactory.initMarketOrderCreateParam(param);
             }else {
 
             }
@@ -179,10 +181,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             OrderInfoRecord order = orderInfo.addRecord(param, orderBo, orderBo.getOrderGoodsBo(), orderBeforeVo);
             //普通营销活动处理
             processNormalActivity(order, orderBo, orderBeforeVo);
-            if(null != order.getActivityId()){
-                //指定的排他性营销活动处理，orderBeforeVo里activityId指定
-                processExclusiveActivity(orderBo, orderBeforeVo,param.getWxUserInfo().getUserId());
-            }
             //计算其他数据（需关联去其他模块）
             setOtherValue(order, orderBo, orderBeforeVo);
             //订单入库
@@ -327,7 +325,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             processorFactory.doProcess(param,vo);
 
             //营销购买
-            purchaseForMarket(param, param.getStoreId(), vo);
+            purchaseForMarket(param, param.getStoreId());
         } else {
             // 普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
             if (Boolean.TRUE) {
@@ -387,10 +385,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * 唯一性的营销活动下单
      * @param param
      * @param storeId
-     * @param vo
      * @throws MpException
      */
-    private void purchaseForMarket(OrderBeforeParam param, Integer storeId, OrderBeforeVo vo) throws MpException {
+    private void purchaseForMarket(OrderBeforeParam param, Integer storeId) throws MpException {
         //规格信息,key proId
         Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(param.getProductIds(), storeId);
         //goods type,key goodsId
