@@ -9,6 +9,8 @@ import lombok.Data;
  */
 @Data
 public class GoodsDetailMpParam {
+    private Byte fromPage;
+
     private Integer goodsId;
 
     private Integer userId;

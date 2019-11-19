@@ -32,6 +32,10 @@ public class GoodsConstant {
 
     /**************** 结束 *****************/
 
+    /**************** 小程序-装修商品-手动推荐或自动推荐 *****************/
+    public final static Byte AUTO_REOCMMEND = 0;
+    public final static Byte POINT_RECOMMEND = 1;
+
     /**************** 营销活动启用和停止状态 *****************/
     public final static Byte USE_STATUS = 1;
     public final static Byte STOP_STATUS = 0;
@@ -48,10 +52,6 @@ public class GoodsConstant {
     /*** 可在商品列表,详情展示时标签该字段的值*/
     public static final Byte SHOW_LABEL = 1;
     public static final Integer LABEL_GTA_DEFAULT_VALUE = 0;
-    /***商品评价状态对应码*/
-    public static final Byte NOT_AUDIT = 0;
-    public static final Byte PASS_AUDIT = 1;
-    public static final Byte NOT_PASS_AUDIT = 2;
 
 
     /*** 是推荐品牌,普通品牌，推荐分类，普通分类码*/

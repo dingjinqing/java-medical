@@ -54,10 +54,10 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     List<String> labels;
     /**商品购买时需要的运费，详情展示时的默认运费*/
     private BigDecimal deliverPrice;
-
     /**是否已删除*/
     private Byte delFlag;
     private Boolean isCollected;
+    private CommentDetailVo comment;
     /**相关优惠券*/
     List<CouponDetailMpVo> coupons;
     /**商品专享会员卡*/

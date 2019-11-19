@@ -31,10 +31,6 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
-        // 已从从es获取数据
-        if (capsules.size()==0||capsules.get(0).getIsDisposedByEs()) {
-            return;
-        }
 
         List<Integer> goodsIds = new ArrayList<>();
         List<Integer> catIds = new ArrayList<>();
@@ -68,10 +64,6 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
-        if (goodsDetailMpBo.getLabels() != null) {
-            return;
-        }
-
         List<String> labels = goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId(),param.getCatId(),param.getSortId());
         goodsDetailMpBo.setLabels(labels);
     }

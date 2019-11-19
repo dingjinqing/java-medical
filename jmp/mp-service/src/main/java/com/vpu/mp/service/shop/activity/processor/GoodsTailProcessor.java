@@ -92,6 +92,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
         });
         // 商品图片和视频路径地址处理
         List<String> goodsImgs = new ArrayList<>(goodsDetailMpBo.getGoodsImgs().size());
+        goodsDetailMpBo.getGoodsImgs().add(0,goodsDetailMpBo.getGoodsImg());
         goodsDetailMpBo.getGoodsImgs().forEach(img-> goodsImgs.add(getImgFullUrlUtil(img)));
         goodsDetailMpBo.setGoodsImgs(goodsImgs);
         goodsDetailMpBo.setGoodsVideo(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideo(),true));
@@ -105,6 +106,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
         // 判断是否已收藏商品
         boolean collectedGoods = tailProcessorDao.isCollectedGoods(param.getUserId(), param.getGoodsId());
         goodsDetailMpBo.setIsCollected(collectedGoods);
+
     }
 
     /**

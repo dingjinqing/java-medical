@@ -10,6 +10,13 @@ public class EsGoodsConstant {
 
     public static final String INDEX_NAME = "es_goods";
 
+    /**小程序-商品详情页*/
+    public static final Byte GOODS_DETAIL_PAGE = 1;
+    /**小程序-商品列表页*/
+    public static final Byte GOODS_LIST_PAGE = 2;
+    /**小程序-商品筛选页*/
+    public static final Byte GOODS_SEARCH_PAGE = 3;
+
     public static class EsGoodsSearchFact{
         public static final String GOODS_BRAND_FACT = "brand_id";
 

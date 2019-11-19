@@ -57,12 +57,12 @@ public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListPro
             List<GoodsSpecProductRecord> prdInfos = goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());
             prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());
             goodsDetailMpBo.setProducts(prdMpVos);
-        }
 
-        if (prdMpVos.size() == 1 && StringUtils.isBlank(prdMpVos.get(0).getPrdDesc())) {
-            goodsDetailMpBo.setDefaultPrd(true);
-        } else {
-            goodsDetailMpBo.setDefaultPrd(false);
+            if (prdMpVos.size() == 1 && StringUtils.isBlank(prdMpVos.get(0).getPrdDesc())) {
+                goodsDetailMpBo.setDefaultPrd(true);
+            } else {
+                goodsDetailMpBo.setDefaultPrd(false);
+            }
         }
     }
 

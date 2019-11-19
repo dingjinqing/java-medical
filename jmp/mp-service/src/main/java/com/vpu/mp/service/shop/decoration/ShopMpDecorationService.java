@@ -30,6 +30,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
+import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -700,6 +701,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         param.setGoodsType(moduleGoods.getGoodsType());
         param.setSortType(moduleGoods.getSortType());
         param.setGoodsNum(moduleGoods.getGoodsNum());
+        param.setFromPage(EsGoodsConstant.GOODS_LIST_PAGE);
         // 转换实时信息
         return goodsMpService.getPageIndexGoodsList(param, userId);
     }

@@ -1,6 +1,9 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CommentDetailVo;
 import com.vpu.mp.service.shop.activity.dao.GoodsCommentProcessorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +17,7 @@ import java.util.stream.Collectors;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsCommentProcessor implements ProcessorPriority,ActivityGoodsListProcessor{
+public class GoodsCommentProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     GoodsCommentProcessorDao goodsCommentProcessorDao;
 
@@ -37,5 +40,12 @@ public class GoodsCommentProcessor implements ProcessorPriority,ActivityGoodsLis
                 capsule.setCommentNum(0);
             }
         });
+    }
+
+    /*****************商品详情处理*******************/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
+        CommentDetailVo goodsCommentInfoForDetail = goodsCommentProcessorDao.getGoodsCommentInfoForDetail(param.getGoodsId());
+       goodsDetailMpBo.setComment(goodsCommentInfoForDetail);
     }
 }

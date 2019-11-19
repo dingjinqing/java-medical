@@ -18,12 +18,13 @@ public class GoodsPrdMpVo {
     private Integer prdNumber;
     /** 规格最终价格，数据库取prd_price*/
     private BigDecimal prdRealPrice;
+    /**规格划线价,首次取时取市场价*/
+    private BigDecimal prdLinePrice;
     private String prdSpecs;
     private String prdDesc;
     private String prdImg;
     //************ElasticSearch中的数据**************start
-    /**规格划线价*/
-    private BigDecimal prdLinePrice;
+
 
     public GoodsPrdMpVo() {
     }

@@ -104,7 +104,7 @@ public class GoodsMpService extends ShopBaseService {
      */
     private List<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param) {
         // 手动推荐展示但是未指定商品数据
-        boolean specifiedNoContent = 0 != param.getRecommendType() && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
+        boolean specifiedNoContent = (!GoodsConstant.AUTO_REOCMMEND.equals(param.getRecommendType())) && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
         if (specifiedNoContent) {
             return new ArrayList<>();
         }
@@ -112,7 +112,7 @@ public class GoodsMpService extends ShopBaseService {
 
         List<GoodsListMpBo> goodsListCapsules;
         // 自动推荐拼接排序条件
-        if (0 != param.getRecommendType()) {
+        if (!GoodsConstant.AUTO_REOCMMEND.equals(param.getRecommendType())) {
             goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, null, null, param.getGoodsItems());
         } else {
             List<SortField<?>> orderFields = new ArrayList<>();
@@ -195,9 +195,17 @@ public class GoodsMpService extends ShopBaseService {
 
     public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds, Integer userId, Integer currentPages, Integer pagesRows) {
         List<GoodsListMpBo> goodsListCapsules;
-
-        goodsListCapsules = getGoodsListNormalFromDb(goodsIds, currentPages, pagesRows);
-
+        GoodsListMpParam param = new GoodsListMpParam();
+        param.setRecommendType(GoodsConstant.POINT_RECOMMEND);
+        param.setCurrentPage(currentPages);
+        param.setPageRows(pagesRows);
+        param.setGoodsItems(goodsIds);
+        try {
+            // 从es获取
+            goodsListCapsules = getPageIndexGoodsListFromEs(param);
+        } catch (Exception e) {
+            goodsListCapsules = getGoodsListNormalFromDb(goodsIds, currentPages, pagesRows);
+        }
         disposeGoodsList(goodsListCapsules, userId);
 
         return goodsListCapsules;
