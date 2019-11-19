@@ -3,18 +3,17 @@
 /* eslint-disable */
 import Vue from 'vue';
 import App from './App';
-import router from './router';
 import store from './store';
 import i18n from './i18n/i18n';
 import ElementUI from 'element-ui';
 import DonMessage from './util/singleMessage';
-
+import 'font-awesome/css/font-awesome.min.css';
+import 'element-ui/lib/theme-chalk/index.css';
+import router from './router';
 // 格式化时间
 import Moment from 'moment';
 // 阿里图标
 // import './assets/aliIcon/iconfont.css';
-import 'element-ui/lib/theme-chalk/index.css';
-import 'font-awesome/css/font-awesome.min.css';
 import myMixins from '@/components/mixins.js';
 // 引入基于 Vue2.0 和 echarts 封装的 v-charts 图表组件
 import VCharts from 'v-charts';
@@ -27,6 +26,7 @@ Vue.prototype.$imageHostDev = `@/assets/image/admin/`;
 // 全局事件总线
 Vue.prototype.$http = new Vue();
 // Vue.prototype.$t = (key, value) => i18n.t(key, value);
+
 Vue.use(ElementUI);
 Vue.prototype.$message = new DonMessage();
 Vue.config.productionTip = false;
@@ -41,6 +41,7 @@ let vm = new Vue({
   components: { App },
   template: '<App/>'
 });
+import 'element-ui/lib/theme-chalk/index.css';
 
 export default vm;
 // /image/admin/sort_moren.png
