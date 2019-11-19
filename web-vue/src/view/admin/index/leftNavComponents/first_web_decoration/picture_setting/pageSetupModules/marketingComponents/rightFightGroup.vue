@@ -10,10 +10,10 @@
           size="small"
         >
           <el-form-item label="活动标题：">
-            <el-radio-group v-model="data.name_set">
+            <el-radio-group v-model="modulesSaveData.name_set">
               <el-radio label="0">默认：拼团抽奖</el-radio>
               <el-radio label="1">自定义：<el-input
-                  v-model="data.group_draw_name"
+                  v-model="modulesSaveData.group_draw_name"
                   style="width:150px;"
                 ></el-input>
               </el-radio>
@@ -21,30 +21,30 @@
             <p class="tip">最多可输入8个字，为空则不显示</p>
           </el-form-item>
           <el-form-item label="活动有效期：">
-            <el-radio-group v-model="data.show_clock">
+            <el-radio-group v-model="modulesSaveData.show_clock">
               <el-radio label="0">隐藏</el-radio>
               <el-radio label="1">显示</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="活动底图：">
-            <el-radio-group v-model="data.module_bg">
+            <el-radio-group v-model="modulesSaveData.module_bg">
               <el-radio label="0">默认底图</el-radio>
               <el-radio label="1">自定义</el-radio>
             </el-radio-group>
             <div class="add-bgs">
-              <div v-if="!data.module_img">
+              <div v-if="!modulesSaveData.module_img">
                 <p class="add-bgs-text">+添加一个背景图</p>
                 <p class="add-bgs-tip">建议宽度720像素以内，高度260像素以内</p>
               </div>
               <el-image
-                v-if="data.module_img"
-                :src="data.module_img"
+                v-if="modulesSaveData.module_img"
+                :src="modulesSaveData.module_img"
               ></el-image>
             </div>
           </el-form-item>
           <el-form-item label="字体颜色">
             <el-color-picker
-              v-model="data.font_color"
+              v-model="modulesSaveData.font_color"
               show-alpha
               :predefine="predefineColors"
             >
@@ -58,7 +58,7 @@
             label="添加拼团抽奖活动"
             required
           >
-            <el-select v-model="data.group_draw_id">
+            <el-select v-model="modulesSaveData.group_draw_id">
               <el-option
                 label="请选择拼团抽奖活动"
                 value=""
@@ -88,7 +88,7 @@ export default {
   },
   data () {
     return {
-      data: {
+      modulesSaveData: {
         module_name: 'm_group_draw',
         group_draw_id: '',
         name_set: '0',
@@ -123,9 +123,16 @@ export default {
     sortIndex: { // 模块公共
       handler (newData) {
         console.log('newData:', newData, this.modulesData)
-        this.$nextTick(() => {
-          this.data = this.modulesData
-        })
+        if (this.modulesData) {
+          let flag = false
+          Object.keys(this.modulesData).forEach((item, index) => {
+            flag = true
+          })
+          if (flag) {
+            this.modulesSaveData = this.modulesData
+          }
+          console.log(this.modulesData)
+        }
       },
       immediate: true
     },

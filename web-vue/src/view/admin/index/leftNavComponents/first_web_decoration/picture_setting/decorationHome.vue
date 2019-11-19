@@ -218,14 +218,15 @@ export default {
     AuxiliaryBlank: () => import('./decorationModules/graphicAndTextComponents/auxiliaryBlank'), // 辅助空白
     Guide: () => import('./decorationModules/graphicAndTextComponents/guide'), // 辅助线
     TitleModule: () => import('./decorationModules/graphicAndTextComponents/titleModule'), // 标题模块
-    VideoModule: () => import('./decorationModules/graphicAndTextComponents/videoModule') // 视频模块
+    VideoModule: () => import('./decorationModules/graphicAndTextComponents/videoModule'), // 视频模块
+    ShopNotices: () => import('./decorationModules/graphicAndTextComponents/ShopNotices') // 店铺公告模块
   },
   data () {
     return {
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
-      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'FightGroup', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'zb', 'zb', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
+      middleModulesList: [null, 'MembershipCard', 'Coupon', 'Bargain', 'zb', 'Spike', 'FightGroup', 'zb', 'Commodity', 'CommoditySearch', 'CommodityGrouping', 'CarouselPicture', 'PictureNavigation', 'PictureAds', 'MagicMap', 'zb', 'LeftWingRightPicture', 'TextModule', 'RichText', 'AuxiliaryBlank', 'Guide', 'TitleModule', 'VideoModule', 'ShopNotices', 'zb', 'zb', 'zb', 'ShopRecruit', 'MapModule'],
       ops: {
         vuescroll: {
           mode: 'native'
@@ -443,6 +444,9 @@ export default {
           break
         case 'm_video':
           moduleNameId = 22
+          break
+        case 'm_shop_announce':
+          moduleNameId = 23
       }
       return moduleNameId
     },
@@ -613,6 +617,9 @@ export default {
               break
             case 22:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 22)
+              break
+            case 23:
+              this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 23)
               break
             case 27:
               this_.handleToMiddleAcceptData(this_.inertModulesId, this_.showModulesList, insert, 27)

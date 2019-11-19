@@ -177,6 +177,8 @@ import {
 import {
   en as titleModule
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/titleModuleEn'
+// 小程序页面装修店铺公告系列国际化
+import { en as shopNotices } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/shopNoticesEn'
 
 // 营销管理系列模块化
 // 营销管理通用词汇
@@ -958,6 +960,7 @@ const en = {
   magicMap, // 小程序页面装修魔方多图模块
   leftWingRightPicture, // 小程序页面装修左文右图模块
   textModule, // 小程序页面装修文本模块
-  titleModule // 小程序页面装修标题模块
+  titleModule, // 小程序页面装修标题模块
+  shopNotices // 小程序页面装修店铺公告模块
 }
 export default en

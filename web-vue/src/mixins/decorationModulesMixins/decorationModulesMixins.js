@@ -300,6 +300,16 @@ export default {
             'custom_path': '' // 自定义封面显示完整路径
           }
           break
+        case 23: // 店铺公告
+          obj = {
+            'module_name': 'm_shop_announce', // 模块名称
+            'shop_text': '', // 内容
+            'font_color': '#333333', // 字体颜色
+            'bg_color': '#fcf9dd', // 背景颜色
+            'title_link': '', // 链接路径
+            'announce_position': '0' // 显示位置
+          }
+          break
         case 27: // 店招设置
           obj = {
             module_name: 'm_shop',

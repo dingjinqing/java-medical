@@ -153,6 +153,8 @@ import {
 import {
   cn as titleModule
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/titleModuleCn'
+// 小程序页面装修店铺公告、公众号、客服模块、电话模块国际化
+import { cn as shopNotices } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/shopNoticesCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -964,7 +966,8 @@ const cn = {
   magicMap, // 小程序页面装修魔方多图模块
   leftWingRightPicture, // 小程序页面装修左文右图国际化
   textModule, // 小程序文本模块国际化 以及下面简单模块的国际化
-  titleModule // 小程序标题模块国际化
+  titleModule, // 小程序标题模块国际化
+  shopNotices // 小程序店铺公告系列国际化
 }
 
 export default cn
