@@ -1,9 +1,6 @@
 package com.vpu.mp.service.pojo.shop.overview.commodity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -13,9 +10,6 @@ import java.util.Map;
  * date 2019/7/22
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductOverviewVo {
     /**
      * 在架商品数
@@ -64,4 +58,102 @@ public class ProductOverviewVo {
      * V: 变化率
      */
     Map<String, BigDecimal> changeRate;
+
+    public ProductOverviewVo() {
+    }
+
+    private ProductOverviewVo(Builder builder) {
+        this.onShelfGoodsNum = builder.onShelfGoodsNum;
+        this.soldGoodsNum = builder.soldGoodsNum;
+        this.visitedGoodsNum = builder.visitedGoodsNum;
+        this.goodsUserVisit = builder.goodsUserVisit;
+        this.goodsPageviews = builder.goodsPageviews;
+        this.purchaseNum = builder.purchaseNum;
+        this.purchaseQuantity = builder.purchaseQuantity;
+        this.paidGoodsNum = builder.paidGoodsNum;
+        this.orderGoodsNum = builder.orderGoodsNum;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+
+    public static class Builder implements com.vpu.mp.service.pojo.shop.overview.Builder<ProductOverviewVo> {
+        private int onShelfGoodsNum;
+        private int soldGoodsNum;
+        private int visitedGoodsNum;
+        private int goodsUserVisit;
+        private int goodsPageviews;
+        private int purchaseNum;
+        private int purchaseQuantity;
+        private int paidGoodsNum;
+        private int orderGoodsNum;
+
+        public Builder() {
+        }
+
+        @Override
+        public void reset() {
+            this.onShelfGoodsNum = 0;
+            this.soldGoodsNum = 0;
+            this.visitedGoodsNum = 0;
+            this.goodsUserVisit = 0;
+            this.goodsPageviews = 0;
+            this.purchaseNum = 0;
+            this.purchaseQuantity = 0;
+            this.paidGoodsNum = 0;
+            this.orderGoodsNum = 0;
+        }
+
+        @Override
+        public ProductOverviewVo build() {
+            return new ProductOverviewVo(this);
+        }
+
+        public ProductOverviewVo.Builder onShelfGoodsNum(int onShelfGoodsNum) {
+            this.onShelfGoodsNum = onShelfGoodsNum;
+            return this;
+        }
+
+        public ProductOverviewVo.Builder soldGoodsNum(int soldGoodsNum) {
+            this.soldGoodsNum = soldGoodsNum;
+            return this;
+        }
+
+        public ProductOverviewVo.Builder visitedGoodsNum(int visitedGoodsNum) {
+            this.visitedGoodsNum = visitedGoodsNum;
+            return this;
+        }
+
+        public ProductOverviewVo.Builder goodsUserVisit(int goodsUserVisit) {
+            this.goodsUserVisit = goodsUserVisit;
+            return this;
+        }
+
+        public ProductOverviewVo.Builder goodsPageviews(int goodsPageviews) {
+            this.goodsPageviews = goodsPageviews;
+            return this;
+        }
+
+        public ProductOverviewVo.Builder purchaseNum(int purchaseNum) {
+            this.purchaseNum = purchaseNum;
+            return this;
+        }
+
+        public ProductOverviewVo.Builder purchaseQuantity(int purchaseQuantity) {
+            this.purchaseQuantity = purchaseQuantity;
+            return this;
+        }
+
+        public ProductOverviewVo.Builder paidGoodsNum(int paidGoodsNum) {
+            this.paidGoodsNum = paidGoodsNum;
+            return this;
+        }
+
+        public ProductOverviewVo.Builder orderGoodsNum(int orderGoodsNum) {
+            this.orderGoodsNum = orderGoodsNum;
+            return this;
+        }
+    }
 }

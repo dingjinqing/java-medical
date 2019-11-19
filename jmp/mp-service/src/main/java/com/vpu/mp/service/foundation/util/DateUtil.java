@@ -241,7 +241,7 @@ public final class DateUtil {
 	    return LocalDate.now().minusDays(day);
     }
 
-    public static final DateTimeFormatter YYYY_MM_DD_FORMATTER = DateTimeFormatter.ofPattern("yyyy-mm-dd");
+    public static final DateTimeFormatter YYYY_MM_DD_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
      * Yyyy mm dd date java . sql . date.获取yyyy-mm-dd格式的date
