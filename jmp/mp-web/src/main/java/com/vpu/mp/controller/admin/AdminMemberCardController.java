@@ -265,7 +265,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	 */
 	@PostMapping("/card/generatecode")
 	public JsonResult generateCardCode(@RequestBody CardBatchParam param) {
-		shop().member.card.generateCardCode(param);
-		return success();
+		CardBatchVo vo = shop().member.card.generateCardCode(param);
+		return success(vo);
 	}
 }

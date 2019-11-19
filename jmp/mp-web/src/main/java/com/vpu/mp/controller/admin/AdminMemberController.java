@@ -33,10 +33,8 @@ import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
-import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
-import com.vpu.mp.service.shop.member.CardVerifyService;
 /**
  * 会员管理
  * @author 黄壮壮
@@ -161,9 +159,8 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping("/manager/center/{userId}")
 	public JsonResult getMemberInfo(@PathVariable Integer userId) {
 		logger().info("获取会员用户id为 " + userId + " 详情信息");
-		/** 获取语言，用于国际化 */
-		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
-		MemberDetailsVo vo = shop().member.getMemberInfoById(userId,language);
+		
+		MemberDetailsVo vo = shop().member.getMemberInfoById(userId,getLang());
 		
 		return i18nSuccess(vo);
 	}
@@ -175,8 +172,6 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping("/info/update")
 	public JsonResult updateMemberInfo(@RequestBody MemberParam param) {
 		logger().info("");
-		/** 获取语言，用于国际化 */
-		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
 		shop().member.updateMemberInfo(param);
 		
 		return success();
