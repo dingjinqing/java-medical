@@ -1620,7 +1620,12 @@ public class GoodsService extends ShopBaseService {
         transaction(()->{
             db().batchUpdate(goodsRecords.values()).execute();
             db().batchUpdate(readyToUpdatePrds).execute();
-            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+
+            try {
+                esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
     }
