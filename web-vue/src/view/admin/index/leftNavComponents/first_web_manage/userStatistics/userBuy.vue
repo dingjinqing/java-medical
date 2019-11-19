@@ -67,6 +67,8 @@ export default {
       myChart: {},
       weekNumList: [],
       againBuyRate: [],
+      startTime: [],
+      endTime: [],
       startDate: {
         year: '',
         month: '',
@@ -76,7 +78,11 @@ export default {
         year: '',
         month: '',
         day: ''
-      }
+      },
+      date1: '2019',
+      date2: '2020',
+      date3: '2021',
+      date4: '2022'
 
     }
   },
@@ -84,7 +90,7 @@ export default {
     defaultWeek (newData) {
       this.$nextTick(() => {
         this.paramsObject.weekNum = Number(this.$refs['time'].$el.children[0].value.split(' ')[2])
-        console.log(this.$refs['time'].$el.children[0].value)
+        console.log(this.$refs['time'].$el.children[0].value, 'default week---')
       })
     }
   },
@@ -142,6 +148,7 @@ export default {
 
     // 处理接口返回来的数据
     handleData (data) {
+      console.log(data, 'data---')
       // this.startDate.year = data.startTime.split('-')[0]
       // this.startDate.month = data.startTime.split('-')[1]
       // this.startDate.day = data.startTime.split('-')[2]
@@ -154,7 +161,11 @@ export default {
         this.weekNumList.push(item.weekNum)
         console.log(this.weekNumList)
         this.againBuyRate.push(item.rebuyRate)
-        console.log(this.again)
+        console.log(this.againBuyRate, 'againBuyRate')
+        this.startTime.push(item.startTime)
+        console.log(this.startTime, 'startTime')
+        this.endTime.push(item.endTime)
+        console.log(this.endTime, 'endTime')
       })
 
       this.echartsData = {
@@ -162,7 +173,7 @@ export default {
           trigger: 'axis'
         },
         legend: {
-          data: ['访客数', '累积用户数', '成交用户数']
+
         },
         grid: {
           left: '7%',
@@ -174,33 +185,22 @@ export default {
           type: 'category',
           boundaryGap: false,
           // data: this.userDate
-          data: ['访客数', '累积用户数', '成交用户数']
+          data: [
+            // { week: 45, start: '2019-11-18', end: '2019-11-20' },
+            // { week: 46, start: '2020-11-18', end: '2019-11-20' },
+            // { week: 47, start: '2021-11-18', end: '2019-11-20' }
+            // 1, 2, 3, 4, 5, 6, 7
+            this.date1, this.date2, this.date3, this.date4
+          ]
         },
         yAxis: {
           type: 'value'
         },
-        // series
         series: [
           {
-            name: '访客数',
+            name: '客户复购率',
             type: 'line',
-            stack: '总量',
-            // data: this.chartVisitorsNumber
-            data: [34, 27, 33, 31, 42, 19, 11]
-          },
-          {
-            name: '累积用户数',
-            type: 'line',
-            stack: '总量',
-            // data: this.chartUserNumber
-            data: [3404, 3410, 3423, 3435, 3441, 3450, 3456]
-          },
-          {
-            name: '成交用户数',
-            type: 'line',
-            stack: '总量',
-            // data: this.chartTradeNumber
-            data: [4, 3, 5, 4, 11, 0, 0]
+            data: this.againBuyRate
           }
         ]
       }

@@ -19,98 +19,41 @@
 
     <!-- 表格数据部分 -->
     <div class="fromWrapper">
-      <div class="fromItem">
+      <div
+        class="fromItem"
+        v-for="item in table"
+        :key="item.number"
+      >
         <div
           class="fromInfo"
           style="display: flex;"
         >
-          <div class="title">访问会员数</div>
+          <div>{{item.name}}</div>
           <el-tooltip
-            class="item"
             effect="light"
-            content="访问会员数"
             placement="top"
           >
+            <div
+              slot="content"
+              style="width: 400px;height: 90px;line-height: 30px;font-size: 14px;"
+            >
+              <section style="display: flex">
+                <div style="width: 30%;color:#999">{{item.title}}</div>
+                <div style="width: 70%;color: #353535">{{item.content}}</div>
+              </section>
+              <section style="display: flex">
+                <div style="width: 30%;color:#999">{{item.title1}}</div>
+                <div style="width: 70%;color: #353535">{{item.content1}}</div>
+              </section>
+            </div>
             <i class="el-icon-warning-outline icons"></i>
           </el-tooltip>
         </div>
         <div
           class="num"
           style="color: #5A8BFF"
-        >{{this.originalData.accessNumber}}</div>
-        <div>占比{{this.originalData.accessNumberRate}}</div>
-      </div>
-
-      <div class="fromItem">
-        <div
-          class="fromInfo"
-          style="display: flex;"
-        >
-          <div class="title">领券会员数</div>
-          <el-tooltip
-            class="item"
-            effect="light"
-            content="领券会员数"
-            placement="top"
-          >
-            <i class="el-icon-warning-outline icons"></i>
-          </el-tooltip>
-        </div>
-        <div
-          class="num"
-          style="color: #fc6181;"
-        >{{this.originalData.getCouponNumber}}</div>
-        <div>占比{{this.originalData.getCouponNumberRate}}</div>
-      </div>
-
-      <div
-        class="fromItem"
-        style="display: flex;"
-      >
-        <div
-          class="fromInfo"
-          style="display: flex;"
-        >
-          <div class="title">加购会员数</div>
-          <el-tooltip
-            class="item"
-            effect="light"
-            content="加购会员数"
-            placement="top"
-          >
-            <i class="el-icon-warning-outline icons"></i>
-          </el-tooltip>
-        </div>
-        <div
-          class="num"
-          style="color: #fdb64a;"
-        >{{this.originalData.addBuyNumber}}</div>
-        <div>占比{{this.originalData.addBuyNumberRate}}</div>
-      </div>
-
-      <div
-        class="fromItem"
-        style="display: flex;"
-      >
-        <div
-          class="fromInfo"
-          style="display: flex;"
-        >
-          <div class="title">成交会员数</div>
-          <el-tooltip
-            class="item"
-            effect="light"
-            content="成交会员数"
-            placement="top"
-          >
-            <i class="el-icon-warning-outline icons"></i>
-          </el-tooltip>
-        </div>
-        <div
-          class="num"
-          style="color: #fdb64a;"
-        >{{this.originalData.successNumber}}</div>
-        <div>占比{{this.originalData.successNumberRate}}</div>
+        >{{item.number}}</div>
+        <div>占比 {{item.rate}}</div>
       </div>
     </div>
 
@@ -159,6 +102,7 @@ export default {
       chartAddBuyNumber: [], // 图表加购会员数
       chartSuccessNumber: [], // 图表成交会员数
       myUserChart: {},
+      table: [],
       startDate: {
         year: '',
         month: '',
@@ -189,6 +133,18 @@ export default {
       }).catch(err => console.log(err))
     },
 
+    numberChange (number) {
+      let str
+      if (number > 0) {
+        str = '↑' + Number(number * 100).toFixed(2) + '%'
+      } else if (number < 0) {
+        str = '↓' + Math.abs(Number(number * 100)).toFixed(2) + '%'
+      } else {
+        str = '--'
+      }
+      return str
+    },
+
     // 处理返回来的数据
     handleData (data) {
       this.startDate.year = data.startTime.split('-')[0]
@@ -202,32 +158,16 @@ export default {
       console.log(data)
       // 访问会员数
       this.originalData.accessNumber = data.loginData
-      if (data.loginDataRate > 0) {
-        this.originalData.accessNumberRate = '↑' + (data.loginDataRate * 100).toFixed(2) + '%'
-      } else {
-        this.originalData.accessNumberRate = '↓ ' + Math.abs((data.loginDataRate * 100)).toFixed(2) + '%'
-      }
+      this.originalData.accessNumberRate = this.numberChange(data.loginDataRate)
       // 领券会员数
       this.originalData.getCouponNumber = data.couponData
-      if (data.couponDataRate > 0) {
-        this.originalData.getCouponNumberRate = '↑' + (data.couponDataRate * 100).toFixed(2) + '%'
-      } else {
-        this.originalData.getCouponNumberRate = '↓ ' + Math.abs((data.couponDataRate * 100)).toFixed(2) + '%'
-      }
+      this.originalData.getCouponNumberRate = this.numberChange(data.couponDataRate)
       // 加购会员数
       this.originalData.addBuyNumber = data.cartData
-      if (data.orderUserDataRate > 0) {
-        this.originalData.addBuyNumberRate = '↑' + (data.cartDataRate * 100).toFixed(2) + '%'
-      } else {
-        this.originalData.addBuyNumberRate = '↓ ' + Math.abs((data.cartDataRate * 100)).toFixed(2) + '%'
-      }
+      this.originalData.orderUserDataRate = this.numberChange(data.orderUserDataRate)
       // 成交会员数
       this.originalData.successNumber = data.orderUserData
-      if (data.orderUserDataRate > 0) {
-        this.originalData.successNumberRate = '↑' + (data.orderUserDataRate * 100).toFixed(2) + '%'
-      } else {
-        this.originalData.successNumberRate = '↓ ' + Math.abs((data.orderUserDataRate * 100)).toFixed(2) + '%'
-      }
+      this.originalData.successNumberRate = this.numberChange(data.orderUserDataRate)
 
       data.activeDailyVo.map(item => {
         this.chartDateList.push(item.refDate)
@@ -236,6 +176,45 @@ export default {
         this.chartAddBuyNumber.push(item.cartData)
         this.chartSuccessNumber.push(item.orderUserData)
       })
+
+      this.table = [
+        {
+          name: '访问会员数',
+          title: '访问会员数',
+          content: '筛选时间内，访问过店铺的用户数量,一人多次访问记为一人',
+          title1: '访问会员数占比',
+          content1: '筛选时间内，访问用户数 / 累积用户数',
+          number: this.originalData.accessNumber,
+          rate: this.originalData.accessNumberRate
+        },
+        {
+          name: '领券会员数',
+          title: '领券会员数',
+          content: '筛选时间内，领取了优惠券的用户数，一人多次领券记为一人',
+          title1: '领券会员数占比',
+          content1: '筛选时间内，领券用户数/ 访问用户数',
+          number: this.originalData.getCouponNumber,
+          rate: this.originalData.getCouponNumberRate
+        },
+        {
+          name: '加购会员数',
+          title: '加购会员数',
+          content: '筛选时间内，将商品添加购物车的用户数，一人多次添加购物车记为一人',
+          title1: '加购会员数占比',
+          content1: '筛选时间内，加购用户数/ 访问用户数',
+          number: this.originalData.addBuyNumber,
+          rate: this.originalData.orderUserDataRate
+        },
+        {
+          name: '成交会员数',
+          title: '成交会员数',
+          content: '筛选时间内，付款成功的用户数，一人多次付款成功记为一人',
+          title1: '成交会员数占比',
+          content1: '筛选时间内，成交用户数/ 访问用户数',
+          number: this.originalData.successNumber,
+          rate: this.originalData.successNumberRate
+        }
+      ]
 
       // // 折线图数据部分
       this.echartsData = {
@@ -255,7 +234,6 @@ export default {
           type: 'category',
           boundaryGap: false,
           data: this.chartDateList
-          // data: ['周一', '周2', '周3', '周4', '周5', '周6', '周7']
         },
         yAxis: {
           type: 'value'
@@ -264,30 +242,22 @@ export default {
           {
             name: '访问会员数 ',
             type: 'line',
-            stack: '总量',
             data: this.chartAccessNumber
-            // data: [34, 27, 33, 31, 42, 19, 11]
           },
           {
             name: '领券会员数',
             type: 'line',
-            stack: '总量',
             data: this.chartGetCouponNumber
-            // data: [3404, 3410, 3423, 3435, 3441, 3450, 3456]
           },
           {
             name: '加购会员数',
             type: 'line',
-            stack: '总量',
             data: this.chartAddBuyNumber
-            // data: [4, 3, 5, 4, 11, 0, 0]
           },
           {
             name: '成交会员数',
             type: 'line',
-            stack: '总量',
             data: this.chartSuccessNumber
-            // data: [4, 3, 5, 44, 113, 45, 89]
           }
         ]
       }

@@ -1,10 +1,10 @@
 
 <template>
-  <div class="userStatistics">
+  <div class="userStatisticss">
     <div class="userContainer">
       <overviewAndTrend class="distance" />
       <userActive class="distance" />
-      <member class="distance" />
+      <memberStatistics class="distance" />
       <userAnalysis class="distance" />
       <userBuy />
     </div>
@@ -14,12 +14,12 @@
 <script>
 import overviewAndTrend from './overviewAndTrend'
 import userActive from './userActive'
-import member from './member'
+import memberStatistics from './memberStatistics'
 import userAnalysis from './userAnalysis'
 import userBuy from './userBuy'
 
 export default {
-  components: { overviewAndTrend, userActive, member, userAnalysis, userBuy },
+  components: { overviewAndTrend, userActive, memberStatistics, userAnalysis, userBuy },
   data () {
     return {
 
@@ -29,8 +29,9 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-.userStatistics {
+.userStatisticss {
   font-size: 14px;
+  margin-top: 10px;
   .userContainer {
     position: relative;
     .distance {

@@ -13,16 +13,16 @@
             >
               <div
                 slot="content"
-                style="width: 700px;line-height: 1.5"
+                style="width: 500px;line-height: 30px;font-size: 14px;padding:10px 5px 10px 10px"
               >
-                {{ this.$t('overview.dataTip1') }}<br />
-                {{ this.$t('overview.dataTip2') }}<br />
-                {{ this.$t('overview.dataTip3') }}<br />
-                {{ this.$t('overview.dataTip4') }}<br />
-                {{ this.$t('overview.dataTip5') }}<br />
-                {{ this.$t('overview.dataTip6') }}<br />
-                {{ this.$t('overview.dataTip7') }}<br />
-                {{ this.$t('overview.dataTip8') }}<br />
+                <section
+                  v-for="item in tipsList"
+                  :key="item.title"
+                  style="display: flex"
+                >
+                  <div style="width: 30%;color:#999">{{item.title}}</div>
+                  <div style="width: 70%;color: #353535">{{item.content}}</div>
+                </section>
               </div>
               <i class="el-icon-warning-outline icons"></i>
             </el-tooltip>
@@ -137,38 +137,14 @@ export default {
       areaData: [],
       maxTradeMoney: '',
       minTradeMoney: '',
-
-      // 标签成分分析
-      custom: true,
-      timeRange: [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' },
-        { value: 0, label: '自定义' }
-      ],
-      date: {
-        year: '',
-        month: '',
-        day: ''
-      },
-      predate: {
-        year: '',
-        month: '',
-        day: ''
-      },
       timeSelect: '',
-      selectDate: [],
-      tableData: [],
-      pageParams: {},
-      queryParams: {
-        'screeningTime': '30',
-        'startTime': '',
-        'endTime': '',
-        'orderByField': '',
-        'orderByType': 'asc',
-        'currentPage': 1,
-        'pageRows': 20
-      }
+      tipsList: [
+        { title: '付款金额', content: '统计时间内，该地域访问用户的所有付款订单金额之和（拼团在成团时计入付款金额；货到付款在发货时计入付款金额，不剔除退款金额）' },
+        { title: '付款人数', content: '统计时间内，该地域访问用户中下单并且付款成功的客户数，一人多次付款记为一人（不剔除退款订单）' },
+        { title: '访客数', content: '统计时间内，该地域访问用户的所有访客数' },
+        { title: '访问-付款转化率', content: '统计时间内，该地域付款人数/该地域访客数' },
+        { title: '订单数', content: '统计时间内，该地区收货订单数 ' }
+      ]
     }
   },
   methods: {
@@ -275,7 +251,7 @@ export default {
         line-height: 50px;
         color: #333;
         .labelInfo {
-          margin-left: 10px;
+          margin-left: 5px;
         }
       }
       .time {

@@ -162,18 +162,14 @@ export default {
 
       data.trendDailyVo.map(item => {
         this.chartChange.date.push(item.refDate)
-        console.log(this.chartChange.date)
         this.chartChange.visitorsNumber.push(item.loginData)
-        console.log(this.chartChange.visitorsNumber)
         this.chartChange.userNumber.push(item.userData)
-        console.log(this.chartChange.userNumber)
         this.chartChange.tradeNumber.push(item.orderUserData)
-        console.log(this.chartChange.tradeNumber)
       })
 
       this.table = [
         {
-          name: '访问会员数',
+          name: '访客数',
           content: '筛选时间内，店铺所有页面被访问的去重人数，一个人在筛选时间范围内访问多次只记为一个',
           number: this.originalData.visitorsNumber,
           rate: this.originalData.visitorsNumberRate
@@ -192,13 +188,14 @@ export default {
         }
       ]
 
+      console.log(this.chartChange, 'char change value==')
+
       // 折线图数据部分
       this.echartsData = {
         tooltip: {
           trigger: 'axis'
         },
         legend: {
-          // data: ['访客数', '累积用户数', '成交用户数']
         },
         grid: {
           left: '7%',
@@ -215,28 +212,20 @@ export default {
           type: 'value'
         },
         series: [
-
           {
             name: '访客数',
             type: 'line',
-            stack: '总量',
-            data: this.chartChange.visitorsNumber,
-            color: 'orange'
+            data: this.chartChange.visitorsNumber
           },
           {
             name: '累积用户数',
             type: 'line',
-            stack: '总量',
-            data: this.chartChange.userNumber,
-            color: 'green',
-            width: 10
+            data: this.chartChange.userNumber
           },
           {
             name: '成交用户数',
             type: 'line',
-            stack: '总量',
-            data: this.chartChange.tradeNumber,
-            color: 'red'
+            data: this.chartChange.tradeNumber
           }
         ]
       }

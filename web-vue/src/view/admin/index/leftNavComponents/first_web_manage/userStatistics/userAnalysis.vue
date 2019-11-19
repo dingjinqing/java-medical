@@ -30,11 +30,20 @@
                 <div>客户数</div>
                 <el-tooltip
                   class="item"
+                  slot="content"
                   effect="light"
-                  content="客户数"
                   placement="top"
                 >
-                  <i class="el-icon-warning-outline icons"></i>
+                  <div
+                    slot="content"
+                    style="width: 400px;height: 90px;line-height: 30px;font-size: 14px;"
+                  >
+                    <!-- <section style="display: flex">
+                      <div style="width: 30%;color:#999">{{item.title}}</div>
+                      <div style="width: 70%;color: #353535">{{item.content}}</div>
+                    </section> -->
+                    <i class="el-icon-warning-outline icons"></i>
+                  </div>
                 </el-tooltip>
               </section>
             </th>
@@ -199,6 +208,12 @@ export default {
         { value: 30, label: '最新30天' }
       ],
       params: 1,
+      tipsList: [
+        {
+          title: '',
+          content: ''
+        }
+      ],
       startDate: {
         year: '',
         month: '',

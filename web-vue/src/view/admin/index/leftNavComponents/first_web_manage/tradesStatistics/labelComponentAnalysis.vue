@@ -3,7 +3,28 @@
   <section class="labelComponentAnalysic">
     <div class="tradesContainer">
       <section class="label">
-        <div class="labelItem">标签成分分析</div>
+        <div class="labelItem">
+          标签成分分析
+          <el-tooltip
+            effect="light"
+            placement="right-start"
+          >
+            <div
+              slot="content"
+              style="width: 500px;line-height: 30px;font-size: 14px;padding:10px 5px 10px 10px"
+            >
+              <section
+                v-for="item in tipsList"
+                :key="item.title"
+                style="display: flex"
+              >
+                <div style="width: 30%;color:#999">{{item.title}}</div>
+                <div style="width: 70%;color: #353535">{{item.content}}</div>
+              </section>
+            </div>
+            <i class="el-icon-warning-outline icons"></i>
+          </el-tooltip>
+        </div>
         <div class="labelItem time">
           <span>时间筛选</span>
           <el-select
@@ -33,7 +54,7 @@
             class="custom"
           >
           </el-date-picker>
-          <span>{{this.predate.year}}年{{this.predate.month}}月{{this.predate.day}}日 - {{date.year}}年{{date.month}}月{{date.day}}日</span>
+          <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
         </div>
 
         <!-- 表格数据部分 -->
@@ -109,7 +130,6 @@ export default {
   name: 'echarts',
   created () {
     this.initDataList()
-    this.initDate()
   },
   mounted () {
     this.langDefault()
@@ -117,8 +137,6 @@ export default {
   data () {
     return {
       value1: '',
-      value2: '',
-
       // 标签成分分析
       custom: true,
       timeRange: [
@@ -127,29 +145,35 @@ export default {
         { value: 30, label: '最新30天' },
         { value: 0, label: '自定义' }
       ],
-      date: {
+      startDate: {
         year: '',
         month: '',
         day: ''
       },
-      predate: {
+      endDate: {
         year: '',
         month: '',
         day: ''
       },
-      timeSelect: '',
-      selectDate: [],
+      timeSelect: 1,
       tableData: [],
       pageParams: {},
       queryParams: {
-        'screeningTime': '30',
+        'screeningTime': '1',
         'startTime': '',
         'endTime': '',
         'orderByField': '',
         'orderByType': 'asc',
         'currentPage': 1,
         'pageRows': 20
-      }
+      },
+      tipsList: [
+        { title: '付款笔数', content: '统计时间内，该标签下客户的成功付款订单数，一个订单对应唯一一个订单号（拼团在成团时计入付款订单；货到付款在发货时计入付款订单，不剔除退款订单）' },
+        { title: '付款金额（元）', content: '统计时间内，该标签下客户的所有付款订单金额之和（拼团在成团时计入付款金额；货到付款在发货时计入付款金额，不剔除退款金额）' },
+        { title: '付款人数', content: '统计时间内，该标签下客户下单并且付款成功的客户数，一人多次付款记为一人（不剔除退款订单）' },
+        { title: '付款商品件数', content: '统计时间内， 该标签下客户成功付款订单的商品件数之和（不剔除退款订单）' },
+        { title: '有手机号客户数', content: '统计时间内， 该标签下下单并且付款成功的有手机号码的客户数（不剔除退款订单）' }
+      ]
     }
   },
   methods: {
@@ -161,30 +185,19 @@ export default {
 
     // 自定义筛选时间
     customDate (val) {
-      console.log(val)
+      console.log(val, 'val')
       this.queryParams.startTime = val[0]
       this.queryParams.endTime = val[1]
-      this.predate.yaer = this.queryParams.startTime.slice(0, 4)
-      this.predate.month = this.queryParams.startTime.slice(5, 7)
-      this.predate.day = this.queryParams.startTime.slice(8, 10)
-      this.date.yaer = this.queryParams.endTime.slice(0, 4)
-      this.date.month = this.queryParams.endTime.slice(5, 7)
-      this.date.day = this.queryParams.endTime.slice(8, 10)
-      // console.log(this.queryParams.startTime, this.queryParams.endTime)
+
+      this.startDate.year = this.queryParams.startTime.slice(0, 4)
+      this.startDate.month = this.queryParams.startTime.slice(5, 7)
+      this.startDate.day = this.queryParams.startTime.slice(8, 10)
+
+      this.endDate.year = this.queryParams.endTime.slice(0, 4)
+      this.endDate.month = this.queryParams.endTime.slice(5, 7)
+      this.endDate.day = this.queryParams.endTime.slice(8, 10)
+      // console.log(this.queryParams)
       this.initDataList()
-    },
-
-    // 初始化日期
-    initDate () {
-      let current = new Date()
-      console.log(current)
-      this.date.day = current.getDate()
-      this.date.month = current.getMonth() + 1
-      this.date.year = current.getFullYear()
-
-      this.predate.day = current.getDate() - 30
-      this.predate.month = current.getMonth()
-      this.predate.year = current.getFullYear()
     },
 
     // 初始化加载数据
@@ -195,8 +208,19 @@ export default {
       labelAnalysisApi(params).then(res => {
         console.log(res)
         if (res.error === 0) {
-          this.pageParams = res.content.page
-          this.tableData = res.content.dataList
+          this.pageParams = res.content.pageData.page
+          console.log(this.pageParams)
+          this.tableData = res.content.pageData.dataList
+          console.log(this.tableData)
+
+          // 时间处理
+          this.startDate.year = res.content.dateMap.startTime.split('-')[0]
+          this.startDate.month = res.content.dateMap.startTime.split('-')[1]
+          this.startDate.day = res.content.dateMap.startTime.split('-')[2]
+
+          this.endDate.year = res.content.dateMap.endTime.split('-')[0]
+          this.endDate.month = res.content.dateMap.endTime.split('-')[1]
+          this.endDate.day = res.content.dateMap.endTime.split('-')[2]
         }
       }).catch(err => console.log(err))
     }
