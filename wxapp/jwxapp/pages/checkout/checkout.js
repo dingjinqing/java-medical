@@ -8,10 +8,6 @@ global.wxPage({
     address:null,
     balanceStatus:0,
     scoreStatus:0,
-    showBalanceDialog:false,
-    showScoreDialog:false,
-    showCardDialog:false,
-    showStoreDialog:false,
     couponArray:[
       1,2,3,4,5
     ],
@@ -26,16 +22,20 @@ global.wxPage({
       useConpon: 16.5, //使用优惠券优惠
       useCardBalance: 15, //使用会员卡余额优惠
       useCardReduce: 0, //会员卡优惠金额
-      useTotalprice: 0, //应付金额,
+      useTotalprice: 0, //应付金额
       useShipping: 0 //运费
-    }
+    },
+    showBalanceDialog: false,
+    showScoreDialog: false,
+    showCardDialog: false,
+    showStoreDialog: false,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.getPayMoney()
+    this.requestOrder(options)
     wx.hideShareMenu()
   },
   // 选择地址
@@ -146,6 +146,22 @@ global.wxPage({
 
       break;
     }
+  },
+  requestOrder(options){
+    let goods = [];
+    let {goodsList} = options
+    JSON.parse(goodsList).forEach(item=>{
+      let { goodsId, prdRealPrice:goodsPrice, goodsNum:goodsNumber, prdId:productId } = item
+      goods.push({ goodsId, goodsPrice, goodsNumber, productId})
+    })
+    let params = {action:10, goods, memberCardNo: null, couponSn: null, activityType: null, addressId: null, deliverType: null, storeId: null, scoreDiscount: null, balance:null, cardBalance: null, orderPayWay:null}
+    util.api('/api/wxapp/order',res=>{
+      if(res.error === 0){
+        this.setData({
+          orderInfo:res.content          
+        })
+      }
+    }, params )
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

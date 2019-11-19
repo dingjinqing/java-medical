@@ -6,6 +6,8 @@
   </view>
   <view class="item_line"></view>
   <view class="goods_detail">
-    <rich-text nodes=""></rich-text>
+    <rich-text nodes="{{goodsDescInfo.goodsDesc}}"></rich-text>
   </view>
 </view>
+
+<v-decorate name='v-decorate' class="v-decorate" page_content="{{pageContent}}" />

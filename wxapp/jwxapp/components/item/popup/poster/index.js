@@ -22,6 +22,13 @@ global.wxComponent({
    */
   methods: {
     saveImage(){
+      console.log(this.data.isMultiple)
+      util.base64ImageHandle(this.data.posterImage,res=>{
+        console.log(res)
+      })
+      if (this.data.isMultiple){
+
+      }
       this.bindClose()
     }
   }

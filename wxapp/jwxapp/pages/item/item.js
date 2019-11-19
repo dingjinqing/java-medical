@@ -40,6 +40,7 @@ global.wxPage({
             this.getMediaInfo(res.content);
             this.getGoodsInfo(res.content);
             this.getCouponInfo(res.content);
+            this.getGoodsDescInfo(res.content);
             resolve(res.content);
           }
         },
@@ -51,6 +52,17 @@ global.wxPage({
         }
       );
     });
+  },
+  // 商品详情-自定以内容
+  getGoodsDescInfo(goodsInfo){
+    let { goodsDesc = null, isPageUp = 0 } = goodsInfo
+    console.log(goodsDesc, isPageUp)
+    this.setData({
+      goodsDescInfo:{
+        goodsDesc,
+        isPageUp
+      }
+    })
   },
   // 服务承诺请求
   requestPledge(goodsInfo) {
@@ -95,6 +107,7 @@ global.wxPage({
   // 获取商品基本信息
   getGoodsInfo(goodsInfo) {
     let {
+      goodsId,
       goodsName,
       goodsSaleNum,
       labels,
@@ -103,9 +116,12 @@ global.wxPage({
       goodsNumber,
       goodsImgs,
       limitBuyNum,
-      limitMaxNum
+      limitMaxNum,
+      deliverPlace,
+      deliverPrice
     } = goodsInfo;
     let info = {
+      goodsId,
       goodsName,
       goodsSaleNum,
       labels,
@@ -114,7 +130,9 @@ global.wxPage({
       goodsNumber,
       goodsImgs,
       limitBuyNum,
-      limitMaxNum
+      limitMaxNum,
+      deliverPlace,
+      deliverPrice
     };
     this.setData({
       goodsInfo: info

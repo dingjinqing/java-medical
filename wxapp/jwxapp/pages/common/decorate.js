@@ -9,7 +9,7 @@ var decorate = {
       console.log(d)
       var pageContent = d.content;
       console.log(pageContent)
-      pageContent.main_setting = _this._getColors();
+      pageContent.main_setting = util.getColors();
       cb(pageContent);
     }, {
       page: page_id,

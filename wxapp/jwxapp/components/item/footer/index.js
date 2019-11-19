@@ -60,7 +60,7 @@ global.wxComponent({
     },
     rightClick(){
       if (this.checkOrigin('right')) return
-      this.test()
+      this.toCheckOut()
     },
     // 添加购物车
     addCart() {
@@ -78,15 +78,15 @@ global.wxComponent({
       );
     },
     checkOrigin(trigger){
-      console.log(1111)
       if (this.data.origin === 'item' && !this.data.isDefaultPrd){
         this.triggerEvent('showSpecDialog', trigger)
         return true
       }
       return false
     },
-    test() {
-      util.jumpLink("pages/item/item", "navigateTo")
+    toCheckOut() {
+      util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify([this.data.productInfo])}`, "navigateTo")
+      this.triggerEvent('close')
     },
 
     // 返回首页

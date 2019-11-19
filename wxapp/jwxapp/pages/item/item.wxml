@@ -9,10 +9,10 @@
       <v-act-content bindactStatus="getActStatus"/>
     </v-goods-info>
     <!-- 发货地 -->
-    <view class="flex_outside_box">
+    <view class="flex_outside_box" wx:if="{{goodsInfo.deliverPlace}}">
       <view class="flex_box">
         <view class="item_left">发货地</view>
-        <view class="item_middle">北京</view>
+        <view class="item_middle">{{goodsInfo.deliverPlace}}</view>
       </view>
     </view>
     <!-- 优惠券&促销信息-->
@@ -34,13 +34,13 @@
           </view>
           <view class="item_right">></view>
         </view>
-        <view class="item_line" slot="service-promises"></view>
+        <view class="item_line" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}"></view>
       </v-sel-spec>
     <!-- 用户评价 -->
     <v-comment />
 
     <!-- 商品详情 -->
-    <v-goods-detail />
+    <v-goods-detail goods-desc-info="{{goodsDescInfo}}"/>
   </view>
   <v-item-footer product-info="{{productInfo}}" isDefaultPrd="{{goodsInfo.defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
   <include src="../common/footer.wxml" />

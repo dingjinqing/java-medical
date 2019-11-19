@@ -37,55 +37,16 @@
         </view>
       </view>
 
-      <view class="goods_item">
-        <image src="{{imageUrl}}image/wxapp/icon_notice.png"></image>
+      <view class="goods_item" wx:for="{{orderInfo.orderGoods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">
+        <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
         <view class="goods_info">
           <view class="goods_name">
-            <text class="name">连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙</text>
-            <text class="spec">尺码:s</text>
+            <text class="name">{{goodsItem.goodsName}}</text>
+            <text class="spec">{{goodsItem.goodsAttr}}</text>
           </view>
           <view class="goods_price">
-            <text class="price" style="color:{{comColor}}">￥800.00</text>
-            <text class="num">x1</text>
-          </view>
-        </view>
-      </view>
-      <view class="goods_item">
-        <image src="{{imageUrl}}image/wxapp/icon_notice.png"></image>
-        <view class="goods_info">
-          <view class="goods_name">
-            <text class="name">连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙</text>
-            <text class="spec">尺码:s</text>
-          </view>
-          <view class="goods_price">
-            <text class="price" style="color:{{comColor}}">￥800.00</text>
-            <text class="num">x1</text>
-          </view>
-        </view>
-      </view>
-      <view class="goods_item">
-        <image src="{{imageUrl}}image/wxapp/icon_notice.png"></image>
-        <view class="goods_info">
-          <view class="goods_name">
-            <text class="name">连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙</text>
-            <text class="spec">尺码:s</text>
-          </view>
-          <view class="goods_price">
-            <text class="price" style="color:{{comColor}}">￥800.00</text>
-            <text class="num">x1</text>
-          </view>
-        </view>
-      </view>
-      <view class="goods_item">
-        <image src="{{imageUrl}}image/wxapp/icon_notice.png"></image>
-        <view class="goods_info">
-          <view class="goods_name">
-            <text class="name">连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙</text>
-            <text class="spec">尺码:s</text>
-          </view>
-          <view class="goods_price">
-            <text class="price" style="color:{{comColor}}">￥800.00</text>
-            <text class="num">x1</text>
+            <text class="price" style="color:{{comColor}}">￥{{goodsItem.goodsPrice}}</text>
+            <text class="num">x{{goodsItem.goodsNumber}}</text>
           </view>
         </view>
       </view>
@@ -98,7 +59,7 @@
           <view class="pay_type_item"> <text class="iconfont icondanxuan" style="color:{{comColor}}"></text> 货到付款</view>
           <view class="pay_type_item"> <text class="iconfont icondanxuanbiankuang"></text> 好友代付</view> -->
         </view>
-        <view class="pay-type-tips">
+        <view class="pay-type-tips" wx:if="{{choosePayTypeIndex === 2}}">
           温馨提示：24小时内未完成支付，订单将会自动取消，所有款项将自动退回到付款人账户
         </view>
       </view>

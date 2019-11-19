@@ -80,6 +80,7 @@ global.wxComponent({
       });
       let { limitBuyNum, limitMaxNum } = this.data.productsInfo;
       this.triggerEvent("productData", {
+        goodsId: this.data.productsInfo.goodsId,
         ...productTarget,
         limitBuyNum,
         limitMaxNum
