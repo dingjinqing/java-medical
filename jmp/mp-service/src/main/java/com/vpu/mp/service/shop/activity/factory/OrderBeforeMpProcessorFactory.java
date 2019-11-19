@@ -1,9 +1,12 @@
 package com.vpu.mp.service.shop.activity.factory;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.processor.OrderBeforeProcessor;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -17,9 +20,19 @@ public class OrderBeforeMpProcessorFactory extends AbstractProcessorFactory<Orde
     public void doProcess(List<OrderBeforeParam> capsules, Integer userId) {
     }
 
-    public void doProcess(OrderBeforeParam orderBeforeParam) {
+    @PostConstruct
+    protected void init(){
+
+    }
+
+    public void doProcess(OrderBeforeParam orderBeforeParam, OrderBeforeVo vo) {
+        if(orderBeforeParam.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_SEC_KILL)){
+            //processors.get
+        }
+
+
         for (OrderBeforeProcessor processor : processors) {
-            processor.processOrderBefore(orderBeforeParam);
+            processor.processOrderBefore(orderBeforeParam,vo);
         }
     }
 }

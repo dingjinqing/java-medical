@@ -323,7 +323,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             // 唯一并互斥的商品营销处理
             // 可能的ActivityType ：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
             OrderBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderBeforeMpProcessorFactory.class);
-            processorFactory.doProcess(param);
+            processorFactory.doProcess(param,vo);
 
             //营销购买
             purchaseForMarket(param, param.getWxUserInfo().getUserId(), param.getStoreId(), vo);
