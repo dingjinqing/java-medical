@@ -138,7 +138,6 @@
               <el-tooltip
                 :content="$t('seckill.order')"
                 placement="top"
-                v-if="scope.row.status == 0"
               >
                 <span
                   style="font-size: 22px;"
@@ -149,7 +148,6 @@
               <el-tooltip
                 :content="$t('seckill.detail')"
                 placement="top"
-                v-if="scope.row.status == 0"
               >
                 <span
                   style="font-size: 22px;"
@@ -160,7 +158,6 @@
               <el-tooltip
                 :content="$t('seckill.user')"
                 placement="top"
-                v-if="scope.row.status == 0"
               >
                 <span
                   style="font-size: 22px;"
@@ -171,7 +168,6 @@
               <el-tooltip
                 :content="$t('seckill.delete')"
                 placement="top"
-                v-if="scope.row.status == 0"
               >
                 <span
                   style="font-size: 22px;"
@@ -518,7 +514,7 @@ export default {
   width: 220px;
 }
 .opt {
-  text-align: center;
+  text-align: left;
   color: #5a8bff;
   span {
     cursor: pointer;

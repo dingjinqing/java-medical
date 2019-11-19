@@ -15,7 +15,7 @@
           :label="$t('distribution.distributorLevelCfg')"
           name="second"
         >
-          <distributorLevelSetting />
+          <distributorLevelSetting @tabChange="tabChange" />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.rebateStrategyCfg')"

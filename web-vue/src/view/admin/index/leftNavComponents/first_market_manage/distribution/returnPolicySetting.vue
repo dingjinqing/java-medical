@@ -88,22 +88,20 @@
           <template slot-scope="scope">
             <span
               @click="editHandler(scope.row.id)"
-              v-if="tabSwitch == '1' || tabSwitch == '2'"
               class="option"
             >编辑</span>
             <span
               @click="deleteHandler(scope.row.id)"
-              v-if="tabSwitch !== '1'"
               class="option"
             >删除</span>
             <span
               @click="stopHandler(scope.row.id)"
-              v-if="tabSwitch == '1' || tabSwitch == '2'"
+              v-if="scope.row.status === 1"
               class="option"
             >停用</span>
             <span
               @click="startHandler(scope.row.id)"
-              v-if="tabSwitch === '4'"
+              v-if="scope.row.status === 0"
               class="option"
             >启用</span>
           </template>

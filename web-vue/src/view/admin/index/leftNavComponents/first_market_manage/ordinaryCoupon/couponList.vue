@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    <!-- tabs -->
     <div class="main">
       <statusTab
         v-model="nav"
@@ -29,6 +30,8 @@
         >添加优惠券</el-button>
       </div>
     </div>
+
+    <!-- 表格 -->
     <div class="table_list">
       <el-table
         class="version-manage-table"
@@ -123,6 +126,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-share"
+                  @click="shareCoupon(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -142,6 +146,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-circle-check"
+                  @click="startCoupon(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -157,7 +162,6 @@
               <el-tooltip
                 content="删除"
                 placement="top"
-                v-if="nav !== 1"
               >
                 <span
                   style="font-size: 22px;"
@@ -165,11 +169,6 @@
                   @click="delCoupon(scope.row.id)"
                 ></span>
               </el-tooltip>
-              <!-- <span @click="updateCoupon(scope.row.id)">编辑</span>
-              <span>分享</span>
-              <span @click="puaseCoupon(scope.row.id)">停用</span>
-              <span @click="receiveDetails(scope.row.id)">领取明细</span>
-              <span @click="delCoupon(scope.row.id)">删除</span> -->
             </div>
           </template>
         </el-table-column>
@@ -179,6 +178,57 @@
         @pagination="handleClick"
       />
     </div>
+
+    <!-- 分享 -->
+    <el-dialog
+      :title="$t('seckill.shareTitle')"
+      :visible.sync="shareDialog"
+      width="350px"
+      center
+      :close-on-click-modal="false"
+    >
+      <div style="width: 100%; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
+        <div>
+          <img
+            :src="shareImg"
+            alt=""
+            style="width:160px;height:160px;"
+          >
+        </div>
+        <div style="margin: 20px; 0">
+          <a
+            v-if="shareImg !== null"
+            :href="shareImg"
+            download
+            style="color: #999;text-decoration: none;"
+          >{{ $t('seckill.downLoad') }}</a>
+          <a
+            v-if="shareImg === null"
+            href="javaScript:void(0);"
+            style="color: #999;text-decoration: none;"
+          >{{ $t('seckill.downLoadFail') }}</a>
+        </div>
+      </div>
+      <div>
+        <el-input v-model="sharePath">
+          <el-button
+            slot="append"
+            v-clipboard:copy="sharePath"
+            v-clipboard:success="copyHandler"
+          >{{ $t('seckill.copy') }}</el-button>
+        </el-input>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="shareDialog = false">{{ $t('seckill.cancel') }}</el-button>
+        <el-button
+          type="primary"
+          @click="shareDialog = false"
+        >{{ $t('seckill.sure') }}</el-button>
+      </span>
+    </el-dialog>
 
   </div>
 
@@ -194,14 +244,15 @@ export default {
   },
   data () {
     return {
+      nav: 0,
       actName: null,
       activityName: '优惠券',
       tableData: [],
-      activeName: 'second',
-      currentPage: 1,
-      nav: 0,
-      pageParams: {},
-      editData: []
+      pageParams: {}, // 分页
+      requestParams: {},
+      shareDialog: false, // 分享弹窗
+      shareImg: '',
+      sharePath: ''
     }
   },
   mounted () {
@@ -209,21 +260,13 @@ export default {
     this.handleClick()
   },
   methods: {
-    // 当前页发生变化
-    handleCurrentChange () {
-      console.log(this.currentPage)
-    },
-
     // 优惠券列表
     handleClick () {
-      this.pageParams.nav = this.nav
-      if (this.actName !== '') {
-        this.pageParams.actName = this.actName
-      }
-      couponList(this.pageParams).then((res) => {
-        console.log(res)
+      this.requestParams.actName = this.actName
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      couponList(this.requestParams).then((res) => {
         if (res.error === 0) {
-          console.log(res.content)
           this.handleData(res.content.dataList)
           this.pageParams = res.content.page
         }
@@ -259,27 +302,7 @@ export default {
       })
       this.tableData = data
     },
-    // 停用优惠券
-    puaseCoupon (id) {
-      this.$confirm('此操作将永久停用该优惠券活动, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        pauseCoupon(id).then(res => {
-          if (res.error === 0) {
-            this.$message.success({
-              message: '停用成功!'
-            })
-            this.handleClick()
-          }
-        })
-      }).catch(() => {
-        this.$message.info({
-          message: '已取消停用'
-        })
-      })
-    },
+
     // 编辑优惠券
     updateCoupon (id) {
       this.$router.push({
@@ -289,6 +312,14 @@ export default {
         }
       })
     },
+
+    // 添加优惠券
+    addCoupon () {
+      this.$router.push({
+        name: 'add_coupon'
+      })
+    },
+
     // 删除优惠券
     delCoupon (id) {
       this.$confirm('此操作将永久删除该优惠券活动, 是否继续?', '提示', {
@@ -298,25 +329,15 @@ export default {
       }).then(() => {
         deleteCoupon(id).then(res => {
           if (res.error === 0) {
-            this.$message.success({
-              message: '删除成功!'
-            })
+            this.$message.success({ message: '删除成功!' })
             this.handleClick()
           }
         })
       }).catch(() => {
-        this.$message.info({
-          message: '已取消删除'
-        })
+        this.$message.info({ message: '已取消删除' })
       })
     },
 
-    // 添加优惠券
-    addCoupon () {
-      this.$router.push({
-        name: 'add_coupon'
-      })
-    },
     // 领取明细
     receiveDetails (id) {
       this.$router.push({
@@ -325,6 +346,47 @@ export default {
           id: id
         }
       })
+    },
+
+    // 停用优惠券
+    puaseCoupon (id) {
+      this.$confirm('此操作将停用该优惠券活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        pauseCoupon(id).then(res => {
+          if (res.error === 0) {
+            this.$message.success({ message: '停用成功!' })
+            this.handleClick()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消停用' })
+      })
+    },
+
+    // 启用优惠券
+    startCoupon (id) {
+      this.$confirm('此操作将启用该优惠券活动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then((res) => {
+        this.$message.success({ message: '启用成功!' })
+      }).catch(() => {
+        this.$message.info({ message: '已取消启用' })
+      })
+    },
+
+    // 分享优惠券
+    shareCoupon (id) {
+      this.shareDialog = true
+    },
+
+    // 复制
+    copyHandler (e) {
+      this.$message.success({ message: this.$t('seckill.copySuccess') })
     }
   },
   watch: {

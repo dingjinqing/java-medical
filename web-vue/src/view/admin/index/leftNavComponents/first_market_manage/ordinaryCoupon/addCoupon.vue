@@ -540,7 +540,7 @@ export default {
         callback(new Error(this.$t('ordinaryCoupon.validateDiscount')))
       } else if (value === 2 && (this.param.randomMin === null || this.param.randomMax === null)) {
         callback(new Error('请填写随机金额'))
-      } else if (!re.test(this.param.randomMin) || !re.test(this.param.randomMax)) {
+      } else if (value === 2 && (!re.test(this.param.randomMin) || !re.test(this.param.randomMax))) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else if (this.param.randomMin > this.param.randomMax) {
         callback(new Error('最大金额不能比最小金额小'))
@@ -734,6 +734,7 @@ export default {
         }
       })
     },
+
     // 编辑回显
     getOneInfo () {
       updateCoupon(this.couponId).then(res => {
@@ -829,27 +830,7 @@ export default {
         }
       })
     },
-    // 点击指定商品出现的添加类弹窗汇总
-    hanldeToAddGoodS (index) {
-      console.log(index)
-      switch (index) {
-        case 0:
-          this.tuneUpChooseGoods = !this.tuneUpChooseGoods
-          break
-        case 1:
-          this.tuneUpBusClassDialog = true
-          this.classFlag = 1
-          this.flag = 1
-          this.commInfo = this.busClass
-          break
-        case 2:
-          this.tuneUpBusClassDialog = true
-          this.classFlag = 2
-          this.flag = 2
-          this.commInfo = this.platClass
-          break
-      }
-    },
+
     // 保存优惠券
     saveCoupon () {
       this.$refs['param'].validate((valid) => {
@@ -919,6 +900,29 @@ export default {
         }
       })
     },
+
+    // 点击指定商品出现的添加类弹窗汇总
+    hanldeToAddGoodS (index) {
+      console.log(index)
+      switch (index) {
+        case 0:
+          this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+          break
+        case 1:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 1
+          this.flag = 1
+          this.commInfo = this.busClass
+          break
+        case 2:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 2
+          this.flag = 2
+          this.commInfo = this.platClass
+          break
+      }
+    },
+
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
       this.goodsInfoRow = row
@@ -927,6 +931,7 @@ export default {
         this.goodsInfo.push(item.goodsId)
       })
     },
+
     // 选择商家分类/平台分类弹窗回调显示
     busClassDialogResult (row) {
       if (this.flag === 1) {
@@ -945,9 +950,6 @@ export default {
         })
       }
     }
-  },
-
-  filters: {
   },
   computed: {
     coupon_date_info () {

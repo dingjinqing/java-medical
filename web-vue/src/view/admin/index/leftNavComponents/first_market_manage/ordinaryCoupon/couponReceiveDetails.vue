@@ -4,21 +4,21 @@
       <div class="filters">
         <div class="filters_item"><span>手机号：</span>
           <el-input
-            v-model="searchCondition.mobile"
+            v-model="searchData.mobile"
             placeholder="请输入手机号"
             size="small"
           ></el-input>
         </div>
         <div class="filters_item"><span>用户昵称：</span>
           <el-input
-            v-model="searchCondition.userName"
+            v-model="searchData.userName"
             placeholder="请输入用户昵称"
             size="small"
           ></el-input>
         </div>
         <div class="filters_item"><span>使用状态：</span>
           <el-select
-            v-model="searchCondition.useStatus"
+            v-model="searchData.useStatus"
             size="small"
           >
             <el-option
@@ -40,19 +40,13 @@
       <div class="table_box">
         <el-table
           v-loading="loading"
+          class="version-manage-table"
+          header-row-class-name="tableClss"
           :data="tableData"
           style="width:100%;"
           border
-          :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none'
-          }"
-          :cell-style="{
-            'text-align':'center'
-          }"
         >
-          <template v-for="item in tableLabel">
+          <!-- <template v-for="item in tableLabel">
             <el-table-column
               :prop="item.prop"
               :label="item.label"
@@ -72,7 +66,7 @@
                     }"
                   >
                     <i
-                      @click="del(scope.row.id)"
+                      @click="deleteCoupon(scope.row.id)"
                       class="el-icon-delete"
                     ></i>
                   </el-tooltip>
@@ -85,7 +79,75 @@
               :key="item.index"
               v-else
             ></el-table-column>
-          </template>
+          </template> -->
+          <el-table-column
+            label="用户昵称"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <a
+                href="javascript:void(0);"
+                @click="infoClickHandler(scope.row.userId)"
+              >{{ scope.row.username }}</a>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号码"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="couponName"
+            label="优惠券名称"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="accessMode"
+            label="领取方式"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="scoreNumber"
+            label="兑换积分数"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="isUsed"
+            label="是否使用"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="orderSn"
+            label="使用订单号"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="validityTime"
+            label="有效期"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="领取时间"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="usedTime"
+            label="使用时间"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span
+                style="font-size: 22px;"
+                class="el-icon-delete"
+                @click="deleteCoupon(scope.row.id)"
+              ></span>
+            </template>
+          </el-table-column>
         </el-table>
         <pagination
           :page-params.sync="pageParams"
@@ -97,7 +159,7 @@
 </template>
 
 <script>
-import { deleteCoupon, couponGetDetail } from '@/api/admin/marketManage/couponList.js'
+import { couponGetDetail, deleteCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -106,8 +168,11 @@ export default {
     return {
       loading: false,
       id: '',
-      pageParams: {},
-      searchCondition: {
+      tableData: [],
+      pageParams: {}, // 分页
+      requestParams: {},
+      // 搜索
+      searchData: {
         mobile: '',
         userName: '',
         useStatus: -1
@@ -118,35 +183,46 @@ export default {
         { value: 2, label: '已使用' },
         { value: 3, label: '已过期' },
         { value: 4, label: '已废除' }
-      ],
-      tableData: [],
-      tableLabel: [
-        { index: 1, prop: 'username', label: '用户昵称' },
-        { index: 2, prop: 'mobile', label: '手机号码' },
-        { index: 3, prop: 'couponName', label: '优惠券名称' },
-        { index: 4, prop: 'accessMode', label: '领取方式' },
-        { index: 5, prop: 'scoreNumber', label: '兑换积分数' },
-        { index: 6, prop: 'isUsed', label: '是否使用' },
-        { index: 7, prop: 'orderSn', label: '使用订单号' },
-        { index: 8, prop: 'validityTime', label: '有效期' },
-        { index: 9, prop: 'createTime', label: '领取时间' },
-        { index: 10, prop: 'usedTime', label: '使用时间' },
-        { index: 11, prop: 'delflag', label: '操作' }
       ]
+      // tableLabel: [
+      //   { index: 1, prop: 'username', label: '用户昵称' },
+      //   { index: 2, prop: 'mobile', label: '手机号码' },
+      //   { index: 3, prop: 'couponName', label: '优惠券名称' },
+      //   { index: 4, prop: 'accessMode', label: '领取方式' },
+      //   { index: 5, prop: 'scoreNumber', label: '兑换积分数' },
+      //   { index: 6, prop: 'isUsed', label: '是否使用' },
+      //   { index: 7, prop: 'orderSn', label: '使用订单号' },
+      //   { index: 8, prop: 'validityTime', label: '有效期' },
+      //   { index: 9, prop: 'createTime', label: '领取时间' },
+      //   { index: 10, prop: 'usedTime', label: '使用时间' },
+      //   { index: 11, prop: 'delflag', label: '操作' }
+      // ]
     }
   },
+  mounted () {
+    this.id = this.$route.query.id
+    // 初始化数据
+    this.initDataList()
+  },
   methods: {
+    // 领取明细列表
     initDataList () {
-      this.pageParams.id = this.id
-      couponGetDetail(this.pageParams).then(res => {
+      this.requestParams.id = this.id
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      this.requestParams.mobile = this.searchData.mobile
+      this.requestParams.userName = this.searchData.userName
+      this.requestParams.useStatus = this.searchData.useStatus
+      couponGetDetail(this.requestParams).then(res => {
         if (res.error === 0) {
-          console.log(res)
           this.handleData(res.content.dataList)
           // this.tableData = res.content.dataList
           this.pageParams = res.content.page
         }
       })
     },
+
+    // 表格处理数据
     handleData (data) {
       data.map((item, index) => {
         if (item.accessMode === 0) {
@@ -158,6 +234,30 @@ export default {
       })
       this.tableData = data
     },
+
+    // 删除
+    deleteCoupon (id) {
+      this.$confirm('是否删除该张优惠券?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteCoupon(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: '删除成功!' })
+            this.initDataList()
+          }
+        }).catch(() => {
+          this.$message.info({ message: '已取消删除' })
+        })
+      })
+    },
+
+    // 个人信息跳转
+    infoClickHandler () {
+
+    },
+
     foramtUseStatus (data) {
       switch (data) {
         case 2:
@@ -183,32 +283,8 @@ export default {
         default:
           return '直接领取'
       }
-    },
-    del (id) {
-      let param = {
-        'id': id
-      }
-      this.$confirm('是否废除该张优惠券?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        deleteCoupon(param).then((res) => {
-          if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '废除成功!'
-            })
-            this.initDataList()
-          }
-        })
-      })
     }
-  },
-  mounted () {
-    this.initDataList()
   }
-
 }
 </script>
 
@@ -235,6 +311,7 @@ export default {
     .table_box {
       background-color: #fff;
       padding: 15px;
+
       .operation {
         display: flex;
         justify-content: space-around;
@@ -246,5 +323,13 @@ export default {
       }
     }
   }
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
 }
 </style>

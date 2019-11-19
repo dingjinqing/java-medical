@@ -47,6 +47,41 @@ export function setDistribution (data) {
 }
 
 // 分销员等级配置
+// 设置分销员等级配置
+export function setDistributionLevel (data) {
+  return service({
+    url: '/api/admin/distribution/level/save',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取分销员等级配置
+export function getDistributionLevel (data) {
+  return service({
+    url: '/api/admin/distribution/level/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 停用分销员配置
+export function stopDistribution (data) {
+  return service({
+    url: `/api/admin/distribution/level/pause?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
+// 启用分销员配置
+export function startDistribution (data) {
+  return service({
+    url: `/api/admin/distribution/level/open?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
 
 // 返利策略配置
 // 获取返利策略列表
