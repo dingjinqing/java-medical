@@ -82,7 +82,7 @@ public class GoodsCardCoupleService extends ShopBaseService {
 	public Map<Byte, List<Integer>> getGoodsCardCouple(Integer userId) {
 		// 获取会员等级
 		String userCardGrade = userCardDao.getUserCardGrade(userId);
-		Map<Byte, List<Integer>> gradeCoupleGoods = new HashMap<>();
+		Map<Byte, List<Integer>> gradeCoupleGoods = new HashMap<>(16);
 		if (userCardGrade != null) {
 			gradeCoupleGoods = getGradeCardCoupleGoodsList(userCardGrade);
 		}

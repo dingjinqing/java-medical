@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartGoodsInfo;
@@ -106,6 +107,10 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
         // 判断是否已收藏商品
         boolean collectedGoods = tailProcessorDao.isCollectedGoods(param.getUserId(), param.getGoodsId());
         goodsDetailMpBo.setIsCollected(collectedGoods);
+        //服务承诺
+        PledgeBo pledgeList = tailProcessorDao.getPledgeList();
+        goodsDetailMpBo.setPledgeSwitch(Integer.parseInt(pledgeList.getPledgeSwitch()));
+        goodsDetailMpBo.setPledgeList(pledgeList.getPledgeList());
 
     }
 

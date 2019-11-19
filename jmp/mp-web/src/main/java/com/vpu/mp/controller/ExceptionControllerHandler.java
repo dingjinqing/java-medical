@@ -32,7 +32,8 @@ public class ExceptionControllerHandler extends BaseController {
             BindingResult result = ((MethodArgumentNotValidException) e).getBindingResult();
             logger.error("valid msg:"+result.getFieldError().getDefaultMessage());
             if( result.hasErrors() ){
-                return this.fail(result.getFieldError().getField() + result.getFieldError().getDefaultMessage());
+                logger.error("error msg: "+result.getFieldError().getField() +result.getFieldError().getDefaultMessage());
+                return this.fail(JsonResultCode.CODE_PARAM_ERROR,", "+result.getFieldError().getField() + result.getFieldError().getDefaultMessage());
             }
         return null;
     }
@@ -40,7 +41,7 @@ public class ExceptionControllerHandler extends BaseController {
     public Object validExceptionHandler(BindException e){
         BindingResult result = e.getBindingResult();
         if( result.hasErrors() ){
-            return this.fail(result.getFieldError().getField() + result.getFieldError().getDefaultMessage());
+            return this.fail(JsonResultCode.CODE_PARAM_ERROR,", "+result.getFieldError().getField() + result.getFieldError().getDefaultMessage());
         }
         return null;
     }
@@ -65,10 +66,10 @@ public class ExceptionControllerHandler extends BaseController {
     public JsonResult request1(HttpMessageNotReadableException e) throws IOException {
          if (e.getCause()==null){
              logger.debug("valid msg:"+e.getMessage());
-             return fail(JsonResultMessage.MSG_PARAM_ERROR);
+             return fail(JsonResultCode.CODE_PARAM_ERROR);
          }
-         logger.debug("valid msg:"+e.getCause().getMessage());
-        return fail(JsonResultMessage.MSG_PARAM_ERROR);
+         logger.error("valid msg:"+e.getCause().getMessage());
+        return fail(JsonResultCode.CODE_PARAM_ERROR);
     }
 
     /**

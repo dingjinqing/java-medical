@@ -1,19 +1,16 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import java.sql.Timestamp;
-import java.util.List;
-
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyShareConfigParam;
-
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 孔德成

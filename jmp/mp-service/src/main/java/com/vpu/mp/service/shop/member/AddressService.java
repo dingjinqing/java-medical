@@ -103,9 +103,11 @@ public class AddressService extends ShopBaseService {
                 .fetchOne();
         if (addressRecord != null && (addressRecord.getLat() == null || addressRecord.getLng() == null)) {
             AddressLocation addressLocation = getGeocoderAddressLocation(wxAddress.getCompleteAddress());
-            addressRecord.setLat(addressLocation.getResult().getLocation().getLat());
-            addressRecord.setLng(addressLocation.getResult().getLocation().getLng());
-            addressRecord.update();
+            if (AddressLocation.STATUS_OK.equals(addressLocation.getStatus())){
+                addressRecord.setLat(addressLocation.getResult().getLocation().getLat());
+                addressRecord.setLng(addressLocation.getResult().getLocation().getLng());
+                addressRecord.update();
+            }
         }
         return addressRecord;
     }
@@ -200,7 +202,7 @@ public class AddressService extends ShopBaseService {
      * @return
      */
     public AddressLocation getGeocoderAddressLocation(String address) {
-        Map<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>(2);
         param.put("address", address);
         param.put("key", txMapLBSConfig.getKey());
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressLocation.class, true);
@@ -209,12 +211,12 @@ public class AddressService extends ShopBaseService {
     /**
      * 根据 经纬度获取地址
      *
-     * @param lat
-     * @param lng
+     * @param lat 经度
+     * @param lng 纬度
      * @return
      */
     public AddressInfo getGeocoderAddressInfo(String lat, String lng) {
-        Map<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>(2);
         param.put("location", lat + "," + lng);
         param.put("key", txMapLBSConfig.getKey());
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressInfo.class, true);

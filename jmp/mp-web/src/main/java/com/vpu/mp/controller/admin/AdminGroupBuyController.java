@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import javax.validation.Valid;
 
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,7 +58,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/add")
-    public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
+    public JsonResult addGroupBuy(@RequestBody @Validated GroupBuyParam param) {
         //校验活动商品是否叠加 (并发不安全)
         Boolean flag = shop().groupBuy.validGroupGoods(null,param.getGoodsId(),param.getStartTime(),param.getEndTime());
         if (!flag){
@@ -79,7 +80,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return  JsonResult
      */
     @PostMapping("/admin/market/groupbuy/delete")
-    public JsonResult deleteGroupBuy(@RequestBody GroupBuyIdParam param) {
+    public JsonResult deleteGroupBuy(@RequestBody @Valid GroupBuyIdParam param) {
         if (param.getId()==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
@@ -113,7 +114,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/detail")
-    public JsonResult detailGroupBuy(@RequestBody GroupBuyIdParam param) {
+    public JsonResult detailGroupBuy(@RequestBody @Valid GroupBuyIdParam param) {
         if (param.getId()==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
@@ -129,7 +130,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult qrCodeVo 二维码信息
      */
     @PostMapping("/admin/market/groupbuy/share")
-    public JsonResult shareGroupBuy(@RequestBody GroupBuyIdParam param) {
+    public JsonResult shareGroupBuy(@RequestBody @Valid GroupBuyIdParam param) {
         ShareQrCodeVo qrCodeVo = shop().groupBuy.shareGroupBuy(param.getId());
         return success(qrCodeVo);
     }
@@ -141,7 +142,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/change/status")
-    public JsonResult changeStatusActivity(@RequestBody GroupBuyIdParam param) {
+    public JsonResult changeStatusActivity(@RequestBody @Valid GroupBuyIdParam param) {
         if (param.getId()==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }

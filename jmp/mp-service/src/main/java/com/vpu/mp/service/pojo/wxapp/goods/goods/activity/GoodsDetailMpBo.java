@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.activity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import lombok.Data;
 import lombok.Getter;
@@ -51,4 +52,15 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
 
     /**商品主图*/
     private String goodsImg;
+
+    //**********服务承诺
+    /**
+     * 服务承诺是否开启
+     */
+    private Integer pledgeSwitch;
+    /**
+     * 服务承诺信息
+     */
+    private  List<PledgeInfo> pledgeList;
+
 }

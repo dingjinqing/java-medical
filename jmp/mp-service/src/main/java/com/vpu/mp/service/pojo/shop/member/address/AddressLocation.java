@@ -12,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddressLocation {
+    public static final Integer STATUS_OK = 0;
     /**
      * 状态码，0为正常,
      * 310请求参数信息有误，

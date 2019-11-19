@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
@@ -81,7 +82,7 @@ public class CouponService extends ShopBaseService {
      */
     public String generateAliasCode() {
         do {
-            int randomNum = (int) (Math.random() * 10000000) + 10000000;
+            int randomNum = new Random().nextInt(10000000) + 10000000;
             this.aliasCode = "b" + randomNum;
         } while (this.hasAliasCode(aliasCode) > 0);
         return aliasCode;

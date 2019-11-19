@@ -58,6 +58,14 @@ public class ShopPledgeService extends ShopBaseService {
   /**
    * 小程序-向用户展示服务承诺
    *
+   * @return list 满足条件的服务承诺列表
+   */
+  public List<PledgeListVo> wxAppPledgeList() {
+    return wxAppPledgeList(null);
+  }
+  /**
+   * 小程序-向用户展示服务承诺
+   *
    * @param param 预留部分-根据当前商品筛选服务承诺
    * @return list 满足条件的服务承诺列表
    */
@@ -103,7 +111,7 @@ public class ShopPledgeService extends ShopBaseService {
             .and(PLEDGE.STATE.eq(NumberUtils.BYTE_ONE))
             .orderBy(PLEDGE.ID.desc())
             .fetchInto(PledgeListVo.class);
-    // TO-DO 筛选-位置为部分商品的服务承诺
+    // TODO 筛选-位置为部分商品的服务承诺
 
     // 把筛选结果放到返回出参里
     for (Iterator<PledgeListVo> tempVo = vo.iterator(); tempVo.hasNext(); ) {
