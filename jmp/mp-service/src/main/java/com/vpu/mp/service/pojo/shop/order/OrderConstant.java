@@ -453,8 +453,8 @@ public class OrderConstant {
     /**
      *  运费模板分类：0：普通运费模板；1：重量运费模板
      */
-    public static final Integer SHIPPING_FEE_TEMPLATE_NUMBER = 0;
-    public static final Integer SHIPPING_FEE_TEMPLATE_WEIGHT = 1;
+    public static final Byte SHIPPING_FEE_TEMPLATE_NUMBER = 0;
+    public static final Byte SHIPPING_FEE_TEMPLATE_WEIGHT = 1;
 
     /**
      *  会员卡 type 0线上 1线下

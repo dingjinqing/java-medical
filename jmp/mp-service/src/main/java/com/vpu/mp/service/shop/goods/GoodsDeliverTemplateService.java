@@ -9,15 +9,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
 import com.vpu.mp.service.pojo.shop.config.DeliverTemplateConfig;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverBoxVo;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverIdParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateAreaParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateContentParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateFeeConditionParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateLimitParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateParam;
-import com.vpu.mp.service.pojo.shop.goods.deliver.GoodsDeliverTemplateVo;
+import com.vpu.mp.service.pojo.shop.goods.deliver.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.config.DeliverTemplateConfigService;
 import jodd.util.StringUtil;
@@ -152,19 +144,19 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
 	 * @param param 模板id
 	 */
 	public void copyTemplate(GoodsDeliverIdParam param) {
-		/** 根据id查模板信息 */
+		// 根据id查模板信息
 		DeliverFeeTemplateRecord record = db().select(DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,
 				DELIVER_FEE_TEMPLATE.SHOP_ID,DELIVER_FEE_TEMPLATE.FLAG)
 				.from(DELIVER_FEE_TEMPLATE)
 				.where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(param.getDeliverTemplateId()))
 				.fetchOneInto(DELIVER_FEE_TEMPLATE);
-		/** 重命名复制出来的副本 */
+		// 重命名复制出来的副本
 		String newName = record.getTemplateName()+" 副本";
 		record.setTemplateName(newName);
 		record.setTemplateContent(record.getTemplateContent());
 		record.setShopId(record.getShopId());
 		record.setFlag(record.getFlag());
-		/** 将副本信息插入为一条新的模板信息 */
+		// 将副本信息插入为一条新的模板信息
 		db().executeInsert(record);
 	}
 
