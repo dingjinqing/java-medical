@@ -78,7 +78,7 @@
               </el-radio-group>
             </div>
             <div class="fl">
-              <el-date-picker
+              <!-- <el-date-picker
                 v-model="form.startTime"
                 type="datetime"
                 class="form_input"
@@ -98,7 +98,17 @@
                 format="yyyy-MM-dd HH:mm:ss"
                 value-format="yyyy-MM-dd HH:mm:ss"
               >
-              </el-date-picker>
+              </el-date-picker> -->
+              <el-date-picker
+                v-model="form.timeInterval"
+                type="datetimerange"
+                range-separator="至"
+                :start-placeholder="$t('firstSpecialAdd.chooseTime')"
+                :end-placeholder="$t('firstSpecialAdd.chooseTime')"
+                :disabled="!!form.isForever"
+                format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd HH:mm:ss"
+              ></el-date-picker>
             </div>
           </el-form-item>
           <el-form-item
@@ -464,6 +474,14 @@ import { addFirstSpecial, getFirstSpecialById, updateFirstSpecial } from '@/api/
 export default {
   components: { choosingGoods, imageDalog, productInfo },
   data () {
+    let that = this
+    // 验证时间
+    let validateTime = function (rule, value, callback) {
+      if (that.form.isForever === 0 && (!that.form.timeInterval[0] || !that.form.timeInterval[1])) {
+        callback(new Error(that.$t('firstSpecialAdd.validityPeriodTip')))
+      }
+      callback()
+    }
     return {
       id: '',
       isEditFlag: false, // 区分新增还是编辑
@@ -471,6 +489,7 @@ export default {
       form: {
         name: '',
         isForever: 0, // 是否永久有效
+        timeInterval: [],
         startTime: '',
         endTime: '',
         first: '', // 活动优先级
@@ -501,7 +520,10 @@ export default {
       productInfo: {},
       rules: {
         name: { required: true, message: this.$t('firstSpecialAdd.validName'), trigger: 'blur' },
-        isForever: { required: true, message: this.$t('firstSpecialAdd.validIsForver') },
+        isForever: [
+          { required: true, message: this.$t('firstSpecialAdd.validIsForver') },
+          { validator: validateTime, trigger: 'blur' }
+        ],
         first: { required: true, message: this.$t('firstSpecialAdd.validFirst') }
       }
     }
@@ -848,15 +870,17 @@ export default {
         }
         return param
       })
+      this.form.startTime = this.form.timeInterval[0]
+      this.form.endTime = this.form.timeInterval[1]
       return Object.assign({}, this.form)
     },
     paramsValid (params, suFn) {
       this.$refs.firstSpecialAddForm.validate((valid) => {
         if (valid) {
-          if (params.isForever === 0 && (params.startTime === '' || params.endTime === '')) {
-            this.$message.warning(this.$t('firstSpecialAdd.validityPeriodTip'))
-            return false
-          }
+          // if (params.isForever === 0 && (params.startTime === '' || params.endTime === '')) {
+          //   this.$message.warning(this.$t('firstSpecialAdd.validityPeriodTip'))
+          //   return false
+          // }
           let goods = params.firstSpecialGoodsParams
           if (goods.length === 0) {
             this.$message.warning(this.$t('firstSpecialAdd.selectEventTip'))
