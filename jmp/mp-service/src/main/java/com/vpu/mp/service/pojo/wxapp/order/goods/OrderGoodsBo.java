@@ -80,7 +80,7 @@ public class OrderGoodsBo {
 	 */
 	/**TODO 优惠卷*/
 	private Integer[] userCoupon;
-	/**营销活动类型*/
+	/**TODO 营销活动类型*/
 	private Integer goodsPriceAction;
 	/**加价购id*/
 	private Integer purchasePriceId;

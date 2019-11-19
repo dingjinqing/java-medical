@@ -152,8 +152,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public ExecuteResult execute(CreateParam param)  {
         //初始化bo
         CreateOrderBo orderBo;
-        //初始化商品行
-        List<OrderGoodsBo> goodsBos;
         //OrderBeforeVo
         OrderBeforeVo orderBeforeVo;
         //order before data ready
@@ -167,10 +165,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             orderBo = initCreateOrderBo(param);
             //校验
             checkCreateOrderBo(orderBo, param);
-            goodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getStoreId());
             orderBeforeVo = OrderBeforeVo.builder().build();
             //处理orderBeforeVo
-            processOrderBeforeVo(param, orderBeforeVo, goodsBos);
+            processOrderBeforeVo(param, orderBeforeVo, orderBo.getOrderGoodsBo());
             //校验
             checkOrder(orderBeforeVo, orderBo, param);
         } catch (MpException e) {
@@ -179,7 +176,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //record入库
         db().transaction(()->{
             //初始化订单（赋值部分数据）
-            OrderInfoRecord order = orderInfo.addRecord(param, orderBo, goodsBos, orderBeforeVo);
+            OrderInfoRecord order = orderInfo.addRecord(param, orderBo, orderBo.getOrderGoodsBo(), orderBeforeVo);
             //普通营销活动处理
             processNormalActivity(order, orderBo, orderBeforeVo);
             if(null != order.getActivityId()){
@@ -194,8 +191,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //支付系统金额
             orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
             //商品退款退货配置
-            calculate.setGoodsReturnCfg(goodsBos, order.getGoodsType(), order.getPosFlag());
-            orderGoods.addRecord(order, goodsBos);
+            calculate.setGoodsReturnCfg(orderBo.getOrderGoodsBo(), order.getGoodsType(), order.getPosFlag());
+            orderGoods.addRecord(order, orderBo.getOrderGoodsBo());
             //必填信息
             must.addRecord(param.getMust());
             //TODO exchang、好友助力
@@ -380,9 +377,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 temp.setIsFirstSpecial(no);
             }
         }
-        // 初始化
-        List<OrderGoodsBo> orderGoodsBos = initOrderGoods(param, param.getGoods(), userId, param.getMemberCardNo(), storeId);
-        vo.setOrderGoods(orderGoodsBos);
     }
 
     /**
@@ -432,7 +426,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param vo
      */
     private void setOrderBeforeVoInfo(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
-        //默认选择
+        // 初始化
+        vo.setOrderGoods(initOrderGoods(param, param.getGoods(), userId, param.getMemberCardNo(), storeId));
+        //默认选择配送方式
         vo.setDeliverType(Objects.isNull(param.getDeliverType()) ? vo.getDefaultDeliverType() : param.getDeliverType());
         //配送方式支持的门店列表（自提、同城配送）
         List<StorePojo>[] storeLists = store.filterExpressList(vo.getExpressList(), param.getProductIds(), vo.getAddress(), no);
@@ -451,7 +447,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 初始化
+     * 营销、非营销处理后初始化orderGoods对象
      * @param param 结算参数
      * @param goods 购买商品列表
      * @param userId 会员id
@@ -474,7 +470,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             GoodsRecord goodsRecord = goodsRecords.get(temp.getGoodsId());
             //TODO 去别的class写：不满足需要推出11111
             //分销返利（return）
-            //首单特惠（return）、
+            //首单特惠（return）
             //会员等级->限时降价/等级会员卡专享价格/商品价格（三取一）return
             //限时降价
 
@@ -884,5 +880,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_SCORE);
         }
         //TODO 好友代付校验
+    }
+
+    public void updateStockAndSales(){
+
     }
 }
