@@ -137,15 +137,18 @@ public class CouponService extends ShopBaseService {
             switch (param.getNav()) {
                 //进行中
                 case 1:
-                    sql = sql.and(MRKING_VOUCHER.ENABLED.eq((byte) 1)).and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0));
+                    sql = sql.and(MRKING_VOUCHER.START_TIME.le(nowDate)).and(MRKING_VOUCHER.END_TIME.ge(nowDate))
+                            .and(MRKING_VOUCHER.ENABLED.eq((byte) 1)).and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0));
                     break;
                 //未开始
                 case 2:
-                    sql = sql.and(MRKING_VOUCHER.START_TIME.ge(nowDate));
+                    sql = sql.and(MRKING_VOUCHER.START_TIME.ge(nowDate)).and(MRKING_VOUCHER.ENABLED.eq((byte) 1))
+                            .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0));
                     break;
                 //已过期
                 case 3:
-                    sql = sql.and(MRKING_VOUCHER.END_TIME.le(nowDate));
+                    sql = sql.and(MRKING_VOUCHER.END_TIME.le(nowDate)).and(MRKING_VOUCHER.ENABLED.eq((byte) 1))
+                            .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0));
                     break;
                 //已停用
                 case 4:
