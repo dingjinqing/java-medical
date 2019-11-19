@@ -275,7 +275,8 @@ export default {
       page_id: null, // 编辑回显page_id
       page_type: null, // 编辑回显page_type
       page_enabled: null, // 编辑回显page_enabled
-      page_tpl_type: null //  编辑回显page_tpl_type
+      page_tpl_type: null, //  编辑回显page_tpl_type
+      isAddBottom: false // 是否添加到底部flag
     }
   },
   watch: {
@@ -300,10 +301,6 @@ export default {
       this.pivTextConArr = this.$t('decorationHome.pivTextConArr')
       this.goodsTextConArr = this.$t('decorationHome.goodsTextConArr')
       this.marketingTextConArr = this.$t('decorationHome.marketingTextConArr')
-      // 初始化数据
-      this.$nextTick(() => {
-        this.init_drag_event()
-      })
       this.initLeftModulesShow(this.activeName)
     }
   },
@@ -527,8 +524,8 @@ export default {
       if (pos.left > p.left && pos.top > p.top &&
         pos.left < p.left + $('.drag_area').width() &&
         pos.top < p.top + $('.drag_area').height()) {
-        // console.log('ssssss')
-
+        console.log('ssssss')
+        this_.isAddBottom = true
         $('.modules').each(function (idx, item) {
           p = $(this).offset()
           if (pos.left > p.left && pos.top > p.top &&
@@ -537,6 +534,7 @@ export default {
           ) {
             this_.insertModulesId = $(this)[0].__vue__.flag
             console.log($(this)[0].__vue__.flag)
+            this_.isAddBottom = false
             $('.modules').removeClass('placeholder')
             $(this).addClass('placeholder')
           }
@@ -630,7 +628,7 @@ export default {
     handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
       console.log(insertModulesId, index)
-      if (insertModulesId === -1) {
+      if (insertModulesId === -1 || this.isAddBottom) {
         this.MoveWhiteFlag = true
         this.handleToClickLeftModule(index)
         // setTimeout(() => {
@@ -639,9 +637,6 @@ export default {
       } else {
         this.MoveWhiteFlag = false
         console.log(this.nowRightShowIndex, insert, index)
-        if (insert === 0) {
-          insert = this.showModulesList.length
-        }
         this.showModulesList.splice(insert, 0, index)
         this.$nextTick(() => {
           if (this.nowRightShowIndex === insert) {

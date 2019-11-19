@@ -236,7 +236,9 @@ export default {
     sortIndex: {
       handler (newData) {
         console.log(newData, this.modulesData)
-        this.data = this.modulesData
+        this.$nextTick(() => {
+          this.data = this.modulesData
+        })
       },
       immediate: true
     },
