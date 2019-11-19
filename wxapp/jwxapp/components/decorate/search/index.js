@@ -16,11 +16,10 @@ global.wxComponent({
       }
     },
     bindSearchConfirm(e) {
-      // var search_text = e.detail.value;
-      // util.jumpLink('/pages/newsearch/newsearch');
+      util.jumpLink('/pages/newsearch/newsearch');
     },
     toSort(e) {
-      // util.jumpLink('/pages/sort/sort');
+      util.jumpLink('/pages/sort/sort');
     }
   },
 });

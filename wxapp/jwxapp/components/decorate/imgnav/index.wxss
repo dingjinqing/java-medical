@@ -3,7 +3,6 @@
   white-space: nowrap;
   display: flex;
   flex-direction: row;
-  margin-bottom: 20rpx;
 }
 
 .imgnav-item {

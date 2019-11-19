@@ -30,14 +30,17 @@ global.wxComponent({
       let pageData = [];
       for (var idx in pageInfo) {
         module = pageInfo[idx];
+        console.log(module)
         // 转化模块名称
         let componentName = this._convertComponentName(module['module_name']);
         if (!componentName) continue;
+        // 模块名称
         module['component_name'] = componentName
-        module['margin_bot'] = pageInfo.page_cfg.show_margin == 1 ? 0 : pageInfo.page_cfg.margin_val;
         module['main_setting'] = page_content.main_setting;
-
+        // 当前域名
         module['imageUrl'] = 'http://jmpdevimg.weipubao.cn'
+        // 模块间距字段  
+        module['margin_bot'] = pageInfo.page_cfg.show_margin == 1 ? pageInfo.page_cfg.margin_val : 0;
         pageData.push(module);
       }
 
