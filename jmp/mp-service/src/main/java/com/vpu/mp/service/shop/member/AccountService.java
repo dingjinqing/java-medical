@@ -5,10 +5,11 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
+import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.DEFAULT_FLAG;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
 import static com.vpu.mp.service.pojo.shop.operation.RecordContentMessage.MSG_MEMBER_ACCOUNT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.CONSUMPTION;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.RECHARGE;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_CONSUMPTION;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_RECHARGE;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 
@@ -37,6 +38,7 @@ import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.shop.member.dao.UserAccountDao;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 /**
  * 余额管理
@@ -47,9 +49,10 @@ import com.vpu.mp.service.shop.operation.RecordTradeService;
 @Service
 
 public class AccountService extends ShopBaseService {
+	private static final String LANGUAGE_TYPE_MEMBER = "member";
 	@Autowired private MemberService memberService;
 	@Autowired private RecordTradeService tradeService;
-	
+	@Autowired private UserAccountDao uAccountDao;
 	/**
 	 * 会员余额变动
 	 * @param param 余额对象参数
@@ -69,37 +72,34 @@ public class AccountService extends ShopBaseService {
 		UserRecord user = memberService.getUserRecordById(param.getUserId());
 
 		/** 1-用户是否存在 是否有账户余额 */
-		if (user == null || user.getAccount() == null) {
+		if (isNull(user) || isNull(user.getAccount())) {
 			throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
 
 		/** 3.备注默认-处理国际化 */
-		final String remark ;
-		if (StringUtils.isEmpty(param.getRemark())) {
+		String remark ;
+		if (StringUtils.isBlank(param.getRemark())) {
 			/** -默认管理员操作 国际化*/
-			String message = ADMIN_OPERATION.getValue();
-			//remark = translator.translate("member",message,message);
-			remark = Util.translateMessage(language,message,LANGUAGE_TYPE_MEMBER);
-			logger().info("remark: "+remark);
+			remark = DEFAULT_FLAG.val()+ADMIN_OPERATION.val();
 		}else {
 			remark = param.getRemark();
 		}	
 		param.setRemark(remark);
 		
 		/** -支付类型  */
-		if(BigDecimalUtil.compareTo(param.getAmount(), BigDecimal.ZERO)>0) {
-			/** -充值 */
-			param.setIsPaid(RECHARGE.val());
-		}else {
+		if(isConsump(param)) {
 			/** -消费 */
-			param.setIsPaid(CONSUMPTION.val());
+			param.setIsPaid(UACCOUNT_CONSUMPTION.val());
+		}else {
+			/** -充值 */
+			param.setIsPaid(UACCOUNT_RECHARGE.val());
 		}
 		
 		/** -支付类型 不能为null */
-		if(param.getPayment() == null) {
+		if(isNull(param.getPayment())) {
 			param.setPayment("");
 		}
-		/** 加事务 */
+		
 		this.transaction(() ->{
 			/** 插入要更新的数据到user_account表 */
 			addRow(param, adminUser);
@@ -111,14 +111,17 @@ public class AccountService extends ShopBaseService {
 			
 			/** 添加操作记录到b2c_record_admin_action*/
 			//TODO目前只是对单个的，后期优化需要批量
-			BigDecimal zero = new BigDecimal(0);
+			BigDecimal zero = BigDecimal.ZERO;
 			String account = param.getAmount().compareTo(zero)<0 ? param.getAmount().toString():"+"+param.getAmount().toString();
-			String data = String.format(MSG_MEMBER_ACCOUNT,user.getUserId(),user.getUsername(),account);
-			saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] {RecordContentTemplate.MEMBER_ACCOUNT.code}), data);
+			saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] {RecordContentTemplate.MEMBER_ACCOUNT.code}), String.valueOf(user.getUserId()),user.getUsername(),account);
 			
 		});
 
 		return ;
+	}
+	
+	private boolean isConsump(AccountParam param) {
+		return BigDecimalUtil.compareTo(param.getAmount(), BigDecimal.ZERO)<0;
 	}
 
 	private void addTradeRecord(AccountParam param, Byte tradeType, Byte tradeFlow) {
@@ -154,9 +157,9 @@ public class AccountService extends ShopBaseService {
 		BigDecimal account = db().select(DSL.sum(USER_ACCOUNT.AMOUNT))
 			.from(USER_ACCOUNT)
 			.where(USER_ACCOUNT.USER_ID.eq(user.getUserId()))
-			.fetchOne()
-			.into(BigDecimal.class);
+			.fetchAnyInto(BigDecimal.class);
 		logger().info("计算用户余额； "+account);
+		account = account != null?account:BigDecimal.ZERO;
 		db().update(USER).set(USER.ACCOUNT,account).where(USER.USER_ID.eq(user.getUserId())).execute();
 	}
 
@@ -213,57 +216,37 @@ public class AccountService extends ShopBaseService {
 	/**
 	 * 分页查询会员用户余额详情
 	 */
-	public PageResult<AccountPageListVo> getPageListOfAccountDetails(AccountPageListParam param) {
+	public PageResult<AccountPageListVo> getPageListOfAccountDetails(AccountPageListParam param,String language) {
+		PageResult<AccountPageListVo> res = uAccountDao.getPageListOfAccountDetails(param);
+		// deal with 国际化
+		for(AccountPageListVo vo: res.dataList) {
+			dealWithRemarkI18n(vo,language);
+		}
 		
- SelectJoinStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select = db()
-				.select(USER.USERNAME,USER.MOBILE,USER_ACCOUNT.ORDER_SN,USER_ACCOUNT.AMOUNT,USER_ACCOUNT.CREATE_TIME,USER_ACCOUNT.REMARK)
-				.from(USER_ACCOUNT.join(USER).on(USER.USER_ID.eq(USER_ACCOUNT.USER_ID)));
-		
-		/** 查询条件的其他选项 */
-		buildOptions(select,param);
-		
-		/** 以时间降序 */
-		select.orderBy(USER_ACCOUNT.CREATE_TIME.desc());
-		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), AccountPageListVo.class);
+		return res;
 	}
 
-	
+	private void dealWithRemarkI18n(AccountPageListVo vo,String language) {
+		if(isNeedI18n(vo)) {
+			String msg = vo.getRemark().split(":")[1];
+			String languageType = msg.split("\\.")[0];
+			vo.setRemark(Util.translateMessage(language, msg, languageType, null));
+		}
+	}
 
-	
 	/**
-	 * 分页查询用户余额明细-积分明细时其他查询条件
+	 * 是否需要国际化
 	 */
-	private void buildOptions( SelectJoinStep<Record6<String, String, String, BigDecimal, Timestamp, String>> select,
-			AccountPageListParam param) {
-		logger().info("正在构建查询条件");
-		
-		/** 会员id与昵称,优先处理id */
-		if(param.getUserId() != null) {
-			select.where(USER_ACCOUNT.USER_ID.eq(param.getUserId()));
-		}else if(!StringUtils.isBlank(param.getUserName())) {
-
-			String likeValue = this.likeValue(param.getUserName());
-			List<Integer> ids = db().select(USER.USER_ID).from(USER).where(USER.USERNAME.like(likeValue)).fetch().into(Integer.class);
-			logger().info("昵称查询转id列表"+ids);
-			select.where(USER_ACCOUNT.USER_ID.in(ids));
-		}
-		
-		/** 订单号 */
-		if(!StringUtils.isBlank(param.getOrderSn())) {
-			select.where(USER_ACCOUNT.ORDER_SN.eq(param.getOrderSn()));
-		}
-		
-		/** 时间范围 */
-		/** 开始时间 */
-		if(param.getStartTime() != null) {
-			select.where(USER_ACCOUNT.CREATE_TIME.ge(param.getStartTime()));
-		}
-		/** 结束时间 */
-		if(param.getEndTime() != null) {
-			select.where(USER_ACCOUNT.CREATE_TIME.le(param.getEndTime()));
-		}
+	private boolean isNeedI18n(AccountPageListVo vo) {
+		String noWhiteSpaceRemark = vo.getRemark().replaceAll("\\s+","");
+		boolean startFlag = noWhiteSpaceRemark.startsWith(DEFAULT_FLAG.val());
+		String[] arr = noWhiteSpaceRemark.split(":");
+		return startFlag  &&  arr.length==2;
 	}
 
+	
+
+	
 	private boolean isNull(Object obj) {
 		return obj == null;
 	}

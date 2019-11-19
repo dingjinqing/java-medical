@@ -589,7 +589,7 @@ public class MemberService extends ShopBaseService {
 	}
 
 	public UserRecord getUserRecordById(Integer userId) {
-		UserRecord user = db().selectFrom(USER).where(USER.USER_ID.eq(userId)).fetchOne();
+		UserRecord user = db().selectFrom(USER).where(USER.USER_ID.eq(userId)).fetchAny();
 		return user;
 	}
 

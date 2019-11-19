@@ -26,7 +26,6 @@ import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
-import com.vpu.mp.service.pojo.shop.operation.builder.TradeOptParamBuilder;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
@@ -130,8 +129,8 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 			return;
 		}
 		
-		TradeOptParam tradeOpt = TradeOptParamBuilder
-				.create()
+		TradeOptParam tradeOpt = TradeOptParam
+				.builder()
 				.adminUserId(0)
 				.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
 				.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
@@ -171,7 +170,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 		remark("订单取消："+order.getOrderSn()+"余额退款").
 		payment(order.getPayCode()).
 		//支付类型
-		isPaid(RecordTradeEnum.RECHARGE.val()).
+		isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
 		//后台处理时为操作人id为0
 		adminUser(0).
 		//用户余额退款

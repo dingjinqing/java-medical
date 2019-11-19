@@ -374,10 +374,12 @@ public class ServiceOrderService extends ShopBaseService{
         /** 国际化语言 */
         String language="";
         
-        TradeOptParam tradeOpt = new TradeOptParam();
-        tradeOpt.setAdminUserId(adminUser);
-        tradeOpt.setTradeType(tradeType);
-        tradeOpt.setTradeFlow(tradeFlow);
+        TradeOptParam tradeOpt = TradeOptParam
+        		.builder()
+        		.adminUserId(adminUser)
+        		.tradeFlow(tradeFlow)
+        		.tradeType(tradeType)
+        		.build();
         
         if(CardConstant.MCARD_TP_LIMIT.equals(memberCard.getCardType())){
             /** 负数为消费次数 */

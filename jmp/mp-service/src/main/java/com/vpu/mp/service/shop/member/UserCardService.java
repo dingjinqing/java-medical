@@ -694,7 +694,7 @@ public class UserCardService extends ShopBaseService {
 			ret = userCardDao.updateUserCardMoney(data, userInfo);
 			if (tradeType > TYPE_DEFAULT.val()) {
 				// 插入交易记录
-				TradeOptParam param = new TradeOptParam();
+				TradeOptParam param = TradeOptParam.builder().build();
 				// TODO
 				//tradesRecord.insertTradesRecord(data, tradeType, tradeFlow);
 			}

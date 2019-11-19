@@ -131,7 +131,7 @@ public class ScoreService extends ShopBaseService {
 		final String remark ;
 		if (StringUtils.isEmpty(param.getRemark())) {
 			/** -默认管理员操作 国际化*/
-			String value = ADMIN_OPERATION.getValue();
+			String value = ADMIN_OPERATION.val();
 			remark = Util.translateMessage(language,value,LANGUAGE_TYPE_MEMBER);
 			logger().info("remark: "+remark);
 		}else {

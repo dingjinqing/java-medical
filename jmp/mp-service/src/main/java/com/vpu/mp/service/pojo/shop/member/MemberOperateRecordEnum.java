@@ -7,6 +7,7 @@ package com.vpu.mp.service.pojo.shop.member;
 * @Description: 会员操作记录国际化
 */
 public enum MemberOperateRecordEnum {
+	DEFAULT_FLAG("default:"),
 	/** 管理员操作 */
 	ADMIN_OPERATION("member.admin.operation"),
 	/** - 兑换商品数量 */
@@ -24,10 +25,10 @@ public enum MemberOperateRecordEnum {
 	
 	public static void main(String... args) {
 		MemberOperateRecordEnum adminOperation = MemberOperateRecordEnum.ADMIN_OPERATION;
-		System.out.println(adminOperation.getValue());
+		System.out.println(adminOperation.val());
 	}
 	
-	public String getValue() {
+	public String val() {
 		return this.operationInfo;
 	}
 	

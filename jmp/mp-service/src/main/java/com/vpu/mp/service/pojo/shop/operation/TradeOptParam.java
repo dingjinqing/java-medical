@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.operation;
 
 import java.math.BigDecimal;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Data;
  * @Description: 交易操作的属性
  *               默认定义值{@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
  */
+@Builder
 @Data
 public class TradeOptParam {
 	// 操作的系统管理员id,默认值为0

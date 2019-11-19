@@ -10,7 +10,6 @@ import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
-import com.vpu.mp.service.pojo.shop.operation.builder.TradeOptParamBuilder;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
@@ -77,7 +76,7 @@ public class VirtualOrderService extends ShopBaseService {
     				amount(param.getAccount()).remark(String.format("虚拟订单退款:%s", payInfo.getOrderSn()))
     						.payment(OrderConstant.PAY_CODE_BALANCE_PAY).
     				// 支付类型
-    				isPaid(RecordTradeEnum.RECHARGE.val()).
+    				isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
     				// 后台处理时为操作人id为0
     				adminUser(0).
     				// 用户余额退款
@@ -93,8 +92,8 @@ public class VirtualOrderService extends ShopBaseService {
     				/**
     				 * 交易记录信息
     				 */
-    				TradeOptParam tradeOpt = TradeOptParamBuilder
-    						.create()
+    				TradeOptParam tradeOpt = TradeOptParam
+    						.builder()
     						.adminUserId(0)
     						.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
     						.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())

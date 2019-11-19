@@ -83,9 +83,9 @@ public enum RecordTradeEnum {
 	
 	/**--------------------*/
 	/** 充值 */
-	RECHARGE(0),
+	UACCOUNT_RECHARGE(0),
 	/** 消费 */
-	CONSUMPTION(1),
+	UACCOUNT_CONSUMPTION(1),
 	
 	/** 门店兑换类型 */
 	STORE_EXCHANGE_TYPE(1),
