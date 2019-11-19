@@ -151,7 +151,7 @@ public class SecKillProcessorDao extends ShopBaseService {
             //秒杀价
             prd.setProductPrice(record.value1());
             //原价
-            prd.setMarketPrice(record.value2());
+            //prd.setMarketPrice(record.value2());
         }
 
     }

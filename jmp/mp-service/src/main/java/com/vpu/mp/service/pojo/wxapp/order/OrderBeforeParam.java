@@ -93,9 +93,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private Integer purchasePriceRuleId;
 		private String promoteInfo;
 		/**以下为后台产生逻辑值directPurchase*/
-		/** 规格原价（b2c_goods_spec_product记录的价格）*/
-		private BigDecimal marketPrice;
-        /** 规格当前价（处理优惠之后的价格） */
+        /** 规格价 */
         private BigDecimal productPrice;
 		private Integer productNumbers;
 		private Byte goodsType;

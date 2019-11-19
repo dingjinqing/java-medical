@@ -15,13 +15,9 @@ import java.util.List;
 public class OrderBeforeMpProcessorFactory extends AbstractProcessorFactory<OrderBeforeProcessor, OrderBeforeParam> {
     @Override
     public void doProcess(List<OrderBeforeParam> capsules, Integer userId) {
-        if (capsules == null || capsules.size() == 0) {
-            return;
-        }
-        this.doProcess(capsules.get(0));
     }
 
-    private void doProcess(OrderBeforeParam orderBeforeParam) {
+    public void doProcess(OrderBeforeParam orderBeforeParam) {
         for (OrderBeforeProcessor processor : processors) {
             processor.processOrderBefore(orderBeforeParam);
         }

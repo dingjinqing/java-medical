@@ -322,10 +322,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if (param.getActivityId() != null && param.getActivityType() != null) {
             // 唯一并互斥的商品营销处理
             // 可能的ActivityType ：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
-            List<OrderBeforeParam> capsules = new ArrayList<>();
-            capsules.add(param);
             OrderBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderBeforeMpProcessorFactory.class);
-            processorFactory.doProcess(capsules,param.getWxUserInfo().getUserId());
+            processorFactory.doProcess(param);
 
             //营销购买
             purchaseForMarket(param, param.getWxUserInfo().getUserId(), param.getStoreId(), vo);
@@ -414,7 +412,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //规格价格(经过营销活动处理的规格价格)
             temp.setProductPrice(temp.getProductPrice());
             //规格原价
-            temp.setMarketPrice(temp.getMarketPrice());
+            //temp.setMarketPrice(temp.getMarketPrice());
             //规格数量（库存）
             temp.setProductNumbers(product.getPrdNumber());
             //商品goodsType
