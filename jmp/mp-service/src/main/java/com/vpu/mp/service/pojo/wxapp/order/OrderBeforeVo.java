@@ -35,7 +35,7 @@ public class OrderBeforeVo {
     private Integer activityId;
 
 	private UserAddressVo address;
-	private byte[] expressList;
+	private Byte[] expressList;
 	private Byte deliverType;
 	private String memberCardNo;
     private String couponSn;

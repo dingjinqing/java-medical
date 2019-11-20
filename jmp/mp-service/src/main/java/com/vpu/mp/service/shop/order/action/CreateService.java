@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -25,6 +27,7 @@ import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.member.BaseScoreCfgService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.must.OrderMustService;
@@ -124,6 +127,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private ProcessorFactoryBuilder processorFactoryBuilder;
 
+    @Autowired
+    private AtomicOperation atomicOperation;
+
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.CREATE;
@@ -149,7 +155,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     @Override
-    public ExecuteResult execute(CreateParam param)  {
+    public ExecuteResult execute(CreateParam param) {
+        logger().info("下单start");
         //初始化bo
         CreateOrderBo orderBo;
         //OrderBeforeVo
@@ -198,7 +205,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             orderBo.setOrderId(order.getOrderId());
 
             //货到付款或者余额积分付款，生成订单时加销量减库存
-
+            List<String> lock = orderBo.getOrderGoodsBo().stream().map(OrderGoodsBo::getKey).collect(Collectors.toList());
+            atomicOperation.updateStockAndSales(order, orderBo.getOrderGoodsBo(), lock);
         });
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         OrderInfoRecord record = orderInfo.getRecord(orderBo.getOrderId());
@@ -282,8 +290,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      *
      * @return
      */
-    public byte[] getExpressList() {
-        byte[] expressList = new byte[3];
+    public Byte[] getExpressList() {
+        Byte[] expressList = new Byte[]{0 , 0 , 0};
         // 快递
         expressList[OrderConstant.DELIVER_TYPE_COURIER] = tradeCfg.getExpress();
         // 自提
@@ -295,7 +303,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 初始化购买商品信息
+     * 初始化购买商品信息(初始化param里的goods信息)
      * @param goods
      * @return
      */
@@ -803,15 +811,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public void setServiceTerms(OrderBeforeVo vo){
         Byte serviceTerms = tradeCfg.getServiceTerms();
-        Byte serviceChoose = null;
-        String serviceName = null;
-        if(serviceTerms.intValue() == no){
-            serviceChoose = tradeCfg.getServiceChoose();
-            serviceName = tradeCfg.getServiceName();
-        }
         vo.setIsShowserviceTerms(serviceTerms);
-        vo.setServiceName(serviceName);
-        vo.setServiceChoose(serviceChoose);
+        if(serviceTerms.intValue() == yes){
+            vo.setServiceName(tradeCfg.getServiceName());
+            vo.setServiceChoose(tradeCfg.getServiceChoose());
+        }
+
+
     }
 
     /**
@@ -849,7 +855,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException 当前配送方式不支持
      */
     public void checkExpress(Byte deliverType) throws MpException {
-        byte[] expressList = getExpressList();
+        Byte[] expressList = getExpressList();
         if(expressList[deliverType] == no){
             //当前配送方式不支持
             throw new MpException(JsonResultCode.CODE_ORDER_DELIVER_TYPE_NO_SUPPORT);

@@ -13,4 +13,9 @@ public class JedisKeyConstant {
      * taskJob lock
      */
     public static final String TASK_JOB_LOCK = "lock:task:";
+
+    /**
+     * goods lock(库存、销量)
+     */
+    public static final String GOODS_LOCK = "lock:goods:";
 }

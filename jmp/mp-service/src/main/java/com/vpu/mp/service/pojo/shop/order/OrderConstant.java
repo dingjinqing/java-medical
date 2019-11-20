@@ -483,7 +483,7 @@ public class OrderConstant {
     public static final Integer CFSFRT_MIXING = 3;
 
     /**
-     * 前端默认优惠卷号
+     * 前端默认会员卡、优惠卷号
      */
     public static final String DEFAULT_COUPON_OR_ORDER_SN = "0";
 

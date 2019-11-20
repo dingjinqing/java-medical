@@ -22,9 +22,9 @@ public class JedisManager {
 
     private static final Long RELEASE_SUCCESS = 1L;
 
-    private static final String LOCK_SUCCESS = "OK";
-    private static final String SET_IF_NOT_EXIST = "NX";
-    private static final String SET_WITH_EXPIRE_TIME = "PX";
+    public static final String LOCK_SUCCESS = "OK";
+    public static final String SET_IF_NOT_EXIST = "NX";
+    public static final String SET_WITH_EXPIRE_TIME = "PX";
 
 	@Autowired
 	private JedisPool pool;
@@ -169,7 +169,6 @@ public class JedisManager {
             }
             return false;
         }
-
     }
 
 

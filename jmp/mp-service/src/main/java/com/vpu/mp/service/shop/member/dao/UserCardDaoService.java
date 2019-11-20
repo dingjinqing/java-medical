@@ -461,7 +461,31 @@ public class UserCardDaoService extends ShopBaseService{
      * @return result
      */
     public OrderMemberVo getOrderGradeCard(Integer userId){
-         return selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId)).fetchOneInto(OrderMemberVo.class);
+        OrderMemberVo orderMemberVo = selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
+            .and(USER_CARD.FLAG.eq(MCARD_DF_NO))
+            .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
+            .and(
+                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
+                    .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
+            )
+            .and(
+                (MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
+                    .or(MEMBER_CARD.USE_TIME.isNull())
+            )
+            .and(
+                ((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+                    .or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER))
+            )
+            .and(
+                (MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull()))
+                    .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
+                    .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
+            ).fetchAnyInto(OrderMemberVo.class);
+        if(orderMemberVo == null) {
+            return orderMemberVo;
+        }else {
+            return orderMemberVo.init();
+        }
     }
 
     /**

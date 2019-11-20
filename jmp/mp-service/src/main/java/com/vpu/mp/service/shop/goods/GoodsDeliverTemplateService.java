@@ -197,8 +197,10 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
         }else if(OrderConstant.DEFAULT_SHIPPING_FEE_TEMPLATE_FREE_LIMIT.equals(template.getTemplateName())){
             //满包邮
             return BigDecimalUtil.compareTo(totalPrica, template.getFeeLimit()) == -1 ? template.getPrice() : BigDecimal.ZERO;
+        }else {
+            throw new MpException(JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR);
         }
-        throw new MpException(JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR);
+
     }
 
     /**

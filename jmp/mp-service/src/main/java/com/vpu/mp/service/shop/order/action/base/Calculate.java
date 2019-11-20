@@ -347,8 +347,17 @@ public class Calculate extends ShopBaseService {
             Total total = entry.getValue();
             BigDecimal shippingFeeByTemplate = null;
             try {
-                shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId, total.getTotalNumber(), total.getTotalPrice(), total.getTotalWeight());
-                result = BigDecimalUtil.add(result, shippingFeeByTemplate);
+                if(districtCode == null || districtCode.equals(0)){
+                    total.getBos().forEach(x->{
+                        x.setIsShipping(OrderConstant.no);
+                    });
+                }else {
+                    shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId, total.getTotalNumber(), total.getTotalPrice(), total.getTotalWeight());
+                    result = BigDecimalUtil.add(result, shippingFeeByTemplate);
+                    total.getBos().forEach(x->{
+                        x.setIsShipping(OrderConstant.yes);
+                    });
+                }
             } catch (MpException e) {
                 total.getBos().forEach(x->{
                     x.setIsShipping(OrderConstant.no);

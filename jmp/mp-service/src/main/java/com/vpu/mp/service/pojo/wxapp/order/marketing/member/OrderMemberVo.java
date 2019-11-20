@@ -62,4 +62,13 @@ public class OrderMemberVo extends BaseMarketingBaseVo {
         this.setBaseCardType(source.getCardType());
         return this;
     }
+
+    /**
+     * 初始化自己
+     */
+    public OrderMemberVo init(){
+        this.setBaseCardId(getCardId());
+        this.setBaseCardType(getCardType());
+        return this;
+    }
 }

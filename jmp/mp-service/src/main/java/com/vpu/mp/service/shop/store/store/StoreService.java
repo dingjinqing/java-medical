@@ -386,7 +386,7 @@ public class StoreService extends ShopBaseService {
      * @param isFormStore    ??
      * @return
      */
-    public List<StorePojo>[] filterExpressList(byte[] expressList, List<Integer> productIds, UserAddressVo address, byte isFormStore) {
+    public List<StorePojo>[] filterExpressList(Byte[] expressList, List<Integer> productIds, UserAddressVo address, byte isFormStore) {
         List<StorePojo>[] result = new List[3];
         //自提
         if (expressList[OrderConstant.DELIVER_TYPE_SELF] == OrderConstant.yes) {

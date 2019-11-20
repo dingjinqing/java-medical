@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.wxapp.order;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustParam;
-import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -49,6 +48,5 @@ public class CreateParam extends OrderBeforeParam{
         if(getScanStoreId() != null && getScanStoreId() > 0){
             orderRecord.setPosFlag(OrderConstant.yes);
         }
-
     }
 }

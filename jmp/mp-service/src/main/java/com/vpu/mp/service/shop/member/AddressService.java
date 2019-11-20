@@ -64,9 +64,6 @@ public class AddressService extends ShopBaseService {
             return null;
         }
         UserAddressVo address = db().select().from(USER_ADDRESS).where(USER_ADDRESS.ADDRESS_ID.eq(addressId).and(USER_ADDRESS.USER_ID.eq(userId))).fetchAnyInto(UserAddressVo.class);
-        if (address != null && (StringUtil.isBlank(address.getLat()) || StringUtil.isBlank(address.getLng()))) {
-            //TODO 经纬度
-        }
         return address;
     }
 
