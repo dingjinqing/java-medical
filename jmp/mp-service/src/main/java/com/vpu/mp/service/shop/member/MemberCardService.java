@@ -1029,7 +1029,7 @@ public class MemberCardService extends ShopBaseService {
 		assignCardBatch(limitCard);
 		int numOfSendCard = getNumSendCardById(limitCard.getId());
 		limitCard.setHasSend(numOfSendCard);
-		limitCard.changeJsonCfg();
+		changeCardJsonCfgToDetailType(limitCard);
 		return limitCard;
 	}
 

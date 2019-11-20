@@ -153,11 +153,13 @@ public class NormalCardToVo extends NormalCardVo {
 			storeIdList = Util.json2Object(storeList, new TypeReference<List<Integer>>() {
             }, false);
 			
-			/** 门店类型 */
-			if (MCARD_STP_BAN.equals(storeIdList.get(0).byteValue()) || MCARD_STP_ALL.equals(storeIdList.get(0).byteValue())) {
-				storeListType = storeIdList.get(0).byteValue();
-			} else {
-				storeListType = MCARD_STP_PART;
+			if(storeIdList != null) {
+				/** 门店类型 */
+				if (MCARD_STP_BAN.equals(storeIdList.get(0).byteValue()) || MCARD_STP_ALL.equals(storeIdList.get(0).byteValue())) {
+					storeListType = storeIdList.get(0).byteValue();
+				} else {
+					storeListType = MCARD_STP_PART;
+				}
 			}
 		}
 		
