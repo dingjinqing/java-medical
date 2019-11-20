@@ -52,6 +52,9 @@ public class ModuleGoods extends ModuleBase {
     @JsonProperty("goods_num")
     private Integer goodsNum;
 
+    @JsonProperty("goods_module_style")
+    private Integer goodsModuleStyle;
+
     /**
      *  商品活动类型默认0，1拼团，2 会员专享，3砍价，5秒杀，6限时降价
      */
