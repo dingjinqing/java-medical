@@ -174,20 +174,27 @@ export default {
     },
     backData: {
       handler (newData) {
-        console.log(newData)
+        this.$nextTick(() => {
+          console.log(newData)
+          if (newData.coupon_arr.length > 1) {
+            console.log(1)
+            this.data = newData
+            this.isRightPageChangeFlga = false
+          } else if (newData.coupon_arr.length === 1) {
+            this.isRightPageChangeFlga = true
+          } else {
+            console.log(0)
+            this.isRightPageChangeFlga = false
+            this.data = this.defaultData
+          }
+        })
         this.firstInter = false
-        if (newData.coupon_arr.length > 1) {
-          console.log(1)
-          this.data = newData
-        } else {
-          console.log(0)
-          this.data = this.defaultData
-        }
-        if (newData.coupon_arr.length === 1) {
-          this.isRightPageChangeFlga = true
-        } else {
-          this.isRightPageChangeFlga = false
-        }
+
+        // if (newData.coupon_arr.length === 1) {
+        //   this.isRightPageChangeFlga = true
+        // } else {
+        //   this.isRightPageChangeFlga = false
+        // }
       },
       deep: true,
       immediate: true
