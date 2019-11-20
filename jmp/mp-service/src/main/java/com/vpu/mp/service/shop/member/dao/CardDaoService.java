@@ -38,6 +38,7 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
@@ -487,6 +488,13 @@ public class CardDaoService extends ShopBaseService {
 	public void updateMemberCardById(MemberCardRecord cardRecord, Integer id) {
 		int num = db().executeUpdate(cardRecord, MEMBER_CARD.ID.eq(id));
 		logger().info("成功更新： " + num + " 行数据");
+	}
+
+	public List<CardBatchDetailVo> selectBatchCfgById(Integer batchId) {
+		 return db()
+				 .selectFrom(CARD_BATCH)
+				 .where(CARD_BATCH.ID.eq(batchId))
+				 .fetchInto(CardBatchDetailVo.class);
 	}
 	
 }

@@ -118,6 +118,7 @@ import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
@@ -1975,5 +1976,9 @@ public class MemberCardService extends ShopBaseService {
 		return db().select(MEMBER_CARD.BUY_SCORE).from(USER_CARD).leftJoin(MEMBER_CARD)
 				.on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)).where(USER_CARD.CARD_NO.eq(cardNo))
 				.fetchOneInto(String.class);
+	}
+
+	public List<CardBatchDetailVo> getBatchCfg(Integer batchId) {
+		return cardDao.selectBatchCfgById(batchId);
 	}
 }

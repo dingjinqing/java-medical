@@ -268,4 +268,13 @@ public class AdminMemberCardController extends AdminBaseController {
 		CardBatchVo vo = shop().member.card.generateCardCode(param);
 		return success(vo);
 	}
+	
+	/**
+	 * 获取领取批次
+	 */
+	@PostMapping("/card/code/{batchId}")
+	public JsonResult getBatchCfg(@PathVariable Integer batchId) {
+		logger().info("获取领取批次");
+		return success(shop().member.card.getBatchCfg(batchId));
+	}
 }
