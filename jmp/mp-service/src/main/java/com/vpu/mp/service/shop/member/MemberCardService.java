@@ -70,6 +70,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1019,13 +1020,17 @@ public class MemberCardService extends ShopBaseService {
 	
 	private void assignCardStoreIdAndName(BaseCardVo card) {
 		List<StoreBasicVo> allStore = storeService.getAllStore();
-		for(StoreBasicVo vo: allStore) {
-			if(!card.getStoreIdList().contains(vo.getStoreId())) {
-				allStore.remove(vo);
+		
+		if(allStore!=null) {
+			for(Iterator<StoreBasicVo> it = allStore.iterator();it.hasNext();) {
+				StoreBasicVo vo = it.next();
+				if(!card.getStoreIdList().contains(vo.getStoreId())) {
+					it.remove();
+				}
 			}
+			System.out.println(allStore.size());
+			card.setStoreDataList(allStore);
 		}
-		System.out.println(allStore.size());
-		card.setStoreDataList(allStore);
 	}
 	
 	private void assignCoupon(NormalCardToVo card) {
