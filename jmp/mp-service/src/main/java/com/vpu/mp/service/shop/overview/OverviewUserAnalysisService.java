@@ -74,9 +74,9 @@ public class OverviewUserAnalysisService extends ShopBaseService {
             .fetchInto(TrendDailyVo.class);
     trendDailyVo.remove(0);
     // 得到变化率
-    double loginDataRate = getChangeRate(beforeVo.getLoginData(), afterVo.getLoginData());
-    double userDataRate = getChangeRate(beforeVo.getUserData(), afterVo.getUserData());
-    double orderUserDataRate =
+    Double loginDataRate = getChangeRate(beforeVo.getLoginData(), afterVo.getLoginData());
+    Double userDataRate = getChangeRate(beforeVo.getUserData(), afterVo.getUserData());
+    Double orderUserDataRate =
         getChangeRate(beforeVo.getOrderUserData(), afterVo.getOrderUserData());
     // 返回出参接收数据
     return new TrendVo() {
@@ -195,7 +195,7 @@ public class OverviewUserAnalysisService extends ShopBaseService {
       return null;
     } else {
       // 除数为0，令结果为null
-      if (a.equals(NumberUtils.INTEGER_ZERO)) {
+      if (NumberUtils.INTEGER_ZERO.equals(a)) {
         return null;
       } else {
         // 公式计算结果
@@ -204,7 +204,7 @@ public class OverviewUserAnalysisService extends ShopBaseService {
     }
   }
   /**
-   * double型计算数据变化率
+   * Double型计算数据变化率
    *
    * @param a 旧数据
    * @param b 新数据
@@ -217,7 +217,7 @@ public class OverviewUserAnalysisService extends ShopBaseService {
       return null;
     } else {
       // 除数为0，令结果为null
-      if (a.equals(NumberUtils.DOUBLE_ZERO)) {
+      if (NumberUtils.DOUBLE_ZERO.equals(a)) {
         return null;
       } else {
         // 公式计算结果
@@ -239,7 +239,7 @@ public class OverviewUserAnalysisService extends ShopBaseService {
       return null;
     } else {
       // 除数为0，令结果为null
-      if (a.compareTo(BigDecimal.ZERO) == 0) {
+      if (BigDecimal.ZERO.compareTo(a) == 0) {
         return null;
       } else {
         // 公式计算结果
@@ -288,16 +288,16 @@ public class OverviewUserAnalysisService extends ShopBaseService {
     totalVo.setActiveDailyVo(activeDailyVo);
     // 计算占比
     // 会员数占比
-    double loginDataRate = getRate(totalVo.getLoginData(), totalVo.getUserData());
+    Double loginDataRate = getRate(totalVo.getLoginData(), totalVo.getUserData());
     totalVo.setLoginDataRate(loginDataRate);
     // 领券会员数占比
-    double couponDataRate = getRate(totalVo.getCouponData(), totalVo.getLoginData());
+    Double couponDataRate = getRate(totalVo.getCouponData(), totalVo.getLoginData());
     totalVo.setCouponDataRate(couponDataRate);
     // 加购会员数占比
-    double cartDataRate = getRate(totalVo.getCartData(), totalVo.getLoginData());
+    Double cartDataRate = getRate(totalVo.getCartData(), totalVo.getLoginData());
     totalVo.setCartDataRate(cartDataRate);
     // 成交会员数占比
-    double orderUserDataRate = getRate(totalVo.getOrderUserData(), totalVo.getLoginData());
+    Double orderUserDataRate = getRate(totalVo.getOrderUserData(), totalVo.getLoginData());
     totalVo.setOrderUserDataRate(orderUserDataRate);
     // 设置时间
     totalVo.setStartTime(showStartTime(param.getType()));
@@ -360,17 +360,17 @@ public class OverviewUserAnalysisService extends ShopBaseService {
             .fetchOneInto(VipVo.class);
     // 计算变化率
     // 累积会员数变化率
-    double userDataRate = getChangeRate(beforeVo.getUserData(), afterVo.getUserData());
+    Double userDataRate = getChangeRate(beforeVo.getUserData(), afterVo.getUserData());
     afterVo.setUserDataRate(userDataRate);
     // 新增会员数变化率
-    double regUserDataRate = getChangeRate(beforeVo.getRegUserData(), afterVo.getRegUserData());
+    Double regUserDataRate = getChangeRate(beforeVo.getRegUserData(), afterVo.getRegUserData());
     afterVo.setRegUserDataRate(regUserDataRate);
     // 升级会员数变化率
-    double upgradeUserDataRate =
+    Double upgradeUserDataRate =
         getChangeRate(beforeVo.getUpgradeUserData(), afterVo.getUpgradeUserData());
     afterVo.setUpgradeUserDataRate(upgradeUserDataRate);
     // 储值会员数变化率
-    double chargeUserDataRate =
+    Double chargeUserDataRate =
         getChangeRate(beforeVo.getChargeUserData(), afterVo.getChargeUserData());
     afterVo.setChargeUserDataRate(chargeUserDataRate);
     // 设置时间
