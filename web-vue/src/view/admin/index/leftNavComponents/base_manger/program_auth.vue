@@ -66,11 +66,9 @@
 
 <script>
 import { grantAuthorizationRequest } from '@/api/admin/basicConfiguration/shopConfig'
-import Card from '@/components/admin/card'
 export default {
   name: 'program_auth',
   components: {
-    Card
   },
   data () {
     return {
