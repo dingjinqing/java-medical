@@ -4,6 +4,8 @@ export const cn = {
   SmallProgramAuthorization: '小程序授权',
   // 未授权页面
   UnauthorizedPages: {
+    topTitle: '绑定已有小程序',
+    topTitle2: '注册小程序',
     title: '我们已经拥有小程序',
     authToUs: '小程序管理员可将小程序一键授权给我们',
     OneAuthorization: '我已有小程序，一键授权',
@@ -73,6 +75,8 @@ export const en = {
   SmallProgramAuthorization: 'Small Program Authorization',
   // 未授权页面
   UnauthorizedPages: {
+    topTitle: 'Bind existing applet',
+    topTitle2: 'Register applet',
     title: 'We already have small programs',
     authToUs: 'The applet administrator can authorize us with one key of the applet',
     OneAuthorization: 'I have a small program, one-click authorization',
