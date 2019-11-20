@@ -31,7 +31,9 @@ const myMixin = {
     },
     adaptation () {
       console.log(this.lang)
-      this.currency = this.currencyPool[localStorage.getItem('V-Currency')][this.lang]
+      if (localStorage.getItem('V-Currency')) {
+        this.currency = this.currencyPool[localStorage.getItem('V-Currency')][this.lang]
+      }
       console.log(this.currency)
       if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
         // this.$i18n.locale = 'en'

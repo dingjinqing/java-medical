@@ -94,12 +94,15 @@ export default {
     })
   },
   mounted () {
+    console.log('ceshi1')
     // 初始化语言
     this.langDefault()
+    console.log('ceshi2')
     this.getAllshopsData()
   },
   methods: {
     getAllshopsData () {
+      console.log('ceshi')
       shopListRequest().then((res) => {
         console.log(res)
         if (!res) {
