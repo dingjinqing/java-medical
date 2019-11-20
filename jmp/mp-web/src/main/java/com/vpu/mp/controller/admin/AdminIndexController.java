@@ -103,7 +103,7 @@ public class AdminIndexController extends AdminBaseController {
 		String enName = request.getHeader(ENNAME);
 		String vsName = request.getHeader(VSNAME);
 		if (StringUtils.isEmpty(enName)) {
-			return fail(JsonResultCode.CODE_FAIL);
+			return fail(JsonResultCode.CODE_ACCOUNT_ENNAME_ISNULL);
 		}
 		
 		if (StringUtils.isEmpty(adminAuth.user().loginShopId)) {
@@ -144,13 +144,14 @@ public class AdminIndexController extends AdminBaseController {
 		logger().info("权限判断传入的enName："+enName+"和vsName值："+vsName+"请求的地址："+path);
 		VersionConfig vConfig = saas.shop.version.mergeVersion(adminAuth.user().loginShopId);
 		if (vConfig == null) {
+			logger().info("版本存在问题，请联系管理员");
 			// 版本存在问题，请联系管理员
 			return JsonResultCode.CODE_FAIL;
 		}
 		VersionMainConfig mainConfig = vConfig.getMainConfig();
 		if (StringUtils.isEmpty(enName)) {
 			logger().info("enName为空");
-			return JsonResultCode.CODE_FAIL;
+			return JsonResultCode.CODE_ACCOUNT_ENNAME_ISNULL;
 		}
 		 
 		String json = Util.loadResource(versionJson);
