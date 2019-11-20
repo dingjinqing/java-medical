@@ -47,7 +47,11 @@ public class PortraitService extends ShopBaseService {
 
     public PortraitVo getPortrait(PortraitParam param) {
         Integer type = param.getType();
+        PortraitVo vo = new PortraitVo();
         MpUserPortraitRecord portraitResult = getPortraitResult(type);
+        if(null==portraitResult) {
+        	return vo;
+        }
         Portrait visitUv = parseVisitJson(portraitResult.getVisitUv());
         Portrait visitUvNew = parseVisitJson(portraitResult.getVisitUvNew());
         KeyValueChart activeUser = getChart(visitUv);
@@ -62,7 +66,6 @@ public class PortraitService extends ShopBaseService {
         //删除设备中value为0的
         removeZeroByDevices(visitUv);
         removeZeroByDevices(visitUvNew);
-        PortraitVo vo = new PortraitVo();
         PortraitSum activeUserSum = portraitSumObject(visitUv);
         PortraitSum newAddUserSum = portraitSumObject(visitUvNew);
         //移除省字
