@@ -151,7 +151,7 @@ export default {
         arr.push(defaultObj)
         spinnerList.content.map((item, index) => {
           let obj = {}
-          obj.value = index
+          obj.value = item.templateId
           obj.label = item.userVersion
           arr.push(obj)
         })

@@ -356,11 +356,10 @@ export default {
         arr.push(defaultObj)
         spinnerList.content.map((item, index) => {
           let obj = {}
-          obj.value = index
+          obj.value = item.templateId
           obj.label = item.userVersion
           arr.push(obj)
         })
-        console.log(arr)
         this.selectIdTemId = arr
         this.handleQueryTableData()
       }
@@ -394,6 +393,7 @@ export default {
     },
     // 选择模板下拉框选中
     handleSelectId () {
+      console.log(this.queryData.selectedId)
       this.handleQueryTableData()
     },
     // 当前页改变
