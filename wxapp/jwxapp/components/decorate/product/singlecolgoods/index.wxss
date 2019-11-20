@@ -108,3 +108,29 @@
     text-align: center;
     z-index: 3;
   }
+  .exclusive{
+    position: absolute;
+  width: 100%;
+  height: 45rpx;
+  line-height: 45rpx;
+  text-align: center;
+  color: #56381b;
+  background: linear-gradient(left, #eed9ad, #e7c38a);
+  background: -webkit-linear-gradient(left, #eed9ad, #e7c38a);
+  background: -moz-linear-gradient(left, #eed9ad, #e7c38a);
+  bottom: 0rpx;
+  font-size: 24rpx;
+  z-index: 2;
+  }
+  .reduce_price{
+    background-color: #f9dbdb;
+  color: #f66;
+  position: absolute;
+  width: 100%;
+  height: 45rpx;
+  line-height: 45rpx;
+  text-align: center;
+  bottom: 0;
+  font-size: 22rpx;
+  z-index: 2;
+  }

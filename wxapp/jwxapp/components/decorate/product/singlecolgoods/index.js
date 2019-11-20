@@ -6,8 +6,11 @@ global.wxComponent({
   methods: {
     onPropChange(newVal, oldVal, changedPath) {
       console.log(newVal, 'single')
+      // 处理活动
+      this.handleToGoodsActivities(newVal.goodsListData)
 
     },
+    // 处理活动数据
     bindMenuClick(e) {
 
     },

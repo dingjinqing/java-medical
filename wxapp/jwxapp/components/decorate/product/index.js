@@ -5,7 +5,7 @@ global.wxComponent({
   mixins: [base],
   methods: {
     onPropChange(newVal, oldVal, changedPath) {
-      console.log(newVal)
+      console.log(newVal, '总数据')
 
     },
     bindMenuClick(e) {

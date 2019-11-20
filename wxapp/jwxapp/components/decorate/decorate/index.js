@@ -39,6 +39,7 @@ global.wxComponent({
         // 模块名称
         module['component_name'] = componentName
         module['main_setting'] = page_content.main_setting;
+        module['is_first_touch'] = 1;
         // 当前域名
         module['imageUrl'] = 'http://jmpdevimg.weipubao.cn'
         // 模块间距字段  

@@ -41,6 +41,20 @@ var base = {
         }, cb);
       }
     },
+    // 处理活动
+    handleToGoodsActivities(goodsData) {
+      console.log(goodsData)
+      goodsData.forEach((item, index) => {
+        item.goodsActivities.forEach((itemC, indexC) => {
+          switch (itemC.activityType) {
+            case 22:
+              item.isMembershipExclusive = true
+          }
+
+        })
+      })
+      console.log(goodsData)
+    }
   }
 };
 
