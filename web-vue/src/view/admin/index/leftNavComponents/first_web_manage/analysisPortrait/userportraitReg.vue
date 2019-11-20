@@ -49,6 +49,7 @@
                 :settings="chartSettings"
                 :visual-map="visualMap"
                 :extend="chartExtend"
+                :data-empty="dataEmpty"
                 ref="chart1"
               ></ve-map>
             </div>
@@ -164,6 +165,7 @@
 import { getPortraitRequest } from '@/api/admin/basicConfiguration/userportrait.js'
 import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 import VCharts from 'v-charts'
+import 'v-charts/lib/style.css'
 export default {
   components: {
     VCharts
@@ -253,6 +255,7 @@ export default {
         columns: ['name', 'value'],
         rows: []
       },
+      dataEmpty: true,
       rows1: [],
       chartDataCity: [],
       userNumOptions: this.$t('userportrait.userNumOptions'),
@@ -308,15 +311,16 @@ export default {
             needData = res.content.newAddUser
             needMaxAndMin = res.content.newAddUserProRange
           }
-          var chartData = needData.province
-          var cityData = needData.city
+          this.dataEmpty = needData === null
+          var chartData = needData === null ? [] : needData.province
+          var cityData = needData === null ? [] : needData.city
           this.rows1 = chartData
           this.chartDataSex.rows = chartData
           this.chartDataCity = chartData
           this.cityTableData = cityData
           this.cityTableData2 = cityData
-          this.visualMap.min = needMaxAndMin.min
-          this.visualMap.max = needMaxAndMin.max
+          this.visualMap.min = needMaxAndMin === null ? 0 : needMaxAndMin.min
+          this.visualMap.max = needMaxAndMin === null ? 0 : needMaxAndMin.max
           console.log('chartDataSex')
           console.log(this.chartDataSex)
           console.log('chartDataCity')
@@ -340,14 +344,15 @@ export default {
         needData = this.tableData.newAddUser
         needMaxAndMin = this.tableData.newAddUserProRange
       }
-      var chartData = needData.province
-      var cityData = needData.city
+      this.dataEmpty = needData === null
+      var chartData = needData === null ? [] : needData.province
+      var cityData = needData === null ? [] : needData.city
       this.chartDataSex.rows = chartData
       this.chartDataCity = chartData
       this.cityTableData = cityData
       this.cityTableData2 = cityData
-      this.visualMap.min = needMaxAndMin.min
-      this.visualMap.max = needMaxAndMin.max
+      this.visualMap.min = needMaxAndMin === null ? 0 : needMaxAndMin.min
+      this.visualMap.max = needMaxAndMin === null ? 0 : needMaxAndMin.max
       this.showCity()
     },
     getData () {

@@ -128,7 +128,7 @@ export default {
             // 新增用户
             needData = res.content.newAddUser
           }
-          var chartData = needData.genders
+          var chartData = needData === null ? [] : needData.genders
           console.log('chartData')
           console.log(chartData)
           let sum = 0
@@ -165,7 +165,7 @@ export default {
         this.label1 = this.$t('userportrait.newUsers')
         needData = this.tableData.newAddUser
       }
-      var chartData = needData.genders
+      var chartData = needData === null ? [] : needData.genders
       console.log('啦啦啦chartData')
       console.log(chartData)
       for (let i = 0; i < chartData.length; i++) {

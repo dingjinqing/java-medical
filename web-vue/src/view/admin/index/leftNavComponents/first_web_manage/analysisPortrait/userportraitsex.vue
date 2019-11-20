@@ -49,6 +49,7 @@
               :data="chartDataSex"
               ref="chart1"
               :title="chartTitle"
+              :data-empty="dataEmpty"
             ></ve-ring>
           </div>
         </el-col>
@@ -59,6 +60,7 @@
               :data="chartDataSexHis"
               :settings="chartSettings"
               :title="chartTitle2"
+              :data-empty="dataEmpty"
               ref="chart2"
             ></ve-histogram>
           </div>
@@ -71,6 +73,7 @@
 <script>
 import { getPortraitRequest } from '@/api/admin/basicConfiguration/userportrait.js'
 import VCharts from 'v-charts'
+import 'v-charts/lib/style.css'
 export default {
   components: {
     VCharts
@@ -105,6 +108,7 @@ export default {
         columns: ['name', 'value'],
         rows: []
       },
+      dataEmpty: true,
       rows1: [],
       rows2: [],
       userNumOptions: this.$t('userportrait.userNumOptions'),
@@ -160,8 +164,9 @@ export default {
             // 新增用户
             needData = res.content.newAddUser
           }
-          var chartData = needData.genders
-          var chartData2 = needData.ages
+          this.dataEmpty = needData === null
+          var chartData = needData === null ? [] : needData.genders
+          var chartData2 = needData === null ? [] : needData.ages
           this.chartDataSex.rows = chartData
           this.rows1 = chartData
           this.chartDataSexHis.rows = chartData2
@@ -185,8 +190,9 @@ export default {
         // 新增用户
         needData = this.tableData.newAddUser
       }
-      var chartData = needData.genders
-      var chartData2 = needData.ages
+      this.dataEmpty = needData === null
+      var chartData = needData === null ? [] : needData.genders
+      var chartData2 = needData === null ? [] : needData.ages
       this.chartDataSex.rows = chartData
       this.chartDataSexHis.rows = chartData2
     }
