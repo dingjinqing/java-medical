@@ -19,8 +19,8 @@ import java.util.List;
 
 /**
  * 装修模块
- * 
- * @author 常乐 
+ *
+ * @author 常乐
  * 2019年6月27日
  */
 @RestController
@@ -32,7 +32,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 //    }
 	/**
 	 * 装修页面列表
-	 * 
+	 *
 	 * @param  param
 	 * @return
 	 */
@@ -41,7 +41,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 		PageResult<XcxCustomerPageVo> list = shop().mpDecoration.getPageList(param);
 		return success(list);
 	}
-	
+
 	/**
 	 * 新建装修页面
 	 * @param param
@@ -55,7 +55,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 
 	/**
 	 * 装修页面详情
-	 * 
+	 *
 	 * @param  pageId
 	 * @return
 	 */
@@ -67,7 +67,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 
 	/**
 	 * 设为首页
-	 * 
+	 *
 	 * @param  pageId
 	 * @return
 	 */
@@ -76,7 +76,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 		boolean res = shop().mpDecoration.setIndex(param);
 		return success(res);
 	}
-	
+
 	/**
 	 * 编辑-获取页面数据
 	 * @param param
@@ -87,7 +87,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 		XcxCustomerPageRecord info = shop().mpDecoration.editPage(param);
 		return this.success(info.intoMap());
 	}
-	
+
 	/**
 	 * 页面分类信息
 	 * @return
@@ -97,7 +97,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 		List<PageClassificationVo> pageCateList = shop().mpDecoration.getPageCate();
 		return this.success(pageCateList);
 	}
-	
+
 	/**
 	 * 页面装修设置页面分类
 	 * @param param
@@ -112,7 +112,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 			return this.fail();
 		}
 	}
-	
+
 	/**
 	 * 批量设置页面分类
 	 * @param param
@@ -138,10 +138,10 @@ public class AdminShopDecorateController extends AdminBaseController {
 			return this.fail();
 		}
 	}
-	
+
 	/**
 	 * 复制页面
-	 * 
+	 *
 	 * @param  param
 	 * @return
 	 */
@@ -153,7 +153,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 
 	/**
 	 * 保存装修数据
-	 * 
+	 *
 	 * @param  param
 	 * @return
 	 */
@@ -165,12 +165,12 @@ public class AdminShopDecorateController extends AdminBaseController {
 		}else {
 			return this.fail();
 		}
-		
+
 	}
 
 	/**
 	 * 设置店铺风格
-	 * 
+	 *
 	 * @param  config
 	 * @return
 	 */
@@ -182,7 +182,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 
 	/**
 	 * 店铺风格查询
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping("/admin/decorate/style/get")
@@ -220,7 +220,7 @@ public class AdminShopDecorateController extends AdminBaseController {
      * 查询 搜索配置
      * @return
      */
-    @GetMapping("/api/admin/get/searchcfg")
+    @GetMapping("/admin/get/searchcfg")
     public JsonResult getSearchCfg() {
         return success(shop().config.searchCfg.getSearchConfig());
     }
@@ -229,7 +229,7 @@ public class AdminShopDecorateController extends AdminBaseController {
      * @param
      * @return
      */
-    @PostMapping("/api/admin/update/searchcfg")
+    @PostMapping("/admin/update/searchcfg")
     public JsonResult updateSearchCfg(@RequestBody SearchConfig config){
         shop().config.searchCfg.setSearchConfig(config);
         return success();

@@ -21,7 +21,7 @@ public class GroupBuyListParam  extends BasePageGroupBuyParam{
      *  1全部拼团活动 2 进行中 3 未开始 4 已过期 5 已停用
      */
     @NotNull
-    private Integer type;
+    private Byte type;
 
 
 }

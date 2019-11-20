@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import org.jooq.AggregateFunction;
 import org.jooq.Record7;
 import org.jooq.Result;
@@ -150,20 +151,20 @@ public class LotteryService extends ShopBaseService {
                 .where(LOTTERY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
         switch (param.getState()) {
-            case 2:
+            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_ONGOING:
                 select.and(LOTTERY.START_TIME.lt(nowTime))
                         .and(LOTTERY.END_TIME.gt(nowTime))
                         .and(LOTTERY.STATUS.eq(USE_STATUS));
                 break;
-            case 3:
+            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_NOT_STARTED:
                 select.and(LOTTERY.STATUS.eq(USE_STATUS))
                         .and(LOTTERY.START_TIME.gt(nowTime));
                 break;
-            case 4:
+            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_FINISHED:
                 select.and(LOTTERY.STATUS.gt(USE_STATUS))
                         .and(LOTTERY.END_TIME.lt(nowTime));
                 break;
-            case 5:
+            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_DISABLED:
                 select.and(LOTTERY.STATUS.eq(STOP_STATUS));
                 break;
             default:

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.givegift;
 
 import com.vpu.mp.db.shop.tables.records.GiveGiftActivityRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -34,6 +35,14 @@ public class GiveGiftService extends ShopBaseService {
 
     private static final byte USE_STATUS = 1;
     private static final byte STOP_STATUS = 0;
+    /**
+     * 永久有效
+     */
+    private static final byte DUE_TIME_TYPE_VALID=1;
+    /**
+     * 不是永久有效
+     */
+    private static final byte DUE_TIME_TYPE_INVALID=0;
 
     @Autowired
     private GiveGiftCartService giveGiftCart;
@@ -79,27 +88,27 @@ public class GiveGiftService extends ShopBaseService {
     private void buildParam(SelectConditionStep<? extends Record> select, GiveGiftListParam param) {
         Timestamp nowTime =new Timestamp(System.currentTimeMillis());
         switch (param.getNavType()) {
-            case 2:
+            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_ONGOING:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(USE_STATUS))
-                        .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 1)
-                            .or(    GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 0)
+                        .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq(DUE_TIME_TYPE_VALID)
+                            .or(    GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq(DUE_TIME_TYPE_INVALID)
                                     .and(GIVE_GIFT_ACTIVITY.START_TIME.le(nowTime))
                                     .and(GIVE_GIFT_ACTIVITY.END_TIME.ge(nowTime))
                             )
                         );
                 break;
-            case 3:
+            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_NOT_STARTED:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(USE_STATUS))
-                        .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 0))
+                        .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq(DUE_TIME_TYPE_INVALID))
                         .and(GIVE_GIFT_ACTIVITY.START_TIME.gt(nowTime));
                 break;
-            case 4:
+            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_FINISHED:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(USE_STATUS))
-                        .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq((byte) 0))
+                        .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq(DUE_TIME_TYPE_INVALID))
                         .and(GIVE_GIFT_ACTIVITY.END_TIME.le(nowTime));
                 break;
-            case 5:
-                select.and(GIVE_GIFT_ACTIVITY.STATUS.eq((byte) 0));
+            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_DISABLED:
+                select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(STOP_STATUS));
                 break;
             default:
 

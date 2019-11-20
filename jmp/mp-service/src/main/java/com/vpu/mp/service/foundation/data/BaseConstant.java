@@ -113,6 +113,23 @@ public final  class  BaseConstant {
      */
     public final static Byte COUPON_LIMIT_SURPLUS_FLAG_UNLIMITED =1;
 
+    //*********************活动导航栏***************************************/
+    /**
+     * 进行中
+     */
+    public final static byte ACTIVITY_NAV_BAR_TYPE_ONGOING= 1;
+    /**
+     * 未开始
+     */
+    public final static byte ACTIVITY_NAV_BAR_TYPE_NOT_STARTED= 2;
+    /**
+     * 已完成
+     */
+    public final static byte ACTIVITY_NAV_BAR_TYPE_FINISHED= 3;
+    /**
+     * 已停用
+     */
+    public final static byte ACTIVITY_NAV_BAR_TYPE_DISABLED= 4;
 
 
 }

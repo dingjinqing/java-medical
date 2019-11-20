@@ -58,7 +58,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/add")
-    public JsonResult addGroupBuy(@RequestBody @Validated GroupBuyParam param) {
+    public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
         //校验活动商品是否叠加 (并发不安全)
         Boolean flag = shop().groupBuy.validGroupGoods(null,param.getGoodsId(),param.getStartTime(),param.getEndTime());
         if (!flag){
@@ -163,7 +163,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/detail/list")
-    public JsonResult detailGroupBuyList(@RequestBody GroupBuyDetailParam param) {
+    public JsonResult detailGroupBuyList(@RequestBody @Valid GroupBuyDetailParam param) {
         PageResult<GroupBuyDetailListVo> vo = shop().groupBuy.detailGroupBuyList(param);
         return success(vo);
     }
@@ -174,7 +174,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/order/list")
-    public JsonResult groupBuyOrderList(@RequestBody MarketOrderListParam param) {
+    public JsonResult groupBuyOrderList(@RequestBody @Valid MarketOrderListParam param) {
         return success(shop().groupBuy.groupBuyOrderList(param));
     }
 
@@ -184,7 +184,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/user/list")
-    public JsonResult groupBuyNewUserList(@RequestBody MarketSourceUserListParam param) {
+    public JsonResult groupBuyNewUserList(@RequestBody @Valid MarketSourceUserListParam param) {
         PageResult<MemberInfoVo> pageResult = shop().groupBuy.groupBuyNewUserList(param);
         return success(pageResult);
     }
@@ -196,7 +196,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/analysis")
-    public JsonResult groupBuyAnalysis(@RequestBody GroupBuyAnalysisParam param) {
+    public JsonResult groupBuyAnalysis(@RequestBody @Valid GroupBuyAnalysisParam param) {
         return success(shop().groupBuy.groupBuyAnalysis(param));
     }
 

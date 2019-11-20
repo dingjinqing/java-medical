@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
  */
 @Data
 public class GroupBuyAnalysisParam {
+    @NotNull
     private Integer id;
 
     private Timestamp startTime;

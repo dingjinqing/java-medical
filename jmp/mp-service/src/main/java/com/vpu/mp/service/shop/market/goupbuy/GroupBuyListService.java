@@ -7,6 +7,7 @@ import static com.vpu.mp.db.shop.Tables.USER;
 
 import java.sql.Timestamp;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -78,26 +79,23 @@ public class GroupBuyListService  extends ShopBaseService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         if (param.getType()!=null){
             switch (param.getType()) {
-                case 1:
-                    //全部活动
-                    break;
-                case 2:
+                case BaseConstant.ACTIVITY_NAV_BAR_TYPE_ONGOING:
                     //正在活动
                     records.and(GROUP_BUY_DEFINE.START_TIME.lt(timestamp))
                             .and(GROUP_BUY_DEFINE.END_TIME.gt(timestamp))
                             .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
                     break;
-                case 3:
+                case BaseConstant.ACTIVITY_NAV_BAR_TYPE_NOT_STARTED:
                     //还未开始
                     records.and(GROUP_BUY_DEFINE.START_TIME.gt(timestamp))
                             .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
                     break;
-                case 4:
+                case BaseConstant.ACTIVITY_NAV_BAR_TYPE_FINISHED:
                     //已经结束
                     records.and(GROUP_BUY_DEFINE.END_TIME.lt(timestamp))
                             .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
                     break;
-                case 5:
+                case BaseConstant.ACTIVITY_NAV_BAR_TYPE_DISABLED:
                     //停用
                     records.and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS));
                     break;
@@ -184,7 +182,7 @@ public class GroupBuyListService  extends ShopBaseService {
         }
 
     }
-    
+
     public GroupOrderVo getByOrder(String orderSn) {
     	return db().select(GROUP_BUY_LIST.ID, GROUP_BUY_LIST.ACTIVITY_ID, GROUP_BUY_LIST.GOODS_ID, GROUP_BUY_LIST.GROUP_ID, GROUP_BUY_LIST.USER_ID, GROUP_BUY_LIST.IS_GROUPER, GROUP_BUY_LIST.ORDER_SN, GROUP_BUY_LIST.STATUS, GROUP_BUY_LIST.START_TIME, GROUP_BUY_LIST.END_TIME).
     	from(GROUP_BUY_LIST).
