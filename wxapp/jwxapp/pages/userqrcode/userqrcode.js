@@ -22,16 +22,24 @@ global.wxPage({
   onLoad: function (options) {
     var _this = this;
     util.api('/api/wxapp/user/qrcode', function (res) {
-      if (res.error == 0) {
+      if (res.status == 1) {
         let imgStr = res.content.substr(res.content.indexOf('/upload'))
         util.api('/api/wxapp/upayyun/image', function (d) {
           if (d.error == 0) {
             posterBase64 = d.content;
             _this.setData({
+              isOk:false,
               userQrCode: res.content
             })
           }
         }, { image_path: imgStr });
+      }else{
+        wx.showToast({
+          title: res.msg,
+          icon: 'none',
+          duration: 3000
+        })
+        
       }
     })
     wx.hideShareMenu();
