@@ -368,7 +368,7 @@
     />
 
     <!-- 选择模板弹窗 -->
-    <el-dialog
+    <!-- <el-dialog
       title="选择页面"
       :visible.sync="templateDialog"
       width="50%"
@@ -458,7 +458,7 @@
           @click="sureClickHandler()"
         >确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
 
     <!-- 选择图片弹窗 -->
     <ImageDalog
@@ -469,17 +469,24 @@
       @handleSelectImg='handleSelectImg'
     />
 
+    <!-- 选择模板弹窗 -->
+    <SelectTemplate
+      :tuneUpSelectTemplate='tuneUpSelectTemplate'
+      @handleSelectTemplate='handleSelectTemplate'
+    />
+
   </div>
 </template>
 
 <script>
 // 引入组件
-import { setDistribution, getDistribution, shopDecorateList, getSelectGoods, getSelectTemplate } from '@/api/admin/marketManage/distribution.js'
+import { setDistribution, getDistribution, getSelectGoods, getSelectTemplate } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
     ImageDalog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
-    Pagination: () => import('@/components/admin/pagination/pagination.vue') // 分页
+    // Pagination: () => import('@/components/admin/pagination/pagination.vue'), // 分页
+    SelectTemplate: () => import('./selectTemplate') // 选择模板弹窗
   },
   data () {
     return {
@@ -537,22 +544,23 @@ export default {
       imageSize: [640, 640], // 调起添加图片宽高
       isDraggable: false, // 添加商品弹窗是否开启多选底部可拖拽状态
       isAddImgOrChangeFlga: false, // true为添加图片  false为更换列表项中的图片
-      templateDialog: false, // 模板弹窗
+      // templateDialog: false, // 模板弹窗
       templateRow: {}, // 模板弹窗回调函数
-      formDialog: {
-        pageName: '',
-        catId: ''
-      },
+      // formDialog: {
+      //   pageName: '',
+      //   catId: ''
+      // },
+      tuneUpSelectTemplate: false,
       pageParams: {}, // 分页
-      requestParams: {},
-      templateData: [], // 模板表格
+      // requestParams: {},
+      // templateData: [], // 模板表格
       tamplateFlag: false // 模板数据显示
     }
   },
   mounted () {
     // 初始化数据
     this.getDistribution()
-    this.getTemplateData()
+    // this.getTemplateData()
   },
   methods: {
     // 获取分销配置
@@ -619,6 +627,7 @@ export default {
           this.tamplateFlag = true
           this.templateRow.pageId = res.content.page_id
           this.templateRow.pageName = res.content.page_name
+          console.log(this.templateRow.pageName, 'current pageName')
           this.templateRow.createTime = res.content.create_time
           this.templateRow.pageType = res.content.page_type
         }
@@ -674,42 +683,43 @@ export default {
 
     // 调起模板弹窗
     chooseTemplate () {
-      this.templateDialog = !this.templateDialog
+      // this.templateDialog = !this.templateDialog
+      this.tuneUpSelectTemplate = !this.tuneUpSelectTemplate
     },
 
     // 获取模板弹窗表格数据
-    getTemplateData () {
-      this.requestParams.pageName = this.formDialog.pageName
-      this.requestParams.catId = this.formDialog.catId
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
-      shopDecorateList(this.requestParams).then((res) => {
-        if (res.error === 0) {
-          this.pageParams = res.content.page
-          this.templateData = res.content.dataList
-          // 表格数据处理
-          this.templateData.map((item, index) => {
-            if (item.pageType === 1) {
-              item.typeText = '是'
-            } else {
-              item.typeText = '否'
-            }
-          })
-        }
-      })
-    },
+    // getTemplateData () {
+    //   this.requestParams.pageName = this.formDialog.pageName
+    //   this.requestParams.catId = this.formDialog.catId
+    //   this.requestParams.currentPage = this.pageParams.currentPage
+    //   this.requestParams.pageRows = this.pageParams.pageRows
+    //   shopDecorateList(this.requestParams).then((res) => {
+    //     if (res.error === 0) {
+    //       this.pageParams = res.content.page
+    //       this.templateData = res.content.dataList
+    //       // 表格数据处理
+    //       this.templateData.map((item, index) => {
+    //         if (item.pageType === 1) {
+    //           item.typeText = '是'
+    //         } else {
+    //           item.typeText = '否'
+    //         }
+    //       })
+    //     }
+    //   })
+    // },
 
     // 选中表格数据
-    handleCurrentChange (val) {
-      this.templateRow = val
-      this.form.rebate_page_id = val.pageId
-    },
+    // handleCurrentChange (val) {
+    //   this.templateRow = val
+    //   this.form.rebate_page_id = val.pageId
+    // },
 
-    // 模板数据回显
-    sureClickHandler () {
-      this.templateDialog = false
-      this.tamplateFlag = true
-    },
+    // // 模板数据回显
+    // sureClickHandler () {
+    //   this.templateDialog = false
+    //   this.tamplateFlag = true
+    // },
 
     // 删除模板
     clearClickHandler () {
@@ -726,6 +736,14 @@ export default {
     // 添加图片弹窗选中图片数据回传
     handleSelectImg (imgData) {
       this.form.bg_img = imgData.imgUrl
+    },
+
+    // 添加选择模板选中数据回传
+    handleSelectTemplate (data) {
+      this.tamplateFlag = true
+      this.templateRow.pageName = data
+      console.log(this.templateRow.pageName)
+      console.log(data, 'child data')
     },
 
     // 切换背景图
