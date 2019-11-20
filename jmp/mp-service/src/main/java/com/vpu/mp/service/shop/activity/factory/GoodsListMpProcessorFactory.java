@@ -14,9 +14,12 @@ import java.util.List;
 public class GoodsListMpProcessorFactory extends AbstractProcessorFactory<ActivityGoodsListProcessor, GoodsListMpBo> {
 
     @Override
-    public void doProcess(List<GoodsListMpBo> capsules, Integer userId) {
+    public void doProcess(List<GoodsListMpBo> goodsListMpBos, Integer userId) {
+        if (goodsListMpBos == null || goodsListMpBos.size() == 0) {
+            return;
+        }
         for (ActivityGoodsListProcessor processor : processors) {
-                processor.processForList(capsules,userId);
+                processor.processForList(goodsListMpBos,userId);
         }
     }
 }

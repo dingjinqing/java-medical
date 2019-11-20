@@ -25,6 +25,9 @@ public class GoodsDetailMpProcessorFactory extends AbstractProcessorFactory<Good
     }
 
     public void doProcess(GoodsDetailMpBo goods, GoodsDetailCapsuleParam param) {
+        if (goods == null) {
+            return;
+        }
         param.setGoodsId(goods.getGoodsId());
         param.setSortId(goods.getSortId());
         param.setCatId(goods.getCatId());

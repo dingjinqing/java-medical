@@ -259,10 +259,15 @@ public class GoodsMpService extends ShopBaseService {
             }
         } catch (Exception e) {
             goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
-        }
-        // 商品从数据库内查询，但是数据已经被删除
-        if (DelFlag.DISABLE_VALUE.equals(goodsDetailMpBo.getDelFlag())) {
-            return goodsDetailMpBo;
+            // 商品从数据库内查询，但是数据已经被删除
+            if (goodsDetailMpBo==null) {
+                goodsDetailMpBo = new GoodsDetailMpBo();
+                goodsDetailMpBo.setDelFlag(DelFlag.NORMAL_VALUE);
+                return goodsDetailMpBo;
+            }
+            if (DelFlag.DISABLE_VALUE.equals(goodsDetailMpBo.getDelFlag())) {
+                return goodsDetailMpBo;
+            }
         }
 
         GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
