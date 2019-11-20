@@ -276,6 +276,7 @@ export default {
       this.defaluteData()
       this.userNumOptions = this.$t('userportrait.userNumOptions')
       this.visitTrendOptions = this.$t('userportrait.visitTrendOptions')
+      this.changeDivInnerHtml()
     },
     rows1 (data) {
       this.$nextTick(_ => {
@@ -396,6 +397,12 @@ export default {
       }
       this.cityTableData2 = ccc
       console.log(ccc)
+    },
+    changeDivInnerHtml () {
+      var charts = document.getElementsByClassName('v-charts-data-empty')
+      for (let i = 0; i < charts.length; i++) {
+        charts[i].innerHTML = this.$t('userportrait.noData')
+      }
     }
 
   }

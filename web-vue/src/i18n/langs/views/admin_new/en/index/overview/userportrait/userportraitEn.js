@@ -19,6 +19,8 @@ export const en = {
   modelDistribution: 'model distribution',
   title4: 'Gender distribution',
   gender: 'gender',
+  proportion: 'Proportion',
+  noData: 'No Data',
   userNumOptions: [{
     value: 1,
     label: 'number of active users'

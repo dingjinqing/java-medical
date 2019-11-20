@@ -121,6 +121,7 @@ export default {
       this.visitTrendOptions = this.$t('userportrait.visitTrendOptions')
       this.chartTitle.text = this.$t('userportrait.terminalDistribution')
       this.chartTitle2.text = this.$t('userportrait.modelDistribution')
+      this.changeDivInnerHtml()
     },
     rows1 (data) {
       this.$nextTick(_ => {
@@ -188,6 +189,12 @@ export default {
       var chartData2 = needData === null ? [] : needData.devices
       this.chartDataSex.rows = chartData
       this.chartDataSexHis.rows = chartData2
+    },
+    changeDivInnerHtml () {
+      var charts = document.getElementsByClassName('v-charts-data-empty')
+      for (let i = 0; i < charts.length; i++) {
+        charts[i].innerHTML = this.$t('userportrait.noData')
+      }
     }
 
   }

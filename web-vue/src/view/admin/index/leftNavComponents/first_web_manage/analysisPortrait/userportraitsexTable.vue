@@ -102,6 +102,7 @@ export default {
       this.defaluteData()
       this.userNumOptions = this.$t('userportrait.userNumOptions')
       this.visitTrendOptions = this.$t('userportrait.visitTrendOptions')
+      this.label1 = this.$t('userportrait.activeUser')
     }
   },
   methods: {

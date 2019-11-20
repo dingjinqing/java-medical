@@ -123,6 +123,7 @@ export default {
   watch: {
     lang () {
       this.defaluteData()
+      this.changeDivInnerHtml()
       this.userNumOptions = this.$t('userportrait.userNumOptions')
       this.visitTrendOptions = this.$t('userportrait.visitTrendOptions')
       this.chartTitle.text = this.$t('userportrait.genderDistribution')
@@ -195,6 +196,12 @@ export default {
       var chartData2 = needData === null ? [] : needData.ages
       this.chartDataSex.rows = chartData
       this.chartDataSexHis.rows = chartData2
+    },
+    changeDivInnerHtml () {
+      var charts = document.getElementsByClassName('v-charts-data-empty')
+      for (let i = 0; i < charts.length; i++) {
+        charts[i].innerHTML = this.$t('userportrait.noData')
+      }
     }
 
   }
