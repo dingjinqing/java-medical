@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
@@ -71,9 +73,12 @@ public class AdminTradeController extends AdminBaseController {
      */
     @GetMapping("/api/admin/config/trade/getWxpayConfig")
     public JsonResult getWxpayConfig() {
-        String appId = saas.shop.mp.getAuthShopByShopId(shop().trade.getShopId()).getAppId();
-        if (saas.shop.mp.checkAuthShopExist(appId)) {
-            return success(saas.shop.mp.getWxpayConfig(appId));
+        MpAuthShopRecord record = saas.shop.mp.getAuthShopByShopId(shop().trade.getShopId());
+        if (Objects.isNull(record)) {
+            return success(new WxpayConfigParam());
+        }
+        if (saas.shop.mp.checkAuthShopExist(record.getAppId())) {
+            return success(saas.shop.mp.getWxpayConfig(record.getAppId()));
         }
         return fail(JsonResultMessage.AUTH_SHOP_NOT_EXIST);
     }
