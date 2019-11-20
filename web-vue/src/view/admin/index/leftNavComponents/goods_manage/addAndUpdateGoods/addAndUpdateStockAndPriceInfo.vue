@@ -106,7 +106,7 @@
               <td><input :id="'prdNumber_'+item.prdNumber" v-model.number="item.prdNumber" @change="specPrdInputChange(item.prdNumber,'prdNumber_'+item.prdNumber,item)"/></td>
               <td><input :id="'prdSn_'+item.prdDesc" v-model="item.prdSn" @change="specPrdSnChange(item,index,$event.target.value,$event)"/></td>
               <td>
-                <div style="margin: 0 auto;width: 30px;height: 30px;border: 1px solid #ccc;" @click="prdImgClick(item)">
+                <div style="margin: 0 auto;width: 30px;height: 30px;border: 1px solid #ccc;cursor: pointer;" @click="prdImgClick(item)">
                   <img v-if="item.prdImg.imgUrl === null" style="width: 30px;height: 30px;"  :src="$imageHost+'/image/admin/add_img.png'">
                   <img v-else style="width: 30px;height: 30px;"  :src="item.prdImg.imgUrl">
                 </div>
@@ -374,8 +374,9 @@
       </el-collapse-item>
     </el-collapse>
     <!--图片dialog-->
-    <ImageDalog v-if="selfImgDialogShow"
+    <ImageDalog :tuneUp="imgDialogShow"
                 pageIndex='pictureSpace'
+                :imageSize="[800,800]"
                 @handleSelectImg='imgDialogSelectedCallback'
     />
   </div>
@@ -398,7 +399,7 @@ export default {
   data () {
     return {
       lang: '',
-      selfImgDialogShow: false,
+      imgDialogShow: false,
       /* 临时存放和后台交互的数据 */
       goodsProductInfo: {
         // 库存、价格信息
@@ -474,11 +475,9 @@ export default {
     /** 商品规格交互函数结束**/
     prdImgClick (specPrd) {
       this.goodsProductInfo.currentImgClickedSpecPrdItem = specPrd
-      this.selfImgDialogShow = true
-      this.$nextTick(() => this.$http.$emit('dtVisible'))
+      this.imgDialogShow = !this.imgDialogShow
     },
     imgDialogSelectedCallback (imgObj) {
-      this.selfImgDialogShow = false
       this.goodsProductInfo.currentImgClickedSpecPrdItem.prdImg.imgUrl = imgObj.imgUrl
       this.goodsProductInfo.currentImgClickedSpecPrdItem.prdImg.imgPath = imgObj.imgPath
     },
@@ -1049,8 +1048,8 @@ export default {
           prdSn: specPrd.prdSn,
           prdSnBak: specPrd.prdSn,
           prdImg: {
-            imgUrl: specPrd.prdImg,
-            imgPath: specPrd.prdImgPath
+            imgUrl: specPrd.prdImgUrl,
+            imgPath: specPrd.prdImg
           },
           prdDesc: specPrd.prdDesc,
           prdSpecs: specPrd.prdSpecs,
