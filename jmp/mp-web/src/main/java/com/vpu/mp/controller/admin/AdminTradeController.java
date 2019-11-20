@@ -1,41 +1,25 @@
 package com.vpu.mp.controller.admin;
 
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.WXERROR_9300529;
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.WXERROR_9300530;
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.WXERROR_9300531;
-import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.WXERROR_9300532;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.config.trade.*;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.jooq.lambda.tuple.Tuple2;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jooq.lambda.tuple.Tuple2;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.config.trade.BindAccountParam;
-import com.vpu.mp.service.pojo.shop.config.trade.LogisticsAccountInfo;
-import com.vpu.mp.service.pojo.shop.config.trade.OrderProcessParam;
-import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigParam;
-import com.vpu.mp.service.pojo.shop.config.trade.PaymentConfigVo;
-import com.vpu.mp.service.pojo.shop.config.trade.ReturnConfigParam;
-import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
-
-import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 
 /**
  * @author liufei
@@ -111,20 +95,20 @@ public class AdminTradeController extends AdminBaseController {
     @PostMapping("/api/admin/config/trade/getOrderProcessConfig")
     public JsonResult getOrderProcessConfig() {
         //微信物流助手物流公司列表
-        List<LogisticsAccountInfo> deliveryList;
+        List<LogisticsAccountInfo> deliveryList = null;
         //基本配置项信息
         OrderProcessParam param = shop().trade.getOrderProcessConfig();
         try {
             deliveryList = shop().trade.combineAllLogisticsAccountInfo();
         } catch (WxErrorException e) {
             log.error("微信物流助手api调用失败，获取支持物流公司列表失败：{}", e.getMessage());
-            return fail(JsonResultCode.CODE_FAIL);
+//            return fail(JsonResultCode.CODE_FAIL);
         }
         return success(new HashMap<String, Object>(2) {
 			private static final long serialVersionUID = 533497335184152545L;
 			{
                 put("trade_process_config", param);
-                put("delivery_list", deliveryList);
+                put("delivery_list", null);
             }
         });
     }
