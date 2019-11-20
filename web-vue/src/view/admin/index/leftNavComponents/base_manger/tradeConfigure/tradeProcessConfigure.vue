@@ -591,8 +591,8 @@ export default {
         },
         {code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false}
       ],
-      invoice: '',
-      serviceTerms: '',
+      invoice: false,
+      serviceTerms: false,
       serviceChoose: null,
       src: `${this.$imageHost}/image/admin/icon_jia.png`,
       province: ``,
