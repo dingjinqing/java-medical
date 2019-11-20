@@ -57,13 +57,25 @@
               href="#"
             >{{$t("goodsAddEditInfo.linkDetail")}}</el-link>
           </div>
-          <div v-if="deliverTemplateCurrentData.deliverTemplateAreasDesc.length>0" class="deliverTemplateContent">
+          <div
+            v-if="deliverTemplateCurrentData.deliverTemplateAreasDesc.length>0"
+            class="deliverTemplateContent"
+          >
             <p>{{$t("goodsAddEditInfo.deliverAndOtherInfo.pointAreaForFreeDeliverTemplate")}}</p>
-            <p v-for="(item,index) in deliverTemplateCurrentData.deliverTemplateAreasDesc" :key="index">{{item}}</p>
+            <p
+              v-for="(item,index) in deliverTemplateCurrentData.deliverTemplateAreasDesc"
+              :key="index"
+            >{{item}}</p>
           </div>
-          <div v-if="deliverTemplateCurrentData.freeDeliverTemplateAreasDesc.length>0" class="deliverTemplateContent">
+          <div
+            v-if="deliverTemplateCurrentData.freeDeliverTemplateAreasDesc.length>0"
+            class="deliverTemplateContent"
+          >
             <p>{{$t("goodsAddEditInfo.deliverAndOtherInfo.pointConditionForFreeDeliverTemplate")}}</p>
-            <p v-for="(item,index) in deliverTemplateCurrentData.freeDeliverTemplateAreasDesc" :key="index">{{item}}</p>
+            <p
+              v-for="(item,index) in deliverTemplateCurrentData.freeDeliverTemplateAreasDesc"
+              :key="index"
+            >{{item}}</p>
           </div>
         </div>
       </el-form-item>
@@ -89,7 +101,7 @@
           ref="deliverPlaceInput"
           v-model="goodsProductInfo.deliverPlace"
           size="small"
-          style="width:230px;"
+          style="width:170px;"
         />
         <span class="inputTip">{{$t('goodsAddEditInfo.deliverAndOtherInfo.deliverPlaceTip')}}</span>
       </el-form-item>
@@ -100,9 +112,7 @@
       :model="goodsProductInfo"
       :label-width="labelWidth+'px'"
     >
-      <el-form-item
-        :label="$t('goodsAddEditInfo.deliverAndOtherInfo.memberCard')"
-      >
+      <el-form-item :label="$t('goodsAddEditInfo.deliverAndOtherInfo.memberCard')">
         <el-checkbox v-model="goodsProductInfo.isCardExclusive">{{$t('goodsAddEditInfo.deliverAndOtherInfo.memberCardTip')}}</el-checkbox>
         <div v-if="goodsProductInfo.isCardExclusive">
           <el-select
@@ -161,7 +171,7 @@
         </div>
       </el-form-item>
       <el-form-item
-        :label="$t('goodsAddEditInfo.deliverAndOtherInfo.saleType')"
+        :label="$t('goodsAddEditInfo.deliverAndOtherInfo.saleType') + '：'"
         prop="isOnSale"
       >
         <el-radio-group v-model="goodsProductInfo.saleType">
@@ -185,8 +195,8 @@
 </template>
 <script>
 // api导入
-import {getExclusiveCardList} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
-import {deliverTemplateNameListApi, getDeliverTemplateApi, getDeliverTemplateConfigApi} from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import { getExclusiveCardList } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import { deliverTemplateNameListApi, getDeliverTemplateApi, getDeliverTemplateConfigApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 // js工具函数导入
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
 import { format, parseDate } from '@/util/date'
@@ -194,7 +204,7 @@ export default {
   data () {
     return {
       lang: '',
-      labelWidth: 170,
+      labelWidth: 120,
       goodsProductInfo: {
         deliverTemplateId: null,
         goodsWeight: null,
@@ -353,7 +363,7 @@ export default {
         })
       } else {
         // 找到对应模板信息
-        getDeliverTemplateApi({'deliverTemplateId': deliverTemplateId}).then(res => {
+        getDeliverTemplateApi({ 'deliverTemplateId': deliverTemplateId }).then(res => {
           this.closeLoading()
           let content = res.content || []
           // 模板信息被删除，则展示默认模板信息
@@ -482,19 +492,19 @@ export default {
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (!isStrBlank(this.goodsProductInfo.deliverPlace) && this.goodsProductInfo.deliverPlace.length > 15) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverPlaceTip'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverPlaceTip'), type: 'warning' })
         this.$refs.deliverPlaceInput.focus()
         return false
       }
 
       if (this.goodsProductInfo.saleType === 1) {
         if (this.goodsProductInfo.saleTime === null) {
-          this.$message.warning({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeNotNll'), type: 'warning'})
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeNotNll'), type: 'warning' })
           this.$refs.saleTimeInput.focus()
           return false
         }
         if (this.goodsProductInfo.saleTime.getTime() <= new Date().getTime()) {
-          this.$message.warning({message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning'})
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning' })
           this.$refs.saleTimeInput.focus()
           return false
         }

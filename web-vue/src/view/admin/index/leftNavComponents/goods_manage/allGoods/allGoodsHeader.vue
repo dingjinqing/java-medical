@@ -18,6 +18,7 @@
             :placeholder="$t('allGoods.allGoodsHeaderData.searchGoods')"
             :style="goodsFilterInputStyle"
             size="small"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -93,7 +94,7 @@
             :style="goodsFilterInputStyle"
             size="small"
           />
-          -
+          至
           <el-date-picker
             v-model="goodsFilterFormData.saleTimeEnd"
             @change="datePickerChange(false)"
@@ -166,7 +167,7 @@
             :style="goodsFilterInputStyle"
             size="small"
           />
-          -
+          至
           <el-input
             v-model.number="goodsFilterFormData.highShopPrice"
             @change="shopPriceChange(false)"

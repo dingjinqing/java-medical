@@ -1,12 +1,20 @@
 <template>
-  <div class="evaluationRecordContent">
-    <div class="table_box">
-      <div class="filters">
+  <!-- class="evaluationRecordContent" -->
+  <div>
+    <div
+      class="table_box"
+      style="background: #fff;margin-bottom: 10px;height: 50px;"
+    >
+      <div
+        class="filters"
+        style="width: 100%;margin-bottom: 0; margin-left: 0;"
+      >
         <div class="filters_item"><span>{{$t('evaluation.orderSn')}}</span>
           <el-input
             v-model="searchParams.orderSn"
             :placeholder="$t('evaluation.input',[$t('evaluation.orderSn')])"
             size="small"
+            style="width: 170px;"
           ></el-input>
         </div>
         <div class="filters_item"><span>{{$t('evaluation.goodsName')}}</span>
@@ -14,6 +22,7 @@
             v-model="searchParams.goodsName"
             :placeholder="$t('evaluation.input',[$t('evaluation.goodsName')])"
             size="small"
+            style="width: 170px;"
           ></el-input>
         </div>
         <div class="filters_item"><span>{{$t('evaluation.mobile')}}</span>
@@ -21,6 +30,7 @@
             v-model="searchParams.mobile"
             :placeholder="$t('evaluation.input',[$t('evaluation.mobile')])"
             size="small"
+            style="width: 170px;"
           ></el-input>
         </div>
         <div
@@ -32,6 +42,7 @@
             v-model="searchParams.flag"
             size="small"
             class="mini_select"
+            style="width: 170px;"
           >
             <el-option
               v-for="item in auditFlag"
@@ -46,6 +57,7 @@
             v-model="searchParams.commstar"
             size="small"
             class="mini_select"
+            style="width: 170px;"
           >
             <el-option
               v-for="item in starLevel"
@@ -60,6 +72,7 @@
             v-model="searchParams.awardActivityId"
             size="small"
             class="mini_select"
+            style="width: 170px;"
           >
             <el-option
               v-for="item in evaluationRewardList"
@@ -77,26 +90,25 @@
           >{{$t('marketCommon.filter')}}</el-button>
         </div>
       </div>
+    </div>
+    <div style="width: 100%; padding:10px;background: #fff;">
       <el-table
         v-loading="loading"
+        class="version-manage-table"
+        header-row-class-name="tableClss"
         :data="dataList"
-        style="width:100%;"
         border
-        :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none'
-          }"
-        :cell-style="{
-            'text-align':'center'
-          }"
       >
         <el-table-column
           type="selection"
-          width="55"
+          align="center"
         >
         </el-table-column>
-        <el-table-column :label="$t('evaluation.evaluationTable.productInformation')">
+        <el-table-column
+          :label="$t('evaluation.evaluationTable.productInformation')"
+          align="center"
+          width="200px"
+        >
           <template slot-scope="scope">
             <div class="orderSn">
               <span v-if="scope.row.bogusUsername">{{$t('evaluation.merchantAddComment')}}</span>
@@ -115,7 +127,7 @@
         </el-table-column>
         <el-table-column
           :label="$t('evaluation.evaluationTable.userInfo')"
-          width="170"
+          align="center"
         >
           <template slot-scope="scope">
             <div class="user_info">
@@ -126,7 +138,7 @@
         </el-table-column>
         <el-table-column
           :label="$t('evaluation.evaluationTable.evaluationContent')"
-          width="200"
+          align="center"
         >
           <template slot-scope="scope">
             <div class="evaluation-info">
@@ -140,7 +152,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('evaluation.evaluationTable.evaluationReply')">
+        <el-table-column
+          :label="$t('evaluation.evaluationTable.evaluationReply')"
+          align="center"
+        >
           <template slot-scope="scope">
             <div class="evaluation_response">
               <span v-if="scope.row.content">{{$t('evaluation.reply')}}：{{scope.row.content}}</span>
@@ -162,17 +177,20 @@
         <el-table-column
           :label="$t('evaluation.evaluationTable.evaluationTime')"
           prop="createTime"
-          width="100"
+          align="center"
         ></el-table-column>
         <el-table-column
           :label="$t('evaluation.evaluationTable.anonymousEvaluation')"
-          width="80"
+          align="center"
         >
           <template slot-scope="scope">
             <span>{{scope.row.anonymousflag ? $t('evaluation.yes') : $t('evaluation.no')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('evaluation.evaluationTable.evaluationReward')">
+        <el-table-column
+          :label="$t('evaluation.evaluationTable.evaluationReward')"
+          align="center"
+        >
           <template slot-scope="scope">
             <span>{{scope.row.lotteryAward ? scope.row.lotteryAward : $t('evaluation.null')}}</span>
           </template>
@@ -180,6 +198,7 @@
         <el-table-column
           :label="$t('evaluation.auditState')"
           v-if="target === 'Record'"
+          align="center"
         >
           <template slot-scope="scope">
             <div>{{scope.flag | auditStatus}}</div>
@@ -187,16 +206,19 @@
         </el-table-column>
         <el-table-column
           :label="$t('evaluation.evaluationTable.operating')"
-          width="150"
+          align="center"
         >
           <template slot-scope="scope">
             <div class="operating">
-              <p>
-                <el-button
-                  type="default"
+              <p
+                @click="delEvaluation(scope.row.id)"
+                style="color: #5a8bff;cursor: pointer;"
+              >{{$t('evaluation.deleteEvaluation')}}
+                <!-- <el-button
+                  type="primary"
                   size="mini"
                   @click="delEvaluation(scope.row.id)"
-                >{{$t('evaluation.deleteEvaluation')}}</el-button>
+                >{{$t('evaluation.deleteEvaluation')}}</el-button> -->
               </p>
               <p v-if="target === 'Record'">
                 <el-button
@@ -422,6 +444,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
 .mini_select {
   width: 80px !important;
 }

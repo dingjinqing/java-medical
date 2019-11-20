@@ -20,6 +20,8 @@
                 placeholder="请输入内容"
                 @select="handleSelect"
                 size="small"
+                clearable
+                style="width: 170px;"
               >
                 <template slot-scope="props">
                   <div class="name">{{ props.item.value }}</div>
@@ -31,31 +33,18 @@
                 <span class="demonstration">创建时间：</span>
                 <el-date-picker
                   v-model="brandStartTime"
-                  type="date"
                   size="small"
-                  value-format="yyyy-MM-dd"
                   placeholder="选择日期"
                 >
                 </el-date-picker>
                 至
                 <el-date-picker
                   v-model="brandEndTime"
-                  type="date"
                   size="small"
-                  value-format="yyyy-MM-dd"
                   placeholder="选择日期"
+                  :picker-options="endTime"
                 >
                 </el-date-picker>
-                <!-- <el-date-picker
-                  v-model="value9"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  value-format="yyyy-MM-dd"
-                  end-placeholder="结束日期"
-                  size="small"
-                >
-                </el-date-picker> -->
               </div>
             </li>
             <li>
@@ -91,6 +80,13 @@
                 </el-option>
               </el-select>
             </li>
+            <li>
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleSXevent()"
+              >筛选</el-button>
+            </li>
           </ul>
           <div class="topBtn">
             <el-button
@@ -98,11 +94,11 @@
               size="small"
               @click="handleAddBrand()"
             >添加品牌</el-button>
-            <el-button
+            <!-- <el-button
               type="primary"
               size="small"
               @click="handleSXevent()"
-            >筛选</el-button>
+            >筛选</el-button> -->
           </div>
         </el-tab-pane>
 
@@ -138,7 +134,6 @@
                   v-model="classifyBrandStartTime"
                   type="date"
                   size="small"
-                  value-format="yyyy-MM-dd"
                   placeholder="选择日期"
                 >
                 </el-date-picker>
@@ -147,7 +142,6 @@
                   v-model="classifyBrandEndTime"
                   type="date"
                   size="small"
-                  value-format="yyyy-MM-dd"
                   placeholder="选择日期"
                 >
                 </el-date-picker>
@@ -221,6 +215,7 @@
                     v-model="hiddleValTop"
                     placeholder="请输入内容"
                     size="small"
+                    style="width: 170px;"
                   ></el-input>
                 </div>
                 <div class="hiddleStyle"></div>
@@ -279,6 +274,7 @@
             <div class="showBtn">
               <el-button
                 type="primary"
+                size="small"
                 style="margin:30px 0 0 75px"
                 @click="handleSaveTapThree()"
               >保存</el-button>
@@ -292,7 +288,106 @@
       v-if="bottomDivFlag"
     >
       <div class="content_two">
-        <table width="100%">
+        <el-table
+          class="version-manage-table"
+          header-row-class-name="tableClss"
+          :data="trList"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            v-if="hiddle_1"
+            prop="brandName"
+            label="品牌名称"
+            align="center"
+          >
+          </el-table-column>
+
+          <el-table-column
+            v-if="hiddle_1"
+            label="品牌logo"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <img
+                :src="scope.row.logo"
+                alt=""
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            v-if="hiddle_1"
+            prop="first"
+            label="优先级"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            v-if="hiddle_1"
+            prop="classifyName"
+            label="品牌分类"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            v-if="hiddle_1"
+            prop="goodsNum"
+            label="包含商品数量"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            v-if="!hiddle_1"
+            prop="brandNum"
+            label="包含商品数量"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            v-if="!hiddle_1"
+            prop="classifyName"
+            label="分类名称"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="first"
+            label="分类优先级"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="创建时间"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <div v-if="hiddle_1">
+                <span
+                  @click="handleEditGoods(scope.row.id)"
+                  style="color: #5a8bff;"
+                >编辑</span>
+                <span
+                  @click="deleGrand(scope.row.id)"
+                  style="color: #5a8bff;"
+                >删除</span>
+              </div>
+              <div v-if="!hiddle_1">
+                <span
+                  @click="handlePagingEditGoods(scope.row)"
+                  style="color: #5a8bff;"
+                >编辑</span>
+                <span
+                  @click="delePagingGrand(scope.row.classifyId)"
+                  style="color: #5a8bff;"
+                >删除</span>
+              </div>
+
+            </template>
+          </el-table-column>
+
+        </el-table>
+        <!-- <table width="100%">
           <thead>
             <tr class="brandTr">
               <td :class="hiddle_1 ? '' : 'firstNameClass'">
@@ -344,11 +439,16 @@
         >
           <img :src="noImg" />
           <span>暂无相关数据</span>
-        </div>
+        </div> -->
+        <!--分页-->
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="defaultAllBrandData"
+        />
       </div>
 
       <!--分页-->
-      <div class="tapOneblock">
+      <!-- <div class="tapOneblock">
         <span class="demonstration">直接前往</span>
         <el-pagination
           @current-change="handleCurrentChange"
@@ -358,7 +458,7 @@
           :total="totalRows"
         >
         </el-pagination>
-      </div>
+      </div> -->
     </div>
     <!--添加品牌分类弹窗-->
     <el-dialog
@@ -400,10 +500,19 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import pagination from '@/components/admin/pagination/pagination'
 import { saveShowBrandgetRequest, showBrandgetRequest, pagingBrandUpdateRequest, pagingBrandDelRequest, pagingBrandQueryRequest, brandAllGetRequest, brandDeleteGetRequest, classificationSelectRequest, addGrandClassRequest } from '@/api/admin/brandManagement.js'
 export default {
+  components: { pagination },
   data () {
     return {
+      // 结束时间校验
+      endTime: {
+        disabledDate: time => {
+          return time.getTime() < this.brandStartTime
+        }
+      },
+      pageParams: {}, // 分页
       upDateClassifyId: '',
       activeName: 'first',
       restaurants: [],
@@ -511,14 +620,14 @@ export default {
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitEditGoodsId']),
     defaultAllBrandData () {
-      let obj = {
-        'currentPage': 1,
-        'pageRows': 20
-      }
+      let obj = {}
+      obj.currentPage = this.pageParams.currentPage
+      obj.pageRows = this.pageParams.pageRows
       // 初始化全部品牌表格数据
       brandAllGetRequest(obj).then((res) => {
         if (res.error === 0) {
           this.trList = res.content.dataList
+          this.pageParams = res.content.page
           this.totalRows = res.content.page.totalRows
           this.tbodyFlag = true
         }
@@ -840,9 +949,9 @@ export default {
       let start = ''
       let end = ''
       if (this.brandStartTime) {
-        start = this.brandStartTime + ' 00:00:00'
+        start = this.brandStartTime.getFullYear() + '-' + (this.brandStartTime.getMonth() + 1) + '-' + this.brandStartTime.getDate() + '00:00:00'
       } else if (this.brandEndTime) {
-        end = this.brandEndTime + ' 00:00:00'
+        end = this.brandEndTime.getFullYear() + '-' + (this.brandEndTime.getMonth() + 1) + '-' + this.brandEndTime.getDate() + '00:00:00'
       }
 
       console.log(this.brandStartTime, this.brandEndTime)
@@ -886,11 +995,18 @@ export default {
     handleToScreen () {
       this.defaultPageingGrand()
     }
-
   }
 }
 </script>
 <style scoped lang='scss'>
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
 .showDiv {
   display: flex;
   flex-direction: column;
@@ -965,13 +1081,16 @@ export default {
   justify-content: flex-start;
 }
 .topUl li:nth-of-type(1) {
-  margin-right: 37px;
+  margin-right: 10px;
 }
 .topUl li:nth-of-type(2) {
-  margin-right: 37px;
+  margin-right: 10px;
 }
 .topUl li:nth-of-type(3) {
-  margin-right: 37px;
+  margin-right: 10px;
+}
+.topUl li:nth-of-type(4) {
+  margin-right: 10px;
 }
 .topBtn {
   display: flex;
@@ -1120,8 +1239,8 @@ tbody img {
 }
 </style>
 <style>
-.brandManagementContent .el-input {
-  width: 140px !important;
+.topUl .el-input {
+  width: 170px;
 }
 .tapOneblock .el-pagination__editor {
   width: 70px !important;

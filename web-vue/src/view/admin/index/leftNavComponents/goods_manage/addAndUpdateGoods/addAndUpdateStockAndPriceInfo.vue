@@ -99,16 +99,44 @@
             </tr>
             <tr
               v-for="(item,index) in goodsProductInfo.goodsSpecProducts"
-              :key="index">
+              :key="index"
+            >
               <td>{{item.prdDescTemp}}</td>
-              <td><input :id="'prdPrice_'+item.prdDesc" v-model.number="item.prdPrice" @change="specPrdInputChange(item.prdPrice,'prdPrice_'+item.prdDesc,item)"/></td>
-              <td><input :id="'prdCostPrice_'+item.prdCostPrice" v-model.number="item.prdCostPrice" @change="specPrdInputChange(item.prdCostPrice,'prdCostPrice_'+item.prdCostPrice,item)"/></td>
-              <td><input :id="'prdNumber_'+item.prdNumber" v-model.number="item.prdNumber" @change="specPrdInputChange(item.prdNumber,'prdNumber_'+item.prdNumber,item)"/></td>
-              <td><input :id="'prdSn_'+item.prdDesc" v-model="item.prdSn" @change="specPrdSnChange(item,index,$event.target.value,$event)"/></td>
+              <td><input
+                  :id="'prdPrice_'+item.prdDesc"
+                  v-model.number="item.prdPrice"
+                  @change="specPrdInputChange(item.prdPrice,'prdPrice_'+item.prdDesc,item)"
+                /></td>
+              <td><input
+                  :id="'prdCostPrice_'+item.prdCostPrice"
+                  v-model.number="item.prdCostPrice"
+                  @change="specPrdInputChange(item.prdCostPrice,'prdCostPrice_'+item.prdCostPrice,item)"
+                /></td>
+              <td><input
+                  :id="'prdNumber_'+item.prdNumber"
+                  v-model.number="item.prdNumber"
+                  @change="specPrdInputChange(item.prdNumber,'prdNumber_'+item.prdNumber,item)"
+                /></td>
+              <td><input
+                  :id="'prdSn_'+item.prdDesc"
+                  v-model="item.prdSn"
+                  @change="specPrdSnChange(item,index,$event.target.value,$event)"
+                /></td>
               <td>
-                <div style="margin: 0 auto;width: 30px;height: 30px;border: 1px solid #ccc;cursor: pointer;" @click="prdImgClick(item)">
-                  <img v-if="item.prdImg.imgUrl === null" style="width: 30px;height: 30px;"  :src="$imageHost+'/image/admin/add_img.png'">
-                  <img v-else style="width: 30px;height: 30px;"  :src="item.prdImg.imgUrl">
+                <div
+                  style="margin: 0 auto;width: 30px;height: 30px;border: 1px solid #ccc;cursor: pointer;"
+                  @click="prdImgClick(item)"
+                >
+                  <img
+                    v-if="item.prdImg.imgUrl === null"
+                    style="width: 30px;height: 30px;"
+                    :src="$imageHost+'/image/admin/add_img.png'"
+                  >
+                  <img
+                    v-else
+                    style="width: 30px;height: 30px;"
+                    :src="item.prdImg.imgUrl"
+                  >
                 </div>
               </td>
             </tr>
@@ -286,7 +314,110 @@
       </el-form-item>
     </el-form>
     <!-- 展开更多配置 -->
-    <el-collapse accordion v-model="collapseActiveName">
+    <div
+      @click="handleToChangeArror"
+      style="padding: 0 0 30px 50px;"
+    >
+      <div
+        v-if="arrorFlag"
+        style="color:rgb(90, 139, 255);cursor:pointer;width: 200px;"
+      >
+        {{ $t('seckill.openConfigure') }}&nbsp;<img :src="ArrowArr[0].img_1">
+      </div>
+      <div
+        v-if="!arrorFlag"
+        style="color:rgb(90, 139, 255);cursor:pointer;width: 200px;"
+      >
+        {{ $t('seckill.closeConfigure') }}&nbsp;<img :src="ArrowArr[1].img_2">
+      </div>
+    </div>
+
+    <el-form
+      :model="goodsProductInfo"
+      :rules="stockAndPriceRules"
+      ref="stockAndPriceInfoOtherForm"
+      label-width="120px"
+      v-if="!arrorFlag"
+    >
+
+      <el-form-item
+        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.limitBuyNum')"
+        prop="limitBuyNum"
+      >
+        <el-input-number
+          ref="limitBuyNumInput"
+          v-model="goodsProductInfo.limitBuyNum"
+          step-strictly
+          size="small"
+          controls-position="right"
+          :min="0"
+          style="width:170px;"
+        />
+        <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.limitBuyNumTip')}}</span>
+      </el-form-item>
+      <el-form-item
+        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.maxBuyNum')"
+        prop="limitMaxNum"
+      >
+        <el-input-number
+          ref="limitMaxNumInput"
+          v-model="goodsProductInfo.limitMaxNum"
+          step-strictly
+          size="small"
+          controls-position="right"
+          :min="0"
+          style="width:170px;"
+        />
+        <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.maxBuyNumTip')}}</span>
+      </el-form-item>
+      <el-form-item
+        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.costPrice')"
+        prop="prdCost"
+      >
+        <el-input-number
+          ref="prdCostInput"
+          v-model="goodsProductInfo.prdCost"
+          step-strictly
+          size="small"
+          controls-position="right"
+          :min="0"
+          :disabled="specInfoSwitch"
+          style="width:170px;"
+        />
+        <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.costPriceTip')}}</span>
+      </el-form-item>
+      <el-form-item
+        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.addSaleNum')"
+        prop="addSaleNum"
+      >
+        <el-input-number
+          v-model="goodsProductInfo.addSaleNum"
+          step-strictly
+          size="small"
+          controls-position="right"
+          :min="0"
+          style="width:170px;"
+        />
+        <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.addSaleNumSetting')}}</span>
+      </el-form-item>
+      <el-form-item
+        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.goodsPrdSn')"
+        v-if="!specInfoSwitch"
+      >
+        <el-input
+          v-model="goodsProductInfo.prdSn"
+          size="small"
+          style="width:170px;"
+          @change="defaultSpecPrdChangeRepeatCheck"
+        />
+      </el-form-item>
+
+    </el-form>
+
+    <!-- <el-collapse
+      accordion
+      v-model="collapseActiveName"
+    >
       <el-collapse-item
         :title="$t('goodsAddEditInfo.toggleName')"
         name="stockMore"
@@ -372,12 +503,13 @@
 
         </el-form>
       </el-collapse-item>
-    </el-collapse>
+    </el-collapse> -->
     <!--图片dialog-->
-    <ImageDalog :tuneUp="imgDialogShow"
-                pageIndex='pictureSpace'
-                :imageSize="[800,800]"
-                @handleSelectImg='imgDialogSelectedCallback'
+    <ImageDalog
+      :tuneUp="imgDialogShow"
+      pageIndex='pictureSpace'
+      :imageSize="[800,800]"
+      @handleSelectImg='imgDialogSelectedCallback'
     />
   </div>
 </template>
@@ -442,7 +574,14 @@ export default {
       /* 会员价辅助数据 */
       memberCards: [],
       memberCardPrdShow: false,
-      unifyCardsPriceShow: false
+      unifyCardsPriceShow: false,
+      arrorFlag: true, // 展开更多配置
+      // 展开设置箭头
+      ArrowArr: [{
+        img_1: this.$imageHost + '/image/admin/show_more.png'
+      }, {
+        img_2: this.$imageHost + '/image/admin/hid_some.png'
+      }]
     }
   },
   watch: {
@@ -516,7 +655,7 @@ export default {
     specInfoChange (specInfoModel, kIndex, newVal, event) {
       // 规格名称重复则将input恢复原值，并返回
       if (this._isSpecInfoNameRepeated(kIndex, newVal)) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.goodsSpecNameRepeat'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSpecNameRepeat'), type: 'warning' })
         event.target.value = specInfoModel.specName
         event.target.focus()
         return
@@ -550,7 +689,7 @@ export default {
     specValChange (specInfoModel, vIndex, newVal, event) {
       // 商品规格值名称有重复的话则将input恢复原值,并返回
       if (this._isSpecValNameRepeated(specInfoModel, vIndex, newVal)) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.goodsSpecValKRepeat'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSpecValKRepeat'), type: 'warning' })
         event.target.value = specInfoModel.goodsSpecVals[vIndex].specValName
         event.target.focus()
         return
@@ -607,7 +746,7 @@ export default {
       }
 
       if (this._isSpecPrdSnRepeated(index, newVal)) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.goodsSkuSnRepeat'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSkuSnRepeat'), type: 'warning' })
         item.prdSn = item.prdSnBak
         event.target.focus()
         return
@@ -620,7 +759,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.goodsSkuSnRepeat'), type: 'warning'})
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSkuSnRepeat'), type: 'warning' })
           item.prdSn = item.prdSnBak
           event.target.focus()
         } else {
@@ -926,7 +1065,7 @@ export default {
     /* 会员价格change处理函数 */
     memberCardPriceChange (prdPrice, cardPrice, inputId, item) {
       if (cardPrice === undefined || cardPrice === '') {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.gradPrdPriceIsNull'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.gradPrdPriceIsNull'), type: 'warning' })
         document.getElementById(inputId).focus()
         return
       }
@@ -938,7 +1077,7 @@ export default {
       }
 
       if (cardPrice > prdPrice) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.gradePrdPriceHigherThanGoodsPrice'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.gradePrdPriceHigherThanGoodsPrice'), type: 'warning' })
         document.getElementById(inputId).focus()
       }
     },
@@ -949,7 +1088,7 @@ export default {
       }
       // 商品价格填写校验正确性
       if (!this.specInfoSwitch && this.goodsProductInfo.prdPrice === undefined) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.goodsPriceIsNull'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsPriceIsNull'), type: 'warning' })
         this.$refs.prdPriceInput.focus()
         memberCard.checked = false
         return false
@@ -959,7 +1098,7 @@ export default {
         for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
           let item = this.goodsProductInfo.goodsSpecProducts[i]
           if (item.prdPrice === undefined || item.prdPrice === null || item.prdPrice === '') {
-            this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.prdPriceIsNull'), type: 'warning'})
+            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.prdPriceIsNull'), type: 'warning' })
             document.getElementById('prdPrice_' + item.prdDesc).focus()
             memberCard.checked = false
             return false
@@ -981,7 +1120,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.goodsPrdSnRepeat'), type: 'warning'})
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsPrdSnRepeat'), type: 'warning' })
           this.goodsProductInfo.prdSn = this.goodsProductInfo.prdSnBak
         } else {
           this.goodsProductInfo.prdSnBak = this.goodsProductInfo.prdSn
@@ -1011,7 +1150,7 @@ export default {
       goodsData.goodsSpecs.forEach(spec => {
         let specTemp = { specId: spec.specId, specName: spec.specName, goodsSpecVals: [] }
         spec.goodsSpecVals.forEach(specVal => {
-          specTemp.goodsSpecVals.push({specValId: specVal.specValId, specValName: specVal.specValName})
+          specTemp.goodsSpecVals.push({ specValId: specVal.specValId, specValName: specVal.specValName })
         })
         this.goodsProductInfo.goodsSpecs.push(specTemp)
       })
@@ -1057,7 +1196,7 @@ export default {
           memberCards: []
         }
         this.memberCards.forEach(card => {
-          temp.memberCards.push({card: card, cardPrice: null})
+          temp.memberCards.push({ card: card, cardPrice: null })
         })
         specProducts.push(temp)
       })
@@ -1167,13 +1306,13 @@ export default {
         for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
           let item = this.goodsProductInfo.goodsSpecProducts[i]
           if (isNumberBlank(item.prdPrice) || item.prdPrice < 0) {
-            this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.priceIsWrong'), type: 'warning'})
+            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.priceIsWrong'), type: 'warning' })
             document.getElementById('prdPrice_' + item.prdDesc).focus()
             return false
           }
 
           if (isNumberBlank(item.prdNumber) || item.prdNumber < 0) {
-            this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.goodsNumIsWrong'), type: 'warning'})
+            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.goodsNumIsWrong'), type: 'warning' })
             document.getElementById('prdNumber_' + item.prdDesc).focus()
             return false
           }
@@ -1189,13 +1328,13 @@ export default {
               continue
             }
             if (isNumberBlank(cardWrap.cardPrice) || cardWrap < 0) {
-              this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.gradPrdPriceIsNull'), type: 'warning'})
+              this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.gradPrdPriceIsNull'), type: 'warning' })
               document.getElementById(specProduct.prdDesc + cardWrap.card.cardName).focus()
               return false
             }
 
             if (cardWrap.cardPrice > specProduct.prdPrice) {
-              this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.gradePrdPriceHigherThanGoodsPrice'), type: 'warning'})
+              this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.gradePrdPriceHigherThanGoodsPrice'), type: 'warning' })
               document.getElementById(specProduct.prdDesc + cardWrap.card.cardName).focus()
               return false
             }
@@ -1204,19 +1343,19 @@ export default {
       } else {
         // 商品库存检查
         if (isNumberBlank(this.goodsProductInfo.prdNumber) || this.goodsProductInfo.prdNumber < 0) {
-          this.$message.warning({message: '商品库存填写错误', type: 'warning'})
+          this.$message.warning({ message: '商品库存填写错误', type: 'warning' })
           this.$refs.prdNumberInput.focus()
           return false
         }
         // 商品价格验证
         if (isNumberBlank(this.goodsProductInfo.prdPrice) || this.goodsProductInfo.prdPrice < 0) {
-          this.$message.warning({message: '商品价格填写错误', type: 'warning'})
+          this.$message.warning({ message: '商品价格填写错误', type: 'warning' })
           this.$refs.prdPriceInput.focus()
           return false
         }
         // 成本价格验证
         if (isNumberBlank(this.goodsProductInfo.prdCost) || this.goodsProductInfo.prdCost < 0) {
-          this.$message.warning({message: '成本价格填写错误', type: 'warning'})
+          this.$message.warning({ message: '成本价格填写错误', type: 'warning' })
           this.$refs.prdPriceInput.focus()
           return false
         }
@@ -1227,12 +1366,12 @@ export default {
             continue
           }
           if (isNumberBlank(item.cardPrice) || item.cardPrice < 0) {
-            this.$message.warning({message: '会员价格不可为空', type: 'warning'})
+            this.$message.warning({ message: '会员价格不可为空', type: 'warning' })
             document.getElementById(item.cardName).focus()
             return false
           }
           if (item.cardPrice > this.goodsProductInfo.prdPrice) {
-            this.$message.warning({message: '会员价格不可高于商品价格', type: 'warning'})
+            this.$message.warning({ message: '会员价格不可高于商品价格', type: 'warning' })
             document.getElementById(item.cardName).focus()
             return false
           }
@@ -1243,7 +1382,7 @@ export default {
       if ((isNumberBlank(this.goodsProductInfo.limitBuyNum) || this.goodsProductInfo.limitBuyNum < 0) &&
         (isNumberBlank(this.goodsProductInfo.limitMaxNum) || this.goodsProductInfo.limitMaxNum < 0)) {
         if (this.goodsProductInfo.limitBuyNum > this.goodsProductInfo.limitMaxNum) {
-          this.$message.warning({message: '最小限购数量不可大于最大限购数量', type: 'warning'})
+          this.$message.warning({ message: '最小限购数量不可大于最大限购数量', type: 'warning' })
           this.$refs.limitBuyNumInput.focus()
           return false
         }
@@ -1341,6 +1480,10 @@ export default {
         })
       }
       return retData
+    },
+    /* 展开更多配置 */
+    handleToChangeArror () {
+      this.arrorFlag = !this.arrorFlag
     }
   },
   mounted () {

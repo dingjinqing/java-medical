@@ -12,7 +12,7 @@
           :label="$t('evaluation.evaluationTabs.evaluationRecord')"
           name="first"
         >
-          <evaluationRecord v-if="activeName === 'first'" />
+          <!-- <evaluationRecord v-if="activeName === 'first'" /> -->
         </el-tab-pane>
         <el-tab-pane
           :label="$t('evaluation.evaluationTabs.evaluationReview')"
@@ -45,6 +45,8 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+
+    <evaluationRecord v-if="activeName === 'first'" />
   </div>
 </template>
 <script>

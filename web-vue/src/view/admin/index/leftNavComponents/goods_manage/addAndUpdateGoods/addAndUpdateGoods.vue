@@ -1,5 +1,5 @@
 <template>
-  <div class="goodsWrap" >
+  <div class="goodsWrap">
     <div
       v-if="reload"
       id="goodsDiv"
@@ -33,22 +33,22 @@
 
       <!-- 主要内容区 -->
       <!--商品信息-->
-        <addAndUpdateGoodsProductInfo
-          ref="goodsProductInfoCmp"
-          v-show="stepData.currentStep===1"
-        />
+      <addAndUpdateGoodsProductInfo
+        ref="goodsProductInfoCmp"
+        v-show="stepData.currentStep===1"
+      />
       <!--商品详情-->
-        <addAndUpdateGoodsDetails
-          :goodsProductInfoData="goodsProductInfoDataForDetails"
-          ref="goodsDetailsCmp"
-          v-show="stepData.currentStep===2"
-        />
+      <addAndUpdateGoodsDetails
+        :goodsProductInfoData="goodsProductInfoDataForDetails"
+        ref="goodsDetailsCmp"
+        v-show="stepData.currentStep===2"
+      />
       <!--商品分销信息-->
-        <addAndUpdateGoodsDistributionInfo
-          :goodsProductInfoData="goodsProductInfoDataForDistribution"
-          ref="goodsDistributionInfoCmp"
-          v-show="stepData.currentStep===3"
-        />
+      <addAndUpdateGoodsDistributionInfo
+        :goodsProductInfoData="goodsProductInfoDataForDistribution"
+        ref="goodsDistributionInfoCmp"
+        v-show="stepData.currentStep===3"
+      />
 
       <!-- 底部按钮组件 -->
       <div class="goodsFooter">
@@ -92,7 +92,11 @@
       </div>
 
       <!--预览商品太阳码-->
-      <el-dialog :visible.sync="qrCodeData.isShow" :title="$t('goodsAddEditInfo.goodsAppView')" width="350px">
+      <el-dialog
+        :visible.sync="qrCodeData.isShow"
+        :title="$t('goodsAddEditInfo.goodsAppView')"
+        width="350px"
+      >
         <div style="text-align: center;">
           <el-image
             fit="scale-down"
@@ -100,8 +104,14 @@
             style="width: 250px; height: 230px;"
           />
         </div>
-        <div slot="footer" style="text-align: center;">
-          <el-button @click="reloadCmp" type="primary">{{$t('goodsAddEditInfo.continueAdd')}}</el-button>
+        <div
+          slot="footer"
+          style="text-align: center;"
+        >
+          <el-button
+            @click="reloadCmp"
+            type="primary"
+          >{{$t('goodsAddEditInfo.continueAdd')}}</el-button>
           <el-button @click="returnGoodsList">{{$t('goodsAddEditInfo.returnToList')}}</el-button>
         </div>
       </el-dialog>
@@ -115,11 +125,11 @@ import addAndUpdateGoodsDetails from './addAndUpdateGoodsDetails'
 import addAndUpdateGoodsDistributionInfo from './addAndUpdateGoodsDistributionInfo'
 
 /* 导入js组件 */
-import {addGoodsApi, updateGoodsApi, selectGoodsApi, getGoodsQrCode} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import { addGoodsApi, updateGoodsApi, selectGoodsApi, getGoodsQrCode } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 
 export default {
   name: 'addAndUpdateGoods',
-  components: {addAndUpdateGoodsProductInfo, addAndUpdateGoodsDetails, addAndUpdateGoodsDistributionInfo},
+  components: { addAndUpdateGoodsProductInfo, addAndUpdateGoodsDetails, addAndUpdateGoodsDistributionInfo },
   computed: {
     goodsProductInfoDataForDetails: function () {
       let retData = {}
@@ -153,8 +163,8 @@ export default {
     return {
       reload: true,
       /* 为了能在子组件内部通过inject察觉到变化,默认情况inject不具有响应式 */
-      stepData: {currentStep: 1},
-      isUpdateWrap: {isUpdate: false, updateGoodsId: null, isCopy: 0},
+      stepData: { currentStep: 1 },
+      isUpdateWrap: { isUpdate: false, updateGoodsId: null, isCopy: 0 },
       goodsProductInfoData: {},
       goodsDetailsData: {},
       goodsDistributionInfoData: {},
@@ -289,7 +299,7 @@ export default {
             type: 'error'
           })
         } else {
-          this.$router.push({name: 'goodsForSale'})
+          this.$router.push({ name: 'goodsForSale' })
         }
       })
     },
@@ -308,7 +318,7 @@ export default {
             type: 'error'
           })
         } else {
-          this.$router.push({name: 'goods_add'})
+          this.$router.push({ name: 'goods_add' })
           this.reloadCmp()
         }
       })
@@ -339,11 +349,11 @@ export default {
       })
     },
     returnGoodsList () {
-      this.$router.push({name: 'soldOutGoods'})
+      this.$router.push({ name: 'soldOutGoods' })
     },
     /* 初始化待修改商品数据 */
     _initDataForUpdate (goodsId) {
-      selectGoodsApi({goodsId: goodsId}).then(res => {
+      selectGoodsApi({ goodsId: goodsId }).then(res => {
         if (res.error !== 0) {
           this.$message.error({
             type: 'error',
@@ -401,27 +411,27 @@ export default {
 }
 </script>
 <style scoped>
-  .goodsWrap {
-    padding: 10px 10px;
-    overflow-y: auto;
-  }
+.goodsWrap {
+  padding: 10px 10px;
+  overflow-y: auto;
+}
 
-  .goodsContent {
-    background-color: white;
-    padding: 10px 10px 100px 10px;
-    position: relative;
-  }
+.goodsContent {
+  background-color: white;
+  padding: 10px 10px 100px 10px;
+  position: relative;
+}
 
-  .goodsFooter {
-    background: #f8f8fa;
-    text-align: center;
-    box-sizing: border-box;
-    height: 50px;
-    padding-top: 10px;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-  }
+.goodsFooter {
+  background: #f8f8fa;
+  text-align: center;
+  box-sizing: border-box;
+  height: 50px;
+  padding-top: 10px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
 </style>

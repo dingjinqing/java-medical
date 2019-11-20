@@ -16,7 +16,7 @@
             ref="goodsNameInput"
             v-model="goodsProductInfo.goodsName"
             size="small"
-            style="width:400px"
+            style="width:170px"
             @change="goodsNameChangeRepeatCheck"
           />
         </el-form-item>
@@ -24,7 +24,7 @@
           <el-input
             v-model="goodsProductInfo.goodsAd"
             size="small"
-            style="width:400px"
+            style="width:170px"
           />
         </el-form-item>
         <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsSn')">
@@ -104,9 +104,7 @@
             target="_blank"
           >{{$t("goodsAddEditInfo.basicInfo.catIdGo")}}</el-link>
         </el-form-item>
-        <el-form-item
-          :label="$t('goodsAddEditInfo.basicInfo.goodsImg')"
-        >
+        <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsImg')">
           <div style="display: flex;align-items: center;flex-wrap: wrap;">
             <div
               v-for="(item,index) in goodsProductInfo.goodsImgs"
@@ -150,7 +148,199 @@
         </el-form-item>
       </el-form>
       <!-- 基本信息更多配置 -->
-      <el-collapse accordion v-model="collapseActiveName">
+      <div
+        @click="handleToChangeArror"
+        style="padding: 0 0 30px 50px"
+      >
+        <div
+          v-if="arrorFlag"
+          style="color:rgb(90, 139, 255);cursor:pointer;width: 200px;"
+        >
+          {{ $t('seckill.openConfigure') }}&nbsp;<img :src="ArrowArr[0].img_1">
+        </div>
+        <div
+          v-if="!arrorFlag"
+          style="color:rgb(90, 139, 255);cursor:pointer;width: 200px;"
+        >
+          {{ $t('seckill.closeConfigure') }}&nbsp;<img :src="ArrowArr[1].img_2">
+        </div>
+      </div>
+
+      <el-form
+        ref="basicInfoOtherForm"
+        :model="goodsProductInfo"
+        :rules="basicInfoRules"
+        label-width="120px"
+        v-if="!arrorFlag"
+      >
+        <el-form-item
+          :label="$t('goodsAddEditInfo.basicInfoOther.unit')"
+          prop="unit"
+        >
+          <el-select
+            ref="unitSelect"
+            v-model="unitSelectedValue"
+            @change="unitSelectChange"
+            size="small"
+            style="width:170px;"
+          >
+            <el-option
+              v-for="(item,index) in unitSelectOptions"
+              :key="index"
+              :value="item.value"
+              :label="item.label"
+            />
+          </el-select>
+          <el-input
+            v-if="unitSelectedValue===null"
+            v-model="unitCustomerValue"
+            @change="unitCustomerChange"
+            size="small"
+            style="width:100px;"
+          />
+          <span
+            v-if="unitSelectedValue===null"
+            class="inputTip"
+          >{{$t('goodsAddEditInfo.basicInfoOther.unitTip')}}</span>
+        </el-form-item>
+        <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.sortId')">
+          <el-select
+            filterable
+            v-model="goodsProductInfo.sortId"
+            :placeholder="$t('goodsAddEditInfo.basicInfoOther.sortIdDefault')"
+            size="small"
+            style="width:170px;"
+          >
+            <el-option
+              v-for="(item,index) in sortSelectOptions"
+              :label="item.sortName"
+              :value="item.sortId"
+              :key="index"
+              :style="{paddingLeft: (item.level+1)*20+'px'}"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsLabel')">
+          <el-select
+            v-model="labelSelectedTempVal"
+            :placeholder="$t('goodsAddEditInfo.basicInfoOther.goodsLabelDefault')"
+            size="small"
+            @change="labelSelectChange"
+            style="width:170px;"
+          >
+            <el-option
+              v-for="item in labelSelectOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+          <el-link
+            type="primary"
+            :underline="false"
+            @click.native="labelSelectRefresh"
+            href="#"
+            style="margin:0 5px;"
+          >{{$t('goodsAddEditInfo.linkRefresh')}}
+          </el-link>
+          |
+          <el-link
+            type="primary"
+            :underline="false"
+            href="#"
+            style="margin:0 5px;"
+          >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelNew')}}</el-link>
+          |
+          <el-link
+            type="primary"
+            :underline="false"
+            href="#"
+            style="margin:0 5px;"
+          >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelManage')}}</el-link>
+          <div
+            v-if="labelSelectedItems.length>0"
+            style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;"
+          >
+            <div>已选：</div>
+            <div
+              class="selectedWrap"
+              v-for="(item,index) in labelSelectedItems"
+              :key="index"
+            >
+              {{item.name}}
+              <span
+                @click="deleteLabel(item,index)"
+                class="deleteIcon"
+              >×</span>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrand')">
+          <el-button
+            @click="goodsBrandDialogData.goodsBrandDialogShow=true"
+            size="small"
+            style="width: 170px;"
+          >
+            {{currentGoodsBrandData.brandName}}
+          </el-button>
+          <el-link
+            type="primary"
+            :underline="false"
+            href="#"
+            style="margin:0 5px;"
+          >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandNew')}}</el-link>
+          |
+          <el-link
+            type="primary"
+            :underline="false"
+            href="#"
+            style="margin:0 5px;"
+          >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandManage')}}</el-link>
+        </el-form-item>
+        <el-form-item
+          :label="$t('goodsAddEditInfo.basicInfoOther.goodsVideo') + '：'"
+          prop="video"
+        >
+          <VideoSpaceDialog
+            :visible.sync="showVideoSpaceDialog"
+            @video-click="videoSelected"
+          />
+          <div style="display: flex; align-items: center;flex-wrap: wrap;">
+            <div class="add-video-container">
+              <el-image
+                fit="scale-down"
+                class="add-goods-video"
+                :src="videoSnapShotUrl"
+                @click="videoInputClick"
+              />
+              <el-image
+                fit="scale-down"
+                @click="videoRemove"
+                :src="imgHost+'/image/admin/icon_delete.png'"
+                class="img-delete good_img_deletes"
+                v-show="showRemoveVideoIcon"
+              />
+
+              <el-link
+                type="primary"
+                :underline="false"
+                :href="videoUrl"
+                v-show="showRemoveVideoIcon"
+                class="btn_playa"
+                target="_blank"
+              >
+                {{$t('videoSpace.upload.play')}}
+              </el-link>
+            </div>
+            <span class="inputTip">{{$t('goodsAddEditInfo.basicInfoOther.goodsVideoTip')}}</span>
+          </div>
+        </el-form-item>
+      </el-form>
+
+      <!-- <el-collapse
+        accordion
+        v-model="collapseActiveName"
+      >
         <el-collapse-item
           :title="$t('goodsAddEditInfo.toggleName')"
           name="basicMore"
@@ -163,7 +353,8 @@
           >
             <el-form-item
               :label="$t('goodsAddEditInfo.basicInfoOther.unit')"
-            prop="unit">
+              prop="unit"
+            >
               <el-select
                 ref="unitSelect"
                 v-model="unitSelectedValue"
@@ -190,21 +381,24 @@
                 class="inputTip"
               >{{$t('goodsAddEditInfo.basicInfoOther.unitTip')}}</span>
             </el-form-item>
-            <el-form-item
-              :label="$t('goodsAddEditInfo.basicInfoOther.sortId')">
+            <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.sortId')">
               <el-select
                 filterable
                 v-model="goodsProductInfo.sortId"
-               :placeholder="$t('goodsAddEditInfo.basicInfoOther.sortIdDefault')"
+                :placeholder="$t('goodsAddEditInfo.basicInfoOther.sortIdDefault')"
                 size="small"
                 style="width:170px;"
               >
-                <el-option v-for="(item,index) in sortSelectOptions" :label="item.sortName" :value="item.sortId" :key="index"
-                           :style="{paddingLeft: (item.level+1)*20+'px'}"/>
+                <el-option
+                  v-for="(item,index) in sortSelectOptions"
+                  :label="item.sortName"
+                  :value="item.sortId"
+                  :key="index"
+                  :style="{paddingLeft: (item.level+1)*20+'px'}"
+                />
               </el-select>
             </el-form-item>
-            <el-form-item
-              :label="$t('goodsAddEditInfo.basicInfoOther.goodsLabel')">
+            <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsLabel')">
               <el-select
                 v-model="labelSelectedTempVal"
                 :placeholder="$t('goodsAddEditInfo.basicInfoOther.goodsLabelDefault')"
@@ -259,9 +453,12 @@
                 </div>
               </div>
             </el-form-item>
-            <el-form-item
-              :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrand')">
-              <el-button @click="goodsBrandDialogData.goodsBrandDialogShow=true" size="small" style="width: 170px;">
+            <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrand')">
+              <el-button
+                @click="goodsBrandDialogData.goodsBrandDialogShow=true"
+                size="small"
+                style="width: 170px;"
+              >
                 {{currentGoodsBrandData.brandName}}
               </el-button>
               <el-link
@@ -279,14 +476,15 @@
               >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandManage')}}</el-link>
             </el-form-item>
             <el-form-item
-              :label="$t('goodsAddEditInfo.basicInfoOther.goodsVideo')"
+              :label="$t('goodsAddEditInfo.basicInfoOther.goodsVideo') + '：'"
               prop="video"
             >
-              <VideoSpaceDialog :visible.sync="showVideoSpaceDialog"
-                                @video-click="videoSelected"
+              <VideoSpaceDialog
+                :visible.sync="showVideoSpaceDialog"
+                @video-click="videoSelected"
               />
               <div style="display: flex; align-items: center;flex-wrap: wrap;">
-                <div class="add-video-container"  >
+                <div class="add-video-container">
                   <el-image
                     fit="scale-down"
                     class="add-goods-video"
@@ -297,8 +495,8 @@
                     fit="scale-down"
                     @click="videoRemove"
                     :src="imgHost+'/image/admin/icon_delete.png'"
-                    class="img-delete good_img_deletes" v-show="showRemoveVideoIcon"
-
+                    class="img-delete good_img_deletes"
+                    v-show="showRemoveVideoIcon"
                   />
 
                   <el-link
@@ -307,7 +505,8 @@
                     :href="videoUrl"
                     v-show="showRemoveVideoIcon"
                     class="btn_playa"
-                    target="_blank">
+                    target="_blank"
+                  >
                     {{$t('videoSpace.upload.play')}}
                   </el-link>
                 </div>
@@ -316,38 +515,76 @@
             </el-form-item>
           </el-form>
         </el-collapse-item>
-      </el-collapse>
+      </el-collapse> -->
       <!--图片dialog-->
-      <ImageDalog :tuneUp="selfImgDialogShow"
-        pageIndex='pictureSpace' :isDraggable="true" :imageSize="[800,800]" @handleSelectImg='imgDialogSelectedCallback'
+      <ImageDalog
+        :tuneUp="selfImgDialogShow"
+        pageIndex='pictureSpace'
+        :isDraggable="true"
+        :imageSize="[800,800]"
+        @handleSelectImg='imgDialogSelectedCallback'
       />
       <!--添加品牌dialog-->
-      <el-dialog :title="$t('goodsAddEditInfo.basicInfoOther.goodsBrandTitle')"
-                 :visible.sync="goodsBrandDialogData.goodsBrandDialogShow" @open="goodsBrandDialogBeforeOpen"
-                 modal  width="40%" :show-close="false">
-        <el-form :inline="true" :model="goodsBrandDialogData.formData" label-width="80px">
-          <el-form-item  :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandName')">
-            <el-input v-model="goodsBrandDialogData.formData.brandName"/>
+      <el-dialog
+        :title="$t('goodsAddEditInfo.basicInfoOther.goodsBrandTitle')"
+        :visible.sync="goodsBrandDialogData.goodsBrandDialogShow"
+        @open="goodsBrandDialogBeforeOpen"
+        modal
+        width="40%"
+        :show-close="false"
+      >
+        <el-form
+          :inline="true"
+          :model="goodsBrandDialogData.formData"
+          label-width="80px"
+        >
+          <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandName')">
+            <el-input v-model="goodsBrandDialogData.formData.brandName" />
           </el-form-item>
-          <el-form-item  :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandClassify')">
+          <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandClassify')">
             <el-select v-model="goodsBrandDialogData.formData.classifyId">
-              <el-option :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandClassifyDefault')" :value="null"/>
-              <el-option v-for="(item,index) in goodsBrandDialogData.formData.brandClassifyOptions"
-                         :key="index"
-                         :label="item.classifyName"
-                         :value="item.classifyId"/>
+              <el-option
+                :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandClassifyDefault')"
+                :value="null"
+              />
+              <el-option
+                v-for="(item,index) in goodsBrandDialogData.formData.brandClassifyOptions"
+                :key="index"
+                :label="item.classifyName"
+                :value="item.classifyId"
+              />
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button @click="fetchGoodsBrandDialogTableData" type="primary" size="small">{{$t('goodsAddEditInfo.filter')}}</el-button>
+            <el-button
+              @click="fetchGoodsBrandDialogTableData"
+              type="primary"
+              size="small"
+            >{{$t('goodsAddEditInfo.filter')}}</el-button>
           </el-form-item>
         </el-form>
         <div class="tableContent">
-          <el-table :data="goodsBrandDialogData.tableData" v-loading="goodsBrandDialogData.loading" border height="300" highlight-current-row
-                    @current-change="brandTableCurrentChange" style="width: 100%;">
-            <el-table-column prop="brandName" :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandName')"/>
-            <el-table-column prop="classifyName" :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandClassify')"/>
-            <el-table-column prop="createTime" :label="$t('goodsAddEditInfo.createTime')"/>
+          <el-table
+            :data="goodsBrandDialogData.tableData"
+            v-loading="goodsBrandDialogData.loading"
+            border
+            height="300"
+            highlight-current-row
+            @current-change="brandTableCurrentChange"
+            style="width: 100%;"
+          >
+            <el-table-column
+              prop="brandName"
+              :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandName')"
+            />
+            <el-table-column
+              prop="classifyName"
+              :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrandClassify')"
+            />
+            <el-table-column
+              prop="createTime"
+              :label="$t('goodsAddEditInfo.createTime')"
+            />
           </el-table>
           <pagination
             :page-params.sync="goodsBrandDialogData.formData.pageParams"
@@ -355,8 +592,16 @@
           />
         </div>
         <div slot="footer">
-          <el-button @click="brandDialogConfirm" type="primary" size="small">{{$t('goodsAddEditInfo.confirmBtn')}}</el-button>
-          <el-button @click="brandDialogCancel" type="primary" size="small">{{$t('goodsAddEditInfo.cancelBtn')}}</el-button>
+          <el-button
+            @click="brandDialogConfirm"
+            type="primary"
+            size="small"
+          >{{$t('goodsAddEditInfo.confirmBtn')}}</el-button>
+          <el-button
+            @click="brandDialogCancel"
+            type="primary"
+            size="small"
+          >{{$t('goodsAddEditInfo.cancelBtn')}}</el-button>
         </div>
       </el-dialog>
     </div>
@@ -370,7 +615,7 @@ import {
   selectParentPlatfromClassification,
   isGoodsColumnValueExist
 } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
-import {goodsBrandClassifyListApi, goodsBrandPageListApi} from '@/api/admin/goodsManage/brandManagement/brandManagement'
+import { goodsBrandClassifyListApi, goodsBrandPageListApi } from '@/api/admin/goodsManage/brandManagement/brandManagement'
 // js工具函数导入
 import { isStrBlank } from '@/util/goodsUtil'
 // 组件导入
@@ -468,7 +713,14 @@ export default {
       showVideoSpaceDialog: false,
       videoSnapShotUrl: this.$imageHost + '/image/admin/add_video.png',
       videoUrl: '',
-      showRemoveVideoIcon: false
+      showRemoveVideoIcon: false,
+      arrorFlag: true, // 展开更多配置
+      // 展开设置箭头
+      ArrowArr: [{
+        img_1: this.$imageHost + '/image/admin/show_more.png'
+      }, {
+        img_2: this.$imageHost + '/image/admin/hid_some.png'
+      }]
     }
   },
   watch: {
@@ -481,26 +733,26 @@ export default {
       let i18nUnitOptions = this.$t('goodsAddEditInfo.basicInfoOther.unitOptions')
       this.unitSelectedValue = i18nUnitOptions[0]
       this.unitSelectOptions = [
-        {value: i18nUnitOptions[0], label: i18nUnitOptions[0]},
-        {value: i18nUnitOptions[1], label: i18nUnitOptions[1]},
-        {value: i18nUnitOptions[2], label: i18nUnitOptions[2]},
-        {value: i18nUnitOptions[3], label: i18nUnitOptions[3]},
-        {value: i18nUnitOptions[4], label: i18nUnitOptions[4]},
-        {value: i18nUnitOptions[5], label: i18nUnitOptions[5]},
-        {value: i18nUnitOptions[6], label: i18nUnitOptions[6]},
-        {value: i18nUnitOptions[7], label: i18nUnitOptions[7]},
-        {value: i18nUnitOptions[8], label: i18nUnitOptions[8]},
-        {value: i18nUnitOptions[9], label: i18nUnitOptions[9]},
-        {value: i18nUnitOptions[10], label: i18nUnitOptions[10]},
-        {value: i18nUnitOptions[11], label: i18nUnitOptions[11]},
-        {value: i18nUnitOptions[12], label: i18nUnitOptions[12]},
-        {value: i18nUnitOptions[13], label: i18nUnitOptions[13]},
-        {value: i18nUnitOptions[14], label: i18nUnitOptions[14]},
-        {value: i18nUnitOptions[15], label: i18nUnitOptions[15]},
-        {value: i18nUnitOptions[16], label: i18nUnitOptions[16]},
-        {value: i18nUnitOptions[17], label: i18nUnitOptions[17]},
-        {value: i18nUnitOptions[18], label: i18nUnitOptions[18]},
-        {value: null, label: i18nUnitOptions[19]}
+        { value: i18nUnitOptions[0], label: i18nUnitOptions[0] },
+        { value: i18nUnitOptions[1], label: i18nUnitOptions[1] },
+        { value: i18nUnitOptions[2], label: i18nUnitOptions[2] },
+        { value: i18nUnitOptions[3], label: i18nUnitOptions[3] },
+        { value: i18nUnitOptions[4], label: i18nUnitOptions[4] },
+        { value: i18nUnitOptions[5], label: i18nUnitOptions[5] },
+        { value: i18nUnitOptions[6], label: i18nUnitOptions[6] },
+        { value: i18nUnitOptions[7], label: i18nUnitOptions[7] },
+        { value: i18nUnitOptions[8], label: i18nUnitOptions[8] },
+        { value: i18nUnitOptions[9], label: i18nUnitOptions[9] },
+        { value: i18nUnitOptions[10], label: i18nUnitOptions[10] },
+        { value: i18nUnitOptions[11], label: i18nUnitOptions[11] },
+        { value: i18nUnitOptions[12], label: i18nUnitOptions[12] },
+        { value: i18nUnitOptions[13], label: i18nUnitOptions[13] },
+        { value: i18nUnitOptions[14], label: i18nUnitOptions[14] },
+        { value: i18nUnitOptions[15], label: i18nUnitOptions[15] },
+        { value: i18nUnitOptions[16], label: i18nUnitOptions[16] },
+        { value: i18nUnitOptions[17], label: i18nUnitOptions[17] },
+        { value: i18nUnitOptions[18], label: i18nUnitOptions[18] },
+        { value: null, label: i18nUnitOptions[19] }
       ]
       this.goodsProductInfo.unit = this.unitSelectOptions[0].value
     }
@@ -521,7 +773,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message.warning({type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat')})
+          this.$message.warning({ type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat') })
           this.goodsProductInfo.goodsName = this.goodsProductInfo.goodsNameBak
         } else {
           this.goodsProductInfo.goodsNameBak = this.goodsProductInfo.goodsName
@@ -542,7 +794,7 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
-          this.$message.warning({type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat')})
+          this.$message.warning({ type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat') })
           this.goodsProductInfo.goodsSn = this.goodsProductInfo.goodsSnBak
         } else {
           this.goodsProductInfo.goodsSnBak = this.goodsProductInfo.goodsSn
@@ -597,7 +849,7 @@ export default {
       }
       this.goodsProductInfo.goodsImgs = []
       imgObjs.forEach(imgObj => {
-        this.goodsProductInfo.goodsImgs.push({imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl})
+        this.goodsProductInfo.goodsImgs.push({ imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl })
       })
       if (this.goodsProductInfo.goodsImgs.length > 5) {
         this.goodsProductInfo.goodsImgs.splice(5)
@@ -659,7 +911,7 @@ export default {
         let selfItem = retObj[item[idName]]
         if (selfItem === undefined) {
           // 未遍历到则初始化自己
-          retObj[item[idName]] = {'item': item, children: []}
+          retObj[item[idName]] = { 'item': item, children: [] }
           selfItem = retObj[item[idName]]
         } else {
           // 已创建过，（因提前遍历了子节点而创建）
@@ -672,7 +924,7 @@ export default {
           parentItem.children.push(selfItem)
         } else {
           // 没有则创建临时父亲
-          retObj[item.parentId] = {'item': null, children: [selfItem]}
+          retObj[item.parentId] = { 'item': null, children: [selfItem] }
         }
       }
 
@@ -824,10 +1076,10 @@ export default {
     },
     /* 初始化图片 */
     _initGoodsImgs (goodsData) {
-      this.goodsProductInfo.goodsImgs = [{imgUrl: goodsData.goodsImg, imgPath: goodsData.goodsImgPath}]
+      this.goodsProductInfo.goodsImgs = [{ imgUrl: goodsData.goodsImg, imgPath: goodsData.goodsImgPath }]
       if (goodsData.goodsImgs !== null && goodsData.goodsImgs.length > 0) {
         for (let i = 0; i < goodsData.goodsImgs.length; i++) {
-          this.goodsProductInfo.goodsImgs.push({imgUrl: goodsData.goodsImgs[i], imgPath: goodsData.goodsImgsPath[i]})
+          this.goodsProductInfo.goodsImgs.push({ imgUrl: goodsData.goodsImgs[i], imgPath: goodsData.goodsImgsPath[i] })
         }
       }
     },
@@ -908,24 +1160,24 @@ export default {
     /* 验证数据是否全部合法 */
     validateFormData () {
       if (isStrBlank(this.goodsProductInfo.goodsName)) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsName'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsName'), type: 'warning' })
         this.$refs.goodsNameInput.focus()
         return false
       }
 
       if (this.goodsProductInfo.catId === null) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify'), type: 'warning' })
         this.$refs.catSelect.focus()
         return false
       }
 
       if (this.goodsProductInfo.goodsImgs.length === 0) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage'), type: 'warning' })
         return false
       }
 
       if (isStrBlank(this.goodsProductInfo.unit)) {
-        this.$message.warning({message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit'), type: 'warning'})
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit'), type: 'warning' })
         this.$refs.unitSelect.focus()
         return false
       }
@@ -957,6 +1209,10 @@ export default {
         }
       }
       return retData
+    },
+    /* 展开更多配置 */
+    handleToChangeArror () {
+      this.arrorFlag = !this.arrorFlag
     }
   },
   mounted () {
@@ -1044,28 +1300,28 @@ export default {
   cursor: pointer;
   opacity: 0.8;
 }
-  .add-video-container{
-    float: left;
-    position: relative;
-    margin-right: 15px;
-    background: #f7f7f7;
-    border: 1px solid #ccc;
-    width: 80px;
-    height: 81px;
-    text-align: center;
-    line-height: 80px;
-    cursor: pointer;
-  }
-  .add-goods-video{
-    width: 100%;
-    height: 100%;
-  }
-  .good_img_deletes{
-    position: absolute;
-    right: -10px;
-    top: -7px;
-    cursor: pointer;
-  }
+.add-video-container {
+  float: left;
+  position: relative;
+  margin-right: 15px;
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  width: 80px;
+  height: 81px;
+  text-align: center;
+  line-height: 80px;
+  cursor: pointer;
+}
+.add-goods-video {
+  width: 100%;
+  height: 100%;
+}
+.good_img_deletes {
+  position: absolute;
+  right: -10px;
+  top: -7px;
+  cursor: pointer;
+}
 .btn_playa {
   color: #5a8bff !important;
   width: 80px;

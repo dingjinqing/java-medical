@@ -78,6 +78,7 @@
       <el-table-column
         align="center"
         prop="goodsSn"
+        width="180px"
         :label="$t('allGoods.allGoodsData.goodsSn')"
       />
       <el-table-column
@@ -130,11 +131,11 @@
       <el-table-column
         align="center"
         :label="$t('allGoods.allGoodsData.goodsLabel')"
-        min-width="120px"
+        width="160px"
       >
         <template slot-scope="{row}">
-          <div style="">
-            <div style="width:120px; float: left;">
+          <div style="overflow: hidden;">
+            <div style="max-width:96px; float: left;">
               <span
                 v-for="(item,index) in row.goodsLabels"
                 :key="index"
@@ -189,7 +190,7 @@
           >
             <span
               style="font-size: 22px;color:#5a8bff;"
-              class="el-icon-bottom iconSpan"
+              class="el-icon-download"
               @click="withdrawIconClick(row,$index)"
             ></span>
           </el-tooltip>
