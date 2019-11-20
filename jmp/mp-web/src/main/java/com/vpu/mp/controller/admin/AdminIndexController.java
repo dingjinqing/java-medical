@@ -100,11 +100,10 @@ public class AdminIndexController extends AdminBaseController {
 	 */
 	@RequestMapping(value = "/admin/checkMenu")
 	public JsonResult checkMenu(@RequestBody VersionPath path) {
-		String enName = request.getHeader(ENNAME);
-		String vsName = request.getHeader(VSNAME);
-		//TODO 等前端改
+		String enName = path.getEName();
+		String vsName = path.getVName();
 		if (StringUtils.isEmpty(enName)) {
-			//return fail(JsonResultCode.CODE_ACCOUNT_ENNAME_ISNULL);
+			return fail(JsonResultCode.CODE_ACCOUNT_ENNAME_ISNULL);
 		}
 		
 		if (StringUtils.isEmpty(adminAuth.user().loginShopId)) {
@@ -114,7 +113,7 @@ public class AdminIndexController extends AdminBaseController {
 		//判断版本的权限
 		JsonResultCode judgeVersion = judgeVersion(enName,vsName,path.getPath());
 		if(!judgeVersion.equals(JsonResultCode.CODE_SUCCESS)) {
-			//return fail(judgeVersion);
+			return fail(judgeVersion);
 		}
 		
 		Integer roleId = saas.shop.getShopAccessRoleId(adminAuth.user().sysId, adminAuth.user().loginShopId,
