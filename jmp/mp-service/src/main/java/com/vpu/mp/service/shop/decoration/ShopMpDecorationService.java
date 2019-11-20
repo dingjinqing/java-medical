@@ -18,10 +18,12 @@ import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCoupon;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoods;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoodsGroup;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
 import com.vpu.mp.service.pojo.wxapp.config.ShareConfig;
+import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.ShopCollectInfo;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageParam;
@@ -30,6 +32,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
+import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.user.user.UserService;
@@ -62,6 +65,9 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     @Autowired
     protected GoodsMpService goodsMpService;
+
+    @Autowired
+    protected CouponMpService couponMpService;
 
     /**
      * 装修页面列表
@@ -650,7 +656,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         // 是否是分销员
         boolean isDistributor = 1 == userRecord.getIsDistributor();
 
-        if (DistributionConfigService.ENABLE_STATUS.equals(distributionCfg.getStatus()) && isDistributor) {
+        if (distributionCfg != null && DistributionConfigService.ENABLE_STATUS.equals(distributionCfg.getStatus()) && isDistributor) {
             pageContent = pageContent.replace("pages/distribution/distribution", "pages/distributionspread/distributionspread");
         }
         Object o = getDetailDecoratePageModule(pageContent, param.getModuleIndex(), userRecord);
@@ -679,6 +685,9 @@ public class ShopMpDecorationService extends ShopBaseService {
                     switch (moduleName) {
                         case ModuleConstant.M_GOODS:
                             return this.convertGoodsForModule(objectMapper,node,user);
+                        case ModuleConstant.M_COUPON:
+                            return this.convertCouponForModule(objectMapper,node,user);
+                        //TODO case
                     }
                 }
             }
@@ -688,6 +697,14 @@ public class ShopMpDecorationService extends ShopBaseService {
         return null;
     }
 
+    /**
+     * 商品模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
     private ModuleGoods convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
         Integer userId = user.getUserId();
@@ -707,6 +724,22 @@ public class ShopMpDecorationService extends ShopBaseService {
         moduleGoods.setGoodsListData(pageIndexGoodsList);
 
         return moduleGoods;
+    }
+
+    /**
+     * 优惠券模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private  List<? extends CouponPageDecorationVo> convertCouponForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleCoupon moduleCoupon = objectMapper.readValue(node.getValue().toString(), ModuleCoupon.class);
+        Integer userId = user.getUserId();
+
+        // 转换实时信息
+        return couponMpService.getPageIndexCouponList(moduleCoupon, userId);
     }
 
 }

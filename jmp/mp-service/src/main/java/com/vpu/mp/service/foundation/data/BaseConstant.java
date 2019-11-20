@@ -82,5 +82,37 @@ public final  class  BaseConstant {
     public final static byte FIRST_SPECIAL_LIMIT_FLAG_CONFINE =1;
 
 
+    //*************************优惠券*****************************
+    //状态 1启用 0停用
+    /**
+     * 禁用
+     */
+    public final static Byte COUPON_ENABLED_DISABLED =0;
+    /**
+     * 可用
+     */
+    public final static Byte COUPON_ENABLED_NORMAL =1;
+
+    //优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效
+    /**
+     * 固定时间段有效
+     */
+    public final static Byte COUPON_VALIDITY_TYPE_FIXED =0;
+    /**
+     * 领取后开始指定时间段内有效
+     */
+    public final static Byte COUPON_VALIDITY_TYPE_FLEXIBLE =1;
+
+    //是否限制库存：0限制，1不限制
+    /**
+     * 0限制
+     */
+    public final static Byte COUPON_LIMIT_SURPLUS_FLAG_LIMITED =0;
+    /**
+     * 1不限制
+     */
+    public final static Byte COUPON_LIMIT_SURPLUS_FLAG_UNLIMITED =1;
+
+
 
 }

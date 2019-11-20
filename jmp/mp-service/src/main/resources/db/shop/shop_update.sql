@@ -926,7 +926,6 @@ alter table `b2c_part_order_goods_ship` add index `product_id` (`product_id`);
 
 梁晨 2019-10-18 添加优惠券字段
 alter table `b2c_mrking_voucher` add column `limit_surplus_flag`  tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否限制库存：0限制，1不限制';
-ALTER TABLE b2c_mrking_voucher add column `expiration_date` timestamp default 0 comment 'validity_type为1时的过期时间';
 
 --王帅增加订单字段
 ALTER TABLE `b2c_order_info`
