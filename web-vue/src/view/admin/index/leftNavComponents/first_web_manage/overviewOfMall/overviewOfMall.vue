@@ -869,7 +869,7 @@ export default {
       // 服务列表
       serveList: this.$t('overview.serveList'),
       shopInfo: {},
-      avatarImage: this.$imageHost + '/image/admin/ad_img.png'
+      avatarImage: this.$imageHost + '/image/admin/shop_logo_default.png'
 
     }
   },
