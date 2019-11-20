@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.saas.shop;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 /**
@@ -11,5 +13,8 @@ import lombok.Data;
 @Data
 public class VersionPath {
 	private String path;
-
+	@JsonProperty(value = "V-EnName")
+	private String eName;
+	@JsonProperty(value = "V-VsName")
+	private String vName;
 }
