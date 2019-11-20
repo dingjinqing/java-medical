@@ -168,9 +168,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialogVisible = false">{{$t('pageClassification.cancel')}}</el-button>
+          <el-button
+            size="small"
+            @click="dialogVisible = false"
+          >{{$t('pageClassification.cancel')}}</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="addCatergory"
           >{{$t('pageClassification.confirm')}}</el-button>
         </span>

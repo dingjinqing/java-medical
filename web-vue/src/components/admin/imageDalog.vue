@@ -192,9 +192,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialogTableVisible = false">{{$t('imgageDalog.cancel')}}</el-button>
+          <el-button
+            size="small"
+            @click="dialogTableVisible = false"
+          >{{$t('imgageDalog.cancel')}}</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="handleToSure()"
           >{{$t('imgageDalog.Determine')}}</el-button>
         </span>
