@@ -2,7 +2,7 @@
   <div class="returnGoodsConfigure">
     <!-- 退货配置 -->
     <section class="returnGoods">
-      <div class='title'>{{$t('returnconfiguration.returnconfig')}}</div>
+      <div class='title'>{{$t('returnconfiguration.returnconfig')}}：</div>
       <div class="content">
         <el-radio-group
           v-model="returnParam.return_change_goods_status"
@@ -187,6 +187,7 @@
     <div class="btn">
       <el-button
         type="primary"
+        size="small"
         @click="updateConfig"
       >{{$t('returnconfiguration.save')}}</el-button>
     </div>

@@ -53,12 +53,12 @@
             >
               <el-table-column
                 prop="pledgeName"
-                :label="$t('pledge.name')"
+                :label="$t('pledge.name')+'：'"
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop="pledgeLogo"
-                :label="$t('pledge.icon')"
+                :label="$t('pledge.icon')+'：'"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -71,21 +71,21 @@
               </el-table-column>
               <el-table-column
                 prop="pledgeContent"
-                :label="$t('pledge.explanation')"
+                :label="$t('pledge.explanation')+'：'"
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop=""
-                :label="$t('pledge.goods')"
+                :label="$t('pledge.goods')+'：'"
                 align="center"
               ></el-table-column>
               <el-table-column
                 prop=""
-                :label="$t('pledge.priority')"
+                :label="$t('pledge.priority')+'：'"
                 align="center"
               ></el-table-column>
               <el-table-column
-                :label="$t('pledge.option')"
+                :label="$t('pledge.option')+'：'"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -153,7 +153,7 @@
             >
               <!-- 服务名称 -->
               <el-form-item
-                :label="$t('pledge.name')"
+                :label="$t('pledge.name')+'：'"
                 prop="name"
               >
                 <el-input
@@ -165,7 +165,7 @@
                 <span style="padding-left: 15px;color:#999">{{$t('pledge.nameTip')}}</span>
               </el-form-item>
               <!-- 优先级 -->
-              <el-form-item :label="$t('pledge.priority')">
+              <el-form-item :label="$t('pledge.priority')+'：'">
                 <el-input
                   style="width:200px"
                   size="small"
@@ -176,7 +176,7 @@
               </el-form-item>
               <!-- 图标 -->
               <el-form-item
-                :label="$t('pledge.icon')"
+                :label="$t('pledge.icon')+'：'"
                 prop="logos"
               >
 
@@ -198,7 +198,7 @@
               </el-form-item>
               <!-- 承诺说明 -->
               <el-form-item
-                :label="$t('pledge.explanation')"
+                :label="$t('pledge.explanation')+'：'"
                 prop="desc"
               >
                 <el-input
@@ -211,7 +211,7 @@
                 <span style="padding-left: 15px;color:#999">{{$t('pledge.explanationTip')}}</span>
               </el-form-item>
               <!-- 选择商品 -->
-              <el-form-item :label="$t('pledge.chooseGoods')">
+              <el-form-item :label="$t('pledge.chooseGoods')+'：'">
                 <el-radio
                   v-model="form.goods"
                   label=1

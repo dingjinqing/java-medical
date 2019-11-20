@@ -140,7 +140,7 @@
         align="center"
         :label="$t('allGoods.allGoodsData.operate')"
       >
-        <template slot-scope="{row,$index}">
+        <template slot-scope="{row}">
           <el-tooltip
             :content="$t('allGoods.allGoodsData.edit')"
             placement="top"

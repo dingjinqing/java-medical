@@ -7,15 +7,16 @@
             <el-form
               label-width="auto"
               class="demo-dynamic"
-              size="mini"
+              size="small"
             >
               <el-form-item
                 display:block
-                :label="$t('authRoleList.mobileList')"
+                :label="$t('authRoleList.mobileList')+'：'"
               >
                 <el-select
                   filterable
                   v-model="AccountId"
+                  style="width:170px;"
                   :placeholder="$t('authRoleList.please')"
                 >
                   <el-option
@@ -29,10 +30,11 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item :label="$t('authRoleList.roleIdList')">
+              <el-form-item :label="$t('authRoleList.roleIdList')+'：'">
                 <el-select
                   filterable
                   v-model="RoleId"
+                  style="width:170px;"
                   :placeholder="$t('authRoleList.please')"
                 >
                   <el-option
@@ -51,7 +53,7 @@
               <el-form-item>
                 <el-button
                   type="primary"
-                  size="mini"
+                  size="small"
                   @click="setAndUpdate()"
                 >{{$t('authRoleList.save')}}</el-button>
               </el-form-item>
@@ -156,7 +158,7 @@
               <el-form
                 label-width="100px"
                 class="demo-dynamic"
-                size="mini"
+                size="small"
               >
                 <el-form-item :label="$t('authRoleList.accountName')">
                   {{AccountName}}
@@ -165,6 +167,7 @@
                   <el-select
                     filterable
                     v-model="RoleId"
+                    style="width:170px;"
                     :placeholder="$t('authRoleList.please')"
                   >
                     <el-option

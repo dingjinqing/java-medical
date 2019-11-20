@@ -158,7 +158,7 @@
           >
             <div style="position: absolute; ">
               <span class="item-label">
-                {{$t('ShopConfiguration.SmallProgramAuthorizationPage.failReason')}}
+                {{$t('ShopConfiguration.SmallProgramAuthorizationPage.failReason')}}:
               </span>
             </div>
 

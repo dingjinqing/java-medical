@@ -7,7 +7,7 @@
             <el-form
               label-width="100px"
               class="demo-dynamic"
-              size="mini"
+              size="small"
             >
               <el-button
                 type="primary"
@@ -43,14 +43,32 @@
               align="center"
             >
               <template slot-scope="scope">
-                <el-button
+                <!-- <el-button
                   type="text"
                   @click="editOption(scope.row)"
-                >{{$t('authRoleList.eidt')}}</el-button>
-                <el-button
+                >{{$t('authRoleList.eidt')}}</el-button> -->
+                <el-tooltip
+                  :content="$t('authRoleList.eidt')"
+                  placement="top"
+                >
+                  <span
+                    class="el-icon-edit-outline iconSpan"
+                    @click="editOption(scope.row)"
+                  ></span>
+                </el-tooltip>
+                <!-- <el-button
                   type="text"
                   @click="delOption(scope.row)"
-                >{{$t('authRoleList.del')}}</el-button>
+                >{{$t('authRoleList.del')}}</el-button> -->
+                <el-tooltip
+                  :content="$t('authRoleList.del')"
+                  placement="top"
+                >
+                  <span
+                    class="el-icon-delete iconSpan"
+                    @click="delOption(scope.row)"
+                  ></span>
+                </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
@@ -202,6 +220,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.iconSpan {
+  font-size: 22px;
+  color: #5a8bff;
+  cursor: pointer !important;
+}
 .footer {
   display: flex;
   align-items: center;

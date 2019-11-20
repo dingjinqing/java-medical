@@ -10,8 +10,7 @@
         <span>{{item.payName}}</span>
         <el-switch
           v-model="item.enabled"
-          active-color="#13ce66"
-          inactive-color="#f7931e"
+          active-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span>{{item.enabled?$t('payConfiguration.activated'):$t('payConfiguration.inactived')}}</span>
@@ -115,9 +114,13 @@
       >
         <el-button
           type="primary"
+          size="small"
           @click="save"
         >{{$t('payConfiguration.save')}}</el-button>
-        <el-button @click="cancle">{{$t('payConfiguration.cancel')}}</el-button>
+        <el-button
+          size="small"
+          @click="cancle"
+        >{{$t('payConfiguration.cancel')}}</el-button>
       </span>
     </el-dialog>
   </div>

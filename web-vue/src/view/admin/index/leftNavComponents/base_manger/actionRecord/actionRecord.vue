@@ -1,23 +1,25 @@
 <template>
   <div class="payContent">
     <div class="payContent_main">
-      <div>
+      <div class="search_list">
         <el-form
-          size="mini"
+          size="small"
           :inline="true"
           class="demo-form-inline"
         >
-          <el-form-item :label="$t('actionRecord.userName')">
+          <el-form-item :label="$t('actionRecord.userName')+'：'">
             <el-input
               v-model="userName"
+              style="width:170px;"
               :placeholder="$t('actionRecord.userName')"
             ></el-input>
           </el-form-item>
-          <el-form-item :label="$t('actionRecord.actionType')">
+          <el-form-item :label="$t('actionRecord.actionType')+'：'">
             <el-select
               v-model="actionType"
               :placeholder="$t('actionRecord.all')"
               size="small"
+              style="width:170px;"
               clearable
             >
               <el-option
@@ -28,18 +30,21 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('actionRecord.optionTime')">
+          <el-form-item :label="$t('actionRecord.optionTime')+'：'">
             <div class="block">
               <el-date-picker
                 v-model="startCreateTime"
                 type="date"
+                style="width:170px;"
                 value-format="yyyy-MM-dd 00:00:00"
                 :placeholder="$t('actionRecord.startTime')"
               >
               </el-date-picker>
+              <span>至</span>
               <el-date-picker
                 v-model="endCreateTime"
                 type="date"
+                style="width:170px;"
                 value-format="yyyy-MM-dd 00:00:00"
                 :placeholder="$t('actionRecord.endTime')"
               >
@@ -59,7 +64,7 @@
           :data="tableData"
           border
           stripe
-          style="width: 100%"
+          style="width: 100%;margin-bottom: 10px;"
           :header-cell-style="{background:'#eef1f6',color:'#606266'}"
         >
           <el-table-column
@@ -231,9 +236,18 @@ export default {
   font-size: 14px;
   height: 100%;
 }
-.payContent_main {
-  background-color: #fff;
-  padding: 10px 20px;
+// .payContent_main {
+//   background-color: #fff;
+//   padding: 10px 20px;
+// }
+.search_list {
+  padding: 15px;
+  background: #fff;
+}
+.table_box {
+  background: #fff;
+  margin-top: 10px;
+  padding: 15px;
 }
 .footer {
   display: flex;

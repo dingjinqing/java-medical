@@ -114,9 +114,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="$emit('update:callAddBrand', false)">取 消</el-button>
+          <el-button
+            size="small"
+            @click="$emit('update:callAddBrand', false)"
+          >取 消</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="handleToSure()"
           >确 定</el-button>
         </span>
