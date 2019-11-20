@@ -154,8 +154,7 @@ public class PortraitService extends ShopBaseService {
                 .where(MP_USER_PORTRAIT.CREATE_TIME.lessOrEqual(Timestamp.from(Instant.now()))
                         .and(MP_USER_PORTRAIT.TYPE.equal(type.byteValue())))
                 .limit(1)
-                .fetchOne()
-                .into(MP_USER_PORTRAIT);
+                .fetchOneInto(MP_USER_PORTRAIT);
     }
 
     /**
