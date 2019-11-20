@@ -121,6 +121,10 @@
               >
               <div class="right_info">
                 <div class="goods_name">{{scope.row.goodsName}}</div>
+                <div
+                  class="goods_desc"
+                  v-if="scope.row.prdDesc"
+                >{{scope.row.prdDesc}}</div>
               </div>
             </div>
           </template>
@@ -270,7 +274,7 @@
 </template>
 
 <script>
-import { getCommentCheckList, getCommentList, goodsCommentDelete, CommentPass, CommentRefuse, CommentAnswer, delAnswer } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
+import { getCommentList, goodsCommentDelete, CommentPass, CommentRefuse, CommentAnswer, delAnswer } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -333,30 +337,19 @@ export default {
         page: { ...this.pageParams },
         awardActivityId: this.searchParams.awardActivityId === -1 ? null : this.searchParams.awardActivityId
       }
-      if (this.target === 'Record') {
-        getCommentCheckList(obj).then(res => {
-          console.log(res)
-          if (res.error === 0) {
-            this.pageParams = res.content.page
-            this.dataList = res.content.dataList.sort((a, b) => {
-              return (b.id - a.id)
-            })
-            this.loading = false
-          }
-        })
-      } else {
+      if (this.target !== 'Record') {
         delete obj.flag
-        getCommentList(obj).then(res => {
-          console.log(res)
-          if (res.error === 0) {
-            this.pageParams = res.content.page
-            this.dataList = res.content.dataList.sort((a, b) => {
-              return (b.id - a.id)
-            })
-            this.loading = false
-          }
-        })
       }
+      getCommentList(obj).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.pageParams = res.content.page
+          this.dataList = res.content.dataList.sort((a, b) => {
+            return (b.id - a.id)
+          })
+          this.loading = false
+        }
+      })
     },
     // 删除评价
     delEvaluation (id) {

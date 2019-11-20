@@ -8,6 +8,7 @@ global.wxPage({
     address:null,
     balanceStatus:0,
     scoreStatus:0,
+    cardBalanceStatus:0,
     couponArray:[
       1,2,3,4,5
     ],
@@ -15,37 +16,72 @@ global.wxPage({
     shippingMethod:[0,1,2],
     chooseShippingIndex:0,
     choosePayTypeIndex:0,
-    moneyInfo:{
-      totalPrice: 100, //总金额
-      useBalance: 0, //使用余额
-      useScore: 20, //使用积分
-      useConpon: 16.5, //使用优惠券优惠
-      useCardBalance: 15, //使用会员卡余额优惠
-      useCardReduce: 0, //会员卡优惠金额
-      useTotalprice: 0, //应付金额
-      useShipping: 0 //运费
-    },
     showBalanceDialog: false,
     showScoreDialog: false,
     showCardDialog: false,
     showStoreDialog: false,
+    params:{
+      action:10,
+      activityType:null, // 指定本次结算所参加的唯一营销活动类型
+      activityId:null, // 指定本次结算所参加的唯一营销活动类型 ID
+      addressId:null, // 地址id
+      goods:null, // 商品列表
+      deliverType:null, // 配送方式
+      storeId:null, // 门店id
+      memberCardNo:0, //0: 默认选第一张；null：不选；其他：卡号
+      couponSn:0, //0: 默认选第一张；null：不选；其他：优惠卷号
+      scoreDiscount:null, // 积分抵扣金额
+      balance:null, //余额抵扣金额
+      cardBalance:null, //会员卡抵扣金额
+      orderPayWay:null//支付方式
+    },
+    orderInfo:{},
+    useCardBalance:0,
+    useBalance:0,
+    useScore:0
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.requestOrder(options)
+    let goods = [];
+    let { goodsList } = options
+    JSON.parse(goodsList).forEach(item => {
+      let { goodsId, prdRealPrice: goodsPrice, goodsNum: goodsNumber, prdId: productId } = item
+      goods.push({ goodsId, goodsPrice, goodsNumber, productId })
+    })
+    this.setData({
+      'params.goods': goods
+    })
+    this.requestOrder()
     wx.hideShareMenu()
+  },
+  requestOrder() {
+    util.api('/api/wxapp/order', res => {
+      if (res.error === 0) {
+        let orderInfo = res.content
+        this.setData({
+          orderInfo
+        })
+        this.defaultInput(orderInfo)
+      }
+    }, { ...this.data.params })
   },
   // 选择地址
   addAddress(){
     wx.chooseAddress({
       success: (res) => {
-        let address = res
-        this.setData({
-          address: address
-        })
+        util.api('/api/wxapp/address/choose',res=>{
+          console.log(res)
+          if(res.error === 0){
+            this.setData({
+              'params.addressId': res.content.addressId
+            })
+            console.log()
+            this.requestOrder()
+          }
+        }, { wxAddress:{...res}})
       },
       fail: function () {
         wx.getSetting({
@@ -62,6 +98,31 @@ global.wxPage({
         })
       }
     })
+  },
+  // 默认填充
+  defaultInput(orderInfo){
+    let { isBalancePay, isCardPay, isScorePay, moneyPaid, memberCardMoney, userAccount, scorePayNum, userScore } = orderInfo
+    if (isCardPay === 1){
+      let useCardBalance = moneyPaid - memberCardMoney > 0 ? memberCardMoney : moneyPaid
+      this.setData({
+        useCardBalance,
+        cardBalanceStatus:1
+      })
+    }
+    if (isBalancePay === 1){
+      let useBalance = moneyPaid - userAccount > 0 ? userAccount : moneyPaid
+      this.setData({
+        useBalance,
+        balanceStatus: 1
+      })
+    }
+    if (isScorePay === 1 && userScore > scorePayNum){
+      let useScore = moneyPaid - userScore / 100 > 0 ? userScore / 100 : moneyPaid
+      this.setData({
+        useScore,
+        scoreStatus: 1
+      })
+    }
   },
   // 余额支付事件
   balanceTap(){
@@ -128,12 +189,12 @@ global.wxPage({
     })
   },
   // 获取应付总金额
-  getPayMoney(){
-    let money = this.data.moneyInfo
-    this.setData({
-      'moneyInfo.useTotalprice': money.totalPrice - money.useBalance - money.useScore - money.useConpon - money.useCardBalance - money.useCardReduce - money.useTotalprice - money.useShipping
-    })
-  },
+  // getPayMoney(){
+  //   let money = this.data.moneyInfo
+  //   this.setData({
+  //     'moneyInfo.useTotalprice': money.totalPrice - money.useBalance - money.useScore - money.useConpon - money.useCardBalance - money.useCardReduce - money.useTotalprice - money.useShipping
+  //   })
+  // },
   // 获取门店改变
   getSelectStore(info){
     let {id:storeId,openType} = info.detail;
@@ -146,22 +207,6 @@ global.wxPage({
 
       break;
     }
-  },
-  requestOrder(options){
-    let goods = [];
-    let {goodsList} = options
-    JSON.parse(goodsList).forEach(item=>{
-      let { goodsId, prdRealPrice:goodsPrice, goodsNum:goodsNumber, prdId:productId } = item
-      goods.push({ goodsId, goodsPrice, goodsNumber, productId})
-    })
-    let params = {action:10, goods, memberCardNo: null, couponSn: null, activityType: null, addressId: null, deliverType: null, storeId: null, scoreDiscount: null, balance:null, cardBalance: null, orderPayWay:null}
-    util.api('/api/wxapp/order',res=>{
-      if(res.error === 0){
-        this.setData({
-          orderInfo:res.content          
-        })
-      }
-    }, params )
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

@@ -1,12 +1,12 @@
 <view class="body">
   <include src="../common/header.wxml" />
     <view class="main-container">
-      <view class="pay_notice">
+      <!-- <view class="pay_notice">
         <image src="{{imageUrl}}image/wxapp/icon_notice.png"></image>
         <block>
           <text>付款时间已截至，订单已被取消，请重新下单</text>
         </block>
-      </view>
+      </view> -->
       <view class="shipping_method_content">
         <view wx:for="{{shippingMethod}}" wx:for-item="shipItem" wx:for-index="shipIndex" wx:key="*this" class="shipping_method" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{chooseShippingIndex === shipIndex ? comColor : ''}};">{{shipItem}}快递</view>
       </view>
@@ -22,17 +22,17 @@
         </view>
       </view>
       <view class="address_info" bindtap="addAddress" style="background:#fff url({{imageUrl}}image/wxapp/address_bottom.png) no-repeat  left bottom / 100%;" >
-        <view class="address-address_info" wx:if="{{!address}}">
+        <view class="address-address_info" wx:if="{{!orderInfo.address}}">
           <image src="{{imageUrl}}image/wxapp/address.png"></image>
           <text class="address">请新建收货地址</text> 
         </view>
-        <view class="address-user_info" wx:if="{{address}}">
-          <text class="user_name">{{address.userName}}</text>
-          <text class="user_mobile">{{address.telNumber}}</text>
+        <view class="address-user_info" wx:if="{{orderInfo.address}}">
+          <text class="user_name">{{orderInfo.address.consignee}}</text>
+          <text class="user_mobile">{{orderInfo.address.mobile}}</text>
         </view>
-        <view class="address-address_info" wx:if="{{address && chooseShippingIndex !== 1}}">
+        <view class="address-address_info" wx:if="{{orderInfo.address && chooseShippingIndex !== 1}}">
           <image src="{{imageUrl}}image/wxapp/address.png"></image>
-          <text class="address">{{address.provinceName+address.cityName+address.countyName+address.detailInfo}}</text> 
+          <text class="address">{{orderInfo.address.provinceName+orderInfo.address.cityName+orderInfo.address.districtName+orderInfo.address.completeAddress}}</text> 
           <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
         </view>
       </view>
@@ -73,13 +73,6 @@
           </view>
         </view> 
         <view class="pay_list_item">
-          <text class="pay_list_title">会员卡余额支付</text>
-          <text class="pay_list_content">减330.00元</text>
-          <view class="pay_list_right">
-            <text class="iconfont iconduoxuan"></text>
-          </view>
-        </view>
-        <view class="pay_list_item">
           <text class="pay_list_title">优惠券</text>
           <picker class="pay_list_content picker" value="" range="{{couponArray}}" bindchange="couponChange">
             <view>不使用优惠券</view>
@@ -88,16 +81,23 @@
             <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
           </view>
         </view>
+        <view class="pay_list_item">
+          <text class="pay_list_title">会员卡余额支付</text>
+          <text class="pay_list_content">减{{useCardBalance}}元</text>
+          <view class="pay_list_right">
+            <text class="iconfont {{cardBalanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{cardBalanceStatus ? 'color:'+comColor+';' : ''}}"></text>
+          </view>
+        </view>
         <view class="pay_list_item" bindtap="balanceTap">
           <text class="pay_list_title">余额支付</text>
-          <text class="pay_list_content"></text>
+          <text class="pay_list_content">减{{useBalance}}元</text>
           <view class="pay_list_right">
             <text class="iconfont {{balanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{balanceStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
         <view class="pay_list_item" bindtap="scoreTap">
           <text class="pay_list_title">积分支付</text>
-          <text class="pay_list_content"></text>
+          <text class="pay_list_content">减{{useScore}}元</text>
           <view class="pay_list_right">
             <text class="iconfont {{scoreStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{scoreStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
@@ -107,15 +107,11 @@
       <view class="checkout_detail">
         <view class="detail_item">
           <text class="detail_title">商品总计</text>
-          <text class="detail_content" style="color:{{comColor}};">-￥1594.51</text>
+          <text class="detail_content" style="color:{{comColor}};">￥{{orderInfo.orderAmount}}</text>
         </view>
-        <view class="detail_item">
-          <text class="detail_title">商品总计</text>
-          <text class="detail_content" style="color:{{comColor}};">-￥1594.51</text>
-        </view>
-        <view class="detail_item">
-          <text class="detail_title">商品总计</text>
-          <text class="detail_content" style="color:{{comColor}};">-￥1594.51</text>
+        <view class="detail_item" wx:if="{{orderInfo.shippingFee}}">
+          <text class="detail_title">运费</text>
+          <text class="detail_content" style="color:{{comColor}};">+￥{{orderInfo.shippingFee}}</text>
         </view>
         <view class="detail_item" wx:if="{{balanceStatus}}">
           <text class="detail_title">余额支付</text>

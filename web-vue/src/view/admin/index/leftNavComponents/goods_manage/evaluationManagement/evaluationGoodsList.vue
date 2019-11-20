@@ -57,12 +57,15 @@
         <template slot-scope="scope">
           <div class="goods_info">
             <img
-              :src="$imageHost+scope.row.goodsImg"
+              :src="$imageHost+'/'+scope.row.goodsImg"
               alt=""
             >
             <div class="right_info">
               <div class="goods_name">{{scope.row.goodsName}}</div>
-              <div class="goods_spec">{{scope.row.goodsAttr}}</div>
+              <div
+                class="goods_spec"
+                v-if="scope.row.prdDesc"
+              >{{scope.row.prdDesc}}</div>
             </div>
           </div>
         </template>
@@ -74,7 +77,7 @@
       </el-table-column>
       <el-table-column
         :label="$t('allGoods.allGoodsHeaderData.category')"
-        prop="sortName"
+        prop="catName"
       >
       </el-table-column>
       <el-table-column
@@ -97,9 +100,15 @@
         prop="pv"
       >
       </el-table-column>
-      <el-table-column :label="$t('evaluation.actualEvaluationNum')">
+      <el-table-column
+        :label="$t('evaluation.actualEvaluationNum')"
+        prop="realCommNum"
+      >
       </el-table-column>
-      <el-table-column :label="$t('evaluation.addEvaluationNum')">
+      <el-table-column
+        :label="$t('evaluation.addEvaluationNum')"
+        prop="shopCommNum"
+      >
       </el-table-column>
       <el-table-column
         :label="$t('evaluation.evaluationTable.operating')"
