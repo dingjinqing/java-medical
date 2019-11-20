@@ -486,6 +486,7 @@ export default {
     },
     // 保存
     saveServiceHandle () {
+      let that = this
       this.$set(this.form, 'serviceDuration', Number(this.serviceHour * 60 + this.serviceMinute))
       this.$refs.serviceForm.validate((valid) => {
         if (valid) {
@@ -493,13 +494,29 @@ export default {
           if (!params.id) {
             addService(params).then(res => {
               if (res.error === 0) {
-                this.$message.success(this.$t('serviceAdd.successTip'))
+                that.$message.success(this.$t('serviceAdd.successTip'))
+                that.$router.push({
+                  name: 'store_storemanage_service_list',
+                  query: {
+                    id: that.storeId,
+                    businessHours: that.$route.query.businessHours,
+                    businessType: that.$route.query.businessType
+                  }
+                })
               }
             })
           } else {
             updateService(params).then(res => {
               if (res.error === 0) {
                 this.$message.success(this.$t('serviceAdd.updateTip'))
+                that.$router.push({
+                  name: 'store_storemanage_service_list',
+                  query: {
+                    id: that.storeId,
+                    businessHours: that.$route.query.businessHours,
+                    businessType: that.$route.query.businessType
+                  }
+                })
               }
             })
           }

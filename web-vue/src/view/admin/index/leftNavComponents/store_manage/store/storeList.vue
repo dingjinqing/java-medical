@@ -6,15 +6,15 @@
           type="primary"
           size="small"
           @click="addStoreHandle"
-          style="margin-top: 10px;"
         >{{$t('storeList.addStore')}}</el-button>
       </div>
       <div class="table_box">
         <div class="filters">
-          <div class="filters_item"><span>{{$t('storeList.storeGroup')}}:</span>
+          <div class="filters_item"><span>{{$t('storeList.storeGroup')}}：</span>
             <el-select
               v-model="queryParams.groupId"
               size="small"
+              style="width:170px;"
             >
               <el-option
                 :label="$t('storeCommon.all')"
@@ -28,10 +28,11 @@
               ></el-option>
             </el-select>
           </div>
-          <div class="filters_item"><span>{{$t('storeList.isAuthPos')}}:</span>
+          <div class="filters_item"><span>{{$t('storeList.isAuthPos')}}：</span>
             <el-select
               v-model="queryParams.isAuthPos"
               size="small"
+              style="width:170px;"
             >
               <el-option
                 :label="$t('storeCommon.all')"
@@ -48,11 +49,11 @@
               ></el-option>
             </el-select>
           </div>
-          <div class="filters_item"><span>{{$t('storeList.storeInfo')}}:</span>
+          <div class="filters_item"><span>{{$t('storeList.storeInfo')}}：</span>
             <el-input
               v-model="queryParams.keywords"
-              class="inputWidth"
               size="small"
+              style="width:170px;"
               :placeholder="$t('storeList.storeInfoPlaceholder')"
             ></el-input>
           </div>
@@ -394,13 +395,13 @@ export default {
   padding: 10px;
   .navBox {
     background-color: #fff;
-    padding: 0 15px 14px;
-    margin-bottom: 10px;
+    padding: 15px;
   }
   .btn {
     margin-left: 5px;
   }
   .table_box {
+    margin-top: 10px;
     background-color: #fff;
     padding: 15px;
     .filters {

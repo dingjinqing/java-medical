@@ -3,7 +3,7 @@
     <div class="receiveDetailMain">
       <div class="order-container">
         <div class="order-info">
-          <p class="list-store-name">{{$t('storeGoodsList.storeName')}}:<span>{{storeName}}</span></p>
+          <p class="list-store-name">{{$t('storeGoodsList.storeName')}}：<span>{{storeName}}</span></p>
           <ul class="list-store-filters">
             <li>
               <el-select
@@ -11,6 +11,7 @@
                 size="small"
                 filterable
                 @change="selectChangeHandle"
+                style="width:170px;"
               >
                 <el-option
                   :label="$t('storeGoodsList.goodsSort')"
@@ -31,6 +32,7 @@
                 v-model="queryParams.isOnSale"
                 size="small"
                 @change="selectChangeHandle"
+                style="width:170px;"
               >
                 <el-option
                   :label="$t('storeGoodsList.shelfStatus')"
@@ -49,6 +51,7 @@
                 v-model="queryParams.isSync"
                 size="small"
                 @change="selectChangeHandle"
+                style="width:170px;"
               >
                 <el-option
                   :label="$t('storeGoodsList.syncPos')"
@@ -67,6 +70,7 @@
                 :placeholder="$t('storeGoodsList.searchProductsbarcode')"
                 v-model="queryParams.keywords"
                 size="small"
+                style="width:170px;"
               >
                 <i
                   slot="suffix"
@@ -171,20 +175,30 @@
                   :content="$t('storeGoodsList.shelf')"
                   placement="top"
                 >
-                  <span
+                  <!-- <span
                     class="iconSpan"
                     @click=shelfGoodsHandle(row.prdId)
-                  >{{$t('storeGoodsList.shelf')}}</span>
+                  >{{$t('storeGoodsList.shelf')}}</span> -->
+                  <span
+                    class="el-icon-top iconSpan"
+                    style="font-size:20px;"
+                    @click=shelfGoodsHandle(row.prdId)
+                  ></span>
                 </el-tooltip>
                 <el-tooltip
                   v-else
                   :content="$t('storeGoodsList.obtain')"
                   placement="top"
                 >
-                  <span
+                  <!-- <span
                     class="iconSpan"
                     @click=obtainGoodsHandle(row.prdId)
-                  >{{$t('storeGoodsList.obtain')}}</span>
+                  >{{$t('storeGoodsList.obtain')}}</span> -->
+                  <span
+                    class="el-icon-bottom iconSpan"
+                    style="font-size: 20px;"
+                    @click=obtainGoodsHandle(row.prdId)
+                  ></span>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -197,6 +211,10 @@
           </el-table>
           <div class="table-page">
             <div class="table-page-left">
+              <el-checkbox
+                v-model="isSelectAll"
+                @change="selectAllChange"
+              >全选</el-checkbox>
               <el-button
                 size="small"
                 @click="shelfGoodsHandle()"
@@ -247,7 +265,8 @@ export default {
       selected: [],
       tableData: [],
       noImg: this.$imageHost + '/image/admin/no_data.png',
-      pageParams: {}
+      pageParams: {},
+      isSelectAll: false // 标识是否全选
     }
   },
   computed: {
@@ -282,7 +301,16 @@ export default {
         console.error(err)
       })
     },
+    selectAllChange (val) {
+      console.log(val)
+      this.$refs.goodsTable.toggleAllSelection()
+    },
     selectionChangeHandle (rows) {
+      if (rows && rows.length === this.tableData.length) {
+        this.isSelectAll = true
+      } else {
+        this.isSelectAll = false
+      }
       this.selected = rows
     },
     shelfGoodsHandle (data) {
@@ -356,16 +384,19 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .order-container {
   padding: 10px;
 }
 .order-info {
   background: #fff;
-  padding: 15px 18px;
+  padding: 15px;
 }
 .order-content {
   margin-top: 10px;
+  padding: 15px;
+  background: #fff;
 }
 .list-store-name {
   margin-left: 10px;

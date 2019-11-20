@@ -241,10 +241,12 @@ export default {
 }
 .order-info {
   background: #fff;
-  padding: 15px 18px;
+  padding: 15px;
 }
 .order-content {
   margin-top: 10px;
+  padding: 15px;
+  background: #fff;
 }
 .list-store-name {
   margin-left: 10px;
@@ -255,7 +257,6 @@ export default {
 .list-verifier-filters {
   overflow: hidden;
   margin-top: 10px;
-  margin-left: 10px;
   line-height: 1.428571429;
 }
 .list-verifier-filters li {
@@ -270,7 +271,7 @@ export default {
   color: #333;
 }
 .list-verifier-filters .input-narrow {
-  width: 175px;
+  width: 170px;
   color: #555;
 }
 .list-verifier-filters-right {

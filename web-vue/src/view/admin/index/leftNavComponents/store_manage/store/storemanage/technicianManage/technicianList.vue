@@ -2,7 +2,7 @@
   <div>
     <div class="technician_list_page">
       <div class="list_info">
-        <label>
+        <label style="font-size: 14px;">
           {{$t('technicianList.technicianName')}}：
           <el-input
             size="small"
@@ -14,6 +14,7 @@
         <!-- 服务分类下拉 -->
         <el-select
           size="small"
+          style="width:170px;"
           v-model="queryParams.groupId"
           @change="initDataList"
         >
@@ -31,7 +32,7 @@
         <el-input
           type="tel"
           :placeholder="$t('technicianList.technicianPhone')"
-          style="width: 188px;"
+          style="width: 170px;"
           size="small"
           v-model="queryParams.technicianMobile"
         >
@@ -90,7 +91,7 @@
             align="center"
           >
             <template slot-scope="{ row }">
-              <div>
+              <div style="margin-top:10px;">
                 <el-tooltip :content="$t('technicianList.shiftManagement')">
                   <span
                     class="iconSpan"
@@ -203,7 +204,7 @@ export default {
   .list_info {
     padding-bottom: 10px;
     .filter_input {
-      width: 130px;
+      width: 170px;
     }
     .technician_list_img {
       display: inline-block;

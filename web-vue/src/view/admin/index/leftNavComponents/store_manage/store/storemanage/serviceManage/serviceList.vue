@@ -5,6 +5,7 @@
         <!-- 服务分类下拉 -->
         <el-select
           size="small"
+          style="width: 170px;"
           v-model="queryParams.catId"
           @change="categroyChangeHandle"
         >
@@ -22,7 +23,7 @@
         <el-input
           v-model="queryParams.serviceName"
           :placeholder="$t('serviceList.searchPl')"
-          style="width: 188px;"
+          style="width: 170px;"
           size="small"
         >
           <i
@@ -107,53 +108,82 @@
             <template slot-scope="{ row }">
               <div style="word-break:keep-all; font-size:13px;">
                 <el-tooltip :content="$t('serviceList.edit')">
-                  <span
+                  <!-- <span
                     class="iconSpan"
                     @click="edit('edit', row)"
-                  >{{$t('serviceList.edit')}}</span>
+                  >{{$t('serviceList.edit')}}</span> -->
+                  <span
+                    class="el-icon-edit-outline iconSpan"
+                    @click="edit('edit', row)"
+                  ></span>
                 </el-tooltip>
                 <el-tooltip
                   v-if="row.serviceShelf === 1"
                   :content="$t('serviceList.unShelf')"
                 >
-                  <span
+                  <!-- <span
                     class="iconSpan"
                     @click="edit('off', row)"
-                  >{{$t('serviceList.unShelf')}}</span>
+                  >{{$t('serviceList.unShelf')}}</span> -->
+                  <!-- 下架 -->
+                  <span
+                    class="el-icon-bottom iconSpan"
+                    @click="edit('off', row)"
+                  ></span>
                 </el-tooltip>
                 <el-tooltip
                   v-if="row.serviceShelf === 0"
                   :content="$t('serviceList.shelf')"
                 >
-                  <span
+                  <!-- <span
                     class="iconSpan"
                     @click="edit('on', row)"
-                  >{{$t('serviceList.shelf')}}</span>
+                  >{{$t('serviceList.shelf')}}</span> -->
+                  <span
+                    class="el-icon-top iconSpan"
+                    @click="edit('on', row)"
+                  ></span>
                 </el-tooltip>
                 <el-tooltip :content="$t('serviceList.share')">
-                  <span
+                  <!-- <span
                     class="iconSpan"
                     @click="edit('share', row)"
-                  >{{$t('serviceList.share')}}</span>
+                  >{{$t('serviceList.share')}}</span> -->
+                  <span
+                    class="el-icon-share iconSpan"
+                    @click="edit('share', row)"
+                  ></span>
                 </el-tooltip>
                 <el-tooltip :content="$t('serviceList.view')">
-                  <span
+                  <!-- <span
                     class="iconSpan"
                     @click="edit()"
-                  >{{$t('serviceList.view')}}</span>
+                  >{{$t('serviceList.view')}}</span> -->
+                  <span
+                    class="el-icon-tickets iconSpan"
+                    @click="edit('look', row)"
+                  ></span>
                 </el-tooltip>
                 <el-tooltip :content="$t('serviceList.delete')">
-                  <span
+                  <!-- <span
                     class="iconSpan"
                     @click="edit('delete', row)"
-                  >{{$t('serviceList.delete')}}</span>
+                  >{{$t('serviceList.delete')}}</span> -->
+                  <span
+                    class="el-icon-delete iconSpan"
+                    @click="edit('delete', row)"
+                  ></span>
                 </el-tooltip>
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table-page">
-          <div>
+          <div style="margin-top: 10px;">
+            <el-checkbox
+              v-model="isSelectAll"
+              @change="selectAllChange"
+            >全选</el-checkbox>
             <el-button
               size="small"
               @click="shelfHandle"
@@ -228,7 +258,8 @@ export default {
       selects: [],
       shareDialogVisible: false,
       shareImageUrl: '',
-      shareUrl: ''
+      shareUrl: '',
+      isSelectAll: false
     }
   },
   created () {
@@ -273,6 +304,9 @@ export default {
     },
     categroyChangeHandle () {
       this.initDataList()
+    },
+    selectAllChange (val) {
+      this.$refs.serviceTable.toggleAllSelection()
     },
     edit (operate, row) {
       let that = this
@@ -338,6 +372,11 @@ export default {
       }
     },
     selectChangeHandle (selects) {
+      if (selects && this.tableData.length === selects.length) {
+        this.isSelectAll = true
+      } else {
+        this.isSelectAll = false
+      }
       this.selects = selects
     },
     // 上架
@@ -395,6 +434,7 @@ export default {
     color: #5a8bff;
     text-decoration: none;
     cursor: pointer !important;
+    font-size: 22px;
   }
   .list_info {
     padding-bottom: 10px;

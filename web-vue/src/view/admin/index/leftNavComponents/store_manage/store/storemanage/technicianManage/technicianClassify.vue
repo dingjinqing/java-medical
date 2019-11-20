@@ -5,7 +5,7 @@
         <div>
           <el-input
             :placeholder="$t('technicianClassify.categoryNameTip')"
-            style="width: 188px;"
+            style="width: 170px;"
             size="small"
             v-model="newTechnicianGroupName"
           ></el-input>

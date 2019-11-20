@@ -800,6 +800,8 @@ export default {
 }
 
 .storeFooter {
+  width: calc(100% - 150px);
+  transform: translateX(150px);
   background: #f8f8fa;
   text-align: center;
   box-sizing: border-box;
