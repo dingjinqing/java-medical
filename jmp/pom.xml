@@ -19,7 +19,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<java.version>1.8</java.version>
-        <elasticsearch.version>7.3.2</elasticsearch.version>
+		<elasticsearch.version>7.3.2</elasticsearch.version>
 	</properties>
 
 
@@ -67,7 +67,7 @@
 				<artifactId>mp-web</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.vpu.mp</groupId>
 				<artifactId>mp-command</artifactId>
