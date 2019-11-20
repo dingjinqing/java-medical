@@ -49,6 +49,12 @@ var base = {
           switch (itemC.activityType) {
             case 22:
               item.isMembershipExclusive = true
+              break
+            case 18:
+              item.isFirstOrder = true
+              break
+            case 6:
+              item.isLimitedPrice = true
           }
 
         })
