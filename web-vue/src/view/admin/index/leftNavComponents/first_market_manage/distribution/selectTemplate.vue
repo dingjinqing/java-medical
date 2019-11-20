@@ -115,9 +115,9 @@ export default {
       templateData: [], // 模板表格
       templateRow: {}, // 模板弹窗回调函数
       requestParams: {},
-      form: {
-        rebate_page_id: '' // 推广模版文案id
-      },
+      // form: {
+      //   rebate_page_id: '' // 推广模版文案id
+      // },
       formDialog: {
         pageName: null,
         catId: null
@@ -138,16 +138,16 @@ export default {
     handleCurrentChange (val) {
       console.log(val)
       this.templateRow = val
-      this.form.rebate_page_id = val.pageId
-      this.formDialog.pageName = val.pageName
-      console.log(this.formDialog.pageName)
+      // this.form.rebate_page_id = val.pageId
+      // this.formDialog.pageName = val.pageName
+      console.log(this.templateRow)
     },
 
     // 模板数据回显
     sureClickHandler () {
       this.templateDialog = false
       this.tamplateFlag = true
-      this.$emit('handleSelectTemplate', this.formDialog.pageName, this.form.rebate_page_id)
+      this.$emit('handleSelectTemplate', this.templateRow)
     },
 
     // 获取模板弹窗表格数据

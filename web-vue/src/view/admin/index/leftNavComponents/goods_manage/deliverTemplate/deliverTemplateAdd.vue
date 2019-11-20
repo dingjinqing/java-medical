@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     addDelivery (params) {
-      // console.log(params)
+      console.log(params, 'paramas id')
       addTemplate(params).then(res => {
         console.log(res)
         const { error } = res
