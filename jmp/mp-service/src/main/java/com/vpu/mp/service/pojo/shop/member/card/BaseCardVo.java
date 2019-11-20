@@ -68,6 +68,10 @@ public abstract class BaseCardVo {
 	// 批次
 	private List<CardBatchVo> batchList;
 	
+	/**
+	 * 使用门店类型 0：全部门店；1：部分门店；-1：不可在门店使用
+	 */
+	protected Byte storeListType;
 	/** 门店Id */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected String storeList;

@@ -73,13 +73,6 @@ public class NormalCardToVo extends NormalCardVo {
 	private PowerCardJson powerCardJson;
 	
 	
-	/**
-	 * 使用门店
-	 */
-	/**
-	 * 使用门店类型 0：全部门店；1：部分门店；-1：不可在门店使用
-	 */
-	private Byte storeListType;
 
 	
 	/** 购买类型 */

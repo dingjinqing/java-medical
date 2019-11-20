@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.service.foundation.util.Util;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +15,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_PA
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_BAN;
 
 import java.math.BigDecimal;
+import java.util.List;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月7日
@@ -41,19 +44,6 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 	@JsonProperty("exchangGoods")
 	private String[] exchangGoodsArr;
 	
-	
-	/**
-	 * 使用门店
-	 */
-	/**
-	 * 使用门店类型 0：全部门店；1：部分门店；-1：不可在门店使用
-	 */
-	private Byte storeListType;
-	/** 门店Id */
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String storeList;
-	@JsonProperty("storeList")
-	private String[] storeListArray;
 	
 	/** 激活需要的信息 */
 	private String[] activationCfgBox;
@@ -93,11 +83,12 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 		/** 门店策略处理 */
 		if (storeList != null) {
 			storeList = storeList.replaceAll("\\s+", "");
-			storeListArray = storeList.split(",");
+			storeIdList = Util.json2Object(storeList, new TypeReference<List<Integer>>() {
+            }, false);
+			
 			/** 门店类型 */
-			if (MCARD_STP_BAN.equals(Byte.valueOf(storeListArray[0])) 
-						|| MCARD_STP_ALL.equals(Byte.valueOf(storeListArray[0]))) {
-				storeListType = Byte.valueOf(storeListArray[0]);
+			if (MCARD_STP_BAN.equals(storeIdList.get(0).byteValue()) || MCARD_STP_ALL.equals(storeIdList.get(0).byteValue())) {
+				storeListType = storeIdList.get(0).byteValue();
 			} else {
 				storeListType = MCARD_STP_PART;
 			}
