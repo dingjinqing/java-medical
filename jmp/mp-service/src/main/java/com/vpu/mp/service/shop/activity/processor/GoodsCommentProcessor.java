@@ -52,6 +52,9 @@ public class GoodsCommentProcessor implements ProcessorPriority,ActivityGoodsLis
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
         CommentDetailVo goodsCommentInfoForDetail = goodsCommentProcessorDao.getGoodsCommentInfoForDetail(param.getGoodsId());
        goodsDetailMpBo.setComment(goodsCommentInfoForDetail);
+       if (goodsCommentInfoForDetail==null){
+           return;
+       }
         CommentDetailVo.CommentInfo commentInfo = goodsCommentInfoForDetail.getCommentInfo();
         commentInfo.setUserAvatar(getImgFullUrlUtil(commentInfo.getUserAvatar()));
         List<String> fullImgs = new ArrayList<>();
