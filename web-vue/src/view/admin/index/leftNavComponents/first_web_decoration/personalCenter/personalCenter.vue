@@ -585,6 +585,7 @@
                 <el-form-item label="标题：">
                   <el-input
                     style="width: 120px;"
+                    size="small"
                     @blur="changeTitle(item.module_name, item.title)"
                     v-model="item.title"
                   ></el-input>
@@ -661,6 +662,7 @@
                 <el-form-item label="标题：">
                   <el-input
                     style="width: 120px;"
+                    size="small"
                     @blur="changeTitle(item.module_name, item.title)"
                     v-model="item.title"
                   ></el-input>
@@ -830,6 +832,7 @@
                 <el-form-item label="标题：">
                   <el-input
                     style="width: 120px;"
+                    size="small"
                     @blur="changeTitle(item.module_name, item.title)"
                     v-model="item.title"
                   ></el-input>
@@ -859,6 +862,7 @@
                 <el-form-item label="标题：">
                   <el-input
                     style="width: 120px;"
+                    size="small"
                     @blur="changeTitle(item.module_name, item.title)"
                     v-model="item.title"
                   ></el-input>
@@ -918,6 +922,7 @@
                 <el-form-item label="标题：">
                   <el-input
                     style="width: 120px;"
+                    size="small"
                     @blur="changeTitle(item.module_name, item.title)"
                     v-model="item.title"
                   ></el-input>
@@ -1210,6 +1215,7 @@
                   <div style="margin: 10px 0;">
                     标题：&nbsp;&nbsp;<el-input
                       v-model="val.title"
+                      size="small"
                       @blur="changeTemplateTitle(item.module_name, key, val.title)"
                       style="width: 120px;"
                     ></el-input>
