@@ -119,7 +119,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
                     DSL.cast(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID, Integer.class)));
     select = this.buildOptions(select, param);
     select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
-    Result<Record> fetch = select.fetch();
+
     return this.getPageResult(select, param.page, param.pageRows, UploadImageCatNameVo.class);
   }
 

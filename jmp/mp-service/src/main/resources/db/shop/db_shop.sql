@@ -77,10 +77,10 @@ create table `b2c_user_address`
     `best_time`        varchar(120)  not null default '',
     `is_default`       tinyint(1)    not null default '0',
     `last_used_time`   timestamp     null     default null,
-    `lat`              varchar(20)   DEFAULT  NULL COMMENT '纬度' ,
-    `lng`              varchar(20)   DEFAULT  NULL COMMENT '经度' ,
     `create_time`      timestamp              default current_timestamp,
     `update_time`      timestamp              default current_timestamp on update current_timestamp comment '最后修改时间',
+    `lat`              varchar(20)   DEFAULT  NULL COMMENT '纬度' ,
+    `lng`              varchar(20)   DEFAULT  NULL COMMENT '经度' ,
     primary key (`address_id`),
     key `user_id` (`user_id`)
 );
@@ -4407,46 +4407,47 @@ create table `b2c_user_promotion_language`
     primary key (`id`),
     key (`user_id`)
 );
--- 送礼_礼物卡
--- DROP TABLE IF EXISTS `b2c_gift_cart`;
-CREATE TABLE `b2c_gift_cart`
+-- 送礼_礼物车
+-- DROP TABLE IF EXISTS `b2c_give_gift_cart`;
+CREATE TABLE `b2c_give_gift_cart`
 (
     `id`           int(11)    NOT NULL AUTO_INCREMENT,
-    `gift_id`      int(11)    NOT NULL COMMENT '礼单ID',
+    `give_gift_id` int(11)    NOT NULL COMMENT '礼单ID',
     `user_id`      int(11)    NOT NULL COMMENT '用户ID',
-    `product_id`   text COMMENT '已选商品，逗号分隔',
-    `goods_number` text COMMENT '已选商品数，逗号分隔',
-    `gift_type`    tinyint(1) NOT NULL DEFAULT '1' COMMENT '赠送方式：1:直接送礼 2:先到先得 3:定时开奖',
-    `draw_time`       timestamp  null     default null comment '开奖时间',
-    `message`      varchar(200)        DEFAULT NULL COMMENT '祝福语',
-    `status`       tinyint(1) NOT NULL DEFAULT '0',
-    `create_time`  timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`  timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    `goods_number` text COLLATE utf8mb4_unicode_ci COMMENT '已选商品数，逗号分隔',
+    `gift_type`    tinyint(1) NOT NULL                     DEFAULT '1' COMMENT '赠送方式：1:直接送礼 2:先到先得 3:定时开奖',
+    `draw_time`    timestamp                               DEFAULT NULL COMMENT '开奖时间',
+    `message`      varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '祝福语',
+    `status`       tinyint(1) NOT NULL                     DEFAULT '0' COMMENT '礼单状态 进行中 已完成',
+    `create_time`  timestamp  NOT NULL                     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`  timestamp  NOT NULL                     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`id`),
-    KEY `gift_id` (`gift_id`),
+    KEY `give_gift_id` (`give_gift_id`),
     KEY `user_id` (`user_id`)
-);
+) ;
+
 -- 送礼_活动主表
--- DROP TABLE IF EXISTS `b2c_gift_giving_activity`;
-CREATE TABLE `b2c_gift_giving_activity`
+-- DROP TABLE IF EXISTS `b2c_give_gift_activity`;
+CREATE TABLE `b2c_give_gift_activity`
 (
-    `id`                     mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-    `act_name`               varchar(120)          NOT NULL DEFAULT '' COMMENT '活动名称',
-    `start_time`             timestamp              NOT NULL COMMENT '活动起始时间',
-    `end_time`               timestamp              NOT NULL COMMENT '活动截止时间',
-    `level`                  smallint(6)           NOT NULL DEFAULT '0' COMMENT '优先级',
-    `due_time_type`          tinyint(1)                     DEFAULT '0' COMMENT '是否永久有效：0否，1是',
-    `act_type_first_served`  tinyint(1)                     DEFAULT '0' COMMENT '活动玩法：先到先得 1开启',
-    `act_type_timing_open`   tinyint(1)                     DEFAULT '0' COMMENT '活动玩法：定时开奖 1开启',
-    `act_type_direct_giving` tinyint(1)                     DEFAULT '0' COMMENT '活动玩法：直接送礼 1开启',
-    `recommend_goods_id`     text COMMENT '指定商品可用',
-    `status`                 tinyint(1)                     DEFAULT '1' COMMENT '活动状态：1启用',
-    `del_flag`               tinyint(1)                     DEFAULT '0' COMMENT '删除标识：0未删除，1已删除',
-    `create_time`            timestamp             NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`            timestamp             NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    `id`                     int(11)                                 NOT NULL AUTO_INCREMENT,
+    `act_name`               varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '活动名称',
+    `start_time`             timestamp                               NOT NULL COMMENT '活动起始时间',
+    `end_time`               timestamp                               NOT NULL COMMENT '活动截止时间',
+    `level`                  smallint(6)                             NOT NULL DEFAULT '0' COMMENT '优先级',
+    `due_time_type`          tinyint(1)                                       DEFAULT '0' COMMENT '是否永久有效：0否，1是',
+    `act_type_first_served`  tinyint(1)                                       DEFAULT '0' COMMENT '活动玩法：先到先得 1开启',
+    `act_type_timing_open`   tinyint(1)                                       DEFAULT '0' COMMENT '活动玩法：定时开奖 1开启',
+    `act_type_direct_giving` tinyint(1)                                       DEFAULT '0' COMMENT '活动玩法：直接送礼 1开启',
+    `recommend_goods_id`     text COLLATE utf8mb4_unicode_ci COMMENT '指定商品可用',
+    `status`                 tinyint(1)                                       DEFAULT '0' COMMENT '活动状态：1启用',
+    `del_flag`               tinyint(1)                                       DEFAULT '0' COMMENT '删除标识：0未删除，1已删除',
+    `create_time`            timestamp                               NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`            timestamp                               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
     PRIMARY KEY (`id`),
     KEY `act_name` (`act_name`)
 );
+
 -- 送礼_记录表
 -- DROP TABLE IF EXISTS `b2c_give_gift_receive`;
 CREATE TABLE `b2c_give_gift_receive`

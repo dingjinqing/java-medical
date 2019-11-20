@@ -48,9 +48,9 @@ public class HttpsUtils {
         // 设置连接池
         connMgr = new PoolingHttpClientConnectionManager();
         // 设置连接池大小
-        connMgr.setMaxTotal(100);
+        connMgr.setMaxTotal(30);
         connMgr.setDefaultMaxPerRoute(connMgr.getMaxTotal());
-        // Validate connections after 1 sec of inactivity
+        // 1秒不活动后验证连接
         connMgr.setValidateAfterInactivity(1000);
         RequestConfig.Builder configBuilder = RequestConfig.custom();
         // 设置连接超时

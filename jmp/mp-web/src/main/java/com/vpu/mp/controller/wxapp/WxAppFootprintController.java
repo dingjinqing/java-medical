@@ -35,7 +35,7 @@ public class WxAppFootprintController extends WxAppBaseController {
         if (user!=null){
            param.setUserId(user.getUserId());
         }else {
-            log.info("user:"+ Util.toJson(user));
+            log.info("user = null ");
         }
         FootprintListVo footprintPage = shop().footPrintService.getFootprintPage(param.getUserId(), param.getKeyword(), param.getCurrentPage(), param.getPageRows());
         return  success(footprintPage);

@@ -3,14 +3,16 @@ package com.vpu.mp.service.pojo.saas.shop.image;
 import java.sql.Timestamp;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author 孔德成
  * @date 2019/7/17 9:56
  */
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 public class ShopUploadedImageVo {
     private Integer   imgId;
     private String    imgType;

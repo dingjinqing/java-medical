@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,8 @@ import com.vpu.mp.service.pojo.shop.market.givegift.receive.GiveGiftReceiveListV
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListVo;
 
+import javax.validation.Valid;
+
 /**
  * 我要送礼
  *
@@ -25,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListVo;
  */
 @RestController
 @RequestMapping("/api/admin/marker/givegift")
+@Slf4j
 public class AdminGiveGiftController extends AdminBaseController {
 
 
@@ -33,7 +37,7 @@ public class AdminGiveGiftController extends AdminBaseController {
      * @return
      */
     @PostMapping("/list")
-    public JsonResult getGiveGiftList(@RequestBody GiveGiftListParam param) {
+    public JsonResult getGiveGiftList(@RequestBody @Valid GiveGiftListParam param) {
         PageResult<GiveGiftListVo> giveGiftList = shop().giveGift.getGiveGiftList(param);
         return success(giveGiftList);
     }
@@ -44,7 +48,7 @@ public class AdminGiveGiftController extends AdminBaseController {
      * @return json
      */
     @PostMapping("/get")
-    public JsonResult getGiveGiftById(@RequestBody GiveGiftIdParam param){
+    public JsonResult getGiveGiftById(@RequestBody @Valid GiveGiftIdParam param){
         GiveGiftVo giveGiftVo = shop().giveGift.getGiveGiftById(param.getId()).into(GiveGiftVo.class);
         return success(giveGiftVo);
     }
@@ -56,7 +60,7 @@ public class AdminGiveGiftController extends AdminBaseController {
          * @return 成功或失败
          */
         @PostMapping("/add")
-        public JsonResult addGiveGift(@RequestBody GiveGiftParam param) {
+        public JsonResult addGiveGift(@RequestBody @Valid GiveGiftParam param) {
             Integer flag = shop().giveGift.addGiveGift(param);
             if (flag<=0){
                 return fail();
@@ -71,7 +75,7 @@ public class AdminGiveGiftController extends AdminBaseController {
      * @return 成功或失败
      */
     @PostMapping("/update")
-    public JsonResult updateGiveGift(@RequestBody GiveGiftParam param) {
+    public JsonResult updateGiveGift(@RequestBody @Valid GiveGiftParam param) {
         Integer flag = shop().giveGift.updateGiveGift(param);
         if (flag>0){
             return success();
@@ -85,7 +89,7 @@ public class AdminGiveGiftController extends AdminBaseController {
      * @return 成功火失败
      */
     @PostMapping("/change/status")
-    public JsonResult changeGiveGift(@RequestBody GiveGiftIdParam param) {
+    public JsonResult changeGiveGift(@RequestBody @Valid GiveGiftIdParam param) {
         int flag = shop().giveGift.changeGiveGift(param.getId());
         if (flag>0){
             return success();
@@ -100,7 +104,7 @@ public class AdminGiveGiftController extends AdminBaseController {
      * @return 成功或失败
      */
     @PostMapping("/delete")
-    public JsonResult deleteGiveGift(@RequestBody GiveGiftIdParam param) {
+    public JsonResult deleteGiveGift(@RequestBody @Valid GiveGiftIdParam param) {
         int flag = shop().giveGift.deleteGiveGift(param.getId());
         if (flag>0){
             return success();
@@ -114,7 +118,7 @@ public class AdminGiveGiftController extends AdminBaseController {
      * @return 返回 page
      */
     @PostMapping("/send/list")
-    public JsonResult giveGiftRecordList(@RequestBody GiveGiftRecordListParam param) {
+    public JsonResult giveGiftRecordList(@RequestBody @Valid GiveGiftRecordListParam param) {
         PageResult<GiveGiftRecordListVo> giveGiftRecordListVoPageResult = shop().giveGift.giveGiftRecordList(param);
         return success(giveGiftRecordListVoPageResult);
     }
@@ -124,7 +128,7 @@ public class AdminGiveGiftController extends AdminBaseController {
      * @return page对象
      */
     @PostMapping("/receive/list")
-    public JsonResult giveGiftReceiveList(@RequestBody GiveGiftReceiveListParam param) {
+    public JsonResult giveGiftReceiveList(@RequestBody @Valid GiveGiftReceiveListParam param) {
         PageResult<GiveGiftReceiveListVo> giveGiftReceiveListVoPageResult = shop().giveGift.giveGiftReceiveList(param);
         return success(giveGiftReceiveListVoPageResult);
     }

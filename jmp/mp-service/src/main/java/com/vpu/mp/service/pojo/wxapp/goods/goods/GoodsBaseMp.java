@@ -1,13 +1,16 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 小程序返回商品基类
  * @author 李晓冰
  * @date 2019年11月08日
  */
-@Data
+@Getter
+@Setter
 public class GoodsBaseMp {
     //************ElasticSearch中的数据**************start
     /**商品ID*/

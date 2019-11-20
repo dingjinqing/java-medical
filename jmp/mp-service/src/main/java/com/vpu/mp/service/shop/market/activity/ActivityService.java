@@ -140,6 +140,7 @@ public class ActivityService extends ShopBaseService {
             case DRAW:
                 couponId = String.valueOf(param.getActivityId());
                 break;
+            default:
         }
         db().insertInto(TABLE).columns(TABLE.NAME, TABLE.ACTION, TABLE.ACTIVITY_ACTION, TABLE.BG_ACTION,
             TABLE.START_DATE, TABLE.END_DATE, TABLE.MRKING_VOUCHER_ID, TABLE.TITLE, TABLE.STATUS,

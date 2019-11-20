@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -8,7 +10,8 @@ import lombok.Data;
  * @author 孔德成
  * @date 2019/8/2 10:10
  */
-@Data
+@Getter
+@Setter
 public class BasePageGroupBuyParam {
     private Integer pageRows ;
     private Integer currentPage ;

@@ -363,7 +363,6 @@ public class GoodsSpecProductService extends ShopBaseService {
             Result<Record3<BigDecimal, Integer, Integer>> storeGoods = db().select(STORE_GOODS.PRODUCT_PRICE, STORE_GOODS.PRODUCT_NUMBER, STORE_GOODS.PRD_ID).from(STORE_GOODS)
                     .where(STORE_GOODS.IS_ON_SALE.eq((byte) 1)).and(STORE_GOODS.IS_SYNC.eq((byte) 1))
                     .and(STORE_GOODS.STORE_ID.eq(storeId)).and(STORE_GOODS.PRD_ID.in(productIds)).fetch();
-            List<Integer> storeGoodsProIds =storeGoods.getValues(STORE_GOODS.PRD_ID);
             Map<Integer, BigDecimal> storeGoodsPrices =storeGoods.intoMap(STORE_GOODS.PRD_ID,STORE_GOODS.PRODUCT_PRICE);
             Map<Integer, Integer> storeGoodsNumbers =storeGoods.intoMap(STORE_GOODS.PRD_ID,STORE_GOODS.PRODUCT_NUMBER);
             products.stream().forEach(pro->{
@@ -419,11 +418,11 @@ public class GoodsSpecProductService extends ShopBaseService {
         }
         return goodsSpecproduct;
     }
-    
-    
+
+
 	/**
 	 * 转化规格商品格式 好物圈用
-	 * 
+	 *
 	 * @param prdDesc
 	 * @return
 	 */

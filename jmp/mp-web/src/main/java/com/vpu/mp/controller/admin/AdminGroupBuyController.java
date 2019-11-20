@@ -64,12 +64,9 @@ public class AdminGroupBuyController extends AdminBaseController {
         if (!flag){
             return fail(JsonResultMessage.GROUP_BUY_ADD_ACTIVITY_STOP_STATUS);
         }
-        //插入数据
         shop().groupBuy.addGroupBuy(param,flag);
-        if (flag){
-            return success();
-        }
-        return success(Util.translateMessage(getLang(), JsonResultMessage.GROUP_BUY_ADD_ACTIVITY_STOP_STATUS,I18N_RESOURCE));
+        return success();
+//        return success(Util.translateMessage(getLang(), JsonResultMessage.GROUP_BUY_ADD_ACTIVITY_STOP_STATUS,I18N_RESOURCE));
     }
 
 

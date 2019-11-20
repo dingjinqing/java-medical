@@ -21,7 +21,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 @Component
 public class OrderOperateFactory implements ApplicationContextAware {
 
-	private static Map<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam>> orderOperateMap;
+	private  Map<OrderServiceCode, IorderOperate<AbstractOrderOperateQueryParam,AbstractOrderOperateQueryParam>> orderOperateMap;
 
 	@SuppressWarnings("unchecked")
 	@Override
