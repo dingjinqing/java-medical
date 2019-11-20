@@ -8,6 +8,8 @@ import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -489,6 +491,11 @@ public class CouponGiveService extends ShopBaseService {
               .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
               .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
               .fetchOneInto(CouponDetailsVo.class);
+      //查询结果为空直接返回
+        if (couponDetails==null){
+            String couponInfo = "优惠券ID:"+couponId;
+            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST,couponInfo);
+        }
       // 判断优惠券类型 减价or打折
       byte type = 0;
       if (VOUCHER.equalsIgnoreCase(couponDetails.getActCode())) {
