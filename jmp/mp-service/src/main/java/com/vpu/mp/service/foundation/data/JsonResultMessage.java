@@ -44,6 +44,7 @@ public class JsonResultMessage {
 	public static final String MSG_CODE_ACCOUNT_VERSIN_NO_POWER = "account.version.no.power";
 	public static final String MSG_ACCOUNT_SHOPTYPE_REGISTERED = "account.shoptype.notNull";
 	public static final String MSG_ACCOUNT_SYTEM_LOGIN_EXPIRED = "system.account.login.expired";
+	public static final String MSG_CODE_ACCOUNT_ENNAME_ISNULL = "enanme.isnull";
 
 	// 图片
 
