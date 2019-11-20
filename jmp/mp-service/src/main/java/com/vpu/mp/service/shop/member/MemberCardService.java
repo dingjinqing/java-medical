@@ -80,6 +80,9 @@ import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.pojo.shop.member.MemberConstant;
+import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
 import org.jooq.Result;
@@ -114,35 +117,6 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
-import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
-import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
-import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
-import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
-import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardParam;
-import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
-import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
-import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
-import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
-import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
-import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
-import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
-import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
@@ -1981,4 +1955,53 @@ public class MemberCardService extends ShopBaseService {
 	public List<CardBatchDetailVo> getBatchCfg(Integer batchId) {
 		return cardDao.selectBatchCfgById(batchId);
 	}
+
+
+    /**
+     * 小程序装修会员卡模块显示异步调用
+     * status : 未领取-1 已领取1 过期2  停用3
+     * @param cardId
+     * @param userId
+     * @return
+     */
+	public MemberCardPageDecorationVo getPageIndexMemberCard(int cardId,int userId){
+        MemberCardPageDecorationVo vo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchSingle().into(MemberCardPageDecorationVo.class);
+
+        if(vo.getFlag().equals(CardConstant.MCARD_FLAG_STOP)){
+            //已停用
+            vo.setStatus((byte)3);
+        }else if(vo.getExpireType().equals(MCARD_ET_FIX) && DateUtil.getLocalDateTime().after(vo.getEndTime())){
+            //已过期
+            vo.setStatus((byte)2);
+        }
+
+        //用户已经领取该卡的数量
+        int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,cardId);
+        if(vo.getCardType().equals(MCARD_TP_LIMIT) && vo.getLimit() > 1){
+            //限次卡，还有库存 或 不限库存
+            if(vo.getStock() == 0 || (vo.getStock() > 0 && userCardService.userCardDao.calcNumCardById(cardId) < vo.getStock())){
+                if(vo.getLimit() == null || vo.getLimit() == 0 || userHasGotNumber < vo.getLimit()){
+                    //未达到领取上限
+                    vo.setStatus((byte)-1);
+                }else{
+                    vo.setStatus((byte)1);
+                }
+            }else{
+                //已经没有库存
+                vo.setStatus((byte)1);
+            }
+        }else if(vo.getCardType().equals(MCARD_TP_GRADE)){
+            //只要拥有一张等级卡，就认为是已领取
+            if(userCardService.userCardDao.getUserGradeCard(userId) != null){
+                vo.setStatus((byte)1);
+            }
+        }else{
+            //普通卡 只能拥有一张
+            if(userHasGotNumber > 0){
+                vo.setStatus((byte)1);
+            }
+        }
+
+        return vo;
+    }
 }

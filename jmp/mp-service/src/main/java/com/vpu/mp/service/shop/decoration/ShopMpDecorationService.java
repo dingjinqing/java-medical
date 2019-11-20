@@ -17,10 +17,7 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.*;
-import com.vpu.mp.service.pojo.shop.decoration.module.ModuleConstant;
-import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCoupon;
-import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoods;
-import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGoodsGroup;
+import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
 import com.vpu.mp.service.pojo.wxapp.config.ShareConfig;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
@@ -30,11 +27,13 @@ import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
+import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record5;
@@ -62,6 +61,9 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     @Autowired
     protected UserService user;
+
+    @Autowired
+    protected MemberService member;
 
     @Autowired
     protected GoodsMpService goodsMpService;
@@ -687,12 +689,15 @@ public class ShopMpDecorationService extends ShopBaseService {
                             return this.convertGoodsForModule(objectMapper,node,user);
                         case ModuleConstant.M_COUPON:
                             return this.convertCouponForModule(objectMapper,node,user);
+                        case ModuleConstant.M_CARD:
+                            return this.convertMemberCardForModule(objectMapper,node,user);
                         //TODO case
                     }
                 }
             }
         } catch (Exception e) {
             logger().error("小程序首页装修模块内容转换错误,pageContent:{}",pageContent);
+            e.printStackTrace();
         }
         return null;
     }
@@ -734,12 +739,28 @@ public class ShopMpDecorationService extends ShopBaseService {
      * @return
      * @throws IOException
      */
-    private  List<? extends CouponPageDecorationVo> convertCouponForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+    private  List<CouponPageDecorationVo> convertCouponForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleCoupon moduleCoupon = objectMapper.readValue(node.getValue().toString(), ModuleCoupon.class);
         Integer userId = user.getUserId();
 
         // 转换实时信息
         return couponMpService.getPageIndexCouponList(moduleCoupon, userId);
+    }
+
+    /**
+     * 会员卡模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private MemberCardPageDecorationVo convertMemberCardForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
+        Integer userId = user.getUserId();
+
+        // 转换实时信息
+        return member.card.getPageIndexMemberCard(moduleCard.getCardId(), userId);
     }
 
 }
