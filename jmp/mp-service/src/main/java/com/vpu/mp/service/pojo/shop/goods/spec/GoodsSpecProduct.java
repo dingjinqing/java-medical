@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.goods.spec;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
  * 货品SKU
@@ -29,5 +29,5 @@ public class GoodsSpecProduct {
 
 	private BigDecimal lowShopPrice;
 	private String prdImg;
-	private String prdImgPath;
+	private String prdImgUrl;
 }
