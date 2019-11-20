@@ -213,7 +213,7 @@ ul li {
 }
 .grid-content {
   border-radius: 4px;
-  min-height: 36px;
+  min-height: 48px;
 }
 .bg-purple-dark {
   text-align: left;

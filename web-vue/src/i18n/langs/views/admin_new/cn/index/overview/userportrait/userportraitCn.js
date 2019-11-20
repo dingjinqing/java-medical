@@ -20,7 +20,7 @@ export const cn = {
   title4: '性别分布',
   proportion: '占比',
   gender: '性别',
-  noData: '没有数据',
+  noData: '暂无数据',
   userNumOptions: [{
     value: 1,
     label: '活跃用户数'
