@@ -1,22 +1,29 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.VersionPath;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
 import com.vpu.mp.service.pojo.shop.auth.MenuParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuReturnParam;
 import com.vpu.mp.service.pojo.shop.auth.PrivilegeAndPassParam;
 import com.vpu.mp.service.pojo.shop.auth.PrivilegeVo;
+import com.vpu.mp.service.pojo.shop.auth.ShopVersionParam;
 
 /**
  * 
@@ -26,7 +33,7 @@ import com.vpu.mp.service.pojo.shop.auth.PrivilegeVo;
 @RestController
 @RequestMapping("/api")
 public class AdminIndexController extends AdminBaseController {
-
+	
 	@Autowired
 	protected JedisManager jedis;
 	
@@ -34,7 +41,10 @@ public class AdminIndexController extends AdminBaseController {
 	final protected String privilegeJsonPath = "admin.privilegePass.json";
 	
 	private static final String ENNAME="V-EnName";
-
+	// 版本控制传的值
+	private static final String VSNAME="V-VsName";
+	final protected String versionJson = "admin.versionNew.json";
+	
 	/**
 	 * 返回店铺菜单
 	 * 
@@ -88,12 +98,24 @@ public class AdminIndexController extends AdminBaseController {
 	 * 
 	 * @return
 	 */
-	 @RequestMapping(value = "/admin/checkMenu")
-	public JsonResult checkMenu() {
+	@RequestMapping(value = "/admin/checkMenu")
+	public JsonResult checkMenu(@RequestBody VersionPath path) {
+		String enName = request.getHeader(ENNAME);
+		String vsName = request.getHeader(VSNAME);
+		if (StringUtils.isEmpty(enName)) {
+			return fail(JsonResultCode.CODE_FAIL);
+		}
+		
 		if (StringUtils.isEmpty(adminAuth.user().loginShopId)) {
 			return fail(JsonResultCode.CODE_ACCOUNT_ROLE__SHOP_SELECT);
 		}
-		judgeVersion();
+		
+		//判断版本的权限
+		JsonResultCode judgeVersion = judgeVersion(enName,vsName,path.getPath());
+		if(!judgeVersion.equals(JsonResultCode.CODE_SUCCESS)) {
+			return fail(judgeVersion);
+		}
+		
 		Integer roleId = saas.shop.getShopAccessRoleId(adminAuth.user().sysId, adminAuth.user().loginShopId,
 				adminAuth.user().subAccountId);
 		if (roleId == -1) {
@@ -105,30 +127,141 @@ public class AdminIndexController extends AdminBaseController {
 			return success(JsonResultCode.CODE_SUCCESS);
 		}
 		// 子账户，判断是否可以点击
-		if (saas.shop.role.checkPrivilegeList(roleId, request.getHeader(ENNAME))) {
+		if (saas.shop.role.checkPrivilegeList(roleId, enName)) {
 			return success(JsonResultCode.CODE_SUCCESS);
 		}
 		return fail(JsonResultCode.CODE_FAIL);
 	}
 
-	public JsonResultCode judgeVersion() {
+
+	/**
+	 * 店铺权限的判断
+	 * @param enName
+	 * @param vsName
+	 * @return
+	 */
+	public JsonResultCode judgeVersion(String enName, String vsName,String path) {
+		logger().info("权限判断传入的enName："+enName+"和vsName值："+vsName+"请求的地址："+path);
 		VersionConfig vConfig = saas.shop.version.mergeVersion(adminAuth.user().loginShopId);
 		if (vConfig == null) {
 			// 版本存在问题，请联系管理员
 			return JsonResultCode.CODE_FAIL;
 		}
 		VersionMainConfig mainConfig = vConfig.getMainConfig();
-		String enName = request.getHeader(ENNAME);
-		if(StringUtils.isEmpty(enName)) {
+		if (StringUtils.isEmpty(enName)) {
+			logger().info("enName为空");
 			return JsonResultCode.CODE_FAIL;
 		}
-
-		if (saas.shop.version.checkMainConfig(mainConfig, enName)) {
-			//为true则请求在version版本里
+		 
+		String json = Util.loadResource(versionJson);
+		ArrayList<ShopVersionParam> list = Util.parseJson(json, new TypeReference<List<ShopVersionParam>>() {
+		});
+		
+		//enName校验在不在admin.versionNew.json中，不在返回成功
+		if (!includeEname(list, enName,null)) {
+			// 请求不在所有定义的权限里，返回成功
+			logger().info("请求enName："+enName+"不在json文件中，不校验");
 			return JsonResultCode.CODE_SUCCESS;
 		}
-		//此功能需要更高版本才可使用。如需了解详情我们的产品顾问将尽快与您联系！！！
-		return JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER;
+		
+		//带vsname的定义为需要校验，以后添加权限要添加vsname，前端要做好添加
+		if(StringUtils.isEmpty(vsName)) {
+			logger().info("vsName为空，不校验权限");
+			return JsonResultCode.CODE_SUCCESS;
+		}
+		
+		//校验enName和VsName是否匹配
+		if (!includeEname(list, enName,vsName)) {
+			// 请求不在所有定义的权限里
+			return JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT;
+		}
+		
+		//去vConfig中校验是否存在
+		if (!saas.shop.version.checkMainConfig(mainConfig, vsName)) {
+			logger().info("enName："+enName+"不在vConfig权限里");
+			// 此功能需要更高版本才可使用。如需了解详情我们的产品顾问将尽快与您联系！！
+			return JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER;
+		}
+		//校验API是否在请求里
+		if(!checkApi(list, enName, vsName, path)) {
+			//先返回true
+			return JsonResultCode.CODE_SUCCESS;
+			// 请求不在所有定义的权限里
+			//return JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT;
+		}
+		
+		return JsonResultCode.CODE_SUCCESS;
+
 	}
 
+	/**
+	 * 匹配返回true
+	 * 
+	 * @param eNameList
+	 * @param reqEnName
+	 * @return
+	 */
+	private Boolean includeEname(List<ShopVersionParam> eNameList, String reqEnName, String reqVsName) {
+		for (ShopVersionParam allEname : eNameList) {
+			if (allEname.getEnName().equals(reqEnName)) {
+				if (!StringUtils.isEmpty(reqVsName)) {
+					if (allEname.getVsName().equals(reqVsName)) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 校验api是否在里面
+	 * @param eNameList
+	 * @param reqEnName
+	 * @param reqVsName
+	 * @return
+	 */
+	private Boolean checkApi(List<ShopVersionParam> eNameList, String reqEnName, String reqVsName,String path) {
+		for (ShopVersionParam allEname : eNameList) {
+			if (allEname.getEnName().equals(reqEnName)) {
+				if (!StringUtils.isEmpty(reqVsName)) {
+					if (allEname.getVsName().equals(reqVsName)) {
+						List<String> includeApi = allEname.getIncludeApi();
+						if(match(includeApi, path)) {
+							return true;
+						}
+						logger().info("请求的api："+path+"没在ename："+reqEnName+"；vsName："+reqVsName+"的includeApi里");
+						return false;
+					} else {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean match(List<String> regexps, String path) {
+		for (String regexp : regexps) {
+			if (match(regexp, path)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean match(String regexp, String path) {
+		char asterisk = '*';
+		if (regexp.charAt(regexp.length() - 1) == asterisk) {
+			regexp = regexp.substring(0, regexp.length() - 1);
+			return path.startsWith(regexp);
+		} else {
+			return regexp.equals(path);
+		}
+	}
+	
 }
