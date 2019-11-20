@@ -83,8 +83,7 @@
           <div class="infoContent">
             <el-switch
               v-model="isOpenHistory"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
+              active-color="#f7931e"
             >
             </el-switch>
             <span :style="{'margin-left': '20px', 'color': '#606266'}">
@@ -100,7 +99,7 @@
           <div class="infoContent">
             <el-switch
               v-model="isOpenHotWords"
-              active-color="#13ce66"
+              active-color="#f7931e"
               inactive-color="#ff4949"
             >
             </el-switch>

@@ -4,39 +4,51 @@
       <el-row>
         <el-col :span='24'>
           <el-form label-width="100px">
-            <el-row :gutter="24">
+            <el-row style="line-height:40px;">
               <el-col :span="6">
                 <div class="grid-content ">
-                  <el-form-item :label="$t('pageClassification.catergory')">
+                  <el-form-item
+                    :label="$t('pageClassification.catergory')+'：'"
+                    style="margin:0;"
+                  >
                     <el-input
-                        v-model="requestParams.keywords"
-                        :placeholder="$t('pageClassification.catergoryNamePlease')"
-                        size="small"
-                        clearable
+                      v-model="requestParams.keywords"
+                      :placeholder="$t('pageClassification.catergoryNamePlease')"
+                      size="small"
+                      clearable
                     ></el-input>
                   </el-form-item>
                 </div>
               </el-col>
               <el-col :span="6">
-                <div class="grid-content ">
+                <div
+                  class="grid-content "
+                  style="margin-left:20px;"
+                >
                   <div class="grid-content ">
                     <el-button
-                        class="btn"
-                        type="primary"
-                        size="small"
-                        @click="handleQuery"
+                      class="btn"
+                      type="primary"
+                      size="small"
+                      @click="handleQuery"
                     >{{$t('pageClassification.query')}}
                     </el-button>
                   </div>
                 </div>
               </el-col>
-              <el-col :span="6" :offset="6">
-                <div class="grid-content ">
+              <el-col
+                :span="6"
+                :offset="6"
+              >
+                <div
+                  class="grid-content "
+                  style="text-align: right;"
+                >
                   <el-button
-                      class="btn"
-                      type="primary"
-                      size="small"
-                      @click="dialogVisible = true"
+                    class="btn"
+                    type="primary"
+                    size="small"
+                    @click="dialogVisible = true"
                   >{{$t('pageClassification.addCatergory')}}
                   </el-button>
                 </div>
@@ -48,60 +60,83 @@
     </div>
     <div class="table_list">
       <el-table
-          class="version-manage-table"
-          header-row-class-name="tableClss"
-          :data="tableData"
-          v-loading="loading"
-          border
-          style="width: 100%">
+        class="version-manage-table"
+        header-row-class-name="tableClss"
+        :data="tableData"
+        v-loading="loading"
+        border
+        style="width: 100%"
+      >
 
         <el-table-column
-            prop="name"
-            :label="$t('pageClassification.catergory')"
-            align="center"
+          prop="name"
+          :label="$t('pageClassification.catergory')"
+          align="center"
         >
           <template slot-scope="scope">
             <el-popover
-                placement="top"
-                :title="$t('pageClassification.edit')"
-                v-model="scope.row.popover"
-                width="260">
+              placement="top"
+              :title="$t('pageClassification.edit')"
+              v-model="scope.row.popover"
+              width="260"
+            >
               <el-form label-width="100px">
                 <el-form-item :label="$t('pageClassification.catergoryName')">
-                  <el-input v-model="scope.row.name" size="small" ></el-input>
+                  <el-input
+                    v-model="scope.row.name"
+                    size="small"
+                  ></el-input>
                 </el-form-item>
               </el-form>
               <div style="text-align: right; margin: 0">
-                <el-button @click="scope.row.popover = false" size="mini" type="text">取消</el-button>
-                <el-button type="primary" size="mini" @click="editCatergory(scope.row)">确定</el-button>
+                <el-button
+                  @click="scope.row.popover = false"
+                  size="mini"
+                  type="text"
+                >取消</el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="editCatergory(scope.row)"
+                >确定</el-button>
               </div>
-              <span slot="reference" style="color: #5A8BFF;" >{{scope.row.name}}</span>
+              <span
+                slot="reference"
+                style="color: #5A8BFF;"
+              >{{scope.row.name}}</span>
             </el-popover>
           </template>
         </el-table-column>
         <el-table-column
-            prop="subPageCount"
-            :label="$t('pageClassification.catergoryNum')"
-            align="center"
+          prop="subPageCount"
+          :label="$t('pageClassification.catergoryNum')"
+          align="center"
         >
         </el-table-column>
         <el-table-column
-            prop="createTime"
-            :label="$t('pageClassification.createTime')"
-            align="center"
+          prop="createTime"
+          :label="$t('pageClassification.createTime')"
+          align="center"
         >
         </el-table-column>
         <el-table-column
-            prop="receiveNum"
-            :label="$t('pageClassification.operate')"
-            align="center"
+          prop="receiveNum"
+          :label="$t('pageClassification.operate')"
+          align="center"
         >
           <template slot-scope="scope">
-            <a style="color: #5A8BFF;" @click="handleEdit(scope.row)">{{$t('pageClassification.edit')}}</a>
-            -
-            <a style="color: #5A8BFF;" @click="removeCatergory(scope.row)">{{$t('pageClassification.remove')}}</a>
-            -
-            <a style="color: #5A8BFF;" @click="jumpCatergory(scope.row)">{{$t('pageClassification.viewPage')}}</a>
+            <a
+              style="color: #5A8BFF;margin-right:10px;cursor: pointer;"
+              @click="handleEdit(scope.row)"
+            >{{$t('pageClassification.edit')}}</a>
+            <a
+              style="color: #5A8BFF;margin-right:10px;cursor: pointer;"
+              @click="removeCatergory(scope.row)"
+            >{{$t('pageClassification.remove')}}</a>
+            <a
+              style="color: #5A8BFF;cursor: pointer;"
+              @click="jumpCatergory(scope.row)"
+            >{{$t('pageClassification.viewPage')}}</a>
           </template>
         </el-table-column>
 
@@ -109,25 +144,35 @@
       <div class="footer">
       </div>
       <pagination
-          :page-params.sync="pageParams"
-          @pagination="handleQuery"/>
+        :page-params.sync="pageParams"
+        @pagination="handleQuery"
+      />
     </div>
     <div>
       <el-dialog
-          :title="$t('pageClassification.addCatergory')"
-          :visible.sync="dialogVisible"
-          width="30%"
-          center>
-          <el-form label-width="100px">
-            <el-form-item :label="$t('pageClassification.catergoryName')">
-              <el-input v-model="requestFrom.pageName"
-                        size="small"
-                        clearable></el-input>
-            </el-form-item>
-          </el-form>
-        <span slot="footer" class="dialog-footer">
+        :title="$t('pageClassification.addCatergory')"
+        :visible.sync="dialogVisible"
+        width="30%"
+        center
+      >
+        <el-form label-width="100px">
+          <el-form-item :label="$t('pageClassification.catergoryName')">
+            <el-input
+              v-model="requestFrom.pageName"
+              size="small"
+              clearable
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
           <el-button @click="dialogVisible = false">{{$t('pageClassification.cancel')}}</el-button>
-          <el-button type="primary" @click="addCatergory">{{$t('pageClassification.confirm')}}</el-button>
+          <el-button
+            type="primary"
+            @click="addCatergory"
+          >{{$t('pageClassification.confirm')}}</el-button>
         </span>
       </el-dialog>
     </div>
@@ -201,7 +246,7 @@ export default {
     },
     editCatergory (row) {
       console.log('editCatergory', row)
-      updateCategoryName({pageId: row.id, pageName: row.name}).then(res => {
+      updateCategoryName({ pageId: row.id, pageName: row.name }).then(res => {
         console.log(res)
         this.handleQuery()
         row.popover = false
@@ -213,7 +258,7 @@ export default {
         cancelButtonText: this.$t('pageClassification.cancel'),
         type: 'warning'
       }).then(() => {
-        deleteCategoryById({pageId: row.id}).then(res => {
+        deleteCategoryById({ pageId: row.id }).then(res => {
           console.log(res)
           this.handleQuery()
         }).catch(err => console.log(err))
@@ -238,22 +283,21 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-  .pageClassificationContent {
-    padding: 10px;
-    /* padding-right: 23px; */
-    min-width: 100%;
-    font-size: 14px;
-    height: 100%;
-    position: relative;
-  }
-  .main {
-    background-color: #fff;
-    padding-top: 10px;
-  }
-  .table_list{
-    padding-left: 10px;
-    background-color: white;
-    padding-right: 10px;
-  }
-
+.pageClassificationContent {
+  padding: 10px;
+  /* padding-right: 23px; */
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
+  position: relative;
+}
+.main {
+  background-color: #fff;
+  padding: 15px;
+}
+.table_list {
+  background-color: white;
+  margin-top: 10px;
+  padding: 15px;
+}
 </style>

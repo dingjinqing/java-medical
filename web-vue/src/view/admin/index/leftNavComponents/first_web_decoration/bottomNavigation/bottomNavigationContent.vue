@@ -34,7 +34,7 @@
               <span>{{$t('bottomNavigation.listTitle')}}：</span>
               <el-input
                 :placeholder="$t('bottomNavigation.listTitle')"
-                size="mini"
+                size="small"
                 v-model="item.text"
               ></el-input>
             </div>
@@ -63,10 +63,10 @@
               <el-input
                 v-model="item.page"
                 :placeholder="$t('bottomNavigation.placeholder')"
-                size="mini"
+                size="small"
               ></el-input>
               <el-button
-                size="mini"
+                size="small"
                 @click="handleSelectLinks(index)"
               >{{$t('bottomNavigation.addConnections')}}</el-button>
             </div>
@@ -74,6 +74,7 @@
         </div>
         <div class="cententLRight_content_container">
           <el-button
+            size="small"
             v-if='contentList.length<5'
             @click="addNav"
           >{{$t('bottomNavigation.addMenu')}}</el-button>
@@ -532,7 +533,7 @@ export default {
   width: auto !important;
 }
 .bottomNavigationContent .linkContainer .el-button {
-  padding: 7px 15px !important;
+  /* padding: 7px 15px !important; */
   font-size: 12px !important;
   border-radius: 3px !important;
 }

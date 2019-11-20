@@ -371,7 +371,7 @@ export default {
   /* padding-right: 23px; */
   min-width: 100%;
   font-size: 14px;
-  height: 100%;
+  height: 650px;
   position: relative;
 }
 .shopStyleContent_main {

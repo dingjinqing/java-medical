@@ -27,18 +27,21 @@
         </div>
         <div class="p_top_right">
           <div class="topRightDiv">
-            <span>页面名称</span>
+            <span>页面名称：</span>
             <el-input
+              size="small"
               v-model="inputPageName"
               placeholder="请输入页面名称"
+              style="width:170px;"
             ></el-input>
           </div>
           <div class="topRightDiv">
-            <span>页面分类</span>
+            <span>页面分类：</span>
             <el-select
               v-model="selectValue"
               placeholder="请选择"
               size="small"
+              style="width:170px;"
             >
               <el-option
                 v-for="item in pageSetoptions"
@@ -546,12 +549,12 @@ export default {
   height: 100%;
   .picture_settingMain {
     position: relative;
-    background-color: #fff;
-    padding: 10px 20px 0 20px;
     .p_top {
       display: flex;
       justify-content: space-between;
       margin-bottom: 10px;
+      background-color: #fff;
+      padding: 15px;
       .p_top_left {
         display: flex;
         /deep/ .el-button {
@@ -640,6 +643,8 @@ export default {
       }
     }
     .p_middle {
+      background-color: #fff;
+      padding: 15px;
       /deep/ .tableClss th {
         background-color: #f5f5f5;
         border: none;
@@ -653,13 +658,14 @@ export default {
         justify-content: space-around;
         .iconSpn {
           display: block;
-          font-size: 20px;
+          font-size: 22px;
           color: #5a8bff;
           cursor: pointer;
         }
       }
     }
     .footer {
+      background-color: #fff;
       padding: 20px 0 20px 20px;
       display: flex;
       justify-content: space-between;

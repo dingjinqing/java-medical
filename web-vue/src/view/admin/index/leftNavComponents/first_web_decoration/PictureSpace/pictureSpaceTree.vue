@@ -858,11 +858,11 @@ ul {
   width: 160px;
 }
 .dialog_middle_right_box .el-select {
-  width: 155px !important;
+  width: 170px !important;
   height: 30px !important;
 }
 .dialog_middle_right_box .el-input {
-  width: 155px !important;
+  width: 170px !important;
 }
 .right_content .el-input {
   width: 50px !important;

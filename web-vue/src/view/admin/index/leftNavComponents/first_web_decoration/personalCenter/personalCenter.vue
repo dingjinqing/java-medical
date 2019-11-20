@@ -578,8 +578,7 @@
                     active-value="1"
                     inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
+                    active-color="#f7931e"
                   ></el-switch>
                   <span>开关开启，则展示账户资产信息</span>
                 </el-form-item>
@@ -655,8 +654,7 @@
                     active-value="1"
                     inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
+                    active-color="#f7931e"
                   ></el-switch>
                   <span>开关开启，则展示订单信息</span>
                 </el-form-item>
@@ -825,8 +823,7 @@
                     active-value="1"
                     inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
+                    active-color="#f7931e"
                   ></el-switch>
                   <span>开关开启，则展示预约信息</span>
                 </el-form-item>
@@ -855,8 +852,7 @@
                     active-value="1"
                     inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
+                    active-color="#f7931e"
                   ></el-switch>
                   <span>开关开启，则展示店铺使用信息</span>
                 </el-form-item>
@@ -915,8 +911,7 @@
                     active-value="1"
                     inactive-value="0"
                     @change="changeSwitch(item.module_name, item.is_show)"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
+                    active-color="#f7931e"
                   ></el-switch>
                   <span>开关开启，则展示店铺服务信息</span>
                 </el-form-item>
@@ -1247,6 +1242,7 @@
                 <div style="text-align: center;">
                   <el-button
                     type="primary"
+                    size="small"
                     style="text-align: center;"
                     @click="addTemplate"
                   >添加自定义模板</el-button>
@@ -1879,7 +1875,7 @@ export default {
   padding-left: 12px;
   /* margin: 0 auto; */
   margin-left: 224px;
-  margin-top: 80px;
+  margin-top: 28px;
 }
 
 .prompt img {
@@ -2218,6 +2214,10 @@ export default {
   color: #999;
   font-size: 12px;
   margin-left: 15px;
+}
+.cententRight_container .el-collapse-item {
+  padding: 10px;
+  background: #fff;
 }
 
 .customizeImgWrap {
