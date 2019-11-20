@@ -40,11 +40,15 @@ public class CardReceiveCode extends ShopBaseService {
 	}
 	
 	public void addCardIdToCardBatch(Integer cardId,Set<Integer> batchIdSet) {
-		cardReceiveCodeDao.addCardIdToCardBatch(cardId, batchIdSet);
+		if(batchIdSet.size()>0) {
+			cardReceiveCodeDao.addCardIdToCardBatch(cardId, batchIdSet);
+		}
 	}
 	
 	public void delBatchId(Set<Integer> batchIdSet) {
+		if(batchIdSet.size()>0) {
 		cardReceiveCodeDao.deleteBatchId(batchIdSet);
+		}
 	}
 	
 	private Set<Integer> getBatchIdByCardId(Integer cardId){

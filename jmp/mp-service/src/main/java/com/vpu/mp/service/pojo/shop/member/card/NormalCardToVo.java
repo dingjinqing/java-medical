@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -79,12 +80,7 @@ public class NormalCardToVo extends NormalCardVo {
 	 * 使用门店类型 0：全部门店；1：部分门店；-1：不可在门店使用
 	 */
 	private Byte storeListType;
-	/** 门店Id */
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private String storeList;
-	@JsonProperty("storeList")
-	private String[] storeListArray;
-	
+
 	
 	/** 购买类型 */
 	private Byte payType;
@@ -161,12 +157,12 @@ public class NormalCardToVo extends NormalCardVo {
 		/** 门店策略处理 */
 		if (storeList != null) {
 			storeList = storeList.replaceAll("\\s+", "");
-			List<Integer> storeListArray = Util.json2Object(storeList, new TypeReference<List<Integer>>() {
+			storeIdList = Util.json2Object(storeList, new TypeReference<List<Integer>>() {
             }, false);
 			
 			/** 门店类型 */
-			if (MCARD_STP_BAN.equals(storeListArray.get(0).byteValue()) || MCARD_STP_ALL.equals(storeListArray.get(0).byteValue())) {
-				storeListType = storeListArray.get(0).byteValue();
+			if (MCARD_STP_BAN.equals(storeIdList.get(0).byteValue()) || MCARD_STP_ALL.equals(storeIdList.get(0).byteValue())) {
+				storeListType = storeIdList.get(0).byteValue();
 			} else {
 				storeListType = MCARD_STP_PART;
 			}

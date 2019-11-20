@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.member.card;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -64,6 +65,15 @@ public abstract class BaseCardVo {
 
 	// 批次
 	private List<CardBatchVo> batchList;
+	
+	/** 门店Id */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected String storeList;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected List<Integer> storeIdList;
+	@JsonProperty("storeList")
+	protected List<StoreBasicVo> storeDataList;
+	
 
 	public abstract void changeJsonCfg();
 

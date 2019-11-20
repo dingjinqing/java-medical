@@ -336,15 +336,12 @@ public class StoreService extends ShopBaseService {
 
     /**
      * 获取所有门店id和名称
-     *
-     * @return
      */
     public List<StoreBasicVo> getAllStore() {
         logger().info("获取所有门店id和名称");
         return db().select(STORE.STORE_ID, STORE.STORE_NAME)
             .from(STORE)
-            .fetch()
-            .into(StoreBasicVo.class);
+            .fetchInto(StoreBasicVo.class);
     }
 
     /**

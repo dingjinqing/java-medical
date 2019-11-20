@@ -2,8 +2,7 @@ package com.vpu.mp.service.pojo.shop.store.store;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.validation.constraints.PositiveOrZero;
 
@@ -12,8 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
 * @Date: 2019年9月3日
 * @Description: 获取门店弹窗出参
 */
-@Getter
-@Setter
+@Data
 public class StoreBasicVo {
 	@JsonProperty("value")
     @JsonAlias({"storeId", "store_id"})

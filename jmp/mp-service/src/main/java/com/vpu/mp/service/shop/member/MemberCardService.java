@@ -145,11 +145,13 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 
 /**
  *
@@ -177,6 +179,8 @@ public class MemberCardService extends ShopBaseService {
 	private GoodsCardCoupleService goodsCardCoupleService;
 	@Autowired
 	private CouponGiveService couponGiveService;
+	@Autowired
+	private StoreService storeService;
 
 	/**
 	 * 添加会员卡
@@ -196,6 +200,10 @@ public class MemberCardService extends ShopBaseService {
 	 * 更新会员卡
 	 */
 	public void updateMemberCard(CardParam card) {
+		if(isNull(card.getId())) {
+			logger().info("会员卡id不能为空");
+			return;
+		}
 		logger().info("更新会员卡");
 		MemberCardRecord cardRecord = initMembercardRecordByCfgData(card);
 		transaction(() -> {
@@ -782,8 +790,11 @@ public class MemberCardService extends ShopBaseService {
 	/**
 	 * 会员卡数据更新
 	 */
-	private void updateMemberCardById(MemberCardRecord cardRecord, Integer id) {
-		cardDao.updateMemberCardById(cardRecord, id);
+	private void updateMemberCardById(MemberCardRecord cardRecord, Integer cardId) {
+		if(isNull(cardId)) {
+			return;
+		}
+		cardDao.updateMemberCardById(cardRecord, cardId);
 	}
 
 	/**
@@ -996,11 +1007,27 @@ public class MemberCardService extends ShopBaseService {
 		NormalCardToVo normalCard = card.into(NormalCardToVo.class);
 		assignPayOwnGoods(normalCard);
 		assignCardBatch(normalCard);
-		normalCard.changeJsonCfg();
+		changeCardJsonCfgToDetailType(normalCard);
 		assignCoupon(normalCard);
 		return normalCard;
 	}
-
+	
+	private void changeCardJsonCfgToDetailType(BaseCardVo card) {
+			card.changeJsonCfg();
+			assignCardStoreIdAndName(card);
+	}
+	
+	private void assignCardStoreIdAndName(BaseCardVo card) {
+		List<StoreBasicVo> allStore = storeService.getAllStore();
+		for(StoreBasicVo vo: allStore) {
+			if(!card.getStoreIdList().contains(vo.getStoreId())) {
+				allStore.remove(vo);
+			}
+		}
+		System.out.println(allStore.size());
+		card.setStoreDataList(allStore);
+	}
+	
 	private void assignCoupon(NormalCardToVo card) {
 		logger().info("处理优惠券信息");
 		List<CouponGivePopVo> couponList = couponGiveService.popWindows(new CouponGivePopParam());
