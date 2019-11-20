@@ -219,7 +219,7 @@ export default {
     Guide: () => import('./decorationModules/graphicAndTextComponents/guide'), // 辅助线
     TitleModule: () => import('./decorationModules/graphicAndTextComponents/titleModule'), // 标题模块
     VideoModule: () => import('./decorationModules/graphicAndTextComponents/videoModule'), // 视频模块
-    ShopNotices: () => import('./decorationModules/graphicAndTextComponents/ShopNotices'), // 店铺公告模块
+    ShopNotices: () => import('./decorationModules/graphicAndTextComponents/shopNotices'), // 店铺公告模块
     OfficialAccount: () => import('./decorationModules/graphicAndTextComponents/officialAccount'), // 公众号模块
     CustomerServiceModule: () => import('./decorationModules/graphicAndTextComponents/customerServiceModule') // 客服模块
   },
