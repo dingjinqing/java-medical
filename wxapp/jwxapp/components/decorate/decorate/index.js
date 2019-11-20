@@ -26,6 +26,8 @@ global.wxComponent({
       console.log(page_content, '111', module)
       let pageInfo = page_content.page_info || null;
       console.log(pageInfo)
+      this.scene = page_content.scene || 0
+      this.page_id = page_content.page_id;
       if (!pageInfo) return;
       let pageData = [];
       for (var idx in pageInfo) {
@@ -46,10 +48,134 @@ global.wxComponent({
 
 
       console.log(pageData)
+      this._loadIndex = 0;   // 加载起点
+      this._pageData = pageData;
+      // 加载详细信息
+      this.loadMoreData();
 
-      this.setData({
-        pageData: pageData
-      })
+    },
+    // 加载详细信息
+    loadMoreData() {
+      console.log(this._loaded)
+      var data = {}
+      var l = this._loaded = this._loaded || {}
+      console.log(l)
+      var _loaded_len = Object.keys(this._loaded).length;
+      var d = this._pageData
+      var number = 0;
+      var count = Math.max(_loaded_len, d.length);
+      var loadMore = false;
+      var delayed = {};
+      console.log(this._loadIndex)
+      for (var i = this._loadIndex; i < count; i++) {
+        console.log('循环次数', l, i)
+        var key = "pageData[" + i + "]";
+        l[i] = data[key] = this._timerConvertModule(d[i])
+        delayed[i] = `c_${l[i].cur_idx}`
+        // if (!l[i]) {
+        //   console.log('测试')
+        //   // 添加悬浮组件 和 其他固定数量模块
+        //   if (!d[i].is_float) {
+        //     if (number < 2) {
+        //       l[i] = data[key] = this._timerConvertModule(d[i]);
+        //       console.log(l[i])
+        //       // if (l[i].need_request) delayed[i] = `c_${l[i].cur_idx}`;
+        //       delayed[i] = `c_${l[i].cur_idx}`
+        //       loadMore = true;
+        //       number++;
+        //       this._loadIndex = i + 1;
+        //       if (number == 2 && this._loadFloat) break;
+        //     }
+        //   } else {
+        //     console.log('触发')
+        //     // l[i] = data[key] = this._timerConvertModule(d[i]);
+        //     // if (l[i].need_request) delayed[i] = l[i].idx;
+        //     // loadMore = true;
+        //   }
+        // } else {  // 则更新数据不同的模块
+        //   console.log('l有值')
+        //   if (!d[i] || l[i] && (JSON.stringify(d[i]) != JSON.stringify(l[i]))) { // 初始数据中没有则直接更新 或者 加载数据与初始数据不等则更新 
+        //     l[i] = data[key] = this._timerConvertModule(d[i]) || {};
+        //     // if (l[i].need_request) delayed[i] = l[i].idx;
+        //     console.log(l[i])
+        //     delayed[i] = `c_${l[i].cur_idx}`
+        //   }
+        // }
+      }
+      console.log(delayed)
+      // if (Object.keys(data).length > 0) {
+      //   console.log("loadMore:", data);
+      //   var _this = this;
+      //   this.setData(data, function () {
+      //     console.log('发现')
+      //     _this.detectLoadingMore();
+      //   });
+      //   console.log(delayed)
+      //   // 延迟加载
+      //   for (var i in delayed) {
+      //     this.requestPageModule(delayed[i]);
+      //   }
+      // }
+      // 请求数据
+      for (var i in delayed) {
+        this.requestPageModule(delayed[i]);
+      }
+    },
+    // 请求详细数据
+    requestPageModule(idx) {
+      var _this = this;
+      util.api('/api/wxapp/page/module', function (d) {
+        console.log(d, _this.page_id)
+        _this.refreshModule(idx, d.content);
+      }, {
+        page: _this.page_id,
+        idx: idx,
+        scene: _this.scene || 0
+      });
+    },
+    // 更新模块数据
+    refreshModule(idx, moduleContent) {
+      var data = {};
+      let cur_idx = Number(idx.split('_')[1])
+      console.log(this._pageData, cur_idx)
+      for (var i in this._pageData) {
+        console.log(this._pageData[i], cur_idx)
+        if (this._pageData[i].cur_idx == cur_idx) {
+          this._pageData[i] = Object.assign({}, this._pageData[i], moduleContent);  // 新老数据合并
+          this._pageData[i]['need_request'] = false;
+          var key = "pageData[" + i + "]";
+          data[key] = this._timerConvertModule(this._pageData[i]) || {};
+          break;
+        }
+      }
+      console.log(data)
+      if (Object.keys(data).length > 0) {
+        console.log("refreshModule:", data);
+        this.setData(data);
+      }
+
+    },
+    _timerConvertModule(m) {
+      if (!m) return m;
+      if (m.component_name == 'v-bargain' || m.component_name == 'v-pinlottery') {
+        m.elapse_secs = this.elapse_secs
+      }
+      return m;
+    },
+    detectLoadingMore() {
+      if (this._gettingRect) return;
+      if (this._loadedOk) return;
+      if (!this._windowHeight) this._windowHeight = wx.getSystemInfoSync().windowHeight;
+      console.log('发现加载')
+      var _this = this;
+      this._gettingRect = true;
+      this.getRect("#decorate").then(function (rect) {
+        console.log(rect)
+        if (rect.height < _this._windowHeight || rect.bottom < _this._windowHeight * 1.5) {
+          _this.loadMoreData();
+        }
+        _this._gettingRect = false;
+      });
     },
     // 会员卡  card 模块点击
     onGetCardSuccess(card) {
