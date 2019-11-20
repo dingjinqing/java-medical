@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 运费模板容器卡片 -->
-    <el-card>
+    <el-card style="padding: 15px;">
       <!-- header  标签页-->
       <el-tabs
         v-model="activeName"

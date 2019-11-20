@@ -53,12 +53,12 @@
       <div class="settingContent">
         <el-button
           type="info"
-          size="mini"
+          size="small"
           @click="handleTake()"
         >{{$t('serviceConfig.pleasechoose')}}</el-button>
         {{$t('serviceConfig.alreadychoose')}}
         <el-input
-          size="mini"
+          size="small"
           class="inputWidthSmall"
           :disabled="true"
           v-model="param.store_scan_num"
@@ -71,6 +71,7 @@
       <div class="settingContent">
         <el-button
           type="primary"
+          size="small"
           @click="updateConfig"
         >{{$t('storeCommon.save')}}</el-button>
       </div>
@@ -78,7 +79,7 @@
 
     <!-- 设置自提门店弹窗 -->
     <el-dialog
-      title=""
+      title="选择开启'扫码购'功能的门店"
       :visible.sync="showStoreDialog"
       :close-on-click-modal='false'
       width=50%
@@ -148,7 +149,10 @@
           size="small"
           @click="initDataList"
         >{{$t('tradeConfiguration.save')}}</el-button>
-        <el-button @click="cancle">{{$t('tradeConfiguration.cancel')}}</el-button>
+        <el-button
+          size="small"
+          @click="cancle"
+        >{{$t('tradeConfiguration.cancel')}}</el-button>
       </span>
     </el-dialog>
   </div>

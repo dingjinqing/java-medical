@@ -21,6 +21,7 @@ module.exports = {
   rules: {
     // semi: 0,
     // 'space-before-function-paren': 0,
+    "space-before-function-paren": ["error", "always"],
     // allow async-await
     'generator-star-spacing': 'off',
     // allow debugger during development
