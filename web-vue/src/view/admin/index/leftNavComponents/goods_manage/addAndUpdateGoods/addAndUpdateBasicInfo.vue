@@ -136,7 +136,6 @@
             <div
               class="goodsImgWrap"
               @click="addGoodsImg"
-              v-if="goodsProductInfo.goodsImgs.length < 5"
             >
               <el-image
                 fit="scale-down"
@@ -320,8 +319,7 @@
       </el-collapse>
       <!--图片dialog-->
       <ImageDalog :tuneUp="selfImgDialogShow"
-        pageIndex='pictureSpace'
-        @handleSelectImg='imgDialogSelectedCallback'
+        pageIndex='pictureSpace' :isDraggable="true" :imageSize="[800,800]" @handleSelectImg='imgDialogSelectedCallback'
       />
       <!--添加品牌dialog-->
       <el-dialog :title="$t('goodsAddEditInfo.basicInfoOther.goodsBrandTitle')"
@@ -591,14 +589,19 @@ export default {
     /* 添加图片点击事件，弹出图片选择组件 */
     addGoodsImg () {
       this.selfImgDialogShow = !this.selfImgDialogShow
-      this.$nextTick(() => this.$http.$emit('dtVisible'))
     },
     /* 商品图片点击回调函数 */
-    imgDialogSelectedCallback (imgObj) {
-      if (this.goodsProductInfo.goodsImgs.length >= 5) {
+    imgDialogSelectedCallback (imgObjs) {
+      if (imgObjs == null || imgObjs.length === 0) {
         return
       }
-      this.goodsProductInfo.goodsImgs.push({imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl})
+      this.goodsProductInfo.goodsImgs = []
+      imgObjs.forEach(imgObj => {
+        this.goodsProductInfo.goodsImgs.push({imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl})
+      })
+      if (this.goodsProductInfo.goodsImgs.length > 5) {
+        this.goodsProductInfo.goodsImgs.splice(5)
+      }
     },
     /* 删除商品图片 */
     deleteGoodsImg (index) {
