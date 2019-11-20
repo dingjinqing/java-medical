@@ -145,6 +145,7 @@
       >
         <el-button
           type="primary"
+          size="small"
           @click="initDataList"
         >{{$t('tradeConfiguration.save')}}</el-button>
         <el-button @click="cancle">{{$t('tradeConfiguration.cancel')}}</el-button>
@@ -309,6 +310,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .tradeProcessConfigure {
+  padding: 10px;
   padding-bottom: 20px;
   .settingWrapper {
     font-size: 13px;

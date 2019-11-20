@@ -303,7 +303,7 @@ export default {
   padding: 10px;
   .navBox {
     background-color: #fff;
-    padding: 14px 15px 14px;
+    padding: 15px;
     margin-bottom: 10px;
   }
   .btn {
