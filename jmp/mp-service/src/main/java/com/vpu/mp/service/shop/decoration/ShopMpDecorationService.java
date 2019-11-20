@@ -688,7 +688,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         return null;
     }
 
-    private  List<? extends GoodsListMpVo> convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+    private ModuleGoods convertGoodsForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
         Integer userId = user.getUserId();
         GoodsListMpParam param = new GoodsListMpParam();
@@ -703,7 +703,10 @@ public class ShopMpDecorationService extends ShopBaseService {
         param.setGoodsNum(moduleGoods.getGoodsNum());
         param.setFromPage(EsGoodsConstant.GOODS_LIST_PAGE);
         // 转换实时信息
-        return goodsMpService.getPageIndexGoodsList(param, userId);
+        List<? extends GoodsListMpVo> pageIndexGoodsList = goodsMpService.getPageIndexGoodsList(param, userId);
+        moduleGoods.setGoodsListData(pageIndexGoodsList);
+
+        return moduleGoods;
     }
 
 }

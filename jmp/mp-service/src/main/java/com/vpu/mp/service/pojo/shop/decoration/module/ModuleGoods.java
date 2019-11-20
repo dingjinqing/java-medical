@@ -110,4 +110,5 @@ public class ModuleGoods extends ModuleBase {
 
     private String titleLink;
 
+    private List<?> goodsListData;
 }
