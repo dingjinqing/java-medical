@@ -44,6 +44,8 @@ public abstract class BaseCardVo {
 	 * 领取类型 0：直接领取；1：需要购买；2：需要领取码
 	 */
 	private Byte isPay;
+	/**领取方式 1:领取码 2：卡号+密码*/
+	private Byte receiveAction;
 	/**
 	 * 是否需要激活 0： 否；1： 是
 	 */
