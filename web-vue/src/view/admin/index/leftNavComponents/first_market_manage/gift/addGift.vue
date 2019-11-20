@@ -27,7 +27,7 @@
           ref="param"
           :rules="paramRules"
           :model="param"
-          label-width="120px"
+          label-width="130px"
         >
           <el-row style="margin-bottom:20px;">
             <el-col :span="2">

@@ -178,7 +178,7 @@ export const en = {
   custom: 'Custom order information required',
   orderExportConfirmTip_1: 'Filter',
   orderExportConfirmTip_2: 'data according to the following conditions, confirm the export?',
-  filterCondition: 'Filter Condition:',
+  filterCondition: 'Filter Condition：',
   orderExportLimitTip: 'Export number(export up to 5000 data at a time)',
   orderStatusList: [
     [null, 'all orders'],

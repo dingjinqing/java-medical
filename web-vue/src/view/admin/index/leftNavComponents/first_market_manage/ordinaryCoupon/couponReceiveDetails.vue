@@ -159,7 +159,7 @@
 </template>
 
 <script>
-import { couponGetDetail, deleteCoupon } from '@/api/admin/marketManage/couponList.js'
+import { couponGetDetail, deleteCouponDetail } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -235,14 +235,14 @@ export default {
       this.tableData = data
     },
 
-    // 删除
+    // 删除明细
     deleteCoupon (id) {
-      this.$confirm('是否删除该张优惠券?', '提示', {
+      this.$confirm('是否删除该张优惠券明细?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteCoupon(id).then((res) => {
+        deleteCouponDetail(id).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: '删除成功!' })
             this.initDataList()

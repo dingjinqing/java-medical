@@ -160,14 +160,16 @@
     </div>
 
     <!-- 添加分销员弹窗 -->
-    <distributorDialog
+    <DistributorDialog
       :turnUp="turnUpDialogTwo"
       @handleSelect="handleSelectRowTwo"
+      :selectRowIds="selectRowTwoIds"
     />
 
-    <distributorDialog
+    <DistributorDialog
       :turnUp="turnUpDialogThree"
       @handleSelect="handleSelectRowThree"
+      :selectRowIds="selectRowThreeIds"
     />
 
   </div>
@@ -178,7 +180,7 @@ import { getDistributionLevel, setDistributionLevel, startDistribution, stopDist
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination'),
-    distributorDialog: () => import('@/components/admin/distributorDialog')
+    DistributorDialog: () => import('@/components/admin/distributorDialog')
   },
   props: {
 

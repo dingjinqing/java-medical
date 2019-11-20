@@ -11,10 +11,12 @@
         @click="tabItemClicked('goodsForInStock')"
       >{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>
     </div>
+    <!-- 查询 -->
     <allGoodsHeader
       ref="allGoodsHeaderCmp"
       :initSortCatParams="initFilterData"
     />
+    <!-- 按钮 -->
     <div class="btnWrap">
       <el-button
         type="primary"
@@ -36,6 +38,7 @@
         size="small"
       >{{$t('allGoods.allGoodsRouterHeader.addGoods')}}</el-button>
     </div>
+    <!-- 表格 -->
     <saleOnAndInStockContent ref="saleOnAndInStockContentCmp" />
   </div>
 </template>

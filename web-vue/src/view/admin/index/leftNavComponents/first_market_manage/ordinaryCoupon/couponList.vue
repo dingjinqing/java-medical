@@ -112,6 +112,7 @@
               <el-tooltip
                 content="编辑"
                 placement="top"
+                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
               >
                 <span
                   style="font-size: 22px;"
@@ -122,6 +123,7 @@
               <el-tooltip
                 content="分享"
                 placement="top"
+                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
               >
                 <span
                   style="font-size: 22px;"
@@ -132,6 +134,7 @@
               <el-tooltip
                 content="停用"
                 placement="top"
+                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
               >
                 <span
                   style="font-size: 22px;"
@@ -142,6 +145,7 @@
               <el-tooltip
                 content="启用"
                 placement="top"
+                v-if="scope.row.statusText === '已停用' || scope.row.statusText === 'deactivated'"
               >
                 <span
                   style="font-size: 22px;"
@@ -162,6 +166,7 @@
               <el-tooltip
                 content="删除"
                 placement="top"
+                v-if="scope.row.statusText === '已结束' || scope.row.statusText === '已停用' || scope.row.statusText === 'ended' || scope.row.statusText === 'deactivated'"
               >
                 <span
                   style="font-size: 22px;"
@@ -237,7 +242,7 @@
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
-import { couponList, pauseCoupon, deleteCoupon } from '@/api/admin/marketManage/couponList.js'
+import { couponList, pauseCoupon, deleteCoupon, startCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     statusTab, pagination
@@ -245,7 +250,7 @@ export default {
   data () {
     return {
       nav: 0,
-      actName: null,
+      actName: null, // 搜索条件
       activityName: '优惠券',
       tableData: [],
       pageParams: {}, // 分页
@@ -262,6 +267,10 @@ export default {
   methods: {
     // 优惠券列表
     handleClick () {
+      this.requestParams.nav = this.nav
+      if (this.actName === '') {
+        this.actName = null
+      }
       this.requestParams.actName = this.actName
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
@@ -299,8 +308,19 @@ export default {
         }
         item.receivePerson = `${item.receivePerson} /${item.receiveAmount}`
         item.giveOutPerson = `${item.giveoutPerson}/${item.giveoutAmount}`
+
+        if (item.startTime !== null && item.endTime !== null) {
+          item.statusText = this.getActStatusString(item.enabled, item.startTime, item.endTime)
+        } else {
+          if (item.enabled === 1) {
+            item.statusText = '进行中'
+          } else {
+            item.statusText = '已停用'
+          }
+        }
       })
       this.tableData = data
+      console.log(this.tableData)
     },
 
     // 编辑优惠券
@@ -373,7 +393,12 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then((res) => {
-        this.$message.success({ message: '启用成功!' })
+        startCoupon(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: '启用成功!' })
+            this.handleClick()
+          }
+        })
       }).catch(() => {
         this.$message.info({ message: '已取消启用' })
       })

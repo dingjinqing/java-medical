@@ -363,7 +363,6 @@ export default {
 
     // 表格数据处理
     handleData (data) {
-      debugger
       console.log(this.tableData)
       this.tableData.map((item, index) => {
         item.levelId = data[index].levelId

@@ -158,6 +158,7 @@
             placement="top"
           >
             <span
+              style="font-size: 22px;color:#5a8bff;"
               class="el-icon-edit-outline iconSpan"
               @click="editIconClick(row)"
             ></span>
@@ -167,6 +168,7 @@
             placement="top"
           >
             <span
+              style="font-size: 22px;color:#5a8bff;"
               class="fa fa-copy iconSpan"
               @click="copyIconClick(row)"
             ></span>
@@ -176,6 +178,7 @@
             placement="top"
           >
             <span
+              style="font-size: 22px;color:#5a8bff;"
               class="el-icon-share iconSpan"
               @click="shareIconClick(row)"
             ></span>
@@ -185,6 +188,7 @@
             placement="top"
           >
             <span
+              style="font-size: 22px;color:#5a8bff;"
               class="el-icon-bottom iconSpan"
               @click="withdrawIconClick(row,$index)"
             ></span>
@@ -194,6 +198,7 @@
             placement="top"
           >
             <span
+              style="font-size: 22px;color:#5a8bff;"
               class="el-icon-delete iconSpan"
               @click="deleteIconClick(row,$index)"
             ></span>
@@ -575,7 +580,8 @@ export default {
 
 <style lang="scss" scoped>
 .saleOnAndInStock {
-  margin-top: 10px;
+  padding: 5px;
+  // margin-top: 10px;
 }
 /deep/.tableClass th {
   background-color: #f5f5f5;

@@ -19,9 +19,9 @@
             type="flex"
           >
             <el-col
-              :span="8"
+              :span="10"
               style="height:30px;line-height: 37px;font-size: 14px;"
-            >{{ $t('gift.activityName') }}</el-col>
+            >{{ $t('gift.activityName') + '：' }}</el-col>
             <el-input
               :span="3"
               clearable
@@ -103,62 +103,58 @@
           <template slot-scope="scope">
             <el-row>
               <el-tooltip
-                effect="dark"
                 :content="$t('gift.edit')"
                 placement="top"
-                v-if="tabSwitch === '2'"
+                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
               >
                 <i
                   @click="editGift(scope.row.id)"
                   class="el-icon-edit-outline"
-                  style="color:#409EFF;fontSize:20px;cursor:pointer;"
+                  style="font-size: 22px;color: #5a8bff;"
                 ></i>
               </el-tooltip>
               <el-tooltip
-                effect="dark"
                 :content="$t('gift.stop')"
                 placement="top"
-                v-if="tabSwitch === '2'"
+                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
               >
                 <i
                   @click="disableGift(scope.row.id)"
-                  class="el-icon-remove-outline"
-                  style="color:#409EFF;fontSize:20px;cursor:pointer;"
+                  class="el-icon-circle-close"
+                  style="font-size: 22px;color: #5a8bff;"
                 ></i>
               </el-tooltip>
               <el-tooltip
-                effect="dark"
                 :content="$t('gift.start')"
                 placement="top"
-                v-if="tabSwitch === '4'"
+                v-if="scope.row.statusText === '已停用' || scope.row.statusText === 'deactivated'"
               >
                 <i
                   @click="enableGift(scope.row.id)"
                   class="el-icon-circle-check"
-                  style="color:#409EFF;fontSize:20px;cursor:pointer;"
+                  style="font-size: 22px;color: #5a8bff;"
                 ></i>
               </el-tooltip>
               <el-tooltip
-                effect="dark"
                 :content="$t('gift.detail')"
                 placement="top"
               >
                 <i
                   @click="gotoGiftDetail(scope.row.id)"
-                  class="el-icon-present"
-                  style="color:#409EFF;fontSize:20px;cursor:pointer;"
+                  class="el-icon-tickets"
+                  style="font-size: 22px;color: #5a8bff;"
                 ></i>
               </el-tooltip>
               <el-tooltip
                 class="item"
-                effect="dark"
                 :content="$t('gift.delete')"
                 placement="top"
+                v-if="scope.row.statusText !== '进行中' && scope.row.statusText !== 'unstarted'"
               >
                 <i
                   @click="deleteGift(scope.row.id)"
                   class="el-icon-delete"
-                  style="color:#409EFF;fontSize:20px;cursor:pointer;"
+                  style="font-size: 22px;color: #5a8bff;"
                 ></i>
               </el-tooltip>
             </el-row>

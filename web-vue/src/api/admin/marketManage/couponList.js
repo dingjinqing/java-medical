@@ -27,6 +27,15 @@ export function pauseCoupon (data) {
   })
 }
 
+// 启用
+export function startCoupon (data) {
+  return service({
+    url: `/api/admin/coupon/open?couponId=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
 // 删除优惠券
 export function deleteCoupon (data) {
   return service({
@@ -35,8 +44,6 @@ export function deleteCoupon (data) {
     data: data
   })
 }
-
-// 删除明细
 
 // 添加保存优惠券
 export function saveCoupon (data) {
@@ -61,6 +68,15 @@ export function couponGetDetail (data) {
   return service({
     url: '/api/admin/coupon/get/detail',
     method: 'post',
+    data: data
+  })
+}
+
+// 删除明细
+export function deleteCouponDetail (data) {
+  return service({
+    url: `couponId=${data}`,
+    method: 'get',
     data: data
   })
 }

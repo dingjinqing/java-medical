@@ -162,7 +162,7 @@
       />
 
       <span slot="footer">
-        <el-button @click="dialogTableVisible = false">取 消</el-button>
+        <el-button @click="cancelHandler()">取 消</el-button>
         <el-button
           type="primary"
           @click="sureHandler()"
@@ -180,9 +180,17 @@ export default {
     Pagination: () => import('@/components/admin/pagination/pagination')
   },
   props: {
-    turnUp: { // 调起弹窗
+    // 调起弹窗
+    turnUp: {
       type: Boolean,
       default: () => false
+    },
+    // 选中的数据id
+    selectRowIds: {
+      type: Array,
+      default () {
+        return []
+      }
     }
   },
   data () {
@@ -200,11 +208,8 @@ export default {
   watch: {
     turnUp (newData) {
       this.dialogTableVisible = true
+      this.initDataList()
     }
-  },
-  mounted () {
-    // 初始化数据
-    this.initDataList()
   },
   methods: {
     initDataList () {
@@ -225,6 +230,18 @@ export default {
         if (res.error === 0) {
           this.distributorList = res.content.dataList
           this.pageParams = res.content.page
+          // 数据回显
+          this.$nextTick(() => {
+            if (this.selectRowIds.length > 0) {
+              this.selectRowIds.map(item => {
+                this.distributorList.map((row, index) => {
+                  if (item === row.userId) {
+                    this.$refs.multipleTable.toggleRowSelection(row, true)
+                  }
+                })
+              })
+            }
+          })
         }
       })
     },
@@ -238,6 +255,13 @@ export default {
     sureHandler () {
       this.$emit('handleSelect', this.multipleData)
       this.dialogTableVisible = false
+      this.$message.success({ message: '添加成功!' })
+    },
+
+    // 取消添加
+    cancelHandler () {
+      this.dialogTableVisible = false
+      this.$message.info({ message: '已取消添加!' })
     }
   }
 }

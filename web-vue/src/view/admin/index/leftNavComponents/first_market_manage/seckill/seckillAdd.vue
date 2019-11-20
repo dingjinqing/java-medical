@@ -7,11 +7,11 @@
         ref="form"
         :model="form"
         :rules="fromRules"
-        label-width="120px"
+        label-width="130px"
         :label-position="'right'"
       >
         <el-form-item
-          :label="$t('seckill.activityName')"
+          :label="$t('seckill.activityName') + '：'"
           prop="name"
         >
           <el-col :span="8">
@@ -22,7 +22,7 @@
           </el-col>
         </el-form-item>
         <el-form-item
-          :label="$t('seckill.goodsName')"
+          :label="$t('seckill.goodsName') + '：'"
           prop="goodsId"
         >
           <el-col :span="2">
@@ -45,7 +45,7 @@
 
         </el-form-item>
         <el-form-item
-          :label="$t('seckill.validDate')"
+          :label="$t('seckill.validDate') + '：'"
           prop="validity"
         >
           <el-date-picker
@@ -60,7 +60,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item
-          :label="$t('seckill.limitNum')"
+          :label="$t('seckill.limitNum') + '：'"
           prop="limitAmount"
         >
           <el-input-number
@@ -72,7 +72,7 @@
           <span style="color: #999; margin-left: 10px;">{{ $t('seckill.limitTip') }}</span>
         </el-form-item>
         <el-form-item
-          :label="$t('seckill.orderAfter')"
+          :label="$t('seckill.orderAfter') + '：'"
           prop="limitPaytime"
         >
           <el-input-number
@@ -85,7 +85,7 @@
           <p style="color: #999;">{{ $t('seckill.langTip') }}</p>
         </el-form-item>
         <el-form-item
-          :label="$t('seckill.seckillPrice')"
+          :label="$t('seckill.seckillPrice') + '：'"
           prop="secKillProduct"
         >
           <el-table
@@ -146,7 +146,7 @@
           </el-table>
         </el-form-item>
         <el-form-item
-          :label="$t('seckill.freeFreight')"
+          :label="$t('seckill.freeFreight') + '：'"
           prop="freeFreight"
         >
           <el-radio
@@ -181,7 +181,7 @@
 
         <!-- 会员专享 -->
         <el-form-item
-          :label="this.$t('seckill.cardTitle')"
+          :label="this.$t('seckill.cardTitle') + '：'"
           v-if="!arrorFlag"
         >
           <el-checkbox
@@ -219,7 +219,7 @@
         <!-- 活动分享 -->
         <el-form-item
           prop="shareConfig"
-          label="活动分享"
+          label="活动分享："
           v-if="!arrorFlag"
         >
           <div class="shareContent">

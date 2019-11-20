@@ -290,7 +290,7 @@ export const cn = {
   custom: '自定义下单必填信息',
   orderExportConfirmTip_1: '根据以下条件筛选出',
   orderExportConfirmTip_2: '条数据,是否确认导出？',
-  filterCondition: '筛选条件:',
+  filterCondition: '筛选条件：',
   orderExportLimitTip: '导出条数（一次最多导出5000条数据）',
   recordTypeObj: {
     0: '商家',

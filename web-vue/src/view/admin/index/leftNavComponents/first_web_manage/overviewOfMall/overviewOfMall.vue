@@ -284,7 +284,17 @@
                 ></el-progress>
                 <div class="progress-info">
                   <div class="status-text">
-                    <p><span class="status-text_count">{{ storeList.totalNum }}</span>{{ this.$t('overview.storeItems') }}</p>
+                    <p>
+                      <span
+                        class="status-text_count"
+                        v-if="storeList.totalNum > 0"
+                      >{{ storeList.totalNum }}</span>
+                      <span
+                        class="status-text_count"
+                        v-if="storeList.totalNum === 0"
+                      >0</span>
+                      {{ this.$t('overview.storeItems') }}
+                    </p>
                     <p>{{ this.$t('overview.storePending') }}</p>
                   </div>
                 </div>
@@ -959,7 +969,11 @@ export default {
           this.storeList = res.content.shopAssistantVo
           // 公告
           this.noticeList = res.content.announcementVoList
-          this.percentage = 45
+          if (this.storeList.totalNum === 0) {
+            this.percentage = 100
+          } else {
+            this.percentage = 45
+          }
         }
       })
     },

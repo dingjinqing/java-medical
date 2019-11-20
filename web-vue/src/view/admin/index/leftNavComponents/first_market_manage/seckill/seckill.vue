@@ -94,7 +94,7 @@
               <el-tooltip
                 :content="$t('seckill.edit')"
                 placement="top"
-                v-if="scope.row.status == 1"
+                v-if="scope.row.statusText !== '已停用' && scope.row.statusText !== 'deactivated'"
               >
                 <span
                   style="font-size: 22px;"
@@ -105,7 +105,7 @@
               <el-tooltip
                 :content="$t('seckill.share')"
                 placement="top"
-                v-if="scope.row.status == 1"
+                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
               >
                 <span
                   style="font-size: 22px;"
@@ -116,7 +116,7 @@
               <el-tooltip
                 :content="$t('seckill.stop')"
                 placement="top"
-                v-if="scope.row.status == 1"
+                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
               >
                 <span
                   style="font-size: 22px;"
@@ -127,7 +127,7 @@
               <el-tooltip
                 :content="$t('seckill.start')"
                 placement="top"
-                v-if="scope.row.status == 0"
+                v-if="scope.row.statusText === '已停用' || scope.row.statusText === 'deactivated'"
               >
                 <span
                   style="font-size: 22px;"
@@ -138,6 +138,7 @@
               <el-tooltip
                 :content="$t('seckill.order')"
                 placement="top"
+                v-if="scope.row.statusText !== '未开始' && scope.row.statusText !== 'unstarted'"
               >
                 <span
                   style="font-size: 22px;"
@@ -148,6 +149,7 @@
               <el-tooltip
                 :content="$t('seckill.detail')"
                 placement="top"
+                v-if="scope.row.statusText !== '未开始' && scope.row.statusText !== 'unstarted'"
               >
                 <span
                   style="font-size: 22px;"
@@ -158,6 +160,7 @@
               <el-tooltip
                 :content="$t('seckill.user')"
                 placement="top"
+                v-if="scope.row.statusText !== '未开始' && scope.row.statusText !== 'unstarted'"
               >
                 <span
                   style="font-size: 22px;"
@@ -168,6 +171,7 @@
               <el-tooltip
                 :content="$t('seckill.delete')"
                 placement="top"
+                v-if="scope.row.statusText === '已结束' || scope.row.statusText === '已停用' || scope.row.statusText === 'ended' || scope.row.statusText === 'deactivated'"
               >
                 <span
                   style="font-size: 22px;"
@@ -514,7 +518,7 @@ export default {
   width: 220px;
 }
 .opt {
-  text-align: left;
+  text-align: center;
   color: #5a8bff;
   span {
     cursor: pointer;

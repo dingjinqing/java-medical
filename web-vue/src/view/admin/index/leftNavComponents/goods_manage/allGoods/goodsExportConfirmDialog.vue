@@ -3,14 +3,18 @@
     :title="$t('allGoods.allGoodsData.tip')"
     :visible.sync="showNodes"
     custom-class="custom"
-    width="30%"
     v-loading="loading"
+    width="30%"
+    center
   >
-    <span>{{$t('order.orderExportConfirmTip_1')}}{{totalRows}}{{$t('order.orderExportConfirmTip_2')}}</span>
-    <div>
+    <p>{{$t('order.orderExportConfirmTip_1')}}{{totalRows}}{{$t('order.orderExportConfirmTip_2')}}</p>
+    <div style="margin-top: 10px;">
       {{$t('order.filterCondition')}}
     </div>
-    <div v-if="Object.keys(paramString).length!=0">
+    <div
+      v-if="Object.keys(paramString).length!=0"
+      style="margin-top: 10px;"
+    >
       <div
         v-for="(item,key,index) in paramString"
         :key="index"
@@ -20,32 +24,40 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div
+      v-else
+      style="margin-top: 10px;"
+    >
       {{$t('allGoods.allGoodsData.no')}}
     </div>
-    <div v-if="totalRows > 0">
-      <div>{{$t('order.orderExportLimitTip')}}</div>
+    <div
+      v-if="totalRows > 0"
+      style="margin-top: 10px;"
+    >
+      <div style="margin-bottom: 10px;">{{$t('order.orderExportLimitTip')}}</div>
       <el-input
         v-model="param.exportRowStart"
-        placeholder=""
         size="small"
-        width="30%"
+        style="width: 100px;"
       ></el-input>
       {{$t('orderCommon.to')}}
       <el-input
         v-model="param.exportRowEnd"
-        placeholder=""
         size="small"
-        width="30%"
+        style="width: 100px;"
       ></el-input>
     </div>
     <span
       slot="footer"
       class="dialog-footer"
     >
-      <el-button @click="showNodes = false">{{$t('orderCommon.cancel')}}</el-button>
+      <el-button
+        size="small"
+        @click="showNodes = false"
+      >{{$t('orderCommon.cancel')}}</el-button>
       <el-button
         type="primary"
+        size="small"
         @click="confirm"
         v-if="totalRows > 0"
       >{{$t('orderCommon.ok')}}</el-button>

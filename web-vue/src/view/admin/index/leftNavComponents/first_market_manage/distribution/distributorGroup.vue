@@ -113,161 +113,11 @@
         </el-table-column>
       </el-table>
       <!-- 添加分销员弹窗 -->
-      <el-dialog
-        title="添加分销员"
-        :visible.sync="centerDialogVisible"
-        width="70%"
-        center
-      >
-        <div>
-          <span>分销员手机号:</span>
-          <el-input
-            class="optionInput"
-            prop="title"
-            size="small"
-          ></el-input>
-          <span>分销员昵称:</span>
-          <el-input
-            class="optionInput"
-            prop="title"
-            size="small"
-          ></el-input>
-          <span>真实姓名:</span>
-          <el-input
-            class="optionInput"
-            prop="title"
-            size="small"
-          ></el-input>
-        </div>
-        <div>
-          <span>分销员ID:</span>
-          <el-input
-            class="optionInput"
-            prop="title"
-            size="small"
-          ></el-input>
-          <span>分销员等级:</span>
-          <el-select
-            class="optionInput"
-            size="small"
-            v-model="valueLevel"
-            placeholder="请选择等级"
-          >
-            <el-option
-              v-for="level in groupLevelList"
-              :key="level.levelId"
-              :label="level.label"
-              :value="level.levelName"
-            >
-            </el-option>
-          </el-select>
-          <span>分销员分组:</span>
-          <el-select
-            class="optionInput"
-            size="small"
-            v-model="valueGroup"
-            placeholder="请选择分组"
-          >
-            <el-option
-              v-for="group in groupNameList"
-              :key="group.id"
-              :label="group.groupName"
-              :value="group.groupName"
-            >
-            </el-option>
-          </el-select>
-        </div>
-        <section style="padding: 10px 0;">
-          <div>
-            <el-button
-              type="primary"
-              size="small"
-            >筛选</el-button>
-            <el-button
-              type="primary"
-              size="small"
-              plain
-            >重置</el-button>
-          </div>
-        </section>
-
-        <div>
-          <table width='100%'>
-            <!-- 表头部分 -->
-            <thead>
-              <tr>
-                <td>
-                  <el-checkbox
-                    v-model="allChecked"
-                    @change="handleAllcheck()"
-                  >全选本页</el-checkbox>
-                </td>
-                <td>分销员ID</td>
-                <td>分销员手机号</td>
-                <td>分销员昵称</td>
-                <td>真实姓名</td>
-                <td>下级用户数</td>
-                <td>累计获得佣金金额</td>
-                <td>分销员组</td>
-                <td>当前等级</td>
-              </tr>
-            </thead>
-            <!-- 表格数据部分 -->
-            <tbody>
-              <tr
-                v-for="(item,index) in distributorList"
-                :key="index"
-              >
-                <td>
-                  <div class="tdCenter">
-                    <el-checkbox
-                      @change="handleClick()"
-                      v-model="item.ischecked"
-                    ></el-checkbox>
-                  </div>
-                </td>
-                <td class="isLeft">
-                  {{item.userId}}
-
-                </td>
-                <td class="tb_decorate_a">
-                  {{item.mobile}}
-                </td>
-                <td class="tb_decorate_a">
-                  {{item.username}}
-                </td>
-                <td class="tb_decorate_a">
-                  {{item.realName}}
-                </td>
-                <td class="tb_decorate_a">
-                  {{item.nextNumber}}
-                </td>
-                <td class="tb_decorate_a">
-                  {{item.totalFanliMoney}}
-                </td>
-                <td class="tb_decorate_a">
-                  {{item.groupName}}
-                </td>
-                <td class="tb_decorate_a">
-                  {{item.levelName}}
-                </td>
-
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button @click="cancel">取 消</el-button>
-          <el-button
-            v-model="opt"
-            type="primary"
-            @click="addConfirm()"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
+      <DistributorDialog
+        :turnUp="turnUpDialog"
+        @handleSelect="handleSelectRow"
+        :selectRowIds="addData.userIds"
+      />
     </div>
     <pagination
       :page-params.sync="pageParams"
@@ -279,13 +129,15 @@
 <script>
 import {
   distributionGroup, distributionGroupDel, distributionGroupAdd,
-  distributionGroupEdit, distributionGroupSave, distributorList,
-  distributorLevelList, distributorGroupList, addDistributor, setDefaultGroup, cancleDefaultGroup
+  distributionGroupEdit, distributionGroupSave, addDistributor, setDefaultGroup, cancleDefaultGroup
 } from '@/api/admin/marketManage/distribution.js'
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 export default {
-  components: { pagination },
+  components: {
+    pagination,
+    DistributorDialog: () => import('@/components/admin/distributorDialog')
+  },
   data () {
     return {
       groupNameList: [],
@@ -303,7 +155,8 @@ export default {
       groupName: null,
       opt: 0,
       dialogVisible: false,
-      centerDialogVisible: false,
+      turnUpDialog: false, // 分销员弹窗
+      selectRow: [],
       id: '',
       allChecked: false,
       allCheckFlag: false,
@@ -313,7 +166,6 @@ export default {
         userIds: [],
         groupId: ''
       }
-
     }
   },
   created () {
@@ -393,6 +245,7 @@ export default {
       this.dialogVisible = true
       this.param.groupName = ''
     },
+
     // 添加分组
     confirm () {
       this.dialogVisible = false
@@ -432,30 +285,23 @@ export default {
     // 添加分销员
     addDistributor (id) {
       this.addData.groupId = id
-      this.centerDialogVisible = true
-      distributorGroupList().then(res => {
-        this.groupNameList = res.content
-      })
-
-      distributorLevelList().then(res => {
-        this.groupLevelList = res.content
-        this.distributorLevel = res.content.dataList
-      })
-      distributorList(this.pageParams).then(res => {
-        if (res.error === 0) {
-          console.log(res.content.dataList)
-          res.content.dataList.filter(item => {
-            item.ischecked = false
-          })
-          this.allCheckFlag = false
-          this.allChecked = false
-          this.distributorList = res.content.dataList
-        }
-
-        console.log(res)
-      })
-      console.log(this.hasCheck)
+      this.turnUpDialog = !this.turnUpDialog
     },
+
+    // 分销员回调函数
+    handleSelectRow (row) {
+      this.selectRow = row
+      this.selectRow.map(item => {
+        this.addData.userIds.push(item.userId)
+      })
+      addDistributor(this.addData).then(res => {
+        if (res.error === 0) {
+          this.$message.success({ message: '添加成功' })
+          this.groupList()
+        }
+      })
+    },
+
     // 表格对应行选中高亮
     handleClick () {
       console.log(this.distributorList)
@@ -481,21 +327,7 @@ export default {
     cancel () {
       this.centerDialogVisible = false
     },
-    addConfirm () {
-      this.hasCheck.map((item, index) => {
-        this.addData.userIds.push(item.userId)
-      })
-      addDistributor(this.addData).then(res => {
-        if (res.error === 0) {
-          this.$message.success({
-            message: '添加成功'
-          })
-          this.groupList()
-        }
-      })
 
-      this.centerDialogVisible = false
-    },
     // 设置默认分组
     setDefault (id, v) {
       if (v === '否 设为默认') {

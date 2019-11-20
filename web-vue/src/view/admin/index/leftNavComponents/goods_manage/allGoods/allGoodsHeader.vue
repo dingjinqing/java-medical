@@ -85,7 +85,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('allGoods.allGoodsHeaderData.saleTime')">
+        <el-form-item :label="$t('allGoods.allGoodsHeaderData.saleTime')+'：'">
           <el-date-picker
             v-model="goodsFilterFormData.saleTimeStart"
             @change="datePickerChange(true)"
@@ -93,11 +93,12 @@
             :style="goodsFilterInputStyle"
             size="small"
           />
-          —
+          -
           <el-date-picker
             v-model="goodsFilterFormData.saleTimeEnd"
             @change="datePickerChange(false)"
             :placeholder="$t('allGoods.allGoodsHeaderData.chooseSaleTime')"
+            :picker-options="endTime"
             :style="goodsFilterInputStyle"
             size="small"
           />
@@ -165,7 +166,7 @@
             :style="goodsFilterInputStyle"
             size="small"
           />
-          —
+          -
           <el-input
             v-model.number="goodsFilterFormData.highShopPrice"
             @change="shopPriceChange(false)"
@@ -258,6 +259,12 @@ export default {
   },
   data () {
     return {
+      // 结束时间校验
+      endTime: {
+        disabledDate: time => {
+          return time.getTime() < this.goodsFilterFormData.saleTimeStart
+        }
+      },
       // 国际化使用
       goodsSourceOptions: [],
       goodsTypeOptions: [],
@@ -481,6 +488,8 @@ export default {
   border-bottom: 2px solid #5a8bff;
 }
 .allGoodsFilter {
-  padding: 20px 0px 0px 0px;
+  padding: 15px;
+  padding-bottom: 0;
+  /* padding: 20px 0px 0px 0px; */
 }
 </style>
