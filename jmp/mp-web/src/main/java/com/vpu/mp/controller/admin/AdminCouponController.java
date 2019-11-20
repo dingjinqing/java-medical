@@ -97,6 +97,21 @@ public class AdminCouponController extends AdminBaseController{
 	}
 
 	/**
+	 * 启用优惠券
+	 * @param couponId
+	 * @return
+	 */
+	@GetMapping("/admin/coupon/open")
+	public JsonResult couponOpen(@NotNull Integer couponId) {
+		boolean result = shop().coupon.couponOpen(couponId);
+		if(result) {
+			return this.success(result);
+		}else {
+			return this.fail();
+		}
+	}
+
+	/**
 	 * 删除优惠券（假删除）
 	 * @param couponId
 	 * @return

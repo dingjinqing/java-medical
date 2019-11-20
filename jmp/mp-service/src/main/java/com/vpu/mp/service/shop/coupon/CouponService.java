@@ -213,6 +213,20 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
+     * 启用优惠券
+     *
+     * @param couponId
+     * @return
+     */
+    public boolean couponOpen(Integer couponId) {
+        int result = db().update(MRKING_VOUCHER)
+                .set(MRKING_VOUCHER.ENABLED, (byte) 1)
+                .where(MRKING_VOUCHER.ID.eq(couponId))
+                .execute();
+        return result > 0 ? true : false;
+    }
+
+    /**
      * 删除优惠券（假删除）
      *
      * @param couponId
