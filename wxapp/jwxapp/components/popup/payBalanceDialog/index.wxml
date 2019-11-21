@@ -8,19 +8,19 @@
         <view class="info_top">
           <view class="info_tips">
             <image src="{{imageUrl}}image/wxapp/main_goods_notice.png"></image>
-            <text>本单可支付￥105，可编辑支付余额数量。</text>
+            <text>本单可支付￥{{maxCanUse}}，可编辑支付余额数量。</text>
           </view>
           <view class="input_box">
             <text>支付余额</text>
-            <text class="warn">使用余额不得超过订单金额</text>
-            <input type="number" value="400"></input>
+            <text class="warn">{{msg}}</text>
+            <input type="number" bindinput="changeInput" value="{{balanceInput}}"></input>
           </view>
           <view class="info_total">
-            <view>我的余额：￥10000</view>
+            <view>我的余额：￥{{userBalance}}</view>
           </view>
         </view>
     </view>
-    <view class="content_bottom" style="background-color:{{main_setting.comColor}}">
+    <view class="content_bottom" bindtap="{{canConfirm ? 'confirmData' : ''}}" style="background-color:{{canConfirm ? main_setting.comColor : '#999'}}">
           确定
     </view>
   </view>

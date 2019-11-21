@@ -16,6 +16,7 @@ global.wxPage({
     shippingMethod:[0,1,2],
     chooseShippingIndex:0,
     choosePayTypeIndex:0,
+    showCardBalanceDialog: false,
     showBalanceDialog: false,
     showScoreDialog: false,
     showCardDialog: false,
@@ -35,10 +36,14 @@ global.wxPage({
       cardBalance:null, //会员卡抵扣金额
       orderPayWay:null//支付方式
     },
+    usePayInfo:{
+      moneyPaid:0,
+      useCardBalance: 0,
+      useBalance: 0,
+      useScore: 0
+    },
     orderInfo:{},
-    useCardBalance:0,
-    useBalance:0,
-    useScore:0
+    
   },
 
   /**
@@ -61,6 +66,8 @@ global.wxPage({
     util.api('/api/wxapp/order', res => {
       if (res.error === 0) {
         let orderInfo = res.content
+        orderInfo.userAccount = 5000
+        orderInfo.userScore = 500000
         this.setData({
           orderInfo
         })
@@ -101,54 +108,106 @@ global.wxPage({
   },
   // 默认填充
   defaultInput(orderInfo){
-    let { isBalancePay, isCardPay, isScorePay, moneyPaid, memberCardMoney, userAccount, scorePayNum, userScore } = orderInfo
-    if (isCardPay === 1){
+    let { isBalancePay, isCardPay, isScorePay, moneyPaid, memberCardMoney, userAccount, scorePayNum, userScore, scoreMaxDiscount } = orderInfo
+    if (isCardPay === 1 && memberCardMoney > 0){
       let useCardBalance = moneyPaid - memberCardMoney > 0 ? memberCardMoney : moneyPaid
       this.setData({
-        useCardBalance,
+        'usePayInfo.useCardBalance': useCardBalance,
         cardBalanceStatus:1
       })
+    } else {
+      this.setData({
+        'usePayInfo.useCardBalance': 0,
+        cardBalanceStatus: 0
+      })
     }
-    if (isBalancePay === 1){
+    if (isBalancePay === 1 && userAccount > 0){
       let useBalance = moneyPaid - userAccount > 0 ? userAccount : moneyPaid
       this.setData({
-        useBalance,
-        balanceStatus: 1
+        'usePayInfo.useBalance': useBalance,
+        balanceStatus: 1,
+      })
+    } else {
+      this.setData({
+        'usePayInfo.useBalance': 0,
+        balanceStatus: 0,
       })
     }
-    if (isScorePay === 1 && userScore > scorePayNum){
-      let useScore = moneyPaid - userScore / 100 > 0 ? userScore / 100 : moneyPaid
+    if (isScorePay === 1 && userScore > scorePayNum && userScore > 0){
+      let useScore = moneyPaid * 100 > scoreMaxDiscount * 100 ? (scoreMaxDiscount * 100 > userScore ? userScore : scoreMaxDiscount * 100) : (moneyPaid * 100 > userScore ? userScore : moneyPaid * 100) 
+      console.log(useScore)
       this.setData({
-        useScore,
+        'usePayInfo.useScore': useScore,
         scoreStatus: 1
       })
+    } else {
+      this.setData({
+        'usePayInfo.useScore': 0,
+        scoreStatus: 0
+      })
     }
+    this.getPayMoney()
+  },
+  // 会员卡余额支付事件
+  cardBalanceTap(){
+    if (this.data.cardBalanceStatus) {
+      this.setData({
+        cardBalanceStatus: 0,
+        showCardBalanceDialog: false,
+        'usePayInfo.useCardBalance': 0
+      })
+    } else {
+      this.setData({
+        showCardBalanceDialog: true
+      })
+    }
+    this.getPayMoney()
   },
   // 余额支付事件
   balanceTap(){
     if (this.data.balanceStatus){
       this.setData({
         balanceStatus: 0,
-        showBalanceDialog:false
+        showBalanceDialog:false,
+        'usePayInfo.useBalance':0
       })
     } else {
       this.setData({
         showBalanceDialog:true
       })
     }
+    this.getPayMoney()
   },
   // 积分支付事件
   scoreTap(){
     if (this.data.scoreStatus){
       this.setData({
         scoreStatus: 0,
-        showScoreDialog:false
+        showScoreDialog:false,
+        'usePayInfo.useScore':0
       })
     } else {
       this.setData({
         showScoreDialog:true
       })
     }
+    this.getPayMoney()
+  },
+  // 获得输入的余额数
+  getInputBalance(data){
+    this.setData({
+      'usePayInfo.useBalance': data.detail,
+      balanceStatus:1
+    })
+    this.getPayMoney()
+  },
+  //获取输入的积分数
+  getInputScore(data){
+    this.setData({
+      'usePayInfo.useScore': data.detail,
+      scoreStatus: 1
+    })
+    this.getPayMoney()
   },
   // 变更优惠券
   couponChange(){
@@ -188,13 +247,15 @@ global.wxPage({
       storeDialogData: storeDialogData
     })
   },
-  // 获取应付总金额
-  // getPayMoney(){
-  //   let money = this.data.moneyInfo
-  //   this.setData({
-  //     'moneyInfo.useTotalprice': money.totalPrice - money.useBalance - money.useScore - money.useConpon - money.useCardBalance - money.useCardReduce - money.useTotalprice - money.useShipping
-  //   })
-  // },
+  //获取应付总金额
+  getPayMoney(){
+    let moneyPaid = this.data.orderInfo.moneyPaid, useScore = this.data.usePayInfo.useScore, useBalance = this.data.usePayInfo.useBalance, useCardBalance = this.data.usePayInfo.useCardBalance
+    let floatNum = parseFloat(moneyPaid - useCardBalance - useBalance - useScore / 100).toFixed(3)
+    floatNum = parseFloat(floatNum.substring(0, floatNum.length - 1))
+    this.setData({
+      'usePayInfo.moneyPaid': floatNum
+    })
+  },
   // 获取门店改变
   getSelectStore(info){
     let {id:storeId,openType} = info.detail;
@@ -205,6 +266,26 @@ global.wxPage({
       break;
       default:
 
+      break;
+    }
+  },
+  // 关闭弹窗
+  closeDialog(target){
+    switch (target.detail){
+      case 'balance':
+        this.setData({
+          showBalanceDialog:false
+        })
+      break;
+      case 'score':
+        this.setData({
+          showScoreDialog:false
+        })
+      break;
+      default:
+        this.setData({
+          showCardBalanceDialog:false
+        })
       break;
     }
   },

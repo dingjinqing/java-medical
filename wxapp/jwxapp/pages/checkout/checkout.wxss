@@ -140,6 +140,7 @@
   height: 80rpx;
   align-items: center;
   font-size: 26rpx;
+  justify-content: space-between;
 }
 .pay_list_item > .pay_list_content{
   flex: 1;
