@@ -86,8 +86,7 @@
         <span class="intTitle">{{$t('scoreCfg.buySend')}}</span>
         <el-switch
           v-model="shopValue"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
+          active-color="#f7931e"
         >
         </el-switch>
         <span style="display:inline-block;margin:0 20px">{{shopValue?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
@@ -157,8 +156,7 @@
         <span class="intTitle">{{$t('scoreCfg.storeSend')}}</span>
         <el-switch
           v-model="doorValue"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
+          active-color="#f7931e"
         >
         </el-switch>
         <span style="display:inline-block;margin:0 20px">{{doorValue? $t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
@@ -172,8 +170,7 @@
           >{{$t('scoreCfg.loginSendScore')}}</span>
           <el-switch
             v-model="loginValue"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
+            active-color="#f7931e"
           >
           </el-switch>
           <div>
@@ -206,8 +203,7 @@
         >{{$t('scoreCfg.signSendScore')}}</span>
         <el-switch
           v-model="signInvalue"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
+          active-color="#f7931e"
         >
         </el-switch>
         <div class="signHiddenDiv">

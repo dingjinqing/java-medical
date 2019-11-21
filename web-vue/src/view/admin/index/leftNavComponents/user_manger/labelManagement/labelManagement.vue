@@ -11,6 +11,7 @@
           v-model="labelInput"
           :placeholder="$t('tag.queryPrompt')"
           size="small"
+          style="width:170px;"
           suffix-icon="el-icon-search"
         ></el-input>
         <el-button
@@ -85,9 +86,13 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisible = false">{{$t('tag.cancel')}}</el-button>
+        <el-button
+          size="small"
+          @click="dialogVisible = false"
+        >{{$t('tag.cancel')}}</el-button>
         <el-button
           type="primary"
+          size="small"
           @click="handleTagEditOrCreateOption"
         >{{$t('tag.ok')}}</el-button>
       </span>
@@ -280,12 +285,14 @@ export default {
   overflow-y: auto;
   .labelManagementMain {
     position: relative;
-    background-color: #fff;
+    // background-color: #fff;
     overflow: hidden;
     overflow-y: auto;
-    padding: 15px 25px;
+    // padding: 15px 25px;
     .top {
-      margin-bottom: 20px;
+      padding: 15px;
+      background: #fff;
+      margin-bottom: 10px;
       /deep/ .el-button {
         width: 100px;
       }
@@ -300,7 +307,8 @@ export default {
       background-color: #fff;
       overflow: hidden;
       overflow-y: auto;
-      margin-top: 10px;
+      padding: 15px;
+      // margin-top: 10px;
       /deep/ .tableClss th {
         background-color: #f5f5f5;
         border: none;

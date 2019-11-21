@@ -3,15 +3,16 @@
     <div class="viewSigninMembersMain">
       <div class="top">
         <div>
-          <span>会员信息</span>
+          <span>会员信息：</span>
           <el-input
             v-model="MemberInforInput"
+            style="width:170px;"
             placeholder="请输入会员昵称/手机号"
             size="small"
           ></el-input>
         </div>
         <div>
-          <span>签到时间</span>
+          <span>签到时间：</span>
           <el-date-picker
             size="small"
             v-model="date"
@@ -29,11 +30,12 @@
         style="margin-top:15px"
       >
         <div>
-          <span>标签</span>
+          <span>标签：</span>
           <el-input
             v-model="labelInput"
             placeholder="请输入会员昵称/手机号"
             size="small"
+            style="width:170px;"
           ></el-input>
         </div>
         <div class="btn">

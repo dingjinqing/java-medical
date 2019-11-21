@@ -1,123 +1,127 @@
 <template>
   <div class="introductionContainer">
     <div class="introductionMain">
-      <div class="introductionMain_top">
-        <div class="topLeft">说明：会员导入适用于会员迁移得场景，系统会导入增量会员并更新未激活会员得信息，不会更新已激活会员得信息</div>
-        <div class="topRight">
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleSetAll(0)"
-          >设置激活通知</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleSetAll(1)"
-          >会员导入</el-button>
+      <div class="filter-list">
+        <div class="introductionMain_top">
+          <div class="topLeft">说明：会员导入适用于会员迁移得场景，系统会导入增量会员并更新未激活会员得信息，不会更新已激活会员得信息</div>
+          <div class="topRight">
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleSetAll(0)"
+            >设置激活通知</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleSetAll(1)"
+            >会员导入</el-button>
+          </div>
         </div>
-      </div>
-      <div class="introductionMain_middle">
-        <div class="batchNumber">
-          <span>批次号</span>
-          <el-input
-            v-model="input"
-            placeholder="请输入内容"
-            size="small"
-          ></el-input>
-        </div>
-        <div
-          class="batchNumber"
-          style="margin-right:10px"
-        >
-          <span>操作时间</span>
-          <el-date-picker
-            v-model="introducionDate"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            size="small"
+        <div class="introductionMain_middle">
+          <div class="batchNumber">
+            <span>批次号</span>
+            <el-input
+              v-model="input"
+              placeholder="请输入内容"
+              size="small"
+            ></el-input>
+          </div>
+          <div
+            class="batchNumber"
+            style="margin-right:10px"
           >
-          </el-date-picker>
+            <span>操作时间</span>
+            <el-date-picker
+              v-model="introducionDate"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              size="small"
+            >
+            </el-date-picker>
+          </div>
+          <el-button
+            type="primary"
+            size="small"
+            @click="handleSetAll(2)"
+          >筛选</el-button>
         </div>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleSetAll(2)"
-        >筛选</el-button>
       </div>
-      <el-table
-        class="auth-list mt-10"
-        header-row-class-name='tableClss'
-        :data="tableData"
-        border
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="versionNum"
-          label="批次号"
-          align="center"
+      <div class="table-list">
+        <el-table
+          class="auth-list"
+          header-row-class-name='tableClss'
+          :data="tableData"
+          border
+          style="width: 100%"
         >
-        </el-table-column>
-        <el-table-column
-          prop="isAuth"
-          label="操作时间"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="会员卡"
-        >
-          <template slot-scope="scope">
-            <div
-              class="num"
-              @click="handleClickMem(scope.row.ispay)"
-            >{{scope.row.ispay}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="status1"
-          align="center"
-          label="成功数量"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="status2"
-          align="center"
-          label="失败数量"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="num"
-          align="center"
-          label="激活数量"
-        >
+          <el-table-column
+            prop="versionNum"
+            label="批次号"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="isAuth"
+            label="操作时间"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="会员卡"
+          >
+            <template slot-scope="scope">
+              <div
+                class="num"
+                @click="handleClickMem(scope.row.ispay)"
+              >{{scope.row.ispay}}</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="status1"
+            align="center"
+            label="成功数量"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="status2"
+            align="center"
+            label="失败数量"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="num"
+            align="center"
+            label="激活数量"
+          >
 
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="操作"
-        >
-          <template slot-scope="scope">
-            <div
-              class="num"
-              @click="handleClickO(scope.row)"
-            >下载激活数据</div>
-          </template>
-        </el-table-column>
-      </el-table>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="操作"
+          >
+            <template slot-scope="scope">
+              <div
+                class="num"
+                @click="handleClickO(scope.row)"
+              >下载激活数据</div>
+            </template>
+          </el-table-column>
+        </el-table>
 
-      <div class="footer">
-        <span>当前页面1/2,总记录3条</span>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-size="1"
-          layout="prev, pager, next, jumper"
-          :total="3"
-        >
-        </el-pagination>
+        <div class="footer">
+          <span>当前页面1/2,总记录3条</span>
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-size="1"
+            layout="prev, pager, next, jumper"
+            :total="3"
+          >
+          </el-pagination>
+        </div>
       </div>
     </div>
     <!--设置激活通知弹窗-->
@@ -203,10 +207,10 @@ export default {
   overflow-y: auto;
   .introductionMain {
     position: relative;
-    background-color: #fff;
+    // background-color: #fff;
     overflow: hidden;
     overflow-y: auto;
-    padding: 10px;
+    // padding: 10px;
     .introductionMain_top {
       display: flex;
       justify-content: space-between;
@@ -256,6 +260,15 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+  }
+  .filter-list {
+    padding: 15px;
+    background: #fff;
+  }
+  .table-list {
+    padding: 15px;
+    background: #fff;
+    margin-top: 10px;
   }
 }
 </style>

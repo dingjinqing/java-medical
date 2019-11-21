@@ -1263,7 +1263,7 @@ export default {
     // 获取会员用户
     getUserTabelListData () {
       let obj = {
-        'mobile': this.mobileInput,
+        'mobile': String(this.mobileInput).trim(),
         'username': this.userNameInput,
         'realName': this.realNameInput
       }

@@ -1077,7 +1077,7 @@ export default {
       this.options_four = this.$t('membershipIntroduction.options_four')
       this.options_five = this.$t('membershipIntroduction.options_five')
       let obj = {
-        'mobile': this.phoneNum,
+        'mobile': String(this.phoneNum).trim(),
         'username': this.vxName,
         'source': this.sourceValue,
         'cardId': this.membershipCardVal,
