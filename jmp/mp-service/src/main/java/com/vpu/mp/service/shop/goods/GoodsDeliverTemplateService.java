@@ -191,6 +191,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
      */
     public BigDecimal getShippingFeeByDefaultTemplate(BigDecimal totalPrica) throws MpException {
         DeliverTemplateConfig template = getDefaultTemplate();
+        logger().info("默认模板计算运费:{}", template);
         if(OrderConstant.DEFAULT_SHIPPING_FEE_TEMPLATE_UNITY.equals(template.getTemplateName())){
             //统一模板
             return template.getPrice();
@@ -213,6 +214,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
      * @return
      */
     public BigDecimal getShippingFeeByNumber(Integer districtCode, GoodsDeliverTemplateContentParam rule, Integer totalNumber, BigDecimal totalPrice) throws MpException {
+        logger().info("通过价格和数量计算运费");
         if(OrderConstant.S_HAS_FEE_CONDITION_OPEN.equals(rule.getHasFee0Condition()) && CollectionUtils.isNotEmpty(rule.getFeeConditionParam())){
             //开启指定包邮条件
             for (GoodsDeliverTemplateFeeConditionParam template : rule.getFeeConditionParam()) {
@@ -273,6 +275,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
      * @return
      */
     public BigDecimal getShippingFeeByWeight(Integer districtCode, GoodsDeliverTemplateContentParam rule, BigDecimal totalWeight, BigDecimal totalPrice) throws MpException {
+        logger().info("通过价格和重量计算运费");
         if(BigDecimalUtil.compareTo(totalWeight , BigDecimal.ZERO) == 0){
             return BigDecimal.ZERO;
         }
@@ -342,6 +345,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
      * @throws MpException
      */
 	public BigDecimal getShippingFeeByTemplate(Integer districtCode, Integer templateId, Integer totalNumber, BigDecimal totalPrice, BigDecimal totalWeight) throws MpException {
+	    logger().info("计算订单商品单个运费模板运费");
 	    if(0 == templateId.intValue()){
             //默认模板
             return getShippingFeeByDefaultTemplate(totalPrice);

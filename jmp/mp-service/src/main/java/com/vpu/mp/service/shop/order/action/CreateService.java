@@ -218,6 +218,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @return CreateOrderBo
      */
     private CreateOrderBo initCreateOrderBo(CreateParam param) throws MpException {
+        logger().info("初始化CreateOrderBo,start-end");
         return CreateOrderBo.builder().
             //地址
             address(address.get(param.getAddressId(), param.getWxUserInfo().getUserId())).
@@ -236,6 +237,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //ordergoods
             orderGoodsBo(initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getStoreId())).
             build();
+
     }
 
     /**
@@ -245,6 +247,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException 见throw语句
      */
     public void checkCreateOrderBo(CreateOrderBo bo, CreateParam param) throws MpException {
+        logger().info("校验checkCreateOrderBo,start");
         //非送礼 非门店 校验地址
         if(bo.getOrderType().contains(OrderConstant.GOODS_TYPE_GIVE_GIFT) && bo.getStore() == null && bo.getAddress() == null){
             throw new MpException(JsonResultCode.CODE_ORDER_ADDRESS_NO_NULL);
@@ -257,6 +260,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(StringUtil.isNotBlank(param.getCouponSn()) && bo.getCurrencyCupon() == null) {
             throw new MpException(JsonResultCode.CODE_ORDER_COUPON_INVALID);
         }
+        logger().info("校验checkCreateOrderBo,end");
     }
 
     /**
@@ -353,6 +357,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException
      */
     public void purchase(OrderBeforeParam param, Integer userId, Integer storeId) throws MpException {
+        logger().info("非营销初始化商品start(purchase)");
         //TODO 返利信息
         Boolean isNewUser = orderInfo.isNewUser(userId, true);
         //规格信息,key proId
@@ -382,6 +387,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 temp.setIsFirstSpecial(NO);
             }
         }
+        logger().info("非营销初始化商品end(purchase)");
     }
 
     /**
@@ -563,6 +569,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param bos
      */
     public void processOrderBeforeVo(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos) {
+        logger().info("金额处理赋值(processOrderBeforeVo),start");
         //积分抵扣金额
         BigDecimal scoreDiscount = param.getScoreDiscount();
         //余额抵扣金额
@@ -655,6 +662,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setIsCardPay(tradeCfg.getCardFirst());
         vo.setIsScorePay(tradeCfg.getScoreFirst());
         vo.setIsBalancePay(tradeCfg.getBalanceFirst());
+        logger().info("金额处理赋值(processOrderBeforeVo),end");
     }
 
     /**

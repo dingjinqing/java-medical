@@ -72,6 +72,7 @@ public class Calculate extends ShopBaseService {
      * @return 折扣总额
      */
     public BigDecimal calculateOrderGoodsDiscount(BaseMarketingBaseVo mbv, List<OrderGoodsBo> bos, Byte mType){
+        logger().info("计算订单商品折扣金额start,营销活动:{},商品:{},活动类型（0会员卡，1优惠卷）：{}", mbv, bos, mType);
         if(mbv == null){
             return BigDecimal.ZERO;
         }
@@ -113,6 +114,7 @@ public class Calculate extends ShopBaseService {
                 }
             }
         }
+        logger().info("计算订单商品折扣金额end,折扣金额：{}", discountPrica);
         return discountPrica;
     }
 
@@ -158,7 +160,9 @@ public class Calculate extends ShopBaseService {
      * @param vo vo
      */
     public void calculateCoupon(OrderBeforeParam param, OrderBeforeVo vo) {
+        logger().info("获取可用优惠卷start");
         if(!StringUtils.isBlank(param.getCouponSn()) && (vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType()))){
+            logger().info("该次下单可以用优惠卷，准备获取优惠卷");
             //可用优惠卷
             List<OrderCouponVo> coupons = coupon.getValidCoupons(param.getWxUserInfo().getUserId());
             if(CollectionUtils.isEmpty(coupons)){
@@ -224,6 +228,7 @@ public class Calculate extends ShopBaseService {
         }else{
             vo.setCouponSn(null);
         }
+        logger().info("获取可用优惠卷end");
     }
 
     /**
@@ -316,6 +321,7 @@ public class Calculate extends ShopBaseService {
      * @return 运费
      */
     public BigDecimal calculateShippingFee(Integer districtCode, List<OrderGoodsBo> bos, Integer storeId, List<Integer> noCalculateGoods) {
+        logger().info("计算运费start");
         BigDecimal result = BigDecimal.ZERO;
         //处理过程中局部内部类
         @NoArgsConstructor
@@ -364,6 +370,7 @@ public class Calculate extends ShopBaseService {
                 });
             }
         }
+        logger().info("计算运费end");
         return result;
     }
 

@@ -470,7 +470,7 @@ public class CouponService extends ShopBaseService {
      */
     public boolean isContainsProduct(OrderCouponVo coupon, OrderGoodsBo bo){
         //全部为空为全部商品
-        if(StringUtil.isNotBlank(new StringBuilder().append(coupon.getRecommendGoodsId()).append(coupon.getRecommendCatId()).append(coupon.getRecommendSortId()).append(coupon.getRecommendProductId()).toString())){
+        if(StringUtil.isBlank(new StringBuilder().append(coupon.getRecommendGoodsId()).append(coupon.getRecommendCatId()).append(coupon.getRecommendSortId()).append(coupon.getRecommendProductId()).toString())){
             return true;
         }
         if(StringUtil.isNotBlank(coupon.getRecommendGoodsId())){

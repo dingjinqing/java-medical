@@ -435,7 +435,7 @@ public class OrderConstant {
      */
     /**会员卡*/
     public static final Byte D_T_MEMBER_CARD = 0;
-    /**会员卡*/
+    /**优惠卷*/
     public static final Byte D_T_COUPON = 1;
 
     /**
