@@ -188,3 +188,21 @@ export function deleteCardRequest (data) {
     data
   })
 }
+
+// 添加领取批次
+export function createReceiveBatchRequest (data) {
+  return service({
+    url: '/api/admin/member/card/generatecode',
+    method: 'post',
+    data
+  })
+}
+
+// 添加领取批次
+export function getReceiveBatchRequest (id) {
+  return service({
+    url: `/api/admin/member/card/code/${id}`,
+    method: 'post',
+    data: null
+  })
+}
