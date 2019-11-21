@@ -10,7 +10,10 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
@@ -106,21 +109,30 @@ public class NormalCardToVo extends NormalCardVo {
 		
 		/** 积分指定商品 处理 */
 		/** 商品id */
-		if(discountGoodsId != null) {
+		if(isNotBlank(discountGoodsId)) {
 			goodsId = discountGoodsId.replaceAll("\\s+","").split(",");
+		}else {
+			goodsId = new String[] {};
 		}
 		/** 商家分类id */
-		if(discountSortId != null) {
+		if(isNotBlank(discountSortId)) {
 			shopCategoryIds = discountSortId.replaceAll("\\s+","").split(",");
+		}else {
+			shopCategoryIds = new String[] {};
 		}
 		/**平台分类id */
-		if(discountCatId != null) {
+		if(isNotBlank(discountCatId)) {
 			platformCategoryIds = discountCatId.replaceAll("\\s+","").split(",");
+		}else {
+			platformCategoryIds = new String[] {};
 		}
 		/** 品牌分类id */
-		if(discountBrandId != null) {
+		if(isNotBlank(discountBrandId)) {
 			brandId = discountBrandId.replaceAll("\\s+","").split(",");
+		}else {
+			brandId = new String[] {};
 		}
+		
 		
 		
 		/** 购物送积分策略json对象 */
@@ -177,5 +189,8 @@ public class NormalCardToVo extends NormalCardVo {
 		
 		// 优惠券
 		couponIds = Util.stringToList(sendCouponIds);
+	}
+	private boolean isNotBlank(String val) {
+		return !StringUtils.isBlank(val);
 	}
 }

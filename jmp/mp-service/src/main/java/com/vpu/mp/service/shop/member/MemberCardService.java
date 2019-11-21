@@ -80,7 +80,6 @@ import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
-import com.vpu.mp.service.pojo.shop.member.MemberConstant;
 import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import org.jooq.InsertValuesStep3;
@@ -598,6 +597,8 @@ public class MemberCardService extends ShopBaseService {
 			cardBuilder.discountBrandId(brandId);
 		}
 	}
+	
+	
 
 	/**
 	 * 初始化等级卡的基本配置
