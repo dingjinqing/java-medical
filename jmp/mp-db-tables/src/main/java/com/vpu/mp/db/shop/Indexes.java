@@ -178,7 +178,7 @@ public class Indexes {
     public static final Index GOODS_SPEC_PRODUCT_BAK_GSP_PRD_SN = Indexes0.GOODS_SPEC_PRODUCT_BAK_GSP_PRD_SN;
     public static final Index GOODS_SPEC_PRODUCT_BAK_PRIMARY = Indexes0.GOODS_SPEC_PRODUCT_BAK_PRIMARY;
     public static final Index GOODS_SUMMARY_PRIMARY = Indexes0.GOODS_SUMMARY_PRIMARY;
-    public static final Index GOODS_SUMMARY_REF_TYPE = Indexes0.GOODS_SUMMARY_REF_TYPE;
+    public static final Index GOODS_SUMMARY_UNI_KEY = Indexes0.GOODS_SUMMARY_UNI_KEY;
     public static final Index GOODS_OVERVIEW_SUMMARY_PRIMARY = Indexes0.GOODS_OVERVIEW_SUMMARY_PRIMARY;
     public static final Index GOODS_OVERVIEW_SUMMARY_REF_TYPE = Indexes0.GOODS_OVERVIEW_SUMMARY_REF_TYPE;
     public static final Index GRADE_PRD_PRD_ID = Indexes0.GRADE_PRD_PRD_ID;
@@ -617,7 +617,7 @@ public class Indexes {
         public static Index GOODS_SPEC_PRODUCT_BAK_GSP_PRD_SN = Internal.createIndex("gsp_prd_sn", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, new OrderField[] { GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_SN }, false);
         public static Index GOODS_SPEC_PRODUCT_BAK_PRIMARY = Internal.createIndex("PRIMARY", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, new OrderField[] { GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_BAK_ID }, true);
         public static Index GOODS_SUMMARY_PRIMARY = Internal.createIndex("PRIMARY", GoodsSummary.GOODS_SUMMARY, new OrderField[] { GoodsSummary.GOODS_SUMMARY.ID }, true);
-        public static Index GOODS_SUMMARY_REF_TYPE = Internal.createIndex("ref_type", GoodsSummary.GOODS_SUMMARY, new OrderField[] { GoodsSummary.GOODS_SUMMARY.REF_DATE, GoodsSummary.GOODS_SUMMARY.TYPE }, false);
+        public static Index GOODS_SUMMARY_UNI_KEY = Internal.createIndex("uni_key", GoodsSummary.GOODS_SUMMARY, new OrderField[]{GoodsSummary.GOODS_SUMMARY.REF_DATE, GoodsSummary.GOODS_SUMMARY.TYPE, GoodsSummary.GOODS_SUMMARY.GOODS_ID}, true);
         public static Index GOODS_OVERVIEW_SUMMARY_PRIMARY = Internal.createIndex("PRIMARY", GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY, new OrderField[]{GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY.ID}, true);
         public static Index GOODS_OVERVIEW_SUMMARY_REF_TYPE = Internal.createIndex("ref_type", GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY, new OrderField[]{GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY.REF_DATE, GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY.TYPE}, false);
         public static Index GRADE_PRD_PRD_ID = Internal.createIndex("prd_id", GradePrd.GRADE_PRD, new OrderField[] { GradePrd.GRADE_PRD.PRD_ID }, false);

@@ -5,20 +5,21 @@ import com.vpu.mp.db.shop.tables.records.GoodsOverviewSummaryRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
+import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
 import static org.apache.commons.lang3.math.NumberUtils.*;
+import static org.jooq.impl.DSL.min;
 import static org.jooq.impl.DSL.*;
 
 /**
@@ -29,13 +30,50 @@ import static org.jooq.impl.DSL.*;
  */
 @Service
 public class GoodsTaskService extends ShopBaseService {
+    /**
+     * The constant BAK.
+     */
     private static final GoodsBak BAK = GoodsBak.GOODS_BAK.as("BAK");
+    /**
+     * The constant LABEL.
+     */
     private static final GoodsLabelCouple LABEL = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("LABEL");
+    /**
+     * The constant USER_GR.
+     */
     private static final UserGoodsRecord USER_GR = UserGoodsRecord.USER_GOODS_RECORD.as("USER_GR");
+    /**
+     * The constant CART.
+     */
     private static final UserCartRecord CART = UserCartRecord.USER_CART_RECORD.as("CART");
+    /**
+     * The constant ORDER_G.
+     */
     private static final OrderGoods ORDER_G = OrderGoods.ORDER_GOODS.as("ORDER_G");
+    /**
+     * The constant ORDER_I.
+     */
     private static final OrderInfo ORDER_I = OrderInfo.ORDER_INFO.as("ORDER_I");
+    /**
+     * The constant WX_SR.
+     */
+    private static final WxShoppingRecommend WX_SR = WxShoppingRecommend.WX_SHOPPING_RECOMMEND.as("WX_SR");
+    /**
+     * The constant COLLECTION.
+     */
+    private static final UserCollection COLLECTION = UserCollection.USER_COLLECTION.as("COLLECTION");
 
+    /**
+     * The constant SHARE.
+     */
+    private static final ShareRecord SHARE = ShareRecord.SHARE_RECORD.as("SHARE");
+
+    /**
+     * Condition builder condition.
+     *
+     * @param param the param
+     * @return the condition
+     */
     private Condition conditionBuilder(ProductOverviewParam param) {
         Condition extCondition = DSL.trueCondition();
         if (param.getBrandId() > 0) {
@@ -86,12 +124,12 @@ public class GoodsTaskService extends ShopBaseService {
      * @param field the field
      * @return the int
      */
-    private int commonBuilder(ProductOverviewParam param, Field<?> field) {
+    private Map<Integer, Integer> commonBuilder(ProductOverviewParam param, Field<?> field) {
         // 基本筛选条件
         Condition baseCondition = USER_GR.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(param.getStartTime().toLocalDate().atStartOfDay()))
             .and(USER_GR.CREATE_TIME.lessThan(Timestamp.valueOf(param.getEndTime().toLocalDate().atStartOfDay())));
-        SelectJoinStep<?> joinStep = db().select(field).from(USER_GR);
-        return selectBuilder(param, joinStep, USER_GR.GOODS_ID, baseCondition);
+        SelectJoinStep<?> joinStep = db().select(min(USER_GR.GOODS_ID), cast(field, Integer.class)).from(USER_GR);
+        return selectBuilder(param, joinStep, USER_GR.GOODS_ID, baseCondition, field);
     }
 
     /**
@@ -101,7 +139,7 @@ public class GoodsTaskService extends ShopBaseService {
      * @return the int
      */
     public int getGoodsNumByVisit(ProductOverviewParam param) {
-        return commonBuilder(param, countDistinct(USER_GR.GOODS_ID));
+        return commonBuilder(param, countDistinct(USER_GR.GOODS_ID)).size();
     }
 
     /**
@@ -111,36 +149,76 @@ public class GoodsTaskService extends ShopBaseService {
      * @return the int
      */
     public int getGoodsUv(ProductOverviewParam param) {
+        return commonBuilder(param, countDistinct(USER_GR.USER_ID)).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+    }
+
+    /**
+     * 每件单一商品的商品UV数
+     *
+     * @param param the param
+     * @return the int
+     */
+    public Map<Integer, Integer> getSingleGoodsUv(ProductOverviewParam param) {
         return commonBuilder(param, countDistinct(USER_GR.USER_ID));
     }
 
     /**
-     * 商品PV数
+     * 总商品PV数
      *
      * @param param the param
      * @return the goods pv
      */
     public int getGoodsPv(ProductOverviewParam param) {
+        return commonBuilder(param, sum(USER_GR.COUNT)).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+    }
+
+    /**
+     * 每件单一商品的商品PV数
+     *
+     * @param param the param
+     * @return the goods pv
+     */
+    public Map<Integer, Integer> getSingleGoodsPv(ProductOverviewParam param) {
         return commonBuilder(param, sum(USER_GR.COUNT));
     }
 
     /**
-     * 加购人数
+     * 总加购人数
      *
      * @param param the param
      * @return the int
      */
     public int addCartUserNum(ProductOverviewParam param) {
+        return commonBuilder1(param, countDistinct(CART.USER_ID)).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+    }
+
+    /**
+     * 每件单一商品的加购人数
+     *
+     * @param param the param
+     * @return the int
+     */
+    public Map<Integer, Integer> addSingleCartUserNum(ProductOverviewParam param) {
         return commonBuilder1(param, countDistinct(CART.USER_ID));
     }
 
     /**
-     * 加购件数
+     * 总加购件数
      *
      * @param param the param
      * @return the add cart goods number
      */
     public int getAddCartGoodsNumber(ProductOverviewParam param) {
+        return commonBuilder1(param, sum(CART.NUM)).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+    }
+
+    /**
+     * 每件单一商品的加购件数
+     *
+     * @param param the param
+     * @return the add cart goods number
+     */
+    public Map<Integer, Integer> getSingleAddCartGoodsNumber(ProductOverviewParam param) {
         return commonBuilder1(param, sum(CART.NUM));
     }
 
@@ -152,41 +230,92 @@ public class GoodsTaskService extends ShopBaseService {
      * @param field the field
      * @return the int
      */
-    private int commonBuilder1(ProductOverviewParam param, Field<?> field) {
+    private Map<Integer, Integer> commonBuilder1(ProductOverviewParam param, Field<?> field) {
         // 基本筛选条件
         Condition baseCondition = CART.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(param.getStartTime().toLocalDate().atStartOfDay()))
             .and(CART.CREATE_TIME.lessThan(Timestamp.valueOf(param.getEndTime().toLocalDate().atStartOfDay())));
-        SelectJoinStep<?> joinStep = db().select(field).from(CART);
-        return selectBuilder(param, joinStep, CART.GOODS_ID, baseCondition);
+        SelectJoinStep<?> joinStep = db().select(min(CART.GOODS_ID), cast(field, Integer.class)).from(CART);
+        return selectBuilder(param, joinStep, CART.GOODS_ID, baseCondition, field);
     }
 
-    private int selectBuilder(ProductOverviewParam param, SelectJoinStep<?> joinStep, Field<Integer> field, Condition baseCondition) {
+    /**
+     * Select builder int.
+     *
+     * @param param         the param
+     * @param joinStep      the join step
+     * @param field         the field
+     * @param baseCondition the base condition
+     * @param field1        the field 1
+     * @return the int
+     */
+    private Map<Integer, Integer> selectBuilder(ProductOverviewParam param, SelectJoinStep<?> joinStep, Field<Integer> field, Condition baseCondition, Field<?> field1) {
         if (param.getBrandId() > 0 || param.getSortId() > 0) {
             joinStep = joinStep.leftJoin(BAK).on(field.eq(BAK.GOODS_ID));
         }
         if (param.getSortId() > 0) {
             joinStep = joinStep.leftJoin(LABEL).on(LABEL.GTA_ID.eq(field));
         }
-        return joinStep.where(baseCondition).and(conditionBuilder(param)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
+//        return joinStep.where(baseCondition).and(conditionBuilder(param)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
+        return joinStep.where(baseCondition).and(conditionBuilder(param)).groupBy(field).fetchMap(min(field), cast(field1, Integer.class));
     }
 
     /**
-     * 付款商品数
+     * 总付款商品数
      *
      * @param param the param
      * @return the int
      */
     public int paidGoodsNum(ProductOverviewParam param) {
+        return commonBuilder2(param, sum(ORDER_G.GOODS_NUMBER), EXT_CONDITION).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+    }
+
+    /**
+     * 每件单一商品的付款商品数
+     *
+     * @param param the param
+     * @return the int
+     */
+    public Map<Integer, Integer> singlePaidGoodsNum(ProductOverviewParam param) {
         return commonBuilder2(param, sum(ORDER_G.GOODS_NUMBER), EXT_CONDITION);
     }
 
     /**
-     * 下单商品数
+     * 总付款人数
+     *
+     * @param param the param
+     * @return the int
+     */
+    public int paidUv(ProductOverviewParam param) {
+        return commonBuilder2(param, count(ORDER_I.USER_ID), EXT_CONDITION).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+    }
+
+    /**
+     * 每件单一商品的付款人数
+     *
+     * @param param the param
+     * @return the int
+     */
+    public Map<Integer, Integer> singlePaidUv(ProductOverviewParam param) {
+        return commonBuilder2(param, count(ORDER_I.USER_ID), EXT_CONDITION);
+    }
+
+    /**
+     * 总下单商品数
      *
      * @param param the param
      * @return the int
      */
     public int getPayOrderGoodsNum(ProductOverviewParam param) {
+        return commonBuilder2(param, sum(ORDER_G.GOODS_NUMBER), TRUE_CONDITION).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+    }
+
+    /**
+     * 每件单一商品的下单商品数
+     *
+     * @param param the param
+     * @return the int
+     */
+    public Map<Integer, Integer> getSinglePayOrderGoodsNum(ProductOverviewParam param) {
         return commonBuilder2(param, sum(ORDER_G.GOODS_NUMBER), TRUE_CONDITION);
     }
 
@@ -197,7 +326,7 @@ public class GoodsTaskService extends ShopBaseService {
      * @return the int
      */
     public int getDySoldGoodsNum(ProductOverviewParam param) {
-        return commonBuilder2(param, count(ORDER_G.GOODS_ID), EXT_CONDITION);
+        return commonBuilder2(param, count(ORDER_G.GOODS_ID), EXT_CONDITION).size();
     }
 
     /**
@@ -207,7 +336,7 @@ public class GoodsTaskService extends ShopBaseService {
     /**
      * The constant TRUE_CONDITION.
      */
-    private static final Condition TRUE_CONDITION = DSL.trueCondition();
+    public static final Condition TRUE_CONDITION = DSL.trueCondition();
 
     /**
      * Common builder 2 int.
@@ -218,18 +347,21 @@ public class GoodsTaskService extends ShopBaseService {
      * @param extCondition the ext condition
      * @return the int
      */
-    private int commonBuilder2(ProductOverviewParam param, Field<?> field, Condition extCondition) {
+    private Map<Integer, Integer> commonBuilder2(ProductOverviewParam param, Field<?> field, Condition extCondition) {
         Condition baseConditon = ORDER_I.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(param.getStartTime().toLocalDate().atStartOfDay()))
             .and(ORDER_I.CREATE_TIME.lessThan(Timestamp.valueOf(param.getEndTime().toLocalDate().atStartOfDay())))
             .and(ORDER_I.IS_COD.eq(BYTE_ZERO).or(ORDER_I.IS_COD.eq(BYTE_ONE).and(ORDER_I.SHIPPING_TIME.isNotNull())))
             .and(ORDER_I.ORDER_SN.notEqual(ORDER_I.MAIN_ORDER_SN))
             .and(extCondition);
-        SelectJoinStep<?> joinStep = db().select(field).from(ORDER_G)
+        SelectJoinStep<?> joinStep = db().select(min(ORDER_G.GOODS_ID), cast(field, Integer.class)).from(ORDER_G)
             .leftJoin(ORDER_I).on(ORDER_G.ORDER_SN.eq(ORDER_I.ORDER_SN));
-        return selectBuilder(param, joinStep, ORDER_G.GOODS_ID, baseConditon);
+        return selectBuilder(param, joinStep, ORDER_G.GOODS_ID, baseConditon, field);
     }
 
-    private static final List<Byte> TYPE_LIST = new ArrayList<Byte>() {{
+    /**
+     * The constant TYPE_LIST.
+     */
+    public static final List<Byte> TYPE_LIST = new ArrayList<Byte>() {{
         add(Byte.valueOf("1"));
         add(Byte.valueOf("7"));
         add(Byte.valueOf("30"));
@@ -247,7 +379,13 @@ public class GoodsTaskService extends ShopBaseService {
         }})));
     }
 
-    private GoodsOverviewSummaryRecord createOverviewRecord(ProductOverviewParam param) {
+    /**
+     * Create overview record goods overview summary record.
+     *
+     * @param param the param
+     * @return the goods overview summary record
+     */
+    public GoodsOverviewSummaryRecord createOverviewRecord(ProductOverviewParam param) {
         return new GoodsOverviewSummaryRecord() {{
             setRefDate(DateUtil.yyyyMmDdDate(LocalDate.now()));
             setType(param.getDynamicDate());
@@ -261,5 +399,345 @@ public class GoodsTaskService extends ShopBaseService {
             setPaidGoodsNum(paidGoodsNum(param));
             setOrderGoodsNum(getPayOrderGoodsNum(param));
         }};
+    }
+
+    /**
+     * 所有商品的总推荐用户数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the int
+     */
+    public int recommendUserNum(Timestamp startTime, Timestamp endTime) {
+        return db().select(countDistinct(WX_SR.USER_ID)).from(WX_SR).where(WX_SR.CREATE_TIME.greaterOrEqual(startTime))
+            .and(WX_SR.CREATE_TIME.lessOrEqual(endTime)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
+    }
+
+    /**
+     * Single recommend user num.每件单一商品的推荐用户数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, Integer> singleRecommendUserNum(Timestamp startTime, Timestamp endTime) {
+        return db().select(min(WX_SR.GOODS_ID), countDistinct(WX_SR.USER_ID)).from(WX_SR).where(WX_SR.CREATE_TIME.greaterOrEqual(startTime))
+            .and(WX_SR.CREATE_TIME.lessOrEqual(endTime))
+            .groupBy(WX_SR.GOODS_ID)
+            .fetchMap(min(WX_SR.GOODS_ID), countDistinct(WX_SR.USER_ID));
+    }
+
+    /**
+     * 所有商品的总收藏人数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the int
+     */
+    public int collectUserNum(Timestamp startTime, Timestamp endTime) {
+        return db().select(countDistinct(COLLECTION.USER_ID)).from(COLLECTION).where(COLLECTION.CREATE_TIME.greaterOrEqual(startTime))
+            .and(COLLECTION.CREATE_TIME.lessOrEqual(endTime)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
+    }
+
+    /**
+     * 每件单一商品的收藏人数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, Integer> singleCollectUserNum(Timestamp startTime, Timestamp endTime) {
+        return db().select(min(COLLECTION.GOODS_ID), countDistinct(COLLECTION.USER_ID)).from(COLLECTION).where(COLLECTION.CREATE_TIME.greaterOrEqual(startTime))
+            .and(COLLECTION.CREATE_TIME.lessOrEqual(endTime))
+            .groupBy(COLLECTION.GOODS_ID)
+            .fetchMap(min(COLLECTION.GOODS_ID), countDistinct(COLLECTION.USER_ID));
+    }
+
+    /**
+     * The constant STATUS_CONDITION. 订单状态大于３的，排除货到付款非发货
+     */
+    public static final Condition STATUS_CONDITION = ORDER_I.ORDER_STATUS.ge(CONDITION_THREE).or(ORDER_I.ORDER_STATUS.eq(BYTE_ZERO).and(ORDER_I.BK_ORDER_PAID.greaterThan(BYTE_ZERO)))
+        .and(ORDER_I.IS_COD.eq(BYTE_ZERO).or(ORDER_I.IS_COD.eq(BYTE_ONE).and(ORDER_I.SHIPPING_TIME.isNotNull())));
+
+    /**
+     * (新/老)成交客户数(排除货到付款非发货)
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public Result<Record2<Integer, Integer>> customerTransactionNum(Timestamp startTime, Timestamp endTime) {
+        // 限制时间范围内的成交客户
+        Condition normalTime = ORDER_I.CREATE_TIME.ge(startTime).and(ORDER_I.CREATE_TIME.le(endTime));
+
+        return db().select(ORDER_G.GOODS_ID, ORDER_I.USER_ID).from(ORDER_G)
+            .leftJoin(ORDER_I).on(ORDER_G.ORDER_SN.eq(ORDER_I.ORDER_SN))
+            .where(normalTime)
+            .and(STATUS_CONDITION)
+            .fetch();
+    }
+
+    /**
+     * Customer his tran num set.历史成交客户集
+     *
+     * @param time the time
+     * @return the set
+     */
+    public Set<Integer> customerHisTranNum(Timestamp time) {
+        // 指定历史范围成交客户
+        Condition conditionTime = ORDER_I.CREATE_TIME.lessThan(time);
+        // 获取指定历史范围成交客户集
+        return db().selectDistinct(ORDER_I.USER_ID).from(ORDER_I).where(conditionTime).and(STATUS_CONDITION).fetchSet(ORDER_I.USER_ID);
+    }
+
+    /**
+     * Total customer tran num set.获取指定时间范围内总成交客户数（可细分为新/老成交客户数）
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the set
+     */
+    public Set<Integer> totalCustomerTranNum(Timestamp startTime, Timestamp endTime) {
+        return new HashSet<>(customerTransactionNum(startTime, endTime).getValues(ORDER_I.USER_ID));
+    }
+
+    /**
+     * Single goods customer tran num map.获取指定时间范围内每个单一商品的成交客户数（可细分为新/老成交客户数）
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, List<Integer>> singleGoodsCustomerTranNum(Timestamp startTime, Timestamp endTime) {
+        return customerTransactionNum(startTime, endTime).intoGroups(ORDER_G.GOODS_ID, ORDER_I.USER_ID);
+    }
+
+    /**
+     * New customer tran num int.全部商品的新成交客户数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the int
+     */
+    public int newCustomerTranNum(Timestamp startTime, Timestamp endTime) {
+        Set<Integer> result = totalCustomerTranNum(startTime, endTime);
+        // 差集
+        result.removeAll(customerHisTranNum(startTime));
+        return result.size();
+    }
+
+    /**
+     * Single new customer tran num.每件单一商品的新成交客户数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, Integer> singleNewCustomerTranNum(Timestamp startTime, Timestamp endTime) {
+        Map<Integer, List<Integer>> temp = singleGoodsCustomerTranNum(startTime, endTime);
+        return new HashMap<Integer, Integer>(temp.size()) {{
+            temp.forEach((k, v) -> {
+                Set<Integer> r = new HashSet<>(v);
+                r.removeAll(customerHisTranNum(startTime));
+                put(k, r.size());
+            });
+        }};
+    }
+
+    /**
+     * Old customer tran num int.全部商品的旧成交客户数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the int
+     */
+    public int oldCustomerTranNum(Timestamp startTime, Timestamp endTime) {
+        Set<Integer> result = totalCustomerTranNum(startTime, endTime);
+        // 交集
+        result.retainAll(customerHisTranNum(startTime));
+        return result.size();
+    }
+
+    /**
+     * Single old customer tran num.每件单一商品的旧成交客户数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, Integer> singleOldCustomerTranNum(Timestamp startTime, Timestamp endTime) {
+        Map<Integer, List<Integer>> temp = singleGoodsCustomerTranNum(startTime, endTime);
+        return new HashMap<Integer, Integer>(temp.size()) {{
+            temp.forEach((k, v) -> {
+                Set<Integer> r = new HashSet<>(v);
+                r.retainAll(customerHisTranNum(startTime));
+                put(k, r.size());
+            });
+        }};
+    }
+
+    /**
+     * Sales map.每件单一商品的商品的销售额
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, BigDecimal> singleGoodsSales(Timestamp startTime, Timestamp endTime) {
+        Condition normalTime = ORDER_I.CREATE_TIME.ge(startTime).and(ORDER_I.CREATE_TIME.le(endTime));
+
+        return db().select(min(ORDER_G.GOODS_ID), sum(ORDER_G.DISCOUNTED_GOODS_PRICE)).from(ORDER_G)
+            .leftJoin(ORDER_I).on(ORDER_G.ORDER_SN.eq(ORDER_I.ORDER_SN))
+            .where(normalTime)
+            .and(STATUS_CONDITION)
+            .groupBy(ORDER_G.GOODS_ID)
+            .fetchMap(min(ORDER_G.GOODS_ID), sum(ORDER_G.DISCOUNTED_GOODS_PRICE));
+    }
+
+    /**
+     * Single goods sales result.商品的总销售额
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the result
+     */
+    public BigDecimal goodsSales(Timestamp startTime, Timestamp endTime) {
+        return singleGoodsSales(startTime, endTime).values().stream().reduce(BIGDECIMAL_ZERO, BigDecimal::add);
+    }
+
+    /**
+     * Get single share goods pv map.获得每件单一商品的商品分享pv
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, Integer> getSingleShareGoodsPv(Timestamp startTime, Timestamp endTime) {
+        return db().select(min(SHARE.ACTIVITY_ID), cast(sum(SHARE.COUNT), Integer.class)).from(SHARE)
+            .where(SHARE.ACTIVITY_TYPE.eq(INTEGER_ZERO)).and(SHARE.CREATE_TIME.ge(startTime)).and(SHARE.CREATE_TIME.lessThan(endTime))
+            .groupBy(SHARE.ACTIVITY_ID)
+            .fetchMap(min(SHARE.ACTIVITY_ID), cast(sum(SHARE.COUNT), Integer.class));
+    }
+
+    /**
+     * Get single share goods pv map.总商品分享pv
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public int getShareGoodsPv(Timestamp startTime, Timestamp endTime) {
+        return getSingleShareGoodsPv(startTime, endTime).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+    }
+
+    /**
+     * Get single share goods uv map.获得每件单一商品的商品分享uv
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, Integer> getSingleShareGoodsUv(Timestamp startTime, Timestamp endTime) {
+        return db().select(min(SHARE.ACTIVITY_ID), count(SHARE.USER_ID)).from(SHARE)
+            .where(SHARE.ACTIVITY_TYPE.eq(INTEGER_ZERO)).and(SHARE.CREATE_TIME.ge(startTime)).and(SHARE.CREATE_TIME.lessThan(endTime))
+            .groupBy(SHARE.ACTIVITY_ID)
+            .fetchMap(min(SHARE.ACTIVITY_ID), count(SHARE.USER_ID));
+    }
+
+    /**
+     * Get single share goods uv map.获得每件单一商品的商品分享uv
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public int getShareGoodsUv(Timestamp startTime, Timestamp endTime) {
+        return getSingleShareGoodsUv(startTime, endTime).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+    }
+
+    /**
+     * Insert overview.
+     * 往表 b2c_goods_summary 中插入统计数据(昨天, 前一星期, 前一个月)
+     */
+    public void insertGoodsSummary() {
+        TYPE_LIST.forEach((e) -> {
+            Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
+            Date startDate = Date.valueOf(LocalDate.now().minusDays(e));
+            Date endDate = Date.valueOf(LocalDate.now());
+            Timestamp startTimeStamp = Timestamp.valueOf(startDate.toLocalDate().atStartOfDay());
+            Timestamp endTimeStamp = Timestamp.valueOf(endDate.toLocalDate().atStartOfDay());
+            ProductOverviewParam param = new ProductOverviewParam() {{
+                setDynamicDate(e);
+                setStartTime(startDate);
+                setEndTime(endDate);
+            }};
+            // 商品UV数
+            getSingleGoodsUv(param).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.UV, v);
+            });
+            // 新成交客户数
+            singleNewCustomerTranNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.NEW_USER_NUMBER, v);
+            });
+            // 旧成交客户数
+            singleOldCustomerTranNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.OLD_USER_NUMBER, v);
+            });
+            // 商品PV数
+            getSingleGoodsPv(param).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.PV, v);
+            });
+            // 加购人数
+            addSingleCartUserNum(param).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.CART_UV, v);
+            });
+            // 付款人数
+            singlePaidUv(param).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.PAID_UV, v);
+            });
+            // 付款商品数
+            singlePaidGoodsNum(param).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.PAID_GOODS_NUMBER, v);
+            });
+            // 销售额
+            singleGoodsSales(startTimeStamp, endTimeStamp).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODSSALES, v);
+            });
+            // 推荐人数
+            singleRecommendUserNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODSRECOMMENDUSERNUM, v);
+            });
+            // 收藏人数
+            singleCollectUserNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODSCOLLECTUSERNUM, v);
+            });
+            // 商品分享pv
+            getSingleShareGoodsPv(startTimeStamp, endTimeStamp).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODSSHAREPV, v);
+            });
+            // 商品分享uv
+            getSingleShareGoodsUv(startTimeStamp, endTimeStamp).forEach((K, v) -> {
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODSSHAREUV, v);
+            });
+        });
+    }
+
+    /**
+     * Create overview record goods overview summary record.
+     *
+     * @param <T>        the type parameter
+     * @param date       the date
+     * @param type       the type
+     * @param goodsId    the goods id
+     * @param field      the field
+     * @param fieldValue the field value
+     * @return the goods overview summary record
+     */
+    public <T> void createGoodsSummaryRecord(Date date, Byte type, Integer goodsId, Field<T> field, T fieldValue) {
+        db().insertInto(GOODS_SUMMARY, GOODS_SUMMARY.REF_DATE, GOODS_SUMMARY.TYPE, GOODS_SUMMARY.GOODS_ID, field)
+            .values(date, type, goodsId, fieldValue)
+            .onDuplicateKeyUpdate()
+            .set(field, fieldValue)
+            .execute();
     }
 }

@@ -334,6 +334,7 @@ public class Keys {
     public static final UniqueKey<GoodsSpecProductRecord> KEY_B2C_GOODS_SPEC_PRODUCT_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_SPEC_PRODUCT_PRIMARY;
     public static final UniqueKey<GoodsSpecProductBakRecord> KEY_B2C_GOODS_SPEC_PRODUCT_BAK_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_SPEC_PRODUCT_BAK_PRIMARY;
     public static final UniqueKey<GoodsSummaryRecord> KEY_B2C_GOODS_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_SUMMARY_PRIMARY;
+    public static final UniqueKey<GoodsSummaryRecord> KEY_B2C_GOODS_SUMMARY_UNI_KEY = UniqueKeys0.KEY_B2C_GOODS_SUMMARY_UNI_KEY;
     public static final UniqueKey<GoodsOverviewSummaryRecord> KEY_B2C_GOODS_OVERVIEW_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_GOODS_OVERVIEW_SUMMARY_PRIMARY;
     public static final UniqueKey<GradePrdRecord> KEY_B2C_GRADE_PRD_PRIMARY = UniqueKeys0.KEY_B2C_GRADE_PRD_PRIMARY;
     public static final UniqueKey<GroupDrawRecord> KEY_B2C_GROUP_DRAW_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_DRAW_PRIMARY;
@@ -793,6 +794,7 @@ public class Keys {
         public static final UniqueKey<GoodsSpecProductRecord> KEY_B2C_GOODS_SPEC_PRODUCT_PRIMARY = Internal.createUniqueKey(GoodsSpecProduct.GOODS_SPEC_PRODUCT, "KEY_b2c_goods_spec_product_PRIMARY", GoodsSpecProduct.GOODS_SPEC_PRODUCT.PRD_ID);
         public static final UniqueKey<GoodsSpecProductBakRecord> KEY_B2C_GOODS_SPEC_PRODUCT_BAK_PRIMARY = Internal.createUniqueKey(GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK, "KEY_b2c_goods_spec_product_bak_PRIMARY", GoodsSpecProductBak.GOODS_SPEC_PRODUCT_BAK.PRD_BAK_ID);
         public static final UniqueKey<GoodsSummaryRecord> KEY_B2C_GOODS_SUMMARY_PRIMARY = Internal.createUniqueKey(GoodsSummary.GOODS_SUMMARY, "KEY_b2c_goods_summary_PRIMARY", GoodsSummary.GOODS_SUMMARY.ID);
+        public static final UniqueKey<GoodsSummaryRecord> KEY_B2C_GOODS_SUMMARY_UNI_KEY = Internal.createUniqueKey(GoodsSummary.GOODS_SUMMARY, "KEY_b2c_goods_summary_uni_key", GoodsSummary.GOODS_SUMMARY.REF_DATE, GoodsSummary.GOODS_SUMMARY.TYPE, GoodsSummary.GOODS_SUMMARY.GOODS_ID);
         public static final UniqueKey<GoodsOverviewSummaryRecord> KEY_B2C_GOODS_OVERVIEW_SUMMARY_PRIMARY = Internal.createUniqueKey(GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY, "KEY_b2c_goods_overview_summary_PRIMARY", GoodsOverviewSummary.GOODS_OVERVIEW_SUMMARY.ID);
         public static final UniqueKey<GradePrdRecord> KEY_B2C_GRADE_PRD_PRIMARY = Internal.createUniqueKey(GradePrd.GRADE_PRD, "KEY_b2c_grade_prd_PRIMARY", GradePrd.GRADE_PRD.ID);
         public static final UniqueKey<GroupDrawRecord> KEY_B2C_GROUP_DRAW_PRIMARY = Internal.createUniqueKey(GroupDraw.GROUP_DRAW, "KEY_b2c_group_draw_PRIMARY", GroupDraw.GROUP_DRAW.ID);

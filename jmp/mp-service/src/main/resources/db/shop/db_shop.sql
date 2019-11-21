@@ -2732,21 +2732,26 @@ create table `b2c_goods_overview_summary`
 -- drop table if exists `b2c_goods_summary`;
 create table `b2c_goods_summary`
 (
-    `id`                int(11) not null auto_increment,
-    `ref_date`          date       default null comment '统计日期',
-    `type`              tinyint(2) default null comment '1,7,30',
-    `goods_id`          int(11)    default null,
-    `new_user_number`   int(11)    default null comment '新成交客户数',
-    `old_user_number`   int(11)    default null comment '老成交客户数',
-    `pv`                int(11)    default null comment '浏览量',
-    `uv`                int(11)    default null comment '访客数',
-    `cart_uv`           int(11)    default null comment '加购人数',
-    `paid_uv`           int(11)    default null comment '付款人数',
-    `paid_goods_number` int(11)    default null comment '付款商品件数',
-    `create_time`       timestamp  default current_timestamp,
-    `update_time`       timestamp  default current_timestamp on update current_timestamp comment '最后修改时间',
-    primary key (`id`),
-    key `ref_type` (`ref_date`, `type`) using btree
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ref_date` date DEFAULT NULL COMMENT '统计日期',
+  `type` tinyint(2) DEFAULT NULL COMMENT '1,7,30',
+  `goods_id` int(11) DEFAULT NULL,
+  `new_user_number` int(11) DEFAULT '0' COMMENT '新成交客户数',
+  `old_user_number` int(11) DEFAULT '0' COMMENT '老成交客户数',
+  `pv` int(11) DEFAULT '0' COMMENT '浏览量',
+  `uv` int(11) DEFAULT '0' COMMENT '访客数',
+  `cart_uv` int(11) DEFAULT '0' COMMENT '加购人数',
+  `paid_uv` int(11) DEFAULT '0' COMMENT '付款人数',
+  `paid_goods_number` int(11) DEFAULT '0' COMMENT '付款商品件数',
+    `goodsSales` decimal(10,2) DEFAULT '0.00' COMMENT '销售额',
+  `goodsRecommendUserNum` int(11) DEFAULT '0' COMMENT '推荐人数',
+  `goodsCollectUserNum` int(11) DEFAULT '0' COMMENT '收藏人数',
+  `goodsSharePv` int(11) DEFAULT '0' COMMENT '分享次数',
+  `goodsShareUv` int(11) DEFAULT '0' COMMENT '分享人数',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uni_key` (`ref_date`,`type`,`goods_id`) USING BTREE
 );
 
 -- 用户概览

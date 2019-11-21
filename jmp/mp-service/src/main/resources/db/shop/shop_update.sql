@@ -1202,3 +1202,20 @@ ADD COLUMN `prd_id` int(9) DEFAULT '0' COMMENT '商品规格id';
 ALTER TABLE `b2c_goods_spec_product`
 ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT '0';
 
+-- 商品统计-效果
+ALTER TABLE `b2c_goods_summary`
+ADD COLUMN `goodsSales` decimal(10, 2)  NULL DEFAULT 0.0 comment '销售额',
+ADD COLUMN `goodsRecommendUserNum` int(11)  NULL DEFAULT 0 comment '推荐人数',
+ADD COLUMN `goodsCollectUserNum` int(11)  NULL DEFAULT 0 comment '收藏人数',
+ADD COLUMN `goodsSharePv` int(11)  NULL DEFAULT 0 comment '分享次数',
+ADD COLUMN `goodsShareUv` int(11)  NULL DEFAULT 0 comment '分享人数',
+MODIFY COLUMN    `new_user_number`   int(11)    default 0 comment '新成交客户数',
+MODIFY COLUMN    `old_user_number`   int(11)    default 0 comment '老成交客户数',
+MODIFY COLUMN    `pv`                int(11)    default 0 comment '浏览量',
+MODIFY COLUMN    `uv`                int(11)    default 0 comment '访客数',
+MODIFY COLUMN    `cart_uv`           int(11)    default 0 comment '加购人数',
+MODIFY COLUMN    `paid_uv`           int(11)    default 0 comment '付款人数',
+MODIFY COLUMN    `paid_goods_number` int(11)    default 0 comment '付款商品件数',
+drop KEY `ref_type`,
+ADD UNIQUE KEY `uni_key` (`ref_date`,`type`,`goods_id`) using btree ;
+

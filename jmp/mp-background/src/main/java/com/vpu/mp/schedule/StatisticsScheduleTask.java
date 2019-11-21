@@ -2,6 +2,7 @@ package com.vpu.mp.schedule;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.saas.SaasApplication;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -34,8 +35,9 @@ public class StatisticsScheduleTask {
     public void goodsStatistics() {
         Result<ShopRecord> result = saas.shop.getAll();
         result.forEach((r) -> {
-            saas.getShopApp(r.getShopId()).
-                shopTaskService.goodsTaskService.insertOverview();
+            ShopApplication shop = saas.getShopApp(r.getShopId());
+            shop.shopTaskService.goodsTaskService.insertOverview();
+            shop.shopTaskService.goodsTaskService.insertGoodsSummary();
         });
     }
 }

@@ -8,26 +8,16 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsSummaryRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -43,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsSummary extends TableImpl<GoodsSummaryRecord> {
 
-    private static final long serialVersionUID = 593602624;
+    private static final long serialVersionUID = -1194098077;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_summary</code>
@@ -81,37 +71,37 @@ public class GoodsSummary extends TableImpl<GoodsSummaryRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_goods_summary.new_user_number</code>. 新成交客户数
      */
-    public final TableField<GoodsSummaryRecord, Integer> NEW_USER_NUMBER = createField("new_user_number", org.jooq.impl.SQLDataType.INTEGER, this, "新成交客户数");
+    public final TableField<GoodsSummaryRecord, Integer> NEW_USER_NUMBER = createField("new_user_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "新成交客户数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods_summary.old_user_number</code>.
+     * The column <code>mini_shop_471752.b2c_goods_summary.old_user_number</code>. 老成交客户数
      */
-    public final TableField<GoodsSummaryRecord, Integer> OLD_USER_NUMBER = createField("old_user_number", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<GoodsSummaryRecord, Integer> OLD_USER_NUMBER = createField("old_user_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "老成交客户数");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_summary.pv</code>. 浏览量
      */
-    public final TableField<GoodsSummaryRecord, Integer> PV = createField("pv", org.jooq.impl.SQLDataType.INTEGER, this, "浏览量");
+    public final TableField<GoodsSummaryRecord, Integer> PV = createField("pv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "浏览量");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_summary.uv</code>. 访客数
      */
-    public final TableField<GoodsSummaryRecord, Integer> UV = createField("uv", org.jooq.impl.SQLDataType.INTEGER, this, "访客数");
+    public final TableField<GoodsSummaryRecord, Integer> UV = createField("uv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "访客数");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_summary.cart_uv</code>. 加购人数
      */
-    public final TableField<GoodsSummaryRecord, Integer> CART_UV = createField("cart_uv", org.jooq.impl.SQLDataType.INTEGER, this, "加购人数");
+    public final TableField<GoodsSummaryRecord, Integer> CART_UV = createField("cart_uv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "加购人数");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_summary.paid_uv</code>. 付款人数
      */
-    public final TableField<GoodsSummaryRecord, Integer> PAID_UV = createField("paid_uv", org.jooq.impl.SQLDataType.INTEGER, this, "付款人数");
+    public final TableField<GoodsSummaryRecord, Integer> PAID_UV = createField("paid_uv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "付款人数");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_summary.paid_goods_number</code>. 付款商品件数
      */
-    public final TableField<GoodsSummaryRecord, Integer> PAID_GOODS_NUMBER = createField("paid_goods_number", org.jooq.impl.SQLDataType.INTEGER, this, "付款商品件数");
+    public final TableField<GoodsSummaryRecord, Integer> PAID_GOODS_NUMBER = createField("paid_goods_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "付款商品件数");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_summary.create_time</code>.
@@ -122,6 +112,31 @@ public class GoodsSummary extends TableImpl<GoodsSummaryRecord> {
      * The column <code>mini_shop_471752.b2c_goods_summary.update_time</code>. 最后修改时间
      */
     public final TableField<GoodsSummaryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.goodsSales</code>. 销售额
+     */
+    public final TableField<GoodsSummaryRecord, BigDecimal> GOODSSALES = createField("goodsSales", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "销售额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.goodsRecommendUserNum</code>. 推荐人数
+     */
+    public final TableField<GoodsSummaryRecord, Integer> GOODSRECOMMENDUSERNUM = createField("goodsRecommendUserNum", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "推荐人数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.goodsCollectUserNum</code>. 收藏人数
+     */
+    public final TableField<GoodsSummaryRecord, Integer> GOODSCOLLECTUSERNUM = createField("goodsCollectUserNum", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "收藏人数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.goodsSharePv</code>. 分享次数
+     */
+    public final TableField<GoodsSummaryRecord, Integer> GOODSSHAREPV = createField("goodsSharePv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分享次数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.goodsShareUv</code>. 分享人数
+     */
+    public final TableField<GoodsSummaryRecord, Integer> GOODSSHAREUV = createField("goodsShareUv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分享人数");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_summary</code> table reference
@@ -169,7 +184,7 @@ public class GoodsSummary extends TableImpl<GoodsSummaryRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.GOODS_SUMMARY_PRIMARY, Indexes.GOODS_SUMMARY_REF_TYPE);
+        return Arrays.<Index>asList(Indexes.GOODS_SUMMARY_PRIMARY, Indexes.GOODS_SUMMARY_UNI_KEY);
     }
 
     /**
@@ -193,7 +208,7 @@ public class GoodsSummary extends TableImpl<GoodsSummaryRecord> {
      */
     @Override
     public List<UniqueKey<GoodsSummaryRecord>> getKeys() {
-        return Arrays.<UniqueKey<GoodsSummaryRecord>>asList(Keys.KEY_B2C_GOODS_SUMMARY_PRIMARY);
+        return Arrays.<UniqueKey<GoodsSummaryRecord>>asList(Keys.KEY_B2C_GOODS_SUMMARY_PRIMARY, Keys.KEY_B2C_GOODS_SUMMARY_UNI_KEY);
     }
 
     /**
