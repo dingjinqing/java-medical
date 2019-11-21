@@ -5,8 +5,12 @@ import static org.jooq.impl.DSL.val;
 import static org.jooq.tools.StringUtils.abbreviate;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RegExUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.aspectj.weaver.Utils;
 import org.jooq.Configuration;
 import org.jooq.ExecuteContext;
 import org.jooq.ExecuteType;
@@ -20,8 +24,12 @@ import org.jooq.impl.DefaultExecuteListener;
 import org.jooq.impl.DefaultVisitListener;
 import org.jooq.impl.DefaultVisitListenerProvider;
 import org.jooq.tools.JooqLogger;
-import org.jooq.tools.StringUtils;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.vpu.mp.config.DatabaseConfig;
+import com.vpu.mp.support.SpringUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
@@ -53,24 +61,22 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 			if (ctx.query() != null) {
 
 				// Actual SQL passed to JDBC
-				LOGGER.debug("Executing query", newline + ctx.sql());
+//				LOGGER.debug("Executing query", newline + ctx.sql());
 
 				// [#1278] DEBUG log also SQL with inlined bind values, if
 				// that is not the same as the actual SQL passed to JDBC
 				String inlined = DSL.using(configuration).renderInlined(ctx.query());
 				if (!ctx.sql().equals(inlined)) {
-					LOGGER.debug("-> with bind values", newline + inlined);
+					this.logSql(newline + inlined);
 				}
 			}
 
 			// [#2987] Log routines
 			else if (ctx.routine() != null) {
-				LOGGER.debug("Calling routine", newline + ctx.sql());
-
+//				LOGGER.debug("Calling routine", newline + ctx.sql());
 				String inlined = DSL.using(configuration).renderInlined(ctx.routine());
-
 				if (!ctx.sql().equals(inlined)) {
-					LOGGER.debug("-> with bind values", newline + inlined);
+					this.logSql(newline + inlined);
 				}
 			}
 
@@ -88,12 +94,33 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 			else if (batchSql.length > 0) {
 				if (batchSql[batchSql.length - 1] != null) {
 					for (String sql : batchSql) {
-						LOGGER.debug("Executing batch query", newline + sql);
+						this.logSql(newline + sql);
 					}
 				}
 			}
 		}
 
+	}
+
+	private void logSql(String sql) {
+		String message = sql;
+		DatabaseConfig databaseConfig = SpringUtil.getBean(DatabaseConfig.class);
+		String mainDbName = databaseConfig.getDatabase();
+		String shopDbPrefix = databaseConfig.getShopDbPrefix();
+		String dbName = "";
+		String search = "`" + mainDbName + "`.";
+		if (StringUtils.containsAny(sql, search)) {
+			dbName = mainDbName;
+			message = RegExUtils.replaceAll(sql, search, "");
+		}
+		search = "`(" + shopDbPrefix + "_\\d+)\\.`";
+		Matcher m = Pattern.compile(search, Pattern.CASE_INSENSITIVE).matcher(sql);
+		if (m.find()) {
+			dbName = m.group(1);
+			search = "`" + dbName + "`.";
+			message = RegExUtils.replaceAll(sql, search, "");
+		}
+		LOGGER.debug("[" + dbName + "]\t" + message);
 	}
 
 	/**
