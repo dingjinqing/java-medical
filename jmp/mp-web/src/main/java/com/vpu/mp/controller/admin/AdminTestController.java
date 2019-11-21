@@ -91,7 +91,7 @@ public class AdminTestController extends AdminBaseController {
 		
 		Map<String, String> v2 = new HashMap<>();
 		v2.put("value", "2019年10月9日00时00分01秒");
-		data.put("date3", v1);
+		data.put("date3", v2);
 		
 		Map<String, String> v3 = new HashMap<>();
 		v3.put("value", "2019年10月9日23时59分59秒");
