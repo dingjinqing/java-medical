@@ -99,19 +99,19 @@ export const en = {
   newUserList: 'Get new user details',
   tabInfo: [{
     title: 'All sweepstakes',
-    name: '1'
+    name: '0'
   }, {
     title: 'In Progress',
-    name: '2'
+    name: '1'
   }, {
     title: 'Not started',
-    name: '3'
+    name: '2'
   }, {
     title: 'Expired',
-    name: '4'
+    name: '3'
   }, {
     title: 'Disabled',
-    name: '5'
+    name: '4'
   }],
   changeStatusComment: 'This operation will enable the activity, do you want to continue?',
   DeleteLuckDrawComment: 'This operation will delete the activity, will it continue?',

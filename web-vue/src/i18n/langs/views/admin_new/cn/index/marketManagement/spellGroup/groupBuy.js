@@ -137,19 +137,19 @@ export const cn = {
   activityEchert: '活动效果',
   tabInfo: [{
     title: '全部拼团活动',
-    name: '1'
+    name: '0'
   }, {
     title: '进行中',
-    name: '2'
+    name: '1'
   }, {
     title: '未开始',
-    name: '3'
+    name: '2'
   }, {
     title: '已过期',
-    name: '4'
+    name: '3'
   }, {
     title: '已停用',
-    name: '5'
+    name: '4'
   }],
   changeStatusComment: '此操作将启用该活动, 是否继续?',
   deleteComment: '此操作将删除该活动, 是否继续?',

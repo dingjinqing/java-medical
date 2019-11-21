@@ -127,22 +127,22 @@ export const en = {
     {
       title: 'all I want is a gift-giving activity ',
       name: 'all',
-      Index: 1.0
+      Index: 0
     }, {
       title: 'in progress ',
       name: 'inProgress',
-      Index: 2
+      Index: 1
     }, {
       title: 'not started ',
       name: 'notStarted',
-      Index: 3
+      Index: 2
     }, {
       title: 'expired ',
       name: 'expired',
-      Index: 4
+      Index: 3
     }, {
       title: 'disabled ',
       name: 'disabled',
-      Index: 5
+      Index: 4
     }]
 }

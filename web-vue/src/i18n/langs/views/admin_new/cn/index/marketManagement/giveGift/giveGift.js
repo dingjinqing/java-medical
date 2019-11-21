@@ -128,22 +128,22 @@ export const cn = {
     {
       title: '全部我要送礼活动',
       name: 'all',
-      index: 1
+      index: 0
     }, {
       title: '进行中',
       name: 'inProgress',
-      index: 2
+      index: 1
     }, {
       title: '未开始',
       name: 'notStarted',
-      index: 3
+      index: 2
     }, {
       title: '已过期',
       name: 'expired',
-      index: 4
+      index: 3
     }, {
       title: '已停用',
       name: 'disabled',
-      index: 5
+      index: 4
     }]
 }
