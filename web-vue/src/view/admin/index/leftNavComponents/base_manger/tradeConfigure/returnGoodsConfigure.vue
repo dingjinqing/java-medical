@@ -21,39 +21,98 @@
         >{{$t('returnconfiguration.choosecanreturn')}}</div>
 
         <div
-          class="chooseBtn"
+          class="noneBlockList"
           @click="showChoosingGoods"
         >
-          <img :src="src">
-          <span>{{$t('tradeConfiguration.selectgoods')}}</span>
+          <div class="noneBlockLeft">
+            <img :src="src">
+            <span>{{$t('tradeConfiguration.selectgoods')}}</span>
+          </div>
+          <div class="noneBlockRight" v-if="goodsN">已选择：
+            <el-input
+              size="mini"
+              style="width:50px"
+              :disabled="true"
+              placeholder="0"
+              v-model.number="goodsN"
+            ></el-input>  件 商品
+          </div>
         </div>
         <div
-          class="chooseBtn"
+          class="noneBlockList"
           @click="showBusClassDialog(2)"
+          style="margin: 10px 0"
         >
-          <img :src="src">
-          <span>{{$t('tradeConfiguration.selectplant')}}</span>
+          <div class="noneBlockLeft">
+            <img :src="src">
+            <span>{{$t('tradeConfiguration.selectplant')}}</span>
+          </div>
+          <div class="noneBlockRight" v-if="platN">已选择：
+            <el-input
+              size="mini"
+              style="width:50px"
+              :disabled="true"
+              placeholder="0"
+              v-model.number="platN"
+            ></el-input>  个 平台分类
+          </div>
         </div>
         <div
-          class="chooseBtn"
+          class="noneBlockList"
           @click="showBusClassDialog(1)"
+          style="margin: 10px 0"
         >
-          <img :src="src">
-          <span>{{$t('tradeConfiguration.selectshop')}}</span>
+          <div class="noneBlockLeft">
+            <img :src="src">
+            <span>{{$t('tradeConfiguration.selectshop')}}</span>
+          </div>
+          <div class="noneBlockRight" v-if="busClassN">已选择：
+            <el-input
+              size="mini"
+              style="width:50px"
+              :disabled="true"
+              placeholder="0"
+              v-model.number="busClassN"
+            ></el-input>  个 商家分类
+          </div>
         </div>
         <div
-          class="chooseBtn"
+          class="noneBlockList"
           @click="showProductLabel"
+          style="margin: 10px 0"
         >
-          <img :src="src">
-          <span>{{$t('tradeConfiguration.selectlabel')}}</span>
+          <div class="noneBlockLeft">
+            <img :src="src">
+            <span>{{$t('tradeConfiguration.selectlabel')}}</span>
+          </div>
+          <div class="noneBlockRight" v-if="labelN">已选择：
+            <el-input
+              size="mini"
+              style="width:50px"
+              :disabled="true"
+              placeholder="0"
+              v-model.number="labelN"
+            ></el-input>  个 商品标签
+          </div>
         </div>
         <div
-          class="chooseBtn"
+          class="noneBlockList"
           @click="showBrandDialog"
+          style="margin: 10px 0"
         >
-          <img :src="src">
-          <span>{{$t('tradeConfiguration.selectbrand')}}</span>
+          <div class="noneBlockLeft">
+            <img :src="src">
+            <span>{{$t('tradeConfiguration.selectbrand')}}</span>
+          </div>
+          <div class="noneBlockRight" v-if="brandN">已选择：
+            <el-input
+              size="mini"
+              style="width:50px"
+              :disabled="true"
+              placeholder="0"
+              v-model.number="brandN"
+            ></el-input>  个 商品品牌
+          </div>
         </div>
       </div>
 
@@ -134,7 +193,7 @@
         <!-- 关闭时的显示内容 -->
         <div
           class="returnMoneySetting"
-          v-if="returnParam.auto_return === 2"
+          v-if="returnParam.auto_return === 0"
         >
           <div>
             {{$t('returnconfiguration.note5')}}</div>
@@ -243,18 +302,23 @@ export default {
       // 商品弹窗回调数据
       goodsInfo: [],
       goodsInfoRow: [],
+      goodsN: 0,
       // 标签弹窗回调数据
       labelInfo: [],
       labelInfoRow: [],
+      labelN: 0,
       // 商品品牌弹窗回调数据
       brand: [],
       brandRow: [],
+      brandN: 0,
       // 商家分类弹窗回调数据
       busClass: [],
       busClassRow: [],
+      busClassN: 0,
       // 平台分类弹窗回调数据
       platClass: [],
       platClassRow: [],
+      platN: 0,
       // 平台分类/商家分类共享变量
       commInfo: [],
       // 弹窗结果区分标识 1商家分类;2平台分类
@@ -310,6 +374,7 @@ export default {
       this.goodsInfoRow.map((item, index) => {
         this.goodsInfo.push(item.goodsId)
       })
+      this.goodsN = this.goodsInfo.length
     },
     // 选择商家分类/平台分类弹窗调起
     showBusClassDialog (classFlag) {
@@ -333,6 +398,7 @@ export default {
         this.busClassRow.map((item, index) => {
           this.busClass.push(item.sortId)
         })
+        this.busClassN = this.busClass.length
       } else {
         // 平台分类
         this.platClassRow = row
@@ -340,6 +406,7 @@ export default {
         this.platClassRow.map((item, index) => {
           this.platClass.push(item.catId)
         })
+        this.platN = this.platClass.length
       }
     },
     // 选择商品标签弹窗调起
@@ -354,6 +421,7 @@ export default {
       this.labelInfoRow.map((item, index) => {
         this.labelInfo.push(item.id)
       })
+      this.labelN = this.labelInfo.length
     },
     // 选择商品品牌弹窗调起
     showBrandDialog () {
@@ -367,6 +435,7 @@ export default {
       this.brandRow.map((item, index) => {
         this.brand.push(item.id)
       })
+      this.brandN = this.brand.length
     },
     initData () {
       returnSelect().then(res => {
@@ -374,10 +443,15 @@ export default {
         if (res.error === 0) {
           this.returnParam = res.content
           this.goodsInfo = this.returnParam.order_return_goods_package.add_goods
+          this.goodsN = this.goodsInfo.length
           this.labelInfo = this.returnParam.order_return_goods_package.add_label
+          this.labelN = this.labelInfo.length
           this.brand = this.returnParam.order_return_goods_package.add_brand
+          this.brandN = this.brand.length
           this.busClass = this.returnParam.order_return_goods_package.add_sort
+          this.busClassN = this.busClass.length
           this.platClass = this.returnParam.order_return_goods_package.add_cate
+          this.platN = this.platClass.length
         } else {
           this.$message.error('操作失败，请稍后重试！')
         }
@@ -423,6 +497,28 @@ export default {
       }
       .chooseInfo {
         margin: 0 0 10px;
+      }
+      .noneBlockList {
+        margin-bottom: 10px;
+        display: flex;
+        .noneBlockLeft {
+          line-height: 30px;
+          height: 30px;
+          width: 120px;
+          text-align: left;
+          color: #5a8bff;
+          border: 1px solid #ccc;
+          background: #fff;
+          cursor: pointer;
+          padding-left: 5px;
+          margin-right: 20px;
+        }
+        .noneBlockRight {
+          color: #5a8bff;
+          cursor: pointer;
+          height: 30px;
+          line-height: 30px;
+        }
       }
       .chooseBtn {
         width: 120px;
