@@ -1594,32 +1594,38 @@ public class GoodsService extends ShopBaseService {
      * @param params 待更新商品、规格数量销量信息
      */
     public void batchUpdateGoodsNumsAndSaleNumsForOrder(List<BatchUpdateGoodsNumAndSaleNumForOrderParam> params){
-        List<Integer> goodsIds = params.stream().map(BatchUpdateGoodsNumAndSaleNumForOrderParam::getGoodsId).collect(Collectors.toList());
+
+        if (params.size() == 0) {
+            return;
+        }
+
+        List<Integer> goodsIds = new ArrayList<>(params.size());
+        List<Integer> prdIds = new ArrayList<>(params.size());
+
+        params.forEach(param -> {
+            goodsIds.add(param.getGoodsId());
+            prdIds.addAll(param.getProductsInfo().stream().map(BatchUpdateGoodsNumAndSaleNumForOrderParam.ProductNumInfo::getPrdId).collect(Collectors.toList()));
+        });
 
         // 查询数据库商品信息，规格信息，准备进行数据修改
         Map<Integer,GoodsRecord> goodsRecords = db().select(GOODS.GOODS_ID,GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM).from(GOODS).where(GOODS.GOODS_ID.in(goodsIds))
             .fetchMap(GOODS.GOODS_ID,GoodsRecord.class);
-
-        Map<Integer, List<GoodsSpecProductRecord>> prdRecordsMap = db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
-            .fetchGroups(GOODS_SPEC_PRODUCT.GOODS_ID, GoodsSpecProductRecord.class);
-
-        List<GoodsSpecProductRecord> readyToUpdatePrds = new ArrayList<>(prdRecordsMap.size());
+        Map<Integer, GoodsSpecProductRecord> prdRecordsMap = db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(prdIds))
+            .fetchMap(GOODS_SPEC_PRODUCT.PRD_ID, GoodsSpecProductRecord.class);
 
         params.forEach(param->{
             GoodsRecord goodsRecord = goodsRecords.get(param.getGoodsId());
-            // 存在不需要更新的规格项
-            Map<Integer, GoodsSpecProductRecord> prdMap = prdRecordsMap.get(param.getGoodsId()).stream().collect(Collectors.toMap(GoodsSpecProductRecord::getPrdId, x -> x));
             goodsRecord.setGoodsNumber(param.getGoodsNum());
             goodsRecord.setGoodsSaleNum(param.getSaleNum());
+
             param.getProductsInfo().forEach(prdInfo->{
-                GoodsSpecProductRecord record = prdMap.get(prdInfo.getPrdId());
+                GoodsSpecProductRecord record = prdRecordsMap.get(prdInfo.getPrdId());
                 record.setPrdNumber(prdInfo.getPrdNum());
-                readyToUpdatePrds.add(record);
             });
         });
         transaction(()->{
             db().batchUpdate(goodsRecords.values()).execute();
-            db().batchUpdate(readyToUpdatePrds).execute();
+            db().batchUpdate(prdRecordsMap.values()).execute();
 
             try {
                 esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
