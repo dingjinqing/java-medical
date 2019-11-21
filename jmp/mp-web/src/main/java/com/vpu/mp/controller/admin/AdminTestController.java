@@ -95,7 +95,7 @@ public class AdminTestController extends AdminBaseController {
 		
 		Map<String, String> v3 = new HashMap<>();
 		v3.put("value", "2019年10月9日23时59分59秒");
-		data.put("thing1", v3);
+		data.put("date4", v3);
 
 		WxOpenResult result = open.getMaExtService().sendTemplate(appId, toUser, templateId, page, data);
 		return success(result);
