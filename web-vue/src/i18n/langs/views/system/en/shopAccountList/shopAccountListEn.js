@@ -1,4 +1,3 @@
-
 export const en = {
   title: {
     list: 'Merchant account list',
@@ -22,6 +21,7 @@ export const en = {
     operation: 'operating'
   },
   stateOption: {
+    state0: 'Select review status',
     state1: 'under review',
     state2: 'examination passed',
     state3: 'audit not passed',

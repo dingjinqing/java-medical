@@ -179,19 +179,23 @@ export default {
   name: 'list',
   data () {
     return {
-      options: [{
-        value: '1',
-        label: this.$t('shopAccountList.stateOption.state1')
-      }, {
-        value: '2',
-        label: this.$t('shopAccountList.stateOption.state2')
-      }, {
-        value: '3',
-        label: this.$t('shopAccountList.stateOption.state3')
-      }, {
-        value: '4',
-        label: this.$t('shopAccountList.stateOption.state4')
-      }],
+      options: [
+        {
+          value: '',
+          label: this.$t('shopAccountList.stateOption.state0')
+        }, {
+          value: '1',
+          label: this.$t('shopAccountList.stateOption.state1')
+        }, {
+          value: '2',
+          label: this.$t('shopAccountList.stateOption.state2')
+        }, {
+          value: '3',
+          label: this.$t('shopAccountList.stateOption.state3')
+        }, {
+          value: '4',
+          label: this.$t('shopAccountList.stateOption.state4')
+        }],
       mainData: {
         state: '',
         keywords: '',

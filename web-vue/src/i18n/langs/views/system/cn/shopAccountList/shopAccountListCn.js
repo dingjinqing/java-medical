@@ -22,6 +22,7 @@ export const cn = {
     edit: '编辑'
   },
   stateOption: {
+    state0: '选择审核状态',
     state1: '申请中',
     state2: '审核通过',
     state3: '审核不通过',

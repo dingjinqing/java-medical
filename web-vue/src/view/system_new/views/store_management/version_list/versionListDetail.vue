@@ -653,7 +653,7 @@ export default {
   display: inline-flex;
 }
 .table_box /deep/ .el-checkbox__input.is-disabled + span.el-checkbox__label {
-  color: #409eff;
+  color: #999;
 }
 
 .table_box
