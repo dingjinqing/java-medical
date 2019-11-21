@@ -10,7 +10,8 @@
         <span>{{item.name}}</span>
         <el-switch
           v-model="item.value"
-          active-color="#f7931e"
+          active-color="#13ce66"
+          inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span>{{item.value?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -89,7 +90,8 @@
       <div class="settingContent delay top">
         <el-switch
           v-model="extenReceiveGoods"
-          active-color="#f7931e"
+          active-color="#13ce66"
+          inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{this.extenReceiveGoods?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -115,7 +117,8 @@
       <div class="settingContent">
         <el-switch
           v-model="invoice"
-          active-color="#f7931e"
+          active-color="#13ce66"
+          inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{this.invoice?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -132,7 +135,8 @@
       <div class="settingContent defaultSelect">
         <el-switch
           v-model="serviceTerms"
-          active-color="#f7931e"
+          active-color="#13ce66"
+          inactive-color="#f7931e"
           style="margin: 0 10px;"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{this.serviceTerms?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -181,7 +185,8 @@
         <span style="display: block;width: 130px;">{{item.info}}</span>
         <el-switch
           v-model="item.value"
-          active-color="#f7931e"
+          active-color="#13ce66"
+          inactive-color="#f7931e"
           style="margin:0 10px;height:60px;line-height:60px"
         ></el-switch>
         <span style="font-size: 14px; color:#333;">{{item.value?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -210,43 +215,99 @@
       <!-- <div class="boxList"> -->
       <div class="goodsWrapper">
         <div
-          class="addGoods"
+          class="noneBlockList"
           @click="showChoosingGoods"
         >
-          <img :src="src">
-          <span>{{$t('tradeConfiguration.selectgoods')}}</span>
+          <div class="noneBlockLeft">
+            <img :src="src">
+            <span>{{$t('tradeConfiguration.selectgoods')}}</span>
+          </div>
+          <div class="noneBlockRight" v-if="goodsN">已选择：
+            <el-input
+              size="mini"
+              style="width:50px"
+              :disabled="true"
+              placeholder="0"
+              v-model.number="goodsN"
+            ></el-input>  件 商品
+          </div>
         </div>
+
         <div
-          class="addGoods"
+          class="noneBlockList"
           @click="showBusClassDialog(2)"
           style="margin: 10px 0"
         >
-          <img :src="src">
-          <span>{{$t('tradeConfiguration.selectplant')}}</span>
+          <div class="noneBlockLeft">
+            <img :src="src">
+            <span>{{$t('tradeConfiguration.selectplant')}}</span>
+          </div>
+          <div class="noneBlockRight" v-if="platN">已选择：
+            <el-input
+              size="mini"
+              style="width:50px"
+              :disabled="true"
+              placeholder="0"
+              v-model.number="platN"
+            ></el-input>  个 平台分类
+          </div>
         </div>
         <div
-          class="addGoods"
+          class="noneBlockList"
           @click="showBusClassDialog(1)"
           style="margin: 10px 0"
         >
+          <div class="noneBlockLeft">
           <img :src="src">
           <span>{{$t('tradeConfiguration.selectshop')}}</span>
+          </div>
+          <div class="noneBlockRight" v-if="busClassN">已选择：
+            <el-input
+              size="mini"
+              style="width:50px"
+              :disabled="true"
+              placeholder="0"
+              v-model.number="busClassN"
+            ></el-input>  个 商家分类
+          </div>
         </div>
         <div
-          class="addGoods"
+          class="noneBlockList"
           @click="showProductLabel"
           style="margin: 10px 0"
         >
+          <div class="noneBlockLeft">
           <img :src="src">
           <span>{{$t('tradeConfiguration.selectlabel')}}</span>
+          </div>
+          <div class="noneBlockRight" v-if="labelN">已选择：
+            <el-input
+              size="mini"
+              style="width:50px"
+              :disabled="true"
+              placeholder="0"
+              v-model.number="labelN"
+            ></el-input>  个 商品标签
+          </div>
         </div>
         <div
-          class="addGoods"
+          class="noneBlockList"
           @click="showBrandDialog"
           style="margin: 10px 0"
         >
+          <div class="noneBlockLeft">
           <img :src="src">
           <span>{{$t('tradeConfiguration.selectbrand')}}</span>
+          </div>
+          <div class="noneBlockRight" v-if="brandN">已选择：
+            <el-input
+              size="mini"
+              style="width:50px"
+              :disabled="true"
+              placeholder="0"
+              v-model.number="brandN"
+            ></el-input>  个 商品品牌
+          </div>
         </div>
       </div>
     </section>
@@ -263,7 +324,8 @@
       >
         <el-switch
           v-model="shippingExpress"
-          active-color="#f7931e"
+          active-color="#13ce66"
+          inactive-color="#f7931e"
           style="margin: 17px 10px 0;"
         ></el-switch>
         <div class="switchText">
@@ -280,7 +342,7 @@
           <!-- 发货地址部分 -->
           <div class="addressContent">
             <span class="address">{{$t('tradeConfiguration.selectaddress')}}</span>
-            <areaLinkage @areaData="handleAreaData" />
+            <areaLinkage @areaData="handleAreaData"/>
             <el-input
               size="small"
               style="width:180px"
@@ -291,23 +353,23 @@
           <div class="expressTable">
             <table>
               <thead>
-                <tr>
-                  <td>{{$t('tradeConfiguration.logiscompany')}}</td>
-                  <td>{{$t('tradeConfiguration.account')}}</td>
-                  <td>{{$t('tradeConfiguration.status')}}</td>
-                  <td>{{$t('tradeConfiguration.operation')}}</td>
-                </tr>
+              <tr>
+                <td>{{$t('tradeConfiguration.logiscompany')}}</td>
+                <td>{{$t('tradeConfiguration.account')}}</td>
+                <td>{{$t('tradeConfiguration.status')}}</td>
+                <td>{{$t('tradeConfiguration.operation')}}</td>
+              </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="item in expressCompany"
-                  :key="item.delivery_name"
-                >
-                  <td style="width:190px">{{item.delivery_name}}</td>
-                  <td style="width:150px">{{item.biz_id}}</td>
-                  <td style="width:90px">{{item.status_code}}</td>
-                  <td style="color:#5A8BFF;cursor:pointer;width:70px">{{item.operate}}</td>
-                </tr>
+              <tr
+                v-for="item in expressCompany"
+                :key="item.delivery_name"
+              >
+                <td style="width:190px">{{item.delivery_name}}</td>
+                <td style="width:150px">{{item.biz_id}}</td>
+                <td style="width:90px">{{item.status_code}}</td>
+                <td style="color:#5A8BFF;cursor:pointer;width:70px">{{item.operate}}</td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -382,7 +444,8 @@
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.autoPick"
-                active-color="#f7931e"
+                active-color="#13ce66"
+                inactive-color="#f7931e"
                 style="margin: 0 10px;"
               ></el-switch>
               <span style="font-size: 14px; color:#333;">{{scope.row.autoPick?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}</span>
@@ -402,13 +465,9 @@
       >
         <el-button
           type="primary"
-          size="small"
           @click="initDataList"
         >{{$t('tradeConfiguration.save')}}</el-button>
-        <el-button
-          size="small"
-          @click="cancle"
-        >{{$t('tradeConfiguration.cancel')}}</el-button>
+        <el-button @click="cancle">{{$t('tradeConfiguration.cancel')}}</el-button>
       </span>
     </el-dialog>
 
@@ -444,12 +503,12 @@
 <script>
 import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
 import pagination from '@/components/admin/pagination/pagination'
-import { tradeSelect, tradeUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
+import {tradeSelect, tradeUpdate} from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import ProductLabel from '@/components/admin/addProductLabel'
 import BrandDialog from '@/components/admin/addBrandDialog'
 import BusClassDialog from '@/components/admin/addingBusClassDialog'
-import { storeList, batchUpdateStore } from '@/api/admin/storeManage/store'
+import {storeList, batchUpdateStore} from '@/api/admin/storeManage/store'
 
 export default {
   components: {
@@ -466,8 +525,8 @@ export default {
   watch: {
     lang () {
       this.deliverMethods = [
-        { code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false },
-        { code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false }
+        {code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false},
+        {code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false}
       ]
       this.isRequiredInfo = [
         {
@@ -494,7 +553,7 @@ export default {
           content: this.$t('tradeConfiguration.creadid'),
           value: false
         },
-        { code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false }
+        {code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false}
       ]
     },
     allChecked (newData) {
@@ -541,25 +600,30 @@ export default {
       // 商品弹窗回调数据
       goodsInfo: [],
       goodsInfoRow: [],
+      goodsN: 0,
       // 标签弹窗回调数据
       labelInfo: [],
       labelInfoRow: [],
+      labelN: 0,
       // 商品品牌弹窗回调数据
       brand: [],
       brandRow: [],
+      brandN: 0,
       // 商家分类弹窗回调数据
       busClass: [],
       busClassRow: [],
+      busClassN: 0,
       // 平台分类弹窗回调数据
       platClass: [],
       platClassRow: [],
+      platN: 0,
       // 平台分类/商家分类共享变量
       commInfo: [],
       // 弹窗结果区分标识 1商家分类;2平台分类
       flag: 0,
       deliverMethods: [
-        { code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false },
-        { code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false }
+        {code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false},
+        {code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false}
       ],
       isRequiredInfo: [
         {
@@ -586,7 +650,7 @@ export default {
           content: this.$t('tradeConfiguration.creadid'),
           value: false
         },
-        { code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false }
+        {code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false}
       ],
       invoice: false,
       serviceTerms: false,
@@ -598,7 +662,7 @@ export default {
       showStoreDialog: false,
       pageParams: {},
       expressCompany: [
-        { delivery_name: '百世快递', biz_id: '', status_code: '未签约', operate: '签约' }
+        {delivery_name: '百世快递', biz_id: '', status_code: '未签约', operate: '签约'}
       ],
       cancelHour: 0,
       cancelMinute: 0,
@@ -657,11 +721,11 @@ export default {
       ],
       brandClassify: '',
       classifyList: [
-        { value: 1, label: '运动品牌' },
-        { value: 2, label: '奢侈品' },
-        { value: 3, label: '电子产品' },
-        { value: 4, label: 'SONY' },
-        { value: 5, label: '商品测试' }
+        {value: 1, label: '运动品牌'},
+        {value: 2, label: '奢侈品'},
+        {value: 3, label: '电子产品'},
+        {value: 4, label: 'SONY'},
+        {value: 5, label: '商品测试'}
       ],
       allChecked: false,
       allCheckFlag: false,
@@ -737,10 +801,15 @@ export default {
             this.serviceTerms = this.number2boolean(this.tradeProcessConfig.service_terms)
             this.addresssConf = JSON.parse(this.tradeProcessConfig.shop_address)
             this.goodsInfo = this.tradeProcessConfig.order_require_goods_package.add_goods
+            this.goodsN = this.goodsInfo.length
             this.labelInfo = this.tradeProcessConfig.order_require_goods_package.add_label
+            this.labelN = this.labelInfo.length
             this.brand = this.tradeProcessConfig.order_require_goods_package.add_brand
+            this.brandN = this.brand.length
             this.busClass = this.tradeProcessConfig.order_require_goods_package.add_sort
+            this.busClassN = this.busClass.length
             this.platClass = this.tradeProcessConfig.order_require_goods_package.add_cate
+            this.platN = this.platClass.length
           })
         } else {
           this.$message.error('操作失败，请稍后重试！')
@@ -851,7 +920,7 @@ export default {
     // 更新门店自提状态
     updateSetPick () {
       var updateParam = []
-      const stores = this.storeParamList.map(({ storeId, autoPick }) => ({ storeId, autoPick }))
+      const stores = this.storeParamList.map(({storeId, autoPick}) => ({storeId, autoPick}))
       updateParam = stores
       updateParam.map((item, index) => {
         item.autoPick = this.boolean2number(item.autoPick)
@@ -894,6 +963,7 @@ export default {
       this.goodsInfoRow.map((item, index) => {
         this.goodsInfo.push(item.goodsId)
       })
+      this.goodsN = this.goodsInfo.length
     },
     // 选择商家分类/平台分类弹窗调起
     showBusClassDialog (classFlag) {
@@ -917,6 +987,7 @@ export default {
         this.busClassRow.map((item, index) => {
           this.busClass.push(item.sortId)
         })
+        this.busClassN = this.busClass.length
       } else {
         // 平台分类
         this.platClassRow = row
@@ -924,6 +995,7 @@ export default {
         this.platClassRow.map((item, index) => {
           this.platClass.push(item.catId)
         })
+        this.platN = this.platClass.length
       }
     },
     // 选择商品标签弹窗调起
@@ -938,6 +1010,7 @@ export default {
       this.labelInfoRow.map((item, index) => {
         this.labelInfo.push(item.id)
       })
+      this.labelN = this.labelInfo.length
     },
     // 选择商品品牌弹窗调起
     showBrandDialog () {
@@ -951,196 +1024,207 @@ export default {
       this.brandRow.map((item, index) => {
         this.brand.push(item.id)
       })
+      this.brandN = this.brand.length
     }
   }
 }
 
 </script>
 <style lang="scss" scoped>
-.tradeProcessConfigure {
-  padding-bottom: 20px;
+  .tradeProcessConfigure {
+    padding-bottom: 20px;
 
-  .deliverMethods {
-    position: relative;
-    width: 80%;
-    padding-top: 0 !important;
+    .deliverMethods {
+      position: relative;
+      width: 80%;
+      padding-top: 0 !important;
 
-    .deliverContent {
-      height: 50px;
-      line-height: 50px;
-      border-bottom: 1px solid #eee;
+      .deliverContent {
+        height: 50px;
+        line-height: 50px;
+        border-bottom: 1px solid #eee;
 
-      :nth-of-type(3) {
-        margin-left: 15px;
-        color: #999;
-        font-size: 12px;
-      }
-
-      .takeByself {
-        position: absolute;
-        color: #5a8bff;
-        right: 90px;
-        cursor: pointer;
-      }
-    }
-  }
-
-  .settingWrapper {
-    font-size: 13px;
-
-    .title {
-      height: 40px;
-      line-height: 40px;
-      background: #eef1f6;
-      padding-left: 16px;
-
-      span {
-        display: inline-block;
-        border-left: 2px solid #5a8bff;
-        height: 14px;
-        width: 8px;
-        margin-bottom: -1px;
-      }
-    }
-
-    .settingContent {
-      height: 60px;
-      line-height: 60px;
-      padding-left: 10px;
-      color: #666;
-
-      .inputWidth {
-        width: 65px;
-        margin: 0 5px;
-      }
-    }
-
-    .delay {
-      height: 35px;
-      line-height: 35px;
-    }
-
-    .top {
-      margin-top: 15px;
-    }
-
-    .bottom {
-      margin: 0 0 15px 10px;
-    }
-
-    .WeChatExpress {
-      font-size: 14px;
-
-      div {
-        margin-bottom: 10px;
-      }
-
-      .switchText {
-        line-height: 25px;
-        color: #333;
-        width: 85px;
-        margin: 15px 20px 0 10px;
-      }
-
-      .expressInfo {
-        margin-top: 15px;
-
-        .grayText {
+        :nth-of-type(3) {
+          margin-left: 15px;
           color: #999;
-          line-height: 25px;
+          font-size: 12px;
         }
 
-        .addressContent {
-          color: #333;
-          display: flex;
+        .takeByself {
+          position: absolute;
+          color: #5a8bff;
+          right: 90px;
+          cursor: pointer;
+        }
+      }
+    }
 
-          .address {
+    .settingWrapper {
+      font-size: 13px;
+
+      .title {
+        height: 40px;
+        line-height: 40px;
+        background: #eef1f6;
+        padding-left: 16px;
+
+        span {
+          display: inline-block;
+          border-left: 2px solid #5a8bff;
+          height: 14px;
+          width: 8px;
+          margin-bottom: -1px;
+        }
+      }
+
+      .settingContent {
+        height: 60px;
+        line-height: 60px;
+        padding-left: 10px;
+        color: #666;
+
+        .inputWidth {
+          width: 65px;
+          margin: 0 5px;
+        }
+      }
+
+      .delay {
+        height: 35px;
+        line-height: 35px;
+      }
+
+      .top {
+        margin-top: 15px;
+      }
+
+      .bottom {
+        margin: 0 0 15px 10px;
+      }
+
+      .WeChatExpress {
+        font-size: 14px;
+
+        div {
+          margin-bottom: 10px;
+        }
+
+        .switchText {
+          line-height: 25px;
+          color: #333;
+          width: 85px;
+          margin: 15px 20px 0 10px;
+        }
+
+        .expressInfo {
+          margin-top: 15px;
+
+          .grayText {
+            color: #999;
             line-height: 25px;
+          }
+
+          .addressContent {
+            color: #333;
+            display: flex;
+
+            .address {
+              line-height: 25px;
+              margin-right: 20px;
+            }
+          }
+
+          .expressTable {
+            width: 500px;
+            line-height: 35px;
+
+            table {
+              width: 100%;
+              text-align: center;
+
+              thead {
+                background: #f5f5f5;
+              }
+
+              tbody td {
+                border: 1px solid #eee;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .settingWrapper:nth-of-type(1) {
+      margin-top: 20px;
+    }
+
+    .requiredInfo {
+      .necessaryGoodsInfo {
+        height: 60px;
+        line-height: 60px;
+        color: #666;
+      }
+
+      .goodsWrapper {
+        margin: 10px 0;
+        .noneBlockList {
+          margin-bottom: 10px;
+          display: flex;
+          .noneBlockLeft {
+            line-height: 30px;
+            height: 30px;
+            width: 120px;
+            text-align: left;
+            color: #5a8bff;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+            padding-left: 5px;
             margin-right: 20px;
           }
-        }
-
-        .expressTable {
-          width: 500px;
-          line-height: 35px;
-
-          table {
-            width: 100%;
-            text-align: center;
-
-            thead {
-              background: #f5f5f5;
-            }
-
-            tbody td {
-              border: 1px solid #eee;
-            }
+          .noneBlockRight {
+            color: #5a8bff;
+            cursor: pointer;
+            height: 30px;
+            line-height: 30px;
           }
         }
       }
     }
-  }
 
-  .settingWrapper:nth-of-type(1) {
-    margin-top: 20px;
-  }
-
-  .requiredInfo {
-    .necessaryGoodsInfo {
-      height: 60px;
-      line-height: 60px;
-      color: #666;
-    }
-
-    .goodsWrapper {
-      margin: 10px 0;
-
-      .addGoods {
-        width: 120px;
-        height: 30px;
-        line-height: 30px;
-        text-align: center;
-        color: #5a8bff;
-        border: 1px solid #ccc;
-        background: #fff;
-        cursor: pointer;
-        margin: 10px 0;
-      }
-    }
-  }
-
-  .btn {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-top: 30px;
-  }
-
-  /deep/ .tableClss th {
-    background-color: #f5f5f5;
-    border: none;
-    height: 36px;
-    padding: 8px 10px;
-    color: #333;
-  }
-
-  .table_list {
-    position: relative;
-
-    .table_footer {
-      background: #666;
-    }
-  }
-
-  .chooseGoodsBrand {
-    .selectCondition {
+    .btn {
       display: flex;
-      margin-bottom: 15px;
+      justify-content: center;
+      width: 100%;
+      margin-top: 30px;
+    }
 
-      .brandClassify {
-        margin: 0 30px 0 20px;
+    /deep/ .tableClss th {
+      background-color: #f5f5f5;
+      border: none;
+      height: 36px;
+      padding: 8px 10px;
+      color: #333;
+    }
+
+    .table_list {
+      position: relative;
+
+      .table_footer {
+        background: #666;
+      }
+    }
+
+    .chooseGoodsBrand {
+      .selectCondition {
+        display: flex;
+        margin-bottom: 15px;
+
+        .brandClassify {
+          margin: 0 30px 0 20px;
+        }
       }
     }
   }
-}
 </style>
