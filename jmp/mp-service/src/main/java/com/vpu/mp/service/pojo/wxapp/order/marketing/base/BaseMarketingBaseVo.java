@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@ToString
 public abstract class BaseMarketingBaseVo {
     private BigDecimal totalDiscount;
     private BigDecimal totalGoodsNumber;

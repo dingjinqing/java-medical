@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.order.marketing.coupon;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.base.BaseMarketingBaseVo;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
  */
 @Getter
 @Setter
+@ToString
 public class OrderCouponVo extends BaseMarketingBaseVo {
     private String recommendGoodsId;
     private String recommendCatId;

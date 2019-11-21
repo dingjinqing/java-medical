@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.base.BaseMarketingBaseVo;
 import com.vpu.mp.service.shop.member.UserCardService;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
 
@@ -18,6 +19,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Slf4j
+@ToString
 public class OrderMemberVo extends BaseMarketingBaseVo {
     /**userCard表字段映射*/
     private Integer  userId;
