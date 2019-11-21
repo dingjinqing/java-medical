@@ -103,24 +103,25 @@ public class SqlExcuteListener extends DefaultExecuteListener {
 	}
 
 	private void logSql(String sql) {
-		String message = sql;
-		DatabaseConfig databaseConfig = SpringUtil.getBean(DatabaseConfig.class);
-		String mainDbName = databaseConfig.getDatabase();
-		String shopDbPrefix = databaseConfig.getShopDbPrefix();
-		String dbName = "";
-		String search = "`" + mainDbName + "`.";
-		if (StringUtils.containsAny(sql, search)) {
-			dbName = mainDbName;
-			message = RegExUtils.replaceAll(sql, search, "");
-		}
-		search = "`(" + shopDbPrefix + "_\\d+)\\.`";
-		Matcher m = Pattern.compile(search, Pattern.CASE_INSENSITIVE).matcher(sql);
-		if (m.find()) {
-			dbName = m.group(1);
-			search = "`" + dbName + "`.";
-			message = RegExUtils.replaceAll(sql, search, "");
-		}
-		LOGGER.debug("[" + dbName + "]\t" + message);
+		LOGGER.debug(sql);
+//		String message = sql;
+//		DatabaseConfig databaseConfig = SpringUtil.getBean(DatabaseConfig.class);
+//		String mainDbName = databaseConfig.getDatabase();
+//		String shopDbPrefix = databaseConfig.getShopDbPrefix();
+//		String dbName = "";
+//		String search = "`" + mainDbName + "`.";
+//		if (StringUtils.containsAny(sql, search)) {
+//			dbName = mainDbName;
+//			message = RegExUtils.replaceAll(sql, search, "");
+//		}
+//		search = "`(" + shopDbPrefix + "_\\d+)\\.`";
+//		Matcher m = Pattern.compile(search, Pattern.CASE_INSENSITIVE).matcher(sql);
+//		if (m.find()) {
+//			dbName = m.group(1);
+//			search = "`" + dbName + "`.";
+//			message = RegExUtils.replaceAll(sql, search, "");
+//		}
+//		LOGGER.debug("[" + dbName + "]\t" + message);
 	}
 
 	/**
