@@ -1595,7 +1595,7 @@ public class GoodsService extends ShopBaseService {
      */
     public void batchUpdateGoodsNumsAndSaleNumsForOrder(List<BatchUpdateGoodsNumAndSaleNumForOrderParam> params){
 
-        if (params.size() == 0) {
+        if (params==null||params.size() == 0) {
             return;
         }
 
