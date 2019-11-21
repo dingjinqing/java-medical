@@ -193,7 +193,7 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 		param.put("template_id", templateId);
 		param.put("page", page);
 		param.put("data", data);
-		String json = get(appId, WX_SUBSCRIBE_GET_TEMPLATE_LIST, Util.toJson(param));
+		String json = post(appId, WX_SUBSCRIBE_GET_TEMPLATE_LIST, Util.toJson(param));
 		return WxOpenGetResult.fromJson(json);
 	}
 }

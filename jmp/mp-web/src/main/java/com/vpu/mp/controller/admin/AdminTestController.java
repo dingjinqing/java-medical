@@ -32,7 +32,7 @@ public class AdminTestController extends AdminBaseController {
 	public JsonResult addtemplate() throws Exception {
 		String appId = "wxbb38922409fdaa24";
 		String tid = "274";
-		int[] kidList = { 1, 2, 3 };
+		int[] kidList = { 1, 3, 4 };
 		String sceneDesc = "模板描述";
 		WxOpenMaSubscribeAddTemplateResult result = open.getMaExtService().addTemplate(appId, tid, kidList, sceneDesc);
 		return success(result);
