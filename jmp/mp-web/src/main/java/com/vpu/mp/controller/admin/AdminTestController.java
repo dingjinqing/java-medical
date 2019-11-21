@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,17 +85,19 @@ public class AdminTestController extends AdminBaseController {
 		String toUser =  this.request.getParameter("toUser");
 		String templateId =  this.request.getParameter("templateId");
 		String page="pages/index/index";
-		Map<String, Map<String, String>> data = new HashMap<>();
-		Map<String, String> v1 = new HashMap<>();
-		v1.put("value", "阿顺");
+		page = null;
+		
+		Map<String, Map<String, String>> data = new LinkedHashMap<>();
+		Map<String, String> v1 = new LinkedHashMap<>();
+		v1.put("value", "李新国");
 		data.put("thing1", v1);
 		
-		Map<String, String> v2 = new HashMap<>();
-		v2.put("value", "2019年10月9日00时00分01秒");
+		Map<String, String> v2 = new LinkedHashMap<>();
+		v2.put("value", "2019-10-10");
 		data.put("date3", v2);
 		
-		Map<String, String> v3 = new HashMap<>();
-		v3.put("value", "2019年10月9日23时59分59秒");
+		Map<String, String> v3 = new LinkedHashMap<>();
+		v3.put("value", "2019-12-01");
 		data.put("date4", v3);
 
 		WxOpenResult result = open.getMaExtService().sendTemplate(appId, toUser, templateId, page, data);
