@@ -12,5 +12,5 @@ public interface JedisGetProcess {
      * 从数据库去数据同时更新到缓存
      * @return
      */
-    String getByRedis();
+    String getByDb();
 }

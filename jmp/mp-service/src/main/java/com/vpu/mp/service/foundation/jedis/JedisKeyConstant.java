@@ -9,10 +9,11 @@ package com.vpu.mp.service.foundation.jedis;
 public class JedisKeyConstant {
     public static final String SEND_USER_KEY = "send:user:";
 
-    /**
-     * taskJob lock
-     */
+    /**taskJob lock*/
     public static final String TASK_JOB_LOCK = "lock:task:";
+
+    /**商品标签*/
+    public static final String GOODS_LABEL = "goods:label:shop-id_";
 
     /**
      * goods lock(库存、销量)

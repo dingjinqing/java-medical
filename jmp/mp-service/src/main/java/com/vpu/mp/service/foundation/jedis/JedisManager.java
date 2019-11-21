@@ -1,5 +1,6 @@
 package com.vpu.mp.service.foundation.jedis;
 
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -140,17 +142,70 @@ public class JedisManager {
 			if( value != null ){
 				return value;
 			}else {
-				value = function.getByRedis();
+				value = function.getByDb();
 				jedis.set(key,value);
 				jedis.expire(key,timeOut);
 				return value;
 			}
 		}
 	}
+    /**
+     *  从redis获取数据(单个)
+     * @param key 键值
+     * @param field Hash->K
+     * @param timeOut Hash->V
+     * @param function get data by db
+     * @return data
+     */
+	public String getValueAndSaveForHash(String key,String field,Integer timeOut, JedisGetProcess function){
+	    try(Jedis jedis = getJedisPool().getResource()){
+	        String result = jedis.hget(key,field);
+	        if( result == null ){
+                result = function.getByDb();
+            }else{
+	            return result;
+            }
+	        jedis.hset(key,field,result);
+            jedis.expire(key,timeOut);
+            return result;
+        }
+    }
+
+    /**
+     *  从redis获取数据(批量)
+     * @param key 键值
+     * @param field Hash->K
+     * @param timeOut Hash->V
+     * @param function get data by db
+     * @return data
+     */
+    public List<String> getValueAndSaveForHash(String key,String[] field,Integer timeOut, JedisMgetProcess function){
+        try(Jedis jedis = getJedisPool().getResource()){
+            List<String> result = jedis.hmget(key,field);
+
+            if( result == null ){
+                result = function.getByDb();
+            }else{
+                return result;
+            }
+            Map<String,String> data = new HashMap<>(field.length);
+            for (int i = 0; i < field.length; i++) {
+                data.put(field[i],result.get(i));
+            }
+            jedis.hmset(key,data);
+            jedis.expire(key,timeOut);
+            return result;
+        }
+    }
 	public void addToHash(String key, Map<String,String> data,Integer timeOut){
         try (Jedis jedis = getJedisPool().getResource()){
             jedis.hmset(key,data);
             jedis.expire(key,timeOut);
+        }
+    }
+    public void delFoHash(String key, String... field){
+        try (Jedis jedis = getJedisPool().getResource()){
+            jedis.hdel(key,field);
         }
     }
 
