@@ -4,7 +4,7 @@
     <el-dialog
       title="选择用户"
       :visible.sync="dialogVisible"
-      width="50%"
+      width="800px"
       :before-close="handleClose"
       center
     >

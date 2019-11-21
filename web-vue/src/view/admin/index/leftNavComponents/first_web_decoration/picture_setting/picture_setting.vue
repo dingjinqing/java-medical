@@ -208,9 +208,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="pageSetdialogVisible = false">取 消</el-button>
+          <el-button
+            size="small"
+            @click="pageSetdialogVisible = false"
+          >取 消</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="savePageCate()"
           >确 定</el-button>
         </span>

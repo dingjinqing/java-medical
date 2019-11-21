@@ -355,7 +355,7 @@
       <el-dialog
         :title="$t('membershipIntroduction.chooseUser')"
         :visible.sync="modifypersonDialogVisible"
-        width="50%"
+        width="800px"
         :modal-append-to-body="false"
       >
         <div

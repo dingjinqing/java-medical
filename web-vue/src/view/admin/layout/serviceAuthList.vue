@@ -169,9 +169,13 @@
           slot="footer"
           class="dialog-footer changeMa"
         >
-          <el-button @click="dialogFormVisible = false">{{$t('serviceAuth.cancel')}}</el-button>
+          <el-button
+            size="small"
+            @click="dialogFormVisible = false"
+          >{{$t('serviceAuth.cancel')}}</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="payManageUp()"
           >{{$t('serviceAuth.sure')}}</el-button>
         </div>

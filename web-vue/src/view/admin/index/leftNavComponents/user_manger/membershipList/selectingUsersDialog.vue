@@ -4,7 +4,7 @@
       <el-dialog
         title="选择用户"
         :visible.sync="modifypersonDialogVisible"
-        width="50%"
+        width="800px"
         :modal-append-to-body="false"
       >
         <div
