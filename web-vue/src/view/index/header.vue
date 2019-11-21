@@ -111,7 +111,7 @@
 </template>
 <script>
 import Cookies from 'js-cookie'
-import { loginRequestOut } from '@/api/index/login.js'
+import { loginRequestOut, isloginRequest } from '@/api/index/login.js'
 import { loadLanguageAsync } from '@/i18n/i18n.js'
 export default {
   data () {
@@ -170,12 +170,23 @@ export default {
   methods: {
     // 初始化登录
     judgeuserinfo () {
-      if (localStorage.getItem('V-Username')) {
-        this.user_flag = true
-        this.username = localStorage.getItem('V-Username')
-      } else {
-        this.user_flag = false
-      }
+      isloginRequest().then((res) => {
+        console.log(res)
+        if (res.error !== 0) {
+          Cookies.remove('V-Token')
+          localStorage.removeItem('V-Username')
+          this.user_flag = false
+        } else {
+          if (localStorage.getItem('V-Username')) {
+            this.username = localStorage.getItem('V-Username')
+            this.user_flag = true
+          } else {
+            Cookies.remove('V-Token')
+            localStorage.removeItem('V-Username')
+            this.user_flag = false
+          }
+        }
+      })
     },
     // 初始化顶部导航
     navshow () {

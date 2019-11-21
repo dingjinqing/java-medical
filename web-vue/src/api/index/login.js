@@ -19,3 +19,10 @@ export function loginRequestOut (riid) {
     data: riid
   })
 }
+// 登出
+export function isloginRequest () {
+  return request({
+    url: '/api/admin/login/isLogin',
+    method: 'get'
+  })
+}
