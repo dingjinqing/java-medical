@@ -205,7 +205,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            <div>{{scope.flag | auditStatus}}</div>
+            <div>{{scope.row.flag | auditStatus}}</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -224,14 +224,14 @@
                   @click="delEvaluation(scope.row.id)"
                 >{{$t('evaluation.deleteEvaluation')}}</el-button> -->
               </p>
-              <p v-if="target === 'Record'">
+              <p v-if="target === 'Record' && scope.row.flag === 0">
                 <el-button
                   type="primary"
                   size="mini"
                   @click="evaluationPass(scope.row.id)"
                 >{{$t('evaluation.pass')}}</el-button>
               </p>
-              <p v-if="target === 'Record'">
+              <p v-if="target === 'Record' && scope.row.flag === 0">
                 <el-button
                   type="default"
                   size="mini"
