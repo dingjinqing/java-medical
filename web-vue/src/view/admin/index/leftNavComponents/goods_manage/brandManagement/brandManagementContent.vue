@@ -302,7 +302,6 @@
             align="center"
           >
           </el-table-column>
-
           <el-table-column
             v-if="hiddle_1"
             label="品牌logo"
@@ -335,15 +334,15 @@
           ></el-table-column>
           <el-table-column
             v-if="!hiddle_1"
-            prop="brandNum"
-            label="包含商品数量"
+            prop="classifyName"
+            label="分类名称"
             align="center"
           >
           </el-table-column>
           <el-table-column
             v-if="!hiddle_1"
-            prop="classifyName"
-            label="分类名称"
+            prop="brandNum"
+            label="包含商品数量"
             align="center"
           >
           </el-table-column>

@@ -471,8 +471,8 @@
 
     <!-- 选择模板弹窗 -->
     <SelectTemplate
-      :tuneUpSelectTemplate='tuneUpSelectTemplate'
-      @handleSelectTemplate='handleSelectTemplate'
+      :tuneUpSelectTemplate="tuneUpSelectTemplate"
+      @handleSelectTemplate="handleSelectTemplate"
     />
 
   </div>
@@ -545,16 +545,16 @@ export default {
       isDraggable: false, // 添加商品弹窗是否开启多选底部可拖拽状态
       isAddImgOrChangeFlga: false, // true为添加图片  false为更换列表项中的图片
       // templateDialog: false, // 模板弹窗
+      tuneUpSelectTemplate: false,
       templateRow: {}, // 模板弹窗回调函数
+      tamplateFlag: false, // 模板数据显示
+      pageParams: {} // 分页
       // formDialog: {
       //   pageName: '',
       //   catId: ''
       // },
-      tuneUpSelectTemplate: false,
-      pageParams: {}, // 分页
       // requestParams: {},
       // templateData: [], // 模板表格
-      tamplateFlag: false // 模板数据显示
     }
   },
   mounted () {
@@ -741,9 +741,8 @@ export default {
     // 添加选择模板选中数据回传
     handleSelectTemplate (data) {
       this.tamplateFlag = true
-      this.templateRow.pageName = data
-      console.log(this.templateRow.pageName)
-      console.log(data, 'child data')
+      this.templateRow = data
+      this.form.rebate_page_id = data.pageId
     },
 
     // 切换背景图
