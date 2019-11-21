@@ -38,6 +38,7 @@ global.wxComponent({
       let scoreMax = this.data.scoreMax * 100
       let userScore = this.data.userScore
       let scoreMin = this.data.scoreMin
+      let useMaxScore = moneyPaid > scoreMax ? (scoreMax > userScore ? userScore : scoreMax) : (moneyPaid > userScore ? userScore : moneyPaid);
       let msg = ''
       let canConfirm = true
       if(userScore === 0) {
@@ -46,10 +47,13 @@ global.wxComponent({
       } else if (userScore < scoreMin){
         msg = `积分支付最小使用${scoreMin}`
         canConfirm = false
-      } 
+      } else if (useMaxScore === 0){
+        msg = `订单金额已满，请提交订单`
+        canConfirm = false
+      }
       this.setData({ 
-        useMaxScore: moneyPaid > scoreMax ? (scoreMax > userScore ? userScore : scoreMax) : (moneyPaid > userScore ? userScore : moneyPaid ),
-        scoreInPut: moneyPaid > scoreMax ? (scoreMax > userScore ? userScore : scoreMax) : (moneyPaid > userScore ? userScore : moneyPaid),
+        useMaxScore,
+        scoreInPut: useMaxScore,
         msg,
         canConfirm
       })

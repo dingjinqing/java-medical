@@ -6,21 +6,20 @@ global.wxPage({
    */
   data: {
     address:null,
-    balanceStatus:0,
-    scoreStatus:0,
-    cardBalanceStatus:0,
-    couponArray:[
-      1,2,3,4,5
-    ],
+    balanceStatus:0,//使用余额状态 
+    scoreStatus:0,//使用积分状态
+    cardBalanceStatus:0,//使用会员卡余额状态
+    couponArray:null,//优惠券列表
+    defaultCouponIndex:null,//默认选择优惠券
     payType:[0,1,2],
     shippingMethod:[0,1,2],
-    chooseShippingIndex:0,
-    choosePayTypeIndex:0,
-    showCardBalanceDialog: false,
-    showBalanceDialog: false,
-    showScoreDialog: false,
-    showCardDialog: false,
-    showStoreDialog: false,
+    chooseShippingIndex:0,//所选配送方式
+    choosePayTypeIndex:0,//所选支付方式
+    showCardBalanceDialog: false, //是否显示会员卡余额弹框
+    showBalanceDialog: false, //是否显示余额弹框
+    showScoreDialog: false, //是否显示积分弹框
+    showCardDialog: false, //是否显示选择会员卡弹框
+    showStoreDialog: false, //是否显示选择门店弹框
     params:{
       action:10,
       activityType:null, // 指定本次结算所参加的唯一营销活动类型
@@ -37,10 +36,10 @@ global.wxPage({
       orderPayWay:null//支付方式
     },
     usePayInfo:{
-      moneyPaid:0,
-      useCardBalance: 0,
-      useBalance: 0,
-      useScore: 0
+      moneyPaid:0,//订单可支付的金额
+      useCardBalance: 0,//已使用的会员卡余额
+      useBalance: 0,//已使用的余额
+      useScore: 0//已使用的积分
     },
     orderInfo:{},
     
@@ -68,9 +67,11 @@ global.wxPage({
         let orderInfo = res.content
         orderInfo.userAccount = 5000
         orderInfo.userScore = 500000
+        orderInfo.isBalancePay = 1
         this.setData({
           orderInfo
         })
+        this.getCouponData(orderInfo)
         this.defaultInput(orderInfo)
       }
     }, { ...this.data.params })
@@ -111,9 +112,10 @@ global.wxPage({
     let { isBalancePay, isCardPay, isScorePay, moneyPaid, memberCardMoney, userAccount, scorePayNum, userScore, scoreMaxDiscount } = orderInfo
     if (isCardPay === 1 && memberCardMoney > 0){
       let useCardBalance = moneyPaid - memberCardMoney > 0 ? memberCardMoney : moneyPaid
+      moneyPaid -= useCardBalance
       this.setData({
         'usePayInfo.useCardBalance': useCardBalance,
-        cardBalanceStatus:1
+        cardBalanceStatus: useCardBalance > 0 ? 1 : 0,
       })
     } else {
       this.setData({
@@ -123,9 +125,10 @@ global.wxPage({
     }
     if (isBalancePay === 1 && userAccount > 0){
       let useBalance = moneyPaid - userAccount > 0 ? userAccount : moneyPaid
+      moneyPaid -= useBalance
       this.setData({
         'usePayInfo.useBalance': useBalance,
-        balanceStatus: 1,
+        balanceStatus: useBalance > 0 ? 1 : 0,
       })
     } else {
       this.setData({
@@ -135,10 +138,10 @@ global.wxPage({
     }
     if (isScorePay === 1 && userScore > scorePayNum && userScore > 0){
       let useScore = moneyPaid * 100 > scoreMaxDiscount * 100 ? (scoreMaxDiscount * 100 > userScore ? userScore : scoreMaxDiscount * 100) : (moneyPaid * 100 > userScore ? userScore : moneyPaid * 100) 
-      console.log(useScore)
+      moneyPaid -= useScore
       this.setData({
         'usePayInfo.useScore': useScore,
-        scoreStatus: 1
+        scoreStatus: useScore > 0 ? 1 : 0
       })
     } else {
       this.setData({
@@ -209,9 +212,39 @@ global.wxPage({
     })
     this.getPayMoney()
   },
+  // 获取输入的会员卡余额数
+  getInputCardBalance(){
+    this.setData({
+      'usePayInfo.useCardBalance': data.detail,
+      cardBalanceStatus: 1
+    })
+    this.getPayMoney()
+  },
+  // 获取优惠券数据
+  getCouponData(orderInfo){
+    let { coupons, defaultCoupon } = orderInfo
+    if (coupons === null || coupons.length === 0) {
+      this.setData({
+        couponArray:null,
+        defaultCouponIndex: null
+      })
+      return
+    }
+    let couponArray = [{ couponSn: null, actName: '不使用优惠券' }, ...coupons]
+    let defaultCouponIndex = couponArray.findIndex(item => item.couponSn === defaultCoupon.couponSn)
+    this.setData({
+      couponArray,
+      defaultCouponIndex
+    })
+  },
   // 变更优惠券
-  couponChange(){
-
+  couponChange(e){
+    let { couponSn } = this.data.couponArray[parseInt(e.detail.value)]
+    this.setData({
+      'params.couponSn': couponSn,
+      defaultCouponIndex: parseInt(e.detail.value)
+    })
+    this.requestOrder()
   },
   // 选择会员卡事件
   selectCardTap(){
