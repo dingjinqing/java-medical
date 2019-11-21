@@ -424,12 +424,15 @@ export default {
     switch (name) {
       case 'user_card':
         this.activeName = 'first'
+        this.currentCardType = 0
         break
       case 'limitTimes':
         this.activeName = 'second'
+        this.currentCardType = 1
         break
       case 'GradeCard':
         this.activeName = 'third'
+        this.currentCardType = 2
         break
     }
     this.loadAllPageData()
@@ -437,6 +440,8 @@ export default {
   methods: {
     // 1- 获取页面所有数据
     loadAllPageData () {
+      console.log(this.cardData)
+      console.log(this.currentCardType)
       // 如果数据已经存在该组件中就不再向后端请求数据
       switch (Number(this.currentCardType)) {
         case 0:
@@ -650,6 +655,10 @@ export default {
               img1: this.$imageHost + '/image/admin/card_del.png',
               img2: this.$imageHost + '/image/admin/card_enable.png'
             }
+
+            // 时间格式
+            item.startTime = String(item.startTime).split(' ')[0]
+            item.endTime = String(item.endTime).split(' ')[0]
 
             // 处理会员卡权益
             this.dealWithCardBehavior(item)
@@ -886,6 +895,7 @@ export default {
       min-width: 1000px;
       padding-right: 0;
       .firstListDiv {
+        width: 272px;
         float: left;
         margin-right: 1%;
         margin-bottom: 20px;
@@ -953,6 +963,8 @@ export default {
           }
         }
         .card_condition {
+          line-height: 15px;
+          height: 52px;
           margin: 0 7px;
           border-bottom: 1px solid #eee;
           padding-bottom: 20px;
@@ -966,8 +978,9 @@ export default {
           }
         }
         .card_footer {
+          margin-top: 10px;
           padding-left: 7px;
-          line-height: 30px;
+          line-height: 20px;
           color: #5a8bff;
           font-size: 12px;
         }
