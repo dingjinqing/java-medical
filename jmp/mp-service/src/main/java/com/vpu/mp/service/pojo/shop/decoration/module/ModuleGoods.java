@@ -19,7 +19,8 @@ public class ModuleGoods extends ModuleBase {
 
     @JsonProperty("cart_btn")
     private Byte cartBtn;
-
+    @JsonProperty("cart_btn_choose")
+    private Byte cartBtnChoose;
     @JsonProperty("col_type")
     private Byte colType;
 
