@@ -75,7 +75,7 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 		try {
 			data.append("tid=" + URLEncoder.encode(tid, "UTF-8"));
 			for (int i = 0; i < kidList.length; i++) {
-				data.append("kidList[]=" + URLEncoder.encode(String.valueOf(kidList[i]), "UTF-8"));
+				data.append("&kidList[]=" + URLEncoder.encode(String.valueOf(kidList[i]), "UTF-8"));
 			}
 			data.append("sceneDesc=" + URLEncoder.encode(sceneDesc, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
@@ -151,8 +151,8 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 		StringBuilder data = new StringBuilder();
 		try {
 			data.append("ids=" + URLEncoder.encode(ids, "UTF-8"));
-			data.append("start=" + URLEncoder.encode(String.valueOf(start), "UTF-8"));
-			data.append("limit" + URLEncoder.encode(String.valueOf(limit), "UTF-8"));
+			data.append("&start=" + URLEncoder.encode(String.valueOf(start), "UTF-8"));
+			data.append("&limit" + URLEncoder.encode(String.valueOf(limit), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
