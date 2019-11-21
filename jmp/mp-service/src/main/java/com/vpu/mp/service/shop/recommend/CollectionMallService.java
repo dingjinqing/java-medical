@@ -38,8 +38,8 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 @Slf4j
 @Service
 public class CollectionMallService extends ShopMallBaseService {
-	private static final Byte one = 1;
-	private static final Byte two = 2;
+	private static final Byte ONE = 1;
+	private static final Byte TWO = 2;
 	@Autowired
 	private CartService cartService;
 	@Autowired
@@ -89,7 +89,7 @@ public class CollectionMallService extends ShopMallBaseService {
 			skuInfo.setOriginalPrice(productRecord.getPrdMarketPrice().compareTo(BigDecimal.ZERO) == 1
 					? productRecord.getPrdMarketPrice().multiply(new BigDecimal(100))
 					: productRecord.getPrdPrice().multiply(new BigDecimal(100)));
-			skuInfo.setStatus(goodsRecord.getIsOnSale() == one ? one : two);
+			skuInfo.setStatus(ONE.equals(goodsRecord.getIsOnSale()) ? ONE : TWO);
 			skuInfo.setVersion((int) DateUtil.getLocalDateTime().getTime());
 			skuInfo.setSkuAttrList(goodsService.goodsSpecProductService.getSkuAttrList(productRecord.getPrdDesc()));
 			skuProduct.setSkuInfo(skuInfo);

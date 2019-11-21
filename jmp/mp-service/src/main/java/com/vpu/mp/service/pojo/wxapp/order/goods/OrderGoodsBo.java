@@ -3,6 +3,9 @@ package com.vpu.mp.service.pojo.wxapp.order.goods;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,6 +21,7 @@ public class OrderGoodsBo {
 	private Integer orderId;
     @JsonIgnore
 	private String orderSn;
+    @RedisLockField
 	private Integer goodsId;
 	private String goodsName;
 	private String goodsSn;

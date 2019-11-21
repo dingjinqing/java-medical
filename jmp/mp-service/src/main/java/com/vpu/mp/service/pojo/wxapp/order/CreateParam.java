@@ -1,12 +1,15 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustParam;
+import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -21,7 +24,8 @@ public class CreateParam extends OrderBeforeParam{
     private Integer invoiceId;
     /**买家留言*/
     private String message;
-    /**实付金额*/
+    /**TODO 实付金额*/
+    @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_ADDRESS_NO_NULL)
     private BigDecimal orderAmount;
     /**自提日期*/
     private String pickupDate;
@@ -35,18 +39,26 @@ public class CreateParam extends OrderBeforeParam{
     private Integer scanStoreId;
     /**必填信息*/
     private OrderMustParam must;
+    /**用户ip*/
+    private String clientIp;
     public void intoRecord(OrderInfoRecord orderRecord){
         //user
         orderRecord.setUserId(getWxUserInfo().getUserId());
         orderRecord.setUserOpenid(getWxUserInfo().getWxUser().getOpenId());
-        orderRecord.setAddMessage(getMessage());
+        if(getMessage() != null) {
+            orderRecord.setAddMessage(getMessage());
+        }
         orderRecord.setDeliverType(getDeliverType());
-        orderRecord.setPickupdateTime(getPickupDate() + " " + getPickupTime());
-        orderRecord.setTrueName(getTrueName());
-        orderRecord.setIdCard(getIdCard());
+        //TODO orderRecord.setPickupdateTime(getPickupDate() + " " + getPickupTime());
+        if(getTrueName() != null) {
+            orderRecord.setTrueName(getTrueName());
+        }
+        if(getIdCard() != null) {
+            orderRecord.setIdCard(getIdCard());
+        }
         //扫码购
         if(getScanStoreId() != null && getScanStoreId() > 0){
-            orderRecord.setPosFlag(OrderConstant.yes);
+            orderRecord.setPosFlag(OrderConstant.YES);
         }
     }
 }

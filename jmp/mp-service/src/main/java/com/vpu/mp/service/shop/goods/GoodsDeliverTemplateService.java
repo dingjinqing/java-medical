@@ -245,7 +245,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
             }
         }
         //不支持区域
-        if(rule.getLimitParam() == null || OrderConstant.S_LIMIT_DELIVER_AREA_OPEN.equals(rule.getLimitParam())){
+        if(rule.getLimitParam() == null || OrderConstant.S_LIMIT_DELIVER_AREA_OPEN.equals(rule.getLimitParam().getLimitDeliverArea())){
             logger().error("计算运费时运费模板,未找到可配送的区域");
             throw new MpException(JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR);
         }

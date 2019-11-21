@@ -68,7 +68,7 @@ public class AddressService extends ShopBaseService {
     }
 
     /**
-     * 选择地址
+     * 选择地址cd
      *
      * @return
      */

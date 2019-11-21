@@ -42,7 +42,6 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
-import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryVo;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
@@ -90,8 +89,8 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.no;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.yes;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
 /**
  * 	订单模块普通查询service
@@ -477,7 +476,7 @@ public class OrderReadService extends ShopBaseService {
 			//订单类型
 			order.setOrderType(Arrays.asList(orderTypeToArray(order.getGoodsType())));
 			//奖品订单判断
-			order.setIsLotteryGift(isAwardOrder(order.getOrderType()) ? yes :no);
+			order.setIsLotteryGift(isAwardOrder(order.getOrderType()) ? YES : NO);
 			//设置商品
 			order.setGoods(goods.get(order.getOrderId()));
 			//订单操作设置（商品订单类型需要提前计算好）
@@ -499,7 +498,7 @@ public class OrderReadService extends ShopBaseService {
 				setBkPayOperation(order);
 			}
 			//是否退过款
-			order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? yes : no);
+			order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? YES : NO);
 		}
 		return result;
 	}
@@ -538,11 +537,11 @@ public class OrderReadService extends ShopBaseService {
 		//set goods
 		order.setGoods(goodsList);
 		//奖品订单判断
-		order.setIsLotteryGift(isAwardOrder(order.getOrderType()) ? yes :no);
+		order.setIsLotteryGift(isAwardOrder(order.getOrderType()) ? YES : NO);
 		//订单操作设置
 		setMpOrderOperation(order);
 		//是否退过款
-		order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? yes : no);
+		order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? YES : NO);
 		//门店信息
 		order.setStoreInfo(order.getStoreId() > 0 ? store.getStore(order.getOrderId()) : null);
 		//发票
@@ -583,7 +582,7 @@ public class OrderReadService extends ShopBaseService {
 	 */
 	private void setMpOrderOperation(OrderListMpVo order) {
 		//1.延长收货
-		order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, getExtendReceiveDays()) ? yes : no);
+		order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, getExtendReceiveDays()) ? YES : NO);
 		//2.确认收货(order_status==4可以判断)
 		//3.好友代付（order_pay_way == 2）
 		//4.待支付状态处理order_status==0 => 去付尾款(bk_order_paid == 1) 、 去付款
@@ -593,9 +592,9 @@ public class OrderReadService extends ShopBaseService {
 		//5.(退货中心-退款 退货) 6. 取消 7删除
 		OrderOperationJudgment.operationSet(order);
 		//8.再次购买
-		order.setIsShowAgainBuy(OrderOperationJudgment.isShowAgainBuy(order) ? yes : no);
+		order.setIsShowAgainBuy(OrderOperationJudgment.isShowAgainBuy(order) ? YES : NO);
 		//9.提醒发货
-		order.setIsRemindShip(OrderOperationJudgment.isShowRemindShip(order) ? yes : no);
+		order.setIsRemindShip(OrderOperationJudgment.isShowRemindShip(order) ? YES : NO);
 		//10.评价（查看评价、评价有礼/商品评价）
 		order.setIsShowCommentType(getCommentType(order));
 		//TODO 幸运大抽奖 分享优惠卷。。。。
@@ -634,7 +633,7 @@ public class OrderReadService extends ShopBaseService {
 			//普通订单待支付取消时间
 			order.setPayOperationTime(order.getExpireTime().getTime() - currenTmilliseconds);
 		}
-		order.setIsShowPay(order.getPayOperationTime() > 0 ? yes : no);
+		order.setIsShowPay(order.getPayOperationTime() > 0 ? YES : NO);
 	}
 
 	/**
@@ -702,7 +701,7 @@ public class OrderReadService extends ShopBaseService {
 	public Byte getCommentType(OrderListMpVo order){
 		if(order.getOrderStatus() != OrderConstant.ORDER_RECEIVED &&  order.getOrderStatus() != OrderConstant.ORDER_FINISHED) {
 			//0不展示
-			return no;
+			return NO;
 		}
 		if(order.getCommentFlag() > 0) {
 			//1查看评价

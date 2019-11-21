@@ -191,6 +191,8 @@ public enum JsonResultCode {
     CODE_ORDER_GOODS_LOW_STOCK(120081, JsonResultMessage.MSG_ORDER_GOODS_LOW_STOCK),
     /**redis锁获取失败（服务忙）*/
     CODE_ORDER_GOODS_GET_LOCK_FAIL(120082, JsonResultMessage.MSG_ORDER_GOODS_GET_LOCK_FAIL),
+    /**更新库存失败*/
+    CODE_ORDER_UPDATE_STOCK_FAIL(120083, JsonResultMessage.MSG_ORDER_UPDATE_STOCK_FAIL),
 
 
 

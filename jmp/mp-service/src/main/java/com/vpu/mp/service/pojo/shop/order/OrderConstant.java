@@ -416,9 +416,9 @@ public class OrderConstant {
 	public static final Byte IS_COD_YES = 1;
 
 	/** yes */
-	public static final byte yes = 1;
+	public static final byte YES = 1;
 	/** no */
-	public static final byte no = 0;
+	public static final byte NO = 0;
 	/**奖品订单类型*/
 	public static final ImmutableSet<Byte> AWARD_ORDER;
 

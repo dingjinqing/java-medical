@@ -4,9 +4,16 @@ import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+/**
+ * @author 王帅
+ */
+@Setter
+@Getter
+@ToString
 public class OrderGoodsMpVo {
 	private Integer recId;
 	@JsonIgnore

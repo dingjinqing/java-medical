@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.foundation.util.RequestUtil;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
@@ -57,14 +58,13 @@ public class WxAppOrderController extends WxAppBaseController{
     public JsonResult pay(@RequestBody @Validated(CreateOrderValidatedGroup.class) CreateParam param) {
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
+        param.setClientIp(RequestUtil.getIp(request));
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult.isSuccess()){
             return success();
         };
         return fail(executeResult.getErrorCode());
-
     }
-
 	/**
 	 * 	退款、退货创建
 	 */

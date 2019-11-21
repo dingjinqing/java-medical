@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.auth.WxAppAuth;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +38,7 @@ public class WxAppAccountController extends WxAppBaseController {
 		logger().info("更新用户昵称，头像");
 		Integer shopId = wxAppAuth.shopId();
 		ShopApplication shopApp = saas.getShopApp(shopId);
-		boolean updateUser = shopApp.user.updateUser(param,wxAppAuth.TOKEN_PREFIX);
+		boolean updateUser = shopApp.user.updateUser(param, WxAppAuth.TOKEN_PREFIX);
 		if(updateUser) {
 			return success();
 		}

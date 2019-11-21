@@ -11,10 +11,10 @@ public class ShopConst {
 	 * 店铺等级
 	 */
 	public interface shopType {
-		final static String v1 = "v1";
-		final static String v2 = "v2";
-		final static String v3 = "v3";
-		final static String v4 = "v4";
+		final static String V_1 = "v1";
+		final static String V_2 = "v2";
+		final static String V_3 = "v3";
+		final static String V_4 = "v4";
 	}
 
 	/**

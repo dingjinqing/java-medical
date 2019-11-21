@@ -389,11 +389,11 @@ public class StoreService extends ShopBaseService {
     public List<StorePojo>[] filterExpressList(Byte[] expressList, List<Integer> productIds, UserAddressVo address, byte isFormStore) {
         List<StorePojo>[] result = new List[3];
         //自提
-        if (expressList[OrderConstant.DELIVER_TYPE_SELF] == OrderConstant.yes) {
+        if (expressList[OrderConstant.DELIVER_TYPE_SELF] == OrderConstant.YES) {
             result[OrderConstant.DELIVER_TYPE_SELF] = getCanBuyStoreList(productIds, OrderConstant.DELIVER_TYPE_SELF, address, isFormStore);
         }
         //同城配送
-        if (expressList[OrderConstant.CITY_EXPRESS_SERVICE] == OrderConstant.yes) {
+        if (expressList[OrderConstant.CITY_EXPRESS_SERVICE] == OrderConstant.YES) {
             result[OrderConstant.CITY_EXPRESS_SERVICE] = getCanBuyStoreList(productIds, OrderConstant.CITY_EXPRESS_SERVICE, address, isFormStore);
         }
         return result;
@@ -410,9 +410,9 @@ public class StoreService extends ShopBaseService {
         //条件
         Condition condition = STORE_GOODS.PRD_ID.in(productIds).and(STORE_GOODS.IS_ON_SALE.eq(StoreGoodsService.ON_SALE)).and(STORE.BUSINESS_STATE.eq(BUSINESS_STATE_ON)).and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         //自提
-        condition = express == OrderConstant.DELIVER_TYPE_SELF ? condition.and(STORE.AUTO_PICK.eq((short) OrderConstant.yes)) : condition;
+        condition = express == OrderConstant.DELIVER_TYPE_SELF ? condition.and(STORE.AUTO_PICK.eq((short) OrderConstant.YES)) : condition;
         //TODO 同城配送
-        condition = express == OrderConstant.CITY_EXPRESS_SERVICE ? condition.and(STORE.AUTO_PICK.eq((short) OrderConstant.yes)) : condition;
+        condition = express == OrderConstant.CITY_EXPRESS_SERVICE ? condition.and(STORE.AUTO_PICK.eq((short) OrderConstant.YES)) : condition;
         //获取门店id
         List<Integer> storeIds = db().select(STORE.STORE_ID, DSL.count(STORE.STORE_ID)).from(STORE).innerJoin(STORE_GOODS).on(STORE.STORE_ID.eq(STORE_GOODS.STORE_ID)).
             where(condition).

@@ -288,7 +288,7 @@ public class OrderInfoService extends ShopBaseService {
      * @param orderType 订单类型
      */
     private static String getGoodsTypeToInsert(List<Byte> orderType) {
-        if(CollectionUtils.isNotEmpty(orderType)){
+        if(CollectionUtils.isEmpty(orderType)){
             orderType.add(OrderConstant.GOODS_TYPE_GENERAL);
         }
         //distinct
@@ -298,11 +298,11 @@ public class OrderInfoService extends ShopBaseService {
         StringBuilder sbr = new StringBuilder();
         for (Byte one : orderType) {
             //Prefix
-            sbr.append("\\[");
+            sbr.append("[");
             //查找条件
             sbr.append(one);
             //suffix
-            sbr.append("\\]");
+            sbr.append("]");
         }
         return sbr.toString();
     }

@@ -8,14 +8,14 @@ import java.util.regex.Pattern;
 
 public class RegexUtil {
 
-    private static final List<String> str = Arrays.asList(
+    private static final List<String> STR = Arrays.asList(
        new String[] { "\\", "$", "(", ")", "*", "+", ".", "[", "]", "?", "^", "{", "}", "|" });
 
 
 
     public static List<String> getSubStrList(String first,String lastStr,String content){
         List<String> result = new ArrayList<>();
-        for(String key:str){
+        for(String key: STR){
             if(first.contains(key)){
                 first = first.replace(key, "\\" + key);
             }

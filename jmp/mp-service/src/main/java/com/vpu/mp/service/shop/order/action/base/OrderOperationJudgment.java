@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.order.action.base;
 
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.no;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.yes;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -329,12 +329,12 @@ public class OrderOperationJudgment {
 			return;
 		}
 		//退款
-		source.setIsReturnMoney(isReturnMoney(target, OrderConstant.IS_MP_Y) ? yes : no);
+		source.setIsReturnMoney(isReturnMoney(target, OrderConstant.IS_MP_Y) ? YES : NO);
 		//退货
-		source.setIsReturnMoney(mpIsReturnGoods(target) ? yes : no);;
+		source.setIsReturnMoney(mpIsReturnGoods(target) ? YES : NO);;
 		//取消
-		source.setIsCancel(mpIsCancel(target) ? yes : no);
+		source.setIsCancel(mpIsCancel(target) ? YES : NO);
 		//删除
-		source.setIsDelete(isDelete(source) ? yes : no);
+		source.setIsDelete(isDelete(source) ? YES : NO);
 	}
 }

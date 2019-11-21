@@ -467,6 +467,8 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_GOODS_NO_EXIST = "order_goods_no_exist";
     public static final String MSG_ORDER_GOODS_LOW_STOCK = "order_goods_low_stock";
     public static final String MSG_ORDER_GOODS_GET_LOCK_FAIL = "order_goods_get_lock_fail";
+    public static final String MSG_ORDER_UPDATE_STOCK_FAIL = "MSG_ORDER_UPDATE_STOCK_FAIL";
+
 
     public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";

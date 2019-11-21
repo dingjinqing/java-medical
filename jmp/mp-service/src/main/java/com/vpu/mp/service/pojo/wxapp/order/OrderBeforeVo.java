@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -77,7 +78,7 @@ public class OrderBeforeVo {
     private BigDecimal discount;
     /**支付金额（微信）*/
     private BigDecimal moneyPaid;
-    /**折扣*/
+    /**微信支付金额-运费*/
     private BigDecimal discountedMoney;
     /**用户积分*/
     private Integer userScore;
@@ -105,21 +106,28 @@ public class OrderBeforeVo {
     /**TODO 自提时间*/
     private Timestamp[][] pickupDate;
     /**???*/
-    private BigDecimal promotionReduce;
+    @Builder.Default
+    private BigDecimal promotionReduce = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**???*/
-    private BigDecimal packageDiscount;
+    @Builder.Default
+    private BigDecimal packageDiscount = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**???*/
-    private BigDecimal grouperCheapReduce;
+    @Builder.Default
+    private BigDecimal grouperCheapReduce = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**???*/
-    private BigDecimal preSaleDiscount;
+    @Builder.Default
+    private BigDecimal preSaleDiscount = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**???*/
-    private BigDecimal bkOrderMoney;
+    @Builder.Default
+    private BigDecimal bkOrderMoney = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**???*/
+    @Builder.Default
     private Timestamp bkShippingTime;
     /**???*/
     private Byte bkReturnType;
     /*TODO 代付金额*/
-    private BigDecimal insteadPayMoney;
+    @Builder.Default
+    private BigDecimal insteadPayMoney = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**默认支付配置->会员卡余额*/
     private Byte isCardPay;
     /**默认支付配置->余额*/
@@ -133,7 +141,7 @@ public class OrderBeforeVo {
      */
     public Byte getDefaultDeliverType(){
         for (int i = 0, length = expressList.length ; i < length ; i++){
-            if(expressList[i] == OrderConstant.yes){
+            if(expressList[i] == OrderConstant.YES){
                 return (byte)i;
             }
         }

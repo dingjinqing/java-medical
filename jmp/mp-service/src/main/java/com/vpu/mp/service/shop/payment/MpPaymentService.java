@@ -92,9 +92,8 @@ public class MpPaymentService extends ShopBaseService {
 	 * @return
 	 * @throws WxPayException
 	 */
-	public WxPayUnifiedOrderResult wxUnitOrder(String clientIp, String goodsName, String orderSn, Integer amount,
-			String openId)
-			throws WxPayException {
+	public WxPayUnifiedOrderResult wxUnitOrder(String clientIp, String goodsName, String orderSn, Integer amount, String openId) throws WxPayException {
+        logger().info("微信预支付调用接口start,clientIp:{},goodsName:{},orderSn:{},amount:{},openId:{}", clientIp,  goodsName,  orderSn,  amount,  openId);
 		WxPayment wxPayment = this.getMpPay();
 		WxPayUnifiedOrderRequest payInfo = WxPayUnifiedOrderRequest.newBuilder()
 				.openid(openId)
@@ -108,7 +107,7 @@ public class MpPaymentService extends ShopBaseService {
 		this.logger().info("PartnerKey is : {}", wxPayment.getConfig().getMchKey());
 		WxPayUnifiedOrderResult result = wxPayment.unifiedOrder(payInfo);
 		String resultJson = new Gson().toJson(result);
-		this.logger().info("result: {}", resultJson);
+        logger().info("微信预支付调用接口end,result:{}", resultJson);
 		return result;
 	}
 
@@ -224,7 +223,7 @@ public class MpPaymentService extends ShopBaseService {
         // 过滤字符串中的表情,微信接口不支持表情
         goodsName = Util.filterEmoji(goodsName, "");
         MpAuthShopRecord mpAuthShopRecord = getMpAuthShop();
-//        根据不同的子商户模式,执行不同的支付方法
+        //根据不同的子商户模式,执行不同的支付方法
         switch (mpAuthShopRecord.getIsSubMerchant()) {
             case CONDITION_ZERO:
                 // todo 非子商户
@@ -238,6 +237,7 @@ public class MpPaymentService extends ShopBaseService {
             case CONDITION_THREE:
                 // todo 微信国际支付方式
                 return null;
+            default:
         }
         WxPayment wxPayment = getMpPay();
         // ...

@@ -187,11 +187,11 @@ public class ShopService extends MainBaseService {
 			// 区分体验版和付费版
 			if (param.shopTypes.equals(ShopConst.shopTypes.TRIAL_VERSION)) {
 				// 体验版
-				select.where(SHOP.SHOP_TYPE.eq(ShopConst.shopType.v1));
+				select.where(SHOP.SHOP_TYPE.eq(ShopConst.shopType.V_1));
 			}
 			if (param.shopTypes.equals(ShopConst.shopTypes.PAID_VERSION)) {
 				// 付费版
-				select.where(SHOP.SHOP_TYPE.in(ShopConst.shopType.v2, ShopConst.shopType.v3, ShopConst.shopType.v4));
+				select.where(SHOP.SHOP_TYPE.in(ShopConst.shopType.V_2, ShopConst.shopType.V_3, ShopConst.shopType.V_4));
 			}
 
 		}

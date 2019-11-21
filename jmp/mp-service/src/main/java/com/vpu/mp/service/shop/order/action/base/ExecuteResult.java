@@ -28,7 +28,10 @@ public class ExecuteResult {
         return false;
     }
 
-    public ExecuteResult(JsonResultCode errorCode, Object result, String[] errorParam) {
+    /**
+     * 私有构造器
+     */
+    private ExecuteResult(JsonResultCode errorCode, Object result, String[] errorParam) {
         this.errorCode = errorCode;
         this.result = result;
         this.errorParam = errorParam;
@@ -54,5 +57,4 @@ public class ExecuteResult {
     public static ExecuteResult create(JsonResultCode errorCode, String... errorParam){
         return new ExecuteResult(errorCode, null, errorParam);
     }
-
 }

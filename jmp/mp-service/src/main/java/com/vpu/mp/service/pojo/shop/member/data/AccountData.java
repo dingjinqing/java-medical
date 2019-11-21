@@ -14,7 +14,7 @@ import lombok.Setter;
 @Builder(builderMethodName = "newBuilder")
 @Setter
 @Getter
-public class AccountData extends BasicData {
+public class AccountData extends BaseData {
 	/** 用户Id */
 	protected Integer userId;
 	/** 操作员id */

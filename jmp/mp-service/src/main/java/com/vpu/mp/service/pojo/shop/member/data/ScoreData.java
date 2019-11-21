@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder(builderMethodName = "newBuilder")
 @Setter
 @Getter
-public class ScoreData extends BasicData {
+public class ScoreData extends BaseData {
 	/** 国际化语言 */
 	private String language;
 	/** 用户Id */

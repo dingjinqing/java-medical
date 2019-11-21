@@ -39,7 +39,7 @@ public class AtomicOperation extends ShopBaseService {
     private GoodsSpecProductService goodsSpecProduct;
 
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
-    public void updateStockAndSales(OrderInfoRecord order, List<OrderGoodsBo> goodsBo, @RedisLockKeys List<String> lock) throws MpException {
+    public void updateStockAndSales(OrderInfoRecord order, @RedisLockKeys List<OrderGoodsBo> goodsBo) throws MpException {
         log.info("AtomicOperation.updateStockAndSales订单库存销量更新start,订单号{},商品{}", order.getOrderId(), goodsBo);
         /*if(!(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
             OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||

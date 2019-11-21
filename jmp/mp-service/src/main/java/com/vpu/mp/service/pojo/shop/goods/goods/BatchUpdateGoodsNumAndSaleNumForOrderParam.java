@@ -18,10 +18,8 @@ public class BatchUpdateGoodsNumAndSaleNumForOrderParam {
     private Integer goodsId;
     private Integer goodsNum;
     private Integer saleNum;
-    private List<ProductNumInfo> productsInfo;
-    {
-        productsInfo = new ArrayList<>();
-    }
+    @Builder.Default
+    private List<ProductNumInfo> productsInfo = new ArrayList<>();
 
     /**
      * 该类重写equals、hashCode使用时需注意

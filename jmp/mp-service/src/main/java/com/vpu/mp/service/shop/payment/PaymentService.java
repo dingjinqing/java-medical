@@ -96,7 +96,7 @@ public class PaymentService extends ShopBaseService {
 		BigDecimal totalFee = new BigDecimal(param.getTotalFee());
 
 		// 全款支付，且金额不相同，则抛出异常
-		if (orderInfo.getMoneyPaid() != totalFee && orderInfo.getOrderPayWay().equals(orderPayFull)) {
+		if (orderInfo.getMoneyPaid().equals(totalFee) && orderInfo.getOrderPayWay().equals(orderPayFull)) {
 			throw new WxPayException("onPayNotify orderSn " + orderSn + " pay amount  did not match");
 		}
 

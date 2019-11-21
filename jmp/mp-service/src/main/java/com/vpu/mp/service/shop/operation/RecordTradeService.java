@@ -14,7 +14,7 @@ import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.data.AccountData;
-import com.vpu.mp.service.pojo.shop.member.data.BasicData;
+import com.vpu.mp.service.pojo.shop.member.data.BaseData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -45,7 +45,7 @@ public class RecordTradeService extends ShopBaseService{
 	 * @param data
 	 * @throws MpException 
 	 */
- 	public void updateUserEconomicData(BasicData data) throws MpException {
+ 	public void updateUserEconomicData(BaseData data) throws MpException {
 		if(data instanceof AccountData) {
 			logger().info("余额变动");
 			/** 余额变动 */

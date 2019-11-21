@@ -32,7 +32,7 @@ public class RabbitmqSendService  {
     private static final String CONTENT_TYPE = "application/json";
     private static final String CONTENT_ENCODING = "UTF-8";
 
-    private static final ClassMapper classMapper = new DefaultClassMapper();
+    private static final ClassMapper CLASS_MAPPER = new DefaultClassMapper();
     /**
      * 发送消息
      * @param object 发送消息
@@ -71,7 +71,7 @@ public class RabbitmqSendService  {
         if(StringUtils.isNotBlank(className)){
             try {
                 Class<?> clz = Class.forName(className);
-                classMapper.fromClass(clz,properties);
+                CLASS_MAPPER.fromClass(clz,properties);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

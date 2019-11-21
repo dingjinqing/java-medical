@@ -93,14 +93,14 @@ public class UserService extends ShopBaseService {
 	@Autowired
 	public MpOrderInfoService mpOrderInfoService;
 
-	private int userActiveEnter[] = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
+	private int[] userActiveEnter = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
 			1038, 1042, 1014, 1043, 1045, 1046, 1052, 1053, 1056, 1057, 1058, 1064, 1067, 1068, 1071, 1072, 1073, 1074,
 			1078, 1079, 1081, 1082, 1084, 1089, 1090, 1091, 1092, 1095, 1097, 1102, 1039, 1103, 1104, 1129, 1099, 1059,
 			1054, 1022, 1030 };
 
-	private int userPassiveEnter[] = { 1007, 1008, 1017, 1029, 1036, 1044, 1047, 1048, 1049, 1096 };
+	private int[] userPassiveEnter = { 1007, 1008, 1017, 1029, 1036, 1044, 1047, 1048, 1049, 1096 };
 
-	private int scanqrode[] = { 1011, 1012, 1013, 1025, 1031, 1032 };
+	private int[] scanqrode = { 1011, 1012, 1013, 1025, 1031, 1032 };
 
 	private String SESSION_SIGN_KEY = "weipubao!@#miniprogram";
 

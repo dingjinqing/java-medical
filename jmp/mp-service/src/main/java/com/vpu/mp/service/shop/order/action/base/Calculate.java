@@ -349,18 +349,18 @@ public class Calculate extends ShopBaseService {
             try {
                 if(districtCode == null || districtCode.equals(0)){
                     total.getBos().forEach(x->{
-                        x.setIsShipping(OrderConstant.no);
+                        x.setIsShipping(OrderConstant.NO);
                     });
                 }else {
                     shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId, total.getTotalNumber(), total.getTotalPrice(), total.getTotalWeight());
                     result = BigDecimalUtil.add(result, shippingFeeByTemplate);
                     total.getBos().forEach(x->{
-                        x.setIsShipping(OrderConstant.yes);
+                        x.setIsShipping(OrderConstant.YES);
                     });
                 }
             } catch (MpException e) {
                 total.getBos().forEach(x->{
-                    x.setIsShipping(OrderConstant.no);
+                    x.setIsShipping(OrderConstant.NO);
                 });
             }
         }
@@ -413,7 +413,7 @@ public class Calculate extends ShopBaseService {
         OrderMustVo must = new OrderMustVo();
         //初始化赋值
         must.init(trade);
-        if(OrderConstant.no == must.isCheck()){
+        if(OrderConstant.NO == must.isCheck()){
             return must;
         }
         //规则(This will never be null)
@@ -477,7 +477,7 @@ public class Calculate extends ShopBaseService {
         Map<Integer, Byte> goodsReturnCfg = null;
         if(Lists.newArrayList(OrderReadService.orderTypeToArray(goodsType)).contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)){
             isCanReturn = OrderConstant.IS_CAN_RETURN_N;
-        }else if(posFlag != null && OrderConstant.yes == posFlag) {
+        }else if(posFlag != null && OrderConstant.YES == posFlag) {
             isCanReturn = OrderConstant.IS_CAN_RETURN_Y;
         }
         if(isCanReturn == null){

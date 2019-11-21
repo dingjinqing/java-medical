@@ -40,9 +40,9 @@ public class OrderMustVo {
     public Byte isCheck(){
         if(isShow == null){
             if((orderRealName + orderCid + consigneeRealName + consigneeCid + custom) > 0){
-                isShow = OrderConstant.yes;
+                isShow = OrderConstant.YES;
             }else{
-                isShow = OrderConstant.no;
+                isShow = OrderConstant.NO;
             }
         }
         return isShow;
@@ -53,12 +53,12 @@ public class OrderMustVo {
      * @return
      */
     public OrderMustVo show(){
-        isShow = OrderConstant.yes;
+        isShow = OrderConstant.YES;
         return this;
     }
 
     public OrderMustVo hide(){
-        isShow = OrderConstant.no;
+        isShow = OrderConstant.NO;
         return this;
     }
 }

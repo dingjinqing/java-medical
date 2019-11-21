@@ -43,7 +43,8 @@ public class WxOpenComponentExtServiceImpl implements WxOpenComponentHttpBase,Wx
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public WxOpenAuthorizerListResult getAuthorizerList(Integer offset,Integer count) throws WxErrorException {
+	@Override
+    public WxOpenAuthorizerListResult getAuthorizerList(Integer offset, Integer count) throws WxErrorException {
 		JsonObject param = new JsonObject();
 		param.addProperty("component_appid", openService.getWxOpenConfigStorage().getComponentAppId());
 		param.addProperty("offset", offset);

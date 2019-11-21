@@ -201,7 +201,7 @@ public class StoreWxService extends ShopBaseService {
      */
     public static final Byte BYTE_TWO = 2;
 
-    private static final Condition delCondition = STORE.DEL_FLAG.eq(BYTE_ZERO);
+    private static final Condition DEL_CONDITION = STORE.DEL_FLAG.eq(BYTE_ZERO);
 
     /**
      * 门店列表查询-小程序端
@@ -228,7 +228,7 @@ public class StoreWxService extends ShopBaseService {
                 List<Integer> supportStoreList = Util.json2Object(memberCardPojo.getStoreList(), new TypeReference<List<Integer>>() {
                 }, false);
                 if (CollectionUtils.isNotEmpty(supportStoreList)) {
-                    storeList = db().selectFrom(STORE).where(STORE.STORE_ID.in(supportStoreList)).and(delCondition).fetchInto(StorePojo.class);
+                    storeList = db().selectFrom(STORE).where(STORE.STORE_ID.in(supportStoreList)).and(DEL_CONDITION).fetchInto(StorePojo.class);
                 } else {
                     storeList = getStoreByCustomCondition(new HashMap<String, Byte>(2) {{
                         put("scan_stores", param.getScanStores());
@@ -303,7 +303,7 @@ public class StoreWxService extends ShopBaseService {
         if (condition.get("scan_stores") != null) {
             Byte scanStore = (Byte) condition.get("scan_stores");
             SelectConditionStep<StoreRecord> conditionStep = db()
-                .selectFrom(STORE).where(delCondition);
+                .selectFrom(STORE).where(DEL_CONDITION);
             if (!BYTE_ZERO.equals(scanStore)) {
                 conditionStep.and(STORE.POS_SHOP_ID.greaterThan(INTEGER_ZERO));
             }

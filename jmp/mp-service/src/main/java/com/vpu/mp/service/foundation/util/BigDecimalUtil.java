@@ -14,7 +14,8 @@ import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO
  *
  */
 public class BigDecimalUtil {
-    public static final BigDecimal BIGDECIMAL_ZERO = new BigDecimal(0);
+    public static final int DEFAULT_SCALE = 2;
+    public static final BigDecimal BIGDECIMAL_ZERO = BigDecimal.ZERO.setScale(DEFAULT_SCALE);
 	public enum Operator {
 		//加
 		add,
@@ -33,8 +34,8 @@ public class BigDecimalUtil {
 	 * @return int[result] = {-1,0,1}
 	 */
 	static public int compareTo(BigDecimal left , BigDecimal right) {
-        left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
-        right = right == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : right;
+        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : left;
+        right = right == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : right;
 		return left.compareTo(right);
 	}
 
@@ -45,8 +46,8 @@ public class BigDecimalUtil {
 	 * @return result left+right
 	 */
 	static public BigDecimal add(BigDecimal left , BigDecimal right) {
-        left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
-        right = right == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : right;
+        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : left;
+        right = right == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : right;
 		return left.add(right);
 	}
 
@@ -57,8 +58,8 @@ public class BigDecimalUtil {
 	 * @return result left-+right
 	 */
 	static public BigDecimal subtrac(BigDecimal left , BigDecimal right) {
-        left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
-        right = right == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : right;
+        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : left;
+        right = right == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : right;
 		return left.subtract(right);
 	}
 
@@ -69,9 +70,9 @@ public class BigDecimalUtil {
 	 * @return value
 	 */
 	static public BigDecimal multiply(BigDecimal left , BigDecimal right) {
-        left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
-        right = right == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : right;
-        return left.multiply(right).setScale(2, RoundingMode.HALF_UP);
+        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : left;
+        right = right == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : right;
+        return left.multiply(right).setScale(DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
 	/**
@@ -81,12 +82,12 @@ public class BigDecimalUtil {
 	 * @return value
 	 */
 	static public BigDecimal divide(BigDecimal left , BigDecimal right) throws ArithmeticException{
-        left = left == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : left;
+        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : left;
 		if(right == null || compareTo(right, null) < 1) {
 			throw new ArithmeticException("Division by zero");
 		}
-        right = right.setScale(2, RoundingMode.HALF_UP);
-        return left.divide(right, 2, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+        right = right.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP);
+        return left.divide(right, DEFAULT_SCALE, RoundingMode.HALF_UP).setScale(DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
     /**
@@ -103,7 +104,7 @@ public class BigDecimalUtil {
         if (right == null || right.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
-        return left.divide(right, 2, RoundingMode.HALF_UP);
+        return left.divide(right, DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
     /**
@@ -132,9 +133,9 @@ public class BigDecimalUtil {
      * @return value
      */
     static public BigDecimal multiply(BigDecimal left , BigDecimal right , RoundingMode roundingMode) {
-        left = left == null ? BigDecimal.ZERO.setScale(2, roundingMode) : left;
-        right = right == null ? BigDecimal.ZERO.setScale(2, roundingMode) : right;
-        return left.multiply(right).setScale(2, roundingMode);
+        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, roundingMode) : left;
+        right = right == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, roundingMode) : right;
+        return left.multiply(right).setScale(DEFAULT_SCALE, roundingMode);
     }
 
     /**
@@ -144,12 +145,12 @@ public class BigDecimalUtil {
      * @return value
      */
     static public BigDecimal divide(BigDecimal left , BigDecimal right , RoundingMode roundingMode) throws ArithmeticException{
-        left = left == null ? BigDecimal.ZERO.setScale(2, roundingMode) : left;
+        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, roundingMode) : left;
         if(right == null || compareTo(right, null) < 1) {
             throw new ArithmeticException("Division by zero");
         }
-        right = right.setScale(2, roundingMode);
-        return left.divide(right, 2, roundingMode).setScale(2, roundingMode);
+        right = right.setScale(DEFAULT_SCALE, roundingMode);
+        return left.divide(right, DEFAULT_SCALE, roundingMode).setScale(DEFAULT_SCALE, roundingMode);
     }
 
 	/**
@@ -158,7 +159,7 @@ public class BigDecimalUtil {
 	 * @return value
 	 */
 	static public BigDecimal addOrSubtrac(BigDecimalPlus...bigDecimals) {
-		if(bigDecimals == null || bigDecimals.length < 2) {
+		if(bigDecimals == null || bigDecimals.length < DEFAULT_SCALE) {
 			throw new IllegalArgumentException("method param Illegal,The parameter length should be greater than or equal to two.");
 		}
 		BigDecimalPlus left = bigDecimals[0];
@@ -175,7 +176,7 @@ public class BigDecimalUtil {
 	 * @return value
 	 */
 	static public BigDecimal multiplyOrDivide(BigDecimalPlus...bigDecimals) {
-		if(bigDecimals == null || bigDecimals.length < 2) {
+		if(bigDecimals == null || bigDecimals.length < DEFAULT_SCALE) {
 			throw new IllegalArgumentException("method param Illegal,The parameter length should be greater than or equal to two.");
 		}
 		BigDecimalPlus left = bigDecimals[0];

@@ -35,14 +35,14 @@ public class ReturnOrderInfoVo {
 	private BigDecimal money;
 	private BigDecimal shippingFee;
 	private Byte returnType;
-	private Byte reasonType;//
-	private String reasonDesc;//
-	private String shippingType;//
-	private String shippingNo;//
+	private Byte reasonType;
+	private String reasonDesc;
+	private String shippingType;
+	private String shippingNo;
 	private String goodsImages;
 	private String voucherImages;
 	private String phone;
-	private Timestamp applyTime;//
+	private Timestamp applyTime;
 	private Timestamp applyPassTime;
 	private Timestamp applyNotPassTime;
 	private Timestamp shippingOrRefundTime;

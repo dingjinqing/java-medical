@@ -2,15 +2,22 @@ package com.vpu.mp.service.shop.order.trade;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.payment.MpPaymentService;
+import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -39,16 +46,23 @@ public class OrderPayService extends ShopBaseService{
 
     @Autowired
     private RecordTradeService recordMemberTrade;
+    
     @Autowired
     private RefundAmountRecordService refundAmountRecord;
+    
     @Autowired
     private OrderRefundRecordService orderRefundRecord;
+    
     @Autowired
     private TradesRecordService tradesRecord;
+    
     @Autowired
     private UserCardService card;
+    
     @Autowired
-    private OrderInfoService order;
+    private MpPaymentService pay;
+
+    
     /**
      * 订单系统内金额支付方法
      * @param order 订单
@@ -66,20 +80,42 @@ public class OrderPayService extends ShopBaseService{
     /**
      * 是否需要继续微信支付
      * @param orderInfo record
+     * @param orderGoodsBo
+     * @param param
      */
-    public void isContinuePay(OrderInfoRecord orderInfo){
+    public WxPayUnifiedOrderResult isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param){
+        logger().info("继续支付接口start");
         ArrayList<String> goodsType = Lists.newArrayList(OrderReadService.orderTypeToArray(orderInfo.getGoodsType()));
         if(goodsType.contains(String.valueOf(OrderConstant.ORDER_WAIT_DELIVERY)) || goodsType.contains(String.valueOf(OrderConstant.ORDER_PIN_PAYED_GROUPING))){
-            return;
+            return null;
         }else if(OrderConstant.ORDER_WAIT_PAY == orderInfo.getOrderStatus() &&
             (((orderInfo.getBkOrderPaid() > 0 && goodsType.contains(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE))))
                 || OrderConstant.PAY_WAY_FRIEND_PAYMENT == orderInfo.getOrderPayWay())) {
             //待支付 && （（预售 && 已付定金或已付尾款） || 好友代付）
-            return;
+            return null;
         }else {
-            //TODO 微信支付
+            //非系统金额支付
+            String goodsNameForPay = getGoodsNameForPay(orderInfo, orderGoodsBo);
+            Integer amount = BigDecimalUtil.multiply(orderInfo.getMoneyPaid(), BigDecimal.valueOf(100)).intValue();
+            try {
+                return pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), amount, param.getWxUserInfo().getWxUser().getOpenId());
+            } catch (WxPayException e) {
+                logger().error("微信预支付调用接口失败，订单号：{}", orderInfo.getOrderSn());
+            }
         }
+        logger().info("继续支付接口end");
+        return null;
     }
+
+    private String getGoodsNameForPay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo) {
+        StringBuilder result = new StringBuilder(orderGoodsBo.get(0).getGoodsName());
+        if(result.length() > 32){
+            result.substring(0, 32);
+        }
+        result.append(orderGoodsBo.size() == 1 ? StringUtils.EMPTY : "等").append(orderInfo.getGoodsAmount()).append("件");
+        return result.toString();
+    }
+
     /**
      * 会员卡余额
      * @param order 订单

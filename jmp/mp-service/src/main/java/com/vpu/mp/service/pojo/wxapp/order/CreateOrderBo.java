@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
@@ -28,10 +29,8 @@ import java.util.List;
 @Builder
 @ToString
 public class CreateOrderBo {
-    private List<Byte> orderType;
-    {
-        orderType = new ArrayList<>();
-    }
+    @Builder.Default
+    private List<Byte> orderType = Lists.newArrayList();
     private StorePojo store;
     private UserAddressVo address;
     private PaymentVo payment;

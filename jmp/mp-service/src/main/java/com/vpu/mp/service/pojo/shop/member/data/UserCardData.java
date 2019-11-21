@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder(builderMethodName = "newBuilder")
-public class UserCardData extends BasicData {
+public class UserCardData extends BaseData {
 	/** 交易操作数据 */
 	protected TradeOptParam tradeOpt;
 	

@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.order.goods;
 
 import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.FootprintRecord.FOOTPRINT_RECORD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 import java.math.BigDecimal;
@@ -299,7 +298,7 @@ public class OrderGoodsService extends ShopBaseService{
         for (OrderGoodsBo bo : bos) {
             bo.setOrderId(order.getOrderId());
             bo.setOrderSn(order.getOrderSn());
-            if(bo.getIsCanReturn() == OrderConstant.yes){
+            if(bo.getIsCanReturn() != null && bo.getIsCanReturn() == OrderConstant.YES){
                 isAllNotReturn = false;
             }
             records.add(db().newRecord(TABLE, bo));

@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ShopMallBaseService extends ShopBaseService{
-	private static final Byte one = 1;
+	private static final Byte ONE = 1;
 	private static final String FORTYONE = "41";
 	/**
 	 * 校验
@@ -86,7 +86,7 @@ public class ShopMallBaseService extends ShopBaseService{
 			log.info("MpAuthShop是空的");
 			return false;
 		}
-		if (!mp.getIsAuthOk().equals(one)) {
+		if (!mp.getIsAuthOk().equals(ONE)) {
 			log.info("IsAuthOk不为1，为" + mp.getIsAuthOk());
 			return false;
 		}

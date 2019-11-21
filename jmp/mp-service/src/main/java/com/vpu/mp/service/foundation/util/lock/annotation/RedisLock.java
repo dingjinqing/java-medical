@@ -20,6 +20,11 @@ public @interface RedisLock {
     long maxWait() default 3 *1000;
 
     /**
+     * 轮询锁最大次数
+     */
+    int pollingLimit() default 30;
+
+    /**
      * 锁过期时间（毫秒）
      */
     int expiredTime() default 2 * 60 * 1000;
