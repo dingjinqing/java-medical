@@ -289,6 +289,26 @@ global.wxPage({
       break;
     }
   },
+  // 提交订单
+  confirmOrder(){
+    let { orderGoods:goods, orderAmount } = this.data.orderInfo
+    let { useBalance: balance, useCardBalance:cardBalance, useScore: scoreDiscount} = this.data.usePayInfo
+    let params = {
+      goods,
+      action:10,
+      orderAmount,
+      addressId: this.data.params.addressId,
+      balance,
+      cardBalance,
+      scoreDiscount,
+      deliverType: this.data.chooseShippingIndex,
+      orderPayWay:this.data.choosePayTypeIndex,
+    }
+    console.log(params)
+    util.api('',res=>{
+      console.log(res)
+    }, params)
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
