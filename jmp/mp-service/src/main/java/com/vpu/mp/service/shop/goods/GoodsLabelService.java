@@ -6,16 +6,16 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
+import com.vpu.mp.service.foundation.jedis.data.LabelDataHelper;
+import com.vpu.mp.service.foundation.jedis.data.label.GoodsLabelInfo;
 import com.vpu.mp.service.pojo.shop.goods.label.*;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
-import org.jooq.Condition;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +44,7 @@ public class GoodsLabelService extends ShopBaseService {
 	
 	@Autowired public GoodsService goodsService;
 	@Autowired public GoodsSortService sortService;
+	@Autowired private LabelDataHelper labelDataHelper;
 	 /**
      * 分页获取商品标签信息
      *
@@ -209,7 +210,10 @@ public class GoodsLabelService extends ShopBaseService {
 			int id = result.get(0, Integer.class);
 			goodsLabel.setId(id);
 			goodsLabelCoupleService.insert(goodsLabel);
+			/**缓存同步更新*/
+            labelDataHelper.update(getShopId(), Collections.singletonList(id));
 		});
+
 	    return 0;
 	}
 
@@ -238,6 +242,8 @@ public class GoodsLabelService extends ShopBaseService {
 				.where(GOODS_LABEL.ID.eq(id))
 				.and(GOODS_LABEL.DEL_FLAG.eq(NORMAL))
 				.execute();
+        /**缓存同步更新*/
+        labelDataHelper.update(getShopId(), Collections.singletonList(id));
 		return result;
 	}
 
@@ -276,6 +282,8 @@ public class GoodsLabelService extends ShopBaseService {
 					.execute();
 			goodsLabelCoupleService.deleteByGoodsLabelId(goodsLabel.getId());
 			goodsLabelCoupleService.insert(goodsLabel);
+            /**缓存同步更新*/
+            labelDataHelper.update(getShopId(), Collections.singletonList(goodsLabel.getId()));
 		});
 		return 0;
 	}
@@ -341,9 +349,33 @@ public class GoodsLabelService extends ShopBaseService {
                 .from(GOODS_LABEL)
                 .where(GOODS_LABEL.DEL_FLAG.eq((int) DelFlag.NORMAL.getCode()))
                 .fetch().into(GoodsLabel.class);
-
     }
 
+    /**
+     * 获取当前店铺所有未删除的标签的相关信息
+     * @return List<GoodsLabelRecord>
+     */
+    public List<GoodsLabelRecord> getByCondition(Condition condition){
+        return db()
+            .select(
+                GOODS_LABEL.ID,
+                GOODS_LABEL.NAME,
+                GOODS_LABEL.LIST_PATTERN,
+                GOODS_LABEL.GOODS_DETAIL,
+                GOODS_LABEL.GOODS_LIST,
+                GOODS_LABEL.GOODS_SELECT)
+            .from(GOODS_LABEL)
+            .where(condition)
+            .fetch().into(GOODS_LABEL);
+    }
+    /**
+     * 根据商品id、商家分类、平台分类和包含所有商品的商品标签</p>
+     * 来倒推处这些商品的商品标签
+     * @param goodsIds 商品id
+     * @param sortIds 商家分类
+     * @param categoryIds 平台分类
+     * @return Map:K->标签类型,V->标签信息
+     */
     public Map<Byte,List<GoodsLabelAndCouple>> getGoodsLabelByFilter(List<Integer> goodsIds, List<Integer> sortIds,
                                                                      List<Integer> categoryIds){
         return db()
@@ -359,6 +391,14 @@ public class GoodsLabelService extends ShopBaseService {
             .and(GOODS_LABEL.DEL_FLAG.eq(NORMAL))
             .fetchGroups(GOODS_LABEL_COUPLE.TYPE,GoodsLabelAndCouple.class);
     }
+
+    /**
+     * 封装不同类型的标签id以及他的类型
+     * @param goodsIds 商品id
+     * @param sortIds 商家分类
+     * @param categoryIds 平台分类
+     * @return Condition 标签的类型以及指定商品相关的过滤条件
+     */
     private Condition assemblyGoodsLabelFilter(List<Integer> goodsIds,
                                                List<Integer> sortIds,
                                                List<Integer> categoryIds){
