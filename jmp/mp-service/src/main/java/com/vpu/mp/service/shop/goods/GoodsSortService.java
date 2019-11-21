@@ -144,7 +144,6 @@ public class GoodsSortService extends ShopBaseService {
      * 默认列表中第一个分类为一级分类
      */
     public void insertRecommendSort(GoodsRecommendSortParam param) {
-
         SortRecord parentRecord = param.convertParentToRecord();
         List<SortRecord> childrenRecords = param.convertChildrenToRecord();
         transaction(() -> {
@@ -175,7 +174,6 @@ public class GoodsSortService extends ShopBaseService {
             if (recordsUpdate != null) {
                 db.batchUpdate(recordsUpdate).execute();
             }
-
             // 新增操作
             List<SortRecord> recordsInsert = collect.get(toInsert);
             if (recordsInsert != null) {
