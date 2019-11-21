@@ -228,7 +228,7 @@ public class Calculate extends ShopBaseService {
         }else{
             vo.setCouponSn(null);
         }
-        logger().info("获取可用优惠卷end");
+        logger().info("获取可以优惠卷列表end,列表：{}，此次选择：{}", vo.getCoupons(), vo.getDefaultCoupon());
     }
 
     /**
@@ -237,7 +237,7 @@ public class Calculate extends ShopBaseService {
      * @param vo
      */
     public void calculateCardInfo(OrderBeforeParam param, OrderBeforeVo vo) {
-        logger().info("计算会员卡折扣开始");
+        logger().info("获取可用会员卡列表start");
         //会员卡折扣
         if(!StringUtils.isBlank(param.getMemberCardNo())){
             /**使用会员卡，其中cardNo==0为使用默认会员卡*/
@@ -264,7 +264,7 @@ public class Calculate extends ShopBaseService {
             vo.setMemberCards(validCardList);
             vo.setMemberCards(null);
         }
-        logger().info("计算会员卡折扣结束");
+        logger().info("获取可用会员卡列表end,列表：{}，此次选择：{}", vo.getMemberCards(), vo.getDefaultMemberCard());
     }
 
     /**
