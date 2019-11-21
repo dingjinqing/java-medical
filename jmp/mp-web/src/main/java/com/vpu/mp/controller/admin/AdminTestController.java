@@ -85,7 +85,6 @@ public class AdminTestController extends AdminBaseController {
 		String toUser =  this.request.getParameter("toUser");
 		String templateId =  this.request.getParameter("templateId");
 		String page="pages/index/index";
-		page = null;
 		
 		Map<String, Map<String, String>> data = new LinkedHashMap<>();
 		Map<String, String> v1 = new LinkedHashMap<>();
