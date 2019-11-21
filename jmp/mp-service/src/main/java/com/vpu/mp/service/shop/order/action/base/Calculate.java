@@ -171,6 +171,7 @@ public class Calculate extends ShopBaseService {
             for (OrderCouponVo temp : coupons) {
                 for (OrderGoodsBo bo: param.getBos()) {
                     if(coupon.isContainsProduct(temp, bo)){
+                        logger().info("该商品可用使用该优惠卷");
                         if(temp.getBos() == null){
                             temp.setBos(new ArrayList<>());
                         }
@@ -187,6 +188,7 @@ public class Calculate extends ShopBaseService {
                     if(BigDecimalUtil.compareTo(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], null) == 1 ){
                         //获取折扣金额
                         BigDecimal discountAmount = coupon.getDiscountAmount(temp, tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
+                        logger().info("优惠卷折扣金额为{}", discountAmount);
                         //折扣金额 > 0
                         if(BigDecimalUtil.compareTo(discountAmount, null) > 0){
                             temp.setTotalDiscount(discountAmount);
@@ -200,16 +202,19 @@ public class Calculate extends ShopBaseService {
                                 i.remove();
                             }
                         }else{
+                            logger().info("优惠券折扣金额不大于0删除");
                             i.remove();
                         }
                     }
                 }else {
+                    logger().info("优惠券无匹配商品删除");
                     i.remove();
                 }
             }
             //再次校验
             if(CollectionUtils.isEmpty(coupons)){
                 vo.setCouponSn(null);
+                logger().info("无可用优惠券");
                 return;
             }
             if(OrderConstant.DEFAULT_COUPON_OR_ORDER_SN.equals(param.getCouponSn())){
@@ -217,14 +222,15 @@ public class Calculate extends ShopBaseService {
                 vo.setCouponSn(coupons.get(0).getCouponSn());
                 vo.setDefaultCoupon(coupons.get(0));
             }else{
-                coupons.forEach(x->{
-                    if(x.getCouponSn().equals(param.getCouponSn())){
+                for (OrderCouponVo coupon : coupons) {
+                    if(coupon.getCouponSn().equals(param.getCouponSn())){
                         vo.setCouponSn(param.getCouponSn());
-                        vo.setDefaultCoupon(x);
+                        vo.setDefaultCoupon(coupon);
                     }
-                });
+                }
             }
             vo.setCoupons(coupons);
+            logger().info("获取可以优惠卷列表end,列表：{}，此次选择：{}", vo.getCoupons(), vo.getDefaultCoupon());
         }else{
             vo.setCouponSn(null);
         }

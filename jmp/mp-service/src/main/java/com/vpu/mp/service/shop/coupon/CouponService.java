@@ -469,6 +469,7 @@ public class CouponService extends ShopBaseService {
      * @return 是否可以使用
      */
     public boolean isContainsProduct(OrderCouponVo coupon, OrderGoodsBo bo){
+        logger().info("判断该product是否可以使用该优惠卷strat,优惠卷：{}，商品：{}", coupon, bo);
         //全部为空为全部商品
         if(StringUtil.isBlank(new StringBuilder().append(coupon.getRecommendGoodsId()).append(coupon.getRecommendCatId()).append(coupon.getRecommendSortId()).append(coupon.getRecommendProductId()).toString())){
             return true;
@@ -496,6 +497,7 @@ public class CouponService extends ShopBaseService {
      * @return 折扣价格
      */
     public BigDecimal getDiscountAmount(OrderCouponVo coupon, BigDecimal totalPrice){
+        logger().info("优惠券折扣金额计算（CouponService）start");
         if(OrderConstant.T_CAC_TYPE_REDUCTION == coupon.getType()){
             //代金券
             return BigDecimalUtil.compareTo(coupon.getLimitOrderAmount(), totalPrice) < 1 ? coupon.getAmount() : BigDecimal.ZERO;
