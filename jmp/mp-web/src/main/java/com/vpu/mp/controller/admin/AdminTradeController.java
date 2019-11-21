@@ -15,13 +15,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 
 /**
  * @author liufei
@@ -100,7 +98,13 @@ public class AdminTradeController extends AdminBaseController {
     @PostMapping("/api/admin/config/trade/getOrderProcessConfig")
     public JsonResult getOrderProcessConfig() {
         //微信物流助手物流公司列表
-        List<LogisticsAccountInfo> deliveryList = null;
+        List<LogisticsAccountInfo> deliveryList = new ArrayList<LogisticsAccountInfo>() {{
+            add(new LogisticsAccountInfo() {{
+                setDeliveryName("物流");
+                setBizId("110");
+                setStatusCode(BYTE_ONE);
+            }});
+        }};
         //基本配置项信息
         OrderProcessParam param = shop().trade.getOrderProcessConfig();
         /* TODO 等微信api好了之后在开放此代码
@@ -114,7 +118,7 @@ public class AdminTradeController extends AdminBaseController {
 			private static final long serialVersionUID = 533497335184152545L;
 			{
                 put("trade_process_config", param);
-                put("delivery_list", null);
+                put("delivery_list", deliveryList);
             }
         });
     }
