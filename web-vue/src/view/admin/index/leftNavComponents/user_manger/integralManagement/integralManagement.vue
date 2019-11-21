@@ -288,7 +288,7 @@ export default {
       ],
       buyEach: null,
       scoreEach: null,
-      ruleData: null
+      ruleData: { radio: '0' }
     }
   },
   created () {
@@ -324,12 +324,14 @@ export default {
           this.loginValue = res.content.loginScore === '1'
           this.loginIntegralNum = res.content.scoreLogin
           this.signInvalue = res.content.signInScore === 'on'
-          this.signInput = []
 
-          for (let i in res.content.signScore) {
-            this.signInput.push({
-              input: res.content.signScore[i]
-            })
+          if (res.content.signScore) {
+            this.signInput = []
+            for (let i in res.content.signScore) {
+              this.signInput.push({
+                input: res.content.signScore[i]
+              })
+            }
           }
           if (res.content.buy.length > 0) {
             this.shopFullArr = []

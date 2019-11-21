@@ -308,6 +308,7 @@ export default {
       console.log('数据传递成功')
     },
     '$store.state.util.integralDataNotice' (newData) {
+      console.log(newData)
       console.log('正在监控积分通用规则')
       let obj = {
         radio: this.message.radio

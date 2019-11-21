@@ -884,6 +884,7 @@ export default {
       padding: 0 1%;
       overflow: hidden;
       min-width: 1000px;
+      padding-right: 0;
       .firstListDiv {
         float: left;
         margin-right: 1%;

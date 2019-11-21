@@ -8,17 +8,17 @@
       >
         <div class="top">
           <el-radio
-            v-model="radio"
+            v-model="action"
             label="1"
           >自动生成领取码</el-radio>
           <span>将随机生成xxx个唯一领取码，领取码由数字+字母组成</span>
         </div>
-        <div v-if="radio === '1'">
+        <div v-if="action === '1'">
           <div class="contentList">
             <span style="color:#333">领取码前缀:</span>
             <el-input
               size="small"
-              v-model="input_one"
+              v-model="codePrefix"
             ></el-input>
             <span>0-4个数字或字母</span>
           </div>
@@ -26,7 +26,7 @@
             <span style="color:#333">领取码位数:</span>
             <el-input
               size="small"
-              v-model="input_two"
+              v-model="codeSize"
             ></el-input>
             <span>领取码组成未知数，限制6-12位</span>
           </div>
@@ -37,20 +37,20 @@
             <span style="color:#333">领取数量:</span>
             <el-input
               size="small"
-              v-model="input_three"
+              v-model="number"
             ></el-input>
           </div>
         </div>
         <div class="top footer">
           <el-radio
-            v-model="radio"
+            v-model="action"
             label="2"
           >导入领取码</el-radio>
           <span>需导入已有领取码</span>
         </div>
         <div
           class="bottomHidden"
-          v-if="radio === '2'"
+          v-if="action === '2'"
         >
           <div>
             <span>第一步:</span>
@@ -85,10 +85,10 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button @click="$emit('update:dialogVisible', false)">取 消</el-button>
           <el-button
             type="primary"
-            @click="dialogVisible = false"
+            @click="handleSure"
           >确 定</el-button>
         </span>
       </el-dialog>
@@ -97,16 +97,43 @@
   </div>
 </template>
 <script>
+import { createReceiveBatchRequest, getReceiveBatchRequest } from '@/api/admin/memberManage/memberCard.js'
 export default {
+  props: {
+    dialogVisible: {
+      type: Boolean,
+      default: () => false
+    },
+    batchName: {
+      type: String,
+      default: () => ''
+    },
+    batchId: {
+      type: Number,
+      default: () => null
+    }
+  },
   data () {
     return {
-      dialogVisible: false,
-      radio: '2',
-      input_one: '',
-      input_two: '',
-      input_three: '',
+      action: '1',
+      codePrefix: '',
+      codeSize: '',
+      number: '',
       fileList: [],
       fileName: ''
+    }
+  },
+  watch: {
+    dialogVisible (data) {
+      this.clearData()
+      console.log(data)
+      console.log(this.batchName)
+      console.log(this.batchId)
+      if (data) {
+        if (this.batchId) {
+          this.getBatch(this.batchId)
+        }
+      }
     }
   },
   mounted () {
@@ -119,12 +146,55 @@ export default {
         this.dialogVisible = true
       })
     },
+    clearData () {
+      this.action = '1'
+      this.codePrefix = ''
+      this.codeSize = ''
+      this.number = ''
+    },
+    getBatch (id) {
+      getReceiveBatchRequest(id).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let data = res.content[0]
+          this.action = String(data.action)
+          this.codePrefix = data.codePrefix
+          this.codeSize = data.codeSize
+          this.number = data.number
+        }
+      })
+    },
     // 上传前得钩子
     beforeUpload (file) {
       console.log(file)
       this.fileName = file.name
       return false
+    },
+    handleSure () {
+      let data = {
+        action: this.action,
+        batchName: this.batchName,
+        codePrefix: this.codePrefix,
+        codeSize: this.codeSize,
+        number: this.number
+      }
+
+      console.log(data)
+      this.generateReceiveBatch(data)
+    },
+
+    generateReceiveBatch (data) {
+      createReceiveBatchRequest(data).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$emit('generateReceiveCodeId', res.content.batchId)
+        } else {
+          this.$emit('generateReceiveCodeId', null)
+        }
+        this.$emit('update:dialogVisible', false)
+      })
     }
+
   }
 }
 </script>

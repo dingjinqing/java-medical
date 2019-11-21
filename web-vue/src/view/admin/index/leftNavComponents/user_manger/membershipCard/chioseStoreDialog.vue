@@ -2,28 +2,21 @@
   <div class="addBrandDialog">
     <div class="addBrandDialogMain">
       <el-dialog
-        title="添加商品品牌"
+        title="添加门店"
         :visible.sync="dialogVisible"
-        width="40%"
+        width="50%"
       >
         <div class="footer">
           <el-table
             class="version-manage-table"
             header-row-class-name="tableClss"
-            :data="tableData"
+            :data="storeParamList"
             border
             style="width: 100%"
+            ref="multipleTable"
             @selection-change="changeFun"
           >
-            <el-table-column
-              align="center"
-              width="50"
-              type="selection"
-            >
-              <template slot-scope="scope">
-                <el-checkbox v-model="scope.row.ischeck"></el-checkbox>
-
-              </template>
+            <el-table-column type="selection">
             </el-table-column>
             <el-table-column
               prop="storeName"
@@ -32,34 +25,33 @@
             >
             </el-table-column>
             <el-table-column
-              prop="adress"
+              prop="address"
               label="门店地址"
               align="center"
             >
             </el-table-column>
             <el-table-column
-              prop="presenter"
+              prop="manager"
               label="负责人"
               align="center"
             >
 
             </el-table-column>
             <el-table-column
-              prop="phoneNum"
+              prop="mobile"
               label="联系电话"
               align="center"
             >
-
             </el-table-column>
             <el-table-column
-              prop="creatTime"
+              prop="businessTime"
               label="营业时间"
               align="center"
             >
 
             </el-table-column>
             <el-table-column
-              prop="status"
+              prop="businessState"
               label="营业状态"
               align="center"
             >
@@ -85,7 +77,7 @@
         >
           <el-button
             size="small"
-            @click="dialogVisible = false"
+            @click="$emit('update:dialogVisible', false)"
           >取 消</el-button>
           <el-button
             type="primary"
@@ -99,76 +91,43 @@
   </div>
 </template>
 <script>
+import { storeList } from '@/api/admin/storeManage/store'
 export default {
+  props: {
+    dialogVisible: {
+      type: Boolean,
+      default: () => false
+    },
+    storeBackData: {
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
       currentPage: 1,
       totle: 1,
       pageCount: 1,
-      dialogVisible: false,
-      tableData: [
-        {
-          ischeck: false,
-          id: 1,
-          storeName: '牡丹园店1',
-          adress: '天博中润1',
-          presenter: '孙腾飞1',
-          phoneNum: '1111111',
-          creatTime: '每天1',
-          isFirstPage: true,
-          status: '营业1'
-
-        },
-        {
-          ischeck: false,
-          id: 2,
-          storeName: '牡丹园店2',
-          adress: '天博中润2',
-          presenter: '孙腾飞2',
-          phoneNum: '1111111',
-          creatTime: '每天2',
-          isFirstPage: true,
-          status: '营业2'
-
-        },
-        {
-          ischeck: false,
-          id: 3,
-          storeName: '牡丹园店3',
-          adress: '天博中润3',
-          presenter: '孙腾飞3',
-          phoneNum: '11111113',
-          creatTime: '每天3',
-          isFirstPage: true,
-          status: '营业3'
-
-        },
-        {
-          ischeck: false,
-          id: 4,
-          storeName: '牡丹园店4',
-          adress: '天博中润4',
-          presenter: '孙腾飞4',
-          phoneNum: '11111114',
-          creatTime: '每天4',
-          isFirstPage: true,
-          status: '营业4'
-
-        }
-      ]
+      checkBoxData: [],
+      storeParamList: []
     }
   },
   watch: {
+    dialogVisible (data) {
+      if (data) {
+        this.makeTableShowItemSelected(this.getSelectItems())
+      }
+    },
     allChecked (newData) {
       console.log(newData)
       switch (newData) {
         case true:
-          this.tableData.map((item, index) => {
+          this.storeParamList.map((item, index) => {
             item.ischeck = true
           })
           break
         case false:
-          this.tableData.map((item, index) => {
+          this.storeParamList.map((item, index) => {
             item.ischeck = false
           })
       }
@@ -186,18 +145,50 @@ export default {
       this.$http.$on('CallAddBrand', res => {
         this.dialogVisible = true
       })
+      let storPageParam = {
+        currentPage: 0,
+        pageRows: 20
+      }
+
+      storeList(storPageParam).then(res => {
+        if (res.error === 0) {
+          console.log(res.content.dataList)
+          this.pageParams = res.content.page
+          this.storeParamList = res.content.dataList
+          this.storeParamList.map((item, index) => {
+            if (item.businessState === 0) {
+              item.businessState = '关店'
+            } else if (item.businessState === 1) {
+              item.businessState = '营业'
+            }
+            item.autoPick = this.number2boolean(item.autoPick)
+            item.businessTime = item.openingTime + '-' + item.closeTime
+            item.ischeck = true
+          })
+        } else {
+          this.$message.error(this.$t('storeCommon.getstorelistfailed'))
+        }
+      })
     },
     // render事件
     renderHeader (h, { column }) {
       return <el-checkbox v-model=''></el-checkbox>
     },
+    number2boolean (configValue) {
+      if (configValue === 1) {
+        return true
+      } else if (configValue === 0) {
+        return false
+      }
+    },
     changeFun (val) {
+      console.log(val)
       if (val.length) {
-        this.tableData.forEach((item, index) => {
+        this.storeParamList.forEach((item, index) => {
           item.ischeck = true
         })
       } else {
-        this.tableData.forEach((item, index) => {
+        this.storeParamList.forEach((item, index) => {
           item.ischeck = false
         })
       }
@@ -212,14 +203,35 @@ export default {
     // 确定事件
     handleToSure () {
       let arr = []
-      this.tableData.forEach(item => {
+      this.storeParamList.forEach(item => {
         if (item.ischeck) {
           arr.push(item)
         }
       })
       console.log(arr)
-      this.$http.$emit('chioseSureData', arr)
-      this.dialogVisible = false
+      // this.$http.$emit('chioseSureData', arr)
+
+      this.$emit('getChoosedStore', this.checkBoxData)
+      this.$emit('update:dialogVisible', false)
+      this.$refs.multipleTable.clearSelection()
+    },
+    getSelectItems () {
+      let selectedItems = []
+      this.storeParamList.forEach(itemA => {
+        this.storeBackData.forEach(itemB => {
+          if (itemB.storeId === itemA.storeId) {
+            selectedItems.push(itemA)
+          }
+        })
+      })
+      return selectedItems
+    },
+    makeTableShowItemSelected (selectedItems) {
+      if (selectedItems) {
+        selectedItems.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row, true)
+        })
+      }
     }
   }
 }

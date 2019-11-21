@@ -202,130 +202,137 @@
       <el-dialog
         :title="$t('membershipIntroduction.Towrite')"
         :visible.sync="baseInfoDialogVisible"
-        width="30%"
+        width="40%"
         :modal-append-to-body="false"
       >
         <div
           class="balanceDialogDiv"
           style="margin-bottom:30px"
         >
-          <div>
-            <span>{{ $t('membershipIntroduction.Gender') }}</span>
-            <el-select
-              v-model="GenderValue"
-              :placeholder="$t('membershipIntroduction.placeChoise') "
-              size="small"
-            >
-              <el-option
-                v-for="item in GenderValueOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-          <div style="margin-top:10px">
-            <span>{{ $t('membershipIntroduction.Birthday') }}</span>
-            <el-date-picker
-              v-model="birthdayVal"
-              type="date"
-              :placeholder="$t('membershipIntroduction.chooseDate')"
-              value-format='yyyy-MM-dd'
-              size="small"
-            >
-            </el-date-picker>
-          </div>
-          <div
-            class="name"
-            style="margin-top:10px"
+          <el-form
+            label-position="right"
+            label-width="130px"
+            size="small"
           >
-            <span>{{ $t('membershipIntroduction.Realname') }}</span>
-            <el-input
-              size="small"
-              v-model="nameInput"
-              :placeholder="$t('membershipIntroduction.Pleasecontent')"
-            ></el-input>
-          </div>
-          <div style="margin-top:10px">
-            <span>{{$t('membershipIntroduction.localtion')}}</span>
-            <ProAndUrbA />
-          </div>
-          <div style="margin-top:10px">
-            <span>{{$t('membershipIntroduction.Maritalstatus')}}</span>
-            <el-select
-              v-model="MarriageValue"
-              :placeholder="$t('membershipIntroduction.placeChoise')"
-              size="small"
-            >
-              <el-option
-                v-for="(item,index) in MarriageValueOptions"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-          <div style="margin-top:10px">
-            <span>{{ $t('membershipIntroduction.monthlyincome') }}</span>
-            <el-select
-              v-model="incomeValue"
-              :placeholder="$t('membershipIntroduction.placeChoise')"
-              size="small"
-            >
-              <el-option
-                v-for="(item,index) in incomeValueOptions"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-          <div
-            style="margin-top:10px"
-            class="name"
-          >
-            <span>{{ $t('membershipIntroduction.ID') }}</span>
-            <el-input
-              size="small"
-              v-model="IDInput"
-              :placeholder="$t('membershipIntroduction.Pleasecontent')"
-            ></el-input>
-          </div>
-          <div style="margin-top:10px">
-            <span>{{ $t('membershipIntroduction.Educationlevel') }}</span>
-            <el-select
-              v-model="educationValue"
-              :placeholder="$t('membershipIntroduction.placeChoise')"
-              size="small"
-            >
-              <el-option
-                v-for="(item,index) in educationValueOptions"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-          <div style="margin-top:10px">
-            <span>{{ $t('membershipIntroduction.industry') }}</span>
-            <el-select
-              v-model="industryValue"
-              :placeholder="$t('membershipIntroduction.placeChoise')"
-              size="small"
-            >
-              <el-option
-                v-for="(item,index) in industryValueOptions"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
+            <el-form-item :label="$t('membershipIntroduction.Gender')">
+              <el-col :span="12">
+                <el-select
+                  v-model="GenderValue"
+                  :placeholder="$t('membershipIntroduction.placeChoise') "
+                  size="small"
+                >
+                  <el-option
+                    v-for="item in GenderValueOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('membershipIntroduction.Birthday')">
+              <el-col :span="10">
+                <el-date-picker
+                  v-model="birthdayVal"
+                  type="date"
+                  :placeholder="$t('membershipIntroduction.chooseDate')"
+                  value-format='yyyy-MM-dd'
+                  size="small"
+                >
+                </el-date-picker>
+              </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('membershipIntroduction.Realname')">
+              <el-col :span="12">
+                <el-input
+                  size="small"
+                  v-model="nameInput"
+                  :placeholder="$t('membershipIntroduction.Pleasecontent')"
+                ></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('membershipIntroduction.localtion')">
+              <ProAndUrbA />
+            </el-form-item>
+            <el-form-item :label="$t('membershipIntroduction.Maritalstatus')">
+              <el-col :span="12">
+                <el-select
+                  v-model="MarriageValue"
+                  :placeholder="$t('membershipIntroduction.placeChoise')"
+                  size="small"
+                >
+                  <el-option
+                    v-for="(item,index) in MarriageValueOptions"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('membershipIntroduction.monthlyincome')">
+              <el-col :span="12">
+                <el-select
+                  v-model="incomeValue"
+                  :placeholder="$t('membershipIntroduction.placeChoise')"
+                  size="small"
+                >
+                  <el-option
+                    v-for="(item,index) in incomeValueOptions"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('membershipIntroduction.ID')">
+              <el-col :span="12">
+                <el-input
+                  size="small"
+                  v-model="IDInput"
+                  :placeholder="$t('membershipIntroduction.Pleasecontent')"
+                ></el-input>
+              </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('membershipIntroduction.Educationlevel')">
+              <el-col :span="12">
+                <el-select
+                  v-model="educationValue"
+                  :placeholder="$t('membershipIntroduction.placeChoise')"
+                  size="small"
+                >
+                  <el-option
+                    v-for="(item,index) in educationValueOptions"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+            <el-form-item :label="$t('membershipIntroduction.industry')">
+              <el-col :span="12">
+                <el-select
+                  v-model="industryValue"
+                  :placeholder="$t('membershipIntroduction.placeChoise')"
+                  size="small"
+                >
+                  <el-option
+                    v-for="(item,index) in industryValueOptions"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+          </el-form>
         </div>
         <span
           slot="footer"
@@ -886,6 +893,9 @@ export default {
           console.log(res.content.memberBasicInfo.industryInfo)
           // 设置值 基本信息
           this.memberBasicInfo = res.content.memberBasicInfo
+          if (this.memberBasicInfo.userAvatar) {
+            this.headeImgUrl = this.memberBasicInfo.userAvatar
+          }
           console.log(this.memberBasicInfo)
           this.addressListLength = this.memberBasicInfo.addressList.length
           // 交易统计
@@ -1762,6 +1772,9 @@ td {
 }
 </style>
 <style>
+.balanceDialogDiv .el-input__inner {
+  width: 170px !important;
+}
 .baseInfo .el-dialog__body {
   padding-bottom: 0 !important;
 }

@@ -839,7 +839,7 @@ import SetUpMemCDialog from '@/view/admin/index/leftNavComponents/user_manger/me
 import SelectingUsersDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/selectingUsersDialog'
 export default {
   components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog },
-  data () {
+  data() {
     return {
       minixLabel: '',
       memberListliNav: '',
@@ -965,7 +965,7 @@ export default {
     }
   },
   watch: {
-    lang () {
+    lang() {
       let source = [{
         value: '-2',
         label: this.$t('membershipIntroduction.allSource')
@@ -992,7 +992,7 @@ export default {
       this.getAllTag()
       console.log('数据初始化完成')
     },
-    allChecked (newData) {
+    allChecked(newData) {
       if (newData === true) {
         this.trList.map((item, index) => {
           item.ischecked = true
@@ -1005,7 +1005,7 @@ export default {
         }
       }
     },
-    labelDialogInput (newData) {
+    labelDialogInput(newData) {
       console.log('I am watching you')
       console.log(newData)
       if (newData.length === 6) {
@@ -1013,11 +1013,11 @@ export default {
         this.$message.error(this.$t('membershipIntroduction.tagError'))
       }
     },
-    '$store.goodsManagement.state.goodsIds' (newData) {
+    '$store.goodsManagement.state.goodsIds'(newData) {
       console.log(newData)
     }
   },
-  created () {
+  created() {
     console.log(this.$route.params.tagName)
     this.labelVal = this.$route.params.tagName
     console.log('会员列表 created ')
@@ -1031,7 +1031,7 @@ export default {
     this.getAllTag()
     console.log('数据初始化完成')
   },
-  mounted () {
+  mounted() {
     // 初始化标签下拉框
     this.restaurants = this.loadAll()
     // 初始化语言
@@ -1044,7 +1044,7 @@ export default {
   methods: {
     ...mapActions(['ToTurnMemberShipDetail', 'toHandleSetUpMemDialog', 'toHandleSelectingUsersDialog']),
     // 初始化会员列表数据
-    defaultTabelListData () {
+    defaultTabelListData() {
       this.options_one = this.$t('membershipIntroduction.options_one')
       this.options_two = this.$t('membershipIntroduction.options_two')
       this.options_three = this.$t('membershipIntroduction.options_three')
@@ -1107,7 +1107,7 @@ export default {
     },
 
     // 获取会员卡
-    getAllUserCard () {
+    getAllUserCard() {
       allUserCardRequest().then(res => {
         console.log('--------------------------')
         console.log(res.content)
@@ -1115,7 +1115,7 @@ export default {
       })
     },
     // 获取来源
-    getAllSource () {
+    getAllSource() {
       allSourceRequest().then(res => {
         console.log('-------------获取所有门店---------------------')
         console.log(res.content)
@@ -1124,7 +1124,7 @@ export default {
       })
     },
     // 获取标签
-    getAllTag () {
+    getAllTag() {
       console.log('-------------获取所有标签---------------------')
       allTagRequest().then(res => {
         console.log(res.content)
@@ -1132,23 +1132,23 @@ export default {
       })
     },
     // 筛选按钮
-    handleScreen () {
+    handleScreen() {
       this.defaultTabelListData()
     },
-    querySearch (queryString, cb) {
+    querySearch(queryString, cb) {
       var results = this.tagSource
 
       setTimeout(() => {
         cb(results)
       }, 1000 * Math.random())
     },
-    createFilter (queryString) {
+    createFilter(queryString) {
       return (restaurant) => {
         return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
       }
     },
     // 获取标签
-    loadAll () {
+    loadAll() {
       return [
         { 'value': '三全鲜食（北新泾店）', 'address': '长宁区新渔路144号' },
         { 'value': 'Hot honey 首尔炸鸡（仙霞路）', 'address': '上海市长宁区淞虹路661号' },
@@ -1159,25 +1159,25 @@ export default {
       ]
     },
     // 选中输入框建议列表项
-    handleSelect (item) {
+    handleSelect(item) {
       console.log(item)
     },
     // 改变箭头事件
-    handleToChangeArror () {
+    handleToChangeArror() {
       this.arrorFlag = !this.arrorFlag
     },
     // 点击选择商品按钮
-    handleClickChoiseGood () {
+    handleClickChoiseGood() {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
       this.chooseGoodsBack = [11]
       // this.$http.$emit('choosingGoodsFlag', true)
     },
     // 当前页发生变化
-    handleCurrentChange () {
+    handleCurrentChange() {
       this.defaultTabelListData()
     },
     // 会员列表表格选中
-    handleClick () {
+    handleClick() {
       console.log(123)
       // this.trList[index].ischecked = true
       let flag = this.trList.filter((item, index) => {
@@ -1193,11 +1193,11 @@ export default {
       console.log(flag, 1)
     },
     // 全部checkbox选中
-    handleAllcheck () {
+    handleAllcheck() {
       this.allCheckFlag = false
     },
     // 控制修改余额-积分弹窗
-    handlebalanceDialog (index, item, id) {
+    handlebalanceDialog(index, item, id) {
       console.log(index)
       if (index === 0) {
         this.balanceDialogData[0].persentMoney = item
@@ -1210,7 +1210,7 @@ export default {
       this.userId = id
     },
     // 修改余额弹窗确认按钮
-    hanldemodifySure () {
+    hanldemodifySure() {
       let obj = {
         'userId': this.userId,
         'account': this.addDialogData[0].persentMoney,
@@ -1238,7 +1238,7 @@ export default {
     },
 
     // 修改积分弹窗确认按钮
-    handleScoreSure () {
+    handleScoreSure() {
       let obj = {
         'userId': [this.userId],
         'score': parseInt(this.balanceDialogInput),
@@ -1264,7 +1264,7 @@ export default {
     },
 
     // 表格底部下拉框选中事件
-    handleFooterSelect (index) {
+    handleFooterSelect(index) {
       console.log(index, this.value_five)
       if (index === 0) {
         console.log(this.value_one)
@@ -1323,7 +1323,7 @@ export default {
       }
     },
     // 表格底部下拉框选中ischecked判断函数
-    handlePdIsChecked (index) {
+    handlePdIsChecked(index) {
       let flag = this.trList.filter((item, index) => {
         return item.ischecked === true
       })
@@ -1371,7 +1371,7 @@ export default {
       }
     },
     // 清空设置会员卡数据
-    clearnSetMemberCardData () {
+    clearnSetMemberCardData() {
       this.setUpSelectVal_one = []
       this.setUpSelectVal_two = []
       this.setUpSelectVal_three = []
@@ -1383,7 +1383,7 @@ export default {
       this.setUpSelectVal_threeTmp = 0
     },
     // 再提交到数据库之前，除去查询出来的值
-    deleteOriginCardInfo () {
+    deleteOriginCardInfo() {
       while (this.setUpSelectVal_oneTmp-- > 0) {
         this.setUpSelectVal_one.splice(0, 1)
       }
@@ -1397,7 +1397,7 @@ export default {
       }
     },
     // 会员卡弹窗控制
-    handleSetUp (id) {
+    handleSetUp(id) {
       // 保存该用户id
       this.cardUserId = id
       console.log(this.cardUserId)
@@ -1452,7 +1452,7 @@ export default {
     },
 
     // 处理提交为会员设置会员卡逻辑
-    setUpCardForMember () {
+    setUpCardForMember() {
       this.setUpDialogVisible = false
       console.log(this.setUpSelectVal_one)
       // 清空已经拥有的会员卡
@@ -1477,7 +1477,7 @@ export default {
       })
     },
     // 切换会员设置弹窗中的添加与下拉框
-    handleToChangeSetUpAdd (index) {
+    handleToChangeSetUpAdd(index) {
       switch (index) {
         case 0:
           this.setUpFalg_1 = false
@@ -1492,7 +1492,7 @@ export default {
       }
     },
     // 会员设置里删除cion点击
-    handleReadd (type, index) {
+    handleReadd(type, index) {
       console.log(index)
       console.log(this.setUpSelectVal_two)
       if (type === 0) {
@@ -1533,7 +1533,7 @@ export default {
       console.log(this.setUpSelectVal_two)
     },
     // 会员设置弹窗下拉框选中事件
-    handleSetUpSelect (index) {
+    handleSetUpSelect(index) {
       console.log(index)
       switch (index) {
         case 0:
@@ -1556,7 +1556,7 @@ export default {
       }
     },
     // 禁止登录 || 恢复登录
-    handleNoLanding (id, status) {
+    handleNoLanding(id, status) {
       this.userId = id
       if (status === 1) {
         this.noLandingDialogVisible = true
@@ -1566,7 +1566,7 @@ export default {
     },
 
     // 改变用户登录状态
-    changeLoginStatus () {
+    changeLoginStatus() {
       var isDelete
       if (this.noLandingDialogVisible) {
         isDelete = 1
@@ -1595,7 +1595,7 @@ export default {
       })
     },
     // 打标签
-    setTagForMember () {
+    setTagForMember() {
       // 关闭打标签弹窗
 
       this.labelDialogVisible = false
@@ -1615,7 +1615,7 @@ export default {
       })
     },
     // 获取用户标签
-    handleToLabel (userId) {
+    handleToLabel(userId) {
       // 获取当前用户所标记的标签
       let obj = {
         'userId': userId
@@ -1639,11 +1639,11 @@ export default {
       this.labelDialogVisible = true
     },
     // 打标签弹窗内的输入框建议处理事件
-    handleLabelSelect () {
+    handleLabelSelect() {
 
     },
     // 跳转到会员详情
-    hanldeToDetail (userId) {
+    hanldeToDetail(userId) {
       // this.ToTurnMemberShipDetail('memberDetail')
       this.$router.push({
         name: 'membershipInformation',
@@ -1653,23 +1653,23 @@ export default {
       })
     },
     // 成功消息弹框
-    getSuccessMessagePrompt () {
+    getSuccessMessagePrompt() {
       var message = this.$t('membershipIntroduction.success')
       this.$message.success({
         showClose: true,
         message: message,
-        type: 'success' })
+        type: 'success'      })
     },
     // 失败消息弹框
-    getFailMessagePrompt () {
+    getFailMessagePrompt() {
       var message = this.$t('membershipIntroduction.error')
       this.$message({
         showClose: true,
         message: message,
-        type: 'error' })
+        type: 'error'      })
     },
     // 点击表格中更多&&余额明细&&积分明细
-    handleToTurnMore (params, name, id) {
+    handleToTurnMore(params, name, id) {
       console.log(name)
       console.log(params)
       switch (params) {
@@ -1725,7 +1725,7 @@ export default {
   /* height: 100%; */
   overflow: hidden;
   overflow-y: auto;
-  padding: 15px 25px;
+  padding: 15px 15px;
 }
 .li {
   padding: 8px 0;
@@ -1866,11 +1866,13 @@ thead {
   border-color: inherit;
 }
 thead td {
-  background: #faf9f8;
+  background: #f5f5f5;
   text-align: center;
-  color: #333;
+  color: #000;
+  font-weight: bold;
   padding: 8px 10px;
   vertical-align: middle !important;
+  height: 36px;
 }
 
 thead td:nth-of-type(1) {

@@ -509,7 +509,7 @@
               label="适用商品"
               prop="useStore"
               class="userCardName"
-              v-if="cardType===0"
+              v-if="cardType===1"
             >
               <div class="useStoreDiv">
                 <el-radio
@@ -539,11 +539,11 @@
                     <span>运费策略：</span>
                     <el-radio
                       v-model="strategyRadio"
-                      label="1"
+                      label="0"
                     >免运费</el-radio>
                     <el-radio
-                      v-model="radio"
-                      strategyRadio="2"
+                      v-model="strategyRadio"
+                      label="1"
                     >使用商品运费策略</el-radio>
                   </div>
                   <div class="noneBlockList">
@@ -554,7 +554,10 @@
                       <img :src="$imageHost+'/image/admin/icon_jia.png'">
                       选择商品
                     </div>
-                    <div class="noneBlockRight">已选择商品：2件</div>
+                    <div
+                      class="noneBlockRight"
+                      v-if="suitebleGoods.length"
+                    >已选择商品：{{suitebleGoods.length}}件</div>
                     <div style="margin-left: 20px;color: #999;height:30px;line-height:30px">最多可选择20件</div>
                   </div>
                 </div>
@@ -586,13 +589,13 @@
               <!--点击部分门店时显示模块-->
               <div v-if="ruleForm.useStoreRadio==='1'">
                 <div
-                  v-if="chioseSureData.length"
+                  v-if="chooseStore.length"
                   class="table"
                 >
                   <el-table
                     class="version-manage-table"
                     header-row-class-name="tableClss"
-                    :data="chioseSureData"
+                    :data="chooseStore"
                     border
                     style="width: 40%"
                   >
@@ -651,6 +654,71 @@
             </el-form-item>
           </el-form>
         </div>
+
+        <div
+          class="gradeDiv"
+          v-if="cardType===2"
+        >
+          <div class="gradeDivTitle">升级设置</div>
+          <div class="gradeSet">
+            <div style="display:flex;justify-content: center">
+              <div>
+                <span class="must">*</span>
+                升级条件：
+              </div>
+
+              <div>
+                <p class="countPromptTwo">低等级用户满足升级条件会自动升级为高等级卡</p>
+                <div class="scoreReceiveDiv">
+                  <span>累积积分达到</span>
+                  <el-input
+                    v-model="ruleForm.name"
+                    size="small"
+                  ></el-input>
+                  <span>分</span>
+                </div>
+                <div>
+                  或
+                </div>
+                <div class="gradeConsumeDiv">
+                  <span style="white-space:nowrap;margin-right:25px">累积消费总额达到</span>
+                  <el-input
+                    v-model="ruleForm.name"
+                    size="small"
+                  ></el-input>
+                  <span style="color:#999;height:32px;line-height:32px;margin-left:5px">元</span>
+                  <span style="white-space:nowrap;color:#999;height:32px;line-height:32px">仅包含微信、余额支付</span>
+                </div>
+              </div>
+            </div>
+            <div class="userCardBox">
+              <div class="specialBox">
+                <div style="margin-right:5px">
+                  <span style="height:32px;line-height:32px;">*</span>会员卡等级:
+                </div>
+                <div>
+                  <el-select
+                    v-model="gradeValue"
+                    placeholder="请选择等级"
+                    size="small"
+                  >
+                    <el-option
+                      v-for="(item,index) in gradeOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                  <p style="color:#999;margin-top:5px">数字越大等级越高，当会员满足相应条件时会自动发放对应等级的会员卡</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
         <!--底部部分-->
         <div class="rightContainerBottom">
           <div class="rightTile">{{ $t('memberCard.getSetting') }}</div>
@@ -698,7 +766,7 @@
 
                   <div>
                     <el-radio
-                      v-model="ruleFormBottom.integralRadio"
+                      v-model="ruleFormBottom.cashRadio"
                       label="1"
                     >{{ $t('memberCard.scoreBuy') }}</el-radio>
                     <el-input
@@ -729,7 +797,7 @@
                           <span>{{ $t('memberCard.batchOne') }}</span>
                           <span>{{ $t('memberCard.batchName') }}</span>
                           <el-input
-                            v-model="ruleFormBottom.pcNameinput"
+                            v-model="codeAddDivArr[indexH].batchName"
                             size="small"
                           ></el-input>
                           <span
@@ -861,9 +929,18 @@
       @handleToGetBackData="handleBrandResult"
     />
     <!--添加门店弹窗-->
-    <ChioseStoreDialog />
+    <ChioseStoreDialog
+      :dialogVisible.sync="chooseStoreDialogFlag"
+      :storeBackData="chooseStore"
+      @getChoosedStore="dealWithChooseStore"
+    />
     <!--领取码弹窗-->
-    <ReceivingCodeDialog />
+    <ReceivingCodeDialog
+      :dialogVisible.sync="receiveCodeDialogVisible"
+      :batchName="currentBatchName"
+      :batchId="currentBatchId"
+      @generateReceiveCodeId="dealWithReceiveCodeId"
+    />
   </div>
 </template>
 <script>
@@ -914,7 +991,6 @@ export default {
       console.log(Number(value), flag)
       if (!this.ruleForm.discount) {
         callback()
-        return
       }
       if (value === '' || !reg.test(Number(value))) {
         callback(new Error('请输入0-10之间的数字'))
@@ -927,7 +1003,6 @@ export default {
       console.log(this.ruleForm.dateRadio)
       if (this.ruleForm.dateRadio !== '0') {
         callback()
-        return
       }
       if (!value) {
         callback(new Error('请输入有效期'))
@@ -940,14 +1015,16 @@ export default {
       if (this.ruleForm.dateRadio === '1') {
         if (value === '') {
           callback(new Error('请输入有效期'))
-        } else {
-          callback()
         }
       }
+      callback()
     }
     return {
+      currentBatchName: null,
+      currentBatchId: null,
       classFlag: null, // 区分商家分类和平台分类flag
       businessDialogVisible: false, // 商家分类和平台分类flag
+      receiveCodeDialogVisible: false,
       cardType: null,
       colorLeft_: '',
       defaultColorleft: '#fff',
@@ -983,7 +1060,7 @@ export default {
         bgFlag: 0,
         discount: true,
         discountInput: '',
-        allGoods: 1,
+        allGoods: '1',
         integralInputOne: '', // 开卡赠送积分
         vipFlag: false,
         shoppingFull: '0',
@@ -1107,9 +1184,12 @@ export default {
       treeType: null,
       AtreeType: null,
       codeArr: [],
-      codeAddDivArr: ['null'],
+      codeAddDivArr: [{ batchName: null, batchId: null }],
+      receiveCodeTmpIndex: 0,
       codeAddDivArrBottom: ['null'],
       chioseSureData: [],
+      chooseStore: [],
+      chooseStoreDialogFlag: false,
       userDialogFlag: null,
       addBrandDialogDataFlag1: '', // 指定商品-添加品牌弹窗选中数据
       shopAndPlatformBackDataArr: null, // 商家，平台弹窗的数据传输载体
@@ -1127,14 +1207,29 @@ export default {
       callAddBrandDialogSignal: false, // 品牌弹窗显示信号标记
       choosingGoodsDateFlag2: '', // 会员专享-选择商品选中数据
       tuneUp: false,
+      limitFlag: false,
       couponBack: '',
       // 限次卡出现的隐藏模块调试字段
       limitCardRadio: '0', // 试用商品radio
       limitCardInput: '', // 允许兑换input
       strategyRadio: '0', // 运费策略radio
+      suitebleGoods: [],
+      currentFlag: '',
       chioseGoodsList: [
         { goodsId: 1 }
-      ]
+      ],
+      gradeOptions: [
+        { label: 'v1', value: 'v1' },
+        { label: 'v2', value: 'v2' },
+        { label: 'v3', value: 'v3' },
+        { label: 'v4', value: 'v4' },
+        { label: 'v5', value: 'v5' },
+        { label: 'v6', value: 'v6' },
+        { label: 'v7', value: 'v7' },
+        { label: 'v8', value: 'v8' },
+        { label: 'v9', value: 'v9' }
+      ],
+      gradeValue: null
     }
   },
   filters: {
@@ -1173,10 +1268,11 @@ export default {
       console.log(this.codeArr)
     },
     'ruleForm.dateRadio' (newData) {
+      console.log(newData)
       this.$refs['ruleForm'].validate((valid) => {
+        console.log(valid)
         if (valid) {
-          alert('submit!')
-          this.$refs['ruleForm'].resetFields()
+          // this.$refs['ruleForm'].resetFields()
         } else {
           console.log('error submit!!')
           return false
@@ -1322,14 +1418,20 @@ export default {
         'endTime': this.ruleForm.fixedDate ? this.ruleForm.fixedDate[1] : null,
         'receiveDay': this.ruleForm.fromDateInput,
         'dateType': this.ruleForm.dateSelectvalue,
+        'isExchange': this.limitCardRadio,
+        'exchangCount': this.limitCardInput,
+        'exchangFreight': this.strategyRadio,
+        'exchangGoods': this.suitebleGoods,
         'storeListType': this.ruleForm.useStoreRadio,
-        'storeList': [],
+        'storeList': this.chooseStore.map(({ storeId }) => storeId),
         'desc': this.ruleForm.textarea,
         'mobile': this.ruleForm.phoneNuminput,
         'isPay': this.ruleFormBottom.isBuyRadio,
         'payType': this.ruleFormBottom.cashRadio,
         'payMoney': this.ruleFormBottom.cashInput,
         'payScore': this.ruleFormBottom.integralInputTwo,
+        'batchIdList': this.codeAddDivArr.map(({ batchId }) => batchId),
+        'receiveAction': this.ruleFormBottom.needGetRadio,
         'activation': this.ruleFormBottom.activationRadio,
         'activationCfgBox': this.ruleFormBottom.checkList,
         'examine': this.ruleFormBottom.examineRadio
@@ -1396,7 +1498,6 @@ export default {
       }
       getCardDetailInfoRequest(obj).then(res => {
         console.log(res)
-
         if (res.error === 0) {
           // success
           // bind data from backend to frontend
@@ -1415,74 +1516,77 @@ export default {
       this.baImgUrl = data.bgImg
       this.ruleForm.discount = data.powerCount === 1
       this.ruleForm.discountInput = data.disCount
-      this.ruleForm.allGoods = String(data.discountIsAll)
+
+      this.ruleForm.allGoods = data.discountIsAll ? String(data.discountIsAll) : this.ruleForm.allGoods
+      console.log(this.ruleForm.allGoods)
       this.ruleForm.vipFlag = data.powerPayOwnGood === 'on'
       // 指定商品 - 商品id
-      if (data.goodsId.length > 0) {
-        this.choosingGoodsDateFlag1 = data.goodsId
-        this.noneBlockDiscArr[0].num = data.goodsId.length
-      }
+
+      this.choosingGoodsDateFlag1 = data.goodsId ? data.goodsId : []
+      this.noneBlockDiscArr[0].num = data.goodsId ? data.goodsId.length : 0
+
       // 指定商品 - 商家id
-      if (data.shopCategoryIds.length > 0) {
-        this.shopCategoryIds = data.shopCategoryIds
-        this.noneBlockDiscArr[1].num = data.shopCategoryIds.length
-      }
+
+      this.shopCategoryIds = data.shopCategoryIds ? data.shopCategoryIds : []
+      this.noneBlockDiscArr[1].num = data.shopCategoryIds ? data.shopCategoryIds.length : 0
+
       // 指定商品 - 平台id
-      if (data.platformCategoryIds.length > 0) {
-        this.platformCategoryIds = data.platformCategoryIds
-        this.noneBlockDiscArr[2].num = data.platformCategoryIds.length
-      }
+
+      this.platformCategoryIds = data.platformCategoryIds ? data.platformCategoryIds : []
+      this.noneBlockDiscArr[2].num = data.platformCategoryIds ? data.platformCategoryIds.length : 0
 
       // 指定品牌 - 品牌id
-      if (data.brandId.length > 0) {
-        this.chioseSureData = data.brandId.map(item => Number(item))
-        this.noneBlockDiscArr[3].num = data.brandId.length
+
+      this.chioseSureData = data.brandId ? data.brandId.map(item => Number(item)) : []
+      this.noneBlockDiscArr[3].num = data.brandId ? data.brandId.length : 0
+
+      this.ownGoodsId = data.ownGoodsId ? data.ownGoodsId : []
+      this.noneBlockVipArr[0].num = data.ownGoodsId ? data.ownGoodsId.length : 0
+
+      this.ownStoreCategoryIds = data.ownStoreCategoryIds ? data.ownStoreCategoryIds : []
+      this.noneBlockVipArr[1].num = data.ownStoreCategoryIds ? data.ownStoreCategoryIds.length : 0
+
+      this.ownPlatFormCategoryIds = data.ownPlatFormCategoryIds ? data.ownPlatFormCategoryIds : []
+      this.noneBlockVipArr[2].num = data.ownPlatFormCategoryIds ? data.ownPlatFormCategoryIds.length : 0
+
+      this.ownBrandId = data.ownBrandId ? data.ownBrandId : []
+      this.noneBlockVipArr[3].num = data.ownBrandId ? data.ownBrandId.length : 0
+
+      this.chooseStore = []
+      if (data.storeList) {
+        this.chooseStore = data.storeList.map(({ value, label }) => {
+          return { storeId: value, storeName: label }
+        })
       }
-
-      this.ownGoodsId = data.ownGoodsId
-      this.noneBlockDiscArr[1].num = data.brandId.length
-
-      this.ownGoodsId = data.ownGoodsId
-      this.noneBlockVipArr[0].num = data.ownGoodsId.length ? data.ownGoodsId.length : 0
-
-      this.ownStoreCategoryIds = data.ownStoreCategoryIds
-      this.noneBlockVipArr[1].num = data.ownStoreCategoryIds.length ? data.ownStoreCategoryIds.length : 0
-
-      this.ownPlatFormCategoryIds = data.ownPlatFormCategoryIds
-      this.noneBlockVipArr[2].num = data.ownPlatFormCategoryIds.length ? data.ownPlatFormCategoryIds.length : 0
-
-      this.ownBrandId = data.ownBrandId
-      this.noneBlockVipArr[3].num = data.ownBrandId.length ? data.ownBrandId.length : 0
-
-      this.ruleForm.intGet = data.powerScore === 1
+      console.log(this.chooseStore)
+      this.ruleForm.intGet = data.powerScore ? data.powerScore === 1 : true
       this.ruleForm.integralInputOne = data.score
-      this.ruleForm.shoppingFull = String(data.scoreJson.offset)
-      this.goodsMoney = data.scoreJson.goodsMoney
-      this.getScores = data.scoreJson.getScores
+
+      this.ruleForm.shoppingFull = data.scoreJson ? String(data.scoreJson.offset) : '0'
+      this.goodsMoney = data.scoreJson ? data.scoreJson.goodsMoney : []
+      this.getScores = data.scoreJson ? data.scoreJson.getScores : []
 
       this.ruleForm.shopingInputLeftM = data.perGoodsMoney
       this.ruleForm.shopingInputReftM = data.perGetScores
-      this.ruleForm.cardRechargeFlag = data.powerCard === 1
+      this.ruleForm.cardRechargeFlag = data.powerCard ? data.powerCard === 1 : true
       this.ruleForm.cardRechargeInput = data.sendMoney
-      this.ruleForm.rechargeInput = String(data.powerCardJson.offsetMoney)
-      this.money = data.powerCardJson.money
-      this.getMoney = data.powerCardJson.getMoney
-      this.ruleForm.rechargeInputLeftM = data.powerCardJson.perMoney
-      this.ruleForm.rechargeInputReftM = data.powerCardJson.perGetMoney
-      this.ruleForm.dateRadio = String(data.expireType)
-      // this.ruleForm.fixedDate[0] = data.startTime
-      // this.ruleForm.fixedDate[1] = data.endTime
+      this.ruleForm.rechargeInput = data.powerCardJson ? String(data.powerCardJson.offsetMoney) : '2'
+      this.money = data.powerCardJson ? data.powerCardJson.money : this.money
+      this.getMoney = data.powerCardJson ? data.powerCardJson.getMoney : this.getMoney
+      this.ruleForm.rechargeInputLeftM = data.powerCardJson ? data.powerCardJson.perMoney : this.ruleForm.rechargeInputLeftM
+      this.ruleForm.rechargeInputReftM = data.powerCardJson ? data.powerCardJson.perGetMoney : this.ruleForm.rechargeInputReftM
+      this.ruleForm.dateRadio = data.expireType ? String(data.expireType) : this.ruleForm.dateRadio
+
       this.ruleForm.fixedDate = [data.startTime, data.endTime]
-      // this.ruleForm.fixedDate = ['2019-10-17 00:00:00', '2019-11-12 23:59:59']
       console.log(this.ruleForm.fixedDate)
       this.ruleForm.fromDateInput = data.receiveDay
-      this.ruleForm.dateSelectvalue = data.dateType
-      this.ruleForm.useStoreRadio = data.storeListType
+      this.ruleForm.dateSelectvalue = String(data.dateType)
+      this.ruleForm.useStoreRadio = String(data.storeListType)
       this.ruleForm.textarea = data.desc
       this.ruleForm.phoneNuminput = data.mobile
       this.ruleFormBottom.isBuyRadio = String(data.isPay)
       this.ruleFormBottom.cashRadio = String(data.payType)
-      this.ruleFormBottom.cashInput = String(data.payMoney)
+      this.ruleFormBottom.cashInput = data.payMoney ? data.payMoney : ''
       this.ruleFormBottom.integralInputTwo = data.payScore
       this.ruleFormBottom.activationRadio = String(data.activation)
       this.ruleFormBottom.examineRadio = String(data.examine)
@@ -1490,7 +1594,31 @@ export default {
       // 优惠券
       this.ruleForm.sendingPaperFlag = data.sendCouponSwitch === 1
       this.ruleForm.couponDiv = String(data.sendCouponType + 1)
-      this.couponList = data.couponList
+      this.couponList = data.couponList ? data.couponList : this.couponList
+
+      console.log(this.codeAddDivArr)
+
+      // 适用商品
+
+      this.limitCardRadio = data.isExchange ? String(data.isExchange) : this.limitCardRadio
+      this.limitCardInput = data.exchangCount ? data.exchangCount : this.limitCardInput
+      this.strategyRadio = data.exchangFreight ? String(data.exchangFreight) : this.strategyRadio
+      this.suitebleGoods = data.exchangGoods ? data.exchangGoods : this.suitebleGoods
+
+      // 领取码
+      if (data.batchList) {
+        if (data.batchList.length > 0) {
+          this.codeAddDivArr = []
+          data.batchList.forEach(item => {
+            this.codeAddDivArr.push({ batchName: item.name, batchId: item.batchId })
+          })
+        }
+      } else {
+        this.codeAddDivArr = [{ batchName: null, batchId: null }]
+      }
+      console.log(this.codeAddDivArr)
+      this.ruleFormBottom.needGetRadio = data.receiveAction === 0 ? '1' : String(data.receiveAction)
+
       // 处理json数据
       this.dealWithDataFromBackEnd()
     },
@@ -1524,6 +1652,8 @@ export default {
       }
       console.log(this.money, this.getMoney)
       // 优惠券
+
+      console.log(this.couponList)
       this.couponIds = this.couponList.map(({ id }) => id)
     },
     // 8-1 处理从后端获取的数据
@@ -1561,6 +1691,7 @@ export default {
     // 9- 更新会员卡信息
     updateCardInfo (data) {
       updateCardRequest(data).then(res => {
+        console.log(res)
         if (res.error === 0) {
           // success
           this.successOptions()
@@ -1581,14 +1712,19 @@ export default {
     // 11- 获取会员权益选择商品弹窗的商品id
     getGoodsIdFromChoosingGoods (data) {
       console.log(data)
-      if (this.userDialogFlag === '1') {
-        // 折扣商品
-        this.choosingGoodsDateFlag1 = data
-        this.noneBlockDiscArr[0].num = data.length
+      if (this.currentFlag === 'limit') {
+        this.currentFlag = ''
+        this.suitebleGoods = data
       } else {
-        // 专享商品
-        this.ownGoodsId = data
-        this.noneBlockVipArr[0].num = data.length
+        if (this.userDialogFlag === '1') {
+          // 折扣商品
+          this.choosingGoodsDateFlag1 = data
+          this.noneBlockDiscArr[0].num = data.length
+        } else {
+          // 专享商品
+          this.ownGoodsId = data
+          this.noneBlockVipArr[0].num = data.length
+        }
       }
     },
     // 12- 接收四个弹窗的信息
@@ -1789,17 +1925,26 @@ export default {
     },
     // 调起添加门店弹窗
     handleToCallChioseStore () {
-      this.$http.$emit('CallChioseStore')
+      this.chooseStoreDialogFlag = true
+      // this.$http.$emit('CallChioseStore')
     },
     // 调起领取码弹窗
     handleCallCodeDialog (index, indexH) {
       switch (index) {
         case 0:
 
-          this.$http.$emit('CallCodeDialog')
+          console.log(this.codeAddDivArr[indexH].batchName)
+          if (!this.codeAddDivArr[indexH].batchName) {
+            this.$message.error('请填写批次名称')
+            break
+          }
+          this.receiveCodeDialogVisible = true
+          this.receiveCodeTmpIndex = indexH
+          this.currentBatchName = this.codeAddDivArr[indexH].batchName
+          this.currentBatchId = this.codeAddDivArr[indexH].batchId
           break
         case 1:
-          this.codeAddDivArr.push('null')
+          this.codeAddDivArr.push({ batchName: null, batchId: null })
           break
         case 2:
           if (this.codeAddDivArr.length === 1) {
@@ -1836,7 +1981,7 @@ export default {
     handleToStoreRowDel (row) {
       console.log(row.$index)
       let { $index } = row
-      this.chioseSureData.splice($index, 1)
+      this.chooseStore.splice($index, 1)
     },
     // 商品分类和平台分类弹窗选中回传数据
     BusClassTrueArr (data) {
@@ -1882,9 +2027,22 @@ export default {
     },
     // 限次会员卡中显示的适用商品里面的选择商品调起事件
     handleToCallGoodsDialog (flag) {
-
+      // 商品弹窗显示
+      this.currentFlag = flag
+      this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
+      this.choosingGoodsDateTmpContainer = this.suitebleGoods
+    },
+    dealWithReceiveCodeId (id) {
+      console.log(id, this.receiveCodeDialogVisible)
+      this.codeAddDivArr[this.receiveCodeTmpIndex].batchId = id
+      console.log(this.codeAddDivArr)
+    },
+    dealWithChooseStore (data) {
+      this.chooseStore = data.map(({ storeId, storeName }) => {
+        return { storeId, storeName }
+      })
+      console.log(this.chooseStore)
     }
-
   }
 }
 </script>
@@ -2352,6 +2510,68 @@ export default {
     }
   }
 }
+
+.gradeDiv {
+  background: #f8f8f8;
+  border: 1px solid #e4e4e4;
+  padding-left: 10px;
+  margin-bottom: 10px;
+  .gradeDivTitle {
+    line-height: 38px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 7px;
+  }
+}
+.userCardBox {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  .specialBox {
+    width: 547px;
+    display: flex;
+  }
+}
+.must {
+  color: red;
+}
+.gradeSet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.countPromptTwo {
+  color: #999;
+}
+.scoreReceiveDiv {
+  margin-top: 10px;
+  display: flex;
+  width: 300px;
+}
+.scoreReceiveDiv span:first-child {
+  line-height: 33px;
+  min-width: 90px;
+}
+
+.scoreReceiveDiv span:last-child {
+  line-height: 33px;
+  margin-left: 10px;
+}
+.gradeConsumeDiv {
+  display: flex;
+}
+
+.gradeConsumeDiv span:first-child {
+  line-height: 33px;
+  min-width: 90px;
+}
+
+.gradeConsumeDiv span:nth-child(2) {
+  color: red;
+  line-height: 33px;
+  margin-left: 10px;
+}
+
 .footer {
   background: #f8f8fa;
   border-top: 1px solid #f2f2f2;
