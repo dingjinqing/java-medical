@@ -441,8 +441,8 @@ public class OrderConstant {
     /**
      * table : b2c_customer_avail_coupons type 1为减价，2为打折
      */
-    public static final byte T_CAC_TYPE_REDUCTION = 1;
-    public static final byte T_CAC_TYPE_DISCOUNT = 2;
+    public static final byte T_CAC_TYPE_REDUCTION = 0;
+    public static final byte T_CAC_TYPE_DISCOUNT = 1;
 
     /**
      *  默认运费模板 0：统一运费，1：满额包邮，
