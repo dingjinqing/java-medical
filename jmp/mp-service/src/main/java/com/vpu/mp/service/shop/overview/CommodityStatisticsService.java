@@ -1,8 +1,6 @@
 package com.vpu.mp.service.shop.overview;
 
 import com.vpu.mp.db.shop.tables.GoodsOverviewSummary;
-import com.vpu.mp.db.shop.tables.UserCollection;
-import com.vpu.mp.db.shop.tables.WxShoppingRecommend;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -40,7 +38,6 @@ import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.divideWithOutCheck;
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
-import static com.vpu.mp.service.shop.overview.RealTimeOverviewService.div;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.jooq.impl.DSL.*;
 
@@ -259,7 +256,7 @@ public class CommodityStatisticsService extends ShopBaseService {
      */
     public PageResult<ProductEffectVo> fixedDayEffect(ProductEffectParam param) {
         /** 必要筛选条件 */
-        Condition baseCondition = (GOODS_SUMMARY.REF_DATE.eq(new Date(Util.getEarlyTimeStamp(new java.util.Date(), -1).getTime())))
+        Condition baseCondition = (GOODS_SUMMARY.REF_DATE.eq(DateUtil.yyyyMmDdDate(LocalDate.now())))
             .and(GOODS_SUMMARY.TYPE.eq(param.getDynamicDate()));
         SelectJoinStep<?> joinStep = db().select(GOODS_SUMMARY.GOODS_ID
             , GOODS.GOODS_NAME
@@ -271,7 +268,13 @@ public class CommodityStatisticsService extends ShopBaseService {
             , GOODS_SUMMARY.UV
             , GOODS_SUMMARY.CART_UV
             , GOODS_SUMMARY.PAID_UV
-            , GOODS_SUMMARY.PAID_GOODS_NUMBER)
+            , GOODS_SUMMARY.PAID_GOODS_NUMBER
+            , GOODS_SUMMARY.GOODSSALES
+            , GOODS_SUMMARY.GOODSRECOMMENDUSERNUM
+            , GOODS_SUMMARY.GOODSCOLLECTUSERNUM
+            , GOODS_SUMMARY.GOODSSHAREPV
+            , GOODS_SUMMARY.GOODSSHAREUV
+        )
             .from(GOODS_SUMMARY)
             .leftJoin(GOODS)
             .on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID));
@@ -279,9 +282,9 @@ public class CommodityStatisticsService extends ShopBaseService {
         PageResult<ProductEffectVo> pageResult = this.getPageResult(createEffectSelect(param, joinStep, baseCondition, true), param.getCurrentPage(), param.getPageRows(), ProductEffectVo.class);
 
         for (ProductEffectVo vo : pageResult.dataList) {
-            vo.setNewUserPercentage(div(vo.getPaidUv(), vo.getNewUserNumber()));
-            vo.setOldUserPercentage(div(vo.getPaidUv(), vo.getOldUserNumber()));
-            vo.setUv2paidGoods(div(vo.getUv(), vo.getPaidGoodsNumber()));
+            vo.setNewUserPercentage(BigDecimalUtil.divideWithOutCheck(vo.getNewUserNumber(), vo.getPaidUv()));
+            vo.setOldUserPercentage(BigDecimalUtil.divideWithOutCheck(vo.getOldUserNumber(), vo.getPaidUv()));
+            vo.setUv2paidGoods(BigDecimalUtil.divideWithOutCheck(vo.getPaidGoodsNumber(), vo.getUv()));
         }
         return pageResult;
     }
@@ -300,7 +303,7 @@ public class CommodityStatisticsService extends ShopBaseService {
      * @return the page result
      */
     public PageResult<ProductEffectVo> customizeDayEffect(ProductEffectParam param) {
-        /** 必要筛选条件 */
+        // 必要筛选条件
         Condition baseCondition = (GOODS_SUMMARY.REF_DATE.greaterOrEqual(new Date(param.getStartTime().getTime())))
             .and(GOODS_SUMMARY.REF_DATE.lessThan(new Date(param.getEndTime().getTime())))
             .and(GOODS_SUMMARY.TYPE.eq((byte) 1));
@@ -314,39 +317,23 @@ public class CommodityStatisticsService extends ShopBaseService {
             , sum(GOODS_SUMMARY.UV).as("uv")
             , sum(GOODS_SUMMARY.CART_UV).as("cartUv")
             , sum(GOODS_SUMMARY.PAID_UV).as("paidUv")
-            , sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber"))
+            , sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber")
+            , sum(GOODS_SUMMARY.GOODSSALES).as("goodsSales")
+            , sum(GOODS_SUMMARY.GOODSRECOMMENDUSERNUM).as("goodsRecommendUserNum")
+            , sum(GOODS_SUMMARY.GOODSCOLLECTUSERNUM).as("goodsCollectUserNum")
+            , sum(GOODS_SUMMARY.GOODSSHAREPV).as("goodsSharePv")
+            , sum(GOODS_SUMMARY.GOODSSHAREUV).as("goodsShareUv")
+        )
             .from(GOODS_SUMMARY)
             .leftJoin(GOODS)
             .on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID));
         PageResult<ProductEffectVo> pageResult = this.getPageResult(createEffectSelect(param, joinStep, baseCondition, false), param.getCurrentPage(), param.getPageRows(), ProductEffectVo.class);
         for (ProductEffectVo vo : pageResult.dataList) {
-            vo.setNewUserPercentage(div(vo.getPaidUv(), vo.getNewUserNumber()));
-            vo.setOldUserPercentage(div(vo.getPaidUv(), vo.getOldUserNumber()));
-            vo.setUv2paidGoods(div(vo.getUv(), vo.getPaidGoodsNumber()));
-            vo.setRecommendUserNum(recommendUserNum(param, vo.getGoodsId()));
-            vo.setCollectUserNum(collectUserNum(param, vo.getGoodsId()));
+            vo.setNewUserPercentage(BigDecimalUtil.divideWithOutCheck(vo.getNewUserNumber(), vo.getPaidUv()));
+            vo.setOldUserPercentage(BigDecimalUtil.divideWithOutCheck(vo.getOldUserNumber(), vo.getPaidUv()));
+            vo.setUv2paidGoods(BigDecimalUtil.divideWithOutCheck(vo.getPaidGoodsNumber(), vo.getUv()));
         }
         return pageResult;
-    }
-
-    /**
-     * 推荐用户数
-     */
-    private int recommendUserNum(ProductEffectParam param, int goodsId) {
-        WxShoppingRecommend wsr = WxShoppingRecommend.WX_SHOPPING_RECOMMEND.as("wsr");
-        return db().select(count(wsr.USER_ID)).from(wsr).where(wsr.CREATE_TIME.greaterOrEqual(Util.getEarlyTimeStamp(param.getStartTime(), 0)))
-            .and(wsr.CREATE_TIME.lessOrEqual(Util.getEarlyTimeStamp(param.getEndTime(), 0)))
-            .and(wsr.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(0);
-    }
-
-    /**
-     * 商品收藏人数
-     */
-    private int collectUserNum(ProductEffectParam param, int goodsId) {
-        UserCollection uc = UserCollection.USER_COLLECTION.as("uc");
-        return db().select(countDistinct(uc.USER_ID)).from(uc).where(uc.CREATE_TIME.greaterOrEqual(Util.getEarlyTimeStamp(param.getStartTime(), 0)))
-            .and(uc.CREATE_TIME.lessOrEqual(Util.getEarlyTimeStamp(param.getEndTime(), 0)))
-            .and(uc.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
@@ -358,20 +345,18 @@ public class CommodityStatisticsService extends ShopBaseService {
      * @param isFixedDay    true为指定时间，false为自定义时间
      * @return select limit step
      */
-    public SelectLimitStep<?> createEffectSelect(ProductEffectParam param, SelectJoinStep<?> joinStep, Condition baseCondition, boolean isFixedDay) {
-        /** 按照goods_id分组求和各个字段的值 */
-
+    private SelectLimitStep<?> createEffectSelect(ProductEffectParam param, SelectJoinStep<?> joinStep, Condition baseCondition, boolean isFixedDay) {
         Optional<String> field = Optional.ofNullable(param.getOrderByField());
         Optional<String> sortType = Optional.ofNullable(param.getOrderByType());
-        /** 动态排序字段，规则 */
+        // 动态排序字段，规则
         SortField<?> sortField = getSortField(field, sortType);
 
-        /** 查询筛选条件，商品品牌，商家分类 */
+        // 查询筛选条件，商品品牌，商家分类
         Condition brandCondition = GOODS.BRAND_ID.eq(param.getBrandId());
         Condition sortCondition = GOODS.SORT_ID.eq(param.getSortId());
 
-        /** 标签条件 */
-        Condition labelCondtion = GOODS_LABEL_COUPLE.ID.eq(param.getLabelId()).and(GOODS_LABEL_COUPLE.TYPE.eq((byte) 1));
+        //  标签条件
+        Condition labelCondtion = GOODS_LABEL_COUPLE.ID.eq(param.getLabelId()).and(GOODS_LABEL_COUPLE.TYPE.eq(BYTE_ONE));
 
         if (param.getBrandId() > 0) {
             baseCondition = baseCondition.and(brandCondition);
@@ -412,7 +397,13 @@ public class CommodityStatisticsService extends ShopBaseService {
             , GOODS_SUMMARY.UV
             , GOODS_SUMMARY.CART_UV
             , GOODS_SUMMARY.PAID_UV
-            , GOODS_SUMMARY.PAID_GOODS_NUMBER)
+            , GOODS_SUMMARY.PAID_GOODS_NUMBER
+            , GOODS_SUMMARY.GOODSSALES
+            , GOODS_SUMMARY.GOODSRECOMMENDUSERNUM
+            , GOODS_SUMMARY.GOODSCOLLECTUSERNUM
+            , GOODS_SUMMARY.GOODSSHAREPV
+            , GOODS_SUMMARY.GOODSSHAREUV
+            )
                 .from(GOODS_SUMMARY)
                 .leftJoin(GOODS)
                 .on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID))
@@ -430,7 +421,13 @@ public class CommodityStatisticsService extends ShopBaseService {
                 , sum(GOODS_SUMMARY.UV).as("uv")
                 , sum(GOODS_SUMMARY.CART_UV).as("cartUv")
                 , sum(GOODS_SUMMARY.PAID_UV).as("paidUv")
-                , sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber"))
+                , sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber")
+                , sum(GOODS_SUMMARY.GOODSSALES).as("goodsSales")
+                , sum(GOODS_SUMMARY.GOODSRECOMMENDUSERNUM).as("goodsRecommendUserNum")
+                , sum(GOODS_SUMMARY.GOODSCOLLECTUSERNUM).as("goodsCollectUserNum")
+                , sum(GOODS_SUMMARY.GOODSSHAREPV).as("goodsSharePv")
+                , sum(GOODS_SUMMARY.GOODSSHAREUV).as("goodsShareUv")
+            )
                 .from(GOODS_SUMMARY)
                 .leftJoin(GOODS)
                 .on(GOODS.GOODS_ID.eq(GOODS_SUMMARY.GOODS_ID)), (GOODS_SUMMARY.REF_DATE.greaterOrEqual(new Date(param.getStartTime().getTime())))

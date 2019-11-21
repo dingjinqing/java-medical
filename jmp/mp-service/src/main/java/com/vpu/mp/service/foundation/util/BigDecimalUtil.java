@@ -1,9 +1,12 @@
 package com.vpu.mp.service.foundation.util;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
 
 /**
  * 	扩展BigDecimal
@@ -101,6 +104,25 @@ public class BigDecimalUtil {
             return BigDecimal.ZERO;
         }
         return left.divide(right, 2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * BigDecimal除法：精度保留小数点后两位，采取四舍五入
+     *
+     * @param left  left
+     * @param right right
+     * @return value left/right为null,为0直接返回0.00
+     */
+    static public BigDecimal divideWithOutCheck(Object left, Object right) {
+        if (left == null || StringUtils.isBlank(left.toString()) || STRING_ZERO.equals(left.toString())) {
+            return BigDecimal.ZERO;
+        }
+        if (right == null || StringUtils.isBlank(right.toString()) || STRING_ZERO.equals(right.toString())) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal tempLeft = new BigDecimal(left.toString());
+        BigDecimal tempRight = new BigDecimal(right.toString());
+        return tempLeft.divide(tempRight, 2, RoundingMode.HALF_UP);
     }
 
     /**

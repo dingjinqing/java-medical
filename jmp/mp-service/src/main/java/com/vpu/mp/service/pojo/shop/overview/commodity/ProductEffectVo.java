@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.overview.commodity;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author liufei
  * @date 2019/7/22
@@ -16,7 +18,7 @@ public class ProductEffectVo {
     /** 商品图片 */
     private String goodsImg;
     /** 商品价格 */
-    private double shopPrice;
+    private BigDecimal shopPrice;
     /**  新成交客户数  */
     private  int newUserNumber;
     /**  老成交客户数  */
@@ -32,13 +34,25 @@ public class ProductEffectVo {
     /**  付款商品件数  */
     private  int paidGoodsNumber;
     /**  新成交客户数占比  */
-    private double newUserPercentage;
+    private BigDecimal newUserPercentage;
     /**  老成交客户数占比  */
-    private double oldUserPercentage;
+    private BigDecimal oldUserPercentage;
     /**  商品转化率  */
-    private double uv2paidGoods;
+    private BigDecimal uv2paidGoods;
     /**  推荐人数  */
-    private Integer recommendUserNum;
+    private int goodsRecommendUserNum;
     /**  收藏人数  */
-    private Integer collectUserNum;
+    private int goodsCollectUserNum;
+    /**
+     * 分享次数
+     */
+    private int goodsSharePv;
+    /**
+     * 分享人数
+     */
+    private int goodsShareUv;
+    /**
+     * 销售额
+     */
+    private BigDecimal goodsSales;
 }
