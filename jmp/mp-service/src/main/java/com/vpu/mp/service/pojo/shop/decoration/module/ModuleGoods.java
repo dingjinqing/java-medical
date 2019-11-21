@@ -99,6 +99,7 @@ public class ModuleGoods extends ModuleBase {
     @JsonProperty("min_price")
     private BigDecimal minPrice;
 
+    @JsonProperty("other_message")
     private Byte otherMessage;
     /**
      * 0 自动推荐 1手动推荐
@@ -106,12 +107,15 @@ public class ModuleGoods extends ModuleBase {
     @JsonProperty("recommend_type")
     private Byte recommendType;
 
+    @JsonProperty("show_market")
     private Byte showMarket;
 
+    @JsonProperty("sort_type")
     private Byte sortType;
 
     private String title;
 
+    @JsonProperty("title_link")
     private String titleLink;
 
     private List<?> goodsListData;
