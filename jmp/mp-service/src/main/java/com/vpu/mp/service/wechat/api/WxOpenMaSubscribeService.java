@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.JsonObject;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
@@ -127,13 +128,15 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 	 */
 	default WxOpenMaSubScribeGeKeywordResult getPubTemplateKeyWordsById(String appId, String tid)
 			throws WxErrorException {
-		StringBuilder data = new StringBuilder();
-		try {
-			data.append("tid=" + URLEncoder.encode(tid, "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		String json = post(appId, WX_SUBSCRIBE_GET_TEMPLATE_KEYWORDS, data.toString());
+//		StringBuilder data = new StringBuilder();
+//		try {
+//			data.append("tid=" + URLEncoder.encode(tid, "UTF-8"));
+//		} catch (UnsupportedEncodingException e) {
+//			e.printStackTrace();
+//		}
+		JsonObject param = new JsonObject();
+		param.addProperty("tid", tid);
+		String json = post(appId, WX_SUBSCRIBE_GET_TEMPLATE_KEYWORDS, param.toString());
 		return WxOpenMaSubScribeGeKeywordResult.fromJson(json);
 	}
 
