@@ -128,15 +128,13 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 	 */
 	default WxOpenMaSubScribeGeKeywordResult getPubTemplateKeyWordsById(String appId, String tid)
 			throws WxErrorException {
-//		StringBuilder data = new StringBuilder();
-//		try {
-//			data.append("tid=" + URLEncoder.encode(tid, "UTF-8"));
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		}
-		JsonObject param = new JsonObject();
-		param.addProperty("tid", tid);
-		String json = post(appId, WX_SUBSCRIBE_GET_TEMPLATE_KEYWORDS, param.toString());
+		StringBuilder data = new StringBuilder();
+		try {
+			data.append("tid=" + URLEncoder.encode(tid, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		String json = get(appId, WX_SUBSCRIBE_GET_TEMPLATE_KEYWORDS, data.toString());
 		return WxOpenMaSubScribeGeKeywordResult.fromJson(json);
 	}
 
@@ -160,7 +158,7 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		String json = post(appId, WX_SUBSCRIBE_GET_TEMPLATE_TITLE, data.toString());
+		String json = get(appId, WX_SUBSCRIBE_GET_TEMPLATE_TITLE, data.toString());
 		return WxOpenMaSubScribeGetTemplateTitleResult.fromJson(json);
 	}
 
