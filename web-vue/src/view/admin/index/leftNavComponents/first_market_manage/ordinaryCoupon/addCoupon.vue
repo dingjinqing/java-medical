@@ -818,13 +818,13 @@ export default {
           // 可使用商品
           this.param.suitGoods = data.suitGoods
           this.goodsInfo = data.recommendGoodsId.split(',')
-          this.goodsInfo = this.goodsInfo.map(Number)
+          // this.goodsInfo = this.goodsInfo.map(Number)
 
           this.busClass = data.recommendCatId.split(',')
-          this.busClass = this.busClass.map(Number)
+          // this.busClass = this.busClass.map(Number)
 
           this.platClass = data.recommendSortId.split(',')
-          this.platClass = this.platClass.map(Number)
+          // this.platClass = this.platClass.map(Number)
           // 说明
           this.param.useExplain = data.useExplain
         }

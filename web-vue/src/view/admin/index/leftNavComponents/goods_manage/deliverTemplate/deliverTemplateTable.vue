@@ -7,8 +7,8 @@
     >
       <section
         class="list"
-        v-for="(item,i) in lists"
-        :key="i"
+        v-for="(item,index) in lists"
+        :key="index"
       >
         <section class="table_header">
           <section class="left"></section>
@@ -32,8 +32,45 @@
         </section>
         <section class="table_list">
           <!-- 表格 -->
+          <el-table
+            border
+            :data="item.templateContent.areaParam"
+            v-if="item.templateContent !== null"
+          >
+            <el-table-column
+              prop="area_text"
+              label="可配送区域"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="first_num"
+              label="首件（件）"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="first_fee"
+              label="运费（元）"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="continue_num"
+              label="续件（件）"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="continue_fee"
+              label="续费（元）"
+              align="center"
+            >
+            </el-table-column>
+          </el-table>
+
           <table border="1">
-            <thead>
+            <!-- <thead>
               <tr>
                 <th>可配送区域</th>
                 <th>首件（件）</th>
@@ -41,17 +78,17 @@
                 <th>续件（件）</th>
                 <th>续费（元）</th>
               </tr>
-            </thead>
+            </thead> -->
             <tbody>
-              <tr v-show="item.templateContent[0].datalist[0].limit_deliver_area === 0">
+              <!-- <tr v-show="item.templateContent[0].datalist[0].limit_deliver_area === 0">
                 <td>{{item.templateContent[0].datalist[0].area_text}}</td>
                 <td>{{item.templateContent[0].datalist[0].first_num}}</td>
                 <td>{{item.templateContent[0].datalist[0].first_fee}}</td>
                 <td>{{item.templateContent[0].datalist[0].continue_num}}</td>
                 <td>{{item.templateContent[0].datalist[0].continue_fee}}</td>
-              </tr>
+              </tr> -->
               <!-- 其他区域以外的表格 -->
-              <tr
+              <!-- <tr
                 v-for="(it22,i) in item.templateContent[0].datalist[1]"
                 :key="i"
                 v-show="it22.area_text!== null"
@@ -61,7 +98,7 @@
                 <td>{{it22.first_fee}}</td>
                 <td>{{it22.continue_num}}</td>
                 <td>{{it22.continue_fee}}</td>
-              </tr>
+              </tr> -->
               <!-- 条件 -->
 
             </tbody>
@@ -84,7 +121,7 @@
 <script>
 import { formatTemplateData } from '@/util/formatData.js'
 
-import { fetchDeliverTemplateList, getWeightTemplateListApi, deliverDelete, copyDeliverTemplateApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import { fetchDeliverTemplateList, deliverDelete, copyDeliverTemplateApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   name: `deliverTemplateTable`,
@@ -101,7 +138,7 @@ export default {
       loading: true
     }
   },
-  created () {
+  mounted () {
     this.initData()
   },
   methods: {
@@ -109,7 +146,11 @@ export default {
     initData () {
       if (this.listType === `list`) {
         // 运费模板列表
-        fetchDeliverTemplateList(this.pageParams).then(res => {
+        fetchDeliverTemplateList({
+          flag: 0,
+          currentPage: this.pageParams.currentPage,
+          pageRows: this.pageParams.pageRows
+        }).then(res => {
           const { error, content: { config, pageResult: { dataList, page } } } = res
           if (error === 0) {
             this.loading = false
@@ -125,7 +166,11 @@ export default {
         }).catch(err => console.log(err))
       } else {
         // 重量运费模板列表
-        getWeightTemplateListApi(this.pageParams).then(res => {
+        fetchDeliverTemplateList({
+          flag: 1,
+          currentPage: this.pageParams.currentPage,
+          pageRows: this.pageParams.pageRows
+        }).then(res => {
           const { error, content: { page } } = res
           if (error === 0) {
             this.loading = false
@@ -196,6 +241,7 @@ export default {
   height: 10px;
 }
 .table_header {
+  position: relative;
   padding-right: 10px;
   display: flex;
   align-items: center;
@@ -210,9 +256,13 @@ export default {
   width: 2px;
 }
 .title {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  height: 50px;
+  line-height: 50px;
   color: #333;
   font-size: 14px;
-  margin-left: 20px;
   font-weight: 700;
 }
 /* .right {
@@ -241,5 +291,10 @@ td {
   vertical-align: middle;
   padding: 10px;
   width: 20%;
+}
+
+.list {
+  background: #fff;
+  margin-bottom: 10px;
 }
 </style>

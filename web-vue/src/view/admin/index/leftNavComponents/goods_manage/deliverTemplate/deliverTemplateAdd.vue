@@ -12,9 +12,7 @@ import delivery from './Delivery'
 import { addTemplate } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
 export default {
   name: `deliverTemplateAdd`,
-  components: {
-    delivery
-  },
+  components: { delivery },
   data () {
     return {
 

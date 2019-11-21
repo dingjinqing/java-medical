@@ -1,11 +1,12 @@
 <template>
   <div class="container">
-    <!-- 运费模板容器卡片 -->
-    <el-card style="padding: 15px;">
+
+    <div style="width: 100%;">
       <!-- header  标签页-->
       <el-tabs
         v-model="activeName"
         @tab-click="handleClick"
+        style="padding: 10px; background: #fff;"
       >
         <el-tab-pane
           v-for="(item ,i) in labels"
@@ -21,11 +22,13 @@
         </template>
 
       </el-tabs>
+
       <!-- 路由出口 -->
       <keep-alive>
         <router-view></router-view>
       </keep-alive>
-    </el-card>
+    </div>
+
   </div>
 </template>
 <script>

@@ -643,9 +643,4 @@ div.column-input > .el-input__inner {
 div.el-select.column-input {
   width: 130px;
 }
-div.el-form-item__error {
-  position: relative;
-  height: 20px;
-  left: 40px;
-}
 </style>

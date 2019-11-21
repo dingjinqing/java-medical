@@ -3,7 +3,10 @@
 
   <!-- 运费模板列表 -->
   <div class="deliverTemplateList">
-    <section class="wrap">
+    <section
+      class="wrap"
+      style="padding: 0 10px;margin-bottom: 10px; background: #fff;"
+    >
       <section>
         <el-form
           :rules="formRules"
@@ -16,7 +19,7 @@
           <el-form-item label="店铺默认运费模板：">
             <el-select
               @change="handleChange"
-              style="width:100px;"
+              style="width: 170px;"
               size="small"
               v-model="formData.templateName"
               placeholder="请选择运费模板"
@@ -39,7 +42,7 @@
             <el-input
               size="small"
               v-model.number="formData.price"
-              style="width:80px"
+              style="width:170px"
             ></el-input><span>元</span>
           </el-form-item>
           <!-- 订单金额 -->
