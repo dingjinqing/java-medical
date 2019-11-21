@@ -61,9 +61,8 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 	/**购买类型1 积分购买 */
 	private BigDecimal payScore;
 	
-	
 	/** 领取限制 填0为不限制 */
-	private Integer limits;
+	private Integer limit;
 	
 	/**
 	 * 处理策略
