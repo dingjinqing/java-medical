@@ -125,9 +125,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="modifypersonDialogVisible = false">取 消</el-button>
+          <el-button
+            size="small"
+            @click="modifypersonDialogVisible = false"
+          >取 消</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="modifypersonDialogVisible = false"
           >确 定</el-button>
         </span>

@@ -1,78 +1,81 @@
 <template>
   <div class="receiveDetail">
     <div class="receiveDetailMain">
-      <div class="top spDiv">
-        <div :class="mixinleftDiv">
-          <span>{{$t('membershipIntroduction.phoneNum')}}</span>
-          <el-input
-            v-model="phoneNum"
-            :placeholder="$t('membershipIntroduction.placePhoneNum')"
-            size="small"
-          ></el-input>
+      <div class="filter">
+        <div class="top spDiv">
+          <div :class="mixinleftDiv">
+            <span>{{$t('membershipIntroduction.phoneNum')}}：</span>
+            <el-input
+              v-model="phoneNum"
+              :placeholder="$t('membershipIntroduction.placePhoneNum')"
+              size="small"
+            ></el-input>
+          </div>
+          <div>
+            <span>{{$t('membershipIntroduction.nickname')}}：</span>
+            <el-input
+              v-model="nameInput"
+              :placeholder="$t('membershipIntroduction.placeNameNum')"
+              size="small"
+            ></el-input>
+          </div>
+          <div class="receiveDetailDate">
+            <span>{{$t('membershipIntroduction.Collectiontime')}}：</span>
+            <el-date-picker
+              v-model="dateInput"
+              type="daterange"
+              size="small"
+              align="right"
+              unlink-panels
+              :range-separator="$t('membershipIntroduction.to')"
+              :start-placeholder="$t('membershipIntroduction.startdata')"
+              :end-placeholder="$t('membershipIntroduction.enddate')"
+              value-format='yyyy-MM-dd'
+            >
+            </el-date-picker>
+          </div>
         </div>
-        <div>
-          <span>{{$t('membershipIntroduction.nickname')}}</span>
-          <el-input
-            v-model="nameInput"
-            :placeholder="$t('membershipIntroduction.placeNameNum')"
-            size="small"
-          ></el-input>
-        </div>
-        <div class="receiveDetailDate">
-          <span>{{$t('membershipIntroduction.Collectiontime')}}</span>
-          <el-date-picker
-            v-model="dateInput"
-            type="daterange"
-            align="right"
-            unlink-panels
-            :range-separator="$t('membershipIntroduction.to')"
-            :start-placeholder="$t('membershipIntroduction.startdata')"
-            :end-placeholder="$t('membershipIntroduction.enddate')"
-            value-format='yyyy-MM-dd'
-          >
-          </el-date-picker>
-        </div>
-      </div>
 
-      <div class="top middle">
-        <div>
-          <span>{{$t('membershipIntroduction.membershipCard')}}</span>
-          <el-select
-            v-model="membershipCardValue"
-            :placeholder="$t('membershipIntroduction.placeChoise')"
-            size="small"
-          >
-            <el-option
-              v-for="(item,index) in membershipCardOptins"
-              :key="index"
-              :label="item.cardName"
-              :value="item.id"
+        <div class="top middle">
+          <div>
+            <span>{{$t('membershipIntroduction.membershipCard')}}：</span>
+            <el-select
+              v-model="membershipCardValue"
+              :placeholder="$t('membershipIntroduction.placeChoise')"
+              size="small"
             >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="middleType">
-          <span class="middleTypeSpan">{{$t('membershipIntroduction.membershipcard')}}</span>
-          <el-select
-            v-model="CardTypeValue"
-            :placeholder="$t('membershipIntroduction.placeChoise')"
-            size="small"
-          >
-            <el-option
-              v-for="item in CardTypeOptins"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              <el-option
+                v-for="(item,index) in membershipCardOptins"
+                :key="index"
+                :label="item.cardName"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div class="middleType">
+            <span class="middleTypeSpan">{{$t('membershipIntroduction.membershipcard')}}：</span>
+            <el-select
+              v-model="CardTypeValue"
+              :placeholder="$t('membershipIntroduction.placeChoise')"
+              size="small"
             >
-            </el-option>
-          </el-select>
-        </div>
-        <div>
-          <el-button
-            type="primary"
-            size="small"
-            @click="loadUserCardData()"
-          >{{$t('membershipIntroduction.screen')}}</el-button>
+              <el-option
+                v-for="item in CardTypeOptins"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div>
+            <el-button
+              type="primary"
+              size="small"
+              @click="loadUserCardData()"
+            >{{$t('membershipIntroduction.screen')}}</el-button>
+          </div>
         </div>
       </div>
 
@@ -317,7 +320,8 @@ export default {
       this.$message.success({
         showClose: true,
         message: message,
-        type: 'success' })
+        type: 'success'
+      })
     }
   }
 }
@@ -332,7 +336,7 @@ export default {
   /* width: 650px; */
   flex-direction: column;
   border: 1px solid #eee;
-  margin-top: 10px;
+  /* margin-top: 10px; */
 }
 .noData span {
   margin: 10px;
@@ -348,12 +352,16 @@ export default {
   overflow-y: auto;
 }
 .receiveDetailMain {
-  padding: 15px 25px;
+  /* padding: 15px 25px; */
   position: relative;
-  background-color: #fff;
   /* height: 100%; */
   overflow: hidden;
   overflow-y: auto;
+}
+.filter {
+  padding: 15px;
+  margin-bottom: 10px;
+  background: #fff;
 }
 .top {
   display: flex;
@@ -370,9 +378,12 @@ export default {
   width: 80px;
   line-height: 30px;
   line-height: 30px;
-  text-align: right;
-  margin-right: 25px;
+  text-align: left;
+  /* margin-right: 25px; */
   color: #333;
+}
+.top > div > .el-input {
+  flex: 1;
 }
 .receiveDetailDate {
   width: 480px !important;
@@ -380,20 +391,19 @@ export default {
 .middle {
   margin-top: 20px;
 }
-.spDiv {
+/* .spDiv {
   padding-left: 22px;
-}
+} */
 .middleType {
-  margin: 0 122px !important;
-  margin-left: 80px !important;
-  width: 330px !important;
+  margin-left: 60px !important;
 }
 .middleTypeSpan {
   width: 100px !important;
 }
 
 .content {
-  margin-top: 30px;
+  padding: 15px;
+  background: #fff;
 }
 table {
   border: 1px solid #eff1f5;

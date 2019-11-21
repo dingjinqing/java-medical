@@ -338,8 +338,12 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="baseInfoDialogVisible = false">{{ $t('membershipIntroduction.cancel') }}</el-button>
           <el-button
+            size="small"
+            @click="baseInfoDialogVisible = false"
+          >{{ $t('membershipIntroduction.cancel') }}</el-button>
+          <el-button
+            size="small"
             type="primary"
             @click="handleUserDialogSure()"
           >{{ $t('membershipIntroduction.centain') }}</el-button>
@@ -469,9 +473,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="modifypersonDialogVisible = false">取 消</el-button>
+          <el-button
+            size="small"
+            @click="modifypersonDialogVisible = false"
+          >取 消</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="handleUserDialogSure()"
           >确 定</el-button>
         </span>
@@ -491,6 +499,7 @@
         >
           <div>{{ $t('membershipIntroduction.chooseTag') }}</div>
           <el-select
+            size="small"
             v-model="labelEditValue"
             :placeholder="$t('membershipIntroduction.placeChoise')"
             multiple
@@ -508,9 +517,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="labelEditDialogVisible = false">取 消</el-button>
+          <el-button
+            size="small"
+            @click="labelEditDialogVisible = false"
+          >取 消</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="handleTagDialogSure()"
           >确 定</el-button>
         </span>
@@ -643,9 +656,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="closeMemberCardDialog()">取 消</el-button>
+          <el-button
+            size="small"
+            @click="closeMemberCardDialog()"
+          >取 消</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="handleForSetMemberCard()"
           >确 定</el-button>
         </span>
@@ -695,9 +712,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="memberLabelVisible = false">取 消</el-button>
+          <el-button
+            size="small"
+            @click="memberLabelVisible = false"
+          >取 消</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="memberLabelVisible = false"
           >确 定</el-button>
         </span>
@@ -1434,7 +1455,8 @@ export default {
       this.$message.success({
         showClose: true,
         message: message,
-        type: 'success' })
+        type: 'success'
+      })
     }
   }
 }

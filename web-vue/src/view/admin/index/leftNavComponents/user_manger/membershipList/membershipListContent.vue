@@ -4,7 +4,7 @@
       <ul>
         <li class="li">
           <div class="liNav">
-            <div class="phoneClass">{{$t('membershipIntroduction.phoneNum')}}</div>
+            <div class="phoneClass">{{$t('membershipIntroduction.phoneNum')}}：</div>
             <el-input
               v-model="phoneNum"
               :placeholder="$t('membershipIntroduction.placePhoneNum')"
@@ -15,7 +15,7 @@
             class="liNav"
             :class="memberListliNav"
           >
-            <span>{{$t('membershipIntroduction.wechatNickname')}}</span>
+            <span>{{$t('membershipIntroduction.wechatNickname')}}：</span>
             <el-input
               v-model="vxName"
               :placeholder="$t('membershipIntroduction.placeWXNameNum')"
@@ -23,7 +23,7 @@
             ></el-input>
           </div>
           <div class="liNav">
-            <span>{{$t('membershipIntroduction.source')}}</span>
+            <span>{{$t('membershipIntroduction.source')}}：</span>
             <el-select
               v-model="sourceValue"
               :placeholder="$t('membershipIntroduction.placeChoise')"
@@ -42,7 +42,7 @@
             class="liNav"
             :class="memberListliLast"
           >
-            <span>{{$t('membershipIntroduction.membershipCard')}}</span>
+            <span>{{$t('membershipIntroduction.membershipCard')}}：</span>
             <el-select
               v-model="membershipCardVal"
               :placeholder="$t('membershipIntroduction.placeChoise')"
@@ -68,7 +68,7 @@
             <span
               :class="minixLabel"
               class="labelClass"
-            >{{$t('membershipIntroduction.label')}}</span>
+            >{{$t('membershipIntroduction.label')}}：</span>
             <el-autocomplete
               v-model="labelVal"
               :placeholder="$t('membershipIntroduction.placeinpuLabel')"
@@ -83,7 +83,7 @@
             class="liNav date"
             :class="specialliNavTwo"
           >
-            <span>{{$t('membershipIntroduction.registrationTime')}}</span>
+            <span>{{$t('membershipIntroduction.registrationTime')}}：</span>
             <el-date-picker
               v-model="datePickerVal"
               type="daterange"
@@ -102,7 +102,7 @@
             class="liNav"
             :class="memberListliLast"
           >
-            <span>{{$t('membershipIntroduction.inviter')}}</span>
+            <span>{{$t('membershipIntroduction.inviter')}}：</span>
             <el-input
               v-model="inviteUserName"
               :placeholder="$t('membershipIntroduction.coverName')"
@@ -117,7 +117,7 @@
       >
         <li>
           <div>
-            <span>{{$t('membershipIntroduction.reacord')}}</span>
+            <span>{{$t('membershipIntroduction.reacord')}}：</span>
             <el-date-picker
               v-model="datePickerVal_one"
               type="daterange"
@@ -130,7 +130,7 @@
             </el-date-picker>
           </div>
           <div class="hiddenRight">
-            <span>{{$t('membershipIntroduction.PassengerUnitPrice')}}</span>
+            <span>{{$t('membershipIntroduction.PassengerUnitPrice')}}：</span>
             <el-input
               v-model="unitPriceLeft"
               :placeholder="$t('membershipIntroduction.Pleasecontent')"
@@ -146,7 +146,7 @@
         </li>
         <li>
           <div>
-            <span>{{$t('membershipIntroduction.behavior')}}</span>
+            <span>{{$t('membershipIntroduction.behavior')}}：</span>
             <el-date-picker
               v-model="datePickerVal_two"
               type="daterange"
@@ -159,7 +159,7 @@
             </el-date-picker>
           </div>
           <div class="hiddenRight">
-            <span>{{$t('membershipIntroduction.purchasetimes')}}</span>
+            <span>{{$t('membershipIntroduction.purchasetimes')}}：</span>
             <el-input
               v-model="frequencyLeft"
               :placeholder="$t('membershipIntroduction.Pleasecontent')"
@@ -175,7 +175,7 @@
         </li>
         <li class="specialLi">
           <div>
-            <span>{{$t('membershipIntroduction.transaction')}}</span>
+            <span>{{$t('membershipIntroduction.transaction')}}：</span>
             <el-date-picker
               v-model="datePickerVal_three"
               type="daterange"
@@ -188,7 +188,7 @@
             </el-date-picker>
           </div>
           <div class="brand_title">
-            <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}</span>
+            <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}：</span>
             <div
               class="choiseDivClass"
               @click="handleClickChoiseGood()"
@@ -246,15 +246,15 @@
           <thead>
             <tr>
               <td style="width:8%">ID</td>
-              <td style="width:10%">{{$t('membershipIntroduction.nickname')}}</td>
+              <td style="width:8%">{{$t('membershipIntroduction.nickname')}}</td>
               <td style="width:8%">{{$t('membershipIntroduction.phoneNum')}}</td>
-              <td>{{$t('membershipIntroduction.inviter')}}</td>
-              <td style="width:11%">{{$t('membershipIntroduction.Balance')}}</td>
-              <td style="width:11%">{{$t('membershipIntroduction.integral')}}</td>
-              <td style="width:11%">{{$t('membershipIntroduction.membershipCard')}}</td>
+              <td style="width:8%">{{$t('membershipIntroduction.inviter')}}</td>
+              <td style="width:7%">{{$t('membershipIntroduction.Balance')}}</td>
+              <td style="width:7%">{{$t('membershipIntroduction.integral')}}</td>
+              <td style="width:8%">{{$t('membershipIntroduction.membershipCard')}}</td>
               <td style="width:10%">{{$t('membershipIntroduction.source')}}</td>
-              <td>{{$t('membershipIntroduction.registrationTime')}}</td>
-              <td>{{$t('membershipIntroduction.operation')}}</td>
+              <td style="width:10%">{{$t('membershipIntroduction.registrationTime')}}</td>
+              <td style="width:15%">{{$t('membershipIntroduction.operation')}}</td>
             </tr>
           </thead>
           <tbody v-if="tbodyFlag">
@@ -378,7 +378,7 @@
                 </el-option>
               </el-select>
             </div>
-            <div style="margin:0 10px">
+            <div style="margin:0 5px">
               <el-select
                 v-model="value_two"
                 :placeholder="$t('membershipIntroduction.placeChoise')"
@@ -394,7 +394,7 @@
                 </el-option>
               </el-select>
             </div>
-            <div style="margin:0 10px">
+            <div style="margin:0 5px">
               <el-select
                 v-model="value_three"
                 :placeholder="$t('membershipIntroduction.placeChoise')"
@@ -410,7 +410,7 @@
                 </el-option>
               </el-select>
             </div>
-            <div style="margin:0 10px">
+            <div style="margin:0 5px">
               <el-select
                 v-model="value_four"
                 :placeholder="$t('membershipIntroduction.placeChoise')"
@@ -426,7 +426,7 @@
                 </el-option>
               </el-select>
             </div>
-            <div style="margin:0 10px">
+            <div style="margin:0 5px">
               <el-select
                 v-model="value_five"
                 :placeholder="$t('membershipIntroduction.placeChoise')"
@@ -501,17 +501,22 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="balanceDialogVisible = false">{{ $t('membershipIntroduction.cancel') }}</el-button>
+          <el-button
+            size="small"
+            @click="balanceDialogVisible = false"
+          >{{ $t('membershipIntroduction.cancel') }}</el-button>
 
           <el-button
             v-if="item.index === 0"
             type="primary"
+            size="small"
             @click="hanldemodifySure()"
           >{{ $t('membershipIntroduction.accountCertain') }}</el-button>
 
           <el-button
             v-else-if="item.index === 1"
             type="primary"
+            size="small"
             @click="handleScoreSure()"
           >{{ $t('membershipIntroduction.scoreCertain') }}</el-button>
         </span>
@@ -705,9 +710,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="setUpDialogVisible = false">取 消</el-button>
+          <el-button
+            size="small"
+            @click="setUpDialogVisible = false"
+          >取 消</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="setUpCardForMember()"
           >确 定</el-button>
         </span>
@@ -734,9 +743,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="noLandingDialogVisible = false">{{ $t('membershipIntroduction.cancel') }}</el-button>
+          <el-button
+            size="small"
+            @click="noLandingDialogVisible = false"
+          >{{ $t('membershipIntroduction.cancel') }}</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="changeLoginStatus"
           >{{ $t('membershipIntroduction.centain') }}</el-button>
         </span>
@@ -759,9 +772,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="resumeLoginVisible = false">{{ $t('membershipIntroduction.cancel') }}</el-button>
+          <el-button
+            size="small"
+            @click="resumeLoginVisible = false"
+          >{{ $t('membershipIntroduction.cancel') }}</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="changeLoginStatus"
           >{{ $t('membershipIntroduction.centain') }}</el-button>
         </span>
@@ -776,7 +793,7 @@
         :modal-append-to-body="false"
       >
         <div
-          class="balanceDialogDiv labelDialogDiv"
+          class="balanceDialogDiv"
           style="margin-bottom:30px"
         >
           <span style="line-height:15px;font-size:12px;color:#a3a3a3;display:block;margin-bottom:10px">一个用户最多可以打5个标签，超过数量的标签将不再被添加给该用户</span>
@@ -784,6 +801,7 @@
             filterable
             v-model="labelDialogInput"
             multiple
+            size="small"
             :placeholder="$t('membershipIntroduction.placeChoise')"
           >
             <el-option
@@ -799,9 +817,13 @@
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="labelDialogVisible = false">{{ $t('membershipIntroduction.cancel') }}</el-button>
+          <el-button
+            size="small"
+            @click="labelDialogVisible = false"
+          >{{ $t('membershipIntroduction.cancel') }}</el-button>
           <el-button
             type="primary"
+            size="small"
             @click="setTagForMember"
           >{{ $t('membershipIntroduction.centain') }}</el-button>
         </span>
@@ -821,9 +843,13 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="deletePersondialogVisible = false">取 消</el-button>
+        <el-button
+          size="small"
+          @click="deletePersondialogVisible = false"
+        >取 消</el-button>
         <el-button
           type="primary"
+          size="small"
           @click="deletePersondialogVisible = false"
         >确 定</el-button>
       </span>
@@ -1329,7 +1355,7 @@ export default {
       })
       console.log(flag)
       if (flag.length === 0) {
-        this.$message('请选择会员')
+        this.$message.warning('请选择会员')
         switch (index) {
           case '0':
             this.value_one = '0'
@@ -1658,7 +1684,8 @@ export default {
       this.$message.success({
         showClose: true,
         message: message,
-        type: 'success' })
+        type: 'success'
+      })
     },
     // 失败消息弹框
     getFailMessagePrompt () {
@@ -1666,7 +1693,8 @@ export default {
       this.$message({
         showClose: true,
         message: message,
-        type: 'error' })
+        type: 'error'
+      })
     },
     // 点击表格中更多&&余额明细&&积分明细
     handleToTurnMore (params, name, id) {
@@ -1727,6 +1755,9 @@ export default {
   overflow-y: auto;
   padding: 15px 15px;
 }
+.brandManagementContent_main > ul {
+  padding-left: 15px;
+}
 .li {
   padding: 8px 0;
   display: flex;
@@ -1737,12 +1768,14 @@ export default {
 }
 .liNav span {
   display: block;
-  width: 80px;
+  width: 70px;
   line-height: 30px;
   height: 30px;
-  text-align: right;
+  text-align: left;
   color: #333;
-  margin-right: 25px;
+}
+.liNav .el-input {
+  flex: 1;
 }
 .uls {
   margin-top: 10px;
@@ -1756,9 +1789,9 @@ export default {
 .ulsThree li:nth-of-type(2) {
   margin-left: 152px;
 }
-.uls span {
+/* .uls span {
   width: 56px;
-}
+} */
 .date {
   width: 455px;
 }
@@ -1822,9 +1855,9 @@ i {
 .clickClass {
   background-color: #eee !important;
 }
-ul {
+/* ul {
   padding-left: 30px;
-}
+} */
 ul li {
   line-height: 30px;
   display: flex;
@@ -1901,7 +1934,7 @@ td {
   padding: 8px 7px;
   vertical-align: middle !important;
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
 }
 .plusSpan {
   /* display: inline-block;
@@ -1950,7 +1983,7 @@ img {
 }
 .footer_t {
   overflow: hidden;
-  padding-left: 30px;
+  padding-left: 10px;
   height: 60px;
   display: flex;
   align-items: center;
@@ -1981,8 +2014,8 @@ img {
   cursor: pointer;
 }
 .lastDiv {
-  padding: 5px 0 5px 50px;
-  text-align: left;
+  padding: 5px 0 5px 5px;
+  text-align: center;
   color: #5a8bff;
 }
 .lastDiv span {
@@ -1999,6 +2032,7 @@ img {
   line-height: 32px;
 }
 .setUpDialogDiv {
+  overflow-x: hidden;
   overflow-y: auto;
 }
 .setUpDialogDiv p {
@@ -2047,15 +2081,15 @@ img {
   height: 15px;
 }
 .phoneClass {
+  width: 70px;
   line-height: 30px;
   height: 30px;
-  text-align: right;
+  text-align: left;
   color: #333;
-  margin-right: 25px;
 }
-.labelClass {
+/* .labelClass {
   width: 42px !important;
-}
+} */
 .noData {
   height: 100px;
   display: flex;
@@ -2141,8 +2175,5 @@ img {
 }
 .hy_common .el-input__inner {
   width: 168px !important;
-}
-.labelDialogDiv .el-input__inner {
-  width: 340px !important;
 }
 </style>

@@ -3,7 +3,7 @@
     <div class="receiveDetailMain">
       <div class="top spDiv">
         <div>
-          <span>{{$t('membershipIntroduction.memberName')}}</span>
+          <span>{{$t('membershipIntroduction.memberName')}}：</span>
           <el-input
             v-model="username"
             :placeholder="$t('membershipIntroduction.memberName')"
@@ -12,7 +12,7 @@
           </el-input>
         </div>
         <div>
-          <span>{{$t('membershipIntroduction.orderSn')}}</span>
+          <span>{{$t('membershipIntroduction.orderSn')}}：</span>
           <el-input
             v-model="orderSn"
             :placeholder="$t('membershipIntroduction.placeHolderOrderSn')"
@@ -20,7 +20,7 @@
           ></el-input>
         </div>
         <div class="receiveDetailDate">
-          <span>{{$t('membershipIntroduction.time')}}</span>
+          <span>{{$t('membershipIntroduction.time')}}：</span>
           <el-date-picker
             v-model="dateInput"
             type="daterange"
@@ -44,7 +44,7 @@
         </div>
       </div>
 
-      <div>
+      <div class="table-content">
         <table
           class="content"
           width="100%"
@@ -195,12 +195,19 @@ export default {
   overflow-y: auto;
 }
 .receiveDetailMain {
-  background-color: #fff;
-  padding: 15px 25px;
+  /* background-color: #fff;
+  padding: 15px 25px; */
   overflow: hidden;
 }
 .top {
+  padding: 15px;
+  background: #fff;
   display: flex;
+}
+.table-content {
+  padding: 15px;
+  background: #fff;
+  margin-top: 10px;
 }
 
 .top > div {
@@ -231,9 +238,6 @@ export default {
   padding-left: 22px;
 }
 
-.content {
-  margin-top: 30px;
-}
 table {
   border: 1px solid #eff1f5;
   border-collapse: collapse;

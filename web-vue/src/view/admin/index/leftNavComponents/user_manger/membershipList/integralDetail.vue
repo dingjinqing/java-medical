@@ -3,7 +3,7 @@
     <div class="receiveDetailMain">
       <div class="top spDiv">
         <div>
-          <span>{{$t('membershipIntroduction.memberName')}}</span>
+          <span>{{$t('membershipIntroduction.memberName')}}：</span>
           <el-input
             v-model="userName"
             :placeholder="$t('membershipIntroduction.memberName')"
@@ -11,7 +11,7 @@
           ></el-input>
         </div>
         <div>
-          <span>{{$t('membershipIntroduction.orderSn')}}</span>
+          <span>{{$t('membershipIntroduction.orderSn')}}：</span>
           <el-input
             v-model="orderSn"
             :placeholder="$t('membershipIntroduction.placeHolderOrderSn')"
@@ -19,7 +19,7 @@
           ></el-input>
         </div>
         <div class="receiveDetailDate">
-          <span>{{$t('membershipIntroduction.time')}}</span>
+          <span>{{$t('membershipIntroduction.time')}}：</span>
           <el-date-picker
             v-model="dateInput"
             type="daterange"
@@ -235,31 +235,39 @@ export default {
   overflow-y: auto;
 }
 .receiveDetailMain {
-  padding: 15px 25px;
+  /* padding: 15px 25px; */
   position: relative;
-  background-color: #fff;
+  /* background-color: #fff; */
   /* height: 100%; */
   overflow: hidden;
   overflow-y: auto;
 }
 .top {
+  padding: 15px;
+  background: #fff;
   display: flex;
 }
 .top > div {
   display: flex;
-  min-width: 220px;
+  /* min-width: 220px; */
 }
 .top > div:nth-of-type(3) {
   margin-right: 100px;
 }
 .top > div > span {
   display: inline-block;
-  min-width: 90px;
+  min-width: 70px;
   line-height: 30px;
   line-height: 30px;
-  text-align: right;
-  margin-right: 25px;
+  text-align: left;
+  /* margin-right: 25px; */
   color: #333;
+}
+.top > div > .el-input {
+  flex: 1;
+}
+.top > div {
+  margin-right: 10px;
 }
 .receiveDetailDate {
   width: 480px !important;
@@ -267,9 +275,9 @@ export default {
 .middle {
   margin-top: 20px;
 }
-.spDiv {
+/* .spDiv {
   padding-left: 22px;
-}
+} */
 .middleType {
   margin: 0 122px !important;
   margin-left: 80px !important;
@@ -280,7 +288,9 @@ export default {
 }
 
 .content {
-  margin-top: 30px;
+  margin-top: 10px;
+  padding: 15px;
+  background: #fff;
 }
 table {
   border: 1px solid #eff1f5;
@@ -326,7 +336,7 @@ td {
 </style>
 <style>
 .receiveDetailMain .top .el-input__inner {
-  width: 150px !important;
+  width: 170px !important;
 }
 .receiveDetail .receiveDetailMain .receiveDetailDate .el-input__inner {
   width: 350px !important;

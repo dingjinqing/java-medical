@@ -46,7 +46,10 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary">搜索</el-button>
+            <el-button
+              size="small"
+              type="primary"
+            >搜索</el-button>
           </el-form-item>
         </el-form>
 
