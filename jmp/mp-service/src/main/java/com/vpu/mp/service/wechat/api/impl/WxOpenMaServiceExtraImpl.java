@@ -4,10 +4,12 @@ import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 import com.vpu.mp.service.wechat.api.WxOpenMaLogisticsService;
 import com.vpu.mp.service.wechat.api.WxOpenMaMallService;
 import com.vpu.mp.service.wechat.api.WxOpenMaSubscribeService;
+import com.vpu.mp.service.wechat.util.http.ApacheFormEncodedPostRequestExecutor;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.api.WxOpenMaService;
 import me.chanjar.weixin.open.api.WxOpenService;
+import me.chanjar.weixin.open.api.impl.WxOpenMaServiceImpl;
 
 /**
  * 用于小程序未实现的接口
@@ -35,4 +37,9 @@ public class WxOpenMaServiceExtraImpl implements  WxOpenAccountService, WxOpenMa
 		return maService.get(url, queryParam);
 	}
 
+	@Override
+	public String postForm(String appId, String url, String data) throws WxErrorException {
+		WxOpenMaService maService = openService.getWxOpenComponentService().getWxMaServiceByAppid(appId);
+		return maService.execute(new ApacheFormEncodedPostRequestExecutor((WxOpenMaServiceImpl)maService), url, data);
+	}
 }

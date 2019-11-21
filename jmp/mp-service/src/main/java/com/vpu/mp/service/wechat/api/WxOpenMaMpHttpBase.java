@@ -19,6 +19,17 @@ public interface WxOpenMaMpHttpBase {
 	 * @throws WxErrorException
 	 */
 	String post(String appId, String url, String data) throws WxErrorException;
+	
+	/**
+	 * post请求 ContentType: application/x-www-form-urlencoded
+	 * @param appId
+	 * @param url
+	 * @param data
+	 * @param accessTokenKey
+	 * @return
+	 * @throws WxErrorException
+	 */
+	String postForm(String appId, String url, String data) throws WxErrorException;
 
 	
 	/**

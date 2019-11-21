@@ -82,7 +82,7 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		String json = post(appId, WX_SUBSCRIBE_ADD_TEMPLATE, data.toString());
+		String json = postForm(appId, WX_SUBSCRIBE_ADD_TEMPLATE, data.toString());
 		return WxOpenMaSubscribeAddTemplateResult.fromJson(json);
 	}
 
@@ -101,7 +101,7 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		String json = get(appId, WX_SUBSCRIBE_DEL_TEMPLATE, data.toString());
+		String json = this.postForm(appId, WX_SUBSCRIBE_DEL_TEMPLATE, data.toString());
 		return WxOpenGetResult.fromJson(json);
 	}
 
