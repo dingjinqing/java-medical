@@ -7,12 +7,12 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.JsonObject;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
+import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateTitleResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -146,7 +146,7 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	default WxOpenMaSubScribeGetTemplateListResult getPubTemplateTitleList(String appId, String ids, int start,
+	default WxOpenMaSubScribeGetTemplateTitleResult getPubTemplateTitleList(String appId, String ids, int start,
 			int limit) throws WxErrorException {
 		StringBuilder data = new StringBuilder();
 		try {
@@ -157,7 +157,7 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 			e.printStackTrace();
 		}
 		String json = post(appId, WX_SUBSCRIBE_GET_TEMPLATE_TITLE, data.toString());
-		return WxOpenMaSubScribeGetTemplateListResult.fromJson(json);
+		return WxOpenMaSubScribeGetTemplateTitleResult.fromJson(json);
 	}
 
 	/**
