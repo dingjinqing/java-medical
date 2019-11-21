@@ -54,6 +54,7 @@ public class CouponDetailMpVo {
         this.setId(record.getId());
         this.setType(record.getType());
         this.setActCode(record.getActCode());
+        this.setActName(record.getActName());
         this.setValidityType(record.getValidityType());
         this.setStartTime(record.getStartTime());
         this.setEndTime(record.getEndTime());
@@ -63,7 +64,6 @@ public class CouponDetailMpVo {
         this.setUseScore(record.getUseScore()==1);
         this.setScoreNumber(record.getScoreNumber());
         this.setIsCardExclusive(StringUtils.isNotEmpty(record.getCardId()));
-        this.setActCode(record.getActCode());
         this.setDenomination(record.getDenomination());
         this.setUseConsumeRestrict(record.getUseConsumeRestrict());
         this.setLeastConsume(record.getLeastConsume());

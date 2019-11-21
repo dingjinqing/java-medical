@@ -126,7 +126,7 @@ public class CouponProcessorDao extends ShopBaseService {
         // 优惠券剩余量限制，限量券的剩余数大于0或者是不限量券
         Condition surplusCondition = (MRKING_VOUCHER.TOTAL_AMOUNT.gt(0).and(MRKING_VOUCHER.SURPLUS.gt(0))).or(MRKING_VOUCHER.TOTAL_AMOUNT.eq(0));
         // 优惠券指定使用对象限制，全部商品或指定条件
-        Condition usableTargetCondition = MRKING_VOUCHER.RECOMMEND_GOODS_ID.isNull().and(MRKING_VOUCHER.RECOMMEND_CAT_ID.isNull()).and(MRKING_VOUCHER.RECOMMEND_SORT_ID.isNull());
+        Condition usableTargetCondition = MRKING_VOUCHER.RECOMMEND_GOODS_ID.eq("").and(MRKING_VOUCHER.RECOMMEND_CAT_ID.eq("")).and(MRKING_VOUCHER.RECOMMEND_SORT_ID.eq(""));
         usableTargetCondition = usableTargetCondition.or(DslPlus.findInSet(goodsId,MRKING_VOUCHER.RECOMMEND_GOODS_ID)
             .or(DslPlus.findInSet(catId,MRKING_VOUCHER.RECOMMEND_CAT_ID)).or(DslPlus.findInSet(sortId,MRKING_VOUCHER.RECOMMEND_SORT_ID)));
 
