@@ -97,7 +97,25 @@ export default {
   },
   methods: {
     tabClickHandle (tab) {
-      console.log(tab)
+      let status = ''
+      switch (tab.name) {
+        case 'first':
+          status = ''
+          break
+        case 'second':
+          status = 0
+          break
+        case 'third':
+          status = 1
+          break
+        case 'fourth':
+          status = 2
+          break
+        case 'fifth':
+          status = 3
+          break
+      }
+      this.$set(this.queryParams, 'status', status)
     },
     initDataList () {
       let params = Object.assign({}, this.queryParams, this.pageParams)
