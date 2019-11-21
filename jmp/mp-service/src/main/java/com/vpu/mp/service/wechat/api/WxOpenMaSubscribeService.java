@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.JsonObject;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
@@ -102,7 +101,7 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		String json = post(appId, WX_SUBSCRIBE_DEL_TEMPLATE, data.toString());
+		String json = get(appId, WX_SUBSCRIBE_DEL_TEMPLATE, data.toString());
 		return WxOpenGetResult.fromJson(json);
 	}
 
