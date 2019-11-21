@@ -3,39 +3,42 @@
     <div class="content">
       <div class="open-screen-add-page">
         <div class="page-left">
-          <div
-            class="left-title"
-            :style="'background:url('+ $imageHost +'/image/admin/shop_beautify/phone_tops.png) no-repeat;'"
-          ></div>
-          <div class="left-content">
-            <el-image
-              v-if="form.type === 0"
-              :src="images.show_score"
-            ></el-image>
-            <el-image
-              v-else-if="form.type === 1"
-              :src="images.show_coupon"
-            ></el-image>
-            <el-image
-              v-else-if="form.type === 2"
-              :src="images.show_lottery"
-            ></el-image>
-            <el-image
-              v-else-if="form.type === 3"
-              :src="images.show_yue"
-            ></el-image>
-            <el-image
-              v-else
-              :src="images.show_custom"
-            ></el-image>
+          <div class="left-wrap">
+            <div
+              class="left-title"
+              :style="'background:url('+ $imageHost +'/image/admin/shop_beautify/phone_tops.png) no-repeat;'"
+            ></div>
+            <div class="left-content">
+              <el-image
+                v-if="form.type === 0"
+                :src="images.show_score"
+              ></el-image>
+              <el-image
+                v-else-if="form.type === 1"
+                :src="images.show_coupon"
+              ></el-image>
+              <el-image
+                v-else-if="form.type === 2"
+                :src="images.show_lottery"
+              ></el-image>
+              <el-image
+                v-else-if="form.type === 3"
+                :src="images.show_yue"
+              ></el-image>
+              <el-image
+                v-else
+                :src="images.show_custom"
+              ></el-image>
+            </div>
           </div>
+
         </div>
         <div class="page-right">
           <div class="right-top">
             <header>活动配置</header>
             <el-form
               size="small"
-              label-width="110px;"
+              label-width="110px"
               :rules="rules"
             >
               <el-form-item
@@ -99,7 +102,10 @@
           </div>
           <div class="right-bottom">
             <header>开屏奖励</header>
-            <el-form>
+            <el-form
+              label-width="110px"
+              size="small"
+            >
               <el-form-item
                 label="支付奖励："
                 required
@@ -135,7 +141,7 @@
                 <el-button size="small">选择链接</el-button>
               </el-form-item>
               <el-form-item label="奖品份数：">
-                <el-number-input size="small"></el-number-input>
+                <el-input-number size="small"></el-input-number>
                 <span>份</span>
                 <span class="span-tip">填写0表示不限制</span>
                 <p class="tips">发放人数达到奖品份数，后续用户无法再获取支付奖励</p>
@@ -148,6 +154,7 @@
     <footer class="footer">
       <el-button
         size="small"
+        type="primary"
         @click="saveOpenScreenHandle"
       >保存</el-button>
     </footer>
@@ -217,15 +224,17 @@ export default {
       display: flex;
       .page-left {
         width: 323px;
-        border: 1px solid #ccc;
-        background: #eee;
-        .left-title {
-          height: 55px;
-          color: white;
-          text-align: center;
-        }
-        .left-content {
-          height: 570px;
+        .left-wrap {
+          border: 1px solid #ccc;
+          background: #eee;
+          .left-title {
+            height: 55px;
+            color: white;
+            text-align: center;
+          }
+          .left-content {
+            height: 570px;
+          }
         }
       }
       .page-right {
