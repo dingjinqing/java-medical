@@ -368,7 +368,10 @@
           </div>
         </div>
         <!-- 开屏有礼 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="to('open_screen')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/hdyl.png'"
               alt=""

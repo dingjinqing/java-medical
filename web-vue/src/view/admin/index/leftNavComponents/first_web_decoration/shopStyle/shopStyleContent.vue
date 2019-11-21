@@ -191,9 +191,9 @@ export default {
     getShopStyle () {
       shopStyleGetRequest().then((res) => {
         console.log(res)
-        if (res.content.shopStyleId) {
+        if (res.content && res.content.shopStyleId) {
           this.choiseId = res.content.shopStyleId
-          if (res.content.shopStyleId === 6) {
+          if (res.content && res.content.shopStyleId === 6) {
             this.choiseId = res.content.shopStyleId
             let leftColor = res.content.shopStyleValue.split(',')[0]
             let RightColor = res.content.shopStyleValue.split(',')[1]

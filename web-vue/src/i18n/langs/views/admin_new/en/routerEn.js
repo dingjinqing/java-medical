@@ -307,6 +307,8 @@ export const en = {
     'Package Price',
     'Participation details'
   ],
+  // 营销管理 开屏有礼
+  open_screen: ['Marketing management', 'Open screen courtesy'],
   // 营销管理 首单特惠
   first_special: ['Marketing Management', 'First Special Offer'],
   // 营销管理 首单特惠 首单特惠订单

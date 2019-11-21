@@ -751,6 +751,28 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/packagePrice/packagePriceDetail'
       )
   },
+  // 开屏有礼
+  {
+    path: '/admin/home/main/openScreen/list',
+    name: 'market_gifted',
+    meta: {
+      crumbTitle: 'router.open_screen',
+      meta: 'first_market_manage',
+      category: 'market_gifted'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/openScreen/openScreenList')
+  },
+  // 开屏有礼添加
+  {
+    path: '/admin/home/main/openScreen/add',
+    name: 'open_screen_add',
+    meta: {
+      crumbTitle: 'router.open_screen',
+      meta: 'first_market_manage',
+      category: 'market_gifted'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/openScreen/openScreenAdd')
+  },
   // 首单特惠
   {
     path: '/admin/home/main/firstSpecial/list',
