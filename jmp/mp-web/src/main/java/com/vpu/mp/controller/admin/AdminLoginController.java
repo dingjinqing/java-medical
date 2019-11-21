@@ -44,4 +44,17 @@ public class AdminLoginController extends AdminBaseController {
 		return success(JsonResultCode.CODE_SUCCESS);
 	}
 	
+	/**
+	 * 判断用户是否在线，首页右上角是否显示用户信息用
+	 * @return
+	 */
+	@GetMapping(value = "/admin/login/isLogin")
+	public JsonResult checkToken() {
+		AdminTokenAuthInfo user = adminAuth.user();
+		if(user!=null) {
+			return success();
+		}
+		return fail();
+	}
+	
 }
