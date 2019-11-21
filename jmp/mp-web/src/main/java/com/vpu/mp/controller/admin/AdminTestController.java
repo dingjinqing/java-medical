@@ -88,17 +88,13 @@ public class AdminTestController extends AdminBaseController {
 		
 		Map<String, Map<String, String>> data = new LinkedHashMap<>();
 		Map<String, String> v1 = new LinkedHashMap<>();
-		v1.put("value", "李新国");
+		v1.put("value", "活动内容");
 		data.put("thing1", v1);
 		
 		Map<String, String> v2 = new LinkedHashMap<>();
-		v2.put("value", "2019-10-10");
-		data.put("date3", v2);
+		v2.put("value", "活动地址");
+		data.put("thing6", v2);
 		
-		Map<String, String> v3 = new LinkedHashMap<>();
-		v3.put("value", "2019-12-01");
-		data.put("date4", v3);
-
 		WxOpenResult result = open.getMaExtService().sendTemplate(appId, toUser, templateId, page, data);
 		return success(result);
 	}
