@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
-import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 
 import lombok.Getter;
 import lombok.Setter;

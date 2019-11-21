@@ -28,7 +28,22 @@ public class RankCardToVo extends RankCardVo {
 	
 	/** 会员折扣: 全部商品；1代表全部商品，0代表指定商品 */
 	private Byte discountIsAll;
-	
+	/** -折扣： 商品id */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String discountGoodsId;
+	private String[] goodsId;
+	/** -折扣： 商家分类id */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String discountSortId;
+	private String[] shopCategoryIds;
+	/** -折扣: 平台分类id */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String discountCatId;
+	private String[] platformCategoryIds;
+	/** -折扣 : 品牌分类id */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String discountBrandId;
+	private String[] brandId;
 	/**
 	 * 积分获取开关， 0表示关闭，1表示开启
 	 */
@@ -40,12 +55,7 @@ public class RankCardToVo extends RankCardVo {
 	//private String buyScore;
 	/** 购物送积分策略json序列化对象 */
 	private ScoreJson scoreJson;
-	
-	/** 等级卡升级策略 */
-//	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-//	private String gradeCondition;
-//	private GradeConditionJson gradeConditionJson;
-	
+		
 	
 	/** 激活需要的信息 */
 	private String[] activationCfgBox;
@@ -71,22 +81,28 @@ public class RankCardToVo extends RankCardVo {
 		}
 		
 		
-		/**
-		 * 等级会员卡升级策略
-		 */
-		/** 等级卡升级策略 */
-//		if(gradeCondition !=null && !gradeCondition.equals("")) {
-//			try {
-//				gradeConditionJson = MAPPER.readValue(gradeCondition, GradeConditionJson.class);
-//			} catch (Exception e) {
-//				log.info("等级卡升级策略json解析失败");
-//			} 
-//		}
-		
 		/** 激活需要填写的信息 */
 		String activationCfg = getActivationCfg();
 		if(null != activationCfg) {
 			activationCfgBox = activationCfg.replaceAll("\\s+","").split(",");
+		}
+		
+		/** 积分指定商品 处理 */
+		/** 商品id */
+		if(discountGoodsId != null) {
+			goodsId = discountGoodsId.replaceAll("\\s+","").split(",");
+		}
+		/** 商家分类id */
+		if(discountSortId != null) {
+			shopCategoryIds = discountSortId.replaceAll("\\s+","").split(",");
+		}
+		/**平台分类id */
+		if(discountCatId != null) {
+			platformCategoryIds = discountCatId.replaceAll("\\s+","").split(",");
+		}
+		/** 品牌分类id */
+		if(discountBrandId != null) {
+			brandId = discountBrandId.replaceAll("\\s+","").split(",");
 		}
 		
 	}
