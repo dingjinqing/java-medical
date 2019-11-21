@@ -10,6 +10,7 @@ import lombok.Data;
 public class GoodsRecommendSortConfig {
     /** 是否开启推荐分类 0关闭 1开启*/
     public static final Integer SHOW_RECOMMEND_SORT = 1;
+
     private Integer recommendSortStatus = 0;
     /** 推荐分类全路径 */
     private String recommendSortImg;

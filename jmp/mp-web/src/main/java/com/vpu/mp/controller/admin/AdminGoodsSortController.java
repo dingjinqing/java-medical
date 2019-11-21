@@ -1,21 +1,13 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortConfig;
-import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
-import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.goods.sort.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -24,77 +16,149 @@ import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 @RestController
 public class AdminGoodsSortController extends AdminBaseController {
 
-
     /**
      * 商品分类查询，未分页
-     *
-     * @param param
      * @return
      */
-    @PostMapping("/api/admin/goods/sort/list")
-    public JsonResult getList(@RequestBody GoodsSortListParam param) {
-
-        List<Sort> list = shop().goods.goodsSort.getList(param);
-
-        return success(list);
+    @GetMapping("/api/admin/goods/sort/list/{sortType}")
+    public JsonResult getList(@PathVariable("sortType") Byte sortType) {
+        if (!GoodsConstant.NORMAL_SORT.equals(sortType) && !GoodsConstant.RECOMMEND_SORT.equals(sortType)) {
+            sortType = GoodsConstant.NORMAL_SORT;
+        }
+        GoodsSortListParam param = new GoodsSortListParam();
+        param.setParentId(GoodsConstant.ROOT_PARENT_ID);
+        param.setType(sortType);
+        return success(shop().goods.goodsSort.getSortList(param));
     }
 
+    /**
+     * 选择框下拉列表（非树形数据）
+     */
+    @GetMapping("/api/admin/goods/sort/select/list")
+    public JsonResult getSelectList(){
+        return success(shop().goods.goodsSort.getSelectList());
+    }
+
+    /**
+     *  普通分类新增
+     * @param param {@link GoodsNormalSortAddParam}
+     */
+    @PostMapping("/api/admin/goods/sort/add")
+    public JsonResult insert(@RequestBody GoodsNormalSortAddParam param) {
+        if (param.getSortName()==null) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
+        }
+
+        boolean isExist = shop().goods.goodsSort.isSortNameExist(null,param.getSortName());
+        if (isExist) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
+        }
+
+        shop().goods.goodsSort.insertNormal(param);
+
+        return success();
+    }
+
+    /**
+     * 普通分类修改
+     * @param param {@link GoodsNormalSortUpdateParam}
+     */
+    @PostMapping("/api/admin/goods/sort/update")
+    public JsonResult update(@RequestBody GoodsNormalSortUpdateParam param) {
+        if (param.getSortId() == null) {
+            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+        }
+        boolean isExist = shop().goods.goodsSort.isSortNameExist(param.getSortId(),param.getSortName());
+        if (isExist) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
+        }
+        shop().goods.goodsSort.updateNormal(param);
+        return success();
+    }
+
+    /**
+     * 删除商家分类
+     * @param sortId 分类id
+     */
+    @GetMapping("/api/admin/goods/sort/delete/{sortId}")
+    public JsonResult delete(@PathVariable("sortId") Integer sortId) {
+        if (sortId == null) {
+            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+        }
+        shop().goods.goodsSort.delete(sortId);
+        return success();
+    }
+
+    /**
+     * 根据id获取普通商家分类
+     * @param sortId 普通商家分类id
+     */
     @GetMapping("/api/admin/goods/sort/get/{sortId}")
     public JsonResult getSort(@PathVariable("sortId") Integer sortId) {
         if (sortId == null) {
             return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
         }
-
         return success(shop().goods.goodsSort.getSort(sortId));
     }
 
     /**
-     * 新增
-     * @param sort
-     * @return
-     */
-    @PostMapping("/api/admin/goods/sort/add")
-    public JsonResult insert(@RequestBody Sort sort) {
-
-        if (sort.getSortName()==null) {
-            return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
-        }
-
-        boolean isExist = shop().goods.goodsSort.isSortNameExist(sort);
-        if (isExist) {
-            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
-        }
-
-        shop().goods.goodsSort.insert(sort);
-
-        return success();
-    }
-
-    /**
      *  推荐商品批量新增接口
-     * @param sort
-     * @return
+     * @param param
      */
     @PostMapping("/api/admin/goods/sort/recommend/add")
-    public JsonResult insertRecommendSort(@RequestBody Sort sort) {
+    public JsonResult insertRecommendSort(@RequestBody GoodsRecommendSortParam param) {
 
         //如果提交的内容内部有重复
-        List<Sort> sorts = new ArrayList<>();
-        sorts.add(sort);
-
-        sorts.addAll(sort.getChildren());
-        if (isSortNameRepeat(sorts)) {
+        List<String> sortsNames = new ArrayList<>();
+        sortsNames.add(param.getSortName());
+        if (param.getChildren() != null) {
+            sortsNames.addAll(param.getChildren().stream().map(GoodsRecommendSortParam.GoodsRecommendSortChild::getSortName).collect(Collectors.toList()));
+        }
+        // 判断传入的数据是否存在名称重复
+        if (isSortNamesRepeat(sortsNames)) {
             return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
         }
 
         //判断内容和数据库内有重复
-        if (shop().goods.goodsSort.isSortNameExist(sorts)) {
+        if (shop().goods.goodsSort.isSortNameExist(sortsNames)) {
             return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
         }
 
-        shop().goods.goodsSort.insertRecommendSort(sort);
+        shop().goods.goodsSort.insertRecommendSort(param);
         return success();
     }
+
+    @PostMapping("/api/admin/goods/sort/recommend/update")
+    public JsonResult updateRecommendSort(@RequestBody GoodsRecommendSortParam param){
+        if (param.getSortId() == null) {
+            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+        }
+
+        //如果提交的内容内部有重复
+        List<String> sortsNames = new ArrayList<>();
+        sortsNames.add(param.getSortName());
+        if (param.getChildren() != null) {
+            sortsNames.addAll(param.getChildren().stream().map(GoodsRecommendSortParam.GoodsRecommendSortChild::getSortName).collect(Collectors.toList()));
+        }
+        // 判断传入的数据是否存在名称重复
+        if (isSortNamesRepeat(sortsNames)) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
+        }
+
+        //判断子分类内容和数据库内有重复
+        if (shop().goods.goodsSort.isSortNameExist(param.getSortId(),sortsNames)) {
+            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
+        }
+
+        shop().goods.goodsSort.updateRecommendSort(param);
+        return success();
+    }
+
+    private boolean isSortNamesRepeat(List<String> sortNames){
+        Set<String> set = new HashSet<>(sortNames);
+        return set.size()!=sortNames.size();
+    }
+
 
     @GetMapping("/api/admin/goods/sort/recommend/get/{sortId}")
     public JsonResult getRecommendSort(@PathVariable("sortId") Integer sortId) {
@@ -122,69 +186,6 @@ public class AdminGoodsSortController extends AdminBaseController {
         }
     }
 
-    /**
-     * 删除
-     * @param sort
-     * @return
-     */
-    @PostMapping("/api/admin/goods/sort/delete")
-    public JsonResult delete(@RequestBody Sort sort) {
-
-        if (sort.getSortId() == null) {
-            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
-        }
-
-        shop().goods.goodsSort.delete(sort);
-
-        return success();
-    }
-
-    /**
-     * 修改
-     *
-     * @param sort
-     * @return
-     */
-    @PostMapping("/api/admin/goods/sort/update")
-    public JsonResult update(@RequestBody Sort sort) {
-
-        if (sort.getSortId() == null) {
-            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
-        }
-
-        boolean isExist = shop().goods.goodsSort.isOtherSortNameExist(sort);
-        if (isExist) {
-            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
-        }
-
-        shop().goods.goodsSort.update(sort);
-
-        return success();
-    }
-
-    @PostMapping("/api/admin/goods/sort/recommend/update")
-    public JsonResult updateRecommendSort(@RequestBody Sort sort) {
-        if (sort.getSortId() == null) {
-            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
-        }
-
-        //如果提交的内容内部有重复
-        List<Sort> sorts = new ArrayList<>();
-        sorts.add(sort);
-
-        sorts.addAll(sort.getChildren());
-        if (isSortNameRepeat(sorts)) {
-            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
-        }
-
-        //判断子分类内容和数据库内有重复
-        if (shop().goods.goodsSort.isOtherSortNameExist(sorts,sort.getSortId())) {
-            return fail(JsonResultCode.GOODS_SORT_NAME_EXIST);
-        }
-
-        shop().goods.goodsSort.updateRecommendSort(sort);
-        return success();
-    }
 
     /**
      * 设置推荐分类配置

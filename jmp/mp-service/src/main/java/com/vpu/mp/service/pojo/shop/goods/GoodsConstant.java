@@ -59,6 +59,11 @@ public class GoodsConstant {
     public static final Byte NORMAL_BRAND = 0;
     public static final Byte RECOMMEND_SORT = 1;
     public static final Byte NORMAL_SORT = 0;
+    public static final Byte HAS_CHILD = 1;
+    public static final Byte HAS_NO_CHILD = 0;
+    public static final Short ROOT_LEVEL = 0;
+    public static final Short SECOND_LEVEL = 1;
+    public static final Short THIRD_LEVEL = 2;
     /*** 未关联品牌分类时的分类id*/
     public static final Integer NO_CLASSIFY_ID = 0;
 

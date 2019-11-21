@@ -1,15 +1,13 @@
 package com.vpu.mp.service.shop.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortConfig;
+import com.vpu.mp.service.shop.image.ImageService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortConfig;
-import com.vpu.mp.service.shop.image.ImageService;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author 李晓冰
@@ -22,21 +20,26 @@ public class GoodsRecommendSortConfigService extends BaseShopConfigService {
 
     final static String K_RECOMMEND_SORT = "recommend_sort";
 
-
+    final static String K1="recommendSortStatus";
+    final static String K2="recommendSortImgPath";
+    final static String K3="recommendImgLink";
     /**
      *  获取推荐分类配置信息
      * @return
      */
     public GoodsRecommendSortConfig getRecommendSortConfig() {
-
-        GoodsRecommendSortConfig recommendSortConfig  = get(K_RECOMMEND_SORT,GoodsRecommendSortConfig.class,new GoodsRecommendSortConfig());
-        recommendSortConfig.setRecommendSortImg(getImgFullUrlUtil(recommendSortConfig.getRecommendSortImgPath()));
-        return recommendSortConfig;
+        Map jsonObject = getJsonObject(K_RECOMMEND_SORT, Map.class, new HashMap());
+        GoodsRecommendSortConfig config = new GoodsRecommendSortConfig();
+        config.setRecommendSortStatus((Integer) jsonObject.get(K1));
+        config.setRecommendSortImgPath((String) jsonObject.get(K2));
+        config.setRecommendImgLink((String) jsonObject.get(K3));
+        config.setRecommendSortImg(getImgFullUrlUtil(config.getRecommendSortImgPath()));
+        return config;
     }
 
     /**
      * 设置推荐分类配置信息
-     * @param recommendSortConfig
+     * @param recommendSortConfig 配置信息
      */
     public void setRecommendSortConfig(GoodsRecommendSortConfig recommendSortConfig) {
         Map<String,Object> map=new HashMap<>(3);
