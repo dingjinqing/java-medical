@@ -6,8 +6,8 @@
         v-model="level"
         style="margin-bottom: 10px;"
       >
-        <el-radio :label="0">{{$t('goodsSorts.addFirstLevel')}}</el-radio>
-        <el-radio :label="1">{{$t('goodsSorts.addSecondLevel')}}</el-radio>
+        <el-radio :label="0" :disabled="isUpdate">{{$t('goodsSorts.addFirstLevel')}}</el-radio>
+        <el-radio :label="1" :disabled="isUpdate">{{$t('goodsSorts.addSecondLevel')}}</el-radio>
       </el-radio-group>
       <!-- 一级分类表单 -->
       <el-form
@@ -31,7 +31,7 @@
         <el-form-item :label="$t('goodsSorts.goodsSortFirst')">
           <el-input
             @change="firstChanged"
-            v-model.number="goodsSortDataFirst.firstOld"
+            v-model.number="goodsSortDataFirst.firstBind"
             size="small"
             style="width: 170px;"
           />
@@ -64,6 +64,7 @@
           <span style="font-size: 14px;color: #666;">{{$t('goodsSorts.goodsSortHeadImgLink')}}：</span>
           <el-input
             v-model="goodsSortDataFirst.imgLink"
+            :readonly="true"
             size="small"
             style="width: 280px;"
           />
@@ -130,7 +131,7 @@
         <el-form-item :label="$t('goodsSorts.goodsSortFirst')">
           <el-input
             @change="firstChanged"
-            v-model.number="goodsSortDataSecond.firstOld"
+            v-model.number="goodsSortDataSecond.firstBind"
             size="small"
             style="width: 170px;"
           />
@@ -174,6 +175,7 @@
     <ImageDialog
       :tuneUp="imgDialogShow"
       pageIndex='pictureSpace'
+      :imageSize="[imgWidth,imgHeight]"
       @handleSelectImg='imgDialogSelectedCallback'
     />
     <!--链接dialog-->
@@ -186,7 +188,7 @@
 
 <script>
 // 导入api
-import { getGoodsSortList, addGoodsSort, updateGoodsSort, getGoodsSort } from '@/api/admin/goodsManage/goodsSortManagement/goodsSortManagement'
+import { getGoodsSortSelectList, addGoodsSort, updateGoodsSort, getGoodsSort } from '@/api/admin/goodsManage/goodsSortManagement/goodsSortManagement'
 // 导入工具
 import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
 
@@ -206,11 +208,13 @@ export default {
     return {
       isUpdate: false,
       level: 0,
+      imgWidth: 510,
+      imgHeight: 200,
       goodsSortDataFirst: {
         sortId: null,
         sortName: null,
         first: null,
-        firstOld: null,
+        firstBind: null,
         imgLink: null,
         sortImg: null,
         sortImgObj: null
@@ -220,7 +224,7 @@ export default {
         sortId: null,
         sortName: null,
         first: null,
-        firstOld: null,
+        firstBind: null,
         sortImg: null,
         sortImgObj: null
       },
@@ -244,17 +248,27 @@ export default {
     /* 分类优先级改变事件 */
     firstChanged () {
       let target = this.level === 0 ? this.goodsSortDataFirst : this.goodsSortDataSecond
-
-      if (isNumberBlank(target.firstOld)) {
+      // 用户输入为空
+      if (isNumberBlank(target.firstBind)) {
         target.first = null
-      } else if (typeof target.firstOld !== 'number') {
-        target.firstOld = target.first
+      } else if (typeof target.firstBind !== 'number') {
+        // 用户输入的不是数字，则还原数据
+        target.firstBind = target.first
+      } else if (target.firstBind < 0 || target.firstBind > 100) {
+        target.firstBind = target.first
       } else {
-        target.first = target.firstOld
+        target.first = target.firstBind
       }
     },
     /* 选择图标 */
     chooseSortImg () {
+      if (this.level === 0) {
+        this.imgWidth = 510
+        this.imgHeight = 200
+      } else {
+        this.imgWidth = 150
+        this.imgHeight = 140
+      }
       this.imgDialogShow = !this.imgDialogShow
     },
     /* 选择图标回调 */
@@ -279,7 +293,7 @@ export default {
     },
     /* 页面数据初始化 */
     _initData () {
-      return getGoodsSortList({ parentId: 0, type: 0 }).then(res => {
+      return getGoodsSortSelectList().then(res => {
         this.firstSortOptions = res.content
       })
     },
@@ -296,7 +310,7 @@ export default {
         target.sortId = sort.sortId
         target.sortName = sort.sortName
         target.first = sort.first
-        target.firstOld = sort.first
+        target.firstBind = sort.first
         this.level = sort.level
         target.sortImgObj = {
           imgPath: sort.sortImg,
@@ -304,6 +318,7 @@ export default {
         }
         target.imgLink = sort.imgLink
         target.parentId = sort.parentId
+        target.oldParentId = sort.parentId
         if (sort.level === 1) {
           target.firstSortId = sort.parentId
         }
@@ -345,15 +360,18 @@ export default {
         formData.sortName = this.goodsSortDataFirst.sortName
         formData.level = this.level
         formData.parentId = 0
-        formData.first = this.goodsSortDataFirst.first
+        formData.first = this.goodsSortDataFirst.first || 0
         formData.sortImg = this.goodsSortDataFirst.sortImgObj === null ? null : this.goodsSortDataFirst.sortImgObj.imgPath
         formData.imgLink = this.goodsSortDataFirst.imgLink
       } else {
         formData.sortId = this.goodsSortDataSecond.sortId
         formData.parentId = this.goodsSortDataSecond.firstSortId
+        if (this.isUpdate) {
+          formData.oldParentId = this.goodsSortDataSecond.oldParentId
+        }
         formData.sortName = this.goodsSortDataSecond.sortName
         formData.level = this.level
-        formData.first = this.goodsSortDataSecond.first
+        formData.first = this.goodsSortDataSecond.first || 0
         formData.sortImg = this.goodsSortDataSecond.sortImgObj === null ? null : this.goodsSortDataSecond.sortImgObj.imgPath
       }
       return formData

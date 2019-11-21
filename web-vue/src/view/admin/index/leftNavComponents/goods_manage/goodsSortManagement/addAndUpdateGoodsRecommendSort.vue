@@ -66,7 +66,7 @@
                  {{$t('goodsRecommendSorts.goodsSortImgLink')}}：
                </div>
                <div class="formItemVal">
-                 <el-input v-model="item.imgLink" size="small" style="width: 250px;"/>
+                 <el-input v-model="item.imgLink" :readonly="true" size="small" style="width: 250px;"/>
                  <el-button @click="chooseImgLink(item)" size="small" style="margin-left: 5px;color: #666666;">
                    {{$t('goodsRecommendSorts.addHeadImgLink')}}
                  </el-button>
@@ -82,7 +82,7 @@
       <el-button @click="save" type="primary">{{$t('goodsRecommendSorts.save')}}</el-button>
     </div>
     <!--图片dialog-->
-    <ImageDialog :tuneUp="imgDialogShow" pageIndex='pictureSpace' @handleSelectImg='imgDialogSelectedCallback'/>
+    <ImageDialog :tuneUp="imgDialogShow" pageIndex='pictureSpace' :imageSize="[150,140]" @handleSelectImg='imgDialogSelectedCallback'/>
     <!--链接dialog-->
     <LinkDialog :tuneUpSelectLink="linkDialogShow" @selectLinkPath="imgLinkDialogSelectedCallback"/>
   </div>
@@ -212,21 +212,20 @@ export default {
         sortId: this.recommendSort.sortId,
         sortName: this.recommendSort.sortName,
         first: this.recommendSort.first,
-        type: 1,
-        parentId: 0,
-        level: 0,
         children: []
       }
 
       this.recommendSortChildren.forEach(item => {
-        recommendSort.children.push({
+        let updateItem = {
           sortId: item.sortId,
           sortName: item.sortName,
           imgLink: item.imgLink,
-          sortImg: item.sortImgObj.imgPath,
-          type: 1,
-          level: 1
-        })
+          sortImg: item.sortImgObj.imgPath
+        }
+        if (this.isUpdate) {
+          updateItem.parentId = recommendSort.sortId
+        }
+        recommendSort.children.push(updateItem)
       })
 
       return recommendSort

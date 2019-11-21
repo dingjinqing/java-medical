@@ -1,19 +1,24 @@
 import service from '@/util/request.js'
 
 // 商品分类查询
-export function getGoodsSortList (data) {
+export function getGoodsSortList (type) {
   return service({
-    url: `/api/admin/goods/sort/list`,
-    method: 'post',
-    data: data
+    url: `/api/admin/goods/sort/list/${type}`,
+    method: 'get'
+  })
+}
+// 商品分类普通列表查询
+export function getGoodsSortSelectList () {
+  return service({
+    url: `/api/admin/goods/sort/select/list`,
+    method: 'get'
   })
 }
 // 商品分类删除
-export function deleteGoodsSort (data) {
+export function deleteGoodsSort (sortId) {
   return service({
-    url: `/api/admin/goods/sort/delete`,
-    method: 'post',
-    data: data
+    url: `/api/admin/goods/sort/delete/${sortId}`,
+    method: 'get'
   })
 }
 // 商品分类新增

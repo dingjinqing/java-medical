@@ -1,133 +1,53 @@
 <template>
   <div class="allGoodsRecommendSort">
-    <allGoodsSortHeaderTab :tabIndex="1" />
+    <allGoodsSortHeaderTab :tabIndex="1"/>
     <div class="content">
       <el-form label-width="140px">
-        <el-form-item :label="$t('goodsRecommendSorts.isEnableRecommendSort') + '：'">
-          <el-radio
-            v-model="recommendSortCfg.recommendSortStatus"
-            :label="1"
-          >{{$t('goodsRecommendSorts.enable')}}</el-radio>
-          <el-radio
-            v-model="recommendSortCfg.recommendSortStatus"
-            :label="0"
-          >{{$t('goodsRecommendSorts.disable')}}</el-radio>
-          <span class="inputTip">{{$t('goodsRecommendSorts.enableRecommendSortTip')}}</span>
+        <el-form-item :label="$t('goodsRecommendSorts.isEnableRecommendSort')">
+            <el-radio v-model="recommendSortCfg.recommendSortStatus" :label="1">{{$t('goodsRecommendSorts.enable')}}</el-radio>
+            <el-radio v-model="recommendSortCfg.recommendSortStatus" :label="0">{{$t('goodsRecommendSorts.disable')}}</el-radio>
+            <span class="inputTip">{{$t('goodsRecommendSorts.enableRecommendSortTip')}}</span>
         </el-form-item>
-        <el-form-item :label="$t('goodsRecommendSorts.goodsSortHeadImg') + '：'">
-          <img
-            v-if="recommendSortCfg.recommendSortImgObj === null"
-            @click="chooseSortImg"
-            style=" display:block;width: 230px;height: 90px;cursor:pointer;"
-            :src="$imageHost+'/image/admin/addSort/add_simple.png'"
-          />
-          <div
-            v-else
-            style="width: 230px;height: 90px;position: relative;"
-            @click="chooseSortImg"
-          >
-            <img
-              style="width: 100%;height: 100%;cursor: pointer;"
-              :src="recommendSortCfg.recommendSortImgObj.imgUrl"
-            />
-            <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">{{$t('goodsRecommendSorts.changeIcon')}}</div>
-            <span
-              @click.stop="deleteSortImg"
-              class="deleteIcon"
-            >×</span>
+        <el-form-item :label="$t('goodsRecommendSorts.goodsSortHeadImg')">
+          <img v-if="recommendSortCfg.recommendSortImgObj === null" @click="chooseSortImg" style=" display:block;width: 230px;height: 90px;cursor:pointer;" :src="$imageHost+'/image/admin/addSort/add_simple.png'"/>
+          <div v-else style="width: 230px;height: 90px;position: relative;" @click="chooseSortImg">
+            <img style="width: 100%;height: 100%;cursor: pointer;cursor: pointer;"
+                 :src="recommendSortCfg.recommendSortImgObj.imgUrl"/>
+            <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);cursor: pointer;">{{$t('goodsRecommendSorts.changeIcon')}}</div>
+            <span @click.stop="deleteSortImg" class="deleteIcon">×</span>
           </div>
           <span class="inputTip">{{$t('goodsRecommendSorts.goodsSortHeadImgTip')}}</span>
           <span style="font-size: 14px;color: #666;">{{$t('goodsRecommendSorts.goodsSortHeadImgLink')}}：</span>
-          <el-input
-            v-model="recommendSortCfg.recommendImgLink"
-            size="small"
-            style="width: 170px;"
-          />
-          <el-button
-            @click="chooseImgLink"
-            size="small"
-            style="margin-left: 5px;color: #666666;"
-          >{{$t('goodsRecommendSorts.addHeadImgLink')}}</el-button>
+          <el-input :readonly="true" v-model="recommendSortCfg.recommendImgLink" size="small" style="width: 280px;"/>
+          <el-button @click="chooseImgLink" size="small" style="margin-left: 5px;color: #666666;">{{$t('goodsRecommendSorts.addHeadImgLink')}}</el-button>
         </el-form-item>
       </el-form>
-      <el-button
-        @click="addGoodsRecommendSort"
-        type="primary"
-        size="small"
-        style="margin-bottom: 10px;"
-      >{{$t('goodsRecommendSorts.addRecommendSort')}}</el-button>
-      <el-table
-        class="version-manage-table"
-        header-row-class-name="tableClss"
-        :data="goodsRecommendSortData"
-        border
-        style="width: 100%"
-      >
-        <el-table-column
-          align="center"
-          :label="$t('goodsRecommendSorts.goodsSortName')"
-          prop="sortName"
-        />
-        <el-table-column
-          align="center"
-          :label="$t('goodsRecommendSorts.goodsSortImg')"
-        >
+      <el-button @click="addGoodsRecommendSort" type="primary" style="margin-bottom: 10px;">{{$t('goodsRecommendSorts.addRecommendSort')}}</el-button>
+      <el-table :data="goodsRecommendSortData" class="tableClass" border style="width: 100%">
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortName')" prop="sortName"/>
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortImg')">
           <template slot-scope="{row}">
-            <img
-              :src="row.sortImg"
-              style="height: 50px;min-width: 160px;"
-            />
+            <img :src="row.sortImg" style="height: 50px;min-width: 160px;"/>
           </template>
         </el-table-column>
-        <el-table-column
-          align="center"
-          :label="$t('goodsRecommendSorts.goodsSortImgLink')"
-          prop="imgLink"
-        />
-        <el-table-column
-          align="center"
-          :label="$t('goodsRecommendSorts.goodsSortFirst')"
-          prop="first"
-        />
-        <el-table-column
-          align="center"
-          :label="$t('goodsRecommendSorts.goodsSortCreateTime')"
-          prop="createTime"
-        />
-        <el-table-column
-          align="center"
-          :label="$t('goodsRecommendSorts.goodsSortOperate')"
-        >
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortImgLink')" prop="imgLink"/>
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortFirst')" prop="first"/>
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortCreateTime')" prop="createTime"/>
+        <el-table-column align="center" :label="$t('goodsRecommendSorts.goodsSortOperate')">
           <template slot-scope="{row}">
-            <span
-              class="operateSpan"
-              @click="editGoodsRecommendSortClicked(row)"
-            >{{$t('goodsRecommendSorts.edit')}}</span>
-            <span
-              class="operateSpan"
-              @click="deleteGoodsRecommendSortClicked(row)"
-            >{{$t('goodsRecommendSorts.delete')}}</span>
+            <span class="operateSpan" @click="editGoodsRecommendSortClicked(row)">{{$t('goodsRecommendSorts.edit')}}</span>
+            <span class="operateSpan" @click="deleteGoodsRecommendSortClicked(row)">{{$t('goodsRecommendSorts.delete')}}</span>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="contentFooter">
-      <el-button
-        @click="save"
-        type="primary"
-      >{{$t('goodsRecommendSorts.save')}}</el-button>
+      <el-button @click="save" type="primary">{{$t('goodsRecommendSorts.save')}}</el-button>
     </div>
     <!--图片dialog-->
-    <ImageDialog
-      :tuneUp="imgDialogShow"
-      pageIndex='pictureSpace'
-      @handleSelectImg='imgDialogSelectedCallback'
-    />
+    <ImageDialog :tuneUp="imgDialogShow" pageIndex='pictureSpace' :imageSize="[510,200]" @handleSelectImg='imgDialogSelectedCallback'/>
     <!--链接dialog-->
-    <LinkDialog
-      :tuneUpSelectLink="linkDialogShow"
-      @selectLinkPath="imgLinkDialogSelectedCallback"
-    />
+    <LinkDialog :tuneUpSelectLink="linkDialogShow" @selectLinkPath="imgLinkDialogSelectedCallback"/>
   </div>
 </template>
 
@@ -166,7 +86,7 @@ export default {
     },
     /* 选择图标回调 */
     imgDialogSelectedCallback (imgObj) {
-      this.recommendSortCfg.recommendSortImgObj = { imgUrl: imgObj.imgUrl, imgPath: imgObj.imgPath }
+      this.recommendSortCfg.recommendSortImgObj = {imgUrl: imgObj.imgUrl, imgPath: imgObj.imgPath}
     },
     /* 删除图标 */
     deleteSortImg () {
@@ -182,11 +102,11 @@ export default {
     },
     /* 添加推荐分类 */
     addGoodsRecommendSort () {
-      this.$router.push({ name: 'addGoodsRecommendSort' })
+      this.$router.push({name: 'addGoodsRecommendSort'})
     },
     /* 编辑商品分类 */
     editGoodsRecommendSortClicked (row) {
-      this.$router.push({ name: 'updateGoodsRecommendSort', params: { sortId: row.sortId } })
+      this.$router.push({name: 'updateGoodsRecommendSort', params: {sortId: row.sortId}})
     },
     /* 删除商品分类 */
     deleteGoodsRecommendSortClicked (row) {
@@ -195,14 +115,14 @@ export default {
         cancelButtonText: this.$t('goodsRecommendSorts.cancel'),
         type: 'info'
       }).then(() => {
-        deleteGoodsSort({ sortId: row.sortId }).then(res => {
+        deleteGoodsSort(row.sortId).then(res => {
           this._fetchGoodsSortData()
         })
       })
     },
     /* 获取商品分类 */
     _fetchGoodsSortData () {
-      getGoodsSortList({ type: 1, parentId: 0 }).then(res => {
+      getGoodsSortList(1).then(res => {
         this.goodsRecommendSortData = res.content
       })
     },
@@ -227,10 +147,10 @@ export default {
       }
       setRecommendSortConfig(params).then(res => {
         if (res.error !== 0) {
-          this.$message.error({ message: res.message() })
+          this.$message.error({message: res.message()})
           return
         }
-        this.$message.info({ message: this.$t('goodsRecommendSorts.saveSuccess') })
+        this.$message.info({message: this.$t('goodsRecommendSorts.saveSuccess')})
       })
     }
   },
@@ -243,52 +163,52 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  margin: 20px 0px;
-  padding-left: 10px;
-}
-.inputTip {
-  color: #999;
-  display: block;
-}
-.deleteIcon {
-  width: 17px;
-  height: 17px;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  line-height: 17px;
-  text-align: center;
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  cursor: pointer;
-  opacity: 0.8;
-}
-/deep/ .tableClss th {
-  background-color: #f5f5f5;
-  border: none;
-  height: 36px;
-  font-weight: bold;
-  color: #000;
-  padding: 8px 10px;
-}
-.operateSpan {
-  font-size: 16px;
-  color: #5a8bff;
-  cursor: pointer !important;
-}
-.contentFooter {
-  background: #f8f8fa;
-  text-align: center;
-  box-sizing: border-box;
-  height: 60px;
-  padding-top: 10px;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-}
+  .content{
+    margin: 20px 0px;
+    padding-left: 10px;
+  }
+  .inputTip {
+    color: #999;
+    display: block;
+  }
+  .deleteIcon {
+    width: 17px;
+    height: 17px;
+    color: #fff;
+    background: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    line-height: 17px;
+    text-align: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    cursor: pointer;
+    opacity: 0.8;
+  }
+  .  /deep/.tableClass th{
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
+  }
+  .operateSpan{
+    font-size: 16px;
+    color: #5a8bff;
+    cursor: pointer !important;
+  }
+  .contentFooter{
+    background: #f8f8fa;
+    text-align: center;
+    box-sizing: border-box;
+    height: 60px;
+    padding-top: 10px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+  }
 </style>
