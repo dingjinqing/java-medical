@@ -2,6 +2,7 @@ export const en = {
   // Check
   activityNameRequiredRules: 'Please enter the event name',
   goodsIdRequireRules: 'Please select the event product',
+  validityDateRules: 'Please select time',
   LimitAmountRequireRules: 'Please fill in the number of people',
   joinLimitRequireRules: 'Please fill in the tour limit',
   openLimitRequireRules: 'Please fill in the opening limit',

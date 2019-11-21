@@ -3,6 +3,7 @@ export const cn = {
   // 校验
   activityNameRequiredRules: '请输入活动名称',
   goodsIdRequireRules: '请选择活动商品',
+  validityDateRules: '请选择时间',
   limitAmountRequireRules: '请填写成团人数',
   joinLimitRequireRules: '请填写参团限制',
   openLimitRequireRules: '请填写开团限制',

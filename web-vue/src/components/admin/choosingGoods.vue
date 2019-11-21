@@ -573,6 +573,7 @@ export default {
         goodsImg: row.goodsImg,
         goodsId: this.getRowId(row)
       })
+      row.ischecked = true
       if (!this.singleElection) {
         let flag = this.tableData.filter((item, index) => {
           return item.ischecked === false
@@ -598,6 +599,7 @@ export default {
       this.checkedUrlList = this.checkedUrlList.filter(item => {
         return item.goodsId !== this.getRowId(row)
       })
+      row.ischecked = false
     },
     clearCheckedRow () {
       this.checkedId = {}
