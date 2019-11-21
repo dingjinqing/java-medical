@@ -76,7 +76,7 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 		try {
 			data.append("tid=" + URLEncoder.encode(tid, "UTF-8"));
 			for (int i = 0; i < kidList.length; i++) {
-				String key = "kidList[" + i + "]";
+				String key = URLEncoder.encode("kidList[" + i + "]", "UTF-8");
 				data.append("&" + key + "=" + URLEncoder.encode(String.valueOf(kidList[i]), "UTF-8"));
 			}
 			data.append("&sceneDesc=" + URLEncoder.encode(sceneDesc, "UTF-8"));
