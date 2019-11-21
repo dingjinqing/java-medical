@@ -301,11 +301,12 @@ public class ShopVersionService extends MainBaseService {
 	 * 校验是否需要判断权限。
 	 * 为true表示客户有权限，为false表示没有权限，此时要返回JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER;
 	 * saas.shop.version.verifyVerPurview
+	 * VersionName 版本vsName对应的类
 	 * @param shopId
 	 * @param vsNames
 	 * @return
 	 */
-	public String[] verifyVerPurview(Integer shopId, String[] vsNames) {
+	public String[] verifyVerPurview(Integer shopId, String... vsNames) {
 		String[] result = new String[vsNames.length];
 		for(int i=0;i<result.length;i++) {
 			result[i]="false";
