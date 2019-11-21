@@ -56,6 +56,7 @@ public class WxContentMessage {
 	//刷新审核状态
 	public static final String WX_REFRESH_AUDIT_STATE_FAIL = "wx.refersh.audit.state.fail";
 	public static final String WX_REFRESH_AUDIT_STATE_SUCCESS = "wx.refersh.audit.state.success";
+	public static final String WX_REFRESH_AUDIT_STATE_SUCCESSON2 = "wx.refersh.audit.state.successon2";
 	//检查必输项
 	public static final String WX_TABLE_ISNULL = "wx.table.is.null";
 	//该功能尚未开放

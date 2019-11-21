@@ -852,7 +852,12 @@ public class MpAuthShopService extends MainBaseService {
 					mp.update();
 				}
 			}
-			operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_SUCCESS.code, new String[] {String.valueOf(result.getStatus()),result.getReason()});
+			if(result.getStatus().equals(2)) {
+				//状态成功没有返回reason
+				operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_SUCCESSON2.code, new String[] {String.valueOf(result.getStatus())});
+			}else {
+				operateLogGlobal(mp, MpOperateLogService.OP_TYPE_REFRESH_AUDIT_STATE, result, WxContentTemplate.WX_REFRESH_AUDIT_STATE_SUCCESS.code, new String[] {String.valueOf(result.getStatus()),result.getReason()});				
+			}
 			return result;
 		}
 		//尚未上传代码

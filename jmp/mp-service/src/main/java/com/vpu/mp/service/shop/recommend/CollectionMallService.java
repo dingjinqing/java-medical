@@ -39,7 +39,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 @Service
 public class CollectionMallService extends ShopMallBaseService {
 	private static final Byte one = 1;
-	private static final Byte two = 1;
+	private static final Byte two = 2;
 	@Autowired
 	private CartService cartService;
 	@Autowired
