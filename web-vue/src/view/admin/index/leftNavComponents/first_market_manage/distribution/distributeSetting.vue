@@ -367,99 +367,6 @@
       :chooseGoodsBack="goodsInfo"
     />
 
-    <!-- 选择模板弹窗 -->
-    <!-- <el-dialog
-      title="选择页面"
-      :visible.sync="templateDialog"
-      width="50%"
-      :close-on-click-modal="false"
-      center
-    >
-      <div style="width: 100%; text-align: center;">
-        <el-form
-          ref="formDialog"
-          :model="formDialog"
-          label-width="90px"
-        >
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="页面名称：">
-                <el-input
-                  v-model="formDialog.pageName"
-                  style="width: 150px;"
-                  size="small"
-                  placeholder="请输入页面名称"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="页面分类：">
-                <el-input
-                  v-model="formDialog.catId"
-                  style="width: 150px;"
-                  size="small"
-                  placeholder="请选择页面分类"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-button
-                type="primary"
-                size="small"
-                style="margin-top: 5px;"
-              >搜索</el-button>
-            </el-col>
-          </el-row>
-
-        </el-form>
-
-        <el-table
-          ref="templateData"
-          :data="templateData"
-          border
-          highlight-current-row
-          @current-change="handleCurrentChange"
-          height="300px"
-          style="width: 100%;"
-        >
-          <el-table-column
-            prop="pageName"
-            label="页面名称"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="createTime"
-            label="创建时间"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="typeText"
-            label="是否首页"
-            align="center"
-          ></el-table-column>
-        </el-table>
-        <Pagination
-          :page-params.sync="pageParams"
-          @pagination="getTemplateData"
-        />
-      </div>
-
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          size="small"
-          @click="templateDialog = false"
-        >取 消</el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click="sureClickHandler()"
-        >确 定</el-button>
-      </span>
-    </el-dialog> -->
-
     <!-- 选择图片弹窗 -->
     <ImageDalog
       pageIndex='imageDalog'
@@ -485,8 +392,7 @@ export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
     ImageDalog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
-    // Pagination: () => import('@/components/admin/pagination/pagination.vue'), // 分页
-    SelectTemplate: () => import('./selectTemplate') // 选择模板弹窗
+    SelectTemplate: () => import('@/components/admin/selectTemplate') // 选择模板弹窗
   },
   data () {
     return {
@@ -544,23 +450,14 @@ export default {
       imageSize: [640, 640], // 调起添加图片宽高
       isDraggable: false, // 添加商品弹窗是否开启多选底部可拖拽状态
       isAddImgOrChangeFlga: false, // true为添加图片  false为更换列表项中的图片
-      // templateDialog: false, // 模板弹窗
       tuneUpSelectTemplate: false,
       templateRow: {}, // 模板弹窗回调函数
-      tamplateFlag: false, // 模板数据显示
-      pageParams: {} // 分页
-      // formDialog: {
-      //   pageName: '',
-      //   catId: ''
-      // },
-      // requestParams: {},
-      // templateData: [], // 模板表格
+      tamplateFlag: false // 模板数据显示
     }
   },
   mounted () {
     // 初始化数据
     this.getDistribution()
-    // this.getTemplateData()
   },
   methods: {
     // 获取分销配置
@@ -683,43 +580,8 @@ export default {
 
     // 调起模板弹窗
     chooseTemplate () {
-      // this.templateDialog = !this.templateDialog
       this.tuneUpSelectTemplate = !this.tuneUpSelectTemplate
     },
-
-    // 获取模板弹窗表格数据
-    // getTemplateData () {
-    //   this.requestParams.pageName = this.formDialog.pageName
-    //   this.requestParams.catId = this.formDialog.catId
-    //   this.requestParams.currentPage = this.pageParams.currentPage
-    //   this.requestParams.pageRows = this.pageParams.pageRows
-    //   shopDecorateList(this.requestParams).then((res) => {
-    //     if (res.error === 0) {
-    //       this.pageParams = res.content.page
-    //       this.templateData = res.content.dataList
-    //       // 表格数据处理
-    //       this.templateData.map((item, index) => {
-    //         if (item.pageType === 1) {
-    //           item.typeText = '是'
-    //         } else {
-    //           item.typeText = '否'
-    //         }
-    //       })
-    //     }
-    //   })
-    // },
-
-    // 选中表格数据
-    // handleCurrentChange (val) {
-    //   this.templateRow = val
-    //   this.form.rebate_page_id = val.pageId
-    // },
-
-    // // 模板数据回显
-    // sureClickHandler () {
-    //   this.templateDialog = false
-    //   this.tamplateFlag = true
-    // },
 
     // 删除模板
     clearClickHandler () {

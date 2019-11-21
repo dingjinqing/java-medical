@@ -6,23 +6,29 @@
         <span>{{$t('scoreCfg.frontEndDesc')}}</span>
       </div>
       <div class="content">
+
         <div class="left">
           <img :src="$imageHost+'/image/admin/score_qd.png'">
           <div
             class="show_area"
-            @click="handleToDirectDecorate"
+            @click="handleToDirectDecorate(templateList)"
+            v-if="templateList"
           >
-            {{$t('scoreCfg.alreadyTemplate')}}:<span>{{templateName}}</span>
+            {{$t('scoreCfg.alreadyTemplate')}}：<span>{{templateName}}</span>
           </div>
-          <div class="show_area hidden">
+          <div
+            class="show_area hidden"
+            v-else
+          >
             <div>
               <h1>{{$t('scoreCfg.infoOne')}}</h1>
               <p>{{$t('scoreCfg.infoTwo')}}</p>
               <p>{{$t('scoreCfg.infoThree')}}</p>
             </div>
-
           </div>
-          <div class="score_get">{{$t('scoreCfg.getAndPayDetail')}}</div>
+
+          <div class="
+            score_get">{{$t('scoreCfg.getAndPayDetail')}}</div>
           <div class="score_set bottom">
             <div class="score_setDiv">{{$t('scoreCfg.signGetScoreEx')}}</div>
             <div class="score_setDiv">2019-04-29 12:00:00</div>
@@ -54,7 +60,7 @@
                 class="templateList"
                 v-if="templateList"
               >
-                <span>{{templateList}}</span>
+                <span>{{templateName}}</span>
                 <img
                   @click="handleTodel()"
                   :src="$imageHost+'/image/admin/icon_delete.png'"
@@ -65,9 +71,16 @@
                 <el-button
                   plain
                   size="small"
-                  @click="handleToRightBtn(1)"
+                  @click="handleChooseTemplate"
                 >{{$t('scoreCfg.chooseTemplate')}}</el-button>
               </div>
+              <!-- <div>
+                <el-button
+                  plain
+                  size="small"
+                  @click="handleToRightBtn(1)"
+                >{{$t('scoreCfg.chooseTemplate')}}</el-button>
+              </div> -->
               <span
                 @click="handleToRightBtn(2)"
                 class="common"
@@ -83,19 +96,28 @@
       </div>
     </div>
     <!--选择运费模板-->
-    <SelectTemplateDialog @handleToSendData="handleToSendData" />
+    <!-- <SelectTemplateDialog @handleToSendData="handleToSendData" /> -->
+
+    <!-- 选择模板弹窗 -->
+    <SelectTemplate
+      :tuneUpSelectTemplate='tuneUpSelectTemplate'
+      @handleSelectTemplate='handleSelectTemplate'
+    />
   </div>
 </template>
 <script>
 import { scorePageIdUpdate, getScoreConfigRequest } from '@/api/admin/memberManage/scoreManage/scoreCfg.js'
 export default {
   components: {
-    SelectTemplateDialog: () => import('./selectTemplateDialog')
+    // SelectTemplateDialog: () => import('./selectTemplateDialog'),
+    SelectTemplate: () => import('@/components/admin/selectTemplate') // 选择模板弹窗
+
   },
   data () {
     return {
       templateList: null, // 模板id
-      templateName: null // 模板名称
+      templateName: null, // 模板名称
+      tuneUpSelectTemplate: false
     }
   },
   watch: {
@@ -165,14 +187,26 @@ export default {
       this.templateList = ''
     },
     // 选择模板弹窗选中数据
-    handleToSendData (res) {
-      console.log(res)
-      this.templateList = res.userID
+    // handleToSendData (res) {
+    //   console.log(res)
+    //   this.templateList = res.userID
+    // },
+    // 调起选择模板弹窗
+    handleChooseTemplate () {
+      this.tuneUpSelectTemplate = !this.tuneUpSelectTemplate
     },
-    handleToDirectDecorate () {
+    // 选择模板弹窗数据回显
+    handleSelectTemplate (val) {
+      this.templateList = val.pageId
+      this.templateName = val.pageName
+    },
+    handleToDirectDecorate (val) {
       // TODO 等小程序管理->页面装修->自定义页面装修完成
-      console.log('页面跳转')
-      this.$route.push({
+      this.$router.push({
+        path: '/admin/home/main/decorationHome',
+        query: {
+          pageId: val
+        }
       })
     }
   }
@@ -238,9 +272,6 @@ export default {
             cursor: pointer;
             color: #5a8bff;
           }
-        }
-        .hidden {
-          display: none;
         }
         .score_get {
           height: 40px;
