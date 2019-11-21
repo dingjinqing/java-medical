@@ -197,7 +197,6 @@ export default {
     },
     // 修改运费模板
     upDateTemplate (deliverTemplateId) {
-      this.$http.$emit('showedit', true)
       this.$router.push({
         path: `/admin/home/main/goodsManage/deliverTemplate/deliverTemplateUpdate`,
         query: { deliverTemplateId }

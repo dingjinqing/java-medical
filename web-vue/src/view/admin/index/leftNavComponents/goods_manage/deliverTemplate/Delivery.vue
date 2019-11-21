@@ -209,7 +209,6 @@ export default {
     }
   },
   mounted () {
-    this.delivery.flag = this.flag // 传入类型来判断是普通的还是重量的
     if (this.flag === 1) {
       // 编辑初始化
       this.initData()
@@ -217,6 +216,19 @@ export default {
   },
   methods: {
     initData () {
+      debugger
+      console.log(this.propDelivery)
+      var data = this.propDelivery
+      this.delivery = {
+        deliverTemplateId: data.deliverTemplateId,
+        templateName: data.templateName,
+        flag: data.flag,
+        contentParam: {
+          limitParam: data.templateContent.limitParam,
+          areaParam: data.templateContent.areaParam,
+          feeConditionParam: data.templateContent.feeConditionParam
+        }
+      }
       //   // 判断有没有传递参数
       //   if (
       //     this.propDelivery &&
@@ -256,21 +268,19 @@ export default {
     addDeliveryTemplate () {
       // 状态，存储，为0的情况下验证全部通过，否则就是不通过
       // var stats = 0
-      // this.$refs['formData'].validate((valid) => {
-      //   if (!valid) {
-      //     return false
-      //   }
-      // })
-      // alert('校验名称')
-      // if (this.delivery.contentParam.limitParam.limit_deliver_area === 0) {
-      //   this.$refs['freightRegion'].validate((valid) => {
-      //     if (!valid) {
-      //       //       stats++
-      //       return false
-      //     }
-      //   })
-      // }
-      // alert('校验配送信息')
+      this.$refs['formData'].validate((valid) => {
+        if (valid) {
+          return false
+        }
+      })
+      if (this.delivery.contentParam.limitParam.limit_deliver_area === 0) {
+        this.$refs['freightRegion'].validate((valid) => {
+          if (valid) {
+            //       stats++
+            return false
+          }
+        })
+      }
       var regionData = this.$refs['regionData'].getTableData()
       this.delivery.contentParam.areaParam = regionData
       // if (this.delivery.contentParam.limitParam.limit_deliver_area && !regionData.length) {
@@ -293,10 +303,10 @@ export default {
       // })
       if (this.propDelivery) {
         // 编辑保存
-
+        this.$emit('updateDelivery', this.delivery)
       } else {
         // 添加保存
-        // this.$emit('addDelivery', this.delivery)
+        this.$emit('addDelivery', this.delivery)
       }
       // this.$refs.formData.validate(required => {
       // if (!required) return false
