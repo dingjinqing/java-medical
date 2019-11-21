@@ -23,27 +23,26 @@
     <div class="table_box">
       <el-table
         v-loading="loading"
+        class="version-manage-table"
+        header-row-class-name="tableClss"
         :data="dataList"
         style="width:100%;"
         border
-        :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none'
-          }"
-        :cell-style="{
-            'text-align':'center'
-          }"
       >
         <el-table-column
           prop="recommendName"
           :label="$t('recommend.templateName')"
+          align="center"
         ></el-table-column>
         <el-table-column
           prop="updateTime"
           :label="$t('recommend.updateTime')"
+          align="center"
         ></el-table-column>
-        <el-table-column :label="$t('recommend.applicationPage')">
+        <el-table-column
+          :label="$t('recommend.applicationPage')"
+          align="center"
+        >
           <template slot-scope="scope">
             <div class="used_page">
               <div
@@ -61,12 +60,18 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('recommend.templateStatus')">
+        <el-table-column
+          :label="$t('recommend.templateStatus')"
+          align="center"
+        >
           <template slot-scope="scope">
             {{scope.row.status === 0 ? $t('recommend.activated') : $t('recommend.terminated')}}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('recommend.operating')">
+        <el-table-column
+          :label="$t('recommend.operating')"
+          align="center"
+        >
           <template slot-scope="scope">
             <div class="operation">
               <p @click="edit(scope.row.id)">{{$t('recommend.edit')}}</p>
@@ -201,6 +206,14 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
 .goodsRecommend {
   padding: 10px;
 }

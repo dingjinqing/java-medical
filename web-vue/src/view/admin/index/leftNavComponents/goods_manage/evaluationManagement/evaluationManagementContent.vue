@@ -28,10 +28,10 @@
           :label="$t('evaluation.evaluationTabs.productList')"
           name="third"
         >
-          <evaluationGoodsList
+          <!-- <evaluationGoodsList
             v-if="activeName === 'third'"
             @handleAddEvaluation="addGoodsEvaluation"
-          />
+          /> -->
         </el-tab-pane>
         <el-tab-pane
           :label="$t('evaluation.evaluationTabs.addEvaluation')"
@@ -47,6 +47,10 @@
     </div>
 
     <evaluationRecord v-if="activeName === 'first'" />
+    <evaluationGoodsList
+      v-if="activeName === 'third'"
+      @handleAddEvaluation="addGoodsEvaluation"
+    />
   </div>
 </template>
 <script>

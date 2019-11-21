@@ -9,7 +9,7 @@
         class="filters"
         style="width: 100%;margin-bottom: 0; margin-left: 0;"
       >
-        <div class="filters_item"><span>{{$t('evaluation.orderSn')}}</span>
+        <div class="filters_item"><span>{{$t('evaluation.orderSn') + '：' }}</span>
           <el-input
             v-model="searchParams.orderSn"
             :placeholder="$t('evaluation.input',[$t('evaluation.orderSn')])"
@@ -17,7 +17,7 @@
             style="width: 170px;"
           ></el-input>
         </div>
-        <div class="filters_item"><span>{{$t('evaluation.goodsName')}}</span>
+        <div class="filters_item"><span>{{$t('evaluation.goodsName') + '：' }}</span>
           <el-input
             v-model="searchParams.goodsName"
             :placeholder="$t('evaluation.input',[$t('evaluation.goodsName')])"
@@ -25,7 +25,7 @@
             style="width: 170px;"
           ></el-input>
         </div>
-        <div class="filters_item"><span>{{$t('evaluation.mobile')}}</span>
+        <div class="filters_item"><span>{{$t('evaluation.mobile') + '：' }}</span>
           <el-input
             v-model="searchParams.mobile"
             :placeholder="$t('evaluation.input',[$t('evaluation.mobile')])"
@@ -52,7 +52,7 @@
             ></el-option>
           </el-select>
         </div>
-        <div class="filters_item"><span>{{$t('evaluation.evaluationGrade')}}</span>
+        <div class="filters_item"><span>{{$t('evaluation.evaluationGrade') + '：'}}</span>
           <el-select
             v-model="searchParams.commstar"
             size="small"
@@ -67,7 +67,7 @@
             ></el-option>
           </el-select>
         </div>
-        <div class="filters_item"><span>{{$t('evaluation.evaluationTable.evaluationReward')}}</span>
+        <div class="filters_item"><span>{{$t('evaluation.evaluationTable.evaluationReward') + '：' }}</span>
           <el-select
             v-model="searchParams.awardActivityId"
             size="small"

@@ -296,11 +296,13 @@
           style="width: 100%"
         >
           <el-table-column
-            v-if="hiddle_1"
-            prop="brandName"
-            label="品牌名称"
+            :label="secondGrandName"
             align="center"
           >
+            <template slot-scope="scope">
+              <p v-if="hiddle_1">{{ scope.row.brandName }}</p>
+              <p v-if="!hiddle_1">{{ scope.row.classifyName }}</p>
+            </template>
           </el-table-column>
           <el-table-column
             v-if="hiddle_1"
@@ -327,24 +329,14 @@
             align="center"
           ></el-table-column>
           <el-table-column
-            v-if="hiddle_1"
-            prop="goodsNum"
-            label="包含商品数量"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            v-if="!hiddle_1"
-            prop="classifyName"
-            label="分类名称"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column
-            v-if="!hiddle_1"
-            prop="brandNum"
+            prop=""
             label="包含商品数量"
             align="center"
           >
+            <template slot-scope="scope">
+              <p v-if="hiddle_1">{{ scope.row.goodsNum }}</p>
+              <p v-if="!hiddle_1">{{ scope.row.brandNum }}</p>
+            </template>
           </el-table-column>
           <el-table-column
             prop="first"
@@ -364,21 +356,21 @@
               <div v-if="hiddle_1">
                 <span
                   @click="handleEditGoods(scope.row.id)"
-                  style="color: #5a8bff;"
+                  style="color: #5a8bff;cursor: pointer;"
                 >编辑</span>
                 <span
                   @click="deleGrand(scope.row.id)"
-                  style="color: #5a8bff;"
+                  style="color: #5a8bff;cursor: pointer;"
                 >删除</span>
               </div>
               <div v-if="!hiddle_1">
                 <span
                   @click="handlePagingEditGoods(scope.row)"
-                  style="color: #5a8bff;"
+                  style="color: #5a8bff;cursor: pointer;"
                 >编辑</span>
                 <span
                   @click="delePagingGrand(scope.row.classifyId)"
-                  style="color: #5a8bff;"
+                  style="color: #5a8bff;cursor: pointer;"
                 >删除</span>
               </div>
 
@@ -531,8 +523,7 @@ export default {
           label: '否'
         }],
       valueIsClss: '',
-      trList: [
-      ],
+      trList: [], // 表格数据
       clickIindex: null,
       tbodyFlag: true,
       noImg: this.$imageHost + '/image/admin/no_data.png',
@@ -628,7 +619,9 @@ export default {
           this.trList = res.content.dataList
           this.pageParams = res.content.page
           this.totalRows = res.content.page.totalRows
-          this.tbodyFlag = true
+          this.$nextTick(() => {
+            this.tbodyFlag = true
+          })
         }
         if (res.content.page.totalRows === 0) {
           this.tbodyFlag = false
@@ -654,27 +647,34 @@ export default {
       console.log(tab, event)
       switch (tab.index) {
         case '0':
-          this.hiddle_1 = true
-          this.bottomDivFlag = true
           this.secondGrandName = '品牌名称'
           this.trList = []
           this.defaultAllBrandData()
-          this.hiddenOverFlag = false
+          this.$nextTick(() => {
+            this.hiddenOverFlag = false
+            this.bottomDivFlag = true
+            this.hiddle_1 = true
+          })
+
           break
         case '1':
-          this.hiddle_1 = false
-          this.bottomDivFlag = true
           this.secondGrandName = '分类名称'
           this.trList = []
           // 初始化品牌分类页数据
           this.defaultPageingGrand()
-          this.hiddenOverFlag = false
+          this.$nextTick(() => {
+            this.hiddenOverFlag = false
+            this.bottomDivFlag = true
+            this.hiddle_1 = false
+          })
           break
         case '2':
-          this.bottomDivFlag = false
-          this.hiddenOverFlag = true
           // 初始化tap3数据
           this.defaulttapThreeData()
+          this.$nextTick(() => {
+            this.bottomDivFlag = false
+            this.hiddenOverFlag = true
+          })
           break
       }
     },

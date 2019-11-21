@@ -1,19 +1,27 @@
 <template>
-  <div class="table_box">
-    <div class="filters">
+  <div
+    class="table_box"
+    style="background: none;"
+  >
+    <div
+      class="filters"
+      style="margin-left: 0;background: #fff;height: 50px;margin-bottom: 10px;"
+    >
       <div class="filters_item">
-        <span>{{$t('evaluation.goodsName')}}</span>
+        <span>{{$t('evaluation.goodsName') + '：'}}</span>
         <el-input
           v-model="searchParams.goodsName"
           :placeholder="$t('evaluation.searchGoods')"
           size="small"
+          style="width: 170px;"
         ></el-input>
       </div>
       <div class="filters_item">
-        <span>{{$t('allGoods.allGoodsHeaderData.category')}}</span>
+        <span>{{$t('allGoods.allGoodsHeaderData.category') + '：'}}</span>
         <el-select
           v-model="searchParams.sortName"
           size="small"
+          style="width: 170px;"
         >
           <el-option
             :label="$t('allGoods.allGoodsHeaderData.chooseCategory')"
@@ -28,7 +36,7 @@
           />
         </el-select>
       </div>
-      <div class="filters_item">
+      <div style="margin-left: 37px;">
         <el-button
           @click="initDataList"
           type="primary"
@@ -36,98 +44,103 @@
         >{{$t('marketCommon.filter')}}</el-button>
       </div>
     </div>
-    <el-table
-      v-loading="loading"
-      :data="dataList"
-      style="width:100%;"
-      border
-      :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'text-align':'center',
-            'border':'none'
-          }"
-      :cell-style="{
-            'text-align':'center'
-          }"
-    >
-      <el-table-column
-        :label="$t('evaluation.goodsName')"
-        width="200"
+    <div style="width: 100%; padding:10px;background: #fff;">
+      <el-table
+        v-loading="loading"
+        class="version-manage-table"
+        header-row-class-name="tableClss"
+        :data="dataList"
+        border
       >
-        <template slot-scope="scope">
-          <div class="goods_info">
-            <img
-              :src="$imageHost+'/'+scope.row.goodsImg"
-              alt=""
-            >
-            <div class="right_info">
-              <div class="goods_name">{{scope.row.goodsName}}</div>
-              <div
-                class="goods_spec"
-                v-if="scope.row.prdDesc"
-              >{{scope.row.prdDesc}}</div>
+        <el-table-column
+          :label="$t('evaluation.goodsName')"
+          align="center"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <div class="goods_info">
+              <img
+                :src="$imageHost+'/'+scope.row.goodsImg"
+                alt=""
+              >
+              <div class="right_info">
+                <div class="goods_name">{{scope.row.goodsName}}</div>
+                <div
+                  class="goods_spec"
+                  v-if="scope.row.prdDesc"
+                >{{scope.row.prdDesc}}</div>
+              </div>
             </div>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        :label="$t('evaluation.productCode')"
-        prop="goodsSn"
-      >
-      </el-table-column>
-      <el-table-column
-        :label="$t('allGoods.allGoodsHeaderData.category')"
-        prop="catName"
-      >
-      </el-table-column>
-      <el-table-column
-        :label="$t('allGoods.allGoodsData.shopPrice')"
-        prop="shopPrice"
-      >
-      </el-table-column>
-      <el-table-column
-        :label="$t('allGoods.allGoodsData.goodsNumber')"
-        prop="goodsNumber"
-      >
-      </el-table-column>
-      <el-table-column
-        :label="$t('evaluation.uv')"
-        prop="uv"
-      >
-      </el-table-column>
-      <el-table-column
-        :label="$t('evaluation.pv')"
-        prop="pv"
-      >
-      </el-table-column>
-      <el-table-column
-        :label="$t('evaluation.actualEvaluationNum')"
-        prop="realCommNum"
-      >
-      </el-table-column>
-      <el-table-column
-        :label="$t('evaluation.addEvaluationNum')"
-        prop="shopCommNum"
-      >
-      </el-table-column>
-      <el-table-column
-        :label="$t('evaluation.evaluationTable.operating')"
-        width="120"
-      >
-        <template slot-scope="scope">
-          <div class="operation">
+          </template>
+        </el-table-column>
+        <el-table-column
+          :label="$t('evaluation.productCode')"
+          prop="goodsSn"
+          align="center"
+          width="200px"
+        >
+        </el-table-column>
+        <el-table-column
+          :label="$t('allGoods.allGoodsHeaderData.category')"
+          prop="catName"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          :label="$t('allGoods.allGoodsData.shopPrice')"
+          prop="shopPrice"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          :label="$t('allGoods.allGoodsData.goodsNumber')"
+          prop="goodsNumber"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          :label="$t('evaluation.uv')"
+          prop="uv"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          :label="$t('evaluation.pv')"
+          prop="pv"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          :label="$t('evaluation.actualEvaluationNum')"
+          prop="realCommNum"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          :label="$t('evaluation.addEvaluationNum')"
+          prop="shopCommNum"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          :label="$t('evaluation.evaluationTable.operating')"
+          width="120"
+          align="center"
+        >
+          <template slot-scope="scope">
             <span
-              class="item"
               @click="viewEvaluation(scope.row.goodsId)"
+              style="color: #5a8bff;cursor: pointer;"
             >{{$t('evaluation.view')}}</span>
             <span
-              class="item"
               @click="addEvaluation(scope.row)"
+              style="color: #5a8bff;cursor: pointer;"
             >{{$t('evaluation.addEvaluation')}}</span>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
     <pagination
       :page-params.sync="pageParams"
       @pagination="initDataList"
@@ -240,6 +253,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
 .goods_info {
   display: flex;
   > img {

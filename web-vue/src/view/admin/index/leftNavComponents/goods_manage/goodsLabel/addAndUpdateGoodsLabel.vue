@@ -5,54 +5,119 @@
         ref="goodsLabelFormRef"
         :model="goodsLabelData"
         :rules="goodsLabelRules"
-        label-width="120px">
+        label-width="120px"
+      >
         <el-form-item
           :label="$t('addAndUpdateGoodsLabel.labelName')+'：'"
-          prop="nameOld">
-          <el-input ref="nameRef" v-model="goodsLabelData.nameOld" size="small"  style="width: 170px;" @change="labelNameChanged"/>
+          prop="nameOld"
+        >
+          <el-input
+            ref="nameRef"
+            v-model="goodsLabelData.nameOld"
+            size="small"
+            style="width: 170px;"
+            @change="labelNameChanged"
+          />
           <span class="inputTip">{{$t('addAndUpdateGoodsLabel.labelNameTip')}}</span>
         </el-form-item>
-        <el-form-item :label="$t('addAndUpdateGoodsLabel.labelLevel')+'：'"
-                      prop="levelOld">
-          <el-input ref="levelRef" v-model.number="goodsLabelData.levelOld" size="small"  style="width: 80px;" @change="labelLevelChanged"/>
+        <el-form-item
+          :label="$t('addAndUpdateGoodsLabel.labelLevel')+'：'"
+          prop="levelOld"
+        >
+          <el-input
+            ref="levelRef"
+            v-model.number="goodsLabelData.levelOld"
+            size="small"
+            style="width: 80px;"
+            @change="labelLevelChanged"
+          />
           <span class="inputTip">{{$t('addAndUpdateGoodsLabel.labelNameTip')}}</span>
         </el-form-item>
         <el-form-item :label="$t('addAndUpdateGoodsLabel.webUseModel')+'：'">
           <ul class="useModelUl">
             <li>
-              <el-checkbox v-model="goodsLabelData.goodsDetail" :true-label="1" :false-label="0">{{$t('addAndUpdateGoodsLabel.goodsDetailPage')}}</el-checkbox>
-              <el-popover placement="right-start" trigger="hover">
-                <el-image :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
-                <span slot="reference" style="color:#409EFF;cursor:pointer;">{{$t('addAndUpdateGoodsLabel.exampleTip')}}</span>
+              <el-checkbox
+                v-model="goodsLabelData.goodsDetail"
+                :true-label="1"
+                :false-label="0"
+              >{{$t('addAndUpdateGoodsLabel.goodsDetailPage')}}</el-checkbox>
+              <el-popover
+                placement="right-start"
+                trigger="hover"
+              >
+                <el-image
+                  :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'"
+                  fit="scale-down"
+                  style="width:220px;height: 400px;"
+                />
+                <span
+                  slot="reference"
+                  style="color:#409EFF;cursor:pointer;"
+                >{{$t('addAndUpdateGoodsLabel.exampleTip')}}</span>
               </el-popover>
             </li>
-            <li><el-checkbox v-model="goodsLabelData.goodsList" :true-label="1" :false-label="0">{{$t('addAndUpdateGoodsLabel.goodsListPage')}}</el-checkbox></li>
             <li>
-              <el-checkbox v-model="goodsLabelData.goodsSelect" :true-label="1" :false-label="0">{{$t('addAndUpdateGoodsLabel.goodsSelectPage')}}</el-checkbox>
-              <el-popover placement="right-start" trigger="hover">
-                <el-image :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'" fit="scale-down" style="width:220px;height: 400px;"/>
-                <span slot="reference" style="color:#409EFF;cursor:pointer;">{{$t('addAndUpdateGoodsLabel.exampleTip')}}</span>
+              <el-checkbox
+                v-model="goodsLabelData.goodsList"
+                :true-label="1"
+                :false-label="0"
+              >{{$t('addAndUpdateGoodsLabel.goodsListPage')}}</el-checkbox>
+            </li>
+            <li>
+              <el-checkbox
+                v-model="goodsLabelData.goodsSelect"
+                :true-label="1"
+                :false-label="0"
+              >{{$t('addAndUpdateGoodsLabel.goodsSelectPage')}}</el-checkbox>
+              <el-popover
+                placement="right-start"
+                trigger="hover"
+              >
+                <el-image
+                  :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'"
+                  fit="scale-down"
+                  style="width:220px;height: 400px;"
+                />
+                <span
+                  slot="reference"
+                  style="color:#409EFF;cursor:pointer;"
+                >{{$t('addAndUpdateGoodsLabel.exampleTip')}}</span>
               </el-popover>
             </li>
           </ul>
-          <div v-if="goodsLabelData.goodsList === 1" class="useModelListPattern">
+          <div
+            v-if="goodsLabelData.goodsList === 1"
+            class="useModelListPattern"
+          >
             <span><em style="color: red;">*</em>{{$t('addAndUpdateGoodsLabel.labelStyle')+':'}}</span>
             <div style="margin-top: 5px;display: flex;justify-content: space-around;">
               <div style="flex-grow: 1;text-align: center;">
                 <div>图片1</div>
-                <el-radio v-model="goodsLabelData.listPattern" :label="1">{{""}}</el-radio>
+                <el-radio
+                  v-model="goodsLabelData.listPattern"
+                  :label="1"
+                >{{""}}</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
                 <div>图片2</div>
-                <el-radio v-model="goodsLabelData.listPattern" :label="2">{{""}}</el-radio>
+                <el-radio
+                  v-model="goodsLabelData.listPattern"
+                  :label="2"
+                >{{""}}</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
                 <div>图片3</div>
-                <el-radio v-model="goodsLabelData.listPattern" :label="3">{{""}}</el-radio>
+                <el-radio
+                  v-model="goodsLabelData.listPattern"
+                  :label="3"
+                >{{""}}</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
                 <div>图片4</div>
-                <el-radio v-model="goodsLabelData.listPattern" :label="4">{{""}}</el-radio>
+                <el-radio
+                  v-model="goodsLabelData.listPattern"
+                  :label="4"
+                >{{""}}</el-radio>
               </div>
             </div>
           </div>
@@ -61,8 +126,14 @@
           <span class="inputTip">{{$t('addAndUpdateGoodsLabel.addGoodsTip')}}</span>
           <div class="goodsInfoWrap">
             <div>
-              <el-radio v-model="goodsLabelData.isAll" :label="1">{{$t('addAndUpdateGoodsLabel.allGoods')}}</el-radio>
-              <el-radio v-model="goodsLabelData.isAll" :label="0">{{$t('addAndUpdateGoodsLabel.pointGoods')}}</el-radio>
+              <el-radio
+                v-model="goodsLabelData.isAll"
+                :label="1"
+              >{{$t('addAndUpdateGoodsLabel.allGoods')}}</el-radio>
+              <el-radio
+                v-model="goodsLabelData.isAll"
+                :label="0"
+              >{{$t('addAndUpdateGoodsLabel.pointGoods')}}</el-radio>
             </div>
             <div v-if="goodsLabelData.isAll ===0">
               <div>
@@ -72,20 +143,45 @@
                     :data="selectedGoodsList"
                     class="tableClass"
                     border
-                    style="width: 100%">
-                    <el-table-column align="center" prop="name" :label="$t('addAndUpdateGoodsLabel.goodsName')">
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      align="center"
+                      prop="name"
+                      :label="$t('addAndUpdateGoodsLabel.goodsName')"
+                    >
                       <template slot-scope="{row}">
-                        <img style="width: 50px;height: 50px;float: left;" :src="row.goodsImg"/>
+                        <img
+                          style="width: 50px;height: 50px;float: left;"
+                          :src="row.goodsImg"
+                        />
                         <div style="padding:10px;">
                           {{row.goodsName}}
                         </div>
                       </template>
                     </el-table-column>
-                    <el-table-column align="center" prop="shopPrice" :label="$t('addAndUpdateGoodsLabel.shopPrice')" width="100px" />
-                    <el-table-column align="center" prop="goodsNumber" :label="$t('addAndUpdateGoodsLabel.goodsNumber')" width="100px" />
-                    <el-table-column align="center" :label="$t('addAndUpdateGoodsLabel.operate')" width="100px">
+                    <el-table-column
+                      align="center"
+                      prop="shopPrice"
+                      :label="$t('addAndUpdateGoodsLabel.shopPrice')"
+                      width="100px"
+                    />
+                    <el-table-column
+                      align="center"
+                      prop="goodsNumber"
+                      :label="$t('addAndUpdateGoodsLabel.goodsNumber')"
+                      width="100px"
+                    />
+                    <el-table-column
+                      align="center"
+                      :label="$t('addAndUpdateGoodsLabel.operate')"
+                      width="100px"
+                    >
                       <template slot-scope="{$index}">
-                        <span class="operateSpan" @click="selectedGoodsDeleteItem($index)">{{$t('addAndUpdateGoodsLabel.deleteOperate')}}</span>
+                        <span
+                          class="operateSpan"
+                          @click="selectedGoodsDeleteItem($index)"
+                        >{{$t('addAndUpdateGoodsLabel.deleteOperate')}}</span>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -104,23 +200,29 @@
         </el-form-item>
       </el-form>
     </div>
-    <choosingGoods :tuneUpChooseGoods="tuneUpChooseGoods" @resultGoodsDatas="chooseGoodsResult"/>
+    <choosingGoods
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      @resultGoodsDatas="chooseGoodsResult"
+    />
     <div class="contentFooter">
-      <el-button type="primary" @click="saveGoodsLabel">{{$t('addAndUpdateGoodsLabel.save')}}</el-button>
+      <el-button
+        type="primary"
+        @click="saveGoodsLabel"
+      >{{$t('addAndUpdateGoodsLabel.save')}}</el-button>
     </div>
   </div>
 </template>
 
 <script>
 // api引入
-import {isGoodsLabelNameOk, addGoodsLabel, updateGoodsLabel, getGoodsLabel} from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
+import { isGoodsLabelNameOk, addGoodsLabel, updateGoodsLabel, getGoodsLabel } from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
 // 组件引入
 import choosingGoods from '@/components/admin/choosingGoods'
 // 工具类引入
-import {isStrBlank} from '@/util/goodsUtil'
+import { isStrBlank } from '@/util/goodsUtil'
 export default {
   name: 'addAndUpdateGoodsLabel',
-  components: {choosingGoods},
+  components: { choosingGoods },
   watch: {
     lang () {
       this.goodsLabelRules.nameOld[0].message = this.$t('addAndUpdateGoodsLabel.labelNameRequired')
@@ -165,7 +267,7 @@ export default {
     /* 标签名称改变事件 */
     labelNameChanged () {
       if (isStrBlank(this.goodsLabelData.nameOld)) {
-        this.$message.warning({message: this.$t('addAndUpdateGoodsLabel.labelNameRequired')})
+        this.$message.warning({ message: this.$t('addAndUpdateGoodsLabel.labelNameRequired') })
         this.goodsLabelData.nameOld = this.goodsLabelData.name
         this.$refs.nameRef.focus()
         return
@@ -177,7 +279,7 @@ export default {
       }
       isGoodsLabelNameOk(params).then(res => {
         if (res.error !== 0) {
-          this.$message.warning({message: res.message})
+          this.$message.warning({ message: res.message })
           this.goodsLabelData.nameOld = this.goodsLabelData.name
           this.$refs.nameRef.focus()
         } else {
@@ -188,7 +290,7 @@ export default {
     /* 标签优先级改变事件 */
     labelLevelChanged () {
       if (typeof this.goodsLabelData.levelOld !== 'number') {
-        this.$message.warning({message: this.$t('addAndUpdateGoodsLabel.labelLevelRequired')})
+        this.$message.warning({ message: this.$t('addAndUpdateGoodsLabel.labelLevelRequired') })
         this.goodsLabelData.levelOld = this.goodsLabelData.level
         this.$refs.labelRef.focus()
       } else {
@@ -231,7 +333,7 @@ export default {
     _initDataForUpdate (labelId) {
       getGoodsLabel(labelId).then(res => {
         if (res.error !== 0) {
-          this.$message.error({message: res.message})
+          this.$message.error({ message: res.message })
         }
         let labelData = res.content
         this.goodsLabelData.id = labelData.id
@@ -252,14 +354,14 @@ export default {
     /* 验证数据正确性 */
     _validateGoodsLabelData () {
       if (isStrBlank(this.goodsLabelData.name)) {
-        this.$message.warning({message: this.$t('addAndUpdateGoodsLabel.labelNameRequired')})
+        this.$message.warning({ message: this.$t('addAndUpdateGoodsLabel.labelNameRequired') })
         this.$refs.nameRef.focus()
         this.$refs.goodsLabelFormRef.validate()
         return false
       }
 
       if (typeof this.goodsLabelData.level !== 'number') {
-        this.$message.warning({message: this.$t('addAndUpdateGoodsLabel.labelLevelRequired')})
+        this.$message.warning({ message: this.$t('addAndUpdateGoodsLabel.labelLevelRequired') })
         this.$refs.nameRef.focus()
         this.$refs.goodsLabelFormRef.validate()
         return false
@@ -299,9 +401,9 @@ export default {
       let execFun = this.isUpdate ? updateGoodsLabel : addGoodsLabel
       execFun(params).then(res => {
         if (res.error === 0) {
-          this.$router.push({name: 'label'})
+          this.$router.push({ name: 'label' })
         } else {
-          this.$message.error({message: res.message})
+          this.$message.error({ message: res.message })
         }
       })
     }
@@ -318,61 +420,61 @@ export default {
 </script>
 
 <style scoped>
-  .contentWrap {
-    padding: 10px 10px;
-  }
-  .content {
-    background-color: white;
-    padding: 10px 10px 20px 10px;
-  }
-  .inputTip {
-    color: #999;
-    margin-left: 15px;
-  }
-  .useModelUl{
-    min-width: 100px;
-  }
-  .useModelUl li{
-    padding: 5px 0px;
-  }
-  .useModelListPattern{
-    width: 990px;
-    margin-top: 5px;
-    background: #f8f8f8;
-    padding: 10px 15px 20px 10px;
-    border: 1px solid #eee;
-    border-radius: 5px;
-  }
-  .goodsInfoWrap{
-    width: 550px;
-    padding: 10px;
-    border: 1px solid #eee;
-    border-radius: 5px;
-    background: #f8f8f8;
-  }
-  /deep/.tableClass th{
-    background-color: #f5f5f5;
-    border: none;
-    height: 36px;
-    font-weight: bold;
-    color: #000;
-    padding: 8px 10px;
-  }
-  .operateSpan{
-    font-size: 16px;
-    color: #5a8bff;
-    cursor: pointer !important;
-  }
-  .contentFooter{
-    background: #f8f8fa;
-    text-align: center;
-    box-sizing: border-box;
-    height: 60px;
-    padding-top: 10px;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-  }
+.contentWrap {
+  padding: 10px 10px;
+}
+.content {
+  background-color: white;
+  padding: 10px 10px 20px 10px;
+}
+.inputTip {
+  color: #999;
+  margin-left: 15px;
+}
+.useModelUl {
+  min-width: 100px;
+}
+.useModelUl li {
+  padding: 5px 0px;
+}
+.useModelListPattern {
+  width: 990px;
+  margin-top: 5px;
+  background: #f8f8f8;
+  padding: 10px 15px 20px 10px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+.goodsInfoWrap {
+  width: 550px;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  background: #f8f8f8;
+}
+/deep/.tableClass th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+.operateSpan {
+  font-size: 16px;
+  color: #5a8bff;
+  cursor: pointer !important;
+}
+.contentFooter {
+  background: #f8f8fa;
+  text-align: center;
+  box-sizing: border-box;
+  height: 60px;
+  padding-top: 10px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
 </style>
