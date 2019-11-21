@@ -669,9 +669,8 @@ public class MemberCardService extends ShopBaseService {
 			} else {
 				cardBuilder.isExchang(MCARD_ISE_NON).exchangGoods(null);
 			}
-
 		} else if (isExchangAllGoods(isExchange)) {
-			cardBuilder.exchangGoods(null);
+			cardBuilder.isExchang(isExchange).exchangGoods(null);
 		}
 	}
 
