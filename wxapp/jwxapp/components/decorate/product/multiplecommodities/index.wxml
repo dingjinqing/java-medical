@@ -1,42 +1,34 @@
 <scroll-view class='three_column mul_column' scroll-x="true" wx:if="{{m.col_type =='3' && m.goodsListData != ''}}" style="{{m.goods_module_style == 1 ? 'margin-bottom:0;height:470rpx;' : ''}}background:{{m.goods_module_bg == 0 ? '': m.goods_bg_color}}">
     <block wx:for="{{m.goodsListData}}" wx:key="index" wx:for-item="item" wx:for-index='idex'>
-      <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="{{item.goods_type == 10?'bindTopre':'bindJumpLink'}}"
-        data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.cur_idx}}' data-url="pages/item/item?good_id={{item.goodsId}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goodsType}}' wx:if='{{item.goods_type !=3 && item.goods_type !=1 && item.goods_type !=5}}'>
+      <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="{{item.activityType == 10?'bindTopre':'bindJumpLink'}}"
+        data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.cur_idx}}' data-url="pages/item/item?goodsId={{item.goodsId}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goodsType}}' wx:if='{{item.activityType !=3 && item.activityType !=1 && item.activityType !=5}}'>
         <view class="see_more" wx:if='{{idex == 6}}' catchtap='bindMenuClick'>
           <view>查看更多</view>
           <view class="see_line"></view>
           <view style="line-height:20rpx;">see more</view>
         </view>
         <view class='product-image' style='white-space:normal;'>
-          <image class="sell_out" wx:if='{{item.goods_number == 0}}' src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
           <include src="../goodscommon/labelcommon.wxml" />
-          <image src='{{item.goodsImg}}' lazy-load="{{true}}" class="item_img"></image>
         </view>
-        <view class='product-name' wx:if='{{m.hide_name == 0}}'></view>
-        <view class='product-name ' wx:else>
-          <block wx:if='{{item.goodsType == 10 || item.goodsTags != ""}}'>
-            <view class='van-ellipsis'>{{item.goodsName}}</view>
-            <view class='title_label'>
-              <view class='pin_flag' wx:if='{{item.goodsType == 10}}' style='color:{{comColor}};border-color:{{comColor}}'>预售</view>
-              <view class='pin_flag' wx:if='{{item.goodsTags != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>领券减￥{{item.goodsTags[0]}}</view>
-              <view class='pin_flag' wx:if='{{item.goodsTags[1] != undefined && item.goodsType != 10}}' style='color:{{comColor}};border-color:{{comColor}}'>{{item.goodsTags[1]}}</view>
+        <view class='product-name' wx:if="{{m.hide_name != '0'}}">
+            <view class='top_title'>
+              <view class='van-two-ellipsis'>{{item.goodsName}}</view>
             </view>
-          </block>
-          <block wx:else>
-            <view class='van-two-ellipsis'>{{item.goodsName}}</view>
-          </block>
-        </view>
+            <view class='title_label_container' style="bottom:104rpx">
+              <view style="{{indexC!==0?'margin-left:10rpx':''}}" class="{{indexC==0?'title_label':''}}" wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>
+            {{indexC===0?itemC.text:''}}
+            </view>
+            </view>
+          </view>
         <view class='product-price'>
-          <block wx:if="{{m.hide_price != 0}}">
-            <view class='sale_price' wx:if='{{item.goods_type != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
-            <view class='sale_price' wx:if='{{item.goods_type == 10}}' style='color:{{comColor}};'>￥{{item.shopPrice}}</view>
-          </block>
-          <block wx:if='{{m.other_message == 0  && m.cart_btn != 0}}'>
-            <block wx:if="{{m.show_market == 1 }}">
-              <view class='market_price' wx:if="{{item.linePrice != undefined && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
+            <block wx:if="{{m.hide_price == 1}}">
+              <view class='sale_price' wx:if="{{item.activityType != '10'}}" style='color:{{comColor}};'>￥{{item.realPrice===null?"0.00":item.realPrice}}</view>
+              <view class='sale_price' wx:if="{{item.activityType == '10'}}" style='color:{{comColor}};'>￥{{item.shopPrice}}</view>
             </block>
-          </block>
-        </view>
+            <block wx:if='{{ m.otherMessage===1}}'>
+                <view class='market_price' wx:if="{{item.linePrice && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
+            </block>
+          </view>
       </view>
     </block>
   </scroll-view>

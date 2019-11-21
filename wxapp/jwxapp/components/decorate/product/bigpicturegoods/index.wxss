@@ -1,4 +1,4 @@
-@import "../../goodscommon/goodslabel.wxss";
+@import "../goodscommon/goodslabel.wxss";
 .one_column {
     margin: 0 auto;
     margin-bottom: 20rpx;

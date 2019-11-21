@@ -1,4 +1,4 @@
-@import "../../goodscommon/goodslabel.wxss";
+@import "../goodscommon/goodslabel.wxss";
 .mul_column {
     white-space: nowrap;
     height: 444rpx;
@@ -22,6 +22,7 @@
     width: 280rpx;
     height: 280rpx;
     overflow: hidden;
+    position: relative;
   }
   
   .mul_column .every_module .save_money {

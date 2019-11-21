@@ -1,13 +1,14 @@
 /* new 单列 */
-
-.odd_column {
+@import "../goodscommon/goodslabel.wxss";
+@import "/css/iconfont.wxss";
+.single_column {
     width: 700rpx;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
   }
   
-  .odd_column .xunhuan_one {
+  .single_column .xunhuan_one {
     margin-bottom: 20rpx;
     height: 280rpx;
     overflow: hidden;
@@ -15,13 +16,13 @@
     background: #fff;
   }
   
-  .odd_column .product-image {
+  .single_column .product-image {
     float: left;
     overflow: hidden;
     position: relative;
   }
   
-  .odd_column .product-image image {
+  .single_column .product-image image {
     height: 280rpx;
     width: 280rpx;
     margin: 0 auto;
@@ -30,7 +31,7 @@
     float: left;
   }
   
-  .odd_column .save_money {
+  .single_column .save_money {
     bottom: 0rpx !important;
     width: 240rpx;
     color: #fff;
@@ -44,12 +45,12 @@
     line-height: 50rpx;
   }
   
-  .odd_column .module_text {
+  .single_column .module_text {
     padding-left: 8rpx;
     overflow: hidden;
   }
   
-  .odd_column .product-name {
+  .single_column .product-name {
     height: 190rpx;
     font-size: 26rpx;
     padding-left: 8rpx;
@@ -58,7 +59,7 @@
     padding-top: 10px;
   }
   
-  .odd_column .sale_price {
+  .single_column .sale_price {
     font-size: 30rpx;
     margin-top: -3rpx;
     overflow: hidden;
@@ -66,7 +67,7 @@
     text-overflow: ellipsis;
   }
   
-  .odd_column .market_price {
+  .single_column .market_price {
     font-weight: normal;
     margin-top: 0;
     color: #999;
@@ -74,30 +75,23 @@
     display: inline-block;
   }
   
-  .odd_column .top_title {
+  .single_column .top_title {
     height: 70rpx;
   }
-  
-  .odd_column .title_label {
-    position: absolute;
-    bottom: 0rpx;
-    left: 10rpx;
-  }
-  
-  .odd_column  .product-price {
+  .single_column  .product-price {
     font-weight: bold;
     padding: 8rpx 10rpx;
     height: 70rpx;
     position: relative;
   }
   
-  .odd_column .cart_btn {
+  .single_column .cart_btn {
     position: absolute;
     right: 0;
     bottom: 40rpx;
   }
   
-  .odd_column .if_delete {
+  .single_column .if_delete {
     position: absolute;
     bottom: 0rpx;
     background: rgba(0, 0, 0, 0.5);
@@ -108,29 +102,4 @@
     text-align: center;
     z-index: 3;
   }
-  .exclusive{
-    position: absolute;
-  width: 100%;
-  height: 45rpx;
-  line-height: 45rpx;
-  text-align: center;
-  color: #56381b;
-  background: linear-gradient(left, #eed9ad, #e7c38a);
-  background: -webkit-linear-gradient(left, #eed9ad, #e7c38a);
-  background: -moz-linear-gradient(left, #eed9ad, #e7c38a);
-  bottom: 0rpx;
-  font-size: 24rpx;
-  z-index: 2;
-  }
-  .reduce_price{
-    background-color: #f9dbdb;
-  color: #f66;
-  position: absolute;
-  width: 100%;
-  height: 45rpx;
-  line-height: 45rpx;
-  text-align: center;
-  bottom: 0;
-  font-size: 22rpx;
-  z-index: 2;
-  }
+

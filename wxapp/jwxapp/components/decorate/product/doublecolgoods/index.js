@@ -5,8 +5,9 @@ global.wxComponent({
   mixins: [base],
   methods: {
     onPropChange(newVal, oldVal, changedPath) {
-      console.log(newVal, '11112312')
-
+      console.log(newVal, 'double')
+      // 处理活动
+      this.handleToGoodsActivities(newVal.goodsListData)
     },
     bindMenuClick(e) {
 

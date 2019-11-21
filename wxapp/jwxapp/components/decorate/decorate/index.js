@@ -40,20 +40,28 @@ global.wxComponent({
         module['component_name'] = componentName
         module['main_setting'] = page_content.main_setting;
         module['is_first_touch'] = 1;
-        // 当前域名
+        // 当前图片域名
         module['imageUrl'] = 'http://jmpdevimg.weipubao.cn'
         // 模块间距字段  
         module['margin_bot'] = pageInfo.page_cfg.show_margin == 1 ? pageInfo.page_cfg.margin_val : 0;
+        // 是否需要请求数据
+        module['need_request'] = module['need_request'] || false;
         pageData.push(module);
       }
 
+      var _this = this;
+      this.elapse_secs = 0;
+      this.createTimer("interval", "decorate_elapse", function () {
+        _this.elapse_secs++;
+      });
 
       console.log(pageData)
       this._loadIndex = 0;   // 加载起点
+      this._loadFloat = false;
       this._pageData = pageData;
       // 加载详细信息
       this.loadMoreData();
-
+      this.startLoadingMoreTimer();
     },
     // 加载详细信息
     loadMoreData() {
@@ -73,54 +81,55 @@ global.wxComponent({
         var key = "pageData[" + i + "]";
         l[i] = data[key] = this._timerConvertModule(d[i])
         delayed[i] = `c_${l[i].cur_idx}`
-        // if (!l[i]) {
-        //   console.log('测试')
-        //   // 添加悬浮组件 和 其他固定数量模块
-        //   if (!d[i].is_float) {
-        //     if (number < 2) {
-        //       l[i] = data[key] = this._timerConvertModule(d[i]);
-        //       console.log(l[i])
-        //       // if (l[i].need_request) delayed[i] = `c_${l[i].cur_idx}`;
-        //       delayed[i] = `c_${l[i].cur_idx}`
-        //       loadMore = true;
-        //       number++;
-        //       this._loadIndex = i + 1;
-        //       if (number == 2 && this._loadFloat) break;
-        //     }
-        //   } else {
-        //     console.log('触发')
-        //     // l[i] = data[key] = this._timerConvertModule(d[i]);
-        //     // if (l[i].need_request) delayed[i] = l[i].idx;
-        //     // loadMore = true;
-        //   }
-        // } else {  // 则更新数据不同的模块
-        //   console.log('l有值')
-        //   if (!d[i] || l[i] && (JSON.stringify(d[i]) != JSON.stringify(l[i]))) { // 初始数据中没有则直接更新 或者 加载数据与初始数据不等则更新 
-        //     l[i] = data[key] = this._timerConvertModule(d[i]) || {};
-        //     // if (l[i].need_request) delayed[i] = l[i].idx;
-        //     console.log(l[i])
-        //     delayed[i] = `c_${l[i].cur_idx}`
-        //   }
-        // }
+        if (!l[i]) {
+          console.log('测试')
+          // 添加悬浮组件 和 其他固定数量模块
+          if (!d[i].is_float) {
+            if (number < 2) {
+              l[i] = data[key] = this._timerConvertModule(d[i]);
+              console.log(l[i])
+              if (l[i].need_request) delayed[i] = `c_${l[i].cur_idx}`;
+              // delayed[i] = `c_${l[i].cur_idx}`
+              loadMore = true;
+              number++;
+              this._loadIndex = i + 1;
+              if (number == 2 && this._loadFloat) break;
+            }
+          } else {
+            console.log('触发')
+            l[i] = data[key] = this._timerConvertModule(d[i]);
+            if (l[i].need_request) delayed[i] = l[i].cur_idx;
+            loadMore = true;
+          }
+        } else {  // 则更新数据不同的模块
+          console.log('l有值')
+          if (!d[i] || l[i] && (JSON.stringify(d[i]) != JSON.stringify(l[i]))) { // 初始数据中没有则直接更新 或者 加载数据与初始数据不等则更新 
+            l[i] = data[key] = this._timerConvertModule(d[i]) || {};
+            if (l[i].need_request) delayed[i] = l[i].cur_idx;
+            console.log(l[i])
+            // delayed[i] = `c_${l[i].cur_idx}`
+          }
+        }
       }
       console.log(delayed)
-      // if (Object.keys(data).length > 0) {
-      //   console.log("loadMore:", data);
-      //   var _this = this;
-      //   this.setData(data, function () {
-      //     console.log('发现')
-      //     _this.detectLoadingMore();
-      //   });
-      //   console.log(delayed)
-      //   // 延迟加载
-      //   for (var i in delayed) {
-      //     this.requestPageModule(delayed[i]);
-      //   }
-      // }
-      // 请求数据
-      for (var i in delayed) {
-        this.requestPageModule(delayed[i]);
+      this._loadFloat = true;
+      this._loadedOk = !loadMore;
+      if (this._loadedOk) this._loaded = this._pageData;
+      if (Object.keys(data).length > 0) {
+        console.log("loadMore:", data);
+        var _this = this;
+        this.setData(data, function () {
+          _this.detectLoadingMore();
+        });
+        // 延迟加载
+        for (var i in delayed) {
+          this.requestPageModule(delayed[i]);
+        }
       }
+      // 请求数据
+      // for (var i in delayed) {
+      //   this.requestPageModule(delayed[i]);
+      // }
     },
     // 请求详细数据
     requestPageModule(idx) {
@@ -142,7 +151,7 @@ global.wxComponent({
       for (var i in this._pageData) {
         console.log(this._pageData[i], cur_idx)
         if (this._pageData[i].cur_idx == cur_idx) {
-          this._pageData[i] = Object.assign({}, this._pageData[i], moduleContent);  // 新老数据合并
+          this._pageData[i] = Object.assign({}, this._pageData[i], moduleContent);  // 数据合并
           this._pageData[i]['need_request'] = false;
           var key = "pageData[" + i + "]";
           data[key] = this._timerConvertModule(this._pageData[i]) || {};
@@ -177,6 +186,16 @@ global.wxComponent({
         }
         _this._gettingRect = false;
       });
+    },
+    // 逐步加载其他模块，解决iphone滚动事件问题。
+    startLoadingMoreTimer() {
+      if (!this._op_system) this._op_system = wx.getSystemInfoSync().system;
+      if (this._op_system.indexOf("iOS") == -1) return;
+      var _this = this;
+      this.createTimer("interval", "load_more", function () {
+        if (_this._loadedOk) return;
+        _this.loadMoreData();
+      }, 1000);
     },
     // 会员卡  card 模块点击
     onGetCardSuccess(card) {

@@ -1,0 +1,41 @@
+<block wx:if="{{item.label && m.hide_label != 1}}">
+  <block wx:if="{{item.label.listPattern == 1}}">
+    <view class="label-style1" style='background:url({{m.imageUrl}}/image/wxapp/label-three.png) no-repeat ; background-size:100%;'>
+      <text>{{item.label.name}}</text>
+    </view>
+  </block>
+  <block wx:if="{{item.label.listPattern == 2}}">
+    <view class='label-style2' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <text>{{item.label.name}}</text>
+    </view>
+  </block>
+  <block wx:if="{{item.label.listPattern == 3 }}">
+    <view class='label-style3' style='border-color:{{comColor}}'>
+      <text style='color:{{comColor}}'>{{item.label.name}}</text>
+    </view>
+  </block>
+  <block wx:if="{{ item.label.listPattern == 4}}">
+    <view class='label-style4' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <text style='color:#fff'>{{item.label.name}}</text>
+    </view>
+  </block>
+  <block wx:if="{{ item.label.listPattern == 5}}">
+    <image class='new_label_img' src='{{item.new_label_img.label_img_url}}' mode="widthFix" style="height:{{item.new_label_img.label_img_height}}px;width:{{item.new_label_img.label_img_width}}px" wx:if='{{m.col_type == 1}}'></image>
+    <image class='new_label_img sm_scale_img' src='{{item.new_label_img.label_img_url}}' mode="widthFix" style="height:{{item.new_label_img.label_img_height}}px;width:{{item.new_label_img.label_img_width}}px" wx:if='{{m.col_type == 3 || m.col_type == 4}}'></image>
+    <image class='new_label_img three_scale_img' src='{{item.new_label_img.label_img_url}}' mode="widthFix" style="height:{{item.new_label_img.label_img_height}}px;width:{{item.new_label_img.label_img_width}}px" wx:if='{{m.col_type == 2}}'></image>
+    <image class='new_label_img big_scale_img' src='{{item.new_label_img.label_img_url}}' mode="widthFix" style="height:{{item.new_label_img.label_img_height}}px;width:{{item.new_label_img.label_img_width}}px" wx:if='{{m.col_type == 0}}'></image>
+    <image class='new_label_img left_scale_img' src='{{item.new_label_img.label_img_url}}' mode="widthFix" style="height:{{item.new_label_img.label_img_height}}px;width:{{item.new_label_img.label_img_width}}px" wx:if='{{m.col_type == 6}}'></image>
+  </block>
+</block>
+<image class="sell_out" wx:if='{{item.goodsNumber == 0}}' src="{{m.imageUrl}}image/wxapp/goods_sell_out.png"></image>
+<image src='{{item.goodsImg}}'   lazy-load="{{true}}" class="item_img"></image>
+<!--会员专享商品图片tip-->
+<view wx:if="{{item.isMembershipExclusive}}" class='exclusive'>会员专享商品，立即查看</view>
+<!--首单特惠商品图片tip-->
+<view wx:if="{{item.isFirstOrder}}" class="reduce_price">新人专享，首单特惠</view>
+<!--限时降价商品图片tip-->
+<view wx:if="{{item.isLimitedPrice}}" class="reduce_price">限时降价，立即查看</view>
+<!--砍价-->
+<view wx:if="{{item.isBargain}}" class="bargain">{{item.realPrice===null?"0.00":item.realPrice}}元砍走</view>
+<!--多人拼团-->
+<view wx:if="{{item.assemble}}" class="bargain">开团立省{{item.discountPrice===null?"0.00":item.discountPrice}}元</view>
