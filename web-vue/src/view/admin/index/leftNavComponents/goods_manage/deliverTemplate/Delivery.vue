@@ -216,7 +216,6 @@ export default {
   },
   methods: {
     initData () {
-      debugger
       console.log(this.propDelivery)
       var data = this.propDelivery
       this.delivery = {
