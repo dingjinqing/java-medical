@@ -191,7 +191,7 @@ export default {
   .main {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
+    padding: 15px;
     .wrapper {
       .el-button {
         margin-left: 5px;
@@ -211,7 +211,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 15px;
 }
 .inputWidth {
   width: 175px;

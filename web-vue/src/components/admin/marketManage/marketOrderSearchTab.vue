@@ -120,9 +120,7 @@ export default {
   padding: 10px;
   display: flex;
   line-height: 32px;
-  margin-bottom: 10px;
   background-color: #fff;
-  padding: 20px 0;
   flex-wrap: wrap;
   .filters_item {
     width: 320px;
@@ -131,7 +129,7 @@ export default {
     margin-bottom: 10px;
     text-align: right;
     > span {
-      width: 85px;
+      width: 90px;
       font-size: 14px;
       margin-right: 20px;
     }

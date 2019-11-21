@@ -196,9 +196,9 @@ export default {
       this.tuneUpSelectTemplate = !this.tuneUpSelectTemplate
     },
     // 选择模板弹窗数据回显
-    handleSelectTemplate (val) {
-      this.templateList = val.pageId
-      this.templateName = val.pageName
+    handleSelectTemplate (data) {
+      this.templateList = data.pageId
+      this.templateName = data.pageName
     },
     handleToDirectDecorate (val) {
       // TODO 等小程序管理->页面装修->自定义页面装修完成

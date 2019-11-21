@@ -17,7 +17,8 @@
           <el-col :span="8">
             <el-input
               v-model="form.name"
-              style="width: 165px"
+              size="small"
+              style="width: 170px"
             ></el-input>
           </el-col>
         </el-form-item>
@@ -25,22 +26,28 @@
           :label="$t('seckill.goodsName') + '：'"
           prop="goodsId"
         >
-          <el-col :span="2">
+          <el-col
+            :span="2"
+            style="margin-right:10px"
+          >
             <el-input
               :disabled="true"
               v-model="tableContent[0].goodsName"
               v-if="tableContent[0].goodsName ? true : false"
+              size="small"
             ></el-input>
             <el-input
               :disabled="true"
               v-if="false"
               v-model="form.goodsId"
+              size="small"
             ></el-input>
           </el-col>
           <el-button
             :disabled="this.isEdite"
             @click="showChoosingGoods"
             class="el-icon-plus"
+            size="small"
           >{{ $t('seckill.select') }}</el-button>
 
         </el-form-item>
@@ -56,6 +63,7 @@
             :start-placeholder="$t('seckill.startTime')"
             :end-placeholder="$t('seckill.endTime')"
             value-format="yyyy-MM-dd HH:mm:ss"
+            size="small"
           >
           </el-date-picker>
         </el-form-item>
@@ -68,6 +76,7 @@
             v-model="form.limitAmount"
             controls-position="right"
             :min="0"
+            size="small"
           ></el-input-number>
           <span style="color: #999; margin-left: 10px;">{{ $t('seckill.limitTip') }}</span>
         </el-form-item>
@@ -80,6 +89,7 @@
             v-model="form.limitPaytime"
             controls-position="right"
             :min="5"
+            size="small"
           ></el-input-number>
           <span>{{ $t('seckill.orderTip') }}</span>
           <p style="color: #999;">{{ $t('seckill.langTip') }}</p>
@@ -163,7 +173,7 @@
         <!-- 收起、展开更多配置 -->
         <div
           @click="handleToChangeArror"
-          style="padding: 0 0 30px 50px"
+          style="padding: 0 0 30px 30px"
         >
           <div
             v-if="arrorFlag"
@@ -188,7 +198,10 @@
             :label="this.$t('seckill.cardSelect')"
             v-model="showMember"
           ></el-checkbox>
-          <div v-if="showMember">
+          <div
+            v-if="showMember"
+            style="display: flex"
+          >
             <el-select
               :placeholder="this.$t('seckill.cardTip')"
               v-model="form.cardId"
@@ -202,19 +215,22 @@
                 :value="item.id"
               ></el-option>
             </el-select>
-            <span>
-              <a style="color: #409eff;margin: 0 5px;">{{ this.$t('seckill.cardRefresh') }}</a><span> | </span>
-              <a style="color: #409eff;margin: 0 5px;">{{ this.$t('seckill.cardNew') }}</a><span> | </span>
-              <a style="color: #409eff;margin: 0 5px;">{{ this.$t('seckill.cardManage') }}</a>
-            </span>
+            <div>
+              <span
+                class="member"
+                @click="refresh()"
+              >{{ this.$t('seckill.cardRefresh') }}</span><span> | </span>
+              <span
+                class="member"
+                @click="addMemberCard()"
+              >{{ this.$t('seckill.cardNew') }}</span><span> | </span>
+              <span
+                class="member"
+                @click="manageMemberCard()"
+              >{{ this.$t('seckill.cardManage') }}</span>
+            </div>
           </div>
         </el-form-item>
-
-        <!-- 活动分享 -->
-        <!-- <actShare
-          :shareConfig="form.shareConfig"
-          v-if="!arrorFlag"
-        /> -->
 
         <!-- 活动分享 -->
         <el-form-item
@@ -276,22 +292,30 @@
                   :label="2"
                 >自定义图片</el-radio>
               </div>
+
               <div
-                class="imgContent"
+                style="display: flex"
                 v-if="form.shareConfig.share_img_action === 2"
-                @click="addGoodsImg"
               >
-                <img
-                  v-if="form.shareConfig.share_img === ''"
-                  src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
-                  alt=""
+                <div
+                  class="imgContent"
+                  @click="addGoodsImg"
                 >
-                <img
-                  v-if="form.shareConfig.share_img !== ''"
-                  :src="form.shareConfig.share_img"
-                  alt=""
-                  class="shareImg"
-                >
+                  <div>
+                    <img
+                      v-if="form.shareConfig.share_img === ''"
+                      src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
+                      alt=""
+                    >
+                    <img
+                      v-if="form.shareConfig.share_img !== ''"
+                      :src="form.shareConfig.share_img"
+                      alt=""
+                      class="shareImg"
+                    >
+                  </div>
+                </div>
+                <span class="picSizeTips">建议尺寸：800*800像素</span>
               </div>
             </div>
           </div>
@@ -315,6 +339,7 @@
       pageIndex='pictureSpace'
       :tuneUp="showImageDialog"
       @handleSelectImg='handleSelectImg'
+      :imageSize="[800, 800]"
     />
 
     <!-- 底部 -->
@@ -445,6 +470,20 @@ export default {
     })
   },
   methods: {
+    // 刷新
+    refresh () {
+      console.log(111)
+    },
+    addMemberCard () {
+      this.$router.push({
+        path: '/admin/home/main/normalCardDetail'
+      })
+    },
+    manageMemberCard () {
+      this.$router.push({
+        path: '/admin/home/main/user_card'
+      })
+    },
     // 校验表格数据
     checkNum (e, maxValue) {
       if (e.target.value > maxValue) {
@@ -602,6 +641,7 @@ export default {
       })
       this.submitStatus = false
     }
+
   }
 }
 </script>
@@ -639,11 +679,21 @@ export default {
   margin-left: 60px;
   border: 1px solid #ccc;
   cursor: pointer;
-  padding: 10px;
   box-sizing: border-box;
 }
 .imgContent .shareImg {
   width: 100%;
   height: 100%;
+}
+.member {
+  color: #409eff;
+  margin: 0 5px;
+  cursor: pointer;
+}
+.picSizeTips {
+  display: block;
+  line-height: 80px;
+  margin-left: 20px;
+  color: rgb(153, 153, 153);
 }
 </style>

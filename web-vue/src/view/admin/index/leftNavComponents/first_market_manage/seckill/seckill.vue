@@ -16,7 +16,7 @@
         >
           <el-button
             type="primary"
-            size="medium"
+            size="small"
             v-if="tableListView"
             @click="addSeckill"
           >{{$t('seckill.addSeckill')}}</el-button>
@@ -49,7 +49,6 @@
           :label="$t('seckill.activityName')"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           prop="goodsName"
@@ -62,6 +61,9 @@
           :label="$t('seckill.validDate')"
           align="center"
         >
+          <template slot-scope="scope">
+            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+          </template>
         </el-table-column>
         <el-table-column
           prop="statusText"
@@ -74,15 +76,14 @@
           :label="$t('seckill.saleNum')"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           prop="limitAmount"
           :label="$t('seckill.limitAmount')"
           align="center"
         >
-
         </el-table-column>
+        <!-- 操作 -->
         <el-table-column
           :label="$t('seckill.option')"
           align="center"
@@ -207,7 +208,7 @@
       center
       :close-on-click-modal="false"
     >
-      <div style="width: 100%; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
+      <div class="shareBox">
         <div>
           <img
             :src="shareImg"
@@ -242,9 +243,14 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="shareDialog = false">{{ $t('seckill.cancel') }}</el-button>
+        <el-button
+          @click="shareDialog = false"
+          size="small"
+          style="margin-right: 10px"
+        >{{ $t('seckill.cancel') }}</el-button>
         <el-button
           type="primary"
+          size="small"
           @click="shareDialog = false"
         >{{ $t('seckill.sure') }}</el-button>
       </span>
@@ -303,7 +309,6 @@ export default {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
           this.tableData.map((item, index) => {
-            item.validity = `${item.startTime}` + `至` + `${item.endTime}`
             item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
           })
         } else {
@@ -468,7 +473,7 @@ export default {
   .main {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
+    padding: 15px;
     .wrapper {
       .el-button {
         margin-left: 5px;
@@ -488,7 +493,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 15px;
 }
 .balanceDialo .el-dialog__body {
   padding-bottom: 0 !important;
@@ -523,5 +528,11 @@ export default {
   span {
     cursor: pointer;
   }
+}
+.shareBox {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ccc;
 }
 </style>
