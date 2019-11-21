@@ -154,7 +154,7 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 		try {
 			data.append("ids=" + URLEncoder.encode(ids, "UTF-8"));
 			data.append("&start=" + URLEncoder.encode(String.valueOf(start), "UTF-8"));
-			data.append("&limit" + URLEncoder.encode(String.valueOf(limit), "UTF-8"));
+			data.append("&limit=" + URLEncoder.encode(String.valueOf(limit), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
