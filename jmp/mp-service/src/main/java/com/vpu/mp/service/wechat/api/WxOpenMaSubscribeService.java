@@ -75,9 +75,10 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 		try {
 			data.append("tid=" + URLEncoder.encode(tid, "UTF-8"));
 			for (int i = 0; i < kidList.length; i++) {
-				data.append("&kidList[]=" + URLEncoder.encode(String.valueOf(kidList[i]), "UTF-8"));
+				String key = "kidList[" + i + "]";
+				data.append("&" + key + "=" + URLEncoder.encode(String.valueOf(kidList[i]), "UTF-8"));
 			}
-			data.append("sceneDesc=" + URLEncoder.encode(sceneDesc, "UTF-8"));
+			data.append("&sceneDesc=" + URLEncoder.encode(sceneDesc, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -174,17 +175,19 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 
 	/**
 	 * 发送订阅消息
+	 * 
 	 * @param appId
-	 * @param toUser 接收者（用户）的 openid
+	 * @param toUser     接收者（用户）的 openid
 	 * @param templateId 所需下发的订阅模板id
-	 * @param page 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
-	 * @param data 模板内容，格式形如 { "key1": { "value": any }, "key2": { "value": any } }
+	 * @param page       点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
+	 * @param data       模板内容，格式形如 { "key1": { "value": any }, "key2": { "value":
+	 *                   any } }
 	 * @return
 	 * @throws WxErrorException
 	 */
 	default WxOpenResult sendTemplate(String appId, String toUser, String templateId, String page,
 			Map<String, Map<String, String>> data) throws WxErrorException {
-		Map<String,Object> param = new HashMap<>();
+		Map<String, Object> param = new HashMap<>();
 		param.put("touser", toUser);
 		param.put("template_id", templateId);
 		param.put("page", page);
