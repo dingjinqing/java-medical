@@ -40,17 +40,17 @@ public class ProductEffectVo {
     /**  商品转化率  */
     private BigDecimal uv2paidGoods;
     /**  推荐人数  */
-    private int goodsRecommendUserNum;
+    private int recommendUserNum;
     /**  收藏人数  */
-    private int goodsCollectUserNum;
+    private int collectUserNum;
     /**
      * 分享次数
      */
-    private int goodsSharePv;
+    private int sharePv;
     /**
      * 分享人数
      */
-    private int goodsShareUv;
+    private int shareUv;
     /**
      * 销售额
      */

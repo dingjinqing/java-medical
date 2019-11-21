@@ -269,11 +269,11 @@ public class CommodityStatisticsService extends ShopBaseService {
             , GOODS_SUMMARY.CART_UV
             , GOODS_SUMMARY.PAID_UV
             , GOODS_SUMMARY.PAID_GOODS_NUMBER
-            , GOODS_SUMMARY.GOODSSALES
-            , GOODS_SUMMARY.GOODSRECOMMENDUSERNUM
-            , GOODS_SUMMARY.GOODSCOLLECTUSERNUM
-            , GOODS_SUMMARY.GOODSSHAREPV
-            , GOODS_SUMMARY.GOODSSHAREUV
+            , GOODS_SUMMARY.GOODS_SALES
+            , GOODS_SUMMARY.RECOMMEND_USER_NUM
+            , GOODS_SUMMARY.COLLECT_USE_NUM
+            , GOODS_SUMMARY.SHARE_PV
+            , GOODS_SUMMARY.SHARE_UV
         )
             .from(GOODS_SUMMARY)
             .leftJoin(GOODS)
@@ -289,11 +289,17 @@ public class CommodityStatisticsService extends ShopBaseService {
         return pageResult;
     }
 
-    private SortField<Object> getSortField(Optional<String> field, Optional<String> sortType) {
+    private SortField<Object> getSortField(Optional<String> field, Optional<String> sortType, boolean isFixedDay) {
         if (!sortType.isPresent() || DEFAULT_ORDER_BY_TYPE.equalsIgnoreCase(sortType.get())) {
-            return DSL.field(name(field.orElse(DEFAULT_ORDER_BY_FIELD))).asc();
+            if (isFixedDay) {
+                return DSL.field(name(field.orElse(DEFAULT_ORDER_BY_FIELD))).asc();
+            }
+            return DSL.field(name(field.orElse(DEFAULT_ORDER_BY_FIELD))).as(Util.underlineToHump(field.orElse(DEFAULT_ORDER_BY_FIELD))).asc();
         }
-        return DSL.field(name(field.orElse(DEFAULT_ORDER_BY_FIELD))).desc();
+        if (isFixedDay) {
+            return DSL.field(name(field.orElse(DEFAULT_ORDER_BY_FIELD))).desc();
+        }
+        return DSL.field(name(field.orElse(DEFAULT_ORDER_BY_FIELD))).as(Util.underlineToHump(field.orElse(DEFAULT_ORDER_BY_FIELD))).desc();
     }
 
     /**
@@ -304,9 +310,9 @@ public class CommodityStatisticsService extends ShopBaseService {
      */
     public PageResult<ProductEffectVo> customizeDayEffect(ProductEffectParam param) {
         // 必要筛选条件
-        Condition baseCondition = (GOODS_SUMMARY.REF_DATE.greaterOrEqual(new Date(param.getStartTime().getTime())))
-            .and(GOODS_SUMMARY.REF_DATE.lessThan(new Date(param.getEndTime().getTime())))
-            .and(GOODS_SUMMARY.TYPE.eq((byte) 1));
+        Condition baseCondition = (GOODS_SUMMARY.REF_DATE.greaterThan(new Date(param.getStartTime().getTime())))
+            .and(GOODS_SUMMARY.REF_DATE.le(new Date(param.getEndTime().getTime())))
+            .and(GOODS_SUMMARY.TYPE.eq(BYTE_ONE));
         SelectJoinStep<?> joinStep = db().select(max(GOODS_SUMMARY.GOODS_ID).as("goodsId")
             , max(GOODS.GOODS_NAME).as("goodsName")
             , max(GOODS.GOODS_IMG).as("goodsImg")
@@ -318,11 +324,11 @@ public class CommodityStatisticsService extends ShopBaseService {
             , sum(GOODS_SUMMARY.CART_UV).as("cartUv")
             , sum(GOODS_SUMMARY.PAID_UV).as("paidUv")
             , sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber")
-            , sum(GOODS_SUMMARY.GOODSSALES).as("goodsSales")
-            , sum(GOODS_SUMMARY.GOODSRECOMMENDUSERNUM).as("goodsRecommendUserNum")
-            , sum(GOODS_SUMMARY.GOODSCOLLECTUSERNUM).as("goodsCollectUserNum")
-            , sum(GOODS_SUMMARY.GOODSSHAREPV).as("goodsSharePv")
-            , sum(GOODS_SUMMARY.GOODSSHAREUV).as("goodsShareUv")
+            , sum(GOODS_SUMMARY.GOODS_SALES).as("goodsSales")
+            , sum(GOODS_SUMMARY.RECOMMEND_USER_NUM).as("recommendUserNum")
+            , sum(GOODS_SUMMARY.COLLECT_USE_NUM).as("collectUserNum")
+            , sum(GOODS_SUMMARY.SHARE_PV).as("sharePv")
+            , sum(GOODS_SUMMARY.SHARE_UV).as("shareUv")
         )
             .from(GOODS_SUMMARY)
             .leftJoin(GOODS)
@@ -349,7 +355,7 @@ public class CommodityStatisticsService extends ShopBaseService {
         Optional<String> field = Optional.ofNullable(param.getOrderByField());
         Optional<String> sortType = Optional.ofNullable(param.getOrderByType());
         // 动态排序字段，规则
-        SortField<?> sortField = getSortField(field, sortType);
+        SortField<?> sortField = getSortField(field, sortType, isFixedDay);
 
         // 查询筛选条件，商品品牌，商家分类
         Condition brandCondition = GOODS.BRAND_ID.eq(param.getBrandId());
@@ -398,11 +404,11 @@ public class CommodityStatisticsService extends ShopBaseService {
             , GOODS_SUMMARY.CART_UV
             , GOODS_SUMMARY.PAID_UV
             , GOODS_SUMMARY.PAID_GOODS_NUMBER
-            , GOODS_SUMMARY.GOODSSALES
-            , GOODS_SUMMARY.GOODSRECOMMENDUSERNUM
-            , GOODS_SUMMARY.GOODSCOLLECTUSERNUM
-            , GOODS_SUMMARY.GOODSSHAREPV
-            , GOODS_SUMMARY.GOODSSHAREUV
+            , GOODS_SUMMARY.GOODS_SALES
+            , GOODS_SUMMARY.RECOMMEND_USER_NUM
+            , GOODS_SUMMARY.COLLECT_USE_NUM
+            , GOODS_SUMMARY.SHARE_PV
+            , GOODS_SUMMARY.SHARE_UV
             )
                 .from(GOODS_SUMMARY)
                 .leftJoin(GOODS)
@@ -422,11 +428,11 @@ public class CommodityStatisticsService extends ShopBaseService {
                 , sum(GOODS_SUMMARY.CART_UV).as("cartUv")
                 , sum(GOODS_SUMMARY.PAID_UV).as("paidUv")
                 , sum(GOODS_SUMMARY.PAID_GOODS_NUMBER).as("paidGoodsNumber")
-                , sum(GOODS_SUMMARY.GOODSSALES).as("goodsSales")
-                , sum(GOODS_SUMMARY.GOODSRECOMMENDUSERNUM).as("goodsRecommendUserNum")
-                , sum(GOODS_SUMMARY.GOODSCOLLECTUSERNUM).as("goodsCollectUserNum")
-                , sum(GOODS_SUMMARY.GOODSSHAREPV).as("goodsSharePv")
-                , sum(GOODS_SUMMARY.GOODSSHAREUV).as("goodsShareUv")
+                , sum(GOODS_SUMMARY.GOODS_SALES).as("goodsSales")
+                , sum(GOODS_SUMMARY.RECOMMEND_USER_NUM).as("recommendUserNum")
+                , sum(GOODS_SUMMARY.COLLECT_USE_NUM).as("collectUserNum")
+                , sum(GOODS_SUMMARY.SHARE_PV).as("sharePv")
+                , sum(GOODS_SUMMARY.SHARE_UV).as("shareUv")
             )
                 .from(GOODS_SUMMARY)
                 .leftJoin(GOODS)

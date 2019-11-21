@@ -701,23 +701,23 @@ public class GoodsTaskService extends ShopBaseService {
             });
             // 销售额
             singleGoodsSales(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODSSALES, v);
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODS_SALES, v);
             });
             // 推荐人数
             singleRecommendUserNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODSRECOMMENDUSERNUM, v);
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.RECOMMEND_USER_NUM, v);
             });
             // 收藏人数
             singleCollectUserNum(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODSCOLLECTUSERNUM, v);
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.COLLECT_USE_NUM, v);
             });
             // 商品分享pv
             getSingleShareGoodsPv(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODSSHAREPV, v);
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.SHARE_PV, v);
             });
             // 商品分享uv
             getSingleShareGoodsUv(startTimeStamp, endTimeStamp).forEach((K, v) -> {
-                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.GOODSSHAREUV, v);
+                createGoodsSummaryRecord(nowDate, e, K, GOODS_SUMMARY.SHARE_UV, v);
             });
         });
     }

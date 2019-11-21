@@ -33,7 +33,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsSummary extends TableImpl<GoodsSummaryRecord> {
 
-    private static final long serialVersionUID = -1194098077;
+    private static final long serialVersionUID = -1764038200;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_summary</code>
@@ -104,6 +104,31 @@ public class GoodsSummary extends TableImpl<GoodsSummaryRecord> {
     public final TableField<GoodsSummaryRecord, Integer> PAID_GOODS_NUMBER = createField("paid_goods_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "付款商品件数");
 
     /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.goods_sales</code>. 销售额
+     */
+    public final TableField<GoodsSummaryRecord, BigDecimal> GOODS_SALES = createField("goods_sales", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "销售额");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.recommend_user_num</code>. 推荐人数
+     */
+    public final TableField<GoodsSummaryRecord, Integer> RECOMMEND_USER_NUM = createField("recommend_user_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "推荐人数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.collect_use_num</code>. 收藏人数
+     */
+    public final TableField<GoodsSummaryRecord, Integer> COLLECT_USE_NUM = createField("collect_use_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "收藏人数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.share_pv</code>. 分享次数
+     */
+    public final TableField<GoodsSummaryRecord, Integer> SHARE_PV = createField("share_pv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分享次数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_summary.share_uv</code>. 分享人数
+     */
+    public final TableField<GoodsSummaryRecord, Integer> SHARE_UV = createField("share_uv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分享人数");
+
+    /**
      * The column <code>mini_shop_471752.b2c_goods_summary.create_time</code>.
      */
     public final TableField<GoodsSummaryRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
@@ -112,31 +137,6 @@ public class GoodsSummary extends TableImpl<GoodsSummaryRecord> {
      * The column <code>mini_shop_471752.b2c_goods_summary.update_time</code>. 最后修改时间
      */
     public final TableField<GoodsSummaryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_summary.goodsSales</code>. 销售额
-     */
-    public final TableField<GoodsSummaryRecord, BigDecimal> GOODSSALES = createField("goodsSales", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "销售额");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_summary.goodsRecommendUserNum</code>. 推荐人数
-     */
-    public final TableField<GoodsSummaryRecord, Integer> GOODSRECOMMENDUSERNUM = createField("goodsRecommendUserNum", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "推荐人数");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_summary.goodsCollectUserNum</code>. 收藏人数
-     */
-    public final TableField<GoodsSummaryRecord, Integer> GOODSCOLLECTUSERNUM = createField("goodsCollectUserNum", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "收藏人数");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_summary.goodsSharePv</code>. 分享次数
-     */
-    public final TableField<GoodsSummaryRecord, Integer> GOODSSHAREPV = createField("goodsSharePv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分享次数");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_summary.goodsShareUv</code>. 分享人数
-     */
-    public final TableField<GoodsSummaryRecord, Integer> GOODSSHAREUV = createField("goodsShareUv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分享人数");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_summary</code> table reference
