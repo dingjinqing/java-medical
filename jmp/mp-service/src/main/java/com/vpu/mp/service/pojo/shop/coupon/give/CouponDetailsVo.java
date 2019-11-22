@@ -12,6 +12,8 @@ import java.sql.Timestamp;
  */
 @Data
 public class CouponDetailsVo {
+  /** 是否限制库存：0限制，1不限制 */
+  private Byte limitSurplusFlag;
   /** 优惠券库存 */
   private Integer surplus;
   /** voucher：减价；discount:打折 */

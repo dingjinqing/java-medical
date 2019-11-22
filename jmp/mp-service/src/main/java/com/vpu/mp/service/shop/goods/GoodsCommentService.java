@@ -6,7 +6,6 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
-import com.vpu.mp.service.pojo.shop.coupon.give.CouponDetailsVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
@@ -819,90 +818,6 @@ public class GoodsCommentService extends ShopBaseService {
       else if (param.getAwardType().equals(FIVE)) {
         // 前端展示内容：查看神秘奖励，可以选择进入path链接
       }
-    }
-  }
-
-  /**
-   * 给当前用户赠送优惠券
-   *
-   * @param param 会员信息、活动信息、优惠券信息
-   */
-  public void giveCouponByAct(AddCommentParam param) {
-    // 判断删除状态和库存
-    Integer surplus =
-        db().select(MRKING_VOUCHER.SURPLUS)
-            .from(MRKING_VOUCHER)
-            .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
-            .and(MRKING_VOUCHER.DEL_FLAG.eq(BYTE_ZERO))
-            .fetchOptionalInto(Integer.class)
-            .orElse(NumberUtils.INTEGER_ZERO);
-    // 如果库存为0，返回信息库存不足
-    if (surplus.equals(NumberUtils.INTEGER_ZERO)) {
-      logger().info("所选优惠券库存不足");
-    }
-    // 库存足够，发券
-    else {
-      // 获取优惠券详情
-      CouponDetailsVo couponDetails =
-          db().select(
-                  MRKING_VOUCHER.ACT_NAME,
-                  MRKING_VOUCHER.ACT_CODE,
-                  MRKING_VOUCHER.DENOMINATION,
-                  MRKING_VOUCHER.START_TIME,
-                  MRKING_VOUCHER.END_TIME,
-                  MRKING_VOUCHER.VALIDITY_TYPE,
-                  MRKING_VOUCHER.VALIDITY,
-                  MRKING_VOUCHER.VALIDITY_HOUR,
-                  MRKING_VOUCHER.VALIDITY_MINUTE)
-              .from(MRKING_VOUCHER)
-              .where(MRKING_VOUCHER.DEL_FLAG.eq(BYTE_ZERO))
-              .and(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
-              .fetchOneInto(CouponDetailsVo.class);
-      // 获取优惠券类型
-      byte type;
-      String voucher = "voucher";
-      // 减价
-      if (voucher.equals(couponDetails.getActCode())) {
-        type = 0;
-      }
-      // 打折
-      else {
-        type = 1;
-      }
-      // 得到开始时间和结束时间
-      Map<String, Timestamp> timeMap = couponGiveService.getCouponTime(couponDetails);
-      // 为用户发券，入库
-      db().insertInto(
-              CUSTOMER_AVAIL_COUPONS,
-              CUSTOMER_AVAIL_COUPONS.COUPON_SN,
-              CUSTOMER_AVAIL_COUPONS.USER_ID,
-              CUSTOMER_AVAIL_COUPONS.ACT_ID,
-              CUSTOMER_AVAIL_COUPONS.TYPE,
-              CUSTOMER_AVAIL_COUPONS.AMOUNT,
-              CUSTOMER_AVAIL_COUPONS.ACT_DESC,
-              CUSTOMER_AVAIL_COUPONS.ACCESS_ID,
-              CUSTOMER_AVAIL_COUPONS.GET_SOURCE,
-              CUSTOMER_AVAIL_COUPONS.START_TIME,
-              CUSTOMER_AVAIL_COUPONS.END_TIME)
-          .values(
-              CouponGiveService.getCouponSn(),
-              param.getUserId(),
-              Integer.valueOf(param.getAward()),
-              type,
-              couponDetails.getDenomination(),
-              couponDetails.getActName(),
-              param.getId(),
-              GET_SOURCE,
-              timeMap.get("startTime"),
-              timeMap.get("endTime"))
-          .execute();
-      // 发券成功后，优惠券库存减少
-      Integer newSurplus = surplus - 1;
-      db().update(MRKING_VOUCHER)
-          .set(MRKING_VOUCHER.SURPLUS, newSurplus)
-          .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(param.getAward())))
-          .and(MRKING_VOUCHER.DEL_FLAG.eq(BYTE_ZERO))
-          .execute();
     }
   }
 

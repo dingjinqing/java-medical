@@ -83,7 +83,7 @@ public class CouponGiveService extends ShopBaseService {
               CouponGiveListVo.class);
       // 整合活动对应优惠券信息
       for (CouponGiveListVo vo : listVo.getDataList()) {
-        //解析得到活动中包含的优惠券
+        // 解析得到活动中包含的优惠券
         String dataList = vo.getSendCondition();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode;
@@ -415,7 +415,7 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
 
-      //指定时间内有登陆记录
+      // 指定时间内有登陆记录
       if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
         if (param.getCouponGiveGrantInfoParams().getPointStartTime() != null
             && param.getCouponGiveGrantInfoParams().getPointEndTme() != null) {
@@ -442,7 +442,7 @@ public class CouponGiveService extends ShopBaseService {
       // RabbitConfig.BINDING_EXCHANGE_COUPON_KEY, TaskJobEnum.GIVE_COUPON);
       CouponGiveQueueParam newParam =
           new CouponGiveQueueParam(
-              userIdList, actId, couponArray, ACCESS_MODE, GET_SOURCE);
+              getShopId(), userIdList, actId, couponArray, ACCESS_MODE, GET_SOURCE);
       if (param.getSendAction() == 0) {
         saas.taskJobMainService.dispatchImmediately(
             newParam,
@@ -478,6 +478,7 @@ public class CouponGiveService extends ShopBaseService {
       // 得当当前优惠券信息
       CouponDetailsVo couponDetails =
           db().select(
+                  MRKING_VOUCHER.LIMIT_SURPLUS_FLAG,
                   MRKING_VOUCHER.SURPLUS,
                   MRKING_VOUCHER.ACT_CODE,
                   MRKING_VOUCHER.ACT_NAME,
@@ -492,11 +493,11 @@ public class CouponGiveService extends ShopBaseService {
               .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
               .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
               .fetchOneInto(CouponDetailsVo.class);
-      //查询结果为空直接返回
-        if (couponDetails==null){
-            String couponInfo = "优惠券ID:"+couponId;
-            throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST,couponInfo);
-        }
+      // 查询结果为空直接返回
+      if (couponDetails == null) {
+        String couponInfo = "优惠券ID:" + couponId;
+        throw new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, couponInfo);
+      }
       // 判断优惠券类型 减价or打折
       byte type = 0;
       if (VOUCHER.equalsIgnoreCase(couponDetails.getActCode())) {
@@ -507,11 +508,16 @@ public class CouponGiveService extends ShopBaseService {
       // 得到开始时间和结束时间
       Map<String, Timestamp> timeMap = getCouponTime(couponDetails);
       // 判断当前券的库存
-
+      if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
+          && couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
+        logger().info("所选优惠券库存不足");
+        break;
+      }
       // 发券入库
       for (Integer userId : param.getUserIds()) {
         // 如果库存为0，返回信息库存不足
-        if (couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
+        if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
+            && couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
           logger().info("所选优惠券库存不足");
           break;
         }
@@ -546,13 +552,16 @@ public class CouponGiveService extends ShopBaseService {
                   .execute();
           // 得到成功条数
           successList.add(rows);
-          // 优惠券库存-1
-          db().update(MRKING_VOUCHER)
-              .set(MRKING_VOUCHER.SURPLUS, (couponDetails.getSurplus() - 1))
-              .where(MRKING_VOUCHER.ID.eq(Integer.parseInt(couponId)))
-              .execute();
-          // 当前对象中优惠券剩余量-1
-          couponDetails.setSurplus(couponDetails.getSurplus() - 1);
+          // 如果是限制库存类型 则优惠券库存-1
+          if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
+              && couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
+            db().update(MRKING_VOUCHER)
+                .set(MRKING_VOUCHER.SURPLUS, (couponDetails.getSurplus() - 1))
+                .where(MRKING_VOUCHER.ID.eq(Integer.parseInt(couponId)))
+                .execute();
+            // 同时当前对象中优惠券剩余量-1
+            couponDetails.setSurplus(couponDetails.getSurplus() - 1);
+          }
         }
       }
     }
@@ -597,19 +606,43 @@ public class CouponGiveService extends ShopBaseService {
     };
   }
 
-  /** 生成优惠券编号 */
-  public static String getCouponSn() {
-    return "C" + System.currentTimeMillis();
+  /**
+   * 生成优惠券编号
+   *
+   * @return 优惠券编号
+   */
+  public String getCouponSn() {
+    String couponSn;
+    Calendar calendar = Calendar.getInstance();
+    couponSn =
+        "C"
+            + Integer.toHexString(calendar.get(Calendar.MONTH) + 1).toUpperCase()
+            + calendar.get(Calendar.DATE);
+    Date date = new Date();
+    couponSn =
+        couponSn + String.valueOf(date.getTime()).substring(8, 13) + new Random().nextInt(99);
+    // 判断是否与库存已存在编号冲突
+    Integer couponInDb =
+        db().select(CUSTOMER_AVAIL_COUPONS.ID)
+            .from(CUSTOMER_AVAIL_COUPONS)
+            .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(couponSn))
+            .fetchOptionalInto(Integer.class)
+            .orElse(NumberUtils.INTEGER_ZERO);
+    // 若冲突 递归获取唯一的优惠券编号
+    if (!couponInDb.equals(NumberUtils.INTEGER_ZERO)) {
+      couponSn = getCouponSn();
+    }
+    return couponSn;
   }
 
   /**
    * 优惠券弹窗
    *
-   * @param param
+   * @param param 选填：优惠券名称
    * @return popListVo
    */
   public List<CouponGivePopVo> popWindows(CouponGivePopParam param) {
-    /* 查询，并筛选出正确的使用限制条件 */
+    //查询，并筛选出正确的使用限制条件
     SelectWhereStep<? extends Record> select =
         db().select(
                 MRKING_VOUCHER.ID,
@@ -647,11 +680,10 @@ public class CouponGiveService extends ShopBaseService {
   /**
    * 废除优惠券
    *
-   * @param param
-   * @return
+   * @param param 优惠券id
    */
   public void deleteCoupon(CouponGiveDeleteParam param) {
-    /* 假删除实现废除某个用户的某张优惠券 */
+    // 假删除实现废除某个用户的某张优惠券
     db().update(CUSTOMER_AVAIL_COUPONS)
         .set(CUSTOMER_AVAIL_COUPONS.IS_USED, (byte) 3)
         .where(CUSTOMER_AVAIL_COUPONS.ID.eq(param.getId()))

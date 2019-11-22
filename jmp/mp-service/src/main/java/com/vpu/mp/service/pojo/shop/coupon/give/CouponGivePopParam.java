@@ -9,9 +9,9 @@ import lombok.Data;
  */
 @Data
 public class CouponGivePopParam {
-	/* 优惠券名称 */
+	/** 优惠券名称 */
 	private String actName;
-	/* 分页信息 */
+	/** 分页信息 */
 	private int currentPage;
     private int pageRows;
 }
