@@ -87,6 +87,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        log.debug("会员价格查询");
         List<GradePrdRecord> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
         List<GoodsDetailMpBo.GradePrd> list = new ArrayList<>();
         goodsGradeGradePrice.forEach(record -> {
@@ -96,6 +97,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
             gradePrd.setGrade(record.getGrade());
             list.add(gradePrd);
         });
+        log.debug("商品会员价：{}",list.toString());
 
         capsule.setGradeCardPrice(list);
     }

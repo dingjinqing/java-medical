@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -28,6 +29,7 @@ import static com.vpu.mp.db.shop.Tables.*;
  * @date 2019年10月31日
  */
 @Service
+@Slf4j
 public class MemberCardProcessorDao extends ShopBaseService {
 
     /**
@@ -131,7 +133,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
             return new ArrayList<>();
         }
         // 获取商品规格等级信息
-        return db().select(GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE).from(GRADE_PRD).where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+        return db().select(GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE,GRADE_PRD.GRADE).from(GRADE_PRD).where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(GRADE_PRD.GRADE.eq(userGradeCard.get(MEMBER_CARD.GRADE))).and(GRADE_PRD.GOODS_ID.eq(goodsId))
             .fetchInto(GradePrdRecord.class);
     }
@@ -146,9 +148,10 @@ public class MemberCardProcessorDao extends ShopBaseService {
             .where(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(USER_CARD.USER_ID.eq(userId)).and(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_GRADE))
             // 判断是否已经激活
-            .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
+            .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
             .fetchAny();
 
+        log.debug("查询用户{}等级：等级卡id-{} 等级-{}",userId,gradeCard.get(MEMBER_CARD.ID),gradeCard.get(MEMBER_CARD.GRADE));
         return gradeCard;
     }
 }

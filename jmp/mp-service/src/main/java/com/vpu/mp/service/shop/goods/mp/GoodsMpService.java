@@ -336,12 +336,16 @@ public class GoodsMpService extends ShopBaseService {
      * @return {@link GoodsDetailMpBo}
      */
     private GoodsDetailMpBo getGoodsDetailMpInfoDao(Integer goodsId) {
-        GoodsDetailMpBo capsule = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
+        Record record1 = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
             GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DELIVER_TEMPLATE_ID, GOODS.DELIVER_PLACE, GOODS.GOODS_WEIGHT, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
             GOODS.GOODS_IMG, GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
             GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_DESC)
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
-            .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny().into(GoodsDetailMpBo.class);
+            .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
+        if (record1 == null) {
+            return null;
+        }
+        GoodsDetailMpBo capsule = record1.into(GoodsDetailMpBo.class);
         // 图片处理
         List<String> imgs = db().select().from(GOODS_IMG).where(GOODS_IMG.IMG_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
         capsule.getGoodsImgs().add(capsule.getGoodsImg());
