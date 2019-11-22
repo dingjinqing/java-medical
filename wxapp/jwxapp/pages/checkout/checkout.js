@@ -5,7 +5,6 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    address:null,
     balanceStatus:0,//使用余额状态 
     scoreStatus:0,//使用积分状态
     cardBalanceStatus:0,//使用会员卡余额状态
@@ -65,10 +64,6 @@ global.wxPage({
     util.api('/api/wxapp/order', res => {
       if (res.error === 0) {
         let orderInfo = res.content
-        orderInfo.userAccount = 5000
-        orderInfo.userScore = 500000
-        orderInfo.memberCardMoney = 50000
-        orderInfo.isBalancePay = 1
         this.setData({
           orderInfo
         })
@@ -337,6 +332,8 @@ global.wxPage({
     let { orderGoods: goods, orderAmount } = this.data.orderInfo
     let { useBalance: balance, useCardBalance:cardBalance, useScore: scoreDiscount} = this.data.usePayInfo
     let addressId = this.data.orderInfo.address && this.data.orderInfo.address.addressId || null
+    let couponSn = this.data.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn || null
+    let cardNo = this.data.defaultMemberCard && this.data.defaultMemberCard.cardNo || null
     if (!addressId) {
       wx.showToast({
         title: '请选择地址',
@@ -354,10 +351,14 @@ global.wxPage({
       scoreDiscount,
       deliverType: this.data.chooseShippingIndex,
       orderPayWay:this.data.choosePayTypeIndex,
+      couponSn,
+      cardNo
     }
     console.log(params)
-    util.api('',res=>{
-      console.log(res)
+    util.api('/api/wxapp/order/pay',res=>{
+      if(res.error === 0){
+
+      }
     }, params)
   },
   /**

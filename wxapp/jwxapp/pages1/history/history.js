@@ -39,7 +39,7 @@ global.wxPage({
       },
       {
         currentPage: currentPage,
-        pageRows: 2,
+        pageRows: 20,
         userId: util.getCache('user_id')
       }
     );
