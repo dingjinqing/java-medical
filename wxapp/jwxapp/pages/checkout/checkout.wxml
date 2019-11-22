@@ -8,7 +8,9 @@
         </block>
       </view> -->
       <view class="shipping_method_content">
-        <view wx:for="{{shippingMethod}}" wx:for-item="shipItem" wx:for-index="shipIndex" wx:key="*this" class="shipping_method" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{chooseShippingIndex === shipIndex ? comColor : ''}};">{{shipItem}}快递</view>
+        <block wx:for="{{orderInfo.expressList}}" wx:for-item="shipItem" wx:for-index="shipIndex" wx:key="shipIndex">
+          <view  class="shipping_method" wx:if="{{shipItem === 1}}" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{params.deliverType === shipIndex ? comColor : ''}};">{{shipItem}}快递</view>
+        </block>
       </view>
       <view class="address_info" bindtap="selectStore" wx:if="{{chooseShippingIndex !== 0}}" style="background:#fff;border-bottom:2rpx solid #eee;">
         <view class="address-user_info">
@@ -55,9 +57,6 @@
         <view class="pay_title">支付方式</view>
         <view class="pay_type_content">
           <view class="pay_type_item" wx:for="{{payType}}" wx:key="*this" data-index="{{payTypeIndex}}" wx:for-index="payTypeIndex" wx:for-item="payTypeItem" bindtap="changePayType"> <text class="iconfont {{choosePayTypeIndex === payTypeIndex ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{choosePayTypeIndex === payTypeIndex ? comColor : ''}}"></text>{{payTypeItem}}微信支付</view>
-          <!-- <view class="pay_type_item"> <text class="iconfont icondanxuanbiankuang"></text> 微信支付</view>
-          <view class="pay_type_item"> <text class="iconfont icondanxuan" style="color:{{comColor}}"></text> 货到付款</view>
-          <view class="pay_type_item"> <text class="iconfont icondanxuanbiankuang"></text> 好友代付</view> -->
         </view>
         <view class="pay-type-tips" wx:if="{{choosePayTypeIndex === 2}}">
           温馨提示：24小时内未完成支付，订单将会自动取消，所有款项将自动退回到付款人账户
@@ -67,7 +66,7 @@
       <view class="pay_content">
         <view class="pay_list_item" bindtap="selectCardTap">
           <text class="pay_list_title">会员卡</text>
-          <text class="pay_list_content"></text>
+          <text class="pay_list_content">{{orderInfo.defaultMemberCard ? orderInfo.defaultMemberCard.cardName : '选择会员卡'}}</text>
           <view class="pay_list_right">
             <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
           </view>
@@ -113,6 +112,10 @@
           <text class="detail_title">运费</text>
           <text class="detail_content" style="color:{{comColor}};">+￥{{orderInfo.shippingFee}}</text>
         </view>
+        <view class="detail_item" wx:if="{{orderInfo.memberCardReduce}}">
+          <text class="detail_title">会员卡抵扣</text>
+          <text class="detail_content" style="color:{{comColor}};">-￥{{orderInfo.memberCardReduce}}</text>
+        </view>
         <view class="detail_item" wx:if="{{orderInfo.discount}}">
           <text class="detail_title">优惠券抵扣</text>
           <text class="detail_content" style="color:{{comColor}};">-￥{{orderInfo.discount}}</text>
@@ -142,7 +145,7 @@
   <v-score-popup show="{{showScoreDialog}}" use-pay-info="{{usePayInfo}}" score-max="{{orderInfo.scoreMaxDiscount}}" score-min="{{orderInfo.scorePayNum}}" user-score="{{orderInfo.userScore}}" bindconfirm="getInputScore" bindclose="closeDialog"/>
   <v-card-balance show="{{showCardBalanceDialog}}" use-pay-info="{{usePayInfo}}" user-card-balance="{{orderInfo.memberCardMoney}}" bindconfirm="getInputCardBalance" bindclose="closeDialog"/>
   <!-- 选择会员卡 -->
-  <v-select-card show="{{showCardDialog}}"/>
+  <v-select-card show="{{showCardDialog}}" member-card-list="{{orderInfo.memberCards}}" default-member-card="{{orderInfo.defaultMemberCard}}" bindconfirm="getSelectCard"/>
   <!-- 选择自提/同城门店 -->
   <v-select-store show="{{showStoreDialog}}" store-data="{{storeDialogData}}" bindsubmit="getSelectStore"/>
   <include src="../common/footer.wxml"/>

@@ -26,7 +26,7 @@ global.wxPage({
       activityId:null, // 指定本次结算所参加的唯一营销活动类型 ID
       addressId:null, // 地址id
       goods:null, // 商品列表
-      deliverType:null, // 配送方式
+      deliverType:0, // 配送方式
       storeId:null, // 门店id
       memberCardNo:0, //0: 默认选第一张；null：不选；其他：卡号
       couponSn:0, //0: 默认选第一张；null：不选；其他：优惠卷号
@@ -67,6 +67,7 @@ global.wxPage({
         let orderInfo = res.content
         orderInfo.userAccount = 5000
         orderInfo.userScore = 500000
+        orderInfo.memberCardMoney = 50000
         orderInfo.isBalancePay = 1
         this.setData({
           orderInfo
@@ -237,6 +238,7 @@ global.wxPage({
       defaultCouponIndex
     })
   },
+  
   // 变更优惠券
   couponChange(e){
     let { couponSn } = this.data.couponArray[parseInt(e.detail.value)]
@@ -252,6 +254,13 @@ global.wxPage({
       showCardDialog:true
     })
   },
+  // 得到选择后的会员卡
+  getSelectCard(data){
+    this.setData({
+      'params.memberCardNo': data.detail
+    })
+    this.requestOrder()
+  },
   // 变更支付类型
   changePayType(e){
     this.setData({
@@ -261,8 +270,9 @@ global.wxPage({
   // 变更配送方式
   selectShippingMethod(e){
     this.setData({
-      chooseShippingIndex:e.currentTarget.dataset.index
+      'params.deliverType':e.currentTarget.dataset.index
     })
+    this.requestOrder()
   },
   // 选择门店
   selectStore(){

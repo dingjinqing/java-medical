@@ -5,112 +5,24 @@
       <image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap='bindClose'></image>
     </view>
     <scroll-view class="dialog_info" scroll-y enable-flex>
-      <view class="card_item">
-        <view class="radio_box">
-          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
-        </view>
-        <view class="card_info">
-          <image src="{{imageUrl}}image/wxapp/close_icon.png"></image>
-          <view class="card_right">
-            <text class="card_name">测试会员111</text>
-            <text class="card_discount">折扣6.66折</text>
-            <text class="card_expire">123456789</text>
+      <block wx:for="{{cardList}}" wx:for-item="cardItem" wx:for-index="cardIndex"  wx:key="cardIndex">
+        <view class="card_item" data-index="{{cardIndex}}" bindtap="selectCard">
+          <view class="radio_box">
+            <text class="iconfont {{cardItem.isChecked ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{cardItem.isChecked ? main_setting.comColor : ''}}"></text>
+          </view>
+          <view class="card_info" style="{{cardItem.cardBgStyle}}">
+            <image src="{{imageUrl}}image/wxapp/close_icon.png"></image>
+            <view class="card_right">
+              <text class="card_name">{{cardItem.cardName}}</text>
+              <text class="card_no">卡号：{{cardItem.cardNo}}</text>
+              <text class="card_discount" wx:if="{{cardItem.cardType !== 1 && cardItem.discount}}">折扣：{{cardItem.discount}}折</text>
+              <text class="card_expire" wx:if="{{cardItem.cardType !== 2}}">{{cardItem.cardExpireTime}}</text>
+            </view>
           </view>
         </view>
-      </view>
-      <view class="card_item">
-        <view class="radio_box">
-          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
-        </view>
-        <view class="card_info">
-          <image src="{{imageUrl}}image/wxapp/close_icon.png"></image>
-          <view class="card_right">
-            <text class="card_name">测试会员111</text>
-            <text class="card_discount">折扣6.66折</text>
-            <text class="card_expire">123456789</text>
-          </view>
-        </view>
-      </view>
-      <view class="card_item">
-        <view class="radio_box">
-          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
-        </view>
-        <view class="card_info">
-          <image src="{{imageUrl}}image/wxapp/close_icon.png"></image>
-          <view class="card_right">
-            <text class="card_name">测试会员111</text>
-            <text class="card_discount">折扣6.66折</text>
-            <text class="card_expire">123456789</text>
-          </view>
-        </view>
-      </view>
-      <view class="card_item">
-        <view class="radio_box">
-          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
-        </view>
-        <view class="card_info">
-          <image src="{{imageUrl}}image/wxapp/close_icon.png"></image>
-          <view class="card_right">
-            <text class="card_name">测试会员111</text>
-            <text class="card_discount">折扣6.66折</text>
-            <text class="card_expire">123456789</text>
-          </view>
-        </view>
-      </view>
-      <view class="card_item">
-        <view class="radio_box">
-          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
-        </view>
-        <view class="card_info">
-          <image src="{{imageUrl}}image/wxapp/close_icon.png"></image>
-          <view class="card_right">
-            <text class="card_name">测试会员111</text>
-            <text class="card_discount">折扣6.66折</text>
-            <text class="card_expire">123456789</text>
-          </view>
-        </view>
-      </view>
-      <view class="card_item">
-        <view class="radio_box">
-          <text class="iconfont {{true ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{true ? main_setting.comColor : ''}}"></text>
-        </view>
-        <view class="card_info">
-          <image src="{{imageUrl}}image/wxapp/close_icon.png"></image>
-          <view class="card_right">
-            <text class="card_name">测试会员111</text>
-            <text class="card_discount">折扣6.66折</text>
-            <text class="card_expire">123456789</text>
-          </view>
-        </view>
-      </view>
-      <view class="card_item">
-        <view class="radio_box">
-          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
-        </view>
-        <view class="card_info">
-          <image src="{{imageUrl}}image/wxapp/close_icon.png"></image>
-          <view class="card_right">
-            <text class="card_name">测试会员111</text>
-            <text class="card_discount">折扣6.66折</text>
-            <text class="card_expire">123456789</text>
-          </view>
-        </view>
-      </view>
-      <view class="card_item">
-        <view class="radio_box">
-          <text class="iconfont {{false ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{false ? main_setting.comColor : ''}}"></text>
-        </view>
-        <view class="card_info">
-          <image src="{{imageUrl}}image/wxapp/close_icon.png"></image>
-          <view class="card_right">
-            <text class="card_name">测试会员111</text>
-            <text class="card_discount">折扣6.66折</text>
-            <text class="card_expire">123456789</text>
-          </view>
-        </view>
-      </view>
+      </block>
     </scroll-view>
-     <view class="dialog_bottom" style="background-color:{{main_setting.comColor}}">
+     <view class="dialog_bottom" bindtap="confirm" style="background-color:{{main_setting.comColor}}">
           确定
     </view>
   </view>
