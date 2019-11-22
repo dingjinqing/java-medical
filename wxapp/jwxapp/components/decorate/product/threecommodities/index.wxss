@@ -1,5 +1,5 @@
 @import "../goodscommon/goodslabel.wxss";
-
+@import "/css/iconfont.wxss";
 .three_column {
     padding: 0 12rpx 0 16rpx;
       margin: 0 auto;
@@ -41,13 +41,6 @@
     height: 80rpx;
     width: 205rpx;
   }
-  
-  .three_column .every_module .product-price::after {
-    content: "";
-    display: block;
-    clear: both;
-  }
-  
   .three_column .every_module .product-price {
     font-size: 11px;
     color: #f66;
@@ -56,6 +49,8 @@
     overflow: hidden;
     margin-bottom: 10rpx;
     height: 40rpx;
+    display: flex;
+    justify-content: space-between;
   }
   
   .three_column .every_module .product-price .sale_price {
@@ -104,4 +99,10 @@
     padding: 10rpx 0;
     width: 100%;
     text-align: center;
+  }
+
+  .three_column  .right_buy_btn,.cart_buy_btn{
+    width: 102rpx;
+   height: 33rpx;
+   line-height: 33rpx;
   }

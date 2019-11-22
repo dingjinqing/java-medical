@@ -1,4 +1,5 @@
 @import "../goodscommon/goodslabel.wxss";
+@import "/css/iconfont.wxss";
 .two_column {
     padding: 0 15rpx;
     margin: 0 auto;
@@ -57,13 +58,6 @@
     padding: 0 10rpx;
     margin-top: 15rpx;
   }
-  
-  .two_column .each_module .product-price::after {
-    content: "";
-    display: block;
-    clear: both;
-  }
-  
   .two_column .each_module .product-price {
     font-size: 30rpx;
     font-weight: bold;
@@ -73,6 +67,8 @@
     position: absolute;
     bottom: 10rpx;
     width: 330rpx;
+    display: flex;
+    justify-content: space-between;
   }
   
   .two_column .each_module .product-price .sale_price {

@@ -1,4 +1,5 @@
 @import "../goodscommon/goodslabel.wxss";
+@import "/css/iconfont.wxss";
 .one_column {
     margin: 0 auto;
     margin-bottom: 20rpx;
@@ -34,19 +35,15 @@
     padding: 0 10rpx;
     padding-top: 10rpx;
   }
-  
-  .one_column .product-price::after {
-    content: "";
-    display: block;
-    clear: both;
-  }
-  
   .one_column .product-price {
     font-size: 28rpx;
     color: #f66;
     font-weight: bold;
     padding: 0 10rpx;
     overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
   .one_column .product-price .sale_price {

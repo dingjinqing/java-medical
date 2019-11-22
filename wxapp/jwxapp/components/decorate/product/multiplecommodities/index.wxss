@@ -1,4 +1,5 @@
 @import "../goodscommon/goodslabel.wxss";
+@import "/css/iconfont.wxss";
 .mul_column {
     white-space: nowrap;
     height: 444rpx;

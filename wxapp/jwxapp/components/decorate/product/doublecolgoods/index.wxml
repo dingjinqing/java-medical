@@ -10,7 +10,7 @@
           <view class='top_title'>
             <view class='van-ellipsis'>{{item.goodsName}}</view>
           </view>
-           <view class='title_label_container' style="bottom:54rpx">
+           <view class='title_label_container' style="bottom:60rpx">
               <view style="{{indexC!==0?'margin-left:10rpx':''}}" class='title_label' wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>
             {{itemC.text}}</view>
             </view>

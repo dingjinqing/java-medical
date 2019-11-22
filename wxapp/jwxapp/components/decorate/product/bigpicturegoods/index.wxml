@@ -8,7 +8,7 @@
             <view class='top_title'>
               <view class='van-two-ellipsis'>{{item.goodsName}}</view>
             </view>
-            <view class='title_label_container' style="bottom:54rpx">
+            <view class='title_label_container' style="bottom:70rpx">
               <view style="{{indexC!==0?'margin-left:10rpx':''}}" class='title_label' wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>
             {{itemC.text}}
             </view>
@@ -21,6 +21,12 @@
             </block>
             <block wx:if='{{ m.otherMessage===1}}'>
                 <view class='market_price' wx:if="{{item.linePrice && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
+            </block>
+            <block wx:if="{{m.cart_btn == 1 && item.activityType != 10}}">
+              <text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == 0}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
+              <text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == 1}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
+              <text class='cart_btn right_buy_btn' style='background:{{comColor}};bottom:30rpx' wx:if="{{m.cart_btn_choose == 2}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>马上抢</text>
+              <text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}};bottom:24rpx' wx:if="{{m.cart_btn_choose ==3}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>购买</text>
             </block>
       </view>
     </view>
