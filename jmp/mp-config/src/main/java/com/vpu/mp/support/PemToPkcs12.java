@@ -1,5 +1,7 @@
 package com.vpu.mp.support;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -12,7 +14,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -20,19 +22,19 @@ public class PemToPkcs12 {
 
 	/**
 	 * X.509 pem format to pkcs12 format
-	 * 
+     *
 	 * @param privateKeyStr
 	 * @param certificateStr
 	 * @return
 	 * @throws Exception
 	 */
 	public static byte[] pemToPkcs12(String privateKeyStr, String certificateStr) throws Exception {
-		return pemToPkcs12(privateKeyStr, certificateStr, null, "alias");
+        return pemToPkcs12(privateKeyStr, certificateStr, StringUtils.EMPTY.toCharArray(), "alias");
 	}
 
 	/**
 	 * X.509 pem format to pkcs12 format
-	 * 
+     *
 	 * @param privateKeyStr
 	 * @param certificateStr
 	 * @param password
@@ -45,7 +47,7 @@ public class PemToPkcs12 {
 
 	/**
 	 * X.509 pem format to pkcs12 format
-	 * 
+     *
 	 * @param privateKeyStr
 	 * @param certificateStr
 	 * @param password
