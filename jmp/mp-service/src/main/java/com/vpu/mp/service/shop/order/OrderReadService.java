@@ -87,8 +87,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.BACK_STAGE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
@@ -922,13 +922,13 @@ public class OrderReadService extends ShopBaseService {
             }
             if(columns.contains(OrderExportVo.USER_SOURCE)){
                 //下单用户来源
-                if(BACK_STAGE.getCode().equals(order.getUserSource())){
+                if(SRC_BACK_STAGE.getCode().equals(order.getUserSource())){
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_ADMIN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
-                if(NOT_ACQUIRED.getCode().equals(order.getUserSource()) && order.getInviteSource() != null && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
+                if(SRC_NOT_ACQUIRED.getCode().equals(order.getUserSource()) && order.getInviteSource() != null && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
                     order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_UNKNOWN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
-                if(order.getUserSource() != null && order.getUserSource() > BACK_STAGE.getCode()){
+                if(order.getUserSource() != null && order.getUserSource() > SRC_BACK_STAGE.getCode()){
                     order.setUserSourceString(saas.getShopApp(getShopId()).store.getStoreName(order.getUserSource()));
                 }
                 if(order.getInviteSource() != null && order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){

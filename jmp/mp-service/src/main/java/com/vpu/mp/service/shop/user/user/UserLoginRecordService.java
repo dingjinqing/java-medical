@@ -2,6 +2,10 @@ package com.vpu.mp.service.shop.user.user;
 
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 
+import java.sql.Timestamp;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.UserLoginRecordRecord;
@@ -9,6 +13,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
+import com.vpu.mp.service.shop.user.user.dao.UserLoginRecordDao;
 
 /**
  *
@@ -18,7 +23,8 @@ import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
  */
 @Service
 public class UserLoginRecordService extends ShopBaseService {
-
+	@Autowired UserLoginRecordDao userLoginRecordDao;
+	
 	public void userLoginRecord(Integer userId, UserLoginRecordVo vo) {
 		logger().info("记录小程序登录");
 		UserLoginRecordRecord res = db().selectFrom(USER_LOGIN_RECORD).where(USER_LOGIN_RECORD.USER_ID.eq(userId))
@@ -48,10 +54,24 @@ public class UserLoginRecordService extends ShopBaseService {
 	 * @return district
 	 */
 	public Integer getUserLoginRecordDistrictCode(Integer userId){
+		
 		return db().select(USER_LOGIN_RECORD.DISTRICT_CODE).from(USER_LOGIN_RECORD)
 				.where(USER_LOGIN_RECORD.USER_ID.eq(userId))
 				.and(USER_LOGIN_RECORD.DISTRICT_CODE.notEqual("").or(USER_LOGIN_RECORD.DISTRICT_CODE.isNotNull()))
 				.orderBy(USER_LOGIN_RECORD.CREATE_TIME.desc()).fetchOneInto(Integer.class);
 	}
-
+	
+	/**
+	 * 获取从该时间开始登录的用户Id
+	 */
+	public List<Integer> getUserIdFromLoginStartTime(Timestamp time) {
+		return userLoginRecordDao.getUserIdFromLoginStartTime(time);
+	}
+	
+	/**
+	 * 获取从该时间之前登录的用户Id
+	 */
+	public List<Integer> getUserIdUtilToLoginEndTime(Timestamp time) {
+		return userLoginRecordDao.getUserIdUtilToLoginEndTime(time);
+	}
 }

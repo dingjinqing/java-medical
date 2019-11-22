@@ -1,21 +1,13 @@
 package com.vpu.mp.service.shop.operation.dao;
 
 import static com.vpu.mp.db.shop.Tables.TRADES_RECORD;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_EXCHANGE;
 
-import java.math.BigDecimal;
 
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_POWER_MCARD_ACCOUNT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_STATUS_ALREADY_IN;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.operation.builder.TradesRecordRecordBuilder;
 

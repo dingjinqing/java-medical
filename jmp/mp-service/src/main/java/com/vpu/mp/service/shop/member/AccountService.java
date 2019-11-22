@@ -6,20 +6,14 @@ import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.DEFAULT_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
-import static com.vpu.mp.service.pojo.shop.operation.RecordContentMessage.MSG_MEMBER_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_CONSUMPTION;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_RECHARGE;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.List;
 
-import org.jooq.Record6;
-import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +43,6 @@ import com.vpu.mp.service.shop.operation.RecordTradeService;
 @Service
 
 public class AccountService extends ShopBaseService {
-	private static final String LANGUAGE_TYPE_MEMBER = "member";
 	@Autowired private MemberService memberService;
 	@Autowired private RecordTradeService tradeService;
 	@Autowired private UserAccountDao uAccountDao;
@@ -89,6 +82,9 @@ public class AccountService extends ShopBaseService {
 		/** -支付类型  */
 		if(isConsump(param)) {
 			/** -消费 */
+			if(isNotConsumpAvailable(user,param)) {
+				throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
+			}
 			param.setIsPaid(UACCOUNT_CONSUMPTION.val());
 		}else {
 			/** -充值 */
@@ -107,8 +103,6 @@ public class AccountService extends ShopBaseService {
 			updateUserAccount(param, user);
 			/** 插入交易明细数据 到trades_record */
 			addTradeRecord(param, tradeType, tradeFlow);
-			
-			
 			/** 添加操作记录到b2c_record_admin_action*/
 			//TODO目前只是对单个的，后期优化需要批量
 			BigDecimal zero = BigDecimal.ZERO;
@@ -120,10 +114,19 @@ public class AccountService extends ShopBaseService {
 		return ;
 	}
 	
-	private boolean isConsump(AccountParam param) {
-		return BigDecimalUtil.compareTo(param.getAmount(), BigDecimal.ZERO)<0;
+	private boolean isNotConsumpAvailable(UserRecord user,AccountParam param) {
+		return !isConsumpAvailable(user,param);
 	}
-
+	private boolean isConsumpAvailable(UserRecord user,AccountParam param) {
+		BigDecimal val = param.getAmount().add(user.getAccount());
+		return isLessThanZero(val);
+	}
+	private boolean isConsump(AccountParam param) {
+		return isLessThanZero(param.getAmount());
+	}
+	private boolean isLessThanZero(BigDecimal val) {
+		return BigDecimalUtil.compareTo(val, BigDecimal.ZERO)<0;
+	}
 	private void addTradeRecord(AccountParam param, Byte tradeType, Byte tradeFlow) {
 		String tradeSn = param.getOrderSn() == null ? "" : param.getOrderSn();
 		
@@ -151,8 +154,6 @@ public class AccountService extends ShopBaseService {
 	 */
 	private void updateUserAccount(AccountParam param, UserRecord user) {
 		/** 应该从user_account表中计算余额 */
-//		db().update(USER).set(USER.ACCOUNT, param.getAmount().add(user.getAccount()))
-//				.where(USER.USER_ID.eq(user.getUserId())).execute();
 		logger().info("计算用户余额");
 		BigDecimal account = db().select(DSL.sum(USER_ACCOUNT.AMOUNT))
 			.from(USER_ACCOUNT)
@@ -178,9 +179,6 @@ public class AccountService extends ShopBaseService {
 
 	/**
 	 * 添加操作记录到b2c_record_admin_action
-	 * @param param
-	 * @param user
-	 * @param admin 
 	 */
 	public void addActionRecord(AccountParam param, UserRecord user, AdminTokenAuthInfo admin) {
 		
@@ -230,7 +228,8 @@ public class AccountService extends ShopBaseService {
 		if(isNeedI18n(vo)) {
 			String msg = vo.getRemark().split(":")[1];
 			String languageType = msg.split("\\.")[0];
-			vo.setRemark(Util.translateMessage(language, msg, languageType, null));
+			String transMsg = Util.translateMessage(language, msg, languageType);
+			vo.setRemark(transMsg);
 		}
 	}
 

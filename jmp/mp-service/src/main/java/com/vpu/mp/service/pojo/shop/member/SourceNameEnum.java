@@ -5,14 +5,17 @@ package com.vpu.mp.service.pojo.shop.member;
 * @Description: 来源名称国际化
 */
 public enum SourceNameEnum {
-	/** 未获取 */
-	NOT_ACQUIRED(-1,"member.source.not_acquired"),
+	
 	/** 后台 */
-	BACK_STAGE(0,"member.source.back_stage"),
+	SRC_BACK_STAGE(0,"member.source.back_stage"),
+	/** 未获取 */
+	SRC_NOT_ACQUIRED(-1,"member.source.not_acquired"),
 	/** 渠道页-- */
-	CHANNAL_PAGE(1,"member.source.channal_page"),
+	SRC_CHANNAL_PAGE(1,"member.source.channal_page"),
+	/** 全部门店 */
+	SRC_ALL(-2,"member.source.all"),
 	/** 扫码进入 */
-	SCAN_QRCODE(-3,"member.source.scan_qrcode");
+	SRC_SCAN_QRCODE(-3,"member.source.scan_qrcode");
 
 	
 	/** 数字代号 */

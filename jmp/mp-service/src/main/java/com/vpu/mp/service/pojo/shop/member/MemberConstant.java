@@ -9,6 +9,10 @@ public class MemberConstant {
 	public static final Byte DELETE_YES = 1;
 	public static final Byte DELETE_NO = 0;
 	
+	/** 禁止登录 */
+	public static final Byte LOGIN_FORBID = 1;
+	/** 允许登录 */
+	public static final Byte LOGIN_PERMIT = 0;
 	public static final String INVITE_USERNAME = "inviteUserName";
 	
 	/** 用于计算时间范围 */

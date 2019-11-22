@@ -1011,5 +1011,13 @@ public class UserCardService extends ShopBaseService {
         }
         return userCardDao.getUserCardInfo(cardNo);
     }
+    
+    /**
+	 * 获取持有会员卡的用户id
+	 */
+	public List<Integer> getUserIdThatHasValidCard() {
+		return userCardDao.getUserIdThatHasValidCard();
+	}
+    
 
 }

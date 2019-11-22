@@ -15,6 +15,7 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
@@ -45,6 +46,7 @@ import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.UpdateSetMoreStep;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -1073,4 +1075,47 @@ public class OrderInfoService extends ShopBaseService {
 
         return 0;
     }
+    
+    
+	/**
+	 * 该时间之后有下单的用户ID列表
+	 */
+	public List<Integer> getUserIdFromBuyStartTime(Timestamp time) {
+		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY)).and(TABLE.CREATE_TIME.ge(time))
+				.groupBy(TABLE.USER_ID).fetch().getValues(TABLE.USER_ID, Integer.class);
+	}
+	
+	/**
+	 * 该时间之前有下单的用户ID列表
+	 */
+	public List<Integer> getUserIdUtilToBuyEndTime(Timestamp time) {
+		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY)).and(TABLE.CREATE_TIME.le(time))
+				.groupBy(TABLE.USER_ID).fetch().getValues(TABLE.USER_ID);
+	}
+	
+	/**
+	 * 获取大于等于该购买次数的用户Id列表
+	 */
+	public List<Integer> getUserIdGreateThanBuyCountLow(Integer cnt) {
+		return db().select(TABLE.USER_ID).from(TABLE).groupBy(TABLE.USER_ID).having(DSL.count(TABLE.USER_ID).ge(cnt))
+				.fetch().getValues(TABLE.USER_ID, Integer.class);
+	}
+	
+	/**
+	 * 获取小于等于该购买次数的用户Id列表
+	 */
+	public List<Integer> getUserIdLessThanBuyCountHight(Integer cnt) {
+		return db().selectFrom(TABLE).groupBy(TABLE.USER_ID).having(DSL.count(TABLE.USER_ID).le(cnt)).fetch()
+				.getValues(TABLE.USER_ID, Integer.class);
+	}
+	
+	/**
+	 * 通过商品id获取购买过该商品的用户id列表
+	 */
+	public List<Integer> getUserIdHasBuyTheGoods(List<Integer> goodsIdList) {
+		return db().select().from(ORDER_GOODS.leftJoin(TABLE).on(ORDER_GOODS.ORDER_SN.eq(TABLE.ORDER_SN)))
+				.where(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY)).and(ORDER_GOODS.GOODS_ID.in(goodsIdList))
+				.groupBy(TABLE.USER_ID).fetch().getValues(TABLE.USER_ID, Integer.class);
+	}
+
 }

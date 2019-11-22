@@ -13,6 +13,7 @@ import org.jooq.Record4;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.Tag;
@@ -22,6 +23,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.tag.TagInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagPageListParam;
 import com.vpu.mp.service.pojo.shop.member.tag.UpdateTagParam;
+import com.vpu.mp.service.shop.member.dao.tag.TagDao;
 import com.vpu.mp.service.pojo.shop.member.tag.CommonTagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 
@@ -30,9 +32,9 @@ import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
  * @author 黄壮壮 2019-07-09 20:16
  */
 @Service
-
 public class TagService extends ShopBaseService {
 	final static Byte DELETE_NO = 0;
+	@Autowired private TagDao tagDao;
 
 	public PageResult<TagInfoVo> getPageList(TagPageListParam param) {
 
@@ -135,9 +137,6 @@ public class TagService extends ShopBaseService {
 
 	/**
 	 * 更新标签名称
-	 * 
-	 * @param param
-	 * @return
 	 */
 	public int updateTag(@Valid UpdateTagParam param) {
 		int result = db().update(TAG).set(TAG.TAG_NAME, param.getTagName()).where(TAG.TAG_ID.eq(param.getTagId()))
@@ -156,7 +155,6 @@ public class TagService extends ShopBaseService {
 	}
 	/**
 	 * 获取标签基本信息
-	 * @return
 	 */
 	public List<TagVo> getAllTag() {
 		logger().info("获取所有标签");
@@ -166,4 +164,10 @@ public class TagService extends ShopBaseService {
 			.into(TagVo.class);
 	}
 
+	/**
+	 * 根据标签名查询id
+	 */
+	public List<Integer> getId(String name){
+		return tagDao.getId(name);
+	}
 }

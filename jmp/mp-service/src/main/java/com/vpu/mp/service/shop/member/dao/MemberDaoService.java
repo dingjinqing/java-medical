@@ -1,45 +1,63 @@
 package com.vpu.mp.service.shop.member.dao;
 
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
 import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CART_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
 import org.jooq.SelectOnConditionStep;
+import org.jooq.SelectSeekStep1;
 import org.jooq.SelectSeekStep3;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.jooq.tools.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
+import com.vpu.mp.service.shop.member.TagService;
+import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.cart.UserCartService;
+import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 
+import jodd.util.StringUtil;
+
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
-import static org.jooq.impl.DSL.count;
+
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_ALL;
+import  org.jooq.impl.DSL;
 
 
 /**
@@ -49,6 +67,81 @@ import static org.jooq.impl.DSL.count;
  */
 @Service
 public class MemberDaoService extends ShopBaseService {
+	@Autowired TagService tagService;
+	@Autowired UserLoginRecordService userLoginRecordService;
+	@Autowired UserCartService userCartService;
+	@Autowired OrderInfoService orderInfoService;
+	@Autowired UserCardService userCardService;
+	private static final String USER_NAME = "userName";
+	
+	/**
+	 * 获取会员列表的基本信息 
+	 */
+	public PageResult<MemberInfoVo> getMemberList(MemberPageListParam param) {
+		User AliasUser = USER.as("AliasUser");
+
+		SelectOnConditionStep<? extends Record> select = db()
+				.select(USER.USER_ID, USER.USERNAME.as(USER_NAME), AliasUser.USERNAME.as(INVITE_USERNAME), USER.MOBILE,
+						USER.ACCOUNT, USER.SCORE, USER.SOURCE, USER.CREATE_TIME, USER.DEL_FLAG, USER_DETAIL.REAL_NAME)
+				.from(USER)
+				.leftJoin(AliasUser).on(AliasUser.USER_ID.eq(USER.INVITE_ID))
+				.leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(USER.USER_ID));
+	
+		buildOptionsForTable(param,select);
+		select.where(buildOptions(param))
+			  .orderBy(USER.USER_ID.desc());
+		
+		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), MemberInfoVo.class);
+	}
+	
+	/** 获取会员列表的基本信息 */
+	public List<UserRecord> getExportUserList(MemberPageListParam param) {
+		SelectJoinStep<Record> select = db().select(USER.asterisk()).from(USER);
+		buildOptionsForTable(param,select);
+		
+		select.where(buildOptions(param))
+			  .orderBy(USER.USER_ID.desc());
+		
+		PageResult<UserRecord> memberList = getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				UserRecord.class);
+		return memberList.dataList;
+	}
+	
+	
+	/**
+	 * 通过活动新增用户
+	 */
+	public PageResult<MemberInfoVo> getSourceActList(MemberPageListParam param, String source, int actId) {
+		User aliasUser = USER.as("aliasUser");
+		SelectSeekStep1<? extends Record, Timestamp> select = db()
+				.select(USER.USER_ID, USER.USERNAME.as(USER_NAME), USER.MOBILE, USER.CREATE_TIME, USER.INVITE_ID,
+						aliasUser.USERNAME.as(INVITE_USERNAME))
+				.from(USER)
+				.leftJoin(aliasUser)
+				.on(USER.INVITE_ID.eq(aliasUser.USER_ID))
+				.where(USER.INVITE_SOURCE.eq(source))
+				.and(USER.INVITE_ACT_ID.eq(actId))
+				.and(buildOptions(param))
+				.orderBy(USER.CREATE_TIME.desc());
+				
+		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), MemberInfoVo.class);
+	}
+	
+	
+
+	/**
+	 * 动态连表
+	 */
+	private void buildOptionsForTable(MemberPageListParam param,SelectJoinStep<? extends Record> select) {
+		if(param.getCardId() != null) {
+			select.leftJoin(USER_CARD).on(USER.USER_ID.eq(USER_CARD.USER_ID));
+		}
+		if(!StringUtil.isBlank(param.getTagName())) {
+			/** -标签处理 */
+			select.leftJoin(USER_TAG).on(USER.USER_ID.eq(USER_TAG.USER_ID));
+		}
+	}
+	
 	
 	/**
 	 * 获取会员用户的详细信息
@@ -124,138 +217,8 @@ public class MemberDaoService extends ShopBaseService {
 				.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))
 		.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc());
 	}
-	
-	
-	
-	/**
-	 * 获取持有会员卡的用户id
-	 * @return
-	 */
-	public Result<Record1<Integer>> getUserIdByCardExist() {
-		Timestamp localDateTime = DateUtil.getLocalDateTime();
-		return db().select(USER_CARD.USER_ID)
-			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
-			.where(USER_CARD.FLAG.eq(UCARD_FG_USING))
-			.and(USER_CARD.EXPIRE_TIME.greaterThan(localDateTime).or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER)))
-			.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(localDateTime)))
-		            .or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))
-			.fetch();
-	}
-	
-	/**
-	 * 通过商品id获取购买过该商品的用户id
-	 * @param param
-	 * @return
-	 */
-	public Result<Record1<Integer>> getMemberIdByGoodsId(MemberPageListParam param) {
-		return db().select(ORDER_INFO.USER_ID)
-			.from(ORDER_GOODS.leftJoin(ORDER_INFO).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN)))
-			.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
-			.and(ORDER_GOODS.GOODS_ID.in(param.getGoodsId()))
-			.groupBy(ORDER_INFO.USER_ID)
-			.fetch();
-	}
-	
-	/**
-	 * 获取指定范围内最高次数
-	 */
-	public Result<Record1<Integer>> getBuyCountHight(Integer hight) {
-		return db().select(ORDER_INFO.USER_ID)
-				.from(ORDER_INFO)
-				.groupBy(ORDER_INFO.USER_ID)
-				.having(count(ORDER_INFO.USER_ID).le(hight))
-				.fetch();
-	}
-	
-	/**
-	 * 获取指定范围内最低次数
-	 */
-	public Result<Record1<Integer>> getBuyCountLow(Integer low) {
-		return db().select(ORDER_INFO.USER_ID)
-			.from(ORDER_INFO)
-			.groupBy(ORDER_INFO.USER_ID)
-			.having(count(ORDER_INFO.USER_ID).ge(low))
-			.fetch();
-	}
-	
-	/**
-	 * 时间内有交易记录-开始时间
-	 */
-	public Result<Record1<Integer>> getBuyStartTime(String startTime) {
-		return db().select(ORDER_INFO.USER_ID)
-			.from(ORDER_INFO)
-			.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
-			.and(ORDER_INFO.CREATE_TIME.ge(DateUtil.convertToTimestamp(startTime)))
-			.groupBy(ORDER_INFO.USER_ID)
-			.fetch();
-	}
-	
-	/**
-	 * 时间内有交易记录-结束时间
-	 */
-	public Result<Record1<Integer>> getBuyEndTime(String endTime) {
-		return db().select(ORDER_INFO.USER_ID)
-			.from(ORDER_INFO)
-			.where(ORDER_INFO.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY))
-			.and(ORDER_INFO.CREATE_TIME.le(DateUtil.convertToTimestamp(endTime)))
-			.groupBy(ORDER_INFO.USER_ID)
-			.fetch();
-	}
-	
-	/**
-	 * 指定时间内登录-开始时间
-	 * @param startTime
-	 * @return
-	 */
-	public Result<Record1<Integer>> getLoginStartTime(String startTime) {
-		return db().select(USER_LOGIN_RECORD.USER_ID)
-			.from(USER_LOGIN_RECORD)
-			.where(USER_LOGIN_RECORD.CREATE_TIME.ge(DateUtil.convertToTimestamp(startTime)))
-			.groupBy(USER_LOGIN_RECORD.USER_ID)
-			.fetch();
-	}
-
 
 	
-
-	/**
-	 * 指定时间内登录-结束时间
-	 * @param string
-	 * @return
-	 */
-	public Result<Record1<Integer>> getLoginEndTime(String endTime) {
-		return db().select(USER_LOGIN_RECORD.USER_ID)
-			.from(USER_LOGIN_RECORD)
-			.where(USER_LOGIN_RECORD.CREATE_TIME.le(DateUtil.convertToTimestamp(endTime)))
-			.groupBy(USER_LOGIN_RECORD.USER_ID)
-			.fetch();
-	}
-
-	/**
-	 * 指定时间内有加购行为-开始时间
-	 * @param string
-	 * @return
-	 */
-	public Result<Record1<Integer>> getCartStartTime(String startTime) {
-		return db().select(USER_CART_RECORD.USER_ID)
-			.from(USER_CART_RECORD)
-			.where(USER_CART_RECORD.CREATE_TIME.ge(DateUtil.convertToTimestamp(startTime)))
-			.groupBy(USER_CART_RECORD.USER_ID)
-			.fetch();
-	}
-
-	/**
-	 * 指定时间内有加购行为-结束时间
-	 * @param string
-	 * @return
-	 */
-	public Result<Record1<Integer>> getCartEndTime(String endTime) {
-		return db().select(USER_CART_RECORD.USER_ID)
-			.from(USER_CART_RECORD)
-			.where(USER_CART_RECORD.CREATE_TIME.le(DateUtil.convertToTimestamp(endTime)))
-			.groupBy(USER_CART_RECORD.USER_ID)
-			.fetch();
-	}
 	
 	/**
 	 * 更新用户的邀请人id
@@ -326,47 +289,408 @@ public class MemberDaoService extends ShopBaseService {
 	 *  会员持有会员卡详情
 	 */
 	public Result<Record> getAllUserCardDetailSql(UserCardDetailParam param) {
-		SelectOnConditionStep<Record> select = db().select(USER_CARD.asterisk(),MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,USER.USERNAME)
-													.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
-													.leftJoin(USER).on(USER_CARD.USER_ID.eq(USER.USER_ID));
-		buildOptionsForUserCard(select,param);
-		return select.fetch();
-			
+		return db().select(USER_CARD.asterisk(),MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE,USER.USERNAME)
+					.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+					.leftJoin(USER).on(USER_CARD.USER_ID.eq(USER.USER_ID))
+					.where(DSL.noCondition())
+					.and(buildOptionsForUserCard(param))
+					.fetch();
 	}
+	
+	/**
+	 * 多条件查询构建条件
+	 */
+	private Condition buildOptions(MemberPageListParam param) {
+		Condition condition = DSL.noCondition();
+		if (isNotNull(param)) {
+			condition
+				.and(getUserIdCondition(param.getUserId()))
+				.and(getMobileCondition(param.getMobile()))
+				.and(getUserNameCondition(param.getUsername()))
+				.and(getSourceCondition(param.getSource()))
+				.and(getInviteUserCondition(param.getInviteUserName()))
+				.and(getUserCardCondition(param.getCardId()))
+				.and(getTagNameCondition(param.getTagName()))
+				.and(getUnitPriceLowCondition(param.getUnitPriceLow()))
+				.and(getUnitPriceHightCondition(param.getUnitPriceHight()))
+				.and(getBuyCountLowCondition(param.getBuyCountLow()))
+				.and(getBuyCountHightCondition(param.getBuyCountHight()))
+				.and(getGoodsIdCondition(param.getGoodsId()))
+				.and(getHasMobileCondition(param.getHasMobile()))
+				.and(getHasScoreCondition(param.getHasScore()))
+				.and(getHasBalance(param.getHasBalance()))
+				.and(getHasCardCondition(param.getHasCard()))
+				.and(getIsForbidLoginCondition(param.getHasDelete()))
+				.and(getRealNameCondition(param.getRealName()))
+				.and(getHasImportCondition(param.getHasImport()))
+				.and(getRegistStartTimeCondition(DateUtil.convertToTimestamp(param.getCreateTime())))
+				.and(getRegistEndTimeCondition(DateUtil.convertToTimestamp(param.getEndTime())))
+				.and(getLoginStartTimeCondition(DateUtil.convertToTimestamp(param.getLoginStartTime())))
+				.and(getLoginEndTimeCondition(DateUtil.convertToTimestamp(param.getLoginEndTime())))
+				.and(getCartStartTimeCondition(DateUtil.convertToTimestamp(param.getCartStartTime())))
+				.and(getCartEndTimeCondition(DateUtil.convertToTimestamp(param.getCartEndTime())))
+				.and(getBuyStartTimeCondition(DateUtil.convertToTimestamp(param.getBuyStartTime())))
+				.and(getBuyEndTimeCondition(DateUtil.convertToTimestamp(param.getBuyEndTime())));
+		}
+		return condition;
+	}
+
+	
 	/**
 	 * 构建查询会员持有会员卡详情的参数
 	 */
-	private void buildOptionsForUserCard(SelectOnConditionStep<Record> select, UserCardDetailParam param) {
-		/** - 用户id */
-		if(param.getUserId()!=null) {
-			select.where(USER_CARD.USER_ID.equal(param.getUserId()));
+	private Condition buildOptionsForUserCard(UserCardDetailParam param) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(param)) {
+			condition
+				.and(getUserIdCondition(param.getUserId()))
+				.and(getMobileCondition(param.getMobile()))
+				.and(getUserNameCondition(param.getUsername()))
+				.and(getReceiveCardStartTimeCondition(DateUtil.convertToTimestamp(param.getCreateTimeFirst())))
+				.and(getReceiveCardEndTimeCondition(DateUtil.convertToTimestamp(param.getCreateTimeSecond())))
+				.and(getCardIdCondition(param.getCardId()))
+				.and(getCardTypeCondition(param.getCardType()));
 		}
-		/** -手机号 */
-		if(!StringUtils.isBlank(param.getMobile())) {
-			select.where(USER.MOBILE.eq(param.getMobile()));
+		return condition;
+	}
+	
+	/**
+	 * 会员id条件
+	 */
+	private Condition getUserIdCondition(Integer userId) {
+		Condition condition = DSL.noCondition();
+		return isNotNull(userId)?condition.and(USER.USER_ID.eq(userId)):condition;
+	}
+	
+	/**
+	 * 手机号条件
+	 */
+	private Condition getMobileCondition(String mobile) {
+		Condition condition = DSL.noCondition();
+		return isNotBlank(mobile)?condition.and(USER.MOBILE.eq(mobile)):condition;
+	}
+	
+	/**
+	 * 昵称条件
+	 */
+	private Condition getUserNameCondition(String userName) {
+		Condition condition = DSL.noCondition();
+		String val = likeValue(userName);
+		return isNotBlank(userName)?condition.and(USER.USERNAME.like(val)):condition;
+	}
+	
+	/**
+	 * 来源条件
+	 */
+	private Condition getSourceCondition(Integer source) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(source)&&isNotAllStore(source)) {
+			condition.and(USER.SOURCE.eq(source));
 		}
-		/** - 昵称 */
-		if(!StringUtils.isBlank(param.getUsername())) {
-			select.where(USER.USERNAME.eq(param.getUsername()));
+		return condition;
+	}
+	private boolean isNotAllStore(Integer source) {
+		return SRC_ALL.equals(source);
+	}
+	
+	/**
+	 * 邀请人条件
+	 */
+	private Condition getInviteUserCondition(String name) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(name)) {
+			condition.and(USER.INVITE_ID.in(getUserIdByName(name)));
 		}
-		/** -领取时间 -开始 */
-		if(!StringUtils.isBlank(param.getCreateTimeFirst())) {
-			select.where(USER_CARD.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getCreateTimeFirst())));
+		return condition;
+	}
+	
+	private List<Integer> getUserIdByName(String name){
+		return getUserByName(name).getValues(USER.USER_ID,Integer.class);
+	}
+	
+	private Result<UserRecord> getUserByName(String name) {
+		String val = likeValue(name);
+		return db().selectFrom(USER).where(USER.USERNAME.like(val)).fetch();
+	}
+	
+	/**
+	 * 会员卡条件
+	 */
+	private Condition getUserCardCondition(Integer cardId) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(cardId)) {
+			condition
+			.and(USER_CARD.CARD_ID.eq(cardId))
+			.and(USER_CARD.FLAG.eq(UCARD_FG_USING));
 		}
+		return condition;
+	}
+	
+	/**
+	 * 注册开始时间查询条件
+	 */
+	private Condition getRegistStartTimeCondition(Timestamp time) {
+		Condition condition = DSL.noCondition();
+		return isNotNull(time)?condition.and(USER.CREATE_TIME.ge(time)):condition;
+	}
+	
+	/**
+	 * 注册结束时间查询条件
+	 */
+	private Condition getRegistEndTimeCondition(Timestamp time) {
+		Condition condition = DSL.noCondition();
+		return isNotNull(time)?condition.and(USER.CREATE_TIME.le(time)):condition;
+	}
+	
+	/**
+	 * 标签查询条件
+	 */
+	private Condition getTagNameCondition(String name) {
+		Condition condition = DSL.noCondition();
+		if(isNotBlank(name)) {
+			List<Integer> tagIdList = tagService.getId(name);
+			condition.and(USER_TAG.TAG_ID.in(tagIdList));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 指定时间内有登录 - 开始时间条件
+	 */
+	private Condition getLoginStartTimeCondition(Timestamp time) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(time)) {
+			List<Integer> userIdList = userLoginRecordService.getUserIdFromLoginStartTime(time);
+			condition.and(USER.USER_ID.in(userIdList));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 指定时间内有登录 - 结束时间条件
+	 */
+	private Condition getLoginEndTimeCondition(Timestamp time) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(time)) {
+			List<Integer> userIdList = userLoginRecordService.getUserIdUtilToLoginEndTime(time);
+			condition.and(USER.USER_ID.in(userIdList));
+		}
+		return condition;
+	}
+	
+	
+	/**
+	 * 指定时间内有加购行为 - 开始时间条件
+	 */
+	private Condition getCartStartTimeCondition(Timestamp time) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(time)) {
+			List<Integer> userIdList = userCartService.getUserIdFromCartStartTime(time);
+			condition.and(USER.USER_ID.in(userIdList));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 指定时间内有加购行为 - 结束时间条件
+	 */
+	private Condition getCartEndTimeCondition(Timestamp time) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(time)) {
+			List<Integer> userIdList = userCartService.getUserIdUtilToCartEndTime(time);
+			condition.and(USER.USER_ID.in(userIdList));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 指定时间内有交易记录 - 开始时间条件
+	 */
+	private Condition getBuyStartTimeCondition(Timestamp time) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(time)) {
+			List<Integer> userIdList = orderInfoService.getUserIdFromBuyStartTime(time);
+			condition.and(USER.USER_ID.in(userIdList));
+		}
+		return condition;
+	}
+	
+	
+	/**
+	 * 指定时间内有交易记录 - 结束时间条件
+	 */
+	private Condition getBuyEndTimeCondition(Timestamp time) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(time)) {
+			List<Integer> userIdList = orderInfoService.getUserIdUtilToBuyEndTime(time);
+			condition.and(USER.USER_ID.in(userIdList));
+		}
+		return condition;
+	}
+	
+	
+	/**
+	 * 客单价最低查询条件
+	 */
+	private Condition getUnitPriceLowCondition(BigDecimal price) {
+		Condition condition = DSL.noCondition();
+		return isNotNull(price)?condition.and(USER.UNIT_PRICE.ge(price)):condition;
+	}
+	
+	/**
+	 * 客单价最高查询条件
+	 */
+	private Condition getUnitPriceHightCondition(BigDecimal price) {
+		Condition condition = DSL.noCondition();
+		return isNotNull(price)?condition.and(USER.UNIT_PRICE.le(price)):condition;
+	}
+	
+	/**
+	 * 累计购买次数 - 最低次数条件
+	 */
+	private Condition getBuyCountLowCondition(Integer cnt) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(cnt)) {
+			List<Integer> userIdList = orderInfoService.getUserIdGreateThanBuyCountLow(cnt);
+			condition.and(USER.USER_ID.in(userIdList));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 累计购买次数 - 最高次数条件
+	 */
+	private Condition getBuyCountHightCondition(Integer cnt) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(cnt)) {
+			List<Integer> userIdList = orderInfoService.getUserIdLessThanBuyCountHight(cnt);
+			condition.and(USER.USER_ID.in(userIdList));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 购买指定商品条件
+	 */
+	private Condition getGoodsIdCondition(List<Integer> goodsIdList) {
+		Condition condition = DSL.noCondition();
+		if (isNotNull(goodsIdList)) {
+			List<Integer> userIdList = orderInfoService.getUserIdHasBuyTheGoods(goodsIdList);
+			condition.and(USER.USER_ID.in(userIdList));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 是否有手机号条件
+	 */
+	private Condition getHasMobileCondition(boolean hasMobile) {
+		Condition condition = DSL.noCondition();
+		return hasMobile?condition.and(USER.MOBILE.isNotNull()):condition;
+	}
+	
+	/**
+	 * 是否有可用积分
+	 */
+	private Condition getHasScoreCondition(boolean hasScore) {
+		Condition condition = DSL.noCondition();
+		return hasScore?condition.and(USER.SCORE.gt(NumberUtils.INTEGER_ZERO)):condition;
+	}
+	
+	/**
+	 * 是否有可用余额
+	 */
+	private Condition getHasBalance(boolean hasBalance) {
+		Condition condition = DSL.noCondition();
+		return hasBalance?condition.and(USER.ACCOUNT.gt(BigDecimal.ZERO)):condition;
+	}
+	
+	/**
+	 * 是否持有会员卡
+	 */
+	private Condition getHasCardCondition(boolean hasCard) {
+		Condition condition = DSL.noCondition();
+		if(hasCard) {
+			List<Integer> userIdList = userCardService.getUserIdThatHasValidCard();
+			condition.and(USER.USER_ID.in(userIdList));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 是否禁止条件
+	 */
+	private Condition getIsForbidLoginCondition(boolean isLogin) {
+		Condition condition = DSL.noCondition();
+		return isLogin?condition.and(USER.DEL_FLAG.eq(LOGIN_FORBID)):condition;
+	}
+	
+	/**
+	 * 真实姓名条件
+	 */
+	private Condition getRealNameCondition(String name) {
+		Condition condition = DSL.noCondition();
+		if(isNotBlank(name)) {
+			String val = likeValue(name);
+			condition.and(USER_DETAIL.REAL_NAME.like(val));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 是否为导入会员
+	 */
+	private Condition getHasImportCondition(boolean hasImport) {
+		Condition condition = DSL.noCondition();
+		if(hasImport) {
+			SelectConditionStep<Record1<Integer>> subSelect = db().select(USER_IMPORT_DETAIL.ID).from(USER_IMPORT_DETAIL).where(USER_IMPORT_DETAIL.MOBILE.eq(USER.MOBILE));
+			condition.andExists(subSelect);
+		}
+		return condition;
+	}
+	
+	/**
+	 * 会员卡领取开始时间条件
+	 */
+	private Condition getReceiveCardStartTimeCondition(Timestamp time) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(time)) {
+			condition.and(USER_CARD.CREATE_TIME.ge(time));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 会员卡领取结束时间条件
+	 */
+	private Condition getReceiveCardEndTimeCondition(Timestamp time) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(time)) {
+			condition.and(USER_CARD.CREATE_TIME.le(time));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 会员卡ID条件
+	 */
+	private Condition getCardIdCondition(Integer cardId) {
+		Condition condition = DSL.noCondition();
+		return isNotNull(cardId)?condition.and(MEMBER_CARD.ID.eq(cardId)):condition;
+	}
+	
+	/**
+	 * 会员卡类型条件
+	 */
+	private Condition getCardTypeCondition(Byte cardType) {
+		Condition condition = DSL.noCondition();
+		return isNotNull(cardType)?condition.and(MEMBER_CARD.CARD_TYPE.eq(cardType)):condition;
+	}
 		
-		/** - 领取时间-结束 */
-		if(!StringUtils.isBlank(param.getCreateTimeSecond())) {
-			select.where(USER_CARD.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getCreateTimeSecond())));
-		}
-		
-		/** - 会员卡id */
-		if(param.getCardId()!=null) {
-			select.where(MEMBER_CARD.ID.eq(param.getCardId()));
-		}
-		
-		/** - 会员卡类型 */
-		if(param.getCardType() != null) {
-			select.where(MEMBER_CARD.CARD_TYPE.eq(param.getCardType()));
-		}
+	private boolean isNotNull(Object obj) {
+		return obj!=null;
+	}
+	private boolean isNotBlank(String val) {
+		return !StringUtils.isBlank(val);
 	}
 }

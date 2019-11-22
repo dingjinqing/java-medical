@@ -506,4 +506,19 @@ public class UserCardDaoService extends ShopBaseService{
         }
         return result;
     }
+
+	/**
+	 * 获取持有会员卡的用户id
+	 */
+	public List<Integer> getUserIdThatHasValidCard() {
+		Timestamp localDateTime = DateUtil.getLocalDateTime();
+		return db().select(USER_CARD.USER_ID)
+				.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+				.where(USER_CARD.FLAG.eq(UCARD_FG_USING))
+				.and(USER_CARD.EXPIRE_TIME.greaterThan(localDateTime).or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER)))
+				.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(localDateTime)))
+						.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))
+				.fetch().getValues(USER_CARD.USER_ID);
+	}
+
 }

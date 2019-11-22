@@ -4,8 +4,6 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.TAG;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
@@ -13,13 +11,10 @@ import static com.vpu.mp.db.shop.Tables.CHANNEL;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SCAN_QRCODE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_ACQUIRED;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.BACK_STAGE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.CHANNAL_PAGE;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DELETE_YES;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_SCAN_QRCODE;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_CHANNAL_PAGE;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_DAYS;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_DAYS;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
@@ -32,18 +27,14 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Field;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
-import org.jooq.SelectConditionStep;
 import org.jooq.SelectField;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
@@ -51,7 +42,6 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -63,7 +53,6 @@ import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -98,7 +87,6 @@ import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
-import jodd.util.StringUtil;
 
 /**
  * 
@@ -106,9 +94,6 @@ import jodd.util.StringUtil;
  */
 @Service
 public class MemberService extends ShopBaseService {
-
-	
-	private static final String USER_NAME = "userName";
 
 	public static final String INVITE_SOURCE_GROUPBUY = "groupbuy";
 	public static final String INVITE_SOURCE_BARGAIN = "bargain";
@@ -181,22 +166,7 @@ public class MemberService extends ShopBaseService {
 	
 	
 	public List<UserRecord> getExportUserList(MemberPageListParam param) {
-		
-		/** 获取会员列表的基本信息 */
-		User u = USER.as("u");
-		SelectJoinStep<Record> from = db().select(u.asterisk()).from(u);
-		
-		/** 动态构建连表 */
-		buildOptionsForTable(param, u, from);
-		
-		SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) from;
-		
-		/** -构建查询条件 */
-		select = this.buildOptions(select, u, param);
-		select.orderBy(u.USER_ID.desc());
-		PageResult<UserRecord> memberList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				UserRecord.class);
-		return memberList.dataList;
+		return memberDao.getExportUserList(param);
 	}
 	
 	
@@ -238,78 +208,35 @@ public class MemberService extends ShopBaseService {
 
 	/**
 	 * 获取会员列表的基本信息 
-	 * @param param
-	 * @return
 	 */
 	private PageResult<MemberInfoVo> getMemberList(MemberPageListParam param) {
-		User u = USER.as("u");
-		User n = USER.as("n");
-
-		/** 自查寻 */
-		Field<?> inviteUserName = this.db().select(n.USERNAME).from(n).where(n.USER_ID.eq(u.INVITE_ID))
-				.asField(INVITE_USERNAME);
-	
-		SelectJoinStep<?> from = this.db().selectDistinct(u.USER_ID,
-				u.USERNAME.as(USER_NAME), inviteUserName, u.MOBILE, u.ACCOUNT, u.SCORE, u.SOURCE, u.CREATE_TIME,u.DEL_FLAG,USER_DETAIL.REAL_NAME)
-				.from(u.leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(u.USER_ID)));
-				
-		
-		/** 动态构建连表 */
-		buildOptionsForTable(param, u, from);
-		
-		SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) from;
-		
-		/** -构建查询条件 */
-		select = this.buildOptions(select, u, param);
-		select.orderBy(u.USER_ID.desc());
-		PageResult<MemberInfoVo> memberList = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				MemberInfoVo.class);
-		return memberList;
-	}
-
-	/**
-	 * 动态连表
-	 * @param param
-	 * @param user
-	 * @param from
-	 */
-	private void buildOptionsForTable(MemberPageListParam param, User user, SelectJoinStep<?> from) {
-		if(param.getCardId() != null) {
-			from.leftJoin(USER_CARD).on(user.USER_ID.eq(USER_CARD.USER_ID));
-		}
-		if(!StringUtil.isBlank(param.getTagName())) {
-			/** -标签处理 */
-			from.leftJoin(USER_TAG).on(user.USER_ID.eq(USER_TAG.USER_ID));
-		}
+		return memberDao.getMemberList(param);
 	}
 
 	/**
 	 * 获取用户来源
-	 * @param language
-	 * @param member
-	 * @return
 	 */
-	@SuppressWarnings("unlikely-arg-type")
+	
 	private String getSourceName(String language, MemberInfoVo member) {
 		String sourceName = null;
-		if (NOT_ACQUIRED.getCode().equals(member.getSource())
+		if (SRC_NOT_ACQUIRED.getCode().equals(member.getSource())
 				&& !(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource()))
-				&& !(SCAN_QRCODE.getCode().equals(member.getSource()))) {
+				&& !(SRC_SCAN_QRCODE.getCode().equals(member.getSource()))) {
 			/** 未获取 */
-			sourceName = Util.translateMessage(language, NOT_ACQUIRED.getName(), "member");
+			sourceName = Util.translateMessage(language, SRC_NOT_ACQUIRED.getName(), "member");
 			logger().info(sourceName);
-		} else if (BACK_STAGE.getCode().equals(member.getSource())) {
+		} else if (SRC_BACK_STAGE.getCode().equals(member.getSource())) {
 			/** 后台 */
-			sourceName = Util.translateMessage(language, BACK_STAGE.getName(), "member");
+			sourceName = Util.translateMessage(language, SRC_BACK_STAGE.getName(), "member");
 		} else if (INVITE_SOURCE_CHANNEL.equals(member.getInviteSource())) {
 			/** 渠道页-- */
 			String channelName = db().select(CHANNEL.CHANNEL_NAME).from(CHANNEL)
 					.where(CHANNEL.ID.eq(member.getInviteActId())).fetchOne().into(String.class);
-			sourceName = Util.translateMessage(language, CHANNAL_PAGE.getName(), "member") + channelName;
-		} else if (SCAN_QRCODE.getCode().equals(member.getSource())
+			sourceName = Util.translateMessage(language, SRC_CHANNAL_PAGE.getName(), "member") + channelName;
+		} else if (SRC_SCAN_QRCODE.getCode().equals(member.getSource())
 				|| INVITE_SOURCE_SCANQRCODE.equals(member.getInviteSource())) {
 			/** 扫码进入 */
-			sourceName = Util.translateMessage(language, SCAN_QRCODE.getName(), "member");
+			sourceName = Util.translateMessage(language, SRC_SCAN_QRCODE.getName(), "member");
 		} else {
 			/** 门店名称 */
 			if(member.getSource() != null) {
@@ -320,233 +247,9 @@ public class MemberService extends ShopBaseService {
 	}
 	
 
-	/**
-	 * 多条件查询
-	 * 
-	 * @param select
-	 * @param param
-	 * @return
-	 */
-	private SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select, User u,
-			MemberPageListParam param) {
-
-		if (param == null) {
-
-			return select;
-		}
-		
-		/** -会员id */
-		if(param.getUserId() != null) {
-			select.where(u.USER_ID.eq(param.getUserId()));
-		}
-		/** - 手机号 */
-		if (!StringUtils.isEmpty(param.getMobile())) {
-			select.where(u.MOBILE.eq(param.getMobile()));
-		}
-		/** - 昵称 */
-		if (!StringUtils.isEmpty(param.getUsername())) {
-			logger().info("用户昵称模糊查询");
-			String likeValue = likeValue(param.getUsername());
-			select.where(u.USERNAME.like(likeValue));
-		}
-		/** - 来源 */
-		if (param.getSource() != null) {
-			select.where(u.SOURCE.eq(param.getSource()));
-		}
-		/** -邀请人 */
-		if (!StringUtils.isBlank(param.getInviteUserName())) {
-			logger().info("处理邀请人模糊查询");
-			String likeValue = likeValue(param.getInviteUserName());
-			List<Integer> ids = db().select(u.USER_ID).from(u).where(u.USERNAME.like(likeValue)).fetch().into(Integer.class);
-			select.where(u.INVITE_ID.in(ids));
-		}
-		
-		/** - 会员卡 */
-		if(param.getCardId() != null) {
-			logger().info("测试会员卡查询");
-			select.where(USER_CARD.CARD_ID.eq(param.getCardId())).and(USER_CARD.FLAG.eq(UCARD_FG_USING));
-		}
-
-		/** -注册时间 */
-		if (!StringUtils.isEmpty(param.getCreateTime())) {
-			select.where(u.CREATE_TIME.ge(DateUtil.convertToTimestamp(param.getCreateTime())));
-		}
-
-		/** -结束时间 */
-		if (!StringUtils.isEmpty(param.getEndTime())) {
-			select.where(u.CREATE_TIME.le(DateUtil.convertToTimestamp(param.getEndTime())));
-		}
-		
-		/** -标签处理 */
-		if(!StringUtil.isBlank(param.getTagName())) {
-			logger().info("正在构建标签查询页");
-			String tagName = param.getTagName();
-			List<Integer> ids = db().select(TAG.TAG_ID).from(TAG).where(TAG.TAG_NAME.eq(tagName)).fetch().into(Integer.class);
-			select.where(USER_TAG.TAG_ID.in(ids));
-		}
-		
-
-		/**  -指定时间内有登录 - 开始时间 */
-		if(!StringUtil.isBlank(param.getLoginStartTime())) {
-			logger().info("正在构建指定时间内登录-开始时间");
-			Result<Record1<Integer>> record = memberDao.getLoginStartTime(param.getLoginStartTime());
-			if(record != null) {
-			List<Integer> ids = record.into(Integer.class);
-			select.where(u.USER_ID.in(ids));
-			}
-		}
-		
-		/**  -指定时间内有登录 - 结束时间 */
-		if(!StringUtil.isBlank(param.getLoginEndTime())) {
-			logger().info("正在构建指定时间内登录-结束时间");
-			Result<Record1<Integer>> record = memberDao.getLoginEndTime(param.getLoginEndTime());
-			if(record != null) {
-			List<Integer> ids = record.into(Integer.class);
-			select.where(u.USER_ID.in(ids));
-			}
-		}
-		
-		
-		/**  -指定时间内有加购行为 */
-		if(!StringUtil.isBlank(param.getCartStartTime())) {
-			logger().info("正在构建指定时间内有加购行为-开始时间");
-			/** -用户添加购物车商品记录表 */
-			Result<Record1<Integer>> record = memberDao.getCartStartTime(param.getCartStartTime());
-			if(record != null) {
-				List<Integer> ids = record.into(Integer.class);
-				select.where(u.USER_ID.in(ids));
-			}
-		}
-		
-		/**  -指定时间内有加购行为 */
-		if(!StringUtil.isBlank(param.getCartEndTime())) {
-			logger().info("正在构建指定时间内有加购行为-结束时间");
-			Result<Record1<Integer>> record = memberDao.getCartEndTime(param.getCartEndTime());
-			/** -用户添加购物车商品记录表 */
-			if(record != null) {
-				List<Integer> ids = record.into(Integer.class);
-				select.where(u.USER_ID.in(ids));
-			}
-		}
-		
-		
-		/** -指定时间内有交易记录 */
-		if(!StringUtil.isBlank(param.getBuyStartTime())) {
-			logger().info("正在构建指定时间内有交易记录-开始时间");
-			Result<Record1<Integer>> record = memberDao.getBuyStartTime(param.getBuyStartTime());
-			/** -订单表 */
-			if(record != null) {
-				List<Integer> ids = record.into(Integer.class);
-				select.where(u.USER_ID.in(ids));
-			}
-		}
-		
-		
-		/** -指定时间内有交易记录 */
-		if(!StringUtil.isBlank(param.getBuyEndTime())) {
-			logger().info("正在构建指定时间内有交易记录-结束时间");
-			Result<Record1<Integer>> record = memberDao.getBuyEndTime(param.getBuyEndTime());
-			/** -订单表 */
-			if(record != null) {
-				List<Integer> ids = record.into(Integer.class);
-				select.where(u.USER_ID.in(ids));
-			}
-		}
-		
-		
-		/** -客单价 -最低 */
-		if(param.getUnitPriceLow() != null) {
-			select.where(u.UNIT_PRICE.ge(param.getUnitPriceLow()));
-		}
-		
-		/** -客单价 -最高  */
-		if(param.getUnitPriceHight() != null) {
-			select.where(u.UNIT_PRICE.le(param.getUnitPriceHight()));
-		}
-		
-		
-			
-		/** -累计购买次数 - 最低次数 */
-		if(param.getBuyCountLow()!=null) {
-			logger().info("正在构建累计购买次数-最低次数");
-			Result<Record1<Integer>> record = memberDao.getBuyCountLow(param.getBuyCountLow());
-			if(record != null) {
-				List<Integer> ids = record.into(Integer.class);
-				select.where(u.USER_ID.in(ids));
-			}
-		}
-		
-		/** -累计购买次数 - 最高次数 */
-		if(param.getBuyCountHight() != null) {
-			logger().info("正在构建累计购买次数-最高次数");
-			Result<Record1<Integer>> record = memberDao.getBuyCountHight(param.getBuyCountHight());
-			if(record != null) {
-				List<Integer> ids = record.into(Integer.class);
-				select.where(u.USER_ID.in(ids));
-			}
-		}
-		
-		/**  -购买指定商品 */
-		if(param.getGoodsId()!=null && param.getGoodsId().size()>0) {
-			logger().info("正在构建购买指定商品");
-			Result<Record1<Integer>> record = memberDao.getMemberIdByGoodsId(param);
-			if(record!=null) {
-				List<Integer> ids = record.into(Integer.class);
-				select.where(u.USER_ID.in(ids));
-			}
-		}
-
-		/** -是否有手机号  */
-		if(param.getHasMobile()) {
-			select.where(u.MOBILE.isNotNull());
-		}
-		
-		/** -是否有积分 */
-		if(param.getHasScore()) {
-			select.where(u.SCORE.greaterThan(Integer.parseInt(ZERO)));
-		}
-		
-		/** -是否有余额 */
-		if(param.getHasBalance()) {
-			select.where(u.ACCOUNT.greaterThan(BigDecimal.ZERO));
-		}
-		
-		/** -是否持有会员卡 */
-		if(param.getHasCard()) {
-			logger().info("正在处理持有会员卡的会员");
-			Result<Record1<Integer>> record = memberDao.getUserIdByCardExist();
-			if(record != null) {
-			List<Integer> ids = record.into(Integer.class);
-			select.where(u.USER_ID.in(ids));
-			}
-		}
-		
-		/** -是否已经禁止登录 */
-		if(param.getHasDelete()) {
-			select.where(u.DEL_FLAG.eq(DELETE_YES));
-		}
-		
-		/** -是否是导入会员 */
-		if(param.getHasImport()) {
-			logger().info("正在构建导入会员");
-			SelectConditionStep<Record1<Integer>> subSelect = db().select(USER_IMPORT_DETAIL.ID).from(USER_IMPORT_DETAIL).where(USER_IMPORT_DETAIL.MOBILE.eq(u.MOBILE));
-			select.whereExists(subSelect);
-		}
-		/** 真实姓名 */
-		if(!StringUtil.isBlank(param.getRealName())) {
-			select.where(USER_DETAIL.REAL_NAME.eq(param.getRealName()));
-		}
-		
-		return select;
-	}
-
-
 
 	/**
 	 * 通用会员列表弹窗分页查询
-	 * 
-	 * @param param
-	 * @return
 	 */
 	public PageResult<CommonMemberPageListQueryVo> getCommonPageList(CommonMemberPageListQueryParam param) {
 		SelectJoinStep<? extends Record> select = db().select(USER.USER_ID, USER.USERNAME, USER.MOBILE).from(USER);
@@ -599,31 +302,13 @@ public class MemberService extends ShopBaseService {
 
 	/**
 	 * 通过活动新增用户
-	 *
-	 * @param param
-	 * @param source
-	 * @param actId
-	 * @return
 	 */
 	public PageResult<MemberInfoVo> getSourceActList(MemberPageListParam param, String source, int actId) {
-		User a = USER.as("a");
-		User b = USER.as("b");
-		@SuppressWarnings("unchecked")
-		SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) db()
-				.select(a.USER_ID, a.USERNAME.as(USER_NAME), a.MOBILE, a.CREATE_TIME, a.INVITE_ID,
-						b.USERNAME.as(INVITE_USERNAME))
-				.from(a).leftJoin(b).on(a.INVITE_ID.eq(b.USER_ID)).where(a.INVITE_SOURCE.eq(source))
-				.and(a.INVITE_ACT_ID.eq(actId)).orderBy(a.CREATE_TIME.desc());
-		select = this.buildOptions(select, a, param);
-
-		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), MemberInfoVo.class);
+		return memberDao.getSourceActList(param,source,actId);
 	}
 
 	/**
 	 * 分裂营销活动拉新用户数据分析
-	 * 
-	 * @param param
-	 * @return
 	 */
 	public Map<Date, Integer> getMarketSourceUserAnalysis(MarketAnalysisParam param) {
 		Map<Date, Integer> map;
@@ -676,17 +361,11 @@ public class MemberService extends ShopBaseService {
 	
 	/**
 	 * 查询会员所持有标签列表
-	 * @param userId
-	 * @return
 	 */
 	public List<TagVo> getTagForMember(Integer userId) {
-	    if(userId == null || userId <= 0){
-	        return Collections.emptyList();
-        }
 		 return db().select(TAG.TAG_NAME,TAG.TAG_ID).from(USER_TAG.innerJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID)))
 			.where(USER_TAG.USER_ID.eq(userId))
-			.fetch()
-			.into(TagVo.class);
+			.fetchInto(TagVo.class);
 	}
 	
 	/** 根据用户id获取用户详情 

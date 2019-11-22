@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +45,6 @@ public class AdminMemberController extends AdminBaseController{
 	
 	/**
 	 * 返回所有行业信息
-	 * @return
 	 */
 	@PostMapping("/industry/get")
 	public JsonResult getIndustryList() {
@@ -73,8 +71,7 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping("/list")
 	public JsonResult getPageList(@RequestBody MemberPageListParam param) {
 		/** 获取语言，用于国际化 */
-		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
-		PageResult<MemberInfoVo> pageResult = this.shop().member.getPageList(param,language);
+		PageResult<MemberInfoVo> pageResult = this.shop().member.getPageList(param,getLang());
 		return this.success(pageResult);
 	}
 	
