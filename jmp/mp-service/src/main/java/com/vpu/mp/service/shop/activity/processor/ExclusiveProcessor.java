@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -115,8 +116,8 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
         List<MemberCardRecord> gradeCards = map.getOrDefault(CardConstant.MCARD_TP_GRADE, new ArrayList<>(0));
 
         // 获取当前用户拥有的所有会员卡信息
-        List<Record> userAllCard = memberCardProcessorDao.getUserAllCard(param.getUserId());
-        log.debug("商品详情-用户拥有的会员卡ids:{}",userAllCard.stream().map(x->x.get(USER_CARD.CARD_ID)).collect(Collectors.toList()));
+        List<UserCardRecord> userAllCard = memberCardProcessorDao.getUserAllCard(param.getUserId());
+        log.debug("商品详情-用户拥有的会员卡ids:{}",userAllCard.stream().map(UserCardRecord::getCardId).collect(Collectors.toList()));
         // 获取用户等级
         Record2<Integer, String> userGrade = memberCardProcessorDao.getUserGradeCard(param.getUserId());
         // 最后的lambda是为了防止主键重复

@@ -82,7 +82,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
 
         List<GoodsDetailMpBo.GradePrd> gradeCardPrice = goodsDetailMpBo.getGradeCardPrice();
 
-        Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GoodsDetailMpBo.GradePrd::getPrdId, GoodsDetailMpBo.GradePrd::getGradePrice));
+        Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GoodsDetailMpBo.GradePrd::getPrdId, GoodsDetailMpBo.GradePrd::getGradePrice,(x1,x2)->x1));
 
         // 规格会员价和图片路径处理
         products.forEach(prd->{

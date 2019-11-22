@@ -2,13 +2,13 @@ package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
-import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.springframework.stereotype.Service;
@@ -95,10 +95,10 @@ public class MemberCardProcessorDao extends ShopBaseService {
      * @param userId 用户id
      * @return 会员卡集合
      */
-    public List<Record>  getUserAllCard(Integer userId){
-        return new ArrayList<>(db().select().from(USER_CARD)
+    public List<UserCardRecord>  getUserAllCard(Integer userId){
+        return db().select().from(USER_CARD)
             .where(USER_CARD.FLAG.eq(DelFlag.NORMAL.getCode())).and(USER_CARD.USER_ID.eq(userId))
-            .fetch());
+            .fetchInto(UserCardRecord.class);
     }
 
     /**
