@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -380,7 +381,7 @@ public class StoreReservation extends ShopBaseService {
      * @param param the param
      */
     public WxPayUnifiedOrderResult submitReservation(SubmitReservationParam param) {
-        AtomicReference<String> orderSn = new AtomicReference<>();
+        AtomicReference<String> orderSn = new AtomicReference<>("sn1234567");
         Integer serviceId = param.getServiceId();
 //        if (!serviceOrderService.checkReservationNum(serviceId, param.getTechnicianId())) {
 //            // 预约人数已达上限
@@ -388,10 +389,9 @@ public class StoreReservation extends ShopBaseService {
 //        }
         ServiceOrderRecord serviceOrder = new ServiceOrderRecord();
         FieldsUtil.assignNotNull(param, serviceOrder);
-        AtomicReference<WxPayUnifiedOrderResult> result = new AtomicReference<>();
-        this.transaction(() -> {
+                  /*  this.transaction(() -> {
             log.debug("门店服务订单创建入参: {}", serviceOrder);
-            /*orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
+orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
             // 会员余额变动
             if (serviceOrder.getUseAccount().compareTo(ZERO) > 0) {
                 try {
@@ -420,7 +420,7 @@ public class StoreReservation extends ShopBaseService {
                     setReason(serviceOrder.getOrderSn());
                     setType(BYTE_ZERO);
                 }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
-            }*/
+            }
             if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
                 //TODO 支付接口
                 String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
@@ -430,7 +430,7 @@ public class StoreReservation extends ShopBaseService {
             }
             // todo 微信回调---更新门店订单支付成功状态
 //            serviceOrderService.updateServiceOrderStatus(serviceOrder.getOrderSn(), ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
-        });
+        });*/
         /*// 队列前置校验
         prefixCheck(serviceOrder);
         // TODO 发送模板消息; 1. 预约订单支付成功模板消息; 2. 定时提醒预约服务过期模板消息
@@ -441,7 +441,20 @@ public class StoreReservation extends ShopBaseService {
             TaskJobsConstant.TaskJobEnum.RESERVATION_PAY.getExecutionType());*/
         // 返回支付成功后的预约订单详情
 //        return serviceOrderService.getServiceOrderDetail(orderSn.get());
-        return result.get();
+        if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
+            //TODO 支付接口
+            String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
+            WxPayUnifiedOrderResult unifiedOrderResult = null;
+            try {
+                unifiedOrderResult = mpPaymentService.wxUnitOrder(param.getClientIp(), param.getServiceId().toString(), orderSn.get(), serviceOrder.getMoneyPaid().intValue(), openId);
+            } catch (WxPayException e) {
+                log.error("微信支付接口调用失败：{}", e.getMessage());
+                e.printStackTrace();
+            }
+            log.debug("微信支付接口调用结果：{}", unifiedOrderResult);
+            return unifiedOrderResult;
+        }
+        return null;
     }
 
     /**
