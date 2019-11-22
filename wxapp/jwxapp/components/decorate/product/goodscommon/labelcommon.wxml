@@ -28,7 +28,7 @@
   </block>
 </block>
 <image class="sell_out" wx:if='{{item.goodsNumber == 0}}' src="{{m.imageUrl}}image/wxapp/goods_sell_out.png"></image>
-<image src='{{item.goodsImg}}'   lazy-load="{{true}}" class="item_img"></image>
+<image src='{{item.goodsImg}}' style="width:100%;height:100%"   lazy-load="{{true}}" class="item_img"></image>
 <!--会员专享商品图片tip-->
 <view wx:if="{{item.isMembershipExclusive}}" class='exclusive'>会员专享商品，立即查看</view>
 <!--首单特惠商品图片tip-->
