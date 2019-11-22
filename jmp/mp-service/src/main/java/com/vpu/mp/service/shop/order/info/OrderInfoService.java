@@ -146,7 +146,7 @@ public class OrderInfoService extends ShopBaseService {
 		//存在子单但是显示不易子单为主所以查询需过滤子单
 		mainOrder.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
 		buildOptions(mainOrder, param);
-        mainOrder.orderBy(ORDER_INFO.ORDER_ID);
+        mainOrder.orderBy(ORDER_INFO.ORDER_ID.desc());
 		//得到订单号
 		return getPageResult(mainOrder,param.getCurrentPage(),param.getPageRows(),String.class);
 	}
