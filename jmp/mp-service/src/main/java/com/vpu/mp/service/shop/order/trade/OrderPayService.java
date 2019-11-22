@@ -98,8 +98,9 @@ public class OrderPayService extends ShopBaseService{
             String goodsNameForPay = getGoodsNameForPay(orderInfo, orderGoodsBo);
             Integer amount = BigDecimalUtil.multiply(orderInfo.getMoneyPaid(), BigDecimal.valueOf(100)).intValue();
             try {
-                logger().info("微信预支付调用接口调用");
+                logger().info("微信预支付调用接口调用start");
                 executeResult.setResult(pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), amount, param.getWxUserInfo().getWxUser().getOpenId()));
+                logger().info("微信预支付调用接口调用end");
                 return executeResult;
             } catch (Exception e) {
                 logger().error("微信预支付调用接口失败，订单号：{},异常：{}", orderInfo.getOrderSn(), e.getMessage());
