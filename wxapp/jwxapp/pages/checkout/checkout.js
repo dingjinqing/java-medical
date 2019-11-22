@@ -214,7 +214,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 获取输入的会员卡余额数
-  getInputCardBalance(){
+  getInputCardBalance(data){
     this.setData({
       'usePayInfo.useCardBalance': data.detail,
       cardBalanceStatus: 1
