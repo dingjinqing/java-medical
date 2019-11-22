@@ -1,40 +1,39 @@
 package com.vpu.mp.controller.system;
 
-import java.io.IOException;
-
-import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.vpu.mp.db.main.tables.records.BackProcessRecord;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpCurrentTempIdVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpPackageVersionVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpUploadListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionListVo;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionParam;
-import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
+import com.vpu.mp.service.pojo.saas.shop.ShopMpListParam;
+import com.vpu.mp.service.pojo.saas.shop.ShopMpListVo;
+import com.vpu.mp.service.pojo.saas.shop.mp.*;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
+import com.vpu.mp.service.wechat.bean.open.MaWxPlusInListInner;
+import com.vpu.mp.service.wechat.bean.open.MaWxPlusInResult;
 
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.bean.result.WxOpenMaQueryAuditResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+
+import org.jooq.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
 /**
  * 
@@ -314,6 +313,17 @@ public class SystemMpAuthShopController extends SystemBaseController {
 			return fail(JsonResultCode.WX_JOB_PROBLEM);
 		}
 		return success();
+		
+	}
+	
+	/**
+	 * 店铺发布列表
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/api/system/shop/mp/list")
+	public JsonResult getShopMpList(@RequestBody ShopMpListParam param) {
+		return success(saas.shop.mp.getShopMpList(param));
 		
 	}
 	}
