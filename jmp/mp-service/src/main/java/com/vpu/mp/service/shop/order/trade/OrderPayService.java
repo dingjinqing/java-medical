@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
-import com.github.binarywang.wxpay.exception.WxPayException;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -17,7 +15,6 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,8 +101,8 @@ public class OrderPayService extends ShopBaseService{
                 logger().info("微信预支付调用接口调用");
                 executeResult.setResult(pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), amount, param.getWxUserInfo().getWxUser().getOpenId()));
                 return executeResult;
-            } catch (WxPayException e) {
-                logger().error("微信预支付调用接口失败，订单号：{}", orderInfo.getOrderSn());
+            } catch (Exception e) {
+                logger().error("微信预支付调用接口失败，订单号：{},异常：{}", orderInfo.getOrderSn(), e.getMessage());
                 executeResult.setErrorCode(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
                 return executeResult;
             }
