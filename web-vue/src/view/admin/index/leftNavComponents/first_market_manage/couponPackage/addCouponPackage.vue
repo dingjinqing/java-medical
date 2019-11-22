@@ -551,6 +551,7 @@ export default {
       this.coupon_info[this.target].strategyAmount = temStrategy.immediatelyGrantAmount + temStrategy.timingAmount
       this.coupon_info[this.target].coupon_set = temStrategy
       this.couponSetDialogFlag = false
+      console.log(this.coupon_info)
     },
     // 删除
     handleCouponDel (index) {
@@ -669,7 +670,7 @@ export default {
     totalCouponAmount () {
       let r = 0
       this.coupon_info.forEach(item => {
-        if (item.denomination && item.send_num) {
+        if (item.actCode === 'voucher' && item.denomination && item.send_num) {
           r += item.denomination * item.send_num
         }
       })
