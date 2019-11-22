@@ -88,7 +88,7 @@ public class OrderPayService extends ShopBaseService{
     public ExecuteResult isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param) {
         logger().info("继续支付接口start");
         ArrayList<String> goodsType = Lists.newArrayList(OrderReadService.orderTypeToArray(orderInfo.getGoodsType()));
-        if(goodsType.contains(String.valueOf(OrderConstant.ORDER_WAIT_DELIVERY)) || goodsType.contains(String.valueOf(OrderConstant.ORDER_PIN_PAYED_GROUPING))){
+        if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
             return null;
         }else if(OrderConstant.ORDER_WAIT_PAY == orderInfo.getOrderStatus() &&
             (((orderInfo.getBkOrderPaid() > 0 && goodsType.contains(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE))))
