@@ -389,6 +389,7 @@ public class GroupDrawUserService extends ShopBaseService {
             couponIdArray[i] = String.valueOf(coupOnIds.get(i));
         }
         CouponGiveQueueParam message = new CouponGiveQueueParam();
+        message.setShopId(getShopId());
         message.setUserIds(userIds);
         message.setCouponArray(couponIdArray);
         rabbit.convertAndSend(RabbitConfig.QUEUE_COUPON_SEND, message);

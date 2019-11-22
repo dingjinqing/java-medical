@@ -2,8 +2,9 @@ package com.vpu.mp.service.pojo.shop.coupon.give;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -12,17 +13,29 @@ import java.util.List;
  * @author liangchen
  * @date 2019年8月6日
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class CouponGiveQueueParam {
-	public CouponGiveQueueParam(List<Integer> userIds, Integer actId, String[] couponArray,Byte accessMode,Byte getSource) {
+	public CouponGiveQueueParam(Integer shopId, List<Integer> userIds, Integer actId, String[] couponArray,Byte accessMode,Byte getSource) {
 		super();
+		this.shopId = shopId;
 		this.userIds = userIds;
 		this.actId = actId;
 		this.couponArray = couponArray;
         this.accessMode = accessMode;
         this.getSource = getSource;
 	}
+    public CouponGiveQueueParam( List<Integer> userIds, Integer actId, String[] couponArray,Byte accessMode,Byte getSource) {
+        super();
+        this.userIds = userIds;
+        this.actId = actId;
+        this.couponArray = couponArray;
+        this.accessMode = accessMode;
+        this.getSource = getSource;
+    }
+	/** 店铺id 定时任务需要传 非定时任务不传*/
+	private Integer shopId;
     /** 用户id */
 	private List<Integer> userIds;
     /** 发放活动id 若来源为领取则传0 */
