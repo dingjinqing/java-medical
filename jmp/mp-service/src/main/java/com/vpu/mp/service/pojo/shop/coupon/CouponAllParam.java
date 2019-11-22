@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class CouponAllParam {
 
-    @Default
+
     private Boolean isHasStock =true;
 
 }

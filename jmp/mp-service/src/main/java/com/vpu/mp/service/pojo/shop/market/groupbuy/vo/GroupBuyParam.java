@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyShareConfigPar
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -99,6 +100,7 @@ public class GroupBuyParam {
      */
     @NotNull
     @Size(min = 1)
+    @Valid
     private List<GroupBuyProductParam> product;
 
 

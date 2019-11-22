@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyEditParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
+import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,18 +67,19 @@ public class GroupBuyService extends ShopBaseService {
 
     @Autowired
     private QrCodeService qrCode;
+
     /**
      * 添加拼团活动
      *
-     * @param groupBuy
-     * @param status
+     * @param groupBuy 拼团
+     * @param status true 启用 false 禁用
      */
     public void addGroupBuy(GroupBuyParam groupBuy, Boolean status) {
         transaction(() -> {
             //分享配置转json
             groupBuy.setShareConfig(Util.toJson(groupBuy.getShare()));
             //订单总库存
-            Integer stock = groupBuy.getProduct().stream().mapToInt(group -> group.getStock()).sum();
+            Integer stock = groupBuy.getProduct().stream().mapToInt(GroupBuyProductParam::getStock).sum();
             //拼团信息
             GroupBuyDefineRecord groupBuyDefineRecord = db().newRecord(GROUP_BUY_DEFINE, groupBuy);
             groupBuyDefineRecord.setStatus(status == true ? USE_STATUS : STOP_STATUS);
@@ -227,13 +230,15 @@ public class GroupBuyService extends ShopBaseService {
      * @return 0
      */
     public Boolean validGroupGoods(Integer id, Integer goodsId, Timestamp startTime, Timestamp endTime) {
-        return db().fetchCount(GROUP_BUY_DEFINE, GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId)
-            .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
-            .and(GROUP_BUY_DEFINE.ID.notEqual(id))
-            .and(GROUP_BUY_DEFINE.START_TIME.lt(startTime))
-            .and(GROUP_BUY_DEFINE.END_TIME.gt(endTime))) == 0;
-
+        Condition where  =GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId)
+                .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+                .and(GROUP_BUY_DEFINE.START_TIME.le(endTime))
+                .and(GROUP_BUY_DEFINE.END_TIME.ge(startTime));
+        if (id!=null){
+            where.and(GROUP_BUY_DEFINE.ID.notEqual(id));
+        }
+      return   db().fetchCount(GROUP_BUY_DEFINE,where)==0;
     }
 
     /**

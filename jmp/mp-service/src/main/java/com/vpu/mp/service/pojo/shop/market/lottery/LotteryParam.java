@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.lottery;
 import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeParam;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 public class LotteryParam {
 
     private Integer   id;
-    @NotNull
+    @NotBlank
     private String    lotteryName;
     @NotNull
     private Timestamp startTime;

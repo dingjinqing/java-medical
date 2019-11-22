@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +38,7 @@ public class AdminGiveGiftController extends AdminBaseController {
      * @return
      */
     @PostMapping("/list")
-    public JsonResult getGiveGiftList(@RequestBody @Valid GiveGiftListParam param) {
+    public JsonResult getGiveGiftList(@RequestBody @Validated GiveGiftListParam param) {
         PageResult<GiveGiftListVo> giveGiftList = shop().giveGift.getGiveGiftList(param);
         return success(giveGiftList);
     }

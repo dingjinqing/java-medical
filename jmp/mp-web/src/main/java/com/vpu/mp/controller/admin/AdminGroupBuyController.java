@@ -62,11 +62,11 @@ public class AdminGroupBuyController extends AdminBaseController {
         //校验活动商品是否叠加 (并发不安全)
         Boolean flag = shop().groupBuy.validGroupGoods(null,param.getGoodsId(),param.getStartTime(),param.getEndTime());
         if (!flag){
-            return fail(JsonResultMessage.GROUP_BUY_ADD_ACTIVITY_STOP_STATUS);
+            return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
         }
         shop().groupBuy.addGroupBuy(param,flag);
-        return success();
 //        return success(Util.translateMessage(getLang(), JsonResultMessage.GROUP_BUY_ADD_ACTIVITY_STOP_STATUS,I18N_RESOURCE));
+        return success();
     }
 
 
