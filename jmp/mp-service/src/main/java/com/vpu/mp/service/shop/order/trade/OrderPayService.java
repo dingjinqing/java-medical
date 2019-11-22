@@ -87,19 +87,19 @@ public class OrderPayService extends ShopBaseService{
      */
     public ExecuteResult isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param) {
         logger().info("继续支付接口start");
+        ExecuteResult executeResult = ExecuteResult.create();
         ArrayList<String> goodsType = Lists.newArrayList(OrderReadService.orderTypeToArray(orderInfo.getGoodsType()));
         if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
-            return null;
+            return executeResult;
         }else if(OrderConstant.ORDER_WAIT_PAY == orderInfo.getOrderStatus() &&
             (((orderInfo.getBkOrderPaid() > 0 && goodsType.contains(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE))))
                 || OrderConstant.PAY_WAY_FRIEND_PAYMENT == orderInfo.getOrderPayWay())) {
             //待支付 && （（预售 && 已付定金或已付尾款） || 好友代付）
-            return null;
+            return executeResult;
         }else {
             //非系统金额支付
             String goodsNameForPay = getGoodsNameForPay(orderInfo, orderGoodsBo);
             Integer amount = BigDecimalUtil.multiply(orderInfo.getMoneyPaid(), BigDecimal.valueOf(100)).intValue();
-            ExecuteResult executeResult = ExecuteResult.create();
             try {
                 logger().info("微信预支付调用接口调用");
                 executeResult.setResult(pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), amount, param.getWxUserInfo().getWxUser().getOpenId()));
