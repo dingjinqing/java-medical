@@ -34,7 +34,7 @@
         </view>
         <view class="address-address_info" wx:if="{{orderInfo.address && chooseShippingIndex !== 1}}">
           <image src="{{imageUrl}}image/wxapp/address.png"></image>
-          <text class="address">{{orderInfo.address.provinceName+orderInfo.address.cityName+orderInfo.address.districtName+orderInfo.address.completeAddress}}</text> 
+          <text class="address">{{orderInfo.address.provinceName+orderInfo.address.cityName+orderInfo.address.districtName+orderInfo.address.address}}</text> 
           <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
         </view>
       </view>
