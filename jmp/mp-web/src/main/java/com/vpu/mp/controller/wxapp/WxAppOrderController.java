@@ -61,7 +61,7 @@ public class WxAppOrderController extends WxAppBaseController{
         param.setClientIp(RequestUtil.getIp(request));
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
-            return success();
+            return success(executeResult == null ? null : executeResult.getResult());
         }else {
             return fail(executeResult.getErrorCode());
         }
