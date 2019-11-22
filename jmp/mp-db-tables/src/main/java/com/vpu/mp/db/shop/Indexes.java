@@ -29,6 +29,8 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index COOPEN_ACTIVITY_PRIMARY = Indexes0.COOPEN_ACTIVITY_PRIMARY;
+    public static final Index COOPEN_ACTIVITY_RECORDS_PRIMARY = Indexes0.COOPEN_ACTIVITY_RECORDS_PRIMARY;
     public static final Index COMMENT_GOODS_PRIMARY = Indexes0.COMMENT_GOODS_PRIMARY;
     public static final Index COMMENT_GOODS_SHOP_ID = Indexes0.COMMENT_GOODS_SHOP_ID;
     public static final Index COMMENT_AWARD_PRIMARY = Indexes0.COMMENT_AWARD_PRIMARY;
@@ -94,8 +96,6 @@ public class Indexes {
     public static final Index COMMENT_GOODS_ANSWER_PRIMARY = Indexes0.COMMENT_GOODS_ANSWER_PRIMARY;
     public static final Index COMMENT_SERVICE_PRIMARY = Indexes0.COMMENT_SERVICE_PRIMARY;
     public static final Index COMMENT_SERVICE_SERVICE_ID = Indexes0.COMMENT_SERVICE_SERVICE_ID;
-    public static final Index COUPON_ACTIVITY_PRIMARY = Indexes0.COUPON_ACTIVITY_PRIMARY;
-    public static final Index COUPON_ACTIVITY_RECORD_PRIMARY = Indexes0.COUPON_ACTIVITY_RECORD_PRIMARY;
     public static final Index COUPON_PACK_PRIMARY = Indexes0.COUPON_PACK_PRIMARY;
     public static final Index COUPON_PAYREWARD_RECORD_PRIMARY = Indexes0.COUPON_PAYREWARD_RECORD_PRIMARY;
     public static final Index CUSTOMER_AVAIL_COUPONS_COUPON_SN = Indexes0.CUSTOMER_AVAIL_COUPONS_COUPON_SN;
@@ -533,8 +533,6 @@ public class Indexes {
         public static Index COMMENT_GOODS_ANSWER_PRIMARY = Internal.createIndex("PRIMARY", CommentGoodsAnswer.COMMENT_GOODS_ANSWER, new OrderField[] { CommentGoodsAnswer.COMMENT_GOODS_ANSWER.ANSWER_ID }, true);
         public static Index COMMENT_SERVICE_PRIMARY = Internal.createIndex("PRIMARY", CommentService.COMMENT_SERVICE, new OrderField[] { CommentService.COMMENT_SERVICE.ID }, true);
         public static Index COMMENT_SERVICE_SERVICE_ID = Internal.createIndex("service_id", CommentService.COMMENT_SERVICE, new OrderField[]{CommentService.COMMENT_SERVICE.SERVICE_ID}, false);
-        public static Index COUPON_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", CouponActivity.COUPON_ACTIVITY, new OrderField[] { CouponActivity.COUPON_ACTIVITY.ID }, true);
-        public static Index COUPON_ACTIVITY_RECORD_PRIMARY = Internal.createIndex("PRIMARY", CouponActivityRecord.COUPON_ACTIVITY_RECORD, new OrderField[] { CouponActivityRecord.COUPON_ACTIVITY_RECORD.ID }, true);
         public static Index COUPON_PACK_PRIMARY = Internal.createIndex("PRIMARY", CouponPack.COUPON_PACK, new OrderField[] { CouponPack.COUPON_PACK.ID }, true);
         public static Index COUPON_PAYREWARD_RECORD_PRIMARY = Internal.createIndex("PRIMARY", CouponPayrewardRecord.COUPON_PAYREWARD_RECORD, new OrderField[] { CouponPayrewardRecord.COUPON_PAYREWARD_RECORD.ID }, true);
         public static Index CUSTOMER_AVAIL_COUPONS_COUPON_SN = Internal.createIndex("coupon_sn", CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, new OrderField[] { CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.COUPON_SN }, true);
@@ -915,5 +913,7 @@ public class Indexes {
         public static Index USER_COLLECTION_GOODS_ID = Internal.createIndex("goods_id", UserCollection.USER_COLLECTION, new OrderField[] { UserCollection.USER_COLLECTION.GOODS_ID }, false);
         public static Index USER_RFM_SUMMARY_PRIMARY = Internal.createIndex("PRIMARY", UserRfmSummary.USER_RFM_SUMMARY, new OrderField[] { UserRfmSummary.USER_RFM_SUMMARY.ID }, true);
         public static Index USER_RFM_SUMMARY_REF_DATE = Internal.createIndex("ref_date", UserRfmSummary.USER_RFM_SUMMARY, new OrderField[] { UserRfmSummary.USER_RFM_SUMMARY.REF_DATE }, false);
+        public static Index COOPEN_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", CoopenActivity.COOPEN_ACTIVITY, new OrderField[] { CoopenActivity.COOPEN_ACTIVITY.ID }, true);
+        public static Index COOPEN_ACTIVITY_RECORDS_PRIMARY = Internal.createIndex("PRIMARY", CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS, new OrderField[] { CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS.ID }, true);
     }
 }

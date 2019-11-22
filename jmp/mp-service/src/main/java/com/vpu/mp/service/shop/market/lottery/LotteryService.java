@@ -4,12 +4,15 @@ import static com.vpu.mp.db.shop.Tables.LOTTERY;
 import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
 import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import org.checkerframework.checker.units.qual.A;
 import org.jooq.AggregateFunction;
 import org.jooq.Record7;
 import org.jooq.Result;
@@ -42,8 +45,7 @@ import com.vpu.mp.service.shop.member.MemberService;
  */
 @Service
 public class LotteryService extends ShopBaseService {
-    private static final Byte STOP_STATUS = 0;
-    private static final Byte USE_STATUS = 1;
+
 
 
     @Autowired
@@ -116,10 +118,10 @@ public class LotteryService extends ShopBaseService {
         LotteryRecord record = db().newRecord(LOTTERY);
         record.setId(lotteryId);
         record.refresh();
-        if (STOP_STATUS.equals(record.getStatus())) {
-            record.setStatus(USE_STATUS);
+        if (ACTIVITY_STATUS_NORMAL.equals(record.getStatus())) {
+            record.setStatus(ACTIVITY_STATUS_NORMAL);
         } else {
-            record.setStatus(STOP_STATUS);
+            record.setStatus(ACTIVITY_STATUS_DISABLE);
         }
         return record.update();
     }
@@ -151,21 +153,21 @@ public class LotteryService extends ShopBaseService {
                 .where(LOTTERY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
         switch (param.getState()) {
-            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_ONGOING:
+            case BaseConstant.NAVBAR_TYPE_ONGOING:
                 select.and(LOTTERY.START_TIME.lt(nowTime))
                         .and(LOTTERY.END_TIME.gt(nowTime))
-                        .and(LOTTERY.STATUS.eq(USE_STATUS));
+                        .and(LOTTERY.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                 break;
-            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_NOT_STARTED:
-                select.and(LOTTERY.STATUS.eq(USE_STATUS))
+            case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
+                select.and(LOTTERY.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                         .and(LOTTERY.START_TIME.gt(nowTime));
                 break;
-            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_FINISHED:
-                select.and(LOTTERY.STATUS.gt(USE_STATUS))
+            case BaseConstant.NAVBAR_TYPE_FINISHED:
+                select.and(LOTTERY.STATUS.gt(ACTIVITY_STATUS_NORMAL))
                         .and(LOTTERY.END_TIME.lt(nowTime));
                 break;
-            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_DISABLED:
-                select.and(LOTTERY.STATUS.eq(STOP_STATUS));
+            case BaseConstant.NAVBAR_TYPE_DISABLED:
+                select.and(LOTTERY.STATUS.eq(ACTIVITY_STATUS_DISABLE));
                 break;
             default:
         }
@@ -259,7 +261,7 @@ public class LotteryService extends ShopBaseService {
             return join;
         }
         //活动停止
-        if (lottery.getStatus().equals(STOP_STATUS)) {
+        if (lottery.getStatus().equals(ACTIVITY_STATUS_DISABLE)) {
             join.setStatus(JoinLottery.ACTIVITY_STOP);
             return join;
         }

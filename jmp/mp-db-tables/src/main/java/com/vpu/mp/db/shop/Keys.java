@@ -10,7 +10,6 @@ import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.AssessTopicRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.ChannelRecord;
-import com.vpu.mp.db.shop.tables.records.CouponActivityRecord;
 import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecord;
@@ -40,6 +39,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final Identity<CoopenActivityRecord, Integer> IDENTITY_COOPEN_ACTIVITY = Identities0.IDENTITY_COOPEN_ACTIVITY;
+    public static final Identity<CoopenActivityRecordsRecord, Integer> IDENTITY_COOPEN_ACTIVITY_RECORDS = Identities0.IDENTITY_COOPEN_ACTIVITY_RECORDS;
     public static final Identity<CommentGoodsRecord, Integer> IDENTITY_COMMENT_GOODS = Identities0.IDENTITY_COMMENT_GOODS;
     public static final Identity<CommentAwardRecord, Integer> IDENTITY_COMMENT_AWARD = Identities0.IDENTITY_COMMENT_AWARD;
     public static final Identity<GiveGiftActivityRecord, Integer> IDENTITY_GIVE_GIFT_ACTIVITY = Identities0.IDENTITY_GIVE_GIFT_ACTIVITY;
@@ -78,8 +79,6 @@ public class Keys {
     public static final Identity<CodeRecord, Integer> IDENTITY_CODE = Identities0.IDENTITY_CODE;
     public static final Identity<CommentGoodsAnswerRecord, Integer> IDENTITY_COMMENT_GOODS_ANSWER = Identities0.IDENTITY_COMMENT_GOODS_ANSWER;
     public static final Identity<CommentServiceRecord, Integer> IDENTITY_COMMENT_SERVICE = Identities0.IDENTITY_COMMENT_SERVICE;
-    public static final Identity<CouponActivityRecord, Integer> IDENTITY_COUPON_ACTIVITY = Identities0.IDENTITY_COUPON_ACTIVITY;
-    public static final Identity<CouponActivityRecordRecord, Integer> IDENTITY_COUPON_ACTIVITY_RECORD = Identities0.IDENTITY_COUPON_ACTIVITY_RECORD;
     public static final Identity<CouponPackRecord, Integer> IDENTITY_COUPON_PACK = Identities0.IDENTITY_COUPON_PACK;
     public static final Identity<CouponPayrewardRecordRecord, Integer> IDENTITY_COUPON_PAYREWARD_RECORD = Identities0.IDENTITY_COUPON_PAYREWARD_RECORD;
     public static final Identity<CustomerAvailCouponsRecord, Integer> IDENTITY_CUSTOMER_AVAIL_COUPONS = Identities0.IDENTITY_CUSTOMER_AVAIL_COUPONS;
@@ -249,6 +248,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<CoopenActivityRecord> KEY_B2C_COOPEN_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_COOPEN_ACTIVITY_PRIMARY;
+    public static final UniqueKey<CoopenActivityRecordsRecord> KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY = UniqueKeys0.KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY;
     public static final UniqueKey<PayAwardRecord> KEY_B2C_PAY_AWARD_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_PRIMARY;
     public static final UniqueKey<PayAwardRecordRecord> KEY_B2C_PAY_AWARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_RECORD_PRIMARY;
     public static final UniqueKey<CommentGoodsRecord> KEY_B2C_COMMENT_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_GOODS_PRIMARY;
@@ -289,8 +290,6 @@ public class Keys {
     public static final UniqueKey<CodeRecord> KEY_B2C_CODE_PRIMARY = UniqueKeys0.KEY_B2C_CODE_PRIMARY;
     public static final UniqueKey<CommentGoodsAnswerRecord> KEY_B2C_COMMENT_GOODS_ANSWER_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_GOODS_ANSWER_PRIMARY;
     public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_SERVICE_PRIMARY;
-    public static final UniqueKey<CouponActivityRecord> KEY_B2C_COUPON_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_ACTIVITY_PRIMARY;
-    public static final UniqueKey<CouponActivityRecordRecord> KEY_B2C_COUPON_ACTIVITY_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_ACTIVITY_RECORD_PRIMARY;
     public static final UniqueKey<CouponPackRecord> KEY_B2C_COUPON_PACK_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PACK_PRIMARY;
     public static final UniqueKey<CouponPayrewardRecordRecord> KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY;
     public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY = UniqueKeys0.KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY;
@@ -499,6 +498,8 @@ public class Keys {
 
     private static class Identities0 {
 
+        public static Identity<CoopenActivityRecord, Integer> IDENTITY_COOPEN_ACTIVITY = Internal.createIdentity(CoopenActivity.COOPEN_ACTIVITY, CoopenActivity.COOPEN_ACTIVITY.ID);
+        public static Identity<CoopenActivityRecordsRecord, Integer> IDENTITY_COOPEN_ACTIVITY_RECORDS = Internal.createIdentity(CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS, CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS.ID);
         public static Identity<PayAwardRecord, Integer> IDENTITY_PAY_AWARD = Internal.createIdentity(PayAward.PAY_AWARD, PayAward.PAY_AWARD.ID);
         public static Identity<PayAwardRecordRecord, Integer> IDENTITY_PAY_AWARD_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.PayAwardRecord.PAY_AWARD_RECORD, com.vpu.mp.db.shop.tables.PayAwardRecord.PAY_AWARD_RECORD.ID);
         public static Identity<CommentGoodsRecord, Integer> IDENTITY_COMMENT_GOODS = Internal.createIdentity(CommentGoods.COMMENT_GOODS, CommentGoods.COMMENT_GOODS.ID);
@@ -539,8 +540,6 @@ public class Keys {
         public static Identity<CodeRecord, Integer> IDENTITY_CODE = Internal.createIdentity(Code.CODE, Code.CODE.CODE_ID);
         public static Identity<CommentGoodsAnswerRecord, Integer> IDENTITY_COMMENT_GOODS_ANSWER = Internal.createIdentity(CommentGoodsAnswer.COMMENT_GOODS_ANSWER, CommentGoodsAnswer.COMMENT_GOODS_ANSWER.ANSWER_ID);
         public static Identity<CommentServiceRecord, Integer> IDENTITY_COMMENT_SERVICE = Internal.createIdentity(CommentService.COMMENT_SERVICE, CommentService.COMMENT_SERVICE.ID);
-        public static Identity<CouponActivityRecord, Integer> IDENTITY_COUPON_ACTIVITY = Internal.createIdentity(CouponActivity.COUPON_ACTIVITY, CouponActivity.COUPON_ACTIVITY.ID);
-        public static Identity<CouponActivityRecordRecord, Integer> IDENTITY_COUPON_ACTIVITY_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD, com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD.ID);
         public static Identity<CouponPackRecord, Integer> IDENTITY_COUPON_PACK = Internal.createIdentity(CouponPack.COUPON_PACK, CouponPack.COUPON_PACK.ID);
         public static Identity<CouponPayrewardRecordRecord, Integer> IDENTITY_COUPON_PAYREWARD_RECORD = Internal.createIdentity(CouponPayrewardRecord.COUPON_PAYREWARD_RECORD, CouponPayrewardRecord.COUPON_PAYREWARD_RECORD.ID);
         public static Identity<CustomerAvailCouponsRecord, Integer> IDENTITY_CUSTOMER_AVAIL_COUPONS = Internal.createIdentity(CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.ID);
@@ -709,6 +708,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<CoopenActivityRecord> KEY_B2C_COOPEN_ACTIVITY_PRIMARY = Internal.createUniqueKey(CoopenActivity.COOPEN_ACTIVITY, "KEY_b2c_coopen_activity_PRIMARY", CoopenActivity.COOPEN_ACTIVITY.ID);
+        public static final UniqueKey<CoopenActivityRecordsRecord> KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY = Internal.createUniqueKey(CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS, "KEY_b2c_coopen_activity_records_PRIMARY", CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS.ID);
         public static final UniqueKey<PayAwardRecord> KEY_B2C_PAY_AWARD_PRIMARY = Internal.createUniqueKey(PayAward.PAY_AWARD, "KEY_b2c_pay_award_PRIMARY", PayAward.PAY_AWARD.ID);
         public static final UniqueKey<PayAwardRecordRecord> KEY_B2C_PAY_AWARD_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.PayAwardRecord.PAY_AWARD_RECORD, "KEY_b2c_pay_award_record_PRIMARY", com.vpu.mp.db.shop.tables.PayAwardRecord.PAY_AWARD_RECORD.ID);
         public static final UniqueKey<MessageTemplateConfigRecord> KEY_B2C_MESSAGE_TEMPLATE_CONFIG_PRIMARY = Internal.createUniqueKey(MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG, "KEY_b2c_message_template_config_PRIMARY", MessageTemplateConfig.MESSAGE_TEMPLATE_CONFIG.ID);
@@ -749,8 +750,6 @@ public class Keys {
         public static final UniqueKey<CodeRecord> KEY_B2C_CODE_PRIMARY = Internal.createUniqueKey(Code.CODE, "KEY_b2c_code_PRIMARY", Code.CODE.CODE_ID);
         public static final UniqueKey<CommentGoodsAnswerRecord> KEY_B2C_COMMENT_GOODS_ANSWER_PRIMARY = Internal.createUniqueKey(CommentGoodsAnswer.COMMENT_GOODS_ANSWER, "KEY_b2c_comment_goods_answer_PRIMARY", CommentGoodsAnswer.COMMENT_GOODS_ANSWER.ANSWER_ID);
         public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_PRIMARY = Internal.createUniqueKey(CommentService.COMMENT_SERVICE, "KEY_b2c_comment_service_PRIMARY", CommentService.COMMENT_SERVICE.ID);
-        public static final UniqueKey<CouponActivityRecord> KEY_B2C_COUPON_ACTIVITY_PRIMARY = Internal.createUniqueKey(CouponActivity.COUPON_ACTIVITY, "KEY_b2c_coupon_activity_PRIMARY", CouponActivity.COUPON_ACTIVITY.ID);
-        public static final UniqueKey<CouponActivityRecordRecord> KEY_B2C_COUPON_ACTIVITY_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD, "KEY_b2c_coupon_activity_record_PRIMARY", com.vpu.mp.db.shop.tables.CouponActivityRecord.COUPON_ACTIVITY_RECORD.ID);
         public static final UniqueKey<CouponPackRecord> KEY_B2C_COUPON_PACK_PRIMARY = Internal.createUniqueKey(CouponPack.COUPON_PACK, "KEY_b2c_coupon_pack_PRIMARY", CouponPack.COUPON_PACK.ID);
         public static final UniqueKey<CouponPayrewardRecordRecord> KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY = Internal.createUniqueKey(CouponPayrewardRecord.COUPON_PAYREWARD_RECORD, "KEY_b2c_coupon_payreward_record_PRIMARY", CouponPayrewardRecord.COUPON_PAYREWARD_RECORD.ID);
         public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY = Internal.createUniqueKey(CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, "KEY_b2c_customer_avail_coupons_PRIMARY", CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.ID);

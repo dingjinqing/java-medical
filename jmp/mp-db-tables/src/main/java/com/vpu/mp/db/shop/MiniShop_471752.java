@@ -203,17 +203,6 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>mini_shop_471752.b2c_comment_service</code>.
      */
     public final CommentService COMMENT_SERVICE = CommentService.COMMENT_SERVICE;
-
-    /**
-     * The table <code>mini_shop_471752.b2c_coupon_activity</code>.
-     */
-    public final CouponActivity COUPON_ACTIVITY = CouponActivity.COUPON_ACTIVITY;
-
-    /**
-     * The table <code>mini_shop_471752.b2c_coupon_activity_record</code>.
-     */
-    public final CouponActivityRecord COUPON_ACTIVITY_RECORD = CouponActivityRecord.COUPON_ACTIVITY_RECORD;
-
     /**
      * The table <code>mini_shop_471752.b2c_coupon_pack</code>.
      */
@@ -1114,8 +1103,6 @@ public class MiniShop_471752 extends SchemaImpl {
             CommentGoods.COMMENT_GOODS,
             CommentGoodsAnswer.COMMENT_GOODS_ANSWER,
             CommentService.COMMENT_SERVICE,
-            CouponActivity.COUPON_ACTIVITY,
-            CouponActivityRecord.COUPON_ACTIVITY_RECORD,
             CouponPack.COUPON_PACK,
             CouponPayrewardRecord.COUPON_PAYREWARD_RECORD,
             CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS,

@@ -236,7 +236,7 @@ public class LotteryRecord extends UpdatableRecordImpl<LotteryRecord> implements
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_lottery.status</code>. 状态：1停用
+     * Getter for <code>mini_shop_4748160.b2c_lottery.status</code>. 状态：1启用
      */
     public Byte getStatus() {
         return (Byte) get(14);

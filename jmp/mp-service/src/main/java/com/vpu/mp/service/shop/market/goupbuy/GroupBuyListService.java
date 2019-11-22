@@ -79,23 +79,23 @@ public class GroupBuyListService  extends ShopBaseService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         if (param.getType()!=null){
             switch (param.getType()) {
-                case BaseConstant.ACTIVITY_NAV_BAR_TYPE_ONGOING:
+                case BaseConstant.NAVBAR_TYPE_ONGOING:
                     //正在活动
                     records.and(GROUP_BUY_DEFINE.START_TIME.lt(timestamp))
                             .and(GROUP_BUY_DEFINE.END_TIME.gt(timestamp))
                             .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
                     break;
-                case BaseConstant.ACTIVITY_NAV_BAR_TYPE_NOT_STARTED:
+                case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                     //还未开始
                     records.and(GROUP_BUY_DEFINE.START_TIME.gt(timestamp))
                             .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
                     break;
-                case BaseConstant.ACTIVITY_NAV_BAR_TYPE_FINISHED:
+                case BaseConstant.NAVBAR_TYPE_FINISHED:
                     //已经结束
                     records.and(GROUP_BUY_DEFINE.END_TIME.lt(timestamp))
                             .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
                     break;
-                case BaseConstant.ACTIVITY_NAV_BAR_TYPE_DISABLED:
+                case BaseConstant.NAVBAR_TYPE_DISABLED:
                     //停用
                     records.and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS));
                     break;

@@ -24,12 +24,12 @@ import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.image.posterTraits.UserCenterTraitService;
-import com.vpu.mp.service.shop.market.activity.ActivityIssueService;
-import com.vpu.mp.service.shop.market.activity.ActivityService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.channel.ChannelService;
 import com.vpu.mp.service.shop.market.channel.ChannelStatisticalService;
 import com.vpu.mp.service.shop.market.commentaward.CommentAwardService;
+import com.vpu.mp.service.shop.market.coopen.CoopenRecordService;
+import com.vpu.mp.service.shop.market.coopen.CoopenService;
 import com.vpu.mp.service.shop.market.couponpack.CouponPackService;
 import com.vpu.mp.service.shop.market.firstspecial.FirstSpecialService;
 import com.vpu.mp.service.shop.market.form.FormStatisticsService;
@@ -317,9 +317,9 @@ public class ShopApplication {
 	 * 活动有礼
 	 */
 	@Autowired
-	public ActivityService activity;
+	public CoopenService coopen;
 	@Autowired
-	public ActivityIssueService issue;
+	public CoopenRecordService coopenRecord;
 
 	/**
 	 * 满折满减
@@ -460,7 +460,7 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public RecommendService recommendService;
-	
+
 	/**
 	 * 用户地址
 	 */

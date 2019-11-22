@@ -21,6 +21,15 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+    /**
+     * The table <code>mini_shop_4748160.b2c_coopen_activity</code>.
+     */
+    public static final CoopenActivity COOPEN_ACTIVITY = com.vpu.mp.db.shop.tables.CoopenActivity.COOPEN_ACTIVITY;
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_coopen_activity_records</code>.
+     */
+    public static final CoopenActivityRecords COOPEN_ACTIVITY_RECORDS = com.vpu.mp.db.shop.tables.CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS;
 
     /**
      * The table <code>mini_shop_4748160.b2c_pay_award</code>.
@@ -193,16 +202,6 @@ public class Tables {
      * The table <code>mini_shop_471752.b2c_comment_service</code>.
      */
     public static final CommentService COMMENT_SERVICE = CommentService.COMMENT_SERVICE;
-
-    /**
-     * The table <code>mini_shop_471752.b2c_coupon_activity</code>.
-     */
-    public static final CouponActivity COUPON_ACTIVITY = CouponActivity.COUPON_ACTIVITY;
-
-    /**
-     * The table <code>mini_shop_471752.b2c_coupon_activity_record</code>.
-     */
-    public static final CouponActivityRecord COUPON_ACTIVITY_RECORD = CouponActivityRecord.COUPON_ACTIVITY_RECORD;
 
     /**
      * The table <code>mini_shop_471752.b2c_coupon_pack</code>.

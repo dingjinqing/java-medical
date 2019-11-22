@@ -88,7 +88,7 @@ public class GiveGiftService extends ShopBaseService {
     private void buildParam(SelectConditionStep<? extends Record> select, GiveGiftListParam param) {
         Timestamp nowTime =new Timestamp(System.currentTimeMillis());
         switch (param.getNavType()) {
-            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_ONGOING:
+            case BaseConstant.NAVBAR_TYPE_ONGOING:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(USE_STATUS))
                         .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq(DUE_TIME_TYPE_VALID)
                             .or(    GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq(DUE_TIME_TYPE_INVALID)
@@ -97,17 +97,17 @@ public class GiveGiftService extends ShopBaseService {
                             )
                         );
                 break;
-            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_NOT_STARTED:
+            case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(USE_STATUS))
                         .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq(DUE_TIME_TYPE_INVALID))
                         .and(GIVE_GIFT_ACTIVITY.START_TIME.gt(nowTime));
                 break;
-            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_FINISHED:
+            case BaseConstant.NAVBAR_TYPE_FINISHED:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(USE_STATUS))
                         .and(GIVE_GIFT_ACTIVITY.DUE_TIME_TYPE.eq(DUE_TIME_TYPE_INVALID))
                         .and(GIVE_GIFT_ACTIVITY.END_TIME.le(nowTime));
                 break;
-            case BaseConstant.ACTIVITY_NAV_BAR_TYPE_DISABLED:
+            case BaseConstant.NAVBAR_TYPE_DISABLED:
                 select.and(GIVE_GIFT_ACTIVITY.STATUS.eq(STOP_STATUS));
                 break;
             default:

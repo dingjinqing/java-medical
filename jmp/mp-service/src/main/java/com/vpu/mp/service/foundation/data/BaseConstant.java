@@ -18,6 +18,7 @@ public final  class  BaseConstant {
      */
     public static final Byte ACTIVITY_STATUS_DISABLE = 0;
 
+    //******************商品goodsType对应信息*****************************/
     /** 普通商品 */
     public final static Byte ACTIVITY_TYPE_GENERAL = 0;
     /** 拼团商品 */
@@ -117,19 +118,19 @@ public final  class  BaseConstant {
     /**
      * 进行中
      */
-    public final static byte ACTIVITY_NAV_BAR_TYPE_ONGOING= 1;
+    public final static byte NAVBAR_TYPE_ONGOING= 1;
     /**
      * 未开始
      */
-    public final static byte ACTIVITY_NAV_BAR_TYPE_NOT_STARTED= 2;
+    public final static byte NAVBAR_TYPE_NOT_STARTED= 2;
     /**
      * 已完成
      */
-    public final static byte ACTIVITY_NAV_BAR_TYPE_FINISHED= 3;
+    public final static byte NAVBAR_TYPE_FINISHED= 3;
     /**
      * 已停用
      */
-    public final static byte ACTIVITY_NAV_BAR_TYPE_DISABLED= 4;
+    public final static byte NAVBAR_TYPE_DISABLED= 4;
 
 
 }

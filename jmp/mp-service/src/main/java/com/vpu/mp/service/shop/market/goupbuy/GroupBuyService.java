@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.market.goupbuy;
 
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -44,6 +45,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.pojo.shop.goods.GoodsConstant.STOP_STATUS;
+import static com.vpu.mp.service.pojo.shop.goods.GoodsConstant.USE_STATUS;
 
 /**
  * @author 孔德成
@@ -54,8 +59,6 @@ import static com.vpu.mp.db.shop.Tables.*;
 @Primary
 public class GroupBuyService extends ShopBaseService {
 
-    private static final byte USE_STATUS = 1;
-    private static final byte STOP_STATUS = 0;
 
 
     @Autowired
@@ -165,17 +168,17 @@ public class GroupBuyService extends ShopBaseService {
      */
     public int changeStatusActivity(Integer id) {
         Byte status = db().select(GROUP_BUY_DEFINE.STATUS).from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOne().component1();
-        if (status != null && status == STOP_STATUS) {
+        if (ACTIVITY_STATUS_DISABLE.equals(status)) {
             return db().update(GROUP_BUY_DEFINE)
-                .set(GROUP_BUY_DEFINE.STATUS, USE_STATUS)
+                .set(GROUP_BUY_DEFINE.STATUS, ACTIVITY_STATUS_NORMAL)
                 .where(GROUP_BUY_DEFINE.ID.eq(id))
-                .and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS))
+                .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_DISABLE))
                 .execute();
-        } else if (status != null && status == USE_STATUS) {
+        } else if (ACTIVITY_STATUS_NORMAL.equals(status)) {
             return db().update(GROUP_BUY_DEFINE)
-                .set(GROUP_BUY_DEFINE.STATUS, STOP_STATUS)
+                .set(GROUP_BUY_DEFINE.STATUS, ACTIVITY_STATUS_DISABLE)
                 .where(GROUP_BUY_DEFINE.ID.eq(id))
-                .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+                .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                 .execute();
         }
         return 0;
