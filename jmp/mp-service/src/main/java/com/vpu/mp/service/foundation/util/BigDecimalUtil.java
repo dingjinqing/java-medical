@@ -34,8 +34,8 @@ public class BigDecimalUtil {
 	 * @return int[result] = {-1,0,1}
 	 */
 	static public int compareTo(BigDecimal left , BigDecimal right) {
-        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : left;
-        right = right == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : right;
+        left = left == null ? BigDecimal.ZERO : left;
+        right = right == null ? BigDecimal.ZERO : right;
 		return left.compareTo(right);
 	}
 
@@ -46,8 +46,8 @@ public class BigDecimalUtil {
 	 * @return result left+right
 	 */
 	static public BigDecimal add(BigDecimal left , BigDecimal right) {
-        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : left;
-        right = right == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : right;
+        left = left == null ? BigDecimal.ZERO : left;
+        right = right == null ? BigDecimal.ZERO : right;
 		return left.add(right);
 	}
 
@@ -58,8 +58,8 @@ public class BigDecimalUtil {
 	 * @return result left-+right
 	 */
 	static public BigDecimal subtrac(BigDecimal left , BigDecimal right) {
-        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : left;
-        right = right == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : right;
+        left = left == null ? BigDecimal.ZERO : left;
+        right = right == null ? BigDecimal.ZERO : right;
 		return left.subtract(right);
 	}
 
@@ -70,8 +70,8 @@ public class BigDecimalUtil {
 	 * @return value
 	 */
 	static public BigDecimal multiply(BigDecimal left , BigDecimal right) {
-        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : left;
-        right = right == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : right;
+        left = left == null ? BigDecimal.ZERO : left;
+        right = right == null ? BigDecimal.ZERO : right;
         return left.multiply(right).setScale(DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
@@ -82,12 +82,11 @@ public class BigDecimalUtil {
 	 * @return value
 	 */
 	static public BigDecimal divide(BigDecimal left , BigDecimal right) throws ArithmeticException{
-        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP) : left;
+        left = left == null ? BigDecimal.ZERO : left;
 		if(right == null || compareTo(right, null) < 1) {
 			throw new ArithmeticException("Division by zero");
 		}
-        right = right.setScale(DEFAULT_SCALE, RoundingMode.HALF_UP);
-        return left.divide(right, DEFAULT_SCALE, RoundingMode.HALF_UP).setScale(DEFAULT_SCALE, RoundingMode.HALF_UP);
+        return left.divide(right, DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
     /**
@@ -133,8 +132,8 @@ public class BigDecimalUtil {
      * @return value
      */
     static public BigDecimal multiply(BigDecimal left , BigDecimal right , RoundingMode roundingMode) {
-        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, roundingMode) : left;
-        right = right == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, roundingMode) : right;
+        left = left == null ? BigDecimal.ZERO : left;
+        right = right == null ? BigDecimal.ZERO : right;
         return left.multiply(right).setScale(DEFAULT_SCALE, roundingMode);
     }
 
@@ -145,12 +144,11 @@ public class BigDecimalUtil {
      * @return value
      */
     static public BigDecimal divide(BigDecimal left , BigDecimal right , RoundingMode roundingMode) throws ArithmeticException{
-        left = left == null ? BigDecimal.ZERO.setScale(DEFAULT_SCALE, roundingMode) : left;
+        left = left == null ? BigDecimal.ZERO : left;
         if(right == null || compareTo(right, null) < 1) {
             throw new ArithmeticException("Division by zero");
         }
-        right = right.setScale(DEFAULT_SCALE, roundingMode);
-        return left.divide(right, DEFAULT_SCALE, roundingMode).setScale(DEFAULT_SCALE, roundingMode);
+        return left.divide(right, DEFAULT_SCALE, roundingMode);
     }
 
 	/**
@@ -184,7 +182,7 @@ public class BigDecimalUtil {
         for (int i = 1 , n = bigDecimals.length ; i < n ; i++) {
 			left.toOperator(bigDecimals[i]);
 		}
-		return left.getValue();
+		return left.getValue().setScale(DEFAULT_SCALE, RoundingMode.HALF_UP);
 	}
 
     /**
@@ -221,10 +219,10 @@ public class BigDecimalUtil {
 				value = BigDecimalUtil.subtrac(value, bigDecimalPlus.value);
 				break;
 			case multiply:
-				value = BigDecimalUtil.multiply(value, bigDecimalPlus.value);
+				value = multiply(value, bigDecimalPlus.value);
 				break;
 			case Divide:
-				value = BigDecimalUtil.divide(value, bigDecimalPlus.value);
+				value = divide(value, bigDecimalPlus.value);
 				break;
 			default:
 				throw new IllegalArgumentException("method param Illegal,BigDecimalPlus object field operator must be an Operator enum type.");
@@ -232,6 +230,33 @@ public class BigDecimalUtil {
 			operator = bigDecimalPlus.getOperator();
 			return this;
 		}
+
+        /**
+         * BigDecimal乘法：针对BigDecimalPlus四则运算增强
+         * @param left	null->zero
+         * @param right null->zero
+         * @return value
+         */
+        private static BigDecimal multiply(BigDecimal left , BigDecimal right) {
+            left = left == null ? BigDecimal.ZERO : left;
+            right = right == null ? BigDecimal.ZERO : right;
+            return left.multiply(right);
+        }
+
+        /**
+         * BigDecimal除法：精度保留小数点后两位，采取四舍五入
+         * @param left=null->zero
+         * @param right=null throw Exception
+         * @return value
+         */
+        static public BigDecimal divide(BigDecimal left , BigDecimal right) throws ArithmeticException{
+            left = left == null ? BigDecimal.ZERO : left;
+            if(right == null || compareTo(right, null) < 1) {
+                throw new ArithmeticException("Division by zero");
+            }
+            return left.divide(right,8 , RoundingMode.HALF_UP);
+        }
+
 		public static void main(String[] args) {
 			BigDecimal multiplyOrDivide = multiplyOrDivide(new BigDecimalPlus(new BigDecimal("1"),Operator.Divide),
 					new BigDecimalPlus(new BigDecimal("3"),Operator.multiply),

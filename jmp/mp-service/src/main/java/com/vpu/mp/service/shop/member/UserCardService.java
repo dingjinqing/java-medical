@@ -895,6 +895,7 @@ public class UserCardService extends ShopBaseService {
         List<OrderMemberVo> cards = new ArrayList<OrderMemberVo>();
         if(CollectionUtils.isEmpty(defaultCards)){
 	        //初始化
+            int _ = 1;
             defaultCards = userCardDao.getOrderMembers(userId, new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, OrderConstant.MEMBER_CARD_ONLINE);
         }
         if(CollectionUtils.isEmpty(defaultCards)){
@@ -976,14 +977,13 @@ public class UserCardService extends ShopBaseService {
             //如果没有打折权益则为十折
             card.setTotalDiscount(BigDecimal.ZERO);
         }else{
-            //正常打折
+            //正常打折(价格 * （10 - 折扣（eg:6.66） / 10）)
             card.setTotalDiscount(
                 BigDecimalUtil.multiplyOrDivide(
                     BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
-                    BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.addOrSubtrac(BigDecimalUtil.BigDecimalPlus.create(BigDecimal.ONE, BigDecimalUtil.Operator.subtrac),
-                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.multiplyOrDivide(BigDecimalUtil.BigDecimalPlus.create(card.getDiscount(), BigDecimalUtil.Operator.Divide),
-                            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)), null)
-                    ), null)));
+                    BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.addOrSubtrac(BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, BigDecimalUtil.Operator.subtrac), BigDecimalUtil.BigDecimalPlus.create(card.getDiscount(), null)), BigDecimalUtil.Operator.Divide),
+                    BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null))
+                );
         }
         return card.getTotalDiscount();
     }

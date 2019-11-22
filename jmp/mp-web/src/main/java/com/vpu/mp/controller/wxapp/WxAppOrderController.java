@@ -52,9 +52,9 @@ public class WxAppOrderController extends WxAppBaseController{
     }
 
     /**
-     * 	结算页面
+     * 	结算页面提交
      */
-    @PostMapping("/pay")
+    @PostMapping("/submit")
     public JsonResult pay(@RequestBody @Validated(CreateOrderValidatedGroup.class) CreateParam param) {
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());

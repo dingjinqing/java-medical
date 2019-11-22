@@ -57,8 +57,8 @@ public class PemToPkcs12 {
 	 */
 	public static byte[] pemToPkcs12(String privateKeyStr, String certificateStr, char[] password,
 			String alias) throws Exception {
-		byte privateKeyData[] = privateKeyStr.getBytes();
-		byte certificateData[] = certificateStr.getBytes();
+		byte[] privateKeyData = privateKeyStr.getBytes();
+		byte[] certificateData = certificateStr.getBytes();
 
 		// Remove PEM header, footer and \n
 		String privateKeyPem = new String(privateKeyData, StandardCharsets.UTF_8);
