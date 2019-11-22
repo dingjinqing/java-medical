@@ -132,6 +132,7 @@ public class MemberCardProcessorDao extends ShopBaseService {
         if (userGradeCard == null) {
             return new ArrayList<>();
         }
+
         // 获取商品规格等级信息
         return db().select(GRADE_PRD.PRD_ID, GRADE_PRD.GRADE_PRICE,GRADE_PRD.GRADE).from(GRADE_PRD).where(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(GRADE_PRD.GRADE.eq(userGradeCard.get(MEMBER_CARD.GRADE))).and(GRADE_PRD.GOODS_ID.eq(goodsId))
@@ -151,7 +152,6 @@ public class MemberCardProcessorDao extends ShopBaseService {
             .and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull())))
             .fetchAny();
 
-        log.debug("查询用户{}等级：等级卡id-{} 等级-{}",userId,gradeCard.get(MEMBER_CARD.ID),gradeCard.get(MEMBER_CARD.GRADE));
         return gradeCard;
     }
 }
