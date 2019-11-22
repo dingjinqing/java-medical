@@ -65,14 +65,22 @@
         </div>
         <!-- 左侧内容end -->
         <!-- 右侧内容 -->
-        <div class="right_settings">
+        <el-form
+          class="right_settings"
+          :model="param"
+          :rules="formRules"
+          ref="form"
+        >
           <div class="set_box">
             <p class="set_title">{{$t('addCouponPackage.basicSettings')}}</p>
             <div class="set_item">
               <div class="item_title">
                 <em>*</em> {{$t('addCouponPackage.activityName')}}：
               </div>
-              <div class="item_right">
+              <el-form-item
+                class="item_right"
+                prop="actName"
+              >
                 <el-input
                   v-model="param.actName"
                   :placeholder="$t('addCouponPackage.actNamePlaceholder')"
@@ -81,13 +89,16 @@
                   maxlength="10"
                 ></el-input>
                 <span class="item_tips">{{$t('addCouponPackage.actNameTip')}}</span>
-              </div>
+              </el-form-item>
             </div>
             <div class="set_item">
               <div class="item_title"><em>*</em> {{$t('marketCommon.validDate')}}：</div>
-              <div class="item_right">
+              <el-form-item
+                class="item_right"
+                prop="effectiveDate"
+              >
                 <el-date-picker
-                  v-model="effectiveDate"
+                  v-model="param.effectiveDate"
                   type="datetimerange"
                   :range-separator="$t('marketCommon.to')"
                   :start-placeholder="$t('marketCommon.startTime')"
@@ -96,11 +107,14 @@
                   size="small"
                 >
                 </el-date-picker>
-              </div>
+              </el-form-item>
             </div>
             <div class="set_item">
               <div class="item_title"><em>*</em> {{$t('couponPackage.packName')}}：</div>
-              <div class="item_right">
+              <el-form-item
+                class="item_right"
+                prop="packName"
+              >
                 <el-input
                   v-model="param.packName"
                   :placeholder="$t('addCouponPackage.packNamePlaceholder')"
@@ -109,7 +123,7 @@
                   maxlength="8"
                 ></el-input>
                 <span class="item_tips">{{$t('addCouponPackage.packNameTip')}}</span>
-              </div>
+              </el-form-item>
             </div>
             <div class="set_item">
               <div class="item_title"><em>*</em> {{$t('addCouponPackage.packageContent')}}：</div>
@@ -143,7 +157,7 @@
                           class="coupon_price"
                           v-else
                         ><span>{{scope.row.denomination}}</span>{{$t('addCouponPackage.discount')}}</div>
-                        <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? `$t('addCouponPackage.full')${scope.row.leastConsume}$t('addCouponPackage.yuan')$t('addCouponPackage.available')`  : $t('addCouponPackage.unrestricted')}}</div>
+                        <div class="coupon_rule">{{scope.row.useConsumeRestrict > 0? $t('addCouponPackage.full') + scope.row.leastConsume + $t('addCouponPackage.yuan') + $t('addCouponPackage.available')  : $t('addCouponPackage.unrestricted')}}</div>
                       </div>
                     </template>
                   </el-table-column>
@@ -157,8 +171,9 @@
                           :disabled="isEditFlag"
                           v-model="scope.row.send_num"
                           size="small"
-                          :min="1"
+                          :min="scope.row.strategyAmount ? scope.row.strategyAmount : 1"
                           :max="6"
+                          :precision="0"
                           style="width:100px;"
                         ></el-input-number>
                       </div>
@@ -209,27 +224,37 @@
             </div>
             <div class="set_item">
               <div class="item_title"><em>*</em> {{$t('addCouponPackage.limitGetTimes')}}：</div>
-              <div class="item_right">
-                <el-input
+              <el-form-item
+                class="item_right"
+                prop="limitGetTimes"
+              >
+                <el-input-number
                   v-model="param.limitGetTimes"
                   placeholder=""
+                  :precision="0"
+                  :min="0"
                   size="small"
                   class="small_input"
-                ></el-input>
+                ></el-input-number>
                 <span class="item_tips">{{$t('addCouponPackage.limitGetTimesTip')}}</span>
-              </div>
+              </el-form-item>
             </div>
             <div class="set_item">
               <div class="item_title"><em>*</em> {{$t('addCouponPackage.totalAmount')}}：</div>
-              <div class="item_right">
-                <el-input
+              <el-form-item
+                class="item_right"
+                prop="totalAmount"
+              >
+                <el-input-number
                   v-model="param.totalAmount"
                   placeholder=""
+                  :precision="0"
+                  :min='1'
                   size="small"
                   class="small_input"
-                ></el-input>
+                ></el-input-number>
                 <span class="item_tips">{{$t('addCouponPackage.totalAmountTip')}}</span>
-              </div>
+              </el-form-item>
             </div>
             <div class="set_item">
               <div class="item_title"><em>*</em> {{$t('addCouponPackage.packAccessMode')}}：</div>
@@ -250,28 +275,33 @@
                 </p>
                 <p class="package_get_choose">
                   <span v-if="param.accessMode===0">
-                    {{$t('addCouponPackage.payable')}}：<el-input
+                    {{$t('addCouponPackage.payable')}}：<el-input-number
                       v-model="param.accessCost"
                       class="small_input"
+                      :precision="2"
                       size="small"
-                    ></el-input> {{$t('addCouponPackage.yuan')}}，
+                    ></el-input-number> {{$t('addCouponPackage.yuan')}}，
                   </span>
                   <span v-if="param.accessMode===1">
-                    {{$t('addCouponPackage.payable')}}：<el-input
+                    {{$t('addCouponPackage.payable')}}：<el-input-number
                       v-model="param.accessCost"
                       class="small_input"
+                      :precision="0"
                       size="small"
-                    ></el-input> {{$t('addCouponPackage.integral')}}，
+                    ></el-input-number> {{$t('addCouponPackage.integral')}}，
                   </span>
                   <span v-if="param.accessMode!==2">
-                    {{$t('addCouponPackage.accessModeTip')}} <span>0.00</span>{{$t('addCouponPackage.yuan')}}
+                    {{$t('addCouponPackage.accessModeTip')}} <span>{{totalCouponAmount}}</span>{{$t('addCouponPackage.yuan')}}
                   </span>
                 </p>
               </div>
             </div>
             <div class="set_item">
               <div class="item_title"><em>*</em> {{$t('addCouponPackage.rule')}}：</div>
-              <div class="item_right">
+              <el-form-item
+                class="item_right"
+                prop="actRule"
+              >
                 <el-input
                   v-model="param.actRule"
                   :placeholder="$t('addCouponPackage.rulePlaceholder')"
@@ -279,10 +309,10 @@
                   :rows="5"
                   resize="none"
                 ></el-input>
-              </div>
+              </el-form-item>
             </div>
           </div>
-        </div>
+        </el-form>
         <!-- 右侧内容end -->
       </div>
     </div>
@@ -407,9 +437,9 @@ export default {
         totalAmount: '',
         actRule: '',
         accessMode: 0,
+        effectiveDate: '',
         couponPackVoucher: []
       },
-      effectiveDate: '',
       coupon_info: [],
       couponDialogFlag: false,
       couponSetDialogFlag: false,
@@ -440,7 +470,28 @@ export default {
       target: null,
       isEditFlag: false,
       actId: null,
-      showCouponDialog: false
+      showCouponDialog: false,
+      // 表单约束
+      formRules: {
+        actName: [
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+        ],
+        packName: [
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+        ],
+        limitGetTimes: [
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+        ],
+        totalAmount: [
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+        ],
+        actRule: [
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+        ],
+        effectiveDate: [
+          { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
+        ]
+      }
     }
   },
   methods: {
@@ -463,7 +514,6 @@ export default {
       this.coupon_info = oldArr.filter((item) => {
         return couponKey.includes(item.id)
       })
-      console.log(this.coupon_info)
     },
     // 添加优惠券初始项
     formatCoupon (data) {
@@ -478,7 +528,6 @@ export default {
       data.map(item => {
         arry.push(Object.assign({}, item, { send_num: '', coupon_set: couponData }))
       })
-      console.log(arry)
       return arry
     },
     // 设置优惠券内容弹窗
@@ -490,14 +539,24 @@ export default {
     },
     // 确认设置优惠券
     confrimCouponSet () {
-      this.coupon_info[this.target].coupon_set = JSON.parse(JSON.stringify(this.coupon_set))
+      let temStrategy = JSON.parse(JSON.stringify(this.coupon_set))
+      if (temStrategy.immediatelyGrantAmount > this.coupon_info[this.target].send_num) {
+        this.$message.warning(this.$t('addCouponPackage.validStrategy1'))
+        return false
+      }
+      if (temStrategy.timingEvery > 0 && (temStrategy.immediatelyGrantAmount + temStrategy.timingAmount > this.coupon_info[this.target].send_num)) {
+        this.$message.warning(this.$t('addCouponPackage.validStrategy2'))
+        return false
+      }
+      this.coupon_info[this.target].strategyAmount = temStrategy.immediatelyGrantAmount + temStrategy.timingAmount
+      this.coupon_info[this.target].coupon_set = temStrategy
       this.couponSetDialogFlag = false
     },
     // 删除
     handleCouponDel (index) {
-      this.$confirm('是否删除该优惠券？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('addCouponPackage.delCouponConfirm'), this.$t('addCouponPackage.prompt'), {
+        confirmButtonText: this.$t('marketCommon.ok'),
+        cancelButtonText: this.$t('marketCommon.cancel'),
         type: 'warning'
       }).then(() => {
         this.coupon_info.splice(index, 1)
@@ -516,54 +575,86 @@ export default {
       return [...map.values()]
     },
     addSubmit () {
-      // 新建活动
-      this.coupon_info.forEach(element => {
-        var voucher = {}
-        voucher.voucherId = element.id
-        voucher.totalAmount = element.send_num
-        voucher.immediatelyGrantAmount = element.coupon_set.immediatelyGrantAmount
-        voucher.timingAmount = element.coupon_set.timingAmount
-        voucher.timingEvery = element.coupon_set.timingEvery
-        voucher.timingTime = element.coupon_set.timingTime
-        voucher.timingUnit = element.coupon_set.timingUnit
-        this.param.couponPackVoucher.push(voucher)
-      })
-      this.param.startTime = this.effectiveDate[0]
-      this.param.endTime = this.effectiveDate[1]
-      addCouponPackage(this.param).then((res) => {
-        if (res.error === 0) {
-          this.$message.success({
-            message: '保存成功!'
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          // 新建活动
+          this.param.couponPackVoucher = []
+          this.coupon_info.forEach(element => {
+            var voucher = {}
+            voucher.voucherId = element.id
+            voucher.totalAmount = element.send_num
+            voucher.immediatelyGrantAmount = element.coupon_set.immediatelyGrantAmount
+            voucher.timingAmount = element.coupon_set.timingAmount
+            voucher.timingEvery = element.coupon_set.timingEvery
+            voucher.timingTime = element.coupon_set.timingTime
+            voucher.timingUnit = element.coupon_set.timingUnit
+            this.param.couponPackVoucher.push(voucher)
           })
-          this.$router.push({
-            name: 'coupon_package'
-          })
-        } else {
-          this.$message.fail({
-            message: '保存失败!'
-          })
+          this.param.startTime = this.param.effectiveDate[0]
+          this.param.endTime = this.param.effectiveDate[1]
+          if (this.validParam()) {
+            addCouponPackage(this.param).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({
+                  message: this.$t('marketCommon.successfulOperation')
+                })
+                this.$router.push({
+                  name: 'coupon_package'
+                })
+              } else {
+                this.$message.error({
+                  message: this.$t('marketCommon.failureOperation')
+                })
+              }
+            })
+          }
         }
       })
     },
     updateSubmit () {
       // 更新活动
       this.param.id = this.actId
-      this.param.startTime = this.effectiveDate[0]
-      this.param.endTime = this.effectiveDate[1]
+      this.param.startTime = this.param.effectiveDate[0]
+      this.param.endTime = this.param.effectiveDate[1]
       updateCouponPackage(this.param).then((res) => {
         if (res.error === 0) {
           this.$message.success({
-            message: '更新成功!'
+            message: this.$t('marketCommon.successfulOperation')
           })
           this.$router.push({
             name: 'coupon_package'
           })
         } else {
-          this.$message.fail({
-            message: '更新失败!'
+          this.$message.error({
+            message: this.$t('marketCommon.failureOperation')
           })
         }
       })
+    },
+    validParam () {
+      if (this.param.accessMode !== 2) {
+        if (!this.param.accessCost) {
+          this.$message.warning(this.$t('addCouponPackage.validaAccessCost'))
+          return false
+        }
+      }
+      if (!this.param.couponPackVoucher || this.param.couponPackVoucher.length === 0) {
+        this.$message.warning(this.$t('addCouponPackage.validVoucher'))
+        return false
+      } else {
+        let app = this
+        let validFlag = false
+        this.param.couponPackVoucher.forEach(function (item) {
+          if (!item.totalAmount || (!item.immediatelyGrantAmount && !item.timingEvery && !item.timingAmount)) {
+            app.$message.warning(app.$t('addCouponPackage.validStrategy3'))
+            validFlag = true
+          }
+        })
+        if (validFlag) {
+          return false
+        }
+      }
+      return true
     }
   },
   computed: {
@@ -574,6 +665,15 @@ export default {
       return this.coupon_info.map(item => {
         return item.id
       })
+    },
+    totalCouponAmount () {
+      let r = 0
+      this.coupon_info.forEach(item => {
+        if (item.denomination && item.send_num) {
+          r += item.denomination * item.send_num
+        }
+      })
+      return r
     }
   },
   mounted () {
@@ -589,9 +689,9 @@ export default {
       getCouponPackById(SimpleCouponPackParam).then((res) => {
         if (res.error === 0) {
           this.param = res.content
-          this.effectiveDate = []
-          this.effectiveDate.push(res.content.startTime)
-          this.effectiveDate.push(res.content.endTime)
+          this.param.effectiveDate = []
+          this.param.effectiveDate.push(res.content.startTime)
+          this.param.effectiveDate.push(res.content.endTime)
           let couponList = []
           this.param.couponPackVoucher.map(item => {
             let couponInfo = Object.assign({}, item.couponView)
@@ -877,10 +977,6 @@ export default {
           > .item_right {
             flex: 1;
             line-height: 32px;
-            > .item_tips {
-              color: #999;
-              font-size: 12px;
-            }
             > .package_get_choose {
               font-size: 14px;
               color: #333;
@@ -943,7 +1039,7 @@ export default {
   width: 150px;
 }
 .small_input {
-  width: 80px;
+  width: 160px;
 }
 .coupon_info_set {
   display: flex;
@@ -978,5 +1074,9 @@ export default {
   background-color: #fff;
   text-align: center;
   z-index: 3;
+}
+.item_tips {
+  color: #999;
+  font-size: 12px;
 }
 </style>

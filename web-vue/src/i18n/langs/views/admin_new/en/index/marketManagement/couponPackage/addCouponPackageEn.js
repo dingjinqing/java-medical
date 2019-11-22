@@ -52,5 +52,12 @@ export const en = {
   setSendStrategy: 'set up a voucher strategy',
   every: 'every',
   prompt: 'tip',
-  delCouponConfirm: 'Whether to delete the coupon?'
+  delCouponConfirm: 'Whether to delete the coupon?',
+
+  // 校验
+  validStrategy1: 'The number of strategies issued immediately is greater than the total amount of bonds issued!',
+  validStrategy2: 'The number of policy issues is greater than the total amount of bonds issued!',
+  validaAccessCost: 'Please fill in the collection price!',
+  validVoucher: 'Please choose coupons in the package!',
+  validStrategy3: 'Please complete the number and strategy of the selected coupons!'
 }

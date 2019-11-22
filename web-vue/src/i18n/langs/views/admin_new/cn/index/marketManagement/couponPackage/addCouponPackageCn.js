@@ -53,5 +53,12 @@ export const cn = {
   setSendStrategy: '设置发券策略',
   every: '每',
   prompt: '提示',
-  delCouponConfirm: '是否删除该优惠券？'
+  delCouponConfirm: '是否删除该优惠券？',
+
+  // 校验
+  validStrategy1: '策略立即发放数量大于发券总量！',
+  validStrategy2: '策略发放数量大于发券总量！',
+  validaAccessCost: '请填写领取价格！',
+  validVoucher: '请选择礼包内优惠券！',
+  validStrategy3: '请完整填写所选优惠券的发券数量和策略！'
 }
