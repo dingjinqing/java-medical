@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
+import com.vpu.mp.service.pojo.shop.market.coopen.CoopenIdParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenIssueListParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenParam;
@@ -20,7 +21,7 @@ import javax.validation.Valid;
  * @date 2019/11/22 14:10
  */
 @RestController
-@RequestMapping("/api/admin/market/conpen")
+@RequestMapping("/api/admin/market/coopen")
 public class AdminCoopenContorller extends  AdminBaseController {
 
 
@@ -28,34 +29,34 @@ public class AdminCoopenContorller extends  AdminBaseController {
      * 活动列表
      */
     @PostMapping("/list")
-    public JsonResult getPageList(@RequestBody CoopenListParam param) {
+    public JsonResult getPageList(@RequestBody  CoopenListParam param) {
         return success(shop().coopen.getPageList(param));
     }
 
     /**
      * 停用活动
      */
-    @PostMapping("/disable/{id}")
-    public JsonResult disableActivity(@PathVariable Integer id) {
-        shop().coopen.disableActivity(id);
+    @PostMapping("/disable")
+    public JsonResult disableActivity(@RequestBody @Valid CoopenIdParam param) {
+        shop().coopen.disableActivity(param.getId());
         return success();
     }
 
     /**
      * 启用活动
      */
-    @PostMapping("/enable/{id}")
-    public JsonResult enableActivity(@PathVariable Integer id) {
-        shop().coopen.enableActivity(id);
+    @PostMapping("/enable")
+    public JsonResult enableActivity(@RequestBody CoopenIdParam param) {
+        shop().coopen.enableActivity(param.getId());
         return success();
     }
 
     /**
      * 删除活动
      */
-    @PostMapping("/delete/{id}")
-    public JsonResult deleteActivity(@PathVariable Integer id) {
-        shop().coopen.deleteActivity(id);
+    @PostMapping("/delete")
+    public JsonResult deleteActivity(@RequestBody CoopenIdParam param) {
+        shop().coopen.deleteActivity(param.getId());
         return success();
     }
 
@@ -71,9 +72,9 @@ public class AdminCoopenContorller extends  AdminBaseController {
     /**
      * 活动修改 - 明细
      */
-    @PostMapping("/detail/{id}")
-    public JsonResult getActivityDetail(@PathVariable Integer id) {
-        return success(shop().coopen.getActivityDetail(id));
+    @PostMapping("/detail")
+    public JsonResult getActivityDetail(@RequestBody CoopenIdParam param) {
+        return success(shop().coopen.getActivityDetail(param.getId()));
     }
 
     /**
@@ -88,7 +89,7 @@ public class AdminCoopenContorller extends  AdminBaseController {
     /**
      * 发放明细
      */
-    @PostMapping("/issue_detail")
+    @PostMapping("/issuelist")
     public JsonResult issueDetail(@RequestBody CoopenIssueListParam param) {
         return success(shop().coopenRecord.getIssuePageList(param));
     }

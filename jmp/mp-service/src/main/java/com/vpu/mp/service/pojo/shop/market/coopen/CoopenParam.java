@@ -23,7 +23,6 @@ import java.sql.Timestamp;
 @Setter
 public class CoopenParam implements Default {
 
-    /* 触发条件 */
     /** 新用户 **/
     public static final byte BRAND_NEW = 1;
     /** 全部用户 **/
@@ -62,6 +61,7 @@ public class CoopenParam implements Default {
     /**
      * 活动类型
      */
+    @NotNull
     private Byte       activityAction;
     /**
      *  优惠卷

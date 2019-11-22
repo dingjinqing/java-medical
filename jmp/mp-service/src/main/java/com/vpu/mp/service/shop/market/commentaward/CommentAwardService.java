@@ -112,26 +112,28 @@ public class CommentAwardService extends ShopBaseService {
 
     private void buildParam(SelectConditionStep<? extends Record> select, CommentAwardListParam param) {
         Timestamp nowTime =new Timestamp(System.currentTimeMillis());
-        switch (param.getNavType()){
-            case 1:
-                select.and(COMMENT_AWARD.IS_FOREVER.eq(NEVER_EXPIRE))
-                        .or(COMMENT_AWARD.START_TIME.lt(nowTime)
-                        .and(COMMENT_AWARD.END_TIME.gt(nowTime)));
-                break;
-            case 2:
-                select.and(COMMENT_AWARD.IS_FOREVER.eq(NEVER_EXPIRE))
-                        .and(COMMENT_AWARD.START_TIME.gt(nowTime))
-                        .and(COMMENT_AWARD.STATUS.eq(USE_STATUS));
-                break;
-            case 3:
-                select.and(COMMENT_AWARD.IS_FOREVER.eq(FIXED_EXPIRE))
-                        .and(COMMENT_AWARD.END_TIME.lt(nowTime))
-                        .and(COMMENT_AWARD.STATUS.eq(USE_STATUS));
-                break;
-            case 4:
-                select.and(COMMENT_AWARD.STATUS.eq(STOP_STATUS));
-                break;
-            default:
+        if (param.getNavType()!=null){
+            switch (param.getNavType()){
+                case 1:
+                    select.and(COMMENT_AWARD.IS_FOREVER.eq(NEVER_EXPIRE))
+                            .or(COMMENT_AWARD.START_TIME.lt(nowTime)
+                                    .and(COMMENT_AWARD.END_TIME.gt(nowTime)));
+                    break;
+                case 2:
+                    select.and(COMMENT_AWARD.IS_FOREVER.eq(NEVER_EXPIRE))
+                            .and(COMMENT_AWARD.START_TIME.gt(nowTime))
+                            .and(COMMENT_AWARD.STATUS.eq(USE_STATUS));
+                    break;
+                case 3:
+                    select.and(COMMENT_AWARD.IS_FOREVER.eq(FIXED_EXPIRE))
+                            .and(COMMENT_AWARD.END_TIME.lt(nowTime))
+                            .and(COMMENT_AWARD.STATUS.eq(USE_STATUS));
+                    break;
+                case 4:
+                    select.and(COMMENT_AWARD.STATUS.eq(STOP_STATUS));
+                    break;
+                default:
+            }
         }
     }
 

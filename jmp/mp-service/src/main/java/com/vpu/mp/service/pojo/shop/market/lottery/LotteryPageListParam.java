@@ -13,11 +13,10 @@ import lombok.Data;
 public class LotteryPageListParam {
 
     /**
-     * 活动状态过滤 ：1全部，2进行中，3未开始，4已过期，5已停用
-     */
+     * 活动状态过滤 ：     */
     @Max(5)
     @Min(0)
-    private Byte state = (byte)1;
+    private Byte state = (byte)0;
 
     /**
      * 	分页信息

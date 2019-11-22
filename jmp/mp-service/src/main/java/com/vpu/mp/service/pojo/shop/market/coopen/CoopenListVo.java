@@ -23,6 +23,10 @@ public class CoopenListVo {
     private Byte action;
     /** 活动类型 **/
     private Byte activityAction;
+    /**
+     * 是否永久有效
+     */
+    private Integer    isForever;
     private Timestamp startDate;
     private Timestamp endDate;
     private Byte status;

@@ -30,7 +30,7 @@ import com.vpu.mp.service.pojo.shop.auth.ShopSubAccountEditParam;
 import com.vpu.mp.service.pojo.shop.auth.ShopSubAccountParam;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -42,7 +42,7 @@ public class AdminRoleController extends AdminBaseController {
 
 	/**
 	 * 查询店铺列表
-	 * 
+	 *
 	 * @return
 	 */
 	@PostMapping(value = "/admin/account/shop/select")
@@ -66,7 +66,7 @@ public class AdminRoleController extends AdminBaseController {
 
 	/**
 	 * 切换店铺
-	 * 
+	 *
 	 * @param shopId
 	 * @return
 	 */
@@ -81,7 +81,7 @@ public class AdminRoleController extends AdminBaseController {
 
 	/**
 	 * 账户设置的查询 只让主账户进入设置
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping(value = "/admin/account/manage/query")
@@ -100,7 +100,7 @@ public class AdminRoleController extends AdminBaseController {
 
 	/**
 	 * 账户设置更新
-	 * 
+	 *
 	 * @param shopManageParam
 	 * @param result
 	 * @return
@@ -150,13 +150,13 @@ public class AdminRoleController extends AdminBaseController {
 		ShopAccountRecord pojo = new ShopAccountRecord();
 		pojo.setSysId(info.getSysId());
 		pojo.setPassword(Util.md5(sParam.newPasswd));
-		
+
 		if (saas.shop.account.updateById(pojo) < 0) {
 			return fail(JsonResultCode.CODE_FAIL);
 		}
 		return success(JsonResultCode.CODE_SUCCESS);
 	}
-	
+
 	/**
 	 * 查询子账户
 	 * @param param
@@ -181,22 +181,22 @@ public class AdminRoleController extends AdminBaseController {
 		}
 		return success();
 	}
-	
+
 	/**
 	 * 删除子账户
 	 * @param param
 	 * @return
 	 */
 	@GetMapping(value = "/admin/account/user/del/{accountId}")
-	public JsonResult subUserDel(@PathVariable Integer accountId) {
+	public JsonResult csubUserDel(@PathVariable Integer accountId) {
 		int account = saas.overviewService.childAccountService.delSubAccount(adminAuth.user().sysId, accountId);
 		if(account>0) {
 			return success();
 		}
 		return fail();
 	}
-	
-	
+
+
 	/**
 	 * 编辑子账户
 	 * @param param
@@ -211,7 +211,7 @@ public class AdminRoleController extends AdminBaseController {
 		}
 		return fail();
 	}
-	
+
 	/**
 	 * 查询单个店铺的信息
 	 * @return

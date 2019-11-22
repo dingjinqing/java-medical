@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.market.coopen.ConpenVo;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListVo;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenParam;
+import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -40,20 +41,20 @@ public class CoopenService extends ShopBaseService {
      * 列表查询
      */
     public PageResult<CoopenListVo> getPageList(CoopenListParam param) {
-        SelectConditionStep<CoopenActivityRecord> select =
-                db().selectFrom(TABLE).where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        SelectConditionStep<? extends Record> select =
+                db().select(TABLE.ID,TABLE.NAME,TABLE.STATUS,TABLE.START_DATE,TABLE.END_DATE,TABLE.IS_FOREVER, TABLE.ACTIVITY_ACTION)
+                        .from(TABLE).where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildOptions(select, param);
-        PageResult<CoopenListVo> result = getPageResult(select, param, CoopenListVo.class);
-        return result;
+        select.orderBy(TABLE.FIRST.desc(),TABLE.ID.desc());
+        return getPageResult(select, param, CoopenListVo.class);
     }
-
 
     /**
      * 查询条件
      */
-    private void buildOptions(SelectConditionStep<CoopenActivityRecord> select, CoopenListParam param) {
-        Byte nvaType = param.getNvaType();
-            switch (nvaType) {
+    private void buildOptions(SelectConditionStep<? extends Record> select, CoopenListParam param) {
+        if (param.getNvaType()!=null){
+            switch (param.getNvaType()) {
                 case BaseConstant.NAVBAR_TYPE_ONGOING:
                     select.and(TABLE.START_DATE.le(Util.currentTimeStamp()))
                             .and(TABLE.END_DATE.gt(Util.currentTimeStamp()))
@@ -71,8 +72,9 @@ public class CoopenService extends ShopBaseService {
                 case BaseConstant.NAVBAR_TYPE_DISABLED:
                     select.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                     break;
-                    default:
+                default:
             }
+        }
     }
 
     /**
@@ -88,10 +90,10 @@ public class CoopenService extends ShopBaseService {
     public void enableActivity(Integer id) {
         db().update(TABLE).set(TABLE.STATUS, ACTIVITY_STATUS_NORMAL).where(TABLE.ID.eq(id)).execute();
     }
-
     /**
      * 删除活动
      */
+
     public void deleteActivity(Integer activityId) {
         db().update(TABLE).set(TABLE.DEL_FLAG, DelFlag.DISABLE_VALUE).where(TABLE.ID.eq(activityId)).execute();
     }
@@ -111,14 +113,14 @@ public class CoopenService extends ShopBaseService {
      * 参数校验
      */
     private void validateParam(final CoopenParam param) {
-        byte type = param.getAction();
+        byte type = param.getActivityAction();
         switch (type) {
             case COUPON:
-                Assert.notNull(param.getMrkingVoucherId(), "Missing parameter couponId");
-                Assert.notNull(param.getTitle(), "Missing parameter title");
+                Assert.notNull(param.getMrkingVoucherId(), "Missing parameter MrkingVoucherId");
+                Assert.notNull(param.getTitle(), "Missing parameter Title");
                 break;
             case DRAW:
-                Assert.notNull(param.getLotteryId(), "Missing parameter activityId");
+                Assert.notNull(param.getLotteryId(), "Missing parameter LotteryId");
                 break;
             case CUSTOMIZE:
                 Assert.notNull(param.getCustomizeUrl(), "Missing parameter customizeImgUrl");
