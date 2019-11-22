@@ -219,7 +219,7 @@ import { isGoodsLabelNameOk, addGoodsLabel, updateGoodsLabel, getGoodsLabel } fr
 // 组件引入
 import choosingGoods from '@/components/admin/choosingGoods'
 // 工具类引入
-import { isStrBlank } from '@/util/goodsUtil'
+import { isStrBlank } from '@/util/typeUtil'
 export default {
   name: 'addAndUpdateGoodsLabel',
   components: { choosingGoods },

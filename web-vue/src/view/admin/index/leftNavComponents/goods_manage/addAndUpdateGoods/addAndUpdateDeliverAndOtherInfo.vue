@@ -198,7 +198,7 @@
 import { getExclusiveCardList } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 import { deliverTemplateNameListApi, getDeliverTemplateApi, getDeliverTemplateConfigApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 // js工具函数导入
-import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
+import { isStrBlank, isNumberBlank } from '@/util/typeUtil'
 import { format, parseDate } from '@/util/date'
 export default {
   data () {

@@ -190,7 +190,7 @@
 // 导入api
 import { getGoodsSortSelectList, addGoodsSort, updateGoodsSort, getGoodsSort } from '@/api/admin/goodsManage/goodsSortManagement/goodsSortManagement'
 // 导入工具
-import { isStrBlank, isNumberBlank } from '@/util/goodsUtil'
+import { isStrBlank, isNumberBlank } from '@/util/typeUtil'
 
 // 组件导入
 import allGoodsSortHeaderTab from './allGoodsSortHeaderTab'

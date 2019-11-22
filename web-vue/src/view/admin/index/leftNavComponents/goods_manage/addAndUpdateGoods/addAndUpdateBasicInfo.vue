@@ -617,7 +617,7 @@ import {
 } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 import { goodsBrandClassifyListApi, goodsBrandPageListApi } from '@/api/admin/goodsManage/brandManagement/brandManagement'
 // js工具函数导入
-import { isStrBlank } from '@/util/goodsUtil'
+import { isStrBlank } from '@/util/typeUtil'
 // 组件导入
 import ImageDalog from '@/components/admin/imageDalog'
 import pagination from '@/components/admin/pagination/pagination'

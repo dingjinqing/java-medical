@@ -217,7 +217,7 @@
 // 组件导入
 import ImageDalog from '@/components/admin/imageDalog'
 // js工具函数导入
-import { isStrBlank } from '@/util/goodsUtil'
+import { isStrBlank } from '@/util/typeUtil'
 
 export default {
   name: 'addingGoodsDistributionInfo',

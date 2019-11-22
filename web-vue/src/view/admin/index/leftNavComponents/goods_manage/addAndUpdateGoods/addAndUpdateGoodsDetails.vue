@@ -143,7 +143,7 @@
 import TinymceEditor from '@/components/admin/tinymceEditor/tinymceEditor'
 
 /* 工具函数导入 */
-import { isStrBlank } from '@/util/goodsUtil'
+import { isStrBlank } from '@/util/typeUtil'
 
 export default {
   name: 'addingGoodsDetails',

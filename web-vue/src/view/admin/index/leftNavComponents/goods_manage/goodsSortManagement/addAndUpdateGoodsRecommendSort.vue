@@ -92,7 +92,7 @@
 // 导入api
 import {addRecommendGoodsSort, updateRecommendGoodsSort, getGoodsRecommendSort} from '@/api/admin/goodsManage/goodsSortManagement/goodsSortManagement'
 // 导入工具
-import {isStrBlank, isNumberBlank} from '@/util/goodsUtil'
+import {isStrBlank, isNumberBlank} from '@/util/typeUtil'
 // 组件导入
 import allGoodsSortHeaderTab from './allGoodsSortHeaderTab'
 import ImageDialog from '@/components/admin/imageDalog'
