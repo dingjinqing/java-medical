@@ -1,20 +1,16 @@
 package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
-import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
-import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
@@ -50,13 +46,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_DATA_NOT_EXIST;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_NAME_WAIT_SERVICE;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_WAIT_SERVICE;
-import static java.math.BigDecimal.ZERO;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.math.NumberUtils.*;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * @author liufei
@@ -387,18 +379,19 @@ public class StoreReservation extends ShopBaseService {
      *
      * @param param the param
      */
-    public ServiceOrderDetailVo submitReservation(SubmitReservationParam param) {
+    public WxPayUnifiedOrderResult submitReservation(SubmitReservationParam param) {
         AtomicReference<String> orderSn = new AtomicReference<>();
         Integer serviceId = param.getServiceId();
-        if (!serviceOrderService.checkReservationNum(serviceId, param.getTechnicianId())) {
-            // 预约人数已达上限
-            throw new BusinessException(JsonResultCode.CODE_RESERVATION_UPPER_LIMIT);
-        }
+//        if (!serviceOrderService.checkReservationNum(serviceId, param.getTechnicianId())) {
+//            // 预约人数已达上限
+//            throw new BusinessException(JsonResultCode.CODE_RESERVATION_UPPER_LIMIT);
+//        }
         ServiceOrderRecord serviceOrder = new ServiceOrderRecord();
         FieldsUtil.assignNotNull(param, serviceOrder);
+        AtomicReference<WxPayUnifiedOrderResult> result = new AtomicReference<>();
         this.transaction(() -> {
             log.debug("门店服务订单创建入参: {}", serviceOrder);
-            orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
+            /*orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
             // 会员余额变动
             if (serviceOrder.getUseAccount().compareTo(ZERO) > 0) {
                 try {
@@ -427,12 +420,16 @@ public class StoreReservation extends ShopBaseService {
                     setReason(serviceOrder.getOrderSn());
                     setType(BYTE_ZERO);
                 }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
-            }
+            }*/
             if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
                 //TODO 支付接口
+                String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
+                WxPayUnifiedOrderResult unifiedOrderResult = mpPaymentService.wxUnitOrder(param.getClientIp(), param.getServiceId().toString(), orderSn.get(), serviceOrder.getMoneyPaid().intValue(), openId);
+                log.debug("微信支付接口调用结果：{}", unifiedOrderResult);
+                result.set(unifiedOrderResult);
             }
-            // 更新门店订单支付状态
-            serviceOrderService.updateServiceOrderStatus(serviceOrder.getOrderSn(), ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
+            // todo 微信回调---更新门店订单支付成功状态
+//            serviceOrderService.updateServiceOrderStatus(serviceOrder.getOrderSn(), ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
         });
         /*// 队列前置校验
         prefixCheck(serviceOrder);
@@ -443,7 +440,8 @@ public class StoreReservation extends ShopBaseService {
             getShopId(),
             TaskJobsConstant.TaskJobEnum.RESERVATION_PAY.getExecutionType());*/
         // 返回支付成功后的预约订单详情
-        return serviceOrderService.getServiceOrderDetail(orderSn.get());
+//        return serviceOrderService.getServiceOrderDetail(orderSn.get());
+        return result.get();
     }
 
     /**

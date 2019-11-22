@@ -15,6 +15,11 @@ import java.math.BigDecimal;
 @Data
 public class SubmitReservationParam {
     /**
+     * The Client ip.客户端ip地址
+     */
+    @NotBlank
+    private String clientIp;
+    /**
      * The Store id.门店id
      */
     @PositiveOrZero
