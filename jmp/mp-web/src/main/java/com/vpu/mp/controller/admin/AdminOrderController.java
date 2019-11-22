@@ -135,10 +135,11 @@ public class AdminOrderController extends AdminBaseController {
 		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.isSuccess()){
+        if(executeResult == null || executeResult.isSuccess()) {
             return success();
-        };
-		return fail(executeResult.getErrorCode());
+        }else {
+            return fail(executeResult.getErrorCode());
+        }
 	}
 	
 	/**
@@ -162,10 +163,11 @@ public class AdminOrderController extends AdminBaseController {
 		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.isSuccess()){
+        if(executeResult == null || executeResult.isSuccess()) {
             return success();
-        };
-        return fail(executeResult.getErrorCode());
+        }else {
+            return fail(executeResult.getErrorCode());
+        }
 	}
 	
 	/**
@@ -176,10 +178,11 @@ public class AdminOrderController extends AdminBaseController {
 		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.isSuccess()){
+        if(executeResult == null || executeResult.isSuccess()) {
             return success();
-        };
-        return fail(executeResult.getErrorCode());
+        }else {
+            return fail(executeResult.getErrorCode());
+        }
 	}
 	
 	/**
@@ -190,10 +193,11 @@ public class AdminOrderController extends AdminBaseController {
 		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.isSuccess()){
+        if(executeResult == null || executeResult.isSuccess()) {
             return success();
-        };
-        return fail(executeResult.getErrorCode());
+        }else {
+            return fail(executeResult.getErrorCode());
+        }
 	}
 	
 	/**
@@ -204,10 +208,11 @@ public class AdminOrderController extends AdminBaseController {
 		param.setIsMp(OrderConstant.IS_MP_ADMIN);
 		param.setAdminInfo(adminAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.isSuccess()){
+        if(executeResult == null || executeResult.isSuccess()) {
             return success();
-        };
-        return fail(executeResult.getErrorCode());
+        }else {
+            return fail(executeResult.getErrorCode());
+        }
 	}
 
     /**

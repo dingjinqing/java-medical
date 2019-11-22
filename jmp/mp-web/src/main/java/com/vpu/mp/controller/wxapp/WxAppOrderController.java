@@ -60,10 +60,11 @@ public class WxAppOrderController extends WxAppBaseController{
         param.setWxUserInfo(wxAppAuth.user());
         param.setClientIp(RequestUtil.getIp(request));
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.isSuccess()){
+        if(executeResult == null || executeResult.isSuccess()) {
             return success();
-        };
-        return fail(executeResult.getErrorCode());
+        }else {
+            return fail(executeResult.getErrorCode());
+        }
     }
 	/**
 	 * 	退款、退货创建
@@ -86,10 +87,11 @@ public class WxAppOrderController extends WxAppBaseController{
 		param.setIsMp(OrderConstant.IS_MP_Y);
 		param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.isSuccess()){
+        if(executeResult == null || executeResult.isSuccess()) {
             return success();
-        };
-        return fail(executeResult.getErrorCode());
+        }else {
+            return fail(executeResult.getErrorCode());
+        }
 	}
 
 	/**
@@ -100,10 +102,11 @@ public class WxAppOrderController extends WxAppBaseController{
 		param.setIsMp(OrderConstant.IS_MP_Y);
 		param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
-        if(executeResult.isSuccess()){
+        if(executeResult == null || executeResult.isSuccess()) {
             return success();
-        };
-        return fail(executeResult.getErrorCode());
+        }else {
+            return fail(executeResult.getErrorCode());
+        }
 	}
 
 	/**
