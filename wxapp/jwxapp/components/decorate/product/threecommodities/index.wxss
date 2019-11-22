@@ -55,7 +55,7 @@
   
   .three_column .every_module .product-price .sale_price {
     display: inline-block;
-    margin-top: 3rpx;
+    margin-top: 6rpx;
   }
   
   .three_column .every_module .product-price .market_price {

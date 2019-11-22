@@ -83,14 +83,10 @@
     padding: 8rpx 10rpx;
     height: 70rpx;
     position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
   }
-  
-  .single_column .cart_btn {
-    position: absolute;
-    right: 0;
-    bottom: 40rpx;
-  }
-  
   .single_column .if_delete {
     position: absolute;
     bottom: 0rpx;

@@ -9,7 +9,7 @@
               <view class='van-two-ellipsis'>{{item.goodsName}}</view>
             </view>
             <view class='title_label_container' style="bottom:70rpx">
-              <view style="{{indexC!==0?'margin-left:10rpx':''}}" class='title_label' wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>
+              <view style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}" class='title_label' wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>
             {{itemC.text}}
             </view>
             </view>
@@ -19,7 +19,7 @@
               <view class='sale_price' wx:if="{{item.activityType != '10'}}" style='color:{{comColor}};'>￥{{item.realPrice===null?"0.00":item.realPrice}}</view>
               <view class='sale_price' wx:if="{{item.activityType == '10'}}" style='color:{{comColor}};'>￥{{item.shopPrice}}</view>
             </block>
-            <block wx:if='{{ m.otherMessage===1}}'>
+            <block wx:if='{{ m.other_message===1}}'>
                 <view class='market_price' wx:if="{{item.linePrice && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
             </block>
             <block wx:if="{{m.cart_btn == 1 && item.activityType != 10}}">

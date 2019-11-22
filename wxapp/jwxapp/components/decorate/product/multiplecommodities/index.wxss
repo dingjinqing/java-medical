@@ -38,4 +38,7 @@
     display: flex;
     justify-content: space-between;
   }
+  .mul_column .sale_price{
+    padding-top: 12rpx;
+  }
   
