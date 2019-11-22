@@ -158,7 +158,7 @@ public class CouponParam {
     /**
      * 是否限制库存 0:限制；1:不限制
      */
-    private Integer limitSurplusFlag;
+    private Byte limitSurplusFlag;
     private Timestamp  createTime;
     private Timestamp  updateTime;
 
