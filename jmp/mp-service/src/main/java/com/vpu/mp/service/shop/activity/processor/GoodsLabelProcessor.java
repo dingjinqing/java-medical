@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsLabelMpVo;
 import com.vpu.mp.service.shop.activity.dao.GoodsLabelProcessorDao;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.Map;
  * @date 2019年11月04日
  */
 @Service
+@Slf4j
 public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor {
 
     @Autowired
@@ -65,6 +67,7 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
     @Override
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
         List<String> labels = goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId(),param.getCatId(),param.getSortId());
+        log.debug("商品详情-商品关联标签处理：{}",labels);
         goodsDetailMpBo.setLabels(labels);
     }
 

@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CouponDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.CouponListMpVo;
 import com.vpu.mp.service.shop.activity.dao.CouponProcessorDao;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
  * @date 2019年10月30日
  */
 @Service
+@Slf4j
 public class CouponProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     CouponProcessorDao couponProcessorDao;
@@ -58,9 +60,12 @@ public class CouponProcessor implements ProcessorPriority,ActivityGoodsListProce
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        log.debug("商品详情-优惠券查询");
         List<MrkingVoucherRecord> goodsCouponForDetail = couponProcessorDao.getGoodsCouponForDetail(param.getGoodsId(), param.getCatId(), param.getSortId(), DateUtil.getLocalDateTime());
         List<Integer> couponIds = goodsCouponForDetail.stream().map(MrkingVoucherRecord::getId).collect(Collectors.toList());
+        log.debug("商品详情-可使用优惠券ids:{}",couponIds.toString());
         Map<Integer, Integer> userCouponsAlreadyNum = couponProcessorDao.getUserCouponsAlreadyNum(param.getUserId(), couponIds);
+        log.debug("商品详情-用户已拥有优惠券数量:{}",userCouponsAlreadyNum.toString());
 
         List<CouponDetailMpVo> coupons = new ArrayList<>();
 

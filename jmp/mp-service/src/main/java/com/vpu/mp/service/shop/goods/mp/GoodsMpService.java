@@ -20,6 +20,7 @@ import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import static com.vpu.mp.db.shop.Tables.*;
  * 小程序和装修内商品相关
  */
 @Service
+@Slf4j
 public class GoodsMpService extends ShopBaseService {
 
     @Autowired
@@ -273,6 +275,7 @@ public class GoodsMpService extends ShopBaseService {
         GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
         GoodsDetailCapsuleParam capsuleParam = new GoodsDetailCapsuleParam();
         capsuleParam.setUserId(param.getUserId());
+        capsuleParam.setActivityId(param.getActivityId());
         capsuleParam.setActivityType(param.getActivityType());
         capsuleParam.setLat(param.getLat());
         capsuleParam.setLon(param.getLon());
@@ -343,9 +346,15 @@ public class GoodsMpService extends ShopBaseService {
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
         if (record1 == null) {
+            log.debug("商品详情-{}已被从数据库真删除",goodsId);
             return null;
         }
+
         GoodsDetailMpBo capsule = record1.into(GoodsDetailMpBo.class);
+        if (DelFlag.NORMAL_VALUE.equals(capsule.getDelFlag())) {
+            return capsule;
+        }
+
         // 图片处理
         List<String> imgs = db().select().from(GOODS_IMG).where(GOODS_IMG.IMG_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
         capsule.getGoodsImgs().add(capsule.getGoodsImg());

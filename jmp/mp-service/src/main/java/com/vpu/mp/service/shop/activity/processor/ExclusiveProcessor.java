@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
@@ -104,9 +105,10 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
 
         capsule.setUserCanBuy(false);
         // 获取商品所有专享卡（包含普通卡和等级卡）
+        log.debug("商品详情-会员专享卡查询");
         List<MemberCardRecord> exclusiveInfo = memberCardProcessorDao.getExclusiveInfo(param.getGoodsId(), param.getCatId(), param.getSortId(), param.getBrandId());
         Map<Byte, List<MemberCardRecord>> map = exclusiveInfo.stream().collect(Collectors.groupingBy(MemberCardRecord::getCardType));
-
+        log.debug("商品详情-商品有效的专享卡ids:{}",exclusiveInfo.stream().map(x->x.get(MEMBER_CARD.ID)).collect(Collectors.toList()));
         // 普通卡
         List<MemberCardRecord> normalCards = map.getOrDefault(CardConstant.MCARD_TP_NORMAL, new ArrayList<>(0));
         // 等级卡
@@ -114,10 +116,12 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
 
         // 获取当前用户拥有的所有会员卡信息
         List<Record> userAllCard = memberCardProcessorDao.getUserAllCard(param.getUserId());
+        log.debug("商品详情-用户拥有的会员卡ids:{}",userAllCard.stream().map(x->x.get(USER_CARD.CARD_ID)).collect(Collectors.toList()));
         // 获取用户等级
         Record2<Integer, String> userGrade = memberCardProcessorDao.getUserGradeCard(param.getUserId());
-        Map<Integer, Record> userAllCardMap = userAllCard.stream().collect(Collectors.toMap(x -> x.get(USER_CARD.CARD_ID), x -> x));
-
+        // 最后的lambda是为了防止主键重复
+        Map<Integer, Record> userAllCardMap = userAllCard.stream().collect(Collectors.toMap(x -> x.get(USER_CARD.CARD_ID), Function.identity(),(x1,x2)->x1));
+        log.debug("商品详情-用户拥有的会员卡转map后ids:{}",userAllCardMap.keySet());
         Timestamp now = DateUtil.getLocalDateTime();
 
         List<MemberCardDetailMpVo> cardsLis = new ArrayList<>();
@@ -159,7 +163,13 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
         capsule.setMemberCards(cardsLis);
         capsule.setIsExclusive(GoodsConstant.CARD_EXCLUSIVE);
 
-        if (gradeCards.size() == 0||userGrade == null) {
+        if (gradeCards.size() == 0) {
+            log.debug("商品详情-会员专享商品不存在等级卡");
+            return;
+        }
+        if (userGrade == null) {
+            log.debug("商品详情-会员专享商品用户不存在等级卡");
+            capsule.setUserCanBuy(false);
             return;
         }
 

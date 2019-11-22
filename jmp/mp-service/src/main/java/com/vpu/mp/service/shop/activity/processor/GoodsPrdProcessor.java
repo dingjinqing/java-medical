@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.activity.dao.GoodsPrdProcessorDao;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
  * @date 2019年11月04日
  */
 @Service
+@Slf4j
 public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     GoodsPrdProcessorDao goodsPrdProcessorDao;
@@ -57,12 +59,12 @@ public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListPro
             List<GoodsSpecProductRecord> prdInfos = goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());
             prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());
             goodsDetailMpBo.setProducts(prdMpVos);
-
             if (prdMpVos.size() == 1 && StringUtils.isBlank(prdMpVos.get(0).getPrdDesc())) {
                 goodsDetailMpBo.setDefaultPrd(true);
             } else {
                 goodsDetailMpBo.setDefaultPrd(false);
             }
+            log.debug("商品详情-商品规格查询完成");
         }
     }
 

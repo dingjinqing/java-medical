@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.activity.dao;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CommentDetailVo;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record11;
@@ -25,6 +26,7 @@ import static com.vpu.mp.db.shop.Tables.*;
  * @date 2019年11月04日
  */
 @Service
+@Slf4j
 public class GoodsCommentProcessorDao extends BaseShopConfigService {
 
     /**
@@ -99,6 +101,7 @@ public class GoodsCommentProcessorDao extends BaseShopConfigService {
             condition = condition.and(COMMENT_GOODS.COMM_NOTE.isNotNull());
         }
         // 获取最近的一次评级详情
+        log.debug("商品详情-查询商品最近一次评价详情信息");
         Record11<Integer, Byte, String, Byte, String, Timestamp, String, String, String, String, String> record = db().select(COMMENT_GOODS.ID, COMMENT_GOODS.ANONYMOUSFLAG, COMMENT_GOODS.COMM_NOTE, COMMENT_GOODS.COMMSTAR, COMMENT_GOODS.COMM_IMG,
             COMMENT_GOODS.CREATE_TIME, USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR,
             COMMENT_GOODS.BOGUS_USERNAME, COMMENT_GOODS.BOGUS_USER_AVATAR, ORDER_GOODS.GOODS_ATTR)
@@ -109,6 +112,7 @@ public class GoodsCommentProcessorDao extends BaseShopConfigService {
             .fetchAny();
 
         if (record == null) {
+            log.debug("商品详情-无评价信息");
             return null;
         }
 
@@ -143,7 +147,7 @@ public class GoodsCommentProcessorDao extends BaseShopConfigService {
         }
         CommentDetailVo vo = new CommentDetailVo();
         vo.setCommentInfo(commentInfo);
-
+        log.debug("商品详情-统计商品所有评价数量");
         List<CommentDetailVo.CommentLevelInfo> commentLevelInfos = calculateGoodsCommentNumInfo(goodsId, commentConfig, commentStateConfig);
         vo.setCommentLevelsInfo(commentLevelInfos);
         return vo;
@@ -160,9 +164,9 @@ public class GoodsCommentProcessorDao extends BaseShopConfigService {
             condition = condition.and(COMMENT_GOODS.COMM_NOTE.isNotNull());
         }
         if (NOT_AUDIT.equals(commentConfig) || PUBLISH_FIRST.equals(commentConfig)) {
-            condition = COMMENT_GOODS.FLAG.ne(NOT_PASS_AUDIT);
+            condition = condition.and(COMMENT_GOODS.FLAG.ne(NOT_PASS_AUDIT));
         } else {
-            condition = COMMENT_GOODS.FLAG.eq(PASS_AUDIT);
+            condition = condition.and(COMMENT_GOODS.FLAG.eq(PASS_AUDIT));
         }
 
         ArrayList<Record3<Integer, Byte, String>> recordsList = new ArrayList<>(db().select(COMMENT_GOODS.ID, COMMENT_GOODS.COMMSTAR, COMMENT_GOODS.COMM_IMG).from(COMMENT_GOODS)
