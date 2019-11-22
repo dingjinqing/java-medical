@@ -30,12 +30,42 @@
           'border':'none'
         }"
       >
-        <el-table-column label="活动名称"></el-table-column>
-        <el-table-column label="触发条件"></el-table-column>
-        <el-table-column label="活动时间"></el-table-column>
-        <el-table-column label="活动类型"></el-table-column>
+        <el-table-column
+          label="活动名称"
+          prop="name"
+        ></el-table-column>
+        <el-table-column
+          label="触发条件"
+          prop="action"
+        >
+          <template slot-scope="{row}">
+            <div>
+              {{row.action|filterAction}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="活动时间">
+          <template slot-scope="{row}">
+            <div>
+              <span>{{row.startDate}}</span>
+              <span>至</span>
+              <span>{{row.endDate}}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="活动类型"
+          prop="activityAction"
+        ></el-table-column>
         <el-table-column label="优先级"></el-table-column>
-        <el-table-column label="活动状态"></el-table-column>
+        <el-table-column
+          label="活动状态"
+          prop="status"
+        >
+          <template slot-scope="{row}">
+            <div>{{row.status|filterStatus}}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="operate"
           label="操作"
@@ -91,6 +121,41 @@ export default {
       pageParams: {}
     }
   },
+  filters: {
+    filterAction (val) {
+      let text = ''
+      switch (val) {
+        case 1:
+          text = '新用户'
+          break
+        case 2:
+          text = '全部用户'
+          break
+        case 3:
+          text = '未在店内支付过的用户'
+          break
+      }
+      return text
+    },
+    filterStatus (status) {
+      let text = ''
+      switch (status) {
+        case 0:
+          text = '进行中'
+          break
+        case 1:
+          text = '未开始'
+          break
+        case 2:
+          text = '已过期'
+          break
+        case 3:
+          text = '已停用'
+          break
+      }
+      return text
+    }
+  },
   mounted () {
     this.langDefault()
     this.initDataList()
@@ -116,6 +181,7 @@ export default {
           break
       }
       this.$set(this.queryParams, 'status', status)
+      this.initDataList()
     },
     initDataList () {
       let params = Object.assign({}, this.queryParams, this.pageParams)

@@ -23,7 +23,11 @@
     </div>
     <!-- 添加抽奖活动的路由出口 -->
     <div v-if="isShowAddFlag">
-      <component v-bind:is="currentComponent" :id="lotteryId" :isEdite="isEdite"></component>
+      <component
+        v-bind:is="currentComponent"
+        :id="lotteryId"
+        :isEdite="isEdite"
+      ></component>
     </div>
     <div
       v-if="!isShowAddFlag"
@@ -199,6 +203,9 @@ export default {
     // 初始化页面数据
     this.initPageData()
     this.closeTabAddGroup()
+    if (this.$route.query.add) {
+      this.addActivity()
+    }
     if (this.tabSwitch === `6`) {
       console.log(1111111111)
     } else {
@@ -319,7 +326,7 @@ export default {
         return false
       }
       // 不是新增
-      for (;this.tabInfo.length > 5;) {
+      for (; this.tabInfo.length > 5;) {
         this.currentComponent = luckyDrawAdd
 
         this.isShowAddFlag = false
