@@ -298,19 +298,7 @@ export default {
       tuneUp: false,
       defaultColorright: '#fff',
       cat_id: '',
-      classificationOptions: [{
-        value: 'null',
-        label: '请选择页面分类'
-      }, {
-        value: '0',
-        label: '测试页面1'
-      }, {
-        value: '1',
-        label: '测试页面2'
-      }, {
-        value: '2',
-        label: '测试页面3'
-      }],
+      classificationOptions: [],
       ruleForm: {
         'is_ok': 1,
         'cat_id': '',
@@ -369,13 +357,25 @@ export default {
   watch: {
     pageSet: {
       handler (newData) {
-        console.log(newData)
+        console.log(newData, this.classificationOptions)
         if (JSON.stringify(newData) !== '{}') {
-          this.classificationOptions.forEach((res) => {
-            if (res.id === Number(newData.cat_id)) {
-              this.pageClassify = res.name
+          getClassifyData().then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              let obj = {
+                id: null,
+                name: '请选择页面分类'
+              }
+              res.content.unshift(obj)
+              this.classificationOptions = res.content
+              this.classificationOptions.forEach((res) => {
+                if (Number(res.id) === Number(newData.cat_id)) {
+                  this.pageClassify = res.name
+                }
+              })
             }
           })
+
           console.log(this.pageClassify)
           this.ruleForm = newData
         }
@@ -409,17 +409,6 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
-    getClassifyData().then((res) => {
-      console.log(res)
-      if (res.error === 0) {
-        let obj = {
-          id: null,
-          name: '请选择页面分类'
-        }
-        res.content.unshift(obj)
-        this.classificationOptions = res.content
-      }
-    })
   },
   methods: {
     // 点击重置
