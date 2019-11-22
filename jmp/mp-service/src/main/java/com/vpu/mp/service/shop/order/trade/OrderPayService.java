@@ -8,6 +8,7 @@ import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
@@ -15,6 +16,7 @@ import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.OrderReadService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import org.jooq.tools.StringUtils;
@@ -83,7 +85,7 @@ public class OrderPayService extends ShopBaseService{
      * @param orderGoodsBo
      * @param param
      */
-    public WxPayUnifiedOrderResult isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param){
+    public ExecuteResult isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param) {
         logger().info("继续支付接口start");
         ArrayList<String> goodsType = Lists.newArrayList(OrderReadService.orderTypeToArray(orderInfo.getGoodsType()));
         if(goodsType.contains(String.valueOf(OrderConstant.ORDER_WAIT_DELIVERY)) || goodsType.contains(String.valueOf(OrderConstant.ORDER_PIN_PAYED_GROUPING))){
@@ -97,14 +99,17 @@ public class OrderPayService extends ShopBaseService{
             //非系统金额支付
             String goodsNameForPay = getGoodsNameForPay(orderInfo, orderGoodsBo);
             Integer amount = BigDecimalUtil.multiply(orderInfo.getMoneyPaid(), BigDecimal.valueOf(100)).intValue();
+            ExecuteResult executeResult = ExecuteResult.create();
             try {
-                return pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), amount, param.getWxUserInfo().getWxUser().getOpenId());
+                logger().info("微信预支付调用接口调用");
+                executeResult.setResult(pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), amount, param.getWxUserInfo().getWxUser().getOpenId()));
+                return executeResult;
             } catch (WxPayException e) {
                 logger().error("微信预支付调用接口失败，订单号：{}", orderInfo.getOrderSn());
+                executeResult.setErrorCode(JsonResultCode.ORDER_PROCESS_CONFIG_IS_NULL);
+                return executeResult;
             }
         }
-        logger().info("继续支付接口end");
-        return null;
     }
 
     private String getGoodsNameForPay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo) {

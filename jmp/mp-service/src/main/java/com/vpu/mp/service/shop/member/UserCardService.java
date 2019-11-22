@@ -916,6 +916,8 @@ public class UserCardService extends ShopBaseService {
                 discountAmount = getDiscountAmount(card, tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
             }else{
                 iterator.remove();
+                //TODO 删除判断
+                continue;
             }
             card.setBos(bos);
             card.setTotalPrice(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);

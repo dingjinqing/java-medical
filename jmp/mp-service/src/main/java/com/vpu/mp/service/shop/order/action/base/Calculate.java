@@ -194,8 +194,10 @@ public class Calculate extends ShopBaseService {
                             temp.setTotalDiscount(discountAmount);
                             temp.setTotalGoodsNumber(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER]);
                             temp.setTotalPrice(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
+                            temp.setIdentity(temp.getCouponSn());
                             //折扣
                             BigDecimal ratio = temp.initRatio();
+                            //
                             if(ratio.compareTo(BigDecimal.ZERO) == -1 || ratio.compareTo(BigDecimal.ONE) == 1){
                                 logger().error("订单结算优惠券计算ratio数据非法,信息为:", param.getWxUserInfo(), temp.getCouponSn());
                                 //数据异常不影响正常流程，不使用该优惠券

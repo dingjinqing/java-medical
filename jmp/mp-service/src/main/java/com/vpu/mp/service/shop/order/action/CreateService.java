@@ -209,7 +209,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         });
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         OrderInfoRecord record = orderInfo.getRecord(orderBo.getOrderId());
-        return ExecuteResult.create(null, orderPay.isContinuePay(record, orderBo.getOrderGoodsBo(), param));
+        return orderPay.isContinuePay(record, orderBo.getOrderGoodsBo(), param);
     }
 
     /**

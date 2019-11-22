@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.action.base;
 
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -10,6 +11,7 @@ import lombok.ToString;
  */
 @ToString
 @Getter
+@Setter
 public class ExecuteResult {
     private JsonResultCode errorCode;
     /**返回参数*/
@@ -56,5 +58,13 @@ public class ExecuteResult {
      */
     public static ExecuteResult create(JsonResultCode errorCode, String... errorParam){
         return new ExecuteResult(errorCode, null, errorParam);
+    }
+
+    /**
+     * 静态构造器
+     * @return
+     */
+    public static ExecuteResult create() {
+        return new ExecuteResult(null, null, null);
     }
 }

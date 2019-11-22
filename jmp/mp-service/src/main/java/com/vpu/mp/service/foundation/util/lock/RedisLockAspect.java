@@ -138,7 +138,7 @@ public class RedisLockAspect extends ShopBaseService {
                     log.info("批量锁获取成功，准备调用代理方法");
                     //成功调用代理方法
                     joinPoint.proceed();
-                    log.info("批量锁获取成功，准备调用代理方法");
+                    log.info("调用代理方法成功");
                     break;
                 }
             } while (nano - System.nanoTime() < redisLockAnnotation.maxWait() * 1000000);
