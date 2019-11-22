@@ -1,6 +1,4 @@
 <template>
-  <!-- header -->
-
   <!-- 运费模板列表 -->
   <div class="deliverTemplateList">
     <section
@@ -90,7 +88,6 @@ import { formatTemplateData } from '@/util/formatData.js'
 import deliverTemplateTable from './deliverTemplateTable'
 import { deliverConfig, fetchDeliverTemplateList } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 export default {
-  name: 'deliverTemplateList',
   components: { deliverTemplateTable },
   data () {
     // 自定义校验规则
@@ -170,7 +167,6 @@ export default {
       }
     }).catch(err => console.log(err))
   },
-
   methods: {
     // 选中运费模板的时候
     handleChange (val) {
@@ -187,10 +183,8 @@ export default {
       console.log(this.formData)
       // 修改默认运费模板配置
       deliverConfig(this.formData).then(res => {
-        console.log(res)
         // let templateOption = res.content
-        const { error } = res
-        if (error === 0) {
+        if (res.error === 0) {
           this.$message({
             showClose: true,
             message: '保存成功',

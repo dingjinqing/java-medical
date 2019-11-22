@@ -178,17 +178,17 @@
                 </el-form-item>
                 <el-form-item
                   :label="$t('ordinaryCoupon.surplus') + '：'"
-                  prop="surplus"
+                  prop="limitSurplusFlag"
                 >
                   <div>
                     <div>
                       <el-radio
-                        v-model="param.surplus"
+                        v-model="param.limitSurplusFlag"
                         :label='1'
                       >{{ $t('ordinaryCoupon.surplusRadio1') }}</el-radio>
                       <span>
                         <el-input
-                          :disabled="param.surplus===1?false:true"
+                          :disabled="param.limitSurplusFlag===1?false:true"
                           v-model.number="param.totalAmount"
                           size="small"
                           class="small_input"
@@ -198,7 +198,7 @@
                     </div>
                     <div>
                       <el-radio
-                        v-model="param.surplus"
+                        v-model="param.limitSurplusFlag"
                         :label='0'
                       >{{ $t('ordinaryCoupon.surplusRadio2') }}</el-radio>
                     </div>
@@ -615,7 +615,7 @@ export default {
         validity: '',
         validityHour: '',
         validityMinute: '',
-        surplus: 0, // 初始库存
+        limitSurplusFlag: 0, // 初始库存
         totalAmount: null, // num发行量
         validationCode: '',
         recommendGoodsId: '', // 指定商品
@@ -642,7 +642,7 @@ export default {
           { max: 10, message: this.$t('ordinaryCoupon.validateactName2'), trigger: 'blur' }
         ],
         validityType: { required: true, validator: validateTime, trigger: 'change' },
-        surplus: { required: true, validator: validateSurplus, trigger: 'change' },
+        limitSurplusFlag: { required: true, validator: validateSurplus, trigger: 'change' },
         preferentialType: { required: true, validator: validatePreferentialType, trigger: 'change' },
         useScore: { required: true, validator: validateisRandom, trigger: 'change' },
         receivePerPerson: { required: true, message: this.$t('ordinaryCoupon.validatereceivePerPerson'), trigger: 'change' },
@@ -660,10 +660,10 @@ export default {
           value: 0
         }, {
           label: '1',
-          value: 0
+          value: 1
         }, {
           label: '2',
-          value: 1
+          value: 2
         }, {
           label: '3',
           value: 3
@@ -756,11 +756,7 @@ export default {
           this.param.validityMinute = data.validityMinute
           // 初始库存
           this.param.totalAmount = data.totalAmount
-          if (this.param.totalAmount === 0) {
-            this.param.surplus = 0
-          } else {
-            this.param.surplus = 1
-          }
+          this.param.limitSurplusFlag = data.limitSurplusFlag
           // 优惠类型
           this.param.actCode = data.actCode
           if (this.param.actCode === 'voucher') {
@@ -802,7 +798,7 @@ export default {
           } else {
             this.param.isExclusive = true
             this.param.cardId = this.param.cardId.split(',')
-            this.param.cardId = this.param.cardId.map(Number)
+            // this.param.cardId = this.param.cardId.map(Number)
           }
           // 领取码
           this.param.validationCode = data.validationCode
@@ -850,10 +846,10 @@ export default {
             this.param.receiveNum = 0
           }
           // 发放的总数量
-          if (this.param.surplus === 0) {
-            this.param.totalAmount = null
+          if (this.param.limitSurplusFlag === 0) {
+            this.param.totalAmount = 0
           } else {
-            this.param.surplus = this.param.totalAmount
+            // this.param.limitSurplusFlag = this.param.totalAmount
           }
           // 使用门槛
           if (this.param.useConsumeRestrict === 0) {

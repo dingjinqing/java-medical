@@ -19,25 +19,24 @@ export default {
     return {
       update: '保存',
       flag: 0,
-      template: {} // 传递需要修改的数据，如果不用修改，则无需传递
-      // templates: {
-      //   templateName: '',
-      //   flag: 0, // 默认添加普通
-      //   contentParam: {
-      //     limitParam: {
-      //       limit_deliver_area: 0,
-      //       area_list: 0,
-      //       area_text: '全国（其他地区）',
-      //       first_num: 1,
-      //       first_fee: 0,
-      //       continue_num: 1,
-      //       continue_fee: 0
-      //     },
-      //     areaParam: [],
-      //     hasFee0Condition: 0,
-      //     feeConditionParam: []
-      //   }
-      // }
+      template: {
+        templateName: '',
+        flag: 0, // 默认添加普通
+        contentParam: {
+          limitParam: {
+            limit_deliver_area: 0,
+            area_list: 0,
+            area_text: '全国（其他地区）',
+            first_num: 1,
+            first_fee: 0,
+            continue_num: 1,
+            continue_fee: 0
+          },
+          areaParam: [],
+          hasFee0Condition: 0,
+          feeConditionParam: []
+        }
+      }
     }
   },
   watch: {
@@ -75,6 +74,7 @@ export default {
           break
       }
     },
+    // 获取单个数据
     initData () {
       getTemplateOneApi({
         deliverTemplateId: this.$route.query.deliverTemplateId
@@ -82,35 +82,36 @@ export default {
         if (res.error === 0) {
           res.content[0].templateContent = JSON.parse(res.content[0].templateContent)
           this.template = res.content[0]
-          console.log(res.content[0])
           console.log(this.template)
         }
-      }).catch(err => console.log(err))
+      })
     },
-
+    // 编辑保存
     updateDelivery (data) {
       if (this.flag === 0) {
+        // 普通运费
         updateTemplateApi(data).then(res => {
-          console.log(res)
-          const { error } = res
-          if (error === 0) {
-            this.$message.success('修改成功')
+          if (res.error === 0) {
+            this.$message.success('修改运费模板成功!')
             this.$router.push({
               path: `/admin/home/main/goodsManage/deliverTemplate/list`
             })
+          } else {
+            this.$message.warning('修改运费模板失败!')
           }
-        }).catch(err => console.log(err))
+        })
       } else {
+        // 重量运费
         updateWeightTemplateApi(data).then(res => {
-          console.log(res)
-          const { error } = res
-          if (error === 0) {
-            this.$message.success('修改成功')
+          if (res.error === 0) {
+            this.$message.success('修改重量运费模板成功!')
             this.$router.push({
               path: `/admin/home/main/goodsManage/deliverTemplate/weightList`
             })
+          } else {
+            this.$message.warning('修改重量运费模板失败!')
           }
-        }).catch(err => alert(err))
+        })
       }
     }
   }

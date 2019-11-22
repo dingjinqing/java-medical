@@ -2,37 +2,32 @@
   <div class="add">
     <delivery
       @addDelivery="addDelivery"
-      :flag="1"
+      :flag="flag"
     />
   </div>
 </template>
 
 <script>
 import delivery from './Delivery'
-import { addWeightTemplateApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
+import { addTemplate } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
 export default {
   name: `deliverTemplateAdd`,
-  components: {
-    delivery
-  },
+  components: { delivery },
   data () {
     return {
-
+      flag: 1
     }
   },
   methods: {
     addDelivery (params) {
-      // console.log(params)
-      addWeightTemplateApi(params).then(res => {
-        console.log(res)
-        const { error } = res
-        if (error === 0) {
-          this.$message.success('添加运费模板成功')
+      addTemplate(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success('添加重量运费模板成功!')
           this.$router.push({
             path: `/admin/home/main/goodsManage/deliverTemplate/weightList`
           })
         }
-      }).catch(err => console.log(err))
+      })
     }
   }
 }

@@ -125,12 +125,9 @@ import LocatTPTable from '@/components/admin/areaLinkage/LocatTPTable'
 import RulesMixins from '@/mixins/RulesMixins' // mixin混入
 
 export default {
-  components: {
-    LocatTPTable
-  },
+  components: { LocatTPTable },
   props: {
     propDelivery: {
-      required: false,
       type: Object
     },
     addOrUpdate: {
@@ -145,19 +142,19 @@ export default {
   watch: {
     propDelivery: {
       handler: function (newVal, oldVal) {
+        // 编辑初始化
         this.initData()
-      },
-      immediate: true
-    },
-    flag: {
-      handler: function (newVal, oldVal) {
-        this.delivery.flag = this.flag
       }
     }
+    // flag: {
+    //   handler: function (newVal, oldVal) {
+    //     this.delivery.flag = this.flag
+    //   }
+    // }
   },
   data () {
     var validateNum = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*$/
       if (value === '') {
         callback(new Error('请填写件数'))
       } else if (!re.test(value)) {
@@ -205,153 +202,73 @@ export default {
           hasFee0Condition: 0,
           feeConditionParam: []
         }
-      }
-    }
-  },
-  mounted () {
-    if (this.flag === 1) {
-      // 编辑初始化
-      this.initData()
+      },
+      updateId: null // 修改数据id
     }
   },
   methods: {
     initData () {
-      console.log(this.propDelivery)
+      // 编辑回显
       var data = this.propDelivery
+      this.updateId = data.deliverTemplateId
       this.delivery = {
-        deliverTemplateId: data.deliverTemplateId,
         templateName: data.templateName,
         flag: data.flag,
         contentParam: {
-          limitParam: data.templateContent.limitParam,
+          limitParam: {
+            limit_deliver_area: data.templateContent.limitParam.limit_deliver_area,
+            area_list: data.templateContent.limitParam.area_list,
+            area_text: data.templateContent.limitParam.area_text,
+            first_num: data.templateContent.limitParam.first_num,
+            first_fee: data.templateContent.limitParam.first_fee,
+            continue_num: data.templateContent.limitParam.continue_num,
+            continue_fee: data.templateContent.limitParam.continue_fee
+          },
           areaParam: data.templateContent.areaParam,
           feeConditionParam: data.templateContent.feeConditionParam
         }
       }
-      //   // 判断有没有传递参数
-      //   if (
-      //     this.propDelivery &&
-      //     this.propDelivery.templateName &&
-      //     this.propDelivery.goodsDeliverTemplateLimitParam &&
-      //     this.propDelivery.goodsDeliverTemplateFeeParam
-      //   ) {
-      //     const {
-      //       deliverTemplateId,
-      //       templateName,
-      //       goodsDeliverTemplateLimitParam,
-      //       goodsDeliverTemplateAreaParam,
-      //       goodsDeliverTemplateFeeParam,
-      //       goodsDeliverTemplateFeeConditionParam
-      //     } = this.propDelivery
-      //     this.delivery = {
-      //       deliverTemplateId,
-      //       templateName,
-      //       goodsDeliverTemplateLimitParam: {
-      //         ...goodsDeliverTemplateLimitParam,
-      //         limit_deliver_area: Boolean(
-      //           goodsDeliverTemplateLimitParam.limit_deliver_area
-      //         )
-      //       },
-      //       goodsDeliverTemplateAreaParam,
-      //       goodsDeliverTemplateFeeParam: {
-      //         ...goodsDeliverTemplateFeeParam,
-      //         has_fee_0_condition: Boolean(
-      //           goodsDeliverTemplateFeeParam.has_fee_0_condition
-      //         )
-      //       },
-      //       goodsDeliverTemplateFeeConditionParam
-      //     }
-      //   }
     },
     // 添加运费模板
     addDeliveryTemplate () {
-      // 状态，存储，为0的情况下验证全部通过，否则就是不通过
-      // var stats = 0
+      var hasFeeData = []
       this.$refs['formData'].validate((valid) => {
-        if (valid) {
+        if (!valid) {
           return false
         }
       })
       if (this.delivery.contentParam.limitParam.limit_deliver_area === 0) {
         this.$refs['freightRegion'].validate((valid) => {
-          if (valid) {
-            //       stats++
+          if (!valid) {
             return false
           }
         })
       }
       var regionData = this.$refs['regionData'].getTableData()
       this.delivery.contentParam.areaParam = regionData
-      // if (this.delivery.contentParam.limitParam.limit_deliver_area && !regionData.length) {
-      //   this.$message.error('可配送区域不能为空')
-      //   return false
-      // }
-      var hasFeeData = this.$refs['freeShippingData'].getTableData()
-      this.delivery.contentParam.feeConditionParam = hasFeeData
-      console.log(this.delivery)
-      // if (this.delivery.contentParam.hasFee0Condition === 1 && !hasFeeData.length) {
-      //   this.$message.error('包邮条件不能为空')
-      //   return false
-      // }
-      // this.$refs['formData'].validate((valid) => {
-      //   if (valid) {
-
-      //   } else {
-      //     return false
-      //   }
-      // })
-      if (this.propDelivery) {
-        // 编辑保存
-        this.$emit('updateDelivery', this.delivery)
-      } else {
-        // 添加保存
-        this.$emit('addDelivery', this.delivery)
+      if (this.delivery.contentParam.limitParam.limit_deliver_area && !regionData.length) {
+        this.$message.error('可配送区域不能为空')
+        return false
       }
-      // this.$refs.formData.validate(required => {
-      // if (!required) return false
-      // if (!stats && regionData) {
-      // 状态为0，并且freeShippingData和regionData都不为''字符串
-      // this.$refs.freeShippingData;
-      // const {
-      //   flag,
-      //   templateName,
-      //   goodsDeliverTemplateLimitParam,
-      //   goodsDeliverTemplateFeeParam
-      // } = this.delivery
-      // const data = {
-      //   flag,
-      //   templateName,
-      //   goodsDeliverTemplateLimitParam: {
-      //     ...goodsDeliverTemplateLimitParam,
-      //     limit_deliver_area: Number(
-      //       goodsDeliverTemplateLimitParam.limit_deliver_area
-      //     )
-      //   },
-      //   goodsDeliverTemplateAreaParam: regionData,
-      //   goodsDeliverTemplateFeeParam: {
-      //     ...goodsDeliverTemplateFeeParam,
-      //     has_fee_0_condition: Number(
-      //       goodsDeliverTemplateFeeParam.has_fee_0_condition
-      //     )
-      //   }
-      // }
-      // data[
-      //   'goodsDeliverTemplateFeeConditionParam'
-      // ] = freeShippingData.length ? freeShippingData : []
-      // if (this.propDelivery) {
-      //   data[
-      //     'deliverTemplateId'
-      //   ] = this.delivery.deliverTemplateId
-      //   // 发送请求,传递data给后台,这是修改
-      //   // this.$emit('updateDelivery', data)
-      // } else {
-      //   // 发送请求,传递data给后台
-      //   // this.$emit('addDelivery', data)
-      //   console.log(data)
-      // }
-      // this.$message.success('模板添加成功!!!')
-      // }
-      // })
+      if (this.delivery.contentParam.hasFee0Condition === 1) {
+        hasFeeData = this.$refs['freeShippingData'].getTableData()
+      }
+      this.delivery.contentParam.feeConditionParam = hasFeeData
+      if (this.delivery.contentParam.hasFee0Condition === 1 && !hasFeeData.length) {
+        this.$message.error('包邮条件不能为空')
+        return false
+      }
+      if (!this.propDelivery) {
+        // 添加保存
+        this.delivery.flag = this.flag
+        this.$emit('addDelivery', this.delivery)
+      } else {
+        alert(this.flag)
+        var obj = this.delivery
+        obj.deliverTemplateId = this.updateId
+        // 编辑保存
+        this.$emit('updateDelivery', obj)
+      }
     }
   }
 }

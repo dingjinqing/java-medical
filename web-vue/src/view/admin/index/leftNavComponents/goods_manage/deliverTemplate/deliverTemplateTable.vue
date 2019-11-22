@@ -141,6 +141,11 @@ export default {
   mounted () {
     this.initData()
   },
+  watch: {
+    $router () {
+      this.initData()
+    }
+  },
   methods: {
     // 初始化运费模板数据
     initData () {
@@ -154,16 +159,13 @@ export default {
           const { error, content: { config, pageResult: { dataList, page } } } = res
           if (error === 0) {
             this.loading = false
-
-            console.log(res)
             this.pageParams = page
             this.content = res.content
             this.formData = JSON.parse(config)
             let resData = formatTemplateData(dataList)
             this.lists = resData
-            console.log(this.lists)
           }
-        }).catch(err => console.log(err))
+        })
       } else {
         // 重量运费模板列表
         fetchDeliverTemplateList({
@@ -171,21 +173,20 @@ export default {
           currentPage: this.pageParams.currentPage,
           pageRows: this.pageParams.pageRows
         }).then(res => {
-          const { error, content: { page } } = res
+          const { error, content: { config, pageResult: { dataList, page } } } = res
           if (error === 0) {
             this.loading = false
-            console.log(res)
             this.pageParams = page
-            let resData = formatTemplateData(res.content.dataList)
+            this.content = res.content
+            this.formData = JSON.parse(config)
+            let resData = formatTemplateData(dataList)
             this.lists = resData
-            console.log(this.lists)
           }
-        }).catch(err => console.log(err))
+        })
       }
     },
     // 复制运费模板
     handleCopyTemplate (deliverTemplateId) {
-      // copyDeliverTemplateApi
       copyDeliverTemplateApi({ deliverTemplateId }).then(res => {
         const { error } = res
         if (error === 0) {
@@ -216,12 +217,7 @@ export default {
           const { error } = res
           if (error === 0) {
             this.initData()
-            // 删除成功提示
-            this.$message({
-              type: 'success',
-              center: 'true',
-              message: '删除成功!'
-            })
+            this.$message.success({ message: '删除成功!' })
           }
         }).catch(err => console.log(err))
       }).catch((error) => console.log(error))

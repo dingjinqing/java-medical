@@ -2,7 +2,7 @@
   <div class="add">
     <delivery
       @addDelivery="addDelivery"
-      :flag="0"
+      :flag="flag"
     />
   </div>
 </template>
@@ -15,22 +15,19 @@ export default {
   components: { delivery },
   data () {
     return {
-
+      flag: 0
     }
   },
   methods: {
     addDelivery (params) {
-      console.log(params, 'paramas id')
       addTemplate(params).then(res => {
-        console.log(res)
-        const { error } = res
-        if (error === 0) {
-          this.$message.success('添加运费模板成功')
+        if (res.error === 0) {
+          this.$message.success('添加运费模板成功!')
           this.$router.push({
             path: `/admin/home/main/goodsManage/deliverTemplate/list`
           })
         }
-      }).catch(err => console.log(err))
+      })
     }
   }
 }
