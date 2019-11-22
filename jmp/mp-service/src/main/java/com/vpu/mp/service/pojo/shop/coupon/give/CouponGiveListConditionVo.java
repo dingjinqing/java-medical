@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.coupon.give;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * 定向发放优惠券
@@ -14,13 +14,17 @@ import lombok.Data;
 @Data
 public class CouponGiveListConditionVo {
 	/** 优惠券id*/
-	private Integer    couponId;
+	private Integer couponId;
 	/** 优惠券名称 */
-	private String 		couponName;
+	private String couponName;
+	/** 优惠券类型 */
+	private String actCode;
 	/** 使用限制 */
-	private BigDecimal	leastConsume;
+	private Byte useConsumeRestrict;
+    /** 满多少可用 */
+	private BigDecimal leastConsume;
 	/** 面值 */
-	private BigDecimal 	denomination;
+	private BigDecimal denomination;
 	/** 有效期标识 0：固定时间 1：领取后指定时间段 */
 	private Integer validityType;
 	/** 开始时间 */
@@ -28,7 +32,7 @@ public class CouponGiveListConditionVo {
 	/** 结束时间 */
 	private Timestamp endTime;
 	/** 有效期天数 */
-	private Integer 	validity;
+	private Integer validity;
 	/** 有效期小时数 */
 	private Integer validityHour;
 	/** 有效期分钟数 */

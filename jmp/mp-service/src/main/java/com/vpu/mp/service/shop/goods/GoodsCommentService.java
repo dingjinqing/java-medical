@@ -781,7 +781,6 @@ public class GoodsCommentService extends ShopBaseService {
         // 给当前用户赠送优惠券
           Integer shopId = getShopId();
           CouponGiveQueueParam giveCoupon = new CouponGiveQueueParam(){{
-              setShopId(shopId);
               setActId(1);
               setGetSource(GET_SOURCE);
               setAccessMode(BYTE_ZERO);

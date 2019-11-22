@@ -37,8 +37,8 @@ public class CouponHoldService extends ShopBaseService {
         /* 用户持有的优惠券 */
         CustomerAvailCoupons h = CUSTOMER_AVAIL_COUPONS;
 
-        SelectJoinStep<? extends Record> select = db()
-                .select(u.USERNAME, u.MOBILE,
+        SelectJoinStep<? extends Record> select =
+            db().select(u.USERNAME, u.MOBILE,
                         m.ACT_NAME.as("coupon_name"),m.USE_SCORE,m.SCORE_NUMBER,
                         h.ID,h.ACCESS_MODE, h.IS_USED,h.ORDER_SN, h.START_TIME, h.END_TIME, h.CREATE_TIME, h.USED_TIME,h.DEL_FLAG)
                 .from(h)

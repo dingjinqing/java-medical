@@ -10,10 +10,11 @@ import lombok.Data;
 
 @Data
 public class CouponGiveListParam {
-	private String actName;
+	/** 活动名称 */
+    private String actName;
 	/**
      * 	分页信息
      */
-    private int currentPage;
-    private int pageRows;
+    private Integer currentPage;
+    private Integer pageRows;
 }

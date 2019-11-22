@@ -53,37 +53,37 @@ public class CouponGiveService extends ShopBaseService {
   private static final MrkingVoucher MV = MrkingVoucher.MRKING_VOUCHER.as("MV");
 
   /** 获取方式，0：发放 */
-  private static final byte ACCESS_MODE = 0;
+  private static final Byte ACCESS_MODE = 0;
   /** 活动类型 定向发券 值为9 */
-  private static final byte GET_SOURCE = 9;
+  private static final Byte GET_SOURCE = 9;
 
   /**
    * 优惠券发放情况分页列表
    *
-   * @param param
-   * @return listVo
+   * @param param 选填项：活动名称
+   * @return listVo 对应的发券活动信息
    */
   public PageResult<CouponGiveListVo> getCouponGiveList(CouponGiveListParam param) {
     try {
-      /* 查询活动信息 */
+      // 查询活动信息
       SelectLimitStep<Record> couponGiveListVo =
           db().select().from(GIVE_VOUCHER).orderBy(GIVE_VOUCHER.ID.desc());
-      /* 模糊查询 */
+      // 模糊查询
       if (!StringUtils.isNullOrEmpty(param.getActName())) {
         couponGiveListVo =
             ((SelectWhereStep<Record>) couponGiveListVo)
                 .where(GIVE_VOUCHER.ACT_NAME.like(this.likeValue(param.getActName())));
       }
-      /* 整合分页信息 */
+      // 整合分页信息
       PageResult<CouponGiveListVo> listVo =
           this.getPageResult(
               couponGiveListVo,
               param.getCurrentPage(),
               param.getPageRows(),
               CouponGiveListVo.class);
-      /* 整合活动对应优惠券信息 */
+      // 整合活动对应优惠券信息
       for (CouponGiveListVo vo : listVo.getDataList()) {
-        /* 解析得到活动中包含的优惠券 */
+        //解析得到活动中包含的优惠券
         String dataList = vo.getSendCondition();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode;
@@ -91,13 +91,15 @@ public class CouponGiveService extends ShopBaseService {
         String voucherId = jsonNode.get("coupon_ids").toString();
         String id = voucherId.replace("\"", "");
         String[] idArray = id.split(",");
-        /* 优惠券信息 */
-        List<CouponGiveListConditionVo> tempListVo = new ArrayList<CouponGiveListConditionVo>();
+        // 优惠券信息
+        List<CouponGiveListConditionVo> tempListVo = new ArrayList<>();
         for (String selectId : idArray) {
           Optional<CouponGiveListConditionVo> couponVo =
               db().select(
                       MRKING_VOUCHER.ID.as("couponId"),
                       MRKING_VOUCHER.ACT_NAME.as("coupon_name"),
+                      MRKING_VOUCHER.ACT_CODE,
+                      MRKING_VOUCHER.USE_CONSUME_RESTRICT,
                       MRKING_VOUCHER.LEAST_CONSUME,
                       MRKING_VOUCHER.DENOMINATION,
                       MRKING_VOUCHER.START_TIME,
@@ -109,15 +111,15 @@ public class CouponGiveService extends ShopBaseService {
                   .from(MRKING_VOUCHER)
                   .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(selectId)))
                   .fetchOptionalInto(CouponGiveListConditionVo.class);
-          tempListVo.add(couponVo.isPresent() ? couponVo.get() : null);
+          tempListVo.add(couponVo.orElse(null));
         }
 
-        /** 完善某一活动对应的优惠券信息 */
+        // 完善某一活动对应的优惠券信息
         vo.setCouponGiveListConditionVo(tempListVo);
         // 会员卡信息
         if (!StringUtils.isNullOrEmpty(vo.getCardId())) {
           String[] cardId = vo.getCardId().split(",");
-          List<String> cardIdList = new ArrayList<String>();
+          List<String> cardIdList = new ArrayList<>();
           for (String cId : cardId) {
             cardIdList.add(cId);
           }
@@ -132,7 +134,7 @@ public class CouponGiveService extends ShopBaseService {
         // 标签信息
         if (!StringUtils.isNullOrEmpty(vo.getTagId())) {
           String[] tagId = vo.getTagId().split(",");
-          List<String> tagIdList = new ArrayList<String>();
+          List<String> tagIdList = new ArrayList<>();
           for (String tId : tagId) {
             tagIdList.add(tId);
           }
@@ -156,8 +158,8 @@ public class CouponGiveService extends ShopBaseService {
   /**
    * 优惠券明细
    *
-   * @param param
-   * @return
+   * @param param 发券活动信息和优惠券信息
+   * @return 优惠券-用户 明细
    */
   public PageResult<CouponHoldListVo> getDetail(CouponGiveDetailParam param) {
 
@@ -176,8 +178,7 @@ public class CouponGiveService extends ShopBaseService {
   /**
    * 发放优惠券
    *
-   * @param param
-   * @return
+   * @param param 发券活动条件
    */
   public void insertGrant(CouponGiveGrantParam param) {
 
@@ -225,7 +226,7 @@ public class CouponGiveService extends ShopBaseService {
               .limit(1)
               .fetchOptionalInto(Integer.class)
               .orElse(0);
-      Set<Integer> userIds = new HashSet<Integer>();
+      Set<Integer> userIds = new HashSet<>();
       // 将发券活动写入用户-优惠券对应表
 
       // 加购人群
@@ -433,7 +434,7 @@ public class CouponGiveService extends ShopBaseService {
       }
 
       // 队列
-      List<Integer> userIdList = new ArrayList<Integer>(userIds);
+      List<Integer> userIdList = new ArrayList<>(userIds);
       String couponIds = param.getCouponGiveGrantInfoParams().getCouponIds().toString();
       String[] couponArray = couponIds.split(",");
 
@@ -441,7 +442,7 @@ public class CouponGiveService extends ShopBaseService {
       // RabbitConfig.BINDING_EXCHANGE_COUPON_KEY, TaskJobEnum.GIVE_COUPON);
       CouponGiveQueueParam newParam =
           new CouponGiveQueueParam(
-              getShopId(), userIdList, actId, couponArray, ACCESS_MODE, GET_SOURCE);
+              userIdList, actId, couponArray, ACCESS_MODE, GET_SOURCE);
       if (param.getSendAction() == 0) {
         saas.taskJobMainService.dispatchImmediately(
             newParam,
@@ -505,6 +506,8 @@ public class CouponGiveService extends ShopBaseService {
       }
       // 得到开始时间和结束时间
       Map<String, Timestamp> timeMap = getCouponTime(couponDetails);
+      // 判断当前券的库存
+
       // 发券入库
       for (Integer userId : param.getUserIds()) {
         // 如果库存为0，返回信息库存不足

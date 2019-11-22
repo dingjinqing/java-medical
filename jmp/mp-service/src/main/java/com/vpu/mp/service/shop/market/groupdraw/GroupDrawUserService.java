@@ -1,5 +1,23 @@
 package com.vpu.mp.service.shop.market.groupdraw;
 
+import com.vpu.mp.config.mq.RabbitConfig;
+import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.ShopApplication;
+import org.jooq.Record1;
+import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
@@ -8,33 +26,7 @@ import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.config.mq.RabbitConfig;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.GroupDrawInviteRecord;
-import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
-import com.vpu.mp.db.shop.tables.records.JoinDrawListRecord;
-import com.vpu.mp.db.shop.tables.records.JoinGroupListRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.shop.ShopApplication;
 
 /**
  * 拼团抽奖
@@ -397,7 +389,6 @@ public class GroupDrawUserService extends ShopBaseService {
             couponIdArray[i] = String.valueOf(coupOnIds.get(i));
         }
         CouponGiveQueueParam message = new CouponGiveQueueParam();
-        message.setShopId(getShopId());
         message.setUserIds(userIds);
         message.setCouponArray(couponIdArray);
         rabbit.convertAndSend(RabbitConfig.QUEUE_COUPON_SEND, message);
