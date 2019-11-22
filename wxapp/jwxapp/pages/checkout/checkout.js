@@ -334,13 +334,21 @@ global.wxPage({
   },
   // 提交订单
   confirmOrder(){
-    let { orderGoods:goods, orderAmount } = this.data.orderInfo
+    let { orderGoods: goods, orderAmount } = this.data.orderInfo
     let { useBalance: balance, useCardBalance:cardBalance, useScore: scoreDiscount} = this.data.usePayInfo
+    let addressId = this.data.orderInfo.address && this.data.orderInfo.address.addressId || null
+    if (!addressId) {
+      wx.showToast({
+        title: '请选择地址',
+        icon:'none'
+      })
+      return 
+    }
     let params = {
       goods,
       action:10,
       orderAmount,
-      addressId: this.data.params.addressId,
+      addressId,
       balance,
       cardBalance,
       scoreDiscount,
