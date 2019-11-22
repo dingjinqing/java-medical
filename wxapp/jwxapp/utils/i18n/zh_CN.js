@@ -1,6 +1,7 @@
 var navigation = require("./components/navigation.js")
 var order = require("./pages/order.js")
 var comment = require('./page1/commentCn.js')
+var decorate = require('./components/decorate/decorate.js')
 var zh_CN = {
   "common": {
     "info": {
@@ -24,19 +25,20 @@ var zh_CN = {
     }
   },
   "components": {
-    "navigation": navigation
+    "navigation": navigation,
+    'decorate': decorate
   },
   "pages": {
-    "bottom":{
-      "shopDisabled":"该店铺已禁用",
+    "bottom": {
+      "shopDisabled": "该店铺已禁用",
       "shopExpired": "该店铺已过期",
       "shopClosed": "该店铺已停业",
       "disableLogin": "您已被禁止登录",
       "contactMerchant": "联系商家",
     },
-    "usercenter":{
+    "usercenter": {
       "available": "今日可领",
-      "qrcTitle":"今日已领",
+      "qrcTitle": "今日已领",
       "qrcTitleB": "积分",
       "signIn": "签到",
       "continuouslySignedIn": "已连续签到",

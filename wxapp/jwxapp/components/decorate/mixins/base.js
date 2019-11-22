@@ -73,7 +73,6 @@ var base = {
     },
     // 处理价格上方显示的label条
     handleToActivitiesLabel(item, itemC, arr) {
-      // <view class='pin_flag'  style='color:{{comColor}};border-color:{{comColor}}'>{{itemC.activityType===1?'拼团':itemC.activityType===3?'砍价':itemC.activityType===5?'秒杀':itemC.activityType===6?'限时降价':itemC.activityType===10?'预售':itemC.activityType===18?'首单特惠':((itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1))?('满'+${itemC.leastConsume}+'减￥'+${itemC.denomination}):((itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0))?('优惠卷减￥'+${itemC.denomination}):((itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1))?('满'+${itemC.leastConsume}+'打'+${itemC.denomination}+'折'):((itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0))?('优惠卷打'+${itemC.denomination}+'折'):itemC.activityType===20?'满减':itemC.activityType===21?'会员满减价':itemC.activityType===22?'会员专享':''}}</view>
       let obj = {}
       switch (itemC.activityType) {
         case 1:

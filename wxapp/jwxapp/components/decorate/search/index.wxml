@@ -1,10 +1,11 @@
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view style='margin-bottom:{{m.margin_bot}}rpx;background:#eeeeee' class='all_info' bindtap='bindSearchConfirm'>
   <view class="search" style='background:{{m.back_color}};border-radius:{{m.search_style == 0?"14rpx;":"90rpx;"}};height:{{m.height}};width:{{m.search_sort == 1 ? "84%" : "94%"}}'>
     <icon type="search" class="search-img" size="13"></icon>
-    <input type="text" placeholder="请输入商品关键字" disabled='true' />
+    <input type="text" placeholder="{{i18n.$t(localePack,'components.decorate.searchPlaceholder')}}" disabled='true' />
     <view class='search_sort' wx:if='{{m.search_sort == 1}}' catchtap='toSort'>
       <view class="iconfont iconfenlei" style="color:{{m.sort_bg_color}};font-size:56rpx;"></view>
-      <text style="color:{{m.sort_bg_color}}">分类</text>
+      <text style="color:{{m.sort_bg_color}}">{{i18n.$t(localePack,'components.decorate.searchText')}}</text>
     </view>
   </view>
 </view>
