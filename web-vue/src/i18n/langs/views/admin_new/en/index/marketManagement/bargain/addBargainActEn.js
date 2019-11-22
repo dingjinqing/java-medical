@@ -30,5 +30,19 @@ export const en = {
   addCoupon: 'add coupons',
   couponLimitTip: 'Add up to 5 coupons, expired and disabled coupons cannot be added',
   encouragementAward: 'encouragement award',
-  encouragementAwardTip: 'Buyers give certain rewards after failing to bargain, which can enhance buyer\'s repurchase'
+  encouragementAwardTip: 'Buyers give certain rewards after failing to bargain, which can enhance buyer\'s repurchase',
+
+  // 校验
+  vaildGoodsSelect: 'Please select an event product!',
+  vaildStock: 'Please fill in the bargain stock!',
+  vaildExpectationPrice: 'Please fill in the price of the bargain!',
+  vaildExpectationNumber: 'Please select an event product!',
+  vaildExpectationNumberMin: 'Expect to participate in the bargaining minimum of 3!',
+  vaildProportionalinterval1: 'Please fill in the first bargain price to bargain!',
+  vaildProportionalinterval2: 'The first bargaining price can be set in the wrong price range!',
+  vaildCalculatedAmount1: 'Please fill in the settlement amount!',
+  vaildCalculatedAmount2: 'The settlement amount is incorrectly filled!',
+  vaildFixedMoney: 'Please fill in the fixed amount!',
+  vaildRandomAmount1: 'Please fill in the random help cut amount!',
+  vaildRandomAmount2: 'Randomly help cut the amount to fill in the wrong!'
 }

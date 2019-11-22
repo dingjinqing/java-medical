@@ -10,8 +10,11 @@
       <div class="bargainActMain">
         <!-- 公共部分 -->
         <el-form
+          :model="param"
           label-width="150px"
           labelPosition='right'
+          :rules="formRules"
+          ref="form"
         >
           <el-form-item
             :label="$t('addBargainAct.bargainType')+':'"
@@ -30,7 +33,7 @@
 
           <el-form-item
             :label="$t('marketCommon.actName')+':'"
-            prop=""
+            prop="bargainName"
           >
             <el-input
               v-model="param.bargainName"
@@ -42,10 +45,10 @@
 
           <el-form-item
             :label="$t('marketCommon.validDate')+':'"
-            prop=""
+            prop="effectiveDate"
           >
             <el-date-picker
-              v-model="effectiveDate"
+              v-model="param.effectiveDate"
               type="datetimerange"
               :range-separator="$t('marketCommon.to')"
               :start-placeholder="$t('marketCommon.startTime')"
@@ -249,12 +252,14 @@
                     v-model="param.bargainMinMoney"
                     size="mini"
                     style="width:150px"
+                    :min="0"
                   ></el-input-number>&nbsp;{{$t('marketCommon.yuan')}}
                   <span>{{$t('marketCommon.to')}}</span>
                   <el-input-number
                     v-model="param.bargainMaxMoney"
                     size="mini"
                     style="width:150px;margin-top: 10px"
+                    :min="0"
                   ></el-input-number>{{$t('marketCommon.yuan')}}{{$t('addBargainAct.getRandomMoneyBetween')}}
                 </el-radio>
               </el-radio-group>
@@ -452,9 +457,9 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.param = res.content
-          this.effectiveDate = []
-          this.effectiveDate.push(res.content.startTime)
-          this.effectiveDate.push(res.content.endTime)
+          this.param.effectiveDate = []
+          this.param.effectiveDate.push(res.content.startTime)
+          this.param.effectiveDate.push(res.content.endTime)
           this.mrkingVoucherObjs = res.content.mrkingVoucherList
           this.rewardCouponObjs = res.content.rewardCouponList
           this.goodsRow.push(res.content.goods)
@@ -479,7 +484,6 @@ export default {
       rewardCouponObjs: [],
       // 优惠券弹窗区分，1鼓励奖，0好友砍价优惠券
       dialogFlag: 1,
-      effectiveDate: '',
       goodsRow: [],
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
@@ -494,7 +498,10 @@ export default {
         expectationNumber: 100,
         bargainMoneyType: 0,
         stock: 0,
-        floorPrice: 0
+        floorPrice: 0,
+        effectiveDate: '',
+        goodsId: 0,
+        expectationPrice: 0
       },
       shareConfig: {
         'share_action': 1,
@@ -518,7 +525,16 @@ export default {
         {
           img_2: this.$imageHost + '/image/admin/hid_some.png'
         }
-      ]
+      ],
+      // 表单约束
+      formRules: {
+        bargainName: [
+          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+        ],
+        effectiveDate: [
+          { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
+        ]
+      }
     }
   },
   methods: {
@@ -573,25 +589,26 @@ export default {
       this.param.stock = this.goodsRow[0].goodsNumber
     },
     addSubmit () {
-      this.param.shareConfig = this.shareConfig
-      this.param.startTime = this.effectiveDate[0]
-      this.param.endTime = this.effectiveDate[1]
-      this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
-      this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
-      addBargain(this.param).then((res) => {
-        if (res.error === 0) {
-          this.$message({
-            type: 'success',
-            message: this.$t('marketCommon.successfulOperation')
-          })
-          this.$router.push({
-            name: 'bargain'
-          })
-        } else {
-          this.$message({
-            type: 'fail',
-            message: this.$t('marketCommon.failureOperation')
-          })
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.param.shareConfig = this.shareConfig
+          this.param.startTime = this.param.effectiveDate[0]
+          this.param.endTime = this.param.effectiveDate[1]
+          this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
+          this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
+
+          if (this.validParam()) {
+            addBargain(this.param).then((res) => {
+              if (res.error === 0) {
+                this.$message.success(this.$t('marketCommon.successfulOperation'))
+                this.$router.push({
+                  name: 'bargain'
+                })
+              } else {
+                this.$message.error(this.$t('marketCommon.failureOperation'))
+              }
+            })
+          }
         }
       })
     },
@@ -599,24 +616,18 @@ export default {
       // 更新活动
       this.param.id = this.actId
       this.param.shareConfig = this.shareConfig
-      this.param.startTime = this.effectiveDate[0]
-      this.param.endTime = this.effectiveDate[1]
+      this.param.startTime = this.param.effectiveDate[0]
+      this.param.endTime = this.param.effectiveDate[1]
       this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
       this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
       updateBargain(this.param).then((res) => {
         if (res.error === 0) {
-          this.$message({
-            type: 'success',
-            message: this.$t('marketCommon.successfulOperation')
-          })
+          this.$message.success(this.$t('marketCommon.successfulOperation'))
           this.$router.push({
             name: 'bargain'
           })
         } else {
-          this.$message({
-            type: 'fail',
-            message: this.$t('marketCommon.failureOperation')
-          })
+          this.$message.error(this.$t('marketCommon.failureOperation'))
         }
       })
     },
@@ -641,10 +652,71 @@ export default {
     // 改变箭头事件
     handleToChangeArror () {
       this.arrorFlag = !this.arrorFlag
+    },
+    // 提交前校验
+    validParam () {
+      if (!this.param.goodsId) {
+        this.$message.warning(this.$t('addBargainAct.vaildGoodsSelect'))
+        return false
+      }
+      if (!this.param.stock) {
+        this.$message.warning(this.$t('addBargainAct.vaildStock'))
+        return false
+      }
+      if (this.param.bargainType === 0) {
+        // 砍到指定金额结算：期望参与砍价人次必填；商品首次砍价可砍价百分比区间必填；砍价底价必填
+        if (this.param.expectationPrice === '') {
+          this.$message.warning(this.$t('addBargainAct.vaildExpectationPrice'))
+          return false
+        }
+        if (!this.param.expectationNumber) {
+          this.$message.warning(this.$t('addBargainAct.vaildExpectationNumber'))
+          return false
+        }
+        if (this.param.expectationNumber < 3) {
+          this.$message.warning(this.$t('addBargainAct.vaildExpectationNumberMin'))
+          return false
+        }
+        if (this.param.bargainMin === '' || !this.param.bargainMax) {
+          this.$message.warning(this.$t('addBargainAct.vaildProportionalinterval1'))
+          return false
+        }
+        if (this.param.bargainMin > this.param.bargainMax) {
+          this.$message.warning(this.$t('addBargainAct.vaildProportionalinterval2'))
+          return false
+        }
+      } else {
+        // 砍到任意金额结算
+        if (this.param.bargainMoneyType === 0) {
+          if (!this.param.expectationPrice || this.param.floorPrice === '') {
+            this.$message.warning(this.$t('addBargainAct.vaildCalculatedAmount1'))
+            return false
+          }
+          if (this.param.expectationPrice < this.param.floorPrice) {
+            this.$message.warning(this.$t('addBargainAct.vaildCalculatedAmount2'))
+            return false
+          }
+
+          // 固定金额模式
+          if (!this.param.bargainFixedMoney) {
+            this.$message.warning(this.$t('addBargainAct.vaildFixedMoney'))
+            return false
+          }
+        } else {
+          if (this.param.bargainMinMoney === '' || !this.param.bargainMaxMoney) {
+            this.$message.warning(this.$t('addBargainAct.vaildRandomAmount1'))
+            return false
+          }
+          if (this.param.bargainMinMoney > this.param.bargainMaxMoney) {
+            this.$message.warning(this.$t('addBargainAct.vaildRandomAmount2'))
+            return false
+          }
+        }
+      }
+      return true
     }
   }
 }
-
 </script>
 <style lang="scss" scoped>
 .bargainAct {

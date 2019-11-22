@@ -30,5 +30,19 @@ export const cn = {
   addCoupon: '添加优惠券',
   couponLimitTip: '最多添加5张优惠券，已过期和已停用的优惠券不能添加',
   encouragementAward: '鼓励奖',
-  encouragementAwardTip: '买家砍价失败后给予一定奖励，可提升买家复购'
+  encouragementAwardTip: '买家砍价失败后给予一定奖励，可提升买家复购',
+
+  // 校验
+  vaildGoodsSelect: '请选择活动商品！',
+  vaildStock: '请填写砍价库存！',
+  vaildExpectationPrice: '请填写期砍价底价！',
+  vaildExpectationNumber: '请填写砍价期望人次！',
+  vaildExpectationNumberMin: '期望参与砍价人次最小为3！',
+  vaildProportionalinterval1: '请填写首次砍价可砍价比例！',
+  vaildProportionalinterval2: '首次砍价可砍价比例区间设置错误！',
+  vaildCalculatedAmount1: '请填写结算金额！',
+  vaildCalculatedAmount2: '结算金额填写错误！',
+  vaildFixedMoney: '请填写固定帮砍金额！',
+  vaildRandomAmount1: '请填写随机帮砍金额！',
+  vaildRandomAmount2: '随机帮砍金额填写错误！'
 }
