@@ -8,7 +8,11 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record7;
 import org.jooq.Record8;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -223,5 +227,27 @@ public class MpOperateLogService extends MainBaseService {
 			}
 		}
 		return Util.translateMessage(language, message, LANGUAGE_TYPE_WX, (Object[]) datas.split(","));
+	}
+	
+	/**
+	 * 获取上线日志
+	 * @param appId
+	 * @return
+	 */
+	public List<MpOperateVo> getOperateLog(String appId) {
+		int code = WxContentTemplate.WX_PUBLISH_CODE_SUCCESS.getCode();
+		Result<Record7<Integer, Timestamp, String, String, String, String, String>> fetch = db()
+				.select(MP_OPERATE_LOG.TEMPLATE_ID, MP_OPERATE_LOG.CREATE_TIME, MP_OPERATE_LOG.APP_ID,
+						MP_OPERATE_LOG.MEMO, MP_VERSION.USER_VERSION, MP_OPERATE_LOG.MEMO_ID, MP_OPERATE_LOG.MEMO_LIST)
+				.from(MP_OPERATE_LOG, MP_VERSION)
+				.where(MP_OPERATE_LOG.TEMPLATE_ID.eq(MP_VERSION.TEMPLATE_ID)
+						.and(MP_OPERATE_LOG.APP_ID.eq(appId).and(MP_OPERATE_LOG.MEMO_ID.eq(String.valueOf(code)))))
+				.orderBy(MP_OPERATE_LOG.CREATE_TIME.desc()).fetch();
+		if(null==fetch) {
+			return null;
+		}else {
+			return fetch.into(MpOperateVo.class);
+		}
+		
 	}
 }

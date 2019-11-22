@@ -20,10 +20,12 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.Record11;
 import org.jooq.Record13;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ import com.vpu.mp.db.main.tables.records.BackProcessRecord;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
+import com.vpu.mp.db.main.tables.records.MpOperateLogRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -50,10 +53,13 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.saas.shop.ShopMpListParam;
+import com.vpu.mp.service.pojo.saas.shop.ShopMpListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
@@ -1541,6 +1547,57 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		return false;
 	}
+	
+	/**店铺发布列表
+	 * 
+	 * @param param
+	 * @return 
+	 * @return
+	 */
+	public PageResult<ShopMpListVo> getShopMpList(ShopMpListParam param) {
+		SelectJoinStep<Record11<String, Integer, Timestamp, String, Timestamp, Timestamp, Integer, Byte, String, String, Byte>> selectFrom = db()
+				.select(MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.SHOP_ID, MP_AUTH_SHOP.CREATE_TIME, MP_AUTH_SHOP.NICK_NAME,
+						MP_AUTH_SHOP.PUBLISH_TIME, MP_AUTH_SHOP.LAST_UPLOAD_TIME, MP_AUTH_SHOP.BIND_TEMPLATE_ID,
+						MP_AUTH_SHOP.OPEN_PAY, MP_AUTH_SHOP.PRINCIPAL_NAME, SHOP.SHOP_TYPE, SHOP.IS_ENABLED)
+				.from(MP_AUTH_SHOP, SHOP);
+		buildOptionsMp(param, selectFrom);
+		selectFrom.where(MP_AUTH_SHOP.SHOP_ID.eq(SHOP.SHOP_ID));
+		selectFrom.orderBy(SHOP.CREATED.desc());
+		selectFrom.orderBy(MP_AUTH_SHOP.SHOP_ID.desc());
+		selectFrom.orderBy(MP_AUTH_SHOP.CREATE_TIME.desc());
+		PageResult<ShopMpListVo> pageResult = this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), ShopMpListVo.class);
+		for(ShopMpListVo vo:pageResult.dataList) {
+			vo.setRenewMoney(saas.shop.renew.getShopRenewTotal(vo.getShopId()));
+			vo.setExpireTime(saas.shop.renew.getShopRenewExpireTime(vo.getShopId()));
+			List<MpOperateVo> operateLog = saas.shop.mpOperateLog.getOperateLog(vo.getAppId());
+			System.out.println(operateLog);
+			if(operateLog.size()>0) {
+				MpOperateVo mpOperateVo = operateLog.get(0);
+				vo.setCreateTime(mpOperateVo.getCreateTime());
+				vo.setTemplateId(mpOperateVo.getTemplateId());
+				vo.setUserVersion(mpOperateVo.getUserVersion());
+				MpOperateVo mpOperateVo2 = operateLog.get(operateLog.size()-1);
+				vo.setLastUploadTime(mpOperateVo2.getCreateTime());
+				vo.setBindTemplateId(mpOperateVo2.getTemplateId());
+				vo.setBindUserVersion(mpOperateVo2.getUserVersion());
+			}
+		}
+		return pageResult;
+	}
 
-
+	
+	private void buildOptionsMp(ShopMpListParam param,SelectJoinStep selectFrom) {
+		if(StringUtils.isNotEmpty(param.getKeywords())) {
+			selectFrom.where(MP_AUTH_SHOP.SHOP_ID.like(param.getKeywords()).or(MP_AUTH_SHOP.NICK_NAME.like(param.getKeywords())));
+		}
+		if(StringUtils.isNotEmpty(param.getShopType())) {
+			selectFrom.where(SHOP.SHOP_TYPE.eq(param.getShopType()));
+		}
+		if(param.getOpenPay()!=null) {
+			selectFrom.where(MP_AUTH_SHOP.OPEN_PAY.eq(param.getOpenPay()));
+		}
+		if(param.getIsEnabled()!=null) {
+			selectFrom.where(SHOP.IS_ENABLED.eq(param.getIsEnabled()));
+		}
+	}
 }
