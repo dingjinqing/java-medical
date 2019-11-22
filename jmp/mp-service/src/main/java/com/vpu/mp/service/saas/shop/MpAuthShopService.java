@@ -1601,7 +1601,7 @@ public class MpAuthShopService extends MainBaseService {
 	
 	private void buildOptionsMp(ShopMpListParam param,SelectJoinStep<?> selectFrom) {
 		if(StringUtils.isNotEmpty(param.getKeywords())) {
-			selectFrom.where(MP_AUTH_SHOP.SHOP_ID.like(param.getKeywords()).or(MP_AUTH_SHOP.NICK_NAME.like(param.getKeywords()).or(SHOP.SHOP_NAME.like(param.getKeywords()))));
+			selectFrom.where(MP_AUTH_SHOP.SHOP_ID.like(likeValue(param.getKeywords())).or(MP_AUTH_SHOP.NICK_NAME.like(likeValue(param.getKeywords())).or(SHOP.SHOP_NAME.like(likeValue(param.getKeywords())))));
 		}
 		if(StringUtils.isNotEmpty(param.getShopType())) {
 			selectFrom.where(SHOP.SHOP_TYPE.eq(param.getShopType()));
