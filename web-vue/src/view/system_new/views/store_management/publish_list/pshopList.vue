@@ -6,7 +6,7 @@
   >
     <el-tab-pane
       name="first"
-      label="店铺列表"
+      label="店铺发布列表"
     >
       <shopContent />
     </el-tab-pane>

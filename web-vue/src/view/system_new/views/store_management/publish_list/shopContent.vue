@@ -9,7 +9,7 @@
         clearable
       ></el-input>
       <el-select
-        v-model="mainData.state"
+        v-model="mainData.shopType"
         :placeholder="$t('publishList.shopOptions.selectType')"
         size="small"
         class="select-input ml-6"
@@ -24,7 +24,7 @@
         </el-option>
       </el-select>
       <el-select
-        v-model="mainData.state"
+        v-model="mainData.openPay"
         :placeholder="$t('publishList.payOptions.selectType')"
         size="small"
         class="select-input ml-6"
@@ -39,7 +39,7 @@
         </el-option>
       </el-select>
       <el-select
-        v-model="mainData.state"
+        v-model="mainData.isEnabled"
         :placeholder="$t('publishList.disabledOption.selectType')"
         size="small"
         class="select-input ml-6"
@@ -69,94 +69,116 @@
       :data="formTable"
       border
       style="width: 100%"
-      height="400"
     >
       <el-table-column
-        prop="userName"
+        prop="shopId"
         :label="$t('publishList.table.shopID')"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="accountName"
+        prop="nickName"
         :label="$t('publishList.table.wechatName')"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="company"
+        prop="principalName"
         align="center"
         :label="$t('publishList.table.companyName')"
       >
       </el-table-column>
       <el-table-column
-        prop="state"
+        prop="createTime"
         align="center"
-        :formatter="changeState"
         :label="$t('publishList.table.createTime')"
       >
+        <template slot-scope="scope">
+          <div v-if="scope.row.createTime!=null">
+            <div>{{moment(scope.row.createTime).format('YYYY-MM-DD')}}</div>
+            <div>{{moment(scope.row.createTime).format('HH:mm:ss')}}</div>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="shopGrade"
         align="center"
         :label="$t('publishList.table.startTime')"
       >
         <template slot-scope="scope">
-          <span>{{scope.row.shopGrade === 1 ? '普通店':scope.row.shopGrade}}</span>
+          <div v-if="scope.row.startTime!=null">
+            <div>{{moment(scope.row.startTime).format('YYYY-MM-DD')}}</div>
+            <div>{{moment(scope.row.startTime).format('HH:mm:ss')}}</div>
+            <div>({{scope.row.userVersion}})</div>
+          </div>
         </template>
       </el-table-column>
       <el-table-column
-        prop="shopNumber"
+        prop="lastUploadTime"
         align="center"
         :label="$t('publishList.table.nowTime')"
       >
+        <template slot-scope="scope">
+          <div v-if="scope.row.lastUploadTime!==null">
+            <div>{{moment(scope.row.lastUploadTime).format('YYYY-MM-DD')}}</div>
+            <div>{{moment(scope.row.lastUploadTime).format('HH:mm:ss')}}</div>
+            <div>({{scope.row.bindUserVersion}})</div>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="addTime"
+        prop="openPay"
         align="center"
         :label="$t('publishList.table.pay')"
+        :formatter="openPayFormatter"
       >
       </el-table-column>
       <el-table-column
-        prop="buyTime"
+        prop="shopType"
         align="center"
         :label="$t('publishList.table.shopType')"
+        :formatter="shopTypeFormatter"
       >
       </el-table-column>
       <el-table-column
-        prop="endTime"
+        prop="shopExpireStatus"
         align="center"
         :label="$t('publishList.table.shopState')"
+        :formatter="shopExpireStatusFormatter"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="isEnabled"
+        align="center"
+        :label="$t('publishList.table.disabled')"
+        :formatter="isEnabledFormatter"
       >
       </el-table-column>
       <el-table-column
         prop="renewMoney"
-        align="center"
-        :label="$t('publishList.table.disabled')"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="mobile"
         align="center"
         :label="$t('publishList.table.money')"
       >
       </el-table-column>
       <el-table-column
-        prop="renewMoney"
+        prop="expireTime"
         align="center"
         :label="$t('publishList.table.endTime')"
       >
+        <template slot-scope="scope">
+          <div>{{moment(scope.row.expireTime).format('YYYY-MM-DD')}}</div>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="operation"
         align="center"
         :label="$t('publishList.table.view')"
       >
-        <!-- <el-button
-          type="text"
-          style="color:#000"
-          @click="handleView"
-        >{{$t('publishList.table.view')}}</el-button> -->
+        <template slot-scope="scope">
+          <el-button
+            class="xbutton"
+            type="text"
+            @click="show(scope.row.appId)"
+          >查看</el-button>
+        </template>
       </el-table-column>
     </el-table>
 
@@ -164,7 +186,7 @@
       <span>每页{{this.pageRows}}行记录，当前页面：{{this.currentPage}}，总页数：{{this.pageCount}}，总记录数为：{{this.totalRows}}</span>
       <el-pagination
         @current-change="handleCurrentChange"
-        :current-page.sync="currentPage3"
+        :current-page.sync="currentPage"
         layout="prev, pager, next, jumper"
         :page-count="pageCount"
         :small="pagination_b"
@@ -175,76 +197,45 @@
 </template>
 
 <script>
-// import { searchAccountRequest } from '@/api/system/accountList.js'
+import { getListRequest } from '@/api/system/shopContent.js'
 
 export default {
   name: 'experienceVersion',
   data () {
     return {
-      shopOptions: [{
-        value: '1',
-        label: this.$t('shopAccountList.stateOption.state1')
-      }, {
-        value: '2',
-        label: this.$t('shopAccountList.stateOption.state2')
-      }, {
-        value: '3',
-        label: this.$t('shopAccountList.stateOption.state3')
-      }, {
-        value: '4',
-        label: this.$t('shopAccountList.stateOption.state4')
-      }],
+      shopOptions: this.$t('shopAccountList.auth_state'),
 
       payOptions: [{
+        value: '',
+        label: '选择支付类型'
+      }, {
+        value: '0',
+        label: '未开通'
+      }, {
         value: '1',
-        label: this.$t('shopAccountList.stateOption.state1')
-      }, {
-        value: '2',
-        label: this.$t('shopAccountList.stateOption.state2')
-      }, {
-        value: '3',
-        label: this.$t('shopAccountList.stateOption.state3')
-      }, {
-        value: '4',
-        label: this.$t('shopAccountList.stateOption.state4')
+        label: '已开通'
       }],
-
       disabledOptions: [{
+        value: '',
+        label: '选择禁用类型'
+      }, {
+        value: '0',
+        label: '未禁用'
+      }, {
         value: '1',
-        label: this.$t('shopAccountList.stateOption.state1')
-      }, {
-        value: '2',
-        label: this.$t('shopAccountList.stateOption.state2')
-      }, {
-        value: '3',
-        label: this.$t('shopAccountList.stateOption.state3')
-      }, {
-        value: '4',
-        label: this.$t('shopAccountList.stateOption.state4')
+        label: '已禁用'
       }],
       mainData: {
-        currentPage3: 1,
-        state: '',
-        keywords: '',
-        company: ''
+        keywords: null,
+        shopType: null,
+        openPay: null,
+        isEnabled: null
       },
-      formTable: [{
-        usreName: '',
-        company: '',
-        state: '',
-        shopGrade: '',
-        shopNumber: '',
-        addTime: '',
-        buyTime: '',
-        endTime: '',
-        renewMoney: '',
-        mobile: ''
-      }],
-      totalRows: null,
-      pageRows: '',
-      currentPage: '',
-      currentPage3: 1,
-      pageCount: null,
+      formTable: [],
+      totalRows: 0,
+      pageRows: 0,
+      currentPage: 1,
+      pageCount: 0,
       pagination_b: true,
       value: '',
       text: ''
@@ -292,28 +283,77 @@ export default {
 
     // 商家账户列表查询
     searchAccount () {
-      // let obj1 = {
-      // }
-      // let parameter = Object.assign(obj1, this.mainData)
-      // searchAccountRequest(parameter).then((res) => {
-      //   // console.log(res)
-      //   const { error, content } = res
-      //   if (error === 0) {
-      //     let formList = content.dataList
-      //     let pageObj = content.page
-      //     this.totalRows = pageObj.totalRows
-      //     this.currentPage = pageObj.currentPage
-      //     this.firstPage = pageObj.firstPage
-      //     this.lastPage = pageObj.lastPage
-      //     this.nextPage = pageObj.nextPage
-      //     this.pageCount = pageObj.pageCount
-      //     this.pageRows = pageObj.pageRows
+      let param = {
+        'keywords': this.mainData.keywords,
+        'shopType': this.mainData.shopType,
+        'openPay': this.mainData.openPay,
+        'isEnabled': this.mainData.isEnabled
+      }
+      getListRequest(param).then((res) => {
+        if (res.error === 0) {
+          console.log('结果')
+          console.log(res.content.dataList)
+          this.formTable = res.content.dataList
+          this.currentPage = res.content.page.currentPage
+          this.pageRows = res.content.page.pageRows
+          this.pageCount = res.content.page.pageCount
+          this.totalRows = res.content.page.totalRows
+          this.firstPage = res.content.page.firstPage
+          this.lastPage = res.content.page.lastPage
+          this.nextPage = res.content.page.nextPage
+        } else {
 
-      //     this.formTable = formList
-      //   }
-      // }).catch(() => {
-      //   this.$message.error('保存失败')
-      // })
+        }
+      })
+    },
+    openPayFormatter (row, column) {
+      switch (row.openPay) {
+        case 0: row.openPaySing = '无支付'
+          break
+        case 1: row.openPaySing = '有支付'
+          break
+      }
+      return row.openPaySing
+    },
+    shopTypeFormatter (row, column) {
+      switch (row.shopType) {
+        case 'v1': row.shopTypeSing = '体验版'
+          break
+        case 'v2': row.shopTypeSing = '基础版'
+          break
+        case 'v3': row.shopTypeSing = '高级版'
+          break
+        case 'v4': row.shopTypeSing = '旗舰版'
+          break
+      }
+      return row.shopTypeSing
+    },
+    shopExpireStatusFormatter (row, column) {
+      switch (row.shopExpireStatus) {
+        case '0': row.shopExpireStatusSing = '未过期'
+          break
+        case '1': row.shopExpireStatusSing = '已过期'
+          break
+      }
+      return row.shopExpireStatusSing
+    },
+    isEnabledFormatter (row, column) {
+      switch (row.isEnabled) {
+        case 0: row.isEnabledSing = '未禁用'
+          break
+        case 1: row.isEnabledSing = '已禁用'
+          break
+      }
+      return row.isEnabledSing
+    },
+    show (data) {
+      this.$router.push({
+        name: 'programManage',
+        params: {
+          page: 'authMsg',
+          appId: data
+        }
+      })
     }
   }
 }
