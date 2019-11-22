@@ -1219,3 +1219,52 @@ MODIFY COLUMN    `paid_goods_number` int(11)    default 0 comment '付款商品�
 drop KEY `ref_type`,
 ADD UNIQUE KEY `uni_key` (`ref_date`,`type`,`goods_id`) using btree ;
 
+-- kdc 2019年11月22日 16:44:46
+
+-- 开屏有礼活动
+-- drop table if exists `b2c_Coopen_activity`;
+CREATE TABLE `b2c_coopen_activity`
+(
+    `id`                 int(11)                                 NOT NULL AUTO_INCREMENT,
+    `action`             tinyint(1)                              NOT NULL DEFAULT '1' COMMENT '针对用户群体： 1: 初次访问新用户 2: 全部用户 3:未支付的用户',
+    `name`               varchar(50) COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '活动名称',
+    `title`              varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '宣传语',
+    `bg_action`          tinyint(4)                              NOT NULL DEFAULT '1' COMMENT '背景图',
+    `is_forever`         int(11)                                 NOT NULL DEFAULT '0' COMMENT '是否永久有效 0:无效 1:有效',
+    `start_date`         datetime                                NOT NULL COMMENT '有效期-起始',
+    `end_date`           datetime                                NOT NULL COMMENT '有效期-结束',
+    `first`              int(11)                                 NOT NULL DEFAULT '1' COMMENT '优先级',
+    `activity_action`    tinyint(1)                                       DEFAULT '1' COMMENT '活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接 4: 积分 5:余额  6:分裂',
+    `mrking_voucher_id`  varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '活动优惠券，逗号分隔',
+    `lottery_id`         int(11)                                 not null default 0 comment '抽奖活动id',
+    `customize_img_path` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '活动有礼跳转活动图片路径',
+    `customize_url`      varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '活动有礼跳转活动链接',
+    `give_score`         decimal(10, 2)                                   DEFAULT '0.00' COMMENT '积分',
+    `give_account`       decimal(10, 2)                                   DEFAULT '0.00' COMMENT '余额',
+    `award_num`          int(11)                                          DEFAULT '-1' COMMENT '发放数量',
+    `status`             tinyint(1)                              NOT NULL DEFAULT '1' COMMENT '状态： 1: 正常 0: 关闭',
+    `del_flag`           tinyint(4)                              NOT NULL DEFAULT '0',
+    `del_time`           int(11)                                 NOT NULL DEFAULT '0',
+    `create_time`        timestamp                               NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `update_time`        timestamp                               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`id`)
+);
+-- 开屏有礼活动记录
+-- drop table if exists `b2c_coopen_activity_records`;
+CREATE TABLE `b2c_coopen_activity_records`
+(
+    `id`                int(11)      NOT NULL AUTO_INCREMENT,
+    `activity_id`       int(11)      NOT NULL COMMENT '活动id',
+    `user_id`           int(11)      NOT NULL,
+    `activity_action`   tinyint(1)                                                    DEFAULT '1' COMMENT '活动类型：1：活动送券 2：大转盘抽奖 3：跳转自定义链接 4: 积分 5:余额  6:分裂',
+    `comment`           varchar(200) not null                                         DEFAULT '' comment '说明',
+    `receive_time`      timestamp    NOT NULL COMMENT '领取时间',
+    `mrking_voucher_id` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '已领取的优惠券',
+    `lottery_id`        int(11) unsigned                                              DEFAULT NULL COMMENT '抽奖id',
+    `give_num`          decimal(10, 2)                                                DEFAULT '0.00' COMMENT '积分或者余额数量',
+    `create_time`       timestamp    NOT NULL                                         DEFAULT CURRENT_TIMESTAMP,
+    `update_time`       timestamp    NOT NULL                                         DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+    PRIMARY KEY (`id`) USING BTREE
+);
+
+
