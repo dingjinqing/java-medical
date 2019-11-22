@@ -332,8 +332,8 @@ global.wxPage({
     let { orderGoods: goods, orderAmount } = this.data.orderInfo
     let { useBalance: balance, useCardBalance:cardBalance, useScore: scoreDiscount} = this.data.usePayInfo
     let addressId = this.data.orderInfo.address && this.data.orderInfo.address.addressId || null
-    let couponSn = this.data.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn || null
-    let cardNo = this.data.defaultMemberCard && this.data.defaultMemberCard.cardNo || null
+    let couponSn = this.data.orderInfo.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn || null
+    let cardNo = this.data.orderInfo.defaultMemberCard && this.data.orderInfo.defaultMemberCard.cardNo || null
     if (!addressId) {
       wx.showToast({
         title: '请选择地址',
@@ -355,7 +355,7 @@ global.wxPage({
       cardNo
     }
     console.log(params)
-    util.api('/api/wxapp/order/pay',res=>{
+    util.api('/api/wxapp/order/submit',res=>{
       if(res.error === 0){
 
       }
