@@ -67,6 +67,7 @@
                 <div>
                   <el-radio>固定时间</el-radio>
                   <el-date-picker
+                    v-model="dateInterval"
                     type="daterange"
                     style="width:240px;"
                     range-separator="至"
@@ -95,9 +96,15 @@
                 required
               >
                 <el-radio-group v-model="form.activityAction">
-                  <el-radio>初次访问店铺的用户</el-radio>
-                  <el-radio>未在店铺内支付的用户</el-radio>
-                  <el-radio>全部用户</el-radio>
+                  <div>
+                    <el-radio label="1">初次访问店铺的用户</el-radio>
+                  </div>
+                  <div>
+                    <el-radio label="2">未在店铺内支付的用户</el-radio>
+                  </div>
+                  <div>
+                    <el-radio label="0">全部用户</el-radio>
+                  </div>
                 </el-radio-group>
                 <p class="tips">只针对新用户的活动只对初次进入小程序的用户可见，通常在拉新活动中使用较为常见</p>
               </el-form-item>
@@ -346,6 +353,7 @@
 
 <script>
 import { addOpenScreen } from '@/api/admin/marketManage/openScreen.js'
+import('@/util/date')
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'),
@@ -385,6 +393,7 @@ export default {
         name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }]
       },
 
+      dateInterval: [], // 时间范围
       addCouponVisible: false, // 优惠券
       couponSelected: [],
       addDisCouponVisible: false, // 分裂优惠券
@@ -408,8 +417,15 @@ export default {
       }
     }
   },
+  watch: {
+    dateInterval: function (newVal) {
+      if (newVal) {
+        this.$set(this.form, 'startDate', newVal[0].format('yyyy-MM-dd'))
+        this.$set(this.form, 'endDate', newVal[1].format('yyyy-MM-dd'))
+      }
+    }
+  },
   mounted () {
-    console.log('$imageHost:', this.$imageHost)
   },
   methods: {
     saveOpenScreenHandle () {
@@ -466,6 +482,9 @@ export default {
       min-width: 700px;
       margin: 0 auto;
       display: flex;
+      .el-radio {
+        line-height: 32px;
+      }
       .page-left {
         width: 323px;
         .left-wrap {
@@ -611,6 +630,9 @@ export default {
             width: 100%;
             height: 100%;
           }
+          .span-tip {
+            color: #999;
+          }
         }
         header {
           height: 40px;
@@ -621,7 +643,7 @@ export default {
     }
     .tips {
       margin-top: 10px;
-      line-height: 1;
+      line-height: 1.4;
       font-size: 12px;
       color: #999;
     }
