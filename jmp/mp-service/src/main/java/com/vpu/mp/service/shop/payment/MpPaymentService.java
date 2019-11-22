@@ -47,7 +47,7 @@ public class MpPaymentService extends ShopBaseService {
 		MpAuthShopRecord mp = getMpAuthShop();
 		WxPayConfig wxPayConfig = this.getWxPayConfig(mp);
         // 使用仿真环境验证支付接口，TODO 上线后切回生产环境
-        wxPayConfig.setUseSandboxEnv(true);
+       //wxPayConfig.setUseSandboxEnv(true);
 		WxPayment wxPayment = new WxPayment();
 		wxPayment.setConfig(wxPayConfig);
 		return wxPayment;
