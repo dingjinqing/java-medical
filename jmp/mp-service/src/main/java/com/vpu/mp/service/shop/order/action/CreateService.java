@@ -722,14 +722,18 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private void setOtherValue(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         //支付信息
         if(BigDecimalUtil.add(beforeVo.getMoneyPaid(), beforeVo.getBkOrderMoney()).compareTo(BigDecimal.ZERO) == 0){
+            logger().info("支付信息:余额支付");
             //非补款
             order.setPayCode(OrderConstant.PAY_CODE_BALANCE_PAY);
             //覆盖货到付款（小程序选择货到付款但是如果无需再支付时设置货到付款为否）
+            logger().info("支付信息:货到付款");
             order.setIsCod(OrderConstant.IS_COD_NO);
         }else {
             if (orderBo.getPayment() != null) {
+                logger().info("支付信息:{}", orderBo.getPayment());
                 order.setPayCode(orderBo.getPayment().getPayCode());
                 if(OrderConstant.PAY_CODE_COD.equals(orderBo.getPayment().getPayCode())){
+                    logger().info("支付信息:货到付款");
                     order.setIsCod(OrderConstant.IS_COD_YES);
                 }
             }
@@ -738,6 +742,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_PRE_SALE) ||
             (OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay() && BigDecimalUtil.compareTo(beforeVo.getInsteadPayMoney(), BigDecimal.ZERO) == 1)) {
             //预售、代付（代付金额大于0）->待支付
+            logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_PAY);
             order.setOrderStatus(OrderConstant.ORDER_WAIT_PAY);
         }else {
             if((orderBo.getPayment() != null && OrderConstant.PAY_CODE_COD.equals(orderBo.getPayment().getPayCode()) ||
@@ -745,12 +750,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //货到付款 || 待支付=0
                 if(orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_PIN_GROUP) || orderBo.getOrderType().contains(OrderConstant.GOODS_TYPE_GROUP_DRAW)) {
                     //拼团
+                    logger().info("订单状态:{}", OrderConstant.ORDER_PIN_PAYED_GROUPING);
                     order.setOrderStatus(OrderConstant.ORDER_PIN_PAYED_GROUPING);
                 }
                 else {
+                    logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_DELIVERY);
                     order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
                 }
             }else {
+                logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_PAY);
                 order.setOrderStatus(OrderConstant.ORDER_WAIT_PAY);
             }
         }
