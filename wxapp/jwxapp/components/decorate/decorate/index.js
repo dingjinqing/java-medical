@@ -103,7 +103,7 @@ global.wxComponent({
           }
         } else {  // 则更新数据不同的模块
           console.log('l有值')
-          if (!d[i] || l[i] && (JSON.stringify(d[i]) != JSON.stringify(l[i]))) { // 初始数据中没有则直接更新 或者 加载数据与初始数据不等则更新 
+          if (!d[i] || l[i] && (JSON.stringify(d[i]) != JSON.stringify(l[i]))) {
             l[i] = data[key] = this._timerConvertModule(d[i]) || {};
             if (l[i].need_request) delayed[i] = l[i].cur_idx;
             console.log(l[i])
@@ -131,7 +131,7 @@ global.wxComponent({
       //   this.requestPageModule(delayed[i]);
       // }
     },
-    // 请求详细数据
+    // 请求装修模块详细数据
     requestPageModule(idx) {
       var _this = this;
       util.api('/api/wxapp/page/module', function (d) {

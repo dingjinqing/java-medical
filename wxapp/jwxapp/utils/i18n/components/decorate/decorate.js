@@ -20,5 +20,14 @@ module.exports = {
     lootAll: '已抢光',
     enterClaimCode: '请输入领取码',
     cancel: '取消',
-    confirm: '确认'
+    confirm: '确认',
+    grabAtOnce: '马上抢', // 商品部分
+    purchase: '购买',
+    viewMore: '查看更多',
+    newRecruitsExclusive: '新人专享，首单特惠',
+    membershipExclusive: '会员专享商品，立即查看',
+    limitedPriceReduction: '限时降价，立即查看',
+    yuanChopAway: '元砍走',
+    element: '元',
+    establishaProvince: '开团立省'
 }

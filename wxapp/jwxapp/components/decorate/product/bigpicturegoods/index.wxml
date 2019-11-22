@@ -1,3 +1,4 @@
+<wxs src="../../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class='product-item one_column' wx:if="{{m.col_type =='0'}}" style='{{m.goods_module_style == 1 ? "margin:none;padding:0 15rpx;" : ""}}background:{{m.goods_module_bg == 0 ? "": m.goods_bg_color}}'>
   <block wx:for="{{m.goodsListData}}" wx:key="key" wx:for-item="item" wx:for-index='index'>
     <view class='xunhuan_one' style='border-radius:{{m.if_radius == 1?"16rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="{{item.goods_type == 10?'bindTopre':'bindJumpLink'}}" data-is_first_touch="{{m.is_first_touch}}" data-url="pages/item/item?goodsId={{item.goodsId}}" data-idx='{{m.cur_idx}}' data-presale_id='{{item.presale_id}}' data-goods_type='{{item.activityType}}' wx:if='{{ item.activityType !=3 && item.activityType !=1 && item.activityType !=5}}'>
@@ -25,8 +26,8 @@
             <block wx:if="{{m.cart_btn == 1 && item.activityType != 10}}">
               <text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == 0}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
               <text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == 1}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
-              <text class='cart_btn right_buy_btn' style='background:{{comColor}};bottom:30rpx' wx:if="{{m.cart_btn_choose == 2}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>马上抢</text>
-              <text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}};bottom:24rpx' wx:if="{{m.cart_btn_choose ==3}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>购买</text>
+              <text class='cart_btn right_buy_btn' style='background:{{comColor}};bottom:30rpx' wx:if="{{m.cart_btn_choose == 2}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}</text>
+              <text class='cart_btn cart_buy_btn' style='color:{{comColor}};border:1px solid {{comColor}};bottom:24rpx' wx:if="{{m.cart_btn_choose ==3}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.purchase')}}</text>
             </block>
       </view>
     </view>

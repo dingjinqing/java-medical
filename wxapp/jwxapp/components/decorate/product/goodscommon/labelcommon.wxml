@@ -1,3 +1,4 @@
+<wxs src="../../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <block wx:if="{{item.label && m.hide_label == 1}}">
   <block wx:if="{{item.label.listPattern == 1}}">
     <view class="label-style1" style='background:url({{m.imageUrl}}/image/wxapp/label-three.png) no-repeat ; background-size:100%;'>
@@ -30,12 +31,12 @@
 <image class="sell_out" wx:if='{{item.goodsNumber == 0}}' src="{{m.imageUrl}}image/wxapp/goods_sell_out.png"></image>
 <image src='{{item.goodsImg}}' style="width:100%;height:100%"   lazy-load="{{true}}" class="item_img"></image>
 <!--会员专享商品图片tip-->
-<view wx:if="{{item.isMembershipExclusive}}" class='exclusive'>会员专享商品，立即查看</view>
+<view wx:if="{{item.isMembershipExclusive}}" class='exclusive'>{{i18n.$t(localePack,'components.decorate.membershipExclusive')}}</view>
 <!--首单特惠商品图片tip-->
-<view wx:if="{{item.isFirstOrder}}" class="reduce_price">新人专享，首单特惠</view>
+<view wx:if="{{item.isFirstOrder}}" class="reduce_price">{{i18n.$t(localePack,'components.decorate.newRecruitsExclusive')}}</view>
 <!--限时降价商品图片tip-->
-<view wx:if="{{item.isLimitedPrice}}" class="reduce_price">限时降价，立即查看</view>
+<view wx:if="{{item.isLimitedPrice}}" class="reduce_price">{{i18n.$t(localePack,'components.decorate.limitedPriceReduction')}}</view>
 <!--砍价-->
-<view wx:if="{{item.isBargain}}" class="bargain">{{item.realPrice===null?"0.00":item.realPrice}}元砍走</view>
+<view wx:if="{{item.isBargain}}" class="bargain">{{item.realPrice===null?"0.00":item.realPrice}}{{i18n.$t(localePack,'components.decorate.yuanChopAway')}}</view>
 <!--多人拼团-->
-<view wx:if="{{item.assemble}}" class="bargain">开团立省{{item.discountPrice===null?"0.00":item.discountPrice}}元</view>
+<view wx:if="{{item.assemble}}" class="bargain">{{i18n.$t(localePack,'components.decorate.establishaProvince')}}{{item.discountPrice===null?"0.00":item.discountPrice}}{{i18n.$t(localePack,'components.decorate.element')}}</view>
