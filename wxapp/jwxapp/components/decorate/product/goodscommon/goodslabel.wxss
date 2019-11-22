@@ -151,7 +151,6 @@ background: -webkit-linear-gradient(left, #eed9ad, #e7c38a);
 background: -moz-linear-gradient(left, #eed9ad, #e7c38a);
 bottom: 0rpx;
 font-size: 24rpx;
-z-index: 2;
 }
 .reduce_price{
   background-color: #f9dbdb;
