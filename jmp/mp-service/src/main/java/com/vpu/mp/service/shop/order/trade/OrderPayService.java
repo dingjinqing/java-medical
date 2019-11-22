@@ -102,7 +102,7 @@ public class OrderPayService extends ShopBaseService{
                 executeResult.setResult(pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), amount, param.getWxUserInfo().getWxUser().getOpenId()));
                 logger().info("微信预支付调用接口调用end");
                 return executeResult;
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 logger().error("微信预支付调用接口失败，订单号：{},异常：{}", orderInfo.getOrderSn(), e.getMessage());
                 executeResult.setErrorCode(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
                 return executeResult;
