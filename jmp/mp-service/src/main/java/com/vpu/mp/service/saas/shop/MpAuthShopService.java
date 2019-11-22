@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,6 @@ import com.vpu.mp.db.main.tables.records.BackProcessRecord;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpDeployHistoryRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
-import com.vpu.mp.db.main.tables.records.MpOperateLogRecord;
 import com.vpu.mp.db.main.tables.records.MpVersionRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -1568,12 +1568,25 @@ public class MpAuthShopService extends MainBaseService {
 		PageResult<ShopMpListVo> pageResult = this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), ShopMpListVo.class);
 		for(ShopMpListVo vo:pageResult.dataList) {
 			vo.setRenewMoney(saas.shop.renew.getShopRenewTotal(vo.getShopId()));
-			vo.setExpireTime(saas.shop.renew.getShopRenewExpireTime(vo.getShopId()));
+			Timestamp expireTime = saas.shop.renew.getShopRenewExpireTime(vo.getShopId());
+			vo.setExpireTime(expireTime);
+			String expireStatus = "1";
+			if (expireTime != null) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(expireTime);
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				if (cal.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
+					expireStatus = "0";
+				}
+			}
+			vo.setShopExpireStatus(expireStatus);
 			List<MpOperateVo> operateLog = saas.shop.mpOperateLog.getOperateLog(vo.getAppId());
 			System.out.println(operateLog);
 			if(operateLog.size()>0) {
 				MpOperateVo mpOperateVo = operateLog.get(0);
-				vo.setCreateTime(mpOperateVo.getCreateTime());
+				vo.setStartTime(mpOperateVo.getCreateTime());
 				vo.setTemplateId(mpOperateVo.getTemplateId());
 				vo.setUserVersion(mpOperateVo.getUserVersion());
 				MpOperateVo mpOperateVo2 = operateLog.get(operateLog.size()-1);

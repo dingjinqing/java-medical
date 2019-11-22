@@ -29,4 +29,6 @@ public class ShopMpListVo {
 	private Integer templateId;
 	private String userVersion;
 	private String bindUserVersion;
+	private String shopExpireStatus;
+	private Timestamp startTime;
 }
