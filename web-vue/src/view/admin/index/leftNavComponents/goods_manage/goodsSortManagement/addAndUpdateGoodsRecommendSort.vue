@@ -15,7 +15,7 @@
           {{$t('goodsRecommendSorts.goodsSortFirst')}}：
         </div>
         <div class="formItemVal">
-          <el-input v-model.number="recommendSort.first" size="small"/>
+          <el-input v-model.number="recommendSort.firstBind"  @change="firstChanged" size="small"/>
         </div>
       </div>
       <div class="formItem">
@@ -92,7 +92,7 @@
 // 导入api
 import {addRecommendGoodsSort, updateRecommendGoodsSort, getGoodsRecommendSort} from '@/api/admin/goodsManage/goodsSortManagement/goodsSortManagement'
 // 导入工具
-import {isStrBlank} from '@/util/goodsUtil'
+import {isStrBlank, isNumberBlank} from '@/util/goodsUtil'
 // 组件导入
 import allGoodsSortHeaderTab from './allGoodsSortHeaderTab'
 import ImageDialog from '@/components/admin/imageDalog'
@@ -111,7 +111,8 @@ export default {
       recommendSort: {
         sortId: null,
         sortName: null,
-        first: 0
+        first: null,
+        firstBind: null
       },
       recommendSortChildren: [
         {
@@ -127,6 +128,19 @@ export default {
     }
   },
   methods: {
+    firstChanged () {
+      // 用户输入为空
+      if (isNumberBlank(this.recommendSort.firstBind)) {
+        this.recommendSort.first = null
+      } else if (typeof this.recommendSort.firstBind !== 'number') {
+        // 用户输入的不是数字，则还原数据
+        this.recommendSort.firstBind = this.recommendSort.first
+      } else if (this.recommendSort.firstBind < 0 || this.recommendSort.firstBind > 100) {
+        this.recommendSort.firstBind = this.recommendSort.first
+      } else {
+        this.recommendSort.first = this.recommendSort.firstBind
+      }
+    },
     /* 添加推荐分类子类 */
     addSortChild () {
       this.recommendSortChildren.push({
@@ -167,7 +181,8 @@ export default {
         this.recommendSort = {
           sortId: parentSort.sortId,
           sortName: parentSort.sortName,
-          first: parentSort.first
+          first: parentSort.first,
+          firstBind: parentSort.first
         }
         this.recommendSortChildren = []
         parentSort.children.forEach(sort => {

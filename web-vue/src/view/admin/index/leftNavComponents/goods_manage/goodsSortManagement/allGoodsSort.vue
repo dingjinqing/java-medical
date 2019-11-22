@@ -85,7 +85,7 @@ export default {
     },
     /* 获取商品分类 */
     _fetchGoodsSortData () {
-      getGoodsSortList(0).then(res => {
+      getGoodsSortList({type: 0}).then(res => {
         this.goodsSortData = this._disposeGoodsSortData(res.content, 'sortId')
       })
     },

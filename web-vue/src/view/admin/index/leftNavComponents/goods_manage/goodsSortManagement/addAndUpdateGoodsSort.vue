@@ -54,7 +54,7 @@
               style="width: 100%;height: 100%;cursor: pointer;"
               :src="goodsSortDataFirst.sortImgObj.imgUrl"
             />
-            <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);">{{$t('goodsSorts.changeIcon')}}</div>
+            <div style="position:absolute;bottom:0px;width:100%;text-align:center;color:#fff;background-color: rgba(0,0,0,0.5);cursor: pointer;">{{$t('goodsSorts.changeIcon')}}</div>
             <span
               @click.stop="deleteSortImg"
               class="deleteIcon"

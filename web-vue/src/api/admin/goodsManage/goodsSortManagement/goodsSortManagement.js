@@ -1,10 +1,11 @@
 import service from '@/util/request.js'
 
 // 商品分类查询
-export function getGoodsSortList (type) {
+export function getGoodsSortList (data) {
   return service({
-    url: `/api/admin/goods/sort/list/${type}`,
-    method: 'get'
+    url: `/api/admin/goods/sort/list`,
+    method: 'post',
+    data: data
   })
 }
 // 商品分类普通列表查询

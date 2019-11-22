@@ -122,7 +122,7 @@ export default {
     },
     /* 获取商品分类 */
     _fetchGoodsSortData () {
-      getGoodsSortList(1).then(res => {
+      getGoodsSortList({parentId: 0, type: 1}).then(res => {
         this.goodsRecommendSortData = res.content
       })
     },
@@ -150,7 +150,7 @@ export default {
           this.$message.error({message: res.message()})
           return
         }
-        this.$message.info({message: this.$t('goodsRecommendSorts.saveSuccess')})
+        this.$message.success({message: this.$t('goodsRecommendSorts.saveSuccess')})
       })
     }
   },
