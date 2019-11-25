@@ -198,6 +198,15 @@ public class CartService extends ShopBaseService {
     }
 
     /**
+     * 删除购物车商品
+     * @param userId 用户
+     * @param productIds 规格id
+     * @return 1
+     */
+    public int removeCartByProductIds(Integer userId,List<Integer> productIds){
+        return db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.PRODUCT_ID.in(productIds)).execute();
+    }
+    /**
      * 改变购物车商品数量
      *
      * @param userId
@@ -230,7 +239,7 @@ public class CartService extends ShopBaseService {
                 .and(CART.STORE_ID.eq(storeId)).and(CART.USER_ID.eq(user)).fetchOne().component1();
         return goodsNum.intValue();
     }
-    
+
     /**
      * 根据recid获取所有信息
      * @param recid
