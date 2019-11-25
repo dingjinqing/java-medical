@@ -229,7 +229,15 @@ import {
 // 普通优惠券
 import {
   cn as ordinaryCoupon
-} from './views/admin_new/cn/index/marketManagement/ordinaryCouponCn'
+} from './views/admin_new/cn/index/marketManagement/ordinaryCoupon/ordinaryCouponCn'
+// 普通优惠券-普通优惠券列表
+import {
+  cn as ordinaryCouponList
+} from './views/admin_new/cn/index/marketManagement/ordinaryCoupon/ordinaryCouponListCn'
+// 普通优惠券-领取明细
+import {
+  cn as couponReceive
+} from './views/admin_new/cn/index/marketManagement/ordinaryCoupon/couponReceiveCn'
 // 好友助力
 import {
   cn as promoteList
@@ -893,6 +901,8 @@ const cn = {
   marketManage, // 营销管理
   marketCommon, // 营销管理通用词汇
   ordinaryCoupon, // 普通优惠券
+  ordinaryCouponList, // 普通优惠券列表页面
+  couponReceive, // 普通优惠券获取明细
   groupBuy, // 多人拼团
   couponPackage, // 优惠券礼包
   addCouponPackage, // 优惠券礼包-活动创建页

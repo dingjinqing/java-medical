@@ -2,24 +2,30 @@
   <div class="content">
     <div class="main">
       <div class="filters">
-        <div class="filters_item"><span>手机号：</span>
+        <div class="filters_item">
+          <div calss="mobile">{{$t('couponReceive.mobile')}}：</div>
           <el-input
             v-model="searchData.mobile"
-            placeholder="请输入手机号"
+            :placeholder="$t('couponReceive.mobilePlaceholder')"
             size="small"
+            class="inputWidth"
           ></el-input>
         </div>
-        <div class="filters_item"><span>用户昵称：</span>
+        <div class="filters_item">
+          <div class="itemWidth">{{$t('couponReceive.userNickName')}}：</div>
           <el-input
             v-model="searchData.userName"
-            placeholder="请输入用户昵称"
+            :placeholder="$t('couponReceive.userNickNamePlaceholder')"
             size="small"
+            class="inputWidth"
           ></el-input>
         </div>
-        <div class="filters_item"><span>使用状态：</span>
+        <div class="filters_item">
+          <div>{{$t('couponReceive.useState')}}：</div>
           <el-select
             v-model="searchData.useStatus"
             size="small"
+            class="inputWidth"
           >
             <el-option
               v-for="item in get_type_option"
@@ -34,7 +40,7 @@
             @click="initDataList"
             type="primary"
             size="small"
-          >搜索</el-button>
+          >{{$t('couponReceive.search')}}</el-button>
         </div>
       </div>
       <div class="table_box">
@@ -46,42 +52,8 @@
           style="width:100%;"
           border
         >
-          <!-- <template v-for="item in tableLabel">
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-if="item.index === 11"
-            >
-              <template slot-scope="scope">
-
-                <div class="operation">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    content="废除"
-                    placement="top"
-                    :popper-options="{
-                        trigger: 'hover'
-                    }"
-                  >
-                    <i
-                      @click="deleteCoupon(scope.row.id)"
-                      class="el-icon-delete"
-                    ></i>
-                  </el-tooltip>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :prop="item.prop"
-              :label="item.label"
-              :key="item.index"
-              v-else
-            ></el-table-column>
-          </template> -->
           <el-table-column
-            label="用户昵称"
+            :label="$t('couponReceive.userNickName')"
             align="center"
           >
             <template slot-scope="scope">
@@ -93,51 +65,51 @@
           </el-table-column>
           <el-table-column
             prop="mobile"
-            label="手机号码"
+            :label="$t('couponReceive.mobile')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="couponName"
-            label="优惠券名称"
+            :label="$t('couponReceive.couponName')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="accessMode"
-            label="领取方式"
+            :label="$t('couponReceive.receiveMethods')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="scoreNumber"
-            label="兑换积分数"
+            :label="$t('couponReceive.pointExchage')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="isUsed"
-            label="是否使用"
+            :label="$t('couponReceive.WhetherToUse')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="orderSn"
-            label="使用订单号"
+            :label="$t('couponReceive.userOrderNumber')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="validityTime"
-            label="有效期"
+            :label="$t('couponReceive.validDate')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="createTime"
-            label="领取时间"
+            :label="$t('couponReceive.receiveTime')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="usedTime"
-            label="使用时间"
+            :label="$t('couponReceive.useTime')"
             align="center"
           ></el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('couponReceive.operate')"
             align="center"
           >
             <template slot-scope="scope">
@@ -297,14 +269,20 @@ export default {
       line-height: 32px;
       margin-bottom: 10px;
       background-color: #fff;
-      padding: 10px 15px 10px 0;
+      padding: 15px;
       .filters_item {
         max-width: 250px;
         display: flex;
-        margin-left: 15px;
-        > span {
-          min-width: 80px;
-          font-size: 14px;
+        margin-left: 25px;
+        font-size: 14px;
+        .mobile {
+          width: 60px;
+        }
+        .itemWidth {
+          width: 80px;
+        }
+        .inputWidth {
+          width: 170px;
         }
       }
     }

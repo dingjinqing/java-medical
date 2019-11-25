@@ -120,6 +120,7 @@
                     class="coupon_name_input"
                     :placeholder="$t('ordinaryCoupon.nameTip')"
                     v-model="param.actName"
+                    clearable
                   ></el-input>
                 </el-form-item>
                 <el-form-item
@@ -134,13 +135,14 @@
                       >{{ $t('ordinaryCoupon.fixedDate') }}</el-radio>
                     </p>
                     <p style="margin:15px 0;">
+
                       <el-date-picker
-                        :disabled="param.validityType===0?false:true"
+                        :disabled="param.validityType === 0 ? false : true"
                         v-model="param.couponDate"
                         type="datetimerange"
                         value-format="yyyy-MM-dd HH:mm:ss"
                         format="yyyy-MM-dd HH:mm:ss"
-                        range-separator="-"
+                        range-separator="至"
                         :start-placeholder="$t('ordinaryCoupon.startTime')"
                         :end-placeholder="$t('ordinaryCoupon.endTime')"
                         size="small"
@@ -192,7 +194,7 @@
                           v-model.number="param.totalAmount"
                           size="small"
                           class="small_input"
-                        ></el-input>{{ $t('ordinaryCoupon.surplusTip1') }}
+                        ></el-input> {{ $t('ordinaryCoupon.surplusTip1') }}
                         <span style="color: #999;">{{ $t('ordinaryCoupon.surplusTip2') }}</span>
                       </span>
                     </div>
@@ -409,7 +411,7 @@
                       <el-radio
                         v-model="param.useConsumeRestrict"
                         :label='1'
-                      >{{ $t('ordinaryCoupon.restrictRadio2') }}<el-input
+                      >{{ $t('ordinaryCoupon.restrictRadio2') }}&nbsp;<el-input
                           :disabled="param.useConsumeRestrict === 0"
                           size="small"
                           v-model.number="param.leastConsume"
@@ -598,6 +600,7 @@ export default {
       editType: false, // 编辑保存状态
       couponInfo: {},
       id: '',
+      example: false,
       param: {
         type: 0, // 优惠券类型
         actCode: '',

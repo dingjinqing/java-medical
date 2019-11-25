@@ -260,10 +260,9 @@ export default {
       this.myChart.showLoading({
         text: 'loading',
         color: '#4cbbff',
-        textColor: '#4cbbff',
-        maskColor: 'rgba(0, 0, 0, 0.9'
+        textColor: '#4cbbff'
+        // maskColor: 'rgba(0, 0, 0, 0.9)'
       })
-      // window.addEventListener('resize', function () { myChart.resize() })
     },
     updateEcharts () {
       this.echartInit.legendData = this.$t('groupBuy.legendData')
@@ -299,7 +298,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 30px 0 50px 0;
+    margin: 30px 0 50px;
     .fromInfo {
       flex: 1;
       height: 130px;

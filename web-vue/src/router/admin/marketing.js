@@ -957,7 +957,7 @@ const routes = [
   },
   // 秒杀 活动效果数据
   {
-    path: '/admin/home/main/seckill/userList',
+    path: '/admin/home/main/seckill/seckillEffect',
     name: 'seckill_effect_view',
     meta: {
       crumbTitle: 'router.resultSeckill',

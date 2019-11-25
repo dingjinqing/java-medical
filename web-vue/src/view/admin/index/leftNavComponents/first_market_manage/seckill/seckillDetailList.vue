@@ -5,7 +5,7 @@
       <el-form label-width="100px">
         <el-row :gutter=24>
           <el-col :span="5">
-            <el-form-item :label="this.$t('seckill.mobile')">
+            <el-form-item :label="this.$t('seckill.mobile') + '：'">
               <el-input
                 size="small"
                 v-model="requestParams.mobile"
@@ -20,7 +20,7 @@
             :span="5"
             style="margin-left: -20px"
           >
-            <el-form-item :label="this.$t('seckill.name')">
+            <el-form-item :label="this.$t('seckill.name')+ '：'">
               <el-input
                 size="small"
                 v-model="requestParams.username"
@@ -34,7 +34,7 @@
             :span="4"
             style="margin-left: -20px"
           >
-            <el-form-item :label="this.$t('seckill.inviter')">
+            <el-form-item :label="this.$t('seckill.inviter')+ '：'">
               <el-input
                 size="small"
                 v-model="requestParams.inviteUserName"
@@ -164,7 +164,7 @@ export default {
   .main {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
+    padding: 15px;
     .wrapper {
       .el-button {
         margin-left: 5px;
@@ -184,7 +184,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 15px;
 }
 .inputWidth {
   width: 175px;
@@ -192,7 +192,15 @@ export default {
 .el-form-item {
   margin-bottom: 1px;
 }
+/deep/ .el-form-item__label {
+  padding: 0;
+}
+
 .el-row {
-  margin-bottom: 14px !important;
+  margin-bottom: 2px !important;
+}
+.el-col-offset-2 {
+  padding-left: 0 !important;
+  margin-left: 6.33333% !important;
 }
 </style>

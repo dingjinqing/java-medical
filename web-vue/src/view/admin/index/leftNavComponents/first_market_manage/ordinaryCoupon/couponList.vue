@@ -8,26 +8,27 @@
         :standard="true"
       />
       <div class="wrapper">
-        <span>优惠券名称：</span>
+        <span>{{$t('ordinaryCouponList.couponName')}}：</span>
         <el-input
-          size="medium"
+          size="small"
           v-model="actName"
           clearable
-          placeholder="请输入优惠券名称"
+          :placeholder="$t('ordinaryCouponList.inputPlaceholder')"
           class='search_content'
         >
         </el-input>
         <el-button
           type="primary"
-          size="medium"
+          size="small"
           @click="handleClick"
-        >查询</el-button>
+          class="btn"
+        >{{$t('ordinaryCouponList.search')}}</el-button>
         <el-button
           type="primary"
-          size="medium"
+          size="small"
           @click="addCoupon()"
           class="barginBtn"
-        >添加优惠券</el-button>
+        >{{$t('ordinaryCouponList.addCoupon')}}</el-button>
       </div>
     </div>
 
@@ -42,75 +43,75 @@
       >
         <el-table-column
           prop="actName"
-          label="优惠券名称"
+          :label="$t('ordinaryCouponList.couponName')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="scoreNumber"
-          label="积分兑换"
+          :label="$t('ordinaryCouponList.pointsExchange')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="denomination"
-          label="价值"
+          :label="$t('ordinaryCouponList.value')"
           align="center"
           width="80"
         >
         </el-table-column>
         <el-table-column
           prop="leastConsume"
-          label="最低消费"
+          :label="$t('ordinaryCouponList.minConsume')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="surplus"
-          label="库存"
+          :label="$t('ordinaryCouponList.inventory')"
           align="center"
           width="80"
         >
         </el-table-column>
         <el-table-column
           prop="receivePerPerson"
-          label="领取限制"
+          :label="$t('ordinaryCouponList.receiveLimit')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="vaildDate"
-          label="有效期"
+          :label="$t('ordinaryCouponList.validityDay')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="receivePerson"
-          label="领取人/次"
+          :label="$t('ordinaryCouponList.receiveTimes')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="giveOutPerson"
-          label="发放人/次"
+          :label="$t('ordinaryCouponList.sendTimes')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="used"
-          label="已使用"
+          :label="$t('ordinaryCouponList.use')"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          label="操作"
+          :label="$t('ordinaryCouponList.operate')"
           align="center"
           width="130"
         >
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
-                content="编辑"
+                :content="$t('ordinaryCouponList.edit')"
                 placement="top"
                 v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
               >
@@ -121,7 +122,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="分享"
+                :content="$t('ordinaryCouponList.share')"
                 placement="top"
                 v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
               >
@@ -132,7 +133,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="停用"
+                :content="$t('ordinaryCouponList.disableUse')"
                 placement="top"
                 v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
               >
@@ -143,7 +144,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="启用"
+                :content="$t('ordinaryCouponList.enableUse')"
                 placement="top"
                 v-if="scope.row.statusText === '已停用' || scope.row.statusText === 'deactivated'"
               >
@@ -154,7 +155,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="领取明细"
+                :content="$t('ordinaryCouponList.reveiveDetails')"
                 placement="top"
               >
                 <span
@@ -164,7 +165,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t('ordinaryCouponList.delete')"
                 placement="top"
                 v-if="scope.row.statusText === '已结束' || scope.row.statusText === '已停用' || scope.row.statusText === 'ended' || scope.row.statusText === 'deactivated'"
               >
@@ -251,7 +252,7 @@ export default {
     return {
       nav: 0,
       actName: null, // 搜索条件
-      activityName: '优惠券',
+      activityName: this.$t('ordinaryCouponList.coupon'),
       tableData: [],
       pageParams: {}, // 分页
       requestParams: {},
@@ -284,6 +285,7 @@ export default {
 
     // 表格数据处理
     handleData (data) {
+      console.log(data)
       data.map((item, index) => {
         if (item.receivePerPerson === 0) {
           item.receivePerPerson = '不限制'
@@ -304,7 +306,7 @@ export default {
         if (item.validityType === 1) {
           item.vaildDate = `领取开始${item.validity}天${item.validityHour}小时${item.validityMinute}分内有效`
         } else {
-          item.vaildDate = `${item.startTime} 至${item.endTime} `
+          item.vaildDate = `${item.startTime}至${item.endTime} `
         }
         item.receivePerson = `${item.receivePerson} /${item.receiveAmount}`
         item.giveOutPerson = `${item.giveoutPerson}/${item.giveoutAmount}`
@@ -342,19 +344,19 @@ export default {
 
     // 删除优惠券
     delCoupon (id) {
-      this.$confirm('此操作将永久删除该优惠券活动, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('ordinaryCouponList.couponDelTips'), this.$t('ordinaryCouponList.tips'), {
+        confirmButtonText: this.$t('ordinaryCouponList.confirm'),
+        cancelButtonText: this.$t('ordinaryCouponList.cancle'),
         type: 'warning'
       }).then(() => {
         deleteCoupon(id).then(res => {
           if (res.error === 0) {
-            this.$message.success({ message: '删除成功!' })
+            this.$message.success({ message: this.$t('ordinaryCouponList.delSuccess') })
             this.handleClick()
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消删除' })
+        this.$message.info({ message: this.$t('ordinaryCouponList.cancleDel') })
       })
     },
 
@@ -370,37 +372,37 @@ export default {
 
     // 停用优惠券
     puaseCoupon (id) {
-      this.$confirm('此操作将停用该优惠券活动, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('ordinaryCouponList.couponActStopTip'), this.$t('ordinaryCouponList.tips'), {
+        confirmButtonText: this.$t('ordinaryCouponList.confirm'),
+        cancelButtonText: this.$t('ordinaryCouponList.cancle'),
         type: 'warning'
       }).then(() => {
         pauseCoupon(id).then(res => {
           if (res.error === 0) {
-            this.$message.success({ message: '停用成功!' })
+            this.$message.success({ message: this.$t('ordinaryCouponList.stopSuccess') })
             this.handleClick()
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消停用' })
+        this.$message.info({ message: this.$t('ordinaryCouponList.cancleStop') })
       })
     },
 
     // 启用优惠券
     startCoupon (id) {
-      this.$confirm('此操作将启用该优惠券活动, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('ordinaryCouponList.couponActStartTip'), this.$t('ordinaryCouponList.tips'), {
+        confirmButtonText: this.$t('ordinaryCouponList.confirm'),
+        cancelButtonText: this.$t('ordinaryCouponList.cancle'),
         type: 'warning'
       }).then((res) => {
         startCoupon(id).then((res) => {
           if (res.error === 0) {
-            this.$message.success({ message: '启用成功!' })
+            this.$message.success({ message: this.$t('ordinaryCouponList.startSuccess') })
             this.handleClick()
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消启用' })
+        this.$message.info({ message: this.$t('ordinaryCouponList.cancleStart') })
       })
     },
 
@@ -430,26 +432,15 @@ export default {
   .main {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
-    .wrapper {
-      .rightContent {
-        .el-button {
-          margin-left: 5px;
-        }
-        span {
-          height: 30px;
-          line-height: 30px;
-        }
-        :nth-of-type(3) {
-          color: #999;
-        }
-      }
-      .barginBtn {
-        float: right;
-      }
-    }
+    padding: 15px;
     span {
-      line-height: 40px;
+      line-height: 30px;
+    }
+    .btn {
+      margin-left: 10px;
+    }
+    .barginBtn {
+      float: right;
     }
   }
 }
@@ -465,7 +456,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 15px;
 }
 .balanceDialo .el-dialog__body {
   padding-bottom: 0 !important;

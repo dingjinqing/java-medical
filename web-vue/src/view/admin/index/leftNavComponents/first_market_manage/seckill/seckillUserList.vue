@@ -5,7 +5,7 @@
       <el-form label-width="100px">
         <el-row :gutter=24>
           <el-col :span="5">
-            <el-form-item :label="this.$t('seckill.mobile')">
+            <el-form-item :label="this.$t('seckill.mobile') + '：'">
               <el-input
                 size="small"
                 v-model="requestParams.mobile"
@@ -20,7 +20,7 @@
             :span="5"
             style="margin-left: -20px"
           >
-            <el-form-item :label="this.$t('seckill.name')">
+            <el-form-item :label="this.$t('seckill.name') + '：'">
               <el-input
                 size="small"
                 v-model="requestParams.username"
@@ -34,7 +34,7 @@
             :span="6"
             style="margin-left: -20px"
           >
-            <el-form-item :label="this.$t('seckill.goodsNum')">
+            <el-form-item :label="this.$t('seckill.goodsNum') + '：'">
               <el-input
                 size="small"
                 v-model="requestParams.minGoodsAmount"
@@ -50,7 +50,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="2">
+          <el-col :span="1">
             <el-button
               size="small"
               type="primary"
@@ -184,7 +184,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 15px;
 }
 .inputWidth {
   width: 175px;
@@ -192,7 +192,10 @@ export default {
 .el-form-item {
   margin-bottom: 1px;
 }
+/deep/ .el-form-item__label {
+  padding: 0;
+}
 .el-row {
-  margin-bottom: 14px !important;
+  margin-bottom: 2px !important;
 }
 </style>
