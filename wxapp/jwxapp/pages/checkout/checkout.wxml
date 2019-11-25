@@ -1,3 +1,4 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
   <include src="../common/header.wxml"/>
     <view class="main-container">
@@ -9,10 +10,10 @@
       </view> -->
       <view class="shipping_method_content">
         <block wx:for="{{orderInfo.expressList}}" wx:for-item="shipItem" wx:for-index="shipIndex" wx:key="shipIndex">
-          <view  class="shipping_method" wx:if="{{shipItem === 1}}" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{params.deliverType === shipIndex ? comColor : ''}};">{{shipItem}}快递</view>
+          <view  class="shipping_method" wx:if="{{shipItem === 1}}" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{params.deliverType === shipIndex ? comColor : ''}};">{{i18n.$t(localePack,"pages.checkout.deliverType["+shipIndex+"]")}}</view>
         </block>
       </view>
-      <view class="address_info" bindtap="selectStore" wx:if="{{chooseShippingIndex !== 0}}" style="background:#fff;border-bottom:2rpx solid #eee;">
+      <view class="address_info" bindtap="selectStore" wx:if="{{params.deliverType !== 0}}" style="background:#fff;border-bottom:2rpx solid #eee;">
         <view class="address-user_info">
           <text class="user_name">王的盛宴</text>
         </view>
@@ -26,13 +27,13 @@
       <view class="address_info" bindtap="addAddress" style="background:#fff url({{imageUrl}}image/wxapp/address_bottom.png) no-repeat  left bottom / 100%;" >
         <view class="address-address_info" wx:if="{{!orderInfo.address}}">
           <image src="{{imageUrl}}image/wxapp/address.png"></image>
-          <text class="address">请新建收货地址</text> 
+          <text class="address">{{i18n.$t(localePack,"pages.checkout.createAddress")}}</text> 
         </view>
         <view class="address-user_info" wx:if="{{orderInfo.address}}">
           <text class="user_name">{{orderInfo.address.consignee}}</text>
           <text class="user_mobile">{{orderInfo.address.mobile}}</text>
         </view>
-        <view class="address-address_info" wx:if="{{orderInfo.address && chooseShippingIndex !== 1}}">
+        <view class="address-address_info" wx:if="{{orderInfo.address && params.deliverType !== 1}}">
           <image src="{{imageUrl}}image/wxapp/address.png"></image>
           <text class="address">{{orderInfo.address.provinceName+orderInfo.address.cityName+orderInfo.address.districtName+orderInfo.address.address}}</text> 
           <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
@@ -54,25 +55,25 @@
       </view>
 
       <view class="pay_type">
-        <view class="pay_title">支付方式</view>
+        <view class="pay_title">{{i18n.$t(localePack,"pages.checkout.paymentMethod")}}</view>
         <view class="pay_type_content">
-          <view class="pay_type_item" wx:for="{{payType}}" wx:key="*this" data-index="{{payTypeIndex}}" wx:for-index="payTypeIndex" wx:for-item="payTypeItem" bindtap="changePayType"> <text class="iconfont {{choosePayTypeIndex === payTypeIndex ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{choosePayTypeIndex === payTypeIndex ? comColor : ''}}"></text>{{payTypeItem}}微信支付</view>
+          <view class="pay_type_item" wx:for="{{payType}}" wx:key="*this" data-index="{{payTypeIndex}}" wx:for-index="payTypeIndex" wx:for-item="payTypeItem" bindtap="changePayType"> <text class="iconfont {{choosePayTypeIndex === payTypeIndex ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{choosePayTypeIndex === payTypeIndex ? comColor : ''}}"></text>{{i18n.$t(localePack,"pages.checkout.payType["+payTypeItem+"]")}}</view>
         </view>
         <view class="pay-type-tips" wx:if="{{choosePayTypeIndex === 2}}">
-          温馨提示：24小时内未完成支付，订单将会自动取消，所有款项将自动退回到付款人账户
+          {{i18n.$t(localePack,"pages.checkout.friendPaymentTips")}}
         </view>
       </view>
 
       <view class="pay_content">
         <view class="pay_list_item" bindtap="selectCardTap">
-          <text class="pay_list_title">会员卡</text>
-          <text class="pay_list_content">{{orderInfo.defaultMemberCard ? orderInfo.defaultMemberCard.cardName : '选择会员卡'}}</text>
+          <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")}}</text>
+          <text class="pay_list_content">{{orderInfo.defaultMemberCard ? orderInfo.defaultMemberCard.cardName : i18n.$t(localePack,"pages.checkout.select")+i18n.$t(localePack,"pages.checkout.membershipCard")}}</text>
           <view class="pay_list_right">
             <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
           </view>
         </view> 
         <view class="pay_list_item" wx:if="{{couponArray}}">
-          <text class="pay_list_title">优惠券</text>
+          <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.coupon")}}</text>
           <picker class="pay_list_content picker" value="{{defaultCouponIndex}}" range="{{couponArray}}" range-key="actName" bindchange="couponChange">
             <view>{{couponArray[defaultCouponIndex].actName}}</view>
           </picker>
@@ -81,22 +82,22 @@
           </view>
         </view>
         <view class="pay_list_item" bindtap="cardBalanceTap">
-          <text class="pay_list_title">会员卡余额支付</text>
-          <text class="pay_list_content" wx:if="{{usePayInfo.useCardBalance > 0}}">减{{usePayInfo.useCardBalance}}元</text>
+          <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
+          <text class="pay_list_content" wx:if="{{usePayInfo.useCardBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce")}}{{usePayInfo.useCardBalance}}元</text>
           <view class="pay_list_right">
             <text class="iconfont {{cardBalanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{cardBalanceStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
         <view class="pay_list_item" bindtap="balanceTap">
-          <text class="pay_list_title">余额支付</text>
-          <text class="pay_list_content" wx:if="{{usePayInfo.useBalance > 0}}">减{{usePayInfo.useBalance}}元</text>
+          <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}{{}}</text>
+          <text class="pay_list_content" wx:if="{{usePayInfo.useBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce")}}{{usePayInfo.useBalance}}元</text>
           <view class="pay_list_right">
             <text class="iconfont {{balanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{balanceStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
         <view class="pay_list_item" bindtap="scoreTap">
-          <text class="pay_list_title">积分抵扣</text>
-          <text class="pay_list_content" wx:if="{{usePayInfo.useScore > 0}}">减{{usePayInfo.useScore / 100}}元</text>
+          <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.integral")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
+          <text class="pay_list_content" wx:if="{{usePayInfo.useScore > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce")}}{{usePayInfo.useScore / 100}}元</text>
           <view class="pay_list_right">
             <text class="iconfont {{scoreStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{scoreStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
@@ -105,31 +106,31 @@
  
       <view class="checkout_detail">
         <view class="detail_item">
-          <text class="detail_title">商品总计</text>
+          <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.goods")+i18n.$t(localePack,"pages.checkout.total")}}</text>
           <text class="detail_content" style="color:{{comColor}};">￥{{orderInfo.orderAmount}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.shippingFee}}">
-          <text class="detail_title">运费</text>
+          <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.freight")}}</text>
           <text class="detail_content" style="color:{{comColor}};">+￥{{orderInfo.shippingFee}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.memberCardReduce}}">
-          <text class="detail_title">会员卡抵扣</text>
+          <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
           <text class="detail_content" style="color:{{comColor}};">-￥{{orderInfo.memberCardReduce}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.discount}}">
-          <text class="detail_title">优惠券抵扣</text>
+          <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.coupon")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
           <text class="detail_content" style="color:{{comColor}};">-￥{{orderInfo.discount}}</text>
         </view>
         <view class="detail_item" wx:if="{{cardBalanceStatus}}">
-          <text class="detail_title">会员卡余额支付</text>
+          <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
           <text class="detail_content" style="color:{{comColor}};">-￥{{usePayInfo.useCardBalance}}</text>
         </view>
         <view class="detail_item" wx:if="{{balanceStatus}}">
-          <text class="detail_title">余额支付</text>
+          <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
           <text class="detail_content" style="color:{{comColor}};">-￥{{usePayInfo.useBalance}}</text>
         </view>
         <view class="detail_item" wx:if="{{scoreStatus}}">
-          <text class="detail_title">积分抵扣</text>
+          <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.integral")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
           <text class="detail_content" style="color:{{comColor}};">-￥{{usePayInfo.useScore / 100}}</text>
         </view>
       </view>

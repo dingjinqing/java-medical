@@ -1,5 +1,6 @@
 var navigation = require("./components/navigation.js")
 var order = require("./pages/order.js")
+var checkout = require("./pages/checkout.js")
 var comment = require('./page1/commentCn.js')
 var decorate = require('./components/decorate/decorate.js')
 var zh_CN = {
@@ -77,7 +78,8 @@ var zh_CN = {
       "leftMenuB": "推荐品牌",
       "leftMenuC": "推荐分类"
     },
-    "order": order
+    "order": order,
+    "checkout": checkout
   },
   "page1": {
     "comment": comment

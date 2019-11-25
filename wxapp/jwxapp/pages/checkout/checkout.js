@@ -12,7 +12,6 @@ global.wxPage({
     defaultCouponIndex:null,//默认选择优惠券
     payType:[0,1,2],
     shippingMethod:[0,1,2],
-    chooseShippingIndex:0,//所选配送方式
     choosePayTypeIndex:0,//所选支付方式
     showCardBalanceDialog: false, //是否显示会员卡余额弹框
     showBalanceDialog: false, //是否显示余额弹框
