@@ -26,6 +26,10 @@ public class CouponGivePopVo {
 	private BigDecimal leastConsume;
 	/** 剩余数量 */
 	private Integer surplus;
+	/**
+	 * 优惠卷类型 0普通 1分裂
+	 */
+	private Integer type;
 	/** 优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效 */
 	private Byte validityType;
 	/** 优惠券优惠券有效天数 */
@@ -50,5 +54,5 @@ public class CouponGivePopVo {
     private Integer scoreNumber;
     /** 是否限制库存：0限制，1不限制*/
     private Integer limitSurplusFlag;
-	
+
 }

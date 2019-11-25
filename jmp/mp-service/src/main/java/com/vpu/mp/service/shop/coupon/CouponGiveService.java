@@ -653,6 +653,7 @@ public class CouponGiveService extends ShopBaseService {
                 MRKING_VOUCHER.LEAST_CONSUME,
                 MRKING_VOUCHER.USE_CONSUME_RESTRICT,
                 MRKING_VOUCHER.SURPLUS,
+                MRKING_VOUCHER.TYPE,
                 MRKING_VOUCHER.VALIDITY_TYPE,
                 MRKING_VOUCHER.VALIDITY,
                 MRKING_VOUCHER.VALIDITY_HOUR,
