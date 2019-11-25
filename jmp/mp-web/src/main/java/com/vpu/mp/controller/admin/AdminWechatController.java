@@ -60,7 +60,7 @@ public class AdminWechatController extends AdminBaseController {
 				}
 				MpOfficeAccountListVo officeAccountByAppId = saas.shop.officeAccount
 						.getOfficeAccountByAppId(authorizerInfo.getAuthorizationInfo().getAuthorizerAppid());
-				if (officeAccountByAppId != null && officeAccountByAppId.getSysId() != sysId) {
+				if (officeAccountByAppId != null && (!officeAccountByAppId.getSysId().equals(sysId))) {
 					// 公众号已经授权给其他账号！
 					return ("公众号已经授权给其他账号！");
 				}
