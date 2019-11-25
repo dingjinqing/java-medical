@@ -117,7 +117,7 @@ public class GoodsService extends ShopBaseService {
 //        if( esUtilSearchService.esState() )
 //        esFactSearchService.assemblyFactByAdminGoodsListInit(goodsInitialVo,goodsPageListParam);
 
-        if (param.getNeedGoodsNum()) {
+        if (param.getNeedGoodsNum()!=null&&param.getNeedGoodsNum()) {
             return getGoodsFilterItemWithGoodsNum(param);
         } else {
             return getGoodsFilterItemNotGoodsNum(param);
