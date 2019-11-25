@@ -11,15 +11,7 @@ import java.sql.Timestamp;
  */
 @Getter
 @Setter
-public class GoodsSortListVo{
-    private Integer sortId;
-    private String sortName;
-    private Integer parentId;
+public class GoodsSortListVo extends GoodsSort{
     private Byte hasChild;
-    private Short level;
-
-    private String sortImg;
-    private String imgLink;
-    private Short first;
     private Timestamp createTime;
 }

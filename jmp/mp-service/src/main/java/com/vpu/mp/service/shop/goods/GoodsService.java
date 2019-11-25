@@ -165,6 +165,19 @@ public class GoodsService extends ShopBaseService {
         return goodsInitialVo;
     }
 
+    public GoodsFilterItemInitVo getGoodsFilterItem(GoodsFilterItemInitParam param){
+        return getGoodsFilterItemNotGoodsNum(param);
+    }
+
+    private GoodsFilterItemInitVo getGoodsFilterItemNotGoodsNum(GoodsFilterItemInitParam param){
+        GoodsFilterItemInitVo vo =new GoodsFilterItemInitVo();
+        // 需要商家分类信息
+        if (Boolean.TRUE.equals(param.getNeedGoodsSort())) {
+            vo.setGoodsSorts(goodsSort.getSortSelectTree());
+        }
+
+        return vo;
+    }
     /**
      * 全部商品界面：商品分页查询，包含了部分规格信息（规格价格范围，规格类型数量）
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}

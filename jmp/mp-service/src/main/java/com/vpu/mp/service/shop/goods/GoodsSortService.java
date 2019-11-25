@@ -34,45 +34,49 @@ public class GoodsSortService extends ShopBaseService {
 
     /**
      * 分类列表
-     * @param param
-     * @return
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam}
+     * @return {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListVo}集合
      */
     public List<GoodsSortListVo> getSortList(GoodsSortListParam param) {
-        Condition condition = buildCondition(param);
-        List<GoodsSortListVo> goodsSortListVos = db().select().from(SORT).where(condition).orderBy(SORT.FIRST.desc(), SORT.CREATE_TIME.desc())
-            .fetchInto(GoodsSortListVo.class);
-        goodsSortListVos.forEach(vo->vo.setSortImg(getImgFullUrlUtil(vo.getSortImg())));
+        List<SortRecord> sortRecords = getSortListDao(param);
+        List<GoodsSortListVo> retList = new ArrayList<>(sortRecords.size());
 
-        return goodsSortListVos;
+        sortRecords.forEach(record->{
+            GoodsSortListVo vo = record.into(GoodsSortListVo.class);
+            vo.setSortImg(getImgFullUrlUtil(vo.getSortImg()));
+            retList.add(vo);
+        });
+
+        return retList;
     }
 
-    private Condition buildCondition(GoodsSortListParam param){
-        Condition condition = DSL.noCondition();
-        if (param.getType() != null) {
-            condition = condition.and(SORT.TYPE.eq(param.getType()));
-        }
-
-        if (param.getParentId() != null) {
-            condition = condition.and(SORT.PARENT_ID.eq(param.getParentId()));
-        }
-        return condition;
+    /**
+     * 分类列表获取树形基础数据，不需要商品数量
+     * @return {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectTreeVo} 集合
+     */
+    public List<GoodsSortSelectTreeVo> getSortSelectTree() {
+        GoodsSortListParam param = new GoodsSortListParam();
+        param.setType(GoodsConstant.NORMAL_SORT);
+        List<SortRecord> sortRecords = getSortListDao(param);
+        return sortRecords.stream().map(x -> x.into(GoodsSortSelectTreeVo.class)).collect(Collectors.toList());
     }
-
     /**
      * 普通分类下拉列表式
      * @return
      */
     public List<GoodsSortSelectListVo> getSelectList() {
-       return db().select().from(SORT).where(SORT.TYPE.eq(GoodsConstant.NORMAL_SORT)).and(SORT.PARENT_ID.eq(0))
-           .orderBy(SORT.FIRST.desc(), SORT.CREATE_TIME.desc())
-           .fetchInto(GoodsSortSelectListVo.class);
+        GoodsSortListParam param = new GoodsSortListParam();
+        param.setType(GoodsConstant.NORMAL_SORT);
+        param.setParentId(GoodsConstant.ROOT_PARENT_ID);
+        List<SortRecord> sortRecords = getSortListDao(param);
+        return sortRecords.stream().map(x -> x.into(GoodsSortSelectListVo.class)).collect(Collectors.toList());
     }
 
     /**
      * 普通商家分类新增
      * @param param 普通商家分类
      */
-    public void insertNormal(GoodsNormalSortAddParam param) {
+    public void insertNormal(GoodsNormalSortParam param) {
         transaction(() -> {
             DSLContext db= db();
             //是二级分类
@@ -94,10 +98,9 @@ public class GoodsSortService extends ShopBaseService {
      * 普通商家分类修改
      * @param param 普通商家分类
      */
-    public void updateNormal(GoodsNormalSortUpdateParam param) {
+    public void updateNormal(GoodsNormalSortParam param) {
         transaction(()->{
-            SortRecord sortRecord =new SortRecord();
-            assign(param,sortRecord);
+            SortRecord sortRecord = param.convertToSortRecord();
             db().executeUpdate(sortRecord);
             // 二级节点修改了父节点，判断原父节点是否还有孩子，同时修改新的父节点为有孩子
             if (!Objects.equals(param.getParentId(),GoodsConstant.ROOT_PARENT_ID)&&!Objects.equals(param.getParentId(), param.getOldParentId())) {
@@ -112,36 +115,8 @@ public class GoodsSortService extends ShopBaseService {
     }
 
     /**
-     * 删除商家分类
-     */
-    public void delete(Integer sortId) {
-        transaction(() -> {
-            DSLContext db = db();
-            SortRecord sortRecord = db.selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
-            if (sortRecord == null) {
-                return;
-            }
-
-            db.delete(SORT).where(SORT.SORT_ID.eq(sortId)).execute();
-            //是一级节点，有子分类
-            if (GoodsConstant.ROOT_PARENT_ID.equals(sortRecord.getParentId())
-                &&GoodsConstant.HAS_CHILD.equals(sortRecord.getHasChild())){
-                db.delete(SORT).where(SORT.PARENT_ID.eq(sortId)).execute();
-            }
-            //是子分类，查看是否需要修改父分类hasChild属性
-            if (!GoodsConstant.ROOT_PARENT_ID.equals(sortRecord.getParentId())) {
-                int i = db.fetchCount(SORT, SORT.PARENT_ID.eq(sortRecord.getParentId()));
-                if (i == 0) {
-                    db.update(SORT).set(SORT.HAS_CHILD,GoodsConstant.HAS_NO_CHILD)
-                        .where(SORT.SORT_ID.eq(sortRecord.getParentId())).execute();
-                }
-            }
-        });
-    }
-
-    /**
      * 批量插入推荐分类
-     * 默认列表中第一个分类为一级分类
+     * @param param{@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortParam}
      */
     public void insertRecommendSort(GoodsRecommendSortParam param) {
         SortRecord parentRecord = param.convertParentToRecord();
@@ -155,6 +130,10 @@ public class GoodsSortService extends ShopBaseService {
         });
     }
 
+    /**
+     * 批量更新推荐分类，会删除无效旧的二级分类
+     * @param param{@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortParam}
+     */
     public void updateRecommendSort(GoodsRecommendSortParam param) {
         final String toUpdate = "k1";
         final String toInsert = "k2";
@@ -182,6 +161,94 @@ public class GoodsSortService extends ShopBaseService {
         });
     }
 
+    /**
+     * 删除商家分类，会同时删除所有子分类，同时会判断是否需要修改父节是否有孩子节点状态
+     * @param  sortId 待删除二级分类
+     */
+    public void delete(Integer sortId) {
+        transaction(() -> {
+            DSLContext db = db();
+            SortRecord sortRecord = db.selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
+            if (sortRecord == null) {
+                return;
+            }
+
+            db.delete(SORT).where(SORT.SORT_ID.eq(sortId)).execute();
+            //是一级节点，有子分类
+            if (GoodsConstant.ROOT_PARENT_ID.equals(sortRecord.getParentId())
+                &&GoodsConstant.HAS_CHILD.equals(sortRecord.getHasChild())){
+                db.delete(SORT).where(SORT.PARENT_ID.eq(sortId)).execute();
+            }
+            //是子分类，查看是否需要修改父分类hasChild属性
+            if (!GoodsConstant.ROOT_PARENT_ID.equals(sortRecord.getParentId())) {
+                int i = db.fetchCount(SORT, SORT.PARENT_ID.eq(sortRecord.getParentId()));
+                if (i == 0) {
+                    db.update(SORT).set(SORT.HAS_CHILD,GoodsConstant.HAS_NO_CHILD)
+                        .where(SORT.SORT_ID.eq(sortRecord.getParentId())).execute();
+                }
+            }
+        });
+    }
+
+    public GoodsNormalSortDetailVo getSort2(Integer sortId){
+        SortRecord sortRecord = getSortDao(sortId);
+
+        if (sortRecord == null) {
+            return null;
+        }
+        GoodsNormalSortDetailVo vo = sortRecord.into(GoodsNormalSortDetailVo.class);
+        vo.setSortImgUrl(getImgFullUrlUtil(vo.getSortImg()));
+        return vo;
+    }
+
+    public GoodsRecommendSortDetailVo getRecommendSort2(Integer sortId){
+        Record3<Integer, String, Short> record = db().select(SORT.SORT_ID, SORT.SORT_NAME,SORT.FIRST).from(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
+        if (record == null) {
+            return null;
+        }
+        GoodsRecommendSortDetailVo parent = record.into(GoodsRecommendSortDetailVo.class);
+        List<GoodsRecommendSortDetailVo.GoodsRecommendSortChild> children = db().select().from(SORT).where(SORT.PARENT_ID.eq(sortId)).fetchInto(GoodsRecommendSortDetailVo.GoodsRecommendSortChild.class);
+        children.forEach(x->x.setSortImgUrl(getImgFullUrlUtil(x.getSortImg())));
+        parent.setChildren(children);
+        return parent;
+    }
+
+    /**
+     * 根据筛选条件查询商家分类集合
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam}
+     * @return SortRecord集合
+     */
+    public List<SortRecord> getSortListDao(GoodsSortListParam param) {
+        Condition condition = buildCondition(param);
+        return db().select().from(SORT).where(condition).orderBy(SORT.FIRST.desc(), SORT.CREATE_TIME.desc())
+            .fetchInto(SortRecord.class);
+    }
+    private Condition buildCondition(GoodsSortListParam param){
+        Condition condition = DSL.noCondition();
+        if (param.getType() != null) {
+            condition = condition.and(SORT.TYPE.eq(param.getType()));
+        }
+
+        if (param.getParentId() != null) {
+            condition = condition.and(SORT.PARENT_ID.eq(param.getParentId()));
+        }
+        return condition;
+    }
+
+    /**
+     * 根据id获取商家分类
+     * @param sortId 商家分类id
+     * @return null 或 SortRecord
+     */
+    public SortRecord getSortDao(Integer sortId){
+        Record record = db().select().from(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
+        if (record == null) {
+            return null;
+        }
+        return record.into(SortRecord.class);
+    }
+
+    /*********以上为新修改版本*********/
 
 
 
@@ -278,20 +345,6 @@ public class GoodsSortService extends ShopBaseService {
         return result;
     }
 
-    /**
-     *  获取推荐分类详细信息
-     * @param sortId
-     * @return
-     */
-    public Sort getRecommendSort(Integer sortId) {
-       Sort sort = getSort(sortId);
-        GoodsSortListParam param = new GoodsSortListParam();
-        param.setParentId(sort.getSortId());
-        param.setType(sort.getType());
-        List<Sort> children = getList(param);
-        sort.setChildren(children);
-        return sort;
-    }
 
     private SelectConditionStep<?> buildOptions(SelectWhereStep<?> select, GoodsSortListParam param) {
         List<Condition> list = new ArrayList<>(10);
@@ -389,28 +442,6 @@ public class GoodsSortService extends ShopBaseService {
         return resultSort;
     }
 
-    /**
-     * 普通商家分类新增
-     * @param sort
-     */
-    public void insert(Sort sort) {
-        transaction(() -> {
-            DSLContext db= db();
-            //防止故意传递错误的类型
-            sort.setType(Sort.NORMAL_TYPE_CODE);
-            sort.setHasChild(Sort.HAS_NO_CHILD_CODE);
-
-            //是二级分类
-            if (sort.getParentId() != null && sort.getParentId() != 0) {
-                db.update(SORT).set(SORT.HAS_CHILD, Sort.HAS_CHILD_CODE).where(SORT.SORT_ID.eq(sort.getParentId()))
-                    .execute();
-            }
-
-            SortRecord sortRecord = db.newRecord(SORT, sort);
-            sortRecord.insert();
-        });
-
-    }
 
 
 
@@ -451,96 +482,6 @@ public class GoodsSortService extends ShopBaseService {
         Condition condition = SORT.SORT_NAME.in(sortNames).and(SORT.SORT_ID.ne(parentId)).and(SORT.PARENT_ID.ne(parentId));
         int count = db().fetchCount(SORT, condition);
         return count>0;
-    }
-
-    /**
-     *  推荐分类修改时名称重复判断
-     * @param sorts
-     * @param parentId
-     * @return
-     */
-    public boolean isOtherSortNameExist(List<Sort> sorts,Integer parentId) {
-        List<String> sortNames = new ArrayList<>(sorts.size());
-        List<Integer> sortIds = new ArrayList<>(sorts.size());
-        sorts.forEach(item -> {
-            sortNames.add(item.getSortName());
-            sortIds.add(item.getSortId());
-        });
-
-        List<Integer> readyToDeleteIds = db().selectFrom(SORT).where(SORT.SORT_ID.notIn(sortIds)).and(SORT.PARENT_ID.eq(parentId)).fetch(SORT.SORT_ID);
-
-        sortIds.addAll(readyToDeleteIds);
-
-        Record1<Integer> countRecord = db().selectCount().from(SORT)
-            .where(SORT.SORT_NAME.in(sortNames)).and(SORT.SORT_ID.notIn(sortIds))
-            .fetchOne();
-
-        Integer count = countRecord.getValue(0, Integer.class);
-        if (count > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    /**
-     * 商家分类修改
-     * @param sort
-     */
-    public void update(Sort sort) {
-
-        //不允许修改父节点
-        sort.setParentId(null);
-        //不允许修改类型
-        sort.setType(null);
-        //不允许修改子节点情况
-        sort.setHasChild(null);
-
-        SortRecord sortRecord = new SortRecord();
-        assign(sort, sortRecord);
-        db().executeUpdate(sortRecord);
-    }
-
-    /**
-     * 修改推荐分类及其子分类
-     * @param sort
-     */
-    public void updateRecommendSort(Sort sort) {
-        List<? extends Sort> children = sort.getChildren();
-        List<Integer> childrenId = new ArrayList<>(children.size());
-        List<SortRecord> childrenSortRecordForUpdate =new ArrayList<>(children.size());
-        List<SortRecord> childrenSortRecordForInsert =new ArrayList<>(children.size());
-
-        children.forEach((Sort item)->{
-            SortRecord sortRecord=new SortRecord();
-            sortRecord.setType(Sort.RECOMMENT_TYPE_CODE);
-            sortRecord.setHasChild(Sort.HAS_NO_CHILD_CODE);
-            sortRecord.setParentId(sort.getSortId());
-            sortRecord.setSortName(item.getSortName());
-            sortRecord.setSortImg(item.getSortImg());
-            sortRecord.setImgLink(item.getImgLink());
-
-            if (item.getSortId() != null) {
-                sortRecord.setSortId(item.getSortId());
-                childrenId.add(item.getSortId());
-                childrenSortRecordForUpdate.add(sortRecord);
-            } else {
-                childrenSortRecordForInsert.add(sortRecord);
-            }
-        });
-        SortRecord parentSort =new SortRecord();
-        parentSort.setSortId(sort.getSortId());
-        parentSort.setSortName(sort.getSortName());
-        parentSort.setFirst(sort.getFirst());
-        if (childrenSortRecordForInsert.size() == 0 && childrenSortRecordForUpdate.size() == 0) {
-            parentSort.setHasChild(Sort.HAS_NO_CHILD_CODE);
-        }
-
-        transaction(()->{
-            db().deleteFrom(SORT).where(SORT.PARENT_ID.eq(sort.getSortId())).and(SORT.SORT_ID.notIn(childrenId)).execute();
-            db().batchUpdate(childrenSortRecordForUpdate).execute();
-            db().batchInsert(childrenSortRecordForInsert).execute();
-            db().executeUpdate(parentSort);
-        });
     }
 
     /**

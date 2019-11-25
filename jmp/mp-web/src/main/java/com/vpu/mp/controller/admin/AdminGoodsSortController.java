@@ -18,21 +18,20 @@ public class AdminGoodsSortController extends AdminBaseController {
 
     /**
      * 商品分类查询，未分页
-     * @return
+     * @param  {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam}
+     * @return {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListVo}集合
      */
-    @GetMapping("/api/admin/goods/sort/list/{sortType}")
-    public JsonResult getList(@PathVariable("sortType") Byte sortType) {
-        if (!GoodsConstant.NORMAL_SORT.equals(sortType) && !GoodsConstant.RECOMMEND_SORT.equals(sortType)) {
-            sortType = GoodsConstant.NORMAL_SORT;
+    @PostMapping("/api/admin/goods/sort/list")
+    public JsonResult getList(@RequestBody GoodsSortListParam param) {
+        if (!GoodsConstant.NORMAL_SORT.equals(param.getType()) && !GoodsConstant.RECOMMEND_SORT.equals(param.getType())) {
+            param.setType(GoodsConstant.NORMAL_SORT);
         }
-        GoodsSortListParam param = new GoodsSortListParam();
-        param.setParentId(GoodsConstant.ROOT_PARENT_ID);
-        param.setType(sortType);
         return success(shop().goods.goodsSort.getSortList(param));
     }
 
     /**
-     * 选择框下拉列表（非树形数据）
+     * 普通分类选择框下拉列表（非树形数据，仅返回一级数据）
+     * @return {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectListVo}集合
      */
     @GetMapping("/api/admin/goods/sort/select/list")
     public JsonResult getSelectList(){
@@ -41,10 +40,10 @@ public class AdminGoodsSortController extends AdminBaseController {
 
     /**
      *  普通分类新增
-     * @param param {@link GoodsNormalSortAddParam}
+     * @param param {@link GoodsNormalSortParam}
      */
     @PostMapping("/api/admin/goods/sort/add")
-    public JsonResult insert(@RequestBody GoodsNormalSortAddParam param) {
+    public JsonResult insert(@RequestBody GoodsNormalSortParam param) {
         if (param.getSortName()==null) {
             return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
         }
@@ -61,10 +60,10 @@ public class AdminGoodsSortController extends AdminBaseController {
 
     /**
      * 普通分类修改
-     * @param param {@link GoodsNormalSortUpdateParam}
+     * @param param {@link GoodsNormalSortParam}
      */
     @PostMapping("/api/admin/goods/sort/update")
-    public JsonResult update(@RequestBody GoodsNormalSortUpdateParam param) {
+    public JsonResult update(@RequestBody GoodsNormalSortParam param) {
         if (param.getSortId() == null) {
             return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
         }
@@ -77,19 +76,6 @@ public class AdminGoodsSortController extends AdminBaseController {
     }
 
     /**
-     * 删除商家分类
-     * @param sortId 分类id
-     */
-    @GetMapping("/api/admin/goods/sort/delete/{sortId}")
-    public JsonResult delete(@PathVariable("sortId") Integer sortId) {
-        if (sortId == null) {
-            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
-        }
-        shop().goods.goodsSort.delete(sortId);
-        return success();
-    }
-
-    /**
      * 根据id获取普通商家分类
      * @param sortId 普通商家分类id
      */
@@ -98,12 +84,12 @@ public class AdminGoodsSortController extends AdminBaseController {
         if (sortId == null) {
             return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
         }
-        return success(shop().goods.goodsSort.getSort(sortId));
+        return success(shop().goods.goodsSort.getSort2(sortId));
     }
 
     /**
      *  推荐商品批量新增接口
-     * @param param
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortParam} 推荐分类
      */
     @PostMapping("/api/admin/goods/sort/recommend/add")
     public JsonResult insertRecommendSort(@RequestBody GoodsRecommendSortParam param) {
@@ -128,6 +114,10 @@ public class AdminGoodsSortController extends AdminBaseController {
         return success();
     }
 
+    /**
+     * 推荐商品批量更新接口
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortParam} 推荐分类
+     */
     @PostMapping("/api/admin/goods/sort/recommend/update")
     public JsonResult updateRecommendSort(@RequestBody GoodsRecommendSortParam param){
         if (param.getSortId() == null) {
@@ -154,43 +144,40 @@ public class AdminGoodsSortController extends AdminBaseController {
         return success();
     }
 
-    private boolean isSortNamesRepeat(List<String> sortNames){
-        Set<String> set = new HashSet<>(sortNames);
-        return set.size()!=sortNames.size();
-    }
-
-
     @GetMapping("/api/admin/goods/sort/recommend/get/{sortId}")
     public JsonResult getRecommendSort(@PathVariable("sortId") Integer sortId) {
         if (sortId == null) {
             return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
         }
-        return success(shop().goods.goodsSort.getRecommendSort(sortId));
+        return success(shop().goods.goodsSort.getRecommendSort2(sortId));
     }
 
     /**
-     *  判断批量商品新增时候是否内部有重复值
-     * @param sorts
-     * @return
+     * 删除商家分类
+     * @param sortId 分类id
      */
-    private boolean isSortNameRepeat(List<Sort> sorts) {
-        Map<String,Object> map=new HashMap<>(sorts.size());
-        for (Sort sort : sorts) {
-            map.put(sort.getSortName(),null);
+    @GetMapping("/api/admin/goods/sort/delete/{sortId}")
+    public JsonResult delete(@PathVariable("sortId") Integer sortId) {
+        if (sortId == null) {
+            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
         }
-
-        if (map.size() != sorts.size()) {
-            return true;
-        } else {
-            return false;
-        }
+        shop().goods.goodsSort.delete(sortId);
+        return success();
     }
 
+    /**
+     * 判断字符串集合内是否存在重复数据
+     * @param sortNames 字符串集合
+     * @return true 存在， false 不存在
+     */
+    private boolean isSortNamesRepeat(List<String> sortNames){
+        Set<String> set = new HashSet<>(sortNames);
+        return set.size()!=sortNames.size();
+    }
 
     /**
      * 设置推荐分类配置
      * @param goodsRecommendSortConfig 推荐配置参数
-     * @return
      */
     @PostMapping("/api/admin/goods/sort/setConfig")
     public JsonResult setRecommendSortConfig(@RequestBody GoodsRecommendSortConfig goodsRecommendSortConfig){
@@ -200,7 +187,7 @@ public class AdminGoodsSortController extends AdminBaseController {
 
     /**
      * 获取推荐分类配置
-     * @return 推荐分类配置项
+     * @return 推荐分类配置项 {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortConfig}
      */
     @GetMapping("/api/admin/goods/sort/getConfig")
     public JsonResult getRecommendSortConfig() {

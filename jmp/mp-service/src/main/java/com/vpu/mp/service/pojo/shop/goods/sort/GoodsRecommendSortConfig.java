@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.goods.sort;
 import lombok.Data;
 
 /**
+ * 商品推荐分类配置信息修改param
  * @author 李晓冰
  * @date 2019年10月08日
  */

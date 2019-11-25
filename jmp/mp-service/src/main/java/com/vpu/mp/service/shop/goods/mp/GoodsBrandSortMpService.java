@@ -1,12 +1,12 @@
 package com.vpu.mp.service.shop.goods.mp;
 
+import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandConfig;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortConfig;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
-import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortMenuContentVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortMenuParam;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -88,14 +89,15 @@ public class GoodsBrandSortMpService extends ShopBaseService{
         GoodsSortListParam param = new GoodsSortListParam();
         param.setType(GoodsConstant.NORMAL_SORT);
         param.setParentId(GoodsConstant.ROOT_PARENT_ID);
-        List<Sort> sorts = goodsSortService.getList(param);
-        for (Sort sort : sorts) {
+        List<SortRecord> sortRecords = goodsSortService.getSortListDao(param);
+
+        for (SortRecord record : sortRecords) {
             GoodsSortMenuVo item =new GoodsSortMenuVo();
             item.setMenuType(GoodsConstant.NORMAL_SORT_TYPE);
-            item.setMenuName(sort.getSortName());
-            item.setMenuId(sort.getSortId());
+            item.setMenuName(record.getSortName());
+            item.setMenuId(record.getSortId());
             if (isFirst) {
-                item.setMenuContent(getNormalSortContent(sort));
+                item.setMenuContent(getNormalSortContent(record));
                 isFirst=false;
             }
             menuVo.add(item);
@@ -196,15 +198,18 @@ public class GoodsBrandSortMpService extends ShopBaseService{
      * @return
      */
     private GoodsSortMenuContentVo getNormalSortContent(Integer sortId) {
-        Sort sort = goodsSortService.getSort(sortId);
-        return getNormalSortContent(sort);
+        SortRecord record = goodsSortService.getSortDao(sortId);
+        if (record == null) {
+            return null;
+        }
+        return getNormalSortContent(record);
     }
     /**
      * 获取普通分类下的集合内容,其返回值可能是普通二级分类,也可能是商品信息
      * @param sort
      * @return
      */
-    private GoodsSortMenuContentVo getNormalSortContent(Sort sort) {
+    private GoodsSortMenuContentVo getNormalSortContent(SortRecord sort) {
         GoodsSortMenuContentVo content=new GoodsSortMenuContentVo();
         content.setMenuContentType(GoodsConstant.NORMAL_SORT_TYPE);
         content.setMenuImg(sort.getSortImg());
@@ -212,7 +217,7 @@ public class GoodsBrandSortMpService extends ShopBaseService{
 
         SortGroupByParentParam param = new SortGroupByParentParam();
         param.setIsRecommend(GoodsConstant.NORMAL_SORT);
-        param.setSortIds(Arrays.asList(sort.getSortId()));
+        param.setSortIds(Collections.singletonList(sort.getSortId()));
         List<GoodsSortParentMpVo> sortGroupByParentMp = goodsSortService.getSortGroupByParentMp(param);
 
         if (sortGroupByParentMp.size()==0) {

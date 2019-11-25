@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 推荐分类新增，修改param
  * @author 李晓冰
  * @date 2019年11月21日
  */
@@ -16,6 +17,7 @@ public class GoodsRecommendSortParam {
     private Integer sortId;
     private String sortName;
     private Short first;
+    private Byte type = GoodsConstant.RECOMMEND_SORT;
     private List<GoodsRecommendSortChild> children;
 
     @Data
@@ -25,7 +27,9 @@ public class GoodsRecommendSortParam {
         private String sortName;
         private String sortImg;
         private String imgLink;
+        private Byte type = GoodsConstant.RECOMMEND_SORT;
     }
+
 
     public SortRecord convertParentToRecord() {
         SortRecord sortRecord = new SortRecord();
@@ -35,7 +39,7 @@ public class GoodsRecommendSortParam {
         }
         sortRecord.setParentId(GoodsConstant.ROOT_PARENT_ID);
         sortRecord.setLevel(GoodsConstant.ROOT_LEVEL);
-        sortRecord.setType(GoodsConstant.RECOMMEND_SORT);
+        sortRecord.setType(type);
 
         //更新操作
         if (sortId != null) {
