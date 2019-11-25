@@ -15,7 +15,7 @@
               size="small"
             ></el-input>
             <el-select
-              v-if="couponType !== ''"
+              v-if="type === -1"
               v-model="couponType"
               size="small"
               @change="couponTypeChaneg"
@@ -52,7 +52,8 @@
               :src="$imageHost +'/image/admin/shop_beautify/checked_card.png'"
             >
             <div class="coupon_list_top">
-              {{item.actCode==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'折':''}}</i></span>
+              <p v-if="item.actCode !== 'random'">{{item.actCode==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?'折':''}}</i></span></p>
+              <p v-else>￥<span>{{item.randomMax}}</span><span style="font-size:12px;">最高</span></p>
             </div>
             <div class="coupon_list_center">
               <div class="coupon_center_limit">{{item.useConsumeRestrict > 0 ?`满${item.leastConsume}使用`:'不限制'}}</div>
@@ -64,7 +65,10 @@
               <div class="coupon_name">{{item.actName}}</div>
             </div>
           </div>
-          <div class="couponLi coupon-add">
+          <div
+            class="couponLi coupon-add"
+            @click="addCouponHandle"
+          >
             <img
               class="coupon-add-icon"
               :src="$imageHost+ '/image/admin/shop_beautify/add_decorete.png'"
@@ -107,26 +111,11 @@ export default {
         { id: -1, label: '全部' },
         { id: 0, label: '普通优惠券' },
         { id: 1, label: '分裂优惠券' }
-      ]
+      ],
+      couonType: ''
     }
   },
   props: ['origin', 'singleElection', 'tuneUpCoupon', 'couponBack', 'type'],
-  computed: {
-    couponType: {
-      get: function () {
-        console.log('get.....')
-        if (this.type || this.type === 0) {
-          return this.type
-        } else {
-          return ''
-        }
-      },
-      set: function (val) {
-        console.log('newVal:', val)
-        // return val
-      }
-    }
-  },
   mounted () {
     // 初始化
     this.defaultData()
@@ -139,6 +128,9 @@ export default {
       handler (newData) {
         console.log(newData)
         this.data = newData
+        if (this.type || this.type === 0) {
+          this.couponType = this.type
+        }
         this.initCouponList(newData)
       },
       immediate: true
@@ -157,14 +149,14 @@ export default {
       let param = {
         'actName': this.couponInput
       }
-      if (this.couponType !== '') {
+      if (this.type !== undefined && this.type !== '') {
         param.type = this.couponType
       } else {
         param.type = 0
       }
       getCouponSelectComponentData(param).then((res) => {
         if (res.error === 0) {
-          console.log(res)
+          console.log('dialogData: ', res.content)
           this.dialogData = res.content
           this.dialogData.map((item, index) => {
             this.$set(item, 'ischeck', false)
@@ -231,9 +223,13 @@ export default {
       return couponArr
     },
     couponTypeChaneg (val) {
-      console.log(val)
       // this.couponType = val
-      this.initCouponList()
+      this.initCouponList(this.data)
+    },
+    addCouponHandle () {
+      this.$router.push({
+        name: 'add_coupon'
+      })
     }
   }
 }

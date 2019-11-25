@@ -199,7 +199,14 @@
                   v-for="(item,index) in couponSelected"
                   :key="item.id"
                 >
-                  <h3 class="ca-value">￥<span>{{item.denomination}}</span></h3>
+                  <div
+                    class="ca-value"
+                    v-if="item.actCode=='discount'"
+                  ><span>{{item.denomination}}</span>折</div>
+                  <h3
+                    class="ca-value"
+                    v-else
+                  >￥<span>{{item.denomination}}</span></h3>
                   <!-- 是否限制使用方式 -->
                   <p
                     v-if="item.useConsumeRestrict == 0"
@@ -267,7 +274,20 @@
                   v-for="item in disCouponSelected"
                   :key="item.id"
                 >
-                  <h3 class="ca-value">￥<span>{{item.denomination}}</span></h3>
+                  <div
+                    class="ca-value"
+                    v-if="item.actCode=='discount'"
+                  ><span>{{item.denomination}}</span>折</div>
+                  <div
+                    class="ca-value"
+                    v-else-if="item.actCode=='random'"
+                  >
+                    ￥<span>{{item.randomMax}}</span>最高
+                  </div>
+                  <h3
+                    class="ca-value"
+                    v-else
+                  >￥<span>{{item.denomination}}</span></h3>
                   <!-- 是否限制使用方式 -->
                   <p
                     v-if="item.useConsumeRestrict == 0"
@@ -344,7 +364,7 @@
                 required
               >
                 <el-input
-                  v-model="selectLink"
+                  v-model="form.customizeUrl"
                   size="small"
                   style="width:170px;"
                 ></el-input>
@@ -404,6 +424,7 @@
     <addCouponDialog
       :tuneUpCoupon="addDisCouponVisible"
       :type="1"
+      :singleElection="true"
       :couponBack="disCouponAdded"
       @handleToCheck="addDisCouponHandle"
     ></addCouponDialog>
@@ -451,14 +472,16 @@ export default {
         lotteryId: '', // 抽奖活动id
         giveAccount: '', // 金额
         customizeImgPath: '', // 自定义图片
-        customizePagePath: '', // 自定义链接
+        customizeUrl: '', // 自定义链接
 
         bgAction: '' // 背景图
       },
       rules: {
         name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
         isForever: [{ validator: validateSiForever }],
-        first: [{ required: true, message: '请输入活动优先级', trigger: 'blur' }],
+        first: [{ required: true, message: '请输入活动优先级', trigger: 'blur' }, {
+          type: 'number', message: '优先级需为数字'
+        }],
         mrkingVoucherId: [{ required: true, message: '请选择优惠券', trigger: 'blur' }],
         lotteryId: [{ required: true, message: '请选择抽奖活动', trigger: 'blur' }],
         customizeImgPath: [{ required: true, message: '请选择自定义图片' }],
@@ -480,8 +503,7 @@ export default {
       imageDalogVisible: false, // 选择图片
       selectImg: null,
       uploadHover: false,
-      selectLinksVisible: false, // 选择链接
-      selectLink: ''
+      selectLinksVisible: false // 选择链接
     }
   },
   computed: {
@@ -542,7 +564,7 @@ export default {
       this.$set(this.form, 'customizeImgPath', img.imgPath)
     },
     selectLinkHandle (path) {
-      this.selectLink = path
+      this.$set(this.form, 'customizeUrl', path)
     },
     addCoupon () {
       this.addCouponVisible = !this.addCouponVisible
