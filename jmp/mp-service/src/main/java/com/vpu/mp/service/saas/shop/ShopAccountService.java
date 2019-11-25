@@ -58,14 +58,14 @@ public class ShopAccountService extends MainBaseService {
 		}
 		if (!StringUtils.isEmpty(param.keywords)) {
 			select.where(
-					SHOP_ACCOUNT.USER_NAME.like(param.keywords).or(SHOP_ACCOUNT.ACCOUNT_NAME.like(param.keywords)));
+					SHOP_ACCOUNT.USER_NAME.like(likeValue(param.keywords)).or(SHOP_ACCOUNT.ACCOUNT_NAME.like(likeValue(param.keywords))));
 		}
 		if (param.state != null && param.state != 0) {
 			select.where(SHOP_ACCOUNT.STATE.eq(param.state));
 		}
 
 		if (!StringUtils.isEmpty(param.company)) {
-			select.where(SHOP_ACCOUNT.COMPANY.like(param.company));
+			select.where(SHOP_ACCOUNT.COMPANY.like(likeValue(param.company)));
 		}
 
 		return select;
