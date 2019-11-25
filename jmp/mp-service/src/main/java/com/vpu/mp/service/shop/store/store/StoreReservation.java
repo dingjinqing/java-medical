@@ -1,8 +1,6 @@
 package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
-import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -12,6 +10,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
@@ -380,57 +379,29 @@ public class StoreReservation extends ShopBaseService {
      *
      * @param param the param
      */
-    public WxPayUnifiedOrderResult submitReservation(SubmitReservationParam param) {
-        AtomicReference<String> orderSn = new AtomicReference<>("sn1234567");
+    public ServiceOrderDetailVo submitReservation(SubmitReservationParam param) {
+        AtomicReference<String> orderSn = new AtomicReference<>();
         Integer serviceId = param.getServiceId();
-//        if (!serviceOrderService.checkReservationNum(serviceId, param.getTechnicianId())) {
-//            // 预约人数已达上限
-//            throw new BusinessException(JsonResultCode.CODE_RESERVATION_UPPER_LIMIT);
-//        }
+        if (!serviceOrderService.checkReservationNum(serviceId, param.getTechnicianId())) {
+            // 预约人数已达上限
+            throw new BusinessException(JsonResultCode.CODE_RESERVATION_UPPER_LIMIT);
+        }
         ServiceOrderRecord serviceOrder = new ServiceOrderRecord();
         FieldsUtil.assignNotNull(param, serviceOrder);
-                  /*  this.transaction(() -> {
-            log.debug("门店服务订单创建入参: {}", serviceOrder);
-orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
-            // 会员余额变动
-            if (serviceOrder.getUseAccount().compareTo(ZERO) > 0) {
-                try {
-                    accountService.addUserAccount(new AccountParam() {{
-                        setUserId(serviceOrder.getUserId());
-                        setAccount(serviceOrder.getUseAccount());
-                        setOrderSn(serviceOrder.getOrderSn());
-                        setPayment("balance");
-                        setIsPaid(BYTE_ONE);
-                        setRemark(serviceOrder.getOrderSn());
-                    }}, 0, CONDITION_TWO, BYTE_ZERO, "zh");
-                } catch (MpException e) {
-                    log.error("会员余额变动失败,原因如下:{}", e.getMessage());
-                    throw new BusinessException(JsonResultCode.CODE_FAIL);
-                }
-            }
-            // 增加会员卡消费记录
-            if (serviceOrder.getMemberCardBalance().compareTo(ZERO) > 0) {
-                UserCardParam userCardParam = userCardDaoService.getUserCardInfo(serviceOrder.getMemberCardNo());
-                userCardService.cardConsumer(new UserCardConsumeBean() {{
-                    setMoneyDis(userCardParam.getMoney());
-                    setUserId(serviceOrder.getUserId());
-                    setMoney(serviceOrder.getMemberCardBalance());
-                    setCardNo(serviceOrder.getMemberCardNo());
-                    setCardId(userCardParam.getCardId());
-                    setReason(serviceOrder.getOrderSn());
-                    setType(BYTE_ZERO);
-                }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
-            }
+        // 创建订单前置校验, 校验成功后返回db事务参数
+        ServiceOrderTran orderTran = serviceOrderService.checkBeforeCreate(serviceOrder);
+        this.transaction(() -> {
+            serviceOrderService.createServiceOrder(orderTran);
+            // 是否需要吊起微信支付
             if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
                 //TODO 支付接口
-                String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
+                /*String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
                 WxPayUnifiedOrderResult unifiedOrderResult = mpPaymentService.wxUnitOrder(param.getClientIp(), param.getServiceId().toString(), orderSn.get(), serviceOrder.getMoneyPaid().intValue(), openId);
-                log.debug("微信支付接口调用结果：{}", unifiedOrderResult);
-                result.set(unifiedOrderResult);
+                log.debug("微信支付接口调用结果：{}", unifiedOrderResult);*/
             }
             // todo 微信回调---更新门店订单支付成功状态
 //            serviceOrderService.updateServiceOrderStatus(serviceOrder.getOrderSn(), ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
-        });*/
+        });
         /*// 队列前置校验
         prefixCheck(serviceOrder);
         // TODO 发送模板消息; 1. 预约订单支付成功模板消息; 2. 定时提醒预约服务过期模板消息
@@ -439,9 +410,9 @@ orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
             ServiceOrderRecord.class.getName(),
             getShopId(),
             TaskJobsConstant.TaskJobEnum.RESERVATION_PAY.getExecutionType());*/
-        // 返回支付成功后的预约订单详情
-//        return serviceOrderService.getServiceOrderDetail(orderSn.get());
-        if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
+//         返回支付成功后的预约订单详情
+        return serviceOrderService.getServiceOrderDetail(orderSn.get());
+        /*if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
             //TODO 支付接口
             String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
             WxPayUnifiedOrderResult unifiedOrderResult = null;
@@ -453,8 +424,7 @@ orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
             }
             log.debug("微信支付接口调用结果：{}", unifiedOrderResult);
             return unifiedOrderResult;
-        }
-        return null;
+        }*/
     }
 
     /**

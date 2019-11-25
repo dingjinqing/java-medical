@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.shop.member.UserCardService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
@@ -38,6 +39,7 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 * @Date: 2019年10月10日
 * @Description:
 */
+@Slf4j
 @Service
 public class UserCardDaoService extends ShopBaseService{
 	final static Byte CARD_ONLINE = 0;
@@ -146,10 +148,12 @@ public class UserCardDaoService extends ShopBaseService{
      * @return the store valid card list
      */
     public List<ValidUserCardBean> getStoreValidCardList(Integer userId, Integer storeId) {
-        return getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
+        List<ValidUserCardBean> result = getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
             .stream().filter((c) -> org.jooq.tools.StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
             }, false)).contains(storeId))
             .collect(Collectors.toList());
+        log.debug("用户【{}】在门店【{}】的有效会员卡列表：{}", userId, storeId, result);
+        return result;
     }
 
     /**
@@ -161,7 +165,10 @@ public class UserCardDaoService extends ShopBaseService{
      * @return the boolean
      */
     public boolean checkStoreValidCard(Integer userId, Integer storeId, String cardNo) {
-        return getStoreValidCardList(userId, storeId).stream().anyMatch((e) -> cardNo.equals(e.getCardNo()));
+        return getStoreValidCardList(userId, storeId).stream()
+            // todo 该方法目前只有门店使用，门店暂不支持会员卡次卡，所以过滤掉
+            .filter((e) -> BYTE_ZERO.equals(e.getCardType()))
+            .anyMatch((e) -> cardNo.equals(e.getCardNo()));
     }
 
 	public List<ValidUserCardBean> getValidCardList(Integer userId,Byte[] cardType,Byte type) {

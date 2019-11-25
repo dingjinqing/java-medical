@@ -10,13 +10,18 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.*;
+import com.vpu.mp.service.pojo.wxapp.store.ServiceOrderTran;
+import com.vpu.mp.service.shop.member.AccountService;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,20 +43,22 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
 import static com.vpu.mp.service.shop.store.store.StoreReservation.HH_MM_FORMATTER;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+import static java.math.BigDecimal.ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
  * @author 王兵兵
- *
+ * <p>
  * 2019年7月17日
- *
+ * <p>
  * 预约（门店服务订单）
  */
 @Service
 @Slf4j
-public class ServiceOrderService extends ShopBaseService{
+public class ServiceOrderService extends ShopBaseService {
     /**
      * 门店服务
      */
@@ -70,13 +77,25 @@ public class ServiceOrderService extends ShopBaseService{
     @Autowired
     public UserCardDaoService userCardDaoService;
 
-	/**
-	 * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
-	 */
-	public static final Byte ORDER_STATUS_WAIT_SERVICE = 0;
-	public static final Byte ORDER_STATUS_CANCELED = 1;
-	public static final Byte ORDER_STATUS_FINISHED = 2;
-	public static final Byte ORDER_STATUS_WAIT_PAY = 3;
+    /**
+     * The Account service.余额管理
+     */
+    @Autowired
+    public AccountService accountService;
+
+    /**
+     * The User card service.
+     */
+    @Autowired
+    public UserCardService userCardService;
+
+    /**
+     * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
+     */
+    public static final Byte ORDER_STATUS_WAIT_SERVICE = 0;
+    public static final Byte ORDER_STATUS_CANCELED = 1;
+    public static final Byte ORDER_STATUS_FINISHED = 2;
+    public static final Byte ORDER_STATUS_WAIT_PAY = 3;
 
     /**
      * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
@@ -86,182 +105,184 @@ public class ServiceOrderService extends ShopBaseService{
     public static final String ORDER_STATUS_NAME_FINISHED = "已完成";
     public static final String ORDER_STATUS_NAME_WAIT_PAY = "待付款";
 
-	/**
-	 * 预约订单创建创建类型 0用户创建 1后台
-	 */
-	public static final Byte ORDER_TYPE_USER_CREATE = 0;
-	public static final Byte ORDER_TYPE_ADMIN_CREATE = 1;
-
-	/**
-	 * 核销方式 0是店家核销 1是用户
-	 */
-	public static final Byte VERIFY_TYPE_ADMIN = 0;
-	public static final Byte VERIFY_TYPE_USER = 1;
-
-	/**
-	 * 核销支付方式 0门店买单 1会员卡 2余额
-	 */
-	public static final byte VERIFY_PAY_TYPE_STORE = 0;
-	public static final byte VERIFY_PAY_TYPE_MEMBER_CARD = 1;
-	public static final byte VERIFY_PAY_TYPE_ACCOUNT = 2;
+    /**
+     * 预约订单创建创建类型 0用户创建 1后台
+     */
+    public static final Byte ORDER_TYPE_USER_CREATE = 0;
+    public static final Byte ORDER_TYPE_ADMIN_CREATE = 1;
 
     /**
-	 * 门店服务预约列表分页查询
-	 * @param
-	 * @return StorePageListVo
-	 */
-	public PageResult<ServiceOrderListQueryVo> getPageList(ServiceOrderListQueryParam param) {
-        SelectWhereStep<? extends Record> select =
-		db().select(SERVICE_ORDER.STORE_ID,SERVICE_ORDER.ORDER_SN,SERVICE_ORDER.USER_ID,SERVICE_ORDER.SUBSCRIBER,STORE_SERVICE.SERVICE_NAME,SERVICE_ORDER.MOBILE,SERVICE_ORDER.SERVICE_DATE,SERVICE_ORDER.SERVICE_PERIOD,SERVICE_ORDER.TECHNICIAN_NAME,STORE_SERVICE.SERVICE_SUBSIST,SERVICE_ORDER.ADD_MESSAGE).
-		from(SERVICE_ORDER).
-		leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID));
-		select = this.buildOptions(select, param);
-		select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId())).orderBy(SERVICE_ORDER.CREATE_TIME.desc());
-		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),ServiceOrderListQueryVo.class);
-	}
+     * 核销方式 0是店家核销 1是用户
+     */
+    public static final Byte VERIFY_TYPE_ADMIN = 0;
+    public static final Byte VERIFY_TYPE_USER = 1;
 
     /**
-	 * 门店服务预约列表计数
-	 * @param
-	 * @return Integer
-	 */
-	public Integer getCountData(ServiceOrderListQueryParam param) {
+     * 核销支付方式 0门店买单 1会员卡 2余额
+     */
+    public static final byte VERIFY_PAY_TYPE_STORE = 0;
+    public static final byte VERIFY_PAY_TYPE_MEMBER_CARD = 1;
+    public static final byte VERIFY_PAY_TYPE_ACCOUNT = 2;
+
+    /**
+     * 门店服务预约列表分页查询
+     *
+     * @param
+     * @return StorePageListVo
+     */
+    public PageResult<ServiceOrderListQueryVo> getPageList(ServiceOrderListQueryParam param) {
         SelectWhereStep<? extends Record> select =
-		db().selectCount().
-		from(SERVICE_ORDER).
-		leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID));
-		select = this.buildOptions(select, param);
-		select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId()));
-		return select.fetchOne(0,Integer.class);
-	}
+            db().select(SERVICE_ORDER.STORE_ID, SERVICE_ORDER.ORDER_SN, SERVICE_ORDER.USER_ID, SERVICE_ORDER.SUBSCRIBER, STORE_SERVICE.SERVICE_NAME, SERVICE_ORDER.MOBILE, SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.TECHNICIAN_NAME, STORE_SERVICE.SERVICE_SUBSIST, SERVICE_ORDER.ADD_MESSAGE).
+                from(SERVICE_ORDER).
+                leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID));
+        select = this.buildOptions(select, param);
+        select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId())).orderBy(SERVICE_ORDER.CREATE_TIME.desc());
+        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ServiceOrderListQueryVo.class);
+    }
 
-	/**
-	 * 门店服务预约的条件查询
-	 * @param select
-	 * @param param
-	 * @return
-	 */
-	public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select, ServiceOrderListQueryParam param) {
-		if (param == null) {
-			return select;
-		}
+    /**
+     * 门店服务预约列表计数
+     *
+     * @param
+     * @return Integer
+     */
+    public Integer getCountData(ServiceOrderListQueryParam param) {
+        SelectWhereStep<? extends Record> select =
+            db().selectCount().
+                from(SERVICE_ORDER).
+                leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID));
+        select = this.buildOptions(select, param);
+        select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId()));
+        return select.fetchOne(0, Integer.class);
+    }
 
-		if(param.getOrderStatus() != null && param.getOrderStatus() > (byte)-1){
-			select.where(SERVICE_ORDER.ORDER_STATUS.eq(param.getOrderStatus()));
-		}
+    /**
+     * 门店服务预约的条件查询
+     *
+     * @param select
+     * @param param
+     * @return
+     */
+    public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select, ServiceOrderListQueryParam param) {
+        if (param == null) {
+            return select;
+        }
+
+        if (param.getOrderStatus() != null && param.getOrderStatus() > (byte) -1) {
+            select.where(SERVICE_ORDER.ORDER_STATUS.eq(param.getOrderStatus()));
+        }
 
         if (!StringUtils.isEmpty(param.getMobile())) {
-			select.where(SERVICE_ORDER.MOBILE.contains(param.getMobile()));
-		}
+            select.where(SERVICE_ORDER.MOBILE.contains(param.getMobile()));
+        }
 
         if (!StringUtils.isEmpty(param.getServiceDateStart())) {
-			select.where(SERVICE_ORDER.SERVICE_DATE.gt(param.getServiceDateStart()));
-		}
+            select.where(SERVICE_ORDER.SERVICE_DATE.gt(param.getServiceDateStart()));
+        }
 
         if (!StringUtils.isEmpty(param.getServiceDateEnd())) {
-			select.where(SERVICE_ORDER.SERVICE_DATE.lt(param.getServiceDateEnd()));
-		}
+            select.where(SERVICE_ORDER.SERVICE_DATE.lt(param.getServiceDateEnd()));
+        }
 
         if (!StringUtils.isEmpty(param.getTechnicianName())) {
-			select.where(SERVICE_ORDER.TECHNICIAN_NAME.contains(param.getTechnicianName()));
-		}
+            select.where(SERVICE_ORDER.TECHNICIAN_NAME.contains(param.getTechnicianName()));
+        }
 
         if (!StringUtils.isEmpty(param.getKeywords())) {
-			select.where(SERVICE_ORDER.SUBSCRIBER.contains(param.getKeywords()).or(STORE_SERVICE.SERVICE_NAME.contains(param.getKeywords())));
-		}
-		return select;
-	}
+            select.where(SERVICE_ORDER.SUBSCRIBER.contains(param.getKeywords()).or(STORE_SERVICE.SERVICE_NAME.contains(param.getKeywords())));
+        }
+        return select;
+    }
 
     public ServiceOrderDetailVo getServiceOrderDetail(String orderSn) {
         Record vo =
-	    db().select(
-				SERVICE_ORDER.ORDER_ID,SERVICE_ORDER.ORDER_SN,SERVICE_ORDER.ORDER_STATUS,SERVICE_ORDER.ORDER_STATUS_NAME,SERVICE_ORDER.SUBSCRIBER,
-				SERVICE_ORDER.MOBILE,SERVICE_ORDER.TECHNICIAN_NAME,SERVICE_ORDER.SERVICE_DATE,SERVICE_ORDER.SERVICE_PERIOD,SERVICE_ORDER.ADD_MESSAGE,
-				SERVICE_ORDER.ADMIN_MESSAGE,SERVICE_ORDER.ORDER_AMOUNT,SERVICE_ORDER.MONEY_PAID,SERVICE_ORDER.FINISHED_TIME,SERVICE_ORDER.VERIFY_TYPE,
-				SERVICE_ORDER.VERIFY_CODE,SERVICE_ORDER.VERIFY_ADMIN,SERVICE_ORDER.TYPE,SERVICE_ORDER.VERIFY_PAY,SERVICE_ORDER.CREATE_TIME,
-				STORE_SERVICE.SERVICE_NAME,STORE_SERVICE.SERVICE_PRICE,STORE_SERVICE.SERVICE_SUBSIST,STORE_SERVICE.SERVICE_IMG
-				).
-		from(SERVICE_ORDER).leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID)).
-		where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne();
-		if(vo == null) {
-			return null;
-		}else {
-			return vo.into(ServiceOrderDetailVo.class);
-		}
-	}
+            db().select(
+                SERVICE_ORDER.ORDER_ID, SERVICE_ORDER.ORDER_SN, SERVICE_ORDER.ORDER_STATUS, SERVICE_ORDER.ORDER_STATUS_NAME, SERVICE_ORDER.SUBSCRIBER,
+                SERVICE_ORDER.MOBILE, SERVICE_ORDER.TECHNICIAN_NAME, SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.ADD_MESSAGE,
+                SERVICE_ORDER.ADMIN_MESSAGE, SERVICE_ORDER.ORDER_AMOUNT, SERVICE_ORDER.MONEY_PAID, SERVICE_ORDER.FINISHED_TIME, SERVICE_ORDER.VERIFY_TYPE,
+                SERVICE_ORDER.VERIFY_CODE, SERVICE_ORDER.VERIFY_ADMIN, SERVICE_ORDER.TYPE, SERVICE_ORDER.VERIFY_PAY, SERVICE_ORDER.CREATE_TIME,
+                STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_PRICE, STORE_SERVICE.SERVICE_SUBSIST, STORE_SERVICE.SERVICE_IMG
+            ).
+                from(SERVICE_ORDER).leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID)).
+                where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne();
+        if (vo == null) {
+            return null;
+        } else {
+            return vo.into(ServiceOrderDetailVo.class);
+        }
+    }
 
-	public Boolean addServiceOrderAdminMessage(ServiceOrderAdminMessageParam param) {
-		return db().update(SERVICE_ORDER).set(SERVICE_ORDER.ADMIN_MESSAGE,param.getAdminMessage()).where(SERVICE_ORDER.ORDER_SN.eq(param.getOrderSn())).execute() > 0 ? true : false;
-	}
+    public Boolean addServiceOrderAdminMessage(ServiceOrderAdminMessageParam param) {
+        return db().update(SERVICE_ORDER).set(SERVICE_ORDER.ADMIN_MESSAGE, param.getAdminMessage()).where(SERVICE_ORDER.ORDER_SN.eq(param.getOrderSn())).execute() > 0 ? true : false;
+    }
 
-	/**
-	 *生成订单号
-	 */
-	public String generateOrderSn() {
-		Random random = new Random();
-        SimpleDateFormat sdf =   new SimpleDateFormat( "yyyyMMddHHmmss" );
+    /**
+     * 生成订单号
+     */
+    public String generateOrderSn() {
+        Random random = new Random();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String date = sdf.format(new Date());
         String orderSn;
         do {
-        	orderSn = "";
-        	int randomStr = random.nextInt(9999)%(9000) + 1000;
-        	orderSn = "S".concat(date).concat(String.valueOf(randomStr));
-        }while(hasOrderSn(orderSn));
+            orderSn = "";
+            int randomStr = random.nextInt(9999) % (9000) + 1000;
+            orderSn = "S".concat(date).concat(String.valueOf(randomStr));
+        } while (hasOrderSn(orderSn));
         return orderSn;
-	}
-
-	/**
-	 * 判断该orderSn是否已存在
-	 * @param orderSn
-	 * @return
-	 */
-	public Boolean hasOrderSn(String orderSn) {
-		List<Integer> ids = db().select(SERVICE_ORDER.ORDER_ID).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetch().into(Integer.class);
-		if(ids.size() > 0) {
-			return true;
-		}else {
-			return false;
-		}
-	}
-
-	public String generateVerifyCode() {
-		Random random = new Random(2);
-		List<Integer> ids;
-		String verifyCode;
-		do {
-		int randomStr = random.nextInt(999999)%(900000) + 100000;
-		verifyCode = String.valueOf(randomStr);
-		ids = db().select(SERVICE_ORDER.VERIFY_CODE).from(SERVICE_ORDER).where(SERVICE_ORDER.VERIFY_CODE.eq(verifyCode)).fetch().into(Integer.class);
-		}while(ids.size() > 0);
-		return verifyCode;
-	}
-
-	public BigDecimal getServiceMoneyPaid(Integer serviceId) {
-		StoreServiceParam storeService = db().select(STORE_SERVICE.SERVICE_PRICE,STORE_SERVICE.SERVICE_SUBSIST).from(STORE_SERVICE).where(STORE_SERVICE.ID.eq(serviceId)).fetchOne().into(StoreServiceParam.class);
-		return storeService.getServicePrice().subtract(storeService.getServiceSubsist()) ;
-	}
-
-	/**
-     * 后台添加服务预约
-	 * @param
-	 * @return
-	 */
-	public Boolean addServiceOrder(ServiceOrderAddParam param) {
-		param.setOrderSn(generateOrderSn());
-		param.setVerifyCode(generateVerifyCode());
-		param.setType(ORDER_TYPE_ADMIN_CREATE);
-		param.setMoneyPaid(getServiceMoneyPaid(param.getServiceId()));
-		ServiceOrderRecord record = new ServiceOrderRecord();
-		this.assign(param, record);
-		return db().executeInsert(record) > 0 ? true : false;
-	}
+    }
 
     /**
-     * Create service order.创建门店服务预约订单
+     * 判断该orderSn是否已存在
      *
-     * @param param the param
+     * @param orderSn
+     * @return
      */
-    public String createServiceOrder(ServiceOrderRecord param) {
+    public Boolean hasOrderSn(String orderSn) {
+        List<Integer> ids = db().select(SERVICE_ORDER.ORDER_ID).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetch().into(Integer.class);
+        if (ids.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String generateVerifyCode() {
+        Random random = new Random(2);
+        List<Integer> ids;
+        String verifyCode;
+        do {
+            int randomStr = random.nextInt(999999) % (900000) + 100000;
+            verifyCode = String.valueOf(randomStr);
+            ids = db().select(SERVICE_ORDER.VERIFY_CODE).from(SERVICE_ORDER).where(SERVICE_ORDER.VERIFY_CODE.eq(verifyCode)).fetch().into(Integer.class);
+        } while (ids.size() > 0);
+        return verifyCode;
+    }
+
+    public BigDecimal getServiceMoneyPaid(Integer serviceId) {
+        StoreServiceParam storeService = db().select(STORE_SERVICE.SERVICE_PRICE, STORE_SERVICE.SERVICE_SUBSIST).from(STORE_SERVICE).where(STORE_SERVICE.ID.eq(serviceId)).fetchOne().into(StoreServiceParam.class);
+        return storeService.getServicePrice().subtract(storeService.getServiceSubsist());
+    }
+
+    /**
+     * 后台添加服务预约
+     *
+     * @param
+     * @return
+     */
+    public Boolean addServiceOrder(ServiceOrderAddParam param) {
+        param.setOrderSn(generateOrderSn());
+        param.setVerifyCode(generateVerifyCode());
+        param.setType(ORDER_TYPE_ADMIN_CREATE);
+        param.setMoneyPaid(getServiceMoneyPaid(param.getServiceId()));
+        ServiceOrderRecord record = new ServiceOrderRecord();
+        this.assign(param, record);
+        return db().executeInsert(record) > 0 ? true : false;
+    }
+
+    // TODO 事务中抽离逻辑判断和实际的db操作，减少事务执行时间
+    public ServiceOrderTran checkBeforeCreate(ServiceOrderRecord param) {
+        String orderSn = generateOrderSn();
         // 二次验证前端计算的应付金额是否正确,
         BigDecimal moneyPaidSecondCheck = BIGDECIMAL_ZERO;
         // 订单总金额
@@ -272,32 +293,63 @@ public class ServiceOrderService extends ShopBaseService{
         BigDecimal cardDis = param.getMemberCardBalance();
         // 优惠券抵扣金额
         BigDecimal couponDis = param.getDiscount();
+        AccountParam accountParam = null;
+        UserCardConsumeBean userCardConsumeBean = null;
         if (balance.compareTo(BIGDECIMAL_ZERO) > 0) {
             // 用户余额校验
             BigDecimal userBalance = Optional.ofNullable(userService.getUserByUserId(param.getUserId()))
                 .orElseThrow(() -> new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, "User: " + param.getUserId())).getAccount();
             if (userBalance.compareTo(balance) < 0) {
                 // 余额不足，无法下单
-                log.error("用户余额[{}]不足(实际抵扣金额[{}])，无法下单", balance, userBalance);
+                log.error("用户余额[{}]不足(实际抵扣金额[{}])，无法下单", userBalance, balance);
                 throw new BusinessException(JsonResultCode.CODE_BALANCE_INSUFFICIENT);
             }
-            log.debug("用户余额[{}]抵扣(实际抵扣金额[{}])成功!", balance, userBalance);
+            // 创建会员余额变动事件
+            accountParam = new AccountParam() {{
+                setUserId(param.getUserId());
+                // 更新金额  区分正负号， 这里置为负号，表示扣减
+                setAmount(param.getUseAccount().negate());
+                setOrderSn(orderSn);
+                setPayment("balance");
+                // 支付类型，0：充值，1：消费
+                setIsPaid(BYTE_ONE);
+                setRemark(orderSn);
+            }};
         }
         String cardNo = param.getMemberCardNo();
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo)) {
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo) && cardDis.compareTo(ZERO) > 0) {
             // 验证会员卡有效性
-            Assert.isTrue(userCardDaoService.checkStoreValidCard(param.getUserId(), param.getStoreId(), cardNo), JsonResultCode.CODE_FAIL);
+            if (!userCardDaoService.checkStoreValidCard(param.getUserId(), param.getStoreId(), cardNo)) {
+                log.error("会员卡【{}】无效", cardNo);
+                throw new BusinessException(JsonResultCode.CODE_ORDER_CARD_INVALID);
+            }
             Record2<BigDecimal, BigDecimal> record2 = db().select(USER_CARD.MONEY, MEMBER_CARD.DISCOUNT).from(USER_CARD).leftJoin(MEMBER_CARD)
                 .on(Tables.USER_CARD.CARD_ID.eq(Tables.MEMBER_CARD.ID)).where(USER_CARD.CARD_NO.eq(cardNo)).fetchAny();
-            // 会员卡余额
+            // 会员卡余额（门店服务不涉及会员卡折扣）
             BigDecimal money = record2.getValue(USER_CARD.MONEY);
-            // 会员卡抵扣金额
+            // 会员卡抵扣金额大于会员卡余额
             if (cardDis.compareTo(money) > 0) {
                 // 会员卡余额不足
                 log.error("会员卡余额[{}]不足(实际抵扣金额[{}])，无法下单", money, cardDis);
                 throw new BusinessException(JsonResultCode.CODE_USER_CARD_BALANCE_INSUFFICIENT);
             }
-            log.debug("会员卡余额[{}]抵扣(实际抵扣金额[{}])成功!", money, cardDis);
+            // 增加会员卡消费记录
+            UserCardParam userCardParam = userCardDaoService.getUserCardInfo(param.getMemberCardNo());
+            // 创建会员卡消费变动事件
+            userCardConsumeBean = new UserCardConsumeBean() {{
+                setUserId(param.getUserId());
+                // 卡余额消耗
+                setMoney(param.getMemberCardBalance());
+                // 卡余额消耗
+                setMoneyDis(param.getMemberCardBalance());
+                setCardNo(param.getMemberCardNo());
+                setCardId(userCardParam.getCardId());
+                setReason(orderSn);
+                // 消费类型 :门店只支持普通卡0
+                setType(BYTE_ZERO);
+                // 消费次数
+                setCount(SHORT_ONE);
+            }};
         }
         if (!INTEGER_ZERO.equals(param.getCouponId())) {
             // todo 根据优惠券规则计算优惠券抵扣金额
@@ -309,41 +361,62 @@ public class ServiceOrderService extends ShopBaseService{
             throw new BusinessException(JsonResultCode.CODE_AMOUNT_PAYABLE_CALCULATION_FAILED);
         }
         log.debug("应付金额[{}]校验成功(前端计算的应付金额为[{}])", moneyPaidSecondCheck, param.getMoneyPaid());
-        String orderSn = generateOrderSn();
         param.setOrderSn(orderSn);
         param.setVerifyCode(generateVerifyCode());
         param.setOrderStatus(ORDER_STATUS_WAIT_PAY);
         param.setOrderStatusName(ORDER_STATUS_NAME_WAIT_PAY);
         param.setMoneyPaid(moneyPaidSecondCheck);
         log.debug("创建门店服务订单: {}", param);
-        db().executeInsert(param);
-        return orderSn;
+        return ServiceOrderTran.builder().account(accountParam).userCardConsume(userCardConsumeBean).serviceOrder(param).build();
     }
 
     /**
-	 * 校验核销码
-	 * @param orderSn
-	 * @param verifyCode
-	 * @return
-	 */
-	public Boolean checkVerifyCode(String orderSn,String verifyCode) {
-		if(!StringUtils.isBlank(orderSn) && !StringUtils.isBlank(verifyCode)) {
-			String trueCode = db().select(SERVICE_ORDER.VERIFY_CODE).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne().into(String.class);
-			return verifyCode.equals(trueCode);
-		}
-		return false;
-	}
+     * Create service order.创建门店服务预约订单
+     *
+     * @param param the param
+     */
+    public String createServiceOrder(ServiceOrderTran param) {
+        AccountParam account = param.getAccount();
+        UserCardConsumeBean userCard = param.getUserCardConsume();
+        ServiceOrderRecord order = param.getServiceOrder();
+        db().executeInsert(order);
+        try {
+            accountService.addUserAccount(account, 0, CONDITION_TWO, BYTE_ZERO, "zh");
+        } catch (MpException e) {
+            e.printStackTrace();
+        }
+        log.debug("用户余额[{}]抵扣(实际抵扣金额[{}])成功!", account.getAccount(), order.getUseAccount());
+        userCardService.cardConsumer(userCard, INTEGER_ZERO, CONDITION_THREE, BYTE_ONE, BYTE_ZERO, false);
+        log.debug("会员卡余额抵扣(实际抵扣金额[{}])成功!", userCard.getMoney());
+        return order.getOrderSn();
+    }
 
     /**
-	 * 服务预约订单修改
-	 * @param param
-	 * @return
-	 */
-	public Boolean serviceOrderUpdate(ServiceOrderUpdateParam param) {
-		ServiceOrderRecord record = new ServiceOrderRecord();
-	    assign(param, record);
-	    return db().executeUpdate(record) > 0 ? true : false;
-	}
+     * 校验核销码
+     *
+     * @param orderSn
+     * @param verifyCode
+     * @return
+     */
+    public Boolean checkVerifyCode(String orderSn, String verifyCode) {
+        if (!StringUtils.isBlank(orderSn) && !StringUtils.isBlank(verifyCode)) {
+            String trueCode = db().select(SERVICE_ORDER.VERIFY_CODE).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne().into(String.class);
+            return verifyCode.equals(trueCode);
+        }
+        return false;
+    }
+
+    /**
+     * 服务预约订单修改
+     *
+     * @param param
+     * @return
+     */
+    public Boolean serviceOrderUpdate(ServiceOrderUpdateParam param) {
+        ServiceOrderRecord record = new ServiceOrderRecord();
+        assign(param, record);
+        return db().executeUpdate(record) > 0 ? true : false;
+    }
 
     /**
      * 更新服务预约订单状态
@@ -355,7 +428,7 @@ public class ServiceOrderService extends ShopBaseService{
     /**
      * 使用会员卡核销预约服务订单
      */
-	public void userCardServiceOrderCharge(ServiceOrderChargeParam param,int adminUser) throws MpException{
+    public void userCardServiceOrderCharge(ServiceOrderChargeParam param, int adminUser) throws MpException {
         MemberCardPojo memberCard = saas.getShopApp(getShopId()).member.card.getMemberCardInfoById(param.getCardId());
 
         /** 会员卡核销的门店服务订单，交易类型认为是会员卡支付 */
@@ -372,30 +445,30 @@ public class ServiceOrderService extends ShopBaseService{
         /** 消费人暂时记录为后台操作人员 */
         cardConsumpData.setUserId(adminUser);
         /** 国际化语言 */
-        String language="";
-        
+        String language = "";
+
         TradeOptParam tradeOpt = TradeOptParam
-        		.builder()
-        		.adminUserId(adminUser)
-        		.tradeFlow(tradeFlow)
-        		.tradeType(tradeType)
-        		.build();
-        
-        if(CardConstant.MCARD_TP_LIMIT.equals(memberCard.getCardType())){
+            .builder()
+            .adminUserId(adminUser)
+            .tradeFlow(tradeFlow)
+            .tradeType(tradeType)
+            .build();
+
+        if (CardConstant.MCARD_TP_LIMIT.equals(memberCard.getCardType())) {
             /** 负数为消费次数 */
             cardConsumpData.setCount(-param.getReduce().intValue());
-            saas.getShopApp(getShopId()).member.card.updateMemberCardSurplus(cardConsumpData,tradeOpt,language);
-        }else if(CardConstant.MCARD_TP_NORMAL.equals(memberCard.getCardType())){
+            saas.getShopApp(getShopId()).member.card.updateMemberCardSurplus(cardConsumpData, tradeOpt, language);
+        } else if (CardConstant.MCARD_TP_NORMAL.equals(memberCard.getCardType())) {
             /** 负数为消费金额 */
             cardConsumpData.setMoney(param.getReduce().negate());
-            saas.getShopApp(getShopId()).member.card.updateMemberCardAccount(cardConsumpData,tradeOpt,language);
+            saas.getShopApp(getShopId()).member.card.updateMemberCardAccount(cardConsumpData, tradeOpt, language);
         }
     }
 
     /**
      * 使用会员卡核销预约服务订单
      */
-    public void accountServiceOrderCharge(ServiceOrderChargeParam param,int adminUser) throws MpException{
+    public void accountServiceOrderCharge(ServiceOrderChargeParam param, int adminUser) throws MpException {
         /** 余额核销的门店服务订单，交易类型认为是余额支付 */
         Byte tradeType = RecordTradeEnum.TYPE_CRASH_ACCOUNT_PAY.val();
         Byte tradeFlow = RecordTradeEnum.TRADE_FLOW_IN.val();
@@ -409,27 +482,28 @@ public class ServiceOrderService extends ShopBaseService{
         /** 国际化语言 */
         String language = "";
         /** 余额核销的门店服务订单，交易类型认为是余额支付 */
-        saas.getShopApp(getShopId()).member.account.addUserAccount(accountData,adminUser,tradeType,tradeFlow,language);
+        saas.getShopApp(getShopId()).member.account.addUserAccount(accountData, adminUser, tradeType, tradeFlow, language);
     }
 
 
     /**
      * 获取用户最新的预约服务
+     *
      * @param userId
      * @return
      */
     public Record getUserLastOrderInfo(Integer userId) {
-		Result<Record> fetch = db().select(SERVICE_ORDER.asterisk(), STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_PRICE,
-				STORE_SERVICE.SERVICE_SUBSIST, STORE_SERVICE.SERVICE_IMG, STORE.STORE_NAME, STORE.LATITUDE,
-				STORE.LONGITUDE, STORE.ADDRESS, STORE.DISTRICT_CODE).from(SERVICE_ORDER).leftJoin(STORE_SERVICE)
-				.on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID)).leftJoin(STORE)
-				.on(SERVICE_ORDER.STORE_ID.eq(STORE.STORE_ID)).where(SERVICE_ORDER.USER_ID.eq(userId))
-				.and(SERVICE_ORDER.DEL_FLAG.eq((byte) 0)).orderBy(SERVICE_ORDER.ORDER_ID.desc()).fetch();
-		if(fetch.size()==0) {
-			return null;
-		}else {
-			return fetch.get(0);
-		}
+        Result<Record> fetch = db().select(SERVICE_ORDER.asterisk(), STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_PRICE,
+            STORE_SERVICE.SERVICE_SUBSIST, STORE_SERVICE.SERVICE_IMG, STORE.STORE_NAME, STORE.LATITUDE,
+            STORE.LONGITUDE, STORE.ADDRESS, STORE.DISTRICT_CODE).from(SERVICE_ORDER).leftJoin(STORE_SERVICE)
+            .on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID)).leftJoin(STORE)
+            .on(SERVICE_ORDER.STORE_ID.eq(STORE.STORE_ID)).where(SERVICE_ORDER.USER_ID.eq(userId))
+            .and(SERVICE_ORDER.DEL_FLAG.eq((byte) 0)).orderBy(SERVICE_ORDER.ORDER_ID.desc()).fetch();
+        if (fetch.size() == 0) {
+            return null;
+        } else {
+            return fetch.get(0);
+        }
     }
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
