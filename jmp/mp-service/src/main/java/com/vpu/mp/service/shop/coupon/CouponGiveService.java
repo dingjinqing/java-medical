@@ -15,6 +15,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
@@ -665,16 +666,32 @@ public class CouponGiveService extends ShopBaseService {
                 MRKING_VOUCHER.SCORE_NUMBER,
                 MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
             .from(MRKING_VOUCHER);
-    select
-        .where(MRKING_VOUCHER.TYPE.eq(NumberUtils.BYTE_ZERO))
-        .and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+    popWindowsBuildOptions(select,param);
+    select.orderBy(MRKING_VOUCHER.CREATE_TIME.desc());
+    return select.fetchInto(CouponGivePopVo.class);
+  }
+
+  /**
+   * 优惠卷弹窗条件
+   * @param select
+   * @param param
+   */
+  private void popWindowsBuildOptions(SelectWhereStep<? extends Record> select, CouponGivePopParam param){
+    select.where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
     if (StringUtil.isNotEmpty(param.getActName())) {
       select.where(MRKING_VOUCHER.ACT_NAME.contains(param.getActName()));
     }
-    select.orderBy(MRKING_VOUCHER.CREATE_TIME.desc());
-    List<CouponGivePopVo> popVo = select.fetchInto(CouponGivePopVo.class);
-
-    return popVo;
+    if (param.getType()!=null){
+      switch (param.getType()){
+        case CouponConstant.COUPON_TYPE_NORMAL:
+          select.where(MRKING_VOUCHER.TYPE.eq(CouponConstant.COUPON_TYPE_NORMAL));
+          break;
+        case CouponConstant.COUPON_TYPE_SPILT:
+          select.where(MRKING_VOUCHER.TYPE.eq(CouponConstant.COUPON_TYPE_SPILT));
+          break;
+        default:
+      }
+    }
   }
 
   /**

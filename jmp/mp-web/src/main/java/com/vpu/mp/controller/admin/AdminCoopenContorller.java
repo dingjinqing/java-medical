@@ -29,7 +29,7 @@ public class AdminCoopenContorller extends  AdminBaseController {
      * 活动列表
      */
     @PostMapping("/list")
-    public JsonResult getPageList(@RequestBody  CoopenListParam param) {
+    public JsonResult getPageList(@RequestBody @Valid  CoopenListParam param) {
         return success(shop().coopen.getPageList(param));
     }
 
@@ -46,7 +46,7 @@ public class AdminCoopenContorller extends  AdminBaseController {
      * 启用活动
      */
     @PostMapping("/enable")
-    public JsonResult enableActivity(@RequestBody CoopenIdParam param) {
+    public JsonResult enableActivity(@RequestBody @Valid CoopenIdParam param) {
         shop().coopen.enableActivity(param.getId());
         return success();
     }
@@ -55,7 +55,7 @@ public class AdminCoopenContorller extends  AdminBaseController {
      * 删除活动
      */
     @PostMapping("/delete")
-    public JsonResult deleteActivity(@RequestBody CoopenIdParam param) {
+    public JsonResult deleteActivity(@RequestBody @Valid CoopenIdParam param) {
         shop().coopen.deleteActivity(param.getId());
         return success();
     }
@@ -73,7 +73,7 @@ public class AdminCoopenContorller extends  AdminBaseController {
      * 活动修改 - 明细
      */
     @PostMapping("/detail")
-    public JsonResult getActivityDetail(@RequestBody CoopenIdParam param) {
+    public JsonResult getActivityDetail(@RequestBody @Valid CoopenIdParam param) {
         return success(shop().coopen.getActivityDetail(param.getId()));
     }
 
@@ -90,7 +90,7 @@ public class AdminCoopenContorller extends  AdminBaseController {
      * 发放明细
      */
     @PostMapping("/issuelist")
-    public JsonResult issueDetail(@RequestBody CoopenIssueListParam param) {
+    public JsonResult issueDetail(@RequestBody @Valid CoopenIssueListParam param) {
         return success(shop().coopenRecord.getIssuePageList(param));
     }
 }

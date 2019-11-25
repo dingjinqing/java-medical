@@ -45,7 +45,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 
 		return success(pageResult);
 	}
-	
+
 	/**
 	 * 发优惠券
 	 *
@@ -54,9 +54,9 @@ public class AdminCouponGiveController extends AdminBaseController{
 	 */
 	@PostMapping("/grant")
 	public JsonResult insertGrant(@RequestBody CouponGiveGrantParam param) {
-		
+
 		shop().coupon.couponGiveService.insertGrant(param);
-		
+
 		return success();
 	}
 	/**
@@ -67,9 +67,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 	 */
 	@PostMapping("/pop")
 	public JsonResult getPopWindow(@RequestBody CouponGivePopParam param) {
-
 		List<CouponGivePopVo> pageResult = shop().coupon.couponGiveService.popWindows(param);
-
 		return success(pageResult);
 	}
 	/**

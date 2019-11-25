@@ -1,14 +1,24 @@
 package com.vpu.mp.service.pojo.shop.coupon.give;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * 优惠券弹窗
  * @author liangchen
  * @date 2019年8月1日
  */
-@Data
+@Getter
+@Setter
 public class CouponGivePopParam {
+
+	/**
+	 * 优惠卷类型  -1全部 0普通 1分裂
+	 */
+	private Byte type;
 	/** 优惠券名称 */
 	private String actName;
 	/** 分页信息 */
