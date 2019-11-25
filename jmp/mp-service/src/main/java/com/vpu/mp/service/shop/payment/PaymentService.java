@@ -71,7 +71,37 @@ public class PaymentService extends ShopBaseService {
 	 * 统一订单支付回调
 	 */
 	public void unionPayNotify(PaymentRecordParam param) {
-		// TODO: 统一支付回调
+        String orderSn = param.getOrderSn();
+        String prefix = orderSn.substring(0,1);
+        switch (prefix) {
+            //TODO 订单根据前缀判断处理类型,将字面量替换为对应常量
+            case "S":
+                //服务订单统一支付回调
+                break;
+            case "D":
+                //门店买单订单统一支付回调
+                break;
+            case "C":
+                //会员卡充值订单统一支付回调
+                break;
+            case "M":
+                //会员卡充值订单统一支付回调
+                break;
+            case "T":
+                //代付/子订单统一支付回调
+                break;
+            case OrderConstant.ORDER_SN_PREFIX:
+                //订单统一支付回调
+                try {
+                    onPayNotify(param);
+                } catch (WxPayException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                return;
+        }
+
 	}
 
 	/**

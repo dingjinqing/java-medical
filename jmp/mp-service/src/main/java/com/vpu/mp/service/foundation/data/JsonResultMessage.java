@@ -654,6 +654,9 @@ public class JsonResultMessage {
 	public static final String CART_MINIMUM_PURCHASE ="cart.minimum.purchase";
 	public static final String CART_MAXIMUM_PURCHASE ="cart.maximum.purchase";
 
-
+    /**
+     *  微信支付
+     */
+    public static final String MSG_WX_PAY_PREPAY_ID_IS_NULL ="wx_pay_prepay_id_is_null";
 
 }

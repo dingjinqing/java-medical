@@ -364,6 +364,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(param.getProductIds(), storeId);
         //goods type,key goodsId
         Map<Integer, Byte> goodsTypes = goodsService.getGoodsType(param.getGoodsIds());
+        //非营销默认0
+        param.setActivityType(OrderConstant.GOODS_TYPE_GENERAL);
         //赋值
         for (Goods temp : param.getGoods()) {
             GoodsSpecProductRecord product = productInfo.get(temp.getProductId());

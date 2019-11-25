@@ -89,16 +89,16 @@ public class AccountService extends ShopBaseService {
 				throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 			}
 			param.setIsPaid(UACCOUNT_CONSUMPTION.val());
-			
+
 		}else {
 			logger().info("充值");
 			/** -充值 */
 			param.setIsPaid(UACCOUNT_RECHARGE.val());
-			
+
 		}
-		
+
 		logger().info("消费判断成功");
-		
+
 		/** -支付类型 不能为null */
 		if(isNull(param.getPayment())) {
 			param.setPayment("");
@@ -125,7 +125,7 @@ public class AccountService extends ShopBaseService {
 	private boolean isNotConsumpAvailable(UserRecord user,AccountParam param) {
 		return !isConsumpAvailable(user,param);
 	}
-	
+
 	private boolean isConsumpAvailable(UserRecord user,AccountParam param) {
 		BigDecimal val = param.getAmount().add(user.getAccount());
 		return !isLessThanZero(val);

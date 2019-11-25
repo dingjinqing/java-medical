@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -12,9 +13,11 @@ import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +64,9 @@ public class OrderPayService extends ShopBaseService{
     @Autowired
     private MpPaymentService pay;
 
+    @Autowired
+    private OrderInfoService order;
+
     
     /**
      * 订单系统内金额支付方法
@@ -99,11 +105,25 @@ public class OrderPayService extends ShopBaseService{
             Integer amount = BigDecimalUtil.multiply(orderInfo.getMoneyPaid(), BigDecimal.valueOf(100)).intValue();
             try {
                 logger().info("微信预支付调用接口调用start");
-                executeResult.setResult(pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), amount, param.getWxUserInfo().getWxUser().getOpenId()));
+                WebPayVo webPayVo = pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), amount, param.getWxUserInfo().getWxUser().getOpenId());
+                webPayVo.setOrderSn(orderInfo.getOrderSn());
+                webPayVo.setOrderType(param.getActivityType().toString());
+                order.updatePrepayId(webPayVo.getResult().getPrepayId(), orderInfo.getOrderId());
+                executeResult.setResult(webPayVo);
                 logger().info("微信预支付调用接口调用end");
                 return executeResult;
-            } catch (Throwable e) {
-                logger().error("微信预支付调用接口失败，订单号：{},异常：{}", orderInfo.getOrderSn(), e.getMessage());
+            } catch (WxPayException e) {
+                logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderInfo.getOrderSn(), e);
+                executeResult.setErrorCode(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+                return executeResult;
+            }
+            catch (MpException e) {
+                logger().error("微信预支付调用接口失败MpException，订单号：{},异常：{}", orderInfo.getOrderSn(), e.getErrorCode());
+                executeResult.setErrorCode(e.getErrorCode());
+                executeResult.setErrorParam(e.getCodeParam());
+                return executeResult;
+            }catch (Exception e) {
+                logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", orderInfo.getOrderSn(), e.getMessage());
                 executeResult.setErrorCode(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
                 return executeResult;
             }

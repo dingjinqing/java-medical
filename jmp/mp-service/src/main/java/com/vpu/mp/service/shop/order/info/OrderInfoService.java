@@ -687,9 +687,9 @@ public class OrderInfoService extends ShopBaseService {
      */
     public String generateOrderSn() {
         while(true) {
-            String orderSn = "P" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE) + RandomUtil.getIntRandom();
-            if(db().fetchCount(TABLE,TABLE.ORDER_SN.eq(orderSn)) < 1){
-                return orderSn;
+            StringBuilder orderSn = new StringBuilder(OrderConstant.ORDER_SN_PREFIX).append(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE)).append(RandomUtil.getIntRandom());
+            if(db().fetchCount(TABLE,TABLE.ORDER_SN.eq(orderSn.toString())) < 1){
+                return orderSn.toString();
             }
         }
     }
@@ -738,6 +738,10 @@ public class OrderInfoService extends ShopBaseService {
 
         }
         return order;
+    }
+
+    public void updatePrepayId(String prepayId, Integer orderId){
+	    db().update(TABLE).set(TABLE.PREPAY_ID, prepayId).where(TABLE.ORDER_ID.eq(orderId)).execute();
     }
 	/**
 	 * 根据用户id获取累计消费金额
