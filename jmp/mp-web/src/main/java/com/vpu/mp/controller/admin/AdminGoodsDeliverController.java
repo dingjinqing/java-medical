@@ -104,9 +104,9 @@ public class AdminGoodsDeliverController extends AdminBaseController {
 	@PostMapping("/templateone")
 	public JsonResult selectOne(@RequestBody GoodsDeliverIdParam param) {
 
-		List<GoodsDeliverTemplateVo> goodsDeliverTemplateVos = shop().goods.goodsDeliver.selectOne(param);
+		GoodsDeliverTemplateVo singleTemplate = shop().goods.goodsDeliver.selectOne(param);
 
-		return success(goodsDeliverTemplateVos);
+		return success(singleTemplate);
 
 	}
 

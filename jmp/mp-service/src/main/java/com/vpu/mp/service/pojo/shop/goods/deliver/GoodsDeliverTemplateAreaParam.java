@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 /**
@@ -14,10 +15,10 @@ import java.math.BigDecimal;
 public class GoodsDeliverTemplateAreaParam {
     /** 地区编号 */
     @JsonProperty(value = "area_list")
-    private String 		areaList;
+    private List<String> areaList;
     /** 地区名称 */
     @JsonProperty(value = "area_text")
-    private String 		areaText;
+    private List<String> areaText;
     /** N件/公斤内 */
     @JsonProperty(value = "first_num")
     private Integer 	firstNum;

@@ -41,7 +41,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
     @Autowired
     private DeliverTemplateConfigService defaultTemplate;
 
-	/**
+    /**
 	 *	查询所有省、市、区、县
 	 *
 	 * @return List<AreaSelectVo>
@@ -63,8 +63,14 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
 				.from(DELIVER_FEE_TEMPLATE)
 				.where(DELIVER_FEE_TEMPLATE.FLAG.eq(param.getFlag()))
 				.orderBy(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.desc());
-		
+		//整合分页信息
 		PageResult<GoodsDeliverTemplateVo> pageResult = this.getPageResult(selectFrom, param.getCurrentPage(), param.getPageRows(), GoodsDeliverTemplateVo.class);
+        //遍历将模板内容由字符串转对象
+        for (GoodsDeliverTemplateVo tempVo:pageResult.dataList) {
+            GoodsDeliverTemplateContentParam templateContent = Util.json2Object(tempVo.getTemplateContent(),GoodsDeliverTemplateContentParam.class,false);
+            tempVo.setContent(templateContent);
+            tempVo.setTemplateContent("null");
+        }
 		return pageResult;
 	}
 	
@@ -97,19 +103,25 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
 	 * 修改模版前先查询单个模版的信息，将其参数作为修改时的默认值
 	 * 
 	 * @param param 模板id
-	 * @return List<GoodsDeliverTemplateVo>
+	 * @return 单个模板信息
 	 */
 	
-	public List<GoodsDeliverTemplateVo> selectOne(GoodsDeliverIdParam param) {
-
-		List<GoodsDeliverTemplateVo> goodsDeliverTemplateVos = 
+	public GoodsDeliverTemplateVo selectOne(GoodsDeliverIdParam param) {
+        //查询单个对象
+		GoodsDeliverTemplateVo result =
 				db().select(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID,DELIVER_FEE_TEMPLATE.TEMPLATE_NAME,DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,DELIVER_FEE_TEMPLATE.FLAG)
 				.from(DELIVER_FEE_TEMPLATE)
 				.where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(param.getDeliverTemplateId()))
-				.fetchInto(GoodsDeliverTemplateVo.class);
+				.fetchOneInto(GoodsDeliverTemplateVo.class);
+        if (result == null){
+            return null;
+        }
+        //遍历将模板内容由字符串转对象
+        GoodsDeliverTemplateContentParam templateContent = Util.json2Object(result.getTemplateContent(),GoodsDeliverTemplateContentParam.class,false);
+        result.setContent(templateContent);
+        result.setTemplateContent("null");
 
-		return goodsDeliverTemplateVos;
-
+		return result;
 	}
 	/**
      *修改运费模版
@@ -123,7 +135,6 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
 	                .set(DELIVER_FEE_TEMPLATE.TEMPLATE_CONTENT,Util.toJsonNotNull(param.getContentParam()))
 	                .where(DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID.eq(param.getDeliverTemplateId()))
 	                .execute();
-
 	}
 
 	/**
@@ -219,7 +230,8 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
             //开启指定包邮条件
             for (GoodsDeliverTemplateFeeConditionParam template : rule.getFeeConditionParam()) {
                 //判断地区与规则
-                if(StringUtil.isNotBlank(template.getAreaList()) && matchDistrictCode(districtCode, template.getAreaList()) && matchFee(template, totalNumber, totalPrice)){
+                if(true){
+//***********  if(StringUtil.isNotBlank(template.getAreaList()) && matchDistrictCode(districtCode, template.getAreaList()) && matchFee(template, totalNumber, totalPrice)){
                     return BigDecimal.ZERO;
                 }
             }
@@ -230,7 +242,8 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
             throw new MpException(JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR);
         }
         for (GoodsDeliverTemplateAreaParam  supportArea : rule.getAreaParam()) {
-            if(matchDistrictCode(districtCode, supportArea.getAreaList())){
+// **********  if(matchDistrictCode(districtCode, supportArea.getAreaList())){
+            if(true){
                 //支持区域
                 if(totalNumber <= supportArea.getFirstNum()){
                     //小于等于首件
@@ -283,7 +296,8 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
             //开启指定包邮条件
             for (GoodsDeliverTemplateFeeConditionParam template : rule.getFeeConditionParam()) {
                 //判断地区与规则
-                if(StringUtil.isNotBlank(template.getAreaList()) && matchDistrictCode(districtCode, template.getAreaList()) && matchWeightFee(template, totalWeight, totalPrice)){
+                if(true){
+//**************  if(StringUtil.isNotBlank(template.getAreaList()) && matchDistrictCode(districtCode, template.getAreaList()) && matchWeightFee(template, totalWeight, totalPrice)){
                     return BigDecimal.ZERO;
                 }
             }
@@ -294,8 +308,9 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
             throw new MpException(JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR);
         }
         for (GoodsDeliverTemplateAreaParam  supportArea : rule.getAreaParam()) {
-            if(matchDistrictCode(districtCode, supportArea.getAreaList())){
-                //支持区域
+//*********** if(matchDistrictCode(districtCode, supportArea.getAreaList())){
+            if (true){
+            //支持区域
                 if(BigDecimalUtil.compareTo(totalWeight, BigDecimal.valueOf(supportArea.getFirstNum())) < 1){
                     //不足首重，按首重运费计算
                     return supportArea.getFirstFee();

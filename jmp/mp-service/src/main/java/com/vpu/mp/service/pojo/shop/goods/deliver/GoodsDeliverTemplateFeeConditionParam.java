@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author liangchen
@@ -14,10 +15,10 @@ import java.math.BigDecimal;
 public class GoodsDeliverTemplateFeeConditionParam {
     /** 地区编号 */
 	@JsonProperty(value = "area_list")
-	private String areaList;
+	private List<String> areaList;
     /** 地区名称 */
 	@JsonProperty(value = "area_text")
-	private String areaText;
+	private List<String> areaText;
 	/** 包邮类型（1:件数,2:金额,3:件数+金额） */
 	@JsonProperty(value = "fee_0_condition")
 	private Integer fee0Condition;
