@@ -262,8 +262,15 @@
             :title="activeName === '1' ? $t('marketCommon.collapseMoreConfigurations'):$t('marketCommon.expandMoreConfigurations')"
             name="1"
           >
-            <!-- 引入活动分享模块 -->
-            <actShare :shareConfig="reduceData.shareConfig" />
+            <div class="set_item">
+              <div class="item_title">
+                <em>*</em> {{$t('reducePriceList.setDiscount')}}：
+              </div>
+              <div class="item_right">
+                <!-- 引入活动分享模块 -->
+                <actShare :shareConfig="reduceData.shareConfig" />
+              </div>
+            </div>
           </el-collapse-item>
         </el-collapse>
       </div>
@@ -304,14 +311,13 @@
 <script>
 import { addReducePrice, getReducePriceById } from '@/api/admin/marketManage/reducePrice.js'
 import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
-import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     CycleDialog: () => import('./repeatCycle'),
     choosingGoods: () => import('@/components/admin/choosingGoods'),
     productInfo: () => import('./productInfo'),
-    actShare
+    actShare: () => import('@/components/admin/marketManage/marketActivityShareSetting')
   },
   data () {
     return {

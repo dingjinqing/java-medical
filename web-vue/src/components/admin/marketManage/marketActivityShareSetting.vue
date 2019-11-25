@@ -1,10 +1,7 @@
 <!--活动分享模块-->
 <template>
   <div>
-    <div
-      :label="$t('marketCommon.activitySharing') + ':'"
-      prop=''
-    >
+    <div>
       <section>
         <el-radio
           v-model="actShare"
@@ -16,11 +13,10 @@
           trigger="hover"
         >
           <el-image :src="srcList.src1"></el-image>
-          <el-button
+          <span
             slot="reference"
-            type="text"
-            style="margin: 0 20 0 0px"
-          >{{$t('marketCommon.viewExample')}}</el-button>
+            class="operate"
+          >{{$t('marketCommon.viewExample')}}</span>
         </el-popover>
         <el-popover
           placement="right-start"
@@ -28,10 +24,10 @@
           trigger="hover"
         >
           <el-image :src="srcList.src2"></el-image>
-          <el-button
+          <span
             slot="reference"
-            type="text"
-          >{{$t('marketCommon.downloadPoster')}}</el-button>
+            class="operate"
+          >{{$t('marketCommon.downloadPoster')}}</span>
         </el-popover>
       </section>
 
@@ -167,5 +163,12 @@ export default {
   right: -80px;
   cursor: pointer;
   opacity: 0.8;
+}
+.operate {
+  cursor: pointer;
+  color: #409eff;
+}
+.operate {
+  margin-left: 10px;
 }
 </style>
