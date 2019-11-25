@@ -87,7 +87,7 @@
                  <text class="total_price" style="color:{{comColor}}">￥{{totalPrice}}</text>
             </view>
             <view class="footer_right" >
-                <view class="footer_btn" style="color:#fff;background-color:{{comColor}};">
+                <view class="footer_btn" bindtap="toCheckOut" style="color:#fff;background-color:{{comColor}};">
                     去结算
                 </view>
             </view>

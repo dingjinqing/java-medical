@@ -347,7 +347,7 @@ global.wxPage({
       balance,
       cardBalance,
       scoreDiscount,
-      deliverType: this.data.chooseShippingIndex,
+      deliverType: this.data.params.deliverType,
       orderPayWay:this.data.choosePayTypeIndex,
       couponSn,
       memberCardNo

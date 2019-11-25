@@ -12,7 +12,7 @@
             <text>{{i18n.$t(localePack,"pages.checkout.balanceTips[0]",{maxCanUse:maxCanUse||"0",target:i18n.$t(localePack,"pages.checkout.membershipCard")})}}</text>
           </view>
           <view class="input_box">
-            <text>{{i18n.$t(localePack,"pages.checkout.pay")+i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")}}}</text>
+            <text>{{i18n.$t(localePack,"pages.checkout.pay")+i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")}}</text>
             <text class="warn">{{msg}}</text>
             <input type="number" bindinput="changeInput" value="{{cardBalanceInput}}"></input>
           </view>

@@ -48,7 +48,7 @@
             <text class="spec">{{goodsItem.goodsAttr}}</text>
           </view>
           <view class="goods_price">
-            <text class="price" style="color:{{comColor}}">￥{{goodsItem.goodsPrice}}</text>
+            <text class="price" style="color:{{comColor}}">{{i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.goodsPrice})}}</text>
             <text class="num">x{{goodsItem.goodsNumber}}</text>
           </view>
         </view>
@@ -83,21 +83,21 @@
         </view>
         <view class="pay_list_item" bindtap="cardBalanceTap">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
-          <text class="pay_list_content" wx:if="{{usePayInfo.useCardBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce")}}{{usePayInfo.useCardBalance}}元</text>
+          <text class="pay_list_content" wx:if="{{usePayInfo.useCardBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useCardBalance})}}</text>
           <view class="pay_list_right">
             <text class="iconfont {{cardBalanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{cardBalanceStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
         <view class="pay_list_item" bindtap="balanceTap">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}{{}}</text>
-          <text class="pay_list_content" wx:if="{{usePayInfo.useBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce")}}{{usePayInfo.useBalance}}元</text>
+          <text class="pay_list_content" wx:if="{{usePayInfo.useBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useBalance})}}</text>
           <view class="pay_list_right">
             <text class="iconfont {{balanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{balanceStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
         <view class="pay_list_item" bindtap="scoreTap">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.integral")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
-          <text class="pay_list_content" wx:if="{{usePayInfo.useScore > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce")}}{{usePayInfo.useScore / 100}}元</text>
+          <text class="pay_list_content" wx:if="{{usePayInfo.useScore > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useScore / 100})}}</text>
           <view class="pay_list_right">
             <text class="iconfont {{scoreStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{scoreStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
@@ -107,36 +107,36 @@
       <view class="checkout_detail">
         <view class="detail_item">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.goods")+i18n.$t(localePack,"pages.checkout.total")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">￥{{orderInfo.orderAmount}}</text>
+          <text class="detail_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.orderAmount})}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.shippingFee}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.freight")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">+￥{{orderInfo.shippingFee}}</text>
+          <text class="detail_content" style="color:{{comColor}};">+{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.shippingFee})}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.memberCardReduce}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-￥{{orderInfo.memberCardReduce}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.memberCardReduce})}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.discount}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.coupon")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-￥{{orderInfo.discount}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.discount})}}</text>
         </view>
         <view class="detail_item" wx:if="{{cardBalanceStatus}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-￥{{usePayInfo.useCardBalance}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:usePayInfo.useCardBalance})}}</text>
         </view>
         <view class="detail_item" wx:if="{{balanceStatus}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-￥{{usePayInfo.useBalance}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:usePayInfo.useBalance})}}</text>
         </view>
         <view class="detail_item" wx:if="{{scoreStatus}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.integral")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-￥{{usePayInfo.useScore / 100}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:usePayInfo.useScore / 100})}}</text>
         </view>
       </view>
 
       <view class="checkout_footer">
-        <text class="footer_content" style="color:{{comColor}};">应付：{{usePayInfo.moneyPaid}}元</text>
+        <text class="footer_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.actualPay",{price:usePayInfo.moneyPaid || "0"})}}</text>
         <text class="footer_button" style="background-color:{{comColor}};" bindtap="confirmOrder">{{i18n.$t(localePack,"pages.checkout.submitOrder")}}</text>
       </view>
     </view>

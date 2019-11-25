@@ -46,20 +46,6 @@ global.wxPage({
       }
     })
   },
-  // // 获取可购买商品列表
-  // getCanBuyList(listArray){
-  //   if (!Array.isArray(listArray)) return []
-  //   return listArray.filter(item => {
-  //     return item.isOnSale === 1 && item.isDelete === 0 && item.tip !== '无效商品'
-  //   })
-  // },
-  // // 获取不可购买商品列表
-  // getInvalidGoodsList(listArray){
-  //   if (!Array.isArray(listArray)) return []
-  //   return listArray.filter(item => {
-  //     return item.isOnSale === 0 || item.isDelete === 1 || item.tip == '无效商品'
-  //   })
-  // },
   // 清除无效购物车列表
   clearCart(){
     let recIds = this.data.invalidGoodsList.map(item => {
@@ -141,6 +127,13 @@ global.wxPage({
     this.setData({
       totalPrice: realPrice.substring(0, realPrice.length - 1)
     })
+  },
+  toCheckOut(){
+    let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item=>{
+      let { goodsId, cartPrice: prdRealPrice, cartNumber: goodsNum, prdId } = item
+      return { goodsId, prdRealPrice, goodsNum, prdId }
+    })
+    util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify(goodsList)}`, "navigateTo")
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
