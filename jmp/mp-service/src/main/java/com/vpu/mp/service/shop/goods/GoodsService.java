@@ -1595,9 +1595,6 @@ public class GoodsService extends ShopBaseService {
      */
     public Map<Integer, Byte> getGoodsType(List<Integer> goodsIds) throws MpException {
         Map<Integer, Byte> goodsTypes = db().select(GOODS.GOODS_ID, GOODS.GOODS_TYPE).from(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).fetchMap(GOODS.GOODS_ID, GOODS.GOODS_TYPE);
-        if(goodsTypes.size() != goodsIds.size()) {
-        	throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST);
-        }
         return goodsTypes;
     }
 

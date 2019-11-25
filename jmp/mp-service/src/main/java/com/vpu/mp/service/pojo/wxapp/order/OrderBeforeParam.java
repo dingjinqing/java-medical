@@ -105,7 +105,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	 * @return
 	 */
 	public List<Integer> getGoodsIds() {
-		return goods == null ? Collections.emptyList() : goods.stream().map(Goods::getGoodsId).collect(Collectors.toList());
+		return goods == null ? Collections.emptyList() : goods.stream().map(Goods::getGoodsId).distinct().collect(Collectors.toList());
 	}
 
 	/**
