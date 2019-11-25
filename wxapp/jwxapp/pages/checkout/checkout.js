@@ -30,7 +30,8 @@ global.wxPage({
       scoreDiscount:null, // 积分抵扣金额
       balance:null, //余额抵扣金额
       cardBalance:null, //会员卡抵扣金额
-      orderPayWay:null//支付方式
+      orderPayWay:null,//支付方式
+      isCart:0
     },
     usePayInfo:{
       moneyPaid:0,//订单可支付的金额
@@ -49,11 +50,12 @@ global.wxPage({
     let goods = [];
     let { goodsList } = options
     JSON.parse(goodsList).forEach(item => {
-      let { goodsId, prdRealPrice: goodsPrice, goodsNum: goodsNumber, prdId: productId } = item
-      goods.push({ goodsId, goodsPrice, goodsNumber, productId })
+      let { goodsId, prdRealPrice: goodsPrice, goodsNum: goodsNumber, prdId: productId,isCart = 0 } = item
+      goods.push({ goodsId, goodsPrice, goodsNumber, productId, isCart })
     })
     this.setData({
-      'params.goods': goods
+      'params.goods': goods,
+      'params.isCart': goods[0].isCart //购物车来源|商品详情
     })
     this.requestOrder()
     wx.hideShareMenu()

@@ -131,7 +131,7 @@ global.wxPage({
   toCheckOut(){
     let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item=>{
       let { goodsId, cartPrice: prdRealPrice, cartNumber: goodsNum, prdId } = item
-      return { goodsId, prdRealPrice, goodsNum, prdId }
+      return { goodsId, prdRealPrice, goodsNum, prdId, isCart:1 }
     })
     util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify(goodsList)}`, "navigateTo")
   },
