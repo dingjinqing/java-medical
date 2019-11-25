@@ -27,5 +27,19 @@ export const en = {
   priceAfterDiscount: 'price after discount',
   originalPrice: 'original price',
   stock: 'stock',
-  productReducePriceTip: 'specifications price reduction'
+  productReducePriceTip: 'specifications price reduction',
+
+  // 校验
+  validActName: 'Please fill in the event name！',
+  validActDate: 'Please fill in the validity period of the event！',
+  validActGoods: 'Please set up event products！',
+  validActGoodsPrice: 'Please set the full product activity price！',
+
+  batchValidPrice1: 'The price reduction must be less than the original price！',
+  batchValidPrice2: 'After the price reduction, the amount must not be less than 0！',
+  batchValidPrice3: 'This item cannot be reduced in price！',
+  batchValidSet: 'Please tick the item and try again！',
+  batchValidDiscount1: 'Please enter the number of discounts！',
+  batchValidDiscount2: 'Discount can only be entered between 0-10！',
+  batchValidSetType: 'Please select a batch type！'
 }

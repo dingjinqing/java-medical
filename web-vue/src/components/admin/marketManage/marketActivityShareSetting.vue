@@ -1,7 +1,7 @@
 <!--活动分享模块-->
 <template>
   <div>
-    <el-form-item
+    <div
       :label="$t('marketCommon.activitySharing') + ':'"
       prop=''
     >
@@ -91,7 +91,7 @@
           @handleSelectImg='handleSelectImg'
         />
       </section>
-    </el-form-item>
+    </div>
   </div>
 </template>
 

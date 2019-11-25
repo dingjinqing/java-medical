@@ -469,16 +469,16 @@ export default {
     batchSet () {
       console.log(this.$refs.multipleTable.selection)
       if (this.$refs.multipleTable.selection.length === 0) {
-        this.$message.error('请勾选商品后再试')
+        this.$message.warning(this.$t('reducePriceList.batchValidSet'))
         return false
       } else {
         switch (this.batchFlag) {
           case 1:
             if (!this.reduceData.batchDiscount) {
-              this.$message.error('请输入折扣数')
+              this.$message.warning(this.$t('reducePriceList.batchValidDiscount1'))
               return false
             } else if (parseFloat(this.reduceData.batchDiscount) <= 0 || parseFloat(this.reduceData.batchDiscount) >= 10) {
-              this.$message.error('折扣只能输入0-10之间')
+              this.$message.warning(this.$t('reducePriceList.batchValidDiscount2'))
               return false
             }
             this.$refs.multipleTable.selection.map(item => {
@@ -529,7 +529,7 @@ export default {
             })
             break
           default:
-            this.$message.error('请选择批量类型')
+            this.$message.warning(this.$t('reducePriceList.batchValidSetType'))
             break
         }
       }
@@ -599,11 +599,11 @@ export default {
     reduceError (rowData) {
       if (rowData.discount || rowData.reducePrice || rowData.goodsPrice) {
         if (rowData.goodsPrice > rowData.shopPrice) {
-          return `降价金额需小于原价`
+          return this.$t('reducePriceList.batchValidPrice1')
         } else if (rowData.goodsPrice < 0) {
-          return `降价后金额不得小于0`
+          return this.$t('reducePriceList.batchValidPrice2')
         } else if (rowData.shopPrice > 0 && rowData.shopPrice < 0.01) {
-          return `此商品不可降价`
+          return this.$t('reducePriceList.batchValidPrice2')
         } else {
           return ''
         }
@@ -615,23 +615,57 @@ export default {
       this.reduceData.reducePriceGoodsAddParams = this.pageShowGoodsList
       this.reduceData.limitFlag = this.reduceData.limitFlag ? 1 : 0
 
-      addReducePrice(this.reduceData).then((res) => {
-        if (res.error === 0) {
-          this.$message.success({
-            message: this.$t('marketCommon.successfulOperation')
-          })
-          this.$router.push({
-            name: 'reduce'
-          })
-        } else {
-          this.$message.fail({
-            message: this.$t('marketCommon.failureOperation')
-          })
-        }
-      })
+      if (this.validParam()) {
+        addReducePrice(this.reduceData).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({
+              message: this.$t('marketCommon.successfulOperation')
+            })
+            this.$router.push({
+              name: 'reduce'
+            })
+          } else {
+            this.$message.error({
+              message: this.$t('marketCommon.failureOperation')
+            })
+          }
+        })
+      }
     },
     updateSubmit () {
       // 更新活动
+    },
+    // 提交前校验
+    validParam () {
+      if (!this.reduceData.name) {
+        this.$message.warning(this.$t('reducePriceList.validActName'))
+        return false
+      }
+      if (!this.reduceData.startTime || !this.reduceData.endTime) {
+        this.$message.warning(this.$t('reducePriceList.validActDate'))
+        return false
+      }
+      if (!this.reduceData.reducePriceGoodsAddParams || this.reduceData.reducePriceGoodsAddParams.length === 0) {
+        this.$message.warning(this.$t('reducePriceList.validActGoods'))
+        return false
+      }
+      let flag = false
+      this.reduceData.reducePriceGoodsAddParams.forEach(item => {
+        if (!item.discount || !item.reducePrice || !item.goodsPrice) {
+          flag = true
+        } else {
+          item.reducePriceProduct.forEach(prdItem => {
+            if (!prdItem.prdPrice) {
+              flag = true
+            }
+          })
+        }
+      })
+      if (flag) {
+        this.$message.warning(this.$t('reducePriceList.validActGoodsPrice'))
+        return false
+      }
+      return true
     }
   }
 }
@@ -740,7 +774,7 @@ export default {
     }
   }
   .small_input {
-    width: 80px;
+    width: 90px;
   }
   .default_input {
     width: 150px;

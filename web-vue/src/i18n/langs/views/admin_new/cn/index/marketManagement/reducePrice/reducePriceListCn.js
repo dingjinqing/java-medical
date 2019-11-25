@@ -27,5 +27,19 @@ export const cn = {
   priceAfterDiscount: '折后价',
   originalPrice: '原价',
   stock: '库存',
-  productReducePriceTip: '个规格降价'
+  productReducePriceTip: '个规格降价',
+
+  // 校验
+  validActName: '请填写活动名称！',
+  validActDate: '请填写活动有效期！',
+  validActGoods: '请设置活动商品！',
+  validActGoodsPrice: '请设置完整的商品活动价！',
+
+  batchValidPrice1: '降价金额需小于原价！',
+  batchValidPrice2: '降价后金额不得小于0！',
+  batchValidPrice3: '此商品不可降价！',
+  batchValidSet: '请勾选商品后再试！',
+  batchValidDiscount1: '请输入折扣数！',
+  batchValidDiscount2: '折扣只能输入0-10之间！',
+  batchValidSetType: '请选择批量类型！'
 }
