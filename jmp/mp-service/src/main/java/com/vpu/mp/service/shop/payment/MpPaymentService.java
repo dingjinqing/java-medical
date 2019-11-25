@@ -108,6 +108,7 @@ public class MpPaymentService extends ShopBaseService {
 				.build();
 		this.logger().info("PartnerKey is : {}", wxPayment.getConfig().getMchKey());
 		WxPayUnifiedOrderResult result = wxPayment.unifiedOrder(payInfo);
+		//TODO 校验
         this.logger().info("微信预支付调用接口result : {}", result);
 		//String resultJson = new Gson().toJson(result);
         //logger().info("微信预支付调用接口end,result:{}", resultJson);

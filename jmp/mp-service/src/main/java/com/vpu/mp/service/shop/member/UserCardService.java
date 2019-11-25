@@ -895,7 +895,6 @@ public class UserCardService extends ShopBaseService {
         List<OrderMemberVo> cards = new ArrayList<OrderMemberVo>();
         if(CollectionUtils.isEmpty(defaultCards)){
 	        //初始化
-//            int _ = 1;
             defaultCards = userCardDao.getOrderMembers(userId, new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, OrderConstant.MEMBER_CARD_ONLINE);
         }
         if(CollectionUtils.isEmpty(defaultCards)){
@@ -1011,13 +1010,13 @@ public class UserCardService extends ShopBaseService {
         }
         return userCardDao.getUserCardInfo(cardNo);
     }
-    
+
     /**
 	 * 获取持有会员卡的用户id
 	 */
 	public List<Integer> getUserIdThatHasValidCard() {
 		return userCardDao.getUserIdThatHasValidCard();
 	}
-    
+
 
 }

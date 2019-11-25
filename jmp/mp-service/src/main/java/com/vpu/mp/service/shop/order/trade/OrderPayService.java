@@ -126,11 +126,10 @@ public class OrderPayService extends ShopBaseService{
      * @throws MpException 见具体方法
      */
     public void payMemberCardBalance(OrderInfoRecord order, BigDecimal money) throws MpException {
+        logger().info("下单支付会员卡余额start:{}", money);
         if(BigDecimalUtil.compareTo(money, null) == 0) {
             return;
         }
-
-        
         /**
 		 * 交易记录信息
 		 */
@@ -140,10 +139,7 @@ public class OrderPayService extends ShopBaseService{
 				.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
 				.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
 				.build();
-		
-
         UserCardParam card = this.card.getCard(order.getCardNo());
-
         UserCardData userCardData = UserCardData.newBuilder().
             userId(order.getUserId()).
             cardId(card == null ? null : card.getCardId()).
@@ -151,12 +147,12 @@ public class OrderPayService extends ShopBaseService{
             money(money.negate()).
             reason("订单下单会员卡余额支付"+order.getOrderSn()).
             //普通会员卡
-
             type(CardConstant.MCARD_TP_NORMAL).
             orderSn(order.getOrderSn()).
             tradeOpt(tradeOpt).build();
         //调用退会员卡接口
         recordMemberTrade.updateUserEconomicData(userCardData);
+        logger().info("下单支付会员卡余额start:{}", money);
     }
 
     /**
@@ -166,6 +162,7 @@ public class OrderPayService extends ShopBaseService{
      * @throws MpException 见具体方法
      */
     public void payUseAccount(OrderInfoRecord order, BigDecimal money) throws MpException {
+        logger().info("下单支付用户余额start:{}", money);
         if(BigDecimalUtil.compareTo(money, null) == 0) {
             return;
         }
@@ -187,8 +184,8 @@ public class OrderPayService extends ShopBaseService{
             //资金流量-支出
                 tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
         //调用退余额接口
-
         recordMemberTrade.updateUserEconomicData(accountData);
+        logger().info("下单支付用户余额end:{}", money);
     }
 
     /**
@@ -198,6 +195,7 @@ public class OrderPayService extends ShopBaseService{
      * @throws MpException 见具体方法
      */
     public void payScoreDiscount(OrderInfoRecord order, BigDecimal money) throws MpException {
+        logger().info("下单支付用户积分start:{}", money);
         if(BigDecimalUtil.compareTo(money, null) == 0) {
             return;
         }
@@ -224,6 +222,7 @@ public class OrderPayService extends ShopBaseService{
         //调用退积分接口
 
         recordMemberTrade.updateUserEconomicData(scoreData);
+        logger().info("下单支付用户积分end:{}", money);
     }
 
     /**
