@@ -9,6 +9,7 @@ public class GoodsLinkVo {
 	public Integer goodsId;
 	public String goodsName;
 	public String goodsImg;
+	public String goodsSn;
 	public String keyWords;
 	public static Integer page;
 	
