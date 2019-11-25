@@ -585,4 +585,50 @@ public class ServiceOrderService extends ShopBaseService {
             .where(SERVICE_ORDER.USER_ID.eq(userId)).orderBy(SERVICE_ORDER.CREATE_TIME.desc()).fetchOneInto(RecentOrderInfo.class);
     }
 
+    /**
+     * Update service order.更新服务订单信息
+     *
+     * @param orderId the order id
+     * @param map     the map
+     */
+    public void updateServiceOrder(Integer orderId, Map<Field<?>, ?> map) {
+        db().update(SERVICE_ORDER).set(map).where(SERVICE_ORDER.ORDER_ID.eq(orderId)).execute();
+    }
+
+    /**
+     * Update single field.
+     *
+     * @param <T>     the type parameter
+     * @param orderId the order id
+     * @param field   the field
+     * @param value   the value
+     */
+    public <T> void updateSingleField(Integer orderId, Field<T> field, T value) {
+        db().update(SERVICE_ORDER).set(field, value).where(SERVICE_ORDER.ORDER_ID.eq(orderId)).execute();
+    }
+
+    /**
+     * Update single field.
+     *
+     * @param <T>     the type parameter
+     * @param orderId the order id
+     * @param field   the field
+     * @param value   the value
+     */
+    public <T> void updateSingleField(Integer orderId, Field<T> field, Field<T> value) {
+        db().update(SERVICE_ORDER).set(field, value).where(SERVICE_ORDER.ORDER_ID.eq(orderId)).execute();
+    }
+
+    /**
+     * Select single field t.
+     *
+     * @param <T>     the type parameter
+     * @param orderId the order id
+     * @param field   the field
+     * @return the t
+     */
+    public <T> T selectSingleField(Integer orderId, Field<T> field) {
+        return db().select(field).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_ID.eq(orderId)).fetchOne(field);
+    }
+
 }

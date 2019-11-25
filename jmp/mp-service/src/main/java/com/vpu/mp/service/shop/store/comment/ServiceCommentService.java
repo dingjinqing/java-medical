@@ -158,4 +158,25 @@ public class ServiceCommentService extends ShopBaseService {
             .orderBy(COMMENT_SERVICE.CREATE_TIME.desc())
             .fetchOneInto(ServiceCommentVo.class);
     }
+
+    /**
+     * Is comment boolean.订单是否已评价
+     *
+     * @param orderSn the order sn
+     * @return the boolean
+     */
+    public boolean isComment(String orderSn) {
+        return db().fetchExists(COMMENT_SERVICE, COMMENT_SERVICE.ORDER_SN.eq(orderSn));
+    }
+
+    /**
+     * Gets comment by order id.获取订单评价
+     *
+     * @param orderSn the order sn
+     * @return the comment by order id
+     */
+    public ServiceCommentVo getCommentByOrderSn(String orderSn) {
+        return db().selectFrom(COMMENT_SERVICE).where(COMMENT_SERVICE.ORDER_SN.eq(orderSn)).fetchOneInto(ServiceCommentVo.class);
+    }
+
 }

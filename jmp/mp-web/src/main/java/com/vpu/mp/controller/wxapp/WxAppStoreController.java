@@ -77,4 +77,53 @@ public class WxAppStoreController extends WxAppBaseController{
     public JsonResult submitReservation(@RequestBody @Validated SubmitReservationParam param) {
         return this.success(shop().store.reservation.submitReservation(param));
     }
+
+    /**
+     * 门店服务预约订单详情查询（根据订单编号）
+     */
+    @PostMapping("/service/reservationDetail")
+    public JsonResult reservationDetail(@RequestBody @Validated(ValidCon.class) ReservationDetail param) {
+        return this.success(shop().store.reservation.getReservationDetail(param));
+    }
+
+    /**
+     * 门店服务预约订单确认完成
+     */
+    @PostMapping("/service/comfirmComplete")
+    public JsonResult comfirmComplete(@RequestBody @Validated(ValidCon1.class) ReservationDetail param) {
+        return this.success(shop().store.reservation.confirmComplete(param));
+    }
+
+    /**
+     * 门店服务预约订单列表查询（获取全部）
+     */
+    @PostMapping("/service/reservationAllList")
+    public JsonResult reservationAllList(@RequestBody @Validated(ValidCon.class) ReservationParam param) {
+        return this.success(shop().store.reservation.reservationList(param.getUserId()));
+    }
+
+    /**
+     * 门店服务预约订单列表查询（按照订单状态获取）
+     */
+    @PostMapping("/service/reservationList")
+    public JsonResult reservationList(@RequestBody @Validated(ValidCon1.class) ReservationParam param) {
+        return this.success(shop().store.reservation.reservationList(param.getUserId(), param.getOrderStatus()));
+    }
+
+    /**
+     * 删除门店服务预约订单
+     */
+    @PostMapping("/service/reservationDel")
+    public JsonResult reservationDel(@RequestBody @Validated(ValidCon2.class) ReservationDetail param) {
+        shop().store.reservation.reservationDel(param.getOrderId());
+        return this.success();
+    }
+
+    /**
+     * 门店服务预约订单评价
+     */
+    @PostMapping("/service/reservationComment")
+    public JsonResult reservationComment(@RequestBody @Validated(ValidCon.class) ReservationDetail param) {
+        return this.success(shop().store.reservation.reservationComment(param.getOrderSn()));
+    }
 }

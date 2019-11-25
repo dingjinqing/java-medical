@@ -1,11 +1,5 @@
 package com.vpu.mp.service.foundation.database;
 
-import static org.jooq.impl.DSL.cast;
-import static org.jooq.impl.DSL.concat;
-
-import java.sql.Timestamp;
-import java.util.Arrays;
-
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.SortField;
@@ -13,6 +7,12 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Timestamp;
+import java.util.Arrays;
+
+import static org.jooq.impl.DSL.cast;
+import static org.jooq.impl.DSL.concat;
 
 
 /**
@@ -122,6 +122,17 @@ public class DslPlus {
     }
     private static Field<String> concatHandler(Field<?> head,Field<?> next,String separator){
         return concat(concat(cast(head,String.class),separator),cast(next,String.class));
+    }
+
+    /**
+     * Json extract field.
+     *
+     * @param field the field
+     * @param args  the args
+     * @return the field
+     */
+    public static Field<?> jsonExtract(Field<String> field, String args) {
+        return DSL.field("JSON_EXTRACT({0}, {1})", field, args);
     }
 
 }

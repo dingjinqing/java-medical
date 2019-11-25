@@ -2,16 +2,16 @@ package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
-import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
@@ -36,21 +36,30 @@ import com.vpu.mp.service.shop.user.message.WechatMessageTemplateService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Condition;
+import org.jooq.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
+import static com.vpu.mp.db.shop.tables.Store.STORE;
+import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_DATA_NOT_EXIST;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_NAME_FINISHED;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
  * @author liufei
@@ -500,5 +509,143 @@ orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
         ];*/
         ServiceOrderTemplate serviceOrderTemplate = new ServiceOrderTemplate();
         return true;
+    }
+
+    /**
+     * Gets reservation detail.获取服务预约订单详情(根据订单号)
+     *
+     * @param param the param
+     * @return the reservation detail
+     */
+    public ReservationDetail getReservationDetail(ReservationDetail param) {
+        Iterator<ReservationDetail> iterator = getReservationDetail(SERVICE_ORDER.ORDER_SN.eq(param.getOrderSn()), ReservationDetail.class).iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
+        }
+        return null;
+    }
+
+    /**
+     * Gets reservation detail.获取服务预约订单详情(根据订单id)
+     *
+     * @param orderId the order id
+     * @return the reservation detail
+     */
+    public ReservationDetail getReservationDetail(Integer orderId) {
+        Iterator<ReservationDetail> iterator = getReservationDetail(SERVICE_ORDER.ORDER_ID.eq(orderId), ReservationDetail.class).iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
+        }
+        return null;
+    }
+
+    /**
+     * Gets reservation detail.
+     *
+     * @param condition the condition
+     * @return the reservation detail
+     */
+    public <T> List<T> getReservationDetail(Condition condition, Class<T> clazz) {
+        return db().select(
+            SERVICE_ORDER.ORDER_ID
+            , SERVICE_ORDER.ORDER_SN
+            , SERVICE_ORDER.ORDER_STATUS
+            , SERVICE_ORDER.ORDER_STATUS_NAME
+            , SERVICE_ORDER.TECHNICIAN_ID
+            , SERVICE_ORDER.TECHNICIAN_NAME
+            , SERVICE_ORDER.SERVICE_DATE
+            , SERVICE_ORDER.SERVICE_PERIOD
+            , SERVICE_ORDER.VERIFY_CODE
+            , SERVICE_ORDER.CREATE_TIME,
+            SERVICE_ORDER.SERVICE_ID
+            , SERVICE_ORDER.STORE_ID
+            , SERVICE_ORDER.MONEY_PAID
+            , STORE_SERVICE.SERVICE_NAME
+            , STORE_SERVICE.SERVICE_PRICE
+            , STORE_SERVICE.SERVICE_SUBSIST
+            , STORE_SERVICE.SERVICE_IMG
+            , STORE.STORE_NAME
+            , DslPlus.jsonExtract(STORE.STORE_IMGS, "$[0]")
+            , STORE.PROVINCE_CODE
+            , STORE.CITY_CODE
+            , STORE.DISTRICT_CODE
+            , STORE.ADDRESS
+            , STORE.LATITUDE
+            , STORE.LONGITUDE
+        ).
+            from(SERVICE_ORDER).leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID))
+            .leftJoin(STORE).on(SERVICE_ORDER.STORE_ID.eq(STORE.STORE_ID))
+            .where(condition).and(SERVICE_ORDER.DEL_FLAG.eq(BYTE_ZERO)).fetchInto(clazz);
+    }
+
+    /**
+     * Confirm complete reservation detail.服务订单确认完成 todo 取消
+     *
+     * @param param the param
+     * @return the reservation detail
+     */
+    public ReservationDetail confirmComplete(ReservationDetail param) {
+        String username = Optional.ofNullable(userService.getUserInfo(param.getUserId())).orElseThrow(() -> new BusinessException(CODE_DATA_NOT_EXIST, "user:" + param.getUserId())).getUsername();
+        Map<Field<?>, Object> map = new HashMap<Field<?>, Object>(5) {{
+            put(SERVICE_ORDER.FINISHED_TIME, Timestamp.valueOf(LocalDateTime.now()));
+            put(SERVICE_ORDER.ORDER_STATUS, ORDER_STATUS_FINISHED);
+            put(SERVICE_ORDER.ORDER_STATUS_NAME, ORDER_STATUS_NAME_FINISHED);
+            put(SERVICE_ORDER.VERIFY_ADMIN, username);
+            put(SERVICE_ORDER.VERIFY_TYPE, BYTE_ONE);
+        }};
+        this.transaction(() -> {
+            serviceOrderService.updateServiceOrder(param.getOrderId(), map);
+            //预约完成服务销量加一
+            Integer serviceId = serviceOrderService.selectSingleField(param.getOrderId(), SERVICE_ORDER.SERVICE_ID);
+            storeService.updateSingleField(serviceId, STORE_SERVICE.SALE_NUM, STORE_SERVICE.SALE_NUM.add(INTEGER_ONE));
+        });
+        return getReservationDetail(param.getOrderId());
+    }
+
+    /**
+     * Reservation list map.预约列表
+     *
+     * @param userId the user id
+     * @return the map
+     */
+    public Map<Byte, List<ReservationListVo>> reservationList(Integer userId) {
+        List<ReservationListVo> list = getReservationDetail(SERVICE_ORDER.USER_ID.eq(userId), ReservationListVo.class);
+        list.forEach((e) -> {
+            if (commentService.isComment(e.getOrderSn())) {
+                e.setFlag(BYTE_ONE);
+            }
+        });
+        Map<Byte, List<ReservationListVo>> map = list.stream().collect(groupingBy(ReservationListVo::getOrderStatus));
+        return map;
+    }
+
+    /**
+     * Reservation list list.预约列表
+     *
+     * @param userId      the user id
+     * @param orderStatus the order status
+     * @return the list
+     */
+    public List<ReservationListVo> reservationList(Integer userId, Byte orderStatus) {
+        return getReservationDetail(SERVICE_ORDER.USER_ID.eq(userId).and(SERVICE_ORDER.ORDER_STATUS.eq(orderStatus)), ReservationListVo.class);
+    }
+
+    /**
+     * Reservation del.预约订单删除
+     *
+     * @param orderId the order id
+     */
+    public void reservationDel(Integer orderId) {
+        serviceOrderService.updateSingleField(orderId, SERVICE_ORDER.DEL_FLAG, BYTE_ONE);
+    }
+
+    /**
+     * Reservation comment service comment vo.订单评价
+     *
+     * @param orderSn the order sn
+     * @return the service comment vo
+     */
+    public ServiceCommentVo reservationComment(String orderSn) {
+        return commentService.getCommentByOrderSn(orderSn);
     }
 }
