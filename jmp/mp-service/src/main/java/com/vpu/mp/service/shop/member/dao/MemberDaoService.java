@@ -565,7 +565,7 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getGoodsIdCondition(List<Integer> goodsIdList) {
 		Condition condition = DSL.noCondition();
-		if (isNotNull(goodsIdList)) {
+		if (isNotNull(goodsIdList) && goodsIdList.size()>0) {
 			List<Integer> userIdList = orderInfoService.getUserIdHasBuyTheGoods(goodsIdList);
 			condition.and(USER.USER_ID.in(userIdList));
 		}
