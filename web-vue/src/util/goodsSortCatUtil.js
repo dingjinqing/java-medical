@@ -52,10 +52,10 @@ export function convertDataFromArrayToTree (array, itemId) {
 }
 
 /**
- *  将树形数据结构转换为对应的数组，转换后会在每个节点上添加“level”字段，该值表示节点所在的树中的层级，从1开始
+ *  将树形数据结构转换为对应的数组，该值表示节点所在的树中的层级，从1开始
  *  栗子：
  *    输入数据：[{sortId:1,parentId:0,hasChild:1,children:[{sortId:2,parentId:1,hasChild:0}]},{sortId:3,parentId:0,hasChild:0}]
- *    输入数据：[{sortId:1,parentId:0,hasChild:1,level:1},{sortId:2,parentId:1,hasChild:0,level:2},{sortId:3,parentId:0,hasChild:0,level:1}]
+ *    输入数据：[{sortId:1,parentId:0,hasChild:1},{sortId:2,parentId:1,hasChild:0},{sortId:3,parentId:0,hasChild:0}]
  * @param treeArray 树一级节点对象数组
  */
 export function convertTreeToArray (treeArray, deleteChildrenFlag) {
@@ -65,15 +65,10 @@ export function convertTreeToArray (treeArray, deleteChildrenFlag) {
   for (let i = 0; i < treeArray.length; i++) {
     let item = treeArray[i]
 
-    item.level = item.level || 0
-
     if (item.hasChild === 1) {
       // 保证按顺输出
       treeArray.splice(i + 1, 0, ...item.children)
-      // 设置子节点level为当前level+1
-      for (let j = 0; j < item.children.length; j++) {
-        item.children[j].level = item.level + 1
-      }
+
       // 删除节点children属性，保持数据整洁性
       if (deleteChildrenFlag) {
         delete item.children
