@@ -91,14 +91,14 @@ public class FirstSpecialService extends ShopBaseService {
      *
      */
     public PageResult<FirstSpecialPageListQueryVo> getPageList(FirstSpecialPageListQueryParam param) {
-        SelectWhereStep<? extends Record> select = db().select(FIRST_SPECIAL.ID,FIRST_SPECIAL.NAME,FIRST_SPECIAL.FIRST,FIRST_SPECIAL.START_TIME,FIRST_SPECIAL.END_TIME,FIRST_SPECIAL.STATUS).
+        SelectWhereStep<? extends Record> select = db().select(FIRST_SPECIAL.ID,FIRST_SPECIAL.NAME,FIRST_SPECIAL.FIRST,FIRST_SPECIAL.IS_FOREVER,FIRST_SPECIAL.START_TIME,FIRST_SPECIAL.END_TIME,FIRST_SPECIAL.STATUS).
             from(FIRST_SPECIAL);
         if(param.getState() > 0) {
             /** 状态过滤*/
             Timestamp now = DateUtil.getLocalDateTime();
             switch(param.getState()) {
                 case (byte)1:
-                    select.where(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL)).and(FIRST_SPECIAL.START_TIME.lt(now)).and(FIRST_SPECIAL.END_TIME.gt(now));
+                    select.where(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL)).and(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_YES).or(FIRST_SPECIAL.START_TIME.lt(now).and(FIRST_SPECIAL.END_TIME.gt(now))));
                     break;
                 case (byte)2:
                     select.where(FIRST_SPECIAL.STATUS.eq(STATUS_NORMAL)).and(FIRST_SPECIAL.START_TIME.gt(now));

@@ -47,12 +47,12 @@ public class BargainAddParam {
 	 * 砍价预期人数
 	 */
 	private Integer expectationNumber;
-	
+
 	/**
 	 *  指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限
 	 */
 	private BigDecimal expectationPrice;
-	
+
 	/**
 	 * 商品首次砍价可砍价比例区间 百分比
 	 */
@@ -68,7 +68,7 @@ public class BargainAddParam {
 	 * 砍价失败后向买家赠送优惠券，ID串，逗号分隔
 	 */
 	private String rewardCouponId;
-	
+
 	/**
 	 * 分享设置 
 	 */

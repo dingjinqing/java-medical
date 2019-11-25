@@ -30,17 +30,11 @@ public class CouponPageDecorationVo {
     private Integer    surplus;
     private Byte       useConsumeRestrict;
     private BigDecimal leastConsume;
-    private String     useExplain;
     private Byte       enabled;
     private Short      receivePerPerson;
-    private Byte       suitGoods;
     private Byte       togetherUsed;
     private Byte       permitShare;
     private Byte       remindOwner;
-    private Short      giveoutAmount;
-    private Short      giveoutPerson;
-    private Short      receiveAmount;
-    private Short      receivePerson;
     private Short      usedAmount;
     private String     aliasCode;
     private String     validationCode;
@@ -50,8 +44,6 @@ public class CouponPageDecorationVo {
     private Byte       useScore;
     private Integer    scoreNumber;
     private String     cardId;
-    private Timestamp createTime;
-    private Timestamp  updateTime;
     private Byte       validityType;
     private Integer    validityHour;
     private Integer    validityMinute;

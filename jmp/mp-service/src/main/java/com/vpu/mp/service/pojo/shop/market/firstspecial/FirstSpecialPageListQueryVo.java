@@ -24,6 +24,9 @@ public class FirstSpecialPageListQueryVo {
     /** 商品数量 */
     private Integer goodsAmount;
 
+    /** 是否永久有效 1是*/
+    private Byte isForever;
+
     /** 开始时间 */
     private Timestamp startTime;
 
