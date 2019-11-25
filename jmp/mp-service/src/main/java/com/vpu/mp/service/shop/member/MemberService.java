@@ -180,7 +180,7 @@ public class MemberService extends ShopBaseService {
 		
 		/** 获取会员列表的基本信息 */
 		PageResult<MemberInfoVo> memberList = getMemberList(param);
-
+		logger().info("获取会员列表成功");
 		List<Integer> inDate = userCardService.useInDate();
 		
 		for (MemberInfoVo member : memberList.dataList) {
@@ -200,6 +200,7 @@ public class MemberService extends ShopBaseService {
 			logger().info(sourceName);
 			member.setSourceName(sourceName);
 		}
+		logger().info("获取会员成功");
 
 		return memberList;
 	}
@@ -216,8 +217,8 @@ public class MemberService extends ShopBaseService {
 	/**
 	 * 获取用户来源
 	 */
-	
 	private String getSourceName(String language, MemberInfoVo member) {
+		logger().info("正在获取用户来源信息");
 		String sourceName = null;
 		if (SRC_NOT_ACQUIRED.getCode().equals(member.getSource())
 				&& !(INVITE_SOURCE_CHANNEL.equals(member.getInviteSource()))

@@ -18,12 +18,10 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
@@ -65,7 +63,7 @@ public class AccountService extends ShopBaseService {
 		checkForUserExistAndHaveAccount(user);
 		BigDecimal newAccount = calcAccount(user, param);
 		dealWithRemark(param);
-		dealWithPayType(param, newAccount);
+		dealWithPayType(param, newAccount,tradeOpt);
 		
 		
 		/** -支付类型 不能为null */
@@ -97,7 +95,7 @@ public class AccountService extends ShopBaseService {
 		}
 	}
 
-	private void dealWithPayType(AccountParam param, BigDecimal newAccount) throws MpException {
+	private void dealWithPayType(AccountParam param, BigDecimal newAccount,TradeOptParam tradeOpt) throws MpException {
 		/** -支付类型  */
 		if(isConsump(param)) {
 			/** -消费 */
@@ -106,10 +104,11 @@ public class AccountService extends ShopBaseService {
 				throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 			}
 			param.setIsPaid(UACCOUNT_CONSUMPTION.val());
-//			TRADE_FLOW_OUT.val():TRADE_FLOW_IN.val()
+			tradeOpt.setTradeFlow(TRADE_FLOW_OUT.val());
 		}else {
 			/** -充值 */
 			param.setIsPaid(UACCOUNT_RECHARGE.val());
+			tradeOpt.setTradeFlow(TRADE_FLOW_IN.val());
 		}
 	}
 
@@ -176,9 +175,6 @@ public class AccountService extends ShopBaseService {
 				.tradeStatus(tradeOpt.getTradeFlow() == 2 ? TRADE_FLOW_IN.val() : tradeOpt.getTradeFlow())
 				.build());
 	}
-
-	
-	
 	/**
 	 * 更新user表的account字段
 	 */
