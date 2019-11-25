@@ -242,7 +242,7 @@ public class AdminWechatApiController extends AdminBaseController {
 		}
 		AdminTokenAuthInfo user = adminAuth.user();
 		assert (user != null && user.isShopLogin());
-		if (sendSysId != user.sysId) {
+		if (!sendSysId.equals(user.sysId)) {
 			// 没有权限
 			return false;
 		}
