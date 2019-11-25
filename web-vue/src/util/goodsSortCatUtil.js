@@ -1,5 +1,6 @@
 /**
- * 将具有层级结构的列表数据转换为对应的树形结构，输入数据需要具有，主键:{@param itemId}，父节点id：parentId, 是否具有孩子节点,一级节点parentId=0：hasChild，（不需要有children字段）
+ * 将具有层级结构的列表数据转换为对应的树形结构，输入数据需要具有，主键:{@param itemId}，父节点id：parentId, 是否具有孩子节点,
+ * 如果是一级节点则parentId=0，无孩子节点则hasChild=0或hasChild = false，（不需要有children字段）,有孩子节点时hasChild=1或hasChild=true
  *  栗子：
  *    输入数据：[{sortId:1,parentId:0,hasChild:1},{sortId:2,parentId:1,hasChild:0},{sortId:3,parentId:0,hasChild:0}]
  *    返回数据：[{sortId:1,parentId:0,hasChild:1,children:[{sortId:2,parentId:1,hasChild:0}]},{sortId:3,parentId:0,hasChild:0}]
