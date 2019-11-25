@@ -98,7 +98,7 @@ public class AdminGoodsBrandController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/brand/name/list")
     public JsonResult listGoodsBrandName() {
-        List<GoodsBrandVo> goodsBrands = shop().goods.goodsBrand.listGoodsBrandName();
+        List<GoodsBrandSelectListVo> goodsBrands = shop().goods.goodsBrand.getGoodsBrandSelectList();
         return success(goodsBrands);
     }
 

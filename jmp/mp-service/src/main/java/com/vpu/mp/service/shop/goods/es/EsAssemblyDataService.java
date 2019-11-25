@@ -7,7 +7,7 @@ import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsGradePrd;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelAndCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -93,7 +93,7 @@ public class EsAssemblyDataService extends ShopBaseService {
         Map<Integer, Result<GoodsSpecProductRecord>> goodsProductMap = goodsSpecProductService.selectByGoodsIds(goodsIds);
         Map<Integer, List<SysCatevo>> goodsCatInfoMap = getCatInfoByGoodsIds(goodsCatMap);
         Map<Integer, Sort> sortMap = batchAssemblySortInfo(goodsSortIdSet);
-        Map<Integer, GoodsBrandVo> brandMap = batchAssemblyBrandAndSale(goodsBrandIdSet);
+        Map<Integer, GoodsBrandSelectListVo> brandMap = batchAssemblyBrandAndSale(goodsBrandIdSet);
         Map<Integer, Map<Byte, List<Integer>>> goodsLabelFilterMap = new HashMap<>(goodsIds.size());
         for (Integer goodsId : goodsIds) {
             if (!goodsMap.containsKey(goodsId)) {
@@ -194,7 +194,7 @@ public class EsAssemblyDataService extends ShopBaseService {
         );
     }
 
-    private Map<Integer, GoodsBrandVo> batchAssemblyBrandAndSale(Set<Integer> brandIds) {
+    private Map<Integer, GoodsBrandSelectListVo> batchAssemblyBrandAndSale(Set<Integer> brandIds) {
         return goodsBrandService.listGoodsBrandNameByIds(new ArrayList<>(brandIds));
     }
 

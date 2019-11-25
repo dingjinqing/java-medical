@@ -124,7 +124,7 @@ public class GoodsService extends ShopBaseService {
             List<Integer> catIds = new ArrayList<>(goodsNumberMap.keySet());
             goodsInitialVo.setSysCates(saas.sysCate.getList(catIds, goodsNumberMap));
         }
-        goodsInitialVo.setGoodsBrands(goodsBrand.listGoodsBrandName());
+        goodsInitialVo.setGoodsBrands(goodsBrand.getGoodsBrandSelectList());
         goodsInitialVo.setGoodsLabels(goodsLabel.listGoodsLabelName());
         return goodsInitialVo;
     }
@@ -153,10 +153,11 @@ public class GoodsService extends ShopBaseService {
      * 该方法不需要进行特殊处理，仅需查询出平台、商家下所有的分类，标签，品牌即可。
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo}
      */
+    @Deprecated
     public GoodsInitialVo getSortBrandLabelList() {
         GoodsInitialVo goodsInitialVo = new GoodsInitialVo();
 
-        goodsInitialVo.setGoodsBrands(goodsBrand.listGoodsBrandName());
+        goodsInitialVo.setGoodsBrands(goodsBrand.getGoodsBrandSelectList());
 
         goodsInitialVo.setGoodsLabels(goodsLabel.listGoodsLabelName());
 
@@ -165,17 +166,30 @@ public class GoodsService extends ShopBaseService {
         return goodsInitialVo;
     }
 
+
     public GoodsFilterItemInitVo getGoodsFilterItem(GoodsFilterItemInitParam param){
         return getGoodsFilterItemNotGoodsNum(param);
     }
 
+    /**
+     * 根据条件查询过滤商品所有需要的标签，品牌，商家分类信息项（对应的项内不统计对应的商品数量）
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
+     * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo}
+     */
     private GoodsFilterItemInitVo getGoodsFilterItemNotGoodsNum(GoodsFilterItemInitParam param){
         GoodsFilterItemInitVo vo =new GoodsFilterItemInitVo();
         // 需要商家分类信息
         if (Boolean.TRUE.equals(param.getNeedGoodsSort())) {
             vo.setGoodsSorts(goodsSort.getSortSelectTree());
         }
-
+        // 需要商品标签
+        if (Boolean.TRUE.equals(param.getNeedGoodsLabel())) {
+            vo.setGoodsLabels(goodsLabel.getGoodsLabelSelectList());
+        }
+        // 需要商品品牌
+        if (Boolean.TRUE.equals(param.getNeedGoodsBrand())) {
+            vo.setGoodsBrands(goodsBrand.getGoodsBrandSelectList());
+        }
         return vo;
     }
     /**

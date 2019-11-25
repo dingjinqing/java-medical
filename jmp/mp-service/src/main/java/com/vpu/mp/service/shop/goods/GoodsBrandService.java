@@ -173,10 +173,10 @@ public class GoodsBrandService extends ShopBaseService {
      * @param id
      * @return
      */
-    public GoodsBrandSelectVo select(Integer id) {
-        GoodsBrandSelectVo brand = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME,
+    public GoodsBrandVo select(Integer id) {
+        GoodsBrandVo brand = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME,
             GOODS_BRAND.LOGO, GOODS_BRAND.FIRST, GOODS_BRAND.CLASSIFY_ID, GOODS_BRAND.IS_RECOMMEND)
-            .from(GOODS_BRAND).where(GOODS_BRAND.ID.eq(id)).fetchAny().into(GoodsBrandSelectVo.class);
+            .from(GOODS_BRAND).where(GOODS_BRAND.ID.eq(id)).fetchAny().into(GoodsBrandVo.class);
 
         if (brand == null) {
             return null;
@@ -211,45 +211,47 @@ public class GoodsBrandService extends ShopBaseService {
 
     /**
      * 根据brandId列出所有品牌
-     *
-     * @return
+     * @return key 品牌id，value 品牌信息
      */
-    public Map<Integer,GoodsBrandVo>  listGoodsBrandNameByIds(List<Integer> ids) {
+    public Map<Integer, GoodsBrandSelectListVo>  listGoodsBrandNameByIds(List<Integer> ids) {
         return db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME)
             .from(GOODS_BRAND)
             .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(GOODS_BRAND.ID.in(ids))
-            .fetch().into(GoodsBrandVo.class)
-            .stream().collect(Collectors.toMap(GoodsBrandVo::getId,x->x));
+            .fetch().into(GoodsBrandSelectListVo.class)
+            .stream().collect(Collectors.toMap(GoodsBrandSelectListVo::getId, x->x));
     }
     /**
      * 列出所有品牌
-     *
-     * @return
+     * @return 品牌列表信息
      */
-    public List<GoodsBrandVo> listGoodsBrandName() {
-        List<GoodsBrandVo> goodsBrandNames = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME)
-            .from(GOODS_BRAND)
-            .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .fetch().into(GoodsBrandVo.class);
-
-        return goodsBrandNames;
+    public List<GoodsBrandSelectListVo> getGoodsBrandSelectList() {
+        List<GoodsBrandRecord> goodsBrandRecords = getGoodsBrandListDao();
+        return goodsBrandRecords.stream().map(x -> x.into(GoodsBrandSelectListVo.class)).collect(Collectors.toList());
     }
-
 
     /**
      * 品牌分类列表
-     *
-     * @return
+     * @return 品牌分类列表
      */
     public List<GoodsBrandClassifyVo> getBrandClassifyList() {
-        List<GoodsBrandClassifyVo> voList = db().select(BRAND_CLASSIFY.CLASSIFY_ID, BRAND_CLASSIFY.CLASSIFY_NAME)
-            .from(BRAND_CLASSIFY)
-            .where(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .fetch().into(GoodsBrandClassifyVo.class);
 
-        return voList;
+        List<GoodsBrandRecord> goodsBrandRecords = getGoodsBrandListDao();
+
+        return goodsBrandRecords.stream().map(x -> x.into(GoodsBrandClassifyVo.class)).collect(Collectors.toList());
     }
+
+    /**
+     * 获取所有商品品牌列表
+     * @return GoodsBrandRecord 列表
+     */
+    private List<GoodsBrandRecord> getGoodsBrandListDao(){
+       return db().select()
+            .from(GOODS_BRAND)
+            .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .fetch().into(GoodsBrandRecord.class);
+    }
+
 
     /**
      * 品牌分类分页查询

@@ -11,7 +11,7 @@ import lombok.Data;
 public class GoodsFilterItemInitParam {
     private Boolean needGoodsNum;
 
-    private Boolean needGoodsSort;
     private Boolean needGoodsLabel;
     private Boolean needGoodsBrand;
+    private Boolean needGoodsSort;
 }

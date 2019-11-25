@@ -1,30 +1,31 @@
 package com.vpu.mp.service.shop.goods;
 
 
-import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
-import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
+import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.jedis.data.LabelDataHelper;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.label.*;
+import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import org.jooq.Condition;
+import org.jooq.Record1;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
-import com.vpu.mp.service.foundation.jedis.data.LabelDataHelper;
-import com.vpu.mp.service.foundation.jedis.data.label.GoodsLabelInfo;
-import com.vpu.mp.service.pojo.shop.goods.label.*;
-import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
-import org.jooq.*;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
+import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
+import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 
 /**
  * @author 黄荣刚
@@ -328,22 +329,25 @@ public class GoodsLabelService extends ShopBaseService {
     }
 
     /**
-     *  根据type类型对标签数据进行分组
-     * @param type 标签对应的类型
+     * 获取所有标签列表
      * @return
      */
-    public Map<Integer,List<GoodsLabelListVo>> getGtaLabelMap(GoodsLabelCoupleTypeEnum type) {
-        return db().select()
-                .from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
-                .where(GOODS_LABEL_COUPLE.TYPE.eq(type.getCode()))
-                .fetch()
-                .intoGroups(GOODS_LABEL_COUPLE.GTA_ID,GoodsLabelListVo.class);
+    public List<GoodsLabelSelectListVo> getGoodsLabelSelectList(){
+        List<GoodsLabelRecord> labelRecords = getGoodsLabelsDao();
+        return labelRecords.stream().map(x->x.into(GoodsLabelSelectListVo.class)).collect(Collectors.toList());
+    }
+
+    private List<GoodsLabelRecord> getGoodsLabelsDao(){
+	    return db().select().from(GOODS_LABEL)
+                .where(GOODS_LABEL.DEL_FLAG.eq((int) DelFlag.NORMAL.getCode()))
+                .fetch().into(GoodsLabelRecord.class);
     }
 
     /**
      *  列出所有关联了商品的label集合
      * @return
      */
+    @Deprecated
     public List<GoodsLabel> listGoodsLabelName(){
 	    return db().select(GOODS_LABEL.ID,GOODS_LABEL.NAME)
                 .from(GOODS_LABEL)

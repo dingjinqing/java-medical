@@ -1,13 +1,20 @@
 package com.vpu.mp.service.pojo.shop.goods.brand;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
 
 /**
  * @author 李晓冰
- * @date 2019年07月15日
+ * @date 2019年11月13日
  */
-@Data
-public class GoodsBrandVo {
-    private Integer id;
-    private String brandName;
+@Setter
+@Getter
+public class GoodsBrandVo extends GoodsBrandBase{
+    private String eName;
+    private String fullUrlLogo;
+    private Integer classifyId;
+    private Byte isRecommend;
+    private List<Integer> goodsIds;
 }

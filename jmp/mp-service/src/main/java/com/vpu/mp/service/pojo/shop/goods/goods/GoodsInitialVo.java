@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
+import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class GoodsInitialVo {
 
-    List<GoodsBrandVo> goodsBrands;
+    List<GoodsBrandSelectListVo> goodsBrands;
 
     List<GoodsLabel> goodsLabels;
 

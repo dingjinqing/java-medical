@@ -1,44 +1,15 @@
 package com.vpu.mp.service.shop.goods.es;
 
-import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.es.EsManager;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.saas.category.SysCatevo;
-import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandVo;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsGradePrd;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelAndCouple;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
-import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
-import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
-import com.vpu.mp.service.shop.goods.*;
-import com.vpu.mp.service.shop.image.ImageService;
-import com.vpu.mp.service.shop.market.bargain.BargainService;
-import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
-import com.vpu.mp.service.shop.market.presale.PreSaleService;
-import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
-import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.index.IndexRequest;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 
 /**
  * EsGoods相关操作

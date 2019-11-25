@@ -60,10 +60,11 @@ public class AdminGoodsController extends AdminBaseController {
      * 获取全品牌，标签，商家分类数据
      * @return
      */
-    @GetMapping("/api/admin/goods/sortBrandLabel/list")
-    public JsonResult getSortBrandLabelList(){
-        GoodsInitialVo goodsInitialVo = shop().goods.getSortBrandLabelList();
-        return success(goodsInitialVo);
+    @PostMapping("/api/admin/goods/sortBrandLabel/list")
+    public JsonResult getSortBrandLabelList(@RequestBody GoodsFilterItemInitParam param){
+//        GoodsInitialVo goodsInitialVo = shop().goods.getSortBrandLabelList();
+        GoodsFilterItemInitVo vo = shop().goods.getGoodsFilterItem(param);
+        return success(vo);
     }
 
     /**
