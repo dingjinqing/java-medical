@@ -10,9 +10,9 @@
         >
           <el-option
             v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :key="item.appName"
+            :label="item.appName"
+            :value="item.appName"
           >
           </el-option>
         </el-select>
@@ -28,7 +28,7 @@
       <div class="top_one top_three">
         <div>小程序页面地址：</div>
         <el-input
-          v-model="pageName"
+          v-model="pagePath"
           placeholder="请输入要跳转的小程序页面路径"
           size="mini"
         ></el-input>
@@ -36,7 +36,7 @@
           type="primary"
           size="mini"
           @click="pageSave()"
-        >搜索</el-button>
+        >保存</el-button>
       </div>
 
     </div>
@@ -59,8 +59,8 @@
             @click="handleClick(index)"
           >
             <td>{{item.title}}</td>
-            <td class="link">{{item.pageNme}}</td>
-            <td>{{item.path}}</td>
+            <td class="link">{{item.pathName}}</td>
+            <td>{{item.linkPath}}</td>
             <td>{{item.status}}</td>
             <td
               class="tb_decorate_a"
@@ -83,76 +83,65 @@
   </div>
 </template>
 <script>
+import { xcxApi, linkSaveApi, linkListApi, delListApi } from '@/api/admin/selectLinksApi/selectLinksApi'
 import { mapActions } from 'vuex'
 export default {
   data () {
     return {
       selectValue: '',
-      options: [{
-        value: '测试页面1',
-        label: ''
-      }, {
-        value: '测试页面2',
-        label: ''
-      }, {
-        value: '测试页面3',
-        label: ''
-      }, {
-        value: '测试页面4',
-        label: ''
-      }, {
-        value: '测试页面5',
-        label: ''
-      }],
+      options: [],
       pageName: '',
       pagePath: '',
       tbodyFlag: true,
       noImg: this.$imageHost + '/image/admin/no_data.png',
-      trList: [
-        {
-          title: '111',
-          pageNme: '礼物',
-          path: 'pages/index/index',
-          status: '可用',
-          spanId: ''
-        },
-        {
-          title: '222',
-          pageNme: '优惠详情',
-          path: 'pages/index/index',
-          status: '不可用',
-          spanId: ''
-        },
-        {
-          title: '333',
-          pageNme: '首页',
-          path: 'pages/index/index',
-          status: '不可用',
-          spanId: ''
-        },
-        {
-          title: '444',
-          pageNme: '测试',
-          path: 'pages/index/index',
-          status: '可用',
-          spanId: ''
-        }
-
-      ],
+      trList: [],
       clickIindex: null
     }
   },
   mounted () {
     // 初始化数据
-    this.defaultData()
+    this.defaultData(true)
   },
   methods: {
     ...mapActions(['choisePagePath']),
-    defaultData () {
-      this.selectValue = this.options[0].value
+    defaultData (flag) {
+      linkListApi().then(res => {
+        console.log(res)
+        if (!res.content.length) {
+          this.tbodyFlag = false
+        } else {
+          this.tbodyFlag = true
+        }
+        if (res.error === 0) {
+          this.trList = res.content
+        }
+      })
+      if (!flag) return
+      xcxApi().then(res => {
+        if (res.error === 0) {
+          this.options = res.content
+          this.selectValue = this.options[0].appName
+        }
+        console.log(res)
+      })
     },
+    // 保存
     pageSave () {
-
+      let params = {
+        title: this.selectValue,
+        pathName: this.pageName,
+        linkPath: this.pagePath
+      }
+      linkSaveApi(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success({
+            message: '添加成功',
+            showClose: true
+          })
+          this.defaultData(true)
+        }
+      })
     },
     // 行选中高亮
     handleClick (index) {
@@ -162,7 +151,17 @@ export default {
     // 删除
     deleRr (index) {
       console.log(index)
-      this.trList.splice(index, 1)
+      let query = this.trList[index].id
+      delListApi(query).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success({
+            message: '删除成功',
+            showClose: true
+          })
+          this.defaultData(false)
+        }
+      })
     }
   }
 }

@@ -26,7 +26,7 @@
             <td>链接</td>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-loading="loading">
           <tr
             v-for="(item,index) in trList"
             :key="index"
@@ -35,13 +35,13 @@
           >
 
             <td class="isLeft">
-              <img :src="tdHiddenImg">
-              <span>范思哲</span>
+              <img :src="$imageHost+'/'+item.goodsImg">
+              <span>{{item.goodsName}}</span>
 
             </td>
-            <td>{{item.title}}</td>
+            <td>{{item.goodsSn}}</td>
             <td class="tb_decorate_a">
-              {{item.path}}
+              pages/item/item?goodsId={{item.goodsId}}
             </td>
           </tr>
         </tbody>
@@ -54,7 +54,22 @@
         <img :src="noImg">
         <span>暂无相关数据</span>
       </div>
+
     </div>
+    <div class="pagination">
+      <div class="paginationLeft">
+        当前页面{{currentPage}}/{{pageCount}},总记录{{totalRows}}条
+      </div>
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="20"
+        layout="prev, pager, next, jumper"
+        :total="totalRows"
+      >
+      </el-pagination>
+    </div>
+
   </div>
 </template>
 <script>
@@ -63,77 +78,15 @@ import { goodsListApi } from '@/api/admin/selectLinksApi/selectLinksApi'
 export default {
   data () {
     return {
-      trList: [
-        {
-          title: '111',
-          path: 'pages/index/index',
-          spanId: '',
-          children: [
-            {
-              title: '456',
-              path: 'pages/index/index'
-            },
-            {
-              title: 'lalala',
-              path: 'pages/index/index'
-            }
-          ]
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: ''
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          spanId: '',
-          children: [
-            {
-              title: '789',
-              path: 'pages/index/index'
-            },
-            {
-              title: '789123',
-              path: 'pages/index/index'
-            },
-            {
-              title: 'aaa',
-              path: 'pages/index/index'
-            }
-          ]
-        },
-        {
-          title: '子页',
-          path: 'pages/cart/cart',
-          spanId: '',
-          children: [
-            {
-              title: 'zzzzz',
-              path: 'pages/index/index'
-            }
-          ]
-        }
-
-      ],
+      trList: [],
       clickIindex: null,
       tbodyFlag: true,
-      leftImg: [
-        {
-          img: this.$imageHost + '/image/admin/shop_deco/icon_down.png'
-        },
-        {
-          img: this.$imageHost + '/image/admin/shop_deco/icon_up.png'
-        }
-      ],
-      imgIndex: null,
-      imgFlag: false,
+      noImg: this.$imageHost + '/image/admin/no_data.png',
       pageName: '',
-      topHiddenFlag: false,
-      tdHiddenImg: this.$imageHost + '/upload/7467397/image/20190507/crop_N7Fu7EaKRtaZri18.gif',
-      classificationName: '分类名称',
-      topName: '',
-      isCenterFlag: ''
+      currentPage: 1,
+      totalRows: null,
+      pageCount: null,
+      loading: true
     }
   },
   computed: {
@@ -153,74 +106,47 @@ export default {
       immediate: true
     }
   },
-  created () {
-    this.fetchData()
-  },
   methods: {
-    // 获取商品链接的数据
-    fetchData () {
-      goodsListApi({
-        'currentPage': 1,
-        'pageRows': 20,
-        'keyWords': ''
-      }).then(res => {
-        console.log(res)
-      }).catch(err => console.log(err))
-    },
     ...mapActions(['choisePagePath']),
     defaultData (newData) {
       console.log(newData)
-      if (newData.levelIndex === 2) {
-        switch (newData.index) {
-          case 0: this.classificationName = '分类名称'
-            this.topHiddenFlag = false
-            break
-          case 1: this.classificationName = '名称'
-            this.topHiddenFlag = false
-            break
-          case 2: this.topName = '品牌名称'
-            this.topHiddenFlag = true
-            this.isCenterFlag = false
-            break
-          case 3: this.topName = '标签名称'
-            this.topHiddenFlag = true
-            this.isCenterFlag = true
-            break
+      this.loading = true
+      goodsListApi({
+        'currentPage': this.currentPage,
+        'pageRows': 20,
+        'keyWords': this.pageName
+      }).then(res => {
+        if (res.error === 0) {
+          if (!res.content.dataList.length) {
+            this.tbodyFlag = false
+            this.loading = false
+          } else {
+            this.trList = res.content.dataList
+            this.tbodyFlag = true
+            this.totalRows = res.content.page.totalRows
+            this.pageCount = res.content.page.pageCount
+            console.log(this.trList)
+            this.loading = false
+          }
         }
-      }
-    },
-    // 向下点击
-    handleImg (index) {
-      console.log(this.trList[index].children)
-      if (this.trList[index].children) {
-        this.imgFlag = !this.imgFlag
-        this.imgIndex = index
-        console.log(this.imgIndex, this.imgFlag)
-        this.hiddenFlag = !this.hiddenFlag
-        if (this.imgFlag === false) {
-          console.log(this.trList[index].children.length)
-          this.trList.splice(index + 1, this.trList[index].children.length)
-          console.log(this.trList)
-          return
-        }
-        console.log(index)
-        let index_ = index
-        this.trList[index].children.map((item, index) => {
-          this.trList.splice(index_ + 1, 0, item)
-        })
-        console.log(this.trList)
-        this.imgIndex = index
-      }
+        console.log(res)
+      }).catch(err => console.log(err))
     },
     // 行选中高亮
     handleClick (index, item) {
       this.clickIindex = index
       console.log('选中', item)
-      this.choisePagePath(this.trList[index].path)
+      let path = `pages/item/item?goodsId=${this.trList[index].goodsId}`
+      this.choisePagePath(path)
     },
     // 搜索
     handleSearch () {
       console.log(this.pageName, this.value)
+      this.defaultData()
+    },
+    // 当前页改变
+    handleCurrentChange () {
+      this.defaultData()
     }
   }
 }
@@ -308,7 +234,7 @@ img {
   margin-left: 10px;
 }
 .isLeft {
-  text-align: left;
+  display: flex;
 }
 .isLeft img {
   width: 40px;
@@ -321,5 +247,14 @@ img {
 }
 .tdCenter {
   text-align: center;
+}
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.paginationLeft {
+  display: flex;
+  align-items: center;
 }
 </style>

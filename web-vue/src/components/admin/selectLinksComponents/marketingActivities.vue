@@ -8,6 +8,7 @@
         <thead>
           <tr>
             <td>名称</td>
+            <td v-if="couponFlag">类型</td>
             <td>有效期</td>
             <td>链接</td>
           </tr>
@@ -19,10 +20,11 @@
             :class="clickIindex===index?'clickClass':''"
             @click="handleClick(index)"
           >
-            <td>{{item.title}}</td>
-            <td class="link">{{item.date}}</td>
+            <td>{{item.actName}}</td>
+            <td v-if="couponFlag"></td>
+            <td class="link">{{item.startTime}}至{{item.endTime}}</td>
             <td class="tb_decorate_a">
-              {{item.path}}
+              pages/pinlotterylist/pinlotterylist?group_draw_id={{item.id}}
             </td>
           </tr>
         </tbody>
@@ -40,34 +42,16 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { packListRequest, assessListRequest, cardListRequest, voucherListRequest, packageListRequest, mrkingListRequest, lotteryListRequest, pinListRequest, integrationListRequest, promoteListRequest, priceListRequest } from '@/api/admin/selectLinksApi/selectLinksApi'
 export default {
   data () {
     return {
-      trList: [
-        {
-          title: '111',
-          path: 'pages/index/index',
-          date: ' 2019-07-12 11:07:34至2019-08-10 11:07:35',
-          spanId: ''
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: '',
-          date: ' 2019-07-18 11:04:06至2019-08-10 11:04:08'
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          date: ' 2019-07-18 11:04:06至2019-08-10 11:04:08',
-          spanId: ''
-        }
-
-      ],
+      trList: [],
       clickIindex: null,
       tbodyFlag: true,
       noImg: this.$imageHost + '/image/admin/no_data.png',
-      navText: ''
+      navText: '',
+      couponFlag: false // 优惠卷td flag
     }
   },
   computed: {
@@ -81,6 +65,11 @@ export default {
     selectlinksIndex_: {
       handler (newData, oldData) {
         console.log(newData)
+        if (newData.index === 7) {
+          this.couponFlag = true
+        } else {
+          this.couponFlag = false
+        }
         // 初始化数据
         this.defaultData(newData)
       },
@@ -93,6 +82,150 @@ export default {
       console.log(newData)
       if (newData.levelIndex === 1) {
         this.navText = newData.navText
+        switch (newData.index) {
+          case 0:
+            pinListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+            break
+          case 1:
+            integrationListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+            break
+          case 2:
+            promoteListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+            break
+          case 3:
+            priceListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+            break
+          case 4:
+            lotteryListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+            break
+          case 5:
+            mrkingListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+            break
+          case 6:
+            packageListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+            break
+          case 7:
+            voucherListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+            break
+          case 8:
+            cardListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+            break
+          case 9:
+            assessListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+            break
+          case 10:
+            packListRequest().then((res) => {
+              if (res.error === 0) {
+                if (!res.content.length) {
+                  this.tbodyFlag = false
+                } else {
+                  this.tbodyFlag = true
+                }
+                this.trList = res.content
+              } else if (res.error === -1) this.tbodyFlag = false
+              console.log(res)
+            })
+        }
       }
       console.log(newData)
     },

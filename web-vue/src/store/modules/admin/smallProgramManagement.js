@@ -11,6 +11,7 @@ const smallProgramManagement = {
       console.log(state.selectlinksIndex)
     },
     CHANGE_SELECTLEFT: (state, params) => {
+      console.log(params)
       state.selectlinksLevelOneBottom = params
     },
     CHIOSE_PAGEPATH: (state, params) => {

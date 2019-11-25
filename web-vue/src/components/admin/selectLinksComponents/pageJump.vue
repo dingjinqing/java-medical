@@ -2,37 +2,42 @@
   <div>
     <div class="pageJump_container">
       <div class="top_left">
-        <div>页面名称：</div>
-        <el-input
-          v-model="pageName"
-          placeholder="请输入链接名称"
-          size="mini"
-        ></el-input>
-        <div></div>
-      </div>
-      <div class="top_middle">
-        <div>页面分类：</div>
-        <el-select
-          v-model="value"
-          placeholder="请输入要跳转的网页链接"
-          size="mini"
+        <el-form
+          :model="ruleForm"
+          :rules="rules"
+          ref="ruleForm"
+          label-width="100px"
+          class="demo-ruleForm"
         >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+          <el-form-item
+            label="链接名称："
+            prop="pageName"
           >
-          </el-option>
-        </el-select>
+            <el-input
+              v-model="ruleForm.pageName"
+              size="small"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="页面分类："
+            prop="pageClassify"
+          >
+            <el-input
+              v-model="ruleForm.pageClassify"
+              size="small"
+            ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleToSaveNewPath()"
+            >保存</el-button>
+          </el-form-item>
+        </el-form>
+
       </div>
-      <div class="top_right">
-        <el-button
-          type="primary"
-          size="mini"
-          @click="handleSearch()"
-        >搜索</el-button>
-      </div>
+
     </div>
     <div class="alerm">注意：由于微信限制，目前仅支持小程序关联的公众号文章链接</div>
     <div class="content">
@@ -51,8 +56,8 @@
             :class="clickIindex===index?'clickClass':''"
             @click="handleClick(index)"
           >
-            <td>{{item.title}}</td>
-            <td class="link">{{item.path}}</td>
+            <td>{{item.pathName}}</td>
+            <td class="link">{{item.linkPath}}</td>
             <td
               class="tb_decorate_a"
               @click="deleRr(index)"
@@ -74,6 +79,7 @@
   </div>
 </template>
 <script>
+import { webListApi, webSaveApi } from '@/api/admin/selectLinksApi/selectLinksApi'
 import { mapActions } from 'vuex'
 export default {
   data () {
@@ -82,114 +88,70 @@ export default {
       pagePath: '',
       tbodyFlag: true,
       noImg: this.$imageHost + '/image/admin/no_data.png',
-      trList: [
-        {
-          title: '111',
-          path: 'pages/index/index',
-          classification: '分类1',
-          spanId: ''
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: '',
-          classification: '分类2'
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          classification: '分类3',
-          spanId: ''
-        },
-        {
-          title: '个人中心页',
-          path: 'pages/usercenter/usercenter',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '订单列表页',
-          path: 'pages/orderlist/orderlist',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '全部商品',
-          path: 'pages/searchs/search',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '商家分类',
-          path: 'pages/sort/sort',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '分销返利中心',
-          path: 'pages/distribution/distribution',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '授权手机号',
-          path: 'pages/auth/auth',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '积分商品列表',
-          path: 'pages/searchs/search?is_from=integral',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '会员卡领取页（卡号+密码）',
-          path: 'pages/getcardpage/getcardpage?type=1',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '会员卡领取页（领取码）',
-          path: 'pages/getcardpage/getcardpage?type=2',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '客服',
-          path: 'pages/customer/customer',
-          classification: '',
-          spanId: ''
-        }
-      ],
-      options: [{
-        value: '测试页面1',
-        label: ''
-      }, {
-        value: '测试页面2',
-        label: ''
-      }, {
-        value: '测试页面3',
-        label: ''
-      }, {
-        value: '测试页面4',
-        label: ''
-      }, {
-        value: '测试页面5',
-        label: ''
-      }],
-      clickIindex: null
+      trList: [],
+      clickIindex: null,
+      pageClassify: '',
+      ruleForm: {
+        pageName: '',
+        pageClassify: ''
+      },
+      rules: {
+        pageName: [{ required: true, message: '请输入链接名称', trigger: 'blur' }],
+        pageClassify: [{ required: true, message: '请输入要跳转的网页链接', trigger: 'blur' }]
+      }
     }
+  },
+  mounted () {
+    // 初始化数据
+    this.handleToInitData()
   },
   methods: {
     ...mapActions(['choisePagePath']),
+    // 初始化数据
+    handleToInitData () {
+      webListApi().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          if (!res.content.length) {
+            this.tbodyFlag = false
+          } else {
+            this.tbodyFlag = true
+          }
+          this.trList = res.content
+        }
+      })
+    },
     // 行选中高亮
     handleClick (index) {
       this.clickIindex = index
       this.choisePagePath(this.trList[index].path)
     },
-    // 搜索
-    handleSearch () {
+    // 保存
+    handleToSaveNewPath () {
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          let params = {
+            pathName: this.ruleForm.pageName,
+            linkPath: this.ruleForm.pageClassify
+          }
+          webSaveApi(params).then(res => {
+            console.log(res)
+            if (res.error === 170010) {
+              this.$message.error({
+                message: res.message
+              })
+            } else if (res.error) {
+              this.$message.success({
+                message: res.message
+              })
+              this.handleToInitData()
+            }
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
       console.log(1)
     },
     // 删除
@@ -286,6 +248,10 @@ td {
   margin-top: 10px;
   font-size: 14px;
   color: red;
+}
+.demo-ruleForm {
+  display: flex;
+  justify-content: space-around;
 }
 </style>
 <style>

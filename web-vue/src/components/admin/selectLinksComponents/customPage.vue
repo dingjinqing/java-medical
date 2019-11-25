@@ -20,9 +20,9 @@
         >
           <el-option
             v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
           >
           </el-option>
         </el-select>
@@ -44,17 +44,21 @@
             <td>链接</td>
           </tr>
         </thead>
-        <tbody v-if="tbodyFlag">
+        <tbody
+          v-if="tbodyFlag"
+          v-loading="loading"
+        >
           <tr
             v-for="(item,index) in trList"
             :key="index"
             :class="clickIindex===index?'clickClass':''"
             @click="handleClick(index)"
           >
-            <td>{{item.title}}</td>
-            <td class="link">{{item.path}}</td>
+            <td>{{item.pageName}}</td>
+            <td class="link">{{item.name}}</td>
             <td class="tb_decorate_a">
-              {{item.path}}
+              <!-- {{item.path}} -->
+              pages/index/index?page={{item.pageId}}
             </td>
           </tr>
         </tbody>
@@ -68,124 +72,82 @@
         <span>暂无相关数据</span>
       </div>
     </div>
+    <div class="pagination">
+      <div class="paginationLeft">
+        当前页面{{currentPage}}/{{pageCount}},总记录{{totalRows}}条
+      </div>
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="20"
+        layout="prev, pager, next, jumper"
+        :total="totalRows"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
 import { mapActions } from 'vuex'
 import { pageCustomApi } from '@/api/admin/selectLinksApi/selectLinksApi'
+import { getPageCate } from '@/api/admin/decoration/pageSet.js'
 export default {
   data () {
     return {
       pageName: '',
-      options: [{
-        value: '测试页面1',
-        label: ''
-      }, {
-        value: '测试页面2',
-        label: ''
-      }, {
-        value: '测试页面3',
-        label: ''
-      }, {
-        value: '测试页面4',
-        label: ''
-      }, {
-        value: '测试页面5',
-        label: ''
-      }],
+      options: [],
       value: '',
-      trList: [
-        {
-          title: '111',
-          path: 'pages/index/index',
-          classification: '分类1',
-          spanId: ''
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: '',
-          classification: '分类2'
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          classification: '分类3',
-          spanId: ''
-        },
-        {
-          title: '个人中心页',
-          path: 'pages/usercenter/usercenter',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '订单列表页',
-          path: 'pages/orderlist/orderlist',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '全部商品',
-          path: 'pages/searchs/search',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '商家分类',
-          path: 'pages/sort/sort',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '分销返利中心',
-          path: 'pages/distribution/distribution',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '授权手机号',
-          path: 'pages/auth/auth',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '积分商品列表',
-          path: 'pages/searchs/search?is_from=integral',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '会员卡领取页（卡号+密码）',
-          path: 'pages/getcardpage/getcardpage?type=1',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '会员卡领取页（领取码）',
-          path: 'pages/getcardpage/getcardpage?type=2',
-          classification: '',
-          spanId: ''
-        },
-        {
-          title: '客服',
-          path: 'pages/customer/customer',
-          classification: '',
-          spanId: ''
-        }
-      ],
+      trList: [],
       clickIindex: null,
       tbodyFlag: true,
-      noImg: this.$imageHost + '/image/admin/no_data.png'
+      noImg: this.$imageHost + '/image/admin/no_data.png',
+      currentPage: 1,
+      totalRows: null,
+      pageCount: null,
+      loading: true
     }
   },
-  created () {
-    this.fetchData()
+  mounted () {
+    // 初始化数据
+    this.fetchData(true)
   },
   methods: {
     // 获取数据
-    fetchData () {
-      pageCustomApi({}).then(res => { console.log(res) }).catch(err => console.log(err))
+    fetchData (flag) {
+      this.loading = true
+
+      let params = {
+        currentPage: this.currentPage,
+        pageName: this.pageName
+      }
+      pageCustomApi(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          if (!res.content.dataList.length) {
+            this.tbodyFlag = false
+            this.loading = false
+          } else {
+            this.trList = res.content.dataList
+            this.tbodyFlag = true
+            this.totalRows = res.content.page.totalRows
+            this.pageCount = res.content.page.pageCount
+            console.log(this.trList)
+            this.loading = false
+          }
+        }
+      }).catch(err => console.log(err))
+      if (!flag) return
+      getPageCate().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let obj = {
+            id: '',
+            name: '请选择分类'
+          }
+          res.content.unshift(obj)
+          this.options = res.content
+        }
+      })
     },
     ...mapActions(['choisePagePath']),
     // 行选中高亮
@@ -195,7 +157,11 @@ export default {
     },
     // 搜索
     handleSearch () {
-      console.log(this.pageName, this.value)
+      this.fetchData(false)
+    },
+    // 当前页改变
+    handleCurrentChange () {
+      this.fetchData(false)
     }
   }
 }
@@ -268,6 +234,15 @@ td {
   padding: 8px 10px;
   vertical-align: middle !important;
   text-align: center;
+}
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.paginationLeft {
+  display: flex;
+  align-items: center;
 }
 </style>
 <style>

@@ -19,10 +19,10 @@
             :class="clickIindex===index?'clickClass':''"
             @click="handleClick(index)"
           >
-            <td>{{item.title}}</td>
-            <td class="link">{{item.status}}</td>
+            <td>{{item.storeName}}</td>
+            <td class="link">{{item.businessState===1?'营业中':'歇业'}}</td>
             <td class="tb_decorate_a">
-              {{item.path}}
+              pages/storeinfo/storeinfo?id={{item.storeId}}
             </td>
           </tr>
         </tbody>
@@ -55,10 +55,10 @@
             :class="clickIindex===index?'clickClass':''"
             @click="handleClick(index)"
           >
-            <td>{{item.title}}</td>
+            <td>{{item.pageName}}</td>
 
             <td class="tb_decorate_a">
-              {{item.path}}
+              pages/form/form?page_id={{item.pageId}}
             </td>
           </tr>
         </tbody>
@@ -75,34 +75,12 @@
   </div>
 </template>
 <script>
+import { formListApi, storeListApi } from '@/api/admin/selectLinksApi/selectLinksApi'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      trList: [
-        {
-          title: '111',
-          path: 'pages/index/index',
-          classification: '分类1',
-          status: '营业中',
-          spanId: ''
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: '',
-          classification: '分类2',
-          status: '歇业中'
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          classification: '分类3',
-          spanId: '',
-          status: '营业中'
-        }
-
-      ],
+      trList: [],
       clickIindex: null,
       tbodyFlag: true,
       noImg: this.$imageHost + '/image/admin/no_data.png',
@@ -117,10 +95,14 @@ export default {
   },
   watch: {
     selectlinksLevelOneBottom_ (newData, oldData) {
+      console.log(newData)
       // 初始化
       this.defaultData(newData)
     }
-
+  },
+  mounted () {
+    // 初始化
+    this.defaultData(this.selectlinksLevelOneBottom)
   },
   methods: {
     ...mapActions(['choisePagePath']),
@@ -128,8 +110,30 @@ export default {
       console.log(newData)
       if (newData === 6) {
         this.page_one = false
+        formListApi().then(res => {
+          if (res.error === 0) {
+            if (!res.content.length) {
+              this.tbodyFlag = false
+            } else {
+              this.tbodyFlag = true
+            }
+            this.trList = res.content
+          }
+          console.log(res)
+        })
       } else {
         this.page_one = true
+        storeListApi().then(res => {
+          if (res.error === 0) {
+            if (!res.content.dataList.length) {
+              this.tbodyFlag = false
+            } else {
+              this.tbodyFlag = true
+            }
+            this.trList = res.content.dataList
+          }
+          console.log(res)
+        })
       }
       console.log(this.page_one)
     },

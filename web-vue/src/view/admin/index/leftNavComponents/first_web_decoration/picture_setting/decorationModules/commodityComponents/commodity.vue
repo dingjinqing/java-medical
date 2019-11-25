@@ -76,7 +76,7 @@
                       <div
                         class="labelStyle2"
                         v-if="(item.label?item.label.listPattern:-1)===2&&data.hide_label==='1'"
-                        style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
+                        :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
                       >
                         <span style="display: inline;">{{item.label.name}}</span>
                       </div>
@@ -89,7 +89,7 @@
                       <div
                         class="labelStyle3"
                         v-if="(item.label?item.label.listPattern:-1)===4&&data.hide_label==='1'"
-                        style="background: linear-gradient(to right, rgba(177, 78, 105, 0.8), rgb(177, 78, 105));"
+                        :style="`background:linear-gradient(to right,${bgColor},${bgColor})`"
                       >
                         <span style="display: inline-block;">{{item.label.name}}</span>
                       </div>
@@ -156,19 +156,28 @@
                         v-if="data.hide_name==='1'"
                       >{{item.goodsName}}</div>
                       <div
-                        :style="data.col_type!=='4'?'margin-top:10px':''"
-                        v-for="(itemC,indexC) in item.goodsActivities"
-                        :key="indexC"
-                        class="activitySpan"
+                        class="activityContainer"
+                        :style="data.col_type==='4'?'display:flex':''"
                       >
-                        <span :style="(data.col_type==='2'||data.col_type==='0')?'max-width:100%':data.col_type==='4'?'max-width:145px':data.col_type==='1'?'max-width:163px':data.col_type==='3'?'max-width:128px':''">{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):(itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===20?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===21?$t('commodity.membershipPrice'):itemC.activityType===22?$t('commodity.membershipExclusive'):''}}</span>
+                        <div
+                          :style="data.col_type!=='4'?'margin-top:10px;':(data.col_type==='4'&&indexC===1)?'margin-top:0;margin-left:5px':''"
+                          v-for="(itemC,indexC) in item.goodsActivities"
+                          :key="indexC"
+                          class="activitySpan"
+                        >
+                          <span :style="((data.col_type==='2'||data.col_type==='0')?'max-width:100%':data.col_type==='4'?'max-width:145px':data.col_type==='1'?'max-width:163px':data.col_type==='3'?'max-width:128px':'')+`;color:${bgColor};border-color:${bgColor}`">{{itemC.activityType===1?$t('commodity.assemble'):itemC.activityType===3?$t('commodity.bargain'):itemC.activityType===5?$t('commodity.seckill'):itemC.activityType===6?$t('commodity.limitedPriceReduction'):itemC.activityType===10?$t('commodity.advanceSale'):itemC.activityType===18?$t('commodity.firstSpecialOffer'):(itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.reduce')}￥${itemC.denomination}`:(itemC.activityType===19)&&(itemC.actCode==='voucher')&&(itemC.useConsumeRestrict===0)?`${$t('commodity.volumeReduction')}￥${itemC.denomination}`:(itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===1)?`${$t('commodity.full')}${itemC.leastConsume}${$t('commodity.hit')}${itemC.denomination}${$t('commodity.fracture')}`:(itemC.activityType===19)&&(itemC.actCode==='discount')(itemC.useConsumeRestrict===0)?`${$t('commodity.discountRoll')}${itemC.denomination}${$t('commodity.fracture')}`:itemC.activityType===20?`${$t('commodity.full')}${$t('commodity.reduce')}`:itemC.activityType===21?$t('commodity.membershipPrice'):itemC.activityType===22?$t('commodity.membershipExclusive'):''}}</span>
+                        </div>
                       </div>
+
                     </div>
                     <div
                       class="bottomFooter"
                       :style="data.col_type!=='4' ?'display:flex;flex-direction: row;height:auto':''"
                     >
-                      <span v-if="data.hide_price === '1'">￥{{Number(item.realPrice).toFixed(2)}}</span>
+                      <span
+                        :style="`color:${bgColor}`"
+                        v-if="data.hide_price === '1'"
+                      >￥{{Number(item.realPrice).toFixed(2)}}</span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
                         v-if="data.col_type!=='2'&&data.other_message==='1'"
@@ -176,24 +185,24 @@
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"
-                        style="color: rgb(177, 78, 105);"
+                        :style="`color:${bgColor}`"
                         v-if="data.cart_btn === '1'&&data.cart_btn_choose==='0'"
                       ></i>
                       <i
                         class="iconfont icongouwuche1 icon_font_size new_class"
-                        style="color: rgb(177, 78, 105);"
+                        :style="`color:${bgColor}`"
                         v-if="data.cart_btn === '1'&&data.cart_btn_choose==='1'"
                       ></i>
                       <i
                         class="right_buy new_back"
-                        style="background-color: rgb(177, 78, 105);"
+                        :style="data.col_type==='2'?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor}`"
                         v-if="data.cart_btn === '1'&&data.cart_btn_choose==='2'"
                       >
                         {{$t('commodity.grabAtOnce')}}
                       </i>
                       <i
                         class="cart_buy"
-                        style="color: rgb(177, 78, 105); border-color: rgb(177, 78, 105);"
+                        :style="data.col_type==='2'?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor}`"
                         v-if="data.cart_btn === '1'&&data.cart_btn_choose==='3'"
                       >{{$t('commodity.purchase')}}</i>
                     </div>
@@ -586,29 +595,30 @@ export default {
             div {
               white-space: nowrap;
             }
-
-            div:nth-of-type(2) {
-              font-size: 12px;
-              margin-top: 5px;
+            .activityContainer {
               margin-top: 50px;
+              div:nth-of-type(1) {
+                font-size: 12px;
 
-              span {
-                padding: 1px 4px;
-                border-radius: 2px;
-                border: 1px solid rgb(64, 128, 128);
-                color: rgb(64, 128, 128);
+                span {
+                  padding: 1px 4px;
+                  border-radius: 2px;
+                  border: 1px solid rgb(64, 128, 128);
+                  color: rgb(64, 128, 128);
+                }
+              }
+              div:nth-of-type(2) {
+                font-size: 12px;
+                margin-top: 5px;
+                span {
+                  padding: 1px 4px;
+                  border-radius: 2px;
+                  border: 1px solid rgb(64, 128, 128);
+                  color: rgb(64, 128, 128);
+                }
               }
             }
-            div:nth-of-type(3) {
-              font-size: 12px;
-              margin-top: 5px !important;
-              span {
-                padding: 1px 4px;
-                border-radius: 2px;
-                border: 1px solid rgb(64, 128, 128);
-                color: rgb(64, 128, 128);
-              }
-            }
+
             span {
               display: inline-block;
               height: auto;
