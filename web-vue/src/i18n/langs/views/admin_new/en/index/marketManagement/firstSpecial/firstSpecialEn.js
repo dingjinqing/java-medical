@@ -18,6 +18,8 @@ export const en = {
   userAmount: 'number of payment users',
   paymentTotalAmount: 'total amount of payment',
   orderDetail: 'order detail',
-  save: 'save settings'
+  save: 'save settings',
+  permanent: 'permanent',
+  inProgress: 'ongoing'
 
 }

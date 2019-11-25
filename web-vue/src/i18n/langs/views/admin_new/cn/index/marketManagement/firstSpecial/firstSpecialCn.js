@@ -18,6 +18,8 @@ export const cn = {
   userAmount: '付款用户数',
   paymentTotalAmount: '付款总金额',
   orderDetail: '订单明细',
-  save: '保存设置'
+  save: '保存设置',
+  permanent: '永久有效',
+  inProgress: '进行中'
 
 }
