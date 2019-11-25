@@ -241,8 +241,13 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
-        item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
+        if (item.isForever === 1) {
+          item.vaildDate = this.$t('firstSpecial.permanent')
+          item.statusName = this.$t('firstSpecial.inProgress')
+        } else {
+          item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
+          item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
+        }
       })
       this.tableData = data
     },
