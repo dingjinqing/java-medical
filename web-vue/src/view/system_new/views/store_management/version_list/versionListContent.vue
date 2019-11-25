@@ -24,7 +24,6 @@
       :data="formTable"
       border
       style="width: 100%"
-      height="400"
     >
       <el-table-column
         prop="id"
