@@ -41,8 +41,8 @@ public class CoopenService extends ShopBaseService {
      * 列表查询
      */
     public PageResult<CoopenListVo> getPageList(CoopenListParam param) {
-        SelectConditionStep<? extends Record> select =
-                db().select(TABLE.ID,TABLE.NAME,TABLE.STATUS,TABLE.START_DATE,TABLE.END_DATE,TABLE.IS_FOREVER, TABLE.ACTIVITY_ACTION)
+        SelectConditionStep<? extends Record> select = db().select(TABLE.ID,TABLE.NAME,TABLE.ACTION,TABLE.FIRST,TABLE.STATUS,
+                TABLE.START_DATE,TABLE.END_DATE,TABLE.IS_FOREVER, TABLE.ACTIVITY_ACTION)
                         .from(TABLE).where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildOptions(select, param);
         select.orderBy(TABLE.FIRST.desc(),TABLE.ID.desc());
@@ -127,7 +127,6 @@ public class CoopenService extends ShopBaseService {
                 Assert.notNull(param.getCustomizeImgPath(), "Missing parameter customizePagePath");
                 break;
             default:
-                throw new IllegalArgumentException("Unexpected type: " + type);
         }
     }
 

@@ -23,6 +23,7 @@ public class CoopenListVo {
     private Byte action;
     /** 活动类型 **/
     private Byte activityAction;
+    private Integer first;
     /**
      * 是否永久有效
      */

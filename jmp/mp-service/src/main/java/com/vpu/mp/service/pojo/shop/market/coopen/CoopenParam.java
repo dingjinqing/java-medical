@@ -51,12 +51,14 @@ public class CoopenParam implements Default {
     /**
      * 是否永久有效
      */
+    @NotNull
     private Integer    isForever;
     private Timestamp startDate;
     private Timestamp  endDate;
     /**
      * 优先级
      */
+    @NotNull
     private Integer    first;
     /**
      * 活动类型
@@ -90,6 +92,7 @@ public class CoopenParam implements Default {
     /**
      * 礼物数量
      */
+    @NotNull
     private Integer    awardNum;
 
 }

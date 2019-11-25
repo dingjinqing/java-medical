@@ -13,5 +13,16 @@ public class CoopenConstant {
     public static final byte DRAW = 2;
     /** 自定义活动 **/
     public static final byte CUSTOMIZE = 3;
-
+    /**
+     * 积分
+     */
+    public static final byte SCORE = 3;
+    /**
+     * 余额
+     */
+    public static final byte ACCOUNT = 3;
+    /**
+     * 分裂优惠卷
+     */
+    public static final byte SPLIT_COUPON = 3;
 }
