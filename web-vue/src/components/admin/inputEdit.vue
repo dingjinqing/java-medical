@@ -22,6 +22,8 @@
       v-show="showInput"
       v-model="value"
       size="small"
+      @blur="closeBlur"
+      style="width: 80px"
     ></el-input>
     <!-- <el-button
       @click="switchEditState"
@@ -66,15 +68,21 @@ export default {
       if (!this.showInput) {
         this.$emit('update', this.value)
       }
+    },
+    closeBlur () {
+      this.showInput = false
+      if (!this.showInput) {
+        this.$emit('update', this.value)
+      }
     }
   },
   computed: {
-    btnContent () {
-      if (this.showInput) {
-        return '确定'
-      }
-      return '编辑'
-    }
+    // btnContent () {
+    //   if (this.showInput) {
+    //     return '确定'
+    //   }
+    //   return '编辑'
+    // }
   },
   watch: {
     showInput (v) {

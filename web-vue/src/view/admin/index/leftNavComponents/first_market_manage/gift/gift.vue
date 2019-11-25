@@ -20,18 +20,21 @@
           >
             <el-col
               :span="10"
-              style="height:30px;line-height: 37px;font-size: 14px;"
+              style="height:30px;line-height: 30px;font-size: 14px;"
             >{{ $t('gift.activityName') + '：' }}</el-col>
             <el-input
               :span="3"
               clearable
               v-model="activityName"
+              style="margin-left:-20px;"
+              size="small"
               :placeholder="$t('gift.searchTip')"
             ></el-input>
             <el-col :span="3">
               <el-button
                 type="primary"
                 @click="initDataList"
+                size="small"
               >{{ $t('gift.search') }}</el-button>
             </el-col>
             <el-col
@@ -40,7 +43,7 @@
             >
               <el-button
                 type="primary"
-                size="medium"
+                size="small"
                 @click="gotoAddGift"
               >{{ $t('gift.addGift') }}</el-button>
             </el-col>
@@ -71,10 +74,20 @@
           :label="$t('gift.validDate')"
           align="center"
         >
+          <template slot-scope="scope">
+            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+          </template>
         </el-table-column>
         <el-table-column
           prop="level"
           :label="$t('gift.level')"
+          align="center"
+        >
+
+        </el-table-column>
+        <el-table-column
+          prop="giftTimes"
+          :label="$t('gift.giftTimes')"
           align="center"
         >
           <template slot-scope="scope">
@@ -83,12 +96,6 @@
               @update="updateGiftLevel(scope.row.id, scope.row.level)"
             />
           </template>
-        </el-table-column>
-        <el-table-column
-          prop="giftTimes"
-          :label="$t('gift.giftTimes')"
-          align="center"
-        >
         </el-table-column>
         <el-table-column
           prop="statusText"
@@ -214,7 +221,7 @@ export default {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
           this.tableData.map((item, index) => {
-            item.validity = `${item.startTime}` + `至` + `${item.endTime}`
+            // item.validity = `${item.startTime}` + `至` + `${item.endTime}`
             item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
           })
         }
@@ -306,7 +313,7 @@ export default {
   .main {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
+    padding: 15px;
     .wrapper {
       .el-button {
         margin-left: 5px;
@@ -326,7 +333,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 15px;
 }
 .balanceDialo .el-dialog__body {
   padding-bottom: 0 !important;

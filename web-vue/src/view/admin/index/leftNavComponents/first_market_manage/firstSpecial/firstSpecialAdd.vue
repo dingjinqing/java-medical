@@ -115,7 +115,10 @@
             :label="$t('firstSpecialAdd.priority')+'：'"
             prop="first"
           >
-            <el-input-number v-model="form.first"></el-input-number>
+            <el-input-number
+              v-model="form.first"
+              :min='0'
+            ></el-input-number>
             <p class="form_tip">{{$t('firstSpecialAdd.priorityTip')}}</p>
           </el-form-item>
           <el-form-item
@@ -139,6 +142,7 @@
                 <el-input-number
                   v-model="form.limitAmount"
                   :disabled="!limit"
+                  :min='1'
                   style="margin-left: 10px;"
                 ></el-input-number>
               </el-radio>
@@ -150,6 +154,7 @@
               :false-label="0"
             >{{$t('firstSpecialAdd.limitedTip')}}</el-checkbox>
           </el-form-item>
+          <!-- 活动商品 -->
           <el-form-item
             :label="$t('firstSpecialAdd.activeGoods')+'：'"
             required
@@ -175,7 +180,7 @@
                 >
                   <el-radio label="0">
                     <span>
-                      {{$t('firstSpecialAdd.batchDiscount')}}<el-input
+                      {{$t('firstSpecialAdd.batchDiscount')}} <el-input
                         class="num_input"
                         v-model="form.batchDiscount"
                         min="0"
@@ -186,26 +191,26 @@
                   </el-radio>
                   <el-radio label="1">
                     <span>
-                      {{$t('firstSpecialAdd.batchPrice')}}<el-input
+                      {{$t('firstSpecialAdd.batchPrice')}} <el-input
                         class="num_input"
                         v-model="form.batchReduce"
                         @focus="inputFocus(1)"
-                      ></el-input>{{$t('firstSpecialAdd.yuan')}}
+                      ></el-input> {{$t('firstSpecialAdd.yuan')}}
                     </span>
                   </el-radio>
                   <el-radio label="2">
                     <span>
-                      {{$t('firstSpecialAdd.batch')}}<el-input
+                      {{$t('firstSpecialAdd.batch')}} <el-input
                         class="num_input"
                         v-model="form.batchFinalPrice"
                         @focus="inputFocus(2)"
-                      ></el-input>{{$t('firstSpecialAdd.yuan')}}
+                      ></el-input> {{$t('firstSpecialAdd.yuan')}}
                     </span>
                   </el-radio>
                 </el-radio-group>
                 <el-button
                   type="primary"
-                  style="margin-left:20px;"
+                  style="margin-left:60px;"
                   @click="volumeDiscountHandle"
                 >{{$t('firstSpecialAdd.determine')}}</el-button>
                 <el-button @click="resetTableData">{{$t('firstSpecialAdd.cancel')}}</el-button>
@@ -266,7 +271,7 @@
               <el-table-column :label="$t('firstSpecialAdd.discount')">
                 <template slot-scope="{row}">
                   <el-input
-                    style="width:50px;"
+                    style="width:80px;"
                     size="small"
                     v-model="row.batchDiscount"
                     @change="tableBatchDiscountChange(row)"
@@ -276,7 +281,7 @@
               <el-table-column :label="$t('firstSpecialAdd.priceReduction')">
                 <template slot-scope="{row}">
                   <el-input
-                    style="width:80px;"
+                    style="width:60px;"
                     size="small"
                     v-model="row.batchReduce"
                     @change="tableBatchReduceChange(row)"
@@ -341,7 +346,7 @@
                   <el-radio
                     :label="1"
                     class="active_radio"
-                  >
+                  >{{$t('firstSpecialAdd.defaultStyle')}}
                     <el-tooltip
                       style="margin-left:40px;"
                       placement="right"
@@ -356,7 +361,7 @@
                           :src="$imageHost +'/image/admin/share/first_share1.jpg'"
                         ></el-image>
                       </div>
-                      <span>{{$t('firstSpecialAdd.defaultStyle')}}</span>
+                      <span>{{$t('firstSpecialAdd.viewExample')}}</span>
                     </el-tooltip>
                     <el-tooltip
                       style="margin-left:40px;"
@@ -414,17 +419,19 @@
                       >{{$t('firstSpecialAdd.customPicture')}}</el-radio>
                     </el-radio-group>
                     <div class="upload_wrap">
-                      <div
-                        class="upload_img"
-                        @click="uploadImgHandle"
-                      >
-                        <el-image
-                          style="width: 100%; height:100%;"
-                          fit="contain"
-                          :src="form.shareConfig.share_img"
-                        ></el-image>
+                      <div style="display: flex">
+                        <div
+                          class="upload_img"
+                          @click="uploadImgHandle"
+                        >
+                          <el-image
+                            style="width: 100%; height:100%;"
+                            fit="contain"
+                            :src="form.shareConfig.share_img"
+                          ></el-image>
+                        </div>
+                        <p class="sizeTips">{{$t('firstSpecialAdd.size')}}</p>
                       </div>
-                      <p class="tips">{{$t('firstSpecialAdd.size')}}</p>
                     </div>
                   </div>
                 </div>
@@ -627,7 +634,7 @@ export default {
       })
     },
     deleteGood (goodsId) {
-      this.$confirm(this.$t('firstSpecialAdd.validFirst'), this.$t('firstSpecialAdd.remind'), {
+      this.$confirm(this.$t('firstSpecialAdd.tipDelete'), this.$t('firstSpecialAdd.remind'), {
         confirmButtonText: this.$t('firstSpecialAdd.determine'),
         cancelButtonText: this.$t('firstSpecialAdd.cancel'),
         type: 'warning'
@@ -993,7 +1000,7 @@ export default {
     float: right;
   }
   .num_input {
-    width: 50px;
+    width: 70px;
   }
   .iconSpan {
     font-size: 20px;
@@ -1070,6 +1077,10 @@ export default {
       }
       .upload_wrap {
         margin-left: 78px;
+        .sizeTips {
+          margin-left: 30px;
+          line-height: 70px;
+        }
       }
     }
     .active_tool {

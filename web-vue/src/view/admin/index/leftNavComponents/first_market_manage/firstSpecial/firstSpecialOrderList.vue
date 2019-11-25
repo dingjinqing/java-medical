@@ -15,6 +15,7 @@
           border
           :header-cell-style="{
             'background-color':'#f5f5f5',
+            'color': 'none',
             'text-align':'center',
             'border':'none'
           }"
@@ -201,6 +202,9 @@ export default {
   .table_box {
     background-color: #fff;
     padding: 15px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #000;
     .goods_price {
       border-bottom: 1px solid #ebeef5;
       line-height: 62px;

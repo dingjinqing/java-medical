@@ -2,10 +2,10 @@
   <div class="content">
 
     <div class="main">
-      <el-form label-width="100px">
+      <el-form label-width="80px">
         <el-row :gutter=24>
           <el-col :span="5">
-            <el-form-item :label="$t('gift.mobile')">
+            <el-form-item :label="$t('gift.mobile') + '：'">
               <el-input
                 size="small"
                 v-model="requestParams.mobile"
@@ -17,7 +17,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item :label="$t('gift.username')">
+            <el-form-item :label="$t('gift.username') + '：'">
               <el-input
                 size="small"
                 v-model="requestParams.username"
@@ -27,8 +27,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
-            <el-form-item :label="$t('gift.givingTime')">
+          <el-col :span="9">
+            <el-form-item :label="$t('gift.givingTime') + '：'">
               <el-date-picker
                 type="datetime"
                 :placeholder="$t('gift.startTime')"
@@ -153,7 +153,7 @@ export default {
   .main {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
+    padding: 15px;
     .wrapper {
       .el-button {
         margin-left: 5px;
@@ -173,15 +173,18 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 15px;
 }
 .inputWidth {
   width: 175px;
 }
 .el-form-item {
   margin-bottom: 1px;
+  /deep/ label {
+    padding: 0;
+  }
 }
 .el-row {
-  margin-bottom: 14px !important;
+  margin-bottom: 2px !important;
 }
 </style>

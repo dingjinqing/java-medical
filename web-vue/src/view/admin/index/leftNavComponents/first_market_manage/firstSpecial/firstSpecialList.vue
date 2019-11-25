@@ -9,19 +9,33 @@
       <div class="wrapper">
         <el-button
           type="primary"
+          size="small"
           @click="addActivity"
         >{{$t('firstSpecial.addFirstSpecial')}}</el-button>
 
         <div class="rightContent">
+          <div style="margin:7px 3px 0 0">
+            <el-tooltip
+              content="例：共设置了三件活动商品A、B、C，用户可从中任选两件（如：A、B）购买，超出限购数量的(C)将以商品原价购买"
+              placement="top"
+              effect="light"
+            >
+              <img
+                :src="$imageHost + '/image/admin/analysis_tishi.png'"
+                alt=""
+              >
+            </el-tooltip>
+          </div>
           <span>{{$t('firstSpecial.firstSpecialLimitGoodsTip1')}}</span>
           <el-input
             v-model="firstSpecialLimitGoods"
-            style="width: 80px"
+            style="width: 80px;margin: 0 5px;"
             size="small"
             type="number"
+            min='0'
           ></el-input>
           <span>{{$t('firstSpecial.firstSpecialLimitGoodsTip2')}}</span>
-          <span>{{$t('firstSpecial.firstSpecialLimitGoodsTip3')}}</span>
+          <span style="margin-left:3px">{{$t('firstSpecial.firstSpecialLimitGoodsTip3')}}</span>
           <el-button
             @click="setFirstSpecialLimitGoods"
             type="primary"
@@ -50,6 +64,7 @@
           prop="first"
           :label="$t('firstSpecial.first')"
           align="center"
+          width="100"
         >
         </el-table-column>
 
@@ -65,6 +80,12 @@
           :label="$t('firstSpecial.vaildDate')"
           align="center"
         >
+          <template slot-scope="scope">
+            <div v-if="scope.row.startTime!==null">
+              {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+            </div>
+            <div v-else>暂无</div>
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -146,7 +167,7 @@
               >
                 <i
                   @click="enableFirstSpecial(scope.row.id)"
-                  class="el-icon-check"
+                  class="el-icon-circle-check"
                 ></i>
               </el-tooltip>
               <el-tooltip
@@ -245,7 +266,7 @@ export default {
           item.vaildDate = this.$t('firstSpecial.permanent')
           item.statusName = this.$t('firstSpecial.inProgress')
         } else {
-          item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
+          // item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
           item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
         }
       })
@@ -360,11 +381,12 @@ export default {
   .main {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
+    padding: 15px;
     .wrapper {
       display: flex;
       justify-content: space-between;
       .rightContent {
+        display: flex;
         .el-button {
           margin-left: 5px;
         }
@@ -402,7 +424,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 15px;
 }
 .balanceDialo .el-dialog__body {
   padding-bottom: 0 !important;
@@ -418,7 +440,6 @@ export default {
   margin-left: 65%;
 }
 .footer {
-  padding: 20px 0 20px 20px;
   display: flex;
   justify-content: flex-end;
   span {
