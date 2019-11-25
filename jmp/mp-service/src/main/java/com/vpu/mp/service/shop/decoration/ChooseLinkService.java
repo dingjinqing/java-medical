@@ -148,7 +148,7 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public List<ActivityVo> getVoucherList() {
-		 List<ActivityVo>list = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME).from(MRKING_VOUCHER)
+		 List<ActivityVo>list = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME,MRKING_VOUCHER.TYPE).from(MRKING_VOUCHER)
 				.where(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
 				.and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetch().into(ActivityVo.class);
