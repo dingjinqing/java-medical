@@ -96,8 +96,8 @@ public class SystemAuth {
 		info.setSubLogin(subAccount != null);
 		// 如果当前登录用户与正在登录的用户相同，则使用当前登录用户的Token
 		SystemTokenAuthInfo user = user();
-		if (user != null && user.getSystemUserId() == info.getSystemUserId()
-				&& user.getSubAccountId() == info.getSubAccountId()) {
+		if (user != null && user.getSystemUserId().equals(info.getSystemUserId())
+				&& user.getSubAccountId().equals(info.getSubAccountId())) {
 			info.setToken(user.getToken());
 		}
 		this.saveTokenInfo(info);

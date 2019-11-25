@@ -108,7 +108,7 @@ public class AdminAuth {
 		
 		// 如果当前登录用户与正在登录的用户相同，则使用当前登录用户的Token
 		AdminTokenAuthInfo user = user();
-		if(user!=null && user.getSysId() == info.getSysId() && user.getSubAccountId() == info.getSubAccountId()) {
+		if(user!=null && user.getSysId().equals(info.getSysId()) && user.getSubAccountId().equals(info.getSubAccountId())) {
 			info.setToken(user.getToken());
 		}
 		
@@ -151,14 +151,14 @@ public class AdminAuth {
 		if (info == null) {
 			return false;
 		}
-		if (info.getLoginShopId() == shopId) {
+		if (info.getLoginShopId().equals(shopId)) {
 			return true;
 		}
 		ShopRecord shop = saas.shop.getShopById(shopId);
 		if (shop == null) {
 			return false;
 		}
-		if (shop.getSysId() != info.getSysId()) {
+		if (!shop.getSysId().equals(info.getSysId())) {
 			return false;
 		}
 		if (saas.shop.checkExpire(shopId)) {
