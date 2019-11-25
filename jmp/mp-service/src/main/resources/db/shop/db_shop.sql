@@ -801,6 +801,7 @@ create table `b2c_user_account`
     `is_paid`     tinyint(1)     not null default '0' comment '支付类型，0：充值，1：消费',
     `remark`      varchar(1024) comment '备注',
     `source`      tinyint(1)              default '0' comment '1:分销来源，0:充值',
+    `settle_account` decimal(10, 2) DEFAULT 0.00 COMMENT '更新后的余额',
     `create_time` timestamp               default current_timestamp,
     `update_time` timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),

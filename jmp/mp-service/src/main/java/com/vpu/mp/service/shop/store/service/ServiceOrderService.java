@@ -381,7 +381,12 @@ public class ServiceOrderService extends ShopBaseService {
         ServiceOrderRecord order = param.getServiceOrder();
         db().executeInsert(order);
         try {
-            accountService.addUserAccount(account, 0, CONDITION_TWO, BYTE_ZERO, "zh");
+        	TradeOptParam tradeOpt = TradeOptParam.builder()
+        			.adminUserId(0)
+                	.tradeType(CONDITION_TWO)
+                	.tradeFlow(BYTE_ZERO)
+                	.build();
+            accountService.addUserAccount(account,tradeOpt);
         } catch (MpException e) {
             e.printStackTrace();
         }
@@ -482,7 +487,12 @@ public class ServiceOrderService extends ShopBaseService {
         /** 国际化语言 */
         String language = "";
         /** 余额核销的门店服务订单，交易类型认为是余额支付 */
-        saas.getShopApp(getShopId()).member.account.addUserAccount(accountData, adminUser, tradeType, tradeFlow, language);
+    	TradeOptParam tradeOpt = TradeOptParam.builder()
+    			.adminUserId(adminUser)
+            	.tradeType(tradeType)
+            	.tradeFlow(tradeFlow)
+            	.build();
+        saas.getShopApp(getShopId()).member.account.addUserAccount(accountData, tradeOpt);
     }
 
 

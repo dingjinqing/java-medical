@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
@@ -501,7 +502,9 @@ public class StoreWxService extends ShopBaseService {
                         setPayment("balance");
                         setIsPaid(BYTE_ONE);
                         setRemark(storeOrderRecord.getOrderSn());
-                    }}, 0, CONDITION_TWO, BYTE_ZERO, "zh");
+                    }}, 
+                    TradeOptParam.builder().tradeType(CONDITION_TWO).tradeFlow(BYTE_ZERO).build()
+                    );
                 } catch (MpException e) {
                     log.error("会员余额变动失败,原因如下:{}", e.getMessage());
                     throw new BusinessException(JsonResultCode.CODE_FAIL);

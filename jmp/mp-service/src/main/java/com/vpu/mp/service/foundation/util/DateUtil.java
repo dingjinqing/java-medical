@@ -180,7 +180,7 @@ public final class DateUtil {
 	 * 转换为时间戳
 	 */
 	public static Timestamp convertToTimestamp(String dateTime) {
-		return Timestamp.valueOf(dateTime);
+		return dateTime !=null ? Timestamp.valueOf(dateTime):null;
 	}
 
     /**

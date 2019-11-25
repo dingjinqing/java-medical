@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.comment.*;
 import com.vpu.mp.service.saas.categroy.SysCateService;
@@ -805,10 +806,7 @@ public class GoodsCommentService extends ShopBaseService {
                 setOrderSn(param.getOrderSn());
               }
             },
-            0,
-            (byte) 8,
-            (byte) 1,
-            language);
+            TradeOptParam.builder().tradeType((byte)8).tradeFlow((byte)1).build());
       }
       // 活动奖励4：赠送抽奖机会
       else if (param.getAwardType().equals(FOUR)) {

@@ -1,20 +1,19 @@
 package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
-import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.DEFAULT_FLAG;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_CONSUMPTION;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_RECHARGE;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_CONSUMPTION;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_RECHARGE;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,10 @@ import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.builder.UserAccountRecordBuilder;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+import com.vpu.mp.service.shop.member.dao.AccountDao;
 import com.vpu.mp.service.shop.member.dao.UserAccountDao;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 /**
@@ -43,34 +45,78 @@ import com.vpu.mp.service.shop.operation.RecordTradeService;
 @Service
 public class AccountService extends ShopBaseService {
 	@Autowired private MemberService memberService;
-	@Autowired private RecordTradeService tradeService;
+	@Autowired private RecordTradeService recordTradeService;
 	@Autowired private UserAccountDao uAccountDao;
+	@Autowired private AccountDao accountDao;
+
+	
 	/**
 	 * 会员余额变动
 	 * @param param 余额对象参数
-	 * @param adminUser 操作员id
-	 * @param tradeType  交易类型 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
-	 * @param tradeFlow  资金流向 {@link com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum}
-	 * @param language 语言
-	 * @return
+	 * @param tradeOpt 交易操作数据
 	 */
-	public void  addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow,String language) throws MpException {
-		logger().info("正在进行余额更新");
-		logger().info(param.toString());
+	public void  addUserAccount(AccountParam param, TradeOptParam tradeOpt) throws MpException {
 		if (isNull(param.getUserId()) || isNull(param.getAmount())) {
 			logger().info("用户id或用户卡余额不能为空");
 			throw new MpException(CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
 		
 		UserRecord user = memberService.getUserRecordById(param.getUserId());
-		logger().info(user.toString());
-		/** 1-用户是否存在 是否有账户余额 */
+		checkForUserExistAndHaveAccount(user);
+		BigDecimal newAccount = calcAccount(user, param);
+		dealWithRemark(param);
+		dealWithPayType(param, newAccount);
+		
+		
+		/** -支付类型 不能为null */
+		if(isNull(param.getPayment())) {
+			param.setPayment("");
+		}
+		
+		this.transaction(() ->{
+			logger().info("事务处理中");
+			
+			addRow(param, tradeOpt.getAdminUserId());
+			/** 更新用户余额user表  */
+			updateUserAccount(newAccount,user.getUserId());
+			/** 插入交易明细数据 到trades_record */
+			addTradeRecord(param, tradeOpt);
+			String account = param.getAmount().compareTo(BigDecimal.ZERO)<0 ? param.getAmount().toString():"+"+param.getAmount().toString();
+			saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] {RecordContentTemplate.MEMBER_ACCOUNT.code}), String.valueOf(user.getUserId()),user.getUsername(),account);
+		});
+		
+	}
+
+	/**
+	 * 检测确保用户存在并有用余额
+	 */
+	private void checkForUserExistAndHaveAccount(UserRecord user) throws MpException {
 		if (isNull(user) || isNull(user.getAccount())) {
+			logger().info("此用户不存在或余额不存在");
 			throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
-		logger().info("余额判断成功");
+	}
 
-		/** 3.备注默认-处理国际化 */
+	private void dealWithPayType(AccountParam param, BigDecimal newAccount) throws MpException {
+		/** -支付类型  */
+		if(isConsump(param)) {
+			/** -消费 */
+			if(isNotConsumpAvailable(newAccount)) {
+				logger().info("余额不足");
+				throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
+			}
+			param.setIsPaid(UACCOUNT_CONSUMPTION.val());
+//			TRADE_FLOW_OUT.val():TRADE_FLOW_IN.val()
+		}else {
+			/** -充值 */
+			param.setIsPaid(UACCOUNT_RECHARGE.val());
+		}
+	}
+
+	/**
+	 * 处理备注
+	 */
+	private void dealWithRemark(AccountParam param) {
 		String remark ;
 		if (StringUtils.isBlank(param.getRemark())) {
 			/** -默认管理员操作 国际化*/
@@ -79,112 +125,87 @@ public class AccountService extends ShopBaseService {
 			remark = param.getRemark();
 		}	
 		param.setRemark(remark);
-		logger().info("备注判断成功");
-		/** -支付类型  */
-		if(isConsump(param)) {
-			logger().info("消费");
-			/** -消费 */
-			if(isNotConsumpAvailable(user,param)) {
-				logger().info("余额不足");
-				throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
-			}
-			param.setIsPaid(UACCOUNT_CONSUMPTION.val());
-
-		}else {
-			logger().info("充值");
-			/** -充值 */
-			param.setIsPaid(UACCOUNT_RECHARGE.val());
-
-		}
-
-		logger().info("消费判断成功");
-
-		/** -支付类型 不能为null */
-		if(isNull(param.getPayment())) {
-			param.setPayment("");
-		}
-		logger().info("支付类型");
-		this.transaction(() ->{
-			logger().info("事务处理中");
-			/** 插入要更新的数据到user_account表 */
-			addRow(param, adminUser);
-			/** 更新用户余额user表  */
-			updateUserAccount(param, user);
-			/** 插入交易明细数据 到trades_record */
-			addTradeRecord(param, tradeType, tradeFlow);
-			/** 添加操作记录到b2c_record_admin_action*/
-			//TODO目前只是对单个的，后期优化需要批量
-			logger().info("amount 为： "+param.getAmount());
-			String account = param.getAmount().compareTo(BigDecimal.ZERO)<0 ? param.getAmount().toString():"+"+param.getAmount().toString();
-			saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] {RecordContentTemplate.MEMBER_ACCOUNT.code}), String.valueOf(user.getUserId()),user.getUsername(),account);
-		});
-		logger().info("余额更新成功");
-		return ;
 	}
 	
-	private boolean isNotConsumpAvailable(UserRecord user,AccountParam param) {
-		return !isConsumpAvailable(user,param);
+	private BigDecimal calcAccount(UserRecord user,AccountParam param) {
+		return BigDecimalUtil.add(param.getAmount(), user.getAccount());
 	}
-
-	private boolean isConsumpAvailable(UserRecord user,AccountParam param) {
-		BigDecimal val = param.getAmount().add(user.getAccount());
+	
+	/**
+	 * 余额是否不满足消费
+	 * @return true: 不满足；false: 满足
+	 */
+	private boolean isNotConsumpAvailable(BigDecimal val) {
+		return !isConsumpAvailable(val);
+	}
+	
+	/**
+	 * 余额是否满足消费
+	 * @return true: 满足；false: 不满足
+	 */
+	private boolean isConsumpAvailable(BigDecimal val) {
 		return !isLessThanZero(val);
 	}
+	/**
+	 * 是否为消费
+	 * @return true: 是；false: 不是
+	 */
 	private boolean isConsump(AccountParam param) {
 		return isLessThanZero(param.getAmount());
 	}
 	private boolean isLessThanZero(BigDecimal val) {
-		boolean g = BigDecimalUtil.compareTo(val, BigDecimal.ZERO)<0;
-		return g;
+		return BigDecimalUtil.compareTo(val, BigDecimal.ZERO)<0;
 	}
-	private void addTradeRecord(AccountParam param, Byte tradeType, Byte tradeFlow) {
-		String tradeSn = param.getOrderSn() == null ? "" : param.getOrderSn();
-		
-		TradesRecordRecord record = new TradesRecordRecord();
-		record.setTradeTime(DateUtil.getLocalDateTime());
-		record.setTradeNum(param.getAmount());
-		record.setTradeSn(tradeSn);
-		record.setUserId(param.getUserId());
-		record.setTradeContent(TRADE_CONTENT_CASH.val());
-		record.setTradeType(tradeType);
-		record.setTradeFlow(tradeFlow);
-		tradeFlow = tradeFlow == 2 ? TRADE_FLOW_IN.val() : tradeFlow;
-		record.setTradeStatus(tradeFlow);
-		tradeService.insertRecord(record);
-		
+	
+	private boolean isGreatOrEqualThanZero(BigDecimal val) {
+		return BigDecimalUtil.compareTo(val, BigDecimal.ZERO)>=0;
+	}
+	
+	/*
+	 * 插入交易记录
+	 */
+	private void addTradeRecord(AccountParam param,TradeOptParam tradeOpt) {
+		logger().info("记录用户余额到交易tradeRecord表");
+		recordTradeService.insertTradeRecord(TradeOptParam.builder()
+				.tradeNum(param.getAmount())
+				.tradeSn(param.getOrderSn())
+				.userId(param.getUserId())
+				.tradeContent(TRADE_CONTENT_CASH.val())
+				.tradeType(tradeOpt.getTradeType())
+				.tradeFlow(tradeOpt.getTradeFlow())
+				.tradeStatus(tradeOpt.getTradeFlow() == 2 ? TRADE_FLOW_IN.val() : tradeOpt.getTradeFlow())
+				.build());
 	}
 
 	
 	
 	/**
 	 * 更新user表的account字段
-	 * 
-	 * @param param
-	 * @param user
 	 */
-	private void updateUserAccount(AccountParam param, UserRecord user) {
-		/** 应该从user_account表中计算余额 */
-		logger().info("计算用户余额");
-		BigDecimal account = db().select(DSL.sum(USER_ACCOUNT.AMOUNT))
-			.from(USER_ACCOUNT)
-			.where(USER_ACCOUNT.USER_ID.eq(user.getUserId()))
-			.fetchAnyInto(BigDecimal.class);
-		logger().info("计算用户余额； "+account);
-		account = account != null?account:BigDecimal.ZERO;
-		db().update(USER).set(USER.ACCOUNT,account).where(USER.USER_ID.eq(user.getUserId())).execute();
+	private void updateUserAccount(BigDecimal account, Integer userId) {
+		assert isGreatOrEqualThanZero(account):"余额不能为负数";
+		if(isNotNull(account) && isGreatOrEqualThanZero(account)) {
+			accountDao.updateUserAccount(account, userId);
+		}
 	}
+
+
 
 	/**
 	 * 将数据插入到user_account
-	 * 
-	 * @param param
-	 * @param adminUser
 	 */
-	private void addRow(AccountParam param, int adminUser) {
-		db().insertInto(USER_ACCOUNT, USER_ACCOUNT.USER_ID, USER_ACCOUNT.AMOUNT, USER_ACCOUNT.REMARK,
-				USER_ACCOUNT.ADMIN_USER,USER_ACCOUNT.IS_PAID,USER_ACCOUNT.PAYMENT)
-				.values(param.getUserId(), param.getAmount(), param.getRemark(), String.valueOf(adminUser),param.getIsPaid(),param.getPayment())
-				.execute();
+	public void addRow(AccountParam param, int adminUser) {
+		logger().info("插入userAccount记录");
+		UserAccountRecordBuilder
+			.create(db().newRecord(USER_ACCOUNT))
+			.userId(param.getUserId())
+			.amount(param.getAmount())
+			.remark(param.getRemark())
+			.adminUser(String.valueOf(adminUser))
+			.isPaid(param.getIsPaid())
+			.payment(param.getPayment())
+			.build()
+			.insert();
 	}
 
 	/**
@@ -251,7 +272,9 @@ public class AccountService extends ShopBaseService {
 	}
 
 	
-
+	private boolean isNotNull(BigDecimal account) {
+		return account != null;
+	}
 	
 	private boolean isNull(Object obj) {
 		return obj == null;
@@ -259,3 +282,5 @@ public class AccountService extends ShopBaseService {
 
 
 }
+
+

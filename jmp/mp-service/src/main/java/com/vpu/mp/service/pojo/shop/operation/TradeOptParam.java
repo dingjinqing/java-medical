@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.operation;
 
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
+
 import java.math.BigDecimal;
 
 import lombok.Builder;
@@ -24,7 +26,8 @@ public class TradeOptParam {
 	/** 交易内容 */
 	private Byte tradeContent;
 	/** 交易类型 */
-	private Byte tradeType;
+	@Builder.Default
+	private Byte tradeType = TYPE_DEFAULT.val();
 	/** 交易资金流向 */
 	private Byte tradeFlow;
 	/** 交易状态 */

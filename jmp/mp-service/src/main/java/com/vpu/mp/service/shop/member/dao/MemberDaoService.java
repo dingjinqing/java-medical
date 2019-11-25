@@ -367,8 +367,7 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getUserNameCondition(String userName) {
 		Condition condition = DSL.noCondition();
-		String val = likeValue(userName);
-		return isNotBlank(userName)?condition.and(USER.USERNAME.like(val)):condition;
+		return isNotBlank(userName)?condition.and(USER.USERNAME.like(likeValue(userName))):condition;
 	}
 	
 	/**

@@ -1267,4 +1267,7 @@ CREATE TABLE `b2c_coopen_activity_records`
     PRIMARY KEY (`id`) USING BTREE
 );
 
+-- 添加字段
+ALTER TABLE `b2c_user_account` 
+ADD COLUMN `settle_account` decimal(10, 2) DEFAULT 0.00 COMMENT '更新后的余额' AFTER `source`;
 
