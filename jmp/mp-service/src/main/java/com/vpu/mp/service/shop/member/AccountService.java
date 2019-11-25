@@ -85,6 +85,7 @@ public class AccountService extends ShopBaseService {
 			logger().info("消费");
 			/** -消费 */
 			if(isNotConsumpAvailable(user,param)) {
+				logger().info("余额不足");
 				throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 			}
 			param.setIsPaid(UACCOUNT_CONSUMPTION.val());
@@ -124,15 +125,17 @@ public class AccountService extends ShopBaseService {
 	private boolean isNotConsumpAvailable(UserRecord user,AccountParam param) {
 		return !isConsumpAvailable(user,param);
 	}
+	
 	private boolean isConsumpAvailable(UserRecord user,AccountParam param) {
 		BigDecimal val = param.getAmount().add(user.getAccount());
-		return isLessThanZero(val);
+		return !isLessThanZero(val);
 	}
 	private boolean isConsump(AccountParam param) {
 		return isLessThanZero(param.getAmount());
 	}
 	private boolean isLessThanZero(BigDecimal val) {
-		return BigDecimalUtil.compareTo(val, BigDecimal.ZERO)<0;
+		boolean g = BigDecimalUtil.compareTo(val, BigDecimal.ZERO)<0;
+		return g;
 	}
 	private void addTradeRecord(AccountParam param, Byte tradeType, Byte tradeFlow) {
 		String tradeSn = param.getOrderSn() == null ? "" : param.getOrderSn();
