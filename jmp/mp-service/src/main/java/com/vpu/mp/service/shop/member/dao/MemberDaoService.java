@@ -381,7 +381,7 @@ public class MemberDaoService extends ShopBaseService {
 		return condition;
 	}
 	private boolean isNotAllStore(Integer source) {
-		return SRC_ALL.getCode().equals(source);
+		return !SRC_ALL.getCode().equals(source);
 	}
 	
 	/**
