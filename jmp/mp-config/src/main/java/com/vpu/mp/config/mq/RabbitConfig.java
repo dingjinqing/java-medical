@@ -107,7 +107,7 @@ public class RabbitConfig {
     /**
      * 好物圈 交换机
      */
-	public static final String EXCHANGE_WX_IMPORTORDER = "direct.wx.importorder";
+	public static final String EXCHANGE_WX_IMPORTORDER = "direct.wx.mall";
     /**
      * 好物圈订单
      */
