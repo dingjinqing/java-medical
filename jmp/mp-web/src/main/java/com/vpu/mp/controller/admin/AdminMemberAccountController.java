@@ -1,6 +1,9 @@
 package com.vpu.mp.controller.admin;
 
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
+
+import java.math.BigDecimal;
+
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_OUT;
 
@@ -18,6 +21,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.shop.member.MemberService;
 
 /**
@@ -46,22 +50,8 @@ public class AdminMemberAccountController extends AdminBaseController {
 	 */
 	@PostMapping("/api/admin/member/account/update")
 	public JsonResult updateMemberAccount(@RequestBody AccountParam param) {
-		int adminUser = 0;
-		Byte tradeType = TYPE_DEFAULT.val();
-		Byte tradeFlow = null;
-		if(BigDecimalUtil.compareTo(param.getAmount(), null)==-1) {
-			tradeFlow = TRADE_FLOW_OUT.val();
-		}else {
-			tradeFlow = TRADE_FLOW_IN.val();
-		}
-		
-		/** 获取语言 用于国际化 */
-		String language = StringUtils.isEmpty(request.getHeader("V-Lang"))?"":request.getHeader("V-Lang");
-		MemberService member = shop().member;
-		
-		
 		try {
-			member.account.addUserAccount(param,adminUser,tradeType,tradeFlow,language);
+			shop().member.account.addUserAccount(param,TradeOptParam.builder().build());
 		} catch (MpException e) {
 			return this.fail(e.getErrorCode());
 		}
