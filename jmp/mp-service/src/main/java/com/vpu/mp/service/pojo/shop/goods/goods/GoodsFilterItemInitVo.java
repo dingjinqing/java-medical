@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
+import com.vpu.mp.service.pojo.saas.category.SysCategorySelectTreeVo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectTreeVo;
@@ -18,4 +19,6 @@ public class GoodsFilterItemInitVo {
     private List<GoodsLabelSelectListVo> goodsLabels;
 
     private List<GoodsBrandSelectListVo> goodsBrands;
+
+    private List<SysCategorySelectTreeVo> goodsCategories;
 }

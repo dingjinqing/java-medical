@@ -1,7 +1,9 @@
 package com.vpu.mp.service.saas.categroy;
 
+import com.google.common.base.Functions;
 import com.vpu.mp.db.main.tables.records.CategoryRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.pojo.saas.category.SysCategorySelectTreeVo;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
@@ -10,6 +12,7 @@ import org.jooq.Record3;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.main.Tables.CATEGORY;
 
@@ -35,52 +38,50 @@ public class SysCateService extends MainBaseService {
     }
 
     /**
-     * 根据传入的平台分类id集合查询出相应的所有平台分类
-     * @param catIds 平台分类id
-     * @param goodsNumberMap 平台分类id对应的商品数量
-     * @return {@link com.vpu.mp.service.pojo.saas.category.SysCatevo}
+     * 分类列表获取树形基础数据，需要商品数量
+     * @param catNumMap key: catId value: 对应的商品数量
+     * @return {@link com.vpu.mp.service.pojo.saas.category.SysCategorySelectTreeVo}
      */
-    public List<SysCatevo> getList(List<Integer> catIds,Map<Integer,Integer> goodsNumberMap) {
-        List<SysCatevo> resultCat = new ArrayList<>(catIds.size());
-        List<SysCatevo> tempData = db().select().from(CATEGORY).where(CATEGORY.CAT_ID.in(catIds)).fetchInto(SysCatevo.class);
-        resultCat.addAll(tempData);
-        // 设置数据的商品数量并放置到catIdMap中，为后期计算商品数量准备
-        Map<Integer,SysCatevo> catIdMap=new HashMap<>(resultCat.size());
-        List<Integer> tempIds = new ArrayList<>(tempData.size());
-        while (tempData.size() > 0) {
-            List<Integer> tempParentIds = new ArrayList<>(tempData.size());
-            tempData.forEach(sysCatevo -> {
-                tempParentIds.add(sysCatevo.getParentId());
-                tempIds.add(sysCatevo.getCatId());
+    public List<SysCategorySelectTreeVo> getCatSelectTree(Map<Integer,Long> catNumMap) {
+        Set<Integer> catIds = catNumMap.keySet();
+        List<CategoryRecord> categoryRecords = getCategoryListVo(catIds);
 
-                Integer num = goodsNumberMap.get(sysCatevo.getCatId().intValue());
-                sysCatevo.setGoodsNumber(num ==null ? 0:num);
-                sysCatevo.setGoodsNumberSum(sysCatevo.getGoodsNumber());
-                catIdMap.put(sysCatevo.getCatId(),sysCatevo);
-            });
-            tempData= db().select().from(CATEGORY).where(CATEGORY.CAT_ID.in(tempParentIds)).and(CATEGORY.CAT_ID.notIn(tempIds)).fetchInto(SysCatevo.class);
-            resultCat.addAll(tempData);
+        List<SysCategorySelectTreeVo> retTree = categoryRecords.stream().map(x -> {
+            SysCategorySelectTreeVo vo = x.into(SysCategorySelectTreeVo.class);
+            vo.setGoodsNum(catNumMap.get(x.getCatId()).intValue());
+            vo.setGoodsSumNum(catNumMap.get(x.getCatId()).intValue());
+            return vo;
+        }).collect(Collectors.toList());
+
+        // 迭代查询所有父节点，tempIds为已查询处理的所有节点id集合，避免同一个节点被查询两次
+        Set<Integer> tempIds = new HashSet<>(catIds);
+        while (categoryRecords.size() > 0) {
+            List<Integer> tempParentIds = categoryRecords.stream().map(CategoryRecord::getParentId).collect(Collectors.toList());
+            List<CategoryRecord> tempList = getCategoryListVo(tempParentIds, tempIds);
+            tempIds.addAll(tempList.stream().map(CategoryRecord::getCatId).collect(Collectors.toList()));
+            List<SysCategorySelectTreeVo> tempTree = tempList.stream().map(x -> x.into(SysCategorySelectTreeVo.class)).collect(Collectors.toList());
+            retTree.addAll(tempTree);
+            categoryRecords = tempList;
         }
-
-        resultCat.forEach(sysCatevo -> {
-            Integer baseNum = sysCatevo.getGoodsNumber();
-            SysCatevo parent = catIdMap.get(sysCatevo.getParentId());
+        // 没有在上上面的递归中一次性转换，为了逻辑清晰点（效率稍有损耗，但是不大）
+        Map<Integer, SysCategorySelectTreeVo> catIdMap = retTree.stream().collect(Collectors.toMap(SysCategorySelectTreeVo::getCatId, Functions.identity()));
+        retTree.forEach(vo->{
+            SysCategorySelectTreeVo parent = catIdMap.get(vo.getParentId());
             while (parent != null) {
-                parent.setGoodsNumberSum(parent.getGoodsNumberSum()+baseNum);
+                parent.setGoodsSumNum(parent.getGoodsNum()+vo.getGoodsNum());
                 parent = catIdMap.get(parent.getParentId());
             }
         });
 
-        resultCat.sort((c1,c2)->{
-            if (c1.getFirst().equals(c2.getFirst())){
-                return c2.getCreateTime().compareTo(c1.getCreateTime());
+        retTree.sort((s1,s2)->{
+            if (s1.getFirst().equals(s2.getFirst())){
+                return s2.getCreateTime().compareTo(s1.getCreateTime());
             }
-            return  c2.getFirst() - c1.getFirst();
+            return  s2.getFirst() - s1.getFirst();
         });
 
-        return resultCat;
+        return retTree;
     }
-
     /**
      * 根据传入的平台分类id集合获取对应平台分类对象集合
      * @param catIds 平台分类id结合
@@ -229,5 +230,18 @@ public class SysCateService extends MainBaseService {
     	Collections.reverse(list);
     	return list;
     	
+    }
+
+    /**
+     * 获取指定id集合的平台分类
+     * @param catIds id集合
+     * @return 平台分类集合
+     */
+    private List<CategoryRecord> getCategoryListVo(Collection<Integer> catIds) {
+        return db().select().from(CATEGORY).where(CATEGORY.CAT_ID.in(catIds)).fetchInto(CategoryRecord.class);
+    }
+
+    private List<CategoryRecord> getCategoryListVo(Collection<Integer> inIds, Collection<Integer> notInIds) {
+        return db().select().from(CATEGORY).where(CATEGORY.CAT_ID.in(inIds)).and(CATEGORY.CAT_ID.notIn(notInIds)).fetchInto(CategoryRecord.class);
     }
 }

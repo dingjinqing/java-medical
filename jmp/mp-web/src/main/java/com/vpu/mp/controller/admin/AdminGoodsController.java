@@ -35,34 +35,17 @@ import java.util.stream.Collectors;
 public class AdminGoodsController extends AdminBaseController {
 
     /**
-     * 商品分页查询页面过滤框数据初始化，包含了全部品牌，全部标签，店铺内商品对应的平台分类和商家分类,
-     * 对于平台分类和商家分类会根据对应的查询条件进行过滤
-     * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
-     * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo}
+     * 获取全品牌，全部标签，商家分类数据,平台分类数据
+     * param.needXX=true表示需要查询对应的数据，否则对应数不会返回
+     * param.needGoodsNum = true 表示需要根据商品过滤平台和商家分类，并计算分类对应的商品数量
+     * param.selectType : 1 以商品为统计对象，2以商品规格为统计对象
+     * param.isOnSale : 1在售，0下架
+     * param.isSaleOut : true 查询售罄商品
+     * @param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
+     * @return JsonResult
      */
-    @PostMapping("/api/admin/goods/page/init")
-    public JsonResult getPageInitValue(@RequestBody GoodsPageListParam param) {
-
-        if (param.getSelectType() == null) {
-            param.setSelectType(GoodsPageListParam.GOODS_LIST);
-        }
-        GoodsInitialVo goodsInitialVo = null;
-        try {
-            goodsInitialVo = shop().goods.pageInitValue(param);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return fail();
-        }
-        return success(goodsInitialVo);
-    }
-
-    /**
-     * 获取全品牌，标签，商家分类数据
-     * @return
-     */
-    @PostMapping("/api/admin/goods/sortBrandLabel/list")
+    @PostMapping("/api/admin/goods/filterItem/list")
     public JsonResult getSortBrandLabelList(@RequestBody GoodsFilterItemInitParam param){
-//        GoodsInitialVo goodsInitialVo = shop().goods.getSortBrandLabelList();
         GoodsFilterItemInitVo vo = shop().goods.getGoodsFilterItem(param);
         return success(vo);
     }

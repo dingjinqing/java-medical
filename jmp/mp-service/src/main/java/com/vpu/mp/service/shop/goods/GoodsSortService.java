@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.google.common.base.Functions;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.*;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
 /**
@@ -59,6 +57,52 @@ public class GoodsSortService extends ShopBaseService {
         param.setType(GoodsConstant.NORMAL_SORT);
         List<SortRecord> sortRecords = getSortListDao(param);
         return sortRecords.stream().map(x -> x.into(GoodsSortSelectTreeVo.class)).collect(Collectors.toList());
+    }
+    /**
+     * 分类列表获取树形基础数据，需要商品数量
+     * @param sortNumMap key: sortId value: 对应的商品数量
+     * @return {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectTreeVo} 集合
+     */
+    public List<GoodsSortSelectTreeVo> getSortSelectTree(Map<Integer,Long> sortNumMap) {
+        Set<Integer> sortIds = sortNumMap.keySet();
+        List<SortRecord> sortRecords = getSortListDao(sortIds);
+
+        // 存储所有需要返回的数据，并设置其初始商品数量
+        List<GoodsSortSelectTreeVo> retTree = sortRecords.stream().map(x -> {
+            GoodsSortSelectTreeVo vo = x.into(GoodsSortSelectTreeVo.class);
+            vo.setGoodsNum(sortNumMap.get(x.getSortId()).intValue());
+            vo.setGoodsSumNum(sortNumMap.get(x.getSortId()).intValue());
+            return vo;
+        }).collect(Collectors.toList());
+
+        // 迭代查询所有父节点，tempIds为已查询处理的所有节点id集合，避免同一个节点被查询两次
+        Set<Integer> tempIds = new HashSet<>(sortIds);
+        while (sortRecords.size() > 0) {
+            List<Integer> tempParentIds = sortRecords.stream().map(SortRecord::getSortId).collect(Collectors.toList());
+            List<SortRecord> tempList = getSortListDao(tempParentIds, tempIds);
+            tempIds.addAll(tempList.stream().map(SortRecord::getSortId).collect(Collectors.toList()));
+            List<GoodsSortSelectTreeVo> tempTree = tempList.stream().map(x -> x.into(GoodsSortSelectTreeVo.class)).collect(Collectors.toList());
+            retTree.addAll(tempTree);
+            sortRecords = tempList;
+        }
+        // 没有在上上面的递归中一次性转换，为了逻辑清晰点（效率稍有损耗，但是不大）
+        Map<Integer, GoodsSortSelectTreeVo> sortIdMap = retTree.stream().collect(Collectors.toMap(GoodsSortSelectTreeVo::getSortId, Functions.identity()));
+        retTree.forEach(vo->{
+            GoodsSortSelectTreeVo parent = sortIdMap.get(vo.getParentId());
+            while (parent != null) {
+                parent.setGoodsSumNum(parent.getGoodsNum()+vo.getGoodsNum());
+                parent = sortIdMap.get(parent.getParentId());
+            }
+        });
+
+        retTree.sort((s1,s2)->{
+            if (s1.getFirst().equals(s2.getFirst())){
+                return s2.getCreateTime().compareTo(s1.getCreateTime());
+            }
+            return  s2.getFirst() - s1.getFirst();
+        });
+
+        return retTree;
     }
     /**
      * 普通分类下拉列表式
@@ -190,7 +234,7 @@ public class GoodsSortService extends ShopBaseService {
         });
     }
 
-    public GoodsNormalSortDetailVo getSort2(Integer sortId){
+    public GoodsNormalSortDetailVo getNormalSort(Integer sortId){
         SortRecord sortRecord = getSortDao(sortId);
 
         if (sortRecord == null) {
@@ -201,7 +245,12 @@ public class GoodsSortService extends ShopBaseService {
         return vo;
     }
 
-    public GoodsRecommendSortDetailVo getRecommendSort2(Integer sortId){
+    /**
+     * 根据分类id获取推荐分类信息
+     * @param sortId 分类id
+     * @return {@link GoodsRecommendSortDetailVo} 推荐分类详情
+     */
+    public GoodsRecommendSortDetailVo getRecommendSort(Integer sortId){
         Record3<Integer, String, Short> record = db().select(SORT.SORT_ID, SORT.SORT_NAME,SORT.FIRST).from(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
         if (record == null) {
             return null;
@@ -213,62 +262,43 @@ public class GoodsSortService extends ShopBaseService {
         return parent;
     }
 
-    /**
-     * 根据筛选条件查询商家分类集合
-     * @param param {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam}
-     * @return SortRecord集合
-     */
-    public List<SortRecord> getSortListDao(GoodsSortListParam param) {
-        Condition condition = buildCondition(param);
-        return db().select().from(SORT).where(condition).orderBy(SORT.FIRST.desc(), SORT.CREATE_TIME.desc())
-            .fetchInto(SortRecord.class);
-    }
-    private Condition buildCondition(GoodsSortListParam param){
-        Condition condition = DSL.noCondition();
-        if (param.getType() != null) {
-            condition = condition.and(SORT.TYPE.eq(param.getType()));
-        }
 
-        if (param.getParentId() != null) {
-            condition = condition.and(SORT.PARENT_ID.eq(param.getParentId()));
+    /**
+     * 商家分类名称是否存在，用来新增检查
+     * @param sortId 分类id
+     * @param sortName 商家分类名称
+     * @return true 存在 false 不存在
+     */
+    public boolean isSortNameExist(Integer sortId,String sortName) {
+        Condition condition = SORT.SORT_NAME.eq(sortName);
+        if (sortId != null) {
+            condition = condition.and(SORT.SORT_ID.ne(sortId));
         }
-        return condition;
+        int count = db().fetchCount(SORT, condition);
+
+        return count>0;
     }
 
     /**
-     * 根据id获取商家分类
-     * @param sortId 商家分类id
-     * @return null 或 SortRecord
+     * 商家分类名称是否存在，推荐分类新增使用
+     * @param  sortNames 商家分类名称
+     * @return true 存在 false 不存在
      */
-    public SortRecord getSortDao(Integer sortId){
-        Record record = db().select().from(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
-        if (record == null) {
-            return null;
-        }
-        return record.into(SortRecord.class);
+    public boolean isSortNameExist(List<String> sortNames) {
+        int count = db().fetchCount(SORT, SORT.SORT_NAME.in(sortNames));
+        return count>0;
     }
 
-    /*********以上为新修改版本*********/
-
-
-
     /**
-     * 根据条件查询符合条件的分类信息
-     * @param param
-     * @return
+     * 商家分类名称是否存在，推荐分类修改使用
+     * @param parentId 推荐分类父分类id
+     * @param sortNames 父分类名称和其所有子分类名称
+     * @return true 存在 false 不存在
      */
-    public List<Sort> getList(GoodsSortListParam param) {
-        SelectWhereStep<Record> selectFrom = db().select().from(SORT);
-
-        SelectConditionStep<?> select = this.buildOptions(selectFrom, param);
-
-        select.orderBy(SORT.FIRST.desc(), SORT.CREATE_TIME.desc());
-
-        List<Sort> sorts = select.fetchInto(Sort.class);
-        /* 处理图片路径 */
-        sorts.forEach(sort -> sort.setSortImgUrl(getImgFullUrlUtil(sort.getSortImg())));
-
-        return sorts;
+    public boolean isSortNameExist(Integer parentId, List<String> sortNames) {
+        Condition condition = SORT.SORT_NAME.in(sortNames).and(SORT.SORT_ID.ne(parentId)).and(SORT.PARENT_ID.ne(parentId));
+        int count = db().fetchCount(SORT, condition);
+        return count>0;
     }
 
     /**
@@ -276,6 +306,7 @@ public class GoodsSortService extends ShopBaseService {
      * @param sortIds 分类id集合
      * @return 分类集合
      */
+    @Deprecated
     public List<Sort> getList(List<Integer> sortIds) {
         List<Sort> sorts = db().selectFrom(SORT).where(SORT.SORT_ID.in(sortIds)).fetchInto(Sort.class);
 
@@ -285,21 +316,6 @@ public class GoodsSortService extends ShopBaseService {
         return sorts;
     }
 
-    /**
-     *  查询分类详细信息
-     * @param sortId
-     * @return
-     */
-    public Sort getSort(Integer sortId) {
-        Record record = db().selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
-        if (record == null) {
-            return null;
-        }
-        Sort sort= record.into(Sort.class);
-        /* 处理图片路径 */
-        sort.setSortImgUrl(getImgFullUrlUtil(sort.getSortImg()));
-        return sort;
-    }
     /**
      *  查询分类详细信息
      * @param ids
@@ -346,188 +362,6 @@ public class GoodsSortService extends ShopBaseService {
     }
 
 
-    private SelectConditionStep<?> buildOptions(SelectWhereStep<?> select, GoodsSortListParam param) {
-        List<Condition> list = new ArrayList<>(10);
-
-        if (!StringUtils.isBlank(param.getSortName())) {
-            list.add(SORT.SORT_NAME.like(likeValue(param.getSortName())));
-        }
-
-        if (param.getType() != null) {
-            list.add(SORT.TYPE.eq(param.getType()));
-        }
-
-        if (param.getParentId() != null) {
-            list.add(SORT.PARENT_ID.eq(param.getParentId()));
-        }
-
-        if (param.getStartCreateTime() != null) {
-            list.add(SORT.CREATE_TIME.ge(param.getStartCreateTime()));
-        }
-
-        if (param.getEndCreateTime() != null) {
-            list.add(SORT.CREATE_TIME.le(param.getEndCreateTime()));
-        }
-
-        return select.where(list);
-    }
-
-
-    /**
-     * 查询出绑定了商品的的商家分类(如果是子分类则包含该分类的祖先级分类)
-     * @return {@link com.vpu.mp.service.pojo.shop.goods.sort.Sort}
-     */
-    public List<Sort> getListBindedGoods(Condition condition,Integer selectType) {
-
-        // 查询sortId 对应的所有sort集合，集合内都是相同的数据，仅仅是为了统计数量
-        Map<Integer,List<Sort>> sortsMap = null;
-        if (GoodsPageListParam.GOODS_LIST.equals(selectType)) {
-            sortsMap = db().select(SORT.asterisk()).from(SORT).innerJoin(GOODS).on(SORT.SORT_ID.eq(GOODS.SORT_ID)).where(condition).fetch().intoGroups(SORT.SORT_ID, Sort.class);
-        } else {
-            sortsMap = db().select(SORT.asterisk()).from(SORT).innerJoin(GOODS).on(SORT.SORT_ID.eq(GOODS.SORT_ID))
-                .innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID)).where(condition).fetch().intoGroups(SORT.SORT_ID,Sort.class);
-        }
-
-        // 临时存储当前查出来的sort数据
-        List<Sort> tempData = new ArrayList<>(sortsMap.size());
-        // 设置数据的商品数量并放置到sortIdMap中，为后期计算商品数量准备
-        Map<Integer,Sort> sortIdMap=new HashMap<>(tempData.size());
-        // 设置最初分类的商品或规格数量，并放入sortIdMap和tempData中
-        for (Map.Entry<Integer, List<Sort>> entry : sortsMap.entrySet()) {
-            Sort sort = entry.getValue().get(0);
-            sort.setGoodsNumber(entry.getValue().size());
-            sortIdMap.put(entry.getKey(),sort);
-            tempData.add(sort);
-        }
-        // 返回的结果对象
-        List<Sort> resultSort = new ArrayList<>(tempData.size());
-        resultSort.addAll(tempData);
-
-        List<Integer> tempIds = new ArrayList<>(tempData.size());
-        // 迭代查询所有的祖先数据，并将祖先数据的商品或规格数全部设置为0
-        while (tempData.size() > 0) {
-            List<Integer> tempParentIds = new ArrayList<>(tempData.size());
-
-            tempData.forEach(sort -> {
-                tempParentIds.add(sort.getParentId());
-                tempIds.add(sort.getSortId());
-
-                if (sort.getGoodsNumber() == null) {
-                    sort.setGoodsNumber(0);
-                }
-                sort.setGoodsNumberSum(sort.getGoodsNumber());
-                sortIdMap.put(sort.getSortId(),sort);
-            });
-            tempData = db().select().from(SORT).where(SORT.SORT_ID.in(tempParentIds)).and(SORT.SORT_ID.notIn(tempIds)).fetchInto(Sort.class);
-
-            resultSort.addAll(tempData);
-        }
-        // 迭代计算平台分类对应的所有商品或规格数量
-        resultSort.forEach(sort -> {
-            Integer baseNum = sort.getGoodsNumber();
-            Sort parent = sortIdMap.get(sort.getParentId());
-            while (parent != null) {
-                parent.setGoodsNumberSum(parent.getGoodsNumberSum()+baseNum);
-                parent = sortIdMap.get(parent.getParentId());
-            }
-        });
-        // 根据first和creteTime 排序
-        resultSort.sort((s1,s2)->{
-            if (s1.getFirst().equals(s2.getFirst())){
-                return s2.getCreateTime().compareTo(s1.getCreateTime());
-            }
-            return  s2.getFirst() - s1.getFirst();
-        });
-
-        return resultSort;
-    }
-
-
-
-
-    /**
-     * 商家分类名称是否存在，用来新增检查
-     * @param sortId 分类id
-     * @param sortName 商家分类名称
-     * @return true 存在 false 不存在
-     */
-    public boolean isSortNameExist(Integer sortId,String sortName) {
-        Condition condition = SORT.SORT_NAME.eq(sortName);
-        if (sortId != null) {
-            condition = condition.and(SORT.SORT_ID.ne(sortId));
-        }
-        int count = db().fetchCount(SORT, condition);
-
-        return count>0;
-    }
-
-
-    /**
-     * 商家分类名称是否存在，推荐分类新增使用
-     * @param  sortNames 商家分类名称
-     * @return true 存在 false 不存在
-     */
-    public boolean isSortNameExist(List<String> sortNames) {
-        int count = db().fetchCount(SORT, SORT.SORT_NAME.in(sortNames));
-        return count>0;
-    }
-
-    /**
-     * 商家分类名称是否存在，推荐分类修改使用
-     * @param parentId 推荐分类父分类id
-     * @param sortNames 父分类名称和其所有子分类名称
-     * @return true 存在 false 不存在
-     */
-    public boolean isSortNameExist(Integer parentId, List<String> sortNames) {
-        Condition condition = SORT.SORT_NAME.in(sortNames).and(SORT.SORT_ID.ne(parentId)).and(SORT.PARENT_ID.ne(parentId));
-        int count = db().fetchCount(SORT, condition);
-        return count>0;
-    }
-
-    /**
-     * 根据父节点查询所有子孙节点，包含传入节点
-     * @param parentId
-     * @return
-     */
-    public List<Integer> findChildrenByParentId(Integer parentId) {
-        Integer[] children = new Integer[]{parentId};
-        List<Integer> list = new ArrayList<>(children.length);
-        do {
-            for (Integer id : children) {
-                list.add(id);
-            }
-
-            children = db().select(SORT.SORT_ID).from(SORT).where(SORT.PARENT_ID.in(children)).fetchArray(SORT.SORT_ID);
-
-        } while (children.length > 0);
-
-        return list;
-    }
-
-    /**
-     * @param parentIds
-     * @return
-     */
-    public List<Integer> findChildrenByParentId(List<Integer> parentIds) {
-        Integer[] children = new Integer[parentIds.size()];
-        for (int i = 0; i < parentIds.size(); i++) {
-            children[i] = parentIds.get(i);
-        }
-        List<Integer> list = new ArrayList<>(children.length);
-        do {
-            for (Integer id : children) {
-                list.add(id);
-            }
-            children = db().select(SORT.SORT_ID).from(SORT).where(SORT.PARENT_ID.in(children)).fetchArray(SORT.SORT_ID);
-
-        } while (children.length > 0);
-
-        Set set = new HashSet(list);
-
-        return new ArrayList<>(set);
-    }
-
-
     /**
      * 获取所有有效分类作为父分类，并查询这些有效分类的子分类，将子分类按照父分类进行组织
      * @param param 查询父分类需要的条件
@@ -541,7 +375,7 @@ public class GoodsSortService extends ShopBaseService {
             .orderBy(SORT.FIRST.desc(),SORT.CREATE_TIME.desc())
             .fetchInto(GoodsSortParentMpVo.class);
 
-        List<Integer> parentIds = sortParent.stream().mapToInt(GoodsSortParentMpVo::getSortId).boxed().collect(Collectors.toList());
+        List<Integer> parentIds =sortParent.stream().map(GoodsSortParentMpVo::getSortId).collect(Collectors.toList());
 
         Map<Integer, List<GoodsSortMpVo>> sortMap = db().selectFrom(SORT).where(SORT.PARENT_ID.in(parentIds))
             .orderBy(SORT.FIRST.desc(),SORT.CREATE_TIME.desc())
@@ -560,7 +394,7 @@ public class GoodsSortService extends ShopBaseService {
         return sortParent;
     }
 
-    public Condition buildSortGroupByParentCondition(SortGroupByParentParam param) {
+    private Condition buildSortGroupByParentCondition(SortGroupByParentParam param) {
         Condition condition = DSL.noCondition();
         if (param.getIsRecommend() != null) {
             condition = condition.and(SORT.TYPE.eq(param.getIsRecommend()));
@@ -588,4 +422,74 @@ public class GoodsSortService extends ShopBaseService {
         }
     }
 
+
+    /**
+     * 根据筛选条件查询商家分类集合
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam}
+     * @return SortRecord集合
+     */
+    public List<SortRecord> getSortListDao(GoodsSortListParam param) {
+        Condition condition = buildCondition(param);
+        return db().select().from(SORT).where(condition).orderBy(SORT.FIRST.desc(), SORT.CREATE_TIME.desc())
+            .fetchInto(SortRecord.class);
+    }
+
+    /**
+     * 根据指定sortId集合查询商家分类集合
+     * @return SortRecord集合
+     */
+    private List<SortRecord> getSortListDao(Collection<Integer> sortIds){
+        return db().select().from(SORT).where(SORT.SORT_ID.in(sortIds)).orderBy(SORT.FIRST.desc(), SORT.CREATE_TIME.desc())
+            .fetchInto(SortRecord.class);
+    }
+
+    /**
+     * 根据传入的父id集合迭代查询所有子孙分类id集合（包含传入的id集合）
+     * @param parentIds 父id集合
+     * @return 子孙id集合
+     */
+    public List<Integer> getChildrenIdByParentIdsDao(Collection<Integer> parentIds) {
+        List<Integer> retIds = new ArrayList<>(parentIds);
+        while (parentIds.size() > 0) {
+            List<Integer> childrenIds = db().select(SORT.SORT_ID).from(SORT).where(SORT.PARENT_ID.in(parentIds)).fetch(SORT.SORT_ID);
+            retIds.addAll(childrenIds);
+            parentIds = childrenIds;
+        }
+        return retIds;
+    }
+
+    /**
+     * 查询分类id在inIds集合中，但是不在notInids集合内的所有分类
+     * @param inIds  在该集合内
+     * @param notInIds 不在该集合内
+     * @return   分类集合
+     */
+    private List<SortRecord> getSortListDao(Collection<Integer> inIds,Collection<Integer> notInIds) {
+        return db().select().from(SORT).where(SORT.SORT_ID.in(inIds).and(SORT.SORT_ID.notIn(notInIds))).fetchInto(SortRecord.class);
+    }
+
+    private Condition buildCondition(GoodsSortListParam param){
+        Condition condition = DSL.noCondition();
+
+        if (param.getType() != null) {
+            condition = condition.and(SORT.TYPE.eq(param.getType()));
+        }
+
+        if (param.getParentId() != null) {
+            condition = condition.and(SORT.PARENT_ID.eq(param.getParentId()));
+        }
+        return condition;
+    }
+    /**
+     * 根据id获取商家分类
+     * @param sortId 商家分类id
+     * @return null 或 SortRecord
+     */
+    public SortRecord getSortDao(Integer sortId){
+        Record record = db().select().from(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
+        if (record == null) {
+            return null;
+        }
+        return record.into(SortRecord.class);
+    }
 }

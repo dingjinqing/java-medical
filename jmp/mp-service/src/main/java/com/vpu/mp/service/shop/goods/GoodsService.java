@@ -16,7 +16,6 @@ import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
-import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
@@ -109,66 +108,71 @@ public class GoodsService extends ShopBaseService {
     private EsUtilSearchService esUtilSearchService;
 
     /**
-     * 全部商品页面各个下拉框的数据初始化
-     * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo}
+     * 获取全品牌，标签，商家分类数据,平台分类数据
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
+     * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo}
      */
-    public GoodsInitialVo pageInitValue(GoodsPageListParam goodsPageListParam) throws Exception {
-        GoodsInitialVo goodsInitialVo = new GoodsInitialVo();
-        if( esUtilSearchService.esState() ){
-            esFactSearchService.assemblyFactByAdminGoodsListInit(goodsInitialVo,goodsPageListParam);
-        }else{
-            Condition condition = this.buildOptions(goodsPageListParam);
-            goodsInitialVo.setGoodsSorts(goodsSort.getListBindedGoods(condition,goodsPageListParam.getSelectType()));
-            Map<Integer,Integer> goodsNumberMap = this.getSysCateNumberMap(condition,goodsPageListParam.getSelectType());
-            // 此处商品表里cat字段为int类型而category表里该字段为smallint类型，在这里做转换处理
-            List<Integer> catIds = new ArrayList<>(goodsNumberMap.keySet());
-            goodsInitialVo.setSysCates(saas.sysCate.getList(catIds, goodsNumberMap));
-        }
-        goodsInitialVo.setGoodsBrands(goodsBrand.getGoodsBrandSelectList());
-        goodsInitialVo.setGoodsLabels(goodsLabel.listGoodsLabelName());
-        return goodsInitialVo;
-    }
-
-    /**
-     *  处理平台分类对应的已有商品或规格数量，由于该表在主库内所以需要在此预处理
-     * @param condition 过滤已拼接条件
-     * @param selectType 查询类型
-     * @return 平台分类id和数据量对应表
-     */
-    private Map<Integer, Integer> getSysCateNumberMap(Condition condition, Integer selectType) {
-        String goodsNumberFiledName = "goods_number";
-        if (GoodsPageListParam.GOODS_LIST.equals(selectType)) {
-            return db().select(GOODS.CAT_ID, DSL.count().as(goodsNumberFiledName))
-                .from(GOODS).where(condition)
-                .groupBy(GOODS.CAT_ID).fetch().intoMap(GOODS.CAT_ID, DSL.field(goodsNumberFiledName, Integer.class));
-        } else {
-            return db().select(GOODS.CAT_ID, DSL.count().as(goodsNumberFiledName))
-                .from(GOODS).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID)).where(condition)
-                .groupBy(GOODS.CAT_ID).fetch().intoMap(GOODS.CAT_ID, DSL.field(goodsNumberFiledName, Integer.class));
-        }
-    }
-
-    /**
-     * 获取商家，标签，品牌list全数据
-     * 该方法不需要进行特殊处理，仅需查询出平台、商家下所有的分类，标签，品牌即可。
-     * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo}
-     */
-    @Deprecated
-    public GoodsInitialVo getSortBrandLabelList() {
-        GoodsInitialVo goodsInitialVo = new GoodsInitialVo();
-
-        goodsInitialVo.setGoodsBrands(goodsBrand.getGoodsBrandSelectList());
-
-        goodsInitialVo.setGoodsLabels(goodsLabel.listGoodsLabelName());
-
-        goodsInitialVo.setGoodsSorts(goodsSort.getList(new GoodsSortListParam()));
-
-        return goodsInitialVo;
-    }
-
-
     public GoodsFilterItemInitVo getGoodsFilterItem(GoodsFilterItemInitParam param){
-        return getGoodsFilterItemNotGoodsNum(param);
+//        es查询
+//        if( esUtilSearchService.esState() )
+//        esFactSearchService.assemblyFactByAdminGoodsListInit(goodsInitialVo,goodsPageListParam);
+
+        if (param.getNeedGoodsNum()) {
+            return getGoodsFilterItemWithGoodsNum(param);
+        } else {
+            return getGoodsFilterItemNotGoodsNum(param);
+        }
+    }
+
+    private GoodsFilterItemInitVo getGoodsFilterItemWithGoodsNum(GoodsFilterItemInitParam param) {
+        GoodsFilterItemInitVo vo =new GoodsFilterItemInitVo();
+        // 需要商品标签
+        if (Boolean.TRUE.equals(param.getNeedGoodsLabel())) {
+            vo.setGoodsLabels(goodsLabel.getGoodsLabelSelectList());
+        }
+        // 需要商品品牌
+        if (Boolean.TRUE.equals(param.getNeedGoodsBrand())) {
+            vo.setGoodsBrands(goodsBrand.getGoodsBrandSelectList());
+        }
+        if (Boolean.TRUE.equals(param.getNeedGoodsSort()) || Boolean.TRUE.equals(param.getNeedSysCategory())) {
+            List<GoodsRecord> goodsRecords = getGoodsListForFilterItem(param);
+            // 需要商家分类信息
+            if (Boolean.TRUE.equals(param.getNeedGoodsSort())) {
+                Map<Integer, Long> sortNumMap = goodsRecords.stream().collect(Collectors.groupingBy(GoodsRecord::getSortId, Collectors.counting()));
+                vo.setGoodsSorts(goodsSort.getSortSelectTree(sortNumMap));
+            }
+            // 需要平台分类信息
+            if (Boolean.TRUE.equals(param.getNeedSysCategory())){
+                Map<Integer, Long> catNumMap = goodsRecords.stream().collect(Collectors.groupingBy(GoodsRecord::getCatId, Collectors.counting()));
+                vo.setGoodsCategories(saas.sysCate.getCatSelectTree(catNumMap));
+            }
+        }
+
+        return vo;
+    }
+
+    /**
+     * 获取符合条件的商品的平台分类，商家分类信息
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
+     * @return 商品信息集合
+     */
+    private List<GoodsRecord> getGoodsListForFilterItem(GoodsFilterItemInitParam param){
+        GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
+        goodsPageListParam.setSelectType(param.getSelectType());
+        goodsPageListParam.setIsOnSale(param.getIsOnSale());
+        goodsPageListParam.setIsSaleOut(param.getIsSaleOut());
+
+        Condition condition = buildOptions(goodsPageListParam);
+
+        List<GoodsRecord> goodsRecords;
+
+        if (GoodsPageListParam.GOODS_LIST.equals(goodsPageListParam.getSelectType())) {
+            goodsRecords = db().select(GOODS.GOODS_ID,GOODS.SORT_ID,GOODS.CAT_ID).from(GOODS).where(condition).fetchInto(GoodsRecord.class);
+        } else {
+            goodsRecords = db().select(GOODS.GOODS_ID,GOODS.SORT_ID,GOODS.CAT_ID).from(GOODS).innerJoin(GOODS_SPEC_PRODUCT)
+                .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID)).where(condition).fetchInto(GoodsRecord.class);
+        }
+        return goodsRecords;
     }
 
     /**
@@ -178,10 +182,6 @@ public class GoodsService extends ShopBaseService {
      */
     private GoodsFilterItemInitVo getGoodsFilterItemNotGoodsNum(GoodsFilterItemInitParam param){
         GoodsFilterItemInitVo vo =new GoodsFilterItemInitVo();
-        // 需要商家分类信息
-        if (Boolean.TRUE.equals(param.getNeedGoodsSort())) {
-            vo.setGoodsSorts(goodsSort.getSortSelectTree());
-        }
         // 需要商品标签
         if (Boolean.TRUE.equals(param.getNeedGoodsLabel())) {
             vo.setGoodsLabels(goodsLabel.getGoodsLabelSelectList());
@@ -189,6 +189,10 @@ public class GoodsService extends ShopBaseService {
         // 需要商品品牌
         if (Boolean.TRUE.equals(param.getNeedGoodsBrand())) {
             vo.setGoodsBrands(goodsBrand.getGoodsBrandSelectList());
+        }
+        // 需要商家分类信息
+        if (Boolean.TRUE.equals(param.getNeedGoodsSort())) {
+            vo.setGoodsSorts(goodsSort.getSortSelectTree());
         }
         return vo;
     }
@@ -369,7 +373,7 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 处理商品在售（上下架）状态
-     * 出售中和已售罄都可以为上架状态（isOnSale = 1），而仓库中表示下架（`Sale = 0）
+     * 出售中和已售罄都可以为上架状态（isOnSale = 1），而仓库中表示下架（isOnSale = 0）
      * 出售中：isOnSale=1&&goodsNumber!=0,已售罄：isOnSale=1&&goodsNumber==0
      * 仓库中：isOnSale=0
      * @param condition   已有过滤条件
@@ -421,7 +425,7 @@ public class GoodsService extends ShopBaseService {
         }
         // 商家分类
         if (goodsPageListParam.getSortId() != null) {
-            List<Integer> childrenId = goodsSort.findChildrenByParentId(goodsPageListParam.getSortId());
+            List<Integer> childrenId = goodsSort.getChildrenIdByParentIdsDao(Collections.singletonList(goodsPageListParam.getSortId()));
             condition = condition.and(GOODS.SORT_ID.in(childrenId));
         }
         return condition;
@@ -443,10 +447,10 @@ public class GoodsService extends ShopBaseService {
             if (integers != null && integers.size() > 0) {
                 labelCondition = labelCondition.or(GOODS.GOODS_ID.in(integers));
             }
-            // 处理标签打在商家分了上
+            // 处理标签打在商家分类上
             integers = byteListMap.get(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode());
             if (integers != null && integers.size() > 0) {
-                List<Integer> sortChildrenId = goodsSort.findChildrenByParentId(integers);
+                List<Integer> sortChildrenId = goodsSort.getChildrenIdByParentIdsDao(integers);
                 labelCondition = labelCondition.or(GOODS.SORT_ID.in(sortChildrenId));
             }
             // 处理标签打在平台分类上
@@ -1548,14 +1552,18 @@ public class GoodsService extends ShopBaseService {
         for(GoodsExportVo goods : list){
             goods.setCatName(SysCatServiceHelper.getSysCateVoByCatId(goods.getCatId()).getCatName());
 
-            Sort sort = saas.getShopApp(getShopId()).goods.goodsSort.getSort(goods.getSortId());
+            SortRecord sort = saas.getShopApp(getShopId()).goods.goodsSort.getSortDao(goods.getSortId());
             if(sort != null){
                 if(Sort.NO_PARENT_CODE.equals(sort.getParentId())){
                     //parent_id 是0，表示该分类是一级节点
                     goods.setSortNameParent(sort.getSortName());
                 }else{
                     goods.setSortNameChild(sort.getSortName());
-                    goods.setSortNameParent(saas.getShopApp(getShopId()).goods.goodsSort.getSort(sort.getParentId()).getSortName());
+
+                    SortRecord parent = saas.getShopApp(getShopId()).goods.goodsSort.getSortDao(sort.getParentId());
+                    if (parent != null) {
+                        goods.setSortNameParent(parent.getSortName());
+                    }
                 }
             }
         }

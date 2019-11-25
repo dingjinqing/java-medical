@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.goods.label;
 
-import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
 import lombok.Data;
 
 

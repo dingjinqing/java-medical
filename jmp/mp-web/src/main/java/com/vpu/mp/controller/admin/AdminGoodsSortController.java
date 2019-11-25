@@ -84,7 +84,7 @@ public class AdminGoodsSortController extends AdminBaseController {
         if (sortId == null) {
             return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
         }
-        return success(shop().goods.goodsSort.getSort2(sortId));
+        return success(shop().goods.goodsSort.getNormalSort(sortId));
     }
 
     /**
@@ -149,7 +149,7 @@ public class AdminGoodsSortController extends AdminBaseController {
         if (sortId == null) {
             return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
         }
-        return success(shop().goods.goodsSort.getRecommendSort2(sortId));
+        return success(shop().goods.goodsSort.getRecommendSort(sortId));
     }
 
     /**

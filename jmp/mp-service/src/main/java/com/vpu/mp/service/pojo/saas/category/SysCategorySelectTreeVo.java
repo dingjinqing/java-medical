@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.goods.sort;
+package com.vpu.mp.service.pojo.saas.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -6,17 +6,18 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 /**
- * 商品分类树形下拉框vo
+ * 平台分类树形下拉框vo
  * @author 李晓冰
- * @date 2019年11月22日
+ * @date 2019年11月25日
  */
 @Data
-public class GoodsSortSelectTreeVo {
-    protected Integer sortId;
-    protected String sortName;
-    protected Integer parentId;
-    private Byte hasChild;
-    private Byte level;
+public class SysCategorySelectTreeVo {
+    private Integer catId;
+    private String catName;
+    private Integer parentId;
+    private Short level;
+    private Integer hasChild;
+
     /**当前分类所包含的商品数量*/
     @JsonIgnore
     private Integer goodsNum = 0;

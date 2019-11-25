@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
-import com.vpu.mp.service.pojo.shop.goods.es.Fact;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -37,9 +36,9 @@ public class GoodsPageListParam {
     /**
      * 分别为查询：1商品分页列表信息，2规格分页列表信息，3商品分页信息（每一条商品数据附带了对应的所有规格数据）
      */
-    public static final Integer GOODS_LIST=1;
-    public static final Integer GOODS_PRD_LIST=2;
-    public static final Integer GOODS_LIST_WITH_PRD=3;
+    public static final Byte GOODS_LIST=1;
+    public static final Byte GOODS_PRD_LIST=2;
+    public static final Byte GOODS_LIST_WITH_PRD=3;
 
     private Integer goodsId;
     private String goodsName;
@@ -67,7 +66,7 @@ public class GoodsPageListParam {
     /**
      * 查询类型分类：1商品分页列表信息，2规格分页列表信息，3商品分页信息（每一条商品数据附带了对应的所有规格数据）,默认为1
      */
-    private Integer selectType;
+    private Byte selectType;
     /**
      * 是否在售 1 在售（上架），0下架（仓库中）
      * 商品数量为0时属于售罄状态，但是依然可以为（上架状态）
