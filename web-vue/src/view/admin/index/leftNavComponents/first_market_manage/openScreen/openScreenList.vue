@@ -46,18 +46,27 @@
         </el-table-column>
         <el-table-column label="活动时间">
           <template slot-scope="{row}">
-            <div>
-              <span>{{row.startDate}}</span>
-              <span>至</span>
-              <span>{{row.endDate}}</span>
+            <div style="text-align:center;line-height:1;">
+              <p>{{row.startDate}}</p>
+              <p>至</p>
+              <p>{{row.endDate}}</p>
             </div>
           </template>
         </el-table-column>
         <el-table-column
           label="活动类型"
           prop="activityAction"
+        >
+          <template slot-scope="{row}">
+            <div>
+              {{row.activityAction|filterType(row)}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="优先级"
+          prop="first"
         ></el-table-column>
-        <el-table-column label="优先级"></el-table-column>
         <el-table-column
           label="活动状态"
           prop="status"
@@ -72,10 +81,10 @@
           width="180"
         >
           <template slot-scope="{row}">
-            <div>
+            <div class="iconWrap">
               <el-tooltip content="编辑">
                 <span
-                  class="el-icon-edit iconSpan"
+                  class="el-icon-edit-outline iconSpan"
                   @click="edit('edit', row)"
                 ></span>
               </el-tooltip>
@@ -154,6 +163,30 @@ export default {
           break
       }
       return text
+    },
+    filterType (type, row) {
+      let text = ''
+      switch (type) {
+        case 1:
+          text = '活动送券'
+          break
+        case 2:
+          text = '幸运大抽奖'
+          break
+        case 3:
+          text = '自定义活动'
+          break
+        case 4:
+          text = '积分'
+          break
+        case 5:
+          text = '余额'
+          break
+        case 6:
+          text = '分裂优惠券'
+          break
+      }
+      return text
     }
   },
   mounted () {
@@ -218,6 +251,14 @@ export default {
   height: 100%;
   font-size: 14px;
   color: #333;
+  .iconWrap {
+    display: flex;
+    justify-content: space-around;
+  }
+  .iconSpan {
+    font-size: 22px;
+    color: #5a8bff;
+  }
   .filter-list {
     padding: 15px;
     background-color: #fff;

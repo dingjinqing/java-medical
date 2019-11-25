@@ -3,7 +3,7 @@ import service from '@/util/request.js'
 // 开屏有礼列表
 export function getOpenScreenList (data) {
   return service({
-    url: '/api/admin/market/activity_reward/list',
+    url: '/api/admin/market/coopen/list',
     method: 'post',
     data: data
   })

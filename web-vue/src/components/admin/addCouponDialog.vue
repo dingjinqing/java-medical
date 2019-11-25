@@ -3,7 +3,7 @@
     <el-dialog
       title="选择优惠卷"
       :visible.sync="dialogVisible"
-      width="35%"
+      width="550px"
       :modal-append-to-body='false'
     >
       <div class="couponDialogDIiv">
@@ -14,6 +14,19 @@
               placeholder="请输入优惠卷名称"
               size="small"
             ></el-input>
+            <el-select
+              v-if="couponType !== ''"
+              v-model="couponType"
+              size="small"
+              @change="couponTypeChaneg"
+            >
+              <el-option
+                v-for="item in couponTypes"
+                :key="item.id"
+                :label="item.label"
+                :value="item.id"
+              ></el-option>
+            </el-select>
             <el-button
               @click="initCouponList (data)"
               type="info"
@@ -51,6 +64,14 @@
               <div class="coupon_name">{{item.actName}}</div>
             </div>
           </div>
+          <div class="couponLi coupon-add">
+            <img
+              class="coupon-add-icon"
+              :src="$imageHost+ '/image/admin/shop_beautify/add_decorete.png'"
+              alt="+"
+            >
+            <span class="coupon-add-tip">添加优惠券</span>
+          </div>
         </div>
 
       </div>
@@ -58,9 +79,13 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          size="small"
+          @click="dialogVisible = false"
+        >取 消</el-button>
         <el-button
           type="primary"
+          size="small"
           @click="handleToSure()"
         >确 定</el-button>
       </span>
@@ -77,10 +102,31 @@ export default {
       dialogData: [],
       data: '',
       loading: false,
-      isSingleElection: false
+      isSingleElection: false,
+      couponTypes: [
+        { id: -1, label: '全部' },
+        { id: 0, label: '普通优惠券' },
+        { id: 1, label: '分裂优惠券' }
+      ]
     }
   },
-  props: ['origin', 'singleElection', 'tuneUpCoupon', 'couponBack'],
+  props: ['origin', 'singleElection', 'tuneUpCoupon', 'couponBack', 'type'],
+  computed: {
+    couponType: {
+      get: function () {
+        console.log('get.....')
+        if (this.type || this.type === 0) {
+          return this.type
+        } else {
+          return ''
+        }
+      },
+      set: function (val) {
+        console.log('newVal:', val)
+        // return val
+      }
+    }
+  },
   mounted () {
     // 初始化
     this.defaultData()
@@ -110,6 +156,11 @@ export default {
       this.loading = true
       let param = {
         'actName': this.couponInput
+      }
+      if (this.couponType !== '') {
+        param.type = this.couponType
+      } else {
+        param.type = 0
       }
       getCouponSelectComponentData(param).then((res) => {
         if (res.error === 0) {
@@ -178,6 +229,11 @@ export default {
         couponArr.push(Object.assign({}, item, { send_num: '', coupon_set: couponData }))
       })
       return couponArr
+    },
+    couponTypeChaneg (val) {
+      console.log(val)
+      // this.couponType = val
+      this.initCouponList()
     }
   }
 }
@@ -205,6 +261,7 @@ export default {
         display: flex;
       }
       span {
+        width: 60px;
         height: 32px;
         line-height: 32px;
         display: block;
@@ -233,6 +290,12 @@ export default {
           position: absolute;
           top: -5px;
           right: -5px;
+        }
+        img.coupon-add-icon {
+          position: absolute;
+          top: 25px;
+          left: 50%;
+          transform: translateX(-50%);
         }
         .coupon_list_top {
           padding-top: 10px;
@@ -290,6 +353,23 @@ export default {
           width: 110px;
         }
       }
+    }
+  }
+  .coupon-add {
+    width: 108px;
+    height: 100px;
+    color: rgb(153, 153, 153);
+    font-size: 12px;
+    text-align: center;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(204, 204, 204);
+    border-image: initial;
+    position: relative;
+    cursor: pointer;
+    .coupon-add-tip {
+      display: inline-block;
+      margin-top: 60px;
     }
   }
 }

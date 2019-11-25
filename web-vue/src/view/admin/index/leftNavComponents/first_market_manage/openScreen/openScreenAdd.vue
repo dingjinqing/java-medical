@@ -10,25 +10,54 @@
             ></div>
             <div class="left-content">
               <el-image
-                v-if="form.type === 0"
+                v-if="form.activityAction === 4"
                 :src="images.show_score"
               ></el-image>
               <el-image
-                v-else-if="form.type === 1"
+                v-else-if="form.activityAction === 1 || form.activityAction === 6"
                 :src="images.show_coupon"
               ></el-image>
               <el-image
-                v-else-if="form.type === 2"
+                v-else-if="form.activityAction === 2"
                 :src="images.show_lottery"
               ></el-image>
               <el-image
-                v-else-if="form.type === 3"
+                v-else-if="form.activityAction === 5"
                 :src="images.show_yue"
               ></el-image>
               <el-image
                 v-else
                 :src="images.show_custom"
               ></el-image>
+              <div
+                v-if="form.activityAction === 3"
+                class="custom-popup"
+              >
+                <img
+                  class="custom-top"
+                  :src="$imageHost + '/image/wxapp/split_btn1.png'"
+                  alt=""
+                >
+                <i class="custom-xian"></i>
+                <div class="img-content">
+                  <div
+                    class="no-custom-img"
+                    v-if="!form.customizeImgPath"
+                  >
+                    <el-image
+                      :src="$imageHost+ '/image/admin/no_custom_img.png'"
+                      style="width: 80px;height: 80px;"
+                    ></el-image>
+                    <span>活动图片</span>
+                  </div>
+                  <el-image
+                    v-else
+                    :src="$imageHost + '/' +form.customizeImgPath"
+                    style="width:100%;height:100%;"
+                    fit="fit"
+                  ></el-image>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -36,8 +65,10 @@
           <div class="right-top">
             <header>活动配置</header>
             <el-form
+              ref="openScreenForm"
               size="small"
               label-width="110px"
+              :model="form"
               :rules="rules"
             >
               <el-form-item
@@ -55,6 +86,7 @@
               </el-form-item>
               <el-form-item label="活动宣传语：">
                 <el-input
+                  v-model="form.title"
                   style="width:170px;"
                   size="small"
                   placeholder="最多支持20个字"
@@ -63,9 +95,16 @@
                 ></el-input>
                 <p class="tips">展示在前端页面，用于优惠活动通知</p>
               </el-form-item>
-              <el-form-item label="活动有效期：">
+              <el-form-item
+                label="活动有效期："
+                prop="isForever"
+                required
+              >
                 <div>
-                  <el-radio>固定时间</el-radio>
+                  <el-radio
+                    v-model="form.isForever"
+                    :label="0"
+                  >固定时间</el-radio>
                   <el-date-picker
                     v-model="dateInterval"
                     type="daterange"
@@ -76,15 +115,18 @@
                   ></el-date-picker>
                 </div>
                 <div>
-                  <el-radio>永久有效</el-radio>
+                  <el-radio
+                    v-model="form.isForever"
+                    :label="1"
+                  >永久有效</el-radio>
                 </div>
               </el-form-item>
               <el-form-item
                 label="优先级："
-                required
+                prop="first"
               >
                 <el-input
-                  v-model.number="form.priority"
+                  v-model.number="form.first"
                   size="small"
                   style="width:170px;"
                   min="0"
@@ -95,15 +137,15 @@
                 label="触发条件："
                 required
               >
-                <el-radio-group v-model="form.activityAction">
+                <el-radio-group v-model="form.action">
                   <div>
-                    <el-radio label="1">初次访问店铺的用户</el-radio>
+                    <el-radio :label="1">初次访问店铺的用户</el-radio>
                   </div>
                   <div>
-                    <el-radio label="2">未在店铺内支付的用户</el-radio>
+                    <el-radio :label="3">未在店铺内支付的用户</el-radio>
                   </div>
                   <div>
-                    <el-radio label="0">全部用户</el-radio>
+                    <el-radio :label="2">全部用户</el-radio>
                   </div>
                 </el-radio-group>
                 <p class="tips">只针对新用户的活动只对初次进入小程序的用户可见，通常在拉新活动中使用较为常见</p>
@@ -115,36 +157,42 @@
             <el-form
               label-width="110px"
               size="small"
+              :model="form"
+              :rules="rules"
             >
               <el-form-item
                 label="支付奖励："
+                prop="activityAction"
                 required
               >
-                <el-radio-group>
+                <el-radio-group v-model="form.activityAction">
                   <div class="radio-layout">
-                    <el-radio>积分</el-radio>
-                    <el-radio>优惠券</el-radio>
-                    <el-radio>幸运大抽奖</el-radio>
+                    <el-radio :label="4">积分</el-radio>
+                    <el-radio :label="1">优惠券</el-radio>
+                    <el-radio :label="2">幸运大抽奖</el-radio>
                   </div>
                   <div class="radio-layout">
-                    <el-radio>余额</el-radio>
-                    <el-radio>分裂优惠券</el-radio>
-                    <el-radio>自定义</el-radio>
+                    <el-radio :label="5">余额</el-radio>
+                    <el-radio :label="6">分裂优惠券</el-radio>
+                    <el-radio :label="3">自定义</el-radio>
                   </div>
                 </el-radio-group>
               </el-form-item>
               <el-form-item
+                v-show="form.activityAction == 4"
                 label="积分："
-                required
+                prop="giveScore"
               >
                 <el-input
+                  v-model.number="form.giveScore"
                   placeholder="请输入积分"
                   style="width:170px;"
                 ></el-input>
               </el-form-item>
               <el-form-item
+                v-show="form.activityAction == 1"
                 label="优惠券："
-                required
+                prop="mrkingVoucherId"
               >
                 <div
                   class="coupon-added"
@@ -192,23 +240,27 @@
                 </div>
               </el-form-item>
               <el-form-item
+                v-show="form.activityAction == 2"
                 label="幸运大抽奖："
-                required
+                prop="lotteryId"
               >
-                <selectPayRewardAct v-model="form.activityId"></selectPayRewardAct>
+                <selectPayRewardAct v-model="form.lotteryId"></selectPayRewardAct>
               </el-form-item>
               <el-form-item
+                v-show="form.activityAction == 5"
                 label="余额："
-                required
+                prop="giveAccount"
               >
                 <el-input
+                  v-model.number="form.giveAccount"
                   style="width:170px;"
                   placeholder="请输入余额"
                 ></el-input>
               </el-form-item>
               <el-form-item
+                v-show="form.activityAction == 6"
                 label="分裂优惠券："
-                required
+                prop="mrkingVoucherId"
               >
                 <div
                   class="coupon-added"
@@ -257,8 +309,9 @@
                 </div>
               </el-form-item>
               <el-form-item
+                v-show="form.activityAction == 3"
                 label="活动图片："
-                required
+                prop="customizeImgPath"
               >
                 <div
                   class="uploaded-add"
@@ -286,6 +339,7 @@
                 <span class="upload-tip">建议尺寸：560px * 700px</span>
               </el-form-item>
               <el-form-item
+                v-show="form.activityAction == 3"
                 label="设置链接："
                 required
               >
@@ -299,9 +353,13 @@
                   @click="selectLinksVisible = !selectLinksVisible"
                 >选择链接</el-button>
               </el-form-item>
-              <el-form-item label="奖品份数：">
+              <el-form-item
+                label="奖品份数："
+                prop="awardNum"
+                required
+              >
                 <el-input-number
-                  v-model="form.activeNum"
+                  v-model="form.awardNum"
                   size="small"
                 ></el-input-number>
                 <span>份</span>
@@ -345,6 +403,7 @@
     <!-- 选择分裂优惠券 -->
     <addCouponDialog
       :tuneUpCoupon="addDisCouponVisible"
+      :type="1"
       :couponBack="disCouponAdded"
       @handleToCheck="addDisCouponHandle"
     ></addCouponDialog>
@@ -362,6 +421,12 @@ export default {
     addCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
+    var validateSiForever = (rule, value, callback) => {
+      if (value === 0 && (!this.form.startDate || !this.form.endDate)) {
+        return callback(new Error('请选择活动生效时间'))
+      }
+      callback()
+    }
     return {
       images: {
         show_score: this.$imageHost + '/image/admin/activity_score.jpg', // 积分
@@ -371,26 +436,40 @@ export default {
         show_custom: this.$imageHost + '/image/admin/activity_custom.jpg' // 自定义
       },
       form: {
-        type: 0,
         name: '',
+        title: '', // 宣传语
+        isForever: 0, // 固定时间0还是永久有效1
         startDate: '',
         endDate: '',
-        action: '',
-        activityAction: 1, // 触发条件
-        activeNum: 0,
-        priority: '',
+        first: '', // 优先级
+        action: 1, // 触发条件 1新用户 2全部 3未支付过用户
+        activityAction: 4, // 活动类型
+        awardNum: 0, // 礼物数量
 
-        customizeImgUrl: '', // 自定义图片
+        giveScore: '', // 积分
+        mrkingVoucherId: '', // 优惠券id,字符串逗号分隔
+        lotteryId: '', // 抽奖活动id
+        giveAccount: '', // 金额
+        customizeImgPath: '', // 自定义图片
         customizePagePath: '', // 自定义链接
 
-        activityId: '', // 抽奖活动id
-
-        title: '', // 活动宣传语
-        bgAction: '', // 背景图
-        couponId: [] // 优惠券id
+        bgAction: '' // 背景图
       },
       rules: {
-        name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }]
+        name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+        isForever: [{ validator: validateSiForever }],
+        first: [{ required: true, message: '请输入活动优先级', trigger: 'blur' }],
+        mrkingVoucherId: [{ required: true, message: '请选择优惠券', trigger: 'blur' }],
+        lotteryId: [{ required: true, message: '请选择抽奖活动', trigger: 'blur' }],
+        customizeImgPath: [{ required: true, message: '请选择自定义图片' }],
+        giveScore: [
+          { required: true, message: '请输入积分', trigger: 'blur' },
+          { type: 'number', message: '积分必须为数字' }
+        ],
+        giveAccount: [
+          { required: true, message: '请输入金额', trigger: 'blur' },
+          { type: 'number', message: '金额必须为数字' }
+        ]
       },
 
       dateInterval: [], // 时间范围
@@ -406,12 +485,18 @@ export default {
     }
   },
   computed: {
+    // 优惠券id数组
     couponAdded: function () {
-      return this.couponSelected.map(item => item.id)
+      let added = this.couponSelected.map(item => item.id)
+      this.$set(this.form, 'mrkingVoucherId', added.join(','))
+      return added
     },
+    // 分裂优惠券id数组
     disCouponAdded: function () {
       if (this.disCouponSelected && this.disCouponSelected.length) {
-        return [this.disCouponSelected[0].id]
+        let added = [this.disCouponSelected[0].id]
+        this.$set(this.form, 'mrkingVoucherId', this.disCouponSelected[0].id)
+        return added
       } else {
         return []
       }
@@ -420,8 +505,11 @@ export default {
   watch: {
     dateInterval: function (newVal) {
       if (newVal) {
-        this.$set(this.form, 'startDate', newVal[0].format('yyyy-MM-dd'))
-        this.$set(this.form, 'endDate', newVal[1].format('yyyy-MM-dd'))
+        this.$set(this.form, 'startDate', newVal[0].format('yyyy-MM-dd hh:mm:ss'))
+        this.$set(this.form, 'endDate', newVal[1].format('yyyy-MM-dd hh:mm:ss'))
+      } else {
+        this.$set(this.form, 'startDate', '')
+        this.$set(this.form, 'endDate', '')
       }
     }
   },
@@ -429,15 +517,29 @@ export default {
   },
   methods: {
     saveOpenScreenHandle () {
-      let params = {}
-      addOpenScreen(params).then(res => {
-        if (res.error === 0) {
-          console.log(res.content)
+      this.$refs.openScreenForm.validate(valid => {
+        if (valid) {
+          let params = Object.assign({}, this.form)
+          addOpenScreen(params).then(res => {
+            if (res.error === 0) {
+              console.log(res.content)
+              this.$message.success(res.message)
+              this.$router.push({
+                name: 'market_gifted'
+              })
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+        } else {
+          console.log('submit error')
+          return false
         }
       })
     },
     handleSelectImg (img) {
       this.selectImg = img
+      this.$set(this.form, 'customizeImgPath', img.imgPath)
     },
     selectLinkHandle (path) {
       this.selectLink = path
@@ -490,6 +592,7 @@ export default {
         .left-wrap {
           border: 1px solid #ccc;
           background: #eee;
+          position: relative;
           .left-title {
             height: 55px;
             color: white;
@@ -497,6 +600,48 @@ export default {
           }
           .left-content {
             height: 570px;
+          }
+        }
+        .custom-popup {
+          position: absolute !important;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 230px;
+          top: 150px;
+          transition: 0.6s ease-in-out left;
+          .custom-top {
+            position: absolute;
+            width: 20px;
+            height: auto;
+            right: 24px;
+            line-height: 1;
+          }
+          .custom-xian {
+            position: absolute;
+            width: 1px;
+            background-color: #fff;
+            height: 20px;
+            top: 20px;
+            right: 34px;
+          }
+          .img-content {
+            width: 100%;
+            background: #fff;
+            height: 270px;
+            margin-top: 40px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            .no-custom-img {
+              text-align: center;
+              span {
+                color: #999;
+                display: block;
+                margin-top: 15px;
+              }
+            }
           }
         }
       }
