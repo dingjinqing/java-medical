@@ -24,10 +24,11 @@ export function cateList () {
   })
 }
 // 获取商家分类和
-export function goodsSortAndGoodsBrandInitApi () {
+export function goodsSortAndGoodsBrandInitApi (data) {
   return service({
     url: '/api/admin/goods/sortBrandLabel/list',
-    method: 'get'
+    method: 'post',
+    data: data
   })
 }
 // 商品新增，发送请求分为有sku和无sku两个示例

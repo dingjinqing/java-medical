@@ -1251,6 +1251,8 @@ export default {
     },
     /* 初始化待修改商品数据 */
     initDataForUpdate (goodsData) {
+      // 打开basicForm，否则display = none时会因数据尚未渲染报错
+      this.arrorFlag = false
       return this.initPageDataLink().then(() => {
         let isUseDefaultPrd = false
 

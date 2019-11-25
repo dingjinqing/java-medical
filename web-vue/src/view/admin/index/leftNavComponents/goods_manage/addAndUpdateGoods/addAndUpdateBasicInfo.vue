@@ -336,186 +336,6 @@
           </div>
         </el-form-item>
       </el-form>
-
-      <!-- <el-collapse
-        accordion
-        v-model="collapseActiveName"
-      >
-        <el-collapse-item
-          :title="$t('goodsAddEditInfo.toggleName')"
-          name="basicMore"
-        >
-          <el-form
-            ref="basicInfoOtherForm"
-            :model="goodsProductInfo"
-            :rules="basicInfoRules"
-            label-width="120px"
-          >
-            <el-form-item
-              :label="$t('goodsAddEditInfo.basicInfoOther.unit')"
-              prop="unit"
-            >
-              <el-select
-                ref="unitSelect"
-                v-model="unitSelectedValue"
-                @change="unitSelectChange"
-                size="small"
-                style="width:170px;"
-              >
-                <el-option
-                  v-for="(item,index) in unitSelectOptions"
-                  :key="index"
-                  :value="item.value"
-                  :label="item.label"
-                />
-              </el-select>
-              <el-input
-                v-if="unitSelectedValue===null"
-                v-model="unitCustomerValue"
-                @change="unitCustomerChange"
-                size="small"
-                style="width:100px;"
-              />
-              <span
-                v-if="unitSelectedValue===null"
-                class="inputTip"
-              >{{$t('goodsAddEditInfo.basicInfoOther.unitTip')}}</span>
-            </el-form-item>
-            <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.sortId')">
-              <el-select
-                filterable
-                v-model="goodsProductInfo.sortId"
-                :placeholder="$t('goodsAddEditInfo.basicInfoOther.sortIdDefault')"
-                size="small"
-                style="width:170px;"
-              >
-                <el-option
-                  v-for="(item,index) in sortSelectOptions"
-                  :label="item.sortName"
-                  :value="item.sortId"
-                  :key="index"
-                  :style="{paddingLeft: (item.level+1)*20+'px'}"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsLabel')">
-              <el-select
-                v-model="labelSelectedTempVal"
-                :placeholder="$t('goodsAddEditInfo.basicInfoOther.goodsLabelDefault')"
-                size="small"
-                @change="labelSelectChange"
-                style="width:170px;"
-              >
-                <el-option
-                  v-for="item in labelSelectOptions"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-              <el-link
-                type="primary"
-                :underline="false"
-                @click.native="labelSelectRefresh"
-                href="#"
-                style="margin:0 5px;"
-              >{{$t('goodsAddEditInfo.linkRefresh')}}
-              </el-link>
-              |
-              <el-link
-                type="primary"
-                :underline="false"
-                href="#"
-                style="margin:0 5px;"
-              >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelNew')}}</el-link>
-              |
-              <el-link
-                type="primary"
-                :underline="false"
-                href="#"
-                style="margin:0 5px;"
-              >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelManage')}}</el-link>
-              <div
-                v-if="labelSelectedItems.length>0"
-                style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;"
-              >
-                <div>已选：</div>
-                <div
-                  class="selectedWrap"
-                  v-for="(item,index) in labelSelectedItems"
-                  :key="index"
-                >
-                  {{item.name}}
-                  <span
-                    @click="deleteLabel(item,index)"
-                    class="deleteIcon"
-                  >×</span>
-                </div>
-              </div>
-            </el-form-item>
-            <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrand')">
-              <el-button
-                @click="goodsBrandDialogData.goodsBrandDialogShow=true"
-                size="small"
-                style="width: 170px;"
-              >
-                {{currentGoodsBrandData.brandName}}
-              </el-button>
-              <el-link
-                type="primary"
-                :underline="false"
-                href="#"
-                style="margin:0 5px;"
-              >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandNew')}}</el-link>
-              |
-              <el-link
-                type="primary"
-                :underline="false"
-                href="#"
-                style="margin:0 5px;"
-              >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandManage')}}</el-link>
-            </el-form-item>
-            <el-form-item
-              :label="$t('goodsAddEditInfo.basicInfoOther.goodsVideo') + '：'"
-              prop="video"
-            >
-              <VideoSpaceDialog
-                :visible.sync="showVideoSpaceDialog"
-                @video-click="videoSelected"
-              />
-              <div style="display: flex; align-items: center;flex-wrap: wrap;">
-                <div class="add-video-container">
-                  <el-image
-                    fit="scale-down"
-                    class="add-goods-video"
-                    :src="videoSnapShotUrl"
-                    @click="videoInputClick"
-                  />
-                  <el-image
-                    fit="scale-down"
-                    @click="videoRemove"
-                    :src="imgHost+'/image/admin/icon_delete.png'"
-                    class="img-delete good_img_deletes"
-                    v-show="showRemoveVideoIcon"
-                  />
-
-                  <el-link
-                    type="primary"
-                    :underline="false"
-                    :href="videoUrl"
-                    v-show="showRemoveVideoIcon"
-                    class="btn_playa"
-                    target="_blank"
-                  >
-                    {{$t('videoSpace.upload.play')}}
-                  </el-link>
-                </div>
-                <span class="inputTip">{{$t('goodsAddEditInfo.basicInfoOther.goodsVideoTip')}}</span>
-              </div>
-            </el-form-item>
-          </el-form>
-        </el-collapse-item>
-      </el-collapse> -->
       <!--图片dialog-->
       <ImageDalog
         :tuneUp="selfImgDialogShow"
@@ -618,6 +438,7 @@ import {
 import { goodsBrandClassifyListApi, goodsBrandPageListApi } from '@/api/admin/goodsManage/brandManagement/brandManagement'
 // js工具函数导入
 import { isStrBlank } from '@/util/typeUtil'
+import { autoConvertDataFromArrayToTreeOrderArray } from '@/util/goodsSortCatUtil'
 // 组件导入
 import ImageDalog from '@/components/admin/imageDalog'
 import pagination from '@/components/admin/pagination/pagination'
@@ -893,56 +714,12 @@ export default {
       this.$refs.basicInfoOtherForm.validateField('unit')
     },
     // 初始化商家分类和商品标签
-    sortAndLabelAndBrandSelectInit () {
-      return goodsSortAndGoodsBrandInitApi().then(res => {
+    _sortAndLabelAndBrandSelectInit () {
+      return goodsSortAndGoodsBrandInitApi({needGoodsLabel: true, needGoodsSort: true}).then(res => {
         const { content: { goodsLabels, goodsSorts } } = res
-        this.sortSelectOptions = this._disposeGoodsSortAndCatData(goodsSorts, 'sortId')
+        this.sortSelectOptions = autoConvertDataFromArrayToTreeOrderArray(goodsSorts, 'sortId')
         this.labelSelectOptions = goodsLabels
       })
-    },
-    /* 处理后台传入的商家分类数据 */
-    _disposeGoodsSortAndCatData (data, idName) {
-      let retObj = {}
-
-      for (let i = 0; i < data.length; i++) {
-        let item = data[i]
-
-        // 是否自身节点被创建过（子节点先遍历到了）
-        let selfItem = retObj[item[idName]]
-        if (selfItem === undefined) {
-          // 未遍历到则初始化自己
-          retObj[item[idName]] = { 'item': item, children: [] }
-          selfItem = retObj[item[idName]]
-        } else {
-          // 已创建过，（因提前遍历了子节点而创建）
-          selfItem.item = item
-        }
-
-        let parentItem = retObj[item.parentId]
-        // 有父亲直接插入
-        if (parentItem !== undefined) {
-          parentItem.children.push(selfItem)
-        } else {
-          // 没有则创建临时父亲
-          retObj[item.parentId] = { 'item': null, children: [selfItem] }
-        }
-      }
-
-      let retArr = []
-
-      if (data.length === 0) {
-        return retArr
-      }
-      let rootArr = retObj['0'].children
-      // 处理结果将对象变为数组
-      for (let i = 0; i < rootArr.length; i++) {
-        let retItem = rootArr[i]
-        retArr.push(retItem.item)
-        if (retItem.children.length > 0) {
-          rootArr.splice(i + 1, 0, ...(retItem.children))
-        }
-      }
-      return retArr
     },
     /* 标签下拉框选择事件 */
     labelSelectChange () {
@@ -1110,13 +887,15 @@ export default {
       })
     },
     /* 页面数据初始化链，避免页面数据未加载完成的时候就初始化待修改商品数据，返回一个Promise */
-    initPageDataLink () {
-      return this.sortAndLabelAndBrandSelectInit()
+    _initPageDataLink () {
+      return this._sortAndLabelAndBrandSelectInit()
     },
     /* 初始化待修改商品数据 */
     initDataForUpdate (goodsData) {
+      // 打开basicForm，否则display = none时会因数据尚未渲染报错
+      this.arrorFlag = false
       // 先初始化页面数据再渲染待修改商品数据
-      return this.initPageDataLink().then(() => {
+      return this._initPageDataLink().then(() => {
         this.goodsProductInfo.goodsId = goodsData.goodsId
         this.goodsProductInfo.goodsName = goodsData.goodsName
         this.goodsProductInfo.goodsNameBak = goodsData.goodsName
@@ -1155,7 +934,7 @@ export default {
     initDataForInsert () {
       this._catFirstInit()
       // 商家分类和品牌初始化
-      this.sortAndLabelAndBrandSelectInit()
+      this._sortAndLabelAndBrandSelectInit()
     },
     /* 验证数据是否全部合法 */
     validateFormData () {
