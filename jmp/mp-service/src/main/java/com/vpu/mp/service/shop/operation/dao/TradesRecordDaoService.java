@@ -33,7 +33,7 @@ public class TradesRecordDaoService extends ShopBaseService{
 			.tradeType(tradeOpt.getTradeType())
 			.tradeFlow(tradeOpt.getTradeFlow())
 			.tradeStatus(tradeOpt.getTradeStatus())
-			.tradeTime(DateUtil.getLocalTimeDate())
+			.tradeTime(DateUtil.getLocalDateTime())
 			.build()
 			.insert();
 		logger().info(String.format("成功插入%d条交易记录", res));
