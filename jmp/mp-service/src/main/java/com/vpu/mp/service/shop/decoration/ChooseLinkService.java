@@ -1,49 +1,23 @@
 package com.vpu.mp.service.shop.decoration;
 
-import static com.vpu.mp.db.shop.Tables.ASSESS_ACTIVITY;
-import static com.vpu.mp.db.shop.Tables.COUPON_PACK;
-import static com.vpu.mp.db.shop.Tables.DECORATE_LINK;
-import static com.vpu.mp.db.shop.Tables.FORM_PAGE;
-import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_ACTIVITY;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
-import static com.vpu.mp.db.shop.Tables.GROUP_DRAW;
-import static com.vpu.mp.db.shop.Tables.GROUP_INTEGRATION_DEFINE;
-import static com.vpu.mp.db.shop.Tables.LOTTERY;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.MP_JUMP;
-import static com.vpu.mp.db.shop.Tables.MP_JUMP_USABLE;
-import static com.vpu.mp.db.shop.Tables.MRKING_STRATEGY;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.PACKAGE_SALE;
-import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_DEFINE;
-import static com.vpu.mp.db.shop.Tables.SORT;
-import static com.vpu.mp.db.shop.Tables.STORE;
-
-import java.sql.Timestamp;
-import java.util.List;
-
+import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.decoration.*;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
+import com.vpu.mp.service.pojo.shop.sort.SortVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.SelectJoinStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.DecorateLinkRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
-import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
-import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
-import com.vpu.mp.service.pojo.shop.decoration.PageFormVo;
-import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
-import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
-import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
-import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
-import com.vpu.mp.service.pojo.shop.sort.SortVo;
-import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
+import java.sql.Timestamp;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 
@@ -82,7 +56,6 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public SelectJoinStep<Record4<Integer, String, String, String>> buildOptions(SelectJoinStep<Record4<Integer, String, String, String>> select, GoodsLinkVo param) {
-		System.out.println(111);
 		if(param.getKeyWords() != null) {
 			select.where(GOODS.GOODS_NAME.contains(param.getKeyWords()).or(GOODS.GOODS_SN.contains(param.getKeyWords())));
 		}
@@ -267,6 +240,16 @@ public class ChooseLinkService extends ShopBaseService {
 				.where(DECORATE_LINK.LINK_ACTION.eq((byte) 1))
 				.fetch().into(XcxLinkListVo.class);
 		return list;
+	}
+
+	/**
+	 * 删除网页跳转
+	 * @param id
+	 * @return
+	 */
+	public int delWebLink(Integer id){
+		int res = db().delete(DECORATE_LINK).where(DECORATE_LINK.ID.eq(id)).execute();
+		return res;
 	}
 	
 	/**

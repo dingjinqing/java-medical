@@ -1,31 +1,18 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.List;
-
-import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
-import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
-import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
-import com.vpu.mp.service.pojo.shop.decoration.ChooseLinkParam;
-import com.vpu.mp.service.pojo.shop.decoration.GoodsLinkVo;
-import com.vpu.mp.service.pojo.shop.decoration.PageFormVo;
-import com.vpu.mp.service.pojo.shop.decoration.StoreVo;
-import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
-import com.vpu.mp.service.pojo.shop.decoration.XcxLinkListVo;
-import com.vpu.mp.service.pojo.shop.decoration.XcxNameListVo;
+import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandClassifyVo;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
+import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 装修通用弹窗-选择链接
@@ -35,6 +22,10 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 @RestController
 @RequestMapping("/api")
 public class AdminChooseLinkController extends AdminBaseController{
+//		@Override
+//	protected ShopApplication shop() {
+//		return saas.getShopApp(471752);
+//	}
 	/**
 	 * 常用链接
 	 */
@@ -94,6 +85,17 @@ public class AdminChooseLinkController extends AdminBaseController{
 		List<XcxLinkListVo> list = shop().chooselink.getWebLink();
 		return this.success(list);
 		
+	}
+
+	/**
+	 * 删除网页跳转记录
+	 * @param id
+	 * @return
+	 */
+	@GetMapping(value = "/admin/decorate/web/del")
+	public JsonResult delWebLink(Integer id){
+		int res = shop().chooselink.delWebLink(id);
+		return this.success(res);
 	}
 	
 	/**
