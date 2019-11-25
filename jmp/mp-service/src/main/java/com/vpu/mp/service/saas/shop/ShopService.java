@@ -174,7 +174,6 @@ public class ShopService extends MainBaseService {
 		}
 		if (param.isUse != null && param.isUse.equals(shopSoonExpiredStatus)) {
 			// 即将过期
-			Field<Timestamp> timestampAdd = DSL.timestampAdd(DSL.currentTimestamp(), 1, DatePart.MONTH);
 			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
 					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.le(DSL.timestampAdd(DSL.currentTimestamp(), 1, DatePart.MONTH))).and(SHOP_RENEW.EXPIRE_TIME.ge(DSL.currentTimestamp())))));
 		}
