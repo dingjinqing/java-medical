@@ -1,28 +1,29 @@
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="bottom" bindtap='bindClose'>
   <view class="payment_content">
     <view class="content_top">
-      积分支付
+      {{i18n.$t(localePack,"pages.checkout.integral")+i18n.$t(localePack,"pages.checkout.pay")}}
       <image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap='bindClose'></image>
     </view>
     <view class="content_info">
         <view class="info_top">
           <view class="info_tips">
             <image src="{{imageUrl}}image/wxapp/main_goods_notice.png"></image>
-            <text>可编辑支付积分数量，积分数量需为整数，本单可支付{{useMaxScore === scoreMin || useMaxScore === 0 ? useMaxScore : ( useMaxScore < scoreMin ? scoreMin : scoreMin + '-' + useMaxScore)}}积分</text>
+            <text>{{i18n.$t(localePack,"pages.checkout.integralTips[0]",{canUse:useMaxScore === scoreMin || useMaxScore === 0 ? useMaxScore : ( useMaxScore < scoreMin ? scoreMin : scoreMin + '-' + useMaxScore) || "0"})}}</text>
           </view>
           <view class="input_box">
-            <text>支付积分</text>
+            <text>{{i18n.$t(localePack,"pages.checkout.pay")+i18n.$t(localePack,"pages.checkout.integral")}}</text>
             <text class="warn">{{msg}}</text>
             <input type="number" value="{{scoreInPut}}" bindinput="changeInput"></input>
           </view>
           <view class="info_total">
-            <view>我的积分：{{userScore}}</view>
-            <view>抵用现金: {{scoreInPut / 100}}</view>
+            <view>{{i18n.$t(localePack,"pages.checkout.my",{name:i18n.$t(localePack,"pages.checkout.integral")})}}：{{userScore}}</view>
+            <view>{{i18n.$t(localePack,"pages.checkout.deduction")+i18n.$t(localePack,"pages.checkout.cash")}}: {{scoreInPut / 100}}</view>
           </view>
         </view>
     </view>
     <view class="content_bottom" bindtap="{{canConfirm ? 'confirmData' : ''}}" style="background-color:{{canConfirm ? main_setting.comColor : '#999'}}">
-          确定
+        {{i18n.$t(localePack,"pages.checkout.confirm")}}
     </view>
   </view>
 </v-popup>

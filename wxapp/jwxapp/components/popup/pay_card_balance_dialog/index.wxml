@@ -1,27 +1,28 @@
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="bottom" bindtap='bindClose'>
   <view class="payment_content">
     <view class="content_top">
-      会员卡余额支付
+      {{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}
       <image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap='bindClose'></image>
     </view>
     <view class="content_info">
         <view class="info_top">
           <view class="info_tips">
             <image src="{{imageUrl}}image/wxapp/main_goods_notice.png"></image>
-            <text>本单可支付￥{{maxCanUse}}，可编辑支付会员卡余额数量。</text>
+            <text>{{i18n.$t(localePack,"pages.checkout.balanceTips[0]",{maxCanUse:maxCanUse||"0",target:i18n.$t(localePack,"pages.checkout.membershipCard")})}}</text>
           </view>
           <view class="input_box">
-            <text>支付会员卡余额</text>
+            <text>{{i18n.$t(localePack,"pages.checkout.pay")+i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")}}}</text>
             <text class="warn">{{msg}}</text>
             <input type="number" bindinput="changeInput" value="{{cardBalanceInput}}"></input>
           </view>
           <view class="info_total">
-            <view>会员卡余额：￥{{userCardBalance}}</view>
+            <view>{{i18n.$t(localePack,"pages.checkout.my",{name:i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")})}}：￥{{userCardBalance}}</view>
           </view>
         </view>
     </view>
     <view class="content_bottom" bindtap="{{canConfirm ? 'confirmData' : ''}}" style="background-color:{{canConfirm ? main_setting.comColor : '#999'}}">
-          确定
+        {{i18n.$t(localePack,"pages.checkout.confirm")}}
     </view>
   </view>
 </v-popup>

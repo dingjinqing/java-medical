@@ -42,13 +42,13 @@ global.wxComponent({
       let msg = ''
       let canConfirm = true
       if(userScore === 0) {
-        msg = `可用积分为0无法支付`
+        msg = this.$t("pages.checkout.integralTips[1]")
         canConfirm = false
       } else if (userScore < scoreMin){
-        msg = `积分支付最小使用${scoreMin}`
+        msg = this.$t("pages.checkout.integralTips[2]", { scoreMin: scoreMin})
         canConfirm = false
       } else if (useMaxScore === 0){
-        msg = `订单金额已满，请提交订单`
+        msg = this.$t("pages.checkout.integralTips[3]")
         canConfirm = false
       }
       this.setData({ 
@@ -65,19 +65,19 @@ global.wxComponent({
       scoreInPut = parseInt(scoreInPut)
       console.log(scoreInPut)
       if (isNaN(scoreInPut) || scoreInPut === '' || !isNaN(scoreInPut) && scoreInPut < 0) {
-        msg = '请输入正确的积分'
+        msg = this.$t("pages.checkout.integralTips[4]")
         canConfirm = false
       } else if (scoreInPut === 0) {
-        msg = '积分需大于0'
+        msg = this.$t("pages.checkout.integralTips[5]")
         canConfirm = false
       } else if (scoreInPut > this.data.userScore) {
-        msg = `超出已有积分数量`
+        msg = this.$t("pages.checkout.integralTips[6]")
         canConfirm = false
       } else if (scoreInPut < this.data.scoreMin){
-        msg = `积分支付最小使用${this.data.scoreMin}`
+        msg = this.$t("pages.checkout.integralTips[2]", { scoreMin: this.data.scoreMin })
         canConfirm = false
       } else if (scoreInPut > this.data.useMaxScore){
-        msg = `最多可以使用：${this.data.useMaxScore}积分`
+        msg = this.$t("pages.checkout.integralTips[7]", { useMaxScore: this.data.useMaxScore})
         canConfirm = false
       }
       this.setData({

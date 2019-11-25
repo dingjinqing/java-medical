@@ -137,7 +137,7 @@
 
       <view class="checkout_footer">
         <text class="footer_content" style="color:{{comColor}};">应付：{{usePayInfo.moneyPaid}}元</text>
-        <text class="footer_button" style="background-color:{{comColor}};" bindtap="confirmOrder">提交订单</text>
+        <text class="footer_button" style="background-color:{{comColor}};" bindtap="confirmOrder">{{i18n.$t(localePack,"pages.checkout.submitOrder")}}</text>
       </view>
     </view>
   <!-- 修改余额 -->

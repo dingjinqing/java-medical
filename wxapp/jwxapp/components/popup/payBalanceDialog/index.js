@@ -37,7 +37,7 @@ global.wxComponent({
         maxCanUse,
         balanceInput: maxCanUse,
         canConfirm : maxCanUse > 0 ? true : false,
-        msg: maxCanUse > 0 ? '' : '余额需大于0'
+        msg: maxCanUse > 0 ? '' : this.$t("pages.checkout.balanceTips[1]")
       })
     },
     changeInput(e){
@@ -47,13 +47,13 @@ global.wxComponent({
       let floatNum = parseFloat(balanceInput).toFixed(3)
       floatNum = parseFloat(floatNum.substring(0, floatNum.length - 1))
       if (isNaN(floatNum) || floatNum === '' || !isNaN(floatNum) && floatNum < 0){
-        msg = '请输入正确的余额'
+        msg = this.$t("pages.checkout.balanceTips[2]")
         canConfirm = false
       } else if (floatNum === 0){
-        msg = '余额需大于0'
+        msg = this.$t("pages.checkout.balanceTips[1]")
         canConfirm = false
       } else if (floatNum > this.data.maxCanUse){
-        msg = '输入金额大于订单可用金额'
+        msg = this.$t("pages.checkout.balanceTips[3]")
         canConfirm = false
       }
       this.setData({

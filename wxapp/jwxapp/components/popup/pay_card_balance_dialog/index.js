@@ -37,7 +37,7 @@ global.wxComponent({
         maxCanUse,
         cardBalanceInput: maxCanUse,
         canConfirm : maxCanUse > 0 ? true : false,
-        msg: maxCanUse > 0 ? '' : '会员卡余额需大于0'
+        msg: maxCanUse > 0 ? '' : this.$t("pages.checkout.balanceTips[1]", { target: this.$t("pages.checkout.membershipCard")})
       })
     },
     changeInput(e){
@@ -47,13 +47,13 @@ global.wxComponent({
       let floatNum = parseFloat(cardBalanceInput).toFixed(3)
       floatNum = parseFloat(floatNum.substring(0, floatNum.length - 1))
       if (isNaN(floatNum) || floatNum === '' || !isNaN(floatNum) && floatNum < 0){
-        msg = '请输入正确的会员卡余额'
+        msg = this.$t("pages.checkout.balanceTips[2]", { target: this.$t("pages.checkout.membershipCard") })
         canConfirm = false
       } else if (floatNum === 0){
-        msg = '会员卡余额需大于0'
+        msg = this.$t("pages.checkout.balanceTips[1]", { target: this.$t("pages.checkout.membershipCard") })
         canConfirm = false
       } else if (floatNum > this.data.maxCanUse){
-        msg = '输入金额大于订单可用金额'
+        msg = this.$t("pages.checkout.balanceTips[3]")
         canConfirm = false
       }
       this.setData({

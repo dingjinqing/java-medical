@@ -14,5 +14,11 @@ module.exports = {
   "freight":"运费",
   "total":"总计",
   "goods":"商品",
-  "reduce":"减"
+  "reduce":"减",
+  "submitOrder":"提交订单",
+  "confirm":"确定",
+  "cash":"现金",
+  "my":"我的{name}",
+  "balanceTips": ["本单可支付￥{maxCanUse}，可编辑支付{target}余额。", "{target}余额需大于0", "请输入正确的{target}余额","输入金额大于订单可用金额"],
+  "integralTips": ["可编辑支付积分，积分需为整数，本单可支付{canUse}积分", "可用积分为0无法支付", "积分支付最小使用{scoreMin}", "订单金额已满，请提交订单", "请输入正确的积分", "积分需大于0", "超出已有积分","最多可以使用：{useMaxScore}积分"],
 }
