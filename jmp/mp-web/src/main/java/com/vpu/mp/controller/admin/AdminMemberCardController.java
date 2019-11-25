@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
@@ -33,6 +35,8 @@ import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.data.AccountData;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 
 /**
  * 
@@ -277,4 +281,37 @@ public class AdminMemberCardController extends AdminBaseController {
 		logger().info("获取领取批次");
 		return success(shop().member.card.getBatchCfg(batchId));
 	}
+	
+	/**
+	 * 领取会员卡
+	 */
+	@PostMapping(value="/api/card/getcard")
+	public JsonResult getCard() {
+		logger().info("领取会员卡");
+		AccountData accountData = AccountData.newBuilder().
+	            userId(6).
+	            orderSn("123456").
+	            //退款金额
+	                amount(BigDecimal.valueOf(100).negate()).
+	                remark("下单：123456").
+	                payment("订单").
+	            //支付类型
+	                isPaid((byte)0).
+
+	            //后台处理时为操作人id为0
+	                adminUser(0).
+	            //用户余额退款
+	                tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
+	            //资金流量-支出
+	                tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
+		
+		try {
+			shop().recordTradeService.updateUserEconomicData(accountData);
+		} catch (MpException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return success();
+	}
+	
 }

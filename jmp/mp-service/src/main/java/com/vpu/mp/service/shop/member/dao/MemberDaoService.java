@@ -1,19 +1,11 @@
 package com.vpu.mp.service.shop.member.dao;
 
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.STORE;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
-import static com.vpu.mp.db.shop.Tables.USER_TAG;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
+import  org.jooq.impl.DSL;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -25,10 +17,11 @@ import org.jooq.SelectJoinStep;
 import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectSeekStep1;
 import org.jooq.SelectSeekStep3;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.jooq.tools.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
@@ -47,7 +40,14 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.cart.UserCartService;
 import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 
-import jodd.util.StringUtil;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.STORE;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
 
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
@@ -57,7 +57,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
 
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_ALL;
-import  org.jooq.impl.DSL;
+
 
 
 /**
@@ -78,15 +78,15 @@ public class MemberDaoService extends ShopBaseService {
 	 * 获取会员列表的基本信息 
 	 */
 	public PageResult<MemberInfoVo> getMemberList(MemberPageListParam param) {
-		User AliasUser = USER.as("AliasUser");
+		User aliasUser = USER.as("aliasUser");
 
 		SelectOnConditionStep<? extends Record> select = db()
-				.select(USER.USER_ID, USER.USERNAME.as(USER_NAME), AliasUser.USERNAME.as(INVITE_USERNAME), USER.MOBILE,
+				.select(USER.USER_ID, USER.USERNAME.as(USER_NAME), aliasUser.USERNAME.as(INVITE_USERNAME), USER.MOBILE,
 						USER.ACCOUNT, USER.SCORE, USER.SOURCE, USER.CREATE_TIME, USER.DEL_FLAG, USER_DETAIL.REAL_NAME)
 				.from(USER)
-				.leftJoin(AliasUser).on(AliasUser.USER_ID.eq(USER.INVITE_ID))
+				.leftJoin(aliasUser).on(aliasUser.USER_ID.eq(USER.INVITE_ID))
 				.leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(USER.USER_ID));
-	
+
 		buildOptionsForTable(param,select);
 		select.where(buildOptions(param))
 			  .orderBy(USER.USER_ID.desc());
@@ -106,7 +106,6 @@ public class MemberDaoService extends ShopBaseService {
 				UserRecord.class);
 		return memberList.dataList;
 	}
-	
 	
 	/**
 	 * 通过活动新增用户
@@ -136,7 +135,7 @@ public class MemberDaoService extends ShopBaseService {
 		if(param.getCardId() != null) {
 			select.leftJoin(USER_CARD).on(USER.USER_ID.eq(USER_CARD.USER_ID));
 		}
-		if(!StringUtil.isBlank(param.getTagName())) {
+		if(isNotBlank(param.getTagName())) {
 			/** -标签处理 */
 			select.leftJoin(USER_TAG).on(USER.USER_ID.eq(USER_TAG.USER_ID));
 		}
@@ -162,8 +161,6 @@ public class MemberDaoService extends ShopBaseService {
 
 	/**
 	 * 查询会员最近浏览时间
-	 * @param userId
-	 * @return
 	 */
 	public Record2<Timestamp, Timestamp> getRecentBrowseTime(Integer userId) {
 		return db().select(USER_LOGIN_RECORD.CREATE_TIME, USER_LOGIN_RECORD.UPDATE_TIME).from(USER_LOGIN_RECORD)
@@ -188,8 +185,6 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 * 获取用户的所有可用会员卡
-	 * @param userId
-	 * @return
 	 */
 	public Result<Record> getAllAvailableMemberCard(Integer userId) {
 		List<Integer> data = Arrays.asList(new Integer[]{0,1,2});
@@ -199,9 +194,6 @@ public class MemberDaoService extends ShopBaseService {
 	
 	/**
 	 * 获取用户会员卡sql
-	 * @param inData
-	 * @param userId
-	 * @return
 	 */
 	private SelectSeekStep3<Record, Byte, Byte, String> getMemberCardSql(List<Integer> inData, Integer userId) {
 		return  db()
@@ -390,7 +382,7 @@ public class MemberDaoService extends ShopBaseService {
 		return condition;
 	}
 	private boolean isNotAllStore(Integer source) {
-		return SRC_ALL.equals(source);
+		return SRC_ALL.getCode().equals(source);
 	}
 	
 	/**
@@ -690,6 +682,7 @@ public class MemberDaoService extends ShopBaseService {
 	private boolean isNotNull(Object obj) {
 		return obj!=null;
 	}
+	
 	private boolean isNotBlank(String val) {
 		return !StringUtils.isBlank(val);
 	}

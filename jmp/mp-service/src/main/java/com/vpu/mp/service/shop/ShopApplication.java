@@ -416,7 +416,7 @@ public class ShopApplication {
      * 交易明细
      */
     @Autowired
-    public RecordTradeService tradeService;
+    public RecordTradeService recordTradeService;
 
     /**
      * 店铺库的公众号用户

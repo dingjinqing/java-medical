@@ -52,8 +52,14 @@ public class RecordTradeService extends ShopBaseService{
 			AccountData accountData = (AccountData)data;
 			AccountParam accountParam = new AccountParam();
 			FieldsUtil.assignNotNull(accountData, accountParam);
-
-			accountService.addUserAccount(accountParam, accountData.getAdminUser(), accountData.getTradeType(), accountData.getTradeFlow(),accountData.getLanguage());
+			logger().info("测试中");
+			
+			Integer adminUser = accountData.getAdminUser();
+			Byte tradeType = accountData.getTradeType();
+			Byte tradeFlow = accountData.getTradeFlow();
+			String language = accountData.getLanguage();
+			
+			accountService.addUserAccount(accountParam, adminUser, tradeType,tradeFlow,language);
 		}else if(data instanceof ScoreData) {
 			logger().info("积分变动");
 			/** 积分变动 */

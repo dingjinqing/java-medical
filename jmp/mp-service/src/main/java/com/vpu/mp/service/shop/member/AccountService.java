@@ -41,7 +41,6 @@ import com.vpu.mp.service.shop.operation.RecordTradeService;
  * @Description: 会员余额管理
  */
 @Service
-
 public class AccountService extends ShopBaseService {
 	@Autowired private MemberService memberService;
 	@Autowired private RecordTradeService tradeService;
@@ -56,7 +55,7 @@ public class AccountService extends ShopBaseService {
 	 * @return
 	 */
 	public void  addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow,String language) throws MpException {
-		
+		logger().info("正在进行余额更新");
 		if (isNull(param.getUserId()) || isNull(param.getAmount())) {
 			logger().info("用户id或用户卡余额不能为空");
 			throw new MpException(CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
@@ -97,6 +96,7 @@ public class AccountService extends ShopBaseService {
 		}
 		
 		this.transaction(() ->{
+			logger().info("事务处理中");
 			/** 插入要更新的数据到user_account表 */
 			addRow(param, adminUser);
 			/** 更新用户余额user表  */
