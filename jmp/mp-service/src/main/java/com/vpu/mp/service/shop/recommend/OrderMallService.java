@@ -349,7 +349,7 @@ public class OrderMallService extends ShopMallBaseService {
 		map2.put(22, new ExpressParam(2015, "优速"));
 		map2.put(9999, new ExpressParam(9999, shippingName));
 
-		ExpressParam vo = map2.get(shippingId);
+		ExpressParam vo = map2.get((int)shippingId);
 		if (null == vo) {
 			vo = new ExpressParam(9999, shippingName);
 
