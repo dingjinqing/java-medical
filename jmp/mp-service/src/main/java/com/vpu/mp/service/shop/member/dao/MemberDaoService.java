@@ -1,11 +1,27 @@
 package com.vpu.mp.service.shop.member.dao;
 
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.STORE;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
-import  org.jooq.impl.DSL;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -17,9 +33,8 @@ import org.jooq.SelectJoinStep;
 import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectSeekStep1;
 import org.jooq.SelectSeekStep3;
+import  org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,24 +54,6 @@ import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.cart.UserCartService;
 import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
-
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.STORE;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
-import static com.vpu.mp.db.shop.Tables.USER_TAG;
-
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
-
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_ALL;
 
 
 
@@ -295,7 +292,7 @@ public class MemberDaoService extends ShopBaseService {
 	private Condition buildOptions(MemberPageListParam param) {
 		Condition condition = DSL.noCondition();
 		if (isNotNull(param)) {
-			condition
+			condition = condition
 				.and(getUserIdCondition(param.getUserId()))
 				.and(getMobileCondition(param.getMobile()))
 				.and(getUserNameCondition(param.getUsername()))
@@ -367,7 +364,10 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getUserNameCondition(String userName) {
 		Condition condition = DSL.noCondition();
-		return isNotBlank(userName)?condition.and(USER.USERNAME.like(likeValue(userName))):condition;
+		if(isNotBlank(userName)) {
+			condition = condition.and(USER.USERNAME.like(likeValue(userName)));
+		}
+		return condition;
 	}
 	
 	/**
@@ -376,7 +376,7 @@ public class MemberDaoService extends ShopBaseService {
 	private Condition getSourceCondition(Integer source) {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(source)&&isNotAllStore(source)) {
-			condition.and(USER.SOURCE.eq(source));
+			condition = condition.and(USER.SOURCE.eq(source));
 		}
 		return condition;
 	}
