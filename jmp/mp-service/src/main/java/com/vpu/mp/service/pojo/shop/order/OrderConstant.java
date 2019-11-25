@@ -493,4 +493,9 @@ public class OrderConstant {
      * 订单待支付自动取消默认时间(默认30minutes)
      */
     public static final int DEFAULT_AUTO_CANCEL_TIME = 30;
+
+    /**
+     * 是否是购物车
+     */
+    public static final Byte CART_Y = 1;
 }

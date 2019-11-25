@@ -32,6 +32,7 @@ import com.vpu.mp.service.shop.order.must.OrderMustService;
 import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +129,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private AtomicOperation atomicOperation;
 
+    @Autowired
+    private CartService cart;
+
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.CREATE;
@@ -207,8 +211,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //货到付款或者余额积分付款，生成订单时加销量减库存
             atomicOperation.updateStockAndSales(order, orderBo.getOrderGoodsBo());
         });
+        //购物车删除
+        if(OrderConstant.CART_Y.equals(param.getIsCart())){
+            cart.removeCartByProductIds(param.getWxUserInfo().getUserId(), param.getProductIds());
+        }
+        cart.removeCartByProductIds(param.getWxUserInfo().getUserId(), param.getProductIds());
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         OrderInfoRecord record = orderInfo.getRecord(orderBo.getOrderId());
+
         return orderPay.isContinuePay(record, orderBo.getOrderGoodsBo(), param);
     }
 

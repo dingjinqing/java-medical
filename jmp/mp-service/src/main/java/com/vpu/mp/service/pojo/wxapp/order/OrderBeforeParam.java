@@ -40,6 +40,8 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	private List<Goods> goods;
     @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_DELIVER_TYPE_NO_NULL)
     private Byte deliverType;
+    /**购物车标记*/
+    private Byte isCart;
 	private Integer storeId;
     /**
      * 0:默认选第一张；null：不选；其他：卡号
