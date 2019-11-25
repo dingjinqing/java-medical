@@ -5,8 +5,8 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
+import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.tables.records.UserAccountRecord;
 
 import java.math.BigDecimal;
@@ -43,10 +43,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserAccount extends TableImpl<UserAccountRecord> {
 
-    private static final long serialVersionUID = 1866275008;
+    private static final long serialVersionUID = -4652756;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_user_account</code>
+     * The reference instance of <code>jmini_shop_444801.b2c_user_account</code>
      */
     public static final UserAccount USER_ACCOUNT = new UserAccount();
 
@@ -59,81 +59,86 @@ public class UserAccount extends TableImpl<UserAccountRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.id</code>.
+     * The column <code>jmini_shop_444801.b2c_user_account.id</code>.
      */
     public final TableField<UserAccountRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.user_id</code>.
+     * The column <code>jmini_shop_444801.b2c_user_account.user_id</code>.
      */
     public final TableField<UserAccountRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.admin_user</code>. 操作员
+     * The column <code>jmini_shop_444801.b2c_user_account.admin_user</code>. 操作员
      */
     public final TableField<UserAccountRecord, String> ADMIN_USER = createField("admin_user", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "操作员");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.order_sn</code>. 分销订单结算产生返利
+     * The column <code>jmini_shop_444801.b2c_user_account.order_sn</code>. 分销订单结算产生返利
      */
     public final TableField<UserAccountRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分销订单结算产生返利");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.amount</code>. 金额
+     * The column <code>jmini_shop_444801.b2c_user_account.amount</code>. 金额
      */
     public final TableField<UserAccountRecord, BigDecimal> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false), this, "金额");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.admin_note</code>. 操作员备注
+     * The column <code>jmini_shop_444801.b2c_user_account.admin_note</code>. 操作员备注
      */
     public final TableField<UserAccountRecord, String> ADMIN_NOTE = createField("admin_note", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false), this, "操作员备注");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.payment</code>. 支付方式
+     * The column <code>jmini_shop_444801.b2c_user_account.payment</code>. 支付方式
      */
     public final TableField<UserAccountRecord, String> PAYMENT = createField("payment", org.jooq.impl.SQLDataType.VARCHAR(90).nullable(false), this, "支付方式");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.is_paid</code>. 支付类型，0：充值，1：消费
+     * The column <code>jmini_shop_444801.b2c_user_account.is_paid</code>. 支付类型，0：充值，1：消费
      */
     public final TableField<UserAccountRecord, Byte> IS_PAID = createField("is_paid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "支付类型，0：充值，1：消费");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.remark</code>. 备注
+     * The column <code>jmini_shop_444801.b2c_user_account.remark</code>. 备注
      */
     public final TableField<UserAccountRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR(1024), this, "备注");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.source</code>. 1:分销来源，0:充值
+     * The column <code>jmini_shop_444801.b2c_user_account.source</code>. 1:分销来源，0:充值
      */
     public final TableField<UserAccountRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:分销来源，0:充值");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.create_time</code>.
+     * The column <code>jmini_shop_444801.b2c_user_account.settle_account</code>. 更新后的余额
+     */
+    public final TableField<UserAccountRecord, BigDecimal> SETTLE_ACCOUNT = createField("settle_account", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "更新后的余额");
+
+    /**
+     * The column <code>jmini_shop_444801.b2c_user_account.create_time</code>.
      */
     public final TableField<UserAccountRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_user_account.update_time</code>. 最后修改时间
+     * The column <code>jmini_shop_444801.b2c_user_account.update_time</code>. 最后修改时间
      */
     public final TableField<UserAccountRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * Create a <code>mini_shop_471752.b2c_user_account</code> table reference
+     * Create a <code>jmini_shop_444801.b2c_user_account</code> table reference
      */
     public UserAccount() {
         this(DSL.name("b2c_user_account"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_user_account</code> table reference
+     * Create an aliased <code>jmini_shop_444801.b2c_user_account</code> table reference
      */
     public UserAccount(String alias) {
         this(DSL.name(alias), USER_ACCOUNT);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_user_account</code> table reference
+     * Create an aliased <code>jmini_shop_444801.b2c_user_account</code> table reference
      */
     public UserAccount(Name alias) {
         this(alias, USER_ACCOUNT);
