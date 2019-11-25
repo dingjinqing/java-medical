@@ -75,7 +75,7 @@ public class BatchUploadListener implements BaseRabbitHandler {
 			WxOpenResult result = new WxOpenResult();
 
 			try {
-				if (param.getPackageVersion() != mpPackageVersion) {
+				if (!mpPackageVersion.equals(param.getPackageVersion())) {
 					result.setErrcode("0");
 					result.setErrmsg("该小程序暂不提交审核");
 				} else {
