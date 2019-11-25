@@ -35,8 +35,8 @@ global.wxPage({
     util.api('/api/wxapp/cart/list',(res)=>{
       console.log(res)
       if(res.error === 0){
-        let canBuyList = res.content.cartGoodsList
-        let invalidList = res.content.invalidCartList
+        let canBuyList = (res.content && res.content.cartGoodsList) || []
+        let invalidList = (res.content && res.content.invalidCartList) || []
         this.setData({
           canBuyGoodsList: canBuyList,
           invalidGoodsList: invalidList

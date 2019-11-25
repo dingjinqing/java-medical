@@ -57,7 +57,7 @@ global.wxPage({
       },
       {
         currentPage: currentPage,
-        pageRows: 2,
+        pageRows: 20,
         type: this.data.navType[this.data.scrollIntoId],
         search: this.data.searchInput
       }
