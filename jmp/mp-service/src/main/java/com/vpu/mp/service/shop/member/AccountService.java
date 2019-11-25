@@ -56,17 +56,19 @@ public class AccountService extends ShopBaseService {
 	 */
 	public void  addUserAccount(AccountParam param, int adminUser, Byte tradeType, Byte tradeFlow,String language) throws MpException {
 		logger().info("正在进行余额更新");
+		logger().info(param.toString());
 		if (isNull(param.getUserId()) || isNull(param.getAmount())) {
 			logger().info("用户id或用户卡余额不能为空");
 			throw new MpException(CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
 		
 		UserRecord user = memberService.getUserRecordById(param.getUserId());
-
+		logger().info(user.toString());
 		/** 1-用户是否存在 是否有账户余额 */
 		if (isNull(user) || isNull(user.getAccount())) {
 			throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 		}
+		logger().info("余额判断成功");
 
 		/** 3.备注默认-处理国际化 */
 		String remark ;
@@ -77,24 +79,30 @@ public class AccountService extends ShopBaseService {
 			remark = param.getRemark();
 		}	
 		param.setRemark(remark);
-		
+		logger().info("备注判断成功");
 		/** -支付类型  */
 		if(isConsump(param)) {
+			logger().info("消费");
 			/** -消费 */
 			if(isNotConsumpAvailable(user,param)) {
 				throw new MpException( CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
 			}
 			param.setIsPaid(UACCOUNT_CONSUMPTION.val());
+			
 		}else {
+			logger().info("充值");
 			/** -充值 */
 			param.setIsPaid(UACCOUNT_RECHARGE.val());
+			
 		}
+		
+		logger().info("消费判断成功");
 		
 		/** -支付类型 不能为null */
 		if(isNull(param.getPayment())) {
 			param.setPayment("");
 		}
-		
+		logger().info("支付类型");
 		this.transaction(() ->{
 			logger().info("事务处理中");
 			/** 插入要更新的数据到user_account表 */
@@ -105,12 +113,11 @@ public class AccountService extends ShopBaseService {
 			addTradeRecord(param, tradeType, tradeFlow);
 			/** 添加操作记录到b2c_record_admin_action*/
 			//TODO目前只是对单个的，后期优化需要批量
-			BigDecimal zero = BigDecimal.ZERO;
-			String account = param.getAmount().compareTo(zero)<0 ? param.getAmount().toString():"+"+param.getAmount().toString();
+			logger().info("amount 为： "+param.getAmount());
+			String account = param.getAmount().compareTo(BigDecimal.ZERO)<0 ? param.getAmount().toString():"+"+param.getAmount().toString();
 			saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] {RecordContentTemplate.MEMBER_ACCOUNT.code}), String.valueOf(user.getUserId()),user.getUsername(),account);
-			
 		});
-
+		logger().info("余额更新成功");
 		return ;
 	}
 	
@@ -181,9 +188,6 @@ public class AccountService extends ShopBaseService {
 	 * 添加操作记录到b2c_record_admin_action
 	 */
 	public void addActionRecord(AccountParam param, UserRecord user, AdminTokenAuthInfo admin) {
-		
-		
-		
 		Integer userId = user.getUserId();
 		String name = user.getUsername();
 		BigDecimal zero = new BigDecimal(0);
