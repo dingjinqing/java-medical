@@ -322,6 +322,16 @@ public class ChooseLinkService extends ShopBaseService {
 			return false;
 		}
 	}
+
+	/**
+	 * 删除小程序跳转连接
+	 * @param id
+	 * @return
+	 */
+	public Integer delXcxLink(Integer id){
+		int res = db().update(DECORATE_LINK).set(DECORATE_LINK.DEL_FLAG,(byte) 1).where(DECORATE_LINK.ID.eq(id)).execute();
+		return res;
+	}
 	
 
 	

@@ -9,6 +9,7 @@ import lombok.Data;
  */
 @Data
 public class XcxLinkListVo {
+	public int id;
 	public String appid;
 	public String shopId;
 	public String title;

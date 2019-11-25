@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -152,6 +153,17 @@ public class AdminChooseLinkController extends AdminBaseController{
 		}else{
 			return this.fail();
 		}
+	}
+
+	/**
+	 * 删除小程序跳转链接
+	 * @param id
+	 * @return
+	 */
+	@GetMapping(value = "/admin/decorate/link/del")
+	public JsonResult xcxLinkDel(Integer id) {
+		int res = shop().chooselink.delXcxLink(id);
+		return this.success(res);
 	}
 	
 	/**
