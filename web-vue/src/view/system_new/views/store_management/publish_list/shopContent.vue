@@ -203,7 +203,7 @@ export default {
   name: 'experienceVersion',
   data () {
     return {
-      shopOptions: this.$t('shopAccountList.auth_state'),
+      shopOptions: this.$t('versionList.shopVersion'),
 
       payOptions: [{
         value: '',
