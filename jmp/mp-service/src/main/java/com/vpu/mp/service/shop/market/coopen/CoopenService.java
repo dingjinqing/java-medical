@@ -158,10 +158,7 @@ public class CoopenService extends ShopBaseService {
         if (update) {
             condition.and(TABLE.ID.ne(param.getId()));
         }
-        boolean exists = db().fetchExists(condition);
-        if (exists) {
-            throw new IllegalArgumentException(ACTIVITY_TIME_RANGE_CONFLICT);
-        }
+
     }
 
     /**
