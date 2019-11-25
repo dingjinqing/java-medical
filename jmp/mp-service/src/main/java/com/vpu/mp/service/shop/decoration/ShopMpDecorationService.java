@@ -36,13 +36,12 @@ import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record5;
+import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -81,9 +80,10 @@ public class ShopMpDecorationService extends ShopBaseService {
         if (getPageCount() == 0) {
             this.addDefaultPage();
         }
-        SelectWhereStep<Record5<Integer, String, Timestamp, Byte, String>> select = db()
+        System.out.println(param);
+        SelectWhereStep<? extends Record> select = db()
             .select(XCX_CUSTOMER_PAGE.PAGE_ID, XCX_CUSTOMER_PAGE.PAGE_NAME, XCX_CUSTOMER_PAGE.CREATE_TIME,
-                XCX_CUSTOMER_PAGE.PAGE_TYPE, PAGE_CLASSIFICATION.NAME)
+                XCX_CUSTOMER_PAGE.PAGE_TYPE,XCX_CUSTOMER_PAGE.CAT_ID, PAGE_CLASSIFICATION.NAME)
             .from(XCX_CUSTOMER_PAGE
                 .leftJoin(PAGE_CLASSIFICATION)
                 .on(XCX_CUSTOMER_PAGE.CAT_ID.eq(PAGE_CLASSIFICATION.ID)));
@@ -99,8 +99,8 @@ public class ShopMpDecorationService extends ShopBaseService {
      * @param param
      * @return
      */
-    public SelectWhereStep<Record5<Integer, String, Timestamp, Byte, String>> buildOptions(
-        SelectWhereStep<Record5<Integer, String, Timestamp, Byte, String>> select, XcxCustomerPageVo param) {
+    public SelectWhereStep<? extends Record> buildOptions(
+        SelectWhereStep<? extends Record> select, XcxCustomerPageVo param) {
         Byte enabled = 1;
         select.where(XCX_CUSTOMER_PAGE.PAGE_ENABLED.eq(enabled));
         // 页面内容

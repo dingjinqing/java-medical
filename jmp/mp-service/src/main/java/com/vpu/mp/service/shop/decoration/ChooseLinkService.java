@@ -69,8 +69,10 @@ public class ChooseLinkService extends ShopBaseService {
 	 */
 	public PageResult<XcxCustomerPageVo> customPage(ChooseLinkParam param) {
 		XcxCustomerPageVo xcx = new XcxCustomerPageVo();
-		xcx.setPageId(param.getCurrentPage());
+		xcx.setCurrentPage(param.getCurrentPage());
+		xcx.setPageRows(param.getPageRows());
 		xcx.setPageName(param.getPageName());
+		xcx.setCatId(param.getCatId());
 		PageResult<XcxCustomerPageVo> list = mpDecoration.getPageList(xcx);
 		return list;
 	}
@@ -266,7 +268,7 @@ public class ChooseLinkService extends ShopBaseService {
 	
 	/**
 	 * 门店列表
-	 * @param page
+	 * @param param
 	 * @return
 	 */
 	public PageResult<StoreVo> store(StoreListQueryParam param) {
