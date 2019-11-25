@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  *  购物车
  * @author 孔德成
@@ -25,7 +27,7 @@ public class WxAppCartController extends WxAppBaseController {
 
 
     @PostMapping("/list")
-    public JsonResult getCartList(@RequestBody  WxAppCartListParam param) {
+    public JsonResult getCartList() {
         WxAppSessionUser user = wxAppAuth.user();
         WxAppCartListVo cartList = shop().cart.getCartList(user.getUserId());
         return success(cartList);
@@ -57,7 +59,7 @@ public class WxAppCartController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/remove")
-    public JsonResult deleteCartById(@RequestBody WxAppRemoveCartProductParam param){
+    public JsonResult deleteCartById(@RequestBody @Valid WxAppRemoveCartProductParam param){
         WxAppSessionUser user = wxAppAuth.user();
         shop().cart.removeCartProductById(user.getUserId(),param.getRecId().longValue());
         return success();
@@ -88,6 +90,10 @@ public class WxAppCartController extends WxAppBaseController {
         WxAppSessionUser user = wxAppAuth.user();
         shop().cart.removeCartProductByIds(user.getUserId(),param.getRecIds());
         return success();
+    }
+
+    public JsonResult checked(){
+        return null;
     }
 
 

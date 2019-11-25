@@ -665,6 +665,8 @@ public class CouponGiveService extends ShopBaseService {
                 MRKING_VOUCHER.RECOMMEND_SORT_ID,
                 MRKING_VOUCHER.USE_SCORE,
                 MRKING_VOUCHER.SCORE_NUMBER,
+                MRKING_VOUCHER.RANDOM_MAX,
+                MRKING_VOUCHER.RANDOM_MIN,
                 MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
             .from(MRKING_VOUCHER);
     popWindowsBuildOptions(select,param);
