@@ -439,7 +439,7 @@ export default {
   background: #eee;
   position: relative;
   float: left;
-  margin: 70px 0 0 224px;
+  margin-top: 70px;
 }
 .bottomNavigationContent {
   padding: 10px;
@@ -450,6 +450,8 @@ export default {
   position: relative;
 }
 .bottomNavigationContent_main {
+  display: flex;
+  justify-content: center;
   background-color: #fff;
   height: 100%;
   overflow: hidden;
