@@ -32,7 +32,7 @@ public class CouponListVo {
 	    private Byte       useScore;
 	    private Integer    scoreNumber;
 	    private Integer    used;
-	    private Integer enabled;
+	    private Byte enabled;
 		/**
 		 * 优惠券有效期类型
 		 */
@@ -70,4 +70,9 @@ public class CouponListVo {
 		 * 是否限制库存 0:限制；1:不限制
 		 */
 		private Integer limitSurplusFlag;
+
+        /**
+         * 当前活动状态：1进行中，2未开始，3已结束，4已停用
+         */
+        private Byte currentState;
 }

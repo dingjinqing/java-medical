@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.coupon;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

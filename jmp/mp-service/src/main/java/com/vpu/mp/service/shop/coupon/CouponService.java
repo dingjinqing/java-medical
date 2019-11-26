@@ -2,12 +2,14 @@ package com.vpu.mp.service.shop.coupon;
 
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
@@ -106,7 +108,6 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public PageResult<CouponListVo> getCouponList(CouponListParam param) {
-        System.out.println(param);
         SelectJoinStep<Record> select = db().select().from(MRKING_VOUCHER);
 
         //条件查询
@@ -116,6 +117,7 @@ public class CouponService extends ShopBaseService {
         for (CouponListVo list : couponList.dataList) {
             int used = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(list.getId())).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1)).fetchOne().into(Integer.class);
             list.setUsed(used);
+            list.setCurrentState(Util.getActStatus(list.getEnabled(),list.getStartTime(),list.getEndTime()));
         }
         return couponList;
     }
@@ -128,33 +130,31 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public SelectConditionStep<Record> buildOptions(SelectJoinStep<Record> select, CouponListParam param) {
-        SelectConditionStep<Record> sql = select.where(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0));
+        SelectConditionStep<Record> sql = select.where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         if (param.getActName() != null) {
-            sql = sql.and(MRKING_VOUCHER.ACT_NAME.eq(param.getActName()));
+            sql = sql.and(MRKING_VOUCHER.ACT_NAME.contains(param.getActName()));
         }
 
         Timestamp nowDate = new Timestamp(System.currentTimeMillis());
 
-        if (param.getNav() != null) {
+        if (param.getNav() != null && param.getNav() > 0) {
             switch (param.getNav()) {
                 //进行中
                 case 1:
                     sql = sql.and(MRKING_VOUCHER.START_TIME.le(nowDate)).and(MRKING_VOUCHER.END_TIME.ge(nowDate))
-                            .and(MRKING_VOUCHER.ENABLED.eq((byte) 1)).and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0));
+                            .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL));
                     break;
                 //未开始
                 case 2:
-                    sql = sql.and(MRKING_VOUCHER.START_TIME.ge(nowDate)).and(MRKING_VOUCHER.ENABLED.eq((byte) 1))
-                            .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0));
+                    sql = sql.and(MRKING_VOUCHER.START_TIME.ge(nowDate)).and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL));
                     break;
                 //已过期
                 case 3:
-                    sql = sql.and(MRKING_VOUCHER.END_TIME.le(nowDate)).and(MRKING_VOUCHER.ENABLED.eq((byte) 1))
-                            .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0));
+                    sql = sql.and(MRKING_VOUCHER.END_TIME.le(nowDate)).and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL));
                     break;
                 //已停用
                 case 4:
-                    sql = sql.and(MRKING_VOUCHER.ENABLED.eq((byte) 0));
+                    sql = sql.and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_DISABLED));
                     break;
                 default:
 
