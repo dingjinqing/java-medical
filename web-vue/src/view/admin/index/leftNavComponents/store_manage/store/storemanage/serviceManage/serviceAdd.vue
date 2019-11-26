@@ -317,6 +317,7 @@
 
 <script>
 import { getAllServiceCats, addService, editService, updateService } from '@/api/admin/storeManage/storemanage/serviceManage'
+import('@/util/date')
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'),
@@ -339,6 +340,7 @@ export default {
         storeId: '',
         serviceName: '',
         servicePrice: 0,
+        serviceSubsist: '',
         catId: '',
         serviceShelf: 1,
         serviceImg: '',
@@ -382,8 +384,8 @@ export default {
   watch: {
     'form.dateInterval': function (val) {
       if (val && Array.isArray(val) && val.length === 2) {
-        this.form.startDate = val[0]
-        this.form.endDate = val[1]
+        this.form.startDate = val[0].format('yyyy-MM-dd hh:mm:ss')
+        this.form.endDate = val[1].format('yyyy-MM-dd hh:mm:ss')
       } else {
         this.form.startDate = ''
         this.form.endDate = ''

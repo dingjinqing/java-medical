@@ -41,13 +41,16 @@ export default {
       handler (newName) {
         console.log(newName)
       }
+    },
+    '$route.name': function (newVal) {
+      console.log('route', newVal)
+      this.initStatus()
     }
   },
   created () {
     this.id = this.$route.query.id
     this.businessHours = this.$route.query.businessHours
     this.langDefault()
-    this.initStatus()
   },
   mounted () {
   },
