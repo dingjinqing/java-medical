@@ -566,7 +566,7 @@ orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
             , STORE_SERVICE.SERVICE_SUBSIST
             , STORE_SERVICE.SERVICE_IMG
             , STORE.STORE_NAME
-            , DslPlus.jsonExtract(STORE.STORE_IMGS, "$[0]")
+            , DslPlus.jsonExtract(STORE.STORE_IMGS, "$[0]").as("storeImg")
             , STORE.PROVINCE_CODE
             , STORE.CITY_CODE
             , STORE.DISTRICT_CODE
