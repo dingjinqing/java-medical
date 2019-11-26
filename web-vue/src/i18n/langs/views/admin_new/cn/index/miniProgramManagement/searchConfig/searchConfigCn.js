@@ -21,7 +21,7 @@ export const cn = {
     custom: '自定义'
   },
   rightSearchHistory: {
-    title: '默认历史',
+    title: '搜索历史',
     on: '已开启',
     off: '已关闭',
     tips: '启用后，可方便用户搜索'
@@ -40,5 +40,6 @@ export const cn = {
     newGoods: '新建商品推荐',
     goodsManage: '商品管理推荐'
   },
+  maxHotWords: '最多只能添加十个热词',
   save: '保存'
 }

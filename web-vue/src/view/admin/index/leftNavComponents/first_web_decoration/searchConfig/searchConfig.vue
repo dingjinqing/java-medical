@@ -89,7 +89,7 @@
             <span :style="{'margin-left': '20px', 'color': '#606266'}">
               {{this.isOpenHistory === true ? $t('searchConfig.rightSearchHistory.on') : $t('searchConfig.rightSearchHistory.off')}}
             </span>
-            <span class="ifUse">{{$t('searchConfig.rightSearchHistory.title')}}</span>
+            <span class="ifUse">{{$t('searchConfig.rightSearchHistory.tips')}}</span>
           </div>
         </section>
 
@@ -100,11 +100,10 @@
             <el-switch
               v-model="isOpenHotWords"
               active-color="#f7931e"
-              inactive-color="#ff4949"
             >
             </el-switch>
             <span :style="{'margin-left': '20px', 'color': '#606266'}">
-              {{this.isOpenHotWords === true ? $t('searchConfig.searchHotWords.on') : $t('searchConfig.searchHotWords.on')}}
+              {{this.isOpenHotWords === true ? $t('searchConfig.searchHotWords.on') : $t('searchConfig.searchHotWords.off')}}
             </span>
             <span class="ifUse">{{$t('searchConfig.searchHotWords.tips')}}</span>
             <!-- 添加热词按钮 -->
@@ -171,10 +170,10 @@ export default {
     return {
       titleAction: 1,
       isOpenHistory: true,
-      isOpenHotWords: true,
+      isOpenHotWords: false,
       titleCustom: '',
-      hotWords: [''],
-      hotWordsList: [''],
+      hotWords: [],
+      hotWordsList: [],
       itemList: []
     }
   },
@@ -186,7 +185,9 @@ export default {
         this.titleAction = content.title_action
         this.titleCustom = content.title_custom
         this.isOpenHistory = Boolean(content.is_open_history)
+        console.log(this.isOpenHistory)
         this.isOpenHotWords = Boolean(content.is_open_hot_words)
+        console.log(this.isOpenHotWords)
         this.hotWordsList = content.hot_words
         // console.log(this.titleAction, this.title_custom, this.is_open_history, this.is_open_hot_words, this.hot_words)
       })
@@ -194,7 +195,7 @@ export default {
     // 添加热词事件
     handleBtn () {
       if (this.hotWordsList.length > 9) {
-        this.$message.warning('最多只能添加十个热词')
+        this.$message.warning(this.$t('searchConfig.maxHotWords'))
       } else {
         let obj = ''
         this.hotWordsList.push(obj)
@@ -209,12 +210,12 @@ export default {
     },
     handleNewGoods () {
       this.$router.push({
-        path: '/admin/home/main/goodsManage/goodsRecommend'
+        path: '/admin/home/main/goodsManage/goodsRecommend/add'
       })
     },
     handleGoodsManage () {
       this.$router.push({
-        path: '/admin/home/main/goodsManage/evaluationManagement'
+        path: '/admin/home/main/goodsManage/goodsRecommend'
       })
     },
     // 保存按钮 -> 提交数据
@@ -319,7 +320,7 @@ export default {
           }
           .ifUse {
             color: #999;
-            margin-left: 30px;
+            margin-left: 20px;
           }
           .btn {
             margin: 20px 0;
