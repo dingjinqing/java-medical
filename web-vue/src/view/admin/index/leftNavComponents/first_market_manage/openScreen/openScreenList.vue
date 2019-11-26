@@ -82,13 +82,50 @@
         >
           <template slot-scope="{row}">
             <div class="iconWrap">
-              <el-tooltip content="编辑">
+              <el-tooltip
+                v-show="row.status === 1 || row.status === 2"
+                content="编辑"
+                placement="top"
+              >
                 <span
                   class="el-icon-edit-outline iconSpan"
                   @click="edit('edit', row)"
                 ></span>
               </el-tooltip>
-              <el-tooltip content="删除">
+              <el-tooltip
+                content="活动明细"
+                placement="top"
+              >
+                <span
+                  class="iconfont iconmingxi1 iconSpan"
+                  @click="edit('detail', row)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                v-show="row.status === 1 || row.status === 2"
+                content="停用"
+                placement="top"
+              >
+                <span
+                  class="iconfont icontingyong iconSpan"
+                  @click="edit('stop', row)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                v-show="row.status === 4"
+                content="启用"
+                placement="top"
+              >
+                <span
+                  class="iconfont iconqiyong iconSpan"
+                  @click="edit('start', row)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                v-show="row.status === 3 || row.status === 4"
+                content="删除"
+                placement="top"
+              >
                 <span
                   class="el-icon-delete iconSpan"
                   @click="edit('delete', row)"
@@ -108,7 +145,7 @@
 </template>
 
 <script>
-import { getOpenScreenList } from '@/api/admin/marketManage/openScreen.js'
+import { getOpenScreenList, disableOpenScreenApi, enableOpenScreenApi, deleteOpenScreenApi } from '@/api/admin/marketManage/openScreen.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -125,7 +162,7 @@ export default {
       activeName: 'second',
       tableData: [],
       queryParams: {
-        status: 2
+        nvaType: 1
       },
       pageParams: {}
     }
@@ -149,17 +186,20 @@ export default {
     filterStatus (status) {
       let text = ''
       switch (status) {
-        case 0:
+        case 1:
           text = '进行中'
           break
-        case 1:
+        case 2:
           text = '未开始'
           break
-        case 2:
+        case 3:
           text = '已过期'
           break
-        case 3:
+        case 4:
           text = '已停用'
+          break
+        default:
+          text = ''
           break
       }
       return text
@@ -198,22 +238,22 @@ export default {
       let status = ''
       switch (tab.name) {
         case 'first':
-          status = ''
-          break
-        case 'second':
           status = 0
           break
-        case 'third':
+        case 'second':
           status = 1
           break
-        case 'fourth':
+        case 'third':
           status = 2
           break
-        case 'fifth':
+        case 'fourth':
           status = 3
           break
+        case 'fifth':
+          status = 4
+          break
       }
-      this.$set(this.queryParams, 'status', status)
+      this.$set(this.queryParams, 'nvaType', status)
       this.initDataList()
     },
     initDataList () {
@@ -221,17 +261,53 @@ export default {
       getOpenScreenList(params).then(res => {
         if (res.error === 0) {
           console.log(res)
-          this.tableData = [...res.content.dataList]
+          this.tableData = res.content.dataList.map(item => {
+            if (item.endDate > new Date()) {
+              item.expired = true
+            }
+            item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+            return item
+          })
           this.pageParams = Object.assign({}, res.content.page)
         }
       })
     },
     edit (opera, row) {
-      console.log(row)
+      let id = row.id
       switch (opera) {
         case 'edit':
+          this.$router.push({
+            name: 'open_screen_add',
+            query: {
+              id: id
+            }
+          })
+          break
+        case 'detail':
+          this.$router.push({
+            name: 'open_screen_detail',
+            query: {
+              id: id
+            }
+          })
+          break
+        case 'stop':
+          this.$confirm('确认要停用该活动吗?', '提示'
+          ).then(() => {
+            this.stopActivity(id)
+          })
+          break
+        case 'start':
+          this.$confirm('确认要启用该活动吗?', '提示'
+          ).then(() => {
+            this.enableActivity(id)
+          })
           break
         case 'delete':
+          this.$confirm('确认要删除该活动吗?', '提示'
+          ).then(() => {
+            this.deleteActivity(id)
+          })
           break
       }
     },
@@ -239,12 +315,52 @@ export default {
       this.$router.push({
         name: 'open_screen_add'
       })
+    },
+    stopActivity (id) {
+      let params = {
+        id: id
+      }
+      disableOpenScreenApi(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success(res.message)
+          this.initDataList()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    enableActivity (id) {
+      let params = {
+        id: id
+      }
+      enableOpenScreenApi(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success(res.message)
+          this.initDataList()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    deleteActivity (id) {
+      let params = {
+        id: id
+      }
+      deleteOpenScreenApi(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success(res.message)
+          this.initDataList()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .container {
   padding: 10px;
   width: 100%;
@@ -258,6 +374,7 @@ export default {
   .iconSpan {
     font-size: 22px;
     color: #5a8bff;
+    cursor: pointer;
   }
   .filter-list {
     padding: 15px;

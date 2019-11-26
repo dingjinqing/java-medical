@@ -773,6 +773,17 @@ const routes = [
     },
     component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/openScreen/openScreenAdd')
   },
+  // 开屏有礼活动明细
+  {
+    path: '/admin/home/main/openScreen/detail',
+    name: 'open_screen_detail',
+    meta: {
+      crumbTitle: 'router.open_screen_detail',
+      meta: 'first_market_manage',
+      category: 'market_gifted'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/openScreen/openScreenDetail')
+  },
   // 首单特惠
   {
     path: '/admin/home/main/firstSpecial/list',

@@ -13,6 +13,7 @@
         >
           <el-button
             type="primary"
+            size="small"
             class="barginBtn"
           >添加拼团抽奖活动</el-button>
         </el-tab-pane>

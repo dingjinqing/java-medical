@@ -2,7 +2,7 @@
   <!-- 幸运大抽奖下拉组件 -->
   <div>
     <el-select
-      v-model="value"
+      v-model="selectValue"
       @change="changeHandle"
       style="width:170px;"
       size="small"
@@ -46,6 +46,16 @@ export default {
       selects: []
     }
   },
+  computed: {
+    selectValue: {
+      get () {
+        return this.value
+      },
+      set (val) {
+        this.$emit('change', val)
+      }
+    }
+  },
   mounted () {
     this.initSelectData()
   },
@@ -54,7 +64,7 @@ export default {
       selectPayRewardApi().then(res => {
         if (res.error === 0) {
           console.log(res)
-          this.selects = res.content
+          this.selects = res.content.dataList
         }
       })
     },

@@ -206,6 +206,8 @@ export const cn = {
   package_price_detail: ['营销管理', '打包一口价', '参与明细'],
   // 营销管理 开屏有礼
   open_screen: ['营销管理', '开屏有礼'],
+  // 营销管理 开屏有礼 活动明细
+  open_screen_detail: ['营销管理', '开屏有礼', '活动明细'],
   // 营销管理 首单特惠
   first_special: ['营销管理', '首单特惠'],
   // 营销管理 首单特惠 首单特惠订单

@@ -335,13 +335,13 @@
               >
                 <div
                   class="uploaded-add"
-                  v-if="selectImg"
+                  v-if="form.customizeImgPath"
                   @click="selectImgHandle"
                   @mouseenter="hoverImgHandle"
                   @mouseleave="hoverImgHandle"
                 >
                   <el-image
-                    :src="selectImg.imgUrl"
+                    :src="$imageHost+ '/' + form.customizeImgPath"
                     class="uploaded-img"
                   ></el-image>
                   <p
@@ -350,7 +350,7 @@
                   >重新选择</p>
                 </div>
                 <div
-                  v-if="!selectImg"
+                  v-if="!form.customizeImgPath"
                   class="upload-add"
                   :style="'background-image:url('+$imageHost+'/image/admin/btn_add.png);'"
                   @click="selectImgHandle"
@@ -432,7 +432,7 @@
 </template>
 
 <script>
-import { addOpenScreen } from '@/api/admin/marketManage/openScreen.js'
+import { addOpenScreen, queryOpenScreen, updateOpenScreen } from '@/api/admin/marketManage/openScreen.js'
 import('@/util/date')
 export default {
   components: {
@@ -449,6 +449,7 @@ export default {
       callback()
     }
     return {
+      id: '',
       images: {
         show_score: this.$imageHost + '/image/admin/activity_score.jpg', // 积分
         show_coupon: this.$imageHost + '/image/admin/activity_coupon.jpg', // 优惠券，分裂优惠券
@@ -536,26 +537,70 @@ export default {
     }
   },
   mounted () {
+    if (this.$route.query.id) {
+      this.id = this.$route.query.id
+      this.initDetail()
+    }
   },
   methods: {
+    initDetail () {
+      let params = {
+        id: this.id
+      }
+      queryOpenScreen(params).then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+          this.form = Object.assign({}, this.form, res.content)
+          if (res.content.startDate && res.content.endDate) {
+            this.dateInterval = [new Date(res.content.startDate), new Date(res.content.endDate)]
+          }
+          if (res.content.mrkingVoucherId && res.content.couponView && res.content.couponView.length > 0) {
+            if (res.content.activityAction === 3) {
+              this.couponSelected = res.content.couponView
+            } else if (res.content.activityAction === 6) {
+              this.disCouponSelected = res.content.couponView
+            }
+          }
+        }
+      })
+    },
     saveOpenScreenHandle () {
       this.$refs.openScreenForm.validate(valid => {
         if (valid) {
           let params = Object.assign({}, this.form)
-          addOpenScreen(params).then(res => {
-            if (res.error === 0) {
-              console.log(res.content)
-              this.$message.success(res.message)
-              this.$router.push({
-                name: 'market_gifted'
-              })
-            } else {
-              this.$message.error(res.message)
-            }
-          })
+          if (this.id) {
+            this.updateRequest(params)
+          } else {
+            this.addRequest(params)
+          }
         } else {
           console.log('submit error')
           return false
+        }
+      })
+    },
+    addRequest (params) {
+      addOpenScreen(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success(res.message)
+          this.$router.push({
+            name: 'market_gifted'
+          })
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    updateRequest (params) {
+      params.id = this.id
+      updateOpenScreen(params).then(res => {
+        if (res.error === 0) {
+          this.$message.success(res.message)
+          this.$router.push({
+            name: 'market_gifted'
+          })
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
