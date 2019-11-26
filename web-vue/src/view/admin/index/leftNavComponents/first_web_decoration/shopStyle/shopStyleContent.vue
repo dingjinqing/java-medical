@@ -33,6 +33,7 @@
             :predefine="predefineColors"
             v-if="index===6?true:false"
             size='small'
+            @change="headleChangeColorLeft()"
           >
           </el-color-picker>
           <el-color-picker
@@ -41,6 +42,7 @@
             :predefine="predefineColors"
             v-if="index===6?true:false"
             size='small'
+            @change="headleChangeColorRight()"
           >
           </el-color-picker>
         </div>
@@ -149,8 +151,8 @@ Vue.use(vcolorpicker)
 export default {
   data () {
     return {
-      colorLeft_: '#5b9ea4',
-      colorRight: '#324047',
+      colorLeft_: '',
+      colorRight: '',
       colorDataList: [],
       choiseId: '',
       colorLeft_color: 'color: rgb(255, 102, 102)',
@@ -216,8 +218,10 @@ export default {
           this.choiseId = res.content.shopStyleId
           if (res.content && res.content.shopStyleId === 6) {
             this.choiseId = res.content.shopStyleId
-            let leftColor = res.content.shopStyleValue.split(',')[0]
-            let RightColor = res.content.shopStyleValue.split(',')[1]
+            let leftColor = res.content.shopStyleValue.split(',')[0] + ',' + res.content.shopStyleValue.split(',')[1] + ',' + res.content.shopStyleValue.split(',')[2] + ',' + res.content.shopStyleValue.split(',')[3]
+            let RightColor = res.content.shopStyleValue.split(',')[4] + ',' + res.content.shopStyleValue.split(',')[5] + ',' + res.content.shopStyleValue.split(',')[6] + ',' + res.content.shopStyleValue.split(',')[7]
+            this.colorLeft_ = leftColor
+            this.colorRight = RightColor
             console.log(leftColor, RightColor)
             // 配色选项初始化
             this.defaultColorleft = leftColor
@@ -234,6 +238,7 @@ export default {
             this.custom_colorLeft = this.colorLeft
             this.custom_middleLeft = this.middleLeft
             this.custom_rightBorder = this.rightBorder
+            this.custom_btnLeft_background = this.btnLeft_background
             this.custom_btnRight_background = this.btnRight_background
           } else {
             this.changeColor(res.content.shopStyleId)
@@ -310,32 +315,32 @@ export default {
       }
     },
     // 自定义颜色改Left
-    // headleChangeColorLeft () {
-    //   console.log(this.colorLeft_)
-    //   console.log(this.colorLeft_color)
-    //   this.ToRgba(this.colorLeft_, 0.2)
-    //   this.colorLeft_color = 'color:' + this.colorLeft_
-    //   this.colorLeft = 'background:' + this.ToRgba(this.colorLeft_, 0.2) + ';color:' + this.colorLeft_ + ';border:1px solid ' + this.ToRgba(this.colorLeft_, 0.4)
-    //   this.middleLeft = 'color:' + this.colorLeft_ + ';border: 1px solid' + this.ToRgba(this.colorLeft_, 0.4)
-    //   this.rightBorder = 'border-bottom: 1px solid ' + this.ToRgba(this.colorLeft_, 0.4) + '; color:' + this.colorLeft_
-    //   this.btnRight_background = 'background:' + this.colorLeft_
-    //   // 自定义颜色存储
-    //   this.custom_colorLeft_color = this.colorLeft_color
-    //   this.custom_colorLeft = this.colorLeft
-    //   this.custom_middleLeft = this.middleLeft
-    //   this.custom_rightBorder = this.rightBorder
+    headleChangeColorLeft () {
+      console.log(this.colorLeft_)
+      console.log(this.colorLeft_color)
+      this.ToRgba(this.colorLeft_, 0.2)
+      this.colorLeft_color = 'color:' + this.colorLeft_
+      this.colorLeft = 'background:' + this.ToRgba(this.colorLeft_, 0.2) + ';color:' + this.colorLeft_ + ';border:1px solid ' + this.ToRgba(this.colorLeft_, 0.4)
+      this.middleLeft = 'color:' + this.colorLeft_ + ';border: 1px solid' + this.ToRgba(this.colorLeft_, 0.4)
+      this.rightBorder = 'border-bottom: 1px solid ' + this.ToRgba(this.colorLeft_, 0.4) + '; color:' + this.colorLeft_
+      this.btnRight_background = 'background:' + this.colorLeft_
+      // 自定义颜色存储
+      this.custom_colorLeft_color = this.colorLeft_color
+      this.custom_colorLeft = this.colorLeft
+      this.custom_middleLeft = this.middleLeft
+      this.custom_rightBorder = this.rightBorder
 
-    //   this.custom_btnRight_background = this.btnRight_background
+      this.custom_btnRight_background = this.btnRight_background
 
-    //   this.choiseId = 6
-    // },
-    // // 自定义颜色改Right
-    // headleChangeColorRight () {
-    //   console.log(this.colorRight)
-    //   this.btnLeft_background = 'background:' + this.colorRight
-    //   this.custom_btnLeft_background = this.btnLeft_background
-    //   this.choiseId = 6
-    // },
+      this.choiseId = 6
+    },
+    // 自定义颜色改Right
+    headleChangeColorRight () {
+      console.log(this.colorRight)
+      this.btnLeft_background = 'background:' + this.colorRight
+      this.custom_btnLeft_background = this.btnLeft_background
+      this.choiseId = 6
+    },
     // 16进制转换rgba
     ToRgba (str, n) {
       // 十六进制颜色值的正则表达式
