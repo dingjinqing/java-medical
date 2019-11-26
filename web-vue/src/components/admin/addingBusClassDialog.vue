@@ -186,7 +186,7 @@ export default {
         if (res.error === 0) {
           let data = ''
           if (flag === 2) {
-            data = res.content.sysCates
+            data = res.content.goodsCategories
           } else {
             data = res.content.goodsSorts
           }
