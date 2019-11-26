@@ -172,7 +172,7 @@ public class ServiceCommentService extends ShopBaseService {
     }
 
     /**
-     * Gets comment by order id.获取订单评价
+     * Gets comment by order id.获取订单评价(审核状态为已通过的)
      *
      * @param orderSn the order sn
      * @return the comment by order id
@@ -180,7 +180,8 @@ public class ServiceCommentService extends ShopBaseService {
     public ServiceCommentVo getCommentByOrderSn(String orderSn) {
         return db().select(COMMENT_SERVICE.asterisk(), SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD).from(COMMENT_SERVICE)
             .leftJoin(SERVICE_ORDER).on(COMMENT_SERVICE.ORDER_SN.eq(SERVICE_ORDER.ORDER_SN))
-            .where(COMMENT_SERVICE.ORDER_SN.eq(orderSn)).fetchOneInto(ServiceCommentVo.class);
+            .where(COMMENT_SERVICE.ORDER_SN.eq(orderSn)).and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE))
+            .fetchOneInto(ServiceCommentVo.class);
     }
 
     /**

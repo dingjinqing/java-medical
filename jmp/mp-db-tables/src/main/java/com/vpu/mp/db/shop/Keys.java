@@ -290,6 +290,7 @@ public class Keys {
     public static final UniqueKey<CodeRecord> KEY_B2C_CODE_PRIMARY = UniqueKeys0.KEY_B2C_CODE_PRIMARY;
     public static final UniqueKey<CommentGoodsAnswerRecord> KEY_B2C_COMMENT_GOODS_ANSWER_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_GOODS_ANSWER_PRIMARY;
     public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_PRIMARY = UniqueKeys0.KEY_B2C_COMMENT_SERVICE_PRIMARY;
+    public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_ORDER_SN = UniqueKeys0.KEY_B2C_COMMENT_SERVICE_ORDER_SN;
     public static final UniqueKey<CouponPackRecord> KEY_B2C_COUPON_PACK_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PACK_PRIMARY;
     public static final UniqueKey<CouponPayrewardRecordRecord> KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY;
     public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY = UniqueKeys0.KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY;
@@ -750,6 +751,7 @@ public class Keys {
         public static final UniqueKey<CodeRecord> KEY_B2C_CODE_PRIMARY = Internal.createUniqueKey(Code.CODE, "KEY_b2c_code_PRIMARY", Code.CODE.CODE_ID);
         public static final UniqueKey<CommentGoodsAnswerRecord> KEY_B2C_COMMENT_GOODS_ANSWER_PRIMARY = Internal.createUniqueKey(CommentGoodsAnswer.COMMENT_GOODS_ANSWER, "KEY_b2c_comment_goods_answer_PRIMARY", CommentGoodsAnswer.COMMENT_GOODS_ANSWER.ANSWER_ID);
         public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_PRIMARY = Internal.createUniqueKey(CommentService.COMMENT_SERVICE, "KEY_b2c_comment_service_PRIMARY", CommentService.COMMENT_SERVICE.ID);
+        public static final UniqueKey<CommentServiceRecord> KEY_B2C_COMMENT_SERVICE_ORDER_SN = Internal.createUniqueKey(CommentService.COMMENT_SERVICE, "KEY_b2c_comment_service_order_sn", CommentService.COMMENT_SERVICE.ORDER_SN);
         public static final UniqueKey<CouponPackRecord> KEY_B2C_COUPON_PACK_PRIMARY = Internal.createUniqueKey(CouponPack.COUPON_PACK, "KEY_b2c_coupon_pack_PRIMARY", CouponPack.COUPON_PACK.ID);
         public static final UniqueKey<CouponPayrewardRecordRecord> KEY_B2C_COUPON_PAYREWARD_RECORD_PRIMARY = Internal.createUniqueKey(CouponPayrewardRecord.COUPON_PAYREWARD_RECORD, "KEY_b2c_coupon_payreward_record_PRIMARY", CouponPayrewardRecord.COUPON_PAYREWARD_RECORD.ID);
         public static final UniqueKey<CustomerAvailCouponsRecord> KEY_B2C_CUSTOMER_AVAIL_COUPONS_PRIMARY = Internal.createUniqueKey(CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS, "KEY_b2c_customer_avail_coupons_PRIMARY", CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS.ID);

@@ -657,10 +657,11 @@ orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
      */
     public void createComment(ServiceCommentVo param) {
         // 门店服务评论配置：0不用审核    1先发后审   2先审后发
-        Byte flag = storeConfigService.getServiceComment();
+        Byte commConfig = storeConfigService.getServiceComment();
         CommentServiceRecord serviceRecord = new CommentServiceRecord();
         FieldsUtil.assignNotNull(param, serviceRecord);
-        serviceRecord.setFlag(flag);
+        // 0:未审批,1:审批通过,2:审批未通过（不用审核时评价状态直接为通过，否则为待审核）
+        serviceRecord.setFlag(BYTE_ZERO.equals(commConfig) ? BYTE_ONE : BYTE_ZERO);
         commentService.createComment(serviceRecord);
     }
 }

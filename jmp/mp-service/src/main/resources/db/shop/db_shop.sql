@@ -1743,25 +1743,25 @@ create table `b2c_share_split`
 -- drop table if exists `b2c_comment_service`;
 create table `b2c_comment_service`
 (
-    `id`            int(11)      not null auto_increment,
-    `shop_id`       int(11)      not null comment '店铺id',
-    `store_id`      int(11)      not null comment '门店id',
-    `technician_id` mediumint(8) not null comment '技师id',
-    `user_id`       int(11)      not null comment '用户id',
-    `commstar`      tinyint(1)   not null comment '评价星级',
-    `user_score`    int(11)      not null comment '评价可得积分',
-    `anonymousflag` tinyint(1)   not null comment '匿名状态 0.未匿名；1.匿名',
-    `commtag`       varchar(100) not null default '' comment '评价标签',
-    `service_id`    int(11)      not null comment '服务id',
-    `order_sn`      varchar(20)  not null comment '订单编号',
-    `comm_note`     varchar(255) not null comment '评论内容',
-    `comm_img`      varchar(1000)         default null comment '评论图片',
-    `create_time`   timestamp             default current_timestamp,
-    `update_time`   timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
-    `flag`          tinyint(1)   not null default '0' comment '0:未审批,1:审批通过,2:审批未通过',
-    `del_flag`      tinyint(1)   not null default '0' comment '1:删除',
-    primary key (`id`),
-    key `service_id` (`service_id`) USING BTREE
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `store_id` int(11) NOT NULL COMMENT '门店id',
+  `technician_id` int(11) NOT NULL COMMENT '技师id',
+  `user_id` int(11) NOT NULL COMMENT '用户id',
+  `commstar` tinyint(1) NOT NULL COMMENT '评价星级',
+  `user_score` int(11) DEFAULT '0' COMMENT '评价可得积分',
+  `anonymousflag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '匿名状态 0.未匿名；1.匿名',
+  `commtag` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '评价标签',
+  `service_id` int(11) NOT NULL COMMENT '服务id',
+  `order_sn` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '订单编号',
+  `comm_note` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '评论内容',
+  `comm_img` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT '[]' COMMENT '评论图片',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未审批,1:审批通过,2:审批未通过',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1:删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `order_sn` (`order_sn`) USING BTREE,
+  KEY `service_id` (`service_id`) USING BTREE
 );
 
 -- -- 门店买单订单表

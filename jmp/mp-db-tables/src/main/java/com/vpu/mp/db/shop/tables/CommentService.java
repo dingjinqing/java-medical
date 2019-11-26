@@ -31,7 +31,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentService extends TableImpl<CommentServiceRecord> {
 
-    private static final long serialVersionUID = 174559552;
+    private static final long serialVersionUID = -1355114884;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_comment_service</code>
@@ -50,11 +50,6 @@ public class CommentService extends TableImpl<CommentServiceRecord> {
      * The column <code>mini_shop_471752.b2c_comment_service.id</code>.
      */
     public final TableField<CommentServiceRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_comment_service.shop_id</code>. 店铺id
-     */
-    public final TableField<CommentServiceRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "店铺id");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_service.store_id</code>. 门店id
@@ -79,12 +74,12 @@ public class CommentService extends TableImpl<CommentServiceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_comment_service.user_score</code>. 评价可得积分
      */
-    public final TableField<CommentServiceRecord, Integer> USER_SCORE = createField("user_score", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "评价可得积分");
+    public final TableField<CommentServiceRecord, Integer> USER_SCORE = createField("user_score", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "评价可得积分");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_service.anonymousflag</code>. 匿名状态 0.未匿名；1.匿名
      */
-    public final TableField<CommentServiceRecord, Byte> ANONYMOUSFLAG = createField("anonymousflag", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "匿名状态 0.未匿名；1.匿名");
+    public final TableField<CommentServiceRecord, Byte> ANONYMOUSFLAG = createField("anonymousflag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "匿名状态 0.未匿名；1.匿名");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_service.commtag</code>. 评价标签
@@ -109,7 +104,7 @@ public class CommentService extends TableImpl<CommentServiceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_comment_service.comm_img</code>. 评论图片
      */
-    public final TableField<CommentServiceRecord, String> COMM_IMG = createField("comm_img", org.jooq.impl.SQLDataType.VARCHAR(1000), this, "评论图片");
+    public final TableField<CommentServiceRecord, String> COMM_IMG = createField("comm_img", org.jooq.impl.SQLDataType.VARCHAR(1000).defaultValue(org.jooq.impl.DSL.inline("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "评论图片");
 
     /**
      * The column <code>mini_shop_471752.b2c_comment_service.create_time</code>.
@@ -177,7 +172,7 @@ public class CommentService extends TableImpl<CommentServiceRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.COMMENT_SERVICE_PRIMARY, Indexes.COMMENT_SERVICE_SERVICE_ID);
+        return Arrays.<Index>asList(Indexes.COMMENT_SERVICE_ORDER_SN, Indexes.COMMENT_SERVICE_PRIMARY, Indexes.COMMENT_SERVICE_SERVICE_ID);
     }
 
     /**
@@ -201,7 +196,7 @@ public class CommentService extends TableImpl<CommentServiceRecord> {
      */
     @Override
     public List<UniqueKey<CommentServiceRecord>> getKeys() {
-        return Arrays.<UniqueKey<CommentServiceRecord>>asList(Keys.KEY_B2C_COMMENT_SERVICE_PRIMARY);
+        return Arrays.<UniqueKey<CommentServiceRecord>>asList(Keys.KEY_B2C_COMMENT_SERVICE_PRIMARY, Keys.KEY_B2C_COMMENT_SERVICE_ORDER_SN);
     }
 
     /**
