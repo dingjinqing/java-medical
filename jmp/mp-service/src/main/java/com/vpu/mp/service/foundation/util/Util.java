@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -645,4 +646,24 @@ public class Util {
             return source;
         }
     }
+
+	/**
+	 * 活动状态
+	 *
+	 * @return
+	 */
+	public static Byte getActStatus(Byte status,Timestamp startTime,Timestamp endTime){
+		Timestamp now  =DateUtil.getLocalDateTime();
+		if (status.equals(BaseConstant.NAVBAR_TYPE_ONGOING)){
+			if (now.compareTo(startTime)<0){
+				return BaseConstant.NAVBAR_TYPE_NOT_STARTED;
+			}else if (now.compareTo(endTime)>0){
+				return BaseConstant.NAVBAR_TYPE_FINISHED;
+			}else {
+				return BaseConstant.NAVBAR_TYPE_ONGOING;
+			}
+		}else {
+			return BaseConstant.NAVBAR_TYPE_DISABLED;
+		}
+	}
 }
