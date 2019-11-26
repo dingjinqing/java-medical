@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -247,5 +248,26 @@ public class CartService extends ShopBaseService {
      */
     public CartRecord getInfoByRecid(Long recid) {
     	return db().selectFrom(CART).where(CART.REC_ID.eq(recid)).fetchAny();
+    }
+
+    /**
+     * 选中购物车中的商品
+     * @param userId
+     * @param recId
+     * @return
+     */
+    public byte switchCheckedProduct(Integer userId, Integer recId) {
+        CartRecord cartRecord =db().newRecord(CART);
+        cartRecord.setRecId(recId.longValue());
+        cartRecord.setUserId(userId);
+        cartRecord.refresh();
+        if (Objects.equals(cartRecord.getIsChecked(), CartConstant.CART_IS_CHECKED)) {
+          cartRecord.setIsChecked(CartConstant.CART_NO_CHECKED);
+          cartRecord.update();
+            return CartConstant.CART_NO_CHECKED;
+        }
+        cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);
+        cartRecord.update();
+        return CartConstant.CART_IS_CHECKED;
     }
 }

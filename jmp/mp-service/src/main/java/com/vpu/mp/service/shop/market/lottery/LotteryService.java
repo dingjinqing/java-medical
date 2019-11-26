@@ -64,12 +64,11 @@ public class LotteryService extends ShopBaseService {
      * @return lotteryId
      */
     public Integer addLottery(LotteryParam param) {
-        param.setId(null);
         LotteryRecord record = db().newRecord(LOTTERY, param);
+        record.setId(null);
         record.insert();
         param.getPrizeList().forEach(prize -> {
             LotteryPrizeRecord prizeRecord = db().newRecord(LOTTERY_PRIZE, prize);
-            prizeRecord.setId(null);
             prizeRecord.setLotteryId(record.getId());
             prizeRecord.insert();
         });

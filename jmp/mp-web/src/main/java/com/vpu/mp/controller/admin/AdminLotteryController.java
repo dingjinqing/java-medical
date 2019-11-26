@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import org.jooq.Result;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +41,19 @@ public class AdminLotteryController extends AdminBaseController {
      */
     @PostMapping("/list")
     public JsonResult getLotteryList(@RequestBody LotteryPageListParam param){
+        PageResult<LotteryPageListVo> result = shop().lottery.getLotteryList(param);
+        return success(result);
+    }
+
+    /**
+     * 获取可用的抽奖活动列表
+     * @return
+     */
+    @PostMapping("/usableList")
+    public JsonResult getLotteryUsableAllList(){
+        LotteryPageListParam param = new LotteryPageListParam();
+        param.setState(BaseConstant.NAVBAR_TYPE_ONGOING);
+        param.setPageRows(Integer.MAX_VALUE);
         PageResult<LotteryPageListVo> result = shop().lottery.getLotteryList(param);
         return success(result);
     }

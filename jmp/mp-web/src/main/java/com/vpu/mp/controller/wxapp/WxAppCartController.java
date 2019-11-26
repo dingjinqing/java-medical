@@ -2,6 +2,8 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
+import com.vpu.mp.service.pojo.wxapp.cart.CartProductIdParam;
+import com.vpu.mp.service.pojo.wxapp.cart.CartProductIdVo;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppCartListParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
@@ -82,7 +84,7 @@ public class WxAppCartController extends WxAppBaseController {
 
     /**
      * 从购物车删除商品
-     * @param param
+     * @param param rceId
      * @return
      */
     @PostMapping("/removes")
@@ -92,8 +94,19 @@ public class WxAppCartController extends WxAppBaseController {
         return success();
     }
 
-    public JsonResult checked(){
-        return null;
+    /**
+     *  切换选择状态
+     * @param param id
+     * @return IS_CHECKED)
+     */
+    @PostMapping("/switch")
+    public JsonResult checked(@RequestBody @Valid CartProductIdParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        byte flag = shop().cart.switchCheckedProduct(user.getUserId(), param.getRecId());
+        CartProductIdVo cart  =new CartProductIdVo();
+        cart.setRecId(param.getRecId());
+        cart.setIsChecked(flag);
+        return success(cart);
     }
 
 
