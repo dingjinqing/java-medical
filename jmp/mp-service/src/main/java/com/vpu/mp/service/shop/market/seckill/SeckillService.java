@@ -261,9 +261,9 @@ public class SeckillService extends ShopBaseService{
     /**
      * 获取小程序码
      */
-    public ShareQrCodeVo getMpQrCode(Integer skId) throws Exception {
+    public ShareQrCodeVo getMpQrCode(Integer skId) {
 
-        String pathParam="paramId="+skId;
+        String pathParam="sk_id="+skId;
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();

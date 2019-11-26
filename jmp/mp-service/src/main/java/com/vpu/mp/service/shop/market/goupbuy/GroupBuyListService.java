@@ -41,8 +41,6 @@ import com.vpu.mp.service.shop.member.MemberService;
 @Service
 public class GroupBuyListService  extends ShopBaseService {
 
-    private static final Byte USE_STATUS = 1;
-    private static final Byte STOP_STATUS = 0;
     private static final String GROUP_ORDER_NUM = "groupOrderNum";
 
     @Autowired
@@ -60,7 +58,7 @@ public class GroupBuyListService  extends ShopBaseService {
         SelectHavingStep<Record2<Integer, Integer>> table = db()
                 .select(GROUP_BUY_LIST.ACTIVITY_ID, DSL.count(GROUP_BUY_LIST.ID).as(GROUP_ORDER_NUM))
                 .from(GROUP_BUY_LIST)
-                .where(GROUP_BUY_LIST.STATUS.eq(USE_STATUS))
+                .where(GROUP_BUY_LIST.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
                 .groupBy(GROUP_BUY_LIST.ACTIVITY_ID);
 
         SelectConditionStep<? extends Record> records = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.NAME, GOODS.GOODS_NAME, GROUP_BUY_DEFINE.ACTIVITY_TYPE,
@@ -88,21 +86,21 @@ public class GroupBuyListService  extends ShopBaseService {
                     //正在活动
                     records.and(GROUP_BUY_DEFINE.START_TIME.lt(timestamp))
                             .and(GROUP_BUY_DEFINE.END_TIME.gt(timestamp))
-                            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
+                            .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                     break;
                 case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                     //还未开始
                     records.and(GROUP_BUY_DEFINE.START_TIME.gt(timestamp))
-                            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
+                            .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                     break;
                 case BaseConstant.NAVBAR_TYPE_FINISHED:
                     //已经结束
                     records.and(GROUP_BUY_DEFINE.END_TIME.lt(timestamp))
-                            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS));
+                            .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                     break;
                 case BaseConstant.NAVBAR_TYPE_DISABLED:
                     //停用
-                    records.and(GROUP_BUY_DEFINE.STATUS.eq(STOP_STATUS));
+                    records.and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                     break;
                 default:
             }

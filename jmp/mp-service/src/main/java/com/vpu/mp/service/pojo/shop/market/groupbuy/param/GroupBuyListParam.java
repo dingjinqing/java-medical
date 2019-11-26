@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 public class GroupBuyListParam  extends BasePageGroupBuyParam{
 
     /**
-     *  1全部拼团活动 2 进行中 3 未开始 4 已过期 5 已停用
+     *  0全部拼团活动 1进行中 2未开始 3已过期 4已停用
      */
     @NotNull
     private Byte type;
