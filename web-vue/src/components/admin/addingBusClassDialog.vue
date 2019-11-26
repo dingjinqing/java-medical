@@ -2,7 +2,7 @@
   <div class="addingBusClassDialog">
     <div class="addingBusClassDialogMain">
       <el-dialog
-        title="添加商家分类"
+        :title="dialogTitle"
         :visible.sync="dialogVisible"
         width="30%"
         :modal-append-to-body='false'
@@ -98,7 +98,8 @@ export default {
       defaultArr: [],
       sortId: '',
       flag: null,
-      loading: true
+      loading: true,
+      dialogTitle: ''
     }
   },
   watch: {
@@ -178,6 +179,11 @@ export default {
       let params = {
         needGoodsSort: true,
         needSysCategory: true
+      }
+      if (flag === 2) {
+        this.dialogTitle = '添加平台分类'
+      } else {
+        this.dialogTitle = '添加商家分类'
       }
       // 弹窗数据获取
       cateListApi(params).then((res) => {
