@@ -79,8 +79,6 @@ global.wxComponent({
       for (var i = this._loadIndex; i < count; i++) {
         console.log('循环次数', l, i)
         var key = "pageData[" + i + "]";
-        l[i] = data[key] = this._timerConvertModule(d[i])
-        delayed[i] = `c_${l[i].cur_idx}`
         if (!l[i]) {
           console.log('测试')
           // 添加悬浮组件 和 其他固定数量模块
