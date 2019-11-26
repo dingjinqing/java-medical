@@ -8,10 +8,10 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
-import com.vpu.mp.service.pojo.shop.market.coopen.ConpenVo;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListVo;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenParam;
+import com.vpu.mp.service.pojo.shop.market.coopen.CoopenVo;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
@@ -24,7 +24,6 @@ import java.util.List;
 
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-import static com.vpu.mp.service.foundation.data.JsonResultMessage.ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant.COUPON;
 import static com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant.CUSTOMIZE;
 import static com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant.DRAW;
@@ -166,8 +165,8 @@ public class CoopenService extends ShopBaseService {
     /**
      * 获取活动明细
      */
-    public ConpenVo getActivityDetail(Integer id) {
-        ConpenVo conpenVo = getActivity(id).fetchOneInto(ConpenVo.class);
+    public CoopenVo getActivityDetail(Integer id) {
+        CoopenVo conpenVo = getActivity(id).fetchOneInto(CoopenVo.class);
         List<CouponView> couponViewByIds = saas().getShopApp(getShopId()).coupon.getCouponViewByIds(Util.splitValueToList(conpenVo.getMrkingVoucherId()));
         conpenVo.setCouponView(couponViewByIds);
         return conpenVo;

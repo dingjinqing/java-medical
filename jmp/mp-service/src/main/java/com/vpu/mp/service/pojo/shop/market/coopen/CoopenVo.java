@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class ConpenVo {
+public class CoopenVo {
 
 
     private Integer    id;
