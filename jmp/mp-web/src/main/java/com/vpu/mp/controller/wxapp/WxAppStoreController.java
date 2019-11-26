@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -120,10 +121,19 @@ public class WxAppStoreController extends WxAppBaseController{
     }
 
     /**
-     * 门店服务预约订单评价
+     * 获取门店服务预约订单评价
      */
     @PostMapping("/service/reservationComment")
     public JsonResult reservationComment(@RequestBody @Validated(ValidCon.class) ReservationDetail param) {
         return this.success(shop().store.reservation.reservationComment(param.getOrderSn()));
+    }
+
+    /**
+     * 添加门店服务预约订单评价
+     */
+    @PostMapping("/service/createComment")
+    public JsonResult createComment(@RequestBody @Validated(ValidCon.class) ServiceCommentVo param) {
+        shop().store.reservation.createComment(param);
+        return this.success();
     }
 }

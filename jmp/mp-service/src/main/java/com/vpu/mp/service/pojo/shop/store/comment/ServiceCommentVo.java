@@ -1,8 +1,12 @@
 package com.vpu.mp.service.pojo.shop.store.comment;
 
+import com.vpu.mp.service.pojo.wxapp.store.ValidCon;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.sql.Timestamp;
 
 /**
@@ -16,19 +20,25 @@ public class ServiceCommentVo {
 	/**评论ID */
 	private Integer id;
 	/** 门店ID */
-	private Integer storeId;
+    @PositiveOrZero(groups = ValidCon.class)
+    private Integer storeId;
 	/** 订单编号 */
-	private String orderSn;
+    @NotBlank(groups = ValidCon.class)
+    private String orderSn;
 
 	/** 服务ID */
-	private Integer serviceId;
+    @PositiveOrZero(groups = ValidCon.class)
+    private Integer serviceId;
 	/** 服务主图 */
 	private String serviceImg;
 	/** 服务名称 */
 	private String serviceName;
+    private String serviceDate;
+    private String servicePeriod;
 
     /** 用户ID*/
-	private Integer userId;
+    @PositiveOrZero(groups = ValidCon.class)
+    private Integer userId;
 	/** 用户名*/
 	private String username;
 	/** 用户手机号 */
@@ -36,9 +46,11 @@ public class ServiceCommentVo {
 
 
     /** 评价星级 */
-	private Byte commstar;
+    @NotNull(groups = ValidCon.class)
+    private Byte commstar;
 	/** 评论内容 */
-	private String commNote;
+    @NotBlank(groups = ValidCon.class)
+    private String commNote;
 	/** 评论图片*/
 	private String commImg;
 

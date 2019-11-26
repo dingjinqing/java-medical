@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.store.comment;
 
+import com.vpu.mp.db.shop.tables.records.CommentServiceRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
@@ -176,7 +178,18 @@ public class ServiceCommentService extends ShopBaseService {
      * @return the comment by order id
      */
     public ServiceCommentVo getCommentByOrderSn(String orderSn) {
-        return db().selectFrom(COMMENT_SERVICE).where(COMMENT_SERVICE.ORDER_SN.eq(orderSn)).fetchOneInto(ServiceCommentVo.class);
+        return db().select(COMMENT_SERVICE.asterisk(), SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD).from(COMMENT_SERVICE)
+            .leftJoin(SERVICE_ORDER).on(COMMENT_SERVICE.ORDER_SN.eq(SERVICE_ORDER.ORDER_SN))
+            .where(COMMENT_SERVICE.ORDER_SN.eq(orderSn)).fetchOneInto(ServiceCommentVo.class);
+    }
+
+    /**
+     * Create comment.添加评价
+     *
+     * @param record the record
+     */
+    public void createComment(CommentServiceRecord record) {
+        db().executeInsert(record);
     }
 
 }

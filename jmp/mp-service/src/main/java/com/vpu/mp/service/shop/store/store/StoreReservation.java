@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
+import com.vpu.mp.db.shop.tables.records.CommentServiceRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -647,5 +648,19 @@ orderSn.set(serviceOrderService.createServiceOrder(serviceOrder));
      */
     public ServiceCommentVo reservationComment(String orderSn) {
         return commentService.getCommentByOrderSn(orderSn);
+    }
+
+    /**
+     * Create comment.添加预约评价
+     *
+     * @param param the param
+     */
+    public void createComment(ServiceCommentVo param) {
+        // 门店服务评论配置：0不用审核    1先发后审   2先审后发
+        Byte flag = storeConfigService.getServiceComment();
+        CommentServiceRecord serviceRecord = new CommentServiceRecord();
+        FieldsUtil.assignNotNull(param, serviceRecord);
+        serviceRecord.setFlag(flag);
+        commentService.createComment(serviceRecord);
     }
 }
