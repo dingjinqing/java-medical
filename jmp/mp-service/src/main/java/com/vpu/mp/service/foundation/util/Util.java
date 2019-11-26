@@ -647,23 +647,40 @@ public class Util {
         }
     }
 
-	/**
-	 * 活动状态
-	 *
-	 * @return
-	 */
+    /**
+     * 活动状态
+     * @param status 状态
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
 	public static Byte getActStatus(Byte status,Timestamp startTime,Timestamp endTime){
-		Timestamp now  =DateUtil.getLocalDateTime();
-		if (status.equals(BaseConstant.NAVBAR_TYPE_ONGOING)){
-			if (now.compareTo(startTime)<0){
-				return BaseConstant.NAVBAR_TYPE_NOT_STARTED;
-			}else if (now.compareTo(endTime)>0){
-				return BaseConstant.NAVBAR_TYPE_FINISHED;
-			}else {
-				return BaseConstant.NAVBAR_TYPE_ONGOING;
-			}
-		}else {
-			return BaseConstant.NAVBAR_TYPE_DISABLED;
-		}
+        return getActStatus(status,startTime,endTime,BaseConstant.ACTIVITY_NOT_FOREVER);
 	}
+
+    /**
+     *  活动状态
+     * @param status 状态
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param isForever 是否是永久
+     * @return
+     */
+    public static Byte getActStatus(Byte status,Timestamp startTime,Timestamp endTime,Byte isForever){
+        if (BaseConstant.ACTIVITY_NOT_FOREVER.equals(isForever)){
+            Timestamp now  =DateUtil.getLocalDateTime();
+            if (Objects.equals(status, BaseConstant.NAVBAR_TYPE_ONGOING)){
+                if (now.compareTo(startTime)<0){
+                    return BaseConstant.NAVBAR_TYPE_NOT_STARTED;
+                }else if (now.compareTo(endTime)>0){
+                    return BaseConstant.NAVBAR_TYPE_FINISHED;
+                }else {
+                    return BaseConstant.NAVBAR_TYPE_ONGOING;
+                }
+            }else {
+                return BaseConstant.NAVBAR_TYPE_DISABLED;
+            }
+        }
+        return status;
+    }
 }

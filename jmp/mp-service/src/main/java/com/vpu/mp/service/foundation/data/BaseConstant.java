@@ -8,6 +8,7 @@ package com.vpu.mp.service.foundation.data;
  */
 public final  class  BaseConstant {
 
+
     //******************** 营销活动活动*******************/
     /**
      * 活动启用
@@ -114,7 +115,7 @@ public final  class  BaseConstant {
      */
     public final static Byte COUPON_LIMIT_SURPLUS_FLAG_UNLIMITED =1;
 
-    //*********************活动导航栏***************************************/
+    //*********************前段活动状态***************************************/
     /**
      * 进行中
      */
@@ -131,6 +132,16 @@ public final  class  BaseConstant {
      * 已停用
      */
     public final static byte NAVBAR_TYPE_DISABLED= 4;
+
+    //************************活动是否永久有效***************************************/
+    /**
+     * 活动永久有效
+     */
+    public final static Byte ACTIVITY_IS_FOREVER =1;
+    /**
+     * 活动不是永久有效
+     */
+    public final static Byte ACTIVITY_NOT_FOREVER =0;
 
 
 }
