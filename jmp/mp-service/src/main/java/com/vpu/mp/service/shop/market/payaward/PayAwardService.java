@@ -142,6 +142,7 @@ public class PayAwardService extends ShopBaseService {
                 payAward.setAwardContentList(Util.json2Object(payAward.getAwardList(),new TypeReference<List<PayAwardContentBo>>(){},false));
                 payAward.setAwardList(null);
             }
+            payAward.setCurrentState(Util.getActStatus(payAward.getStatus(),payAward.getStartTime(),payAward.getEndTime(),payAward.getTimeType()));
         });
         return pageResult;
     }

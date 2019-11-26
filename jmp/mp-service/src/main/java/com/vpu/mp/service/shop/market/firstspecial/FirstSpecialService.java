@@ -121,6 +121,7 @@ public class FirstSpecialService extends ShopBaseService {
             vo.setOrderAmount(getFirstSpecialActOrderAmount(vo.getId()));
             vo.setUserAmount(getFirstSpecialActUserAmount(vo.getId()));
             vo.setPaymentTotalAmount(getFirstSpecialPaymentTotalAmount(vo.getId()));
+            vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime(),vo.getIsForever()));
         }
 
         return res;
