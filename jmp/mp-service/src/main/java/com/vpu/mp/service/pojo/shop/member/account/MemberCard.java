@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.member.account;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberCard {
 	private Integer id;
 	private String cardName;
+	private Byte cardType;
 	private Byte expireType;
 	private Byte bgType;
 	private String bgColor;
@@ -31,6 +33,13 @@ public class MemberCard {
 	private Integer receiveDay;
 	private Byte dateType;
 	private Byte flag;
+	private String grade;
+	private BigDecimal payFee;
+	private Byte payType;
+	private List<String> exchangCountLegal;
+	private List<String> legal;
+	private Integer legalFlag;
+	
 	
 	/** 创建时间 */
 	private Timestamp createTime;
@@ -54,7 +63,6 @@ public class MemberCard {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String chargeMoney;
 	
-
 	/**
 	 * 设置开关及是否过期
 	 */
@@ -67,8 +75,6 @@ public class MemberCard {
 		/** 卡充值开关 0关闭；1开启 */
 		this.powerCard = (byte) (this.chargeMoney == null ? 0 : 1);
 	}
-
-
 	public MemberCard(Integer id) {
 		super();
 		this.id = id;

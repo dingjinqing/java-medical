@@ -19,6 +19,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_COLOR;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_IMG;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_CTP_COUPON;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_CTP_PACKAGE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DIS_ALL;
@@ -38,6 +40,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_CO
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_DEFAULT;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_CODE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_PWD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_REA_CODE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_REA_PWD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_ALL;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_BAN;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_PART;
@@ -46,10 +50,6 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_SUSE_O
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_REA_CODE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_REA_PWD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_CTP_COUPON;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_CTP_PACKAGE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
@@ -61,8 +61,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import static org.jooq.impl.DSL.count;
 
 import java.math.BigDecimal;
@@ -80,12 +80,12 @@ import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
-import com.vpu.mp.service.pojo.shop.member.card.*;
-import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
+import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -116,17 +116,50 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
+import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
+import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
+import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
+import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
+import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
+import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
+import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
+import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
+import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
+import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+
 
 /**
  *
@@ -1099,17 +1132,86 @@ public class MemberCardService extends ShopBaseService {
 	 *
 	 * @return
 	 */
-	public MemberCardVo getAllCardList() {
+	public MemberCardVo getAllCardList(CardParam param) {
 
-		Result<MemberCardRecord> cardRecords = selectAllMemberCard();
+		Result<MemberCardRecord> cardRecords = selectAllMemberCard(param);
+		
 		MemberCardVo vo = new MemberCardVo();
 		logger().info("正在分类处理");
+		
 		for (MemberCardRecord card : cardRecords) {
 			Byte cardType = card.getCardType();
+			
+			List<String> legal = new ArrayList<>();
+			List<String> exchangCountLegal = new ArrayList<>();
+			Integer legalFlag = 0;
+			if(isNormalCard(cardType) || isGradeCard(cardType)) {
+				if(isNotNull(card.getDiscount())) {
+					logger().info("积分打折");
+					legal.add(""+card.getDiscount());
+					legalFlag = 1;
+				}else if(isNotNull(card.getSorce())) {
+					logger().info("开卡赠送积分");
+					legal.add(""+card.getSorce());
+					legalFlag = 2;
+				}else if(isNotBlank(card.getBuyScore())) {
+					ScoreJson buyScore = Util.parseJson(card.getBuyScore(), ScoreJson.class);
+					Byte offset = buyScore.getOffset();
+					if(!Byte.valueOf((byte)-1).equals(offset)) {
+						if(Byte.valueOf((byte)0).equals(offset) && buyScore.getGoodsMoney().size()>0) {
+							logger().info("购买满多少赠送多少积分");
+							legal.add(""+buyScore.getGoodsMoney().get(0));
+							legal.add(" "+buyScore.getGetScores().get(0));
+							legalFlag = 3;
+						}else {
+							logger().info("购买每满多少赠送多少积分");
+							legal.add(""+buyScore.getPerGoodsMoney());
+							legal.add(""+buyScore.getPerGetScores());
+							legalFlag = 4;
+						}
+					}
+				}else if(isNotNull(card.getSendMoney())){
+					logger().info("开卡赠送多少");
+					legal.add(""+ card.getSendMoney());
+					legalFlag = 5;
+				}else if(isNotBlank(card.getChargeMoney())) {
+					PowerCardJson powerCardJson = Util.parseJson(card.getChargeMoney(), PowerCardJson.class);
+					Byte offsetMoney = powerCardJson.getOffsetMoney();
+					if(Byte.valueOf((byte)0).equals(offsetMoney) && powerCardJson.getMoney().length>0) {
+						logger().info("充值满多少赠送多少");
+						legal.add(""+powerCardJson.getMoney()[0]);
+						legal.add(""+powerCardJson.getGetMoney()[0]);
+						legalFlag = 6;
+					}else if(Byte.valueOf((byte)1).equals(offsetMoney)){
+						logger().info("充值每满多少赠多少");
+						legal.add(""+powerCardJson.getPerMoney());
+						legal.add(""+powerCardJson.getPerGetMoney());
+						legalFlag = 7;
+					}else if(Byte.valueOf((byte)2).equals(offsetMoney)) {
+						logger().info("仅充值");
+						legalFlag = 8;
+					}
+				}
+			}else if(isLimitCard(cardType)) {
+				if(isNotNull(card.getCount())) {
+					logger().info("开卡赠送门店服务机会");
+					legal.add(""+card.getCount());
+					legalFlag = 9;
+				}else {
+					logger().info("开卡赠送兑换商品机会");
+					exchangCountLegal.add(""+card.getExchangCount());
+					legalFlag = 10;
+				}
+			}
+			
+			
 			MemberCard cardVo = card.into(MemberCard.class);
 			/** 执行策略 */
 			cardVo.changeJsonCfg();
-
+			cardVo.setLegal(legal);
+			cardVo.setExchangCountLegal(exchangCountLegal);
+			cardVo.setLegalFlag(legalFlag);
+			
 			if (MCARD_TP_NORMAL.equals(cardType)) {
 				vo.getNormalCard().add(cardVo);
 			} else if (MCARD_TP_LIMIT.equals(cardType)) {
@@ -1123,14 +1225,31 @@ public class MemberCardService extends ShopBaseService {
 		return vo;
 	}
 
+	private boolean isNotBlank(String buyScore) {
+		return !StringUtils.isBlank(buyScore);
+	}
+
 	/**
 	 * 查询所有的会员卡
 	 */
-	private Result<MemberCardRecord> selectAllMemberCard() {
+	private Result<MemberCardRecord> selectAllMemberCard(CardParam param) {
 		logger().info("查询所有会员卡");
 		Result<MemberCardRecord> cardRecords = db().selectFrom(MEMBER_CARD)
-				.where(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO)).fetch();
+				.where(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
+				.and(getCondition(param))
+				.fetch();
 		return cardRecords;
+	}
+
+	private Condition getCondition(CardParam param) {
+		Condition condition = DSL.noCondition();
+		if(isNotNull(param.getCardType())) {
+			condition = condition.and(MEMBER_CARD.CARD_TYPE.eq(param.getCardType()));
+		}
+		if(isNotBlank(param.getCardName())) {
+			condition = condition.and(MEMBER_CARD.CARD_NAME.like(likeValue(param.getCardName())));
+		}
+		return condition;
 	}
 
 	/**

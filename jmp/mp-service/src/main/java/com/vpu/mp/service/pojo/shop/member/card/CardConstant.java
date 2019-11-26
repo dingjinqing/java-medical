@@ -1,9 +1,8 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
@@ -176,7 +175,6 @@ public class CardConstant {
 	/** user_card 激活 */
 	public static final Boolean UCARD_ACT_NO = false;
 	public static final Boolean UCARD_ACT_TRUE = true;
-
 
 
 	// member_card
