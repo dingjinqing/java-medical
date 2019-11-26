@@ -57,6 +57,7 @@ export default {
   data () {
     return {
       initFilterData: {
+        needGoodsNum: true,
         isOnSale: 0,
         selectType: 1
       }

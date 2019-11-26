@@ -337,7 +337,7 @@
       :rules="stockAndPriceRules"
       ref="stockAndPriceInfoOtherForm"
       label-width="120px"
-      v-if="!arrorFlag"
+      v-show="!arrorFlag"
     >
 
       <el-form-item
@@ -413,97 +413,6 @@
       </el-form-item>
 
     </el-form>
-
-    <!-- <el-collapse
-      accordion
-      v-model="collapseActiveName"
-    >
-      <el-collapse-item
-        :title="$t('goodsAddEditInfo.toggleName')"
-        name="stockMore"
-      >
-        <el-form
-          :model="goodsProductInfo"
-          :rules="stockAndPriceRules"
-          ref="stockAndPriceInfoOtherForm"
-          label-width="120px"
-        >
-
-          <el-form-item
-            :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.limitBuyNum')"
-            prop="limitBuyNum"
-          >
-            <el-input-number
-              ref="limitBuyNumInput"
-              v-model="goodsProductInfo.limitBuyNum"
-              step-strictly
-              size="small"
-              controls-position="right"
-              :min="0"
-              style="width:170px;"
-            />
-            <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.limitBuyNumTip')}}</span>
-          </el-form-item>
-          <el-form-item
-            :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.maxBuyNum')"
-            prop="limitMaxNum"
-          >
-            <el-input-number
-              ref="limitMaxNumInput"
-              v-model="goodsProductInfo.limitMaxNum"
-              step-strictly
-              size="small"
-              controls-position="right"
-              :min="0"
-              style="width:170px;"
-            />
-            <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.maxBuyNumTip')}}</span>
-          </el-form-item>
-          <el-form-item
-            :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.costPrice')"
-            prop="prdCost"
-          >
-            <el-input-number
-              ref="prdCostInput"
-              v-model="goodsProductInfo.prdCost"
-              step-strictly
-              size="small"
-              controls-position="right"
-              :min="0"
-              :disabled="specInfoSwitch"
-              style="width:170px;"
-            />
-            <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.costPriceTip')}}</span>
-          </el-form-item>
-          <el-form-item
-            :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.addSaleNum')"
-            prop="addSaleNum"
-          >
-            <el-input-number
-              v-model="goodsProductInfo.addSaleNum"
-              step-strictly
-              size="small"
-              controls-position="right"
-              :min="0"
-              style="width:170px;"
-            />
-            <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.addSaleNumSetting')}}</span>
-          </el-form-item>
-          <el-form-item
-            :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.goodsPrdSn')"
-            v-if="!specInfoSwitch"
-          >
-            <el-input
-              v-model="goodsProductInfo.prdSn"
-              size="small"
-              style="width:170px;"
-              @change="defaultSpecPrdChangeRepeatCheck"
-            />
-          </el-form-item>
-
-        </el-form>
-      </el-collapse-item>
-    </el-collapse> -->
     <!--图片dialog-->
     <ImageDalog
       :tuneUp="imgDialogShow"

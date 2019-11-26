@@ -67,6 +67,15 @@ export function getAllGoodsInitValue (data) {
   })
 }
 
+// 获取全品牌或全部标签或商家分类数据或平台分类数据
+export function getGoodsFilterItem (data) {
+  return service({
+    url: `/api/admin/goods/filterItem/list`,
+    method: 'post',
+    data: data
+  })
+}
+
 // 所选条件过滤出的数据条数
 export function getExportTotalRows (data) {
   return service({

@@ -21,50 +21,8 @@
             clearable
           />
         </el-form-item>
-        <el-form-item
-          :label="$t('allGoods.allGoodsHeaderData.category')+'：'"
-          prop="catId"
-        >
-          <el-select
-            v-model="goodsFilterFormData.catId"
-            :style="goodsFilterInputStyle"
-            size="small"
-          >
-            <el-option
-              :label="$t('allGoods.allGoodsHeaderData.chooseCategory')"
-              :value="null"
-            />
-            <el-option
-              v-for="(item,index) in goodsCatOptions"
-              :label="item.catName+' ('+item.goodsNumberSum+')'"
-              :value="item.catId"
-              :key="index"
-              :style="{paddingLeft: (item.level+1)*20+'px'}"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          :label="$t('allGoods.allGoodsHeaderData.sort')+'：'"
-          prop="sortId"
-        >
-          <el-select
-            v-model="goodsFilterFormData.sortId"
-            :style="goodsFilterInputStyle"
-            size="small"
-          >
-            <el-option
-              :label="$t('allGoods.allGoodsHeaderData.chooseSort')"
-              :value="null"
-            />
-            <el-option
-              v-for="(item,index) in goodsSortOptions"
-              :label="item.sortName+' ('+item.goodsNumberSum+')'"
-              :value="item.sortId"
-              :key="index"
-              :style="{paddingLeft: (item.level+1)*20+'px'}"
-            />
-          </el-select>
-        </el-form-item>
+        <sortCatTreeSelect ref="catTree" :filterGoodsInfo="initSortCatParams" treeType="cat" :selectedId.sync="goodsFilterFormData.catId"/>
+        <sortCatTreeSelect ref="sortTree" :filterGoodsInfo="initSortCatParams" treeType="sort" :selectedId.sync="goodsFilterFormData.sortId"/>
         <el-form-item
           :label="$t('allGoods.allGoodsHeaderData.goodsLabel')+'：'"
           prop="labelId"
@@ -181,7 +139,11 @@
   </div>
 </template>
 <script>
-import { getAllGoodsInitValue } from '@/api/admin/goodsManage/allGoods/allGoods'
+// 组件导入
+import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
+// api导入
+import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
+// 工具导入
 import { format } from '@/util/date'
 export default {
   name: 'allGoodsHeader',
@@ -240,13 +202,14 @@ export default {
       console.log(this.goodsLabelOptions)
     }
   },
+  components: {sortCatTreeSelect},
   computed: {
     // 查询过滤对象的字符串格式化
     goodsFilterFormDataString () {
       return {
         goodsName: this.goodsFilterFormData.goodsName,
-        catName: this.getCatNameById(this.goodsFilterFormData.catId),
-        sortName: this.getSortNameById(this.goodsFilterFormData.sortId),
+        catName: this.getCatName(),
+        sortName: this.getSortName(),
         labelName: this.getLabelNameById(this.goodsFilterFormData.labelId),
         brandName: this.getBrandNameById(this.goodsFilterFormData.brandId),
         sourceName: this.getSourceNameById(this.goodsFilterFormData.source),
@@ -289,8 +252,6 @@ export default {
         saleType: null
       },
       goodsFilterInputStyle: { width: '170px' },
-      goodsCatOptions: [],
-      goodsSortOptions: [],
       goodsBrandOptions: [],
       goodsLabelOptions: []
     }
@@ -299,57 +260,11 @@ export default {
   methods: {
     /* 初始化form表单下拉框数据 */
     initFilterData () {
-      getAllGoodsInitValue(this.initSortCatParams).then(res => {
+      getGoodsFilterItem({needGoodsLabel: true, needGoodsBrand: true}).then(res => {
         let { content } = res
         this.goodsBrandOptions = content.goodsBrands
         this.goodsLabelOptions = content.goodsLabels
-        this.goodsSortOptions = this._disposeGoodsSortAndCatData(content.goodsSorts, 'sortId')
-        this.goodsCatOptions = this._disposeGoodsSortAndCatData(content.sysCates, 'catId')
       })
-    },
-    /* 处理后台传入的商家分类数据 */
-    _disposeGoodsSortAndCatData (data, idName) {
-      let retObj = {}
-
-      for (let i = 0; i < data.length; i++) {
-        let item = data[i]
-
-        // 是否自身节点被创建过（子节点先遍历到了）
-        let selfItem = retObj[item[idName]]
-        if (selfItem === undefined) {
-          // 未遍历到则初始化自己
-          retObj[item[idName]] = { 'item': item, children: [] }
-          selfItem = retObj[item[idName]]
-        } else {
-          // 已创建过，（因提前遍历了子节点而创建）
-          selfItem.item = item
-        }
-
-        let parentItem = retObj[item.parentId]
-        // 有父亲直接插入
-        if (parentItem !== undefined) {
-          parentItem.children.push(selfItem)
-        } else {
-          // 没有则创建临时父亲
-          retObj[item.parentId] = { 'item': null, children: [selfItem] }
-        }
-      }
-
-      let retArr = []
-
-      if (data.length === 0) {
-        return retArr
-      }
-      let rootArr = retObj['0'].children
-      // 处理结果将对象变为数组
-      for (let i = 0; i < rootArr.length; i++) {
-        let retItem = rootArr[i]
-        retArr.push(retItem.item)
-        if (retItem.children.length > 0) {
-          rootArr.splice(i + 1, 0, ...(retItem.children))
-        }
-      }
-      return retArr
     },
     /* 验证输入的时间范围是否合法 */
     datePickerChange (isStart) {
@@ -403,29 +318,18 @@ export default {
     /* 清空过滤条件 */
     resetFormData () {
       this.$refs['goodsFilterForm'].resetFields()
+      this.$refs['catTree'].clearData()
+      this.$refs['sortTree'].clearData()
       this.goodsFilterFormData.lowShopPrice = null
       this.goodsFilterFormData.highShopPrice = null
       this.goodsFilterFormData.saleTimeStart = null
       this.goodsFilterFormData.saleTimeEnd = null
     },
-
-    getCatNameById (catId) {
-      let catName = null
-      this.goodsCatOptions.forEach((item, index) => {
-        if (item.catId === catId) {
-          catName = item.catName
-        }
-      })
-      return catName
+    getCatName () {
+      return this.$refs['catTree'].getSelectedText()
     },
-    getSortNameById (sortId) {
-      let sortName = null
-      this.goodsSortOptions.forEach((item, index) => {
-        if (item.sortId === sortId) {
-          sortName = item.sortName
-        }
-      })
-      return sortName
+    getSortName () {
+      return this.$refs['sortTree'].getSelectedText()
     },
     getLabelNameById (labelId) {
       let labelName = null

@@ -171,7 +171,7 @@
         :model="goodsProductInfo"
         :rules="basicInfoRules"
         label-width="120px"
-        v-if="!arrorFlag"
+        v-show="!arrorFlag"
       >
         <el-form-item
           :label="$t('goodsAddEditInfo.basicInfoOther.unit')"
@@ -203,23 +203,7 @@
             class="inputTip"
           >{{$t('goodsAddEditInfo.basicInfoOther.unitTip')}}</span>
         </el-form-item>
-        <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.sortId')">
-          <el-select
-            filterable
-            v-model="goodsProductInfo.sortId"
-            :placeholder="$t('goodsAddEditInfo.basicInfoOther.sortIdDefault')"
-            size="small"
-            style="width:170px;"
-          >
-            <el-option
-              v-for="(item,index) in sortSelectOptions"
-              :label="item.sortName"
-              :value="item.sortId"
-              :key="index"
-              :style="{paddingLeft: (item.level+1)*20+'px'}"
-            />
-          </el-select>
-        </el-form-item>
+        <sortCatTreeSelect  ref="sortTree" :autoLoad="false" :filterGoodsInfo="{needGoodsNum: false}" treeType="sort" :selectedId.sync="goodsProductInfo.sortId"/>
         <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsLabel')">
           <el-select
             v-model="labelSelectedTempVal"
@@ -435,16 +419,17 @@ import {
   selectParentPlatfromClassification,
   isGoodsColumnValueExist
 } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import {getGoodsFilterItem} from '@/api/admin/goodsManage/allGoods/allGoods'
 import { goodsBrandClassifyListApi, goodsBrandPageListApi } from '@/api/admin/goodsManage/brandManagement/brandManagement'
 // js工具函数导入
 import { isStrBlank } from '@/util/typeUtil'
-import { autoConvertDataFromArrayToTreeOrderArray } from '@/util/goodsSortCatUtil'
 // 组件导入
+import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
 import ImageDalog from '@/components/admin/imageDalog'
 import pagination from '@/components/admin/pagination/pagination'
 import VideoSpaceDialog from '@/components/admin/videoSpace/videoSpaceDialog'
 export default {
-  components: { ImageDalog, pagination, VideoSpaceDialog },
+  components: { sortCatTreeSelect, ImageDalog, pagination, VideoSpaceDialog },
   data () {
     return {
       selfImgDialogShow: false,
@@ -457,7 +442,6 @@ export default {
         goodsSn: null,
         goodsSnBak: null,
         catId: null,
-        // [{imgUrl:'http://upload/a.jpg',imgPath:upload/a.jpg}]
         goodsImgs: [],
         unit: null,
         sortId: null,
@@ -489,7 +473,6 @@ export default {
         firstCatId: null,
         secondCatId: null,
         thirdCatId: null,
-        // [{catId:1,catName:'XX'}]
         firstCatData: null,
         secondCatData: null,
         thirdCatData: null
@@ -500,8 +483,6 @@ export default {
       unitSelectOptions: [],
       unitSelectedValue: null,
       unitCustomerValue: null,
-      // 商家分类下落框
-      sortSelectOptions: [],
       /* 商品品牌服辅助数据 */
       // 商品品牌选中对象
       currentGoodsBrandData: {
@@ -713,14 +694,6 @@ export default {
       this.goodsProductInfo.unit = this.unitCustomerValue
       this.$refs.basicInfoOtherForm.validateField('unit')
     },
-    // 初始化商家分类和商品标签
-    _sortAndLabelAndBrandSelectInit () {
-      return goodsSortAndGoodsBrandInitApi({needGoodsLabel: true, needGoodsSort: true}).then(res => {
-        const { content: { goodsLabels, goodsSorts } } = res
-        this.sortSelectOptions = autoConvertDataFromArrayToTreeOrderArray(goodsSorts, 'sortId')
-        this.labelSelectOptions = goodsLabels
-      })
-    },
     /* 标签下拉框选择事件 */
     labelSelectChange () {
       this.labelSelectOptions = this.labelSelectOptions.filter(item => {
@@ -886,16 +859,21 @@ export default {
         return !has
       })
     },
-    /* 页面数据初始化链，避免页面数据未加载完成的时候就初始化待修改商品数据，返回一个Promise */
-    _initPageDataLink () {
-      return this._sortAndLabelAndBrandSelectInit()
+    // 初始化商家分类和商品标签
+    _sortAndLabelSelectInit () {
+      let p1 = getGoodsFilterItem({needGoodsLabel: true}).then(res => {
+        this.labelSelectOptions = res.content.goodsLabels
+      })
+      let p2 = this.$refs.sortTree.loadData()
+
+      return Promise.all([p1, p2])
     },
     /* 初始化待修改商品数据 */
     initDataForUpdate (goodsData) {
       // 打开basicForm，否则display = none时会因数据尚未渲染报错
       this.arrorFlag = false
       // 先初始化页面数据再渲染待修改商品数据
-      return this._initPageDataLink().then(() => {
+      return this._sortAndLabelSelectInit().then(() => {
         this.goodsProductInfo.goodsId = goodsData.goodsId
         this.goodsProductInfo.goodsName = goodsData.goodsName
         this.goodsProductInfo.goodsNameBak = goodsData.goodsName
@@ -912,7 +890,7 @@ export default {
         // 初始化商品单位
         this._initGoodsUnit(goodsData)
         // 初始化商家分类
-        this.goodsProductInfo.sortId = goodsData.sortId
+        this.$refs.sortTree.setSelectedId(goodsData.sortId)
         // 初始化商品标签
         this._initGoodsLabel(goodsData)
         // 初始化商品品牌
@@ -934,7 +912,7 @@ export default {
     initDataForInsert () {
       this._catFirstInit()
       // 商家分类和品牌初始化
-      this._sortAndLabelAndBrandSelectInit()
+      this._sortAndLabelSelectInit()
     },
     /* 验证数据是否全部合法 */
     validateFormData () {

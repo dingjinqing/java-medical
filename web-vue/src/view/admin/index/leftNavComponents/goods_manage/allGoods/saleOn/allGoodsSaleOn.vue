@@ -62,6 +62,7 @@ export default {
     return {
       // 在售未售罄状态
       initFilterData: {
+        needGoodsNum: true,
         isOnSale: 1,
         isSaleOut: false,
         selectType: 1
