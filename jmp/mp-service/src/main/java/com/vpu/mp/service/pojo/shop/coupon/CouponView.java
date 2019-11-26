@@ -43,4 +43,12 @@ public class CouponView {
     private String recommendCatId;
     /** 指定商家分类可用的商家分类ID串，为空时为全部商品商家分类可用 */
     private String recommendSortId;
+    /**
+     * 分裂优惠卷随机金额最低
+     */
+    private Integer randomMin;
+    /**
+     * 分裂优惠卷随机金额最高
+     */
+    private Integer randomMax;
 }

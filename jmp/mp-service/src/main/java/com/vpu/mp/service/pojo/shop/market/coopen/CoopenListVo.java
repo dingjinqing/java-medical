@@ -27,7 +27,7 @@ public class CoopenListVo {
     /**
      * 是否永久有效
      */
-    private Integer    isForever;
+    private Byte    isForever;
     private Timestamp startDate;
     private Timestamp endDate;
     private Byte status;

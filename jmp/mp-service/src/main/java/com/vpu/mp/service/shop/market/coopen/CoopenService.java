@@ -12,10 +12,12 @@ import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListVo;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenVo;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -38,6 +40,8 @@ import static com.vpu.mp.service.pojo.shop.market.coopen.CoopenConstant.DRAW;
 public class CoopenService extends ShopBaseService {
     private static CoopenActivity TABLE = CoopenActivity.COOPEN_ACTIVITY;
 
+    @Autowired
+    private CouponService couponService;
     /**
      * 列表查询
      */
@@ -47,7 +51,11 @@ public class CoopenService extends ShopBaseService {
                         .from(TABLE).where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildOptions(select, param);
         select.orderBy(TABLE.FIRST.desc(),TABLE.ID.desc());
-        return getPageResult(select, param, CoopenListVo.class);
+        PageResult<CoopenListVo> pageResult = getPageResult(select, param, CoopenListVo.class);
+        pageResult.getDataList().forEach(coopen->{
+            coopen.setStatus(Util.getActStatus(coopen.getStatus(),coopen.getStartDate(),coopen.getEndDate(),coopen.getIsForever()));
+        });
+        return pageResult;
     }
 
     /**
@@ -167,7 +175,7 @@ public class CoopenService extends ShopBaseService {
      */
     public CoopenVo getActivityDetail(Integer id) {
         CoopenVo conpenVo = getActivity(id).fetchOneInto(CoopenVo.class);
-        List<CouponView> couponViewByIds = saas().getShopApp(getShopId()).coupon.getCouponViewByIds(Util.splitValueToList(conpenVo.getMrkingVoucherId()));
+        List<CouponView> couponViewByIds =couponService.getCouponViewByIds(Util.splitValueToList(conpenVo.getMrkingVoucherId()));
         conpenVo.setCouponView(couponViewByIds);
         return conpenVo;
     }
