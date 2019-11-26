@@ -24,19 +24,19 @@ public class ShopShareConfig {
 	 *  
 	 */
 	@JsonProperty(value = "share_doc")
-	public String shareDoc;
+	public String shareDoc = "";
 	
 	/**
 	 * 分享图类型
 	 *  1店铺首页截图    2自定义图片
 	 */
 	@JsonProperty(value = "share_img_action")
-	public Byte shareImgAction;
+	public Byte shareImgAction = 1;
 	
 	/**
 	 * 分享图路径,当为NULL时默认店铺首页截图
 	 *  
 	 */
 	@JsonProperty(value = "share_img")
-	public String shareImg;
+	public String shareImg = "";
 }

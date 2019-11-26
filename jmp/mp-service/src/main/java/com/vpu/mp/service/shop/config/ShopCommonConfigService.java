@@ -511,7 +511,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public ShopShareConfig getShareConfig() {
-		return this.getJsonObject(K_SHARE_CONFIG, ShopShareConfig.class, null);
+		return this.getJsonObject(K_SHARE_CONFIG, ShopShareConfig.class, new ShopShareConfig());
 	}
 
     /**
