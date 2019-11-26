@@ -16,21 +16,6 @@ export function selectParentPlatfromClassification (catId) {
   })
 }
 
-// 选择平台分类
-export function cateList () {
-  return service({
-    url: `/api/admin/decorate/cate/list`,
-    method: 'get'
-  })
-}
-// 获取商家分类和
-export function goodsSortAndGoodsBrandInitApi (data) {
-  return service({
-    url: '/api/admin/goods/sortBrandLabel/list',
-    method: 'post',
-    data: data
-  })
-}
 // 商品新增，发送请求分为有sku和无sku两个示例
 export function addGoodsApi (data) {
   return service({

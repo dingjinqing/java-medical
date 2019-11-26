@@ -569,7 +569,6 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import { addActive, selectOneInfo, updateInfo } from '@/api/admin/marketManage/friendHelp.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 import { selectGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods.js'
-// import { getGoodsProductList } from '@/api/admin/brandManagement.js'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
   components: {

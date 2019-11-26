@@ -35,6 +35,7 @@
         <el-link
           type="primary"
           :underline="false"
+          @click.native="$router.push({name: 'deliverTemplateAdd'})"
           href="#"
           style="margin:0 5px;"
         >{{$t("goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateNew")}}</el-link>
@@ -42,6 +43,7 @@
         <el-link
           type="primary"
           :underline="false"
+          @click.native="$router.push({name: 'deliverTemplateList'})"
           href="#"
           style="margin:0 5px;"
         >{{$t("goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateManage")}}</el-link>
@@ -132,7 +134,7 @@
           <el-link
             type="primary"
             :underline="false"
-            @click="cardSelectRefresh"
+            @click.native="cardSelectRefresh"
             href="#"
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.linkRefresh')}}
@@ -141,6 +143,7 @@
           <el-link
             type="primary"
             :underline="false"
+            @click.native="$router.push({name: 'normalCardDetail'})"
             href="#"
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.deliverAndOtherInfo.memberCardNew')}}</el-link>
@@ -148,6 +151,7 @@
           <el-link
             type="primary"
             :underline="false"
+            @click.native="$router.push({name: 'user_card'})"
             href="#"
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.deliverAndOtherInfo.memberCardManage')}}</el-link>

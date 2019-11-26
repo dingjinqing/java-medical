@@ -254,8 +254,8 @@
 </template>
 <script>
 
-import { getGoodsProductList, batchOperateSpecPrdPriceNumber, updateLabelByGoodsId } from '@/api/admin/goodsManage/allGoods/allGoods'
-import { getGoodsQrCode, goodsSortAndGoodsBrandInitApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import {getGoodsProductList, batchOperateSpecPrdPriceNumber, updateLabelByGoodsId, getGoodsFilterItem} from '@/api/admin/goodsManage/allGoods/allGoods'
+import {getGoodsQrCode} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import pagination from '@/components/admin/pagination/pagination'
 import goodsExportConfirmDialog from './goodsExportConfirmDialog'
@@ -350,7 +350,7 @@ export default {
     /** table表单内标签 **/
     /* table表单内标签设置按钮 */
     tdLabelSetClick (row) {
-      goodsSortAndGoodsBrandInitApi().then(res => {
+      getGoodsFilterItem({needGoodsLabel: true}).then(res => {
         const { content: { goodsLabels } } = res
         this.goodsLabelData.currentRow = row
         this.goodsLabelData.isShow = true

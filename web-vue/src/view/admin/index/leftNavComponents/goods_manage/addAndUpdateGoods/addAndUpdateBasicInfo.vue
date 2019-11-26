@@ -231,6 +231,7 @@
           <el-link
             type="primary"
             :underline="false"
+            @click.native="$router.push({name: 'addGoodsLabel'})"
             href="#"
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelNew')}}</el-link>
@@ -238,6 +239,7 @@
           <el-link
             type="primary"
             :underline="false"
+            @click.native="$router.push({name: 'label'})"
             href="#"
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelManage')}}</el-link>
@@ -270,6 +272,7 @@
           <el-link
             type="primary"
             :underline="false"
+            @click.native="$router.push({name: 'addBrand'})"
             href="#"
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandNew')}}</el-link>
@@ -277,6 +280,7 @@
           <el-link
             type="primary"
             :underline="false"
+            @click.native="$router.push({name: 'brand'})"
             href="#"
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandManage')}}</el-link>
@@ -415,7 +419,6 @@
 // 接口函数引入
 import {
   selectPlatformClassification,
-  goodsSortAndGoodsBrandInitApi,
   selectParentPlatfromClassification,
   isGoodsColumnValueExist
 } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
@@ -707,7 +710,7 @@ export default {
     },
     /* 刷新标签下拉列表，要将已选的项剔除 */
     labelSelectRefresh () {
-      goodsSortAndGoodsBrandInitApi().then(res => {
+      getGoodsFilterItem({needGoodsLabel: true}).then(res => {
         const { content: { goodsLabels } } = res
         this.labelSelectOptions = goodsLabels.filter(item => !this.labelSelectedItems.some(innerItem => innerItem.id === item.id))
       })
