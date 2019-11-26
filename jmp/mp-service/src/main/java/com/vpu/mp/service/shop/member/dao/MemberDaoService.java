@@ -331,7 +331,7 @@ public class MemberDaoService extends ShopBaseService {
 	private Condition buildOptionsForUserCard(UserCardDetailParam param) {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(param)) {
-			condition
+			condition = condition
 				.and(getUserIdCondition(param.getUserId()))
 				.and(getMobileCondition(param.getMobile()))
 				.and(getUserNameCondition(param.getUsername()))
