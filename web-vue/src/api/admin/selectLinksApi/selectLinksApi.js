@@ -165,9 +165,10 @@ export function storeListApi (data) {
 }
 
 // 平台分类接口
-export function cateListApi () {
+export function cateListApi (params) {
   return service({
-    url: '/api/admin/decorate/cate/list',
-    method: 'get'
+    url: '/api/admin/goods/filterItem/list',
+    method: 'post',
+    data: params
   })
 }

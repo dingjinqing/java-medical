@@ -9,7 +9,7 @@
           <div>{{topName}}：</div>
           <el-input
             v-model="pageName"
-            placeholder="请输入品牌名称"
+            :placeholder="(classificationFlag===2)?'请输入品牌名称':'请输入标签名称'"
             size="mini"
           ></el-input>
           <div class="top_right">
@@ -24,7 +24,7 @@
       <table width='100%'>
         <thead>
           <tr>
-            <td>{{classificationName}}</td>
+            <td>{{topName}}</td>
 
             <td>链接</td>
           </tr>
@@ -36,9 +36,12 @@
             :class="clickIindex===index?'clickClass':''"
             @click="handleClick(index,item)"
           >
-            <td v-if="!topHiddenFlag">{{item.title}}<img
-                v-if="item.children?true:false"
-                :src="imgIndex===index&&imgFlag?leftImg[1].img:leftImg[0].img"
+            <td
+              v-if="!topHiddenFlag"
+              :style="'padding-left:'+item.level*30+'px'"
+            >{{(classificationFlag===0)?item.catName:item.sortName}}<img
+                v-if="item.hasChild?true:false"
+                :src="imgIndex===index&&item.imgFlag?leftImg[1].img:leftImg[0].img"
                 @click="handleImg(index)"
               ></td>
             <td
@@ -46,15 +49,15 @@
               class="isLeft"
               :class="isCenterFlag?'tdCenter':''"
             >
-              <img
+              <!-- <img
                 v-if="!isCenterFlag"
                 :src="tdHiddenImg"
-              >
-              <span>范思哲</span>
+              > -->
+              <span>{{(classificationFlag===2)?item.brandName:item.name}}</span>
 
             </td>
             <td class="tb_decorate_a">
-              {{item.path}}
+              pages/searchs/search?{{(classificationFlag===0)?('cat_id='+item.catId):(classificationFlag===1)?('sort_id='+item.sortId):(classificationFlag===2?('brand_id='+item.id):('label_id='+item.id))}}
             </td>
           </tr>
         </tbody>
@@ -72,63 +75,13 @@
 </template>
 <script>
 import { cateListApi } from '@/api/admin/selectLinksApi/selectLinksApi'
+import { goodsBrandPageListApi } from '@/api/admin/goodsManage/brandManagement/brandManagement'
+import { getGoodsLabelList } from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      trList: [
-        {
-          title: '111',
-          path: 'pages/index/index',
-          spanId: '',
-          children: [
-            {
-              title: '456',
-              path: 'pages/index/index'
-            },
-            {
-              title: 'lalala',
-              path: 'pages/index/index'
-            }
-          ]
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: ''
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          spanId: '',
-          children: [
-            {
-              title: '789',
-              path: 'pages/index/index'
-            },
-            {
-              title: '789123',
-              path: 'pages/index/index'
-            },
-            {
-              title: 'aaa',
-              path: 'pages/index/index'
-            }
-          ]
-        },
-        {
-          title: '子页',
-          path: 'pages/cart/cart',
-          spanId: '',
-          children: [
-            {
-              title: 'zzzzz',
-              path: 'pages/index/index'
-            }
-          ]
-        }
-
-      ],
+      trList: [],
       clickIindex: null,
       tbodyFlag: true,
       leftImg: [
@@ -146,7 +99,9 @@ export default {
       tdHiddenImg: this.$imageHost + '/upload/7467397/image/20190507/crop_N7Fu7EaKRtaZri18.gif',
       classificationName: '分类名称',
       topName: '',
-      isCenterFlag: ''
+      isCenterFlag: '',
+      catData: null,
+      classificationFlag: null
     }
   },
   computed: {
@@ -169,63 +124,146 @@ export default {
   methods: {
     ...mapActions(['choisePagePath']),
     defaultData (newData) {
+      this.trList = []
       console.log(newData)
       if (newData.levelIndex === 2) {
         switch (newData.index) {
           case 0: this.classificationName = '分类名称'
+            this.classificationFlag = 0
             this.topHiddenFlag = false
-            cateListApi().then(res => {
+            let params = {
+              'needSysCategory': true
+            }
+            cateListApi(params).then(res => {
               console.log(res)
               if (res.error === 0) {
-                this._disposeGoodsSortAndCatData(res.content, 'catId')
+                this.catData = this._disposeGoodsSortAndCatData(res.content.goodsCategories, 'catId')
+                console.log(this.catData)
+                let arr = []
+                this.catData.forEach((item, index) => {
+                  if (item.level === 0) arr.push(item)
+                })
+                this.trList = arr
               }
             })
             break
           case 1: this.classificationName = '名称'
+            this.classificationFlag = 1
             this.topHiddenFlag = false
+            let needGoodsSortParams = {
+              'needGoodsSort': true
+            }
+            cateListApi(needGoodsSortParams).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                this.catData = this._disposeGoodsSortAndCatData(res.content.goodsSorts, 'sortId')
+                console.log(this.catData)
+                let arr = []
+                this.catData.forEach((item, index) => {
+                  if (item.level === 0) arr.push(item)
+                })
+                this.trList = arr
+              }
+            })
             break
           case 2: this.topName = '品牌名称'
             this.topHiddenFlag = true
             this.isCenterFlag = false
+            this.classificationFlag = 2
+            let needGoodsBrandParams = {
+              'needGoodsBrand': true
+            }
+            cateListApi(needGoodsBrandParams).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                this.trList = res.content.goodsBrands
+              }
+            })
             break
           case 3: this.topName = '标签名称'
             this.topHiddenFlag = true
             this.isCenterFlag = true
+            this.classificationFlag = 3
+            let goodsLabelsParams = {
+              'needGoodsLabel': true
+            }
+            cateListApi(goodsLabelsParams).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                this.trList = res.content.goodsLabels
+              }
+            })
             break
         }
       }
     },
     // 向下点击
     handleImg (index) {
-      console.log(this.trList[index].children)
-      if (this.trList[index].children) {
-        this.imgFlag = !this.imgFlag
-        this.imgIndex = index
-        console.log(this.imgIndex, this.imgFlag)
-        this.hiddenFlag = !this.hiddenFlag
-        if (this.imgFlag === false) {
-          console.log(this.trList[index].children.length)
-          this.trList.splice(index + 1, this.trList[index].children.length)
-          console.log(this.trList)
-          return
+      console.log(this.trList[index])
+      if (this.trList[index]) {
+        let arr = []
+        if (this.classificationFlag === 0) {
+          arr = this.catData.filter((itemC, indexC) => {
+            return itemC.parentId === this.trList[index].catId
+          })
+        } else {
+          arr = this.catData.filter((itemC, indexC) => {
+            return itemC.parentId === this.trList[index].sortId
+          })
         }
-        console.log(index)
-        let index_ = index
-        this.trList[index].children.map((item, index) => {
-          this.trList.splice(index_ + 1, 0, item)
-        })
-        console.log(this.trList)
+
+        console.log(arr)
         this.imgIndex = index
+        this.trList[index].imgFlag = !this.trList[index].imgFlag
+        if (this.trList[index].imgFlag) {
+          arr.forEach((itemB, indexB) => {
+            this.trList.splice((index + 1), 0, itemB)
+          })
+        } else {
+          console.log('触发')
+          this.trList.splice((index + 1), arr.length)
+        }
       }
     },
     // 行选中高亮
     handleClick (index, item) {
       this.clickIindex = index
       console.log('选中', item)
-      this.choisePagePath(this.trList[index].path)
+      let path = ''
+      switch (this.classificationFlag) {
+        case 0: path = 'pages/searchs/search/' + 'cat_id=' + this.trList[index].catId
+          break
+        case 1: path = 'pages/searchs/search/' + 'sort_id=' + this.trList[index].sortId
+          break
+        case 2: path = 'pages/searchs/search/' + 'brand_id=' + this.trList[index].id
+          break
+        case 3: path = 'pages/searchs/search/' + 'label_id=' + this.trList[index].id
+          break
+      }
+      this.choisePagePath(path)
     },
     // 搜索
     handleSearch () {
+      if (this.classificationFlag === 2) {
+        let brandParams = {
+          brandName: this.pageName
+        }
+        goodsBrandPageListApi(brandParams).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.trList = res.content.dataList
+          }
+        })
+      } else {
+        let labelParams = {
+          labelName: this.pageName
+        }
+        getGoodsLabelList(labelParams).then(res => {
+          if (res.error === 0) {
+            this.trList = res.content.dataList
+          }
+        })
+      }
       console.log(this.pageName, this.value)
     },
     _disposeGoodsSortAndCatData (data, idName) {
@@ -257,7 +295,6 @@ export default {
         return retArr
       }
       let rootArr = retObj['0'].children
-      // 处理结果将对象变为数组
       for (let i = 0; i < rootArr.length; i++) {
         let retItem = rootArr[i]
         retArr.push(retItem.item)
@@ -266,6 +303,9 @@ export default {
         }
       }
       console.log(retArr)
+      retArr.forEach((item, index) => {
+        item.imgFlag = false
+      })
       return retArr
     }
   }

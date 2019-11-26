@@ -24,7 +24,7 @@
             <td v-if="couponFlag"></td>
             <td class="link">{{item.startTime}}至{{item.endTime}}</td>
             <td class="tb_decorate_a">
-              pages/pinlotterylist/pinlotterylist?group_draw_id={{item.id}}
+              {{path}}{{item.id}}
             </td>
           </tr>
         </tbody>
@@ -51,7 +51,8 @@ export default {
       tbodyFlag: true,
       noImg: this.$imageHost + '/image/admin/no_data.png',
       navText: '',
-      couponFlag: false // 优惠卷td flag
+      couponFlag: false, // 优惠卷td flag
+      path: '' //  显示和保存的路径
     }
   },
   computed: {
@@ -91,6 +92,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages/pinlotterylist/pinlotterylist?group_draw_id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -104,6 +106,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages/pinlotterylist/pinlotterylist?group_draw_id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -117,6 +120,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages/pinlotterylist/pinlotterylist?group_draw_id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -130,6 +134,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages/maingoodslist/maingoodslist?identity_id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -143,6 +148,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages/lottery/lottery?lottery_id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -156,6 +162,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages/lottery/lottery?lottery_id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -169,6 +176,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages/packagesalelist/packagesalelist?package_id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -182,6 +190,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages/getcoupon/getcoupon?code='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -195,6 +204,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages/usercardinfo/usercardinfo?card_id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -208,6 +218,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages2/assessstart/assessstart?assess_id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -221,6 +232,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
+                this.path = 'pages1/couponpackage/couponpackage?pack_id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -232,7 +244,8 @@ export default {
     // 行选中高亮
     handleClick (index) {
       this.clickIindex = index
-      this.choisePagePath(this.trList[index].path)
+      let path = `${this.path}${this.trList[index].id}`
+      this.choisePagePath(path)
     }
 
   }

@@ -140,7 +140,8 @@ export default {
     // 行选中高亮
     handleClick (index) {
       this.clickIindex = index
-      this.choisePagePath(this.trList[index].path)
+      let path = `pages/storeinfo/storeinfo?id=${this.trList[index].storeId}`
+      this.choisePagePath(path)
     }
   }
 }

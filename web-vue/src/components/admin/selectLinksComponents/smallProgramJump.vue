@@ -146,7 +146,7 @@ export default {
     // 行选中高亮
     handleClick (index) {
       this.clickIindex = index
-      this.choisePagePath(this.trList[index].path)
+      this.choisePagePath(this.trList[index].linkPath)
     },
     // 删除
     deleRr (index) {

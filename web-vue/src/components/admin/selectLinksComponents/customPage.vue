@@ -153,7 +153,8 @@ export default {
     // 行选中高亮
     handleClick (index) {
       this.clickIindex = index
-      this.choisePagePath(this.trList[index].path)
+      let path = `pages/index/index?page=${this.trList[index].pageId}`
+      this.choisePagePath(path)
     },
     // 搜索
     handleSearch () {
