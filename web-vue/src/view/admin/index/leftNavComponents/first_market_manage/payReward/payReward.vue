@@ -50,18 +50,10 @@
         </el-table-column>
 
         <el-table-column
-          prop="timeType"
+          prop="vaildDate"
           label="活动有效期"
           align="center"
         >
-          <template slot-scope="scope">
-            <div v-if="scope.row.timeType === 0">
-              {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
-            </div>
-            <div v-else>
-              {{scope.row.timeType = '永久有效'}}
-            </div>
-          </template>
         </el-table-column>
 
         <el-table-column
@@ -87,7 +79,7 @@
         </el-table-column>
 
         <el-table-column
-          prop="status"
+          prop="statusName"
           label="活动状态"
           align="center"
           :formatter="actState"
@@ -154,7 +146,7 @@
       </el-table>
       <div class="footer">
         <pagination
-          :page-params.sync="pageParams"
+          :page-params.sync="param"
           @pagination="searchList"
         />
       </div>
@@ -185,7 +177,6 @@ export default {
     return {
       activityName: '支付有礼',
       tableData: [],
-      pageParams: {},
       param: {
         'navType': 0,
         'currentPage': 1,
@@ -229,7 +220,7 @@ export default {
       payRewardList(this.param).then((res) => {
         const { error } = res
         if (error === 0) {
-          this.pageParams = res.content.page
+          this.param = Object.assign(res.content.page, this.param)
           this.handleData(res.content)
           console.log(res.content)
         }
@@ -237,7 +228,14 @@ export default {
     },
     // 处理列表数据
     handleData (data) {
-      console.log(data)
+      data.dataList.map((item, index) => {
+        if (item.timeType === 1) {
+          item.vaildDate = this.$t('marketCommon.permanent')
+        } else {
+          item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
+        }
+        item.statusName = this.getActStatusString(item.currentState)
+      })
       this.tableData = data.dataList
     },
 

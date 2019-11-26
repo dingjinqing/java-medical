@@ -43,6 +43,7 @@ export const en = {
   validDate: 'validity period',
   startTime: 'start time',
   endTime: 'end time',
+  permanent: 'permanent',
   save: 'save',
   getSourceUserList: 'new users from this',
   activityEffectData: 'Activity effect data',

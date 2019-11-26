@@ -258,11 +258,10 @@ export default {
       data.map((item, index) => {
         if (item.isForever === 1) {
           item.vaildDate = this.$t('firstSpecial.permanent')
-          item.statusName = this.$t('firstSpecial.inProgress')
         } else {
           item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
-          item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
         }
+        item.statusName = this.getActStatusString(item.currentState)
       })
       this.tableData = data
     },

@@ -268,7 +268,7 @@ export default {
     handleData (tabData) {
       tabData.map((item, index) => {
         item.vaildDate = `${item.startTime}` + this.$t('marketCommon.to') + `${item.endTime}`
-        item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+        item.statusText = this.getActStatusString(item.currentState)
         this.activityTypeText.forEach(entity => {
           if (entity.value === item.activityType) {
             console.log('活动类型' + entity.label)

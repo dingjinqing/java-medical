@@ -41,6 +41,7 @@ export const cn = {
   unknown: '未知',
   validDate: '有效期',
   startTime: '开始日期',
+  permanent: '永久有效',
   endTime: '结束日期',
   save: '保存',
   getSourceUserList: '获取新用户明细',
