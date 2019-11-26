@@ -1857,11 +1857,11 @@ export default {
         }
       }
       // 删除左侧
-      for (let i = 0; i < this.leftData.length; i++) {
-        if (this.leftData[i].module_name === 'service') {
-          this.leftData[i].content.splice(index, 1)
-        }
-      }
+      // for (let i = 0; i < this.leftData.length; i++) {
+      //   if (this.leftData[i].module_name === 'service') {
+      //     this.leftData[i].content.splice(index, 1)
+      //   }
+      // }
     },
     // 添加自定义模板
     addTemplate () {
