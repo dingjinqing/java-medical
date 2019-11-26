@@ -358,7 +358,7 @@ public class GiftService extends ShopBaseService {
     private void buildOptions(SelectConditionStep<?> query, GiftListParam param) {
         Byte status = param.getStatus();
         String name = param.getName();
-        if (null != status) {
+        if (null != status && !status.equals(0)) {
             addStatusCondition(query, status);
         }
         if (isNotEmpty(name)) {
