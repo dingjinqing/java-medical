@@ -138,12 +138,12 @@ public class AdminWechatApiController extends AdminBaseController {
 		into.setCurrentUserVersion(mpRecord.getUserVersion());
 		//当前版本名字
 		logger().info("开始查询当前版本名字，版本ID为"+record.getBindTemplateId());
-		if(record.getBindTemplateId().equals(0)) {
+		MpVersionRecord row = saas.shop.mpVersion.getRow(record.getBindTemplateId());
+		if(null==row) {
 			//没有上传过
 			logger().info("还没上传过代码，模板为0");
-			into.setBindUserVersion(null);
+			into.setBindUserVersion("0.0.0");
 		}else {
-			MpVersionRecord row = saas.shop.mpVersion.getRow(record.getBindTemplateId());
 			into.setBindUserVersion(row.getUserVersion());			
 		}
 		if(officialAccount!=null) {
