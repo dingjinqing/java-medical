@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -135,6 +136,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private CartService cart;
 
+    @Autowired
+    private JedisManager jedis;
+    
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.CREATE;
@@ -194,10 +198,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             return ExecuteResult.create(e.getErrorCode(), null,  e.getCodeParam());
         }
         try{
+            //生成orderSn
+            String orderSn = jedis.getIncrSequence(OrderConstant.ORDER_SN_PREFIX);
             //record入库
             transaction(()->{
                 //初始化订单（赋值部分数据）
-                OrderInfoRecord order = orderInfo.addRecord(param, orderBo, orderBo.getOrderGoodsBo(), orderBeforeVo);
+                OrderInfoRecord order = orderInfo.addRecord(orderSn, param, orderBo, orderBo.getOrderGoodsBo(), orderBeforeVo);
                 //普通营销活动处理
                 processNormalActivity(order, orderBo, orderBeforeVo);
                 //计算其他数据（需关联去其他模块）
@@ -214,11 +220,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 must.addRecord(param.getMust());
                 //TODO exchang、好友助力
                 orderBo.setOrderId(order.getOrderId());
-        });
+            });
         orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
         createVo.setOrderSn(orderAfterRecord.getOrderSn());
-        //货到付款或者余额积分付款，生成订单时加销量减库存
-        atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo());
+        if(!(OrderConstant.PAY_CODE_COD.equals(orderAfterRecord.getPayCode()) ||
+            OrderConstant.PAY_CODE_BALANCE_PAY.equals(orderAfterRecord.getPayCode()) ||
+            (OrderConstant.PAY_CODE_SCORE_PAY.equals(orderAfterRecord.getPayCode()) && BigDecimalUtil.compareTo(orderAfterRecord.getMoneyPaid(), BigDecimal.ZERO) == 0))) {
+                //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
+                atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo());
+        }
     } catch (DataAccessException e) {
         logger().error("下单捕获mp异常", e);
         Throwable cause = e.getCause();

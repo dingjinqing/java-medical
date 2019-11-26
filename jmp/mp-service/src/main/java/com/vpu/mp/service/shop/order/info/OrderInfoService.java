@@ -681,29 +681,14 @@ public class OrderInfoService extends ShopBaseService {
 				limit(1).
 				fetchAnyInto(UserAddressVo.class);
 	}
-    /**
-     * 生成订单号
-     * @return 订单号
-     */
-    public String generateOrderSn() {
-        while(true) {
-            StringBuilder orderSn = new StringBuilder(OrderConstant.ORDER_SN_PREFIX)
-                .append(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE))
-                .append(RandomUtil.getIntRandom());
-            if(db().fetchCount(TABLE,TABLE.ORDER_SN.eq(orderSn.toString())) < 1){
-                logger().info("自动生成orderSn:{}", orderSn.toString());
-                return orderSn.toString();
-            }
-        }
-    }
 
     /**
      * 创建订单
      */
-	public OrderInfoRecord addRecord(CreateParam param, CreateOrderBo orderBo, List<OrderGoodsBo> goodsBos, OrderBeforeVo beforeVo){
+	public OrderInfoRecord addRecord(String orderSn, CreateParam param, CreateOrderBo orderBo, List<OrderGoodsBo> goodsBos, OrderBeforeVo beforeVo){
         OrderInfoRecord order = db().newRecord(TABLE);
         //基础信息
-        order.setOrderSn(generateOrderSn());
+        order.setOrderSn(orderSn);
         order.setShopId(getShopId());
         //param赋值
         param.intoRecord(order);

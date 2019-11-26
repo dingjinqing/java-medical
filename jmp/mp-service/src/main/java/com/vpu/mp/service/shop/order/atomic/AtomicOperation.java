@@ -42,17 +42,11 @@ public class AtomicOperation extends ShopBaseService {
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
     public void updateStockAndSales(OrderInfoRecord order, @RedisLockKeys List<OrderGoodsBo> goodsBo) throws MpException {
         log.info("AtomicOperation.updateStockAndSales订单库存销量更新start,订单号{},商品{}", order.getOrderId(), goodsBo);
-        /*if(!(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
-            OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
-            (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0))) {
-            //非 --货到付款 余额付款 积分兑换且无需再支付时，生成订单时不加销量减库存
-            return;
-        }
         if(Boolean.FALSE) {
             //TOOD 营销
         }else {
 
-        }*/
+        }
         //TODO 第三方对接erp
         List<Integer> goodsIds = goodsBo.stream().map(OrderGoodsBo::getGoodsId).distinct().collect(Collectors.toList());
         List<Integer> proIds = goodsBo.stream().map(OrderGoodsBo::getProductId).collect(Collectors.toList());
@@ -81,7 +75,10 @@ public class AtomicOperation extends ShopBaseService {
             }else {
                 if(product.getPrdNumber() < num) {
                     //库存不足
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+                    log.error("库存不足AtomicOperation.updateStockAndSales");
+                    order.setOrderStatusName("超卖");
+                    order.store();
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK, null, order.getOrderSn());
                 }
             }
             //商品库存
