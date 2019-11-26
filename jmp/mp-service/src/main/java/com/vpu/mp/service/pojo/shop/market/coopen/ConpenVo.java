@@ -1,10 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.coopen;
 
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 活动有礼 详情
@@ -36,6 +38,10 @@ public class ConpenVo {
     private Byte       status;
     private Timestamp  createTime;
     private Timestamp  updateTime;
+    /**
+     * 会员卡
+     */
+    private List<CouponView> couponView;
 
 
 

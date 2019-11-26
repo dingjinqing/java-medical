@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.coopen.ConpenVo;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListParam;
 import com.vpu.mp.service.pojo.shop.market.coopen.CoopenListVo;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
@@ -165,7 +167,10 @@ public class CoopenService extends ShopBaseService {
      * 获取活动明细
      */
     public ConpenVo getActivityDetail(Integer id) {
-        return getActivity(id).fetchOneInto(ConpenVo.class);
+        ConpenVo conpenVo = getActivity(id).fetchOneInto(ConpenVo.class);
+        List<CouponView> couponViewByIds = saas().getShopApp(getShopId()).coupon.getCouponViewByIds(Util.splitValueToList(conpenVo.getMrkingVoucherId()));
+        conpenVo.setCouponView(couponViewByIds);
+        return conpenVo;
     }
 
     /**

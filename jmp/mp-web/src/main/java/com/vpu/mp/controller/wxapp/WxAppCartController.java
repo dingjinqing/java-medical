@@ -97,7 +97,7 @@ public class WxAppCartController extends WxAppBaseController {
     /**
      *  切换选择状态
      * @param param id
-     * @return IS_CHECKED)
+     * @return
      */
     @PostMapping("/switch")
     public JsonResult checked(@RequestBody @Valid CartProductIdParam param){
@@ -108,6 +108,5 @@ public class WxAppCartController extends WxAppBaseController {
         cart.setIsChecked(flag);
         return success(cart);
     }
-
 
 }
