@@ -390,7 +390,7 @@ public class MemberDaoService extends ShopBaseService {
 	private Condition getInviteUserCondition(String name) {
 		Condition condition = DSL.noCondition();
 		if(isNotNull(name)) {
-			condition.and(USER.INVITE_ID.in(getUserIdByName(name)));
+			condition = condition.and(USER.INVITE_ID.in(getUserIdByName(name)));
 		}
 		return condition;
 	}

@@ -796,7 +796,7 @@ create table `b2c_user_account`
     `admin_user`  varchar(191)   not null default '0' comment '操作员',
     `order_sn`    varchar(20)    not null default '' comment '分销订单结算产生返利',
     `amount`      decimal(10, 2) not null comment '金额',
-    `admin_note`  varchar(191)   not null comment '操作员备注',
+    `admin_note` varchar(191)    not null default '' comment '操作员备注',
     `payment`     varchar(90)    not null comment '支付方式',
     `is_paid`     tinyint(1)     not null default '0' comment '支付类型，0：充值，1：消费',
     `remark`      varchar(1024) comment '备注',

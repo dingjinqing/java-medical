@@ -1271,3 +1271,6 @@ CREATE TABLE `b2c_coopen_activity_records`
 ALTER TABLE `b2c_user_account` 
 ADD COLUMN `settle_account` decimal(10, 2) DEFAULT 0.00 COMMENT '更新后的余额' AFTER `source`;
 
+-- 修改默认值
+ALTER TABLE `b2c_user_account` 
+MODIFY COLUMN `admin_note` varchar(191) not null default '' COMMENT '操作员备注' AFTER `amount`;
