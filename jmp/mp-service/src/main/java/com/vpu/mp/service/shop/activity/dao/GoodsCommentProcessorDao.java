@@ -190,7 +190,7 @@ public class GoodsCommentProcessorDao extends BaseShopConfigService {
         rets.add(good);
         CommentDetailVo.CommentLevelInfo normal = new CommentDetailVo.CommentLevelInfo(CommentDetailVo.NORMAL_LEVEL,level3Num+level2Num);
         rets.add(normal);
-        CommentDetailVo.CommentLevelInfo bad = new CommentDetailVo.CommentLevelInfo(CommentDetailVo.GOODS_LEVEL,level1Num+level0Num);
+        CommentDetailVo.CommentLevelInfo bad = new CommentDetailVo.CommentLevelInfo(CommentDetailVo.BAD_LEVEL,level1Num+level0Num);
         rets.add(bad);
 
         Long imgNum = recordsList.stream().filter(x -> StringUtils.isNotBlank(x.get(COMMENT_GOODS.COMM_IMG))).count();
