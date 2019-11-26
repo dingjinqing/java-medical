@@ -123,19 +123,29 @@ public class AdminWechatApiController extends AdminBaseController {
 			return fail(JsonResultCode.WX_MA_NEED_AUTHORIZATION);
 		}
 		//可以绑定的公众号列表
+		logger().info("开始查询可以绑定的公众号列表");
 		Result<MpOfficialAccountRecord> officialAccountBySysId = saas.shop.officeAccount.getOfficialAccountBySysId(adminAuth.user().sysId);
 		List<MpOfficeAccountVo> officialList = saas.shop.officeAccount.findSamePrincipalMiniAndMP(officialAccountBySysId, record);
 		MpAuthShopToAdminVo into = record.into(MpAuthShopToAdminVo.class);
-		//查询已绑定的公众号信息
-		Record officialAccount = saas.shop.officeAccount.getOfficeAccountByAppIdRecord(record.getLinkOfficialAppId());
 		into.setOfficialList(officialList);
+		//查询已绑定的公众号信息
+		logger().info("开始查询已绑定的公众号信息");
+		Record officialAccount = saas.shop.officeAccount.getOfficeAccountByAppIdRecord(record.getLinkOfficialAppId());
 		//最新版本id
+		logger().info("开始查询最新版本id");
 		MpVersionRecord mpRecord = saas.shop.mpVersion.getCurrentUseVersion(record.getAppId(),(byte)1);
 		into.setCurrentTemplateId(mpRecord.getTemplateId());
 		into.setCurrentUserVersion(mpRecord.getUserVersion());
 		//当前版本名字
-		MpVersionRecord row = saas.shop.mpVersion.getRow(record.getBindTemplateId());
-		into.setBindUserVersion(row.getUserVersion());
+		logger().info("开始查询当前版本名字");
+		if(record.getBindTemplateId().equals("0")) {
+			//没有上传过
+			logger().info("还没上传过代码，模板为0");
+			into.setBindUserVersion(null);
+		}else {
+			MpVersionRecord row = saas.shop.mpVersion.getRow(record.getBindTemplateId());
+			into.setBindUserVersion(row.getUserVersion());			
+		}
 		if(officialAccount!=null) {
 			into.setOfficialAccount(officialAccount.into(MpOfficeAccountVo.class));
 		}
