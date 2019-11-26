@@ -35,17 +35,25 @@
       style="margin-top: 10px;"
     >
       <div style="margin-bottom: 10px;">{{$t('order.orderExportLimitTip')}}</div>
-      <el-input
-        v-model="param.exportRowStart"
+      <el-input-number
+        v-model="exportRowStart"
+        placeholder=""
+        :min="1"
+        :max="exportRowEnd"
+        :precision="0"
         size="small"
-        style="width: 100px;"
-      ></el-input>
+        style="width: 150px;"
+      ></el-input-number>
       {{$t('orderCommon.to')}}
-      <el-input
-        v-model="param.exportRowEnd"
+      <el-input-number
+        v-model="exportRowEnd"
+        placeholder=""
         size="small"
-        style="width: 100px;"
-      ></el-input>
+        :min="exportRowStart"
+        :max="param.exportRowEnd"
+        :precision="0"
+        style="width: 150px;"
+      ></el-input-number>
     </div>
     <span
       slot="footer"
@@ -74,7 +82,9 @@ export default {
       totalRows: 0,
       showNodes: false,
       loading: false,
-      orderStatusMap: new Map(this.$t('order.orderStatusList'))
+      orderStatusMap: new Map(this.$t('order.orderStatusList')),
+      exportRowStart: 1,
+      exportRowEnd: 5000
     }
   },
   props: {
@@ -84,12 +94,13 @@ export default {
   },
   methods: {
     initData () {
-      this.param.exportRowStart = 1
-      this.param.exportRowEnd = 5000
+      this.param.exportRowStart = this.exportRowStart
+      this.param.exportRowEnd = this.exportRowEnd
       getExportTotalRows(this.param).then(res => {
         if (res.error === 0) {
           this.totalRows = res.content
           if (this.totalRows < 5000) {
+            this.exportRowEnd = this.totalRows
             this.param.exportRowEnd = this.totalRows
           }
         }
@@ -107,6 +118,8 @@ export default {
     },
     confirm () {
       this.loading = true
+      this.param.exportRowStart = this.exportRowStart
+      this.param.exportRowEnd = this.exportRowEnd
       goodsExport(this.param).then(res => {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName.split(';')[1].split('=')[1]
