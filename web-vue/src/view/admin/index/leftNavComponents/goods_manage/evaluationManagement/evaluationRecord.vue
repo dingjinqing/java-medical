@@ -3,93 +3,104 @@
   <div>
     <div
       class="table_box"
-      style="background: #fff;margin-bottom: 10px;height: 50px;"
+      style="background: #fff;margin-bottom: 10px;"
     >
-      <div
-        class="filters"
-        style="width: 100%;margin-bottom: 0; margin-left: 0;"
-      >
-        <div class="filters_item"><span>{{$t('evaluation.orderSn') + '：' }}</span>
-          <el-input
-            v-model="searchParams.orderSn"
-            :placeholder="$t('evaluation.input',[$t('evaluation.orderSn')])"
-            size="small"
-            style="width: 170px;"
-          ></el-input>
-        </div>
-        <div class="filters_item"><span>{{$t('evaluation.goodsName') + '：' }}</span>
-          <el-input
-            v-model="searchParams.goodsName"
-            :placeholder="$t('evaluation.input',[$t('evaluation.goodsName')])"
-            size="small"
-            style="width: 170px;"
-          ></el-input>
-        </div>
-        <div class="filters_item"><span>{{$t('evaluation.mobile') + '：' }}</span>
-          <el-input
-            v-model="searchParams.mobile"
-            :placeholder="$t('evaluation.input',[$t('evaluation.mobile')])"
-            size="small"
-            style="width: 170px;"
-          ></el-input>
-        </div>
-        <div
-          class="filters_item"
+      <el-row>
+        <el-col :span="5">
+          <div class="filters_item"><span>{{$t('evaluation.orderSn') + '：' }}</span>
+            <el-input
+              v-model="searchParams.orderSn"
+              :placeholder="$t('evaluation.input',[$t('evaluation.orderSn')])"
+              size="small"
+              style="width: 170px;"
+            ></el-input>
+          </div>
+        </el-col>
+        <el-col :span="5">
+          <div class="filters_item"><span>{{$t('evaluation.goodsName') + '：' }}</span>
+            <el-input
+              v-model="searchParams.goodsName"
+              :placeholder="$t('evaluation.input',[$t('evaluation.goodsName')])"
+              size="small"
+              style="width: 170px;"
+            ></el-input>
+          </div>
+        </el-col>
+        <el-col :span="5">
+          <div class="filters_item"><span>{{$t('evaluation.mobile') + '：' }}</span>
+            <el-input
+              v-model="searchParams.mobile"
+              :placeholder="$t('evaluation.input',[$t('evaluation.mobile')])"
+              size="small"
+              style="width: 170px;"
+            ></el-input>
+          </div>
+        </el-col>
+        <el-col
+          :span="5"
           v-if="target === 'Record'"
         >
-          <span>{{$t('evaluation.auditState')}}</span>
-          <el-select
-            v-model="searchParams.flag"
-            size="small"
-            class="mini_select"
-            style="width: 170px;"
-          >
-            <el-option
-              v-for="item in auditFlag"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="filters_item"><span>{{$t('evaluation.evaluationGrade') + '：'}}</span>
-          <el-select
-            v-model="searchParams.commstar"
-            size="small"
-            class="mini_select"
-            style="width: 170px;"
-          >
-            <el-option
-              v-for="item in starLevel"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="filters_item"><span>{{$t('evaluation.evaluationTable.evaluationReward') + '：' }}</span>
-          <el-select
-            v-model="searchParams.awardActivityId"
-            size="small"
-            class="mini_select"
-            style="width: 170px;"
-          >
-            <el-option
-              v-for="item in evaluationRewardList"
-              :key="item.id"
-              :label="item.value"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="filters_item">
-          <el-button
-            @click="initDataList"
-            type="primary"
-            size="small"
-          >{{$t('marketCommon.filter')}}</el-button>
-        </div>
-      </div>
+          <div class="filters_item">
+            <span>{{$t('evaluation.auditState') + '：'}}</span>
+            <el-select
+              v-model="searchParams.flag"
+              size="small"
+              class="mini_select"
+              style="width: 170px;"
+            >
+              <el-option
+                v-for="item in auditFlag"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              ></el-option>
+            </el-select>
+          </div>
+        </el-col>
+        <el-col :span="5">
+          <div class="filters_item"><span>{{$t('evaluation.evaluationGrade') + '：'}}</span>
+            <el-select
+              v-model="searchParams.commstar"
+              size="small"
+              class="mini_select"
+              style="width: 170px;"
+            >
+              <el-option
+                v-for="item in starLevel"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              ></el-option>
+            </el-select>
+          </div>
+        </el-col>
+        <el-col :span="5">
+          <div class="filters_item"><span>{{$t('evaluation.evaluationTable.evaluationReward') + '：' }}</span>
+            <el-select
+              v-model="searchParams.awardActivityId"
+              size="small"
+              class="mini_select"
+              style="width: 170px;"
+            >
+              <el-option
+                v-for="item in evaluationRewardList"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </div>
+        </el-col>
+        <el-col :span="5">
+          <div class="filters_item">
+            <el-button
+              @click="initDataList"
+              type="primary"
+              size="small"
+            >{{$t('marketCommon.filter')}}</el-button>
+          </div>
+        </el-col>
+      </el-row>
     </div>
     <div style="width: 100%; padding:10px;background: #fff;">
       <el-table
@@ -440,6 +451,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-row {
+  padding-left: 10px;
+}
+.el-col {
+  margin-bottom: 10px;
+}
 /deep/ .tableClss th {
   background-color: #f5f5f5;
   border: none;
@@ -449,7 +466,7 @@ export default {
   padding: 8px 10px;
 }
 .mini_select {
-  width: 80px !important;
+  width: 170px !important;
 }
 .goods_info {
   display: flex;

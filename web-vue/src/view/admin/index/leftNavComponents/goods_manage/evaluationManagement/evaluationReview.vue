@@ -82,6 +82,9 @@ export default {
 
 <style lang="scss" scoped>
 .condition {
+  background: #fff;
+  padding-left: 10px;
+  padding-right: 10px;
   padding-bottom: 10px;
   .fl {
     float: left;

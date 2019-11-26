@@ -18,11 +18,11 @@
           :label="$t('evaluation.evaluationTabs.evaluationReview')"
           name="second"
         >
-          <evaluationReview v-if="activeName === 'second'">
+          <!-- <evaluationReview v-if="activeName === 'second'">
             <template v-slot:evaluationRecord>
               <evaluationRecord target="Record" />
             </template>
-          </evaluationReview>
+          </evaluationReview> -->
         </el-tab-pane>
         <el-tab-pane
           :label="$t('evaluation.evaluationTabs.productList')"
@@ -47,6 +47,11 @@
     </div>
 
     <evaluationRecord v-if="activeName === 'first'" />
+    <evaluationReview v-if="activeName === 'second'">
+      <template v-slot:evaluationRecord>
+        <evaluationRecord target="Record" />
+      </template>
+    </evaluationReview>
     <evaluationGoodsList
       v-if="activeName === 'third'"
       @handleAddEvaluation="addGoodsEvaluation"
@@ -91,17 +96,19 @@ export default {
 <style lang="scss" scoped>
 .EvaluationContent {
   padding: 10px;
-  min-width: 100%;
-  font-size: 14px;
-  position: relative;
+  // padding: 10px;
+  // min-width: 100%;
+  // font-size: 14px;
+  // position: relative;
 }
 .EvaluationContent_main {
-  position: relative;
-  background-color: #fff;
-  /* height: 100%; */
-  overflow: hidden;
-  overflow-y: auto;
   padding: 10px;
+  background: #fff;
+  // position: relative;
+  // background-color: #fff;
+  // overflow: hidden;
+  // overflow-y: auto;
+  // padding: 10px;
 }
 .goodsEvaluationPage {
   padding-bottom: 62px;
