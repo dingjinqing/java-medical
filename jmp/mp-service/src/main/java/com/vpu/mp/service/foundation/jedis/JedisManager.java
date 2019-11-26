@@ -1,6 +1,5 @@
 package com.vpu.mp.service.foundation.jedis;
 
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ *
  * JedisPool是线程安全的
- * 
+ *
  * @author 新国
  *
  */
@@ -28,13 +27,16 @@ public class JedisManager {
     public static final String SET_IF_NOT_EXIST = "NX";
     public static final String SET_WITH_EXPIRE_TIME = "PX";
 
+    private static final Integer INCR_SEQUENCE_MAX =9999;
+    private static final Integer INCR_SEQUENCE_MIN =1;
+
 	@Autowired
 	private JedisPool pool;
 
 
 	/**
 	 * 获取缓存连接池
-	 * 
+	 *
 	 * @return
 	 */
 	public JedisPool getJedisPool() {
@@ -43,7 +45,7 @@ public class JedisManager {
 
 	/**
 	 * 按时间设置缓存
-	 * 
+	 *
 	 * @param key
 	 * @param value
 	 * @param seconds
@@ -85,7 +87,7 @@ public class JedisManager {
 
 	/**
 	 * 永久设置缓存
-	 * 
+	 *
 	 * @param key
 	 * @param value
 	 */
@@ -97,7 +99,7 @@ public class JedisManager {
 
 	/**
 	 * 删除key的缓存
-	 * 
+	 *
 	 * @param key
 	 */
 	public void delete(String key) {
@@ -108,7 +110,7 @@ public class JedisManager {
 
 	/**
 	 * 得到key的缓存
-	 * 
+	 *
 	 * @param  key
 	 * @return
 	 */
@@ -120,7 +122,7 @@ public class JedisManager {
 
 	/**
 	 * 重设key缓存时间
-	 * 
+	 *
 	 * @param key
 	 * @param seconds
 	 */
@@ -243,4 +245,26 @@ public class JedisManager {
             return false;
         }
     }
+
+	/**
+	 * 获取自增序列
+	 * @param key
+	 * @param max
+	 * @param min
+	 * @return
+	 */
+    public Long getIncrSequence(String key,Integer max,Integer min){
+		try (Jedis jedis = getJedisPool().getResource()){
+			return  jedis.incr(key)%(max-min)+min;
+		}
+	}
+
+	/**
+	 * 自增序列 默认9999-1
+	 * @param key
+	 * @return
+	 */
+    public int getIncrSequence(String key){
+		return getIncrSequence(key,INCR_SEQUENCE_MAX,INCR_SEQUENCE_MIN).intValue();
+	}
 }
