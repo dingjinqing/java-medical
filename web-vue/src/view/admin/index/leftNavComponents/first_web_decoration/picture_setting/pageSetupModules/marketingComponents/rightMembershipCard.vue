@@ -107,13 +107,20 @@
                   <span>刷新</span>
                 </div>
               </div>
+              <div
+                class="tips"
+                v-if="radio==='3'"
+              >
+                <p>提示：</p>
+                <p>1、等级卡装修1张即可，系统将根据等级卡升级条件及用户实际情况自动匹配用户当前可领取等级卡</p>
+                <p>2、以下选中的等级卡仅影响装修时的显示样式。</p>
+              </div>
               <!--右侧中部-->
               <div class="mainRightMiddle">
                 <ul>
                   <li
                     v-for="(item,index) in showCardList"
                     :key="index"
-                    :style="item.bg_type === '0'?`backgroundColor:${item.bg_color}`:`backgroundImage:url('${item.bg_img}')`"
                     @click="handleToClickCard(index)"
                   >
                     <img
@@ -122,7 +129,7 @@
                       :src="$imageHost+'/image/admin/shop_beautify/checked_card.png'"
                     >
                     <div>
-                      <span class="card_name">{{item.card_name}}</span>
+                      <span class="card_name">{{item.cardName}}</span>
                       <span
                         style="margin-bottom:8px"
                         v-if="radio==='3'"
@@ -175,6 +182,7 @@
   </div>
 </template>
 <script>
+import { allCardData } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 export default {
   props: {
     modulesData: Object,
@@ -450,9 +458,37 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
-    this.showCardList = this.ordinaryCardData
+
+    // 初始化获取会员卡数据
+    this.handleToGetCardData()
   },
   methods: {
+    // 初始化获取会员卡数据
+    handleToGetCardData () {
+      allCardData().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          // 处理数据
+          this.handleToAllData(res)
+        }
+      })
+    },
+    // 处理起始数据
+    handleToAllData (res) {
+      res.content.normalCard.forEach((item, index) => {
+        item.isChecked = false
+      })
+      res.content.limitNumCard.forEach((item, index) => {
+        item.isChecked = false
+      })
+      res.content.rankCard.forEach((item, index) => {
+        item.isChecked = false
+      })
+      this.ordinaryCardData = res.content.normalCard
+      this.limitCardData = res.content.limitNumCard
+      this.gradeCardData = res.content.rankCard
+      this.showCardList = this.ordinaryCardData
+    },
     // 调起弹窗
     handlCallCardDialog () {
       this.dialogVisible = true
@@ -475,7 +511,18 @@ export default {
     },
     //  点击添加会员卡
     handleToAddCard () {
-
+      let obj = { query: { 'cardType': Number(this.radio) } }
+      switch (this.radio) {
+        case '1':
+          obj.name = 'normalCardDetail'
+          break
+        case '2':
+          obj.name = 'limitCardDetail'
+          break
+        case '3':
+          obj.name = 'gradeCardDetail'
+      }
+      this.$router.push(obj)
     },
     // 点击搜索
     handleToSearchCard () {
@@ -609,6 +656,17 @@ export default {
             align-items: center;
             color: #5a8bff;
             cursor: pointer;
+          }
+        }
+        .tips {
+          background-color: rgb(255, 247, 235);
+          padding: 3px 11px;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgb(255, 213, 163);
+          margin-top: 15px;
+          p {
+            line-height: 20px;
           }
         }
         .mainRightMiddle {

@@ -51,3 +51,11 @@ export function getFightGroup (data) {
     method: 'get'
   })
 }
+
+// 页面装修会员卡弹窗接口
+export function allCardData (data) {
+  return service({
+    url: '/api/admin/member/card/all/list',
+    method: 'post'
+  })
+}

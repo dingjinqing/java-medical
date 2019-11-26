@@ -35,10 +35,13 @@
 </template>
 <script>
 /* eslint-disable */
+import {
+  judgeJurisdictionRequest
+} from '@/api/admin/util.js'
 import { mapActions } from 'vuex'
 import { jurisdictionQueryRequest } from '@/api/admin/jurisdiction'
 export default {
-  data () {
+  data() {
     return {
       navLeftData: '',
       dataList: {
@@ -496,18 +499,18 @@ export default {
     }
   },
   watch: {
-    $route (to, from) {
+    $route(to, from) {
       console.log(to)
       console.log(this.$route, this.click_nav_index, this.saveIndex)
       this.saveIndex = -1
       this.defaultNav(to.meta.meta)
     },
-    lang (newData) {
+    lang(newData) {
       console.log(newData)
       this.handleJurisdiction()
     }
   },
-  mounted () {
+  mounted() {
     console.log(this.$route)
     //初始化语言
     this.langDefault()
@@ -516,7 +519,7 @@ export default {
   },
   methods: {
     ...mapActions(['judgeMenuAll']),
-    handleJurisdiction () {
+    handleJurisdiction() {
       jurisdictionQueryRequest().then((res) => {
         console.log(res)
         for (let i in this.dataList) {
@@ -534,7 +537,7 @@ export default {
         console.log(this.dataList)
       })
     },
-    async defaultNav (meta) {
+    async defaultNav(meta) {
       console.log(meta)
       console.log(this.dataList)
       switch (meta) {
@@ -610,7 +613,10 @@ export default {
       console.log(this.navLeftData)
     },
     // 左侧菜单栏点击事件
-    leftNavClick (index, name) {
+    leftNavClick(index, name) {
+      // 判断二级菜单事件
+      this.handleToJudgeTwoDiction(name)
+
       if (name === 'first_market_manage') this.nav_s_class_index = true
       this.click_nav_index = index
       console.log(index)
@@ -643,12 +649,25 @@ export default {
       }
     },
     // 左侧菜单栏划入事件
-    left_nav_over (index) {
+    left_nav_over(index) {
       this.click_nav_index = index
     },
     // 左侧菜单栏划出事件
-    left_nav_leave (index) {
+    left_nav_leave(index) {
       this.click_nav_index = null
+    },
+    handleToJudgeTwoDiction(name) {
+      console.log(name)
+      // 二级菜单需要校验的元素池
+      let arr = ['shop_view', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort']
+      console.log(arr.indexOf(name))
+      if (arr.indexOf('name') !== -1) {
+
+        judgeJurisdictionRequest({
+          'V-EnName': name
+        }).then()
+      }
+
     }
   }
 }
