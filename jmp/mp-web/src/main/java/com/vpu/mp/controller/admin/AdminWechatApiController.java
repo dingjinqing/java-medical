@@ -137,8 +137,8 @@ public class AdminWechatApiController extends AdminBaseController {
 		into.setCurrentTemplateId(mpRecord.getTemplateId());
 		into.setCurrentUserVersion(mpRecord.getUserVersion());
 		//当前版本名字
-		logger().info("开始查询当前版本名字");
-		if(record.getBindTemplateId().equals("0")) {
+		logger().info("开始查询当前版本名字，版本ID为"+record.getBindTemplateId());
+		if(record.getBindTemplateId().equals(0)) {
 			//没有上传过
 			logger().info("还没上传过代码，模板为0");
 			into.setBindUserVersion(null);
