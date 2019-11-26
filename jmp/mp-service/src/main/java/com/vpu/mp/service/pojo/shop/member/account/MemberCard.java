@@ -23,7 +23,9 @@ public class MemberCard {
 	private Integer id;
 	private String cardName;
 	private Byte expireType;
-	
+	private Byte bgType;
+	private String bgColor;
+	private String bgImg;
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private Integer receiveDay;
