@@ -12,7 +12,7 @@ import java.util.List;
  * @author 郑保乐
  */
 @Data
-public class GiftVo implements StatusContainer {
+public class GiftVo {
 
     private Integer id;
     /** 活动名称 **/

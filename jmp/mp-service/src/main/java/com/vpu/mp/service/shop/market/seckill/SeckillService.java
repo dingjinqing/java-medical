@@ -64,10 +64,10 @@ public class SeckillService extends ShopBaseService{
     private QrCodeService qrCode;
 
     /**
-     * 秒杀活动列表分页查询
+     * 秒杀活动列表分页数据
      *
      */
-    public PageResult<SeckillPageListQueryVo> getPageList(SeckillPageListQueryParam param) {
+    private PageResult<SeckillPageListQueryVo> getPageData(SeckillPageListQueryParam param) {
         SelectWhereStep<? extends Record> select = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.NAME,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,
             SEC_KILL_DEFINE.STATUS,SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.LIMIT_AMOUNT,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.STOCK,
             GOODS.GOODS_NAME,GOODS.GOODS_NUMBER,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.IS_ON_SALE).
@@ -77,12 +77,25 @@ public class SeckillService extends ShopBaseService{
         select.orderBy(SEC_KILL_DEFINE.CREATE_TIME.desc());
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(),SeckillPageListQueryVo.class);
     }
+
+    /**
+     * 秒杀活动列表分页数据
+     *
+     */
+    public PageResult<SeckillPageListQueryVo> getPageList(SeckillPageListQueryParam param) {
+        PageResult<SeckillPageListQueryVo> res = getPageData(param);
+        for(SeckillPageListQueryVo vo : res.dataList){
+            vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
+        }
+        return res;
+    }
+
     /**
      * 秒杀活动列表分页查询(装修页弹窗选择)
      *
      */
     public PageResult<SeckillPageListQueryVo> getPageListDialog(SeckillPageListQueryParam param) {
-        PageResult<SeckillPageListQueryVo> res = getPageList(param);
+        PageResult<SeckillPageListQueryVo> res = getPageData(param);
         for(SeckillPageListQueryVo vo : res.dataList){
             vo.setSecPrice(getMinProductSecPrice(vo.getSkId()));
         }

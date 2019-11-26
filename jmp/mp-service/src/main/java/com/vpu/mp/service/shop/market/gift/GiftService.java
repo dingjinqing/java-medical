@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.GiftProduct;
 import com.vpu.mp.db.shop.tables.GoodsSpecProduct;
 import com.vpu.mp.db.shop.tables.records.GiftProductRecord;
 import com.vpu.mp.db.shop.tables.records.GiftRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -29,8 +30,6 @@ import static com.vpu.mp.db.shop.tables.Tag.TAG;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.service.foundation.util.Util.*;
 import static com.vpu.mp.service.pojo.shop.market.gift.GiftListParam.*;
-import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.ABLE;
-import static com.vpu.mp.service.pojo.shop.market.gift.GiftListVo.DISABLE;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.jooq.impl.DSL.countDistinct;
@@ -382,33 +381,13 @@ public class GiftService extends ShopBaseService {
                 query.and(TABLE.END_TIME.lt(Util.currentTimeStamp()));
                 break;
             case DISABLED:
-                query.and(TABLE.STATUS.eq(DISABLE));
+                query.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected status: " + status);
         }
         if (DISABLED != status) {
-            query.and(TABLE.STATUS.eq(ABLE));
-        }
-    }
-
-    /**
-     * 获取活动的状态
-     */
-    private byte getStatusOf(StatusContainer vo) {
-        Byte status = vo.getStatus();
-        if (DISABLE == status) {
-            return DISABLED;
-        } else {
-            Timestamp startDate = vo.getStartTime();
-            Timestamp endDate = vo.getEndTime();
-            if (startDate.after(Util.currentTimeStamp())) {
-                return NOT_STARTED;
-            } else if (endDate.after(Util.currentTimeStamp())) {
-                return ONGOING;
-            } else {
-                return EXPIRED;
-            }
+            query.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
         }
     }
 

@@ -115,7 +115,7 @@ public final  class  BaseConstant {
      */
     public final static Byte COUPON_LIMIT_SURPLUS_FLAG_UNLIMITED =1;
 
-    //*********************前段活动状态***************************************/
+    //*********************前端活动状态***************************************/
     /**
      * 进行中
      */
@@ -125,7 +125,7 @@ public final  class  BaseConstant {
      */
     public final static byte NAVBAR_TYPE_NOT_STARTED= 2;
     /**
-     * 已完成
+     * 已结束
      */
     public final static byte NAVBAR_TYPE_FINISHED= 3;
     /**

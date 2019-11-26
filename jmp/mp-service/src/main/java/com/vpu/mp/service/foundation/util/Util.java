@@ -669,7 +669,7 @@ public class Util {
     public static Byte getActStatus(Byte status,Timestamp startTime,Timestamp endTime,Byte isForever){
         if (BaseConstant.ACTIVITY_NOT_FOREVER.equals(isForever)){
             Timestamp now  =DateUtil.getLocalDateTime();
-            if (Objects.equals(status, BaseConstant.NAVBAR_TYPE_ONGOING)){
+            if (Objects.equals(status, BaseConstant.ACTIVITY_STATUS_NORMAL)){
                 if (now.compareTo(startTime)<0){
                     return BaseConstant.NAVBAR_TYPE_NOT_STARTED;
                 }else if (now.compareTo(endTime)>0){
@@ -680,7 +680,12 @@ public class Util {
             }else {
                 return BaseConstant.NAVBAR_TYPE_DISABLED;
             }
+        }else{
+            if (Objects.equals(status, BaseConstant.ACTIVITY_STATUS_NORMAL)){
+                return BaseConstant.NAVBAR_TYPE_ONGOING;
+            }else {
+                return BaseConstant.NAVBAR_TYPE_DISABLED;
+            }
         }
-        return status;
     }
 }

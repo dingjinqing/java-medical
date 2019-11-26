@@ -55,4 +55,9 @@ public class SeckillPageListQueryVo {
 
     /**单用户最大购买数量*/
     private Short limitAmount;
+
+    /**
+     * 当前活动状态：1进行中，2未开始，3已结束，4已停用
+     */
+    private Byte currentState;
 }

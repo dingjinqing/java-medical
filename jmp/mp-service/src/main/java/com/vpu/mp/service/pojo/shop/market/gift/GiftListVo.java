@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  * @author 郑保乐
  */
 @Data
-public class GiftListVo implements StatusContainer {
+public class GiftListVo {
 
     private Integer id;
     /** 活动名称 **/
@@ -26,8 +26,8 @@ public class GiftListVo implements StatusContainer {
     /** 活动状态 **/
     private Byte status;
 
-    /* 活动状态 */
-    /** 开启 **/
-    public static final byte ABLE = 1;
-    public static final byte DISABLE = 0;
+    /**
+     * 当前活动状态：1进行中，2未开始，3已结束，4已停用
+     */
+    private Byte currentState;
 }
