@@ -53,7 +53,7 @@ public class CoopenService extends ShopBaseService {
         select.orderBy(TABLE.FIRST.desc(),TABLE.ID.desc());
         PageResult<CoopenListVo> pageResult = getPageResult(select, param, CoopenListVo.class);
         pageResult.getDataList().forEach(coopen->{
-            coopen.setStatus(Util.getActStatus(coopen.getStatus(),coopen.getStartDate(),coopen.getEndDate(),coopen.getIsForever()));
+            coopen.setCurrentState(Util.getActStatus(coopen.getStatus(),coopen.getStartDate(),coopen.getEndDate(),coopen.getIsForever()));
         });
         return pageResult;
     }

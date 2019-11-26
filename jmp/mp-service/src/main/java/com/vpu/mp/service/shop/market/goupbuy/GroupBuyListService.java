@@ -8,6 +8,7 @@ import static com.vpu.mp.db.shop.Tables.USER;
 import java.sql.Timestamp;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.util.Util;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -71,8 +72,12 @@ public class GroupBuyListService  extends ShopBaseService {
                 .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         records.orderBy(GROUP_BUY_DEFINE.ID.desc());
         this.buildOptions(param, records);
-        return getPageResult(records, param.getCurrentPage(), param.getPageRows(), GroupBuyListVo.class);
 
+        PageResult<GroupBuyListVo> page = getPageResult(records, param.getCurrentPage(), param.getPageRows(), GroupBuyListVo.class);
+        page.dataList.forEach(vo->{
+            vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
+        });
+        return page;
     }
 
     private void buildOptions(GroupBuyListParam param, SelectConditionStep<? extends Record> records) {

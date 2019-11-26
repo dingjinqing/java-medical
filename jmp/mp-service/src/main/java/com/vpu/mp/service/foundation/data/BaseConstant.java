@@ -125,7 +125,7 @@ public final  class  BaseConstant {
      */
     public final static byte NAVBAR_TYPE_NOT_STARTED= 2;
     /**
-     * 已结束
+     * 已过期
      */
     public final static byte NAVBAR_TYPE_FINISHED= 3;
     /**

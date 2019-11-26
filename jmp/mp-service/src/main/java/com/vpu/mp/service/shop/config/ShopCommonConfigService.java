@@ -439,7 +439,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public ShowCartConfig getShowCart() {
-		return this.getJsonObject(K_SHOW_CART, ShowCartConfig.class, null);
+		return this.getJsonObject(K_SHOW_CART, ShowCartConfig.class, new ShowCartConfig());
 	}
 
     /**

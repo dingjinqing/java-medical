@@ -17,13 +17,13 @@ public class ShowCartConfig {
 	 *  0：关，1：开
 	 */
 	@JsonProperty(value = "show_cart")
-	public Byte showCart;
+	public Byte showCart = 0;
 	
 	/**
 	 * 购买按钮类型
 	 *  0，1，2，3  四种类型
 	 */
 	@JsonProperty(value = "cart_type")
-	public Integer cartType;
+	public Integer cartType = 0;
 
 }

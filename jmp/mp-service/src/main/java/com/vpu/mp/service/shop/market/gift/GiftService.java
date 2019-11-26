@@ -333,6 +333,9 @@ public class GiftService extends ShopBaseService {
         buildOptions(query, param);
         query.orderBy(TABLE.CREATE_TIME.desc());
         PageResult<GiftListVo> page = getPageResult(query, param, GiftListVo.class);
+        page.dataList.forEach(vo->{
+            vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
+        });
         return page;
     }
 
