@@ -71,7 +71,7 @@
                     <div class="item_num">
                       <span>1000.99</span>
                     </div>
-                    <div class="item_word">我的余额</div>
+                    <div class="item_word">{{ $t('personalCenter.account') }}</div>
                   </div>
                   <div
                     class="each_item"
@@ -82,7 +82,7 @@
                     <div class="item_num">
                       <span>1000</span>
                     </div>
-                    <div class="item_word">我的积分</div>
+                    <div class="item_word">{{ $t('personalCenter.score') }}</div>
                   </div>
                   <div
                     class="each_item"
@@ -91,9 +91,9 @@
                     v-if="val.icon_name=='coupon' && val.is_show=='1'"
                   >
                     <div class="item_num">
-                      <span>122</span>张
+                      <span>122</span>{{ $t('personalCenter.sheets') }}
                     </div>
-                    <div class="item_word">优惠券</div>
+                    <div class="item_word">{{ $t('personalCenter.coupon') }}</div>
                   </div>
                   <div
                     class="each_item"
@@ -102,9 +102,9 @@
                     v-if="val.icon_name=='card' && val.is_show=='1'"
                   >
                     <div class="item_num">
-                      <span>90</span>张
+                      <span>90</span>{{ $t('personalCenter.sheets') }}
                     </div>
-                    <div class="item_word">优惠卡</div>
+                    <div class="item_word">{{ $t('personalCenter.card') }}</div>
                   </div>
                 </div>
                 <div class="orderOperation">
@@ -133,7 +133,7 @@
                     class="titleRight"
                     v-if="isShowOrder=='1'"
                   >
-                    <span>查看全部订单 </span>
+                    <span>{{ $t('personalCenter.viewAllOrder') }} </span>
                     <img
                       :src="imgHost + '/image/admin/right_into.png'"
                       alt=""
@@ -153,7 +153,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="item_word">待付款</div>
+                    <div class="item_word">{{ $t('personalCenter.wait1') }}</div>
                   </div>
                   <div
                     class="each_item"
@@ -167,7 +167,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="item_word">待发货</div>
+                    <div class="item_word">{{ $t('personalCenter.wait2') }}</div>
                   </div>
                   <div
                     class="each_item"
@@ -181,7 +181,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="item_word">待收货</div>
+                    <div class="item_word">{{ $t('personalCenter.wait3') }}</div>
                   </div>
                   <div
                     class="each_item"
@@ -195,7 +195,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="item_word">评价</div>
+                    <div class="item_word">{{ $t('personalCenter.wait4') }}</div>
                   </div>
                   <div
                     class="each_item"
@@ -209,7 +209,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="item_word">退款中</div>
+                    <div class="item_word">{{ $t('personalCenter.wait5') }}</div>
                   </div>
                   <div
                     class="each_item_special"
@@ -230,7 +230,7 @@
                           alt=""
                         >
                       </div>
-                      <div class="item_word">全部订单</div>
+                      <div class="item_word">{{ $t('personalCenter.allOrder') }}</div>
                     </div>
 
                   </div>
@@ -264,21 +264,21 @@
                     v-if="item.is_show_collect=='1'"
                   >
                     <div class="item_his">100</div>
-                    <div class="item_word">我的收藏</div>
+                    <div class="item_word">{{ $t('personalCenter.collect') }}</div>
                   </div>
                   <div
                     class="each_item"
                     v-if="item.is_show_buy_history=='1'"
                   >
                     <div class="item_his">100</div>
-                    <div class="item_word">历史购买</div>
+                    <div class="item_word">{{ $t('personalCenter.buyHistory') }}</div>
                   </div>
                   <div
                     class="each_item"
                     v-if="item.is_show_footprint=='1'"
                   >
                     <div class="item_his">100</div>
-                    <div class="item_word">我的足迹</div>
+                    <div class="item_word">{{ $t('personalCenter.footprint') }}</div>
                   </div>
                 </div>
                 <div class="orderOperation">
@@ -304,7 +304,7 @@
                 <div class="orderTitle">
                   <div class="titleLeft">{{ item.title }}</div>
                   <div class="titleRight">
-                    <span>查看全部预约 </span>
+                    <span>{{ $t('personalCenter.viewAllAppointments') }} </span>
                     <img
                       :src="imgHost + '/image/admin/right_into.png'"
                       alt=""
@@ -364,7 +364,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="serve_word">分销中心</div>
+                    <div class="serve_word">{{ $t('personalCenter.distribution') }}</div>
                   </div>
                   <div
                     class="each_serve"
@@ -379,7 +379,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="serve_word">我的砍价</div>
+                    <div class="serve_word">{{ $t('personalCenter.bargain') }}</div>
                   </div>
                   <div
                     class="each_serve"
@@ -394,7 +394,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="serve_word">我的奖品</div>
+                    <div class="serve_word">{{ $t('personalCenter.award') }}</div>
                   </div>
                   <div
                     class="each_serve"
@@ -409,7 +409,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="serve_word">我的评价</div>
+                    <div class="serve_word">{{ $t('personalCenter.commentList') }}</div>
                   </div>
                   <div
                     class="each_serve"
@@ -424,7 +424,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="serve_word">门店列表</div>
+                    <div class="serve_word">{{ $t('personalCenter.storeList') }}</div>
                   </div>
                   <div
                     class="each_serve"
@@ -439,7 +439,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="serve_word">会员激活</div>
+                    <div class="serve_word">{{ $t('personalCenter.userActivate') }}</div>
                   </div>
                   <div
                     class="each_serve"
@@ -454,7 +454,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="serve_word">扫码核销</div>
+                    <div class="serve_word">{{ $t('personalCenter.orderVerify') }}</div>
                   </div>
                   <div
                     class="each_serve"
@@ -469,7 +469,7 @@
                         alt=""
                       >
                     </div>
-                    <div class="serve_word">礼物记录</div>
+                    <div class="serve_word">{{ $t('personalCenter.presentList') }}</div>
                   </div>
                   <div
                     class="each_serve"
@@ -528,7 +528,7 @@
           <div class="cententRight_container">
             <el-collapse v-model="activeNames">
               <el-collapse-item
-                title="个人信息背景色配置"
+                :title="$t('personalCenter.userInfoColor')"
                 name="1"
                 style="margin-bottom: 20px;"
                 v-for="(item, index) in rightData"
@@ -539,8 +539,8 @@
                   <el-radio
                     label="0"
                     style="display: block;margin-bottom: 20px;"
-                  >同步店铺配色</el-radio>
-                  <el-radio label="1">自定义图片</el-radio>
+                  >{{ $t('personalCenter.storeColor') }}</el-radio>
+                  <el-radio label="1">{{ $t('personalCenter.customPicture') }}</el-radio>
                   <div
                     class="customizeImgWrap"
                     v-if="bgImg!=''"
@@ -566,14 +566,14 @@
                 </el-radio-group>
               </el-collapse-item>
               <el-collapse-item
-                title="账户资产信息展示项配置"
+                :title="$t('personalCenter.propertyInfo')"
                 name="2"
                 v-for="(item, index) in rightData"
                 :key="index"
                 v-if="index===2"
               >
-                <el-form label-width="100px">
-                  <el-form-item label="资产：">
+                <el-form label-width="120px">
+                  <el-form-item :label="$t('personalCenter.assetsLabel')">
                     <el-switch
                       v-model="item.is_show"
                       active-value="1"
@@ -581,11 +581,11 @@
                       @change="changeSwitch(item.module_name, item.is_show)"
                       active-color="#f7931e"
                     ></el-switch>
-                    <span>开关开启，则展示账户资产信息</span>
+                    <span>{{ $t('personalCenter.assetsLabelTip') }}</span>
                   </el-form-item>
-                  <el-form-item label="标题：">
+                  <el-form-item :label="$t('personalCenter.title')">
                     <el-input
-                      placeholder="最多输入20字"
+                      :placeholder="$t('personalCenter.inputTip')"
                       maxlength="20"
                       show-word-limit
                       style="width: 170px;"
@@ -593,9 +593,9 @@
                       @blur="changeTitle(item.module_name, item.title)"
                       v-model="item.title"
                     ></el-input>
-                    <p>用户资产模块标题，不填写则不显示</p>
+                    <p>{{ $t('personalCenter.assetsTitle') }}</p>
                   </el-form-item>
-                  <el-form-item label="我的余额：">
+                  <el-form-item :label="$t('personalCenter.account') + '：'">
                     <el-radio-group
                       v-for="(val,key) in item.content"
                       :key="key"
@@ -603,11 +603,11 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                   </el-form-item>
-                  <el-form-item label="我的积分：">
+                  <el-form-item :label="$t('personalCenter.score') + '：'">
                     <el-radio-group
                       v-for="(val,key) in item.content"
                       :key="key"
@@ -615,11 +615,11 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                   </el-form-item>
-                  <el-form-item label="优惠券：">
+                  <el-form-item :label="$t('personalCenter.coupon') + '：'">
                     <el-radio-group
                       v-for="(val,key) in item.content"
                       :key="key"
@@ -627,11 +627,11 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                   </el-form-item>
-                  <el-form-item label="优惠卡：">
+                  <el-form-item :label="$t('personalCenter.card') + '：'">
                     <el-radio-group
                       v-for="(val,key) in item.content"
                       :key="key"
@@ -639,21 +639,21 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                   </el-form-item>
                 </el-form>
               </el-collapse-item>
               <el-collapse-item
-                title="订单信息展示项配置"
+                :title="$t('personalCenter.orderInfo')"
                 name="3"
                 v-for="(item, index) in rightData"
                 :key="index"
                 v-if="index===3"
               >
-                <el-form label-width="100px">
-                  <el-form-item label="订单：">
+                <el-form label-width="120px">
+                  <el-form-item :label="$t('personalCenter.orderLabel')">
                     <el-switch
                       v-model="item.is_show"
                       active-value="1"
@@ -661,11 +661,11 @@
                       @change="changeSwitch(item.module_name, item.is_show)"
                       active-color="#f7931e"
                     ></el-switch>
-                    <span>开关开启，则展示订单信息</span>
+                    <span>{{ $t('personalCenter.orderLabelTip') }}</span>
                   </el-form-item>
-                  <el-form-item label="标题：">
+                  <el-form-item :label="$t('personalCenter.title')">
                     <el-input
-                      placeholder="最多输入20字"
+                      :placeholder="$t('personalCenter.inputTip')"
                       maxlength="20"
                       show-word-limit
                       style="width: 170px;"
@@ -673,18 +673,18 @@
                       @blur="changeTitle(item.module_name, item.title)"
                       v-model="item.title"
                     ></el-input>
-                    <p>订单模块标题，不填写则不显示</p>
+                    <p>{{ $t('personalCenter.orderTitle') }}</p>
                   </el-form-item>
-                  <el-form-item label="模块样式：">
+                  <el-form-item :label="$t('personalCenter.orderStyle')">
                     <el-radio-group
                       v-model="item.module_style"
                       @change="changeModuleStyle"
                     >
-                      <el-radio label="1">样式1</el-radio>
-                      <el-radio label="2">样式2</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.styleRadio1') }}</el-radio>
+                      <el-radio label="2">{{ $t('personalCenter.styleRadio2') }}</el-radio>
                     </el-radio-group>
                   </el-form-item>
-                  <el-form-item label="待付款订单：">
+                  <el-form-item :label="$t('personalCenter.waitPay')">
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
@@ -699,18 +699,18 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/uc_order_icon1.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
-                  <el-form-item label="待发货订单：">
+                  <el-form-item :label="$t('personalCenter.waitDeliver')">
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
@@ -725,18 +725,18 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/uc_order_icon2.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
-                  <el-form-item label="待收款订单：">
+                  <el-form-item :label="$t('personalCenter.waitReceive')">
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
@@ -751,18 +751,18 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/uc_order_icon3.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
-                  <el-form-item label="评价订单：">
+                  <el-form-item :label="$t('personalCenter.waitComment')">
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
@@ -777,18 +777,18 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/uc_order_icon4.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
-                  <el-form-item label="退款中订单：">
+                  <el-form-item :label="$t('personalCenter.refund')">
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
@@ -803,14 +803,14 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/uc_order_icon5.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
@@ -819,14 +819,14 @@
 
               </el-collapse-item>
               <el-collapse-item
-                title="预约信息展示项配置"
+                :title="$t('personalCenter.appointmentInfo')"
                 name="4"
                 v-for="(item, index) in rightData"
                 :key="index"
                 v-if="index===4"
               >
-                <el-form label-width="100px">
-                  <el-form-item label="预约：">
+                <el-form label-width="120px">
+                  <el-form-item :label="$t('personalCenter.appointmentLabel')">
                     <el-switch
                       v-model="item.is_show"
                       active-value="1"
@@ -834,11 +834,11 @@
                       @change="changeSwitch(item.module_name, item.is_show)"
                       active-color="#f7931e"
                     ></el-switch>
-                    <span>开关开启，则展示预约信息</span>
+                    <span>{{ $t('personalCenter.appointmentLabelTip') }}</span>
                   </el-form-item>
-                  <el-form-item label="标题：">
+                  <el-form-item :label="$t('personalCenter.title')">
                     <el-input
-                      placeholder="最多输入20字"
+                      :placeholder="$t('personalCenter.inputTip')"
                       maxlength="20"
                       show-word-limit
                       style="width: 170px;"
@@ -846,20 +846,20 @@
                       @blur="changeTitle(item.module_name, item.title)"
                       v-model="item.title"
                     ></el-input>
-                    <p>预约模块标题，不填写则不显示</p>
+                    <p>{{ $t('personalCenter.appointmentTitle') }}</p>
                   </el-form-item>
                 </el-form>
 
               </el-collapse-item>
               <el-collapse-item
-                title="店铺使用相关数据展示项配置"
+                :title="$t('personalCenter.shopUseInfo')"
                 name="5"
                 v-for="(item, index) in rightData"
                 :key="index"
                 v-if="index===5"
               >
-                <el-form label-width="100px">
-                  <el-form-item label="店铺使用：">
+                <el-form label-width="120px">
+                  <el-form-item :label="$t('personalCenter.shopLabel')">
                     <el-switch
                       v-model="item.is_show"
                       active-value="1"
@@ -867,11 +867,11 @@
                       @change="changeSwitch(item.module_name, item.is_show)"
                       active-color="#f7931e"
                     ></el-switch>
-                    <span>开关开启，则展示店铺使用信息</span>
+                    <span>{{ $t('personalCenter.shopLabelTip') }}</span>
                   </el-form-item>
-                  <el-form-item label="标题：">
+                  <el-form-item :label="$t('personalCenter.title')">
                     <el-input
-                      placeholder="最多输入20字"
+                      :placeholder="$t('personalCenter.inputTip')"
                       maxlength="20"
                       show-word-limit
                       style="width: 170px;"
@@ -879,50 +879,50 @@
                       @blur="changeTitle(item.module_name, item.title)"
                       v-model="item.title"
                     ></el-input>
-                    <p>店铺使用模块标题，不填写则不显示</p>
+                    <p>{{ $t('personalCenter.shopTitle') }}</p>
                   </el-form-item>
-                  <el-form-item label="我的收藏：">
+                  <el-form-item :label="$t('personalCenter.collect') + '：'">
                     <el-radio-group
                       v-model="item.is_show_collect"
                       @change="changeItem(item.module_name, 'is_show_collect', item.is_show_collect)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
-                    <span>用户收藏的商品</span>
+                    <span>{{ $t('personalCenter.collectTip') }}</span>
                   </el-form-item>
-                  <el-form-item label="历史购买：">
+                  <el-form-item :label="$t('personalCenter.buyHistory') + '：'">
                     <el-radio-group
                       v-model="item.is_show_buy_history"
                       @change="changeItem(item.module_name, 'is_show_buy_history', item.is_show_buy_history)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
-                    <span>用户购买过的商品</span>
+                    <span>{{ $t('personalCenter.buyHistoryTip') }}</span>
                   </el-form-item>
-                  <el-form-item label="我的足迹：">
+                  <el-form-item :label="$t('personalCenter.footprint') + '：'">
                     <el-radio-group
                       v-model="item.is_show_footprint"
                       @change="changeItem(item.module_name, 'is_show_footprint', item.is_show_footprint)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
-                    <span>用户浏览过的商品</span>
+                    <span>{{ $t('personalCenter.footprintTip') }}</span>
                   </el-form-item>
                 </el-form>
 
               </el-collapse-item>
               <el-collapse-item
-                title="服务展示项配置"
+                :title="$t('personalCenter.serveShowInfo')"
                 name="6"
                 v-for="(item, index) in rightData"
                 :key="index"
                 v-if="index===6"
               >
                 <el-form label-width="100px">
-                  <el-form-item label="服务：">
+                  <el-form-item :label="$t('personalCenter.serveLabel')">
                     <el-switch
                       v-model="item.is_show"
                       active-value="1"
@@ -930,11 +930,11 @@
                       @change="changeSwitch(item.module_name, item.is_show)"
                       active-color="#f7931e"
                     ></el-switch>
-                    <span>开关开启，则展示店铺服务信息</span>
+                    <span>{{ $t('personalCenter.serveLabelTip') }}</span>
                   </el-form-item>
-                  <el-form-item label="标题：">
+                  <el-form-item :label="$t('personalCenter.title')">
                     <el-input
-                      placeholder="最多输入20字"
+                      :placeholder="$t('personalCenter.inputTip')"
                       maxlength="20"
                       show-word-limit
                       style="width: 170px;"
@@ -942,10 +942,10 @@
                       @blur="changeTitle(item.module_name, item.title)"
                       v-model="item.title"
                     ></el-input>
-                    <p>开关开启，则展示店铺服务信息</p>
+                    <p>{{ $t('personalCenter.serveTitle') }}</p>
                   </el-form-item>
                   <el-form-item
-                    label="分销中心："
+                    :label="$t('personalCenter.distribution') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
                     v-if="key==0"
@@ -954,8 +954,8 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
@@ -966,19 +966,19 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_dis.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
                   <el-form-item
-                    label="我的砍价："
+                    :label="$t('personalCenter.bargain') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
                     v-if="key==1"
@@ -987,8 +987,8 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
@@ -999,19 +999,19 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_bargain.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
                   <el-form-item
-                    label="我的奖品："
+                    :label="$t('personalCenter.award') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
                     v-if="key==2"
@@ -1020,8 +1020,8 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
@@ -1032,20 +1032,20 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_award.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
 
                   <el-form-item
-                    label="我的评价："
+                    :label="$t('personalCenter.commentList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
                     v-if="key==3"
@@ -1054,8 +1054,8 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
@@ -1066,19 +1066,19 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_comment.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
                   <el-form-item
-                    label="门店列表："
+                    :label="$t('personalCenter.storeList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
                     v-if="key==4"
@@ -1087,8 +1087,8 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
@@ -1099,19 +1099,19 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_store.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
                   <el-form-item
-                    label="会员激活："
+                    :label="$t('personalCenter.userActivate') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
                     v-if="key==5"
@@ -1120,8 +1120,8 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
@@ -1132,19 +1132,19 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_member.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
                   <el-form-item
-                    label="扫码核销："
+                    :label="$t('personalCenter.orderVerify') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
                     v-if="key==6"
@@ -1153,8 +1153,8 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
@@ -1165,19 +1165,19 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_scan.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
                   <el-form-item
-                    label="礼物记录："
+                    :label="$t('personalCenter.presentList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
                     v-if="key==7"
@@ -1186,8 +1186,8 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
@@ -1198,20 +1198,20 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                         <el-button
                           type="text"
                           @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_pre.png')"
-                        >重置图标</el-button>
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
                       </div>
                     </div>
                   </el-form-item>
 
                   <el-form-item
-                    label="自定义模板："
+                    :label="$t('personalCenter.customIcon') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
                     v-if="key>7"
@@ -1220,17 +1220,17 @@
                       v-model="val.is_show"
                       @change="changeAccountItem(item.module_name, val.icon_name, val.is_show, key)"
                     >
-                      <el-radio label="1">展示</el-radio>
-                      <el-radio label="0">不展示</el-radio>
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
                     </el-radio-group>
                     <el-button
                       type="text"
                       style="margin-left: 10px;"
                       @click="delTemplate(item.content, key)"
-                    >删除模板</el-button>
+                    >{{ $t('personalCenter.deleteTemplate') }}</el-button>
                     <div style="margin: 10px 0;">
-                      标题：&nbsp;&nbsp;<el-input
-                        placeholder="最多输入20字"
+                      {{ $t('personalCenter.title') }}&nbsp;&nbsp;<el-input
+                        :placeholder="$t('personalCenter.inputTip')"
                         maxlength="20"
                         show-word-limit
                         v-model="val.title"
@@ -1248,15 +1248,15 @@
                           fit="scale-down"
                           :src="imgHost + val.icon"
                         />
-                        <div class="selectIcon">更换图标</div>
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
                       </div>
                       <div style="margin-left: 10px;">
-                        <p style="color: #999;">建议尺寸：50px*50px</p>
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
                       </div>
-                      <div>跳转到的页面：<el-button
+                      <div>{{ $t('personalCenter.jumpPage') }}<el-button
                           type="text"
                           @click="selectLink(key)"
-                        >选择链接</el-button>
+                        >{{ $t('personalCenter.selectLink') }}</el-button>
                       </div>
                       <div
                         style="margin-left: 20px;"
@@ -1270,7 +1270,7 @@
                       size="small"
                       style="text-align: center;"
                       @click="addTemplate"
-                    >添加自定义模板</el-button>
+                    >{{ $t('personalCenter.addTemplate') }}</el-button>
                   </div>
                 </el-form>
 
@@ -1280,13 +1280,12 @@
 
         </div>
       </div>
-
       <div class="footer">
         <el-button
           type="primary"
           size="small"
           @click="saveClickHandler"
-        >保存</el-button>
+        >{{ $t('personalCenter.save') }}</el-button>
       </div>
     </div>
     <!--图片dialog-->
@@ -1906,6 +1905,7 @@ export default {
 }
 
 .personalCenterContent_main {
+  position: relative;
   background-color: #fff;
   height: 100%;
   overflow: hidden;
@@ -1914,7 +1914,7 @@ export default {
 }
 
 .prompt {
-  width: 840px;
+  width: 900px;
   height: 40px;
   line-height: 40px;
   border: 1px solid #f2e1c8;
@@ -1929,13 +1929,15 @@ export default {
 }
 
 .bottomContent {
-  width: 840px;
+  width: 900px;
   overflow: hidden;
   margin: 0 auto;
+  margin-bottom: 70px;
 }
 
 .cententLeft {
-  width: 323px;
+  /* width: 323px; */
+  width: 350px;
   border: 1px solid #ccc;
   background: #eee;
   position: relative;
@@ -1975,7 +1977,7 @@ export default {
 }
 
 .center_name {
-  width: 100px;
+  width: 105px;
   position: absolute;
   top: 40px;
   left: 90px;
@@ -2148,7 +2150,7 @@ export default {
 }
 
 .each_serve {
-  width: 98px;
+  width: 105px;
   margin-bottom: 20px;
   float: left;
   flex: 30% !important;
@@ -2315,15 +2317,15 @@ export default {
 }
 
 .footer {
-  background: #f8f8fa;
-  text-align: center;
-  box-sizing: border-box;
-  height: 50px;
-  padding-top: 10px;
   position: fixed;
-  left: 0;
-  right: 0;
   bottom: 0;
-  z-index: 2;
+  right: 27px;
+  left: 160px;
+  height: 52px;
+  padding: 10px 0;
+  background-color: #fff;
+  text-align: center;
+  border-top: 1px solid #eee;
+  z-index: 9;
 }
 </style>
