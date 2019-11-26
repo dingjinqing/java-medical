@@ -51,10 +51,15 @@
                   <li v-if="row.goodsList === 1">{{$t('allGoodsLabel.goodsListPage')}}</li>
                   <li v-if="row.goodsSelect === 1">{{$t('allGoodsLabel.goodsSelectPage')}}</li>
                 </ul>
-                <span
-                  class="operateSpan"
-                  @click="useModelSettingClicked(row)"
-                >{{$t('allGoodsLabel.setting')}}</span>
+                <el-tooltip
+                  :content="$t('allGoodsLabel.setting')"
+                  placement="top"
+                >
+                  <span
+                    class="el-icon-edit-outline operateSpan"
+                    @click="useModelSettingClicked(row)"
+                  ></span>
+                </el-tooltip>
               </div>
             </template>
           </el-table-column>
@@ -74,14 +79,24 @@
             :label="$t('allGoodsLabel.operate')"
           >
             <template slot-scope="{row}">
-              <span
-                class="operateSpan"
-                @click="updateLabelSettingClicked(row)"
-              >{{$t('allGoodsLabel.update')}}</span>
-              <span
-                class="operateSpan"
-                @click="deleteLabelSettingClicked(row)"
-              >{{$t('allGoodsLabel.delete')}}</span>
+              <el-tooltip
+                :content="$t('allGoodsLabel.update')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-edit-outline operateSpan"
+                  @click="updateLabelSettingClicked(row)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('allGoodsLabel.delete')"
+                placement="top"
+              >
+                <span
+                  class="el-icon-delete operateSpan"
+                  @click="deleteLabelSettingClicked(row)"
+                ></span>
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
@@ -284,7 +299,7 @@ ul li {
   padding: 5px 0px;
 }
 .operateSpan {
-  font-size: 16px;
+  font-size: 22px;
   color: #5a8bff;
   cursor: pointer !important;
 }

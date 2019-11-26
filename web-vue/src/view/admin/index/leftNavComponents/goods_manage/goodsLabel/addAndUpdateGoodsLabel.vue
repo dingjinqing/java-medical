@@ -200,16 +200,18 @@
         </el-form-item>
       </el-form>
     </div>
+    <div class="contentFooter">
+      <el-button
+        type="primary"
+        size="small"
+        @click="saveGoodsLabel"
+      >{{$t('addAndUpdateGoodsLabel.save')}}</el-button>
+    </div>
     <choosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       @resultGoodsDatas="chooseGoodsResult"
     />
-    <div class="contentFooter">
-      <el-button
-        type="primary"
-        @click="saveGoodsLabel"
-      >{{$t('addAndUpdateGoodsLabel.save')}}</el-button>
-    </div>
+
   </div>
 </template>
 
@@ -421,11 +423,12 @@ export default {
 
 <style scoped>
 .contentWrap {
-  padding: 10px 10px;
+  padding: 10px;
 }
 .content {
   background-color: white;
-  padding: 10px 10px 20px 10px;
+  padding: 10px;
+  margin-bottom: 50px;
 }
 .inputTip {
   color: #999;
@@ -466,15 +469,15 @@ export default {
   cursor: pointer !important;
 }
 .contentFooter {
-  background: #f8f8fa;
-  text-align: center;
-  box-sizing: border-box;
-  height: 60px;
-  padding-top: 10px;
-  position: fixed;
-  left: 0;
-  right: 0;
+  position: absolute;
   bottom: 0;
-  z-index: 2;
+  right: 27px;
+  left: 160px;
+  height: 52px;
+  padding: 10px;
+  background-color: #fff;
+  text-align: center;
+  border-top: 1px solid #eee;
+  z-index: 99;
 }
 </style>

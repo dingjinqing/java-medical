@@ -353,7 +353,49 @@
             align="center"
           >
             <template slot-scope="scope">
-              <div v-if="hiddle_1">
+              <el-tooltip
+                :content="$t('allGoodsLabel.update')"
+                placement="top"
+                v-if="hiddle_1"
+              >
+                <span
+                  class="el-icon-edit-outline operateSpan"
+                  @click="handleEditGoods(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('allGoodsLabel.delete')"
+                placement="top"
+                v-if="hiddle_1"
+              >
+                <span
+                  class="el-icon-delete operateSpan"
+                  @click="deleGrand(scope.row.id)"
+                ></span>
+              </el-tooltip>
+
+              <el-tooltip
+                :content="$t('allGoodsLabel.update')"
+                placement="top"
+                v-if="!hiddle_1"
+              >
+                <span
+                  class="el-icon-edit-outline operateSpan"
+                  @click="handlePagingEditGoods(scope.row)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('allGoodsLabel.delete')"
+                placement="top"
+                v-if="!hiddle_1"
+              >
+                <span
+                  class="el-icon-delete operateSpan"
+                  @click="delePagingGrand(scope.row.classifyId)"
+                ></span>
+              </el-tooltip>
+
+              <!-- <div v-if="hiddle_1">
                 <span
                   @click="handleEditGoods(scope.row.id)"
                   style="color: #5a8bff;cursor: pointer;"
@@ -372,65 +414,12 @@
                   @click="delePagingGrand(scope.row.classifyId)"
                   style="color: #5a8bff;cursor: pointer;"
                 >删除</span>
-              </div>
+              </div> -->
 
             </template>
           </el-table-column>
 
         </el-table>
-        <!-- <table width="100%">
-          <thead>
-            <tr class="brandTr">
-              <td :class="hiddle_1 ? '' : 'firstNameClass'">
-                {{ secondGrandName }}
-              </td>
-              <td v-if="hiddle_1">品牌logo</td>
-              <td v-if="hiddle_1">优先级</td>
-              <td v-if="hiddle_1">品牌分类</td>
-              <td :class="hiddle_1 ? '' : 'secondNameClass'">包含商品数量</td>
-              <td :class="hiddle_1 ? '' : 'threeNameClass'">分类优先级</td>
-              <td :class="hiddle_1 ? '' : 'fourNameClass'">创建时间</td>
-              <td>操作</td>
-            </tr>
-          </thead>
-          <tbody v-if="tbodyFlag">
-            <tr
-              v-for="(item, index) in trList"
-              :key="index"
-            >
-              <td v-if="!hiddle_1">{{ item.classifyName }}</td>
-              <td v-if="hiddle_1">{{ item.brandName }}</td>
-              <td v-if="hiddle_1"><img :src="item.logo" /></td>
-              <td v-if="hiddle_1">{{ item.first }}</td>
-              <td v-if="hiddle_1">{{ item.classifyName }}</td>
-              <td v-if="hiddle_1">{{ item.goodsNum }}</td>
-              <td v-if="!hiddle_1">{{ item.brandNum }}</td>
-              <td>{{ item.first }}</td>
-              <td>{{ item.createTime }}</td>
-              <td
-                class="lastSpan"
-                v-if="hiddle_1"
-              >
-                <span @click="handleEditGoods(item.id)">编辑</span>
-                <span @click="deleGrand(item.id)">删除</span>
-              </td>
-              <td
-                class="lastSpan"
-                v-if="!hiddle_1"
-              >
-                <span @click="handlePagingEditGoods(item)">编辑</span>
-                <span @click="delePagingGrand(item.classifyId)">删除</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div
-          class="noData"
-          v-if="!tbodyFlag"
-        >
-          <img :src="noImg" />
-          <span>暂无相关数据</span>
-        </div> -->
         <!--分页-->
         <pagination
           :page-params.sync="pageParams"
@@ -438,18 +427,6 @@
         />
       </div>
 
-      <!--分页-->
-      <!-- <div class="tapOneblock">
-        <span class="demonstration">直接前往</span>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage1"
-          :page-size="20"
-          layout="prev, pager, next, jumper"
-          :total="totalRows"
-        >
-        </el-pagination>
-      </div> -->
     </div>
     <!--添加品牌分类弹窗-->
     <el-dialog
@@ -1256,5 +1233,10 @@ tbody img {
 }
 .ra_div .el-radio {
   margin-right: 0 !important;
+}
+.operateSpan {
+  font-size: 22px;
+  color: #5a8bff;
+  cursor: pointer !important;
 }
 </style>

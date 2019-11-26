@@ -7,7 +7,7 @@
         label-width="100px"
       >
         <el-form-item
-          :label="$t('recommend.eventName')"
+          :label="$t('recommend.eventName') + '：'"
           prop="recommendName"
         >
           <el-input
@@ -18,7 +18,7 @@
           <span class="tips">{{$t('recommend.eventNameTips')}}</span>
         </el-form-item>
         <el-form-item
-          :label="$t('recommend.addingGoods')"
+          :label="$t('recommend.addingGoods') + '：'"
           prop="name"
         >
           <el-radio-group v-model="paramsData.chooseType">
@@ -93,7 +93,7 @@
           </div>
         </el-form-item>
         <el-form-item
-          :label="$t('recommend.applicationPage')"
+          :label="$t('recommend.applicationPage') + '：'"
           prop="name"
         >
           <el-checkbox-group v-model="paramsData.recommendUsePage">
@@ -118,7 +118,7 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item
-          :label="$t('recommend.enabledState')"
+          :label="$t('recommend.enabledState') + '：'"
           prop="name"
         >
           <el-radio-group v-model="paramsData.status">
@@ -273,6 +273,7 @@ export default {
 .main_container {
   padding: 10px;
   .recommend_container {
+    margin-bottom: 50px;
     padding: 10px;
     background-color: #fff;
     .choose_goods_content {
@@ -313,18 +314,19 @@ export default {
     line-height: 40px;
   }
   .default_width {
-    width: 180px;
+    width: 170px;
   }
   .footer {
-    position: fixed;
+    position: absolute;
     bottom: 0;
+    right: 27px;
     left: 160px;
-    right: 10px;
     height: 52px;
     padding: 10px 0;
     background-color: #fff;
     text-align: center;
-    z-index: 3;
+    border-top: 1px solid #eee;
+    z-index: 99;
   }
 }
 </style>

@@ -128,10 +128,11 @@
     </div>
     <!--保存-->
     <div class="footer">
-      <div
-        class="save"
+      <el-button
+        size="small"
+        type="primary"
         @click="saveShopStyle()"
-      >{{$t('shopStyle.saveText')}}</div>
+      >{{$t('shopStyle.saveText')}}</el-button>
     </div>
     <!--添加品牌分类弹窗-->
     <el-dialog
@@ -609,14 +610,16 @@ export default {
 </script>
 <style scoped>
 .footer {
-  background: #f8f8fa;
-  border-top: 1px solid #f2f2f2;
-  text-align: center;
-  position: fixed;
-  z-index: 2;
+  position: absolute;
   bottom: 0;
-  width: 89%;
-  padding: 10px 0;
+  right: 27px;
+  left: 160px;
+  height: 52px;
+  padding: 10px;
+  background-color: #fff;
+  text-align: center;
+  border-top: 1px solid #eee;
+  z-index: 99;
 }
 .save {
   width: 70px;
@@ -630,20 +633,11 @@ export default {
 }
 .addBrand {
   padding: 10px;
-  padding-right: 23px;
-  min-width: 100%;
-  font-size: 14px;
-  height: 100%;
-  position: relative;
 }
 .addBrandContent {
-  position: relative;
-  background-color: #fff;
-  /* height: 100%; */
-  overflow: hidden;
-  overflow-y: auto;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 50px;
 }
 .addBrandMain {
   padding-left: 30px;

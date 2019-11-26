@@ -554,7 +554,7 @@ export default {
   opacity: 0.8;
 }
 .iconSpan {
-  font-size: 20px;
+  font-size: 22px;
   color: #5a8bff;
   cursor: pointer !important;
 }

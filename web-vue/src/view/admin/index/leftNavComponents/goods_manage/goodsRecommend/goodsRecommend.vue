@@ -55,7 +55,15 @@
                 >{{$t('recommend.pageList')[item]}}</p>
               </div>
               <div class="page_right">
-                <span @click="editItem(scope.row)">{{$t('recommend.setting')}}</span>
+                <el-tooltip
+                  :content="$t('recommend.setting')"
+                  placement="top"
+                >
+                  <span
+                    class="el-icon-edit-outline operateSpan"
+                    @click="editItem(scope.row)"
+                  ></span>
+                </el-tooltip>
               </div>
             </div>
           </template>
@@ -73,11 +81,38 @@
           align="center"
         >
           <template slot-scope="scope">
-            <div class="operation">
+            <el-tooltip
+              :content="$t('recommend.edit')"
+              placement="top"
+            >
+              <span
+                class="el-icon-edit-outline operateSpan"
+                @click="edit(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="scope.row.status === 0 ? $t('recommend.disable') : $t('recommend.enable')"
+              placement="top"
+            >
+              <span
+                class="el-icon-circle-close operateSpan"
+                @click="editStatus(scope.row)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('recommend.delete')"
+              placement="top"
+            >
+              <span
+                class="el-icon-delete operateSpan"
+                @click="del(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <!-- <div class="operation">
               <p @click="edit(scope.row.id)">{{$t('recommend.edit')}}</p>
               <p @click="editStatus(scope.row)">{{scope.row.status === 0 ? $t('recommend.disable') : $t('recommend.enable')}}</p>
               <p @click="del(scope.row.id)">{{$t('recommend.delete')}}</p>
-            </div>
+            </div> -->
           </template>
         </el-table-column>
       </el-table>
@@ -255,5 +290,10 @@ export default {
 }
 .default_input {
   width: 180px;
+}
+.operateSpan {
+  font-size: 22px;
+  color: #5a8bff;
+  cursor: pointer !important;
 }
 </style>

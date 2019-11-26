@@ -4,10 +4,16 @@
     <div class="content">
       <el-radio-group
         v-model="level"
-        style="margin-bottom: 10px;"
+        style="margin-bottom: 15px; margin-left: 15px;"
       >
-        <el-radio :label="0" :disabled="isUpdate">{{$t('goodsSorts.addFirstLevel')}}</el-radio>
-        <el-radio :label="1" :disabled="isUpdate">{{$t('goodsSorts.addSecondLevel')}}</el-radio>
+        <el-radio
+          :label="0"
+          :disabled="isUpdate"
+        >{{$t('goodsSorts.addFirstLevel')}}</el-radio>
+        <el-radio
+          :label="1"
+          :disabled="isUpdate"
+        >{{$t('goodsSorts.addSecondLevel')}}</el-radio>
       </el-radio-group>
       <!-- 一级分类表单 -->
       <el-form
@@ -18,7 +24,7 @@
         label-width="120px"
       >
         <el-form-item
-          :label="$t('goodsSorts.goodsSortName')"
+          :label="$t('goodsSorts.goodsSortName') + '：'"
           prop="sortName"
         >
           <el-input
@@ -28,7 +34,7 @@
             style="width: 170px;"
           />
         </el-form-item>
-        <el-form-item :label="$t('goodsSorts.goodsSortFirst')">
+        <el-form-item :label="$t('goodsSorts.goodsSortFirst') + '：'">
           <el-input
             @change="firstChanged"
             v-model.number="goodsSortDataFirst.firstBind"
@@ -38,7 +44,7 @@
           <br />
           <span class="inputTip">{{$t('goodsSorts.goodsSortFirstTip')}}</span>
         </el-form-item>
-        <el-form-item :label="$t('goodsSorts.goodsSortHeadImg')">
+        <el-form-item :label="$t('goodsSorts.goodsSortHeadImg') + '：'">
           <img
             v-if="goodsSortDataFirst.sortImgObj === null"
             @click="chooseSortImg"
@@ -66,7 +72,7 @@
             v-model="goodsSortDataFirst.imgLink"
             :readonly="true"
             size="small"
-            style="width: 280px;"
+            style="width: 170px;"
           />
           <el-button
             @click="chooseImgLink"
@@ -84,12 +90,13 @@
         label-width="120px"
       >
         <el-form-item
-          :label="$t('goodsSorts.firstLevel')"
+          :label="$t('goodsSorts.firstLevel') + '：'"
           prop="firstSortId"
         >
           <el-select
             ref="firstSortIdSelector"
             v-model="goodsSortDataSecond.firstSortId"
+            style="width: 170px;"
           >
             <el-option
               :label="$t('goodsSorts.pleaseChoose')"
@@ -118,7 +125,7 @@
           </el-popover>
         </el-form-item>
         <el-form-item
-          :label="$t('goodsSorts.goodsSortName')"
+          :label="$t('goodsSorts.goodsSortName') + '：'"
           prop="sortName"
         >
           <el-input
@@ -128,7 +135,7 @@
             style="width: 170px;"
           />
         </el-form-item>
-        <el-form-item :label="$t('goodsSorts.goodsSortFirst')">
+        <el-form-item :label="$t('goodsSorts.goodsSortFirst') + '：'">
           <el-input
             @change="firstChanged"
             v-model.number="goodsSortDataSecond.firstBind"
@@ -139,7 +146,7 @@
           <span class="inputTip">{{$t('goodsSorts.goodsSortFirstTip')}}</span>
         </el-form-item>
         <el-form-item
-          :label="$t('goodsSorts.goodsSortImg')"
+          :label="$t('goodsSorts.goodsSortImg') + '：'"
           prop="sortImg"
         >
           <div style="display: flex;justify-content: left;align-items: center;line-height: 20px;">
@@ -168,6 +175,7 @@
     <div class="contentFooter">
       <el-button
         type="primary"
+        size="small"
         @click="save"
       >{{$t('goodsSorts.save')}}</el-button>
     </div>
@@ -409,6 +417,7 @@ export default {
 <style scoped>
 .content {
   margin: 20px 0px;
+  margin-bottom: 50px;
 }
 .inputTip {
   color: #999;
@@ -430,15 +439,15 @@ export default {
   opacity: 0.8;
 }
 .contentFooter {
-  background: #f8f8fa;
-  text-align: center;
-  box-sizing: border-box;
-  height: 60px;
-  padding-top: 10px;
-  position: fixed;
-  left: 0;
-  right: 0;
+  position: absolute;
   bottom: 0;
-  z-index: 2;
+  right: 27px;
+  left: 160px;
+  height: 52px;
+  padding: 10px 0;
+  background-color: #fff;
+  text-align: center;
+  border-top: 1px solid #eee;
+  z-index: 99;
 }
 </style>

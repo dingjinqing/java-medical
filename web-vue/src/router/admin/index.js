@@ -691,7 +691,8 @@ const routes = [{
         name: 'addRecommend',
         meta: {
           crumbTitle: 'router.addGoodsRecommend',
-          meta: 'goods_manage'
+          meta: 'goods_manage',
+          category: 'recommend'
         },
         component: () =>
           import(
@@ -717,7 +718,8 @@ const routes = [{
         name: 'addGoodsLabel',
         meta: {
           crumbTitle: 'router.addGoodsLabel',
-          meta: 'goods_manage'
+          meta: 'goods_manage',
+          category: 'label'
         },
         component: () =>
           import(

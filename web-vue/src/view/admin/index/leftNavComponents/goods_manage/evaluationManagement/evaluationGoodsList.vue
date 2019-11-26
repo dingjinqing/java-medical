@@ -128,14 +128,24 @@
           align="center"
         >
           <template slot-scope="scope">
-            <span
-              @click="viewEvaluation(scope.row.goodsId)"
-              style="color: #5a8bff;cursor: pointer;"
-            >{{$t('evaluation.view')}}</span>
-            <span
-              @click="addEvaluation(scope.row)"
-              style="color: #5a8bff;cursor: pointer;"
-            >{{$t('evaluation.addEvaluation')}}</span>
+            <el-tooltip
+              :content="$t('evaluation.view')"
+              placement="top"
+            >
+              <span
+                class="el-icon-tickets operateSpan"
+                @click="viewEvaluation(scope.row.goodsId)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('evaluation.addEvaluation')"
+              placement="top"
+            >
+              <span
+                class="el-icon-circle-plus-outline operateSpan"
+                @click="addEvaluation(scope.row)"
+              ></span>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -286,5 +296,10 @@ export default {
       line-height: 1;
     }
   }
+}
+.operateSpan {
+  font-size: 22px;
+  color: #5a8bff;
+  cursor: pointer !important;
 }
 </style>

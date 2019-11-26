@@ -153,6 +153,7 @@
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.operate')"
+          width="160px"
         >
           <template slot-scope="{row,$index}">
             <el-tooltip
@@ -160,7 +161,6 @@
               placement="top"
             >
               <span
-                style="font-size: 22px;color:#5a8bff;"
                 class="el-icon-edit-outline iconSpan"
                 @click="editIconClick(row)"
               ></span>
@@ -180,7 +180,6 @@
               placement="top"
             >
               <span
-                style="font-size: 22px;color:#5a8bff;"
                 class="el-icon-share iconSpan"
                 @click="shareIconClick(row)"
               ></span>
@@ -190,8 +189,7 @@
               placement="top"
             >
               <span
-                style="font-size: 22px;color:#5a8bff;"
-                class="el-icon-download"
+                class="el-icon-download iconSpan"
                 @click="withdrawIconClick(row,$index)"
               ></span>
             </el-tooltip>
@@ -200,7 +198,6 @@
               placement="top"
             >
               <span
-                style="font-size: 22px;color:#5a8bff;"
                 class="el-icon-delete iconSpan"
                 @click="deleteIconClick(row,$index)"
               ></span>
@@ -624,7 +621,7 @@ export default {
   opacity: 0.8;
 }
 .iconSpan {
-  font-size: 20px;
+  font-size: 22px;
   color: #5a8bff;
   cursor: pointer !important;
 }

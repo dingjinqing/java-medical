@@ -213,32 +213,35 @@
           align="center"
         >
           <template slot-scope="scope">
-            <div class="operating">
-              <p
+            <el-tooltip
+              :content="$t('evaluation.deleteEvaluation')"
+              placement="top"
+            >
+              <span
+                class="el-icon-delete operateSpan"
                 @click="delEvaluation(scope.row.id)"
-                style="color: #5a8bff;cursor: pointer;"
-              >{{$t('evaluation.deleteEvaluation')}}
-                <!-- <el-button
-                  type="primary"
-                  size="mini"
-                  @click="delEvaluation(scope.row.id)"
-                >{{$t('evaluation.deleteEvaluation')}}</el-button> -->
-              </p>
-              <p v-if="target === 'Record' && scope.row.flag === 0">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  @click="evaluationPass(scope.row.id)"
-                >{{$t('evaluation.pass')}}</el-button>
-              </p>
-              <p v-if="target === 'Record' && scope.row.flag === 0">
-                <el-button
-                  type="default"
-                  size="mini"
-                  @click="evaluationRefuse(scope.row.id)"
-                >{{$t('evaluation.refuse')}}</el-button>
-              </p>
-            </div>
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('evaluation.pass')"
+              placement="top"
+              v-if="target === 'Record' && scope.row.flag === 0"
+            >
+              <span
+                class="el-icon-remove-outline operateSpan"
+                @click="evaluationRefuse(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('evaluation.refuse')"
+              placement="top"
+              v-if="target === 'Record' && scope.row.flag === 0"
+            >
+              <span
+                class="el-icon-circle-plus-outline operateSpan"
+                @click="evaluationRefuse(scope.row.id)"
+              ></span>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -526,5 +529,10 @@ export default {
   span {
     display: inline-block;
   }
+}
+.operateSpan {
+  font-size: 22px;
+  color: #5a8bff;
+  cursor: pointer !important;
 }
 </style>
