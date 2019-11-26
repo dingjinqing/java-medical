@@ -482,6 +482,7 @@
           <div class="bD_div">
             <span>{{item.addText}}：</span>
             <el-input
+              type="number"
               v-model="balanceDialogInput"
               :placeholder="$t('membershipIntroduction.Pleasecontent')"
               size="small"
@@ -568,6 +569,7 @@
                         :key="index"
                         :label="item.cardName"
                         :value="item"
+                        :disabled="item.disabled"
                       >
                       </el-option>
                     </el-select>
@@ -682,6 +684,7 @@
                         :key="index"
                         :label="item.cardName"
                         :value="item"
+                        :disabled="item.disabled"
                       >
                       </el-option>
                     </el-select>
@@ -955,30 +958,7 @@ export default {
       pageCount: '',
       userId: '',
       minx_bottom_select: '',
-      hitLabeloptions: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '帅飞'
-        },
-        {
-          value: '选项5',
-          label: '拉拉'
-        },
-        {
-          value: '选项6',
-          label: '嘿嘿'
-        }
-      ],
+      hitLabeloptions: [],
       memberListliLast: '',
       specielNav: '',
       specialliNavTwo: '',
@@ -992,22 +972,9 @@ export default {
   },
   watch: {
     lang () {
-      let source = [{
-        value: '-2',
-        label: this.$t('membershipIntroduction.allSource')
-      }, {
-        value: '-1',
-        label: this.$t('membershipIntroduction.notAcquired')
-      }, {
-        value: '0',
-        label: this.$t('membershipIntroduction.backStage')
-      }, {
-        value: '-3',
-        label: this.$t('membershipIntroduction.scanQrCode')
-      }]
       this.balanceDialogData = this.$t('membershipIntroduction.balanceDialogData')
       this.integralDialogData = this.$t('membershipIntroduction.integralDialogData')
-      this.sourceOptions = source
+      this.sourceOptions = this.$t('membershipIntroduction.userFromSource')
       // 初始化会员列表数据
       this.defaultTabelListData()
       // 初始化会员卡下拉框列表
@@ -1016,7 +983,6 @@ export default {
       this.getAllSource()
       // 初始化标签数据
       this.getAllTag()
-      console.log('数据初始化完成')
     },
     allChecked (newData) {
       if (newData === true) {
@@ -1032,15 +998,12 @@ export default {
       }
     },
     labelDialogInput (newData) {
-      console.log('I am watching you')
-      console.log(newData)
       if (newData.length === 6) {
         this.labelDialogInput.splice(5, 1)
         this.$message.error(this.$t('membershipIntroduction.tagError'))
       }
     },
     '$store.goodsManagement.state.goodsIds' (newData) {
-      console.log(newData)
     }
   },
   created () {
@@ -1051,19 +1014,13 @@ export default {
     this.defaultTabelListData()
     // 初始化会员卡下拉框列表
     this.getAllUserCard()
-    // 初始化来源下拉框列表
-    this.getAllSource()
     // 初始化标签数据
     this.getAllTag()
-    console.log('数据初始化完成')
   },
   mounted () {
-    // 初始化标签下拉框
-    this.restaurants = this.loadAll()
     // 初始化语言
     this.langDefault()
     this.$http.$on('choseGoodsId', res => {
-      console.log(res)
       this.goodsIdsArr = res
     })
   },
@@ -1099,13 +1056,7 @@ export default {
         'currentPage': this.currentPage3,
         'pageRows': '20'
       }
-
-      console.log(obj)
-      console.log(this.phoneNum)
-      console.log(this.checkPhone)
-      console.log(this.checkIntegr)
       membershipListRequest(obj).then((res) => {
-        console.log('获得查询数据')
         if (res) {
           if (res.content.dataList.length === 0) {
             this.tbodyFlag = false
@@ -1116,12 +1067,8 @@ export default {
           this.trList.map((item, index) => {
             item.ischecked = false
           })
-
-          console.log(this.trList)
-
           this.totalNum = res.content.page.totalRows
           this.pageCount = res.content.page.pageCount
-
           this.options_one[2].label = this.$t('membershipIntroduction.Forscreened') + res.content.page.totalRows + this.$t('membershipIntroduction.people') + this.$t('membershipIntroduction.Nolanding')
           this.options_two[2].label = this.$t('membershipIntroduction.Forscreened') + res.content.page.totalRows + this.$t('membershipIntroduction.people') + this.$t('membershipIntroduction.Labeling')
           this.options_three[2].label = this.$t('membershipIntroduction.Forscreened') + res.content.page.totalRows + this.$t('membershipIntroduction.people') + this.$t('membershipIntroduction.Hairpin')
@@ -1131,27 +1078,21 @@ export default {
         }
       })
     },
-
     // 获取会员卡
     getAllUserCard () {
       allUserCardRequest().then(res => {
-        console.log('--------------------------')
-        console.log(res.content)
         this.membershipCardOptions = res.content
       })
     },
     // 获取来源
     getAllSource () {
       allSourceRequest().then(res => {
-        console.log('-------------获取所有门店---------------------')
-        console.log(res.content)
         this.sourceOptions = this.sourceOptions.concat(res.content)
         console.log(this.sourceOptions)
       })
     },
     // 获取标签
     getAllTag () {
-      console.log('-------------获取所有标签---------------------')
       allTagRequest().then(res => {
         console.log(res.content)
         this.tagSource = res.content
@@ -1163,7 +1104,6 @@ export default {
     },
     querySearch (queryString, cb) {
       var results = this.tagSource
-
       setTimeout(() => {
         cb(results)
       }, 1000 * Math.random())
@@ -1173,20 +1113,8 @@ export default {
         return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
       }
     },
-    // 获取标签
-    loadAll () {
-      return [
-        { 'value': '三全鲜食（北新泾店）', 'address': '长宁区新渔路144号' },
-        { 'value': 'Hot honey 首尔炸鸡（仙霞路）', 'address': '上海市长宁区淞虹路661号' },
-        { 'value': '新旺角茶餐厅', 'address': '上海市普陀区真北路988号创邑金沙谷6号楼113' },
-        { 'value': '泷千家(天山西路店)', 'address': '天山西路438号' },
-        { 'value': '胖仙女纸杯蛋糕（上海凌空店）', 'address': '上海市长宁区金钟路968号1幢18号楼一层商铺18-101' },
-        { 'value': '贡茶', 'address': '上海市长宁区金钟路633号' }
-      ]
-    },
     // 选中输入框建议列表项
     handleSelect (item) {
-      console.log(item)
     },
     // 改变箭头事件
     handleToChangeArror () {
@@ -1196,7 +1124,6 @@ export default {
     handleClickChoiseGood () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
       this.chooseGoodsBack = [11]
-      // this.$http.$emit('choosingGoodsFlag', true)
     },
     // 当前页发生变化
     handleCurrentChange () {
@@ -1204,8 +1131,6 @@ export default {
     },
     // 会员列表表格选中
     handleClick () {
-      console.log(123)
-      // this.trList[index].ischecked = true
       let flag = this.trList.filter((item, index) => {
         return item.ischecked === false
       })
@@ -1216,7 +1141,6 @@ export default {
         this.allChecked = false
       }
       this.$forceUpdate()
-      console.log(flag, 1)
     },
     // 全部checkbox选中
     handleAllcheck () {
@@ -1224,7 +1148,6 @@ export default {
     },
     // 控制修改余额-积分弹窗
     handlebalanceDialog (index, item, id) {
-      console.log(index)
       if (index === 0) {
         this.balanceDialogData[0].persentMoney = item
         this.addDialogData = this.balanceDialogData
@@ -1244,8 +1167,6 @@ export default {
         'amount': parseInt(this.balanceDialogInput)
       }
       accountAddRequest(obj).then((res) => {
-        console.log(res)
-
         if (res.error === 0) {
           this.getSuccessMessagePrompt()
           this.defaultTabelListData()
@@ -1271,16 +1192,14 @@ export default {
         'remark': this.balanceDialogBottomInput,
         'scoreDis': this.addDialogData[0].persentMoney
       }
-      console.log(obj)
       scoreUpdateRequest(obj).then(res => {
-        console.log(res)
-        if (res) {
+        if (res.error === 0) {
           this.getSuccessMessagePrompt()
           this.defaultTabelListData()
+        } else {
+          // 失败弹窗
+          this.getFailMessagePrompt()
         }
-      }).catch(e => {
-        // 失败弹窗
-        this.getFailMessagePrompt()
       })
       // 隐藏弹窗
       this.balanceDialogVisible = false
@@ -1291,9 +1210,7 @@ export default {
 
     // 表格底部下拉框选中事件
     handleFooterSelect (index) {
-      console.log(index, this.value_five)
       if (index === 0) {
-        console.log(this.value_one)
         switch (this.value_one) {
           case '1':
             this.handlePdIsChecked('0')
@@ -1332,7 +1249,6 @@ export default {
         switch (this.value_five) {
           case '1':
             this.handlePdIsChecked('4')
-
             break
           case '2':
             this.toHandleSelectingUsersDialog(true)
@@ -1353,7 +1269,6 @@ export default {
       let flag = this.trList.filter((item, index) => {
         return item.ischecked === true
       })
-      console.log(flag)
       if (flag.length === 0) {
         this.$message.warning('请选择会员')
         switch (index) {
@@ -1426,31 +1341,25 @@ export default {
     handleSetUp (id) {
       // 保存该用户id
       this.cardUserId = id
-      console.log(this.cardUserId)
       // 清理缓冲数据
       this.clearnSetMemberCardData()
       // api请求数据所有会员卡
       getAllMemberCardByClassRequest().then(res => {
-        console.log(res)
         if (res.error === 0) {
-          console.log(res.content)
           // 普通会员卡下拉数据
           this.setUpoptionsOne = res.content.normalCard
           // 限次会员卡下拉数据
           this.setUpoptionsTwo = res.content.limitNumCard
           // 等级会员卡下拉数据
           this.setUpoptionsThree = res.content.rankCard
-          console.log(this.setUpoptionsThree)
         }
       })
       // 获取会员所有的可用的会员卡
       getAllAvailableMemberCardRequest(id).then(res => {
         if (res.error === 0) {
           // 设置缓冲区
-          console.log(res.content)
           res.content.forEach(item => {
             let obj = { text: item.cardName, id: item.id }
-            console.log(obj)
             switch (item.cardType) {
               case 0:
                 this.setUpSelectVal_one.push(obj)
@@ -1468,33 +1377,24 @@ export default {
                 break
             }
           })
-          console.log(this.setUpSelectVal_one)
-          console.log(this.setUpSelectVal_two)
-          console.log(this.setUpSelectVal_three)
         }
       })
-
       this.setUpDialogVisible = true
     },
-
     // 处理提交为会员设置会员卡逻辑
     setUpCardForMember () {
       this.setUpDialogVisible = false
-      console.log(this.setUpSelectVal_one)
       // 清空已经拥有的会员卡
       this.deleteOriginCardInfo()
       // 处理会员卡信息
       let cardId = this.setUpSelectVal_one.map(({ id }) => id)
       cardId = cardId.concat(this.setUpSelectVal_two.map(({ id }) => id))
       cardId = cardId.concat(this.setUpSelectVal_three.map(({ id }) => id))
-      console.log(cardId)
       let obj = {
         'userIdList': [this.cardUserId],
         'cardIdList': cardId
       }
-      console.log(obj)
       setCardForMemberRequest(obj).then(res => {
-        console.log(res)
         if (res.error === 0) {
           this.getSuccessMessagePrompt()
           // 重新加载会员列表数据
@@ -1508,19 +1408,21 @@ export default {
         case 0:
           this.setUpFalg_1 = false
           this.setUpValOne = ''
+          this.handleNormalCardShow()
           break
         case 1:
           this.setUpFalg_2 = false
+          this.setUpValTwo = ''
           break
         case 2:
           this.setUpFalg_3 = false
+          this.setUpValThree = ''
+          this.handleGradeCardShow()
           break
       }
     },
     // 会员设置里删除cion点击
     handleReadd (type, index) {
-      console.log(index)
-      console.log(this.setUpSelectVal_two)
       if (type === 0) {
         switch (index) {
           case -1:
@@ -1555,12 +1457,30 @@ export default {
             this.setUpSelectVal_three.splice(index, 1)
         }
       }
-
-      console.log(this.setUpSelectVal_two)
+    },
+    handleNormalCardShow () {
+      this.setUpoptionsOne.forEach(itemA => {
+        itemA.disabled = false
+        this.setUpSelectVal_one.forEach(itemB => {
+          if (Number(itemA.id) === Number(itemB.id)) {
+            itemA.disabled = true
+          }
+        })
+      })
+    },
+    handleGradeCardShow () {
+      if (this.setUpSelectVal_three.length > 0) {
+        this.setUpoptionsThree.forEach(itemA => {
+          itemA.disabled = true
+        })
+      } else {
+        this.setUpoptionsThree.forEach(itemA => {
+          itemA.disabled = false
+        })
+      }
     },
     // 会员设置弹窗下拉框选中事件
     handleSetUpSelect (index) {
-      console.log(index)
       switch (index) {
         case 0:
           // 普通会员卡
@@ -1569,11 +1489,8 @@ export default {
           break
         case 1:
           // 限次会员卡
-
           this.setUpFalg_2 = true
-          console.log(this.setUpSelectVal_two)
           this.setUpSelectVal_two.push({ text: this.setUpValTwo.cardName, id: this.setUpValTwo.id })
-          console.log(this.setUpSelectVal_two)
           break
         case 2:
           // 等级会员卡
@@ -1596,18 +1513,15 @@ export default {
       var isDelete
       if (this.noLandingDialogVisible) {
         isDelete = 1
-
         this.noLandingDialogVisible = false
       } else if (this.resumeLoginVisible) {
         isDelete = 0
-
         this.resumeLoginVisible = false
       }
       let obj = {
         'userIdList': [this.userId],
         'isDelete': isDelete
       }
-      console.log(obj)
       // 请求api
       loginStatusRequest(obj).then(res => {
         if (res.error === 0) {
@@ -1623,15 +1537,12 @@ export default {
     // 打标签
     setTagForMember () {
       // 关闭打标签弹窗
-
       this.labelDialogVisible = false
       let obj = {
         'userIdList': [this.tagUserId],
         'tagIdList': this.labelDialogInput
       }
-      console.log(obj)
       setTagForMemberRequest(obj).then(res => {
-        console.log(res.error)
         if (res.error === 0) {
           // 提示框
           this.getSuccessMessagePrompt()
@@ -1646,15 +1557,11 @@ export default {
       let obj = {
         'userId': userId
       }
-      console.log(obj)
       // 异步请求
       getTagForMemberRequest(obj).then(res => {
         if (res.error === 0) {
-          console.log('查询成功')
-          console.log(res)
           // 设置默认标签列表
           this.labelDialogInput = res.content.map(({ id }) => id)
-          console.log(this.labelDialogInput)
           // 存储标签
           this.tagUserId = userId
         }
@@ -1670,7 +1577,6 @@ export default {
     },
     // 跳转到会员详情
     hanldeToDetail (userId) {
-      // this.ToTurnMemberShipDetail('memberDetail')
       this.$router.push({
         name: 'membershipInformation',
         query: {
@@ -1698,8 +1604,6 @@ export default {
     },
     // 点击表格中更多&&余额明细&&积分明细
     handleToTurnMore (params, name, id) {
-      console.log(name)
-      console.log(params)
       switch (params) {
         case 'receiveDetail':
           this.$router.push({
@@ -1729,10 +1633,7 @@ export default {
           })
           break
       }
-
-      // this.ToTurnMemberShipDetail(params)
     }
-
   }
 }
 </script>

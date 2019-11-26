@@ -141,7 +141,17 @@
               <td>{{item.money}}</td>
               <td>{{item.surplus}}</td>
               <td>{{item.exchang_surplus}}</td>
-              <td class="link">{{item.status}}</td>
+              <td class="link">
+                <div class="operateDiv">
+                  <span>充值明细</span>
+                  <span>-消费明细</span>
+                  <span
+                    v-if="item.deleteShow"
+                    @click="deleteUserCard(item)"
+                  >-废除</span>
+                </div>
+              </td>
+
               <td class="tb_decorate_a">
                 {{item.path}}
               </td>
@@ -197,7 +207,7 @@
   </div>
 </template>
 <script>
-import { getAllMemberCardDetailRequest } from '@/api/admin/memberManage/memberCard.js'
+import { getAllMemberCardDetailRequest, deleteUserCardRequest } from '@/api/admin/memberManage/memberCard.js'
 import { allUserCardRequest } from '@/api/admin/membershipList.js'
 
 export default {
@@ -275,6 +285,12 @@ export default {
           // 绑定数据
           if (res.content.length > 0) {
             this.trList = res.content
+            this.trList.forEach(item => {
+              item.deleteShow = false
+              if (Number(item.flag) === 0) {
+                item.deleteShow = true
+              }
+            })
             console.log(this.trList)
             // 显示数据
             this.tbodyFlag = true
@@ -321,6 +337,15 @@ export default {
         showClose: true,
         message: message,
         type: 'success'
+      })
+    },
+    deleteUserCard (card) {
+      console.log('delete card:', card)
+      deleteUserCardRequest({ cardNo: card.cardNo }).then(res => {
+        if (res.error === 0) {
+          this.$message.success(this.$t('membershipIntroduction.deleteCardSuccess'))
+          this.loadAllPageDate()
+        }
       })
     }
   }
@@ -449,6 +474,13 @@ td {
 
 .mixinleftDiv {
   width: 280px !important;
+}
+.operateDiv {
+  color: #0e70ca;
+}
+.operateDiv span {
+  cursor: pointer;
+  margin-left: -3px;
 }
 </style>
 <style>

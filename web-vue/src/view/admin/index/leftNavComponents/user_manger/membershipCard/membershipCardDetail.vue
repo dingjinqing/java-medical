@@ -739,6 +739,10 @@
                     >
                     </el-option>
                   </el-select>
+                  <span
+                    v-if="!gradeValue"
+                    style="color: #F56C6C;font-size: 12px"
+                  >请选择等级</span>
                   <p style="color:#999;margin-top:5px">数字越大等级越高，当会员满足相应条件时会自动发放对应等级的会员卡</p>
                 </div>
               </div>
@@ -1583,8 +1587,15 @@ export default {
       this.$refs['ruleForm'].validate((valid) => {
         console.log(valid)
         if (valid) {
-          this.prepareCardData()
-          this.$refs['ruleForm'].resetFields()
+          if (Number(this.cardType) === 2) {
+            if (!this.gradeValue) {
+              this.prepareCardData()
+              this.$refs['ruleForm'].resetFields()
+            }
+          } else {
+            this.prepareCardData()
+            this.$refs['ruleForm'].resetFields()
+          }
         } else {
           this.$message.error('填写错误')
         }

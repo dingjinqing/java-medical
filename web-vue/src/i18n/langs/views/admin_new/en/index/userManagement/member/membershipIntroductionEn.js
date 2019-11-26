@@ -237,10 +237,23 @@ export const en = {
   placeWXNameNum: 'Please enter your Weixin nickname',
   placeChoise: 'Please choose',
   placeinpuLabel: 'Please enter the label',
+  userFromSource: [{
+    value: '-2',
+    label: 'ALL'
+  }, {
+    value: '-1',
+    label: 'Not acquired'
+  }, {
+    value: '0',
+    label: 'Back stage'
+  }, {
+    value: '-3',
+    label: 'ScanQrCode'
+  }],
   allSource: 'ALL',
   notAcquired: 'Not acquired',
-  backStage: 'back stage',
-  scanQrCode: 'scanQrCode',
+  backStage: 'Back stage',
+  scanQrCode: 'ScanQrCode',
   filter: 'filter',
   orderSn: 'orderSn',
   placeHolderOrderSn: 'please input orderSn',
@@ -380,6 +393,7 @@ export const en = {
   powerScore: 'score reward;',
   times: 'time(s);',
   storeExchange: 'store exchange',
+  deleteCardSuccess: 'delete success',
   goodsExchange: 'goods exchange',
   normalCard: 'Ordinary Card',
   limiteCard: 'Limited Card',

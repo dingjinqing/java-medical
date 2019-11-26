@@ -5,7 +5,7 @@ export function getAllMemberCardByClassRequest () {
   return service({
     url: '/api/admin/member/card/all/list',
     method: 'post',
-    data: null
+    data: {}
   })
 }
 
@@ -204,5 +204,14 @@ export function getReceiveBatchRequest (id) {
     url: `/api/admin/member/card/code/${id}`,
     method: 'post',
     data: null
+  })
+}
+
+// 废除会员卡
+export function deleteUserCardRequest (data) {
+  return service({
+    url: '/api/admin/user/card/delete',
+    method: 'post',
+    data
   })
 }

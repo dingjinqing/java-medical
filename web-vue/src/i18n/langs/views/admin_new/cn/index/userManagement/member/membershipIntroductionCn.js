@@ -236,6 +236,19 @@ export const cn = {
   servicestimes: '门店服务次数(次)',
   ExchangeFrequency: '兑换商品次数(次)',
   noData: '暂无相关数据',
+  userFromSource: [{
+    value: '-2',
+    label: '全部'
+  }, {
+    value: '-1',
+    label: '未获取'
+  }, {
+    value: '0',
+    label: '后台'
+  }, {
+    value: '-3',
+    label: '扫码进入'
+  }],
   allSource: '全部',
   notAcquired: '未获取',
   backStage: '后台',
@@ -379,6 +392,7 @@ export const cn = {
   powerScore: '积分奖励',
   times: '次;',
   storeExchange: '门店兑换',
+  deleteCardSuccess: '废除成功',
   goodsExchange: '商品兑换',
   normalCard: '普通卡',
   limiteCard: '限次卡',
