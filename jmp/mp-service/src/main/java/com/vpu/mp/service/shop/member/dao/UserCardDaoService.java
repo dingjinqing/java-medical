@@ -528,4 +528,15 @@ public class UserCardDaoService extends ShopBaseService{
 				.fetch().getValues(USER_CARD.USER_ID);
 	}
 
+	/**
+	 * 废除会员卡
+	 */
+	public void repealCardByCardNo(String cardNo) {
+		int res = db().update(USER_CARD).set(USER_CARD.FLAG,UCARD_FG_STOP)
+						.set(USER_CARD.UPDATE_TIME,DateUtil.getLocalDateTime())
+						.where(USER_CARD.CARD_NO.eq(cardNo))
+						.execute();
+		logger().info("废除会员卡: "+cardNo+" "+res+"张");
+	}
+
 }
