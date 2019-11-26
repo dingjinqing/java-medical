@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 
 @Service
 public class MpPaymentService extends ShopBaseService {
@@ -100,13 +101,14 @@ public class MpPaymentService extends ShopBaseService {
 	 * @return
 	 * @throws WxPayException
 	 */
-	public WebPayVo wxUnitOrder(String clientIp, String goodsName, String orderSn, Integer amount, String openId) throws WxPayException, MpException {
+    public WebPayVo wxUnitOrder(String clientIp, String goodsName, String orderSn, BigDecimal amount, String openId) throws WxPayException, MpException {
         logger().info("微信预支付调用接口start,clientIp:{},goodsName:{},orderSn:{},amount:{},openId:{}", clientIp,  goodsName,  orderSn,  amount,  openId);
 		WxPayment wxPayment = this.getMpPay();
 		WxPayUnifiedOrderRequest payInfo = WxPayUnifiedOrderRequest.newBuilder()
 				.openid(openId)
 				.outTradeNo(orderSn)
-				.totalFee(amount)
+            // 订单总金额，单位为分
+            .totalFee(amount.multiply(HUNDRED).intValue())
 				.body(goodsName)
 				.tradeType(WxPayConstants.TradeType.JSAPI)
 				.spbillCreateIp(clientIp)

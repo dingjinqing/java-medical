@@ -280,7 +280,13 @@ public class ServiceOrderService extends ShopBaseService {
         return db().executeInsert(record) > 0 ? true : false;
     }
 
-    // TODO 事务中抽离逻辑判断和实际的db操作，减少事务执行时间
+    /**
+     * Check before create service order tran.订单创建前置校验
+     * 事务中抽离逻辑判断和实际的db操作，减少事务执行时间
+     *
+     * @param param the param
+     * @return the service order tran
+     */
     public ServiceOrderTran checkBeforeCreate(ServiceOrderRecord param) {
         String orderSn = generateOrderSn();
         // 二次验证前端计算的应付金额是否正确,
@@ -347,8 +353,6 @@ public class ServiceOrderService extends ShopBaseService {
                 setReason(orderSn);
                 // 消费类型 :门店只支持普通卡0
                 setType(BYTE_ZERO);
-                // 消费次数
-                setCount(SHORT_ONE);
             }};
         }
         if (!INTEGER_ZERO.equals(param.getCouponId())) {
@@ -380,19 +384,23 @@ public class ServiceOrderService extends ShopBaseService {
         UserCardConsumeBean userCard = param.getUserCardConsume();
         ServiceOrderRecord order = param.getServiceOrder();
         db().executeInsert(order);
-        try {
-        	TradeOptParam tradeOpt = TradeOptParam.builder()
-        			.adminUserId(0)
-                	.tradeType(CONDITION_TWO)
-                	.tradeFlow(BYTE_ZERO)
-                	.build();
-            accountService.addUserAccount(account,tradeOpt);
-        } catch (MpException e) {
-            e.printStackTrace();
+        if (Objects.nonNull(account)) {
+            try {
+                TradeOptParam tradeOpt = TradeOptParam.builder()
+                    .adminUserId(0)
+                    .tradeType(CONDITION_TWO)
+                    .tradeFlow(BYTE_ZERO)
+                    .build();
+                accountService.addUserAccount(account, tradeOpt);
+            } catch (MpException e) {
+                e.printStackTrace();
+            }
+            log.debug("用户余额[{}]抵扣(实际抵扣金额[{}])成功!", account.getAccount(), order.getUseAccount());
         }
-        log.debug("用户余额[{}]抵扣(实际抵扣金额[{}])成功!", account.getAccount(), order.getUseAccount());
-        userCardService.cardConsumer(userCard, INTEGER_ZERO, CONDITION_THREE, BYTE_ONE, BYTE_ZERO, false);
-        log.debug("会员卡余额抵扣(实际抵扣金额[{}])成功!", userCard.getMoney());
+        if (Objects.nonNull(userCard)) {
+            userCardService.cardConsumer(userCard, INTEGER_ZERO, CONDITION_THREE, BYTE_ONE, BYTE_ZERO, false);
+            log.debug("会员卡余额抵扣(实际抵扣金额[{}])成功!", userCard.getMoney());
+        }
         return order.getOrderSn();
     }
 

@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.payment.PayCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.Payment.PAYMENT;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_NAME_WAIT_SERVICE;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_WAIT_SERVICE;
 
 @Service
 public class PaymentService extends ShopBaseService {
@@ -31,6 +34,12 @@ public class PaymentService extends ShopBaseService {
 
 	@Autowired
 	public MpPaymentService mpPay;
+
+    /**
+     * The Service order service.门店服务订单
+     */
+    @Autowired
+    public ServiceOrderService serviceOrderService;
 
 	public PaymentVo getPaymentInfo(String payCode) {
 		return db().select(PAYMENT.asterisk()).from(PAYMENT).where(PAYMENT.PAY_CODE.eq(payCode)).fetchOneInto(PaymentVo.class);
@@ -77,6 +86,7 @@ public class PaymentService extends ShopBaseService {
             //TODO 订单根据前缀判断处理类型,将字面量替换为对应常量
             case "S":
                 //服务订单统一支付回调
+                serviceOrderService.updateServiceOrderStatus(orderSn, ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
                 break;
             case "D":
                 //门店买单订单统一支付回调

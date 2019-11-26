@@ -13,22 +13,10 @@ import java.math.BigDecimal;
  */
 @Data
 public class StorePayOrderInfo {
-
-    /**
-     * store_id : 55
-     * card_no : 47481606403254132
-     * order_amount : 0.01
-     * card_dis : 0.01
-     * invoice : 62
-     * score_dis : 0
-     * total_price : 0.00
-     * openid : o-2MM5ANXgJHG_NBG5G-WX-KPjKI
-     * form_id : the formId is a mock one
-     */
     @PositiveOrZero(groups = {StoreConfirmPay.class})
     public Integer storeId;
     /**
-     * The Card no.
+     * The Card no.会员卡号
      */
     public String cardNo;
     /**
@@ -36,13 +24,13 @@ public class StorePayOrderInfo {
      */
     public BigDecimal orderAmount;
     /**
-     * The Card charge dis.会员卡抵扣金额
+     * The Card charge dis.会员卡余额抵扣金额
      */
-    public BigDecimal cardChargeDis;
+    public BigDecimal cardAmount;
     /**
-     * The Card dis.
+     * The Card dis.会员卡折扣抵扣金额
      */
-    public String cardDis;
+    public BigDecimal cardDisAmount;
     /**
      * The Invoice.发票
      */
@@ -50,25 +38,17 @@ public class StorePayOrderInfo {
     /**
      * The Score dis.积分抵扣金额
      */
-    public BigDecimal scoreDis;
+    public BigDecimal scoreAmount;
     /**
      * The Score dis.余额抵扣金额
      */
-    public BigDecimal accountDis;
+    public BigDecimal balanceAmount;
     /**
-     * The Total price.
+     * The Total price.应付金额
      */
-    public BigDecimal totalPrice;
+    public BigDecimal moneyPaid;
     /**
-     * The Openid.
-     */
-    public String openid;
-    /**
-     * The Form id.
-     */
-    public String formId;
-    /**
-     * The remark
+     * The remark 留言
      */
     public String remark;
 }

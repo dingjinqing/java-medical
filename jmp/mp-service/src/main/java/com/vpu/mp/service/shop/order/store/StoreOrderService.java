@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.order.store;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.StoreOrder;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
@@ -38,8 +37,6 @@ import org.springframework.util.comparator.Comparators;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -51,7 +48,6 @@ import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ONE;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
@@ -182,14 +178,20 @@ public class StoreOrderService extends ShopBaseService {
      * @param orderInfo   the order info 门店订单信息
      */
     public StoreOrderRecord createStoreOrder(UserRecord userInfo, InvoiceVo invoiceInfo, StorePayOrderInfo orderInfo) {
-        // 会员卡折扣金额
-        BigDecimal cardDiscount = ZERO;
         StorePojo storePojo = store.getStore(orderInfo.getStoreId());
         Objects.requireNonNull(storePojo, "店铺不存在");
         if (storePojo.getDelFlag().equals(BYTE_ONE)) {
             // 该门店已删除
             throw new BusinessException(JsonResultCode.CODE_STORE_ALREADY_DEL);
         }
+        // 会员卡余额抵扣金额
+        BigDecimal cardAmount = orderInfo.getCardAmount();
+        // 会员卡折扣抵扣金额
+        BigDecimal cardDisAmount = orderInfo.getCardDisAmount();
+        // 积分抵扣金额
+        BigDecimal scoreAmount = orderInfo.getScoreAmount();
+        // 余额抵扣金额
+        BigDecimal balanceAmount = orderInfo.getBalanceAmount();
         String cardNo = orderInfo.getCardNo();
         if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo)) {
             // 验证会员卡有效性
@@ -202,35 +204,40 @@ public class StoreOrderService extends ShopBaseService {
             BigDecimal money = record2.getValue(USER_CARD.MONEY);
             if (discount != null) {
                 // 计算会员卡折扣金额
-                cardDiscount = orderInfo.getOrderAmount().multiply((ONE.subtract(discount.divide(TEN))));
-                log.debug("会员卡折扣金额:{}", cardDiscount);
+                BigDecimal cardDisAm = orderInfo.getOrderAmount().multiply((ONE.subtract(discount.divide(TEN, 2, RoundingMode.DOWN))));
+                if (cardDisAm.compareTo(cardDisAmount) != 0) {
+                    log.debug("会员卡折扣抵扣金额【{}】计算有误【前端计算结果为：{}】", cardDisAm, cardDisAmount);
+                    throw new BusinessException(JsonResultCode.CODE_FAIL);
+                }
+                log.debug("会员卡折扣金额:{}", cardDisAmount);
             }
             // 会员卡抵扣金额
-            if (orderInfo.getCardChargeDis().compareTo(money) > 0) {
+            if (cardAmount.compareTo(money) > 0) {
                 // 会员卡余额不足
                 throw new BusinessException(JsonResultCode.CODE_USER_CARD_BALANCE_INSUFFICIENT);
             }
         }
         // 积分抵扣金额(积分数除以100就是积分抵扣金额数)
-        if (orderInfo.getScoreDis().multiply(HUNDRED).intValue() > userInfo.getScore()) {
+        if (scoreAmount.multiply(HUNDRED).intValue() > userInfo.getScore()) {
             // 积分不足，无法下单
             throw new BusinessException(JsonResultCode.CODE_SCORE_INSUFFICIENT);
         }
         // 余额抵扣金额
-        if (orderInfo.getAccountDis().compareTo(userInfo.getAccount()) > 0) {
+        if (balanceAmount.compareTo(userInfo.getAccount()) > 0) {
             // 余额不足，无法下单
             throw new BusinessException(JsonResultCode.CODE_BALANCE_INSUFFICIENT);
         }
         // 应付金额
         BigDecimal moneyPaid = orderInfo.getOrderAmount()
-            .subtract(cardDiscount)
-            .subtract(orderInfo.getScoreDis())
-            .subtract(orderInfo.getAccountDis())
-            .subtract(orderInfo.getCardChargeDis())
-            .setScale(2, RoundingMode.HALF_UP);
+            .subtract(cardAmount)
+            .subtract(cardDisAmount)
+            .subtract(scoreAmount)
+            .subtract(balanceAmount)
+            .setScale(2, RoundingMode.UP);
         log.debug("应付金额:{}", moneyPaid);
-        if (orderInfo.getTotalPrice().compareTo(ZERO) < 0 || orderInfo.getTotalPrice().compareTo(moneyPaid) != 0) {
+        if (Objects.isNull(orderInfo.getMoneyPaid()) || orderInfo.getMoneyPaid().compareTo(moneyPaid) != 0) {
             // 应付金额计算错误
+            log.debug("应付金额【{}】计算有误【前端计算结果为：{}】", moneyPaid, orderInfo.getMoneyPaid());
             throw new BusinessException(JsonResultCode.CODE_AMOUNT_PAYABLE_CALCULATION_FAILED);
         }
         StoreOrderRecord orderRecord = new StoreOrderRecord();
@@ -243,22 +250,17 @@ public class StoreOrderService extends ShopBaseService {
         orderRecord.setOrderStatus(ORDER_WAIT_PAY);
         orderRecord.setOrderStatusName("未支付");
         orderRecord.setInvoiceId(invoiceInfo.getId());
-        try {
-            orderRecord.setInvoiceDetail(MAPPER.writeValueAsString(invoiceInfo));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        orderRecord.setInvoiceDetail(Util.toJson(invoiceInfo));
         orderRecord.setAddMessage(orderInfo.getRemark());
         orderRecord.setPayCode(moneyPaid.compareTo(ZERO) > 0 ? PAY_CODE_WX_PAY : PAY_CODE_BALANCE_PAY);
         orderRecord.setPayName("");
         orderRecord.setMoneyPaid(moneyPaid);
-        orderRecord.setMemberCardNo(orderInfo.getCardNo());
-        orderRecord.setMemberCardRedunce(cardDiscount);
-        orderRecord.setMemberCardBalance(orderInfo.getCardChargeDis());
-        orderRecord.setScoreDiscount(orderInfo.getScoreDis());
-        orderRecord.setUseAccount(orderInfo.getAccountDis());
+        orderRecord.setMemberCardNo(cardNo);
+        orderRecord.setMemberCardRedunce(cardAmount);
+        orderRecord.setScoreDiscount(scoreAmount);
+        orderRecord.setUseAccount(balanceAmount);
         orderRecord.setOrderAmount(orderInfo.getOrderAmount());
-        orderRecord.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
+//        orderRecord.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
 
         db().executeInsert(orderRecord);
         db().lastID();

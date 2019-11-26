@@ -40,7 +40,6 @@ import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.user.user.UserService;
-import com.vpu.mp.service.wechat.WxPayment;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
@@ -61,7 +60,8 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static java.math.BigDecimal.ZERO;
 import static java.util.stream.Collectors.toList;
@@ -479,17 +479,7 @@ public class StoreWxService extends ShopBaseService {
             orderSn.set(storeOrderRecord.getOrderSn());
             if (storeOrderRecord.getMoneyPaid().compareTo(ZERO) > 0) {
                 // todo 支付预留接口
-                String openId = orderInfo.getOpenid();
-                switch (param.getAppletRequestSource()) {
-                    case CONDITION_ZERO:
-                        defaultPay(storeOrderRecord, orderInfo.getOpenid());
-                        break;
-                    case CONDITION_ONE:
-                        aliMiniPay(userRecord);
-                        break;
-                    default:
-                        break;
-                }
+
             }
             // 会员余额变动
             if (storeOrderRecord.getUseAccount().compareTo(ZERO) > 0) {
@@ -502,7 +492,7 @@ public class StoreWxService extends ShopBaseService {
                         setPayment("balance");
                         setIsPaid(BYTE_ONE);
                         setRemark(storeOrderRecord.getOrderSn());
-                    }}, 
+                                                  }},
                     TradeOptParam.builder().tradeType(CONDITION_TWO).tradeFlow(BYTE_ZERO).build()
                     );
                 } catch (MpException e) {
@@ -547,32 +537,5 @@ public class StoreWxService extends ShopBaseService {
         });
         // 返回支付完成订单详情
         return storeOrderService.get(orderSn.get());
-    }
-
-    /**
-     * Default pay.微信小程序请求支付
-     *
-     * @param storeOrderInfo the store order info
-     * @param openId         the open id
-     * @return the string
-     */
-    public String defaultPay(StoreOrderRecord storeOrderInfo, String openId) {
-        BigDecimal amount = storeOrderInfo.getMoneyPaid().multiply(HUNDRED);
-        WxPayment wxPayment = mpPaymentService.getMpPay();
-        // 获取微信支付id
-        String prepayId = mpPaymentService.getPrepayId("门店买单", storeOrderInfo.getOrderSn(), openId, amount);
-        // 更新门店订单中微信支付id
-        storeOrderService.updatePrepayIdByOrderSn(storeOrderInfo.getOrderSn(), prepayId);
-//    todo    $payConfig = $payment->jssdk->bridgeConfig($prepayId, false);
-        return storeOrderInfo.getOrderSn();
-    }
-
-    /**
-     * Ali mini pay.支付宝小程序请求支付
-     *
-     * @param userInfo the user info
-     */
-    public void aliMiniPay(UserRecord userInfo) {
-
     }
 }

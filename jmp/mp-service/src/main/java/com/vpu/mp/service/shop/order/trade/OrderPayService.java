@@ -1,32 +1,15 @@
 package com.vpu.mp.service.shop.order.trade;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
-import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
-import com.vpu.mp.service.shop.member.UserCardService;
-import com.vpu.mp.service.shop.order.OrderReadService;
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import com.vpu.mp.service.shop.payment.MpPaymentService;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
@@ -35,9 +18,26 @@ import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+import com.vpu.mp.service.shop.order.OrderReadService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
+import com.vpu.mp.service.shop.payment.MpPaymentService;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * 订单支付
  * @author 王帅
@@ -48,26 +48,26 @@ public class OrderPayService extends ShopBaseService{
 
     @Autowired
     private RecordTradeService recordMemberTrade;
-    
+
     @Autowired
     private RefundAmountRecordService refundAmountRecord;
-    
+
     @Autowired
     private OrderRefundRecordService orderRefundRecord;
-    
+
     @Autowired
     private TradesRecordService tradesRecord;
-    
+
     @Autowired
     private UserCardService card;
-    
+
     @Autowired
     private MpPaymentService pay;
 
     @Autowired
     private OrderInfoService order;
 
-    
+
     /**
      * 订单系统内金额支付方法
      * @param order 订单
@@ -102,10 +102,9 @@ public class OrderPayService extends ShopBaseService{
         }else {
             //非系统金额支付
             String goodsNameForPay = getGoodsNameForPay(orderInfo, orderGoodsBo);
-            Integer amount = BigDecimalUtil.multiply(orderInfo.getMoneyPaid(), BigDecimal.valueOf(100)).intValue();
             try {
                 logger().info("微信预支付调用接口调用start");
-                WebPayVo webPayVo = pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), amount, param.getWxUserInfo().getWxUser().getOpenId());
+                WebPayVo webPayVo = pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), orderInfo.getMoneyPaid(), param.getWxUserInfo().getWxUser().getOpenId());
                 webPayVo.setOrderSn(orderInfo.getOrderSn());
                 webPayVo.setOrderType(param.getActivityType().toString());
                 order.updatePrepayId(webPayVo.getResult().getPrepayId(), orderInfo.getOrderId());
