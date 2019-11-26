@@ -80,12 +80,6 @@
           :label="$t('firstSpecial.vaildDate')"
           align="center"
         >
-          <template slot-scope="scope">
-            <div v-if="scope.row.startTime!==null">
-              {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
-            </div>
-            <div v-else>暂无</div>
-          </template>
         </el-table-column>
 
         <el-table-column
@@ -266,7 +260,7 @@ export default {
           item.vaildDate = this.$t('firstSpecial.permanent')
           item.statusName = this.$t('firstSpecial.inProgress')
         } else {
-          // item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
+          item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
           item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
         }
       })
