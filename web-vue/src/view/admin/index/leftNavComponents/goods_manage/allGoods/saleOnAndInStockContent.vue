@@ -21,7 +21,7 @@
           align="center"
           prop="goodsName"
           :label="$t('allGoods.allGoodsData.goodsName')"
-          min-width="120px"
+          width="180px"
         >
           <template slot-scope="scope">
             <div>
