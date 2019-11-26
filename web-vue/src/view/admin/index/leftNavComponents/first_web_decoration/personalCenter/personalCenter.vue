@@ -584,12 +584,15 @@
                 </el-form-item>
                 <el-form-item label="标题：">
                   <el-input
-                    style="width: 120px;"
+                    placeholder="最多输入20字"
+                    maxlength="20"
+                    show-word-limit
+                    style="width: 170px;"
                     size="small"
                     @blur="changeTitle(item.module_name, item.title)"
                     v-model="item.title"
                   ></el-input>
-                  <span>用户资产模块标题，不填写则不显示</span>
+                  <p>用户资产模块标题，不填写则不显示</p>
                 </el-form-item>
                 <el-form-item label="我的余额：">
                   <el-radio-group
@@ -661,12 +664,15 @@
                 </el-form-item>
                 <el-form-item label="标题：">
                   <el-input
-                    style="width: 120px;"
+                    placeholder="最多输入20字"
+                    maxlength="20"
+                    show-word-limit
+                    style="width: 170px;"
                     size="small"
                     @blur="changeTitle(item.module_name, item.title)"
                     v-model="item.title"
                   ></el-input>
-                  <span>订单模块标题，不填写则不显示</span>
+                  <p>订单模块标题，不填写则不显示</p>
                 </el-form-item>
                 <el-form-item label="模块样式：">
                   <el-radio-group
@@ -831,12 +837,15 @@
                 </el-form-item>
                 <el-form-item label="标题：">
                   <el-input
-                    style="width: 120px;"
+                    placeholder="最多输入20字"
+                    maxlength="20"
+                    show-word-limit
+                    style="width: 170px;"
                     size="small"
                     @blur="changeTitle(item.module_name, item.title)"
                     v-model="item.title"
                   ></el-input>
-                  <span>预约模块标题，不填写则不显示</span>
+                  <p>预约模块标题，不填写则不显示</p>
                 </el-form-item>
               </el-form>
 
@@ -861,12 +870,15 @@
                 </el-form-item>
                 <el-form-item label="标题：">
                   <el-input
-                    style="width: 120px;"
+                    placeholder="最多输入20字"
+                    maxlength="20"
+                    show-word-limit
+                    style="width: 170px;"
                     size="small"
                     @blur="changeTitle(item.module_name, item.title)"
                     v-model="item.title"
                   ></el-input>
-                  <span>店铺使用模块标题，不填写则不显示</span>
+                  <p>店铺使用模块标题，不填写则不显示</p>
                 </el-form-item>
                 <el-form-item label="我的收藏：">
                   <el-radio-group
@@ -921,12 +933,15 @@
                 </el-form-item>
                 <el-form-item label="标题：">
                   <el-input
-                    style="width: 120px;"
+                    placeholder="最多输入20字"
+                    maxlength="20"
+                    show-word-limit
+                    style="width: 170px;"
                     size="small"
                     @blur="changeTitle(item.module_name, item.title)"
                     v-model="item.title"
                   ></el-input>
-                  <span>开关开启，则展示店铺服务信息</span>
+                  <p>开关开启，则展示店铺服务信息</p>
                 </el-form-item>
                 <el-form-item
                   label="分销中心："
@@ -1214,10 +1229,13 @@
                   >删除模板</el-button>
                   <div style="margin: 10px 0;">
                     标题：&nbsp;&nbsp;<el-input
+                      placeholder="最多输入20字"
+                      maxlength="20"
+                      show-word-limit
                       v-model="val.title"
                       size="small"
                       @blur="changeTemplateTitle(item.module_name, key, val.title)"
-                      style="width: 120px;"
+                      style="width: 170px;"
                     ></el-input>
                   </div>
                   <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
@@ -2238,9 +2256,12 @@ export default {
 } */
 
 .cententRight_container span {
+  margin-left: 15px;
+}
+.cententRight_container span,
+.cententRight_container p {
   color: #999;
   font-size: 12px;
-  margin-left: 15px;
 }
 .cententRight_container .el-collapse-item {
   padding: 10px;
