@@ -28,10 +28,12 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
+import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 /**
@@ -98,9 +100,9 @@ public class AdminMemberController extends AdminBaseController{
 	 * 会员卡-弹窗
 	 */
 	@PostMapping("/card/all/list")
-	public JsonResult getAllCardList() {
+	public JsonResult getAllCardList(@RequestBody CardParam param) {
 		logger().info("获取系统中的所有会员卡");
-		MemberCardVo vo  = shop().member.card.getAllCardList();
+		MemberCardVo vo  = shop().member.card.getAllCardList(param);
 		return success(vo);
 	}
 	
@@ -210,9 +212,9 @@ public class AdminMemberController extends AdminBaseController{
 	@PostMapping(value="/api/card/test/detail")
 	public JsonResult getUserCardDetail(@RequestBody UserCardParam param) {
 		logger().info("WxAppCardController: request for card detail");
-		shop().cardVerifyService.passCardVerify(param.getUserId(), "");
-		return success("");
-		/**
+//		shop().cardVerifyService.passCardVerify(param.getUserId(), "");
+//		return success("");
+		
 		WxAppUserCardVo userCardDetail;
 		try {
 			userCardDetail = shop().user.userCard.getUserCardDetail(param);
@@ -220,6 +222,6 @@ public class AdminMemberController extends AdminBaseController{
 			return fail(e.getErrorCode());
 		}
 		return success(userCardDetail);
-		*/
+		
 	}
 }
