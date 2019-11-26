@@ -4422,7 +4422,7 @@ CREATE TABLE `b2c_give_gift_cart`
     `user_id`      int(11)    NOT NULL COMMENT '用户ID',
     `goods_number` text COLLATE utf8mb4_unicode_ci COMMENT '已选商品数，逗号分隔',
     `gift_type`    tinyint(1) NOT NULL                     DEFAULT '1' COMMENT '赠送方式：1:直接送礼 2:先到先得 3:定时开奖',
-    `draw_time`    timestamp                               DEFAULT NULL COMMENT '开奖时间',
+    `draw_time`    timestamp  NOT NULL                     DEFAULT NULL COMMENT '开奖时间',
     `message`      varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '祝福语',
     `status`       tinyint(1) NOT NULL                     DEFAULT '0' COMMENT '礼单状态 进行中 已完成',
     `create_time`  timestamp  NOT NULL                     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
