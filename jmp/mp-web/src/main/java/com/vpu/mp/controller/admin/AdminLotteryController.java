@@ -49,7 +49,7 @@ public class AdminLotteryController extends AdminBaseController {
      * 获取可用的抽奖活动列表
      * @return
      */
-    @PostMapping("/usableList")
+    @PostMapping("/usablelist")
     public JsonResult getLotteryUsableAllList(){
         LotteryPageListParam param = new LotteryPageListParam();
         param.setState(BaseConstant.NAVBAR_TYPE_ONGOING);
