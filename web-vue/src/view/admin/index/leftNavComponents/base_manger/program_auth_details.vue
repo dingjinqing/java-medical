@@ -542,10 +542,7 @@ export default {
       console.log(params1, params2)
       setGoodThingRequest(obj).then(res => {
         if (res.error === 0) {
-          this.$message({
-            message: this.$t('ShopConfiguration.SmallProgramAuthorizationPage.success'),
-            type: 'success'
-          })
+          this.$message.success(this.$t('ShopConfiguration.SmallProgramAuthorizationPage.success'))
         }
       })
     },
