@@ -17,24 +17,7 @@
         ></el-input>
       </div>
       <div class="filters_item">
-        <span>{{$t('allGoods.allGoodsHeaderData.category') + '：'}}</span>
-        <el-select
-          v-model="searchParams.sortName"
-          size="small"
-          style="width: 170px;"
-        >
-          <el-option
-            :label="$t('allGoods.allGoodsHeaderData.chooseCategory')"
-            :value="null"
-          />
-          <el-option
-            v-for="(item,index) in goodsCatOptions"
-            :label="item.catName+' ('+item.goodsNumberSum+')'"
-            :value="item.catId"
-            :key="index"
-            :style="{paddingLeft: (item.level+1)*20+'px'}"
-          />
-        </el-select>
+        <sortCatTreeSelect ref="catTree" treeType="cat" :selectedId.sync="searchParams.sortName"/>
       </div>
       <div style="margin-left: 37px;">
         <el-button
@@ -159,10 +142,11 @@
 </template>
 
 <script>
-import { getAllGoodsInitValue } from '@/api/admin/goodsManage/allGoods/allGoods'
+import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
 import { CommentGoodsList } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 export default {
   components: {
+    sortCatTreeSelect,
     pagination: () => import('@/components/admin/pagination/pagination')
   },
   data () {
@@ -171,7 +155,6 @@ export default {
         goodsName: null,
         sortName: null
       },
-      goodsCatOptions: [],
       loading: false,
       pageParams: {
       },
@@ -179,8 +162,6 @@ export default {
     }
   },
   mounted () {
-    // 初始化form表单下拉框数据
-    this.initFilterData()
     // 初始化国际语言
     this.langDefault()
     this.initDataList()
@@ -198,62 +179,7 @@ export default {
         }
       })
     },
-    /* 初始化form表单下拉框数据 */
-    initFilterData () {
-      let obj = {
-        isOnSale: 1,
-        isSaleOut: false,
-        selectType: 1
-      }
-      getAllGoodsInitValue(obj).then(res => {
-        let { content } = res
-        this.goodsCatOptions = this._disposeGoodsSortAndCatData(content.sysCates, 'catId')
-      })
-    },
-    /* 处理后台传入的商家分类数据 */
-    _disposeGoodsSortAndCatData (data, idName) {
-      let retObj = {}
 
-      for (let i = 0; i < data.length; i++) {
-        let item = data[i]
-
-        // 是否自身节点被创建过（子节点先遍历到了）
-        let selfItem = retObj[item[idName]]
-        if (selfItem === undefined) {
-          // 未遍历到则初始化自己
-          retObj[item[idName]] = { 'item': item, children: [] }
-          selfItem = retObj[item[idName]]
-        } else {
-          // 已创建过，（因提前遍历了子节点而创建）
-          selfItem.item = item
-        }
-
-        let parentItem = retObj[item.parentId]
-        // 有父亲直接插入
-        if (parentItem !== undefined) {
-          parentItem.children.push(selfItem)
-        } else {
-          // 没有则创建临时父亲
-          retObj[item.parentId] = { 'item': null, children: [selfItem] }
-        }
-      }
-
-      let retArr = []
-
-      if (data.length === 0) {
-        return retArr
-      }
-      let rootArr = retObj['0'].children
-      // 处理结果将对象变为数组
-      for (let i = 0; i < rootArr.length; i++) {
-        let retItem = rootArr[i]
-        retArr.push(retItem.item)
-        if (retItem.children.length > 0) {
-          rootArr.splice(i + 1, 0, ...(retItem.children))
-        }
-      }
-      return retArr
-    },
     viewEvaluation (goodsId) { console.log(goodsId) },
     addEvaluation (goodsInfo) {
       this.$emit('handleAddEvaluation', goodsInfo)

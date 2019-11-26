@@ -17,44 +17,11 @@
       <div class="choiseDialog">
         <div>
           <ul>
-            <li>平台分类：
-              <el-select
-                v-model="requestParam.catId"
-                placeholder="请选择平台分类"
-                size="small"
-              >
-                <el-option
-                  label="请选择平台分类"
-                  :value="null"
-                />
-                <el-option
-                  v-for="(item,index) in goodsCatOptions"
-                  :label="item.catName+' ('+item.goodsNumberSum+')'"
-                  :value="item.catId"
-                  :key="index"
-                  :style="{paddingLeft: (item.level+1)*20+'px'}"
-                />
-
-              </el-select>
+            <li>
+              <sortCatTreeSelect ref="catTree" :filterGoodsInfo="initSortCatParams" treeType="cat" :selectedId.sync="requestParam.catId"/>
             </li>
-            <li>商家分类：
-              <el-select
-                v-model="requestParam.goodsSortId"
-                placeholder="请选择商家分类"
-                size="small"
-              >
-                <el-option
-                  label="请选择商家分类"
-                  :value="null"
-                />
-                <el-option
-                  v-for="(item,index) in goodsSortOptions"
-                  :label="item.sortName+' ('+item.goodsNumberSum+')'"
-                  :value="item.sortId"
-                  :key="index"
-                  :style="{paddingLeft: (item.level+1)*20+'px'}"
-                />
-              </el-select>
+            <li>
+              <sortCatTreeSelect ref="sortTree" :filterGoodsInfo="initSortCatParams" treeType="sort" :selectedId.sync="requestParam.goodsSortId"/>
             </li>
             <li>商品标签：
               <el-select
@@ -265,12 +232,15 @@ import {
   getGoodsProductList
 } from '@/api/admin/brandManagement.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
-import { getAllGoodsInitValue } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { mapActions } from 'vuex'
+
+import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
 
 export default {
   components: {
-    pagination
+    pagination,
+    sortCatTreeSelect
   },
   props: {
     // 是否加载规格
@@ -297,6 +267,17 @@ export default {
       type: Array,
       default () {
         return []
+      }
+    }
+  },
+  computed: {
+    initSortCatParams: function () {
+      return {
+        needGoodsNum: true,
+        isOnSale: 1,
+        isSaleOut: false,
+        // 查询商品时值为1，规格查询值为2
+        selectType: this.loadProduct ? 2 : 1
       }
     }
   },
@@ -328,8 +309,6 @@ export default {
       // 表格数据
       tableData: [],
       // 下拉框数据
-      goodsCatOptions: [],
-      goodsSortOptions: [],
       goodsLabelOptions: [],
       goodsBrandOptions: [],
       allGoodsProductId: [],
@@ -387,63 +366,14 @@ export default {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
     /* 初始化 */
     _initFilterDatas () {
-      let filterBaseParam = {
-        isOnSale: 1,
-        isSaleOut: false,
-        // 查询商品时值为1，规格查询值为2
-        selectType: this.loadProduct ? 2 : 1
-      }
       // 过滤条件下拉框数据
-      return getAllGoodsInitValue(filterBaseParam).then((res) => {
+      return getGoodsFilterItem({needGoodsLabel: true, needGoodsBrand: true}).then((res) => {
         if (!res) return
         if (res.error === 0) {
-          this.goodsCatOptions = this._disposeGoodsSortAndCatData(res.content.sysCates, 'catId')
-
-          this.goodsSortOptions = this._disposeGoodsSortAndCatData(res.content.goodsSorts, 'sortId')
           this.goodsLabelOptions = res.content.goodsLabels
           this.goodsBrandOptions = res.content.goodsBrands
         }
       })
-    },
-    /* 处理后台传入的商家分类数据 */
-    _disposeGoodsSortAndCatData (data, idName) {
-      let retObj = {}
-      for (let i = 0; i < data.length; i++) {
-        let item = data[i]
-        // 是否自身节点被创建过（子节点先遍历到了）
-        let selfItem = retObj[item[idName]]
-        if (selfItem === undefined) {
-          // 未遍历到则初始化自己
-          retObj[item[idName]] = { 'item': item, children: [] }
-          selfItem = retObj[item[idName]]
-        } else {
-          // 已创建过，（因提前遍历了子节点而创建）
-          selfItem.item = item
-        }
-        let parentItem = retObj[item.parentId]
-        // 有父亲直接插入
-        if (parentItem !== undefined) {
-          parentItem.children.push(selfItem)
-        } else {
-          // 没有则创建临时父亲
-          retObj[item.parentId] = { 'item': null, children: [selfItem] }
-        }
-      }
-      let retArr = []
-      if (data.length === 0) {
-        return retArr
-      }
-      let rootArr = retObj['0'].children
-      // 处理结果将对象变为数组
-      for (let i = 0; i < rootArr.length; i++) {
-        let retItem = rootArr[i]
-        retArr.push(retItem.item)
-        if (retItem.children.length > 0) {
-          rootArr.splice(i + 1, 0, ...(retItem.children))
-        }
-      }
-      console.log(retArr)
-      return retArr
     },
     /* 筛选商品或规格数据 */
     selectGoodsData () {
