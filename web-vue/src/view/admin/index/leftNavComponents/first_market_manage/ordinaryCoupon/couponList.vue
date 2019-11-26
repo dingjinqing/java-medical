@@ -113,7 +113,7 @@
               <el-tooltip
                 :content="$t('ordinaryCouponList.edit')"
                 placement="top"
-                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
+                v-if="scope.row.currentState === 2 || scope.row.currentState === 1"
               >
                 <span
                   style="font-size: 22px;"
@@ -124,7 +124,7 @@
               <el-tooltip
                 :content="$t('ordinaryCouponList.share')"
                 placement="top"
-                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
+                v-if="scope.row.currentState === 2 || scope.row.currentState === 1"
               >
                 <span
                   style="font-size: 22px;"
@@ -135,7 +135,7 @@
               <el-tooltip
                 :content="$t('ordinaryCouponList.disableUse')"
                 placement="top"
-                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
+                v-if="scope.row.currentState === 2 || scope.row.currentState === 1"
               >
                 <span
                   style="font-size: 22px;"
@@ -146,7 +146,7 @@
               <el-tooltip
                 :content="$t('ordinaryCouponList.enableUse')"
                 placement="top"
-                v-if="scope.row.statusText === '已停用' || scope.row.statusText === 'deactivated'"
+                v-if="scope.row.currentState === 4"
               >
                 <span
                   style="font-size: 22px;"
@@ -167,7 +167,7 @@
               <el-tooltip
                 :content="$t('ordinaryCouponList.delete')"
                 placement="top"
-                v-if="scope.row.statusText === '已结束' || scope.row.statusText === '已停用' || scope.row.statusText === 'ended' || scope.row.statusText === 'deactivated'"
+                v-if="scope.row.currentState === 3 || scope.row.currentState === 4"
               >
                 <span
                   style="font-size: 22px;"
@@ -310,16 +310,6 @@ export default {
         }
         item.receivePerson = `${item.receivePerson} /${item.receiveAmount}`
         item.giveOutPerson = `${item.giveoutPerson}/${item.giveoutAmount}`
-
-        if (item.startTime !== null && item.endTime !== null) {
-          item.statusText = this.getActStatusString(item.enabled, item.startTime, item.endTime)
-        } else {
-          if (item.enabled === 1) {
-            item.statusText = '进行中'
-          } else {
-            item.statusText = '已停用'
-          }
-        }
       })
       this.tableData = data
       console.log(this.tableData)
