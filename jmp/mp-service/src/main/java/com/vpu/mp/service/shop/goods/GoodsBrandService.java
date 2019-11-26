@@ -269,7 +269,6 @@ public class GoodsBrandService extends ShopBaseService {
 
     /**
      * 品牌分类分页查询
-     *
      * @param param
      * @return
      */
@@ -373,14 +372,6 @@ public class GoodsBrandService extends ShopBaseService {
         return count > 0;
     }
 
-    public boolean isOtherClassifyNameExist(GoodsBrandClassifyParam param) {
-        Integer count = db().selectCount().from(BRAND_CLASSIFY)
-            .where(BRAND_CLASSIFY.CLASSIFY_NAME.eq(param.getClassifyName()))
-            .and(BRAND_CLASSIFY.CLASSIFY_ID.ne(param.getClassifyId()))
-            .fetchOne().into(Integer.class);
-
-        return count > 0;
-    }
 
     /**
      * 查询所有有效的品牌，按照名称拼音进行组织
