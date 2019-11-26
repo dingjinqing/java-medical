@@ -600,6 +600,10 @@ public class ShopMpDecorationService extends ShopBaseService {
                     return this.convertGoodsGroupForIndex(objectMapper, node, user);
                 case ModuleConstant.M_GOODS:
                     return this.convertGoodsForIndex(objectMapper, node, user);
+                case ModuleConstant.M_COUPON:
+                    return this.convertCouponForIndex(objectMapper, node, user);
+                case ModuleConstant.M_CARD:
+                    return this.convertCardForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -636,6 +640,34 @@ public class ShopMpDecorationService extends ShopBaseService {
         ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
         moduleGoods.setNeedRequest(true);
         return moduleGoods;
+    }
+
+    /**
+     * 优惠券需要setNeedRequest
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleCoupon convertCouponForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleCoupon moduleCoupon = objectMapper.readValue(node.getValue().toString(), ModuleCoupon.class);
+        moduleCoupon.setNeedRequest(true);
+        return moduleCoupon;
+    }
+
+    /**
+     * 会员卡需要setNeedRequest
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleCard convertCardForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
+        moduleCard.setNeedRequest(true);
+        return moduleCard;
     }
 
     /**
