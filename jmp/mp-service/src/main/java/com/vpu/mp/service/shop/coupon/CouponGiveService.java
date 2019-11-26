@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.coupon;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
@@ -10,7 +9,6 @@ import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
-import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -19,11 +17,11 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.SelectLimitStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -31,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -48,8 +48,6 @@ import static com.vpu.mp.db.shop.Tables.*;
 public class CouponGiveService extends ShopBaseService {
 
   @Autowired private CouponHoldService couponHold;
-
-  @Autowired private RabbitmqSendService rabbitmqSendService;
 
   private static final MrkingVoucher MV = MrkingVoucher.MRKING_VOUCHER.as("MV");
 
@@ -120,10 +118,7 @@ public class CouponGiveService extends ShopBaseService {
         // 会员卡信息
         if (!StringUtils.isNullOrEmpty(vo.getCardId())) {
           String[] cardId = vo.getCardId().split(",");
-          List<String> cardIdList = new ArrayList<>();
-          for (String cId : cardId) {
-            cardIdList.add(cId);
-          }
+            List<String> cardIdList = new ArrayList<>(Arrays.asList(cardId));
           List<String> cardName =
               db().select(MEMBER_CARD.CARD_NAME)
                   .from(MEMBER_CARD)
@@ -135,10 +130,7 @@ public class CouponGiveService extends ShopBaseService {
         // 标签信息
         if (!StringUtils.isNullOrEmpty(vo.getTagId())) {
           String[] tagId = vo.getTagId().split(",");
-          List<String> tagIdList = new ArrayList<>();
-          for (String tId : tagId) {
-            tagIdList.add(tId);
-          }
+            List<String> tagIdList = new ArrayList<>(Arrays.asList(tagId));
           List<String> tagName =
               db().select(TAG.TAG_NAME)
                   .from(TAG)
@@ -182,295 +174,375 @@ public class CouponGiveService extends ShopBaseService {
    * @param param 发券活动条件
    */
   public void insertGrant(CouponGiveGrantParam param) {
-
-    try {
-      // 完成一次发券活动
-      ObjectMapper objectMapper = new ObjectMapper();
-      String condition = objectMapper.writeValueAsString(param.getCouponGiveGrantInfoParams());
-
-      db().insertInto(
-              GIVE_VOUCHER,
-              GIVE_VOUCHER.ACT_NAME,
-              GIVE_VOUCHER.SEND_CONDITION,
-              GIVE_VOUCHER.CARD_ID,
-              GIVE_VOUCHER.TAG_ID,
-              GIVE_VOUCHER.USER,
-              GIVE_VOUCHER.HAVE_PAY,
-              GIVE_VOUCHER.NO_PAY,
-              GIVE_VOUCHER.MAX_COUNT,
-              GIVE_VOUCHER.MIN_COUNT,
-              GIVE_VOUCHER.MAX_AVE_PRICE,
-              GIVE_VOUCHER.MIN_AVE_PRICE,
-              GIVE_VOUCHER.SEND_ACTION,
-              GIVE_VOUCHER.START_TIME,
-              GIVE_VOUCHER.ACT_ID)
-          .values(
-              param.getActName(),
-              condition,
-              param.getCardId(),
-              param.getTagId(),
-              param.getUser(),
-              param.getHavePay(),
-              param.getNoPay(),
-              param.getMaxCount(),
-              param.getMinCount(),
-              param.getMaxAvePrice(),
-              param.getMinAvePrice(),
-              param.getSendAction(),
-              param.getStartTime(),
-              NumberUtils.INTEGER_ZERO)
-          .execute();
-      int actId =
-          db().select(GIVE_VOUCHER.ID)
-              .from(GIVE_VOUCHER)
-              .orderBy(GIVE_VOUCHER.CREATE_TIME.desc())
-              .limit(1)
-              .fetchOptionalInto(Integer.class)
-              .orElse(0);
-      Set<Integer> userIds = new HashSet<>();
-      // 将发券活动写入用户-优惠券对应表
-
-      // 加购人群
-      Date today = new Date();
-      Timestamp cartDay = Util.getEarlyTimeStamp(today, -30);
-      if (param.getCouponGiveGrantInfoParams().getCartBox().equals(1)) {
-        List<Record1<Integer>> cartUserIds =
-            db().select(CART.USER_ID)
-                .from(CART)
-                .where(CART.CREATE_TIME.greaterOrEqual(cartDay))
-                .fetch();
-        for (Record1<Integer> cartUserId : cartUserIds) {
-          userIds.add(cartUserId.value1());
-        }
-      }
-
-      // 购买指定商品人群
-      if (param.getCouponGiveGrantInfoParams().getGoodsBox().equals(1)) {
-        String goodsIds = param.getCouponGiveGrantInfoParams().getGoodsIds();
-        String[] goodArray = goodsIds.split(",");
-
-        for (String goodId : goodArray) {
-          List<Record1<Integer>> orderIds =
-              db().select(ORDER_GOODS.ORDER_ID)
-                  .from(ORDER_GOODS)
-                  .where(ORDER_GOODS.GOODS_ID.eq(Integer.valueOf(goodId)))
-                  .fetch();
-          for (Record1<Integer> orderId : orderIds) {
-            int userId =
-                db().select(ORDER_INFO.USER_ID)
-                    .from(ORDER_INFO)
-                    .where(ORDER_INFO.ORDER_ID.eq(orderId.value1()))
-                    .fetchOptionalInto(Integer.class)
-                    .orElse(0);
-            userIds.add(userId);
-          }
-        }
-      }
-
-      // 持有会员卡人群
-      if (param.getCouponGiveGrantInfoParams().getCardBox().equals(1)) {
-        String cardIds = param.getCardId();
-        String[] cardArray = cardIds.split(",");
-        for (String cardId : cardArray) {
-          List<Record1<Integer>> cardUserIds =
-              db().select(USER_CARD.USER_ID)
-                  .from(USER_CARD)
-                  .where(USER_CARD.FLAG.eq((byte) 0))
-                  .and(USER_CARD.CARD_ID.eq(Integer.valueOf(cardId)))
-                  .fetch();
-          for (Record1<Integer> userId : cardUserIds) {
-            userIds.add(userId.value1());
-          }
-        }
-      }
-
-      // 属于标签人群
-      if (param.getCouponGiveGrantInfoParams().getTagBox().equals(1)) {
-        String tagIds = param.getTagId();
-        String[] tagArray = tagIds.split(",");
-        for (String tagId : tagArray) {
-          List<Record1<Integer>> tagUserIds =
-              db().select(USER_TAG.USER_ID)
-                  .from(USER_TAG)
-                  .where(USER_TAG.TAG_ID.eq(Integer.valueOf(tagId)))
-                  .fetch();
-          for (Record1<Integer> userId : tagUserIds) {
-            userIds.add(userId.value1());
-          }
-        }
-      }
-
-      // 选择指定的会员
-      if (param.getCouponGiveGrantInfoParams().getMemberBox().equals(1)) {
-        String memberIds = param.getUser();
-        String[] memberArray = memberIds.split(",");
-        for (String memberId : memberArray) {
-          userIds.add(Integer.valueOf(memberId));
-        }
-      }
-
-      // N天内有交易记录
-      if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
-        if (param.getHavePay() != null) {
-          Timestamp havePayDay = Util.getEarlyTimeStamp(today, -param.getHavePay());
-          List<Record1<Integer>> havePayUserIds =
-              db().select(ORDER_INFO.USER_ID)
-                  .from(ORDER_INFO)
-                  .where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2))
-                  .and(ORDER_INFO.CREATE_TIME.greaterOrEqual(havePayDay))
-                  .fetch();
-          for (Record1<Integer> havePayUserId : havePayUserIds) {
-            userIds.add(havePayUserId.value1());
-          }
-        }
-      }
-
-      // N天内无交易记录
-      if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
-        if (param.getNoPay() != null) {
-          Timestamp noPayDay = Util.getEarlyTimeStamp(today, -param.getNoPay());
-          List<Record1<Integer>> noPayUserIds =
-              db().select(ORDER_INFO.USER_ID)
-                  .from(ORDER_INFO)
-                  .where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2))
-                  .and(ORDER_INFO.CREATE_TIME.greaterOrEqual(noPayDay))
-                  .fetch();
-          for (Record1<Integer> noId : noPayUserIds) {
-            List<Record1<Integer>> noPayId =
-                db().select(USER.USER_ID)
-                    .from(USER)
-                    .where(USER.USER_ID.notEqual(noId.value1()))
-                    .fetch();
-            for (Record1<Integer> noPayUserId : noPayId) {
-              userIds.add(noPayUserId.value1());
-            }
-          }
-        }
-      }
-
-      // 累计购买次数大于N次 min
-      if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
-        if (param.getMinCount() != null) {
-          List<Record1<Integer>> minCountUserIds =
-              db().select(ORDER_INFO.USER_ID)
-                  .from(ORDER_INFO)
-                  .where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2))
-                  .groupBy(ORDER_INFO.USER_ID)
-                  .having(DSL.count(ORDER_INFO.ORDER_ID).greaterThan(param.getMinCount()))
-                  .fetch();
-          for (Record1<Integer> minCountUserId : minCountUserIds) {
-            userIds.add(minCountUserId.value1());
-          }
-        }
-      }
-
-      // 累计购买次数小于N次 max
-      if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
-        if (param.getMaxCount() != null) {
-          List<Record1<Integer>> maxCountUserIds =
-              db().select(ORDER_INFO.USER_ID)
-                  .from(ORDER_INFO)
-                  .where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2))
-                  .groupBy(ORDER_INFO.USER_ID)
-                  .having(DSL.count(ORDER_INFO.ORDER_ID).lessThan(param.getMaxCount()))
-                  .fetch();
-          for (Record1<Integer> maxCountUserId : maxCountUserIds) {
-            userIds.add(maxCountUserId.value1());
-          }
-        }
-      }
-
-      // 购买商品均价大于N元 min
-      if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
-        if (param.getMinAvePrice() != null) {
-          List<Record1<Integer>> minAvePriceUserIds =
-              db().select(ORDER_INFO.USER_ID)
-                  .from(ORDER_INFO)
-                  .where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2))
-                  .groupBy(ORDER_INFO.USER_ID)
-                  .having(
-                      (DSL.sum(ORDER_INFO.ORDER_AMOUNT).divide(DSL.sum(ORDER_INFO.GOODS_AMOUNT)))
-                          .greaterThan(param.getMinAvePrice()))
-                  .fetch();
-          for (Record1<Integer> minAvePriceUserId : minAvePriceUserIds) {
-            userIds.add(minAvePriceUserId.value1());
-          }
-        }
-      }
-
-      // 购买商品均价小于N元 max
-      if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
-        if (param.getMaxAvePrice() != null) {
-          List<Record1<Integer>> maxAvePriceUserIds =
-              db().select(ORDER_INFO.USER_ID)
-                  .from(ORDER_INFO)
-                  .where(ORDER_INFO.ORDER_STATUS.greaterOrEqual((byte) 2))
-                  .groupBy(ORDER_INFO.USER_ID)
-                  .having(
-                      (DSL.sum(ORDER_INFO.ORDER_AMOUNT).divide(DSL.sum(ORDER_INFO.GOODS_AMOUNT)))
-                          .lessThan(param.getMaxAvePrice()))
-                  .fetch();
-          for (Record1<Integer> maxAvePriceUserId : maxAvePriceUserIds) {
-            userIds.add(maxAvePriceUserId.value1());
-          }
-        }
-      }
-
-      // 指定时间内有登陆记录
-      if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(1)) {
-        if (param.getCouponGiveGrantInfoParams().getPointStartTime() != null
-            && param.getCouponGiveGrantInfoParams().getPointEndTme() != null) {
-          List<Record1<Integer>> loginRecordUserIds =
-              db().select(USER_LOGIN_RECORD.USER_ID)
-                  .from(USER_LOGIN_RECORD)
-                  .where(
-                      USER_LOGIN_RECORD.CREATE_TIME.between(
-                          param.getCouponGiveGrantInfoParams().getPointStartTime(),
-                          param.getCouponGiveGrantInfoParams().getPointEndTme()))
-                  .fetch();
-          for (Record1<Integer> loginRecordUserId : loginRecordUserIds) {
-            userIds.add(loginRecordUserId.value1());
-          }
-        }
-      }
-
-      // 队列
-      List<Integer> userIdList = new ArrayList<>(userIds);
-      String couponIds = param.getCouponGiveGrantInfoParams().getCouponIds().toString();
-      String[] couponArray = couponIds.split(",");
-
-      //            rabbitmqSendService.sendMessage(RabbitConfig.EXCHANGE_MARKETING,
-      // RabbitConfig.BINDING_EXCHANGE_COUPON_KEY, TaskJobEnum.GIVE_COUPON);
-      CouponGiveQueueParam newParam =
-          new CouponGiveQueueParam(
-              getShopId(), userIdList, actId, couponArray, ACCESS_MODE, GET_SOURCE);
-      if (param.getSendAction() == 0) {
-        saas.taskJobMainService.dispatchImmediately(
-            newParam,
-            CouponGiveQueueParam.class.getName(),
-            getShopId(),
-            TaskJobEnum.GIVE_COUPON.getExecutionType());
-      }
-      if (param.getSendAction() == 1) {
-        saas.messageTemplateService.createCouponTaskJob(
-            getShopId(), newParam, param.getStartTime());
-      }
-
-      // 一次发券活动完成后，将发放状态修改为已发放
-      db().update(GIVE_VOUCHER)
-          .set(GIVE_VOUCHER.SEND_STATUS, NumberUtils.BYTE_ONE)
-          .where(GIVE_VOUCHER.ID.eq(actId))
-          .execute();
-
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
+    // 完成一次发券活动
+    String condition = Util.toJson(param.getCouponGiveGrantInfoParams());
+    // 插入数据库
+    db().insertInto(
+            GIVE_VOUCHER,
+            GIVE_VOUCHER.ACT_NAME,
+            GIVE_VOUCHER.SEND_CONDITION,
+            GIVE_VOUCHER.CARD_ID,
+            GIVE_VOUCHER.TAG_ID,
+            GIVE_VOUCHER.USER,
+            GIVE_VOUCHER.HAVE_PAY,
+            GIVE_VOUCHER.NO_PAY,
+            GIVE_VOUCHER.MAX_COUNT,
+            GIVE_VOUCHER.MIN_COUNT,
+            GIVE_VOUCHER.MAX_AVE_PRICE,
+            GIVE_VOUCHER.MIN_AVE_PRICE,
+            GIVE_VOUCHER.SEND_ACTION,
+            GIVE_VOUCHER.START_TIME,
+            GIVE_VOUCHER.ACT_ID)
+        .values(
+            param.getActName(),
+            condition,
+            param.getCardId(),
+            param.getTagId(),
+            param.getUser(),
+            param.getHavePay(),
+            param.getNoPay(),
+            param.getMaxCount(),
+            param.getMinCount(),
+            param.getMaxAvePrice(),
+            param.getMinAvePrice(),
+            param.getSendAction(),
+            param.getStartTime(),
+            NumberUtils.INTEGER_ZERO)
+        .execute();
+    // 得到当前发券活动id
+    BigInteger bigIntegerActId = db().lastID();
+    Integer actId = Integer.valueOf(bigIntegerActId.toString());
+    // 获取当前活动设计到的所有用户 并将发券活动写入用户-优惠券对应表
+    Set<Integer> userIds = new HashSet<>();
+    // 得到相关时间
+    // time-今天
+    Date today = new Date();
+    // time-加购人群筛选时间
+    Timestamp cartDay = Util.getEarlyTimeStamp(today, -30);
+    // time-N天有交易记录人群筛选时间
+    Timestamp havePayDay = Util.getEarlyTimeStamp(today, -param.getHavePay());
+    // time-N天无交易记录人群筛选时间
+    Timestamp noPayDay = Util.getEarlyTimeStamp(today, -param.getNoPay());
+    // 加购人群
+    if (param.getCouponGiveGrantInfoParams().getCartBox().equals(NumberUtils.INTEGER_ONE)) {
+      addCart(userIds, cartDay);
+    }
+    // 购买指定商品人群
+    if (param.getCouponGiveGrantInfoParams().getGoodsBox().equals(NumberUtils.INTEGER_ONE)) {
+      buyGoods(userIds, param.getCouponGiveGrantInfoParams().getGoodsIds());
+    }
+    // 持有会员卡人群
+    if (param.getCouponGiveGrantInfoParams().getCardBox().equals(NumberUtils.INTEGER_ONE)) {
+      haveCards(userIds, param.getCardId());
+    }
+    // 属于标签人群
+    if (param.getCouponGiveGrantInfoParams().getTagBox().equals(NumberUtils.INTEGER_ONE)) {
+      haveTags(userIds, param.getTagId());
+    }
+    // 选择指定的会员
+    if (param.getCouponGiveGrantInfoParams().getMemberBox().equals(NumberUtils.INTEGER_ONE)) {
+      getMember(userIds, param.getUser());
+    }
+    // N天内有交易记录
+    if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(NumberUtils.INTEGER_ONE)
+        && param.getHavePay() != null) {
+      havePay(userIds, havePayDay);
+    }
+    // N天内无交易记录
+    if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(NumberUtils.INTEGER_ONE)
+        && param.getNoPay() != null) {
+      noPay(userIds, noPayDay);
+    }
+    // 累计购买次数大于N次 min
+    if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(NumberUtils.INTEGER_ONE)
+        && param.getMinCount() != null) {
+      minCount(userIds, param.getMinCount());
+    }
+    // 累计购买次数小于N次 max
+    if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(NumberUtils.INTEGER_ONE)
+        && param.getMaxCount() != null) {
+      maxCount(userIds, param.getMaxCount());
+    }
+    // 购买商品均价大于N元 min
+    if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(NumberUtils.INTEGER_ONE)
+        && param.getMinAvePrice() != null) {
+      minAvePrice(userIds, param.getMinAvePrice());
+    }
+    // 购买商品均价小于N元 max
+    if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(NumberUtils.INTEGER_ONE)
+        && param.getMaxAvePrice() != null) {
+      maxAvePrice(userIds, param.getMaxAvePrice());
+    }
+    // 指定时间内有登陆记录
+    if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(NumberUtils.INTEGER_ONE)
+        && param.getCouponGiveGrantInfoParams().getPointStartTime() != null
+        && param.getCouponGiveGrantInfoParams().getPointEndTme() != null) {
+      loginRecord(
+          userIds,
+          param.getCouponGiveGrantInfoParams().getPointStartTime(),
+          param.getCouponGiveGrantInfoParams().getPointEndTme());
+    }
+    // 队列
+    List<Integer> userIdList = new ArrayList<>(userIds);
+    String couponIds = param.getCouponGiveGrantInfoParams().getCouponIds();
+    String[] couponArray = couponIds.split(",");
+    CouponGiveQueueParam newParam =
+        new CouponGiveQueueParam(
+            getShopId(), userIdList, actId, couponArray, ACCESS_MODE, GET_SOURCE);
+    // 立即发送
+    if (param.getSendAction() == 0) {
+      saas.taskJobMainService.dispatchImmediately(
+          newParam,
+          CouponGiveQueueParam.class.getName(),
+          getShopId(),
+          TaskJobEnum.GIVE_COUPON.getExecutionType());
+    }
+    // 定时发送
+    if (param.getSendAction() == 1) {
+      saas.messageTemplateService.createCouponTaskJob(getShopId(), newParam, param.getStartTime());
+    }
+    // 一次发券活动完成后，将发放状态修改为已发放
+    db().update(GIVE_VOUCHER)
+        .set(GIVE_VOUCHER.SEND_STATUS, NumberUtils.BYTE_ONE)
+        .where(GIVE_VOUCHER.ID.eq(actId))
+        .execute();
+  }
+  /**
+   * 获取30天内加购用户
+   *
+   * @param userIds 用户id集合
+   */
+  private void addCart(Set<Integer> userIds, Timestamp cartDay) {
+    List<Integer> cartUserIds =
+        db().select(CART.USER_ID)
+            .from(CART)
+            .where(CART.CREATE_TIME.greaterOrEqual(cartDay))
+            .fetchInto(Integer.class);
+    // 把对应的用户id插入集合
+    userIds.addAll(cartUserIds);
+  }
+  /**
+   * 获取购买过指定商品的用户
+   *
+   * @param userIds 用户id集合
+   * @param goodsIds 商品id
+   */
+  private void buyGoods(Set<Integer> userIds, String goodsIds) {
+    // 商品id解析为数组
+    String[] goodArray = goodsIds.split(",");
+    // 遍历商品id查询
+    for (String goodsId : goodArray) {
+      List<Integer> goodsUserIds =
+          db().select(ORDER_INFO.USER_ID)
+              .from(ORDER_INFO)
+              .leftJoin(ORDER_GOODS)
+              .on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
+              .where(ORDER_GOODS.GOODS_ID.eq(Integer.valueOf(goodsId)))
+              .fetchInto(Integer.class);
+      // 把对应的用户id插入集合
+      userIds.addAll(goodsUserIds);
+    }
+  }
+  /**
+   * 获取持有会员卡人群
+   *
+   * @param userIds 用户id集合
+   * @param cardIds 指定会员卡id
+   */
+  private void haveCards(Set<Integer> userIds, String cardIds) {
+    // 会员卡转为数组
+    String[] cardArray = cardIds.split(",");
+    // 遍历查询持有该会员卡的用户
+    for (String cardId : cardArray) {
+      List<Integer> cardUserIds =
+          db().select(USER_CARD.USER_ID)
+              .from(USER_CARD)
+              .where(USER_CARD.FLAG.eq(NumberUtils.BYTE_ZERO))
+              .and(USER_CARD.CARD_ID.eq(Integer.valueOf(cardId)))
+              .fetchInto(Integer.class);
+      userIds.addAll(cardUserIds);
+    }
+  }
+  /**
+   * 获取属于指定标签人群
+   *
+   * @param userIds 用户id集合
+   * @param tagIds 指定标签id
+   */
+  private void haveTags(Set<Integer> userIds, String tagIds) {
+    // 标签转为数组
+    String[] tagArray = tagIds.split(",");
+    // 遍历查询属于该标签的用户
+    for (String tagId : tagArray) {
+      List<Integer> tagUserIds =
+          db().select(USER_TAG.USER_ID)
+              .from(USER_TAG)
+              .where(USER_TAG.TAG_ID.eq(Integer.valueOf(tagId)))
+              .fetchInto(Integer.class);
+      userIds.addAll(tagUserIds);
+    }
+  }
+  /**
+   * 获取指定用户人群
+   *
+   * @param userIds 用户id集合
+   * @param memberIds 指定会员id
+   */
+  private void getMember(Set<Integer> userIds, String memberIds) {
+    // 用户id转为数组
+    String[] memberArray = memberIds.split(",");
+    // 遍历查询指定会员
+    for (String memberId : memberArray) {
+      userIds.add(Integer.valueOf(memberId));
     }
   }
 
   /**
+   * 获取N天内有交易记录的用户
+   *
+   * @param userIds 用户id集合
+   * @param havePayDay N天
+   */
+  private void havePay(Set<Integer> userIds, Timestamp havePayDay) {
+    // 查询有交易记录的用户id
+    List<Integer> havePayUserIds =
+        db().select(ORDER_INFO.USER_ID)
+            .from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_STATUS.greaterThan(OrderConstant.ORDER_CLOSED))
+            .and(ORDER_INFO.CREATE_TIME.greaterOrEqual(havePayDay))
+            .fetchInto(Integer.class);
+    userIds.addAll(havePayUserIds);
+  }
+  /**
+   * 获取N天内无交易记录的用户
+   *
+   * @param userIds 用户id集合
+   * @param noPayDay N天
+   */
+  private void noPay(Set<Integer> userIds, Timestamp noPayDay) {
+    // 查询有交易记录的用户id
+    List<Integer> havePayUserIds =
+        db().select(ORDER_INFO.USER_ID)
+            .from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_STATUS.greaterThan(OrderConstant.ORDER_CLOSED))
+            .and(ORDER_INFO.CREATE_TIME.greaterOrEqual(noPayDay))
+            .fetchInto(Integer.class);
+    // 查询所有用户id
+    List<Integer> allUserIds =
+        db().select(USER.USER_ID)
+            .from(USER)
+            .where(USER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+            .fetchInto(Integer.class);
+    // 得到两个集合差集为N天内无交易记录的用户
+    allUserIds.removeAll(havePayUserIds);
+    userIds.addAll(allUserIds);
+  }
+  /**
+   * 获取累计购买次数大于N次的用户
+   *
+   * @param userIds 用户id集合
+   * @param minCountNum 累计购买次数大于N次
+   */
+  private void minCount(Set<Integer> userIds, Integer minCountNum) {
+    // 最小购买次数大于N
+    List<Integer> minCountUserIds =
+        db().select(ORDER_INFO.USER_ID)
+            .from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_STATUS.greaterThan(OrderConstant.ORDER_CLOSED))
+            .groupBy(ORDER_INFO.USER_ID)
+            .having(DSL.count(ORDER_INFO.ORDER_ID).greaterThan(minCountNum))
+            .fetchInto(Integer.class);
+    userIds.addAll(minCountUserIds);
+  }
+  /**
+   * 获取累计购买次数小于N次的用户
+   *
+   * @param userIds 用户id集合
+   * @param maxCountNum 累计购买次数小于N次
+   */
+  private void maxCount(Set<Integer> userIds, Integer maxCountNum) {
+    // 最小购买次数大于N
+    List<Integer> minCountUserIds =
+        db().select(ORDER_INFO.USER_ID)
+            .from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_STATUS.greaterThan(OrderConstant.ORDER_CLOSED))
+            .groupBy(ORDER_INFO.USER_ID)
+            .having(DSL.count(ORDER_INFO.ORDER_ID).greaterThan(maxCountNum))
+            .fetchInto(Integer.class);
+    // 查询所有用户id
+    List<Integer> allUserIds =
+        db().select(USER.USER_ID)
+            .from(USER)
+            .where(USER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+            .fetchInto(Integer.class);
+    // 得到两个集合差集为N天内无交易记录的用户
+    allUserIds.removeAll(minCountUserIds);
+    userIds.addAll(allUserIds);
+  }
+  /**
+   * 获取购买金额大于N元的用户
+   *
+   * @param userIds 用户id集合
+   * @param minAvePrice 最小购买金额
+   */
+  private void minAvePrice(Set<Integer> userIds, BigDecimal minAvePrice) {
+    List<Integer> minAvePriceUserIds =
+        db().select(ORDER_INFO.USER_ID)
+            .from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_CLOSED))
+            .groupBy(ORDER_INFO.USER_ID)
+            .having(
+                (DSL.sum(ORDER_INFO.ORDER_AMOUNT).divide(DSL.sum(ORDER_INFO.GOODS_AMOUNT)))
+                    .greaterThan(minAvePrice))
+            .fetchInto(Integer.class);
+    userIds.addAll(minAvePriceUserIds);
+  }
+  /**
+   * 获取购买金额小于N元的用户
+   *
+   * @param userIds 用户id集合
+   * @param maxAvePrice 最大购买金额
+   */
+  private void maxAvePrice(Set<Integer> userIds, BigDecimal maxAvePrice) {
+    List<Integer> minAvePriceUserIds =
+        db().select(ORDER_INFO.USER_ID)
+            .from(ORDER_INFO)
+            .where(ORDER_INFO.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_CLOSED))
+            .groupBy(ORDER_INFO.USER_ID)
+            .having(
+                (DSL.sum(ORDER_INFO.ORDER_AMOUNT).divide(DSL.sum(ORDER_INFO.GOODS_AMOUNT)))
+                    .greaterThan(maxAvePrice))
+            .fetchInto(Integer.class);
+    // 查询所有用户id
+    List<Integer> allUserIds =
+        db().select(USER.USER_ID)
+            .from(USER)
+            .where(USER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+            .fetchInto(Integer.class);
+    // 得到两个集合差集为N天内无交易记录的用户
+    allUserIds.removeAll(minAvePriceUserIds);
+    userIds.addAll(allUserIds);
+  }
+
+  /**
+   * 获取指定时间内有登录记录的用户
+   *
+   * @param userIds 用户id集合
+   * @param startTime 开始时间
+   * @param endTime 结束时间
+   */
+  private void loginRecord(Set<Integer> userIds, Timestamp startTime, Timestamp endTime) {
+    List<Integer> loginRecordUserIds =
+        db().select(USER_LOGIN_RECORD.USER_ID)
+            .from(USER_LOGIN_RECORD)
+            .where(USER_LOGIN_RECORD.CREATE_TIME.between(startTime, endTime))
+            .fetchInto(Integer.class);
+    userIds.addAll(loginRecordUserIds);
+  }
+  /**
    * 定向发券，后台异步执行
    *
-   * @param param
+   * @param param 用户和优惠券信息
    */
   public List<Integer> handlerCouponGive(CouponGiveQueueParam param) {
     List<Integer> successList = new ArrayList<>();
@@ -501,9 +573,7 @@ public class CouponGiveService extends ShopBaseService {
       }
       // 判断优惠券类型 减价or打折
       byte type = 0;
-      if (VOUCHER.equalsIgnoreCase(couponDetails.getActCode())) {
-        type = 0;
-      } else if (DISCOUNT.equalsIgnoreCase(couponDetails.getActCode())) {
+      if (DISCOUNT.equalsIgnoreCase(couponDetails.getActCode())) {
         type = 1;
       }
       // 得到开始时间和结束时间
@@ -575,7 +645,7 @@ public class CouponGiveService extends ShopBaseService {
    * @param couponDetails 优惠券信息
    * @return 优惠券有效期
    */
-  public Map<String, Timestamp> getCouponTime(CouponDetailsVo couponDetails) {
+  private Map<String, Timestamp> getCouponTime(CouponDetailsVo couponDetails) {
 
     // 定义开始时间和结束时间作为最后的参数
     Timestamp startTime;
@@ -643,7 +713,7 @@ public class CouponGiveService extends ShopBaseService {
    * @return popListVo
    */
   public List<CouponGivePopVo> popWindows(CouponGivePopParam param) {
-    //查询，并筛选出正确的使用限制条件
+    // 查询，并筛选出正确的使用限制条件
     SelectWhereStep<? extends Record> select =
         db().select(
                 MRKING_VOUCHER.ID,
