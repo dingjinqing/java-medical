@@ -672,7 +672,7 @@ const cn = {
   imgageDalog: {
     title: '浏览图片',
     upload: '上传图片',
-    tip: '上传图片支持jpeg、jpg、png、bmp格式，为保障前端加载顺利，单张图片大小不能超过5M',
+    tip: '上传图片支持jpeg、jpg、png、bmp、gif格式，为保障前端加载顺利，单张图片大小不能超过5M',
     imagePlaceholder: '请输入图片名称',
     search: '搜索',
     OriginalImg: '原图',

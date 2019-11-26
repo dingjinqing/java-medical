@@ -522,7 +522,7 @@ export default {
   }
 
   .ly-edit__text {
-    width: 25%;
+    width: 96px !important;
     height: 25px;
     border: 1px solid #e6e6e6;
     border-radius: 3px;

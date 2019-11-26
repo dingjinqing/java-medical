@@ -59,6 +59,7 @@
                 v-model="value"
                 placeholder="请选择"
                 size='mini'
+                :change='detailImgsSearch()'
               >
                 <el-option
                   v-for="item in options"
@@ -442,6 +443,12 @@ export default {
     },
     // 图片上传前的钩子
     beforeUpLoad (file) {
+      console.log(file)
+      let fileType = file.type.split('/')[0]
+      if (fileType !== 'image') {
+        this.$message.error('您上传的不是图片文件')
+        return
+      }
       this.upLoadImg({ file, imgSize: 5 })
 
       return false // 停止上传
@@ -856,6 +863,7 @@ ul {
 }
 .tree_container .is-always-shadow {
   width: 160px;
+  overflow: auto;
 }
 .dialog_middle_right_box .el-select {
   width: 170px !important;
