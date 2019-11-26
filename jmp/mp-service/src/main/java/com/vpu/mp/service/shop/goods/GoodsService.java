@@ -194,6 +194,10 @@ public class GoodsService extends ShopBaseService {
         if (Boolean.TRUE.equals(param.getNeedGoodsSort())) {
             vo.setGoodsSorts(goodsSort.getSortSelectTree());
         }
+        // 需要平台分类信息
+        if (Boolean.TRUE.equals(param.getNeedSysCategory())) {
+            vo.setGoodsCategories(saas.sysCate.getCatSelectTree());
+        }
         return vo;
     }
     /**

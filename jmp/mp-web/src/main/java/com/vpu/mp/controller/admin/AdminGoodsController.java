@@ -45,7 +45,7 @@ public class AdminGoodsController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/api/admin/goods/filterItem/list")
-    public JsonResult getSortBrandLabelList(@RequestBody GoodsFilterItemInitParam param){
+    public JsonResult getGoodsFilterItem(@RequestBody GoodsFilterItemInitParam param){
         GoodsFilterItemInitVo vo = shop().goods.getGoodsFilterItem(param);
         return success(vo);
     }

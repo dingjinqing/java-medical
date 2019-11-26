@@ -37,6 +37,15 @@ public class SysCateService extends MainBaseService {
         return parentList;
     }
 
+
+    /**
+     * 分类列表获取树形基础数据，不需要商品数量
+     * @return {@link com.vpu.mp.service.pojo.saas.category.SysCategorySelectTreeVo}
+     */
+    public List<SysCategorySelectTreeVo> getCatSelectTree(){
+        List<CategoryRecord> categoryListVo = getCategoryListVo();
+        return categoryListVo.stream().map(x->x.into(SysCategorySelectTreeVo.class)).collect(Collectors.toList());
+    }
     /**
      * 分类列表获取树形基础数据，需要商品数量
      * @param catNumMap key: catId value: 对应的商品数量
@@ -239,6 +248,10 @@ public class SysCateService extends MainBaseService {
      */
     private List<CategoryRecord> getCategoryListVo(Collection<Integer> catIds) {
         return db().select().from(CATEGORY).where(CATEGORY.CAT_ID.in(catIds)).fetchInto(CategoryRecord.class);
+    }
+
+    private List<CategoryRecord> getCategoryListVo(){
+        return db().select().from(CATEGORY).orderBy(CATEGORY.FIRST.desc(),CATEGORY.CREATE_TIME.desc()).fetchInto(CategoryRecord.class);
     }
 
     private List<CategoryRecord> getCategoryListVo(Collection<Integer> inIds, Collection<Integer> notInIds) {
