@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.service.foundation.util.Util;
 
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_BUY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SUPPORT_PAY_BY_CASH;
@@ -133,12 +135,8 @@ public class UserCardParam {
 	}
 	
 	private List<Integer> changeIncludeCommaStringToIntList(String idStr) {
-		String[] ids = idStr.replaceAll("\\s+","").split(",");
-		List<Integer> idList = new ArrayList<>();
-		for(String id: ids) {
-			idList.add(Integer.parseInt(id));
-		}
-		return idList;
+		return Util.json2Object(storeList, new TypeReference<List<Integer>>() {
+        }, false);
 	}
 	
 	
