@@ -64,7 +64,7 @@
   </div>
 </template>
 <script>
-import { initGrandgetRequest } from '@/api/admin/brandManagement.js'
+import { cateListApi } from '@/api/admin/selectLinksApi/selectLinksApi'
 export default {
   props: {
     dialogVisible: { // 弹窗调起flag
@@ -175,8 +175,12 @@ export default {
     defaultData (backData, flag) {
       console.log(flag)
       this.flag = flag
+      let params = {
+        needGoodsSort: true,
+        needSysCategory: true
+      }
       // 弹窗数据获取
-      initGrandgetRequest().then((res) => {
+      cateListApi(params).then((res) => {
         console.log(res)
 
         if (res.error === 0) {

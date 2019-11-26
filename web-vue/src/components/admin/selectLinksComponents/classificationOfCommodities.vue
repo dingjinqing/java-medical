@@ -125,6 +125,7 @@ export default {
     ...mapActions(['choisePagePath']),
     defaultData (newData) {
       this.trList = []
+      this.clickIindex = null
       console.log(newData)
       if (newData.levelIndex === 2) {
         switch (newData.index) {

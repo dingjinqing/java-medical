@@ -81,6 +81,7 @@ export default {
     ...mapActions(['choisePagePath']),
     defaultData (newData) {
       console.log(newData)
+      this.clickIindex = null
       if (newData.levelIndex === 1) {
         this.navText = newData.navText
         switch (newData.index) {
