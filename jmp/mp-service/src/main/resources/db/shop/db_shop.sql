@@ -2421,7 +2421,7 @@ create table `b2c_lottery`
 -- drop table if exists `b2c_lottery_prize`;
 CREATE TABLE `b2c_lottery_prize`
 (
-    `id`                 int(11)   NOT NULL,
+    `id`                 int(11)   NOT NULL                     auto_increment,
     `lottery_id`         int(11)                                 DEFAULT NULL COMMENT '抽奖编号',
     `chance_numerator`   int(11)                                 DEFAULT NULL COMMENT '中奖概率--分子',
     `chance_denominator` int(11)                                 DEFAULT NULL COMMENT '中奖概率--分母',
