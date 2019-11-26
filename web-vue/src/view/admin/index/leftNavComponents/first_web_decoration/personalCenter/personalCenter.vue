@@ -1202,7 +1202,7 @@
                 >
                   <el-radio-group
                     v-model="val.is_show"
-                    @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
+                    @change="changeAccountItem(item.module_name, val.icon_name, val.is_show, key)"
                   >
                     <el-radio label="1">展示</el-radio>
                     <el-radio label="0">不展示</el-radio>
@@ -1678,13 +1678,28 @@ export default {
     },
 
     // 切换列表项显示隐藏
-    changeAccountItem (title, name, value) {
+    changeAccountItem (title, name, value, key) {
+      var itemNum = 0
       for (let i = 0; i < this.leftData.length; i++) {
         if (this.leftData[i].module_name === title) {
           for (let j = 0; j < this.leftData[i].content.length; j++) {
             if (this.leftData[i].content[j].icon_name === name) {
-              this.leftData[i].content[j].is_show = value
+              if (key) {
+                // 自定义模板
+                this.leftData[i].content[key].is_show = value
+              } else {
+                this.leftData[i].content[j].is_show = value
+              }
             }
+            // 判断是否全部关闭
+            if (this.leftData[i].content[j].is_show === '1') {
+              itemNum++
+            }
+          }
+          if (itemNum === 0) {
+            this.leftData[i].is_show = '0'
+          } else {
+            this.leftData[i].is_show = '1'
           }
         }
       }
@@ -1698,6 +1713,12 @@ export default {
               let data = this.leftData[i]
               data[key] = value
             }
+          }
+          // 判断是否全部关闭
+          if (this.leftData[i].is_show_collect === '0' && this.leftData[i].is_show_buy_history === '0' && this.leftData[i].is_show_footprint === '0') {
+            this.leftData[i].is_show = '0'
+          } else {
+            this.leftData[i].is_show = '1'
           }
         }
       }
