@@ -242,6 +242,7 @@
                       :controls="false"
                       :min="0"
                       size="small"
+                      controls-position="right"
                     ></el-input-number>
                     {{
                          getCurrencyPool_0 + '，' +
@@ -250,6 +251,7 @@
                     <el-input-number
                       v-model="canReturnShippingFee"
                       size="small"
+                      controls-position="right"
                       :precision="2"
                       :controls="false"
                       :min="0"

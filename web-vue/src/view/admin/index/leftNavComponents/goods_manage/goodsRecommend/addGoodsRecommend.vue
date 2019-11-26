@@ -34,6 +34,7 @@
               :min="0"
               :controls="false"
               size="small"
+              controls-position="right"
             ></el-input-number> <span class="tips">{{$t('recommend.maxGoods')}}</span></p>
           <p
             class="tips"

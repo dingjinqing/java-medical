@@ -115,6 +115,7 @@
                   <el-input-number
                     v-model="param.stock"
                     size="mini"
+                    controls-position="right"
                     :min="1"
                     :max="scope.row.goodsNumber"
                   >
@@ -139,6 +140,7 @@
                   <el-input-number
                     v-model="param.expectationPrice"
                     size="mini"
+                    controls-position="right"
                     :min="0"
                     :max="scope.row.shopPrice"
                   >
@@ -159,6 +161,7 @@
                       :disabled="isEditFlag"
                       v-model="param.floorPrice"
                       size="mini"
+                      controls-position="right"
                       :min="0"
                       :max="scope.row.shopPrice"
                     >
@@ -168,6 +171,7 @@
                       :disabled="isEditFlag"
                       v-model="param.expectationPrice"
                       size="small"
+                      controls-position="right"
                       :min="0"
                       :max="scope.row.shopPrice"
                     >
@@ -199,6 +203,7 @@
                 :disabled="isEditFlag"
                 v-model="param.expectationNumber"
                 size="small"
+                controls-position="right"
                 style="width:150px"
                 :min="3"
               >
@@ -211,6 +216,7 @@
               <div style="display: flex">
                 <el-input-number
                   v-model="param.bargainMin"
+                  controls-position="right"
                   size="small"
                   style="width:150px"
                   :min="0"
@@ -219,6 +225,7 @@
                 <el-input-number
                   v-model="param.bargainMax"
                   size="small"
+                  controls-position="right"
                   style="width:150px"
                   :min="0"
                   :max="50"
@@ -242,6 +249,7 @@
                 <el-radio :label='0'>{{$t('addBargainAct.fixedMoney')}}
                   <el-input-number
                     v-model="param.bargainFixedMoney"
+                    controls-position="right"
                     size="mini"
                     style="width:150px"
                   ></el-input-number>&nbsp;{{$t('marketCommon.yuan')}}
@@ -251,6 +259,7 @@
                   <el-input-number
                     v-model="param.bargainMinMoney"
                     size="mini"
+                    controls-position="right"
                     style="width:150px"
                     :min="0"
                   ></el-input-number>&nbsp;{{$t('marketCommon.yuan')}}
@@ -258,6 +267,7 @@
                   <el-input-number
                     v-model="param.bargainMaxMoney"
                     size="mini"
+                    controls-position="right"
                     style="width:150px;margin-top: 10px"
                     :min="0"
                   ></el-input-number>{{$t('marketCommon.yuan')}}{{$t('addBargainAct.getRandomMoneyBetween')}}

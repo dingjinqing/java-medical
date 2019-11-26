@@ -45,6 +45,7 @@
         :max="exportRowEnd"
         :precision="0"
         size="small"
+        controls-position="right"
         style="width: 150px;"
       ></el-input-number>
       {{$t('orderCommon.to')}}
@@ -56,6 +57,7 @@
         :max="param.exportRowEnd"
         :precision="0"
         style="width: 150px;"
+        controls-position="right"
       ></el-input-number>
     </div>
     <span

@@ -100,6 +100,7 @@
                     v-model="reduceData.batchDiscount"
                     :controls="false"
                     size="small"
+                    controls-position="right"
                     class="small_input"
                     :min="0"
                     :max="10"
@@ -109,6 +110,7 @@
                     v-model="reduceData.batchReduce"
                     :controls="false"
                     size="small"
+                    controls-position="right"
                     class="small_input"
                     :min="0"
                   ></el-input-number>{{$t('marketCommon.yuan')}}</el-radio>
@@ -117,6 +119,7 @@
                     v-model="reduceData.batchFinalPrice"
                     :controls="false"
                     size="small"
+                    controls-position="right"
                     class="small_input"
                     :min="0"
                   ></el-input-number>{{$t('marketCommon.yuan')}}</el-radio>
@@ -184,6 +187,7 @@
                     :controls="false"
                     :precision="2"
                     size="small"
+                    controls-position="right"
                     class="small_input"
                     @input="changeItemDiscount(scope.row)"
                   ></el-input-number> {{$t('reducePriceList.discount')}}
@@ -202,6 +206,7 @@
                     :controls="false"
                     :precision="2"
                     size="small"
+                    controls-position="right"
                     class="small_input"
                     @input="changeItemReducePrice(scope.row)"
                   ></el-input-number> {{$t('marketCommon.yuan')}}
@@ -221,6 +226,7 @@
                     :controls="false"
                     :precision="2"
                     size="small"
+                    controls-position="right"
                     class="small_input"
                     @input="changeItemGoodsPrice(scope.row)"
                   ></el-input-number> {{$t('marketCommon.yuan')}}

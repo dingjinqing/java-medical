@@ -175,6 +175,7 @@
                           :max="6"
                           :precision="0"
                           style="width:100px;"
+                          controls-position="right"
                         ></el-input-number>
                       </div>
                     </template>
@@ -234,6 +235,7 @@
                   :precision="0"
                   :min="0"
                   size="small"
+                  controls-position="right"
                   class="small_input"
                 ></el-input-number>
                 <span class="item_tips">{{$t('addCouponPackage.limitGetTimesTip')}}</span>
@@ -250,6 +252,7 @@
                   placeholder=""
                   :precision="0"
                   :min='1'
+                  controls-position="right"
                   size="small"
                   class="small_input"
                 ></el-input-number>
@@ -280,6 +283,7 @@
                       class="small_input"
                       :precision="2"
                       size="small"
+                      controls-position="right"
                     ></el-input-number> {{$t('addCouponPackage.yuan')}}，
                   </span>
                   <span v-if="param.accessMode===1">
@@ -288,6 +292,7 @@
                       class="small_input"
                       :precision="0"
                       size="small"
+                      controls-position="right"
                     ></el-input-number> {{$t('addCouponPackage.integral')}}，
                   </span>
                   <span v-if="param.accessMode!==2">
@@ -343,12 +348,14 @@
             v-model="coupon_set.immediatelyGrantAmount"
             placeholder=""
             size="small"
+            controls-position="right"
             style="width:100px;"
           ></el-input-number> {{$t('addCouponPackage.sheet')}}</p>
         <p>{{$t('addCouponPackage.afterPurchase')}}{{$t('addCouponPackage.every')}} <el-input-number
             v-model="coupon_set.timingEvery"
             placeholder=""
             size="small"
+            controls-position="right"
             style="width:100px;"
           ></el-input-number>
           <el-select
@@ -401,6 +408,7 @@
             v-model="coupon_set.timingAmount"
             placeholder=""
             size="small"
+            controls-position="right"
             style="width:100px;"
           ></el-input-number> {{$t('addCouponPackage.sheet')}}</p>
       </div>

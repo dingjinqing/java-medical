@@ -12,14 +12,17 @@
       <p v-if="refundInfo.useScore > 0">{{$t('refundDialog.integral')}}:<el-input-number
           v-model="refundData.score"
           size="small"
+          controls-position="right"
         ></el-input-number> {{$t('refundDialog.integral')}}</p>
       <p v-if="refundInfo.useAccount > 0">{{$t('refundDialog.balance')}}:<el-input-number
           v-model="refundData.account"
           size="small"
+          controls-position="right"
         ></el-input-number> {{$t('refundDialog.yuan')}}</p>
       <p v-if="refundInfo.moneyPaid > 0">{{$t('refundDialog.cash')}}:<el-input-number
           v-model="refundData.money"
           size="small"
+          controls-position="right"
         ></el-input-number> {{$t('refundDialog.yuan')}}</p>
     </div>
     <div
@@ -31,18 +34,22 @@
         <p v-if="refundInfo.useAccount > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.balance')}}:<el-input-number
             v-model="refundData.account"
             size="small"
+            controls-position="right"
           ></el-input-number> {{$t('refundDialog.yuan')}}</p>
         <p v-if="refundInfo.memberCardBalance > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.memberCardBalance')}}:<el-input-number
             v-model="refundData.memberCardBalance"
             size="small"
+            controls-position="right"
           ></el-input-number> {{$t('refundDialog.yuan')}}</p>
         <p v-if="refundInfo.moneyPaid > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.cash')}}:<el-input-number
             v-model="refundData.money"
             size="small"
+            controls-position="right"
           ></el-input-number> {{$t('refundDialog.yuan')}}</p>
         <p v-if="refundInfo.useScore > 0">{{$t('refundDialog.refund')}}{{$t('refundDialog.integral')}}:<el-input-number
             v-model="refundData.score"
             size="small"
+            controls-position="right"
           ></el-input-number> {{$t('refundDialog.integral')}}</p>
       </div>
       <div class="coupon_refund_bottom">

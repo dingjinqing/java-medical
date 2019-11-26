@@ -118,6 +118,7 @@
             <el-input-number
               v-model="form.first"
               :min='0'
+              controls-position="right"
             ></el-input-number>
             <p class="form_tip">{{$t('firstSpecialAdd.priorityTip')}}</p>
           </el-form-item>
@@ -144,6 +145,7 @@
                   :disabled="!limit"
                   :min='1'
                   style="margin-left: 10px;"
+                  controls-position="right"
                 ></el-input-number>
               </el-radio>
             </el-radio-group>

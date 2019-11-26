@@ -380,6 +380,7 @@
               >
                 <el-input-number
                   v-model="form.awardNum"
+                  controls-position="right"
                   size="small"
                 ></el-input-number>
                 <span>份</span>

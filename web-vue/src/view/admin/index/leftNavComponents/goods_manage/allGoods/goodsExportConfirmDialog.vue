@@ -42,6 +42,7 @@
         :max="exportRowEnd"
         :precision="0"
         size="small"
+        controls-position="right"
         style="width: 150px;"
       ></el-input-number>
       {{$t('orderCommon.to')}}
@@ -49,6 +50,7 @@
         v-model="exportRowEnd"
         placeholder=""
         size="small"
+        controls-position="right"
         :min="exportRowStart"
         :max="param.exportRowEnd"
         :precision="0"

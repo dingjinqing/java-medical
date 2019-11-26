@@ -101,6 +101,7 @@
                 v-model="scope.row.canRefundNum"
                 class="mini_input"
                 size="small"
+                controls-position="right"
                 @change="selectionChange"
                 :min="0"
                 :max="scope.row.returnable"
@@ -139,6 +140,7 @@
               <el-input-number
                 v-model="scope.row.returnOneGoodsAmount"
                 size="small"
+                controls-position="right"
                 :precision="2"
                 :controls="false"
                 @change="selectionChange"
@@ -160,6 +162,7 @@
                 :precision="2"
                 class="mini_input"
                 size="small"
+                controls-position="right"
                 :min="0"
                 :max="max_refund_price"
               >
@@ -171,6 +174,7 @@
                 :precision="2"
                 class="mini_input"
                 size="small"
+                controls-position="right"
                 :min="0"
                 :max="returnShippingFee"
               ></el-input-number>{{currency[0]}},
