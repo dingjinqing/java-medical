@@ -18,26 +18,31 @@
             class="ps_color middle_span"
             :style="item.colorLeft"
             :class="item.id===index?'choiseColor':''"
+            v-if="index===6?false:true"
           ></span>
           <span
             class="ps_color"
             :style="item.colorRight"
             :class="item.id===index?'choiseColor':''"
+            v-if="index===6?false:true"
           ></span>
 
-          <colorPicker
+          <el-color-picker
             v-model="colorLeft_"
-            :defaultColor="defaultColorleft"
-            v-on:change="headleChangeColorLeft"
+            show-alpha
+            :predefine="predefineColors"
             v-if="index===6?true:false"
-          />
-          <colorPicker
-            v-if="index===6?true:false"
+            size='small'
+          >
+          </el-color-picker>
+          <el-color-picker
             v-model="colorRight"
-            :defaultColor="defaultColorright"
-            v-on:change="headleChangeColorRight"
-            style="right:13px;"
-          />
+            show-alpha
+            :predefine="predefineColors"
+            v-if="index===6?true:false"
+            size='small'
+          >
+          </el-color-picker>
         </div>
 
       </div>
@@ -144,8 +149,8 @@ Vue.use(vcolorpicker)
 export default {
   data () {
     return {
-      colorLeft_: '',
-      colorRight: '',
+      colorLeft_: '#5b9ea4',
+      colorRight: '#324047',
       colorDataList: [],
       choiseId: '',
       colorLeft_color: 'color: rgb(255, 102, 102)',
@@ -164,7 +169,23 @@ export default {
       defaultColorleft: '',
       defaultColorright: '',
       en_ch_title_width_one: '',
-      en_ch_title_width_two: ''
+      en_ch_title_width_two: '',
+      predefineColors: [ // 颜色选择器预定义颜色池
+        '#ff4500',
+        '#ff8c00',
+        '#ffd700',
+        '#90ee90',
+        '#00ced1',
+        '#1e90ff',
+        '#c71585',
+        'rgba(255, 69, 0, 0.68)',
+        'rgb(255, 120, 0)',
+        'hsv(51, 100, 98)',
+        'hsva(120, 40, 94, 0.5)',
+        'hsl(181, 100%, 37%)',
+        'hsla(209, 100%, 56%, 0.73)',
+        '#c7158577'
+      ]
     }
   },
   watch: {
@@ -289,32 +310,32 @@ export default {
       }
     },
     // 自定义颜色改Left
-    headleChangeColorLeft () {
-      console.log(this.colorLeft_)
-      console.log(this.colorLeft_color)
-      this.ToRgba(this.colorLeft_, 0.2)
-      this.colorLeft_color = 'color:' + this.colorLeft_
-      this.colorLeft = 'background:' + this.ToRgba(this.colorLeft_, 0.2) + ';color:' + this.colorLeft_ + ';border:1px solid ' + this.ToRgba(this.colorLeft_, 0.4)
-      this.middleLeft = 'color:' + this.colorLeft_ + ';border: 1px solid' + this.ToRgba(this.colorLeft_, 0.4)
-      this.rightBorder = 'border-bottom: 1px solid ' + this.ToRgba(this.colorLeft_, 0.4) + '; color:' + this.colorLeft_
-      this.btnRight_background = 'background:' + this.colorLeft_
-      // 自定义颜色存储
-      this.custom_colorLeft_color = this.colorLeft_color
-      this.custom_colorLeft = this.colorLeft
-      this.custom_middleLeft = this.middleLeft
-      this.custom_rightBorder = this.rightBorder
+    // headleChangeColorLeft () {
+    //   console.log(this.colorLeft_)
+    //   console.log(this.colorLeft_color)
+    //   this.ToRgba(this.colorLeft_, 0.2)
+    //   this.colorLeft_color = 'color:' + this.colorLeft_
+    //   this.colorLeft = 'background:' + this.ToRgba(this.colorLeft_, 0.2) + ';color:' + this.colorLeft_ + ';border:1px solid ' + this.ToRgba(this.colorLeft_, 0.4)
+    //   this.middleLeft = 'color:' + this.colorLeft_ + ';border: 1px solid' + this.ToRgba(this.colorLeft_, 0.4)
+    //   this.rightBorder = 'border-bottom: 1px solid ' + this.ToRgba(this.colorLeft_, 0.4) + '; color:' + this.colorLeft_
+    //   this.btnRight_background = 'background:' + this.colorLeft_
+    //   // 自定义颜色存储
+    //   this.custom_colorLeft_color = this.colorLeft_color
+    //   this.custom_colorLeft = this.colorLeft
+    //   this.custom_middleLeft = this.middleLeft
+    //   this.custom_rightBorder = this.rightBorder
 
-      this.custom_btnRight_background = this.btnRight_background
+    //   this.custom_btnRight_background = this.btnRight_background
 
-      this.choiseId = 6
-    },
-    // 自定义颜色改Right
-    headleChangeColorRight () {
-      console.log(this.colorRight)
-      this.btnLeft_background = 'background:' + this.colorRight
-      this.custom_btnLeft_background = this.btnLeft_background
-      this.choiseId = 6
-    },
+    //   this.choiseId = 6
+    // },
+    // // 自定义颜色改Right
+    // headleChangeColorRight () {
+    //   console.log(this.colorRight)
+    //   this.btnLeft_background = 'background:' + this.colorRight
+    //   this.custom_btnLeft_background = this.btnLeft_background
+    //   this.choiseId = 6
+    // },
     // 16进制转换rgba
     ToRgba (str, n) {
       // 十六进制颜色值的正则表达式
@@ -662,5 +683,10 @@ export default {
 }
 .shopStyleContent .box.open {
   z-index: 1000;
+}
+</style>
+<style lang="scss" scoped>
+/deep/ .el-color-picker {
+  width: 34px !important;
 }
 </style>

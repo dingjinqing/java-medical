@@ -36,6 +36,7 @@
                 :placeholder="$t('bottomNavigation.listTitle')"
                 size="small"
                 v-model="item.text"
+                :maxlength="5"
               ></el-input>
             </div>
             <div class="mp_list moDifyImg">
