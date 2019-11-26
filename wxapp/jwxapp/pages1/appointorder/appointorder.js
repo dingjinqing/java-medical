@@ -34,35 +34,33 @@ global.wxPage({
     main_goods_notice: imageUrl + '/image/wxapp/main_goods_notice.png',
 
     // 接口请求回来的数据
+    account: 0, // 余额
+    shopAvatar: '', // 店铺logo
     serviceInfo: {}, // 接口返回的服务信息
     storeInfo: {}, // 接口返回的门店信息
     recentOrderInfo: {}, // 用户上一次预约填写的信息
-    technicianTitle: '', //职称
-    paymentVoList: [], // 支付方式
+    technicianTitle: '', //职称：技师分类
+    paymentVoList: [], // 支持的支付方式
     cardList: [], // 会员卡列表
-    userCard: {}, // 选中的会员卡信息
-    cardFirst: false, // 是否选择会员卡支付
-    account: 0, // 余额
-    balanceFirst: false, // 是否选择余额支付
-    shopAvatar: '', // 店铺logo
+    cardFirst: false, // 默认选择会员卡支付开关
+    balanceFirst: false, // 默认选择余额支付开关
 
-    card_choose_name: '', // 选择的会员卡
+    userCard: {}, // 选中的会员卡信息
     cardMode: false, // 会员卡弹窗
     payMode: false, // 余额支付弹窗
-    create_order: {
-      account_discount: '', // 减多少余额
-      member_card_balance: '', // 减多少会员卡余额
-      money_paid: '' // 应付总额
-    }, // 填写的支付金额
-    add_message: '', // 备注
-    pay_click_type: 0, // 支付方式 1 积分，2 余额，3 会员卡余额
     member_card_input: '', // 支付弹窗-会员卡余额输入金额
     user_account_input: '', // 支付弹窗-余额输入金额
+    pay_click_type: 0, // 因为积分，会员卡余额，余额支付公用一个弹窗，通过此字段区分支付方式： 1 积分，2 余额，3 会员卡
     prompt_message: "", // 校验填写余额信息
     canClick: true, // 是否可点击确认使用余额按钮
     pay_card: 0, // 会员卡余额有值
     pay_yue: 0, // 余额有值
-
+    create_order: {
+      account_discount: '', // 余额支付金额
+      member_card_balance: '', // 会员卡余额支付金额
+      money_paid: '' // 商品金额
+    },
+    add_message: '', // 备注
     params: {} // 提交的信息
   },
 
@@ -84,12 +82,11 @@ global.wxPage({
     })
     this.initData()
   },
-  initData() {
+  initData () {
     let _this = this
     let params = {
       serviceId: this.data.reserveInfo.serviceId,
-      // userId: this.data.userId
-      userId: 190
+      userId: this.data.userId
     }
     util.api('/api/wxapp/store/service/confirmReservation', function (res) {
       console.log(res)
@@ -143,7 +140,7 @@ global.wxPage({
       }
     }, params)
   },
-  toArray(imgs) {
+  toArray (imgs) {
     let images = imgs.slice(1, imgs.length - 1).split(',')
     images = images.map(function (item) {
       return item.slice(1, item.length - 1)
@@ -151,7 +148,7 @@ global.wxPage({
     return images
   },
   // 默认填充
-  defaultInput(con) {
+  defaultInput (con) {
     let that = this
     // 会员卡余额支付 支付开关开启
     if (con.cardFirst == 1 && that.data.userCard.money) {
@@ -181,7 +178,7 @@ global.wxPage({
     }
   },
   // 预约人
-  nameInput(e) {
+  nameInput (e) {
     let value = e.detail.value
     if (value != "") {
       this.setData({
@@ -193,14 +190,14 @@ global.wxPage({
       return false
     }
   },
-  cancelName() {
+  cancelName () {
     this.setData({
       'recentOrderInfo.subscriber': "",
       'params.subsciber': ""
     })
   },
   // 手机号
-  mobileInput(e) {
+  mobileInput (e) {
     let value = e.detail.value
     if (value != "") {
       this.setData({
@@ -212,20 +209,20 @@ global.wxPage({
       return false
     }
   },
-  cancelMobile() {
+  cancelMobile () {
     this.setData({
       'recentOrderInfo.mobile': "",
       'params.mobile': ""
     })
   },
   // 服务列表
-  toStore(e) {
+  toStore (e) {
     let storeId = e.currentTarget.dataset.id
     util.navigateTo({
       url: '/pages/storeinfo/storeinfo?id=' + storeId,
     })
   },
-  toService(e) {
+  toService (e) {
     let serviceId = e.currentTarget.dataset.id
     util.navigateTo({
       url: '/pages/appointment/appointment?service_id=' + serviceId,
@@ -242,7 +239,7 @@ global.wxPage({
       cardMode: false
     })
   },
-  chooseCard(e) {
+  chooseCard (e) {
     let that = this
     let dataset = e.currentTarget.dataset
     let cardNo = dataset.card_no
@@ -262,16 +259,15 @@ global.wxPage({
       cardList: cardList
     })
   },
-  cardConfirm(e) {
+  cardConfirm (e) {
     this.setData({
       cardMode: false
     })
     this.checkCancelCard()
     this.checkCancelYue()
   },
-  // 支付弹窗
-  payClick(e) {
-    let _this = this
+  // 显示支付弹窗
+  payClick (e) {
     let type = e.currentTarget.dataset.type
     let pay_click_type = 0
     if (type == 'score') { // 积分支付
@@ -282,19 +278,19 @@ global.wxPage({
       // 会员卡余额支付
       pay_click_type = 3
     }
-    _this.setData({
+    this.setData({
       payMode: true,
       canClick: true,
       prompt_message: '',
       pay_click_type: pay_click_type
     })
   },
-  payCancel() {
+  payCancel () {
     this.setData({
       payMode: false
     })
   },
-  payConfirm(e) {
+  payConfirm (e) {
     let type = this.data.pay_click_type
     let prompt_message = this.data.prompt_message
     if (prompt_message != '') return false
@@ -317,7 +313,7 @@ global.wxPage({
    *  会员卡余额支付
    */
   // 取消会员卡余额支付
-  checkCancelCard(e) {
+  checkCancelCard (e) {
     let new_money_paid = parseFloat(this.data.create_order.money_paid) + parseFloat(this.data.create_order.member_card_balance);
     this.setData({
       'create_order.money_paid': new_money_paid,
@@ -327,13 +323,13 @@ global.wxPage({
       member_card_input: ''
     })
   },
-  mem_fo(e) {
+  mem_fo (e) {
     this.setData({
       prompt_message: '',
       canClick: true
     })
   },
-  member_card_blur(e) {
+  member_card_blur (e) {
     let value = e.detail.value
     let member_card_input = this.data.member_card_input
     if (value) {
@@ -372,7 +368,7 @@ global.wxPage({
    * 余额支付
    */
   // 取消余额支付
-  checkCancelYue(e) {
+  checkCancelYue (e) {
     let new_money_paid = parseFloat(this.data.create_order.money_paid) + parseFloat(this.data.create_order.account_discount);
     this.setData({
       'create_order.money_paid': new_money_paid,
@@ -381,13 +377,13 @@ global.wxPage({
       prompt_message: ''
     })
   },
-  yue_fo(e) {
+  yue_fo (e) {
     this.setData({
       prompt_message: '',
       canClick: true
     })
   },
-  user_account_blur(e) {
+  user_account_blur (e) {
     let value = e.detail.value
     let user_account_input = this.data.user_account_input
     if (value) {
@@ -427,14 +423,14 @@ global.wxPage({
   },
 
   // 备注
-  msgInput(e) {
+  msgInput (e) {
     let value = e.detail.value
     this.setData({
       addMessage: value
     })
   },
   // 订单计算
-  OneClickBuy(e) {
+  OneClickBuy (e) {
     var that = this
     let params = {
       serviceId: this.data.reserveInfo.serviceId,
@@ -479,7 +475,7 @@ global.wxPage({
       }
     }, params)
   },
-  confirmServ(e) {
+  confirmServ (e) {
     let params = {
       serviceId: this.data.reserveInfo.serviceId,
       userId: that.data.userId,

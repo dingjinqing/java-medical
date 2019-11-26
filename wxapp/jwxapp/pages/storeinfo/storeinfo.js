@@ -102,7 +102,6 @@ global.wxPage({
           return;
         }
         info = res.content;
-        console.log(info);
         that.setData({
           info: that.formatData(info)
         });
@@ -246,7 +245,6 @@ global.wxPage({
         item.serviceList.forEach(function (item, i) {
           if (item.serviceImg) {
             var imgSrc = item.serviceImg.split('"')
-            console.log(imgSrc)
             item.serviceImg = imgSrc[1]
           }
         })
@@ -256,7 +254,6 @@ global.wxPage({
   },
   // 买单
   toCheckout: function (e) {
-    console.log(e)
     var storeId = e.currentTarget.dataset.storeid;
     util.navigateTo({
       url: '/pages/shopcheckout/shopcheckout?storeId=' + storeId
@@ -265,7 +262,6 @@ global.wxPage({
   // 扫码购
   toScanBuy: function (e) {
     var storeId = e.currentTarget.dataset.storeid;
-    console.log(store_id)
     util.navigateTo({
       url: '/pages/scancode/scancode?storeId=' + storeId,
       success: function (res) { },

@@ -3,7 +3,7 @@ let util = require('../../utils/util')
 let app = getApp()
 let imageUrl = app.globalData.imageUrl;
 
-Page({
+global.wxPage({
   /**
    * 页面的初始数据
    */

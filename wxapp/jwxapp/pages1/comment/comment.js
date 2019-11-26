@@ -20,7 +20,7 @@ global.wxPage({
     ],
     page: 1,
     last_page: 1,
-    imageUrl: app.globalData.imageUrl,
+    imageUrl: util.getImageUrl(""),
     img_len: 0, // 添加了几张图片
     imageVisible: false,// 是否显示晒单的图片
     islogin: true,
@@ -142,7 +142,7 @@ global.wxPage({
                   util.uploadFile(url, tempFilePaths[i], params, function (e) {
                     var data = JSON.parse(e.data);
                     if (data.error === 0) {
-                      info.comm_img.push(data.content.imgUrl);
+                      info.comm_img.push(data.content.imgPath);
                       var img_len = parseInt(info.comm_img.length);
                       that.setData({
                         info: info,

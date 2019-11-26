@@ -117,13 +117,9 @@
           </view>
         </view>
         <view class='hr' wx:if="{{cardList.length != 0}}"></view>
-        <view class='yue_pay' wx:if="{{userCard.money > 0}}">
+        <view class='yue_pay'>
           <view>会员卡余额支付:</view>
-          <view class='pay_focus'>
-            <text style='color:{{comColor}}' wx:if='{{pay_card == 1}}'>
-              减{{create_order.member_card_balance}}元
-            </text>
-          </view>
+          <view class='pay_focus'><text style='color:{{comColor}}' wx:if='{{pay_card == 1}}'>减{{create_order.member_card_balance}}元</text></view>
           <view class='pay_check' bindtap='{{pay_card == 1 ? "" : "payClick"}}' data-type='card'>
             <image src="{{ checkbox_no }}" mode='widthFix' wx:if='{{pay_card == 0}}' />
             <text class='iconfont iconduoxuan' style='font-size:42rpx;color:{{comColor}}' bindtap='checkCancelCard' wx:else></text>
@@ -240,7 +236,7 @@
     </view>
     <view class='price_show '>
       <view wx:if="{{pay_click_type == 2 }}">我的余额：￥{{account}}</view>
-      <view wx:if='{{pay_click_type == 3}}'>{{card_choose_name}}</view>
+      <view wx:if='{{pay_click_type == 3}}'>{{userCard.cardName}}</view>
       <view wx:if='{{pay_click_type == 3}}'>会员卡余额：￥{{userCard.money}}</view>
     </view>
     <view class='card_sure ' bindtap='payConfirm' style='background:{{ canClick == true ? comColor : "#999"}};bottom:{{isIpx==1 ? "80rpx": "0"}} '>

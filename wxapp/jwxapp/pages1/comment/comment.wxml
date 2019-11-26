@@ -97,7 +97,7 @@
                       <block wx:for="{{info.comm_img}}" wx:key="index" wx:for-item="imgitem">
                         <view class='shai_view'>
                           <image src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
-                          <image src="{{imgitem}}" data-idx="{{index}}"></image>
+                          <image src="{{imageUrl + imgitem}}" data-idx="{{index}}"></image>
                         </view>
                       </block>
                     </block>
