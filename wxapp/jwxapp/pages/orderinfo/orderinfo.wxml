@@ -8,17 +8,17 @@
       <text>{{orderInfo.orderStatusName}}</text>
     </view>
     <view class="shipping_info">
-      <navigator>
+      <navigator wx:if="{{orderInfo.shippingInfo}}">
         <view class="logistics" style='background:url({{imageUrl}}image/wxapp/right_into.png) 95% center no-repeat;background-size:16rpx 32rpx;'>
           <image mode="widthFix" src="{{imageUrl}}image/wxapp/icon_get.png"></image>
           <view class="shipping_info_content">
             <view>
               <text selectable>{{i18n.$t(localePack,"pages.order.trackingNumber")}}：</text>
-              <text selectable>17600236996</text>
+              <text selectable>{{orderInfo.shippingInfo[0].shippingNo}}</text>
             </view>
             <view>
               <text selectable>{{i18n.$t(localePack,"pages.order.courierCompany")}}：</text>
-              <text selectable>申通快递</text>
+              <text selectable>{{orderInfo.shippingInfo[0].shippingName}}</text>
             </view>
           </view>
         </view>
@@ -28,11 +28,11 @@
         <view class="shipping_info_content">
           <view>
             <text selectable>{{i18n.$t(localePack,"pages.order.receiver")}}：</text>
-            <text selectable>刘洋  17600236996</text>
+            <text selectable>{{orderInfo.consignee}}</text>
           </view>
           <view>
             <text selectable>{{i18n.$t(localePack,"pages.order.address")}}：</text>
-            <text selectable>北京市北京市海淀区牡丹园花园路13号天博中润216室</text>
+            <text selectable>{{orderInfo.completeAddress}}</text>
           </view>
         </view>
       </view>
@@ -119,9 +119,9 @@
       </view>
     </view>
     <view class="order_info">
-      <view class="title">{{i18n.$t(localePack,"pages.order.orderSn")}}</view>
-      <view class="order_item">{{i18n.$t(localePack,"pages.order.orderSn")}}：{{orderInfo.orderSn}}</view>
-      <view class="order_item">{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</view>
+      <text class="title">{{i18n.$t(localePack,"pages.order.orderDetail")}}</text>
+      <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderSn")}}：{{orderInfo.orderSn}}</text>
+      <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</text>
     </view>
     <view class="fixed_footer">
       <block wx:for="{{orderInfo.operate}}" wx:key="*this" wx:for-item="operateItem" wx:for-index="operateKey">

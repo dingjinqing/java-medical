@@ -7,7 +7,7 @@ global.wxComponent({
    */
   properties: {
     memberCardList:Array,
-    defaultMemberCard:Object
+    defaultMemberCardNo:String
   },
 
   /**
@@ -22,12 +22,12 @@ global.wxComponent({
    */
   methods: {
     init(){
-      console.log(this.data.defaultMemberCard)
+      console.log(this.data.defaultMemberCardNo)
      let cardList =  this.data.memberCardList.map(item=>{
         let cardItem = JSON.parse(JSON.stringify(item))
         cardItem.cardBgStyle = this.getCardBg(cardItem);
         cardItem.cardExpireTime = this.getCardExpireTime(cardItem)
-        cardItem.isChecked = (this.data.defaultMemberCard && cardItem.cardNo === this.data.defaultMemberCard.cardNo)
+        cardItem.isChecked = (this.data.defaultMemberCardNo && cardItem.cardNo === this.data.defaultMemberCardNo)
         return cardItem
      })
      this.setData({

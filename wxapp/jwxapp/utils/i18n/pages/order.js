@@ -22,6 +22,7 @@ module.exports = {
   "promotions":"促销活动",
   "actualPayment":"实际付款",
   "orderTime":"下单时间",
+  "orderDetail":"订单信息",
   "operateList": {
     "isShowPay": "立即支付",
     "isCancel": "取消订单",

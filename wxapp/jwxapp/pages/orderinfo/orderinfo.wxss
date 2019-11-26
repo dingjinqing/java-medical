@@ -153,6 +153,8 @@
   background-color: #fff;
   padding: 0 16rpx;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 .order_info .title {
   color: #333;

@@ -169,3 +169,26 @@ movable-view{
 .not_tap{
   background-color: #eee;
 }
+.is-null{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.is-null image{
+  width: 250rpx;
+  height: 202rpx;
+}
+.is-null text{
+  margin-top: 20rpx;
+  color: #999;
+}
+.is-null .null-btn{
+  color: #fff;
+  padding: 10rpx 20rpx;
+  font-size: 30rpx;
+  border-radius: 10rpx;
+}

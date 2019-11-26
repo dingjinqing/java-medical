@@ -1,22 +1,24 @@
-<view class="flex_outside_box">
+<view class="flex_outside_box" wx:if="{{comment}}">
   <view class="flex_box">
     <view class="item_left">
-      用户评价(123)
+      用户评价({{all}})
     </view>
     <view class="item_right">查看全部></view>
   </view>
   <view class="label-content comment_box">
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>好评(100000)</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>中评(100000)</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>差评(100000)</text>
-    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>有图(100000)</text>
+    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>好评({{positive}})</text>
+    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>中评({{moderate}})</text>
+    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>差评({{negative}})</text>
+    <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>有图({{hasPic}})</text>
   </view>
   <view class="item_line"></view>
   <view class="flex_box">
-    <view class="item_left">卡卡</view>
-    <view class="item_right">******</view>
+    <view class="item_left">{{comment.commentInfo.userName}}</view>
+    <view class="item_right">
+      <text wx:for="{{starArr}}" wx:key="*this" class="iconfont iconshoucang" style="color:{{main_setting.comColor}}"></text>
+    </view>
   </view>
   <view class="flex_box">
-    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    {{comment.commentInfo.commNote}}
   </view>
 </view>

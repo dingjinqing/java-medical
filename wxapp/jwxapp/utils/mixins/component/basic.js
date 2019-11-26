@@ -14,10 +14,6 @@ module.exports = {
     baseUrl: {
       type: String,
       value: nav.getUrl("")
-    },
-    main_setting:{
-      type: Object,
-      value: helper.getColors()
     }
   },
   options: {
@@ -28,7 +24,8 @@ module.exports = {
   attached(e) {
     pages.addObj(this);
     this.setData({
-      localePack: this.getLocalePack()
+      localePack: this.getLocalePack(),
+      main_setting: helper.getColors()
     })
     var _this = this;
     settings.PageSettings.lifecycle.forEach(v => {

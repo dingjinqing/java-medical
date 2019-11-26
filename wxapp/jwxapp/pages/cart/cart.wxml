@@ -1,7 +1,8 @@
 <view class="body">
     <include src="../common/header.wxml" />
     <view class="main-container">
-        <view class="list_box">
+        <!-- 可购买商品列表 -->
+        <view class="list_box" wx:if="{{canBuyGoodsList.length > 0}}">
             <view class="cart-goods_item" wx:for="{{canBuyGoodsList}}" wx:key="index">
               <view class="goods_content">
                 <movable-area>
@@ -46,6 +47,7 @@
             </view>
         </view>
 
+        <!-- 失效商品列表 -->
         <view class="list_box" wx:if="{{invalidGoodsList.length > 0}}">
           <view class="invalid_title">
             <text class="title_left">失效商品 <text class="invalid_num" style="color:{{comColor}}">{{invalidGoodsList.length}}</text> 件</text>
@@ -77,7 +79,16 @@
             </view>
         </view>
 
-        <view class="flex_footer" style="{{!isIpx ? 'bottom:110rpx;' :'bottom:160rpx'}}">
+        <!-- 列表无数据时 -->
+
+        <view class="is-null" wx:if="{{canBuyGoodsList.length === 0 && invalidGoodsList.length === 0}}">
+          <image src="{{imageUrl}}image/wxapp/common_cart_no.png"></image>
+          <text>购物车竟然是空的</text>
+          <text class="null-btn" bindtap="toIndex" style="background-color:{{comColor}}">随便逛逛</text>
+        </view>
+
+        <!-- 底部按钮 -->
+        <view class="flex_footer" wx:if="{{canBuyGoodsList.length > 0}}" style="{{!isIpx ? 'bottom:110rpx;' :'bottom:160rpx'}}">
             <view class="footer_left">
                 <text class="iconfont {{allChecked ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}}" bindtap="changeAllChecked"></text>
                 <text>全选</text>

@@ -10,15 +10,23 @@
       </view>
     </view>
     <view class="content" style="margin-top:{{margin_top_nav * 2 + 116}}rpx">
-      <block wx:if="{{dataList[0].length}}" wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
-        <block wx:for="{{pageItem}}" wx:key="cardNo" wx:for-index="itemIndex">
-          <text class="date">{{item.date}}</text>
-          <view class="goods_content">
-          <block wx:for="{{item.goodsList}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">
-            <v-double-col-goods goods-data="{{goodsItem}}"/>
+      <block wx:if="{{dataList[0].length}}">
+         <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+            <block wx:for="{{pageItem}}" wx:key="cardNo" wx:for-index="itemIndex">
+              <text class="date">{{item.date}}</text>
+              <view class="goods_content">
+              <block wx:for="{{item.goodsList}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">
+                <v-double-col-goods goods-data="{{goodsItem}}"/>
+              </block>
+              </view>
+            </block>
           </block>
-          </view>
-        </block>
+      </block>
+      <block wx:else>
+        <view class="is-null" >
+          <image src="{{imageUrl}}image/wxapp/no_result.png"></image>
+          <text>抱歉！没有找到相关的商品</text>
+        </view>
       </block>
     </view>
   </view>

@@ -135,6 +135,9 @@ global.wxPage({
     })
     util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify(goodsList)}`, "navigateTo")
   },
+  toIndex(){
+    util.jumpLink('pages/index/index','navigateTo')
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

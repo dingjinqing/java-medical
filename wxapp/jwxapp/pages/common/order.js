@@ -116,6 +116,7 @@ var order = {
       true
     );
   },
+  // 过滤需要的参数
   filterObj(obj, arr) {
     if (typeof obj !== "object" || !Array.isArray(arr)) {
       throw new Error("参数格式不正确");

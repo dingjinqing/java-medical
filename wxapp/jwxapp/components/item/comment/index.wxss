@@ -1,4 +1,5 @@
 @import "/css/item.wxss";
+@import "/css/iconfont.wxss";
 .comment_box {
   padding: 12rpx 20rpx;
   margin-bottom: 0;

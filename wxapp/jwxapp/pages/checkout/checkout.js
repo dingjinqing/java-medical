@@ -40,7 +40,6 @@ global.wxPage({
       useScore: 0//已使用的积分
     },
     orderInfo:{},
-    
   },
 
   /**
@@ -358,7 +357,11 @@ global.wxPage({
     util.api('/api/wxapp/order/submit',res=>{
       console.log(res)
       if(res.error === 0){
-        
+        util.jumpLink('pages/orderlist/orderlist','navigateTo')
+      } else {
+        util.showModal('提示',res.message, function () {
+          util.jumpLink('/pages/index/index','redirectTo')
+        });
       }
     }, params)
   },

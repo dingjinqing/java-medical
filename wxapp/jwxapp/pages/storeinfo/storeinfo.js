@@ -7,7 +7,7 @@ var lon;
 var info;
 var all_serv = {};
 var id;
-Page({
+global.wxPage({
 
   /**
    * 页面的初始数据

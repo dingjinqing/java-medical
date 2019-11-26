@@ -41,6 +41,7 @@ global.wxPage({
             this.getGoodsInfo(res.content);
             this.getCouponInfo(res.content);
             this.getGoodsDescInfo(res.content);
+            this.getComment(res.content)
             resolve(res.content);
           }
         },
@@ -62,6 +63,13 @@ global.wxPage({
         goodsDesc,
         isPageUp
       }
+    })
+  },
+  // 商品评价信息
+  getComment(goodsInfo){
+    let { comment } = goodsInfo
+    this.setData({
+      comment
     })
   },
   // 服务承诺请求

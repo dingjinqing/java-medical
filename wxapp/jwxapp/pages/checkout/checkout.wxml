@@ -144,9 +144,10 @@
   <v-balance-popup show="{{showBalanceDialog}}" use-pay-info="{{usePayInfo}}" user-balance="{{orderInfo.userAccount}}" bindconfirm="getInputBalance" bindclose="closeDialog" />
   <!-- 修改积分 -->
   <v-score-popup show="{{showScoreDialog}}" use-pay-info="{{usePayInfo}}" score-max="{{orderInfo.scoreMaxDiscount}}" score-min="{{orderInfo.scorePayNum}}" user-score="{{orderInfo.userScore}}" bindconfirm="getInputScore" bindclose="closeDialog"/>
+  <!-- 修改会员卡余额- -->
   <v-card-balance show="{{showCardBalanceDialog}}" use-pay-info="{{usePayInfo}}" user-card-balance="{{orderInfo.memberCardMoney}}" bindconfirm="getInputCardBalance" bindclose="closeDialog"/>
   <!-- 选择会员卡 -->
-  <v-select-card show="{{showCardDialog}}" member-card-list="{{orderInfo.memberCards}}" default-member-card="{{orderInfo.defaultMemberCard}}" bindconfirm="getSelectCard"/>
+  <v-select-card show="{{showCardDialog}}" member-card-list="{{orderInfo.memberCards}}" default-member-card-no="{{orderInfo.defaultMemberCard.cardNo}}" bindconfirm="getSelectCard"/>
   <!-- 选择自提/同城门店 -->
   <v-select-store show="{{showStoreDialog}}" store-data="{{storeDialogData}}" bindsubmit="getSelectStore"/>
   <include src="../common/footer.wxml"/>
