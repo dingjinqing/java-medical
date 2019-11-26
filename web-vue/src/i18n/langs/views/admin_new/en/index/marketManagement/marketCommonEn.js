@@ -39,6 +39,7 @@ export const en = {
   ongoing: 'ongoing',
   ended: 'ended',
   deactivated: 'deactivated',
+  unknown: 'unknown',
   validDate: 'validity period',
   startTime: 'start time',
   endTime: 'end time',

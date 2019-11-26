@@ -95,7 +95,7 @@
               <el-tooltip
                 :content="$t('seckill.edit')"
                 placement="top"
-                v-if="scope.row.statusText !== '已停用' && scope.row.statusText !== 'deactivated'"
+                v-if="scope.row.currentState !== 4"
               >
                 <span
                   style="font-size: 22px;"
@@ -106,7 +106,7 @@
               <el-tooltip
                 :content="$t('seckill.share')"
                 placement="top"
-                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
+                v-if="scope.row.currentState === 2 || scope.row.currentState === 1"
               >
                 <span
                   style="font-size: 22px;"
@@ -117,7 +117,7 @@
               <el-tooltip
                 :content="$t('seckill.stop')"
                 placement="top"
-                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
+                v-if="scope.row.currentState === 2 || scope.row.currentState === 3"
               >
                 <span
                   style="font-size: 22px;"
@@ -128,7 +128,7 @@
               <el-tooltip
                 :content="$t('seckill.start')"
                 placement="top"
-                v-if="scope.row.statusText === '已停用' || scope.row.statusText === 'deactivated'"
+                v-if="scope.row.currentState === 4"
               >
                 <span
                   style="font-size: 22px;"
@@ -139,7 +139,7 @@
               <el-tooltip
                 :content="$t('seckill.order')"
                 placement="top"
-                v-if="scope.row.statusText !== '未开始' && scope.row.statusText !== 'unstarted'"
+                v-if="scope.row.currentState !== 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -150,7 +150,7 @@
               <el-tooltip
                 :content="$t('seckill.detail')"
                 placement="top"
-                v-if="scope.row.statusText !== '未开始' && scope.row.statusText !== 'unstarted'"
+                v-if="scope.row.currentState !== 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -161,7 +161,7 @@
               <el-tooltip
                 :content="$t('seckill.user')"
                 placement="top"
-                v-if="scope.row.statusText !== '未开始' && scope.row.statusText !== 'unstarted'"
+                v-if="scope.row.currentState !== 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -172,7 +172,7 @@
               <el-tooltip
                 :content="$t('seckill.delete')"
                 placement="top"
-                v-if="scope.row.statusText === '已结束' || scope.row.statusText === '已停用' || scope.row.statusText === 'ended' || scope.row.statusText === 'deactivated'"
+                v-if="scope.row.currentState === 3 || scope.row.currentState === 4"
               >
                 <span
                   style="font-size: 22px;"
@@ -309,7 +309,7 @@ export default {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
           this.tableData.map((item, index) => {
-            item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+            item.statusText = this.getActStatusString(item.currentState)
           })
         } else {
           this.$message.error(res.message)

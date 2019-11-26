@@ -179,19 +179,19 @@ const myMixin = {
         this.columnFlag = false
       }
     },
-    // 取营销活动状态字符串（进行中、已过期、未开始、已停用），status==0代表停用，status==1代表启用
-    getActStatusString (status, startTime, endTime) {
-      let d = new Date()
-      if (status === 1) {
-        if (d < new Date(startTime)) {
-          return this.$t('marketCommon.unstarted')
-        } else if (d > new Date(endTime)) {
-          return this.$t('marketCommon.ended')
-        } else {
+    // 取营销活动状态字符串，1进行中，2未开始，3已过期，4已停用
+    getActStatusString (currentState) {
+      switch (currentState) {
+        case 1:
           return this.$t('marketCommon.ongoing')
-        }
-      } else {
-        return this.$t('marketCommon.deactivated')
+        case 2:
+          return this.$t('marketCommon.unstarted')
+        case 3:
+          return this.$t('marketCommon.ended')
+        case 4:
+          return this.$t('marketCommon.deactivated')
+        default:
+          return this.$t('marketCommon.unknown')
       }
     },
     // 处理平台分类、商家分类下拉框数据函数  data是接口原始数据 idName：catId是平台分类  sortId是商家分类

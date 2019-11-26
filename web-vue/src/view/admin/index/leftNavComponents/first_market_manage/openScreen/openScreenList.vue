@@ -83,7 +83,7 @@
           <template slot-scope="{row}">
             <div class="iconWrap">
               <el-tooltip
-                v-show="row.status === 1 || row.status === 2"
+                v-show="row.currentState === 1 || row.currentState === 2"
                 content="编辑"
                 placement="top"
               >
@@ -102,7 +102,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                v-show="row.status === 1 || row.status === 2"
+                v-show="row.currentState === 1 || row.currentState === 2"
                 content="停用"
                 placement="top"
               >
@@ -112,7 +112,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                v-show="row.status === 4"
+                v-show="row.currentState === 4"
                 content="启用"
                 placement="top"
               >
@@ -122,7 +122,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                v-show="row.status === 3 || row.status === 4"
+                v-show="row.currentState === 3 || row.currentState === 4"
                 content="删除"
                 placement="top"
               >
@@ -265,7 +265,7 @@ export default {
             if (item.endDate > new Date()) {
               item.expired = true
             }
-            item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+            item.statusText = this.getActStatusString(item.currentState)
             return item
           })
           this.pageParams = Object.assign({}, res.content.page)

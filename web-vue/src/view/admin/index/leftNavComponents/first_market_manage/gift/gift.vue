@@ -112,7 +112,7 @@
               <el-tooltip
                 :content="$t('gift.edit')"
                 placement="top"
-                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
+                v-if="scope.row.currentState === 2 || scope.row.currentState === 1"
               >
                 <i
                   @click="editGift(scope.row.id)"
@@ -123,7 +123,7 @@
               <el-tooltip
                 :content="$t('gift.stop')"
                 placement="top"
-                v-if="scope.row.statusText === '未开始' || scope.row.statusText === '进行中' || scope.row.statusText === 'ongoing' || scope.row.statusText === 'unstarted'"
+                v-if="scope.row.currentState === 2 || scope.row.currentState === 1"
               >
                 <i
                   @click="disableGift(scope.row.id)"
@@ -134,7 +134,7 @@
               <el-tooltip
                 :content="$t('gift.start')"
                 placement="top"
-                v-if="scope.row.statusText === '已停用' || scope.row.statusText === 'deactivated'"
+                v-if="scope.row.currentState === 4"
               >
                 <i
                   @click="enableGift(scope.row.id)"
@@ -156,7 +156,7 @@
                 class="item"
                 :content="$t('gift.delete')"
                 placement="top"
-                v-if="scope.row.statusText !== '进行中' && scope.row.statusText !== 'unstarted'"
+                v-if="scope.row.currentState !== 1"
               >
                 <i
                   @click="deleteGift(scope.row.id)"
@@ -221,8 +221,7 @@ export default {
           this.tableData = res.content.dataList
           this.pageParams = res.content.page
           this.tableData.map((item, index) => {
-            // item.validity = `${item.startTime}` + `至` + `${item.endTime}`
-            item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+            item.statusText = this.getActStatusString(item.currentState)
           })
         }
       })
