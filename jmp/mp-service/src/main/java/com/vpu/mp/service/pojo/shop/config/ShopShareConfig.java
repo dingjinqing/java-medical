@@ -17,7 +17,7 @@ public class ShopShareConfig {
 	 * 1默认样式    2自定义样式
 	 */
 	@JsonProperty(value = "share_action")
-	public Byte shareActiopn = 1;
+	public Byte shareAction = 1;
 	
 	/**
 	 * 分享文案
