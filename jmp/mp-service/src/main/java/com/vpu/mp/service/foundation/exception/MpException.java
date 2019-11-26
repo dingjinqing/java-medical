@@ -22,7 +22,7 @@ public class MpException extends Exception {
 	public MpException(JsonResultCode errorCode) {
 		this.setErrorCode(errorCode);
 	}
-	
+
 	public MpException(JsonResultCode errorCode, String message, String... codeParam) {
 		super(message);
 		this.setErrorCode(errorCode);

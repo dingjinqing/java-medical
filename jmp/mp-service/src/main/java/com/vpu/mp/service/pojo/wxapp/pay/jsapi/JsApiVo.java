@@ -1,7 +1,5 @@
-package com.vpu.mp.service.pojo.wxapp.pay.base.jsapi;
+package com.vpu.mp.service.pojo.wxapp.pay.jsapi;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import lombok.Builder;

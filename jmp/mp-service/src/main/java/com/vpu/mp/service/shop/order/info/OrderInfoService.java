@@ -687,8 +687,11 @@ public class OrderInfoService extends ShopBaseService {
      */
     public String generateOrderSn() {
         while(true) {
-            StringBuilder orderSn = new StringBuilder(OrderConstant.ORDER_SN_PREFIX).append(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE)).append(RandomUtil.getIntRandom());
+            StringBuilder orderSn = new StringBuilder(OrderConstant.ORDER_SN_PREFIX)
+                .append(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE))
+                .append(RandomUtil.getIntRandom());
             if(db().fetchCount(TABLE,TABLE.ORDER_SN.eq(orderSn.toString())) < 1){
+                logger().info("自动生成orderSn:{}", orderSn.toString());
                 return orderSn.toString();
             }
         }

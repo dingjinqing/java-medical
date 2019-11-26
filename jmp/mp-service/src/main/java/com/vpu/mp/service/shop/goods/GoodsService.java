@@ -1664,7 +1664,7 @@ public class GoodsService extends ShopBaseService {
             db().batchUpdate(prdRecordsMap.values()).execute();
 
             try {
-                esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+                //esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
             } catch (Exception e) {
                 e.printStackTrace();
             }

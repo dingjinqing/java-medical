@@ -193,6 +193,8 @@ public enum JsonResultCode {
     CODE_ORDER_GOODS_GET_LOCK_FAIL(120082, JsonResultMessage.MSG_ORDER_GOODS_GET_LOCK_FAIL),
     /**更新库存失败*/
     CODE_ORDER_UPDATE_STOCK_FAIL(120083, JsonResultMessage.MSG_ORDER_UPDATE_STOCK_FAIL),
+    /**下单数据库执行异常*/
+    CODE_ORDER_DATABASE_ERROR(120084, JsonResultMessage.MSG_ORDER_DATABASE_ERROR),
 
 
 

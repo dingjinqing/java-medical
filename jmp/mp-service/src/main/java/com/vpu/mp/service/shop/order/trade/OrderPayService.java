@@ -9,8 +9,8 @@ import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
@@ -88,7 +88,7 @@ public class OrderPayService extends ShopBaseService{
      * @param orderGoodsBo
      * @param param
      */
-    public ExecuteResult isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param) {
+    public ExecuteResult isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param, CreateOrderVo vo) {
         logger().info("继续支付接口start");
         ExecuteResult executeResult = ExecuteResult.create();
         ArrayList<String> goodsType = Lists.newArrayList(OrderReadService.orderTypeToArray(orderInfo.getGoodsType()));
@@ -109,7 +109,8 @@ public class OrderPayService extends ShopBaseService{
                 webPayVo.setOrderSn(orderInfo.getOrderSn());
                 webPayVo.setOrderType(param.getActivityType().toString());
                 order.updatePrepayId(webPayVo.getResult().getPrepayId(), orderInfo.getOrderId());
-                executeResult.setResult(webPayVo);
+                vo.setOrderSn(orderInfo.getOrderSn());
+                executeResult.setResult(vo);
                 logger().info("微信预支付调用接口调用end");
                 return executeResult;
             } catch (WxPayException e) {

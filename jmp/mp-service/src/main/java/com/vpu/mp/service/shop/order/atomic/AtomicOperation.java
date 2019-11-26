@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -75,8 +76,8 @@ public class AtomicOperation extends ShopBaseService {
                 updateGoodsMap.put(goodsRow.getGoodsId(), updateGoods);
             }
             if(product == null || goods == null){
-                //商品或规格row为bull
-                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_EXIST);
+                //商品或规格row为null
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_EXIST , null, order.getOrderSn());
             }else {
                 if(product.getPrdNumber() < num) {
                     //库存不足

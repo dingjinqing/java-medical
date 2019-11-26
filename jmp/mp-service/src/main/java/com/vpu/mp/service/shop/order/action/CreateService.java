@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.shop.activity.factory.OrderBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.OrderCreatePayBeforeMpProcessorFactory;
@@ -35,6 +36,8 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.exception.DataAccessException;
+import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -159,10 +162,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Override
     public ExecuteResult execute(CreateParam param) {
         logger().info("下单start");
+        //vo
+        CreateOrderVo createVo = new CreateOrderVo();
         //初始化bo
         CreateOrderBo orderBo;
         //OrderBeforeVo
         final OrderBeforeVo orderBeforeVo;
+        //订单入库后数据
+        OrderInfoRecord orderAfterRecord = null;
         //order before data ready
         try {
             //TODO 营销相关
@@ -184,42 +191,53 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //校验
             checkOrder(orderBeforeVo, orderBo, param);
         } catch (MpException e) {
-            return ExecuteResult.create(e.getErrorCode(), null, e.getCodeParam());
+            return ExecuteResult.create(e.getErrorCode(), null,  e.getCodeParam());
         }
-        //record入库
-        transaction(()->{
-            //初始化订单（赋值部分数据）
-            OrderInfoRecord order = orderInfo.addRecord(param, orderBo, orderBo.getOrderGoodsBo(), orderBeforeVo);
-            //普通营销活动处理
-            processNormalActivity(order, orderBo, orderBeforeVo);
-            //计算其他数据（需关联去其他模块）
-            setOtherValue(order, orderBo, orderBeforeVo);
-            //订单入库
-            order.store();
-            order.refresh();
-            //支付系统金额
-            orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
-            //商品退款退货配置
-            calculate.setGoodsReturnCfg(orderBo.getOrderGoodsBo(), order.getGoodsType(), order.getPosFlag());
-            orderGoods.addRecord(order, orderBo.getOrderGoodsBo());
-            //必填信息
-            must.addRecord(param.getMust());
-            //TODO exchang、好友助力
-
-            orderBo.setOrderId(order.getOrderId());
-
-            //货到付款或者余额积分付款，生成订单时加销量减库存
-            atomicOperation.updateStockAndSales(order, orderBo.getOrderGoodsBo());
+        try{
+            //record入库
+            transaction(()->{
+                //初始化订单（赋值部分数据）
+                OrderInfoRecord order = orderInfo.addRecord(param, orderBo, orderBo.getOrderGoodsBo(), orderBeforeVo);
+                //普通营销活动处理
+                processNormalActivity(order, orderBo, orderBeforeVo);
+                //计算其他数据（需关联去其他模块）
+                setOtherValue(order, orderBo, orderBeforeVo);
+                //订单入库
+                order.store();
+                order.refresh();
+                //支付系统金额
+                orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
+                //商品退款退货配置
+                calculate.setGoodsReturnCfg(orderBo.getOrderGoodsBo(), order.getGoodsType(), order.getPosFlag());
+                orderGoods.addRecord(order, orderBo.getOrderGoodsBo());
+                //必填信息
+                must.addRecord(param.getMust());
+                //TODO exchang、好友助力
+                orderBo.setOrderId(order.getOrderId());
         });
+        orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
+        createVo.setOrderSn(orderAfterRecord.getOrderSn());
+        //货到付款或者余额积分付款，生成订单时加销量减库存
+        atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo());
+    } catch (DataAccessException e) {
+        logger().error("下单捕获mp异常", e);
+        Throwable cause = e.getCause();
+        if (cause instanceof MpException) {
+            return ExecuteResult.create(((MpException) cause).getErrorCode(), null,  ((MpException) cause).getCodeParam());
+        } else {
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR);
+        }
+    } catch (Exception e) {
+        logger().error("下单捕获mp异常", e);
+        return ExecuteResult.create(JsonResultCode.CODE_ORDER);
+    }
         //购物车删除
         if(OrderConstant.CART_Y.equals(param.getIsCart())){
             cart.removeCartByProductIds(param.getWxUserInfo().getUserId(), param.getProductIds());
         }
-        cart.removeCartByProductIds(param.getWxUserInfo().getUserId(), param.getProductIds());
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
-        OrderInfoRecord record = orderInfo.getRecord(orderBo.getOrderId());
 
-        return orderPay.isContinuePay(record, orderBo.getOrderGoodsBo(), param);
+        return orderPay.isContinuePay(orderAfterRecord, orderBo.getOrderGoodsBo(), param, createVo);
     }
 
     /**
@@ -535,7 +553,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         if (goods.getGoodsNumber() > goods.getProductNumbers()) {
             logger().error("checkGoodsAndProduct,库存不足,id:" + goods.getProductId());
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, goodsRecord.getGoodsName());
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK, goodsRecord.getGoodsName());
         }
         if (goods.getGoodsNumber() == null || goods.getGoodsNumber() <= 0) {
             logger().error("checkGoodsAndProduct,商品数量不能为0,id:" + goods.getProductId());

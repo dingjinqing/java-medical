@@ -1,11 +1,9 @@
 package com.vpu.mp.service.foundation.util.lock;
 
-import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
@@ -18,24 +16,24 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.BeanUtils;
+import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+ import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 批量锁
+ * @author 王帅
+ */
 @Aspect
 @Slf4j
 @Component
@@ -149,6 +147,7 @@ public class RedisLockAspect extends ShopBaseService {
             log.error("批量锁执行joinPoint.proceed()异常");
             throw new MpException(JsonResultCode.CODE_ORDER_UPDATE_STOCK_FAIL);
         }finally {
+            log.info("释放redis锁");
             //释放
             releaseLocks(keys, value);
         }

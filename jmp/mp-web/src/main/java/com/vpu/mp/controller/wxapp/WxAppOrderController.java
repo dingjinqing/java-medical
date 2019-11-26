@@ -63,7 +63,7 @@ public class WxAppOrderController extends WxAppBaseController{
         if(executeResult == null || executeResult.isSuccess()) {
             return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode());
+            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
         }
     }
 	/**
