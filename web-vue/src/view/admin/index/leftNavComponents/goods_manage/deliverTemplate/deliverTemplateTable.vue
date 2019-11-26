@@ -34,8 +34,9 @@
           <!-- 表格 -->
           <el-table
             border
-            :data="item.templateContent.areaParam"
-            v-if="item.templateContent !== null"
+            v-for="(val, key) in item.tableList"
+            :key="key"
+            :data="val"
           >
             <el-table-column
               prop="area_text"
@@ -68,45 +69,9 @@
             >
             </el-table-column>
           </el-table>
-
-          <table border="1">
-            <!-- <thead>
-              <tr>
-                <th>可配送区域</th>
-                <th>首件（件）</th>
-                <th>运费（元）</th>
-                <th>续件（件）</th>
-                <th>续费（元）</th>
-              </tr>
-            </thead> -->
-            <tbody>
-              <!-- <tr v-show="item.templateContent[0].datalist[0].limit_deliver_area === 0">
-                <td>{{item.templateContent[0].datalist[0].area_text}}</td>
-                <td>{{item.templateContent[0].datalist[0].first_num}}</td>
-                <td>{{item.templateContent[0].datalist[0].first_fee}}</td>
-                <td>{{item.templateContent[0].datalist[0].continue_num}}</td>
-                <td>{{item.templateContent[0].datalist[0].continue_fee}}</td>
-              </tr> -->
-              <!-- 其他区域以外的表格 -->
-              <!-- <tr
-                v-for="(it22,i) in item.templateContent[0].datalist[1]"
-                :key="i"
-                v-show="it22.area_text!== null"
-              >
-                <td>{{it22.area_text}}</td>
-                <td>{{it22.first_num}}</td>
-                <td>{{it22.first_fee}}</td>
-                <td>{{it22.continue_num}}</td>
-                <td>{{it22.continue_fee}}</td>
-              </tr> -->
-              <!-- 条件 -->
-
-            </tbody>
-          </table>
-          <!-- 表格 -->
-
         </section>
       </section>
+
     </section>
     <!-- 分页 -->
     <section class="paginationContainer">
@@ -119,18 +84,20 @@
 </template>
 
 <script>
-import { formatTemplateData } from '@/util/formatData.js'
-
 import { fetchDeliverTemplateList, deliverDelete, copyDeliverTemplateApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   name: `deliverTemplateTable`,
+  activated: function () {
+    this.initData()
+  },
   components: { pagination },
   props: {
     listType: String
   },
   data () {
     return {
+      tableList: [], // 表格的数据
       tableData: [], // 表格的数据
       content: ``, // 后台返回的数据
       lists: [],
@@ -153,34 +120,66 @@ export default {
         // 运费模板列表
         fetchDeliverTemplateList({
           flag: 0,
-          currentPage: this.pageParams.currentPage,
-          pageRows: this.pageParams.pageRows
+          page: {
+            currentPage: this.pageParams.currentPage,
+            pageRows: this.pageParams.pageRows
+          }
         }).then(res => {
-          const { error, content: { config, pageResult: { dataList, page } } } = res
+          const { error, content: { pageResult: { dataList, page } } } = res
           if (error === 0) {
             this.loading = false
             this.pageParams = page
-            this.content = res.content
-            this.formData = JSON.parse(config)
-            let resData = formatTemplateData(dataList)
-            this.lists = resData
+            // 表格数据处理
+            dataList.map((item, index) => {
+              this.tableData = []
+              this.tableList = []
+              if (item.content.limitParam.limit_deliver_area === 0) {
+                this.tableData.push(item.content.limitParam)
+                if (item.content.areaParam.length > 0) {
+                  this.tableData.push(item.content.areaParam[0])
+                  item.content.areaParam[0].area_text = item.content.areaParam[0].area_text.join('，')
+                }
+              } else {
+                this.tableData.push(item.content.areaParam[0])
+                item.content.areaParam[0].area_text = item.content.areaParam[0].area_text.join('，')
+              }
+              this.tableList.push(this.tableData)
+              item.tableList = this.tableList
+            })
+            this.lists = dataList
           }
         })
       } else {
         // 重量运费模板列表
         fetchDeliverTemplateList({
           flag: 1,
-          currentPage: this.pageParams.currentPage,
-          pageRows: this.pageParams.pageRows
+          page: {
+            currentPage: this.pageParams.currentPage,
+            pageRows: this.pageParams.pageRows
+          }
         }).then(res => {
-          const { error, content: { config, pageResult: { dataList, page } } } = res
+          const { error, content: { pageResult: { dataList, page } } } = res
           if (error === 0) {
             this.loading = false
             this.pageParams = page
-            this.content = res.content
-            this.formData = JSON.parse(config)
-            let resData = formatTemplateData(dataList)
-            this.lists = resData
+            // 表格数据处理
+            dataList.map((item, index) => {
+              this.tableData = []
+              this.tableList = []
+              if (item.content.limitParam.limit_deliver_area === 0) {
+                this.tableData.push(item.content.limitParam)
+                if (item.content.areaParam.length > 0) {
+                  this.tableData.push(item.content.areaParam[0])
+                  item.content.areaParam[0].area_text = item.content.areaParam[0].area_text.join('，')
+                }
+              } else {
+                this.tableData.push(item.content.areaParam[0])
+                item.content.areaParam[0].area_text = item.content.areaParam[0].area_text.join('，')
+              }
+              this.tableList.push(this.tableData)
+              item.tableList = this.tableList
+            })
+            this.lists = dataList
           }
         })
       }
@@ -198,9 +197,15 @@ export default {
     },
     // 修改运费模板
     upDateTemplate (deliverTemplateId) {
+      var type = 0
+      if (this.listType === `list`) {
+        type = 0
+      } else {
+        type = 1
+      }
       this.$router.push({
         path: `/admin/home/main/goodsManage/deliverTemplate/deliverTemplateUpdate`,
-        query: { deliverTemplateId }
+        query: { deliverTemplateId, type }
       })
     },
     // 删除运费模板

@@ -1,230 +1,217 @@
 <template>
   <div class="saleOnAndInStock">
-    <el-table
-      :data="goodsData"
-      class="tableClass"
-      border
-      style="width: 100%"
-    >
-      <el-table-column
-        align="center"
-        width="70px"
-        label=""
+    <div style="width: 100%; padding: 10px;background: #fff;">
+      <el-table
+        :data="goodsData"
+        class="tableClass"
+        border
+        style="width: 100%"
       >
-        <template slot-scope="scope">
-          <el-checkbox v-model="scope.row.check"></el-checkbox>
-        </template>
-      </el-table-column>
-      <!-- 商品名称图片 -->
-      <el-table-column
-        align="center"
-        prop="goodsName"
-        :label="$t('allGoods.allGoodsData.goodsName')"
-        min-width="120px"
-      >
-        <template slot-scope="scope">
-          <div>
-            <img
-              style="width: 70px;height: 70px;float: left;"
-              :src="scope.row.goodsImg"
-            >
-            <div style="padding:10px;">
-              <span
-                v-if="scope.row.sourceName !== null"
-                class="goodsTypeSpanWrap"
-              >{{scope.row.sourceName}}</span>
-              <span
-                v-if="scope.row.goodsTypeName !== null"
-                class="goodsSourceSpanWrap"
-              >{{scope.row.goodsTypeName}}</span>
-              {{scope.row.goodsName}}
+        <el-table-column
+          align="center"
+          width="70px"
+          label=""
+        >
+          <template slot-scope="scope">
+            <el-checkbox v-model="scope.row.check"></el-checkbox>
+          </template>
+        </el-table-column>
+        <!-- 商品名称图片 -->
+        <el-table-column
+          align="center"
+          prop="goodsName"
+          :label="$t('allGoods.allGoodsData.goodsName')"
+          min-width="120px"
+        >
+          <template slot-scope="scope">
+            <div>
+              <img
+                style="width: 70px;height: 70px;float: left;"
+                :src="scope.row.goodsImg"
+              >
+              <div style="padding:10px;">
+                <span
+                  v-if="scope.row.sourceName !== null"
+                  class="goodsTypeSpanWrap"
+                >{{scope.row.sourceName}}</span>
+                <span
+                  v-if="scope.row.goodsTypeName !== null"
+                  class="goodsSourceSpanWrap"
+                >{{scope.row.goodsTypeName}}</span>
+                {{scope.row.goodsName}}
+              </div>
             </div>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        :label="$t('allGoods.allGoodsData.shopPrice')"
-      >
-        <template slot-scope="{row}">
-          <span v-if="row.prdId === null">
-            <template v-if="row.prdMinShopPrice === row.prdMaxShopPrice">
-              {{row.prdMinShopPrice}}
-            </template>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          :label="$t('allGoods.allGoodsData.shopPrice')"
+        >
+          <template slot-scope="{row}">
+            <span v-if="row.prdId === null">
+              <template v-if="row.prdMinShopPrice === row.prdMaxShopPrice">
+                {{row.prdMinShopPrice}}
+              </template>
+              <template v-else>
+                {{row.prdMinShopPrice}}~{{row.prdMaxShopPrice}}
+              </template>
+            </span>
             <template v-else>
-              {{row.prdMinShopPrice}}~{{row.prdMaxShopPrice}}
+              <span v-if="!row.shopPriceEdit">
+                {{row.shopPrice}}
+                <span
+                  class="el-icon-edit-outline iconSpan"
+                  style="margin-left: 10px;"
+                  @click="shopPriceAndGoodsNumberEditClick(row,'price')"
+                ></span>
+              </span>
+              <input
+                :id="'shopPrice_'+row.goodsId"
+                v-else
+                v-model.number="row.shopPriceOld"
+                @change="shopPriceChange(row)"
+                @blur="row.shopPriceEdit = false"
+                class="editInput"
+              />
             </template>
-          </span>
-          <template v-else>
-            <span v-if="!row.shopPriceEdit">
-              {{row.shopPrice}}
-              <span
-                class="el-icon-edit-outline iconSpan"
-                style="margin-left: 10px;"
-                @click="shopPriceAndGoodsNumberEditClick(row,'price')"
-              ></span>
-            </span>
-            <input
-              :id="'shopPrice_'+row.goodsId"
-              v-else
-              v-model.number="row.shopPriceOld"
-              @change="shopPriceChange(row)"
-              @blur="row.shopPriceEdit = false"
-              class="editInput"
-            />
           </template>
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        prop="goodsSn"
-        width="180px"
-        :label="$t('allGoods.allGoodsData.goodsSn')"
-      />
-      <el-table-column
-        align="center"
-        prop="catName"
-        :label="$t('allGoods.allGoodsData.cat')"
-      />
-      <el-table-column
-        align="center"
-        prop="sortName"
-        :label="$t('allGoods.allGoodsData.sort')"
-      />
-      <el-table-column
-        align="center"
-        prop="brandName"
-        :label="$t('allGoods.allGoodsData.goodsBrand')"
-      >
-      </el-table-column>
-      <el-table-column
-        align="center"
-        :label="$t('allGoods.allGoodsData.goodsNumber')"
-      >
-        <template slot-scope="{row}">
-          <span v-if="row.prdId === null">{{row.goodsNumber}}</span>
-          <template v-else>
-            <span v-if="!row.goodsNumberEdit">
-              {{row.goodsNumber}}
-              <span
-                class="el-icon-edit-outline iconSpan"
-                style="margin-left: 10px;"
-                @click="shopPriceAndGoodsNumberEditClick(row,'number')"
-              ></span>
-            </span>
-            <input
-              v-else
-              :id="'goodsNumber_'+row.goodsId"
-              v-model.number="row.goodsNumberOld"
-              @change="goodsNumberChange(row)"
-              @blur="row.goodsNumberEdit = false"
-              class="editInput"
-            />
-          </template>
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        prop="goodsSaleNum"
-        :label="$t('allGoods.allGoodsData.saleNumber')"
-      />
-      <el-table-column
-        align="center"
-        :label="$t('allGoods.allGoodsData.goodsLabel')"
-        width="160px"
-      >
-        <template slot-scope="{row}">
-          <div style="overflow: hidden;">
-            <div style="max-width:96px; float: left;">
-              <span
-                v-for="(item,index) in row.goodsLabels"
-                :key="index"
-                class="goodsLabelSpanWrap"
-              >{{item.name}}</span>
-            </div>
-            <div
-              style="width: 50px;float:right;color:#5a8bff;cursor: pointer;"
-              @click="tdLabelSetClick(row)"
-            >{{$t('allGoods.allGoodsData.setting')}}</div>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        :label="$t('allGoods.allGoodsData.operate')"
-      >
-        <template slot-scope="{row,$index}">
-          <el-tooltip
-            :content="$t('allGoods.allGoodsData.edit')"
-            placement="top"
-          >
-            <span
-              style="font-size: 22px;color:#5a8bff;"
-              class="el-icon-edit-outline iconSpan"
-              @click="editIconClick(row)"
-            ></span>
-          </el-tooltip>
-          <el-tooltip
-            :content="$t('allGoods.allGoodsData.copy')"
-            placement="top"
-          >
-            <span
-              style="font-size: 22px;color:#5a8bff;"
-              class="fa fa-copy iconSpan"
-              @click="copyIconClick(row)"
-            ></span>
-          </el-tooltip>
-          <el-tooltip
-            :content="$t('allGoods.allGoodsData.share')"
-            placement="top"
-          >
-            <span
-              style="font-size: 22px;color:#5a8bff;"
-              class="el-icon-share iconSpan"
-              @click="shareIconClick(row)"
-            ></span>
-          </el-tooltip>
-          <el-tooltip
-            :content="$t('allGoods.allGoodsData.underCarriage')"
-            placement="top"
-          >
-            <span
-              style="font-size: 22px;color:#5a8bff;"
-              class="el-icon-download"
-              @click="withdrawIconClick(row,$index)"
-            ></span>
-          </el-tooltip>
-          <el-tooltip
-            :content="$t('allGoods.allGoodsData.delete')"
-            placement="top"
-          >
-            <span
-              style="font-size: 22px;color:#5a8bff;"
-              class="el-icon-delete iconSpan"
-              @click="deleteIconClick(row,$index)"
-            ></span>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div
-      class="allGoodsFooter"
-      style="display: flex;"
-    >
-      <div
-        class="operateBtnWrap"
-        style="width:50%;"
-      >
-      </div>
-      <div
-        class="paginationWrap"
-        style="width:50%"
-      >
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="fetchGoodsData"
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="goodsSn"
+          width="180px"
+          :label="$t('allGoods.allGoodsData.goodsSn')"
         />
-      </div>
+        <el-table-column
+          align="center"
+          prop="catName"
+          :label="$t('allGoods.allGoodsData.cat')"
+        />
+        <el-table-column
+          align="center"
+          prop="sortName"
+          :label="$t('allGoods.allGoodsData.sort')"
+        />
+        <el-table-column
+          align="center"
+          prop="brandName"
+          :label="$t('allGoods.allGoodsData.goodsBrand')"
+        >
+        </el-table-column>
+        <el-table-column
+          align="center"
+          :label="$t('allGoods.allGoodsData.goodsNumber')"
+        >
+          <template slot-scope="{row}">
+            <span v-if="row.prdId === null">{{row.goodsNumber}}</span>
+            <template v-else>
+              <span v-if="!row.goodsNumberEdit">
+                {{row.goodsNumber}}
+                <span
+                  class="el-icon-edit-outline iconSpan"
+                  style="margin-left: 10px;"
+                  @click="shopPriceAndGoodsNumberEditClick(row,'number')"
+                ></span>
+              </span>
+              <input
+                v-else
+                :id="'goodsNumber_'+row.goodsId"
+                v-model.number="row.goodsNumberOld"
+                @change="goodsNumberChange(row)"
+                @blur="row.goodsNumberEdit = false"
+                class="editInput"
+              />
+            </template>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="goodsSaleNum"
+          :label="$t('allGoods.allGoodsData.saleNumber')"
+        />
+        <el-table-column
+          align="center"
+          :label="$t('allGoods.allGoodsData.goodsLabel')"
+          width="160px"
+        >
+          <template slot-scope="{row}">
+            <div style="overflow: hidden;">
+              <div style="max-width:96px; float: left;">
+                <span
+                  v-for="(item,index) in row.goodsLabels"
+                  :key="index"
+                  class="goodsLabelSpanWrap"
+                >{{item.name}}</span>
+              </div>
+              <div
+                style="width: 50px;float:right;color:#5a8bff;cursor: pointer;"
+                @click="tdLabelSetClick(row)"
+              >{{$t('allGoods.allGoodsData.setting')}}</div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          :label="$t('allGoods.allGoodsData.operate')"
+        >
+          <template slot-scope="{row,$index}">
+            <el-tooltip
+              :content="$t('allGoods.allGoodsData.edit')"
+              placement="top"
+            >
+              <span
+                style="font-size: 22px;color:#5a8bff;"
+                class="el-icon-edit-outline iconSpan"
+                @click="editIconClick(row)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('allGoods.allGoodsData.copy')"
+              placement="top"
+            >
+              <span
+                style="font-size: 22px;color:#5a8bff;"
+                class="fa fa-copy iconSpan"
+                @click="copyIconClick(row)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('allGoods.allGoodsData.share')"
+              placement="top"
+            >
+              <span
+                style="font-size: 22px;color:#5a8bff;"
+                class="el-icon-share iconSpan"
+                @click="shareIconClick(row)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('allGoods.allGoodsData.underCarriage')"
+              placement="top"
+            >
+              <span
+                style="font-size: 22px;color:#5a8bff;"
+                class="el-icon-download"
+                @click="withdrawIconClick(row,$index)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('allGoods.allGoodsData.delete')"
+              placement="top"
+            >
+              <span
+                style="font-size: 22px;color:#5a8bff;"
+                class="el-icon-delete iconSpan"
+                @click="deleteIconClick(row,$index)"
+              ></span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="fetchGoodsData"
+      />
     </div>
 
     <!--预览商品太阳码-->
@@ -580,10 +567,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.saleOnAndInStock {
-  padding: 5px;
-  // margin-top: 10px;
-}
 /deep/.tableClass th {
   background-color: #f5f5f5;
   border: none;

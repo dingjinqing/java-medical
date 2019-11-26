@@ -1,11 +1,10 @@
 <template>
   <div>
     <el-form
-      label-width="100px"
-      class="demo-ruleForm"
-      :model="delivery"
       ref="formData"
+      :model="delivery"
       :rules="rules"
+      label-width="100px"
       style="margin-bottom:60px;background: #fff;"
     >
       <el-form-item
@@ -49,7 +48,7 @@
             <el-input
               style="width:80px;"
               size="small"
-              v-model.number="delivery.contentParam.limitParam.first_num"
+              v-model="delivery.contentParam.limitParam.first_num"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -59,7 +58,7 @@
             <el-input
               style="width:80px;"
               size="small"
-              v-model.number="delivery.contentParam.limitParam.first_fee"
+              v-model="delivery.contentParam.limitParam.first_fee"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -69,7 +68,7 @@
             <el-input
               style="width:80px;"
               size="small"
-              v-model.number="delivery.contentParam.limitParam.continue_num"
+              v-model="delivery.contentParam.limitParam.continue_num"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -79,7 +78,7 @@
             <el-input
               style="width:80px;"
               size="small"
-              v-model.number="delivery.contentParam.limitParam.continue_fee"
+              v-model="delivery.contentParam.limitParam.continue_fee"
             ></el-input>元
           </el-form-item>
         </el-form>
@@ -95,13 +94,13 @@
       </el-form-item>
       <el-form-item>
         <el-checkbox
-          v-model="delivery.contentParam.hasFee0Condition"
+          v-model="delivery.contentParam.has_fee_0_condition"
           :true-label="1"
           :false-label="0"
         >指定条件包邮（可选）</el-checkbox>
       </el-form-item>
       <!-- 指定条件包邮组件 -->
-      <el-form-item v-if="delivery.contentParam.hasFee0Condition === 1">
+      <el-form-item v-if="delivery.contentParam.has_fee_0_condition === 1">
         <LocatTPTable
           ref="freeShippingData"
           :isRegion="false"
@@ -109,14 +108,14 @@
           :editLocation="delivery.contentParam.feeConditionParam"
         />
       </el-form-item>
+      <div class="add-template">
+        <el-button
+          size="small"
+          @click="addDeliveryTemplate"
+          type="primary"
+        >{{ addOrUpdate?addOrUpdate:button }}</el-button>
+      </div>
     </el-form>
-    <div class="add-template">
-      <el-button
-        size="small"
-        @click="addDeliveryTemplate"
-        type="primary"
-      >{{ addOrUpdate?addOrUpdate:button }}</el-button>
-    </div>
   </div>
 </template>
 
@@ -145,15 +144,16 @@ export default {
         // 编辑初始化
         this.initData()
       }
+    },
+    flag: {
+      handler: function (newVal, oldVal) {
+        this.delivery.flag = this.flag
+      }
     }
-    // flag: {
-    //   handler: function (newVal, oldVal) {
-    //     this.delivery.flag = this.flag
-    //   }
-    // }
   },
   data () {
     var validateNum = (rule, value, callback) => {
+      // 正整数
       var re = /^[1-9]\d*$/
       if (value === '') {
         callback(new Error('请填写件数'))
@@ -164,7 +164,8 @@ export default {
       }
     }
     var validateMoney = (rule, value, callback) => {
-      var re = /^\d+(\.\d+)?$/
+      // 非负数
+      var re = /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/
       if (value === '') {
         callback(new Error('请填写运费'))
       } else if (!re.test(value)) {
@@ -199,7 +200,7 @@ export default {
             continue_fee: 0
           },
           areaParam: [],
-          hasFee0Condition: 0,
+          has_fee_0_condition: 0,
           feeConditionParam: []
         }
       },
@@ -216,58 +217,103 @@ export default {
         flag: data.flag,
         contentParam: {
           limitParam: {
-            limit_deliver_area: data.templateContent.limitParam.limit_deliver_area,
-            area_list: data.templateContent.limitParam.area_list,
-            area_text: data.templateContent.limitParam.area_text,
-            first_num: data.templateContent.limitParam.first_num,
-            first_fee: data.templateContent.limitParam.first_fee,
-            continue_num: data.templateContent.limitParam.continue_num,
-            continue_fee: data.templateContent.limitParam.continue_fee
+            limit_deliver_area: data.content.limitParam.limit_deliver_area,
+            area_list: data.content.limitParam.area_list,
+            area_text: data.content.limitParam.area_text,
+            first_num: data.content.limitParam.first_num,
+            first_fee: data.content.limitParam.first_fee,
+            continue_num: data.content.limitParam.continue_num,
+            continue_fee: data.content.limitParam.continue_fee
           },
-          areaParam: data.templateContent.areaParam,
-          feeConditionParam: data.templateContent.feeConditionParam
+          areaParam: data.content.areaParam,
+          has_fee_0_condition: data.content.has_fee_0_condition,
+          feeConditionParam: data.content.feeConditionParam
         }
+      }
+
+      // 数据处理
+      if (this.delivery.contentParam.areaParam.length > 0) {
+        this.delivery.contentParam.areaParam[0].area_list = this.delivery.contentParam.areaParam[0].area_list.join(',')
+        this.delivery.contentParam.areaParam[0].area_text = this.delivery.contentParam.areaParam[0].area_text.join(',')
+      }
+      if (this.delivery.contentParam.feeConditionParam.length > 0) {
+        this.delivery.contentParam.feeConditionParam[0].area_list = this.delivery.contentParam.feeConditionParam[0].area_list.join(',')
+        this.delivery.contentParam.feeConditionParam[0].area_text = this.delivery.contentParam.feeConditionParam[0].area_text.join(',')
       }
     },
     // 添加运费模板
     addDeliveryTemplate () {
-      var hasFeeData = []
-      this.$refs['formData'].validate((valid) => {
-        if (!valid) {
-          return false
-        }
-      })
+      var stats = 0
+      if (this.delivery.templateName === '') {
+        this.$refs.formData.validateField('templateName')
+        return stats++
+      }
       if (this.delivery.contentParam.limitParam.limit_deliver_area === 0) {
         this.$refs['freightRegion'].validate((valid) => {
           if (!valid) {
-            return false
+            return stats++
           }
         })
       }
+
       var regionData = this.$refs['regionData'].getTableData()
-      this.delivery.contentParam.areaParam = regionData
-      if (this.delivery.contentParam.limitParam.limit_deliver_area && !regionData.length) {
-        this.$message.error('可配送区域不能为空')
-        return false
-      }
-      if (this.delivery.contentParam.hasFee0Condition === 1) {
-        hasFeeData = this.$refs['freeShippingData'].getTableData()
-      }
-      this.delivery.contentParam.feeConditionParam = hasFeeData
-      if (this.delivery.contentParam.hasFee0Condition === 1 && !hasFeeData.length) {
-        this.$message.error('包邮条件不能为空')
-        return false
-      }
-      if (!this.propDelivery) {
-        // 添加保存
-        this.delivery.flag = this.flag
-        this.$emit('addDelivery', this.delivery)
+      if (regionData[0] === true) {
+        this.delivery.contentParam.areaParam = regionData[1]
+        if (this.delivery.contentParam.limitParam.limit_deliver_area === 1 && regionData[1].length === 0) {
+          this.$message.warning('可配送区域不能为空')
+          return stats++
+        }
+        if (regionData[1].length > 0) {
+          // 数据转换为数组
+          if (Array.isArray(this.delivery.contentParam.areaParam[0].area_list) === false) {
+            this.delivery.contentParam.areaParam[0].area_list = this.delivery.contentParam.areaParam[0].area_list.split(',')
+          }
+          if (Array.isArray(this.delivery.contentParam.areaParam[0].area_text) === false) {
+            this.delivery.contentParam.areaParam[0].area_text = this.delivery.contentParam.areaParam[0].area_text.split(',')
+          }
+        }
       } else {
-        alert(this.flag)
-        var obj = this.delivery
-        obj.deliverTemplateId = this.updateId
-        // 编辑保存
-        this.$emit('updateDelivery', obj)
+        this.$message.warning('输入格式不正确, 请正确填写可配送区域')
+        return stats++
+      }
+
+      if (this.delivery.contentParam.has_fee_0_condition === 1) {
+        var hasFeeData = this.$refs['freeShippingData'].getTableData()
+
+        if (hasFeeData[0] === true) {
+          this.delivery.contentParam.feeConditionParam = hasFeeData[1]
+          if (hasFeeData[1].length === 0) {
+            this.$message.warning('包邮条件不能为空')
+            return stats++
+          } else {
+            // 数据转换为数组
+            if (Array.isArray(this.delivery.contentParam.feeConditionParam[0].area_list) === false) {
+              this.delivery.contentParam.feeConditionParam[0].area_list = this.delivery.contentParam.feeConditionParam[0].area_list.split(',')
+            }
+            if (Array.isArray(this.delivery.contentParam.feeConditionParam[0].area_text) === false) {
+              this.delivery.contentParam.feeConditionParam[0].area_text = this.delivery.contentParam.feeConditionParam[0].area_text.split(',')
+            }
+          }
+        } else {
+          this.$message.warning('输入格式不正确, 请正确填写包邮条件')
+          return stats++
+        }
+      } else {
+        this.delivery.contentParam.feeConditionParam = []
+      }
+
+      // 验证通过
+      if (stats === 0) {
+        if (!this.propDelivery) {
+          // 添加保存
+          this.delivery.flag = this.flag
+          this.$emit('addDelivery', this.delivery)
+        } else {
+          var obj = this.delivery
+          obj.deliverTemplateId = this.updateId
+          // 编辑保存
+          this.$emit('updateDelivery', obj)
+        }
       }
     }
   }
@@ -289,6 +335,6 @@ div.add-template {
   width: 88%;
   height: 50px;
   background: #f8f8fa;
-  margin-left: -35px;
+  // margin-left: -35px;
 }
 </style>

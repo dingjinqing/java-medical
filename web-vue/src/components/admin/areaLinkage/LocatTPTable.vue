@@ -40,10 +40,10 @@
             >
               <el-form-item
                 prop="first_num"
-                :rules="[{ validator: checkLimitParamFirstNum, trigger: 'blur' }]"
+                :rules="[{ required: true, validator: validateNum, message: '格式不正确', trigger: 'blur' }]"
               >
                 <el-input
-                  v-model="scope.row.first_num"
+                  v-model.number="scope.row.first_num"
                   class="column-input"
                 ></el-input>
               </el-form-item>
@@ -61,10 +61,10 @@
             >
               <el-form-item
                 prop="first_fee"
-                :rules="[{validator:checkLimitParamFirstFee, trigger: 'blur'}]"
+                :rules="[{validator: validateMoney, message: '格式不正确', trigger: 'blur'}]"
               >
                 <el-input
-                  v-model="scope.row.first_fee"
+                  v-model.number="scope.row.first_fee"
                   class="column-input"
                 ></el-input>
               </el-form-item>
@@ -82,10 +82,10 @@
             >
               <el-form-item
                 prop="continue_num"
-                :rules="[{validator:ckeckLimitParamContinueNum, trigger: 'blur'}]"
+                :rules="[{validator: validateNum, message: '格式不正确', trigger: 'blur'}]"
               >
                 <el-input
-                  v-model="scope.row.continue_num"
+                  v-model.number="scope.row.continue_num"
                   class="column-input"
                 ></el-input>
               </el-form-item>
@@ -103,10 +103,10 @@
             >
               <el-form-item
                 prop="continue_fee"
-                :rules="[{validator:ckeckLimitParamContinueFee, trigger: 'blur'}]"
+                :rules="[{validator: validateMoney, message: '格式不正确', trigger: 'blur'}]"
               >
                 <el-input
-                  v-model="scope.row.continue_fee"
+                  v-model.number="scope.row.continue_fee"
                   class="column-input"
                 ></el-input>
               </el-form-item>
@@ -152,7 +152,7 @@
                 :rules="[{ validator: feeConditionRule, message:'包邮件数不能小于1', trigger: 'blur' }]"
               >
                 <el-input
-                  v-model="scope.row.fee_0_con1_num"
+                  v-model.number="scope.row.fee_0_con1_num"
                   style="width:80px"
                 ></el-input>件包邮
               </el-form-item>
@@ -163,7 +163,7 @@
                 :rules="[{ validator: feeConditionRule, message:'包邮金额不能小于1', trigger: 'blur' }]"
               >
                 <el-input
-                  v-model="scope.row.fee_0_con2_num"
+                  v-model.number="scope.row.fee_0_con2_num"
                   style="width:80px"
                 ></el-input>元包邮
               </el-form-item>
@@ -174,7 +174,7 @@
                 :rules="[{ validator: feeConditionRule, message:'包邮件数不能小于1', trigger: 'blur' }]"
               >
                 <el-input
-                  v-model="scope.row.fee_0_con3_num"
+                  v-model.number="scope.row.fee_0_con3_num"
                   style="width:80px"
                 ></el-input>
               </el-form-item>
@@ -185,7 +185,7 @@
                 :rules="[{ validator: feeConditionRule,  message:'包邮金额不能小于1', trigger: 'blur' }]"
               >
                 <el-input
-                  v-model="scope.row.fee_0_con3_fee"
+                  v-model.number="scope.row.fee_0_con3_fee"
                   style="width:80px"
                 ></el-input>元包邮
               </el-form-item>
@@ -275,6 +275,28 @@ export default {
     this.affecta()
   },
   methods: {
+    validateNum (rule, value, callback) {
+      // 正整数
+      var re = /^[1-9]\d*$/
+      if (value === '') {
+        callback(new Error('请填写件数'))
+      } else if (!re.test(value)) {
+        callback(new Error('格式不正确'))
+      } else {
+        callback()
+      }
+    },
+    validateMoney (rule, value, callback) {
+      // 非负数
+      var re = /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/
+      if (value === '') {
+        callback(new Error('请填写运费'))
+      } else if (!re.test(value)) {
+        callback(new Error('格式不正确'))
+      } else {
+        callback()
+      }
+    },
     affecta () {
       this.locationList = deepCloneObj(chinaData)
 
@@ -286,7 +308,7 @@ export default {
       //   }
       // }).catch(err => console.log(err))
       // 判断props有没有传递参数什么的
-      if (this.editLocation && this.editLocation.length) {
+      if (this.editLocation && this.editLocation.length > 0) {
         // 调用组件，更新this.locationList，innerObjJ，checkListT
         this.showTableData = this.editLocation.map(item => {
           return {
@@ -294,6 +316,7 @@ export default {
             area_list: JSON.stringify(item.area_list)
           }
         })
+
         this.tableData = this.editLocation
         this.updateData(this.showTableData)
       } else {
@@ -436,49 +459,48 @@ export default {
       this.showTableData.forEach((item, index) => {
         tableData[index] = {
           ...item,
-          area_list: JSON.stringify(this.tableData[index].area_list),
+          area_list: this.tableData[index].area_list,
           area_text: this.tableData[index].area_text
         }
         // 判断是指定包邮的还是指定配送的 ，然后验证
         if (this.isRegion) {
           this.$refs['firstNum' + index].validate(required => {
             if (!required) {
-              val++
-              return false
+              return val++
             }
           })
           this.$refs['firstFee' + index].validate(required => {
             if (!required) {
-              val++
-              return false
+              return val++
             }
           })
           this.$refs['continueNum' + index].validate(required => {
             if (!required) {
-              val++
-              return false
+              return val++
             }
           })
           this.$refs['continueFee' + index].validate(required => {
             if (!required) {
-              val++
-              return false
+              return val++
             }
           })
         } else {
           this.$refs['columnForm' + index].validate(required => {
             if (!required) {
-              val++
-              return false
+              return val++
             }
           })
         }
       })
+
+      var arr = []
       if (val === 0) {
         // 成功的情况下，全部归0，并在父组件发送请求
-        return tableData
+        arr = new Array(true, tableData);
+      } else {
+        arr = new Array(false, tableData);
       }
-      return []
+      return arr
     },
 
     editShowData(flag) {

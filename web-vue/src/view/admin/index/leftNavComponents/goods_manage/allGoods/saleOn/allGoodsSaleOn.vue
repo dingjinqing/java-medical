@@ -1,43 +1,46 @@
 <template>
   <div>
-    <div class="headerTab">
-      <div class="tabItem tabItemActive">{{$t('allGoods.allGoodsRouterHeader.saleOn')}}</div>
-      <div
-        class="tabItem"
-        @click="tabItemClicked('goodsForSaleOut')"
-      >{{$t('allGoods.allGoodsRouterHeader.saleOut')}}</div>
-      <div
-        class="tabItem"
-        @click="tabItemClicked('goodsForInStock')"
-      >{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>
+    <div class="searchContent">
+      <div class="headerTab">
+        <div class="tabItem tabItemActive">{{$t('allGoods.allGoodsRouterHeader.saleOn')}}</div>
+        <div
+          class="tabItem"
+          @click="tabItemClicked('goodsForSaleOut')"
+        >{{$t('allGoods.allGoodsRouterHeader.saleOut')}}</div>
+        <div
+          class="tabItem"
+          @click="tabItemClicked('goodsForInStock')"
+        >{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>
+      </div>
+      <!-- 查询 -->
+      <allGoodsHeader
+        ref="allGoodsHeaderCmp"
+        :initSortCatParams="initFilterData"
+      />
+      <!-- 按钮 -->
+      <div class="btnWrap">
+        <el-button
+          type="primary"
+          size="small"
+          @click="searchGoodsData"
+        >{{$t('allGoods.allGoodsRouterHeader.searchBtn')}}</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="resetFormData"
+        >{{$t('allGoods.allGoodsRouterHeader.resetBtn')}}</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="exportGoodsData"
+        >{{$t('allGoods.allGoodsRouterHeader.exportGoods')}}</el-button>
+        <el-button
+          type="primary"
+          size="small"
+        >{{$t('allGoods.allGoodsRouterHeader.addGoods')}}</el-button>
+      </div>
     </div>
-    <!-- 查询 -->
-    <allGoodsHeader
-      ref="allGoodsHeaderCmp"
-      :initSortCatParams="initFilterData"
-    />
-    <!-- 按钮 -->
-    <div class="btnWrap">
-      <el-button
-        type="primary"
-        size="small"
-        @click="searchGoodsData"
-      >{{$t('allGoods.allGoodsRouterHeader.searchBtn')}}</el-button>
-      <el-button
-        type="primary"
-        size="small"
-        @click="resetFormData"
-      >{{$t('allGoods.allGoodsRouterHeader.resetBtn')}}</el-button>
-      <el-button
-        type="primary"
-        size="small"
-        @click="exportGoodsData"
-      >{{$t('allGoods.allGoodsRouterHeader.exportGoods')}}</el-button>
-      <el-button
-        type="primary"
-        size="small"
-      >{{$t('allGoods.allGoodsRouterHeader.addGoods')}}</el-button>
-    </div>
+
     <!-- 表格 -->
     <saleOnAndInStockContent ref="saleOnAndInStockContentCmp" />
   </div>
@@ -101,6 +104,12 @@ export default {
 </script>
 
 <style scoped>
+.searchContent {
+  width: 100%;
+  padding: 10px;
+  background: #fff;
+  margin-bottom: 10px;
+}
 .headerTab {
   border-bottom: 1px solid #eeeeee;
   color: #666;

@@ -4,7 +4,7 @@
     <delivery
       :propDelivery="template"
       @updateDelivery="updateDelivery"
-      :flag="flag"
+      :flag="type"
       :addOrUpdate="update"
     />
   </div>
@@ -12,13 +12,14 @@
 
 <script>
 import delivery from './Delivery'
-import { getTemplateOneApi, updateTemplateApi, updateWeightTemplateApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
+import { getTemplateOneApi, updateTemplateApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate.js'
 export default {
   components: { delivery },
   data () {
     return {
       update: '保存',
       flag: 0,
+      type: 0, // 类型
       template: {
         templateName: '',
         flag: 0, // 默认添加普通
@@ -41,7 +42,6 @@ export default {
   },
   watch: {
     $route (to, from) {
-      console.log(from.path)
       switch (from.path) {
         case `/admin/home/main/goodsManage/deliverTemplate/list`: this.flag = 0
           break
@@ -70,25 +70,22 @@ export default {
         case `/admin/home/main/goodsManage/deliverTemplate/deliverTemplateUpdate`:
           this.$http.$emit('edit', true)
           break
-        default:
-          break
       }
     },
     // 获取单个数据
     initData () {
+      this.type = this.$route.query.type
       getTemplateOneApi({
         deliverTemplateId: this.$route.query.deliverTemplateId
       }).then(res => {
         if (res.error === 0) {
-          res.content[0].templateContent = JSON.parse(res.content[0].templateContent)
-          this.template = res.content[0]
-          console.log(this.template)
+          this.template = res.content
         }
       })
     },
     // 编辑保存
     updateDelivery (data) {
-      if (this.flag === 0) {
+      if (this.type === 0) {
         // 普通运费
         updateTemplateApi(data).then(res => {
           if (res.error === 0) {
@@ -102,7 +99,7 @@ export default {
         })
       } else {
         // 重量运费
-        updateWeightTemplateApi(data).then(res => {
+        updateTemplateApi(data).then(res => {
           if (res.error === 0) {
             this.$message.success('修改重量运费模板成功!')
             this.$router.push({

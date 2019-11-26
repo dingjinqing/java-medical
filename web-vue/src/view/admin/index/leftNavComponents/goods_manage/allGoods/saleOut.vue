@@ -1,185 +1,172 @@
 <template>
   <div class="saleOut">
-    <el-table
-      :data="goodsData"
-      class="tableClass"
-      border
-      style="width: 100%"
-    >
-      <el-table-column
-        align="center"
-        width="70px"
-        label=""
+    <div style="width: 100%; padding: 10px;background: #fff;">
+      <el-table
+        :data="goodsData"
+        class="tableClass"
+        border
+        style="width: 100%"
       >
-        <template slot-scope="scope">
-          <el-checkbox v-model="scope.row.check"></el-checkbox>
-        </template>
-      </el-table-column>
-      <!-- 商品名称图片 -->
-      <el-table-column
-        align="center"
-        prop="goodsName"
-        :label="$t('allGoods.allGoodsData.goodsName')"
-        min-width="120px"
-      >
-        <template slot-scope="{row}">
-          <div>
-            <img
-              style="width: 70px;height: 70px;float: left;"
-              :src="row.prdDesc === ''? row.goodsImg : row.prdImg"
-            >
-            <div style="padding:10px;">
-              <span
-                v-if="row.sourceName !== null"
-                class="goodsTypeSpanWrap"
-              >{{row.sourceName}}</span>
-              <span
-                v-if="row.goodsTypeName !== null"
-                class="goodsSourceSpanWrap"
-              >{{row.goodsTypeName}}</span>
-              {{row.goodsName}}
-              <span v-if="row.prdDesc === ''">
-                ({{$t('allGoods.allGoodsData.noPrdSn')}})
-              </span>
-              <span v-else>
-                {{row.prdDesc}}
-              </span>
+        <el-table-column
+          align="center"
+          width="70px"
+          label=""
+        >
+          <template slot-scope="scope">
+            <el-checkbox v-model="scope.row.check"></el-checkbox>
+          </template>
+        </el-table-column>
+        <!-- 商品名称图片 -->
+        <el-table-column
+          align="center"
+          prop="goodsName"
+          :label="$t('allGoods.allGoodsData.goodsName')"
+          min-width="120px"
+        >
+          <template slot-scope="{row}">
+            <div>
+              <img
+                style="width: 70px;height: 70px;float: left;"
+                :src="row.prdDesc === ''? row.goodsImg : row.prdImg"
+              >
+              <div style="padding:10px;">
+                <span
+                  v-if="row.sourceName !== null"
+                  class="goodsTypeSpanWrap"
+                >{{row.sourceName}}</span>
+                <span
+                  v-if="row.goodsTypeName !== null"
+                  class="goodsSourceSpanWrap"
+                >{{row.goodsTypeName}}</span>
+                {{row.goodsName}}
+                <span v-if="row.prdDesc === ''">
+                  ({{$t('allGoods.allGoodsData.noPrdSn')}})
+                </span>
+                <span v-else>
+                  {{row.prdDesc}}
+                </span>
+              </div>
             </div>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        :label="$t('allGoods.allGoodsData.shopPrice')"
-      >
-        <template slot-scope="{row}">
-          <span v-if="!row.prdPriceEdit">
-            {{row.prdPrice}}
-            <span
-              class="el-icon-edit-outline iconSpan"
-              style="margin-left: 10px;"
-              @click="prdPriceAndPrdNumberEditClick(row,'price')"
-            ></span>
-          </span>
-          <input
-            :id="'prdPrice_'+row.prdId"
-            v-else
-            v-model.number="row.prdPriceOld"
-            @change="prdPriceChange(row)"
-            @blur="row.prdPriceEdit = false"
-            class="editInput"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        prop="prdSn"
-        :label="$t('allGoods.allGoodsData.prdSn')"
-      />
-      <el-table-column
-        align="center"
-        prop="catName"
-        :label="$t('allGoods.allGoodsData.cat')"
-      />
-      <el-table-column
-        align="center"
-        prop="sortName"
-        :label="$t('allGoods.allGoodsData.sort')"
-      />
-      <el-table-column
-        align="center"
-        prop="brandName"
-        :label="$t('allGoods.allGoodsData.goodsBrand')"
-      >
-      </el-table-column>
-      <el-table-column
-        align="center"
-        :label="$t('allGoods.allGoodsData.goodsNumber')"
-      >
-        <template slot-scope="{row}">
-          <span v-if="!row.prdNumberEdit">
-            {{row.prdNumber}}
-            <span
-              class="el-icon-edit-outline iconSpan"
-              style="margin-left: 10px;"
-              @click="prdPriceAndPrdNumberEditClick(row,'number')"
-            ></span>
-          </span>
-          <input
-            v-else
-            :id="'prdNumber_'+row.prdId"
-            v-model.number="row.prdNumberOld"
-            @change="goodsNumberChange(row)"
-            @blur="row.prdNumberEdit = false"
-            class="editInput"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        :label="$t('allGoods.allGoodsData.goodsLabel')"
-        min-width="120px"
-      >
-        <template slot-scope="{row}">
-          <div style="">
-            <div style="width:120px; float: left;">
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          :label="$t('allGoods.allGoodsData.shopPrice')"
+        >
+          <template slot-scope="{row}">
+            <span v-if="!row.prdPriceEdit">
+              {{row.prdPrice}}
               <span
-                v-for="(item,index) in row.goodsLabels"
-                :key="index"
-                class="goodsLabelSpanWrap"
-              >{{item.name}}</span>
-            </div>
-            <div
-              style="width: 50px;float:right;color:#5a8bff;cursor: pointer;"
-              @click="tdLabelSetClick(row)"
-            >{{$t('allGoods.allGoodsData.setting')}}</div>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        :label="$t('allGoods.allGoodsData.operate')"
-      >
-        <template slot-scope="{row}">
-          <el-tooltip
-            :content="$t('allGoods.allGoodsData.edit')"
-            placement="top"
-          >
-            <span
-              class="el-icon-edit-outline iconSpan"
-              @click="editIconClick(row)"
-            ></span>
-          </el-tooltip>
-          <el-tooltip
-            :content="$t('allGoods.allGoodsData.share')"
-            placement="top"
-          >
-            <span
-              class="el-icon-share iconSpan"
-              @click="shareIconClick(row)"
-            ></span>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div
-      class="allGoodsFooter"
-      style="display: flex;"
-    >
-      <div
-        class="operateBtnWrap"
-        style="width:50%;"
-      >
-      </div>
-      <div
-        class="paginationWrap"
-        style="width:50%"
-      >
-        <pagination
-          :page-params.sync="pageParams"
-          @pagination="fetchGoodsData"
+                class="el-icon-edit-outline iconSpan"
+                style="margin-left: 10px;"
+                @click="prdPriceAndPrdNumberEditClick(row,'price')"
+              ></span>
+            </span>
+            <input
+              :id="'prdPrice_'+row.prdId"
+              v-else
+              v-model.number="row.prdPriceOld"
+              @change="prdPriceChange(row)"
+              @blur="row.prdPriceEdit = false"
+              class="editInput"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="prdSn"
+          :label="$t('allGoods.allGoodsData.prdSn')"
         />
-      </div>
+        <el-table-column
+          align="center"
+          prop="catName"
+          :label="$t('allGoods.allGoodsData.cat')"
+        />
+        <el-table-column
+          align="center"
+          prop="sortName"
+          :label="$t('allGoods.allGoodsData.sort')"
+        />
+        <el-table-column
+          align="center"
+          prop="brandName"
+          :label="$t('allGoods.allGoodsData.goodsBrand')"
+        >
+        </el-table-column>
+        <el-table-column
+          align="center"
+          :label="$t('allGoods.allGoodsData.goodsNumber')"
+        >
+          <template slot-scope="{row}">
+            <span v-if="!row.prdNumberEdit">
+              {{row.prdNumber}}
+              <span
+                class="el-icon-edit-outline iconSpan"
+                style="margin-left: 10px;"
+                @click="prdPriceAndPrdNumberEditClick(row,'number')"
+              ></span>
+            </span>
+            <input
+              v-else
+              :id="'prdNumber_'+row.prdId"
+              v-model.number="row.prdNumberOld"
+              @change="goodsNumberChange(row)"
+              @blur="row.prdNumberEdit = false"
+              class="editInput"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          :label="$t('allGoods.allGoodsData.goodsLabel')"
+          min-width="120px"
+        >
+          <template slot-scope="{row}">
+            <div style="">
+              <div style="width:120px; float: left;">
+                <span
+                  v-for="(item,index) in row.goodsLabels"
+                  :key="index"
+                  class="goodsLabelSpanWrap"
+                >{{item.name}}</span>
+              </div>
+              <div
+                style="width: 50px;float:right;color:#5a8bff;cursor: pointer;"
+                @click="tdLabelSetClick(row)"
+              >{{$t('allGoods.allGoodsData.setting')}}</div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          :label="$t('allGoods.allGoodsData.operate')"
+        >
+          <template slot-scope="{row}">
+            <el-tooltip
+              :content="$t('allGoods.allGoodsData.edit')"
+              placement="top"
+            >
+              <span
+                class="el-icon-edit-outline iconSpan"
+                @click="editIconClick(row)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('allGoods.allGoodsData.share')"
+              placement="top"
+            >
+              <span
+                class="el-icon-share iconSpan"
+                @click="shareIconClick(row)"
+              ></span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="fetchGoodsData"
+      />
     </div>
 
     <!--预览商品太阳码-->
