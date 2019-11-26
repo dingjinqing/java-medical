@@ -2,16 +2,18 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParamBuilder;
+import com.vpu.mp.service.pojo.saas.category.SysCategorySelectTreeVo;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsInitialVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectTreeVo;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -31,7 +33,12 @@ public class EsFactSearchService extends EsBaseSearchService{
     @Autowired
     private GoodsSortService goodsSortService;
 
-    public void assemblyFactByAdminGoodsListInit(GoodsInitialVo goodsInitialVo,GoodsPageListParam goodsPageListParam) throws Exception {
+    public GoodsFilterItemInitVo assemblyFactByAdminGoodsListInit(GoodsFilterItemInitParam initParam) throws Exception {
+        GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
+        goodsPageListParam.setIsSaleOut(initParam.getIsSaleOut());
+        goodsPageListParam.setIsOnSale(initParam.getIsOnSale());
+        goodsPageListParam.setSelectType(initParam.getSelectType());
+
         EsSearchParam param = getFactSearchParamByAdminGoodsListInit(goodsPageListParam,getShopId());
         EsSearchSourceBuilderParam searchParam = EsSearchSourceBuilderParamBuilder.builder()
             .queryBuilder(assemblySearchBuilder(param.getSearchList()))
@@ -43,29 +50,47 @@ public class EsFactSearchService extends EsBaseSearchService{
             ,EsDataInitService.ES_GOODS
         );
 
-        assemblyGoodsInitialVo(goodsInitialVo,search(searchRequest));
+       return assemblyGoodsInitialVo(initParam,search(searchRequest));
 
     }
-
-    private void assemblyGoodsInitialVo(GoodsInitialVo goodsInitialVo,SearchResponse response){
+    private GoodsFilterItemInitVo assemblyGoodsInitialVo(GoodsFilterItemInitParam initParam,SearchResponse response){
         Aggregations aggregations = response.getAggregations();
-        goodsInitialVo.setSysCates(assemblySysCatFactDataToVo(aggregations));
-        goodsInitialVo.setGoodsSorts(assemblySortFactDataToVo(aggregations));
+
+        GoodsFilterItemInitVo vo = new GoodsFilterItemInitVo();
+        if (Boolean.TRUE.equals(initParam.getNeedGoodsSort())) {
+            vo.setGoodsSorts(assemblySortFactDataToVo(aggregations));
+        }
+
+        if (Boolean.TRUE.equals(initParam.getNeedSysCategory())) {
+            vo.setGoodsCategories(assemblySysCatFactDataToVo(aggregations));
+        }
+
+        return vo;
     }
     /**
      * 封装sysCatFact数据
      * @param aggregations es聚合结果
      * @return List<SysCateVo>
      */
-    private List<SysCatevo> assemblySysCatFactDataToVo(Aggregations aggregations){
+    private List<SysCategorySelectTreeVo> assemblySysCatFactDataToVo(Aggregations aggregations){
         Map<Integer,Integer> sysCatMap = assemblySysCatFactDataToMap(aggregations);
         List<Integer> sysCatIds = new ArrayList<>(sysCatMap.keySet());
         //TODO 暂时先走简化的缓存,后期对保证数据一致性做改造
         List<SysCatevo> result = SysCatServiceHelper.getSysCateVoByCatIds(sysCatIds);
+
+        List<SysCategorySelectTreeVo> retList = new ArrayList<>(result.size());
+
         result.forEach(x->{
-            x.setGoodsNumberSum(sysCatMap.get(x.getCatId()));
+            SysCategorySelectTreeVo vo = new SysCategorySelectTreeVo();
+            vo.setCatId(x.getCatId());
+            vo.setCatName(x.getCatName());
+            vo.setParentId(x.getParentId());
+            vo.setHasChild(x.getHasChild());
+            vo.setLevel(x.getLevel());
+            vo.setGoodsSumNum(sysCatMap.get(x.getCatId()));
+            retList.add(vo);
         });
-        return result;
+        return retList;
     }
     /**
      * 从Aggregations中组装数据
@@ -118,15 +143,22 @@ public class EsFactSearchService extends EsBaseSearchService{
      * @param aggregations es聚合结果
      * @return List<SysCateVo>
      */
-    private List<Sort> assemblySortFactDataToVo(Aggregations aggregations){
+    private List<GoodsSortSelectTreeVo> assemblySortFactDataToVo(Aggregations aggregations){
         Map<Integer,Integer> sortMap = assemblySortFactDataToMap(aggregations);
         List<Integer> sortIds = new ArrayList<>(sortMap.keySet());
         //TODO 暂时先走数据库,后期做改造走缓存
         List<Sort> result = goodsSortService.getList(sortIds);
+        List<GoodsSortSelectTreeVo> retList = new ArrayList<>(result.size());
         result.forEach(x->{
-            x.setGoodsNumberSum(sortMap.get(x.getSortId()));
+            GoodsSortSelectTreeVo vo =new GoodsSortSelectTreeVo();
+            vo.setSortId(x.getSortId());
+            vo.setSortName(x.getSortName());
+            vo.setParentId(x.getParentId());
+            vo.setLevel(x.getLevel().byteValue());
+            vo.setHasChild(x.getHasChild());
+            vo.setGoodsSumNum(sortMap.get(x.getSortId()));
         });
-        return result;
+        return retList;
     }
     private EsSearchParam getFactSearchParamByAdminGoodsListInit(GoodsPageListParam param, Integer shopId){
         updateGoodsPageListParamForEs(param);

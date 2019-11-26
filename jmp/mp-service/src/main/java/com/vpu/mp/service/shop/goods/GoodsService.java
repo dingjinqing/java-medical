@@ -113,9 +113,14 @@ public class GoodsService extends ShopBaseService {
      * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo}
      */
     public GoodsFilterItemInitVo getGoodsFilterItem(GoodsFilterItemInitParam param){
-//        es查询
-//        if( esUtilSearchService.esState() )
-//        esFactSearchService.assemblyFactByAdminGoodsListInit(goodsInitialVo,goodsPageListParam);
+//        es查询目前不会同时查询分类数据和品牌标签数据
+        if( esUtilSearchService.esState()&&param.canGoEs()){
+            try {
+              return esFactSearchService.assemblyFactByAdminGoodsListInit(param);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         if (param.getNeedGoodsNum()!=null&&param.getNeedGoodsNum()) {
             return getGoodsFilterItemWithGoodsNum(param);

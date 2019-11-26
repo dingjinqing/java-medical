@@ -23,8 +23,6 @@ public class GoodsFilterItemInitParam {
     /**查询类型：1 以商品为统计对象，2以商品规格为统计对象*/
     private Byte selectType;
 
-
-
     /**是否需要标签*/
     private Boolean needGoodsLabel;
     /**是否需要品牌*/
@@ -33,4 +31,15 @@ public class GoodsFilterItemInitParam {
     private Boolean needGoodsSort;
     /**是否需要平台分类*/
     private Boolean needSysCategory;
+
+    private Boolean isHasGoEs;
+    /** 可以直接走ES*/
+    public boolean canGoEs(){
+        boolean catOrSort  = Boolean.TRUE.equals(needGoodsSort) || Boolean.TRUE.equals(needSysCategory);
+        if (Boolean.TRUE.equals(needGoodsNum) && catOrSort) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

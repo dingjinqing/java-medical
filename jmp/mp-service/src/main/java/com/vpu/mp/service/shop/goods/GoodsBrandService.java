@@ -12,7 +12,10 @@ import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandClassifyNameMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
 import com.vpu.mp.service.shop.image.ImageService;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record7;
+import org.jooq.SelectSeekStep2;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,9 +239,20 @@ public class GoodsBrandService extends ShopBaseService {
      */
     public List<GoodsBrandClassifyVo> getBrandClassifyList() {
 
-        List<GoodsBrandRecord> goodsBrandRecords = getGoodsBrandListDao();
+        List<BrandClassifyRecord> goodsBrandRecords = getBrandClassifyListDao();
 
         return goodsBrandRecords.stream().map(x -> x.into(GoodsBrandClassifyVo.class)).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取所有品牌分类列表数据
+     * @return 品牌分类列表
+     */
+    private List<BrandClassifyRecord> getBrandClassifyListDao(){
+        return db().select()
+            .from(BRAND_CLASSIFY)
+            .where(BRAND_CLASSIFY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .fetch().into(BrandClassifyRecord.class);
     }
 
     /**
