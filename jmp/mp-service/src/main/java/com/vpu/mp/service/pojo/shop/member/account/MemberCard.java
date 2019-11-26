@@ -22,7 +22,14 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberCard {
 	private Integer id;
 	private String cardName;
-
+	private Byte expireType;
+	
+	private Timestamp startTime;
+	private Timestamp endTime;
+	private Integer receiveDay;
+	private Byte dateType;
+	private Byte flag;
+	
 	/** 创建时间 */
 	private Timestamp createTime;
 	
