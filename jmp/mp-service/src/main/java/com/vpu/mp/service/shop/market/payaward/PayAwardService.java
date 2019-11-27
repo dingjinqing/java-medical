@@ -32,6 +32,11 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DI
 @Service
 public class PayAwardService extends ShopBaseService {
 
+    //限时有效
+    public static final Byte TIME_TYPE_FIXED = 0;
+    //永久有效
+    public static final Byte TIME_TYPE_PERMANENT = 1;
+
 
     @Autowired
     PayAwardRecordService payAwardRecordService;
@@ -119,17 +124,19 @@ public class PayAwardService extends ShopBaseService {
                 .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         switch (param.getNavType()) {
             case BaseConstant.NAVBAR_TYPE_ONGOING:
-                select.and(PAY_AWARD.START_TIME.lt(nowTime))
-                        .and(PAY_AWARD.END_TIME.gt(nowTime))
+                select.and(PAY_AWARD.TIME_TYPE.eq(TIME_TYPE_PERMANENT).or(PAY_AWARD.START_TIME.lt(nowTime))
+                        .and(PAY_AWARD.END_TIME.gt(nowTime)))
                         .and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                 break;
             case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                        .and(PAY_AWARD.START_TIME.gt(nowTime));
+                      .and(PAY_AWARD.TIME_TYPE.eq(TIME_TYPE_FIXED))
+                      .and(PAY_AWARD.START_TIME.gt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_FINISHED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                        .and(PAY_AWARD.END_TIME.lt(nowTime));
+                      .and(PAY_AWARD.TIME_TYPE.eq(TIME_TYPE_FIXED))
+                      .and(PAY_AWARD.END_TIME.lt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_DISABLED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_DISABLE));
