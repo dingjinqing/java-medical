@@ -185,7 +185,6 @@
                   <el-input-number
                     v-model="scope.row.discount"
                     :controls="false"
-                    :precision="2"
                     size="small"
                     controls-position="right"
                     class="small_input"
@@ -204,7 +203,6 @@
                   <el-input-number
                     v-model="scope.row.reducePrice"
                     :controls="false"
-                    :precision="2"
                     size="small"
                     controls-position="right"
                     class="small_input"
@@ -224,7 +222,6 @@
                   <el-input-number
                     v-model="scope.row.goodsPrice"
                     :controls="false"
-                    :precision="2"
                     size="small"
                     controls-position="right"
                     class="small_input"
@@ -495,16 +492,16 @@ export default {
             }
             this.$refs.multipleTable.selection.map(item => {
               let shopPrice = parseFloat(item.shopPrice)
-              let goodsPrice = (shopPrice * parseFloat(this.reduceData.batchDiscount / 10)).toFixed(2)
-              let reducePrice = parseFloat(shopPrice - goodsPrice).toFixed(2)
-              item.goodsPrice = goodsPrice
-              item.reducePrice = reducePrice
+              let goodsPriceFloat = (shopPrice * parseFloat(this.reduceData.batchDiscount / 10)).toFixed(3)
+              let reducePriceFloat = parseFloat(shopPrice - goodsPriceFloat).toFixed(3)
+              item.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
+              item.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
               item.discount = this.reduceData.batchDiscount
               if (item.reducePriceProduct && item.reducePriceProduct.length) {
                 item.reducePriceProduct.map(item2 => {
                   let originalPrice = item2.originalPrice
-                  let prdPrice = (originalPrice * (parseFloat(this.reduceData.batchDiscount / 10))).toFixed(2)
-                  item2.prdPrice = prdPrice
+                  let prdPriceFloat = (originalPrice * (parseFloat(this.reduceData.batchDiscount / 10))).toFixed(2)
+                  item2.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
                 })
               }
             })
@@ -512,32 +509,37 @@ export default {
           case 2:
             this.$refs.multipleTable.selection.map(item => {
               let shopPrice = parseFloat(item.shopPrice)
-              let goodsPrice = parseFloat(shopPrice - this.reduceData.batchReduce).toFixed(2)
-              let discount = (parseFloat(goodsPrice / shopPrice) * 10).toFixed(2)
-              item.goodsPrice = goodsPrice
-              item.reducePrice = this.reduceData.batchReduce
-              item.discount = discount
-              if (item.reducePriceProduct && item.reducePriceProduct.length) {
-                item.reducePriceProduct.map(item2 => {
-                  let originalPrice = item2.originalPrice
-                  item2.prdPrice = parseFloat(originalPrice - this.reduceData.batchReduce).toFixed(2)
-                })
-              }
+              let goodsPriceFloat = parseFloat(shopPrice - this.reduceData.batchReduce).toFixed(3)
+              let discountFloat = (parseFloat(goodsPriceFloat / shopPrice) * 10).toFixed(3)
+              item.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
+              this.$nextTick(() => {
+                item.reducePrice = this.reduceData.batchReduce
+                item.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
+                if (item.reducePriceProduct && item.reducePriceProduct.length) {
+                  item.reducePriceProduct.map(item2 => {
+                    let originalPrice = item2.originalPrice
+                    let prdPriceFloat = parseFloat(originalPrice - this.reduceData.batchReduce).toFixed(3)
+                    item2.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
+                  })
+                }
+              })
             })
             break
           case 3:
             this.$refs.multipleTable.selection.map(item => {
               let shopPrice = parseFloat(item.shopPrice)
-              let reducePrice = parseFloat(shopPrice - this.reduceData.batchFinalPrice).toFixed(2)
-              let discount = (parseFloat(this.reduceData.batchFinalPrice / shopPrice) * 10).toFixed(2)
+              let reducePriceFloat = parseFloat(shopPrice - this.reduceData.batchFinalPrice).toFixed(3)
+              let discountFloat = (parseFloat(this.reduceData.batchFinalPrice / shopPrice) * 10).toFixed(3)
               item.goodsPrice = this.reduceData.batchFinalPrice
-              item.reducePrice = reducePrice
-              item.discount = discount
-              if (item.reducePriceProduct && item.reducePriceProduct.length) {
-                item.reducePriceProduct.map(item2 => {
-                  item2.prdPrice = this.reduceData.batchFinalPrice
-                })
-              }
+              this.$nextTick(() => {
+                item.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
+                item.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
+                if (item.reducePriceProduct && item.reducePriceProduct.length) {
+                  item.reducePriceProduct.map(item2 => {
+                    item2.prdPrice = this.reduceData.batchFinalPrice
+                  })
+                }
+              })
             })
             break
           default:
@@ -564,14 +566,15 @@ export default {
       })
       let itemData = this.pageShowGoodsList[goodsTarget]
       let shopPrice = parseFloat(itemData.shopPrice)
-      let goodsPrice = (shopPrice * parseFloat(rowData.discount / 10)).toFixed(2)
-      let reducePrice = parseFloat(shopPrice - goodsPrice).toFixed(2)
-      itemData.goodsPrice = goodsPrice
-      itemData.reducePrice = reducePrice
+      let goodsPriceFloat = (shopPrice * parseFloat(rowData.discount / 10)).toFixed(3)
+      let reducePriceFloat = parseFloat(shopPrice - goodsPriceFloat).toFixed(3)
+      itemData.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
+      itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
       if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
         itemData.reducePriceProduct.map(item => {
           let originalPrice = item.originalPrice
-          item.prdPrice = (originalPrice * (parseFloat(rowData.discount / 10))).toFixed(2)
+          let prdPriceFloat = (originalPrice * (parseFloat(rowData.discount / 10))).toFixed(3)
+          item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
         })
       }
     },
@@ -581,14 +584,15 @@ export default {
       })
       let itemData = this.pageShowGoodsList[goodsTarget]
       let shopPrice = parseFloat(itemData.shopPrice)
-      let goodsPrice = parseFloat(shopPrice - rowData.reducePrice).toFixed(2)
-      let discount = (parseFloat(goodsPrice / shopPrice) * 10).toFixed(2)
-      itemData.goodsPrice = goodsPrice
-      itemData.discount = discount
+      let goodsPriceFloat = parseFloat(shopPrice - rowData.reducePrice).toFixed(3)
+      let discountFloat = (parseFloat(goodsPriceFloat / shopPrice) * 10).toFixed(3)
+      itemData.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
+      itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
       if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
         itemData.reducePriceProduct.map(item => {
           let originalPrice = item.originalPrice
-          item.prdPrice = parseFloat(originalPrice - rowData.reducePrice).toFixed(2)
+          let prdPriceFloat = parseFloat(originalPrice - rowData.reducePrice).toFixed(3)
+          item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
         })
       }
     },
@@ -598,10 +602,10 @@ export default {
       })
       let itemData = this.pageShowGoodsList[goodsTarget]
       let shopPrice = parseFloat(itemData.shopPrice)
-      let reducePrice = parseFloat(shopPrice - rowData.goodsPrice).toFixed(2)
-      let discount = (parseFloat(rowData.goodsPrice / shopPrice) * 10).toFixed(2)
-      itemData.reducePrice = reducePrice
-      itemData.discount = discount
+      let reducePriceFloat = parseFloat(shopPrice - rowData.goodsPrice).toFixed(3)
+      let discountFloat = (parseFloat(rowData.goodsPrice / shopPrice) * 10).toFixed(3)
+      itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
+      itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
       if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
         itemData.reducePriceProduct.map(item => {
           item.prdPrice = rowData.goodsPrice

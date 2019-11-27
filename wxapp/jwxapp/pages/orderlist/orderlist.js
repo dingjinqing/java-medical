@@ -6,6 +6,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
+    imageUrl: util.getImageUrl(""),
     searchInput: null,
     scrollIntoId: null,
     currentPage: 1,

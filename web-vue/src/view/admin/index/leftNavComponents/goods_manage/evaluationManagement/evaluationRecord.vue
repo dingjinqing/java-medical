@@ -6,7 +6,7 @@
       style="background: #fff;margin-bottom: 10px;"
     >
       <el-row>
-        <el-col :span="5">
+        <el-col :span="6">
           <div class="filters_item"><span>{{$t('evaluation.orderSn') + '：' }}</span>
             <el-input
               v-model="searchParams.orderSn"
@@ -16,7 +16,7 @@
             ></el-input>
           </div>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="6">
           <div class="filters_item"><span>{{$t('evaluation.goodsName') + '：' }}</span>
             <el-input
               v-model="searchParams.goodsName"
@@ -26,7 +26,7 @@
             ></el-input>
           </div>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="6">
           <div class="filters_item"><span>{{$t('evaluation.mobile') + '：' }}</span>
             <el-input
               v-model="searchParams.mobile"
@@ -37,7 +37,7 @@
           </div>
         </el-col>
         <el-col
-          :span="5"
+          :span="6"
           v-if="target === 'Record'"
         >
           <div class="filters_item">
@@ -57,7 +57,7 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="6">
           <div class="filters_item"><span>{{$t('evaluation.evaluationGrade') + '：'}}</span>
             <el-select
               v-model="searchParams.commstar"
@@ -74,7 +74,7 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="6">
           <div class="filters_item"><span>{{$t('evaluation.evaluationTable.evaluationReward') + '：' }}</span>
             <el-select
               v-model="searchParams.awardActivityId"
@@ -91,7 +91,7 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="6">
           <div class="filters_item">
             <el-button
               @click="initDataList"
@@ -113,12 +113,13 @@
         <el-table-column
           type="selection"
           align="center"
+          width="58px"
         >
         </el-table-column>
         <el-table-column
           :label="$t('evaluation.evaluationTable.productInformation')"
           align="center"
-          width="200px"
+          width="250px"
         >
           <template slot-scope="scope">
             <div class="orderSn">
@@ -154,6 +155,7 @@
         <el-table-column
           :label="$t('evaluation.evaluationTable.evaluationContent')"
           align="center"
+          width="200px"
         >
           <template slot-scope="scope">
             <div class="evaluation-info">

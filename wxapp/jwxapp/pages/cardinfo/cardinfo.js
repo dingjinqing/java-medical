@@ -5,7 +5,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-
+    imageUrl: util.getImageUrl("")
   },
 
   /**
@@ -23,6 +23,7 @@ global.wxPage({
       cardInfo.cardTypeName = this.getTypeName(cardInfo.cardType);
       cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
       cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
+      cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
       this.setData({
         cardInfo:res.content
       })

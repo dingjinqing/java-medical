@@ -355,9 +355,28 @@ global.wxPage({
     }
     console.log(params)
     util.api('/api/wxapp/order/submit',res=>{
-      console.log(res)
       if(res.error === 0){
-        util.jumpLink('pages/orderlist/orderlist','navigateTo')
+        if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo){
+          console.log(11111)
+          wx.requestPayment({
+            'timeStamp': res.content.webPayVo.timeStamp,
+            'nonceStr': res.content.webPayVo.nonceStr,
+            'package': res.content.webPayVo.package,
+            'signType': 'MD5',
+            'paySign': res.content.webPayVo.paySign,
+            'success': function (res) {
+              util.toast_success('支付成功');
+            },
+            'fail': function (res) {
+              console.log(res)
+              // util.redirectTo({
+              //   url: '/pages/orderinfo/orderinfo?order_sn=' + res.content.order_sn + "&coupon=1",
+              // })
+            },
+            'complete': function (res) { }
+          });
+        }
+        // util.jumpLink('pages/orderlist/orderlist','navigateTo')
       } else {
         util.showModal('提示',res.message, function () {
           util.jumpLink('/pages/index/index','redirectTo')
