@@ -4,7 +4,7 @@ export const en = {
   labelNameRequired: 'Please Input Label Name',
   labelNameTip: 'Every goods can have no more than five labels，otherwise，lowest priority label will be disabled',
   labelLevel: 'Priority',
-  labelLevelRequired: 'Priority Can Not Be Null',
+  labelLevelRequired: 'Priority must be positive integer',
   labelLevelTip: 'Use to pint the priority of label ,please input positive number,the larger,the higher priority',
   webUseModel: 'Web Use Model',
   goodsDetailPage: 'Goods Detail Page',
