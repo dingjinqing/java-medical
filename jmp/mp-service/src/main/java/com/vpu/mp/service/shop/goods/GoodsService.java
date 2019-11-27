@@ -1458,7 +1458,9 @@ public class GoodsService extends ShopBaseService {
     public GoodsQrCodeVo getGoodsQrCode(Integer goodsId) {
         String paramName = "goods_id=";
         String urlParam = paramName + goodsId;
+        log.debug("urlParam:{}"+urlParam);
         String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, urlParam);
+        log.debug("qrCode img full url:{}",mpQrCode);
         GoodsQrCodeVo goodsQrCodeVo = new GoodsQrCodeVo();
         goodsQrCodeVo.setImgFullUrl(mpQrCode);
         goodsQrCodeVo.setPageUrl(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(urlParam));

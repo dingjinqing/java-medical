@@ -1,15 +1,5 @@
 package com.vpu.mp.service.shop.image;
 
-import static com.vpu.mp.db.shop.tables.Code.CODE;
-import static java.lang.String.format;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-
 import com.upyun.UpException;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.CodeRecord;
@@ -17,8 +7,17 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.tables.Code.CODE;
+import static java.lang.String.format;
 
 /**
  * 小程序码
@@ -26,6 +25,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
  * @author 郑保乐
  */
 @Service
+@Slf4j
 public class QrCodeService extends ShopBaseService {
 
     private final ImageService imageService;
@@ -67,11 +67,10 @@ public class QrCodeService extends ShopBaseService {
         String relativePath = db().select(CODE.QRCODE_IMG).from(CODE)
             .where(CODE.PARAM_ID.eq(paramId)).and(CODE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .fetchAny(CODE.QRCODE_IMG);
-
+        log.debug("get img url from db:{}", relativePath);
 
         //数据库存在该图片路劲
         if (!StringUtils.isBlank(relativePath)) {
-
             String fullPath=this.imageService.imageUrl(relativePath);
 
             try {
@@ -99,13 +98,16 @@ public class QrCodeService extends ShopBaseService {
         int qrcodWidth = 430;
 
         try {
+            log.debug("调取微信接口，尝试请求二维码图片");
             byte[] qrcodeBytes = open().getWxOpenComponentService().getWxMaServiceByAppid(appId)
                 .getQrcodeService().createWxaCodeUnlimitBytes(paramStr,typeUrl, qrcodWidth,true,null,true);
+            log.debug("调取微信二维码接口，图片字节长度：{}",qrcodeBytes==null? 0 : qrcodeBytes.length);
 
             relativePath = format("upload/%s/qrcode/%s/T%sP%s_%s.jpg", type, getShopId(), type, paramId,
                 new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date()));
 
             this.imageService.getUpYunClient().writeFile(relativePath, qrcodeBytes, true);
+            log.debug("通过UpYun将二进制写入磁盘，磁盘路径{}",relativePath);
         } catch (WxErrorException e) {
             logger().warn("获取小程序分享码错误：" + e.getMessage());
             return null;
