@@ -146,12 +146,13 @@ public class MpPaymentService extends ShopBaseService {
             //TODO 原生扫码支付
         } else if (WxPayConstants.TradeType.APP.equals(result.getTradeType())) {
             //TODO App支付
-        } else if (WxPayConstants.TradeType.JSAPI.equals(config.getTradeType())) {
+        } else if (WxPayConstants.TradeType.JSAPI.equals(result.getTradeType())) {
             //公众号支付/小程序支付.
             vo = JsApiVo.builder().
                 appId(result.getAppid()).
                 timeStamp(timestamp).nonceStr(nonceStr).
-                packageAlias("prepay_id=" + prepayId).signType(config.getSignType()).
+                packageAlias("prepay_id=" + prepayId).
+                signType(config.getSignType()).
                 paySign(SignUtils.createSign(payInfo, config.getSignType(), config.getMchKey(), null)).
                 build();
         }
