@@ -82,7 +82,6 @@
           prop="statusName"
           label="活动状态"
           align="center"
-          :formatter="actState"
         >
         </el-table-column>
 
@@ -105,7 +104,7 @@
               <el-tooltip
                 content="启用"
                 placement="top"
-                v-if="scope.row.status === '已停用'"
+                v-if="scope.row.currentState === 4"
               >
                 <span
                   class="el-icon-circle-check"
@@ -125,6 +124,7 @@
               <el-tooltip
                 content="活动明细"
                 placement="top"
+                v-if="scope.row.currentState !== 2"
               >
                 <span
                   class="el-icon-tickets"
@@ -134,6 +134,7 @@
               <el-tooltip
                 content="删除"
                 placement="top"
+                v-if="scope.row.currentState === 3 || scope.row.currentState === 4"
               >
                 <span
                   class="el-icon-delete"
@@ -259,7 +260,6 @@ export default {
 
     // 停用
     closeSwitch (row) {
-      console.log('row', row)
       this.$confirm('确认要停用吗？', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
@@ -274,7 +274,6 @@ export default {
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消停用' })
       })
     },
 
@@ -294,19 +293,7 @@ export default {
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消启用' })
       })
-    },
-
-    // 活动状态文字转化
-    actState (row, col) {
-      switch (row.status) {
-        case 0: row.status = '已停用'
-          break
-        case 1: row.status = '已启用'
-          break
-      }
-      return row.status
     }
   },
 
