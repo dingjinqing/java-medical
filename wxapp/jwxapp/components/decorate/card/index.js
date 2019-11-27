@@ -11,7 +11,7 @@ global.wxComponent({
         newVal.bg = newVal.bg_color = newVal.bg_color || '#e6cb96';
       }
       if (newVal.bg_type == 1) {
-        newVal.bg = 'url(' + newVal.bg_img + ')';
+        newVal.bg = 'url(' + newVal.imageUrl + '/' + newVal.bg_img + ')';
       }
       console.log(newVal)
       // shop_img、activation字段在第二个接口
