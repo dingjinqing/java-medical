@@ -127,7 +127,7 @@
         </view>
         <view class='hr' wx:if="{{useCard.money > 0}}"></view>
       </block>
-      <view class="yue_pay" wx:if="{{account > 0}}">
+      <view class="yue_pay" wx:if="{{account > 0 && isBalance}}">
         <view>余额支付:</view>
         <view class='pay_focus'>
           <text style='color:{{comColor}}' wx:if='{{create_order.account_discount > 0}}'>
@@ -150,6 +150,10 @@
       <view class='price_amount'>
         <view>订单总计</view>
         <view style='color:{{comColor}}'>￥{{serviceInfo.serviceSubsist}}</view>
+      </view>
+      <view class="pay_nums" wx:if="{{create_order.member_card_discount > 0 && create_order.member_card_discount > 0}}">
+        <view>会员卡折扣</view>
+        <view style="color:{{comColor}}">-￥{{create_order.member_card_discount}}</view>
       </view>
       <view class='pay_nums' wx:if="{{create_order.member_card_balance > 0 && create_order.member_card_balance > 0}}">
         <view>会员卡余额</view>
