@@ -31,7 +31,7 @@
             style="width: 170px;"
             @change="labelLevelChanged"
           />
-          <span class="inputTip">{{$t('addAndUpdateGoodsLabel.labelNameTip')}}</span>
+          <span class="inputTip">{{$t('addAndUpdateGoodsLabel.labelLevelTip')}}</span>
         </el-form-item>
         <el-form-item :label="$t('addAndUpdateGoodsLabel.webUseModel')+'：'">
           <ul class="useModelUl">
@@ -249,7 +249,7 @@ export default {
     },
     /* 标签优先级改变事件 */
     labelLevelChanged () {
-      if (typeof this.goodsLabelData.levelOld !== 'number') {
+      if (typeof this.goodsLabelData.levelOld !== 'number' || this.goodsLabelData.levelOld <= 0) {
         this.$message.warning({ message: this.$t('addAndUpdateGoodsLabel.labelLevelRequired') })
         this.goodsLabelData.levelOld = this.goodsLabelData.level
         this.$refs.labelRef.focus()
@@ -263,7 +263,7 @@ export default {
     },
     /* 商品弹出回调处理函数 */
     goodsResultChoosed (data) {
-      if (data != null) {
+      if (data == null) {
         this.selectedGoodsList = []
       } else {
         this.selectedGoodsList = []

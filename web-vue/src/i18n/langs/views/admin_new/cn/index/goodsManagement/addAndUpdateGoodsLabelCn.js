@@ -4,7 +4,7 @@ export const cn = {
   labelNameRequired: '请输入标签名称',
   labelNameTip: '每个商品最多可以设置5个标签，若超出，优先级最低的标签将自动失效',
   labelLevel: '优先级',
-  labelLevelRequired: '优先级不可为空',
+  labelLevelRequired: '优先级请输入正整数',
   labelLevelTip: '用于确定商品标签的优先程度，请填写正整数，数值越大，优先级越高',
   webUseModel: '前端应用模块',
   goodsDetailPage: '商品详情页',
