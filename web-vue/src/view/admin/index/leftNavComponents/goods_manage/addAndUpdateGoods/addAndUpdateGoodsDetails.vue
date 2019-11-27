@@ -81,6 +81,7 @@
           <span style="color: #ccc">{{$t("goodsAddEditInfo.goodsDetail.goodsItemStyleTip")}}</span>
         </p>
       </div>
+      <!-- 模板位置 -->
       <div class="goodsDetailItem">
         <p class="message">
           <span class="messageTitle">{{$t("goodsAddEditInfo.goodsDetail.goodsItemPositionTitle")}}</span>
@@ -92,6 +93,7 @@
           </span>
         </p>
       </div>
+      <!-- 选择模板 -->
       <div class="goodsDetailItem">
         <p class="message" style="border-bottom: 1px solid #ccc;"><span class="messageTitle">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateTitle")}}</span></p>
         <p class="message">
@@ -100,11 +102,13 @@
             <span style="font-size: 14px;">{{goodsDetailInfo.goodsPageData.pageName}}</span>
             <span @click="goodsDetailInfo.goodsPageData=null" class="deleteIcon">×</span>
           </template>
-          <span @click="pageTemplateDialogData.isShow=true" style="border: 1px solid #ccc;display: inline-block;width: 75px;font-size: 14px;line-height:20px;text-align: center;cursor: pointer;">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateBtn")}}</span>
+          <!--选择模板按钮-->
+          <span @click="pageTemplateShow=!pageTemplateShow" style="border: 1px solid #ccc;display: inline-block;width: 75px;font-size: 14px;line-height:20px;text-align: center;cursor: pointer;">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateBtn")}}</span>
           <el-link style="margin-left: 10px;" type="primary" :underline="false" href="#" target="_blank">{{$t("goodsAddEditInfo.linkRefresh")}}</el-link>
           <el-link style="margin-left: 10px;" type="primary" :underline="false" href="#" target="_blank">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateAdd")}}</el-link>
         </p>
       </div>
+      <!-- 商品详情 -->
       <div class="goodsDetailItem">
         <p class="message" style="border-bottom: 1px solid #ccc;"><span class="messageTitle">{{$t("goodsAddEditInfo.goodsDetail.goodsItemDecorateTitle")}}</span></p>
         <div style="margin:10px 0px;border: 1px solid #ccc;width:calc(100% - 15px);">
@@ -113,27 +117,7 @@
       </div>
     </div>
     <!-- 页面装修模板选择框 -->
-    <el-dialog ref="templateDialog"  :title="$t('goodsAddEditInfo.goodsDetail.goodsItemDecorateBtn')" center :visible.sync="pageTemplateDialogData.isShow" @open="beforePageTemplateDialogShow" width="800px">
-      <el-form :inline="true">
-        <el-form-item :label="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageName')">
-          <el-input :placeholder="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageSelector')" size="small" v-model="pageTemplateDialogData.pageName"/></el-form-item>
-        <el-form-item :label="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageClassification')">
-          <el-select size="small" v-model="pageTemplateDialogData.pageClassificationId">
-            <el-option v-for="(item,index) in pageTemplateDialogData.pageClassificationList" :key="index" :value="item.id" :label="item.name"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item><el-button type="primary" size="small">{{$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageSearch')}}</el-button></el-form-item>
-      </el-form>
-      <el-table :data="pageTemplateDialogData.pageTemplateTableData"  @row-click="pageTemplateTableClick"  highlight-current-row border height="300">
-        <el-table-column prop="createTime" :label="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageCreateTime')"/>
-        <el-table-column prop="pageName" :label="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageName')" />
-        <el-table-column :label="$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageIsDefaultPage')">
-          <template slot-scope="scope">
-            {{scope.row.pageType ===1 ? $t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageIsDefaultYes'):$t('goodsAddEditInfo.goodsDetail.goodsItemDecoratePageIsDefaultNo')}}
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
+    <selectTemplate :tuneUpSelectTemplate="pageTemplateDialogData.isShow" @handleSelectTemplate="pageTemplateTableClick"/>
   </div>
 </template>
 <script>
@@ -141,7 +125,7 @@
 
 /* 组件导入 */
 import TinymceEditor from '@/components/admin/tinymceEditor/tinymceEditor'
-
+import selectTemplate from '@/components/admin/selectTemplate'
 /* 工具函数导入 */
 import { isStrBlank } from '@/util/typeUtil'
 
@@ -149,7 +133,8 @@ export default {
   name: 'addingGoodsDetails',
   props: ['goodsProductInfoData'],
   components: {
-    TinymceEditor
+    TinymceEditor,
+    selectTemplate
   },
   computed: {
     goodsNumAndPriceComputed () {
@@ -172,39 +157,25 @@ export default {
   data () {
     return {
       goodsDetailInfo: {
+        // {pageId:1,pageName:"XXX"}
         goodsPageData: null,
         isPageUp: 1,
         goodsDesc: null
       },
-      /* 页面装修模板辅助数据 */
-      pageTemplateDialogData: {
-        isShow: false,
-        pageName: null,
-        pageClassificationId: null,
-        pageClassificationList: [],
-        pageTemplateTableData: []
-      }
+      /* 页面装修模板弹框展示控制数据 */
+      pageTemplateShow: false
     }
   },
   methods: {
-    /* 页面模板处理弹出 */
-    beforePageTemplateDialogShow () {
-      this.pageTemplateDialogData.pageClassificationList = []
-      this.pageTemplateDialogData.pageClassificationList.push({id: null, name: '请选择分类'}, {id: 1, name: '测试1'},
-        {id: 2, name: '测试2'},
-        {id: 3, name: '测试3'},
-        {id: 4, name: '测试4'})
-
-      this.pageTemplateDialogData.pageTemplateTableData = []
-      this.pageTemplateDialogData.pageTemplateTableData.push({pageId: 1, createTime: 'XXXXXX', pageName: '测试页面', pageType: 1}, {pageId: 1, createTime: 'XXXXXX', pageName: '测试页面2', pageType: 1}, {pageId: 1, createTime: 'XXXXXX', pageName: '测试页面3', pageType: 1})
-      this.pageTemplateDialogData.pageTemplateTableData.push({pageId: 1, createTime: 'XXXXXX', pageName: '测试页面3', pageType: 1}, {pageId: 1, createTime: 'XXXXXX', pageName: '测试页面5', pageType: 0}, {pageId: 1, createTime: 'XXXXXX', pageName: '测试页面7', pageType: 0})
-      this.pageTemplateDialogData.pageTemplateTableData.push({pageId: 1, createTime: 'XXXXXX', pageName: '测试页面4', pageType: 1}, {pageId: 1, createTime: 'XXXXXX', pageName: '测试页面6', pageType: 0}, {pageId: 1, createTime: 'XXXXXX', pageName: '测试页面8', pageType: 1})
-    },
     /* 页面模板点击回调 */
-    pageTemplateTableClick (row, column, event) {
-      this.pageTemplateDialogData.isShow = false
-      this.goodsDetailInfo.goodsPageData = row
+    pageTemplateTableClick (data) {
+      if (data == null) {
+        this.goodsDetailInfo.goodsPageData = null
+      } else {
+        this.goodsDetailInfo.goodsPageData = {pageId: data.pageId, pageName: data.pageName}
+      }
     },
+    /* 这样是未了让esLint不报错，否则导入的地方为报unusage */
     isStrBlank (val) {
       return isStrBlank(val)
     },
