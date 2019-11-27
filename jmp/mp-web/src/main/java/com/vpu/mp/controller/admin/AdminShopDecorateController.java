@@ -11,7 +11,6 @@ import com.vpu.mp.service.pojo.shop.decoration.BatchSetPageCateParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.setIndexParam;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +50,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/admin/decorate/page/add")
 	public JsonResult addPage(@RequestBody XcxCustomerPageVo param) {
-		boolean res = shop().mpDecoration.addPage(param);
+		Integer res = shop().mpDecoration.addPage(param);
 		return this.success(res);
 	}
 
@@ -70,7 +69,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	/**
 	 * 设为首页
 	 *
-	 * @param  pageId
+	 * @param  param
 	 * @return
 	 */
 	@PostMapping(value = "/admin/decorate/index/set")
@@ -151,6 +150,15 @@ public class AdminShopDecorateController extends AdminBaseController {
 	public JsonResult copyDecoration(@RequestBody XcxCustomerPageVo param) {
 		Boolean res = shop().mpDecoration.copyDecoration(param.getPageId());
 		return success(res);
+	}
+
+	/**
+	 * 分享装修页面获取小程序二维码
+	 * @return
+	 */
+	@PostMapping(value = "/admin/decorate/page/share")
+	public JsonResult getPageShareCode(@RequestBody Integer pageId) throws Exception {
+		return success(shop().mpDecoration.getMpQrCode(pageId));
 	}
 
 	/**

@@ -141,10 +141,12 @@ public class ShopMpDecorationService extends ShopBaseService {
      * @param param
      * @return
      */
-    public boolean addPage(XcxCustomerPageVo param) {
-        XcxCustomerPageRecord record = new XcxCustomerPageRecord();
+    public Integer addPage(XcxCustomerPageVo param) {
+        XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
         this.assign(param, record);
-        return db().executeInsert(record) > 0 ? true : false;
+        record.insert();
+        int pageId = record.getPageId();
+        return pageId;
     }
 
     public int setPageCatId(Integer pageId, Integer catId) {
