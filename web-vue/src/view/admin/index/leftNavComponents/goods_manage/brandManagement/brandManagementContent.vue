@@ -1214,6 +1214,13 @@ tbody img {
   height: 100%;
 }
 </style>
+<style lang="scss" scoped>
+.dialogMain {
+  /deep/ .el-input {
+    width: 200px;
+  }
+}
+</style>
 <style>
 .topUl .el-input {
   width: 170px;

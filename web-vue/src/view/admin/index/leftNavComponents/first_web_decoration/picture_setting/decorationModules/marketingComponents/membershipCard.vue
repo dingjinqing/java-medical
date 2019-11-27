@@ -11,17 +11,17 @@
       <div class="carModule">
         <div
           class="card_back_module"
-          :style="carData.bg_type==='0'?`backgroundColor:${carData.bg_color}`:`backgroundImage:url('${carData.bg_img}')`"
+          :style="carData.bgType===0?`backgroundColor:${carData.bgColor}`:`backgroundImage:url('${$imageHost}/${carData.bgImg}')`"
         >
-          <div class="card_type">{{carClass}}</div>
+          <div class="card_type">{{carData.cardType===0?'普通卡':carData.cardType===1?'限次卡':'等级卡'}}</div>
           <div class="card_content clearfix">
             <div class="card_shop_icon">
               <img :src="$imageHost+'/image/admin/shop_def_y.png'">
             </div>
             <div class="card_content_right">
-              <div>{{carData.card_name}}</div>
+              <div>{{carData.cardName}}</div>
               <p>{{carData.legal}}</p>
-              <p>{{carData.exchang_count_legal}}</p>
+              <p>{{carData.exchangCountLegal}}</p>
             </div>
             <!-- <div
                       class="card_pay_fee"
@@ -83,7 +83,6 @@ export default {
       activeBorder: false,
       activeSetHere: false,
       hoverTips: 'hoverTips', // 英文适配
-      carClass: '普通卡',
       carData: {
         backgroundColor: '#ecc98f',
         bgImgUrl: ''

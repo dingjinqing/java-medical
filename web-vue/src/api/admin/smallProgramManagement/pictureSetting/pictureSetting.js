@@ -56,6 +56,7 @@ export function getFightGroup (data) {
 export function allCardData (data) {
   return service({
     url: '/api/admin/member/card/all/list',
-    method: 'post'
+    method: 'post',
+    data: data
   })
 }

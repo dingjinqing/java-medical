@@ -16,7 +16,7 @@
             <div
               class="card_add"
               @click="handlCallCardDialog()"
-              v-if="!nowChecked.card_id"
+              v-if="!nowChecked.id"
             >
               <img :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'">
               <p>{{$t('membershipCard.addMembershipCard')}}</p>
@@ -26,18 +26,18 @@
               v-else
               @click="handlCallCardDialog()"
               class="selectCard"
-              :style="nowChecked.bg_type==='0'?`backgroundColor:${nowChecked.bg_color}`:`backgroundImage:url('${nowChecked.bg_img}')`"
+              :style="nowChecked.bgType===0?`backgroundColor:${nowChecked.bgColor}`:`backgroundImage:url('${$imageHost}/${nowChecked.bgImg}')`"
             >
               <div>
-                <span class="card_name">{{nowChecked.card_name}}</span>
+                <span class="card_name">{{nowChecked.cardName}}</span>
                 <span
                   style="margin-bottom:8px"
                   v-if="radio==='3'"
-                >{{nowChecked.card_grade}}</span>
+                >{{nowChecked.grade}}</span>
                 <span
                   v-else
                   class="card_state"
-                >{{nowChecked.card_state}}</span>
+                >{{nowChecked.cardState===1?'使用中':'停止使用'}}</span>
               </div>
               <!-- <p
                 class="receive_day"
@@ -47,7 +47,7 @@
                 v-if="typeof nowChecked.expired !== 'number'&&radio!== '3'"
                 class="receive_day"
               >有效期：永久有效</p> -->
-              <p class="receive_day">{{nowChecked.receive_day}}</p>
+              <p class="receive_day">{{nowChecked.receiveDay}}</p>
             </div>
 
           </div>
@@ -122,6 +122,7 @@
                     v-for="(item,index) in showCardList"
                     :key="index"
                     @click="handleToClickCard(index)"
+                    :style="item.bgType===0?`backgroundColor:${item.bgColor}`:`backgroundImage:url('${$imageHost}/${item.bgImg}')`"
                   >
                     <img
                       v-if="item.isChecked"
@@ -133,11 +134,11 @@
                       <span
                         style="margin-bottom:8px"
                         v-if="radio==='3'"
-                      >{{item.card_grade}}</span>
+                      >{{item.grade}}</span>
                       <span
                         v-else
                         class="card_state"
-                      >使用中</span>
+                      >{{item.cardState===1?'使用中':'停止使用'}}</span>
                     </div>
                     <!-- <p
                       class="receive_day"
@@ -147,7 +148,7 @@
                       v-if="typeof item.expired !== 'number'&&radio!== '3'"
                       class="receive_day"
                     >有效期：永久有效</p> -->
-                    <p class="receive_day">{{item.receive_day}}</p>
+                    <p class="receive_day">{{item.receiveDay}}</p>
                   </li>
                   <!--添加会员卡-->
                   <li
@@ -443,7 +444,7 @@ export default {
     },
     checked (newData) {
       // 如果已经有选中数据则直接改变数据里的isHidden项，若果没有则等待弹窗选中确认后，将是否隐藏卡片checked值赋予选中的数据中的isHidden.
-      if (this.nowChecked.card_id) {
+      if (this.nowChecked.id) {
         if (newData) { // 将checked得值转化为0 1
           this.nowChecked.hidden_card = 1
         } else {
@@ -465,7 +466,7 @@ export default {
   methods: {
     // 初始化获取会员卡数据
     handleToGetCardData () {
-      allCardData().then(res => {
+      allCardData({}).then(res => {
         console.log(res)
         if (res.error === 0) {
           // 处理数据
@@ -476,18 +477,80 @@ export default {
     // 处理起始数据
     handleToAllData (res) {
       res.content.normalCard.forEach((item, index) => {
-        item.isChecked = false
+        // 处理每种卡的权益、过期类型
+        this.handleToExptreType(item)
       })
       res.content.limitNumCard.forEach((item, index) => {
-        item.isChecked = false
+        // 处理每种卡的权益、过期类型
+        this.handleToExptreType(item)
       })
       res.content.rankCard.forEach((item, index) => {
-        item.isChecked = false
+        // 处理每种卡的权益、过期类型
+        this.handleToExptreType(item)
       })
       this.ordinaryCardData = res.content.normalCard
       this.limitCardData = res.content.limitNumCard
       this.gradeCardData = res.content.rankCard
       this.showCardList = this.ordinaryCardData
+    },
+    // 处理每种卡的权益、过期类型
+    handleToExptreType (item) {
+      item.isChecked = false
+      switch (item.expireType) { // 处理有效期
+        case 0:
+          item.receiveDay = item.startTime + '-' + item.endTime
+          break
+        case 1:
+          item.receiveDay = '自领取之日起' + item.receiveDay + '日内有效'
+          break
+        case 2:
+          item.receiveDay = '有效期：永久有效'
+      }
+      switch (item.legalFlag) { // 处理权益
+        case 0:
+          item.legal = ''
+          item.exchangCountLegal = ''
+          break
+        case 1:
+          item.legal = `会员${item.legal}折扣权益`
+          item.exchangCountLegal = ''
+          break
+        case 2:
+          item.legal = `开卡赠送${item.legal}积分`
+          item.exchangCountLegal = ''
+          break
+        case 3:
+          item.legal = `购物满${item.legal[0]}赠${item.legal[1]}积分`
+          item.exchangCountLegal = ''
+          break
+        case 4:
+          item.legal = `购物每满${item.legal[0]}赠${item.legal[1]}积分`
+          item.exchangCountLegal = ''
+          break
+        case 5:
+          item.legal = `开卡赠送${item.legal}元`
+          item.exchangCountLegal = ''
+          break
+        case 6:
+          item.legal = `充值满${item.legal[0]}赠${item.legal[1]}积分`
+          item.exchangCountLegal = ''
+          break
+        case 7:
+          item.legal = `充值每满${item.legal[0]}赠送${item.legal[1]}积分`
+          item.exchangCountLegal = ''
+          break
+        case 8:
+          item.legal = '仅充值'
+          item.exchangCountLegal = ''
+          break
+        case 9:
+          item.exchangCountLegal = `开卡赠送${item.exchangCountLegal}次门店服务机会`
+          item.legal = ''
+          break
+        case 10:
+          item.legal = ''
+          item.exchangCountLegal = `开卡赠送${item.exchangCountLegal}兑换商品机会`
+      }
     },
     // 调起弹窗
     handlCallCardDialog () {
@@ -527,10 +590,21 @@ export default {
     // 点击搜索
     handleToSearchCard () {
       console.log(this.input)
+      let obj = {
+        'cardType': (Number(this.radio) - 1),
+        'cardName': this.input
+      }
+      allCardData(obj).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          // 处理数据
+          this.handleToAllData(res)
+        }
+      })
     },
     // 点击刷新
     handleToRefresh () {
-
+      this.handleToSearchCard()
     }
   }
 }
@@ -587,6 +661,7 @@ export default {
               border-radius: 25px;
               position: relative;
               top: -3px;
+              white-space: nowrap;
             }
           }
           .receive_day {
@@ -714,6 +789,7 @@ export default {
                   border-radius: 25px;
                   position: relative;
                   top: -3px;
+                  white-space: nowrap;
                 }
               }
               .receive_day {

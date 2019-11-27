@@ -7,21 +7,21 @@ export default {
         case 1: // 会员卡模块
           obj = {
             module_name: 'm_card', // 模块名称
-            card_id: '', // 会员卡id
+            id: '', // 会员卡id
             hidden_card: 0, // 是否用户领取后隐藏会员卡
-            card_name: 'V1代理卡', // 会员卡名称
-            card_state: '使用中', // 会员卡使用状态
-            card_grade: 'v1', // 会员卡等级
-            receive_day: '有效期:永久有效', // 有效期
-            card_type: '0', // 会员卡等级
+            cardName: 'V1代理卡', // 会员卡名称
+            cardState: 1, // 会员卡使用状态
+            cardGrade: 'v1', // 会员卡等级
+            receiveDay: '有效期:永久有效', // 有效期
+            cardType: 0, // 会员卡等级
             legal: '会员折扣9折', // 会员卡描述
-            exchang_count_legal: '', // 会员卡折扣描述
-            bg_type: '0', // 背景类型
-            bg_color: '#ecc98f', // 背景颜色
-            bg_img: '', // 背景图片
-            is_pay: '2',
-            pay_type: '0',
-            pay_fee: '0.00'
+            exchangCountLegal: '', // 会员卡折扣描述
+            bgType: '0', // 背景类型
+            bgColor: '#ecc98f', // 背景颜色
+            bgImg: '', // 背景图片
+            isPay: '2',
+            payType: '0',
+            payFee: '0.00'
           }
           break
         case 2: // 优惠卷模块
