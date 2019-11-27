@@ -3,11 +3,12 @@
     <!-- class="content" -->
     <div>
       <div class="contentHeader">
-        <span style="margin-right: 10px;">{{$t('allGoodsLabel.labelName')}}:</span>
+        <span style="font-size: 14px;">{{ $t('allGoodsLabel.labelName') + '：' }}</span>
         <el-input
           v-model="labelName"
           size="small"
-          style="width:180px;"
+          style="width:170px;"
+          clearable
           :placeholder="$t('allGoodsLabel.inputLabelName')"
         />
         <el-button
@@ -110,6 +111,7 @@
       :title="$t('allGoodsLabel.chooseUsePosition')"
       :visible.sync="dialogVisible"
       width="40%"
+      center
     >
       <div style="font-size: 12px;border: 1px solid #FFD5A3;margin: 0 auto;padding: 5px;background: #FFF7EB;">{{$t('allGoodsLabel.chooseUsePositionTip')}}</div>
       <ul>
@@ -175,8 +177,12 @@
         <el-button
           @click="updateGoodsLabelUseModel"
           type="primary"
+          size="small"
         >{{$t('allGoodsLabel.confirm')}}</el-button>
-        <el-button @click="dialogCancel">{{$t('allGoodsLabel.cancel')}}</el-button>
+        <el-button
+          @click="dialogCancel"
+          size="small"
+        >{{$t('allGoodsLabel.cancel')}}</el-button>
       </div>
     </el-dialog>
   </div>

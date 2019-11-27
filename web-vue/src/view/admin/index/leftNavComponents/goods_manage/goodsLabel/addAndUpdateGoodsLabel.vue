@@ -28,7 +28,7 @@
             ref="levelRef"
             v-model.number="goodsLabelData.levelOld"
             size="small"
-            style="width: 80px;"
+            style="width: 170px;"
             @change="labelLevelChanged"
           />
           <span class="inputTip">{{$t('addAndUpdateGoodsLabel.labelNameTip')}}</span>

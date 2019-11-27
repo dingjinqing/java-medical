@@ -35,6 +35,7 @@
         <el-button
           type="primary"
           size="small"
+          @click="addGoodsData"
         >{{$t('allGoods.allGoodsRouterHeader.addGoods')}}</el-button>
       </div>
     </div>
@@ -89,6 +90,10 @@ export default {
     /* 重置过滤数据 */
     resetFormData () {
       this.$refs.goodsHeaderFormCmp.resetFormData()
+    },
+    /* 添加商品跳转 */
+    addGoodsData () {
+      this.$router.push({ name: 'goods_add' })
     }
   },
   mounted () {

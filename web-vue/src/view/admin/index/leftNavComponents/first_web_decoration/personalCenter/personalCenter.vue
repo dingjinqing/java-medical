@@ -1914,7 +1914,7 @@ export default {
 }
 
 .prompt {
-  width: 900px;
+  width: 845px;
   height: 40px;
   line-height: 40px;
   border: 1px solid #f2e1c8;
@@ -1929,7 +1929,7 @@ export default {
 }
 
 .bottomContent {
-  width: 900px;
+  width: 845px;
   overflow: hidden;
   margin: 0 auto;
   margin-bottom: 70px;

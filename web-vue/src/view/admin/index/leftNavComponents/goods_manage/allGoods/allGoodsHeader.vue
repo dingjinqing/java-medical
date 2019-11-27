@@ -6,7 +6,7 @@
         ref="goodsFilterForm"
         :inline="true"
         :model="goodsFilterFormData"
-        label-width="120px"
+        label-width="100px"
       >
         <el-form-item
           :label="$t('allGoods.allGoodsHeaderData.goodsName')+'：'"
@@ -21,8 +21,18 @@
             clearable
           />
         </el-form-item>
-        <sortCatTreeSelect ref="catTree" :filterGoodsInfo="initSortCatParams" treeType="cat" :selectedId.sync="goodsFilterFormData.catId"/>
-        <sortCatTreeSelect ref="sortTree" :filterGoodsInfo="initSortCatParams" treeType="sort" :selectedId.sync="goodsFilterFormData.sortId"/>
+        <sortCatTreeSelect
+          ref="catTree"
+          :filterGoodsInfo="initSortCatParams"
+          treeType="cat"
+          :selectedId.sync="goodsFilterFormData.catId"
+        />
+        <sortCatTreeSelect
+          ref="sortTree"
+          :filterGoodsInfo="initSortCatParams"
+          treeType="sort"
+          :selectedId.sync="goodsFilterFormData.sortId"
+        />
         <el-form-item
           :label="$t('allGoods.allGoodsHeaderData.goodsLabel')+'：'"
           prop="labelId"
@@ -202,7 +212,7 @@ export default {
       console.log(this.goodsLabelOptions)
     }
   },
-  components: {sortCatTreeSelect},
+  components: { sortCatTreeSelect },
   computed: {
     // 查询过滤对象的字符串格式化
     goodsFilterFormDataString () {
@@ -260,7 +270,7 @@ export default {
   methods: {
     /* 初始化form表单下拉框数据 */
     initFilterData () {
-      getGoodsFilterItem({needGoodsLabel: true, needGoodsBrand: true}).then(res => {
+      getGoodsFilterItem({ needGoodsLabel: true, needGoodsBrand: true }).then(res => {
         let { content } = res
         this.goodsBrandOptions = content.goodsBrands
         this.goodsLabelOptions = content.goodsLabels
@@ -393,7 +403,7 @@ export default {
   border-bottom: 2px solid #5a8bff;
 }
 .allGoodsFilter {
-  padding: 15px;
+  padding: 10px;
   padding-bottom: 0;
   /* padding: 20px 0px 0px 0px; */
 }
