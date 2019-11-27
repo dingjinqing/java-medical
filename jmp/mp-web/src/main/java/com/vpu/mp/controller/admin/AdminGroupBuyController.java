@@ -142,9 +142,6 @@ public class AdminGroupBuyController extends AdminBaseController {
      */
     @PostMapping("/admin/market/groupbuy/change/status")
     public JsonResult changeStatusActivity(@RequestBody @Valid GroupBuyIdParam param) {
-        if (param.getId()==null){
-            return fail(JsonResultCode.CODE_PARAM_ERROR);
-        }
         GroupBuyDefineRecord groupBuyRecord = shop().groupBuy.getGroupBuyRecord(param.getId());
         if (groupBuyRecord==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
@@ -153,7 +150,7 @@ public class AdminGroupBuyController extends AdminBaseController {
         if (param.getStatus().equals(status)){
             return success();
         }
-        if(groupBuyRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL)){
+        if(param.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL)){
             Boolean flag = shop().groupBuy.validGroupGoods(groupBuyRecord.getId(),groupBuyRecord.getGoodsId(),groupBuyRecord.getStartTime(),groupBuyRecord.getEndTime());
             if (!flag){
                 return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
