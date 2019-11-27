@@ -16,7 +16,7 @@
             <div
               class="card_add"
               @click="handlCallCardDialog()"
-              v-if="!nowChecked.id"
+              v-if="!nowChecked.card_id"
             >
               <img :src="$imageHost+'/image/admin/shop_beautify/add_decorete.png'">
               <p>{{$t('membershipCard.addMembershipCard')}}</p>
@@ -26,18 +26,18 @@
               v-else
               @click="handlCallCardDialog()"
               class="selectCard"
-              :style="nowChecked.bgType===0?`backgroundColor:${nowChecked.bgColor}`:`backgroundImage:url('${$imageHost}/${nowChecked.bgImg}')`"
+              :style="nowChecked.bg_type===0?`backgroundColor:${nowChecked.bg_color}`:`backgroundImage:url('${$imageHost}/${nowChecked.bg_img}')`"
             >
               <div>
-                <span class="card_name">{{nowChecked.cardName}}</span>
+                <span class="card_name">{{nowChecked.card_name}}</span>
                 <span
                   style="margin-bottom:8px"
                   v-if="radio==='3'"
-                >{{nowChecked.grade}}</span>
+                >{{nowChecked.card_grade}}</span>
                 <span
                   v-else
                   class="card_state"
-                >{{nowChecked.cardState===1?'使用中':'停止使用'}}</span>
+                >{{nowChecked.card_state}}</span>
               </div>
               <!-- <p
                 class="receive_day"
@@ -47,7 +47,7 @@
                 v-if="typeof nowChecked.expired !== 'number'&&radio!== '3'"
                 class="receive_day"
               >有效期：永久有效</p> -->
-              <p class="receive_day">{{nowChecked.receiveDay}}</p>
+              <p class="receive_day">{{nowChecked.receive_day}}</p>
             </div>
 
           </div>
@@ -189,7 +189,7 @@ export default {
     modulesData: Object,
     sortIndex: Number
   },
-  data () {
+  data() {
     return {
       checked: false,
       dialogVisible: false,
@@ -414,7 +414,7 @@ export default {
   watch: {
     // 中间模块当前高亮index
     sortIndex: {
-      handler (newData) {
+      handler(newData) {
         if (this.modulesData) {
           this.nowChecked = this.modulesData // 回显数据
           if (this.modulesData.hidden_card) { // 是否选中用户领取后隐藏会员卡回显
@@ -427,7 +427,7 @@ export default {
       },
       immediate: true
     },
-    radio (newData) {
+    radio(newData) {
       this.showCardList.forEach(item => {
         item.isChecked = false
       })
@@ -442,7 +442,7 @@ export default {
           this.showCardList = this.gradeCardData
       }
     },
-    checked (newData) {
+    checked(newData) {
       // 如果已经有选中数据则直接改变数据里的isHidden项，若果没有则等待弹窗选中确认后，将是否隐藏卡片checked值赋予选中的数据中的isHidden.
       if (this.nowChecked.id) {
         if (newData) { // 将checked得值转化为0 1
@@ -456,7 +456,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     // 初始化语言
     this.langDefault()
 
@@ -465,7 +465,7 @@ export default {
   },
   methods: {
     // 初始化获取会员卡数据
-    handleToGetCardData () {
+    handleToGetCardData() {
       allCardData({}).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -475,7 +475,7 @@ export default {
       })
     },
     // 处理起始数据
-    handleToAllData (res) {
+    handleToAllData(res) {
       res.content.normalCard.forEach((item, index) => {
         // 处理每种卡的权益、过期类型
         this.handleToExptreType(item)
@@ -494,7 +494,7 @@ export default {
       this.showCardList = this.ordinaryCardData
     },
     // 处理每种卡的权益、过期类型
-    handleToExptreType (item) {
+    handleToExptreType(item) {
       item.isChecked = false
       switch (item.expireType) { // 处理有效期
         case 0:
@@ -553,18 +553,35 @@ export default {
       }
     },
     // 调起弹窗
-    handlCallCardDialog () {
+    handlCallCardDialog() {
       this.dialogVisible = true
     },
     // 弹窗确定事件
-    handleToSelectCuopon () {
+    handleToSelectCuopon() {
+      let obj = {
+        card_id: this.zcCheckedData.id, // 会员卡id
+        card_name: this.zcCheckedData.cardName, // 会员卡名称
+        card_state: this.zcCheckedData.cardState, // 会员卡使用状态
+        card_grade: this.zcCheckedData.cardGrade, // 会员卡等级
+        receive_day: this.zcCheckedData.receiveDay, // 有效期
+        card_type: this.zcCheckedData.cardType, // 会员卡等级
+        legal: this.zcCheckedData.legal, // 会员卡描述
+        exchang_count_legal: this.zcCheckedData.exchangCountLegal, // 会员卡折扣描述
+        bg_type: this.zcCheckedData.bgType, // 背景类型
+        bg_color: this.zcCheckedData.bgColor, // 背景颜色
+        bg_img: this.zcCheckedData.bgImg, // 背景图片
+        is_pay: this.zcCheckedData.isPay,
+        pay_type: this.zcCheckedData.payType,
+        pay_fee: this.zcCheckedData.payFee
+      }
       console.log(this.zcCheckedData)
-      let obj = Object.assign(this.nowChecked, this.zcCheckedData)
-      this.$emit('handleToBackData', obj)
+      let data = Object.assign(this.nowChecked, obj)
+      console.log(this.nowChecked, data)
+      this.$emit('handleToBackData', data)
       this.dialogVisible = false
     },
     // 卡片点击
-    handleToClickCard (index) {
+    handleToClickCard(index) {
       this.showCardList.forEach(item => {
         item.isChecked = false
       })
@@ -573,7 +590,7 @@ export default {
       this.showCardList[index].isChecked = !this.showCardList[index].isChecked
     },
     //  点击添加会员卡
-    handleToAddCard () {
+    handleToAddCard() {
       let obj = { query: { 'cardType': Number(this.radio) } }
       switch (this.radio) {
         case '1':
@@ -588,7 +605,7 @@ export default {
       this.$router.push(obj)
     },
     // 点击搜索
-    handleToSearchCard () {
+    handleToSearchCard() {
       console.log(this.input)
       let obj = {
         'cardType': (Number(this.radio) - 1),
@@ -603,7 +620,7 @@ export default {
       })
     },
     // 点击刷新
-    handleToRefresh () {
+    handleToRefresh() {
       this.handleToSearchCard()
     }
   }
