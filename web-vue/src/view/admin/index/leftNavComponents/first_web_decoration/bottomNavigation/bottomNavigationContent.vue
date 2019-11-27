@@ -401,7 +401,6 @@ export default {
   margin-top: 20px;
 }
 .cententLRight {
-  float: left;
   margin: 80px 0 0 30px;
   border: 1px solid #e5e5e5;
   background: #f8f8f8;
@@ -439,7 +438,6 @@ export default {
   border: 1px solid #ccc;
   background: #eee;
   position: relative;
-  float: left;
   margin-top: 70px;
 }
 .bottomNavigationContent {
@@ -454,7 +452,7 @@ export default {
   display: flex;
   justify-content: center;
   background-color: #fff;
-  height: 100%;
+  /* height: 100%; */
   overflow: hidden;
   overflow-y: auto;
   padding-bottom: 96px;
@@ -513,7 +511,7 @@ export default {
   background: #f8f8fa;
   border-top: 1px solid #f2f2f2;
   text-align: center;
-  position: absolute;
+  position: fixed;
   z-index: 2;
   bottom: 0;
   padding: 10px 0;
