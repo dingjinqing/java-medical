@@ -169,6 +169,8 @@ page{
   color: rgb(248, 8, 8);
   font-size: 13px;
   border-radius:0 0 10rpx 10rpx;
+  margin-bottom: 10px;
+  border-top: 1px dashed #ccc;
 }
 .permissions{
   position: absolute;
