@@ -39,29 +39,25 @@ global.wxPage({
     serviceInfo: {}, // 接口返回的服务信息
     storeInfo: {}, // 接口返回的门店信息
     recentOrderInfo: {}, // 用户上一次预约填写的信息
-    technicianTitle: '', //职称：技师分类
+    technicianTitle: '', //职称
     paymentVoList: [], // 支持的支付方式
     cardList: [], // 会员卡列表
     cardFirst: false, // 默认选择会员卡支付开关
     balanceFirst: false, // 默认选择余额支付开关
 
-    userCard: {}, // 选中的会员卡信息
-    cardMode: false, // 会员卡弹窗
-    payMode: false, // 余额支付弹窗
-    member_card_input: '', // 支付弹窗-会员卡余额输入金额
-    user_account_input: '', // 支付弹窗-余额输入金额
-    pay_click_type: 0, // 因为积分，会员卡余额，余额支付公用一个弹窗，通过此字段区分支付方式： 1 积分，2 余额，3 会员卡
-    prompt_message: "", // 校验填写余额信息
+    useCard: {}, // 选中的会员卡信息
     canClick: true, // 是否可点击确认使用余额按钮
-    pay_card: 0, // 会员卡余额有值
-    pay_yue: 0, // 余额有值
     create_order: {
-      account_discount: '', // 余额支付金额
+      service_deposit: '', // 服务订金
       member_card_balance: '', // 会员卡余额支付金额
-      money_paid: '' // 商品金额
+      account_discount: '', // 余额支付金额
+      money_paid: '' // 应付金额
     },
     add_message: '', // 备注
-    params: {} // 提交的信息
+
+    showCardDialog: false,
+    showCardBalanceDialog: false,
+    showBalanceDialog: false
   },
 
   /**
@@ -89,7 +85,6 @@ global.wxPage({
       userId: this.data.userId
     }
     util.api('/api/wxapp/store/service/confirmReservation', function (res) {
-      console.log(res)
       if (res.error === 0) {
         let content = res.content
         content.service.serviceImg = JSON.parse(content.service.serviceImg)
@@ -112,11 +107,7 @@ global.wxPage({
           }
           return card
         })
-        let userCard = {}
-        if (cardList && cardList.length > 0) {
-          userCard = cardList[0]
-          userCard.card_src = 1
-        }
+
         // 初始化应付金额
         _this.setData({
           serviceInfo: content.service,
@@ -125,67 +116,61 @@ global.wxPage({
           technicianTitle: content.technicianTitle,
           paymentVoList: content.paymentVoList,
           cardList: cardList,
-          userCard: cardList[0] || {}, // 默认选中第一张会员卡
+          useCard: cardList[0] || {}, // 默认选中第一张会员卡
           account: content.account,
           balanceFirst: content.balanceFirst,
           shopAvatar: content.shopAvatar,
-          'create_order.money_paid': content.service.serviceSubsist,
-          'create_order.account_discount': 0,
-          'create_order.member_card_balance': 0,
-          member_card_input: '',
-          user_account_input: ''
+          create_order: {
+            service_deposit: content.service.serviceSubsist,
+            money_paid: parseFloat(content.service.serviceSubsist).toFixed(2),
+            account_discount: 0,
+            member_card_balance: 0
+          }
         })
 
-        _this.defaultInput(content)
+        // 默认使用会员卡余额支付
+        if (content.cardFirst) {
+          if (_this.data.useCard.money) {
+            if (_this.data.useCard.money > _this.data.create_order.money_paid) {
+              _this.setData({
+                'create_order.member_card_balance': parseFloat(_this.data.create_order.money_paid).toFixed(2)
+              })
+            } else {
+              _this.setData({
+                'create_order.member_card_balance': parseFloat(_this.data.useCard.money).toFixed(2)
+              })
+            }
+            _this.calculateBalance()
+          }
+        }
+        // 默认使用余额支付
+        if (content.balanceFirst) {
+          if (_this.data.account) {
+            if (_this.data.account > _this.data.create_order.money_paid) {
+              _this.setData({
+                'create_order.account_discount': parseFloat(_this.data.create_order.money_paid).toFixed(2)
+              })
+            } else {
+              _this.setData({
+                'create_order.account_discount': parseFloat(_this.data.account).toFixed(2)
+              })
+            }
+            _this.calculateBalance()
+          }
+        }
       }
     }, params)
   },
-  toArray (imgs) {
-    let images = imgs.slice(1, imgs.length - 1).split(',')
-    images = images.map(function (item) {
-      return item.slice(1, item.length - 1)
+  nameChange (e) {
+    let value = e.detail.value
+    this.setData({
+      'recentOrderInfo.subscriber': value,
     })
-    return images
-  },
-  // 默认填充
-  defaultInput (con) {
-    let that = this
-    // 会员卡余额支付 支付开关开启
-    if (con.cardFirst == 1 && that.data.userCard.money) {
-      let member_card_input = that.data.create_order.money_paid - that.data.userCard.money > 0 ?
-        that.data.userCard.money : that.data.create_order.money_paid;
-      let new_money_paid = (parseFloat(that.data.create_order.money_paid) - parseFloat(member_card_input)).toFixed(2);
-      let member_card_balance = parseFloat(member_card_input).toFixed(2);
-      that.setData({
-        member_card_input: member_card_input > 0 ? member_card_input : '',
-        pay_card: 1,
-        'create_order.money_paid': new_money_paid,
-        'create_order.member_card_balance': member_card_balance
-      })
-    }
-    // 余额支付 支付开关开启
-    if (con.balanceFirst == 1 && that.data.account) {
-      let user_account_input = that.data.create_order.money_paid - that.data.account > 0 ?
-        that.data.account : that.data.create_order.money_paid;
-      let new_money_paid = (parseFloat(that.data.create_order.money_paid) - parseFloat(user_account_input)).toFixed(2);
-      let account_discount = parseFloat(user_account_input).toFixed(2);
-      that.setData({
-        user_account_input: user_account_input >= 0 ? user_account_input : '',
-        pay_yue: 1,
-        'create_order.money_paid': new_money_paid,
-        'create_order.account_discount': account_discount,
-      })
-    }
   },
   // 预约人
-  nameInput (e) {
+  nameBlur (e) {
     let value = e.detail.value
-    if (value != "") {
-      this.setData({
-        'params.subsciber': value,
-        'recentOrderInfo.subscriber': value,
-      })
-    } else {
+    if (value === "") {
       util.showModal('提示', '请输入预约人姓名')
       return false
     }
@@ -193,26 +178,26 @@ global.wxPage({
   cancelName () {
     this.setData({
       'recentOrderInfo.subscriber': "",
-      'params.subsciber': ""
+    })
+  },
+  mobileChange (e) {
+    let value = e.detail.value
+    this.setData({
+      'recentOrderInfo.mobile': value,
     })
   },
   // 手机号
-  mobileInput (e) {
+  mobileBlur (e) {
     let value = e.detail.value
-    if (value != "") {
-      this.setData({
-        'params.mobile': value,
-        'recentOrderInfo.mobile': value,
-      })
-    } else {
+    if (value === "") {
       util.showModal('提示', '请输入手机号')
       return false
     }
   },
+
   cancelMobile () {
     this.setData({
       'recentOrderInfo.mobile': "",
-      'params.mobile': ""
     })
   },
   // 服务列表
@@ -231,7 +216,8 @@ global.wxPage({
   // 会员卡选择
   cardClick: function (e) { //会员卡弹框显示
     this.setData({
-      cardMode: true
+      // cardMode: true,
+      showCardDialog: true
     })
   },
   cardCancel: function (e) { //关闭会员卡弹框
@@ -239,189 +225,20 @@ global.wxPage({
       cardMode: false
     })
   },
-  chooseCard (e) {
-    let that = this
-    let dataset = e.currentTarget.dataset
-    let cardNo = dataset.card_no
-    let id = dataset.id
-    let cardList = this.data.cardList
-    cardList.forEach(function (item, i) {
-      if (item.cardNo === cardNo) {
-        item.card_src = 1
-        that.setData({
-          userCard: item
-        })
-      } else {
-        item.card_src = that.data.imageUrl + 'image/wxapp/icon_rectangle.png'
-      }
-    })
-    that.setData({
-      cardList: cardList
-    })
-  },
-  cardConfirm (e) {
-    this.setData({
-      cardMode: false
-    })
-    this.checkCancelCard()
-    this.checkCancelYue()
-  },
-  // 显示支付弹窗
-  payClick (e) {
-    let type = e.currentTarget.dataset.type
-    let pay_click_type = 0
-    if (type == 'score') { // 积分支付
-      pay_click_type = 1
-    } else if (type == 'yue') { // 余额支付
-      pay_click_type = 2
-    } else if (type == 'card') {
-      // 会员卡余额支付
-      pay_click_type = 3
-    }
-    this.setData({
-      payMode: true,
-      canClick: true,
-      prompt_message: '',
-      pay_click_type: pay_click_type
-    })
-  },
-  payCancel () {
-    this.setData({
-      payMode: false
-    })
-  },
-  payConfirm (e) {
-    let type = this.data.pay_click_type
-    let prompt_message = this.data.prompt_message
-    if (prompt_message != '') return false
-    if (type == 2) {
-      this.user_account_blur(e)
-      this.setData({
-        pay_yue: 1
-      })
-    } else if (type == 3) {
-      this.member_card_blur(e)
-      this.setData({
-        pay_card: 1
-      })
-    }
-    this.setData({
-      payMode: false
-    })
-  },
-  /**
-   *  会员卡余额支付
-   */
   // 取消会员卡余额支付
   checkCancelCard (e) {
-    let new_money_paid = parseFloat(this.data.create_order.money_paid) + parseFloat(this.data.create_order.member_card_balance);
     this.setData({
-      'create_order.money_paid': new_money_paid,
-      'create_order.member_card_balance': 0,
-      pay_card: 0,
-      prompt_message: '',
-      member_card_input: ''
+      'create_order.member_card_balance': 0
     })
+    this.calculateBalance()
   },
-  mem_fo (e) {
-    this.setData({
-      prompt_message: '',
-      canClick: true
-    })
-  },
-  member_card_blur (e) {
-    let value = e.detail.value
-    let member_card_input = this.data.member_card_input
-    if (value) {
-      member_card_input = value ? value : 0
-    } else {
-      member_card_input = this.data.create_order.money_paid - this.data.userCard.money > 0 ?
-        this.data.userCard.money : this.data.create_order.money_paid;
-    }
-    if (isNaN(member_card_input) || !isNaN(member_card_input) && member_card_input < 0) {
-      this.setData({
-        member_card_input: '',
-        prompt_message: '请输入正确的金额'
-      })
-    }
-    let msg = ''
-    if (parseInt(member_card_input) > parseInt(this.data.account)) {
-      msg = "最多可以使用会员卡余额：" + this.data.account + "元";
-    }
-    let new_money_paid = (parseFloat(this.data.create_order.money_paid) - parseFloat(member_card_input)).toFixed(2);
-    if (new_money_paid < 0) {
-      msg = '使用金额不得超过订单金额'
-    }
-    if (msg != '') {
-      this.setData({
-        prompt_message: msg,
-        canClick: false
-      })
-    }
-    this.setData({
-      member_card_input: member_card_input > 0 ? member_card_input : '',
-      'create_order.member_card_balance': parseFloat(member_card_input).toFixed(2),
-      'create_order.money_paid': new_money_paid
-    })
-  },
-  /**
-   * 余额支付
-   */
   // 取消余额支付
   checkCancelYue (e) {
-    let new_money_paid = parseFloat(this.data.create_order.money_paid) + parseFloat(this.data.create_order.account_discount);
     this.setData({
-      'create_order.money_paid': new_money_paid,
-      'create_order.account_discount': 0,
-      pay_yue: 0,
-      prompt_message: ''
+      'create_order.account_discount': 0
     })
+    this.calculateBalance()
   },
-  yue_fo (e) {
-    this.setData({
-      prompt_message: '',
-      canClick: true
-    })
-  },
-  user_account_blur (e) {
-    let value = e.detail.value
-    let user_account_input = this.data.user_account_input
-    if (value) {
-      user_account_input = value ? value : 0
-    } else {
-      if (user_account_input == "") {
-        user_account_input = this.data.create_order.money_paid - this.data.account > 0 ?
-          this.data.account : this.data.create_order.money_paid;
-      }
-    }
-    if (isNaN(user_account_input) || !isNaN(user_account_input) && user_account_input < 0) {
-      this.setData({
-        user_account_input: '',
-        prompt_message: '请输入正确的金额'
-      })
-      return false
-    }
-    let msg = ''
-    if (parseInt(user_account_input) > parseInt(this.data.account)) {
-      msg = "最多可以使用：" + this.data.account + "余额"
-    }
-    let new_money_paid = (parseFloat(this.data.create_order.money_paid) - parseFloat(user_account_input)).toFixed(2);
-    if (new_money_paid < 0) {
-      msg = '使用余额不得超过订单金额'
-    }
-    if (msg != '') {
-      this.setData({
-        prompt_message: msg,
-        canClick: false
-      })
-    }
-    this.setData({
-      user_account_input: user_account_input > 0 ? user_account_input : '',
-      'create_order.account_discount': parseFloat(user_account_input).toFixed(2),
-      'create_order.money_paid': new_money_paid
-    })
-  },
-
   // 备注
   msgInput (e) {
     let value = e.detail.value
@@ -429,7 +246,7 @@ global.wxPage({
       addMessage: value
     })
   },
-  // 订单计算
+  // 提交预约
   OneClickBuy (e) {
     var that = this
     let params = {
@@ -438,15 +255,16 @@ global.wxPage({
       storeId: that.data.storeInfo.storeId,
       technicianId: that.data.reserveInfo.tech_id,
       technicianName: that.data.reserveInfo.tech_name,
-      subscriber: that.data.params.subsciber,
-      mobile: that.data.params.mobile,
+      subscriber: that.data.recentOrderInfo.subscriber,
+      mobile: that.data.recentOrderInfo.mobile,
       addMessage: that.data.addMessage,
       serviceDate: that.data.reserveInfo.date,
       servicePeriod: that.data.reserveInfo.startTime + '-' + that.data.reserveInfo.endTime,
       useAccount: that.data.create_order.account_discount,
-      memberCardNo: '',
+      memberCardNo: that.data.useCard.cardNo,
       memberCardBalance: that.data.create_order.member_card_balance
     }
+    console.log(params)
     if (!params.subscriber) {
       util.showModal('提示', '请输入预约人姓名')
       return false
@@ -455,7 +273,6 @@ global.wxPage({
       util.showModal('提示', '请输入预约人手机号')
       return false
     }
-    console.log(params)
     util.api('/api/wxapp/store/service/submitReservation', function (res) {
       if (res.error === 0) {
         console.log(res.content)
@@ -482,12 +299,13 @@ global.wxPage({
       storeId: that.data.storeInfo.storeId,
       technicianId: that.data.reserveInfo.tech_id,
       technicianName: that.data.reserveInfo.tech_name,
-      subscriber: that.data.params.subsciber,
-      mobile: that.data.params.mobile,
+      subscriber: that.data.recentOrderInfo.subscriber,
+      mobile: that.data.recentOrderInfo.mobile,
       addMessage: that.data.addMessage,
       serviceDate: that.data.reserveInfo.date,
       servicePeriod: that.data.reserveInfo.startTime + '-' + that.data.reserveInfo.endTime
     }
+    console.log(params)
     if (!params.subscriber) {
       util.showModal('提示', '请输入预约人姓名')
       return false
@@ -496,7 +314,6 @@ global.wxPage({
       util.showModal('提示', '请输入预约人手机号')
       return false
     }
-    console.log(params)
     util.api('/api/wxapp/store/service/submitReservation', function (res) {
       if (res.error === 0) {
         console.log(res.content)
@@ -509,5 +326,67 @@ global.wxPage({
         })
       }
     }, params)
+  },
+  // 会员卡组件回调
+  getSelectCard (e) {
+    let no = e.detail;
+    let useCard = this.data.cardList.find(item => item.cardNo === no)
+    this.setData({
+      useCard: useCard,
+      'create_order.member_card_balance': 0
+    })
+    this.calculateBalance()
+  },
+  // 弹出会员卡余额弹窗
+  payCardBalanceClick () {
+    this.setData({
+      showCardBalanceDialog: true
+    })
+  },
+  // 弹出余额弹窗
+  payBalanceClick () {
+    this.setData({
+      showBalanceDialog: true
+    })
+  },
+  // 弹窗关闭回调
+  closeDialog (e) {
+    console.log(e)
+    switch (e.detail) {
+      case 'balance':
+        this.setData({
+          showBalanceDialog: false
+        })
+        break;
+      default:
+        this.setData({
+          showCardBalanceDialog: false
+        })
+        break;
+    }
+  },
+  // 应付计算
+  calculateBalance () {
+    let { service_deposit, member_card_balance, account_discount, money_paid } = this.data.create_order
+    money_paid = service_deposit - member_card_balance - account_discount
+    this.setData({
+      'create_order.money_paid': parseFloat(money_paid).toFixed(2)
+    })
+  },
+  // 会员卡余额支付组件回调
+  getInputCardBalance (e) {
+    console.log(e.detail)
+    this.setData({
+      'create_order.member_card_balance': e.detail ? parseFloat(e.detail).toFixed(2) : 0
+    })
+    this.calculateBalance()
+  },
+  // 余额支付组件回调
+  getInputBalance (e) {
+    console.log(e.detail)
+    this.setData({
+      'create_order.account_discount': e.detail ? parseFloat(e.detail).toFixed(2) : 0
+    })
+    this.calculateBalance()
   }
 })

@@ -1,4 +1,8 @@
 {
   "navigationBarTitleText": "提交预约",
-  "usingComponents": {}
+  "usingComponents": {
+    "select_card_dialog": "/components/popup/select_card_dialog/index",
+    "pay_card_balance_dialog": "/components/popup/pay_card_balance_dialog/index",
+    "pay_balance_dialog": "/components/popup/pay_balance_dialog/index"
+  }
 }
