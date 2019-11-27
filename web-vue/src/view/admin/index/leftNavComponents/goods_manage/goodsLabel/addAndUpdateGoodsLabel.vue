@@ -136,64 +136,17 @@
               >{{$t('addAndUpdateGoodsLabel.pointGoods')}}</el-radio>
             </div>
             <div v-if="goodsLabelData.isAll ===0">
-              <div>
-                <el-button @click="addGoodsClicked">+{{$t('addAndUpdateGoodsLabel.addGoods')}}</el-button>
-                <div v-if="selectedGoodsList.length > 0">
-                  <el-table
-                    :data="selectedGoodsList"
-                    class="tableClass"
-                    border
-                    style="width: 100%"
-                  >
-                    <el-table-column
-                      align="center"
-                      prop="name"
-                      :label="$t('addAndUpdateGoodsLabel.goodsName')"
-                    >
-                      <template slot-scope="{row}">
-                        <img
-                          style="width: 50px;height: 50px;float: left;"
-                          :src="row.goodsImg"
-                        />
-                        <div style="padding:10px;">
-                          {{row.goodsName}}
-                        </div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
-                      align="center"
-                      prop="shopPrice"
-                      :label="$t('addAndUpdateGoodsLabel.shopPrice')"
-                      width="100px"
-                    />
-                    <el-table-column
-                      align="center"
-                      prop="goodsNumber"
-                      :label="$t('addAndUpdateGoodsLabel.goodsNumber')"
-                      width="100px"
-                    />
-                    <el-table-column
-                      align="center"
-                      :label="$t('addAndUpdateGoodsLabel.operate')"
-                      width="100px"
-                    >
-                      <template slot-scope="{$index}">
-                        <span
-                          class="operateSpan"
-                          @click="selectedGoodsDeleteItem($index)"
-                        >{{$t('addAndUpdateGoodsLabel.deleteOperate')}}</span>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
+              <div @click="addGoodsClicked" class="pointGoodsItemBtnWrap">
+                <el-button size="small">+{{$t('addAndUpdateGoodsLabel.addGoods')}}</el-button>
+                <span>已选{{selectedGoodsList.length}}件商品</span>
               </div>
-              <div>
-                <el-button @click="addSortClicked">+{{$t('addAndUpdateGoodsLabel.addSort')}}</el-button>
-                <div></div>
+              <div @click="tuneUpChooseSort=true" class="pointGoodsItemBtnWrap">
+                <el-button  size="small">+{{$t('addAndUpdateGoodsLabel.addSort')}}</el-button>
+                <span>已选{{selectedSortList.length}}件商家</span>
               </div>
-              <div>
-                <el-button @click="addCatClicked">+{{$t('addAndUpdateGoodsLabel.addCategory')}}</el-button>
-                <div></div>
+              <div @click="tuneUpChooseCat=true" class="pointGoodsItemBtnWrap">
+                <el-button size="small">+{{$t('addAndUpdateGoodsLabel.addCategory')}}</el-button>
+                <span>已选{{selectedCatList.length}}件平台</span>
               </div>
             </div>
           </div>
@@ -209,9 +162,11 @@
     </div>
     <choosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
-      @resultGoodsDatas="chooseGoodsResult"
+      @resultGoodsDatas="goodsResultChoosed"
+      :chooseGoodsBack="selectedGoodsList"
     />
-
+    <catSortDialog @BusClassTrueArr="sortResultChoosed" :classFlag="1" :backDataArr="selectedSortList" :dialogVisible.sync="tuneUpChooseSort"/>
+    <catSortDialog @BusClassTrueArr="catResultChoosed" :classFlag="2" :backDataArr="selectedCatList" :dialogVisible.sync="tuneUpChooseCat"/>
   </div>
 </template>
 
@@ -220,11 +175,12 @@
 import { isGoodsLabelNameOk, addGoodsLabel, updateGoodsLabel, getGoodsLabel } from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
 // 组件引入
 import choosingGoods from '@/components/admin/choosingGoods'
+import catSortDialog from '@/components/admin/addingBusClassDialog'
 // 工具类引入
 import { isStrBlank } from '@/util/typeUtil'
 export default {
   name: 'addAndUpdateGoodsLabel',
-  components: { choosingGoods },
+  components: {choosingGoods, catSortDialog},
   watch: {
     lang () {
       this.goodsLabelRules.nameOld[0].message = this.$t('addAndUpdateGoodsLabel.labelNameRequired')
@@ -258,11 +214,13 @@ export default {
       /* 以下数据再goodsLabelData.isAll 为0时才有效 */
       // 关联的商品信息
       selectedGoodsList: [],
-      tuneUpChooseGoods: true,
+      tuneUpChooseGoods: false,
       // 关联的商家分类信息
       selectedSortList: [],
+      tuneUpChooseSort: false,
       // 关联的平台分类信息
-      selectedCatList: []
+      selectedCatList: [],
+      tuneUpChooseCat: false
     }
   },
   methods: {
@@ -303,33 +261,15 @@ export default {
     addGoodsClicked () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
-    /* 添加标签关联的商家分类信息 */
-    addSortClicked () {
-
-    },
-    /* 添加标签关联的平台分类信息 */
-    addCatClicked () {
-
-    },
     /* 商品弹出回调处理函数 */
-    chooseGoodsResult (data) {
+    goodsResultChoosed (data) {
       this.selectedGoodsList = data
     },
-    /* 删除已选中的需要关联的商品某一项 */
-    selectedGoodsDeleteItem (index) {
-      this.selectedGoodsList.splice(index, 1)
+    sortResultChoosed (data) {
+      this.selectedSortList = data
     },
-    /* 初始化关联商品信息 */
-    _initSelectedList (labelData) {
-      if (labelData.goodsViewList !== null && labelData.goodsViewList.length > 0) {
-        this.selectedGoodsList = labelData.goodsViewList
-      }
-      if (labelData.sortList !== null && labelData.sortList.length > 0) {
-        this.selectedSortList = labelData.sortList
-      }
-      if (labelData.catList !== null && labelData.catList.length > 0) {
-        this.selectedCatList = labelData.catList
-      }
+    catResultChoosed (data) {
+      this.selectedCatList = data
     },
     /* 修改标签内容回显 */
     _initDataForUpdate (labelId) {
@@ -349,7 +289,9 @@ export default {
         this.goodsLabelData.goodsSelect = labelData.goodsSelect
         this.goodsLabelData.isAll = labelData.isAll
         if (this.goodsLabelData.isAll === 0) {
-          this._initSelectedList(labelData)
+          this.selectedGoodsList = labelData.goodsIds
+          this.selectedSortList = labelData.sortIds
+          this.selectedCatList = labelData.catIds
         }
       })
     },
@@ -382,14 +324,14 @@ export default {
         listPattern: this.goodsLabelData.listPattern,
         goodsSelect: this.goodsLabelData.goodsSelect,
         isAll: this.goodsLabelData.isAll,
-        goodsId: [],
-        sortId: [],
-        catId: []
+        goodsIds: [],
+        sortIds: [],
+        catIds: []
       }
       if (this.goodsLabelData.isAll === 0) {
-        this.selectedGoodsList.forEach(item => params.goodsId.push(item.goodsId))
-        this.selectedSortList.forEach(item => params.sortId.push(item.sortId))
-        this.selectedCatList.forEach(item => params.catId.push(item.catId))
+        this.selectedGoodsList.forEach(item => params.goodsIds.push(item.goodsId))
+        params.sortIds = this.selectedSortList
+        params.catIds = this.selectedCatList
       }
       return params
     },
@@ -467,6 +409,10 @@ export default {
   font-size: 16px;
   color: #5a8bff;
   cursor: pointer !important;
+}
+.pointGoodsItemBtnWrap{
+  cursor: pointer;
+  width: 200px;
 }
 .contentFooter {
   position: absolute;

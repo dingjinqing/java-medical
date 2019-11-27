@@ -74,7 +74,7 @@
   </div>
 </template>
 <script>
-import { getGoodsLabelList } from '@/api/admin/goodsManage/goodsLabel/goodsLabel.js'
+import { getGoodsLabelPageList } from '@/api/admin/goodsManage/goodsLabel/goodsLabel.js'
 export default {
   props: {
     callAddProductLabel: { // 弹窗调起
@@ -148,7 +148,7 @@ export default {
         currentPage: this.currentPage,
         pageRows: 20
       }
-      getGoodsLabelList(params).then((res) => {
+      getGoodsLabelPageList(params).then((res) => {
         if (res.error === 0) {
           res.content.dataList.forEach((item, index) => {
             this.$set(item, 'ischeck', false)

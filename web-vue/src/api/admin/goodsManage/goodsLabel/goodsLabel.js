@@ -1,13 +1,14 @@
 import service from '@/util/request.js'
 
 // 分页查询商品标签
-export function getGoodsLabelList (data) {
+export function getGoodsLabelPageList (data) {
   return service({
-    url: '/api/admin/goods/label/list',
+    url: '/api/admin/goods/label/page/list',
     method: 'post',
     data: data
   })
 }
+
 // 商品标签添加
 export function addGoodsLabel (data) {
   return service({

@@ -189,7 +189,7 @@
 </template>
 <script>
 // api导入
-import { getGoodsLabelList, updateGoodsLabel, deleteGoodsLabel } from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
+import { getGoodsLabelPageList, updateGoodsLabel, deleteGoodsLabel } from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
 // 组件导入
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -258,7 +258,7 @@ export default {
         labelName: this.labelName,
         ...this.pageParams
       }
-      getGoodsLabelList(params).then(res => {
+      getGoodsLabelPageList(params).then(res => {
         this.goodsLabelData = res.content.dataList
 
         this.pageParams.totalRows = res.content.page.totalRows

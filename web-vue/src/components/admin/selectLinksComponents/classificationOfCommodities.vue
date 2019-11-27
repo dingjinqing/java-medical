@@ -76,7 +76,7 @@
 <script>
 import { cateListApi } from '@/api/admin/selectLinksApi/selectLinksApi'
 import { goodsBrandPageListApi } from '@/api/admin/goodsManage/brandManagement/brandManagement'
-import { getGoodsLabelList } from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
+import { getGoodsLabelPageList } from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
@@ -259,7 +259,7 @@ export default {
         let labelParams = {
           labelName: this.pageName
         }
-        getGoodsLabelList(labelParams).then(res => {
+        getGoodsLabelPageList(labelParams).then(res => {
           if (res.error === 0) {
             this.trList = res.content.dataList
           }
