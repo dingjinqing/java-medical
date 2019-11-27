@@ -268,6 +268,8 @@ public class JsonResultMessage {
     public static final String WX_9300530 = "wx.ma.biz_id.not.exist";
     public static final String WX_9300531 = "wx.ma.account.or.password.error";
     public static final String WX_9300532 = "wx.ma.under.review";
+    public static final String SEARCHCFG_HOTWORDS_LIMIT = "searchcfg.hotwords.limit";
+    public static final String SEARCHCFG_TITLECUSTOM_NOTNULL = "searchcfg.titleCustom.not.null";
 
 	/**
 	 * 门店管理
