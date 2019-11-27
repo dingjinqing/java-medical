@@ -120,7 +120,7 @@ public class FootPrintService extends ShopBaseService {
 			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(footprintGoods.getGoodsId());
 			footprintGoods.getGoodsList().add(goodsListMpVo);
 		});
-
+		byDateGroup(footprintList,footprintDaylist);
         return footprintListVo;
 	}
 

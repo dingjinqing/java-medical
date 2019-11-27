@@ -967,7 +967,7 @@ public class OrderReadService extends ShopBaseService {
 		Map<Integer, GoodsListMpVo> goodsListMpVoMap = goodsListMpVos.stream().collect(Collectors.toMap(GoodsListMpVo::getGoodsId, goods->goods));
 		orderGoodsHistoryVos.forEach(orderGoods->{
 			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(orderGoods.getGoodsId());
-			FieldsUtil.assignNotNull(goodsListMpVo, orderGoods);
+			orderGoods.getGoodsList().add(goodsListMpVo);
 		});
 		// 安装日期分组
 		footPrintService.byDateGroup(orderGoodsHistoryVos,footprintDaylist);
