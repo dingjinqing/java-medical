@@ -233,7 +233,7 @@ export default {
     resDataFilter (data) {
       data.map((item, index) => {
         item.dateValidity = item.startTime + '~' + item.endTime
-        item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+        item.statusText = this.getActStatusString(item.currentState)
       })
     },
     handlePagination () {

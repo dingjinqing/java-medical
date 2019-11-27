@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftListParam;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftListVo;
 import com.vpu.mp.service.pojo.shop.market.givegift.GiveGiftParam;
@@ -81,6 +82,7 @@ public class GiveGiftService extends ShopBaseService {
             Integer getGiftOrderCt = giveGiftReceive.getGetGiftOrderCt(data.getId());
             data.setSendOrderNumber(sendGiftOrderCt);
             data.setGetOrderMunber(getGiftOrderCt);
+            data.setCurrentState(Util.getActStatus(data.getStatus(),data.getStartTime(),data.getEndTime(),data.getDueTimeType()));
         });
         return pageResult;
     }

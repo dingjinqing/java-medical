@@ -260,7 +260,7 @@ export default {
     resDataFilter (data) {
       data.forEach(item => {
         item.validDate = item.startTime + this.$t('giveGift.to') + item.endTime
-        item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+        item.statusText = this.getActStatusString(item.currentState)
       })
       this.tableData = data
     },

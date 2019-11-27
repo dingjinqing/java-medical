@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.util.Util;
 import org.checkerframework.checker.units.qual.A;
 import org.jooq.AggregateFunction;
 import org.jooq.Record7;
@@ -172,7 +173,11 @@ public class LotteryService extends ShopBaseService {
         }
         select.orderBy(LOTTERY.CREATE_TIME.desc());
         select.groupBy(LOTTERY.ID, LOTTERY.LOTTERY_NAME, LOTTERY.START_TIME, LOTTERY.END_TIME,LOTTERY.STATUS);
-        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), LotteryPageListVo.class);
+        PageResult<LotteryPageListVo> res = getPageResult(select, param.getCurrentPage(), param.getPageRows(), LotteryPageListVo.class);
+        res.dataList.forEach(vo -> {
+            vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
+        });
+        return res;
     }
 
     /**

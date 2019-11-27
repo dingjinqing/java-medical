@@ -30,4 +30,9 @@ public class LotteryPageListVo {
      */
     private Integer awardNumber;
 
+    /**
+     * 当前活动状态：1进行中，2未开始，3已结束，4已停用
+     */
+    private Byte currentState;
+
 }
