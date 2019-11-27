@@ -460,7 +460,7 @@ export default {
     }
     var validatMoney = (rule, value, callback) => {
       var re = /^\d+(\.\d+)?$/
-      if (!re.test(value)) {
+      if (!re.test(value) && this.contains(0)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
       } else {
         callback()
@@ -468,7 +468,7 @@ export default {
     }
     var validatNum = (rule, value, callback) => {
       var re = /^(0|\+?[1-9][0-9]*)$/
-      if (!re.test(value)) {
+      if (!re.test(value) && this.contains(1)) {
         callback(new Error('请填写0或者正整数'))
       } else {
         callback()
@@ -476,7 +476,7 @@ export default {
     }
     var validatInt = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
-      if (!re.test(value)) {
+      if (!re.test(value) && this.contains(4)) {
         callback(new Error('请填写正整数'))
       } else {
         callback()
@@ -484,18 +484,13 @@ export default {
     }
     var validatMin = (rule, value, callback) => {
       let maxPayNum = this.$refs.maxPayNum.value
-      if (!value && !maxPayNum) {
-        callback()
-      }
       var re = /^(0|\+?[1-9][0-9]*)$/
-      if (!re.test(value) || !re.test(maxPayNum)) {
+      if ((!re.test(value) || !re.test(maxPayNum)) && this.contains(5)) {
         callback(new Error('请填写0或者正整数'))
+      } else if (value > maxPayNum) {
+        callback(new Error('最小购买次数不能大于最大购买次数'))
       } else {
-        if (value > maxPayNum) {
-          callback(new Error('最小购买次数不能大于最大购买次数'))
-        } else {
-          callback()
-        }
+        callback()
       }
     }
 
@@ -542,16 +537,16 @@ export default {
       },
       // 校验
       paramRules: {
-        name: { required: true, message: '请填写活动名称', trigger: 'blur' },
-        level: { required: true, validator: validatelevel, trigger: 'blur' },
-        dateRange: { required: true, message: '请填写活动时间', trigger: 'change' },
-        goodsRange: { required: true, validator: validategoodsRange, trigger: 'change' },
-        selectedRules: { required: true, validator: validateselectedRules, trigger: 'change', type: 'array' },
-        'rules.fullPrice': { validator: validatMoney, trigger: 'blur' },
-        'rules.fullNumber': { validator: validatNum, trigger: 'blur' },
-        'rules.payTop': { validator: validatInt, trigger: 'blur' },
-        'rules.minPayNum': { validator: validatMin, trigger: 'blur' },
-        explain: { required: true, message: '请填写赠品规则说明', trigger: 'blur' }
+        name: [{ required: true, message: '请填写活动名称', trigger: 'blur' }],
+        level: [{ required: true, validator: validatelevel, trigger: 'blur' }],
+        dateRange: [{ required: true, message: '请填写活动时间', trigger: 'change' }],
+        goodsRange: [{ required: true, validator: validategoodsRange, trigger: 'change' }],
+        selectedRules: [{ required: true, validator: validateselectedRules, trigger: 'change', type: 'array' }],
+        'rules.fullPrice': [{ validator: validatMoney, trigger: 'blur' }],
+        'rules.fullNumber': [{ validator: validatNum, trigger: 'blur' }],
+        'rules.payTop': [{ validator: validatInt, trigger: 'blur' }],
+        'rules.minPayNum': [{ validator: validatMin, trigger: 'blur' }],
+        explain: [{ required: true, message: '请填写赠品规则说明', trigger: 'blur' }]
       },
       userAction: this.$t('gift.userAction'),
       // 系统中的全部赠品规则
@@ -611,10 +606,11 @@ export default {
     // 下一步
     nextStep () {
       this.formatParam()
-      if (!this.validateParam()) {
-        return
-      }
+      // if (!this.validateParam()) {
+      //   return
+      // }
       this.$refs['param'].validate((valid) => {
+        console.log(valid)
         if (valid) {
           this.step++
         }
