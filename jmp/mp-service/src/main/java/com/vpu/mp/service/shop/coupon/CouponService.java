@@ -117,7 +117,9 @@ public class CouponService extends ShopBaseService {
         for (CouponListVo list : couponList.dataList) {
             int used = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(list.getId())).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1)).fetchOne().into(Integer.class);
             list.setUsed(used);
-            list.setCurrentState(Util.getActStatus(list.getEnabled(),list.getStartTime(),list.getEndTime()));
+            if(list.getValidityType().equals(BaseConstant.COUPON_VALIDITY_TYPE_FIXED)){
+                list.setCurrentState(Util.getActStatus(list.getEnabled(),list.getStartTime(),list.getEndTime()));
+            }
         }
         return couponList;
     }
@@ -207,7 +209,7 @@ public class CouponService extends ShopBaseService {
      */
     public boolean couponPause(Integer couponId) {
         int result = db().update(MRKING_VOUCHER)
-            .set(MRKING_VOUCHER.ENABLED, (byte) 0)
+            .set(MRKING_VOUCHER.ENABLED, BaseConstant.COUPON_ENABLED_DISABLED)
             .where(MRKING_VOUCHER.ID.eq(couponId))
             .execute();
         return result > 0 ? true : false;
@@ -221,7 +223,7 @@ public class CouponService extends ShopBaseService {
      */
     public boolean couponOpen(Integer couponId) {
         int result = db().update(MRKING_VOUCHER)
-                .set(MRKING_VOUCHER.ENABLED, (byte) 1)
+                .set(MRKING_VOUCHER.ENABLED, BaseConstant.COUPON_ENABLED_NORMAL)
                 .where(MRKING_VOUCHER.ID.eq(couponId))
                 .execute();
         return result > 0 ? true : false;
@@ -235,7 +237,7 @@ public class CouponService extends ShopBaseService {
      */
     public boolean couponDel(Integer couponId) {
         int result = db().update(MRKING_VOUCHER)
-            .set(MRKING_VOUCHER.DEL_FLAG, (byte) 1)
+            .set(MRKING_VOUCHER.DEL_FLAG, DelFlag.DISABLE_VALUE)
             .where(MRKING_VOUCHER.ID.eq(couponId))
             .execute();
         return result > 0 ? true : false;
@@ -401,8 +403,8 @@ public class CouponService extends ShopBaseService {
         recommendCondition = recommendNullCondition.or(recommendCondition);
 
         // 优惠券基本条件过滤
-        Condition otherCondition = MRKING_VOUCHER.ENABLED.eq((byte) 1).and(MRKING_VOUCHER.SURPLUS.gt(0))
-            .and(MRKING_VOUCHER.TYPE.eq((byte) 0)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        Condition otherCondition = MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL).and(MRKING_VOUCHER.SURPLUS.gt(0))
+            .and(MRKING_VOUCHER.TYPE.eq(BaseConstant.COUPON_TYPE_NORMAL)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         if (suit != null) {
             otherCondition.and(MRKING_VOUCHER.SUIT_GOODS.eq(suit));
         }
@@ -422,10 +424,10 @@ public class CouponService extends ShopBaseService {
     public List<CouponAllVo> getCouponAll(Boolean isHasStock) {
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
         List<CouponAllVo> couponAllVos = db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ALIAS_CODE, MRKING_VOUCHER.TYPE, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
-                .from(MRKING_VOUCHER).where(MRKING_VOUCHER.TYPE.eq((byte) 0)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .from(MRKING_VOUCHER).where(MRKING_VOUCHER.TYPE.eq(BaseConstant.COUPON_TYPE_NORMAL)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(MRKING_VOUCHER.START_TIME.le(nowTime).and(MRKING_VOUCHER.END_TIME.gt(nowTime))
                         .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.lt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.lt(0))))
-                .and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte) 1).or(MRKING_VOUCHER.SURPLUS.gt(0))).fetchInto(CouponAllVo.class);
+                .and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq(BaseConstant.COUPON_LIMIT_SURPLUS_FLAG_UNLIMITED).or(MRKING_VOUCHER.SURPLUS.gt(0))).fetchInto(CouponAllVo.class);
         return couponAllVos;
 
     }

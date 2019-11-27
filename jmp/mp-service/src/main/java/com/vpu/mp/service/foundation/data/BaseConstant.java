@@ -104,7 +104,6 @@ public final  class  BaseConstant {
      * 领取后开始指定时间段内有效
      */
     public final static Byte COUPON_VALIDITY_TYPE_FLEXIBLE =1;
-
     //是否限制库存：0限制，1不限制
     /**
      * 0限制
@@ -114,6 +113,15 @@ public final  class  BaseConstant {
      * 1不限制
      */
     public final static Byte COUPON_LIMIT_SURPLUS_FLAG_UNLIMITED =1;
+    //优惠券类型，0普通优惠券；1分裂优惠券
+    /**
+     * 0普通优惠券
+     */
+    public final static Byte COUPON_TYPE_NORMAL =0;
+    /**
+     * 1分裂优惠券
+     */
+    public final static Byte COUPON_TYPE_SPLIT =1;
 
     //*********************前端活动状态***************************************/
     /**
