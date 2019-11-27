@@ -474,7 +474,7 @@ public class OrderReadService extends ShopBaseService {
 		Map<Integer, List<OrderGoodsMpVo>> goods = orderGoods.getByOrderIds(ids.toArray(new Integer[ids.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
 		for(OrderListMpVo order : result.dataList) {
 			//订单类型
-			order.setOrderType(Arrays.asList(orderTypeToArray(order.getGoodsType())));
+			order.setOrderType(Arrays.asList(OrderInfoService.orderTypeToArray(order.getGoodsType())));
 			//奖品订单判断
 			order.setIsLotteryGift(isAwardOrder(order.getOrderType()) ? YES : NO);
 			//设置商品
@@ -494,7 +494,7 @@ public class OrderReadService extends ShopBaseService {
 				order.setGroupBuyInfo(groupBuyList.getByOrder(order.getOrderSn()));
 			}
 			//补款设置时间
-			if(order.getBkOrderPaid() == OrderConstant.BK_PAID_Y) {
+			if(order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
 				setBkPayOperation(order);
 			}
 			//是否退过款
@@ -528,7 +528,7 @@ public class OrderReadService extends ShopBaseService {
 			throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		OrderInfoMpVo order = orders.get(0);
-		List<String> orderType = Arrays.asList(orderTypeToArray(order.getGoodsType()));
+        List<String> orderType = Arrays.asList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
 		//商品
 		Map<Integer, OrderGoodsMpVo> goods = orderGoods.getKeyMapByIds(order.getOrderId());
 		//set orderType
@@ -620,7 +620,7 @@ public class OrderReadService extends ShopBaseService {
 	 */
 	private void setPayOperation(OrderListMpVo order) {
 		long currenTmilliseconds  = Instant.now().toEpochMilli();
-		if(order.getBkOrderPaid() == OrderConstant.BK_PAID_Y) {
+		if(order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
 			//预售、定金订单
 			Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
 			if(timeInterval.value1().getTime() < currenTmilliseconds && currenTmilliseconds < timeInterval.value2().getTime() ) {
@@ -682,15 +682,6 @@ public class OrderReadService extends ShopBaseService {
 		subOrder.forEach(x->x.setGoods(subOrderGoods.get(x.getOrderId())));
 		return subOrder;
 
-	}
-
-	/**
-	 * 转化订单类型
-	 * @param orderType
-	 * @return
-	 */
-	public static String[] orderTypeToArray(String orderType) {
-		return orderType.substring(1, orderType.length() - 1 ).split("\\]\\[");
 	}
 
 	/**

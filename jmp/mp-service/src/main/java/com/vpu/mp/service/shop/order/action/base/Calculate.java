@@ -23,7 +23,6 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.UserCardService;
-import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 import lombok.Getter;
@@ -490,7 +489,7 @@ public class Calculate extends ShopBaseService {
     public void setGoodsReturnCfg(List<OrderGoodsBo> orderGoods, String goodsType, Byte posFlag){
         Byte isCanReturn = null;
         Map<Integer, Byte> goodsReturnCfg = null;
-        if(Lists.newArrayList(OrderReadService.orderTypeToArray(goodsType)).contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)){
+        if(Lists.newArrayList(OrderInfoService.orderTypeToArray(goodsType)).contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)){
             isCanReturn = OrderConstant.IS_CAN_RETURN_N;
         }else if(posFlag != null && OrderConstant.YES == posFlag) {
             isCanReturn = OrderConstant.IS_CAN_RETURN_Y;

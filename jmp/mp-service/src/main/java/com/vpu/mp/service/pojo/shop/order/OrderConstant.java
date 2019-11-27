@@ -21,6 +21,10 @@ public class OrderConstant {
 
     /**order sn 前缀*/
     public final static String ORDER_SN_PREFIX = "P";
+
+    /**pay sn 前缀*/
+    public final static String PAY_SN_PREFIX = "PS";
+
 	/** 订单状态order_status */
 	/** 待付款 可进行操作：关闭订单 */
 	public final static byte ORDER_WAIT_PAY = 0;
@@ -269,8 +273,9 @@ public class OrderConstant {
 	/**
 	 * 定金尾款支付状态，先定金后尾款。order_pay_way=1时有效，0未支付，1定金已支付，2尾款已支付
 	 */
-	public final static byte BK_PAID_N = 0;
-	public final static byte BK_PAID_Y = 1;
+    public final static byte BK_PAY_NO = 0;
+    public final static byte BK_PAY_FRONT = 1;
+    public final static byte BK_PAY_FINISH = 2;
 
 	/**
 	 * 综合查询：支付方式

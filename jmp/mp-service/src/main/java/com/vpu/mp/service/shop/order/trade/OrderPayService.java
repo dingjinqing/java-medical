@@ -25,7 +25,6 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
-import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
@@ -91,7 +90,7 @@ public class OrderPayService extends ShopBaseService{
     public ExecuteResult isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param, CreateOrderVo vo) {
         logger().info("继续支付接口start");
         ExecuteResult executeResult = ExecuteResult.create();
-        ArrayList<String> goodsType = Lists.newArrayList(OrderReadService.orderTypeToArray(orderInfo.getGoodsType()));
+        ArrayList<String> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToArray(orderInfo.getGoodsType()));
         if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
             return executeResult;
         }else if(OrderConstant.ORDER_WAIT_PAY == orderInfo.getOrderStatus() &&

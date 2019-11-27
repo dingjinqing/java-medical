@@ -72,14 +72,6 @@ public class AtomicOperation extends ShopBaseService {
             if(product == null || goods == null){
                 //商品或规格row为null
                 throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_EXIST , null, order.getOrderSn());
-            }else {
-                if(product.getPrdNumber() < num) {
-                    //库存不足
-                    log.error("库存不足AtomicOperation.updateStockAndSales");
-                    order.setOrderStatusName("超卖");
-                    order.store();
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK, null, order.getOrderSn());
-                }
             }
             //商品库存
             int goodsStock = goods.getGoodsNumber() - num;
@@ -87,6 +79,23 @@ public class AtomicOperation extends ShopBaseService {
             int goodsSales = goods.getGoodsSaleNum() + num;
             //规格库存
             int productStock = product.getPrdNumber() - num;
+            if(product.getPrdNumber() < num) {
+                //库存不足
+                log.error("库存不足订单超卖,订单号:{},规格id:{};" +
+                        "原商品库存:{},原商品销量:{},原规格库存:{};" +
+                        "此次购买数量:{}",
+                    order.getOrderSn(), product.getPrdId(),
+                    goods.getGoodsNumber(), goods.getGoodsSaleNum(), product.getPrdNumber(),
+                    num
+                );
+                //不允许出现负值
+                if(goodsStock < 0) {
+                    goodsStock = 0;
+                }
+                if(productStock < 0) {
+                    productStock = 0;
+                }
+            }
             //内存修改
             goods.setGoodsNumber(goodsStock);
             goods.setGoodsSaleNum(goodsSales);
@@ -101,7 +110,6 @@ public class AtomicOperation extends ShopBaseService {
         //商品库存更新
         goodsService.batchUpdateGoodsNumsAndSaleNumsForOrder(updateGoods);
         //TODO 活动库存更新
-
         log.info("AtomicOperation.updateStockAndSales订单库存销量更新end");
     }
 }

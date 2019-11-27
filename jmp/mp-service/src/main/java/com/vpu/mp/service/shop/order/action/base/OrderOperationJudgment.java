@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -20,7 +21,6 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
-import com.vpu.mp.service.shop.order.OrderReadService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -151,7 +151,7 @@ public class OrderOperationJudgment {
 	 */
 	public static boolean mpIsCancel(OrderListInfoVo order) {
 		if(//1待付款  且  无补款或补款未支付
-			(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && order.getBkOrderPaid() == OrderConstant.BK_PAID_N)
+			(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && order.getBkOrderPaid() == OrderConstant.BK_PAY_NO)
 			//2待发货  且 余额支付  且 系统金额为0(。。。不可以取消)
 			//|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPayCode() == OrderConstant.PAY_CODE_BALANCE_PAY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0
 			//3待发货  且  货到付款(。。。不可以取消)
@@ -182,7 +182,7 @@ public class OrderOperationJudgment {
 	 */
 	public static boolean mpIsClose(OrderListInfoVo order) {
 		if(//待支付不存在补款或补款未支付
-			order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && order.getBkOrderPaid() == OrderConstant.BK_PAID_N
+			order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && order.getBkOrderPaid() == OrderConstant.BK_PAY_NO
 			//待发货 且 货到付款 且 系统支付0
 			|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0 && order.getPayCode() == OrderConstant.PAY_CODE_COD) {
 			return true;
@@ -300,7 +300,7 @@ public class OrderOperationJudgment {
 	 */
 	public static boolean isShowRemindShip(OrderListMpVo order) {
 		if(CollectionUtils.isEmpty(order.getOrderType())) {
-			order.setOrderType(Arrays.asList(OrderReadService.orderTypeToArray(order.getGoodsType())));
+			order.setOrderType(Arrays.asList(OrderInfoService.orderTypeToArray(order.getGoodsType())));
 		}
 		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getOrderType().indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GIVE_GIFT).toString()) == -1) {
 			return true;

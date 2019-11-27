@@ -12,6 +12,7 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
@@ -135,9 +136,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private CartService cart;
-
-    @Autowired
-    private JedisManager jedis;
     
     @Override
     public OrderServiceCode getServiceCode() {
@@ -199,7 +197,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         try{
             //生成orderSn
-            String orderSn = jedis.getIncrSequence(OrderConstant.ORDER_SN_PREFIX);
+            String orderSn = IncrSequenceUtil.generateOrderSn(OrderConstant.ORDER_SN_PREFIX);
             //record入库
             transaction(()->{
                 //初始化订单（赋值部分数据）

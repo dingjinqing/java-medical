@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.payment;
 
 import static com.vpu.mp.db.shop.tables.PaymentRecord.PAYMENT_RECORD;
 
+import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +25,10 @@ public class PaymentRecordService extends ShopBaseService {
 	 * @return 
 	 */
 	public PaymentRecordRecord addPaymentRecord(PaymentRecordParam param) {
-		param.setPaySn(generatePaySn());
+		param.setPaySn(IncrSequenceUtil.generateOrderSn(OrderConstant.PAY_SN_PREFIX));
 		PaymentRecordRecord record = db().newRecord(PAYMENT_RECORD,param);
 		record.insert();
+        record.refresh();
 		return record;
 	}
 	
@@ -55,21 +58,6 @@ public class PaymentRecordService extends ShopBaseService {
 	public PaymentRecordRecord getPaymentRecordByTradeNo(String tradeNo) {
 		return db().fetchAny(PAYMENT_RECORD,PAYMENT_RECORD.TRADE_NO.eq(tradeNo));
 	}
-	
-	/**
-	 * 产生PaySn
-	 * @return
-	 */
-    protected String generatePaySn()
-    {
-    	while(true) {
-    		String paySn = "PS" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE) + RandomUtil.getIntRandom();
-    		int count = db().fetchCount(PAYMENT_RECORD,PAYMENT_RECORD.PAY_SN.eq(paySn));
-    		if(count == 0) {
-    			return paySn;
-    		}
-    	}
-    }
     
     /**
      * 得到分页记录

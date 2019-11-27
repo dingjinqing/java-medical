@@ -4,6 +4,7 @@ import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.payment.PayCode;
@@ -79,7 +80,7 @@ public class PaymentService extends ShopBaseService {
 	/**
 	 * 统一订单支付回调
 	 */
-	public void unionPayNotify(PaymentRecordParam param) {
+	public void unionPayNotify(PaymentRecordParam param) throws MpException {
         String orderSn = param.getOrderSn();
         String prefix = orderSn.substring(0,1);
         switch (prefix) {
@@ -102,11 +103,7 @@ public class PaymentService extends ShopBaseService {
                 break;
             case OrderConstant.ORDER_SN_PREFIX:
                 //订单统一支付回调
-                try {
-                    onPayNotify(param);
-                } catch (WxPayException e) {
-                    e.printStackTrace();
-                }
+                onPayNotify(param);
                 break;
             default:
                 return;
@@ -119,25 +116,24 @@ public class PaymentService extends ShopBaseService {
 	 * @param param
 	 * @throws WxPayException
 	 */
-	protected void onPayNotify(PaymentRecordParam param) throws WxPayException {
-		Byte orderPayFull = 0;
-		Byte orderPayHasPreMoney = 1;
-		Byte notPaid = 0;
-		Byte preMondyPaid = 1;
-		Byte bkMoneyPaid = 2;
+	protected void onPayNotify(PaymentRecordParam param) throws MpException {
+
 		String orderSn = param.getOrderSn().split("_")[0];
 		param.setOrderSn(orderSn);
 
 		OrderInfoRecord orderInfo = order.getOrderByOrderSn(orderSn);
 		if (orderInfo == null) {
-			throw new WxPayException("orderSn " + orderSn + "not found");
+            logger().error("订单统一支付回调,未找到订单sn:{}", orderSn);
+			throw new MpException(null, "orderSn " + orderSn + "not found");
 		}
-		String[] goodsTypes = orderInfo.getGoodsType().split(",");
+		String[] goodsTypes = OrderInfoService.orderTypeToArray(orderInfo.getGoodsType());
 		BigDecimal totalFee = new BigDecimal(param.getTotalFee());
 
 		// 全款支付，且金额不相同，则抛出异常
-		if (orderInfo.getMoneyPaid().equals(totalFee) && orderInfo.getOrderPayWay().equals(orderPayFull)) {
-			throw new WxPayException("onPayNotify orderSn " + orderSn + " pay amount  did not match");
+		if (orderInfo.getMoneyPaid().equals(totalFee) && orderInfo.getOrderPayWay().equals(OrderConstant.PAY_WAY_FULL)) {
+            logger().error("订单统一支付回调,全款支付但金额不相同,订单sn:{},参数金额:{},订单金额:{}",
+                orderSn, totalFee, orderInfo.getMoneyPaid());
+			throw new MpException(null, "onPayNotify orderSn " + orderSn + " pay amount  did not match");
 		}
 
 		// 订单状态已经是支付后状态，则直接返回
@@ -149,7 +145,7 @@ public class PaymentService extends ShopBaseService {
 		// TODO: 如果为欧派或者寺库，订单推送，可以尝试消息队列
 
 		// 补款订单，订单号为补款订单号
-		if (!orderInfo.getBkOrderPaid().equals(bkMoneyPaid)) {
+		if (OrderConstant.BK_PAY_FRONT == orderInfo.getBkOrderPaid()) {
 			param.setOrderSn(orderInfo.getBkOrderSn());
 		}
 
@@ -163,18 +159,14 @@ public class PaymentService extends ShopBaseService {
 			 * 否则为全款支付，则直接BK_ORDER_PAID置为2(尾款已支付)，状态变为待发货 最后修改相应预售商品数量销量库存 2.
 			 * 已支付定金状态时，则直接BK_ORDER_PAID置为2(尾款已支付)，状态变为待发货
 			 */
-			if (orderInfo.getBkOrderPaid().equals(notPaid)) {
+			if (orderInfo.getBkOrderPaid() == OrderConstant.BK_PAY_NO) {
 				// 未支付时
-				if (orderInfo.getOrderPayWay().equals(orderPayHasPreMoney)) {
+				if (orderInfo.getOrderPayWay() == OrderConstant.PAY_WAY_BARGIAN) {
 					// 定金尾款支付方式时，先标记定金已支付
-					db().update(order.TABLE).set(order.TABLE.BK_ORDER_PAID, preMondyPaid)
-							.where(order.TABLE.ORDER_ID.eq(orderInfo.getOrderId()))
-							.execute();
+                    orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FRONT);
 				} else {
 					// 全款支付方式时，则直接标记为尾款已支付
-					db().update(order.TABLE).set(order.TABLE.BK_ORDER_PAID, bkMoneyPaid)
-							.where(order.TABLE.ORDER_ID.eq(orderInfo.getOrderId()))
-							.execute();
+                    orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);
 					/**
 					 * 状态变为待发货 TODO: order.waitDeliver();
 					 */
@@ -184,9 +176,7 @@ public class PaymentService extends ShopBaseService {
 				 */
 			} else {
 				// 定金已支付，标记为尾款已支付
-				db().update(order.TABLE).set(order.TABLE.BK_ORDER_PAID, bkMoneyPaid)
-						.where(order.TABLE.ORDER_ID.eq(orderInfo.getOrderId()))
-						.execute();
+                orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);
 				/**
 				 * 状态变为待发货 TODO: order.waitDeliver();
 				 */
@@ -196,6 +186,7 @@ public class PaymentService extends ShopBaseService {
 			 * 状态变为待发货 TODO: order.waitDeliver();
 			 */
 		}
+        orderInfo.update();
 
 		/**
 		 * TODO:POS推送订单
@@ -208,6 +199,5 @@ public class PaymentService extends ShopBaseService {
 		/**
 		 * TODO: 分销订单发送返利模板消息
 		 */
-
 	}
 }

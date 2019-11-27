@@ -309,6 +309,15 @@ public class OrderInfoService extends ShopBaseService {
         return sbr.toString();
     }
 
+    /**
+     * 转化订单类型
+     * @param orderType
+     * @return
+     */
+    public static String[] orderTypeToArray(String orderType) {
+        return orderType.substring(1, orderType.length() - 1 ).split("\\]\\[");
+    }
+
 	/**
 	 *	 构造营销订查询条件
 	 *

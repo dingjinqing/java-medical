@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.foundation.exception.MpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -163,10 +164,10 @@ public class AdminWechatController extends AdminBaseController {
 			mpPay.onPayNotify(orderResult);
 			return WxPayNotifyResponse.success("Ok");
 		} catch (WxPayException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			return WxPayNotifyResponse.fail(e.getMessage());
-		}
+		} catch (MpException e) {
+            return WxPayNotifyResponse.fail(e.getMessage());
+        }
 	}
 
 }
