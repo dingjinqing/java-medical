@@ -174,6 +174,25 @@
         >{{$t('pageSetUp.determine')}}</el-button>
       </span>
     </el-dialog>
+    <!--二次保存确认-->
+    <el-dialog
+      title="页面发布提醒"
+      :visible.sync="saveTwoDialogVisible"
+      width="30%"
+      :center='true'
+    >
+      <span>页面将自动保存为草稿并发布到线上</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="saveTwoDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="handleToSaveTwo()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -223,8 +242,9 @@ export default {
     OfficialAccount: () => import('./decorationModules/graphicAndTextComponents/officialAccount'), // 公众号模块
     CustomerServiceModule: () => import('./decorationModules/graphicAndTextComponents/customerServiceModule') // 客服模块
   },
-  data () {
+  data() {
     return {
+      saveTwoDialogVisible: false, // 二次弹窗flag
       leftComClass: false, // 左边组件库适配中英文
       deleteVisible: false,
       deleteFlag: null,
@@ -279,11 +299,12 @@ export default {
       page_type: null, // 编辑回显page_type
       page_enabled: null, // 编辑回显page_enabled
       page_tpl_type: null, //  编辑回显page_tpl_type
-      isAddBottom: false // 是否添加到底部flag
+      isAddBottom: false, // 是否添加到底部flag
+      isNewEnterFirstSaveSucess: -1 //  新建进来并且是非第一次保存记录id
     }
   },
   watch: {
-    showModulesList (newData) {
+    showModulesList(newData) {
       console.log(this.nowRightShowIndex, newData)
       console.log(newData)
       this.$http.$emit('modulesClick', this.nowRightShowIndex)
@@ -293,25 +314,25 @@ export default {
         this.zbFlag = false
       }
     },
-    nowRightShowIndex (newData) {
+    nowRightShowIndex(newData) {
       console.log(newData, this.activeName, this.nowRightModulesData)
       this.handleToModuleHight()
     },
-    activeName (newData) {
+    activeName(newData) {
       this.initLeftModulesShow(newData)
     },
-    lang () {
+    lang() {
       this.pivTextConArr = this.$t('decorationHome.pivTextConArr')
       this.goodsTextConArr = this.$t('decorationHome.goodsTextConArr')
       this.marketingTextConArr = this.$t('decorationHome.marketingTextConArr')
       this.initLeftModulesShow(this.activeName)
     }
   },
-  updated () {
+  updated() {
     console.log(this.nowRightShowIndex)
     this.$http.$emit('modulesClick', this.nowRightShowIndex)
   },
-  mounted () {
+  mounted() {
     // 初始化语言
     this.langDefault()
     console.log(this.$route)
@@ -374,7 +395,7 @@ export default {
   },
   methods: {
     // 模块名称转化
-    handleToTurnModulesName (data) {
+    handleToTurnModulesName(data) {
       let showModuleArr = []
       let arr = JSON.parse(JSON.stringify(data))
       arr.forEach(item => {
@@ -384,7 +405,7 @@ export default {
       this.showModulesList = showModuleArr
     },
     // 模块名数据池
-    modulesName (name) {
+    modulesName(name) {
       let moduleNameId = null
       switch (name) {
         case 'm_card':
@@ -459,7 +480,7 @@ export default {
       return moduleNameId
     },
     // 初始化左侧模块显示
-    initLeftModulesShow (activeName) {
+    initLeftModulesShow(activeName) {
       switch (activeName) {
         case 'first':
           this.nowShowLeftModules = this.pivTextConArr
@@ -475,12 +496,12 @@ export default {
       })
     },
     // 页面设置回显
-    hanelToPageSet (res) {
+    hanelToPageSet(res) {
       console.log(res)
       this.pageSetData = res
     },
     // 初始化拖拽事件
-    init_drag_event () {
+    init_drag_event() {
       let this_ = this
       // 左侧模块向中间区域拖拽
       $('.third_drag').draggable({
@@ -529,7 +550,7 @@ export default {
       })
     },
     // 左侧模块拖拽开始start处理函数
-    highlignt_row_item (pos) {
+    highlignt_row_item(pos) {
       let this_ = this
       let p = $('.drag_area').offset()
       console.log(p, '--', pos, '--', $('.drag_area').width(), $('.drag_area').height())
@@ -554,7 +575,7 @@ export default {
       }
     },
     // 中间模块拖拽接收
-    handleToAcceptDrag () {
+    handleToAcceptDrag() {
       let this_ = this
       // console.log('test')
       $('.drag_area').droppable({
@@ -646,7 +667,7 @@ export default {
       })
     },
     // 左侧模块拖入中间区域后，中间区域数据处理函数
-    handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
+    handleToMiddleAcceptData(insertModulesId, showModulesList, insert, index) {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
       console.log(insertModulesId, index)
       if (insertModulesId === -1 || this.isAddBottom) {
@@ -669,7 +690,7 @@ export default {
       }
     },
     // 中间区域元素开始拖动时处理函数
-    handleToStart ({ oldIndex }) {
+    handleToStart({ oldIndex }) {
       console.log(oldIndex)
 
       this.middleHereFlag = true
@@ -693,7 +714,7 @@ export default {
       this.isDragging = true
     },
     // 中间区域元素停止拖动是处理函数
-    handleToEnd (e) {
+    handleToEnd(e) {
       // let this_ = this
       console.log(this.oldIndex, this.newIndex, this.oldElement)
 
@@ -734,7 +755,7 @@ export default {
       })
     },
     // 中间区域模块icon点击数据接收统一处理
-    handleToClickIcon ({ direction, flag }) {
+    handleToClickIcon({ direction, flag }) {
       console.log(1111)
       this.topAreaFlag = false
       switch (direction) {
@@ -791,7 +812,7 @@ export default {
       }
     },
     // 中间模块是否删除弹窗点击确定事件
-    handleToSureDelete (flag) {
+    handleToSureDelete(flag) {
       console.log(this.modulesData)
       let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
       console.log(this.nowRightShowIndex)
@@ -836,27 +857,27 @@ export default {
       console.log(this.showModulesList, this.modulesData)
     },
     // 中间区域拖拽插入数据处理
-    middleDragData (res) {
+    middleDragData(res) {
       console.log(res)
       this.newIndex = res
     },
     // 顶部滑动
-    dragTopOver () {
+    dragTopOver() {
       console.log('滑过顶部')
       this.topAreaFlag = true
     },
     // 顶部划出
-    dragTopOut () {
+    dragTopOut() {
       this.topAreaFlag = false
     },
     // 模块点击
-    handleToClickModule (index) {
+    handleToClickModule(index) {
       console.log(index)
       this.$http.$emit('modulesClick', index)
       // this.handleToModuleHight()
     },
     // 当前高亮模块数据处理向右侧传递事件
-    handleToModuleHight () {
+    handleToModuleHight() {
       let flag = true
       this.showModulesList.forEach(item => {
         if (item === -1) {
@@ -888,7 +909,7 @@ export default {
       console.log(this.showModulesList, this.modulesData)
     },
     // 当中间模块数组showModulesList被插入新的数据时、保存数组处理函数
-    handleToSaveModules (showModulesList, modulesData) {
+    handleToSaveModules(showModulesList, modulesData) {
       console.log(this.showModulesList, this.modulesData)
       if (this.showModulesList.length > this.modulesData.length) {
         console.log(this.showModulesList[this.nowRightShowIndex])
@@ -924,7 +945,7 @@ export default {
       // })
     },
     //  点击左侧模块加到中间模块队列底部并高亮
-    handleToClickLeftModule (id) {
+    handleToClickLeftModule(id) {
       this.showModulesList.push(id)
       console.log(id)
       let length = this.showModulesList.length - 1
@@ -934,17 +955,17 @@ export default {
       })
     },
     // 当中部模块数据排序发生变化时处理保存模块数组的排序
-    handleToSortModulesData (insert, obj) {
+    handleToSortModulesData(insert, obj) {
       console.log(insert, this.showModulesList, this.modulesData)
       if (this.showModulesList.length <= 1) return
       console.log(insert, this.showModulesList, this.modulesData)
     },
     // 右侧点击页面设置重置中部显示
-    handleToClearIndex () {
+    handleToClearIndex() {
       this.nowRightShowIndex = null
     },
     // 右侧编辑回显数据
-    handleToBackMiddleData (data) {
+    handleToBackMiddleData(data) {
       console.log(data)
       this.modulesData[this.nowRightShowIndex] = data
       console.log(this.modulesData)
@@ -952,12 +973,17 @@ export default {
       console.log(this.modulesData[this.nowRightShowIndex])
       console.log(data)
     },
-    // 底部保存等按钮点击统一处理
-    handleToFooter (flag) {
+    // 二次保存并发布确认
+    handleToSaveTwo(flag) {
+      this.handleToSave(0)
+    },
+    // 保存处理事件
+    handleToSave(flag) {
       let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
       // 对模块某些数据进行非空校验
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
       if (!judgeFlag) return
+
       console.log(saveMosulesData)
       console.log(this.pageSetData, this.cur_idx)
       this.pageSetData.last_cur_idx = this.cur_idx
@@ -978,18 +1004,6 @@ export default {
         last_cur_idx: this.cur_idx
       }
       console.log(this.isEditSave)
-      // cat_id: 0
-      // create_time: "2019-10-15 14:11:31"
-      // page_content: "{"c_101":{"module_name":"m_image_guide","nav_style":"1","font_color":"#92b0e4","bg_color":"#ffffff","nav_group":[{"nav_name":"导航一","nav_link":"pages/item/item","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20190916/PXRfayzzB9CXpPGku8xq.jpg"},{"nav_name":"导航二","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20191011/MlpTXNue8qrqBOlQhKyB.jpeg"},{"nav_name":"导航三","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20191011/27gnGcsuw2NzMnciLF0S.jpg"},{"nav_name":"导航四","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/0/image/20190903/1N2h7RDrraBKUcNkdG0C.jpg"}],"cur_idx":101},"c_102":{"module_name":"m_card","card_id":1,"hidden_card":0,"card_name":"普通卡续费测试1","card_state":"使用中","card_grade":"v1","receive_day":"有效期:永久有效","card_type":"0","legal":"会员折扣9折","exchang_count_legal":"开卡赠送10次兑换商品机会","bg_type":"0","bg_color":"#ecca90","bg_img":"","is_pay":"2","pay_type":"0","pay_fee":"0.00","cur_idx":102,"isChecked":true},"page_cfg":{"is_ok":1,"cat_id":0,"page_name":"方框测试","bg_types":"0","has_bottom":"0","page_bg_color":"#ffffff","page_bg_image":"","show_margin":"1","margin_val":"20","pictorial":{"is_add":"0","user_visibility":"0","share_btn_name":"","share_desc":"","share_img_path":"","name_length":0}}}"
-      // page_enabled: 1
-      // page_id: 34
-      // page_name: "方框测试"
-      // page_publish_content: "{"c_101":{"module_name":"m_image_guide","nav_style":"1","font_color":"#92b0e4","bg_color":"#ffffff","nav_group":[{"nav_name":"导航一","nav_link":"pages/item/item","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20190916/PXRfayzzB9CXpPGku8xq.jpg"},{"nav_name":"导航二","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20191011/MlpTXNue8qrqBOlQhKyB.jpeg"},{"nav_name":"导航三","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/245547/image/20191011/27gnGcsuw2NzMnciLF0S.jpg"},{"nav_name":"导航四","nav_link":"","nav_src":"http://jmpdevimg.weipubao.cn/upload/0/image/20190903/1N2h7RDrraBKUcNkdG0C.jpg"}],"cur_idx":101},"c_102":{"module_name":"m_card","card_id":1,"hidden_card":0,"card_name":"普通卡续费测试1","card_state":"使用中","card_grade":"v1","receive_day":"有效期:永久有效","card_type":"0","legal":"会员折扣9折","exchang_count_legal":"开卡赠送10次兑换商品机会","bg_type":"0","bg_color":"#ecca90","bg_img":"","is_pay":"2","pay_type":"0","pay_fee":"0.00","cur_idx":102,"isChecked":true},"page_cfg":{"is_ok":1,"cat_id":0,"page_name":"方框测试","bg_types":"0","has_bottom":"0","page_bg_color":"#ffffff","page_bg_image":"","show_margin":"1","margin_val":"20","pictorial":{"is_add":"0","user_visibility":"0","share_btn_name":"","share_desc":"","share_img_path":"","name_length":0}}}"
-      // page_state: 1
-      // page_tpl_type: 0
-      // page_type: 1
-      // shop_id: 245547
-      // update_time: "2019-10-27 19:44:56"
       let pageState = null
       switch (flag) {
         case 0:
@@ -1005,9 +1019,15 @@ export default {
       if (flag === 0 || flag === 1) {
         console.log(params)
         console.log(data)
-        if (this.isEditSave) { // 编辑保存
+        if (this.isEditSave || (this.isNewEnterFirstSaveSucess !== -1)) { // 编辑保存
+          let page_id = ''
+          if ((this.isNewEnterFirstSaveSucess !== -1)) {
+            page_id = this.isNewEnterFirstSaveSucess
+          } else {
+            page_id = this.page_id
+          }
           let editParams = {
-            'pageId': this.page_id,
+            'pageId': page_id,
             'shopId': Number(localStorage.getItem('V-ShopId')),
             'pageName': this.pageSetData.page_name,
             'pageType': this.page_type,
@@ -1021,6 +1041,7 @@ export default {
           }
           editSave(editParams).then((res) => {
             console.log(res)
+
             if (res.error === 0) {
               this.$message.success({
                 message: '保存成功',
@@ -1029,15 +1050,17 @@ export default {
               })
             }
           })
-        } else { // 新建保存
+        } else if (!this.isEditSave && (this.isNewEnterFirstSaveSucess === -1)) { // 新建保存
           saveDecorationPage(params).then(res => {
             console.log(res)
             if (res.error === 0) {
+              this.isNewEnterFirstSaveSucess = res.content
               this.$message.success({
                 message: '保存成功',
                 showClose: true,
                 duration: 1000
               })
+
             }
           })
         }
@@ -1048,7 +1071,22 @@ export default {
           duration: 1000
         })
       }
+      this.saveTwoDialogVisible = false
       console.log(params)
+    },
+    // 底部保存等按钮点击统一处理
+    handleToFooter(flag) {
+      console.log(flag)
+      let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
+      // 对模块某些数据进行非空校验
+      let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
+      if (!judgeFlag) return
+
+      if (flag === 0) {
+        this.saveTwoDialogVisible = true
+      } else {
+        this.handleToSave(flag)
+      }
     }
   }
 }
