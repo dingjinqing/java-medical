@@ -327,10 +327,13 @@
                         style="color: #333;"
                       >{{$t('storeCommonSettings.customPicture')}}</el-radio>
                     </el-radio-group>
-                    <div class="img_wrap">
+                    <div
+                      class="img_wrap"
+                      @click="selectShareImgHandle"
+                      style="cursor: pointer;"
+                    >
                       <el-image
                         :src="$imageHost + '/' + info.share_config.share_img"
-                        @click="selectShareImgHandle"
                         style="width: 70px; height:70px;"
                       ></el-image>
                       <span class="tips">{{$t('storeCommonSettings.recommendedSize')}}：800*800</span>
