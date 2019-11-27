@@ -11,6 +11,8 @@ import com.vpu.mp.service.pojo.shop.decoration.BatchSetPageCateParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.setIndexParam;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -235,6 +237,16 @@ public class AdminShopDecorateController extends AdminBaseController {
      */
     @PostMapping("/admin/update/searchcfg")
     public JsonResult updateSearchCfg(@RequestBody SearchConfig config){
+    	List<String> hotWords = config.getHotWords();
+    	if(null!=hotWords) {
+    		if(hotWords.size()>11) {
+    			return fail(JsonResultCode.SEARCHCFG_HOTWORDS_LIMIT);
+    		}
+    	}
+    	if(config.getTitleAction().equals(3)&&StringUtils.isEmpty(config.getTitleCustom())) {
+    		//自定义，titleCustom不能为空
+    		return fail(JsonResultCode.SEARCHCFG_TITLECUSTOM_NOTNULL);
+    	}
         shop().config.searchCfg.setSearchConfig(config);
         return success();
     }
