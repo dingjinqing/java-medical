@@ -244,8 +244,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             cart.removeCartByProductIds(param.getWxUserInfo().getUserId(), param.getProductIds());
         }
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
-
-        return orderPay.isContinuePay(orderAfterRecord, orderBo.getOrderGoodsBo(), param, createVo);
+        try {
+            orderPay.isContinuePay(orderAfterRecord, orderBo.getOrderGoodsBo(), param, createVo);
+            return ExecuteResult.create(createVo);
+        } catch (MpException e) {
+            return ExecuteResult.create(createVo);
+        }
     }
 
     /**

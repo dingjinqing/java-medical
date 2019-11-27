@@ -64,6 +64,14 @@ public class ExecuteResult {
      * 静态构造器
      * @return
      */
+    public static ExecuteResult create(Object result) {
+        return new ExecuteResult(null, result, null);
+    }
+
+    /**
+     * 静态构造器
+     * @return
+     */
     public static ExecuteResult create() {
         return new ExecuteResult(null, null, null);
     }

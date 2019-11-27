@@ -87,17 +87,16 @@ public class OrderPayService extends ShopBaseService{
      * @param orderGoodsBo
      * @param param
      */
-    public ExecuteResult isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param, CreateOrderVo vo) {
+    public void isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param, CreateOrderVo vo) throws MpException {
         logger().info("继续支付接口start");
-        ExecuteResult executeResult = ExecuteResult.create();
         ArrayList<String> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToArray(orderInfo.getGoodsType()));
         if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
-            return executeResult;
+            return;
         }else if(OrderConstant.ORDER_WAIT_PAY == orderInfo.getOrderStatus() &&
             (((orderInfo.getBkOrderPaid() > 0 && goodsType.contains(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE))))
                 || OrderConstant.PAY_WAY_FRIEND_PAYMENT == orderInfo.getOrderPayWay())) {
             //待支付 && （（预售 && 已付定金或已付尾款） || 好友代付）
-            return executeResult;
+            return;
         }else {
             //非系统金额支付
             String goodsNameForPay = getGoodsNameForPay(orderInfo, orderGoodsBo);
@@ -108,23 +107,15 @@ public class OrderPayService extends ShopBaseService{
                 webPayVo.setOrderType(param.getActivityType().toString());
                 order.updatePrepayId(webPayVo.getResult().getPrepayId(), orderInfo.getOrderId());
                 vo.setOrderSn(orderInfo.getOrderSn());
-                executeResult.setResult(vo);
+                vo.setWebPayVo(webPayVo);
                 logger().info("微信预支付调用接口调用end");
-                return executeResult;
+                return;
             } catch (WxPayException e) {
                 logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderInfo.getOrderSn(), e);
-                executeResult.setErrorCode(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
-                return executeResult;
-            }
-            catch (MpException e) {
-                logger().error("微信预支付调用接口失败MpException，订单号：{},异常：{}", orderInfo.getOrderSn(), e.getErrorCode());
-                executeResult.setErrorCode(e.getErrorCode());
-                executeResult.setErrorParam(e.getCodeParam());
-                return executeResult;
+                throw new MpException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
             }catch (Exception e) {
                 logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", orderInfo.getOrderSn(), e.getMessage());
-                executeResult.setErrorCode(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
-                return executeResult;
+                throw new MpException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
             }
         }
     }
