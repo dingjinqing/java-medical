@@ -1,31 +1,27 @@
 package com.vpu.mp.service.shop.decoration;
 
-import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.PageClassification;
-import com.vpu.mp.db.shop.tables.XcxCustomerPage;
 import com.vpu.mp.db.shop.tables.records.PageClassificationRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.PageCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.decoration.PageClassificationPojo;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.tables.PageClassification.PAGE_CLASSIFICATION;
+import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 
 
 
 /**
- * 
+ *
  * @author lixinguo
  *
  */
@@ -35,7 +31,7 @@ public class PageClassificationService extends ShopBaseService {
 
 	/**
 	 * 装修页面列表
-	 * 
+     *
 	 * @param param
 	 * @return
 	 */
@@ -48,7 +44,7 @@ public class PageClassificationService extends ShopBaseService {
 
 	/**
 	 * 查询条件
-	 * 
+     *
 	 * @param select
 	 * @param param
 	 * @return
@@ -67,7 +63,7 @@ public class PageClassificationService extends ShopBaseService {
 
 	/**
 	 * 获取分类Map
-	 * 
+     *
 	 * @return
 	 */
 	public Map<String, String> getClassificationMap() {
@@ -80,7 +76,7 @@ public class PageClassificationService extends ShopBaseService {
 
 	/**
 	 * 得到所有页面分类
-	 * 
+     *
 	 * @return
 	 */
 	public Result<PageClassificationRecord> getAll() {
@@ -89,7 +85,7 @@ public class PageClassificationService extends ShopBaseService {
 
 	/**
 	 * 得到id对应分类
-	 * 
+     *
 	 * @param id
 	 * @return
 	 */
@@ -103,7 +99,7 @@ public class PageClassificationService extends ShopBaseService {
 
 	/**
 	 * 得到名称相同，但ID不同的一条分类记录
-	 * 
+     *
 	 * @param notId
 	 * @param name
 	 * @return
@@ -157,11 +153,11 @@ public class PageClassificationService extends ShopBaseService {
 		int[] result = {-1};
 		db().transaction(configuration->{
 			DSLContext db = DSL.using(configuration);
-			Condition countCondition = XcxCustomerPage.XCX_CUSTOMER_PAGE.CAT_ID.eq(pageId);
-			if(db.fetchCount(XcxCustomerPage.XCX_CUSTOMER_PAGE,countCondition) > 0){
-				result[0] = db.update(XcxCustomerPage.XCX_CUSTOMER_PAGE)
-						.set(XcxCustomerPage.XCX_CUSTOMER_PAGE.CAT_ID,0)
-						.where(XcxCustomerPage.XCX_CUSTOMER_PAGE.CAT_ID.eq(pageId))
+            Condition countCondition = XCX_CUSTOMER_PAGE.CAT_ID.eq(pageId);
+            if (db.fetchCount(XCX_CUSTOMER_PAGE, countCondition) > 0) {
+                result[0] = db.update(XCX_CUSTOMER_PAGE)
+                    .set(XCX_CUSTOMER_PAGE.CAT_ID, 0)
+                    .where(XCX_CUSTOMER_PAGE.CAT_ID.eq(pageId))
 						.execute();
 			}
 			result[0] = removeRow(pageId);
@@ -176,8 +172,8 @@ public class PageClassificationService extends ShopBaseService {
 	 * @return
 	 */
 	public int getPageCountByCategory(int categoryId){
-		Condition condition = XcxCustomerPage.XCX_CUSTOMER_PAGE.CAT_ID.eq(categoryId);
-		return db().fetchCount(XcxCustomerPage.XCX_CUSTOMER_PAGE,condition);
+        Condition condition = XCX_CUSTOMER_PAGE.CAT_ID.eq(categoryId).and(XCX_CUSTOMER_PAGE.PAGE_ENABLED.eq(BYTE_ONE));
+        return db().fetchCount(XCX_CUSTOMER_PAGE, condition);
 	}
 
 }
