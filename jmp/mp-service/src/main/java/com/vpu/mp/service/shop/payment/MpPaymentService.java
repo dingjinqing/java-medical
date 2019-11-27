@@ -148,6 +148,7 @@ public class MpPaymentService extends ShopBaseService {
             //TODO App支付
         } else if (WxPayConstants.TradeType.JSAPI.equals(result.getTradeType())) {
             //二次签名
+            payInfo.put("appId", result.getAppid());
             payInfo.put("timeStamp", timestamp);
             payInfo.put("nonceStr", nonceStr);
             payInfo.put("package", "prepay_id=" + prepayId);
