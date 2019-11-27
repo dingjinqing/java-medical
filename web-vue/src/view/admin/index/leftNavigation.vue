@@ -658,10 +658,12 @@ export default {
     },
     handleToJudgeTwoDiction(name) {
       console.log(name)
+      // 请求功能或者菜单对应的版本名字池
+      let vsNameArr = ['']
       // 二级菜单需要校验的元素池
-      let arr = ['shop_view', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort']
-      console.log(arr.indexOf(name))
-      if (arr.indexOf('name') !== -1) {
+      let enNameArr = ['shop_view', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort']
+      console.log(enNameArr.indexOf(name))
+      if (enNameArr.indexOf('name') !== -1) {
 
         judgeJurisdictionRequest({
           'V-EnName': name

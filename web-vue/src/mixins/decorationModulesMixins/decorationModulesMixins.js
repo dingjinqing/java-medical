@@ -400,7 +400,7 @@ export default {
         switch (item.module_name) {
           case 'm_card': // 会员卡相关校验
             console.log(item)
-            if (!item.card_id) {
+            if (!item.id) {
               flag = false
               this.$message.error({
                 message: '请选择会员卡',

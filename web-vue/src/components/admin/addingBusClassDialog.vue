@@ -168,6 +168,7 @@ export default {
         detailData = this.$refs.sortTree.getCheckedNodes()
       }
       console.log(this.$refs.sortTree.getCheckedNodes())
+      console.log(arr, detailData)
       this.$emit('BusClassTrueDetailData', detailData) // 返回选中节点详细数据
       this.$emit('BusClassTrueArr', arr) // 返回选中节点id数据
       this.$emit('update:dialogVisible', false)

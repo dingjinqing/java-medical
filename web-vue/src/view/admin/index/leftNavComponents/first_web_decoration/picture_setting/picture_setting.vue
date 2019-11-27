@@ -192,12 +192,12 @@
         <div class="pageDialogMain">
           <el-select
             v-model="pageSetvalue"
-            placeholder="请选择"
+            placeholder="选择页面分类"
             size="small"
           >
             <el-option
               v-for="item in pageSetoptions"
-              :key="item.value"
+              :key="item.id"
               :label="item.name"
               :value="item.id"
             >
@@ -494,6 +494,11 @@ export default {
       getPageCate().then(res => {
         console.log(res)
         if (res.error === 0) {
+          let obj = {
+            id: '',
+            name: '请选择页面分类'
+          }
+          res.content.unshift(obj)
           this.pageSetoptions = res.content
         }
       })
