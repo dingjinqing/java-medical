@@ -8,13 +8,17 @@ import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
-import com.vpu.mp.service.pojo.shop.image.*;
+import com.vpu.mp.service.pojo.shop.image.CropImageParam;
+import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
+import com.vpu.mp.service.pojo.shop.image.UploadImageCatNameVo;
+import com.vpu.mp.service.pojo.shop.image.UploadImageParam;
+import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import org.apache.commons.io.FileUtils;
 import org.jooq.Record;
-import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.SortField;
 import org.jooq.impl.DSL;
@@ -322,8 +326,11 @@ public class ImageService extends ShopBaseService implements ImageDefault {
           .jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID)
           .build();
     }
+    BufferedImage bufferImage = ImageIO.read(file.getInputStream());
+    if (bufferImage == null || bufferImage.getWidth(null) <= 0 || bufferImage.getHeight(null) <= 0) {
+      return ResultMessage.builder().message(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
+    }
     if (param.needImgWidth != null || param.needImgHeight != null) {
-      BufferedImage bufferImage = ImageIO.read(file.getInputStream());
       if (param.needImgWidth != null && param.needImgWidth != bufferImage.getWidth()) {
         return ResultMessage.builder()
             .jsonResultCode(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_WIDTH)

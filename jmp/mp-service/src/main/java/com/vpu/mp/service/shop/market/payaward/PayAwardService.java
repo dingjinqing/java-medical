@@ -32,11 +32,6 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DI
 @Service
 public class PayAwardService extends ShopBaseService {
 
-    //限时有效
-    public static final Byte TIME_TYPE_FIXED = 0;
-    //永久有效
-    public static final Byte TIME_TYPE_PERMANENT = 1;
-
 
     @Autowired
     PayAwardRecordService payAwardRecordService;
@@ -101,8 +96,9 @@ public class PayAwardService extends ShopBaseService {
     public PayAwardVo getPayAwardId(Integer id) {
         PayAwardRecord record = db().selectFrom(PAY_AWARD).where(PAY_AWARD.ID.eq(id)).fetchOne();
         PayAwardVo payAwardVo = record.into(PayAwardVo.class);
-        if (record.getAwardList()!=null&&!record.getAwardList().isEmpty()){
-            payAwardVo.setAwardContentList(Util.json2Object(record.getAwardList(), new TypeReference<List<PayAwardContentBo>>(){},false));
+        if (record.getAwardList() != null && !record.getAwardList().isEmpty()) {
+            payAwardVo.setAwardContentList(Util.json2Object(record.getAwardList(), new TypeReference<List<PayAwardContentBo>>() {
+            }, false));
             payAwardVo.setAwardList(null);
         }
         return payAwardVo;
@@ -119,23 +115,25 @@ public class PayAwardService extends ShopBaseService {
         SelectConditionStep<? extends Record> select = db()
                 .select(PAY_AWARD.ID, PAY_AWARD.ACTIVITY_NAMES, PAY_AWARD.TIME_TYPE, PAY_AWARD.START_TIME,
                         PAY_AWARD.END_TIME, PAY_AWARD.ACT_FIRST, PAY_AWARD.STATUS, PAY_AWARD.AWARD_LIST,
-                        PAY_AWARD.GOODS_AREA_TYPE,PAY_AWARD.MIN_PAY_MONEY)
+                        PAY_AWARD.GOODS_AREA_TYPE, PAY_AWARD.MIN_PAY_MONEY)
                 .from(PAY_AWARD)
                 .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         switch (param.getNavType()) {
             case BaseConstant.NAVBAR_TYPE_ONGOING:
-                select.and(PAY_AWARD.TIME_TYPE.eq(TIME_TYPE_PERMANENT).or(PAY_AWARD.START_TIME.lt(nowTime))
-                        .and(PAY_AWARD.END_TIME.gt(nowTime)))
+                select.and(PAY_AWARD.TIME_TYPE.eq(BaseConstant.ACTIVITY_IS_FOREVER).or(
+                        PAY_AWARD.TIME_TYPE.eq(BaseConstant.ACTIVITY_NOT_FOREVER)
+                                .and(PAY_AWARD.START_TIME.lt(nowTime))
+                                .and(PAY_AWARD.END_TIME.gt(nowTime))))
                         .and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                 break;
             case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                      .and(PAY_AWARD.TIME_TYPE.eq(TIME_TYPE_FIXED))
+                      .and(PAY_AWARD.TIME_TYPE.eq(BaseConstant.ACTIVITY_NOT_FOREVER))
                       .and(PAY_AWARD.START_TIME.gt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_FINISHED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                      .and(PAY_AWARD.TIME_TYPE.eq(TIME_TYPE_FIXED))
+                      .and(PAY_AWARD.TIME_TYPE.eq(BaseConstant.ACTIVITY_NOT_FOREVER))
                       .and(PAY_AWARD.END_TIME.lt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_DISABLED:
@@ -143,14 +141,15 @@ public class PayAwardService extends ShopBaseService {
                 break;
             default:
         }
-        select.orderBy(PAY_AWARD.ACT_FIRST.desc(),PAY_AWARD.CREATE_TIME.desc());
+        select.orderBy(PAY_AWARD.ACT_FIRST.desc(), PAY_AWARD.CREATE_TIME.desc());
         PageResult<PayAwardListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), PayAwardListVo.class);
-        pageResult.getDataList().forEach(payAward->{
-            if (payAward.getAwardList()!=null&&!payAward.getAwardList().isEmpty()){
-                payAward.setAwardContentList(Util.json2Object(payAward.getAwardList(),new TypeReference<List<PayAwardContentBo>>(){},false));
+        pageResult.getDataList().forEach(payAward -> {
+            if (payAward.getAwardList() != null && !payAward.getAwardList().isEmpty()) {
+                payAward.setAwardContentList(Util.json2Object(payAward.getAwardList(), new TypeReference<List<PayAwardContentBo>>() {
+                }, false));
                 payAward.setAwardList(null);
             }
-            payAward.setCurrentState(Util.getActStatus(payAward.getStatus(),payAward.getStartTime(),payAward.getEndTime(),payAward.getTimeType()));
+            payAward.setCurrentState(Util.getActStatus(payAward.getStatus(), payAward.getStartTime(), payAward.getEndTime(), payAward.getTimeType()));
         });
         return pageResult;
     }

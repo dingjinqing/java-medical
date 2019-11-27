@@ -42,8 +42,8 @@ public class CartProcessorContext {
     public void executeCart(WxAppCartBo cartBo){
         // 数据初始化
         executeStrategy(goodsBegin,cartBo);
-        executeStrategy(exclusive,cartBo);
         executeStrategy(seckill,cartBo);
+        executeStrategy(exclusive,cartBo);
         executeStrategy(firstSpecial,cartBo);
         executeStrategy(gradeCard,cartBo);
         executeStrategy(goodsTail,cartBo);

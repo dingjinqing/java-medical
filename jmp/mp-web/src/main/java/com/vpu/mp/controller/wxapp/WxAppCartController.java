@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.WxAppCartListParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductsParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppSwitchCartProductsParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -100,13 +101,13 @@ public class WxAppCartController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/switch")
-    public JsonResult checked(@RequestBody @Valid CartProductIdParam param){
+    public JsonResult checked(@RequestBody @Valid WxAppSwitchCartProductsParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        byte flag = shop().cart.switchCheckedProduct(user.getUserId(), param.getRecId());
-        CartProductIdVo cart  =new CartProductIdVo();
-        cart.setRecId(param.getRecId());
-        cart.setIsChecked(flag);
-        return success(cart);
+        int flag = shop().cart.switchCheckedProduct(user.getUserId(), param.getRecIds(),param.getIsChecked());
+        if (flag>0){
+            return success();
+        }
+        return fail();
     }
 
 }

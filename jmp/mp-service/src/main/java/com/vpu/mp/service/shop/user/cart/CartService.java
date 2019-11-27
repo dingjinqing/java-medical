@@ -71,7 +71,7 @@ public class CartService extends ShopBaseService {
                 .from(CART)
                 .innerJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
                 .innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(CART.PRODUCT_ID))
-                .where(CART.USER_ID.eq(userId)).orderBy(CART.CREATE_TIME.asc()).fetch();
+                .where(CART.USER_ID.eq(userId)).orderBy(CART.CREATE_TIME.desc()).fetch();
 
         List<WxAppCartGoods> cartGoodsList = records.into(WxAppCartGoods.class);
         List<Integer> productIdList = records.getValues(GOODS_SPEC_PRODUCT.PRD_ID);
@@ -104,7 +104,7 @@ public class CartService extends ShopBaseService {
     public ResultMessage checkProductNumber(Integer productId, Integer goodsNumber, Integer storeId) {
         GoodsSpecProductRecord product = goodsSpecProductService.getStoreProductByProductIdAndStoreId(productId, storeId);
         // 商品失效
-        if (product == null ) {
+        if (product == null) {
             return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_CART_GOODS_NO_LONGER_VALID).message(1).message(2).build();
         }
         // 库存不足
@@ -200,13 +200,15 @@ public class CartService extends ShopBaseService {
 
     /**
      * 删除购物车商品
-     * @param userId 用户
+     *
+     * @param userId     用户
      * @param productIds 规格id
      * @return 1
      */
-    public int removeCartByProductIds(Integer userId,List<Integer> productIds){
+    public int removeCartByProductIds(Integer userId, List<Integer> productIds) {
         return db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.PRODUCT_ID.in(productIds)).execute();
     }
+
     /**
      * 改变购物车商品数量
      *
@@ -243,31 +245,47 @@ public class CartService extends ShopBaseService {
 
     /**
      * 根据recid获取所有信息
+     *
      * @param recid
      * @return
      */
     public CartRecord getInfoByRecid(Long recid) {
-    	return db().selectFrom(CART).where(CART.REC_ID.eq(recid)).fetchAny();
+        return db().selectFrom(CART).where(CART.REC_ID.eq(recid)).fetchAny();
     }
 
     /**
-     * 选中购物车中的商品
+     * 购物车中的商品选择状态
+     *
      * @param userId
      * @param recId
      * @return
      */
     public byte switchCheckedProduct(Integer userId, Integer recId) {
-        CartRecord cartRecord =db().newRecord(CART);
+        CartRecord cartRecord = db().newRecord(CART);
         cartRecord.setRecId(recId.longValue());
         cartRecord.setUserId(userId);
         cartRecord.refresh();
         if (Objects.equals(cartRecord.getIsChecked(), CartConstant.CART_IS_CHECKED)) {
-          cartRecord.setIsChecked(CartConstant.CART_NO_CHECKED);
-          cartRecord.update();
+            cartRecord.setIsChecked(CartConstant.CART_NO_CHECKED);
+            cartRecord.update();
             return CartConstant.CART_NO_CHECKED;
         }
         cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);
         cartRecord.update();
         return CartConstant.CART_IS_CHECKED;
+    }
+
+    /**
+     * 修改选中状态
+     *
+     * @param userId
+     * @param recIds    id
+     * @param isChecked 1 选中 0 没选中
+     * @return
+     */
+    public int switchCheckedProduct(Integer userId, List<Integer> recIds, Byte isChecked) {
+        return db().update(CART).set(CART.IS_CHECKED, isChecked)
+                .where(CART.USER_ID.eq(userId))
+                .and(CART.REC_ID.in(recIds)).execute();
     }
 }

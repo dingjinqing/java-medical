@@ -31,9 +31,11 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
         //删除的,下架的--移动到失效列表
         List<WxAppCartGoods> invalidGoodsList = cartBo.getCartGoodsList().stream().filter(goods -> {
             if (goods.getGoodsId() == null || goods.getPrdId() == null|| goods.getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
+                log.debug("商品删除的"+"[getRecId:"+goods.getRecId()+",getGoodsName: "+goods.getGoodsName()+",getDelFlag:"+ goods.getDelFlag()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_DELETE);
                 return true;
             }else if (goods.getIsOnSale().equals(GoodsConstant.OFF_SALE)){
+                log.debug("商品下架的"+"[getRecId:"+goods.getRecId()+",getGoodsName: "+goods.getGoodsName()+",getIsOnSale:"+ goods.getIsOnSale()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_OFF_SALE);
                 return true;
             }
@@ -41,9 +43,11 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
         }).collect(Collectors.toList());
         cartBo.getCartGoodsList().removeAll(invalidGoodsList);
         cartBo.getInvalidCartList().addAll(invalidGoodsList);
+
         //售罄-- 取消选中
         cartBo.getCartGoodsList().forEach(goods->{
             if (goods.getPrdNumber() < goods.getLimitBuyNum() || goods.getPrdNumber() <= 0) {
+                log.debug("商品售罄"+"[getGoodsName:"+goods.getGoodsName()+".getPrdNumber: "+goods.getPrdNumber()+",getLimitBuyNum:"+goods.getLimitBuyNum()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_SOLD_OUT);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
             }

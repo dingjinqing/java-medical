@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.wxapp.cart;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import reactor.util.annotation.NonNull;
 
 /**
@@ -8,7 +10,8 @@ import reactor.util.annotation.NonNull;
  * @author 孔德成
  * @date 2019/10/17 11:04
  */
-@Data
+@Getter
+@Setter
 public class WxAppRemoveCartProductParam {
 
     @NonNull

@@ -148,11 +148,10 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("GoodsTailProcessor->WxAppCartBo:"+Util.toJson(cartBo));
+        log.debug("WxAppCartBo:"+Util.toJson(cartBo));
         WxAppCartListVo cartListVo = new WxAppCartListVo();
         List<CartGoodsInfo> cartGoodsInfoList =cartGoodsToInfo(cartBo.getCartGoodsList());
         List<CartGoodsInfo> invalidCartGoodsInfoList =cartGoodsToInfo(cartBo.getInvalidCartList());
-
         BigDecimal totalPrice  =new BigDecimal(0);
         byte isAllCheck  = 1;
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {

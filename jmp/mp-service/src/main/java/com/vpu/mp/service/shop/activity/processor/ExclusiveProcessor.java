@@ -187,16 +187,19 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("ExclusiveProcessor->WxAppCartBo:"+ Util.toJson(cartBo));
+        log.debug("WxAppCartBo:"+ Util.toJson(cartBo));
         //会员卡绑定商品
         Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(cartBo.getUserId(), cartBo.getCartGoodsList());
+        log.debug("会员绑定的商品[userCardExclusive:{"+Util.toJson(userCardExclusive)+"}]");
         cartBo.getCartGoodsList().stream().filter(goods -> GoodsConstant.CARD_EXCLUSIVE.equals(goods.getIsCardExclusive())).forEach(goods -> {
             // 会员专享商品
             if (!userCardExclusive.contains(goods.getGoodsId())) {
                 //没有资格0
+                log.debug("会员没有资格的商品:[getGoodsName:"+goods.getGoodsName()+",getGoodsId"+goods.getGoodsId()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_EXCLUSIVE);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
             } else {
+                log.debug("会员专享商品:[getGoodsName:"+goods.getGoodsName()+",getGoodsId"+goods.getGoodsId()+"]");
                 CartActivityInfo exclusiveGrade = new CartActivityInfo();
                 exclusiveGrade.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
                 goods.getCartActivityInfos().add(exclusiveGrade);

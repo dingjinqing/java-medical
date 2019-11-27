@@ -1,5 +1,6 @@
 package com.vpu.mp.service.foundation.util;
 
+import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -7,10 +8,11 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 /**
  * 图片的处理
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年10月18日 上午9:42:04
@@ -30,8 +32,8 @@ public final class ImageUtil {
 				0, null);
 		return newBufferedImage;
 	}
-	
-	
+
+
 	/**
 	 * 给图片添加文字
 	 * @param backgroundImage  背景图片
@@ -52,7 +54,7 @@ public final class ImageUtil {
 		graphics.dispose();
 		return backgroundImage;
 	}
-	
+
 	/**
 	 * 背景图上添加前景图
 	 * @param backgroundImage 背景图
@@ -67,10 +69,10 @@ public final class ImageUtil {
 		graphics.drawImage(foregroundImage, x, y, foregroundImage.getWidth(), foregroundImage.getHeight(), null);
 		graphics.dispose();
 		return backgroundImage;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * 图片裁成圆形
 	 * @param image  图片
@@ -92,4 +94,26 @@ public final class ImageUtil {
 		return formatAvatarImage;
 	}
 
+	/**
+	 * 通过读取文件并获取其width及height的方式，来判断判断当前文件是否图片，这是一种非常简单的方式。
+	 * @param imageFile
+	 * @return
+	 */
+	public static boolean isImage(File imageFile) {
+		if (!imageFile.exists()) {
+			return false;
+		}
+		Image img = null;
+		try {
+			img = ImageIO.read(imageFile);
+			if (img == null || img.getWidth(null) <= 0 || img.getHeight(null) <= 0) {
+				return false;
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		} finally {
+			img = null;
+		}
+	}
 }
