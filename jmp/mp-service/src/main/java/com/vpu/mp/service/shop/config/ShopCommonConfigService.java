@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import jodd.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 
 public class ShopCommonConfigService extends BaseShopConfigService{
+
+    @Autowired
+    ShopShareConfig defaultShopShareConfig;
+    @Autowired
+    ShowCartConfig defaultShowCartConfig;
 
 	/**
 	 * 是否显示前端店铺logo
@@ -439,7 +445,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public ShowCartConfig getShowCart() {
-		return this.getJsonObject(K_SHOW_CART, ShowCartConfig.class, new ShowCartConfig());
+		return this.getJsonObject(K_SHOW_CART, ShowCartConfig.class, defaultShowCartConfig);
 	}
 
     /**
@@ -511,7 +517,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	 * @return
 	 */
 	public ShopShareConfig getShareConfig() {
-		return this.getJsonObject(K_SHARE_CONFIG, ShopShareConfig.class, new ShopShareConfig());
+		return this.getJsonObject(K_SHARE_CONFIG, ShopShareConfig.class, defaultShopShareConfig);
 	}
 
     /**

@@ -139,6 +139,7 @@ public class ReducePriceService extends ShopBaseService {
             vo.setOrderAmount(getReducePriceActOrderAmount(vo.getId()));
             vo.setUserAmount(getReducePriceActUserAmount(vo.getId()));
             vo.setPaymentTotalAmount(getReducePricePaymentTotalAmount(vo.getId()));
+            vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
         }
 
         return res;

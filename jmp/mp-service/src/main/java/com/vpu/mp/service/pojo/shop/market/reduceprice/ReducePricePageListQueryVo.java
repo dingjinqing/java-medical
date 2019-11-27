@@ -38,4 +38,9 @@ public class ReducePricePageListQueryVo {
 
     /** 付款总金额 */
     private BigDecimal paymentTotalAmount;
+
+    /**
+     * 当前活动状态：1进行中，2未开始，3已结束，4已停用
+     */
+    private Byte currentState;
 }

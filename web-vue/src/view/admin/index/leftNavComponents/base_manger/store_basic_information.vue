@@ -188,9 +188,8 @@ export default {
     initData () {
       getBaseInfo().then(res => {
         if (res.error === 0) {
-          console.log('content', res.content)
           for (const key in res.content) {
-            if (res.content.hasOwnProperty(key) && res.content[key] !== null) {
+            if (res.content.hasOwnProperty(key) && res.content[key] !== null && res.content[key] !== '') {
               const element = res.content[key]
               this.form[key] = element
             }

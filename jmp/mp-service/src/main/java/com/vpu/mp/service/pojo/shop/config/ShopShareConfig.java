@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.config;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 /**
  * @author 王兵兵
@@ -10,6 +11,7 @@ import lombok.Data;
  * 2019年7月9日
  */
 @Data
+@Component
 public class ShopShareConfig {
 	
 	/**
