@@ -196,6 +196,7 @@ public class GoodsLabelService extends ShopBaseService {
 	 * @return
 	 */
 	public int insert(GoodsLabel goodsLabel) {
+	    //goodsLabel 表的IS_ALL字段暂时没什么用，判断是不是全部商品要根据关联表的type字段判断
 		this.transaction(()->{
 			Record1<Integer> result = db()
 					.insertInto(GOODS_LABEL, 
@@ -367,7 +368,10 @@ public class GoodsLabelService extends ShopBaseService {
                 GOODS_LABEL.LIST_PATTERN,
                 GOODS_LABEL.GOODS_DETAIL,
                 GOODS_LABEL.GOODS_LIST,
-                GOODS_LABEL.GOODS_SELECT)
+                GOODS_LABEL.GOODS_SELECT,
+                GOODS_LABEL.CREATE_TIME,
+                GOODS_LABEL.LEVEL
+            )
             .from(GOODS_LABEL)
             .where(condition)
             .fetch().into(GOODS_LABEL);
@@ -388,7 +392,8 @@ public class GoodsLabelService extends ShopBaseService {
                 GOODS_LABEL_COUPLE.LABEL_ID,
                 GOODS_LABEL_COUPLE.GTA_ID,
                 GOODS_LABEL.LEVEL,
-                GOODS_LABEL.CREATE_TIME)
+                GOODS_LABEL.CREATE_TIME
+             )
             .from(GOODS_LABEL_COUPLE)
             .leftJoin(GOODS_LABEL).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
             .where(assemblyGoodsLabelFilter(goodsIds,sortIds,categoryIds))
