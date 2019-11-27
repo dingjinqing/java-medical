@@ -42,7 +42,8 @@ export const en = {
 
   // 添加页面
   steps: ['Set activity rules', 'Setting gifts'],
-  stepsUp: 'Basic configuration',
+  // stepsUp: 'Basic configuration',
+  stepsUp: 'Basic config',
   stepsDown: 'Gift strategy',
   activityLevel: 'Level',
   activityTime: 'ValidDate',

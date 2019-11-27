@@ -22,7 +22,7 @@
       v-show="showInput"
       v-model="value"
       size="small"
-      @blur="closeBlur"
+      @blur="closeBlur(value)"
       style="width: 80px"
     ></el-input>
     <!-- <el-button
@@ -69,10 +69,16 @@ export default {
         this.$emit('update', this.value)
       }
     },
-    closeBlur () {
-      this.showInput = false
-      if (!this.showInput) {
-        this.$emit('update', this.value)
+    closeBlur (value) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!re.test(value)) {
+        this.$message.warning({ message: '请填写0或者正整数' })
+        return false
+      } else {
+        this.showInput = false
+        if (!this.showInput) {
+          this.$emit('update', this.value)
+        }
       }
     }
   },

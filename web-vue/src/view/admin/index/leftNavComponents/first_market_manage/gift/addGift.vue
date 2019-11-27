@@ -125,6 +125,7 @@
                 <el-form-item
                   :label="$t('gift.conditions1')"
                   v-show="contains(0)"
+                  prop="rules.fullPrice"
                 >
                   <span>{{ $t('gift.conditionsTip1') }}</span>
                   <el-input
@@ -138,6 +139,7 @@
                 <el-form-item
                   :label="$t('gift.conditions2')"
                   v-show="contains(1)"
+                  prop="rules.fullNumber"
                 >
                   <span>{{ $t('gift.conditionsTip1') }}</span>
                   <el-input
@@ -189,6 +191,7 @@
                 <el-form-item
                   :label="$t('gift.conditions5')"
                   v-show="contains(4)"
+                  prop="rules.payTop"
                 >
                   {{ $t('gift.conditionsTip5') }} <el-input
                     size="small"
@@ -200,6 +203,7 @@
                 <el-form-item
                   :label="$t('gift.conditions6')"
                   v-show="contains(5)"
+                  prop="rules.minPayNum"
                 >
                   <el-input
                     size="small"
@@ -210,6 +214,7 @@
                   <span style="margin-right: 10px">{{ $t('gift.to') }}</span>
                   <el-input
                     size="small"
+                    ref="maxPayNum"
                     v-model="param.rules.maxPayNum"
                     class="input"
                     :disabled="ongoing"
@@ -452,6 +457,46 @@ export default {
         callback()
       }
     }
+    var validatMoney = (rule, value, callback) => {
+      var re = /^\d+(\.\d+)?$/
+      if (!re.test(value)) {
+        callback(new Error('请填写非负数, 可以保留两位小数'))
+      } else {
+        callback()
+      }
+    }
+    var validatNum = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!re.test(value)) {
+        callback(new Error('请填写0或者正整数'))
+      } else {
+        callback()
+      }
+    }
+    var validatInt = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    var validatMin = (rule, value, callback) => {
+      let maxPayNum = this.$refs.maxPayNum.value
+      if (!value && !maxPayNum) {
+        callback()
+      }
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!re.test(value) || !re.test(maxPayNum)) {
+        callback(new Error('请填写0或者正整数'))
+      } else {
+        if (value > maxPayNum) {
+          callback(new Error('最小购买次数不能大于最大购买次数'))
+        } else {
+          callback()
+        }
+      }
+    }
 
     return {
       id: null,
@@ -501,6 +546,10 @@ export default {
         dateRange: { required: true, message: '请填写活动时间', trigger: 'change' },
         goodsRange: { required: true, validator: validategoodsRange, trigger: 'change' },
         selectedRules: { required: true, validator: validateselectedRules, trigger: 'change', type: 'array' },
+        'rules.fullPrice': { validator: validatMoney, trigger: 'blur' },
+        'rules.fullNumber': { validator: validatNum, trigger: 'blur' },
+        'rules.payTop': { validator: validatInt, trigger: 'blur' },
+        'rules.minPayNum': { validator: validatMin, trigger: 'blur' },
         explain: { required: true, message: '请填写赠品规则说明', trigger: 'blur' }
       },
       userAction: this.$t('gift.userAction'),

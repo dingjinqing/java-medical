@@ -83,7 +83,6 @@
           :label="$t('gift.level')"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           prop="giftTimes"
