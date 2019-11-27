@@ -31,9 +31,9 @@ public class IncrSequenceUtil {
      * @return
      */
     public static String generateOrderSn(String prefix,String dateFormat,String key){
-        return new StringBuilder(INCR_SEQUENCE).append(prefix)
+        return new StringBuilder(prefix)
                 .append(DateUtil.dateFormat(dateFormat))
-                .append(jedisManager.getIncrSequence(key)).toString();
+                .append(jedisManager.getIncrSequence(INCR_SEQUENCE+key)).toString();
     }
 
     /**
