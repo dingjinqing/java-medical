@@ -78,7 +78,7 @@ public class GoodsSortService extends ShopBaseService {
         // 迭代查询所有父节点，tempIds为已查询处理的所有节点id集合，避免同一个节点被查询两次
         Set<Integer> tempIds = new HashSet<>(sortIds);
         while (sortRecords.size() > 0) {
-            List<Integer> tempParentIds = sortRecords.stream().map(SortRecord::getSortId).collect(Collectors.toList());
+            List<Integer> tempParentIds = sortRecords.stream().map(SortRecord::getParentId).collect(Collectors.toList());
             List<SortRecord> tempList = getSortListDao(tempParentIds, tempIds);
             tempIds.addAll(tempList.stream().map(SortRecord::getSortId).collect(Collectors.toList()));
             List<GoodsSortSelectTreeVo> tempTree = tempList.stream().map(x -> x.into(GoodsSortSelectTreeVo.class)).collect(Collectors.toList());
