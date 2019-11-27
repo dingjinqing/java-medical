@@ -5,7 +5,6 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.*;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import org.jooq.Record3;
@@ -357,17 +356,5 @@ public class ChooseLinkService extends ShopBaseService {
 			level1.setLevelList2(level2List);
 		}
 		return levelList;
-	}
-	
-	/**
-	 * 商品标签链接
-	 * @return
-	 */
-	public List<GoodsLabelVo> getLabelList() {
-		List<GoodsLabelVo> list = db().select(GOODS_LABEL.ID,GOODS_LABEL.NAME)
-				.from(GOODS_LABEL)
-				.where(GOODS_LABEL.DEL_FLAG.eq((int) 0))
-				.fetch().into(GoodsLabelVo.class);
-		return list;
 	}
 }

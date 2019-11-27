@@ -60,7 +60,7 @@ public class LabelDataHelper extends MainBaseService implements CommandLineRunne
     private void initData(Integer shopId){
         String key = JedisKeyConstant.GOODS_LABEL+shopId;
         try{
-            Condition param = GOODS_LABEL.DEL_FLAG.eq( DelFlag.NORMAL_VALUE.intValue());
+            Condition param = GOODS_LABEL.DEL_FLAG.eq( DelFlag.NORMAL.getCode());
             List<GoodsLabelRecord> list = saas().getShopApp(shopId).goods.goodsLabel.getByCondition(param);
             log.info("DB_{} 'b2c_goods_label' SIZE ={}",shopId,list.size());
             if( !list.isEmpty() ){
@@ -107,7 +107,7 @@ public class LabelDataHelper extends MainBaseService implements CommandLineRunne
                 fields,
                 EXPIRED_TIME,
                 ()->{
-                    Condition param = GOODS_LABEL.DEL_FLAG.eq( DelFlag.NORMAL_VALUE.intValue())
+                    Condition param = GOODS_LABEL.DEL_FLAG.eq( DelFlag.NORMAL.getCode())
                         .and(GOODS_LABEL.ID.in(ids));
                     List<GoodsLabelRecord> list = saas().getShopApp(shopId).goods.goodsLabel.getByCondition(param);
                     return list.stream()
@@ -133,7 +133,7 @@ public class LabelDataHelper extends MainBaseService implements CommandLineRunne
             id.toString(),
             EXPIRED_TIME,
             ()->{
-                Condition param = GOODS_LABEL.DEL_FLAG.eq( DelFlag.NORMAL_VALUE.intValue())
+                Condition param = GOODS_LABEL.DEL_FLAG.eq(DelFlag.NORMAL.getCode())
                     .and(GOODS_LABEL.ID.eq(id));
                 List<GoodsLabelRecord> list = saas().getShopApp(shopId).goods.goodsLabel.getByCondition(param);
                 return Util.toJson(list.get(0));
@@ -151,7 +151,7 @@ public class LabelDataHelper extends MainBaseService implements CommandLineRunne
     public void update(Integer shopId,List<Integer> ids){
         String key = JedisKeyConstant.GOODS_LABEL+shopId;
         try{
-            Condition param = GOODS_LABEL.DEL_FLAG.eq( DelFlag.NORMAL_VALUE.intValue())
+            Condition param = GOODS_LABEL.DEL_FLAG.eq(DelFlag.NORMAL.getCode())
                 .and(GOODS_LABEL.ID.in(ids));
             List<GoodsLabelRecord> list = saas().getShopApp(shopId).goods.goodsLabel.getByCondition(param);
 //            if( list.size() < goodsIds.size() ){

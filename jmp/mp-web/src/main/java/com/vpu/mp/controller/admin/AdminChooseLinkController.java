@@ -6,11 +6,10 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandClassifyVo;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
-import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -322,7 +321,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 */
 	@GetMapping("/admin/decorate/label/list")
 	public JsonResult goodsLabel() {
-		List<GoodsLabelVo> goodsLabelList = shop().chooselink.getLabelList();
+		List<GoodsLabelSelectListVo> goodsLabelList = shop().goods.goodsLabel.getGoodsLabelSelectList();
 		return this.success(goodsLabelList);
 	}
 }

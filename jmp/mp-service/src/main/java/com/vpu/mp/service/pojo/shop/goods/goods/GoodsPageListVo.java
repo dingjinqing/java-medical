@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import lombok.Data;
 
@@ -29,7 +29,7 @@ public class  GoodsPageListVo {
     private String brandName;
     private Integer goodsNumber;
     private Integer goodsSaleNum;
-    private List<GoodsLabelListVo> goodsLabels;
+    private List<GoodsLabelSelectListVo> goodsLabels;
     /**
      * 商品对应的规格数据,未使用
      */

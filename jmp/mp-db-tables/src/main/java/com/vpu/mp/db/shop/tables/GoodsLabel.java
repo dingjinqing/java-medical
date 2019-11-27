@@ -8,25 +8,14 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsLabel extends TableImpl<GoodsLabelRecord> {
 
-    private static final long serialVersionUID = 2068746047;
+    private static final long serialVersionUID = 221719726;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods_label</code>
@@ -70,52 +59,47 @@ public class GoodsLabel extends TableImpl<GoodsLabelRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_goods_label.goods_detail</code>. 是否应用于商品详情页： 1：是  0： 否
      */
-    public final TableField<GoodsLabelRecord, Byte> GOODS_DETAIL = createField("goods_detail", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否应用于商品详情页： 1：是  0： 否");
+    public final TableField<GoodsLabelRecord, Byte> GOODS_DETAIL = createField("goods_detail", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否应用于商品详情页： 1：是  0： 否");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_label.goods_list</code>. 是否应用于商品列表页： 1：是  0： 否
      */
-    public final TableField<GoodsLabelRecord, Byte> GOODS_LIST = createField("goods_list", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否应用于商品列表页： 1：是  0： 否");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_label.is_all</code>. 是否适用于全部商品： 1：是  0： 否
-     */
-    public final TableField<GoodsLabelRecord, Byte> IS_ALL = createField("is_all", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否适用于全部商品： 1：是  0： 否");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_label.level</code>.
-     */
-    public final TableField<GoodsLabelRecord, Short> LEVEL = createField("level", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_label.del_time</code>. 删除时间
-     */
-    public final TableField<GoodsLabelRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_goods_label.del_flag</code>.
-     */
-    public final TableField<GoodsLabelRecord, Integer> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<GoodsLabelRecord, Byte> GOODS_LIST = createField("goods_list", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否应用于商品列表页： 1：是  0： 否");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_label.list_pattern</code>. 列表样式
      */
-    public final TableField<GoodsLabelRecord, Short> LIST_PATTERN = createField("list_pattern", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "列表样式");
+    public final TableField<GoodsLabelRecord, Short> LIST_PATTERN = createField("list_pattern", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "列表样式");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_label.goods_select</code>. 是否应用于商品筛选页： 1：是  0： 否
      */
-    public final TableField<GoodsLabelRecord, Byte> GOODS_SELECT = createField("goods_select", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否应用于商品筛选页： 1：是  0： 否");
+    public final TableField<GoodsLabelRecord, Byte> GOODS_SELECT = createField("goods_select", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否应用于商品筛选页： 1：是  0： 否");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_label.is_all</code>. 是否应用于全部商品：1是 0否
+     */
+    public final TableField<GoodsLabelRecord, Byte> IS_ALL = createField("is_all", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否应用于全部商品：1是 0否");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_label.level</code>.
+     */
+    public final TableField<GoodsLabelRecord, Short> LEVEL = createField("level", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods_label.del_flag</code>.
+     */
+    public final TableField<GoodsLabelRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT, this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_label.create_time</code>.
      */
-    public final TableField<GoodsLabelRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<GoodsLabelRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_label.update_time</code>. 最后修改时间
      */
-    public final TableField<GoodsLabelRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<GoodsLabelRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods_label</code> table reference

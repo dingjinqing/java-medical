@@ -2335,6 +2335,7 @@ create table `b2c_grade_prd`
     `shop_id`     int(11)        not null default '0',
     `grade_price` decimal(10, 2) not null default '0.00',
     `grade`       varchar(65)    not null default '' comment '会员卡等级',
+    `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否，1是';
     `create_time` timestamp               default current_timestamp,
     `update_time` timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
@@ -2941,12 +2942,11 @@ create table `b2c_goods_label`
     `name`         varchar(100) not null comment '标签名称',
     `goods_detail` tinyint(1)   not null default '0' comment '是否应用于商品详情页： 1：是  0： 否',
     `goods_list`   tinyint(1)   not null default '0' comment '是否应用于商品列表页： 1：是  0： 否',
-    `is_all`       tinyint(1)   not null default '0' comment '是否适用于全部商品： 1：是  0： 否',
-    `level`        smallint(5)  not null default '0',
-    `del_time`     timestamp    null     default null comment '删除时间',
-    `del_flag`     int(1)       not null default '0',
     `list_pattern` smallint(5)  not null default '0' comment '列表样式',
     `goods_select` tinyint(1)   not null default '0' comment '是否应用于商品筛选页： 1：是  0： 否',
+    `is_all` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否应用于全部商品：1是 0否',
+    `level`        smallint(5)  not null default '0',
+    `del_flag`     tinyint(1)       not null default '0',
     `create_time`  timestamp             default current_timestamp,
     `update_time`  timestamp             default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
@@ -4022,6 +4022,7 @@ create table `b2c_goods_rebate_price`
     `advise_price` decimal(10, 2) not null default 0.00,
     `min_price`    decimal(10, 2)          default null,
     `max_price`    decimal(10, 2)          default null,
+    `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否，1是'
     `create_time`  timestamp               default current_timestamp,
     `update_time`  timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)

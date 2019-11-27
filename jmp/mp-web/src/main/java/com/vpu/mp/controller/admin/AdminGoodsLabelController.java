@@ -1,18 +1,11 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabel;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelPageListParam;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelVo;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelsMapParam;
+import com.vpu.mp.service.pojo.shop.goods.label.*;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 黄荣刚
@@ -26,27 +19,25 @@ public class AdminGoodsLabelController extends AdminBaseController {
      * @param param
      * @return
      */
-    @PostMapping("/api/admin/goods/label/list")
+    @PostMapping("/api/admin/goods/label/page/list")
     public JsonResult getPageList(@RequestBody GoodsLabelPageListParam param) {
-
-        PageResult<GoodsLabelVo> pageResult = shop().goods.goodsLabel.getPageList(param);
+        PageResult<GoodsLabelPageListVo> pageResult = shop().goods.goodsLabel.getPageList(param);
         return success(pageResult);
     }
 
-    /**
-     * 增加商品标签
-     *
-     * @param goodsLabel
-     * @return
-     */
     @PostMapping("/api/admin/goods/label/add")
-    public JsonResult insert(@RequestBody GoodsLabel goodsLabel) {
-        if (shop().goods.goodsLabel.isLabelNameExist(goodsLabel)) {
+    public JsonResult insert(@RequestBody GoodsLabelAddAndUpdateParam param) {
+        if (param.getName() == null) {
+            return fail(JsonResultMessage.GOODS_LABEL_NAME_NOT_NULL);
+        }
+        boolean labelNameExist = shop().goods.goodsLabel.isLabelNameExist(null, param.getName());
+        if (labelNameExist) {
             return fail(JsonResultCode.GOODS_LABEL_NAME_EXIST);
         }
-        shop().goods.goodsLabel.insert(goodsLabel);
-        return success(JsonResultCode.CODE_SUCCESS);
+        shop().goods.goodsLabel.insert(param);
+        return success();
     }
+
 
     /**
      * 删除商品标签（只是将删除标志位置1）
@@ -55,27 +46,7 @@ public class AdminGoodsLabelController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/label/delete/{id}")
     public JsonResult delete(@PathVariable Integer id) {
-        int result = shop().goods.goodsLabel.delete(id);
-        if (result > 0) {
-            return success(JsonResultCode.CODE_SUCCESS);
-        }
-        return fail(JsonResultCode.CODE_FAIL);
-    }
-
-    /**
-     * 更新商品标签
-     * @param goodsLabel
-     * @return
-     */
-    @PostMapping("/api/admin/goods/label/update")
-    public JsonResult update(@RequestBody GoodsLabel goodsLabel) {
-        if (shop().goods.goodsLabel.selectById(goodsLabel.getId()) == null) {
-            return fail(JsonResultCode.GOODS_LABEL_NOT_EXIST);
-        }
-        if (shop().goods.goodsLabel.isOtherLabelNameExist(goodsLabel)) {
-            return fail(JsonResultCode.GOODS_LABEL_NAME_EXIST);
-        }
-        shop().goods.goodsLabel.update(goodsLabel);
+        shop().goods.goodsLabel.delete(id);
         return success();
     }
 
@@ -86,12 +57,32 @@ public class AdminGoodsLabelController extends AdminBaseController {
      */
     @GetMapping("/api/admin/goods/label/select/{id}")
     public JsonResult select(@PathVariable Integer id) {
-        GoodsLabelVo goodsLabelVo = shop().goods.goodsLabel.selectGoodsLabelVoById(id);
+        GoodsLabelVo goodsLabelVo = shop().goods.goodsLabel.selectGoodsLabelById(id);
         if (goodsLabelVo != null) {
             return success(goodsLabelVo);
         }
         return fail(JsonResultCode.GOODS_LABEL_NOT_EXIST);
     }
+
+    /**
+     * 更新商品标签
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/goods/label/update")
+    public JsonResult update(@RequestBody GoodsLabelAddAndUpdateParam param) {
+        if (param.getId() == null||param.getName()==null) {
+            return fail();
+        }
+
+        if (shop().goods.goodsLabel.isLabelNameExist(param.getId(),param.getName())) {
+            return fail(JsonResultCode.GOODS_LABEL_NAME_EXIST);
+        }
+        shop().goods.goodsLabel.update(param);
+        return success();
+    }
+
+
 
     /**
      * 判断标签名称是否重复
@@ -103,16 +94,12 @@ public class AdminGoodsLabelController extends AdminBaseController {
     public JsonResult isGoodsLabelNameOk(@PathVariable("goodsLabelName") String goodsLabelName,
                                             @PathVariable("isUpdate") Byte isUpdate,
                                             @PathVariable("goodsLabelId")Integer goodsLabelId) {
-        GoodsLabel goodsLabel=new GoodsLabel();
         if (isUpdate == 1) {
-            goodsLabel.setId(goodsLabelId);
-            goodsLabel.setName(goodsLabelName);
-            if (shop().goods.goodsLabel.isOtherLabelNameExist(goodsLabel)) {
+            if (shop().goods.goodsLabel.isLabelNameExist(goodsLabelId,goodsLabelName)) {
                 return fail(JsonResultCode.GOODS_LABEL_NAME_EXIST);
             }
         } else {
-            goodsLabel.setName(goodsLabelName);
-            if (shop().goods.goodsLabel.isLabelNameExist(goodsLabel)) {
+            if (shop().goods.goodsLabel.isLabelNameExist(null,goodsLabelName)) {
                 return fail(JsonResultCode.GOODS_LABEL_NAME_EXIST);
             }
         }

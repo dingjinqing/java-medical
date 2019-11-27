@@ -15,7 +15,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
@@ -555,7 +555,7 @@ public class GoodsService extends ShopBaseService {
         List<Integer> goodsIds = new ArrayList<>(dataList.size());
 
         dataList.forEach(item -> goodsIds.add(item.getGoodsId()));
-        Map<Integer, List<GoodsLabelListVo>> goodsLabels = this.getGoodsLabels(goodsIds);
+        Map<Integer, List<GoodsLabelSelectListVo>> goodsLabels = this.getGoodsLabels(goodsIds);
 
         // 获取商品对应的规格集合数据
         Map<Integer, List<GoodsSpecProduct>> goodsIdPrdGroups = goodsSpecProductService.selectGoodsSpecPrdGroup(goodsIds);
@@ -616,7 +616,7 @@ public class GoodsService extends ShopBaseService {
      * 获取商品的关联的标签
      * @param goodsIds 商品ids
      */
-    private Map<Integer, List<GoodsLabelListVo>> getGoodsLabels(List<Integer> goodsIds) {
+    private Map<Integer, List<GoodsLabelSelectListVo>> getGoodsLabels(List<Integer> goodsIds) {
         return goodsLabel.getGtaLabelMap(goodsIds, GoodsLabelCoupleTypeEnum.GOODSTYPE);
     }
 
@@ -1327,7 +1327,7 @@ public class GoodsService extends ShopBaseService {
         setGoodsImgs(goodsVo);
 
         //设置标签
-        Map<Integer, List<GoodsLabelListVo>> gtaLabelMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsId), GoodsLabelCoupleTypeEnum.GOODSTYPE);
+        Map<Integer, List<GoodsLabelSelectListVo>> gtaLabelMap = goodsLabel.getGtaLabelMap(Arrays.asList(goodsId), GoodsLabelCoupleTypeEnum.GOODSTYPE);
         goodsVo.setGoodsLabelListVos(gtaLabelMap.get(goodsId));
 
         //设置sku

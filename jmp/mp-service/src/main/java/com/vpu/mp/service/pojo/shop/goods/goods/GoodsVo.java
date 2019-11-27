@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelListVo;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +17,7 @@ public class GoodsVo extends Goods {
 
     @JsonIgnore
     private List<Integer> goodsLabels;
-    private List<GoodsLabelListVo> goodsLabelListVos;
+    private List<GoodsLabelSelectListVo> goodsLabelListVos;
     private String brandName;
     private String sortName;
     private String goodsPageName;

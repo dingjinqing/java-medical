@@ -1284,6 +1284,10 @@ modify column  `anonymousflag` tinyint(1)  not null default  0  comment '匿名�
 modify column `comm_img`      varchar(1000)    default '[]' comment '评论图片',
 add unique index `order_sn` (`order_sn`) using BTREE;
 
+-- 李晓冰 修改商品标签表结构，删除无用字段，修改错误类型
+ALTER TABLE b2c_goods_label DROP del_time;
+ALTER TABLE b2c_goods_label MODIFY del_flag TINYINT(1);
+
 ALTER TABLE `b2c_mrking_voucher` CHANGE `random_min` `random_min` decimal(10, 2) DEFAULT '0' COMMENT '分裂优惠卷随机金额最低';
 ALTER TABLE `b2c_mrking_voucher` CHANGE `random_max` `random_max` decimal(10, 2) DEFAULT '0' COMMENT '分裂优惠卷随机金额最高';
 ALTER TABLE `b2c_mrking_voucher` CHANGE `receive_per_num` `receive_per_num` tinyint(1) DEFAULT '0' COMMENT '分裂优惠券领券人数是否限制 0不限制 1限制';

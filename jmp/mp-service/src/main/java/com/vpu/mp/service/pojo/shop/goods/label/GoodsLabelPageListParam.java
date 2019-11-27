@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.goods.label;
 
-import com.vpu.mp.service.foundation.util.Page;
-
 import lombok.Data;
 
 /**
@@ -11,10 +9,6 @@ import lombok.Data;
  */
 @Data
 public class GoodsLabelPageListParam {
-	
-	/** 是否删除默认值0 未删除，1已删除 */
-	public static final int DEL_FLAG = 0;
-	
 	 /**
      * 	搜索条件
      */
@@ -22,6 +16,6 @@ public class GoodsLabelPageListParam {
 	 /**
      * 	分页信息
      */
-    private int currentPage = Page.DEFAULT_CURRENT_PAGE;
-    private int pageRows = Page.DEFAULT_PAGE_ROWS;
+    private int currentPage;
+    private int pageRows;
 }

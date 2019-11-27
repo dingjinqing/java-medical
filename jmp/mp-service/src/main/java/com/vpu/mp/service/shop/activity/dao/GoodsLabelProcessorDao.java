@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -45,7 +46,7 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
         Condition allGoodsCondition =  GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
 
         Map<Byte, Map<Integer, List<Record4<String, Short, Byte, Integer>>>> goodsLabelsMap = db().select(GOODS_LABEL.NAME, GOODS_LABEL.LIST_PATTERN, GOODS_LABEL_COUPLE.TYPE, GOODS_LABEL_COUPLE.GTA_ID).from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
-            .where(GOODS_LABEL.GOODS_LIST.eq(GoodsConstant.SHOW_LABEL)).and(GOODS_LABEL.DEL_FLAG.eq(0))
+            .where(GOODS_LABEL.GOODS_LIST.eq(GoodsConstant.SHOW_LABEL)).and(GOODS_LABEL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(goodsIdsCondition.or(catIdsCondition).or(sortIdsCondition).or(allGoodsCondition))
             .orderBy(GOODS_LABEL.LEVEL.asc(), GOODS_LABEL.CREATE_TIME)
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GOODS_LABEL_COUPLE.TYPE), Collectors.groupingBy(x -> x.get(GOODS_LABEL_COUPLE.GTA_ID))));
@@ -85,7 +86,7 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
         Condition allGoodsCondition =  GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
 
         return db().select(GOODS_LABEL.NAME).from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
-            .where(GOODS_LABEL.GOODS_DETAIL.eq(GoodsConstant.SHOW_LABEL).and(GOODS_LABEL.DEL_FLAG.eq(0)))
+            .where(GOODS_LABEL.GOODS_DETAIL.eq(GoodsConstant.SHOW_LABEL).and(GOODS_LABEL.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
             .and(goodsIdsCondition.or(catIdsCondition).or(sortIdsCondition).or(allGoodsCondition))
             .orderBy(GOODS_LABEL.LEVEL.asc(), GOODS_LABEL.CREATE_TIME)
             .fetch(GOODS_LABEL.NAME);
