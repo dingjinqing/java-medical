@@ -186,6 +186,6 @@ export const en = {
   tipss10: 'Do not enter passwords twice',
   tips11: 'The phone number cannot be empty',
   tips12: 'The phone number is in the wrong format',
-  passwd2: 'confirm password'
-
+  passwd2: 'confirm password',
+  tips13: 'should be non-Chinese'
 }

@@ -238,6 +238,9 @@ export default {
       if (this.isEmpty(value)) {
         return callback(new Error(this.$t('authRoleList.tips6')))
       } else {
+        if (!(this.nameReg.test(value))) {
+          callback(new Error(this.$t('authRoleList.tips13')))
+        }
         callback()
       }
     }
@@ -314,6 +317,7 @@ export default {
       },
       phonereg: /^1[3|7|8]\d{9}$|^19[8-9]\d{8}$|^166\d{8}|^15[0-3|5-9]\d{8}|^14[5|7]\d{8}$/,
       passWd: /^[^\u4e00-\u9fa5][\S+$]{5,16}$/,
+      nameReg: /^[^\u4e00-\u9fa5]{0,}$/,
       rules: {
         pass: [
           { validator: validatePass, trigger: 'blur' }

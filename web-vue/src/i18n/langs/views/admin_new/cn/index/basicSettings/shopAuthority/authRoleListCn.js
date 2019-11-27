@@ -189,5 +189,6 @@ export const cn = {
   tipss10: '两次输入密码不一致',
   tips11: '手机号不能为空',
   tips12: '手机号格式错误',
-  passwd2: '确认密码'
+  passwd2: '确认密码',
+  tips13: '应为非中文'
 }

@@ -153,7 +153,7 @@ export default {
   methods: {
     // 表单校验
     JudgementForm (index) {
-      let userNameReg = /^[^\u4e00-\u9fa5][\S+$]{0,}$/
+      let userNameReg = /^[^\u4e00-\u9fa5]{0,}$/
       let passwordReg = /^[^\u4e00-\u9fa5][\S+$]{5,16}$/
       if (index === 1) {
         if (!userNameReg.test(this.mainData.username)) {
