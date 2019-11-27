@@ -681,7 +681,7 @@ export default {
           this.$set(this.form, 'batchFinalPrice', '')
           break
         case '2':
-          if (this.form.batchReduce === '') {
+          if (this.form.batchFinalPrice === '') {
             this.$message.warning(this.$t('firstSpecialAdd.settingTip'))
             return false
           }
