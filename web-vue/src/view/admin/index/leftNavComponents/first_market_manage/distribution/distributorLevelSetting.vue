@@ -380,7 +380,7 @@ export default {
 
     // 校验金额
     checkMoney (value) {
-      var re = /^\d+(\.\d+)?$/
+      var re = /^\d+(\.\d{1,2})?$/
       if (!re.test(value)) {
         this.$message.warning({ message: '请填写非负数, 可以保留两位小数' })
       }

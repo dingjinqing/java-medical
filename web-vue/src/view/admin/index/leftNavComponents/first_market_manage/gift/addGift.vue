@@ -459,7 +459,7 @@ export default {
       }
     }
     var validatMoney = (rule, value, callback) => {
-      var re = /^\d+(\.\d+)?$/
+      var re = /^\d+(\.\d{1,2})?$/
       if (!re.test(value) && this.contains(0)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
       } else {
@@ -606,6 +606,7 @@ export default {
     // 下一步
     nextStep () {
       this.formatParam()
+      // 参数校验
       // if (!this.validateParam()) {
       //   return
       // }
@@ -878,7 +879,6 @@ export default {
     // 参数校验
     validateParam () {
       let result = true
-
       this.param.selectedRules.forEach(index => {
         const { label, keys } = this.rules[index]
         keys.forEach(key => {
@@ -889,7 +889,6 @@ export default {
           }
         })
       })
-
       return result
     },
     // validateParam () {
