@@ -222,7 +222,11 @@ public class AdminShopDecorateController extends AdminBaseController {
      */
     @GetMapping("/admin/get/searchcfg")
     public JsonResult getSearchCfg() {
-        return success(shop().config.searchCfg.getSearchConfig());
+    	SearchConfig searchConfig = shop().config.searchCfg.getSearchConfig();
+    	if(null==searchConfig) {
+    		searchConfig=new SearchConfig(1, 1, 0);
+    	}
+        return success(searchConfig);
     }
     /**
      * 修改搜索配置
