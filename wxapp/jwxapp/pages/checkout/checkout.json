@@ -1,9 +1,9 @@
 {
   "usingComponents": {
-    "v-balance-popup": "/components/popup/payBalanceDialog/index",
-    "v-score-popup": "/components/popup/payScoreDialog/index",
+    "v-balance-popup": "/components/popup/pay_balance_dialog/index",
+    "v-score-popup": "/components/popup/pay_score_dialog/index",
     "v-card-balance": "/components/popup/pay_card_balance_dialog/index",
-    "v-select-card": "/components/popup/selectCardDialog/index",
-    "v-select-store": "/components/popup/selectStoreDialog/index"
+    "v-select-card": "/components/popup/select_card_dialog/index",
+    "v-select-store": "/components/popup/select_store_dialog/index"
   }
 }
