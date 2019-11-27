@@ -5,7 +5,9 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL_COUPLE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.jooq.Condition;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
@@ -64,11 +66,30 @@ public class GoodsLabelCoupleService extends ShopBaseService {
             return;
         }
         Integer goodsLabelId = goodsLabel.getId();
-        this.transaction(() -> {
-            batchInsertGoodsTypeGoodsLabelCouple(goodsLabelId, goodsLabel.getGoodsId());
-            batchInsertCattTypeGoodsLabelCouple(goodsLabelId, goodsLabel.getCatId());
-            batchInsertSortTypeGoodsLabelCouple(goodsLabelId, goodsLabel.getSortId());
-        });
+        if( goodsLabel.getIsAll() == 0 ){
+            this.transaction(() -> {
+                batchInsertGoodsTypeGoodsLabelCouple(goodsLabelId, goodsLabel.getGoodsId());
+                batchInsertCattTypeGoodsLabelCouple(goodsLabelId, goodsLabel.getCatId());
+                batchInsertSortTypeGoodsLabelCouple(goodsLabelId, goodsLabel.getSortId());
+            });
+        }else{
+            insertAllGoodsTypeGoodsLabelCouple(goodsLabelId);
+        }
+
+    }
+
+    /**
+     * 全部商品插入到关联表内
+     * @param id 商品标签ID
+     */
+    private void insertAllGoodsTypeGoodsLabelCouple(Integer id){
+        if (id == null) {
+            return;
+        }
+        GoodsLabelCoupleRecord record = new GoodsLabelCoupleRecord();
+        record.setLabelId(id);
+        record.setType(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
+        record.insert();
     }
 
     /**
@@ -268,5 +289,12 @@ public class GoodsLabelCoupleService extends ShopBaseService {
         db().deleteFrom(GOODS_LABEL_COUPLE)
                 .where(GOODS_LABEL_COUPLE.LABEL_ID.eq(id))
                 .execute();
+    }
+
+    public List<GoodsLabelCouple> getGoodsLabelCouple(Condition param){
+        return db().select(GOODS_LABEL_COUPLE.ID, GOODS_LABEL_COUPLE.LABEL_ID, GOODS_LABEL_COUPLE.GTA_ID, GOODS_LABEL_COUPLE.TYPE)
+            .from(GOODS_LABEL_COUPLE)
+            .where(param)
+            .fetchInto(GoodsLabelCouple.class);
     }
 }
