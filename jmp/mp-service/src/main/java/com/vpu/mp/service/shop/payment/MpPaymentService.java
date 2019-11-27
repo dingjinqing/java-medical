@@ -87,6 +87,7 @@ public class MpPaymentService extends ShopBaseService {
 		payConfig.setMchId(mp.getPayMchId());
 		payConfig.setMchKey(mp.getPayKey());
 		payConfig.setKeyContent(keyContent);
+        payConfig.setSignType("MD5");
 		return payConfig;
 	}
 
