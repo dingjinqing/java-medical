@@ -56,6 +56,7 @@ export const cn = {
   selected: '已选',
   selectedNUm: '件商品',
   giftConditions: '赠品条件',
+  select: '请选择',
   conditions1: '满金额赠送：',
   conditions2: '满数量赠送：',
   conditions3: '会员标签：',

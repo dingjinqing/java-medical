@@ -56,6 +56,7 @@ export const en = {
   selected: 'Selected',
   selectedNUm: 'Commodity',
   giftConditions: 'Conditions',
+  select: 'select',
   conditions1: 'Full amount gift：',
   conditions2: 'Full quantity gift：',
   conditions3: 'Membership tag：',

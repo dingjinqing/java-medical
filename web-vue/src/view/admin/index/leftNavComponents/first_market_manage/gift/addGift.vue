@@ -106,6 +106,7 @@
                 <el-select
                   size="small"
                   v-model="param.selectedRules"
+                  :placeholder="$t('gift.select')"
                   multiple
                   :multiple-limit="3"
                   :disabled="ongoing"
