@@ -32,8 +32,13 @@ public class MemberCard {
 	private Timestamp endTime;
 	private Integer receiveDay;
 	private Byte dateType;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Byte flag;
+	private Byte cardStatus;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String grade;
+	private String cardGrade;
+	private Byte isPay;
 	private BigDecimal payFee;
 	private Byte payType;
 	private List<String> exchangCountLegal;
@@ -74,6 +79,8 @@ public class MemberCard {
 		this.powerScore = (byte) (this.buyScore == null ? 0 : 1);
 		/** 卡充值开关 0关闭；1开启 */
 		this.powerCard = (byte) (this.chargeMoney == null ? 0 : 1);
+		this.cardGrade = this.grade;
+		this.cardStatus = this.flag;
 	}
 	public MemberCard(Integer id) {
 		super();
