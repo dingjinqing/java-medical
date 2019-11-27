@@ -1440,16 +1440,6 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
-     *  通过商品id 和指定列查询商品
-     * @param goodsIds ids
-     * @param fields 列
-     * @return
-     */
-    public Result<Record> getGoodsByIdsAndFields(List<Integer> goodsIds, SelectFieldOrAsterisk... fields){
-        return db().select(fields).from(GOODS).where(GOODS.GOODS_ID.in(goodsIds)).fetch();
-    }
-
-    /**
      * 获取商品小程序展示页面
      *
      * @param goodsId 商品id
@@ -1458,7 +1448,7 @@ public class GoodsService extends ShopBaseService {
     public GoodsQrCodeVo getGoodsQrCode(Integer goodsId) {
         String paramName = "goods_id=";
         String urlParam = paramName + goodsId;
-        log.debug("urlParam:{}"+urlParam);
+        log.debug("urlParam:{}",urlParam);
         String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, urlParam);
         log.debug("qrCode img full url:{}",mpQrCode);
         GoodsQrCodeVo goodsQrCodeVo = new GoodsQrCodeVo();
