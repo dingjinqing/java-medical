@@ -150,10 +150,11 @@ public class MpPaymentService extends ShopBaseService {
             //公众号支付/小程序支付.
             vo = JsApiVo.builder().
                 appId(result.getAppid()).
-                timeStamp(timestamp).nonceStr(nonceStr).
+                timeStamp(timestamp).
+                nonceStr(nonceStr).
                 packageAlias("prepay_id=" + prepayId).
-                signType(config.getSignType()).
-                paySign(SignUtils.createSign(payInfo, config.getSignType(), config.getMchKey(), null)).
+                signType("MD5").
+                paySign(SignUtils.createSign(payInfo, "MD5", config.getMchKey(), null)).
                 build();
         }
         vo.setResult(result);
