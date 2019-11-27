@@ -41,5 +41,6 @@ export const cn = {
     goodsManage: '商品管理推荐'
   },
   maxHotWords: '最多只能添加十个热词',
+  titleCustomError: '请填写默认搜索自定义词',
   save: '保存'
 }

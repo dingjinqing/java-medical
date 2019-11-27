@@ -40,5 +40,7 @@ export const en = {
     newGoods: 'New Product Recommendation',
     goodsManage: 'Commodity management recommendation'
   },
+  maxHotWords: 'Add up to ten hot words',
+  titleCustomError: 'Please fill in the default search custom word',
   save: 'save'
 }

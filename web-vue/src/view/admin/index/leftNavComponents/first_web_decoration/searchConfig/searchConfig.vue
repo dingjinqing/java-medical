@@ -220,8 +220,12 @@ export default {
     },
     // 保存按钮 -> 提交数据
     submitData () {
-      if (this.titleCustom !== 3) {
+      if (this.titleAction !== 3) {
         this.titleCustom = ''
+      }
+      if (this.titleAction === 3 && this.isEmpty(this.titleCustom)) {
+        this.$message.error(this.$t('searchConfig.titleCustomError'))
+        return
       }
       let params = {
         title_action: this.titleAction,
@@ -238,6 +242,13 @@ export default {
           this.$message.error(res.message)
         }
       }).catch(err => console.log(err))
+    },
+    isEmpty (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
