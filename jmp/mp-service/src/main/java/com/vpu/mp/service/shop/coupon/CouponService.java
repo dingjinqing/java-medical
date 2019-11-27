@@ -119,6 +119,8 @@ public class CouponService extends ShopBaseService {
             list.setUsed(used);
             if(list.getValidityType().equals(BaseConstant.COUPON_VALIDITY_TYPE_FIXED)){
                 list.setCurrentState(Util.getActStatus(list.getEnabled(),list.getStartTime(),list.getEndTime()));
+            }else {
+                list.setCurrentState(Util.getActStatus(list.getEnabled(),list.getStartTime(),list.getEndTime(),BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE));
             }
         }
         return couponList;
