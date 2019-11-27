@@ -203,7 +203,13 @@
             class="inputTip"
           >{{$t('goodsAddEditInfo.basicInfoOther.unitTip')}}</span>
         </el-form-item>
-        <sortCatTreeSelect  ref="sortTree" :autoLoad="false" :filterGoodsInfo="{needGoodsNum: false}" treeType="sort" :selectedId.sync="goodsProductInfo.sortId"/>
+        <sortCatTreeSelect
+          ref="sortTree"
+          :autoLoad="false"
+          :filterGoodsInfo="{needGoodsNum: false}"
+          treeType="sort"
+          :selectedId.sync="goodsProductInfo.sortId"
+        />
         <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsLabel')">
           <el-select
             v-model="labelSelectedTempVal"
@@ -422,7 +428,7 @@ import {
   selectParentPlatfromClassification,
   isGoodsColumnValueExist
 } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
-import {getGoodsFilterItem} from '@/api/admin/goodsManage/allGoods/allGoods'
+import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { goodsBrandClassifyListApi, goodsBrandPageListApi } from '@/api/admin/goodsManage/brandManagement/brandManagement'
 // js工具函数导入
 import { isStrBlank } from '@/util/typeUtil'
@@ -459,7 +465,7 @@ export default {
       // 基本信息验证
       basicInfoRules: {
         goodsName: [
-          { required: true, message: '请输入商品名称', trigger: 'change' }
+          { required: true, message: '请输入商品名称', trigger: 'blur' }
         ],
         catId: [
           { required: true, message: '请选择平台分类', trigger: 'change' }
@@ -710,7 +716,7 @@ export default {
     },
     /* 刷新标签下拉列表，要将已选的项剔除 */
     labelSelectRefresh () {
-      getGoodsFilterItem({needGoodsLabel: true}).then(res => {
+      getGoodsFilterItem({ needGoodsLabel: true }).then(res => {
         const { content: { goodsLabels } } = res
         this.labelSelectOptions = goodsLabels.filter(item => !this.labelSelectedItems.some(innerItem => innerItem.id === item.id))
       })
@@ -864,7 +870,7 @@ export default {
     },
     // 初始化商家分类和商品标签
     _sortAndLabelSelectInit () {
-      let p1 = getGoodsFilterItem({needGoodsLabel: true}).then(res => {
+      let p1 = getGoodsFilterItem({ needGoodsLabel: true }).then(res => {
         this.labelSelectOptions = res.content.goodsLabels
       })
       let p2 = this.$refs.sortTree.loadData()

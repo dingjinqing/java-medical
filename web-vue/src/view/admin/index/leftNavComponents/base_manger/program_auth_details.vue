@@ -237,13 +237,21 @@
       </div>
       <div class="__el-card-content fun-opt">
         <el-switch
-          style="height: 30px;"
+          style="height: 30px;margin-left: 30px;"
           v-model="queryData.switch"
           active-color="#f38019"
         >
         </el-switch>
         <ul class="program-details ml-20">
           <li class="details-item flex-wrap">
+            <span
+              v-show="queryData.switch === false"
+              style="margin-right: 15px;"
+            >已关闭</span>
+            <span
+              v-show="queryData.switch === true"
+              style="margin-right: 15px;"
+            >已开启</span>
             <span class="item-text c-999">
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip2')}}
             </span>
@@ -689,6 +697,7 @@ export default {
   .fun-opt {
     display: flex;
     align-items: flex-start;
+    margin-top: 10px;
   }
 
   .c-999 {
