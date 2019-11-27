@@ -64,7 +64,7 @@
 	{
 		"vsName": "basic_yesterday",
 		"name": "概况统计",
-		"enName": "shop_view",
+		"enName": "analysis_basic",
 		"topIndex": 0,
 		"includeApi": []
 	},
