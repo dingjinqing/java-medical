@@ -6,7 +6,7 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    usePayInfo: Object,
+    moneyPaid: Number,
     userScore:Number,
     scoreMax:Number,
     scoreMin:Number
@@ -33,7 +33,7 @@ global.wxComponent({
       this.triggerEvent('close', 'score')
     },
     init(){
-      let { moneyPaid } = this.data.usePayInfo
+      let moneyPaid = this.data.moneyPaid
       moneyPaid = moneyPaid * 100;
       let scoreMax = this.data.scoreMax * 100
       let userScore = this.data.userScore

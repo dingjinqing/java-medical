@@ -76,12 +76,18 @@ global.wxPage({
   },
   // 更改选中状态
   checkedToggle(e){
-    const targetIndex = this.data.canBuyGoodsList.findIndex(item => {return item.recId === e.currentTarget.dataset.rec_id})
-    const target = `canBuyGoodsList[${targetIndex}].isChecked`
-    this.setData({
-      [target]: this.data.canBuyGoodsList[targetIndex].isChecked ? 0 : 1,
-    })
-    this.getAllCheckedStatus()
+    let recId = e.currentTarget.dataset.rec_id
+    util.api('/api/wxapp/cart/switch',res=>{
+      if(res.error === 0){
+        this.requestCartList()
+      }
+    }, { recId })
+    // const targetIndex = this.data.canBuyGoodsList.findIndex(item => {return item.recId === e.currentTarget.dataset.rec_id})
+    // const target = `canBuyGoodsList[${targetIndex}].isChecked`
+    // this.setData({
+    //   [target]: this.data.canBuyGoodsList[targetIndex].isChecked ? 0 : 1,
+    // })
+    // this.getAllCheckedStatus()
   },
   // 获取是否所有单选框全选
   getAllCheckedStatus(){

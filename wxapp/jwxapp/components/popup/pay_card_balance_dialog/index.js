@@ -6,7 +6,7 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    usePayInfo:Object,
+    moneyPaid:Number,
     userCardBalance:Number
   },
 
@@ -30,7 +30,7 @@ global.wxComponent({
       this.triggerEvent('close','cardBalance')
     },
     init(){
-      let { moneyPaid } = this.data.usePayInfo
+      let moneyPaid = this.data.moneyPaid
       let userCardBalance = this.data.userCardBalance
       let maxCanUse = moneyPaid > userCardBalance ? userCardBalance : moneyPaid
       this.setData({
