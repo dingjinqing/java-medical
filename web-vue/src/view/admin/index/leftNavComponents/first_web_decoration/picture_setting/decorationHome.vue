@@ -358,7 +358,7 @@ export default {
         'has_bottom': '0',
         'page_bg_color': '#ffffff',
         'page_bg_image': '',
-        'show_margin': '1',
+        'show_margin': '0',
         'margin_val': '0',
         'last_cur_idx': this.cur_idx,
         'pictorial': {
