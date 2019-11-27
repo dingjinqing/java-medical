@@ -60,13 +60,13 @@
           <div class="infoContent">
             <el-radio-group v-model="titleAction">
               <div class="noSetting">
-                <el-radio :label="0">{{$t('searchConfig.defaultSearch.setting')}}
+                <el-radio :label="1">{{$t('searchConfig.defaultSearch.setting')}}
                   <span>{{$t('searchConfig.defaultSearch.show')}}</span>
                 </el-radio>
-                <el-radio :label="1">{{$t('searchConfig.defaultSearch.allGoods')}}</el-radio>
+                <el-radio :label="2">{{$t('searchConfig.defaultSearch.allGoods')}}</el-radio>
               </div>
               <div class="custom">
-                <el-radio :label="2">{{$t('searchConfig.defaultSearch.custom')}}<el-input
+                <el-radio :label="3">{{$t('searchConfig.defaultSearch.custom')}}<el-input
                     v-model="titleCustom"
                     size="small"
                     style="width:180px;margin-left:12px"
