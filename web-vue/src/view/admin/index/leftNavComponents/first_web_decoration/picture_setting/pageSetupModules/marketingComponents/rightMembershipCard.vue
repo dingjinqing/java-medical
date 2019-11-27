@@ -189,7 +189,7 @@ export default {
     modulesData: Object,
     sortIndex: Number
   },
-  data() {
+  data () {
     return {
       checked: false,
       dialogVisible: false,
@@ -414,7 +414,7 @@ export default {
   watch: {
     // 中间模块当前高亮index
     sortIndex: {
-      handler(newData) {
+      handler (newData) {
         if (this.modulesData) {
           this.nowChecked = this.modulesData // 回显数据
           if (this.modulesData.hidden_card) { // 是否选中用户领取后隐藏会员卡回显
@@ -427,7 +427,7 @@ export default {
       },
       immediate: true
     },
-    radio(newData) {
+    radio (newData) {
       this.showCardList.forEach(item => {
         item.isChecked = false
       })
@@ -442,7 +442,7 @@ export default {
           this.showCardList = this.gradeCardData
       }
     },
-    checked(newData) {
+    checked (newData) {
       // 如果已经有选中数据则直接改变数据里的isHidden项，若果没有则等待弹窗选中确认后，将是否隐藏卡片checked值赋予选中的数据中的isHidden.
       if (this.nowChecked.id) {
         if (newData) { // 将checked得值转化为0 1
@@ -456,7 +456,7 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     // 初始化语言
     this.langDefault()
 
@@ -465,7 +465,7 @@ export default {
   },
   methods: {
     // 初始化获取会员卡数据
-    handleToGetCardData() {
+    handleToGetCardData () {
       allCardData({}).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -475,7 +475,7 @@ export default {
       })
     },
     // 处理起始数据
-    handleToAllData(res) {
+    handleToAllData (res) {
       res.content.normalCard.forEach((item, index) => {
         // 处理每种卡的权益、过期类型
         this.handleToExptreType(item)
@@ -494,7 +494,7 @@ export default {
       this.showCardList = this.ordinaryCardData
     },
     // 处理每种卡的权益、过期类型
-    handleToExptreType(item) {
+    handleToExptreType (item) {
       item.isChecked = false
       switch (item.expireType) { // 处理有效期
         case 0:
@@ -553,11 +553,11 @@ export default {
       }
     },
     // 调起弹窗
-    handlCallCardDialog() {
+    handlCallCardDialog () {
       this.dialogVisible = true
     },
     // 弹窗确定事件
-    handleToSelectCuopon() {
+    handleToSelectCuopon () {
       let obj = {
         card_id: this.zcCheckedData.id, // 会员卡id
         card_name: this.zcCheckedData.cardName, // 会员卡名称
@@ -581,7 +581,7 @@ export default {
       this.dialogVisible = false
     },
     // 卡片点击
-    handleToClickCard(index) {
+    handleToClickCard (index) {
       this.showCardList.forEach(item => {
         item.isChecked = false
       })
@@ -590,7 +590,7 @@ export default {
       this.showCardList[index].isChecked = !this.showCardList[index].isChecked
     },
     //  点击添加会员卡
-    handleToAddCard() {
+    handleToAddCard () {
       let obj = { query: { 'cardType': Number(this.radio) } }
       switch (this.radio) {
         case '1':
@@ -605,7 +605,7 @@ export default {
       this.$router.push(obj)
     },
     // 点击搜索
-    handleToSearchCard() {
+    handleToSearchCard () {
       console.log(this.input)
       let obj = {
         'cardType': (Number(this.radio) - 1),
@@ -620,7 +620,7 @@ export default {
       })
     },
     // 点击刷新
-    handleToRefresh() {
+    handleToRefresh () {
       this.handleToSearchCard()
     }
   }

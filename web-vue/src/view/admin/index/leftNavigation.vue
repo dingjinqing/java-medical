@@ -659,9 +659,9 @@ export default {
     handleToJudgeTwoDiction(name) {
       console.log(name)
       // 请求功能或者菜单对应的版本名字池
-      let vsNameArr = ['']
+      let vsNameArr = ['basic_yesterday', 'portrait_user', 'second_view', 'visit_source', 'analysis_visit_source']
       // 二级菜单需要校验的元素池
-      let enNameArr = ['shop_view', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort']
+      let enNameArr = ['analysis_basic', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort']
       console.log(enNameArr.indexOf(name))
       if (enNameArr.indexOf('name') !== -1) {
 
