@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -13,13 +15,15 @@ import lombok.Data;
  *
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SearchConfig {
 	
 	/**
 	 *  0：不设置，1：全部商品，2：自定义
 	 */
 	@JsonProperty(value = "title_action")
-	public Integer titleAction = 0;
+	public Integer titleAction = 1;
 	
 	/**
 	 * 自定义搜索值
@@ -31,7 +35,7 @@ public class SearchConfig {
 	 * 是否开启搜索历史 0关闭，1开启
 	 */
 	@JsonProperty(value = "is_open_history")
-	public Integer isOpenHistory = 0;
+	public Integer isOpenHistory = 1;
 	
 	/**
 	 * 是否开启热词 0关闭，1开启
@@ -44,4 +48,12 @@ public class SearchConfig {
 	 */
 	@JsonProperty(value = "hot_words")
 	public List<String> hotWords = new ArrayList<String>(0);
+
+	public SearchConfig(Integer titleAction, Integer isOpenHistory, Integer isOpenHotWords) {
+		super();
+		this.titleAction = titleAction;
+		this.isOpenHistory = isOpenHistory;
+		this.isOpenHotWords = isOpenHotWords;
+	}
+	
 }
