@@ -80,8 +80,8 @@ public class ShopOfficialAccount extends MainBaseService {
 		// 因为页面不展示二维码。没有给图像加image.imageUrl方法。想加的加个循环吧
 		PageResult<MpOfficeAccountListVo> pageResult = this.getPageResult(select, oaListParam.getCurrentPage(),
 				oaListParam.getPageRows(), MpOfficeAccountListVo.class);
-		List<String> nickNams=new ArrayList<String>();
 		for(MpOfficeAccountListVo vo:pageResult.dataList) {
+			List<String> nickNams=new ArrayList<String>();
 			Result<MpAuthShopRecord> officialAccountMps = saas.shop.mp.getOfficialAccountMps(vo.getAppId());
 			for(MpAuthShopRecord record:officialAccountMps) {
 				nickNams.add(record.getNickName());
