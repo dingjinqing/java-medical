@@ -14,14 +14,13 @@ import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
-import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.*;
 import com.vpu.mp.service.pojo.wxapp.store.ServiceOrderTran;
 import com.vpu.mp.service.shop.member.AccountService;
-import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,11 +42,11 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
 import static com.vpu.mp.service.shop.store.store.StoreReservation.HH_MM_FORMATTER;
 import static java.math.BigDecimal.ZERO;
-import static org.apache.commons.lang3.math.NumberUtils.*;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * @author 王兵兵
@@ -87,7 +86,7 @@ public class ServiceOrderService extends ShopBaseService {
      * The User card service.
      */
     @Autowired
-    public UserCardService userCardService;
+    public MemberCardService memberCardService;
 
     /**
      * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
@@ -300,7 +299,7 @@ public class ServiceOrderService extends ShopBaseService {
         // 优惠券抵扣金额
         BigDecimal couponDis = param.getDiscount();
         AccountParam accountParam = null;
-        UserCardConsumeBean userCardConsumeBean = null;
+        CardConsumpData cardConsumpData = null;
         if (balance.compareTo(BIGDECIMAL_ZERO) > 0) {
             // 用户余额校验
             BigDecimal userBalance = Optional.ofNullable(userService.getUserByUserId(param.getUserId()))
@@ -312,6 +311,7 @@ public class ServiceOrderService extends ShopBaseService {
             }
             // 创建会员余额变动事件
             accountParam = new AccountParam() {{
+                setAccount(userBalance);
                 setUserId(param.getUserId());
                 // 更新金额  区分正负号， 这里置为负号，表示扣减
                 setAmount(param.getUseAccount().negate());
@@ -342,18 +342,14 @@ public class ServiceOrderService extends ShopBaseService {
             // 增加会员卡消费记录
             UserCardParam userCardParam = userCardDaoService.getUserCardInfo(param.getMemberCardNo());
             // 创建会员卡消费变动事件
-            userCardConsumeBean = new UserCardConsumeBean() {{
-                setUserId(param.getUserId());
-                // 卡余额消耗
-                setMoney(param.getMemberCardBalance());
-                // 卡余额消耗
-                setMoneyDis(param.getMemberCardBalance());
-                setCardNo(param.getMemberCardNo());
-                setCardId(userCardParam.getCardId());
-                setReason(orderSn);
+            cardConsumpData = new CardConsumpData()
+                .setUserId(param.getUserId())
+                .setMoney(param.getMemberCardBalance().negate())
+                .setCardNo(param.getMemberCardNo())
+                .setCardId(userCardParam.getCardId())
+                .setReason(orderSn)
                 // 消费类型 :门店只支持普通卡0
-                setType(BYTE_ZERO);
-            }};
+                .setType(MCARD_TP_NORMAL);
         }
         if (!INTEGER_ZERO.equals(param.getCouponId())) {
             // todo 根据优惠券规则计算优惠券抵扣金额
@@ -371,7 +367,7 @@ public class ServiceOrderService extends ShopBaseService {
         param.setOrderStatusName(ORDER_STATUS_NAME_WAIT_PAY);
         param.setMoneyPaid(moneyPaidSecondCheck);
         log.debug("创建门店服务订单: {}", param);
-        return ServiceOrderTran.builder().account(accountParam).userCardConsume(userCardConsumeBean).serviceOrder(param).build();
+        return ServiceOrderTran.builder().account(accountParam).cardConsumpData(cardConsumpData).serviceOrder(param).build();
     }
 
     /**
@@ -381,24 +377,34 @@ public class ServiceOrderService extends ShopBaseService {
      */
     public String createServiceOrder(ServiceOrderTran param) {
         AccountParam account = param.getAccount();
-        UserCardConsumeBean userCard = param.getUserCardConsume();
+        CardConsumpData userCard = param.getCardConsumpData();
         ServiceOrderRecord order = param.getServiceOrder();
         db().executeInsert(order);
         if (Objects.nonNull(account)) {
             try {
                 TradeOptParam tradeOpt = TradeOptParam.builder()
-                    .adminUserId(0)
-                    .tradeType(CONDITION_TWO)
-                    .tradeFlow(BYTE_ZERO)
+                    .adminUserId(INTEGER_ZERO)
+                    .tradeType(RecordTradeEnum.TYPE_CRASH_ACCOUNT_PAY.val())
+                    .tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
                     .build();
                 accountService.addUserAccount(account, tradeOpt);
             } catch (MpException e) {
-                e.printStackTrace();
+                log.debug("余额抵扣失败：{}", e.getMessage());
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
             }
             log.debug("用户余额[{}]抵扣(实际抵扣金额[{}])成功!", account.getAccount(), order.getUseAccount());
         }
         if (Objects.nonNull(userCard)) {
-            userCardService.cardConsumer(userCard, INTEGER_ZERO, CONDITION_THREE, BYTE_ONE, BYTE_ZERO, false);
+            TradeOptParam optParam = TradeOptParam.builder()
+                .tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
+                .tradeType(RecordTradeEnum.TYPE_CRASH_MEMBER_CARD_PAY.val())
+                .tradeSn(order.getOrderSn()).adminUserId(INTEGER_ZERO).build();
+            try {
+                memberCardService.updateMemberCardAccount(userCard, optParam, org.apache.commons.lang3.StringUtils.EMPTY);
+            } catch (MpException e) {
+                log.debug("会员卡余额抵扣失败：{}", e.getMessage());
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
             log.debug("会员卡余额抵扣(实际抵扣金额[{}])成功!", userCard.getMoney());
         }
         return order.getOrderSn();
@@ -471,7 +477,7 @@ public class ServiceOrderService extends ShopBaseService {
             /** 负数为消费次数 */
             cardConsumpData.setCount(-param.getReduce().intValue());
             saas.getShopApp(getShopId()).member.card.updateMemberCardSurplus(cardConsumpData, tradeOpt, language);
-        } else if (CardConstant.MCARD_TP_NORMAL.equals(memberCard.getCardType())) {
+        } else if (MCARD_TP_NORMAL.equals(memberCard.getCardType())) {
             /** 负数为消费金额 */
             cardConsumpData.setMoney(param.getReduce().negate());
             saas.getShopApp(getShopId()).member.card.updateMemberCardAccount(cardConsumpData, tradeOpt, language);

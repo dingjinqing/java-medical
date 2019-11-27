@@ -56,8 +56,7 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_DATA_NOT_EXIST;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_NAME_FINISHED;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.*;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.math.NumberUtils.*;
@@ -405,11 +404,22 @@ public class StoreReservation extends ShopBaseService {
         this.transaction(() -> {
             // 创建订单
             String orderSn = serviceOrderService.createServiceOrder(orderTran);
+            log.debug("订单创建完成，订单编号为：{}", orderSn);
             if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
                 //TODO 支付接口
                 String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
                 webPayVo.set(mpPaymentService.wxUnitOrder(param.getClientIp(), param.getServiceId().toString(), orderSn, serviceOrder.getMoneyPaid(), openId));
                 log.debug("微信支付接口调用结果：{}", webPayVo.get());
+            } else {
+                // 如果不需要调用微信支付，直接将订单状态由待付款改为待服务
+                serviceOrderService.updateServiceOrderStatus(orderSn, ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);
+            }
+            if (Objects.isNull(webPayVo.get())) {
+                webPayVo.set(new WebPayVo() {{
+                    setOrderSn(orderSn);
+                }});
+            } else {
+                webPayVo.get().setOrderSn(orderSn);
             }
         });
         /*// 队列前置校验
