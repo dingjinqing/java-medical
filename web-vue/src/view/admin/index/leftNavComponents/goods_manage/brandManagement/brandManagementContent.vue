@@ -464,6 +464,25 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+    <!--删除二次提醒-->
+    <el-dialog
+      title="提示"
+      :visible.sync="delDialogVisible"
+      width="30%"
+      :center="true"
+    >
+      <span>是否确认删除?</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="delDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="handleToTowDel()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -472,7 +491,7 @@ import pagination from '@/components/admin/pagination/pagination'
 import { saveShowBrandgetRequest, showBrandgetRequest, pagingBrandUpdateRequest, pagingBrandDelRequest, pagingBrandQueryRequest, brandAllGetRequest, brandDeleteGetRequest, classificationSelectRequest, addGrandClassRequest } from '@/api/admin/brandManagement.js'
 export default {
   components: { pagination },
-  data () {
+  data() {
     return {
       // 结束时间校验
       endTime: {
@@ -535,12 +554,16 @@ export default {
       brandStartTime: '', // 全部品牌tap起始时间
       brandEndTime: '', // 全部品牌tap终止时间
       classifyBrandStartTime: '', // 分类名称tap页面初始时间
-      classifyBrandEndTime: '' // 分类名称tap页面终止时间
+      classifyBrandEndTime: '', // 分类名称tap页面终止时间
+      delDialogVisible: false, // 删除二次提醒弹窗flag
+      delFlag: true,
+      brandId: null,
+      classifyId: null
     }
   },
   props: ['turnIndex'],
   watch: {
-    switchValue (newData) {
+    switchValue(newData) {
       switch (newData) {
         case true:
           this.switchTextOne = '已开启'
@@ -550,7 +573,7 @@ export default {
           break
       }
     },
-    switchValueBottom (newData) {
+    switchValueBottom(newData) {
       switch (newData) {
         case true:
           this.switchTextSecond = '已开启'
@@ -562,11 +585,11 @@ export default {
           break
       }
     },
-    createTime (newData) {
+    createTime(newData) {
       console.log(newData)
     }
   },
-  mounted () {
+  mounted() {
     console.log(this.$route)
     if (this.$route.params.toSecond) {
       this.activeName = 'second'
@@ -586,7 +609,7 @@ export default {
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitEditGoodsId']),
-    defaultAllBrandData () {
+    defaultAllBrandData() {
       let obj = {}
       obj.currentPage = this.pageParams.currentPage
       obj.pageRows = this.pageParams.pageRows
@@ -620,7 +643,7 @@ export default {
       this.changeCrumbstitle(arr)
     },
     // tap切换
-    handleClick (tab, event) {
+    handleClick(tab, event) {
       console.log(tab, event)
       switch (tab.index) {
         case '0':
@@ -655,7 +678,7 @@ export default {
           break
       }
     },
-    defaultPageingGrand () {
+    defaultPageingGrand() {
       let start = ''
       let end = ''
       console.log(this.classifyBrandStartTime, this.classifyBrandEndTime)
@@ -688,7 +711,7 @@ export default {
       })
     },
     // 品牌分类展示设置
-    defaulttapThreeData () {
+    defaulttapThreeData() {
       console.log('初始化品牌展示设置测试')
       showBrandgetRequest().then((res) => {
         if (res.error === 0) {
@@ -717,7 +740,7 @@ export default {
       })
     },
     // 品牌分类tap页品牌分类编辑
-    handlePagingEditGoods (data) {
+    handlePagingEditGoods(data) {
       console.log(data)
       this.addClassOrEdit = false
       this.upDateClassifyId = data.classifyId
@@ -728,21 +751,15 @@ export default {
       this.grandTitle = '修改品牌分类'
     },
     // 品牌分类tap页品牌分类删除
-    delePagingGrand (classifyId) {
-      pagingBrandDelRequest(classifyId).then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.$message.success({
-            message: '删除成功',
-            type: 'success'
-          })
-          this.defaultPageingGrand()
-        }
-      })
+    delePagingGrand(classifyId) {
+      this.classifyId = classifyId
+      this.delFlag = false
+      this.delDialogVisible = true
+
       console.log(classifyId)
     },
     // 品牌分类弹窗确定事件
-    handleUpdateGrandClass () {
+    handleUpdateGrandClass() {
       console.log(this.classificationName)
       let obj = {}
       if (this.addClassOrEdit) {
@@ -787,7 +804,7 @@ export default {
       }
     },
     // tap3保存事件
-    handleSaveTapThree () {
+    handleSaveTapThree() {
       let showAllBrand = ''
       let showRcommendBrandType = ''
       if (this.switchValue === true) {
@@ -819,20 +836,20 @@ export default {
       })
     },
     // 返回输入建议 参数queryString用户主动输入的内容
-    querySearch (queryString, cb) {
+    querySearch(queryString, cb) {
       console.log(queryString)
       var restaurants = this.restaurants
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
       // 调用 callback 返回建议列表的数据
       cb(results)
     },
-    createFilter (queryString) {
+    createFilter(queryString) {
       return (restaurant) => {
         return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
       }
     },
     // 建议列表数据
-    loadAll () {
+    loadAll() {
       return [
         { 'value': '三全鲜食（北新泾店）', 'address': '长宁区新渔路144号' },
         { 'value': 'Hot honey 首尔炸鸡（仙霞路）', 'address': '上海市长宁区淞虹路661号' },
@@ -843,11 +860,11 @@ export default {
       ]
     },
     // 建议列表选中
-    handleSelect (item) {
+    handleSelect(item) {
       console.log(item)
     },
     // 当前页发生变化defaultPageingGrand
-    handleCurrentChange () {
+    handleCurrentChange() {
       console.log(this.currentPage1)
       let obj = {
         'currentPage': this.currentPage1,
@@ -860,7 +877,7 @@ export default {
       })
     },
     // 鼠标划入查看案例
-    showOver (index) {
+    showOver(index) {
       switch (index) {
         case 1:
           this.showFlag_one = true
@@ -872,7 +889,7 @@ export default {
       if (index !== 1 && index !== 2) this.showFlag = true
     },
     // 鼠标划出查看案例
-    showLeave (index) {
+    showLeave(index) {
       switch (index) {
         case 1:
           this.showFlag_one = false
@@ -884,7 +901,7 @@ export default {
       if (index !== 1 || index !== 2) this.showFlag = false
     },
     // 添加品牌按钮
-    handleAddBrand () {
+    handleAddBrand() {
       console.log(1)
       this.$router.push({
         name: 'addBrand'
@@ -897,7 +914,7 @@ export default {
       this.$emit('turnComponents', obj)
     },
     // 调用添加品牌分类弹窗
-    handleBrandDialog () {
+    handleBrandDialog() {
       this.addClassOrEdit = true
       this.grandTitle = '添加品牌分类'
       this.brandName = ''
@@ -905,21 +922,41 @@ export default {
       this.dialogVisibleAddBrand = true
     },
     // 删除品牌
-    deleGrand (id) {
+    deleGrand(id) {
       console.log(id)
-      brandDeleteGetRequest(id).then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.$message.success({
-            message: '删除成功',
-            type: 'success'
-          })
-          this.handleSXevent()
-        }
-      })
+      this.brandId = id
+      this.delFlag = true
+      this.delDialogVisible = true
+    },
+    // 二次删除弹窗确认事件
+    handleToTowDel() {
+      if (this.delFlag) {
+        brandDeleteGetRequest(this.brandId).then((res) => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.handleSXevent()
+          }
+        })
+      } else {
+        pagingBrandDelRequest(this.classifyId).then((res) => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.defaultPageingGrand()
+          }
+        })
+      }
+      this.delDialogVisible = false
     },
     // 筛选
-    handleSXevent () {
+    handleSXevent() {
       // console.log(this.valueClss)
       console.log(this.value9)
       let start = ''
@@ -955,7 +992,7 @@ export default {
       })
     },
     // 点击编辑
-    handleEditGoods (id) {
+    handleEditGoods(id) {
       this.$router.push({
         name: 'addBrand'
       })
@@ -968,7 +1005,7 @@ export default {
       this.$emit('turnComponents', obj)
     },
     // 品牌分类点击筛选
-    handleToScreen () {
+    handleToScreen() {
       this.defaultPageingGrand()
     }
   }
