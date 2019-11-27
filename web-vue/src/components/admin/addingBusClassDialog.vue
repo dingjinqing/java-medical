@@ -3,7 +3,7 @@
     <div class="addingBusClassDialogMain">
       <el-dialog
         :title="dialogTitle"
-        :visible.sync="dialogVisible"
+        :visible.sync="busClassDialogVisible"
         width="30%"
         :modal-append-to-body='false'
       >
@@ -99,15 +99,15 @@ export default {
       sortId: '',
       flag: null,
       loading: true,
-      dialogTitle: ''
+      dialogTitle: '',
+      busClassDialogVisible: false
     }
   },
   watch: {
     dialogVisible (newData) {
       console.log(newData, this.backDataArr)
-      console.log()
       if (newData) {
-        this.dialogVisible = true
+        this.busClassDialogVisible = true
         this.loading = true
         this.newArr = []
         this.defaultArr = []
@@ -172,7 +172,7 @@ export default {
       this.$emit('BusClassTrueDetailData', detailData) // 返回选中节点详细数据
       this.$emit('BusClassTrueArr', arr) // 返回选中节点id数据
       this.$emit('update:dialogVisible', false)
-      this.dialogVisible = false
+      this.busClassDialogVisible = false
     },
     defaultData (backData, flag) {
       console.log(flag)

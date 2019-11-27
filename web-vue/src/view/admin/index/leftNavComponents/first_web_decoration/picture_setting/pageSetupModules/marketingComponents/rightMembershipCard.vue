@@ -558,7 +558,7 @@ export default {
     },
     // 弹窗确定事件
     handleToSelectCuopon () {
-      console.log(this.nowChecked)
+      console.log(this.zcCheckedData)
       let obj = Object.assign(this.nowChecked, this.zcCheckedData)
       this.$emit('handleToBackData', obj)
       this.dialogVisible = false

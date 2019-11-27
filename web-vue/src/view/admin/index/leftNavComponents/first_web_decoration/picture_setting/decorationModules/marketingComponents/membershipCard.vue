@@ -11,17 +11,17 @@
       <div class="carModule">
         <div
           class="card_back_module"
-          :style="carData.bgType===0?`backgroundColor:${carData.bgColor}`:`backgroundImage:url('${$imageHost}/${carData.bgImg}')`"
+          :style="carData.bgType===0?`backgroundColor:${carData.bg_color}`:`backgroundImage:url('${$imageHost}/${carData.bg_img}')`"
         >
-          <div class="card_type">{{carData.cardType===0?'普通卡':carData.cardType===1?'限次卡':'等级卡'}}</div>
+          <div class="card_type">{{carData.cardt_type===0?'普通卡':carData.card_type===1?'限次卡':'等级卡'}}</div>
           <div class="card_content clearfix">
             <div class="card_shop_icon">
               <img :src="$imageHost+'/image/admin/shop_def_y.png'">
             </div>
             <div class="card_content_right">
-              <div>{{carData.cardName}}</div>
+              <div>{{carData.card_name}}</div>
               <p>{{carData.legal}}</p>
-              <p>{{carData.exchangCountLegal}}</p>
+              <p>{{carData.exchang_count_legal}}</p>
             </div>
             <!-- <div
                       class="card_pay_fee"
