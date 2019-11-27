@@ -166,7 +166,7 @@ public class AccountService extends ShopBaseService {
 	private void addTradeRecord(AccountParam param,TradeOptParam tradeOpt) {
 		logger().info("记录用户余额到交易tradeRecord表");
 		recordTradeService.insertTradeRecord(TradeOptParam.builder()
-				.tradeNum(param.getAmount())
+				.tradeNum(param.getAmount().abs())
 				.tradeSn(param.getOrderSn())
 				.userId(param.getUserId())
 				.tradeContent(TRADE_CONTENT_CASH.val())
