@@ -66,5 +66,37 @@ public class EsThreadConfig {
         log.info("\n店铺【{}】索引建立完成，共耗时{}ms",shopId,stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
     }
+    @Async("esAsyncExecutor")
+    public void doLabelIndexByShopId(Integer shopId) {
+        List<Integer> list = saas.getShopApp(shopId).goods.getAllGoodsId();
+
+//        List<Integer> list = new ArrayList<>();
+//        for (int a = 0; a < 125000; a++) {
+//            list.addAll(list1);
+//        }
+        int allSize = list.size();
+        int count = allSize/SIZE + 1;
+        int nextNumber = 0;
+        log.info("\n当前店铺【{}】,预计分【{}】批执行",shopId,count);
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        for (int i = 0; i < count; i++) {
+            int endNumber = nextNumber+SIZE;
+            if( allSize < endNumber){
+                endNumber = allSize;
+                i = count;
+            }
+            log.info("\n开始执行第【{}】批，【{}】-【{}】条",i,nextNumber,endNumber);
+            List<Integer> needIds = list.subList(nextNumber,endNumber);
+            if( needIds.isEmpty() ){
+                break;
+            }
+            nextNumber = endNumber;
+            log.info("listSize【{}】",list.size());
+            saas.getShopApp(shopId).esGoodsLabelCreateService.createEsLabelIndexForGoodsId(needIds);
+            log.info("\n第【{}】批建立成功",i);
+        }
+        log.info("\n店铺【{}】索引建立完成，共耗时{}ms",shopId,stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+    }
 }
 
