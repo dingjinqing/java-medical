@@ -263,7 +263,14 @@ export default {
     },
     /* 商品弹出回调处理函数 */
     goodsResultChoosed (data) {
-      this.selectedGoodsList = data
+      if (data != null) {
+        this.selectedGoodsList = []
+      } else {
+        this.selectedGoodsList = []
+        data.forEach(item => {
+          this.selectedGoodsList.push(item.goodsId)
+        })
+      }
     },
     sortResultChoosed (data) {
       this.selectedSortList = data
@@ -329,7 +336,7 @@ export default {
         catIds: []
       }
       if (this.goodsLabelData.isAll === 0) {
-        this.selectedGoodsList.forEach(item => params.goodsIds.push(item.goodsId))
+        params.goodsIds = this.selectedGoodsList
         params.sortIds = this.selectedSortList
         params.catIds = this.selectedCatList
       }
