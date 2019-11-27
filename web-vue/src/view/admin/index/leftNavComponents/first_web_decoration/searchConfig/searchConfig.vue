@@ -220,6 +220,9 @@ export default {
     },
     // 保存按钮 -> 提交数据
     submitData () {
+      if (this.titleCustom !== 3) {
+        this.titleCustom = ''
+      }
       let params = {
         title_action: this.titleAction,
         title_custom: this.titleCustom,
@@ -228,16 +231,12 @@ export default {
         hot_words: this.hotWordsList
       }
       modifySearchConfig(JSON.stringify(params)).then(res => {
-        console.log(res)
-
-        for (let item of this.hotWordsList) {
-          this.itemList.push(item)
-          // if (this.itemList.length > 10) {
-          //   alert('最多只能添加10条')
-          // }
+        if (res.error === 0) {
+          this.fetchData()
+          this.$message.success(res.message)
+        } else {
+          this.$message.error(res.message)
         }
-        console.log(this.itemList)
-        console.log(this.itemList.length)
       }).catch(err => console.log(err))
     }
   }
