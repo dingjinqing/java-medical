@@ -36,13 +36,17 @@ global.wxPage({
     charge_money: 0,
     card_money: 0,
     discount_block: 0,
-    cardMode: true
+    cardMode: true,
+
+    showCardDialog: false, // 会员卡弹窗是否显示
+    cardList: [], // 会员卡列表
+    useCard: {} // 选中的会员卡
   },
 
   /**
    * 支付金额输入回调
    */
-  totalSpendingInput(e) {
+  totalSpendingInput (e) {
     console.log(e.detail);
     var price = Number(e.detail.value);
     // 限制只能输入一个点
@@ -207,7 +211,8 @@ global.wxPage({
       return;
     }
     this.setData({
-      cardMode: false
+      // cardMode: false
+      showCardDialog: true
     })
   },
   cardCancel: function (e) {//关闭会员卡弹框
@@ -570,7 +575,7 @@ global.wxPage({
   chooseInvoice: function () {
     var that = this;
     wx.chooseInvoiceTitle({
-      success(res) {
+      success (res) {
         invoice_info.invoice_title = res.title;
         var ress = JSON.stringify(res);
         util.api('/api/wxapp/invoice/choose', function (e) {
@@ -580,7 +585,7 @@ global.wxPage({
           invoice_info: invoice_info
         })
       },
-      fail() {
+      fail () {
         util.showModal('', "获取发票信息失败");
       }
     })
@@ -686,6 +691,10 @@ global.wxPage({
     this.setData({
       discount_block: discount_block
     })
+  },
+
+  getSelectCard (e) {
+    console.log(e)
   },
 
   /**
@@ -838,44 +847,9 @@ global.wxPage({
   },
 
   /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
 
   },
 

@@ -94,40 +94,7 @@
     </form>
   </view>
 </view>
-<include src="/pages/common/footer.wxml"/>
+<!--  会员卡弹窗组件  -->
+<select_card_dialog show="{{showCardDialog}}" member-card-list="{{cardList}}" default-member-card-no="{{useCard.cardNo}}"  bindconfirm="getSelectCard"></select_card_dialog>
 
-<!--  会员卡弹框  -->
-<action-sheet hidden="{{ cardMode }}">
-  <view class='action_title'>
-    会员卡
-  <image src='{{ imageUrl }}/image/wxapp/close_icon.png' mode="widthFix" bindtap="cardCancel" class='pro_close' />
-  </view>
-  <view style='height:800rpx;overflow-y:scroll;padding-bottom:110rpx;'>
-    <block wx:for="{{ card_arr }}" wx:key="index">
-      <view class="card_list clearfix">
-        <view class="card_choose">
-          <image src="{{ item.card_src }}" mode="widthFix" data-id="{{ index }}" bindtap='chooseCard' data-name="{{ item.card_name }}" data-card_no="{{ item.card_no }}" data-discount="{{ item.discount }}" />
-        </view>
-        <view class='card_info'>
-          <view style='background:{{ item.bg }};background-size:cover;'  class='card_new_de'>
-            <image src="{{ item.shop_logo }}" />
-            <view  class='card_infos'>
-                <view class='car_names' style='font-weight:bold;'>{{ item.card_name }}</view>
-                <view class='car_discount'>折扣：{{item.discount}}折</view>
-                <view class='card_offset' wx:if="{{item.buy_score[0].value == 1}}">
-                  每满{{item.buy_score1.each_money}}送{{item.buy_score1.each_score}}积分
-                </view>
-                <view class='card_offset' wx:if="{{item.buy_score[0].value == 0}}">
-                  <block wx:for="{{item.buy_score1}}" wx:key="key" wx:for-item='key'>
-                      <text>满{{key.money}}送{{key.score}}积分</text>,
-                  </block>
-                </view>
-                <view class='shjjian' wx:if='{{item.expire_time != null}}'>过期时间:{{item.expire_time}}</view>
-            </view>
-          </view>
-        </view>
-      </view>
-    </block>
-  </view>
-  <view class='card_sure' bindtap='cardConfirm' style='background:{{comColor}}'>确定</view>
-</action-sheet>
+<include src="/pages/common/footer.wxml"/>

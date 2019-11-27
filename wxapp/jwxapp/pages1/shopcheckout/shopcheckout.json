@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "买单",
-  "usingComponents": {}
+  "usingComponents": {
+    "select_card_dialog": "/components/popup/select_card_dialog/index"
+  }
 }

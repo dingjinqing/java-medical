@@ -137,21 +137,21 @@ global.wxPage({
 
 
         // 默认选中会员卡折扣计算
-        if (_this.data.useCard && _this.data.useCard.discount) {
-          let discount = (parseFloat(_this.data.useCard.discount) / 10).toFixed(2)
-          if (discount < 0 || discount > 1 || isNaN(discount)) {
-            util.showModal('提示', '会员卡折扣错误', function () {
-              util.redirectTo({
-                url: 'pages/appointment/appointment?service_id=' + content.service.serviceId,
-              })
-            })
-          }
-          let member_card_discount = (parseFloat(_this.data.create_order.service_deposit) * (1 - discount)).toFixed(2)
-          _this.setData({
-            'create_order.member_card_discount': member_card_discount
-          })
-          _this.calculateBalance()
-        }
+        // if (_this.data.useCard && _this.data.useCard.discount) {
+        //   let discount = (parseFloat(_this.data.useCard.discount) / 10).toFixed(2)
+        //   if (discount < 0 || discount > 1 || isNaN(discount)) {
+        //     util.showModal('提示', '会员卡折扣错误', function () {
+        //       util.redirectTo({
+        //         url: 'pages/appointment/appointment?service_id=' + content.service.serviceId,
+        //       })
+        //     })
+        //   }
+        //   let member_card_discount = (parseFloat(_this.data.create_order.service_deposit) * (1 - discount)).toFixed(2)
+        //   _this.setData({
+        //     'create_order.member_card_discount': member_card_discount
+        //   })
+        //   _this.calculateBalance()
+        // }
 
         // 默认使用会员卡余额支付
         if (content.cardFirst) {
@@ -357,10 +357,10 @@ global.wxPage({
   getSelectCard (e) {
     let no = e.detail;
     let useCard = this.data.cardList.find(item => item.cardNo === no)
-    let member_card_discount = (this.data.create_order.service_deposit * (1 - (parseFloat(useCard.discount) / 10))).toFixed(2)
+    // let member_card_discount = (this.data.create_order.service_deposit * (1 - (parseFloat(useCard.discount) / 10))).toFixed(2)
     this.setData({
       useCard: useCard,
-      'create_order.member_card_discount': member_card_discount,
+      // 'create_order.member_card_discount': member_card_discount,
       'create_order.member_card_balance': 0
     })
     this.calculateBalance()
@@ -396,8 +396,12 @@ global.wxPage({
   // 应付计算
   calculateBalance () {
     let _this = this
-    let { service_deposit, member_card_discount, member_card_balance, account_discount, money_paid } = this.data.create_order
-    money_paid = service_deposit - member_card_discount - member_card_balance - account_discount
+    // 有折扣
+    // let { service_deposit, member_card_discount, member_card_balance, account_discount, money_paid } = this.data.create_order
+    // money_paid = service_deposit - member_card_discount - member_card_balance - account_discount
+    // 没折扣
+    let { service_deposit, member_card_balance, account_discount, money_paid } = this.data.create_order
+    money_paid = service_deposit - member_card_balance - account_discount
     if (money_paid < 0 || isNaN(money_paid)) {
       util.showModal('提醒', '计算金额出错，请稍后再试', function () {
         util.redirectTo({
