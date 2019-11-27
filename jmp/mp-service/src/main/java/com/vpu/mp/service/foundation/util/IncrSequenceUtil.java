@@ -32,7 +32,7 @@ public class IncrSequenceUtil {
      */
     public static String generateOrderSn(String prefix,String dateFormat,String key){
         return new StringBuilder(INCR_SEQUENCE).append(prefix)
-                .append(DateUtil.getLocalTimeDateBySelf(dateFormat))
+                .append(DateUtil.dateFormat(dateFormat))
                 .append(jedisManager.getIncrSequence(key)).toString();
     }
 
