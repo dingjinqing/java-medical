@@ -89,6 +89,8 @@ export const en = {
   wait5: 'Refund',
   allOrder: 'All Order',
   viewAllAppointments: 'View All Appointments',
+  tip1: 'Single bright eyelash grafting package 1 time',
+  tip2: 'Appointment arrival time：2018-03-05 12:30',
 
   save: 'Save'
 }

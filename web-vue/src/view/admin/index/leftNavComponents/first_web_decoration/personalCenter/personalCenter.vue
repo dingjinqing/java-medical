@@ -323,8 +323,8 @@
                     >
                   </div>
                   <div class="app_info">
-                    <p>单人璀璨睫毛嫁接套餐1次</p>
-                    <p>预约到店时间：2018-03-05 12:30</p>
+                    <p>{{ $t('personalCenter.tip1') }}</p>
+                    <p>{{ $t('personalCenter.tip2') }}</p>
                   </div>
                 </div>
                 <div class="orderOperation">
