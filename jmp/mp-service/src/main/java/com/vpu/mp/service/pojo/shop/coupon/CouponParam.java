@@ -165,15 +165,15 @@ public class CouponParam {
     /**
      * 分裂优惠卷随机金额最低
      */
-    private Integer randomMin;
+    private BigDecimal randomMin;
     /**
      * 分裂优惠卷随机金额最高
      */
-    private Integer randomMax;
+    private BigDecimal randomMax;
     /**
      * 分裂优惠券领券人数是否限制 0不限制 1限制
      */
-    private short receivePerNum;
+    private Byte receivePerNum;
     /**
      * 分裂优惠券可领券人数
      */

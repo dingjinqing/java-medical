@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.coupon;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * @author: 王兵兵
@@ -46,9 +46,9 @@ public class CouponView {
     /**
      * 分裂优惠卷随机金额最低
      */
-    private Integer randomMin;
+    private BigDecimal randomMin;
     /**
      * 分裂优惠卷随机金额最高
      */
-    private Integer randomMax;
+    private BigDecimal randomMax;
 }

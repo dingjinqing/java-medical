@@ -18,7 +18,9 @@ import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.config.ShareConfig;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.ShopCollectInfo;
@@ -33,6 +35,7 @@ import com.vpu.mp.service.shop.config.DistributionConfigService;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +72,9 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     @Autowired
     protected CouponMpService couponMpService;
+
+    @Autowired
+    private QrCodeService qrCode;
 
     /**
      * 装修页面列表
@@ -399,6 +405,20 @@ public class ShopMpDecorationService extends ShopBaseService {
         page.setCatId(source.getCatId());
         page.insert();
         return true;
+    }
+
+    /**
+     * 获取小程序码
+     */
+    public ShareQrCodeVo getMpQrCode(Integer pageId) {
+
+        String pathParam="page="+pageId;
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INDEX, pathParam);
+
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.INDEX.getPathUrl(pathParam));
+        return vo;
     }
 
     /**

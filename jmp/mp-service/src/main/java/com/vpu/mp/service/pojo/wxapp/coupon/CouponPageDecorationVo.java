@@ -49,8 +49,8 @@ public class CouponPageDecorationVo {
     private Integer    validityMinute;
     private Timestamp  expirationDate;
     private Byte       limitSurplusFlag;
-    private Integer    randomMin;
-    private Integer    randomMax;
-    private Short      receivePerNum;
+    private BigDecimal    randomMin;
+    private BigDecimal    randomMax;
+    private Byte      receivePerNum;
     private Integer    receiveNum;
 }
