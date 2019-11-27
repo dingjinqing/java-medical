@@ -117,7 +117,7 @@
       </div>
     </div>
     <!-- 页面装修模板选择框 -->
-    <selectTemplate :tuneUpSelectTemplate="pageTemplateDialogData.isShow" @handleSelectTemplate="pageTemplateTableClick"/>
+    <selectTemplate :tuneUpSelectTemplate="pageTemplateShow" @handleSelectTemplate="pageTemplateTableClick"/>
   </div>
 </template>
 <script>

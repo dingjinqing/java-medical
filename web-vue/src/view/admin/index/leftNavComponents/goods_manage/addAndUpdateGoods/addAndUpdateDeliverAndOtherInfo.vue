@@ -246,6 +246,7 @@ export default {
     /* 解析运费模板数据 */
     parseDeliverTemplateData (data) {
       // 定义国际化变量
+      // 全国其他区域运费：
       let pintAreaOtherDeliverFee = this.$t('goodsAddEditInfo.deliverAndOtherInfo.pintAreaOtherDeliverFee')
       // 件
       let deliverTemplateUnit1 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateUnit1')
@@ -265,7 +266,7 @@ export default {
       let deliverTemplateAreasDesc1 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateAreasDesc1')
       // 元,每增加
       let deliverTemplateAreasDesc2 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateAreasDesc2')
-      // 加
+      // ，加
       let deliverTemplateAreasDesc3 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateAreasDesc3')
       // 元
       let deliverTemplateAreasDesc4 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateAreasDesc4')
@@ -280,54 +281,47 @@ export default {
       // 元包邮
       let freeDeliverTemplateAreasDesc5 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.freeDeliverTemplateAreasDesc5')
 
-      // let unit = data.flag === '0' ? '件' : '公斤'
-      let unit = data.flag === '0' ? deliverTemplateUnit1 : deliverTemplateUnit2
+      // let unit = data.flag === 0 ? '件' : '公斤'
+      let unit = data.flag === 0 ? deliverTemplateUnit1 : deliverTemplateUnit2
 
       let retData = {}
-      let temp = null
       retData.deliverTemplateId = data.deliverTemplateId
-      let templateContent = JSON.parse(data.templateContent)
+      let templateContent = data.content
       // 运费模板:'除可配送区域外，其他不可配送' 部分信息
       retData.deliverTemplateTitleDesc = null
-      // 搜索area_list为'0'的表示配送基础信心配置项
-      for (let i = 0; i < templateContent.data_list.length; i++) {
-        if (templateContent.data_list[i].area_list === '0') {
-          temp = templateContent.data_list[i]
-          break
-        }
-      }
 
-      if (temp.limit_deliver_area === 1) {
+      let limitArea = templateContent.limitParam
+      if (limitArea.limit_deliver_area === 1) {
         // retData.deliverTemplateTitleDesc = '除可配送区域外，不可配送'
         retData.deliverTemplateTitleDesc = deliverTemplateTitleDesc1
-      } else { // 1件内5元,没增加1件，加10元
-        retData.deliverTemplateTitleDesc = `${pintAreaOtherDeliverFee}${temp.first_num} ${unit}${deliverTemplateTitleDesc2}${temp.first_fee}${deliverTemplateTitleDesc3}${temp.continue_num}${unit}${deliverTemplateTitleDesc4}${temp.continue_fee}${deliverTemplateTitleDesc9}`
+      } else { // 全国其他区域运费：1件内5元,没增加1件，加10元
+        retData.deliverTemplateTitleDesc = `${pintAreaOtherDeliverFee}${limitArea.first_num}${unit}${deliverTemplateTitleDesc2}${limitArea.first_fee}${deliverTemplateTitleDesc3}${limitArea.continue_num}${unit}${deliverTemplateTitleDesc4}${limitArea.continue_fee}${deliverTemplateTitleDesc9}`
       }
 
       // 搜索指定可配送区域运费
       retData.deliverTemplateAreasDesc = []
-      for (let i = 0; i < templateContent.data_list.length; i++) {
-        if (templateContent.data_list[i].area_list === '0') {
-          continue
+      if (templateContent.areaParam !== null && templateContent.areaParam.length > 0) {
+        for (let i = 0; i < templateContent.areaParam.length; i++) {
+          let temp = templateContent.areaParam[i]
+          // 北京：1件内10元，每增加5件，加10元
+          retData.deliverTemplateAreasDesc.push(`${temp.area_text.join(',')}：${temp.first_num}${unit}${deliverTemplateAreasDesc1}${temp.first_fee}${deliverTemplateAreasDesc2}${temp.continue_num}${unit}${deliverTemplateAreasDesc3}${temp.continue_fee}${deliverTemplateAreasDesc4}`)
         }
-        temp = templateContent.data_list[i]
-        // 北京：1件内10元，每增加5件，加10元
-        retData.deliverTemplateAreasDesc.push(`${temp.area_text}${temp.first_num} ${unit}${deliverTemplateAreasDesc1}${temp.first_fee}${deliverTemplateAreasDesc2}${temp.continue_num}${unit}${deliverTemplateAreasDesc3}${temp.continue_fee}${deliverTemplateAreasDesc4}`)
       }
+
       // 指定条件包邮可配送区域运费
       retData.freeDeliverTemplateAreasDesc = []
       if (templateContent.has_fee_0_condition === 0) {
         return retData
       }
-      for (let i = 0; i < templateContent.fee_0_data_list.length; i++) {
-        temp = templateContent.fee_0_data_list[i]
+      for (let i = 0; i < templateContent.feeConditionParam.length; i++) {
+        let temp = templateContent.feeConditionParam[i]
         // 指定件数包邮
         if (temp.fee_0_condition === '1') {
-          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：${temp.fee_0_con1_num}${unit}${freeDeliverTemplateAreasDesc1}`)
+          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text.join(',')}：${temp.fee_0_con1_num}${unit}${freeDeliverTemplateAreasDesc1}`)
         } else if (temp.fee_0_condition === '2') {
-          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：${freeDeliverTemplateAreasDesc2}${temp.fee_0_con2_fee}${freeDeliverTemplateAreasDesc3}`)
+          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text.join(',')}：${freeDeliverTemplateAreasDesc2}${temp.fee_0_con2_fee}${freeDeliverTemplateAreasDesc3}`)
         } else {
-          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text}：${temp.fee_0_con3_num}${unit}${freeDeliverTemplateAreasDesc4}${temp.fee_0_con3_fee}${freeDeliverTemplateAreasDesc5}`)
+          retData.freeDeliverTemplateAreasDesc.push(`${temp.area_text.join(',')}：${temp.fee_0_con3_num}${unit}${freeDeliverTemplateAreasDesc4}${temp.fee_0_con3_fee}${freeDeliverTemplateAreasDesc5}`)
         }
       }
       return retData
@@ -338,16 +332,17 @@ export default {
       let retData = {}
       retData.deliverTemplateId = null
 
-      let deliverTemplateTitleDesc5 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc5')
-      let deliverTemplateTitleDesc6 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc6')
-      let deliverTemplateTitleDesc7 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc7')
-      let deliverTemplateTitleDesc8 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc8')
-      let deliverTemplateTitleDesc9 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc9')
+      let deliverTemplateTitleDesc5 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc5') // "订单满"
+      let deliverTemplateTitleDesc6 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc6') // "包邮，否则运费为"
+      let deliverTemplateTitleDesc7 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc7') // "元"
+      let deliverTemplateTitleDesc8 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc8') // "店铺统一运费："
+      let deliverTemplateTitleDesc9 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc9')// "元"
 
-      // 订单满
       if (content.templateName === 1) {
+        //
         retData.deliverTemplateTitleDesc = `${deliverTemplateTitleDesc5}${content.feeLimit}${deliverTemplateTitleDesc6}${content.price}${deliverTemplateTitleDesc7}`
       } else {
+        // 订单统一运费：8元
         retData.deliverTemplateTitleDesc = `${deliverTemplateTitleDesc8}${content.price}${deliverTemplateTitleDesc9}`
       }
       retData.deliverTemplateAreasDesc = []
@@ -369,13 +364,13 @@ export default {
         // 找到对应模板信息
         getDeliverTemplateApi({ 'deliverTemplateId': deliverTemplateId }).then(res => {
           this.closeLoading()
-          let content = res.content || []
+          let content = res.content
           // 模板信息被删除，则展示默认模板信息
-          if (content.length === 0) {
+          if (content === null) {
             this.goodsProductInfo.deliverTemplateId = null
             this.deliverTemplateChange(null)
           } else {
-            this.deliverTemplateCurrentData = this.parseDeliverTemplateData(content[0])
+            this.deliverTemplateCurrentData = this.parseDeliverTemplateData(content)
           }
         })
       }
@@ -384,7 +379,7 @@ export default {
     deliverTemplateSelectRefresh () {
       this.deliverTemplateDataInit()
     },
-    /* 初始化运费模板数据 */
+    /* 初始化运费模板下拉框数据 */
     deliverTemplateDataInit () {
       return deliverTemplateNameListApi().then(res => {
         let content = res.content || []
@@ -445,8 +440,8 @@ export default {
         this.goodsProductInfo.saleTime = new Date()
       }
     },
-    /** 此函数由父组件主动调用 **/
-    /* 初始化运费模板 */
+
+    /* 回显运费模板 */
     _initDeliverTemplateId (goodsData) {
       this.goodsProductInfo.deliverTemplateId = goodsData.deliverTemplateId === 0 ? null : goodsData.deliverTemplateId
       this.deliverTemplateChange(goodsData.deliverTemplateId)
