@@ -115,14 +115,14 @@
               >
                 <span
                   class="el-icon-circle-close"
-                  @click="changeStatus(scope.row.id)"
+                  @click="changeStatus(scope.row.id,0)"
                   v-if="scope.row.status==1"
                 > </span>
               </el-tooltip>
               <el-tooltip :content="$t('groupBuy.enabled')">
                 <span
                   class="el-icon-circle-check"
-                  @click="changeStatus(scope.row.id)"
+                  @click="changeStatus(scope.row.id,1)"
                   v-if="scope.row.status==0"
                 > </span>
               </el-tooltip>
@@ -199,10 +199,10 @@
 import addGroupBuy from './addGroupBuy.vue'
 import pagination from '@/components/admin/pagination/pagination.vue'
 import {
-  groupBuyList,
   changeStatusActivity,
   deleteGroupBuyActivity,
-  getGroupBuyDetail
+  getGroupBuyDetail,
+  groupBuyList
 } from '@/api/admin/marketManage/spellGroup.js'
 
 export default {
@@ -214,7 +214,7 @@ export default {
     return {
       pageParams: {},
       tableData: [],
-      tabSwitch: '2',
+      tabSwitch: '1',
       tabIndex: 3,
       currentPage: 0,
       pageRows: 1,
@@ -278,13 +278,17 @@ export default {
       })
       this.tableData = tabData
     },
-    changeStatus (id) {
+    changeStatus (id, status) {
       this.$confirm(this.$t('groupBuy.changeStatusComment'), {
         confirmButtonText: this.$t('groupBuy.confirm'),
         cancelButtonText: this.$t('groupBuy.cancel'),
         type: 'warning'
       }).then(() => {
-        changeStatusActivity({ 'id': id }).then(res => {
+        let param = {
+          'id': id,
+          'status': status
+        }
+        changeStatusActivity(param).then(res => {
           console.log('change=>res = ' + res)
           if (res.error === 0) {
             this.$message.success(res.message)

@@ -174,10 +174,10 @@ export default {
   data () {
     return {
       tableData: [],
-      tabSwitch: '2',
+      tabSwitch: '1',
       tabInfo: this.$t('luckyDraw.tabInfo'),
       pageParams: {},
-      tabIndex: 2,
+      tabIndex: 1,
       /**
        * 添加抽奖相关数据
        */
@@ -216,7 +216,7 @@ export default {
   methods: {
     initPageData () {
       let obj = {
-        //  1全部，1进行中，2未开始，3已过期，4已停用
+        //  0全部，1进行中，2未开始，3已过期，4已停用
         state: this.tabSwitch,
         currentPage: this.pageParams.currentPage,
         pageRows: this.pageParams.pageRows
