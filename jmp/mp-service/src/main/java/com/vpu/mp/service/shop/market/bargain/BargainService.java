@@ -106,7 +106,13 @@ public class BargainService extends ShopBaseService  {
 				leftJoin(GOODS).on(BARGAIN.GOODS_ID.eq(GOODS.GOODS_ID));
         select = buildOptions(select,param);
 		select.orderBy(BARGAIN.CREATE_TIME.desc());
-		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainPageListQueryVo.class);
+        PageResult<BargainPageListQueryVo> page = getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainPageListQueryVo.class);
+		page.dataList.forEach(vo -> {
+            vo.setSuccessNumber(bargainRecord.getBargainRecordNumberByStatus(vo.getId(), BargainRecordService.STATUS_SUCCESS));
+            vo.setBargainUserNumber(bargainRecord.getBargainRecordNumber(vo.getId()));
+            vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
+        });
+        return page;
 	}
 
     private SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select,BargainPageListQueryParam param){

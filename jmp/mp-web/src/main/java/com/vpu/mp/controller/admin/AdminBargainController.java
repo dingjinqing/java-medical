@@ -47,12 +47,7 @@ public class AdminBargainController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/list")
 	public JsonResult getBargainPageList(@RequestBody @Valid BargainPageListQueryParam param) {
-		PageResult<BargainPageListQueryVo>  res = shop().bargain.getPageList(param);
-		for(BargainPageListQueryVo vo : res.dataList) {
-			vo.setSuccessNumber(shop().bargain.bargainRecord.getBargainRecordNumberByStatus(vo.getId(), BargainRecordService.STATUS_SUCCESS));
-			vo.setBargainUserNumber(shop().bargain.bargainRecord.getBargainRecordNumber(vo.getId()));
-		}
-		return success(res);
+		return success(shop().bargain.getPageList(param));
 	}
 
     /**

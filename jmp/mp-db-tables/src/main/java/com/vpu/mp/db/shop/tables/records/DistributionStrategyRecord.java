@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionStrategyRecord extends UpdatableRecordImpl<DistributionStrategyRecord> {
 
-    private static final long serialVersionUID = -1187763621;
+    private static final long serialVersionUID = 1931504091;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_distribution_strategy.id</code>.
@@ -394,14 +394,14 @@ public class DistributionStrategyRecord extends UpdatableRecordImpl<Distribution
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.status</code>. 1停用
+     * Setter for <code>mini_shop_471752.b2c_distribution_strategy.status</code>. 是否启用，1启用，0停用
      */
     public void setStatus(Byte value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.status</code>. 1停用
+     * Getter for <code>mini_shop_471752.b2c_distribution_strategy.status</code>. 是否启用，1启用，0停用
      */
     public Byte getStatus() {
         return (Byte) get(26);

@@ -1287,3 +1287,7 @@ add unique index `order_sn` (`order_sn`) using BTREE;
 ALTER TABLE `b2c_mrking_voucher` CHANGE `random_min` `random_min` decimal(10, 2) DEFAULT '0' COMMENT '分裂优惠卷随机金额最低';
 ALTER TABLE `b2c_mrking_voucher` CHANGE `random_max` `random_max` decimal(10, 2) DEFAULT '0' COMMENT '分裂优惠卷随机金额最高';
 ALTER TABLE `b2c_mrking_voucher` CHANGE `receive_per_num` `receive_per_num` tinyint(1) DEFAULT '0' COMMENT '分裂优惠券领券人数是否限制 0不限制 1限制';
+
+-- 修改默认值
+ALTER TABLE `b2c_distribution_strategy`
+MODIFY COLUMN `status` tinyint(1) not null default '1' COMMENT '是否启用，1启用，0停用';

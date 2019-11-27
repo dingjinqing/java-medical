@@ -272,7 +272,7 @@ export default {
             break
         }
         item.vaildDate = `${item.startTime}<br/>${this.$t('marketCommon.to')}<br/>${item.endTime}`
-        item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
+        item.statusName = this.getActStatusString(item.currentState)
       })
       this.tableData = data
     },

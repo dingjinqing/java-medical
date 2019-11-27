@@ -2529,7 +2529,7 @@ create table `b2c_distribution_strategy`
     `recommend_type`     tinyint(4)            default null comment '0:全部商品1:部分商品',
     `recommend_goods_id` text comment '返利商品ids',
     `recommend_cat_id`   text comment '返利分类ids',
-    `status`             tinyint(2)            default '0' comment '1停用',
+    `status`             tinyint(1)            default '1' comment '是否启用，1启用，0停用',
     `del_flag`           tinyint(2)            default '0' comment '1删除',
     `del_time`           timestamp    null     default null comment '删除时间',
     `recommend_sort_id`  varchar(300)          default null comment '返利商家分类ids',

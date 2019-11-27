@@ -105,6 +105,7 @@ public class CouponPackService extends ShopBaseService {
             vo.setVoucherKindsNumber(couponPackVoucherService.getVoucherKindsNumber(vo.getId()));
             vo.setVoucherNumber(couponPackVoucherService.getVoucherNumber(vo.getId()));
             vo.setIssueAmount(couponPackOrderService.getCouponPackIssueAmount(vo.getId()));
+            vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
         }
 
         return res;

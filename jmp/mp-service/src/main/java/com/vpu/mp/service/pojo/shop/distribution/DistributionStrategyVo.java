@@ -6,13 +6,17 @@ import lombok.Data;
 
 @Data
 public class DistributionStrategyVo {
-	    private Integer   id;
-	    private String    strategyName;
-	    private Byte      strategyLevel;
-	    private Timestamp startTime;
-	    private Timestamp endTime;
-	    private Double    fanliRatio;
-	    private Byte      status;
-	    private Byte      delFlag;
-	    private Timestamp createTime;
+    private Integer   id;
+    private String    strategyName;
+    private Byte      strategyLevel;
+    private Timestamp startTime;
+    private Timestamp endTime;
+    private Double    fanliRatio;
+    private Byte      status;
+    private Timestamp createTime;
+
+    /**
+     * 当前状态：1进行中，2未开始，3已结束，4已停用
+     */
+    private Byte currentState;
 }

@@ -178,7 +178,7 @@ export default {
             } else {
               item.status = 0
             }
-            item.statusText = this.getActStatusString(item.status, item.startTime, item.endTime)
+            item.statusText = this.getActStatusString(item.currentState)
             item.fanliRatioRate = `${item.fanliRatio}` + `%`
           })
         }

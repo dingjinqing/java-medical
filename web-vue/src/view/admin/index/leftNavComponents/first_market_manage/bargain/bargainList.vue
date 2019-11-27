@@ -293,7 +293,7 @@ export default {
       data.map((item, index) => {
         item.bargainType = item.bargainType === 0 ? this.$t('bargainList.bargainType0') : this.$t('bargainList.bargainType1')
         item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
-        item.statusName = this.getActStatusString(item.status, item.startTime, item.endTime)
+        item.statusName = this.getActStatusString(item.currentState)
       })
       this.tableData = data
     },

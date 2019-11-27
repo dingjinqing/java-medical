@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> {
 
-    private static final long serialVersionUID = -621178150;
+    private static final long serialVersionUID = 1966831814;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distribution_strategy</code>
@@ -188,9 +188,9 @@ public class DistributionStrategy extends TableImpl<DistributionStrategyRecord> 
     public final TableField<DistributionStrategyRecord, String> RECOMMEND_CAT_ID = createField("recommend_cat_id", org.jooq.impl.SQLDataType.CLOB, this, "返利分类ids");
 
     /**
-     * The column <code>mini_shop_471752.b2c_distribution_strategy.status</code>. 1停用
+     * The column <code>mini_shop_471752.b2c_distribution_strategy.status</code>. 是否启用，1启用，0停用
      */
-    public final TableField<DistributionStrategyRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1停用");
+    public final TableField<DistributionStrategyRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否启用，1启用，0停用");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_strategy.del_flag</code>. 1删除

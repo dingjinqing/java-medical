@@ -1,8 +1,10 @@
 package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.db.shop.tables.records.DistributionStrategyRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
 import org.jooq.Record;
@@ -23,6 +25,9 @@ import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
 @Service
 
 public class RebateStrategyService extends ShopBaseService{
+
+    public static final Byte STATUS_NORMAL = 1;
+    public static final Byte STATUS_DISABLED = 0;
 	
 	/**
 	 * 添加返利策略
@@ -45,6 +50,9 @@ public class RebateStrategyService extends ShopBaseService{
 				.from(DISTRIBUTION_STRATEGY);
 		SelectConditionStep<? extends Record> sql = buildOptions(select,param);
 		PageResult<DistributionStrategyVo> list = this.getPageResult(sql, param.getCurrentPage(), param.getPageRows(),DistributionStrategyVo.class);
+        list.dataList.forEach(vo -> {
+            vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
+        });
 		return list;
 	}
 	
@@ -55,7 +63,7 @@ public class RebateStrategyService extends ShopBaseService{
 	 * @return
 	 */
 	public SelectConditionStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select,DistributionStrategyParam param) {
-		SelectConditionStep<? extends Record> sql = select.where(DISTRIBUTION_STRATEGY.DEL_FLAG.eq((byte) 0));
+		SelectConditionStep<? extends Record> sql = select.where(DISTRIBUTION_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
 		
 		Timestamp nowDate = new Timestamp(System.currentTimeMillis());
 		
@@ -65,21 +73,21 @@ public class RebateStrategyService extends ShopBaseService{
 				case 1:
 					sql = sql.and(DISTRIBUTION_STRATEGY.START_TIME.le(nowDate))
 							  .and(DISTRIBUTION_STRATEGY.END_TIME.ge(nowDate))
-							  .and(DISTRIBUTION_STRATEGY.STATUS.eq((byte) 0));
+							  .and(DISTRIBUTION_STRATEGY.STATUS.eq(STATUS_NORMAL));
 					break;
 				//未开始
 				case 2:
 					sql = sql.and(DISTRIBUTION_STRATEGY.START_TIME.ge(nowDate))
-							.and(DISTRIBUTION_STRATEGY.STATUS.eq((byte) 0));
+							.and(DISTRIBUTION_STRATEGY.STATUS.eq(STATUS_NORMAL));
 					break;
 				//已过期
 				case 3:
 					sql = sql.and(DISTRIBUTION_STRATEGY.END_TIME.le(nowDate))
-							.and(DISTRIBUTION_STRATEGY.STATUS.eq((byte) 0));
+							.and(DISTRIBUTION_STRATEGY.STATUS.eq(STATUS_NORMAL));
 					break;
 				//已停用
 				case 4:
-					sql = sql.and(DISTRIBUTION_STRATEGY.STATUS.eq((byte) 1));
+					sql = sql.and(DISTRIBUTION_STRATEGY.STATUS.eq(STATUS_DISABLED));
 					break;
 			}
 		}
@@ -116,7 +124,7 @@ public class RebateStrategyService extends ShopBaseService{
 	 */
 	public boolean pauseRebate(Integer id) {
 		int res = db().update(DISTRIBUTION_STRATEGY)
-				.set(DISTRIBUTION_STRATEGY.STATUS,(byte) 1)
+				.set(DISTRIBUTION_STRATEGY.STATUS,STATUS_DISABLED)
 				.where(DISTRIBUTION_STRATEGY.ID.eq(id))
 				.execute();
 		return res > 0 ? true : false;
@@ -129,7 +137,7 @@ public class RebateStrategyService extends ShopBaseService{
 	 */
 	public boolean openRebate(Integer id) {
 		int res = db().update(DISTRIBUTION_STRATEGY)
-				.set(DISTRIBUTION_STRATEGY.STATUS,(byte) 0)
+				.set(DISTRIBUTION_STRATEGY.STATUS,STATUS_NORMAL)
 				.where(DISTRIBUTION_STRATEGY.ID.eq(id))
 				.execute();
 		return res > 0 ? true : false;
@@ -142,7 +150,7 @@ public class RebateStrategyService extends ShopBaseService{
 	 */
 	public boolean deleteRebate(Integer id) {
 		int res = db().update(DISTRIBUTION_STRATEGY)
-				.set(DISTRIBUTION_STRATEGY.DEL_FLAG,(byte) 1)
+				.set(DISTRIBUTION_STRATEGY.DEL_FLAG,DelFlag.DISABLE_VALUE)
 				.where(DISTRIBUTION_STRATEGY.ID.eq(id))
 				.execute();
 		return res > 0 ? true : false;
