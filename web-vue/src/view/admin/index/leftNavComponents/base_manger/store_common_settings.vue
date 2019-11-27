@@ -19,11 +19,11 @@
             </el-switch>
             <span
               class="con4-hide"
-              v-show="value===0"
+              v-show="info.sales_number===0"
             >{{$t('storeCommonSettings.closed')}}</span>
             <span
               class="con4-hide"
-              v-show="value===1"
+              v-show="info.sales_number===1"
             >{{$t('storeCommonSettings.activated')}}</span>
             <span class="tip">{{$t('storeCommonSettings.salesNumberTip')}}</span>
           </div>
@@ -45,11 +45,11 @@
               </el-switch>
               <span
                 class="con4-hide"
-                v-show="value===0"
+                v-show="info.show_cart.show_cart===0"
               >{{$t('storeCommonSettings.closed')}}</span>
               <span
                 class="con4-hide"
-                v-show="value===1"
+                v-show="info.show_cart.show_cart===1"
               >{{$t('storeCommonSettings.activated')}}</span>
               <span class="tip">{{$t('storeCommonSettings.showCartTip')}}</span>
             </div>
@@ -95,11 +95,11 @@
               </el-switch>
               <span
                 class="con4-hide"
-                v-show="value===0"
+                v-show="del_market_radio===0"
               >{{$t('storeCommonSettings.closed')}}</span>
               <span
                 class="con4-hide"
-                v-show="value===1"
+                v-show="del_market_radio===1"
               >{{$t('storeCommonSettings.activated')}}</span>
               <span class="tip">{{$t('storeCommonSettings.delMarketTip')}}</span>
             </div>
@@ -134,11 +134,11 @@
             </el-switch>
             <span
               class="con4-hide"
-              v-show="value===0"
+              v-show="info.sold_out_goods===0"
             >{{$t('storeCommonSettings.closed')}}</span>
             <span
               class="con4-hide"
-              v-show="value===1"
+              v-show="info.sold_out_goods===1"
             >{{$t('storeCommonSettings.activated')}}</span>
             <span class="tip">{{$t('storeCommonSettings.soldOutTip')}}</span>
           </div>
@@ -201,11 +201,11 @@
             </el-switch>
             <span
               class="con4-hide"
-              v-show="value===0"
+              v-show="info.goods_record===0"
             >{{$t('storeCommonSettings.closed')}}</span>
             <span
               class="con4-hide"
-              v-show="value===1"
+              v-show="info.goods_record===1"
             >{{$t('storeCommonSettings.activated')}}</span>
             <span class="tip">{{$t('storeCommonSettings.goodsRecordTip')}} </span>
             <el-tooltip
@@ -359,11 +359,11 @@
               </el-switch>
               <span
                 class="con4-hide"
-                v-show="value===0"
+                v-show="info.bind_mobile===0"
               >{{$t('storeCommonSettings.closed')}}</span>
               <span
                 class="con4-hide"
-                v-show="value===1"
+                v-show="info.bind_mobile===1"
               >{{$t('storeCommonSettings.activated')}}</span>
               <span class="tip">{{$t('storeCommonSettings.phoneNumAuthTip')}} </span>
             </div>
@@ -379,11 +379,11 @@
               </el-switch>
               <span
                 class="con4-hide"
-                v-show="value===0"
+                v-show="info.geographic_location===0"
               >{{$t('storeCommonSettings.closed')}}</span>
               <span
                 class="con4-hide"
-                v-show="value===1"
+                v-show="info.geographic_location===1"
               >{{$t('storeCommonSettings.activated')}}</span>
               <span class="tip">{{$t('storeCommonSettings.locationAuthTip')}} </span>
             </div>
