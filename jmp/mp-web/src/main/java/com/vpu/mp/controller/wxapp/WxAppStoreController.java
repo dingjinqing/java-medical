@@ -2,19 +2,24 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.RequestUtil;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author 王兵兵
  *
  * 2019年7月24日
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/wxapp/store")
 public class WxAppStoreController extends WxAppBaseController{
@@ -75,7 +80,9 @@ public class WxAppStoreController extends WxAppBaseController{
      * 门店服务预约订单提交
      */
     @PostMapping("/service/submitReservation")
-    public JsonResult submitReservation(@RequestBody @Validated SubmitReservationParam param) {
+    public JsonResult submitReservation(@RequestBody @Validated SubmitReservationParam param, HttpServletRequest request) {
+        param.setClientIp(RequestUtil.getIp(request));
+        log.debug("客户端ip地址为：{}", param.getClientIp());
         return this.success(shop().store.reservation.submitReservation(param));
     }
 
