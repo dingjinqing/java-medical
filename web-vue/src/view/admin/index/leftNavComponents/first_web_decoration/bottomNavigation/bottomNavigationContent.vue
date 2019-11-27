@@ -37,6 +37,7 @@
                 size="small"
                 v-model="item.text"
                 :maxlength="5"
+                show-word-limit
               ></el-input>
             </div>
             <div class="mp_list moDifyImg">
