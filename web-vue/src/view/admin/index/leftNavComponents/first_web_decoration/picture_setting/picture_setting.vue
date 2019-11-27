@@ -188,6 +188,7 @@
         title="设置页面分类"
         :visible.sync="pageSetdialogVisible"
         width="20%"
+        center
       >
         <div class="pageDialogMain">
           <el-select
@@ -507,16 +508,14 @@ export default {
       }
     },
     // 装修页面设置页面分类
-    savePageCate () {
+    savePageCate (row) {
+      debugger
       if (this.isBatch === 0) {
-        this.setPageCateParam.pageId = this.pageId
-        this.setPageCateParam.id = this.pageSetvalue
+        this.setPageCateParam.pageId = row.pageId
+        this.setPageCateParam.id = row.pageSetvalue
         setPageCate(this.setPageCateParam).then(res => {
           if (res.error === 0) {
-            this.$message.success({
-              type: 'success',
-              message: '设置成功'
-            })
+            this.$message.success({ message: '设置成功' })
             this.pageSetdialogVisible = false
             this.list()
           }
@@ -526,10 +525,7 @@ export default {
         this.setPageCateParam.id = this.pageSetvalue
         batchSet(this.setPageCateParam).then(res => {
           if (res.error === 0) {
-            this.$message.success({
-              type: 'success',
-              message: '设置成功'
-            })
+            this.$message.success({ message: '设置成功' })
             this.pageSetdialogVisible = false
             this.list()
             this.pageIds = ''

@@ -305,7 +305,7 @@ export default {
         'page_name': '',
         'bg_types': '0',
         'has_bottom': '0',
-        'show_margin': '1',
+        'show_margin': '0',
         'margin_val': '10',
         'page_bg_color': '#ffffff',
         'page_bg_image': '',
@@ -341,7 +341,7 @@ export default {
       //   'has_bottom': '0', // 是否添加底部导航
       //   'page_bg_color': '#ffffff', // 背景颜色
       //   'page_bg_image': '', // 背景图片
-      //   'show_margin': '1', // 是否添加模块边距
+      //   'show_margin': '0', // 是否添加模块边距
       //   'margin_val': '10', // 模块边距
       //   'pictorial': { // 分享海报相关配置
       //     'is_add': '0', // 是否添加分享海报
