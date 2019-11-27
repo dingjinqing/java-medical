@@ -18,31 +18,6 @@
         />
         <!-- </vue-scroll> -->
       </div>
-
-      <!--模块无权限弹窗-->
-      <div class="permissionDialog">
-        <el-dialog
-          title="系统通知"
-          :visible.sync="dialogVisible"
-          width="30%"
-        >
-          <span>此功能需要更高版本才可使用。如需了解详情我们的产品顾问将尽快与您联系！！！</span>
-          <span
-            slot="footer"
-            class="dialog-footer"
-          >
-            <el-button
-              size="small"
-              @click="dialogVisible = false"
-            >下次再说</el-button>
-            <el-button
-              type="primary"
-              size="small"
-              @click="dialogVisible = false"
-            >了解更多</el-button>
-          </span>
-        </el-dialog>
-      </div>
     </div>
     <div
       v-show="!flag"

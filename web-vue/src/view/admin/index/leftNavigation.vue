@@ -31,6 +31,31 @@
         </li>
       </ul>
     </div>
+    <!--模块无权限弹窗-->
+    <div class="permissionDialog">
+      <el-dialog
+        title="系统通知"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :append-to-body='true'
+      >
+        <span>此功能需要更高版本才可使用。如需了解详情我们的产品顾问将尽快与您联系！！！</span>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            size="small"
+            @click="dialogVisible = false"
+          >下次再说</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="dialogVisible = false"
+          >了解更多</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 <script>
@@ -43,6 +68,7 @@ import { jurisdictionQueryRequest } from '@/api/admin/jurisdiction'
 export default {
   data() {
     return {
+      dialogVisible: false, // 二级菜单无权限弹窗flag
       navLeftData: '',
       dataList: {
         first_web_manage: [
@@ -615,38 +641,71 @@ export default {
     // 左侧菜单栏点击事件
     leftNavClick(index, name) {
       // 判断二级菜单事件
-      this.handleToJudgeTwoDiction(name)
+      this.handleToJudgeTwoDiction(name).then(res => {
+        console.log(res)
+        if (res) {
+          if (name === 'first_market_manage') this.nav_s_class_index = true
+          this.click_nav_index = index
+          console.log(index)
+          this.saveIndex = index
+          if (name === 'config_list') {
+            this.$router.push({
+              name: name,
+              params: {
+                isAuth: '-1'
+              }
+            })
+          } else if (name === "order_wait") {
+            this.$router.push({
+              name: name,
+              query: {
+                order_status: 3
+              }
+            })
+          } else if (name === "pin_group_fail") {
+            this.$router.push({
+              name: name,
+              query: {
+                pinStatus: '2'
+              }
+            })
+          } else if (name === 'first_market_manage') this.nav_s_class_index = true
+          this.click_nav_index = index
+          console.log(index)
+          this.saveIndex = index
+          if (name === 'config_list') {
+            this.$router.push({
+              name: name,
+              params: {
+                isAuth: '-1'
+              }
+            })
+          } else if (name === "order_wait") {
+            this.$router.push({
+              name: name,
+              query: {
+                order_status: 3
+              }
+            })
+          } else if (name === "pin_group_fail") {
+            this.$router.push({
+              name: name,
+              query: {
+                pinStatus: '2'
+              }
+            })
+          } else {
+            // this.dialogVisible = true
+            this.$router.push({
+              name: name
+            })
+          }
+        } else {
+          this.dialogVisible = true
+        }
+      })
 
-      if (name === 'first_market_manage') this.nav_s_class_index = true
-      this.click_nav_index = index
-      console.log(index)
-      this.saveIndex = index
-      if (name === 'config_list') {
-        this.$router.push({
-          name: name,
-          params: {
-            isAuth: '-1'
-          }
-        })
-      } else if (name === "order_wait") {
-        this.$router.push({
-          name: name,
-          query: {
-            order_status: 3
-          }
-        })
-      } else if (name === "pin_group_fail") {
-        this.$router.push({
-          name: name,
-          query: {
-            pinStatus: '2'
-          }
-        })
-      } else {
-        this.$router.push({
-          name: name
-        })
-      }
+
     },
     // 左侧菜单栏划入事件
     left_nav_over(index) {
@@ -657,19 +716,31 @@ export default {
       this.click_nav_index = null
     },
     handleToJudgeTwoDiction(name) {
+      return new Promise((resolve, reject) => {
+        // 请求功能或者菜单对应的版本名字池
+        let vsNameArr = ['basic_yesterday', 'portrait_user', 'second_view', 'visit_source', 'analysis_visit_source', 'sort', 'tag', 'pin_group']
+        // 二级菜单需要校验的元素池
+        let enNameArr = ['analysis_basic', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort', 'user_tag', 'pin_group']
+        console.log(enNameArr.indexOf(name))
+        let index = enNameArr.indexOf(name)
+        if (enNameArr.indexOf(name) !== -1) {
+          console.log('触发', vsNameArr[index])
+          judgeJurisdictionRequest({
+            'V-EnName': name,
+            'V-VsName': vsNameArr[index]
+          }).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              resolve(true)
+            } else if (res.error === 10031) {
+              resolve(false)
+            }
+          })
+        } else {
+          resolve(true)
+        }
+      })
       console.log(name)
-      // 请求功能或者菜单对应的版本名字池
-      let vsNameArr = ['basic_yesterday', 'portrait_user', 'second_view', 'visit_source', 'analysis_visit_source', 'sort']
-      // 二级菜单需要校验的元素池
-      let enNameArr = ['analysis_basic', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort']
-      console.log(enNameArr.indexOf(name))
-      if (enNameArr.indexOf('name') !== -1) {
-
-        judgeJurisdictionRequest({
-          'V-EnName': name,
-
-        }).then()
-      }
 
     }
   }

@@ -408,6 +408,16 @@ export default {
               })
             }
             break
+          case 'm_coupon': // 优惠卷校验
+            console.log(item)
+            if (!item.coupon_arr.length) {
+              flag = false
+              this.$message.error({
+                message: '请选择优惠卷',
+                showClose: true
+              })
+            }
+            break
           case 'm_image_guide': // 图片导航相关校验
             item.nav_group.forEach((item, index) => {
               if (!item.nav_src) {

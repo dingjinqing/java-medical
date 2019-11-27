@@ -962,9 +962,9 @@ export default {
       let start = ''
       let end = ''
       if (this.brandStartTime) {
-        start = this.brandStartTime.getFullYear() + '-' + (this.brandStartTime.getMonth() + 1) + '-' + this.brandStartTime.getDate() + '00:00:00'
+        start = this.brandStartTime.getFullYear() + '-' + (this.brandStartTime.getMonth() + 1) + '-' + this.brandStartTime.getDate() + ' 00:00:00'
       } else if (this.brandEndTime) {
-        end = this.brandEndTime.getFullYear() + '-' + (this.brandEndTime.getMonth() + 1) + '-' + this.brandEndTime.getDate() + '00:00:00'
+        end = this.brandEndTime.getFullYear() + '-' + (this.brandEndTime.getMonth() + 1) + '-' + this.brandEndTime.getDate() + ' 00:00:00'
       }
 
       console.log(this.brandStartTime, this.brandEndTime)
