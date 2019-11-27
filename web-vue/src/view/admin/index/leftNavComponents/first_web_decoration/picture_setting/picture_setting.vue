@@ -508,11 +508,12 @@ export default {
       }
     },
     // 装修页面设置页面分类
+
     savePageCate (row) {
-      debugger
       if (this.isBatch === 0) {
         this.setPageCateParam.pageId = row.pageId
         this.setPageCateParam.id = row.pageSetvalue
+        console.log(111)
         setPageCate(this.setPageCateParam).then(res => {
           if (res.error === 0) {
             this.$message.success({ message: '设置成功' })
@@ -521,6 +522,7 @@ export default {
           }
         })
       } else { // 批量设置
+        console.log(222)
         this.setPageCateParam.pageIds = this.pageIds
         this.setPageCateParam.id = this.pageSetvalue
         batchSet(this.setPageCateParam).then(res => {
@@ -529,6 +531,7 @@ export default {
             this.pageSetdialogVisible = false
             this.list()
             this.pageIds = ''
+            this.isBatch = 0
           }
         })
       }
