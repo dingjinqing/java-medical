@@ -42,5 +42,6 @@ export const en = {
   },
   maxHotWords: 'Add up to ten hot words',
   titleCustomError: 'Please fill in the default search custom word',
+  pleasehotcode: 'Please enter a hot word',
   save: 'save'
 }

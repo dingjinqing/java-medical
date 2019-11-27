@@ -67,6 +67,7 @@
               </div>
               <div class="custom">
                 <el-radio :label="3">{{$t('searchConfig.defaultSearch.custom')}}<el-input
+                    :placeholder="$t('searchConfig.pleasehotcode')"
                     v-model="titleCustom"
                     size="small"
                     style="width:180px;margin-left:12px"
