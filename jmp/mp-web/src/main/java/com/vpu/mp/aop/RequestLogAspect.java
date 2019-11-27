@@ -88,6 +88,7 @@ public class RequestLogAspect {
             logErrorStr.append("Exception    :").append(e.getMessage()).append("\n");
             e.printStackTrace();
             log.error(logErrorStr.toString());
+            log.error("ExceptionStackTrace   :",e);
             // 如果是自定义的业务异常, 继续抛出让ExceptionControllerHandler去捕获, 这样可以回显前端详细的错误信息, 而不是简单的"操作失败"
             if (e instanceof BusinessException) {
                 throw e;
