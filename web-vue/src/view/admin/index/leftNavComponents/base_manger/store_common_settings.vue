@@ -229,8 +229,16 @@
           </div>
           <div class="text-set">
             <span>{{$t('storeCommonSettings.customerServicePlacement')}}：
-              <el-checkbox v-model="info.custom_service">{{$t('storeCommonSettings.productDetails')}}</el-checkbox>
-              <el-checkbox v-model="info.return_service">{{$t('storeCommonSettings.returnServiceTip')}}</el-checkbox>
+              <el-checkbox
+                v-model="info.custom_service"
+                :true-label="1"
+                :false-label="0"
+              >{{$t('storeCommonSettings.productDetails')}}</el-checkbox>
+              <el-checkbox
+                v-model="info.return_service"
+                :true-label="1"
+                :false-label="0"
+              >{{$t('storeCommonSettings.returnServiceTip')}}</el-checkbox>
               <a
                 href="http://bbs.weipubao.cn/forum.php?mod=viewthread&amp;tid=685&amp;fromuid=1"
                 target="_blank"
@@ -519,12 +527,12 @@ export default {
       console.log('img: ', img)
       this.$set(this.info.share_config, 'share_img', img.imgPath)
     },
+    // 保存
     saveCommonInfoHandle () {
       const that = this
       let params = Object.assign({}, this.info)
       updateCommonInfo(params).then(res => {
         if (res.error === 0) {
-          console.log(res.content)
           that.$message.success(that.$t('storeCommonSettings.updated'))
         }
       })
