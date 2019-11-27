@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class SearchConfig {
 	
 	/**
-	 *  0：不设置，1：全部商品，2：自定义
+	 *  1：不设置，2：全部商品，3：自定义
 	 */
 	@JsonProperty(value = "title_action")
 	public Integer titleAction = 1;
