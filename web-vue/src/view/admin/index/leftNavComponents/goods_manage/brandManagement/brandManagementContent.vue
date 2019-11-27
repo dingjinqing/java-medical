@@ -683,10 +683,11 @@ export default {
       let end = ''
       console.log(this.classifyBrandStartTime, this.classifyBrandEndTime)
       if (this.classifyBrandStartTime) {
-        start = this.classifyBrandStartTime + ' 00:00:00'
+        start = this.classifyBrandStartTime.getFullYear() + '-' + (this.classifyBrandStartTime.getMonth() + 1) + '-' + this.classifyBrandStartTime.getDate() + ' 00:00:00'
       }
+
       if (this.classifyBrandEndTime) {
-        end = this.classifyBrandEndTime + ' 00:00:00'
+        end = this.classifyBrandEndTime.getFullYear() + '-' + (this.classifyBrandEndTime.getMonth() + 1) + '-' + this.classifyBrandEndTime.getDate() + ' 00:00:00'
       }
       console.log(start, end)
       console.log(this.timeValue2[0], this.timeValue2[1])
