@@ -12,7 +12,7 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-    this.requestOrderInfo(options.order_sn);
+    this.requestOrderInfo(options.orderSn);
   },
   // 请求订单详情
   requestOrderInfo(orderSn) {

@@ -32,7 +32,7 @@ var order = {
   },
   // 查看评价
   viewComment(orderSn) {
-    util.jumpLink(`/pages/comment/comment?order_sn=${orderSn}`, "navigateTo");
+    util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
   },
   // 再次购买
   addCart(orderSn, orderId) {

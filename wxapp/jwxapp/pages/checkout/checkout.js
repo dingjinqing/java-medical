@@ -357,7 +357,7 @@ global.wxPage({
     util.api('/api/wxapp/order/submit',res=>{
       if(res.error === 0){
         if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo){
-          console.log(11111)
+          let {orderSn} = res.content 
           wx.requestPayment({
             'timeStamp': res.content.webPayVo.timeStamp,
             'nonceStr': res.content.webPayVo.nonceStr,
@@ -366,17 +366,16 @@ global.wxPage({
             'paySign': res.content.webPayVo.paySign,
             'success': function (res) {
               util.toast_success('支付成功');
+              util.jumpLink('pages/orderlist/orderlist', 'redirectTo')
             },
             'fail': function (res) {
-              console.log(res)
-              // util.redirectTo({
-              //   url: '/pages/orderinfo/orderinfo?order_sn=' + res.content.order_sn + "&coupon=1",
-              // })
+              util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${orderSn}`, 'redirectTo')
             },
             'complete': function (res) { }
           });
+        } else {
+          util.jumpLink('pages/orderlist/orderlist','redirectTo')
         }
-        // util.jumpLink('pages/orderlist/orderlist','navigateTo')
       } else {
         util.showModal('提示',res.message, function () {
           util.jumpLink('/pages/index/index','redirectTo')
