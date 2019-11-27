@@ -11,12 +11,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class IncrSequenceUtil {
-    private static Util util ;
-
-
-    private static JedisManager jedisManager;
 
     public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
+
+    public static final String INCR_SEQUENCE="IncrSequence:";
+    private static JedisManager jedisManager;
 
     @Autowired
     public void setJedisManager(JedisManager jedisManager){
@@ -32,7 +31,7 @@ public class IncrSequenceUtil {
      * @return
      */
     public static String generateOrderSn(String prefix,String dateFormat,String key){
-        return new StringBuilder(prefix)
+        return new StringBuilder(INCR_SEQUENCE).append(prefix)
                 .append(DateUtil.getLocalTimeDateBySelf(dateFormat))
                 .append(jedisManager.getIncrSequence(key)).toString();
     }
