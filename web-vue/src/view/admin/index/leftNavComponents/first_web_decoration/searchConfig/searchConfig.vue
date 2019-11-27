@@ -35,7 +35,8 @@
             <div class="searchTitle">{{$t('searchConfig.hotSearch.title')}}</div>
             <div class="searchItem clearfix">
               <div
-                v-for="(item,index) in hotWordsList"
+                class="test"
+                v-for="(item,index) in hotWordsListShow"
                 :key="index"
               >{{item.length > 0 ? item : '' }}</div>
             </div>
@@ -167,6 +168,16 @@ export default {
   mounted () {
     this.langDefault()
   },
+  watch: {
+    hotWordsList (newData) {
+      this.hotWordsListShow = []
+      for (let i = 0; i < this.hotWordsList.length; i++) {
+        if (!this.isEmpty(this.hotWordsList[i])) {
+          this.hotWordsListShow.push(this.hotWordsList[i])
+        }
+      }
+    }
+  },
   data () {
     return {
       titleAction: 1,
@@ -175,7 +186,8 @@ export default {
       titleCustom: '',
       hotWords: [],
       hotWordsList: [],
-      itemList: []
+      itemList: [],
+      hotWordsListShow: []
     }
   },
   methods: {
