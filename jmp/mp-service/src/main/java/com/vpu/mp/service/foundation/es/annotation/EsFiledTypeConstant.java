@@ -23,4 +23,6 @@ public class EsFiledTypeConstant {
 
     public static final String DATE = "date";
 
+    public static final String BOOL = "boolean";
+
 }

@@ -14,6 +14,8 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.shop.goods.es.convert.EsConvertFactory;
 import com.vpu.mp.service.shop.goods.es.convert.param.EsParamConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.param.GoodsPageConvertEsParam;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.core.CountRequest;
@@ -42,9 +44,9 @@ import static com.vpu.mp.service.pojo.shop.goods.es.EsSearchName.*;
 public class EsBaseSearchService extends ShopBaseService {
 
 
-    private static final EsSearchName[] DEFAULT = {GOODS_ID,SHOP_ID,IS_ON_SALE,GOODS_NUMBER};
+    private static final String[] DEFAULT_STR = {GOODS_ID,SHOP_ID,IS_ON_SALE,GOODS_NUMBER};
 
-    private static final EsSearchName[] GOODS_SEARCH = {
+    private static final String[] GOODS_SEARCH_STR = {
         GOODS_ID,
         SHOP_ID,
         IS_ON_SALE,
@@ -70,20 +72,7 @@ public class EsBaseSearchService extends ShopBaseService {
         MIN_SPEC_PRD_PRICE
     };
 
-    protected static  String[] DEFAULT_STR;
-    static{
-        DEFAULT_STR = Arrays.stream(DEFAULT)
-            .map(EsSearchName::getEsName)
-            .collect(Collectors.toList())
-            .toArray(new String[DEFAULT.length]);
-    }
 
-    protected static  String[] GOODS_SEARCH_STR ;
-    static{
-        GOODS_SEARCH_STR = Arrays.stream(GOODS_SEARCH)
-            .map(EsSearchName::getEsName).collect(Collectors.toList())
-            .toArray(new String[GOODS_SEARCH.length]);
-    }
 
     @Autowired
     private EsManager esManager;
@@ -198,7 +187,7 @@ public class EsBaseSearchService extends ShopBaseService {
     /**
      * 从ElasticSearch中获取数据
      * @param param ElasticSearch搜索条件
-     * @return {@link PageResult<EsGoods>}
+     * @return {@link PageResult< EsGoods >}
      */
     protected PageResult<EsGoods> searchGoodsPageByParam(EsSearchParam param) throws IOException {
         SearchSourceBuilder sourceBuilder;
@@ -211,9 +200,9 @@ public class EsBaseSearchService extends ShopBaseService {
             sourceBuilder = assemblySearchSourceBuilder(searchParam);
             result.setPage(esPage);
         }else{
-            sourceBuilder =  getSearchSourceBuilderAndPage(result,EsDataInitService.ES_GOODS,param,GOODS_SEARCH_STR,null);
+            sourceBuilder =  getSearchSourceBuilderAndPage(result,EsGoodsConstant.GOODS_INDEX_NAME,param,GOODS_SEARCH_STR,null);
         }
-        result.setDataList(searchEsGoods(assemblySearchRequest(sourceBuilder,EsDataInitService.ES_GOODS)));
+        result.setDataList(searchEsGoods(assemblySearchRequest(sourceBuilder,EsGoodsConstant.GOODS_INDEX_NAME)));
         return result;
     }
     SearchSourceBuilder getSearchSourceBuilderAndPage(PageResult<EsGoods> result,String indexName,EsSearchParam param,
@@ -310,7 +299,7 @@ public class EsBaseSearchService extends ShopBaseService {
         SearchSourceBuilder sourceBuilder = SearchSourceBuilder.searchSource()
             .query(queryBuilder)
             .fetchSource(new String[]{},null);
-        List<EsGoods> list = searchEsGoods(assemblySearchRequest(sourceBuilder,EsDataInitService.ES_GOODS));
+        List<EsGoods> list = searchEsGoods(assemblySearchRequest(sourceBuilder,EsGoodsConstant.GOODS_INDEX_NAME));
         return list.size()>0?list.get(0):null;
     }
 }

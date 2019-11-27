@@ -1,4 +1,4 @@
-package com.vpu.mp.service.shop.goods.es;
+package com.vpu.mp.service.shop.goods.es.goods;
 
 import com.vpu.mp.service.foundation.es.annotation.EsFiled;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
@@ -26,12 +26,17 @@ public class EsGoods  {
     /**
      * 商品广告词
      */
-    @EsFiled(name = EsSearchName.GOODS_AD,type = EsFiledTypeConstant.TEXT)
+    @EsFiled(name = EsSearchName.GOODS_AD,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
     private String goodsAd;
+    /**
+     * 商品描述
+     */
+    @EsFiled(name = EsSearchName.GOODS_DESC,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
+    private String goodsDesc;
     /**
      * 商品货号
      */
-    @EsFiled(name = EsSearchName.GOODS_SN,type = EsFiledTypeConstant.TEXT)
+    @EsFiled(name = EsSearchName.GOODS_SN,type = EsFiledTypeConstant.TEXT,doc_values = false)
     private String goodsSn;
     /**
      * 平台分类
@@ -41,13 +46,13 @@ public class EsGoods  {
     /**
      * 商品主图
      */
-    @EsFiled(name = EsSearchName.GOODS_IMG,type = EsFiledTypeConstant.KEYWORD)
+    @EsFiled(name = EsSearchName.GOODS_IMG,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
     private String goodsImg;
 
     /**
      * 商品单位
      */
-    @EsFiled(name = EsSearchName.UNIT,type = EsFiledTypeConstant.KEYWORD)
+    @EsFiled(name = EsSearchName.UNIT,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
     private String unit;
     /**
      * 商品商家分类
@@ -70,6 +75,11 @@ public class EsGoods  {
      */
     @EsFiled(name = EsSearchName.LIMIT_BUY_NUM,type = EsFiledTypeConstant.INTEGER)
     private Integer limitBuyNum;
+    /**
+     * 最大限购数量
+     */
+    @EsFiled(name = EsSearchName.LIMIT_MAX_NUM,type = EsFiledTypeConstant.INTEGER)
+    private Integer limitMaxNum;
 
     /**
      * 初始销量
@@ -173,57 +183,57 @@ public class EsGoods  {
      * 商品评论数
      */
     @EsFiled(name = EsSearchName.COMMENT_NUM,type = EsFiledTypeConstant.INTEGER)
-    private Integer comment_num;
+    private Integer commentNum;
     /**
      * 商品初始销量
      */
     @EsFiled(name = EsSearchName.BASE_SALE,type = EsFiledTypeConstant.INTEGER)
-    private Integer base_sale;
+    private Integer baseSale;
 
     /**
      * 商品v1会员等级价格
      */
-    @EsFiled(name = EsSearchName.V1,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.V1,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
     private BigDecimal v1;
     /**
      * 商品v2会员等级价格
      */
-    @EsFiled(name = EsSearchName.V2,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.V2,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
     private BigDecimal v2;
     /**
      * 商品v3会员等级价格
      */
-    @EsFiled(name = EsSearchName.V3,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.V3,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
     private BigDecimal v3;
     /**
      * 商品v4会员等级价格
      */
-    @EsFiled(name = EsSearchName.V4,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.V4,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
     private BigDecimal v4;
     /**
      * 商品v5会员等级价格
      */
-    @EsFiled(name = EsSearchName.V5,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.V5,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
     private BigDecimal v5;
     /**
      * 商品v6会员等级价格
      */
-    @EsFiled(name = EsSearchName.V6,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.V6,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
     private BigDecimal v6;
     /**
      * 商品v7会员等级价格
      */
-    @EsFiled(name = EsSearchName.V7,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.V7,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
     private BigDecimal v7;
     /**
      * 商品v8会员等级价格
      */
-    @EsFiled(name = EsSearchName.V8,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.V8,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
     private BigDecimal v8;
     /**
      * 商品v9会员等级价格
      */
-    @EsFiled(name = EsSearchName.V9,type = EsFiledTypeConstant.SCALED_FLOAT)
+    @EsFiled(name = EsSearchName.V9,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
     private BigDecimal v9;
     /**
      * 商品展示价格
@@ -234,7 +244,7 @@ public class EsGoods  {
     /**
      * 商家编码（拼接）
      */
-    @EsFiled(name = EsSearchName.PRD_SNS,type = EsFiledTypeConstant.TEXT)
+    @EsFiled(name = EsSearchName.PRD_SNS,type = EsFiledTypeConstant.TEXT,doc_values = false)
     private String prdSns;
     /**
      * 平台分类名称（空格拼接）
@@ -284,10 +294,24 @@ public class EsGoods  {
      */
     @EsFiled(name = EsSearchName.MIN_SPEC_PRD_PRICE,type = EsFiledTypeConstant.SCALED_FLOAT)
     private BigDecimal minSpecPrdPrices;
-
+    /**
+     * 数据修改时间
+     */
     @EsFiled(name=EsSearchName.UPDATE_TIME,type = EsFiledTypeConstant.DATE)
     private String updateDate;
-
+    /**
+     * 存入es的时间
+     */
     @EsFiled(name=EsSearchName.ADD_ES_TIME,type = EsFiledTypeConstant.DATE)
     private String addEsDate;
+
+    /**
+     * 商品的其他图片(不包含主图)
+     */
+    private List<String> secondaryGoodsImages;
+
+    /**
+     * 视频信息(JSON字符串包含：url,image,size,width,height,id)
+     */
+    private String videoInfo;
 }

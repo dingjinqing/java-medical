@@ -1,7 +1,7 @@
 package com.vpu.mp.service.foundation.es.handler;
 
 import com.vpu.mp.service.pojo.shop.goods.es.Fact;
-import com.vpu.mp.service.shop.goods.es.EsGoodsConstant;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.springframework.stereotype.Component;

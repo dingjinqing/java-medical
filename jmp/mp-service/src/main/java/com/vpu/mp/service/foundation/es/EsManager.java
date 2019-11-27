@@ -2,10 +2,12 @@ package com.vpu.mp.service.foundation.es;
 
 import com.vpu.mp.service.foundation.es.annotation.EsFiledSerializer;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.shop.goods.es.EsGoods;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -103,6 +105,11 @@ public class EsManager {
             EsGoods goods = (EsGoods)object;
             request.id(goods.getShopId().toString()+goods.getGoodsId().toString());
         }
+        //商品索引标签ID设为shopId+goodsId+labelId
+        if( object instanceof EsGoodsLabel){
+            EsGoodsLabel goodsLabel = (EsGoodsLabel)object;
+            request.id(goodsLabel.getShopId().toString()+goodsLabel.getGoodsId().toString()+goodsLabel.getId().toString());
+        }
         request.source(Objects.requireNonNull(Util.toJson(object, ES_FILED_SERIALIZER)), XContentType.JSON);
         return request;
     }
@@ -114,7 +121,14 @@ public class EsManager {
      */
     public void batchDocuments(BulkRequest request) throws IOException {
         BulkResponse response =  restHighLevelClient.bulk(request,RequestOptions.DEFAULT);
+
+        //TODO ElasticSearch索引失败处理机制后续开发(走队列，失败的数据存入main库的一张表中)
         if( response.hasFailures() ){
+            for(BulkItemResponse itemResponse: response){
+                if( itemResponse.isFailed() ){
+
+                }
+            }
             log.error("ERROR");
         }
     }

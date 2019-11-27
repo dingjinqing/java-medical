@@ -19,6 +19,8 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsService;
+import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
+import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -441,6 +443,10 @@ public class ShopApplication {
     public EsGoodsService esGoodsService;
     @Autowired
     public EsGoodsSearchService esGoodsSearchService;
+    @Autowired
+    public EsGoodsLabelCreateService esGoodsLabelCreateService;
+    @Autowired
+    public EsGoodsLabelSearchService esGoodsLabelSearchService;
 
     @Autowired
     public UserCenterTraitService  ucTraitService;

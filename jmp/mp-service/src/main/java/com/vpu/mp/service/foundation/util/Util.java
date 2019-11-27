@@ -3,10 +3,7 @@ package com.vpu.mp.service.foundation.util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -92,6 +89,15 @@ public class Util {
 		}
 		return null;
 	}
+	public static JsonNode toJsonNode(String str){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readTree(str);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * jackson解析自定义注解的json

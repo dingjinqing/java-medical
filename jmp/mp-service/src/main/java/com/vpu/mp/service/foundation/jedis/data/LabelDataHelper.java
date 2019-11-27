@@ -79,6 +79,19 @@ public class LabelDataHelper extends MainBaseService implements CommandLineRunne
     }
 
     /**
+     * 根据店铺id获取所有商品标签数据
+     * @param shopId 店铺id
+     * @return {List<GoodsLabelInfo>}
+     */
+    public List<GoodsLabelInfo> getLabelByShopId(Integer shopId){
+        String key = JedisKeyConstant.GOODS_LABEL+shopId;
+        Map<String,String> map = jedisManager.getAllHash(key);
+        return map.values().stream().
+            map(x->Util.parseJson(x,GoodsLabelInfo.class)).
+            collect(Collectors.toList());
+    }
+
+    /**
      * 获取goodsLabel by Cache
      * @param ids ids
      * @param shopId getShopId()

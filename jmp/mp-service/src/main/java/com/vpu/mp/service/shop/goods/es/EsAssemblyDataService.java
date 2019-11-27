@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.*;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
@@ -449,16 +450,24 @@ public class EsAssemblyDataService extends ShopBaseService {
 
     }
 
-    private Map<Integer, List<Integer>> assemblyGoodsLabel(Map<Integer, Map<Byte, List<Integer>>> goodsLabelFilterMap, List<Integer> goodsIds,
+    private Map<Integer, List<Integer>> assemblyGoodsLabel(Map<Integer, Map< Byte, List<Integer>>> goodsLabelFilterMap, List<Integer> goodsIds,
                                                            Map<Integer, List<SysCatevo>> categoryMap, Map<Integer, Sort> sortMap) {
         Map<Integer, List<Integer>> resultMap = new HashMap<>();
         Set<Integer> categoryIdSet = new HashSet<>(categoryMap.size() * 3);
         categoryMap.values()
-            .forEach(x -> categoryIdSet.addAll(x.stream().map(SysCatevo::getCatId).collect(Collectors.toList())));
+            .forEach(
+                x ->
+                    categoryIdSet.addAll(
+                        x.stream().
+                            map(SysCatevo::getCatId).
+                            collect(Collectors.toList())
+                    )
+            );
         List<Integer> categoryIds = new ArrayList<>(categoryIdSet);
         List<Integer> sortIds = new ArrayList<>(sortMap.keySet());
         Map<Byte, List<GoodsLabelAndCouple>> typeRecord =
             goodsLabelService.getGoodsLabelByFilter(goodsIds, sortIds, categoryIds);
+
         Map<Integer, List<GoodsLabelAndCouple>> sortForLabelMap = new HashMap<>();
         Map<Integer, List<GoodsLabelAndCouple>> categoryForLabelMap = new HashMap<>();
         Map<Integer, List<GoodsLabelAndCouple>> goodsForLabelMap = new HashMap<>();
@@ -498,7 +507,6 @@ public class EsAssemblyDataService extends ShopBaseService {
                         }
                     });
                 }
-
             });
             list.addAll(allGoodsForLabelList);
             if (list.size() > 5) {

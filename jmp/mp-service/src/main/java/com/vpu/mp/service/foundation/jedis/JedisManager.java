@@ -204,6 +204,17 @@ public class JedisManager {
 			return result;
 		}
 	}
+
+    /**
+     * 根据key获取key下的所有hash数据
+     * @param key key
+     * @return {Map<String,String>}
+     */
+    public Map<String,String> getAllHash(String key){
+        try (Jedis jedis = getJedisPool().getResource()){
+            return jedis.hgetAll(key);
+        }
+    }
 	public void addToHash(String key, Map<String,String> data,Integer timeOut){
 		try (Jedis jedis = getJedisPool().getResource()){
 			jedis.hmset(key,data);

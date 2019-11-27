@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectTreeVo;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.aggregations.Aggregation;
@@ -47,7 +48,7 @@ public class EsFactSearchService extends EsBaseSearchService{
         //es查询
         SearchRequest searchRequest = assemblySearchRequest(
             assemblySearchSourceBuilder(searchParam)
-            ,EsDataInitService.ES_GOODS
+            ,EsGoodsConstant.GOODS_INDEX_NAME
         );
 
        return assemblyGoodsInitialVo(initParam,search(searchRequest));

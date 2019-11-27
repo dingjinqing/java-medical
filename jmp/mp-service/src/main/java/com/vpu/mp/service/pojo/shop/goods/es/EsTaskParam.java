@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 public class EsTaskParam {
 
-    private List<Integer> goodsIdList;
+    private List<Integer> idList;
 
     private Integer shopId;
     @Tolerate

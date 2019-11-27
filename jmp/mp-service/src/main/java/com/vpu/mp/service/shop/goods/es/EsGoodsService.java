@@ -9,7 +9,6 @@ import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,15 +24,27 @@ public class EsGoodsService extends BaseShopConfigService {
     private RabbitmqSendService rabbitmqSendService;
 
     /**
-     *  更新索引接口
+     *  更新商品索引接口
      * @param goodsIds goodsIdList
      * @param shopId 店铺Id
      */
     public void addEsGoodsIndex(List<Integer> goodsIds,Integer shopId){
         EsTaskParam param = new EsTaskParam();
-        param.setGoodsIdList(goodsIds);
+        param.setIdList(goodsIds);
         param.setShopId(shopId);
         rabbitmqSendService.sendMessage(RabbitConfig.EXCHANGE_ES,RabbitConfig.BINDING_ES_GOODS_KEY, Util.toJson(param),param.getClass().getName());
+
+    }
+    /**
+     *  更新商品标签索引接口
+     * @param labelIds labelIds
+     * @param shopId 店铺Id
+     */
+    public void updateEsGoodsLabelIndex(List<Integer> labelIds,Integer shopId){
+        EsTaskParam param = new EsTaskParam();
+        param.setIdList(labelIds);
+        param.setShopId(shopId);
+        rabbitmqSendService.sendMessage(RabbitConfig.EXCHANGE_ES,RabbitConfig.BINDING_EXCHANGE_ES_GOODS_LABEL_KEY, Util.toJson(param),param.getClass().getName());
 
     }
 }

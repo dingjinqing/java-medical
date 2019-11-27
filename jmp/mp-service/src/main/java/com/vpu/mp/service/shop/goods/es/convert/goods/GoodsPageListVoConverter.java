@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.goods.es.convert.goods;
 
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
-import com.vpu.mp.service.shop.goods.es.EsGoods;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 

@@ -12,28 +12,28 @@ import org.elasticsearch.index.query.QueryBuilder;
 */
 public class FieldProperty {
 
-    private EsSearchName searchName;
+    private String searchName;
 
     private Operator operator;
 
     private Object value;
 
-    public FieldProperty(EsSearchName searchName,Object value){
+    public FieldProperty(String searchName,Object value){
         this.operator = Operator.EQ;
         this.searchName = searchName;
         this.value = value;
     }
-    public FieldProperty(EsSearchName searchName,Object value,Operator operator){
+    public FieldProperty(String searchName,Object value,Operator operator){
         this.operator = operator;
         this.searchName = searchName;
         this.value = value;
     }
 
-    public EsSearchName getSearchName() {
+    public String getSearchName() {
         return searchName;
     }
 
-    public void setSearchName(EsSearchName searchName) {
+    public void setSearchName(String searchName) {
         this.searchName = searchName;
     }
 

@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsPageListVoConverter;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

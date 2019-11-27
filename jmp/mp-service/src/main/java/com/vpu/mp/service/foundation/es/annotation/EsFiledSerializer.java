@@ -19,8 +19,8 @@ public class EsFiledSerializer extends JacksonAnnotationIntrospector implements 
         boolean useDefault = false;
         EsFiled jg = _findAnnotation(a, EsFiled.class);
         if (jg != null) {
-            EsSearchName s = jg.name();
-            return PropertyName.construct(s.getEsName());
+            String s = jg.name();
+            return PropertyName.construct(s);
         }
         return null;
     }
@@ -32,8 +32,8 @@ public class EsFiledSerializer extends JacksonAnnotationIntrospector implements 
         boolean useDefault = false;
         EsFiled js = _findAnnotation(a, EsFiled.class);
         if (js != null) {
-            EsSearchName s = js.name();
-            return PropertyName.construct(s.getEsName());
+            String s = js.name();
+            return PropertyName.construct(s);
         }
 
         return null;

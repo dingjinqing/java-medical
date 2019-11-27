@@ -43,22 +43,22 @@ public class TaskJobsConstant {
         /** 消息推送任务 */
         SEND_MESSAGE(1001, RabbitConfig.EXCHANGE_MARKETING,RabbitConfig.BINDING_EXCHANGE_MESSAGE_KEY),
     	/**获取关注公众号的用户信息*/
-        MP_BIND_MA(1002, RabbitConfig.EXCHANGE_MA_MAP_BIND, RabbitConfig.BINDING_MA_MAP_BIND_KEY),
+        MP_BIND_MA(1002, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_MA_MAP_BIND_KEY),
     	/**批量提交小程序*/
-    	BATCH_UPLOAD(1003, RabbitConfig.EXCHANGE_BATCH_UPLOAD, RabbitConfig.BINDING_BATCH_UPLOAD_KEY),
+    	BATCH_UPLOAD(1003, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_BATCH_UPLOAD_KEY),
     	/**定向发券*/
         GIVE_COUPON(1004, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_COUPON_KEY),
         /**
          * 服务预约订单支付成功发送模板消息
          */
-        RESERVATION_PAY(1005, RabbitConfig.EXCHANGE_ORDER_MESSAGE, RabbitConfig.BINDING_EXCHANGE_RESERVATION_KEY),
+        RESERVATION_PAY(1005, RabbitConfig.EXCHANGE_ORDER, RabbitConfig.BINDING_EXCHANGE_RESERVATION_KEY),
         
     	/**订单 */
-    	WX_IMPORTORDER(1006, RabbitConfig.EXCHANGE_WX_IMPORTORDER, RabbitConfig.BINDING_EXCHANGE_IMPORTORDER_KEY),
+    	WX_IMPORTORDER(1006, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_IMPORTORDER_KEY),
     	/**收藏 */
-    	WX_ADDSHOPPINGLIST(1007, RabbitConfig.EXCHANGE_WX_IMPORTORDER, RabbitConfig.BINDING_EXCHANGE_ADDSHOPPINGLIST_KEY),
+    	WX_ADDSHOPPINGLIST(1007, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_ADDSHOPPINGLIST_KEY),
     	/**物品信息 */
-    	WX_IMPORTPRODUCT(1008, RabbitConfig.EXCHANGE_WX_IMPORTORDER, RabbitConfig.BINDING_EXCHANGE_IMPORTPRODUCT_KEY);
+    	WX_IMPORTPRODUCT(1008, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_IMPORTPRODUCT_KEY);
         private Integer executionType;
         private String exchangeName;
         private String routingKey;

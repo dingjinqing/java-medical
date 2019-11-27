@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.goods.es.convert.param;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 
 import java.util.ArrayList;

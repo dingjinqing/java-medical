@@ -53,37 +53,35 @@ public class RabbitConfig {
     public static final String QUEUE_BATCH_UPLOAD="batch.upload.queue";
     /** ES的路由 */
     public static final String QUEUE_ES_GOODS = "es.goods";
-    /**
-     * 订单支付发送消息模板默认存放队列, 这里指门店服务预约订单
-     */
+    /** 订单支付发送消息模板默认存放队列, 这里指门店服务预约订单*/
     public static final String QUEUE_RESERVATION_ORDER_MESSAGE = "reservation.message";
-    
-    /**
-     * 好物圈队列
-     */
+    /*************好物圈队列start************/
     /** 订单*/
     public static final String QUEUE_WX_MALL_IMPORTORDER = "wx.mall.importorder";
     /** 收藏*/
     public static final String QUEUE_WX_MALL_ADDSHOPPINGLIST = "wx.mall.addshoppinglist";
     /** 物品信息*/
     public static final String QUEUE_WX_MALL_IMPORTPRODUCT = "wx.mall.importproduct";
-    
-    
-    
+    /*************好物圈队列end************/
+    /**ElasticSearch--商品标签*/
+    public static final String QUEUE_ES_LABEL = "es.label";
+
+    /**
+     * 路由和队列的对应关系是1:n不是1:1(路由按照模块区分)
+     */
     /** 发送失败队列存储的路由 */
     public static final String EXCHANGE_ERROR = "direct.error";
     /** 营销功能的路由 */
     public static final String EXCHANGE_MARKETING = "direct.marketing";
     /** ES的路由 */
     public static final String EXCHANGE_ES = "direct.es";
-    /**获取关注公众号的用户信息*/
-    public static final String EXCHANGE_MA_MAP_BIND="direct.bind.mamp";
-    /**批量提交小程序 */
-    public static final String EXCHANGE_BATCH_UPLOAD="direct.batch.upload";
-    /**
-     * 订单支付发送消息模板功能的路由
-     */
-    public static final String EXCHANGE_ORDER_MESSAGE = "direct.order.message";
+    /** 微信的路由(所有跟微信相关的队列都由这个路由转发) */
+    public static final String EXCHANGE_WX = "direct.wx";
+    /**订单的路由*/
+    public static final String EXCHANGE_ORDER = "direct.order";
+
+
+
 
     /** 发送失败路由键 */
     public static final String BINDING_EXCHANGE_ERROR_KEY = "direct.error.send";
@@ -99,22 +97,18 @@ public class RabbitConfig {
     public static final String BINDING_BATCH_UPLOAD_KEY="bind.batch.upload";
     /** 批量提交小程序*/
     public static final String BINDING_ES_GOODS_KEY = "bind.es.goods";
-    /**
-     * 发送门店服务预约订单支付成功模板消息路由键
-     */
+    /**发送门店服务预约订单支付成功模板消息路由键*/
     public static final String BINDING_EXCHANGE_RESERVATION_KEY = "direct.order.reservation";
-
-    /**
-     * 好物圈 交换机
-     */
-	public static final String EXCHANGE_WX_IMPORTORDER = "direct.wx.mall";
+    /*************好物圈路由键start************/
     /**
      * 好物圈订单
      */
 	public static final String BINDING_EXCHANGE_IMPORTORDER_KEY = "bind.wx.importorders";
 	public static final String BINDING_EXCHANGE_ADDSHOPPINGLIST_KEY = "bind.wx.addshoppinglist";
 	public static final String BINDING_EXCHANGE_IMPORTPRODUCT_KEY = "bind.wx.importproducts";
-	
+    /*************好物圈队列end************/
+    /**商品标签缓存数据一致性*/
+    public static final String BINDING_EXCHANGE_ES_GOODS_LABEL_KEY = "bind.es.goods.label";
     @Bean
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory connectionFactory =
@@ -241,9 +235,15 @@ public class RabbitConfig {
     public Queue sendWxMallWpQueue() {
     	return new Queue(QUEUE_WX_MALL_IMPORTPRODUCT,true);
     }
-    
     /**
-     * 1.交换机名字
+     * @return es label queue
+     */
+    @Bean
+    public Queue cacheGoodsLabelWithQueue() {
+        return new Queue(QUEUE_ES_LABEL,true,false,false);
+    }
+    /**
+     * 1.路由名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
      * 3.autoDelete    当所有消费客户端连接断开后，是否自动删除队列
      * @return 错误存储路由
@@ -272,23 +272,15 @@ public class RabbitConfig {
      */
     @Bean
     public DirectExchange orderExchange() {
-        return new DirectExchange(EXCHANGE_ORDER_MESSAGE,true,false);
+        return new DirectExchange(EXCHANGE_ORDER,true,false);
     }
 
     @Bean
-    public DirectExchange mpTemplateExchange() {
-        return new DirectExchange(EXCHANGE_MA_MAP_BIND,true,false);
+    public DirectExchange wxExchange() {
+        return new DirectExchange(EXCHANGE_WX,true,false);
     }
 
-    @Bean
-    public DirectExchange batchUploadExchange() {
-        return new DirectExchange(EXCHANGE_BATCH_UPLOAD,true,false);
-    }
-    
-    @Bean
-    public DirectExchange wxMallExchange() {
-        return new DirectExchange(EXCHANGE_WX_IMPORTORDER,true,false);
-    }
+
 
     /**
      * @return 路由和队列绑定
@@ -325,13 +317,13 @@ public class RabbitConfig {
      */
     @Bean
     public Binding bindingTemplateSend() {
-    	return BindingBuilder.bind(sendMpMABindQueue()).to(mpTemplateExchange()).with(BINDING_MA_MAP_BIND_KEY);
+    	return BindingBuilder.bind(sendMpMABindQueue()).to(wxExchange()).with(BINDING_MA_MAP_BIND_KEY);
     }
 
 
     @Bean
     public Binding batchUpload() {
-    	return BindingBuilder.bind(batchUploadQueue()).to(batchUploadExchange()).with(BINDING_BATCH_UPLOAD_KEY);
+    	return BindingBuilder.bind(batchUploadQueue()).to(wxExchange()).with(BINDING_BATCH_UPLOAD_KEY);
     }
 
     /**
@@ -340,14 +332,18 @@ public class RabbitConfig {
      */
     @Bean
     public Binding bindingWxMallTd() {
-    	return BindingBuilder.bind(sendWxMallTdQueue()).to(wxMallExchange()).with(BINDING_EXCHANGE_IMPORTORDER_KEY);
+    	return BindingBuilder.bind(sendWxMallTdQueue()).to(wxExchange()).with(BINDING_EXCHANGE_IMPORTORDER_KEY);
     }
     @Bean
     public Binding bindingWxMallSc() {
-    	return BindingBuilder.bind(sendWxMallScQueue()).to(wxMallExchange()).with(BINDING_EXCHANGE_ADDSHOPPINGLIST_KEY);
+    	return BindingBuilder.bind(sendWxMallScQueue()).to(wxExchange()).with(BINDING_EXCHANGE_ADDSHOPPINGLIST_KEY);
     }
     @Bean
     public Binding bindingWxMallWp() {
-    	return BindingBuilder.bind(sendWxMallWpQueue()).to(wxMallExchange()).with(BINDING_EXCHANGE_IMPORTPRODUCT_KEY);
+    	return BindingBuilder.bind(sendWxMallWpQueue()).to(wxExchange()).with(BINDING_EXCHANGE_IMPORTPRODUCT_KEY);
+    }
+    @Bean
+    public Binding bindingCacheGoodsLabel() {
+        return BindingBuilder.bind(cacheGoodsLabelWithQueue()).to(esExchange()).with(BINDING_EXCHANGE_ES_GOODS_LABEL_KEY);
     }
 }

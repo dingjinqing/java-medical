@@ -29,12 +29,12 @@ public class ESGoodsListener implements BaseRabbitHandler {
     @RabbitHandler
     public void handler(@Payload EsTaskParam param, Message message, Channel channel) {
         log.info("\n消费{}",param.getShopId());
-        if( param.getGoodsIdList().size() > 1 ){
+        if( param.getIdList().size() > 1 ){
             saas.getShopApp(param.getShopId())
-                .esGoodsCreateService.batchCreateEsGoodsIndex(param.getGoodsIdList(),param.getShopId());
-        }else if( param.getGoodsIdList().size() == 1){
+                .esGoodsCreateService.batchCreateEsGoodsIndex(param.getIdList(),param.getShopId());
+        }else if( param.getIdList().size() == 1){
             saas.getShopApp(param.getShopId())
-                .esGoodsCreateService.createEsGoodsIndex(param.getGoodsIdList().get(0),param.getShopId());
+                .esGoodsCreateService.createEsGoodsIndex(param.getIdList().get(0),param.getShopId());
         }
 
     }

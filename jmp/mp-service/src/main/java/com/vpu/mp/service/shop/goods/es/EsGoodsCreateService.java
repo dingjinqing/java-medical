@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +54,7 @@ public class EsGoodsCreateService extends BaseShopConfigService {
      */
     public void deleteEsGoods(Integer goodsId,Integer shopId){
         try {
-            esManager.deleteIndexById(EsGoodsConstant.INDEX_NAME,goodsId.toString()+shopId);
+            esManager.deleteIndexById(EsGoodsConstant.GOODS_INDEX_NAME,goodsId.toString()+shopId);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,14 +67,14 @@ public class EsGoodsCreateService extends BaseShopConfigService {
     public void deleteEsGoods(List<Integer> goodsIds,Integer shopId){
         try {
             List<String> list = goodsIds.stream().map(x->shopId.toString()+x).collect(Collectors.toList());
-            esManager.deleteIndexById(EsGoodsConstant.INDEX_NAME,list);
+            esManager.deleteIndexById(EsGoodsConstant.GOODS_INDEX_NAME,list);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     private void commitEdGoodsIndex(EsGoods esGoods){
         try{
-            esManager.createDocuments(esManager.assemblyRequest(EsGoodsConstant.INDEX_NAME,esGoods));
+            esManager.createDocuments(esManager.assemblyRequest(EsGoodsConstant.GOODS_INDEX_NAME,esGoods));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -81,7 +83,7 @@ public class EsGoodsCreateService extends BaseShopConfigService {
     private void batchCommitEsGoodsIndex(List<EsGoods> list){
         BulkRequest requests = new BulkRequest();
         for( EsGoods goods: list ){
-            requests.add(esManager.assemblyRequest(EsGoodsConstant.INDEX_NAME,goods));
+            requests.add(esManager.assemblyRequest(EsGoodsConstant.GOODS_INDEX_NAME,goods));
         }
         try {
             esManager.batchDocuments(requests);

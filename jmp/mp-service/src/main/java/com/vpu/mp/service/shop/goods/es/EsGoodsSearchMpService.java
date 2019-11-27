@@ -10,6 +10,7 @@ import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsDetailBoConverter;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsListMpBoConverter;
 import com.vpu.mp.service.shop.goods.es.convert.param.GoodsListMpConverter;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

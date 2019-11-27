@@ -35,6 +35,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private Byte isPageUp;
     /**商品详情描述*/
     private String goodsDesc;
+    /**商品广告词*/
+    private String goodsAd;
     private Integer brandId;
     private String brandName;
     /**商品使用的运费模板id*/

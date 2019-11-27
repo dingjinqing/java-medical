@@ -1,7 +1,5 @@
 package com.vpu.mp.service.foundation.es.annotation;
 
-import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,7 +22,7 @@ public @interface EsFiled {
     /**
      * @return es存储的键值
      */
-    EsSearchName name();
+    String name();
 
     /**
      * @return es中对应的类型
@@ -41,7 +39,7 @@ public @interface EsFiled {
     String searchAnalyzer() default "";
 
     /**
-     * @return 是否建立索引
+     * @return 是否建立索引(字段能不能被查询/搜索)
      */
     boolean index() default true;
 
@@ -53,7 +51,14 @@ public @interface EsFiled {
     /**
      * @return 复制字段
      */
-    EsSearchName copyTo() default EsSearchName.NULL ;
+    String copyTo() default "" ;
+
+    /**
+     * 所有的数字、地理坐标、日期、IP 和不分析（ not_analyzed ）字符类型都会默认开启.
+     * 这里对其进行优化，先关闭一些没有用到聚合、排序、脚本等操作的字段。
+     * @return 是否启用列式存储(列式存储 适用于聚合、排序、脚本等操作)
+     */
+    boolean doc_values() default true;
 
 
 }

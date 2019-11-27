@@ -56,7 +56,7 @@ public class EsQueryBuilderHandler {
     private List<MatchQueryBuilder> assemblyMatchQueryBuilder(List<FieldProperty> propertyList){
         return  propertyList.stream()
             .filter(x->x.getOperator().equals(Operator.EQ))
-            .map(x->QueryBuilders.matchQuery(x.getSearchName().getEsName(),x.getValue()))
+            .map(x->QueryBuilders.matchQuery(x.getSearchName(),x.getValue()))
             .collect(Collectors.toList());
     }
     /**
@@ -71,22 +71,22 @@ public class EsQueryBuilderHandler {
                 switch (x.getOperator()) {
                     case GT:
                         resultQueryBuilders.add(
-                            QueryBuilders.rangeQuery(x.getSearchName().getEsName()).gt(x.getValue())
+                            QueryBuilders.rangeQuery(x.getSearchName()).gt(x.getValue())
                         );
                         break;
                     case GTE:
                         resultQueryBuilders.add(
-                            QueryBuilders.rangeQuery(x.getSearchName().getEsName()).gte(x.getValue())
+                            QueryBuilders.rangeQuery(x.getSearchName()).gte(x.getValue())
                         );
                         break;
                     case LT:
                         resultQueryBuilders.add(
-                            QueryBuilders.rangeQuery(x.getSearchName().getEsName()).lt(x.getValue())
+                            QueryBuilders.rangeQuery(x.getSearchName()).lt(x.getValue())
                         );
                         break;
                     case LTE:
                         resultQueryBuilders.add(
-                            QueryBuilders.rangeQuery(x.getSearchName().getEsName()).lte(x.getValue())
+                            QueryBuilders.rangeQuery(x.getSearchName()).lte(x.getValue())
                         );
                         break;
                     default:

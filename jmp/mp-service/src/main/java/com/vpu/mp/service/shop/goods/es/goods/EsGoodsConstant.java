@@ -1,4 +1,4 @@
-package com.vpu.mp.service.shop.goods.es;
+package com.vpu.mp.service.shop.goods.es.goods;
 
 /**
  * EsGoods常量类
@@ -7,8 +7,10 @@ package com.vpu.mp.service.shop.goods.es;
  *
 */
 public class EsGoodsConstant {
+    public static final String GOODS_INDEX_NAME = "es_goods";
 
-    public static final String INDEX_NAME = "es_goods";
+    public static final String LABEL_INDEX_NAME = "es_goods_label";
+
 
     /**小程序-商品详情页*/
     public static final Byte GOODS_DETAIL_PAGE = 1;
@@ -16,6 +18,8 @@ public class EsGoodsConstant {
     public static final Byte GOODS_LIST_PAGE = 2;
     /**小程序-商品筛选页*/
     public static final Byte GOODS_SEARCH_PAGE = 3;
+    /**Admin-商品列表页*/
+    public static final Byte ADMIN_GOODS_LIST_PAGE = 4;
 
     public static class EsGoodsSearchFact{
         public static final String GOODS_BRAND_FACT = "brand_id";

@@ -371,4 +371,11 @@ public class GoodsMpService extends ShopBaseService {
         }
         return capsule;
     }
+
+    /**
+     * 商品列表
+     */
+    public void goodsPage(){
+
+    }
 }

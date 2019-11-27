@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.goods.es.convert.goods;
 
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
-import com.vpu.mp.service.shop.goods.es.EsGoods;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 
 /**
  * esGoods转换
@@ -17,5 +17,19 @@ public interface EsGoodsConvertInterface<T> {
      * @return
      */
     T convert(EsGoods esGoods);
+
+    /**
+     * 通用字段复制
+     * @param target 目标
+     * @param source 源
+     */
+    default void copyValues(GoodsBaseMp target,EsGoods source){
+        target.setGoodsId(source.getGoodsId());
+        target.setCommentNum(source.getCommentNum());
+        target.setGoodsName(source.getGoodsName());
+        target.setGoodsSaleNum(source.getGoodsSaleNum());
+        //TODO  ESGoods中尚未加入下面字段
+        target.setDefaultPrd(false);
+    }
 
 }
