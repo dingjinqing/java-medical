@@ -4,6 +4,8 @@ import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.EXCHANGE_GOODS_NUM;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
@@ -1577,7 +1579,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param data
 	 */
 	private void insertIntoChargeMoney(CardConsumpData data) {
-		ChargeMoneyRecord chargeMoneyRecord = new ChargeMoneyRecord();
+		ChargeMoneyRecord chargeMoneyRecord = db().newRecord(CHARGE_MONEY);
 		FieldsUtil.assignNotNull(data, chargeMoneyRecord);
 		/** 处理数据库表中带下划线的字段 */
 		if (data.getUserId() != null) {
@@ -1625,7 +1627,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param data
 	 */
 	private void insertIntoCardConsumer(CardConsumpData data) {
-		CardConsumerRecord cardConsumerRecord = new CardConsumerRecord();
+		CardConsumerRecord cardConsumerRecord = db().newRecord(CARD_CONSUMER);
 		FieldsUtil.assignNotNull(data, cardConsumerRecord);
 		/** 处理数据库表中带下划线的字段 */
 		if (data.getUserId() != null) {
