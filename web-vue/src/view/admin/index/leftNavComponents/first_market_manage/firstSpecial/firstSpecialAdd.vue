@@ -561,7 +561,7 @@ export default {
             }
           }
           if (datas.startTime && datas.endTime) {
-            _this.form.timeInterval = [new Date(datas.startTime), new Date(datas.endTime)]
+            _this.form.timeInterval = [datas.startTime, datas.endTime]
           }
           _this.tableData = datas.firstSpecialGoods.map(function (item, i) {
             item.firstSpecialProduct.forEach(function (d) {
