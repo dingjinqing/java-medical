@@ -496,7 +496,7 @@ export default {
         if (res.error === 0) {
           let obj = {
             id: '',
-            name: '请选择页面分类'
+            name: '全部分类'
           }
           res.content.unshift(obj)
           this.pageSetoptions = res.content
