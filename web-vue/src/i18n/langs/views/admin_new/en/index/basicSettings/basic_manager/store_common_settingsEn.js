@@ -36,6 +36,7 @@ export const en = {
   defaultStyle: 'Default style',
   viewExample: 'View example',
   customStyle: 'Custom style',
+  Copywriting: 'Copy Writing',
   shareTheMap: 'Share the map',
   storeHomeScreenshot: 'Store homepage screenshot',
   customPicture: 'Custom picture',

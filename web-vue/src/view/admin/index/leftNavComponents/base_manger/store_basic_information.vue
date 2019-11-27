@@ -122,10 +122,9 @@
         </li>
       </ul>
     </el-main>
-    <el-footer>
+    <el-footer style="text-align: center;">
       <el-button
         type="primary"
-        class="save_btn"
         size="small"
         @click="saveBasicInfoHandle"
       >{{$t('storeBasicInformation.save')}}</el-button>
@@ -278,9 +277,5 @@ export default {
     margin-left: 20px;
     line-height: 24px;
   }
-}
-.save_btn {
-  margin-left: 110px;
-  width: 90px;
 }
 </style>

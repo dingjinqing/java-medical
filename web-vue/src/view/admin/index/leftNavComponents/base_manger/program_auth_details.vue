@@ -247,11 +247,11 @@
             <span
               v-show="queryData.switch === false"
               style="margin-right: 15px;"
-            >已关闭</span>
+            >{{$t('ShopConfiguration.SmallProgramAuthorizationPage.switchClose')}}</span>
             <span
               v-show="queryData.switch === true"
               style="margin-right: 15px;"
-            >已开启</span>
+            >{{$t('ShopConfiguration.SmallProgramAuthorizationPage.switchOpen')}}</span>
             <span class="item-text c-999">
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip2')}}
             </span>
@@ -340,7 +340,7 @@
               {{$t('ShopConfiguration.SmallProgramAuthorizationPage.tip6')}}
             </div>
           </li>
-          <li style="margin-top: 50px;">
+          <li style="margin-top: 50px;text-align: center;">
             <el-button
               size="small"
               type="primary"

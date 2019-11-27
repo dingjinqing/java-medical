@@ -304,7 +304,7 @@
                 v-if="info.share_config.share_action == 1"
               >
                 <div>
-                  <label>文案：</label>
+                  <label>{{$t('storeCommonSettings.Copywriting') + '：'}}</label>
                   <el-input
                     size="small"
                     style="width: 150px;"
@@ -409,14 +409,15 @@
           </div>
         </li>
       </ul>
-    </div>
-    <div class="footer">
-      <el-button
-        size="small"
-        type="primary"
-        class="footer-btn"
-        @click="saveCommonInfoHandle"
-      >{{$t('storeCommonSettings.save')}}</el-button>
+
+      <div class="footer">
+        <el-button
+          size="small"
+          type="primary"
+          class="footer-btn"
+          @click="saveCommonInfoHandle"
+        >{{$t('storeCommonSettings.save')}}</el-button>
+      </div>
     </div>
 
     <!-- 上传图片 -->
@@ -606,20 +607,30 @@ export default {
     font-weight: bold;
   }
   .footer {
-    position: fixed;
-    z-index: 100;
+    width: 100%;
+    position: absolute;
     bottom: 0;
-    display: flex;
-    justify-content: center;
-    width: calc(100% - 186px);
-    padding: 10px;
-    background: #f8f8fa;
-    border-top: 1px solid #f2f2f2;
+    height: 52px;
+    padding: 10px 0;
+    background-color: #fff;
     text-align: center;
-    .footer-btn {
-      width: 105px;
-      margin: 0 10px;
-    }
+    border-top: 1px solid #eee;
+    z-index: 99;
+
+    // position: fixed;
+    // z-index: 100;
+    // bottom: 0;
+    // display: flex;
+    // justify-content: center;
+    // width: calc(100% - 186px);
+    // padding: 10px;
+    // background: #f8f8fa;
+    // border-top: 1px solid #f2f2f2;
+    // text-align: center;
+    // .footer-btn {
+    //   width: 105px;
+    //   margin: 0 10px;
+    // }
   }
 }
 </style>

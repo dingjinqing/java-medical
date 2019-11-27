@@ -36,6 +36,7 @@ export const cn = {
   defaultStyle: '默认样式',
   viewExample: '查看示例',
   customStyle: '自定义样式',
+  Copywriting: '文案',
   shareTheMap: '分享图',
   storeHomeScreenshot: '店铺首页截图',
   customPicture: '自定义图片',
