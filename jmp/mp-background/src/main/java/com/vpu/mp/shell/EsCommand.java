@@ -70,17 +70,7 @@ public class EsCommand {
             esThreadConfig.doLabelIndexByShopId(x);
         });
     }
-    @ShellMethod("ElasticSearch goods label test query . --id")
-    public void eslt(@ShellOption( defaultValue = "0")int shopId,@ShellOption(arity = 1, defaultValue = "true") String id) {
-        try {
-            saas.getShopApp(shopId).esGoodsLabelSearchService.getGoodsLabelByGoodsId(
-                Arrays.stream(id.split(",")).map(Integer::valueOf).collect(Collectors.toList()),
-                EsGoodsConstant.ADMIN_GOODS_LIST_PAGE
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private Availability argsAvailability(){
         if( helper.checkAuthorities(Collections.singletonList("admin")) ){
