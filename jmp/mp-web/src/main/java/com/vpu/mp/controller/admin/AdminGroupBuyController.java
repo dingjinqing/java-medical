@@ -6,6 +6,7 @@ import ch.qos.logback.core.util.InterruptUtil;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyStatusVaild;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -141,7 +142,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/admin/market/groupbuy/change/status")
-    public JsonResult changeStatusActivity(@RequestBody @Valid GroupBuyIdParam param) {
+    public JsonResult changeStatusActivity(@RequestBody @Validated(GroupBuyStatusVaild.class) GroupBuyIdParam param) {
         GroupBuyDefineRecord groupBuyRecord = shop().groupBuy.getGroupBuyRecord(param.getId());
         if (groupBuyRecord==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);

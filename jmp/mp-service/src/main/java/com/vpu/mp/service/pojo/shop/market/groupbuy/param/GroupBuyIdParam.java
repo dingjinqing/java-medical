@@ -14,7 +14,7 @@ public class GroupBuyIdParam {
 
     @NotNull
     private Integer id;
-    @NotNull
+    @NotNull(groups = GroupBuyStatusVaild.class)
     @Range(max = 1,min = 0)
     private Byte status;
 }
