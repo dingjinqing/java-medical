@@ -53,6 +53,7 @@ public class ShopChildAccountService extends MainBaseService {
 	public ShopChildAccountRecord verify(Integer sysId, String username, String password) {
 		return db().selectFrom(SHOP_CHILD_ACCOUNT).where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId))
 				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_NAME.eq(username))
+				.or(SHOP_CHILD_ACCOUNT.MOBILE.eq(username))
 				.and(SHOP_CHILD_ACCOUNT.ACCOUNT_PWD.eq(Util.md5(password))).fetchAny();
 	}
 
