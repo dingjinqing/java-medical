@@ -27,13 +27,20 @@
             </el-tooltip>
           </div>
           <span>{{$t('firstSpecial.firstSpecialLimitGoodsTip1')}}</span>
-          <el-input
+          <el-input-number
+            v-model="firstSpecialLimitGoods"
+            controls-position="right"
+            size="small"
+            :min="0"
+            style="width: 80px;margin: 0 5px;"
+          ></el-input-number>
+          <!-- <el-input
             v-model="firstSpecialLimitGoods"
             style="width: 80px;margin: 0 5px;"
             size="small"
             type="number"
             min='0'
-          ></el-input>
+          ></el-input> -->
           <span>{{$t('firstSpecial.firstSpecialLimitGoodsTip2')}}</span>
           <span style="margin-left:3px">{{$t('firstSpecial.firstSpecialLimitGoodsTip3')}}</span>
           <el-button
