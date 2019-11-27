@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,6 +14,7 @@ public class GroupBuyIdParam {
 
     @NotNull
     private Integer id;
-
-    private Integer status;
+    @NotNull
+    @Range(max = 1,min = 0)
+    private Byte status;
 }

@@ -166,20 +166,19 @@ public class GroupBuyService extends ShopBaseService {
      * @param id
      * @return
      */
-    public int changeStatusActivity(Integer id) {
-        Byte status = db().select(GROUP_BUY_DEFINE.STATUS).from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchOne().component1();
+    public int changeStatusActivity(Integer id,Byte status) {
         if (ACTIVITY_STATUS_DISABLE.equals(status)) {
             return db().update(GROUP_BUY_DEFINE)
-                .set(GROUP_BUY_DEFINE.STATUS, ACTIVITY_STATUS_NORMAL)
-                .where(GROUP_BUY_DEFINE.ID.eq(id))
-                .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_DISABLE))
-                .execute();
+                    .set(GROUP_BUY_DEFINE.STATUS, ACTIVITY_STATUS_DISABLE)
+                    .where(GROUP_BUY_DEFINE.ID.eq(id))
+                    .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
+                    .execute();
         } else if (ACTIVITY_STATUS_NORMAL.equals(status)) {
             return db().update(GROUP_BUY_DEFINE)
-                .set(GROUP_BUY_DEFINE.STATUS, ACTIVITY_STATUS_DISABLE)
-                .where(GROUP_BUY_DEFINE.ID.eq(id))
-                .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                .execute();
+                    .set(GROUP_BUY_DEFINE.STATUS, ACTIVITY_STATUS_NORMAL)
+                    .where(GROUP_BUY_DEFINE.ID.eq(id))
+                    .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_DISABLE))
+                    .execute();
         }
         return 0;
     }

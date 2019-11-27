@@ -119,14 +119,7 @@ public final class DateUtil {
 		return Timestamp.valueOf(dateFormat(DATE_FORMAT_FULL));
 	}
 
-	/**
-	 * 获取本地时间
-	 * @param format
-	 * @return
-	 */
-	public static Timestamp getLocalDateTime(String format) {
-		return Timestamp.valueOf(dateFormat(format));
-	}
+
     /**
      * 获取延后（秒）的时间
      */

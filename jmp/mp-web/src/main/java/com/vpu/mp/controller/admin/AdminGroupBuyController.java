@@ -2,6 +2,9 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
+import ch.qos.logback.core.util.InterruptUtil;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +40,6 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 @RequestMapping("/api")
 public class AdminGroupBuyController extends AdminBaseController {
 
-    public final static String I18N_RESOURCE = "messages";
 
     /**
      * 查询团购列表
@@ -143,13 +145,21 @@ public class AdminGroupBuyController extends AdminBaseController {
         if (param.getId()==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
-        //校验活动商品是否叠加
         GroupBuyDefineRecord groupBuyRecord = shop().groupBuy.getGroupBuyRecord(param.getId());
-        Boolean flag = shop().groupBuy.validGroupGoods(groupBuyRecord.getId(),groupBuyRecord.getGoodsId(),groupBuyRecord.getStartTime(),groupBuyRecord.getEndTime());
-        if (!flag){
-            return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
+        if (groupBuyRecord==null){
+            return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
-        int resFlag = shop().groupBuy.changeStatusActivity(param.getId());
+        Byte status = groupBuyRecord.getStatus();
+        if (param.getStatus().equals(status)){
+            return success();
+        }
+        if(groupBuyRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL)){
+            Boolean flag = shop().groupBuy.validGroupGoods(groupBuyRecord.getId(),groupBuyRecord.getGoodsId(),groupBuyRecord.getStartTime(),groupBuyRecord.getEndTime());
+            if (!flag){
+                return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
+            }
+        }
+        int resFlag = shop().groupBuy.changeStatusActivity(param.getId(),param.getStatus());
         if (resFlag>0){
          return success();
         }
