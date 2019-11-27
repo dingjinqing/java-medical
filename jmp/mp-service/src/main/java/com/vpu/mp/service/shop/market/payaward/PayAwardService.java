@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.payaward;
 
 import com.vpu.mp.db.shop.tables.records.PayAwardRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -117,20 +118,20 @@ public class PayAwardService extends ShopBaseService {
                 .from(PAY_AWARD)
                 .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         switch (param.getNavType()) {
-            case 1:
+            case BaseConstant.NAVBAR_TYPE_ONGOING:
                 select.and(PAY_AWARD.START_TIME.lt(nowTime))
                         .and(PAY_AWARD.END_TIME.gt(nowTime))
                         .and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                 break;
-            case 2:
+            case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                         .and(PAY_AWARD.START_TIME.gt(nowTime));
                 break;
-            case 3:
+            case BaseConstant.NAVBAR_TYPE_FINISHED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                         .and(PAY_AWARD.END_TIME.lt(nowTime));
                 break;
-            case 4:
+            case BaseConstant.NAVBAR_TYPE_DISABLED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_DISABLE));
                 break;
             default:
