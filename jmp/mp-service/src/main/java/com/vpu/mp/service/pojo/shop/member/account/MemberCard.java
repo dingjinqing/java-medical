@@ -34,7 +34,7 @@ public class MemberCard {
 	private Byte dateType;
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Byte flag;
-	private Byte cardStatus;
+	private Byte cardState;
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String grade;
 	private String cardGrade;
@@ -80,7 +80,7 @@ public class MemberCard {
 		/** 卡充值开关 0关闭；1开启 */
 		this.powerCard = (byte) (this.chargeMoney == null ? 0 : 1);
 		this.cardGrade = this.grade;
-		this.cardStatus = this.flag;
+		this.cardState = this.flag;
 	}
 	public MemberCard(Integer id) {
 		super();
