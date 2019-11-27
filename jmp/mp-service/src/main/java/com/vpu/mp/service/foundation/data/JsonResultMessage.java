@@ -469,10 +469,12 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_GOODS_NO_EXIST = "order_goods_no_exist";
     public static final String MSG_ORDER_GOODS_LOW_STOCK = "order_goods_low_stock";
     public static final String MSG_ORDER_GOODS_GET_LOCK_FAIL = "order_goods_get_lock_fail";
-    public static final String MSG_ORDER_UPDATE_STOCK_FAIL = "MSG_ORDER_UPDATE_STOCK_FAIL";
-    public static final String MSG_ORDER_WXPAY_UNIFIEDORDER_FAIL = "MSG_ORDER_WXPAY_UNIFIEDORDER_FAIL";
+    public static final String MSG_ORDER_UPDATE_STOCK_FAIL = "order_update_stock_fail";
+    public static final String MSG_ORDER_WXPAY_UNIFIEDORDER_FAIL = "order_wxpay_unifiedorder_fail";
     public static final String MSG_ORDER_DATABASE_ERROR = "order_database_error";
 
+    /**订单支付*/
+    public static final String MSG_ORDER_NOT_TO_WAIT_DELIVER = "order_not_to_wait_deliver";
 
     public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";

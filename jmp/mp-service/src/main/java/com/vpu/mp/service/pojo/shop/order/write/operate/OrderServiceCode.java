@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate;
 
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.order.action.*;
+import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 
 /**
  * ************************************************
@@ -34,6 +34,8 @@ public enum OrderServiceCode {
 	//9:删除订单
 	DELETE(DeleteService.class),
     //10:下单
-    CREATE(CreateService.class);
-	OrderServiceCode(Class<? extends ShopBaseService> clz){}
+    CREATE(CreateService.class),
+	//11:支付
+    PAY(PayService.class);
+	OrderServiceCode(Class<? extends IorderOperate> clz){}
 }

@@ -196,6 +196,10 @@ public enum JsonResultCode {
     /**下单数据库执行异常*/
     CODE_ORDER_DATABASE_ERROR(120084, JsonResultMessage.MSG_ORDER_DATABASE_ERROR),
 
+    /**
+     * 支付相关
+     */
+    CODE_ORDER_NOT_TO_WAIT_DELIVER(121000, JsonResultMessage.MSG_ORDER_NOT_TO_WAIT_DELIVER),
 
 
     // 商品

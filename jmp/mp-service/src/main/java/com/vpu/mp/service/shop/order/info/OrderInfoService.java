@@ -609,6 +609,7 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		order.update();
 	}
+
 	/**
 	 * 设置订单支付方式数组
 	 * @param order

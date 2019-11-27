@@ -291,7 +291,18 @@ public class OrderOperationJudgment {
 		}
 		return Boolean.FALSE;
 	}
-	
+
+    /**
+     * 订单是否可以成为待发货订单
+     * @param orderStatus
+     * @return
+     */
+	public static Boolean canWaitDeliver(Byte orderStatus){
+	    if(orderStatus < OrderConstant.ORDER_WAIT_DELIVERY) {
+	        return  Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
 	/**
 	 * 订单是否显示提醒发货按钮(待发货 and 非 送礼)
 	 * 每日只能提醒一次与提醒次数不超过三次不在此逻辑判断

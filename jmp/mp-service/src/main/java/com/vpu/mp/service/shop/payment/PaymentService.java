@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.payment.PayCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
+import com.vpu.mp.service.shop.order.action.PayService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import org.jooq.Result;
@@ -35,6 +36,9 @@ public class PaymentService extends ShopBaseService {
 
 	@Autowired
 	public MpPaymentService mpPay;
+
+    @Autowired
+    public PayService pay;
 
     /**
      * The Service order service.门店服务订单
@@ -112,7 +116,7 @@ public class PaymentService extends ShopBaseService {
 	}
 
 	/**
-     *
+     * 订单统一支付回调业务处理
 	 * @param param
 	 * @throws WxPayException
 	 */
@@ -149,8 +153,8 @@ public class PaymentService extends ShopBaseService {
 			param.setOrderSn(orderInfo.getBkOrderSn());
 		}
 
-		// 添加支付记录
-		PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
+		// 添加支付记录（wx）
+        PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
 
 		// 订单状态处理
 		if (Arrays.asList(goodsTypes).contains(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE))) {
@@ -164,12 +168,12 @@ public class PaymentService extends ShopBaseService {
 				if (orderInfo.getOrderPayWay() == OrderConstant.PAY_WAY_BARGIAN) {
 					// 定金尾款支付方式时，先标记定金已支付
                     orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FRONT);
+
 				} else {
 					// 全款支付方式时，则直接标记为尾款已支付
                     orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);
-					/**
-					 * 状态变为待发货 TODO: order.waitDeliver();
-					 */
+					//状态变为待发货
+					pay.toWaitDeliver(orderInfo, paymentRecord);
 				}
 				/**
 				 * 修改相应预售商品数量销量库存 TODO: preSale.preSaleProduct.updateNumber(orderInfo, -1);
@@ -177,16 +181,13 @@ public class PaymentService extends ShopBaseService {
 			} else {
 				// 定金已支付，标记为尾款已支付
                 orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);
-				/**
-				 * 状态变为待发货 TODO: order.waitDeliver();
-				 */
+				//状态变为待发货
+                pay.toWaitDeliver(orderInfo, paymentRecord);
 			}
 		} else {
-			/**
-			 * 状态变为待发货 TODO: order.waitDeliver();
-			 */
+			//状态变为待发货
+            pay.toWaitDeliver(orderInfo, paymentRecord);
 		}
-        orderInfo.update();
 
 		/**
 		 * TODO:POS推送订单
