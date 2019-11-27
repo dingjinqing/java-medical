@@ -87,7 +87,6 @@ public class MpPaymentService extends ShopBaseService {
 		payConfig.setMchId(mp.getPayMchId());
 		payConfig.setMchKey(mp.getPayKey());
 		payConfig.setKeyContent(keyContent);
-        payConfig.setSignType("MD5");
 		return payConfig;
 	}
 
@@ -148,6 +147,12 @@ public class MpPaymentService extends ShopBaseService {
         } else if (WxPayConstants.TradeType.APP.equals(result.getTradeType())) {
             //TODO App支付
         } else if (WxPayConstants.TradeType.JSAPI.equals(result.getTradeType())) {
+            //二次签名
+            payInfo.put("timeStamp", timestamp);
+            payInfo.put("nonceStr", nonceStr);
+            payInfo.put("package", "prepay_id=" + prepayId);
+            payInfo.put("signType", "MD5");
+            String md5 = SignUtils.createSign(payInfo, "MD5", config.getMchKey(), null);
             //公众号支付/小程序支付.
             vo = JsApiVo.builder().
                 appId(result.getAppid()).
@@ -155,7 +160,7 @@ public class MpPaymentService extends ShopBaseService {
                 nonceStr(nonceStr).
                 packageAlias("prepay_id=" + prepayId).
                 signType("MD5").
-                paySign(SignUtils.createSign(payInfo, "MD5", config.getMchKey(), null)).
+                paySign(md5).
                 build();
         }
         vo.setResult(result);
