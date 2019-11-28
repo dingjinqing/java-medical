@@ -129,6 +129,11 @@ public class GoodsService extends ShopBaseService {
         }
     }
 
+    /**
+     * 根据条件查询过滤商品所有需要的标签，品牌，商家分类信息项（统计对应的商品数量）
+     * @param param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
+     * @return {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo}
+     */
     private GoodsFilterItemInitVo getGoodsFilterItemWithGoodsNum(GoodsFilterItemInitParam param) {
         GoodsFilterItemInitVo vo =new GoodsFilterItemInitVo();
         // 需要商品标签
@@ -205,6 +210,7 @@ public class GoodsService extends ShopBaseService {
         }
         return vo;
     }
+
     /**
      * 全部商品界面：商品分页查询，包含了部分规格信息（规格价格范围，规格类型数量）
      * @param goodsPageListParam {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam}
@@ -224,6 +230,7 @@ public class GoodsService extends ShopBaseService {
         }
         return pageResult;
     }
+
     private PageResult<GoodsPageListVo> getGoodsPageByDb(GoodsPageListParam goodsPageListParam){
         // 拼接过滤条件
         Condition condition = this.buildOptions(goodsPageListParam);
