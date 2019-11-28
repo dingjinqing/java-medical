@@ -4,33 +4,33 @@
       <div class="top">
         <ul class="query-ul">
           <li>
-            <span>领取时间：</span>
+            <span>{{$t('openScreenDetail.receiveTime')}}：</span>
             <el-date-picker
               v-model="value1"
               type="daterange"
               size="small"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :range-separator="$t('openScreenDetail.to')"
+              :start-placeholder="$t('openScreenDetail.startDate')"
+              :end-placeholder="$t('openScreenDetail.endDate')"
             >
             </el-date-picker>
           </li>
           <li>
-            <span>手机号：</span>
+            <span>{{$t('openScreenDetail.phoneNum')}}：</span>
             <el-input
               size="small"
               style="width: 170px;"
               v-model="queryParams.mobile"
-              placeholder="请输入手机号"
+              :placeholder="$t('openScreenDetail.piPhone')"
             ></el-input>
           </li>
           <li>
-            <span>用户昵称：</span>
+            <span>{{$t('openScreenDetail.nickname')}}：</span>
             <el-input
               size="small"
               style="width: 170px;"
               v-model="queryParams.username"
-              placeholder="请输入用户昵称"
+              :placeholder="$t('openScreenDetail.piNickname')"
             ></el-input>
           </li>
           <li>
@@ -38,7 +38,7 @@
               size="small"
               type="primary"
               @click="initDataList"
-            >查询</el-button>
+            >{{$t('openScreenDetail.inquire')}}</el-button>
           </li>
         </ul>
       </div>
@@ -56,19 +56,19 @@
             prop="userId"
           ></el-table-column>
           <el-table-column
-            label="用户昵称"
+            :label="$t('openScreenDetail.nickname')"
             prop="username"
           ></el-table-column>
           <el-table-column
-            label="手机号"
+            :label="$t('openScreenDetail.phoneNum')"
             prop="mobile"
           ></el-table-column>
           <el-table-column
-            label="活动奖励"
+            :label="$t('openScreenDetail.phoneNum')"
             prop="comment"
           ></el-table-column>
           <el-table-column
-            label="领取时间"
+            :label="$t('openScreenDetail.receiveTime')"
             prop="receiveTime"
           ></el-table-column>
         </el-table>
@@ -115,13 +115,14 @@ export default {
       this.id = this.$route.query.id
       this.initDataList()
     } else {
-      this.$alert('抱歉，未找到该活动', '提示', {
-        confirmButtonText: '确定',
+      this.$alert(this.$t('openScreenDetail.sorry'), this.$t('openScreenDetail.prompt'), {
+        confirmButtonText: this.$t('openScreenDetail.determine'),
         callback: action => {
           this.$router.go(-1)
         }
       })
     }
+    this.langDefault()
   },
   methods: {
     initDataList () {

@@ -17,8 +17,8 @@
           type="primary"
           size="small"
           @click="addOpenScreen"
-        >添加开屏有礼活动</el-button>
-        <p class="tips">注：同一时间仅会开展一个优先级最高的开屏有礼活动</p>
+        >{{$t('openScreen.addEvent')}}</el-button>
+        <p class="tips">{{$t('openScreen.note')}}</p>
       </div>
     </div>
     <div class="table-list">
@@ -31,11 +31,11 @@
         }"
       >
         <el-table-column
-          label="活动名称"
+          :label="$t('openScreen.eventName')"
           prop="name"
         ></el-table-column>
         <el-table-column
-          label="触发条件"
+          :label="$t('openScreen.triggerCondition')"
           prop="action"
         >
           <template slot-scope="{row}">
@@ -44,17 +44,17 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="活动时间">
+        <el-table-column :label="$t('openScreen.activityTime')">
           <template slot-scope="{row}">
             <div style="text-align:center;line-height:1;">
               <p>{{row.startDate}}</p>
-              <p>至</p>
+              <p>{{$t('openScreen.to')}}</p>
               <p>{{row.endDate}}</p>
             </div>
           </template>
         </el-table-column>
         <el-table-column
-          label="活动类型"
+          :label="$t('openScreen.activityType')"
           prop="activityAction"
         >
           <template slot-scope="{row}">
@@ -64,11 +64,11 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="优先级"
+          :label="$t('openScreen.priority')"
           prop="first"
         ></el-table-column>
         <el-table-column
-          label="活动状态"
+          :label="$t('openScreen.activeStatus')"
           prop="status"
         >
           <template slot-scope="{row}">
@@ -77,14 +77,14 @@
         </el-table-column>
         <el-table-column
           prop="operate"
-          label="操作"
+          :label="$t('openScreen.operate')"
           width="180"
         >
           <template slot-scope="{row}">
             <div class="iconWrap">
               <el-tooltip
                 v-show="row.currentState === 1 || row.currentState === 2"
-                content="编辑"
+                :content="$t('openScreen.edit')"
                 placement="top"
               >
                 <span
@@ -93,7 +93,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="活动明细"
+                :content="$t('openScreen.eventDetails')"
                 placement="top"
               >
                 <span
@@ -103,7 +103,7 @@
               </el-tooltip>
               <el-tooltip
                 v-show="row.currentState === 1 || row.currentState === 2"
-                content="停用"
+                :content="$t('openScreen.disabled')"
                 placement="top"
               >
                 <span
@@ -113,7 +113,7 @@
               </el-tooltip>
               <el-tooltip
                 v-show="row.currentState === 4"
-                content="启用"
+                :content="$t('openScreen.enabled')"
                 placement="top"
               >
                 <span
@@ -123,7 +123,7 @@
               </el-tooltip>
               <el-tooltip
                 v-show="row.currentState === 3 || row.currentState === 4"
-                content="删除"
+                :content="$t('openScreen.delete')"
                 placement="top"
               >
                 <span
@@ -146,6 +146,7 @@
 
 <script>
 import { getOpenScreenList, disableOpenScreenApi, enableOpenScreenApi, deleteOpenScreenApi } from '@/api/admin/marketManage/openScreen.js'
+import vm from '@/main'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -153,11 +154,11 @@ export default {
   data () {
     return {
       tabPanes: [
-        { id: 'first', label: '全部开屏有礼活动' },
-        { id: 'second', label: '进行中' },
-        { id: 'third', label: '未开始' },
-        { id: 'fourth', label: '已过期' },
-        { id: 'fifth', label: '已停用' }
+        { id: 'first', label: this.$t('openScreen.allEvents') },
+        { id: 'second', label: this.$t('openScreen.processing') },
+        { id: 'third', label: this.$t('openScreen.notStart') },
+        { id: 'fourth', label: this.$t('openScreen.expired') },
+        { id: 'fifth', label: this.$t('openScreen.terminated') }
       ],
       activeName: 'second',
       tableData: [],
@@ -172,13 +173,13 @@ export default {
       let text = ''
       switch (val) {
         case 1:
-          text = '新用户'
+          text = vm.$t('openScreen.newUser')
           break
         case 2:
-          text = '全部用户'
+          text = vm.$t('openScreen.allUser')
           break
         case 3:
-          text = '未在店内支付过的用户'
+          text = vm.$t('openScreen.notPaidUser')
           break
       }
       return text
@@ -187,16 +188,16 @@ export default {
       let text = ''
       switch (status) {
         case 1:
-          text = '进行中'
+          text = vm.$t('openScreen.processing')
           break
         case 2:
-          text = '未开始'
+          text = vm.$t('openScreen.notStart')
           break
         case 3:
-          text = '已过期'
+          text = vm.$t('openScreen.expired')
           break
         case 4:
-          text = '已停用'
+          text = vm.$t('openScreen.terminated')
           break
         default:
           text = ''
@@ -208,30 +209,30 @@ export default {
       let text = ''
       switch (type) {
         case 1:
-          text = '活动送券'
+          text = vm.$t('openScreen.eventCoupon')
           break
         case 2:
-          text = '幸运大抽奖'
+          text = vm.$t('openScreen.luckyDraw')
           break
         case 3:
-          text = '自定义活动'
+          text = vm.$t('openScreen.customEvent')
           break
         case 4:
-          text = '积分'
+          text = vm.$t('openScreen.integral')
           break
         case 5:
-          text = '余额'
+          text = vm.$t('openScreen.balance')
           break
         case 6:
-          text = '分裂优惠券'
+          text = vm.$t('openScreen.splitCoupon')
           break
       }
       return text
     }
   },
   mounted () {
-    this.langDefault()
     this.initDataList()
+    this.langDefault()
   },
   methods: {
     tabClickHandle (tab) {
@@ -292,19 +293,19 @@ export default {
           })
           break
         case 'stop':
-          this.$confirm('确认要停用该活动吗?', '提示'
+          this.$confirm(this.$t('openScreen.ayDisable'), this.$t('openScreen.prompt')
           ).then(() => {
             this.stopActivity(id)
           })
           break
         case 'start':
-          this.$confirm('确认要启用该活动吗?', '提示'
+          this.$confirm(this.$t('openScreen.ayEnable'), this.$t('openScreen.prompt')
           ).then(() => {
             this.enableActivity(id)
           })
           break
         case 'delete':
-          this.$confirm('确认要删除该活动吗?', '提示'
+          this.$confirm(this.$t('openScreen.ayDelete'), this.$t('openScreen.prompt')
           ).then(() => {
             this.deleteActivity(id)
           })

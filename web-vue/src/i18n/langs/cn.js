@@ -298,6 +298,18 @@ import {
 import {
   cn as firstSpecialAdd
 } from './views/admin_new/cn/index/marketManagement/firstSpecial/firstSpecialAddCn'
+// 开屏有礼列表
+import {
+  cn as openScreen
+} from './views/admin_new/cn/index/marketManagement/openScreen/openScreenListCn'
+// 开屏有礼添加
+import {
+  cn as openScreenAdd
+} from './views/admin_new/cn/index/marketManagement/openScreen/openScreenAddCn'
+// 开屏有礼活动详情
+import {
+  cn as openScreenDetail
+} from './views/admin_new/cn/index/marketManagement/openScreen/openScreenDetailCn'
 
 // 订单管理系列模块化
 // 订单通用
@@ -928,6 +940,9 @@ const cn = {
   payReward, // 支付有礼
   firstSpecial, // 首单特惠
   firstSpecialAdd, // 首单特惠新增
+  openScreen, // 开屏有礼
+  openScreenAdd, // 开屏有礼添加
+  openScreenDetail, // 开屏有礼活动详情
 
   // 会员管理
   memberCard, // 会员管理-会员卡

@@ -283,7 +283,7 @@ import {
 import {
   en as payReward
 } from './views/admin_new/en/index/marketManagement/payReward/payReward'
-// 支付有礼
+// 首单特惠
 import {
   en as firstSpecial
 } from './views/admin_new/en/index/marketManagement/firstSpecial/firstSpecialEn'
@@ -291,6 +291,18 @@ import {
 import {
   en as firstSpecialAdd
 } from './views/admin_new/en/index/marketManagement/firstSpecial/firstSpecialAddEn'
+// 开屏有礼
+import {
+  en as openScreen
+} from './views/admin_new/en/index/marketManagement/openScreen/openScreenListEn'
+// 开屏有礼添加
+import {
+  en as openScreenAdd
+} from './views/admin_new/en/index/marketManagement/openScreen/openScreenAddEn'
+// 开屏有礼活动详情
+import {
+  en as openScreenDetail
+} from './views/admin_new/en/index/marketManagement/openScreen/openScreenDetailEn'
 
 // 订单管理系列模块化
 import {
@@ -920,6 +932,9 @@ const en = {
   payReward, // 支付有礼
   firstSpecial, // 首单特惠
   firstSpecialAdd, // 首单特惠新增
+  openScreen, // 开屏有礼
+  openScreenAdd, // 开屏有礼添加
+  openScreenDetail, // 开屏有礼活动详情
 
   dateTimePicker, // 选择时间
 

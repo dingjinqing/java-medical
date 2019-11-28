@@ -48,7 +48,7 @@
                       :src="$imageHost+ '/image/admin/no_custom_img.png'"
                       style="width: 80px;height: 80px;"
                     ></el-image>
-                    <span>活动图片</span>
+                    <span>{{$t('openScreenAdd.eventPictures')}}</span>
                   </div>
                   <el-image
                     v-else
@@ -63,7 +63,7 @@
         </div>
         <div class="page-right">
           <div class="right-top">
-            <header>活动配置</header>
+            <header>{{$t('openScreenAdd.activeConf')}}</header>
             <el-form
               ref="openScreenForm"
               size="small"
@@ -72,31 +72,31 @@
               :rules="rules"
             >
               <el-form-item
-                label="活动名称："
+                :label="$t('openScreenAdd.evenName')"
                 prop="name"
               >
                 <el-input
                   v-model="form.name"
                   style="width:170px;"
                   size="small"
-                  placeholder="最多支持10个字"
+                  :placeholder="$t('openScreenAdd.support10')"
                   maxlength="10"
                   show-word-limit
                 ></el-input>
               </el-form-item>
-              <el-form-item label="活动宣传语：">
+              <el-form-item :label="$t('openScreenAdd.eventSlogan')">
                 <el-input
                   v-model="form.title"
                   style="width:170px;"
                   size="small"
-                  placeholder="最多支持20个字"
+                  :placeholder="$t('openScreenAdd.support20')"
                   maxlength="20"
                   show-word-limit
                 ></el-input>
-                <p class="tips">展示在前端页面，用于优惠活动通知</p>
+                <p class="tips">{{$t('openScreenAdd.notify')}}</p>
               </el-form-item>
               <el-form-item
-                label="活动有效期："
+                :label="$t('openScreenAdd.activityPeriod')"
                 prop="isForever"
                 required
               >
@@ -104,25 +104,25 @@
                   <el-radio
                     v-model="form.isForever"
                     :label="0"
-                  >固定时间</el-radio>
+                  >{{$t('openScreenAdd.fixedTime')}}</el-radio>
                   <el-date-picker
                     v-model="dateInterval"
                     type="daterange"
                     style="width:240px;"
-                    range-separator="至"
-                    start-placeholder="生效时间"
-                    end-placeholder="过期时间"
+                    :range-separator="$t('openScreenAdd.to')"
+                    :start-placeholder="$t('openScreenAdd.effectiveTime')"
+                    :end-placeholder="$t('openScreenAdd.expireDate')"
                   ></el-date-picker>
                 </div>
                 <div>
                   <el-radio
                     v-model="form.isForever"
                     :label="1"
-                  >永久有效</el-radio>
+                  >{{$t('openScreenAdd.permanent')}}</el-radio>
                 </div>
               </el-form-item>
               <el-form-item
-                label="优先级："
+                :label="$t('openScreenAdd.priority')"
                 prop="first"
               >
                 <el-input
@@ -131,29 +131,29 @@
                   style="width:170px;"
                   min="0"
                 ></el-input>
-                <p class="tips">用于区分不同开屏有礼活动的优先级，请填写正整数，数值越大优先级越高</p>
+                <p class="tips">{{$t('openScreenAdd.diffPriority')}}</p>
               </el-form-item>
               <el-form-item
-                label="触发条件："
+                :label="$t('openScreenAdd.triggering')"
                 required
               >
                 <el-radio-group v-model="form.action">
                   <div>
-                    <el-radio :label="1">初次访问店铺的用户</el-radio>
+                    <el-radio :label="1">{{$t('openScreenAdd.firstVisiting')}}</el-radio>
                   </div>
                   <div>
-                    <el-radio :label="3">未在店铺内支付的用户</el-radio>
+                    <el-radio :label="3">{{$t('openScreenAdd.notPaid')}}</el-radio>
                   </div>
                   <div>
-                    <el-radio :label="2">全部用户</el-radio>
+                    <el-radio :label="2">{{$t('openScreenAdd.allUsers')}}</el-radio>
                   </div>
                 </el-radio-group>
-                <p class="tips">只针对新用户的活动只对初次进入小程序的用户可见，通常在拉新活动中使用较为常见</p>
+                <p class="tips">{{$t('openScreenAdd.forNew')}}</p>
               </el-form-item>
             </el-form>
           </div>
           <div class="right-bottom">
-            <header>开屏奖励</header>
+            <header>{{$t('openScreenAdd.openReward')}}</header>
             <el-form
               label-width="110px"
               size="small"
@@ -161,37 +161,37 @@
               :rules="rules"
             >
               <el-form-item
-                label="支付奖励："
+                :label="$t('openScreenAdd.payReward')"
                 prop="activityAction"
                 required
               >
                 <el-radio-group v-model="form.activityAction">
                   <div class="radio-layout">
-                    <el-radio :label="4">积分</el-radio>
-                    <el-radio :label="1">优惠券</el-radio>
-                    <el-radio :label="2">幸运大抽奖</el-radio>
+                    <el-radio :label="4">{{$t('openScreenAdd.integral')}}</el-radio>
+                    <el-radio :label="1">{{$t('openScreenAdd.coupon')}}</el-radio>
+                    <el-radio :label="2">{{$t('openScreenAdd.luckyDraw')}}</el-radio>
                   </div>
                   <div class="radio-layout">
-                    <el-radio :label="5">余额</el-radio>
-                    <el-radio :label="6">分裂优惠券</el-radio>
-                    <el-radio :label="3">自定义</el-radio>
+                    <el-radio :label="5">{{$t('openScreenAdd.balance')}}</el-radio>
+                    <el-radio :label="6">{{$t('openScreenAdd.splitCoupon')}}</el-radio>
+                    <el-radio :label="3">{{$t('openScreenAdd.custom')}}</el-radio>
                   </div>
                 </el-radio-group>
               </el-form-item>
               <el-form-item
                 v-show="form.activityAction == 4"
-                label="积分："
+                :label="$t('openScreenAdd.integral') + '：'"
                 prop="giveScore"
               >
                 <el-input
                   v-model.number="form.giveScore"
-                  placeholder="请输入积分"
+                  :placeholder="$t('openScreenAdd.enterIntegral')"
                   style="width:170px;"
                 ></el-input>
               </el-form-item>
               <el-form-item
                 v-show="form.activityAction == 1"
-                label="优惠券："
+                :label="$t('openScreenAdd.coupon2')"
                 prop="mrkingVoucherId"
               >
                 <div
@@ -202,7 +202,7 @@
                   <div
                     class="ca-value"
                     v-if="item.actCode=='discount'"
-                  ><span>{{item.denomination}}</span>折</div>
+                  ><span>{{item.denomination}}</span>{{$t('openScreenAdd.fold')}}</div>
                   <h3
                     class="ca-value"
                     v-else
@@ -211,20 +211,20 @@
                   <p
                     v-if="item.useConsumeRestrict == 0"
                     class="ca-condition"
-                  >无门槛</p>
+                  >{{$t('openScreenAdd.noThreshold')}}</p>
                   <p
                     v-else
                     class="ca-condition"
-                  >满{{item.leastConsume}}使用</p>
+                  >{{$t('openScreenAdd.full')}}{{item.leastConsume}}{{$t('openScreenAdd.use')}}</p>
                   <!-- 是否限制库存 -->
                   <p
                     class="ca-stock-limit"
                     v-if="item.limitSurplusFlag == 0"
-                  >剩余{{item.surplus}}张</p>
+                  >{{$t('openScreenAdd.remaining')}}{{item.surplus}}{{$t('openScreenAdd.sheet')}}</p>
                   <p
                     v-else
                     class="ca-stock-limit"
-                  >库存不限制</p>
+                  >{{$t('openScreenAdd.unlimited')}}</p>
                   <div
                     class="ca-bottom"
                     :style="'background-image:url(' + $imageHost + '/image/admin/coupon_border.png'"
@@ -243,30 +243,30 @@
                     class="add-icon"
                     :style="'background-image:url('+$imageHost+'/image/admin/shop_beautify/add_decorete.png);'"
                   ></p>
-                  <p class="add-tip">添加优惠券</p>
+                  <p class="add-tip">{{$t('openScreenAdd.addCoupon')}}</p>
                 </div>
               </el-form-item>
               <el-form-item
                 v-show="form.activityAction == 2"
-                label="幸运大抽奖："
+                :label="$t('openScreenAdd.luckyDraw')+'：'"
                 prop="lotteryId"
               >
                 <selectPayRewardAct v-model="form.lotteryId"></selectPayRewardAct>
               </el-form-item>
               <el-form-item
                 v-show="form.activityAction == 5"
-                label="余额："
+                :label="$t('openScreenAdd.balance')+'：'"
                 prop="giveAccount"
               >
                 <el-input
                   v-model.number="form.giveAccount"
                   style="width:170px;"
-                  placeholder="请输入余额"
+                  :placeholder="$t('openScreenAdd.please')"
                 ></el-input>
               </el-form-item>
               <el-form-item
                 v-show="form.activityAction == 6"
-                label="分裂优惠券："
+                :label="$t('openScreenAdd.splitCoupon')+'：'"
                 prop="mrkingVoucherId"
               >
                 <div
@@ -277,12 +277,12 @@
                   <div
                     class="ca-value"
                     v-if="item.actCode=='discount'"
-                  ><span>{{item.denomination}}</span>折</div>
+                  ><span>{{item.denomination}}</span>{{$t('openScreenAdd.fold')}}</div>
                   <div
                     class="ca-value"
                     v-else-if="item.actCode=='random'"
                   >
-                    ￥<span>{{item.randomMax}}</span>最高
+                    ￥<span>{{item.randomMax}}</span>{{$t('openScreenAdd.highest')}}
                   </div>
                   <h3
                     class="ca-value"
@@ -292,20 +292,20 @@
                   <p
                     v-if="item.useConsumeRestrict == 0"
                     class="ca-condition"
-                  >无门槛</p>
+                  >{{$t('openScreenAdd.noThreshold')}}</p>
                   <p
                     v-else
                     class="ca-condition"
-                  >满{{item.leastConsume}}使用</p>
+                  >{{$t('openScreenAdd.full')}}{{item.leastConsume}}{{$t('openScreenAdd.use')}}</p>
                   <!-- 是否限制库存 -->
                   <p
                     class="ca-stock-limit"
                     v-if="item.limitSurplusFlag == 0"
-                  >剩余{{item.surplus}}张</p>
+                  >{{$t('openScreenAdd.remaining')}}{{item.surplus}}{{$t('openScreenAdd.sheet')}}</p>
                   <p
                     v-else
                     class="ca-stock-limit"
-                  >库存不限制</p>
+                  >{{$t('openScreenAdd.unlimited')}}</p>
                   <div
                     class="ca-bottom"
                     :style="'background-image:url(' + $imageHost + '/image/admin/coupon_border.png'"
@@ -325,12 +325,12 @@
                     class="add-icon"
                     :style="'background-image:url('+$imageHost+'/image/admin/shop_beautify/add_decorete.png);'"
                   ></p>
-                  <p class="add-tip">添加分裂优惠券</p>
+                  <p class="add-tip">{{$t('openScreenAdd.addSplitCoupon')}}</p>
                 </div>
               </el-form-item>
               <el-form-item
                 v-show="form.activityAction == 3"
-                label="活动图片："
+                label="$t('openScreenAdd.eventPictures2')"
                 prop="customizeImgPath"
               >
                 <div
@@ -347,7 +347,7 @@
                   <p
                     class="uploaded-tip"
                     :hidden="!uploadHover"
-                  >重新选择</p>
+                  >{{$t('openScreenAdd.reselect')}}</p>
                 </div>
                 <div
                   v-if="!form.customizeImgPath"
@@ -356,11 +356,11 @@
                   @click="selectImgHandle"
                 >
                 </div>
-                <span class="upload-tip">建议尺寸：560px * 700px</span>
+                <span class="upload-tip">{{$t('openScreenAdd.recommendedSize')}}560px * 700px</span>
               </el-form-item>
               <el-form-item
                 v-show="form.activityAction == 3"
-                label="设置链接："
+                :label="$t('openScreenAdd.setLink')"
                 required
               >
                 <el-input
@@ -371,10 +371,10 @@
                 <el-button
                   size="small"
                   @click="selectLinksVisible = !selectLinksVisible"
-                >选择链接</el-button>
+                >{{$t('openScreenAdd.selectLink')}}</el-button>
               </el-form-item>
               <el-form-item
-                label="奖品份数："
+                :label="$t('openScreenAdd.numPrizes')"
                 prop="awardNum"
                 required
               >
@@ -384,8 +384,8 @@
                   size="small"
                 ></el-input-number>
                 <span>份</span>
-                <span class="span-tip">填写0表示不限制</span>
-                <p class="tips">发放人数达到奖品份数，后续用户无法再获取支付奖励</p>
+                <span class="span-tip">{{$t('openScreenAdd.unlimited0')}}</span>
+                <p class="tips">{{$t('openScreenAdd.issuers')}}</p>
               </el-form-item>
             </el-form>
           </div>
@@ -397,7 +397,7 @@
         size="small"
         type="primary"
         @click="saveOpenScreenHandle"
-      >保存</el-button>
+      >{{$t('openScreenAdd.save')}}</el-button>
     </footer>
 
     <!-- 选择图片 -->
@@ -445,7 +445,7 @@ export default {
   data () {
     var validateSiForever = (rule, value, callback) => {
       if (value === 0 && (!this.form.startDate || !this.form.endDate)) {
-        return callback(new Error('请选择活动生效时间'))
+        return callback(new Error(this.$t('openScreenAdd.psTime')))
       }
       callback()
     }
@@ -479,21 +479,21 @@ export default {
         bgAction: '' // 背景图
       },
       rules: {
-        name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+        name: [{ required: true, message: this.$t('openScreenAdd.piName'), trigger: 'blur' }],
         isForever: [{ validator: validateSiForever }],
-        first: [{ required: true, message: '请输入活动优先级', trigger: 'blur' }, {
-          type: 'number', message: '优先级需为数字'
+        first: [{ required: true, message: this.$t('openScreenAdd.piPriority'), trigger: 'blur' }, {
+          type: 'number', message: this.$t('openScreenAdd.priorityNum')
         }],
-        mrkingVoucherId: [{ required: true, message: '请选择优惠券', trigger: 'blur' }],
-        lotteryId: [{ required: true, message: '请选择抽奖活动', trigger: 'blur' }],
-        customizeImgPath: [{ required: true, message: '请选择自定义图片' }],
+        mrkingVoucherId: [{ required: true, message: this.$t('openScreenAdd.psCoupon'), trigger: 'blur' }],
+        lotteryId: [{ required: true, message: this.$t('openScreenAdd.psSweepstakes'), trigger: 'blur' }],
+        customizeImgPath: [{ required: true, message: this.$t('openScreenAdd.psPicture') }],
         giveScore: [
-          { required: true, message: '请输入积分', trigger: 'blur' },
-          { type: 'number', message: '积分必须为数字' }
+          { required: true, message: this.$t('openScreenAdd.piPoints'), trigger: 'blur' },
+          { type: 'number', message: this.$t('openScreenAdd.integralNum') }
         ],
         giveAccount: [
-          { required: true, message: '请输入金额', trigger: 'blur' },
-          { type: 'number', message: '金额必须为数字' }
+          { required: true, message: this.$t('openScreenAdd.piAmount'), trigger: 'blur' },
+          { type: 'number', message: this.$t('openScreenAdd.amountNum') }
         ]
       },
 
@@ -542,6 +542,7 @@ export default {
       this.id = this.$route.query.id
       this.initDetail()
     }
+    this.langDefault()
   },
   methods: {
     initDetail () {
