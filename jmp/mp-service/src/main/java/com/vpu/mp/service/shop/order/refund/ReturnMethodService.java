@@ -214,7 +214,7 @@ public class ReturnMethodService extends ShopBaseService{
 			//TODO 好友代付
 		}
 		if(OrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())) {
-            logger().info("微信退款（refundMoneyPaid）start");
+            logger().info("微信退款（refundMoneyPaid）start,退款金额：{}", money);
             String refundSn = null;
             //支付记录
             PaymentRecordRecord payRecord = null;
@@ -232,7 +232,9 @@ public class ReturnMethodService extends ShopBaseService{
                     throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
                 }
                 //微信金额单为为分需单位换算
-                refundResult = refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn, payRecord.getTotalFee().intValue() * OrderConstant.TUAN_TO_FEN, money.intValue() * OrderConstant.TUAN_TO_FEN);
+                refundResult = refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn,
+                    BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_TO_FEN).toString())).intValue(),
+                    BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_TO_FEN).toString())).intValue());
                 //退款记录
                 orderRefundRecord.addRecord(refundSn, payRecord, refundResult, order, retId);
                 logger().info("微信退款（refundMoneyPaid）end");
