@@ -232,6 +232,7 @@
             </el-form-item>
             <el-form-item
               :label="$t('serviceAdd.serviceDuration')+ '：'"
+              prop="serviceDuration"
               required
             >
               <el-input-number
@@ -324,6 +325,19 @@ export default {
     TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
   },
   data () {
+    let that = this
+    function validInterval (rule, value, callback) {
+      if (!that.form.startDate || !that.form.endDate) {
+        return callback(new Error('请选择可服务日期'))
+      }
+      callback()
+    }
+    function validateDuration (rule, value, callback) {
+      if (!that.form.serviceDuration) {
+        return callback(new Error('服务时长不能为0'))
+      }
+      callback()
+    }
     return {
       activeStep: 1, // 步骤条
       storeId: '',
@@ -377,6 +391,12 @@ export default {
         ],
         endPeriod: [
           { required: true, message: this.$t('serviceAdd.servicePeriodValid'), trigger: 'blur' }
+        ],
+        dateInterval: [
+          { validator: validInterval }
+        ],
+        serviceDuration: [
+          { validator: validateDuration }
         ]
       }
     }
