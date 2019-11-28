@@ -82,7 +82,10 @@
         <!-- 搜索历史 -->
         <section class="infoArea">
           <div class="infoTitle">{{$t('searchConfig.rightSearchHistory.title')}}</div>
-          <div class="infoContent">
+          <div
+            class="infoContent"
+            style="display: flex;"
+          >
             <el-switch
               v-model="isOpenHistory"
               active-color="#f7931e"
@@ -99,15 +102,17 @@
         <section class="infoArea">
           <div class="infoTitle">{{$t('searchConfig.searchHotWords.title')}}</div>
           <div class="infoContent">
-            <el-switch
-              v-model="isOpenHotWords"
-              active-color="#f7931e"
-            >
-            </el-switch>
-            <span :style="{'margin-left': '20px', 'color': '#606266'}">
-              {{this.isOpenHotWords === true ? $t('searchConfig.searchHotWords.on') : $t('searchConfig.searchHotWords.off')}}
-            </span>
-            <span class="ifUse">{{$t('searchConfig.searchHotWords.tips')}}</span>
+            <div style="display: flex;">
+              <el-switch
+                v-model="isOpenHotWords"
+                active-color="#f7931e"
+              >
+              </el-switch>
+              <span :style="{'margin-left': '20px', 'color': '#606266'}">
+                {{this.isOpenHotWords === true ? $t('searchConfig.searchHotWords.on') : $t('searchConfig.searchHotWords.off')}}
+              </span>
+              <span class="ifUse">{{$t('searchConfig.searchHotWords.tips')}}</span>
+            </div>
             <!-- 添加热词按钮 -->
             <el-button
               type="primary"
