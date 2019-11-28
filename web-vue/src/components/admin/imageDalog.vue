@@ -10,6 +10,7 @@
         <Cropper
           @handleToResetPage='handleToResetPage'
           :imageSize='imageSize'
+          :cropperFlagF='cropperFlagF'
         />
         <div class="dialog_top">
           <el-upload
@@ -274,7 +275,8 @@ export default {
         fallbackTolerance: '1',
         scroll: true,
         animation: 300
-      }
+      },
+      cropperFlagF: null
     }
   },
   computed: {
@@ -457,6 +459,7 @@ export default {
       }
       switch (flag) {
         case 0:
+          this.cropperFlagF = 1
           queryImgsRequest(obj).then((res) => {
             console.log(res)
             if (res.error === 0) {
@@ -476,6 +479,7 @@ export default {
           })
           break
         case 1:
+          this.cropperFlagF = 0
           queryHeadImgsRequest(obj).then((res) => {
             console.log(res)
             if (res.error === 0) {

@@ -114,6 +114,10 @@ export default {
     allowToInput: { // 图片空间裁剪用户可以自定义输入
       type: Boolean,
       default: () => false
+    },
+    cropperFlagF: {
+      type: Number,
+      default: () => 0
     }
   },
   components: {
@@ -269,7 +273,7 @@ export default {
         remoteImgId: this.imgID
       }
       console.log(this.cropperFlagF)
-      if (this.cropperFlagF === 0) {
+      if (this.cropperFlagF !== 1) {
         imgsCropperRequest(obj).then((res) => {
           console.log(res)
           if (res.error === 0) {

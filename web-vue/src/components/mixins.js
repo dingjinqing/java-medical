@@ -251,9 +251,9 @@ const myMixin = {
     handleToJudgeTwoDiction (name) {
       return new Promise((resolve, reject) => {
         // 请求功能或者菜单对应的版本名字池
-        let vsNameArr = ['basic_yesterday', 'portrait_user', 'second_view', 'visit_source', 'analysis_visit_source', 'sort', 'tag', 'pin_group', 'distribution', 'pay_reward', 'activity_reward', 'lottery', 'group_draw', 'pin_integration', 'promote']
+        let vsNameArr = ['basic_yesterday', 'portrait_user', 'second_view', 'visit_source', 'analysis_visit_source', 'sort', 'tag', 'pin_group', 'distribution', 'pay_reward', 'activity_reward', 'lottery', 'group_draw', 'pin_integration', 'promote', 'full_cut', 'bargain']
         // 二级菜单需要校验的元素池
-        let enNameArr = ['analysis_basic', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort', 'user_tag', 'pin_group', 'distribution_info', 'payreward', 'market_gifted', 'lottery_activity', 'group_draw', 'pin_integration', 'promote']
+        let enNameArr = ['analysis_basic', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort', 'user_tag', 'pin_group', 'distribution_info', 'payreward', 'market_gifted', 'lottery_activity', 'group_draw', 'pin_integration', 'promote', 'full_cut', 'kanjia']
         console.log(enNameArr.indexOf(name), name)
         let index = enNameArr.indexOf(name)
         if (enNameArr.indexOf(name) !== -1) {
