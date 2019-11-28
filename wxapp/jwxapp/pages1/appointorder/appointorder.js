@@ -117,7 +117,7 @@ global.wxPage({
         _this.setData({
           serviceInfo: content.service,
           storeInfo: content.storePojo,
-          recentOrderInfo: content.recentOrderInfo,
+          recentOrderInfo: content.recentOrderInfo || {},
           technicianTitle: content.technicianTitle,
           paymentVoList: content.paymentVoList,
           cardList: cardList,
@@ -275,6 +275,14 @@ global.wxPage({
   // 提交预约
   OneClickBuy (e) {
     var that = this
+    if (!that.data.recentOrderInfo.subscriber) {
+      util.showModal('提示', '请输入预约人姓名')
+      return false
+    }
+    if (!that.data.recentOrderInfo.mobile) {
+      util.showModal('提示', '请输入预约人手机号')
+      return false
+    }
     let params = {
       serviceId: this.data.reserveInfo.serviceId,
       userId: that.data.userId,
@@ -291,14 +299,6 @@ global.wxPage({
       memberCardBalance: that.data.create_order.member_card_balance
     }
     console.log(params)
-    if (!params.subscriber) {
-      util.showModal('提示', '请输入预约人姓名')
-      return false
-    }
-    if (!params.mobile) {
-      util.showModal('提示', '请输入预约人手机号')
-      return false
-    }
     util.api('/api/wxapp/store/service/submitReservation', function (res) {
       if (res.error === 0) {
         console.log(res.content)
