@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author 孔德成
  * @date 2019/8/9 15:16
  */
-@Data
+@Getter
+@Setter
 public class GroupBuyAnalysisVo {
 
     List<BigDecimal> marketPriceList = new ArrayList<>();
@@ -19,5 +22,12 @@ public class GroupBuyAnalysisVo {
     List<Integer> oldUserList = new ArrayList<>();
     List<Integer> newUserList = new ArrayList<>();
     List<String> dateList = new ArrayList<>();;
+
+    private BigDecimal totalPrice;
+    private BigDecimal totalMarketPrice;
+    private BigDecimal totalRatio;
+    private Integer totalOldUser;
+    private Integer totalNewUser;
+
 
 }

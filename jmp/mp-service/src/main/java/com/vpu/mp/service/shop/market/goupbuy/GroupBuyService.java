@@ -312,6 +312,8 @@ public class GroupBuyService extends ShopBaseService {
                 BigDecimal marketPric = Optional.ofNullable(discountMoney.getDiscountAmount()).orElse(BigDecimal.ZERO);
                 analysisVo.getGoodsPriceList().add(goodsPrice);
                 analysisVo.getMarketPriceList().add(marketPric);
+                analysisVo.setTotalPrice(analysisVo.getTotalPrice().add(goodsPrice));
+                analysisVo.setTotalMarketPrice(analysisVo.getTotalMarketPrice().add(marketPric));
                 analysisVo.getRatioList().add(goodsPrice.compareTo(BigDecimal.ZERO) > 0 ?
                     marketPric.divide(goodsPrice, BigDecimal.ROUND_FLOOR) : BigDecimal.ZERO);
             }
@@ -321,6 +323,7 @@ public class GroupBuyService extends ShopBaseService {
                 analysisVo.getNewUserList().add(0);
             } else {
                 analysisVo.getNewUserList().add(newUser.getNum());
+                analysisVo.setTotalNewUser(analysisVo.getTotalNewUser()+newUser.getNum());
             }
             //老用户数
             OrderActivityUserNum oldUser = getUserNum(activeOrderList.getOldUserNum(), startDate);
@@ -328,6 +331,7 @@ public class GroupBuyService extends ShopBaseService {
                 analysisVo.getOldUserList().add(0);
             } else {
                 analysisVo.getOldUserList().add(oldUser.getNum());
+                analysisVo.setTotalOldUser(analysisVo.getTotalOldUser()+oldUser.getNum());
             }
             analysisVo.getDateList().add(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE, startDate));
             startDate = Util.getEarlyTimeStamp(startDate, 1);
