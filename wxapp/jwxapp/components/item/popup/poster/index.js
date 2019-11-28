@@ -6,7 +6,10 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    isMultiple:Boolean,
+    isMultiple:{
+      type:Boolean,
+      value:false
+    },
     posterImage:String
   },
 

@@ -23,7 +23,7 @@
           </view>
           <view class="surface_bottom_right">
             <!-- ￥10000 -->
-            <image mode="widthFix" class="qrcode" src="{{imageUrl}}image/wxapp/erweima1.png"></image>
+            <image mode="widthFix" class="qrcode" bindtap="showQrCode" src="{{imageUrl}}image/wxapp/erweima1.png"></image>
           </view> 
         </view>
       </view>
@@ -223,4 +223,6 @@
     <view class="footer_btn">设置默认会员卡</view>
   </view>
   <include src="../common/footer.wxml" />
+
+  <v-poster poster-image="{{qrCode}}" show="{{showQrcode}}" />
 </view>
