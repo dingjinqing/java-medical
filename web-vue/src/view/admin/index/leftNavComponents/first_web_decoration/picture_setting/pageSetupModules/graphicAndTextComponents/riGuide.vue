@@ -2,17 +2,7 @@
   <div class="rightCommodity">
     <div class="rightCommodityMain">
       <!--模块私有区域-->
-      <div class="main">
-        <el-date-picker
-          ref='time'
-          v-model="value1"
-          type="week"
-          format="yyyy 第 WW 周"
-          placeholder="选择周"
-        >
-        </el-date-picker>
-        <el-button @click="handleToGet()">测试</el-button>
-      </div>
+
       <!--模块私有end-->
     </div>
   </div>

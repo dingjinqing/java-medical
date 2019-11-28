@@ -274,12 +274,14 @@ export default {
           console.log(res)
           if (res.error === 0) {
             this.$store.commit('TOCHANGE_AUTOREFRESH', this.imgID)
+            this.$emit('handleToResetPage')
           }
         })
       } else {
         picSpaceimgsCropperRequest(obj).then((res) => {
           console.log(res)
           if (res.error === 0) {
+            this.$emit('handleToResetPage')
             this.$store.commit('TOCHANGE_AUTOREFRESHPICSPACE', this.imgID)
           }
         })

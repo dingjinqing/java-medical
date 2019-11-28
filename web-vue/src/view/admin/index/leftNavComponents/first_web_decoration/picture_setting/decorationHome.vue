@@ -31,12 +31,33 @@
               <div
                 v-for="(item,key) in nowShowLeftModules"
                 :key="key"
-                class="picTextConDivList third_drag"
+                class="picTextConDivList"
+                :class="item.flag?'third_drag':''"
                 :dataId="item.id"
-                @click="handleToClickLeftModule(item.id)"
+                @click="handleToClickLeftModule(item.id,item.flag)"
                 :style="leftComClass?'justify-content:space-between ':''"
               >
-                <img :src="item.imgUrl">
+                <img :src="item.flag?item.imgUrl:item.noJurisdictionUurl">
+                <!--无权限时右上角问号-->
+                <img
+                  class="questionMark"
+                  v-if="!item.flag"
+                  :src="$imageHost+'/image/admin/system_icon.png'"
+                >
+                <!--无权限隐藏模块显示-->
+                <div
+                  v-if="!item.flag"
+                  class="system_info_content2"
+                  :style="key%2 !==0?'left:-110px':''"
+                >
+                  <div class="system_info_content_top">该模块仅旗舰版可用</div>
+                  <div class="system_info_content_bottom">
+                    <el-button
+                      size="small"
+                      type="primary"
+                    >了解更多</el-button>
+                  </div>
+                </div>
                 <span
                   :title='item.text'
                   :class="leftComClass"
@@ -202,7 +223,7 @@ import Vue from 'vue'
 import 'vuescroll/dist/vuescroll.css'
 import $ from 'jquery'
 import decMixins from '@/mixins/decorationModulesMixins/decorationModulesMixins'
-import { saveDecorationPage, editSave } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
+import { saveDecorationPage, editSave, getModulesJusList } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 import { pageEdit } from '@/api/admin/decoration/pageSet.js'
 Vue.use(vuescroll)
 require('webpack-jquery-ui')
@@ -300,7 +321,8 @@ export default {
       page_enabled: null, // 编辑回显page_enabled
       page_tpl_type: null, //  编辑回显page_tpl_type
       isAddBottom: false, // 是否添加到底部flag
-      isNewEnterFirstSaveSucess: -1 //  新建进来并且是非第一次保存记录id
+      isNewEnterFirstSaveSucess: -1, //  新建进来并且是非第一次保存记录id
+      isDragFlag: false
     }
   },
   watch: {
@@ -481,18 +503,39 @@ export default {
     },
     // 初始化左侧模块显示
     initLeftModulesShow (activeName) {
-      switch (activeName) {
-        case 'first':
-          this.nowShowLeftModules = this.pivTextConArr
-          break
-        case 'second':
-          this.nowShowLeftModules = this.goodsTextConArr
-          break
-        case 'third':
-          this.nowShowLeftModules = this.marketingTextConArr
-      }
-      this.$nextTick(() => {
-        this.init_drag_event()
+      getModulesJusList().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let arr = res.content
+          this.pivTextConArr.forEach((item, index) => {
+            if (arr.indexOf(item.name) !== -1) {
+              item.flag = false
+            }
+          })
+          this.goodsTextConArr.forEach((item, index) => {
+            if (arr.indexOf(item.name) !== -1) {
+              item.flag = false
+            }
+          })
+          this.marketingTextConArr.forEach((item, index) => {
+            if (arr.indexOf(item.name) !== -1) {
+              item.flag = false
+            }
+          })
+          switch (activeName) {
+            case 'first':
+              this.nowShowLeftModules = this.pivTextConArr
+              break
+            case 'second':
+              this.nowShowLeftModules = this.goodsTextConArr
+              break
+            case 'third':
+              this.nowShowLeftModules = this.marketingTextConArr
+          }
+          this.$nextTick(() => {
+            this.init_drag_event()
+          })
+        }
       })
     },
     // 页面设置回显
@@ -945,7 +988,8 @@ export default {
       // })
     },
     //  点击左侧模块加到中间模块队列底部并高亮
-    handleToClickLeftModule (id) {
+    handleToClickLeftModule (id, flag) {
+      if (!flag) return
       this.showModulesList.push(id)
       console.log(id)
       let length = this.showModulesList.length - 1
@@ -1120,6 +1164,7 @@ export default {
         /deep/ .__vuescroll {
           background-color: #fff;
         }
+
         // padding: 0 2px;
         .hereDaily {
           height: 5px;
@@ -1141,6 +1186,11 @@ export default {
           border: 1px dashed #2589ff;
         }
         .picTextConDivList {
+          &:hover {
+            .system_info_content2 {
+              display: block;
+            }
+          }
           float: left;
           border: 1px solid #e5e5e5;
           background: #f8f8f8;
@@ -1169,6 +1219,39 @@ export default {
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 2;
             overflow: hidden;
+          }
+          .questionMark {
+            position: absolute;
+            right: -5px;
+            top: -5px;
+          }
+          .system_info_content2 {
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+            position: absolute;
+            width: 220px;
+            background: #fff;
+            top: 33px;
+            z-index: 99;
+            left: 0;
+            box-shadow: 0px 0px 10px #f0f0f0;
+            display: none;
+
+            .system_info_content_top {
+              text-align: center;
+              font-size: 14px;
+              color: #333;
+              height: 40px;
+              line-height: 40px;
+              border-bottom: 1px solid #eee;
+            }
+            .system_info_content_bottom {
+              height: 50px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
           }
         }
       }

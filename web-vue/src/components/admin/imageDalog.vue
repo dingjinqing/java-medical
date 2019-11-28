@@ -7,7 +7,10 @@
         width="825px"
         :append-to-body='true'
       >
-        <Cropper :imageSize='imageSize' />
+        <Cropper
+          @handleToResetPage='handleToResetPage'
+          :imageSize='imageSize'
+        />
         <div class="dialog_top">
           <el-upload
             class="upload-demo"
@@ -284,6 +287,7 @@ export default {
     }
   },
   watch: {
+
     allNodes_ (newData, oldData) {
       console.log(newData)
       // 初始化图片查询数据
@@ -333,6 +337,10 @@ export default {
     this.langDefault()
   },
   methods: {
+    // 裁剪完成后重置当前页
+    handleToResetPage () {
+      this.currentPage3 = 1
+    },
     // 图片上传前的钩子
     beforeUpLoad (file) {
       console.log(file)

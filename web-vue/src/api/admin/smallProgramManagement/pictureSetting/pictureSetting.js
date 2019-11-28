@@ -60,3 +60,11 @@ export function allCardData (data) {
     data: data
   })
 }
+
+// 页面装修模块权限
+export function getModulesJusList () {
+  return service({
+    url: '/api/admin/checkMenu/showMa',
+    method: 'get'
+  })
+}
