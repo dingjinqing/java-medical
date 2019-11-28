@@ -7,10 +7,16 @@
         {{$t('serviceConfig.storebuy')}}
       </div>
       <div class="settingContent">
-        <el-radio-group v-model="param.store_buy">
-          <el-radio :label="0">{{$t('serviceConfig.inactived')}}</el-radio>
-          <el-radio :label="1">{{$t('serviceConfig.activated')}}</el-radio>
-        </el-radio-group>
+        <div
+          class="Jurisdiction"
+          @click="handleToJurisdiction()"
+        >
+          <el-radio-group v-model="param.store_buy">
+            <el-radio :label="0">{{$t('serviceConfig.inactived')}}</el-radio>
+            <el-radio :label="1">{{$t('serviceConfig.activated')}}</el-radio>
+          </el-radio-group>
+        </div>
+
       </div>
     </section>
 
@@ -307,6 +313,10 @@ export default {
         }
       })
       console.log()
+    },
+    // 门店买单判断权限
+    handleToJurisdiction () {
+
     }
   }
 }
@@ -337,6 +347,9 @@ export default {
       padding-left: 10px;
       background: #ffffff;
       color: #333;
+      .Jurisdiction {
+        width: 140px;
+      }
       .notefont {
         color: #666;
         margin-left: 20px;

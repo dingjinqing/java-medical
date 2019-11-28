@@ -601,7 +601,7 @@ const routes = [
   // 赠品
   {
     path: '/admin/home/main/gift',
-    name: 'gift_view',
+    name: 'gift',
     meta: {
       crumbTitle: 'router.gift',
       meta: 'first_market_manage',
@@ -899,7 +899,7 @@ const routes = [
   // 秒杀
   {
     path: '/admin/home/main/seckill',
-    name: 'seckill_view',
+    name: 'sec_kill',
     meta: {
       crumbTitle: 'router.seckill',
       meta: 'first_market_manage',
@@ -1113,7 +1113,7 @@ const routes = [
   // 定向发券
   {
     path: '/admin/home/main/couponGive',
-    name: 'couponGive',
+    name: 'market_act_give',
     meta: {
       crumbTitle: 'router.couponGive',
       meta: 'first_market_manage'

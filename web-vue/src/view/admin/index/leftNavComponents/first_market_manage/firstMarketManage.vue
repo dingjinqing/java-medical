@@ -252,7 +252,7 @@
         <!-- 秒杀 -->
         <div
           class="voucher box_style"
-          @click="to('seckill_view')"
+          @click="to('sec_kill')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/ms.png'"
@@ -266,7 +266,7 @@
         <!-- 赠品 -->
         <div
           class="voucher box_style"
-          @click="to('gift_view')"
+          @click="to('gift')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/zp.png'"
@@ -435,7 +435,7 @@
         <!-- 定向发券 -->
         <div
           class="voucher box_style"
-          @click="to('couponGive')"
+          @click="to('market_act_give')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/dxfq.png'"
