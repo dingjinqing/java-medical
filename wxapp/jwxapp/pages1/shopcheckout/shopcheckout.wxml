@@ -6,17 +6,17 @@
       <view class="header">
         <view>
           <text>消费总额</text>
-          <input type="digit" bindinput="inputMoney" placeholder="请询问商家后输入" placeholder-style="#ccc" />
+          <input type="digit" bindchange="inputMoney" placeholder="请询问商家后输入" placeholder-style="#ccc" />
         </view>
       </view>
       <view class="pay">
         <view class="pay_li clearfix" wx:if="{{info.member_card_list != ''}}" bindtap='cardClick'>
           <text class="score_fl">会员卡</text>
           <view class="coupon fr" style="background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right; backrgound-size: 16rpx;">
-            <text>{{card_choose.card_name}}</text>
+            <text>{{useCard.card_name}}</text>
           </view>
         </view>
-        <view class="pay_li clearfix" wx:if="{{card_choose.money>0}}">
+        <view class="pay_li clearfix" wx:if="{{useCard.money>0}}">
           <text class="score_fl">会员卡支付</text>
           <view class="score">
             <input type="digit" bindblur='card_discount' placeholder="会员卡有元余额" placeholder-style="#ccc"/>
@@ -95,6 +95,6 @@
   </view>
 </view>
 <!--  会员卡弹窗组件  -->
-<select_card_dialog show="{{showCardDialog}}" member-card-list="{{cardList}}" default-member-card-no="{{useCard.cardNo}}"  bindconfirm="getSelectCard"></select_card_dialog>
+<select_card_dialog show="{{showCardDialog}}" member-card-list="{{storePayInfo.memberCardList}}" default-member-card-no="{{useCard.cardNo}}"  bindconfirm="getSelectCard"></select_card_dialog>
 
 <include src="/pages/common/footer.wxml"/>
