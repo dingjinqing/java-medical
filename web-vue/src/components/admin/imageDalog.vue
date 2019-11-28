@@ -338,9 +338,12 @@ export default {
       console.log(file)
       let that = this
       console.log(this.firstNodeId)
-      let is1M = file.size / 1024 / 1024 < 5 // 限制小于1M
+      let is1M = file.size / 1024 / 1024 < 5 // 限制小于5M
       console.log(is1M)
-      if (!is1M) this.$message.error('请上传小于5M的图片')
+      if (!is1M) {
+        this.$message.error('请上传小于5M的图片')
+        return
+      }
 
       // let width = 654 // 限制图片尺寸为654X270
       // let height = 270
@@ -363,6 +366,7 @@ export default {
           case 'pictureSpace':
             upmoreImgsRequest(fd).then((res) => {
               console.log(res)
+              localStorage.setItem('contentType', 'application/json;charset=UTF-8')
               if (res.error === 0) {
                 that.queryImgs()
               }
@@ -371,13 +375,13 @@ export default {
           case 'imageDalog':
             upmoreHeadImgsRequest(fd).then((res) => {
               console.log(res)
+              localStorage.setItem('contentType', 'application/json;charset=UTF-8')
               if (res.error === 0) {
                 that.queryImgs()
               }
             })
             break
         }
-
         // let valid = img.width === width && img.height === height
       }
       img.src = _URL.createObjectURL(file)

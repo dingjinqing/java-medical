@@ -46,7 +46,6 @@ export function imgsdeleteRequest (riid) {
 
 // 图片分页查询接口
 export function queryImgsRequest (riid) {
-  localStorage.setItem('contentType', 'application/json;charset=UTF-8')
   return service({
     url: '/api/admin/image/list',
     method: 'post',
@@ -75,7 +74,6 @@ export function upmoreImgsRequest (riid) {
 
 // 图片裁剪
 export function picSpaceimgsCropperRequest (riid) {
-  localStorage.setItem('contentType', 'application/json;charset=UTF-8')
   return service({
     url: '/api/admin/image/makeCrop',
     method: 'post',
