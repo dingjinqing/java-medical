@@ -19,12 +19,6 @@
       </div>
 
     </div>
-
-    <div class="right">
-      <div class="right_main">
-        <img src="../../../assets/adminImg/notice_ld.png">
-      </div>
-    </div>
     <div
       class="middle"
       @mouseenter="user_enter()"
@@ -366,7 +360,7 @@ export default {
 .middle {
   float: right;
   height: 100%;
-  margin-right: 38px;
+  margin-right: 22px;
   position: relative;
 }
 .account {
