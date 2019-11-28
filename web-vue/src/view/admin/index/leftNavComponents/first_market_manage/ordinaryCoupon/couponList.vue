@@ -48,7 +48,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="typeText"
           :label="$t('ordinaryCouponList.type')"
           align="center"
         ></el-table-column>
@@ -71,11 +71,14 @@
         >
         </el-table-column>
         <el-table-column
-          prop="surplus"
           :label="$t('ordinaryCouponList.inventory')"
           align="center"
           width="120px"
         >
+          <template slot-scope="scope">
+            <span v-if="scope.row.limitSurplusFlag === 0">不限制</span>
+            <span v-if="scope.row.limitSurplusFlag === 1">{{ scope.row.surplus }} / {{ scope.row.totalAmount }}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="receivePerPerson"
@@ -290,6 +293,11 @@ export default {
     handleData (data) {
       console.log(data)
       data.map((item, index) => {
+        if (item.type === 1) {
+          item.typeText = '分裂'
+        } else {
+          item.typeText = '普通'
+        }
         if (item.receivePerPerson === 0) {
           item.receivePerPerson = '不限制'
         } else {
