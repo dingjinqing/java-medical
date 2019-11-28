@@ -62,9 +62,9 @@ import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
  */
 @Service
 public class ReturnService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, RefundParam> {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private OrderInfoService orderInfo;
 	@Autowired
@@ -95,15 +95,17 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	
 	/**
 	 * 退款、退货查询
-	 * @param SellerRemarkParam,isMp(T小程序端/F后台手工退款)
-	 * @return RefundVo
-	 * @throws MpException 
+	 * @param param param
+	 * @return ExecuteResult RefundVo
+	 * @throws MpException 见代码
 	 */
 	@Override
 	public ExecuteResult execute(RefundParam param) {
+        logger.info("退款退货执行start(ReturnService)");
 		//获取订单详情
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
+            logger.error("退款退货执行异常，订单不存在");
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		try {
@@ -116,6 +118,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 					if(param.getRetId() != null) {
 						rOrder = returnOrder.getByRetId(param.getRetId());
 						if(rOrder == null) {
+                            logger.error("退款退货执行异常，退订单不存在");
 							throw new MpException(JsonResultCode.CODE_ORDER_NOT_EXIST);
 						}
 					}
@@ -143,6 +146,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 					}
 					//退款商品为空则初始化
 					if(CollectionUtils.isEmpty(returnGoods)) {
+                        logger.info("退款商品为空则初始化");
 						returnGoods = returnOrderGoods.getReturnGoods(order.getOrderSn(), rOrder.getRetId());	
 					}
 					/**
@@ -168,6 +172,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						return;
 					}
 					if(param.getIsMp() == OrderConstant.IS_MP_Y) {
+                        logger.info("买家操作完成");
 						return;
 					}
 					//退款逻辑
@@ -362,7 +367,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	 * @return 是否需要后续处理状态改变（好友代付存在微信退款不需要）
 	 * @throws MpException
 	 */
-	public boolean refundLogic(OrderInfoVo order , ReturnOrderRecord returnOrder , BigDecimal currentMoney , RefundParam param) throws MpException {		
+	public boolean refundLogic(OrderInfoVo order , ReturnOrderRecord returnOrder , BigDecimal currentMoney , RefundParam param) throws MpException {
+        logger.info("退款refundLogic start");
 		if(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING != returnOrder.getRefundStatus()) {
 			logger().info("退款订单sn:"+returnOrder.getReturnOrderSn()+",refundStatus"+returnOrder.getRefundStatus()+"不符合完成退款条件。");
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_STATUS_NOT_SATISFIED);
@@ -382,10 +388,11 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		boolean priorityRefund = priorityRefund(order,returnOrder);
 		//计算退款商品行退款金额
 		returnOrderGoods.calculateGoodsReturnMoney(returnOrder,param.getReturnGoods());
-		//好友代付且存在微信退款队列处理
+		//TODO 好友代付且存在微信退款队列处理
 		if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == order.getOrderPayWay() && priorityRefund) {
 			return false;
 		}
+        logger.info("退款refundLogic end");
 		return true;
 	}
 	
@@ -397,10 +404,12 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	 * @throws MpException
 	 */
 	public boolean priorityRefund(OrderInfoVo order, ReturnOrderRecord returnOrder) throws MpException {
+        logger.info("优先级退款start");
 		//是否微信退款（好友代付没有补款）
 		boolean flag = true;
 		//此次退款金额
 		BigDecimal returnAmount = returnOrder.getMoney().add(returnOrder.getShippingFee());
+        logger.info("此次退款金额{}",returnAmount);
 		// 是否为主订单
 		Boolean isMain = orderInfo.isMainOrder(order);
 		// 如果该订单为主订单则查询子订单
@@ -415,6 +424,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		//优先级退款数据汇总
 		LinkedHashMap<String, BigDecimal> returnAmountMap = refundAmountRecord.getReturnAmountMap(sns,null);
 		for (Entry<String, BigDecimal> entry : returnAmountMap.entrySet()) {
+            logger.info("{}优先级退款", entry.getKey());
 			//当前优先级名称
 			String key = entry.getKey();
 			//有补款支付才退
@@ -456,6 +466,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			 logger.error("优先级退款完成后本次退款金额>0,orderSn:{},retId:{}",order.getOrderSn(),returnOrder.getRetId());
 			 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_AFTER_RETURNAMOUNT_GREAT_THAN_ZERO);
 		}
+        logger.info("优先级退款end");
 		return flag;
 	}
 	
@@ -469,6 +480,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	 * @throws MpException
 	 */
 	public void finishUpdateInfo(OrderInfoVo order , ReturnOrderRecord returnOrderRecord , RefundParam param) throws MpException{
+        logger.info("退款完成变更相关信息start");
 		Result<ReturnOrderGoodsRecord> returnGoods = returnOrderGoods.getReturnGoods(returnOrderRecord.getOrderSn(),returnOrderRecord.getRetId());
 		List<String> goodsType = Arrays.asList(order.getGoodsType().split(","));
 		//非货到付款 非拼团抽奖
@@ -500,6 +512,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		// 发送退款成功模板消息
 		// 自动同步订单微信购物单
 		//添加记录-----不用都放到这里
+        logger.info("退款完成变更相关信息end");
 	}
 	
 	/**

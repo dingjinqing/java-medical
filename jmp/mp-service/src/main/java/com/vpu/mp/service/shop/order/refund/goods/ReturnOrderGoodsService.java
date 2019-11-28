@@ -17,7 +17,7 @@ import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
-import static org.jooq.impl.DSL.*;
+import org.jooq.impl.DSL;
 
 import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
@@ -199,7 +199,8 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 	 * @param returnGoods 前端传的退货商品
 	 * @throws MpException 
 	 */
-	public void calculateGoodsReturnMoney(ReturnOrderRecord returnOrder,List<ReturnGoods> returnGoods) throws MpException {
+	public void calculateGoodsReturnMoney(ReturnOrderRecord returnOrder,List<ReturnGoods> returnGoods) {
+        logger().info("计算退款商品行退款金额start");
 		//手动退款金额map
 		Map<Integer, BigDecimal> returnMoneyMap = null;
 		//手工退款
@@ -246,6 +247,7 @@ public class ReturnOrderGoodsService extends ShopBaseService{
 		//权重分摊校验与差额分摊,此时currentReturnGoods已经去除金额为0的
 		balanceRefundMoney(currentReturnGoods, returnOrder.getMoney());
 		db().batchUpdate(currentReturnGoods).execute();
+        logger().info("计算退款商品行退款金额end,退款商品：{}",currentReturnGoods);
 	}
 	
 	/**
@@ -327,7 +329,7 @@ public class ReturnOrderGoodsService extends ShopBaseService{
      * @param recId order_goods主键
      */
     public BigDecimal getReturnGoodsMoney(Integer recId){
-        return db().select(sum(RETURN_ORDER_GOODS.RETURN_MONEY)).from(RETURN_ORDER_GOODS).where(RETURN_ORDER_GOODS.REC_ID.eq(recId).and(RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_RETURNING).or(RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_COMPLETE)))).fetchOne().into(BigDecimal.class);
+        return db().select(DSL.sum(RETURN_ORDER_GOODS.RETURN_MONEY)).from(RETURN_ORDER_GOODS).where(RETURN_ORDER_GOODS.REC_ID.eq(recId).and(RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_RETURNING).or(RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_COMPLETE)))).fetchOne().into(BigDecimal.class);
     }
 }
 

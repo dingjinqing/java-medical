@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 
@@ -17,6 +18,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public final class RefundParam extends OrderOperateQueryParam {
 	/**退款退货订单id*/
 	private Integer retId;

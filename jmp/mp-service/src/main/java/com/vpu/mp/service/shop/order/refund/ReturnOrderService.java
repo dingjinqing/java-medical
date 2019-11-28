@@ -62,7 +62,7 @@ public class ReturnOrderService extends ShopBaseService{
 
 	/**
 	 * 	通过retid查询退货订单信息
-	 * @param arrayToSearch
+	 * @param retId
 	 * @return Result<?>
 	 */
 	public ReturnOrderRecord getByRetId(Integer retId) {
@@ -71,7 +71,7 @@ public class ReturnOrderService extends ShopBaseService{
 
 	/**
 	 * 	通过returnordersn查询退货订单信息
-	 * @param arrayToSearch
+	 * @param returnOrderSn
 	 * @return Result<?>
 	 */
 	public ReturnOrderRecord getByReturnOrderSn(String returnOrderSn) {
@@ -337,7 +337,14 @@ public class ReturnOrderService extends ShopBaseService{
 		fetch().intoMap(TABLE.ORDER_ID , DSL.count(TABLE.ORDER_ID).as("count"));
 	}
 
+    /**
+     * 相应订单操作
+     * @param param
+     * @param returnOrder
+     * @throws MpException
+     */
     public void responseReturnOperate(RefundParam param , ReturnOrderRecord returnOrder) throws MpException {
+        logger().info("相应订单操作start");
 		if(param.getIsMp().equals(OrderConstant.IS_MP_Y)) {
 			/**mp端操作*/
 			switch (param.getReturnOperate()) {
@@ -371,6 +378,7 @@ public class ReturnOrderService extends ShopBaseService{
 				break;
 			}
 		}
+        logger().info("相应订单操作end");
 	}
 
     /**
@@ -380,6 +388,7 @@ public class ReturnOrderService extends ShopBaseService{
      * @throws MpException
 	 */
 	public void submitShipping(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
+        logger().info("退货提交物流start");
 		//校验
         if (returnOrder.getRefundStatus() != REFUND_STATUS_AUDIT_PASS) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
@@ -391,6 +400,7 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setShippingOrRefundTime(DateUtil.getSqlTimestamp());
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		returnOrder.update();
+        logger().info("退货提交物流end");
 	}
 
     /**
@@ -400,6 +410,7 @@ public class ReturnOrderService extends ShopBaseService{
      * @throws MpException
 	 */
 	public void revokeReturnOrder(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
+        logger().info("撤销退款退货start");
 		//校验
 		if(returnOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_FINISH) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
@@ -408,7 +419,7 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_CLOSE);
 		returnOrder.update();
 		//TODO php系统撤销未实现
-
+        logger().info("撤销退款退货end");
     }
 	/**
 	 * 拒绝退款/退货
@@ -417,6 +428,7 @@ public class ReturnOrderService extends ShopBaseService{
      * @throws MpException
 	 */
 	public void refuseReturn(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
+        logger().info("拒绝退款/退货start");
 		//校验
 		if(returnOrder.getRefundStatus() != OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
@@ -425,6 +437,7 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_REFUSE);
 		returnOrder.setRefundRefuseReason(param.getRefundRefuseReason());
 		returnOrder.update();
+        logger().info("拒绝退款/退货end");
 	}
 
     /**
@@ -434,6 +447,7 @@ public class ReturnOrderService extends ShopBaseService{
      * @throws MpException
 	 */
 	public void agreeReturn(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
+        logger().info("审核通过（退货申请）start");
 		//校验
         if (returnOrder.getRefundStatus() != REFUND_STATUS_AUDITING) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
@@ -445,6 +459,7 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setMerchantTelephone(param.getMerchantTelephone());
 		returnOrder.setZipCode(param.getZipCode());
 		returnOrder.update();
+        logger().info("审核通过（退货申请）end");
 	}
 
     /**
@@ -454,6 +469,7 @@ public class ReturnOrderService extends ShopBaseService{
      * @throws MpException
 	 */
 	public void refuseReturnGoodsApply(ReturnOrderRecord returnOrder , RefundParam param) throws MpException {
+        logger().info("商家拒绝退货申请start");
 		//校验
         if (returnOrder.getRefundStatus() != REFUND_STATUS_AUDITING) {
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR);
@@ -462,6 +478,7 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setRefundStatus(OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS);
 		returnOrder.setApplyNotPassReason(param.getApplyNotPassReason());
 		returnOrder.update();
+        logger().info("商家拒绝退货申请end");
 	}
 
     /**

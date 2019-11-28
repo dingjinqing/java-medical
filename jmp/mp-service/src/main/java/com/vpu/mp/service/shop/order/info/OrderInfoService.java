@@ -531,6 +531,7 @@ public class OrderInfoService extends ShopBaseService {
 	 * @param canReturnGoodsNumber 是否存在可退商品数量；==null时不参与returnOrder==REFUND_STATUS_FINISH分支
 	 */
 	public void updateInReturn(ReturnOrderRecord returnOrder , OrderInfoVo order , Boolean canReturnGoodsNumber) {
+        logger().info("退款退货时更新订单信息start");
 		UpdateSetMoreStep<OrderInfoRecord> set = db().update(TABLE).set(TABLE.REFUND_STATUS, returnOrder.getRefundStatus());
 		//退款退货订单处与 1买家仅退款 2买家提交物流 3仅退运费 4手动退款
 		switch (returnOrder.getRefundStatus()) {
@@ -569,6 +570,7 @@ public class OrderInfoService extends ShopBaseService {
 			break;
 		}
 		set.where(TABLE.ORDER_SN.eq(returnOrder.getOrderSn())).execute();
+        logger().info("退款退货时更新订单信息end");
 	}
 
 	public void setOrderstatus(String orderSn , byte orderStatus){
