@@ -22,6 +22,10 @@ public class OrderListMpVo{
 	private Integer orderId;
 	private String orderSn;
 	private Byte orderStatus;
+    /** 配送方式:0 快递 1 自提 */
+    private Byte deliverType;
+    /** 主支付方式 */
+    private String payCode;
 	@JsonIgnore
 	private String goodsType;
 	private Byte bkOrderPaid;

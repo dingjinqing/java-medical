@@ -99,7 +99,7 @@ public class OrderOperationJudgment {
 	 * @return true可退；false不可退
 	 */
 	public static Boolean adminIsReturnShipingFee(OrderListInfoVo order , BigDecimal returnShipingFee) {
-		if(BigDecimalUtil.compareTo(order.getShippingFee(), returnShipingFee) <= 0) {
+		if(BigDecimalUtil.compareTo(order.getShippingFee(), returnShipingFee) < 0) {
 			return Boolean.FALSE;
 		}
 		return Boolean.TRUE;
