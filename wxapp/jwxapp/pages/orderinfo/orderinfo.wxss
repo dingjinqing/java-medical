@@ -124,7 +124,7 @@
 .pay_info .total_money {
   text-align: right;
   color: #333;
-  padding: 10rpx;
+  padding: 10rpx 0;
 }
 .line-item {
   height: 2rpx;

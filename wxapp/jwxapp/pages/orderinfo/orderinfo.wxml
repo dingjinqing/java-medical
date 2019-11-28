@@ -100,22 +100,30 @@
       </view>
     </view> -->
     <view class="pay_info">
-      <view class="pay_item">
+      <!-- <view class="pay_item">
         <text>{{i18n.$t(localePack,"pages.order.total")}}</text>
         <text>￥726.00</text>
+      </view> -->
+      <view class="pay_item" wx:if="{{orderInfo.memberCardBalance > 0}}">
+        <text>{{i18n.$t(localePack,"pages.order.useCardBalance")}}</text>
+        <text>￥{{orderInfo.memberCardBalance}}</text>
       </view>
-      <view class="pay_item">
+      <view class="pay_item" wx:if="{{orderInfo.scoreDiscount > 0}}">
+        <text>{{i18n.$t(localePack,"pages.order.useScore")}}</text>
+        <text>￥{{orderInfo.scoreDiscount}}</text>
+      </view>
+      <view class="pay_item" wx:if="{{orderInfo.useAccount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useBalance")}}</text>
-        <text>￥300.00</text>
+        <text>￥{{orderInfo.useAccount}}</text>
       </view>
-      <view class="pay_item">
+      <!-- <view class="pay_item">
         <text>{{i18n.$t(localePack,"pages.order.promotions")}}</text>
         <text>￥14.00</text>
-      </view>
+      </view> -->
       <view class="line-item"></view>
       <view class="total_money">
         {{i18n.$t(localePack,"pages.order.actualPayment")}}
-        <text style="color:{{comColor}}">￥6.00</text>
+        <text style="color:{{comColor}}">￥{{orderInfo.moneyPaid}}</text>
       </view>
     </view>
     <view class="order_info">

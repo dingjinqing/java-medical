@@ -152,3 +152,5 @@
   color: #888;
   line-height: 50rpx;
 }
+.grade_content_desc{
+}

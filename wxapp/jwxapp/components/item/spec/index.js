@@ -35,8 +35,7 @@ global.wxComponent({
   data: {
     showSpec: false,
     product: null,
-    goodsNum: null,
-    product: null
+    goodsNum: null
   },
 
   /**

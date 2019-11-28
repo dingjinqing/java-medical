@@ -6,18 +6,24 @@ global.wxComponent({
   properties: {
     goodsDescInfo:{
       type:Object,
-      value:null
+      value:null,
+      observer(val){
+        console.log(val)
+        if (val.goodsPageId) {
+          decorate.requestDecoratePageData(val.goodsPageId, 0, this.processWindowData.bind(this));
+          this.setData({
+            pageUp: val.isPageUp === 0 ? ['Page', 'Desc'] : ['Desc', 'Page']
+          })
+        }
+      }
     }
   },
 
   /**
    * 组件的初始数据
    */
-  data: {},
-  lifetimes:{
-    ready(){
-      decorate.requestDecoratePageData(0, 0, this.processWindowData.bind(this));
-    }
+  data: {
+    pageUp:['Desc'],
   },
   /**
    * 组件的方法列表

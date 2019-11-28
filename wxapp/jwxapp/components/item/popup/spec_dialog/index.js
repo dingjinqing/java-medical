@@ -9,7 +9,17 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(val) {
-        this.formatSpec(val.products);
+        console.log(val)
+        if (val.defaultPrd === true){
+          this.triggerEvent("productData", {
+            goodsId: val.goodsId,
+            ...val.products[0],
+            limitBuyNum:val.limitBuyNum,
+            limitMaxNum:val.limitMaxNum
+          });
+        } else {
+          this.formatSpec(val.products);
+        }
       }
     }
   },
@@ -79,6 +89,7 @@ global.wxComponent({
         checkedProduct: productTarget
       });
       let { limitBuyNum, limitMaxNum } = this.data.productsInfo;
+      console.log(productTarget)
       this.triggerEvent("productData", {
         goodsId: this.data.productsInfo.goodsId,
         ...productTarget,

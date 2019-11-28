@@ -37,6 +37,19 @@
         领取时间：{{cardInfo.userCardCreateTime}}
       </view>
     </view>
+    <view class="card_item_title" wx:if="{{cardInfo.userCardCreateTime}}">
+      <view class="item_title_left">
+        <image mode="widthFix" src="{{imageUrl}}image/wxapp/grade_contion.png"></image>
+      </view>
+      <view class="item_title_content">
+        等级说明
+      </view>
+    </view>
+    <view class="card_item_content">
+      <view class="grade_content_desc">
+        123456
+      </view>
+    </view>
     <!-- 会员权益折扣 -->
     <view class="card_item_title" wx:if="{{cardInfo.discount}}">
       <view class="item_title_left">
@@ -95,7 +108,7 @@
     </view>
 
     <!-- 会员专享商品 -->
-    <view class="card_item_title" wx:if="{{cardInfo.payOwnGood === 1}}">
+    <view class="card_item_title" wx:if="{{cardInfo.powerPayOwnGood === 'on'}}">
       <view class="item_title_left">
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/card_info_goods.png"></image>
       </view>

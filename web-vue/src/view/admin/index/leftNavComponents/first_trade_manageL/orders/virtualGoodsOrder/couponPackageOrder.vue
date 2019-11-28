@@ -3,7 +3,7 @@
     <div class="search_box">
       <div class="filters">
         <div class="filters_item">
-          <span>{{$t('orderCommon.orderUserInfo')}}:</span>
+          <span>{{$t('orderCommon.orderUserInfo')}}：</span>
           <el-input
             v-model="searchParams.userInfo"
             :placeholder="$t('orderCommon.orderUserInfoPlaceholder')"
@@ -12,7 +12,7 @@
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>{{$t('orderCommon.orderSn')}}:</span>
+          <span>{{$t('orderCommon.orderSn')}}：</span>
           <el-input
             v-model="searchParams.orderSn"
             :placeholder="$t('orderCommon.orderSnPlaceholder')"
@@ -21,7 +21,7 @@
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>{{$t('couponPackageOrder.couponPackage')}}:</span>
+          <span>{{$t('couponPackageOrder.couponPackage')}}：</span>
           <el-input
             v-model="searchParams.packName"
             size="small"
@@ -29,7 +29,7 @@
           ></el-input>
         </div>
         <div class="filters_item">
-          <span>{{$t('orderCommon.orderTime')}}:</span>
+          <span>{{$t('orderCommon.orderTime')}}：</span>
           <el-date-picker
             v-model="applicationTime"
             type="datetimerange"

@@ -19,6 +19,8 @@ module.exports = {
   "deliveryMethod":"配送方式",
   "total":"合计",
   "useBalance":"使用余额",
+  "useCardBalance":"使用会员卡余额",
+  "useScore":"使用积分",
   "promotions":"促销活动",
   "actualPayment":"实际付款",
   "orderTime":"下单时间",

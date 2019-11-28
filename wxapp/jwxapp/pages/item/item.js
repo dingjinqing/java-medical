@@ -56,12 +56,13 @@ global.wxPage({
   },
   // 商品详情-自定以内容
   getGoodsDescInfo(goodsInfo){
-    let { goodsDesc = null, isPageUp = 0 } = goodsInfo
+    let { goodsDesc = null, isPageUp = 0, goodsPageId = null } = goodsInfo
     console.log(goodsDesc, isPageUp)
     this.setData({
       goodsDescInfo:{
         goodsDesc,
-        isPageUp
+        isPageUp,
+        goodsPageId
       }
     })
   },
