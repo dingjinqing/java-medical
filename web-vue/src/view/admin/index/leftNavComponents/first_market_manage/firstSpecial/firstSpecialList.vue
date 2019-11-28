@@ -235,7 +235,6 @@ export default {
     if (this.$route.query.tabIndex) {
       this.tabIndex = Number(this.$route.query.tabIndex)
     }
-    this.langDefault()
     // 初始列表化数据
     this.initDataList()
     // 取用户仅可购买活动商品中的数量
@@ -244,6 +243,7 @@ export default {
         this.firstSpecialLimitGoods = res.content
       }
     })
+    this.langDefault()
   },
   methods: {
     initDataList () {
