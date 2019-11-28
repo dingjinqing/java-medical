@@ -116,10 +116,8 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
      * @return
      */
     public List<ActiveDiscountMoney> getActiveDiscountMoney(Byte goodType, Integer activityId, Timestamp startTime, Timestamp  endTime){
-
-
         List<ActiveDiscountMoney> record = db().select(
-            date(ORDER_INFO.CREATE_TIME),
+            date(ORDER_INFO.CREATE_TIME).as(ActiveDiscountMoney.CREATE_TIME),
             sum(when(ORDER_GOODS.RETURN_NUMBER.eq(0),ORDER_GOODS.DISCOUNTED_TOTAL_PRICE).when(ORDER_GOODS.RETURN_NUMBER.notEqual(0),ORDER_GOODS.DISCOUNTED_GOODS_PRICE.multiply(ORDER_GOODS.GOODS_NUMBER.sub(ORDER_GOODS.RETURN_NUMBER)))).as(ActiveDiscountMoney.PAYMENT_AMOUNT),
             sum((ORDER_GOODS.MARKET_PRICE.sub(ORDER_GOODS.GOODS_PRICE)).multiply(ORDER_GOODS.GOODS_NUMBER.sub(ORDER_GOODS.RETURN_NUMBER))).as(ActiveDiscountMoney.DISCOUNT_AMOUNT),
             count(ORDER_INFO.ORDER_ID).as(ActiveDiscountMoney.PAID_ORDER_NUMBER),

@@ -12,7 +12,9 @@ import lombok.Data;
  */
 @Data
 public class ActiveDiscountMoney {
+
     public static final String DISCOUNT_AMOUNT ="discountAmount";
+    public static final String CREATE_TIME ="createTime";
     public static final String PAYMENT_AMOUNT ="paymentAmount";
     public static final String PAID_ORDER_NUMBER ="paidOrderNumber";
     public static final String PAID_GOODS_NUMBER ="paidGoodsNumber";

@@ -440,7 +440,7 @@ public class GroupBuyService extends ShopBaseService {
 
     private ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {
         for (ActiveDiscountMoney data : discountMoneyList) {
-            if (data.getCreateTime().equals(timestamp)) {
+            if (data!=null&&timestamp.equals(data.getCreateTime())) {
                 return data;
             }
         }
