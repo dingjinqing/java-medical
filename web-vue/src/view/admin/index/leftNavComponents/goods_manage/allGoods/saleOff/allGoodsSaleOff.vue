@@ -115,13 +115,15 @@ export default {
   display: flex;
 }
 .tabItem {
+  font-size: 14px;
   min-width: 50px;
-  line-height: 50px;
-  margin: 0px 5px;
+  line-height: 40px;
+  /* margin: 0px 5px; */
+  margin-right: 20px;
   cursor: pointer;
 }
 .tabItemActive {
-  border-bottom: 2px solid #5a8bff;
+  border-bottom: 1.5px solid #5a8bff;
 }
 .btnWrap {
   padding-left: 50px;

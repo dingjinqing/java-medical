@@ -49,7 +49,7 @@
             v-if="goodsSortDataFirst.sortImgObj === null"
             @click="chooseSortImg"
             style=" display:block;width: 230px;height: 90px;cursor:pointer;"
-            :src="$imageHost+'/image/admin/addSort/add_simple.png'"
+            :src="$imageHost+'/image/admin/add_simple.png'"
           />
           <div
             v-else

@@ -520,13 +520,13 @@ export default {
       }
     }
     // 付款时间
-    var validatPayDateRange = (rule, value, callback) => {
-      if (!value && this.contains(6)) {
-        callback(new Error('请选择付款时间'))
-      } else {
-        callback()
-      }
-    }
+    // var validatPayDateRange = (rule, value, callback) => {
+    //   if (!value && this.contains(6)) {
+    //     callback(new Error('请选择付款时间'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     // 用户类别
     var validatUserAction = (rule, value, callback) => {
       if (!value && this.contains(7)) {
@@ -591,7 +591,7 @@ export default {
         'rules.cardId': [{ validator: validatcardId, trigger: 'change' }],
         'rules.payTop': [{ validator: validatInt, trigger: 'blur' }],
         'rules.minPayNum': [{ validator: validatMin, trigger: 'blur' }],
-        'rules.payDateRange': [{ validator: validatPayDateRange, trigger: 'blur' }], // 付款时间
+        // 'rules.payDateRange': [{ validator: validatPayDateRange, trigger: 'blur' }], // 付款时间
         'rules.userAction': [{ validator: validatUserAction, trigger: 'change' }],
         explain: [{ required: true, message: '请填写赠品规则说明', trigger: 'blur' }]
       },
@@ -663,12 +663,10 @@ export default {
           this.step++
         }
       })
-      // this.transmitEditGoodsId(this.tmpGiftGoodsIds)
     },
     // 上一步
     lastStep () {
       this.step--
-      // this.transmitEditGoodsId(this.tmpGoodsIds)
     },
     // 保存
     addGift () {
@@ -694,7 +692,6 @@ export default {
           item.productId = item.prdId
           item.productNumber = Number(item.productNumber)
         })
-
         addGift(this.param).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: this.$t('gift.saveSuccess') })
@@ -712,21 +709,16 @@ export default {
     },
     // 格式化入参时间
     formatTime () {
-      this.param.startTime = this.param.dateRange[0]
-      this.param.endTime = this.param.dateRange[1]
-
-      this.param.rules.payStartTime = this.param.rules.payDateRange[0]
-      this.param.rules.payEndTime = this.param.rules.payDateRange[1]
-
-      // const { dateRange, payDateRange } = this
-      // let startTime = range(dateRange).v1
-      // let endTime = range(dateRange).v2
-      // this.param.startTime = format(startTime)
-      // this.param.endTime = format(endTime)
-      // startTime = range(payDateRange).v1
-      // endTime = range(payDateRange).v2
-      // this.param.rules.payStartTime = format(startTime)
-      // this.param.rules.payEndTime = format(endTime)
+      // 活动时间
+      if (this.param.dateRange) {
+        this.param.startTime = this.param.dateRange[0]
+        this.param.endTime = this.param.dateRange[1]
+      }
+      // 付款时间
+      if (this.param.rules.payDateRange) {
+        this.param.rules.payStartTime = this.param.rules.payDateRange[0]
+        this.param.rules.payEndTime = this.param.rules.payDateRange[1]
+      }
     },
     // 处理商品规则
     formatRules () {
