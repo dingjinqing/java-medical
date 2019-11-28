@@ -252,7 +252,7 @@
         <span> {{this.$t('allGoods.allGoodsData.goodsLabel')}}：</span>
         <el-select
           v-model="goodsLabelData.labelSelectedTempVal"
-          :placeholder="$t('allGoods.allGoodsData.chooseGoodsLabel')"
+          :placeholder="$t('allGoods.allGoodsHeaderData.chooseGoodsLabel')"
           size="small"
           @change="tdLabelSelectChange"
           style="width:170px;"
