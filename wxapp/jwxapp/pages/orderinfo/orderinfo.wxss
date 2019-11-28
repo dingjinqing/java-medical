@@ -78,6 +78,7 @@
 }
 .goods_item > image {
   width: 150rpx;
+  height: 150rpx;
 }
 .goods_item > .goods_info {
   flex: 1;

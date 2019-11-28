@@ -41,7 +41,7 @@
       <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{orderInfo.deliverTypeName}}</text>
     </view>
     <view class="goods_item" bindtap="itemPage" data-goods_id="{{goodsItem.goodsId}}" wx:for="{{orderInfo.goods}}" wx:for-item="goodsItem" wx:key="recId" wx:for-index="goodsIndex">
-      <image mode="widthFix" src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
+      <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
       <view class="goods_info">
         <view class="goods_name">
           {{goodsItem.goodsName}}

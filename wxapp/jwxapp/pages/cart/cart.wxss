@@ -33,6 +33,7 @@
 }
 .goods_item > .goods_img image {
   width: 180rpx;
+  height: 180rpx;
 }
 .goods_item .goods_info {
   flex: 1;

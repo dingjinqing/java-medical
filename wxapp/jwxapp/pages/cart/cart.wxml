@@ -13,7 +13,7 @@
                         </view>
                         <view class="goods_item">
                             <view class="goods_img">
-                                <image src="{{imageUrl}}{{item.goodsImg}}" mode="widthFix"/>
+                                <image src="{{imageUrl}}{{item.goodsImg}}"/>
                                 <view class="invalid" wx:if="{{item.tip}}">
                                     {{item.tip}}
                                 </view>
@@ -58,7 +58,7 @@
                 <view class="flex_goods">
                     <view class="goods_item">
                         <view class="goods_img">
-                            <image src="{{imageUrl}}{{item.goodsImg}}" mode="widthFix"/>
+                            <image src="{{imageUrl}}{{item.goodsImg}}"/>
                             <view class="invalid" wx:if="{{item.tip}}">
                                 {{item.tip}}
                             </view>
@@ -90,7 +90,7 @@
         <!-- 底部按钮 -->
         <view class="flex_footer" wx:if="{{canBuyGoodsList.length > 0}}" style="{{!isIpx ? 'bottom:110rpx;' :'bottom:160rpx'}}">
             <view class="footer_left">
-                <text class="iconfont {{allChecked ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}}" bindtap="changeAllChecked"></text>
+                <text class="iconfont {{isAllCheck ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}}" bindtap="changeAllChecked"></text>
                 <text>全选</text>
             </view>
             <view class="footer_center">  

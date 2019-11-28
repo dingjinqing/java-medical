@@ -40,7 +40,7 @@
             </view>
           </view>
           <view wx:for="{{item.goods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="recId" class="goods_item">
-            <image mode="widthFix" src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
+            <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
             <view class="goods_info">
               <view class="goods_name">
                 {{goodsItem.goodsName}}

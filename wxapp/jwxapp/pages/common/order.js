@@ -26,7 +26,7 @@ var order = {
   // 查看详情
   viewInfo(orderSn) {
     util.jumpLink(
-      `/pages/orderinfo/orderinfo?order_sn=${orderSn}`,
+      `/pages/orderinfo/orderinfo?orderSn=${orderSn}`,
       "navigateTo"
     );
   },

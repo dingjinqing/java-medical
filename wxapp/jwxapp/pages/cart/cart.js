@@ -7,8 +7,7 @@ global.wxPage({
   data: {
     canBuyGoodsList: null,
     invalidGoodsList:null,
-    totalPrice:0,
-    allChecked:false
+    totalPrice:0
   },
 
   /**
@@ -37,12 +36,13 @@ global.wxPage({
       if(res.error === 0){
         let canBuyList = (res.content && res.content.cartGoodsList) || []
         let invalidList = (res.content && res.content.invalidCartList) || []
+
         this.setData({
           canBuyGoodsList: canBuyList,
-          invalidGoodsList: invalidList
+          invalidGoodsList: invalidList,
+          isAllCheck: res.content.isAllCheck,
+          totalPrice: res.content.totalPrice
         })
-        this.getAllCheckedStatus()
-        console.log(canBuyList)
       }
     })
   },
@@ -54,6 +54,7 @@ global.wxPage({
     util.api('/api/wxapp/cart/removes',res=>{
       console.log(res)
       if(res.error === 0){
+        this.requestCartList()
       }
     },{
         recIds
@@ -65,44 +66,29 @@ global.wxPage({
     util.api('/api/wxapp/cart/remove', (res) => {
       console.log(res)
       if(res.error === 0){
-        this.setData({
-          canBuyGoodsList: this.data.canBuyGoodsList.filter(item => {
-            return recId !== item.recId;
-          })
-        })
-        this.getCartPrice()
+        this.requestCartList()
       }
     }, { recId: recId })
   },
   // 更改选中状态
   checkedToggle(e){
     let recId = e.currentTarget.dataset.rec_id
+    let idx = this.data.canBuyGoodsList.findIndex(item => item.recId === recId)
     util.api('/api/wxapp/cart/switch',res=>{
       if(res.error === 0){
         this.requestCartList()
       }
-    }, { recId })
-    // const targetIndex = this.data.canBuyGoodsList.findIndex(item => {return item.recId === e.currentTarget.dataset.rec_id})
-    // const target = `canBuyGoodsList[${targetIndex}].isChecked`
-    // this.setData({
-    //   [target]: this.data.canBuyGoodsList[targetIndex].isChecked ? 0 : 1,
-    // })
-    // this.getAllCheckedStatus()
-  },
-  // 获取是否所有单选框全选
-  getAllCheckedStatus(){
-    this.setData({
-      allChecked: this.data.canBuyGoodsList.every(item => { return item.isChecked === 1 })
-    })
-    this.getCartPrice()
+    }, { recIds: [recId], isChecked: this.data.canBuyGoodsList[idx].isChecked ? 0 : 1 })
   },
   // 更改全选状态
   changeAllChecked(){
-    this.setData({
-      allChecked: !this.data.allChecked,
-      canBuyGoodsList: this.data.canBuyGoodsList.map(item => { item.isChecked = !this.data.allChecked ? 1 : 0; return item})
-    })
-    this.getCartPrice()
+    let recIds = this.data.canBuyGoodsList.map(item=> {return item.recId})
+    let isAllCheck = isAllCheck ? 0 : 1
+    util.api('/api/wxapp/cart/switch', res => {
+      if (res.error === 0) {
+        this.requestCartList()
+      }
+    }, { recIds, isChecked: isAllCheck })
   },
   // 
   //触摸改变
@@ -123,17 +109,17 @@ global.wxPage({
       });
     }
   },
-  //计算商品价格
-  getCartPrice(){
-    const canBuyList = this.data.canBuyGoodsList.filter(item => { return item.isChecked === 1 })
-    let totalPrice = canBuyList.reduce((accumulator, currentValue)=>{
-      return accumulator += currentValue.cartPrice * currentValue.cartNumber
-    },0)
-    let realPrice = totalPrice.toFixed(3)
-    this.setData({
-      totalPrice: realPrice.substring(0, realPrice.length - 1)
-    })
-  },
+  // //计算商品价格
+  // getCartPrice(){
+  //   const canBuyList = this.data.canBuyGoodsList.filter(item => { return item.isChecked === 1 })
+  //   let totalPrice = canBuyList.reduce((accumulator, currentValue)=>{
+  //     return accumulator += currentValue.cartPrice * currentValue.cartNumber
+  //   },0)
+  //   let realPrice = totalPrice.toFixed(3)
+  //   this.setData({
+  //     totalPrice: realPrice.substring(0, realPrice.length - 1)
+  //   })
+  // },
   toCheckOut(){
     let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item=>{
       let { goodsId, cartPrice: prdRealPrice, cartNumber: goodsNum, prdId } = item

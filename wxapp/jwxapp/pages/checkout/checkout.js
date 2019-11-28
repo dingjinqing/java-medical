@@ -5,6 +5,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
+    imageUrl: util.getImageUrl(""),
     balanceStatus:0,//使用余额状态 
     scoreStatus:0,//使用积分状态
     cardBalanceStatus:0,//使用会员卡余额状态
@@ -358,6 +359,7 @@ global.wxPage({
       if(res.error === 0){
         if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo){
           let {orderSn} = res.content 
+          console.log(res.content.webPayVo.appId, res.content.webPayVo.timeStamp, res.content.webPayVo.nonceStr, res.content.webPayVo.package, res.content.webPayVo.paySign)
           wx.requestPayment({
             'timeStamp': res.content.webPayVo.timeStamp,
             'nonceStr': res.content.webPayVo.nonceStr,
@@ -369,6 +371,7 @@ global.wxPage({
               util.jumpLink('pages/orderlist/orderlist', 'redirectTo')
             },
             'fail': function (res) {
+              console.log(res)
               util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${orderSn}`, 'redirectTo')
             },
             'complete': function (res) { }
