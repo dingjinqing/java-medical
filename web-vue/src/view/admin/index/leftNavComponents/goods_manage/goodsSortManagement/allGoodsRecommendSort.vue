@@ -58,8 +58,9 @@
         style="margin-bottom: 10px;"
       >{{$t('goodsRecommendSorts.addRecommendSort')}}</el-button>
       <el-table
+        class="version-manage-table"
+        header-row-class-name="tableClss"
         :data="goodsRecommendSortData"
-        class="tableClass"
         border
         style="width: 100%"
       >
@@ -73,10 +74,14 @@
           :label="$t('goodsRecommendSorts.goodsSortImg')"
         >
           <template slot-scope="{row}">
-            <img
-              :src="row.sortImg"
-              style="height: 50px;min-width: 160px;"
-            />
+            <div style="height: 50px;">
+              <img
+                v-if="row.sortImg"
+                :src="row.sortImg"
+                style="height: 50px;min-width: 160px;"
+              />
+            </div>
+
           </template>
         </el-table-column>
         <el-table-column
@@ -279,7 +284,7 @@ export default {
   cursor: pointer;
   opacity: 0.8;
 }
-. /deep/.tableClass th {
+/deep/ .tableClss th {
   background-color: #f5f5f5;
   border: none;
   height: 36px;

@@ -45,11 +45,13 @@
           :label="$t('goodsSorts.goodsSortImg')"
         >
           <template slot-scope="{row}">
-            <img
-              v-if="row.sortImg"
-              :src="row.sortImg"
-              style="height: 50px;min-width: 160px;"
-            />
+            <div style="height: 50px;">
+              <img
+                v-if="row.sortImg"
+                :src="row.sortImg"
+                style="height: 50px;min-width: 160px;"
+              />
+            </div>
           </template>
         </el-table-column>
         <el-table-column
