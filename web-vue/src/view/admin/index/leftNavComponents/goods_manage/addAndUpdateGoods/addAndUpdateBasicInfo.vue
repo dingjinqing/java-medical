@@ -8,6 +8,7 @@
         :rules="basicInfoRules"
         label-width="120px"
       >
+        <!--商品名称-->
         <el-form-item
           :label="$t('goodsAddEditInfo.basicInfo.goodsName')"
           prop="goodsName"
@@ -20,6 +21,7 @@
             @change="goodsNameChangeRepeatCheck"
           />
         </el-form-item>
+        <!--商品广告语-->
         <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsAd')">
           <el-input
             v-model="goodsProductInfo.goodsAd"
@@ -27,6 +29,7 @@
             style="width:170px"
           />
         </el-form-item>
+        <!--商品唯一SN码值-->
         <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsSn')">
           <el-input
             v-model="goodsProductInfo.goodsSn"
@@ -36,6 +39,7 @@
           />
           <span class="inputTip">{{$t("goodsAddEditInfo.basicInfo.goodsSnTip")}}</span>
         </el-form-item>
+        <!--平台分类-->
         <el-form-item
           :label="$t('goodsAddEditInfo.basicInfo.catId')"
           prop="catId"
@@ -104,6 +108,7 @@
             target="_blank"
           >{{$t("goodsAddEditInfo.basicInfo.catIdGo")}}</el-link>
         </el-form-item>
+        <!--商品图片-->
         <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsImg')">
           <div style="display: flex;align-items: center;flex-wrap: wrap;">
             <div
@@ -173,10 +178,12 @@
         label-width="120px"
         v-show="!arrorFlag"
       >
+        <!--商品单位-->
         <el-form-item
           :label="$t('goodsAddEditInfo.basicInfoOther.unit')"
           prop="unit"
         >
+          <!--商品单位选择框-->
           <el-select
             ref="unitSelect"
             v-model="unitSelectedValue"
@@ -191,6 +198,7 @@
               :label="item.label"
             />
           </el-select>
+          <!--商品单位用户输入框-->
           <el-input
             v-if="unitSelectedValue===null"
             v-model="unitCustomerValue"
@@ -203,6 +211,7 @@
             class="inputTip"
           >{{$t('goodsAddEditInfo.basicInfoOther.unitTip')}}</span>
         </el-form-item>
+        <!--商家分类下拉树-->
         <sortCatTreeSelect
           ref="sortTree"
           :autoLoad="false"
@@ -210,7 +219,9 @@
           treeType="sort"
           :selectedId.sync="goodsProductInfo.sortId"
         />
+        <!--商品标签-->
         <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsLabel')">
+          <!--标签下拉框-->
           <el-select
             v-model="labelSelectedTempVal"
             :placeholder="$t('goodsAddEditInfo.basicInfoOther.goodsLabelDefault')"
@@ -225,6 +236,7 @@
               :value="item.id"
             />
           </el-select>
+          <!--刷新标签-->
           <el-link
             type="primary"
             :underline="false"
@@ -234,6 +246,7 @@
           >{{$t('goodsAddEditInfo.linkRefresh')}}
           </el-link>
           |
+          <!--新建标签-->
           <el-link
             type="primary"
             :underline="false"
@@ -242,6 +255,7 @@
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelNew')}}</el-link>
           |
+          <!--管理标签-->
           <el-link
             type="primary"
             :underline="false"
@@ -249,6 +263,7 @@
             href="#"
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.basicInfoOther.goodsLabelManage')}}</el-link>
+          <!--已选择标签回显框-->
           <div
             v-if="labelSelectedItems.length>0"
             style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;"
@@ -267,6 +282,7 @@
             </div>
           </div>
         </el-form-item>
+        <!--商品品牌-->
         <el-form-item :label="$t('goodsAddEditInfo.basicInfoOther.goodsBrand')">
           <el-button
             @click="goodsBrandDialogData.goodsBrandDialogShow=true"
@@ -275,6 +291,7 @@
           >
             {{currentGoodsBrandData.brandName}}
           </el-button>
+          <!--新建品牌-->
           <el-link
             type="primary"
             :underline="false"
@@ -283,6 +300,7 @@
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandNew')}}</el-link>
           |
+          <!--管理品牌-->
           <el-link
             type="primary"
             :underline="false"
@@ -291,22 +309,26 @@
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandManage')}}</el-link>
         </el-form-item>
+        <!--商品视频-->
         <el-form-item
           :label="$t('goodsAddEditInfo.basicInfoOther.goodsVideo') + '：'"
           prop="video"
         >
+          <!--视频弹框-->
           <VideoSpaceDialog
             :visible.sync="showVideoSpaceDialog"
             @video-click="videoSelected"
           />
           <div style="display: flex; align-items: center;flex-wrap: wrap;">
             <div class="add-video-container">
+              <!--视频图片-->
               <el-image
                 fit="scale-down"
                 class="add-goods-video"
                 :src="videoSnapShotUrl"
                 @click="videoInputClick"
               />
+              <!--删除视频图片按钮-->
               <el-image
                 fit="scale-down"
                 @click="videoRemove"
@@ -314,7 +336,7 @@
                 class="img-delete good_img_deletes"
                 v-show="showRemoveVideoIcon"
               />
-
+              <!--播放视频按钮-->
               <el-link
                 type="primary"
                 :underline="false"
@@ -326,6 +348,7 @@
                 {{$t('videoSpace.upload.play')}}
               </el-link>
             </div>
+            <!--选择视频提示语-->
             <span class="inputTip">{{$t('goodsAddEditInfo.basicInfoOther.goodsVideoTip')}}</span>
           </div>
         </el-form-item>
@@ -437,28 +460,45 @@ import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
 import ImageDalog from '@/components/admin/imageDalog'
 import pagination from '@/components/admin/pagination/pagination'
 import VideoSpaceDialog from '@/components/admin/videoSpace/videoSpaceDialog'
+
 export default {
   components: { sortCatTreeSelect, ImageDalog, pagination, VideoSpaceDialog },
   data () {
     return {
+      // 商品图片弹框控制
       selfImgDialogShow: false,
       goodsProductInfo: {
         goodsId: null,
         // 基本信息
+        // 存放用户的输入值
         goodsName: null,
+        // 存放用户数据的最近一次的合法值
         goodsNameBak: null,
+        // 广告语
         goodsAd: null,
+        // 用户输入商品sn
         goodsSn: null,
+        // 存放用户数据的最近一次的合法值
         goodsSnBak: null,
+        // 用户选择的最终平台分类id值
         catId: null,
+        // 存在商品图片，按顺序存
         goodsImgs: [],
+        // 商品单位
         unit: null,
+        // 商家分类id
         sortId: null,
+        // 商品标签id数组
         goodsLabels: null,
+        // 商品品牌id
         brandId: null,
+        // 视频url
         goodsVideo: null,
+        // 视频图片
         goodsVideoImg: null,
+        // 视频大小
         goodsVideoSize: null,
+        // 视频id
         goodsVideoId: null
       },
       /* 基本信息部分 */
@@ -486,18 +526,25 @@ export default {
         secondCatData: null,
         thirdCatData: null
       },
+      // 图片服务器域名
       imgHost: `${this.$imageHost}`,
       /* 基本信息更多配置部分 */
       collapseActiveName: 'basicMore',
+      /* 商品单位辅助数据 */
       unitSelectOptions: [],
+      // 单位下拉框选中的值
       unitSelectedValue: null,
+      // 用户输入的自定义单位，当下拉框选中null时，此外才有效
       unitCustomerValue: null,
       /* 商品品牌服辅助数据 */
       // 商品品牌选中对象
       currentGoodsBrandData: {
+        // 选中的品牌id
         id: null,
+        // 选中的品牌的名字
         brandName: '添加品牌'
       },
+      // 品牌选中弹框
       goodsBrandDialogData: {
         goodsBrandDialogShow: false,
         formData: {
@@ -514,7 +561,7 @@ export default {
         currentSelectedRow: null
       },
       /* 商品标签辅助数据 */
-      // 商品标签下拉框
+      // 商品标签下拉框数据
       labelSelectOptions: [],
       // 标签已选中列表
       labelSelectedItems: [],
@@ -522,6 +569,7 @@ export default {
       labelSelectedTempVal: null,
       // 视频辅助数据
       showVideoSpaceDialog: false,
+      // 添加视频图片地址
       videoSnapShotUrl: this.$imageHost + '/image/admin/add_video.png',
       videoUrl: '',
       showRemoveVideoIcon: false,
@@ -536,11 +584,6 @@ export default {
   },
   watch: {
     lang () {
-      this.basicInfoRules.goodsName[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsName')
-      this.basicInfoRules.catId[0].message = this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify')
-      this.basicInfoRules.goodsImgs[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage')
-      this.basicInfoRules.unit[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit')
-      this.currentGoodsBrandData.brandName = this.$t('goodsAddEditInfo.basicInfoOther.goodsBrandTitle')
       let i18nUnitOptions = this.$t('goodsAddEditInfo.basicInfoOther.unitOptions')
       this.unitSelectedValue = i18nUnitOptions[0]
       this.unitSelectOptions = [
@@ -570,8 +613,9 @@ export default {
   },
   methods: {
     /* 基本信息部分 */
-    // 商品名称重复性检查
+    // 商品名称重复性检查，每次用户触发change事件时，就触发
     goodsNameChangeRepeatCheck () {
+      // 如果输入的是空值，那就返回，同时认定用户就是想输入空
       if (isStrBlank(this.goodsProductInfo.goodsName)) {
         this.goodsProductInfo.goodsNameBak = this.goodsProductInfo.goodsName
         return
@@ -579,14 +623,17 @@ export default {
 
       let data = {
         columnCheckFor: 0,
+        // 新增时该值为null,修改时是商品id，后台根据该值判断是新增还是修改
         goodsId: this.goodsProductInfo.goodsId,
         goodsName: this.goodsProductInfo.goodsName
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
+          // 有重复的值
           this.$message.warning({ type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat') })
           this.goodsProductInfo.goodsName = this.goodsProductInfo.goodsNameBak
         } else {
+          // 合法可用
           this.goodsProductInfo.goodsNameBak = this.goodsProductInfo.goodsName
         }
       })
@@ -605,14 +652,16 @@ export default {
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
+          // 有重复的值
           this.$message.warning({ type: 'warning', message: this.$t('goodsAddEditInfo.warningInfo.goodsNameRepeat') })
           this.goodsProductInfo.goodsSn = this.goodsProductInfo.goodsSnBak
         } else {
+          // 合法可用
           this.goodsProductInfo.goodsSnBak = this.goodsProductInfo.goodsSn
         }
       })
     },
-    // 平台分类下拉框交互
+    // 平台分类下拉框交互 level：当前选中的层级 1，2,3 catId当前选中的平台分类id值
     catIdSelectChange (level, catId) {
       this.goodsProductInfo.catId = catId
 
@@ -627,19 +676,20 @@ export default {
       if (level === 2) {
         this.catIdTemp.thirdCatId = null
         this.catIdTemp.thirdCatData = null
+        // 二级选择的是null,则catId设置为一级id
         if (catId === null) {
           this.goodsProductInfo.catId = this.catIdTemp.firstCatId
         }
       }
-      // 选择三级
+      // 选择三级，且选的是null，则catId设置为地二级
       if (level === 3 && catId === null) {
         this.goodsProductInfo.catId = this.catIdTemp.secondCatId
       }
-
+      // 选择一级或者二级的null项则不用请求后端
       if (catId === null) {
         return
       }
-
+      // 请求当前选中项的下一级的内容
       selectPlatformClassification(catId).then(res => {
         if (level === 1) {
           this.catIdTemp.secondCatData = res.content
@@ -693,7 +743,7 @@ export default {
     },
     // 自定义单位处理事件
     unitCustomerChange () {
-      // 自定义单位长度超过3字符，则返回
+      // 自定义单位长度超过3字符，则截取后返回
       if (!isStrBlank(this.unitCustomerValue) && this.unitCustomerValue.length > 3) {
         this.unitCustomerValue = this.unitCustomerValue.substring(0, 3)
         this.goodsProductInfo.unit = this.unitCustomerValue
@@ -705,6 +755,7 @@ export default {
     },
     /* 标签下拉框选择事件 */
     labelSelectChange () {
+      // 将用户选中的标签项从下拉框中剔除，装入已选中数组中
       this.labelSelectOptions = this.labelSelectOptions.filter(item => {
         if (item.id === this.labelSelectedTempVal) {
           this.labelSelectedItems.push(item)
@@ -712,6 +763,7 @@ export default {
         }
         return true
       })
+      // 复位下拉框
       this.labelSelectedTempVal = null
     },
     /* 刷新标签下拉列表，要将已选的项剔除 */
@@ -772,7 +824,6 @@ export default {
       this.showVideoSpaceDialog = true
     },
     videoSelected (item) {
-      console.log('videoSelected', item)
       this.refreshVideo(item.snapshotUrl, item.videoSnapPath, item.videoUrl, item.videoPath, item.videoSize, item.videoId)
     },
     /* 快照全路径，快照相对路径，视频全路径，视频相对路径，视频大小，视频id */
@@ -788,24 +839,29 @@ export default {
     videoRemove () {
       this.refreshVideo()
     },
-    /* 初始化平台分类 */
+    /* 展开更多配置 */
+    handleToChangeArror () {
+      this.arrorFlag = !this.arrorFlag
+    },
+    /* 显示商品详情时初始化平台分类 */
     _initCatId (goodsData) {
       let catId = goodsData.catId
       this.goodsProductInfo.catId = catId
+      // 查询当前节点的所有祖先级节点
       selectParentPlatfromClassification(catId).then(res => {
         let catList = res.content
         this._catFirstInit()
-
+        // 如果第一级有数据，则将第二级的下拉框数据进行初始化
         if (catList[0] !== undefined) {
           this.catIdTemp.firstCatId = catList[0].cat_id
           this._catSecondInit(catList[0].cat_id)
         }
-
+        // 如果第二级有数据，则将第三级的下拉框数据进行初始化
         if (catList[1] !== undefined) {
           this.catIdTemp.secondCatId = catList[1].cat_id
           this._catThirdInit(catList[1].cat_id)
         }
-
+        // 第三级有数据
         if (catList[2] !== undefined) {
           this.catIdTemp.thirdCatId = catList[2].cat_id
         }
@@ -835,6 +891,7 @@ export default {
     },
     /* 初始化图片 */
     _initGoodsImgs (goodsData) {
+      // 选择商品图片时第一张图片默认为主图，其他为幅图，数据返回时主图和幅图不在同一个字段中
       this.goodsProductInfo.goodsImgs = [{ imgUrl: goodsData.goodsImg, imgPath: goodsData.goodsImgPath }]
       if (goodsData.goodsImgs !== null && goodsData.goodsImgs.length > 0) {
         for (let i = 0; i < goodsData.goodsImgs.length; i++) {
@@ -863,6 +920,7 @@ export default {
         return
       }
       this.labelSelectedItems = goodsLabelList
+      // 标签下拉框剔除已选中的标签项
       this.labelSelectOptions = this.labelSelectOptions.filter(item => {
         let has = this.labelSelectedItems.some(selectedItem => selectedItem.id === item.id)
         return !has
@@ -874,12 +932,12 @@ export default {
         this.labelSelectOptions = res.content.goodsLabels
       })
       let p2 = this.$refs.sortTree.loadData()
-
+      // 异步操作变同步，为了商品标签的回显操作
       return Promise.all([p1, p2])
     },
     /* 初始化待修改商品数据 */
     initDataForUpdate (goodsData) {
-      // 打开basicForm，否则display = none时会因数据尚未渲染报错
+      // 打开basicForm，否则display = none时会应为组件尚未渲染在this.$refs中取不到
       this.arrorFlag = false
       // 先初始化页面数据再渲染待修改商品数据
       return this._sortAndLabelSelectInit().then(() => {
@@ -919,29 +977,31 @@ export default {
     },
     /* 新增数据时数据初始化 */
     initDataForInsert () {
+      // 初始化第一级平台分类下拉项
       this._catFirstInit()
       // 商家分类和品牌初始化
       this._sortAndLabelSelectInit()
     },
     /* 验证数据是否全部合法 */
     validateFormData () {
+      // 商品名称为空
       if (isStrBlank(this.goodsProductInfo.goodsName)) {
         this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsName'), type: 'warning' })
         this.$refs.goodsNameInput.focus()
         return false
       }
-
+      // 平台分类未选中
       if (this.goodsProductInfo.catId === null) {
         this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify'), type: 'warning' })
         this.$refs.catSelect.focus()
         return false
       }
-
+      // 未选择商品图片
       if (this.goodsProductInfo.goodsImgs.length === 0) {
         this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage'), type: 'warning' })
         return false
       }
-
+      // 单位未选择
       if (isStrBlank(this.goodsProductInfo.unit)) {
         this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit'), type: 'warning' })
         this.$refs.unitSelect.focus()
@@ -961,7 +1021,7 @@ export default {
       this.labelSelectedItems.forEach(item => retData.goodsLabels.push(item.id))
 
       // 处理商品图片
-      // 只有一个商品主图
+      // 只有一个商品主图此处数组不可能为null
       if (this.goodsProductInfo.goodsImgs.length === 1) {
         retData.goodsImg = this.goodsProductInfo.goodsImgs[0].imgPath
         retData.goodsImgs = null
@@ -975,10 +1035,6 @@ export default {
         }
       }
       return retData
-    },
-    /* 展开更多配置 */
-    handleToChangeArror () {
-      this.arrorFlag = !this.arrorFlag
     }
   },
   mounted () {
