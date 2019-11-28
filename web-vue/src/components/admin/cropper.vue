@@ -151,7 +151,8 @@ export default {
       imgCatId: '',
       imgID: '',
       cropperFlagP: '',
-      disabled: true // 用户是否可以自定义输入
+      disabled: true, // 用户是否可以自定义输入
+      saveScaleW: null // 保存缩放后的背景图片宽度
     }
   },
   computed: {
@@ -162,7 +163,7 @@ export default {
   },
   watch: {
     cropperFlag_ (obj) {
-      // console.log(obj, 111)
+      console.log(obj, 111)
       if (obj === null) return
       this.dialogVisible = true
       // this.option.img = url
@@ -171,6 +172,11 @@ export default {
       this.imgID = obj.imgid
       this.cropperFlagP = obj.index
       this.option.img = obj.url
+      if (obj.imgWidth > 150) {
+        this.saveScaleW = 150
+      } else {
+        this.saveScaleW = obj.imgWidth
+      }
     },
     imageSize: {
       handler (newData) {
@@ -249,16 +255,16 @@ export default {
     handleSave () {
       // console.log(this.imgPath, this.cropperTopInput_one, this.cropperTopInput_two, this.cropMovingX, this.cropMovingY, this.previews.img.width, this.previews.img.height, 98, this.imgCatId, this.imgID)
       // console.log(this.previews)
-
+      console.log(this.cropMovingX, this.cropMovingY, this.cropperTopInput_one, this.cropperTopInput_two, this.previews.w, this.previews.h)
       let obj = {
         remoteImgPath: this.imgPath,
         cropWidth: this.cropperTopInput_one,
         cropHeight: this.cropperTopInput_two,
-        x: parseInt(this.cropMovingX),
-        y: parseInt(this.cropMovingY),
-        w: parseInt(this.previews.w),
-        h: parseInt(this.previews.h),
-        imgScaleW: 98,
+        x: this.cropMovingX,
+        y: this.cropMovingY,
+        w: this.previews.w,
+        h: this.previews.h,
+        imgScaleW: this.saveScaleW,
         imgCatId: this.imgCatId,
         remoteImgId: this.imgID
       }
@@ -291,6 +297,7 @@ export default {
       console.log(data)
       let left = data.axis.x1 - this.$refs.cropper.getImgAxis().x1
       let top = data.axis.y1 - this.$refs.cropper.getImgAxis().y1
+      // 处理裁剪比例等数据
       console.log(Math.floor(left), '-', Math.floor(top))
       this.cropMovingX = Math.floor(left)
       this.cropMovingY = Math.floor(top)

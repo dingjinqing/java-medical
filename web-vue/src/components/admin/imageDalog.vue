@@ -99,7 +99,7 @@
                         >{{$t('imgageDalog.OriginalImg')}}</a>
                         <a
                           :title="$t('imgageDalog.cutPictures')"
-                          @click="handleCropper(item.imgPath,item.imgCatId,item.imgId,item.imgUrl)"
+                          @click="handleCropper(item.imgPath,item.imgCatId,item.imgId,item.imgUrl,item.imgWidth,item.imgHeight)"
                         >
                           {{$t('imgageDalog.tailoring')}}
                         </a>
@@ -583,13 +583,15 @@ export default {
       console.log(this.img_list[index].imgIndex)
     },
     // 裁剪弹窗调起
-    handleCropper (path, catid, imgid, url) {
+    handleCropper (path, catid, imgid, url, imgWidth, imgHeight) {
       let obj = {
         path: path,
         catid: catid,
         imgid: imgid,
         url: url,
-        index: 1
+        index: 1,
+        imgWidth: imgWidth,
+        imgHeight: imgHeight
       }
       console.log(1)
       this.$store.commit('TOCHANGE_RECRUITMENTDIALOG', obj)
