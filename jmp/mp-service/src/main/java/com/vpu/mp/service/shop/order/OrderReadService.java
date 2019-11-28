@@ -348,7 +348,7 @@ public class OrderReadService extends ShopBaseService {
 		//获取已退运费
 		BigDecimal returnShipingFee = returnOrder.getReturnShippingFee(rOrder.getOrderSn());
 		//退运费校验
-		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo() , returnShipingFee)){
+		if(OrderOperationJudgment.adminIsReturnShipingFee(vo.getOrderInfo(), returnShipingFee, true)){
 			vo.setCanReturnShippingFee(order.getShippingFee().subtract(returnShipingFee));
 		}
 		//退款商品
