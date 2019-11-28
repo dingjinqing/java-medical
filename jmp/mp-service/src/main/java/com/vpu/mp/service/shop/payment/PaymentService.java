@@ -134,7 +134,7 @@ public class PaymentService extends ShopBaseService {
 		BigDecimal totalFee = new BigDecimal(param.getTotalFee());
 
 		// 全款支付，且金额不相同，则抛出异常
-		if (orderInfo.getMoneyPaid().equals(totalFee) && orderInfo.getOrderPayWay().equals(OrderConstant.PAY_WAY_FULL)) {
+		if (!orderInfo.getMoneyPaid().equals(totalFee) && orderInfo.getOrderPayWay().equals(OrderConstant.PAY_WAY_FULL)) {
             logger().error("订单统一支付回调,全款支付但金额不相同,订单sn:{},参数金额:{},订单金额:{}",
                 orderSn, totalFee, orderInfo.getMoneyPaid());
 			throw new MpException(null, "onPayNotify orderSn " + orderSn + " pay amount  did not match");
