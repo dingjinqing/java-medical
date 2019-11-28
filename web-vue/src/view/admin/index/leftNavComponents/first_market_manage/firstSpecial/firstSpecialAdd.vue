@@ -836,7 +836,14 @@ export default {
           that.selectGoods.forEach(function (item, i) {
             let index = that.tableData.findIndex((row, j) => row.goodsId === item.goodsId)
             let batchFinalPrice = Math.ceil(that.tableData[index].batchFinalPrice)
-            that.$set(that.tableData[index], 'batchFinalPrice', batchFinalPrice)
+            item.batchFinalPrice = batchFinalPrice
+            item.goodsProductParams = item.goodsProductParams.map((good, k) => {
+              if (good.prdPrice) {
+                good.prdPrice = Math.ceil(good.prdPrice)
+              }
+              return good
+            })
+            that.$set(that.tableData, index, item)
             console.log(that.tableData[index])
           })
           that.$refs.firstSpecialTable.clearSelection() // 触发表格数据刷新
@@ -863,8 +870,12 @@ export default {
     handleSelectImg (image) {
       this.$set(this.form.shareConfig, 'share_img', image.imgUrl)
     },
-    getProductdata (datas) {
-      console.log(datas)
+    getProductdata (goodsId, datas) {
+      this.tableData.forEach((row, index) => {
+        if (row.goodsId === goodsId) {
+          row.goodsProductParams = datas
+        }
+      })
     },
     paramsAssign () {
       this.form.firstSpecialGoodsParams = this.tableData.map((item, i) => {

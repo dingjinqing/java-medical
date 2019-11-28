@@ -66,7 +66,7 @@ export default {
       tableLabel: [
         { index: 1, prop: 'prdDesc', label: '规格名称' },
         { index: 2, prop: 'originalPrice', label: '原价' },
-        { index: 3, prop: 'prdPrice', label: '折后价' }
+        { index: 3, prop: 'prdPrice', label: '首单价' }
       ],
       reducePriceProduct: null
     }
