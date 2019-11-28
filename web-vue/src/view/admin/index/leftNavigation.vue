@@ -660,7 +660,7 @@ export default {
             this.$router.push({
               name: name,
               query: {
-                order_status: 3
+                orderStatus: 3
               }
             })
           } else if (name === "pin_group_fail") {
@@ -685,7 +685,7 @@ export default {
             this.$router.push({
               name: name,
               query: {
-                order_status: 3
+                orderStatus: 3
               }
             })
           } else if (name === "pin_group_fail") {

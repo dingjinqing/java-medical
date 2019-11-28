@@ -338,7 +338,11 @@ export const cn = {
     [99, '代付订单'],
     [100, '扫码购订单']
   ],
-  deliverTypeList: [[null, '全部'], [0, '快递'], [1, '自提']],
+  deliverTypeList: [
+    [null, '全部'],
+    [0, '快递'],
+    [1, '自提']
+  ],
   paymentTypeList: [
     [null, '全部'],
     [6, '微信支付'],
@@ -389,7 +393,11 @@ export const cn = {
     '拍错/多拍/不想要',
     '其他'
   ],
-  storeStatusList: [[null, '全部'], [1, '已支付'], [2, '已退款']],
+  storeStatusList: [
+    [null, '全部'],
+    [1, '已支付'],
+    [2, '已退款']
+  ],
   payTypeObj: {
     wxpay: '微信支付',
     balance: '余额支付'

@@ -10,7 +10,7 @@
       </block>
     </view>
     <view class="goods_price">
-      <text class="price" style="color:{{main_setting.comColor}};">￥{{goodsData.realPrice}}</text>
+      <text class="price" style="color:{{main_setting.comColor}};">￥{{goodsData.realPrice===null?'0.00':goodsData.realPrice}}</text>
       <text class="iconfont icongouwuche1" style="color:{{main_setting.comColor}};"></text>
     </view>
   </view>

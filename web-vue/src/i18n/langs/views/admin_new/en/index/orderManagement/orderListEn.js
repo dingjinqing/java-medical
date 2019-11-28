@@ -177,7 +177,8 @@ export const en = {
   orderCid: 'ID number',
   custom: 'Custom order information required',
   orderExportConfirmTip_1: 'Filter',
-  orderExportConfirmTip_2: 'data according to the following conditions, confirm the export?',
+  orderExportConfirmTip_2:
+    'data according to the following conditions, confirm the export?',
   filterCondition: 'Filter Condition：',
   orderExportLimitTip: 'Export number(export up to 5000 data at a time)',
   orderStatusList: [
@@ -221,7 +222,11 @@ export const en = {
     [99, 'Payment Orders'],
     [100, 'Scan code purchase order']
   ],
-  deliverTypeList: [[null, 'all'], [0, 'Express'], [1, 'self-lifting']],
+  deliverTypeList: [
+    [null, 'all'],
+    [0, 'Express'],
+    [1, 'self-lifting']
+  ],
   paymentTypeList: [
     [null, 'all'],
     [1, 'WeChat payment'],
@@ -278,7 +283,11 @@ export const en = {
     'Bid the wrong / multi shot / do not want',
     'other'
   ],
-  storeStatusList: [[null, 'all'], [1, 'paid'], [2, 'returned']],
+  storeStatusList: [
+    [null, 'all'],
+    [1, 'paid'],
+    [2, 'returned']
+  ],
   payTypeObj: {
     wxpay: 'WeChat payment',
     balance: 'balance payment'

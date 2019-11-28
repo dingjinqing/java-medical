@@ -29,7 +29,6 @@
               size="small"
               class="default_input"
               filterable
-              multiple
             >
               <el-option
                 v-for="item in $t('order.orderStatusList')"
@@ -808,7 +807,7 @@ export default {
         pinStatus: [],
         goodsName: '',
         orderSn: '',
-        orderStatus: [],
+        orderStatus: null,
         goodsType: null,
         consignee: '',
         mobile: '',
@@ -861,6 +860,7 @@ export default {
   inject: ['adminReload'],
   mounted () {
     console.log('mounted-----------------------')
+    this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : null
     // 初始化数据
     this.langDefault()
     this.initDataList()
@@ -905,7 +905,11 @@ export default {
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       this.searchType = 0
-      list(this.searchParams).then(res => {
+      let obj = {
+        ...this.searchParams,
+        orderStatus: this.searchParams.orderStatus ? [this.searchParams.orderStatus] : []
+      }
+      list(obj).then(res => {
         console.log(res)
         this.pageParams = res.content.page
         this.orderList = res.content.dataList
@@ -1085,7 +1089,7 @@ export default {
                   color: #666;
                   justify-content: space-between;
                   > span {
-                    width:190px;
+                    width: 190px;
                     text-align: left;
                     overflow: hidden;
                     text-overflow: ellipsis;
