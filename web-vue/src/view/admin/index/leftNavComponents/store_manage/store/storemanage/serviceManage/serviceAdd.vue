@@ -328,13 +328,13 @@ export default {
     let that = this
     function validInterval (rule, value, callback) {
       if (!that.form.startDate || !that.form.endDate) {
-        return callback(new Error('请选择可服务日期'))
+        return callback(new Error(that.$t('serviceAdd.validInterval')))
       }
       callback()
     }
     function validateDuration (rule, value, callback) {
       if (!that.form.serviceDuration) {
-        return callback(new Error('服务时长不能为0'))
+        return callback(new Error(that.$t('serviceAdd.validateDuration')))
       }
       callback()
     }

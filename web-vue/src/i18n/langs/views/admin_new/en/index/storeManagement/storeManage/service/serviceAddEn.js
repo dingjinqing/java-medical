@@ -43,6 +43,8 @@ export const en = {
   serviceStartTimeValid: 'Service start time not filled',
   serviceEndTimeValid: 'Service end time not filled',
   servicePeriodValid: 'The service period cannot be empty',
+  validInterval: 'Please select a service date',
+  validateDuration: 'Service duration cannot be 0',
 
   successTip: 'Successfully saved',
   updateTip: 'update completed'

@@ -43,6 +43,8 @@ export const cn = {
   serviceStartTimeValid: '可服务开始时间未填写',
   serviceEndTimeValid: '可服务结束时间未填写',
   servicePeriodValid: '服务时段不能为空',
+  validInterval: '请选择可服务日期',
+  validateDuration: '服务时长不能为0',
 
   successTip: '保存成功',
   updateTip: '更新成功'
