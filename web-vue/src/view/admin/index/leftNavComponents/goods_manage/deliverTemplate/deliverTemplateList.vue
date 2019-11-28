@@ -23,10 +23,10 @@
               placeholder="请选择运费模板"
             >
               <el-option
-                v-for="item in options"
-                :key="item.value "
-                :label="item.label | showTemplate "
-                :value="item.value "
+                v-for="(item, index) in options"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -51,7 +51,7 @@
             <span> 订单金额>=</span>
             <el-input
               size="small"
-              v-model.number="formData.feeLimit"
+              v-model="formData.feeLimit"
               style="width:80px"
             ></el-input>
             <span>元时包邮,否则运费为</span>
@@ -97,20 +97,9 @@ export default {
         callback(new Error('运费不能为空'))
       } else if (!re.test(value)) {
         callback(new Error('请输入合法数字值'))
-        // this.$message.warning({ message: '请填写非负数, 可以保留两位小数' })
       } else {
         callback()
       }
-    }
-    let checkPrice = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('运费不能为空'))
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入合法数字值'))
-        }
-      }, 1000)
     }
     return {
       tableData: [], // 表格的数据
@@ -122,61 +111,37 @@ export default {
        */
       activeName: `0`,
       formData: {
+        templateName: '',
+        price: '',
+        feeLimit: ''
       },
+      options: [{
+        label: '统一运费',
+        value: 0
+      }, {
+        label: '满额包邮',
+        value: 1
+      }],
       // 表单输入的验证
       formRules: {
-        price: [
-          { validator: checkMoney, trigger: 'blur' }
-        ],
-        feeLimit: [
-          { validator: checkPrice, trigger: 'blur' }
-        ]
+        price: [{ validator: checkMoney, trigger: 'blur' }],
+        feeLimit: [{ validator: checkMoney, trigger: 'blur' }]
       },
-      options: [
-        {
-          label: '0',
-          value: '0'
-        },
-        {
-          label: '1',
-          value: '1'
-        }
-      ],
-      // value: '统一运费', // 默认统一运费
       isShow: true // 用来控制显示隐藏
 
     }
   },
-  // 局部过滤器
-  filters: {
-    // 根据后台返回的0|1显示统一运费|满额包邮
-    showTemplate (val) {
-      console.log(val)
-      switch (val) {
-        case '0': return '统一运费'
-        case '1': return '满额包邮'
-      }
-    }
-  },
   created () {
     fetchDeliverTemplateList(this.pageParams).then(res => {
-      console.log(res)
       const { error, content: { config, pageResult: { dataList, page } } } = res
       if (error === 0) {
-        console.log(res)
         this.pageParams = page
         this.content = res.content
         this.formData = JSON.parse(config)
         let resData = formatTemplateData(dataList)
         this.lists = resData
-        console.log(this.formData.templateName)
-        if (this.formData.templateName === 0) {
-          this.formData.templateName = '统一运费'
-        } else {
-          this.formData.templateName = '满额包邮'
-        }
       }
-    }).catch(err => console.log(err))
+    })
   },
   methods: {
     // 选中运费模板的时候
@@ -191,20 +156,17 @@ export default {
     },
     // 保存配置
     handleSaveConfig () {
-      console.log(this.formData)
-      // 修改默认运费模板配置
-      deliverConfig(this.formData).then(res => {
-        // let templateOption = res.content
-        if (res.error === 0) {
-          this.$message({
-            showClose: true,
-            message: '保存成功',
-            type: 'success',
-            center: true,
-            duration: 1000
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          // 修改默认运费模板配置
+          deliverConfig(this.formData).then(res => {
+            // let templateOption = res.content
+            if (res.error === 0) {
+              this.$message.success({ message: '保存成功' })
+            }
           })
         }
-      }).catch(err => console.log(err))
+      })
     }
   }
 }

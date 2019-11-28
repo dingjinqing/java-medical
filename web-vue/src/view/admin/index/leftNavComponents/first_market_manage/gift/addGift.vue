@@ -226,8 +226,7 @@
                 <el-form-item
                   :label="$t('gift.conditions7')"
                   v-show="contains(6)"
-                  :rules="[{ message: '请填写付款时间', trigger: 'blur' }]"
-                  :required="contains(6)"
+                  prop="rules.payDateRange"
                 >
                   <el-date-picker
                     size="samll"
@@ -521,13 +520,13 @@ export default {
       }
     }
     // 付款时间
-    // var validatPayDateRange = (rule, value, callback) => {
-    //   if (!value && this.contains(6)) {
-    //     callback(new Error('请选择付款时间'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
+    var validatPayDateRange = (rule, value, callback) => {
+      if (!value && this.contains(6)) {
+        callback(new Error('请选择付款时间'))
+      } else {
+        callback()
+      }
+    }
     // 用户类别
     var validatUserAction = (rule, value, callback) => {
       if (!value && this.contains(7)) {
@@ -592,8 +591,7 @@ export default {
         'rules.cardId': [{ validator: validatcardId, trigger: 'change' }],
         'rules.payTop': [{ validator: validatInt, trigger: 'blur' }],
         'rules.minPayNum': [{ validator: validatMin, trigger: 'blur' }],
-        // 'rules.payDateRange': [{ validator: validatPayDateRange, trigger: 'blur' }], // 付款时间
-        // 'rules.payDateRange': [{ message: '请填写付款时间', trigger: 'change' }], // 付款时间
+        'rules.payDateRange': [{ validator: validatPayDateRange, trigger: 'blur' }], // 付款时间
         'rules.userAction': [{ validator: validatUserAction, trigger: 'change' }],
         explain: [{ required: true, message: '请填写赠品规则说明', trigger: 'blur' }]
       },
