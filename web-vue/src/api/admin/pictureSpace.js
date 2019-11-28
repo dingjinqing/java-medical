@@ -64,7 +64,6 @@ export function moveImgsRequest (riid) {
 
 // 上传图片接口
 export function upmoreImgsRequest (riid) {
-  localStorage.setItem('contentType', 'application/x-www-form-urlencoded;charset=UTF-8')
   return service({
     url: '/api/admin/image/uploadOneImgae',
     method: 'post',

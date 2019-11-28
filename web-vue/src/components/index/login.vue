@@ -148,6 +148,7 @@ export default {
 
   mounted () {
     this.langDefault()
+    localStorage.setItem('contentType', 'application/json;charset=UTF-8')
     // window.addEventListener('keyup', this.keyupEnter, false)
   },
   methods: {

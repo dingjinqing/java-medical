@@ -342,7 +342,7 @@ export default {
       console.log(is1M)
       if (!is1M) {
         this.$message.error('请上传小于5M的图片')
-        return
+        return false
       }
 
       // let width = 654 // 限制图片尺寸为654X270
@@ -362,23 +362,28 @@ export default {
         fd.append('needImgWidth', img.width)
         fd.append('needImgHeight', img.height)
         fd.append('imgCatId', that.firstNodeId)
+        localStorage.setItem('contentType', 'application/x-www-form-urlencoded;charset=UTF-8')
         switch (that.pageIndex) {
           case 'pictureSpace':
             upmoreImgsRequest(fd).then((res) => {
               console.log(res)
-              localStorage.setItem('contentType', 'application/json;charset=UTF-8')
               if (res.error === 0) {
                 that.queryImgs()
               }
+            }).catch(error => {
+              localStorage.setItem('contentType', 'application/json;charset=UTF-8')
+              console.log(error)
             })
             break
           case 'imageDalog':
             upmoreHeadImgsRequest(fd).then((res) => {
               console.log(res)
-              localStorage.setItem('contentType', 'application/json;charset=UTF-8')
               if (res.error === 0) {
                 that.queryImgs()
               }
+            }).catch(error => {
+              localStorage.setItem('contentType', 'application/json;charset=UTF-8')
+              console.log(error)
             })
             break
         }
