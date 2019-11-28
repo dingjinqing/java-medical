@@ -48,6 +48,7 @@ export const en = {
     copy: 'Copy',
     share: 'Share',
     underCarriage: 'Under Carriage',
+    upCarriage: 'Up Carriage',
     shareGoodsTitle: 'Scan Scan，Share a friend~',
     setLabelTitle: 'Set Label',
     setLabelTip: 'You add or delete label info here',
@@ -60,11 +61,12 @@ export const en = {
     cancel: 'Cancel',
     deleteOk: 'Delete success!',
     underCarriageTipMsg: 'Are you sure to under the goods from carriage',
-    underCarriageOk: 'Under carriage ok',
+    upCarriageTipMsg: 'Are you sure to up the goods from carriage',
+    upCarriageOk: 'Up carriage ok',
     shopPriceRequired: 'Please input the right shop price',
     goodsNumberRequired: 'Please input the right number',
     setSuccess: 'Set success',
-    goodsType: ['Buy Group', 'Distribution', 'Bargin', 'Integral', 'SecKill'],
+    goodsType: ['Buy Group', 'Distribution', 'Bargain', 'Integral', 'SecKill'],
     no: 'no'
   },
   allGoodsHeaderInputLabel: {

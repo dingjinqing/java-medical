@@ -192,12 +192,23 @@
               ></span>
             </el-tooltip>
             <el-tooltip
+              v-if="filterData.isOnSale === 1"
               :content="$t('allGoods.allGoodsData.underCarriage')"
               placement="top"
             >
               <span
                 class="el-icon-download iconSpan"
                 @click="withdrawIconClick(row,$index)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              v-if="filterData.isOnSale === 0"
+              :content="$t('allGoods.allGoodsData.upCarriage')"
+              placement="top"
+            >
+              <span
+                class="el-icon-upload2 iconSpan"
+                @click="upIconClick(row,$index)"
               ></span>
             </el-tooltip>
             <el-tooltip
@@ -470,6 +481,14 @@ export default {
     withdrawIconClick (row, index) {
       this._$confirm(this.$t('allGoods.allGoodsData.underCarriageTipMsg'), this.$t('allGoods.allGoodsData.underCarriageOk'), () => {
         return batchOperateGoods({ goodsIds: [row.goodsId], isOnSale: 0 }).then((res) => {
+          this.goodsData.splice(index, 1)
+        })
+      })
+    },
+    /* 上架图标按钮点击 */
+    upIconClick (row, index) {
+      this._$confirm(this.$t('allGoods.allGoodsData.upCarriageTipMsg'), this.$t('allGoods.allGoodsData.upCarriageOk'), () => {
+        return batchOperateGoods({ goodsIds: [row.goodsId], isOnSale: 1 }).then((res) => {
           this.goodsData.splice(index, 1)
         })
       })
