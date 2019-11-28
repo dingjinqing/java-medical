@@ -4,8 +4,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
 import com.vpu.mp.service.foundation.es.EsManager;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.goods.es.EsLabelName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
@@ -17,6 +19,9 @@ import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.jooq.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,7 +58,12 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
      * @param goodsIds 商品ID集合
      */
     @SuppressWarnings("unchecked")
-    public void createEsLabelIndexForGoodsId(List<Integer> goodsIds){
+    public void createEsLabelIndexForGoodsId(List<Integer> goodsIds, DBOperating operating){
+        Integer shopId = getShopId();
+        if( operating.equals(DBOperating.DELETE) ){
+            deleteIndexByIds(shopId,goodsIds,null);
+            return ;
+        }
         Set<Integer> sortIds = Sets.newHashSet();
         Set<Integer> categoryIds = Sets.newHashSet();
         List<Map<String,Object>> goodsInfoList = getGoodsInfoByParam(goodsIds,null,null);
@@ -80,7 +90,10 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
             .getByCondition(GOODS_LABEL.ID.in(labelTypeInfo.getAllLabelId()))
             .stream()
             .collect(Collectors.toMap(GoodsLabelRecord::getId, Function.identity()));
-        List<EsGoodsLabel> esGoodsLabelList =assemblyEsGoodsLabels(labelInfoMap,labelTypeInfo,goodsInfoList);
+        List<EsGoodsLabel> esGoodsLabelList =assemblyEsGoodsLabels(shopId,labelInfoMap,labelTypeInfo,goodsInfoList);
+        if( !operating.equals(DBOperating.INSERT) ) {
+            deleteIndexByIds(shopId, goodsIds, null);
+        }
         batchCommitEsGoodsIndex(esGoodsLabelList);
     }
     /**
@@ -88,7 +101,9 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
      * @param goodsId 商品ID
      */
     @SuppressWarnings("unchecked")
-    private void createEsLabelIndexForGoodsId(Integer goodsId){
+    @Deprecated
+    public void createEsLabelIndexForGoodsId(Integer goodsId, DBOperating operating){
+        Integer shopId = getShopId();
         Set<Integer> sortIds = Sets.newHashSet();
         Set<Integer> categoryIds = Sets.newHashSet();
         List<Map<String,Object>> goodsInfoList = getGoodsInfoByParam(Collections.singletonList(goodsId),null,null);
@@ -109,9 +124,13 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
             .getByCondition(GOODS_LABEL.ID.in(labelTypeInfo.getAllLabelId()))
             .stream()
             .collect(Collectors.toMap(GoodsLabelRecord::getId, Function.identity()));
-        List<EsGoodsLabel> esGoodsLabelList =assemblyEsGoodsLabels(labelInfoMap,labelTypeInfo,goodsInfoList);
+        List<EsGoodsLabel> esGoodsLabelList =assemblyEsGoodsLabels(shopId,labelInfoMap,labelTypeInfo,goodsInfoList);
+
+        deleteIndexByIds(shopId,Collections.singletonList(goodsId),null);
+
         batchCommitEsGoodsIndex(esGoodsLabelList);
     }
+
     private void createEsLabelIndexForLabelId(List<Integer> labelIds){
         //TODO 暂时没有发现商品标签批量修改的功能
     }
@@ -120,7 +139,12 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
      * 根据商品标签ID建立索引
      * @param labelId 商品标签ID
      */
-    private void createEsLabelIndexForLabelId(Integer labelId){
+    public void createEsLabelIndexForLabelId(Integer labelId,DBOperating operating){
+        Integer shopId = getShopId();
+        if( operating.equals(DBOperating.DELETE) ){
+            deleteIndexByIds(shopId,null,Collections.singletonList(labelId));
+            return ;
+        }
         Set<Integer> sortIds = Sets.newHashSet();
         Set<Integer> goodsIds = Sets.newHashSet();
         Set<Integer> categoryIds = Sets.newHashSet();
@@ -147,7 +171,10 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
             new ArrayList<>(categoryIds)
         );
         GoodsLabelTypeInfo labelTypeInfo = GoodsLabelTypeInfo.convert(goodsLabelCouples);
-        List<EsGoodsLabel> esGoodsLabelList =assemblyEsGoodsLabels(labelInfoMap,labelTypeInfo,goodsInfoList);
+        List<EsGoodsLabel> esGoodsLabelList =assemblyEsGoodsLabels(shopId,labelInfoMap,labelTypeInfo,goodsInfoList);
+        if( !operating.equals(DBOperating.INSERT) ){
+            deleteIndexByIds(shopId,null,Collections.singletonList(labelId));
+        }
         batchCommitEsGoodsIndex(esGoodsLabelList);
     }
 
@@ -185,9 +212,9 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
      * @return  {EsGoodsLabel}
      */
     @SuppressWarnings("unchecked")
-    public List<EsGoodsLabel> assemblyEsGoodsLabels(Map<Integer, GoodsLabelRecord> labelInfoMap,
+    public List<EsGoodsLabel> assemblyEsGoodsLabels(Integer shopId,Map<Integer, GoodsLabelRecord> labelInfoMap,
                                                     GoodsLabelTypeInfo labelTypeInfo,List<Map<String,Object>> goodsInfoList){
-        Integer shopId = getShopId();
+
         List<EsGoodsLabel> esGoodsLabelList = Lists.newArrayList();
 
         for(Map<String,Object> goodsMap : goodsInfoList){
@@ -281,5 +308,27 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
         } catch (IOException e) {
             log.error("批量建立索引失败");
         }
+    }
+
+    /**
+     * 根据商品ID/标签ID删除对应的索引
+     * @param shopId shop id
+     * @param goodsIds goods id list
+     * @param labelIds label id list
+     */
+    private void deleteIndexByIds(Integer shopId,List<Integer> goodsIds,List<Integer> labelIds){
+        BoolQueryBuilder bool = QueryBuilders.boolQuery();
+        if( labelIds != null && !labelIds.isEmpty() ){
+            bool.must(QueryBuilders.termsQuery(EsLabelName.ID,labelIds));
+        }
+        if( goodsIds != null && !goodsIds.isEmpty() ){
+            bool.must(QueryBuilders.termsQuery(EsLabelName.GOODS_ID,goodsIds));
+        }
+        bool.must(QueryBuilders.termQuery(EsLabelName.SHOP_ID,shopId));
+
+        DeleteByQueryRequest request = new DeleteByQueryRequest(EsGoodsConstant.LABEL_INDEX_NAME);
+        request.setRefresh(Boolean.TRUE);
+        request.setQuery(bool);
+        esManager.deleteIndexByQuery(request);
     }
 }

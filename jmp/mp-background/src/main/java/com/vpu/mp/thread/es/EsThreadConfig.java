@@ -2,6 +2,7 @@ package com.vpu.mp.thread.es;
 
 import com.github.fonimus.ssh.shell.SshShellHelper;
 import com.google.common.base.Stopwatch;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.saas.SaasApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
@@ -92,7 +93,7 @@ public class EsThreadConfig {
             }
             nextNumber = endNumber;
             log.info("listSize【{}】",list.size());
-            saas.getShopApp(shopId).esGoodsLabelCreateService.createEsLabelIndexForGoodsId(needIds);
+            saas.getShopApp(shopId).esGoodsLabelCreateService.createEsLabelIndexForGoodsId(needIds, DBOperating.UPDATE);
             log.info("\n第【{}】批建立成功",i);
         }
         log.info("\n店铺【{}】索引建立完成，共耗时{}ms",shopId,stopwatch.elapsed(TimeUnit.MILLISECONDS));

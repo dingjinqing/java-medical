@@ -46,20 +46,52 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
 
 
     /**
-     *
+     *  Search goods label by ElasticSearch
      * @param goodsIds goods id array
      * @param type  {@link EsGoodsConstant#GOODS_DETAIL_PAGE} page source
-     * @return Map K-> goods id V-> {@link EsGoodsLabel} List
+     * @return Map K-> goods id V->List {@link EsGoodsLabel}
      * @throws IOException connection error
      */
     public Map<Integer, List<EsGoodsLabel>> getGoodsLabelByGoodsId(List<Integer> goodsIds,Byte type) throws IOException {
         Integer shopId = getShopId();
-        SearchRequest searchRequest = assemblySearchRequest(shopId,goodsIds,type);
+        SearchRequest searchRequest = assemblySearchRequestByGoodsId(shopId,goodsIds,type);
         SearchResponse response = search(searchRequest);
-        return assemblyResult(response);
+        return getGoodsLabelForGoods(response);
     }
 
-    private Map<Integer,List<EsGoodsLabel>> assemblyResult(SearchResponse response){
+    /**
+     * get goods number group by label id
+     * @param labelIds label id
+     * @return Map<Integer,Integer>
+     * @throws IOException connection error
+     */
+    public Map<Integer,Integer> getLabelForGoodsNumber(List<Integer> labelIds) throws IOException {
+        Integer shopId = getShopId();
+        SearchRequest searchRequest = assemblySearchRequestByLabelId(shopId,labelIds);
+        SearchResponse response = search(searchRequest);
+        return getLabelForGoodsNumbers(response);
+    }
+    /**
+     * SearchResponse convert
+     * @param response SearchResponse
+     * @return Map<Integer,Integer>
+     */
+    private Map<Integer,Integer> getLabelForGoodsNumbers(SearchResponse response){
+        Map<Integer,Integer> map = Maps.newHashMap();
+        Aggregations aggregations = response.getAggregations();
+        Terms goodsAggregation = aggregations.get(EsLabelName.ID);
+        for (Terms.Bucket x : goodsAggregation.getBuckets()) {
+            Integer key = Integer.valueOf(x.getKey().toString());
+            map.put(key, Math.toIntExact(x.getDocCount()));
+        }
+        return map;
+    }
+    /**
+     * SearchResponse convert
+     * @param response SearchResponse
+     * @return Map<Integer,List<EsGoodsLabel>>
+     */
+    private Map<Integer,List<EsGoodsLabel>> getGoodsLabelForGoods(SearchResponse response){
         Map<Integer,List<EsGoodsLabel>> map = Maps.newHashMap();
         Aggregations aggregations = response.getAggregations();
         Terms goodsAggregation = aggregations.get(EsLabelName.GOODS_ID);
@@ -80,30 +112,46 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
     }
 
     /**
-     * assembly SearchRequest
+     * assembly SearchRequest by goodsIds
      *
      * @param shopId shop id
      * @param goodsIds goods id
      * @param type {@link EsGoodsConstant#GOODS_DETAIL_PAGE} page source
      * @return {@link SearchRequest}
      */
-    private SearchRequest assemblySearchRequest(Integer shopId,List<Integer> goodsIds,Byte type){
+    private SearchRequest assemblySearchRequestByGoodsId(Integer shopId,List<Integer> goodsIds,Byte type){
         SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_INDEX_NAME);
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource();
-        searchSourceBuilder.query(assemblyQueryBuilder(shopId,goodsIds,type));
-        searchSourceBuilder.aggregation(assemblyAggregationBuilder());
-        //don'not need query data
+        searchSourceBuilder.query(assemblyQueryBuilder(shopId,null,goodsIds,type));
+        searchSourceBuilder.aggregation(assemblyAggregationBuilderByGoodsId());
+        //not need to return query data
         searchSourceBuilder.size(0);
         searchRequest.source(searchSourceBuilder);
         return searchRequest;
     }
-
     /**
-     * assembly AggregationBuilder
+     * assembly SearchRequest by labelId
+     *
+     * @param shopId shop id
+     * @param labelIds goods id
+     * @return {@link SearchRequest}
+     */
+    private SearchRequest assemblySearchRequestByLabelId(Integer shopId,List<Integer> labelIds){
+        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_INDEX_NAME);
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource();
+        searchSourceBuilder.query(assemblyQueryBuilder(shopId,labelIds,null,null));
+        searchSourceBuilder.aggregation(assemblyAggregationBuilderByLabelId());
+        //not need to return query data
+        searchSourceBuilder.size(0);
+        searchRequest.source(searchSourceBuilder);
+        return searchRequest;
+    }
+    /**
+     * assembly AggregationBuilder by goodsId
      *
      * @return {@link AggregationBuilder}
      */
-    private AggregationBuilder assemblyAggregationBuilder(){
+    private AggregationBuilder assemblyAggregationBuilderByGoodsId(){
         AggregationBuilder aggregationBuilder = AggregationBuilders.terms(EsLabelName.GOODS_ID)
             .field(EsLabelName.GOODS_ID);
         TopHitsAggregationBuilder topHitsAggregationBuilder = AggregationBuilders
@@ -115,19 +163,33 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         return aggregationBuilder.subAggregation(topHitsAggregationBuilder);
     }
     /**
+     * assembly AggregationBuilder by labelId
+     *
+     * @return {@link AggregationBuilder}
+     */
+    private AggregationBuilder assemblyAggregationBuilderByLabelId(){
+        return AggregationBuilders.terms(EsLabelName.ID)
+            .field(EsLabelName.ID);
+    }
+    /**
      * assembly QueryBuilder
      *
      * @return {@link QueryBuilder}
      */
-    private QueryBuilder assemblyQueryBuilder(Integer shopId,List<Integer> goodsIds,Byte type){
+    private QueryBuilder assemblyQueryBuilder(Integer shopId,List<Integer> labelIds,List<Integer> goodsIds,Byte type){
         BoolQueryBuilder bool = QueryBuilders.boolQuery();
-        bool.must(QueryBuilders.termsQuery(EsLabelName.GOODS_ID,goodsIds));
         bool.must(QueryBuilders.termQuery(EsLabelName.SHOP_ID,shopId));
-        if( type.equals(EsGoodsConstant.GOODS_DETAIL_PAGE) ){
+        if( goodsIds != null && !goodsIds.isEmpty()){
+            bool.must(QueryBuilders.termsQuery(EsLabelName.GOODS_ID,goodsIds));
+        }
+        if( labelIds != null && !labelIds.isEmpty()){
+            bool.must(QueryBuilders.termsQuery(EsLabelName.ID,labelIds));
+        }
+        if( EsGoodsConstant.GOODS_DETAIL_PAGE.equals(type) ){
             bool.must(QueryBuilders.termQuery(EsLabelName.DETAIL_SHOW,Boolean.TRUE));
-        }else if( type.equals(EsGoodsConstant.GOODS_LIST_PAGE) ){
+        }else if( EsGoodsConstant.GOODS_LIST_PAGE.equals(type) ){
             bool.must(QueryBuilders.termQuery(EsLabelName.LIST_SHOW,Boolean.TRUE));
-        }else if( type.equals(EsGoodsConstant.GOODS_SEARCH_PAGE) ){
+        }else if( EsGoodsConstant.GOODS_SEARCH_PAGE.equals(type) ){
             bool.must(QueryBuilders.termQuery(EsLabelName.SEARCH_SHOW,Boolean.TRUE));
         }
         return bool;

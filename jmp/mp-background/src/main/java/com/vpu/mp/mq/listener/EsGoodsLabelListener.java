@@ -2,7 +2,7 @@ package com.vpu.mp.mq.listener;
 
 import com.rabbitmq.client.Channel;
 import com.vpu.mp.config.mq.RabbitConfig;
-import com.vpu.mp.service.foundation.jedis.data.label.GoodsLabelCacheParam;
+import com.vpu.mp.service.foundation.jedis.data.label.MqEsGoodsLabel;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
 import com.vpu.mp.service.saas.SaasApplication;
 import org.springframework.amqp.core.Message;
@@ -13,11 +13,12 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
+import java.util.List;
+
 /**
- * 缓存更新->商品标签
- * @author 卢光耀
- * @date 2019/11/21 10:40 上午
+ * ElasticSearch update goods label data
+ * @author luguangyao
+ * @date 2019/11/21
  *
 */
 @Component
@@ -29,11 +30,15 @@ public class EsGoodsLabelListener implements BaseRabbitHandler {
 
 
     @RabbitHandler
-    public void success(@Payload GoodsLabelCacheParam param, Channel channel, Message message) throws IOException {
-        if( param.getUpdateAll() ){
-
-        }else{
-
+    public void success(@Payload MqEsGoodsLabel param, Channel channel, Message message) throws IOException {
+        Integer shopId = param.getShopId();
+        List<Integer> goodsIds = param.getGoodsIds();
+        List<Integer> labelIds = param.getLabelIds();
+        if( goodsIds != null && !goodsIds.isEmpty() ){
+            saasApplication.getShopApp(shopId).esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds,param.getOperating());
+        }
+        if( labelIds != null && !labelIds.isEmpty() ){
+            saasApplication.getShopApp(shopId).esGoodsLabelCreateService.createEsLabelIndexForLabelId(labelIds.get(0),param.getOperating());
         }
     }
 

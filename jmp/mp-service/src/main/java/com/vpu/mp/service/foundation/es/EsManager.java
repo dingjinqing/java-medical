@@ -20,6 +20,8 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -173,10 +175,30 @@ public class EsManager {
      */
     public void deleteIndexById(String indexName, List<String> ids) throws IOException {
         BulkRequest request = new BulkRequest();
-        ids.forEach(x->{
-            request.add(new DeleteRequest(indexName,x));
-        });
+        ids.forEach(x-> request.add(new DeleteRequest(indexName,x)));
         batchDocuments(request);
+    }
+
+    /**
+     * execute DeleteByQueryRequest
+     * @param request {@link DeleteByQueryRequest}
+     */
+    public void deleteIndexByQuery(DeleteByQueryRequest request){
+        try {
+            BulkByScrollResponse bulkResponse =
+                restHighLevelClient.deleteByQuery(request, RequestOptions.DEFAULT);
+
+            if( bulkResponse.getVersionConflicts() > 0 ){
+                //Number of version conflicts
+                log.error("this delete has VersionConflicts");
+            }else if( !bulkResponse.getSearchFailures().isEmpty() ){
+                log.error("this delete querying error");
+            }else if( !bulkResponse.getBulkFailures().isEmpty() ){
+                log.error("this delete execute error");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

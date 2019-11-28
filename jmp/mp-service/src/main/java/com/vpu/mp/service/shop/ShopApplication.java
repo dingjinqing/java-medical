@@ -16,9 +16,9 @@ import com.vpu.mp.service.shop.distribution.*;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
-import com.vpu.mp.service.shop.goods.es.EsGoodsService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
@@ -440,7 +440,7 @@ public class ShopApplication {
     @Autowired
     public EsGoodsCreateService esGoodsCreateService;
     @Autowired
-    public EsGoodsService esGoodsService;
+    public EsDataUpdateMqService esDataUpdateMqService;
     @Autowired
     public EsGoodsSearchService esGoodsSearchService;
     @Autowired

@@ -3,10 +3,12 @@ package com.vpu.mp.service.shop.goods;
 
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.jedis.data.LabelDataHelper;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.label.*;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectSeekStep2;
@@ -37,8 +39,9 @@ public class GoodsLabelService extends ShopBaseService {
 
     @Autowired
     public GoodsService goodsService;
+
     @Autowired
-    private LabelDataHelper labelDataHelper;
+    private EsDataUpdateMqService esDataUpdateMqService;
 
 
     public PageResult<GoodsLabelPageListVo> getPageList(GoodsLabelPageListParam param) {
@@ -67,6 +70,9 @@ public class GoodsLabelService extends ShopBaseService {
             record.insert();
             param.setId(record.getId());
             insertGoodsLabelCouple(param);
+            //update elasticSearch data
+            esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.INSERT,
+                null,Collections.singletonList(record.getId()));
         });
     }
 
@@ -85,8 +91,9 @@ public class GoodsLabelService extends ShopBaseService {
                 .execute();
             goodsLabelCoupleService.deleteByGoodsLabelId(id);
         });
-        /**缓存同步更新*/
-        labelDataHelper.update(getShopId(), Collections.singletonList(id));
+        //update elasticSearch data
+        esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.DELETE,
+            null,Collections.singletonList(id));
     }
 
     /**
@@ -128,8 +135,9 @@ public class GoodsLabelService extends ShopBaseService {
             goodsLabelCoupleService.deleteByGoodsLabelId(param.getId());
             insertGoodsLabelCouple(param);
         });
-        /**缓存同步更新*/
-        labelDataHelper.update(getShopId(), Collections.singletonList(param.getId()));
+        //update elasticSearch data
+        esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.INSERT,
+            null,Collections.singletonList(param.getId()));
         return 0;
     }
 
