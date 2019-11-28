@@ -1587,8 +1587,10 @@ export default {
       this.$refs['ruleForm'].validate((valid) => {
         console.log(valid)
         if (valid) {
+          console.log(this.cardType)
           if (Number(this.cardType) === 2) {
-            if (!this.gradeValue) {
+            console.log(this.gradeValue)
+            if (this.gradeValue) {
               this.prepareCardData()
               this.$refs['ruleForm'].resetFields()
             }
