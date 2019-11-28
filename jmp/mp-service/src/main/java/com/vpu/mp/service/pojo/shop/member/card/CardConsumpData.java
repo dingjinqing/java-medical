@@ -17,7 +17,7 @@ public class CardConsumpData {
 	private Integer cardId;
 	/** 会员卡号 */
 	private String cardNo;
-	/** 卡余额  */
+	/** 余额变动金额 区分正负号 */
 	private BigDecimal money;
 	/** 消费原因 */
 	private String reason ;

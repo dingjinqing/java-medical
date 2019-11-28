@@ -73,7 +73,8 @@ public class RecordTradeService extends ShopBaseService{
 			UserCardData userCardData = (UserCardData)data;
 			CardConsumpData cardConsumpData = new CardConsumpData();
 			FieldsUtil.assignNotNull(userCardData, cardConsumpData);
-			
+			cardConsumpData.setCardNo(userCardData.getCardNo());
+			cardConsumpData.setUserId(userCardData.getUserId());
 			String language = userCardData.getLanguage();
 			memberCardService.updateMemberCardAccount(cardConsumpData,userCardData.getTradeOpt(),language);
 			
