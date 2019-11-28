@@ -114,7 +114,7 @@ public class GoodsService extends ShopBaseService {
      */
     public GoodsFilterItemInitVo getGoodsFilterItem(GoodsFilterItemInitParam param){
 //        es查询目前不会同时查询分类数据和品牌标签数据
-        if( esUtilSearchService.esState()&&param.canGoEs()){
+        if(param.canGoEs()&&esUtilSearchService.esState()){
             try {
               return esFactSearchService.assemblyFactByAdminGoodsListInit(param);
             } catch (Exception e) {
