@@ -85,10 +85,12 @@
                     <el-radio
                       v-model="param.type"
                       :label=0
+                      :disabled="editType"
                     >{{ $t('ordinaryCoupon.generalCoupons') }}</el-radio>
                     <el-radio
                       v-model="param.type"
                       :label=1
+                      :disabled="editType"
                     >{{ $t('ordinaryCoupon.splitCoupon') }} <el-tooltip
                         effect="dark"
                         :content="$t('ordinaryCoupon.splitTip')"
@@ -121,6 +123,7 @@
                     :placeholder="$t('ordinaryCoupon.nameTip')"
                     v-model="param.actName"
                     clearable
+                    :disabled="editType"
                   ></el-input>
                 </el-form-item>
                 <el-form-item
@@ -132,12 +135,13 @@
                       <el-radio
                         v-model="param.validityType"
                         :label='0'
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.fixedDate') }}</el-radio>
                     </p>
                     <p style="margin:15px 0;">
 
                       <el-date-picker
-                        :disabled="param.validityType === 0 ? false : true"
+                        :disabled="param.validityType === 0 && !editType ? false : true"
                         v-model="param.couponDate"
                         type="datetimerange"
                         value-format="yyyy-MM-dd HH:mm:ss"
@@ -153,23 +157,24 @@
                       <el-radio
                         v-model="param.validityType"
                         :label='1'
+                        :disabled="editType"
                         style="margin-right: 25px;"
                       >{{ $t('ordinaryCoupon.appoint') }}</el-radio>
                       <span>
                         <el-input
-                          :disabled="param.validityType===1?false:true"
+                          :disabled="param.validityType===1 && !editType ?false:true"
                           v-model="param.validity"
                           size="small"
                           class="small_input"
                         ></el-input> {{ $t('ordinaryCoupon.appointDay') }}
                         <el-input
-                          :disabled="param.validityType===1?false:true"
+                          :disabled="param.validityType===1 && !editType ?false:true"
                           v-model="param.validityHour"
                           size="small"
                           class="small_input"
                         ></el-input> {{ $t('ordinaryCoupon.appointHour') }}
                         <el-input
-                          :disabled="param.validityType===1?false:true"
+                          :disabled="param.validityType===1 && !editType ?false:true"
                           v-model="param.validityMinute"
                           size="small"
                           class="small_input"
@@ -187,10 +192,11 @@
                       <el-radio
                         v-model="param.limitSurplusFlag"
                         :label='1'
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.surplusRadio1') }}</el-radio>
                       <span>
                         <el-input
-                          :disabled="param.limitSurplusFlag===1?false:true"
+                          :disabled="param.limitSurplusFlag===1 && !editType ?false:true"
                           v-model.number="param.totalAmount"
                           size="small"
                           class="small_input"
@@ -202,6 +208,7 @@
                       <el-radio
                         v-model="param.limitSurplusFlag"
                         :label='0'
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.surplusRadio2') }}</el-radio>
                     </div>
 
@@ -217,16 +224,17 @@
                         v-model="param.preferentialType"
                         :label='2'
                         v-if="param.type==1"
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.typeRadio1') }}</el-radio>
                       <el-input
-                        :disabled="param.preferentialType==2?false:true"
+                        :disabled="param.preferentialType==2 && !editType ?false:true"
                         v-model="param.randomMin"
                         size="small"
                         class="small_input"
                       ></el-input>
                       {{ $t('ordinaryCoupon.typeTip1') }}
                       <el-input
-                        :disabled="param.preferentialType==2?false:true"
+                        :disabled="param.preferentialType==2 && !editType  ?false:true"
                         v-model="param.randomMax"
                         size="small"
                         class="small_input"
@@ -238,11 +246,12 @@
                       <el-radio
                         v-model="param.preferentialType"
                         :label=0
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.typeRadio2') }}</el-radio>
                       <span>
                         {{ $t('ordinaryCoupon.typeTip3') }}
                         <el-input
-                          :disabled="param.preferentialType==0?false:true"
+                          :disabled="param.preferentialType==0 && !editType ?false:true"
                           v-model.number="param.denomination"
                           size="small"
                           class="small_input"
@@ -254,9 +263,10 @@
                       <el-radio
                         v-model="param.preferentialType"
                         :label=1
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.typeRadio3') }}</el-radio>
                       <el-input
-                        :disabled="param.preferentialType==1?false:true"
+                        :disabled="param.preferentialType==1 && !editType ?false:true"
                         v-model="param.denomination2"
                         size="small"
                         class="small_input"
@@ -274,16 +284,19 @@
                     <el-radio
                       v-model="param.useScore"
                       :label='0'
+                      :disabled="editType"
                     >{{ $t('ordinaryCoupon.randomRadio1') }}</el-radio>
                     <el-radio
                       v-model="param.useScore"
                       :label='1'
+                      :disabled="editType"
                     >{{ $t('ordinaryCoupon.randomRadio2') }}</el-radio>
                     <p v-if="param.useScore== 1">
                       <el-input
                         v-model="param.scoreNumber"
                         class="small_input"
                         size="small"
+                        :disabled="editType"
                       ></el-input>
                       {{ $t('ordinaryCoupon.randomTip') }}
                     </p>
@@ -322,6 +335,7 @@
                       <el-checkbox
                         v-model="param.isExclusive"
                         :label="$t('ordinaryCoupon.memberTip1')"
+                        :disabled="editType"
                       ></el-checkbox>
                     </p>
                     <div v-if="param.isExclusive">
@@ -330,6 +344,7 @@
                         :label="$t('ordinaryCoupon.memberTip2')"
                         multiple
                         size="small"
+                        :disabled="editType"
                       >
                         <el-option
                           v-for="item in cardList"
@@ -353,6 +368,7 @@
                   <el-input
                     v-model="param.validationCode"
                     size="small"
+                    :disabled="editType"
                     class="coupon_name_input"
                   ></el-input>
                 </el-form-item>
@@ -365,13 +381,15 @@
                     <el-radio
                       v-model="param.couponNum"
                       :label="0"
+                      :disabled="editType"
                     >{{ $t('ordinaryCoupon.numRadio1') }}</el-radio>
                     <el-radio
                       v-model="param.couponNum"
                       :label="1"
+                      :disabled="editType"
                     >{{ $t('ordinaryCoupon.numRadio2') }}</el-radio>
                     <el-input
-                      :disabled="param.couponNum==1?false:true"
+                      :disabled="param.couponNum==1 && !editType ?false:true"
                       v-model="param.receiveNum"
                       size="small"
                       class="small_input"
@@ -385,10 +403,12 @@
                       <el-radio
                         v-model="param.enabled"
                         :label="0"
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.enabledRadio1') }}</el-radio>
                       <el-radio
                         v-model="param.enabled"
                         :label="1"
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.enabledRadio2') }}</el-radio>
                     </div>
                     <span style="flex:1;padding-left:15px;color:red;">
@@ -405,14 +425,16 @@
                       <el-radio
                         v-model="param.useConsumeRestrict"
                         :label='0'
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.restrictRadio1') }}</el-radio>
                     </p>
                     <p>
                       <el-radio
                         v-model="param.useConsumeRestrict"
                         :label='1'
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.restrictRadio2') }}&nbsp;<el-input
-                          :disabled="param.useConsumeRestrict === 0"
+                          :disabled="param.useConsumeRestrict === 1 && !editType ? false : true"
                           size="small"
                           v-model.number="param.leastConsume"
                           class="small_input"
@@ -431,12 +453,14 @@
                       <el-radio
                         v-model="param.suitGoods"
                         :label='0'
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.suitGoodsRadio1') }}</el-radio>
                     </p>
                     <p>
                       <el-radio
                         v-model="param.suitGoods"
                         :label='1'
+                        :disabled="editType"
                       >{{ $t('ordinaryCoupon.suitGoodsRadio2') }}</el-radio>
                     </p>
                     <div v-if="param.suitGoods === 1">
@@ -444,12 +468,16 @@
                         class="noneBlockList"
                         v-for="(item,index) in noneBlockDiscArr"
                         :key="index"
-                        @click="hanldeToAddGoodS(index)"
                       >
-                        <div class="noneBlockLeft">
-                          <img :src="$imageHost+'/image/admin/icon_jia.png'">
-                          {{item.name}}
-                        </div>
+                        <el-button
+                          size="small"
+                          plain
+                          :disabled="editType"
+                          @click="hanldeToAddGoodS(index)"
+                          style="margin-right: 20px;"
+                        >
+                          <i class="el-icon-plus"></i> {{item.name}}
+                        </el-button>
                         <div v-if="index === 0">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip2') }}</div>
                         <div v-if="index === 1">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip3') }}</div>
                         <div v-if="index === 2">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip4') }}</div>

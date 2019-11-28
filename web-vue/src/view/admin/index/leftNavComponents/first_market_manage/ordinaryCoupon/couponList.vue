@@ -62,7 +62,6 @@
           prop="denomination"
           :label="$t('ordinaryCouponList.value')"
           align="center"
-          width="80"
         >
         </el-table-column>
         <el-table-column
@@ -75,7 +74,7 @@
           prop="surplus"
           :label="$t('ordinaryCouponList.inventory')"
           align="center"
-          width="180"
+          width="120px"
         >
         </el-table-column>
         <el-table-column
@@ -111,7 +110,6 @@
         <el-table-column
           :label="$t('ordinaryCouponList.operate')"
           align="center"
-          width="130"
         >
           <template slot-scope="scope">
             <div class="opt">
