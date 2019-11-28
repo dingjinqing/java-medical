@@ -43,7 +43,7 @@
                 :rules="[{ required: true, validator: validateNum, message: '格式不正确', trigger: 'blur' }]"
               >
                 <el-input
-                  v-model.number="scope.row.first_num"
+                  v-model="scope.row.first_num"
                   class="column-input"
                 ></el-input>
               </el-form-item>
@@ -85,7 +85,7 @@
                 :rules="[{validator: validateNum, message: '格式不正确', trigger: 'blur'}]"
               >
                 <el-input
-                  v-model.number="scope.row.continue_num"
+                  v-model="scope.row.continue_num"
                   class="column-input"
                 ></el-input>
               </el-form-item>
@@ -149,10 +149,10 @@
                 v-if="scope.row.fee_0_condition === 1"
                 label="满"
                 prop="fee_0_con1_num"
-                :rules="[{ validator: feeConditionRule, message:'包邮件数不能小于1', trigger: 'blur' }]"
+                :rules="[{ validator: validateNum, message:'包邮件数不能小于1', trigger: 'blur' }]"
               >
                 <el-input
-                  v-model.number="scope.row.fee_0_con1_num"
+                  v-model="scope.row.fee_0_con1_num"
                   style="width:80px"
                 ></el-input>件包邮
               </el-form-item>
@@ -160,10 +160,10 @@
                 v-if="scope.row.fee_0_condition === 2"
                 label="满"
                 prop="fee_0_con2_num"
-                :rules="[{ validator: feeConditionRule, message:'包邮金额不能小于1', trigger: 'blur' }]"
+                :rules="[{ validator: validateMoney, message:'包邮金额不能小于1', trigger: 'blur' }]"
               >
                 <el-input
-                  v-model.number="scope.row.fee_0_con2_num"
+                  v-model="scope.row.fee_0_con2_num"
                   style="width:80px"
                 ></el-input>元包邮
               </el-form-item>
@@ -171,10 +171,10 @@
                 v-if="scope.row.fee_0_condition === 3"
                 label="满"
                 prop="fee_0_con3_num"
-                :rules="[{ validator: feeConditionRule, message:'包邮件数不能小于1', trigger: 'blur' }]"
+                :rules="[{ validator: validateNum, message:'包邮件数不能小于1', trigger: 'blur' }]"
               >
                 <el-input
-                  v-model.number="scope.row.fee_0_con3_num"
+                  v-model="scope.row.fee_0_con3_num"
                   style="width:80px"
                 ></el-input>
               </el-form-item>
@@ -182,10 +182,10 @@
                 v-if="scope.row.fee_0_condition === 3"
                 label="件，"
                 prop="fee_0_con3_fee"
-                :rules="[{ validator: feeConditionRule,  message:'包邮金额不能小于1', trigger: 'blur' }]"
+                :rules="[{ validator: validateMoney,  message:'包邮金额不能小于1', trigger: 'blur' }]"
               >
                 <el-input
-                  v-model.number="scope.row.fee_0_con3_fee"
+                  v-model="scope.row.fee_0_con3_fee"
                   style="width:80px"
                 ></el-input>元包邮
               </el-form-item>
@@ -326,13 +326,13 @@ export default {
       }
     },
     // 定义验证规则
-    feeConditionRule (rule, value, callback) {
-      if (Number.isInteger(Number(value)) && Number(value) > 0) {
-        callback()
-      } else {
-        callback(new Error('必须为大于0'))
-      }
-    },
+    // feeConditionRule (rule, value, callback) {
+    //   if (Number.isInteger(Number(value)) && Number(value) > 0) {
+    //     callback()
+    //   } else {
+    //     callback(new Error('必须为大于0'))
+    //   }
+    // },
     // 验证规则，验证是否正确
     /* eslint-disable */
     isYes(area_list, key) {
