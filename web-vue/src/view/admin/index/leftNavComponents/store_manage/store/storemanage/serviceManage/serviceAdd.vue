@@ -384,8 +384,8 @@ export default {
   watch: {
     'form.dateInterval': function (val) {
       if (val && Array.isArray(val) && val.length === 2) {
-        this.form.startDate = val[0].format('yyyy-MM-dd hh:mm:ss')
-        this.form.endDate = val[1].format('yyyy-MM-dd hh:mm:ss')
+        this.form.startDate = new Date(val[0]).format('yyyy-MM-dd hh:mm:ss')
+        this.form.endDate = new Date(val[1]).format('yyyy-MM-dd hh:mm:ss')
       } else {
         this.form.startDate = ''
         this.form.endDate = ''
@@ -423,16 +423,22 @@ export default {
           const content = res.content
           for (const key in content) {
             if (this.form.hasOwnProperty(key)) {
-              if (key === 'startDate' || key === 'endDate') {
+              if (content[key] && (key === 'startDate' || key === 'endDate')) {
                 if (content[key].indexOf(':') < 0) {
                   this.form[key] = content[key] + ' 00:00:00'
+                } else {
+                  this.form[key] = content[key]
                 }
               } else {
                 this.form[key] = content[key]
               }
             }
           }
-          this.form.dateInterval = [new Date(this.form.startDate), new Date(this.form.endDate)]
+          if (this.form.startDate && this.form.endDate) {
+            this.form.dateInterval = [new Date(this.form.startDate), new Date(this.form.endDate)]
+          } else {
+            this.form.dateInterval = []
+          }
           // 初始化图片列表
           let serviceImg = JSON.parse(this.form.serviceImg)
           this.imgLists = serviceImg.map(function (item, index) {
