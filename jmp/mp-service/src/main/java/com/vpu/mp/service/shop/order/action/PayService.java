@@ -73,7 +73,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         }
 
         //TODO 目前转化只有可能为微信回调
-        if(OrderConstant.PAY_CODE_WX_PAY.equals(orderInfo.getPayCode()) && payRecord != null) {
+        if(!OrderConstant.PAY_CODE_WX_PAY.equals(orderInfo.getPayCode()) || payRecord == null) {
             logger().error("订单支付方式必须为微信支付且必须有payRecord(PayService.toWaitDeliver),sn:{}", orderInfo.getOrderSn());
             throw new MpException(JsonResultCode.CODE_ORDER_NOT_TO_WAIT_DELIVER, "订单支付方式必须为微信支付且必须有payRecord");
         }
