@@ -144,13 +144,13 @@ public class AdminIndexController extends AdminBaseController {
 	public JsonResult wxMaShow() {
 		String[] verifys = saas.shop.version.verifyVerPurview(adminAuth.user().loginShopId, VersionName.sub2);
 		String[] sub2 = VersionName.sub2;
-		Map<String,String> map=new HashMap<String, String>();
-		List<Map<String,String>> list=new ArrayList<Map<String,String>>();
-		for(int i=0;i<sub2.length;i++) {
-			map.put(sub2[i], verifys[i]);
-			list.add(map);
+		List<String> list=new ArrayList<String>();
+		for(int i=0;i<verifys.length;i++) {
+			if(verifys[i].equals("true")) {
+				list.add(sub2[i]);
+			}
 		}
-		return success(map);
+		return success(list);
 	}
 
 
