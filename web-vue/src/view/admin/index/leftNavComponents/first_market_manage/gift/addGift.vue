@@ -229,7 +229,7 @@
                   prop="rules.payDateRange"
                 >
                   <el-date-picker
-                    size="samll"
+                    size="small"
                     v-model="param.rules.payDateRange"
                     type="datetimerange"
                     value-format="yyyy-MM-dd HH:mm:ss"
@@ -341,7 +341,7 @@
                 prop="prdNumber"
                 :label="$t('gift.goodsNumber')"
                 align="center"
-              > </el-table-column>
+              ></el-table-column>
               <el-table-column
                 prop="productNumber"
                 :label="$t('gift.productNumber')"
@@ -521,7 +521,8 @@ export default {
     }
     // 付款时间
     // var validatPayDateRange = (rule, value, callback) => {
-    //   if (!value && this.contains(6)) {
+    //   console.log('value：' + value)
+    //   if ((!value || value === null) && this.contains(6)) {
     //     callback(new Error('请选择付款时间'))
     //   } else {
     //     callback()
@@ -542,8 +543,6 @@ export default {
       steps: this.$t('gift.steps'),
       // 活动时间范围
       // dateRange: [],
-      // 支付时间范围
-      // payDateRange: [],
       tags: [],
       cards: [],
       // 0：全部商品，1：指定商品
@@ -572,7 +571,7 @@ export default {
           minPayNum: 1,
           maxPayNum: 10,
           cardId: [],
-          payDateRange: [], // 付款时间
+          payDateRange: [], // 付款时间范围
           payStartTime: null,
           payEndTime: null
         },
@@ -653,12 +652,8 @@ export default {
     // 下一步
     nextStep () {
       this.formatParam()
-      // 参数校验
-      // if (!this.validateParam()) {
-      //   return
-      // }
       this.$refs['param'].validate((valid) => {
-        console.log(valid)
+        console.log('通过：' + valid)
         if (valid) {
           this.step++
         }
@@ -782,7 +777,6 @@ export default {
       const { rules } = content
       const { payStartTime, payEndTime } = rules
       if (payStartTime && payEndTime) {
-        // this.payDateRange = [payStartTime, payEndTime]
         this.param.rules.payDateRange = [payStartTime, payEndTime]
       }
       this.param.rules.payStartTime = payStartTime || null

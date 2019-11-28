@@ -25,11 +25,6 @@
       @blur="closeBlur(value)"
       style="width: 80px"
     ></el-input>
-    <!-- <el-button
-      @click="switchEditState"
-      size="mini"
-      v-show="!disabled"
-    >{{btnContent}}</el-button> -->
     <el-tooltip
       class="item"
       effect="dark"
@@ -64,14 +59,18 @@ export default {
   },
   methods: {
     switchEditState (value) {
-      var re = /^(0|\+?[1-9][0-9]*)$/
-      if (!re.test(value)) {
-        this.$message.warning({ message: '请填写0或者正整数' })
+      if (value) {
+        var re = /^(0|\+?[1-9][0-9]*)$/
+        if (!re.test(value)) {
+          this.$message.warning({ message: '请填写0或者正整数' })
+        } else {
+          this.showInput = !this.showInput
+          if (!this.showInput) {
+            this.$emit('update', this.value)
+          }
+        }
       } else {
         this.showInput = !this.showInput
-        if (!this.showInput) {
-          this.$emit('update', this.value)
-        }
       }
     },
     closeBlur (value) {

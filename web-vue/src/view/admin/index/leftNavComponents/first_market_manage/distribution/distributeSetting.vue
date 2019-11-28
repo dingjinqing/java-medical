@@ -8,8 +8,8 @@
       <el-form-item :label="$t('distribution.switch')">
         <el-switch
           v-model="form.status"
-          :active-value='1'
-          :inactive-value='0'
+          :active-value="1"
+          :inactive-value="0"
         ></el-switch>
         <div class="text">
           {{ $t('distribution.switchTip') }}
@@ -18,7 +18,7 @@
 
       <el-form-item
         :label="$t('distribution.reviewed')"
-        v-if="form.status === 1"
+        v-show="form.status === 1"
       >
         <el-switch
           v-model="form.judge_status"
@@ -70,7 +70,7 @@
 
       <el-form-item
         :label="$t('distribution.ranking')"
-        v-if="form.status === 1"
+        v-show="form.status === 1"
       >
         <el-switch
           v-model="form.rank_status"
@@ -84,7 +84,7 @@
 
       <el-form-item
         :label="$t('distribution.validity')"
-        v-if="form.status === 1"
+        v-show="form.status === 1"
       >
         <el-radio-group v-model="form.vaild">
           <el-radio :label="1">
@@ -101,7 +101,7 @@
 
       <el-form-item
         :label="$t('distribution.protection')"
-        v-if="form.status === 1"
+        v-show="form.status === 1"
       >
         <el-radio-group v-model="form.protect_date">
           <el-radio :label="1">
@@ -118,7 +118,7 @@
 
       <el-form-item
         :label="$t('distribution.pageName')"
-        v-if="form.status === 1"
+        v-show="form.status === 1"
       >
         <el-input
           style="width: 200px"
@@ -128,7 +128,7 @@
 
       <el-form-item
         :label="$t('distribution.recommendShop')"
-        v-if="form.status === 1"
+        v-show="form.status === 1"
       >
         <el-radio-group v-model="form.distribution_goods_type">
           <el-radio :label="0">{{ $t('distribution.recommendRadio1') }}</el-radio>
@@ -177,7 +177,7 @@
 
       <el-form-item
         :label="$t('distribution.customContent')"
-        v-if="form.status === 1"
+        v-show="form.status === 1"
       >
 
         <div
@@ -205,7 +205,7 @@
 
       <!-- 展开更多配置 -->
       <div
-        v-if="form.status === 1"
+        v-show="form.status === 1"
         @click="handleToChangeArror"
         class="arrorContent"
       >
@@ -223,7 +223,7 @@
         </div>
       </div>
 
-      <div v-if="form.status === 1 && arrorFlag">
+      <div v-show="form.status === 1 && arrorFlag">
         <p class="titleContent">返利提现设置</p>
         <el-form-item label="返利提现开关：">
           <el-switch
@@ -463,7 +463,7 @@ export default {
     // 获取分销配置
     getDistribution () {
       getDistribution().then((res) => {
-        if (res.error === 0) {
+        if (res.error === 0 && res.content) {
           this.form = res.content
           // 有效期
           if (this.form.vaild === 0) {
