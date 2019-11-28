@@ -653,7 +653,6 @@ export default {
     nextStep () {
       this.formatParam()
       this.$refs['param'].validate((valid) => {
-        console.log('通过：' + valid)
         if (valid) {
           this.step++
         }
