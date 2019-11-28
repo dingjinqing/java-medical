@@ -48,6 +48,11 @@
         >
         </el-table-column>
         <el-table-column
+          prop=""
+          :label="$t('ordinaryCouponList.type')"
+          align="center"
+        ></el-table-column>
+        <el-table-column
           prop="scoreNumber"
           :label="$t('ordinaryCouponList.pointsExchange')"
           align="center"
@@ -70,7 +75,7 @@
           prop="surplus"
           :label="$t('ordinaryCouponList.inventory')"
           align="center"
-          width="80"
+          width="180"
         >
         </el-table-column>
         <el-table-column

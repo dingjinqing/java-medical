@@ -11,9 +11,10 @@ export const cn = {
   addCoupon: '添加优惠券',
 
   pointsExchange: '积分兑换',
+  type: '类型',
   value: '价值',
   minConsume: '最低消费',
-  inventory: '库存',
+  inventory: '库存(当前库存 / 初始库存)',
   receiveLimit: '领取限制',
   validityDay: '有效期',
   receiveTimes: '领取人/次',

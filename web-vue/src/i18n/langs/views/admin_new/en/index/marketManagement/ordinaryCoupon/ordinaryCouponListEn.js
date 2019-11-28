@@ -13,9 +13,10 @@ export const en = {
 
   // table表格表头
   pointsExchange: 'Points exchange',
+  type: 'Type',
   value: 'value',
   minConsume: 'Least consume',
-  inventory: 'Inventory',
+  inventory: 'Inventory(current stock / initial stock)',
   receiveLimit: 'Receive limit',
   validityDay: 'Period of validity',
   receiveTimes: 'Receive person/times',

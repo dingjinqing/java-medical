@@ -10,8 +10,9 @@
     </div>
     <div>
       <el-table
+        class="version-manage-table"
+        header-row-class-name="tableClss"
         :data="goodsSortData"
-        class="tableClass"
         border
         style="width: 100%"
       >
@@ -45,6 +46,7 @@
         >
           <template slot-scope="{row}">
             <img
+              v-if="row.sortImg"
               :src="row.sortImg"
               style="height: 50px;min-width: 160px;"
             />
@@ -178,14 +180,6 @@ export default {
 .goodsSortForm {
   margin: 10px 0px;
 }
-. /deep/.tableClass th {
-  background-color: #f5f5f5;
-  border: none;
-  height: 36px;
-  font-weight: bold;
-  color: #000;
-  padding: 8px 10px;
-}
 .collapseIcon {
   font-size: 20px;
   margin-right: 4px;
@@ -201,5 +195,13 @@ export default {
   font-size: 22px;
   color: #5a8bff;
   cursor: pointer !important;
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
 }
 </style>
