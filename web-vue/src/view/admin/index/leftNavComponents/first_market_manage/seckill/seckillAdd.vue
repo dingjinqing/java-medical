@@ -475,14 +475,16 @@ export default {
       console.log(111)
     },
     addMemberCard () {
-      this.$router.push({
-        path: '/admin/home/main/normalCardDetail'
-      })
+      window.open('/admin/home/main/normalCardDetail')
+      // this.$router.push({
+      //   path: '/admin/home/main/normalCardDetail'
+      // })
     },
     manageMemberCard () {
-      this.$router.push({
-        path: '/admin/home/main/user_card'
-      })
+      window.open('/admin/home/main/user_card')
+      // this.$router.push({
+      //   path: '/admin/home/main/user_card'
+      // })
     },
     // 校验表格数据
     checkNum (e, maxValue) {
