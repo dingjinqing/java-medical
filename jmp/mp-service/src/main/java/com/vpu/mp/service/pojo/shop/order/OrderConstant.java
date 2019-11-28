@@ -25,6 +25,9 @@ public class OrderConstant {
     /**pay sn 前缀*/
     public final static String PAY_SN_PREFIX = "PS";
 
+    /**return sn 前缀*/
+    public final static String RETURN_SN_PREFIX = "R";
+
 	/** 订单状态order_status */
 	/** 待付款 可进行操作：关闭订单 */
 	public final static byte ORDER_WAIT_PAY = 0;

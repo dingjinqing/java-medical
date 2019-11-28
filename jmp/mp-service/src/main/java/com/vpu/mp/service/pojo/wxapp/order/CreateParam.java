@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -40,6 +41,7 @@ public class CreateParam extends OrderBeforeParam{
     /**必填信息*/
     private OrderMustParam must;
     /**用户ip*/
+    @JsonIgnore
     private String clientIp;
     public void intoRecord(OrderInfoRecord orderRecord){
         //user

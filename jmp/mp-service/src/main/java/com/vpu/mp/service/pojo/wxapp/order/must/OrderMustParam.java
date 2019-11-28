@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order.must;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderMustParam {
+    @JsonIgnore
     private String orderSn;
     private String orderRealName;
     private String orderCid;

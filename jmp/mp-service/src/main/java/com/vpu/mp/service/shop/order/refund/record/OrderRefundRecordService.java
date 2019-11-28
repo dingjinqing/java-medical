@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.tables.OrderRefundRecord.ORDER_REFUND_RECORD;
 
 import java.math.BigDecimal;
 
+import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +49,7 @@ public class OrderRefundRecordService extends ShopBaseService{
 		//子订单取主订单订单号
 		String orderSn = orderInfo.isSubOrder(order) ? order.getMainOrderSn() : order.getOrderSn();
 		//退款流水号
-		String refundSn = generateReturnOrderSn();
+		String refundSn = IncrSequenceUtil.generateOrderSn(OrderConstant.RETURN_SN_PREFIX);
 		//支付记录
 		PaymentRecordRecord payRecord = paymentRecord.getPaymentRecordByOrderSn(orderSn);
 		if(payRecord == null) {
@@ -66,13 +67,12 @@ public class OrderRefundRecordService extends ShopBaseService{
 	/**
 	 * 虚拟订单微信退款
 	 * @param order 
-	 * @param returnOrder
 	 * @param money
 	 * @throws MpException 
 	 */
 	public void wxPayRefund(VirtualOrderPayInfo order , BigDecimal money) throws MpException {
 		//退款流水号
-		String refundSn = generateReturnOrderSn();
+		String refundSn = IncrSequenceUtil.generateOrderSn(OrderConstant.RETURN_SN_PREFIX);
 		//支付记录
 		PaymentRecordRecord payRecord = paymentRecord.getPaymentRecordByOrderSn(order.getOrderSn());
 		if(payRecord == null) {
@@ -115,18 +115,5 @@ public class OrderRefundRecordService extends ShopBaseService{
 	
 	public void addRecord() {
 		
-	}
-	
-	/**
-	 * 	生成退款流水号
-	 * @return
-	 */
-	public String generateReturnOrderSn() {
-		while(true) {
-			String refundSn = "R" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE) +  RandomUtil.getIntRandom();
-			if(db().fetchCount(TABLE,TABLE.REFUND_SN.eq(refundSn)) < 1){
-				return refundSn;
-			}
-		}
 	}
 }
