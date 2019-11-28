@@ -28,6 +28,7 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -596,7 +597,10 @@ public class ServiceOrderService extends ShopBaseService {
      */
     public long checkMaxNumOfReservations(Integer serviceId, Integer technicianId, LocalDate date, LocalTime startPeriod, LocalTime endPeriod) {
         List<ServiceOrderListQueryVo> orderListQueryVos = getOrderListInfo(serviceId, technicianId, date, ORDER_STATUS_WAIT_SERVICE);
-        return orderListQueryVos.stream().filter((e) -> {
+        if (CollectionUtils.isEmpty(orderListQueryVos)) {
+            return LONG_ZERO;
+        }
+        return orderListQueryVos.stream().filter(Objects::nonNull).filter((e) -> {
             String[] periodTime = e.getServicePeriod().split(REGEX);
             return LocalTime.parse(periodTime[0], HH_MM_FORMATTER).isBefore(endPeriod) && LocalTime.parse(periodTime[1], HH_MM_FORMATTER).isAfter(startPeriod);
         }).count();
