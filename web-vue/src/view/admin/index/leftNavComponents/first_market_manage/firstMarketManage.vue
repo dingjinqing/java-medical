@@ -500,8 +500,16 @@ export default {
   methods: {
     // 点击跳转
     to (routerName) {
-      this.$router.push({
-        name: routerName
+      console.log(routerName)
+      this.handleToJudgeTwoDiction(routerName).then(res => {
+        console.log(res)
+        if (res) {
+          this.$router.push({
+            name: routerName
+          })
+        } else {
+          this.$http.$emit('jurisdictionDialog')
+        }
       })
     },
     // 我要送礼

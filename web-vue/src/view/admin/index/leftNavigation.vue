@@ -60,9 +60,6 @@
 </template>
 <script>
 /* eslint-disable */
-import {
-  judgeJurisdictionRequest
-} from '@/api/admin/util.js'
 import { mapActions } from 'vuex'
 import { jurisdictionQueryRequest } from '@/api/admin/jurisdiction'
 export default {
@@ -542,10 +539,14 @@ export default {
     this.langDefault()
     // 权限处理
     // this.handleJurisdiction()
+
   },
   methods: {
     ...mapActions(['judgeMenuAll']),
     handleJurisdiction() {
+      this.$http.$on('jurisdictionDialog', () => {
+        this.dialogVisible = true
+      })
       jurisdictionQueryRequest().then((res) => {
         console.log(res)
         for (let i in this.dataList) {
@@ -714,34 +715,6 @@ export default {
     // 左侧菜单栏划出事件
     left_nav_leave(index) {
       this.click_nav_index = null
-    },
-    handleToJudgeTwoDiction(name) {
-      return new Promise((resolve, reject) => {
-        // 请求功能或者菜单对应的版本名字池
-        let vsNameArr = ['basic_yesterday', 'portrait_user', 'second_view', 'visit_source', 'analysis_visit_source', 'sort', 'tag', 'pin_group']
-        // 二级菜单需要校验的元素池
-        let enNameArr = ['analysis_basic', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort', 'user_tag', 'pin_group']
-        console.log(enNameArr.indexOf(name))
-        let index = enNameArr.indexOf(name)
-        if (enNameArr.indexOf(name) !== -1) {
-          console.log('触发', vsNameArr[index])
-          judgeJurisdictionRequest({
-            'V-EnName': name,
-            'V-VsName': vsNameArr[index]
-          }).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              resolve(true)
-            } else if (res.error === 10031) {
-              resolve(false)
-            }
-          })
-        } else {
-          resolve(true)
-        }
-      })
-      console.log(name)
-
     }
   }
 }

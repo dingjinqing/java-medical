@@ -1,3 +1,6 @@
+import {
+  judgeJurisdictionRequest
+} from '@/api/admin/util.js'
 const myMixin = {
   data () {
     return {
@@ -243,6 +246,33 @@ const myMixin = {
         }
       }
       return retArr
+    },
+    // 校验权限
+    handleToJudgeTwoDiction (name) {
+      return new Promise((resolve, reject) => {
+        // 请求功能或者菜单对应的版本名字池
+        let vsNameArr = ['basic_yesterday', 'portrait_user', 'second_view', 'visit_source', 'analysis_visit_source', 'sort', 'tag', 'pin_group', 'distribution', 'pay_reward', 'activity_reward', 'lottery', 'group_draw', 'pin_integration', 'promote']
+        // 二级菜单需要校验的元素池
+        let enNameArr = ['analysis_basic', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort', 'user_tag', 'pin_group', 'distribution_info', 'payreward', 'market_gifted', 'lottery_activity', 'group_draw', 'pin_integration', 'promote']
+        console.log(enNameArr.indexOf(name), name)
+        let index = enNameArr.indexOf(name)
+        if (enNameArr.indexOf(name) !== -1) {
+          console.log('触发', vsNameArr[index])
+          judgeJurisdictionRequest({
+            'V-EnName': name,
+            'V-VsName': vsNameArr[index]
+          }).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              resolve(true)
+            } else if (res.error === 10031) {
+              resolve(false)
+            }
+          })
+        } else {
+          resolve(true)
+        }
+      })
     }
   }
 }
