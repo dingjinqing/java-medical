@@ -716,7 +716,7 @@ export default {
       console.log('初始化品牌展示设置测试')
       showBrandgetRequest().then((res) => {
         if (res.error === 0) {
-          this.hiddleValTop = res.content.recomTitle
+          this.hiddleValTop = res.content.recommendTitle
           switch (res.content.showAllBrand) {
             case 0:
               this.switchValue = false
@@ -724,7 +724,7 @@ export default {
             case 1:
               this.switchValue = true
           }
-          switch (res.content.showRcommendBrandType) {
+          switch (res.content.showRecommendBrandType) {
             case 0:
               this.switchValueBottom = false
               break
@@ -809,22 +809,22 @@ export default {
       let showAllBrand = ''
       let showRcommendBrandType = ''
       if (this.switchValue === true) {
-        showAllBrand = '1'
+        showAllBrand = 1
       } else {
-        showAllBrand = '0'
+        showAllBrand = 0
       }
       if (this.switchValueBottom === false) {
-        showRcommendBrandType = '0'
+        showRcommendBrandType = 0
       } else if (this.showRadio === '按品牌展示') {
-        showRcommendBrandType = '2'
+        showRcommendBrandType = 2
       } else if (this.showRadio === '按品牌分类展示') {
-        showRcommendBrandType = '3'
+        showRcommendBrandType = 3
       }
 
       let obj = {
-        recomTitle: this.hiddleValTop,
+        recommendTitle: this.hiddleValTop,
         showAllBrand: showAllBrand,
-        showRcommendBrandType: showRcommendBrandType
+        showRecommendBrandType: showRcommendBrandType
       }
       saveShowBrandgetRequest(obj).then((res) => {
         if (res.error === 0) {
