@@ -1771,7 +1771,7 @@ create table `b2c_store_order`
     `store_id`            int(11)        not null default '0' comment '门店id',
     `order_sn`            varchar(20)    not null default '' comment '订单编号',
     `user_id`             mediumint(8)   not null default '0' comment '用户id',
-    `order_status`        tinyint(1)     not null default '0' comment '订单状态',
+    `order_status`        tinyint(1)     not null default '0' comment '订单状态, 0待付款，1已付款',
     `order_status_name`   varchar(32)             default null comment '订单状态名称',
     `invoice_id`          int(11)        not null default '0' comment '发票id',
     `invoice_detail`      text comment '发票内容：json存储',

@@ -4,25 +4,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
-import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
-import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
-import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
-import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
-import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceCategoryListQueryVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.saas.region.ProvinceService;
 import com.vpu.mp.service.saas.shop.ShopService;
@@ -60,10 +54,8 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
-import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
-import static java.math.BigDecimal.ZERO;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.PAY_SUCCESS;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.PAY_SUCCESS_NAME;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
@@ -459,7 +451,7 @@ public class StoreWxService extends ShopBaseService {
      * @param param the param 门店订单信息
      * @return the string 订单编号
      */
-    public StoreOrderInfoVo storePay(StoreInfoParam param) {
+    public WebPayVo storePay(StoreInfoParam param) {
         // 订单编号, 创建支付订单时生成,支付成功后用来获取订单详情
         AtomicReference<String> orderSn = new AtomicReference<>();
         int userId = param.getUserId();
@@ -469,73 +461,37 @@ public class StoreWxService extends ShopBaseService {
         StorePayOrderInfo orderInfo = param.getOrderInfo();
         // 发票信息
         InvoiceVo invoiceVo = invoiceService.get(orderInfo.getInvoiceId());
+        // 事务db前置校验
+        StoreOrderTran storeOrderTran = storeOrderService.checkBeforeCreate(userRecord, invoiceVo, orderInfo);
+        AtomicReference<WebPayVo> webPayVo = new AtomicReference<>();
         this.transaction(() -> {
             // 创建门店订单
-            StoreOrderRecord storeOrderRecord = storeOrderService.createStoreOrder(userRecord, invoiceVo, orderInfo);
-            if (storeOrderRecord == null) {
-                log.error("创建门店订单失败,原因如下");
-                throw new BusinessException(JsonResultCode.CODE_FAIL);
-            }
-            orderSn.set(storeOrderRecord.getOrderSn());
-            if (storeOrderRecord.getMoneyPaid().compareTo(ZERO) > 0) {
+            orderSn.set(storeOrderService.createStoreOrder(storeOrderTran));
+            if (BigDecimalUtil.greaterThanZero(orderInfo.getMoneyPaid())) {
                 // todo 支付预留接口
-
+                String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
+                webPayVo.set(mpPaymentService.wxUnitOrder(param.getClientIp(), "", orderSn.get(), orderInfo.getMoneyPaid(), openId));
+                log.debug("微信支付接口调用结果：{}", webPayVo.get());
+            } else {
+                // 跟新门店订单支付状态
+                storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(orderSn.get()), new StoreOrderRecord() {{
+                    setPayTime(Timestamp.valueOf(LocalDateTime.now()));
+                    setOrderStatus(PAY_SUCCESS);
+                    setOrderStatusName(PAY_SUCCESS_NAME);
+                }});
             }
-            // 会员余额变动
-            if (storeOrderRecord.getUseAccount().compareTo(ZERO) > 0) {
-                try {
-                    accountService.addUserAccount(new AccountParam() {{
-                        setUserId(userId);
-                        setAccount(userRecord.getAccount());
-                        setOrderSn(storeOrderRecord.getOrderSn());
-                        setAmount(storeOrderRecord.getUseAccount());
-                        setPayment("balance");
-                        setIsPaid(BYTE_ONE);
-                        setRemark(storeOrderRecord.getOrderSn());
-                                                  }},
-                    TradeOptParam.builder().tradeType(CONDITION_TWO).tradeFlow(BYTE_ZERO).build()
-                    );
-                } catch (MpException e) {
-                    log.error("会员余额变动失败,原因如下:{}", e.getMessage());
-                    throw new BusinessException(JsonResultCode.CODE_FAIL);
-                }
-            }
-            // 创建用户积分记录
-            if (storeOrderRecord.getScoreDiscount().compareTo(ZERO) > 0) {
-                scoreService.addUserScore(new UserScoreVo() {{
-                    setScoreDis(userRecord.getScore());
-                    setUserId(userId);
-                    setScore(storeOrderRecord.getScoreDiscount().multiply(HUNDRED).intValue());
-                    setOrderSn(storeOrderRecord.getOrderSn());
-                    setShopId(getShopId());
-                    setRemark(storeOrderRecord.getOrderSn());
-                }}, "0", BYTE_ONE, BYTE_ZERO);
-            }
-            // 增加会员卡消费记录
-            if (storeOrderRecord.getMemberCardBalance().compareTo(ZERO) > 0) {
-                    UserCardParam userCardParam = userCardDaoService.getUserCardInfo(storeOrderRecord.getMemberCardNo());
-                    userCardService.cardConsumer(new UserCardConsumeBean() {{
-                        setMoneyDis(storeOrderRecord.getMemberCardBalance());
-                        setUserId(userId);
-                        setMoney(storeOrderRecord.getMemberCardBalance());
-                        setCardNo(storeOrderRecord.getMemberCardNo());
-                        setCardId(userCardParam.getCardId());
-                        setReason(storeOrderRecord.getOrderSn());
-                        setType(BYTE_ZERO);
-                    }}, INTEGER_ZERO, CONDITION_THREE, BYTE_ZERO, BYTE_ZERO, false);
-                }
-            // 跟新门店订单支付状态
-            storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(storeOrderRecord.getOrderSn()), new StoreOrderRecord() {{
-                setPayTime(Timestamp.valueOf(LocalDateTime.now()));
-                setOrderStatus(BYTE_ONE);
-                setOrderStatusName("已支付");
-            }});
-            // 支付完成送积分; 门店买单支付是否返送积分开关 on 1
-            if (BYTE_ONE.equals(scoreCfgService.getStoreScore())) {
-                storeOrderService.sendScoreAfterPayDone(storeOrderRecord);
+            if (Objects.isNull(webPayVo.get())) {
+                webPayVo.set(new WebPayVo() {{
+                    setOrderSn(orderSn.get());
+                }});
+            } else {
+                webPayVo.get().setOrderSn(orderSn.get());
             }
         });
-        // 返回支付完成订单详情
-        return storeOrderService.get(orderSn.get());
+        // 支付完成送积分; 门店买单支付是否返送积分开关 on 1
+        if (BYTE_ONE.equals(scoreCfgService.getStoreScore())) {
+            storeOrderService.sendScoreAfterPayDone(storeOrderTran.getStoreOrder());
+        }
+        return webPayVo.get();
     }
 }

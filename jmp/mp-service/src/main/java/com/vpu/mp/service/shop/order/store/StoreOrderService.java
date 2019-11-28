@@ -1,30 +1,38 @@
 package com.vpu.mp.service.shop.order.store;
 
-import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.StoreOrder;
 import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.wxapp.store.StoreOrderTran;
 import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderInfo;
+import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.ScoreCfgService;
 import com.vpu.mp.service.shop.member.ScoreService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
+import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -50,10 +58,12 @@ import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ONE;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_PAY;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_WX_PAY;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.WAIT_TO_PAY;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.WAIT_TO_PAY_NAME;
 import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY;
 import static com.vpu.mp.service.shop.member.ScoreCfgService.BUY_EACH;
 import static java.math.BigDecimal.*;
@@ -101,6 +111,18 @@ public class StoreOrderService extends ShopBaseService {
      */
     @Autowired
     public UserCardDaoService userCardDaoService;
+
+    /**
+     * The Payment service.
+     */
+    @Autowired
+    public PaymentService paymentService;
+
+    /**
+     * The Account service.余额管理
+     */
+    @Autowired
+    public AccountService accountService;
 
     public final StoreOrder TABLE = STORE_ORDER;
     public static final BigDecimal HUNDRED = new BigDecimal(100);
@@ -170,14 +192,27 @@ public class StoreOrderService extends ShopBaseService {
             .fetchOneInto(StoreOrderInfoVo.class);
     }
 
+    private static final String PREFIX = "D";
+
     /**
-     * Create store order.创建门店买单订单
-     *
-     * @param userInfo    the user info 用户信息
-     * @param invoiceInfo the invoice info 发票信息
-     * @param orderInfo   the order info 门店订单信息
+     * 生成门店买单订单号
      */
-    public StoreOrderRecord createStoreOrder(UserRecord userInfo, InvoiceVo invoiceInfo, StorePayOrderInfo orderInfo) {
+    public String generateOrderSn() {
+        return IncrSequenceUtil.generateOrderSn(PREFIX);
+    }
+
+    /**
+     * Check before create store order tran.
+     *
+     * @param userInfo    the user info
+     * @param invoiceInfo the invoice info
+     * @param orderInfo   the order info
+     * @return the store order tran
+     */
+    public StoreOrderTran checkBeforeCreate(UserRecord userInfo, InvoiceVo invoiceInfo, StorePayOrderInfo orderInfo) {
+        // 订单编号
+        String orderSn = generateOrderSn();
+        log.debug("门店买单订单编号:{}", orderSn);
         StorePojo storePojo = store.getStore(orderInfo.getStoreId());
         Objects.requireNonNull(storePojo, "店铺不存在");
         if (storePojo.getDelFlag().equals(BYTE_ONE)) {
@@ -192,12 +227,17 @@ public class StoreOrderService extends ShopBaseService {
         BigDecimal scoreAmount = orderInfo.getScoreAmount();
         // 余额抵扣金额
         BigDecimal balanceAmount = orderInfo.getBalanceAmount();
+        AccountParam accountParam = null;
+        CardConsumpData cardConsumpData = null;
+        ScoreParam scoreParam = null;
         String cardNo = orderInfo.getCardNo();
         if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo)) {
             // 验证会员卡有效性
-            Assert.isTrue(userCardDaoService.checkStoreValidCard(userInfo.getUserId(), orderInfo.getStoreId(), cardNo), JsonResultCode.CODE_FAIL);
-            Record2<BigDecimal, BigDecimal> record2 = db().select(USER_CARD.MONEY, MEMBER_CARD.DISCOUNT).from(USER_CARD).leftJoin(MEMBER_CARD)
-                .on(Tables.USER_CARD.CARD_ID.eq(Tables.MEMBER_CARD.ID)).where(USER_CARD.CARD_NO.eq(cardNo)).fetchAny();
+            if (!userCardDaoService.checkStoreValidCard(userInfo.getUserId(), orderInfo.getStoreId(), cardNo)) {
+                log.error("会员卡【{}】无效", cardNo);
+                throw new BusinessException(JsonResultCode.CODE_ORDER_CARD_INVALID);
+            }
+            Record2<BigDecimal, BigDecimal> record2 = userCardDaoService.getCardBalAndDis(cardNo);
             // 会员卡折扣
             BigDecimal discount = record2.getValue(MEMBER_CARD.DISCOUNT);
             // 会员卡余额
@@ -211,21 +251,63 @@ public class StoreOrderService extends ShopBaseService {
                 }
                 log.debug("会员卡折扣金额:{}", cardDisAmount);
             }
-            // 会员卡抵扣金额
-            if (cardAmount.compareTo(money) > 0) {
-                // 会员卡余额不足
-                throw new BusinessException(JsonResultCode.CODE_USER_CARD_BALANCE_INSUFFICIENT);
+            // 会员卡余额抵扣金额
+            if (BigDecimalUtil.greaterThanZero(cardAmount)) {
+                if (cardAmount.compareTo(money) > 0) {
+                    // 会员卡余额不足
+                    log.error("会员卡余额[{}]不足(实际抵扣金额[{}])，无法下单", money, cardAmount);
+                    throw new BusinessException(JsonResultCode.CODE_USER_CARD_BALANCE_INSUFFICIENT);
+                }
+                // 增加会员卡消费记录
+                UserCardParam userCardParam = userCardDaoService.getUserCardInfo(cardNo);
+                // 创建会员卡消费变动事件
+                cardConsumpData = new CardConsumpData()
+                    .setUserId(userInfo.getUserId())
+                    // 会员卡更新金额，区分正负号，这里是负号，意为扣减
+                    .setMoney(orderInfo.getCardAmount().negate())
+                    .setCardNo(cardNo)
+                    .setCardId(userCardParam.getCardId())
+                    .setReason(orderSn)
+                    // 消费类型 :门店只支持普通卡0
+                    .setType(MCARD_TP_NORMAL);
             }
         }
         // 积分抵扣金额(积分数除以100就是积分抵扣金额数)
-        if (scoreAmount.multiply(HUNDRED).intValue() > userInfo.getScore()) {
-            // 积分不足，无法下单
-            throw new BusinessException(JsonResultCode.CODE_SCORE_INSUFFICIENT);
+        if (BigDecimalUtil.greaterThanZero(scoreAmount)) {
+            int scoreValue = scoreAmount.multiply(HUNDRED).intValue();
+            if (scoreValue > userInfo.getScore()) {
+                // 积分不足，无法下单
+                log.error("积分[{}]不足(实际抵扣金额[{}]，金额积分兑换率为1:100)，无法下单", userInfo.getScore(), scoreAmount);
+                throw new BusinessException(JsonResultCode.CODE_SCORE_INSUFFICIENT);
+            }
+            scoreParam = new ScoreParam() {{
+                setScoreDis(userInfo.getScore());
+                setUserId(new Integer[]{userInfo.getUserId()});
+                // 积分变动数额
+                setScore(scoreValue);
+                setOrderSn(orderSn);
+                setRemark(orderSn);
+            }};
         }
         // 余额抵扣金额
-        if (balanceAmount.compareTo(userInfo.getAccount()) > 0) {
-            // 余额不足，无法下单
-            throw new BusinessException(JsonResultCode.CODE_BALANCE_INSUFFICIENT);
+        if (BigDecimalUtil.greaterThanZero(balanceAmount)) {
+            if (balanceAmount.compareTo(userInfo.getAccount()) > 0) {
+                // 余额不足，无法下单
+                log.error("用户余额[{}]不足(实际抵扣金额[{}])，无法下单", userInfo.getAccount(), balanceAmount);
+                throw new BusinessException(JsonResultCode.CODE_BALANCE_INSUFFICIENT);
+            }
+            // 创建会员余额变动事件
+            accountParam = new AccountParam() {{
+                setAccount(userInfo.getAccount());
+                setUserId(userInfo.getUserId());
+                // 更新金额  区分正负号， 这里置为负号，表示扣减
+                setAmount(balanceAmount.negate());
+                setOrderSn(orderSn);
+                setPayment(PAY_CODE_BALANCE_PAY);
+                // 支付类型，0：充值，1：消费
+                setIsPaid(BYTE_ONE);
+                setRemark(orderSn);
+            }};
         }
         // 应付金额
         BigDecimal moneyPaid = orderInfo.getOrderAmount()
@@ -242,29 +324,84 @@ public class StoreOrderService extends ShopBaseService {
         }
         StoreOrderRecord orderRecord = new StoreOrderRecord();
         orderRecord.setStoreId(orderInfo.getStoreId());
-        // 生成订单编号
-        String orderSn = orderService.generateOrderSn();
-        log.debug("订单编号:{}", orderSn);
         orderRecord.setOrderSn(orderSn);
         orderRecord.setUserId(userInfo.getUserId());
-        orderRecord.setOrderStatus(ORDER_WAIT_PAY);
-        orderRecord.setOrderStatusName("未支付");
+        orderRecord.setOrderStatus(WAIT_TO_PAY);
+        orderRecord.setOrderStatusName(WAIT_TO_PAY_NAME);
         orderRecord.setInvoiceId(invoiceInfo.getId());
         orderRecord.setInvoiceDetail(Util.toJson(invoiceInfo));
         orderRecord.setAddMessage(orderInfo.getRemark());
         orderRecord.setPayCode(moneyPaid.compareTo(ZERO) > 0 ? PAY_CODE_WX_PAY : PAY_CODE_BALANCE_PAY);
-        orderRecord.setPayName("");
+        orderRecord.setPayName(paymentService.getPaymentInfo(orderRecord.getPayCode()).getPayName());
         orderRecord.setMoneyPaid(moneyPaid);
         orderRecord.setMemberCardNo(cardNo);
         orderRecord.setMemberCardRedunce(cardAmount);
         orderRecord.setScoreDiscount(scoreAmount);
         orderRecord.setUseAccount(balanceAmount);
         orderRecord.setOrderAmount(orderInfo.getOrderAmount());
-//        orderRecord.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
+        return StoreOrderTran.builder()
+            .account(accountParam)
+            .cardConsumpData(cardConsumpData)
+            .scoreParam(scoreParam)
+            .storeOrder(orderRecord)
+            .build();
+    }
 
-        db().executeInsert(orderRecord);
-        db().lastID();
-        return orderRecord;
+    /**
+     * Create store order.创建门店买单订单
+     *
+     * @param param the param
+     * @return the string
+     */
+    public String createStoreOrder(StoreOrderTran param) {
+        AccountParam account = param.getAccount();
+        CardConsumpData userCard = param.getCardConsumpData();
+        ScoreParam scoreParam = param.getScoreParam();
+        StoreOrderRecord order = param.getStoreOrder();
+        // 创建门店买单订单记录
+        db().executeInsert(order);
+        // 创建余额，会员卡，积分消费记录
+        if (Objects.nonNull(account)) {
+            try {
+                TradeOptParam tradeOpt = TradeOptParam.builder()
+                    .adminUserId(INTEGER_ZERO)
+                    .tradeType(RecordTradeEnum.TYPE_CRASH_ACCOUNT_PAY.val())
+                    .tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
+                    .build();
+                accountService.addUserAccount(account, tradeOpt);
+            } catch (MpException e) {
+                log.debug("余额抵扣失败：{}", e.getMessage());
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
+            log.debug("用户余额[{}]抵扣(实际抵扣金额[{}])成功!", account.getAccount(), order.getUseAccount());
+        }
+        if (Objects.nonNull(userCard)) {
+            TradeOptParam optParam = TradeOptParam.builder()
+                .tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
+                .tradeType(RecordTradeEnum.TYPE_CRASH_MEMBER_CARD_PAY.val())
+                .tradeSn(order.getOrderSn()).adminUserId(INTEGER_ZERO).build();
+            try {
+                memberCardService.updateMemberCardAccount(userCard, optParam, org.apache.commons.lang3.StringUtils.EMPTY);
+            } catch (MpException e) {
+                log.debug("会员卡余额抵扣失败：{}", e.getMessage());
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
+            log.debug("会员卡余额抵扣(实际抵扣金额[{}])成功!", userCard.getMoney());
+        }
+        if (Objects.nonNull(scoreParam)) {
+            TradeOptParam optParam = TradeOptParam.builder()
+                .tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
+                .tradeType(RecordTradeEnum.TYPE_CRASH_MEMBER_CARD_PAY.val())
+                .tradeSn(order.getOrderSn()).adminUserId(INTEGER_ZERO).build();
+            try {
+                scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, RecordTradeEnum.TYPE_SCORE_PAY.val(), RecordTradeEnum.TRADE_FLOW_OUT.val());
+            } catch (MpException e) {
+                log.debug("积分抵扣失败：{}", e.getMessage());
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
+            log.debug("积分抵扣(实际抵扣金额[{}])成功!", scoreParam.getScore());
+        }
+        return order.getOrderSn();
     }
 
     /**

@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.member.dao;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Lists;
+import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -24,6 +25,7 @@ import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
+import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -539,5 +543,16 @@ public class UserCardDaoService extends ShopBaseService{
 						.execute();
 		logger().info("废除会员卡: "+cardNo+" "+res+"张");
 	}
+
+    /**
+     * Gets card bal and dis.获取会员卡余额和折扣
+     *
+     * @param cardNo the card no
+     * @return the card bal and dis
+     */
+    public Record2<BigDecimal, BigDecimal> getCardBalAndDis(String cardNo) {
+        return db().select(USER_CARD.MONEY, MEMBER_CARD.DISCOUNT).from(USER_CARD).leftJoin(MEMBER_CARD)
+            .on(Tables.USER_CARD.CARD_ID.eq(Tables.MEMBER_CARD.ID)).where(USER_CARD.CARD_NO.eq(cardNo)).fetchAny();
+    }
 
 }

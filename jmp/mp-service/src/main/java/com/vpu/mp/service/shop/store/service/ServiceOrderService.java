@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.store.service;
 
-import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -8,6 +7,8 @@ import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
@@ -16,12 +17,15 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.*;
 import com.vpu.mp.service.pojo.wxapp.store.ServiceOrderTran;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
+import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.*;
@@ -30,23 +34,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
 import static com.vpu.mp.db.shop.tables.UserCard.USER_CARD;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
+import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static com.vpu.mp.service.shop.store.store.StoreReservation.HH_MM_FORMATTER;
-import static java.math.BigDecimal.ZERO;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
  * @author 王兵兵
@@ -87,6 +88,18 @@ public class ServiceOrderService extends ShopBaseService {
      */
     @Autowired
     public MemberCardService memberCardService;
+
+    /**
+     * The Payment service.
+     */
+    @Autowired
+    public PaymentService paymentService;
+
+    /**
+     * The User card service.
+     */
+    @Autowired
+    public UserCardService userCardService;
 
     /**
      * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
@@ -215,20 +228,13 @@ public class ServiceOrderService extends ShopBaseService {
         return db().update(SERVICE_ORDER).set(SERVICE_ORDER.ADMIN_MESSAGE, param.getAdminMessage()).where(SERVICE_ORDER.ORDER_SN.eq(param.getOrderSn())).execute() > 0 ? true : false;
     }
 
+    private static final String PREFIX = "S";
+
     /**
-     * 生成订单号
+     * 生成门店服务订单号
      */
     public String generateOrderSn() {
-        Random random = new Random();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-        String date = sdf.format(new Date());
-        String orderSn;
-        do {
-            orderSn = "";
-            int randomStr = random.nextInt(9999) % (9000) + 1000;
-            orderSn = "S".concat(date).concat(String.valueOf(randomStr));
-        } while (hasOrderSn(orderSn));
-        return orderSn;
+        return IncrSequenceUtil.generateOrderSn(PREFIX);
     }
 
     /**
@@ -280,6 +286,25 @@ public class ServiceOrderService extends ShopBaseService {
     }
 
     /**
+     * Pay method verify.下单前支付方式校验
+     * todo 门店相关支付业务暂不确定是否参与交易配置
+     *
+     * @param param the param
+     */
+    public void payMethodVerify(ServiceOrderRecord param) {
+        // 余额抵扣金额
+        BigDecimal balance = param.getUseAccount();
+        BigDecimal moneyPaid = param.getMoneyPaid();
+        Map<String, PaymentVo> pays = paymentService.getSupportPayment();
+        if (Objects.nonNull(balance) && balance.compareTo(BIGDECIMAL_ZERO) > INTEGER_ZERO) {
+            if (BYTE_ZERO.equals(pays.get(PAY_CODE_BALANCE_PAY).getEnabled())) {
+                log.debug("暂不支持使用余额支付");
+                throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
+        }
+    }
+
+    /**
      * Check before create service order tran.订单创建前置校验
      * 事务中抽离逻辑判断和实际的db操作，减少事务执行时间
      *
@@ -287,6 +312,7 @@ public class ServiceOrderService extends ShopBaseService {
      * @return the service order tran
      */
     public ServiceOrderTran checkBeforeCreate(ServiceOrderRecord param) {
+
         String orderSn = generateOrderSn();
         // 二次验证前端计算的应付金额是否正确,
         BigDecimal moneyPaidSecondCheck = BIGDECIMAL_ZERO;
@@ -300,7 +326,7 @@ public class ServiceOrderService extends ShopBaseService {
         BigDecimal couponDis = param.getDiscount();
         AccountParam accountParam = null;
         CardConsumpData cardConsumpData = null;
-        if (balance.compareTo(BIGDECIMAL_ZERO) > 0) {
+        if (BigDecimalUtil.greaterThanZero(balance)) {
             // 用户余额校验
             BigDecimal userBalance = Optional.ofNullable(userService.getUserByUserId(param.getUserId()))
                 .orElseThrow(() -> new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST, "User: " + param.getUserId())).getAccount();
@@ -316,23 +342,21 @@ public class ServiceOrderService extends ShopBaseService {
                 // 更新金额  区分正负号， 这里置为负号，表示扣减
                 setAmount(param.getUseAccount().negate());
                 setOrderSn(orderSn);
-                setPayment("balance");
+                setPayment(PAY_CODE_BALANCE_PAY);
                 // 支付类型，0：充值，1：消费
                 setIsPaid(BYTE_ONE);
                 setRemark(orderSn);
             }};
         }
         String cardNo = param.getMemberCardNo();
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo) && cardDis.compareTo(ZERO) > 0) {
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo) && BigDecimalUtil.greaterThanZero(cardDis)) {
             // 验证会员卡有效性
             if (!userCardDaoService.checkStoreValidCard(param.getUserId(), param.getStoreId(), cardNo)) {
                 log.error("会员卡【{}】无效", cardNo);
                 throw new BusinessException(JsonResultCode.CODE_ORDER_CARD_INVALID);
             }
-            Record2<BigDecimal, BigDecimal> record2 = db().select(USER_CARD.MONEY, MEMBER_CARD.DISCOUNT).from(USER_CARD).leftJoin(MEMBER_CARD)
-                .on(Tables.USER_CARD.CARD_ID.eq(Tables.MEMBER_CARD.ID)).where(USER_CARD.CARD_NO.eq(cardNo)).fetchAny();
             // 会员卡余额（门店服务不涉及会员卡折扣）
-            BigDecimal money = record2.getValue(USER_CARD.MONEY);
+            BigDecimal money = userCardService.getSingleField(USER_CARD.MONEY, USER_CARD.CARD_NO.eq(cardNo));
             // 会员卡抵扣金额大于会员卡余额
             if (cardDis.compareTo(money) > 0) {
                 // 会员卡余额不足
@@ -344,12 +368,14 @@ public class ServiceOrderService extends ShopBaseService {
             // 创建会员卡消费变动事件
             cardConsumpData = new CardConsumpData()
                 .setUserId(param.getUserId())
+                // 会员卡更新金额，区分正负号，这里是负号，意为扣减
                 .setMoney(param.getMemberCardBalance().negate())
                 .setCardNo(param.getMemberCardNo())
                 .setCardId(userCardParam.getCardId())
                 .setReason(orderSn)
                 // 消费类型 :门店只支持普通卡0
-                .setType(MCARD_TP_NORMAL);
+                .setType(MCARD_TP_NORMAL)
+            ;
         }
         if (!INTEGER_ZERO.equals(param.getCouponId())) {
             // todo 根据优惠券规则计算优惠券抵扣金额
@@ -379,7 +405,9 @@ public class ServiceOrderService extends ShopBaseService {
         AccountParam account = param.getAccount();
         CardConsumpData userCard = param.getCardConsumpData();
         ServiceOrderRecord order = param.getServiceOrder();
+        // 创建服务订单记录
         db().executeInsert(order);
+        // 创建余额，会员卡消费记录
         if (Objects.nonNull(account)) {
             try {
                 TradeOptParam tradeOpt = TradeOptParam.builder()

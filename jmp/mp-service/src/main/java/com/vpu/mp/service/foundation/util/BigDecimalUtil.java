@@ -5,8 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * 	扩展BigDecimal
@@ -123,6 +125,26 @@ public class BigDecimalUtil {
         BigDecimal tempLeft = new BigDecimal(left.toString());
         BigDecimal tempRight = new BigDecimal(right.toString());
         return tempLeft.divide(tempRight, 2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Greater than zero boolean.是否大于0
+     *
+     * @param target the target
+     * @return the boolean
+     */
+    public static boolean greaterThanZero(BigDecimal target) {
+        return Objects.nonNull(target) && target.compareTo(BIGDECIMAL_ZERO) > INTEGER_ZERO;
+    }
+
+    /**
+     * Ge zero boolean.是否大于等于0
+     *
+     * @param target the target
+     * @return the boolean
+     */
+    public static boolean geZero(BigDecimal target) {
+        return Objects.nonNull(target) && target.compareTo(BIGDECIMAL_ZERO) >= INTEGER_ZERO;
     }
 
     /**
