@@ -44,10 +44,6 @@ public class WxAppCardController extends WxAppBaseController {
 		}
 		return success(userCardDetail);
 	}
-	
-	
-	
-	
 	/**
 	 * 领取会员卡
 	 */
