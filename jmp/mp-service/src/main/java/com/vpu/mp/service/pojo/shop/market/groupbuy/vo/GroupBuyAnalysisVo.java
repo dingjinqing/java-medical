@@ -23,11 +23,11 @@ public class GroupBuyAnalysisVo {
     List<Integer> newUserList = new ArrayList<>();
     List<String> dateList = new ArrayList<>();;
 
-    private BigDecimal totalPrice;
-    private BigDecimal totalMarketPrice;
-    private BigDecimal totalRatio;
-    private Integer totalOldUser;
-    private Integer totalNewUser;
+    private BigDecimal totalPrice =BigDecimal.ZERO;
+    private BigDecimal totalMarketPrice =BigDecimal.ZERO;
+    private BigDecimal totalRatio =BigDecimal.ZERO;
+    private Integer totalOldUser =0;
+    private Integer totalNewUser =0;
 
 
 }
