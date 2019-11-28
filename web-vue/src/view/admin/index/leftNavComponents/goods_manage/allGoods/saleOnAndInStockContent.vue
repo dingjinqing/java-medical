@@ -21,15 +21,17 @@
           align="center"
           prop="goodsName"
           :label="$t('allGoods.allGoodsData.goodsName')"
-          width="180px"
+          width="200px"
         >
           <template slot-scope="scope">
-            <div>
-              <img
-                style="width: 70px;height: 70px;float: left;"
-                :src="scope.row.goodsImg"
-              >
-              <div style="padding:10px;">
+            <div style="overflow: hidden;">
+              <div class="goodsNameLeft">
+                <img
+                  style="width: 100%; height: 100%;"
+                  :src="scope.row.goodsImg"
+                >
+              </div>
+              <div class="goodsNameRight">
                 <span
                   v-if="scope.row.sourceName !== null"
                   class="goodsTypeSpanWrap"
@@ -38,7 +40,8 @@
                   v-if="scope.row.goodsTypeName !== null"
                   class="goodsSourceSpanWrap"
                 >{{scope.row.goodsTypeName}}</span>
-                {{scope.row.goodsName}}
+                <span>{{scope.row.goodsName}}</span>
+                <!-- {{scope.row.goodsName}} -->
               </div>
             </div>
           </template>
@@ -46,6 +49,7 @@
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.shopPrice')"
+          width="120px"
         >
           <template slot-scope="{row}">
             <span v-if="row.prdId === null">
@@ -79,18 +83,20 @@
         <el-table-column
           align="center"
           prop="goodsSn"
-          width="180px"
+          width="120px"
           :label="$t('allGoods.allGoodsData.goodsSn')"
         />
         <el-table-column
           align="center"
           prop="catName"
           :label="$t('allGoods.allGoodsData.cat')"
+          width="100px"
         />
         <el-table-column
           align="center"
           prop="sortName"
           :label="$t('allGoods.allGoodsData.sort')"
+          width="100px"
         />
         <el-table-column
           align="center"
@@ -101,6 +107,7 @@
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.goodsNumber')"
+          width="120px"
         >
           <template slot-scope="{row}">
             <span v-if="row.prdId === null">{{row.goodsNumber}}</span>
@@ -393,7 +400,7 @@ export default {
     /** table表单内标签 **/
     /* table表单内标签设置按钮 */
     tdLabelSetClick (row) {
-      getGoodsFilterItem({needGoodsLabel: true}).then(res => {
+      getGoodsFilterItem({ needGoodsLabel: true }).then(res => {
         const { content: { goodsLabels } } = res
         this.goodsLabelData.currentRow = row
         this.goodsLabelData.isShow = true
@@ -579,11 +586,27 @@ export default {
   padding: 2px;
   margin-right: 2px;
 }
+.goodsNameLeft {
+  width: 70px;
+  height: 70px;
+  float: left;
+}
+.goodsNameRight {
+  width: 100px;
+  height: 70px;
+  float: left;
+  margin-left: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
 .goodsTypeSpanWrap {
   border: 1px solid #ff3f3f;
   color: #ff3f3f;
   border-radius: 3px;
-  padding: 2px;
+  // padding: 2px;
   margin-right: 2px;
 }
 .goodsLabelSpanWrap {
