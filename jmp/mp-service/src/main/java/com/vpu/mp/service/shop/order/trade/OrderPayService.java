@@ -236,32 +236,6 @@ public class OrderPayService extends ShopBaseService{
     }
 
     /**
-     * 	微信
-     * @param order
-     * @param money
-     * @return
-     * @throws MpException
-     */
-    public void refundMoneyPaid(OrderInfoVo order , Integer retId ,BigDecimal money) {
-        if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == order.getOrderPayWay()) {
-            //TODO 好友代付
-        }
-        if(OrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())) {
-            try {
-                orderRefundRecord.wxPayRefund(order, retId, money);
-            } catch (MpException e) {
-                //TODO 微信失败处理
-            }
-
-        }
-        //交易记录
-        tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
-        //记录
-        refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.MONEY_PAID, money, retId);
-    }
-
-
-    /**
      * 虚拟订单微信退款
      * @param order
      * @param money
@@ -269,7 +243,7 @@ public class OrderPayService extends ShopBaseService{
      */
     public void refundVirtualWx(VirtualOrderPayInfo order , BigDecimal money) throws MpException {
         if(OrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())) {
-            orderRefundRecord.wxPayRefund(order , money);
+            //orderRefundRecord.wxPayRefund(order , money);
         }
         //交易记录
         tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);

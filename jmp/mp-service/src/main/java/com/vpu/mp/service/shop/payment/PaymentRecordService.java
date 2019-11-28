@@ -52,7 +52,7 @@ public class PaymentRecordService extends ShopBaseService {
 	
 	/**
 	 * 通过交易单号得到支付记录
-	 * @param orderSn
+	 * @param tradeNo
 	 * @return
 	 */
 	public PaymentRecordRecord getPaymentRecordByTradeNo(String tradeNo) {

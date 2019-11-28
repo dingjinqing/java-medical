@@ -178,9 +178,14 @@ public class MpPaymentService extends ShopBaseService {
 	 * @return
 	 * @throws WxPayException
 	 */
-	public WxPayRefundResult refundByTransactionId(String transactionId, String outRefundNo, Integer refundFee,
-			Integer totalFee) throws WxPayException {
-		return this.refund(null, transactionId, outRefundNo, refundFee, totalFee);
+	public WxPayRefundResult refundByTransactionId(String transactionId, String outRefundNo, Integer refundFee, Integer totalFee) throws WxPayException {
+        if(Boolean.FALSE) {
+            //TODO 扩展微信支付类型（国际、通联、子商账户）
+            return null;
+        }else {
+            return refund(null, transactionId, outRefundNo, refundFee, totalFee);
+        }
+
 	}
 
 	/**
@@ -206,7 +211,7 @@ public class MpPaymentService extends ShopBaseService {
 	 * @param outRefundNo   退款单号
 	 * @param refundFee     退款金额，单位分
 	 * @param totalFee      订单总金额，单位分
-	 * @return
+	 * @return WxPayRefundResult
 	 * @throws WxPayException
 	 */
 	public WxPayRefundResult refund(String outTradeNo, String transactionId, String outRefundNo, Integer refundFee,

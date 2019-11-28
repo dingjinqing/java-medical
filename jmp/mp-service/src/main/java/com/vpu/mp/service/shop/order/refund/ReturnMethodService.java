@@ -4,6 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 
+import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
+import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.payment.MpPaymentService;
+import com.vpu.mp.service.shop.payment.PaymentRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +51,13 @@ public class ReturnMethodService extends ShopBaseService{
 	private OrderRefundRecordService orderRefundRecord;
 	@Autowired
 	private TradesRecordService tradesRecord;
+    @Autowired
+    private OrderInfoService orderInfo;
+    @Autowired
+    private PaymentRecordService paymentRecord;
+    @Autowired
+    private MpPaymentService mpPayment;
+
 	/**
 	 * 	退款统一入口（微信、余额、积分、卡余额等）
 	 * @param methodName 
@@ -195,23 +209,70 @@ public class ReturnMethodService extends ShopBaseService{
 	 * @return
 	 * @throws MpException
 	 */
-	public void refundMoneyPaid(OrderInfoVo order , Integer retId ,BigDecimal money) {
+	public void refundMoneyPaid(OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
 		if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == order.getOrderPayWay()) {
 			//TODO 好友代付
 		}
 		if(OrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())) {
-			try {
-				orderRefundRecord.wxPayRefund(order, retId, money);
+            logger().info("微信退款（refundMoneyPaid）start");
+            String refundSn = null;
+            //支付记录
+            PaymentRecordRecord payRecord = null;
+            //微信退款结果
+            WxPayRefundResult refundResult = null;
+            try {
+                //子订单取主订单订单号
+                String orderSn = orderInfo.isSubOrder(order) ? order.getMainOrderSn() : order.getOrderSn();
+                //退款流水号
+                refundSn = IncrSequenceUtil.generateOrderSn(OrderConstant.RETURN_SN_PREFIX);
+                //支付记录
+                payRecord = paymentRecord.getPaymentRecordByOrderSn(orderSn);
+                if(payRecord == null) {
+                    logger().error("wxPayRefund 微信支付记录未找到 order_sn="+orderSn);
+                    throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
+                }
+                //微信金额单为为分需单位换算
+                refundResult = refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn, payRecord.getTotalFee().intValue() * OrderConstant.TUAN_TO_FEN, money.intValue() * OrderConstant.TUAN_TO_FEN);
+                //退款记录
+                orderRefundRecord.addRecord(refundSn, payRecord, refundResult, order, retId);
+                logger().info("微信退款（refundMoneyPaid）end");
 			} catch (MpException e) {
-				//TODO 微信失败处理
+                logger().info("微信退款异常（refundMoneyPaid）");
+                orderRefundRecord.addRecord(refundSn, payRecord, refundResult, order, retId);
+				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WX_FAIL);
 			}
-			
 		}
-		//交易记录
-		tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);	
+		if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode())){
+            //交易记录
+            tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);
+        }
 		//记录
 		refundAmountRecord.addRecord(order.getOrderSn(), order.getUserId(), RefundAmountRecordService.MONEY_PAID, money, retId);
 	}
+
+    /**
+     * 	退款api
+     * @param payCode 订单支付code(微信支付)
+     * @param tradeNo 微信支付订单号
+     * @param returnSn 退款流水号
+     * @param totalFee 该笔支付总金额
+     * @param money 此次退款金额
+     * @throws MpException
+     */
+    public WxPayRefundResult refundByApi(String payCode ,String tradeNo , String returnSn ,Integer totalFee , Integer money) throws MpException {
+        //微信退款
+        if(payCode.equals(OrderConstant.PAY_CODE_WX_PAY)){
+            try {
+                return mpPayment.refundByTransactionId(tradeNo, returnSn, totalFee, money);
+            } catch (WxPayException e) {
+                logger().error("微信退款失败捕获WxPayException：{}", e.getCustomErrorMsg());
+                throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_ERROR,e.getMessage());
+            }
+        }else {
+            //TODO 将来扩展其他支付
+            throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_ERROR);
+        }
+    }
 	
 	/**
 	 * 虚拟订单微信退款
@@ -221,7 +282,18 @@ public class ReturnMethodService extends ShopBaseService{
 	 */
 	public void refundVirtualWx(VirtualOrderPayInfo order , BigDecimal money) throws MpException {
 		if(OrderConstant.PAY_CODE_WX_PAY.equals(order.getPayCode())) {
-			orderRefundRecord.wxPayRefund(order , money);
+            //退款流水号
+            String refundSn = IncrSequenceUtil.generateOrderSn(OrderConstant.RETURN_SN_PREFIX);
+            //支付记录
+            PaymentRecordRecord payRecord = paymentRecord.getPaymentRecordByOrderSn(order.getOrderSn());
+            if(payRecord == null) {
+                logger().error("wxPayRefund 微信支付记录未找到 order_sn={}",order.getOrderSn());
+                throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
+            }
+            //微信金额单为为分需单位换算
+            refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn, payRecord.getTotalFee().intValue() * OrderConstant.TUAN_TO_FEN, money.intValue() * OrderConstant.TUAN_TO_FEN);
+            //TODO
+            //addRecord();
 		}
 		//交易记录
 		tradesRecord.addRecord(money,order.getOrderSn(),order.getUserId(),TradesRecordService.TRADE_CONTENT_MONEY,RecordTradeEnum.TYPE_CASH_REFUND.val(),RecordTradeEnum.TRADE_FLOW_OUT.val(),TradesRecordService.TRADE_STATUS_ARRIVAL);	

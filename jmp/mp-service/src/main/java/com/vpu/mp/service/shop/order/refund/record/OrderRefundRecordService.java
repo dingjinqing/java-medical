@@ -4,7 +4,12 @@ import static com.vpu.mp.db.shop.tables.OrderRefundRecord.ORDER_REFUND_RECORD;
 
 import java.math.BigDecimal;
 
+import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
+import com.vpu.mp.db.shop.tables.records.OrderRefundRecordRecord;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +29,7 @@ import com.vpu.mp.service.shop.payment.MpPaymentService;
 import com.vpu.mp.service.shop.payment.PaymentRecordService;
 
 /**
- * 	退款记录表
+ * 	非系统金额退款记录表
  * @author 王帅
  *
  */
@@ -32,88 +37,41 @@ import com.vpu.mp.service.shop.payment.PaymentRecordService;
 public class OrderRefundRecordService extends ShopBaseService{
 	
 	public final OrderRefundRecord TABLE = ORDER_REFUND_RECORD;
-	
-	@Autowired
-	private OrderInfoService orderInfo;
-	@Autowired
-	private PaymentRecordService paymentRecord;
-	@Autowired
-	private MpPaymentService mpPayment;
-	/**
-	 * 
-	 * @param order 
-	 * @param money
-	 * @throws MpException 
-	 */
-	public void wxPayRefund(OrderInfoVo order ,Integer retId ,BigDecimal money) throws MpException {
-		//子订单取主订单订单号
-		String orderSn = orderInfo.isSubOrder(order) ? order.getMainOrderSn() : order.getOrderSn();
-		//退款流水号
-		String refundSn = IncrSequenceUtil.generateOrderSn(OrderConstant.RETURN_SN_PREFIX);
-		//支付记录
-		PaymentRecordRecord payRecord = paymentRecord.getPaymentRecordByOrderSn(orderSn);
-		if(payRecord == null) {
-			logger().error("wxPayRefund 微信支付记录未找到 order_sn="+orderSn);
-			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
-		}
-		//微信金额单为为分需单位换算
-		refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn, payRecord.getTotalFee().intValue() * OrderConstant.TUAN_TO_FEN, money.intValue() * OrderConstant.TUAN_TO_FEN);
-		
-		addRecord();
-		
-		
-	}
-	
-	/**
-	 * 虚拟订单微信退款
-	 * @param order 
-	 * @param money
-	 * @throws MpException 
-	 */
-	public void wxPayRefund(VirtualOrderPayInfo order , BigDecimal money) throws MpException {
-		//退款流水号
-		String refundSn = IncrSequenceUtil.generateOrderSn(OrderConstant.RETURN_SN_PREFIX);
-		//支付记录
-		PaymentRecordRecord payRecord = paymentRecord.getPaymentRecordByOrderSn(order.getOrderSn());
-		if(payRecord == null) {
-			logger().error("wxPayRefund 微信支付记录未找到 order_sn={}",order.getOrderSn());
-			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
-		}
-		//微信金额单为为分需单位换算
-		refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn, payRecord.getTotalFee().intValue() * OrderConstant.TUAN_TO_FEN, money.intValue() * OrderConstant.TUAN_TO_FEN);
-		
-		addRecord();
-		
-		
-	}
-	
-	/**
-	 * 	退款api
-	 * @param payCode
-	 * @param tradeNo
-	 * @param returnSn
-	 * @param totalFee
-	 * @param money
-	 * @return
-	 * @throws MpException 
-	 */
-	public void refundByApi(String payCode ,String tradeNo , String returnSn ,Integer totalFee , Integer money) throws MpException {
-		//微信退款
-		if(payCode.equals(OrderConstant.PAY_CODE_WX_PAY)){
-			try {
-				mpPayment.refundByTransactionId(tradeNo, returnSn, totalFee, money);
-			} catch (WxPayException e) {
-				//TODO 增加类型判断并记录
-				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_ERROR,e.getMessage());
-			} catch (Exception e) {
-				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_ERROR,e.getMessage());
-			}
-		}else {
-			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_ERROR);
-		}
-	}
-	
-	public void addRecord() {
-		
-	}
+
+    /**
+     * 非系统金额退款记录
+     * @param refundSn 退款流水号
+     * @param refundResult 退款结果（失败==null）
+     * @param order 订单
+     * @param retId 退订单号
+     */
+	public void addRecord(String refundSn, PaymentRecordRecord payRecord, WxPayRefundResult refundResult, OrderInfoVo order, Integer retId) {
+        OrderRefundRecordRecord record = db().newRecord(TABLE);
+        record.setRefundSn(refundSn);
+        record.setPaySn(payRecord.getPaySn());
+        record.setOrderSn(order.getOrderSn());
+        record.setPayCode(order.getPayCode());
+        record.setRefundTime(DateUtil.getSqlTimestamp());
+        record.setRetId(retId);
+        record.setTransSn(payRecord.getTradeNo());
+
+        if(refundResult != null) {
+            //成功
+            record.setDealStatus(NumberUtils.BYTE_ONE);
+            record.setDealStatusName("退款成功");
+            record.setDealRemark(refundResult.toString());
+            record.setRefundAmount(
+                BigDecimalUtil.divide(new BigDecimal(refundResult.getRefundFee().toString()), new BigDecimal("100"))
+            );
+        }else {
+            //失败
+            record.setDealStatus((byte)2);
+            record.setDealStatusName("退款失败");
+            record.setDealRemark("见日志");
+            record.setRefundAmount(
+                BigDecimalUtil.divide(new BigDecimal(refundResult.getRefundFee().toString()), new BigDecimal("100"))
+            );
+        }
+        record.insert();
+    }
 }
