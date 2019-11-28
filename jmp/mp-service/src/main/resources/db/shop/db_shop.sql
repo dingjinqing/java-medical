@@ -3472,6 +3472,7 @@ CREATE TABLE `b2c_virtual_order`
     `card_no`             varchar(32)             DEFAULT NULL COMMENT '下单使用的会员卡号',
     `still_send_flag`     tinyint(1)     NOT NULL DEFAULT '1' COMMENT '优惠券礼包订单-退款后是否继续发放优惠劵，1：继续发放，0：停止发放',
     `access_mode`         tinyint(1)              default '0' comment '优惠券礼包订单-下单时的领取方式，0：现金购买，1：积分购买，2直接领取',
+    `currency` varchar(10) NOT NULL DEFAULT 'CNY' COMMENT '币种',
     PRIMARY KEY (`order_id`),
     key `order_sn` (`order_sn`),
     key `user_id` (`user_id`)
