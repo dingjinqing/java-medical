@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="title">{{$t("goodsAddEditInfo.stockAndPriceInfo.title")}}</div>
+    <!--库存和价格-->
     <el-form
       ref="stockAndPriceInfoForm"
       :model="goodsProductInfo"
@@ -187,6 +188,7 @@
         />
         <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsNumberTip')}}</span>
       </el-form-item>
+      <!--商品价格-->
       <el-form-item
         :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsShopPrice')"
         prop="prdPrice"
@@ -197,6 +199,7 @@
           size="small"
           controls-position="right"
           :min="0"
+          :precision="2"
           :disabled="specInfoSwitch"
           style="width:170px;"
         />
@@ -212,6 +215,7 @@
           size="small"
           controls-position="right"
           :min="0"
+          :precision="2"
           style="width:170px;"
         />
       </el-form-item>
@@ -451,7 +455,7 @@ export default {
         currentImgClickedSpecPrdItem: null,
         // 修改商品时保存回显的默认规格值
         updateGoodsSpecProduct: null,
-        // 存放sku名和值[{specName:'',goodsSpecVals:[{specValName:''},{specValName:''}]}]
+        // 存放sku名和值{ specId: null, specName: null, goodsSpecVals: [{ specValId: null, specValName: null }] }，新增时没有各种id值
         goodsSpecs: [],
         limitBuyNum: 0,
         limitMaxNum: 0,
@@ -474,7 +478,7 @@ export default {
           { required: true, message: '请输入商品成本价格', trigger: 'change' }
         ]
       },
-      /* 自定义商品规格 */
+      /* 是否自定义商品规格 */
       specInfoSwitch: false,
       // 前端使用的规格自增id
       goodsSpecProductsIndex: 0,
@@ -532,7 +536,7 @@ export default {
     addSpecClick () {
       this.specInfoSwitch = !this.specInfoSwitch
       this.goodsProductInfo.goodsSpecs.push({ specId: null, specName: null, goodsSpecVals: [{ specValId: null, specValName: null }] })
-
+      // 商品sku数据初始化
       this._recalculateSpec()
     },
     /* 添加规格选项按钮 */
@@ -735,11 +739,12 @@ export default {
 
       return false
     },
-    /* 判断规格是否存在有效的规格值，只有在所有规格值中有名字非空的情况下返回true,否则返回false */
+    /* 判断规格是否存在有效的规格值，只要在所有规格值中存任意一个非空的项时就返回true,否则返回false
+     * specInfoModel: { specId: null, specName: null, goodsSpecVals: [{ specValId: null, specValName: null }] } */
     _isSpecInfoHasSpecVal (specInfoModel) {
       let hasValue = false
       specInfoModel.goodsSpecVals.forEach(item => {
-        if (item.specValName !== '' && item.specValName !== null) {
+        if (!isStrBlank(item.specValName)) {
           hasValue = true
         }
       })
@@ -818,6 +823,7 @@ export default {
     },
     /* 当删除某规格值的时候直接遍历已有笛卡尔结果，并删除包含当前规格值的所有项 */
     _calculateDeleteSpecVal (specInfoModel, specVal) {
+      // 如果被删除规格值的规格项没有可以使用的其他有效规格值
       if (this._isSpecInfoHasSpecVal(specInfoModel)) {
         // 通过正则表达式判断需要剔除的项
         let regStr = `:${specVal.specValName}$|:${specVal.specValName};`
@@ -828,9 +834,9 @@ export default {
         this._recalculateSpec()
       }
     },
-    /* 计算规格笛卡尔积 */
+    /* 重新计算规格笛卡尔积 */
     _recalculateSpec () {
-      // 商品规格是否有效
+      // 商品规格是否存在可以使用的规格项和值
       let specOk = false
       this.goodsProductInfo.goodsSpecs.forEach(specInfoModel => {
         if (this._isSpecInfoHasSpecVal(specInfoModel)) {
@@ -849,24 +855,33 @@ export default {
 
       this.goodsProductInfo.goodsSpecProducts = this._calculateCartesian(0, this.goodsProductInfo.goodsSpecs, goodsSpecProducts)
     },
-    /* 递归计算笛卡尔积 */
+    /* 递归计算笛卡尔积
+     * curIndex:当前计算到的规格项
+     * goodsSpecs: 规格项数组 eg:[{ specName:'颜色',goodsSpecVals:[{specValName:'红色'},{specValName:'白色'}]}
+     *                            { specName:'尺寸',goodsSpecVals:[{specValName:'X'},{specValName:'L'}]}]
+     * goodsSpecProducts:已计算出来的sku项 和返回内容格式相同
+     * 返回内容是sku数组，eg:（仅列出了prdDesc和prdDescTemp字段内容，其它字段是_getGoodsSpecProductObj函数的返回内容）
+     * [{prdDesc:'颜色:红色;尺寸:X',prdDescTemp:'红色 X'},{prdDesc:'颜色:白色;尺寸:X',prdDescTemp:'白色 X'},
+     *  {prdDesc:'颜色:红色;尺寸:L',prdDescTemp:'红色 L'},{prdDesc:'颜色:白色;尺寸:L',prdDescTemp:'白色 L'}]
+     * */
     _calculateCartesian (curIndex, goodsSpecs, goodsSpecProducts) {
-      // 规格名和值之间的分隔符
+      // 规格项名和规格值之间的分隔符
       let PRD_VAL_DELIMITER = ':'
-      // 不同规格之间的分隔符
+      // 不同规格项之间的分隔符
       let PRD_SPEC_DELIMITER = ';'
       // 递归出口，已遍历完所有规格
       if (curIndex >= goodsSpecs.length) {
         return goodsSpecProducts
       }
-      // 当前将要进行计算的规格
+      // 当前将要进行计算的规格项
+      // item : { specId: null, specName: null, goodsSpecVals: [{ specValId: null, specValName: null }] }
       let item = goodsSpecs[curIndex]
 
-      // 规格名称为null或者规格没有有效的规格值则视为无效项，则直接跳过
+      // 规格项名称为空或者规格没有有效的规格值则视为无效项，则直接跳过
       if (isStrBlank(item.specName) || !this._isSpecInfoHasSpecVal(item)) {
         return this._calculateCartesian(curIndex + 1, goodsSpecs, goodsSpecProducts)
       }
-      // 用来缓存通过当前规格计算出来的笛卡尔积
+      // 用来缓存通过当前规格项计算出来的笛卡尔积
       let tempArr = []
 
       // 遍历当前规格的所有规格值，依次进行遍历计算
@@ -908,18 +923,18 @@ export default {
     _getGoodsSpecProductObj () {
       return {
         tempId: this.goodsSpecProductsIndex++,
-        prdId: null,
-        prdPrice: 0,
-        prdCostPrice: 0,
-        prdNumber: 0,
-        prdSn: null,
-        prdSnBak: null,
+        prdId: null, // 更新接口需要数据
+        prdPrice: 0, // sku价格 接口需要数据
+        prdCostPrice: 0, // sku成本价 接口需要数据
+        prdNumber: 0, // sku数量 接口需要数据
+        prdSn: null, // sku sn码 用户输入项
+        prdSnBak: null, // sku sn码 接口需要数据
         prdImg: {
-          imgUrl: null,
-          imgPath: null
+          imgUrl: null, // 图片全路径 接口需要数据
+          imgPath: null // 图片相对路径 接口需要数据
         },
-        prdDesc: '',
-        prdDescTemp: ''
+        prdDesc: '', // sku 内容 颜色:红色;尺寸:x 接口需要数据
+        prdDescTemp: '' // 规格价格表格第一列显示内容 sku 内容 红色 x
       }
     },
     /** 会员卡部分交互函数 **/

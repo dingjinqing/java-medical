@@ -91,6 +91,7 @@
           size="small"
           controls-position="right"
           :min="0"
+          :precision="1"
           style="width:170px;"
         />
         <span>&nbsp;&nbsp;kg</span>
