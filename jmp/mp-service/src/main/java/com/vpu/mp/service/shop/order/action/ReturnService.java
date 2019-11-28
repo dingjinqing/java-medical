@@ -447,7 +447,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				currentReturn = keyCanReturn;
 				returnAmount = returnAmount.subtract(keyCanReturn);
 			}
-			
+            logger.info("{}优先级退款执行", entry.getKey());
 			boolean result = returnMethod.refundMethods(entry.getKey(), order, returnOrder.getRetId(), currentReturn);
 			if(!result) {
 				logger.error("优先级退款调用refundMethods失败,orderSn:{},retId:{},优先级为:{}",order.getOrderSn(),returnOrder.getRetId(),key);

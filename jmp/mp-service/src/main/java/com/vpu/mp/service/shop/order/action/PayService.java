@@ -90,7 +90,6 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         }
         orderInfo.setPayTime(DateUtil.getSqlTimestamp());
         orderInfo.setPaySn(payRecord == null ? StringUtils.EMPTY : payRecord.getPaySn());
-        orderInfo.setPayCode(payRecord == null ? StringUtils.EMPTY : payRecord.getPaySn());
         orderInfo.update();
         //TODO 更新拼团状态
 
