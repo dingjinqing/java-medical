@@ -3,6 +3,12 @@ export const cn = {
   firstSpecial: '首单特惠',
   firstSpecialGoods: '首单商品',
 
+  allEvents: '全部活动',
+  processing: '进行中',
+  notStart: '未开始',
+  expired: '已过期',
+  terminated: '已停用',
+
   // 首单特惠活动列表,
   addFirstSpecial: '添加首单特惠',
   firstSpecialLimitGoodsTip1: '设置用户仅可购买活动商品中的',

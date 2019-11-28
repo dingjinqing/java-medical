@@ -1,42 +1,44 @@
+import vm from '@/main'
+
 const status = [
   {
     status: null,
-    name: '全部活动'
+    name: vm.$t('firstSpecial.allEvents')
   },
   {
     status: 0,
-    name: '进行中'
+    name: vm.$t('firstSpecial.processing')
   },
   {
     status: 1,
-    name: '未开始'
+    name: vm.$t('firstSpecial.notStart')
   }, {
     status: 2,
-    name: '已过期'
+    name: vm.$t('firstSpecial.expired')
   }, {
     status: 3,
-    name: '已停用'
+    name: vm.$t('firstSpecial.terminated')
   }
 ]
 
 export const standardStatus = [
   {
     status: 0,
-    name: '全部活动'
+    name: vm.$t('firstSpecial.allEvents')
   },
   {
     status: 1,
-    name: '进行中'
+    name: vm.$t('firstSpecial.processing')
   },
   {
     status: 2,
-    name: '未开始'
+    name: vm.$t('firstSpecial.notStart')
   }, {
     status: 3,
-    name: '已过期'
+    name: vm.$t('firstSpecial.expired')
   }, {
     status: 4,
-    name: '已停用'
+    name: vm.$t('firstSpecial.terminated')
   }
 ]
 

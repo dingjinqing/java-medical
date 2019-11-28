@@ -3,6 +3,12 @@ export const en = {
   firstSpecial: 'First Special Offer',
   firstSpecialGoods: 'First special offer goods',
 
+  allEvents: 'All events',
+  processing: 'In progress',
+  notStart: 'Not started',
+  expired: 'Expired',
+  terminated: 'Disabled',
+
   // 首单特惠活动列表,
   addFirstSpecial: 'Add A First Special Offer',
   firstSpecialLimitGoodsTip1: 'Set up users to purchase only',
