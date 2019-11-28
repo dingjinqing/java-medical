@@ -154,6 +154,7 @@
                 <el-form-item
                   :label="$t('gift.conditions3')"
                   v-show="contains(2)"
+                  prop="rules.tagId"
                 >
                   <el-select
                     size="small"
@@ -173,6 +174,7 @@
                 <el-form-item
                   :label="$t('gift.conditions4')"
                   v-show="contains(3)"
+                  prop="rules.cardId"
                 >
                   <el-select
                     size="small"
@@ -224,11 +226,15 @@
                 <el-form-item
                   :label="$t('gift.conditions7')"
                   v-show="contains(6)"
+                  :rules="[{ message: '请填写付款时间', trigger: 'blur' }]"
+                  :required="contains(6)"
                 >
                   <el-date-picker
                     size="samll"
-                    v-model="payDateRange"
+                    v-model="param.rules.payDateRange"
                     type="datetimerange"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    format="yyyy-MM-dd HH:mm:ss"
                     :range-separator="$t('gift.to')"
                     :start-placeholder="$t('gift.startTime')"
                     :end-placeholder="$t('gift.endTime')"
@@ -239,6 +245,7 @@
                 <el-form-item
                   :label="$t('gift.conditions8')"
                   v-show="contains(7)"
+                  prop="rules.userAction"
                 >
                   <el-select
                     size="small"
@@ -458,6 +465,7 @@ export default {
         callback()
       }
     }
+    // 满金额
     var validatMoney = (rule, value, callback) => {
       var re = /^\d+(\.\d{1,2})?$/
       if (!re.test(value) && this.contains(0)) {
@@ -466,6 +474,7 @@ export default {
         callback()
       }
     }
+    // 满件数
     var validatNum = (rule, value, callback) => {
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (!re.test(value) && this.contains(1)) {
@@ -474,6 +483,23 @@ export default {
         callback()
       }
     }
+    // 会员标签
+    var validattagId = (rule, value, callback) => {
+      if (!value && this.contains(2)) {
+        callback(new Error('请选择会员标签'))
+      } else {
+        callback()
+      }
+    }
+    // 会员卡
+    var validatcardId = (rule, value, callback) => {
+      if (!value && this.contains(3)) {
+        callback(new Error('请选择会员卡'))
+      } else {
+        callback()
+      }
+    }
+    // 付款排名
     var validatInt = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
       if (!re.test(value) && this.contains(4)) {
@@ -482,6 +508,7 @@ export default {
         callback()
       }
     }
+    // 已购买次数
     var validatMin = (rule, value, callback) => {
       let maxPayNum = this.$refs.maxPayNum.value
       var re = /^(0|\+?[1-9][0-9]*)$/
@@ -489,6 +516,22 @@ export default {
         callback(new Error('请填写0或者正整数'))
       } else if (value > maxPayNum) {
         callback(new Error('最小购买次数不能大于最大购买次数'))
+      } else {
+        callback()
+      }
+    }
+    // 付款时间
+    // var validatPayDateRange = (rule, value, callback) => {
+    //   if (!value && this.contains(6)) {
+    //     callback(new Error('请选择付款时间'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
+    // 用户类别
+    var validatUserAction = (rule, value, callback) => {
+      if (!value && this.contains(7)) {
+        callback(new Error('请选择用户类别'))
       } else {
         callback()
       }
@@ -501,7 +544,7 @@ export default {
       // 活动时间范围
       // dateRange: [],
       // 支付时间范围
-      payDateRange: [],
+      // payDateRange: [],
       tags: [],
       cards: [],
       // 0：全部商品，1：指定商品
@@ -530,6 +573,7 @@ export default {
           minPayNum: 1,
           maxPayNum: 10,
           cardId: [],
+          payDateRange: [], // 付款时间
           payStartTime: null,
           payEndTime: null
         },
@@ -544,8 +588,13 @@ export default {
         selectedRules: [{ required: true, validator: validateselectedRules, trigger: 'change', type: 'array' }],
         'rules.fullPrice': [{ validator: validatMoney, trigger: 'blur' }],
         'rules.fullNumber': [{ validator: validatNum, trigger: 'blur' }],
+        'rules.tagId': [{ validator: validattagId, trigger: 'change' }],
+        'rules.cardId': [{ validator: validatcardId, trigger: 'change' }],
         'rules.payTop': [{ validator: validatInt, trigger: 'blur' }],
         'rules.minPayNum': [{ validator: validatMin, trigger: 'blur' }],
+        // 'rules.payDateRange': [{ validator: validatPayDateRange, trigger: 'blur' }], // 付款时间
+        // 'rules.payDateRange': [{ message: '请填写付款时间', trigger: 'change' }], // 付款时间
+        'rules.userAction': [{ validator: validatUserAction, trigger: 'change' }],
         explain: [{ required: true, message: '请填写赠品规则说明', trigger: 'blur' }]
       },
       userAction: this.$t('gift.userAction'),
@@ -668,6 +717,9 @@ export default {
       this.param.startTime = this.param.dateRange[0]
       this.param.endTime = this.param.dateRange[1]
 
+      this.param.rules.payStartTime = this.param.rules.payDateRange[0]
+      this.param.rules.payEndTime = this.param.rules.payDateRange[1]
+
       // const { dateRange, payDateRange } = this
       // let startTime = range(dateRange).v1
       // let endTime = range(dateRange).v2
@@ -740,7 +792,8 @@ export default {
       const { rules } = content
       const { payStartTime, payEndTime } = rules
       if (payStartTime && payEndTime) {
-        this.payDateRange = [payStartTime, payEndTime]
+        // this.payDateRange = [payStartTime, payEndTime]
+        this.param.rules.payDateRange = [payStartTime, payEndTime]
       }
       this.param.rules.payStartTime = payStartTime || null
       this.param.rules.payEndTime = payEndTime || null

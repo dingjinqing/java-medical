@@ -39,7 +39,7 @@
             <!-- 运费输入框 -->
             <el-input
               size="small"
-              v-model.number="formData.price"
+              v-model="formData.price"
               style="width:170px"
             ></el-input><span>元</span>
           </el-form-item>
@@ -91,6 +91,17 @@ export default {
   components: { deliverTemplateTable },
   data () {
     // 自定义校验规则
+    var checkMoney = (rule, value, callback) => {
+      var re = /^\d+(\.\d{1,2})?$/
+      if (!value) {
+        callback(new Error('运费不能为空'))
+      } else if (!re.test(value)) {
+        callback(new Error('请输入合法数字值'))
+        // this.$message.warning({ message: '请填写非负数, 可以保留两位小数' })
+      } else {
+        callback()
+      }
+    }
     let checkPrice = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('运费不能为空'))
@@ -115,7 +126,7 @@ export default {
       // 表单输入的验证
       formRules: {
         price: [
-          { validator: checkPrice, trigger: 'blur' }
+          { validator: checkMoney, trigger: 'blur' }
         ],
         feeLimit: [
           { validator: checkPrice, trigger: 'blur' }
@@ -195,7 +206,6 @@ export default {
         }
       }).catch(err => console.log(err))
     }
-
   }
 }
 </script>
