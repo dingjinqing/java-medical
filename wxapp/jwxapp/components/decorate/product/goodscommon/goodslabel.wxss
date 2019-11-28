@@ -91,16 +91,7 @@
   padding-left: 16rpx;
   padding-right: 16rpx;
 }
-.van-two-ellipsis{
-  text-overflow:ellipsis; 
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  word-break: break-all;
-  margin-bottom: 10rpx;
-  white-space: normal;
-}
+
 .sell_out {
   position: absolute !important;
   width: 130rpx !important;
@@ -213,4 +204,22 @@ rgba(91, 158, 164, 0.8),
   color: #999;
   text-decoration: line-through;
   display: inline-block;
+}
+
+.van-ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+
+.van-two-ellipsis{
+  text-overflow:ellipsis; 
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-all;
+  margin-bottom: 10rpx;
+  white-space: normal;
 }
