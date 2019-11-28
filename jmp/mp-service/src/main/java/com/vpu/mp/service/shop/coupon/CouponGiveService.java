@@ -219,10 +219,6 @@ public class CouponGiveService extends ShopBaseService {
     Date today = new Date();
     // time-加购人群筛选时间
     Timestamp cartDay = Util.getEarlyTimeStamp(today, -30);
-    // time-N天有交易记录人群筛选时间
-    Timestamp havePayDay = Util.getEarlyTimeStamp(today, -param.getHavePay());
-    // time-N天无交易记录人群筛选时间
-    Timestamp noPayDay = Util.getEarlyTimeStamp(today, -param.getNoPay());
     // 加购人群
     if (param.getCouponGiveGrantInfoParams().getCartBox().equals(NumberUtils.INTEGER_ONE)) {
       addCart(userIds, cartDay);
@@ -246,11 +242,15 @@ public class CouponGiveService extends ShopBaseService {
     // N天内有交易记录
     if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(NumberUtils.INTEGER_ONE)
         && param.getHavePay() != null) {
+        // time-N天有交易记录人群筛选时间
+        Timestamp havePayDay = Util.getEarlyTimeStamp(today, -param.getHavePay());
       havePay(userIds, havePayDay);
     }
     // N天内无交易记录
     if (param.getCouponGiveGrantInfoParams().getCustomBox().equals(NumberUtils.INTEGER_ONE)
         && param.getNoPay() != null) {
+        // time-N天无交易记录人群筛选时间
+        Timestamp noPayDay = Util.getEarlyTimeStamp(today, -param.getNoPay());
       noPay(userIds, noPayDay);
     }
     // 累计购买次数大于N次 min
