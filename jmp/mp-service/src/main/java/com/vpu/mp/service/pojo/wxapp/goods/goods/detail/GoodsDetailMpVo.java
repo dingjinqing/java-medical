@@ -33,6 +33,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private Byte isExclusive;
     /**商品自定义内容是否在商品详情上方*/
     private Byte isPageUp;
+    /**-商品装修模板id*/
+    private Integer goodsPageId;
     /**商品详情描述*/
     private String goodsDesc;
     /**商品广告词*/
