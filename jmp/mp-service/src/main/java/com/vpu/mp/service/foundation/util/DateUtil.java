@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -244,5 +246,17 @@ public final class DateUtil {
      */
     public static java.sql.Date yyyyMmDdDate(LocalDate date) {
         return java.sql.Date.valueOf(date.format(YYYY_MM_DD_FORMATTER));
+    }
+
+    /**
+     * 时间字符串转化为时间戳格式
+     * @param dateFormat 时间格式
+     * @param date 时间
+     * @return Timestamp
+     */
+    public static Timestamp dateFormatToTimeStamp(String dateFormat, String date){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dateFormat);
+        LocalDateTime parse = LocalDateTime.parse(date, dtf);
+        return Timestamp.valueOf(parse);
     }
 }

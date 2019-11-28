@@ -264,9 +264,9 @@ public class MpPaymentService extends ShopBaseService {
 				.totalFee(BaseWxPayResult.fenToYuan(orderResult.getTotalFee()))
 				.buyerId(orderResult.getOpenid())
 				.sellerId(orderResult.getMchId())
-                .gmtCreate(DateUtil.convertToTimestamp(orderResult.getTimeEnd()))
-                .notifyTime(DateUtil.convertToTimestamp(orderResult.getTimeEnd()))
-                .gmtCloseTime(DateUtil.convertToTimestamp(orderResult.getTimeEnd()))
+                .gmtCreate(DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
+                .notifyTime(DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
+                .gmtCloseTime(DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, orderResult.getTimeEnd()))
 				.created(Timestamp.valueOf(LocalDateTime.now()))
 				.remark2(orderResult.toString())
 				.build();
