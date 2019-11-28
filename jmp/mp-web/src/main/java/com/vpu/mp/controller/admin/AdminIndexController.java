@@ -179,7 +179,7 @@ public class AdminIndexController extends AdminBaseController {
 		
 		//去vConfig中校验是否存在
 		if (!saas.shop.version.checkMainConfig(mainConfig, vsName)) {
-			logger().info("enName："+enName+"不在vConfig权限里");
+			logger().info("vsName："+vsName+"不在vConfig权限里");
 			// 此功能需要更高版本才可使用。如需了解详情我们的产品顾问将尽快与您联系！！
 			return JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER;
 		}
