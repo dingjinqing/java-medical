@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCard extends TableImpl<UserCardRecord> {
 
-    private static final long serialVersionUID = -744344587;
+    private static final long serialVersionUID = -1287900555;
 
     /**
      * The reference instance of <code>jmini_shop_444801.b2c_user_card</code>
@@ -106,11 +106,6 @@ public class UserCard extends TableImpl<UserCardRecord> {
      * The column <code>jmini_shop_444801.b2c_user_card.exchang_surplus</code>. 卡剩余兑换次数
      */
     public final TableField<UserCardRecord, Integer> EXCHANG_SURPLUS = createField("exchang_surplus", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "卡剩余兑换次数");
-
-    /**
-     * The column <code>jmini_shop_444801.b2c_user_card.qrcode_img</code>. 二维码条形码位置
-     */
-    public final TableField<UserCardRecord, String> QRCODE_IMG = createField("qrcode_img", org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "二维码条形码位置");
 
     /**
      * The column <code>jmini_shop_444801.b2c_user_card.create_time</code>.
