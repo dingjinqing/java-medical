@@ -37,7 +37,7 @@
       placement="top"
     >
       <i
-        @click="switchEditState"
+        @click="switchEditState(value)"
         v-show="!disabled"
         class="el-icon-edit-outline"
         style="color:#409EFF;fontSize:20px;height:45px;line-height:45px;"
@@ -63,17 +63,21 @@ export default {
     }
   },
   methods: {
-    switchEditState () {
-      this.showInput = !this.showInput
-      if (!this.showInput) {
-        this.$emit('update', this.value)
+    switchEditState (value) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!re.test(value)) {
+        this.$message.warning({ message: '请填写0或者正整数' })
+      } else {
+        this.showInput = !this.showInput
+        if (!this.showInput) {
+          this.$emit('update', this.value)
+        }
       }
     },
     closeBlur (value) {
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (!re.test(value)) {
         this.$message.warning({ message: '请填写0或者正整数' })
-        return false
       } else {
         this.showInput = false
         if (!this.showInput) {
