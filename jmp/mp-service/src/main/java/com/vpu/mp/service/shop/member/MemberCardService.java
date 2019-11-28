@@ -1,11 +1,11 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
 import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.EXCHANGE_GOODS_NUM;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.MEMBER_CARD_ACCOUNT;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.STORE_SERVICE_TIMES;
@@ -85,6 +85,7 @@ import javax.validation.Valid;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
+import org.jooq.InsertValuesStep8;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
@@ -156,6 +157,7 @@ import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -191,6 +193,8 @@ public class MemberCardService extends ShopBaseService {
 	private CouponGiveService couponGiveService;
 	@Autowired
 	private StoreService storeService;
+	@Autowired
+	private QrCodeService qrCodeService;
 
 	/**
 	 * 添加会员卡
@@ -935,7 +939,8 @@ public class MemberCardService extends ShopBaseService {
 	public MemberCardRecord getCardById(Integer cardId) {
 		logger().info("获取会员卡基本信息");
 		MemberCardRecord card = cardDao.getCardById(cardId);
-		return card != null ? card : new MemberCardRecord();
+		//return card != null ? card : new MemberCardRecord();
+		return card;
 	}
 
 	/**
@@ -1310,7 +1315,7 @@ public class MemberCardService extends ShopBaseService {
 
 		/** insert */
 		/** USER_CARD.SURPLUS-门店兑换次数，USER_CARD.EXCHANG_SURPLUS-商品兑换次数 */
-		InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, Timestamp, Integer> insert = db()
+InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, Timestamp, Integer> insert = db()
 				.insertInto(USER_CARD).columns(USER_CARD.USER_ID, USER_CARD.CARD_ID, USER_CARD.CARD_NO,
 						USER_CARD.EXPIRE_TIME, USER_CARD.SURPLUS, USER_CARD.ACTIVATION_TIME, USER_CARD.EXCHANG_SURPLUS);
 

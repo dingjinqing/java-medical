@@ -69,7 +69,7 @@ public final class ImageUtil {
 		graphics.drawImage(foregroundImage, x, y, foregroundImage.getWidth(), foregroundImage.getHeight(), null);
 		graphics.dispose();
 		return backgroundImage;
-
+		
 	}
 
 

@@ -300,6 +300,7 @@ public class UserCardDaoService extends ShopBaseService{
 				.where(USER_CARD.CARD_NO.eq(cardNo))
 				.fetchAnyInto(WxAppUserCardVo.class);
 	}
+	
 
     public int getHasSend(Integer cardId){
 		return db().selectCount().from(USER_CARD).where(USER_CARD.CARD_ID.eq(cardId)).execute();

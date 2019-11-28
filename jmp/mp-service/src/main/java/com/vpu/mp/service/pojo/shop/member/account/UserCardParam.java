@@ -98,7 +98,10 @@ public class UserCardParam {
 	 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	public boolean isPayByCash(){
-		return isPay.equals(MCARD_ISP_BUY) && payType.equals(SUPPORT_PAY_BY_CASH);
+		if(isPay==null || payType==null) {
+			return false;
+		}
+		return MCARD_ISP_BUY.equals(isPay) && SUPPORT_PAY_BY_CASH.equals(payType);
 	}
 	
 	public int intCashValue() {
@@ -116,7 +119,10 @@ public class UserCardParam {
 	}
 	
 	public boolean hasAvailableExchangGoods() {
-		return cardType.equals(MCARD_TP_LIMIT) && !MCARD_ISE_NON.equals(isExchang);
+		if(cardType==null || isExchang==null) {
+			return false;
+		}
+		return MCARD_TP_LIMIT.equals(cardType) && !MCARD_ISE_NON.equals(isExchang);
 	}
 	/**
 	 * 获取门店列表id List

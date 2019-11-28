@@ -81,6 +81,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
@@ -131,6 +132,9 @@ public class UserCardService extends ShopBaseService {
 	private CardUpgradeService cardUpgradeService;
     @Autowired
     private Calculate calculate;
+    @Autowired
+    private QrCodeService qrCodeService;
+    
 	public static final String DEFAULT_ADMIN = "0";
 
 	public static final String OPTIONINFO = OPEN_CARD_SEND;
@@ -745,12 +749,12 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param) throws UserCardNullException {
+		
 		WxAppUserCardVo card = (WxAppUserCardVo) userCardDao.getUserCardInfo(param.getCardNo());
 		if (card == null) {
 			throw new UserCardNullException();
 		}
 		dealWithUserCardDetailInfo(card);
-
 		// TODO 累计消费 等王帅的接口 
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
 		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
@@ -758,7 +762,15 @@ public class UserCardService extends ShopBaseService {
 		// TODO 升级进度
 
 		// TODO 开卡送卷
+		setQrCode(card);
+		
 		return card;
+	}
+
+	private void setQrCode(WxAppUserCardVo card) {
+		MemberCardRecord mCard = memberCardService.getCardById(card.getCardId());
+		String qrCode = qrCodeService.getUserCardQrCode(card.getCardNo(), mCard);
+		card.setQrCode(qrCode);
 	}
 
 	public void dealWithUserCardDetailInfo(WxAppUserCardVo card) {
@@ -766,7 +778,6 @@ public class UserCardService extends ShopBaseService {
 		dealWithUserCardBasicInfo(card);
 		dealWithUserCardAvailableStore(card);
 		dealWithExchangGoods(card);
-
 	}
 
 	public void dealWithUserCardAvailableStore(WxAppUserCardVo card) {

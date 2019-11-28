@@ -31,6 +31,7 @@ public class WxAppUserCardVo extends UserCardParam {
 	protected LocalDate startDate;
 	protected LocalDate endDate;
 	protected String avatar;
+	protected String qrCode;
 	// 使用商品列表
 	protected List<GoodsSmallVo> goodsList;
 	// 门店信息

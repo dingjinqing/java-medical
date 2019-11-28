@@ -1284,6 +1284,14 @@ modify column  `anonymousflag` tinyint(1)  not null default  0  comment '匿名�
 modify column `comm_img`      varchar(1000)    default '[]' comment '评论图片',
 add unique index `order_sn` (`order_sn`) using BTREE;
 
+
+-- 用户会员卡表添加字段
+ALTER TABLE `b2c_user_card` 
+ADD COLUMN `qrcode_img` varchar(200) NOT NULL DEFAULT '' COMMENT '二维码条形码位置' AFTER `exchang_surplus`;
+-- 删除字段
+ALTER TABLE `b2c_user_card` DROP COLUMN `qrcode_img`;
+add unique index `order_sn` (`order_sn`) using BTREE;
+
 -- 李晓冰 修改商品标签表结构，删除无用字段，修改错误类型
 ALTER TABLE b2c_goods_label DROP del_time;
 ALTER TABLE b2c_goods_label MODIFY del_flag TINYINT(1);
