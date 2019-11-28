@@ -124,4 +124,6 @@ public class VersionName {
 	public static final String SUB_5_SERVICE = "service";
 	/** 同城配送 */
 	public static final String SUB_5_SERVICE_CITY = "service_city";
+	/** 所有小程序组件 */
+	public static final String[] sub2= {SUB_2_M_MEMBER_CARD,SUB_2_M_VOUCHER,SUB_2_M_BARGAIN,SUB_2_M_VIDEO,SUB_2_M_INTEGRAL_GOODS,SUB_2_M_SECKILL_GOODS,SUB_2_AUTHORIZATION,SUB_2_M_GROUP_DRAW,SUB_2_M_PIN_INTEGRATION,SUB_2_M_NAV};
 }

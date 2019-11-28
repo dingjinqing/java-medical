@@ -2,7 +2,9 @@ package com.vpu.mp.controller.admin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -19,6 +21,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.VersionPath;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionMainConfig;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.auth.MenuParam;
 import com.vpu.mp.service.pojo.shop.auth.MenuReturnParam;
 import com.vpu.mp.service.pojo.shop.auth.PrivilegeAndPassParam;
@@ -131,6 +134,23 @@ public class AdminIndexController extends AdminBaseController {
 			return success(JsonResultCode.CODE_SUCCESS);
 		}
 		return fail(JsonResultCode.CODE_FAIL);
+	}
+	
+	/**
+	 * 前端小程序装修，模块的显示问题
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/checkMenu/showMa")
+	public JsonResult wxMaShow() {
+		String[] verifys = saas.shop.version.verifyVerPurview(adminAuth.user().loginShopId, VersionName.sub2);
+		String[] sub2 = VersionName.sub2;
+		Map<String,String> map=new HashMap<String, String>();
+		List<Map<String,String>> list=new ArrayList<Map<String,String>>();
+		for(int i=0;i<sub2.length;i++) {
+			map.put(sub2[i], verifys[i]);
+			list.add(map);
+		}
+		return success(map);
 	}
 
 
