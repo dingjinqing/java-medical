@@ -64,7 +64,7 @@
                 :rules="[{validator: validateMoney, message: '格式不正确', trigger: 'blur'}]"
               >
                 <el-input
-                  v-model.number="scope.row.first_fee"
+                  v-model="scope.row.first_fee"
                   class="column-input"
                 ></el-input>
               </el-form-item>
@@ -106,7 +106,7 @@
                 :rules="[{validator: validateMoney, message: '格式不正确', trigger: 'blur'}]"
               >
                 <el-input
-                  v-model.number="scope.row.continue_fee"
+                  v-model="scope.row.continue_fee"
                   class="column-input"
                 ></el-input>
               </el-form-item>
@@ -288,7 +288,8 @@ export default {
     },
     validateMoney (rule, value, callback) {
       // 非负数
-      var re = /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/
+      // var re = /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/
+      var re = /^\d+(\.\d{1,2})?$/
       if (value === '') {
         callback(new Error('请填写运费'))
       } else if (!re.test(value)) {
