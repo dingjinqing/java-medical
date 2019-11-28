@@ -449,7 +449,7 @@ public class GroupBuyService extends ShopBaseService {
 
     private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
         for (OrderActivityUserNum activityUserNum : list) {
-            if (activityUserNum.getDate().equals(timestamp)) {
+            if (activityUserNum!=null&& timestamp.equals(activityUserNum.getDate())) {
                 return activityUserNum;
             }
         }
