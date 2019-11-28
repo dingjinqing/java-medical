@@ -8,7 +8,7 @@
           <text>付款时间已截至，订单已被取消，请重新下单</text>
         </block>
       </view> -->
-      <view class="shipping_method_content">
+      <view class="shipping_method_content" wx:if="{{orderInfo.expressList[1]||orderInfo.expressList[2]}}">
         <block wx:for="{{orderInfo.expressList}}" wx:for-item="shipItem" wx:for-index="shipIndex" wx:key="shipIndex">
           <view  class="shipping_method" wx:if="{{shipItem === 1}}" bindtap="selectShippingMethod" data-index="{{shipIndex}}" style="border-bottom-color:{{params.deliverType === shipIndex ? comColor : ''}};">{{i18n.$t(localePack,"pages.checkout.deliverType["+shipIndex+"]")}}</view>
         </block>

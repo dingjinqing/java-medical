@@ -10,15 +10,15 @@
   box-sizing: border-box;
 }
 .num_minus {
-  border-right: 2rpx solid #eee;
+  border-right: 1rpx solid #eee;
 }
 .num_plus {
-  border-left: 2rpx solid #eee;
+  border-left: 1rpx solid #eee;
 }
 .num_cfg {
   width: 160rpx;
   display: flex;
-  border: 2rpx solid #eee;
+  border: 1rpx solid #eee;
   box-sizing: border-box;
 }
 .num_cfg input {
