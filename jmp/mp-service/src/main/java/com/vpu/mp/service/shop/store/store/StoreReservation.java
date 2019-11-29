@@ -495,6 +495,10 @@ public class StoreReservation extends ShopBaseService {
             List<String> imgs = Util.json2Object(e.getStoreImgs(), new TypeReference<List<String>>() {
             }, false);
             e.setStoreImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
+            // 服务图片中选一张做 主图
+            imgs = Util.json2Object(e.getServiceImg(), new TypeReference<List<String>>() {
+            }, false);
+            e.setServiceImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
         });
         Iterator<ReservationDetail> iterator = list.iterator();
         if (iterator.hasNext()) {
@@ -516,6 +520,10 @@ public class StoreReservation extends ShopBaseService {
             List<String> imgs = Util.json2Object(e.getStoreImgs(), new TypeReference<List<String>>() {
             }, false);
             e.setStoreImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
+            // 服务图片中选一张做 主图
+            imgs = Util.json2Object(e.getServiceImg(), new TypeReference<List<String>>() {
+            }, false);
+            e.setServiceImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
         });
         Iterator<ReservationDetail> iterator = list.iterator();
         if (iterator.hasNext()) {
@@ -600,6 +608,10 @@ public class StoreReservation extends ShopBaseService {
             List<String> imgs = Util.json2Object(e.getStoreImgs(), new TypeReference<List<String>>() {
             }, false);
             e.setStoreImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
+            // 服务图片中选一张做 主图
+            imgs = Util.json2Object(e.getServiceImg(), new TypeReference<List<String>>() {
+            }, false);
+            e.setServiceImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
             if (commentService.isComment(e.getOrderSn())) {
                 e.setFlag(BYTE_ONE);
             }

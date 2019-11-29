@@ -33,6 +33,7 @@ public class ReservationDetail {
     // 服务信息
     private Integer serviceId;
     private String serviceName;
+    private String serviceImg;
     // 价格
     private String servicePrice;
 
