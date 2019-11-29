@@ -1418,7 +1418,7 @@ create table `b2c_service_order`
     `store_id`          int(11)        not null comment '门店id',
     `order_sn`          varchar(20)    not null default '' comment '订单编号',
     `user_id`           mediumint(8)   not null default '0' comment '用户id',
-    `order_status`      tinyint(1)     not null default '0' comment '订单状态 0：待服务，1：已取消，2：已完成',
+    `order_status`      tinyint(1)     not null default '0' comment '订单状态 0待付款，1：待服务，2：已取消，3：已完成',
     `order_status_name` varchar(32)    not null default '' comment '订单状态名称',
     `subscriber`        varchar(60)    not null default '' comment '预约人姓名',
     `mobile`            varchar(60)    not null default '' comment '手机号',

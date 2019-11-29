@@ -36,6 +36,8 @@ public class ReservationDetail {
     private String serviceImg;
     // 价格
     private String servicePrice;
+    // 定金
+    private String serviceSubsist;
 
     // 核销码
     private String verifyCode;
@@ -43,7 +45,7 @@ public class ReservationDetail {
     // 订单信息
     // 下单时间
     private Timestamp createTime;
-    // 订单状态 0：待服务，1：已取消，2：已完成
+    // 订单状态 0待付款，1：待服务，2：已取消，3：已完成
     private Byte orderStatus;
     private String orderStatusName;
     private String serviceDate;
