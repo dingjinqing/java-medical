@@ -4,6 +4,8 @@ import javax.imageio.ImageIO;
 
 import com.thoughtworks.xstream.core.util.Base64Encoder;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -22,6 +24,7 @@ import java.io.IOException;
  *
  *         2019年10月18日 上午9:42:04
  */
+@Slf4j
 public final class ImageUtil {
 	/**
 	 * 重新设置图片大小
@@ -132,19 +135,21 @@ public final class ImageUtil {
 		try {
 			ImageIO.write(image, "png", os);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
+			return null;
 		} finally {
 			if (os != null) {
 				try {
 					os.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
+					return null;
 				}
 			}
 		}
 		byte[] byteArray = os.toByteArray();
-		Base64Encoder encoder=new Base64Encoder();
+		Base64Encoder encoder = new Base64Encoder();
 		String encode = encoder.encode(byteArray);
-		return "data:image/png;base64,"+encode;
+		return "data:image/png;base64," + encode;
 	}
 }
