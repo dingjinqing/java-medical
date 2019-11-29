@@ -669,11 +669,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
         //折后订单金额
         BigDecimal moneyAfterDiscount = BigDecimalUtil.add(tolalDiscountAfterPrice, vo.getShippingFee());
-        //TODO 积分抵扣比例 用户可使用积分抵扣订单折后金额的50% 不填默认积分抵扣订单折后金额的50%
-        Integer scoreDiscountRatio = 50;
+        //最大积分抵扣
         BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivide(
             BigDecimalUtil.BigDecimalPlus.create(moneyAfterDiscount, BigDecimalUtil.Operator.multiply),
-            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.valueOf(scoreDiscountRatio), BigDecimalUtil.Operator.Divide),
+            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.valueOf(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.Divide),
             BigDecimalUtil.BigDecimalPlus.create(BigDecimal.valueOf(100), null)
         );
         //会员信息
