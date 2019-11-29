@@ -714,6 +714,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException 见throw语句
      */
     public void checkOrder(OrderBeforeVo vo, CreateOrderBo bo, CreateParam param) throws MpException {
+        logger().info("vo:{};bo:{};",vo , bo);
         //地址超出配送范围,请重新选择商品后下单
         if(NO == vo.getCanShipping()) {
             throw new MpException(JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR);
