@@ -218,6 +218,7 @@ public class MpPaymentService extends ShopBaseService {
 			Integer totalFee)
 			throws WxPayException {
 		WxPayment wxPayment = this.getMpPay();
+        wxPayment.getConfig().initSSLContext();
 		WxPayRefundRequest request = WxPayRefundRequest.newBuilder()
 				.transactionId(transactionId)
 				.outTradeNo(outTradeNo)
