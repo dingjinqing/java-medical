@@ -637,8 +637,11 @@ public class ServiceOrderService extends ShopBaseService {
      * @param userId the user id
      */
     public RecentOrderInfo getRecentOrderInfo(Integer userId) {
-        return db().select(SERVICE_ORDER.USER_ID, SERVICE_ORDER.SUBSCRIBER, SERVICE_ORDER.MOBILE).from(SERVICE_ORDER)
-            .where(SERVICE_ORDER.USER_ID.eq(userId)).orderBy(SERVICE_ORDER.CREATE_TIME.desc()).fetchOneInto(RecentOrderInfo.class);
+        return db().select(SERVICE_ORDER.USER_ID, SERVICE_ORDER.SUBSCRIBER, SERVICE_ORDER.MOBILE)
+            .from(SERVICE_ORDER)
+            .where(SERVICE_ORDER.USER_ID.eq(userId)).orderBy(SERVICE_ORDER.CREATE_TIME.desc())
+            .limit(INTEGER_ONE)
+            .fetchOneInto(RecentOrderInfo.class);
     }
 
     /**
