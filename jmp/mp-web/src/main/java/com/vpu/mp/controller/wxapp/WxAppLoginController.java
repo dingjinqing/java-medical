@@ -42,9 +42,13 @@ public class WxAppLoginController extends WxAppBaseController {
 	 * @return
 	 */
 	@PostMapping("/api/wxapp/user/qrcode")
-	public UserCenterTraitVo getUserQrCode() {
+	public JsonResult getUserQrCode() {
 		logger().info("进入分享二维码");
 		Integer userId = wxAppAuth.user().getUserId();
-		return shop().ucTraitService.getUserCenter(userId);
+		UserCenterTraitVo userCenter = shop().ucTraitService.getUserCenter(userId);
+		if(userCenter.getStatus().equals((byte)0)) {
+			return fail(userCenter.getMsg());
+		}
+		return success(userCenter.getImage());
 	}
 }
