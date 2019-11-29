@@ -788,6 +788,7 @@ public class UserCardService extends ShopBaseService {
 				vo.setSorce(resCard.getSorce());
 				vo.setScoreJson(resCard.getScoreJson());
 				vo.setGrade(resCard.getGrade());
+				vo.setPowerScore(resCard.getPowerScore());
 				vo.setGradeConditionJson(resCard.getGradeConditionJson());
 				card.setNextGradeCard(vo);
 			}

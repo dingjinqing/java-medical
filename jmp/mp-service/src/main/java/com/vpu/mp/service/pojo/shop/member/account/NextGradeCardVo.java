@@ -24,6 +24,10 @@ public class NextGradeCardVo {
 	@JsonProperty("disCount")
 	protected BigDecimal discount;
 	
+	/**
+	 * 积分获取开关， 0表示关闭，1表示开启
+	 */
+	protected Byte powerScore;
 	/** 开卡送多少积分 */
 	@JsonProperty("score")
 	private Integer sorce;
