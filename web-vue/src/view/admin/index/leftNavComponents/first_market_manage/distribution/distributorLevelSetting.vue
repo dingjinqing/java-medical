@@ -257,7 +257,7 @@ export default {
     // 获取分销员等级
     initDataList () {
       getDistributionLevel().then((res) => {
-        if (res.error === 0) {
+        if (res.error === 0 && res.content) {
           this.handleData(res.content.levelList)
         }
       })

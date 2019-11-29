@@ -163,7 +163,7 @@
                     :disabled="ongoing"
                   >
                     <el-option
-                      v-for="item in tags"
+                      v-for="item in tagsList"
                       :key="item.id"
                       :label="item.name"
                       :value="item.id"
@@ -183,9 +183,9 @@
                     :disabled="ongoing"
                   >
                     <el-option
-                      v-for="item in cards"
+                      v-for="item in cardList"
                       :key="item.id"
-                      :label="item.name"
+                      :label="item.cardName"
                       :value="item.id"
                     >
                     </el-option>
@@ -431,7 +431,8 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import status from '@/components/admin/marketManage/status/status'
 // import { format, range } from '@/util/date'
 // import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
-import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
+import { allCardApi } from '@/api/admin/marketManage/messagePush'
+import { addGift, getGiftDetail, updateGift, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
 
 export default {
   components: {
@@ -541,12 +542,10 @@ export default {
       id: null,
       step: 1,
       steps: this.$t('gift.steps'),
-      // 活动时间范围
-      // dateRange: [],
-      tags: [],
-      cards: [],
-      // 0：全部商品，1：指定商品
-      // goodsRange: 0,
+      // dateRange: [], // 活动时间范围
+      tagsList: [], // 会员标签列表
+      cardList: [], // 会员卡列表
+      // goodsRange: 0, // 0：全部商品，1：指定商品
       goodsRanges: this.$t('gift.goodsRanges'),
       // 当前页为编辑页
       update: false,
@@ -642,10 +641,20 @@ export default {
     if (this.$route.params.id) {
       // 编辑回显
       this.loadData()
-      this.loadTag()
-      this.loadMemberCard()
       this.listenGoodsResult()
     }
+    // 获取会员标签
+    getTagList().then(res => {
+      if (res.error === 0) {
+        this.tagsList = res.content
+      }
+    })
+    // 获取会员卡数据
+    allCardApi().then((res) => {
+      if (res.error === 0) {
+        this.cardList = res.content
+      }
+    })
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
@@ -805,18 +814,6 @@ export default {
         // this.transmitEditGoodsId(goodsIds)
       }
     },
-    loadTag () {
-      getTagList().then(r => {
-        const tags = r.content
-        this.tags = tags
-      })
-    },
-    loadMemberCard () {
-      getMemberCardList().then(r => {
-        const cards = r.content
-        this.cards = cards
-      })
-    },
     loadTime (content) {
       const { startTime, endTime } = content
       this.param.dateRange.push(startTime)
@@ -928,50 +925,6 @@ export default {
       })
       return result
     },
-    // validateParam () {
-    //   const { param: { name, level, explain }, dateRange, goodsRange, selectedRules } = this
-    //   // const { tmpGoodsIds } = this
-    //   if (!name) {
-    //     this.fail('请输入活动名称')
-    //     return false
-    //   }
-    //   if (!level) {
-    //     this.fail('请输入活动优先级')
-    //     return false
-    //   }
-    //   if (!dateRange || dateRange.length < 2) {
-    //     this.fail('请选择活动时间')
-    //     return false
-    //   }
-    //   // if (goodsRange === 1 && (!tmpGoodsIds || tmpGoodsIds.length === 0)) {
-    //   //   this.fail('请选择活动商品')
-    //   //   return false
-    //   // }
-    //   if (goodsRange === 1 && this.goodslength === 0) {
-    //     this.fail('请选择活动商品')
-    //     return false
-    //   }
-    //   if (selectedRules.length < 1) {
-    //     this.fail('请选择赠品规则')
-    //     return false
-    //   }
-    //   if (!explain) {
-    //     this.fail('请输入规则说明')
-    //     return false
-    //   }
-    //   let result = true
-    //   selectedRules.forEach(index => {
-    //     const { label, keys } = this.rules[index]
-    //     keys.forEach(key => {
-    //       const value = this.param.rules[key]
-    //       if (!value || (typeof value === 'object' && value.length < 1)) {
-    //         this.fail(`请输入${label}`)
-    //         result = false
-    //       }
-    //     })
-    //   })
-    //   return result
-    // },
     // 校验赠品参数
     validateGiftParam () {
       let result = true
