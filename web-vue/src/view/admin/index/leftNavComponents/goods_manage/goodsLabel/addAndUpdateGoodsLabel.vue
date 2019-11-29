@@ -46,7 +46,7 @@
                 trigger="hover"
               >
                 <el-image
-                  :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'"
+                  :src="$imageHost+'/image/admin/new_preview_image/label/xiangqing.jpg'"
                   fit="scale-down"
                   style="width:220px;height: 400px;"
                 />
@@ -74,7 +74,7 @@
                 trigger="hover"
               >
                 <el-image
-                  :src="$imageHost+'/image/admin/share/goods_info_exapmle.jpg'"
+                  :src="$imageHost+'/image/admin/new_preview_image/label/shaixuan.jpg'"
                   fit="scale-down"
                   style="width:220px;height: 400px;"
                 />

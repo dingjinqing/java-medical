@@ -511,6 +511,10 @@ export default {
     },
     /* 监听GoodsSpecProducts */
     _watchGoodsSpecProducts () {
+      if (this.memberCards === undefined || this.memberCards === null) {
+        return
+      }
+
       // 当商品规格信息变化时将会员卡信息注入每一个规格项内，用来生成会员价的列表
       this.goodsProductInfo.goodsSpecProducts.forEach(specPrd => {
         if (specPrd.memberCards === undefined) {
@@ -522,7 +526,7 @@ export default {
             })
           })
         }
-      })
+      });
     },
     /** 商品规格交互函数结束**/
     prdImgClick (specPrd) {
@@ -532,6 +536,69 @@ export default {
     imgDialogSelectedCallback (imgObj) {
       this.goodsProductInfo.currentImgClickedSpecPrdItem.prdImg.imgUrl = imgObj.imgUrl
       this.goodsProductInfo.currentImgClickedSpecPrdItem.prdImg.imgPath = imgObj.imgPath
+    },
+    /* 统一规格属性函数（填写规格价格的时候，下面那一排批量设置按钮） */
+    unifyPrdSpecAttr (attrName) {
+      if (this.goodsProductInfo.goodsSpecProducts.length === 0) {
+        return
+      }
+      // 取数组第一个数据的值作为其他值的内容
+      let val = this.goodsProductInfo.goodsSpecProducts[0][attrName]
+      this.goodsProductInfo.goodsSpecProducts.forEach(item => {
+        if (attrName === 'prdImg') {
+          item.prdImg = {
+            imgUrl: val.imgUrl,
+            imgPath: val.imgPath
+          }
+        } else {
+          item[attrName] = val
+        }
+      })
+    },
+    /* 商品规格价格、成本价格、库存发生变化变化 */
+    specPrdInputChange (val, inputId, item) {
+      if (typeof val !== 'number') {
+        if (inputId.indexOf('prdPrice_') > -1) {
+          item.prdPrice = 0
+        }
+        if (inputId.indexOf('prdCostPrice_') > -1) {
+          item.prdCostPrice = 0
+        }
+        if (inputId.indexOf('prdNumber_') > -1) {
+          item.prdCostPrice = 0
+        }
+        document.getElementById(inputId).focus()
+      }
+    },
+    /* 规格编码改变 */
+    specPrdSnChange (item, index, newVal, event) {
+      if (isStrBlank(newVal)) {
+        item.prdSn = null
+        item.prdSnBak = null
+        return
+      }
+
+      if (this._isSpecPrdSnRepeated(index, newVal)) {
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSkuSnRepeat'), type: 'warning' })
+        item.prdSn = item.prdSnBak
+        event.target.focus()
+        return
+      }
+
+      let data = {
+        columnCheckFor: 1,
+        prdId: item.prdId,
+        prdSn: newVal
+      }
+      isGoodsColumnValueExist(data).then(res => {
+        if (res.error === 0) {
+          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSkuSnRepeat'), type: 'warning' })
+          item.prdSn = item.prdSnBak
+          event.target.focus()
+        } else {
+          item.prdSnBak = item.prdSn
+        }
+      })
     },
     addSpecClick () {
       this.specInfoSwitch = !this.specInfoSwitch
@@ -579,26 +646,35 @@ export default {
 
       // 如果规格名称被修改为null则认为是删除了该规格
       if (isStrBlank(newVal)) {
-        // 删除了规格但是规格下没有有效的规格值
+        // 删除了规格项但是规格下没有有效的规格值
         if (!this._isSpecInfoHasSpecVal(specInfoModel)) {
           // TODO:仅仅触发specInfoLabel值遍历计算
         } else {
-          // 删除了规格但是规格下有有效的规格值，则触发重计算，视为删除了该规格
+          // 删除了规格项但是规格下有有效的规格值，则触发重计算，视为删除了该规格
           this._recalculateSpec()
         }
       } else {
-        // 名字由null修改为非null,但是存在可用的规格值，则认为是新增了规格，则触发重新计算
-        if (isStrBlank(oldSpecName) && this._isSpecInfoHasSpecVal(specInfoModel)) {
-          this._recalculateSpec()
+        // 如果原值为null，新值不为null，则认为是新增了规格项
+        if (isStrBlank(oldSpecName)) {
+          // 规格项有可用规格值则重计算
+          if (this._isSpecInfoHasSpecVal(specInfoModel)) {
+            this._recalculateSpec()
+          } else {
+            // 没有有效规格值，则啥也不干
+          }
         } else {
-          // 修改了规格名字而且有有效的规格值，则进行遍历修改specInfoLabel和specDesc
+          // 修改了规格名字而且有有效的规格值，则进行遍历修改specInfoLabel和spec
           if (this._isSpecInfoHasSpecVal(specInfoModel)) {
             this._calculateChangeSpecInfo(newVal, oldSpecName)
+          } else {
+            // 没有有效规格值，则啥也不干
           }
         }
       }
     },
-    /* 规格值名称改变 */
+    /*
+     * 规格值名称改变
+     */
     specValChange (specInfoModel, vIndex, newVal, event) {
       // 商品规格值名称有重复的话则将input恢复原值,并返回
       if (this._isSpecValNameRepeated(specInfoModel, vIndex, newVal)) {
@@ -616,18 +692,17 @@ export default {
       // 设置新名称
       specInfoModel.goodsSpecVals[vIndex].specValName = newVal
 
-      // 如果规格名为空则只更新一下goodsSpec即可
+      // 如果规格项名为空则只更新一下goodsSpec即可
       if (isStrBlank(specInfoModel.specName)) {
         return null
       }
-
       if (isStrBlank(newVal)) {
-        // 看做删除操作,遍历删除对应项
+        // 如果规格值被修改为了null,看做删除操作,遍历删除对应项
         this._calculateDeleteSpecVal(specInfoModel, tempSpecVal)
       } else {
         // 旧值为null,而新值不是null则视为新增项
         if (isStrBlank(tempSpecVal.specValName)) {
-          // 新增项
+          // 新增项,此处代码内部可能会触发_recalculateSpec重计算
           this._calculateAddSpecVal(specInfoModel, specInfoModel.goodsSpecVals[vIndex])
         } else {
           // 修改规格值名字，遍历修改对应项
@@ -635,69 +710,26 @@ export default {
         }
       }
     },
-    /* 商品规格价格、成本价格、库存发送变化 */
-    specPrdInputChange (val, inputId, item) {
-      if (typeof val !== 'number') {
-        if (inputId.indexOf('prdPrice_') > -1) {
-          item.prdPrice = 0
-        }
-        if (inputId.indexOf('prdCostPrice_') > -1) {
-          item.prdCostPrice = 0
-        }
-        if (inputId.indexOf('prdNumber_') > -1) {
-          item.prdCostPrice = 0
-        }
-        document.getElementById(inputId).focus()
-      }
-    },
-    /* 规格编码改变 */
-    specPrdSnChange (item, index, newVal, event) {
-      if (isStrBlank(newVal)) {
-        item.prdSn = null
-        item.prdSnBak = null
-        return
-      }
-
-      if (this._isSpecPrdSnRepeated(index, newVal)) {
-        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSkuSnRepeat'), type: 'warning' })
-        item.prdSn = item.prdSnBak
-        event.target.focus()
-        return
-      }
-
-      let data = {
-        columnCheckFor: 1,
-        prdId: item.prdId,
-        prdSn: newVal
-      }
-      isGoodsColumnValueExist(data).then(res => {
-        if (res.error === 0) {
-          this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSkuSnRepeat'), type: 'warning' })
-          item.prdSn = item.prdSnBak
-          event.target.focus()
-        } else {
-          item.prdSnBak = item.prdSn
-        }
-      })
-    },
     /* 判断规格名称是否存在重复 */
     _isSpecInfoNameRepeated (kIndex, newVal) {
       if (isStrBlank(newVal)) {
         return false
       }
-
       for (let i = 0; i < this.goodsProductInfo.goodsSpecs.length; i++) {
         if (i === kIndex) {
           continue
         }
-
         if (this.goodsProductInfo.goodsSpecs[i].specName === newVal) {
           return true
         }
       }
       return false
     },
-    /* 判断规格值名称在同一个规格项内是否重复 */
+    /*
+     * 判断规格值名称在所有规格项内是否重复
+     * specInfoModel: 代表规格项
+     * vIndex: 规格值在规格项的
+     * */
     _isSpecValNameRepeated (specInfoModel, vIndex, newVal) {
       if (isStrBlank(newVal)) {
         return false
@@ -706,29 +738,34 @@ export default {
         let modelItem = this.goodsProductInfo.goodsSpecs[i]
 
         let isSameFlag = false
-
+        // 同一个规格项
         if (modelItem.specName === specInfoModel.specName) {
           isSameFlag = true
         }
-
-        for (let j = 0; j < specInfoModel.goodsSpecVals.length; j++) {
+        // 判断重复性
+        for (let j = 0; j < modelItem.goodsSpecVals.length; j++) {
           if (j === vIndex && isSameFlag) {
             continue
           }
-          if (specInfoModel.goodsSpecVals[j].specValName === newVal) {
+          if (modelItem.goodsSpecVals[j].specValName === newVal) {
             return true
           }
         }
       }
+
       return false
     },
-    /* 规格编码是否重复 */
+    /*
+     * 规格编码是否重复
+     * index: newVal在goodsSpecProducts数组的索引
+     * newVal: 待比较的规格编码值
+     * */
     _isSpecPrdSnRepeated (index, newVal) {
       if (isStrBlank(newVal)) {
         return false
       }
-
       for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
+        // 自己不和自己比较
         if (i === index) {
           continue
         }
@@ -736,38 +773,16 @@ export default {
           return true
         }
       }
-
       return false
     },
-    /* 判断规格是否存在有效的规格值，只要在所有规格值中存任意一个非空的项时就返回true,否则返回false
-     * specInfoModel: { specId: null, specName: null, goodsSpecVals: [{ specValId: null, specValName: null }] } */
+    /*
+     * 判断规格是否存在有效的规格值，只要在所有规格值中存在任意一个规格值非空的项时就返回true,否则返回false
+     * specInfoModel: { specId: null, specName: null, goodsSpecVals: [{ specValId: null, specValName: null }] }
+     * */
     _isSpecInfoHasSpecVal (specInfoModel) {
-      let hasValue = false
-      specInfoModel.goodsSpecVals.forEach(item => {
-        if (!isStrBlank(item.specValName)) {
-          hasValue = true
-        }
-      })
-      return hasValue
+      return specInfoModel.goodsSpecVals.some(item => !isStrBlank(item.specValName))
     },
-    /* 统一规格属性函数 */
-    unifyPrdSpecAttr (attrName) {
-      if (this.goodsProductInfo.goodsSpecProducts.length === 0) {
-        return
-      }
-      let val = this.goodsProductInfo.goodsSpecProducts[0][attrName]
-      this.goodsProductInfo.goodsSpecProducts.forEach(item => {
-        if (attrName === 'prdImg') {
-          item.prdImg = {
-            imgUrl: val.imgUrl,
-            imgPath: val.imgPath
-          }
-        } else {
-          item[attrName] = val
-        }
-      })
-    },
-    /* 规格名称改变，当变为null和从null变为非空都会触发重计算，否则就是进行遍历修改 */
+    /* 规格名称改变，当变为null或从null变为非空都会触发重计算，否则就是进行遍历修改 */
     _calculateChangeSpecInfo (newVal, oldVal) {
       let prdDescReg = new RegExp(`^${oldVal}:|;${oldVal}:`)
       for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
@@ -776,7 +791,13 @@ export default {
         item.prdDesc = item.prdDesc.replace(prdDescReg, replacement => replacement.replace(oldVal, newVal))
       }
     },
-    /* 当添加新的规格值的时候或者当规格值由空变为有值的时候,需要判断是否是新增规格的情况 */
+    /*
+     * 当添加新的规格值的时候或者当规格值由空变为有值的时候都需要手动触发此方法
+     * 需要判断是否是新增规格的情况，如果是则需要通过_recalculateSpec重新计算所有的sku
+     * 如果仅仅是新增加了一个规格值，则可以先计算出该规格值和其他规格项的产生的sku，然后将这个新的sku添加到已有的sku集合中
+     * specInfoModel: 改变后的规格项
+     * specVal: 新改变的规格值
+     * */
     _calculateAddSpecVal (specInfoModel, specVal) {
       let okCount = 0
       specInfoModel.goodsSpecVals.forEach(item => {
@@ -785,11 +806,11 @@ export default {
         }
       })
       if (okCount === 1) {
-        // 表明当前规格只有一个规格值，而且是新增加的，则这时候要触发重新计算，视为新添加规格
+        // 表明当前规格只有一个有效的规格值，而且是新增加的，则这时候要触发重新计算，视为新添加规格项
         this._recalculateSpec()
         return
       }
-
+      // goodsSpecs代表新规格值和其他规格项的集合，为计算新增的规格值和其他规格项产生的新的sku做准备
       let goodsSpecs = this.goodsProductInfo.goodsSpecs.map(item => {
         if (item.specName !== specInfoModel.specName) {
           return item
@@ -802,13 +823,16 @@ export default {
       })
 
       let goodsSpecProducts = [this._getGoodsSpecProductObj()]
-
+      // 新增的sku
       goodsSpecProducts = this._calculateCartesian(0, goodsSpecs, goodsSpecProducts)
-
+      // 将新增的sku添加到已有的sku集合中
       for (let item of goodsSpecProducts) {
         this.goodsProductInfo.goodsSpecProducts.push(item)
       }
     },
+    /*
+     * 计算规格项值名称改变
+     */
     _calculateChangeSpecVal (newVal, oldVal) {
       let prdDescReg = new RegExp(`:${oldVal}$|:${oldVal};`)
       let prdDescTemp = new RegExp(`^${oldVal}|${oldVal}$|\\s${oldVal}\\s`)
@@ -821,9 +845,13 @@ export default {
         item.prdDescTemp = item.prdDescTemp.replace(prdDescTemp, replacement => replacement.replace(oldVal, newVal))
       }
     },
-    /* 当删除某规格值的时候直接遍历已有笛卡尔结果，并删除包含当前规格值的所有项 */
+    /*
+     * 当删除某规格值的时候直接遍历已有笛卡尔结果，并删除包含当前规格值的所有项
+     * specInfoModel:已删除对应的specVal项
+     * specVal:被删除的specVal项 {specValName:'xx'}
+     **/
     _calculateDeleteSpecVal (specInfoModel, specVal) {
-      // 如果被删除规格值的规格项没有可以使用的其他有效规格值
+      // 如果被删除规格值的规格项还有可以使用的其他有效规格值
       if (this._isSpecInfoHasSpecVal(specInfoModel)) {
         // 通过正则表达式判断需要剔除的项
         let regStr = `:${specVal.specValName}$|:${specVal.specValName};`
@@ -831,6 +859,7 @@ export default {
         let tempArr = this.goodsProductInfo.goodsSpecProducts.filter(item => !regExp.test(item.prdDesc))
         this.goodsProductInfo.goodsSpecProducts = tempArr
       } else {
+        // 该规格项没有可以使用的有效规格值
         this._recalculateSpec()
       }
     },
@@ -839,7 +868,7 @@ export default {
       // 商品规格是否存在可以使用的规格项和值
       let specOk = false
       this.goodsProductInfo.goodsSpecs.forEach(specInfoModel => {
-        if (this._isSpecInfoHasSpecVal(specInfoModel)) {
+        if (!isStrBlank(specInfoModel.specName) && this._isSpecInfoHasSpecVal(specInfoModel)) {
           specOk = true
         }
       })
