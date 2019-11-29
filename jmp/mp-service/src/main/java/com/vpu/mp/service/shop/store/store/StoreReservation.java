@@ -392,7 +392,7 @@ public class StoreReservation extends ShopBaseService {
      */
     public WebPayVo submitReservation(SubmitReservationParam param) {
         Integer serviceId = param.getServiceId();
-        if (!serviceOrderService.checkReservationNum(serviceId, param.getTechnicianId())) {
+        if (!serviceOrderService.checkReservationNum(param)) {
             // 预约人数已达上限
             throw new BusinessException(JsonResultCode.CODE_RESERVATION_UPPER_LIMIT);
         }

@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
 import com.vpu.mp.service.pojo.shop.store.service.order.*;
 import com.vpu.mp.service.pojo.wxapp.store.ServiceOrderTran;
+import com.vpu.mp.service.pojo.wxapp.store.SubmitReservationParam;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
@@ -606,29 +607,35 @@ public class ServiceOrderService extends ShopBaseService {
         if (CollectionUtils.isEmpty(orderListQueryVos)) {
             return LONG_ZERO;
         }
-        return orderListQueryVos.stream().filter(Objects::nonNull).filter((e) -> {
+        long num = orderListQueryVos.stream().filter(Objects::nonNull).filter((e) -> {
             String[] periodTime = e.getServicePeriod().split(REGEX);
             return LocalTime.parse(periodTime[0], HH_MM_FORMATTER).isBefore(endPeriod) && LocalTime.parse(periodTime[1], HH_MM_FORMATTER).isAfter(startPeriod);
         }).count();
+        log.debug("日期【{}】时间段[{}-{}]内已预约人数为：{}", date, startPeriod, endPeriod, num);
+        return num;
     }
 
     /**
      * Check reservation num boolean.检测该服务已预约数量是否达到上限
      *
-     * @param serviceId    the service id
-     * @param technicianId the technician id
+     * @param param the param
      * @return the boolean true表示可以继续接收预约订单, 否表示预约人数已达上限
      */
-    public boolean checkReservationNum(Integer serviceId, Integer technicianId) {
+    public boolean checkReservationNum(SubmitReservationParam param) {
+        int serviceId = param.getServiceId();
         // 门店服务信息
         StoreServiceParam service = storeService.getStoreService(serviceId);
         Assert.notNull(service, JsonResultCode.CODE_STORE_SERVICE_NOT_EXIST);
         Integer num = BYTE_ONE.equals(service.getServiceType()) ? service.getTechServicesNumber() : service.getServicesNumber();
-        // 如果未设置预约数量上限，或者为0，表示无上限 TODO 技师的可预约服务数量是可以计算出来的
+        // 如果未设置预约数量上限，或者为0，表示无上限
         if (Objects.isNull(num) || INTEGER_ZERO.equals(num)) {
             num = Integer.MAX_VALUE;
         }
-        return checkMaxNumOfReservations(serviceId, technicianId, LocalDate.now(), LocalTime.parse(service.getStartPeriod(), HH_MM_FORMATTER), LocalTime.parse(service.getEndPeriod(), HH_MM_FORMATTER)) < num;
+        // 校验给定时间段内的服务预约数量
+        LocalDate date = LocalDate.parse(param.getServiceDate(), DATE_TIME_FORMATTER);
+        String[] period = param.getServicePeriod().split(REGEX);
+        log.debug("预约时间段参数为：{}", Arrays.toString(period));
+        return checkMaxNumOfReservations(serviceId, param.getTechnicianId(), date, LocalTime.parse(period[0], HH_MM_FORMATTER), LocalTime.parse(period[1], HH_MM_FORMATTER)) < num;
     }
 
     /**
