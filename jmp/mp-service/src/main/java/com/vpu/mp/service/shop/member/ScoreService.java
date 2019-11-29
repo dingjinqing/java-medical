@@ -154,15 +154,14 @@ public class ScoreService extends ShopBaseService {
 				try {
 					/** 4 如果时负数，则消耗积分 */
 					if (score < 0) {
-						/** 消耗的积分超出可用积分 */
 						if(Math.abs(score)>dbScore) {
+							logger().info("消耗的积分超出可用积分");
 							throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
 						}
 						/** -消耗积分 */
 						//useUserScore(userId, Math.abs(score), orderSn);
 						useUserScore(userId, Math.abs(score),orderSn);
 					}
-			
 				}catch(MpException e) {
 					logger().info("正在处理异常");
 					throw e;
@@ -217,13 +216,12 @@ public class ScoreService extends ShopBaseService {
 				tradesRecord.setTradeFlow(tradeFlow);
 				tradesRecord.setTradeStatus(tradeFlow);
 				
-				
 				/** -交易记录表-记录交易的数据信息  */
 				insertTradesRecord(tradesRecord);
 		
 			});
 		}catch(DataAccessException e) {
-			/** 从事务抛出的DataAccessException中获取我们自定义的异常*/
+			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
 			Throwable cause = e.getCause();
 			MpException ex = (MpException)cause;
 			throw ex;
@@ -243,9 +241,7 @@ public class ScoreService extends ShopBaseService {
 					.and(USER_SCORE.ORDER_SN.eq(orderSn))
 					.and(USER_SCORE.SCORE.ge(0))
 					.orderBy(USER_SCORE.CREATE_TIME)
-					.limit(1)
-					.fetchOne()
-					.into(UserScoreRecord.class);
+					.fetchAnyInto(UserScoreRecord.class);
 	}
 
 	/**
@@ -417,7 +413,7 @@ public class ScoreService extends ShopBaseService {
 		}else if(!StringUtils.isBlank(param.getUserName())){
 			String likeValue = likeValue(param.getUserName());
 			/** 查询出所有符合昵称的会员id */
-			List<Integer> ids = db().select(USER.USER_ID).from(USER).where(USER.USERNAME.like(likeValue)).fetch().into(Integer.class);
+			List<Integer> ids = db().select(USER.USER_ID).from(USER).where(USER.USERNAME.like(likeValue)).fetchInto(Integer.class);
 			select.where(USER_SCORE.USER_ID.in(ids));
 		}
 		
@@ -503,6 +499,7 @@ public class ScoreService extends ShopBaseService {
 				}
 			}else if(data.getIsFromRefund()) {
 				 // 退款处理积分
+				logger().info("退款处理积分");
 				record.setStatus(REFUND_SCORE_STATUS);
 				UserScoreRecord scoreRecordByOrderSn = getScoreRecordByOrderSn(data.getUserId(), data.getOrderSn());
 				record.setExpireTime(scoreRecordByOrderSn.getExpireTime()!=null?scoreRecordByOrderSn.getExpireTime():data.getExpireTime());
