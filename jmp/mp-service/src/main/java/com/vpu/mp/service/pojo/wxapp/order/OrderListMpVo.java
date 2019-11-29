@@ -46,6 +46,8 @@ public class OrderListMpVo{
 	private Byte partShipFlag;
 	@JsonIgnore
 	private Timestamp extendReceiveTime;
+	@JsonIgnore
+    private Integer storeId;
 	
 	/**预售、定金支付区间*/
 	private Timestamp[] preSaleTimeInterval;

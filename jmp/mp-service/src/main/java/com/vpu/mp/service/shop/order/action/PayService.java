@@ -1,6 +1,9 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -11,27 +14,41 @@ import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 订单支付
  * @author 王帅
  */
 @Component
-public class PayService  extends ShopBaseService implements IorderOperate<OrderOperateQueryParam,OrderOperateQueryParam> {
+public class PayService  extends ShopBaseService implements IorderOperate<OrderOperateQueryParam,PayParam> {
 
     @Autowired
     private TradesRecordService tradesRecord;
@@ -40,16 +57,83 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
     private AtomicOperation atomicOperation;
 
     @Autowired
-    private OrderGoodsService orderGoods;
+    private OrderGoodsService orderGoodsService;
+
+    @Autowired
+    private OrderInfoService orderInfo;
+
+    @Autowired
+    private PreSaleService preSale;
+
+    @Autowired
+    private CreateService createOrder;
+
+    @Autowired
+    private GoodsService goodsService;
+
+    @Autowired
+    private GoodsSpecProductService goodsSpecProduct;
+
+    @Autowired
+    private OrderPayService orderPay;
 
     @Override
-    public Object query(OrderOperateQueryParam param) throws MpException {
+    public Object query(OrderOperateQueryParam param) {
         return null;
     }
 
     @Override
-    public ExecuteResult execute(OrderOperateQueryParam obj) {
-        return null;
+    public ExecuteResult execute(PayParam param) {
+        OrderInfoRecord order = orderInfo.getRecord(param.getOrderId());
+        if(order == null) {
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
+        }
+        if(order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY){
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_STATUS_NOT_WAIT_PAY);
+        }
+        //过期校验
+        long currenTmilliseconds  = Instant.now().toEpochMilli();
+        if(order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
+            //定金订单
+            Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
+            if(timeInterval.value1().getTime() < currenTmilliseconds) {
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START);
+            }
+            if(currenTmilliseconds > timeInterval.value2().getTime()) {
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED);
+            }
+        }else {
+            //普通订单
+            if(order.getExpireTime().getTime() < currenTmilliseconds) {
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED);
+            }
+        }
+        //订单商品
+        Result<OrderGoodsRecord> orderGoodsRecord = orderGoodsService.getByOrderId(param.getOrderId());
+        List<Goods> orderGoods = orderGoodsRecord.into(Goods.class);
+        //商品
+        Map<Integer, GoodsRecord> goodsRecords = goodsService.getGoodsToOrder(orderGoods.stream().map(Goods::getGoodsId).distinct().collect(Collectors.toList()));
+        //规格信息,key proId
+        Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(orderGoods.stream().map(Goods::getProductId).distinct().collect(Collectors.toList()));
+        for (Goods temp : orderGoods) {
+            GoodsSpecProductRecord product = productInfo.get(temp.getProductId());
+            if(product == null) {
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST);
+            }
+            try {
+                createOrder.checkGoodsAndProduct(goodsRecords.get(temp.getGoodsId()), temp);
+            } catch (MpException e) {
+                return ExecuteResult.create(e.getErrorCode(), e.getMessage(), e.getCodeParam());
+            }
+        }
+        CreateOrderVo result = new CreateOrderVo();
+        result.setOrderSn(order.getOrderSn());
+        try {
+            result.setWebPayVo(orderPay.isContinuePay(order, orderPay.getGoodsNameForPay(order, orderGoodsRecord.into(OrderGoodsBo.class)), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), null));
+            return ExecuteResult.create(result);
+        } catch (MpException e) {
+            return ExecuteResult.create(e);
+        }
     }
 
     @Override
@@ -94,9 +178,9 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         //TODO 更新拼团状态
 
         //订单商品
-        List<OrderGoodsBo> goods = orderGoods.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
+        List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
         //库存销量
-        atomicOperation.updateStockAndSales(orderInfo, goods);
+        atomicOperation.updateStockAndSales(orderInfo, goods, false);
         //TODO 异常订单处理等等
     }
 }

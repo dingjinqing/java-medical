@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record3;
@@ -308,18 +309,17 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
-     * 根据规格id查询规格明细
-     *
+     * 下单查询规格
+     * @param proIds
+     * @param storeId
      * @return
-     * @throws MpException
      */
-    public Map<Integer, GoodsSpecProductRecord> selectSpecByProIds(List<Integer> proIds, Integer storeId) throws MpException {
+    public Map<Integer, GoodsSpecProductRecord> selectSpecByProIds(List<Integer> proIds, Integer storeId) {
         //商品规格信息
     	Map<Integer, GoodsSpecProductRecord> products = selectSpecByProIds(proIds);
-    	//校验数量
-    	if(proIds.size() != products.size()) {
-    		throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST);
-    	}
+    	if(storeId == null || storeId.equals(NumberUtils.INTEGER_ZERO)) {
+            return products;
+        }
     	//门店商品规格信息
         Map<Integer, StoreGoodsListQueryVo> storeProducts = db().
         		select(STORE_GOODS.PRODUCT_PRICE, STORE_GOODS.PRODUCT_NUMBER, STORE_GOODS.PRD_ID).

@@ -225,7 +225,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             OrderConstant.PAY_CODE_BALANCE_PAY.equals(orderAfterRecord.getPayCode()) ||
             (OrderConstant.PAY_CODE_SCORE_PAY.equals(orderAfterRecord.getPayCode()) && BigDecimalUtil.compareTo(orderAfterRecord.getMoneyPaid(), BigDecimal.ZERO) == 0))) {
                 //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
-                atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo());
+                atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo(), false);
         }
     } catch (DataAccessException e) {
         logger().error("下单捕获mp异常", e);
@@ -245,10 +245,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         try {
-            orderPay.isContinuePay(orderAfterRecord, orderBo.getOrderGoodsBo(), param, createVo);
+            createVo.setWebPayVo(orderPay.isContinuePay(orderAfterRecord, orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), param.getActivityType()));
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
-            return ExecuteResult.create(createVo);
+            return ExecuteResult.create(e.getErrorCode());
         }
     }
 

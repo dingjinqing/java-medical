@@ -197,7 +197,18 @@ public enum JsonResultCode {
     CODE_ORDER_DATABASE_ERROR(120084, JsonResultMessage.MSG_ORDER_DATABASE_ERROR),
 
     /**
-     * 支付相关
+     * 去支付
+     */
+    /**该订单非待支付订单*/
+    CODE_ORDER_TOPAY_STATUS_NOT_WAIT_PAY(120100, JsonResultMessage.MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY),
+    /**不在尾款支付时间*/
+    CODE_ORDER_TOPAY_BK_PAY_NOT_START(120101, JsonResultMessage.MSG_ORDER_TOPAY_BK_PAY_NOT_START),
+    /**该订单已过期需重新下单*/
+    CODE_ORDER_TOPAY_EXPIRED(120102, JsonResultMessage.MSG_ORDER_TOPAY_EXPIRED),
+
+
+    /**
+     * 微信支付相关
      */
     CODE_ORDER_NOT_TO_WAIT_DELIVER(121000, JsonResultMessage.MSG_ORDER_NOT_TO_WAIT_DELIVER),
 

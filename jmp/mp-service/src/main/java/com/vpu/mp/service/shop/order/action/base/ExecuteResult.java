@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.action.base;
 
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -66,6 +67,15 @@ public class ExecuteResult {
      */
     public static ExecuteResult create(Object result) {
         return new ExecuteResult(null, result, null);
+
+    }
+
+    /**
+     * 静态构造器
+     * @return
+     */
+    public static ExecuteResult create(MpException e) {
+        return new ExecuteResult(e.getErrorCode(), null, e.getCodeParam());
     }
 
     /**

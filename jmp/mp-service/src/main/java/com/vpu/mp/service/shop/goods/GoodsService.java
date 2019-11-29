@@ -1621,11 +1621,8 @@ public class GoodsService extends ShopBaseService {
      * @return
      * @throws MpException
      */
-    public Map<Integer, GoodsRecord> getGoodsToOrder(List<Integer> goodsIds) throws MpException {
+    public Map<Integer, GoodsRecord> getGoodsToOrder(List<Integer> goodsIds) {
     	Map<Integer, GoodsRecord> goods = getGoodsByIds(goodsIds);
-    	if(goods.size() != goodsIds.size()) {
-    		throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST);
-    	}
     	return goods;
     }
 

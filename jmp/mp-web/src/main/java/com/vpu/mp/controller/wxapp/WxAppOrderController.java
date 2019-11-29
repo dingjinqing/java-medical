@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import javax.validation.Valid;
 
 import com.vpu.mp.service.foundation.util.RequestUtil;
+import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
@@ -55,7 +56,7 @@ public class WxAppOrderController extends WxAppBaseController{
      * 	结算页面提交
      */
     @PostMapping("/submit")
-    public JsonResult pay(@RequestBody @Validated(CreateOrderValidatedGroup.class) CreateParam param) {
+    public JsonResult submit(@RequestBody @Validated(CreateOrderValidatedGroup.class) CreateParam param) {
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
         param.setClientIp(RequestUtil.getIp(request));
@@ -66,6 +67,23 @@ public class WxAppOrderController extends WxAppBaseController{
             return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
         }
     }
+
+    /**
+     * 	支付
+     */
+    @PostMapping("/pay")
+    public JsonResult pay(@RequestBody PayParam param) {
+        param.setIsMp(OrderConstant.IS_MP_Y);
+        param.setWxUserInfo(wxAppAuth.user());
+        param.setClientIp(RequestUtil.getIp(request));
+        ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
+        if(executeResult == null || executeResult.isSuccess()) {
+            return success(executeResult == null ? null : executeResult.getResult());
+        }else {
+            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
+        }
+    }
+
 	/**
 	 * 	退款、退货创建
 	 */
@@ -88,9 +106,9 @@ public class WxAppOrderController extends WxAppBaseController{
 		param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
-            return success();
+            return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode());
+            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
         }
 	}
 
@@ -103,9 +121,9 @@ public class WxAppOrderController extends WxAppBaseController{
 		param.setWxUserInfo(wxAppAuth.user());
         ExecuteResult executeResult = shop().orderActionFactory.orderOperate(param);
         if(executeResult == null || executeResult.isSuccess()) {
-            return success();
+            return success(executeResult == null ? null : executeResult.getResult());
         }else {
-            return fail(executeResult.getErrorCode());
+            return fail(executeResult.getErrorCode(), executeResult.getErrorParam());
         }
 	}
 

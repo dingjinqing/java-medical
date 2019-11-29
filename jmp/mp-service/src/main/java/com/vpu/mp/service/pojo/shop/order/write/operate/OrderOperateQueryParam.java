@@ -20,9 +20,9 @@ public class OrderOperateQueryParam extends AbstractOrderOperateQueryParam{
 	/**
 	 * TODO 
 	 */
-	@NotNull(message = JsonResultMessage.MSG_ORDER)
+	@NotNull(message = JsonResultMessage.MSG_ORDER_ORDER_ID_NOT_NULL)
 	private Integer orderId;
-	@NotBlank(message = JsonResultMessage.MSG_ORDER)
+	@NotBlank(message = JsonResultMessage.MSG_ORDER_ORDER_SN_NOT_NULL)
 	private String orderSn;
 
 }

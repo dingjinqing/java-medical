@@ -45,7 +45,7 @@ public class DeleteService  extends ShopBaseService implements IorderOperate <Or
 	 */
 	@Override
 	public ExecuteResult execute(OrderOperateQueryParam param) {
-
+        logger().info("订单删除start");
 		OrderListMpVo order = orderInfo.getByOrderId(param.getOrderId(), OrderListMpVo.class);
 		if(order == null) {
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
@@ -56,7 +56,7 @@ public class DeleteService  extends ShopBaseService implements IorderOperate <Or
 		orderInfo.delete(order);
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_DELETE.code }), new String[] {param.getOrderSn()});
-		return null;
+        logger().info("订单删除end");
+        return null;
 	}
-
 }

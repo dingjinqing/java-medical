@@ -83,33 +83,33 @@ public class OrderPayService extends ShopBaseService{
 
     /**
      * 是否需要继续微信支付
-     * @param orderInfo record
-     * @param orderGoodsBo
-     * @param param
+     * @param orderInfo 订单
+     * @param goodsNameForPay 商品描述
+     * @param ClientIp mp端ip
+     * @param openId openid
+     * @param activityType 活动类型
+     * @throws MpException
      */
-    public void isContinuePay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo, CreateParam param, CreateOrderVo vo) throws MpException {
+    public WebPayVo isContinuePay(OrderInfoRecord orderInfo, String goodsNameForPay,String ClientIp, String openId, Byte activityType) throws MpException {
         logger().info("继续支付接口start");
         ArrayList<String> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToArray(orderInfo.getGoodsType()));
         if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
-            return;
+            return null;
         }else if(OrderConstant.ORDER_WAIT_PAY == orderInfo.getOrderStatus() &&
             (((orderInfo.getBkOrderPaid() > 0 && goodsType.contains(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE))))
                 || OrderConstant.PAY_WAY_FRIEND_PAYMENT == orderInfo.getOrderPayWay())) {
             //待支付 && （（预售 && 已付定金或已付尾款） || 好友代付）
-            return;
+            return null;
         }else {
             //非系统金额支付
-            String goodsNameForPay = getGoodsNameForPay(orderInfo, orderGoodsBo);
             try {
                 logger().info("微信预支付调用接口调用start");
-                WebPayVo webPayVo = pay.wxUnitOrder(param.getClientIp(), goodsNameForPay, orderInfo.getOrderSn(), orderInfo.getMoneyPaid(), param.getWxUserInfo().getWxUser().getOpenId());
+                WebPayVo webPayVo = pay.wxUnitOrder(ClientIp, goodsNameForPay, orderInfo.getOrderSn(), orderInfo.getMoneyPaid(), openId);
                 webPayVo.setOrderSn(orderInfo.getOrderSn());
-                webPayVo.setOrderType(param.getActivityType().toString());
+                webPayVo.setOrderType(activityType == null ? null : activityType.toString());
                 order.updatePrepayId(webPayVo.getResult().getPrepayId(), orderInfo.getOrderId());
-                vo.setOrderSn(orderInfo.getOrderSn());
-                vo.setWebPayVo(webPayVo);
                 logger().info("微信预支付调用接口调用end");
-                return;
+                return webPayVo;
             } catch (WxPayException e) {
                 logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderInfo.getOrderSn(), e);
                 throw new MpException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
@@ -120,7 +120,7 @@ public class OrderPayService extends ShopBaseService{
         }
     }
 
-    private String getGoodsNameForPay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo) {
+    public String getGoodsNameForPay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo) {
         StringBuilder result = new StringBuilder(orderGoodsBo.get(0).getGoodsName());
         if(result.length() > 32){
             result.substring(0, 32);

@@ -75,7 +75,7 @@ public class MpPaymentService extends ShopBaseService {
 	 * @param mp
 	 * @return
 	 */
-	protected WxPayConfig getWxPayConfig(MpAuthShopRecord mp) {
+	protected WxPayConfig  getWxPayConfig(MpAuthShopRecord mp) {
 		byte[] keyContent = null;
 		try {
 			keyContent = PemToPkcs12.pemToPkcs12(mp.getPayKeyContent(), mp.getPayCertContent());
@@ -109,7 +109,7 @@ public class MpPaymentService extends ShopBaseService {
 				.outTradeNo(orderSn)
             // 订单总金额，单位为分
             .totalFee(amount.multiply(HUNDRED).intValue())
-				.body(goodsName)
+				.body(Util.filterEmoji(goodsName, ""))
 				.tradeType(WxPayConstants.TradeType.JSAPI)
 				.spbillCreateIp(clientIp)
 				.notifyUrl(domainConfig.getWxMaPayNotifyUrl(this.getShopId()))

@@ -39,8 +39,15 @@ public class AtomicOperation extends ShopBaseService {
     @Autowired
     private GoodsSpecProductService goodsSpecProduct;
 
+    /**
+     * 普通商品库存更新
+     * @param order 订单
+     * @param goodsBo 商品
+     * @param limit 超卖限制 true 不允许超卖，false 允许超卖
+     * @throws MpException
+     */
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
-    public void updateStockAndSales(OrderInfoRecord order, @RedisLockKeys List<OrderGoodsBo> goodsBo) throws MpException {
+    public void updateStockAndSales(OrderInfoRecord order, @RedisLockKeys List<OrderGoodsBo> goodsBo, boolean limit) throws MpException {
         log.info("AtomicOperation.updateStockAndSales订单库存销量更新start,订单号{},商品{}", order.getOrderId(), goodsBo);
         if(Boolean.FALSE) {
             //TOOD 营销
@@ -88,6 +95,9 @@ public class AtomicOperation extends ShopBaseService {
                     goods.getGoodsNumber(), goods.getGoodsSaleNum(), product.getPrdNumber(),
                     num
                 );
+                if(limit) {
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+                }
                 //不允许出现负值
                 if(goodsStock < 0) {
                     goodsStock = 0;
