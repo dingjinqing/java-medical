@@ -47,6 +47,7 @@ export const en = {
   invitationTip4: 'List of distributors',
   invitationTip5: 'Set up',
   reviewedInfo: 'When users apply to become distributors, they need to submit personal information',
+  checkedList: ['Real Name', 'Phone number', 'ID card', 'Sex', 'Birthday', 'Marital status', 'Education level', 'Industry in which', 'Location', 'Remarks', 'Picture upload'],
   ranking: 'Distributor Ranking：',
   rankingTip: 'By default, the switch is off and on. When the number of distributors with rebate data is greater than or equal to 3, the distributor center displays the distributor Commission ranking. If it is closed, the distributor Commission ranking page will not be displayed.',
   validity: 'Validity Of Rebate：',
@@ -71,6 +72,96 @@ export const en = {
   selectTemplate: 'Select Template',
   refresh: 'refresh',
   addTemplate: 'Add Template',
+
+  rebateSettings: 'Rebate withdrawal settings',
+  rebateSettingsSwitch: 'Rebate withdrawal switch：',
+  rebateSettingsTip1: 'Note: please read before turning on the withdraw function switch',
+  rebateSettingsTip2: '《Operating instructions for rebate withdrawal configuration》',
+  rebateSettingsTip3: 'When the switch is on, the Commission obtained by the distributor in promoting the rebate can be withdrawn to wechat wallet. The distributor initiates the rebate application in the applet and can only withdraw to the account after the approval of the background',
+  rebateRadio1: 'Small program',
+  rebateRadioTip1: 'Note: if you use the rebate withdrawal function, please make sure that weChat payment has been enabled in the applet, otherwise you cannot withdraw ',
+  rebateRadioTip2: 'Dispose',
+  rebateRadio2: 'official account',
+  rebateRadioTip3: 'Note: the use of the rebate function, please ensure that the small program has been binding the authentication service number and configure the relevant payment information, otherwise it can not be presented. Users who do not pay attention to the public number will fail to make withdrawals.',
+  minRebate: 'Minimum withdrawal amount of rebate：',
+  minUnit: 'yuan',
+  minRebateTip: 'The distributor initiates rebate withdrawal and applies for the minimum withdrawal amount in a single time. In order to prevent the distributor from withdrawing too frequently, please set a single minimum withdrawal amount.',
+  rebateBg: 'Distribution center promotion poster background',
+  rebateNickname: 'Nickname',
+  rebateCode: 'QR code',
+  rebateWriting: 'Invitation copy：',
+  rebateImg: 'Poster background：',
+  customSelect: 'Default background selection：',
+  uploadSelect: 'Upload background picture：',
+  imgTip: 'Picture size640px*640px',
+  rebateSave: 'Save',
+  rebateSaveSuccess: 'Save Success!',
+
+  // -----------------分销员等级配置---------------
+  levelTip: 'Tip: every time you modify the distributor level, a large number of distributors will be affected. Please operate carefully',
+  levelText: 'Upgrade Rules',
+  dialogTitle: 'Remind',
+  dialogText1: 'Cumulative invited users: the cumulative number of users invited by the distributor.',
+  dialogText2: 'Cumulative promotion fund: the cumulative order amount of the promotion goods of the distributor.',
+  dialogText3: 'Accumulated consumption fund: the accumulated consumption amount of the distributor in the store.',
+  dialogSure: 'Sure',
+  // 表格
+  level: 'Level',
+  levelName: 'Level Name',
+  level1: 'After becoming a distributor, the default is this level',
+  levelRadio1: 'Automatic upgrade',
+  levelRadio2: 'Manual upgrade',
+  levelTip1: 'Total number of invited users',
+  levelTip2: 'Number',
+  levelTip3: 'or',
+  levelTip4: 'Accumulated Promotion Fund',
+  levelTip5: 'yuan',
+  levelTip6: 'The sum of accumulated promotion fund and consumption fund reaches',
+  addDistributor: 'Add Distributor',
+  distributorsNum: 'Distributors Num',
+  option: 'Option',
+  levelAlready: 'Already Started',
+  levelStart1: 'Enable',
+  levelStart2: 'Enabled',
+  levelStop1: 'Deactivate',
+  levelStop2: 'Deactivated',
+
+  // -------------------返利策略配置---------------
+  policyTabInfo: [{
+    title: 'All',
+    name: '0'
+  }, {
+    title: 'In Progress',
+    name: '1'
+  }, {
+    title: 'Not Started',
+    name: '2'
+  }, {
+    title: 'Overdue',
+    name: '3'
+  }, {
+    title: 'Disable',
+    name: '4'
+  }],
+  AddRebateStrategy: 'Add Rebate Strategy',
+  strategyName: 'Strategy Name',
+  strategyValidity: 'Validity',
+  ratioRate: 'Rebate Ratio',
+  strategyCreateTime: 'Create Time',
+  strategyLevel: 'Priority',
+  strategyStatus: 'Status',
+  strategyOption: 'Option',
+
+  // 表格
+  strategyTip1: 'Please enter rebate policy name',
+  ratioLevel: 'Rebate policy priority',
+  strategyTip2: 'Please enter rebate policy priority',
+  strategyTip3: 'When a product is added to multiple strategies, the one with the highest execution priority can fill in an integer between 1 and 100. Repeat priority is allowed. If it is repeated, the latest rebate policy created will be executed for rebate products.',
+  selfPurchase: 'Self Purchase',
+  purchaseOpen: 'Open',
+  purchaseClose: 'Close',
+  strategyTip4: 'When enabled, the distributor will also get rebate when purchasing goods. The rebate proportion is the direct invitation rebate proportion of the current level of the distributor.',
+  strategyTip5: 'Note: when the self purchase rebate switch is on, if the next person is a distributor, the indirect invitee of the next person will not get rebate, and the direct invitee can get rebate. The rebate proportion is the indirect invitation rebate proportion of the direct invitee level',
 
   // ---------------------分销推广语----------------
   // 列表搜索框

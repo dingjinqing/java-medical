@@ -16,7 +16,7 @@
             size="medium"
             v-if="tableListView"
             @click="addPolicy"
-          >添加返利策略</el-button>
+          >{{ $t('distribution.AddRebateStrategy') }}</el-button>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -41,52 +41,95 @@
       >
         <el-table-column
           prop="strategyName"
-          label="返利策略名称"
+          :label="$t('distribution.strategyName')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="validity"
-          label="有效期"
+          :label="$t('distribution.strategyValidity')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="fanliRatioRate"
-          label="返利比例"
+          :label="$t('distribution.ratioRate')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="strategyLevel"
-          label="优先级"
+          :label="$t('distribution.strategyLevel')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="createTime"
-          label="创建时间"
+          :label="$t('distribution.strategyCreateTime')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="statusText"
-          label="状态"
+          :label="$t('distribution.strategyStatus')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          label="操作"
+          :label="$t('distribution.strategyOption')"
           align="center"
         >
           <template slot-scope="scope">
-            <span
+            <el-tooltip
+              :content="$t('seckill.edit')"
+              placement="top"
+            >
+              <span
+                style="font-size: 22px;color: #5a8bff;"
+                class="el-icon-edit-outline"
+                @click="editHandler(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('seckill.edit')"
+              placement="top"
+            >
+              <span
+                style="font-size: 22px;color: #5a8bff;"
+                class="el-icon-delete"
+                @click="deleteHandler(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('seckill.stop')"
+              placement="top"
+              v-if="scope.row.status === 1"
+            >
+              <span
+                style="font-size: 22px;color: #5a8bff;"
+                class="el-icon-circle-close"
+                @click="stopHandler(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="$t('seckill.start')"
+              placement="top"
+              v-if="scope.row.status === 0"
+            >
+              <span
+                style="font-size: 22px;color: #5a8bff;"
+                class="el-icon-circle-check"
+                @click="startHandler(scope.row.id)"
+              ></span>
+            </el-tooltip>
+
+            <!-- <span
               @click="editHandler(scope.row.id)"
               class="option"
             >编辑</span>
@@ -103,7 +146,7 @@
               @click="startHandler(scope.row.id)"
               v-if="scope.row.status === 0"
               class="option"
-            >启用</span>
+            >启用</span> -->
           </template>
         </el-table-column>
       </el-table>
@@ -131,27 +174,17 @@ export default {
       // tabs
       tableListView: true, // tab显示隐藏
       tabSwitch: '1',
-      tabInfo: [{
-        title: '全部策略',
-        name: '0'
-      }, {
-        title: '进行中',
-        name: '1'
-      }, {
-        title: '未开始',
-        name: '2'
-      }, {
-        title: '已过期',
-        name: '3'
-      }, {
-        title: '已停用',
-        name: '4'
-      }],
+      tabInfo: [],
       tableData: [], // 表格数据
       pageParams: {}, // 分页
       requestParams: {},
       editId: '', // 编辑的活动id
       isEdite: true // 编辑状态
+    }
+  },
+  watch: {
+    lang () {
+      this.tabInfo = this.$t('distribution.policyTabInfo')
     }
   },
   mounted () {

@@ -224,53 +224,53 @@
       </div>
 
       <div v-show="form.status === 1 && arrorFlag">
-        <p class="titleContent">返利提现设置</p>
-        <el-form-item label="返利提现开关：">
+        <p class="titleContent">{{ $t('distribution.rebateSettings') }}</p>
+        <el-form-item :label="$t('distribution.rebateSettingsSwitch')">
           <el-switch
             v-model="form.withdraw_status"
             :active-value='1'
             :inactive-value='0'
             style="width: 60px;"
           ></el-switch>
-          <span style="color: red;">注：开启提现功能开关前，请阅读 <a
+          <span style="color: red;">{{ $t('distribution.rebateSettingsTip1') }} <a
               href="javascript:void(0);"
               @click="optionHandler"
-            >《返利提现配置操作说明》</a></span>
+            >{{ $t('distribution.rebateSettingsTip2') }}</a></span>
           <div class="text">
-            开关开启，分销员推广返利获得的佣金可提现到微信钱包，分销员在小程序发起返利申请，需后台审核通过才可提现到账
+            {{ $t('distribution.rebateSettingsTip3') }}
           </div>
           <div v-if="form.withdraw_status === 1">
             <el-radio
               v-model="form.withdraw_source"
               label="wx_mini"
-            >小程序</el-radio>
-            <p class="text">注意：使用返利提现功能，请确保小程序已开通微信支付，否则不可提现 <a
+            >{{ $t('distribution.rebateRadio1') }}</el-radio>
+            <p class="text">{{ $t('distribution.rebateRadioTip1') }} <a
                 href="javascript:void(0);"
                 @click="dealClickHandler"
-              >去配置</a></p>
+              >{{ $t('distribution.rebateRadioTip2') }}</a></p>
             <el-radio
               v-model="form.withdraw_source"
               label="wx_open"
-            >公众号</el-radio>
-            <p class="text">注意：使用返利提现功能，请确保小程序已绑定认证服务号并配置相关支付信息，否则不可提现，未关注公众号的用户将会提现失败
+            >{{ $t('distribution.rebateRadio2') }}</el-radio>
+            <p class="text">{{ $t('distribution.rebateRadioTip3') }}
               <a
                 href="javascript:void(0);"
                 @click="officialHandler"
-              >去配置</a></p>
+              >{{ $t('distribution.rebateRadioTip2') }}</a></p>
           </div>
         </el-form-item>
 
-        <el-form-item label="返利最小提现金额：">
+        <el-form-item :label="$t('distribution.minRebate')">
           <el-input
             style="width: 100px;"
             v-model="form.withdraw_cash"
-          ></el-input> 元
+          ></el-input> {{ $t('distribution.minUnit') }}
           <div class="text">
-            分销员发起返利提现，单次申请最小提现金额。为防止分销员提现过于频繁，请设置单次最小提现金额。
+            {{ $t('distribution.minRebateTip') }}
           </div>
         </el-form-item>
 
-        <p class="titleContent">分销中心推广海报背景图</p>
+        <p class="titleContent">{{ $t('distribution.rebateBg') }}</p>
 
         <el-form-item>
           <div class="leftContent">
@@ -286,13 +286,13 @@
                   >
                 </div>
                 <div class="rightInfo">
-                  <p>昵称</p>
+                  <p>{{ $t('distribution.rebateNickname') }}</p>
                   <p> {{ this.form.rebate_center_name }} </p>
                 </div>
               </div>
             </div>
             <div class="leftBottom">
-              <span class="codeArea">二维码区域</span>
+              <span class="codeArea">{{ $t('distribution.rebateCode') }}</span>
               <img
                 class="codeTips"
                 src="http://mpdevimg2.weipubao.cn/image/admin/usr_codes.png"
@@ -302,16 +302,16 @@
           </div>
           <div class="rightContent">
             <div>
-              <span class="rightLabel">邀请文案：</span>
+              <span class="rightLabel">{{ $t('distribution.rebateWriting') }}</span>
               <el-input
                 v-model="form.rebate_center_name"
                 style="width: 300px;"
               ></el-input>
             </div>
             <div style="margin-top: 20px;">
-              <span class="rightLabel">海报背景图：</span>
+              <span class="rightLabel">{{ $t('distribution.rebateImg') }}</span>
               <div class="defaultBg">
-                <span>默认背景选择：</span>
+                <span>{{ $t('distribution.customSelect') }}</span>
                 <el-select
                   v-model="defaultValue"
                   @change="selectChange"
@@ -325,7 +325,7 @@
                 </el-select>
               </div>
               <div class="customBg">
-                <span>上传背景图片：</span>
+                <span>{{ $t('distribution.uploadSelect') }}</span>
                 <div
                   class="custom"
                   @click="handleToCallImgDialog"
@@ -342,7 +342,7 @@
                     class="customImg"
                   >
                 </div>
-                <span>图片尺寸640px*640px</span>
+                <span>{{ $t('distribution.imgTip') }}</span>
               </div>
             </div>
 
@@ -357,7 +357,7 @@
         type="primary"
         size="small"
         @click="addDistribution()"
-      >保存</el-button>
+      >{{ $t('distribution.rebateSave') }}</el-button>
     </div>
 
     <!--选择商品弹窗-->
@@ -419,7 +419,7 @@ export default {
         bg_img: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg' // 海报背景图
       },
       // 分销员信息
-      checkedList: ['真实姓名', '手机号', '身份证号码', '性别', '生日', '婚姻状况', '教育程度', '所在行业', '所在地', '备注', '图片上传'],
+      checkedList: [],
       // 推荐商品表格
       tableData: [],
       arrorFlag: true, // 展开更多配置
@@ -455,8 +455,14 @@ export default {
       tamplateFlag: false // 模板数据显示
     }
   },
+  watch: {
+    lang () {
+      this.checkedList = this.$t('distribution.checkedList')
+    }
+  },
   mounted () {
     // 初始化数据
+    this.langDefault()
     this.getDistribution()
   },
   methods: {
@@ -546,7 +552,7 @@ export default {
 
       setDistribution(this.form).then((res) => {
         if (res.error === 0) {
-          this.$message.success({ message: '保存成功!' })
+          this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
           this.getDistribution()
         }
       })
@@ -777,7 +783,7 @@ a {
 
 .rightContent {
   float: left;
-  height: 250px;
+  min-height: 250px;
   padding: 10px;
   box-sizing: border-box;
   border: 1px solid #e2e2e2;

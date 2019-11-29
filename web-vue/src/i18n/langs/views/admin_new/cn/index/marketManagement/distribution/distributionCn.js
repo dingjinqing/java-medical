@@ -39,32 +39,6 @@ export const cn = {
   distributorMobile: '分销员手机号',
 
   // -----------------------分销配置-----------------
-  // wdistributionSitch: '分销开关',
-  // wdistributionSitchDesc: '开关默认关闭，开启开关，则用户可以申请为店铺分销员，分销员邀请用户注册产生订单，购买者邀请人可获得佣金奖励。关闭开关，手机端个人中心”分销中心“菜单隐藏，用户下单，邀请人不再产生佣金奖励，系统分销机制关闭，邀请不再记录邀请关系。',
-  // distributorCheck: '分销员审核',
-  // distributorCheckDesc: '开启分销员审核功能后，普通用户申请成为分销员时需要经过商家审核。关闭则成为店铺分销员不需要申请审核，全部用户均默认为店铺分销员。',
-
-  // distributionRanking: '分销排名',
-  // distributionRankingDesc: '开关默认关闭，开启开关，且拥有返利数据的分销员数大于等于3位时分销员中心显示分销员佣金排名。关闭则不显示分销员佣金排名页面。',
-  // rebateVailDateDesc: '用户被分销员邀请注册开始计算，在该天数限制内该用户购买分销商品给分销员计算佣金返利，一旦超过该天数，则不再给分销员佣金返利，默认为空，为空表示不限制。',
-  // distributorProtectDate: '分销员保护期',
-  // distributorProtectDateDesc: '在保护期内，分销员发展的客户不会变更绑定关系，保护期过后可通过分享链接重新绑定邀请关系。 超过保护期若未重新建立邀请关系，则原绑定关系仍然有效，可依据返利配置条件返利。若保护期设置为0天，则用户可随时通过他人分享进入小程序实现其邀请人的变更。',
-  // distributionCenterPage: '分销中心页面名称',
-  // recommendGoods: '推荐商品',
-  // recommendGoodsDesc: '将从已选商品中随机抽取10个展示在小程序端“分销中心”，引导分销员推广商品',
-  // noShow: '不显示',
-  // default: '默认',
-  // custom: '自定义',
-  // customContent: '自定义内容',
-  // selectTemplate: '选择模版',
-  // refresh: '刷新',
-  // addTemplate: '添加模版',
-  // openMoreCfg: '展开更多配置',
-  // rebateWithdrawSet: '返利提现设置',
-  // rebateWithdrawSwitch: '返利提现开关',
-  // withdrawSwitchDesc: '开启提现功能开关前，请阅读《返利提现配置操作说明》',
-
-  // ---------------------分销配置----------------
   switch: '分销开关：',
   switchTip: '开关默认关闭，开启开关，则用户可以申请为店铺分销员，分销员邀请用户注册产生订单，购买者邀请人可获得佣金奖励。关闭开关，手机端个人中心”分销中心“菜单隐藏，用户下单，邀请人不再产生佣金奖励，系统分销机制关闭，邀请不再记录邀请关系。',
   reviewed: '分销员审核：',
@@ -78,6 +52,7 @@ export const cn = {
   invitationTip4: '分销员列表',
   invitationTip5: '中进行设置',
   reviewedInfo: '用户申请成为分销员时，需要提交个人信息',
+  checkedList: ['真实姓名', '手机号', '身份证号码', '性别', '生日', '婚姻状况', '教育程度', '所在行业', '所在地', '备注', '图片上传'],
   ranking: '分销员排名：',
   rankingTip: '开关默认关闭，开启开关，且拥有返利数据的分销员数大于等于3位时分销员中心显示分销员佣金排名。关闭则不显示分销员佣金排名页面。',
   validity: '返利有效期：',
@@ -103,9 +78,94 @@ export const cn = {
   refresh: '刷新',
   addTemplate: '添加模版',
 
+  rebateSettings: '返利提现设置',
+  rebateSettingsSwitch: '返利提现开关：',
+  rebateSettingsTip1: '注：开启提现功能开关前，请阅读',
+  rebateSettingsTip2: '《返利提现配置操作说明》',
+  rebateSettingsTip3: '开关开启，分销员推广返利获得的佣金可提现到微信钱包，分销员在小程序发起返利申请，需后台审核通过才可提现到账',
+  rebateRadio1: '小程序',
+  rebateRadioTip1: '注意：使用返利提现功能，请确保小程序已开通微信支付，否则不可提现',
+  rebateRadioTip2: '去配置',
+  rebateRadio2: '公众号',
+  rebateRadioTip3: '注意：使用返利提现功能，请确保小程序已绑定认证服务号并配置相关支付信息，否则不可提现，未关注公众号的用户将会提现失败',
+  minRebate: '返利最小提现金额：',
+  minUnit: '元',
+  minRebateTip: '分销员发起返利提现，单次申请最小提现金额。为防止分销员提现过于频繁，请设置单次最小提现金额。',
+  rebateBg: '分销中心推广海报背景图',
+  rebateNickname: '昵称',
+  rebateCode: '二维码区域',
+  rebateWriting: '邀请文案：',
+  rebateImg: '海报背景图：',
+  customSelect: '默认背景选择：',
+  uploadSelect: '上传背景图片：',
+  imgTip: '图片尺寸640px*640px',
+  rebateSave: '保存',
+  rebateSaveSuccess: '保存成功!',
+
   // -----------------分销员等级配置---------------
+  levelTip: '提示：每次修改分销员等级，将会有大量分销员受到影响，请谨慎操作',
+  levelText: '升级规则',
+  dialogTitle: '提醒',
+  dialogText1: '累计邀请用户数：分销员累积邀请的用户数。',
+  dialogText2: '累积推广金：分销员推广商品的订单累计金额。',
+  dialogText3: '累积消费金：分销员在店铺累积消费金额。',
+  dialogSure: '确 定',
+  // 表格
+  level: '等级',
+  levelName: '等级名称',
+  level1: '成为分销员后，默认即是该等级',
+  levelRadio1: '自动升级',
+  levelRadio2: '手动升级',
+  levelTip1: '累计邀请用户数达',
+  levelTip2: '个',
+  levelTip3: '或',
+  levelTip4: '累计推广金达',
+  levelTip5: '元',
+  levelTip6: '累积推广金与消费金总和达',
+  distributorsNum: '分销员数量',
+  option: '操作',
+  levelAlready: '已启动',
+  levelStart1: '启用',
+  levelStart2: '已启用',
+  levelStop1: '停用',
+  levelStop2: '已停用',
 
   // -------------------返利策略配置---------------
+  policyTabInfo: [{
+    title: '全部策略',
+    name: '0'
+  }, {
+    title: '进行中',
+    name: '1'
+  }, {
+    title: '未开始',
+    name: '2'
+  }, {
+    title: '已过期',
+    name: '3'
+  }, {
+    title: '已停用',
+    name: '4'
+  }],
+  AddRebateStrategy: '添加返利策略',
+  strategyName: '返利策略名称',
+  strategyValidity: '有效期',
+  ratioRate: '返利比例',
+  strategyCreateTime: '创建时间',
+  strategyLevel: '优先级',
+  strategyStatus: '状态',
+  strategyOption: '操作',
+
+  // 表格
+  strategyTip1: '请输入返利策略名称',
+  ratioLevel: '返利策略优先级',
+  strategyTip2: '请输入返利策略优先级',
+  strategyTip3: '当一个商品被添加到多个策略时，执行优先级最高的，可填写1到100间的整数。允许优先级重复，若重复则返利商品执行最新创建的返利策略。',
+  selfPurchase: '分销员自购返利',
+  purchaseOpen: '开启',
+  purchaseClose: '关闭',
+  strategyTip4: '开启后，分销员购买商品也会获得返利，返利比例为分销员当前等级的直接邀请返利比例。',
+  strategyTip5: '注：当自购返利开关开启，若下单人是分销员，则该下单人的间接邀请人不会获得返利，其直接邀请人可获得返利，返利比例为直接邀请人所在等级的间接邀请返利比例',
 
   // ---------------------分销员列表----------------
   wxName: '微信昵称',

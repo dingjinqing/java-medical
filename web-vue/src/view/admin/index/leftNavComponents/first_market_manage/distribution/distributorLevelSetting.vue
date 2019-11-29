@@ -8,24 +8,24 @@
         <i
           class="el-icon-warning"
           style="color: #E6A23C;margin-right: 5px;"
-        ></i>提示：每次修改分销员等级，将会有大量分销员受到影响，请谨慎操作</div>
+        ></i>{{ $t('distribution.levelTip') }}</div>
     </div>
 
     <el-button
       type="text"
       @click="centerDialogVisible = true"
-    >升级规则</el-button>
+    >{{ $t('distribution.levelText') }}</el-button>
 
     <el-dialog
-      title="提醒"
+      :title="$t('distribution.dialogTitle')"
       :visible.sync="centerDialogVisible"
       width="25%"
       center
       :close-on-click-modal="false"
     >
-      <div class="textInfo">累计邀请用户数：分销员累积邀请的用户数。</div>
-      <div class="textInfo">累积推广金：分销员推广商品的订单累计金额。</div>
-      <div class="textInfo">累积消费金：分销员在店铺累积消费金额。</div>
+      <div class="textInfo">{{ $t('distribution.dialogText1') }}</div>
+      <div class="textInfo">{{ $t('distribution.dialogText2') }}</div>
+      <div class="textInfo">{{ $t('distribution.dialogText3') }}</div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -33,7 +33,7 @@
         <el-button
           type="primary"
           @click="centerDialogVisible = false"
-        >确 定</el-button>
+        >{{ $t('distribution.dialogSure') }}</el-button>
       </span>
     </el-dialog>
 
@@ -47,12 +47,12 @@
       >
         <el-table-column
           prop="levelText"
-          label="等级"
+          :label="$t('distribution.level')"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          label="等级名称"
+          :label="$t('distribution.levelName')"
           align="center"
         >
           <template slot-scope="scope">
@@ -60,46 +60,46 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="升级规则"
+          :label="$t('distribution.levelText')"
           align="center"
           width="300px"
         >
           <template slot-scope="scope">
-            <div v-if="scope.row.levelId === 1">成为分销员后，默认即是该等级</div>
+            <div v-if="scope.row.levelId === 1">{{ $t('distribution.level1') }}</div>
             <el-radio-group
               v-model="scope.row.levelUpRoute"
               v-if="scope.row.levelId !== 1"
             >
-              <el-radio :label="0">自动升级</el-radio>
-              <el-radio :label="1">手动升级</el-radio>
+              <el-radio :label="0">{{ $t('distribution.levelRadio1') }}</el-radio>
+              <el-radio :label="1">{{ $t('distribution.levelRadio2') }}</el-radio>
             </el-radio-group>
             <div
               v-if="scope.row.levelUpRoute === 0 && scope.row.levelId !== 1"
               style="margin: 15px 0;"
             >
-              <div>累计邀请用户数达
+              <div>{{ $t('distribution.levelTip1') }}
                 <el-input
                   v-model="scope.row.inviteNumber"
                   @blur="checkNum(scope.row.inviteNumber)"
                   size="mini"
                   style="width: 70px;"
-                ></el-input> 个</div>
-              <div>或</div>
-              <div>累计推广金达
+                ></el-input> {{ $t('distribution.levelTip2') }}</div>
+              <div>{{ $t('distribution.levelTip3') }}</div>
+              <div>{{ $t('distribution.levelTip4') }}
                 <el-input
                   v-model="scope.row.totalDistributionMoney"
                   @blur="checkMoney(scope.row.totalDistributionMoney)"
                   size="mini"
                   style="width: 70px;"
-                ></el-input> 元</div>
-              <div>或</div>
-              <div>累积推广金与消费金总和达
+                ></el-input> {{ $t('distribution.levelTip5') }}</div>
+              <div>{{ $t('distribution.levelTip3') }}</div>
+              <div>{{ $t('distribution.levelTip6') }}
                 <el-input
                   v-model="scope.row.totalBuyMoney"
                   @blur="checkMoney(scope.row.totalBuyMoney)"
                   size="mini"
                   style="width: 70px;"
-                ></el-input> 元</div>
+                ></el-input> {{ $t('distribution.levelTip5') }}</div>
             </div>
             <div
               v-if="scope.row.levelUpRoute === 1 && (scope.row.levelId === 2 || scope.row.levelId === 3)"
@@ -108,13 +108,13 @@
               <el-button
                 size="mini"
                 @click="addDistributor(scope.row.levelId)"
-              ><i class="el-icon-plus"></i> 添加分销员</el-button>
+              ><i class="el-icon-plus"></i> {{ $t('distribution.addDistributor') }}</el-button>
             </div>
           </template>
         </el-table-column>
 
         <el-table-column
-          label="分销员数量"
+          :label="$t('distribution.distributorsNum')"
           align="center"
         >
           <template slot-scope="scope">
@@ -126,25 +126,25 @@
         </el-table-column>
 
         <el-table-column
-          label="操作"
+          :label="$t('distribution.option')"
           align="center"
         >
           <template slot-scope="scope">
-            <p v-if="scope.row.levelId === 1">已启动</p>
+            <p v-if="scope.row.levelId === 1">{{ $t('distribution.levelAlready') }}</p>
             <div v-if="scope.row.levelId !== 1">
-              <p v-if="scope.row.levelStatus === 1">已启用</p>
-              <p v-if="scope.row.levelStatus === 0">已停用</p>
+              <p v-if="scope.row.levelStatus === 1">{{ $t('distribution.levelStart2') }}</p>
+              <p v-if="scope.row.levelStatus === 0">{{ $t('distribution.levelStop2') }}</p>
               <el-button
                 type="primary"
                 size="mini"
                 @click="startHandler(scope.row.id)"
                 v-if="scope.row.levelStatus === 0"
-              >启用</el-button>
+              >{{ $t('distribution.levelStart1') }}</el-button>
               <el-button
                 size="mini"
                 @click="stopHandler(scope.row.id)"
                 v-if="scope.row.levelStatus === 1"
-              >停用</el-button>
+              >{{ $t('distribution.levelStop1') }}</el-button>
             </div>
           </template>
         </el-table-column>
@@ -156,7 +156,7 @@
         type="primary"
         size="small"
         @click="setDistributionLevel"
-      >保存</el-button>
+      >{{ $t('distribution.rebateSave') }}</el-button>
     </div>
 
     <!-- 添加分销员弹窗 -->
@@ -301,7 +301,7 @@ export default {
       })
       setDistributionLevel(this.tableData).then((res) => {
         if (res.error === 0) {
-          this.$message.success({ message: '保存成功!' })
+          this.$message.success({ message: this.$t('distribution.rebateSaveSuccess') })
         }
       })
     },
@@ -458,6 +458,6 @@ a {
   line-height: 50px;
   background: #f8f8f8;
   text-align: center;
-  z-index: 99;
+  z-index: 9;
 }
 </style>

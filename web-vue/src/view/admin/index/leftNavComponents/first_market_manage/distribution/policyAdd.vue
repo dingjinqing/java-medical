@@ -11,26 +11,26 @@
         :label-position="'right'"
       >
         <el-form-item
-          label="返利策略名称："
+          :label="$t('distribution.strategyName') + '：'"
           prop="strategyName"
         >
           <el-input
             v-model="form.strategyName"
-            placeholder="请输入返利策略名称"
+            :placeholder="$t('distribution.strategyTip1')"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="返利策略优先级："
+          :label="$t('distribution.ratioLevel') + '：'"
           prop="strategyLevel"
         >
           <el-input
             v-model.number="form.strategyLevel"
-            placeholder="请输入返利策略优先级"
+            :placeholder="$t('distribution.strategyTip2')"
           ></el-input>
-          <div class="text">当一个商品被添加到多个策略时，执行优先级最高的，可填写1到100间的整数。允许优先级重复，若重复则返利商品执行最新创建的返利策略。</div>
+          <div class="text">{{ $t('distribution.strategyTip3') }}</div>
         </el-form-item>
         <el-form-item
-          label="有效期："
+          :label="$t('distribution.strategyValidity') + '：'"
           prop="validity"
         >
           <el-date-picker
@@ -43,15 +43,15 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item
-          label="分销员自购返利："
+          :label="$t('distribution.selfPurchase') + '：'"
           prop="selfPurchase"
         >
           <el-radio-group v-model="form.selfPurchase">
-            <el-radio :label="1">开启</el-radio>
-            <el-radio :label="0">关闭</el-radio>
+            <el-radio :label="1">{{ $t('distribution.purchaseOpen') }}</el-radio>
+            <el-radio :label="0">{{ $t('distribution.purchaseClose') }}</el-radio>
           </el-radio-group>
-          <span class="tips">开启后，分销员购买商品也会获得返利，返利比例为分销员当前等级的直接邀请返利比例。</span>
-          <div class="text">注：当自购返利开关开启，若下单人是分销员，则该下单人的间接邀请人不会获得返利，其直接邀请人可获得返利，返利比例为直接邀请人所在等级的间接邀请返利比例</div>
+          <span class="tips">{{ $t('distribution.strategyTip4') }}</span>
+          <div class="text">{{ $t('distribution.strategyTip5') }}</div>
         </el-form-item>
         <el-form-item prop="costProtection">
           <template slot="label">
@@ -72,8 +72,8 @@
 
           </template>
           <el-radio-group v-model="form.costProtection">
-            <el-radio :label="1">开启</el-radio>
-            <el-radio :label="0">关闭</el-radio>
+            <el-radio :label="1">{{ $t('distribution.purchaseOpen') }}</el-radio>
+            <el-radio :label="0">{{ $t('distribution.purchaseClose') }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
@@ -81,8 +81,8 @@
           prop=""
         >
           <el-radio-group v-model="form.firstRebate">
-            <el-radio :label="1">开启</el-radio>
-            <el-radio :label="0">关闭</el-radio>
+            <el-radio :label="1">{{ $t('distribution.purchaseOpen') }}</el-radio>
+            <el-radio :label="0">{{ $t('distribution.purchaseClose') }}</el-radio>
           </el-radio-group>
           <span class="tips">开启后，分销员邀请新用户并引导其在店铺下首单（直接邀请关系），可单独设置返利比例。帮助店铺快速拉新，提高新用户成单率。</span>
         </el-form-item>
@@ -96,12 +96,12 @@
           >
             <el-table-column
               prop="levelText"
-              label="等级"
+              :label="$t('distribution.level')"
               align="center"
               width="200px"
             ></el-table-column>
             <el-table-column
-              label="等级名称"
+              :label="$t('distribution.levelName')"
               align="center"
               width="350px"
             >
@@ -217,7 +217,7 @@
         type="primary"
         :disabled="submitStatus"
         @click="saveClickHandler()"
-      >保存</el-button>
+      >{{ $t('distribution.rebateSave') }}</el-button>
     </div>
 
     <!--选择商品弹窗-->
