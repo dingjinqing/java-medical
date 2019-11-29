@@ -132,32 +132,8 @@ public class UserCenterTraitService extends ShopBaseService {
 		String imgDir = "upload/" + getShopId() + "/pictorial/userqrcode/";
 		String filePath = imgDir + saveFileName;
 		logger().info("userId: " + userId + "  保存相对路径" + filePath);
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		try {
-			ImageIO.write(backgroundImage, "png", os);
-		} catch (IOException e) {
-			vo.setMsg("图片转换失败");
-			vo.setStatus(PSTATUS_ZERO);
-			logger().error(e.getMessage(), e);
-			return vo;
-		}
-
-		byte[] byteArray = os.toByteArray();
-		boolean upload = false;
-		try {
-			upload = saas.sysImage.uploadToUpYunByByte(filePath, byteArray);
-		} catch (Exception e) {
-			vo.setMsg("图片上传服务器失败");
-			vo.setStatus(PSTATUS_ZERO);
-			logger().error(e.getMessage(), e);
-			return vo;
-		}
-		if (upload == false) {
-			vo.setMsg("图片上传服务器失败");
-			vo.setStatus(PSTATUS_ZERO);
-			return vo;
-		}
-		vo.setImage(user.image.imageUrl(filePath));
+		String base64 = ImageUtil.toBase64(backgroundImage);
+		vo.setImage(base64);
 		vo.setStatus(PSTATUS_ONE);
 		return vo;
 
