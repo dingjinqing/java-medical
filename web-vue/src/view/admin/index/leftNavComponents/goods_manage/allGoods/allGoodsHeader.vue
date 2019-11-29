@@ -8,6 +8,7 @@
         :model="goodsFilterFormData"
         label-width="100px"
       >
+        <!--商品名称-->
         <el-form-item
           :label="$t('allGoods.allGoodsHeaderData.goodsName')+'：'"
           prop="goodsName"
@@ -21,18 +22,21 @@
             clearable
           />
         </el-form-item>
+        <!--平台分类树-->
         <sortCatTreeSelect
           ref="catTree"
           :filterGoodsInfo="initSortCatParams"
           treeType="cat"
           :selectedId.sync="goodsFilterFormData.catId"
         />
+        <!--商家分类树-->
         <sortCatTreeSelect
           ref="sortTree"
           :filterGoodsInfo="initSortCatParams"
           treeType="sort"
           :selectedId.sync="goodsFilterFormData.sortId"
         />
+        <!--商品标签-->
         <el-form-item
           :label="$t('allGoods.allGoodsHeaderData.goodsLabel')+'：'"
           prop="labelId"
@@ -54,6 +58,7 @@
             />
           </el-select>
         </el-form-item>
+        <!--上架开始时间和结束时间-->
         <el-form-item :label="$t('allGoods.allGoodsHeaderData.saleTime')+'：'">
           <el-date-picker
             v-model="goodsFilterFormData.saleTimeStart"
@@ -72,6 +77,7 @@
             size="small"
           />
         </el-form-item>
+        <!--商品品牌-->
         <el-form-item
           :label="$t('allGoods.allGoodsHeaderData.goodsBrand')+'：'"
           prop="brandId"
@@ -93,6 +99,7 @@
             />
           </el-select>
         </el-form-item>
+        <!--商品来源-->
         <el-form-item
           :label="$t('allGoods.allGoodsHeaderData.goodsSource')+'：'"
           prop="source"
@@ -110,6 +117,7 @@
             />
           </el-select>
         </el-form-item>
+        <!--活动类型-->
         <el-form-item
           :label="$t('allGoods.allGoodsHeaderData.goodsType')+'：'"
           prop="goodsType"
@@ -127,9 +135,10 @@
             />
           </el-select>
         </el-form-item>
+        <!--商品价格区间-->
         <el-form-item :label="$t('allGoods.allGoodsHeaderData.shopPrice')+'：'">
           <el-input
-            v-model.number="goodsFilterFormData.lowShopPrice"
+            v-model="goodsFilterFormData.lowShopPrice"
             @change="shopPriceChange(true)"
             :placeholder="$t('allGoods.allGoodsHeaderData.inputShopPrice')"
             :style="goodsFilterInputStyle"
@@ -137,7 +146,7 @@
           />
           至
           <el-input
-            v-model.number="goodsFilterFormData.highShopPrice"
+            v-model="goodsFilterFormData.highShopPrice"
             @change="shopPriceChange(false)"
             :placeholder="$t('allGoods.allGoodsHeaderData.inputShopPrice')"
             :style="goodsFilterInputStyle"
@@ -292,23 +301,36 @@ export default {
     },
     /* 商品价格输入范围是否合法 */
     shopPriceChange (isStart) {
-      if (typeof this.goodsFilterFormData.lowShopPrice !== 'number') {
-        this.goodsFilterFormData.lowShopPrice = null
-      }
-      if (typeof this.goodsFilterFormData.highShopPrice !== 'number') {
-        this.goodsFilterFormData.highShopPrice = null
-      }
+      this.goodsFilterFormData.lowShopPrice = parseFloat(this.goodsFilterFormData.lowShopPrice)
+      this.goodsFilterFormData.highShopPrice = parseFloat(this.goodsFilterFormData.highShopPrice)
 
-      if (this.goodsFilterFormData.lowShopPrice === null || this.goodsFilterFormData.highShopPrice === null) {
-        return
-      }
-      if (this.goodsFilterFormData.lowShopPrice <= this.goodsFilterFormData.highShopPrice) {
-        return
-      }
-      if (isStart) {
-        this.goodsFilterFormData.lowShopPrice = null
+      let startTypeIsOk = !isNaN(this.goodsFilterFormData.lowShopPrice)
+      let endTypeIsOk = !isNaN(this.goodsFilterFormData.highShopPrice)
+
+      if (startTypeIsOk && endTypeIsOk) {
+        if (this.goodsFilterFormData.lowShopPrice < 0) {
+          this.goodsFilterFormData.lowShopPrice = 0
+        }
+        if (this.goodsFilterFormData.highShopPrice < 0) {
+          this.goodsFilterFormData.highShopPrice = 0
+        }
+        this.goodsFilterFormData.lowShopPrice = parseFloat(this.goodsFilterFormData.lowShopPrice.toFixed(2))
+        this.goodsFilterFormData.highShopPrice = parseFloat(this.goodsFilterFormData.highShopPrice.toFixed(2))
+        if (this.goodsFilterFormData.lowShopPrice <= this.goodsFilterFormData.highShopPrice) {
+          return
+        }
+        if (isStart) {
+          this.goodsFilterFormData.lowShopPrice = null
+        } else {
+          this.goodsFilterFormData.highShopPrice = null
+        }
       } else {
-        this.goodsFilterFormData.highShopPrice = null
+        if (!startTypeIsOk) {
+          this.goodsFilterFormData.lowShopPrice = null
+        }
+        if (!endTypeIsOk) {
+          this.goodsFilterFormData.highShopPrice = null
+        }
       }
     },
     /* 获取过滤条件数据 */
