@@ -51,8 +51,8 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
      * 0:默认选第一张；null：不选；其他：卡号
      */
     private String couponSn;
-    /**积分抵扣金额*/
-    private BigDecimal scoreDiscount;
+    /**积分抵扣*/
+    private Integer scoreDiscount;
     /**余额抵扣金额*/
     private BigDecimal balance;
     /**会员卡抵扣金额*/
