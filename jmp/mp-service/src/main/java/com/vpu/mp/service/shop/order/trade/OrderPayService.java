@@ -148,8 +148,8 @@ public class OrderPayService extends ShopBaseService{
 		TradeOptParam tradeOpt = TradeOptParam
 				.builder()
 				.adminUserId(0)
-				.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
-				.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
+				.tradeType(RecordTradeEnum.TYPE_CRASH_MEMBER_CARD_PAY.val())
+				.tradeFlow(RecordTradeEnum.TRADE_FLOW_IN.val())
 				.build();
         UserCardParam card = this.card.getCard(order.getCardNo());
         UserCardData userCardData = UserCardData.newBuilder().
@@ -158,7 +158,7 @@ public class OrderPayService extends ShopBaseService{
             cardNo(order.getCardNo()).
             money(money.negate()).
             reason("订单下单会员卡余额支付"+order.getOrderSn()).
-            //普通会员卡
+            //目前只有普通会员卡有余额
             type(CardConstant.MCARD_TP_NORMAL).
             orderSn(order.getOrderSn()).
             tradeOpt(tradeOpt).build();
@@ -186,15 +186,13 @@ public class OrderPayService extends ShopBaseService{
                 remark("下单："+order.getOrderSn()).
                 payment(order.getPayCode()).
             //支付类型
-                isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
-
+                isPaid(RecordTradeEnum.UACCOUNT_CONSUMPTION.val()).
             //后台处理时为操作人id为0
                 adminUser(0).
-
-            //用户余额退款
-                tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
+            //用户余额支付
+                tradeType(RecordTradeEnum.TYPE_CRASH_ACCOUNT_PAY.val()).
             //资金流量-支出
-                tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
+                tradeFlow(RecordTradeEnum.TRADE_FLOW_IN.val()).build();
         //调用退余额接口
         recordMemberTrade.updateUserEconomicData(accountData);
         logger().info("下单支付用户余额end:{}", money);
@@ -225,12 +223,12 @@ public class OrderPayService extends ShopBaseService{
                 remark("下单："+order.getOrderSn()).
             //后台处理时为操作人id为0
                 adminUser(0).
-            //用户余额充值
-                tradeType(RecordTradeEnum.TYPE_CRASH_POWER_MACCOUNT.val()).
-            //资金流量-支出
-                tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
+            //积分消费
+                tradeType(RecordTradeEnum.TYPE_SCORE_PAY.val()).
+            //资金流量-收入
+                tradeFlow(RecordTradeEnum.TRADE_FLOW_IN.val()).
             //积分变动是否来自退款
-                isFromRefund(RecordTradeEnum.IS_FROM_REFUND_Y.val()).build();
+                isFromRefund(RecordTradeEnum.IS_FROM_REFUND_N.val()).build();
         //调用退积分接口
 
         recordMemberTrade.updateUserEconomicData(scoreData);
