@@ -22,17 +22,17 @@ global.wxPage({
   onLoad: function (options) {
     var _this = this;
     util.api('/api/wxapp/user/qrcode', function (res) {
-      if (res.status == 1) {
+      if (res.error == 0) {
         _this.setData({
           isOk: true,
-          userQrCode: res.image
+          userQrCode: res.message
         })
       }else{
         _this.setData({
           isOk: false
         })
         wx.showToast({
-          title: res.msg,
+          title: res.message,
           icon: 'none',
           duration: 3000
         })
