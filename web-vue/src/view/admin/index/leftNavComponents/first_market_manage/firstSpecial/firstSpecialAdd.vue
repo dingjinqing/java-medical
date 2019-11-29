@@ -617,7 +617,6 @@ export default {
       let params = {
         goodsIds: ids
       }
-      console.log(params)
       getGoodsInfosByGoodIds(params).then(res => {
         if (res.error === 0) {
           let datas = res.content
@@ -630,8 +629,18 @@ export default {
               })
             }
           })
-          console.log(datas)
-          this.tableData = datas
+          // this.tableData = datas
+          // 选择的商品与表格的商品比较，表格中如果有该商品，那么不进行覆盖
+          let addData = []
+          datas.forEach((data, i) => {
+            let added = this.tableData.find(item => item.goodsId === data.goodsId)
+            if (added) {
+              addData.push(added)
+            } else {
+              addData.push(data)
+            }
+          })
+          this.tableData = addData
         }
       })
     },
