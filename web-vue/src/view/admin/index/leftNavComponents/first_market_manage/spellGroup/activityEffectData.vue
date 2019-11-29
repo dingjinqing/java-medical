@@ -152,7 +152,7 @@ export default {
         legendData: this.$t('groupBuy.legendData')
       },
       echartData: {
-        dateList: ['2019-09-01', '2019-09-02', '2019-09-03', '2019-09-04', '2019-09-05', '2019-09-06', '2019-09-07', '2019-09-08', '2019-09-09', '2019-09-10'],
+        dateList: [],
         marketPriceList: [],
         goodsPriceList: [],
         ratioList: [],
@@ -184,6 +184,7 @@ export default {
       this.handleEcharts()
       groupBuyAnalysis(obj).then(res => {
         this.handleData(res.content)
+        console.log('aaaaaaaaaaaaaaaaaaaaa', this.echartData.marketPriceList)
         this.myChart.hideLoading()
         this.myChart.dispatchAction({
           type: 'restore'
@@ -229,34 +230,29 @@ export default {
             color: this.echartInit.colors[0],
             yAxisIndex: 0,
             stack: '总量',
-            data: [120, 132, 101, 134, 90, 230, 210, 220, 240, 220]
+            data: this.echartData.goodsPriceList
           },
           {
             name: this.echartInit.legendData[1],
             yAxisIndex: 0,
             color: this.echartInit.colors[1],
-
             type: 'line',
-            stack: '总量',
-            data: [220, 182, 191, 234, 290, 330, 310, 300, 320, 323]
+            data: this.echartData.marketPriceList
           },
           {
             name: this.echartInit.legendData[2],
             type: 'line',
             color: this.echartInit.colors[2],
-
             yAxisIndex: 1,
-            stack: '总量',
-            data: [150, 232, 201, 154, 190, 330, 410, 440, 430, 424]
+            data: this.echartData.ratioList
           },
           {
             name: this.echartInit.legendData[3],
             type: 'line',
             color: this.echartInit.colors[3],
-
             yAxisIndex: 0,
             stack: '总量',
-            data: [320, 332, 301, 334, 390, 330, 320, 313, 329, 321]
+            data: this.echartData.oldUserList
           },
           {
             name: this.echartInit.legendData[4],
@@ -264,7 +260,7 @@ export default {
             color: this.echartInit.colors[4],
             yAxisIndex: 0,
             stack: '总量',
-            data: [820, 932, 901, 934, 1290, 1330, 1320, 1235, 1335, 1285]
+            data: this.echartData.newUserList
           }
         ]
       }
@@ -279,6 +275,11 @@ export default {
     },
     handleData (data) {
       this.echartData = data
+      this.totalAmountPaid = data.totalPrice
+      this.totalDiscountAmount = data.totalMarketPrice
+      this.costBenefitRatio = data.totalRatio
+      this.numberNewTransactions = data.totalNewUseer
+      this.oldNumberUsers = data.totalOldUser
     },
     updateEcharts () {
       this.echartInit.legendData = this.$t('groupBuy.legendData')
