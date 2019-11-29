@@ -203,13 +203,14 @@ public class AdminIndexController extends AdminBaseController {
 			// 此功能需要更高版本才可使用。如需了解详情我们的产品顾问将尽快与您联系！！
 			return JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER;
 		}
-		//校验API是否在请求里
-		if(!checkApi(list, enName, vsName, path)) {
-			//先返回true
-			return JsonResultCode.CODE_SUCCESS;
-			// 请求不在所有定义的权限里
-			//return JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT;
-		}
+		//不校验api，由拦截器进行校验
+//		//校验API是否在请求里
+//		if(!checkApi(list, enName, vsName, path)) {
+//			//先返回true
+//			return JsonResultCode.CODE_SUCCESS;
+//			// 请求不在所有定义的权限里
+//			//return JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT;
+//		}
 		
 		return JsonResultCode.CODE_SUCCESS;
 
