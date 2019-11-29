@@ -942,6 +942,9 @@ public class MemberCardService extends ShopBaseService {
 		//return card != null ? card : new MemberCardRecord();
 		return card;
 	}
+	
+	
+	
 
 	/**
 	 * 根据ID获取该会员卡的详细信息
@@ -1076,7 +1079,7 @@ public class MemberCardService extends ShopBaseService {
 		return limitCard;
 	}
 
-	private RankCardToVo changeToGradeCardDetail(MemberCardRecord card) {
+	public RankCardToVo changeToGradeCardDetail(MemberCardRecord card) {
 		logger().info("获取等级会员卡");
 		RankCardToVo gradeCard = card.into(RankCardToVo.class);
 		assignPayOwnGoods(gradeCard);

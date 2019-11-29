@@ -1,5 +1,49 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.ADMIN_OPTION;
+import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.EXCHANGE_GOODS_NUM;
+import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.MEMBER_MONEY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.OPEN_CARD_SEND;
+import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.STORE_SERVICE_TIMES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.SYSTEM_UPGRADE;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
@@ -7,6 +51,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -14,12 +59,18 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
+import com.vpu.mp.service.pojo.shop.member.account.NextGradeCardVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
-import com.vpu.mp.service.pojo.shop.member.builder.*;
+import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
+import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
+import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
+import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
+import com.vpu.mp.service.pojo.shop.member.builder.UserScoreVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.exception.CardSendRepeatException;
@@ -42,27 +93,8 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+
 import jodd.util.StringUtil;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
-import static com.vpu.mp.service.pojo.shop.member.card.CardMessage.*;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 
 
 
@@ -738,9 +770,38 @@ public class UserCardService extends ShopBaseService {
 		// TODO 开卡送卷
 		setQrCode(card);
 
+		if(CardUtil.isGradeCard(card.getCardType())) {
+			
+			String currentGrade = card.getGrade();
+			logger().info("当前会员卡的等级："+currentGrade);
+			
+			Integer gVal = Integer.valueOf(currentGrade.substring(1));
+			gVal = gVal+1;
+			if(gVal<9) {
+				logger().info("设置会员升级的下一张等级卡");
+				String newGrade = "v"+gVal;
+				MemberCardRecord gradeCard = getGradeCardByGrade(newGrade);
+				RankCardToVo resCard = memberCardService.changeToGradeCardDetail(gradeCard);
+				NextGradeCardVo vo = new NextGradeCardVo();
+				vo.setPowerCount(resCard.getPowerCount());
+				vo.setDiscount(resCard.getDiscount());
+				vo.setSorce(resCard.getSorce());
+				vo.setScoreJson(resCard.getScoreJson());
+				vo.setGrade(resCard.getGrade());
+				vo.setGradeConditionJson(resCard.getGradeConditionJson());
+				card.setNextGradeCard(vo);
+			}
+			
+		}
+		
 		return card;
 	}
 
+	
+	public MemberCardRecord getGradeCardByGrade(String grade) {
+		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.GRADE.eq(grade)).fetchAny();
+	}	
+	
 	private void setQrCode(WxAppUserCardVo card) {
 		MemberCardRecord mCard = memberCardService.getCardById(card.getCardId());
 		String qrCode = qrCodeService.getUserCardQrCode(card.getCardNo(), mCard);

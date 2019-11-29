@@ -53,7 +53,7 @@ public class RankCardToVo extends RankCardVo {
 	@JsonProperty("score")
 	private Integer sorce;
 	/** 购物送积分策略json序列化对象 */
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	//@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	//private String buyScore;
 	/** 购物送积分策略json序列化对象 */
 	private ScoreJson scoreJson;

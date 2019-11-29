@@ -23,4 +23,12 @@ public class CardUtil {
 		return CardConstant.MCARD_BGT_IMG.equals(type);
 	}
 	
+	/**
+	 * 是否等级会员卡
+	 */
+	public static boolean isGradeCard(Byte cardType) {
+		return CardConstant.MCARD_TP_GRADE.equals(cardType);
+	}
+	
+	
 }

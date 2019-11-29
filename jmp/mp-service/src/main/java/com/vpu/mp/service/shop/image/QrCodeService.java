@@ -37,6 +37,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 
+
 /**
  * 小程序码
  *
@@ -146,7 +147,7 @@ public class QrCodeService extends ShopBaseService {
     
     
     /**
-             * 生成用户会员卡二维码图
+     * 生成用户会员卡二维码图
      * @return 二维码地址
      */
     public String getUserCardQrCode(String cardNo,MemberCardRecord card) {
@@ -183,36 +184,9 @@ public class QrCodeService extends ShopBaseService {
     	setCardBarCode(bgImg, cardBarCode);
     	
     	String filePath = createCardQrCodeFileName(cardNo);
+    	String base64 = ImageUtil.toBase64(bgImg);
     	
-    	//	转换图片成流
-    	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    	
-    	try {
-			ImageIO.write(bgImg, "png", outputStream);
-		} catch (IOException e) {
-			logger().info("图片转换成字节流失败");
-			e.printStackTrace();
-			return null;
-		}
-    	
-    	// 上传到又拍云
-		byte[] byteArray = outputStream.toByteArray();
-    	boolean upload = false;
-    	
-    	try {
-			upload = saas.sysImage.uploadToUpYunByByte(filePath, byteArray);
-		} catch (Exception e) {
-			logger().info("图片上传服务器失败");
-			e.printStackTrace();
-			return null;
-		}
-	
-    	if(upload) {
-    		logger().info("图片上传服务器成功");
-    	}else {
-    		logger().info("图片上传服务器失败");
-    	}
-    	return imageService.imageUrl(filePath);
+    	return base64;
     }
 
     /**
