@@ -27,10 +27,10 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
     public RabbitMessageParam deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         RabbitMessageParam param = RabbitMessageParam.builder().build();
         JsonNode node = p.getCodec().readTree(p);
-        Iterator<String> iterator = node.get(0).fieldNames();
+        Iterator<String> iterator = node.fieldNames();
         while( iterator.hasNext() ){
             String key = iterator.next();
-            JsonNode j_node = node.get(0);
+            JsonNode j_node = node;
             if( "shopId".equals(key) ){
                 param.setShopId(j_node.findValue(key).asInt());
             }else if( "messageTemplateId".equals(key) ){

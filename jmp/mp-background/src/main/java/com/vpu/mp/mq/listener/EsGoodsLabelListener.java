@@ -30,7 +30,7 @@ public class EsGoodsLabelListener implements BaseRabbitHandler {
 
 
     @RabbitHandler
-    public void success(@Payload MqEsGoodsLabel param, Channel channel, Message message) throws IOException {
+    public void success(@Payload MqEsGoodsLabel param, Message message, Channel channel) throws IOException {
         Integer shopId = param.getShopId();
         List<Integer> goodsIds = param.getGoodsIds();
         List<Integer> labelIds = param.getLabelIds();
