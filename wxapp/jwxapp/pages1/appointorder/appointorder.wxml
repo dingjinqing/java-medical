@@ -84,7 +84,7 @@
                 <text>{{serviceInfo.serviceSubsist}}</text>
               </view>
               <view class='all-price' wx:if='{{serviceInfo.servicePrice!=0}}'>
-                <text>服务总价：￥{{service.servicePrice}}</text>
+                <text>服务总价：￥{{serviceInfo.servicePrice}}</text>
               </view>
             </view>
           </block>
@@ -171,12 +171,12 @@
       <view class="all-money">
         <text style='color:{{comColor}}'>应付总额：￥{{create_order.money_paid}}</text>
       </view>
-      <form report-submit='true' bindsubmit='OneClickBuy' style='width:35%'>
+      <form report-submit='true' bindsubmit='oneClickBuy' style='width:35%'>
         <button class="go-order" formType='submit' style='background:{{comColor}}'>提交预约</button>
       </form>
     </block>
     <block wx:else>
-      <form report-submit='true' bindsubmit='confirmServ' style="width:100%;">
+      <form report-submit='true' bindsubmit='oneClickBuy' style="width:100%;">
         <button class="go-order" formType='submit' style='background:{{comColor}}'>确认预约</button>
       </form>
     </block>

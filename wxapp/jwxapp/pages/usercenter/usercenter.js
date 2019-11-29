@@ -71,8 +71,8 @@ global.wxPage({
             }
           }
           if (user_center[i].module_name == "appointment") {
-            if (user_center[i].appointment_info && user_center[i].appointment_info.service_img) {
-              user_center[i].appointment_info.service_img = JSON.parse(user_center[i].appointment_info.service_img)[0];
+            if (user_center[i].appointment_info && user_center[i].appointment_info.serviceImg) {
+              user_center[i].appointment_info.serviceImg = JSON.parse(user_center[i].appointment_info.serviceImg)[0];
             }
           }
         }

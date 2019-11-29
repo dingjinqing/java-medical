@@ -49,9 +49,10 @@ global.wxPage({
     canClick: true, // 是否可点击确认使用余额按钮
     create_order: {
       service_deposit: '', // 服务订金
-      member_card_discount: '', // 会员卡折扣
-      member_card_balance: '', // 会员卡余额支付金额
-      account_discount: '', // 余额支付金额
+      member_card_discount: 0, // 会员卡折扣
+      member_card_balance: 0, // 会员卡余额支付金额
+      account_discount: 0, // 余额支付金额
+      discount: 0, // 优惠券抵扣金额
       money_paid: '' // 应付金额
     },
     isBalance: true, // 是否支持余额支付
@@ -273,7 +274,7 @@ global.wxPage({
     })
   },
   // 提交预约
-  OneClickBuy (e) {
+  oneClickBuy (e) {
     var that = this
     if (!that.data.recentOrderInfo.subscriber) {
       util.showModal('提示', '请输入预约人姓名')
@@ -294,62 +295,52 @@ global.wxPage({
       addMessage: that.data.addMessage,
       serviceDate: that.data.reserveInfo.date,
       servicePeriod: that.data.reserveInfo.startTime + '-' + that.data.reserveInfo.endTime,
-      useAccount: that.data.create_order.account_discount,
+      useAccount: that.data.create_order.account_discount || 0,
       memberCardNo: that.data.useCard.cardNo,
-      memberCardBalance: that.data.create_order.member_card_balance
+      memberCardBalance: that.data.create_order.member_card_balance || 0,
+      moneyPaid: that.data.create_order.money_paid || 0,
+      orderAmount: that.data.create_order.service_deposit || 0,
+      couponId: 0, // 优惠券预留字段 ，优惠券id
+      discount: 0 // 优惠券减价
     }
     console.log(params)
     util.api('/api/wxapp/store/service/submitReservation', function (res) {
       if (res.error === 0) {
         console.log(res.content)
+        debugger
         if (typeof (res.content.timeStamp) != 'undefined') {
-
+          wx.requestPayment({
+            timeStamp: res.content.timeStamp, // 当前的时间戳
+            nonceStr: res.content.nonceStr, // 随机字符串,32个字符以下
+            package: res.content.package, // 统一下单接口返回的 prepay_id
+            signType: !res.content.signType ? 'MD5' : res.content.signType,
+            paySign: res.content.paySign,
+            success (opt) {
+              util.toast_success('支付成功')
+              util.redirectTo({
+                url: '/pages/appointinfo/appointinfo?order_sn=' + res.content.orderSn
+              })
+            },
+            fail (opt) {
+              util.toast_fail('支付失败')
+              util.redirectTo({
+                url: '/pages/appointinfo/appointinfo?order_sn=' + res.content.orderSn
+              })
+            }
+          })
         } else {
           util.redirectTo({
             url: '/pages/appointinfo/appointinfo?order_sn=' + res.content.orderSn,
           })
         }
       } else if (res.error == 400002) {
-        util.showModal('提示', res.content, function () {
+        util.showModal('提示', res.message, function () {
           util.redirectTo({
             url: 'pages/appointment/appointment?service_id=' + params.serviceId,
           })
         });
-      }
-    }, params)
-  },
-  confirmServ (e) {
-    let params = {
-      serviceId: this.data.reserveInfo.serviceId,
-      userId: that.data.userId,
-      storeId: that.data.storeInfo.storeId,
-      technicianId: that.data.reserveInfo.tech_id,
-      technicianName: that.data.reserveInfo.tech_name,
-      subscriber: that.data.recentOrderInfo.subscriber,
-      mobile: that.data.recentOrderInfo.mobile,
-      addMessage: that.data.addMessage,
-      serviceDate: that.data.reserveInfo.date,
-      servicePeriod: that.data.reserveInfo.startTime + '-' + that.data.reserveInfo.endTime
-    }
-    console.log(params)
-    if (!params.subscriber) {
-      util.showModal('提示', '请输入预约人姓名')
-      return false
-    }
-    if (!params.mobile) {
-      util.showModal('提示', '请输入预约人手机号')
-      return false
-    }
-    util.api('/api/wxapp/store/service/submitReservation', function (res) {
-      if (res.error === 0) {
-        console.log(res.content)
-        util.redirectTo({
-          url: '/pages/appointinfo/appointinfo?order_sn=' + e.content.orderSn
-        })
-      } else if (res.error === 400002) {
-        util.redirectTo({
-          url: 'pages/appointment/appointment?service_id=' + params.serviceId,
-        })
+      } else {
+        util.showModal('提示', res.message)
       }
     }, params)
   },

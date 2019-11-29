@@ -129,13 +129,13 @@
           <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
         </view>
       </view>
-      <view class='ma_appoint clearfix' bindtap='click_to_detail' data-service_id="{{item.appointment_info.service_id}}">
+      <view class='ma_appoint clearfix' bindtap='click_to_detail' data-service_id="{{item.appointment_info.serviceId}}">
         <view class='app_img'>
-          <image src='{{item.appointment_info.service_img}}'></image>
+          <image src='{{item.appointment_info.serviceImg}}'></image>
         </view>
         <view class='app_info'>
-          <view>{{item.appointment_info.service_name}}</view>
-          <view>预约到店时间：{{item.appointment_info.service_date}} {{item.appointment_info.service_period}}</view>
+          <view>{{item.appointment_info.serviceName}}</view>
+          <view>预约到店时间：{{item.appointment_info.serviceDate}} {{item.appointment_info.servicePeriod}}</view>
         </view>
       </view>
     </view>
