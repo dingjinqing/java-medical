@@ -224,15 +224,16 @@ public class AdminIndexController extends AdminBaseController {
 	 */
 	private Boolean includeEname(List<ShopVersionParam> eNameList, String reqEnName, String reqVsName) {
 		for (ShopVersionParam allEname : eNameList) {
-			if (allEname.getEnName().equals(reqEnName)) {
-				if (!StringUtils.isEmpty(reqVsName)) {
-					if (allEname.getVsName().equals(reqVsName)) {
+			if(!StringUtils.isEmpty(reqVsName)) {
+				if(allEname.getVsName().equals(reqVsName)) {
+					if(allEname.getEnName().equals(reqEnName)) {
 						return true;
-					} else {
-						return false;
 					}
 				}
-				return true;
+			}else {
+				if(allEname.getEnName().equals(reqEnName)) {
+					return true;
+				}
 			}
 		}
 		return false;
