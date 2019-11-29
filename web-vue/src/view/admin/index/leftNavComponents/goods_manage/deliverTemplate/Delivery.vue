@@ -52,7 +52,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="件内,"
+            :label="this.flag === 0 ? '件内,' : '公斤内'"
             prop="first_fee"
           >
             <el-input
@@ -72,7 +72,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="件，增加运费"
+            :label="this.flag === 0 ? '件，增加运费' : '公斤，增加运费'"
             prop="continue_fee"
           >
             <el-input

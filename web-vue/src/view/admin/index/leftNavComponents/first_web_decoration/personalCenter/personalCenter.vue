@@ -9,521 +9,509 @@
         <span>{{ $t('personalCenter.warningTip') }}</span>
       </div>
       <div class="bottomContent">
+
         <div class="cententLeft">
-          <div class="_title"></div>
-          <div class="left_info">
+          <!-- 左侧头部 -->
+          <div class="left_info_head">
             <div
-              class="left_info_head"
-              v-for="(item, index) in rightData"
-              :key="index"
-              v-if="index==1"
+              class="left_info_headBg"
+              v-if="leftData[1].bg_type=='0'"
+              style="background: -webkit-linear-gradient(left,rgb(80, 160, 160),rgb(64, 128, 128));"
+            ></div>
+            <div
+              class="left_info_headBg"
+              v-if="leftData[1].bg_type!='0'"
+              :style="{'backgroundImage': bgImg=='' ? '#eee' : 'url(' + bgImage + ')', 'backgroundSize': 'cover'}"
+            ></div>
+            <img
+              class="center_set"
+              :src="imgHost + '/image/admin/center_set.png'"
+              alt=""
             >
-              <div
-                class="left_info_headBg"
-                v-if="item.bg_type=='0'"
-                style="background: -webkit-linear-gradient(left,rgb(80, 160, 160),rgb(64, 128, 128));"
-              ></div>
-              <div
-                class="left_info_headBg"
-                v-if="item.bg_type!='0'"
-                :style="{'backgroundImage': bgImg=='' ? '#eee' : 'url(' + bgImage + ')', 'backgroundSize': 'cover'}"
-              ></div>
+            <img
+              class="center_head"
+              :src="imgHost + '/image/admin/user_touxiang.png'"
+              alt=""
+            >
+            <div class="center_name">{{ $t('personalCenter.userNickname') }}</div>
+            <div class="center_sign">
               <img
-                class="center_set"
-                :src="imgHost + '/image/admin/center_set.png'"
+                :src="imgHost + '/image/admin/sign_icon.png'"
                 alt=""
               >
-              <img
-                class="center_head"
-                :src="imgHost + '/image/admin/user_touxiang.png'"
-                alt=""
-              >
-              <div class="center_name">{{ $t('personalCenter.userNickname') }}</div>
-              <div class="center_sign">
-                <img
-                  :src="imgHost + '/image/admin/sign_icon.png'"
-                  alt=""
+              <span>{{ $t('personalCenter.integralTip') }}</span>
+            </div>
+          </div>
+          <!-- 左侧结构 -->
+          <div
+            v-for="(item, index) in leftData"
+            :key="index"
+          >
+            <div
+              class="indoor_area_raidus"
+              :class="styleChoose=='1'? 'widthActive' : ''"
+              v-if="item.module_name=='account_money' && item.is_show=='1'"
+            >
+              <div class="orderTitle">
+                <div class="titleLeft">{{ item.title }}</div>
+              </div>
+              <div class="orderContent">
+                <div
+                  class="each_item"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name=='account' && val.is_show=='1'"
                 >
-                <span>{{ $t('personalCenter.integralTip') }}</span>
+                  <div class="item_num">
+                    <span>1000.99</span>
+                  </div>
+                  <div class="item_word">{{ $t('personalCenter.account') }}</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name=='score' && val.is_show=='1'"
+                >
+                  <div class="item_num">
+                    <span>1000</span>
+                  </div>
+                  <div class="item_word">{{ $t('personalCenter.score') }}</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name=='coupon' && val.is_show=='1'"
+                >
+                  <div class="item_num">
+                    <span>122</span>{{ $t('personalCenter.sheets') }}
+                  </div>
+                  <div class="item_word">{{ $t('personalCenter.coupon') }}</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name=='card' && val.is_show=='1'"
+                >
+                  <div class="item_num">
+                    <span>90</span>{{ $t('personalCenter.sheets') }}
+                  </div>
+                  <div class="item_word">{{ $t('personalCenter.card') }}</div>
+                </div>
+              </div>
+              <div class="orderOperation">
+                <img
+                  class="up_img"
+                  :src="imgHost + '/image/admin/add_up_use.png'"
+                  alt=""
+                  @click="upClickHandler(leftData, index)"
+                >
+                <img
+                  class="down_img"
+                  :src="imgHost + '/image/admin/add_down.png'"
+                  alt=""
+                  @click="downClickHandler(leftData, index)"
+                >
               </div>
             </div>
-
-            <!-- 左侧结构 -->
             <div
-              v-for="(item, index) in leftData"
-              :key="index"
+              class="indoor_area_raidus"
+              :class="styleChoose=='1'? 'widthActive' : ''"
+              v-if="item.module_name=='order' && item.is_show=='1'"
             >
-              <div
-                class="indoor_area_raidus"
-                :class="styleChoose=='1'? 'widthActive' : ''"
-                v-if="item.module_name=='account_money' && item.is_show=='1'"
-              >
-                <div class="orderTitle">
-                  <div class="titleLeft">{{ item.title }}</div>
-                </div>
-                <div class="orderContent">
-                  <div
-                    class="each_item"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name=='account' && val.is_show=='1'"
-                  >
-                    <div class="item_num">
-                      <span>1000.99</span>
-                    </div>
-                    <div class="item_word">{{ $t('personalCenter.account') }}</div>
-                  </div>
-                  <div
-                    class="each_item"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name=='score' && val.is_show=='1'"
-                  >
-                    <div class="item_num">
-                      <span>1000</span>
-                    </div>
-                    <div class="item_word">{{ $t('personalCenter.score') }}</div>
-                  </div>
-                  <div
-                    class="each_item"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name=='coupon' && val.is_show=='1'"
-                  >
-                    <div class="item_num">
-                      <span>122</span>{{ $t('personalCenter.sheets') }}
-                    </div>
-                    <div class="item_word">{{ $t('personalCenter.coupon') }}</div>
-                  </div>
-                  <div
-                    class="each_item"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name=='card' && val.is_show=='1'"
-                  >
-                    <div class="item_num">
-                      <span>90</span>{{ $t('personalCenter.sheets') }}
-                    </div>
-                    <div class="item_word">{{ $t('personalCenter.card') }}</div>
-                  </div>
-                </div>
-                <div class="orderOperation">
+              <div class="orderTitle">
+                <div class="titleLeft">{{ item.title }}</div>
+                <div
+                  class="titleRight"
+                  v-if="isShowOrder=='1'"
+                >
+                  <span>{{ $t('personalCenter.viewAllOrder') }} </span>
                   <img
-                    class="up_img"
-                    :src="imgHost + '/image/admin/add_up_use.png'"
+                    :src="imgHost + '/image/admin/right_into.png'"
                     alt=""
-                    @click="upClickHandler(leftData, index)"
-                  >
-                  <img
-                    class="down_img"
-                    :src="imgHost + '/image/admin/add_down.png'"
-                    alt=""
-                    @click="downClickHandler(leftData, index)"
                   >
                 </div>
               </div>
-              <div
-                class="indoor_area_raidus"
-                :class="styleChoose=='1'? 'widthActive' : ''"
-                v-if="item.module_name=='order' && item.is_show=='1'"
-              >
-                <div class="orderTitle">
-                  <div class="titleLeft">{{ item.title }}</div>
-                  <div
-                    class="titleRight"
-                    v-if="isShowOrder=='1'"
-                  >
-                    <span>{{ $t('personalCenter.viewAllOrder') }} </span>
+              <div class="orderContent">
+                <div
+                  class="each_item"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name=='wait_pay'"
+                >
+                  <div class="item_img">
                     <img
-                      :src="imgHost + '/image/admin/right_into.png'"
+                      :src="imgHost + val.icon"
                       alt=""
                     >
                   </div>
+                  <div class="item_word">{{ $t('personalCenter.wait1') }}</div>
                 </div>
-                <div class="orderContent">
+                <div
+                  class="each_item"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name=='wait_deliver'"
+                >
+                  <div class="item_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="item_word">{{ $t('personalCenter.wait2') }}</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name=='wait_receive'"
+                >
+                  <div class="item_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="item_word">{{ $t('personalCenter.wait3') }}</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name=='wait_comment' && isShowOrder=='1'"
+                >
+                  <div class="item_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="item_word">{{ $t('personalCenter.wait4') }}</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name=='refund'"
+                >
+                  <div class="item_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="item_word">{{ $t('personalCenter.wait5') }}</div>
+                </div>
+                <div
+                  class="each_item_special"
+                  v-if="isShowOrder!='1'"
+                >
+                  <img
+                    :src="imgHost + '/image/admin/icon_jiantou.png'"
+                    alt=""
+                  >
+
                   <div
                     class="each_item"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name=='wait_pay'"
-                  >
-                    <div class="item_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="item_word">{{ $t('personalCenter.wait1') }}</div>
-                  </div>
-                  <div
-                    class="each_item"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name=='wait_deliver'"
-                  >
-                    <div class="item_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="item_word">{{ $t('personalCenter.wait2') }}</div>
-                  </div>
-                  <div
-                    class="each_item"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name=='wait_receive'"
-                  >
-                    <div class="item_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="item_word">{{ $t('personalCenter.wait3') }}</div>
-                  </div>
-                  <div
-                    class="each_item"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name=='wait_comment' && isShowOrder=='1'"
-                  >
-                    <div class="item_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="item_word">{{ $t('personalCenter.wait4') }}</div>
-                  </div>
-                  <div
-                    class="each_item"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name=='refund'"
-                  >
-                    <div class="item_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="item_word">{{ $t('personalCenter.wait5') }}</div>
-                  </div>
-                  <div
-                    class="each_item_special"
                     v-if="isShowOrder!='1'"
                   >
-                    <img
-                      :src="imgHost + '/image/admin/icon_jiantou.png'"
-                      alt=""
-                    >
-
-                    <div
-                      class="each_item"
-                      v-if="isShowOrder!='1'"
-                    >
-                      <div class="item_img">
-                        <img
-                          :src="imgHost + '/image/admin/uc_order_icon6.png'"
-                          alt=""
-                        >
-                      </div>
-                      <div class="item_word">{{ $t('personalCenter.allOrder') }}</div>
-                    </div>
-
-                  </div>
-                </div>
-                <div class="orderOperation">
-                  <img
-                    class="up_img"
-                    :src="imgHost + '/image/admin/add_up_use.png'"
-                    alt=""
-                    @click="upClickHandler(leftData, index)"
-                  >
-                  <img
-                    class="down_img"
-                    :src="imgHost + '/image/admin/add_down.png'"
-                    alt=""
-                    @click="downClickHandler(leftData, index)"
-                  >
-                </div>
-              </div>
-              <div
-                class="indoor_area_raidus"
-                :class="styleChoose=='1'? 'widthActive' : ''"
-                v-if="item.module_name=='use_record' && item.is_show=='1'"
-              >
-                <div class="orderTitle">
-                  <div class="titleLeft">{{ item.title }}</div>
-                </div>
-                <div class="orderContent">
-                  <div
-                    class="each_item"
-                    v-if="item.is_show_collect=='1'"
-                  >
-                    <div class="item_his">100</div>
-                    <div class="item_word">{{ $t('personalCenter.collect') }}</div>
-                  </div>
-                  <div
-                    class="each_item"
-                    v-if="item.is_show_buy_history=='1'"
-                  >
-                    <div class="item_his">100</div>
-                    <div class="item_word">{{ $t('personalCenter.buyHistory') }}</div>
-                  </div>
-                  <div
-                    class="each_item"
-                    v-if="item.is_show_footprint=='1'"
-                  >
-                    <div class="item_his">100</div>
-                    <div class="item_word">{{ $t('personalCenter.footprint') }}</div>
-                  </div>
-                </div>
-                <div class="orderOperation">
-                  <img
-                    class="up_img"
-                    :src="imgHost + '/image/admin/add_up_use.png'"
-                    alt=""
-                    @click="upClickHandler(leftData, index)"
-                  >
-                  <img
-                    class="down_img"
-                    :src="imgHost + '/image/admin/add_down.png'"
-                    alt=""
-                    @click="downClickHandler(leftData, index)"
-                  >
-                </div>
-              </div>
-              <div
-                class="indoor_area_raidus"
-                :class="styleChoose=='1'? 'widthActive' : ''"
-                v-if="item.module_name=='appointment' && item.is_show=='1'"
-              >
-                <div class="orderTitle">
-                  <div class="titleLeft">{{ item.title }}</div>
-                  <div class="titleRight">
-                    <span>{{ $t('personalCenter.viewAllAppointments') }} </span>
-                    <img
-                      :src="imgHost + '/image/admin/right_into.png'"
-                      alt=""
-                    >
-                  </div>
-                </div>
-                <div class="orderContent">
-                  <div
-                    class="app_img"
-                    style="margin-left: 10px; border: 1px solid #ccc;
-                                        width: 40px; height: 40px; overflow: hidden;flex: 0.2;margin-right: 10px;text-align: left;"
-                  >
-                    <img
-                      :src="imgHost + '/image/admin/img1.jpg'"
-                      alt=""
-                    >
-                  </div>
-                  <div class="app_info">
-                    <p>{{ $t('personalCenter.tip1') }}</p>
-                    <p>{{ $t('personalCenter.tip2') }}</p>
-                  </div>
-                </div>
-                <div class="orderOperation">
-                  <img
-                    class="up_img"
-                    :src="imgHost + '/image/admin/add_up_use.png'"
-                    alt=""
-                    @click="upClickHandler(leftData, index)"
-                  >
-                  <img
-                    class="down_img"
-                    :src="imgHost + '/image/admin/add_down.png'"
-                    alt=""
-                    @click="downClickHandler(leftData, index)"
-                  >
-                </div>
-              </div>
-              <div
-                class="indoor_area_raidus"
-                :class="styleChoose=='1'? 'widthActive' : ''"
-                v-if="item.module_name=='service' && item.is_show=='1'"
-              >
-                <div class="orderTitle">
-                  <div class="titleLeft">{{ item.title }}</div>
-                </div>
-                <div class="serveContent">
-                  <div
-                    class="each_serve"
-                    style="display: flex;"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name==='distribution' && val.is_show=='1'"
-                  >
-                    <div class="serve_img">
+                    <div class="item_img">
                       <img
-                        :src="imgHost + val.icon"
+                        :src="imgHost + '/image/admin/uc_order_icon6.png'"
                         alt=""
                       >
                     </div>
-                    <div class="serve_word">{{ $t('personalCenter.distribution') }}</div>
-                  </div>
-                  <div
-                    class="each_serve"
-                    style="display: flex;"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name==='bargain' && val.is_show=='1'"
-                  >
-                    <div class="serve_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="serve_word">{{ $t('personalCenter.bargain') }}</div>
-                  </div>
-                  <div
-                    class="each_serve"
-                    style="display: flex;"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name==='award' && val.is_show=='1'"
-                  >
-                    <div class="serve_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="serve_word">{{ $t('personalCenter.award') }}</div>
-                  </div>
-                  <div
-                    class="each_serve"
-                    style="display: flex;"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name==='comment_list' && val.is_show=='1'"
-                  >
-                    <div class="serve_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="serve_word">{{ $t('personalCenter.commentList') }}</div>
-                  </div>
-                  <div
-                    class="each_serve"
-                    style="display: flex;"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name==='store_list' && val.is_show=='1'"
-                  >
-                    <div class="serve_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="serve_word">{{ $t('personalCenter.storeList') }}</div>
-                  </div>
-                  <div
-                    class="each_serve"
-                    style="display: flex;"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name==='user_activate' && val.is_show=='1'"
-                  >
-                    <div class="serve_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="serve_word">{{ $t('personalCenter.userActivate') }}</div>
-                  </div>
-                  <div
-                    class="each_serve"
-                    style="display: flex;"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name==='order_verify' && val.is_show=='1'"
-                  >
-                    <div class="serve_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="serve_word">{{ $t('personalCenter.orderVerify') }}</div>
-                  </div>
-                  <div
-                    class="each_serve"
-                    style="display: flex;"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="val.icon_name==='present_list' && val.is_show=='1'"
-                  >
-                    <div class="serve_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="serve_word">{{ $t('personalCenter.presentList') }}</div>
-                  </div>
-                  <div
-                    class="each_serve"
-                    style="display: flex;"
-                    v-for="(val, key) in item.content"
-                    :key="key"
-                    v-if="key>7 && val.is_show=='1'"
-                  >
-                    <div class="serve_img">
-                      <img
-                        :src="imgHost + val.icon"
-                        alt=""
-                      >
-                    </div>
-                    <div class="serve_word">{{ val.title }}</div>
+                    <div class="item_word">{{ $t('personalCenter.allOrder') }}</div>
                   </div>
 
                 </div>
-                <div class="orderOperation">
-                  <img
-                    class="up_img"
-                    :src="imgHost + '/image/admin/add_up_use.png'"
-                    alt=""
-                    @click="upClickHandler(leftData, index)"
-                  >
-                  <img
-                    class="down_img"
-                    :src="imgHost + '/image/admin/add_down.png'"
-                    alt=""
-                    @click="downClickHandler(leftData, index)"
-                  >
-                </div>
+              </div>
+              <div class="orderOperation">
+                <img
+                  class="up_img"
+                  :src="imgHost + '/image/admin/add_up_use.png'"
+                  alt=""
+                  @click="upClickHandler(leftData, index)"
+                >
+                <img
+                  class="down_img"
+                  :src="imgHost + '/image/admin/add_down.png'"
+                  alt=""
+                  @click="downClickHandler(leftData, index)"
+                >
               </div>
             </div>
+            <div
+              class="indoor_area_raidus"
+              :class="styleChoose=='1'? 'widthActive' : ''"
+              v-if="item.module_name=='use_record' && item.is_show=='1'"
+            >
+              <div class="orderTitle">
+                <div class="titleLeft">{{ item.title }}</div>
+              </div>
+              <div class="orderContent">
+                <div
+                  class="each_item"
+                  v-if="item.is_show_collect=='1'"
+                >
+                  <div class="item_his">100</div>
+                  <div class="item_word">{{ $t('personalCenter.collect') }}</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-if="item.is_show_buy_history=='1'"
+                >
+                  <div class="item_his">100</div>
+                  <div class="item_word">{{ $t('personalCenter.buyHistory') }}</div>
+                </div>
+                <div
+                  class="each_item"
+                  v-if="item.is_show_footprint=='1'"
+                >
+                  <div class="item_his">100</div>
+                  <div class="item_word">{{ $t('personalCenter.footprint') }}</div>
+                </div>
+              </div>
+              <div class="orderOperation">
+                <img
+                  class="up_img"
+                  :src="imgHost + '/image/admin/add_up_use.png'"
+                  alt=""
+                  @click="upClickHandler(leftData, index)"
+                >
+                <img
+                  class="down_img"
+                  :src="imgHost + '/image/admin/add_down.png'"
+                  alt=""
+                  @click="downClickHandler(leftData, index)"
+                >
+              </div>
+            </div>
+            <div
+              class="indoor_area_raidus"
+              :class="styleChoose=='1'? 'widthActive' : ''"
+              v-if="item.module_name=='appointment' && item.is_show=='1'"
+            >
+              <div class="orderTitle">
+                <div class="titleLeft">{{ item.title }}</div>
+                <div class="titleRight">
+                  <span>{{ $t('personalCenter.viewAllAppointments') }} </span>
+                  <img
+                    :src="imgHost + '/image/admin/right_into.png'"
+                    alt=""
+                  >
+                </div>
+              </div>
+              <div class="orderContent">
+                <div
+                  class="app_img"
+                  style="margin-left: 10px; border: 1px solid #ccc;
+                                        width: 40px; height: 40px; overflow: hidden;flex: 0.2;margin-right: 10px;text-align: left;"
+                >
+                  <img
+                    :src="imgHost + '/image/admin/img1.jpg'"
+                    alt=""
+                  >
+                </div>
+                <div class="app_info">
+                  <p>{{ $t('personalCenter.tip1') }}</p>
+                  <p>{{ $t('personalCenter.tip2') }}</p>
+                </div>
+              </div>
+              <div class="orderOperation">
+                <img
+                  class="up_img"
+                  :src="imgHost + '/image/admin/add_up_use.png'"
+                  alt=""
+                  @click="upClickHandler(leftData, index)"
+                >
+                <img
+                  class="down_img"
+                  :src="imgHost + '/image/admin/add_down.png'"
+                  alt=""
+                  @click="downClickHandler(leftData, index)"
+                >
+              </div>
+            </div>
+            <div
+              class="indoor_area_raidus"
+              :class="styleChoose=='1'? 'widthActive' : ''"
+              v-if="item.module_name=='service' && item.is_show=='1'"
+            >
+              <div class="orderTitle">
+                <div class="titleLeft">{{ item.title }}</div>
+              </div>
+              <div class="serveContent">
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name==='distribution' && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ $t('personalCenter.distribution') }}</div>
+                </div>
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name==='bargain' && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ $t('personalCenter.bargain') }}</div>
+                </div>
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name==='award' && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ $t('personalCenter.award') }}</div>
+                </div>
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name==='comment_list' && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ $t('personalCenter.commentList') }}</div>
+                </div>
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name==='store_list' && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ $t('personalCenter.storeList') }}</div>
+                </div>
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name==='user_activate' && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ $t('personalCenter.userActivate') }}</div>
+                </div>
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name==='order_verify' && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ $t('personalCenter.orderVerify') }}</div>
+                </div>
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="val.icon_name==='present_list' && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ $t('personalCenter.presentList') }}</div>
+                </div>
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
+                  v-if="key>7 && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ val.title }}</div>
+                </div>
 
+              </div>
+              <div class="orderOperation">
+                <img
+                  class="up_img"
+                  :src="imgHost + '/image/admin/add_up_use.png'"
+                  alt=""
+                  @click="upClickHandler(leftData, index)"
+                >
+                <img
+                  class="down_img"
+                  :src="imgHost + '/image/admin/add_down.png'"
+                  alt=""
+                  @click="downClickHandler(leftData, index)"
+                >
+              </div>
+            </div>
           </div>
         </div>
+
         <div class="cententRight">
-          <div
-            class="cententRight_title"
-            v-for="(item, index) in rightData"
-            :key="index"
-            v-if="index===0"
-          >
+          <!-- 右侧头部 -->
+          <div class="cententRight_title">
             {{ $t('personalCenter.layoutStyle') }}：
             <el-radio-group
-              v-model="item.page_style"
+              v-model="rightData[0].page_style"
               @change="changepageStyle"
             >
               <el-radio label="1">{{ $t('personalCenter.flatStyle') }}</el-radio>
               <el-radio label="2">{{ $t('personalCenter.cardStyle') }}</el-radio>
             </el-radio-group>
           </div>
-
           <!-- 右侧结构 -->
           <div class="cententRight_container">
             <el-collapse v-model="activeNames">
@@ -1277,8 +1265,8 @@
               </el-collapse-item>
             </el-collapse>
           </div>
-
         </div>
+
       </div>
       <div class="footer">
         <el-button
@@ -1621,6 +1609,9 @@ export default {
         ]
       }]
     }
+  },
+  computed: {
+
   },
   mounted () {
     // 初始化语言
