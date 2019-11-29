@@ -274,6 +274,8 @@ public class JsonResultMessage {
 	public static final String WX_READQRCODE_FAIL = "wx.readqrcode.fail";
 	public static final String WX_GETHEAD_FAIL = "wx.gethead.fail";
 	public static final String WX_GETBG_FAIL =  "wx.getbg.fail";
+	public static final String WX_SHARESHOP = "wx.share.shop";
+	public static final String WX_SCAN_QRSHOP = "wx.scan.qrshop";
 
 	/**
 	 * 门店管理

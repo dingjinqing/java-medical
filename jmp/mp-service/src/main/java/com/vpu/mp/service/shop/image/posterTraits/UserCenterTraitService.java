@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.image.posterTraits;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -14,10 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.PictorialRecord;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.UserCenterTraitVo;
@@ -44,13 +42,7 @@ public class UserCenterTraitService extends ShopBaseService {
 
 	public UserCenterTraitVo getUserCenter(Integer userId) {
 		UserInfo userInfo = user.getUserInfo(userId);
-		PictorialRecord pictorialRecord = pService.getCanUserPictorial(userId, 0, (byte) 99);
 		UserCenterTraitVo vo = new UserCenterTraitVo();
-		if (pictorialRecord != null && StringUtils.isNotEmpty(pictorialRecord.getPath())) {
-			vo.setImage(pictorialRecord.getPath());
-			vo.setStatus(PSTATUS_ONE);
-			return vo;
-		}
 		logger().info("读取背景图");
 		// 读取背景图片
 		BufferedImage backgroundImage = null;
@@ -117,10 +109,12 @@ public class UserCenterTraitService extends ShopBaseService {
 		ImageUtil.addFont(backgroundImage, userInfo.getUsername(), new Font(null, Font.BOLD, 30), 180, 100,
 				Color.BLACK);
 
-		String titel1 = "分享给你一个好店铺";
+		ShopRecord shop = saas.shop.getShopById(getShopId());
+		//分享给你一个好店铺
+		String titel1 = Util.translateMessage(shop.getShopLanguage(), JsonResultCode.WX_SHARESHOP.getMessage(),"messages",null);
 		ImageUtil.addFont(backgroundImage, titel1, new Font(null, Font.BOLD, 22), 180, 145, Color.GRAY);
-
-		String titel2 = "扫一扫上面的二维码，进店选购商品";
+		//扫一扫上面的二维码，进店选购商品
+		String titel2 = Util.translateMessage(shop.getShopLanguage(), JsonResultCode.WX_SCAN_QRSHOP.getMessage(),"messages",null);
 		ImageUtil.addFont(backgroundImage, titel2, new Font(null, Font.BOLD, 22), 120, 750, Color.GRAY);
 
 		// 合并头像图片
