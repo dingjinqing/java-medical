@@ -8,8 +8,8 @@
         <view class="nav_list_item" bindtap="changeNav" data-nav_type="2" style="{{navType === 2 ? 'border-bottom-color:' + comColor + ';color:' + comColor + ';' : ''}}">砍价失败</view>
     </view>
     <view wx:if="{{dataList[0].length}}" class="goods_list" style="margin-top:{{margin_top_nav * 2 + 110}}rpx">
-      <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="{{pageIndex}}" wx:for-index="pageIndex">
-        <block wx:for="{{pageItem}}" wx:key="{{item.id}}" >
+      <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+        <block wx:for="{{pageItem}}" wx:key="id" >
         <view class="goods_item">
           <image src="{{imageUrl}}{{item.goodsImg}}"></image>
           <view class="item_right">

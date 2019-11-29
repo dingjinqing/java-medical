@@ -38,7 +38,7 @@
       </view>
     </view>
     <view class="order_top">
-      <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{orderInfo.deliverTypeName}}</text>
+      <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{i18n.$t(localePack,"pages.checkout.deliverType["+orderInfo.deliverType+"]")}}</text>
     </view>
     <view class="goods_item" bindtap="itemPage" data-goods_id="{{goodsItem.goodsId}}" wx:for="{{orderInfo.goods}}" wx:for-item="goodsItem" wx:key="recId" wx:for-index="goodsIndex">
       <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
@@ -60,7 +60,7 @@
           <view class="shipping_info_content">
             <view>
               <text selectable>{{i18n.$t(localePack,"pages.order.trackingNumber")}}：</text>
-              <text selectable>17600236996</text>
+              <text selectable>17600236996</text>1
             </view>
             <view>
               <text selectable>{{i18n.$t(localePack,"pages.order.courierCompany")}}：</text>
@@ -100,21 +100,33 @@
       </view>
     </view> -->
     <view class="pay_info">
-      <!-- <view class="pay_item">
-        <text>{{i18n.$t(localePack,"pages.order.total")}}</text>
-        <text>￥726.00</text>
-      </view> -->
+      <view class="pay_item" wx:if="{{orderInfo.goodsTotalPrice > 0}}">
+        <text>{{i18n.$t(localePack,"pages.order.goodsTotalPrice")}}</text>
+        <text>￥{{orderInfo.goodsTotalPrice}}</text>
+      </view>
+      <view class="pay_item" wx:if="{{orderInfo.shippingFee > 0}}">
+        <text>{{i18n.$t(localePack,"pages.order.shippingFee")}}</text>
+        <text>+￥{{orderInfo.shippingFee}}</text>
+      </view>
+      <view class="pay_item" wx:if="{{orderInfo.discount > 0}}">
+        <text>{{i18n.$t(localePack,"pages.order.couponReduce")}}</text>
+        <text>-￥{{orderInfo.discount}}</text>
+      </view>
+      <view class="pay_item" wx:if="{{orderInfo.memberCardReduce > 0}}">
+        <text>{{i18n.$t(localePack,"pages.order.cardReduce")}}</text>
+        <text>-￥{{orderInfo.memberCardReduce}}</text>
+      </view>
       <view class="pay_item" wx:if="{{orderInfo.memberCardBalance > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useCardBalance")}}</text>
-        <text>￥{{orderInfo.memberCardBalance}}</text>
+        <text>-￥{{orderInfo.memberCardBalance}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.scoreDiscount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useScore")}}</text>
-        <text>￥{{orderInfo.scoreDiscount}}</text>
+        <text>-￥{{orderInfo.scoreDiscount}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.useAccount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useBalance")}}</text>
-        <text>￥{{orderInfo.useAccount}}</text>
+        <text>-￥{{orderInfo.useAccount}}</text>
       </view>
       <!-- <view class="pay_item">
         <text>{{i18n.$t(localePack,"pages.order.promotions")}}</text>

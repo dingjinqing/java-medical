@@ -968,7 +968,18 @@ export default {
         orderSn: orderInfo.orderSn,
         action: 3
       }
-      close(obj).then(res => {
+      this.$confirm('确认关闭订单吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+        close(obj).then(res => {
+          if (res.error === 0) {
+            this.search()
+          }
+        })
+      }).catch(() => {
       })
     },
     finish (orderInfo) {
@@ -978,6 +989,9 @@ export default {
         action: 5
       }
       finish(obj).then(res => {
+        if (res.error === 0) {
+          this.search()
+        }
       })
     },
     toggleStar (orderSn, starFlag) {

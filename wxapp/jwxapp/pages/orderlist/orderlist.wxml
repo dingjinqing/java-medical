@@ -56,7 +56,7 @@
             <view class="pay_info">
               <view class="pay_type">
                 {{i18n.$t(localePack,"pages.order.payType")}}：
-                <text>微信支付</text>
+                <text>{{i18n.$t(localePack,"pages.order.payCode."+item.payCode)}}</text>
               </view>
               <view class="pay_money">
                 {{i18n.$t(localePack,"pages.order.payMoney")}}：

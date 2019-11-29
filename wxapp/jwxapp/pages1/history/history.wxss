@@ -6,6 +6,7 @@
   justify-content: center;
   position: fixed;
   width: 100%;
+  z-index: 2;
 }
 .input_box {
   line-height: 60rpx;
@@ -26,6 +27,7 @@
 }
 .content {
   padding: 0 20rpx;
+  padding-top: 100rpx;
 }
 .date {
   line-height: 60rpx;

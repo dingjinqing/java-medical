@@ -17,9 +17,12 @@ module.exports = {
   "address":"地址",
   "receiver":"收货人",
   "deliveryMethod":"配送方式",
-  "total":"合计",
+  "goodsTotalPrice":"商品合计",
   "useBalance":"使用余额",
   "useCardBalance":"使用会员卡余额",
+  "couponReduce":"优惠券抵扣",
+  "cardReduce":"会员卡抵扣",
+  "shippingFee":"运费",
   "useScore":"使用积分",
   "promotions":"促销活动",
   "actualPayment":"实际付款",
@@ -38,5 +41,11 @@ module.exports = {
     "isShowCommentType-3": "商品评价",
     "orderInfo":"查看详情",
     "returnCenter":"退货中心"
+  },
+  "payCode":{
+    "wxpay":"微信支付",
+    "balance":"余额支付",
+    "score":"积分支付",
+    "cod":"货到付款"
   }
 }

@@ -1,6 +1,6 @@
 <view class="body">
   <include src="/pages/common/header.wxml"/>
-  <view class="main-container">
+  <view class="main-container" wx:if="{{dataList}}">
     <view class="filter" style="top:{{margin_top_nav + 8}}px">
       <view class="input_box">
         <view>
@@ -9,7 +9,7 @@
         <input placeholder="请输入搜索关键字"></input>
       </view>
     </view>
-    <view class="content" style="margin-top:{{margin_top_nav * 2 + 116}}rpx">
+    <view class="content">
       <block wx:if="{{dataList[0].length}}">
          <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
             <block wx:for="{{pageItem}}" wx:key="cardNo" wx:for-index="itemIndex">
