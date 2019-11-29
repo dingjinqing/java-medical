@@ -66,7 +66,7 @@
             <span>{{$t('scoreCfg.scoreScaleDesOne')}}
               <el-input-number
                 size="small"
-                v-model="limitIntegralNum"
+                v-model="scoreDiscountRatio"
                 controls-position="right"
                 :min="1"
                 :max="100000"
@@ -264,6 +264,7 @@ export default {
       activeName: 'first',
       limitRadio: '1',
       limitIntegralNum: '',
+      scoreDiscountRatio: '',
       shopValue: true,
       doorValue: true,
       loginValue: true,
@@ -314,6 +315,7 @@ export default {
 
           this.limitRadio = res.content.scorePayLimit
           this.limitIntegralNum = res.content.scorePayNum
+          this.scoreDiscountRatio = res.content.scoreDiscountRatio
           this.shopValue = res.content.shoppingScore === '1'
           console.log(this.shopValue)
           this.doorValue = res.content.storeScore === '1'
@@ -363,6 +365,7 @@ export default {
         'scorePeriod': data.integralDateValue,
         'scorePayLimit': this.limitRadio,
         'scorePayNum': this.limitIntegralNum,
+        'scoreDiscountRatio': this.scoreDiscountRatio,
         'shoppingScore': this.shopValue ? 'on' : '',
         'storeScore': this.doorValue ? 'on' : '',
         'loginScore': this.loginValue ? 'on' : '',
