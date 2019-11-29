@@ -8,27 +8,27 @@
           ref="ruleForm"
         >
           <el-form-item
-            label="品牌名称："
+            :label="$t('brandManagement.brandName')+'：'"
             prop="name"
           >
             <el-input
               size="small"
               v-model="ruleForm.name"
-              placeholder="请输入内容"
+              :placeholder="$t('brandManagement.inputPlaceText')"
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="品牌英文名称："
+            :label="$t('brandManagement.brandName')+'：'"
             prop="NameEnlishInput"
           >
             <el-input
               size="small"
               v-model="ruleForm.NameEnlishInput"
-              placeholder="请输入内容"
+              :placeholder="$t('brandManagement.inputPlaceText')"
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="品牌Logo："
+            :label="$t('brandManagement.brand')+'Logo：'"
             prop="logoImgUrl"
           >
             <div class="brand_title">
@@ -46,7 +46,7 @@
             </div>
           </el-form-item>
           <el-form-item
-            label="品牌分类："
+            :label="$t('brandManagement.brandClassify')+'：'"
             prop="classSelectValue"
           >
             <div
@@ -55,7 +55,7 @@
             >
               <el-select
                 v-model="ruleForm.classSelectValue"
-                placeholder="请选择"
+                :placeholder="$t('brandManagement.pleaseChoose')"
                 size="mini"
               >
                 <el-option
@@ -67,14 +67,14 @@
                 </el-option>
               </el-select>
               <div class="classDiv">
-                <span @click="handleRefresh()">&nbsp;刷新</span> &nbsp;|&nbsp;
-                <span @click="handleNewBuild()">新建品牌分类</span>&nbsp;|&nbsp;
-                <span @click="handleTurnManClassPage()">管理品牌分类</span>
+                <span @click="handleRefresh()">&nbsp;{{$t('brandManagement.refresh')}}</span> &nbsp;|&nbsp;
+                <span @click="handleNewBuild()">{{$t('brandManagement.newBrandClassification')}}</span>&nbsp;|&nbsp;
+                <span @click="handleTurnManClassPage()">{{$t('brandManagement.manageBrandClassification')}}</span>
               </div>
             </div>
           </el-form-item>
           <el-form-item
-            label="品牌优先级："
+            :label="$t('brandManagement.brandPriority')+'：'"
             prop="firstInput"
           >
             <div
@@ -83,14 +83,14 @@
             >
               <el-input
                 v-model="ruleForm.firstInput"
-                placeholder="请输入内容"
+                :placeholder="$t('brandManagement.inputPlaceText')"
                 size="mini"
               ></el-input>
-              <span style="color:#999;margin-left:3px">请填写正整数，数值越大，优先级越高，在小程序前端展示位置越靠前</span>
+              <span style="color:#999;margin-left:3px">{{$t('brandManagement.dialogTips')}}</span>
             </div>
           </el-form-item>
           <el-form-item
-            label="设为推荐品牌："
+            :label="$t('brandManagement.setAsRecommendedBrand')+'：'"
             prop="radio"
           >
             <div
@@ -100,15 +100,15 @@
               <el-radio
                 v-model="ruleForm.radio"
                 label="1"
-              >是</el-radio>
+              >{{$t('brandManagement.yes')}}</el-radio>
               <el-radio
                 v-model="ruleForm.radio"
                 label="2"
-              >否</el-radio>
-              <span style="color:#999">设为推荐品牌，将展示在小程序推荐品牌中列表中</span>
+              >{{$t('brandManagement.no')}}</el-radio>
+              <span style="color:#999">{{$t('brandManagement.bottomTips')}}</span>
             </div>
           </el-form-item>
-          <el-form-item label="添加商品：">
+          <el-form-item :label="$t('brandManagement.yes')+'：'">
             <div
               class="brand_title"
               style="margin-left:16px"
@@ -116,11 +116,12 @@
               <div
                 class="choiseDivClass"
                 @click="handleClickChoiseGood()"
+                :style="columnFlag?'width:170px':''"
               >
                 <img :src="choiseGoodImgUrl">
-                选择商品
+                {{$t('brandManagement.chooseCommodity')}}
               </div>
-              <span style="color:#5a8bff;margin-left:20px">已选择商品数量：{{selectgoodsNum}}</span>
+              <span style="color:#5a8bff;margin-left:20px"> {{$t('brandManagement.itemQuantitySelected')}}：{{selectgoodsNum}}</span>
             </div>
           </el-form-item>
         </el-form>
@@ -191,7 +192,7 @@ export default {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     ChoosingGoods: () => import('@/components/admin/choosingGoods')
   },
-  data () {
+  data() {
     var validatePassLogoImgUrl = (rule, value, callback) => { // 自定义校验品牌Logo
       if (value === '') {
         callback(new Error('请选择品牌Logo'))
@@ -395,15 +396,15 @@ export default {
       selectgoodsNum: 0,
       hxgoodsIds: [],
       saveImgUrl: '',
-      oldGoodsIds: [] // 编辑来的旧的商品id集合
-
+      oldGoodsIds: [], // 编辑来的旧的商品id集合
+      columnFlag: null
     }
   },
   computed: {
     ...mapGetters(['goodsIds', 'editGoodsId'])
   },
   watch: {
-    checkedAll (newData, oldData) {
+    checkedAll(newData, oldData) {
       if (newData === true) {
         this.trList.map((item, index) => {
           item.ischecked = true
@@ -415,7 +416,7 @@ export default {
       }
     },
     goodsIds_: {
-      handler (newData, oldData) {
+      handler(newData, oldData) {
         this.ruleForm.goodsIdsArr = [...new Set(newData)]
         this.selectgoodsNum = this.ruleForm.goodsIdsArr.length
         console.log(this.ruleForm.goodsIdsArr)
@@ -423,7 +424,7 @@ export default {
       immediate: true
     }
   },
-  mounted () {
+  mounted() {
     // 传递crumbsTitle
     let arr = ['商品管理', '品牌管理', '添加品牌']
     this.changeCrumbstitle(arr)
@@ -433,7 +434,7 @@ export default {
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
-    defaultGrandClass () {
+    defaultGrandClass() {
       console.log(this.editGoodsId)
       // 品牌分类下拉框数据获取
       classificationSelectRequest().then((res) => {
@@ -467,11 +468,11 @@ export default {
       }
     },
     // 新建品牌分类弹窗
-    handleNewBuild () {
+    handleNewBuild() {
       this.dialogVisible = true
     },
     // 添加品牌分类
-    handleAddGrandClass () {
+    handleAddGrandClass() {
       let obj = {
         'classifyName': this.brandName,
         'first': this.classificationName
@@ -497,7 +498,7 @@ export default {
       this.dialogVisible = false
     },
     // 跳转到品牌分类
-    handleTurnManClassPage () {
+    handleTurnManClassPage() {
       this.$router.push({
         name: 'brand',
         params: {
@@ -506,40 +507,40 @@ export default {
       })
     },
     // 页码改变
-    handleCurrentChange () {
+    handleCurrentChange() {
       this.defaultGrandClass()
     },
     // 点击选择商品按钮
-    handleClickChoiseGood () {
+    handleClickChoiseGood() {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
-    handleToGetGoods (data) { // 商品弹窗选中数据回传函数
+    handleToGetGoods(data) { // 商品弹窗选中数据回传函数
       console.log(data)
       this.ruleForm.goodsIdsArr = data
       this.selectgoodsNum = data.length
     },
     // 选择商品弹窗确定
-    handleChoiseGooddialog () {
+    handleChoiseGooddialog() {
       this.transmitGoodsIds(this.ruleForm.goodsIdsArr)
       this.choiseGooddialogVisible = false
     },
     // 调用图片弹窗
-    handleImgDailog () {
+    handleImgDailog() {
       this.tuneUp = !this.tuneUp
     },
     // 图片弹窗选中
-    handleSelectImg (res) {
+    handleSelectImg(res) {
       console.log(res, this.saveImgUrl)
       this.saveImgUrl = res.imgPath
       this.ruleForm.logoImgUrl = res.imgUrl
     },
     // 刷新
-    handleRefresh () {
+    handleRefresh() {
       // 品牌分类初始化获取
       this.defaultGrandClass()
     },
     // 保存
-    saveShopStyle () {
+    saveShopStyle() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           if (!(this.ruleForm.firstInput >= 1 && this.ruleForm.firstInput <= 100)) {
@@ -610,16 +611,16 @@ export default {
 </script>
 <style scoped>
 .footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  right: 27px;
-  left: 160px;
+  right: 0;
+  left: 0;
   height: 52px;
   padding: 10px;
   background-color: #fff;
   text-align: center;
   border-top: 1px solid #eee;
-  z-index: 99;
+  z-index: 2;
 }
 .save {
   width: 70px;
@@ -892,6 +893,11 @@ img {
 .addBrandMain {
   /deep/ .el-form-item__label {
     width: 122px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 40px;
   }
   /deep/ .el-input {
     width: 140px;

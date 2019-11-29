@@ -187,6 +187,7 @@ import {
 import {
   cn as recommend
 } from './views/admin_new/cn/index/goodsManagement/recommendCn'
+import { cn as brandManagement } from './views/admin_new/cn/index/goodsManagement/brandManagementCn'
 // 营销管理系列国际化
 // 营销管理通用词汇
 import {
@@ -999,7 +1000,8 @@ const cn = {
   textModule, // 小程序文本模块国际化 以及下面简单模块的国际化
   titleModule, // 小程序标题模块国际化
   shopNotices, // 小程序店铺公告系列国际化
-  messageHint // 全局消息国际化
+  messageHint, // 全局消息国际化
+  brandManagement // 商品品牌国际化
 }
 
 export default cn

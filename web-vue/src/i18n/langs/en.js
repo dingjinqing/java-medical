@@ -68,6 +68,7 @@ import {
 import {
   en as recommend
 } from './views/admin_new/en/index/goodsManagement/recommendEn'
+import { en as brandManagement } from './views/admin_new/en/index/goodsManagement/brandManagementEn'
 // 概览系列国际化
 // 商城概览
 import {
@@ -992,6 +993,7 @@ const en = {
   textModule, // 小程序页面装修文本模块
   titleModule, // 小程序页面装修标题模块
   shopNotices, // 小程序页面装修店铺公告模块
-  messageHint // 全局消息国际化配置
+  messageHint, // 全局消息国际化配置
+  brandManagement // 商品品牌国际化
 }
 export default en

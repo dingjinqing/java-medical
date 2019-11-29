@@ -9,15 +9,15 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="全部品牌"
+          :label="$t('brandManagement.allBrands')"
           name="first"
         >
           <ul class="topUl">
             <li>
-              品牌名称：
+              {{$t('brandManagement.brandName')}}：
               <el-input
                 v-model="state3"
-                placeholder="请输入内容"
+                :placeholder="$t('brandManagement.inputPlaceText')"
                 @select="handleSelect"
                 size="small"
                 clearable
@@ -30,28 +30,27 @@
             </li>
             <li>
               <div class="block">
-                <span class="demonstration">创建时间：</span>
+                <span class="demonstration">{{$t('brandManagement.creatTime')}}：</span>
                 <el-date-picker
                   v-model="brandStartTime"
                   size="small"
-                  placeholder="选择日期"
+                  :placeholder="$t('brandManagement.selectDate')"
                 >
                 </el-date-picker>
-                至
+                {{$t('brandManagement.to')}}
                 <el-date-picker
                   v-model="brandEndTime"
                   size="small"
-                  placeholder="选择日期"
+                  :placeholder="$t('brandManagement.selectDate')"
                   :picker-options="endTime"
                 >
                 </el-date-picker>
               </div>
             </li>
             <li>
-              品牌分类：
+              {{$t('brandManagement.brandClassify')}}：
               <el-select
                 v-model="valueClss"
-                placeholder="请选择"
                 size="small"
               >
                 <el-option
@@ -65,10 +64,9 @@
               </el-select>
             </li>
             <li>
-              是否为推荐品牌：
+              {{$t('brandManagement.isRecommendBrand')}}：
               <el-select
                 v-model="valueIsClss"
-                placeholder="请选择"
                 size="small"
               >
                 <el-option
@@ -85,7 +83,7 @@
                 type="primary"
                 size="small"
                 @click="handleSXevent()"
-              >筛选</el-button>
+              >{{$t('brandManagement.screen')}}</el-button>
             </li>
           </ul>
           <div class="topBtn">
@@ -93,7 +91,7 @@
               type="primary"
               size="small"
               @click="handleAddBrand()"
-            >添加品牌</el-button>
+            >{{$t('brandManagement.addBrand')}}</el-button>
             <!-- <el-button
               type="primary"
               size="small"
@@ -103,46 +101,34 @@
         </el-tab-pane>
 
         <el-tab-pane
-          label="分类名称"
+          :label="$t('brandManagement.classifyName')"
           name="second"
         >
           <ul class="topUl">
             <li>
-              分类名称：
+              {{$t('brandManagement.classifyName')}}：
               <el-input
                 v-model="classifyName"
                 size="small"
-                placeholder="请输入内容"
+                :placeholder="$t('brandManagement.inputPlaceText')"
               ></el-input>
-              <!-- <el-autocomplete
-                popper-class="my-autocomplete"
-                v-model="state3"
-                :fetch-suggestions="querySearch"
-                placeholder="请输入内容"
-                @select="handleSelect"
-                size="small"
-              >
-                <template slot-scope="props">
-                  <div class="name">{{ props.item.value }}</div>
-                </template>
-              </el-autocomplete> -->
             </li>
             <li>
               <div class="block">
-                <span class="demonstration">创建时间：</span>
+                <span class="demonstration">{{$t('brandManagement.creatTime')}}：</span>
                 <el-date-picker
                   v-model="classifyBrandStartTime"
                   type="date"
                   size="small"
-                  placeholder="选择日期"
+                  :placeholder="$t('brandManagement.selectDate')"
                 >
                 </el-date-picker>
-                至
+                {{$t('brandManagement.to')}}
                 <el-date-picker
                   v-model="classifyBrandEndTime"
                   type="date"
                   size="small"
-                  placeholder="选择日期"
+                  :placeholder="$t('brandManagement.selectDate')"
                 >
                 </el-date-picker>
               </div>
@@ -152,7 +138,7 @@
                 type="primary"
                 size="small"
                 @click="handleToScreen()"
-              >筛选</el-button>
+              >{{$t('brandManagement.screen')}}</el-button>
             </li>
           </ul>
           <div class="tapTwo">
@@ -160,16 +146,16 @@
               type="primary"
               size="small"
               @click="handleBrandDialog()"
-            >添加品牌分类</el-button>
+            >{{$t('brandManagement.addBrandClassify')}}</el-button>
           </div>
         </el-tab-pane>
         <el-tab-pane
-          label="品牌展示设置"
+          :label="$t('brandManagement.brandDisplaySettings')"
           name="third"
         >
           <div class="showMain">
             <div class="showTop">
-              将全部品牌展示在商品分类页：
+              {{$t('brandManagement.showTop')}}：
               <el-switch
                 v-model="switchValue"
                 active-color="#F7931E"
@@ -177,13 +163,13 @@
               >
               </el-switch>
               <span>{{ this.switchTextOne }}</span>
-              <span style="color:#999">开启后，将在商品分类页展示全部品牌列表</span>
+              <span style="color:#999">{{$t('brandManagement.switchTips')}}</span>
               <div
                 class="example"
                 @mouseover="showOver()"
                 @mouseleave="showLeave()"
               >
-                查看实例
+                {{$t('brandManagement.viewExamples')}}
                 <div
                   class="hover_show"
                   v-if="showFlag"
@@ -196,7 +182,7 @@
               class="showTop"
               style="margin-top:30px"
             >
-              推荐品牌：
+              {{$t('brandManagement.recommendBrand')}}：
               <el-switch
                 v-model="switchValueBottom"
                 active-color="#F7931E"
@@ -204,16 +190,16 @@
               >
               </el-switch>
               <span>{{ this.switchTextSecond }}</span>
-              <span style="color:#999">开启后，将在商品分类页展示全部品牌列表</span>
+              <span style="color:#999">{{$t('brandManagement.switchTips')}}</span>
             </div>
             <!--隐藏模块-->
             <div v-if="hiddle_containerFlag">
               <div style="margin-top:20px;margin-left:75px">
                 <div class="hiddleTitle">
-                  推荐标题：
+                  {{$t('brandManagement.recommendTitle')}}：
                   <el-input
                     v-model="hiddleValTop"
-                    placeholder="请输入内容"
+                    :placeholder="$t('brandManagement.inputPlaceText')"
                     size="small"
                     style="width: 170px;"
                   ></el-input>
@@ -222,12 +208,12 @@
               </div>
               <div style="margin-top:20px;margin-left:75px">
                 <div class="hiddleTitle specialDiv">
-                  <div>展示样式：&nbsp;</div>
+                  <div>{{$t('brandManagement.showStyle')}}：&nbsp;</div>
                   <div class="showDiv">
                     <div class="ra_div">
                       <el-radio
                         v-model="showRadio"
-                        label="按品牌展示"
+                        :label="$t('brandManagement.byBrandShow')"
                         text-color="#000"
                       ></el-radio>
                       <span style="color:#999"></span>
@@ -236,7 +222,7 @@
                         @mouseover="showOver(1)"
                         @mouseleave="showLeave(1)"
                       >
-                        查看实例
+                        {{$t('brandManagement.viewExamples')}}
                         <div
                           class="hover_show"
                           v-if="showFlag_one"
@@ -248,7 +234,7 @@
                     <div class="ra_div">
                       <el-radio
                         v-model="showRadio"
-                        label="按品牌分类展示"
+                        :label="$t('brandManagement.byBrandClassifyShow')"
                         text-color="#000"
                       ></el-radio>
                       <span style="color:#999"></span>
@@ -257,7 +243,7 @@
                         @mouseover="showOver(2)"
                         @mouseleave="showLeave(2)"
                       >
-                        查看实例
+                        {{$t('brandManagement.viewExamples')}}
                         <div
                           class="hover_show"
                           v-if="showFlag_two"
@@ -277,7 +263,7 @@
                 size="small"
                 style="margin:30px 0 0 75px"
                 @click="handleSaveTapThree()"
-              >保存</el-button>
+              >{{$t('brandManagement.save')}}</el-button>
             </div>
           </div>
         </el-tab-pane>
@@ -306,7 +292,7 @@
           </el-table-column>
           <el-table-column
             v-if="hiddle_1"
-            label="品牌logo"
+            :label="$t('brandManagement.brand')+'logo'"
             align="center"
           >
             <template slot-scope="scope">
@@ -319,18 +305,18 @@
           <el-table-column
             v-if="hiddle_1"
             prop="first"
-            label="优先级"
+            :label="$t('brandManagement.priority')"
             align="center"
           ></el-table-column>
           <el-table-column
             v-if="hiddle_1"
             prop="classifyName"
-            label="品牌分类"
+            :label="$t('brandManagement.brandClassify')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop=""
-            label="包含商品数量"
+            :label="$t('brandManagement.includeProductQuantity')"
             align="center"
           >
             <template slot-scope="scope">
@@ -340,16 +326,16 @@
           </el-table-column>
           <el-table-column
             prop="first"
-            label="分类优先级"
+            :label="$t('brandManagement.classificationPriority')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="createTime"
-            label="创建时间"
+            :label="$t('brandManagement.creatTime')"
             align="center"
           ></el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('brandManagement.operation')"
             align="center"
           >
             <template slot-scope="scope">
@@ -394,28 +380,6 @@
                   @click="delePagingGrand(scope.row.classifyId)"
                 ></span>
               </el-tooltip>
-
-              <!-- <div v-if="hiddle_1">
-                <span
-                  @click="handleEditGoods(scope.row.id)"
-                  style="color: #5a8bff;cursor: pointer;"
-                >编辑</span>
-                <span
-                  @click="deleGrand(scope.row.id)"
-                  style="color: #5a8bff;cursor: pointer;"
-                >删除</span>
-              </div>
-              <div v-if="!hiddle_1">
-                <span
-                  @click="handlePagingEditGoods(scope.row)"
-                  style="color: #5a8bff;cursor: pointer;"
-                >编辑</span>
-                <span
-                  @click="delePagingGrand(scope.row.classifyId)"
-                  style="color: #5a8bff;cursor: pointer;"
-                >删除</span>
-              </div> -->
-
             </template>
           </el-table-column>
 
@@ -437,50 +401,50 @@
     >
       <div class="dialogMain">
         <p>
-          品牌分类名称：<el-input
+          {{$t('brandManagement.brandClassifyName')}}：<el-input
             v-model="brandName"
-            placeholder="请输入内容"
+            :placeholder="$t('brandManagement.inputPlaceText')"
             size="mini"
           ></el-input>
         </p>
         <p style="margin-top:10px">
-          <span style="margin-right:11px">分类优先级：</span>
+          <span style="margin-right:11px">{{$t('brandManagement.classificationPriority')}}：</span>
           <el-input
             v-model="classificationName"
-            placeholder="请输入内容"
+            :placeholder="$t('brandManagement.inputPlaceText')"
             size="mini"
           ></el-input>
         </p>
-        <p>请填写正整数，数值越大，优先级越高，在小程序前端展示位置越靠前</p>
+        <p>{{$t('brandManagement.dialogTips')}}</p>
       </div>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisibleAddBrand = false">取 消</el-button>
+        <el-button @click="dialogVisibleAddBrand = false">{{$t('brandManagement.cancel')}}</el-button>
         <el-button
           type="primary"
           @click="handleUpdateGrandClass()"
-        >确 定</el-button>
+        >{{$t('brandManagement.sure')}}</el-button>
       </span>
     </el-dialog>
     <!--删除二次提醒-->
     <el-dialog
-      title="提示"
+      :title="$t('brandManagement.dialogTwoTips')"
       :visible.sync="delDialogVisible"
       width="30%"
       :center="true"
     >
-      <span>是否确认删除?</span>
+      <span>{{$t('brandManagement.dialogContent')}}</span>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="delDialogVisible = false">取 消</el-button>
+        <el-button @click="delDialogVisible = false">{{$t('brandManagement.cancel')}}</el-button>
         <el-button
           type="primary"
           @click="handleToTowDel()"
-        >确 定</el-button>
+        >{{$t('brandManagement.sure')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -507,17 +471,6 @@ export default {
       value9: '',
       optionsClss: [],
       valueClss: '',
-      optionsIsClss: [
-        {
-          value: '',
-          label: '全部'
-        }, {
-          value: '1',
-          label: '是'
-        }, {
-          value: '0',
-          label: '否'
-        }],
       valueIsClss: '',
       trList: [], // 表格数据
       clickIindex: null,
@@ -537,7 +490,6 @@ export default {
       brandName: '',
       classificationName: '',
       totalRows: null,
-      secondGrandName: '品牌名称',
       switchTextOne: '',
       switchTextSecond: '',
       hiddleValTop: '推荐标题',
@@ -566,27 +518,41 @@ export default {
     switchValue (newData) {
       switch (newData) {
         case true:
-          this.switchTextOne = '已开启'
+          this.switchTextOne = this.alreadyOpened
           break
         case false:
-          this.switchTextOne = '已关闭'
+          this.switchTextOne = this.closed
           break
       }
     },
     switchValueBottom (newData) {
       switch (newData) {
         case true:
-          this.switchTextSecond = '已开启'
+          this.switchTextSecond = this.alreadyOpened
           this.hiddle_containerFlag = true
           break
         case false:
-          this.switchTextSecond = '已关闭'
+          this.switchTextSecond = this.closed
           this.hiddle_containerFlag = false
           break
       }
     },
     createTime (newData) {
       console.log(newData)
+    }
+  },
+  computed: {
+    secondGrandName () {
+      return this.$t('brandManagement.brandName')
+    },
+    optionsIsClss () {
+      return this.$t('brandManagement.optionsIsClss')
+    },
+    alreadyOpened () {
+      return this.$t('brandManagement.alreadyOpened')
+    },
+    closed () {
+      return this.$t('brandManagement.closed')
     }
   },
   mounted () {
@@ -632,7 +598,7 @@ export default {
       classificationSelectRequest().then((res) => {
         if (res.error === 0) {
           console.log(res.content)
-          res.content.unshift({ classifyName: '全部', classifyId: '' })
+          res.content.unshift({ classifyName: this.$t('brandManagement.whole'), classifyId: '' })
           this.optionsClss = res.content
         }
 
@@ -1093,6 +1059,11 @@ export default {
 .topUl {
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.topUl li {
+  white-space: nowrap;
+  margin-bottom: 10px;
 }
 .topUl li:nth-of-type(1) {
   margin-right: 10px;
