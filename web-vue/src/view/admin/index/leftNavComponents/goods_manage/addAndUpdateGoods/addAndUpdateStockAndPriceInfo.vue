@@ -432,10 +432,11 @@
 // TODO: 3.会员价格table表格样式未实现
 
 // 接口函数引入
-import { getLevelCardList, isGoodsColumnValueExist } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import {getLevelCardList, isGoodsColumnValueExist} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // js工具函数导入
-import { isStrBlank, isNumberBlank } from '@/util/typeUtil'
+import {isNumberBlank, isStrBlank} from '@/util/typeUtil'
 import ImageDalog from '@/components/admin/imageDalog'
+
 export default {
   inject: ['isUpdateWrap'],
   components: {
@@ -526,7 +527,7 @@ export default {
             })
           })
         }
-      });
+      })
     },
     /** 商品规格交互函数结束**/
     prdImgClick (specPrd) {
