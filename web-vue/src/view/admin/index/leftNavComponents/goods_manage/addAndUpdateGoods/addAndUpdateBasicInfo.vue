@@ -708,12 +708,15 @@ export default {
       if (imgObjs == null || imgObjs.length === 0) {
         return
       }
-      this.goodsProductInfo.goodsImgs = []
+      if (imgObjs.length > 5) {
+        imgObjs.length = 5
+      }
       imgObjs.forEach(imgObj => {
         this.goodsProductInfo.goodsImgs.push({ imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl })
       })
-      if (this.goodsProductInfo.goodsImgs.length > 5) {
-        this.goodsProductInfo.goodsImgs.splice(5)
+      let imgLength = this.goodsProductInfo.goodsImgs.length
+      if (imgLength > 5) {
+        this.goodsProductInfo.goodsImgs = this.goodsProductInfo.goodsImgs.slice(imgLength - 5)
       }
     },
     /* 删除商品图片 */
