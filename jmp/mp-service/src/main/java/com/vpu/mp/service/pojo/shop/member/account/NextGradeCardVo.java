@@ -15,6 +15,7 @@ import lombok.Data;
 */
 @Data
 public class NextGradeCardVo {
+	private String cardName;
 	/**
 	 * 会员权益
 	 */

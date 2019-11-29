@@ -783,6 +783,7 @@ public class UserCardService extends ShopBaseService {
 				MemberCardRecord gradeCard = getGradeCardByGrade(newGrade);
 				RankCardToVo resCard = memberCardService.changeToGradeCardDetail(gradeCard);
 				NextGradeCardVo vo = new NextGradeCardVo();
+				vo.setCardName(resCard.getCardName());
 				vo.setPowerCount(resCard.getPowerCount());
 				vo.setDiscount(resCard.getDiscount());
 				vo.setSorce(resCard.getSorce());
