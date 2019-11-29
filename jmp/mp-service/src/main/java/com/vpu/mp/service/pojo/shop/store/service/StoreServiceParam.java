@@ -4,6 +4,7 @@ import com.vpu.mp.service.pojo.shop.config.pledge.group.DeleteGroup;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import lombok.Data;
 
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -31,6 +32,7 @@ public class StoreServiceParam {
     private Date       endDate;
     private String     startPeriod;
     private String     endPeriod;
+    @Positive
     private Integer    serviceDuration;
     private Byte       serviceType;
     private Integer    servicesNumber;

@@ -396,6 +396,7 @@ public class StoreReservation extends ShopBaseService {
             // 预约人数已达上限
             throw new BusinessException(JsonResultCode.CODE_RESERVATION_UPPER_LIMIT);
         }
+        String serviceName = storeService.getStoreService(serviceId).getServiceName();
         ServiceOrderRecord serviceOrder = new ServiceOrderRecord();
         FieldsUtil.assignNotNull(param, serviceOrder);
         // 事务前置校验
@@ -408,8 +409,10 @@ public class StoreReservation extends ShopBaseService {
             if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
                 //TODO 支付接口
                 String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
-                webPayVo.set(mpPaymentService.wxUnitOrder(param.getClientIp(), param.getServiceId().toString(), orderSn, serviceOrder.getMoneyPaid(), openId));
+                webPayVo.set(mpPaymentService.wxUnitOrder(param.getClientIp(), serviceName, orderSn, serviceOrder.getMoneyPaid(), openId));
                 log.debug("微信支付接口调用结果：{}", webPayVo.get());
+                // TODO 记录prepayId到订单表中
+                serviceOrderService.updateSingleField(orderSn, SERVICE_ORDER.PREPAY_ID, webPayVo.get().getResult().getPrepayId());
             } else {
                 // 如果不需要调用微信支付，直接将订单状态由待付款改为待服务
                 serviceOrderService.updateServiceOrderStatus(orderSn, ORDER_STATUS_WAIT_SERVICE, ORDER_STATUS_NAME_WAIT_SERVICE);

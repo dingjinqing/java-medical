@@ -289,6 +289,7 @@ public class JsonResultMessage {
     public static final String CODE_DB_DATA_ABNORMAL = "db.data.abnormal";
     public static final String CODE_RESERVATION_UPPER_LIMIT = "reservation.upper.limit";
     public static final String CODE_DATA_ALREADY_EXIST = "data.already.exist";
+    public static final String CODE_ORDER_AMOUNT_NOT_EQUALS_SERVICE_SUBSIST = "code.order.amount.not.equals.service.subsist";
 
 	/**
 	 * 门店技师管理

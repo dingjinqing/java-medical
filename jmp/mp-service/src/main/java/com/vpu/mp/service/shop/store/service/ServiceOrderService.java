@@ -313,12 +313,15 @@ public class ServiceOrderService extends ShopBaseService {
      * @return the service order tran
      */
     public ServiceOrderTran checkBeforeCreate(ServiceOrderRecord param) {
-
         String orderSn = generateOrderSn();
         // 二次验证前端计算的应付金额是否正确,
         BigDecimal moneyPaidSecondCheck = BIGDECIMAL_ZERO;
         // 订单总金额
         BigDecimal orderAmount = param.getOrderAmount();
+        if (orderAmount.compareTo(storeService.getStoreService(param.getServiceId()).getServiceSubsist()) > INTEGER_ZERO) {
+//            验证是否与服务定金相等
+            throw new BusinessException(JsonResultCode.CODE_ORDER_AMOUNT_NOT_EQUALS_SERVICE_SUBSIST);
+        }
         // 余额抵扣金额
         BigDecimal balance = param.getUseAccount();
         // 会员卡抵扣金额
@@ -348,6 +351,7 @@ public class ServiceOrderService extends ShopBaseService {
                 setIsPaid(BYTE_ONE);
                 setRemark(orderSn);
             }};
+            moneyPaidSecondCheck = orderAmount.subtract(balance);
         }
         String cardNo = param.getMemberCardNo();
         if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo) && BigDecimalUtil.greaterThanZero(cardDis)) {
@@ -375,14 +379,16 @@ public class ServiceOrderService extends ShopBaseService {
                 .setCardId(userCardParam.getCardId())
                 .setReason(orderSn)
                 // 消费类型 :门店只支持普通卡0
-                .setType(MCARD_TP_NORMAL)
-            ;
+                .setType(MCARD_TP_NORMAL);
+            moneyPaidSecondCheck = orderAmount.subtract(cardDis);
         }
         if (!INTEGER_ZERO.equals(param.getCouponId())) {
             // todo 根据优惠券规则计算优惠券抵扣金额
+            if (BigDecimalUtil.greaterThanZero(couponDis)) {
+                moneyPaidSecondCheck = orderAmount.subtract(couponDis);
+            }
         }
-        moneyPaidSecondCheck = orderAmount.subtract(balance).subtract(cardDis).subtract(couponDis);
-        if (moneyPaidSecondCheck.compareTo(param.getMoneyPaid()) != 0) {
+        if (moneyPaidSecondCheck.compareTo(param.getMoneyPaid()) != INTEGER_ZERO) {
             // 应付金额计算错误
             log.error("应付金额[{}]计算错误(前端计算的应付金额为[{}])", moneyPaidSecondCheck, param.getMoneyPaid());
             throw new BusinessException(JsonResultCode.CODE_AMOUNT_PAYABLE_CALCULATION_FAILED);
@@ -618,6 +624,10 @@ public class ServiceOrderService extends ShopBaseService {
         StoreServiceParam service = storeService.getStoreService(serviceId);
         Assert.notNull(service, JsonResultCode.CODE_STORE_SERVICE_NOT_EXIST);
         Integer num = BYTE_ONE.equals(service.getServiceType()) ? service.getTechServicesNumber() : service.getServicesNumber();
+        // 如果未设置预约数量上限，或者为0，表示无上限 TODO 技师的可预约服务数量是可以计算出来的
+        if (Objects.isNull(num) || INTEGER_ZERO.equals(num)) {
+            num = Integer.MAX_VALUE;
+        }
         return checkMaxNumOfReservations(serviceId, technicianId, LocalDate.now(), LocalTime.parse(service.getStartPeriod(), HH_MM_FORMATTER), LocalTime.parse(service.getEndPeriod(), HH_MM_FORMATTER)) < num;
     }
 
@@ -651,6 +661,18 @@ public class ServiceOrderService extends ShopBaseService {
      */
     public <T> void updateSingleField(Integer orderId, Field<T> field, T value) {
         db().update(SERVICE_ORDER).set(field, value).where(SERVICE_ORDER.ORDER_ID.eq(orderId)).execute();
+    }
+
+    /**
+     * Update single field.
+     *
+     * @param <T>     the type parameter
+     * @param orderSn the order sn
+     * @param field   the field
+     * @param value   the value
+     */
+    public <T> void updateSingleField(String orderSn, Field<T> field, T value) {
+        db().update(SERVICE_ORDER).set(field, value).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).execute();
     }
 
     /**
