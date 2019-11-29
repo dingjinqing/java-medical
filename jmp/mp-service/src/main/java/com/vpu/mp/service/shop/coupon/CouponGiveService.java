@@ -48,7 +48,7 @@ import static com.vpu.mp.db.shop.Tables.*;
 public class CouponGiveService extends ShopBaseService {
 
   @Autowired private CouponHoldService couponHold;
-
+  @Autowired public CouponService couponService;
   private static final MrkingVoucher MV = MrkingVoucher.MRKING_VOUCHER.as("MV");
 
   /** 获取方式，0：发放 */
@@ -636,6 +636,8 @@ public class CouponGiveService extends ShopBaseService {
         }
       }
     }
+    //更新优惠券表发放/领取数量
+    couponService.updateCouponGiveOrReceiveNum(param.getAccessMode(),param.getCouponArray());
     return successList;
   }
 

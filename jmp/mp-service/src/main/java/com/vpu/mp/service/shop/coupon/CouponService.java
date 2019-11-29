@@ -19,6 +19,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import jodd.util.StringUtil;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -540,5 +541,73 @@ public class CouponService extends ShopBaseService {
             .limit(5)
             .fetchMap(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME);
     }
+    /**发放*/
+    private static final Byte COUPON_GIVE = 0;
+    /**领取*/
+    private static final Byte COUPON_RECEIVE = 1;
 
+    /**
+     * 发放/领取优惠券后更新优惠券表发放/领取的数量
+     * @author liangchen
+     * @param accessMode 0:发放,1:领取
+     * @param couponArray 优惠券数组
+     */
+    public void updateCouponGiveOrReceiveNum(Byte accessMode,String[] couponArray){
+        //遍历优惠券
+        for(String couponId : couponArray){
+            //更新优惠券人数和数量
+            selectCouponNum(accessMode,Integer.valueOf(couponId));
+        }
+    }
+
+    /**
+     * 查询数量变化
+     * @author liangchen
+     * @param accessMode 0:发放,1:领取
+     * @param couponId 当前操作的优惠券id
+     */
+    private void selectCouponNum(Byte accessMode, Integer couponId){
+        //查询人数
+        short peopleNum = db().select(DSL.countDistinct(CUSTOMER_AVAIL_COUPONS.USER_ID))
+                .from(CUSTOMER_AVAIL_COUPONS)
+                .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(couponId))
+                .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(BYTE_ZERO))
+                .and(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(accessMode))
+                .fetchOneInto(short.class);
+        //查询数量
+        short couponNum = db().select(DSL.count(CUSTOMER_AVAIL_COUPONS.USER_ID))
+                .from(CUSTOMER_AVAIL_COUPONS)
+                .where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(couponId))
+                .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(BYTE_ZERO))
+                .and(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(accessMode))
+                .fetchOneInto(short.class);
+        updateCouponNum(accessMode,couponId,peopleNum,couponNum);
+    }
+
+    /**
+     * 更改数量变化
+     * @author liangchen
+     * @param accessMode 0:发放,1:领取
+     * @param couponId 当前操作的优惠券id
+     * @param peopleNum 最新的人数
+     * @param couponNum 最新的数量
+     */
+    private void updateCouponNum(Byte accessMode, Integer couponId, short peopleNum, short couponNum){
+        //更新发放数量
+        if (accessMode.equals(COUPON_GIVE)){
+            db().update(MRKING_VOUCHER)
+                .set(MRKING_VOUCHER.GIVEOUT_PERSON,peopleNum)
+                .set(MRKING_VOUCHER.GIVEOUT_AMOUNT,couponNum)
+                .where(MRKING_VOUCHER.ID.eq(couponId))
+                .execute();
+        }
+        //更新领取数量
+        if (accessMode.equals(COUPON_RECEIVE)){
+            db().update(MRKING_VOUCHER)
+                .set(MRKING_VOUCHER.RECEIVE_PERSON,peopleNum)
+                .set(MRKING_VOUCHER.RECEIVE_AMOUNT,couponNum)
+                .where(MRKING_VOUCHER.ID.eq(couponId))
+                .execute();
+        }
+    }
 }
