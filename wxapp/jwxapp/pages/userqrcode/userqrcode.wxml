@@ -4,5 +4,5 @@
     <view class="my_QrCode_container">
       <image src="{{ userQrCode }}"></image>
     </view>
-    <view wx:if="{{ userQrCode }}" class='btn_save_img' bindtap='bindSaveIamge'  style='background:{{comColor}}' data-user-qr-code="{{ userQrCode }}">保存图片到手机</view>
+    <view wx:if="{{ isOk }}" class='btn_save_img' bindtap='bindSaveIamge'  style='background:{{comColor}}' data-user-qr-code="{{ userQrCode }}">保存图片到手机</view>
 </view>

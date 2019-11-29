@@ -23,17 +23,14 @@ global.wxPage({
     var _this = this;
     util.api('/api/wxapp/user/qrcode', function (res) {
       if (res.status == 1) {
-        let imgStr = res.content.substr(res.content.indexOf('/upload'))
-        util.api('/api/wxapp/upayyun/image', function (d) {
-          if (d.error == 0) {
-            posterBase64 = d.content;
-            _this.setData({
-              isOk:false,
-              userQrCode: res.content
-            })
-          }
-        }, { image_path: imgStr });
+        _this.setData({
+          isOk: true,
+          userQrCode: res.image
+        })
       }else{
+        _this.setData({
+          isOk: false
+        })
         wx.showToast({
           title: res.msg,
           icon: 'none',
@@ -46,8 +43,8 @@ global.wxPage({
   },
 
   bindSaveIamge(e) {
-    if (posterBase64) {
-      util.base64ImageHandle(posterBase64, function (res) {
+    if (this.data.userQrCode) {
+      util.base64ImageHandle(this.data.userQrCode, function (res) {
         util.toast_success('保存成功');
       });
     } else {
