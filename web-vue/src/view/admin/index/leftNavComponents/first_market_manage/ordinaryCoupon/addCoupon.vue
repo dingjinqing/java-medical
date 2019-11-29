@@ -191,12 +191,12 @@
                     <div>
                       <el-radio
                         v-model="param.limitSurplusFlag"
-                        :label='1'
+                        :label='0'
                         :disabled="editType"
                       >{{ $t('ordinaryCoupon.surplusRadio1') }}</el-radio>
                       <span>
                         <el-input
-                          :disabled="param.limitSurplusFlag===1 && !editType ?false:true"
+                          :disabled="param.limitSurplusFlag===0 && !editType ?false:true"
                           v-model.number="param.totalAmount"
                           size="small"
                           class="small_input"
@@ -207,7 +207,7 @@
                     <div>
                       <el-radio
                         v-model="param.limitSurplusFlag"
-                        :label='0'
+                        :label='1'
                         :disabled="editType"
                       >{{ $t('ordinaryCoupon.surplusRadio2') }}</el-radio>
                     </div>
@@ -646,7 +646,7 @@ export default {
         validity: '',
         validityHour: '',
         validityMinute: '',
-        limitSurplusFlag: 0, // 初始库存
+        limitSurplusFlag: 1, // 初始库存
         totalAmount: null, // num发行量
         validationCode: '',
         recommendGoodsId: '', // 指定商品
@@ -877,7 +877,7 @@ export default {
             this.param.receiveNum = 0
           }
           // 发放的总数量
-          if (this.param.limitSurplusFlag === 0) {
+          if (this.param.limitSurplusFlag === 1) {
             this.param.totalAmount = 0
           } else {
             // this.param.limitSurplusFlag = this.param.totalAmount
