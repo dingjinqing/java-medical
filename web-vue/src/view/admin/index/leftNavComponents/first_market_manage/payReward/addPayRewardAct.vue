@@ -16,8 +16,8 @@
             trigger="click"
             height="573px"
             arrow="never"
-            :autoplay="false"
           >
+            <!-- :autoplay="false" -->
             <el-carousel-item
               v-for="(item,index) in carouselList"
               :key="index"
@@ -39,21 +39,30 @@
           <div class="title">活动配置</div>
           <el-form
             label-position="right"
-            label-width="102px"
+            label-width="113px"
+            ref="payRewardForm"
+            :rules="rules"
+            :model="params"
           >
             <el-form-item
               label="活动名称："
               style="margin-top:15px"
+              prop="activityNames"
             >
               <el-input
                 v-model="params.activityNames"
                 size="small"
-                style="width: 200px"
+                style="width: 170px"
                 placeholder="最多支持10个字"
+                maxlength="10"
+                show-word-limit
               ></el-input>
             </el-form-item>
 
-            <el-form-item label="活动有效期：">
+            <el-form-item
+              label="活动有效期："
+              prop="timeType"
+            >
               <div>
                 <el-radio
                   v-model="params.timeType"
@@ -61,24 +70,14 @@
                   style="margin-right: 20px;"
                 >固定时间</el-radio>
                 <el-date-picker
-                  v-model="params.startTime"
-                  type="datetime"
-                  placeholder="选择开始时间"
-                  style="width:130px"
+                  v-model="dateInterval"
+                  type="daterange"
+                  style="width:240px;"
                   size="small"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                >
-                </el-date-picker>
-                <span>至</span>
-                <el-date-picker
-                  v-model="params.endTime"
-                  type="datetime"
-                  placeholder="选择结束时间"
-                  style="width:130px"
-                  size="small"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                >
-                </el-date-picker>
+                  range-separator="至"
+                  start-placeholder="生效时间"
+                  end-placeholder="过期时间"
+                ></el-date-picker>
                 <div>
                   <el-radio
                     v-model="params.timeType"
@@ -88,20 +87,24 @@
               </div>
             </el-form-item>
 
-            <el-form-item label="优先级：">
+            <el-form-item
+              label="优先级："
+              prop="actFirst"
+            >
               <el-input
                 v-model="params.actFirst"
                 size="small"
-                style="width:200px"
+                style="width:170px"
               ></el-input>
-              <div style="line-height:30px;font-size:12px">用于区分不同支付有礼活动的优先级，请填写正整数，数值越大优先级越高</div>
+              <div class="tips">用于区分不同支付有礼活动的优先级，请填写正整数，数值越大优先级越高</div>
             </el-form-item>
 
             <el-form-item
               label="触发条件："
               class="triggerCondition"
+              prop="goodsAreaType"
             >
-              <span>以下条件为"且"的关系</span>
+              <span style="color: #999">以下条件为"且"的关系</span>
               <div>
                 <span>商品条件：</span>
                 <el-radio-group v-model="params.goodsAreaType">
@@ -141,13 +144,16 @@
               </div>
             </el-form-item>
 
-            <el-form-item label="参与限制：">
+            <el-form-item
+              label="参与限制："
+              prop="limitTimes"
+            >
               <div style="display: flex">
                 <span>每个用户可参加</span>
                 <el-input
                   v-model="params.limitTimes"
                   size="small"
-                  style="width: 100px"
+                  style="width: 100px;margin:0 5px"
                 ></el-input>
                 <span>次活动</span>
               </div>
@@ -189,9 +195,12 @@
               </div>
             </el-form-item>
 
-            <el-form-item label="支付奖励：">
+            <el-form-item
+              label="支付奖励："
+              required
+            >
               <el-radio-group
-                v-model="item.giftType"
+                v-model="params.awardList[index].giftType"
                 class="itemOptions"
               >
                 <div style="margin-top:13px">
@@ -212,80 +221,121 @@
             </el-form-item>
 
             <el-form-item
-              v-if="item.giftType==='2'"
+              v-if=" item.giftType==='2'"
               label="普通优惠券："
             >
               <div class="middleContainer">
-                <div
-                  v-for="(item,index) in item.ordinaryCoupon"
-                  :key="index"
-                  class="addInfo"
-                  style="margin-right: 5px;"
-                >
-                  <section
-                    class="couponImgWrapper"
+                <div>
+                  <div
+                    v-for="(item,index) in item.ordinaryCoupon"
+                    :key="index"
+                    class="addInfo"
+                    prop="awardList[index].ordinaryCoupon"
+                    required
+                  >
+                    <!-- :rules="{
+                      required: true, message: '请选择普通优惠', trigger: 'blur'
+                    }" -->
+                    <section
+                      class="couponImgWrapper"
+                      style="line-height: normal"
+                    >
+                      <div
+                        class="coupon_list_top"
+                        v-if="item.actCode==='voucher'"
+                      >
+                        <span>￥</span>
+                        <span>{{item.denomination}}</span>
+                      </div>
+                      <div
+                        class="coupon_list_top"
+                        v-if="item.actCode==='discount'"
+                      >
+                        <span style="font-size: 20px">{{item.denomination}}</span>
+                        <span style="font-size: 14px">折</span>
+                      </div>
+                      <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                      <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                      <div
+                        class="coupon_list_bottom"
+                        style="font-size:12px"
+                      >
+                        <span v-if="item.scoreNumber === 0">领取</span>
+                        <div v-if="item.scoreNumber !== 0">
+                          <span>{{item.scoreNumber}}</span>积分 兑换
+                        </div>
+                      </div>
+                    </section>
+                    <span
+                      @click="deleteCouponImg(index)"
+                      class="deleteIcon"
+                    >×</span>
+                  </div>
+                  <div
+                    class="addInfo"
+                    @click="handleToCallDialog1(index)"
                     style="line-height: normal"
                   >
-                    <div class="coupon_list_top">
-                      <span>￥</span>
-                      <span class="number">{{item.denomination}}</span>
-                    </div>
-                    <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                    <!-- <div class="coupon_center_limit">{{item.couponCenterLimit}}</div> -->
-                    <div class="coupon_center_number">剩余{{item.surplus}}张</div>
-                    <div
-                      class="coupon_list_bottom"
-                      style="font-size:12px"
-                    >领取</div>
-                  </section>
-                  <span
-                    @click="deleteCouponImg(index)"
-                    class="deleteIcon"
-                  >×</span>
-                </div>
-
-                <div
-                  class="addInfo"
-                  @click="handleToCallDialog1()"
-                  v-if="true"
-                  style="line-height: normal"
-                >
-                  <el-image
-                    fit="scale-down"
-                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                    style="width: 78px;height:78px;cursor:pointer"
-                  ></el-image>
-                  <p>{{$t('addBargainAct.addCoupon')}}</p>
+                    <el-image
+                      fit="scale-down"
+                      :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                      style="width: 78px;height:78px;cursor:pointer"
+                    ></el-image>
+                    <p>添加优惠券</p>
+                  </div>
                 </div>
               </div>
               <div class="textTips">最多可以添加5张优惠券，已过期和已停用的优惠券不能添加</div>
+
             </el-form-item>
 
             <el-form-item
-              v-if="item.giftType==='3'"
+              v-if=" params.awardList[index].giftType ==='3'"
               label="分裂优惠券："
             >
               <div class="middleContainer">
                 <div
-                  v-for="(item,index) in splitCoupon"
+                  v-for="(item,index) in params.awardList[index].splitCoupon"
                   :key="index"
                   class="addInfo"
-                  style="margin-right: 5px;"
                 >
                   <section
                     class="couponImgWrapper"
                     style="line-height: normal"
                   >
-                    <div class="coupon_list_top">
+                    <div
+                      class="coupon_list_top"
+                      v-if="item.actCode==='voucher'"
+                    >
                       <span>￥</span>
-                      <span class="number">{{item.denomination}}</span>
+                      <span>{{item.denomination}}</span>
+                    </div>
+                    <div
+                      class="coupon_list_top"
+                      v-else-if="item.actCode=='random'"
+                    >
+                      <span>￥</span>
+                      <span>{{item.randomMax}}</span>
+                      <span>最高</span>
+                    </div>
+                    <div
+                      class="coupon_list_top"
+                      v-else
+                    >
+                      <span style="font-size: 20px">{{item.denomination}}</span>
+                      <span style="font-size: 14px">折</span>
                     </div>
                     <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                     <div class="coupon_center_number">剩余{{item.surplus}}张</div>
                     <div
                       class="coupon_list_bottom"
                       style="font-size:12px"
-                    >领取</div>
+                    >
+                      <span v-if="item.scoreNumber === 0">领取</span>
+                      <div v-if="item.scoreNumber !== 0">
+                        <span>{{item.scoreNumber}}</span>积分 兑换
+                      </div>
+                    </div>
                   </section>
                   <span
                     @click="deleteCouponImg2(index)"
@@ -296,8 +346,8 @@
                 <div
                   class="addInfo"
                   @click="handleToCallDialog2()"
-                  v-if="splitCoupon.length < 1"
                   style="line-height: normal"
+                  v-if="params.awardList[0].splitCoupon.length < 1"
                 >
                   <el-image
                     fit="scale-down"
@@ -313,28 +363,38 @@
             <el-form-item
               v-if="item.giftType==='4'"
               label="幸运大抽奖："
+              class="luckyDraw"
+              prop="awardList[index].lotteryId"
+              :rules="{
+                required: true, message: '请选择幸运大抽奖活动', trigger: 'blur'
+              }"
             >
               <el-select
                 size="small"
                 style="width: 120px"
-                v-model="item.lotteryId"
+                v-model="params.awardList[index].lotteryId"
                 placeholder="请选择抽奖活动"
               >
                 <el-option
                   v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.id"
+                  :label="item.lotteryName"
+                  :value="item.id"
                 ></el-option>
-              </el-select>
+              </el-select>&nbsp;
+              <span>刷新</span> | <span @click="create">新建</span> | <span @click="manage">管理</span>
             </el-form-item>
 
             <el-form-item
-              v-if="item.giftType==='5'"
+              v-if="params.awardList[index].giftType==='5'"
               label="余额："
+              prop='awardList[index].accountNumber'
+              :rules="{
+                  required: true, message: '请选择余额', trigger: 'blur'
+                }"
             >
               <el-input
-                v-model="item.accountNumber"
+                v-model="params.awardList[index].accountNumber"
                 size="small"
                 style="width:120px"
                 placeholder="请输入余额"
@@ -344,6 +404,7 @@
             <el-form-item
               v-if="item.giftType==='6'"
               label="奖品："
+              required
             >
               <div
                 class="addGoods"
@@ -416,9 +477,13 @@
             <el-form-item
               v-if="item.giftType==='7'"
               label="积分："
+              prop="awardList[index].scoreNumber"
+              :rules="{
+                required: true, message: '请输入积分', trigger: 'blur'
+              }"
             >
               <el-input
-                v-model="item.scoreNumber"
+                v-model="params.awardList[index].scoreNumber"
                 size="small"
                 style="width:120px"
                 placeholder="请输入积分"
@@ -435,9 +500,9 @@
                   @click="handleImage"
                 >
                   <el-image
-                    :src="$imageHost + '/' + params.awardList[0].image"
+                    :src="$imageHost + '/' + params.awardList[index].image"
                     fit="contain"
-                    style="padding:4px; width:100%; height: 100%;"
+                    style=" width:100%; height: 100%;"
                   ></el-image>
                   <!-- <span class="logo_span">重新选择</span> -->
                 </div>
@@ -462,16 +527,20 @@
             <el-form-item
               v-if="item.giftType !== '1'"
               label="奖品份数："
+              prop="awardList[index].awardNumber"
+              :rules="{
+                required: true, message: '请输入奖品份数', trigger:'blur'
+              }"
             >
               <div>
                 <el-input
-                  v-model="item.awardNumber"
+                  v-model="params.awardList[index].awardNumber"
                   size="small"
                   style="width:100px"
                 ></el-input>
                 <span>份(已发0份) </span>
                 <span>填写0表示不限制</span>
-                <div>发放人数达到奖品份数，后续用户无法再获取支付奖励</div>
+                <div class="tips">发放人数达到奖品份数，后续用户无法再获取支付奖励</div>
               </div>
             </el-form-item>
           </el-form>
@@ -483,11 +552,28 @@
         <el-button
           size="small"
           type="primary"
-          @click="addActSave"
+          @click="actSave"
         >保存
         </el-button>
       </div>
     </div>
+
+    <!--添加普通优惠卷-->
+    <AddCouponDialog
+      @handleToCheck="addCouponHandle"
+      :tuneUpCoupon="addCouponVisible"
+      :couponBack="ordinaryCouponList"
+      :initCleanAllState="true"
+    />
+
+    <!--添加分裂优惠卷-->
+    <AddCouponDialog
+      @handleToCheck="addDisCouponHandle"
+      :tuneUpCoupon="showCouponDialog2"
+      :couponBack="disCouponIdList"
+      :singleElection="true"
+      :type="1"
+    />
 
     <!-- 选择商品弹窗 -->
     <ChoosingGoods />
@@ -511,14 +597,15 @@
 
     <!-- 选择链接弹窗 -->
     <SelectLinks
-      :tuneUpSelectLink="tuneUpSelectLink"
+      :tuneUpSelectLink="tuneUpSelectLinkDialog"
       @selectLinkPath='handleToSelectLinkPath'
     />
 
     <!--选择图片弹窗 -->
     <ImageDalog
       pageIndex='pictureSpace'
-      :tuneUp="tuneUp"
+      :tuneUp="tuneUpImageDialog"
+      :imageSize="[560,780]"
       @handleSelectImg='avatarSelectHandle'
     />
 
@@ -531,26 +618,13 @@
       :loadProduct="true"
     />
 
-    <!--添加普通优惠卷-->
-    <AddCouponDialog
-      @handleToCheck="handleToCheck"
-      :tuneUpCoupon="showCouponDialog"
-      :couponBack="couponIdList"
-    />
-
-    <!--添加分裂优惠卷-->
-    <AddCouponDialog
-      @handleToCheck="handleToCheck1"
-      :tuneUpCoupon="showCouponDialog2"
-      :couponBack="couponIdList"
-      :singleElection="true"
-    />
   </div>
 
 </template>
 
 <script>
-import { addPayRewardAct, updatePayReward, getPayRewardInfo } from '@/api/admin/marketManage/payReward.js'
+import { addPayRewardAct, updatePayReward, getPayRewardInfo, isGoingAct } from '@/api/admin/marketManage/payReward.js'
+import('@/util/date')
 
 export default {
   components: {
@@ -562,6 +636,7 @@ export default {
     AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   mounted () {
+    this.getIsGonigAct()
     if (this.$route.query.id > 0) {
       this.idInfo = this.$route.query.id
       this.fetchData()
@@ -577,6 +652,33 @@ export default {
     }
   },
   data () {
+    var validateSiForever = (rule, value, callback) => {
+      if (value === 1 && (!this.params.startTime || !this.params.endTime)) {
+        return callback(new Error('请选择活动生效时间'))
+      }
+      callback()
+    }
+    var validatelevel = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('请填写优先级'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写0或者正整数'))
+      } else {
+        callback()
+      }
+    }
+    var validateGoodsAreaType = (rule, value, callback) => {
+      console.log(value)
+      // var re = /^(0|\+?[1-9][0-9]*)$/
+      if (value === 1 && this.params.goodsAreaType === null) {
+        callback(new Error('请输入支付条件'))
+      } else if (value === 2 && this.params.goodsAreaType === null) {
+        callback(new Error('请选择参加活动的商品'))
+      } else {
+        callback()
+      }
+    }
     return {
       idInfo: null,
       carouselList: [
@@ -584,22 +686,7 @@ export default {
         { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift2.jpg' },
         { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift3.jpg' }
       ],
-      options: [{
-        value: 1,
-        label: '黄金糕'
-      }, {
-        value: 2,
-        label: '双皮奶'
-      }, {
-        value: 3,
-        label: '巧克力'
-      }, {
-        value: 4,
-        label: '冰淇淋'
-      }, {
-        value: 5,
-        label: '奶酪'
-      }],
+      options: [],
       noneBlockDiscArr: [
         { name: '添加商品', num: '' },
         { name: '添加商品分类', num: '' },
@@ -616,21 +703,23 @@ export default {
       ownBrandId: null,
       GoodsBrandDateArr: '',
       callAddBrand: false,
-      tuneUpSelectLink: false,
-      tuneUp: false,
+      tuneUpSelectLinkDialog: false,
+      tuneUpImageDialog: false,
       isShowChoosingGoodsDialog: false,
       showCouponDialog: false,
       showCouponDialog2: false,
       couponIdList: [],
-      // // 普通优惠券
-      // ordinaryCoupon: [],
-      // // 分裂优惠券
-      // splitCoupon: [],
-      // 优惠券弹窗区分，1普通优惠券，0分裂优惠券
+      ordinaryCouponList: [],
+      disCouponIdList: [],
+      addCouponVisible: false, // 优惠券
+      addDisCouponVisible: false, // 分裂优惠券
       currentPage1: 1,
+      currentModelIndex: 0,
       totalRows: null,
       dialogFlag: 1,
       imgHost: `${this.$imageHost}`,
+      dateInterval: [], // 时间范围
+      dialogFlags: '',
       params: {
         activityNames: '',
         startTime: '',
@@ -654,29 +743,38 @@ export default {
             accountNumber: '',
             scoreNumber: '',
             awardNumber: '',
+            // mrkingVoucherId: '',
             customLink: '',
             image: 'image/admin/btn_add.png',
             // 普通优惠券
             ordinaryCoupon: [],
             // 分裂优惠券
             splitCoupon: [],
-            couponList: [
-              // {
-              //   actCode: 'voucher',
-              //   denomination: 50,
-              //   id: 470,
-              //   randomMin: 0,
-              //   randomMax: 0,
-              //   couponCenterLimit: '满100使用',
-              //   couponCenterNumber: '111'
-              // }
-            ]
-            // couponIds: [
-            //   479,
-            //   476
-            // ]
+            couponList: []
           }
         ]
+      },
+      rules: {
+        activityNames: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+        timeType: [{ required: true, validator: validateSiForever }],
+        actFirst: { required: true, validator: validatelevel, trigger: 'blur' },
+        goodsAreaType: { required: true, validator: validateGoodsAreaType, trigger: 'change' },
+        limitTimes: { required: true, message: '请输入参与限制', trigger: 'blur' }
+        // lotteryId: { required: true, message: '请选择幸运大抽奖活动', triggger: 'blur' }
+        // 'item.giftType': { required: true }
+        // 'awardList[0].scoreNumber': { required: true }
+        // 'awardList[index].scoreNumber': { required: true }
+      }
+    }
+  },
+  watch: {
+    dateInterval: function (newVal) {
+      if (newVal) {
+        this.$set(this.params, 'startTime', newVal[0].format('yyyy-MM-dd hh:mm:ss'))
+        this.$set(this.params, 'endTime', newVal[1].format('yyyy-MM-dd hh:mm:ss'))
+      } else {
+        this.$set(this.params, 'startTime', '')
+        this.$set(this.params, 'endTime', '')
       }
     }
   },
@@ -691,6 +789,8 @@ export default {
         'accountNumber': '',
         'scoreNumber': '',
         'awardNumber': '',
+        'ordinaryCoupon': [],
+        'splitCoupon': [],
         'couponList': [
           {
             'actCode': '',
@@ -717,72 +817,59 @@ export default {
       console.log(index)
     },
 
-    // 普通优惠券和分裂优惠券处理
     // 普通优惠券弹窗调起
-    handleToCallDialog1 () {
-      this.dialogFlag = 0
-      console.log(this.params.awardList[0].ordinaryCoupon)
-      this.couponIdList = this.getCouponIdsArray(this.params.awardList[0].ordinaryCoupon)
-      this.showCouponDialog = !this.showCouponDialog
+    handleToCallDialog1 (currentIndex) {
+      console.log(currentIndex, 'currentIndex')
+      this.addCouponVisible = !this.addCouponVisible
+      this.currentModelIndex = currentIndex
     },
-    // 分裂优惠券弹窗调起
-    handleToCallDialog2 () {
-      this.dialogFlag = 1
-      this.couponIdList = this.getCouponIdsArray(this.splitCoupon)
-      this.showCouponDialog2 = !this.showCouponDialog2
+    // 普通优惠券数据处理回显处理
+    addCouponHandle (data) {
+      console.log('log awardList:', this.currentModelIndex, this.params.awardList, this.params.awardList[this.currentModelIndex].ordinaryCoupon)
+      // if (this.params.awardList[this.currentModelIndex].ordinaryCoupon.length >= 5) {
+      // } else {
+      this.params.awardList[this.currentModelIndex].ordinaryCoupon = data
+      // }
     },
-
-    // handleToCheck (data, index) {
-    //   console.log(data)
-    //   if (this.dialogFlag === 1) {
-    //     // console.log(this.splitCoupon)
-    //     if (this.splitCoupon.length === 1) {
-    //       return
-    //     }
-    //     this.splitCoupon = data
-    //     console.log(this.splitCoupon)
-    //   } else {
-    //     if (this.ordinaryCoupon.length >= 5) {
-    //       return
-    //     }
-    //     this.ordinaryCoupon = data
-    //     console.log(this.ordinaryCoupon)
-    //   }
-    // },
-    // 普通优惠券处理
-    handleToCheck (data) {
-      console.log(data)
-      console.log(this.params.awardList.ordinaryCoupon)
-      if (this.params.awardList[0].ordinaryCoupon.length >= 5) {
-      } else {
-        this.params.awardList.ordinaryCoupon[0] = data
-      }
-    },
-
-    // 分裂优惠券处理
-    handleToCheck1 (data, index) {
-      console.log(data, index)
-      if (this.splitCoupon.length === 1) {
-      } else {
-        this.splitCoupon = data
-      }
-    },
-
     // 删除普通优惠券
     deleteCouponImg (index) {
-      this.params.awardList.ordinaryCoupon.splice(index, 1)
-      // console.log(this.orderordinaryCoupon)
-    },
-    // 删除分裂优惠券
-    deleteCouponImg2 (index) {
-      this.splitCoupon.splice(index, 1)
+      let added = this.params.awardList[0].ordinaryCoupon.map(item => item.id)
+      this.ordinaryCouponList = added
+      // 删除之后优惠券弹框的展示
+      this.ordinaryCouponList.splice(index, 1)
+      // 删除之后优惠券的展示
+      this.params.awardList[0].ordinaryCoupon.splice(index, 1)
     },
 
-    // 获取选中优惠券的 id 和 index
-    getCouponIdsArray (data) {
-      let res = []
-      data.forEach((item, index) => {
-        res.push(item.id, index)
+    // 分裂优惠券弹窗调起
+    handleToCallDialog2 () {
+      this.showCouponDialog2 = !this.showCouponDialog2
+    },
+    // 分裂优惠券处理
+    addDisCouponHandle (disCouponData) {
+      console.log(disCouponData, 'disCouponData')
+      this.params.awardList[0].splitCoupon = disCouponData
+      // console.log(data)
+    },
+
+    // 删除分裂优惠券
+    deleteCouponImg2 (index) {
+      let splitCouponIdList = this.params.awardList[0].splitCoupon.map(item => item.id)
+      this.disCouponIdList = splitCouponIdList
+      this.disCouponIdList.splice(index, 1)
+      this.params.awardList[0].splitCoupon.splice(index, 1)
+    },
+
+    // 跳转到幸运大抽奖创建页面
+    create () {
+      this.$router.push({
+        path: '/admin/home/main/luckyDraw'
+      })
+    },
+
+    manage () {
+      this.$router.push({
+        path: '/admin/home/main/luckyDraw'
       })
     },
 
@@ -831,24 +918,25 @@ export default {
 
     // 调起链接弹窗
     chooseSelect () {
-      this.tuneUpSelectLink = !this.tuneUpSelectLink
+      this.tuneUpSelectLinkDialog = !this.tuneUpSelectLinkDialog
     },
 
     // 链接数据选中回传
-    handleToSelectLinkPath (link) {
-      this.params.awardList.customLink = link
+    handleToSelectLinkPath (link, index) {
+      console.log(link, 'link')
+      this.params.awardList[index].customLink = link
       console.log(this.params.awardList.customLink)
     },
 
     // 活动图片弹窗调起
     handleImage () {
-      this.tuneUp = !this.tuneUp
+      this.tuneUpImageDialog = !this.tuneUpImageDialog
     },
 
     // 活动图片替换
     avatarSelectHandle (val) {
-      this.params.awardList.image = val.imgPath
       console.log(val.imgPath)
+      this.params.awardList[0].image = val.imgPath
     },
 
     // 添加商品品牌弹窗
@@ -891,6 +979,11 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.handleData(res.content)
+          console.log(res.content)
+          this.params = Object.assign({}, this.params, res.content)
+          if (res.content.startTime && res.content.endTime) {
+            this.dateInterval = [new Date(res.content.startTime), new Date(res.content.endTime)]
+          }
         }
       }).catch(err => console.log(err))
     },
@@ -898,9 +991,9 @@ export default {
     // 对获取到的信息进行处理
     handleData (data) {
       this.params.activityNames = data.activityNames
-      this.params.startTime = data.startTime
-      this.params.endTime = data.endTime
-      this.params.timeType = data.timeType //  缺少时间类型字段
+      // this.params.startTime = data.startTime
+      // this.params.endTime = data.endTime
+      // this.params.timeType = data.timeType //  缺少时间类型字段
       this.params.actFirst = data.actFirst
       this.params.goodsAreaType = data.goodsAreaType
       // this.params.goodsIds = data.goodsIds
@@ -912,9 +1005,24 @@ export default {
     },
 
     // 添加支付有礼活动接口调用
-    addActSave () {
+    actSave () {
+      console.log(this.params, 'this.params')
       addPayRewardAct(this.params).then(res => {
         console.log(res)
+        if (res.error === 0) {
+          this.$message.success('保存成功')
+        } else {
+          this.$message.warning('保存失败')
+        }
+      }).catch(err => console.log(err))
+    },
+
+    getIsGonigAct () {
+      isGoingAct().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.options = res.content.dataList
+        }
       }).catch(err => console.log(err))
     },
 
@@ -943,18 +1051,17 @@ export default {
     background: #fff;
     padding: 40px 0 96px;
     .leftContent {
-      width: 323px;
+      width: 325px;
       height: 573px;
-      border: 1px solid #ccc;
       background: #f5f5f5;
       .titles {
         height: 55px;
         img {
-          width: 323px;
+          width: 324px;
         }
       }
       .carousel {
-        width: 323px;
+        width: 324px;
         height: 55px;
       }
     }
@@ -1021,10 +1128,6 @@ export default {
             border: 1px solid red;
           }
         }
-
-        // .order_form:first-child {
-        //   border-top: none;
-        // }
         .topOrder {
           border-top: 1px dashed #eee;
         }
@@ -1124,6 +1227,12 @@ export default {
         //   text-align: center;
         //   font-size: 12px;
         // }
+        .tips {
+          margin-top: 10px;
+          line-height: 1.4;
+          font-size: 12px;
+          color: #999;
+        }
         .middleContainer {
           display: flex;
           .deleteIcon {
@@ -1150,6 +1259,7 @@ export default {
           margin-bottom: 10px;
           background: #fff;
           border: 1px solid #e4e4e4;
+          margin-right: 20px;
           cursor: pointer;
           text-align: center;
           img {
@@ -1168,6 +1278,9 @@ export default {
             .coupon_list_top {
               margin-top: 10px;
               color: #f60;
+              span {
+                font-weight: bold;
+              }
               :nth-of-type(2) {
                 font-size: 20px;
                 font-weight: bold;
@@ -1211,6 +1324,11 @@ export default {
           color: #9a9a9a;
           border: none;
           margin-right: 10px;
+        }
+        .luckyDraw {
+          span {
+            cursor: pointer;
+          }
         }
       }
     }

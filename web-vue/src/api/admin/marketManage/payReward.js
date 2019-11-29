@@ -66,3 +66,12 @@ export function payRewardDetails (data) {
     data: data
   })
 }
+
+// 获取进行中的抽奖活动
+export function isGoingAct (data) {
+  return service({
+    url: '/api/admin/market/lottery/usablelist',
+    method: 'post',
+    data: data
+  })
+}
