@@ -303,11 +303,8 @@ global.wxPage({
       couponId: 0, // 优惠券预留字段 ，优惠券id
       discount: 0 // 优惠券减价
     }
-    console.log(params)
     util.api('/api/wxapp/store/service/submitReservation', function (res) {
       if (res.error === 0) {
-        console.log(res.content)
-        debugger
         if (typeof (res.content.timeStamp) != 'undefined') {
           wx.requestPayment({
             timeStamp: res.content.timeStamp, // 当前的时间戳
