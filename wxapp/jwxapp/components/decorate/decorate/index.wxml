@@ -1,4 +1,4 @@
-<view>
+<view id="decorate">
     <block wx:for="{{pageData}}" wx:key="key" wx:for-item="module">
        <!--搜索模块-->
        <v-search wx:if="{{module.component_name == 'v-search'}}" module="{{module}}" />

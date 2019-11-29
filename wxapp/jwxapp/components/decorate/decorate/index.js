@@ -23,6 +23,7 @@ global.wxComponent({
     // 处理模块渲染数据
     processModuleData(page_content) {
       if (!page_content) return;
+
       console.log(page_content, '111', module)
       let pageInfo = page_content.page_info || null;
       console.log(pageInfo)
@@ -61,6 +62,7 @@ global.wxComponent({
       this._pageData = pageData;
       // 加载详细信息
       this.loadMoreData();
+
       this.startLoadingMoreTimer();
     },
     // 加载详细信息
@@ -75,12 +77,12 @@ global.wxComponent({
       var count = Math.max(_loaded_len, d.length);
       var loadMore = false;
       var delayed = {};
-      console.log(this._loadIndex)
+      console.log(this._loadIndex, count)
       for (var i = this._loadIndex; i < count; i++) {
         console.log('循环次数', l, i)
         var key = "pageData[" + i + "]";
         if (!l[i]) {
-          console.log('测试')
+          console.log('测试', d[i])
           // 添加悬浮组件 和 其他固定数量模块
           if (!d[i].is_float) {
             if (number < 2) {
@@ -91,6 +93,7 @@ global.wxComponent({
               loadMore = true;
               number++;
               this._loadIndex = i + 1;
+              console.log(this._loadIndex)
               if (number == 2 && this._loadFloat) break;
             }
           } else {
@@ -113,6 +116,7 @@ global.wxComponent({
       this._loadFloat = true;
       this._loadedOk = !loadMore;
       if (this._loadedOk) this._loaded = this._pageData;
+      console.log(data)
       if (Object.keys(data).length > 0) {
         console.log("loadMore:", data);
         var _this = this;
@@ -171,6 +175,7 @@ global.wxComponent({
       return m;
     },
     detectLoadingMore() {
+      console.log('触发', this._gettingRect, this._loadedOk, this._windowHeight)
       if (this._gettingRect) return;
       if (this._loadedOk) return;
       if (!this._windowHeight) this._windowHeight = wx.getSystemInfoSync().windowHeight;
@@ -180,6 +185,7 @@ global.wxComponent({
       this.getRect("#decorate").then(function (rect) {
         console.log(rect)
         if (rect.height < _this._windowHeight || rect.bottom < _this._windowHeight * 1.5) {
+          console.log('detectLoadingMore 触发')
           _this.loadMoreData();
         }
         _this._gettingRect = false;
@@ -192,6 +198,7 @@ global.wxComponent({
       var _this = this;
       this.createTimer("interval", "load_more", function () {
         if (_this._loadedOk) return;
+        console.log('startLoadingMoreTimer 触发')
         _this.loadMoreData();
       }, 1000);
     },
