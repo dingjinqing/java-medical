@@ -2,11 +2,12 @@
 page {
   background: #f5f5f5;
 }
-view,text {
+view,text{
   box-sizing: border-box;
 }
 .container {
   position: relative;
+
   overflow: hidden;
 }
 .load_style{
@@ -19,8 +20,235 @@ view,text {
 .appointlist-box,.appoint-content,.appoint-btn,.appoint-nav {
   width: 100%;
 }
+
 .appoint-nav {
   height: 100rpx;
   background: #fff;
   border-top: 1rpx solid #f7f7f7;
+}
+
+.tabs-item.selected {
+  color:#f66;
+  border-bottom:2px solid #f66;
+}
+
+.tabs-item {
+  color:#353535;
+  font-size:26rpx;
+  box-sizing:border-box;
+  width: 30%; 
+  height: 100rpx; 
+  text-align: center;
+
+  line-height: 100rpx;
+  display: inline-block;
+}
+
+.appointlist-box {
+  margin: 3% 0;
+}
+
+.appoint-price {
+  color:#f66;
+  position: absolute;
+  bottom: 0;
+  left: 20rpx;
+  width: 100%;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+}
+
+
+.appoint-top {
+  height: 100rpx;
+  background: #fff;  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20rpx;
+}
+
+.top-center {
+  width: 50%;
+  display:flex;  
+  align-items:center;
+  font-size: 28rpx;
+  color: #353535;
+}
+
+.top-center text {
+  margin: 0% 6%;
+  font-size: 30rpx;
+}
+
+.top-right text {
+  font-size: 28rpx;
+  color: #f66;
+}
+
+.appoint-content {
+  background: #FAFAFA;
+  padding: 30rpx 20rpx;
+}
+
+.content-center {
+  position:relative;
+  float: left;
+  padding-left: 20rpx;
+  height: 156rpx;
+  width: 530rpx;
+}
+
+.content-center text {
+  font-size: 26rpx;
+  width: 100%;
+  text-overflow:ellipsis; 
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-all
+}
+
+.center-text {
+  color: #888;
+  margin:3% 0 8% 0;
+}
+
+.appoint-bottom {
+  height: 100rpx;  
+  background: #fff;
+  border-bottom:2rpx solid  #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20rpx;
+}
+
+.appoint-bottom .text1 {
+  font-size: 24rpx;
+  color: #888;
+}
+
+.appoint-bottom .text2 {
+  font-size: 26rpx;
+  color: #353535;
+}
+
+.appoint-btn {
+  height: 110rpx;  
+  background: #fff; 
+}
+
+.operation {
+  width: 130rpx;
+  height:60rpx;
+  margin:3% 3% 3% 0;
+
+  border: 2rpx solid #ccc;
+  float: right;
+
+  text-align: center;
+  
+}
+.operation button::after{
+  border: none;
+  border-radius: 0;
+}
+.operation button{
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+  padding: 0;
+  font-size: 26rpx;
+  line-height: 60rpx;
+  height: 60rpx;
+}
+.operation .cancel_btn{
+  border: 2rpx solid #ccc;
+}
+.operation .pays_btn{
+  border: 2rpx solid #f66;
+  color: #f66;
+}
+.operation text {
+  font-size: 26rpx;
+  color: #353535;
+  line-height: 60rpx;
+}
+.app_img{
+  width: 156rpx;
+  border: 1px solid #eee;
+  float: left;
+  height: 156rpx;
+}
+.app_img image{
+  width: 100%;
+}
+.shop_icon{
+  width: 50rpx;
+}
+.shop_arrow{
+  width: 12rpx
+}
+.order-goodsno-box {
+  padding-top: 300rpx;
+}
+.order-no{
+    padding: 10rpx 0px;
+    font-weight: normal;
+    text-align:centent;
+    margin: 0 auto;
+    width:100%;
+}
+.order-no-img {
+    padding-left:28%;
+    max-width:320rpx;
+    max-height: 200rpx;
+    margin: 0 auto;
+}
+.no-zi {
+    color: #b8b8b8;
+    text-align: center;
+    font-size: 26rpx;
+}
+.loading{
+  padding: 10rpx; 
+  text-align: center; 
+  font-size: 26rpx;
+}
+.loading:before{
+  display: inline-block; 
+  margin-right: 5rpx; 
+  vertical-align: middle; 
+  content: ''; 
+  width: 40rpx; 
+  height: 40rpx; 
+  
+  background-size: contain; 
+  animation: rotate 1s linear infinite; 
+}
+.loading.complete:before{
+  display: none; 
+}
+.appoint-price-t {
+  width:76rpx;
+  height:35rpx;
+  font-size:24rpx;
+  color:#E99130;
+  line-height:33rpx;
+  text-align:center;                                    
+  border:2rpx solid #F4C99F;
+  border-radius:7rpx;  
+  margin: 2px 5px 0 0;
+}
+.appoint-money {
+  font-size: 33rpx;
+  color:#f66;
+  margin-right: 20rpx;
+}
+.appoint-old-price{
+  color: #999;
+  font-size: 24rpx;
 }

@@ -1,13 +1,13 @@
 <!--pages1/appointlist/appointlist.wxml-->
-<include src="../common/header.wxml" />
+<include src="/pages/common/header.wxml" />
 <view class="main-container">
   <view class="container">
     <view class="appoint-nav">
       <scroll-view scroll-x="true" style="white-space:nowrap; display:flex;">
         <view
           wx:for="{{tabStatus}}" 
-          class="tab-item"
-          style="border-color:{{activeType === item.status?comColor:''}}; color:{{activeType === item.status? comColor: ''}}" 
+          class="tabs-item {{activeStatus === item.status?'selected':''}}"
+          style="border-color:{{activeStatus === item.status?comColor:''}}; color:{{activeStatus === item.status? comColor: ''}}" 
           bindtap="tabItemSwitch" 
           data-index="{{index}}"
           data-status="{{item.status}}"
@@ -19,4 +19,3 @@
     </view>
   </view>
 </view>
-<include src="../common/footer.wxml" />

@@ -214,6 +214,7 @@ global.wxPage({
       url: '/pages/orderlist/orderlist'
     })
   },
+  // 查看全部预约
   allReserve: function () {
     util.navigateTo({
       url: '/pages/appointlist/appointlist'

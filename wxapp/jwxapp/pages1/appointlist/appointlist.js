@@ -1,4 +1,6 @@
 // pages1/appointlist/appointlist.js
+let util = require('../../utils/util.js');
+
 global.wxPage({
 
   /**
@@ -12,14 +14,45 @@ global.wxPage({
       { name: '已取消', status: 2, num: '' },
       { name: '已完成', status: 3, num: '' }
     ],
-    activeType: 'all'
+    activeStatus: '',
+    appointInfo: {}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    this.getAllAppoint()
+  },
 
+  getAllAppoint () {
+    let that = this
+    util.api('/api/wxapp/store/service/reservationAllList', function (res) {
+      if (res.error === 0) {
+        console.log(res.content)
+        let appointInfo = res.content
+        if (appointInfo) {
+          let appoints = []
+          for (let item in appointInfo) {
+            appoints = appoints.concat(appointInfo[item])
+          }
+          appointInfo = appoints
+        }
+        that.setData({
+          appointInfo: appointInfo
+        })
+      } else {
+        util.showModal('提示', '列表错误', function () {
+          wx.navigateBack();
+        })
+      }
+    }, {
+      userId: util.getCache('user_id')
+    })
+  },
+
+  tabItemSwitch (e) {
+    console.log(e)
   },
 
   /**

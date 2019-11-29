@@ -151,7 +151,7 @@ global.wxPage({
         });
       } else {
         util.showModal("提示", res.message, function () {
-          wx.navigateBack({});
+          wx.navigateBack();
         });
       }
     }, { orderSn: orderSn, openid: openid, form_id: form_id })
