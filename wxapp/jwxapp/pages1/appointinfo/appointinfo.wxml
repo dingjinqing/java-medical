@@ -3,66 +3,57 @@
 <view class='main-container'>
   <view class="container">
     <!-- 状态 -->
-    <view class="status" style='color:{{comColor}}' wx:if="{{ order_info.order_status == 0 }}">
-      <text>待服务</text>
-    </view>
-    <view class='status' style='color:{{comColor}}' wx:if="{{ order_info.order_status == 2 }}">
-      <text>已完成</text>
-    </view>
-    <view class='status' style='color:{{comColor}}' wx:if="{{ order_info.order_status == 1 }}">
-      <text>已取消</text>
-    </view>
-    <view class='status' style='color:{{comColor}}' wx:if="{{ order_info.order_status == 3 }}">
-      <text>待付款</text>
+    <view class='status' style='color:{{comColor}}'>
+      <text>{{orderInfo.orderStatusName}}</text>
     </view>
     <!-- 状态END -->
     <!-- 到店时间 -->
     <view class="arrive-time">
-      <view wx:if="{{order_info.technician_name}}">
-        预约{{order_info.technician_title}}：{{order_info.technician_name}}
+      <view wx:if="{{orderInfo.technician_name}}">
+        预约{{orderInfo.technician_title}}：{{orderInfo.technician_name}}
       </view>
-      <view>预约到店时间：{{order_info.service_date}} {{order_info.service_period}}</view>
+      <view>预约到店时间：{{orderInfo.serviceDate}} {{orderInfo.servicePeriod}}</view>
       <view class="time-btm">
-        <view>预约门店地址：{{order_info.address}}</view>
+        <view>预约门店地址：{{orderInfo.address}}</view>
         <view class="look-map" bindtap="showMap">查看地图</view>
       </view>
     </view>
     <!-- 到店时间END -->
     <!-- 门店信息 -->
     <view class="appointlist-box">
-      <view class="appoint-top" data-store_id="{{order_info.store_id}}" bindtap='goStore'>
+      <view class="appoint-top" data-storeId="{{orderInfo.storeId}}" bindtap='goStore'>
         <view class="top-center">
-          <image src="{{order_info.main_imgss}}" style="width:50rpx;height:50rpx;"></image>
+          <image src="{{orderInfo.storeImg}}" style="width:50rpx;height:50rpx;"></image>
         </view>
-        <view>{{order_info.store_name}}</view>
+        <view>{{orderInfo.storeName}}</view>
         <view class="top-right">
           <image src="{{img_arrow}}" style="width:16rpx;height:32rpx;"></image>
         </view>
       </view>
       <view class="appoint-content">
-        <view class='ac_left' bindtap='toDetail' data-id="{{order_info.service_id}}">
-          <image src="{{order_info.service_img[0]}}" style="width:152rpx;height:152rpx;"></image>
+        <view class='ac_left' bindtap='toDetail' data-id="{{orderInfo.serviceId}}">
+          <image src="{{orderInfo.serviceImg}}" style="width:152rpx;height:152rpx;"></image>
         </view>
         <view class="ac_right">
           <view class='ar_names'>
-            <text>{{order_info.service_name}}</text>
+            <text>{{orderInfo.serviceName}}</text>
           </view>
-          <block wx:if="{{order_info.money_paid>0}}">
+          <block wx:if="{{orderInfo.money_paid>0}}">
             <view class='appoine_bottom'>
               <view class="appoint-price" style="color:{{linColor}};border-color:{{linColor}}">
                 订金
               </view>
               <view class="appoint-money" style='color:{{comColor}}'>
                 <text style='font-size:28rpx;'>￥</text>
-                {{order_info.money_paid}}
+                {{orderInfo.money_paid}}
               </view>
-              <view class='all-price'>服务总价：￥{{order_info.service_price}}</view>
+              <view class='all-price'>服务总价：￥{{orderInfo.servicePrice}}</view>
             </view>
           </block>
           <block wx:else>
             <view class='appoine_bottom'>
-              <view class="appoint-money" style='color:{{comColor}}' wx:if='{{order_info.service_price>0}}'>
-                ￥{{order_info.service_price}}
+              <view class="appoint-money" style='color:{{comColor}}' wx:if='{{orderInfo.servicePrice>0}}'>
+                ￥{{orderInfo.servicePrice}}
               </view>
             </view>
           </block>
@@ -71,41 +62,41 @@
     </view>
     <!-- 门店信息 -->
     <!-- 核销 -->
-    <view class="verification" wx:if="{{ order_info.order_status == 0 || order_info.order_status == 2}}">
+    <view class="verification" wx:if="{{ orderInfo.orderStatus == 0 || orderInfo.orderStatus == 2}}">
       <view class="veri-text">
-        <text>核销码：{{order_info.verify_code}}</text>
+        <text>核销码：{{orderInfo.verifyCode}}</text>
       </view>
       <view class="two-code-view">
-        <image class="two-code" src="{{order_info.verify_code_img}}"></image>
+        <image class="two-code" src="{{orderInfo.verifyCodeImg}}"></image>
       </view>
     </view>
     <!-- 核销END -->
     <!-- 订单信息 -->
     <view class="order-info">
-      <view>订单编号：{{order_info.order_sn}}</view>
-      <view>下单时间：{{order_info.add_time}}</view>
+      <view>订单编号：{{orderInfo.orderSn}}</view>
+      <view>下单时间：{{orderInfo.createTime}}</view>
     </view>
     <!-- 订单信息END -->
   </view>
 </view>
 <include src="/pages/common/footer.wxml" />
 <!-- 确认完成 -->
-<view class="confirm-complete" wx:if="{{ order_info.order_status == 0 || order_info.order_status == 2 || order_info.order_status == 3}}" style='height:{{isIpx == 1?"140rpx;":"80rpx;"}}'>
-  <view class="del-appoint" bindtap='toCancel' data-mobile="{{order_info.mobile}}" wx:if="{{order_info.order_status == 0}}">
+<view class="confirm-complete" wx:if="{{ orderInfo.orderStatus == 0 || orderInfo.orderStatus == 2 || orderInfo.orderStatus == 3}}" style='height:{{isIpx == 1?"140rpx;":"80rpx;"}}'>
+  <view class="del-appoint" bindtap='toCancel' data-mobile="{{orderInfo.mobile}}" wx:if="{{orderInfo.orderStatus == 0}}">
     取消预约
   </view>
-  <form report-submit='true' bindsubmit='toTrueCancel' wx:if="{{ order_info.order_status == 3 }}" data-order_sn="{{order_info.order_sn}}">
+  <form report-submit='true' bindsubmit='toTrueCancel' wx:if="{{ orderInfo.orderStatus == 3 }}" data-orderSn="{{orderInfo.orderSn}}">
     <button class="del-appoint del_btns" formType='submit'>取消预约</button>
   </form>
-  <view class="del-appoint" bindtap='ser_comment' data-store_id="{{order_info.store_id}}" data-order_sn="{{order_info.order_sn}}" wx:if="{{ order_info.order_status == 2 }}">
+  <view class="del-appoint" bindtap='toComment' data-storeId="{{orderInfo.storeId}}" data-orderSn="{{orderInfo.orderSn}}" wx:if="{{ orderInfo.orderStatus == 2 }}">
     评价预约
   </view>
-  <form report-submit='true' bindsubmit='toConfirm' wx:if="{{ order_info.order_status == 0 }}" data-order_sn="{{order_info.order_sn}}">
+  <form report-submit='true' bindsubmit='toConfirm' wx:if="{{ orderInfo.orderStatus == 0 }}">
     <button class="confirm wancheng_btn" formType='submit' style="color:{{comColor}};border-color:{{comColor}}">
       确认完成
     </button>
   </form>
-  <form report-submit='true' bindsubmit='toPay' wx:if="{{ order_info.order_status == 3 }}" data-order_sn="{{order_info.order_sn}}">
+  <form report-submit='true' bindsubmit='toPay' wx:if="{{ orderInfo.orderStatus == 3 }}" data-orderSn="{{orderInfo.orderSn}}">
     <button class="confirm wancheng_btn" formType='submit' style="color:{{comColor}};border-color:{{comColor}}">
       去支付
     </button>

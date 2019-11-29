@@ -56,7 +56,8 @@
         "comment/comment",
         "history/history",
         "appointorder/appointorder",
-        "appointinfo/appointinfo"
+        "appointinfo/appointinfo",
+        "appointlist/appointlist"
       ]
     }
   ],
