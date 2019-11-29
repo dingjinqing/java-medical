@@ -21,6 +21,7 @@ public class ReservationDetail {
     // 门店信息
     private Integer storeId;
     private String storeName;
+    private String storeImgs;
     private String storeImg;
     private String provinceCode;
     private String cityCode;

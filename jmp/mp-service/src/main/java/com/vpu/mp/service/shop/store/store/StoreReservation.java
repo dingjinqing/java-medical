@@ -5,7 +5,6 @@ import com.vpu.mp.db.shop.tables.records.CommentServiceRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -37,6 +36,7 @@ import com.vpu.mp.service.shop.user.message.WechatMessageTemplateService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -489,7 +489,14 @@ public class StoreReservation extends ShopBaseService {
      * @return the reservation detail
      */
     public ReservationDetail getReservationDetail(ReservationDetail param) {
-        Iterator<ReservationDetail> iterator = getReservationDetail(SERVICE_ORDER.ORDER_SN.eq(param.getOrderSn()), ReservationDetail.class).iterator();
+        List<ReservationDetail> list = getReservationDetail(SERVICE_ORDER.ORDER_SN.eq(param.getOrderSn()), ReservationDetail.class);
+        list.forEach((e) -> {
+            // 门店图片中选一张作为主图
+            List<String> imgs = Util.json2Object(e.getStoreImgs(), new TypeReference<List<String>>() {
+            }, false);
+            e.setStoreImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
+        });
+        Iterator<ReservationDetail> iterator = list.iterator();
         if (iterator.hasNext()) {
             return iterator.next();
         }
@@ -503,7 +510,14 @@ public class StoreReservation extends ShopBaseService {
      * @return the reservation detail
      */
     public ReservationDetail getReservationDetail(Integer orderId) {
-        Iterator<ReservationDetail> iterator = getReservationDetail(SERVICE_ORDER.ORDER_ID.eq(orderId), ReservationDetail.class).iterator();
+        List<ReservationDetail> list = getReservationDetail(SERVICE_ORDER.ORDER_ID.eq(orderId), ReservationDetail.class);
+        list.forEach((e) -> {
+            // 门店图片中选一张作为主图
+            List<String> imgs = Util.json2Object(e.getStoreImgs(), new TypeReference<List<String>>() {
+            }, false);
+            e.setStoreImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
+        });
+        Iterator<ReservationDetail> iterator = list.iterator();
         if (iterator.hasNext()) {
             return iterator.next();
         }
@@ -536,7 +550,7 @@ public class StoreReservation extends ShopBaseService {
             , STORE_SERVICE.SERVICE_SUBSIST
             , STORE_SERVICE.SERVICE_IMG
             , STORE.STORE_NAME
-            , DslPlus.jsonExtract(STORE.STORE_IMGS, "$[0]").as("storeImg")
+            , STORE.STORE_IMGS
             , STORE.PROVINCE_CODE
             , STORE.CITY_CODE
             , STORE.DISTRICT_CODE
@@ -582,6 +596,10 @@ public class StoreReservation extends ShopBaseService {
     public Map<Byte, List<ReservationListVo>> reservationList(Integer userId) {
         List<ReservationListVo> list = getReservationDetail(SERVICE_ORDER.USER_ID.eq(userId), ReservationListVo.class);
         list.forEach((e) -> {
+            // 门店图片中选一张作为主图
+            List<String> imgs = Util.json2Object(e.getStoreImgs(), new TypeReference<List<String>>() {
+            }, false);
+            e.setStoreImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
             if (commentService.isComment(e.getOrderSn())) {
                 e.setFlag(BYTE_ONE);
             }

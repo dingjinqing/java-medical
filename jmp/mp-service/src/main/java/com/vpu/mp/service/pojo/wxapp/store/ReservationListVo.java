@@ -16,6 +16,7 @@ public class ReservationListVo {
     // 门店信息
     private Integer storeId;
     private String storeName;
+    private String storeImgs;
     private String storeImg;
 
     // 服务信息
