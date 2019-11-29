@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class OrderListMpVo{
     private Byte deliverType;
     /** 主支付方式 */
     private String payCode;
+    /**实际付款*/
+    private BigDecimal moneyPaid;
 	@JsonIgnore
 	private String goodsType;
 	private Byte bkOrderPaid;

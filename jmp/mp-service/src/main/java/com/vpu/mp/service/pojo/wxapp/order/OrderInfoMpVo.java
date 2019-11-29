@@ -53,6 +53,12 @@ public class OrderInfoMpVo extends OrderListMpVo{
 	private BigDecimal useAccount;
 	/**会员卡消费金额*/
 	private BigDecimal memberCardBalance;
+	/**会员卡优惠金额*/
+    private BigDecimal memberCardReduce;
+    /**优惠券优惠金额*/
+    private BigDecimal discount;
+    /**运费*/
+    private BigDecimal shippingFee;
 	@JsonIgnore
 	private BigDecimal subGoodsPrice;
 	@JsonIgnore
