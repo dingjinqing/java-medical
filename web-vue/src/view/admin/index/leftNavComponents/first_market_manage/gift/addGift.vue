@@ -185,7 +185,7 @@
                     <el-option
                       v-for="item in cardList"
                       :key="item.id"
-                      :label="item.cardName"
+                      :label="item.name"
                       :value="item.id"
                     >
                     </el-option>
@@ -431,8 +431,7 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import status from '@/components/admin/marketManage/status/status'
 // import { format, range } from '@/util/date'
 // import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
-import { allCardApi } from '@/api/admin/marketManage/messagePush'
-import { addGift, getGiftDetail, updateGift, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
+import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getProductDetail } from '@/api/admin/marketManage/gift'
 
 export default {
   components: {
@@ -522,8 +521,7 @@ export default {
     }
     // 付款时间
     var validatPayDateRange = (rule, value, callback) => {
-      console.log(value)
-      if ((value.length === 0 || value === null) && this.contains(6)) {
+      if ((!value || value === null || value.length === 0) && this.contains(6)) {
         callback(new Error('请选择付款时间'))
       } else {
         callback()
@@ -650,7 +648,7 @@ export default {
       }
     })
     // 获取会员卡数据
-    allCardApi().then((res) => {
+    getMemberCardList().then((res) => {
       if (res.error === 0) {
         this.cardList = res.content
       }
