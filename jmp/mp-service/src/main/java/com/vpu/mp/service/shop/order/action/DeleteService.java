@@ -6,7 +6,6 @@ import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
@@ -16,12 +15,14 @@ import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import org.springframework.stereotype.Component;
 
 /**
  * 删除订单
  * @author 王帅
  *
  */
+@Component
 public class DeleteService  extends ShopBaseService implements IorderOperate <OrderOperateQueryParam,OrderOperateQueryParam>{
 
 	@Autowired
@@ -36,7 +37,7 @@ public class DeleteService  extends ShopBaseService implements IorderOperate <Or
 	}
 
 	@Override
-	public Object query(OrderOperateQueryParam param) throws MpException {
+	public Object query(OrderOperateQueryParam param) {
 		return null;
 	}
 

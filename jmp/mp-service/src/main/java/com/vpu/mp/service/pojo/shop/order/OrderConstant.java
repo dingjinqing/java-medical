@@ -28,6 +28,9 @@ public class OrderConstant {
     /**return sn 前缀*/
     public final static String RETURN_SN_PREFIX = "R";
 
+    /**定金 sn 后缀*/
+    public final static String BK_SN_SUFFIX = "_BK";
+
 	/** 订单状态order_status */
 	/** 待付款 可进行操作：关闭订单 */
 	public final static byte ORDER_WAIT_PAY = 0;

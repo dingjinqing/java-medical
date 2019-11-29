@@ -18,7 +18,7 @@ import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
@@ -60,7 +60,7 @@ import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
  * @author 王帅
  *
  */
-@Service
+@Component
 public class ReturnService extends ShopBaseService implements IorderOperate<OrderOperateQueryParam, RefundParam> {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());

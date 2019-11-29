@@ -39,9 +39,8 @@ import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.exception.DataAccessException;
-import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
@@ -74,7 +73,7 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
  * @author: ws
  * @create: 2019-10-23 16:15
  **/
-@Service
+@Component
 public class CreateService extends ShopBaseService implements IorderOperate<OrderBeforeParam, CreateParam> {
 
     @Autowired
@@ -245,7 +244,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //TODO 欧派、嗨购、CRM、自动同步订单微信购物单
         try {
-            createVo.setWebPayVo(orderPay.isContinuePay(orderAfterRecord, orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), param.getActivityType()));
+            createVo.setWebPayVo(orderPay.isContinuePay(orderAfterRecord, orderAfterRecord.getOrderSn(), orderAfterRecord.getMoneyPaid(), orderPay.getGoodsNameForPay(orderAfterRecord, orderBo.getOrderGoodsBo()), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), param.getActivityType()));
             return ExecuteResult.create(createVo);
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode());

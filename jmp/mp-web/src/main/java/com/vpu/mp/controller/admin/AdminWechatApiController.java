@@ -278,7 +278,6 @@ public class AdminWechatApiController extends AdminBaseController {
 	
 	/**
 	 * 获取绑定店铺的二维码
-	 * @param appId 公众号的appid
 	 * @return
 	 */
 	@GetMapping("/api/admin/public/service/bind/getOfficialQrCode")

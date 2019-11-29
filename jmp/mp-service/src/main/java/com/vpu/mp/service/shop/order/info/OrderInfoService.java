@@ -740,8 +740,20 @@ public class OrderInfoService extends ShopBaseService {
         return order;
     }
 
-    public void updatePrepayId(String prepayId, Integer orderId){
-	    db().update(TABLE).set(TABLE.PREPAY_ID, prepayId).where(TABLE.ORDER_ID.eq(orderId)).execute();
+    /**
+     * 微信支付完成支付数据更新到订单
+     * @param prepayId 预支付id
+     * @param orderId 订单id
+     * @param orderSn bk特殊
+     */
+    public void updatePrepayId(String prepayId, Integer orderId, String orderSn){
+	    if(orderSn.endsWith(OrderConstant.BK_SN_SUFFIX)) {
+            db().update(TABLE).set(TABLE.BK_PREPAY_ID, prepayId)
+                .set(TABLE.BK_ORDER_SN, orderSn)
+                .where(TABLE.ORDER_ID.eq(orderId)).execute();
+        }else {
+            db().update(TABLE).set(TABLE.PREPAY_ID, prepayId).where(TABLE.ORDER_ID.eq(orderId)).execute();
+        }
     }
 	/**
 	 * 根据用户id获取累计消费金额

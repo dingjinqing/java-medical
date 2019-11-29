@@ -36,6 +36,7 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -129,7 +130,16 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         CreateOrderVo result = new CreateOrderVo();
         result.setOrderSn(order.getOrderSn());
         try {
-            result.setWebPayVo(orderPay.isContinuePay(order, orderPay.getGoodsNameForPay(order, orderGoodsRecord.into(OrderGoodsBo.class)), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), null));
+            String orderSn;
+            BigDecimal money;
+            if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_BARGIAN) && order.getBkOrderPaid().equals(OrderConstant.BK_PAY_FRONT)) {
+                orderSn = order.getOrderSn() + OrderConstant.BK_SN_SUFFIX;
+                money = order.getBkOrderMoney();
+            }else {
+                orderSn = order.getOrderSn();
+                money = order.getMoneyPaid();
+            }
+            result.setWebPayVo(orderPay.isContinuePay(order, orderSn, money, orderPay.getGoodsNameForPay(order, orderGoodsRecord.into(OrderGoodsBo.class)), param.getClientIp(), param.getWxUserInfo().getWxUser().getOpenId(), null));
             return ExecuteResult.create(result);
         } catch (MpException e) {
             return ExecuteResult.create(e);
