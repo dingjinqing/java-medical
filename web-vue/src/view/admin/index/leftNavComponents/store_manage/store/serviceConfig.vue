@@ -9,9 +9,12 @@
       <div class="settingContent">
         <div
           class="Jurisdiction"
-          @click="handleToJurisdiction()"
+          @click.capture="handleToJurisdiction(true)"
         >
-          <el-radio-group v-model="param.store_buy">
+          <el-radio-group
+            :disabled="radioDisabled"
+            v-model="param.store_buy"
+          >
             <el-radio :label="0">{{$t('serviceConfig.inactived')}}</el-radio>
             <el-radio :label="1">{{$t('serviceConfig.activated')}}</el-radio>
           </el-radio-group>
@@ -41,11 +44,15 @@
         <span></span>
         {{$t('serviceConfig.titleconfig')}}
       </div>
-      <div class="settingContent">
+      <div
+        class="settingContent"
+        @click="handleToJurisdiction(true)"
+      >
         <el-input
           size="small"
           class="inputWidth"
           v-model="param.technician_title"
+          :disabled="inputDisabled"
         ></el-input>
       </div>
     </section>
@@ -165,6 +172,7 @@
 </template>
 
 <script>
+import { judgeJurisdictionRequest } from '@/api/admin/util.js'
 import pagination from '@/components/admin/pagination/pagination'
 import { getServiceConfig, updateServiceConfig } from '@/api/admin/storeManage/storemanage/serviceManage'
 import { storeList } from '@/api/admin/storeManage/store'
@@ -174,6 +182,8 @@ export default {
   },
   mounted () {
     this.langDefault()
+    // 判断门店买单radio权限
+    this.handleToJurisdiction(false)
   },
   created () {
     this.initData()
@@ -191,7 +201,9 @@ export default {
         store_scan_ids: '',
         technician_title: '',
         store_scan_num: ''
-      }
+      },
+      radioDisabled: false, // 门店买单 radio disbaled
+      inputDisabled: false // 职称配置input disbaled
     }
   },
   methods: {
@@ -315,8 +327,29 @@ export default {
       console.log()
     },
     // 门店买单判断权限
-    handleToJurisdiction () {
-
+    handleToJurisdiction (flag) {
+      let vsNameArr = ['store_pay', 'technician']
+      vsNameArr.forEach((item, index) => {
+        judgeJurisdictionRequest({
+          'V-EnName': 'store_service_config',
+          'V-VsName': item
+        }).then(res => {
+          console.log(res, flag)
+          if (res.error === 10031) {
+            if (index) {
+              this.inputDisabled = true
+              if (flag) {
+                this.$http.$emit('jurisdictionDialog')
+              }
+            } else {
+              this.radioDisabled = true
+              if (flag) {
+                this.$http.$emit('jurisdictionDialog')
+              }
+            }
+          }
+        })
+      })
     }
   }
 }

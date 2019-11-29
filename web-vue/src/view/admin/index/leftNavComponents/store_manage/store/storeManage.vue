@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { judgeJurisdictionRequest } from '@/api/admin/util.js'
 export default {
   data () {
     return {
@@ -80,12 +81,22 @@ export default {
           })
           break
         case 'third':
-          this.$router.push({
-            name: 'store_storemanage_technician_list',
-            query: {
-              id: this.id,
-              businessHours: this.businessHours,
-              businessType: this.businessType
+          console.log('触发')
+          judgeJurisdictionRequest({
+            'V-EnName': 'store_service_config',
+            'V-VsName': 'service'
+          }).then(res => {
+            if (res.error === 0) {
+              this.$router.push({
+                name: 'store_storemanage_technician_list',
+                query: {
+                  id: this.id,
+                  businessHours: this.businessHours,
+                  businessType: this.businessType
+                }
+              })
+            } else if (res.error === 10031) {
+              this.$http.$emit('jurisdictionDialog')
             }
           })
           break
