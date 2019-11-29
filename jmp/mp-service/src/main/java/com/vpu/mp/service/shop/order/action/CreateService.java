@@ -38,6 +38,7 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -881,7 +882,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //TODO 壮壮需要修改
         Byte scorePayLimit = scoreCfg.getScorePayLimit();
         Integer scorePayNum = null;
-        if(scorePayLimit != null){
+        if(NumberUtils.BYTE_ONE.equals(scorePayLimit)){
             scorePayNum = scoreCfg.getScorePayNum();
         }
         vo.setScorePayLimit(scorePayLimit);
