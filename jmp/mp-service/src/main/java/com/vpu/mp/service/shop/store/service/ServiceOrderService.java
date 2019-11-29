@@ -545,7 +545,7 @@ public class ServiceOrderService extends ShopBaseService {
      * @param userId
      * @return
      */
-    public Record getUserLastOrderInfo(Integer userId) {
+    public StoreUserCertVo getUserLastOrderInfo(Integer userId) {
         Result<Record> fetch = db().select(SERVICE_ORDER.asterisk(), STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_PRICE,
             STORE_SERVICE.SERVICE_SUBSIST, STORE_SERVICE.SERVICE_IMG, STORE.STORE_NAME, STORE.LATITUDE,
             STORE.LONGITUDE, STORE.ADDRESS, STORE.DISTRICT_CODE).from(SERVICE_ORDER).leftJoin(STORE_SERVICE)
@@ -555,7 +555,7 @@ public class ServiceOrderService extends ShopBaseService {
         if (fetch.size() == 0) {
             return null;
         } else {
-            return fetch.get(0);
+            return fetch.get(0).into(StoreUserCertVo.class);
         }
     }
 
