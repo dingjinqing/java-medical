@@ -270,6 +270,10 @@ public class JsonResultMessage {
     public static final String WX_9300532 = "wx.ma.under.review";
     public static final String SEARCHCFG_HOTWORDS_LIMIT = "searchcfg.hotwords.limit";
     public static final String SEARCHCFG_TITLECUSTOM_NOTNULL = "searchcfg.titleCustom.not.null";
+	public static final String WX_GETQRCODE_FAIL = "wx.getqrcode.fail";
+	public static final String WX_READQRCODE_FAIL = "wx.readqrcode.fail";
+	public static final String WX_GETHEAD_FAIL = "wx.gethead.fail";
+	public static final String WX_GETBG_FAIL =  "wx.getbg.fail";
 
 	/**
 	 * 门店管理

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.PictorialRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.ImageUtil;
@@ -58,7 +59,7 @@ public class UserCenterTraitService extends ShopBaseService {
 			loadFile = Util.loadFile("image/wxapp/user_background.png");
 			backgroundImage = ImageIO.read(loadFile);
 		} catch (IOException e) {
-			vo.setMsg("获取背景图失败");
+			vo.setMsg(JsonResultCode.WX_GETBG_FAIL);
 			vo.setStatus(PSTATUS_ZERO);
 			logger().error(e.getMessage(), e);
 			return vo;
@@ -79,7 +80,8 @@ public class UserCenterTraitService extends ShopBaseService {
 		// 获取微信二维码地址
 		String mpQrCode = user.qrCode.getMpQrCode(QrCodeTypeEnum.INVITE, "invite_id=" + userId);
 		if (StringUtils.isEmpty(mpQrCode)) {
-			vo.setMsg("小程序获取二维码失败");
+			//小程序获取二维码失败
+			vo.setMsg(JsonResultCode.WX_GETQRCODE_FAIL);
 			vo.setStatus(PSTATUS_ZERO);
 			return vo;
 		}
@@ -89,7 +91,8 @@ public class UserCenterTraitService extends ShopBaseService {
 		try {
 			qrCodeImage = ImageIO.read(new URL(mpQrCode));
 		} catch (Exception e) {
-			vo.setMsg("小程序读取二维码失败");
+			//小程序读取二维码失败
+			vo.setMsg(JsonResultCode.WX_READQRCODE_FAIL);
 			vo.setStatus(PSTATUS_ZERO);
 			logger().error(e.getMessage(), e);
 			return vo;
@@ -100,7 +103,8 @@ public class UserCenterTraitService extends ShopBaseService {
 		try {
 			avatarImage = ImageIO.read(new URL(userInfo.getUserAvatar()));
 		} catch (Exception e) {
-			vo.setMsg("小程序获取头像失败");
+			//小程序获取头像失败 
+			vo.setMsg(JsonResultCode.WX_GETHEAD_FAIL);
 			vo.setStatus(PSTATUS_ZERO);
 			logger().error(e.getMessage(), e);
 			return vo;
@@ -125,13 +129,7 @@ public class UserCenterTraitService extends ShopBaseService {
 		// 合并二维码图片
 		ImageUtil.addTwoImage(backgroundImage, qrCodeImage, 100, 260);
 
-		String saveFileName = "pictorial_" + userId + "_" + DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE)
-				+ ".png";
-		logger().info("userId: " + userId + "  保存文件名" + saveFileName);
-		// 文件地址
-		String imgDir = "upload/" + getShopId() + "/pictorial/userqrcode/";
-		String filePath = imgDir + saveFileName;
-		logger().info("userId: " + userId + "  保存相对路径" + filePath);
+		logger().info("开始转换成base64");
 		String base64 = ImageUtil.toBase64(backgroundImage);
 		vo.setImage(base64);
 		vo.setStatus(PSTATUS_ONE);

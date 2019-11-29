@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.image;
 
-import lombok.Builder;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+
 import lombok.Data;
 
 /**
@@ -13,5 +14,5 @@ import lombok.Data;
 public class UserCenterTraitVo {
 	private Byte status;
 	private String image;
-	private String msg;
+	private JsonResultCode msg;
 }
