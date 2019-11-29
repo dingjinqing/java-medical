@@ -89,6 +89,16 @@ public class WxAppStoreController extends WxAppBaseController{
     }
 
     /**
+     * 门店服务预约订单继续支付
+     */
+    @PostMapping("/service/reservationContinuePay")
+    public JsonResult reservationContinuePay(@RequestBody @Validated SubmitReservationParam param, HttpServletRequest request) {
+        param.setClientIp(RequestUtil.getIp(request));
+        log.debug("客户端ip地址为：{}", param.getClientIp());
+        return this.success(shop().store.reservation.submitReservation(param));
+    }
+
+    /**
      * 门店服务预约订单详情查询（根据订单编号）
      */
     @PostMapping("/service/reservationDetail")
@@ -126,6 +136,15 @@ public class WxAppStoreController extends WxAppBaseController{
     @PostMapping("/service/reservationDel")
     public JsonResult reservationDel(@RequestBody @Validated(ValidCon2.class) ReservationDetail param) {
         shop().store.reservation.reservationDel(param.getOrderId());
+        return this.success();
+    }
+
+    /**
+     * 取消待付款预约订单
+     */
+    @PostMapping("/service/cancelReservation")
+    public JsonResult cancelWaitToPayReservation(@RequestBody @Validated(ValidCon2.class) ReservationDetail param) {
+        shop().store.reservation.cancelWaitToPayReservation(param.getOrderId(), param.getCancelReason());
         return this.success();
     }
 

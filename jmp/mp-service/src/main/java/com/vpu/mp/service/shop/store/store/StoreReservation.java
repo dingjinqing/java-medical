@@ -438,6 +438,11 @@ public class StoreReservation extends ShopBaseService {
         return webPayVo.get();
     }
 
+    public void continuePay() {
+        // TODO 微信查询订单接口，根据结果判定继续支付还是关闭订单
+        // TODO 前端倒计时十分钟结束后调用后台接口，关闭该订单，更改状态为已取消
+    }
+
     /**
      * Send reservation pay success message.服务预约支付发送模板消息
      *
@@ -565,6 +570,7 @@ public class StoreReservation extends ShopBaseService {
             , STORE.ADDRESS
             , STORE.LATITUDE
             , STORE.LONGITUDE
+            , STORE.MOBILE
         ).
             from(SERVICE_ORDER).leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID))
             .leftJoin(STORE).on(SERVICE_ORDER.STORE_ID.eq(STORE.STORE_ID))
@@ -638,6 +644,22 @@ public class StoreReservation extends ShopBaseService {
      */
     public void reservationDel(Integer orderId) {
         serviceOrderService.updateSingleField(orderId, SERVICE_ORDER.DEL_FLAG, BYTE_ONE);
+    }
+
+    /**
+     * Cancel wait to pay reservation.取消待付款订单
+     *
+     * @param orderId the order id
+     */
+    public void cancelWaitToPayReservation(Integer orderId, String reason) {
+        Map<Field<?>, Object> map = new HashMap<Field<?>, Object>(5) {{
+            put(SERVICE_ORDER.CANCELLED_TIME, Timestamp.valueOf(LocalDateTime.now()));
+            put(SERVICE_ORDER.ORDER_STATUS, ORDER_STATUS_CANCELED);
+            put(SERVICE_ORDER.ORDER_STATUS_NAME, ORDER_STATUS_NAME_CANCELED);
+            put(SERVICE_ORDER.CANCEL_REASON, reason);
+        }};
+        serviceOrderService.updateServiceOrder(orderId, map);
+        // TODO 调用微信关闭订单接口
     }
 
     /**

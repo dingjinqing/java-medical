@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.store;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
 import java.sql.Timestamp;
 
@@ -29,6 +30,7 @@ public class ReservationDetail {
     private String latitude;
     private String longitude;
     private String address;
+    private String mobile;
 
     // 服务信息
     private Integer serviceId;
@@ -50,4 +52,8 @@ public class ReservationDetail {
     private String orderStatusName;
     private String serviceDate;
     private String servicePeriod;
+
+    // 订单取消原因
+    @NotEmpty(groups = {ValidCon2.class})
+    private String cancelReason;
 }
