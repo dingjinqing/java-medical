@@ -8,38 +8,37 @@
             type="primary"
             size="small"
             @click="handleToNewPage()"
-          >新建微页面</el-button>
-          <div class="tipsDiv">当前版本未旗舰版，不限制微页面个数<img :src="iconUrl">
+          >{{$t('pictureSetting.newMicroPage')}}</el-button>
+          <div class="tipsDiv">{{$t('pictureSetting.titleTips')}}<img :src="iconUrl">
             <div class="tipsHidden">
               <div class="tipsTop">
                 <p>
-                  体验版最多创建5页微页面，基础班最多创建5页微页面，高级版最多创建50微页面，旗舰版不限制微页面个数
+                  {{$t('pictureSetting.hiddenTips')}}
                 </p>
               </div>
               <div class="tipsBottom">
                 <el-button
                   type="primary"
                   size="small"
-                >更多</el-button>
+                >{{$t('pictureSetting.more')}}</el-button>
               </div>
             </div>
           </div>
         </div>
         <div class="p_top_right">
           <div class="topRightDiv">
-            <span>页面名称：</span>
+            <span>{{$t('pictureSetting.pageName')}}：</span>
             <el-input
               size="small"
               v-model="inputPageName"
-              placeholder="请输入页面名称"
+              :placeholder="$t('pictureSetting.placeholderText')"
               style="width:170px;"
             ></el-input>
           </div>
           <div class="topRightDiv">
-            <span>页面分类：</span>
+            <span>{{$t('pictureSetting.pageClassify')}}：</span>
             <el-select
               v-model="selectValue"
-              placeholder="请选择"
               size="small"
               style="width:170px;"
             >
@@ -57,7 +56,7 @@
               type="primary"
               size="small"
               @click="list()"
-            >查询</el-button>
+            >{{$t('pictureSetting.searchText')}}</el-button>
           </div>
         </div>
       </div>
@@ -79,33 +78,33 @@
           </el-table-column>
           <el-table-column
             prop="pageName"
-            label="页面名称"
+            :label="$t('pictureSetting.pageName')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="createTime"
-            label="创建时间"
+            :label="$t('pictureSetting.crateTime')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="isFirstPage"
-            label="是否首页"
+            :label="$t('pictureSetting.isFirstPage')"
             align="center"
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.pageType">是</span>
+              <span v-if="scope.row.pageType">{{$t('pictureSetting.yes')}}</span>
               <span
                 style="color:#5A8BFF;cursor:pointer"
                 v-if="!scope.row.pageType"
                 @click="handleSetFirstPage(scope.row.pageId)"
-              >设为首页</span>
+              >{{$t('pictureSetting.setUpPage')}}</span>
             </template>
           </el-table-column>
           <el-table-column
             prop="pageClass"
-            label="页面分类"
+            :label="$t('pictureSetting.pageClassify')"
             align="center"
           >
             <template slot-scope="scope">
@@ -113,11 +112,11 @@
               <span
                 @click="getPageCate(scope.row.pageId)"
                 style="color:#5A8BFF;cursor:pointer"
-              >设置</span>
+              >{{$t('pictureSetting.setUp')}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('pictureSetting.operation')"
             align="center"
             width="150"
           >
@@ -125,7 +124,7 @@
             <template slot-scope="scope">
               <div class="operation">
                 <el-tooltip
-                  content="编辑"
+                  :content="$t('pictureSetting.edtitText')"
                   placement="top"
                 >
                   <span
@@ -134,7 +133,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="删除"
+                  :content="$t('pictureSetting.del')"
                   placement="top"
                 >
                   <span
@@ -144,7 +143,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="复制"
+                  :content="$t('pictureSetting.copy')"
                   placement="top"
                 >
                   <span
@@ -153,7 +152,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="分享"
+                  :content="$t('pictureSetting.share')"
                   placement="top"
                 >
                   <span
@@ -169,11 +168,11 @@
       </div>
       <div class="footer">
         <div class="footer_left">
-          <el-checkbox v-model="allChecked">全选</el-checkbox>
+          <el-checkbox v-model="allChecked">{{$t('pictureSetting.allChecked')}}</el-checkbox>
           <span
             @click="batchSetPageCate()"
             style="color:#5a8bff;cursor:pointer"
-          >批量设置分类</span>
+          >{{$t('pictureSetting.batchSettingClassification')}}</span>
         </div>
         <pagination
           :page-params.sync="pageParams"
@@ -185,7 +184,7 @@
     <!--设置页面分类弹窗-->
     <div class="pageDialog">
       <el-dialog
-        title="设置页面分类"
+        :title="$t('pictureSetting.setPageClassification')"
         :visible.sync="pageSetdialogVisible"
         width="20%"
         center
@@ -193,7 +192,7 @@
         <div class="pageDialogMain">
           <el-select
             v-model="pageSetvalue"
-            placeholder="选择页面分类"
+            :placeholder="$t('pictureSetting.selectPageClassification')"
             size="small"
           >
             <el-option
@@ -212,19 +211,19 @@
           <el-button
             size="small"
             @click="pageSetdialogVisible = false"
-          >取 消</el-button>
+          >{{$t('pictureSetting.cancel')}}</el-button>
           <el-button
             type="primary"
             size="small"
             @click="savePageCate()"
-          >确 定</el-button>
+          >{{$t('pictureSetting.sure')}}</el-button>
         </span>
       </el-dialog>
     </div>
     <!--分享弹窗-->
     <div class="shareC">
       <el-dialog
-        title="扫一扫，分享给好友吧~"
+        :title="$t('pictureSetting.scan')"
         :visible.sync="dialogVisibleShare"
         width="25%"
         :modal='false'
@@ -237,7 +236,7 @@
           <div
             class="shareDialog_bottom_"
             @click="downs()"
-          >下载二维码</div>
+          >{{$t('pictureSetting.downloadQRCode')}}</div>
         </div>
 
         <div class="d_footer">
@@ -247,14 +246,14 @@
           >
             <el-input
               v-model="pathInput"
-              placeholder="请输入内容"
+              :placeholder="$t('pictureSetting.contentPlace')"
               size="mini"
               ref="copy"
             ></el-input>
             <span
               style="cursor:pointer"
               @click="clickCopy()"
-            >复制</span>
+            >{{$t('pictureSetting.copy')}}</span>
           </div>
         </div>
 
@@ -264,20 +263,20 @@
     <SelectTemplateDialog :tuneUpMiniPage.sync="tuneUpMiniPage" />
     <!-- 删除二次提示弹窗 -->
     <el-dialog
-      title="提示"
+      :title="$t('pictureSetting.tipsDialog')"
       :visible.sync="dialogVisible"
       width="30%"
     >
-      <span>是否继续删除该装修页面</span>
+      <span>{{$t('pictureSetting.dialogContent')}}</span>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="dialogVisible = false">{{$t('pictureSetting.cancel')}}</el-button>
         <el-button
           type="primary"
           @click="delConfirm()"
-        >确 定</el-button>
+        >{{$t('pictureSetting.sure')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -356,6 +355,23 @@ export default {
       console.log(newData)
     }
   },
+  computed: {
+    deleteSuccessful () { // 删除成功
+      return this.$t('messageHint.deleteSuccessful')
+    },
+    setUpSuccessfully () { // 设置成功
+      return this.$t('messageHint.setUpSuccessfully')
+    },
+    replicationSuccess () { // 复制成功
+      return this.$t('messageHint.replicationSuccess')
+    },
+    pleaseSelectAPage () { // 请选择页面
+      return this.$t('messageHint.pleaseSelectAPage')
+    },
+    allCategories () { // 全部分类
+      return this.$t('messageHint.allCategories')
+    }
+  },
   mounted () {
     console.log(this.currencyPool)
     this.restaurants = this.loadAll()
@@ -421,7 +437,7 @@ export default {
         if (res.error === 0) {
           this.$message.success({
             type: 'success',
-            message: '设置成功!'
+            message: this.setUpSuccessfully
           })
           this.list()
         }
@@ -438,7 +454,8 @@ export default {
       delPage(this.param).then(res => {
         if (res.error === 0) {
           this.dialogVisible = false
-          this.$message.success('删除成功')
+          console.log(this.deleteSuccessful)
+          this.$message.success(this.deleteSuccessful)
           this.list()
         }
       })
@@ -449,7 +466,7 @@ export default {
       this.param.pageId = pageId
       pageCopy(this.param).then(res => {
         if (res.error === 0) {
-          this.$message.success('复制成功')
+          this.$message.success(this.replicationSuccess)
           this.list()
         }
       })
@@ -479,7 +496,7 @@ export default {
       this.pageIds = newarr.join(',')
 
       if (this.pageIds.length === 0) {
-        this.$message.error('请选择页面')
+        this.$message.error(this.pleaseSelectAPage)
       } else {
         this.getPageCate()
         this.pageSetdialogVisible = true
@@ -497,7 +514,7 @@ export default {
         if (res.error === 0) {
           let obj = {
             id: '',
-            name: '全部分类'
+            name: this.allCategories
           }
           res.content.unshift(obj)
           this.pageSetoptions = res.content
@@ -516,7 +533,7 @@ export default {
         console.log(111)
         setPageCate(this.setPageCateParam).then(res => {
           if (res.error === 0) {
-            this.$message.success({ message: '设置成功' })
+            this.$message.success({ message: this.setUpSuccessfully })
             this.pageSetdialogVisible = false
             this.list()
           }
@@ -527,7 +544,7 @@ export default {
         this.setPageCateParam.id = this.pageSetvalue
         batchSet(this.setPageCateParam).then(res => {
           if (res.error === 0) {
-            this.$message.success({ message: '设置成功' })
+            this.$message.success({ message: this.setUpSuccessfully })
             this.pageSetdialogVisible = false
             this.list()
             this.pageIds = ''

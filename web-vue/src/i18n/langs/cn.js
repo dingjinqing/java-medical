@@ -1,6 +1,7 @@
 // cn.js
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
-
+// 全局消息国际化配置
+import { cn as messageHint } from './views/admin_new/cn/messageHintCn'
 // system 店铺管理系列国际化
 // 小程序版本
 import {
@@ -997,7 +998,8 @@ const cn = {
   leftWingRightPicture, // 小程序页面装修左文右图国际化
   textModule, // 小程序文本模块国际化 以及下面简单模块的国际化
   titleModule, // 小程序标题模块国际化
-  shopNotices // 小程序店铺公告系列国际化
+  shopNotices, // 小程序店铺公告系列国际化
+  messageHint // 全局消息国际化
 }
 
 export default cn

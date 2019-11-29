@@ -1,6 +1,7 @@
 // en.js
 import enLocale from 'element-ui/lib/locale/lang/en'
-
+// 全局消息国际化配置
+import { en as messageHint } from './views/admin_new/en/messageHintEn'
 // system 店铺管理系列国际化
 // 小程序版本
 import {
@@ -990,6 +991,7 @@ const en = {
   leftWingRightPicture, // 小程序页面装修左文右图模块
   textModule, // 小程序页面装修文本模块
   titleModule, // 小程序页面装修标题模块
-  shopNotices // 小程序页面装修店铺公告模块
+  shopNotices, // 小程序页面装修店铺公告模块
+  messageHint // 全局消息国际化配置
 }
 export default en
