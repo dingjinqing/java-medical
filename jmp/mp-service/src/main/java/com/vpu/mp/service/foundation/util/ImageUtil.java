@@ -1,6 +1,9 @@
 package com.vpu.mp.service.foundation.util;
 
 import javax.imageio.ImageIO;
+
+import com.thoughtworks.xstream.core.util.Base64Encoder;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -8,7 +11,9 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * 图片的处理
@@ -115,5 +120,31 @@ public final class ImageUtil {
 		} finally {
 			img = null;
 		}
+	}
+	
+	/**
+	 * image转base64
+	 * @param image
+	 * @return
+	 */
+	public static String toBase64(BufferedImage image) {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(image, "png", os);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (os != null) {
+				try {
+					os.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		byte[] byteArray = os.toByteArray();
+		Base64Encoder encoder=new Base64Encoder();
+		String encode = encoder.encode(byteArray);
+		return "data:image/png;base64,"+encode;
 	}
 }
