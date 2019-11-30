@@ -149,7 +149,7 @@ public class MpPaymentService extends ShopBaseService {
 		WxPayUnifiedOrderResult result = wxPayment.unifiedOrder(payInfo);
 		this.logger().info("微信预支付调用接口result : {}", result);
         //获取前台支付调用参数
-        WebPayVo webParam = getWebParam(result, wxPayment.getConfig());
+        WebPayVo webParam = getWebPayParam(result, wxPayment.getConfig());
         this.logger().info("前台支付调用参数result : {}", webParam);
 		return webParam;
 	}
@@ -161,7 +161,7 @@ public class MpPaymentService extends ShopBaseService {
      * @return WebPayVo
      * @source com.github.binarywang.wxpay.service.impl.BaseWxPayServiceImpl.getPayInfo()
      */
-    private WebPayVo getWebParam(WxPayUnifiedOrderResult result, WxPayConfig config) throws MpException {
+    private WebPayVo getWebPayParam(WxPayUnifiedOrderResult result, WxPayConfig config) throws MpException {
         WebPayVo vo = null;
 	    //微信生成的预支付回话标识，用于后续接口调用中使用，该值有效期为2小时
         String prepayId = result.getPrepayId();
@@ -248,7 +248,6 @@ public class MpPaymentService extends ShopBaseService {
 			Integer totalFee)
 			throws WxPayException {
 		WxPayment wxPayment = this.getMpPay();
-        wxPayment.getConfig().initSSLContext();
 		WxPayRefundRequest request = WxPayRefundRequest.newBuilder()
 				.transactionId(transactionId)
 				.outTradeNo(outTradeNo)
