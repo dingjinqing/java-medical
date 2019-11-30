@@ -614,7 +614,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         logger().info("金额处理赋值(processOrderBeforeVo),start");
         //积分抵扣金额
         BigDecimal scoreDiscount =
-            BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount().toString()), new BigDecimal("100"));
+            BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount() == null ? 0: param.getScoreDiscount()), new BigDecimal("100"));
         //余额抵扣金额
         BigDecimal useAccount = param.getBalance();
         //会员卡抵扣金额
@@ -673,8 +673,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //最大积分抵扣
         BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivide(
             BigDecimalUtil.BigDecimalPlus.create(moneyAfterDiscount, BigDecimalUtil.Operator.multiply),
-            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.valueOf(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.Divide),
-            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.valueOf(100), null)
+            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.Divide),
+            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal("100"), null)
         );
         //会员信息
         UserRecord user = member.getUserRecordById(param.getWxUserInfo().getUserId());
