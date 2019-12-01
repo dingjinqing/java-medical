@@ -238,6 +238,7 @@ img {
 }
 .isLeft img {
   width: 40px;
+  height: 40px;
 }
 .isLeft span {
   display: inline-block;

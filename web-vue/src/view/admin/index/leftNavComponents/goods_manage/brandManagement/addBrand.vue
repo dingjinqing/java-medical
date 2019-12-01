@@ -137,36 +137,36 @@
     </div>
     <!--添加品牌分类弹窗-->
     <el-dialog
-      title="添加品牌分类"
+      :title="$t('brandManagement.addBrandDialogTitle')"
       :visible.sync="dialogVisible"
       width="30%"
       :center='true'
     >
       <div class="dialogMain">
-        <p>品牌分类名称：<el-input
+        <p>{{$t('brandManagement.addBrandDialogName')}}：<el-input
             v-model="brandName"
-            placeholder="请输入内容"
+            :placeholder="$t('brandManagement.inputPlaceText')"
             size="mini"
           ></el-input>
         </p>
-        <p style="margin-top:10px"><span style="margin-right:11px">分类优先级：</span>
+        <p style="margin-top:10px"><span style="margin-right:11px">{{$t('brandManagement.classificationPriority')}}：</span>
           <el-input
             v-model="classificationName"
-            placeholder="请输入内容"
+            :placeholder="$t('brandManagement.inputPlaceText')"
             size="mini"
           ></el-input>
         </p>
-        <p>请填写正整数，数值越大，优先级越高，在小程序前端展示位置越靠前</p>
+        <p>{{$t('brandManagement.addBrandDialogTips')}}</p>
       </div>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="dialogVisible = false">{{$t('brandManagement.cancel')}}</el-button>
         <el-button
           type="primary"
           @click="handleAddGrandClass()"
-        >确 定</el-button>
+        >{{$t('brandManagement.sure')}}</el-button>
       </span>
     </el-dialog>
 
@@ -397,7 +397,7 @@ export default {
       hxgoodsIds: [],
       saveImgUrl: '',
       oldGoodsIds: [], // 编辑来的旧的商品id集合
-      columnFlag: null
+      columnFlag: false
     }
   },
   computed: {
@@ -425,6 +425,8 @@ export default {
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     // 传递crumbsTitle
     let arr = ['商品管理', '品牌管理', '添加品牌']
     this.changeCrumbstitle(arr)

@@ -28,8 +28,8 @@ export const cn = {
   operation: '操作',
   brandClassifyName: '品牌分类名称',
   dialogTips: '请填写正整数，数值越大，优先级越高，在小程序前端展示位置越靠前',
-  cancel: '取消',
-  sure: '确定',
+  cancel: '取 消',
+  sure: '确 定',
   dialogTwoTips: '提示',
   dialogContent: '是否确认删除？',
   whole: '全部',
@@ -58,5 +58,8 @@ export const cn = {
   no: '否',
   bottomTips: '设为推荐品牌，将展示在小程序推荐品牌中列表中',
   chooseCommodity: '选择商品',
-  itemQuantitySelected: '已选择商品数量'
+  itemQuantitySelected: '已选择商品数量',
+  addBrandDialogTitle: '添加品牌分类',
+  addBrandDialogName: '品牌分类名称',
+  addBrandDialogTips: '请填写正整数，数值越大，优先级越高，在小程序前端展示位置越靠前'
 }

@@ -57,5 +57,8 @@ export const en = {
   no: 'no',
   bottomTips: 'Set as recommended brand, it will be displayed in the list of recommended brands in the applet',
   chooseCommodity: 'Choose commodity',
-  itemQuantitySelected: 'Item quantity selected'
+  itemQuantitySelected: 'Item quantity selected',
+  addBrandDialogTitle: 'Add brand category',
+  addBrandDialogName: 'Brand classification name',
+  addBrandDialogTips: 'Please fill in a positive integer. The larger the value, the higher the priority, and the higher the display position in the front of the applet'
 }
