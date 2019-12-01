@@ -76,7 +76,7 @@ public class MpPaymentService extends ShopBaseService {
 	protected WxPayConfig  getWxPayConfig(MpAuthShopRecord mp) {
 		byte[] keyContent = null;
 		try {
-			keyContent = PemToPkcs12.pemToPkcs12(mp.getPayKeyContent(), mp.getPayCertContent());
+			keyContent = PemToPkcs12.pemToPkcs12(mp.getPayKeyContent(), mp.getPayCertContent(), mp.getPayMchId().toCharArray());
 		} catch (Exception e) {
 			this.logger().error("pemToPkcs12 error, message: {}", e.getMessage());
 		}
