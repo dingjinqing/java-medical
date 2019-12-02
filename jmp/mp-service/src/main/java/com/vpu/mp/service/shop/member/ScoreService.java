@@ -10,6 +10,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_SCORE;
 import static com.vpu.mp.service.shop.member.UserCardService.UPGRADE;
@@ -187,6 +188,10 @@ public class ScoreService extends ShopBaseService {
 					userScoreRecord.setStatus(REFUND_SCORE_STATUS);
 					UserScoreRecord userScore = getScoreRecordByOrderSn(userId,orderSn);
 					userScoreRecord.setExpireTime(userScore.getExpireTime());
+				}else if(score < 0) {
+					userScoreRecord.setStatus(USED_SCORE_STATUS);
+				}else {
+					userScoreRecord.setStatus(NO_USE_SCORE_STATUS);
 				}
 			
 				userScoreRecord.insert();
