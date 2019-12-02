@@ -35,6 +35,7 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
                 bo.setVideoHeight(node.get("height").asInt());
             }
         }
+        bo.setDeliverTemplateId(esGoods.getFreightTemplateId());
         bo.setLimitBuyNum(esGoods.getLimitBuyNum());
         bo.setLimitMaxNum(esGoods.getLimitMaxNum());
         bo.setIsExclusive(esGoods.getIsCardExclusive());
