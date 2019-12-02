@@ -227,7 +227,7 @@ global.wxPage({
       return
     }
     let couponArray = [{ couponSn: null, actName: '不使用优惠券' }, ...coupons]
-    let defaultCouponIndex = couponArray.findIndex(item => item.couponSn === defaultCoupon.couponSn)
+    let defaultCouponIndex = defaultCoupon && couponArray.findIndex(item => item.couponSn === defaultCoupon.couponSn) || 0
     this.setData({
       couponArray,
       defaultCouponIndex

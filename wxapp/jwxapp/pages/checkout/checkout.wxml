@@ -65,12 +65,12 @@
       </view>
 
       <view class="pay_content">
-        <view class="pay_list_item" bindtap="selectCardTap">
+        <view class="pay_list_item" bindtap="selectCardTap" wx:if="{{orderInfo.memberCards.length>0}}">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")}}</text>
           <text class="pay_list_content">{{orderInfo.defaultMemberCard ? orderInfo.defaultMemberCard.cardName : i18n.$t(localePack,"pages.checkout.select")+i18n.$t(localePack,"pages.checkout.membershipCard")}}</text>
           <view class="pay_list_right">
             <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
-          </view>
+          </view>     
         </view> 
         <view class="pay_list_item" wx:if="{{couponArray}}">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.coupon")}}</text>
