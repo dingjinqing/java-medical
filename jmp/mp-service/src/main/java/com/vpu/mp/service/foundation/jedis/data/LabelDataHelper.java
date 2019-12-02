@@ -13,6 +13,7 @@ import org.jooq.Condition;
 import org.jooq.Result;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -30,10 +31,10 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
  * @author 卢光耀
  * @date 2019/11/19 5:07 下午
  *
-*/
+ */
 @Component
 @Slf4j
-public class LabelDataHelper extends MainBaseService /*implements CommandLineRunner*/ {
+public class LabelDataHelper extends MainBaseService implements CommandLineRunner {
 
     private static Map<Integer, Map<Integer, GoodsLabelInfo>> labelMap;
 
@@ -46,13 +47,13 @@ public class LabelDataHelper extends MainBaseService /*implements CommandLineRun
      * 数据预热
      * @throws Exception 异常
      */
-//    @Override
+    @Override
     public void run(String... args) throws Exception {
         log.info("GoodsLabel data init start...");
         Result<ShopRecord> result = db().selectFrom(SHOP).
             //IS_ENABLED不太准确暂时忽略
 //            where(SHOP.IS_ENABLED.eq((byte)1)).
-            fetch();
+    fetch();
         result.stream().map(ShopRecord::getShopId).forEach(this::initData);
         log.info("GoodsLabel data init end...");
     }
@@ -102,19 +103,19 @@ public class LabelDataHelper extends MainBaseService /*implements CommandLineRun
             .map(Object::toString)
             .toArray(String[]::new);
         List<String> cacheData = jedisManager.getValueAndSaveForHash(
-                key,
-                fields,
-                EXPIRED_TIME,
-                ()->{
-                    Condition param = GOODS_LABEL.DEL_FLAG.eq( DelFlag.NORMAL.getCode())
-                        .and(GOODS_LABEL.ID.in(ids));
-                    List<GoodsLabelRecord> list = saas().getShopApp(shopId).goods.goodsLabel.getByCondition(param);
-                    return list.stream()
-                        .map(y->GoodsLabelInfo.getGoodsLabelInfo().convert(y))
-                        .map(Util::toJson)
-                        .collect(Collectors.toCollection(LinkedList::new));
-                }
-            );
+            key,
+            fields,
+            EXPIRED_TIME,
+            () -> {
+                Condition param = GOODS_LABEL.DEL_FLAG.eq(DelFlag.NORMAL.getCode())
+                    .and(GOODS_LABEL.ID.in(ids));
+                List<GoodsLabelRecord> list = saas().getShopApp(shopId).goods.goodsLabel.getByCondition(param);
+                return list.stream()
+                    .map(y -> GoodsLabelInfo.getGoodsLabelInfo().convert(y))
+                    .map(Util::toJson)
+                    .collect(Collectors.toCollection(LinkedList::new));
+            }
+        );
         return cacheData.stream().map(x->Util.parseJson(x,GoodsLabelInfo.class)).collect(Collectors.toList());
 
     }
