@@ -166,7 +166,8 @@ public class ScoreService extends ShopBaseService {
 					throw e;
 				}
 				
-				/** 5. 添加积分记录  */
+
+				logger().info("添加积分记录");
 				UserScoreRecord userScoreRecord = db().newRecord(USER_SCORE);
 				/** 5.1 填充数据 */
 				//TODO 还有一些数据不知道从哪些业务传递过来的如goods_id,desc,identity_id 
