@@ -13,7 +13,6 @@ import org.jooq.Condition;
 import org.jooq.Result;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -34,7 +33,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_LABEL;
 */
 @Component
 @Slf4j
-public class LabelDataHelper extends MainBaseService implements CommandLineRunner{
+public class LabelDataHelper extends MainBaseService /*implements CommandLineRunner*/ {
 
     private static Map<Integer, Map<Integer, GoodsLabelInfo>> labelMap;
 
@@ -47,7 +46,7 @@ public class LabelDataHelper extends MainBaseService implements CommandLineRunne
      * 数据预热
      * @throws Exception 异常
      */
-    @Override
+//    @Override
     public void run(String... args) throws Exception {
         log.info("GoodsLabel data init start...");
         Result<ShopRecord> result = db().selectFrom(SHOP).
