@@ -33,21 +33,7 @@ public class LogisticsService extends ShopBaseService {
     /**
      * 获取支持的快递公司列表
      *
-     * @return 微信支持的快递公司列表
-     * <p> eg:
-     * [
-     *     {
-     *       "delivery_id": "BEST",
-     *       "delivery_name": "百世快递"
-     *     },
-     *     {
-     *       "delivery_id": "EMS",
-     *       "delivery_name": "中国邮政速递物流"
-     *     }
-     *   ]
-     * @throws WxErrorException 微信api调用异常
-     *
-     * TODO 微信接口更新，数据格式变动
+     * @return 微信支持的快递公司列表 all delivery
      */
     public List<LogisticsParam> getAllDelivery() {
         WxOpenMaServiceExtraImpl maService = open.getMaExtService();

@@ -104,20 +104,21 @@ public class ServiceOrderService extends ShopBaseService {
     public UserCardService userCardService;
 
     /**
-     * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
+     * 订单状态 0：待付款，1：待服务，2：已取消，3：已完成
      */
-    public static final Byte ORDER_STATUS_WAIT_SERVICE = 0;
-    public static final Byte ORDER_STATUS_CANCELED = 1;
-    public static final Byte ORDER_STATUS_FINISHED = 2;
-    public static final Byte ORDER_STATUS_WAIT_PAY = 3;
+    public static final Byte ORDER_STATUS_WAIT_PAY = 0;
+    public static final Byte ORDER_STATUS_WAIT_SERVICE = 1;
+    public static final Byte ORDER_STATUS_CANCELED = 2;
+    public static final Byte ORDER_STATUS_FINISHED = 3;
+
 
     /**
-     * 订单状态 0：待服务，1：已取消，2：已完成，3：待付款
+     * 订单状态 0：待付款，1：待服务，2：已取消，3：已完成
      */
+    public static final String ORDER_STATUS_NAME_WAIT_PAY = "待付款";
     public static final String ORDER_STATUS_NAME_WAIT_SERVICE = "待服务";
     public static final String ORDER_STATUS_NAME_CANCELED = "已取消";
     public static final String ORDER_STATUS_NAME_FINISHED = "已完成";
-    public static final String ORDER_STATUS_NAME_WAIT_PAY = "待付款";
 
     /**
      * 预约订单创建创建类型 0用户创建 1后台
