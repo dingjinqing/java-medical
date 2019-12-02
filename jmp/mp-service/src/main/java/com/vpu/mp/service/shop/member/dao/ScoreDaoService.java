@@ -82,7 +82,7 @@ public class ScoreDaoService extends ShopBaseService {
 	public UserScoreRecord getTheEarliestUsableUserScoreRecord(Integer userId) {
 		return db().selectFrom(USER_SCORE)
 			.where(USER_SCORE.USER_ID.eq(userId))
-			.and(USER_SCORE.SCORE.greaterThan(0)).and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
+			.and(USER_SCORE.USABLE_SCORE.greaterThan(0)).and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
 			.and(USER_SCORE.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_SCORE.EXPIRE_TIME.isNull()))
 			.orderBy(USER_SCORE.CREATE_TIME)
 			.fetchAny();
