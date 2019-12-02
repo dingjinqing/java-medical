@@ -222,7 +222,7 @@ public class StoreOrderService extends ShopBaseService {
         // 订单金额
         BigDecimal orderAmount = orderInfo.getOrderAmount();
         // 应付金额
-        BigDecimal moneyPaid = BIGDECIMAL_ZERO;
+        BigDecimal moneyPaid = orderAmount;
         // 会员卡余额抵扣金额
         BigDecimal cardAmount = orderInfo.getCardAmount();
         // 会员卡折扣抵扣金额
@@ -254,7 +254,7 @@ public class StoreOrderService extends ShopBaseService {
                     throw new BusinessException(JsonResultCode.CODE_FAIL);
                 }
                 log.debug("会员卡折扣金额:{}", cardDisAmount);
-                moneyPaid = orderAmount.subtract(cardDisAmount).setScale(2, RoundingMode.UP);
+                moneyPaid = moneyPaid.subtract(cardDisAmount).setScale(2, RoundingMode.UP);
             }
             // 会员卡余额抵扣金额
             if (BigDecimalUtil.greaterThanZero(cardAmount)) {

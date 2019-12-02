@@ -407,11 +407,11 @@ public class StoreReservation extends ShopBaseService {
             String orderSn = serviceOrderService.createServiceOrder(orderTran);
             log.debug("订单创建完成，订单编号为：{}", orderSn);
             if (serviceOrder.getMoneyPaid().compareTo(BIGDECIMAL_ZERO) > 0) {
-                //TODO 支付接口
+                // 微信支付接口调用
                 String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
                 webPayVo.set(mpPaymentService.wxUnitOrder(param.getClientIp(), serviceName, orderSn, serviceOrder.getMoneyPaid(), openId));
                 log.debug("微信支付接口调用结果：{}", webPayVo.get());
-                // TODO 记录prepayId到订单表中
+                // 记录prepayId到订单表中
                 serviceOrderService.updateSingleField(orderSn, SERVICE_ORDER.PREPAY_ID, webPayVo.get().getResult().getPrepayId());
             } else {
                 // 如果不需要调用微信支付，直接将订单状态由待付款改为待服务
@@ -636,10 +636,26 @@ public class StoreReservation extends ShopBaseService {
      * @return the list
      */
     public List<ReservationListVo> reservationList(Integer userId, Byte orderStatus) {
+        List<ReservationListVo> list;
         if (Objects.isNull(orderStatus)) {
-            return getReservationDetail(SERVICE_ORDER.USER_ID.eq(userId), ReservationListVo.class);
+            list = getReservationDetail(SERVICE_ORDER.USER_ID.eq(userId), ReservationListVo.class);
+        } else {
+            list = getReservationDetail(SERVICE_ORDER.USER_ID.eq(userId).and(SERVICE_ORDER.ORDER_STATUS.eq(orderStatus)), ReservationListVo.class);
         }
-        return getReservationDetail(SERVICE_ORDER.USER_ID.eq(userId).and(SERVICE_ORDER.ORDER_STATUS.eq(orderStatus)), ReservationListVo.class);
+        list.forEach((e) -> {
+            // 门店图片中选一张作为主图
+            List<String> imgs = Util.json2Object(e.getStoreImgs(), new TypeReference<List<String>>() {
+            }, false);
+            e.setStoreImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
+            // 服务图片中选一张做 主图
+            imgs = Util.json2Object(e.getServiceImg(), new TypeReference<List<String>>() {
+            }, false);
+            e.setServiceImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
+            if (commentService.isComment(e.getOrderSn())) {
+                e.setFlag(BYTE_ONE);
+            }
+        });
+        return list;
     }
 
     /**
