@@ -251,7 +251,11 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
         // 代码优化
 		// 查询配置文件的key-value
-		Map<String, String> intoMap = db().select(SHOP_CFG.K,SHOP_CFG.V).from(SHOP_CFG).fetch().intoMap(SHOP_CFG.K, SHOP_CFG.V);
+		Result<Record2<String, String>> resMap = db().select(SHOP_CFG.K,SHOP_CFG.V).from(SHOP_CFG).fetch();
+		Map<String, String> intoMap = null;
+		if(resMap != null) {
+		 intoMap =  resMap.intoMap(SHOP_CFG.K, SHOP_CFG.V);
+		} 
 		ObjectMapper objectMapper = new ObjectMapper();
 		// 将查询的结果赋值到pojo
 		vo = objectMapper.convertValue(intoMap, ScoreCfgVo.class);

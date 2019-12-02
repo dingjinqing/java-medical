@@ -58,6 +58,9 @@ public class ScoreCfgVo {
 	@JsonAlias("score_pay_num")
 	public String scorePayNum;
 	
+	@JsonAlias("score_discount_ratio")
+	public String scoreDiscountRatio;
+	
 	@JsonAlias("score_page_id")
 	public String scorePageId;
 	

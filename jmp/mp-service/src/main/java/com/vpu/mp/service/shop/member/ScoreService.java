@@ -109,7 +109,6 @@ public class ScoreService extends ShopBaseService {
 
 		/**  1. 校验userId是否存在数据库中 */
 		if (userId <= 0) {
-			//throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
 			throw new MpException(JsonResultCode.CODE_MEMEBER_NOT_EXIST);
 		}
 		/** 1.1 查询用户 */
@@ -168,7 +167,7 @@ public class ScoreService extends ShopBaseService {
 				}
 				
 				/** 5. 添加积分记录  */
-				UserScoreRecord userScoreRecord = new UserScoreRecord();
+				UserScoreRecord userScoreRecord = db().newRecord(USER_SCORE);
 				/** 5.1 填充数据 */
 				//TODO 还有一些数据不知道从哪些业务传递过来的如goods_id,desc,identity_id 
 				userScoreRecord.setScore(score);
@@ -183,16 +182,13 @@ public class ScoreService extends ShopBaseService {
 				userScoreRecord.setExpireTime(param.getExpiredTime());
 				
 				/** -判断是否为退款积分 */
-				if(param.getIsFromRefund() !=null && param.getIsFromRefund()==IS_FROM_REFUND_Y.val()) {
+				if(param.getIsFromRefund() !=null && IS_FROM_REFUND_Y.val().equals(param.getIsFromRefund())) {
 					userScoreRecord.setStatus(REFUND_SCORE_STATUS);
 					UserScoreRecord userScore = getScoreRecordByOrderSn(userId,orderSn);
 					userScoreRecord.setExpireTime(userScore.getExpireTime());
 				}
 			
-				
-				/** 5.2 添加 */
-				/** 在user_score中添加积分记录 */
-				addUserScoreRecord(userScoreRecord);
+				userScoreRecord.insert();
 		
 				
 				/** 6. 更新用户积分 */
@@ -218,13 +214,10 @@ public class ScoreService extends ShopBaseService {
 				
 				/** -交易记录表-记录交易的数据信息  */
 				insertTradesRecord(tradesRecord);
-		
 			});
 		}catch(DataAccessException e) {
 			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
-			Throwable cause = e.getCause();
-			MpException ex = (MpException)cause;
-			throw ex;
+			throw e;
 		}
 		return ;
 	}
@@ -275,15 +268,6 @@ public class ScoreService extends ShopBaseService {
 	
 	
 	/**
-	 * 在user_score中添加积分记录 
-	 */
-	private void addUserScoreRecord(UserScoreRecord record) {
-		db().executeInsert(record);
-
-	}
-
-	
-	/**
 	 * 消耗积分记录
 	 * @param userId 用户id
 	 * @param score 消耗积分的绝对值
@@ -301,6 +285,7 @@ public class ScoreService extends ShopBaseService {
 				userRecord.setIdentityId(userRecord.getIdentityId()+","+orderSn);
 			}
 			if (userRecord == null) {
+				logger().info("暂无可用积分");
 				throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
 			}
 

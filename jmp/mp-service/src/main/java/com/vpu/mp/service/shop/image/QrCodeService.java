@@ -8,10 +8,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Map;
@@ -28,7 +26,6 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.qrcode.QrCodeGenerator;
@@ -174,71 +171,28 @@ public class QrCodeService extends ShopBaseService {
     		return null;
     	}
     	
-    	//	设置构图
-    	setCardQrCode(bgImg, cardQrCode);
+    	// 设置会员卡号二维码
+    	ImageUtil.addTwoImage(bgImg, cardQrCode, 65, 200);
+    	// 设置背景
     	setCardBgType(bgImg,card);
-    	setCardName(bgImg,card.getCardName());
-    	setCardDisCount(bgImg,card.getDiscount());
-    	setCardNo(cardNo, bgImg);
-    	setCardAvatar(bgImg, cardAvatar);
-    	setCardBarCode(bgImg, cardBarCode);
-    	
-    	String filePath = createCardQrCodeFileName(cardNo);
-    	String base64 = ImageUtil.toBase64(bgImg);
-    	
-    	return base64;
-    }
-
-    /**
-     *	会员卡积分
-     */
-	private void setCardDisCount(BufferedImage bgImg, BigDecimal discount) {
-    	String dis = discount.toString()+" 折";
-    	ImageUtil.addFont(bgImg, dis, new Font(null, Font.BOLD, 22), 500, 180,
+    	// 设置卡名称
+    	ImageUtil.addFont(bgImg, card.getCardName(), new Font(null, Font.BOLD, 30), 150, 70,
 				Color.WHITE);
-	}
-
-	private String createCardQrCodeFileName(String cardNo) {
-		String filePath = "";
-		//	名称
-    	String saveFileName = String.format("pictorial_%s_%s.png", cardNo, DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
-    	logger().info(saveFileName);
-    	//	文件地址
-    	String imgDir = "upload/"+getShopId()+"/pictorial/ucardqrcode/";
-    	filePath = imgDir+saveFileName;
-    	logger().info(filePath);
-		return filePath;
-	}
-
-	private void setCardBarCode(BufferedImage bgImg, BufferedImage cardBarCode) {
-		ImageUtil.addTwoImage(bgImg, cardBarCode,15, 620);
-	}
-
-	private void setCardAvatar(BufferedImage bgImg, BufferedImage cardAvatar) {
-		ImageUtil.addTwoImage(bgImg, cardAvatar, 20, 35);
-	}
-
-	private void setCardNo(String cardNo, BufferedImage bgImg) {
-		ImageUtil.addFont(bgImg, cardNo, new Font(null, Font.ITALIC, 22), 190, 750, Color.GRAY);
-	}
-
-    /**
-     * 	设置会员卡名称
-     */
-	private void setCardName(BufferedImage bgImg,String cardName) {
-		Integer posx=150,posy=70;
-    	ImageUtil.addFont(bgImg, cardName, new Font(null, Font.BOLD, 30), posx, posy,
-				Color.BLACK);
-	}
+    	// 设置折扣
+    	if(null != card.getDiscount()) {
+    		String dis = card.getDiscount().toString()+" 折";
+        	ImageUtil.addFont(bgImg, dis, new Font(null, Font.BOLD, 22), 500, 180,
+    				Color.WHITE);
+    	}
+    	// 会员卡号
+    	ImageUtil.addFont(bgImg, cardNo, new Font(null, Font.ITALIC, 22), 190, 750, Color.GRAY);
+    	// 会员卡头像
+    	ImageUtil.addTwoImage(bgImg, cardAvatar, 20, 35);
+    	// 会员卡条形码
+    	ImageUtil.addTwoImage(bgImg, cardBarCode,15, 620);
+    	return ImageUtil.toBase64(bgImg);
+    }
     
-    /**
-     *	 设置会员卡号二维码
-     */
-	private void setCardQrCode(BufferedImage bgImg, BufferedImage cardQrCode) {
-		Integer posx = 65,posy=200;
-    	ImageUtil.addTwoImage(bgImg, cardQrCode, posx, posy);
-	}
-
 	/**
 	 * 	设置会员卡背景
 	 */
@@ -264,7 +218,7 @@ public class QrCodeService extends ShopBaseService {
         		bgImgTwo = ImageIO.read(new URL(bgImgUrl));
     		} catch (Exception e) {
     			logger().info("背景图片解析失败: "+bgImgUrl);
-    			e.printStackTrace();
+    			logger().info(e.getMessage(),e);
     			return;
     		}
         	bgImgTwo  = ImageUtil.resizeImage(bgWidth, bgHeight, bgImgTwo);
@@ -273,7 +227,7 @@ public class QrCodeService extends ShopBaseService {
 	}
    
     /**
-             * 生成会员卡号条形码
+     * 生成会员卡号条形码
      */
 	private BufferedImage getCardNoBarCode(String cardNo) {
 		BufferedImage cardBarCode = null;
@@ -285,14 +239,13 @@ public class QrCodeService extends ShopBaseService {
 			cardBarCode = ImageIO.read(bais);
 		} catch (Exception e) {
 			logger().info("会员卡号生成条形码失败");
-			e.printStackTrace();
 			return null;
 		}
 		return cardBarCode;
 	}
 	
     /**
-             * 获取会员卡号二维码
+     * 获取会员卡号二维码
      */
 	private BufferedImage getCardNoQrCode(String cardNo) {
 		BufferedImage cardQrCode = null;
@@ -303,14 +256,13 @@ public class QrCodeService extends ShopBaseService {
 			cardQrCode = ImageIO.read(bais);
 		} catch (Exception e) {
 			logger().info("用户会员卡卡二维码生成失败");
-			e.printStackTrace();
 			return null;
 		}
 		return cardQrCode;
 	}
 	
     /**
-            * 获取 会员卡头像
+     * 获取 会员卡头像
      */
 	private BufferedImage getCardVatar() {
 		String cardAvatarAddress = imageService.imageUrl(saas().shop.getShopAvatarById(this.getShopId()));
@@ -318,7 +270,6 @@ public class QrCodeService extends ShopBaseService {
     	if(StringUtils.isBlank(cardAvatarAddress)) {
     		return null;
     	}
-    	
     	BufferedImage cardAvatar = null;
     	try {
     		cardAvatar = ImageIO.read(new URL(cardAvatarAddress));
@@ -332,7 +283,7 @@ public class QrCodeService extends ShopBaseService {
 	}
 
     /**
-             * 获取底层图片
+     * 获取底层图片
      */
 	private BufferedImage getBgImg(Integer width,Integer height) {
 		// 背景图片
@@ -344,14 +295,13 @@ public class QrCodeService extends ShopBaseService {
 			bgImg = ImageIO.read(loadFile);
 		} catch (IOException e) {
 			logger().info("获取背景图片失败");
-			e.printStackTrace();
 			return null;
 		}finally {
 			if(loadFile != null) {
 				try {
 					loadFile.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger().info("关闭失败");
 				}
 			}
 		}
