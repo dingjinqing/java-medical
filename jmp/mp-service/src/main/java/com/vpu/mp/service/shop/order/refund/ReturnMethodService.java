@@ -157,7 +157,7 @@ public class ReturnMethodService extends ShopBaseService{
 		isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
 		//后台处理时为操作人id为0
 		adminUser(0).
-		//用户余额退款
+		//交易类型
 		tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
 		//资金流量-支出
 		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
@@ -180,7 +180,7 @@ public class ReturnMethodService extends ShopBaseService{
 		}
 		//金额换算成积分
 		Integer score = BigDecimalUtil.multiplyOrDivide(
-				BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_TO_FEN), Operator.multiply),
+				BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_FEN_RATIO), Operator.multiply),
 				BigDecimalPlus.create(money,null)
 				).intValue();
 				
@@ -192,8 +192,8 @@ public class ReturnMethodService extends ShopBaseService{
 		remark("订单："+order.getOrderSn()+"退款，退积分：score").
 		//后台处理时为操作人id为0
 		adminUser(0).
-		//用户余额充值 
-		tradeType(RecordTradeEnum.TYPE_CRASH_POWER_MACCOUNT.val()).
+		//交易类型
+		tradeType(RecordTradeEnum.TYPE_SCORE_REFUND.val()).
 		//资金流量-支出
 		tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).
 		//积分变动是否来自退款
@@ -235,8 +235,8 @@ public class ReturnMethodService extends ShopBaseService{
                 }
                 //微信金额单为为分需单位换算
                 refundResult = refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn,
-                    BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_TO_FEN).toString())).intValue(),
-                    BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_TO_FEN).toString())).intValue());
+                    BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),
+                    BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue());
                 //退款记录
                 orderRefundRecord.addRecord(refundSn, payRecord, refundResult, order, retId);
                 logger().info("微信退款（refundMoneyPaid）end");
@@ -302,7 +302,7 @@ public class ReturnMethodService extends ShopBaseService{
                 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
             }
             //微信金额单为为分需单位换算
-            refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn, payRecord.getTotalFee().intValue() * OrderConstant.TUAN_TO_FEN, money.intValue() * OrderConstant.TUAN_TO_FEN);
+            refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn, payRecord.getTotalFee().intValue() * OrderConstant.TUAN_FEN_RATIO, money.intValue() * OrderConstant.TUAN_FEN_RATIO);
             //TODO
             //addRecord();
 		}
