@@ -604,7 +604,7 @@ export default {
             })
           }
         } else {
-          this.$message.warning('error submit!!')
+          this.$message.warning('请正确填写表单!')
         }
       })
       this.submitStatus = false
