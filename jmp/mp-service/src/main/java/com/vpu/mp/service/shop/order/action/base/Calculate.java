@@ -222,7 +222,10 @@ public class Calculate extends ShopBaseService {
                 //默认选择
                 vo.setCouponSn(coupons.get(0).getCouponSn());
                 vo.setDefaultCoupon(coupons.get(0));
+            }else if(StringUtils.isBlank(param.getCouponSn())) {
+                //不选择优惠券
             }else{
+                //选择指定优惠券
                 for (OrderCouponVo coupon : coupons) {
                     if(coupon.getCouponSn().equals(param.getCouponSn())){
                         vo.setCouponSn(param.getCouponSn());
