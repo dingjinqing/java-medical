@@ -96,7 +96,7 @@ global.wxPage({
           }
           if (sort_menu[i].menuType == 2) {
             // sort_menu[i].menuName = that.$t('pages.store.leftMenuB');
-            sort_menu[i].menuName = '推荐品牌';
+            //sort_menu[i].menuName = '推荐品牌';
           }
           if (sort_menu[i].menuType == 5) {
             // sort_menu[i].menuName = that.$t('pages.store.leftMenuC');
