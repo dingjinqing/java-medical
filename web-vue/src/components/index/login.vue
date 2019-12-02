@@ -20,7 +20,7 @@
             class="title-head "
             :class="{'title-active': !isSubLogin}"
             @click="switchTab(false)"
-          >{{$t('login_page.login_main')}}</div>
+          >{{$t('login_page.main_name')}}</div>
           <div
             class="title-head "
             :class="{'title-active': isSubLogin}"
@@ -35,27 +35,39 @@
           >
             <div class="mesg-error"></div>
             <div class="smart-form">
-              <div class="account-user">
-                <el-input
-                  type="text"
-                  v-model="mainData.username"
-                  :placeholder="$t('login_page.main_name')"
+              <el-form
+                :model="ruleForm"
+                status-icon
+                :rules="rules"
+                ref="ruleForm"
+                label-width="100px"
+                class="demo-ruleForm"
+                :key="1"
+              >
+                <el-form-item
+                  :label="$t('login_page.main_name')"
+                  prop="username"
                 >
-                </el-input>
-              </div>
-              <div class="account-pawd">
-                <el-input
-                  type="password"
-                  v-model="mainData.password"
-                  :placeholder="$t('login_page.password')"
-                ></el-input>
-              </div>
-              <el-button
-                type="primary"
-                @click.native.prevent="onSubmit(1)"
-                @keyup.enter.native="onSubmit(1)"
-                class="btn"
-              >{{$t('login_page.login_main')}}</el-button>
+                  <el-input v-model="ruleForm.username"></el-input>
+                </el-form-item>
+                <el-form-item
+                  :label="$t('login_page.password')"
+                  prop="password"
+                >
+                  <el-input
+                    show-password
+                    v-model="ruleForm.password"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-button
+                    type="primary"
+                    @click.native.prevent="onSubmit(1,'ruleForm')"
+                    @keyup.enter.native="onSubmit(1,'ruleForm')"
+                    class="btn"
+                  >{{$t('login_page.login_main')}}</el-button>
+                </el-form-item>
+              </el-form>
             </div>
           </div>
           <div
@@ -65,32 +77,46 @@
           >
             <div class="mesg-error"></div>
             <div class="smart-form">
-              <div class="account-name">
-                <el-input
-                  v-model="subData.username"
-                  :placeholder="$t('login_page.main_name')"
-                ></el-input>
-              </div>
-              <div class="account-user">
-                <el-input
-                  v-model="subData.subUsername"
-                  :placeholder="$t('login_page.z_phone')"
-                ></el-input>
-              </div>
-              <div class="account-pawd">
-                <el-input
-                  type="password"
-                  v-model="subData.password"
-                  :placeholder="$t('login_page.password')"
-                ></el-input>
-              </div>
-              <el-button
-                type="primary"
-                class="btn"
-                @click.native.prevent="onSubmit(2)"
-                @keyup.enter.native="onSubmit(2)"
-                :value="$t('login_page.login_main')"
-              >{{$t('login_page.login_main')}}</el-button>
+
+              <el-form
+                :model="subRuleForm"
+                status-icon
+                :rules="subRules"
+                ref="subRuleForm"
+                label-width="100px"
+                class="demo-ruleForm"
+                :key="2"
+              >
+                <el-form-item
+                  :label="$t('login_page.main_name')"
+                  prop="username"
+                >
+                  <el-input v-model="subRuleForm.username"></el-input>
+                </el-form-item>
+                <el-form-item
+                  :label="$t('login_page.subAccount')"
+                  prop="subUsername"
+                >
+                  <el-input v-model="subRuleForm.subUsername"></el-input>
+                </el-form-item>
+                <el-form-item
+                  :label="$t('login_page.password')"
+                  prop="password"
+                >
+                  <el-input
+                    show-password
+                    v-model="subRuleForm.password"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-button
+                    type="primary"
+                    @click.native.prevent="onSubmit(2,'subRuleForm')"
+                    @keyup.enter.native="onSubmit(2,'subRuleForm')"
+                    class="btn"
+                  >{{$t('login_page.login_main')}}</el-button>
+                </el-form-item>
+              </el-form>
             </div>
           </div>
         </div>
@@ -103,18 +129,24 @@ import { loginRequest } from '@/api/index/login.js'
 import Cookies from 'js-cookie'
 export default {
   data () {
+    var validateUserName = (rule, value, callback) => {
+      console.log(this.userNameReg, value)
+      if (!this.userNameReg.test(value)) {
+        callback(new Error('主账号用户名应为非中文且不能为空'))
+      } else {
+        callback()
+      }
+    }
+    var validatePassword = (rule, value, callback) => {
+      if (!this.passwordReg.test(value)) {
+        callback(new Error('密码应为6至16位非中文且不能为空'))
+      } else {
+        callback()
+      }
+    }
     return {
-      mainData: {
-        username: '',
-        password: '',
-        isSubLogin: false
-      },
-      subData: {
-        username: '',
-        password: '',
-        subUsername: '',
-        isSubLogin: true
-      },
+      userNameReg: /^[^\u4e00-\u9fa5]{1,}$/,
+      passwordReg: /^[^\u4e00-\u9fa5][\S+$]{5,16}$/,
       isSubLogin: false,
       imgUrl: [
         {
@@ -123,10 +155,27 @@ export default {
         {
           img: this.$imageHost + '/image/admin/login_new_new.png'
         }
-      ]
+      ],
+      ruleForm: {
+        username: '',
+        password: ''
+      },
+      rules: {
+        username: { validator: validateUserName, trigger: 'blur' },
+        password: { validator: validatePassword, trigger: 'blur' }
+      },
+      subRuleForm: {
+        username: '',
+        subUsername: '',
+        password: ''
+      },
+      subRules: {
+        username: { validator: validateUserName, trigger: 'blur' },
+        subUsername: { validator: validateUserName, trigger: 'blur' },
+        password: { validator: validatePassword, trigger: 'blur' }
+      }
     }
   },
-
   created () {
     var _self = this
     document.onkeydown = function (e) {
@@ -138,9 +187,9 @@ export default {
       }
       if (key === 13) {
         if (_self.isSubLogin === true) {
-          _self.onSubmit(2)
+          _self.onSubmit(2, 'subRuleForm')
         } else {
-          _self.onSubmit(1)
+          _self.onSubmit(1, 'ruleForm')
         }
       }
     }
@@ -152,108 +201,78 @@ export default {
     // window.addEventListener('keyup', this.keyupEnter, false)
   },
   methods: {
-    // 表单校验
-    JudgementForm (index) {
-      let userNameReg = /^[^\u4e00-\u9fa5]{0,}$/
-      let passwordReg = /^[^\u4e00-\u9fa5][\S+$]{5,16}$/
-      if (index === 1) {
-        if (!userNameReg.test(this.mainData.username)) {
-          this.$message.success({
-            message: '主账号用户名应为非中文且不能为空',
-            type: 'warning'
-          })
+    onSubmit (index, formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          localStorage.setItem('contentType', 'application/json;charset=UTF-8')
+          if (index === 1) {
+            loginRequest(this.ruleForm).then((res) => {
+              // test
+              console.log('第一')
+              console.log(res)
+              if (res.error === 0) {
+                document.onkeydown = undefined
+                Cookies.set('V-Index-Token', res.content.token)
+                localStorage.setItem('V-Username', res.content.userName)
+                localStorage.setItem('V-loginType', 0)
+                localStorage.setItem('V-isSubLogin', this.isSubLogin)
+                console.log('子账户登录')
+                console.log(this.isSubLogin)
+                localStorage.setItem('V-AccountName', res.content.accountName)
+                console.log(this.$message)
+                this.$message.success({
+                  showClose: true,
+                  message: res.message,
+                  type: 'success'
+                })
+                console.log(1111)
+                this.$router.push({
+                  name: 'shopMain'
+                })
+                console.log(2222)
+              }
+              // test
+            })
+          } else {
+            loginRequest(this.subData).then((res) => {
+              console.log('第二')
+              if (res.error === 0) {
+                document.onkeydown = undefined
+                localStorage.setItem('V-loginType', 0)
+                Cookies.set('V-Index-Token', res.content.token)
+                localStorage.setItem('V-Username', res.content.userName)
+                localStorage.setItem('V-AccountName', res.content.accountName)
+                localStorage.setItem('V-isSubLogin', this.isSubLogin)
+                console.log('子账户登录')
+                console.log(this.isSubLogin)
+                this.$message.success({
+                  showClose: true,
+                  message: res.message,
+                  type: 'success'
+                })
+                this.$router.push({
+                  name: 'shopMain'
+                })
+              }
+            })
+          }
+        } else {
+          console.log('error submit!!')
           return false
         }
-        if (!passwordReg.test(this.mainData.password)) {
-          this.$message.success({
-            message: '密码应为6至16位非中文且不能为空',
-            type: 'warning'
-          })
-          return false
-        }
-      } else {
-        if (!userNameReg.test(this.subData.username)) {
-          this.$message.success({
-            message: '主账号用户名应为非中文且不能为空',
-            type: 'warning'
-          })
-          return false
-        }
-        if (!userNameReg.test(this.subData.subUsername)) {
-          this.$message.success({
-            message: '子账号用户名或手机号应为非中文且不能为空',
-            type: 'warning'
-          })
-          return false
-        }
-        if (!passwordReg.test(this.subData.password)) {
-          this.$message.success({
-            message: '密码应为6至16位非中文且不能为空',
-            type: 'warning'
-          })
-          return false
-        }
-      }
-    },
-    onSubmit (index) {
-      let flag = this.JudgementForm(index)
+      })
+      // let flag = this.JudgementForm(index)
       // console.log(this.flag)
-      if (flag === false) return
-      localStorage.setItem('contentType', 'application/json;charset=UTF-8')
-      if (index === 1) {
-        loginRequest(this.mainData).then((res) => {
-          // test
-          console.log('第一')
-          console.log(res)
-          if (res.error === 0) {
-            document.onkeydown = undefined
-            Cookies.set('V-Index-Token', res.content.token)
-            localStorage.setItem('V-Username', res.content.userName)
-            localStorage.setItem('V-loginType', 0)
-            localStorage.setItem('V-isSubLogin', this.isSubLogin)
-            console.log('子账户登录')
-            console.log(this.isSubLogin)
-            localStorage.setItem('V-AccountName', res.content.accountName)
-            console.log(this.$message)
-            this.$message.success({
-              showClose: true,
-              message: res.message,
-              type: 'success'
-            })
-            console.log(1111)
-            this.$router.push({
-              name: 'shopMain'
-            })
-            console.log(2222)
-          }
-          // test
-        })
-      } else {
-        loginRequest(this.subData).then((res) => {
-          console.log('第二')
-          if (res.error === 0) {
-            document.onkeydown = undefined
-            localStorage.setItem('V-loginType', 0)
-            Cookies.set('V-Index-Token', res.content.token)
-            localStorage.setItem('V-Username', res.content.userName)
-            localStorage.setItem('V-AccountName', res.content.accountName)
-            localStorage.setItem('V-isSubLogin', this.isSubLogin)
-            console.log('子账户登录')
-            console.log(this.isSubLogin)
-            this.$message.success({
-              showClose: true,
-              message: res.message,
-              type: 'success'
-            })
-            this.$router.push({
-              name: 'shopMain'
-            })
-          }
-        })
-      }
+      // if (flag === false) return
     },
     // tap切换
     switchTab (subLogin) {
+      //  Object.keys(this.ruleForm).forEach(item=>{
+      //    this.ruleForm[item] = ''
+      //  })
+      //  Object.keys(this.subRuleForm).forEach(item=>{
+      //    this.ruleForm[item] = ''
+      //  })
       this.isSubLogin = subLogin
     }
   }
@@ -363,7 +382,7 @@ export default {
   padding-left: none !important;
 }
 .btn {
-  width: 160px;
+  width: 100%;
 }
 .account-login span {
   display: inline-block;
@@ -403,6 +422,20 @@ input::-webkit-input-placeholder {
 .login-container /deep/ .el-button {
   padding: 12px 20px;
 }
-/*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件*/
 </style>
-<!--/*作用于组件内部的样式，可以全局覆盖，但是要添加页面类名隔离，避免污染全局组件，也可以使用deep修复。因影响到小程序版本页面的组件*/-->
+<style lang="scss" scoped>
+.demo-ruleForm {
+  /deep/ .el-form-item__label {
+    width: 60px !important;
+    line-height: 14px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  /deep/ .el-form-item__content {
+    height: 46px;
+    margin-bottom: 10px;
+    margin-left: 60px !important;
+  }
+}
+</style>

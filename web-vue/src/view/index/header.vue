@@ -353,7 +353,7 @@ a {
   width: 100%;
   min-width: 100%;
   box-sizing: border-box;
-  height: 82px;
+  /* height: 82px; */
   background: #fff !important;
 }
 .logo {

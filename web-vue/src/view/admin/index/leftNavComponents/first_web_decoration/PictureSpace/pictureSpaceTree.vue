@@ -523,7 +523,7 @@ export default {
         return item.checked === true
       })
       if (checkArr.length === 0) {
-        this.$message('请选择图片')
+        this.$message.error('请选择图片')
         return
       }
       // console.log(this.img_list)
@@ -549,7 +549,7 @@ export default {
         return item.checked === true
       })
       if (this.checkArr.length === 0) {
-        this.$message('请选择图片')
+        this.$message.error('请选择图片')
         return
       }
       this.dialogVisible = true

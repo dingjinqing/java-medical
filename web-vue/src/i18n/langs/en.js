@@ -578,9 +578,10 @@ const en = {
   login_page: {
     login_main: 'Sign in',
     login_f: 'Subaccount login',
-    main_name: 'Main Account User Name',
+    main_name: 'Main account number',
     password: 'Password',
-    z_phone: 'Subaccount username/cell phone number'
+    z_phone: 'Subaccount username/cell phone number',
+    subAccount: 'Sub account'
   },
   Recommend: 'Recommend',
   aboutUs: {

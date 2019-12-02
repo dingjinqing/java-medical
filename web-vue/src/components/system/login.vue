@@ -19,40 +19,43 @@
             <div class="fildset">
 
               <div class="section_1">
-                <div class="label">{{$t('systemLogin.username')}}</div>
-                <div>
-                  <el-input
-                    suffix-icon="fa fa-user"
-                    v-model="mainData.username"
-                    :placeholder="placeholder_username"
-                  >
-                  </el-input>
-                </div>
+                <el-form
+                  :model="ruleForm"
+                  status-icon
+                  :rules="rules"
+                  ref="ruleForm"
+                  label-width="100px"
+                  class="demo-ruleForm"
+                  :key="1"
+                >
+                  <el-form-item prop="username">
+                    <div class="label">{{$t('systemLogin.username')}}</div>
+                    <el-input
+                      suffix-icon="fa fa-user"
+                      v-model="ruleForm.username"
+                    ></el-input>
+                  </el-form-item>
+                  <el-form-item prop="password">
+                    <div class="label">{{$t('systemLogin.password')}}</div>
+                    <el-input
+                      suffix-icon="fa fa-lock"
+                      show-password
+                      v-model="ruleForm.password"
+                    ></el-input>
+                  </el-form-item>
+                </el-form>
               </div>
-              <div class="section_1">
-                <div class="label">{{$t('systemLogin.password')}}</div>
-                <div>
-                  <el-input
-                    type="password"
-                    suffix-icon="fa fa-lock"
-                    v-model="mainData.password"
-                    :placeholder="placeholder_password"
-                  >
-                  </el-input>
-                </div>
-              </div>
-            </div>
-            <div class="footer">
-              <el-button
-                type="primary"
-                class="button"
-                @click.native.prevent="onSubmit()"
-                @keyup.enter.native="onSubmit()"
-              >{{$t('systemLogin.login')}}</el-button>
+              <div class="footer">
+                <el-button
+                  type="primary"
+                  class="button"
+                  @click.native.prevent="onSubmit()"
+                  @keyup.enter.native="onSubmit()"
+                >{{$t('systemLogin.login')}}</el-button>
 
+              </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -63,11 +66,24 @@ import { loginRequest } from '@/api/system/login.js'
 import Cookies from 'js-cookie'
 export default {
   data () {
+    var validateUserName = (rule, value, callback) => {
+      console.log(this.userNameReg, value)
+      if (!this.userNameReg.test(value)) {
+        callback(new Error('主账号用户名应为非中文且不能为空'))
+      } else {
+        callback()
+      }
+    }
+    var validatePassword = (rule, value, callback) => {
+      if (!this.passwordReg.test(value)) {
+        callback(new Error('密码应为6至16位非中文且不能为空'))
+      } else {
+        callback()
+      }
+    }
     return {
-      mainData: {
-        username: '',
-        password: ''
-      },
+      userNameReg: /^[^\u4e00-\u9fa5]{1,}$/,
+      passwordReg: /^[^\u4e00-\u9fa5][\S+$]{5,16}$/,
       placeholder_username: '请输入用户名或者手机号',
       placeholder_password: '请输入密码',
       flag: true,
@@ -78,7 +94,15 @@ export default {
         {
           img: this.$imageHost + '/image/admin/login_back.png'
         }
-      ]
+      ],
+      ruleForm: {
+        username: '',
+        password: ''
+      },
+      rules: {
+        username: { validator: validateUserName, trigger: 'blur' },
+        password: { validator: validatePassword, trigger: 'blur' }
+      }
     }
   },
   mounted () {
@@ -100,77 +124,39 @@ export default {
     }
     console.log(this)
   },
-
   methods: {
-    // 表单校验
-    JudgementForm (index) {
-      let userNameReg = /^[^\u4e00-\u9fa5][\S+$]{0,}$/
-      let passwordReg = /^[^\u4e00-\u9fa5][\S+$]{5,16}$/
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        if (!userNameReg.test(this.mainData.username)) {
-          this.$message.success({
-            showClose: true,
-            message: 'Please enter your username or mobile phone number',
-            type: 'warning'
-          })
-          this.flag = false
-          return
-        }
-        if (!passwordReg.test(this.mainData.password)) {
-          this.$message.success({
-            showClose: true,
-            message: 'Please input a password',
-            type: 'warning'
-          })
-          this.flag = false
-        }
-        return
-      }
-      if (!userNameReg.test(this.mainData.username)) {
-        this.$message.success({
-          showClose: true,
-          message: '请输入用户名或者手机号',
-          type: 'warning'
-        })
-        this.flag = false
-        return
-      }
-      if (!passwordReg.test(this.mainData.password)) {
-        this.$message.success({
-          showClose: true,
-          message: '请输入密码',
-          type: 'warning'
-        })
-        this.flag = false
-      }
-    },
     // 表单提交
     onSubmit () {
-      this.JudgementForm()
-      if (this.flag === false) return
-      localStorage.setItem('contentType', 'application/json;charset=UTF-8')
-      console.log(this.mainData)
-      loginRequest(this.mainData).then((res) => {
-        console.log(res)
-        if (res.error !== 0) {
-          this.$message.success({
-            showClose: true,
-            message: res.message,
-            type: 'error'
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          localStorage.setItem('contentType', 'application/json;charset=UTF-8')
+          console.log(this.ruleForm)
+          loginRequest(this.ruleForm).then((res) => {
+            console.log(res)
+            if (res.error !== 0) {
+              this.$message.success({
+                showClose: true,
+                message: res.message,
+                type: 'error'
+              })
+            } else {
+              document.onkeydown = undefined
+              localStorage.setItem('V-loginType', 1)
+              Cookies.set('V-System-Token', res.content.token, { expires: 1 / 48 })
+              localStorage.setItem('System-Username', res.content.userName)
+              this.$message.success({
+                showClose: true,
+                message: res.message,
+                type: 'success'
+              })
+              this.$router.push({
+                name: 'overviewMain'
+              })
+            }
           })
         } else {
-          document.onkeydown = undefined
-          localStorage.setItem('V-loginType', 1)
-          Cookies.set('V-System-Token', res.content.token, { expires: 1 / 48 })
-          localStorage.setItem('System-Username', res.content.userName)
-          this.$message.success({
-            showClose: true,
-            message: res.message,
-            type: 'success'
-          })
-          this.$router.push({
-            name: 'overviewMain'
-          })
+          console.log('error submit!!')
+          return false
         }
       })
     }
@@ -247,7 +233,7 @@ export default {
   color: #232323;
 }
 .sys_container .fildset {
-  padding: 25px 14px 5px;
+  padding: 25px 0 5px;
   position: relative;
 }
 .sys_container .section_1 {
@@ -280,5 +266,13 @@ export default {
 }
 .sys_container .button {
   float: right;
+}
+</style>
+<style lang="scss" scoped>
+.demo-ruleForm {
+  padding: 0 14px;
+  /deep/ .el-form-item__content {
+    margin-left: 0 !important;
+  }
 }
 </style>

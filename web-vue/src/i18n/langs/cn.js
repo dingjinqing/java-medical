@@ -584,9 +584,10 @@ const cn = {
   login_page: {
     login_main: '登录',
     login_f: '子账号登录',
-    main_name: '主账号用户名',
+    main_name: '账户名',
     password: '密码',
-    z_phone: '子账号用户名/手机号'
+    z_phone: '子账号用户名/手机号',
+    subAccount: '子账号'
   },
   Recommend: '推荐',
   aboutUs: {
