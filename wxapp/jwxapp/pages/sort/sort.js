@@ -1,4 +1,4 @@
-// pages/sort/sort.js
+// pages/store/store.js
 var util = require('../../utils/util.js')
 // var spec_mixin = require("../goodscommon/spec.js")
 var app = getApp()
@@ -102,7 +102,7 @@ global.wxPage({
             // sort_menu[i].menuName = that.$t('pages.store.leftMenuC');
             sort_menu[i].menuName = '推荐分类';
           }
-        } 
+        }
         if (sort_content.menuContentType == 1 || sort_content.menuContentType == 4) {
           // 全部品牌
           that.setData({
@@ -179,14 +179,14 @@ global.wxPage({
           })
         }
 
-        
+
         that.setData({
           sort_menu: sort_menu,
           sort_content: sort_content,
         });
 
 
-      }   
+      }
     });
 
     // util.api('/api/wxapp/sort/show', function (res) {
@@ -231,8 +231,8 @@ global.wxPage({
 
     //   });
     // });
-    
-    
+
+
   },
   changeSort: function (e) {
     menuType = e.currentTarget.dataset.type;
@@ -249,7 +249,7 @@ global.wxPage({
     sort_menu[indexs].backgr = "#ffffff";
 
     util.api('/api/wxapp/sort/get/content', function (res) {
-      if (res.error ==0) {
+      if (res.error == 0) {
         sort_content = res.content;
         if (sort_content.menuContentType == 1 || sort_content.menuContentType == 4) {
           // 全部品牌
@@ -334,9 +334,9 @@ global.wxPage({
 
       }
     }, {
-      menuType: menuType,
-      menuId: menuId
-    })
+        menuType: menuType,
+        menuId: menuId
+      })
   },
   // changeSort: function (e) {
   //   sort_id = e.currentTarget.dataset.sort_id;
