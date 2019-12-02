@@ -107,13 +107,13 @@ public class AdminTradeController extends AdminBaseController {
         }};
         //基本配置项信息
         OrderProcessParam param = shop().trade.getOrderProcessConfig();
-        /* TODO 等微信api好了之后在开放此代码
+//         TODO 等微信api好了之后在开放此代码
         try {
-            deliveryList = shop().trade.combineAllLogisticsAccountInfo();
+            shop().trade.combineAllLogisticsAccountInfo();
         } catch (WxErrorException e) {
             log.error("微信物流助手api调用失败，获取支持物流公司列表失败：{}", e.getMessage());
 //            return fail(JsonResultCode.CODE_FAIL);
-        }*/
+        }
         return success(new HashMap<String, Object>(2) {
 			private static final long serialVersionUID = 533497335184152545L;
 			{
