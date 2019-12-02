@@ -2,7 +2,7 @@
   <div class="links">
     <!-- 弹窗 -->
     <el-dialog
-      title="选择链接"
+      :title="$t('selectLinks.dialogTitle')"
       :visible.sync="dialogVisible"
       width="70%"
       :fullscreen='true'
@@ -19,7 +19,10 @@
               v-for="(item,index) in level_one_DataList"
               :key="index"
             >
-              <span :class="bottom_line_flagindex==index?'click_active':''">{{item.title}}</span>
+              <span
+                class="liSpan"
+                :class="bottom_line_flagindex==index?'click_active':''"
+              >{{item.title}}</span>
               <div
                 class="three-circle"
                 v-if="index==3||index==4?true:false"
@@ -89,12 +92,12 @@
         <el-button
           size="small"
           @click="dialogVisible = false"
-        >取 消</el-button>
+        >{{$t('selectLinks.cancel')}}</el-button>
         <el-button
           type="primary"
           size="small"
           @click="handleSure()"
-        >确 定</el-button>
+        >{{$t('selectLinks.sure')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -130,84 +133,9 @@ export default {
       dialogVisible: false,
       click_active: 'click_active',
       bg_class: 'bg_class',
-      level_one_DataList: [
-        {
-          flagindex: null, title: '常用链接'
-        },
-        {
-          flagindex: null, title: '商品链接'
-        },
-        {
-          flagindex: '', title: '自定义页面'
-        },
-        {
-          flagindex: '', title: '营销活动'
-        },
-        {
-          flagindex: '', title: '商品分类'
-        },
-        {
-          flagindex: '', title: '网页跳转'
-        },
-        {
-          flagindex: '', title: '小程序跳转'
-        },
-        {
-          flagindex: '', title: '表单页面'
-        },
-        {
-          flagindex: '', title: '门店'
-        }
-      ],
-      level_two_DataList_one: [
-        {
-          flagindex: null, title: '拼团抽奖'
-        },
-        {
-          flagindex: '', title: '瓜分积分'
-        },
-        {
-          flagindex: '', title: '好友助力'
-        },
-        {
-          flagindex: '', title: '加价购'
-        },
-        {
-          flagindex: '', title: '幸运抽奖'
-        },
-        {
-          flagindex: '', title: '满折满减'
-        },
-        {
-          flagindex: '', title: '一口价'
-        },
-        {
-          flagindex: '', title: '优惠卷'
-        },
-        {
-          flagindex: '', title: '会员卡'
-        },
-        {
-          flagindex: '', title: '测评'
-        },
-        {
-          flagindex: '', title: '优惠礼包'
-        }
-      ],
-      level_two_DataList_two: [
-        {
-          flagindex: null, title: '平台分类'
-        },
-        {
-          flagindex: '', title: '商家分类'
-        },
-        {
-          flagindex: '', title: '商品品牌'
-        },
-        {
-          flagindex: '', title: '商品标签'
-        }
-      ],
+      level_one_DataList: [],
+      level_two_DataList_one: [],
+      level_two_DataList_two: [],
       bottom_line_flagindex: 0,
       bottom_in_line_flagindex: 0,
       bottom_level_line_one: null,
@@ -230,17 +158,16 @@ export default {
     },
     tuneUpSelectLink () {
       this.dialogVisible = true
+    },
+    lang () {
+      this.level_one_DataList = this.$t('selectLinks.level_one_DataList')
+      this.level_two_DataList_one = this.$t('selectLinks.level_two_DataList_one')
+      this.level_two_DataList_two = this.$t('selectLinks.level_two_DataList_two')
     }
   },
   mounted () {
-    // this.$http.$on('linkDialogFlag', (flag) => {
-    //   console.log(flag)
-    //   this.dialogVisible = true
-    //   // 初始化弹窗子组件
-    //   // this.$router.push({
-    //   //   name: 'commonLinks'
-    //   // })
-    // })
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     ...mapActions(['changeSelectlink', 'changeSelectLinkLeft', 'afferentPathToPage']),
@@ -407,14 +334,17 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 35px;
+  /* height: 35px; */
   cursor: pointer;
 }
-.ul_out li span {
+.ul_out li .liSpan {
   display: block;
-  line-height: 26px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  line-height: 16px;
   /* width: 56px; */
-  height: 26px;
+  /* height: 26px; */
 }
 .click_active {
   color: #5a8bff;
@@ -453,7 +383,7 @@ export default {
   background-color: #fff;
 }
 .level_two_li {
-  line-height: 35px;
+  /* line-height: 35px; */
   text-align: center;
   position: relative;
   color: #000;
@@ -464,8 +394,9 @@ export default {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  height: 35px;
+  /* height: 35px; */
   cursor: pointer;
+  padding: 10px 12px;
 }
 .right_box {
   flex: 1;

@@ -3,19 +3,18 @@
   <div class="customPage_Container">
     <div class="top_container">
       <div class="top_left">
-        <div>页面名称：</div>
+        <div>{{$t('selectLinks.pageName')}}：</div>
         <el-input
           v-model="pageName"
-          placeholder="请输入名称"
+          :placeholder="$t('selectLinks.inputName')"
           size="mini"
         ></el-input>
         <div></div>
       </div>
       <div class="top_middle">
-        <div>页面分类：</div>
+        <div>{{$t('selectLinks.pageClassification')}}：</div>
         <el-select
           v-model="value"
-          placeholder="请选择分类"
           size="mini"
         >
           <el-option
@@ -32,16 +31,16 @@
           type="primary"
           size="mini"
           @click="handleSearch()"
-        >搜索</el-button>
+        >{{$t('selectLinks.search')}}</el-button>
       </div>
     </div>
     <div class="content">
       <table width='100%'>
         <thead>
           <tr>
-            <td>名称</td>
-            <td>分类</td>
-            <td>链接</td>
+            <td>{{$t('selectLinks.name')}}</td>
+            <td>{{$t('selectLinks.classification')}}</td>
+            <td>{{$t('selectLinks.link')}}</td>
           </tr>
         </thead>
         <tbody
@@ -69,12 +68,12 @@
         v-if="!tbodyFlag"
       >
         <img :src="noImg">
-        <span>暂无相关数据</span>
+        <span>{{$t('selectLinks.noDataAvailable')}}</span>
       </div>
     </div>
     <div class="pagination">
       <div class="paginationLeft">
-        当前页面{{currentPage}}/{{pageCount}},总记录{{totalRows}}条
+        {{$t('selectLinks.nowPage')}}{{currentPage}}/{{pageCount}},{{$t('selectLinks.generalRecord')}}{{totalRows}}{{$t('selectLinks.strip')}}
       </div>
       <el-pagination
         @current-change="handleCurrentChange"
@@ -108,6 +107,8 @@ export default {
     }
   },
   mounted () {
+    // 初始化语言
+    this.langDefault()
     // 初始化数据
     this.fetchData(true)
   },
@@ -142,7 +143,7 @@ export default {
         if (res.error === 0) {
           let obj = {
             id: '',
-            name: '请选择分类'
+            name: this.$t('selectLinks.selectClassify')
           }
           res.content.unshift(obj)
           this.options = res.content

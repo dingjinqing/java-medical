@@ -1,16 +1,16 @@
 <template>
   <div>
     <div class="top">
-      <span>营销活动/ {{this.navText}}</span>
+      <span>{{$t('selectLinks.marketingActivities')}}/ {{this.navText}}</span>
     </div>
     <div class="content">
       <table width='100%'>
         <thead>
           <tr>
-            <td>名称</td>
-            <td v-if="couponFlag">类型</td>
-            <td>有效期</td>
-            <td>链接</td>
+            <td>{{$t('selectLinks.name')}}</td>
+            <td v-if="couponFlag">{{$t('selectLinks.type')}}</td>
+            <td>{{$t('selectLinks.termOfValidity')}}</td>
+            <td>{{$t('selectLinks.link')}}</td>
           </tr>
         </thead>
         <tbody v-if="tbodyFlag">
@@ -22,7 +22,7 @@
           >
             <td>{{item.actName}}</td>
             <td v-if="couponFlag"></td>
-            <td class="link">{{item.startTime}}至{{item.endTime}}</td>
+            <td class="link">{{item.startTime}}{{$t('selectLinks.to')}}{{item.endTime}}</td>
             <td class="tb_decorate_a">
               {{path}}{{item.id}}
             </td>
@@ -35,7 +35,7 @@
         v-if="!tbodyFlag"
       >
         <img :src="noImg">
-        <span>暂无相关数据</span>
+        <span>{{$t('selectLinks.noDataAvailable')}}</span>
       </div>
     </div>
   </div>
@@ -76,6 +76,10 @@ export default {
       },
       immediate: true
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     ...mapActions(['choisePagePath']),

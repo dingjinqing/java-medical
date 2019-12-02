@@ -3,9 +3,9 @@
     <table width='100%'>
       <thead>
         <tr>
-          <td>名称</td>
-          <td>链接</td>
-          <td>操作</td>
+          <td>{{$t('selectLinks.name')}}</td>
+          <td>{{$t('selectLinks.link')}}</td>
+          <td>{{$t('selectLinks.operation')}}</td>
         </tr>
       </thead>
       <tbody>
@@ -26,14 +26,14 @@
             ><span
                 :class="item.spanId===index?'spanClass':''"
                 class="icon_hiddle"
-              >分享<i></i></span></div>
+              >{{$t('selectLinks.share')}}<i></i></span></div>
           </td>
         </tr>
       </tbody>
     </table>
     <!--分享弹窗-->
     <el-dialog
-      title="扫一扫，分享给好友吧~"
+      :title="$t('selectLinks.shareDialogTitle')"
       :visible.sync="dialogVisibleShare"
       width="25%"
       :modal='false'
@@ -46,7 +46,7 @@
         <div
           class="shareDialog_bottom"
           @click="downs()"
-        >下载二维码</div>
+        >{{$t('selectLinks.dowmTowCode')}}</div>
       </div>
 
       <span
@@ -55,14 +55,14 @@
       >
         <el-input
           v-model="pathInput"
-          placeholder="请输入内容"
+          :placeholder="$t('selectLinks.placeTextInput')"
           size="mini"
           ref="copy"
         ></el-input>
         <span
           style="cursor:pointer"
           @click="clickCopy()"
-        >复制</span>
+        >{{$t('selectLinks.copy')}}</span>
       </span>
     </el-dialog>
   </div>
@@ -72,78 +72,21 @@ import { mapActions } from 'vuex'
 export default {
   data () {
     return {
-      trList: [
-        {
-          title: '首页',
-          path: 'pages/index/index',
-          spanId: ''
-        },
-        {
-          title: '门店列表页',
-          path: 'pages/storelist/storelist',
-          spanId: ''
-        },
-        {
-          title: '购物车页',
-          path: 'pages/cart/cart',
-          spanId: ''
-        },
-        {
-          title: '个人中心页',
-          path: 'pages/usercenter/usercenter',
-          spanId: ''
-        },
-        {
-          title: '订单列表页',
-          path: 'pages/orderlist/orderlist',
-          spanId: ''
-        },
-        {
-          title: '全部商品',
-          path: 'pages/searchs/search',
-          spanId: ''
-        },
-        {
-          title: '商家分类',
-          path: 'pages/sort/sort',
-          spanId: ''
-        },
-        {
-          title: '分销返利中心',
-          path: 'pages/distribution/distribution',
-          spanId: ''
-        },
-        {
-          title: '授权手机号',
-          path: 'pages/auth/auth',
-          spanId: ''
-        },
-        {
-          title: '积分商品列表',
-          path: 'pages/searchs/search?is_from=integral',
-          spanId: ''
-        },
-        {
-          title: '会员卡领取页（卡号+密码）',
-          path: 'pages/getcardpage/getcardpage?type=1',
-          spanId: ''
-        },
-        {
-          title: '会员卡领取页（领取码）',
-          path: 'pages/getcardpage/getcardpage?type=2',
-          spanId: ''
-        },
-        {
-          title: '客服',
-          path: 'pages/customer/customer',
-          spanId: ''
-        }
-      ],
+      trList: [],
       clickIindex: null,
       dialogVisibleShare: false,
       pathInput: '',
       shareImg: 'http://mpdev.weipubao.cn/upload/4748160/qrcode/33/T33P307bfc9947d3756c206033bd06eb13b0_20190614100251.jpg'
     }
+  },
+  watch: {
+    lang () {
+      this.trList = this.$t('selectLinks.commonLInkstrList')
+    }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     ...mapActions(['choisePagePath']),

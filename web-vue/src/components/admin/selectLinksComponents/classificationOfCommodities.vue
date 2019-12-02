@@ -6,10 +6,10 @@
         v-if="topHiddenFlag"
       >
         <div class="top_left">
-          <div>{{topName}}：</div>
+          <div>{{classificationName}}：</div>
           <el-input
             v-model="pageName"
-            :placeholder="(classificationFlag===2)?'请输入品牌名称':'请输入标签名称'"
+            :placeholder="(classificationFlag===2)?$t('selectLinks.brandPlaceHolder'):$t('selectLinks.labelPlaceHolder')"
             size="mini"
           ></el-input>
           <div class="top_right">
@@ -17,7 +17,7 @@
               type="primary"
               size="mini"
               @click="handleSearch()"
-            >搜索</el-button>
+            >{{$t('selectLinks.search')}}</el-button>
           </div>
         </div>
       </div>
@@ -26,7 +26,7 @@
           <tr>
             <td>{{topName}}</td>
 
-            <td>链接</td>
+            <td>{{$t('selectLinks.link')}}</td>
           </tr>
         </thead>
         <tbody v-if="tbodyFlag">
@@ -68,7 +68,7 @@
         v-if="!tbodyFlag"
       >
         <img :src="noImg">
-        <span>暂无相关数据</span>
+        <span>{{$t('selectLinks.noDataAvailable')}}</span>
       </div>
     </div>
   </div>
@@ -97,11 +97,12 @@ export default {
       pageName: '',
       topHiddenFlag: false,
       tdHiddenImg: this.$imageHost + '/upload/7467397/image/20190507/crop_N7Fu7EaKRtaZri18.gif',
-      classificationName: '分类名称',
       topName: '',
       isCenterFlag: '',
       catData: null,
-      classificationFlag: null
+      classificationFlag: null,
+      classificationName: '',
+      noImg: this.$imageHost + '/image/admin/no_data.png'
     }
   },
   computed: {
@@ -109,6 +110,24 @@ export default {
     selectlinksIndex_ () {
       console.log(this.selectlinksIndex)
       return this.selectlinksIndex
+    },
+    classificationNameText () {
+      return this.$t('selectLinks.classificationNameText')
+    },
+    name () {
+      return this.$t('selectLinks.name')
+    },
+    brandInformation () {
+      return this.$t('selectLinks.brandInformation')
+    },
+    brandName () {
+      return this.$t('selectLinks.brandName')
+    },
+    labelInformation () {
+      return this.$t('selectLinks.labelInformation')
+    },
+    labelName () {
+      return this.$t('selectLinks.labelName')
     }
   },
   watch: {
@@ -121,6 +140,10 @@ export default {
       immediate: true
     }
   },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
   methods: {
     ...mapActions(['choisePagePath']),
     defaultData (newData) {
@@ -129,7 +152,9 @@ export default {
       console.log(newData)
       if (newData.levelIndex === 2) {
         switch (newData.index) {
-          case 0: this.classificationName = '分类名称'
+          case 0:
+            this.topName = this.classificationNameText
+
             this.classificationFlag = 0
             this.topHiddenFlag = false
             let params = {
@@ -144,11 +169,18 @@ export default {
                 this.catData.forEach((item, index) => {
                   if (item.level === 0) arr.push(item)
                 })
+                if (arr.length) {
+                  this.tbodyFlag = true
+                } else {
+                  this.tbodyFlag = false
+                }
                 this.trList = arr
               }
             })
             break
-          case 1: this.classificationName = '名称'
+          case 1:
+            this.topName = this.name
+
             this.classificationFlag = 1
             this.topHiddenFlag = false
             let needGoodsSortParams = {
@@ -163,11 +195,18 @@ export default {
                 this.catData.forEach((item, index) => {
                   if (item.level === 0) arr.push(item)
                 })
+                if (arr.length) {
+                  this.tbodyFlag = true
+                } else {
+                  this.tbodyFlag = false
+                }
                 this.trList = arr
               }
             })
             break
-          case 2: this.topName = '品牌名称'
+          case 2:
+            this.topName = this.brandInformation
+            this.classificationName = this.brandName
             this.topHiddenFlag = true
             this.isCenterFlag = false
             this.classificationFlag = 2
@@ -177,11 +216,18 @@ export default {
             cateListApi(needGoodsBrandParams).then(res => {
               console.log(res)
               if (res.error === 0) {
+                if (res.content.goodsBrands.length) {
+                  this.tbodyFlag = true
+                } else {
+                  this.tbodyFlag = false
+                }
                 this.trList = res.content.goodsBrands
               }
             })
             break
-          case 3: this.topName = '标签名称'
+          case 3:
+            this.topName = this.labelInformation
+            this.classificationName = this.labelName
             this.topHiddenFlag = true
             this.isCenterFlag = true
             this.classificationFlag = 3
@@ -191,11 +237,17 @@ export default {
             cateListApi(goodsLabelsParams).then(res => {
               console.log(res)
               if (res.error === 0) {
+                if (res.content.goodsLabels.length) {
+                  this.tbodyFlag = true
+                } else {
+                  this.tbodyFlag = false
+                }
                 this.trList = res.content.goodsLabels
               }
             })
             break
         }
+        console.log(this.topName)
       }
     },
     // 向下点击

@@ -2,6 +2,8 @@
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 // 全局消息国际化配置
 import { cn as messageHint } from './views/admin_new/cn/messageHintCn'
+// 选择链接弹窗国际化
+import { cn as selectLinks } from './views/admin_new/cn/components/selectLinks/selectLinksCn'
 // system 店铺管理系列国际化
 // 小程序版本
 import {
@@ -1001,7 +1003,8 @@ const cn = {
   titleModule, // 小程序标题模块国际化
   shopNotices, // 小程序店铺公告系列国际化
   messageHint, // 全局消息国际化
-  brandManagement // 商品品牌国际化
+  brandManagement, // 商品品牌国际化
+  selectLinks // 选择链接弹窗国际化
 }
 
 export default cn

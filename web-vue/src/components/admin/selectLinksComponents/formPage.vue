@@ -7,9 +7,9 @@
       <table width='100%'>
         <thead>
           <tr>
-            <td>名称</td>
-            <td>营业状态</td>
-            <td>链接</td>
+            <td>{{$t('selectLinks.name')}}</td>
+            <td>{{$t('selectLinks.businessStatus')}}</td>
+            <td>{{$t('selectLinks.link')}}</td>
           </tr>
         </thead>
         <tbody v-if="tbodyFlag">
@@ -20,7 +20,7 @@
             @click="handleClick(index)"
           >
             <td>{{item.storeName}}</td>
-            <td class="link">{{item.businessState===1?'营业中':'歇业'}}</td>
+            <td class="link">{{item.businessState===1?$t('selectLinks.inBusiness'):$t('selectLinks.goOutOfBusiness')}}</td>
             <td class="tb_decorate_a">
               pages/storeinfo/storeinfo?id={{item.storeId}}
             </td>
@@ -33,7 +33,7 @@
         v-if="!tbodyFlag"
       >
         <img :src="noImg">
-        <span>暂无相关数据</span>
+        <span>{{$t('selectLinks.noDataAvailable')}}</span>
       </div>
     </div>
     <div
@@ -43,9 +43,9 @@
       <table width='100%'>
         <thead>
           <tr>
-            <td>名称</td>
+            <td>{{$t('selectLinks.name')}}</td>
 
-            <td>链接</td>
+            <td>{{$t('selectLinks.link')}}</td>
           </tr>
         </thead>
         <tbody v-if="tbodyFlag">
@@ -69,7 +69,7 @@
         v-if="!tbodyFlag"
       >
         <img :src="noImg">
-        <span>暂无相关数据</span>
+        <span>{{$t('selectLinks.noDataAvailable')}}</span>
       </div>
     </div>
   </div>
@@ -103,6 +103,8 @@ export default {
   mounted () {
     // 初始化
     this.defaultData(this.selectlinksLevelOneBottom)
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     ...mapActions(['choisePagePath']),

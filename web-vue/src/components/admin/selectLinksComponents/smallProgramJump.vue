@@ -2,10 +2,10 @@
   <div>
     <div class="small_container">
       <div class="top_one">
-        <div class="top_name">小程序名称：</div>
+        <div class="top_name">{{$t('selectLinks.smallProgramName')}}：</div>
         <el-select
           v-model="selectValue"
-          placeholder="请输入要跳转的网页链接"
+          :placeholder="$t('selectLinks.linkPlaceHoder')"
           size="mini"
         >
           <el-option
@@ -18,25 +18,25 @@
         </el-select>
       </div>
       <div class="top_one top_two">
-        <div>小程序页面名称：</div>
+        <div>{{$t('selectLinks.smallProgramPageName')}}：</div>
         <el-input
           v-model="pageName"
-          placeholder="请输入要跳转的小程序页面名称"
+          :placeholder="$t('selectLinks.namePlaceHolder')"
           size="mini"
         ></el-input>
       </div>
       <div class="top_one top_three">
-        <div>小程序页面地址：</div>
+        <div>{{$t('selectLinks.smallProgramAdress')}}：</div>
         <el-input
           v-model="pagePath"
-          placeholder="请输入要跳转的小程序页面路径"
+          :placeholder="$t('selectLinks.adressPlaceholder')"
           size="mini"
         ></el-input>
         <el-button
           type="primary"
           size="mini"
           @click="pageSave()"
-        >保存</el-button>
+        >{{$t('selectLinks.save')}}</el-button>
       </div>
 
     </div>
@@ -44,11 +44,11 @@
       <table width='100%'>
         <thead>
           <tr>
-            <td>小程序名称</td>
-            <td>页面名称</td>
-            <td>路径</td>
-            <td>状态</td>
-            <td>操作</td>
+            <td>{{$t('selectLinks.smallProgramName')}}</td>
+            <td>{{$t('selectLinks.pageName')}}</td>
+            <td>{{$t('selectLinks.route')}}</td>
+            <td>{{$t('selectLinks.status')}}</td>
+            <td>{{$t('selectLinks.operation')}}</td>
           </tr>
         </thead>
         <tbody v-if="tbodyFlag">
@@ -66,7 +66,7 @@
               class="tb_decorate_a"
               @click="deleRr(index)"
             >
-              删除
+              {{$t('selectLinks.del')}}
             </td>
           </tr>
         </tbody>
@@ -77,7 +77,7 @@
         v-if="!tbodyFlag"
       >
         <img :src="noImg">
-        <span>暂无相关数据</span>
+        <span>{{$t('selectLinks.noDataAvailable')}}</span>
       </div>
     </div>
   </div>
@@ -101,6 +101,8 @@ export default {
   mounted () {
     // 初始化数据
     this.defaultData(true)
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     ...mapActions(['choisePagePath']),
@@ -118,11 +120,13 @@ export default {
       })
       if (!flag) return
       xcxApi().then(res => {
+        console.log(res)
         if (res.error === 0) {
           this.options = res.content
-          this.selectValue = this.options[0].appName
+          if (res.content.length) {
+            this.selectValue = this.options[0].appName
+          }
         }
-        console.log(res)
       })
     },
     // 保存

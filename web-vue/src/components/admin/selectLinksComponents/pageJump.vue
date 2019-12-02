@@ -10,7 +10,7 @@
           class="demo-ruleForm"
         >
           <el-form-item
-            label="链接名称："
+            :label="$t('selectLinks.linkName')+'：'"
             prop="pageName"
           >
             <el-input
@@ -19,7 +19,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="页面分类："
+            :label="$t('selectLinks.pageClassification')+'：'"
             prop="pageClassify"
           >
             <el-input
@@ -32,21 +32,21 @@
               type="primary"
               size="mini"
               @click="handleToSaveNewPath()"
-            >保存</el-button>
+            >{{$t('selectLinks.save')}}</el-button>
           </el-form-item>
         </el-form>
 
       </div>
 
     </div>
-    <div class="alerm">注意：由于微信限制，目前仅支持小程序关联的公众号文章链接</div>
+    <div class="alerm">{{$t('selectLinks.pageJumpTips')}}</div>
     <div class="content">
       <table width='100%'>
         <thead>
           <tr>
-            <td>名称</td>
-            <td>链接</td>
-            <td>操作</td>
+            <td>{{$t('selectLinks.name')}}</td>
+            <td>{{$t('selectLinks.link')}}</td>
+            <td>{{$t('selectLinks.operation')}}</td>
           </tr>
         </thead>
         <tbody v-if="tbodyFlag">
@@ -62,7 +62,7 @@
               class="tb_decorate_a"
               @click="deleRr(index)"
             >
-              删除
+              {{$t('selectLinks.del')}}
             </td>
           </tr>
         </tbody>
@@ -73,7 +73,7 @@
         v-if="!tbodyFlag"
       >
         <img :src="noImg">
-        <span>暂无相关数据</span>
+        <span>{{$t('selectLinks.noDataAvailable')}}</span>
       </div>
     </div>
   </div>
@@ -104,6 +104,8 @@ export default {
   mounted () {
     // 初始化数据
     this.handleToInitData()
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     ...mapActions(['choisePagePath']),
@@ -224,6 +226,7 @@ td {
   text-align: center;
 }
 .top_left {
+  width: 100%;
   display: flex;
   align-items: center;
   /* margin-left: 7px; */
@@ -257,5 +260,27 @@ td {
 <style>
 .pageJump_container .el-input {
   width: 170px !important;
+}
+</style>
+<style lang="scss" scoped>
+.top_left {
+  /deep/ .el-form {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    .el-form-item {
+      display: flex;
+    }
+    .el-form-item__label {
+      line-height: 14px;
+      width: 107px !important;
+      height: 40px;
+      display: flex;
+      align-items: center;
+    }
+  }
+  /deep/ .el-form-item__content {
+    margin-left: 0 !important;
+  }
 }
 </style>

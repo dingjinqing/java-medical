@@ -3,10 +3,10 @@
     <div class="content">
       <div class="top_container">
         <div class="top_left">
-          <div>关键词：</div>
+          <div>{{$t('selectLinks.keyWord')}}：</div>
           <el-input
             v-model="pageName"
-            placeholder="请输入关键词"
+            :placeholder="$t('selectLinks.keyWordPlaceHold')"
             size="mini"
           ></el-input>
           <div class="top_right">
@@ -14,16 +14,16 @@
               type="primary"
               size="mini"
               @click="handleSearch()"
-            >搜索</el-button>
+            >{{$t('selectLinks.search')}}</el-button>
           </div>
         </div>
       </div>
       <table width='100%'>
         <thead>
           <tr>
-            <td>商品信息</td>
-            <td>商品货号</td>
-            <td>链接</td>
+            <td>{{$t('selectLinks.commodityInformation')}}</td>
+            <td>{{$t('selectLinks.productCode')}}</td>
+            <td>{{$t('selectLinks.link')}}</td>
           </tr>
         </thead>
         <tbody v-loading="loading">
@@ -52,13 +52,13 @@
         v-if="!tbodyFlag"
       >
         <img :src="noImg">
-        <span>暂无相关数据</span>
+        <span>{{$t('selectLinks.noDataAvailable')}}</span>
       </div>
 
     </div>
     <div class="pagination">
       <div class="paginationLeft">
-        当前页面{{currentPage}}/{{pageCount}},总记录{{totalRows}}条
+        {{$t('selectLinks.nowPage')}}{{currentPage}}/{{pageCount}},{{$t('selectLinks.generalRecord')}}{{totalRows}}{{$t('selectLinks.strip')}}
       </div>
       <el-pagination
         @current-change="handleCurrentChange"
@@ -105,6 +105,10 @@ export default {
       },
       immediate: true
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     ...mapActions(['choisePagePath']),
