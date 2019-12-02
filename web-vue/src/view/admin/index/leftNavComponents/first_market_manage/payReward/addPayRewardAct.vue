@@ -229,14 +229,11 @@
                 required: true
               }"
             >
-              <!-- {{awardList[index].ordinaryCoupon}} -->
               <div class="middleContainer">
                 <div
-                  v-for="(item,index) in params.awardList[index].ordinaryCoupon"
-                  :key="index"
+                  v-for="(itemC,indexC) in params.awardList[index].ordinaryCoupon"
+                  :key="indexC"
                   class="addInfo clear"
-                  prop="awardList[index].ordinaryCoupon"
-                  required
                 >
                   <section
                     class="couponImgWrapper"
@@ -244,39 +241,39 @@
                   >
                     <div
                       class="coupon_list_top"
-                      v-if="item.actCode==='voucher'"
+                      v-if="itemC.actCode==='voucher'"
                     >
                       <span>￥</span>
-                      <span>{{item.denomination}}</span>
+                      <span>{{itemC.denomination}}</span>
                     </div>
                     <div
                       class="coupon_list_top"
-                      v-if="item.actCode==='discount'"
+                      v-if="itemC.actCode==='discount'"
                     >
-                      <span style="font-size: 20px">{{item.denomination}}</span>
+                      <span style="font-size: 20px">{{itemC.denomination}}</span>
                       <span style="font-size: 14px">折</span>
                     </div>
-                    <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                    <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                    <div class="coupon_center_limit">{{itemC.useConsumeRestrict | formatLeastConsume(itemC.leastConsume)}}</div>
+                    <div class="coupon_center_number">剩余{{itemC.surplus}}张</div>
                     <div
                       class="coupon_list_bottom"
                       style="font-size:12px"
                     >
-                      <span v-if="item.scoreNumber === 0">领取</span>
-                      <div v-if="item.scoreNumber !== 0">
-                        <span>{{item.scoreNumber}}</span>积分 兑换
+                      <span v-if="itemC.scoreNumber === 0">领取</span>
+                      <div v-if="itemC.scoreNumber !== 0">
+                        <span>{{itemC.scoreNumber}}</span>积分 兑换
                       </div>
                     </div>
                   </section>
                   <span
-                    @click="deleteCouponImg(index, currentModelIndex)"
+                    @click="deleteCouponImg(itemC,indexC,index)"
                     class="deleteIcon"
                   >×</span>
                 </div>
 
                 <div
                   class="addInfo"
-                  @click="handleToCallDialog1(index)"
+                  @click="handleToCallDialog1(item,index)"
                 >
                   <el-image
                     fit="scale-down"
@@ -284,10 +281,6 @@
                     style="width: 78px;height:78px;cursor:pointer"
                   ></el-image>
                   <p>添加优惠券</p>
-                  <AddCouponDialog
-                    @handleToCheck="addCouponHandle"
-                    :tuneUpCoupon="addCouponVisible"
-                  />
                 </div>
               </div>
               <div class="textTips">最多可以添加5张优惠券，已过期和已停用的优惠券不能添加</div>
@@ -581,11 +574,12 @@
     </div>
 
     <!-- 添加普通优惠卷 -->
-    <!-- <AddCouponDialog
+    <AddCouponDialog
       @handleToCheck="addCouponHandle"
       :tuneUpCoupon="addCouponVisible"
       :couponBack.sync="emptySelect"
-    /> -->
+      :type=0
+    />
 
     <!--添加分裂优惠卷-->
     <AddCouponDialog
@@ -700,7 +694,7 @@ export default {
       }
     }
     return {
-      emptySelect: '',
+      emptySelect: [],
       idInfo: null,
       carouselList: [
         { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift1.jpg' },
@@ -722,17 +716,13 @@ export default {
       ownGoodsId: null, // 会员专享商品: 添加的商品Id
       GoodsBrandDateFlag1: '',
       ownBrandId: null,
-      GoodsBrandDateArr: '',
       callAddBrand: false,
       tuneUpSelectLinkDialog: false,
       tuneUpImageDialog: false,
       isShowChoosingGoodsDialog: false,
-      showCouponDialog: false,
       showCouponDialog2: false,
-      couponIdList: [],
       disCouponIdList: [],
       addCouponVisible: false, // 优惠券
-      addDisCouponVisible: false, // 分裂优惠券
       currentPage1: 1,
       currentModelIndex: 0, // 优惠券索引
       currentDisCouponIndex: 0, // 分裂优惠券索引
@@ -755,7 +745,7 @@ export default {
         minPayMoney: '', // 最少支付金额
         limitTimes: '', // 每个用户参与次数
         lotteryId: '', // 下拉框
-        // ordinaryCouponList: [],
+        ordinaryCouponIdList: [],
 
         awardList: [
           {
@@ -774,6 +764,7 @@ export default {
             // 分裂优惠券
             splitCoupon: [],
             ordinaryCouponList: [],
+            ordinaryCouponIdList: [],
             couponList: [], // 页面优惠券
             ordinaryCouponDialogList: [] // 弹窗优惠券
           }
@@ -816,6 +807,7 @@ export default {
         'awardNumber': '',
         'ordinaryCoupon': [],
         'splitCoupon': [],
+        'ordinaryCouponIdList': [],
         'ordinaryCouponList': [],
         'ordinaryCouponDialogList': [],
         'couponList': [
@@ -845,46 +837,38 @@ export default {
       console.log(index)
     },
 
-    // 普通优惠券弹窗调起
-    handleToCallDialog1 (currentIndex) {
-      console.log(currentIndex, 'currentIndex')
-      // const isShow = !this.addCouponVisible[currentIndex]
-      // this.$set(this.addCouponVisible, currentIndex, isShow)
-      this.addCouponVisible = !this.addCouponVisible
+    // 普通优惠券弹窗调起 currentIndex为当前的添加的Item的索引值
+    handleToCallDialog1 (item, currentIndex) {
+      console.log(item, currentIndex, 'currentIndex---')
+      let arr = []
+      item.ordinaryCoupon.forEach(item => {
+        arr.push(item.id)
+      })
+      this.emptySelect = arr
+      this.$nextTick(() => {
+        this.addCouponVisible = !this.addCouponVisible
+      })
+      // 改变对应的当前模块的index
       this.currentModelIndex = currentIndex
     },
+
     // 普通优惠券数据处理回显处理
     addCouponHandle (data) {
-      console.log('log awardList:', this.currentModelIndex, this.params.awardList, this.params.awardList[this.currentModelIndex].ordinaryCoupon)
-      // if (this.params.awardList[this.currentModelIndex].ordinaryCoupon.length >= 5) {
-      // } else {
-      // this.params.awardList[this.currentModelIndex].ordinaryCoupon = data
-      // if (this.params.awardList[this.currentModelIndex].ordinaryCoupon) {
       this.params.awardList[this.currentModelIndex].ordinaryCoupon = data
-      // } else {
-      //   return []
-      // }
-      // }
-      console.log(this.params.awardList[this.currentModelIndex].ordinaryCoupon)
     },
+
     // 删除普通优惠券
-    deleteCouponImg (index, currentIndex) {
-      console.log(index, 'index')
-      console.log(this.currentModelIndex, 'currentModlIndex')
-
-      console.log(this.params.awardList[this.currentModelIndex], '初始数据')
-      let added = this.params.awardList[currentIndex].ordinaryCoupon.map(item => item.id)
-      // console.log(added, 'added')
-
-      this.params.awardList[currentIndex].ordinaryCouponList = added
-      // console.log(this.params.awardList[currentIndex].ordinaryCouponList, 'ordinaryCouponList----')
-
-      // // 删除之后优惠券弹框的展示
-      this.params.awardList[currentIndex].ordinaryCouponList.splice(index, 1)
-      // console.log(this.params.awardList[currentIndex].ordinaryCouponList, 'delete')
-      // // 删除之后优惠券的展示
+    deleteCouponImg (item, index, currentIndex) {
+      console.log(currentIndex)
+      let added = this.params.awardList[currentIndex].ordinaryCouponIdList.map(item => item.id)
+      this.emptySelect = added
+      //  删除之后优惠券弹框的展示
+      // this.emptySelect.splice(index, 1)
+      // console.log(this.par)
+      // 删除之后优惠券的展示
       this.params.awardList[currentIndex].ordinaryCoupon.splice(index, 1)
-      // console.log(this.params.awardList[currentIndex].ordinaryCoupon, this.params.awardList[currentIndex], currentIndex, 'this.params')
+      // console.log(this.params.awardList[currentIndex].ordinaryCoupon, '------')
+      // console.log(this.params.awardList[currentIndex].ordinaryCoupon.splice(index, 1), 'data----')
     },
 
     // 分裂优惠券弹窗调起
