@@ -46,7 +46,6 @@
           <el-input
             :disabled="true"
             v-model="goodsRow.goodsName"
-            @input="goodsIdChange"
             v-if="goodsRow.ischecked"
             size="small"
             style="width: 170px;"
@@ -124,9 +123,16 @@
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.row.index+ '.groupPrice'"
-                  :rules="[{   required: true, message: '拼团价不能为空',trigger: 'blur' }]"
+                  :rules="[
+                    { required: true, message: '拼团价不能为空', trigger: 'blur' },
+                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: 'blur' }
+                  ]"
+                  style="height: 56px;line-height: 56px;"
                 >
-                  <el-input v-model="scope.row.groupPrice" />
+                  <el-input
+                    v-model="scope.row.groupPrice"
+                    size="small"
+                  />
                 </el-form-item>
               </template>
             </el-table-column>
@@ -146,7 +152,18 @@
                 </el-button>
               </template>
               <template slot-scope="scope">
-                <el-input v-model="scope.row.grouperPrice" />
+                <el-form-item
+                  :rules="[
+                    { required: true, message: '团长价不能为空', trigger: 'blur' },
+                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: 'blur' }
+                  ]"
+                  style="height: 56px;line-height: 56px;"
+                >
+                  <el-input
+                    v-model="scope.row.grouperPrice"
+                    size="small"
+                  />
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column
@@ -172,9 +189,16 @@
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.row.index+ '.stock'"
-                  :rules="[{   required: true, message: '库存不能为空',trigger: 'blur' }]"
+                  :rules="[
+                    { required: true, message: '拼团库存不能为空', trigger: 'blur' },
+                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.prdNumber)}, trigger: 'blur' }
+                  ]"
+                  style="height: 56px;line-height: 56px;"
                 >
-                  <el-input v-model="scope.row.stock" />
+                  <el-input
+                    v-model="scope.row.stock"
+                    size="small"
+                  />
                 </el-form-item>
               </template>
             </el-table-column>
@@ -184,23 +208,26 @@
             >
             </template>
 
-            <div slot="append">
+            <div
+              slot="append"
+              class="moreSetUp"
+            >
               <span>更多设置:</span>
-              <span
-                class="settings"
+              <a
+                :class="activeIndex === 1 ? '' : 'settings'"
                 @click="setCurrent(1)"
               >拼团价
-              </span>
-              <span
-                class="settings"
+              </a>
+              <a
+                :class="activeIndex === 2 ? '' : 'settings'"
                 @click="setCurrent(2)"
               >团长优惠价
-              </span>
-              <span
-                class="settings"
+              </a>
+              <a
+                :class="activeIndex === 3 ? '' : 'settings'"
                 @click="setCurrent(3)"
               >拼团库存
-              </span>
+              </a>
             </div>
           </el-table>
         </el-form-item>
@@ -210,11 +237,12 @@
           prop="validityDate"
         >
           <el-date-picker
+            size="small"
             v-model="form.validityDate"
             type="datetimerange"
             @change="dateChange(form.validityDate)"
             :picker-options="pickerOptions"
-            range-separator="~"
+            range-separator="-"
             :start-placeholder="$t('groupBuy.startDate')"
             :end-placeholder="$t('groupBuy.endDate')"
             align="right"
@@ -551,7 +579,8 @@ export default {
       rewardCouponList: [],
       imgHost: `${this.$imageHost}`,
       showCouponDialog: false,
-      couponIdList: []
+      couponIdList: [],
+      activeIndex: 0
     }
   },
   mounted () {
@@ -571,6 +600,27 @@ export default {
     }
   },
   methods: {
+    validateMoney (rule, value, callback, prdPrice) {
+      var re = /^\d+(\.\d{1,2})?$/
+      if (!re.test(value)) {
+        callback(new Error('请填写非负数, 可以保留两位小数'))
+      } else if (value > prdPrice) {
+        callback(new Error('拼团价不能大于商品原价'))
+      } else {
+        callback()
+      }
+    },
+    validateNum (rule, value, callback, prdNumber) {
+      var re = /^[1-9]\d*$/
+      if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else if (value > prdNumber) {
+        callback(new Error('拼团库存不能大于商品库存'))
+      } else {
+        callback()
+      }
+    },
+
     ...mapActions(['transmitEditGoodsId']),
     // 提交表单
     submitForm (formName) {
@@ -678,16 +728,19 @@ export default {
           price.forEach(row => {
             row.groupPrice = price[0].groupPrice
           })
+          this.activeIndex = 1
           break
         case 2:
           price.forEach(row => {
             row.grouperPrice = price[0].grouperPrice
           })
+          this.activeIndex = 2
           break
         case 3:
           price.forEach(row => {
             row.stock = price[0].stock
           })
+          this.activeIndex = 3
           break
       }
       this.form.product = price
@@ -734,12 +787,6 @@ export default {
         callback(new Error('拼团价格不能为空'))
       }
       callback()
-    },
-
-    // 表单校验
-    goodsIdChange (v) {
-      debugger
-      this.$refs.form.validateField('goodsId')
     }
   }
 }
@@ -867,9 +914,16 @@ export default {
   font-weight: bold;
 }
 
-.settings {
-  margin-right: 30px;
-  color: #5a8bff;
+.moreSetUp a {
+  margin-right: 10px;
   cursor: pointer;
+}
+
+.settings {
+  color: #5a8bff;
+}
+
+.el-table tbody .el-table__row {
+  height: 200px !important;
 }
 </style>
