@@ -7,7 +7,7 @@
     "pages/memberinfo/memberinfo",
     "pages/newsearch/newsearch",
     "pages/searchs/search",
-    "pages/store/store",
+    "pages/sort/sort",
     "pages/coupon/coupon",
     "pages/getCoupon/getCoupon",
     "pages/usercenter/usercenter",
