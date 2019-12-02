@@ -31,8 +31,9 @@
             v-model="firstSpecialLimitGoods"
             controls-position="right"
             size="small"
+            :precision="0"
             :min="0"
-            style="width: 80px;margin: 0 5px;"
+            style="width: 100px;margin: 0 5px;"
           ></el-input-number>
           <!-- <el-input
             v-model="firstSpecialLimitGoods"

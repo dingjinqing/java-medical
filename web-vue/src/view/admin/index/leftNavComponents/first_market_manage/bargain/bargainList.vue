@@ -14,11 +14,14 @@
 
         <div class="rightContent">
           <span>{{$t('bargainList.cutTimesSetTip1')}}</span>
-          <el-input
+          <el-input-number
             v-model="dailyCutTimes"
-            style="width: 80px"
+            controls-position="right"
+            style="width: 100px;margin: 0 5px;"
             size="small"
-          ></el-input>
+            :precision="0"
+            :min="0"
+          ></el-input-number>
           <span>{{$t('bargainList.times')}}</span>
           <span>{{$t('bargainList.cutTimesSetTip2')}}</span>
           <el-button
