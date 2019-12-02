@@ -14,6 +14,7 @@
         >
           <el-button
             v-if="tableListView"
+            size="small"
             type="primary"
             @click="addActivity()"
           >{{$t('groupBuy.addActivity')}}</el-button>
@@ -454,9 +455,9 @@ export default {
 
 .opt {
   text-align: left;
-  color: #5a8bff;
-
   span {
+    font-size: 22px;
+    color: #5a8bff;
     cursor: pointer;
   }
 }

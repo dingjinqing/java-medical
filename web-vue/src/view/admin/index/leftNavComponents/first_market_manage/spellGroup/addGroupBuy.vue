@@ -13,7 +13,7 @@
         :label-position="'right'"
       >
         <el-form-item
-          :label="$t('groupBuy.groupBuyActivity')"
+          :label="$t('groupBuy.groupBuyActivity') + '：'"
           prop="resource"
         >
           <el-radio-group
@@ -28,41 +28,44 @@
           </div>
         </el-form-item>
         <el-form-item
-          :label="$t('groupBuy.activityName')"
+          :label="$t('groupBuy.activityName') + '：'"
           prop="name"
         >
           <el-col :span="8">
             <el-input
               size="small"
-              v-model="form.name"
-              style="width: 165px"
+              v-model.trim="form.name"
+              style="width: 170px"
             ></el-input>
           </el-col>
         </el-form-item>
         <el-form-item
-          :label="$t('groupBuy.goodsName')"
+          :label="$t('groupBuy.goodsName') + '：'"
           prop="goodsId"
         >
+          <el-input
+            :disabled="true"
+            v-model="goodsRow.goodsName"
+            v-if="goodsRow.ischecked"
+            size="small"
+            style="width: 170px;"
+          ></el-input>
+          <el-input
+            :disabled="true"
+            v-if="false"
+            v-model="form.goodsId"
+            size="small"
+            style="width: 170px;"
+          ></el-input>
+
           <el-button
             :disabled="isEdite"
             size="small"
             @click="showChoosingGoods"
           >{{$t('groupBuy.selectGoods')}}
           </el-button>
-          <el-col :span="8">
-            <el-input
-              :disabled="true"
-              v-model="goodsRow.goodsName"
-              v-if="goodsRow.ischecked"
-            ></el-input>
-            <el-input
-              :disabled="true"
-              v-if="false"
-              v-model="form.goodsId"
-            ></el-input>
-          </el-col>
         </el-form-item>
-        <el-form-item :label="$t('groupBuy.commanderDiscounts')">
+        <el-form-item :label="$t('groupBuy.commanderDiscounts') + '：'">
           <section style="display: flex">
             <div style="width: 70px">
               <el-switch
@@ -83,7 +86,7 @@
             </div>
           </section>
         </el-form-item>
-        <el-form-item :label="$t('groupBuy.discountsOption')">
+        <el-form-item :label="$t('groupBuy.discountsOption') + '：'">
           <el-table
             header-row-class-name="tableHeader"
             :data="form.product"
@@ -111,7 +114,7 @@
                 <span>{{$t('groupBuy.groupBuyPrice')}}</span>
                 <el-button
                   @click="setCurrent(1)"
-                  size="mini"
+                  size="small"
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}
 
@@ -202,7 +205,7 @@
         </el-form-item>
 
         <el-form-item
-          :label="$t('groupBuy.validDate')"
+          :label="$t('groupBuy.validDate') + '：'"
           prop="validityDate"
         >
           <el-date-picker
@@ -219,7 +222,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item
-          :label="$t('groupBuy.limitAmount')"
+          :label="$t('groupBuy.limitAmount') + '：'"
           prop="limitAmount"
         >
           <el-input-number
@@ -230,7 +233,7 @@
           ></el-input-number>
           <div class="prompt">{{$t('groupBuy.limitAmountComment')}}</div>
         </el-form-item>
-        <el-form-item :label="$t('groupBuy.orderGoodsNum')">
+        <el-form-item :label="$t('groupBuy.orderGoodsNum') + '：'">
           <div class="prompt fontColor">{{$t('groupBuy.orderGoodsNumComment1')}}</div>
           <el-input-number
             v-model="form.limitBuyNum"
@@ -255,7 +258,7 @@
           </div>
         </el-form-item>
         <el-form-item
-          :label="$t('groupBuy.joinLimit')"
+          :label="$t('groupBuy.joinLimit') + '：'"
           prop="joinLimit"
         >
           <div class="prompt fontColor"> {{$t('groupBuy.joinLimitComment1')}}</div>
@@ -270,7 +273,7 @@
           </div>
         </el-form-item>
         <el-form-item
-          :label=" $t('groupBuy.openLimit')"
+          :label=" $t('groupBuy.openLimit') + '：'"
           prop="openLimit"
         >
           <div class="prompt fontColor"> {{ $t('groupBuy.openLimitComment1')}}</div>
@@ -284,7 +287,7 @@
             <span class="prompt"> {{$t('groupBuy.openLimitComment2')}}</span>
           </div>
         </el-form-item>
-        <el-form-item :label="$t('groupBuy.openIsDefault')">
+        <el-form-item :label="$t('groupBuy.openIsDefault') + '：'">
           <el-switch
             v-model="form.isDefault"
             :active-value=1
@@ -292,7 +295,7 @@
           ></el-switch>
           <div class="prompt">{{$t('groupBuy.openIsDefaultComment')}}</div>
         </el-form-item>
-        <el-form-item :label="$t('groupBuy.shippingOption')">
+        <el-form-item :label="$t('groupBuy.shippingOption') + '：'">
           <el-radio-group v-model="form.shippingType">
             <el-radio :label=1>{{$t('groupBuy.freeShipping')}}</el-radio>
             <el-radio :label=2>{{$t('groupBuy.shippingOptionComment')}}</el-radio>
@@ -313,7 +316,6 @@
             style="color:rgb(90, 139, 255);cursor:pointer"
           >{{$t('groupBuy.packUpConfigure')}}&nbsp;<img :src="ArrowArr[1].img_2"></div>
         </div>
-
         <div v-if="!arrorFlag">
           <!-- 鼓励奖部分内容 -->
           <el-form-item :label="$t('groupBuy.consolationPrize')">
@@ -374,8 +376,11 @@
           </el-form-item>
 
           <!-- 引入活动分享模块 -->
-          <actShare :shareConfig="form.share" />
-          <!-- <couponStyles /> -->
+          <el-form-item>
+            <actShare :shareConfig="form.share" />
+            <couponStyles />
+          </el-form-item>
+
         </div>
 
       </el-form>
@@ -837,6 +842,8 @@ export default {
 
 .wrapper {
   margin: 10px 0 !important;
+  padding: 10px 0;
+  margin-bottom: 80px !important;
 }
 
 .tableHeader th {
