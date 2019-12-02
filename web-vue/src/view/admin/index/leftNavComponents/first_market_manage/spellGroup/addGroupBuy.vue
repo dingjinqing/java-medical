@@ -46,6 +46,7 @@
           <el-input
             :disabled="true"
             v-model="goodsRow.goodsName"
+            @input="goodsIdChange"
             v-if="goodsRow.ischecked"
             size="small"
             style="width: 170px;"
@@ -485,7 +486,7 @@ export default {
           { max: 20, message: this.$t('groupBuy.lengthMax20'), trigger: 'blur' }
         ],
         goodsId: [
-          { required: true, message: this.$t('groupBuy.goodsIdRequireRules'), trigger: 'blur' }
+          { required: true, message: this.$t('groupBuy.goodsIdRequireRules'), trigger: 'change' }
         ],
         limitAmount: [
           { type: 'integer', required: true, message: this.$t('groupBuy.limitAmountRequireRules'), trigger: 'blur' }
@@ -562,6 +563,11 @@ export default {
   watch: {
     lang () {
       this.grouponType = this.$t('groupBuy.grouponType')
+    },
+    'form.goodsId': function (value) {
+      if (value) {
+        this.$refs.form.validateField('goodsId')
+      }
     }
   },
   methods: {
@@ -728,6 +734,12 @@ export default {
         callback(new Error('拼团价格不能为空'))
       }
       callback()
+    },
+
+    // 表单校验
+    goodsIdChange (v) {
+      debugger
+      this.$refs.form.validateField('goodsId')
     }
   }
 }
