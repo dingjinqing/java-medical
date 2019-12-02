@@ -17,7 +17,11 @@
         ></el-input>
       </div>
       <div class="filters_item">
-        <sortCatTreeSelect ref="catTree" treeType="cat" :selectedId.sync="searchParams.sortName"/>
+        <sortCatTreeSelect
+          ref="catTree"
+          treeType="cat"
+          :selectedId.sync="searchParams.sortName"
+        />
       </div>
       <div style="margin-left: 37px;">
         <el-button
@@ -227,5 +231,21 @@ export default {
   font-size: 22px;
   color: #5a8bff;
   cursor: pointer !important;
+}
+.filters .filters_item {
+  max-width: 300px;
+  /deep/ .el-form--inline .el-form-item {
+    margin-bottom: 0;
+    .el-form-item__label,
+    .el-form-item__content {
+      line-height: 1;
+    }
+    .el-form-item__label {
+      color: #000;
+    }
+  }
+  /deep/ .el-button {
+    vertical-align: top;
+  }
 }
 </style>
