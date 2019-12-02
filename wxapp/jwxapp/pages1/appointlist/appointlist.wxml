@@ -52,10 +52,10 @@
             <view class="operation" style="margin-left:0px;" bindtap="toInfo" data-order_sn="{{item.orderSn}}">
               <text>查看详情</text>
             </view>
-            <view class="operation" wx:if="{{item.orderStatus == 3 && item.flag == 0}}" bindtap="ser_comment" data-order_sn="{{item.orderSn}}" data-store_id="{{item.storeId}}">
+            <view class="operation" wx:if="{{item.orderStatus == 3 && !item.flag}}" bindtap="ser_comment" data-order_sn="{{item.orderSn}}" data-store_id="{{item.storeId}}">
               <text>评价预约</text>
             </view>
-            <view class="operation" wx:if="{{item.orderStatus == 3 && item.flag == 1}}" bindtap='ser_comment' data-order_sn="{{item.orderSn }}" data-store_id='{{item.storeId }}'>
+            <view class="operation" wx:if="{{item.orderStatus == 3 && item.flag}}" bindtap='ser_comment' data-order_sn="{{item.orderSn }}" data-store_id='{{item.storeId }}'>
               <text>查看评价</text>
             </view>
             <view class="operation" wx:if="{{item.orderStatus == 0}}" style="border:none;">

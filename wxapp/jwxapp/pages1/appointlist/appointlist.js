@@ -37,9 +37,9 @@ global.wxPage({
             if (item.storeImgs) {
               item.storeImg = JSON.parse(item.storeImgs)[0]
             }
-            if (item.serviceImg) {
-              item.serviceImg = JSON.parse(item.serviceImg)[0]
-            }
+            // if (item.serviceImg) {
+            //   item.serviceImg = JSON.parse(item.serviceImg)[0]
+            // }
           })
         }
         that.countStatus(appointInfo, orderStatus)
