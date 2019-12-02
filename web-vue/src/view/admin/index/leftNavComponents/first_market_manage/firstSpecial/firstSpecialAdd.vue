@@ -762,11 +762,11 @@ export default {
       let price = Number(row.shopPrice)
       let batchReduce = Number(row.batchReduce)
       let batchFinalPrice = price - batchReduce
-      let batchDiscount = (batchFinalPrice / price).toFixed(3)
-      this.$set(row, 'batchFinalPrice', batchFinalPrice)
-      if (!Number.isFinite(batchDiscount)) {
+      let batchDiscount = (batchFinalPrice / price).toFixed(3) * 10
+      if (isNaN(Number(batchDiscount))) {
         batchDiscount = 0
       }
+      this.$set(row, 'batchFinalPrice', batchFinalPrice)
       this.$set(row, 'batchDiscount', batchDiscount)
       this.watchbatchFinalPrice(price, batchFinalPrice, row)
     },
@@ -777,7 +777,7 @@ export default {
       let batchReduce = price - batchFinalPrice
       let batchDiscount = (batchFinalPrice / price).toFixed(3) * 10
       this.$set(row, 'batchReduce', batchReduce)
-      if (!Number.isFinite(batchDiscount)) {
+      if (isNaN(Number(batchDiscount))) {
         batchDiscount = 0
       }
       this.$set(row, 'batchDiscount', batchDiscount)
