@@ -73,11 +73,17 @@ global.wxPage({
     if (cardInfo.cardType !== 2 || !cardInfo.nextGradeCard) return
     if (cardInfo.nextGradeCard.gradeConditionJson.gradeScore){
       this.setData({
-          percentage: Math.round(JSON.parse(cardInfo.gradeCondition).gradeScore / cardInfo.nextGradeCard.gradeConditionJson.gradeScore * 10000) / 100.00,
-          currentCondition: JSON.parse(cardInfo.gradeCondition).gradeScore
+        percentage: Math.round(cardInfo.cumulativeScore / cardInfo.nextGradeCard.gradeConditionJson.gradeScore * 10000) / 100.00,
+        currentCondition: cardInfo.cumulativeScore,
+        unit:'分'
       })
+      console.log(this.data.percentage)
     } else {
-
+      this.setData({
+        percentage: Math.round(cardInfo.cumulativeConsumptionAmounts / cardInfo.nextGradeCard.gradeConditionJson.gradeScore * 10000) / 100.00,
+        currentCondition: cardInfo.cumulativeConsumptionAmounts,
+        unit:'元'
+      })
     }
    
   },
