@@ -416,7 +416,7 @@ public class Calculate extends ShopBaseService {
                 districtCode =lastOrderAddress.getDistrictCode();
             }
         }
-        logger().debug("用地址code:{}",districtCode);
+        logger().debug("用户地址code:{}",districtCode);
         BigDecimal shippingFeeByTemplate =BigDecimal.ZERO;
         BigDecimal totalPrice = BigDecimalUtil.multiply(goodsPrice,BigDecimal.valueOf(totalNumber));
         BigDecimal totalWeight = BigDecimalUtil.multiply(goodWeight,BigDecimal.valueOf(totalNumber));

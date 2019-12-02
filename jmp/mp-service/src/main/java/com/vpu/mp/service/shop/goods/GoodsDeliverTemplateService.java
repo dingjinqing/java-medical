@@ -363,19 +363,24 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
 	    logger().info("计算订单商品单个运费模板运费");
 	    if(0 == templateId.intValue()){
             //默认模板
+            logger().debug("使用商品默认运费信息");
             return getShippingFeeByDefaultTemplate(totalPrice);
         }
         GoodsDeliverTemplateVo template = getById(templateId);
         if(template == null){
             //默认模板
+            logger().debug("无法获取指定templateId:{} 模板数据,使用商品默认运费信息",templateId);
             return getShippingFeeByDefaultTemplate(totalPrice);
         }
+        logger().debug("反序列化运费模板信息");
         GoodsDeliverTemplateContentParam rule = Util.parseJson(template.getTemplateContent(), GoodsDeliverTemplateContentParam.class);
         if(OrderConstant.SHIPPING_FEE_TEMPLATE_NUMBER.equals(template.getFlag())){
             //通过价格和数量计算运费
+            logger().debug("通过价格和数量计算运费");
             return getShippingFeeByNumber(districtCode, rule, totalNumber, totalPrice);
         }else{
             //通过价格和重量计算运费
+            logger().debug("通过价格和重量计算运费");
             return getShippingFeeByWeight(districtCode, rule, totalWeight, totalPrice);
         }
     }
