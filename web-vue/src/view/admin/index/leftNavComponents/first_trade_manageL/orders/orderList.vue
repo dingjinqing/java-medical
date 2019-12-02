@@ -436,7 +436,7 @@
                   <td>
                     <div class="goods_info">
                       <img
-                        :src="$imageHost+goodsItem.goodsImg"
+                        :src="$imageHost+'/'+goodsItem.goodsImg"
                         alt=""
                       >
                       <div class="right_info">
@@ -617,7 +617,7 @@
                       >{{$t('order.childOrderSn') + '：' + childOrder.orderSn}}</p>
                       <div class="goods_info">
                         <img
-                          :src="$imageHost+childGoods.goodsImg"
+                          :src="$imageHost+'/'+childGoods.goodsImg"
                           alt=""
                         >
                         <div class="right_info">

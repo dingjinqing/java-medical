@@ -142,7 +142,7 @@
                     <td>
                       <div class="goods_info">
                         <img
-                          :src="$imageHost+goodsItem.goodsImg"
+                          :src="$imageHost+'/'+goodsItem.goodsImg"
                           alt=""
                         >
                         <div class="right_info">
@@ -193,10 +193,7 @@
                 </template>
               </template>
               <template v-else>
-                <tr
-                  class="order-tb-body"
-                  :key="index"
-                >
+                <tr class="order-tb-body">
                   <td>
                     {{$t('order.nullValue')}}
                   </td>
