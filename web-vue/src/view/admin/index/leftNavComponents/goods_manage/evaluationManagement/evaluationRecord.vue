@@ -165,7 +165,18 @@
                     :key="index"
                   ></i></span></div>
               <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote}}</span></div>
-              <div class="evaluation-info_item"><span></span></div>
+              <div class="evaluation-info_item">
+                <div class="evaluation-pic">
+                 <template v-for="(picItem,picIndex) in scope.row.commImg">
+                   <el-image
+                    :key="picIndex"
+                    style="width: 50px; height: 50px"
+                    :src="$imageHost+'/'+picItem"
+                    :preview-src-list="scope.row.commImg">
+                  </el-image>
+                 </template>
+                </div>
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -360,9 +371,15 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.pageParams = res.content.page
-          this.dataList = res.content.dataList.sort((a, b) => {
-            return (b.id - a.id)
+          this.dataList = res.content.dataList.map(item => {
+            let comment = JSON.parse(JSON.stringify(item))
+            if (comment.commImg !== '' && comment.commImg !== null) {
+              comment.commImg = comment.commImg.split(',')
+            }
+            return comment
           })
+          // this.dataList = res.content.dataList
+          console.log(this.dataList)
           this.loading = false
         }
       })

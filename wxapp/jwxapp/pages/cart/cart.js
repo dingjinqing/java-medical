@@ -33,15 +33,13 @@ global.wxPage({
   requestCartList(){
     util.api('/api/wxapp/cart/list',(res)=>{
       console.log(res)
-      if(res.error === 0){
-        let canBuyList = (res.content && res.content.cartGoodsList) || []
-        let invalidList = (res.content && res.content.invalidCartList) || []
-
+      if (res.error === 0){
+        let { cartGoodsList: canBuyGoodsList = [], invalidCartList:invalidGoodsList = [], isAllCheck = null,totalPrice = null} = res.content || []
         this.setData({
-          canBuyGoodsList: canBuyList,
-          invalidGoodsList: invalidList,
-          isAllCheck: res.content.isAllCheck,
-          totalPrice: res.content.totalPrice
+          canBuyGoodsList,
+          invalidGoodsList,
+          isAllCheck,
+          totalPrice
         })
       }
     })

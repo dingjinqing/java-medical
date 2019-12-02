@@ -70,7 +70,6 @@ global.wxPage({
         "isShowPay",
         "isPayEndPayment",
         "isExtendReceive",
-        "isShowAgainBuy",
         "isRemindShip",
         "isShowCommentType",
         "isDelete",

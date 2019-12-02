@@ -45,7 +45,7 @@
     </view>
     <view class="goods_price">
       <text class="price" style="color:{{main_setting.comColor}};">￥{{goosItem.realPrice===null?'0.00':goosItem.realPrice}}</text>
-      <text class="iconfont icongouwuche1" style="color:{{main_setting.comColor}};"></text>
+      <!-- <text class="iconfont icongouwuche1" style="color:{{main_setting.comColor}};"></text> -->
     </view>
   </view>
 </view>

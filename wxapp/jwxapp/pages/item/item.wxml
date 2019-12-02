@@ -16,7 +16,7 @@
       </view>
     </view>
     <!-- 优惠券&促销信息-->
-    <v-coupon-promotion coupon-list="{{couponList}}"/>
+    <!-- <v-coupon-promotion coupon-list="{{couponList}}"/> -->
     <!--  选择规格（包含无规格情况）  -->
       <v-sel-spec products-info="{{goodsInfo}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
         <!--  服务信息  -->
