@@ -105,7 +105,7 @@ global.wxPage({
   },
   // 默认填充
   defaultInput(orderInfo){
-    let { isBalancePay, isCardPay, isScorePay, moneyPaid, memberCardMoney, userAccount, scorePayNum, userScore, scoreMaxDiscount } = orderInfo
+    let { isBalancePay, isCardPay, isScorePay, moneyPaid, memberCardMoney, userAccount, scorePayNum, userScore, scoreMaxDiscount, paymentList } = orderInfo
     if (isCardPay === 1 && memberCardMoney > 0){
       let useCardBalance = moneyPaid - memberCardMoney > 0 ? memberCardMoney : moneyPaid
       moneyPaid -= useCardBalance
@@ -119,7 +119,7 @@ global.wxPage({
         cardBalanceStatus: 0
       })
     }
-    if (isBalancePay === 1 && userAccount > 0){
+    if (paymentList.balance && isBalancePay === 1 && userAccount > 0){
       let useBalance = moneyPaid - userAccount > 0 ? userAccount : moneyPaid
       moneyPaid -= useBalance
       this.setData({
@@ -132,7 +132,7 @@ global.wxPage({
         balanceStatus: 0,
       })
     }
-    if (isScorePay === 1 && userScore > scorePayNum && userScore > 0){
+    if (paymentList.score && isScorePay === 1 && userScore > scorePayNum && userScore > 0){
       let useScore = moneyPaid * 100 > scoreMaxDiscount * 100 ? (scoreMaxDiscount * 100 > userScore ? userScore : scoreMaxDiscount * 100) : (moneyPaid * 100 > userScore ? userScore : moneyPaid * 100) 
       moneyPaid -= useScore
       this.setData({
@@ -329,7 +329,7 @@ global.wxPage({
   },
   // 提交订单
   confirmOrder(){
-    let { orderGoods: goods, orderAmount } = this.data.orderInfo
+    let { orderGoods: goods, orderAmount, paymentList } = this.data.orderInfo || {}
     let { useBalance: balance, useCardBalance:cardBalance, useScore: scoreDiscount} = this.data.usePayInfo
     let addressId = this.data.orderInfo.address && this.data.orderInfo.address.addressId || null
     let couponSn = this.data.orderInfo.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn || null
@@ -357,7 +357,7 @@ global.wxPage({
     console.log(params)
     util.api('/api/wxapp/order/submit',res=>{
       if(res.error === 0){
-        if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo){
+        if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo && paymentList.wxpay){
           let {orderSn} = res.content 
           console.log(res.content.webPayVo.appId, res.content.webPayVo.timeStamp, res.content.webPayVo.nonceStr, res.content.webPayVo.package, res.content.webPayVo.paySign)
           wx.requestPayment({

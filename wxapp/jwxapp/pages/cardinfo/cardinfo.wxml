@@ -46,8 +46,23 @@
       </view>
     </view>
     <view class="card_item_content">
-      <view class="grade_content_desc">
-        TODO
+      <view class="grade-content-desc">
+        <view class="compare-card-name">
+          <text class="current-card">{{cardInfo.cardName}}</text>
+          <view class="next-card">
+            <view><text>{{cardInfo.nextGradeCard.cardName}}</text><image src="{{imageUrl}}image/wxapp/path.png"></image></view>
+            <text>{{cardInfo.nextGradeCard.gradeConditionJson.gradeScore || cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}</text>
+          </view>
+        </view>
+        <view class="progress-view">
+          <progress percent="{{percentage}}" activeColor="#d0b27c" backgroundColor="#f5ecda" />
+        </view>
+        <view class="current-condition">{{currentCondition}}</view>
+        <view class="upgrade-condition">
+          <text>升级条件：</text>
+          <text class="condition-info">{{JSON.parse(cardInfo.gradeCondition).gradeScore}}累积积分达到{{cardInfo.nextGradeCard.gradeConditionJson.gradeScore}}分</text>
+          <text class="condition-info">累积消费金额达到{{cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}元（仅包含微信、余额支付）</text>
+        </view>
       </view>
     </view>
     <!-- 会员权益折扣 -->

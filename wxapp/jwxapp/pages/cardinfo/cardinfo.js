@@ -24,6 +24,7 @@ global.wxPage({
       cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
       cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
       cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
+      this.getUpgradeCondition(cardInfo)
       this.setData({
         cardInfo:res.content
       })
@@ -67,6 +68,18 @@ global.wxPage({
       qrCode,
       showQrcode:true
     })
+  },
+  getUpgradeCondition(cardInfo){
+    if (cardInfo.cardType !== 2 || !cardInfo.nextGradeCard) return
+    if (cardInfo.nextGradeCard.gradeConditionJson.gradeScore){
+      this.setData({
+          percentage: Math.round(JSON.parse(cardInfo.gradeCondition).gradeScore / cardInfo.nextGradeCard.gradeConditionJson.gradeScore * 10000) / 100.00,
+          currentCondition: JSON.parse(cardInfo.gradeCondition).gradeScore
+      })
+    } else {
+
+    }
+   
   },
   phoneCall: function (e) {
     wx.makePhoneCall({

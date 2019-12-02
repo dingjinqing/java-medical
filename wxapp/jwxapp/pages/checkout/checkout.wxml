@@ -81,21 +81,21 @@
             <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
           </view>
         </view>
-        <view class="pay_list_item" bindtap="cardBalanceTap">
+        <view class="pay_list_item" wx:if="{{orderInfo.defaultMemberCard.money > 0}}" bindtap="cardBalanceTap">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
           <text class="pay_list_content" wx:if="{{usePayInfo.useCardBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useCardBalance})}}</text>
           <view class="pay_list_right">
             <text class="iconfont {{cardBalanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{cardBalanceStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
-        <view class="pay_list_item" bindtap="balanceTap">
+        <view class="pay_list_item" wx:if="{{orderInfo.paymentList.balance}}" bindtap="balanceTap">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}{{}}</text>
           <text class="pay_list_content" wx:if="{{usePayInfo.useBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useBalance})}}</text>
           <view class="pay_list_right">
             <text class="iconfont {{balanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{balanceStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
-        <view class="pay_list_item" bindtap="scoreTap">
+        <view class="pay_list_item" wx:if="{{orderInfo.paymentList.score}}" bindtap="scoreTap">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.integral")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
           <text class="pay_list_content" wx:if="{{usePayInfo.useScore > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useScore / 100})}}</text>
           <view class="pay_list_right">

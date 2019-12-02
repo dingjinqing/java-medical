@@ -152,5 +152,39 @@
   color: #888;
   line-height: 50rpx;
 }
-.grade_content_desc{
+.grade-content-desc{
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx 0;
+  color: #888;
+}
+.compare-card-name{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.next-card{
+  color: #d0b27c;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.next-card image{
+  width: 20rpx;
+  height: 20rpx;
+  margin-left: 10rpx;
+}
+.progress-view{
+
+}
+.upgrade-condition{
+  display: flex;
+  flex-direction: column;
+  line-height: 40rpx;
+}
+.condition-info{
+  padding-left: 40rpx;
+}
+.current-condition{
+  color: #d0b27c;
 }
