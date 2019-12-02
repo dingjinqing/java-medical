@@ -1,4 +1,4 @@
-// pages/store/store.js
+// pages/sort/sort.js
 var util = require('../../utils/util.js')
 // var spec_mixin = require("../goodscommon/spec.js")
 var app = getApp()
