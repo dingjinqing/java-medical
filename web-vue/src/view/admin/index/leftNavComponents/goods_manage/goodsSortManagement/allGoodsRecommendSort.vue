@@ -187,7 +187,7 @@ export default {
     },
     /* 删除图标 */
     deleteSortImg () {
-      this.recommendSortCfg.recommendSortImgObj = null
+      this.recommendSortCfg.recommendSortImgObj = {}
     },
     /* 选择链接 */
     chooseImgLink () {
