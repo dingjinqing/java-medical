@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class OrderConstant {
     /** 语言包放在excel相关properties里 */
-    private final static String LANGUAGE_TYPE_EXCEL = "excel";
+    public final static String LANGUAGE_TYPE_EXCEL = "excel";
 
     /**order sn 前缀*/
     public final static String ORDER_SN_PREFIX = "P";

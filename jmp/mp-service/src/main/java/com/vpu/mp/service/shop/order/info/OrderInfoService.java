@@ -1015,7 +1015,7 @@ public class OrderInfoService extends ShopBaseService {
 		Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now().minusMonths(3L));
 		return db().selectCount().from(ORDER_GOODS).leftJoin(ORDER_INFO)
 				.on(ORDER_INFO.ORDER_SN.eq(ORDER_GOODS.ORDER_SN))
-				.where(ORDER_INFO.USER_ID.eq(userId).and(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY))
+				.where(ORDER_INFO.USER_ID.eq(userId).and(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY))
 						.and(ORDER_INFO.CREATE_TIME.gt(timestamp)))
 				.fetchOne().into(Integer.class);
 	}

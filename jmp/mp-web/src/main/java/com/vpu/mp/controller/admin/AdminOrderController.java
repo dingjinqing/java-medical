@@ -40,8 +40,6 @@ import java.util.List;
 @RequestMapping("/api/admin/order")
 public class AdminOrderController extends AdminBaseController {
 
-    private static final String LANGUAGE_TYPE_EXCEL = "excel";
-
 	/**
 	 * 	订单综合查询（不包括买单订单、虚拟商品订单）
 	 * 
@@ -248,7 +246,7 @@ public class AdminOrderController extends AdminBaseController {
     public void orderExport(@RequestBody @Valid OrderExportQueryParam param, HttpServletResponse response) {
         List<String> columns = shop().config.orderExportCfg.getOrderExportList();
         Workbook workbook =shop().readOrder.exportOrderList(param,columns,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME ,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME ,OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook,fileName,response);
     }
 }
