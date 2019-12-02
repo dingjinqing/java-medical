@@ -1,32 +1,44 @@
 package com.vpu.mp.service.shop.store.comment;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CommentServiceRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.comment.CommentFlagEnum;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentPageListParam;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectOnConditionStep;
 import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.*;
+
 /**
  * @author 黄荣刚
  * @date 2019年7月18日
  *服务评价相关方法
  */
 @Service
-
+@Slf4j
 public class ServiceCommentService extends ShopBaseService {
+    /**
+     * The Domain config.
+     */
+    @Autowired
+    public DomainConfig domainConfig;
 
 	/**
 	 * 分页查询服务评价列表
@@ -178,11 +190,24 @@ public class ServiceCommentService extends ShopBaseService {
      * @return the comment by order id
      */
     public ServiceCommentVo getCommentByOrderSn(String orderSn) {
-        return db().select(COMMENT_SERVICE.asterisk(), SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD).from(COMMENT_SERVICE)
+        ServiceCommentVo vo = db().select(COMMENT_SERVICE.asterisk(), SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD).from(COMMENT_SERVICE)
             .leftJoin(SERVICE_ORDER).on(COMMENT_SERVICE.ORDER_SN.eq(SERVICE_ORDER.ORDER_SN))
             .where(COMMENT_SERVICE.ORDER_SN.eq(orderSn)).and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE))
+            .limit(INTEGER_ONE)
             .fetchOneInto(ServiceCommentVo.class);
+        // 图片加域名处理
+        String imgs = vo.getCommImg();
+        List<String> stringList = Util.json2Object(imgs, new TypeReference<List<String>>() {
+        }, false);
+        if (CollectionUtils.isEmpty(stringList)) {
+            return vo;
+        }
+        stringList = stringList.stream().map(domainConfig::imageUrl).collect(Collectors.toList());
+        log.debug("评论图片有：{}", stringList.toString());
+        vo.setCommImg(Util.toJson(stringList));
+        return vo;
     }
+
 
     /**
      * Create comment.添加评价

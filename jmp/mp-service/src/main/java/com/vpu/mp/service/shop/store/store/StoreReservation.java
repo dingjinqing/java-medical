@@ -574,7 +574,9 @@ public class StoreReservation extends ShopBaseService {
         ).
             from(SERVICE_ORDER).leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID))
             .leftJoin(STORE).on(SERVICE_ORDER.STORE_ID.eq(STORE.STORE_ID))
-            .where(condition).and(SERVICE_ORDER.DEL_FLAG.eq(BYTE_ZERO)).fetchInto(clazz);
+            .where(condition).and(SERVICE_ORDER.DEL_FLAG.eq(BYTE_ZERO))
+            .orderBy(SERVICE_ORDER.CREATE_TIME.desc())
+            .fetchInto(clazz);
     }
 
     /**
@@ -634,6 +636,9 @@ public class StoreReservation extends ShopBaseService {
      * @return the list
      */
     public List<ReservationListVo> reservationList(Integer userId, Byte orderStatus) {
+        if (Objects.isNull(orderStatus)) {
+            return getReservationDetail(SERVICE_ORDER.USER_ID.eq(userId), ReservationListVo.class);
+        }
         return getReservationDetail(SERVICE_ORDER.USER_ID.eq(userId).and(SERVICE_ORDER.ORDER_STATUS.eq(orderStatus)), ReservationListVo.class);
     }
 
