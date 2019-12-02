@@ -41,7 +41,7 @@ global.wxPage({
     let orderSn = e.currentTarget.dataset.ordersn;
     let storeId = e.currentTarget.dataset.storeid;
     util.navigateTo({
-      url: '../servicecomment/servicecomment?orderSn=' + orderSn + "&storeId=" + storeId
+      url: '../servicecomment/servicecomment?order_sn=' + orderSn + "&store_id=" + storeId
     })
   },
   showMap: function (e) {
@@ -62,7 +62,7 @@ global.wxPage({
     util.showModal('提示', '是否取消该订单', function () {
       util.api('/api/wxapp/service/cancel', function (res) {
         if (res.error == 0) {
-          orderInfo.orderStatus = 1;
+          orderInfo.orderStatus = 2;
           that.setData({
             orderInfo: orderInfo
           })

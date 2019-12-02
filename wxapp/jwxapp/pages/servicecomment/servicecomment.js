@@ -4,16 +4,19 @@ var util = require('../../utils/util.js');
 var imageUrl = app.globalData.imageUrl;
 var Url = app.globalData.baseUrl;
 var order_sn;
+var store_id;
 var src_down = imageUrl + 'image/wxapp/down_normal.png';
 var src_up = imageUrl + 'image/wxapp/up_normal.png';
-var store_id;
-var service_info = [];
+var serviceInfo = [];
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
+    orderSn: '',
+    storeId: '',
+    serviceInfo: {},
     imageUrl: app.globalData.imageUrl,
     img_len: 0,
     image: false,//是否显示晒单的图片
@@ -53,20 +56,24 @@ global.wxPage({
     if (!util.check_setting(options)) return;
     order_sn = options.order_sn;
     store_id = options.store_id;
+    this.setData({
+      orderSn: options.order_sn,
+      storeId: options.store_id
+    })
     this.get_comment();
   },
 
   //显示评论内容页面
   show_com_info: function (e) {
-    if (service_info.show_info == true) {
-      service_info.show_info = false;
-      service_info.src = src_down;
+    if (serviceInfo.show_info == true) {
+      serviceInfo.show_info = false;
+      serviceInfo.src = src_down;
     } else {
-      service_info.show_info = true;
-      service_info.src = src_up;
+      serviceInfo.show_info = true;
+      serviceInfo.src = src_up;
     }
     this.setData({
-      service_info: service_info,
+      serviceInfo: serviceInfo,
     })
   },
   //显示提交评价页面
@@ -87,12 +94,12 @@ global.wxPage({
     }
     info.store_id = store_id;
     info.service_id = service_id;
-    if (service_info.show == true) {
-      service_info.show = false;
-      service_info.src = src_down;
+    if (serviceInfo.show == true) {
+      serviceInfo.show = false;
+      serviceInfo.src = src_down;
     } else {
-      service_info.show = true;
-      service_info.src = src_up;
+      serviceInfo.show = true;
+      serviceInfo.src = src_up;
     }
     info.anonymousflag = 0;
     info.comm_img = [];
@@ -116,7 +123,7 @@ global.wxPage({
       }
     ];
     this.setData({
-      service_info: service_info,
+      serviceInfo: serviceInfo,
       info: info,
       star: star
     })
@@ -238,12 +245,12 @@ global.wxPage({
   },
   //隐藏评价
   close_com_info: function (e) {
-    service_info.show_info = false;
+    serviceInfo.show_info = false;
     this.setData({
-      service_info: service_info,
+      serviceInfo: serviceInfo,
     })
   },
-  bindPreviewImage(e) {
+  bindPreviewImage (e) {
     let src = e.currentTarget.dataset.src;
     let srcarr = e.currentTarget.dataset.srcarr;
     let arrs = [];
@@ -257,66 +264,29 @@ global.wxPage({
       })
     }
   },
-  get_comment() {
+  get_comment () {
     let that = this
-    // util.api('/api/wxapp/service/comment/user', function (res) {
-    //   service_info = res.content;
-    let service_info = {
-      order_sn: 1,
-      add_time: '2019-11-14 10:28:00',
-      service_img: '["http://jmpdevimg.weipubao.cn/upload/245547/image/20191106/Cw7hweKwF9TZTt3M0JBZ.jpg","http://jmpdevimg.weipubao.cn/upload/245547/image/20191106/piHajXgTBcS0EwFv5LyK.jpg","http://jmpdevimg.weipubao.cn/upload/245547/image/20191106/6zQd7CS4Briz5NWQ4OH6.jpg"]',
-      service_name: "辅导功课",
-      service_id: '1',
-      servicePrice: 100,
-      serviceShelf: 1,
-      serviceSn: "G101011239",
-      serviceSubsist: 20,
-      serviceType: 0,
-      servicesNumber: 10,
-      startDate: "2019-11-07",
-      startPeriod: "09:00",
-      techServicesNumber: null,
-      updateTime: "2019-11-13 16:34:06",
-      shopAvatar: "upload/1/image/20190903/8quev7YQPROAdfBXQiIx.jpg",
-      storePojo: { storeId: 6, storeName: "牡丹园门店", manager: "zzz", mobile: "15010607187" },
-      store_img: '["http://mpdevimg2.weipubao.cn/upload/0/image/20190927/crop_krznocD6sNDo1zIQ.jpeg"]',
-      technicianTitle: "伏虎罗汉",
-      verify_code: 'http://baidu.com',
-      technician_title: '伏虎罗汉',
-      technician_name: '小手张',
-      service_date: '2019-11-07',
-      service_period: '09:00-19:00',
-      address: "北京南站",
-      latitude: "39.865078",
-      longitude: "116.378929",
-      order_status: 0,
-      money_paid: 10,
-      service_price: 100,
-      store_id: 6,
-      store_name: '牡丹园门店',
-      error: 0,
-      language: "zh_CN",
-      message: "成功"
-    }
-    service_info.service_img = JSON.parse(service_info.service_img);
-    service_info.service_img = service_info.service_img[0];
-    service_info.src = src_down;
-    service_info.show = false;
-    if (service_info.comment) {
-      service_info.comment.commstar = parseInt(service_info.comment.commstar);
-      if (parseInt(service_info.comment.anonymousflag) == 0) {
-        service_info.comment.anonymousflag = false;
-      } else {
-        service_info.comment.anonymousflag = true;
+    util.api('/api/wxapp/store/service/reservationComment', function (res) {
+      let serviceInfo = res.content;
+      serviceInfo.service_img = JSON.parse(serviceInfo.service_img);
+      serviceInfo.service_img = serviceInfo.service_img[0];
+      serviceInfo.src = src_down;
+      serviceInfo.show = false;
+      if (serviceInfo.comment) {
+        serviceInfo.comment.commstar = parseInt(serviceInfo.comment.commstar);
+        if (parseInt(serviceInfo.comment.anonymousflag) == 0) {
+          serviceInfo.comment.anonymousflag = false;
+        } else {
+          serviceInfo.comment.anonymousflag = true;
+        }
+        if (serviceInfo.comment.comm_img != '' || serviceInfo.comment.comm_img != null) {
+          serviceInfo.comment.comm_img = JSON.parse(serviceInfo.comment.comm_img);
+        }
       }
-      if (service_info.comment.comm_img != '' || service_info.comment.comm_img != null) {
-        service_info.comment.comm_img = JSON.parse(service_info.comment.comm_img);
-      }
-    }
-    that.setData({
-      service_info: service_info
-    })
-    // }, { order_sn: order_sn, store_id: store_id });
+      that.setData({
+        serviceInfo: serviceInfo
+      })
+    }, { orderSn: this.data.orderSn, storeId: this.data.storeId });
   },
 
   /**

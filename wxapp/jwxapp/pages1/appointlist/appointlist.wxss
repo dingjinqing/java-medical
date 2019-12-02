@@ -17,7 +17,7 @@ view,text{
   padding: 15rpx 0;
   text-align: center
 }
-.appointlist-box,.appoint-content,.appoint-btn,.appoint-nav {
+.appointlist-box,.appoint-box,.appoint-btn,.appoint-nav {
   width: 100%;
 }
 
@@ -87,7 +87,7 @@ view,text{
   color: #f66;
 }
 
-.appoint-content {
+.appoint-box {
   background: #FAFAFA;
   padding: 30rpx 20rpx;
 }

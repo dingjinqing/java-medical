@@ -298,7 +298,7 @@ global.wxPage({
       useAccount: that.data.create_order.account_discount || 0,
       memberCardNo: that.data.useCard.cardNo,
       memberCardBalance: that.data.create_order.member_card_balance || 0,
-      moneyPaid: that.data.create_order.money_paid || 0,
+      moneyPaid: Number(that.data.create_order.money_paid) || 0,
       orderAmount: that.data.create_order.service_deposit || 0,
       couponId: 0, // 优惠券预留字段 ，优惠券id
       discount: 0 // 优惠券减价
