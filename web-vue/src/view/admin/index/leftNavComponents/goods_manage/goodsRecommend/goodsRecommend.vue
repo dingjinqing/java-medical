@@ -97,7 +97,14 @@
               <span
                 class="el-icon-circle-close operateSpan"
                 @click="editStatus(scope.row)"
+                v-if="scope.row.status === 0"
               ></span>
+              <span
+                class="el-icon-circle-check operateSpan"
+                @click="editStatus(scope.row)"
+                v-else
+              >
+              </span>
             </el-tooltip>
             <el-tooltip
               :content="$t('recommend.delete')"
