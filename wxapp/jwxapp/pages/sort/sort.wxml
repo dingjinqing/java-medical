@@ -1,4 +1,4 @@
-<!--pages/store/store.wxml-->
+<!--pages/sort/sort.wxml-->
 <include src="../common/header.wxml" />
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class='all'>
