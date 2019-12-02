@@ -63,4 +63,13 @@ public class TradeConstant {
      * {@value}
      */
     public static final Byte BYTE_SEVEN = 7;
+
+    /**
+     * The constant TRADE_PROCESS_CONFIG.
+     */
+    public static final String TRADE_PROCESS_CONFIG = "trade_process_config";
+    /**
+     * The constant DELIVERY_LIST.
+     */
+    public static final String DELIVERY_LIST = "delivery_list";
 }

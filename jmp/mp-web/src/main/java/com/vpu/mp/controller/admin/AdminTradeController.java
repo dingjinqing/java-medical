@@ -6,6 +6,7 @@ import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.pojo.shop.config.trade.*;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -15,11 +16,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 
 /**
  * @author liufei
@@ -97,30 +100,19 @@ public class AdminTradeController extends AdminBaseController {
      */
     @PostMapping("/api/admin/config/trade/getOrderProcessConfig")
     public JsonResult getOrderProcessConfig() {
-        //微信物流助手物流公司列表
-        List<LogisticsAccountInfo> deliveryList = new ArrayList<LogisticsAccountInfo>() {{
-            add(new LogisticsAccountInfo() {{
-                setDeliveryName("物流");
-                setBizId("110");
-                setStatusCode(BYTE_ONE);
-            }});
-        }};
-        //基本配置项信息
+        Map<String, Object> result = new HashMap<>(2);
+        // 获取交易流程配置
         OrderProcessParam param = shop().trade.getOrderProcessConfig();
-//         TODO 等微信api好了之后在开放此代码
+        result.put(TRADE_PROCESS_CONFIG, param);
         try {
-            shop().trade.combineAllLogisticsAccountInfo();
-        } catch (WxErrorException e) {
+            //微信物流助手物流公司列表
+            List<LogisticsAccountInfo> deliveryList = shop().trade.combineAllLogisticsAccountInfo();
+            result.put(DELIVERY_LIST, deliveryList);
+        } catch (BusinessException e) {
             log.error("微信物流助手api调用失败，获取支持物流公司列表失败：{}", e.getMessage());
-//            return fail(JsonResultCode.CODE_FAIL);
+            result.put(DELIVERY_LIST, null);
         }
-        return success(new HashMap<String, Object>(2) {
-			private static final long serialVersionUID = 533497335184152545L;
-			{
-                put("trade_process_config", param);
-                put("delivery_list", deliveryList);
-            }
-        });
+        return success(result);
     }
 
     /**

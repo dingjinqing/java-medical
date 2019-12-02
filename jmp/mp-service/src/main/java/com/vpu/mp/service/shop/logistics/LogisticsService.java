@@ -16,7 +16,6 @@ import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 
@@ -29,6 +28,7 @@ import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
 @Slf4j
 @Service
 public class LogisticsService extends ShopBaseService {
+    private static final String DATA = "data";
 
     /**
      * 获取支持的快递公司列表
@@ -48,33 +48,27 @@ public class LogisticsService extends ShopBaseService {
      * @throws WxErrorException 微信api调用异常
      *
      * TODO 微信接口更新，数据格式变动
-     * {
-     *     "delivery_id": "ZTO",
-     *     "delivery_name": "中通快递",
-     *     "can_use_cash": 0,
-     *     "can_get_quservice_type": [
-     *         {
-     *             "service_type": 0,
-     *             "service_name": "标准快件"
-     *         }
-     *     ],
-     *     "cash_biz_id": ""
-     * }
      */
-    public List<Map<String, String>> getAllDelivery() throws WxErrorException {
+    public List<LogisticsParam> getAllDelivery() {
         WxOpenMaServiceExtraImpl maService = open.getMaExtService();
-        String jsonResult = maService.getAllDelivery(getAppId());
+        String jsonResult = StringUtils.EMPTY;
+        try {
+            jsonResult = maService.getAllDelivery(getAppId());
+        } catch (WxErrorException e) {
+            log.debug("微信api调用：获取支持的快递公司列表失败：{}", e.getMessage());
+            throw new BusinessException(JsonResultCode.CODE_WX_LOGISTICS_API_CALL_FAILED);
+        }
         log.debug("微信api调用：获取支持的快递公司列表调用结果为：{}", jsonResult);
-        List<Map<String, String>> deliveryList;
+        List<LogisticsParam> deliveryList;
         try {
             JsonNode node = MAPPER.readTree(jsonResult);
-            JsonNode dataNode = node.get("data");
+            JsonNode dataNode = node.get(DATA);
             Assert.notNull(dataNode, "微信api调用失败，获取data节点数据失败！");
-            deliveryList = MAPPER.readValue(dataNode.traverse(), new TypeReference<List<Map<String, String>>>() {
+            deliveryList = MAPPER.readValue(dataNode.traverse(), new TypeReference<List<LogisticsParam>>() {
             });
         } catch (IOException e) {
             log.error("data节点数据[{}]反序列化失败：{}", jsonResult, e.getMessage());
-            throw new BusinessException(JsonResultCode.CODE_FAIL);
+            throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
         }
         return deliveryList;
     }
@@ -99,10 +93,16 @@ public class LogisticsService extends ShopBaseService {
      * @throws WxErrorException the wx error exception
      * @see com.vpu.mp.service.pojo.shop.config.trade.LogisticsAccountInfo
      */
-    public List<LogisticsAccountInfo> getAllAccount() throws WxErrorException {
-        List<LogisticsAccountInfo> accountInfos = null;
+    public List<LogisticsAccountInfo> getAllAccount() {
+        List<LogisticsAccountInfo> accountInfos;
         WxOpenMaServiceExtraImpl maService = open.getMaExtService();
-        String jsonResult = maService.getAllAccount(getAppId());
+        String jsonResult = StringUtils.EMPTY;
+        try {
+            jsonResult = maService.getAllAccount(getAppId());
+        } catch (WxErrorException e) {
+            log.debug("微信api调用：拉取已绑定账号调用结果失败：{}", e.getMessage());
+            throw new BusinessException(JsonResultCode.CODE_WX_LOGISTICS_API_CALL_FAILED);
+        }
         log.debug("微信api调用：拉取已绑定账号调用结果为：{}", jsonResult);
         if (StringUtils.isBlank(jsonResult)) {
             return null;
@@ -115,7 +115,7 @@ public class LogisticsService extends ShopBaseService {
             });
         } catch (IOException e) {
             log.error("jackson反序列化时读取生成对象实例时失败：{}", e.getMessage());
-            throw new BusinessException(JsonResultCode.CODE_FAIL);
+            throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
         }
         return accountInfos;
     }

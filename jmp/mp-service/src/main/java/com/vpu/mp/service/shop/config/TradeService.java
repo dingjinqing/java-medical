@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.Payment;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.pojo.shop.config.trade.*;
+import com.vpu.mp.service.shop.logistics.LogisticsParam;
 import com.vpu.mp.service.shop.logistics.LogisticsService;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -873,16 +874,16 @@ public class TradeService extends BaseShopConfigService {
      *                          {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#DELIVERY_NAME}
      *                          {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#STATUS_CODE}
      */
-    public List<LogisticsAccountInfo> combineAllLogisticsAccountInfo() throws WxErrorException {
+    public List<LogisticsAccountInfo> combineAllLogisticsAccountInfo() {
         //已绑定账号物流公司列表，不包含未绑定物流公司
         List<LogisticsAccountInfo> accountInfos = logisticsService.getAllAccount();
         //目前支持的快递公司列表，只包含id和name，不含其他详细信息
-        List<Map<String, String>> allDelivery = logisticsService.getAllDelivery();
+        List<LogisticsParam> allDelivery = logisticsService.getAllDelivery();
         //组合上述两个列表信息得到返回果
         Map<String, String> temp = new HashMap<String, String>(allDelivery.size()) {
 			private static final long serialVersionUID = 6286507281294185183L;
 			{
-                allDelivery.forEach(d -> put(d.get(DELIVERY_ID), d.get(DELIVERY_NAME)));
+                allDelivery.forEach(d -> put(d.getDeliveryId(), d.getDeliverName()));
             }
         };
         accountInfos.forEach(info -> {
