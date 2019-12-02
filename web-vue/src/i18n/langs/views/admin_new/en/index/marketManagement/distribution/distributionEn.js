@@ -127,6 +127,8 @@ export const en = {
   levelStop2: 'Deactivated',
 
   // -------------------返利策略配置---------------
+  addRebateStrategy: 'Add Rebate Srategy',
+  editRebateStrategy: 'Edit Rebate Srategy',
   policyTabInfo: [{
     title: 'All',
     name: '0'
@@ -162,6 +164,49 @@ export const en = {
   purchaseClose: 'Close',
   strategyTip4: 'When enabled, the distributor will also get rebate when purchasing goods. The rebate proportion is the direct invitation rebate proportion of the current level of the distributor.',
   strategyTip5: 'Note: when the self purchase rebate switch is on, if the next person is a distributor, the indirect invitee of the next person will not get rebate, and the direct invitee can get rebate. The rebate proportion is the indirect invitation rebate proportion of the direct invitee level',
+  costProtection: 'Cost price protection：',
+  costProtectionTip1: 'When the paid in amount - cost price of a single product is greater than 0, the difference will be allocated according to the distribution proportion',
+  costProtectionTip2: 'When the actual paid amount cost price of a single product is less than or equal to 0, the rebate is 0',
+  costProtectionTip3: 'notes：',
+  costProtectionTip4: 'Invalid item without cost price',
+  Invitation: 'Invite new users to configure first order rebate：',
+  InvitationTip: 'After opening, the distributor invites new users and guides them to place the first order (direct invitation relationship) in the store. Rebate proportion can be set separately. Help stores to quickly pull new, improve the rate of new users.',
+  proportion: 'Rebate Commission proportion',
+  proportionTip1: 'Rebate ratio of direct invitation: Commission obtained by the distributor after successful promotion',
+  proportionTip2: 'Indirect invitation rebate ratio: B is the distributor of development a. after successful promotion, a can get the invitation reward Commission',
+  proportionTip3: 'Rebate ratio of direct invitation',
+  proportionTip4: 'Rebate ratio of indirect invitation',
+  proportionTip5: 'The rebate amount available to current level distributors is 0% - 0% of the amount of goods ordered',
+  proportionTip6: 'Rebate ratio of the first order directly invited to new users',
+  proportionTip7: 'This strategy configures that the Commission of all goods is settled according to the current proportion. The Commission value = the actual payment amount of goods * Commission proportion. For example, if the price of distribution goods is 100 yuan and the rebate Commission proportion is 20%, then the user purchases a distribution goods and invites the user distributor to obtain 20 yuan Commission.After the order is paid, the Commission will be rebate to the balance account of the distribution center of the distributor, but the Commission is in the status of to be rebate.After the order is completed, the Commission will be rebate, and the distributor can directly use the Commission for shopping.Limit the number to one decimal place.',
+  authority: 'Authority of distributor：',
+  authorityTip1: 'Promotion of coupons',
+  authorityTip2: 'Allow distributors to give coupons when distributing goods',
+  distributionGoods: 'Commodity distribution：',
+  goodsRadio1: 'All merchandise',
+  goodsRadio2: 'Designated commodity',
+  goodsTip1: 'Selected',
+  goodsTip2: 'Several items',
+  goodsTip3: 'Several businesses',
+  goodsTip4: 'Several platforms',
+
+  storeArr: [{
+    name: 'Add merchandise',
+    value: '1'
+  },
+  {
+    name: 'Add product category',
+    value: '2'
+  },
+  {
+    name: 'Add platform category',
+    value: '3'
+  }],
+
+  addSuccess: 'Add Success!',
+  addFail: 'Add Fail!',
+  editSuccess: 'Edit Success!',
+  editFail: 'Edit Fail!',
 
   // ---------------------分销推广语----------------
   // 列表搜索框

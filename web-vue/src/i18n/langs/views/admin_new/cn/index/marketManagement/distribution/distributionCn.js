@@ -131,6 +131,8 @@ export const cn = {
   levelStop2: '已停用',
 
   // -------------------返利策略配置---------------
+  addRebateStrategy: '添加返利策略',
+  editRebateStrategy: '编辑返利策略',
   policyTabInfo: [{
     title: '全部策略',
     name: '0'
@@ -166,6 +168,49 @@ export const cn = {
   purchaseClose: '关闭',
   strategyTip4: '开启后，分销员购买商品也会获得返利，返利比例为分销员当前等级的直接邀请返利比例。',
   strategyTip5: '注：当自购返利开关开启，若下单人是分销员，则该下单人的间接邀请人不会获得返利，其直接邀请人可获得返利，返利比例为直接邀请人所在等级的间接邀请返利比例',
+  costProtection: '成本价保护：',
+  costProtectionTip1: '当单件商品实付金额-成本价大于0时，按分销比例分配差额',
+  costProtectionTip2: '当单件商品实付金额-成本价小于等于0时，返利为0',
+  costProtectionTip3: '注：',
+  costProtectionTip4: '未设置成本价的商品无效',
+  Invitation: '邀请新用户下首单返利配置：',
+  InvitationTip: '开启后，分销员邀请新用户并引导其在店铺下首单（直接邀请关系），可单独设置返利比例。帮助店铺快速拉新，提高新用户成单率。',
+  proportion: '返利佣金比例',
+  proportionTip1: '直接邀请返利比例：分销员成功推广后获取的佣金',
+  proportionTip2: '间接邀请返利比例：B是A发展的分销员，B成功推广后，A可获得邀请奖励佣金',
+  proportionTip3: '直接邀请返利比例',
+  proportionTip4: '间接邀请返利比例',
+  proportionTip5: '当前等级分销员可获返利金额为下单商品金额的0%-0%',
+  proportionTip6: '直接邀请新用户下首单返利比例',
+  proportionTip7: '该策略配置商品都按当前比例结算佣金，佣金值=商品实际支付金额*佣金比例，例如，分销商品价格100元，返利佣金比例20%，那么用户购买一件分销商品，邀请该用户分销员获得20元佣金。订单支付完成佣金返利到分销员分销中心的余额账户中，但是该佣金为待返利状态，订单完成后，佣金返利，分销员可以直接使用该佣金购物。限制小数点后一位数字。',
+  authority: '分销员权限：',
+  authorityTip1: '推广赠送优惠券',
+  authorityTip2: '允许分销员分销商品时赠送优惠券',
+  distributionGoods: '分销商品：',
+  goodsRadio1: '全部商品',
+  goodsRadio2: '指定商品',
+  goodsTip1: '已选',
+  goodsTip2: '件商品',
+  goodsTip3: '个商家',
+  goodsTip4: '个平台',
+
+  storeArr: [{
+    name: '添加商品',
+    value: '1'
+  },
+  {
+    name: '添加商品分类',
+    value: '2'
+  },
+  {
+    name: '添加平台分类',
+    value: '3'
+  }],
+
+  addSuccess: '添加成功!',
+  addFail: '添加失败!',
+  editSuccess: '编辑成功!',
+  editFail: '编辑失败!',
 
   // ---------------------分销员列表----------------
   wxName: '微信昵称',

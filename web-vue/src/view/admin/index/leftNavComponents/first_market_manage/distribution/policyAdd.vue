@@ -60,15 +60,15 @@
               placement="top"
             >
               <div slot="content">
-                <p>成本价保护：</p>
-                <p>当单件商品实付金额-成本价大于0时，按分销比例分配差额</p>
-                <p>当单件商品实付金额-成本价小于等于0时，返利为0</p>
-                <p>注：</p>
-                <p>未设置成本价的商品无效</p>
+                <p>{{ $t('distribution.costProtection') }}</p>
+                <p>{{ $t('distribution.costProtectionTip1') }}</p>
+                <p>{{ $t('distribution.costProtectionTip2') }}</p>
+                <p>{{ $t('distribution.costProtectionTip3') }}</p>
+                <p>{{ $t('distribution.costProtectionTip4') }}</p>
               </div>
               <i class="el-icon-warning"></i>
             </el-tooltip>
-            <span>成本价保护：</span>
+            <span>{{ $t('distribution.costProtection') }}</span>
 
           </template>
           <el-radio-group v-model="form.costProtection">
@@ -77,17 +77,17 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          label="邀请新用户下首单返利配置："
+          :label="$t('distribution.Invitation')"
           prop=""
         >
           <el-radio-group v-model="form.firstRebate">
             <el-radio :label="1">{{ $t('distribution.purchaseOpen') }}</el-radio>
             <el-radio :label="0">{{ $t('distribution.purchaseClose') }}</el-radio>
           </el-radio-group>
-          <span class="tips">开启后，分销员邀请新用户并引导其在店铺下首单（直接邀请关系），可单独设置返利比例。帮助店铺快速拉新，提高新用户成单率。</span>
+          <span class="tips">{{ $t('distribution.InvitationTip') }}</span>
         </el-form-item>
         <el-form-item
-          label="返利佣金比例："
+          :label="$t('distribution.proportion') + '：'"
           prop=""
         >
           <el-table
@@ -114,14 +114,14 @@
             </el-table-column>
             <el-table-column align="center">
               <template slot="header">
-                <span>返利佣金比例</span>
+                <span>{{ $t('distribution.proportion') }}</span>
                 <el-tooltip
                   effect="dark"
                   placement="top"
                 >
                   <div slot="content">
-                    <p>直接邀请返利比例：分销员成功推广后获取的佣金</p>
-                    <p>间接邀请返利比例：B是A发展的分销员，B成功推广后，A可获得邀请奖励佣金</p>
+                    <p>{{ $t('distribution.proportionTip1') }}</p>
+                    <p>{{ $t('distribution.proportionTip2') }}</p>
                   </div>
                   <i class="el-icon-question"></i>
                 </el-tooltip>
@@ -130,14 +130,14 @@
               <template slot-scope="scope">
                 <div style="width: 100%; height: 80px;">
                   <div style="width:50%;float: left;">
-                    <div>直接邀请返利比例
+                    <div>{{ $t('distribution.proportionTip3') }}
                       <el-input
                         v-model.number="scope.row.fanliRatio"
                         size="mini"
                         style="width: 50px;"
                       ></el-input> %
                     </div>
-                    <div style="margin-top: 10px;">间接邀请返利比例
+                    <div style="margin-top: 10px;">{{ $t('distribution.proportionTip4') }}
                       <el-input
                         v-model.number="scope.row.rebateRatio"
                         size="mini"
@@ -149,13 +149,13 @@
                     style="width:50%;float: left;"
                     v-if="scope.row.level === '1'"
                   >
-                    当前等级分销员可获返利金额为下单商品金额的0%-0%
+                    {{ $t('distribution.proportionTip5') }}
                   </div>
                 </div>
                 <div
                   v-if="form.firstRebate === 1"
                   style="width: 100%;"
-                >直接邀请新用户下首单返利比例
+                >{{ $t('distribution.proportionTip6') }}
                   <el-input
                     v-model="scope.row.firstRatio"
                     size="mini"
@@ -169,26 +169,26 @@
           <div
             class="text"
             style="line-height: 2;margin-top: 10px;"
-          >该策略配置商品都按当前比例结算佣金，佣金值=商品实际支付金额*佣金比例，例如，分销商品价格100元，返利佣金比例20%，那么用户购买一件分销商品，邀请该用户分销员获得20元佣金。订单支付完成佣金返利到分销员分销中心的余额账户中，但是该佣金为待返利状态，订单完成后，佣金返利，分销员可以直接使用该佣金购物。限制小数点后一位数字。</div>
+          >{{ $t('distribution.proportionTip7') }}</div>
         </el-form-item>
         <el-form-item
-          label="分销员权限："
+          :label="$t('distribution.authority')"
           prop=""
         >
           <el-checkbox
             v-model="form.sendCoupon"
             :true-label='1'
             :false-label="0"
-          >推广赠送优惠券</el-checkbox>
-          <span class="tips">允许分销员分销商品时赠送优惠券</span>
+          >{{ $t('distribution.authorityTip1') }}</el-checkbox>
+          <span class="tips">{{ $t('distribution.authorityTip2') }}</span>
         </el-form-item>
         <el-form-item
-          label="分销商品："
+          :label="$t('distribution.distributionGoods')"
           prop=""
         >
           <el-radio-group v-model="form.recommendType">
-            <el-radio :label="0">全部商品</el-radio>
-            <el-radio :label="1">指定商品</el-radio>
+            <el-radio :label="0">{{ $t('distribution.goodsRadio1') }}</el-radio>
+            <el-radio :label="1">{{ $t('distribution.goodsRadio2') }}</el-radio>
           </el-radio-group>
           <div v-if="form.recommendType === 1">
             <div
@@ -199,9 +199,9 @@
               <el-button @click="hanldeToAddGoodS(index)">
                 <i class="el-icon-plus"></i> {{ item.name }}
               </el-button>
-              <span v-if="index === 0">已选{{ goodsInfo.length > 0 ? goodsInfo.length : 0 }}件商品</span>
-              <span v-if="index === 1">已选{{ busClass.length > 0 ? busClass.length : 0 }}个商家</span>
-              <span v-if="index === 2">已选{{ platClass.length > 0 ? platClass.length : 0 }}个平台</span>
+              <span v-if="index === 0">{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
+              <span v-if="index === 1">{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
+              <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span>
             </div>
           </div>
         </el-form-item>
@@ -309,21 +309,7 @@ export default {
         rebateRatio: null, // 间接比例
         firstRatio: null // 首单返利
       }],
-      // 分销商品
-      storeArr: [
-        {
-          name: '添加商品',
-          value: '1'
-        },
-        {
-          name: '添加商品分类',
-          value: '2'
-        },
-        {
-          name: '添加平台分类',
-          value: '3'
-        }
-      ],
+      storeArr: [], // 分销商品
       tuneUpChooseGoods: false, // 商品弹窗
       tuneUpBusClassDialog: false, // 商家/平台弹窗
       classFlag: 0, // 商家/平台类型
@@ -344,7 +330,13 @@ export default {
       submitStatus: false
     }
   },
+  watch: {
+    lang () {
+      this.storeArr = this.$t('distribution.storeArr')
+    }
+  },
   mounted () {
+    this.langDefault()
     this.initDataList()
     // 编辑初始化
     if (this.isEdite === true) {
@@ -476,10 +468,10 @@ export default {
             // 添加返利
             addPolicy(this.form).then((res) => {
               if (res.error === 0) {
-                this.$message.success({ message: '添加成功!' })
+                this.$message.success({ message: this.$t('distribution.addSuccess') })
                 this.$emit('addPolicySubmit')
               } else {
-                this.$message.warning({ message: '添加失败!' })
+                this.$message.warning({ message: this.$t('distribution.addFail') })
               }
             })
           } else {
@@ -488,10 +480,10 @@ export default {
             obj.id = this.editId
             editPolicy(obj).then((res) => {
               if (res.error === 0) {
-                this.$message.success({ message: '编辑成功!' })
+                this.$message.success({ message: this.$t('distribution.editSuccess') })
                 this.$emit('addPolicySubmit')
               } else {
-                this.$message.warning({ message: '编辑失败!' })
+                this.$message.warning({ message: this.$t('distribution.editFail') })
               }
             })
           }
@@ -502,7 +494,6 @@ export default {
 
     // 点击指定商品出现的添加类弹窗汇总
     hanldeToAddGoodS (index) {
-      console.log(index)
       switch (index) {
         case 0:
           this.tuneUpChooseGoods = !this.tuneUpChooseGoods

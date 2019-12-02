@@ -128,25 +128,6 @@
                 @click="startHandler(scope.row.id)"
               ></span>
             </el-tooltip>
-
-            <!-- <span
-              @click="editHandler(scope.row.id)"
-              class="option"
-            >编辑</span>
-            <span
-              @click="deleteHandler(scope.row.id)"
-              class="option"
-            >删除</span>
-            <span
-              @click="stopHandler(scope.row.id)"
-              v-if="scope.row.status === 1"
-              class="option"
-            >停用</span>
-            <span
-              @click="startHandler(scope.row.id)"
-              v-if="scope.row.status === 0"
-              class="option"
-            >启用</span> -->
           </template>
         </el-table-column>
       </el-table>
@@ -221,14 +202,14 @@ export default {
     // 添加
     addPolicy () {
       this.isEdite = false
-      this.showTabAddGroup('添加返利策略')
+      this.showTabAddGroup(this.$t('distribution.addRebateStrategy'))
     },
 
     // 编辑
     editHandler (id) {
       this.editId = id
       this.isEdite = true
-      this.showTabAddGroup('编辑返利策略')
+      this.showTabAddGroup(this.$t('distribution.editRebateStrategy'))
     },
 
     // 保存
