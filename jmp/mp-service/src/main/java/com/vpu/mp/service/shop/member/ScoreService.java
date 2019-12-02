@@ -185,9 +185,14 @@ public class ScoreService extends ShopBaseService {
 				
 				/** -判断是否为退款积分 */
 				if(param.getIsFromRefund() !=null && IS_FROM_REFUND_Y.val().equals(param.getIsFromRefund())) {
+					logger().info("正在处理退款积分");
 					userScoreRecord.setStatus(REFUND_SCORE_STATUS);
 					UserScoreRecord userScore = getScoreRecordByOrderSn(userId,orderSn);
-					userScoreRecord.setExpireTime(userScore.getExpireTime());
+					if(userScore != null) {
+						userScoreRecord.setScore(Math.abs(userScore.getScore()));
+						userScoreRecord.setUsableScore(Math.abs(userScore.getScore()));
+						userScoreRecord.setExpireTime(userScore.getExpireTime());
+					}
 				}else if(score < 0) {
 					userScoreRecord.setStatus(USED_SCORE_STATUS);
 				}else {
@@ -238,7 +243,6 @@ public class ScoreService extends ShopBaseService {
 	private UserScoreRecord getScoreRecordByOrderSn(Integer userId, String orderSn) {
 		 return db().selectFrom(USER_SCORE).where(USER_SCORE.USER_ID.eq(userId))
 					.and(USER_SCORE.ORDER_SN.eq(orderSn))
-					.and(USER_SCORE.SCORE.ge(0))
 					.orderBy(USER_SCORE.CREATE_TIME)
 					.fetchAnyInto(UserScoreRecord.class);
 	}
