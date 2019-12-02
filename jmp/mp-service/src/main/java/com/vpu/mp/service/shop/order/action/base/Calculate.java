@@ -160,7 +160,7 @@ public class Calculate extends ShopBaseService {
      */
     public void calculateCoupon(OrderBeforeParam param, OrderBeforeVo vo) {
         logger().info("获取可用优惠卷start");
-        if(!StringUtils.isBlank(param.getCouponSn()) && (vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType()))){
+        if((vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType()))){
             logger().info("该次下单可以用优惠卷，准备获取优惠卷");
             //可用优惠卷
             List<OrderCouponVo> coupons = coupon.getValidCoupons(param.getWxUserInfo().getUserId());
@@ -235,8 +235,6 @@ public class Calculate extends ShopBaseService {
             }
             vo.setCoupons(coupons);
             logger().info("获取可以优惠卷列表end,列表：{}，此次选择：{}", vo.getCoupons(), vo.getDefaultCoupon());
-        }else{
-            vo.setCouponSn(null);
         }
         logger().info("获取可以优惠卷列表end,列表：{}，此次选择：{}", vo.getCoupons(), vo.getDefaultCoupon());
     }
@@ -421,7 +419,7 @@ public class Calculate extends ShopBaseService {
         BigDecimal totalPrice = BigDecimalUtil.multiply(goodsPrice,BigDecimal.valueOf(totalNumber));
         BigDecimal totalWeight = BigDecimalUtil.multiply(goodWeight,BigDecimal.valueOf(totalNumber));
         try {
-            shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId,totalNumber , totalPrice, totalWeight);
+            shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId, totalNumber , totalPrice, totalWeight);
         }catch (MpException e){
             logger().debug("获取商品运费信息失败");
             e.printStackTrace();
