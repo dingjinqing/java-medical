@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.operation;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,12 +73,7 @@ public class RecordTradeService extends ShopBaseService{
 			/** 会员卡余额，兑换次数，消费次数变动 */
 			UserCardData userCardData = (UserCardData)data;
 			CardConsumpData cardConsumpData = new CardConsumpData();
-			FieldsUtil.assignNotNull(userCardData, cardConsumpData);
-			logger().info("userCardData: "+userCardData.toString());
-			logger().info("cardConsumpData: "+cardConsumpData.toString());
-			cardConsumpData.setCardNo(userCardData.getCardNo());
-			cardConsumpData.setUserId(userCardData.getUserId());
-			
+			BeanUtils.copyProperties(userCardData, cardConsumpData);
 			String language = userCardData.getLanguage();
 			memberCardService.updateMemberCardAccount(cardConsumpData,userCardData.getTradeOpt(),language);
 			
