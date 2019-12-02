@@ -397,11 +397,17 @@ public class Calculate extends ShopBaseService {
      * @author kdc
      */
     public BigDecimal calculateShippingFee(Integer userId,String lat,String lng,Integer goodsId,Integer templateId,Integer totalNumber,BigDecimal goodsPrice,BigDecimal goodWeight){
+        logger().debug("开始计算运费，输入 userId{},lat:{},lng:{},goodsId:{},templateId:{},totalNumber:{},goodsPrice:{},goodsWeight:{}",userId,lat,lng,goodsId,templateId,totalNumber,goodsPrice,goodWeight);
+
         AddressInfo userAddress = addressService.getGeocoderAddressInfo(lat, lng);
+        logger().debug("封装用户地址信息：{}",userAddress);
         Integer districtCode = addressService.getUserAddressDistrictId(userAddress);
+        logger().debug("获取用户地址区域code:{}",districtCode);
         if(districtCode==null){
+            logger().debug("获取用户最近订单地址");
             UserAddressVo lastOrderAddress = orderInfoService.getLastOrderAddress(userId);
             if (lastOrderAddress==null){
+                logger().debug("获取用户最近登录地址");
                 Integer userLoginRecordDistrictCode = userLoginRecordService.getUserLoginRecordDistrictCode(userId);
                 if (userLoginRecordDistrictCode!=null){
                     districtCode = userLoginRecordDistrictCode;
@@ -410,12 +416,14 @@ public class Calculate extends ShopBaseService {
                 districtCode =lastOrderAddress.getDistrictCode();
             }
         }
+        logger().debug("用地址code:{}",districtCode);
         BigDecimal shippingFeeByTemplate =BigDecimal.ZERO;
         BigDecimal totalPrice = BigDecimalUtil.multiply(goodsPrice,BigDecimal.valueOf(totalNumber));
         BigDecimal totalWeight = BigDecimalUtil.multiply(goodWeight,BigDecimal.valueOf(totalNumber));
         try {
             shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId,totalNumber , totalPrice, totalWeight);
         }catch (MpException e){
+            logger().debug("获取商品运费信息失败");
             e.printStackTrace();
         }
         return shippingFeeByTemplate;

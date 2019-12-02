@@ -100,7 +100,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
         goodsDetailMpBo.setGoodsVideoImg(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideoImg(),false));
 
         // 处理运费信息
-        Integer defaultNum  = goodsDetailMpBo.getLimitBuyNum() == 0? 1:goodsDetailMpBo.getLimitBuyNum();
+        Integer defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
         BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
         goodsDetailMpBo.setDeliverPrice(deliverPrice);
 
