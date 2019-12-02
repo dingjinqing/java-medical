@@ -269,7 +269,6 @@ public class Calculate extends ShopBaseService {
             //不使用会员卡
             List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), null);
             vo.setMemberCards(validCardList);
-            vo.setMemberCards(null);
         }
         logger().info("获取可用会员卡列表end,列表：{}，此次选择：{}", vo.getMemberCards(), vo.getDefaultMemberCard());
     }
