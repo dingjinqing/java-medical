@@ -317,7 +317,7 @@ public class ServiceOrderService extends ShopBaseService {
     public ServiceOrderTran checkBeforeCreate(ServiceOrderRecord param) {
         String orderSn = generateOrderSn();
         // 二次验证前端计算的应付金额是否正确,
-        BigDecimal moneyPaidSecondCheck = BIGDECIMAL_ZERO;
+        BigDecimal moneyPaidSecondCheck = param.getOrderAmount();
         // 订单总金额
         BigDecimal orderAmount = param.getOrderAmount();
         if (orderAmount.compareTo(storeService.getStoreService(param.getServiceId()).getServiceSubsist()) > INTEGER_ZERO) {
@@ -353,7 +353,7 @@ public class ServiceOrderService extends ShopBaseService {
                 setIsPaid(BYTE_ONE);
                 setRemark(orderSn);
             }};
-            moneyPaidSecondCheck = orderAmount.subtract(balance);
+            moneyPaidSecondCheck = moneyPaidSecondCheck.subtract(balance);
         }
         String cardNo = param.getMemberCardNo();
         if (org.apache.commons.lang3.StringUtils.isNotBlank(cardNo) && BigDecimalUtil.greaterThanZero(cardDis)) {
@@ -382,7 +382,7 @@ public class ServiceOrderService extends ShopBaseService {
                 .setReason(orderSn)
                 // 消费类型 :门店只支持普通卡0
                 .setType(MCARD_TP_NORMAL);
-            moneyPaidSecondCheck = orderAmount.subtract(cardDis);
+            moneyPaidSecondCheck = moneyPaidSecondCheck.subtract(cardDis);
         }
         if (!INTEGER_ZERO.equals(param.getCouponId())) {
             // todo 根据优惠券规则计算优惠券抵扣金额

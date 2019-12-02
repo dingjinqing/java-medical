@@ -15,4 +15,5 @@ public class StoreConstant {
     public static final Byte PAY_SUCCESS = BYTE_ONE;
     public static final String WAIT_TO_PAY_NAME = "待付款";
     public static final String PAY_SUCCESS_NAME = "已付款";
+    public static final String STORE_BUY = "门店买单";
 }

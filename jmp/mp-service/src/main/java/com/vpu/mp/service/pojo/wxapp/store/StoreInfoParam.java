@@ -30,10 +30,6 @@ public class StoreInfoParam {
     @Valid
     @NotNull(groups = {StoreConfirmPay.class})
     public StorePayOrderInfo orderInfo;
-    /**
-     * The Applet request source.小程序请求来源; 0:微信小程序 ,1:支付宝小程序...
-     */
-    public Byte appletRequestSource;
 
     /**
      * 客户端ip

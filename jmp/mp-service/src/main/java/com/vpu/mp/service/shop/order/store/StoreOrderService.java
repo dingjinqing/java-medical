@@ -219,6 +219,10 @@ public class StoreOrderService extends ShopBaseService {
             // 该门店已删除
             throw new BusinessException(JsonResultCode.CODE_STORE_ALREADY_DEL);
         }
+        // 订单金额
+        BigDecimal orderAmount = orderInfo.getOrderAmount();
+        // 应付金额
+        BigDecimal moneyPaid = BIGDECIMAL_ZERO;
         // 会员卡余额抵扣金额
         BigDecimal cardAmount = orderInfo.getCardAmount();
         // 会员卡折扣抵扣金额
@@ -242,14 +246,15 @@ public class StoreOrderService extends ShopBaseService {
             BigDecimal discount = record2.getValue(MEMBER_CARD.DISCOUNT);
             // 会员卡余额
             BigDecimal money = record2.getValue(USER_CARD.MONEY);
-            if (discount != null) {
+            if (BigDecimalUtil.greaterThanZero(discount)) {
                 // 计算会员卡折扣金额
-                BigDecimal cardDisAm = orderInfo.getOrderAmount().multiply((ONE.subtract(discount.divide(TEN, 2, RoundingMode.DOWN))));
+                BigDecimal cardDisAm = orderAmount.multiply((ONE.subtract(discount.divide(TEN, 2, RoundingMode.DOWN))));
                 if (cardDisAm.compareTo(cardDisAmount) != 0) {
                     log.debug("会员卡折扣抵扣金额【{}】计算有误【前端计算结果为：{}】", cardDisAm, cardDisAmount);
                     throw new BusinessException(JsonResultCode.CODE_FAIL);
                 }
                 log.debug("会员卡折扣金额:{}", cardDisAmount);
+                moneyPaid = orderAmount.subtract(cardDisAmount).setScale(2, RoundingMode.UP);
             }
             // 会员卡余额抵扣金额
             if (BigDecimalUtil.greaterThanZero(cardAmount)) {
@@ -270,6 +275,8 @@ public class StoreOrderService extends ShopBaseService {
                     .setReason(orderSn)
                     // 消费类型 :门店只支持普通卡0
                     .setType(MCARD_TP_NORMAL);
+                log.debug("会员卡余额抵扣金额:{}", cardAmount);
+                moneyPaid = moneyPaid.subtract(cardAmount).setScale(2, RoundingMode.UP);
             }
         }
         // 积分抵扣金额(积分数除以100就是积分抵扣金额数)
@@ -288,6 +295,8 @@ public class StoreOrderService extends ShopBaseService {
                 setOrderSn(orderSn);
                 setRemark(orderSn);
             }};
+            log.debug("积分抵扣金额:{}", scoreAmount);
+            moneyPaid = moneyPaid.subtract(scoreAmount).setScale(2, RoundingMode.UP);
         }
         // 余额抵扣金额
         if (BigDecimalUtil.greaterThanZero(balanceAmount)) {
@@ -308,14 +317,10 @@ public class StoreOrderService extends ShopBaseService {
                 setIsPaid(BYTE_ONE);
                 setRemark(orderSn);
             }};
+            log.debug("余额抵扣金额:{}", balanceAmount);
+            moneyPaid = moneyPaid.subtract(balanceAmount).setScale(2, RoundingMode.UP);
         }
         // 应付金额
-        BigDecimal moneyPaid = orderInfo.getOrderAmount()
-            .subtract(cardAmount)
-            .subtract(cardDisAmount)
-            .subtract(scoreAmount)
-            .subtract(balanceAmount)
-            .setScale(2, RoundingMode.UP);
         log.debug("应付金额:{}", moneyPaid);
         if (Objects.isNull(orderInfo.getMoneyPaid()) || orderInfo.getMoneyPaid().compareTo(moneyPaid) != 0) {
             // 应付金额计算错误
@@ -389,10 +394,6 @@ public class StoreOrderService extends ShopBaseService {
             log.debug("会员卡余额抵扣(实际抵扣金额[{}])成功!", userCard.getMoney());
         }
         if (Objects.nonNull(scoreParam)) {
-            TradeOptParam optParam = TradeOptParam.builder()
-                .tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
-                .tradeType(RecordTradeEnum.TYPE_CRASH_MEMBER_CARD_PAY.val())
-                .tradeSn(order.getOrderSn()).adminUserId(INTEGER_ZERO).build();
             try {
                 scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, RecordTradeEnum.TYPE_SCORE_PAY.val(), RecordTradeEnum.TRADE_FLOW_OUT.val());
             } catch (MpException e) {
@@ -443,7 +444,7 @@ public class StoreOrderService extends ShopBaseService {
                 return;
             }
             ScoreJson scoreJson = Util.json2Object(buyScoreConfig, ScoreJson.class, false);
-            BigDecimal totalMoney = orderInfo.getMoneyPaid().add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()).setScale(2, RoundingMode.DOWN);
+            BigDecimal totalMoney = orderInfo.getMoneyPaid().add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardRedunce()).setScale(2, RoundingMode.DOWN);
             //0：购物满多少送多少积分；1：购物每满多少送多少积分
             if (BYTE_ONE.equals(scoreJson.getOffset())) {
                 if (scoreJson.getPerGetScores().compareTo(ZERO) > 0 && scoreJson.getPerGoodsMoney().compareTo(ZERO) > 0) {

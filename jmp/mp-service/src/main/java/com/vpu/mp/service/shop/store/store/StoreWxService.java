@@ -54,8 +54,7 @@ import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.PAY_SUCCESS;
-import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.PAY_SUCCESS_NAME;
+import static com.vpu.mp.service.pojo.wxapp.store.StoreConstant.*;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
@@ -470,10 +469,10 @@ public class StoreWxService extends ShopBaseService {
             if (BigDecimalUtil.greaterThanZero(orderInfo.getMoneyPaid())) {
                 // todo 支付预留接口
                 String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
-                webPayVo.set(mpPaymentService.wxUnitOrder(param.getClientIp(), "", orderSn.get(), orderInfo.getMoneyPaid(), openId));
+                webPayVo.set(mpPaymentService.wxUnitOrder(param.getClientIp(), STORE_BUY, orderSn.get(), orderInfo.getMoneyPaid(), openId));
                 log.debug("微信支付接口调用结果：{}", webPayVo.get());
             } else {
-                // 跟新门店订单支付状态
+                // 更新门店订单支付状态
                 storeOrderService.updateRecord(STORE_ORDER.ORDER_SN.eq(orderSn.get()), new StoreOrderRecord() {{
                     setPayTime(Timestamp.valueOf(LocalDateTime.now()));
                     setOrderStatus(PAY_SUCCESS);
