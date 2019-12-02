@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.label.*;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
+import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectSeekStep2;
@@ -16,6 +17,7 @@ import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,12 +44,31 @@ public class GoodsLabelService extends ShopBaseService {
 
     @Autowired
     private EsDataUpdateMqService esDataUpdateMqService;
+    @Autowired
+    private EsGoodsLabelSearchService esGoodsLabelSearchService;
 
 
     public PageResult<GoodsLabelPageListVo> getPageList(GoodsLabelPageListParam param) {
         Condition condition = buildCondition(param);
         SelectSeekStep2<Record, Short, Timestamp> select = db().select().from(GOODS_LABEL).where(condition).orderBy(GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc());
-        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsLabelPageListVo.class);
+        PageResult<GoodsLabelPageListVo> resultPage = getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsLabelPageListVo.class);
+        if( !resultPage.getDataList().isEmpty() ){
+            assemblyGoodsNumberForEs(resultPage.getDataList());
+        }
+
+        return resultPage;
+    }
+    private void assemblyGoodsNumberForEs(List<GoodsLabelPageListVo> dataList){
+        List<Integer> ids = dataList.stream().map(GoodsLabelPageListVo::getId).collect(Collectors.toList());
+        try {
+            Map<Integer,Integer> numberMap = esGoodsLabelSearchService.getLabelForGoodsNumber(ids);
+            dataList.forEach(x->{
+                x.setGoodsNum(numberMap.getOrDefault(x.getId(),0));
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private Condition buildCondition(GoodsLabelPageListParam param) {
