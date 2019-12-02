@@ -174,12 +174,13 @@
             </div>
           </div>
           <el-form
-            label-width="100px"
+            label-width="113px"
             label-position="right"
             v-for="(item,index) in params.awardList"
             :key="index"
             class="order_form"
           >
+
             <el-form-item
               :label="'第'+(index+1)+'次支付奖励'"
               class="order"
@@ -221,68 +222,72 @@
             </el-form-item>
 
             <el-form-item
-              v-if=" item.giftType==='2'"
+              v-if="item.giftType==='2'"
               label="普通优惠券："
+              prop="awardList[index].ordinaryCoupon"
+              :rules="{
+                required: true
+              }"
             >
+              <!-- {{awardList[index].ordinaryCoupon}} -->
               <div class="middleContainer">
-                <div>
-                  <div
-                    v-for="(item,index) in item.ordinaryCoupon"
-                    :key="index"
-                    class="addInfo"
-                    prop="awardList[index].ordinaryCoupon"
-                    required
-                  >
-                    <!-- :rules="{
-                      required: true, message: '请选择普通优惠', trigger: 'blur'
-                    }" -->
-                    <section
-                      class="couponImgWrapper"
-                      style="line-height: normal"
-                    >
-                      <div
-                        class="coupon_list_top"
-                        v-if="item.actCode==='voucher'"
-                      >
-                        <span>￥</span>
-                        <span>{{item.denomination}}</span>
-                      </div>
-                      <div
-                        class="coupon_list_top"
-                        v-if="item.actCode==='discount'"
-                      >
-                        <span style="font-size: 20px">{{item.denomination}}</span>
-                        <span style="font-size: 14px">折</span>
-                      </div>
-                      <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                      <div class="coupon_center_number">剩余{{item.surplus}}张</div>
-                      <div
-                        class="coupon_list_bottom"
-                        style="font-size:12px"
-                      >
-                        <span v-if="item.scoreNumber === 0">领取</span>
-                        <div v-if="item.scoreNumber !== 0">
-                          <span>{{item.scoreNumber}}</span>积分 兑换
-                        </div>
-                      </div>
-                    </section>
-                    <span
-                      @click="deleteCouponImg(index)"
-                      class="deleteIcon"
-                    >×</span>
-                  </div>
-                  <div
-                    class="addInfo"
-                    @click="handleToCallDialog1(index)"
+                <div
+                  v-for="(item,index) in params.awardList[index].ordinaryCoupon"
+                  :key="index"
+                  class="addInfo clear"
+                  prop="awardList[index].ordinaryCoupon"
+                  required
+                >
+                  <section
+                    class="couponImgWrapper"
                     style="line-height: normal"
                   >
-                    <el-image
-                      fit="scale-down"
-                      :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                      style="width: 78px;height:78px;cursor:pointer"
-                    ></el-image>
-                    <p>添加优惠券</p>
-                  </div>
+                    <div
+                      class="coupon_list_top"
+                      v-if="item.actCode==='voucher'"
+                    >
+                      <span>￥</span>
+                      <span>{{item.denomination}}</span>
+                    </div>
+                    <div
+                      class="coupon_list_top"
+                      v-if="item.actCode==='discount'"
+                    >
+                      <span style="font-size: 20px">{{item.denomination}}</span>
+                      <span style="font-size: 14px">折</span>
+                    </div>
+                    <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                    <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                    <div
+                      class="coupon_list_bottom"
+                      style="font-size:12px"
+                    >
+                      <span v-if="item.scoreNumber === 0">领取</span>
+                      <div v-if="item.scoreNumber !== 0">
+                        <span>{{item.scoreNumber}}</span>积分 兑换
+                      </div>
+                    </div>
+                  </section>
+                  <span
+                    @click="deleteCouponImg(index, currentModelIndex)"
+                    class="deleteIcon"
+                  >×</span>
+                </div>
+
+                <div
+                  class="addInfo"
+                  @click="handleToCallDialog1(index)"
+                >
+                  <el-image
+                    fit="scale-down"
+                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                    style="width: 78px;height:78px;cursor:pointer"
+                  ></el-image>
+                  <p>添加优惠券</p>
+                  <AddCouponDialog
+                    @handleToCheck="addCouponHandle"
+                    :tuneUpCoupon="addCouponVisible"
+                  />
                 </div>
               </div>
               <div class="textTips">最多可以添加5张优惠券，已过期和已停用的优惠券不能添加</div>
@@ -292,6 +297,11 @@
             <el-form-item
               v-if=" params.awardList[index].giftType ==='3'"
               label="分裂优惠券："
+              prop="awardList[index].splitCoupon"
+              :rules="{
+                required: true, message:'请选择分裂优惠券'
+
+              }"
             >
               <div class="middleContainer">
                 <div
@@ -345,9 +355,9 @@
 
                 <div
                   class="addInfo"
-                  @click="handleToCallDialog2()"
+                  @click="handleToCallDialog2(index)"
                   style="line-height: normal"
-                  v-if="params.awardList[0].splitCoupon.length < 1"
+                  v-if="params.awardList[index].splitCoupon.length < 1"
                 >
                   <el-image
                     fit="scale-down"
@@ -410,34 +420,40 @@
                 class="addGoods"
                 @click="addGoods()"
               >+&nbsp;添加奖品</div>
-              <div v-if="true">
-                <table
-                  class="goods_modal"
-                  style="display: block;"
-                >
+              <div
+                v-if="true"
+                class="goods_modal"
+              >
+                <table>
                   <thead>
                     <tr style="background: #F8F8F8;">
-                      <th>商品名称</th>
-                      <th>价格</th>
-                      <th>库存</th>
-                      <th>操作</th>
+                      <th width="50%">商品名称</th>
+                      <th width="10%">价格</th>
+                      <th width="20%">库存</th>
+                      <th width="20%">操作</th>
                     </tr>
                   </thead>
                   <tbody class="tbody">
                     <tr>
                       <td>
-                        <div class="goods_img">
-                          <img :src="params.awardList.customImage">
-                        </div>
-                        <div
-                          class="goods_info clearfix"
-                          num="50"
-                          prd_id="5410"
-                        >
-                          <div class="goods_name">
-                            {{ params.awardList.goodsName}}
+                        <section style="overflow:hidden">
+                          <div
+                            class="goods_img"
+                            style="width:40px;height:40px; float: left"
+                          >
+                            <el-image
+                              :src="params.awardList.customImage"
+                              fit="contain"
+                              style="width:100%; height: 100%;"
+                            ></el-image>
                           </div>
-                        </div>
+                          <span
+                            class="goods_name"
+                            style="float: right;;"
+                          >
+                            {{ params.awardList.goodsName}}
+                          </span>
+                        </section>
                       </td>
                       <td>
                         ￥{{params.awardList.goodsPrice}}
@@ -446,13 +462,7 @@
                         {{ params.awardList.prdId}}
                       </td>
                       <td>
-                        <a
-                          href="##"
-                          item="5410"
-                          class="change_goods_del"
-                        >
-                          删除
-                        </a>
+                        上架
                       </td>
                     </tr>
                   </tbody>
@@ -462,10 +472,14 @@
             <el-form-item
               v-if="item.giftType==='6'"
               label="赠品有效期："
+              prop="awardList[idnex].keepDays"
+              :rules="{
+                required: true, message:'请输入赠品有效期', trigger: 'blur'
+              }"
             >
               <div>
                 <el-input
-                  v-model="item.keepDays"
+                  v-model="params.awardList[index].keepDays"
                   size="small"
                   style="width:100px"
                 ></el-input>
@@ -493,6 +507,10 @@
             <el-form-item
               v-if="item.giftType === '8' "
               label="活动图片："
+              prop="awardList[index].image"
+              :rules="{
+                required: true, message:'请选择活动图片', trigger: 'blur'
+              }"
             >
               <div style="display: flex">
                 <div
@@ -512,14 +530,18 @@
             <el-form-item
               v-if="item.giftType ==='8'"
               label="设置链接："
+              prop="awardList[index].customLink"
+              :rules="{
+                required: true, message: '请选择链接', trigger: 'blur'
+              }"
             >
               <el-input
-                v-model="item.customLink"
+                v-model="params.awardList[index].customLink"
                 size="small"
                 style="width:200px"
               ></el-input>
               <span
-                @click="chooseSelect"
+                @click="chooseSelect(index)"
                 class="selectLink"
               >选择链接</span>
             </el-form-item>
@@ -558,13 +580,12 @@
       </div>
     </div>
 
-    <!--添加普通优惠卷-->
-    <AddCouponDialog
+    <!-- 添加普通优惠卷 -->
+    <!-- <AddCouponDialog
       @handleToCheck="addCouponHandle"
       :tuneUpCoupon="addCouponVisible"
-      :couponBack="ordinaryCouponList"
-      :initCleanAllState="true"
-    />
+      :couponBack.sync="emptySelect"
+    /> -->
 
     <!--添加分裂优惠卷-->
     <AddCouponDialog
@@ -576,7 +597,6 @@
     />
 
     <!-- 选择商品弹窗 -->
-    <ChoosingGoods />
     <ChoosingGoods
       @resultGoodsIds='getGoodsIdFromChoosingGoods'
       :tuneUpChooseGoods='controlChoosingGoodsDialog'
@@ -680,6 +700,7 @@ export default {
       }
     }
     return {
+      emptySelect: '',
       idInfo: null,
       carouselList: [
         { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift1.jpg' },
@@ -709,12 +730,13 @@ export default {
       showCouponDialog: false,
       showCouponDialog2: false,
       couponIdList: [],
-      ordinaryCouponList: [],
       disCouponIdList: [],
       addCouponVisible: false, // 优惠券
       addDisCouponVisible: false, // 分裂优惠券
       currentPage1: 1,
-      currentModelIndex: 0,
+      currentModelIndex: 0, // 优惠券索引
+      currentDisCouponIndex: 0, // 分裂优惠券索引
+      currentLinkIndex: 0, // 选择链接索引
       totalRows: null,
       dialogFlag: 1,
       imgHost: `${this.$imageHost}`,
@@ -733,6 +755,7 @@ export default {
         minPayMoney: '', // 最少支付金额
         limitTimes: '', // 每个用户参与次数
         lotteryId: '', // 下拉框
+        // ordinaryCouponList: [],
 
         awardList: [
           {
@@ -750,7 +773,9 @@ export default {
             ordinaryCoupon: [],
             // 分裂优惠券
             splitCoupon: [],
-            couponList: []
+            ordinaryCouponList: [],
+            couponList: [], // 页面优惠券
+            ordinaryCouponDialogList: [] // 弹窗优惠券
           }
         ]
       },
@@ -791,6 +816,8 @@ export default {
         'awardNumber': '',
         'ordinaryCoupon': [],
         'splitCoupon': [],
+        'ordinaryCouponList': [],
+        'ordinaryCouponDialogList': [],
         'couponList': [
           {
             'actCode': '',
@@ -805,9 +832,10 @@ export default {
       }
       if (this.params.awardList.length < 5) {
         this.params.awardList.push(obj)
+        // this.addCouponVisible.push(false)
         console.log(this.params.awardList)
       } else {
-        alert('最多可添加5个规则！')
+        this.$message.warning('最多可添加5个规则！')
       }
     },
     // 删除奖励
@@ -820,6 +848,8 @@ export default {
     // 普通优惠券弹窗调起
     handleToCallDialog1 (currentIndex) {
       console.log(currentIndex, 'currentIndex')
+      // const isShow = !this.addCouponVisible[currentIndex]
+      // this.$set(this.addCouponVisible, currentIndex, isShow)
       this.addCouponVisible = !this.addCouponVisible
       this.currentModelIndex = currentIndex
     },
@@ -828,27 +858,44 @@ export default {
       console.log('log awardList:', this.currentModelIndex, this.params.awardList, this.params.awardList[this.currentModelIndex].ordinaryCoupon)
       // if (this.params.awardList[this.currentModelIndex].ordinaryCoupon.length >= 5) {
       // } else {
+      // this.params.awardList[this.currentModelIndex].ordinaryCoupon = data
+      // if (this.params.awardList[this.currentModelIndex].ordinaryCoupon) {
       this.params.awardList[this.currentModelIndex].ordinaryCoupon = data
+      // } else {
+      //   return []
       // }
+      // }
+      console.log(this.params.awardList[this.currentModelIndex].ordinaryCoupon)
     },
     // 删除普通优惠券
-    deleteCouponImg (index) {
-      let added = this.params.awardList[0].ordinaryCoupon.map(item => item.id)
-      this.ordinaryCouponList = added
-      // 删除之后优惠券弹框的展示
-      this.ordinaryCouponList.splice(index, 1)
-      // 删除之后优惠券的展示
-      this.params.awardList[0].ordinaryCoupon.splice(index, 1)
+    deleteCouponImg (index, currentIndex) {
+      console.log(index, 'index')
+      console.log(this.currentModelIndex, 'currentModlIndex')
+
+      console.log(this.params.awardList[this.currentModelIndex], '初始数据')
+      let added = this.params.awardList[currentIndex].ordinaryCoupon.map(item => item.id)
+      // console.log(added, 'added')
+
+      this.params.awardList[currentIndex].ordinaryCouponList = added
+      // console.log(this.params.awardList[currentIndex].ordinaryCouponList, 'ordinaryCouponList----')
+
+      // // 删除之后优惠券弹框的展示
+      this.params.awardList[currentIndex].ordinaryCouponList.splice(index, 1)
+      // console.log(this.params.awardList[currentIndex].ordinaryCouponList, 'delete')
+      // // 删除之后优惠券的展示
+      this.params.awardList[currentIndex].ordinaryCoupon.splice(index, 1)
+      // console.log(this.params.awardList[currentIndex].ordinaryCoupon, this.params.awardList[currentIndex], currentIndex, 'this.params')
     },
 
     // 分裂优惠券弹窗调起
-    handleToCallDialog2 () {
+    handleToCallDialog2 (receiveCurrentDisCouponIndex) {
       this.showCouponDialog2 = !this.showCouponDialog2
+      this.currentDisCouponIndex = receiveCurrentDisCouponIndex
     },
     // 分裂优惠券处理
     addDisCouponHandle (disCouponData) {
       console.log(disCouponData, 'disCouponData')
-      this.params.awardList[0].splitCoupon = disCouponData
+      this.params.awardList[this.currentDisCouponIndex].splitCoupon = disCouponData
       // console.log(data)
     },
 
@@ -917,15 +964,17 @@ export default {
     },
 
     // 调起链接弹窗
-    chooseSelect () {
+    chooseSelect (current) {
       this.tuneUpSelectLinkDialog = !this.tuneUpSelectLinkDialog
+      console.log(current, 'current')
+      this.currentLinkIndex = current
     },
 
     // 链接数据选中回传
-    handleToSelectLinkPath (link, index) {
+    handleToSelectLinkPath (link) {
       console.log(link, 'link')
-      this.params.awardList[index].customLink = link
-      console.log(this.params.awardList.customLink)
+      this.params.awardList[this.currentLinkIndex].customLink = link
+      console.log(this.params.awardList[this.currentLinkIndex].customLink)
     },
 
     // 活动图片弹窗调起
@@ -1186,6 +1235,9 @@ export default {
           color: #999;
           margin-top: 10px;
           font-size: 12px;
+          clear: both;
+          display: block;
+          content: "";
         }
         .addGoods {
           width: 120px;
@@ -1200,10 +1252,7 @@ export default {
         // 添加表格奖品样式
         .goods_modal {
           display: block;
-          border: none;
           margin-top: 10px;
-          margin-bottom: 0;
-          margin-left: 80px;
           th {
             padding: 10px 0;
             border: 1px solid #eee;
@@ -1234,79 +1283,78 @@ export default {
           color: #999;
         }
         .middleContainer {
-          display: flex;
-          .deleteIcon {
-            position: relative;
-            width: 17px !important;
-            height: 17px;
-            line-height: 17px;
-            top: -118px;
-            left: 45px;
+          .addInfo {
+            float: left;
+            width: 100px;
+            height: 101px;
+            margin-bottom: 10px;
+            background: #fff;
+            border: 1px solid #e4e4e4;
+            margin-right: 20px;
             cursor: pointer;
-            opacity: 0.8;
-            color: #fff;
-            background: #ccc;
-            border: 1px solid #ccc;
-            border-radius: 50%;
             text-align: center;
-          }
-        }
-        .addInfo {
-          display: inline-block;
-          position: relative;
-          width: 100px;
-          height: 101px;
-          margin-bottom: 10px;
-          background: #fff;
-          border: 1px solid #e4e4e4;
-          margin-right: 20px;
-          cursor: pointer;
-          text-align: center;
-          img {
-            margin-top: 10px;
-          }
-          p {
-            line-height: normal;
-            margin-top: -30px;
-            color: #999;
-          }
-          .couponImgWrapper {
-            width: 100%;
-            height: 100%;
-            border: 1px solid #fbb;
-            border-radius: 10px;
-            .coupon_list_top {
+            img {
               margin-top: 10px;
-              color: #f60;
-              span {
-                font-weight: bold;
-              }
-              :nth-of-type(2) {
-                font-size: 20px;
-                font-weight: bold;
-              }
             }
-            .coupon_center_limit {
-              height: 20px;
-              color: #f60;
-              font-size: 12px !important;
+            p {
+              line-height: normal;
+              margin-top: -30px;
+              color: #999;
             }
-            .coupon_center_number {
-              height: 20px;
-              color: #fbb;
-            }
-            .coupon_list_bottom {
-              height: 24px;
-              line-height: 30px;
-              border-bottom-left-radius: 8px;
-              border-bottom-right-radius: 8px;
+            .deleteIcon {
+              position: relative;
+              width: 17px !important;
+              height: 17px;
+              line-height: 17px;
+              top: -118px;
+              left: 45px;
+              cursor: pointer;
+              opacity: 0.8;
               color: #fff;
-              background: #f66;
-              background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
-              background-repeat: repeat-x;
+              background: #ccc;
+              border: 1px solid #ccc;
+              border-radius: 50%;
+              text-align: center;
+            }
+            .couponImgWrapper {
+              width: 100%;
+              height: 100%;
+              border: 1px solid #fbb;
+              border-radius: 10px;
+              .coupon_list_top {
+                margin-top: 10px;
+                color: #f60;
+                span {
+                  font-weight: bold;
+                }
+                :nth-of-type(2) {
+                  font-size: 20px;
+                  font-weight: bold;
+                }
+              }
+              .coupon_center_limit {
+                height: 20px;
+                color: #f60;
+                font-size: 12px !important;
+              }
+              .coupon_center_number {
+                height: 20px;
+                color: #fbb;
+              }
+              .coupon_list_bottom {
+                height: 24px;
+                line-height: 30px;
+                border-bottom-left-radius: 8px;
+                border-bottom-right-radius: 8px;
+                color: #fff;
+                background: #f66;
+                background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+                background-repeat: repeat-x;
+              }
             }
           }
         }
+
         .selectLink {
           background-color: #fff;
           width: 80px;
