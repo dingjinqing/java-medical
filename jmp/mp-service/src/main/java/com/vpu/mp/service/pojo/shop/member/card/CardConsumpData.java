@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.member.card;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.ToString;
 
 /**
 * @author 黄壮壮
@@ -10,6 +11,7 @@ import lombok.Getter;
 * @Description: 会员卡消费数据 
 */
 @Getter
+@ToString
 public class CardConsumpData {
 	/** 会员id */
 	private Integer userId;

@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
 * @author 黄壮壮
@@ -16,6 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder(builderMethodName = "newBuilder")
+@ToString
 public class UserCardData extends BaseData {
 	/** 交易操作数据 */
 	protected TradeOptParam tradeOpt;
