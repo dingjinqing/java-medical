@@ -449,6 +449,7 @@ import actShare from '@/components/admin/marketManage/marketActivityShareSetting
 import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
 import { addGroupBuyActivity, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
+import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 // import couponStyles from './couponStyle_s'
 
 export default {
@@ -532,6 +533,9 @@ export default {
       // 优惠卷弹窗
       couponDialogFlag: false,
       couponList: [],
+
+      rewardCouponList: [],
+      rewardCouponIds: [],
       // 时间控件
       pickerOptions: {
         shortcuts: [{
@@ -573,10 +577,11 @@ export default {
           img_2: this.$imageHost + '/image/admin/hid_some.png'
         }
       ],
-      rewardCouponList: [],
+
       imgHost: `${this.$imageHost}`,
       showCouponDialog: false,
       couponIdList: [],
+
       activeIndex: 0
     }
   },
@@ -633,9 +638,7 @@ export default {
         this.form.goodsId = data.goodsId
         this.getGoodsInfo(data.goodsId)
         this.form.isGrouperCheap = data.isGrouperCheap
-
         this.form.product = data.productList
-
         this.form.startTime = data.startTime
         this.form.endTime = data.endTime
         this.form.validityDate = [data.startTime, data.endTime]
@@ -646,7 +649,11 @@ export default {
         this.form.openLimit = data.openLimit
         this.form.isDefault = data.isDefault
         this.form.shippingType = data.shippingType
-        this.form.rewardCouponId = data.rewardCouponId
+        if (data.rewardCouponId) {
+          this.form.rewardCouponId = data.rewardCouponId.split(',')
+          this.rewardCouponIds = data.rewardCouponId.split(',')
+          this.getCouponList(this.rewardCouponIds.map(Number))
+        }
         this.form.share = data.share
       }
     },
@@ -661,9 +668,25 @@ export default {
       })
     },
 
+    // 获取优惠券信息
+    getCouponList (ids) {
+      this.rewardCouponList = []
+      ids.map((item, index) => {
+        updateCoupon(item).then((res) => {
+          if (res.error === 0) {
+            this.rewardCouponList.push(res.content[0])
+          }
+        })
+      })
+      this.couponIdList = this.getCouponIdsArray(this.rewardCouponList)
+    },
+
     // 提交表单
     submitForm (formName) {
       this.submitStatus = true
+      if (this.rewardCouponIds) {
+        this.form.rewardCouponId = this.rewardCouponIds.join(',')
+      }
       this.$refs['form'].validate((valid) => {
         console.log('提交表单', formName)
         console.log('this.form', this.form)
@@ -722,22 +745,26 @@ export default {
     },
     // 确认选择优惠券-新增
     handleToCheck (data, index) {
-      console.log(data)
-      console.log(this.rewardCouponList)
-      if (this.rewardCouponList.length >= 5) {
-
-      } else {
+      if (this.rewardCouponList.length < 5) {
         this.rewardCouponList = data
+        this.rewardCouponIds = []
+        this.rewardCouponList.map((item, index) => {
+          this.rewardCouponIds.push(item.id)
+        })
+      } else {
+        this.$message.warning('优惠券不能超过五张')
+        return false
       }
     },
     // 删除鼓励奖优惠券图片
     deleteCouponImg (index) {
       this.rewardCouponList.splice(index, 1)
+      this.rewardCouponIds.splice(index, 1)
     },
     // 选择优惠券弹窗-砍价失败后向买家赠送
     handleToCallDialog () {
-      this.couponIdList = this.getCouponIdsArray(this.rewardCouponList)
       this.showCouponDialog = !this.showCouponDialog
+      this.couponIdList = this.getCouponIdsArray(this.rewardCouponList)
     },
     getCouponIdsArray (data) {
       let res = []
