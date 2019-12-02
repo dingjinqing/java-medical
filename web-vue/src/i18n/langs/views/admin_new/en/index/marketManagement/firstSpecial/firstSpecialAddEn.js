@@ -5,6 +5,7 @@ export const en = {
   expired: 'expired',
   terminated: 'terminated',
   addActive: 'Add the first special offer',
+  editActive: 'Edit first special offer',
   description: 'Description',
   des1: '1. The first special price is only visible to users who have not paid for any items in the store. The old user will display the current price of the item when viewing the first special item. ',
   des2: '2. The first special offer is recommended in conjunction with the "Open Screen Gifts - Custom" campaign.',

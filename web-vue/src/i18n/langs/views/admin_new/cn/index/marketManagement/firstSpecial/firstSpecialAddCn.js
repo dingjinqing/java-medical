@@ -5,6 +5,7 @@ export const cn = {
   expired: '已过期',
   terminated: '已停用',
   addActive: '添加首单特惠活动',
+  editActive: '编辑首单特惠活动',
   description: '说明',
   des1: '1.首单特惠价格仅“未在店铺内支付购买过任何商品”的用户可见，老用户查看首单特惠商品时将显示商品的当前价格。',
   des2: '2.首单特惠活动建议与“开屏有礼-自定义”活动配合开展',

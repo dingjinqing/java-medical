@@ -27,7 +27,7 @@
             name="4"
           ></el-tab-pane>
           <el-tab-pane
-            :label="$t('firstSpecialAdd.addActive')"
+            :label="tabName"
             name="5"
           ></el-tab-pane>
         </el-tabs>
@@ -534,12 +534,14 @@ export default {
           { validator: validateTime }
         ],
         first: { required: true, message: this.$t('firstSpecialAdd.validFirst') }
-      }
+      },
+      tabName: this.$t('firstSpecialAdd.addActive')
     }
   },
   created () {
     if (this.$route.query.id) {
       this.isEditFlag = true
+      this.tabName = this.$t('firstSpecialAdd.editActive')
       this.initEditData()
     }
   },
@@ -563,10 +565,11 @@ export default {
           if (datas.startTime && datas.endTime) {
             _this.form.timeInterval = [datas.startTime, datas.endTime]
           }
+          let goodsIdList = []
           _this.tableData = datas.firstSpecialGoods.map(function (item, i) {
-            item.firstSpecialProduct.forEach(function (d) {
-              console.log(d)
-            })
+            // item.firstSpecialProduct.forEach(function (d) {
+            //   console.log(d)
+            // })
             let rowData = Object.assign({
               id: item.id,
               goodsId: item.goodsId,
@@ -576,8 +579,10 @@ export default {
               goodsProductParams: item.firstSpecialProduct,
               unit: item.goods
             }, item.goodsView)
+            goodsIdList.push(item.goodsId)
             return rowData
           })
+          _this.goodsIdList = goodsIdList
           if (datas.limitAmount > 0) {
             _this.limit = 1
           }
