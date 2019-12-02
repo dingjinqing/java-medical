@@ -71,10 +71,9 @@
           />
           <el-table-column
             align="center"
+            prop="goodsNum"
             :label="$t('allGoodsLabel.goodsNumber')"
-          >
-            php查询了es,目前未实现
-          </el-table-column>
+          />
           <el-table-column
             align="center"
             :label="$t('allGoodsLabel.operate')"
