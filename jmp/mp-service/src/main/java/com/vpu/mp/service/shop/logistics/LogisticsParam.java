@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author liufei
@@ -20,28 +21,7 @@ public class LogisticsParam {
     @JsonProperty(value = "can_get_quota")
     private byte canGetQuota;
     @JsonProperty(value = "service_type")
-    private List<ServiceType> serviceType;
-
-    public class ServiceType {
-        @JsonProperty(value = "service_type")
-        private int serviceType;
-        @JsonProperty(value = "service_name")
-        private String serviceName;
-
-        public int getServiceType() {
-            return serviceType;
-        }
-
-        public void setServiceType(int serviceType) {
-            this.serviceType = serviceType;
-        }
-
-        public String getServiceName() {
-            return serviceName;
-        }
-
-        public void setServiceName(String serviceName) {
-            this.serviceName = serviceName;
-        }
-    }
+    private List<Map<String, ?>> serviceType;
+    @JsonProperty(value = "cash_biz_id")
+    private String cashBizId;
 }
