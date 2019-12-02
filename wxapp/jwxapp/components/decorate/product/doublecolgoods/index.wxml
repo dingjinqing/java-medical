@@ -17,7 +17,7 @@
             </view>
         </view>
 
-        <view class='product-price'>
+        <view class='product-price' style="{{!m.hide_price?'justify-content:flex-end':''}}">
           <block wx:if="{{m.hide_price == 1}}">
             <view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{main_setting.comColor}};'>￥{{item.realPrice===null?"0.00":item.realPrice}}</view>
             <view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{main_setting.comColor}};'>￥{{item.shopPrice}}</view>
@@ -25,12 +25,15 @@
           <block wx:if="{{ m.other_message===1}}">
               <view class='market_price' wx:if="{{item.linePrice  && item.linePrice != '0.00'}}">￥{{item.linePrice}}</view>
           </block>
+          <!--
           <block wx:if="{{m.cart_btn == 1 && item.activityType != 10}}">
               <text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{main_setting.comColor}}' wx:if="{{m.cart_btn_choose == 0}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
               <text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{main_setting.comColor}}' wx:if="{{m.cart_btn_choose == 1}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
               <text class='cart_btn right_buy_btn' style='background:{{main_setting.comColor}};bottom:30rpx' wx:if="{{m.cart_btn_choose == 2}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}</text>
               <text class='cart_btn cart_buy_btn' style='color:{{main_setting.comColor}};border:1px solid {{main_setting.comColor}};bottom:24rpx' wx:if="{{m.cart_btn_choose ==3}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.purchase')}}</text>
             </block>
+          -->
+          
         </view>
 
       </view>
