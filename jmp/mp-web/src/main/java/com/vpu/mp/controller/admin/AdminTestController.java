@@ -32,8 +32,8 @@ public class AdminTestController extends AdminBaseController {
 	@RequestMapping(value = "/api/admin/test/addtemplate")
 	public JsonResult addtemplate() throws Exception {
 		String appId = "wxbb38922409fdaa24";
-		String tid = "274";
-		int[] kidList = { 1, 3, 4 };
+		String tid = "1116";
+		int[] kidList = { 1, 2, 3 };
 		String sceneDesc = "模板描述";
 		WxOpenMaSubscribeAddTemplateResult result = open.getMaExtService().addTemplate(appId, tid, kidList, sceneDesc);
 		return success(result);
