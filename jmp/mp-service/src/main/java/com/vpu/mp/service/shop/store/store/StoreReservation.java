@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CommentServiceRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -207,6 +208,12 @@ public class StoreReservation extends ShopBaseService {
      */
     @Autowired
     public ProvinceService provinceService;
+
+    /**
+     * The Domain config.
+     */
+    @Autowired
+    public DomainConfig domainConfig;
 
     /**
      * The constant HH_MM_FORMATTER.
@@ -651,6 +658,8 @@ public class StoreReservation extends ShopBaseService {
             imgs = Util.json2Object(e.getServiceImg(), new TypeReference<List<String>>() {
             }, false);
             e.setServiceImg(CollectionUtils.isNotEmpty(imgs) ? imgs.get(0) : StringUtils.EMPTY);
+            // 图片加域名处理
+            e.setServiceImg(domainConfig.imageUrl(e.getServiceImg()));
             if (commentService.isComment(e.getOrderSn())) {
                 e.setFlag(BYTE_ONE);
             }
