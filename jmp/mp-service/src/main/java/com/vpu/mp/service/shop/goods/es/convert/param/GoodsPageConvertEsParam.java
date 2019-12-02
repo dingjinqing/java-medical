@@ -83,7 +83,7 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
             propertyList.add(new FieldProperty(EsSearchName.GOODS_TYPE,param.getGoodsType()));
         }
         if(StringUtils.isNotBlank(param.getGoodsName()) ){
-            propertyList.add(new FieldProperty(EsSearchName.GOODS_NAME,param.getGoodsName()));
+            propertyList.add(new FieldProperty(EsSearchName.GOODS_NAME,param.getGoodsName(),Operator.SIM));
         }
         if( null != param.getIsOnSale() ){
             propertyList.add(new FieldProperty(EsSearchName.IS_ON_SALE,param.getIsOnSale()));

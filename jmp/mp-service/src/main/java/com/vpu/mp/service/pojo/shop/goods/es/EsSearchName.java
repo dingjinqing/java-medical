@@ -77,6 +77,7 @@ public interface EsSearchName {
     String MIN_SPEC_PRD_PRICE = "min_spec_prd_price" ;
     String UPDATE_TIME = "update_time" ;
     String ADD_ES_TIME = "add_es_time";
+    String FREIGHT_TEMPLATE_ID = "freight_template_id";
 
 
 

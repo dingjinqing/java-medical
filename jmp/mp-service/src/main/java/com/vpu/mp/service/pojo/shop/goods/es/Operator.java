@@ -7,5 +7,28 @@ package com.vpu.mp.service.pojo.shop.goods.es;
  *
 */
 public enum Operator {
-    GT,LT,GTE,LTE,EQ;
+    /**
+     * greater than
+     */
+    GT,
+    /**
+     * less than
+     */
+    LT,
+    /**
+     * greater than or equals
+     */
+    GTE,
+    /**
+     * less than or equals
+     */
+    LTE,
+    /**
+     * equals
+     */
+    EQ,
+    /**
+     * similar(fuzzy query)
+     */
+    SIM;
 }

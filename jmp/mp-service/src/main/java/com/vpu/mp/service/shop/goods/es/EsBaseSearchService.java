@@ -216,6 +216,7 @@ public class EsBaseSearchService extends ShopBaseService {
         if( param.isQueryByPage() ){
             Integer totalRow =  assemblyPage(sourceBuilder,indexName);
             Page page = Page.getPage(totalRow,param.getCurrentPage(),param.getPageRows());
+            result.setPage(page);
             Integer size = page.getPageRows();
             Integer from = (page.getCurrentPage()-1)*size;
             if( from > page.getTotalRows() ){

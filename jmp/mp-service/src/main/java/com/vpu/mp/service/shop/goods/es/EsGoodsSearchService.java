@@ -28,6 +28,7 @@ public class EsGoodsSearchService extends EsBaseSearchService{
 
         Integer shopId = getShopId();
         EsSearchParam param = goodsParamConvertEsGoodsParam(goodsPageListParam,shopId);
+        param.setQueryByPage(Boolean.TRUE);
         PageResult<EsGoods> pageResult = searchGoodsPageByParam(param);
         return esPageConvertVoPage(pageResult);
     }

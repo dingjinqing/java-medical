@@ -2,6 +2,7 @@ package com.vpu.mp.thread.es;
 
 import com.github.fonimus.ssh.shell.SshShellHelper;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.saas.SaasApplication;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,15 @@ public class EsThreadConfig {
 
     @Async("esAsyncExecutor")
     public void doIndexByShopId(Integer shopId) {
-        List<Integer> list = saas.getShopApp(shopId).goods.getAllGoodsId();
+        List<Integer> list;
+        try{
+           //some db maybe don't exist
+           list  = saas.getShopApp(shopId).goods.getAllGoodsId();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ;
+        }
+
 
 //        List<Integer> list = new ArrayList<>();
 //        for (int a = 0; a < 125000; a++) {

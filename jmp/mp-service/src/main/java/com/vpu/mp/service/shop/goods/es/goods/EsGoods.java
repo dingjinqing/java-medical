@@ -314,4 +314,10 @@ public class EsGoods  {
      * 视频信息(JSON字符串包含：url,image,size,width,height,id)
      */
     private String videoInfo;
+
+    /**
+     * 运费模版id
+     */
+    @EsFiled(name = EsSearchName.FREIGHT_TEMPLATE_ID,type = EsFiledTypeConstant.INTEGER,doc_values = false)
+    private Integer freightTemplateId;
 }

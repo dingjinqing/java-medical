@@ -1,5 +1,6 @@
 package com.vpu.mp.service.foundation.es.handler;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import org.elasticsearch.index.query.*;
@@ -24,13 +25,40 @@ public class EsQueryBuilderHandler {
      */
     public BoolQueryBuilder assemblySearchBuilder(List<FieldProperty> propertyList ) {
         BoolQueryBuilder resultQueryBuilder = QueryBuilders.boolQuery();
-        List<MatchQueryBuilder> matchQueryBuilders = assemblyMatchQueryBuilder(propertyList);
-        List<RangeQueryBuilder> rangeQueryBuilders = assemblyRangeQueryBuilder(propertyList);
-        if( matchQueryBuilders != null && !matchQueryBuilders.isEmpty() ){
+        List<TermQueryBuilder> termQueryBuilders = Lists.newArrayList();
+        List<MatchQueryBuilder> matchQueryBuilders = Lists.newArrayList();
+        List<RangeQueryBuilder> rangeQueryBuilders = Lists.newArrayList();
+        for( FieldProperty x: propertyList ) {
+            //elasticSearch查询优化,对filter query进行cache
+            if( "shop_id".equals(x.getSearchName()) ){
+                resultQueryBuilder.filter(QueryBuilders.termQuery(x.getSearchName(),x.getValue()));
+                continue;
+            }
+
+            if( x.getOperator().equals(Operator.EQ) ){
+                termQueryBuilders.add(QueryBuilders.termQuery(x.getSearchName(),x.getValue()));
+            }else if( x.getOperator().equals(Operator.SIM) ){
+                matchQueryBuilders.add(QueryBuilders.matchQuery(x.getSearchName(),x.getValue()));
+            }else if( x.getOperator().equals(Operator.LT) ){
+                rangeQueryBuilders.add(QueryBuilders.rangeQuery(x.getSearchName()).lt(x.getValue()));
+            }else if( x.getOperator().equals(Operator.LTE) ){
+                rangeQueryBuilders.add(QueryBuilders.rangeQuery(x.getSearchName()).lte(x.getValue()));
+            }else if( x.getOperator().equals(Operator.GT) ){
+                rangeQueryBuilders.add(QueryBuilders.rangeQuery(x.getSearchName()).gt(x.getValue()));
+            }else if( x.getOperator().equals(Operator.GTE) ){
+                rangeQueryBuilders.add(QueryBuilders.rangeQuery(x.getSearchName()).gte(x.getValue()));
+            }
+        }
+
+
+        if(!matchQueryBuilders.isEmpty()){
             matchQueryBuilders.forEach(resultQueryBuilder::must);
         }
-        if( rangeQueryBuilders != null && !rangeQueryBuilders.isEmpty() ){
-            rangeQueryBuilders.forEach(resultQueryBuilder::filter);
+        if(!termQueryBuilders.isEmpty()){
+            termQueryBuilders.forEach(resultQueryBuilder::must);
+        }
+        if(!rangeQueryBuilders.isEmpty()){
+            rangeQueryBuilders.forEach(resultQueryBuilder::must);
         }
 
         return resultQueryBuilder;

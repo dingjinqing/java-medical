@@ -223,6 +223,7 @@ public class EsAssemblyDataService extends ShopBaseService {
     private EsGoods assemblyEsGoods(GoodsRecord goods, Integer shopId) {
         EsGoods esGoods = new EsGoods();
         BeanUtils.copyProperties(goods, esGoods);
+        esGoods.setFreightTemplateId(goods.getDeliverTemplateId());
         esGoods.setShopId(shopId);
         esGoods.setGoodsImg(imageService.imageUrl(goods.getGoodsImg()));
         esGoods.setAddEsDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, new Date()));
