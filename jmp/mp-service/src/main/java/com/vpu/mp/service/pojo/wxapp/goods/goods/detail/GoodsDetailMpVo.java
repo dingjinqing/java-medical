@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
+import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import java.util.List;
 public class GoodsDetailMpVo extends GoodsBaseMp {
 
     //************ElasticSearch中的数据**************start
-    /**幅图集合*/
+    /**图片集合*/
     private List<String> goodsImgs = new ArrayList<>();
     private String goodsVideo;
     private String goodsVideoImg;
@@ -68,4 +69,14 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     List<MemberCardDetailMpVo> memberCards;
     /** 详情页所指定的营销活动 */
     private GoodsActivityBaseMp activity;
+
+    //**********服务承诺
+    /**
+     * 服务承诺是否开启
+     */
+    private Integer pledgeSwitch;
+    /**
+     * 服务承诺信息
+     */
+    private  List<PledgeInfo> pledgeList;
 }

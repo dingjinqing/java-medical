@@ -421,13 +421,10 @@ public class Calculate extends ShopBaseService {
         BigDecimal totalPrice = BigDecimalUtil.multiply(goodsPrice,BigDecimal.valueOf(totalNumber));
         BigDecimal totalWeight = BigDecimalUtil.multiply(goodWeight,BigDecimal.valueOf(totalNumber));
         try {
-            shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId, totalNumber, totalPrice, totalWeight);
-        } catch (MpException e) {
+            shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId,totalNumber , totalPrice, totalWeight);
+        }catch (MpException e){
             logger().debug("获取商品运费信息失败");
             e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
         }
         return shippingFeeByTemplate;
     }

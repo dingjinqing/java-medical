@@ -252,7 +252,9 @@ public class GoodsMpService extends ShopBaseService {
     public GoodsDetailMpVo getGoodsDetailMp(GoodsDetailMpParam param) {
         GoodsDetailMpBo goodsDetailMpBo;
         try {
+           log.debug("尝试es获取商品详情");
             goodsDetailMpBo = esGoodsSearchMpService.queryGoodsById(param.getGoodsId());
+            log.debug("商品详情信息 {}",goodsDetailMpBo);
             // 商品已删除，在es内不存在
             if (goodsDetailMpBo == null) {
                 goodsDetailMpBo = new GoodsDetailMpBo();
@@ -260,7 +262,9 @@ public class GoodsMpService extends ShopBaseService {
                 return goodsDetailMpBo;
             }
         } catch (Exception e) {
+            log.debug("尝试DB获取商品详情");
             goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
+            log.debug("商品详情信息 {}",goodsDetailMpBo);
             // 商品从数据库内查询，但是数据已经被删除
             if (goodsDetailMpBo==null) {
                 goodsDetailMpBo = new GoodsDetailMpBo();
