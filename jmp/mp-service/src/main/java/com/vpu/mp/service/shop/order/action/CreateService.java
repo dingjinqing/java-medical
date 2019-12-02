@@ -612,7 +612,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public void processOrderBeforeVo(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos) {
         logger().info("金额处理赋值(processOrderBeforeVo),start");
-        //积分抵扣金额
+        //积分抵扣金额()
         BigDecimal scoreDiscount =
             BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount() == null ? 0: param.getScoreDiscount()), new BigDecimal("100"));
         //余额抵扣金额

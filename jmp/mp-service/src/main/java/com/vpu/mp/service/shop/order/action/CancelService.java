@@ -120,7 +120,6 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 	/**
 	 * 	退会员卡余额
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @throws MpException 
 	 */
@@ -154,7 +153,6 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 	/**
 	 * 	退余额
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @throws MpException 
 	 */
@@ -184,7 +182,6 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 	/**
 	 * 	积分退款
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @return
 	 * @throws MpException
@@ -195,7 +192,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 		}
 		//金额换算成积分
 		Integer score = BigDecimalUtil.multiplyOrDivide(
-				BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_TO_FEN), Operator.multiply),
+				BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_FEN_RATIO), Operator.multiply),
 				BigDecimalPlus.create(money,null)
 				).intValue();
 				

@@ -236,8 +236,8 @@ public class OrderConstant {
 	public final static byte SETTLEMENT_FINISH = 1;
 	public final static byte SETTLEMENT_NOT = 2;
 
-	/**元转化为分的比例*/
-	public final static byte TUAN_TO_FEN = 100;
+	/**元_分的比例*/
+	public final static byte TUAN_FEN_RATIO = 100;
 
 	/**一分*/
 	public final static BigDecimal CENT = new BigDecimal("0.01");

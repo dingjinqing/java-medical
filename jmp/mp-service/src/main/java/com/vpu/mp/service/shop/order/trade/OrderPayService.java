@@ -17,15 +17,11 @@ import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
@@ -211,14 +207,14 @@ public class OrderPayService extends ShopBaseService{
         }
         //金额换算成积分
         Integer score = BigDecimalUtil.multiplyOrDivide(
-            BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_TO_FEN), Operator.multiply),
+            BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_FEN_RATIO), Operator.multiply),
             BigDecimalPlus.create(money,null)
         ).intValue();
 
         ScoreData scoreData = ScoreData.newBuilder().
             userId(order.getUserId()).
             orderSn(order.getOrderSn()).
-            //退款积分
+            //积分
                 score(-score).
                 remark("下单："+order.getOrderSn()).
             //后台处理时为操作人id为0
