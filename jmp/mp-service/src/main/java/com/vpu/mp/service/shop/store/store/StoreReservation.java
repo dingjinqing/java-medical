@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.comment.ServiceCommentVo;
 import com.vpu.mp.service.pojo.shop.store.service.StoreServiceParam;
+import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
@@ -445,7 +446,7 @@ public class StoreReservation extends ShopBaseService {
         return webPayVo.get();
     }
 
-    public void continuePay() {
+    public void continuePay(String orderSn) {
         // TODO 微信查询订单接口，根据结果判定继续支付还是关闭订单
         // TODO 前端倒计时十分钟结束后调用后台接口，关闭该订单，更改状态为已取消
     }
@@ -699,7 +700,17 @@ public class StoreReservation extends ShopBaseService {
      * @return the service comment vo
      */
     public ServiceCommentVo reservationComment(String orderSn) {
-        return commentService.getCommentByOrderSn(orderSn);
+        ServiceCommentVo vo = new ServiceCommentVo();
+        ServiceOrderDetailVo temp = serviceOrderService.getServiceOrderDetail(orderSn);
+        vo.setServiceImg(temp.getServiceImg());
+        vo.setServiceDate(temp.getServiceDate());
+        vo.setServicePeriod(temp.getServicePeriod());
+        ServiceCommentVo result = commentService.getCommentByOrderSn(orderSn);
+        if (Objects.isNull(result)) {
+            return vo;
+        }
+        FieldsUtil.assignNotNull(result, vo);
+        return vo;
     }
 
     /**
