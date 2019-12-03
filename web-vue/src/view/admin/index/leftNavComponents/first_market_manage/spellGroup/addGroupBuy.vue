@@ -92,7 +92,7 @@
             :data="form.product"
             border
             style="width: 100%"
-            empty-text='暂无数据'
+            :empty-text="$t('groupBuy.noData')"
           >
             <el-table-column
               align="center"
@@ -212,21 +212,21 @@
               slot="append"
               class="moreSetUp"
             >
-              <span>更多设置:</span>
+              <span>{{ this.$t('groupBuy.moreSettings') }}</span>
               <a
                 :class="activeIndex === 1 ? '' : 'settings'"
                 @click="setCurrent(1)"
-              >拼团价
+              >{{ this.$t('groupBuy.groupBuyPrice') }}
               </a>
               <a
                 :class="activeIndex === 2 ? '' : 'settings'"
                 @click="setCurrent(2)"
-              >团长优惠价
+              >{{ this.$t('groupBuy.commanderDiscounts') }}
               </a>
               <a
                 :class="activeIndex === 3 ? '' : 'settings'"
                 @click="setCurrent(3)"
-              >拼团库存
+              >{{ this.$t('groupBuy.groupBuyStock') }}
               </a>
             </div>
           </el-table>
@@ -404,7 +404,7 @@
             </el-card>
           </el-form-item>
           <!-- 引入活动分享模块 -->
-          <el-form-item label="活动分享：">
+          <el-form-item :label="$t('groupBuy.activitySharing') + '：'">
             <actShare :shareConfig="form.share" />
           </el-form-item>
         </div>
@@ -960,5 +960,9 @@ export default {
 
 .el-table tbody .el-table__row {
   height: 200px !important;
+}
+.shareContent a {
+  text-decoration: none;
+  color: #409eff;
 }
 </style>

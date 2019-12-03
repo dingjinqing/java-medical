@@ -275,6 +275,10 @@ import {
 import {
   en as seckill
 } from './views/admin_new/en/index/marketManagement/seckill/seckillEn'
+// 满包邮
+import {
+  en as shipping
+} from './views/admin_new/en/index/marketManagement/shipping/shippingEn'
 // 赠品
 import {
   en as gift
@@ -930,6 +934,7 @@ const en = {
   giveGift, // 我要送礼
   couponGive, // 定向发券
   seckill, // 秒杀
+  shipping, // 满包邮
   gift, // 赠品
   ...enLocale,
   expressList,

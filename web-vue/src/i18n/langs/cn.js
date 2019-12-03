@@ -282,6 +282,10 @@ import {
 import {
   cn as seckill
 } from './views/admin_new/cn/index/marketManagement/seckill/seckillCn'
+// 满包邮
+import {
+  cn as shipping
+} from './views/admin_new/cn/index/marketManagement/shipping/shippingCn'
 // 赠品
 import {
   cn as gift
@@ -938,6 +942,7 @@ const cn = {
   giveGift, // 我要送礼
   couponGive, // 定向发券
   seckill, // 秒杀
+  shipping, // 满包邮
   gift, // 赠品
   ...zhLocale,
   expressList,

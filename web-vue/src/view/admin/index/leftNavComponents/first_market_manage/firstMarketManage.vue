@@ -338,7 +338,10 @@
       </div>
       <div class="box2">
         <!-- 满包邮 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="to('shipping_view')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/mby.png'"
               alt=""

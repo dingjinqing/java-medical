@@ -345,6 +345,8 @@ export const en = {
   userSeckill: ['Marketing Management', 'Seckill', 'Seckill User'],
   // 营销管理 秒杀-活动数据效果
   resultSeckill: ['Marketing Management', 'Seckill', 'Activity Data Effect'],
+  // 营销管理 满包邮
+  shipping: ['Marketing Management', 'Shipping'],
   // 营销管理 加价购
   increase_purchase: ['Marketing management', 'Increase Purchase'],
   // 营销管理 加价购 换购订单

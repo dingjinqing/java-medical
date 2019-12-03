@@ -5,7 +5,7 @@
       :label="$t('marketCommon.activitySharing') + ':'"
       prop=''
     >
-      <section>
+      <div>
         <el-radio
           v-model="actShare"
           label="1"
@@ -33,64 +33,64 @@
             type="text"
           >{{$t('marketCommon.downloadPoster')}}</el-button>
         </el-popover>
-      </section>
+      </div>
 
-      <section>
+      <div>
         <el-radio
           v-model="actShare"
           label="2"
+        >{{$t('marketCommon.customStyle')}}</el-radio>
+        <div
+          style="margin: 15px 0"
+          v-if="actShare == '2'"
         >
-          {{$t('marketCommon.customStyle')}}
-          <div
-            style="margin: 15px 0"
-            v-if="actShare == '2'"
-          >
-            <span style="color:#606266">{{$t('marketCommon.copywriting')}}:</span>
-            <el-input
-              v-model="shareConfig.share_doc"
-              size="small"
-              style="width:200px"
-            ></el-input>
-          </div>
-          <div v-if="actShare == '2'">
-            <span style="color:#606266">{{$t('marketCommon.sharedPicture')}}:</span>
+          <span style="color:#606266">{{ $t('marketCommon.copywriting') + '：'}}</span>
+          <el-input
+            v-model="shareConfig.share_doc"
+            size="small"
+            style="width:200px"
+          ></el-input>
+        </div>
+        <div v-if="actShare == '2'">
+          <span style="color:#606266">{{ $t('marketCommon.sharedPicture') + '：'}}</span>
+          <el-radio
+            v-model="shareImg.share_img_action"
+            label="1"
+            style="margin-left:10px"
+          >{{$t('marketCommon.goodsInformationPicture')}}</el-radio>
+
+          <div style="margin: 10px 0 0 60px">
             <el-radio
               v-model="shareImg.share_img_action"
-              label="1"
-              style="margin-left:10px"
-            >{{$t('marketCommon.goodsInformationPicture')}}</el-radio>
-
-            <div style="margin: 10px 0 0 60px">
-              <el-radio
-                v-model="shareImg.share_img_action"
-                label="2"
-              >{{$t('marketCommon.customPicture')}}</el-radio>
-            </div>
-            <div style="margin: 10px 0 0 60px; display:flex">
-              <span
-                @click="deleteSelectImg()"
-                v-if="this.srcList.src3 !==`${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`"
-                class="deleteIcon"
-              >×</span>
-              <div
-                class="choose"
-                @click="addGoodsImg"
-              >
-                <img
-                  class="selectImage"
-                  :src="srcList.src3"
-                >
-              </div>
-              <span style="margin: 30px 0 0 30px">{{$t('marketCommon.customPictureTip')}}</span>
-            </div>
+              label="2"
+            >{{$t('marketCommon.customPicture')}}</el-radio>
           </div>
-        </el-radio>
+          <div style="margin: 10px 0 0 60px; display:flex">
+            <span
+              @click="deleteSelectImg()"
+              v-if="this.srcList.src3 !==`${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`"
+              class="deleteIcon"
+            >×</span>
+            <div
+              class="choose"
+              @click="addGoodsImg"
+            >
+              <img
+                class="selectImage"
+                :src="srcList.src3"
+              >
+            </div>
+            <span style="margin: 30px 0 0 30px">{{$t('marketCommon.customPictureTip')}}</span>
+          </div>
+        </div>
+
         <ImageDalog
           pageIndex='pictureSpace'
           :tuneUp="showImageDialog"
+          :imageSize="[800, 800]"
           @handleSelectImg='handleSelectImg'
         />
-      </section>
+      </div>
     </el-form-item>
   </div>
 </template>

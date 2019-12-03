@@ -57,7 +57,8 @@ export const en = {
     9: 'Return Complete',
     10: 'In refund',
     11: 'Refund Completed',
-    12: 'Gift Done' },
+    12: 'Gift Done'
+  },
   // 添加拼团活动
   groupBuyActivity: 'groupon Activity',
   groupBuyActivityComment: 'The switch is turned off by default. When the switch is turned on, the user can apply for a store distributor. The distributor invites the user to register to generate an order, and the purchaser invites a commission reward. When the switch is turned off, the mobile terminal personal center "distribution center" menu is hidden, the user places an order, the inviter no longer generates a commission reward, the system distribution mechanism is closed, and the invitation no longer records the invitation relationship.',
@@ -72,6 +73,10 @@ export const en = {
   commanderPrice: 'commander Price',
   originalStock: 'Original stock',
   groupBuyStock: 'groupon Stock',
+  noData: 'No Data',
+  moreSettings: 'More Settings：',
+  activitySharing: 'Activity Sharing',
+
   batchOption: 'Batch setting',
   orderGoodsNum: 'Order quantity',
   orderGoodsNumComment1: 'The minimum number of purchases for a single order',
@@ -173,5 +178,7 @@ export const en = {
   deleteComment: 'TThis operation will delete the activity, will it continue?',
   confirm: 'OK',
   cancel: 'Cancel',
-  cancelMessage: 'Cancelled'
+  cancelMessage: 'Cancelled',
+  moreConfigure: 'Expand more configurations',
+  packUpConfigure: 'Fold up more configurations'
 }

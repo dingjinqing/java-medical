@@ -980,6 +980,20 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/seckill/seckillEffect'
       )
   },
+  // 满包邮
+  {
+    path: '/admin/home/main/shipping',
+    name: 'shipping_view',
+    meta: {
+      crumbTitle: 'router.shipping',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/shipping/shipping'
+      )
+  },
   // 加价购活动
   {
     path: '/api/admin/market/addPriceBuy/list',
