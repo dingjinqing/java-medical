@@ -959,7 +959,7 @@ public class UserCardService extends ShopBaseService {
             //当前会员卡适用商品
             BigDecimal[] tolalNumberAndPrice = calculate.getTolalNumberAndPriceByType(bos, OrderConstant.D_T_MEMBER_CARD, DefaultMarketingProcess.builder().card(card).type(OrderConstant.D_T_MEMBER_CARD).build());
             //折扣金额
-            BigDecimal discountAmount = null;
+            BigDecimal discountAmount;
             //判断门店（无门店||全部门店||部分门店）
             if(storeId == null || CardConstant.MCARD_STP_ALL.equals(Byte.valueOf(card.getStoreList())) ||
                 (CardConstant.MCARD_SUSE_OK.equals(card.getStoreUseSwitch()) && Arrays.asList(card.getStoreList().split(",")).contains(storeId.toString()))) {
@@ -970,11 +970,12 @@ public class UserCardService extends ShopBaseService {
                 //TODO 删除判断
                 continue;
             }
-            card.setBos(bos);
+            //card.setBos(bos);
             card.setTotalPrice(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
             card.setTotalGoodsNumber(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER]);
             card.setTotalDiscount(discountAmount);
             card.setIdentity(card.getCardNo());
+            card.initRatio();
         }
         return cards;
     }

@@ -230,8 +230,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
             //开启指定包邮条件
             for (GoodsDeliverTemplateFeeConditionParam template : rule.getFeeConditionParam()) {
                 //判断地区与规则
-                if(true){
-//***********  if(StringUtil.isNotBlank(template.getAreaList()) && matchDistrictCode(districtCode, template.getAreaList()) && matchFee(template, totalNumber, totalPrice)){
+                if(CollectionUtils.isNotEmpty(template.getAreaList()) && matchDistrictCode(districtCode, template.getAreaList()) && matchFee(template, totalNumber, totalPrice)){
                     return BigDecimal.ZERO;
                 }
             }
@@ -242,8 +241,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
             throw new MpException(JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR);
         }
         for (GoodsDeliverTemplateAreaParam  supportArea : rule.getAreaParam()) {
-// **********  if(matchDistrictCode(districtCode, supportArea.getAreaList())){
-            if(true){
+            if(matchDistrictCode(districtCode, supportArea.getAreaList())){
                 //支持区域
                 if(totalNumber <= supportArea.getFirstNum()){
                     //小于等于首件
@@ -296,8 +294,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
             //开启指定包邮条件
             for (GoodsDeliverTemplateFeeConditionParam template : rule.getFeeConditionParam()) {
                 //判断地区与规则
-                if(true){
-//**************  if(StringUtil.isNotBlank(template.getAreaList()) && matchDistrictCode(districtCode, template.getAreaList()) && matchWeightFee(template, totalWeight, totalPrice)){
+                if(CollectionUtils.isNotEmpty(template.getAreaList()) && matchDistrictCode(districtCode, template.getAreaList()) && matchWeightFee(template, totalWeight, totalPrice)){
                     return BigDecimal.ZERO;
                 }
             }
@@ -308,8 +305,7 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
             throw new MpException(JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR);
         }
         for (GoodsDeliverTemplateAreaParam  supportArea : rule.getAreaParam()) {
-//*********** if(matchDistrictCode(districtCode, supportArea.getAreaList())){
-            if (true){
+            if(matchDistrictCode(districtCode, supportArea.getAreaList())){
             //支持区域
                 if(BigDecimalUtil.compareTo(totalWeight, BigDecimal.valueOf(supportArea.getFirstNum())) < 1){
                     //不足首重，按首重运费计算
@@ -392,8 +388,8 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
      * @param areaList
      * @return boolean
      */
-    public boolean matchDistrictCode(Integer districtCode, String areaList){
-        if(StringUtil.isBlank(areaList) || districtCode == null){
+    public boolean matchDistrictCode(Integer districtCode, List<String> areaList){
+        if(CollectionUtils.isEmpty(areaList)){
             return false;
         }
         //省

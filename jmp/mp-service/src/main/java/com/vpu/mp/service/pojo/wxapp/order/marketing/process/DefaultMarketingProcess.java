@@ -12,5 +12,6 @@ import lombok.Data;
 @Builder
 public class DefaultMarketingProcess {
     private OrderMemberVo card;
+    /**会员卡 0 ，优惠券 1*/
     private byte type;
 }

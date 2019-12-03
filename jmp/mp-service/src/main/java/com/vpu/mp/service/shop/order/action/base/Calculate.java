@@ -82,7 +82,7 @@ public class Calculate extends ShopBaseService {
         for (OrderGoodsBo bo : bos) {
             //会员卡 或 优惠卷-> one
             if(OrderConstant.D_T_MEMBER_CARD.equals(mType) || OrderConstant.D_T_COUPON.equals(mType)){
-                //加价购 或 满折满减 与 one 不共存
+                //TODO 加价购 或 满折满减 与 one 不共存
                 if(bo.getPurchasePriceId() != null || bo.getStraId() != null){
                     continue;
                 }
@@ -96,7 +96,7 @@ public class Calculate extends ShopBaseService {
             if(!CollectionUtils.isEmpty(mbv.getBos())){
                 for (int i = 0, lenght = mbv.getBos().size(); i < lenght; i++) {
                     //该商品行折扣金额(向下取整)
-                    BigDecimal tdPrica = BigDecimal.ZERO.setScale(2);
+                    BigDecimal tdPrica;
                     if(i == lenght - 1){
                         //最后一个商品通过减法计算
                         tdPrica = BigDecimalUtil.subtrac(mbv.getTotalDiscount(), discountPrica);
@@ -126,7 +126,8 @@ public class Calculate extends ShopBaseService {
      * 获取订单商品总数量、总价格
      * @param bos bos
      * @param discountType 折扣类型
-     * @return BigDecimal[0->数量，1->价格]
+     * @param defaultMarketing 临时存储默认营销信息
+     * @return BigDecimal[0->数量，1->价格] （上面有常量）
      */
     public BigDecimal[] getTolalNumberAndPriceByType(List<OrderGoodsBo> bos, Byte discountType, DefaultMarketingProcess defaultMarketing){
         BigDecimal[] tolalNumberAndPrice = new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO};
@@ -138,9 +139,16 @@ public class Calculate extends ShopBaseService {
                     continue;
                 }
 
-                if(OrderConstant.D_T_MEMBER_CARD.equals(discountType) && defaultMarketing != null && OrderConstant.D_T_MEMBER_CARD.equals(defaultMarketing.getType()) && !CardConstant.MCARD_TP_LIMIT.equals(defaultMarketing.getCard().getCardType())){
-                    //非限次卡且输入默认card
+                if(OrderConstant.D_T_MEMBER_CARD.equals(discountType) &&
+                    defaultMarketing != null &&
+                    OrderConstant.D_T_MEMBER_CARD.equals(defaultMarketing.getType()) &&
+                    !CardConstant.MCARD_TP_LIMIT.equals(defaultMarketing.getCard().getCardType())){
+                    //会员卡 and
+                    // 临时存储默认营销信息!=null and
+                    // 临时存储默认营销信息==card and
+                    // 非限次卡
                     if(!userCard.checkGoodsDiscount(defaultMarketing.getCard().getCardId(), bo)){
+                        //校验该卡是否可用该商品
                         continue;
                     }
                 }
@@ -160,7 +168,7 @@ public class Calculate extends ShopBaseService {
      */
     public void calculateCoupon(OrderBeforeParam param, OrderBeforeVo vo) {
         logger().info("获取可用优惠卷start");
-        if((vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType()))){
+        if(vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType())){
             logger().info("该次下单可以用优惠卷，准备获取优惠卷");
             //可用优惠卷
             List<OrderCouponVo> coupons = coupon.getValidCoupons(param.getWxUserInfo().getUserId());
