@@ -631,7 +631,7 @@ export default {
           console.log('test', ui)
           console.log(this_.insertModulesId, '--', this_.showModulesList)
           let insert = this_.insertModulesId + 1
-          console.log(typeof ui.draggable[0].getAttribute('dataId'))
+          console.log(ui.draggable[0].getAttribute('dataId'))
           switch (Number(ui.draggable[0].getAttribute('dataId'))) {
             case 1:
               this_.handleToMiddleAcceptData(this_.insertModulesId, this_.showModulesList, insert, 1)
@@ -714,8 +714,9 @@ export default {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
       console.log(insertModulesId, index)
       if (insertModulesId === -1 || this.isAddBottom) {
+        console.log(index)
         this.MoveWhiteFlag = true
-        this.handleToClickLeftModule(index)
+        this.handleToClickLeftModule(index, true)
         // setTimeout(() => {
         //   this.nowRightShowIndex = this.showModulesList.length - 1
         // }, 100)
@@ -989,6 +990,7 @@ export default {
     },
     //  点击左侧模块加到中间模块队列底部并高亮
     handleToClickLeftModule (id, flag) {
+      console.log(id, flag)
       if (!flag) return
       this.showModulesList.push(id)
       console.log(id)
