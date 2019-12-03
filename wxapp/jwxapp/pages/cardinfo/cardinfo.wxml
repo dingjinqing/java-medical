@@ -37,7 +37,7 @@
         领取时间：{{cardInfo.userCardCreateTime}}
       </view>
     </view>
-    <view class="card_item_title" wx:if="{{cardInfo.userCardCreateTime}}">
+    <view class="card_item_title" wx:if="{{cardInfo.nextGradeCard && cardInfo.nextGradeCard.gradeConditionJson.gradeScore || cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}">
       <view class="item_title_left">
         <image mode="widthFix" src="{{imageUrl}}image/wxapp/grade_contion.png"></image>
       </view>
@@ -45,7 +45,7 @@
         等级说明
       </view>
     </view>
-    <view class="card_item_content">
+    <view class="card_item_content" wx:if="{{cardInfo.nextGradeCard && cardInfo.nextGradeCard.gradeConditionJson.gradeScore || cardInfo.nextGradeCard.gradeConditionJson.gradeMoney}}">
       <view class="grade-content-desc">
         <view class="compare-card-name">
           <text class="current-card">{{cardInfo.cardName}}</text>

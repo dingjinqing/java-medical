@@ -165,16 +165,21 @@
                     :key="index"
                   ></i></span></div>
               <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote}}</span></div>
-              <div class="evaluation-info_item">
+              <div
+                class="evaluation-info_item"
+                v-if="scope.row.commImg !== ''"
+              >
                 <div class="evaluation-pic">
-                 <template v-for="(picItem,picIndex) in scope.row.commImg">
-                   <el-image
-                    :key="picIndex"
-                    style="width: 50px; height: 50px"
-                    :src="$imageHost+'/'+picItem"
-                    :preview-src-list="scope.row.commImg">
-                  </el-image>
-                 </template>
+                  <template v-for="(picItem,picIndex) in scope.row.commImg">
+                    <el-image
+                      :key="picIndex"
+                      lazy
+                      style="width: 50px; height: 50px"
+                      :src="picItem"
+                      :preview-src-list="scope.row.commImg"
+                    >
+                    </el-image>
+                  </template>
                 </div>
               </div>
             </div>
@@ -374,7 +379,7 @@ export default {
           this.dataList = res.content.dataList.map(item => {
             let comment = JSON.parse(JSON.stringify(item))
             if (comment.commImg !== '' && comment.commImg !== null) {
-              comment.commImg = comment.commImg.split(',')
+              comment.commImg = comment.commImg.split(',').map(item => this.$imageHost + '/' + item)
             }
             return comment
           })
@@ -570,5 +575,18 @@ export default {
   font-size: 22px;
   color: #5a8bff;
   cursor: pointer !important;
+}
+.evaluation-pic {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: -6px;
+  /deep/ .el-image {
+    margin-top: 6px;
+    margin-left: 14px;
+    &.el-image:nth-child(3n + 1) {
+      margin-left: 0;
+    }
+  }
 }
 </style>

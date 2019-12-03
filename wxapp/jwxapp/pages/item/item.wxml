@@ -40,7 +40,7 @@
     <v-comment comment="{{comment}}"/>
 
     <!-- 商品详情 -->
-    <v-goods-detail goods-desc-info="{{goodsDescInfo}}"/>
+    <!-- <v-goods-detail goods-desc-info="{{goodsDescInfo}}"/> -->
   </view>
   <v-item-footer product-info="{{productInfo}}" isDefaultPrd="{{goodsInfo.defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
   <include src="../common/footer.wxml" />
