@@ -14,38 +14,58 @@
  -->
 <template>
   <el-dialog
-    title="扫一扫，分享给好友吧~"
-    width="30%"
-    center
+    :title="$t('seckill.shareTitle')"
     :visible="show"
+    width="350px"
+    center
+    :close-on-click-modal="false"
     @close="close"
   >
-    <span>
-      <div class="demo-image__error">
-        <div class="block">
-          <el-image :src="imgPath">
-            <div
-              slot="error"
-              class="image-slot"
-            >
-              <i class="el-icon-picture-outline"></i>
-            </div>
-          </el-image>
-        </div>
+    <div class="shareBox">
+      <div>
+        <img
+          :src="imgPath"
+          alt=""
+          style="width:160px;height:160px;"
+        >
       </div>
-    </span>
+      <div style="margin: 20px; 0">
+        <a
+          v-if="imgPath !== null"
+          :href="imgPath"
+          download
+          style="color: #999;text-decoration: none;"
+        >{{ $t('seckill.downLoad') }}</a>
+        <a
+          v-if="imgPath === null"
+          href="javaScript:void(0);"
+          style="color: #999;text-decoration: none;"
+        >{{ $t('seckill.downLoadFail') }}</a>
+      </div>
+    </div>
+    <div>
+      <el-input v-model="pagePath">
+        <el-button
+          slot="append"
+          v-clipboard:copy="pagePath"
+          v-clipboard:success="copyHandler"
+        >{{ $t('seckill.copy') }}</el-button>
+      </el-input>
+    </div>
     <span
       slot="footer"
       class="dialog-footer"
     >
-      <el-row>
-        <el-col :span="18">
-          <el-input v-model="pagePath"></el-input>
-        </el-col>
-        <el-col :span="6">
-          <span>复制</span>
-        </el-col>
-      </el-row>
+      <el-button
+        @click="close"
+        size="small"
+        style="margin-right: 10px"
+      >{{ $t('seckill.cancel') }}</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        @click="close"
+      >{{ $t('seckill.sure') }}</el-button>
     </span>
   </el-dialog>
 </template>
@@ -56,21 +76,34 @@ export default {
     }
   },
   props: {
+    show: {
+      type: Boolean,
+      default: () => false
+    },
     imgPath: {
       type: String
     },
     pagePath: {
       type: String
-    },
-    show: {
-      type: Boolean,
-      default: false
     }
   },
   methods: {
+    // 复制
+    copyHandler (e) {
+      this.$message.success({ message: this.$t('seckill.copySuccess') })
+    },
+    // 关闭弹窗
     close () {
       this.$emit('close')
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+.shareBox {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ccc;
+}
+</style>

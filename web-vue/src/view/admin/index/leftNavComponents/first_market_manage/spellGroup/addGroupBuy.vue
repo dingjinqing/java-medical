@@ -410,6 +410,7 @@
         </div>
 
       </el-form>
+
       <!--添加商品弹窗-->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"

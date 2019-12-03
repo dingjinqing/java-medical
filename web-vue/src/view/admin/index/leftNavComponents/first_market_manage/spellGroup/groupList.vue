@@ -45,49 +45,42 @@
           align="center"
         >
         </el-table-column>
-
         <el-table-column
           prop="activityTypeText"
           :label="$t('groupBuy.activityType')"
           align="center"
         >
         </el-table-column>
-
         <el-table-column
           prop="goodsName"
           :label="$t('groupBuy.goodsName')"
           align="center"
         >
         </el-table-column>
-
         <el-table-column
           prop="vaildDate"
           :label="$t('groupBuy.validDate')"
           align="center"
         >
         </el-table-column>
-
         <el-table-column
           prop="statusText"
           :label="$t('groupBuy.activityStatus')"
           align="center"
         >
         </el-table-column>
-
         <el-table-column
           prop="limitAmount"
           :label="$t('groupBuy.limitAmount')"
           align="center"
         >
         </el-table-column>
-
         <el-table-column
           prop="groupOrderNum"
           :label="$t('groupBuy.grouponOrderNum')"
           align="center"
         >
         </el-table-column>
-
         <el-table-column
           prop=""
           :label="$t('groupBuy.option')"
@@ -98,6 +91,7 @@
               <el-tooltip
                 :content="$t('groupBuy.edit')"
                 placement="top"
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
                   class="el-icon-edit-outline"
@@ -107,12 +101,17 @@
               <el-tooltip
                 :content="$t('groupBuy.share')"
                 placement="top"
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
-                <span class="el-icon-share"></span>
+                <span
+                  class="el-icon-share"
+                  @click="shareActivity(scope.row.id)"
+                ></span>
               </el-tooltip>
               <el-tooltip
                 :content="$t('groupBuy.disable')"
                 placement="top"
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
                   class="el-icon-circle-close"
@@ -120,7 +119,11 @@
                   v-if="scope.row.status==1"
                 > </span>
               </el-tooltip>
-              <el-tooltip :content="$t('groupBuy.enabled')">
+              <el-tooltip
+                :content="$t('groupBuy.enabled')"
+                placement="top"
+                v-if="scope.row.currentState === 4"
+              >
                 <span
                   class="el-icon-circle-check"
                   @click="changeStatus(scope.row.id,1)"
@@ -128,17 +131,9 @@
                 > </span>
               </el-tooltip>
               <el-tooltip
-                :content="$t('groupBuy.delete')"
-                placement="top"
-              >
-                <span
-                  class="el-icon-delete"
-                  @click="deleteGroupBuy(scope.row.id)"
-                ></span>
-              </el-tooltip>
-              <el-tooltip
                 :content="$t('groupBuy.grouponDetailList')"
                 placement="top"
+                v-if="scope.row.currentState !== 2"
               >
                 <span
                   class="el-icon-tickets"
@@ -148,6 +143,7 @@
               <el-tooltip
                 :content="$t('groupBuy.grouponOrderlist')"
                 placement="top"
+                v-if="scope.row.currentState !== 2"
               >
                 <span
                   class="el-icon-s-unfold"
@@ -157,6 +153,7 @@
               <el-tooltip
                 :content="$t('groupBuy.newUserList')"
                 placement="top"
+                v-if="scope.row.currentState !== 2"
               >
                 <span
                   class="el-icon-user-solid"
@@ -166,10 +163,21 @@
               <el-tooltip
                 :content=" $t('groupBuy.returnFailOrder')"
                 placement="top"
+                v-if="scope.row.currentState !== 2"
               >
                 <span
                   class="el-icon-warning"
                   @click="refundFailureOrder(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('groupBuy.delete')"
+                placement="top"
+                v-if="scope.row.currentState === 3 || scope.row.currentState === 4"
+              >
+                <span
+                  class="el-icon-delete"
+                  @click="deleteGroupBuy(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -192,6 +200,15 @@
         @pagination="initDataList"
       />
     </div>
+
+    <!-- 分享弹窗 -->
+    <shareDialog
+      :show="shareDialog"
+      :imgPath="shareImg"
+      :pagePath="sharePath"
+      @close="shareDialog=false"
+    />
+
   </div>
 
 </template>
@@ -199,6 +216,7 @@
 
 import addGroupBuy from './addGroupBuy.vue'
 import pagination from '@/components/admin/pagination/pagination.vue'
+import shareDialog from '@/components/admin/shareDialog'
 import {
   changeStatusActivity,
   deleteGroupBuyActivity,
@@ -209,7 +227,8 @@ import {
 export default {
   components: {
     addGroupBuy,
-    pagination
+    pagination,
+    shareDialog
   },
   data () {
     return {
@@ -226,7 +245,10 @@ export default {
       activityTypeText: [],
       editData: {},
       isEdite: true,
-      loading: false
+      loading: false,
+      shareDialog: false, // 分享弹窗
+      shareImg: '',
+      sharePath: ''
     }
   },
   watch: {
@@ -401,7 +423,13 @@ export default {
     activityEffectData (id) {
       console.log('跳转到活动效果数据页面 id = ', id)
       this.$router.push({ path: '/admin/home/main/spellGroup/activityEffectData', query: { id: id } })
+    },
+
+    // 分享弹窗
+    shareActivity (id) {
+      this.shareDialog = !this.shareDialog
     }
+
   }
 }
 
@@ -487,5 +515,11 @@ export default {
     height: 32px;
     line-height: 32px;
   }
+}
+.shareBox {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ccc;
 }
 </style>

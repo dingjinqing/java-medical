@@ -201,60 +201,12 @@
     </div>
 
     <!-- 分享 -->
-    <el-dialog
-      :title="$t('seckill.shareTitle')"
-      :visible.sync="shareDialog"
-      width="350px"
-      center
-      :close-on-click-modal="false"
-    >
-      <div class="shareBox">
-        <div>
-          <img
-            :src="shareImg"
-            alt=""
-            style="width:160px;height:160px;"
-          >
-        </div>
-        <div style="margin: 20px; 0">
-          <a
-            v-if="shareImg !== null"
-            :href="shareImg"
-            download
-            style="color: #999;text-decoration: none;"
-          >{{ $t('seckill.downLoad') }}</a>
-          <a
-            v-if="shareImg === null"
-            href="javaScript:void(0);"
-            style="color: #999;text-decoration: none;"
-          >{{ $t('seckill.downLoadFail') }}</a>
-        </div>
-      </div>
-      <div>
-        <el-input v-model="sharePath">
-          <el-button
-            slot="append"
-            v-clipboard:copy="sharePath"
-            v-clipboard:success="copyHandler"
-          >{{ $t('seckill.copy') }}</el-button>
-        </el-input>
-      </div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          @click="shareDialog = false"
-          size="small"
-          style="margin-right: 10px"
-        >{{ $t('seckill.cancel') }}</el-button>
-        <el-button
-          type="primary"
-          size="small"
-          @click="shareDialog = false"
-        >{{ $t('seckill.sure') }}</el-button>
-      </span>
-    </el-dialog>
+    <shareDialog
+      :show="shareDialog"
+      :imgPath="shareImg"
+      :pagePath="sharePath"
+      @close="shareDialog=false"
+    />
 
   </div>
 </template>
@@ -262,14 +214,16 @@
 // 引入组件
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination'
+import shareDialog from '@/components/admin/shareDialog'
 import addSeckill from './seckillAdd.vue'
 import { seckillList, deleteSeckillList, shareSeckillList, updateSeckillList } from '@/api/admin/marketManage/seckill.js'
-export default {
 
+export default {
   components: {
     statusTab,
     pagination,
-    addSeckill
+    addSeckill,
+    shareDialog
   },
   data () {
     return {
@@ -385,7 +339,7 @@ export default {
 
     // 分享
     shareHandler (id) {
-      this.shareDialog = true
+      this.shareDialog = !this.shareDialog
       shareSeckillList(id).then((res) => {
         if (res.error === 0) {
           this.shareImg = res.content.imageUrl
@@ -529,10 +483,10 @@ export default {
     cursor: pointer;
   }
 }
-.shareBox {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #ccc;
-}
+// .shareBox {
+//   width: 100%;
+//   text-align: center;
+//   margin-bottom: 15px;
+//   border-bottom: 1px solid #ccc;
+// }
 </style>
