@@ -56,6 +56,7 @@ public class ServiceCommentVo {
 	private Integer technicianId;
 	/** 技师名称 */
 	private String technicianName;
+    private String technicianTitle;
 
     /** 评论创建时间 */
 	private Timestamp createTime;

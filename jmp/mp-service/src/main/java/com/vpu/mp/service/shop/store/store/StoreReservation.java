@@ -797,6 +797,7 @@ public class StoreReservation extends ShopBaseService {
             return vo;
         }
         FieldsUtil.assignNotNull(result, vo);
+        vo.setTechnicianTitle(storeConfigService.getTechnicianTitle());
         return vo;
     }
 
