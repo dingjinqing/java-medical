@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.shop.store.service.order;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import lombok.Data;
 
 /**
  * @author 王兵兵
@@ -12,10 +12,10 @@ import lombok.Data;
  */
 @Data
 public class ServiceOrderDetailVo {
-	
-	
-	/**
-	 *预约订单信息 
+
+
+    /**
+     *预约订单信息
 	 */
 	private Integer    orderId;
     private String     orderSn;
@@ -46,13 +46,16 @@ public class ServiceOrderDetailVo {
      */
     private Byte       verifyPay;
     private Timestamp  createTime;
-    
-    
+
+
     /**
-     *服务信息 
+     *服务信息
      */
     private String     serviceName;
     private String     servicePrice;
     private String     serviceSubsist;
     private String     serviceImg;
+
+    private Integer serviceId;
+    private Integer storeId;
 }

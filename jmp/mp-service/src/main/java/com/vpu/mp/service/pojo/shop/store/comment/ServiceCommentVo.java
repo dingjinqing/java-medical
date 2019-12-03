@@ -20,14 +20,12 @@ public class ServiceCommentVo {
 	/**评论ID */
 	private Integer id;
 	/** 门店ID */
-    @PositiveOrZero(groups = ValidCon.class)
     private Integer storeId;
 	/** 订单编号 */
     @NotBlank(groups = ValidCon.class)
     private String orderSn;
 
 	/** 服务ID */
-    @PositiveOrZero(groups = ValidCon.class)
     private Integer serviceId;
 	/** 服务主图 */
 	private String serviceImg;

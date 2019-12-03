@@ -702,6 +702,8 @@ public class StoreReservation extends ShopBaseService {
     public ServiceCommentVo reservationComment(String orderSn) {
         ServiceCommentVo vo = new ServiceCommentVo();
         ServiceOrderDetailVo temp = serviceOrderService.getServiceOrderDetail(orderSn);
+        vo.setOrderSn(temp.getOrderSn());
+        vo.setServiceId(temp.getServiceId());
         vo.setServiceName(temp.getServiceName());
         vo.setServiceImg(temp.getServiceImg());
         vo.setServiceDate(temp.getServiceDate());
@@ -723,6 +725,8 @@ public class StoreReservation extends ShopBaseService {
         // 门店服务评论配置：0不用审核    1先发后审   2先审后发
         Byte commConfig = storeConfigService.getServiceComment();
         CommentServiceRecord serviceRecord = new CommentServiceRecord();
+        ServiceOrderDetailVo temp = serviceOrderService.getServiceOrderDetail(param.getOrderSn());
+        FieldsUtil.assignNotNull(temp, param);
         FieldsUtil.assignNotNull(param, serviceRecord);
         // 0:未审批,1:审批通过,2:审批未通过（不用审核时评价状态直接为通过，否则为待审核）
         serviceRecord.setFlag(BYTE_ZERO.equals(commConfig) ? BYTE_ONE : BYTE_ZERO);
