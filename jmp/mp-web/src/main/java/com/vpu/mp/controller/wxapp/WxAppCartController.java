@@ -2,10 +2,9 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
-import com.vpu.mp.service.pojo.wxapp.cart.CartProductIdParam;
-import com.vpu.mp.service.pojo.wxapp.cart.CartProductIdVo;
+import com.vpu.mp.service.pojo.wxapp.cart.CartGoodsNumParam;
+import com.vpu.mp.service.pojo.wxapp.cart.CartGoodsNumVo;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppCartListParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductsParam;
@@ -108,6 +107,21 @@ public class WxAppCartController extends WxAppBaseController {
             return success();
         }
         return fail();
+    }
+
+    /**
+     * 查询商品数量
+     * @param param
+     * @return
+     */
+    @PostMapping("/goods/num")
+    public JsonResult cartGoodsNum(@RequestBody @Valid CartGoodsNumParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        Integer num = shop().cart.cartGoodsNum(user.getUserId(),param.getGoodsId());
+        CartGoodsNumVo cartGoodsNumVo =new CartGoodsNumVo();
+        cartGoodsNumVo.setGoodsId(param.getGoodsId());
+        cartGoodsNumVo.setGoodsNum(num==null?0:num);
+        return success(cartGoodsNumVo);
     }
 
 }

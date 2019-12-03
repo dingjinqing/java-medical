@@ -290,4 +290,17 @@ public class CartService extends ShopBaseService {
                 .where(CART.USER_ID.eq(userId))
                 .and(CART.REC_ID.in(recIds)).execute();
     }
+
+    /**
+     * 获取商品数量
+     *
+     * @param userId
+     * @param goodsId 商品id
+     * @return num
+     */
+    public Integer cartGoodsNum(Integer userId, Integer goodsId) {
+        return db().select(DSL.sum(CART.GOODS_NUMBER)).from(CART)
+                .where(CART.USER_ID.eq(userId))
+                .and(CART.GOODS_ID.eq(goodsId)).fetchOneInto(Integer.class);
+    }
 }
