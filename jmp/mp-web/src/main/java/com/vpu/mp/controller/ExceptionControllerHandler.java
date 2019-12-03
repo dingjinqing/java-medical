@@ -1,20 +1,29 @@
 package com.vpu.mp.controller;
 
+import com.vpu.mp.config.ValidatorConfig;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import me.chanjar.weixin.common.error.WxErrorException;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
+import java.util.Objects;
+
+import static com.vpu.mp.config.ValidatorConfig.UNDEER_POINT;
+import static com.vpu.mp.service.foundation.data.BaseConstant.LANGUAGE_TYPE_PARAM;
 
 /**
  * controller全局异常捕获处理
@@ -29,14 +38,40 @@ public class ExceptionControllerHandler extends BaseController {
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public JsonResult request(MethodArgumentNotValidException e){
-            BindingResult result = ((MethodArgumentNotValidException) e).getBindingResult();
+            BindingResult result = e.getBindingResult();
             logger.error("valid msg:"+result.getFieldError().getDefaultMessage());
             if( result.hasErrors() ){
                 logger.error("error msg: "+result.getFieldError().getField() +result.getFieldError().getDefaultMessage());
-                return this.fail(JsonResultCode.CODE_PARAM_ERROR,", "+result.getFieldError().getField() + result.getFieldError().getDefaultMessage());
+                return this.fail(JsonResultCode.CODE_PARAM_ERROR,","+paramErrorMessage(result)+" "+result.getFieldError().getDefaultMessage());
             }
         return null;
     }
+
+    public String paramErrorMessage( BindingResult result){
+        FieldError fieldError = result.getFieldError();
+        ConstraintViolationImpl source = FieldsUtil.getFieldValueByFieldName("source", fieldError, ConstraintViolationImpl.class);
+        String messageTemplate = source != null ? source.getMessageTemplate() : "";
+        if ( messageTemplate.startsWith(ValidatorConfig.VALID_MESSAGE_PREFIX)&&!messageTemplate.contains(ValidatorConfig.JAVAX_ORG_HIBERNATE_KEY)){
+            return "";
+        }
+        String field = Objects.requireNonNull(result.getFieldError()).getField();
+        if (field.contains("[")){
+            field = field.replace("[\\[\\d+\\]]", "");
+        }
+        String objectName = result.getObjectName();
+        String errorCode = result.getFieldError().getCode();
+        String errorMessage =objectName+ UNDEER_POINT+field+UNDEER_POINT+errorCode;
+        String paramMessage= Util.translateMessage(getLang(), errorMessage,null, LANGUAGE_TYPE_PARAM);
+        if (StringUtils.isEmpty(paramMessage)){
+            String message =objectName+UNDEER_POINT+field;
+            paramMessage= Util.translateMessage(getLang(), message,null, LANGUAGE_TYPE_PARAM);
+            if (StringUtils.isEmpty(paramMessage)){
+                paramMessage = Util.translateMessage(getLang(), field, null, LANGUAGE_TYPE_PARAM);
+            }
+        }
+        return paramMessage;
+    }
+
     @ExceptionHandler(BindException.class)
     public Object validExceptionHandler(BindException e){
         BindingResult result = e.getBindingResult();

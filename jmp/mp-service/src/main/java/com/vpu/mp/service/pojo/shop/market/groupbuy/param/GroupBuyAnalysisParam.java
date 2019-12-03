@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.param;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
@@ -11,7 +12,8 @@ import java.sql.Timestamp;
  */
 @Data
 public class GroupBuyAnalysisParam {
-    @NotNull
+
+    @NotNull(message = "{id}")
     private Integer id;
 
     private Timestamp startTime;

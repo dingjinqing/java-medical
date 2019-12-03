@@ -7,7 +7,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import lombok.Data;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -36,9 +36,9 @@ public class JsonResult {
 	 * 语言：zh_CN en_US
 	 */
 	private String language;
-	
+
 	public JsonResult() {
-		 result(null, JsonResultCode.CODE_SUCCESS, null);
+//		 result(null, JsonResultCode.CODE_SUCCESS, null);
 	}
 
 

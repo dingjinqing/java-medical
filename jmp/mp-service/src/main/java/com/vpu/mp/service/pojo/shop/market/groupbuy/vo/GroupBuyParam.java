@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.validator.ListValid;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyShareConfigParam;
 import lombok.Data;
@@ -99,7 +101,7 @@ public class GroupBuyParam {
      * 产品规格配置
      */
     @NotNull
-    @Size(min = 1)
+    @ListValid(min = 1)
     @Valid
     private List<GroupBuyProductParam> product;
 

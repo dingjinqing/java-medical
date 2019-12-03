@@ -8,6 +8,8 @@ package com.vpu.mp.service.foundation.data;
  */
 public final  class  BaseConstant {
 
+    public final static String LANGUAGE_TYPE_PARAM="param";
+
 
     //******************** 营销活动活动*******************/
     /**
