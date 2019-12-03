@@ -298,8 +298,8 @@
             >
               <div class="middleContainer">
                 <div
-                  v-for="(item,index) in params.awardList[index].splitCoupon"
-                  :key="index"
+                  v-for="(itemD,indexD) in params.awardList[index].splitCoupon"
+                  :key="indexD"
                   class="addInfo"
                 >
                   <section
@@ -308,47 +308,47 @@
                   >
                     <div
                       class="coupon_list_top"
-                      v-if="item.actCode==='voucher'"
+                      v-if="itemD.actCode==='voucher'"
                     >
                       <span>￥</span>
-                      <span>{{item.denomination}}</span>
+                      <span>{{itemD.denomination}}</span>
                     </div>
                     <div
                       class="coupon_list_top"
-                      v-else-if="item.actCode=='random'"
+                      v-else-if="itemD.actCode=='random'"
                     >
                       <span>￥</span>
-                      <span>{{item.randomMax}}</span>
+                      <span>{{itemD.randomMax}}</span>
                       <span>最高</span>
                     </div>
                     <div
                       class="coupon_list_top"
                       v-else
                     >
-                      <span style="font-size: 20px">{{item.denomination}}</span>
+                      <span style="font-size: 20px">{{itemD.denomination}}</span>
                       <span style="font-size: 14px">折</span>
                     </div>
-                    <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                    <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                    <div class="coupon_center_limit">{{itemD.useConsumeRestrict | formatLeastConsume(itemD.leastConsume)}}</div>
+                    <div class="coupon_center_number">剩余{{itemD.surplus}}张</div>
                     <div
                       class="coupon_list_bottom"
                       style="font-size:12px"
                     >
-                      <span v-if="item.scoreNumber === 0">领取</span>
-                      <div v-if="item.scoreNumber !== 0">
-                        <span>{{item.scoreNumber}}</span>积分 兑换
+                      <span v-if="itemD.scoreNumber === 0">领取</span>
+                      <div v-if="itemD.scoreNumber !== 0">
+                        <span>{{itemD.scoreNumber}}</span>积分 兑换
                       </div>
                     </div>
                   </section>
                   <span
-                    @click="deleteCouponImg2(index)"
+                    @click="deleteCouponImg2(itemD, indexD, index)"
                     class="deleteIcon"
                   >×</span>
                 </div>
 
                 <div
                   class="addInfo"
-                  @click="handleToCallDialog2(index)"
+                  @click="handleToCallDialog2(item, index)"
                   style="line-height: normal"
                   v-if="params.awardList[index].splitCoupon.length < 1"
                 >
@@ -410,8 +410,8 @@
               required
             >
               <div
-                class="addGoods"
-                @click="addGoods()"
+                class="addGoodsWrapper"
+                @click="addGoods(index)"
               >+&nbsp;添加奖品</div>
               <div
                 v-if="true"
@@ -435,7 +435,7 @@
                             style="width:40px;height:40px; float: left"
                           >
                             <el-image
-                              :src="params.awardList.customImage"
+                              :src="params.awardList[index].customImage"
                               fit="contain"
                               style="width:100%; height: 100%;"
                             ></el-image>
@@ -444,15 +444,15 @@
                             class="goods_name"
                             style="float: right;;"
                           >
-                            {{ params.awardList.goodsName}}
+                            {{ params.awardList[index].goodsName}}
                           </span>
                         </section>
                       </td>
                       <td>
-                        ￥{{params.awardList.goodsPrice}}
+                        ￥{{params.awardList[index].goodsPrice}}
                       </td>
                       <td>
-                        {{ params.awardList.prdId}}
+                        {{ params.awardList[index].prdId}}
                       </td>
                       <td>
                         上架
@@ -462,6 +462,7 @@
                 </table>
               </div>
             </el-form-item>
+
             <el-form-item
               v-if="item.giftType==='6'"
               label="赠品有效期："
@@ -508,7 +509,7 @@
               <div style="display: flex">
                 <div
                   class="size"
-                  @click="handleImage"
+                  @click="handleImage(index)"
                 >
                   <el-image
                     :src="$imageHost + '/' + params.awardList[index].image"
@@ -625,11 +626,10 @@
 
     <!--添加奖品弹窗-->
     <choosingGoods
-      @resultGoodsRow="choosingGoodsResult"
+      @resultGoodsRow="addGiftDialog"
       :tuneUpChooseGoods="isShowChoosingGoodsDialog"
       :singleElection="true"
-      :showTips="true"
-      :loadProduct="true"
+      :chooseGoodsBack="chooseGoodsIdList"
     />
 
   </div>
@@ -650,11 +650,15 @@ export default {
     AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   mounted () {
+    console.log(this.params.awardList[this.currentModelIndex], 'mounted func awradList item value')
     this.getIsGonigAct()
     if (this.$route.query.id > 0) {
       this.idInfo = this.$route.query.id
       this.fetchData()
     }
+  },
+  updated () {
+    console.log(this.params.awardList[this.currentModelIndex], this.currentModelIndex, 'log awardList item value::')
   },
   filters: {
     formatLeastConsume (useConsumeRestrict, leastConsume) {
@@ -732,6 +736,10 @@ export default {
       imgHost: `${this.$imageHost}`,
       dateInterval: [], // 时间范围
       dialogFlags: '',
+      chooseGoodsIdList: [], // 选择商品
+      currentGoodIds: 0,
+      currentGoodsIndex: 0,
+
       params: {
         activityNames: '',
         startTime: '',
@@ -751,7 +759,7 @@ export default {
           {
             flag: null,
             giftType: '1',
-            productId: 5473,
+            productId: '',
             keepDays: '',
             accountNumber: '',
             scoreNumber: '',
@@ -765,8 +773,11 @@ export default {
             splitCoupon: [],
             ordinaryCouponList: [],
             ordinaryCouponIdList: [],
+            splitCouponIdList: [],
             couponList: [], // 页面优惠券
-            ordinaryCouponDialogList: [] // 弹窗优惠券
+            ordinaryCouponDialogList: [], // 弹窗优惠券
+            chooseGoodsList: [] // 选择商品ID列表
+
           }
         ]
       },
@@ -807,9 +818,13 @@ export default {
         'awardNumber': '',
         'ordinaryCoupon': [],
         'splitCoupon': [],
+        'splitCouponIdList': [],
         'ordinaryCouponIdList': [],
         'ordinaryCouponList': [],
         'ordinaryCouponDialogList': [],
+        'chooseGoodsList': [],
+        'image': 'image/admin/btn_add.png',
+        'customLink': '',
         'couponList': [
           {
             'actCode': '',
@@ -839,7 +854,7 @@ export default {
 
     // 普通优惠券弹窗调起 currentIndex为当前的添加的Item的索引值
     handleToCallDialog1 (item, currentIndex) {
-      console.log(item, currentIndex, 'currentIndex---')
+      // console.log(item, currentIndex, 'currentIndex---')
       let arr = []
       item.ordinaryCoupon.forEach(item => {
         arr.push(item.id)
@@ -862,33 +877,31 @@ export default {
       console.log(currentIndex)
       let added = this.params.awardList[currentIndex].ordinaryCouponIdList.map(item => item.id)
       this.emptySelect = added
-      //  删除之后优惠券弹框的展示
-      // this.emptySelect.splice(index, 1)
-      // console.log(this.par)
-      // 删除之后优惠券的展示
       this.params.awardList[currentIndex].ordinaryCoupon.splice(index, 1)
-      // console.log(this.params.awardList[currentIndex].ordinaryCoupon, '------')
-      // console.log(this.params.awardList[currentIndex].ordinaryCoupon.splice(index, 1), 'data----')
     },
 
     // 分裂优惠券弹窗调起
-    handleToCallDialog2 (receiveCurrentDisCouponIndex) {
+    handleToCallDialog2 (item, receiveCurrentDisCouponIndex) {
+      console.log(item)
+      let disCouponArr = []
+      item.splitCoupon.forEach(item => {
+        disCouponArr.push(item.id)
+      })
+      this.disCouponIdList = disCouponArr
       this.showCouponDialog2 = !this.showCouponDialog2
       this.currentDisCouponIndex = receiveCurrentDisCouponIndex
     },
     // 分裂优惠券处理
     addDisCouponHandle (disCouponData) {
-      console.log(disCouponData, 'disCouponData')
       this.params.awardList[this.currentDisCouponIndex].splitCoupon = disCouponData
       // console.log(data)
     },
 
     // 删除分裂优惠券
-    deleteCouponImg2 (index) {
-      let splitCouponIdList = this.params.awardList[0].splitCoupon.map(item => item.id)
-      this.disCouponIdList = splitCouponIdList
-      this.disCouponIdList.splice(index, 1)
-      this.params.awardList[0].splitCoupon.splice(index, 1)
+    deleteCouponImg2 (item, index, receiveCurrentDisCouponIndex) {
+      let disCoupons = this.params.awardList[receiveCurrentDisCouponIndex].splitCouponIdList.map(item => item.id)
+      this.disCouponIdList = disCoupons
+      this.params.awardList[receiveCurrentDisCouponIndex].splitCoupon.splice(index, 1)
     },
 
     // 跳转到幸运大抽奖创建页面
@@ -948,28 +961,32 @@ export default {
     },
 
     // 调起链接弹窗
-    chooseSelect (current) {
+    chooseSelect (index) {
       this.tuneUpSelectLinkDialog = !this.tuneUpSelectLinkDialog
-      console.log(current, 'current')
-      this.currentLinkIndex = current
+      console.log(this.currentModelIndex)
+      console.log(index, 'current')
+      this.currentModelIndex = index
     },
 
     // 链接数据选中回传
     handleToSelectLinkPath (link) {
       console.log(link, 'link')
-      this.params.awardList[this.currentLinkIndex].customLink = link
-      console.log(this.params.awardList[this.currentLinkIndex].customLink)
+      this.params.awardList[this.currentModelIndex].customLink = link
+      console.log(this.params.awardList[this.currentModelIndex].customLink)
     },
 
     // 活动图片弹窗调起
-    handleImage () {
+    handleImage (index) {
+      this.currentModelIndex = index
+      console.log(this.currentModelIndex)
+
       this.tuneUpImageDialog = !this.tuneUpImageDialog
     },
 
     // 活动图片替换
     avatarSelectHandle (val) {
-      console.log(val.imgPath)
-      this.params.awardList[0].image = val.imgPath
+      this.params.awardList[this.currentModelIndex].image = val.imgPath
+      console.log(val.imgPath, this.params.awardList[this.currentModelIndex], 'current awardList item')
     },
 
     // 添加商品品牌弹窗
@@ -992,17 +1009,21 @@ export default {
 
     // 调起选择商品弹窗
     addGoods (index) {
+      console.log(index)
+      this.currentModelIndex = index
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
-    // 返回商品信息
-    choosingGoodsResult (res) {
-      console.log(res)
-      this.params.awardList.prdId = res.prdId
-      this.params.awardList.goodsShow = true
-      this.params.awardList.goodsName = res.goodsName
-      this.params.awardList.customImage = res.goodsImg
-      this.params.awardList.goodsPrice = res.prdPrice
-      this.params.awardList.goodsNumber = res.prdNumber
+
+    // 返回商品信息 选状态选中的商品全部信息
+    addGiftDialog (res) {
+      console.log(res, 'goodInfo')
+      this.params.awardList[this.currentModelIndex].prdId = res.prdId
+      this.params.awardList[this.currentModelIndex].goodsShow = true
+      this.params.awardList[this.currentModelIndex].goodsName = res.goodsName
+      this.params.awardList[this.currentModelIndex].customImage = res.goodsImg
+      this.params.awardList[this.currentModelIndex].goodsPrice = res.prdPrice
+      this.params.awardList[this.currentModelIndex].goodsNumber = res.prdNumber
+      console.log(this.params.awardList, this.params.awardList[this.currentModelIndex], 'console log awardiList value===')
       this.$forceUpdate()
     },
 
@@ -1223,7 +1244,7 @@ export default {
           display: block;
           content: "";
         }
-        .addGoods {
+        .addGoodsWrapper {
           width: 120px;
           height: 30px;
           line-height: 30px;
