@@ -22,7 +22,7 @@ public class OfficialController extends OfficialBaseController{
 
 	
 	/**
-	   *  处理提交申请使用的客户信息
+	 *  处理提交申请使用的客户信息
 	 * @param username
 	 * @param mobile
 	 * @return JsonResult
@@ -62,9 +62,7 @@ public class OfficialController extends OfficialBaseController{
 		}
 	}
 	
-	
 	/**
-	 * TODO 有待优化处理 
 	 * 检测用户的登录设备
 	 * @param request
 	 * @return boolean
