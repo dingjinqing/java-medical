@@ -90,7 +90,7 @@ public class GoodsSortService extends ShopBaseService {
         retTree.forEach(vo->{
             GoodsSortSelectTreeVo parent = sortIdMap.get(vo.getParentId());
             while (parent != null) {
-                parent.setGoodsSumNum(parent.getGoodsNum()+vo.getGoodsNum());
+                parent.setGoodsSumNum(parent.getGoodsSumNum()+vo.getGoodsNum());
                 parent = sortIdMap.get(parent.getParentId());
             }
         });

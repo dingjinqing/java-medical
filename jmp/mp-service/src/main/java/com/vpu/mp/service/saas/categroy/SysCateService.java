@@ -77,7 +77,7 @@ public class SysCateService extends MainBaseService {
         retTree.forEach(vo->{
             SysCategorySelectTreeVo parent = catIdMap.get(vo.getParentId());
             while (parent != null) {
-                parent.setGoodsSumNum(parent.getGoodsNum()+vo.getGoodsNum());
+                parent.setGoodsSumNum(parent.getGoodsSumNum()+vo.getGoodsNum());
                 parent = catIdMap.get(parent.getParentId());
             }
         });
@@ -163,6 +163,11 @@ public class SysCateService extends MainBaseService {
         return child;
     }
 
+    /**
+     * 根据子节点id获取所有祖先数据
+     * @param catId
+     * @return
+     */
     public  LinkedList<Map<String,Object>> findParentByChildId(Integer catId) {
         LinkedList<Map<String,Object>> result=new LinkedList<>();
 
