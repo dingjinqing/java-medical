@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.validator.ValidList;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
 import com.vpu.mp.service.pojo.shop.config.SearchConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
@@ -12,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.decoration.PageClassificationVo;
 import com.vpu.mp.service.pojo.shop.decoration.XcxCustomerPageVo;
 import com.vpu.mp.service.pojo.shop.decoration.setIndexParam;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -221,7 +223,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@PostMapping("/admin/bottom/update")
-	public JsonResult updateDecorateBottom(@RequestBody List<BottomNavigatorConfig> bottomNavConfg) {
+	public JsonResult updateDecorateBottom(@RequestBody @Valid ValidList<BottomNavigatorConfig> bottomNavConfg) {
 		shop().config.bottomCfg.setBottomNavigatorConfig(bottomNavConfg);
 		return success();
 	}

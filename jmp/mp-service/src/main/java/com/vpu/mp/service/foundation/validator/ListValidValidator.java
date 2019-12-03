@@ -7,6 +7,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.Collection;
 
 /**
+ * 列表校验 最大个数最少个数,是否为空
  * @author 孔德成
  * @date 2019/12/2 18:18
  */
@@ -27,6 +28,7 @@ public class ListValidValidator implements ConstraintValidator<ListValid, Collec
 
     @Override
     public boolean isValid(Collection value, ConstraintValidatorContext context) {
+        context.disableDefaultConstraintViolation();
         if (value==null){
             if (!notNull){
                 message="{com.vpu.validation.constraints.ListValid.notNull.message}";
