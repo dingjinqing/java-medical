@@ -13,7 +13,10 @@ public class GoodsLabelSelectListVo {
     private Integer id;
     private String name;
 
-    public GoodsLabelSelectListVo(Integer id,String name){
+    public GoodsLabelSelectListVo() {
+    }
+
+    public GoodsLabelSelectListVo(Integer id, String name){
         this.id = id;
         this.name = name;
     }
