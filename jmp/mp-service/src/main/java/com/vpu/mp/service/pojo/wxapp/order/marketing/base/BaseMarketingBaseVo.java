@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -36,14 +37,12 @@ public abstract class BaseMarketingBaseVo {
      * @return 折扣比例
      */
     public BigDecimal initRatio (){
-        ratio = BigDecimalUtil.multiplyOrDivide(BigDecimalUtil.BigDecimalPlus.create(totalDiscount, BigDecimalUtil.Operator.Divide),
-            BigDecimalUtil.BigDecimalPlus.create(totalPrice, null)
-            );
+        ratio = BigDecimalUtil.divide(totalDiscount ,totalPrice, RoundingMode.FLOOR);
         return ratio;
     }
 
     public boolean checkRatio(){
-        if(ratio != null && (BigDecimalUtil.compareTo(ratio, BigDecimal.ZERO) >= 0 || BigDecimalUtil.compareTo(ratio, BigDecimal.ONE) <= 0)){
+        if(ratio != null && BigDecimalUtil.compareTo(ratio, BigDecimal.ZERO) >= 0 && BigDecimalUtil.compareTo(ratio, BigDecimal.ONE) <= 0){
             return true;
         }
         return false;

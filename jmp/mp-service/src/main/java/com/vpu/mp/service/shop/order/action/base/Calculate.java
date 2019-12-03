@@ -73,27 +73,12 @@ public class Calculate extends ShopBaseService {
      */
     public BigDecimal calculateOrderGoodsDiscount(BaseMarketingBaseVo mbv, List<OrderGoodsBo> bos, Byte mType) {
         logger().info("计算订单商品折扣金额start,营销活动:{},商品:{},活动类型（0会员卡，1优惠卷）：{}", mbv, bos, mType);
-        if (mbv == null || CollectionUtils.isEmpty(mbv.getBos()) || mbv.checkRatio()) {
+        if (mbv == null || CollectionUtils.isEmpty(mbv.getBos()) || !mbv.checkRatio()) {
             return BigDecimal.ZERO;
         }
         // 累计折扣金额
         BigDecimal discountPrica = BigDecimal.ZERO;
-        // 累计原总价
-
         for (int i = 0, lenght = mbv.getBos().size(); i < lenght; i++) {
-            //会员卡 或 优惠卷-> one
-            if (OrderConstant.D_T_MEMBER_CARD.equals(mType) || OrderConstant.D_T_COUPON.equals(mType)) {
-                //TODO 加价购 或 满折满减 与 one 不共存
-                if (mbv.getBos().get(i).getPurchasePriceId() != null || mbv.getBos().get(i).getStraId() != null) {
-                    continue;
-                }
-                if (OrderConstant.D_T_MEMBER_CARD.equals(mType) && !CardConstant.MCARD_TP_LIMIT.equals(mbv.getBaseCardType())) {
-                    if (!userCard.checkGoodsDiscount(mbv.getBaseCardId(), mbv.getBos().get(i))) {
-                        continue;
-                    }
-                }
-                //TODO
-            }
             //该商品行折扣金额(向下取整)
             BigDecimal tdPrica;
             if (i == lenght - 1) {
