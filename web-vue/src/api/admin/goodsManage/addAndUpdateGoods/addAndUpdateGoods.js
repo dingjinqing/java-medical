@@ -8,8 +8,8 @@ export function selectPlatformClassification (parentId) {
   })
 }
 
-// 平台分类-根据父ID获取下级分类
-export function selectParentPlatfromClassification (catId) {
+// 平台分类-根据ID查询当前节点的所有祖先级节点
+export function selectParentPlatformClassification (catId) {
   return service({
     url: `/api/admin/goods/getSysCatParents?catId=${catId}`,
     method: 'get'

@@ -448,7 +448,7 @@
 // 接口函数引入
 import {
   selectPlatformClassification,
-  selectParentPlatfromClassification,
+  selectParentPlatformClassification,
   isGoodsColumnValueExist
 } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
@@ -851,22 +851,22 @@ export default {
       let catId = goodsData.catId
       this.goodsProductInfo.catId = catId
       // 查询当前节点的所有祖先级节点
-      selectParentPlatfromClassification(catId).then(res => {
+      selectParentPlatformClassification(catId).then(res => {
         let catList = res.content
         this._catFirstInit()
         // 如果第一级有数据，则将第二级的下拉框数据进行初始化
         if (catList[0] !== undefined) {
-          this.catIdTemp.firstCatId = catList[0].cat_id
-          this._catSecondInit(catList[0].cat_id)
+          this.catIdTemp.firstCatId = catList[0]
+          this._catSecondInit(catList[0])
         }
         // 如果第二级有数据，则将第三级的下拉框数据进行初始化
         if (catList[1] !== undefined) {
-          this.catIdTemp.secondCatId = catList[1].cat_id
-          this._catThirdInit(catList[1].cat_id)
+          this.catIdTemp.secondCatId = catList[1]
+          this._catThirdInit(catList[1])
         }
         // 第三级有数据
         if (catList[2] !== undefined) {
-          this.catIdTemp.thirdCatId = catList[2].cat_id
+          this.catIdTemp.thirdCatId = catList[2]
         }
       })
     },
