@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -195,16 +196,18 @@ public class ServiceCommentService extends ShopBaseService {
             .where(COMMENT_SERVICE.ORDER_SN.eq(orderSn)).and(COMMENT_SERVICE.FLAG.eq(BYTE_ONE))
             .limit(INTEGER_ONE)
             .fetchOneInto(ServiceCommentVo.class);
-        // 图片加域名处理
-        String imgs = vo.getCommImg();
-        List<String> stringList = Util.json2Object(imgs, new TypeReference<List<String>>() {
-        }, false);
-        if (CollectionUtils.isEmpty(stringList)) {
-            return vo;
+        if (Objects.nonNull(vo)) {
+            // 图片加域名处理
+            String imgs = vo.getCommImg();
+            List<String> stringList = Util.json2Object(imgs, new TypeReference<List<String>>() {
+            }, false);
+            if (CollectionUtils.isEmpty(stringList)) {
+                return vo;
+            }
+            stringList = stringList.stream().map(domainConfig::imageUrl).collect(Collectors.toList());
+            log.debug("评论图片有：{}", stringList.toString());
+            vo.setCommImg(Util.toJson(stringList));
         }
-        stringList = stringList.stream().map(domainConfig::imageUrl).collect(Collectors.toList());
-        log.debug("评论图片有：{}", stringList.toString());
-        vo.setCommImg(Util.toJson(stringList));
         return vo;
     }
 
