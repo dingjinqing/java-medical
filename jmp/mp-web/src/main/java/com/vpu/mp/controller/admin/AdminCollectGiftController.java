@@ -1,13 +1,8 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *	收藏有礼控制器
@@ -29,8 +24,7 @@ public class AdminCollectGiftController extends AdminBaseController{
 	}
 	/**
 	 *	开关控制
-	 * @param 
-	 * @return
+	 * @return 修改状态信息
 	 */
 	@GetMapping("/status")
 	public JsonResult updateStatus() {
