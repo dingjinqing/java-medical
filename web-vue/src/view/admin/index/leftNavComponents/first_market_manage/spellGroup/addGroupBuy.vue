@@ -124,7 +124,7 @@
                   :prop="'product.' +  scope.$index+ '.groupPrice'"
                   :rules="[
                     { required: true, message: '拼团价不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: 'blur' }
+                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
@@ -155,7 +155,7 @@
                   :prop="'product.' +  scope.$index+ '.grouperPrice'"
                   :rules="[
                     { required: true, message: '团长价不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: 'blur' }
+                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
@@ -191,7 +191,7 @@
                   :prop="'product.' +  scope.$index+ '.stock'"
                   :rules="[
                     { required: true, message: '拼团库存不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.prdNumber)}, trigger: 'blur' }
+                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.prdNumber)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
@@ -451,7 +451,6 @@ import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
 import { addGroupBuyActivity, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
-// import couponStyles from './couponStyle_s'
 
 export default {
   components: {
@@ -612,7 +611,7 @@ export default {
       if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
       } else if (value > prdPrice) {
-        callback(new Error('拼团价不能大于商品原价'))
+        callback(new Error('拼团价或团长价不能大于商品原价'))
       } else {
         callback()
       }
