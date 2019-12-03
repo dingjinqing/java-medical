@@ -7,8 +7,7 @@ import com.vpu.mp.service.pojo.saas.category.SysCategorySelectTreeVo;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.decoration.ChildCateVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
-import org.jooq.Record2;
-import org.jooq.Record3;
+import org.jooq.Record1;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -164,32 +163,20 @@ public class SysCateService extends MainBaseService {
     }
 
     /**
-     * 根据子节点id获取所有祖先数据
-     * @param catId
-     * @return
+     * 根据子节点id获取所有祖先数节点id值，包含输入值
+     * @param catId 子节点id
+     * @return 按顺序返回父节点id值集合
      */
-    public  LinkedList<Map<String,Object>> findParentByChildId(Integer catId) {
-        LinkedList<Map<String,Object>> result=new LinkedList<>();
+    public  LinkedList<Integer> findParentIdsByChildId(Integer catId) {
+        LinkedList<Integer> result=new LinkedList<>();
 
-        Map<String, Object> parents = new HashMap<>(2);
+        Integer parentId = catId;
 
-        Record2<String, Integer> stringIntegerRecord2 = db().select(CATEGORY.CAT_NAME, CATEGORY.PARENT_ID)
-            .from(CATEGORY).where(CATEGORY.CAT_ID.eq(catId)).fetchAny();
-        Integer parentId = stringIntegerRecord2.get(CATEGORY.PARENT_ID);
-
-        parents.put(CATEGORY.CAT_ID.getName(),catId);
-        parents.put(CATEGORY.CAT_NAME.getName(),stringIntegerRecord2.get(CATEGORY.CAT_NAME));
-
-        result.addFirst(parents);
-
-        while (parentId != 0) {
-            Record3<Integer, String, Integer> record3 = db().select(CATEGORY.CAT_ID, CATEGORY.CAT_NAME, CATEGORY.PARENT_ID).from(CATEGORY)
+        while (!Integer.valueOf(0).equals(parentId)) {
+            result.addFirst(parentId);
+            Record1<Integer> record = db().select(CATEGORY.PARENT_ID).from(CATEGORY)
                 .where(CATEGORY.CAT_ID.eq(parentId)).fetchAny();
-            parents=new HashMap<>();
-            parents.put(CATEGORY.CAT_ID.getName(),record3.get(CATEGORY.CAT_ID));
-            parents.put(CATEGORY.CAT_NAME.getName(),record3.get(CATEGORY.CAT_NAME));
-            result.addFirst(parents);
-            parentId=record3.get(CATEGORY.PARENT_ID);
+            parentId=record.get(CATEGORY.PARENT_ID);
         }
         return result;
     }

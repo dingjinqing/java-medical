@@ -58,8 +58,8 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @GetMapping("/api/admin/goods/getSysCatParents")
     public JsonResult getSysCatParents(Integer catId) {
-        LinkedList<Map<String, Object>> parentByChildId = saas.sysCate.findParentByChildId(catId);
-        return success(parentByChildId);
+        LinkedList<Integer> parentIds = saas.sysCate.findParentIdsByChildId(catId);
+        return success(parentIds);
     }
     /**
      * 商品分页查询
@@ -72,6 +72,11 @@ public class AdminGoodsController extends AdminBaseController {
         return success(pageList);
     }
 
+    /**
+     * 商品选择弹窗，根据过滤条件查询对应商品id集合
+     * @param param
+     * @return
+     */
     @PostMapping("/api/admin/goods/listAllIds")
     public JsonResult getGoodsIdsListAll(@RequestBody GoodsPageListParam param) {
         List<Integer> goodsIds = shop().goods.getGoodsIdsListAll(param);

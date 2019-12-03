@@ -552,7 +552,7 @@ public class GoodsService extends ShopBaseService {
      * @param dataList 分页结果集
      * @param pageListParam 数据筛选条件
      */
-    public void disposeGoodsPageListVo( List<GoodsPageListVo> dataList, GoodsPageListParam pageListParam) {
+    protected void disposeGoodsPageListVo( List<GoodsPageListVo> dataList, GoodsPageListParam pageListParam) {
 
         // 处理商品平台分类：通过id值获取name值
         saas.sysCate.disposeCategoryName(dataList);
@@ -694,7 +694,9 @@ public class GoodsService extends ShopBaseService {
             //插入商品分销改价信息
             insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
             //更新es
-            esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
+            }
         });
     }
 
@@ -999,7 +1001,9 @@ public class GoodsService extends ShopBaseService {
 
             //更新es
             List<Integer> goodsIds = goodsRecords.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
-            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+            }
         });
     }
 
@@ -1021,7 +1025,9 @@ public class GoodsService extends ShopBaseService {
 
         goodsLabelCouple.batchInsert(goodsLabelCouples);
         //更新es
-        esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+        if (esUtilSearchService.esState()){
+            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+        }
     }
 
     /**
@@ -1073,7 +1079,9 @@ public class GoodsService extends ShopBaseService {
 
             //更新es
             List<Integer> goodsIds = goodsRecordsForUpdate.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
-            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+            if (esUtilSearchService.esState()){
+                esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+            }
         });
     }
 
@@ -1108,7 +1116,9 @@ public class GoodsService extends ShopBaseService {
             deleteGoodsRebatePrices(goodsIds);
 
             //更新es
-            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+            if (esUtilSearchService.esState()){
+                esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+            }
         });
     }
 
@@ -1169,7 +1179,9 @@ public class GoodsService extends ShopBaseService {
             updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
 
             //es更新
-            esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
+            if (esUtilSearchService.esState()){
+                esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
+            }
         });
     }
 
@@ -1664,7 +1676,9 @@ public class GoodsService extends ShopBaseService {
             db().batchUpdate(prdRecordsMap.values()).execute();
 
             try {
-                //esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+                if (esUtilSearchService.esState()){
+                    esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

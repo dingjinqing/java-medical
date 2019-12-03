@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
