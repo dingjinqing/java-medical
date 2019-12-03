@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods.label;
 
-import lombok.Data;
+
 
 
 /**
@@ -8,8 +8,29 @@ import lombok.Data;
  * @author 李晓冰
  * @date 2019年11月25日
  */
-@Data
+
 public class GoodsLabelSelectListVo {
     private Integer id;
     private String name;
+
+    public GoodsLabelSelectListVo(Integer id,String name){
+        this.id = id;
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

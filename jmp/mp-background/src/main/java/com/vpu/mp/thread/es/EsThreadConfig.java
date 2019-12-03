@@ -78,8 +78,14 @@ public class EsThreadConfig {
     }
     @Async("esAsyncExecutor")
     public void doLabelIndexByShopId(Integer shopId) {
-        List<Integer> list = saas.getShopApp(shopId).goods.getAllGoodsId();
-
+        List<Integer> list ;
+        try{
+            //some db maybe don't exist
+            list  = saas.getShopApp(shopId).goods.getAllGoodsId();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ;
+        }
 //        List<Integer> list = new ArrayList<>();
 //        for (int a = 0; a < 125000; a++) {
 //            list.addAll(list1);

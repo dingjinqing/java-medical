@@ -2,10 +2,12 @@ package com.vpu.mp.service.shop.goods.es.goods.label;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.db.shop.tables.GoodsLabel;
 import com.vpu.mp.service.foundation.es.EsAggregationName;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.es.EsLabelName;
+import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.shop.goods.es.EsBaseSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -191,6 +193,8 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
             bool.must(QueryBuilders.termQuery(EsLabelName.LIST_SHOW,Boolean.TRUE));
         }else if( EsGoodsConstant.GOODS_SEARCH_PAGE.equals(type) ){
             bool.must(QueryBuilders.termQuery(EsLabelName.SEARCH_SHOW,Boolean.TRUE));
+        }else if( EsGoodsConstant.ADMIN_GOODS_LIST_PAGE.equals(type) ){
+            bool.must(QueryBuilders.termQuery(EsLabelName.TYPE, GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()));
         }
         return bool;
     }
