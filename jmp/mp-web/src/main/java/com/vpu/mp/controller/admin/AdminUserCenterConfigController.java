@@ -2,6 +2,8 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import com.vpu.mp.service.foundation.validator.ValidList;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.config.center.UserCenterConfigParam;
+
+import javax.validation.Valid;
 
 /**
  *
@@ -39,7 +43,7 @@ public class AdminUserCenterConfigController extends AdminBaseController{
      * @return
      */
     @PostMapping("/admin/user/center/config/update")
-    public JsonResult updateUserCenterConfig(@RequestBody List<UserCenterConfigParam> param){
+    public JsonResult updateUserCenterConfig(@RequestBody @Validated ValidList<UserCenterConfigParam> param){
         shop().config.userCenterConfigService.updateUserCenterConfig(param);
         return success();
     }

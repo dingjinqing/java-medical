@@ -2,9 +2,11 @@ package com.vpu.mp.service.pojo.shop.config.center;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.foundation.validator.CharacterValid;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -55,7 +57,10 @@ public class UserCenterConfigParam {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty(value = "bg_img")
     private String bgImg;
-
+    /**
+     * 标题
+     */
+    @CharacterValid(letterDigit =false, max = 10)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String title;
 
@@ -71,6 +76,8 @@ public class UserCenterConfigParam {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty(value = "is_show_footprint")
     private String isShowFootprint;
+
+    @Valid
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<UserCenterContentConfig> content;
 

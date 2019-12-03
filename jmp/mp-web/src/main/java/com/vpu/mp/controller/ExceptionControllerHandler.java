@@ -56,7 +56,7 @@ public class ExceptionControllerHandler extends BaseController {
         }
         String field = Objects.requireNonNull(result.getFieldError()).getField();
         if (field.contains("[")){
-            field = field.replace("[\\[\\d+\\]]", "");
+            field = field.replaceAll("[\\[\\d+\\]]", "");
         }
         String objectName = result.getObjectName();
         String errorCode = result.getFieldError().getCode();

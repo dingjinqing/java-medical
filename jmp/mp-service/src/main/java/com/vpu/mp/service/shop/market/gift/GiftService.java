@@ -9,7 +9,18 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.gift.*;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftDetailListParam;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftDetailListVo;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftListParam;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftListVo;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftParam;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftVo;
+import com.vpu.mp.service.pojo.shop.market.gift.LevelParam;
+import com.vpu.mp.service.pojo.shop.market.gift.ProductVo;
+import com.vpu.mp.service.pojo.shop.market.gift.RuleJson;
+import com.vpu.mp.service.pojo.shop.market.gift.RuleParam;
+import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
+import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
@@ -28,14 +39,15 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Tag.TAG;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.foundation.util.Util.*;
-import static com.vpu.mp.service.pojo.shop.market.gift.GiftListParam.*;
+import static com.vpu.mp.service.foundation.util.Util.listToString;
+import static com.vpu.mp.service.foundation.util.Util.numberToString;
+import static com.vpu.mp.service.foundation.util.Util.stringToList;
+import static com.vpu.mp.service.foundation.util.Util.underLineStyleGson;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.jooq.impl.DSL.countDistinct;
 import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
-import static com.vpu.mp.service.foundation.util.Util.numberToString;
 
 /**
  * 赠品
@@ -373,24 +385,23 @@ public class GiftService extends ShopBaseService {
      */
     private void addStatusCondition(SelectConditionStep<?> query, Byte status) {
         switch (status) {
-            case NOT_STARTED:
-                query.and(TABLE.START_TIME.gt(Util.currentTimeStamp()));
-                break;
-            case ONGOING:
+            case BaseConstant.NAVBAR_TYPE_ONGOING:
                 query.and(TABLE.START_TIME.le(Util.currentTimeStamp()))
-                    .and(TABLE.END_TIME.gt(Util.currentTimeStamp()));
+                        .and(TABLE.END_TIME.gt(Util.currentTimeStamp()));
+                query.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                 break;
-            case EXPIRED:
+            case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
+                query.and(TABLE.START_TIME.gt(Util.currentTimeStamp()));
+                query.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
+                break;
+            case BaseConstant.NAVBAR_TYPE_FINISHED:
                 query.and(TABLE.END_TIME.lt(Util.currentTimeStamp()));
+                query.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
                 break;
-            case DISABLED:
+            case BaseConstant.NAVBAR_TYPE_DISABLED:
                 query.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                 break;
             default:
-                throw new IllegalArgumentException("Unexpected status: " + status);
-        }
-        if (DISABLED != status) {
-            query.and(TABLE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL));
         }
     }
 

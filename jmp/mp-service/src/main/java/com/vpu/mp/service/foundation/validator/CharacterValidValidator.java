@@ -175,4 +175,16 @@ public class CharacterValidValidator implements ConstraintValidator<CharacterVal
         return false;
 
     }
+
+    @Override
+    public String toString() {
+        return "CharacterValidValidator{" +
+                "min=" + min +
+                ", max=" + max +
+                ", chineseNum=" + chineseNum +
+                ", letterDigit=" + letterDigit +
+                ", chinese=" + chinese +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

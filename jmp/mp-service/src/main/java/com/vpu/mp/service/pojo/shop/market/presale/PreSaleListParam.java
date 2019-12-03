@@ -15,14 +15,6 @@ import java.sql.Timestamp;
 @Setter
 public class PreSaleListParam extends BasePageParam {
 
-    /** 进行中 **/
-    public static final byte ONGOING = 0;
-    /** 未开始 **/
-    public static final byte NOT_STARTED = 1;
-    /** 已过期 **/
-    public static final byte EXPIRED = 2;
-    /** 已停用 **/
-    public static final byte DISABLED = 3;
 
     private String name;
     /** 定金支付开始时间 **/

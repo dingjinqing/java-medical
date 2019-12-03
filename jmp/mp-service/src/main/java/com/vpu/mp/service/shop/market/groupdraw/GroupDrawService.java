@@ -4,7 +4,11 @@ import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.*;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListVo;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawShareParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawUpdateParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +26,13 @@ import java.util.List;
 import static com.vpu.mp.db.shop.tables.GroupDraw.GROUP_DRAW;
 import static com.vpu.mp.db.shop.tables.JoinDrawList.JOIN_DRAW_LIST;
 import static com.vpu.mp.db.shop.tables.JoinGroupList.JOIN_GROUP_LIST;
-import static com.vpu.mp.service.foundation.util.Util.*;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
+import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
+import static com.vpu.mp.service.foundation.util.Util.listToString;
+import static com.vpu.mp.service.foundation.util.Util.stringToList;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -152,23 +162,22 @@ public class GroupDrawService extends ShopBaseService {
         }
         if (null != status) {
             switch (status) {
-                case GroupDrawListVo.ONGOING:
+                case NAVBAR_TYPE_ONGOING:
                     select.and(GROUP_DRAW.START_TIME.le(currentTimeStamp()))
                         .and(GROUP_DRAW.END_TIME.ge(currentTimeStamp()));
                     break;
-                case GroupDrawListVo.NOT_STARTED:
+                case NAVBAR_TYPE_NOT_STARTED:
                     select.and(GROUP_DRAW.START_TIME.greaterThan(currentTimeStamp()));
                     break;
-                case GroupDrawListVo.FINISHED:
+                case NAVBAR_TYPE_FINISHED:
                     select.and(GROUP_DRAW.END_TIME.lessThan(currentTimeStamp()));
                     break;
-                case GroupDrawListVo.DISABLED:
+                case NAVBAR_TYPE_DISABLED:
                     select.and(GROUP_DRAW.STATUS.eq(GROUP_DRAW_DISABLED));
                     break;
                 default:
-                    throw new IllegalArgumentException("Unexpected status: " + status);
             }
-            if (GroupDrawListVo.DISABLED != status) {
+            if (NAVBAR_TYPE_DISABLED != status) {
                 select.and(GROUP_DRAW.STATUS.eq(GROUP_DRAW_ENABLED));
             }
         }
@@ -195,15 +204,15 @@ public class GroupDrawService extends ShopBaseService {
         switch (status) {
             case GROUP_DRAW_ENABLED:
                 if (startTime.after(currentTimeStamp())) {
-                    vo.setStatus(GroupDrawListVo.NOT_STARTED);
+                    vo.setStatus(NAVBAR_TYPE_NOT_STARTED);
                 } else if (startTime.before(currentTimeStamp()) && endTime.after(currentTimeStamp())) {
-                    vo.setStatus(GroupDrawListVo.ONGOING);
+                    vo.setStatus(NAVBAR_TYPE_ONGOING);
                 } else {
-                    vo.setStatus(GroupDrawListVo.FINISHED);
+                    vo.setStatus(NAVBAR_TYPE_FINISHED);
                 }
                 break;
             case GROUP_DRAW_DISABLED:
-                vo.setStatus(GroupDrawListVo.DISABLED);
+                vo.setStatus(NAVBAR_TYPE_DISABLED);
                 break;
         }
         // 商品数量

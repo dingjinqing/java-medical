@@ -13,15 +13,6 @@ import lombok.Setter;
 @Setter
 public class GiftListParam extends BasePageParam {
 
-    /** 进行中 **/
-    public static final byte ONGOING = 1;
-    /** 未开始 **/
-    public static final byte NOT_STARTED = 2;
-    /** 已过期 **/
-    public static final byte EXPIRED = 3;
-    /** 已停用 **/
-    public static final byte DISABLED = 4;
-
     /** 活动名称 **/
     private String name;
     /** 状态 **/

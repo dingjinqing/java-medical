@@ -11,10 +11,21 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
-import com.vpu.mp.service.pojo.shop.market.presale.*;
+import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
+import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListVo;
+import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
+import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
+import com.vpu.mp.service.pojo.shop.market.presale.ProductParam;
+import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
+import com.vpu.mp.service.pojo.shop.market.presale.StatusContainer;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Record1;
+import org.jooq.Record14;
+import org.jooq.Record2;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.stereotype.Service;
@@ -34,8 +45,11 @@ import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
 import static com.vpu.mp.service.foundation.data.JsonResultMessage.ACTIVITY_TIME_RANGE_CONFLICT;
-import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_POSTPONE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_SPECIFIC;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.GOODS_TYPE_PRE_SALE;
@@ -140,9 +154,10 @@ public class PreSaleService extends ShopBaseService {
      * 获取活动状态
      */
     private Byte getStatusOf(StatusContainer vo) {
+        Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime());
         Byte originalStatus = vo.getStatus();
         if (originalStatus == 0) {
-            return DISABLED;
+            return NAVBAR_TYPE_DISABLED;
         } else {
             Timestamp preStartTime = vo.getPreStartTime();
             Timestamp preEndTime = vo.getPreEndTime();
@@ -152,19 +167,19 @@ public class PreSaleService extends ShopBaseService {
             Timestamp endTime = vo.getEndTime();
             Timestamp now = Util.currentTimeStamp();
             if (now.before(preStartTime)) {
-                return NOT_STARTED;
+                return NAVBAR_TYPE_NOT_STARTED;
             } else if ((now.after(preStartTime) && now.before(preEndTime))) {
-                return ONGOING;
+                return NAVBAR_TYPE_ONGOING;
             } else if (null != startTime && null != endTime) {
                 if (now.after(startTime) && now.before(endTime)) {
-                    return ONGOING;
+                    return NAVBAR_TYPE_ONGOING;
                 }
             } else if (null != preStartTime2 && null != preEndTime2) {
                 if (now.after(preStartTime2) && now.before(preEndTime2)) {
-                    return ONGOING;
+                    return NAVBAR_TYPE_ONGOING;
                 }
             }
-            return EXPIRED;
+            return NAVBAR_TYPE_FINISHED;
         }
     }
 
@@ -207,20 +222,20 @@ public class PreSaleService extends ShopBaseService {
         Byte, Timestamp, Timestamp, Integer, Integer, Integer, Integer, Serializable>> query, Byte status) {
         Timestamp now = Util.currentTimeStamp();
         switch (status) {
-            case NOT_STARTED:
+            case NAVBAR_TYPE_ONGOING:
+                query.and(TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME.gt(now)))
+                        .or(TABLE.START_TIME.ge(now).and(TABLE.END_TIME.gt(now)))
+                        .or(TABLE.PRE_START_TIME_2.le(now).and(TABLE.PRE_END_TIME_2.gt(now)));
+                break;
+            case NAVBAR_TYPE_NOT_STARTED:
                 query.and(TABLE.PRE_START_TIME.gt(now));
                 break;
-            case ONGOING:
-                query.and(TABLE.PRE_START_TIME.le(now).and(TABLE.PRE_END_TIME.gt(now)))
-                    .or(TABLE.START_TIME.ge(now).and(TABLE.END_TIME.gt(now)))
-                    .or(TABLE.PRE_START_TIME_2.le(now).and(TABLE.PRE_END_TIME_2.gt(now)));
-                break;
-            case EXPIRED:
+            case NAVBAR_TYPE_FINISHED:
                 query.and(TABLE.PRE_END_TIME.le(now).and(TABLE.PRE_START_TIME_2.gt(now))
                     .and(TABLE.PRE_END_TIME_2.le(now).and(TABLE.START_TIME.gt(now))))
                     .or(TABLE.PRE_END_TIME.le(now).and(TABLE.START_TIME.gt(now)).or(TABLE.END_TIME.gt(now)));
                 break;
-            case DISABLED:
+            case NAVBAR_TYPE_DISABLED:
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected status: " + status);
@@ -471,10 +486,10 @@ public class PreSaleService extends ShopBaseService {
         PreSaleListVo presale = db().selectFrom(TABLE).where(TABLE.ID.eq(presaleId)).fetchOneInto(PreSaleListVo.class);
         Byte status = getStatusOf(presale);
         String shareConfiguration = shareConfigJson(param);
-        if (ONGOING == status) {
+        if (NAVBAR_TYPE_ONGOING == status) {
             db().update(TABLE).set(TABLE.PRESALE_NAME, param.getPresaleName())
                 .set(TABLE.SHARE_CONFIG, shareConfiguration);
-        } else if (NOT_STARTED == status) {
+        } else if (NAVBAR_TYPE_NOT_STARTED == status) {
             validateParam(param);
             db().update(TABLE).set(TABLE.PRESALE_NAME, param.getPresaleName()).set(TABLE.PRE_START_TIME,
                 param.getPreStartTime()).set(TABLE.PRE_END_TIME, param.getPreEndTime()).set(TABLE.PRE_START_TIME_2,
@@ -534,7 +549,7 @@ public class PreSaleService extends ShopBaseService {
     public Boolean getPreGoodsBuyType(Integer goodsId) {
         Timestamp nowDate =new Timestamp(System.currentTimeMillis());
         Record1<Byte> buyType = db().select(TABLE.BUY_TYPE).from(TABLE)
-                .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(TABLE.STATUS.eq(NOT_STARTED)).and(TABLE.GOODS_ID.eq(goodsId))
+                .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(TABLE.STATUS.eq(NAVBAR_TYPE_NOT_STARTED)).and(TABLE.GOODS_ID.eq(goodsId))
                 .and((
                         (TABLE.PRE_PAY_STEP.eq((byte) 2).and(TABLE.PRE_START_TIME.lt(nowDate)).and(TABLE.PRE_END_TIME.gt(nowDate)))
                                 .or(TABLE.PRE_PAY_STEP.eq((byte) 2).and(TABLE.PRE_START_TIME_2.lt(nowDate)).and(TABLE.PRE_END_TIME_2.gt(nowDate)))
