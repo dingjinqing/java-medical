@@ -63,16 +63,6 @@ public class WxAppStoreController extends WxAppBaseController{
     }
 
     /**
-     * TODO 门店买单继续支付
-     */
-    @PostMapping("/continuePay")
-    public JsonResult continuePay(@RequestBody @Validated({StoreConfirmPay.class}) StoreInfoParam param, HttpServletRequest request) {
-        param.setClientIp(RequestUtil.getIp(request));
-        log.debug("客户端ip地址为：{}", param.getClientIp());
-        return this.success(shop().store.wxService.storePay(param));
-    }
-
-    /**
      * 门店服务预约详情
      */
     @PostMapping("/service/reservation")
@@ -102,10 +92,10 @@ public class WxAppStoreController extends WxAppBaseController{
      * 门店服务预约订单继续支付
      */
     @PostMapping("/service/reservationContinuePay")
-    public JsonResult reservationContinuePay(@RequestBody @Validated SubmitReservationParam param, HttpServletRequest request) {
+    public JsonResult reservationContinuePay(@RequestBody @Validated OrderSn param, HttpServletRequest request) {
         param.setClientIp(RequestUtil.getIp(request));
         log.debug("客户端ip地址为：{}", param.getClientIp());
-        return this.success(shop().store.reservation.submitReservation(param));
+        return this.success(shop().store.reservation.continuePay(param.getOrderSn(), param.getClientIp()));
     }
 
     /**

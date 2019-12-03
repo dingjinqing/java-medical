@@ -1,6 +1,9 @@
 package com.vpu.mp.service.shop.store.store;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
+import com.github.binarywang.wxpay.constant.WxPayConstants;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CommentServiceRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
@@ -8,6 +11,7 @@ import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -51,6 +55,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
@@ -446,9 +451,75 @@ public class StoreReservation extends ShopBaseService {
         return webPayVo.get();
     }
 
-    public void continuePay(String orderSn) {
-        // TODO 微信查询订单接口，根据结果判定继续支付还是关闭订单
-        // TODO 前端倒计时十分钟结束后调用后台接口，关闭该订单，更改状态为已取消
+    /**
+     * Continue pay web pay vo.
+     *
+     * @param orderSn  the order sn
+     * @param clientIp the client ip
+     * @return the web pay vo
+     */
+    public WebPayVo continuePay(String orderSn, String clientIp) {
+        WxPayOrderQueryResult queryResult = null;
+        try {
+            // 查询微信支付订单信息
+            queryResult = mpPaymentService.wxQueryOrder(orderSn);
+        } catch (WxPayException e) {
+            e.printStackTrace();
+        }
+        if (Objects.isNull(queryResult)) {
+            // 未查到相关订单信息，删除此订单重新生成新订单支付
+            serviceOrderService.updateSingleField(orderSn, SERVICE_ORDER.DEL_FLAG, BYTE_ONE);
+            SubmitReservationParam param = new SubmitReservationParam();
+            FieldsUtil.assignNotNull(serviceOrderService.getRecord(orderSn), param);
+            param.setClientIp(clientIp);
+            // 重新走支付流程
+            return submitReservation(param);
+        }
+        switch (queryResult.getTradeState()) {
+            case WxPayConstants.WxpayTradeStatus.SUCCESS:
+                // 返回订单已支付
+                return new WebPayVo() {{
+                    setOrderType(WxPayConstants.WxpayTradeStatus.SUCCESS);
+                }};
+            case WxPayConstants.WxpayTradeStatus.CLOSED:
+                // 订单已关闭，删除此订单，并重新创建订单支付
+                return new WebPayVo() {{
+                    setOrderType(WxPayConstants.WxpayTradeStatus.CLOSED);
+                }};
+            case WxPayConstants.WxpayTradeStatus.USER_PAYING:
+                // 返回正在支付
+                return new WebPayVo() {{
+                    setOrderType(WxPayConstants.WxpayTradeStatus.USER_PAYING);
+                }};
+            case WxPayConstants.WxpayTradeStatus.PAY_ERROR:
+                break;
+            case WxPayConstants.WxpayTradeStatus.NOTPAY:
+                // 订单未支付，继续支付
+                String prepayId = serviceOrderService.selectSingleField(orderSn, SERVICE_ORDER.PREPAY_ID);
+                if (StringUtils.isBlank(prepayId)) {
+                    SubmitReservationParam param = new SubmitReservationParam();
+                    FieldsUtil.assignNotNull(serviceOrderService.getRecord(orderSn), param);
+                    param.setClientIp(clientIp);
+                    // 重新走支付流程
+                    return submitReservation(param);
+                }
+                try {
+                    return mpPaymentService.continuePay(queryResult, prepayId);
+                } catch (MpException e) {
+                    log.debug("支付失败：{}", e.getMessage());
+                    return new WebPayVo() {{
+                        setOrderType(WxPayConstants.WxpayTradeStatus.PAY_ERROR);
+                    }};
+                }
+            case WxPayConstants.WxpayTradeStatus.REFUND:
+                break;
+            case WxPayConstants.WxpayTradeStatus.REVOKED:
+                break;
+            default:
+                break;
+        }
+        return null;
+        // TODO 定时任务倒计时十分钟结束后调接口，关闭该订单，更改状态为已取消
     }
 
     /**
@@ -679,7 +750,7 @@ public class StoreReservation extends ShopBaseService {
 
     /**
      * Cancel wait to pay reservation.取消待付款订单
-     *
+     *  门店服务不支持退款（包括用户余额，会员卡余额）
      * @param orderId the order id
      */
     public void cancelWaitToPayReservation(Integer orderId, String reason) {
@@ -690,7 +761,20 @@ public class StoreReservation extends ShopBaseService {
             put(SERVICE_ORDER.CANCEL_REASON, reason);
         }};
         serviceOrderService.updateServiceOrder(orderId, map);
-        // TODO 调用微信关闭订单接口
+        // 调用微信关闭订单接口
+        CompletableFuture.supplyAsync(() -> cancelWXOrder(orderId));
+    }
+
+    private boolean cancelWXOrder(Integer orderId) {
+        // TODO 队列五分钟后调用微信关闭订单接口
+//        String orderSn = serviceOrderService.selectSingleField(orderId, SERVICE_ORDER.ORDER_SN);
+//        try {
+//            mpPaymentService.wxCloseOrder(orderSn);
+//        } catch (WxPayException e) {
+//            log.debug("微信关闭订单接口调用失败 {}", e.getMessage());
+//            return false;
+//        }
+        return true;
     }
 
     /**

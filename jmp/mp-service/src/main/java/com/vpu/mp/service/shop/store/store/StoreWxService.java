@@ -467,7 +467,7 @@ public class StoreWxService extends ShopBaseService {
             // 创建门店订单
             orderSn.set(storeOrderService.createStoreOrder(storeOrderTran));
             if (BigDecimalUtil.greaterThanZero(orderInfo.getMoneyPaid())) {
-                // todo 支付预留接口
+                //支付预留接口
                 String openId = userService.getUserByUserId(param.getUserId()).getWxOpenid();
                 webPayVo.set(mpPaymentService.wxUnitOrder(param.getClientIp(), STORE_BUY, orderSn.get(), orderInfo.getMoneyPaid(), openId));
                 log.debug("微信支付接口调用结果：{}", webPayVo.get());

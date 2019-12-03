@@ -710,4 +710,27 @@ public class ServiceOrderService extends ShopBaseService {
         return db().select(field).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_ID.eq(orderId)).fetchOne(field);
     }
 
+
+    /**
+     * Select single field t.
+     *
+     * @param <T>     the type parameter
+     * @param orderSn the order sn
+     * @param field   the field
+     * @return the t
+     */
+    public <T> T selectSingleField(String orderSn, Field<T> field) {
+        return db().select(field).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne(field);
+    }
+
+    /**
+     * Get record service order record.
+     *
+     * @param orderSn the order sn
+     * @return the service order record
+     */
+    public ServiceOrderRecord getRecord(String orderSn) {
+        return db().selectFrom(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne();
+    }
+
 }

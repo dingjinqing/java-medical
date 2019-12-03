@@ -5,7 +5,10 @@ import com.github.binarywang.wxpay.bean.entpay.EntPayResult;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
-import com.github.binarywang.wxpay.bean.result.*;
+import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
+import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
+import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
+import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
@@ -32,6 +35,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
@@ -98,11 +102,14 @@ public class MpPaymentService extends ShopBaseService {
      * ◆ 调用刷卡支付API，返回USERPAYING的状态；
      * ◆ 调用关单或撤销接口API之前，需确认支付状态；
      *
+     * @param outTradeNo the out trade no
+     * @return the wx pay order query result
      * @throws WxPayException the wx pay exception
      */
-    public void wxQueryOrder() throws WxPayException {
+    public WxPayOrderQueryResult wxQueryOrder(String outTradeNo) throws WxPayException {
         WxPayment wxPayment = this.getMpPay();
-        WxPayOrderQueryResult result = wxPayment.queryOrder("", "");
+        // 第一个参数为transactionId微信订单号，此处置为空字符串，使用第二个参数商家订单号outTradeNo查询订单
+        return wxPayment.queryOrder(StringUtils.EMPTY, outTradeNo);
     }
 
     /**
@@ -115,9 +122,15 @@ public class MpPaymentService extends ShopBaseService {
      *
      * @throws WxPayException the wx pay exception
      */
-    public void wxCloseOrder() throws WxPayException {
+    public boolean wxCloseOrder(String outTradeNo) throws WxPayException {
         WxPayment wxPayment = this.getMpPay();
-        WxPayOrderCloseResult result = wxPayment.closeOrder("");
+        wxPayment.closeOrder(outTradeNo);
+        // 取消后再次查询结果是否为已取消
+        WxPayOrderQueryResult queryResult = wxPayment.queryOrder(StringUtils.EMPTY, outTradeNo);
+        if (Objects.isNull(queryResult)) {
+            return true;
+        }
+        return WxPayConstants.WxpayTradeStatus.CLOSED.equals(queryResult.getTradeState());
     }
 
 	/**
@@ -153,6 +166,45 @@ public class MpPaymentService extends ShopBaseService {
         this.logger().info("前台支付调用参数result : {}", webParam);
 		return webParam;
 	}
+
+    /**
+     * Continue pay web pay vo.
+     *
+     * @param result   the result
+     * @param prepayId the prepay id
+     * @return the web pay vo
+     * @throws MpException the mp exception
+     */
+    public WebPayVo continuePay(WxPayOrderQueryResult result, String prepayId) throws MpException {
+        WxPayment wxPayment = this.getMpPay();
+        WebPayVo vo = null;
+        Map<String, String> payInfo = new HashMap<>();
+        String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
+        String nonceStr = String.valueOf(System.currentTimeMillis());
+        if (WxPayConstants.TradeType.NATIVE.equals(result.getTradeType())) {
+            //TODO 原生扫码支付
+        } else if (WxPayConstants.TradeType.APP.equals(result.getTradeType())) {
+            //TODO App支付
+        } else if (WxPayConstants.TradeType.JSAPI.equals(result.getTradeType())) {
+            //二次签名
+            payInfo.put("appId", result.getAppid());
+            payInfo.put("timeStamp", timestamp);
+            payInfo.put("nonceStr", nonceStr);
+            payInfo.put("package", "prepay_id=" + prepayId);
+            payInfo.put("signType", "MD5");
+            String md5 = SignUtils.createSign(payInfo, "MD5", wxPayment.getConfig().getMchKey(), null);
+            //公众号支付/小程序支付.
+            vo = JsApiVo.builder().
+                appId(result.getAppid()).
+                timeStamp(timestamp).
+                nonceStr(nonceStr).
+                packageAlias("prepay_id=" + prepayId).
+                signType("MD5").
+                paySign(md5).
+                build();
+        }
+        return vo;
+    }
 
     /**
      * 王帅
