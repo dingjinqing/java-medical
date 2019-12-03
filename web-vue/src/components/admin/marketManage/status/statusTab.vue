@@ -51,6 +51,9 @@ export default {
       }
     }
   },
+  mounted () {
+    this.langDefault()
+  },
   methods: {
     tabClick () {
       const { standard } = this
@@ -62,6 +65,14 @@ export default {
       const allCode = standard ? 0 : null
       if (status.status === allCode) {
         return this.$t('statusTab.all') + ' ' + this.activityName + ' ' + this.$t('statusTab.activity')
+      } else if (status.status === 1) {
+        return this.$t('statusTab.processing')
+      } else if (status.status === 2) {
+        return this.$t('statusTab.prepared')
+      } else if (status.status === 3) {
+        return this.$t('statusTab.expired')
+      } else if (status.status === 4) {
+        return this.$t('statusTab.terminated')
       }
       return status.name
     }

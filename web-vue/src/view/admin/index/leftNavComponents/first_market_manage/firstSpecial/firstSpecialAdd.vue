@@ -27,7 +27,7 @@
             name="4"
           ></el-tab-pane>
           <el-tab-pane
-            :label="tabName"
+            :label="getTabName()"
             name="5"
           ></el-tab-pane>
         </el-tabs>
@@ -349,38 +349,34 @@
                     :label="1"
                     class="active_radio"
                   >{{$t('firstSpecialAdd.defaultStyle')}}
-                    <el-tooltip
+                    <el-popover
                       style="margin-left:40px;"
                       placement="right"
-                      effect="light"
+                      trigger="hover"
                     >
-                      <div
-                        slot="content"
-                        class="active_tool"
-                      >
+                      <div class="active_tool">
                         <el-image
                           style="width:240px;"
                           :src="$imageHost +'/image/admin/share/first_share1.jpg'"
+                          :preview-src-list="srcList"
                         ></el-image>
                       </div>
-                      <span>{{$t('firstSpecialAdd.viewExample')}}</span>
-                    </el-tooltip>
-                    <el-tooltip
+                      <span slot="reference">{{$t('firstSpecialAdd.viewExample')}}</span>
+                    </el-popover>
+                    <el-popover
                       style="margin-left:40px;"
                       placement="right"
-                      effect="light"
+                      trigger="hover"
                     >
-                      <div
-                        slot="content"
-                        class="active_tool"
-                      >
+                      <div class="active_tool">
                         <el-image
                           style="width:240px;"
                           :src="$imageHost +'/image/admin/share/first_share2.jpg'"
+                          :preview-src-list="srcList2"
                         ></el-image>
                       </div>
-                      <span>{{$t('firstSpecialAdd.downloadPoster')}}</span>
-                    </el-tooltip>
+                      <span slot="reference">{{$t('firstSpecialAdd.downloadPoster')}}</span>
+                    </el-popover>
                   </el-radio>
                 </div>
                 <div>
@@ -535,17 +531,24 @@ export default {
         ],
         first: { required: true, message: this.$t('firstSpecialAdd.validFirst') }
       },
-      tabName: this.$t('firstSpecialAdd.addActive')
+      srcList: [this.$imageHost + '/image/admin/share/first_share1.jpg'],
+      srcList2: [this.$imageHost + '/image/admin/share/first_share2.jpg']
     }
   },
   created () {
     if (this.$route.query.id) {
       this.isEditFlag = true
-      this.tabName = this.$t('firstSpecialAdd.editActive')
       this.initEditData()
     }
   },
   methods: {
+    getTabName () {
+      if (this.$route.query.id) {
+        return this.$t('firstSpecialAdd.editActive')
+      } else {
+        return this.$t('firstSpecialAdd.addActive')
+      }
+    },
     // 编辑进来的时候
     initEditData () {
       let _this = this

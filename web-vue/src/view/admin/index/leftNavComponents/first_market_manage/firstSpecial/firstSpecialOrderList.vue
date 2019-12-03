@@ -118,12 +118,12 @@ export default {
     marketOrderSearchTab: () => import('@/components/admin/marketManage/marketOrderSearchTab.vue')
   },
   mounted () {
-    this.langDefault()
     if (this.$route.query.id > 0) {
       this.actId = this.$route.query.id
       this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
       this.initDataList()
     }
+    this.langDefault()
   },
   data () {
     return {

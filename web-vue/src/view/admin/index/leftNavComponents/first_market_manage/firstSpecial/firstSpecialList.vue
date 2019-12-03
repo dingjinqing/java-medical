@@ -221,6 +221,7 @@ export default {
   watch: {
     'tabIndex' (n, o) {
       this.initDataList()
+      this.langDefault()
     },
 
     // data内变量国际化
