@@ -134,7 +134,7 @@ public class Calculate extends ShopBaseService {
                     // 临时存储默认营销信息!=null and
                     // 临时存储默认营销信息==card and
                     // 非限次卡
-                    if (!userCard.checkGoodsDiscount(defaultMarketing.getCard().getCardId(), bo)) {
+                    if (!userCard.isContainsProduct(defaultMarketing.getCard().getCardId(), bo)) {
                         //校验该卡是否可用该商品
                         continue;
                     }

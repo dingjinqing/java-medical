@@ -154,7 +154,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             expressList(getExpressList()).
         build();
         // goods info init
-        initGoods(param.getGoods());
+        initGoodsByParam(param.getGoods());
         // process
         processParam(param, result);
 
@@ -180,7 +180,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 OrderCreatePayBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderCreatePayBeforeMpProcessorFactory.class);
                 processorFactory.initMarketOrderCreateParam(param);
             }else {
-                purchase(param, param.getWxUserInfo().getUserId(), param.getStoreId());
+                initGoodsByNormalGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
             }
             orderBo = initCreateOrderBo(param);
             //校验
@@ -347,7 +347,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param goods
      * @return
      */
-    public void initGoods(List<Goods> goods) {
+    public void initGoodsByParam(List<Goods> goods) {
         // TODO 以下参数为模拟参数
         for (Goods temp : goods) {
             // 商品参与的促销活动id
@@ -373,16 +373,16 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             processorFactory.doProcess(param,vo);
 
             //营销购买
-            purchaseForMarket(param, param.getStoreId());
+            initGoodsByMarket(param, param.getStoreId());
         } else {
             // 普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
             if (Boolean.TRUE) {
                 // 非购物车
-                if (Boolean.FALSE) {
+                if (OrderConstant.CART_Y.equals(param.getIsCart())) {
                     // 送礼 或 批量换购
                 } else {
-                    //单次购买
-                    purchase(param, param.getWxUserInfo().getUserId(), param.getStoreId());
+                    //单次购买初始化
+                    initGoodsByNormalGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
                 }
             }
         }
@@ -396,7 +396,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param storeId
      * @throws MpException
      */
-    public void purchase(OrderBeforeParam param, Integer userId, Integer storeId) throws MpException {
+    public void initGoodsByNormalGoods(OrderBeforeParam param, Integer userId, Integer storeId) throws MpException {
         logger().info("非营销初始化商品start(purchase)");
         //TODO 返利信息
         Boolean isNewUser = orderInfo.isNewUser(userId, true);
@@ -438,7 +438,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param storeId
      * @throws MpException
      */
-    private void purchaseForMarket(OrderBeforeParam param, Integer storeId) throws MpException {
+    private void initGoodsByMarket(OrderBeforeParam param, Integer storeId) throws MpException {
         //规格信息,key proId
         Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(param.getProductIds(), storeId);
         //goods type,key goodsId

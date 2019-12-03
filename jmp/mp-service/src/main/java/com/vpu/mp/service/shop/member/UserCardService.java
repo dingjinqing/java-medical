@@ -990,7 +990,7 @@ public class UserCardService extends ShopBaseService {
      * @param bo 商品
      * @return boolean
      */
-    public boolean checkGoodsDiscount(Integer cardId, OrderGoodsBo bo){
+    public boolean isContainsProduct(Integer cardId, OrderGoodsBo bo){
         MemberCardRecord card = userCardDao.getMemberCardById(cardId);
         if(card == null){
             return false;
