@@ -702,6 +702,7 @@ public class StoreReservation extends ShopBaseService {
     public ServiceCommentVo reservationComment(String orderSn) {
         ServiceCommentVo vo = new ServiceCommentVo();
         ServiceOrderDetailVo temp = serviceOrderService.getServiceOrderDetail(orderSn);
+        vo.setServiceName(temp.getServiceName());
         vo.setServiceImg(temp.getServiceImg());
         vo.setServiceDate(temp.getServiceDate());
         vo.setServicePeriod(temp.getServicePeriod());
