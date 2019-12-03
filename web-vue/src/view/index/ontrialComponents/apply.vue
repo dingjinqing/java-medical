@@ -4,7 +4,48 @@
       <div class="apply_left">
         <div class="tiao"></div>
         <h5 class="p_h2">{{$t('apply.title')}}</h5>
-        <div class="input_icon">
+
+        <el-form
+          :model="ruleForm"
+          status-icon
+          :rules="rules"
+          ref="ruleForm"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
+          <el-form-item
+            label="姓名"
+            prop="username"
+          >
+            <el-input
+              :placeholder="$t('apply.placeholder_name')"
+              v-model="ruleForm.username"
+              autocomplete="off"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="电话"
+            prop="phonenum"
+          >
+            <el-input
+              :placeholder="$t('apply.placeholder_name')"
+              v-model.number="ruleForm.phonenum"
+              autocomplete="off"
+            ></el-input>
+          </el-form-item>
+          <div class="companyName">
+            <el-form-item label="公司">
+              <el-input
+                placeholder="请填写公司名称"
+                v-model="ruleForm.companyName"
+                autocomplete="off"
+              ></el-input>
+            </el-form-item>
+          </div>
+
+        </el-form>
+
+        <!-- <div class="input_icon">
           <input
             type="contact"
             :placeholder="$t('apply.placeholder_name')"
@@ -22,7 +63,7 @@
             v-model="phonenum"
           >
           <span>{{$t('apply.mobile')}}</span>
-        </div>
+        </div> -->
         <div
           class="p_apply_submit"
           @click="handlesubmit()"
@@ -44,11 +85,20 @@ import { applyrequest } from '@/api/index/apply.js'
 export default {
   data () {
     return {
-      username: '',
-      phonenum: '',
-      flag: true,
-      imageUrlData: this.$imageHost + '/image/admin/index_circle.png'
-
+      imageUrlData: this.$imageHost + '/image/admin/index_circle.png',
+      ruleForm: {
+        username: '',
+        phonenum: '',
+        companyName: ''
+      },
+      rules: {
+        username: [{ required: true, message: '请填写您的姓名', trigger: 'blur' }],
+        phonenum: [
+          { type: 'number', message: '请填写您的手机号' },
+          { required: true, message: '手机号不能为空' }
+        ],
+        companyName: [{ message: '请填写您的公司名称', trigger: 'blur' }]
+      }
     }
   },
   mounted () {
@@ -56,86 +106,35 @@ export default {
     this.langDefault()
   },
   methods: {
-    // 表单校验
-    JudgementForm (index) {
-      if (localStorage.getItem('WEPUBAO_LANGUAGE') === 'en_US') {
-        if (!this.username) {
-          this.$message({
-            showClose: true,
-            message: 'Please enter your username or mobile phone number',
-            type: 'warning'
-          })
-          this.flag = false
-          return
-        }
-        if (!this.password) {
-          this.$message({
-            showClose: true,
-            message: 'Please input a password',
-            type: 'warning'
-          })
-          this.flag = false
-        }
-        return
-      }
-      if (!this.username) {
-        this.$message({
-          showClose: true,
-          message: '请输入用户名或者手机号',
-          type: 'warning'
-        })
-        this.flag = false
-        return
-      }
-      if (!this.password) {
-        this.$message({
-          showClose: true,
-          message: '请输入密码',
-          type: 'warning'
-        })
-        this.flag = false
-      }
-    },
     // 提交表单
     handlesubmit () {
-      if (this.flag === false) return
       localStorage.setItem('contentType', 'application/json;charset=UTF-8')
-      console.log(this.username, this.phonenum)
-      console.log(applyrequest)
       let obj = {
-        contact: this.username,
-        mobile: this.phonenum
+        contact: this.ruleForm.username,
+        mobile: this.ruleForm.phonenum,
+        company: this.ruleForm.companyName
       }
-      if (!this.username) {
-        this.$message({
-          showClose: true,
-          message: '请填写您的姓名',
-          type: 'warning'
-        })
-        return
-      }
-      if (!this.phonenum) {
-        this.$message({
-          showClose: true,
-          message: '请填写您的手机号',
-          type: 'warning'
-        })
-        return
-      }
-      applyrequest(obj).then((res) => {
-        console.log(res)
-        if (res.error === 0) {
-          this.$message({
-            showClose: true,
-            message: '提交申请成功，请等待业务员联系',
-            type: 'success'
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          applyrequest(obj).then((res) => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$message.success({
+                showClose: true,
+                message: '提交申请成功，请等待业务员联系',
+                type: 'success'
+              })
+            } else {
+              this.$message.error({
+                showClose: true,
+                message: res.message,
+                type: 'error'
+              })
+            }
           })
         } else {
-          this.$message({
-            showClose: true,
-            message: res.message,
-            type: 'error'
-          })
+          console.log('error submit!!')
+          return false
         }
       })
     }
@@ -229,5 +228,26 @@ export default {
   margin: 0 auto;
   text-align: center;
   cursor: pointer;
+}
+</style>
+<style lang="scss" scoped>
+.demo-ruleForm {
+  width: 300px;
+  /deep/ .el-form-item {
+    display: flex;
+    /deep/ .el-form-item__label {
+      width: auto !important;
+      white-space: nowrap;
+    }
+    /deep/ .el-form-item__content {
+      margin-left: 0 !important;
+      width: 100%;
+    }
+  }
+  .companyName {
+    /deep/ .el-form-item__label {
+      padding-left: 10px;
+    }
+  }
 }
 </style>

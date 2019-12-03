@@ -163,7 +163,7 @@ export default {
     })
     this.langDefault()
     this.navshow()
-    console.log(this.$router.history.current.name)
+    console.log(this.$route)
     // 初始化登录
     this.judgeuserinfo()
   },

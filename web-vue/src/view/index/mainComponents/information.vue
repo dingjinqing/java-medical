@@ -39,6 +39,17 @@
         style="cursor:pointer"
       >{{$t('information.more')}}</a>
     </div>
+    <!--底部申请使用模块-->
+    <div
+      class="applyModule"
+      :style="'background:url('+$imageHost+'/image/admin/np_bg1.jpg'+') no-repeat'"
+    >
+      <div class="applyLeft">立即申请即可免费试用</div>
+      <div
+        class="applyBtn"
+        @click="handleToTurnApplyPage()"
+      >申请试用</div>
+    </div>
   </div>
 </template>
 <script>
@@ -163,6 +174,12 @@ export default {
     },
     more_leave () {
       this.more_active = ''
+    },
+    // 底部点击申请使用事件
+    handleToTurnApplyPage () {
+      this.$router.push({
+        name: 'indexHomeOntrial'
+      })
     }
   }
 }
@@ -171,10 +188,8 @@ export default {
 .info_container {
   background: #f7f7f7;
   text-align: center;
-  padding-bottom: 70px;
   position: relative;
   min-width: 100%;
-  padding: 0 0px 20px;
 }
 .light_head {
   text-align: center;
@@ -294,5 +309,35 @@ export default {
 .new_li span:nth-of-type(3):hover {
   color: #fff;
   background-color: #f66;
+}
+</style>
+<style lang="scss" scoped>
+.applyModule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+  color: #fff;
+  margin-top: 60px;
+  .applyLeft {
+    font-size: 30px;
+    margin-right: 20px;
+  }
+  .applyBtn {
+    width: 130px;
+    height: 40px;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 18px;
+    color: #fff;
+    display: block;
+    transition: background-color 0.2s linear, color 0.2s linear;
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
 }
 </style>
