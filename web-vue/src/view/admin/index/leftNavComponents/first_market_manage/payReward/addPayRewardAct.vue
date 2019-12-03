@@ -574,7 +574,15 @@
       </div>
     </div>
 
-    <!-- 添加普通优惠卷 -->
+    <!--选择商家分类弹窗-->
+    <AddingBusClassDialog
+      :dialogVisible.sync="isShowBusinessPlatformDialog"
+      :classFlag="classFlag"
+      :backDataArr="shopAndPlatformBackDataArr"
+      @BusClassTrueArr="getBusinessnPlatformSortData"
+    />
+
+    <!-- 活动配置 - 添加普通优惠卷 -->
     <AddCouponDialog
       @handleToCheck="addCouponHandle"
       :tuneUpCoupon="addCouponVisible"
@@ -582,7 +590,7 @@
       :type=0
     />
 
-    <!--添加分裂优惠卷-->
+    <!--活动配置 - 添加分裂优惠卷-->
     <AddCouponDialog
       @handleToCheck="addDisCouponHandle"
       :tuneUpCoupon="showCouponDialog2"
@@ -591,32 +599,20 @@
       :type="1"
     />
 
-    <!-- 选择商品弹窗 -->
+    <!-- 活动配置 - 触发条件 - 选择商品弹窗 -->
     <ChoosingGoods
-      @resultGoodsIds='getGoodsIdFromChoosingGoods'
+      @result='getGoodsIdFromChoosingGoods'
       :tuneUpChooseGoods='controlChoosingGoodsDialog'
+      :chooseGoodsBack='choosingGoodsDateTmpContainer'
     />
 
-    <!--选择商家分类弹窗-->
-    <AddingBusClassDialog
-      :dialogVisible.sync="businessDialogVisible"
-      :classFlag="classFlag"
-      @BusClassTrueArr="BusClassTrueArr()"
-    />
-
-    <!--添加品牌弹窗-->
-    <AddBrandDialog
-      :callAddBrand.sync='callAddBrand'
-      @handleToGetBackData='handleToGetBrandBackData'
-    />
-
-    <!-- 选择链接弹窗 -->
+    <!-- 选择支付奖励 - 自定义 - 链接弹窗 -->
     <SelectLinks
       :tuneUpSelectLink="tuneUpSelectLinkDialog"
       @selectLinkPath='handleToSelectLinkPath'
     />
 
-    <!--选择图片弹窗 -->
+    <!--支付奖励 - 自定义 - 选择图片弹窗 -->
     <ImageDalog
       pageIndex='pictureSpace'
       :tuneUp="tuneUpImageDialog"
@@ -624,8 +620,8 @@
       @handleSelectImg='avatarSelectHandle'
     />
 
-    <!--添加奖品弹窗-->
-    <choosingGoods
+    <!--支付奖励 - 奖品 - 添加奖品弹窗-->
+    <ChoosingGoods
       @resultGoodsRow="addGiftDialog"
       :tuneUpChooseGoods="isShowChoosingGoodsDialog"
       :singleElection="true"
@@ -642,9 +638,10 @@ import('@/util/date')
 
 export default {
   components: {
+    // SortCatTreeSelect: () => import('@/components/admin/sortCatTreeSelect'),
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'),
-    AddBrandDialog: () => import('@/components/admin/addBrandDialog'),
+    // AddBrandDialog: () => import('@/components/admin/addBrandDialog'),
     SelectLinks: () => import('@/components/admin/selectLinks'),
     ImageDalog: () => import('@/components/admin/imageDalog'),
     AddCouponDialog: () => import('@/components/admin/addCouponDialog')
@@ -699,6 +696,11 @@ export default {
     }
     return {
       emptySelect: [],
+      shopAndPlatformBackDataArr: null,
+      choosingGoodsDateTmpContainer: null,
+      shopCategoryIds: null, // 指定商品-商家分类
+      platformCategoryIds: null, // 指定商品-平台分类
+      AtreeType: null,
       idInfo: null,
       carouselList: [
         { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift1.jpg' },
@@ -707,20 +709,18 @@ export default {
       ],
       options: [],
       noneBlockDiscArr: [
-        { name: '添加商品', num: '' },
-        { name: '添加商品分类', num: '' },
-        { name: '添加平台分类', num: '' },
-        { name: '添加品牌', num: '' }
+        { name: '选择商品', num: '' },
+        { name: '选择商家分类', num: '' },
+        { name: '选择平台分类', num: '' }
       ],
       controlChoosingGoodsDialog: false,
       userDialogFlag: null,
       classFlag: null, // 区分商家分类和平台分类flag
-      businessDialogVisible: false, // 商家分类和平台分类flag
-      choosingGoodsDateFlag1: '', // 指定商品-选择商品选中数据,
+      isShowBusinessPlatformDialog: false, // 商家分类和平台分类调起
+      choosingGoodsDateFlag1: [], // 指定商品-选择商品选中数据,
       ownGoodsId: null, // 会员专享商品: 添加的商品Id
       GoodsBrandDateFlag1: '',
       ownBrandId: null,
-      callAddBrand: false,
       tuneUpSelectLinkDialog: false,
       tuneUpImageDialog: false,
       isShowChoosingGoodsDialog: false,
@@ -746,7 +746,7 @@ export default {
         endTime: '',
         actFirst: '', //  优先级
         timeType: 1, // 时间类型
-        goodsAreaType: 1, // 商品范围类型
+        goodsAreaType: 2, // 商品范围类型
         goodsIds: '1003,1002', // 商品id
         goodsCatIds: '229,230,233,235,329', // 商品平台分类
         goodsSortIds: '225,226', // 商品商家分类
@@ -825,6 +825,9 @@ export default {
         'chooseGoodsList': [],
         'image': 'image/admin/btn_add.png',
         'customLink': '',
+        'goodsId': this.choosingGoodsDateFlag1,
+        'shopCategoryIds': this.shopCategoryIds,
+        'platformCategoryIds': this.platformCategoryIds,
         'couponList': [
           {
             'actCode': '',
@@ -919,7 +922,6 @@ export default {
 
     // 点击会员专享商品出现的添加类弹窗汇总
     hanldeToAddGoodS (index) {
-      // this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
       console.log('指定商品')
       this.userDialogFlag = '1'
       console.log(index)
@@ -927,24 +929,24 @@ export default {
         case 0:
           // 商品弹窗显示
           this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
+          this.choosingGoodsDateTmpContainer = this.choosingGoodsDateFlag1
           break
         case 1:
-          // this.AtreeType = 1
+          this.AtreeType = 1
           console.log('商家分类')
-          this.businessDialogVisible = true
+          this.isShowBusinessPlatformDialog = !this.isShowBusinessPlatformDialog
+          // this.businessDialogVisible = true
           this.classFlag = 1
+          this.shopAndPlatformBackDataArr = this.shopCategoryIds
           break
         case 2:
-          // this.AtreeType = 2
+          this.AtreeType = 2
           console.log('平台分类')
-          this.businessDialogVisible = true
+          this.isShowBusinessPlatformDialog = !this.isShowBusinessPlatformDialog
+          // this.businessDialogVisible = true
           this.classFlag = 2
+          this.shopAndPlatformBackDataArr = this.platformCategoryIds
           break
-        case 3:
-          // 添加品牌弹窗显示
-          this.callAddBrand = !this.callAddBrand
-        //   console.log('detail', index, this.addBrandDialogDataFlag1)
-        //   this.$http.$emit('CallAddBrand', this.chioseSureData, this.addBrandDialogDataFlag1)
       }
     },
 
@@ -989,22 +991,22 @@ export default {
       console.log(val.imgPath, this.params.awardList[this.currentModelIndex], 'current awardList item')
     },
 
-    // 添加商品品牌弹窗
-    handleToGetBrandBackData (data) {
-      console.log(data)
-      if (this.userDialogFlag === '1') {
-        this.GoodsBrandDateFlag1 = data
-        this.noneBlockDiscArr[3].num = data.length
-      } else {
-        this.ownBrandId = data
-        this.noneBlockVipArr[3].num = data.length
-      }
-    },
-
     // 商品分类和平台分类弹窗选中回传数据
-    BusClassTrueArr (data) {
-      // 根据this.AtreeType 的值判断是指定商品里面的弹窗还是会员专享里面的弹窗   backDataArr字段是回显wiki应该有写
-      console.log(data)
+    getBusinessnPlatformSortData (data) {
+      console.log(data, 'bussiness data--')
+      if (this.userDialogFlag === '1') {
+        // 折扣
+        if (this.AtreeType === 1) {
+          // 商家分类
+          this.shopCategoryIds = data
+          this.noneBlockDiscArr[1].num = data.length
+        }
+        if (this.AtreeType === 2) {
+          // 平台分类
+          this.platformCategoryIds = data
+          this.noneBlockDiscArr[2].num = data.length
+        }
+      }
     },
 
     // 调起选择商品弹窗
