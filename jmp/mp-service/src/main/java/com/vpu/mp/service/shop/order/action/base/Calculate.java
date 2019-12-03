@@ -153,6 +153,13 @@ public class Calculate extends ShopBaseService {
                     }
                 }
             }
+            if(OrderConstant.D_T_MEMBER_CARD.equals(discountType)) {
+                //会员卡初始化支持商品
+                if(CollectionUtils.isEmpty(defaultMarketing.getCard().getBos())) {
+                    defaultMarketing.getCard().setBos(new ArrayList<>());
+                }
+                defaultMarketing.getCard().getBos().add(bo);
+            }
             //数量
             tolalNumberAndPrice[BY_TYPE_TOLAL_NUMBER] = BigDecimalUtil.add(tolalNumberAndPrice[0], BigDecimal.valueOf(bo.getGoodsNumber()));
             //价格
