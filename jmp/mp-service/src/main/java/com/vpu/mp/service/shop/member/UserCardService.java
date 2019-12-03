@@ -91,6 +91,7 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 
@@ -140,6 +141,8 @@ public class UserCardService extends ShopBaseService {
     private Calculate calculate;
     @Autowired
     private QrCodeService qrCodeService;
+    @Autowired
+    private OrderInfoService orderInfoService;
 
 	public static final String DEFAULT_ADMIN = "0";
 
@@ -761,7 +764,7 @@ public class UserCardService extends ShopBaseService {
 			throw new UserCardNullException();
 		}
 		dealWithUserCardDetailInfo(card);
-        // TODO 累计消费 等王帅的接口
+		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
 		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
 

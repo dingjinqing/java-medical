@@ -5,6 +5,9 @@ import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
 * @author 黄壮壮
 * @Date: 2019年10月25日
@@ -18,6 +21,7 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	final public static Byte SCORE_LT_YMD = 1;
 	// 2: 从获得积分当天起-内有效
 	final public static Byte SCORE_LT_NOW = 2;
+	final public static List<Integer> SCORE_PROPORTION_LIST = Arrays.asList(new Integer[] {1,10,100,1000});
 	// 积分抵扣比例 默认50%
 	final public static Integer DEFAULT_SCORE_DISCOUNT_RATIO=50;
 	// 积分有效期  0: 永久积分; 1: 从获得开始至 年-月-日; 2: 从获得积分当天起-内有效
@@ -54,6 +58,8 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	final public static String SCORE_PAGE_ID = "score_page_id";
 	// 积分说明
 	final public static String SCORE_DOCUMENT = "score_document";
+	// 积分兑换比
+	final public static String SCORE_PROPORTION = "score_proportion";
 	
 	
 	
@@ -205,6 +211,16 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	}
 	public String getScoreDocument(){
 		return get(SCORE_DOCUMENT);
+	}
+	
+	public void setScoreProportion(Integer value) {
+		if(SCORE_PROPORTION_LIST.contains(value)) {
+			set(SCORE_PROPORTION,value,Integer.class);
+		}
+	}
+
+	public Integer getScoreProportion() {
+		return get(SCORE_PROPORTION,Integer.class,SCORE_PROPORTION_LIST.get(2));
 	}
 	
 }

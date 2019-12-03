@@ -52,13 +52,15 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
 		int result = 1;
 		cfgScoreEffectiveRule(param);
-
+		// 积分兑换比
+		setScoreProportion(param.getScoreProportion());
+		
 		// 积分支付限制
 		Byte scorePayLimit = param.getScorePayLimit();
-		if (NumberUtils.BYTE_ZERO == scorePayLimit) {
+		if (NumberUtils.BYTE_ZERO.equals(scorePayLimit)) {
 			// 不限制
 			setScorePayLimit(scorePayLimit);
-		} else if (NumberUtils.BYTE_ONE == scorePayLimit) {
+		} else if (NumberUtils.BYTE_ONE.equals(scorePayLimit)) {
 			// 自定义积分
 			setScorePayLimit(scorePayLimit);
 			setScorePayNum(param.getScorePayNum());
@@ -75,13 +77,13 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		Byte scoreType = param.getScoreType();
 		setScoreType(scoreType);
 
-		if(ONE == shoppingScore) {
-			if(ZERO == scoreType ) {
+		if(ONE.equals(shoppingScore)) {
+			if(ZERO.equals(scoreType)) {
 				/** 更新满多少送多少积分 */
 				updateRecord(param,BUY);
 			}
 
-			if(ONE == scoreType) {
+			if(ONE.equals(scoreType)) {
 				/** 更新每满多少送多少积分 */
 				updateRecord(param,BUY_EACH);
 			}

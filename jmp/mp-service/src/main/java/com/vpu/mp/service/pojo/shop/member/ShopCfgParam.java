@@ -104,5 +104,9 @@ public class ShopCfgParam {
 	 * 模板页面id
 	 */
 	private Integer scorePageId;
+	/**
+	 * 积分兑换比
+	 */
+	private Integer scoreProportion;
 	
 }
