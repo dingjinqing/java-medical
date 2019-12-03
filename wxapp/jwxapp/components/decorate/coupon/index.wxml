@@ -159,8 +159,8 @@
             <view class="coupon_center_number" style='color:{{borColor}}'><text>{{item.limitSurplusFlag===0?item.receive_text:i18n.$t(localePack,'components.decorate.unlimited')}}</text></view>
           </view>
           <view class="coupon_list_bottom">
-            <form report-submit='true' class="get_coupon"  bindsubmit="bindGetCoupon" data-idx="{{m.cur_idx}}" data-vali="{{item.validation_code}}" data-exclusive="{{item.is_exclusive}}" data-code="{{item.alias_code}}" data-key="{{index}}" data-use_score="{{item.use_score}}">
-              <button form-type='submit' plain="false" style='background: {{comColor}} url("{{m.imageUrl}}/image/admin/coupon_border.png") repeat-x top;background-size: 16rpx;' disabled='{{item.disableds}}'>{{item.is_exclusive == 1 ? i18n.$t(localePack,'components.decorate.memberReceive') : item.use_score == 1 ? item.score_number + i18n.$t(localePack,'components.decorate.exchange') : i18n.$t(localePack,'components.decorate.receive')}}</button>
+            <form report-submit='true' class="get_coupon"  bindsubmit="bindGetCoupon" data-idx="{{m.cur_idx}}" data-vali="{{item.validationCode}}" data-exclusive="{{item.cardId}}" data-code="{{item.aliasCode}}" data-key="{{index}}" data-use_score="{{item.use_score}}">
+              <button form-type='submit' plain="false" style='background: {{comColor}} url("{{m.imageUrl}}/image/admin/coupon_border.png") repeat-x top;background-size: 16rpx;' disabled='{{item.disableds}}'>{{item.cardId? i18n.$t(localePack,'components.decorate.memberReceive') : item.use_score == 1 ? item.score_number + i18n.$t(localePack,'components.decorate.exchange') : i18n.$t(localePack,'components.decorate.receive')}}</button>
             </form>
           </view>
         </view>

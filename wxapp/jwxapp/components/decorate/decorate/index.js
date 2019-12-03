@@ -151,9 +151,11 @@ global.wxComponent({
       let cur_idx = Number(idx.split('_')[1])
       console.log(this._pageData, cur_idx)
       for (var i in this._pageData) {
-        console.log(this._pageData[i], cur_idx)
+        console.log(this._pageData[i], cur_idx, moduleContent, '合并数据')
         if (this._pageData[i].cur_idx == cur_idx) {
+          console.log(this._pageData[i], moduleContent)
           this._pageData[i] = Object.assign({}, this._pageData[i], moduleContent);  // 数据合并
+          console.log(this._pageData[i])
           this._pageData[i]['need_request'] = false;
           var key = "pageData[" + i + "]";
           data[key] = this._timerConvertModule(this._pageData[i]) || {};

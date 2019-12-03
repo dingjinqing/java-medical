@@ -9,8 +9,14 @@ global.wxComponent({
       for (var j in newVal.coupon_arr) {
         newVal.coupon_arr[j].denomination = parseFloat(newVal.coupon_arr[j].denomination);
       }
+      newVal.coupon_arr.forEach((item, index) => {
+        Object.assign(newVal.coupon_arr[index], newVal[index])
+      })
+      console.log(newVal.coupon_arr)
       newVal.isCoupon = 0;
       console.log(this.data.comColor, this.data.borColor)
+
+
       // validation_code、is_exclusive、alias_code、use_score
     },
 
@@ -46,21 +52,22 @@ global.wxComponent({
       // }
     },
     bindGetCoupon(e) {
-      // var d = this.eventData(e);
-      // this._form_data = {
-      //   code: d.code,
-      //   form_id: e.detail.formId,
-      //   open_id: util.getCache("openid"),
-      //   coupon_key: d.key,
-      //   vali: d.vali
-      // };
+      var d = this.eventData(e);
+      console.log(d)
+      this._form_data = {
+        code: d.code,
+        form_id: e.detail.formId,
+        open_id: util.getCache("openid"),
+        coupon_key: d.key,
+        vali: d.vali
+      };
 
-      // var _this = this;
-      // var m = this.data.m;
+      var _this = this;
+      var m = this.data.m;
 
-      // m['coupon_arr'][d.key].disableds = true;
-      // this.$set();
-      // console.log(d.exclusive)
+      m['coupon_arr'][d.key].disableds = true;
+      this.$set();
+      console.log(d.exclusive)
       // if ((d.vali != '' && d.vali != undefined) || d.use_score == 1 ||
       //   (d.exclusive != '' && d.exclusive == 1)) {
       //   util.jumpLink('/pages/getcoupon/getcoupon?code=' + d.code);
