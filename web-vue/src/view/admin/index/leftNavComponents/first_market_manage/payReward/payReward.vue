@@ -16,6 +16,7 @@
       <div class="wrapper">
         <el-button
           type="primary"
+          size="small"
           @click="addActivity"
         >添加支付有礼活动</el-button>
         <div class="right">注：同一时间段仅会开展一个优先级最高的支付有礼活动</div>
@@ -79,14 +80,13 @@
         </el-table-column>
 
         <el-table-column
-          prop="statusName"
+          prop="statusText"
           label="活动状态"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          prop=""
           label="操作"
           align="center"
         >
@@ -95,6 +95,7 @@
               <el-tooltip
                 content="编辑"
                 placement="top"
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
                   class="el-icon-edit-outline"
@@ -104,7 +105,7 @@
               <el-tooltip
                 content="启用"
                 placement="top"
-                v-if="scope.row.currentState === 4"
+                v-if=" scope.row.currentState === 4"
               >
                 <span
                   class="el-icon-circle-check"
@@ -114,7 +115,7 @@
               <el-tooltip
                 content="停用"
                 placement="top"
-                v-else
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
                   class="el-icon-circle-close"
@@ -221,23 +222,24 @@ export default {
       payRewardList(this.param).then((res) => {
         const { error } = res
         if (error === 0) {
-          this.param = Object.assign(res.content.page, this.param)
           this.handleData(res.content)
-          console.log(res.content)
         }
-      })
+      }).catch(err => console.log(err))
     },
     // 处理列表数据
     handleData (data) {
+      this.param = Object.assign(data.page, this.param)
+      this.tableData = data.dataList
       data.dataList.map((item, index) => {
         if (item.timeType === 1) {
           item.vaildDate = this.$t('marketCommon.permanent')
         } else {
           item.vaildDate = `${item.startTime} ` + this.$t('marketCommon.to') + ` ${item.endTime}`
         }
-        item.statusName = this.getActStatusString(item.currentState)
       })
-      this.tableData = data.dataList
+      this.tableData.map((item, index) => {
+        item.statusText = this.getActStatusString(item.currentState)
+      })
     },
 
     // 删除支付有礼活动
@@ -254,7 +256,7 @@ export default {
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '删除成功' })
+        this.$message.info({ message: '已取消删除' })
       })
     },
 
@@ -333,7 +335,7 @@ export default {
   .mainContent {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px;
+    padding: 15px;
     .wrapper {
       display: flex;
       justify-content: space-between;
@@ -355,7 +357,7 @@ export default {
     position: relative;
     margin-top: 10px;
     background-color: #fff;
-    padding: 10px 15px 20px;
+    padding: 15px;
     .opt {
       text-align: center;
       color: #5a8bff;
