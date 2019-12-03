@@ -214,20 +214,8 @@ public class AdminAuth {
 	 * @param shop
 	 * @return
 	 */
-	public int insert(AdminTokenAuthInfo info, ShopRecord shop) {
-		UserLoginRecordRecord record = new UserLoginRecordRecord();
-		record.setUserName(info.getUserName());
-		record.setUserId(info.getSysId());
-		if (info.isSubLogin()) {
-			record.setUserName(info.getSubUserName());
-			record.setUserId(info.getSubAccountId());
-			
-		}
-		record.setSysId(info.getSysId());
-		record.setShopName(shop.getShopName());
-		record.setShopId(shop.getShopId());
-		record.setUserIp(Util.getCleintIp(request));
-		return saas.shop.insertUserLoginRecord(record);
+	public void insert(AdminTokenAuthInfo info, ShopRecord shop) {
+		saas.userLoginService.userLoginRecord(info, shop, Util.getCleintIp(request));
 	}
 	
 	/**
