@@ -90,3 +90,8 @@ CHANGE COLUMN `user_pwd` `user_pwd` varchar(60) not null default '' comment '密
 CHANGE COLUMN `wechat` `wechat`   varchar(100) not null default '' comment '微信',
 CHANGE COLUMN `invite_expiry_date` `invite_expiry_date` date  default null comment '邀请失效时间',
 CHANGE COLUMN `invite_source` `invite_source`  varchar(32)   default null comment '邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖';
+
+--记录表更新
+ALTER TABLE `mini_main`.`b2c_user_login_record` 
+ADD COLUMN `account_type` TINYINT(1) NULL COMMENT '登录日志账户类型：0店铺登录日志，1系统账号登录日志' ;
+

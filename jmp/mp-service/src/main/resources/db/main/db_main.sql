@@ -1132,6 +1132,7 @@ create table `b2c_user_login_record`
     `add_time`  timestamp    null     default CURRENT_TIMESTAMP comment '每日登陆时间',
     `user_ip`   varchar(64)  null     default null comment '用户登录ip',
     `count`     smallint(3)  null     default '0' comment '每日登陆次数',
+    `account_type` tinyint(1) DEFAULT NULL COMMENT '登录日志账户类型：0店铺登录日志，1系统账号登录日志',
     primary key (`id`)
 );
 
