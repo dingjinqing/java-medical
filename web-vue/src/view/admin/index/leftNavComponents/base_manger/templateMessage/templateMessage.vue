@@ -13,10 +13,7 @@
       </div>
       <!-- 交易物流提醒|营销信息提醒 -->
       <div class="main">
-        <el-collapse
-          v-model="activeNames"
-          @change="handleChange"
-        >
+        <el-collapse v-model="activeNames">
           <el-collapse-item
             :title="$t('templateMessage.tradingRemind')"
             name="1"
@@ -179,13 +176,9 @@ export default {
     return {
       list: [],
       activeNames: ['1', '2'],
-      /**
-       * 交易物流提醒
-       */
+      //  交易物流提醒
       tableData: [],
-      /**
-       * 营销信息提醒
-       */
+      //  营销信息提醒
       tableData1: []
     }
   },
@@ -199,12 +192,9 @@ export default {
       return openMaNum
     }
   },
-  created () {
-    this.fetchData()
-    this.handleSave()
-  },
   mounted () {
     this.langDefault()
+    this.fetchData()
   },
   watch: {
     lang () {
@@ -449,49 +439,33 @@ export default {
     // 模板消息查询数据初始化
     fetchData () {
       templateQueryApi().then(res => {
-        console.log(res)
-        console.log(res.content)
+        // console.log(res, 'templateQueryApi data---')
+        // console.log(res.content)
         // 合并定义的数据和返回的数据
         let list = [...res.content]
         let list1 = [...res.content]
+        // console.log(list, '----', list1, 'list data')
 
         let resultData = list.slice(0, 12).map((item, index) => {
           return { ...item, ...this.tableData[index], openMp: !!item.openMp, openMa: !!item.openMa }
         })
         this.tableData = resultData
-        console.log(this.tableData)
+        console.log(this.tableData, 'this.tableData')
 
         let resultData1 = list1.splice(12).map((item, index) => {
           return { ...item, ...this.tableData1[index], openMp: !!item.openMp, openMa: !!item.openMa }
         })
         this.tableData1 = resultData1
-        console.log(this.tableData1)
+        console.log(this.tableData1, 'this.tableData1')
       }).catch(err => console.log(err))
-    },
-
-    // 当前激活面板改变时触发
-    handleChange (val) {
-      console.log(val)
     },
 
     // 保存-更新数据
     handleSave () {
-      let paramsConfigs = {
-        list: []
-      }
-      let { list } = paramsConfigs
-      console.log(list)
-
-      let temp = this.tableData.concat(this.tableData1).map(item => {
+      let configs = this.tableData.concat(this.tableData1).map(item => {
         return { ...item, openMp: Number(item.openMp), openMa: Number(item.openMa) }
       })
-      console.log(temp)
-
-      let configs = list.concat(temp)
-      console.log(configs)
-
-      let lists = { configs }
-      console.log(lists)
+      let params = { configs }
 
       if (this.openMaNum > 25) {
         this.$message.warning('小程序消息不能超过25条!')
@@ -501,8 +475,10 @@ export default {
         this.$message.warning('公众号消息不能超过25条!')
         return
       }
-      templateUpdateApi(JSON.stringify(lists)).then(res => {
-        console.log(res)
+      templateUpdateApi(JSON.stringify(params)).then(res => {
+        if (res.error === 0) {
+          this.$message.success('更新成功')
+        }
       }).catch(err => console.log(err))
     }
   }
