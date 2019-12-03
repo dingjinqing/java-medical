@@ -11,12 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.vpu.mp.config.AuthConfig;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
+import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemLoginParam;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /**
@@ -101,6 +104,7 @@ public class SystemAuth {
 			info.setToken(user.getToken());
 		}
 		this.saveTokenInfo(info);
+		insert(info);
 		return info;
 	}
 
@@ -154,5 +158,31 @@ public class SystemAuth {
 		if (info != null) {
 			this.saveTokenInfo(info);
 		}
+	}
+	
+	
+	/**
+	 * 登录时间表更新
+	 * @param info
+	 * @param shop
+	 * @return 
+	 * @return
+	 */
+	public int insert(SystemTokenAuthInfo info) {
+		//saas.userLoginService.userLoginRecord(info, shop, Util.getCleintIp(request));
+		UserLoginRecordRecord record = new UserLoginRecordRecord();
+		record.setUserName(info.getUserName());
+		record.setUserId(info.getSystemUserId());
+		if (info.isSubLogin()) {
+			record.setUserName(info.getSubUserName());
+			record.setUserId(info.getSubAccountId());
+			
+		}
+		record.setSysId(info.getSystemUserId());
+		record.setShopName("");
+		record.setShopId(0);
+		record.setUserIp(Util.getCleintIp(request));
+		record.setAccountType((byte)1);
+		return saas.shop.insertUserLoginRecord(record);
 	}
 }
