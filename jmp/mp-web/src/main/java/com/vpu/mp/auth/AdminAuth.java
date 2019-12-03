@@ -212,10 +212,25 @@ public class AdminAuth {
 	 * 登录时间表更新
 	 * @param info
 	 * @param shop
+	 * @return 
 	 * @return
 	 */
-	public void insert(AdminTokenAuthInfo info, ShopRecord shop) {
-		saas.userLoginService.userLoginRecord(info, shop, Util.getCleintIp(request));
+	public int insert(AdminTokenAuthInfo info, ShopRecord shop) {
+		//saas.userLoginService.userLoginRecord(info, shop, Util.getCleintIp(request));
+		UserLoginRecordRecord record = new UserLoginRecordRecord();
+		record.setUserName(info.getUserName());
+		record.setUserId(info.getSysId());
+		if (info.isSubLogin()) {
+			record.setUserName(info.getSubUserName());
+			record.setUserId(info.getSubAccountId());
+			
+		}
+		record.setSysId(info.getSysId());
+		record.setShopName(shop.getShopName());
+		record.setShopId(shop.getShopId());
+		record.setUserIp(Util.getCleintIp(request));
+		record.setAccountType((byte)0);
+		return saas.shop.insertUserLoginRecord(record);
 	}
 	
 	/**
