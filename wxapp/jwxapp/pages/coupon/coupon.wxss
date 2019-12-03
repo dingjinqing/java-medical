@@ -182,7 +182,7 @@ page{
   }
   .right .time_canuse{
     /* top: 160rpx; */
-    top: 110rpx;
+    /* top: 110rpx; */
   }
 }
 .left .coupon_xian{

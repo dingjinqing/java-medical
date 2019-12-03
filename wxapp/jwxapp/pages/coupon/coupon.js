@@ -57,6 +57,19 @@ global.wxPage({
           expiredNum: res.content.expiredNum,
           allCoupon: res.content.couponList.dataList
         }) 
+        // 格式化时间
+        console.log(_this.data.allCoupon)
+        if (_this.data.allCoupon) {
+          _this.data.allCoupon.forEach(function (item) {
+            if (item.startTime && item.endTime) {
+              item.startTime = item.startTime.toString().slice(0, 10)
+              item.endTime = item.endTime.toString().slice(0, 10)
+            }
+          })
+        }
+        _this.setData({
+          allCoupon: _this.data.allCoupon
+        }) 
         wx.hideLoading();
         _this.setData({
           cou_list: res.content.unused,
