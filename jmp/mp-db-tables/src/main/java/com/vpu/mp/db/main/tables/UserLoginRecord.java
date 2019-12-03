@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserLoginRecord extends TableImpl<UserLoginRecordRecord> {
 
-    private static final long serialVersionUID = -183262159;
+    private static final long serialVersionUID = -2000177604;
 
     /**
      * The reference instance of <code>mini_main.b2c_user_login_record</code>
@@ -78,9 +78,9 @@ public class UserLoginRecord extends TableImpl<UserLoginRecordRecord> {
     public final TableField<UserLoginRecordRecord, Integer> SYS_ID = createField("sys_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "主账户ID");
 
     /**
-     * The column <code>mini_main.b2c_user_login_record.user_id</code>. 登陆用户id
+     * The column <code>mini_main.b2c_user_login_record.user_id</code>.
      */
-    public final TableField<UserLoginRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "登陆用户id");
+    public final TableField<UserLoginRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>mini_main.b2c_user_login_record.user_name</code>. 登陆用户名
@@ -101,6 +101,11 @@ public class UserLoginRecord extends TableImpl<UserLoginRecordRecord> {
      * The column <code>mini_main.b2c_user_login_record.count</code>. 每日登陆次数
      */
     public final TableField<UserLoginRecordRecord, Short> COUNT = createField("count", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "每日登陆次数");
+
+    /**
+     * The column <code>mini_main.b2c_user_login_record.account_type</code>. 登录日志账户类型：0店铺登录日志，1系统账号登录日志
+     */
+    public final TableField<UserLoginRecordRecord, Byte> ACCOUNT_TYPE = createField("account_type", org.jooq.impl.SQLDataType.TINYINT, this, "登录日志账户类型：0店铺登录日志，1系统账号登录日志");
 
     /**
      * Create a <code>mini_main.b2c_user_login_record</code> table reference

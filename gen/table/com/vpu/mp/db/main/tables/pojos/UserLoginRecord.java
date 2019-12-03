@@ -23,17 +23,18 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserLoginRecord implements Serializable {
 
-    private static final long serialVersionUID = -485190895;
+    private static final long serialVersionUID = 1148504886;
 
     private Integer   id;
     private Integer   shopId;
     private String    shopName;
     private Integer   sysId;
-    private Short     userId;
+    private Integer   userId;
     private String    userName;
     private Timestamp addTime;
     private String    userIp;
     private Short     count;
+    private Byte      accountType;
 
     public UserLoginRecord() {}
 
@@ -47,6 +48,7 @@ public class UserLoginRecord implements Serializable {
         this.addTime = value.addTime;
         this.userIp = value.userIp;
         this.count = value.count;
+        this.accountType = value.accountType;
     }
 
     public UserLoginRecord(
@@ -54,11 +56,12 @@ public class UserLoginRecord implements Serializable {
         Integer   shopId,
         String    shopName,
         Integer   sysId,
-        Short     userId,
+        Integer   userId,
         String    userName,
         Timestamp addTime,
         String    userIp,
-        Short     count
+        Short     count,
+        Byte      accountType
     ) {
         this.id = id;
         this.shopId = shopId;
@@ -69,6 +72,7 @@ public class UserLoginRecord implements Serializable {
         this.addTime = addTime;
         this.userIp = userIp;
         this.count = count;
+        this.accountType = accountType;
     }
 
     public Integer getId() {
@@ -103,11 +107,11 @@ public class UserLoginRecord implements Serializable {
         this.sysId = sysId;
     }
 
-    public Short getUserId() {
+    public Integer getUserId() {
         return this.userId;
     }
 
-    public void setUserId(Short userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -143,6 +147,14 @@ public class UserLoginRecord implements Serializable {
         this.count = count;
     }
 
+    public Byte getAccountType() {
+        return this.accountType;
+    }
+
+    public void setAccountType(Byte accountType) {
+        this.accountType = accountType;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserLoginRecord (");
@@ -156,6 +168,7 @@ public class UserLoginRecord implements Serializable {
         sb.append(", ").append(addTime);
         sb.append(", ").append(userIp);
         sb.append(", ").append(count);
+        sb.append(", ").append(accountType);
 
         sb.append(")");
         return sb.toString();
