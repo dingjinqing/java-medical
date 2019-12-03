@@ -93,7 +93,7 @@ public class Calculate extends ShopBaseService {
                 }
                 //TODO
             }
-            if(!CollectionUtils.isEmpty(mbv.getBos())){
+            if(mbv.checkRatio()){
                 for (int i = 0, lenght = mbv.getBos().size(); i < lenght; i++) {
                     //该商品行折扣金额(向下取整)
                     BigDecimal tdPrica;

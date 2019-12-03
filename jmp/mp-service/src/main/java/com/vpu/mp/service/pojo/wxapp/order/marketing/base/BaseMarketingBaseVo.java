@@ -41,4 +41,11 @@ public abstract class BaseMarketingBaseVo {
             );
         return ratio;
     }
+
+    public boolean checkRatio(){
+        if(ratio != null && (BigDecimalUtil.compareTo(ratio, BigDecimal.ZERO) >= 0 || BigDecimalUtil.compareTo(ratio, BigDecimal.ONE) <= 0)){
+            return true;
+        }
+        return false;
+    }
 }
