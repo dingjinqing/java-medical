@@ -21,6 +21,10 @@ public class PayAwardVo {
 
     private Integer    id;
     private String     activityNames;
+    /**
+     * 时间类型 0 定时 1永久
+     */
+    private Byte timeType;
     private Timestamp  startTime;
     private Timestamp  endTime;
     private Timestamp  createTime;

@@ -25,7 +25,8 @@ public class OrderCartProductBo {
 
 
     public BigDecimal getFirstSpecialPrice(){
-        Optional<BigDecimal> first = activityInfo.stream().filter(activity -> activity.getStatus().equals(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL))
+        Optional<BigDecimal> first = activityInfo.stream()
+                .filter(activity -> activity.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)&&activity.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL))
                 .map(GoodsActivityInfo::getFirstSpecialPrice).findFirst();
         return first.orElse(null);
     }
