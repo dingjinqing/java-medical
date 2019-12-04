@@ -96,22 +96,20 @@ service.interceptors.response.use(
       console.log(error.response.status)
       switch (error.response.status) {
         case 401:
-          error.message = '抱歉，您没有访问此操作的权限！'
-          // eslint-disable-next-line
-          break;
+          error.message = vm.$t('messageHint.noAuthority')
+          break
         case 404:
-          error.message = '抱歉，您请求的资源不存在！'
-          // eslint-disable-next-line
-          break;
+          error.message = vm.$t('messageHint.resourceNotExist')
+          break
         case 400:
-          error.message = '参数错误！'
+          error.message = vm.$t('messageHint.parameterError')
           // console.log(window.vm.$t('case.title'))
           break
         default:
-          error.message = `服务正在处理，请稍后。`
+          error.message = vm.$t('messageHint.beingProcessed')
       }
     } else {
-      error.message = '服务正在处理，请稍后。'
+      error.message = vm.$t('messageHint.beingProcessed')
     }
     vm.$message.error({
       message: error.message,

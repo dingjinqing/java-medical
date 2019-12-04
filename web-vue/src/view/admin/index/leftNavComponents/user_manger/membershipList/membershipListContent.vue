@@ -1913,6 +1913,7 @@ img {
 }
 .member > div > span {
   cursor: pointer;
+  white-space: nowrap;
 }
 .lastDiv {
   padding: 5px 0 5px 5px;
