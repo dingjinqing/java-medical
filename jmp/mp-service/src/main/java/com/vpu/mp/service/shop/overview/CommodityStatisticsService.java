@@ -12,7 +12,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.commodity.*;
-import com.vpu.mp.service.shop.task.overview.GoodsTaskService;
+import com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -51,7 +51,7 @@ import static org.jooq.impl.DSL.*;
 @Service
 public class CommodityStatisticsService extends ShopBaseService {
     @Autowired
-    private GoodsTaskService goodsTaskService;
+    private GoodsStatisticTaskService goodsStatisticTaskService;
 
     /**
      * goods_summary表默认排序字段
@@ -205,15 +205,15 @@ public class CommodityStatisticsService extends ShopBaseService {
      */
     public ProductOverviewVo conditionOverview(ProductOverviewParam param) {
         ProductOverviewVo data = ProductOverviewVo.builder()
-            .onShelfGoodsNum(goodsTaskService.getSaleGoodsNumber(param))
-            .soldGoodsNum(goodsTaskService.getDySoldGoodsNum(param))
-            .visitedGoodsNum(goodsTaskService.getGoodsNumByVisit(param))
-            .goodsUserVisit(goodsTaskService.getGoodsUv(param))
-            .goodsPageviews(goodsTaskService.getGoodsPv(param))
-            .purchaseNum(goodsTaskService.addCartUserNum(param))
-            .purchaseQuantity(goodsTaskService.getAddCartGoodsNumber(param))
-            .paidGoodsNum(goodsTaskService.paidGoodsNum(param))
-            .orderGoodsNum(goodsTaskService.getPayOrderGoodsNum(param))
+            .onShelfGoodsNum(goodsStatisticTaskService.getSaleGoodsNumber(param))
+            .soldGoodsNum(goodsStatisticTaskService.getDySoldGoodsNum(param))
+            .visitedGoodsNum(goodsStatisticTaskService.getGoodsNumByVisit(param))
+            .goodsUserVisit(goodsStatisticTaskService.getGoodsUv(param))
+            .goodsPageviews(goodsStatisticTaskService.getGoodsPv(param))
+            .purchaseNum(goodsStatisticTaskService.addCartUserNum(param))
+            .purchaseQuantity(goodsStatisticTaskService.getAddCartGoodsNumber(param))
+            .paidGoodsNum(goodsStatisticTaskService.paidGoodsNum(param))
+            .orderGoodsNum(goodsStatisticTaskService.getPayOrderGoodsNum(param))
             .build();
         if (Objects.isNull(data)) {
             return ProductOverviewVo.builder().build();
@@ -229,15 +229,15 @@ public class CommodityStatisticsService extends ShopBaseService {
         param.setEndTime(param.getStartTime());
 
         ProductOverviewVo prefixData = ProductOverviewVo.builder()
-            .onShelfGoodsNum(goodsTaskService.getSaleGoodsNumber(param))
-            .soldGoodsNum(goodsTaskService.getDySoldGoodsNum(param))
-            .visitedGoodsNum(goodsTaskService.getGoodsNumByVisit(param))
-            .goodsUserVisit(goodsTaskService.getGoodsUv(param))
-            .goodsPageviews(goodsTaskService.getGoodsPv(param))
-            .purchaseNum(goodsTaskService.addCartUserNum(param))
-            .purchaseQuantity(goodsTaskService.getAddCartGoodsNumber(param))
-            .paidGoodsNum(goodsTaskService.paidGoodsNum(param))
-            .orderGoodsNum(goodsTaskService.getPayOrderGoodsNum(param))
+            .onShelfGoodsNum(goodsStatisticTaskService.getSaleGoodsNumber(param))
+            .soldGoodsNum(goodsStatisticTaskService.getDySoldGoodsNum(param))
+            .visitedGoodsNum(goodsStatisticTaskService.getGoodsNumByVisit(param))
+            .goodsUserVisit(goodsStatisticTaskService.getGoodsUv(param))
+            .goodsPageviews(goodsStatisticTaskService.getGoodsPv(param))
+            .purchaseNum(goodsStatisticTaskService.addCartUserNum(param))
+            .purchaseQuantity(goodsStatisticTaskService.getAddCartGoodsNumber(param))
+            .paidGoodsNum(goodsStatisticTaskService.paidGoodsNum(param))
+            .orderGoodsNum(goodsStatisticTaskService.getPayOrderGoodsNum(param))
             .build();
         if (Objects.isNull(prefixData)) {
             return data;

@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.task;
 
-import com.vpu.mp.db.shop.tables.ReducePrice;
+import com.vpu.mp.service.shop.task.goods.FootprintDeleteTaskService;
 import com.vpu.mp.service.shop.task.market.ReducePriceTaskService;
 import com.vpu.mp.service.shop.task.market.SeckillTaskService;
-import com.vpu.mp.service.shop.task.overview.GoodsTaskService;
+import com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService;
 import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,9 @@ public class ShopTaskService {
      * The Goods task service.概况模块-商品统计
      */
     @Autowired
-    public GoodsTaskService goodsTaskService;
+    public GoodsStatisticTaskService goodsStatisticTaskService;
+
+    @Autowired
+    public FootprintDeleteTaskService footprintDeleteTaskService;
 }
 

@@ -36,8 +36,8 @@ public class StatisticsScheduleTask {
         Result<ShopRecord> result = saas.shop.getAll();
         result.forEach((r) -> {
             ShopApplication shop = saas.getShopApp(r.getShopId());
-            shop.shopTaskService.goodsTaskService.insertOverview();
-            shop.shopTaskService.goodsTaskService.insertGoodsSummary();
+            shop.shopTaskService.goodsStatisticTaskService.insertOverview();
+            shop.shopTaskService.goodsStatisticTaskService.insertGoodsSummary();
         });
     }
 }

@@ -29,7 +29,7 @@ import static org.jooq.impl.DSL.*;
  * @date 11 /18/19 商品统计定时任务统计信息
  */
 @Service
-public class GoodsTaskService extends ShopBaseService {
+public class GoodsStatisticTaskService extends ShopBaseService {
     /**
      * The constant BAK.
      */

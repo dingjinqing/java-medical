@@ -46,4 +46,15 @@ public class GoodsScheduleTask {
             shopTaskService.reducePriceTaskService.monitorGoodsType();});
     }
 
+    /**
+     * 删除用户足迹
+     * 每三个月执行一次
+     */
+    @Scheduled(cron = "0 0 0 1 */3 ?")
+    public void deleteFootprint() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r)->{saas.getShopApp(r.getShopId()).
+            shopTaskService.footprintDeleteTaskService.deleteFootprint();});
+    }
+
 }
