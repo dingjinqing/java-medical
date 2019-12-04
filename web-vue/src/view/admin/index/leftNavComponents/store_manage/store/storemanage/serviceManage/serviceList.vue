@@ -242,6 +242,7 @@
 <script>
 import { getAllServiceCats, getServiceList, deleteService, onService, offService, shareService } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
+import vm from '@/main'
 export default {
   components: { pagination },
   data () {
@@ -273,7 +274,7 @@ export default {
     formatImgUrl (serviceImg) {
       if (serviceImg !== '') {
         const imgs = JSON.parse(serviceImg)
-        let img = imgs ? imgs[0] : ''
+        let img = imgs ? vm.$imageHost + '/' + imgs[0] : ''
         return img
       } else {
         return ''

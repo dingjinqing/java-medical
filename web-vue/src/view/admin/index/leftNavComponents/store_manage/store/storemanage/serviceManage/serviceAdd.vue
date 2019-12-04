@@ -461,11 +461,22 @@ export default {
           }
           // 初始化图片列表
           let serviceImg = JSON.parse(this.form.serviceImg)
+          let that = this
+          serviceImg = serviceImg.map(item => {
+            if (item.indexOf('//') > -1) {
+              item = item.replace(/^http:\/\/[^/]+\//, '')
+            } else if (item[0] === '/') {
+              item = item.slice(1)
+            }
+            return item
+          })
           this.imgLists = serviceImg.map(function (item, index) {
             return {
-              imgUrl: item
+              imgUrl: that.$imageHost + '/' + item,
+              imgPath: item
             }
           })
+          this.form.serviceImg = JSON.stringify(serviceImg)
           // 初始化服务时长
           this.serviceHour = Math.ceil(Number(this.form.serviceDuration) / 60)
           this.serviceMinute = Math.ceil(Number(this.form.serviceDuration) % 60)
@@ -495,7 +506,7 @@ export default {
         return
       }
       this.imgLists.push(...imgObj)
-      let imgs = this.imgLists.map(item => item.imgUrl)
+      let imgs = this.imgLists.map(item => item.imgPath)
       this.form.serviceImg = JSON.stringify(imgs)
     },
     /* 删除商品图片 */

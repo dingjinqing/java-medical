@@ -738,7 +738,14 @@ export default {
             item2.productId = item2.prdId
             // item2.originalPrice = item2.prdPrice
             let originalPrice = item2.originalPrice
-            let prdPrice = (originalPrice * (parseFloat(item.batchDiscount / 10))).toFixed(2)
+            let prdPrice = originalPrice
+            if (this.discountType === '0') {
+              prdPrice = (originalPrice * (parseFloat(item.batchDiscount / 10))).toFixed(2)
+            } else if (this.discountType === '1') {
+              prdPrice = Number(originalPrice - item.batchReduce)
+            } else if (this.discountType === '2') {
+              prdPrice = Number(item.batchFinalPrice)
+            }
             item2.prdPrice = prdPrice
           })
         }
@@ -750,6 +757,7 @@ export default {
         this.$set(this.form, 'isBatchInteger', 0)
       })
     },
+    // 表格内输入折扣
     tableBatchDiscountChange (row) {
       console.log('BatchDiscountChange')
       let price = Number(row.shopPrice)
@@ -763,8 +771,9 @@ export default {
       let batchReduce = price - batchFinalPrice
       this.$set(row, 'batchFinalPrice', batchFinalPrice)
       this.$set(row, 'batchReduce', batchReduce)
-      this.watchbatchFinalPrice(price, batchFinalPrice, row)
+      this.watchbatchFinalPrice(price, batchFinalPrice, row, 'discount')
     },
+    // 表格内输入减价
     tableBatchReduceChange (row) {
       console.log('BatchReduceChange')
       let price = Number(row.shopPrice)
@@ -776,8 +785,9 @@ export default {
       }
       this.$set(row, 'batchFinalPrice', batchFinalPrice)
       this.$set(row, 'batchDiscount', batchDiscount)
-      this.watchbatchFinalPrice(price, batchFinalPrice, row)
+      this.watchbatchFinalPrice(price, batchFinalPrice, row, 'reduce')
     },
+    // 表格内输入首单价
     tableBatchFinalPriceChange (row) {
       console.log('BatchFinalPriceChange')
       let price = Number(row.shopPrice)
@@ -789,9 +799,9 @@ export default {
         batchDiscount = 0
       }
       this.$set(row, 'batchDiscount', batchDiscount)
-      this.watchbatchFinalPrice(price, batchFinalPrice, row)
+      this.watchbatchFinalPrice(price, batchFinalPrice, row, 'final')
     },
-    watchbatchFinalPrice (price, batchFinalPrice, row) {
+    watchbatchFinalPrice (price, batchFinalPrice, row, operate) {
       let tips
       if (batchFinalPrice < 0) {
         tips = this.$t('firstSpecialAdd.batchFinalPriceTip1')
@@ -803,9 +813,23 @@ export default {
         row.goodsProductParams.map(item2 => {
           item2.productId = item2.prdId
           let originalPrice = item2.originalPrice
-          let prdPrice = (originalPrice * (parseFloat(row.batchDiscount / 10))).toFixed(3)
+          let prdPrice = originalPrice
+          if (operate === 'discount') {
+            prdPrice = (originalPrice * (parseFloat(row.batchDiscount / 10))).toFixed(3)
+          } else if (operate === 'reduce') {
+            prdPrice = (originalPrice - row.batchReduce)
+          } else if (operate === 'final') {
+            prdPrice = row.batchFinalPrice
+          }
           item2.prdPrice = prdPrice
           this.$set(item2, 'prdPrice', prdPrice)
+          let tips2 = ''
+          if (prdPrice < 0) {
+            tips2 = this.$t('firstSpecialAdd.batchFinalPriceTip1')
+          } else if (prdPrice > price) {
+            tips2 = this.$t('firstSpecialAdd.batchFinalPriceTip2')
+          }
+          this.$set(item2, 'tips', tips2)
         })
       }
     },

@@ -42,9 +42,12 @@ export default {
         console.log(newName)
       }
     },
-    '$route.name': function (newVal) {
-      console.log('route', newVal)
-      this.initStatus()
+    '$route.name': {
+      handler: function (newVal) {
+        console.log('route', newVal)
+        this.initStatus()
+      },
+      immediate: true
     }
   },
   created () {
