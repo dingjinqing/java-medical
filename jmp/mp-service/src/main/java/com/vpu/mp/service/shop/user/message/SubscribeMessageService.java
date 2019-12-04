@@ -120,7 +120,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		// 获取当前帐号下的个人模板列表
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaInfo());
-		if (templateList != null) {
+		if (!templateList.isSuccess()) {
 			logger().info("获取AppId：" + getMaInfo() + " 的账号下的个人模板失败，准备发送公众号");
 			// TODO发送到公众号
 			return false;
