@@ -464,7 +464,14 @@ public class StoreReservation extends ShopBaseService {
             // 查询微信支付订单信息
             queryResult = mpPaymentService.wxQueryOrder(orderSn);
         } catch (WxPayException e) {
-            e.printStackTrace();
+            log.debug("微信订单查询失败：{}", e.getMessage());
+            // 未查到相关订单信息，删除此订单重新生成新订单支付
+            serviceOrderService.updateSingleField(orderSn, SERVICE_ORDER.DEL_FLAG, BYTE_ONE);
+            SubmitReservationParam param = new SubmitReservationParam();
+            FieldsUtil.assignNotNull(serviceOrderService.getRecord(orderSn), param);
+            param.setClientIp(clientIp);
+            // 重新走支付流程
+            return submitReservation(param);
         }
         if (Objects.isNull(queryResult)) {
             // 未查到相关订单信息，删除此订单重新生成新订单支付
@@ -475,6 +482,7 @@ public class StoreReservation extends ShopBaseService {
             // 重新走支付流程
             return submitReservation(param);
         }
+        log.debug("微信订单查询结果：{}", queryResult.toString());
         switch (queryResult.getTradeState()) {
             case WxPayConstants.WxpayTradeStatus.SUCCESS:
                 // 返回订单已支付
