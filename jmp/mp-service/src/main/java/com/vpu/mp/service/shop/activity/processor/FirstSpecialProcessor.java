@@ -27,6 +27,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -192,7 +193,6 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                                     cartService.changeGoodsNumber(userId,product.getProductId(),0,firstSpecial.getLimitAmount());
                                     product.setGoodsNumber(firstSpecial.getLimitAmount());
                                 }
-
                             }
                             if (Objects.equals(product.getIsChecked(), CartConstant.CART_IS_CHECKED)){
                                 log.debug("选中的特惠商品[getPrdId:"+product.getProductId()+"]");
@@ -204,15 +204,15 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                             if (limitGoodsNum != 0&& goodsNum.get()>limitGoodsNum&&product.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
                                 goodsNum.updateAndGet(v -> v + 1);
                             }
-                            product.setActivityInfo(firstActivityInfo);
+                            product.getActivityInfo().add(firstActivityInfo);
                         }
                     });
                 });
                 if (goodsNum.get() >= limitGoodsNum){
                     log.debug("选中商品过多,触发首单特惠商品数(种类)限制[goodsNum:"+goodsNum+",limitGoodsNum:"+limitGoodsNum+"]");
                     productBos.forEach(goods->{
-                        GoodsActivityInfo actInfo = goods.getActivityInfo();
-                        if (actInfo != null && BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(actInfo.getActivityType()) && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
+                        GoodsActivityInfo actInfo = goods.getActivityInfo().stream().filter(activity -> activity.getStatus().equals(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).findFirst().orElse(null);
+                        if (actInfo!=null && BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(actInfo.getActivityType()) && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
                             if (Objects.equals(goods.getIsChecked(), CartConstant.CART_IS_CHECKED)) {
                                 checkedGoodsNum.updateAndGet(v -> v + 1);
                                 if (checkedGoodsNum.get() > limitGoodsNum) {
