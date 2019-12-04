@@ -176,6 +176,7 @@ public class MpPaymentService extends ShopBaseService {
      * @throws MpException the mp exception
      */
     public WebPayVo continuePay(WxPayOrderQueryResult result, String prepayId) throws MpException {
+        result.setTradeType(WxPayConstants.TradeType.JSAPI);
         WxPayment wxPayment = this.getMpPay();
         WebPayVo vo = null;
         Map<String, String> payInfo = new HashMap<>();

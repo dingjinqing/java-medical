@@ -484,7 +484,6 @@ public class StoreReservation extends ShopBaseService {
             return submitReservation(param);
         }
         log.debug("微信订单查询结果：{}", queryResult.toString());
-        log.debug("查询结果和常量的值比较结果为：{}", WxPayConstants.WxpayTradeStatus.NOTPAY.equals(queryResult.getTradeState()));
         WebPayVo webPayVo = JsApiVo.builder().build();
         switch (queryResult.getTradeState()) {
             case WxPayConstants.WxpayTradeStatus.SUCCESS:
