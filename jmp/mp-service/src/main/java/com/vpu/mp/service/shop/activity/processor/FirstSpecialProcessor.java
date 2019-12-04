@@ -139,7 +139,7 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                         }
                     });
                 });
-                if (goodsNum.get()>=limitGoodsNum){
+                if (goodsNum.get() >= limitGoodsNum){
                     log.debug("选中商品过多,触发首单特惠商品数(种类)限制[goodsNum:"+goodsNum+",limitGoodsNum:"+limitGoodsNum+"]");
                     cartBo.getCartGoodsList().forEach(goods->{
                         goods.getCartActivityInfos().forEach(actInfo->{

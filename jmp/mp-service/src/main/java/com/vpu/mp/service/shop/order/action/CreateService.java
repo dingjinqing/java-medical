@@ -9,11 +9,11 @@ import java.util.Objects;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
-import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.order.activity.set.UnifiedMarketingBo;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
@@ -156,7 +156,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         // goods info init
         initGoodsByParam(param.getGoods());
         // process
-        processParam(param, result);
+        processQueryParam(param, result);
 
         return result;
     }
@@ -180,7 +180,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 OrderCreatePayBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderCreatePayBeforeMpProcessorFactory.class);
                 processorFactory.initMarketOrderCreateParam(param);
             }else {
-                initGoodsByNormalGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
+                processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
             }
             orderBo = initCreateOrderBo(param);
             //校验
@@ -361,7 +361,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     }
 
-    public void processParam(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
+    /**
+     * 处理查询方法
+     * @param param
+     * @param vo
+     * @throws MpException
+     */
+    public void processQueryParam(OrderBeforeParam param, OrderBeforeVo vo) throws MpException {
 
         //初始化所有可选支付方式
         vo.setPaymentList(getSupportPayment());
@@ -373,30 +379,28 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             processorFactory.doProcess(param,vo);
 
             //营销购买
-            initGoodsByMarket(param, param.getStoreId());
+            processParamGoodsByMarket(param, param.getStoreId());
         } else {
+            //普通商品（单次购买、购物车结算）（首单特惠处理。。。）
+            UnifiedMarketingBo unifiedMarketingBo = UnifiedMarketingBo.create();
+            unifiedMarketingBo.setFirstSpecial(null);
             // 普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
-            if (Boolean.TRUE) {
-                // 非购物车
-                if (OrderConstant.CART_Y.equals(param.getIsCart())) {
-                    // 送礼 或 批量换购
-                } else {
-                    //单次购买初始化
-                    initGoodsByNormalGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
-                }
-            }
+
+            //初始化
+            processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
         }
-        this.setOrderBeforeVoInfo(param,param.getWxUserInfo().getUserId(), param.getStoreId(),vo);
+        //据处理过的param和其他信息填充下单确认页返回信息
+        processBeforeVoInfo(param,param.getWxUserInfo().getUserId(), param.getStoreId(),vo);
     }
 
     /**
-     * 非营销初始化商品
+     * 非营销初始化商品（query/execute）
      * @param param
      * @param userId
      * @param storeId
      * @throws MpException
      */
-    public void initGoodsByNormalGoods(OrderBeforeParam param, Integer userId, Integer storeId) throws MpException {
+    public void processParamGoods(OrderBeforeParam param, Integer userId, Integer storeId) throws MpException {
         logger().info("非营销初始化商品start(purchase)");
         //TODO 返利信息
         Boolean isNewUser = orderInfo.isNewUser(userId, true);
@@ -438,7 +442,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param storeId
      * @throws MpException
      */
-    private void initGoodsByMarket(OrderBeforeParam param, Integer storeId) throws MpException {
+    private void processParamGoodsByMarket(OrderBeforeParam param, Integer storeId) throws MpException {
         //规格信息,key proId
         Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(param.getProductIds(), storeId);
         //goods type,key goodsId
@@ -473,7 +477,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param storeId
      * @param vo
      */
-    private void setOrderBeforeVoInfo(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
+    private void processBeforeVoInfo(OrderBeforeParam param, Integer userId, Integer storeId, OrderBeforeVo vo) throws MpException {
         // 初始化
         vo.setOrderGoods(initOrderGoods(param, param.getGoods(), userId, param.getMemberCardNo(), storeId));
         //默认选择配送方式
