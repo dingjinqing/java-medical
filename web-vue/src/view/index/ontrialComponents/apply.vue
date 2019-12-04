@@ -14,7 +14,7 @@
           class="demo-ruleForm"
         >
           <el-form-item
-            label="姓名"
+            :label="$t('indexApply.name')"
             prop="username"
           >
             <el-input
@@ -24,7 +24,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="电话"
+            :label="$t('indexApply.phonenum')"
             prop="phonenum"
           >
             <el-input
@@ -34,9 +34,9 @@
             ></el-input>
           </el-form-item>
           <div class="companyName">
-            <el-form-item label="公司">
+            <el-form-item :label="$t('indexApply.companyName')">
               <el-input
-                placeholder="请填写公司名称"
+                :placeholder="$t('indexApply.companyPlaceHolder')"
                 v-model="ruleForm.companyName"
                 autocomplete="off"
               ></el-input>

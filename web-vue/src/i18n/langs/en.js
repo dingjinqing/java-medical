@@ -4,6 +4,9 @@ import enLocale from 'element-ui/lib/locale/lang/en'
 import { en as messageHint } from './views/admin_new/en/messageHintEn'
 // 选择链接弹窗国际化
 import { en as selectLinks } from './views/admin_new/en/components/selectLinks/selectLinksEn'
+// 官网
+// 申请试用国际化
+import { en as indexApply } from './views/index/en/applyEn'
 // system 店铺管理系列国际化
 // 小程序版本
 import {
@@ -1003,6 +1006,7 @@ const en = {
   shopNotices, // 小程序页面装修店铺公告模块
   messageHint, // 全局消息国际化配置
   brandManagement, // 商品品牌国际化
-  selectLinks // 选择链接弹窗国际化
+  selectLinks, // 选择链接弹窗国际化
+  indexApply // 申请试用
 }
 export default en

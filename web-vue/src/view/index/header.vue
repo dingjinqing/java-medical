@@ -488,6 +488,11 @@ ul li {
 .login_class {
   overflow: hidden;
 }
+.login_class li {
+  display: flex;
+  align-items: center;
+  height: 80px;
+}
 .nav2 ul li {
   margin: 0 0 0 10px;
   line-height: 80px;
