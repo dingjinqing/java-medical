@@ -9,5 +9,6 @@ export const cn = {
   noAuthority: '抱歉，您没有访问此操作的权限',
   resourceNotExist: '抱歉，您请求的资源不存在',
   parameterError: '参数错误！',
-  beingProcessed: '服务正在处理，请稍后。'
+  beingProcessed: '服务正在处理，请稍后。',
+  editLangType: 'zh_CN'
 }

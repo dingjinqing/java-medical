@@ -2,6 +2,7 @@
   <div
     class="tinymceEditor"
     :class="special"
+    v-if="flag"
   >
     <editor
       v-model="myValue"
@@ -53,10 +54,13 @@ export default {
   },
   data () {
     return {
-      // 初始化配置
+      flag: true,
+      myValue: this.value,
+      special: '', // 装修内的左文右图特定高度
+      langName: 'zh_CN',
       init: {
         language_url: `http://${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`,
-        language: 'zh_CN',
+        language: this.$t('messageHint.editLangType'),
         height: 450,
         skin_url: `http://${window.location.host}/static/tinymce/skins/ui/oxide`,
         plugins: this.plugins,
@@ -69,13 +73,8 @@ export default {
           const img = 'data:image/jpeg;base64,' + blobInfo.base64()
           success(img)
         }
-      },
-      myValue: this.value,
-      special: '', // 装修内的左文右图特定高度
-      langName: 'zh_CN'
+      }
     }
-  },
-  created () {
   },
   mounted () {
     // this.init.language_url = `${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`

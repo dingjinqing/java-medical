@@ -8,5 +8,6 @@ export const en = {
   noAuthority: "Sorry, you don't have permission to access this operation",
   resourceNotExist: 'Sorry, the resource you requested does not exist',
   parameterError: 'Parameter error!',
-  beingProcessed: 'Service is processing, please wait.'
+  beingProcessed: 'Service is processing, please wait.',
+  editLangType: ''
 }
