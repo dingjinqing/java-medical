@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.payaward;
 
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,11 @@ public class PayAwardContentBo {
      * 优惠卷
      */
     private List<PayAwardCouponBo> couponList;
+
+    /**
+     * 优惠卷
+     */
+    private List<CouponView> couponView;
     /**
      * 优惠卷ids
      */

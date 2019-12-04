@@ -39,7 +39,7 @@ public class CoopenVo {
     private Timestamp  createTime;
     private Timestamp  updateTime;
     /**
-     * 会员卡
+     * 优惠卷
      */
     private List<CouponView> couponView;
 

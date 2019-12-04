@@ -7,9 +7,11 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.payaward.*;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListVo;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,8 @@ public class PayAwardService extends ShopBaseService {
 
     @Autowired
     PayAwardRecordService payAwardRecordService;
-
+    @Autowired
+    private CouponService couponService;
     /**
      * 添加
      *
@@ -101,6 +104,10 @@ public class PayAwardService extends ShopBaseService {
             }, false));
             payAwardVo.setAwardList(null);
         }
+        payAwardVo.getAwardContentList().forEach(award->{
+            List<CouponView> couponViewByIds =couponService.getCouponViewByIds(award.getCouponIds());
+            award.setCouponView(couponViewByIds);
+        });
         return payAwardVo;
     }
 
