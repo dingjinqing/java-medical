@@ -6,10 +6,11 @@ var footer = {
   onLoad(options) {
 
   },
-  
+
   onClickSupport: function (e) {
-    var link = util.getUrl("") + "/index/free/experience?shop_id=" + config.shop_id +
-      "&user_id=" + util.getCache('user_id');
+    console.log(config, util.getCache('user_id'))
+    var link = util.getUrl("") + "/index/home/applyMobile?shopId=" + config.shop_id +
+      "&userId=" + util.getCache('user_id');
     util.jumpLink('/pages/webview/webview?url=' + encodeURIComponent(link));
   },
   to_somwhere: function (e) {
