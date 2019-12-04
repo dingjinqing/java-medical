@@ -44,26 +44,6 @@
           </div>
 
         </el-form>
-
-        <!-- <div class="input_icon">
-          <input
-            type="contact"
-            :placeholder="$t('apply.placeholder_name')"
-            name="contact"
-            v-model="username"
-          >
-          <span>{{$t('apply.name')}}</span>
-        </div>
-        <div class="input_icon">
-          <input
-            type="mobile"
-            :placeholder="$t('apply.placeholder_tel')"
-            name="mobile"
-            onkeyup="value=value.replace(/[^\d\-]/g,'')"
-            v-model="phonenum"
-          >
-          <span>{{$t('apply.mobile')}}</span>
-        </div> -->
         <div
           class="p_apply_submit"
           @click="handlesubmit()"
@@ -104,6 +84,8 @@ export default {
   mounted () {
     this.$http.$emit('to_rej')
     this.langDefault()
+    // 初始化判断打开的设备
+    this.isMobile()
   },
   methods: {
     // 提交表单
@@ -124,6 +106,8 @@ export default {
                 message: '提交申请成功，请等待业务员联系',
                 type: 'success'
               })
+              this.$refs['ruleForm'].resetFields()
+              this.ruleForm.companyName = ''
             } else {
               this.$message.error({
                 showClose: true,
@@ -137,6 +121,15 @@ export default {
           return false
         }
       })
+    },
+    // 判断当前打开页面的设备
+    isMobile () {
+      let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
+      console.log(flag)
+      if (flag) {
+        console.log('触发')
+        this.$router.push({ name: 'applyMobile' })
+      }
     }
   }
 }

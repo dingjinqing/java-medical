@@ -3,6 +3,7 @@ const routes = [
     path: '/index/home',
     name: 'indexHome',
     component: () => import('@/view/index/home'),
+
     children: [
       {
         path: '/index/home/main',
@@ -14,6 +15,7 @@ const routes = [
         name: 'indexHomeOntrial',
         component: () => import('@/view/index/onTrial')
       },
+
       {
         path: '/index/home/news',
         name: 'indexNews',
@@ -37,6 +39,11 @@ const routes = [
         component: () => import('@/view/index/aboutUs')
       }
     ]
+  },
+  {
+    path: '/index/home/applyMobile',
+    name: 'applyMobile',
+    component: () => import('@/view/index/ontrialComponents/applyMobile')
   }
 ]
 export default routes
