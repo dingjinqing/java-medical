@@ -85,7 +85,7 @@
   <view class="del-appoint" bindtap='toCancel' data-mobile="{{orderInfo.mobile}}" wx:if="{{orderInfo.orderStatus == 1}}">
     取消预约
   </view>
-  <form report-submit='true' bindsubmit='toTrueCancel' wx:if="{{ orderInfo.orderStatus == 0 }}" data-orderSn="{{orderInfo.orderSn}}">
+  <form report-submit='true' bindsubmit='toTrueCancel' wx:if="{{ orderInfo.orderStatus == 0 }}" data-order_id="{{orderInfo.orderId}}" data-orderSn="{{orderInfo.orderSn}}">
     <button class="del-appoint del_btns" formType='submit'>取消预约</button>
   </form>
   <view class="del-appoint" bindtap='toComment' data-storeId="{{orderInfo.storeId}}" data-orderSn="{{orderInfo.orderSn}}" wx:if="{{ orderInfo.orderStatus == 3 }}">

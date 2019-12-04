@@ -69,7 +69,7 @@
               <button wx:if="{{ item.orderStatus == 1 }}" bindtap='serverCancel' data-mobile="{{ item.mobile }}" class='cancel_btn'>
                 取消预约
               </button>
-              <form report-submit='true' bindsubmit='toTrueCancel' wx:if="{{ item.orderStatus == 0}}" data-order_sn='{{item.orderSn}}'>
+              <form report-submit='true' bindsubmit='toTrueCancel' wx:if="{{ item.orderStatus == 0}}" data-order_id="{{item.orderId}}" data-order_sn='{{item.orderSn}}'>
                 <button formType='submit' class='cancel_btn'>取消预约</button>
               </form>
             </view>

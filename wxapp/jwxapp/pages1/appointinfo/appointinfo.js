@@ -56,11 +56,12 @@ global.wxPage({
   // 取消预约
   toTrueCancel: function (e) {
     let orderSn = e.currentTarget.dataset.ordersn;
+    let orderId = e.currentTarget.dataset.order_id;
     let form_id = e.detail.formId;
     let open_id = util.getCache("openid");
     let that = this;
     util.showModal('提示', '是否取消该订单', function () {
-      util.api('/api/wxapp/service/cancel', function (res) {
+      util.api('/api/wxapp/store/service/cancelReservation', function (res) {
         if (res.error == 0) {
           orderInfo.orderStatus = 2;
           that.setData({
@@ -69,7 +70,7 @@ global.wxPage({
         } else if (res.error == 400002) {
 
         }
-      }, { orderSn: orderSn, open_id: open_id, form_id: form_id })
+      }, { orderId: orderId, cancelReason: "取消原因", orderSn: orderSn, open_id: open_id, form_id: form_id })
     }, true);
 
   },
@@ -115,7 +116,7 @@ global.wxPage({
     let orderSn = e.currentTarget.dataset.ordersn;
     let openid = util.getCache('openid');
     let form_id = e.detail.formId;
-    util.api('/api/wxapp/service/pay', function (res) {
+    util.api('/api/wxapp/store/service/submitReservation', function (res) {
       if (res.error == 0) {
         if (typeof (res.content.timeStamp) != 'undefined') {
           wx.requestPayment({

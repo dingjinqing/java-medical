@@ -137,19 +137,18 @@ global.wxPage({
   },
   // 取消预约
   toTrueCancel: function (e) {
-    var order_sn = e.currentTarget.dataset.order_sn;
     var that = this;
     var form_id = e.detail.formId;
-    var open_id = util.getCache("openid");
+    var orderId = e.currentTarget.dataset.order_id
     util.showModal('提示', '是否取消该订单', function () {
-      util.api('/api/wxapp/service/cancel', function (res) {
+      util.api('/api/wxapp/store/service/cancelReservation', function (res) {
         if (res.error == 0) {
           util.toast_success('取消成功');
           util.navigateTo({ url: '/pages/appointlist/appointlist' });
         } else if (res.error == 400002) {
           util.toast_success('操作成功');
         }
-      }, { order_sn: order_sn, open_id: open_id, form_id: form_id })
+      }, { orderId: orderId, cancelReason: "取消原因", form_id: form_id })
     }, true);
   },
   //删除预约
@@ -169,7 +168,7 @@ global.wxPage({
     let order_sn = e.currentTarget.dataset.order_sn
     let form_id = e.detail.formId
     let open_id = util.getCache('openid')
-    util.api('/api/wxapp/service/pay', function (res) {
+    util.api('/api/wxapp/store/service/submitReservation', function (res) {
       if (res.error == 0) {
         if (typeof (res.content.timeStamp) != 'undefined') {
           wx.requestPayment({
@@ -204,12 +203,12 @@ global.wxPage({
           wx.navigateBack();
         });
       } else {
-        util.showModal("提示", res.message, function () {
+        util.showModal("提示", '调起支付失败', function () {
           wx.navigateBack({})
         });
         return false;
       }
-    }, { order_sn: order_sn, openid: open_id, form_id: form_id })
+    }, { orderSn: order_sn, openid: open_id, form_id: form_id })
   },
 
   /**
