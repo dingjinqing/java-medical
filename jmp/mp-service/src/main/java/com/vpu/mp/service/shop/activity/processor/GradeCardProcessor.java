@@ -75,13 +75,13 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
 
             // 不存在限时降价，或者会员价格比限时降价低则加入会员价活动信息
             capsule.setRealPrice(record3.get(GRADE_PRD.GRADE_PRICE));
-            // 如果商品是会员专享的话则价格显示会员价的价格，但是提示信息显示会员专享（ps:filterParam处已经过滤掉了首单特惠）
+            // 如果商品是会员专享的话则价格显示会员价的价格，但是提示信息显示会员专享，就不会执行下面if内语句（ps:filterParam处已经过滤掉了首单特惠）
             if (!capsule.getProcessedTypes().contains(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
                 GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
                 activity.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
                 capsule.getGoodsActivities().add(activity);
             }
-            capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
+            capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
         });
     }
     /*****************商品详情处理******************/
