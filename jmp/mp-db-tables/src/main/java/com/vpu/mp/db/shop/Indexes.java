@@ -470,6 +470,11 @@ public class Indexes {
     public static final Index USER_COLLECTION_GOODS_ID = Indexes0.USER_COLLECTION_GOODS_ID;
     public static final Index USER_RFM_SUMMARY_PRIMARY = Indexes0.USER_RFM_SUMMARY_PRIMARY;
     public static final Index USER_RFM_SUMMARY_REF_DATE = Indexes0.USER_RFM_SUMMARY_REF_DATE;
+    public static final Index SUBSCRIBE_MESSAGE_PRIMARY = Indexes0.SUBSCRIBE_MESSAGE_PRIMARY;
+    public static final Index SUBSCRIBE_MESSAGE_TEMPLATE_ID = Indexes0.SUBSCRIBE_MESSAGE_TEMPLATE_ID;
+    public static final Index SUBSCRIBE_MESSAGE_TEMPLATE_NO = Indexes0.SUBSCRIBE_MESSAGE_TEMPLATE_NO;
+    public static final Index SUBSCRIBE_MESSAGE_USER_ID = Indexes0.SUBSCRIBE_MESSAGE_USER_ID;
+    public static final Index SUBSCRIBE_MESSAGE_WX_OPENID = Indexes0.SUBSCRIBE_MESSAGE_WX_OPENID;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -917,5 +922,10 @@ public class Indexes {
         public static Index USER_RFM_SUMMARY_REF_DATE = Internal.createIndex("ref_date", UserRfmSummary.USER_RFM_SUMMARY, new OrderField[] { UserRfmSummary.USER_RFM_SUMMARY.REF_DATE }, false);
         public static Index COOPEN_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", CoopenActivity.COOPEN_ACTIVITY, new OrderField[] { CoopenActivity.COOPEN_ACTIVITY.ID }, true);
         public static Index COOPEN_ACTIVITY_RECORDS_PRIMARY = Internal.createIndex("PRIMARY", CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS, new OrderField[] { CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS.ID }, true);
+        public static Index SUBSCRIBE_MESSAGE_PRIMARY = Internal.createIndex("PRIMARY", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.REC_ID }, true);
+        public static Index SUBSCRIBE_MESSAGE_TEMPLATE_ID = Internal.createIndex("template_id", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.TEMPLATE_ID }, false);
+        public static Index SUBSCRIBE_MESSAGE_TEMPLATE_NO = Internal.createIndex("template_no", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.TEMPLATE_NO }, false);
+        public static Index SUBSCRIBE_MESSAGE_USER_ID = Internal.createIndex("user_id", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.USER_ID }, false);
+        public static Index SUBSCRIBE_MESSAGE_WX_OPENID = Internal.createIndex("wx_openid", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.WX_OPENID }, false);
     }
 }
