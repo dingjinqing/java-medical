@@ -72,7 +72,7 @@ public class CartService extends ShopBaseService {
                 .from(CART)
                 .innerJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
                 .innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(CART.PRODUCT_ID))
-                .where(CART.USER_ID.eq(userId)).orderBy(CART.CREATE_TIME.desc()).fetch();
+                .where(CART.USER_ID.eq(userId)).orderBy(CART.REC_ID.desc()).fetch();
 
         List<WxAppCartGoods> cartGoodsList = records.into(WxAppCartGoods.class);
         List<Integer> productIdList = records.getValues(GOODS_SPEC_PRODUCT.PRD_ID);
@@ -216,7 +216,7 @@ public class CartService extends ShopBaseService {
      * 删除购物车
      * @param userId 用户
      * @param storeId 门店
-     * @return 
+     * @return
      */
     public int removeCartIsCheckedGoods(Integer userId,Integer storeId){
         return db().delete(CART).where(CART.USER_ID.eq(userId)).execute();

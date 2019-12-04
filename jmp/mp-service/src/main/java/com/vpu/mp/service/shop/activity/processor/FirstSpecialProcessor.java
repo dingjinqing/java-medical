@@ -5,16 +5,16 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialProductBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.CartProductBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.config.FirstSpecialConfigService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.cart.CartService;
-import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
 import org.jooq.Result;
@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -160,7 +162,72 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
         }
     }
 
-    public void doCreateOperation(List<Integer> productId){
+    public void doOrderOperation(Integer userId, Timestamp date, List<CartProductBo> productBos, Integer storeId){
+        boolean isNewUser = orderInfoService.isNewUser(userId);
+        if (isNewUser){
+            List<Integer> productIds =productBos.stream().map(CartProductBo::getProductId).collect(Collectors.toList());
+            List<FirstSpecialProductBo> specialPrdIdList = firstSpecialProcessorDao.getGoodsFirstSpecialPrdId(productIds,date).into(FirstSpecialProductBo.class);
+            if (specialPrdIdList != null && specialPrdIdList.size() > 0) {
+                log.debug("新用户触发首单特惠活动FirstSpecialProductBo:"+Util.toJson(specialPrdIdList));
+                Integer limitGoodsNum = firstSpecialConfigService.getFirstLimitGoods();
+                log.debug("首单特惠全局限制商品种类[limitGoodsNum:"+limitGoodsNum+"]");
+                // 商品数量
+                AtomicReference<Integer> goodsNum = new AtomicReference<>(0);
+                // 选中的商品数量
+                AtomicReference<Integer> checkedGoodsNum = new AtomicReference<>(0);
+                specialPrdIdList.forEach(firstSpecial -> {
+                    productBos.forEach(product -> {
+                        if (firstSpecial.getPrdId().equals(product.getProductId())) {
+                            log.debug("首单特惠商品[getPrdId:"+firstSpecial.getPrdId()+"]");
+                            CartActivityInfo firstActivityInfo = new CartActivityInfo();
+                            firstActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+                            firstActivityInfo.setFirstSpecialPrice(firstSpecial.getPrdPrice());
+                            if (firstSpecial.getLimitAmount() > 0 && product.getGoodsNumber() > firstSpecial.getLimitAmount()) {
+                                //超出限购数量后，买家不可继续添加购买该商品
+                                if (firstSpecial.getLimitFlag().equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONTINUE)){
+                                    firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
+                                }else {
+                                    // 修改购物车中商品数量
+                                    log.debug("商品数量超过限制,修改购物车中的商品数量[getGoodsNumber:"+product.getGoodsNumber()+",getLimitAmount:"+firstSpecial.getLimitAmount()+"]");
+                                    cartService.changeGoodsNumber(userId,product.getProductId(),0,firstSpecial.getLimitAmount());
+                                    product.setGoodsNumber(firstSpecial.getLimitAmount());
+                                }
 
+                            }
+                            if (Objects.equals(product.getIsChecked(), CartConstant.CART_IS_CHECKED)){
+                                log.debug("选中的特惠商品[getPrdId:"+product.getProductId()+"]");
+                                goodsNum.updateAndGet(v -> v + 1);
+                            }
+                            if (limitGoodsNum != 0&& goodsNum.get() >limitGoodsNum) {
+                                firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
+                            }
+                            if (limitGoodsNum != 0&& goodsNum.get()>limitGoodsNum&&product.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
+                                goodsNum.updateAndGet(v -> v + 1);
+                            }
+                            product.setCartActivityInfo(firstActivityInfo);
+                        }
+                    });
+                });
+                if (goodsNum.get() >= limitGoodsNum){
+                    log.debug("选中商品过多,触发首单特惠商品数(种类)限制[goodsNum:"+goodsNum+",limitGoodsNum:"+limitGoodsNum+"]");
+                    productBos.forEach(goods->{
+                        CartActivityInfo actInfo = goods.getCartActivityInfo();
+                        if (actInfo != null && BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(actInfo.getActivityType()) && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
+                            if (Objects.equals(goods.getIsChecked(), CartConstant.CART_IS_CHECKED)) {
+                                checkedGoodsNum.updateAndGet(v -> v + 1);
+                                if (checkedGoodsNum.get() > limitGoodsNum) {
+                                    log.debug("超过限制的商品首单特惠不生效,商品价格为原价[" + "getPrdId:" + goods.getProductId() + "]");
+                                    actInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
+                                }
+                            } else {
+                                actInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
+                            }
+                        }
+
+                    });
+                }
+
+}
+        }
     }
 }
