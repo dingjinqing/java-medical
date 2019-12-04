@@ -24,8 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 小程序-商品列表-处理最终价格信息
@@ -93,17 +94,8 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
         List<GoodsPrdMpVo> products = goodsDetailMpBo.getProducts();
 
-        List<GoodsDetailMpBo.GradePrd> gradeCardPrice = goodsDetailMpBo.getGradeCardPrice();
-
-        Map<Integer, BigDecimal> gradePriceMap = gradeCardPrice.stream().collect(Collectors.toMap(GoodsDetailMpBo.GradePrd::getPrdId, GoodsDetailMpBo.GradePrd::getGradePrice,(x1,x2)->x1));
-
         // 规格会员价和图片路径处理
-        products.forEach(prd->{
-            if (gradePriceMap.get(prd.getPrdId()) != null) {
-                prd.setPrdRealPrice(gradePriceMap.get(prd.getPrdId()));
-            }
-            prd.setPrdImg(getImgFullUrlUtil(prd.getPrdImg()));
-        });
+        products.forEach(prd-> prd.setPrdImg(getImgFullUrlUtil(prd.getPrdImg())));
         // 商品图片和视频路径地址处理
         List<String> goodsImgs = new ArrayList<>(goodsDetailMpBo.getGoodsImgs().size());
         goodsDetailMpBo.getGoodsImgs().add(0,goodsDetailMpBo.getGoodsImg());

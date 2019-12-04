@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -87,19 +87,23 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        log.debug("会员价格查询");
-        List<GradePrdRecord> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
-        List<GoodsDetailMpBo.GradePrd> list = new ArrayList<>();
-        goodsGradeGradePrice.forEach(record -> {
-            GoodsDetailMpBo.GradePrd gradePrd = new GoodsDetailMpBo.GradePrd();
-            gradePrd.setPrdId(record.getPrdId());
-            gradePrd.setGradePrice(record.getGradePrice());
-            gradePrd.setGrade(record.getGrade());
-            list.add(gradePrd);
-        });
-        log.debug("商品会员价：{}",list.toString());
+        List<GoodsDetailMpBo.GradePrd> gradeCards = capsule.getGradeCardPrice();
+        if (gradeCards == null) {
+            log.debug("会员价格查询");
+            List<GradePrdRecord> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
+            gradeCards = goodsGradeGradePrice.stream().map(x -> x.into(GoodsDetailMpBo.GradePrd.class)).collect(Collectors.toList());
+            capsule.setGradeCardPrice(gradeCards);
+        }
 
-        capsule.setGradeCardPrice(list);
+        Map<Integer, BigDecimal> gradePriceMap = gradeCards.stream().collect(Collectors.toMap(GoodsDetailMpBo.GradePrd::getPrdId, GoodsDetailMpBo.GradePrd::getGradePrice,(x1,x2)->x1));
+
+        List<GoodsPrdMpVo> products = capsule.getProducts();
+        products.forEach(prd->{
+            prd.setPrdLinePrice(prd.getPrdRealPrice());
+            prd.setPrdRealPrice(gradePriceMap.get(prd.getPrdId()));
+        });
+
+        log.debug("商品会员价：{}",gradeCards.toString());
     }
 
     //*****************购物车处理************************
