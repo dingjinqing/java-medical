@@ -27,7 +27,7 @@
             <div>
               <img
                 style="width: 70px;height: 70px;float: left;"
-                :src="row.prdDesc === ''? row.goodsImg : row.prdImg"
+                :src="row.prdImg"
               >
               <div style="padding:10px;">
                 <span
@@ -477,9 +477,9 @@ export default {
           }
 
           item.prdPriceEdit = false
-          item.prdPriceOld = item.shopPrice
+          item.prdPriceOld = item.prdPrice
           item.prdNumberEdit = false
-          item.prdNumberOld = item.goodsNumber
+          item.prdNumberOld = item.prdNumber
         })
 
         this.goodsData = dataList

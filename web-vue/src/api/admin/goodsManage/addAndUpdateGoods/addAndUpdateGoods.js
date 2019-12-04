@@ -40,14 +40,6 @@ export function selectGoodsApi (data) {
     data
   })
 }
-// 全部商品查询
-export function getGoodsList (data) {
-  return service({
-    url: `/api/admin/goods/list`,
-    method: 'post',
-    data
-  })
-}
 // 商品名、商品编码、商品规格编码是否已存在
 export function isGoodsColumnValueExist (data) {
   return service({

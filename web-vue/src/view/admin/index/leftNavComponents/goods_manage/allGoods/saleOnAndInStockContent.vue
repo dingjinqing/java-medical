@@ -52,7 +52,8 @@
           width="120px"
         >
           <template slot-scope="{row}">
-            <span v-if="row.prdId === null">
+            <!--非默认规格-->
+            <span v-if="!row.isDefaultPrd">
               <template v-if="row.prdMinShopPrice === row.prdMaxShopPrice">
                 {{row.prdMinShopPrice}}
               </template>
@@ -69,9 +70,8 @@
                   @click="shopPriceAndGoodsNumberEditClick(row,'price')"
                 ></span>
               </span>
-              <input
+              <input v-else
                 :id="'shopPrice_'+row.goodsId"
-                v-else
                 v-model.number="row.shopPriceOld"
                 @change="shopPriceChange(row)"
                 @blur="row.shopPriceEdit = false"
@@ -109,7 +109,7 @@
           :label="$t('allGoods.allGoodsData.goodsNumber')"
           width="120px"
         >
-          <template slot-scope="{row}">
+          <template slot-scope="{row,$index}">
             <span v-if="row.prdId === null">{{row.goodsNumber}}</span>
             <template v-else>
               <span v-if="!row.goodsNumberEdit">
@@ -124,7 +124,7 @@
                 v-else
                 :id="'goodsNumber_'+row.goodsId"
                 v-model.number="row.goodsNumberOld"
-                @change="goodsNumberChange(row)"
+                @change="goodsNumberChange(row,$index)"
                 @blur="row.goodsNumberEdit = false"
                 class="editInput"
               />
@@ -384,7 +384,7 @@ export default {
       })
     },
     /* 商品数量输入框处理函数 */
-    goodsNumberChange (row) {
+    goodsNumberChange (row, index) {
       row.goodsNumberEdit = false
       if (typeof row.goodsNumberOld !== 'number' || row.goodsNumberOld < 0) {
         row.goodsNumberOld = row.goodsNumber
@@ -405,6 +405,9 @@ export default {
       }).then(res => {
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
+          if (row.goodsNumber === 0) {
+            this.goodsData.splice(index, 1)
+          }
         }
       })
     },

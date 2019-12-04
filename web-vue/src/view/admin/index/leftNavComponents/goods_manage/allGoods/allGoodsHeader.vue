@@ -253,22 +253,28 @@ export default {
       goodsTypeOptions: [],
       // 查询过滤对象
       goodsFilterFormData: {
+        // 商品名称
         goodsName: null,
+        // 平台分类
         catId: null,
+        // 商家分类
         sortId: null,
+        // 标签id
         labelId: null,
+        // 品牌id
         brandId: null,
         // 商品来源
         source: null,
         // 活动类型
         goodsType: null,
+        // 上架时间
         saleTimeStart: null,
+        // 下架时间
         saleTimeEnd: null,
+        // 商品价格开始
         lowShopPrice: null,
+        // 商品价格结束
         highShopPrice: null,
-        isOnSale: null,
-        goodsNumber: null,
-        saleType: null
       },
       goodsFilterInputStyle: { width: '170px' },
       goodsBrandOptions: [],

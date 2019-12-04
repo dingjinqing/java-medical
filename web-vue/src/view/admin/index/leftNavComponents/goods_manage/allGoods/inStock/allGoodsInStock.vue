@@ -59,7 +59,9 @@ export default {
     return {
       initFilterData: {
         needGoodsNum: true,
+        // 是否在售 否
         isOnSale: 0,
+        // 查询分类信息展示其商品数量是以商品为统计对象还是以规格为统计对象 1 以商品为对象
         selectType: 1
       }
     }

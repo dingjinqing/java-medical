@@ -38,11 +38,15 @@ export default {
     validateFormData () {
       return this.$refs.basicInfo.validateFormData() && this.$refs.stockAndPriceInfo.validateFormData() && this.$refs.deliverAndOtherInfo.validateFormData()
     },
-    /* 验证数据是否全部合法 */
+    /* 获取数据 */
     getFormData () {
       let basicInfoData = this.$refs.basicInfo.getFormData()
       let stockAndPriceInfoData = this.$refs.stockAndPriceInfo.getFormData()
       let deliverAndOtherInfoData = this.$refs.deliverAndOtherInfo.getFormData()
+      // 默认规格
+      if (!stockAndPriceInfoData.specInfoSwitch) {
+        stockAndPriceInfoData.goodsSpecProducts[0].prdImg = basicInfoData.goodsImg
+      }
 
       return {
         ...basicInfoData,
