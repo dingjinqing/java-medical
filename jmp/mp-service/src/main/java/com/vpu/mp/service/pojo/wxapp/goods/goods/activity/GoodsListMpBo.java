@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 小程序-商品列表信息存储Bo类，
@@ -48,7 +48,7 @@ public class GoodsListMpBo extends GoodsListMpVo {
 
     /** 商品已被哪些processor处理过（商品列表里面将处理的营销码值存入） */
     @JsonIgnore
-    private Set<Byte> processedTypes = new HashSet<>();
+    private List<Byte> processedTypes = new ArrayList<>();
 
 
 

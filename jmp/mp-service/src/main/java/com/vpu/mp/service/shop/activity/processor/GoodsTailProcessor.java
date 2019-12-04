@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -23,10 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -56,7 +54,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         capsules.forEach(capsule->{
             // 被活动处理了的话商品价就是活动价（已被活动设置），否则就是商品的规格最低价(新增商品时该字段存的就是最低价)
-            if (capsule.getProcessedTypes().size() == 0) {
+            if (isRegardAsNormalGoods(capsule.getProcessedTypes())) {
                 capsule.setRealPrice(capsule.getShopPrice());
                 capsule.setLinePrice(capsule.getMarketPrice());
             } else {
@@ -74,6 +72,21 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
                 capsule.setActivityId(activity.getActivityId());
             }
         });
+    }
+
+    /**
+     * 商品是否按照普通商品设置最终真实价格和划线价格
+     * @param processedTypes 商品被处理的活动信息
+     * @return true 是 false 否
+     */
+    private boolean isRegardAsNormalGoods(List<Byte> processedTypes) {
+        if (processedTypes == null || processedTypes.size() == 0) {
+            return true;
+        }
+        if (processedTypes.size() == 1 && BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE.equals(processedTypes.get(0))) {
+            return true;
+        }
+        return false;
     }
     /*****************商品详情处理******************/
     @Override

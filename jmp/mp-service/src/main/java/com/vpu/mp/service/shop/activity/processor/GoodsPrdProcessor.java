@@ -48,7 +48,7 @@ public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListPro
             List<Record3<Integer, BigDecimal, String>> record = goodsPrdInfos.get(capsule.getGoodsId());
             capsule.setDefaultPrd(record.size()==1&&StringUtils.isBlank(record.get(0).get(GOODS_SPEC_PRODUCT.PRD_DESC)));
             // 设置规格最大价格，最低价为商品的shop_price
-            capsule.setPrdMaxPrice(record.get(record.size()-1).get(GOODS_SPEC_PRODUCT.PRD_PRICE));
+            capsule.setPrdMaxPrice(record.get(0).get(GOODS_SPEC_PRODUCT.PRD_PRICE));
         });
     }
     /*****************商品详情处理******************/
