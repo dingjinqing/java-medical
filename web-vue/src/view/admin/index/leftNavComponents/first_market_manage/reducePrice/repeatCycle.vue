@@ -188,7 +188,8 @@ export default {
           label: '周六'
         },
         {
-          value: 7,
+          // 老外的一周从周日开始
+          value: 0,
           label: '周日'
         }
       ]
