@@ -80,5 +80,8 @@ public interface EsSearchName {
     String FREIGHT_TEMPLATE_ID = "freight_template_id";
 
 
+    String PRD_JSON = "prd_json";
+
+
 
 }

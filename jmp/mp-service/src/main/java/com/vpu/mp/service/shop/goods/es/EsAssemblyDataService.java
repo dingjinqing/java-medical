@@ -1,11 +1,13 @@
 package com.vpu.mp.service.shop.goods.es;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.brand.GoodsBrandSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsGradePrd;
@@ -15,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.*;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
@@ -118,13 +121,16 @@ public class EsAssemblyDataService extends ShopBaseService {
                 List<GoodsSpecProductRecord> list = goodsProductMap.get(goodsId);
                 list.sort(Comparator.comparing(GoodsSpecProductRecord::getPrdPrice));
                 List<BigDecimal> specPrdPrices = new LinkedList<>();
+                List<GoodsPrdMpVo> voList = Lists.newArrayList();
                 StringBuilder prdSns = new StringBuilder();
                 list.forEach(x -> {
+                    voList.add(new GoodsPrdMpVo(x));
                     specPrdPrices.add(x.getPrdPrice());
                     prdSns.append(x.getPrdSn()).append(",");
                 });
                 esGoods.setPrdSns(prdSns.toString());
                 int length = specPrdPrices.size();
+                esGoods.setPrdJson(Util.toJson(voList));
                 esGoods.setMaxSpecPrdPrices(specPrdPrices.get(length - 1));
                 esGoods.setMinSpecPrdPrices(specPrdPrices.get(0));
 
@@ -425,12 +431,22 @@ public class EsAssemblyDataService extends ShopBaseService {
         if (!goodsGradePrdList.isEmpty()) {
             for (GoodsGradePrd goodsGradePrd : goodsGradePrdList) {
                 if(StringUtils.isBlank(goodsGradePrd.getGrade())){
-                    break ;
+                    continue ;
                 }
                 try {
+                    StringBuilder vipLevelPrice;
                     Field v = esGoods.getClass().getDeclaredField(goodsGradePrd.getGrade());
                     v.setAccessible(true);
-                    v.set(esGoods, goodsGradePrd.getGradePrice());
+                    if( v.get(esGoods) == null ){
+                        vipLevelPrice = new StringBuilder();
+                    }else{
+                        vipLevelPrice = new StringBuilder(v.get(esGoods).toString());
+                    }
+                    vipLevelPrice.append(goodsGradePrd.getPrdId()).
+                        append(":").
+                        append(goodsGradePrd.getGradePrice()).
+                        append(";");
+                    v.set(esGoods,vipLevelPrice.toString());
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     log.error("建立esGoods【id={}】索引时封装会员价失败", esGoods.getGoodsId());
                     e.printStackTrace();
@@ -445,6 +461,16 @@ public class EsAssemblyDataService extends ShopBaseService {
 
 
     public static void main(String[] args) {
+        EsGoods goods = new EsGoods();
+        goods.setV1("123");
+        try {
+            Field v = EsGoods.class.getDeclaredField("v1");
+            v.setAccessible(true);
+            v.set(goods,"321");
+            System.out.println(v.get(goods).toString());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     private void assemblyGoodsLabelMap(Map<Integer, List<GoodsLabelCoupleRecord>> sortForLabelMap) {

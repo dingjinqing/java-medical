@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -90,4 +92,9 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
         return EsConvertFactory.getParamConvert(GoodsListMpConverter.class).convert(mpParam,shopId);
     }
 
+    public static void main(String[] args) {
+        Integer[] a = {1,2,3};
+        List<Integer> b = Arrays.asList(a);
+        System.out.println(b.toString());
+    }
 }

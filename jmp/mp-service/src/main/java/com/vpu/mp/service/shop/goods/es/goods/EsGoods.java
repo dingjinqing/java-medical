@@ -193,48 +193,48 @@ public class EsGoods  {
     /**
      * 商品v1会员等级价格
      */
-    @EsFiled(name = EsSearchName.V1,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
-    private BigDecimal v1;
+    @EsFiled(name = EsSearchName.V1,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
+    private String v1;
     /**
      * 商品v2会员等级价格
      */
-    @EsFiled(name = EsSearchName.V2,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
-    private BigDecimal v2;
+    @EsFiled(name = EsSearchName.V2,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
+    private String v2;
     /**
      * 商品v3会员等级价格
      */
-    @EsFiled(name = EsSearchName.V3,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
-    private BigDecimal v3;
+    @EsFiled(name = EsSearchName.V3,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
+    private String v3;
     /**
      * 商品v4会员等级价格
      */
-    @EsFiled(name = EsSearchName.V4,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
-    private BigDecimal v4;
+    @EsFiled(name = EsSearchName.V4,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
+    private String v4;
     /**
      * 商品v5会员等级价格
      */
-    @EsFiled(name = EsSearchName.V5,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
-    private BigDecimal v5;
+    @EsFiled(name = EsSearchName.V5,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
+    private String v5;
     /**
      * 商品v6会员等级价格
      */
-    @EsFiled(name = EsSearchName.V6,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
-    private BigDecimal v6;
+    @EsFiled(name = EsSearchName.V6,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
+    private String v6;
     /**
      * 商品v7会员等级价格
      */
-    @EsFiled(name = EsSearchName.V7,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
-    private BigDecimal v7;
+    @EsFiled(name = EsSearchName.V7,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
+    private String v7;
     /**
      * 商品v8会员等级价格
      */
-    @EsFiled(name = EsSearchName.V8,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
-    private BigDecimal v8;
+    @EsFiled(name = EsSearchName.V8,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
+    private String v8;
     /**
      * 商品v9会员等级价格
      */
-    @EsFiled(name = EsSearchName.V9,type = EsFiledTypeConstant.SCALED_FLOAT,doc_values = false)
-    private BigDecimal v9;
+    @EsFiled(name = EsSearchName.V9,type = EsFiledTypeConstant.KEYWORD,doc_values = false)
+    private String v9;
     /**
      * 商品展示价格
      */
@@ -320,4 +320,10 @@ public class EsGoods  {
      */
     @EsFiled(name = EsSearchName.FREIGHT_TEMPLATE_ID,type = EsFiledTypeConstant.INTEGER,doc_values = false)
     private Integer freightTemplateId;
+
+    /**
+     * 商品规格信息JSON(暂时先这样，后期看下是否有必要单独建个索引)
+     */
+    @EsFiled(name=EsSearchName.PRD_JSON,type = EsFiledTypeConstant.KEYWORD,doc_values = false,index = false)
+    private String prdJson;
 }
