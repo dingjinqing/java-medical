@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.store.technician.TechnicianInfo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
+import com.vpu.mp.service.pojo.wxapp.pay.jsapi.JsApiVo;
 import com.vpu.mp.service.pojo.wxapp.store.*;
 import com.vpu.mp.service.saas.region.ProvinceService;
 import com.vpu.mp.service.saas.shop.ShopService;
@@ -483,50 +484,51 @@ public class StoreReservation extends ShopBaseService {
             return submitReservation(param);
         }
         log.debug("微信订单查询结果：{}", queryResult.toString());
+        log.debug("查询结果和常量的值比较结果为：{}", WxPayConstants.WxpayTradeStatus.NOTPAY.equals(queryResult.getTradeState()));
+        WebPayVo webPayVo = JsApiVo.builder().build();
         switch (queryResult.getTradeState()) {
             case WxPayConstants.WxpayTradeStatus.SUCCESS:
                 // 返回订单已支付
-                return new WebPayVo() {{
-                    setOrderType(WxPayConstants.WxpayTradeStatus.SUCCESS);
-                }};
+                webPayVo.setOrderType(WxPayConstants.WxpayTradeStatus.SUCCESS);
+                break;
             case WxPayConstants.WxpayTradeStatus.CLOSED:
                 // 订单已关闭，删除此订单，并重新创建订单支付
-                return new WebPayVo() {{
-                    setOrderType(WxPayConstants.WxpayTradeStatus.CLOSED);
-                }};
+                webPayVo.setOrderType(WxPayConstants.WxpayTradeStatus.CLOSED);
+                break;
             case WxPayConstants.WxpayTradeStatus.USER_PAYING:
                 // 返回正在支付
-                return new WebPayVo() {{
-                    setOrderType(WxPayConstants.WxpayTradeStatus.USER_PAYING);
-                }};
+                webPayVo.setOrderType(WxPayConstants.WxpayTradeStatus.USER_PAYING);
+                break;
             case WxPayConstants.WxpayTradeStatus.PAY_ERROR:
                 break;
             case WxPayConstants.WxpayTradeStatus.NOTPAY:
                 // 订单未支付，继续支付
                 String prepayId = serviceOrderService.selectSingleField(orderSn, SERVICE_ORDER.PREPAY_ID);
+                log.debug("prepayId的值为：{}", prepayId);
                 if (StringUtils.isBlank(prepayId)) {
                     SubmitReservationParam param = new SubmitReservationParam();
                     FieldsUtil.assignNotNull(serviceOrderService.getRecord(orderSn), param);
                     param.setClientIp(clientIp);
                     // 重新走支付流程
-                    return submitReservation(param);
-                }
-                try {
-                    return mpPaymentService.continuePay(queryResult, prepayId);
-                } catch (MpException e) {
-                    log.debug("支付失败：{}", e.getMessage());
-                    return new WebPayVo() {{
-                        setOrderType(WxPayConstants.WxpayTradeStatus.PAY_ERROR);
-                    }};
+                    webPayVo = submitReservation(param);
+                } else {
+                    try {
+                        webPayVo = mpPaymentService.continuePay(queryResult, prepayId);
+                    } catch (MpException e) {
+                        log.debug("支付失败：{}", e.getMessage());
+                        webPayVo.setOrderType(WxPayConstants.WxpayTradeStatus.PAY_ERROR);
+                        break;
+                    }
                 }
             case WxPayConstants.WxpayTradeStatus.REFUND:
                 break;
             case WxPayConstants.WxpayTradeStatus.REVOKED:
                 break;
             default:
+                log.debug("订单查询结果未匹配到任何状态");
                 break;
         }
-        return null;
+        return webPayVo;
         // TODO 定时任务倒计时十分钟结束后调接口，关闭该订单，更改状态为已取消
     }
 
