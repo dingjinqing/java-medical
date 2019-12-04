@@ -1,13 +1,14 @@
 <template>
-  <div>
-    <wrapper>
+  <div class="content">
+    <div class="main">
       <marketOrderSearchTab
         :requestParams="requestParams"
         @filter="initDataList"
         @export="exportDataList"
       />
-    </wrapper>
-    <wrapper>
+    </div>
+
+    <div class="table_list">
       <el-table
         class="version-manage-table"
         header-row-class-name="tableHeader"
@@ -72,12 +73,11 @@
         :page-params.sync="pageParams"
         @pagination="initDataList"
       />
-    </wrapper>
+    </div>
   </div>
 </template>
 
 <script>
-import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination.vue'
 import marketOrderSearchTab from '@/components/admin/marketManage/marketOrderSearchTab.vue'
 import { groupBuyOrderList } from '@/api/admin/marketManage/spellGroup.js'
@@ -85,8 +85,7 @@ import { groupBuyOrderList } from '@/api/admin/marketManage/spellGroup.js'
 export default {
   components: {
     pagination,
-    marketOrderSearchTab,
-    wrapper
+    marketOrderSearchTab
   },
   mounted () {
     if (this.$route.query.id > 0) {
@@ -156,6 +155,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.content {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
+  .main {
+    position: relative;
+    background-color: #fff;
+    padding: 15px;
+    .wrapper {
+      .el-button {
+        margin-left: 5px;
+      }
+    }
+  }
+}
+.table_list {
+  position: relative;
+  margin-top: 10px;
+  background-color: #fff;
+  padding: 15px;
+}
 .inputWidth {
   width: 175px;
 }
