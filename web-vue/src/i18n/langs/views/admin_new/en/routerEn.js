@@ -437,10 +437,10 @@ export const en = {
   // 门店管理 门店管理
   storeManage: ['Store management', 'Store list', 'Store management'],
   // 门店管理 预约管理
-  storeAppointmentManage: [
+  storeReservationManage: [
     'Store management',
     'Store List',
-    'Appointment management'
+    'Reservation management'
   ],
   // 门店管理 服务管理
   storeServiceManage: ['Store management', 'Store List', 'Service management'],

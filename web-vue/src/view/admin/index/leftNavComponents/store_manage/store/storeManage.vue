@@ -64,7 +64,7 @@ export default {
       switch (name) {
         case 'first':
           this.$router.push({
-            name: 'store_storemanage_reserve',
+            name: 'store_storemanage_reservation',
             query: {
               id: this.id
             }

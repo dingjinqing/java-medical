@@ -58,13 +58,13 @@ const routes = [
       // 门店列表 门店管理 预约管理
       {
         path: 'reserve',
-        name: 'store_storemanage_reserve',
+        name: 'store_storemanage_reservation',
         meta: {
-          crumbTitle: 'router.storeAppointmentManage',
+          crumbTitle: 'router.storeReservationManage',
           meta: 'store_manage',
           category: 'store_list'
         },
-        component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/appointmentManage')
+        component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/reservationManage/reservationList')
       },
       // 门店列表 门店管理 服务管理
       {
@@ -161,7 +161,29 @@ const routes = [
           meta: 'store_manage',
           category: 'store_list'
         },
-        component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/evaluationManage')
+        component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/evaluationManage'),
+        children: [
+          {
+            path: 'record',
+            name: 'store_storemanage_reservation_record',
+            meta: {
+              crumbTitle: 'router.storeEvaluationManage',
+              meta: 'store_manage',
+              category: 'store_list'
+            },
+            component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/evaluationManage/evaluationRecord')
+          },
+          {
+            path: 'review',
+            name: 'store_storemanage_reservation_review',
+            meta: {
+              crumbTitle: 'router.storeEvaluationManage',
+              meta: 'store_manage',
+              category: 'store_list'
+            },
+            component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/evaluationManage/evaluationReview')
+          }
+        ]
       }
     ]
   },
