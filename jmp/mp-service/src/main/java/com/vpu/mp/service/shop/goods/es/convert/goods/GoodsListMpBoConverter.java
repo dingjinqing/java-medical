@@ -13,6 +13,7 @@ public class GoodsListMpBoConverter implements EsGoodsConvertInterface<GoodsList
 //        bo.setCommentNum();
 //        bo.setGoodsNumber();
 //        bo.setDefaultPrd();
+        bo.setCommentNum(esGoods.getCommentNum());
         bo.setPrdMaxPrice(esGoods.getMaxSpecPrdPrices());
         bo.setCatId(esGoods.getCatId());
         bo.setBrandId(esGoods.getBrandId());

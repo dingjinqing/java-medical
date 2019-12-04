@@ -25,7 +25,6 @@ public interface EsGoodsConvertInterface<T> {
      */
     default void copyValues(GoodsBaseMp target,EsGoods source){
         target.setGoodsId(source.getGoodsId());
-        target.setCommentNum(source.getCommentNum());
         target.setGoodsName(source.getGoodsName());
         target.setGoodsSaleNum(source.getGoodsSaleNum());
         //TODO  ESGoods中尚未加入下面字段

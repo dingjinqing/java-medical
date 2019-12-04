@@ -428,7 +428,7 @@ public class Calculate extends ShopBaseService {
         BigDecimal totalWeight = BigDecimalUtil.multiply(goodWeight, BigDecimal.valueOf(totalNumber));
         try {
             shippingFeeByTemplate = shippingFeeTemplate.getShippingFeeByTemplate(districtCode, templateId, totalNumber, totalPrice, totalWeight);
-        } catch (MpException e) {
+        } catch (MpException | NullPointerException e) {
             logger().debug("获取商品运费信息失败");
             e.printStackTrace();
         }

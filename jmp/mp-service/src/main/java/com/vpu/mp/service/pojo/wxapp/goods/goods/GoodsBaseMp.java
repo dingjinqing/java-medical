@@ -19,8 +19,6 @@ public class GoodsBaseMp {
     protected Integer goodsSaleNum;
     /**是否是使用默认规格*/
     protected Boolean defaultPrd;
-    /**商品评价数量*/
-    private Integer commentNum;
     /**商品数量*/
     protected Integer goodsNumber;
     //************ElasticSearch中的数据**************end

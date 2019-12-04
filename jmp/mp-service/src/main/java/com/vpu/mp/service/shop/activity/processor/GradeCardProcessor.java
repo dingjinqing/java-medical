@@ -27,13 +27,14 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
 
 /**
- *  等级价格
+ * 等级价格
+ *
  * @author 李晓冰
  * @date 2019年10月31日
  */
 @Service
 @Slf4j
-public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy{
+public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListProcessor, GoodsDetailProcessor, ActivityCartListStrategy {
 
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
@@ -45,6 +46,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_MEMBER_GRADE_PRIORITY;
     }
+
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
@@ -54,7 +56,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
 
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGradeInfos = memberCardProcessorDao.getGoodsGradeCardForListInfo(userId, goodsIds);
 
-        availableCapsules.forEach(capsule->{
+        availableCapsules.forEach(capsule -> {
             Integer goodsId = capsule.getGoodsId();
             if (goodsGradeInfos.get(goodsId) == null) {
                 return;
@@ -84,6 +86,7 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
             capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
         });
     }
+
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
@@ -95,31 +98,35 @@ public class GradeCardProcessor implements ProcessorPriority,ActivityGoodsListPr
             capsule.setGradeCardPrice(gradeCards);
         }
 
-        Map<Integer, BigDecimal> gradePriceMap = gradeCards.stream().collect(Collectors.toMap(GoodsDetailMpBo.GradePrd::getPrdId, GoodsDetailMpBo.GradePrd::getGradePrice,(x1,x2)->x1));
+        Map<Integer, BigDecimal> gradePriceMap = gradeCards.stream().collect(Collectors.toMap(GoodsDetailMpBo.GradePrd::getPrdId, GoodsDetailMpBo.GradePrd::getGradePrice, (x1, x2) -> x1));
 
         List<GoodsPrdMpVo> products = capsule.getProducts();
-        products.forEach(prd->{
-            prd.setPrdLinePrice(prd.getPrdRealPrice());
-            prd.setPrdRealPrice(gradePriceMap.get(prd.getPrdId()));
+        products.forEach(prd -> {
+            if (gradePriceMap.get(prd.getPrdId()) != null) {
+                prd.setPrdLinePrice(prd.getPrdRealPrice());
+                prd.setPrdRealPrice(gradePriceMap.get(prd.getPrdId()));
+            }
         });
 
-        log.debug("商品会员价：{}",gradeCards.toString());
+        log.debug("商品会员价：{}", gradeCards.toString());
     }
 
     //*****************购物车处理************************
+
     /**
      * 会员等级价
+     *
      * @param cartBo 业务数据类
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("WxAppCartBo:"+ Util.toJson(cartBo));
+        log.info("WxAppCartBo:" + Util.toJson(cartBo));
         List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(cartBo.getUserId(), cartBo.getProductIdList());
-        cartBo.getCartGoodsList().forEach(goods->{
+        cartBo.getCartGoodsList().forEach(goods -> {
             // 会员等级
             userCartGradePrice.forEach(gradePrice -> {
                 if (goods.getPrdId().equals(gradePrice.getPrdId())) {
-                    CartActivityInfo gradePriceInfo =new CartActivityInfo();
+                    CartActivityInfo gradePriceInfo = new CartActivityInfo();
                     gradePriceInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
                     gradePriceInfo.setMemberPriceType(gradePrice.getGradePrice());
                 }

@@ -24,6 +24,8 @@ public class GoodsListMpVo extends GoodsBaseMp {
     protected String goodsImg;
     /**初始值可设置为商品表goods_type字段，指定该商品的详情页营销活动类型*/
     protected Byte activityType;
+    /**商品评价数量*/
+    private Integer commentNum;
     //************ElasticSearch中的数据**************end
 
     /**商品装修列表前端展示划线价,初始为goods表内shop_price*/
