@@ -117,7 +117,7 @@ public class AdminTestController extends AdminBaseController {
 		data.put("date2", v2);
 		
 		Map<String, String> v3 = new LinkedHashMap<>();
-		v2.put("value", "你中奖了");
+		v3.put("value", "你中奖了");
 		data.put("thing3", v3);
 		try {
 			subservice.sendMessage(195, SubscribeMessageConfig.draw_result, data, null);
