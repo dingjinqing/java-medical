@@ -131,7 +131,7 @@
       </view>
       <view class='ma_appoint clearfix' bindtap='click_to_detail' data-service_id="{{item.appointment_info.serviceId}}">
         <view class='app_img'>
-          <image src='{{item.appointment_info.serviceImg}}'></image>
+          <image src='{{imageUrl}}{{item.appointment_info.serviceImg}}'></image>
         </view>
         <view class='app_info'>
           <view>{{item.appointment_info.serviceName}}</view>

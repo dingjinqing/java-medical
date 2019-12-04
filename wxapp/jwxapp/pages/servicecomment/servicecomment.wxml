@@ -21,7 +21,7 @@
                   发表评价
                   <image style="width:10px;height:5px;margin-left:5rpx;" src="{{serviceInfo.src}}"></image>
                 </view>
-                <view wx:else bindtap="show_com_info" class="right">
+                <view wx:else bindtap="com_show" class="right">
                   查看评价
                   <image src="{{ serviceInfo.src }}" style="width:10px;height:5px;margin-left:5rpx;" />
                 </view>
@@ -57,7 +57,8 @@
                   <text>*</text>
                   心得:
                 </view>
-                <textarea value="{{serviceInfo.commNote}}" bindblur="comm_note" placeholder="服务是否给力？快分享你的体验心得吧" style="float:left" />
+                <textarea wx:if="{{serviceInfo.flag != 1}}" value="{{serviceInfo.commNote}}" bindinput="comm_note" placeholder="服务是否给力？快分享你的体验心得吧" style="float:left" />
+                <text wx:else>{{serviceInfo.commNote}}</text>
                 <view style="clear:both"></view>
               </view>
               <view class="shaidan">
@@ -69,8 +70,8 @@
                   <block wx:if="{{serviceInfo.commImg && serviceInfo.commImg.length > 0}}">
                     <block wx:for="{{serviceInfo.commImg}}" wx:key="index" wx:for-item="imgitem">
                       <view class='shai_view'>
-                        <image src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
-                        <image src="{{imageUrl}}{{imgitem}}" data-idx="{{index}}"></image>
+                        <image wx:if="{{serviceInfo.flag != 1}}" src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
+                        <image src="{{serviceInfo.flag?'':imageUrl}}{{imgitem}}" data-idx="{{index}}"></image>
                       </view>
                     </block>
                   </block>
@@ -82,11 +83,15 @@
                 </view>
                 <text class="shai_num">{{serviceInfo.commImg.length}}/9</text>
               </view>
-              <view class="square_end">
+              <view class="square_end" wx:if="{{serviceInfo.flag != 1}}">
                 <view style='margin-left:140rpx;width:570rpx;'>
                   <view class="niming">
-                    <checkbox value="" bindtap="flag" checked="{{flag}}" />
-                    <text>匿名评价</text>
+                    <checkbox-group bindchange="anonymousChange">
+                      <label>
+                        <checkbox value="1" checked="{{serviceInfo.anonymousflag}}" color="{{comColor}}" />
+                        <text>匿名评价</text>
+                      </label>
+                    </checkbox-group>
                   </view>
                   <form report-submit='true' bindsubmit='good_commtag' style='float:right'>
                     <button form-type='submit' class='s_left' style='background:{{comColor}};border-color:{{comColor}}'>

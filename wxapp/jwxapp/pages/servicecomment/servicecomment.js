@@ -4,6 +4,7 @@ var util = require('../../utils/util.js');
 var imageUrl = app.globalData.imageUrl;
 var src_down = imageUrl + 'image/wxapp/down_normal.png';
 var src_up = imageUrl + 'image/wxapp/up_normal.png';
+
 global.wxPage({
   /**
    * 页面的初始数据
@@ -13,26 +14,18 @@ global.wxPage({
     storeId: '',
     serviceInfo: {},
     imageUrl: app.globalData.imageUrl,
-    islogin: true,
-    flag: false,//是否匿名评价
-    pass_commtag: [],//传递的标签
-    star: [
-      {
-        show: true
-      },
-      {
-        show: true
-      },
-      {
-        show: true
-      },
-      {
-        show: true
-      },
-      {
-        show: true
-      }
-    ]
+    comm_flag: 0, // 是否展开
+    star: [{
+      show: true
+    }, {
+      show: true
+    }, {
+      show: true
+    }, {
+      show: true
+    }, {
+      show: true
+    }]
   },
 
   /**
@@ -66,6 +59,12 @@ global.wxPage({
           serviceInfo.commstar = 5;
           serviceInfo.commImg = [];
         }
+        if (!serviceInfo.storeId) {
+          serviceInfo.storeId = that.data.storeId
+        }
+        if (!serviceInfo.userId) {
+          serviceInfo.userId = util.getCache('user_id')
+        }
         that.setData({
           serviceInfo: serviceInfo
         })
@@ -73,23 +72,9 @@ global.wxPage({
         util.toast_fail(res.message)
         wx.navigateBack()
       }
-    }, { orderSn: this.data.orderSn });
+    }, { orderSn: this.data.orderSn, storeId: this.data.storeId });
   },
 
-  //显示评论内容页面
-  show_com_info: function (e) {
-    let serviceInfo = this.data.serviceInfo
-    if (serviceInfo.show_info == true) {
-      serviceInfo.show_info = false;
-      serviceInfo.src = src_down;
-    } else {
-      serviceInfo.show_info = true;
-      serviceInfo.src = src_up;
-    }
-    this.setData({
-      serviceInfo: serviceInfo,
-    })
-  },
   //显示提交评价页面
   com_show: function (e) {
     let serviceInfo = this.data.serviceInfo
@@ -104,10 +89,12 @@ global.wxPage({
       serviceInfo: serviceInfo
     })
   },
+
   //选择评分
   choose_star: function (e) {
     var that = this;
     var id = e.currentTarget.dataset.id;
+    if (this.data.serviceInfo.flag) return false;
     for (var i = 0; i < that.data.star.length; i++) {
       if (i <= id) {
         that.data.star[i].show = true;
@@ -118,17 +105,18 @@ global.wxPage({
     that.data.serviceInfo.commstar = parseInt(id) + 1;
     this.setData({
       star: that.data.star,
-      info: that.data.info
+      serviceInfo: that.data.serviceInfo
     })
   },
-  //心得
+
+  // 输入心得
   comm_note: function (e) {
-    var serviceInfo = this.data.serviceInfo;
-    serviceInfo.commNote = e.detail.value;
+    console.log(e.detail.value)
     this.setData({
-      serviceInfo: serviceInfo
+      'serviceInfo.commNote': e.detail.value
     })
   },
+
   //上传图片
   upImage: function () {
     var that = this;
@@ -173,6 +161,8 @@ global.wxPage({
       }
     })
   },
+
+  // 删除图片
   delImage: function (e) {
     var that = this;
     var index = e.currentTarget.dataset.idx;
@@ -182,55 +172,50 @@ global.wxPage({
       serviceInfo: serviceInfo
     })
   },
-  //匿名评价
-  flag: function () {
-    var info = this.data.info;
-    if (this.data.flag == true) {
-      info.anonymousflag = 0;
+
+  // 匿名评价
+  anonymousChange: function (e) {
+    console.log(e)
+    let value = e.detail.value[0]
+    if (value) {
       this.setData({
-        info: info,
-        flag: false
+        'serviceInfo.anonymousflag': 1
       })
     } else {
-      info.anonymousflag = 1;
       this.setData({
-        info: info,
-        flag: true
+        'serviceInfo.anonymousflag': 0
       })
     }
   },
+
   //评价并继续
   good_commtag: function (e) {
+    let that = this
     let serviceInfo = this.data.serviceInfo
-    var that = this;
-    var order_sn = this.data.order_sn;
-    var info = this.data.info;
-    var comm = {};
-    var img = {};
-    var id = 0;
-    info.form_id = e.detail.formId;
-    info.open_id = util.getCache("openid");
     if (parseInt(serviceInfo.commstar) == parseInt(0)) {
-      util.showModal('提示', '请选择评分', function (res) {
-        return false;
-      }, false);
+      util.showModal('提示', '请选择评分');
       return false;
     }
     if (serviceInfo.commNote == '') {
-      util.showModal('提示', '请填写心得', function (res) {
-        return false;
-      }, false);
+      util.showModal('提示', '请填写心得');
       return false;
     }
-    if (info.commImg != '') {
-      info.commImg = JSON.stringify(info.commImg);
+    if (serviceInfo.commImg != '') {
+      serviceInfo.commImg = JSON.stringify(serviceInfo.commImg);
     } else {
-      info.commImg = ''
+      serviceInfo.commImg = ''
     }
-    util.api('/api/wxapp/service/comment/add', function (e) {
-      this.get_comment();
-    }, info);
+    let params = Object.assign({}, serviceInfo)
+    util.api('/api/wxapp/store/service/createComment', function (e) {
+      console.log(e)
+      if (e.error === 0) {
+        that.get_comment();
+      } else {
+
+      }
+    }, params);
   },
+
   //隐藏评价
   close_com_info: function (e) {
     let serviceInfo = this.data.serviceInfo
@@ -239,6 +224,7 @@ global.wxPage({
       serviceInfo: serviceInfo,
     })
   },
+
   bindPreviewImage (e) {
     let src = e.currentTarget.dataset.src;
     let srcarr = e.currentTarget.dataset.srcarr;
@@ -254,40 +240,11 @@ global.wxPage({
     }
   },
 
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-    wx.stopPullDownRefresh();
+    this.get_comment();
   },
 
   /**
