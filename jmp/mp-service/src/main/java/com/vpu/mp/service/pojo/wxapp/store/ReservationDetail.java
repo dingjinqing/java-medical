@@ -13,7 +13,7 @@ import java.sql.Timestamp;
  */
 @Data
 public class ReservationDetail {
-    @PositiveOrZero(groups = {ValidCon1.class, ValidCon2.class})
+    @PositiveOrZero(groups = {ValidCon1.class, ValidCon2.class, ValidCon3.class})
     private Integer orderId;
     @PositiveOrZero(groups = ValidCon1.class)
     private Integer userId;

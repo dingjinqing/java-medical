@@ -134,7 +134,7 @@ public class WxAppStoreController extends WxAppBaseController{
      * 删除门店服务预约订单
      */
     @PostMapping("/service/reservationDel")
-    public JsonResult reservationDel(@RequestBody @Validated(ValidCon2.class) ReservationDetail param) {
+    public JsonResult reservationDel(@RequestBody @Validated(ValidCon3.class) ReservationDetail param) {
         shop().store.reservation.reservationDel(param.getOrderId());
         return this.success();
     }
