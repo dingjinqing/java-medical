@@ -45,36 +45,61 @@
         style="width: 100%"
       >
         <el-table-column
+          prop="name"
           label="活动名称"
           align="center"
         >
         </el-table-column>
         <el-table-column
+          prop="startTime"
           label="创建时间"
           align="center"
         >
         </el-table-column>
         <el-table-column
+          prop="typeText"
           label="活动商品"
           align="center"
         >
+          <template slot-scope="scope">
+            <div v-if="scope.row.type === 0">全部商品</div>
+            <div v-if="scope.row.type === 1">部分商品</div>
+          </template>
         </el-table-column>
         <el-table-column
+          prop="ruleText"
           label="包邮规则"
           align="center"
         >
+          <template slot-scope="scope">
+            <div
+              v-for="(item, index) in scope.row.ruleList"
+              :key="index"
+            >
+              <div v-if="item.conType === 0">满 {{ item.money }} 元包邮；<br></div>
+              <div v-if="item.conType === 1">满 {{ item.num }} 件包邮；<br></div>
+              <div v-if="item.conType === 2">满 {{ item.money }} 元包邮，满 {{ item.num }} 件包邮；<br></div>
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
+          prop="expireTypeText"
           label="有效期"
           align="center"
         >
+          <template slot-scope="scope">
+            <div v-if="scope.row.expireType === 0">{{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}</div>
+            <div v-if="scope.row.expireType === 1">永久有效</div>
+          </template>
         </el-table-column>
         <el-table-column
+          prop="level"
           label="优先级"
           align="center"
         >
         </el-table-column>
         <el-table-column
+          prop="statusText"
           label="活动状态"
           align="center"
         >
@@ -88,56 +113,56 @@
               <el-tooltip
                 :content="$t('seckill.edit')"
                 placement="top"
-                v-if="scope.row.currentState !== 4"
+                v-if="scope.row.currentStatus === 2 || scope.row.currentStatus === 1"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-edit-outline"
-                  @click="editHandler(scope.row.skId, scope.row)"
+                  @click="editHandler(scope.row.id, scope.row)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 :content="$t('seckill.share')"
                 placement="top"
-                v-if="scope.row.currentState === 2 || scope.row.currentState === 1"
+                v-if="scope.row.currentStatus === 2 || scope.row.currentStatus === 1"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-share"
-                  @click="shareHandler(scope.row.skId)"
+                  @click="shareHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 :content="$t('seckill.stop')"
                 placement="top"
-                v-if="scope.row.currentState === 2 || scope.row.currentState === 3"
+                v-if="scope.row.currentStatus === 2 || scope.row.currentStatus === 1"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-circle-close"
-                  @click="stopHandler(scope.row.skId)"
+                  @click="stopHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 :content="$t('seckill.start')"
                 placement="top"
-                v-if="scope.row.currentState === 4"
+                v-if="scope.row.currentStatus === 4"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-circle-check"
-                  @click="startHandler(scope.row.skId)"
+                  @click="startHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 :content="$t('seckill.delete')"
                 placement="top"
-                v-if="scope.row.currentState === 3 || scope.row.currentState === 4"
+                v-if="scope.row.currentStatus === 3 || scope.row.currentStatus === 4"
               >
                 <span
                   style="font-size: 22px;"
                   class="el-icon-delete"
-                  @click="deleteHandler(scope.row.skId)"
+                  @click="deleteHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
             </div>
@@ -150,6 +175,14 @@
       />
     </div>
 
+    <!-- 分享弹窗 -->
+    <shareDialog
+      :show="shareDialog"
+      :imgPath="shareImg"
+      :pagePath="sharePath"
+      @close="shareDialog=false"
+    />
+
   </div>
 </template>
 <script>
@@ -157,7 +190,7 @@
 import pagination from '@/components/admin/pagination/pagination'
 import shareDialog from '@/components/admin/shareDialog'
 import addShipping from './shippingAdd.vue'
-// import { getShippingList } from '@/api/admin/marketManage/shipping.js'
+import { getShippingList, deleteShipping, changeShipping, shareShipping } from '@/api/admin/marketManage/shipping.js'
 export default {
   components: {
     pagination,
@@ -172,6 +205,9 @@ export default {
       tableData: [], // 表格数据
       pageParams: {}, // 分页
       requestParams: {},
+      shareDialog: false, // 分享弹窗
+      shareImg: '',
+      sharePath: '',
       editId: '', // 编辑的活动id
       isEdite: true // 编辑状态
     }
@@ -190,15 +226,21 @@ export default {
   methods: {
     // 满包邮列表
     initDataList () {
-      this.requestParams.state = [this.tabSwitch]
-      this.requestParams.currentPage = this.pageParams.currentPage
-      this.requestParams.pageRows = this.pageParams.pageRows
+      this.requestParams.navType = this.tabSwitch
+      this.requestParams.page = {
+        currentPage: this.pageParams.currentPage,
+        pageRows: this.pageParams.pageRows
+      }
       this.closeTabAddGroup()
-      // getShippingList(this.requestParams).then((res) => {
-      //   if (res.error === 0) {
-
-      //   }
-      // })
+      getShippingList(this.requestParams).then((res) => {
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+          this.tableData.map((item, index) => {
+            item.statusText = this.getActStatusString(item.currentStatus)
+          })
+        }
+      })
     },
 
     // 添加
@@ -256,12 +298,12 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        // deleteSeckillList({ skId: id }).then((res) => {
-        //   if (res.error === 0) {
-        //     this.$message.success({ message: this.$t('seckill.deleteSuccess') })
-        //     this.initDataList()
-        //   }
-        // })
+        deleteShipping({ id: id }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.deleteSuccess') })
+            this.initDataList()
+          }
+        })
       }).catch(() => {
         this.$message.info({ message: this.$t('seckill.deleteFail') })
       })
@@ -270,12 +312,12 @@ export default {
     // 分享
     shareHandler (id) {
       this.shareDialog = !this.shareDialog
-      // shareSeckillList(id).then((res) => {
-      //   if (res.error === 0) {
-      //     this.shareImg = res.content.imageUrl
-      //     this.sharePath = res.content.pagePath
-      //   }
-      // })
+      shareShipping({ id: id }).then((res) => {
+        if (res.error === 0) {
+          this.shareImg = res.content.imageUrl
+          this.sharePath = res.content.pagePath
+        }
+      })
     },
 
     // 停用
@@ -285,15 +327,15 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        // updateSeckillList({
-        //   skId: id,
-        //   status: 0
-        // }).then((res) => {
-        //   if (res.error === 0) {
-        //     this.$message.success({ message: this.$t('seckill.stopSuccess') })
-        //     this.initDataList()
-        //   }
-        // })
+        changeShipping({
+          id: id
+          // status: 0
+        }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.stopSuccess') })
+            this.initDataList()
+          }
+        })
       }).catch(() => {
         this.$message.info({ message: this.$t('seckill.stopFail') })
       })
@@ -306,15 +348,15 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        // updateSeckillList({
-        //   skId: id,
-        //   status: 1
-        // }).then((res) => {
-        //   if (res.error === 0) {
-        //     this.$message.success({ message: this.$t('seckill.startSuccess') })
-        //     this.initDataList()
-        //   }
-        // })
+        changeShipping({
+          id: id
+          // status: 1
+        }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.startSuccess') })
+            this.initDataList()
+          }
+        })
       }).catch(() => {
         this.$message.info({ message: this.$t('seckill.startFail') })
       })
@@ -388,10 +430,4 @@ export default {
     cursor: pointer;
   }
 }
-// .shareBox {
-//   width: 100%;
-//   text-align: center;
-//   margin-bottom: 15px;
-//   border-bottom: 1px solid #ccc;
-// }
 </style>

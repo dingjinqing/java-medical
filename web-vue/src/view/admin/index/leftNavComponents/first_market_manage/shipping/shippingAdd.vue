@@ -29,7 +29,7 @@
             <el-radio
               v-model="form.expireType"
               :label='0'
-            >{{ $t('ordinaryCoupon.fixedDate') }}</el-radio>
+            >固定时间段</el-radio>
             <el-date-picker
               v-model="form.validity"
               type="datetimerange"
@@ -46,7 +46,7 @@
             <el-radio
               v-model="form.expireType"
               :label='1'
-            >{{ $t('ordinaryCoupon.appoint') }}</el-radio>
+            >永久有效</el-radio>
           </div>
 
         </el-form-item>
@@ -87,7 +87,7 @@
         </el-form-item>
         <el-form-item
           label="包邮规则："
-          prop=""
+          prop="ruleList"
         >
           <div
             class="fullRule"
@@ -144,7 +144,7 @@
                 >选择包邮区域</el-button>
                 <div>
                   <span
-                    v-for="(val, key) in item.area"
+                    v-for="(val, key) in item.areaList"
                     :key="key"
                     style="margin-right: 20px;"
                   >{{ val }}</span>
@@ -179,16 +179,10 @@
       :location-list="locationList"
       :outer-visible="outerVisible"
       @close="outerVisible=false"
-      @checkList="changeRegionList"
-    />
-    <!-- <LocatTP
-      :location-list="locationList"
-      :outer-visible="outerVisible"
-      @close="showData"
       :inner-obj-j="innerObjJ"
       :check-list-t="checkListT"
       @checkList="changeRegionList"
-    /> -->
+    />
 
     <!--选择商品弹窗-->
     <ChoosingGoods
@@ -210,7 +204,7 @@
 // 引入组件
 import chinaData from '@/assets/china-data'
 import { deepCloneObj } from '@/util/deepCloneObj'
-// import { addShipping, getDetail, updateShipping } from '@/api/admin/marketManage/shipping.js'
+import { addShipping, getDetail, updateShipping } from '@/api/admin/marketManage/shipping.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
@@ -227,9 +221,24 @@ export default {
         callback()
       }
     }
+    var validateLevel = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!re.test(value)) {
+        callback(new Error('活动等级为0或者正整数'))
+      } else {
+        callback()
+      }
+    }
     var validateType = (rule, value, callback) => {
       if (value === 1 && (this.goodsInfo.length === 0 || this.busClass.length === 0 || this.platClass.length === 0)) {
         callback(new Error('请选择商品信息'))
+      } else {
+        callback()
+      }
+    }
+    var validateRule = (rule, value, callback) => {
+      if (value.length === 0) {
+        callback(new Error('请添加包邮规则'))
       } else {
         callback()
       }
@@ -248,26 +257,21 @@ export default {
         recommendCatId: '',
         recommendSortId: '',
         ruleList: [{
-          shippingId: 1,
-          conType: 1,
-          money: 1,
-          num: 1,
-          area: ''
-        }, {
-          shippingId: 1,
           conType: 0,
-          money: 1,
-          num: 1,
+          money: 0,
+          num: 0,
           area: ''
         }]
       },
       // 校验表单
       fromRules: {
         name: { required: true, message: '请填写活动名称', trigger: 'blur' },
-        expireType: { required: true, validator: validateExpireType, trigger: 'change' },
-        type: { required: true, validator: validateType, trigger: 'change' }
+        expireType: { required: true, validator: validateExpireType, trigger: ['blur', 'change'] },
+        level: { validator: validateLevel, trigger: 'blur' },
+        type: { required: true, validator: validateType, trigger: 'change' },
+        ruleList: { required: true, validator: validateRule, trigger: ['blur', 'change'] }
       },
-      storeArr: [], // 添加商品
+      storeArr: [], // 添加商品数据
 
       tuneUpChooseGoods: false, // 商品弹窗
       tuneUpBusClassDialog: false, // 商家/平台弹窗
@@ -301,6 +305,11 @@ export default {
       // (用于展示)的请求报文的goodsDeliverTemplateFeeConditionParam数组数据
       showTableData: [],
 
+      areaData: [{
+        checkListT: [],
+        innerObjJ: {}
+      }],
+
       submitStatus: false
 
     }
@@ -308,6 +317,16 @@ export default {
   watch: {
     lang () {
       this.storeArr = this.$t('shipping.storeArr')
+    },
+    'form.expireType': function (value) {
+      if (value) {
+        this.$refs.form.validateField('expireType')
+      }
+    },
+    'form.type': function (value) {
+      if (value) {
+        this.$refs.form.validateField('type')
+      }
     }
   },
   mounted () {
@@ -322,36 +341,65 @@ export default {
     initData () {
       this.locationList = deepCloneObj(chinaData)
     },
+
     // 编辑初始化
     editShippingInit () {
-
+      getDetail({ id: this.editId }).then((res) => {
+        if (res.error === 0) {
+          var data = res.content
+          this.form.name = data.name
+          this.form.expireType = data.expireType
+          if (this.form.expireType === 0) {
+            this.form.validity = [data.startTime, data.endTime]
+            this.form.startTime = data.startTime
+            this.form.endTime = data.endTime
+          }
+          this.form.level = data.level
+          this.form.type = data.type
+          if (this.form.type === 1) {
+            this.goodsInfo = data.recommendGoodsId.split(',')
+            this.busClass = data.recommendCatId.split(',')
+            this.platClass = data.recommendSortId.split(',')
+          }
+          this.form.ruleList = data.ruleList
+        }
+      })
     },
 
     // 保存秒杀活动
     saveClickHandler () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          if (this.form.expireType === 0 && this.form.validity) {
+            this.form.startTime = this.form.validity[0]
+            this.form.endTime = this.form.validity[1]
+          }
+          this.form.ruleList.forEach((item, index) => {
+            this.form.ruleList[index].area = this.form.ruleList[index].area.toString()
+          })
+          this.form.recommendGoodsId = this.goodsInfo.toString()
+          this.form.recommendCatId = this.busClass.toString()
+          this.form.recommendSortId = this.platClass.toString()
+          console.log(this.form)
           if (this.isEdite === false) {
-            // 添加秒杀
-            // addSeckillList(this.form).then((res) => {
-            //   if (res.error === 0) {
-            //     this.$message.success({ message: '添加成功' })
-            //     this.$emit('addSeckillSubmit')
-            //   }
-            // })
+            // 添加满包邮
+            addShipping(this.form).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({ message: '添加成功' })
+                this.$emit('addShippingSubmit')
+              }
+            })
           } else {
-            // 编辑秒杀
-            // updateSeckillList({
-            //   skId: this.editId,
-            //   name: this.form.name,
-            //   cardId: this.form.cardId,
-            //   shareConfig: this.form.shareConfig
-            // }).then((res) => {
-            //   if (res.error === 0) {
-            //     this.$message.success({ message: '修改成功' })
-            //     this.$emit('addSeckillSubmit')
-            //   }
-            // })
+            // 编辑满包邮
+            var obj = {}
+            obj = this.form
+            obj.id = this.editId
+            updateShipping(obj).then((res) => {
+              if (res.error === 0) {
+                this.$message.success({ message: '修改成功' })
+                this.$emit('addShippingSubmit')
+              }
+            })
           }
         }
       })
@@ -411,23 +459,33 @@ export default {
     // 添加包邮规则
     addRule () {
       this.form.ruleList.push({
-        shippingId: 1,
-        conType: 1,
-        money: 1,
-        num: 1,
-        area: 'demoData'
+        conType: 0,
+        money: 0,
+        num: 0,
+        area: ''
+      })
+      this.areaData.push({
+        checkListT: [],
+        innerObjJ: {}
       })
     },
 
     // 删除包邮规则
     deleteRule (index) {
       this.form.ruleList.splice(0, 1)
+      this.areaData.splice(0, 1)
     },
 
     // 区域弹窗
     areaHandler (index) {
       this.outerVisible = !this.outerVisible
       this.areaIndex = index
+      this.areaData.forEach((item, key) => {
+        if (index === key) {
+          this.checkListT = this.areaData[index].checkListT
+          this.innerObjJ = this.areaData[index].innerObjJ
+        }
+      })
     },
 
     // 获取返回的数据
@@ -436,6 +494,16 @@ export default {
       this.form.ruleList.forEach((item, index) => {
         if (index === this.areaIndex) {
           this.form.ruleList[index].area = value.idList
+          this.form.ruleList[index].areaList = value.areaList
+        }
+      })
+      this.areaData.forEach((item, index) => {
+        if (index === this.areaIndex) {
+          this.areaData[index].checkListT = value.checkList
+          this.areaData[index].innerObjJ = value.innerObj
+
+          this.checkListT.push(...value.checkList)
+          this.innerObjJ = value.innerObj
         }
       })
     }

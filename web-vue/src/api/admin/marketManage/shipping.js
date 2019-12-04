@@ -9,7 +9,7 @@ export function getShippingList (data) {
   })
 }
 
-// 添加保存满包邮活动
+// 添加保存
 export function addShipping (data) {
   return service({
     url: '/api/admin/market/free/shipping/add',
@@ -27,7 +27,7 @@ export function getDetail (data) {
   })
 }
 
-// 编辑保存满包邮活动
+// 编辑保存
 export function updateShipping (data) {
   return service({
     url: '/api/admin/market/free/shipping/update',
@@ -36,10 +36,28 @@ export function updateShipping (data) {
   })
 }
 
-// 删除满包邮活动
+// 删除
 export function deleteShipping (data) {
   return service({
     url: '/api/admin/market/free/shipping/delete',
+    method: 'post',
+    data: data
+  })
+}
+
+// 更改状态
+export function changeShipping (data) {
+  return service({
+    url: '/api/admin/market/free/shipping/status/change',
+    method: 'post',
+    data: data
+  })
+}
+
+// 分享
+export function shareShipping (data) {
+  return service({
+    url: '/api/admin/market/free/shipping/share',
     method: 'post',
     data: data
   })

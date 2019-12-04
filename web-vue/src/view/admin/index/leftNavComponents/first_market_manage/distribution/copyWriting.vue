@@ -16,7 +16,9 @@
             src="http://mpdevimg2.weipubao.cn/image/admin/shop_beautify/phone_tops.png"
             alt=""
           >
-          <div class="leftPass"></div>
+          <div class="leftPass">
+
+          </div>
         </div>
         <div class="rightContent">
           <el-form
@@ -31,17 +33,38 @@
             </el-form-item>
             <el-form-item label="页面标题：">
               <el-input
+                placeholder="请填写页面标题"
+                maxlength="20"
+                show-word-limit
+                size="small"
                 v-model="form.title"
-                style="width: 180px;"
+                style="width: 170px;"
               ></el-input>
             </el-form-item>
             <el-form-item label="页面内容：">
               <p class="template">使用模板文案</p>
               <TinymceEditor />
+              <!-- <TinymceEditor
+                ref='edit'
+                @input="handleToGetText"
+                :value='moduleSaveData.rich_text'
+                :height='100'
+                :imageSize=[360,360]
+              /> -->
             </el-form-item>
           </el-form>
         </div>
       </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer">
+      <el-button
+        size="small"
+        type="primary"
+        :disabled="submitStatus"
+        @click="saveClickHandler"
+      >{{ $t('seckill.save') }}</el-button>
     </div>
   </div>
 </template>
@@ -54,11 +77,30 @@ export default {
   data () {
     return {
       form: {
-        title: '分销员推广测试'
+        submitStatus: false,
+        title: '分销员推广测试',
+        moduleSaveData: {
+          rich_text: '' // 文本内容
+        }
       }
     }
   },
   methods: {
+    // 获得编辑器输入内容
+    handleToGetText (res) {
+      console.log(res)
+      this.moduleSaveData.rich_text = res
+    },
+
+    // 获取
+    getClickHandler () {
+
+    },
+
+    // 保存
+    saveClickHandler () {
+      this.submitStatus = false
+    }
   }
 
 }
@@ -72,8 +114,9 @@ export default {
 
 .main {
   background: #fff;
-  padding: 10px 25px;
+  padding: 10px;
   overflow: hidden;
+  margin-bottom: 80px;
 }
 
 .titleTip {
@@ -129,7 +172,6 @@ export default {
   float: right;
   width: 600px;
   padding: 10px 20px;
-  height: 630px;
   background: #f8f8f8;
   border: 1px solid #ededed;
 }
@@ -147,5 +189,18 @@ span {
   color: #5a8bff;
   margin-bottom: 5px;
   cursor: pointer;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 27px;
+  left: 160px;
+  height: 52px;
+  padding: 10px 0;
+  background-color: #fff;
+  text-align: center;
+  border-top: 1px solid #eee;
+  z-index: 99;
 }
 </style>
