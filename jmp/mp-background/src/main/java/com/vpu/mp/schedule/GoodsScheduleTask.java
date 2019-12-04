@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableScheduling
 @EnableAsync
-@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
+@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "off")
 public class GoodsScheduleTask {
 
     @Autowired
@@ -28,11 +28,22 @@ public class GoodsScheduleTask {
      * 监控秒杀，更新商品类型
 	 * 每一分钟执行一次
 	 */
-//	@Scheduled(cron = "0 */1 * * * ?")
-//    public void monitorSeckillGoods() {
-//        Result<ShopRecord> result = saas.shop.getAll();
-//        result.forEach((r)->{saas.getShopApp(r.getShopId()).
-//            shopTaskService.seckillTaskService.monitorGoodsType();});
-//    }
+	@Scheduled(cron = "0 */1 * * * ?")
+    public void monitorSeckillGoods() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r)->{saas.getShopApp(r.getShopId()).
+            shopTaskService.seckillTaskService.monitorGoodsType();});
+    }
+
+    /**
+     * 监控限时降价，更新商品类型
+     * 每一分钟执行一次
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void monitorReducePriceGoods() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r)->{saas.getShopApp(r.getShopId()).
+            shopTaskService.reducePriceTaskService.monitorGoodsType();});
+    }
 
 }

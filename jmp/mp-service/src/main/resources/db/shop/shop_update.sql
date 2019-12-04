@@ -1303,3 +1303,7 @@ ALTER TABLE `b2c_mrking_voucher` CHANGE `receive_per_num` `receive_per_num` tiny
 -- 修改默认值
 ALTER TABLE `b2c_distribution_strategy`
 MODIFY COLUMN `status` tinyint(1) not null default '1' COMMENT '是否启用，1启用，0停用';
+
+-- 修改默认值
+ALTER TABLE `b2c_reduce_price`
+MODIFY COLUMN `period_action` tinyint(1) NOT NULL DEFAULT '0' COMMENT '周期类型：0:不进行周期重复  1:每天 2:每月 3:每周';

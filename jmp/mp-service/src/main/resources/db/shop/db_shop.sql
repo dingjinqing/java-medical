@@ -2972,7 +2972,7 @@ create table `b2c_reduce_price`
     `name`              varchar(50) not null comment '活动名称',
     `start_time`        timestamp   null     default null comment '开始时间',
     `end_time`          timestamp   null     default null comment '结束日期',
-    `period_action`     tinyint(1)  not null default '1' comment '周期类型：1:每天 2:每月 3:每周',
+    `period_action`     tinyint(1)  not null default '0' comment '周期类型：0:不进行周期重复  1:每天 2:每月 3:每周',
     `point_time`        varchar(20) null comment '时间段',
     `extend_time`       tinyint(20)          default null comment '每月第几日；每周第几天',
     `batch_discount`    tinyint(1)  not null default '0' comment '批量打几折',

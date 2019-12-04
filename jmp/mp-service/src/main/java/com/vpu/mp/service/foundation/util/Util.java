@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 
 import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static java.util.stream.Collectors.toList;
 
 /**
  *
@@ -241,6 +242,17 @@ public class Util {
 			}
 		}
 	}
+
+    /**
+     * 求差集，list1-list2，只在list1中而不在list2中的元素
+     * @param list1
+     * @param list2
+     * @param <T>
+     * @return
+     */
+	public static <T> List<T> diffList(List<T> list1, List<T> list2){
+        return list1.stream().filter(item -> !list2.contains(item)).collect(toList());
+    }
 
 	public static <T> T readValue(String content,Class<?> clz1,Class<?> clz2){
         ObjectMapper mapper = new ObjectMapper();

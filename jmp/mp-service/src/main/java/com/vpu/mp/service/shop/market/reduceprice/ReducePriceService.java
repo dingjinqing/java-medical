@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.market.reduceprice;
 import com.vpu.mp.db.shop.tables.records.ReducePriceGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReducePriceProductRecord;
 import com.vpu.mp.db.shop.tables.records.ReducePriceRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -46,14 +47,6 @@ import static org.jooq.impl.DSL.sum;
  **/
 @Service
 public class ReducePriceService extends ShopBaseService {
-    /**
-     * 启用状态
-     */
-    public static final byte STATUS_NORMAL = 1;
-    /**
-     * 停用状态
-     */
-    public static final byte STATUS_DISABLED = 0;
 
     public static final Byte PERIOD_ACTION_NORMAL = 0;
     public static final Byte PERIOD_ACTION_EVERY_DAY = 1;
@@ -116,16 +109,16 @@ public class ReducePriceService extends ShopBaseService {
             Timestamp now = DateUtil.getLocalDateTime();
             switch(param.getState()) {
                 case (byte)1:
-                    select.where(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL)).and(REDUCE_PRICE.START_TIME.lt(now)).and(REDUCE_PRICE.END_TIME.gt(now));
+                    select.where(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(REDUCE_PRICE.START_TIME.lt(now)).and(REDUCE_PRICE.END_TIME.gt(now));
                     break;
                 case (byte)2:
-                    select.where(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL)).and(REDUCE_PRICE.START_TIME.gt(now));
+                    select.where(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(REDUCE_PRICE.START_TIME.gt(now));
                     break;
                 case (byte)3:
-                    select.where(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL)).and(REDUCE_PRICE.END_TIME.lt(now));
+                    select.where(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(REDUCE_PRICE.END_TIME.lt(now));
                     break;
                 case (byte)4:
-                    select.where(REDUCE_PRICE.STATUS.eq(STATUS_DISABLED));
+                    select.where(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE));
                     break;
                 default:
             }
@@ -228,7 +221,7 @@ public class ReducePriceService extends ShopBaseService {
             .from(REDUCE_PRICE_GOODS)
             .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
             .where(REDUCE_PRICE_GOODS.GOODS_ID.in(goodsIds))
-            .and(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL))
+            .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(REDUCE_PRICE.START_TIME.lessThan(date))
             .and(REDUCE_PRICE.END_TIME.greaterThan(date))
@@ -271,7 +264,7 @@ public class ReducePriceService extends ShopBaseService {
             .from(REDUCE_PRICE_GOODS)
             .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
             .where(REDUCE_PRICE_GOODS.GOODS_ID.eq(goodsId))
-            .and(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL))
+            .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(REDUCE_PRICE.START_TIME.lessThan(date))
             .and(REDUCE_PRICE.END_TIME.greaterThan(date))
@@ -314,7 +307,7 @@ public class ReducePriceService extends ShopBaseService {
         Map<Integer, List<Record2<Integer, Integer>>> goodsGroup = db().select(REDUCE_PRICE.ID, REDUCE_PRICE_GOODS.GOODS_ID).from(REDUCE_PRICE)
             .innerJoin(REDUCE_PRICE_GOODS).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
             .where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(REDUCE_PRICE.STATUS.eq(STATUS_NORMAL))
+            .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(REDUCE_PRICE_GOODS.GOODS_ID.in(goodsIds))
             .and(REDUCE_PRICE.END_TIME.gt(date))
             .orderBy(REDUCE_PRICE.CREATE_TIME)

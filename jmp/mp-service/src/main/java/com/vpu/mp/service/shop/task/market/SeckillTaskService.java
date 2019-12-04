@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -46,21 +47,20 @@ public class SeckillTaskService  extends ShopBaseService {
                 currentSeckillGoodsIdList.add(seckill.getGoodsId());
             }
         }
-        List<Integer> pastSeckillGoodsIdListCopy = new ArrayList<>();
-        pastSeckillGoodsIdListCopy.addAll(pastSeckillGoodsIdList);
-        pastSeckillGoodsIdList.removeAll(currentSeckillGoodsIdList);
+        //求差集
+        List<Integer> changeToNormalGoodsIds = Util.diffList(pastSeckillGoodsIdList,currentSeckillGoodsIdList);
+        List<Integer> changeToActGoodsIds = Util.diffList(currentSeckillGoodsIdList,pastSeckillGoodsIdList);
 
-        if(pastSeckillGoodsIdList != null && pastSeckillGoodsIdList.size() > 0){
+        if(changeToNormalGoodsIds != null && changeToNormalGoodsIds.size() > 0){
             //活动已失效，将goodsType改回去
-            goodsService.changeToNormalType(pastSeckillGoodsIdList);
+            goodsService.changeToNormalType(changeToNormalGoodsIds);
             //TODO 记录变动
         }
 
-        currentSeckillGoodsIdList.removeAll(pastSeckillGoodsIdListCopy);
-        if(currentSeckillGoodsIdList != null && currentSeckillGoodsIdList.size() > 0){
+        if(changeToActGoodsIds != null && changeToActGoodsIds.size() > 0){
             //有新的活动生效，商品goodsType标记活动类型
-            this.changeToSeckillType(currentSeckillGoodsIdList);
-            seckillService.updateSeckillProcudtStock(currentSeckillGoodsIdList);
+            this.changeToSeckillType(changeToActGoodsIds);
+            seckillService.updateSeckillProcudtStock(changeToActGoodsIds);
             //TODO 记录变动
         }
 

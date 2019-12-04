@@ -35,9 +35,9 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_INTEGRAL = 4;
     /** 秒杀商品 */
     public final static Byte ACTIVITY_TYPE_SEC_KILL = 5;
-    /** 限时降价 返利 */
+    /** 限时降价 */
     public final static Byte ACTIVITY_TYPE_REDUCE_PRICE = 6;
-    /** 加价购 返利 */
+    /** 加价购 */
     public final static Byte ACTIVITY_TYPE_PURCHASE_PRICE = 7;
     /** 拼团抽奖 */
     public final static Byte ACTIVITY_TYPE_GROUP_DRAW = 8;
