@@ -5,7 +5,7 @@
         <ul class="query-ul">
           <li>
             <span>{{$t('openScreenDetail.receiveTime')}}：</span>
-            <el-date-picker
+            <!-- <el-date-picker
               v-model="value1"
               type="daterange"
               size="small"
@@ -13,7 +13,24 @@
               :start-placeholder="$t('openScreenDetail.startDate')"
               :end-placeholder="$t('openScreenDetail.endDate')"
             >
-            </el-date-picker>
+            </el-date-picker> -->
+            <el-date-picker
+              v-model="queryParams.startTime"
+              type="date"
+              size="small"
+              style="width:170px;"
+              :placeholder="$t('openScreenDetail.startDate')"
+              value-format="yyyy-MM-dd hh:mm:ss"
+            ></el-date-picker>
+            {{$t('openScreenDetail.to')}}
+            <el-date-picker
+              v-model="queryParams.endTime"
+              type="date"
+              size="small"
+              style="width:170px;"
+              :placeholder="$t('openScreenDetail.endDate')"
+              value-format="yyyy-MM-dd hh:mm:ss"
+            ></el-date-picker>
           </li>
           <li>
             <span>{{$t('openScreenDetail.phoneNum')}}：</span>
@@ -91,7 +108,7 @@ export default {
   },
   data () {
     return {
-      value1: [], // 开始时间和结束时间
+      // value1: [], // 开始时间和结束时间
       queryParams: {
         startTime: '',
         endTime: '',
@@ -102,14 +119,14 @@ export default {
       tableData: []
     }
   },
-  watch: {
-    value1: function (newVal) {
-      if (newVal && newVal.length === 2) {
-        this.$set(this.queryParams, 'startTime', newVal[0].format('yyyy-MM-dd hh:mm:ss'))
-        this.$set(this.queryParams, 'endTime', newVal[1].format('yyyy-MM-dd hh:mm:ss'))
-      }
-    }
-  },
+  // watch: {
+  //   value1: function (newVal) {
+  //     if (newVal && newVal.length === 2) {
+  //       this.$set(this.queryParams, 'startTime', newVal[0].format('yyyy-MM-dd hh:mm:ss'))
+  //       this.$set(this.queryParams, 'endTime', newVal[1].format('yyyy-MM-dd hh:mm:ss'))
+  //     }
+  //   }
+  // },
   mounted () {
     if (this.$route.query.id) {
       this.id = this.$route.query.id
