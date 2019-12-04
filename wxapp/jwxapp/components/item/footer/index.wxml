@@ -7,7 +7,7 @@
     <view class="small_view" bindtap="toCartList">
       <image mode="widthFix" src="{{imageUrl}}image/wxapp/cart_icon.png"></image>
       <text>购物车</text>
-      <view class="cart_goods_num" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">0</view>
+      <view class="cart_goods_num" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">{{cartNum}}</view>
     </view>
   </block>
   <view class="footer_flex_view" bindtap="leftClick" wx:if="{{leftButtonShow}}" style='color:{{(main_setting.comColor != "#ff6666" || !main_setting.comColor)?"#fff":"#f66"}};background:{{main_setting.commonColor}}'>

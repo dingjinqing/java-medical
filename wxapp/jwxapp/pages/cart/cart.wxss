@@ -49,6 +49,7 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
   overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 .goods_info .goods_spec {

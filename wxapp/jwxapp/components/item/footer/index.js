@@ -11,7 +11,10 @@ global.wxComponent({
     isDefaultPrd:Boolean,
     productInfo:{
       type: Object,
-      value: null
+      value: null,
+      observer(val){
+        this.getCardNum()
+      }
     },
     triggerButton:{
       type:String,
@@ -47,7 +50,8 @@ global.wxComponent({
     rightButtonShow: true,
     leftButtonShow: true,
     leftButtonName:'加入购物车',
-    rightButtonName:'立即购买'
+    rightButtonName:'立即购买',
+    cartNum:0
   },
 
   /**
@@ -62,13 +66,28 @@ global.wxComponent({
       if (this.checkOrigin('right')) return
       this.toCheckOut()
     },
+    getCardNum(){
+      let { goodsId } = this.data.productInfo
+      util.api('/api/wxapp/cart/goods/num',res=>{
+        if(res.error === 0){
+          this.setData({
+            cartNum: res.content.goodsNum
+          })
+        }
+      }, { goodsId })
+    },
     // 添加购物车
     addCart() {
       let { goodsNum: goodsNumber, prdId } = this.data.productInfo
       util.api(
         "/api/wxapp/cart/add",
         res => {
-          console.log(res);
+          if(res.error === 0){
+            util.toast_success('添加成功')
+            this.getCardNum()
+          } else {
+            util.toast_fail('添加失败')
+          }
           this.triggerEvent('close')
         },
         {
