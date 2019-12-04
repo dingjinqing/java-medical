@@ -213,6 +213,16 @@ public class CartService extends ShopBaseService {
     }
 
     /**
+     * 删除购物车
+     * @param userId 用户
+     * @param storeId 门店
+     * @return 
+     */
+    public int removeCartIsCheckedGoods(Integer userId,Integer storeId){
+        return db().delete(CART).where(CART.USER_ID.eq(userId)).execute();
+    }
+
+    /**
      * 改变购物车商品数量
      *
      * @param userId
