@@ -487,10 +487,10 @@ public class StoreWxService extends ShopBaseService {
                 webPayVo.get().setOrderSn(orderSn.get());
             }
         });
-        // 支付完成送积分; 门店买单支付是否返送积分开关 on 1
-        if (BYTE_ONE.equals(scoreCfgService.getStoreScore())) {
-            storeOrderService.sendScoreAfterPayDone(storeOrderTran.getStoreOrder());
-        }
+        // TODO 支付完成送积分; 门店买单支付是否返送积分开关 on 1
+//        if (BYTE_ONE.equals(scoreCfgService.getStoreScore())) {
+//            storeOrderService.sendScoreAfterPayDone(storeOrderTran.getStoreOrder());
+//        }
         return webPayVo.get();
     }
 }
