@@ -322,8 +322,7 @@ export default {
           this.loginValue = res.content.loginScore === '1'
           this.loginIntegralNum = res.content.scoreLogin
           this.signInvalue = res.content.signInScore === 'on'
-
-          if (res.content.signScore) {
+          if (res.content.signScore.length > 0) {
             this.signInput = []
             for (let i in res.content.signScore) {
               this.signInput.push({
