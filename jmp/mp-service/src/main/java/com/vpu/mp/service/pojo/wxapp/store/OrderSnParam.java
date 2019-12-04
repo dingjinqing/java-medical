@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
  * @date 12/3/19
  */
 @Data
-public class OrderSn {
+public class OrderSnParam {
     @NotBlank
     private String orderSn;
     private String clientIp;
