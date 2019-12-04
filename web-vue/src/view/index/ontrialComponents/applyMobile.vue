@@ -7,7 +7,7 @@
     </div>
     <div class="formContainer">
       <div class="main">
-        <div class="title">我要开店-申请免费试用</div>
+        <div class="title">{{$t('indexApply.mobileTitle')}}</div>
         <el-form
           :model="ruleForm"
           status-icon
@@ -15,9 +15,10 @@
           ref="ruleForm"
           label-width="100px"
           class="demo-ruleForm"
+          :class="columnFlag?'enFormStyle':''"
         >
           <el-form-item
-            label="姓名"
+            :label="$t('indexApply.name')"
             prop="username"
           >
             <el-input
@@ -27,7 +28,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="电话"
+            :label="$t('indexApply.phonenum')"
             prop="phonenum"
           >
             <el-input
@@ -37,9 +38,9 @@
             ></el-input>
           </el-form-item>
           <div class="companyName">
-            <el-form-item label="公司名称">
+            <el-form-item :label="$t('indexApply.companyName')">
               <el-input
-                placeholder="请填写公司名称"
+                :placeholder="$t('apply.companyPlaceHolder')"
                 v-model="ruleForm.companyName"
                 autocomplete="off"
               ></el-input>
@@ -110,104 +111,30 @@ export default {
         phonenum: '',
         companyName: ''
       },
-      rules: {
-        username: [{ required: true, message: '请填写您的姓名', trigger: 'blur' }],
+      columnFlag: false
+    }
+  },
+  computed: {
+    rules () {
+      let rules = {
+        username: [{ required: true, message: this.$t('indexApply.fillName'), trigger: 'blur' }],
         phonenum: [
-          { type: 'number', message: '请填写您的手机号' },
-          { required: true, message: '手机号不能为空' }
+          { type: 'number', message: this.$t('indexApply.fillNumber') },
+          { required: true, message: this.$t('indexApply.mobileNumberEmpty') }
         ],
-        companyName: [{ message: '请填写您的公司名称', trigger: 'blur' }]
-      },
-      coreData: [
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/apply.png',
-          name: '预约服务',
-          contentOne: '线上引流、多项预约模式',
-          contentTow: '提高顾客体验'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/store_management.png',
-          name: '门店管理',
-          contentOne: '多门店连锁经营,获客细分',
-          contentTow: '增加曝光、降低管理成本'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/yxhd.png',
-          name: '营销活动',
-          contentOne: '拼团、砍价、分销、秒杀、',
-          contentTow: '优惠券、抽奖、加价购等'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/dpzj.png',
-          name: '店铺装修',
-          contentOne: '行业模板按需试用',
-          contentTow: '模块拖拽、无需代码编辑'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/data_count.png',
-          name: '数据统计',
-          contentOne: '销量、流量来源、精准统计',
-          contentTow: '用户画像精准分析'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/vip.png',
-          name: '会员管理',
-          contentOne: '线上线下会员打通',
-          contentTow: '会员卡、积分、限次卡'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/wlgl.png',
-          name: '物流管理',
-          contentOne: '多种运费模板一键选择',
-          contentTow: '区域性运费模板轻松设置'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/zxjy.png',
-          name: '在线交易',
-          contentOne: '微信、余额、积分、买单',
-          contentTow: '多种支付方式轻松开启'
-        }
-      ],
-      customerData: [
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/ajjc.png',
-          contentOne: '安吉九茶',
-          contentTwo: '让更多人喝到安心正味好茶'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/lsr.png',
-          contentOne: '雷瑟尔行货商城',
-          contentTwo: '行货商品更有性价比'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/bjhz.png',
-          contentOne: '北京寒竹梅鲜花',
-          contentTwo: '良心品质、用心服务'
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/new_apply_mobile/zwlj.png',
-          contentOne: '中外旅居',
-          contentTwo: '品质为本，精益求精'
-        }
-      ],
-      footerPData: [
-        {
-          class: 'p1',
-          text: '北京掌上先机网络科技有限公司'
-        },
-        {
-          class: 'p1',
-          text: '电话:  400-010-1039   7*24小时'
-        },
-        {
-          class: 'p2',
-          text: '北京总部：北京市海淀区西直门外大街伊泰大厦5层'
-        },
-        {
-          class: 'p2',
-          text: '上海分公司：上海市闵行区七莘路1188号A座509'
-        }
-      ]
+        companyName: [{ message: this.$t('indexApply.fillCompanyName'), trigger: 'blur' }]
+
+      }
+      return rules
+    },
+    coreData () {
+      return this.$t('indexApply.coreData')
+    },
+    customerData () {
+      return this.$t('indexApply.customerData')
+    },
+    footerPData () {
+      return this.$t('indexApply.footerPData')
     }
   },
   mounted () {
@@ -304,6 +231,21 @@ export default {
           margin-left: -8px;
         }
       }
+      .enFormStyle {
+        /deep/ .el-form-item {
+          /deep/ .el-form-item__label {
+            width: 130px !important;
+          }
+        }
+        .companyName {
+          /deep/ .el-form-item {
+            /deep/ .el-form-item__label {
+              width: 146px !important;
+            }
+          }
+        }
+      }
+
       .p_apply_submit {
         width: 80%;
         height: 40px;

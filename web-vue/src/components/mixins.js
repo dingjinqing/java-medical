@@ -23,8 +23,8 @@ const myMixin = {
     langDefault () {
       console.log('初始化语言')
       this.$http.$on('CHANGE_LANGUAGE', res => {
-        console.log('feifeifei')
         this.lang = localStorage.getItem('WEPUBAO_LANGUAGE')
+        console.log(this.lang, '触发')
         // 人民币'CNY' 美元USD
         this.adaptation()
       })

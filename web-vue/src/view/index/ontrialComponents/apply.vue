@@ -12,6 +12,7 @@
           ref="ruleForm"
           label-width="100px"
           class="demo-ruleForm"
+          :class="columnFlag?'enFormStyle':''"
         >
           <el-form-item
             :label="$t('indexApply.name')"
@@ -71,21 +72,29 @@ export default {
         phonenum: '',
         companyName: ''
       },
-      rules: {
-        username: [{ required: true, message: '请填写您的姓名', trigger: 'blur' }],
+      columnFlag: null
+    }
+  },
+  computed: {
+    rules () {
+      let rules = {
+        username: [{ required: true, message: this.$t('indexApply.fillName'), trigger: 'blur' }],
         phonenum: [
-          { type: 'number', message: '请填写您的手机号' },
-          { required: true, message: '手机号不能为空' }
+          { type: 'number', message: this.$t('indexApply.fillNumber') },
+          { required: true, message: this.$t('indexApply.mobileNumberEmpty') }
         ],
-        companyName: [{ message: '请填写您的公司名称', trigger: 'blur' }]
+        companyName: [{ message: this.$t('indexApply.fillCompanyName'), trigger: 'blur' }]
+
       }
+      return rules
     }
   },
   mounted () {
     this.$http.$emit('to_rej')
-    this.langDefault()
     // 初始化判断打开的设备
     this.isMobile()
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 提交表单
@@ -240,6 +249,13 @@ export default {
   .companyName {
     /deep/ .el-form-item__label {
       padding-left: 10px;
+    }
+  }
+}
+.enFormStyle {
+  /deep/ .el-form-item {
+    /deep/ .el-form-item__label {
+      width: 130px !important;
     }
   }
 }

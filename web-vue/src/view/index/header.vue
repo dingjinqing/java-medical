@@ -324,6 +324,7 @@ export default {
         this.$store.commit('TOCHANGE_LANGCURRENT', this.langData_cn[index].lang)
         this.$http.$emit('lang_change', index)
       })
+      this.$http.$emit('CHANGE_LANGUAGE')
     },
     // 登录注册跳转
     to_log_rej_page (res) {
