@@ -158,6 +158,7 @@ global.wxPage({
     util.showModal("提示", "是否删除该预约服务订单", function () {
       util.api('/api/wxapp/store/service/reservationDel', function (res) {
         if (res.error == 0) {
+          util.toast_success('删除成功')
           util.navigateTo({ url: '/pages/appointlist/appointlist' });
         }
       }, { orderId: data.order_id, form_id: form_id })
