@@ -122,6 +122,7 @@ public class FreeShippingService extends ShopBaseService {
         transaction(() -> {
             param.setId(null);
             FreeShippingRecord record = db().newRecord(FREE_SHIPPING,param);
+            record.setStatus(ACTIVITY_STATUS_NORMAL);
             record.insert();
             param.getRuleList().forEach(rule -> {
                 FreeShippingRuleRecord ruleRecord = db().newRecord(FREE_SHIPPING_RULE,rule);

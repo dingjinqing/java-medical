@@ -3,6 +3,9 @@ package com.vpu.mp.service.pojo.shop.market.freeshipping;
 import lombok.Data;
 
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -17,10 +20,13 @@ public class FreeShippingRuleParam {
     /**
      * 包邮条件 0满金额 1满件数
      */
+    @NotNull
     private Integer conType;
     @DecimalMin("0")
     private BigDecimal money;
+    @Min(1)
     private Integer num;
+    @NotBlank
     private String  area;
 
 }

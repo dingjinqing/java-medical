@@ -1,6 +1,8 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import org.jooq.Result;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,7 +79,7 @@ public class AdminFreeShippingController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/market/free/shipping/update")
-    public JsonResult updateFreeShipping(@RequestBody @Valid FreeShippingParam param) {
+    public JsonResult updateFreeShipping(@RequestBody @Validated(UpdateGroup.class) FreeShippingParam param) {
         if (param.getId() == null) {
             return fail();
         }
