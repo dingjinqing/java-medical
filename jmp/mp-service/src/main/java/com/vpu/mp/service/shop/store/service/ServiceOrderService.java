@@ -533,7 +533,7 @@ public class ServiceOrderService extends ShopBaseService {
         Byte tradeFlow = RecordTradeEnum.TRADE_FLOW_IN.val();
 
         AccountParam accountData = new AccountParam();
-        accountData.setAccount(param.getAccount());
+        accountData.setAccount(userService.getUserByUserId(param.getUserId()).getAccount());
         accountData.setAmount(param.getBalance().negate());
         accountData.setUserId(param.getUserId());
         accountData.setRemark(param.getReason());

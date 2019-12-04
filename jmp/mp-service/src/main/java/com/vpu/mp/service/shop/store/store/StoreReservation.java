@@ -527,6 +527,7 @@ public class StoreReservation extends ShopBaseService {
                 log.debug("订单查询结果未匹配到任何状态");
                 break;
         }
+        webPayVo.setOrderSn(orderSn);
         return webPayVo;
         // TODO 定时任务倒计时十分钟结束后调接口，关闭该订单，更改状态为已取消
     }
