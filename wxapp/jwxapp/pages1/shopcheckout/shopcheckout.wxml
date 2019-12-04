@@ -22,16 +22,16 @@
             <input type="digit" bindblur='card_discount' placeholder="会员卡有元余额" placeholder-style="#ccc" />
           </view>
           <view class="fr">
-            <text>减{{charge_money}}元</text>
+            <text>减{{payInfo.cardAmount}}元</text>
           </view>
         </view>
         <view class="pay_li clearfix" wx:if="{{orderInfo.score >= 100}}">
           <text class="score_fl">积分支付</text>
           <view class="score">
-            <input type="number" placeholder="最多可使用{{score_enable}}积分" placeholder-style="#ccc" value="" />
+            <input type="number" placeholder="最多可使用{{orderInfo.score}}积分" placeholder-style="#ccc" value="" />
           </view>
           <view class="fr">
-            <text>减{{score_money}}元</text>
+            <text>减{{payInfo.scoreAmount}}元</text>
           </view>
         </view>
         <view class="pay_li clearfix">
@@ -40,11 +40,11 @@
             <input type='digit' bindblur='user_account' placeholder="您有{{orderInfo.account}}元余额" placeholder-style="#ccc" value="" />
           </view>
           <view class='fr'>
-            <text>减{{account_money}}元</text>
+            <text>减{{payInfo.balanceAmount}}元</text>
           </view>
         </view>
       </view>
-      <view class="pay">
+      <view class="pay" wx:if="{{orderInfo.invoiceSwitch}}">
         <view class="pay_li clearfix">
           <text class='score_fl'>发票</text>
           <view class='fr coupon' wx:if="{{imageUrl}}" data-in="{{orderInfo.invoice_title}}" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
@@ -57,38 +57,38 @@
         <view class='pay_li clearfix'>
           <text class='score_fl'>备注</text>
           <view class='text_area fr'>
-            <input bindblur='textArea' placeholder="如服务员号码，桌号等" placeholder-style="#ccc" />
+            <input bindblur='remarkInput' placeholder="如服务员号码，桌号等" placeholder-style="#ccc" />
           </view>
         </view>
-        <view class="pay_li clearfix" wx:if="{{orderInfo.discount_money>0}}">
+        <view class="pay_li clearfix" wx:if="{{payInfo.totalDiscount > 0}}">
           <text class='score_fl'>折扣</text>
           <text class='look_detail' bindtap='look_detail'>查看详情</text>
           <image src="{{imageUrl}}/image/wxapp/detail0.png" wx:if="true" class='to_look' mode='widthFix' bindtap='look_detail' />
           <image src="{{imageUrl}}/image/wxapp/detail1.png" wx:else class='to_look' mode='widthFix' bindtap='look_detail' />
           <view class='fr'>
             <text class='account_color' style='color:{{comColor}}'>
-              -￥{{orderInfo.discount_money}}
+              <text>-￥{{payInfo.totalDiscount}}</text>
             </text>
           </view>
         </view>
       </view>
       <view class="discount_detail" wx:if="{{discount_block == 1}}">
         <view>
-          <view class='clearfix' wx:if="{{card_money>0}}">
+          <view class='clearfix' wx:if="{{payInfo.cardDisAmount>0}}">
             <text class='fl'>会员卡折扣</text>
-            <view class='fr'>-￥{{card_money}}</view>
+            <view class='fr'>-￥{{payInfo.cardDisAmount}}</view>
           </view>
-          <view class='clearfix' wx:if="{{charge_money>0}}">
+          <view class='clearfix' wx:if="{{payInfo.cardAmount>0}}">
             <text class='fl'>会员卡支付</text>
-            <view class='fr'>-￥{{charge_money}}</view>
+            <view class='fr'>-￥{{payInfo.cardAmount}}</view>
           </view>
-          <view class='clearfix' wx:if="{{score_money>0}}">
+          <view class='clearfix' wx:if="{{payInfo.scoreAmount>0}}">
             <text class='fl'>积分抵扣</text>
-            <view class='fr'>-￥{{score_money}}</view>
+            <view class='fr'>-￥{{payInfo.scoreAmount}}</view>
           </view>
-          <view class='clearfix' wx:if="{{account_money>0}}">
+          <view class='clearfix' wx:if="{{payInfo.balanceAmount>0}}">
             <text class='fl'>余额支付</text>
-            <view class='fr'>-￥{{account_money}}</view>
+            <view class='fr'>-￥{{payInfo.balanceAmount}}</view>
           </view>
         </view>
       </view>
@@ -104,5 +104,5 @@
   </view>
 </view>
 <!-- 会员卡弹窗组件 -->
-<select_card_dialog show="{{showCardDialog}}" member-card-list="{{orderorderInfo.memberCardList}}" default-member-card-no="{{useCard.cardNo}}" bindconfirm="getSelectCard"></select_card_dialog>
+<select_card_dialog show="{{showCardDialog}}" member-card-list="{{orderInfo.memberCardList}}" default-member-card-no="{{useCard.cardNo}}" bindconfirm="getSelectCard"></select_card_dialog>
 <include src="/pages/common/footer.wxml" />

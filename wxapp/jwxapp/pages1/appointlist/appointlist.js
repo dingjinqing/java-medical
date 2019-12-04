@@ -168,7 +168,6 @@ global.wxPage({
   toPay: function (e) {
     let order_sn = e.currentTarget.dataset.order_sn
     let form_id = e.detail.formId
-    let open_id = util.getCache('openid')
     util.api('/api/wxapp/store/service/submitReservation', function (res) {
       if (res.error == 0) {
         if (typeof (res.content.timeStamp) != 'undefined') {
@@ -209,7 +208,7 @@ global.wxPage({
         });
         return false;
       }
-    }, { orderSn: order_sn, openid: open_id, form_id: form_id })
+    }, { orderSn: order_sn, form_id: form_id })
   },
 
   /**

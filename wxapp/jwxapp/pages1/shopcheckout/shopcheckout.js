@@ -21,12 +21,13 @@ global.wxPage({
       delFlag: 0, // 门店是否已删除 
     },
     payInfo: {
-      totalPrice: '', // 总金额
-      cardChargeDis: 0, // 会员卡折扣抵扣金额
-      card_money: 0, // 会员卡余额抵扣金额
-      scoreDis: 0, // 积分抵扣金额
-      accountDis: 0, // 余额抵扣金额
-      orderAmount: '', // 订单金额
+      orderAmount: '', // 总金额
+      cardDisAmount: 0, // 会员卡折扣抵扣金额
+      cardAmount: 0, // 会员卡余额抵扣金额
+      scoreAmount: 0, // 积分抵扣金额
+      balanceAmount: 0, // 余额抵扣金额
+      moneyPaid: '', // 订单金额
+      totalDiscount: 0, // 总折扣
       invoiceId: '', // 发票id
       formId: '', // 微信formId
       remark: '' // 留言
@@ -34,7 +35,8 @@ global.wxPage({
 
     showCardDialog: false, // 会员卡弹窗是否显示
     useCard: {}, // 选中的会员卡
-    invoiceInfo: {} // 选择的发票
+    invoiceInfo: {}, // 选择的发票
+    discount_block: 0 // 是否展开折扣详情
   },
 
   /**
@@ -47,10 +49,10 @@ global.wxPage({
     this.setData({
       storeId: storeId
     })
-    this.initBuyingData()
+    this.initOrderInfo()
   },
 
-  initBuyingData () {
+  initOrderInfo () {
     // 请求用户信息
     let params = {
       storeId: this.data.storeId,
@@ -109,7 +111,7 @@ global.wxPage({
             useCard = info.memberCardList[0]
           }
         }
-        // 发票
+        // 发票开关
         if (info.invoiceSwitch) {
           that.initInvoice()
         }
@@ -145,116 +147,64 @@ global.wxPage({
     } else if (money == '') {
       money = 0;
     }
-    this.data.payInfo.totalPric = money;
     this.setData({
-      payInfo: payInfo
+      'payInfo.orderAmount': money
     })
-
-    //会员卡默认折扣
-    if (this.data.orderInfo.memberCardList.length > 0) {
-      if (this.data.payInfo.totalPric >= 0) {
-        var start_nomey = ipt_money;
-        card_money = (start_nomey * useCard.discount).toFixed(2);
-        start_nomey = start_nomey - card_money;
-      }
-      this.data.info.this.data.payInfo.totalPric = ipt_money;
-      this.data.info.total_price = Number(start_nomey).toFixed(2);
-      create_order.card_dis = card_money;
-      //最多可使用的积分数
-      if (start_nomey / 2 * score_ratio >= score_num) {
-        score_enable = parseInt(score_num) - parseInt(score_num) % score_ratio;
-      }
-      else if (parseInt(start_nomey / 2 * score_ratio) >= score_ratio) {
-        score_enable = parseInt(start_nomey / 2 * score_ratio) - parseInt(start_nomey / 2 * score_ratio) % score_ratio;
-      } else {
-        score_enable = 0;
-      }
-    } else {
-      //最多可使用的积分数
-      if (this.data.payInfo.totalPric / 2 * score_ratio >= score_num) {
-        score_enable = parseInt(score_num) - parseInt(score_num) % score_ratio;
-      }
-      else if (parseInt(this.data.payInfo.totalPric / 2 * score_ratio) >= score_ratio) {
-        score_enable = parseInt(this.data.payInfo.totalPric / 2 * score_ratio) - parseInt(this.data.payInfo.totalPric / 2 * score_ratio) % score_ratio;
-      } else {
-        score_enable = 0;
-      }
-    }
-    if (create_order.account_dis) {
-      this.data.info.total_price = (this.data.info.total_price - create_order.account_dis).toFixed(2);
-    }
-    if (create_order.card_charge_dis) {
-      this.data.info.total_price = (this.data.info.total_price - create_order.card_charge_dis).toFixed(2);
-    }
-    if (create_order.score_dis) {
-      this.data.info.total_price = (this.data.info.total_price - create_order.score_dis).toFixed(2);
-    }
-    //结算金额修改后，金额变小支付金额小于时清空积分支付和余额支付
-    if (this.data.info.total_price < 0) {
-      score_block = 0;
-      score_money_input = '';
-      score_money = 0;
-      create_order.score_dis = score_money;
-      user_account_input = '';
-      account_money = 0;
-      create_order.account_dis = account_money;
-      card_discount_input = '';
-      charge_money = 0;
-      create_order.card_charge_dis = charge_money;
-      if (this.data.orderInfo.memberCardList.length > 0) {
-        this.data.info.total_price = start_nomey.toFixed(2);
-      } else {
-        this.data.info.total_price = Number(ipt_money).toFixed(2);
-        discount_block = 0;
-        this.setData({
-          discount_block: discount_block
-        })
-      }
-      this.setData({
-        score_money_input: score_money_input,
-        score_money: score_money,
-        user_account_input: user_account_input,
-        account_money: account_money,
-        score_block: score_block,
-        card_discount_input: card_discount_input,
-        charge_money: charge_money
-      })
-    }
-    //积分是否可使用
-    //只有在订单金额(会员卡折扣后)大于等于2且可用积分大于等于100的时候，才能使用积分去抵扣金额
-    if (this.data.info.total_price >= 2 && score_num >= 100) {
-      score_block = 1;
-      this.setData({
-        score_block: score_block
-      })
-    } else {
-      score_block = 0;
-      this.setData({
-        score_block: score_block
-      })
-      if (create_order.score_dis) {
-        score_money_input = '';
-        score_money = 0;
-        this.data.info.total_price = (Number(this.data.info.total_price) + Number(create_order.score_dis)).toFixed(2);
-        create_order.score_dis = score_money;
-        this.setData({
-          score_money: score_money,
-          score_money_input: score_money_input
-        })
-      }
-    }
-    this.data.info.discount_money = (Number(ipt_money) - Number(this.data.info.total_price)).toFixed(2);//总的折扣数
-    this.data.info.total_price = Number(this.data.info.total_price).toFixed(2);
-    this.setData({
-      info: this.data.info,
-      score_enable: score_enable,
-      card_money: card_money
-    });
+    this.computedMoney(money)
   },
 
   // 计算金额
   computedMoney: function () {
+    let payInfo = this.data.payInfo
+    let money = payInfo.orderAmount
+    let useCard = this.data.useCard
+    // 如果会员卡有折扣
+    if (useCard) {
+      let discount = this.data.useCard.discount
+      if (discount) {
+        payInfo.cardDisAmount = ((1 - discount / 10) * money).toFixed(2)
+      }
+    }
+    payInfo.totalDiscount = parseFloat(payInfo.cardDisAmount + payInfo.cardAmount + payInfo.scoreAmount + payInfo.balanceAmount).toFixed(2)
+    payInfo.moneyPaid = parseFloat(payInfo.orderAmount - payInfo.totalDiscount).toFixed(2)
+    this.setData({
+      payInfo: payInfo
+    })
+  },
 
+  // 查看折扣详情
+  look_detail () {
+    let discount_block = this.data.discount_block
+    if (discount_block == 0) {
+      discount_block = 1;
+    } else {
+      discount_block = 0;
+    }
+    this.setData({
+      discount_block: discount_block
+    })
+  },
+
+  // 选择会员卡弹窗 
+  cardClick () {
+    if (!this.data.payInfo.orderAmount) {
+      util.showModal('', '请输入消费金额')
+      return false
+    }
+    this.setData({
+      showCardDialog: true
+    })
+  },
+
+  // 选择会员卡回调
+  getSelectCard (e) {
+    let cardNo = e.detail
+    let useCard = this.data.orderInfo.memberCardList.find(item => item.cardNo === cardNo)
+    console.log(useCard)
+    this.setData({
+      useCard: useCard
+    })
+    this.computedMoney()
   },
 
   score_money: function (e) {
@@ -397,81 +347,11 @@ global.wxPage({
     create_order.account_dis = account_money;
   },
   card_discount: function (e) {
-    card_discount_input = e.detail.value;
-    if (isNaN(card_discount_input) || !isNaN(card_discount_input) && card_discount_input < 0) {
-      util.showModal('', "请输入正确的余额");
-      this.setData({
-        card_discount_input: '',
-        charge_money: 0
-      })
-      if (create_order.card_charge_dis) {
-        this.data.info.total_price = Number(this.data.info.total_price) + Number(create_order.card_charge_dis);
-        create_order.card_charge_dis = 0;
-        this.data.info.total_price = this.data.info.total_price.toFixed(2);
-        this.setData({
-          info: this.data.info,
-        })
-      }
-      return false;
+    let value = e.detail.value
+    console.log(value)
+    if (value) {
+
     }
-    else {
-      if (card_discount_input > parseInt(useCard.money)) {
-        var tishi3 = "最多可以使用：" + useCard.money + "会员卡余额";
-        util.showModal('提示', tishi3);
-        this.setData({
-          card_discount_input: '',
-          charge_money: 0
-        })
-        if (create_order.card_charge_dis) {
-          this.data.info.total_price = Number(this.data.info.total_price) + Number(create_order.card_charge_dis);
-          create_order.card_charge_dis = 0;
-          this.data.info.total_price = this.data.info.total_price.toFixed(2);
-          this.setData({
-            info: this.data.info,
-          })
-        }
-        this.data.info.discount_money = (Number(ipt_money) - Number(this.data.info.total_price)).toFixed(2);//总的折扣数
-        this.setData({
-          info: this.data.info,
-        })
-        return false;
-      }
-    }
-    if (this.data.charge_money > 0) {
-      this.data.info.total_price = parseFloat(this.data.info.total_price) + parseFloat(this.data.charge_money);
-      this.data.info.total_price = (this.data.info.total_price).toFixed(2);
-      charge_money = 0;
-    }
-    if (card_discount_input != '') {
-      if (parseFloat(this.data.info.total_price) - parseFloat(card_discount_input) < 0) {
-        util.showModal('提示', '使用余额不得超过支付金额');
-        this.setData({
-          card_discount_input: '',
-          charge_money: 0
-        })
-        if (create_order.card_charge_dis) {
-          this.data.info.total_price = Number(this.data.info.total_price).toFixed(2);
-          create_order.card_charge_dis = 0;
-          this.setData({
-            info: this.data.info,
-          })
-        }
-        this.data.info.discount_money = (Number(ipt_money) - Number(this.data.info.total_price)).toFixed(2);//总的折扣数
-        this.setData({
-          info: this.data.info,
-        })
-        return false;
-      }
-      this.data.info.total_price = parseFloat(this.data.info.total_price) - parseFloat(card_discount_input);
-      this.data.info.total_price = Number(this.data.info.total_price).toFixed(2);
-      charge_money = Number(card_discount_input).toFixed(2);
-    }
-    this.data.info.discount_money = (Number(ipt_money) - Number(this.data.info.total_price)).toFixed(2);//总的折扣数
-    this.setData({
-      info: this.data.info,
-      charge_money: charge_money
-    })
-    create_order.card_charge_dis = charge_money;
   },
   chooseInvoice: function () {
     var that = this;
@@ -491,7 +371,7 @@ global.wxPage({
       }
     })
   },
-  textArea: function (e) {
+  remarkInput: function (e) {
     text_area = e.detail.value;
     create_order.remark = text_area;
   },
@@ -512,11 +392,11 @@ global.wxPage({
       });
       return false;
     }
-    if (this.data.payInfo.totalPric == '' || !ipt_money) {
+    if (this.data.payInfo.orderAmount == '' || !ipt_money) {
       util.showModal('', '请输入消费金额');
       return;
     }
-    if (this.data.payInfo.totalPric == 0) {
+    if (this.data.payInfo.orderAmount == 0) {
       util.showModal('', '支付金额不能为0');
       return;
     }
@@ -583,22 +463,6 @@ global.wxPage({
       is_submit = false;
     }, { payInfo: payInfo })
   },
-  look_detail: function () {
-    if (discount_block == 0) {
-      discount_block = 1;
-    } else {
-      discount_block = 0;
-    }
-    this.setData({
-      discount_block: discount_block
-    })
-  },
-
-  getSelectCard (e) {
-    console.log(e)
-  },
-
-
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
