@@ -135,6 +135,9 @@ export default {
     },
     footerPData () {
       return this.$t('indexApply.footerPData')
+    },
+    successfulApplication () {
+      return this.$t('messageHint.successfulApplication')
     }
   },
   mounted () {
@@ -157,7 +160,7 @@ export default {
             if (res.error === 0) {
               this.$message.success({
                 showClose: true,
-                message: '提交申请成功，请等待业务员联系',
+                message: this.successfulApplication,
                 type: 'success'
               })
               this.$refs['ruleForm'].resetFields()

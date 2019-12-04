@@ -87,6 +87,9 @@ export default {
 
       }
       return rules
+    },
+    successfulApplication () {
+      return this.$t('messageHint.successfulApplication')
     }
   },
   mounted () {
@@ -112,7 +115,7 @@ export default {
             if (res.error === 0) {
               this.$message.success({
                 showClose: true,
-                message: '提交申请成功，请等待业务员联系',
+                message: this.successfulApplication,
                 type: 'success'
               })
               this.$refs['ruleForm'].resetFields()
@@ -136,7 +139,6 @@ export default {
       let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
       console.log(flag)
       if (flag) {
-        console.log('触发')
         this.$router.push({ name: 'applyMobile' })
       }
     }
