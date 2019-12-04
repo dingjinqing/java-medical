@@ -1,165 +1,168 @@
 <template>
-  <wrapper>
-    <div>
-
-      <!-- 开关配置 -->
-      <div>
-        <el-switch
-          v-model="switchValue"
-          v-if="this.switchValue"
-          active-text="已开启"
-          @change="tabSwitch()"
-        ></el-switch>
-        <el-switch
-          v-model="switchValue"
-          v-if="!this.switchValue"
-          active-text="已关闭"
-          @change="tabSwitch()"
-        >
-        </el-switch><br><br>
+  <div class="collectGift">
+    <div class="main">
+      <div class="top">
+        <!-- 左边 文字 -->
+        <div class="left">
+          <div class="top1">收藏有礼</div>
+          <div class="top2">引导用户将您的店铺小程序添加至微信”我的小程序“可有效提升店铺小程序打开率，用户活跃度等多项指标。</div>
+          <div>注：1、由于微信的限制，系统无法获知用户是否已收藏小程序，此功能仅作为引导性提示。</div>
+          <div style="margin-top: 10px;margin-bottom: 10px;padding-left: 28px">2、会出现用户未收藏或取消收藏小程序也获得收藏奖励的情况，请知悉。</div>
+        </div>
+        <!-- 右边 开关配置 -->
+        <div class="right">
+          <el-switch
+            v-model="switchValue"
+            active-color="#F7931E"
+            inactive-color="#ddd"
+          >
+          </el-switch>
+          <span style="color: rgb(153, 153, 153);">{{this.switchValue === true ? '已开启' : '已关闭' }}</span>
+        </div>
       </div>
 
-      <!-- 活动内容 -->
-      <div v-if="this.switchValue">
-        <el-form
-          label-width="150px"
-          labelPosition='right'
-          :rules="rules"
-          :model="form"
-          size="small"
-          ref="form"
-        >
-          <!-- 活动时间 -->
-          <el-form-item
-            label="活动时间"
-            prop="actTime"
+      <!-- 下半部分 -->
+      <div
+        class="mid"
+        v-show="this.switchValue"
+      >
+        <!-- 轮播图 -->
+        <div class="midleft">
+
+        </div>
+        <!-- 活动内容 -->
+        <div class="midright">
+          <el-form
+            label-width="150px"
+            labelPosition='right'
+            :rules="rules"
+            :model="form"
+            size="small"
+            ref="form"
           >
-            <div class="block">
-              <el-date-picker
-                v-model="form.actTime"
-                type="datetimerange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              >
-              </el-date-picker>
-            </div>
-          </el-form-item>
-          <!-- 图标 -->
-          <el-form-item
-            label="图标"
-            prop="logo"
-          >
-            <el-radio
-              v-model="form.logo"
-              label="0"
-            >默认</el-radio>
-            <el-radio
-              v-model="form.logo"
-              label="1"
-            >自定义</el-radio>
-            <!-- 图片弹窗 -->
-            <div
-              style="display: flex;align-items: center;flex-wrap: wrap;"
-              v-if="this.form.logo==1"
+            <!-- 活动时间 -->
+            <el-form-item
+              label="活动时间"
+              prop="actTime"
             >
-              <span
-                @click="deleteGoodsImg()"
-                v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
-                class="deleteIcon"
-              >×</span>
-              <div
-                @click="addGoodsImg"
-                class="ImgWrap"
-              >
-                <el-image
-                  style="width: 80px; height: 80px"
-                  :src="srcList.src"
-                  fit="scale-down"
-                ></el-image>
+              <div class="block">
+                <el-date-picker
+                  v-model="form.actTime"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                >
+                </el-date-picker>
               </div>
-              <span class="inputTip">
-                建议尺寸：150px * 150px
-              </span>
-            </div>
-          </el-form-item>
-          <!-- 收藏奖励 -->
-          <el-form-item
-            label="收藏奖励"
-            prop="reward"
-          >
-            <div>
-              <!-- 积分 -->
-              <el-checkbox
-                label="积分"
-                v-model="integral"
-              ></el-checkbox>
-              <el-input
-                size="small"
-                style="width: 180px"
-                v-model="score"
-              ></el-input>
-              积分
-              <br>
-              <!-- 优惠券 -->
-              <el-checkbox
-                label="优惠券"
-                v-model="coupon"
-              ></el-checkbox>
-              <div class="middleContainer">
-                <div>
-                  <div
-                    v-for="(item,index) in couponData"
-                    :key="index"
-                    class="addInfo"
-                    style="margin-right: 5px;"
-                  >
-                    <section
-                      class="couponImgWrapper"
-                      style="line-height:normal"
-                    >
-                      <div class="coupon_list_top">
-                        <span>￥</span>
-                        <span class="number">{{item.denomination}}</span>
-                      </div>
-                      <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                      <div class="coupon_center_number">剩余{{item.surplus}}张</div>
-                      <div
-                        class="coupon_list_bottom"
-                        style="font-size:12px"
-                      >领取</div>
-                    </section>
-                    <span
-                      @click="deleteCouponImg(index)"
-                      class="deleteIcon"
-                    >×</span>
-                  </div>
-                </div>
+            </el-form-item>
+            <!-- 图标 -->
+            <el-form-item
+              label="图标"
+              prop="logo"
+            >
+              <el-radio
+                v-model="form.logo"
+                label="0"
+              >默认</el-radio>
+              <el-radio
+                v-model="form.logo"
+                label="1"
+              >自定义</el-radio>
+              <!-- 图片弹窗 -->
+              <div
+                style="display: flex;align-items: center;flex-wrap: wrap;"
+                v-if="this.form.logo==1"
+              >
+                <span
+                  @click="deleteGoodsImg()"
+                  v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
+                  class="deleteIcon"
+                >×</span>
                 <div
-                  class="addInfo"
-                  @click="handleToCallDialog()"
-                  v-if="couponData.length < 5"
+                  @click="addGoodsImg"
+                  class="ImgWrap"
                 >
                   <el-image
+                    style="width: 80px; height: 80px"
+                    :src="srcList.src"
                     fit="scale-down"
-                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                    style="width: 78px;height:78px;cursor:pointer"
                   ></el-image>
                 </div>
+                <span class="inputTip">
+                  建议尺寸：150px * 150px
+                </span>
               </div>
-            </div>
-          </el-form-item>
-        </el-form>
-      </div>
-
-      <!-- 保存修改 -->
-      <div class="footer">
-        <el-button
-          type="primary"
-          size="small"
-          @click="submit"
-        >保存</el-button>
+            </el-form-item>
+            <!-- 收藏奖励 -->
+            <el-form-item
+              label="收藏奖励"
+              prop="reward"
+            >
+              <div>
+                <!-- 积分 -->
+                <el-checkbox
+                  label="积分"
+                  v-model="integral"
+                ></el-checkbox>
+                <el-input
+                  size="small"
+                  style="width: 180px"
+                  v-model="score"
+                ></el-input>
+                积分
+                <br>
+                <!-- 优惠券 -->
+                <el-checkbox
+                  label="优惠券"
+                  v-model="coupon"
+                ></el-checkbox>
+                <div class="middleContainer">
+                  <div>
+                    <div
+                      v-for="(item,index) in couponData"
+                      :key="index"
+                      class="addInfo"
+                      style="margin-right: 5px;"
+                    >
+                      <section
+                        class="couponImgWrapper"
+                        style="line-height:normal"
+                      >
+                        <div class="coupon_list_top">
+                          <span>￥</span>
+                          <span class="number">{{item.denomination}}</span>
+                        </div>
+                        <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
+                        <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                        <div
+                          class="coupon_list_bottom"
+                          style="font-size:12px"
+                        >领取</div>
+                      </section>
+                      <span
+                        @click="deleteCouponImg(index)"
+                        class="deleteIcon"
+                      >×</span>
+                    </div>
+                  </div>
+                  <div
+                    class="addInfo"
+                    @click="handleToCallDialog()"
+                    v-if="couponData.length < 5"
+                  >
+                    <el-image
+                      fit="scale-down"
+                      :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                      style="width: 78px;height:78px;cursor:pointer"
+                    ></el-image>
+                  </div>
+                </div>
+              </div>
+            </el-form-item>
+          </el-form>
+        </div>
       </div>
       <!-- 图片弹窗 -->
       <ImageDalog
@@ -174,19 +177,25 @@
         :couponBack="couponIdList"
       />
     </div>
-  </wrapper>
+    <!-- 保存修改 -->
+    <div class="footer">
+      <el-button
+        type="primary"
+        size="small"
+        @click="submit"
+      >保存</el-button>
+    </div>
+  </div>
 </template>
 
 <script>
-import wrapper from '@/components/admin/wrapper/wrapper'
 import ImageDalog from '@/components/admin/imageDalog'
 import addCouponDialog from '@/components/admin/addCouponDialog'
-import { collectGiftStatus, collectGiftSelect, collectGiftUpdate } from '@/api/admin/marketManage/collectGift.js'
+import { collectGiftSelect, collectGiftUpdate } from '@/api/admin/marketManage/collectGift.js'
 import { getCouponSelectComponentData } from '@/api/admin/marketManage/couponGive.js'
 
 export default {
   components: {
-    wrapper,
     ImageDalog,
     addCouponDialog
   },
@@ -269,14 +278,6 @@ export default {
     this.langDefault()
   },
   methods: {
-
-    tabSwitch () {
-      collectGiftStatus().then(res => {
-        if (res.error === 0) {
-          console.log('开关切换成功')
-        }
-      })
-    },
     selectInfo () {
       collectGiftSelect().then(res => {
         if (res.error === 0) {
@@ -351,7 +352,7 @@ export default {
         this.couponId = null
       }
       let submitParam = {
-        'on_off': 1,
+        'on_off': Number(this.switchValue),
         'start_time': this.form.actTime[0],
         'end_time': this.form.actTime[1],
         'collect_logo': Number(this.form.logo),
@@ -434,15 +435,56 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.footer {
-  padding: 10px 0px 10px 0px;
-  text-align: center;
-  background: #f8f8f8;
-  margin-top: 10px;
-  position: fixed;
-  bottom: 0;
-  z-index: 1;
-  width: 100%;
+.collectGift {
+  padding: 10px;
+  .main {
+    padding: 10px;
+    background: #fff;
+    .top {
+      background-color: #f2f2f2;
+      height: 120px;
+      padding: 10px;
+      font-family: "微软雅黑";
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      .left {
+        .top1 {
+          font-size: 20px;
+          margin-bottom: 10px;
+          font-weight: bold;
+        }
+        .top2 {
+          font-size: 14px;
+          margin-bottom: 10px;
+          font-weight: bold;
+        }
+      }
+    }
+
+    .mid {
+      display: flex;
+      .midleft {
+        background: rgb(219, 216, 216);
+        width: 500px;
+        height: 500px;
+      }
+      .midright {
+        margin-top: 20px;
+      }
+    }
+  }
+
+  .footer {
+    padding: 10px 10px 10px 10px;
+    text-align: center;
+    background: #f8f8f8;
+    margin-top: 10px;
+    position: fixed;
+    bottom: 0;
+    z-index: 1;
+    width: 90%;
+  }
 }
 .ImgWrap {
   width: 80px;
