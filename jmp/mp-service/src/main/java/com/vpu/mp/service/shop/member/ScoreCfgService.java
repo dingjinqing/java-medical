@@ -248,10 +248,10 @@ public class ScoreCfgService extends BaseScoreCfgService {
      * @throws IllegalArgumentException
 	 */
 	public ScoreCfgVo getShopScoreCfg() {
-
+		
 		ScoreCfgVo vo = new ScoreCfgVo();
+		
 
-        // 代码优化
 		// 查询配置文件的key-value
 		Result<Record2<String, String>> resMap = db().select(SHOP_CFG.K,SHOP_CFG.V).from(SHOP_CFG).fetch();
 		Map<String, String> intoMap = null;
@@ -261,7 +261,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		ObjectMapper objectMapper = new ObjectMapper();
 		// 将查询的结果赋值到pojo
 		vo = objectMapper.convertValue(intoMap, ScoreCfgVo.class);
-
+		logger().info("查询结果赋值成功");
 
         //查询buy
 		Result<Record2<String, String>> result = getValFromUserScoreSet(BUY);
@@ -270,6 +270,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			vo.getBuy().add((String) record.get(0));
 			vo.getBuyScore().add((String)record.get(1));
 		}
+		logger().info("查询buy处理成功");
 
         //查询buyEach
 		Result<Record2<String, String>> resultEach = getValFromUserScoreSet(BUY_EACH);
@@ -278,17 +279,19 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			vo.getBuyEach().add((String) record.get(0));
 			vo.getBuyEachScore().add((String)record.get(1));
 		}
-
+		logger().info("查询buyEach处理成功");
+		
         // 处理签到积分
 		//UserScoreSetValue userScore = getScoreValueThird("sign_in_score");
 		UserScoreSetValue userScore = getSignInScore();
 		if(userScore.getEnable()!=null && ONE == userScore.getEnable()) {
 			vo.setSignInScore(BUTTON_ON);
 		}
-
+		logger().info("处理签到积分开关成功");
 
         vo.setSignScore(userScore.getScore());
-
+        logger().info("处理签到数据成功");
+        
         // 模板名称
 		if(!StringUtils.isBlank(vo.getScorePageId())) {
 			XcxCustomerPageRecord xcxCustomerPage = mpDecoration.getPageById(Integer.parseInt(vo.getScorePageId()));
@@ -296,6 +299,7 @@ public class ScoreCfgService extends BaseScoreCfgService {
 				vo.setPageName(xcxCustomerPage.getPageName());
 			}
 		}
+		logger().info("模板名称处理成功");
 		return vo;
 	}
 

@@ -23,6 +23,7 @@ public class AdminScoreCfgController extends AdminBaseController {
 
 	@PostMapping(value="/get")
 	public JsonResult getScoreConfig() {
+		logger().info("获取积分配置");
 		ScoreCfgVo vo = shop().score.getShopScoreCfg();
 		return this.success(vo);
 	}
