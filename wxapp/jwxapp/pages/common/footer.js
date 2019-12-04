@@ -9,8 +9,9 @@ var footer = {
 
   onClickSupport: function (e) {
     console.log(config, util.getCache('user_id'))
-    var link = util.getUrl("") + "/index/home/applyMobile?shopId=" + config.shop_id +
+    var link = util.getUrl("") + "index/home/applyMobile?shopId=" + config.shop_id +
       "&userId=" + util.getCache('user_id');
+    console.log(link)
     util.jumpLink('/pages/webview/webview?url=' + encodeURIComponent(link));
   },
   to_somwhere: function (e) {
