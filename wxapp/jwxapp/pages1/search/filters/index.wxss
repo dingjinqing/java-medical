@@ -1,0 +1,70 @@
+.filter-content{
+  width: 600rpx;
+  background-color: #fff;
+  height: 100%;
+  border-top: 1rpx solid #eee;
+  transform: translateX(600rpx);
+}
+.filter-item{
+  padding: 0 20rpx;
+}
+.item-title-content{
+  display: flex;
+  height: 80rpx;
+  align-items: center;
+}
+.item-title-content .title{
+  font-weight: 600;
+  font-size: 28rpx;
+}
+.item-content{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: -20rpx;
+}
+.item-content.price{
+  justify-content: space-between;
+}
+.small-line{
+  height: 6rpx;
+  width: 46rpx;
+  background-color: #ccc;
+  margin-top: 20rpx;
+}
+.item-content > .item{
+  box-sizing: border-box;
+  line-height: 60rpx;
+  border-radius: 30rpx;
+  background-color: #f7f7f7;
+  width:170rpx;
+  text-align: center;
+  margin-left: 28rpx;
+  border: 1rpx solid transparent;
+  margin-top: 20rpx;
+}
+.item-content > .item.more{
+  background-color: #fff;
+  border-color: #eee;
+}
+.item-content > .item:nth-child(3n+1){
+  margin-left: 0;
+}
+.item-content > .item.brand{
+  width: 266rpx;
+}
+.item-content > .item.brand:nth-child(even){
+  margin-left: 30rpx;
+}
+.item-content > .item.brand:nth-child(odd){
+  margin-left: 0;
+}
+.item-content > .item.price{
+  width: 240rpx;
+  text-align: center;
+  height: 60rpx;
+  color: #333;
+  background: #f7f7f7;
+  border-radius: 30rpx;
+  margin: 20rpx 0 0 0;
+}

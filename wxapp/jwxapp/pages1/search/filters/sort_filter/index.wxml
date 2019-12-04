@@ -1,0 +1,10 @@
+<v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
+  <view class="filter-content" animation="{{animation}}">
+    <view class="sort-item">
+      <view class="back">
+        <image src="{{imageUrl}}/image/wxapp/category_back.png"></image>
+      </view>
+      <view class="center-title">更多分类</view>
+    </view>
+  </view>
+</v-popup>

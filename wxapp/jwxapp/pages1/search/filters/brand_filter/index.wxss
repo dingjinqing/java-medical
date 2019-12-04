@@ -1,0 +1,7 @@
+.filter-content{
+  width: 600rpx;
+  background-color: #fff;
+  height: 100%;
+  border-top: 1rpx solid #eee;
+  transform: translateX(600rpx);
+}

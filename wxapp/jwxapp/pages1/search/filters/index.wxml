@@ -1,0 +1,64 @@
+<v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
+  <view class="filter-content" animation="{{animation}}">
+    <view class="filter-item">
+      <view class="item-title-content">
+        <text class="title">价格区间</text>
+      </view>
+      <view class="item-content price">
+        <input type="number" class="item price" placeholder="最低价"></input>
+        <view class="small-line"></view>
+        <input type="number" class="item price" placeholder="最高价"></input>
+      </view>
+    </view>
+    <view class="filter-item">
+      <view class="item-title-content">
+        <text class="title">商品分类</text>
+      </view>
+      <view class="item-content">
+        <view class="item">无商品1级</view>
+        <view class="item">男鞋</view>
+        <view class="item more" bindtap="showSort">更多...</view>
+      </view>
+    </view>
+    <view class="filter-item">
+      <view class="item-title-content">
+        <text class="title">品牌</text>
+      </view>
+      <view class="item-content">
+        <view class="item brand">阿瑟东撒的</view>
+        <view class="item brand">阿瑟东撒的</view>
+        <view class="item brand">阿瑟东撒的</view>
+        <view class="item brand">阿瑟东撒的</view>
+        <view class="item brand">阿瑟东撒的</view>
+        <view class="item brand more" bindtap="showBrand">更多...</view>
+      </view>
+    </view>
+    <view class="filter-item">
+      <view class="item-title-content">
+        <text class="title">活动商品</text>
+      </view>
+      <view class="item-content">
+        <view class="item">多人拼团</view>
+        <view class="item">砍价</view>
+        <view class="item">秒杀</view>
+        <view class="item">限时降价</view>
+        <view class="item">一口价</view>
+        <view class="item">支付有礼</view>
+      </view>
+    </view>
+    <view class="filter-item">
+      <view class="item-title-content">
+        <text class="title">商品标签</text>
+      </view>
+      <view class="item-content">
+        <view class="item">限时降价</view>
+        <view class="item">今日特价</view>
+        <view class="item">特价商品</view>
+        <view class="item">人气推荐</view>
+        <view class="item">新品首发</view>
+      </view>
+    </view>
+  </view>
+</v-popup>
+<v-sort-filter show="{{showSortDialog}}"/>
+<v-brand-filter show="{{showBrandDialog}}"/>

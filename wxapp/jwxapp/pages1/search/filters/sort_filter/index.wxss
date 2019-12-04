@@ -1,0 +1,29 @@
+.filter-content{
+  width: 600rpx;
+  background-color: #fff;
+  height: 100%;
+  border-top: 1rpx solid #eee;
+  transform: translateX(600rpx);
+}
+.sort-item{
+  display: flex;
+  border-bottom: 1rpx solid #eee;
+  align-items: center;
+  height: 100rpx;
+}
+.sort-item > .back{
+  width: 60rpx;
+  text-align: center;
+  display: flex;
+}
+.sort-item > .back > image{
+  width: 14rpx;
+  height: 28rpx;
+  vertical-align: middle;
+  margin: auto;
+}
+.sort-item > .center-title{
+  flex: 1;
+  text-align: center;
+  margin-left: -60rpx;
+}

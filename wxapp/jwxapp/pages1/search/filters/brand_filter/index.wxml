@@ -1,0 +1,5 @@
+<v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
+  <view class="filter-content" animation="{{animation}}">
+    456789
+  </view>
+</v-popup>

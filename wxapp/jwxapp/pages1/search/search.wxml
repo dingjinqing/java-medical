@@ -1,0 +1,39 @@
+<view class="body">
+  <include src="/pages/common/header.wxml"/>
+  <view class="main-container" wx:if="{{dataList}}">
+    <view class="filter">
+      <view class="input_box">
+        <view>
+        <icon size="13" type="search" role="img"></icon>
+        </view>
+        <input placeholder="请输入搜索关键字"></input>
+      </view>
+    </view>
+    <view class="condition">
+      <view class="condition-item"><text>销量</text></view>
+      <view class="condition-item"><text>价格</text></view>
+      <view class="condition-item" bindtap="showFilter"><text>筛选</text><image src="{{imageUrl}}image/wxapp/filter.png" class="filterImage"></image></view>
+    </view>
+    <view class="content">
+      <block wx:if="{{dataList[0].length}}">
+         <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+            <block wx:for="{{pageItem}}" wx:key="itemIndex" wx:for-index="itemIndex">
+              <view class="goods_content">
+              <block wx:for="{{item.goodsList}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">
+                <v-double-col-goods goods-data="{{goodsItem}}"/>
+              </block>
+              </view>
+            </block>
+          </block>
+      </block>
+      <block wx:else>
+        <view class="is-null" >
+          <image src="{{imageUrl}}image/wxapp/no_result.png"></image>
+          <text>抱歉！没有找到相关的商品</text>
+        </view>
+      </block>
+    </view>
+  </view>
+  <v-filter show="{{showFilterDialog}}" />
+  <include src="/pages/common/footer.wxml"/>
+</view>
