@@ -12,14 +12,6 @@ import java.util.List;
  */
 @Data
 public class GoodsPageListParam {
-    /**
-     * 	在售状态值
-     */
-    public static final Byte IS_ON_SALE_DEFAULT=1;
-    /**
-     * 已下架状态值
-     */
-    public static final Byte NOT_ON_SALE=0;
 
     /**
      * 前台传入的控制排序方向

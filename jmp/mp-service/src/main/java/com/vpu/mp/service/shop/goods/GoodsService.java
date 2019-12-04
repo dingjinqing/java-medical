@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -397,8 +398,8 @@ public class GoodsService extends ShopBaseService {
      */
     private Condition buildIsOnSaleOptions(Condition condition,GoodsPageListParam goodsPageListParam) {
         // 查询在售（包含售罄商品和规格）
-        if (GoodsPageListParam.IS_ON_SALE_DEFAULT.equals(goodsPageListParam.getIsOnSale())) {
-            condition = condition.and(GOODS.IS_ON_SALE.eq(GoodsPageListParam.IS_ON_SALE_DEFAULT));
+        if (GoodsConstant.ON_SALE.equals(goodsPageListParam.getIsOnSale())) {
+            condition = condition.and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
             // 查询商品列表的售罄
             if (Boolean.TRUE.equals(goodsPageListParam.getIsSaleOut()) && GoodsPageListParam.GOODS_LIST.equals(goodsPageListParam.getSelectType())) {
@@ -418,8 +419,9 @@ public class GoodsService extends ShopBaseService {
             }
         }
         // 查询仓库中（下架）
-        if (GoodsPageListParam.NOT_ON_SALE.equals(goodsPageListParam.getIsOnSale())) {
-            condition = condition.and(GOODS.IS_ON_SALE.eq(GoodsPageListParam.NOT_ON_SALE));
+
+        if (GoodsConstant.OFF_SALE.equals(goodsPageListParam.getIsOnSale())) {
+            condition = condition.and(GOODS.IS_ON_SALE.eq(GoodsConstant.OFF_SALE));
         }
         return condition;
     }
@@ -558,9 +560,7 @@ public class GoodsService extends ShopBaseService {
         saas.sysCate.disposeCategoryName(dataList);
 
         // 处理标签名称准备数据
-        List<Integer> goodsIds = new ArrayList<>(dataList.size());
-
-        dataList.forEach(item -> goodsIds.add(item.getGoodsId()));
+        List<Integer> goodsIds=dataList.stream().map(GoodsPageListVo::getGoodsId).collect(Collectors.toList());
         Map<Integer, List<GoodsLabelSelectListVo>> goodsLabels = this.getGoodsLabels(goodsIds);
 
         // 获取商品对应的规格集合数据
@@ -568,12 +568,12 @@ public class GoodsService extends ShopBaseService {
 
         dataList.forEach(item -> {
             // 设置标签名称
-            item.setGoodsLabels(goodsLabels.get(item.getGoodsId()) == null ? new ArrayList<>() : goodsLabels.get(item.getGoodsId()));
+            item.setGoodsLabels(goodsLabels.getOrDefault(item.getGoodsId(),new ArrayList<>()));
             // 设置图片绝对地址
             item.setGoodsImg(getImgFullUrlUtil(item.getGoodsImg()));
+            item.setPrdImg(getImgFullUrlUtil(item.getPrdImg()));
             // 处理商品对应的规格数据,由于分页问题导致无法连表查询
             List<GoodsSpecProduct> goodsSpecProducts = goodsIdPrdGroups.get(item.getGoodsId());
-
             this.disposeGoodsSpecProductsInfo(item, goodsSpecProducts,pageListParam);
         });
     }
@@ -589,7 +589,7 @@ public class GoodsService extends ShopBaseService {
             return;
         }
         // 默认规格
-        if (goodsSpecProducts.size() == 1 && "".equals(goodsSpecProducts.get(0).getPrdSpecs())) {
+        if (goodsSpecProducts.size() == 1 && StringUtils.isBlank(goodsSpecProducts.get(0).getPrdSpecs())) {
             GoodsSpecProduct prd = goodsSpecProducts.get(0);
             goods.setPrdId(prd.getPrdId());
             goods.setPrdMaxShopPrice(prd.getPrdPrice());
@@ -840,29 +840,27 @@ public class GoodsService extends ShopBaseService {
      */
     private void calculateGoodsPriceAndNumber(Goods goods) {
         // 当存在商品规格时，统计商品总数和最低商品价格
-        if (goods.getGoodsSpecProducts().size() > 0) {
-            BigDecimal smallestGoodsPrice = BigDecimal.valueOf(Double.MAX_VALUE);
-            BigDecimal smallestMarketPrice = BigDecimal.valueOf(Double.MAX_VALUE);
-            BigDecimal smallestCostPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+        BigDecimal smallestGoodsPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+        BigDecimal smallestMarketPrice = BigDecimal.valueOf(Double.MAX_VALUE);
+        BigDecimal smallestCostPrice = BigDecimal.valueOf(Double.MAX_VALUE);
 
-            Integer goodsSumNumber = 0;
-            for (GoodsSpecProduct specProduct : goods.getGoodsSpecProducts()) {
-                goodsSumNumber += specProduct.getPrdNumber();
-                if (smallestGoodsPrice.compareTo(specProduct.getPrdPrice()) > 0) {
-                    smallestGoodsPrice = specProduct.getPrdPrice();
-                }
-                if (smallestMarketPrice.compareTo(specProduct.getPrdMarketPrice()) > 0) {
-                    smallestMarketPrice = specProduct.getPrdMarketPrice();
-                }
-                if (smallestCostPrice.compareTo(specProduct.getPrdCostPrice()) > 0) {
-                    smallestCostPrice = specProduct.getPrdCostPrice();
-                }
+        Integer goodsSumNumber = 0;
+        for (GoodsSpecProduct specProduct : goods.getGoodsSpecProducts()) {
+            goodsSumNumber += specProduct.getPrdNumber();
+            if (smallestGoodsPrice.compareTo(specProduct.getPrdPrice()) > 0) {
+                smallestGoodsPrice = specProduct.getPrdPrice();
             }
-            goods.setGoodsNumber(goodsSumNumber);
-            goods.setShopPrice(smallestGoodsPrice);
-            goods.setMarketPrice(smallestMarketPrice);
-            goods.setCostPrice(smallestCostPrice);
+            if (smallestMarketPrice.compareTo(specProduct.getPrdMarketPrice()) > 0) {
+                smallestMarketPrice = specProduct.getPrdMarketPrice();
+            }
+            if (smallestCostPrice.compareTo(specProduct.getPrdCostPrice()) > 0) {
+                smallestCostPrice = specProduct.getPrdCostPrice();
+            }
         }
+        goods.setGoodsNumber(goodsSumNumber);
+        goods.setShopPrice(smallestGoodsPrice);
+        goods.setMarketPrice(smallestMarketPrice);
+        goods.setCostPrice(smallestCostPrice);
     }
 
     /**
@@ -1606,7 +1604,7 @@ public class GoodsService extends ShopBaseService {
     		.from(GOODS)
     		.where(GOODS.GOODS_ID.in(idList));
     	if(isCanUse) {
-    		sql.and(GOODS.IS_ON_SALE.eq(GoodsPageListParam.IS_ON_SALE_DEFAULT))
+    		sql.and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE))
     		   .and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
     	}
 

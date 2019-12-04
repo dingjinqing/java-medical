@@ -41,39 +41,45 @@ public class AdminGoodsController extends AdminBaseController {
      * param.selectType : 1 以商品为统计对象，2以商品规格为统计对象
      * param.isOnSale : 1在售，0下架
      * param.isSaleOut : true 查询售罄商品
+     *
      * @param {@link com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitParam}
      * @return JsonResult
      */
     @PostMapping("/api/admin/goods/filterItem/list")
-    public JsonResult getGoodsFilterItem(@RequestBody GoodsFilterItemInitParam param){
+    public JsonResult getGoodsFilterItem(@RequestBody GoodsFilterItemInitParam param) {
         GoodsFilterItemInitVo vo = shop().goods.getGoodsFilterItem(param);
         return success(vo);
     }
 
     /**
-     *  根据平台分类id获取其所有的祖先节点数据，
+     * 根据平台分类id获取其所有的祖先节点数据，
      * （修改商品回显商品平台分类数据的时候使用到）
+     *
      * @param catId 平台分类id
-     * @return LinkedList:有序链表，按照祖先顺序排列， map {'cat_id':1,'cat_name':'裤子'}
+     * @return LinkedList:有序链表，按照祖先顺序排列，
      */
     @GetMapping("/api/admin/goods/getSysCatParents")
     public JsonResult getSysCatParents(Integer catId) {
         LinkedList<Integer> parentIds = saas.sysCate.findParentIdsByChildId(catId);
         return success(parentIds);
     }
+
     /**
      * 商品分页查询
+     *
      * @param param 过滤条件
      * @return
      */
     @PostMapping("/api/admin/goods/list")
     public JsonResult getPageList(@RequestBody GoodsPageListParam param) {
+        param.setSelectType(GoodsPageListParam.GOODS_LIST);
         PageResult<GoodsPageListVo> pageList = shop().goods.getPageList(param);
         return success(pageList);
     }
 
     /**
      * 商品选择弹窗，根据过滤条件查询对应商品id集合
+     *
      * @param param
      * @return
      */
@@ -88,16 +94,18 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/product/list")
     public JsonResult getProductPageList(@RequestBody GoodsPageListParam param) {
+        param.setSelectType(GoodsPageListParam.GOODS_PRD_LIST);
         return success(shop().goods.getProductPageList(param));
     }
 
     @PostMapping("/api/admin/goods/product/listAllIds")
-    public JsonResult getProductIdsListAll(@RequestBody GoodsPageListParam param){
+    public JsonResult getProductIdsListAll(@RequestBody GoodsPageListParam param) {
         return success(shop().goods.getProductIdsListAll(param));
     }
 
     /**
      * 查询商品和其所有下属规格信息
+     *
      * @param goodsIdParams
      * @return
      */
@@ -108,7 +116,8 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 通过规格1ds查询规格信息
-     * @param goodsIdParams  guigeids
+     *
+     * @param goodsIdParams guigeids
      * @return
      */
     @PostMapping("/api/admin/goods/product/info/list")
@@ -118,17 +127,19 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 查询商品所有规则信息
+     *
      * @param goodsId 商品ID
-     * @return  规则信息
+     * @return 规则信息
      */
     @GetMapping("/api/admin/goods/product/all/{goodsId}")
-    public JsonResult getAllProductListByGoodsId(@PathVariable("goodsId") Integer goodsId){
+    public JsonResult getAllProductListByGoodsId(@PathVariable("goodsId") Integer goodsId) {
         List<GoodsProductVo> productVos = shop().goods.getAllProductListByGoodsId(goodsId);
         return success(productVos);
     }
 
     /**
      * 商品新增
+     *
      * @param goods 商品参数
      * @return 操作结果
      */
@@ -163,7 +174,7 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
-        result=isGradePrdPriceOk(goods);
+        result = isGradePrdPriceOk(goods);
         if (result.getError() != 0) {
             return result;
         }
@@ -248,7 +259,7 @@ public class AdminGoodsController extends AdminBaseController {
     }
 
     @PostMapping("/api/admin/goodsPrd/updatePriceNumber")
-    public JsonResult updateGoodsPrdPriceNumbers(@RequestBody GoodsBatchOperateParam param){
+    public JsonResult updateGoodsPrdPriceNumbers(@RequestBody GoodsBatchOperateParam param) {
         shop().goods.updateGoodsPrdPriceNumbers(param);
         return success();
     }
@@ -292,13 +303,13 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
-        result=isGradePrdPriceOk(goods);
+        result = isGradePrdPriceOk(goods);
         if (result.getError() != 0) {
             return result;
         }
 
         //存在重复值则直接返回
-         result = columnValueExistCheckForUpdate(goods);
+        result = columnValueExistCheckForUpdate(goods);
         if (result.getError() != 0) {
             return result;
         }
@@ -310,6 +321,7 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 根据id值查询商品信息
+     *
      * @param goods 商品信息
      * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
      */
@@ -327,20 +339,22 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 获得商品的小程序跳转图片
+     *
      * @param goodsId 商品id
      * @return 图片绝对地址和跳转链接相对地址
      */
     @GetMapping("/api/admin/goods/qrCode/get")
-    public JsonResult getQrCode(Integer goodsId){
+    public JsonResult getQrCode(Integer goodsId) {
         if (goodsId == null) {
             return fail(JsonResultCode.GOODS_ID_IS_NULL);
         }
-        GoodsQrCodeVo vo= shop().goods.getGoodsQrCode(goodsId);
+        GoodsQrCodeVo vo = shop().goods.getGoodsQrCode(goodsId);
         return success(vo);
     }
 
     /**
      * 更新数据时判断传入的商品名称、货号，sku码和规格名值是否重复。
+     *
      * @param goods 商品
      * @return {@link JsonResult#getError()}!=0表示存在重复
      */
@@ -426,10 +440,11 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 判断商品会员卡价格是否正确
+     *
      * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
      * @return
      */
-    private JsonResult isGradePrdPriceOk(Goods goods){
+    private JsonResult isGradePrdPriceOk(Goods goods) {
         //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
         if (goods.getGoodsGradePrds() != null && goods.getGoodsGradePrds().size() > 0) {
             Map<String, BigDecimal> collect =
@@ -454,8 +469,9 @@ public class AdminGoodsController extends AdminBaseController {
     /**
      * 验证出入的商品规格属性和商品规格键值的正确性，
      * 验证方式是动态计算{@link GoodsSpecProduct#}的值是否和{@link GoodsSpec}计算出来的值一致
+     *
      * @param goodsSpecProducts 商品规格属性
-     * @param goodsSpecs    商品规格键值
+     * @param goodsSpecs        商品规格键值
      * @return {@link JsonResult#getError()}!=0表示存在错误
      */
     private JsonResult isGoodsSpecProductDescRight(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs) {
@@ -499,11 +515,11 @@ public class AdminGoodsController extends AdminBaseController {
             for (String split : splits) {
                 String[] s = split.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
 
-                if (s.length < 2||StringUtils.isBlank(s[0])||StringUtils.isBlank(s[1])) {
+                if (s.length < 2 || StringUtils.isBlank(s[0]) || StringUtils.isBlank(s[1])) {
                     return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
                 }
 
-                String speck =s[0],specv=s[1];
+                String speck = s[0], specv = s[1];
 
                 //检查规格名称是否存在
                 List<GoodsSpecVal> goodsSpecVals = specs.get(speck);
@@ -512,7 +528,7 @@ public class AdminGoodsController extends AdminBaseController {
                     return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
                 }
 
-                boolean b = goodsSpecVals.stream().anyMatch(goodsSpecVal -> StringUtils.equals(specv,goodsSpecVal.getSpecValName()));
+                boolean b = goodsSpecVals.stream().anyMatch(goodsSpecVal -> StringUtils.equals(specv, goodsSpecVal.getSpecValName()));
 
                 if (!b) {
                     return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
@@ -532,18 +548,19 @@ public class AdminGoodsController extends AdminBaseController {
 
     @PostMapping("/api/admin/goods/export")
     public void export(@RequestBody @Valid GoodsExportParam param, HttpServletResponse response) {
-        Workbook workbook =shop().goods.exportGoodsList(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME ,"excel","excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
-        export2Excel(workbook,fileName,response);
+        Workbook workbook = shop().goods.exportGoodsList(param, getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook, fileName, response);
     }
 
     /**
      * 小程序装修商品列表模块数据接口
+     *
      * @param goodsListMpParam
      */
     @PostMapping("/api/admin/goods/mp/list")
     public JsonResult getGoodsList(@RequestBody GoodsListMpParam goodsListMpParam) {
-        List<? extends  GoodsListMpVo> goodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam,null);
+        List<? extends GoodsListMpVo> goodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam, null);
         return success(goodsList);
     }
 }

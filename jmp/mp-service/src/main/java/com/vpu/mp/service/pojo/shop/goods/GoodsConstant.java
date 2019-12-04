@@ -43,6 +43,7 @@ public class GoodsConstant {
 
     /*** 销售状态：在售*/
     public static final Byte ON_SALE = 1;
+    /** 下架*/
     public static final Byte OFF_SALE = 0;
 
     /*** 会员专享状态：是*/
