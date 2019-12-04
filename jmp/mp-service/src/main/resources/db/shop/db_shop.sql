@@ -2335,7 +2335,7 @@ create table `b2c_grade_prd`
     `shop_id`     int(11)        not null default '0',
     `grade_price` decimal(10, 2) not null default '0.00',
     `grade`       varchar(65)    not null default '' comment '会员卡等级',
-    `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否，1是';
+    `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否，1是',
     `create_time` timestamp               default current_timestamp,
     `update_time` timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
@@ -4023,7 +4023,7 @@ create table `b2c_goods_rebate_price`
     `advise_price` decimal(10, 2) not null default 0.00,
     `min_price`    decimal(10, 2)          default null,
     `max_price`    decimal(10, 2)          default null,
-    `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否，1是'
+    `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除0否，1是',
     `create_time`  timestamp               default current_timestamp,
     `update_time`  timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
