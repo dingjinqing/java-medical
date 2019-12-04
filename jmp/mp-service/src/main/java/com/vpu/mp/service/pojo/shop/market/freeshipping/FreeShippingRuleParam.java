@@ -24,7 +24,7 @@ public class FreeShippingRuleParam {
     private Integer conType;
     @DecimalMin("0")
     private BigDecimal money;
-    @Min(1)
+    @Min(0)
     private Integer num;
     @NotBlank
     private String  area;
