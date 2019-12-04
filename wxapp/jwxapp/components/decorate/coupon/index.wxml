@@ -146,7 +146,7 @@
   <block wx:if="{{m.coupon_arr.length == 2}}">
     <block wx:for="{{m.coupon_arr}}" wx:key="index" wx:for-item="item">
       <block>
-        <view class="coupon_list coupon_list2" style='width:48%;margin-right:0;margin-bottom:{{m.margin_bot}}rpx;border:2rpx solid {{comColor}}'>
+        <view class="coupon_list coupon_list2" style='width:48%;margin-right:0;margin-bottom:{{m.margin_bot}}rpx;border:2rpx solid {{comColor}};border-bottom:0'>
           <view class="coupon_list_top" wx:if="{{item.act_code=='discount'}}" style='color:{{comColor}}'>
             <text>{{item.denomination}}</text>{{i18n.$t(localePack,'components.decorate.fracture')}}
           </view>

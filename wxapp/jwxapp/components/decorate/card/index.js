@@ -5,8 +5,12 @@ global.wxComponent({
   mixins: [base],
   methods: {
     onPropChange(newVal, oldVal, changedPath) {
-      console.log(newVal)
+
       // 根据背景类型来判断是采用背景颜色还是背景图片
+      console.log(newVal, 'cardData')
+      // 暂时改变字段调试
+      // newVal.status = -1
+      // 处理背景
       if (newVal.bg_type == 0) {
         newVal.bg = newVal.bg_color = newVal.bg_color || '#e6cb96';
       }
@@ -17,9 +21,9 @@ global.wxComponent({
       // shop_img、activation字段在第二个接口
     },
     bindGetCard(e) {
-      // var d = this.eventData(e);
-      // var _this = this;
-
+      var d = this.eventData(e);
+      var _this = this;
+      console.log(d)
       // if (d.is_pay == 1 || d.is_pay == 2) {
       //   util.jumpLink('/pages/usercardinfo/usercardinfo?card_id=' + d.card_id, )
       //   return false;
@@ -52,14 +56,16 @@ global.wxComponent({
       //           m: _this.data.m
       //         });
       //       }
-      //       var card_no = res.content.card_no || res.content
-      //       if (d.activation == 1) {
-      //         util.jumpLink('/pages/usercardinfo/usercardinfo?card_no=' + card_no);
-      //       } else {
-      //         util.showModal('提示', '领取成功，可在个人中心查看', function () {
-      //           util.jumpLink('/pages/usercardinfo/usercardinfo?card_no=' + card_no, 'navigateTo')
-      //         }, true, '取消', '立即查看')
-      //       }
+      // var card_no = res.content.card_no || res.content
+
+      // if (d.activation == 1) {
+      //   util.jumpLink('/pages/usercardinfo/usercardinfo?card_no=' + card_no);
+      // } else {
+      //   util.showModal('提示', '领取成功，可在个人中心查看', function () {
+      //     console.log('触发')
+      //     util.jumpLink('/pages/cardinfo/cardinfo?card_no=' + card_no, 'navigateTo')
+      //   }, true, '取消', '立即查看')
+      // }
       //     }
       //   } else {
       //     util.toast_fail('领取失败');

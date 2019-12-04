@@ -63,7 +63,7 @@
     font-weight: bold;
     color: #f66;
     padding: 0 10rpx;
-    margin-top: 10rpx;
+    margin-bottom: 6rpx;
     position: absolute;
     bottom: 0;
     width: 330rpx;

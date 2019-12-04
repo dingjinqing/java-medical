@@ -15,20 +15,34 @@ global.wxPage({
     let cardNo = options.card_no ? options.card_no : null
     this.requestCardInfo(cardNo)
   },
-  requestCardInfo(cardNo){
-    util.api('/api/card/detail',res => {
-      let cardInfo = res.content
-      cardInfo.cardExpireTime = this.getCardExpireTime(cardInfo);
-      cardInfo.cardBgStyle = this.getCardBg(cardInfo);
-      cardInfo.cardTypeName = this.getTypeName(cardInfo.cardType);
-      cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
-      cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
-      cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
-      this.getUpgradeCondition(cardInfo)
-      this.setData({
-        cardInfo:res.content
-      })
-    }, { cardNo: cardNo })
+  requestCardInfo(cardNo) {
+    //测试
+    let cardInfo = {
+      // cardTypeName: '普通卡',
+      // cardName: '测试1',
+      // money: 100,
+      // exchangSurplus: 10,
+      // surplus: 1,
+      // userCardCreateTime: '2019/1/1'
+    }
+    this.setData({
+      cardInfo: cardInfo
+    })
+
+
+    // util.api('/api/card/detail',res => {
+    //   let cardInfo = res.content
+    //   cardInfo.cardExpireTime = this.getCardExpireTime(cardInfo);
+    //   cardInfo.cardBgStyle = this.getCardBg(cardInfo);
+    //   cardInfo.cardTypeName = this.getTypeName(cardInfo.cardType);
+    //   cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
+    //   cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
+    //   cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
+    //   this.getUpgradeCondition(cardInfo)
+    //   this.setData({
+    //     cardInfo:res.content
+    //   })
+    // }, { cardNo: cardNo })
   },
   // 获取会员卡过期时间
   getCardExpireTime(cardItem) {
@@ -59,33 +73,33 @@ global.wxPage({
     }
   },
   // 获取会员卡领取状态
-  getCardStatus(cardItem){
+  getCardStatus(cardItem) {
 
   },
-  showQrCode(){
+  showQrCode() {
     let qrCode = this.data.cardInfo.qrCode
     this.setData({
       qrCode,
-      showQrcode:true
+      showQrcode: true
     })
   },
-  getUpgradeCondition(cardInfo){
+  getUpgradeCondition(cardInfo) {
     if (cardInfo.cardType !== 2 || !cardInfo.nextGradeCard) return
-    if (cardInfo.nextGradeCard.gradeConditionJson.gradeScore){
+    if (cardInfo.nextGradeCard.gradeConditionJson.gradeScore) {
       this.setData({
         percentage: Math.round(cardInfo.cumulativeScore / cardInfo.nextGradeCard.gradeConditionJson.gradeScore * 10000) / 100.00,
         currentCondition: cardInfo.cumulativeScore,
-        unit:'分'
+        unit: '分'
       })
       console.log(this.data.percentage)
     } else {
       this.setData({
         percentage: Math.round(cardInfo.cumulativeConsumptionAmounts / cardInfo.nextGradeCard.gradeConditionJson.gradeScore * 10000) / 100.00,
         currentCondition: cardInfo.cumulativeConsumptionAmounts,
-        unit:'元'
+        unit: '元'
       })
     }
-   
+
   },
   phoneCall: function (e) {
     wx.makePhoneCall({
