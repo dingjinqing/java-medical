@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
@@ -16,6 +18,7 @@ import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResul
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateTitleResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
 
+import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
@@ -28,6 +31,8 @@ public class AdminTestController extends AdminBaseController {
 
 	@Autowired
 	protected OpenPlatform open;
+	@Autowired
+	private SubscribeMessageService subservice;
 
 	@RequestMapping(value = "/api/admin/test/addtemplate")
 	public JsonResult addtemplate() throws Exception {
@@ -97,5 +102,30 @@ public class AdminTestController extends AdminBaseController {
 		
 		WxOpenResult result = open.getMaExtService().sendTemplate(appId, toUser, templateId, page, data);
 		return success(result);
+	}
+	
+	
+	@RequestMapping(value = "/api/admin/test/sendTest")
+	public JsonResult testSend() {
+		Map<String, Map<String, String>> data = new LinkedHashMap<>();
+		Map<String, String> v1 = new LinkedHashMap<>();
+		v1.put("value", "测试抽奖活动");
+		data.put("thing1", v1);
+		
+		Map<String, String> v2 = new LinkedHashMap<>();
+		v2.put("value", "2019-12-04");
+		data.put("date2", v2);
+		
+		Map<String, String> v3 = new LinkedHashMap<>();
+		v2.put("value", "你中奖了");
+		data.put("thing3", v3);
+		try {
+			subservice.sendMessage(195, SubscribeMessageConfig.draw_result, data, null);
+		} catch (WxErrorException e) {
+			
+			e.printStackTrace();
+		}
+		return null;
+		
 	}
 }
