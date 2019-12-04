@@ -4,8 +4,8 @@
 * @author: 赵鑫
 -->
 <template>
-  <div>
-    <wrapper>
+  <div class="content">
+    <div class="main">
       <section class="newuserDetailContent">
         <div>
           <span>{{$t('groupBuy.mobileNumber')}}</span>
@@ -38,73 +38,71 @@
           @click="initDataList"
         >{{$t('groupBuy.searchDataText')}}</el-button>
       </section>
-    </wrapper>
+    </div>
 
-    <wrapper>
-      <div class="table_list">
-        <el-table
-          :data="tableData"
-          header-row-class-name="tableClss"
-          border
-          style="width: 100%"
+    <div class="table_list">
+      <el-table
+        class="version-manage-table"
+        header-row-class-name="tableClss"
+        :data="tableData"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="userName"
+          :label="$t('groupBuy.activityName')"
+          align="center"
         >
-          <el-table-column
-            prop="userName"
-            :label="$t('groupBuy.activityName')"
-            align="center"
-          >
-          </el-table-column>
+        </el-table-column>
 
-          <el-table-column
-            prop="userId"
-            :label="$t('groupBuy.newUserId')"
-            align="center"
-          >
-          </el-table-column>
+        <el-table-column
+          prop="userId"
+          :label="$t('groupBuy.newUserId')"
+          align="center"
+        >
+        </el-table-column>
 
-          <el-table-column
-            prop="userName"
-            :label="$t('groupBuy.newUserNickname')"
-            align="center"
-          >
-          </el-table-column>
+        <el-table-column
+          prop="userName"
+          :label="$t('groupBuy.newUserNickname')"
+          align="center"
+        >
+        </el-table-column>
 
-          <el-table-column
-            prop="mobile"
-            :label="$t('groupBuy.newUserMobile')"
-            align="center"
-          >
-          </el-table-column>
+        <el-table-column
+          prop="mobile"
+          :label="$t('groupBuy.newUserMobile')"
+          align="center"
+        >
+        </el-table-column>
 
-          <el-table-column
-            prop="createTime"
-            :label="$t('groupBuy.registrationTime')"
-            align="center"
-          >
-          </el-table-column>
+        <el-table-column
+          prop="createTime"
+          :label="$t('groupBuy.registrationTime')"
+          align="center"
+        >
+        </el-table-column>
 
-          <el-table-column
-            prop="inviteUserName"
-            :label="$t('groupBuy.invitePeople')"
-            align="center"
-          >
-          </el-table-column>
-        </el-table>
-      </div>
+        <el-table-column
+          prop="inviteUserName"
+          :label="$t('groupBuy.invitePeople')"
+          align="center"
+        >
+        </el-table-column>
+      </el-table>
+
       <pagination
         :page-params.sync="pageParams"
         @pagination="initDataList"
       />
-    </wrapper>
-
+    </div>
   </div>
 </template>
 
 <script>
-import wrapper from '@/components/admin/wrapper/wrapper'
 import { newUserList } from '@/api/admin/marketManage/spellGroup.js'
 export default {
-  components: { wrapper,
+  components: {
     pagination: () => import('@/components/admin/pagination/pagination')
 
   },
@@ -141,6 +139,36 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+.content {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
+  .main {
+    position: relative;
+    background-color: #fff;
+    padding: 15px;
+    .wrapper {
+      .el-button {
+        margin-left: 5px;
+      }
+    }
+  }
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+.table_list {
+  position: relative;
+  margin-top: 10px;
+  background-color: #fff;
+  padding: 15px;
+}
 .newuserDetailContent {
   display: flex;
   font-size: 14px;
@@ -157,15 +185,12 @@ export default {
     margin-left: 5px;
   }
 }
-
 /deep/ .tableClss th {
   background-color: #f5f5f5;
   border: none;
   height: 36px;
+  font-weight: bold;
   color: #000;
   padding: 8px 10px;
-}
-.table_list {
-  position: relative;
 }
 </style>

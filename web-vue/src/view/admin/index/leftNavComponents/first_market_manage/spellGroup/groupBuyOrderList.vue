@@ -11,7 +11,7 @@
     <div class="table_list">
       <el-table
         class="version-manage-table"
-        header-row-class-name="tableHeader"
+        header-row-class-name="tableClss"
         :data="tableData"
         border
         style="width: 100%"
@@ -170,6 +170,14 @@ export default {
       }
     }
   }
+}
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
 }
 .table_list {
   position: relative;

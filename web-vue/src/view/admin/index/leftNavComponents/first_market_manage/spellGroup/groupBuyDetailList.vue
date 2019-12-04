@@ -1,10 +1,13 @@
 <template>
-  <div>
-    <div class="groupBuyDetailList">
-      <el-form label-width="100px">
+  <div class="content">
+    <div class="main">
+      <el-form
+        label-width="100px"
+        style="height: 40px;"
+      >
         <el-row :gutter=24>
           <el-col :span="5">
-            <el-form-item :label="$t('groupBuy.userMobileNumber')">
+            <el-form-item :label="$t('groupBuy.userMobileNumber') + '：'">
               <el-input
                 size="small"
                 v-model="mobile"
@@ -15,11 +18,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col
-            :span="5"
-            style="margin-left: -20px"
-          >
-            <el-form-item :label="$t('groupBuy.userNickname')">
+          <el-col :span="5">
+            <el-form-item :label="$t('groupBuy.userNickname') + '：'">
               <el-input
                 size="small"
                 v-model="nickname"
@@ -29,11 +29,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col
-            :span="4"
-            style="margin-left: -20px"
-          >
-            <el-form-item :label="$t('groupBuy.grouponState')">
+          <el-col :span="5">
+            <el-form-item :label="$t('groupBuy.grouponState') + '：'">
               <el-select
                 size="small"
                 v-model="stauts"
@@ -49,10 +46,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col
-            :span="2"
-            :offset="2"
-          >
+          <el-col :span="2">
             <el-button
               size="small"
               type="primary"
@@ -63,70 +57,70 @@
           </el-col>
         </el-row>
       </el-form>
+
     </div>
 
-    <wrapper>
-      <el-main>
-        <el-table
-          class="version-manage-table"
-          header-row-class-name="tableHeader"
-          :data="tableData"
-          border
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="commanderName"
-            :label="$t('groupBuy.commanderName')"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="commanderMobile"
-            :label="$t('groupBuy.commanderMobile')"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="username"
-            :label="$t('groupBuy.username')"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="mobile"
-            :label="$t('groupBuy.mobile')"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="status"
-            :label="$t('groupBuy.grouponState')"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="isDefault"
-            :label="$t('groupBuy.isDefault')"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="orderSn"
-            :label="$t('groupBuy.orderSn')"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="startTime"
-            :label="$t('groupBuy.startTime')"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="endTime"
-            :label="$t('groupBuy.endTime')"
-            align="center"
-          ></el-table-column>
-        </el-table>
-      </el-main>
+    <div class="table_list">
+      <el-table
+        class="version-manage-table"
+        header-row-class-name="tableClss"
+        :data="tableData"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="commanderName"
+          :label="$t('groupBuy.commanderName')"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="commanderMobile"
+          :label="$t('groupBuy.commanderMobile')"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="username"
+          :label="$t('groupBuy.username')"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="mobile"
+          :label="$t('groupBuy.mobile')"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="status"
+          :label="$t('groupBuy.grouponState')"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="isDefault"
+          :label="$t('groupBuy.isDefault')"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="orderSn"
+          :label="$t('groupBuy.orderSn')"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="startTime"
+          :label="$t('groupBuy.startTime')"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="endTime"
+          :label="$t('groupBuy.endTime')"
+          align="center"
+        ></el-table-column>
+      </el-table>
 
       <pagination
         :page-params.sync="pageParams"
         @pagination="initialize"
       />
-    </wrapper>
+    </div>
+
   </div>
 </template>
 
@@ -192,22 +186,42 @@ export default {
 }
 
 </script>
-<style scoped>
-.groupBuyDetailList {
-  padding: 20px 0 0 30px;
-  margin: 10px 10px 0px;
-  background: #fff;
+<style lang="scss" scoped>
+.content {
+  padding: 10px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
+  .main {
+    position: relative;
+    background-color: #fff;
+    padding: 15px;
+    .el-col {
+      height: 40px;
+      line-height: 40px;
+    }
+    .wrapper {
+      .el-button {
+        margin-left: 5px;
+      }
+    }
+  }
 }
-.el-main {
-  padding: 0 !important;
-}
-.el-form {
-  line-height: normal;
+/deep/ .tableClss th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
 }
 .table_list {
-  padding: 0 !important;
+  position: relative;
+  margin-top: 10px;
+  background-color: #fff;
+  padding: 15px;
 }
 .inputWidth {
-  width: 160px;
+  width: 170px;
 }
 </style>
