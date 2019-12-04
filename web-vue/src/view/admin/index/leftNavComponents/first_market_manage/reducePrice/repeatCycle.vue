@@ -208,7 +208,17 @@ export default {
   },
   methods: {
     confrimCycleSet () {
-      this.$emit('handelCycleData')
+      let data = {}
+      data.periodAction = this.periodAction
+      if (this.periodAction === 2) {
+        // 按月重复，单选一个月的某一天
+        data.extendTime = this.extendTime1
+      } else if (this.periodAction === 3) {
+        // 按周重复，可以多选一周的某些天
+        data.extendTime = this.extendTime2.join('@')
+      }
+      data.pointTime = this.startTime + '@' + this.endTime
+      this.$emit('handelCycleData', data)
       this.cycleShow = false
     }
   }

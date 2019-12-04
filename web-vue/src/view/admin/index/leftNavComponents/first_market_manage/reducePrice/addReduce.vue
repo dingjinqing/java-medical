@@ -330,7 +330,6 @@ export default {
       reduceData: {
         name: '',
         effectiveDate: '',
-        periodAction: '0',
         isCycle: false,
         isLimit: '0',
         limitFlag: '0',
@@ -428,7 +427,8 @@ export default {
       }
     },
     getCycleData (arr) {
-      console.log(1)
+      // 按周期重复
+      Object.assign(this.reduceData, arr)
     },
     showChoosingGoods () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
@@ -630,6 +630,9 @@ export default {
       this.reduceData.endTime = this.reduceData.effectiveDate[1]
       this.reduceData.reducePriceGoodsAddParams = this.pageShowGoodsList
       this.reduceData.limitFlag = this.reduceData.limitFlag ? 1 : 0
+      if (!this.reduceData.isCycle) {
+        this.reduceData.periodAction = 0
+      }
 
       if (this.validParam()) {
         addReducePrice(this.reduceData).then((res) => {
@@ -670,11 +673,13 @@ export default {
         if (!item.discount || !item.reducePrice || !item.goodsPrice) {
           flag = true
         } else {
-          item.reducePriceProduct.forEach(prdItem => {
-            if (!prdItem.prdPrice) {
-              flag = true
-            }
-          })
+          if (item.reducePriceProduct) {
+            item.reducePriceProduct.forEach(prdItem => {
+              if (!prdItem.prdPrice) {
+                flag = true
+              }
+            })
+          }
         }
       })
       if (flag) {
