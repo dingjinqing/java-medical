@@ -4815,4 +4815,4 @@ CREATE TABLE `b2c_user_login_record` (
   `user_ip` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '用户登录ip',
   `count` smallint(3) DEFAULT '0' COMMENT '每日登陆次数',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=152 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
