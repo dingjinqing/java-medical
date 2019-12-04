@@ -19,7 +19,6 @@ import com.vpu.mp.service.shop.member.UserCardService;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
-import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -310,14 +309,20 @@ public class CartService extends ShopBaseService {
      * 获取当前购物车商品
      * @return
      */
-    public OrderBeforeParam.Goods getCartCheckedData(Integer userId,Integer storeId){
-        Result<CartRecord> cartRecords = db().selectFrom(CART)
+    public List<OrderBeforeParam.Goods> getCartCheckedData(Integer userId, Integer storeId){
+        List<OrderBeforeParam.Goods> goodsList =new ArrayList<>();
+        List<CartRecord> cartRecords = db().selectFrom(CART)
                 .where(CART.IS_CHECKED.eq(CartConstant.CART_IS_CHECKED))
                 .and(CART.USER_ID.eq(userId))
                 .and(CART.STORE_ID.eq(storeId))
                 .fetch();
-        OrderBeforeParam.Goods goods =new OrderBeforeParam.Goods();
-
-        return null;
+        cartRecords.forEach(cartRecord -> {
+            OrderBeforeParam.Goods goods =new OrderBeforeParam.Goods();
+            goods.setGoodsId(cartRecord.getGoodsId());
+            goods.setProductId(cartRecord.getProductId());
+            goods.setGoodsNumber(cartRecord.getGoodsNumber().intValue());
+            goodsList.add(goods);
+        });
+        return goodsList;
     }
 }
