@@ -22,7 +22,7 @@
       </view>
       <view class="store-nav-list" wx:for="{{list}}" wx:key="storeId" bindtap="jumpUrl" data-id="{{item.storeId}}" data-state="{{item.businessState}}">
         <view class="list-left">
-          <image class="list-left-img" src='{{item.storeImgs}}'></image>
+          <image class="list-left-img" src='{{imageUrl}}{{item.storeImgs}}'></image>
           <image class="list-left-img off-img" wx:if="{{item.businessState == 0}}" src="{{imageUrl}}/image/wxapp/off_state.png"></image>
         </view>
         <view class="store-name-info">

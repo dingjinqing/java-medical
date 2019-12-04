@@ -156,13 +156,12 @@ global.wxPage({
   toDelete: function (e) {
     var data = e.currentTarget.dataset;
     var form_id = e.detail.formId;
-    var open_id = util.getCache("openid");
     util.showModal("提示", "是否删除该预约服务订单", function () {
       util.api('/api/wxapp/store/service/reservationDel', function (res) {
         if (res.error == 0) {
           util.navigateTo({ url: '/pages/appointlist/appointlist' });
         }
-      }, { order_sn: data.order_sn, orderId: data.order_id, open_id: open_id, form_id: form_id })
+      }, { orderId: data.order_id, form_id: form_id })
     }, true);
   },
   // 去支付
@@ -212,39 +211,12 @@ global.wxPage({
       }
     }, { order_sn: order_sn, openid: open_id, form_id: form_id })
   },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    this.getAppoint(this.data.activeStatus)
   },
 
   /**

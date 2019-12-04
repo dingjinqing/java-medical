@@ -1,80 +1,86 @@
-<!--pages/servicecomment/servicecomment.wxml-->
+<!-- pages/servicecomment/servicecomment.wxml -->
 <include src="../common/header.wxml" />
 <view class='main-container'>
   <view class="container">
-    <!--待评价页面详情  -->
+    <!-- 待评价页面详情 -->
     <view class="comment_main">
       <view class="mocomm_list">
         <view class="comment_list">
           <view class="commm_goods clearfix">
             <view class="left">
-              <image src="{{ service_info.service_img}}"></image>
+              <image src="{{imageUrl}}{{serviceInfo.serviceImg}}"></image>
             </view>
             <view class="middle">
-              <view class="goods_name">{{ service_info.service_name}}</view>
-              <view class='tech_name' wx:if="{{service_info.technician_name != null}}">{{service_info.technician_title}}：{{service_info.technician_name}}</view>
-              <view class="goods_time clearfix">{{service_info.add_time}}
-                <view bindtap="com_show" class="right" data-shop_id="{{service_info.shop_id}}" data-osn="{{service_info.order_sn}}" data-service_id="{{service_info.service_id}}" data-store_id="{{service_info.store_id}}" data-technician_id="{{service_info.technician_id}}"
-                  wx:if="{{service_info.comment_flag == 0}}">
+              <view class="goods_name">{{ serviceInfo.serviceName}}</view>
+              <view class='tech_name' wx:if="{{serviceInfo.technicianName}}">
+                {{serviceInfo.technicianTitle}}：{{serviceInfo.technicianName}}
+              </view>
+              <view class="goods_time clearfix">
+                <text>{{serviceInfo.serviceDate}} {{serviceInfo.servicePeriod}}</text>
+                <view wx:if="{{serviceInfo.flag != 1}}" bindtap="com_show" class="right" data-shop_id="{{serviceInfo.shop_id}}" data-osn="{{serviceInfo.order_sn}}" data-service_id="{{serviceInfo.service_id}}" data-store_id="{{serviceInfo.store_id}}" data-technician_id="{{serviceInfo.technician_id}}">
                   发表评价
-                  <image style="width:10px;height:5px;margin-left:5rpx;" src="{{service_info.src}}"></image>
+                  <image style="width:10px;height:5px;margin-left:5rpx;" src="{{serviceInfo.src}}"></image>
                 </view>
-                <view bindtap="show_com_info" class="right" wx:if="{{service_info.comment_flag == 1}}">
+                <view wx:else bindtap="show_com_info" class="right">
                   查看评价
-                  <image src="{{ service_info.src }}" style="width:10px;height:5px;margin-left:5rpx;" />
+                  <image src="{{ serviceInfo.src }}" style="width:10px;height:5px;margin-left:5rpx;" />
                 </view>
               </view>
             </view>
           </view>
-          <!--未评价  -->
-          <block wx:if="{{service_info.show}}">
+          <!-- 未评价 -->
+          <block wx:if="{{serviceInfo.show}}">
             <view class="comm_square">
               <view class="pingfen">
                 <view class="ping_left">
-                  <text>*</text>评分:
+                  <text>*</text>
+                  评分:
                 </view>
-                <block wx:for="{{star}}" wx:key="key" wx:for-index="id" wx:for-item="item">
+                <block wx:for="{{star}}" wx:for-index="id" wx:key="id">
                   <block wx:if="{{item.show}}">
-                    <!-- <view bindtap="choose_star" data-enen='{{info.commstar}}' data-id="{{id}}" class="star" style='background:url("{{imageUrl}}image/wxapp/collect_yes.png") no-repeat;background-size:cover'></view> -->
-                    <text class='iconfont iconshoucang star' bindtap="choose_star" data-id="{{id}}" data-enen='{{info.commstar}}'  style='color:{{comColor}};font-size:40rpx;float:left' ></text>
+                    <text class='iconfont iconshoucang star' bindtap="choose_star" data-id="{{id}}" data-enen='{{serviceInfo.commstar}}' style='color:{{comColor}};font-size:40rpx;float:left'></text>
                   </block>
                   <block wx:else>
                     <text bindtap="choose_star" data-id="{{id}}" class='iconfont iconshoucang1 star' style='color:{{comColor}};font-size:40rpx;float:left'></text>
                   </block>
                 </block>
                 <view class='ping_zi'>
-                  <block wx:if='{{info.commstar == 1}}'>非常差</block>
-                  <block wx:if='{{info.commstar == 2}}'>差</block>
-                  <block wx:if='{{info.commstar == 3}}'>一般</block>
-                  <block wx:if='{{info.commstar == 4}}'>好</block>
-                  <block wx:if='{{info.commstar == 5}}'>非常好</block>
+                  <block wx:if='{{serviceInfo.commstar == 1}}'>非常差</block>
+                  <block wx:if='{{serviceInfo.commstar == 2}}'>差</block>
+                  <block wx:if='{{serviceInfo.commstar == 3}}'>一般</block>
+                  <block wx:if='{{serviceInfo.commstar == 4}}'>好</block>
+                  <block wx:if='{{serviceInfo.commstar == 5}}'>非常好</block>
                 </view>
               </view>
               <view class="xinde">
                 <view class="xin_left">
-                  <text>*</text>心得:</view>
-                <textarea bindblur="comm_note" placeholder="服务是否给力？快分享你的体验心得吧" style="float:left" />
+                  <text>*</text>
+                  心得:
+                </view>
+                <textarea value="{{serviceInfo.commNote}}" bindblur="comm_note" placeholder="服务是否给力？快分享你的体验心得吧" style="float:left" />
                 <view style="clear:both"></view>
               </view>
               <view class="shaidan">
                 <view class="shai_left">
-                  <text style='color:#fff;'>*</text>晒单:</view>
-                  <view class="shai_content">
-                      <block wx:if="{{image}}">
-                        <block wx:for="{{info.comm_img}}" wx:key="index" wx:for-item="imgitem" >
-                          <view class='shai_view'>
-                            <image src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
-                            <image src="{{imgitem}}" data-idx="{{index}}"></image>
-                          </view>
-                        </block>
-                      </block>
-                      <block wx:if="{{info.comm_img.length < 9}}">
-                        <view class="shai_right" bindtap="upImage">
-                          <image src='{{imageUrl}}/image/wxapp/add.png' mode='widthFix' />
-                        </view>
-                      </block>
+                  <text style='color:#fff;'>*</text>
+                  晒单:
+                </view>
+                <view class="shai_content">
+                  <block wx:if="{{serviceInfo.commImg && serviceInfo.commImg.length > 0}}">
+                    <block wx:for="{{serviceInfo.commImg}}" wx:key="index" wx:for-item="imgitem">
+                      <view class='shai_view'>
+                        <image src='{{imageUrl}}/image/admin/dele_service.png' class="shai_close" bindtap='delImage' data-idx="{{index}}"></image>
+                        <image src="{{imageUrl}}{{imgitem}}" data-idx="{{index}}"></image>
+                      </view>
+                    </block>
+                  </block>
+                  <block wx:if="{{!serviceInfo.flag && serviceInfo.commImg.length < 9}}">
+                    <view class="shai_right" bindtap="upImage">
+                      <image src='{{imageUrl}}/image/wxapp/add.png' mode='widthFix' />
                     </view>
-                    <text class="shai_num">{{info.comm_img.length}}/9</text>
+                  </block>
+                </view>
+                <text class="shai_num">{{serviceInfo.commImg.length}}/9</text>
               </view>
               <view class="square_end">
                 <view style='margin-left:140rpx;width:570rpx;'>
@@ -83,53 +89,12 @@
                     <text>匿名评价</text>
                   </view>
                   <form report-submit='true' bindsubmit='good_commtag' style='float:right'>
-                    <button form-type='submit' class='s_left' style='background:{{comColor}};border-color:{{comColor}}'>评价并继续</button>
+                    <button form-type='submit' class='s_left' style='background:{{comColor}};border-color:{{comColor}}'>
+                      评价并继续
+                    </button>
                   </form>
                 </view>
               </view>
-            </view>
-          </block>
-          <!--已评价-->
-          <block wx:if="{{service_info.show_info}}">
-            <view class="comm_square">
-              <view class="pingfen">
-                <view class="ping_left">
-                  <text> </text>评分：
-                </view>
-                
-                <view class="stars" data-enen='{{service_info.comment.commstar}}'>
-                  <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:40rpx;' wx:if='{{service_info.comment.commstar >= 1}}'></text>
-                  <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:40rpx;' wx:if='{{service_info.comment.commstar >= 2}}'></text>
-                  <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:40rpx;' wx:if='{{service_info.comment.commstar >= 3}}'></text>
-                  <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:40rpx;' wx:if='{{service_info.comment.commstar >= 4}}'></text>
-                  <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:40rpx;' wx:if='{{service_info.comment.commstar >= 5}}'></text>
-                </view>
-                <view class='ping_zi' style='margin-top:0'>
-                  <block wx:if='{{service_info.comment.commstar == 1}}'>非常差</block>
-                  <block wx:if='{{service_info.comment.commstar == 2}}'>差</block>
-                  <block wx:if='{{service_info.comment.commstar == 3}}'>一般</block>
-                  <block wx:if='{{service_info.comment.commstar == 4}}'>好</block>
-                  <block wx:if='{{service_info.comment.commstar == 5}}'>非常好</block>
-                </view>
-              </view>
-              
-              <view class="xinde">
-                <view class="xin_left">
-                  <text> </text>心得：</view>
-                <view class="xinde_value">{{service_info.comment.comm_note}}</view>
-                <view style="clear:both"></view>
-              </view>
-              <block wx:if="{{service_info.comment.comm_img != '' && service_info.comment.comm_img != null}}">
-                <view class="shaidan">
-                  <view class="shai_left">
-                    <text> </text>晒单：</view>
-                  <view class="shai_content">
-                  <block wx:for="{{service_info.comment.comm_img}}" wx:key="key" wx:for-item="iitem">
-                    <image src="{{iitem}}!small?v=1" class="shai_img" data-src="{{iitem}}" data-srcarr='{{service_info.comment.comm_img}}'  bindtap='bindPreviewImage'></image>
-                  </block>
-                  </view>
-                </view>
-              </block>
             </view>
           </block>
         </view>

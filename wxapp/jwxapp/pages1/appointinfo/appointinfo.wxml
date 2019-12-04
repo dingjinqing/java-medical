@@ -23,7 +23,7 @@
     <view class="appointlist-box">
       <view class="appoint-top" data-storeId="{{orderInfo.storeId}}" bindtap='goStore'>
         <view class="top-center">
-          <image src="{{orderInfo.storeImg}}" style="width:50rpx;height:50rpx;"></image>
+          <image src="{{imageUrl}}{{orderInfo.storeImg}}" style="width:50rpx;height:50rpx;"></image>
         </view>
         <view>{{orderInfo.storeName}}</view>
         <view class="top-right">
@@ -32,7 +32,7 @@
       </view>
       <view class="appoint-content">
         <view class='ac_left' bindtap='toDetail' data-id="{{orderInfo.serviceId}}">
-          <image src="{{orderInfo.serviceImg}}" style="width:152rpx;height:152rpx;"></image>
+          <image src="{{imageUrl}}{{orderInfo.serviceImg}}" style="width:152rpx;height:152rpx;"></image>
         </view>
         <view class="ac_right">
           <view class='ar_names'>

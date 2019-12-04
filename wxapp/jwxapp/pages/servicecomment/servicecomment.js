@@ -2,14 +2,9 @@
 var app = getApp()
 var util = require('../../utils/util.js');
 var imageUrl = app.globalData.imageUrl;
-var Url = app.globalData.baseUrl;
-var order_sn;
-var store_id;
 var src_down = imageUrl + 'image/wxapp/down_normal.png';
 var src_up = imageUrl + 'image/wxapp/up_normal.png';
-var serviceInfo = [];
 global.wxPage({
-
   /**
    * 页面的初始数据
    */
@@ -18,16 +13,7 @@ global.wxPage({
     storeId: '',
     serviceInfo: {},
     imageUrl: app.globalData.imageUrl,
-    img_len: 0,
-    image: false,//是否显示晒单的图片
     islogin: true,
-    info: {
-      anonymousflag: 0,
-      comm_img: [],
-      commstar: 0,
-      comm_note: '',
-
-    },//提交的信息
     flag: false,//是否匿名评价
     pass_commtag: [],//传递的标签
     star: [
@@ -54,8 +40,6 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    order_sn = options.order_sn;
-    store_id = options.store_id;
     this.setData({
       orderSn: options.order_sn,
       storeId: options.store_id
@@ -63,8 +47,38 @@ global.wxPage({
     this.get_comment();
   },
 
+  // 初始化
+  get_comment () {
+    let that = this
+    util.api('/api/wxapp/store/service/reservationComment', function (res) {
+      if (res.error === 0) {
+        let serviceInfo = res.content;
+        serviceInfo.serviceImg = JSON.parse(serviceInfo.serviceImg)[0];
+        // 开始不展示评价详情
+        serviceInfo.src = src_down; // 展开图标
+        serviceInfo.show = false; // 是否展示评价
+        if (serviceInfo.flag) {
+          serviceInfo.commstar = parseInt(serviceInfo.commstar);
+          if (serviceInfo.commImg != '' && serviceInfo.commImg != null) {
+            serviceInfo.commImg = JSON.parse(serviceInfo.commImg);
+          }
+        } else {
+          serviceInfo.commstar = 5;
+          serviceInfo.commImg = [];
+        }
+        that.setData({
+          serviceInfo: serviceInfo
+        })
+      } else {
+        util.toast_fail(res.message)
+        wx.navigateBack()
+      }
+    }, { orderSn: this.data.orderSn });
+  },
+
   //显示评论内容页面
   show_com_info: function (e) {
+    let serviceInfo = this.data.serviceInfo
     if (serviceInfo.show_info == true) {
       serviceInfo.show_info = false;
       serviceInfo.src = src_down;
@@ -78,22 +92,7 @@ global.wxPage({
   },
   //显示提交评价页面
   com_show: function (e) {
-    var shop_id = e.currentTarget.dataset.shop_id;
-    var osn = e.currentTarget.dataset.osn;
-    var service_id = e.currentTarget.dataset.service_id;
-    var store_id = e.currentTarget.dataset.store_id;
-    var technician_id = e.currentTarget.dataset.technician_id;
-    var star = this.data.star;
-    var info = this.data.info;
-    info.shop_id = shop_id;
-    info.order_sn = osn;
-    if (technician_id == null) {
-      info.technician_id = 0;
-    } else {
-      info.technician_id = technician_id;
-    }
-    info.store_id = store_id;
-    info.service_id = service_id;
+    let serviceInfo = this.data.serviceInfo
     if (serviceInfo.show == true) {
       serviceInfo.show = false;
       serviceInfo.src = src_down;
@@ -101,31 +100,8 @@ global.wxPage({
       serviceInfo.show = true;
       serviceInfo.src = src_up;
     }
-    info.anonymousflag = 0;
-    info.comm_img = [];
-    info.comm_note = '';
-    info.commstar = 5;
-    star = [
-      {
-        show: true
-      },
-      {
-        show: true
-      },
-      {
-        show: true
-      },
-      {
-        show: true
-      },
-      {
-        show: true
-      }
-    ];
     this.setData({
-      serviceInfo: serviceInfo,
-      info: info,
-      star: star
+      serviceInfo: serviceInfo
     })
   },
   //选择评分
@@ -139,7 +115,7 @@ global.wxPage({
         that.data.star[i].show = false;
       }
     }
-    that.data.info.commstar = parseInt(id) + 1;
+    that.data.serviceInfo.commstar = parseInt(id) + 1;
     this.setData({
       star: that.data.star,
       info: that.data.info
@@ -147,18 +123,18 @@ global.wxPage({
   },
   //心得
   comm_note: function (e) {
-    var info = this.data.info;
-    info.comm_note = e.detail.value;
+    var serviceInfo = this.data.serviceInfo;
+    serviceInfo.commNote = e.detail.value;
     this.setData({
-      info: info
+      serviceInfo: serviceInfo
     })
   },
   //上传图片
-  upImage: function (e) {
+  upImage: function () {
     var that = this;
-    var info = that.data.info;
+    var serviceInfo = that.data.serviceInfo;
     var url = util.getUrl('/api/wxapp/image/upload');
-    let count = 9 - info.comm_img.length;
+    let count = 9 - serviceInfo.commImg.length;
     wx.chooseImage({
       count: count, // 默认9
       sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -168,17 +144,30 @@ global.wxPage({
         var tempFilePaths = res.tempFilePaths
         if (res) {
           for (var i = 0; i < tempFilePaths.length; i++) {
-            util.uploadFile(url, tempFilePaths[i], { img_cat_id: -1 }, function (e) {
-              console.log(e)
-              var data = JSON.parse(e.data);
-              info.comm_img.push(data.content[0].img_url);
-              var img_len = parseInt(info.comm_img.length);
-              that.setData({
-                info: info,
-                image: true,
-                img_len: img_len
-              })
-            });
+            let img = tempFilePaths[i]
+            wx.getImageInfo({
+              src: img,
+              success: function (obj) {
+                let params = {
+                  needImgWidth: obj.width,
+                  needImgHeight: obj.height,
+                  imgCatId: -1,
+                  userId: util.getCache('user_id')
+                }
+                util.uploadFile(url, img, params, function (e) {
+                  let data = JSON.parse(e.data)
+                  if (data.error === 0) {
+                    serviceInfo.commImg.push(data.content.imgPath);
+                    that.setData({
+                      serviceInfo: serviceInfo
+                    })
+                  }
+                }, function (err) {
+                  util.toast_fail('上传失败')
+                  console.log(err)
+                });
+              }
+            })
           }
         }
       }
@@ -187,12 +176,10 @@ global.wxPage({
   delImage: function (e) {
     var that = this;
     var index = e.currentTarget.dataset.idx;
-    var info = that.data.info;
-    info.comm_img.splice(index, 1);
-    var img_len = parseInt(info.comm_img.length);
+    var serviceInfo = that.data.serviceInfo;
+    serviceInfo.commImg.splice(index, 1);
     this.setData({
-      info: info,
-      img_len: img_len
+      serviceInfo: serviceInfo
     })
   },
   //匿名评价
@@ -214,6 +201,7 @@ global.wxPage({
   },
   //评价并继续
   good_commtag: function (e) {
+    let serviceInfo = this.data.serviceInfo
     var that = this;
     var order_sn = this.data.order_sn;
     var info = this.data.info;
@@ -222,22 +210,22 @@ global.wxPage({
     var id = 0;
     info.form_id = e.detail.formId;
     info.open_id = util.getCache("openid");
-    if (parseInt(info.commstar) == parseInt(0)) {
+    if (parseInt(serviceInfo.commstar) == parseInt(0)) {
       util.showModal('提示', '请选择评分', function (res) {
         return false;
       }, false);
       return false;
     }
-    if (info.comm_note == '') {
+    if (serviceInfo.commNote == '') {
       util.showModal('提示', '请填写心得', function (res) {
         return false;
       }, false);
       return false;
     }
-    if (info.comm_img != '') {
-      info.comm_img = JSON.stringify(info.comm_img);
+    if (info.commImg != '') {
+      info.commImg = JSON.stringify(info.commImg);
     } else {
-      info.comm_img = ''
+      info.commImg = ''
     }
     util.api('/api/wxapp/service/comment/add', function (e) {
       this.get_comment();
@@ -245,6 +233,7 @@ global.wxPage({
   },
   //隐藏评价
   close_com_info: function (e) {
+    let serviceInfo = this.data.serviceInfo
     serviceInfo.show_info = false;
     this.setData({
       serviceInfo: serviceInfo,
@@ -264,30 +253,7 @@ global.wxPage({
       })
     }
   },
-  get_comment () {
-    let that = this
-    util.api('/api/wxapp/store/service/reservationComment', function (res) {
-      let serviceInfo = res.content;
-      serviceInfo.service_img = JSON.parse(serviceInfo.service_img);
-      serviceInfo.service_img = serviceInfo.service_img[0];
-      serviceInfo.src = src_down;
-      serviceInfo.show = false;
-      if (serviceInfo.comment) {
-        serviceInfo.comment.commstar = parseInt(serviceInfo.comment.commstar);
-        if (parseInt(serviceInfo.comment.anonymousflag) == 0) {
-          serviceInfo.comment.anonymousflag = false;
-        } else {
-          serviceInfo.comment.anonymousflag = true;
-        }
-        if (serviceInfo.comment.comm_img != '' || serviceInfo.comment.comm_img != null) {
-          serviceInfo.comment.comm_img = JSON.parse(serviceInfo.comment.comm_img);
-        }
-      }
-      that.setData({
-        serviceInfo: serviceInfo
-      })
-    }, { orderSn: this.data.orderSn, storeId: this.data.storeId });
-  },
+
 
   /**
    * 生命周期函数--监听页面初次渲染完成

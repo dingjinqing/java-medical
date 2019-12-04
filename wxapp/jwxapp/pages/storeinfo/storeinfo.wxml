@@ -8,7 +8,7 @@
         <swiper class="storeinfo_swiper" style="height:446rpx;" indicator-dots="true" autoplay='true' interval="5000" duration="500" indicator-active-color="#fff">
           <block wx:for="{{info.storeImgs}}" wx:key="*this">
             <swiper-item wx:if="{{item != null}}">
-              <image class="slide-image" src="{{item}}" bindload="imageLoad" style="height:100%!important" data-src="{{item}}" bindtap="preview"></image>
+              <image class="slide-image" src="{{imageUrl}}{{item}}" bindload="imageLoad" style="height:100%!important" data-src="{{item}}" bindtap="preview"></image>
             </swiper-item>
           </block>
         </swiper>
@@ -93,7 +93,7 @@
             <block wx:for="{{item.serviceList}}" wx:key="id" wx:for-item="serv">       
               <view class="store-nav-list" wx:if="{{serv.serviceShelf == 1}}" bindtap='nowappoint' data-id="{{serv.id}}">
                 <view class="list-left">
-                  <image class="list-left-img" src="{{serv.serviceImg}}"></image>
+                  <image class="list-left-img" src="{{imageUrl}}{{serv.serviceImg}}"></image>
                 </view>
                 <view class="list-right">
                   <view class="list-center">{{serv.serviceName}}</view>

@@ -9,7 +9,7 @@
         <swiper class="swiper" autoplay="true" circular="true" indicator-dots="true" indicator-active-color="#fff" interval="5000" duration="500">
           <block wx:for="{{serviceInfo.serviceImg}}" wx:key="{{index}}">
             <swiper-item item-id="{{index}}+1">
-              <image class="slide-image" src="{{item}}" mode="widthFix" lazy-load="false" binderror="" bindload="" />
+              <image class="slide-image" src="{{imageUrl}}{{item}}" mode="widthFix" lazy-load="false" binderror="" bindload="" />
             </swiper-item>
           </block>
         </swiper>

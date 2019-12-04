@@ -15,7 +15,7 @@
           <view class="appointlist-box">
             <view class="appoint-top">
               <view class="top-center" bindtap="toStore" data-id="{{item.storeId}}">
-                <image src="{{item.storeImg}}" class="shop_icon" mode="widthFix" />
+                <image src="{{imageUrl}}{{item.storeImg}}" class="shop_icon" mode="widthFix" />
                 <text>{{item.storeName}}</text>
                 <image src="{{img_arrow}}" class="shop_arrow" mode="widthFix" />
               </view>
