@@ -1744,7 +1744,7 @@ create table `b2c_comment_service`
 (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `store_id` int(11) NOT NULL COMMENT '门店id',
-  `technician_id` int(11) NOT NULL COMMENT '技师id',
+  `technician_id` int(11) NOT NULL DEFAULT 0 COMMENT '技师id',
   `user_id` int(11) NOT NULL COMMENT '用户id',
   `commstar` tinyint(1) NOT NULL COMMENT '评价星级',
   `user_score` int(11) DEFAULT '0' COMMENT '评价可得积分',

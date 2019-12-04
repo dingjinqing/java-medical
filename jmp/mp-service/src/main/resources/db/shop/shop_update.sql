@@ -1278,7 +1278,7 @@ MODIFY COLUMN `admin_note` varchar(191) not null default '' COMMENT '操作员�
 -- 服务评价表结构修改
 alter table `b2c_comment_service`
 drop column `shop_id`,
-modify column  `technician_id` int(11) not null comment '技师id',
+modify column  `technician_id` int(11) not null default 0 comment '技师id',
 modify column  `user_score`    int(11)   null default  0 comment '评价可得积分',
 modify column  `anonymousflag` tinyint(1)  not null default  0  comment '匿名状态 0.未匿名；1.匿名',
 modify column `comm_img`      varchar(1000)    default '[]' comment '评论图片',
@@ -1286,7 +1286,7 @@ add unique index `order_sn` (`order_sn`) using BTREE;
 
 
 -- 用户会员卡表添加字段
-ALTER TABLE `b2c_user_card` 
+ALTER TABLE `b2c_user_card`
 ADD COLUMN `qrcode_img` varchar(200) NOT NULL DEFAULT '' COMMENT '二维码条形码位置' AFTER `exchang_surplus`;
 -- 删除字段
 ALTER TABLE `b2c_user_card` DROP COLUMN `qrcode_img`;

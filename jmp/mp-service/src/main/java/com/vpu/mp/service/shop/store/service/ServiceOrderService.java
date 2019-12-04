@@ -471,7 +471,10 @@ public class ServiceOrderService extends ShopBaseService {
     public Boolean serviceOrderUpdate(ServiceOrderUpdateParam param) {
         ServiceOrderRecord record = new ServiceOrderRecord();
         assign(param, record);
-        return db().executeUpdate(record) > 0 ? true : false;
+        if (StringUtils.isBlank(param.getOrderSn())) {
+            return db().executeUpdate(record) > 0 ? true : false;
+        }
+        return db().update(SERVICE_ORDER).set(record).where(SERVICE_ORDER.ORDER_SN.eq(param.getOrderSn())).execute() > 0 ? true : false;
     }
 
     /**
