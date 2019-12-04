@@ -4803,16 +4803,21 @@ CREATE TABLE `b2c_coopen_activity_records`
 );
 
 --小程序订阅消息
--- drop table if exists `b2c_user_login_record`;
-CREATE TABLE `b2c_user_login_record` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
-  `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
-  `shop_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '店铺名称',
-  `sys_id` int(11) NOT NULL DEFAULT '0' COMMENT '主账户ID',
-  `user_id` int(11) DEFAULT NULL,
-  `user_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '登陆用户名',
-  `add_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '每日登陆时间',
-  `user_ip` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '用户登录ip',
-  `count` smallint(3) DEFAULT '0' COMMENT '每日登陆次数',
-  PRIMARY KEY (`id`)
+-- drop table if exists `b2c_subscribe_message`;
+CREATE TABLE `b2c_subscribe_message` (
+  `rec_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `wx_openid` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `template_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '模板ID',
+  `template_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '模板编号',
+  `status` tinyint(1) DEFAULT '1' COMMENT '1 正常 0 取消授权',
+  `can_use_num` int(11) DEFAULT NULL COMMENT '可使用数',
+  `success_num` int(11) DEFAULT '0' COMMENT '发送成功数',
+  `add_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`rec_id`),
+  KEY `user_id` (`user_id`),
+  KEY `wx_openid` (`wx_openid`),
+  KEY `template_id` (`template_id`),
+  KEY `template_no` (`template_no`)
 );
