@@ -11,9 +11,9 @@
       <div class="carModule">
         <div
           class="card_back_module"
-          :style="carData.bgType===0?`backgroundColor:${carData.bg_color}`:`backgroundImage:url('${$imageHost}/${carData.bg_img}')`"
+          :style="carData.bgType===0?`backgroundColor:${carData.bg_color}`:`backgroundImage:url('${$imageHost}/${carData.bg_img}');background-size: 100% 100%`"
         >
-          <div class="card_type">{{carData.cardt_type===0?'普通卡':carData.card_type===1?'限次卡':'等级卡'}}</div>
+          <div class="card_type">{{carData.card_type===0?'普通卡':carData.card_type===1?'限次卡':'等级卡'}}</div>
           <div class="card_content clearfix">
             <div class="card_shop_icon">
               <img :src="$imageHost+'/image/admin/shop_def_y.png'">

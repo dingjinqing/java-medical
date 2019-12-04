@@ -40,7 +40,7 @@
             class="coupon_list_bottom new_back"
             :style="'border-color:'+backgroundColor+';background-color:'+backgroundColor"
           >
-            {{item.use_score==='0'?$t('coupon.receive'):item.score_number+$t('coupon.integral')}}
+            {{item.use_score===0?$t('coupon.receive'):item.score_number+$t('coupon.integral')}}
           </div>
         </div>
 
@@ -290,6 +290,9 @@ export default {
       height: 40px;
       color: #f66;
       font-size: 12px;
+      .coupon_center_limit {
+        margin: 5px 0;
+      }
     }
     .coupon_list_bottom {
       font-size: 12px;
