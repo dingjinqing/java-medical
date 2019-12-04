@@ -16,6 +16,8 @@ import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingParam;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 
+import javax.validation.Valid;
+
 /**
  * 满包邮活动
  *
@@ -33,7 +35,7 @@ public class AdminFreeShippingController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/market/free/shipping/list")
-    public JsonResult freeShippingList(@RequestBody  FreeShipQueryParam param) {
+    public JsonResult freeShippingList(@RequestBody @Valid FreeShipQueryParam param) {
         PageResult<FreeShippingVo> freeShippingList = shop().freeShipping.getFreeShippingList(param);
         return success(freeShippingList);
     }
@@ -45,7 +47,7 @@ public class AdminFreeShippingController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/market/free/shipping/get")
-    public JsonResult getFreeShipping(@RequestBody  FreeShipQueryParam param) {
+    public JsonResult getFreeShipping(@RequestBody @Valid  FreeShipQueryParam param) {
         if (param.getId() == null) {
             return fail();
         }
@@ -64,7 +66,7 @@ public class AdminFreeShippingController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/market/free/shipping/add")
-    public JsonResult addFreeShipping(@RequestBody FreeShippingParam param) {
+    public JsonResult addFreeShipping(@RequestBody @Valid FreeShippingParam param) {
         shop().freeShipping.addFreeShipping(param);
         return success();
     }
@@ -75,12 +77,17 @@ public class AdminFreeShippingController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/market/free/shipping/update")
-    public JsonResult updateFreeShipping(@RequestBody FreeShippingParam param) {
+    public JsonResult updateFreeShipping(@RequestBody @Valid FreeShippingParam param) {
         if (param.getId() == null) {
             return fail();
         }
         shop().freeShipping.updateFreeShipping(param);
         return success();
+    }
+
+    @PostMapping("/admin/market/free/shipping/share")
+    public JsonResult shareFreeShipping(@RequestBody @Valid FreeShippingChangeParam param){
+        return success(shop().freeShipping.shareFreeShipping(param.getId()));
     }
 
     /**
@@ -90,7 +97,7 @@ public class AdminFreeShippingController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/market/free/shipping/status/change")
-    public JsonResult changeStatus(@RequestBody FreeShippingChangeParam param) {
+    public JsonResult changeStatus(@RequestBody @Valid FreeShippingChangeParam param) {
         if (param.getId() == null) {
             return fail();
         }

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
+ * 包含list对象的类,用于验证
  * @author 孔德成
  * @date 2019/12/3 10:49
  */

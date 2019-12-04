@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -34,6 +35,7 @@ public class GroupBuyProductParam extends BasePageParam{
      * 拼团价格
      */
     @NotNull
+    @DecimalMin(value = "0")
     private BigDecimal groupPrice;
 
     /**

@@ -36,6 +36,7 @@ public class ExceptionControllerHandler extends BaseController {
 
     Logger logger= LoggerFactory.getLogger(this.getClass());
 
+
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public JsonResult request(MethodArgumentNotValidException e){
             BindingResult result = e.getBindingResult();

@@ -3,11 +3,17 @@ package com.vpu.mp.service.shop.market.freeshipping;
 import static com.vpu.mp.db.main.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.FreeShipping.FREE_SHIPPING;
 import static com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -36,20 +42,10 @@ import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 @Service
 public class FreeShippingService extends ShopBaseService {
 
-    /**
-     * 启用状态 0 启用 1 停用
-     */
-    private static final byte USE_STATUS = 1;
-    private static final byte STOP_STATUS = 0;
-    /**
-     * 有效期 0 固定期限 1永久有效
-     */
-    private static final byte FIXED_EXPIRE = 0;
-    private static final byte NEVER_EXPIRE  = 1;
-
     @Autowired
     public FreeShippingRuleService ruleService;
-
+    @Autowired
+    QrCodeService qrCodeService;
 
 
     /**
@@ -64,12 +60,12 @@ public class FreeShippingService extends ShopBaseService {
         Timestamp date = new Timestamp(System.currentTimeMillis());
         Result<FreeShippingRecord> freeShippingList = db()
                 .selectFrom(FREE_SHIPPING)
-                .where(FREE_SHIPPING.EXPIRE_TYPE.eq(NEVER_EXPIRE)
-                        .or(DSL.field(FREE_SHIPPING.EXPIRE_TYPE.eq(FIXED_EXPIRE)
+                .where(FREE_SHIPPING.EXPIRE_TYPE.eq(ACTIVITY_IS_FOREVER)
+                        .or(DSL.field(FREE_SHIPPING.EXPIRE_TYPE.eq(ACTIVITY_NOT_FOREVER)
                                 .and(FREE_SHIPPING.START_TIME.lt(date)
                                         .and(FREE_SHIPPING.END_TIME.gt(date))))))
                 .and(FREE_SHIPPING.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(FREE_SHIPPING.STATUS.eq(USE_STATUS))
+                .and(FREE_SHIPPING.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                 .fetch();
         freeShippingList.forEach(freeShip -> {
             Result<FreeShippingRuleRecord> ruleList = ruleService.getFreeShippingRule(freeShip.getId());
@@ -182,6 +178,8 @@ public class FreeShippingService extends ShopBaseService {
         result.getDataList().forEach(freeShipping -> {
             List<FreeShippingRuleVo> ruleVoList = ruleService.getRuleListByFreeShippingId(freeShipping.getId()).into(FreeShippingRuleVo.class);
             freeShipping.setRuleList(ruleVoList);
+            Byte actStatus = Util.getActStatus(freeShipping.getStatus(), freeShipping.getStartTime(), freeShipping.getEndTime(), freeShipping.getExpireType());
+            freeShipping.setCurrentStatus(actStatus);
         });
         return result;
     }
@@ -190,30 +188,27 @@ public class FreeShippingService extends ShopBaseService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         if (param.getNavType()!=null) {
             switch (param.getNavType()) {
-                case 0:
-                    //全部满包邮活动
-                    break;
-                case 1:
+                case NAVBAR_TYPE_ONGOING:
                     //进行中的
-                    select.and(FREE_SHIPPING.EXPIRE_TYPE.eq(NEVER_EXPIRE))
-                            .or(FREE_SHIPPING.EXPIRE_TYPE.eq(FIXED_EXPIRE)
+                    select.and(FREE_SHIPPING.EXPIRE_TYPE.eq(ACTIVITY_IS_FOREVER))
+                            .or(FREE_SHIPPING.EXPIRE_TYPE.eq(ACTIVITY_NOT_FOREVER)
                                     .and(FREE_SHIPPING.START_TIME.le(timestamp))
                                     .and(FREE_SHIPPING.END_TIME.ge(timestamp)))
-                            .and(FREE_SHIPPING.STATUS.eq((USE_STATUS)));
+                            .and(FREE_SHIPPING.STATUS.eq((ACTIVITY_STATUS_NORMAL)));
                     break;
-                case 2:
+                case NAVBAR_TYPE_NOT_STARTED:
                     //未开始
                     select.and(FREE_SHIPPING.START_TIME.gt(timestamp))
-                            .and(FREE_SHIPPING.STATUS.eq(USE_STATUS));
+                            .and(FREE_SHIPPING.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                     break;
-                case 3:
+                case NAVBAR_TYPE_FINISHED:
                     //已过期
                     select.and(FREE_SHIPPING.END_TIME.lt(timestamp))
-                            .and(FREE_SHIPPING.STATUS.eq(USE_STATUS));
+                            .and(FREE_SHIPPING.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                     break;
-                case 4:
+                case NAVBAR_TYPE_DISABLED:
                     //已停用
-                    select.and(FREE_SHIPPING.STATUS.eq(STOP_STATUS));
+                    select.and(FREE_SHIPPING.STATUS.eq(ACTIVITY_STATUS_DISABLE));
                     break;
                 default:
             }
@@ -232,17 +227,26 @@ public class FreeShippingService extends ShopBaseService {
      */
     public void changeStatus(Integer id) {
         FreeShippingRecord record = getFreeShippingById(id);
-        if (record.getStatus().equals(USE_STATUS)) {
+        if (record.getStatus().equals(ACTIVITY_STATUS_NORMAL)) {
             db().update(FREE_SHIPPING)
-                    .set(FREE_SHIPPING.STATUS, STOP_STATUS)
+                    .set(FREE_SHIPPING.STATUS, ACTIVITY_STATUS_DISABLE)
                     .where(FREE_SHIPPING.ID.eq(id))
                     .execute();
         } else {
             db().update(FREE_SHIPPING)
-                    .set(FREE_SHIPPING.STATUS, USE_STATUS)
+                    .set(FREE_SHIPPING.STATUS, ACTIVITY_STATUS_NORMAL)
                     .where(FREE_SHIPPING.ID.eq(id))
                     .execute();
         }
+    }
+
+
+    public ShareQrCodeVo shareFreeShipping(Integer id){
+        String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.FULL_SHIP, id.toString());
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.FULL_SHIP.getPathUrl(imageUrl));
+        return vo;
     }
 
     /**

@@ -128,7 +128,6 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                                 log.debug("选中的特惠商品[getGoodsName:"+goods.getGoodsName()+",getPrdId:"+goods.getPrdId()+"]");
                                 goodsNum.updateAndGet(v -> v + 1);
                             }
-
                             if (limitGoodsNum != 0&& goodsNum.get() >limitGoodsNum) {
                                 firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
                             }
@@ -159,5 +158,9 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                 }
             }
         }
+    }
+
+    public void doCreateOperation(List<Integer> productId){
+
     }
 }
