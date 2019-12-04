@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.wxapp.cart.list;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

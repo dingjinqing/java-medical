@@ -4,6 +4,7 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -19,6 +20,7 @@ public class PayAwardParam {
 
 
     private Integer    id;
+    @Length(max = 10)
     private String     activityNames;
     private Timestamp  startTime;
     private Timestamp  endTime;

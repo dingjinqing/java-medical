@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 /**
- * 秒杀商品
+ * 首单特惠商品
  * @author 孔德成
  * @date 2019/11/13 11:40
  */

@@ -6,7 +6,8 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialProductBo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.activity.CartProductBo;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -162,10 +162,10 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
         }
     }
 
-    public void doOrderOperation(Integer userId, Timestamp date, List<CartProductBo> productBos, Integer storeId){
+    public void doOrderOperation(Integer userId, Timestamp date, List<OrderCartProductBo> productBos, Integer storeId){
         boolean isNewUser = orderInfoService.isNewUser(userId);
         if (isNewUser){
-            List<Integer> productIds =productBos.stream().map(CartProductBo::getProductId).collect(Collectors.toList());
+            List<Integer> productIds =productBos.stream().map(OrderCartProductBo::getProductId).collect(Collectors.toList());
             List<FirstSpecialProductBo> specialPrdIdList = firstSpecialProcessorDao.getGoodsFirstSpecialPrdId(productIds,date).into(FirstSpecialProductBo.class);
             if (specialPrdIdList != null && specialPrdIdList.size() > 0) {
                 log.debug("新用户触发首单特惠活动FirstSpecialProductBo:"+Util.toJson(specialPrdIdList));
@@ -179,7 +179,7 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                     productBos.forEach(product -> {
                         if (firstSpecial.getPrdId().equals(product.getProductId())) {
                             log.debug("首单特惠商品[getPrdId:"+firstSpecial.getPrdId()+"]");
-                            CartActivityInfo firstActivityInfo = new CartActivityInfo();
+                            GoodsActivityInfo firstActivityInfo = new GoodsActivityInfo();
                             firstActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
                             firstActivityInfo.setFirstSpecialPrice(firstSpecial.getPrdPrice());
                             if (firstSpecial.getLimitAmount() > 0 && product.getGoodsNumber() > firstSpecial.getLimitAmount()) {
@@ -204,14 +204,14 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                             if (limitGoodsNum != 0&& goodsNum.get()>limitGoodsNum&&product.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
                                 goodsNum.updateAndGet(v -> v + 1);
                             }
-                            product.setCartActivityInfo(firstActivityInfo);
+                            product.setActivityInfo(firstActivityInfo);
                         }
                     });
                 });
                 if (goodsNum.get() >= limitGoodsNum){
                     log.debug("选中商品过多,触发首单特惠商品数(种类)限制[goodsNum:"+goodsNum+",limitGoodsNum:"+limitGoodsNum+"]");
                     productBos.forEach(goods->{
-                        CartActivityInfo actInfo = goods.getCartActivityInfo();
+                        GoodsActivityInfo actInfo = goods.getActivityInfo();
                         if (actInfo != null && BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(actInfo.getActivityType()) && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
                             if (Objects.equals(goods.getIsChecked(), CartConstant.CART_IS_CHECKED)) {
                                 checkedGoodsNum.updateAndGet(v -> v + 1);
