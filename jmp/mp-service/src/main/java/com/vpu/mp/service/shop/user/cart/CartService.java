@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.factory.CartProcessorContext;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -18,6 +19,7 @@ import com.vpu.mp.service.shop.member.UserCardService;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -299,8 +301,23 @@ public class CartService extends ShopBaseService {
      * @return num
      */
     public Integer cartGoodsNum(Integer userId, Integer goodsId) {
-        return db().select(DSL.sum(CART.GOODS_NUMBER)).from(CART)
+        return db().select(DSL.sum(CART.GOODS_NUMBER).as("")).from(CART)
                 .where(CART.USER_ID.eq(userId))
                 .and(CART.GOODS_ID.eq(goodsId)).fetchOneInto(Integer.class);
+    }
+
+    /**
+     * 获取当前购物车商品
+     * @return
+     */
+    public OrderBeforeParam.Goods getCartCheckedData(Integer userId,Integer storeId){
+        Result<CartRecord> cartRecords = db().selectFrom(CART)
+                .where(CART.IS_CHECKED.eq(CartConstant.CART_IS_CHECKED))
+                .and(CART.USER_ID.eq(userId))
+                .and(CART.STORE_ID.eq(storeId))
+                .fetch();
+        OrderBeforeParam.Goods goods =new OrderBeforeParam.Goods();
+
+        return null;
     }
 }

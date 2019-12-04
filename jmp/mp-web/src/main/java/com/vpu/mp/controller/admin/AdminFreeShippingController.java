@@ -49,7 +49,7 @@ public class AdminFreeShippingController extends AdminBaseController {
      * @return
      */
     @PostMapping("/admin/market/free/shipping/get")
-    public JsonResult getFreeShipping(@RequestBody @Valid  FreeShipQueryParam param) {
+    public JsonResult getFreeShipping(@RequestBody @Valid  FreeShippingChangeParam param) {
         if (param.getId() == null) {
             return fail();
         }

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.freeshipping;
 
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,13 +15,9 @@ import javax.validation.constraints.Size;
  */
 @Getter
 @Setter
-public class FreeShipQueryParam {
+public class FreeShipQueryParam  extends BasePageParam {
 
-    private Integer currentPage;
 
-    private Integer pageRows;
-
-    private Integer id;
     /**
      * 活动状态
      */
