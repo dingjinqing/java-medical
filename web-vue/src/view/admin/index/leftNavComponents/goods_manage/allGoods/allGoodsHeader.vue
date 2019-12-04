@@ -274,7 +274,7 @@ export default {
         // 商品价格开始
         lowShopPrice: null,
         // 商品价格结束
-        highShopPrice: null,
+        highShopPrice: null
       },
       goodsFilterInputStyle: { width: '170px' },
       goodsBrandOptions: [],
