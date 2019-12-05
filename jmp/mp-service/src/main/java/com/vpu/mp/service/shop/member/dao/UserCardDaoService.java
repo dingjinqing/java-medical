@@ -433,7 +433,7 @@ public class UserCardDaoService extends ShopBaseService{
 	}
 
     public List<UserCardGradePriceBo> getUserCartGradePrice(String grade, List<Integer> prdIdList) {
-        return db().select(MEMBER_CARD.CARD_NAME, MEMBER_CARD.GRADE, GRADE_PRD.GOODS_ID, GRADE_PRD.PRD_ID,
+        return db().select( GRADE_PRD.GOODS_ID, GRADE_PRD.PRD_ID,
             GRADE_PRD.GRADE_PRICE)
             .from(GRADE_PRD)
             .where(GRADE_PRD.PRD_ID.in(prdIdList).and(GRADE_PRD.GRADE.eq(grade)))
