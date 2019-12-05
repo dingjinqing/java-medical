@@ -16,6 +16,8 @@ import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
+import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.wechat.OpenPlatform;
@@ -109,7 +111,7 @@ public class SubscribeMessageService extends ShopBaseService {
 				.where(SUBSCRIBE_MESSAGE.USER_ID.eq(user.getUserId())
 						.and(SUBSCRIBE_MESSAGE.WX_OPENID.eq(user.getWxOpenid())
 								.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(templateNo)))
-						.and(SUBSCRIBE_MESSAGE.STATUS.eq((byte) 1)))
+						.and(SUBSCRIBE_MESSAGE.STATUS.eq((byte) 1).and(SUBSCRIBE_MESSAGE.CAN_USE_NUM.gt(0))))
 				.fetchAny();
 		if (sRecord != null) {
 			// 存在，取
@@ -187,7 +189,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public String[] getTemplateId(String[] data) throws WxErrorException {
+	public TemplateVo[] getTemplateId(String[] data) throws WxErrorException {
 		//获取所有类目id
 		List<Integer> getcategoryList = getcategoryList();
 		SubscribeMessageConfig[] titleList=new SubscribeMessageConfig[data.length];
@@ -195,7 +197,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			for (int i = 0; i < data.length; i++) {
 				SubscribeMessageConfig byTempleName = SubscribeMessageConfig.getByTempleName(category, data[i]);
 				if (byTempleName == null) {
-					logger().info("appid：" + getMaAppId() + "。数据：" + data[i] + "在类目" + category + "暂时未定义，请补充程序");
+					logger().info("appid：" + getMaAppId() + "。数据：" + data[i] + "在类目" + category + "暂时未定义");
 				} else {
 					logger().info("添加的TempleName为：" + byTempleName.getTitle()+"。类目为"+category);
 					titleList[i]=byTempleName;
@@ -204,7 +206,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		logger().info("titleList大小为"+titleList.length);
 		logger().info(titleList.toString());
-		String[] retult=new String[data.length];
+		TemplateVo[] results=new TemplateVo[data.length];
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		List<WxOpenSubscribeTemplate> data2 = templateList.getData();
 		if (data2.size() != 0) {
@@ -213,23 +215,80 @@ public class SubscribeMessageService extends ShopBaseService {
 					boolean contains = template.getTitle().contains(titleList[i].getTitle());
 					if (contains) {
 						// 存在，直接赋值
-						retult[i] = template.getPriTmplId();
+						results[i]=new TemplateVo(template.getPriTmplId(), titleList[i].getId());
 					} else {
 						// 不存在，新建
-						retult[i] = addTemplate(titleList[i]);
+						results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId());
 					}
 				}
 			}
 		}else {
 			for(int i=0;i<titleList.length;i++) {
-				retult[i]=addTemplate(titleList[i]);
+				results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId());
 			}	
 		}
-		return retult;
+		return results;
 	}
 	
 	
 
+	/**
+	 * 更新表中可用数量
+	 * @param userId
+	 * @param param
+	 */
+	public void updateStatusAndNum(Integer userId,UpdateTemplateParam param) {
+		List<TemplateVo> successs = param.getAccept();
+		List<TemplateVo> rejects = param.getReject();
+		List<TemplateVo> bans = param.getBan();
+		for(TemplateVo success:successs) {
+			SubscribeMessageRecord record = db().selectFrom(SUBSCRIBE_MESSAGE)
+					.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
+					.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(success.getTemplateId())
+							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(success.getId()))))
+					.fetchAny();
+			if(record==null) {
+				SubscribeMessageRecord insertRecord=db().newRecord(SUBSCRIBE_MESSAGE);
+				insertRecord.setUserId(userId);
+				UserRecord user = userService.getUserByUserId(userId);
+				insertRecord.setWxOpenid(user.getWxOpenid());
+				insertRecord.setTemplateId(success.getTemplateId());
+				insertRecord.setTemplateNo(String.valueOf(success.getId()));
+				int insert = insertRecord.insert();
+				logger().info("成功的templateId："+success.getTemplateId()+"插入结果"+insert);		
+			}else {
+				record.setStatus((byte)1);
+				record.setCanUseNum(record.getCanUseNum()+1);
+				int update = record.update();
+				logger().info("成功的templateId："+success.getTemplateId()+"更新结果"+update);				
+			}
+		}
+		for (TemplateVo reject:rejects) {
+			SubscribeMessageRecord rejrecord = db().selectFrom(SUBSCRIBE_MESSAGE)
+					.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
+					.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(reject.getTemplateId())
+							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(reject.getId()))))
+					.fetchAny();
+			if(rejrecord!=null) {
+				rejrecord.setStatus((byte)1);
+				int update = rejrecord.update();
+				logger().info("拒绝的templateId："+reject.getTemplateId()+"更新结果"+update);	
+			}
+		}
+		
+		for (TemplateVo ban:bans) {
+			SubscribeMessageRecord rejrecord = db().selectFrom(SUBSCRIBE_MESSAGE)
+					.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
+					.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(ban.getTemplateId())
+							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(ban.getId()))))
+					.fetchAny();
+			if(rejrecord!=null) {
+				rejrecord.setStatus((byte)2);
+				int update = rejrecord.update();
+				logger().info("已被后台封禁的templateId："+ban.getTemplateId()+"更新结果"+update);	
+			}
+		}
+	}
 	/**
 	 *  带校验的添加模板
 	 * @param templateId
@@ -255,6 +314,7 @@ public class SubscribeMessageService extends ShopBaseService {
 				String.valueOf(config.getTid()), config.getKidList(), config.getTitle());
 		logger().info("创建模板" + addTemplate.getErrmsg() + "  " + addTemplate.getErrcode());
 		if (addTemplate.isSuccess()) {
+			
 			return addTemplate.getPriTmplId();
 		}
 		return null;
