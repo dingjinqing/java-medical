@@ -659,13 +659,13 @@ export default {
   },
   mounted () {
     this.langDefault()
-    // this.getScoreHandler()
+    this.getScoreHandler()
   },
   methods: {
     // 获取积分配置
     getScoreHandler () {
       getScoreConfigRequest().then((res) => {
-        if (res.error === 0 && res.content.scoreLimit) {
+        if (res.error === 0 && res.content.scorePayLimit) {
           this.$message.success('获取积分配置')
           var data = res.content
           this.form.scoreLimit = data.scoreLimit
