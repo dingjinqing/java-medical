@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
@@ -120,9 +121,24 @@ public class AdminTestController extends AdminBaseController {
 		Map<String, String> v3 = new LinkedHashMap<>();
 		v3.put("value", "你中奖了");
 		data.put("thing3", v3);
+		
+		Map<String, Map<String, String>> data2 = new LinkedHashMap<>();
+		Map<String, String> v21 = new LinkedHashMap<>();
+		v21.put("value", "测试邀请成功");
+		data2.put("name1", v21);
+		
+		Map<String, String> v22 = new LinkedHashMap<>();
+		v22.put("value", "金坷垃");
+		data2.put("name2", v22);
+		
+		Map<String, String> v23 = new LinkedHashMap<>();
+		v23.put("value", "2019-12-05");
+		data2.put("time3", v23);
+
 		Boolean sendMessage=false;
 		try {
 			 sendMessage = subservice.sendMessage(195, SubcribeTemplateCategory.DRAW_RESULT, data, null);
+			 sendMessage = subservice.sendMessage(195, SubcribeTemplateCategory.INVITE_SUCCESS, data2, null);
 		} catch (WxErrorException e) {
 			
 			e.printStackTrace();
