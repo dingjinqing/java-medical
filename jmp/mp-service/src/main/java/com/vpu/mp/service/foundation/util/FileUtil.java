@@ -1,6 +1,9 @@
 package com.vpu.mp.service.foundation.util;
 
+import com.vpu.mp.service.pojo.shop.base.BASE64DecodedMultipartFile;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Decoder;
 
 import java.io.*;
 import java.util.zip.ZipEntry;
@@ -96,4 +99,29 @@ public class FileUtil {
         logEndStr.append("文件路径:").append(path).append("\n");
         log.info(logEndStr.toString());
     }
+
+    /**
+     * base64 转文件
+     * @param imgStr
+     * @return
+     */
+    public static MultipartFile base64MutipartFile(String imgStr) {
+        try {
+            String[] baseStr = imgStr.split(",");
+            BASE64Decoder base64Decoder = new BASE64Decoder();
+            byte[] b = new byte[0];
+            b = base64Decoder.decodeBuffer(baseStr[1]);
+            for (int i = 0; i < b.length; ++i) {
+                if (b[i] < 0) {
+                    b[i] += 256;
+                }
+            }
+            return new BASE64DecodedMultipartFile(b, baseStr[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 }

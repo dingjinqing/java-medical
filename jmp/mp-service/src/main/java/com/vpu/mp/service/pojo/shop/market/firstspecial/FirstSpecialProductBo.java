@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class FirstSpecialProductBo {
+    private Integer id;
     /**
      * 规格`id
      */

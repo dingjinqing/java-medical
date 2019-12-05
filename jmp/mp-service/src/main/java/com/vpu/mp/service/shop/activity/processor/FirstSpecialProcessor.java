@@ -190,6 +190,7 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                             GoodsActivityInfo firstActivityInfo = new GoodsActivityInfo();
                             firstActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
                             firstActivityInfo.setFirstSpecialPrice(firstSpecial.getPrdPrice());
+                            firstActivityInfo.setActivityId(firstSpecial.getId());
                             if (firstSpecial.getLimitAmount() > 0 && product.getGoodsNumber() > firstSpecial.getLimitAmount()) {
                                 //超出限购数量后，买家不可继续添加购买该商品
                                 if (firstSpecial.getLimitFlag().equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONTINUE)){

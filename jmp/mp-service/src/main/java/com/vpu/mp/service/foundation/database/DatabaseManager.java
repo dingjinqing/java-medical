@@ -36,7 +36,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * 数据库管理，单例。需要考虑多线程互斥情况
- * 
+ *
  * @author lixinguo
  *
  */
@@ -77,7 +77,7 @@ public class DatabaseManager {
 
 	/**
 	 * 切换当前数据库连接
-	 * 
+	 *
 	 * @param shopId
 	 * @return
 	 */
@@ -91,6 +91,7 @@ public class DatabaseManager {
 				if (dbConfig == null) {
 					throw new RuntimeException("ShopId " + shopId + " Db not found");
 				}
+				dbConfig.host="127.0.0.1";
 				HikariDataSource ds = datasourceManager.getDatasource(dbConfig);
 				db = getDsl(ds, dbConfig, shopId);
 				shopDsl.remove();
@@ -104,7 +105,7 @@ public class DatabaseManager {
 
 	/**
 	 * 得到当前数据库店铺ID
-	 * 
+	 *
 	 * @return
 	 */
 	public Integer getCurrentShopId() {
@@ -260,7 +261,7 @@ public class DatabaseManager {
 
 	/**
 	 * 根据数据源得到JOOQ的配置
-	 * 
+	 *
 	 * @param dataSource
 	 * @return
 	 */
@@ -297,7 +298,7 @@ public class DatabaseManager {
 
 	/**
 	 * 得到当前线程店铺Db名称
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCurrentShopDbSchema() {
@@ -306,7 +307,7 @@ public class DatabaseManager {
 
 	/**
 	 * 得到当前线程店铺Db名称
-	 * 
+	 *
 	 * @return
 	 */
 	public String getMainDbSchema() {

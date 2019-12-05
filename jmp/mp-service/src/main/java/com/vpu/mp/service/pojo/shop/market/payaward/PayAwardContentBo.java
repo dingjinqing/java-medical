@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.payaward;
 
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -49,6 +50,10 @@ public class PayAwardContentBo {
      * 规格id
      */
     private Integer productId;
+    /**
+     * 规格信息
+     */
+    private ProductSmallInfoVo product;
     /**
      * 赠品有效期
      */

@@ -6,6 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.Valid;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
@@ -27,10 +32,13 @@ public class PayAwardParam {
     /**
      * 时间类型 0 定时 1永久
      */
+    @NotNull
+    @Size(min = 0,max = 1)
     private Byte timeType;
     /**
      * 优先级
      */
+    @Size(min = 0,max = 100)
     private Integer actFirst;
     /**
      *  商品范围类型
@@ -51,14 +59,20 @@ public class PayAwardParam {
     /**
      * 最少支付金额
      */
+    @NotNull
+    @DecimalMin("0")
     private BigDecimal minPayMoney;
     /**
      * 每个用户参与次数
      */
+    @NotNull
+    @Min(0)
     private Integer limitTimes;
     /**
      * 奖励内容
      */
+    @Valid
+    @Size(max = 5,min = 1)
     private List<PayAwardContentBo> awardList;
 
 }

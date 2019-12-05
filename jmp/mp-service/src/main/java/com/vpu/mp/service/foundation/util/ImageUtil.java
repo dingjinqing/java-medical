@@ -42,6 +42,8 @@ public final class ImageUtil {
 	}
 
 
+
+
 	/**
 	 * 给图片添加文字
 	 * @param backgroundImage  背景图片
@@ -77,7 +79,7 @@ public final class ImageUtil {
 		graphics.drawImage(foregroundImage, x, y, foregroundImage.getWidth(), foregroundImage.getHeight(), null);
 		graphics.dispose();
 		return backgroundImage;
-		
+
 	}
 
 
@@ -124,7 +126,7 @@ public final class ImageUtil {
 			img = null;
 		}
 	}
-	
+
 	/**
 	 * image转base64
 	 * @param image
@@ -152,4 +154,7 @@ public final class ImageUtil {
 		String encode = encoder.encode(byteArray);
 		return "data:image/png;base64," + encode;
 	}
+
+
+
 }

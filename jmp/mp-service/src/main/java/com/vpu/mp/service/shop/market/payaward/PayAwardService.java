@@ -8,10 +8,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant;
 import com.vpu.mp.service.pojo.shop.market.payaward.*;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListVo;
 import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,8 @@ public class PayAwardService extends ShopBaseService {
     PayAwardRecordService payAwardRecordService;
     @Autowired
     private CouponService couponService;
+    @Autowired
+    private GoodsService goodsService;
     /**
      * 添加
      *
@@ -105,8 +110,13 @@ public class PayAwardService extends ShopBaseService {
             payAwardVo.setAwardList(null);
         }
         payAwardVo.getAwardContentList().forEach(award->{
-            List<CouponView> couponViewByIds =couponService.getCouponViewByIds(award.getCouponIds());
-            award.setCouponView(couponViewByIds);
+            if (award.getGiftType().equals(PayAwardConstant.GIVE_TYPE_ORDINARY_COUPON)||award.getGiftType().equals(PayAwardConstant.GIVE_TYPE_SPLIT_COUPON)){
+                List<CouponView> couponViewByIds =couponService.getCouponViewByIds(award.getCouponIds());
+                award.setCouponView(couponViewByIds);
+            }else if (award.getGiftType().equals(PayAwardConstant.GIVE_TYPE_SPLIT_GOODS)){
+                ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(award.getProductId());
+                award.setProduct(product);
+            }
         });
         return payAwardVo;
     }

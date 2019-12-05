@@ -8,7 +8,6 @@ import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
@@ -17,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
 import com.vpu.mp.service.pojo.shop.image.UploadImageCatNameVo;
 import com.vpu.mp.service.pojo.shop.image.UploadImageParam;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -31,6 +31,7 @@ import javax.servlet.http.Part;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CAT
 
 /** @author 新国 */
 @Service
+@Slf4j
 public class ImageService extends ShopBaseService implements ImageDefault {
 
   @Autowired public ImageCategoryService category;
@@ -209,14 +211,21 @@ public class ImageService extends ShopBaseService implements ImageDefault {
    *
    * @return
    */
-  public UploadedImageRecord addImageToDb(
-      UploadImageParam param, Part file, UploadPath uploadPath) {
+  public UploadedImageRecord addImageToDb(UploadImageParam param, Part file, UploadPath uploadPath) {
+    return addImageToDb(param,file.getSubmittedFileName(),file.getContentType(), (int) file.getSize(),uploadPath);
+  }
+  /**
+   * 保存图片到数据库
+   *
+   * @return
+   */
+  public UploadedImageRecord addImageToDb(UploadImageParam param, String submitName,String  contentType,Integer fileSize, UploadPath uploadPath) {
     UploadedImageRecord image = db().newRecord(UPLOADED_IMAGE);
-    image.setImgName(baseFilename(file.getSubmittedFileName()));
+    image.setImgName(baseFilename(submitName));
+    image.setImgOrigFname(submitName);
+    image.setImgType(contentType);
+    image.setImgSize(new Long(fileSize).intValue());
     image.setImgPath(uploadPath.relativeFilePath);
-    image.setImgType(file.getContentType());
-    image.setImgOrigFname(file.getSubmittedFileName());
-    image.setImgSize(new Long(file.getSize()).intValue());
     image.setImgUrl(uploadPath.getImageUrl());
     image.setImgWidth(param.getNeedImgWidth());
     image.setImgHeight(param.getNeedImgHeight());
@@ -313,20 +322,36 @@ public class ImageService extends ShopBaseService implements ImageDefault {
    * 校验添加图片参数
    *
    * @param param 入参
-   * @param file 文件流
+   * @param file
    * @return jsonResultCode, object
    */
   public ResultMessage validImageParam(UploadImageParam param, Part file) throws IOException {
+    return validImageParam(param,file.getSize(),file.getContentType(),file.getInputStream());
+  }
+
+  /**
+   * 校验添加图片参数
+   *
+   * @param param 入参
+   * @param fileSize
+   * @return jsonResultCode, object
+   */
+  public ResultMessage validImageParam(UploadImageParam param, long fileSize, String fileType, InputStream fileStream) {
     Integer maxSize = 5 * 1024 * 1024;
-    if (file.getSize() > maxSize) {
+    if (fileSize > maxSize) {
       return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_UPLOAD_GT_5M).build();
     }
-    if (!validImageType(file.getContentType())) {
+    if (!validImageType(fileType)) {
       return ResultMessage.builder()
           .jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID)
           .build();
     }
-    BufferedImage bufferImage = ImageIO.read(file.getInputStream());
+    BufferedImage bufferImage = null;
+    try {
+      bufferImage = ImageIO.read(fileStream);
+    } catch (IOException e) {
+      return ResultMessage.builder().message(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
+    }
     if (bufferImage == null || bufferImage.getWidth(null) <= 0 || bufferImage.getHeight(null) <= 0) {
       return ResultMessage.builder().message(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
     }

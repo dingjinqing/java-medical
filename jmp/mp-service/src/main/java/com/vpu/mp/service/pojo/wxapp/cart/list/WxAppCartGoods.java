@@ -66,6 +66,10 @@ public class WxAppCartGoods {
      * 商品规格
      */
     private String goodsSpecs;
+            /**
+             * 商品规格名
+             */
+    private String prdDesc;
     /**
      * 商品规格数量
      */
@@ -147,6 +151,7 @@ public class WxAppCartGoods {
         cartGoodsInfo.setCartPrice(getPrdPrice());
         cartGoodsInfo.setPrdPrice(prdPrice);
         cartGoodsInfo.setPrdNumber(prdNumber);
+        cartGoodsInfo.setPrdDesc(prdDesc);
         cartGoodsInfo.setLimitBuyNum(limitBuyNum);
         cartGoodsInfo.setLimitMaxNum(limitMaxNum);
         cartGoodsInfo.setPrdImg(prdImg);

@@ -51,6 +51,10 @@ public class CartGoodsInfo {
      */
     private Integer prdNumber;
     /**
+     * 商品规格名
+     */
+    private String prdDesc;
+    /**
      * 商品最大购买数量
      */
     private Integer limitBuyNum;
