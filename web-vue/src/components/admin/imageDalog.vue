@@ -346,7 +346,11 @@ export default {
     // 图片上传前的钩子
     beforeUpLoad (file) {
       console.log(file)
-      let that = this
+      let fileType = file.type.split('/')[0]
+      if (fileType !== 'image') {
+        this.$message.error('您上传的不是图片文件')
+        return
+      }
       console.log(this.firstNodeId)
       let is1M = file.size / 1024 / 1024 < 5 // 限制小于5M
       console.log(is1M)

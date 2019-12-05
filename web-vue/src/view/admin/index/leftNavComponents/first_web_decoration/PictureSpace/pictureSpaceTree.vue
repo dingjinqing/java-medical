@@ -420,9 +420,14 @@ export default {
         }
       })
     },
-    upLoadImg ({ file, imgSize }) {
-      let size = file.size / 1024 / 1024 < imgSize
-      if (!size) this.$message.error(`请上传小于${size}的图片`)
+    upLoadImg (file) {
+      console.log(this.firstNodeId)
+      let is1M = file.size / 1024 / 1024 < 5 // 限制小于5M
+      console.log(is1M)
+      if (!is1M) {
+        this.$message.error('请上传小于5M的图片')
+        return false
+      }
       let _URL = window.URL || window.webkitURL
       let img = new Image()
       let _this = this
@@ -449,7 +454,7 @@ export default {
         this.$message.error('您上传的不是图片文件')
         return
       }
-      this.upLoadImg({ file, imgSize: 5 })
+      this.upLoadImg(file)
 
       return false // 停止上传
     },

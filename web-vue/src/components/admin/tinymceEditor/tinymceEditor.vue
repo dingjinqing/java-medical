@@ -2,15 +2,17 @@
   <div
     class="tinymceEditor"
     :class="special"
-    v-if="flag"
   >
-    <editor
+    <!-- <div v-if="flag"> -->
+    <Editor
+      :key="1"
+      id="cnTinymce"
       v-model="myValue"
-      :init="init"
+      :init="cnInit"
       :disabled="disabled"
       @onClick="onClick"
     >
-    </editor>
+    </Editor>
   </div>
 </template>
 <script>
@@ -52,15 +54,17 @@ export default {
       default: 450
     }
   },
+  inject: ['reload'],
   data () {
     return {
       flag: true,
       myValue: this.value,
       special: '', // 装修内的左文右图特定高度
       langName: 'zh_CN',
-      init: {
+      cnInit: {
+        selector: '#cnTinymce',
         language_url: `http://${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`,
-        language: this.$t('messageHint.editLangType'),
+        language: 'zh_CN',
         height: 450,
         skin_url: `http://${window.location.host}/static/tinymce/skins/ui/oxide`,
         plugins: this.plugins,
@@ -70,7 +74,9 @@ export default {
         // 此处为图片上传处理函数，这个直接用了base64的图片形式上传图片，
         // 如需ajax上传可参考https://www.tiny.cloud/docs/configure/file-image-upload/#images_upload_handler
         images_upload_handler: (blobInfo, success, failure) => {
+          console.log(blobInfo.filename(), blobInfo.uri(), blobInfo)
           const img = 'data:image/jpeg;base64,' + blobInfo.base64()
+          console.log(img)
           success(img)
         }
       }
@@ -82,7 +88,7 @@ export default {
     console.log(window.location.host)
     // 初始化语言
     this.langDefault()
-
+    tinymce.init(this.cnInit)
     // this.myHeight = this.height
     console.log(this.height)
     if (this.height === 100) {
@@ -109,6 +115,16 @@ export default {
     },
     myValue (newValue) {
       this.$emit('input', newValue)
+    },
+    lang (type) {
+      tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'cnTinymce')
+      if (type === 'zh_CN') {
+        this.cnInit.language = 'zh_CN'
+      } else {
+        delete this.cnInit.language
+        delete this.cnInit.language_url
+      }
+      tinymce.EditorManager.execCommand('mceAddEditor', true, 'cnTinymce')
     }
   }
 }

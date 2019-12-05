@@ -29,8 +29,8 @@ export default {
     return {
       moduleSaveData: {
         'rich_text': ''
-      }
-
+      },
+      flag: true
     }
   },
   watch: {
