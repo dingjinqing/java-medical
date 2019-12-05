@@ -12,7 +12,7 @@
           :placeholder="$t('tag.queryPrompt')"
           size="small"
           style="width:170px;"
-          suffix-icon="el-icon-search"
+          clearable
         ></el-input>
         <el-button
           type="primary"
@@ -51,13 +51,34 @@
             align="center"
           >
             <template slot-scope="scope">
-              <div class="operation">
+              <el-tooltip
+                :content="$t('tag.edit')"
+                placement="top"
+              >
+                <span class="el-icon-edit-outline iconStyle"></span>
+                <!-- @click="editHandler(scope.row.skId, scope.row)" -->
+              </el-tooltip>
+              <el-tooltip
+                :content="$t('tag.remove')"
+                placement="top"
+              >
                 <span
-                  v-for="(item,index) in operation"
-                  :key="index"
-                  @click="handleToOperation(scope.row,index)"
-                >{{item}}</span>
-              </div>
+                  style="font-size: 22px;color: #5a8bff;cursor:pointer;"
+                  class="el-icon-delete iconStyle"
+                ></span>
+                <!-- @click="deleteHandler(scope.row.skId)" -->
+              </el-tooltip>
+
+              <el-tooltip
+                :content="$t('tag.viewUser')"
+                placement="top"
+              >
+                <span
+                  style="font-size: 22px;color: #5a8bff;cursor:pointer;"
+                  class="el-icon-user-solid iconStyle"
+                ></span>
+                <!-- @click="seckillUserHanlder(scope.row.skId, scope.row.name)" -->
+              </el-tooltip>
             </template>
           </el-table-column>
 
@@ -72,7 +93,9 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
-      width="30%"
+      width="350px"
+      :close-on-click-modal="false"
+      center
     >
       <div class="labelDialog">
         <div style="margin-bottom:10px">{{ $t('tag.tagName')}}</div>
@@ -134,7 +157,6 @@ export default {
         currentPage: 1,
         pageRows: 20
       },
-      operation: null,
       labelDialogInput: '',
       currentOptionTagId: null,
       createNewTagDialogOn: false
@@ -149,7 +171,6 @@ export default {
   },
   watch: {
     lang () {
-      this.operation = [this.$t('tag.edit'), this.$t('tag.remove'), this.$t('tag.viewUser')]
     }
   },
   methods: {
@@ -189,10 +210,14 @@ export default {
       this.createNewTagDialogOn = true
     },
     handleTagEditOrCreateOption () {
-      if (this.createNewTagDialogOn) {
-        this.handleToCreatNewDialog()
+      if (this.labelDialogInput !== '') {
+        if (this.createNewTagDialogOn) {
+          this.handleToCreatNewDialog()
+        } else {
+          this.handleToEditDialog()
+        }
       } else {
-        this.handleToEditDialog()
+        this.$message.warning('请填写标签名')
       }
     },
     handleToCreatNewDialog () {
@@ -319,6 +344,11 @@ export default {
         .el-checkbox {
           margin-left: -4px;
         }
+      }
+      .iconStyle {
+        font-size: 22px;
+        color: #5a8bff;
+        cursor: pointer;
       }
       .operation {
         display: flex;

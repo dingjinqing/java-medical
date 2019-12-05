@@ -395,6 +395,7 @@ export default {
             }
           }
         })
+        callback()
       } else if (value === 'on' && this.form.scoreType === '1' && (!this.buyEach || !this.scoreEach || !re.test(this.buyEach) || !re.test(this.scoreEach))) {
         callback(new Error('购物送积分填写不正确'))
       } else {
@@ -418,6 +419,7 @@ export default {
             }
           }
         })
+        callback()
       } else {
         callback()
       }
@@ -761,6 +763,7 @@ export default {
           })
         }
       })
+      this.submitStatus = false
     },
 
     // 3- 添加购物满
