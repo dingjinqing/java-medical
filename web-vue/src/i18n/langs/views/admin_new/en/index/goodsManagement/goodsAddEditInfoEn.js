@@ -141,8 +141,8 @@ export const en = {
     costPrice: 'Cost price：',
     costPriceTip:
       'Set up the specification of cost price the price will be invalid, not front - end display',
-    addSaleNum: 'Initial sales：',
-    addSaleNumSetting:
+    baseSale: 'Initial sales：',
+    baseSaleSetting:
       'After setting, the sales volume seen by your user = initial sales volume + order quantity, the initial sales volume is not counted into the statistics.',
     goodsPrdSn: 'Goods SKU SN：'
   },

@@ -137,8 +137,8 @@ export const cn = {
     maxBuyNumTip: '0或不填表示不限制购买数量',
     costPrice: '成本价格：',
     costPriceTip: '设置了规格成本价格商品价格将失效，不在前端展示',
-    addSaleNum: '初始销量：',
-    addSaleNumSetting:
+    baseSale: '初始销量：',
+    baseSaleSetting:
       '设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。',
     goodsPrdSn: '商品规格编码：'
   },

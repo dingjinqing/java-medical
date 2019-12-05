@@ -391,18 +391,18 @@
         <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.costPriceTip')}}</span>
       </el-form-item>
       <el-form-item
-        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.addSaleNum')"
-        prop="addSaleNum"
+        :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.baseSale')"
+        prop="baseSale"
       >
         <el-input-number
-          v-model="goodsProductInfo.addSaleNum"
+          v-model="goodsProductInfo.baseSale"
           step-strictly
           size="small"
           controls-position="right"
           :min="0"
           style="width:170px;"
         />
-        <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.addSaleNumSetting')}}</span>
+        <span class="inputTip">{{$t('goodsAddEditInfo.stockAndPriceInfoOther.baseSaleSetting')}}</span>
       </el-form-item>
       <el-form-item
         :label="$t('goodsAddEditInfo.stockAndPriceInfoOther.goodsPrdSn')"
@@ -460,7 +460,7 @@ export default {
         goodsSpecs: [],
         limitBuyNum: 0,
         limitMaxNum: 0,
-        addSaleNum: 0,
+        baseSale: 0,
         /* 以下为使用默认规格时的辅助数据，最终会被整合到goodsSpecProducts传到后台 */
         prdNumber: 0,
         prdPrice: 0,
@@ -1191,7 +1191,7 @@ export default {
       this.goodsProductInfo.marketPrice = goodsData.marketPrice
       this.goodsProductInfo.limitBuyNum = goodsData.limitBuyNum
       this.goodsProductInfo.limitMaxNum = goodsData.limitMaxNum
-      this.goodsProductInfo.addSaleNum = goodsData.addSaleNum
+      this.goodsProductInfo.baseSale = goodsData.baseSale
       if (isUseDefaultPrd) {
         this.goodsProductInfo.prdNumber = goodsData.goodsNumber
         this.goodsProductInfo.prdPrice = goodsData.shopPrice
@@ -1350,7 +1350,7 @@ export default {
       let retData = {}
       // 自定义规格和默认规格公共数据
       retData.marketPrice = this.goodsProductInfo.marketPrice
-      retData.addSaleNum = this.goodsProductInfo.addSaleNum
+      retData.baseSale = this.goodsProductInfo.baseSale
       retData.limitBuyNum = this.goodsProductInfo.limitBuyNum
       retData.limitMaxNum = this.goodsProductInfo.limitMaxNum
       retData.specInfoSwitch = this.specInfoSwitch
