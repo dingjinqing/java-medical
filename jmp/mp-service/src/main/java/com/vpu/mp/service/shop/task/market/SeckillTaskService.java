@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,8 @@ public class SeckillTaskService  extends ShopBaseService {
     private SeckillService seckillService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
 
     public void monitorGoodsType(){
         List<Integer> pastSeckillGoodsIdList = this.getPastSeckillGoodsId();
@@ -54,13 +57,18 @@ public class SeckillTaskService  extends ShopBaseService {
         if(changeToNormalGoodsIds != null && changeToNormalGoodsIds.size() > 0){
             //活动已失效，将goodsType改回去
             goodsService.changeToNormalType(changeToNormalGoodsIds);
+            //异步更新ES
+            esDataUpdateMqService.addEsGoodsIndex(changeToNormalGoodsIds,getShopId());
             //TODO 记录变动
         }
 
         if(changeToActGoodsIds != null && changeToActGoodsIds.size() > 0){
             //有新的活动生效，商品goodsType标记活动类型
             this.changeToSeckillType(changeToActGoodsIds);
+            //刷新秒杀库存
             seckillService.updateSeckillProcudtStock(changeToActGoodsIds);
+            //异步更新ES
+            esDataUpdateMqService.addEsGoodsIndex(changeToActGoodsIds,getShopId());
             //TODO 记录变动
         }
 
