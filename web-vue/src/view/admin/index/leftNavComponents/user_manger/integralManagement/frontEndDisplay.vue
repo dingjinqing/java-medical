@@ -95,6 +95,16 @@
         </div>
       </div>
     </div>
+
+    <!-- 底部 -->
+    <div class="footer">
+      <el-button
+        size="small"
+        type="primary"
+        @click="saveScoreHandler"
+      >保存</el-button>
+    </div>
+
     <!--选择运费模板-->
     <!-- <SelectTemplateDialog @handleToSendData="handleToSendData" /> -->
 
@@ -121,25 +131,17 @@ export default {
     }
   },
   watch: {
-    watch: {
-      '$store.state.util.integralDataNotice' (newData) {
-        alert('iiiiii')
-        let obj = {
-          templateList: this.templateList
-        }
-        console.log(obj)
-        this.$emit('toNoticeSend', obj, 1)
-      }
-    }
-  },
-  created () {
-    this.loadDefaultData()
+    // '$store.state.util.integralDataNotice' (newData) {
+    //   alert('iiiiii')
+    //   let obj = {
+    //     templateList: this.templateList
+    //   }
+    //   console.log(obj)
+    //   this.$emit('toNoticeSend', obj, 1)
+    // }
   },
   mounted () {
-    this.$http.$on('frontEndDisplaySaveSignal', res => {
-      console.log('保存前端')
-      this.updateScorePageId()
-    })
+    this.loadDefaultData()
   },
   methods: {
     // 1 - 加载默认的数据
@@ -151,19 +153,32 @@ export default {
         }
       })
     },
-    // 2 - 保存数据
-    updateScorePageId () {
-      let obj = {
-        'scorePageId': this.templateList
-      }
-      console.log(obj)
-      scorePageIdUpdate(obj).then(res => {
+
+    // 保存前端展示设置
+    saveScoreHandler () {
+      scorePageIdUpdate({
+        scorePageId: this.templateList
+      }).then(res => {
         if (res.error === 0) {
-          // success
           this.$message.success(this.$t('memberCard.auditOption'))
         }
       })
     },
+
+    // 2 - 保存数据
+    // updateScorePageId () {
+    //   let obj = {
+    //     'scorePageId': this.templateList
+    //   }
+    //   console.log(obj)
+    //   scorePageIdUpdate(obj).then(res => {
+    //     if (res.error === 0) {
+    //       // success
+    //       this.$message.success(this.$t('memberCard.auditOption'))
+    //     }
+    //   })
+    // },
+
     // 右侧按钮点击汇总
     handleToRightBtn (flag) {
       switch (flag) {
@@ -215,11 +230,10 @@ export default {
 <style lang="scss" scoped>
 .frontEndDisplay {
   width: 100%;
-  display: flex;
-  justify-content: center;
   .frontEndDisplayMain {
     width: 55%;
-    min-height: 700px;
+    margin: 0 auto;
+    margin-bottom: 50px;
     .frontEndTop {
       height: 30px;
       color: rgb(102, 102, 102);
@@ -351,6 +365,13 @@ export default {
         }
       }
     }
+  }
+  .footer {
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background: #fff;
+    border-top: 1px solid #e4e7ed;
   }
 }
 </style>

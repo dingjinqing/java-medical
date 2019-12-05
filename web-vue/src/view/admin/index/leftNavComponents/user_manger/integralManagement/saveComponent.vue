@@ -20,7 +20,7 @@ export default {
     handleToSave () {
       this.flag = !this.flag
       this.$store.commit('TOCHANGE_NOTICEINTEGRALDATA', this.flag)
-      this.$http.$emit('frontEndDisplaySaveSignal', this.flag)
+      // this.$http.$emit('frontEndDisplaySaveSignal', this.flag)
       this.$http.$emit('saveIntegralDescription', this.flag)
     }
   }
