@@ -377,14 +377,17 @@ export default {
         callback()
       }
     }
-    // var validateRatio = (rule, value, callback) => {
-    //   if (!value || value === '' || value === null) {
-    //     // this.form.scoreDiscountRatio = 50
-    //     callback(new Error('请填写积分抵扣比例'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
+    var validateRatio = (rule, value, callback) => {
+      var re = /^(?:[1-9]?\d|100)$/
+      if (!value) {
+        callback()
+        this.form.scoreDiscountRatio = 50
+      } else if (!re.test(value)) {
+        callback(new Error('请正确填写积分抵扣比例'))
+      } else {
+        callback()
+      }
+    }
     // 购物积分
     var validateshopping = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
@@ -624,7 +627,7 @@ export default {
       fromRules: {
         scoreLimit: { required: true, validator: validateScoreLimit, trigger: 'blur' },
         scorePayLimit: { required: true, validator: validatePayLimit, trigger: 'blur' },
-        // scoreDiscountRatio: { required: true, validator: validateRatio, trigger: 'blur' },
+        scoreDiscountRatio: { required: true, validator: validateRatio, trigger: 'blur' },
         shoppingScore: { required: true, validator: validateshopping, trigger: 'change' },
         loginScore: { required: true, validator: validateLogin, trigger: 'change' },
         signInScore: { required: true, validator: validateSignIn, trigger: 'change' }
@@ -652,22 +655,17 @@ export default {
       if (newData === '0') {
         this.form.scoreDay = ''
       }
-    },
-    'form.scoreDiscountRatio': function (val) {
-      if (!val || val === '' || val === null) {
-        this.form.scoreDiscountRatio = 50
-      }
     }
   },
   mounted () {
     this.langDefault()
-    this.getScoreHandler()
+    // this.getScoreHandler()
   },
   methods: {
     // 获取积分配置
     getScoreHandler () {
       getScoreConfigRequest().then((res) => {
-        if (res.error === 0 && res.content) {
+        if (res.error === 0 && res.content.scoreLimit) {
           this.$message.success('获取积分配置')
           var data = res.content
           this.form.scoreLimit = data.scoreLimit
@@ -803,32 +801,6 @@ export default {
       this.$router.push({
         name: 'viewSigninMembers'
       })
-    },
-
-    // 积分校验
-    checkScoreLimit (value) {
-      var re = /^[1-9]\d*00$/
-      if (!re.test(value)) {
-        this.$message.warning('积分支付限制填写不正确')
-      }
-    },
-    checkScoreRatio (value) {
-      var re = /^(?:[1-9]?\d|100)$/
-      if (!value || !re.test(value)) {
-        this.$message.warning('积分抵扣比例填写不正确')
-      }
-      if (!value) {
-        this.form.scoreDiscountRatio = 50
-      }
-    },
-    checkScore (value) {
-      var re = /^[1-9]\d*$/
-      if (!value) {
-        this.$message.warning('请填写积分')
-      }
-      if (!re.test(value)) {
-        this.$message.warning('积分填写不正确')
-      }
     }
   }
 }
@@ -1022,16 +994,4 @@ export default {
   background: #fff;
   border-top: 1px solid #e4e7ed;
 }
-// .footer {
-//   position: absolute;
-//   bottom: 0;
-//   right: 27px;
-//   left: 160px;
-//   height: 52px;
-//   padding: 10px 0;
-//   background-color: #fff;
-//   text-align: center;
-//   border-top: 1px solid #eee;
-//   z-index: 99;
-// }
 </style>
