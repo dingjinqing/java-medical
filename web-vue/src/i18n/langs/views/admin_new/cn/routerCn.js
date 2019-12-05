@@ -309,6 +309,8 @@ export const cn = {
   storeManage: ['门店管理', '门店列表', '门店管理'],
   // 门店管理 预约管理
   storeReservationManage: ['门店管理', '门店列表', '预约管理'],
+  // 门店管理 预约管理 预约服务详情
+  storeReservationDetail: ['门店管理', '门店列表', '预约管理', '预约服务详情'],
   // 门店管理 服务管理
   storeServiceManage: ['门店管理', '门店列表', '服务管理'],
   // 门店管理 技师管理

@@ -444,6 +444,13 @@ export const en = {
     'Store List',
     'Reservation management'
   ],
+  // 门店管理 预约管理 预约服务详情
+  storeReservationDetail: [
+    'Store management',
+    'Store List',
+    'Reservation management',
+    'Reservation Detail'
+  ],
   // 门店管理 服务管理
   storeServiceManage: ['Store management', 'Store List', 'Service management'],
   // 门店管理 技师管理

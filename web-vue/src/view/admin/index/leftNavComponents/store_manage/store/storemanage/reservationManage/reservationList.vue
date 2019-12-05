@@ -5,7 +5,7 @@
       <!--条件搜索-->
       <div class="list_info">
         <label style="font-size: 14px;">
-          预约手机号：
+          预约手机号
           <el-input
             size="small"
             class="filter_input"
@@ -14,35 +14,35 @@
           ></el-input>
         </label>
         <label style="font-size: 14px;">
-          预约起始时间：
-          <el-input
-            size="small"
-            class="filter_input"
-            :placeholder="$t('technicianList.technicianName')"
+          预约起始时间
+          <el-date-picker
             v-model="queryParams.serviceDateStart"
-          ></el-input>
+            type="date"
+            size="small"
+            placeholder="选择日期">
+          </el-date-picker>
         </label>
         <label style="font-size: 14px;">
-          预约结束时间：
-          <el-input
-            size="small"
-            class="filter_input"
-            :placeholder="$t('technicianList.technicianName')"
+          预约结束时间
+          <el-date-picker
             v-model="queryParams.serviceDateEnd"
-          ></el-input>
+            type="date"
+            size="small"
+            placeholder="选择日期">
+          </el-date-picker>
         </label>
         <label style="font-size: 14px;">
-          技师：
+          技师
           <el-input
             size="small"
             class="filter_input"
-            :placeholder="技师"
+            placeholder="技师"
             v-model="queryParams.technicianName"
           ></el-input>
         </label>
         <el-input
           type="tel"
-          :placeholder="请输入预约人姓名服务名查询"
+          placeholder="请输入预约人姓名服务名查询"
           style="width: 170px;"
           size="small"
           v-model="queryParams.keywords"
@@ -53,96 +53,115 @@
           size="small"
           @click="initDataList"
         >{{$t('technicianList.inquire')}}</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="showMess3"
+        >新建预约活动</el-button>
       </div>
-      <!--列表展示-->
-      <div class="list_table">
-        <el-table
-          ref="technicianTable"
-          :data="tableData"
-          class="tableClass"
-          max-height="500"
-          border
-          :header-cell-style="{
-            'background-color':'#f5f5f5',
-            'border':'none'
-          }"
+      <div>
+        <el-tabs
+          v-model="tabSwitch"
+          @tab-click="handleClick"
         >
-          <el-table-column
-            :label="预约人"
-            prop="subscriber"
+          <el-tab-pane
+            v-for="(item) in tabInfo"
+            :key="item.name"
+            :label="item.title"
+            :name="item.name"
           >
-          </el-table-column>
-          <el-table-column
-            :label="服务名称"
-            prop="serviceName"
+          </el-tab-pane>
+        </el-tabs>
+        <!--列表展示-->
+        <div class="list_table">
+          <el-table
+            ref="technicianTable"
+            :data="tableData"
+            class="tableClass"
+            max-height="500"
+            border
+            :header-cell-style="{
+              'background-color':'#f5f5f5',
+              'border':'none'
+            }"
           >
-          </el-table-column>
-          <el-table-column
-            :label="预约手机号"
-            prop="mobile"
-          ></el-table-column>
-          <el-table-column
-            :label="预约到店时间"
-            prop="serviceDate"
-          ></el-table-column>
-          <el-table-column
-            :label="技师"
-            prop="technicianName"
-          ></el-table-column>
-          <el-table-column
-            :label="预约支付金额"
-            prop="serviceSubsist"
-          ></el-table-column>
-          <el-table-column
-            :label="留言"
-            prop="addMessage"
-          ></el-table-column>
-          <el-table-column
-            label="操作"
-            prop="operate"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <div style="margin-top:10px;">
-                <el-tooltip :content="$t('technicianList.shiftManagement')">
-                  <span
-                    class="iconSpan"
-                    @click="showMess(row.orderSn)"
-                  >添加备注 </span>
-                </el-tooltip>
-                <el-tooltip :content="$t('technicianList.edit')">
-                  <span
-                    class="iconSpan"
-                    @click="edit('edit', row)"
-                  >查看详情</span>
-                </el-tooltip>
-                <el-tooltip :content="$t('technicianList.edit')">
-                  <span
-                    class="iconSpan"
-                    @click="edit('edit', row)"
-                  >查看评价</span>
-                </el-tooltip>
-                <el-tooltip :content="$t('technicianList.edit')">
-                  <span
-                    class="iconSpan"
-                    @click="showMess1(row.orderSn)"
-                  >取消</span>
-                </el-tooltip>
-                <el-tooltip :content="$t('technicianList.edit')">
-                  <span
-                    class="iconSpan"
-                    @click="showMess2(row.orderSn)"
-                  >核销</span>
-                </el-tooltip>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="table-page">
-          <pagination
-            :page-params.sync="pageParams"
-            @pagination="initDataList"
-          ></pagination>
+            <el-table-column
+              label="预约人"
+              prop="subscriber"
+            >
+            </el-table-column>
+            <el-table-column
+              label="服务名称"
+              prop="serviceName"
+            >
+            </el-table-column>
+            <el-table-column
+              label="预约手机号"
+              prop="mobile"
+            ></el-table-column>
+            <el-table-column
+              label="预约到店时间"
+              prop="serviceDate"
+            ></el-table-column>
+            <el-table-column
+              label="技师"
+              prop="technicianName"
+            ></el-table-column>
+            <el-table-column
+              label="预约支付金额"
+              prop="serviceSubsist"
+            ></el-table-column>
+            <el-table-column
+              label="留言"
+              prop="addMessage"
+            ></el-table-column>
+            <el-table-column
+              label="操作"
+              prop="operate"
+              align="center"
+            >
+              <template slot-scope="{ row }">
+                <div style="margin-top:10px;">
+                  <el-tooltip :content="$t('technicianList.shiftManagement')">
+                    <span
+                      class="iconSpan"
+                      @click="showMess(row.orderSn)"
+                    >添加备注 </span>
+                  </el-tooltip>
+                  <el-tooltip :content="$t('technicianList.edit')">
+                    <span
+                      class="iconSpan"
+                      @click="click2Detail(row.orderSn)"
+                    >查看详情</span>
+                  </el-tooltip>
+                  <el-tooltip :content="$t('technicianList.edit')">
+                    <span
+                      class="iconSpan"
+                      @click="edit('edit', row)"
+                    >查看评价</span>
+                  </el-tooltip>
+                  <el-tooltip :content="$t('technicianList.edit')">
+                    <span
+                      class="iconSpan"
+                      @click="showMess1(row.orderSn)"
+                    >取消</span>
+                  </el-tooltip>
+                  <el-tooltip :content="$t('technicianList.edit')">
+                    <span
+                      class="iconSpan"
+                      @click="showMess2(row.orderId, row.orderSn, row.userId)"
+                    >核销</span>
+                  </el-tooltip>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="table-page">
+            <pagination
+              :page-params.sync="pageParams"
+              @pagination="initDataList"
+            ></pagination>
+          </div>
         </div>
       </div>
     </div>
@@ -263,7 +282,7 @@
                   style="width: 30%"
                   size="small"
                   placeholder="99999999999999"
-                  v-model="chargeParam.balance">
+                  v-model.number="chargeParam.balance">
                 </el-input>
                 <el-input
                   v-if="chargeParam.verifyPay === 2"
@@ -292,16 +311,140 @@
         >{{$t('tradeConfiguration.cancel')}}</el-button>
       </span>
     </el-dialog>
+    <!-- 后台添加预约弹窗 -->
+    <el-dialog
+      title="新增预约"
+      :visible.sync="showReservation"
+      :close-on-click-modal='false'
+      width=50%
+    >
+      <div class="table_list">
+        <div>
+          * 预约人：
+          <el-input
+            style="width: 40%"
+            placeholder="选择会员"
+            v-model="reservation.subscriber">
+          </el-input>
+        </div>
+        <div>
+          * 手机号：
+          <el-input
+            style="width: 40%"
+            placeholder="请填写预约人手机号"
+            v-model="reservation.mobile">
+          </el-input>
+        </div>
+        <div>
+          * 预约到店时间：
+          <el-date-picker
+            v-model="dateTime"
+            type="datetime"
+            placeholder="选择到店日期时间"
+            align="right"
+            :picker-options="pickerOptions">
+          </el-date-picker>
+        </div>
+        <div>
+          * 预约服务：
+          <template>
+            <el-select v-model="reservation.serviceId" clearable placeholder="请选择服务"
+                       @change="changeEvent()">
+              <el-option
+                v-for="item in reservationService"
+                :key="item.id"
+                :label="item.serviceName"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </template>
+        </div>
+        <div>
+          * 预约技师：
+          <template>
+            <el-select v-model="reservation.technicianId" clearable placeholder="请选择技师">
+              <el-option
+                v-for="item in reservationTech"
+                :key="item.id"
+                :label="item.technicianName"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </template>
+        </div>
+        <div>
+          备注：
+          <el-input
+            style="width: 40%"
+            placeholder="备注不超过200字"
+            v-model="reservation.adminMessage">
+          </el-input>
+        </div>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="add"
+        >{{$t('tradeConfiguration.save')}}</el-button>
+        <el-button
+          size="small"
+          @click="closeWin3"
+        >{{$t('tradeConfiguration.cancel')}}</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getList, detail, addMessage, add, charge, cancel } from '@/api/admin/storeManage/storemanage/reservationManage'
+import { getList, detail, addMessage, add, charge, cancel, techList } from '@/api/admin/storeManage/storemanage/reservationManage'
+import { getAllService } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
   data () {
     return {
+      // 日期时间
+      pickerOptions: {
+        shortcuts: [{
+          text: '今天',
+          onClick (picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '昨天',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周前',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }]
+      },
+      dateTime: '',
+      // 门店服务下拉
+      reservationService: [{
+        serviceId: 3,
+        serviceName: '服务3'
+      },
+      {
+        serviceId: 2,
+        serviceName: '服务2'
+      }],
+      // 门店技师下拉
+      reservationTech: [{
+        technicianId: 3,
+        technicianName: '服务'
+      }],
       // 备注
       adminMessage: '',
       orderSn: '',
@@ -313,6 +456,8 @@ export default {
       showCharge: false,
       // 核销支付方式 0门店买单 1会员卡 2余额
       verifyPay: '',
+      // 新增预约服务
+      showReservation: false,
       // 列表请求入参
       queryParams: {
         storeId: '',
@@ -337,34 +482,140 @@ export default {
       // 核销入参
       chargeParam: {
         orderSn: '',
-        orderId: '',
-        userId: '',
+        orderId: 0,
+        userId: 0,
         verifyCode: '',
-        verifyPay: '',
-        cardId: '',
-        cardNo: '',
-        reduce: '',
-        balance: '',
+        verifyPay: 0,
+        cardId: null,
+        cardNo: null,
+        reduce: null,
+        balance: null,
         reason: '',
-        account: '',
-        countDis: ''
+        account: null,
+        countDis: null
+      },
+      // 新建预约入参
+      reservation: {
+        userId: 0,
+        subscriber: '',
+        mobile: '',
+        serviceId: 0,
+        technicianId: 0,
+        technicianName: '',
+        serviceDate: '',
+        servicePeriod: '',
+        adminMessage: ''
       },
       tableData: [],
-      pageParams: {}
+      pageParams: {},
+      tabSwitch: '-1',
+      tabInfo: [{
+        title: '所有预约',
+        name: '-1'
+      }, {
+        title: '待支付',
+        name: '0'
+      }, {
+        title: '带服务',
+        name: '1'
+      }, {
+        title: '已取消',
+        name: '2'
+      }, {
+        title: '已完成',
+        name: '3'
+      }],
+      storeId: 0,
+      serviceId: 0
     }
   },
   created () {
     this.queryParams.storeId = this.$route.query.id
+    this.storeId = this.$route.query.id
     this.langDefault()
     this.initDataList()
+    this.getStoreService()
+    // this.getTechList()
   },
   methods: {
-    // 添加预约
-    add (message) {
-      add().then(res => {
+    // 服务下拉
+    getStoreService () {
+      let obj = {
+        storeId: this.storeId
+      }
+      getAllService(obj).then(res => {
         if (res.error === 0) {
-
+          this.reservationService = res.content
         }
+      })
+    },
+    changeEvent () {
+      this.serviceId = this.reservation.serviceId
+      this.getTechList()
+    },
+    // 技师下拉
+    getTechList () {
+      let obj = {
+        storeId: this.storeId,
+        serviceId: this.serviceId
+      }
+      techList(obj).then(res => {
+        if (res.error === 0) {
+          this.reservationTech = res.content
+        }
+      })
+    },
+    // 状态标签页切换
+    handleClick () {
+      this.queryParams.orderStatus = this.tabSwitch
+      // 切换状态重新加载列表
+      let params = Object.assign({}, this.queryParams, this.pageParams)
+      getList(params).then(res => {
+        if (res.error === 0) {
+          this.tableData = [...res.content.pageList.dataList]
+          this.countingData = [...res.content.countingData]
+          this.pageParams = Object.assign({}, res.content.pageList.page)
+          // 合并时期时间段
+          this.tableData.map((item, index) => {
+            item.serviceDate = item.serviceDate + ' ' + item.servicePeriod
+          })
+        }
+      }).catch(() => {
+        this.$message.error('操作失败')
+      })
+    },
+    // 预约详情页跳转
+    click2Detail (orderSn) {
+      this.$router.push({
+        name: 'store_storemanage_reservation_detail',
+        params: {
+          orderSn: orderSn,
+          flag: true
+        }
+      })
+    },
+    // 添加预约弹窗-点击触发弹窗
+    showMess3 (orderSn) {
+      this.orderSn = orderSn
+      this.showReservation = true
+    },
+    // 关闭添加预约弹窗
+    closeWin3 () {
+      this.showReservation = false
+    },
+    // 添加预约
+    add () {
+      this.reservation.technicianName = this.reservationTech.find((item) => {
+        return item.id === this.reservation.technicianId
+      }).technicianName
+      this.reservation.serviceDate = this.dateTime
+      add(this.reservation).then(res => {
+        if (res.error === 0) {
+          this.$message.success('添加成功')
+          this.initDataList()
+        }
+        this.$message.error('添加失败')
+        this.showMessage = false
       })
     },
     // 添加留言弹窗-点击触发弹窗
@@ -427,8 +678,10 @@ export default {
       })
     },
     // 核销弹窗-点击触发弹窗
-    showMess2 (orderSn) {
-      this.orderSn = orderSn
+    showMess2 (orderId, orderSn, userId) {
+      this.chargeParam.orderId = orderId
+      this.chargeParam.orderSn = orderSn
+      this.chargeParam.userId = parseInt(userId)
       this.showCharge = true
     },
     // 关闭核销弹窗

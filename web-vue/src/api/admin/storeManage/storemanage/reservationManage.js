@@ -56,3 +56,12 @@ export function cancel (data) {
     data: data
   })
 }
+
+// 技师下拉
+export function techList (data) {
+  return service({
+    url: '/api/admin/store/services/technician/getTechByStoreService',
+    method: 'post',
+    data: data
+  })
+}

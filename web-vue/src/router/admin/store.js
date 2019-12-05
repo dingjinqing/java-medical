@@ -187,6 +187,17 @@ const routes = [
       }
     ]
   },
+  // 门店列表 门店管理 预约管理 预约服务详情
+  {
+    path: 'detail',
+    name: 'store_storemanage_reservation_detail',
+    meta: {
+      crumbTitle: 'router.storeReservationDetail',
+      meta: 'store_manage',
+      category: 'store_list'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/store_manage/store/storemanage/reservationManage/reservationDetail')
+  },
   // 门店列表 技师管理 排班配置
   {
     path: '/admin/home/main/store/storemanage/schedule/list',
