@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class GoodsListMpParam extends BasePageParam{
+
     private Byte fromPage;
     /**
      * 0 自动推荐 1手动推荐

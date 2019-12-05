@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.*;
@@ -560,6 +561,7 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/mp/list")
     public JsonResult getGoodsList(@RequestBody GoodsListMpParam goodsListMpParam) {
+        goodsListMpParam.setFromPage(EsGoodsConstant.GOODS_LIST_PAGE);
         List<? extends GoodsListMpVo> goodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam, null);
         return success(goodsList);
     }

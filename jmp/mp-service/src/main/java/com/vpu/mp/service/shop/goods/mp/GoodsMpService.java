@@ -126,7 +126,7 @@ public class GoodsMpService extends ShopBaseService {
             } else {
                 orderFields.add(GOODS.GOODS_ID.desc());
             }
-            goodsListCapsules = findActivityGoodsListCapsulesDao(condition, orderFields, null, param.getGoodsNum(), null);
+            goodsListCapsules = findActivityGoodsListCapsulesDao(condition, orderFields, 0, param.getGoodsNum(), null);
         }
         return goodsListCapsules;
     }
@@ -196,18 +196,16 @@ public class GoodsMpService extends ShopBaseService {
     }
 
 
-    public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds, Integer userId, Integer currentPages, Integer pagesRows) {
+    public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds, Integer userId) {
         List<GoodsListMpBo> goodsListCapsules;
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(GoodsConstant.POINT_RECOMMEND);
-        param.setCurrentPage(currentPages);
-        param.setPageRows(pagesRows);
         param.setGoodsItems(goodsIds);
         try {
             // 从es获取
             goodsListCapsules = getPageIndexGoodsListFromEs(param);
         } catch (Exception e) {
-            goodsListCapsules = getGoodsListNormalFromDb(goodsIds, currentPages, pagesRows);
+            goodsListCapsules = getGoodsListNormalFromDb(goodsIds, null, null);
         }
         disposeGoodsList(goodsListCapsules, userId);
 

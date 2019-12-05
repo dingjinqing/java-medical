@@ -114,7 +114,7 @@ public class FootPrintService extends ShopBaseService {
 		Result<? extends Record> records = select.orderBy(FOOTPRINT_RECORD.CREATE_TIME.desc()).limit((currentPage - 1)*pageRows, pageRows).fetch();
 		List<Integer> goodsIdList = Arrays.asList(records.intoArray(GOODS.GOODS_ID));
 		List<FootprintDayVo> footprintList =records.into(FootprintDayVo.class);
-        List<? extends GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId, null, null);
+        List<? extends GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId);
 		Map<Integer, GoodsListMpVo> goodsListMpVoMap = goodsListMpVos.stream().collect(Collectors.toMap(GoodsListMpVo::getGoodsId, goods->goods));
 		footprintList.forEach(footprintGoods->{
 			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(footprintGoods.getGoodsId());
