@@ -79,7 +79,7 @@
   display: block;
   margin: 0 auto;
   width: 1px;
-  height: 40rpx;
+  height: 60rpx;
   background: #fff;
 }
 
