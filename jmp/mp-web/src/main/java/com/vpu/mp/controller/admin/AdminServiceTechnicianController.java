@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.store.technician.*;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -139,4 +140,15 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 		}
 		return fail(JsonResultCode.CODE_FAIL);
 	}
+
+    /**
+     * Gets tech by store service.根据门店，服务查询可用技师列表
+     *
+     * @param param the param
+     * @return the tech by store service
+     */
+    @PostMapping("/services/technician/getTechByStoreService")
+    public JsonResult getTechByStoreService(@RequestBody @Validated TechnicianParam param) {
+        return success(shop().store.serviceTechnician.getTechByStoreService(param));
+    }
 }

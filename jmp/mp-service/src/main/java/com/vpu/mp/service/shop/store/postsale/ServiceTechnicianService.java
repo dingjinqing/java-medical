@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.technician.*;
 import com.vpu.mp.service.shop.store.schedule.TechnicianScheduleService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
@@ -20,9 +21,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.shop.store.service.ServiceOrderService.DATE_TIME_FORMATTER;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
@@ -257,5 +260,30 @@ public class ServiceTechnicianService extends ShopBaseService {
             .and(SERVICE_TECHNICIAN_SCHEDULE.WORK_DATE.eq(date.format(DATE_TIME_FORMATTER)))
             .and(SERVICE_TECHNICIAN.DEL_FLAG.eq(BYTE_ZERO))
             .fetchInto(TechnicianInfo.class);
+    }
+
+    /**
+     * Gets tech by store service.根据门店，服务查询可用技师列表
+     *
+     * @param param the param
+     * @return the tech by store service
+     */
+    public List<TechnicianInfo> getTechByStoreService(TechnicianParam param) {
+        List<TechnicianInfo> list = db().selectFrom(SERVICE_TECHNICIAN)
+            .where(SERVICE_TECHNICIAN.STORE_ID.eq(param.getStoreId()))
+            .and(SERVICE_TECHNICIAN.DEL_FLAG.eq(BYTE_ZERO))
+            .fetchInto(TechnicianInfo.class);
+        List<TechnicianInfo> result = list.stream().filter((e) -> BYTE_ZERO.equals(e.getServiceType())).collect(Collectors.toList());
+        result.addAll(list.stream().filter((e) -> BYTE_ONE.equals(e.getServiceType()))
+            .filter((e) -> !StringUtils.isBlank(e.getServiceList()))
+            .filter((e) -> {
+                List<Integer> temp = Util.json2Object(e.getServiceList(), new TypeReference<List<Integer>>() {
+                }, false);
+                if (CollectionUtils.isEmpty(temp)) {
+                    return false;
+                }
+                return temp.contains(param.getServiceId());
+            }).collect(Collectors.toList()));
+        return result;
     }
 }
