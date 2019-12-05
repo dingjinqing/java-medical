@@ -35,10 +35,10 @@ public class SeckillTaskService  extends ShopBaseService {
     private EsDataUpdateMqService esDataUpdateMqService;
 
     public void monitorGoodsType(){
-        List<Integer> pastSeckillGoodsIdList = this.getPastSeckillGoodsId();
+        List<Integer> pastSeckillGoodsIdList = getPastSeckillGoodsId();
         List<Integer> currentSeckillGoodsIdList = new ArrayList<>();
 
-        List<SeckillVo> onGoingSeckillList = this.getSecKillWithMonitor();
+        List<SeckillVo> onGoingSeckillList = getSecKillWithMonitor();
         for(SeckillVo seckill : onGoingSeckillList){
             int unpaidGoodsNum = 0;
             for(SecKillProductVo secKillProduct : seckill.getSecKillProduct()){
@@ -64,7 +64,7 @@ public class SeckillTaskService  extends ShopBaseService {
 
         if(changeToActGoodsIds != null && changeToActGoodsIds.size() > 0){
             //有新的活动生效，商品goodsType标记活动类型
-            this.changeToSeckillType(changeToActGoodsIds);
+            changeToSeckillType(changeToActGoodsIds);
             //刷新秒杀库存
             seckillService.updateSeckillProcudtStock(changeToActGoodsIds);
             //异步更新ES

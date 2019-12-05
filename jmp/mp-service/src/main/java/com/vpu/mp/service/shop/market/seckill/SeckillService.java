@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.market.seckill;
 
-import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -28,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
@@ -62,6 +62,9 @@ public class SeckillService extends ShopBaseService{
 
     @Autowired
     private QrCodeService qrCode;
+
+    @Autowired
+    private GoodsService goodsService;
 
     /**
      * 秒杀活动列表分页数据
@@ -398,7 +401,7 @@ public class SeckillService extends ShopBaseService{
      */
     public boolean isOnGoingSecKill(int goodsId,Timestamp startTime,Timestamp endTime){
         Record r = db().select(SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.GOODS_ID.eq(goodsId)).and(isConflictingActTime(startTime,endTime))).fetchOne();
-        return r == null ? false : true;
+        return r != null;
     }
 
     /**
@@ -410,7 +413,7 @@ public class SeckillService extends ShopBaseService{
         Record3<Integer, Timestamp, Timestamp> seckill = db().select(SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne();
 
         Record r = db().select(SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.GOODS_ID.eq(seckill.value1())).and(isConflictingActTime(seckill.value2(),seckill.value3()))).fetchOne();
-        return r == null ? false : true;
+        return r != null;
     }
 
     private Condition isConflictingActTime(Timestamp startTime,Timestamp endTime){
@@ -425,9 +428,8 @@ public class SeckillService extends ShopBaseService{
         List<SeckillVo> activeSeckillList = getSecKillWithMonitor(goodsIds);
         for(SeckillVo  seckill : activeSeckillList){
             for(SecKillProductVo secKillProduct : seckill.getSecKillProduct()){
-                Record1<Integer> prdNumberRecord = db().select(Tables.GOODS_SPEC_PRODUCT.PRD_NUMBER).from(Tables.GOODS_SPEC_PRODUCT).where(Tables.GOODS_SPEC_PRODUCT.PRD_ID.eq(secKillProduct.getProductId())).fetchOne();
-                int prdNumber;
-                if(prdNumberRecord != null && (prdNumber = prdNumberRecord.into(Integer.class)) < secKillProduct.getStock()){
+                int prdNumber = goodsService.goodsSpecProductService.getPrdNumberByPrdId(secKillProduct.getProductId());
+                if(prdNumber < secKillProduct.getStock()){
                     db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,prdNumber).set(SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,secKillProduct.getTotalStock()-(secKillProduct.getStock()-prdNumber)).execute();
                 }
             }
@@ -536,7 +538,7 @@ public class SeckillService extends ShopBaseService{
         List<Integer> validCardIds = cards.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
         List<Integer> seckillCardIds = Util.splitValueToList(cardIds);
         validCardIds.removeAll(seckillCardIds);
-        return (validCardIds != null && validCardIds.size() > 0) ? true : false;
+        return (validCardIds != null && validCardIds.size() > 0);
     }
 
 

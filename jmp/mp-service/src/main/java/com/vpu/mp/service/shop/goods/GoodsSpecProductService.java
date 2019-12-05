@@ -14,11 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.Record4;
-import org.jooq.Result;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -26,8 +22,6 @@ import org.springframework.util.StringUtils;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
@@ -436,4 +430,13 @@ public class GoodsSpecProductService extends ShopBaseService {
 		}
 		return list;
 	}
+
+    /**
+     * 取规格库存
+     * @param prdId
+     * @return
+     */
+	public int getPrdNumberByPrdId(int prdId){
+        return db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId)).fetchOptionalInto(Integer.class).orElse(0);
+    }
 }
