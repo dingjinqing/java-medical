@@ -459,7 +459,8 @@ public class StoreWxService extends ShopBaseService {
         // 门店订单信息
         StorePayOrderInfo orderInfo = param.getOrderInfo();
         // 发票信息
-        InvoiceVo invoiceVo = invoiceService.get(orderInfo.getInvoiceId());
+        Integer invoiceId = orderInfo.getInvoiceId();
+        InvoiceVo invoiceVo = Objects.nonNull(invoiceId) ? invoiceService.get(invoiceId) : null;
         // 事务db前置校验
         StoreOrderTran storeOrderTran = storeOrderService.checkBeforeCreate(userRecord, invoiceVo, orderInfo);
         AtomicReference<WebPayVo> webPayVo = new AtomicReference<>();

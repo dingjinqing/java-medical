@@ -333,8 +333,10 @@ public class StoreOrderService extends ShopBaseService {
         orderRecord.setUserId(userInfo.getUserId());
         orderRecord.setOrderStatus(WAIT_TO_PAY);
         orderRecord.setOrderStatusName(WAIT_TO_PAY_NAME);
-        orderRecord.setInvoiceId(invoiceInfo.getId());
-        orderRecord.setInvoiceDetail(Util.toJson(invoiceInfo));
+        if (Objects.nonNull(invoiceInfo)) {
+            orderRecord.setInvoiceId(invoiceInfo.getId());
+            orderRecord.setInvoiceDetail(Util.toJson(invoiceInfo));
+        }
         orderRecord.setAddMessage(orderInfo.getRemark());
         orderRecord.setPayCode(moneyPaid.compareTo(ZERO) > 0 ? PAY_CODE_WX_PAY : PAY_CODE_BALANCE_PAY);
         orderRecord.setPayName(paymentService.getPaymentInfo(orderRecord.getPayCode()).getPayName());
