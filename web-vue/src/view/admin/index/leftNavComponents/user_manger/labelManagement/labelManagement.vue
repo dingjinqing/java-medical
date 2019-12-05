@@ -5,10 +5,10 @@
         <el-button
           type="primary"
           size="small"
-          @click="handleToButton(0)"
+          @click="addHandler"
         >{{$t('tag.createNewTag')}}</el-button>
         <el-input
-          v-model="labelInput"
+          v-model="searchTag"
           :placeholder="$t('tag.queryPrompt')"
           size="small"
           style="width:170px;"
@@ -17,7 +17,7 @@
         <el-button
           type="primary"
           size="small"
-          @click="handleToButton(1)"
+          @click="getTagList"
         >{{$t('tag.query')}}</el-button>
       </div>
       <div class="tableMain">
@@ -55,18 +55,20 @@
                 :content="$t('tag.edit')"
                 placement="top"
               >
-                <span class="el-icon-edit-outline iconStyle"></span>
-                <!-- @click="editHandler(scope.row.skId, scope.row)" -->
+                <span
+                  class="el-icon-edit-outline iconStyle"
+                  @click="getTagDetail(scope.row.tagId)"
+                ></span>
+
               </el-tooltip>
               <el-tooltip
                 :content="$t('tag.remove')"
                 placement="top"
               >
                 <span
-                  style="font-size: 22px;color: #5a8bff;cursor:pointer;"
                   class="el-icon-delete iconStyle"
+                  @click="deleteHandler(scope.row.tagId)"
                 ></span>
-                <!-- @click="deleteHandler(scope.row.skId)" -->
               </el-tooltip>
 
               <el-tooltip
@@ -74,10 +76,9 @@
                 placement="top"
               >
                 <span
-                  style="font-size: 22px;color: #5a8bff;cursor:pointer;"
                   class="el-icon-user-solid iconStyle"
+                  @click="viewUserHanlder"
                 ></span>
-                <!-- @click="seckillUserHanlder(scope.row.skId, scope.row.name)" -->
               </el-tooltip>
             </template>
           </el-table-column>
@@ -85,13 +86,13 @@
         </el-table>
         <Pagination
           :page-params.sync="pageParams"
-          @pagination="pageQuery"
+          @pagination="getTagList"
         />
       </div>
     </div>
     <!--新建标签弹窗-->
     <el-dialog
-      :title="dialogTitle"
+      :title="dialogType === true ? '新建标签' : '编辑标签'"
       :visible.sync="dialogVisible"
       width="350px"
       :close-on-click-modal="false"
@@ -100,7 +101,7 @@
       <div class="labelDialog">
         <div style="margin-bottom:10px">{{ $t('tag.tagName')}}</div>
         <el-input
-          v-model="labelDialogInput"
+          v-model="dialogTag"
           :placeholder="$t('tag.inputContent')"
           size="small"
         ></el-input>
@@ -111,191 +112,140 @@
       >
         <el-button
           size="small"
-          @click="dialogVisible = false"
+          @click="cancelTagHandler"
         >{{$t('tag.cancel')}}</el-button>
         <el-button
           type="primary"
           size="small"
-          @click="handleTagEditOrCreateOption"
+          @click="saveTagHandler"
         >{{$t('tag.ok')}}</el-button>
       </span>
     </el-dialog>
-    <!--删除弹窗-->
-    <el-dialog
-      :title="$t('tag.remind')"
-      :visible.sync="dialogDelVisible"
-      width="30%"
-    >
-      <span>{{$t('tag.deletePrompt')}}</span>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialogDelVisible = false">{{$t('tag.cancel')}}</el-button>
-        <el-button
-          type="primary"
-          @click="handleToDeleteTagDialog"
-        >{{$t('tag.ok')}}</el-button>
-      </span>
-    </el-dialog>
+
   </div>
 </template>
 <script>
-import { appendTag, getAllTagListByName, modifyTagName, deleteTag } from '@/api/admin/memberManage/tagManage/tagManage.js'
+import { getAllTagListByName, getTagDetail, addTag, updateTag, deleteTag } from '@/api/admin/memberManage/tagManage/tagManage.js'
 export default {
 
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
   data () {
     return {
-      dialogDelVisible: false,
-      dialogTitle: '',
-      dialogVisible: false,
-      labelInput: '',
-      tableData: null,
-      pageParams: {
-        totalRows: null,
-        currentPage: 1,
-        pageRows: 20
-      },
-      labelDialogInput: '',
-      currentOptionTagId: null,
-      createNewTagDialogOn: false
+      searchTag: '',
+      tableData: [], // 表格数据
+      pageParams: {}, // 分页
+      requestParams: {},
+      dialogVisible: false, // 标签弹窗
+      dialogTag: '',
+      dialogType: true, // 弹窗类型( true: 新建, false: 编辑)
+      editId: null // 编辑id
     }
-  },
-  created () {
-    this.loadAllTagList()
-  },
-  mounted () {
-    // 初始化语言
-    this.langDefault()
   },
   watch: {
     lang () {
     }
   },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+    this.getTagList()
+  },
   methods: {
-    loadAllTagList () {
-      let param = {
-        ...this.pageParams,
-        tagName: this.labelInput
-      }
-      console.log(param)
-      this.getAllTagList(param)
-    },
-    getAllTagList (param) {
-      getAllTagListByName(param).then(res => {
-        console.log(res)
+    // 标签管理列表
+    getTagList () {
+      this.requestParams.tagName = this.searchTag
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      getAllTagListByName(this.requestParams).then(res => {
         if (res.error === 0) {
-          console.log('success')
-          this.dealPage(res.content.page)
-          this.dealTagListForHtmlShow(res.content.dataList)
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
         }
       })
     },
-    dealPage (page) {
-      this.pageParams = page
+
+    // 新建
+    addHandler () {
+      this.dialogType = true
+      this.dialogTag = ''
+      this.dialogVisible = !this.dialogVisible
     },
-    dealTagListForHtmlShow (dataList) {
-      this.tableData = dataList
-      console.log(this.tableData)
-    },
-    pageQuery (data) {
-      console.log(data)
-      this.loadAllTagList()
-    },
-    showCreateNewTagDialog () {
-      this.labelDialogInput = ''
-      this.dialogTitle = this.$t('tag.createNewTag')
-      this.dialogVisible = true
-      this.createNewTagDialogOn = true
-    },
-    handleTagEditOrCreateOption () {
-      if (this.labelDialogInput !== '') {
-        if (this.createNewTagDialogOn) {
-          this.handleToCreatNewDialog()
-        } else {
-          this.handleToEditDialog()
-        }
-      } else {
-        this.$message.warning('请填写标签名')
-      }
-    },
-    handleToCreatNewDialog () {
-      this.dialogVisible = false
-      this.createNewTagDialogOn = false
-      this.handleToCreateNewTag()
-    },
-    handleToCreateNewTag () {
-      appendTag({ tagName: this.labelDialogInput }).then(res => {
+
+    // 编辑详情
+    getTagDetail (id) {
+      this.dialogType = false
+      this.editId = id
+      getTagDetail().then((res) => {
         if (res.error === 0) {
-          this.$message.success(this.$t('tag.addTagSuccess'))
-          this.loadAllTagList()
-        }
-      })
-    },
-    handleToEditDialog () {
-      this.dialogVisible = false
-      this.handleModifyTagName()
-    },
-    handleToDeleteTagDialog () {
-      this.dialogDelVisible = false
-      this.handleDeleteTag({ tagId: this.currentOptionTagId })
-    },
-    handleDeleteTag (data) {
-      deleteTag(data).then(res => {
-        if (res.error === 0) {
-          this.$message.success(this.$t('tag.removeTagSuccess'))
-          this.loadAllTagList()
-        }
-      })
-    },
-    handleModifyTagName () {
-      let param = {
-        tagId: this.currentOptionTagId,
-        tagName: this.labelDialogInput
-      }
-      modifyTagName(param).then(res => {
-        if (res.error === 0) {
-          this.$message.success(this.$t('tag.modifyTagSuccess'))
-          this.loadAllTagList()
-        }
-      })
-    },
-    // 操作部分点击
-    handleToOperation (row, index) {
-      console.log(row, index)
-      this.temporarySaveCurrentRowTag(row)
-      switch (index) {
-        case 0:
-          this.dialogTitle = this.$t('tag.editTag')
-          this.dialogVisible = true
-          break
-        case 1:
-          this.dialogDelVisible = true
-          break
-        case 2:
-          this.$router.push({
-            name: 'user_list',
-            params: {
-              ...row
+          res.content.forEach((item, index) => {
+            if (id === item.id) {
+              this.dialogTag = item.value
+              this.dialogVisible = !this.dialogVisible
             }
           })
-      }
+        }
+      })
     },
-    temporarySaveCurrentRowTag (row) {
-      this.labelDialogInput = row.tagName
-      this.currentOptionTagId = row.tagId
-    },
-    // 顶部按钮点击
-    handleToButton (flag) {
-      switch (flag) {
-        case 0:
-          this.showCreateNewTagDialog()
-          break
-        case 1:
-          this.loadAllTagList()
+
+    // 保存
+    saveTagHandler () {
+      if (this.dialogTag === '') {
+        this.$message.warning('请填写标签名')
+        return
       }
+      if (this.dialogType === true) {
+        // 添加
+        addTag({ tagName: this.dialogTag }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success('新建成功!')
+            this.getTagList()
+          }
+        })
+      } else {
+        // 编辑
+        updateTag({
+          tagId: this.editId,
+          tagName: this.dialogTag
+        }).then((res) => {
+          if (res.error === 0) {
+            this.$message.success('编辑成功!')
+            this.getTagList()
+          }
+        })
+      }
+
+      this.dialogVisible = !this.dialogVisible
+    },
+
+    // 取消
+    cancelTagHandler () {
+      this.dialogVisible = false
+      this.dialogTag = ''
+    },
+
+    // 删除
+    deleteHandler (id) {
+      this.$confirm(this.$t('seckill.deleteTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
+        type: 'warning'
+      }).then(() => {
+        deleteTag({ tagId: id }).then(res => {
+          if (res.error === 0) {
+            this.$message.success(this.$t('tag.removeTagSuccess'))
+            this.getTagList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('seckill.deleteFail') })
+      })
+    },
+
+    // 查看用户明细
+    viewUserHanlder () {
+      this.$router.push({ name: 'user_list' })
     }
+
   }
 }
 </script>
@@ -310,10 +260,8 @@ export default {
   overflow-y: auto;
   .labelManagementMain {
     position: relative;
-    // background-color: #fff;
     overflow: hidden;
     overflow-y: auto;
-    // padding: 15px 25px;
     .top {
       padding: 15px;
       background: #fff;
@@ -333,7 +281,6 @@ export default {
       overflow: hidden;
       overflow-y: auto;
       padding: 15px;
-      // margin-top: 10px;
       /deep/ .tableClss th {
         background-color: #f5f5f5;
         border: none;
