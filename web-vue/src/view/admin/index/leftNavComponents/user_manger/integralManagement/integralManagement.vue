@@ -2,7 +2,6 @@
   <div class="integralManagement">
     <div class="integralManagementMain">
       <el-tabs v-model="activeName">
-        <!-- @tab-click="handleClick" -->
         <el-tab-pane
           :label="$t('scoreCfg.scoreRuleSetting')"
           name="first"
@@ -32,9 +31,7 @@ export default {
     }
   },
   methods: {
-    handleClick (tab, event) {
-      console.log(tab, event)
-    }
+
   }
 }
 </script>

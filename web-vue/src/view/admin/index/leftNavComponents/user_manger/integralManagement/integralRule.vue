@@ -172,7 +172,7 @@
             </el-switch>
             <span style="display:inline-block;margin:0 20px">{{form.shoppingScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
             <span style="color:#999">{{$t('scoreCfg.scoreGetDescTwo')}}</span>
-            <div v-if="form.shoppingScore">
+            <div v-if="form.shoppingScore === 'on'">
               <div
                 v-for="(item,index) in shopFullArr"
                 :key="index"
@@ -265,7 +265,7 @@
             <span style="display:inline-block;margin:0 20px">{{form.loginScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
             <span style="color:#999">{{$t('scoreCfg.loginDescOne')}}</span>
             <div
-              v-if="form.loginScore"
+              v-if="form.loginScore === 'on'"
               class="hiddenLoginDiv"
             >
               <span>{{$t('scoreCfg.loginSend')}}</span>
@@ -299,7 +299,7 @@
               style="cursor:pointer;color:#5a8bff"
             >{{$t('scoreCfg.view')}}</i>
             <div
-              v-if="form.signInScore"
+              v-if="form.signInScore === 'on'"
               class="hiddenLoginDiv"
             >
               <div
@@ -366,24 +366,35 @@ export default {
       }
     }
     var validatePayLimit = (rule, value, callback) => {
+      var re = /^[1-9]\d*00$/
       if (!value) {
         callback(new Error('请选择积分支付限制'))
       } else if (value === '1' && !this.form.scorePayNum) {
         callback(new Error('请完整填写积分支付限制'))
+      } else if (value === '1' && !re.test(this.form.scorePayNum)) {
+        callback(new Error('请正确填写积分支付限制'))
       } else {
         callback()
       }
     }
     var validateRatio = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('请填写积分抵扣比例'))
+        this.form.scoreDiscountRatio = 50
       } else {
         callback()
       }
     }
     // 购物积分
     var validateshopping = (rule, value, callback) => {
-      if (!value) {
+      if (value === 'on' && this.form.scoreType === '0') {
+        this.shopFullArr.forEach((item, index) => {
+          for (let i in item) {
+            if (!item[i]) {
+              callback(new Error('请填写购物送积分'))
+            }
+          }
+        })
+      } else if (value === 'on' && this.form.scoreType === '1' && (!this.buyEach || !this.scoreEach)) {
         callback(new Error('请填写购物送积分'))
       } else {
         callback()
@@ -397,8 +408,14 @@ export default {
       }
     }
     var validateSignIn = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请填写签到积分'))
+      if (value === 'on') {
+        this.signInput.forEach((item, index) => {
+          for (let i in item) {
+            if (!item[i]) {
+              callback(new Error('请填写签到积分'))
+            }
+          }
+        })
       } else {
         callback()
       }
@@ -760,8 +777,12 @@ export default {
       let obj = {
         input: ''
       }
-      this.signInput.push(obj)
-      this.signData++
+      if (this.signInput.length < 14) {
+        this.signInput.push(obj)
+        this.signData++
+      } else {
+        this.$message.warning('系统开启签到上线为14天')
+      }
     },
     // 签到送积分点击删除icon
     handleToDel (index) {
