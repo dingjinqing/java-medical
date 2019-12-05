@@ -19,7 +19,7 @@
         <view class="pay_li clearfix">
           <text class="score_fl">会员卡支付</text>
           <view class="score">
-            <input type="digit" bindblur='card_discount' placeholder="会员卡有元余额" placeholder-style="#ccc" />
+            <input type="digit" value="{{payInfo.cardAmount?payInfo.cardAmount:''}}" bindblur='card_discount' placeholder="会员卡有{{useCard.money}}元余额" placeholder-style="#ccc" />
           </view>
           <view class="fr">
             <text>减{{payInfo.cardAmount}}元</text>
@@ -28,7 +28,7 @@
         <view class="pay_li clearfix" wx:if="{{orderInfo.score >= 100}}">
           <text class="score_fl">积分支付</text>
           <view class="score">
-            <input type="number" placeholder="最多可使用{{orderInfo.score}}积分" placeholder-style="#ccc" value="" />
+            <input type="number" value="{{payInfo.inputScore?payInfo.inputScore:''}}" bindblur="score_money" placeholder="最多可使用{{orderInfo.score}}积分" placeholder-style="#ccc" />
           </view>
           <view class="fr">
             <text>减{{payInfo.scoreAmount}}元</text>
@@ -37,7 +37,7 @@
         <view class="pay_li clearfix">
           <text class='score_fl'>余额支付</text>
           <view class='score'>
-            <input type='digit' bindblur='user_account' placeholder="您有{{orderInfo.account}}元余额" placeholder-style="#ccc" value="" />
+            <input type='digit' value="{{payInfo.balanceAmount?payInfo.balanceAmount:''}}" bindblur='user_account' placeholder="您有{{orderInfo.account}}元余额" placeholder-style="#ccc" />
           </view>
           <view class='fr'>
             <text>减{{payInfo.balanceAmount}}元</text>
@@ -45,7 +45,7 @@
         </view>
       </view>
       <view class="pay" wx:if="{{orderInfo.invoiceSwitch}}">
-        <view class="pay_li clearfix">
+        <view class="pay_li clearfix" bindtap='chooseInvoice'>
           <text class='score_fl'>发票</text>
           <view class='fr coupon' wx:if="{{imageUrl}}" data-in="{{orderInfo.invoice_title}}" style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
             <text wx:if="{{!invoiceInfo.invoice_title}}">请选择发票</text>
@@ -96,7 +96,7 @@
         <button class='footer' form-type='submit'>
           <view style='background:{{comColor}}'>
             立即支付
-            <text wx:if="{{orderInfo.ipt_money>0}}">￥{{orderInfo.total_price}}</text>
+            <text wx:if="{{payInfo.orderAmount>0}}">￥{{payInfo.moneyPaid}}</text>
           </view>
         </button>
       </form>
