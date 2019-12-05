@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
@@ -150,7 +151,7 @@ public class AdminTestController extends AdminBaseController {
 	@RequestMapping(value = "/api/admin/test/getNeedTemplateId")
 	public JsonResult getNeedTemplateId() {
 		String[] data = { SubcribeTemplateCategory.DRAW_RESULT, SubcribeTemplateCategory.INVITE_SUCCESS};
-		String[] templateId = {};
+		TemplateVo[] templateId = {};
 		try {
 			templateId = subservice.getTemplateId(data);
 		} catch (WxErrorException e) {
