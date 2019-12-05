@@ -784,6 +784,17 @@ const routes = [
     },
     component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/openScreen/openScreenDetail')
   },
+  // 评价有礼
+  {
+    path: '/admin/home/main/evaluationGift/list',
+    name: 'evaluation_gifted',
+    meta: {
+      crumbTitle: 'router.evaluation_gifted',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_market_manage/evaluationGift/evaluationGiftList')
+  },
   // 首单特惠
   {
     path: '/admin/home/main/firstSpecial/list',
