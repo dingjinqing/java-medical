@@ -229,7 +229,9 @@ export default {
     makeTableShowItemSelected (selectedItems) {
       if (selectedItems) {
         selectedItems.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row, true)
+          this.$nextTick(() => {
+            this.$refs.multipleTable.toggleRowSelection(row, true)
+          })
         })
       }
     }

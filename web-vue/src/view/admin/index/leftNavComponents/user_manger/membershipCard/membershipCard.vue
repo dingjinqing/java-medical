@@ -38,7 +38,7 @@
                 <div class="card_info_box">
                   <img
                     class="user_head"
-                    :src="avatar"
+                    :src="item.avatar"
                   >
                   <div class="card_info_Right">
                     <p class="cardName">{{item.cardName}}</p>
@@ -156,7 +156,7 @@
                 <div class="card_info_box">
                   <img
                     class="user_head"
-                    :src=" avatar"
+                    :src="item.avatar"
                   >
                   <div class="card_info_Right">
                     <p class="cardName">{{item.cardName}}</p>
@@ -269,7 +269,7 @@
                 <div class="card_info_box">
                   <img
                     class="user_head"
-                    :src="avatar"
+                    :src="item.avatar"
                   >
                   <div class="card_info_Right">
                     <p class="cardName">{{item.cardName}}</p>
@@ -366,7 +366,6 @@ export default {
       currentCardType: 0, // 默认的会员卡为普通会员卡
       activeName: 'first',
       cardData: [], // 普通会员卡容器
-      avatar: '', // 会员卡头像,
       detailsOfRights: [], // 功能
       cardDataSecond: [],
       cardDataThird: [],
@@ -376,8 +375,6 @@ export default {
   },
   created () {
     this.clearCardData()
-    // 获取头像数据
-    this.avatar = localStorage.getItem('V-shopAvatar')
   },
   watch: {
 
@@ -659,6 +656,7 @@ export default {
             // 时间格式
             item.startTime = String(item.startTime).split(' ')[0]
             item.endTime = String(item.endTime).split(' ')[0]
+            item.avatar = this.$imageHost + '/' + item.avatar
 
             // 处理会员卡权益
             this.dealWithCardBehavior(item)
