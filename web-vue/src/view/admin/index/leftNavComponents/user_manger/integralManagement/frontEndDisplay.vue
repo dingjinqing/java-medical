@@ -257,6 +257,7 @@ export default {
       justify-content: space-between;
       .left {
         height: 561px;
+        margin-right: 20px;
         border: 1px solid #eee;
         .show_area {
           width: 100%;
