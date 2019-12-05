@@ -88,6 +88,9 @@ export default {
             }
             tichTextUpLoadRequest(obj).then(res => {
               console.log(res)
+              if (res.error === 0) {
+                success(res.content.imgUrl)
+              }
             })
           }
           // success(img)
