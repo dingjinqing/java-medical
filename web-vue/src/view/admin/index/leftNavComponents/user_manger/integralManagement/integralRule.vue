@@ -1,130 +1,412 @@
 <template>
-  <div class="integralRule">
-    <div class="top">
-      {{$t('scoreCfg.prompt')}}
-    </div>
-    <div class="title">
-      <span></span>
-      {{$t('scoreCfg.scoreNormalRule')}}
-    </div>
-    <div class="content">
-      <span>{{$t('scoreCfg.scoreEffective')}}</span>
-      <div class="radioDiv">
-        <div>
-          <el-radio
-            v-model="message.radio"
-            label="0"
-          >{{$t('scoreCfg.forever')}}</el-radio>
-        </div>
-        <div>
-          <el-radio
-            v-model="message.radio"
-            label="1"
-          >{{$t('scoreCfg.fromTime')}}</el-radio>
-          <div>
-            <el-select
-              v-model="message.yearValue"
-              :placeholder="$t('scoreCfg.choose')"
-              size="small"
-            >
-              <el-option
-                v-for="item in yearOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
+  <div>
+    <div>
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="fromRules"
+        label-width="140px"
+        :label-position="'right'"
+      >
+        <div class="integralRule">
+          <div class="top">{{$t('scoreCfg.prompt')}}</div>
+          <div class="title">
+            <span></span>
+            {{$t('scoreCfg.scoreNormalRule')}}
           </div>
-          <div>
-            <el-select
-              v-model="message.mounthValue"
-              :placeholder="$t('scoreCfg.choose')"
-              size="small"
-            >
-              <el-option
-                v-for="item in mounthOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+          <el-form-item
+            prop="scoreLimit"
+            :label="$t('scoreCfg.scoreEffective') + '：'"
+          >
+            <el-radio
+              v-model="form.scoreLimit"
+              label="0"
+            >{{$t('scoreCfg.forever')}}</el-radio>
+            <div>
+              <el-radio
+                v-model="form.scoreLimit"
+                label="1"
+              >{{$t('scoreCfg.fromTime')}}</el-radio>
+              <el-select
+                v-model="form.scoreYear"
+                :placeholder="$t('scoreCfg.choose')"
+                size="small"
+                class="selectWidth"
               >
-              </el-option>
-            </el-select>
-            {{$t('scoreCfg.month')}}
-          </div>
-          <div>
-            <el-select
-              v-model="message.dayValue"
-              :placeholder="$t('scoreCfg.choose')"
-              size="small"
-              :disabled="mounthValue==='0'"
-            >
-              <el-option
-                v-for="item in dayOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                <el-option
+                  v-for="item in yearOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+              <el-select
+                v-model="form.scoreMonth"
+                :placeholder="$t('scoreCfg.choose')"
+                size="small"
+                class="selectWidth"
               >
-              </el-option>
-            </el-select>
-            {{$t('scoreCfg.day')}}
-          </div>
-        </div>
-        <div style="color:#FF0000">
-          {{$t('scoreCfg.exampleTime')}}
-        </div>
-        <div class="integralNumDiv">
-          <el-radio
-            v-model="message.radio"
-            label="2"
-          >{{$t('scoreCfg.fromGetScore')}}</el-radio>
-          <el-input-number
-            size="small"
-            v-model="message.integralNum"
-            controls-position="right"
-            :min="1"
-            :max="100"
-          ></el-input-number>
-          <div>
-            <el-select
-              v-model="message.integralDateValue"
-              :placeholder="$t('scoreCfg.choose')"
-              size="small"
-            >
-              <el-option
-                v-for="item in integralDateOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                <el-option
+                  v-for="item in mounthOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>{{$t('scoreCfg.month')}}
+              <el-select
+                v-model="form.scoreDay"
+                :placeholder="$t('scoreCfg.choose')"
+                size="small"
+                :disabled="form.scoreMonth==='0'"
+                class="selectWidth"
               >
-              </el-option>
+                <el-option
+                  v-for="item in dayOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>{{$t('scoreCfg.day')}}
+              <div style="color:#FF0000">{{$t('scoreCfg.exampleTime')}}</div>
+            </div>
+            <div>
+              <el-radio
+                v-model="form.scoreLimit"
+                label="2"
+              >{{$t('scoreCfg.fromGetScore')}}</el-radio>
+              <el-input-number
+                size="small"
+                v-model="form.scoreLimitNumber"
+                controls-position="right"
+                :min="1"
+                :max="100"
+              ></el-input-number>
+              <el-select
+                v-model="form.scorePeriod"
+                :placeholder="$t('scoreCfg.choose')"
+                size="small"
+                class="selectWidth"
+              >
+                <el-option
+                  v-for="item in integralDateOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
 
-            </el-select>
-            {{$t('scoreCfg.innerEffective')}}
-          </div>
+              </el-select>{{$t('scoreCfg.innerEffective')}}
+            </div>
+          </el-form-item>
+          <el-form-item :label="$t('scoreCfg.exchange') + '：'">
+            {{$t('scoreCfg.formula')}}
+          </el-form-item>
         </div>
-      </div>
+
+        <div class="integralRule">
+          <div class="title">
+            <span></span>
+            {{$t('scoreCfg.scoreRule')}}
+          </div>
+          <el-form-item
+            prop="scorePayLimit"
+            :label="$t('scoreCfg.scorePayLimit') + '：'"
+          >
+            <el-radio-group v-model="form.scorePayLimit">
+              <el-radio label="0">{{$t('scoreCfg.unlimit')}}</el-radio>
+              <el-radio label="1">{{$t('scoreCfg.defineSelf')}}</el-radio>
+            </el-radio-group>
+            <div
+              v-if="form.scorePayLimit==='1'"
+              style="margin-top:10px;marginleft: 120px;"
+            >
+              <span>{{$t('scoreCfg.scorePayDesOne')}}
+                <el-input-number
+                  size="small"
+                  v-model="form.scorePayNum"
+                  controls-position="right"
+                  :min="100"
+                  :max="10000"
+                ></el-input-number>{{$t('scoreCfg.scorePayDesTwo')}}
+                <span style="margit-left:20px;color:#999">{{$t('scoreCfg.print')}}</span>
+              </span>
+            </div>
+          </el-form-item>
+          <el-form-item
+            prop="scoreDiscountRatio"
+            :label="$t('scoreCfg.scoreScale') + '：'"
+          >
+            <span>{{$t('scoreCfg.scoreScaleDesOne')}}
+              <el-input-number
+                size="small"
+                v-model="form.scoreDiscountRatio"
+                controls-position="right"
+                :min="0"
+                :max="100"
+              ></el-input-number>{{$t('scoreCfg.scoreScaleDesTwo')}}
+              <span style="margit-left:20px;color:#999">{{$t('scoreCfg.prineTwo')}}</span>
+            </span>
+          </el-form-item>
+
+        </div>
+
+        <div class="integralRule">
+          <div class="title">
+            <span></span>
+            {{$t('scoreCfg.scoreGetRule')}}
+            <i style="color:#999;margin-left:30px;">{{$t('scoreCfg.scoreGetDescOne')}}</i>
+          </div>
+          <el-form-item
+            prop="shoppingScore"
+            :label="$t('scoreCfg.buySend') + '：'"
+          >
+            <el-switch
+              v-model="form.shoppingScore"
+              active-color="#f7931e"
+              active-value='on'
+              inactive-value=''
+            >
+            </el-switch>
+            <span style="display:inline-block;margin:0 20px">{{form.shoppingScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="color:#999">{{$t('scoreCfg.scoreGetDescTwo')}}</span>
+            <div v-if="form.shoppingScore">
+              <div
+                v-for="(item,index) in shopFullArr"
+                :key="index"
+              >
+                <div class="noneIntegralDiv">
+                  <span v-if="index===0">
+                    <el-radio
+                      v-model="form.scoreType"
+                      label="0"
+                    >{{ $t('memberCard.shopFull') }}&nbsp;&nbsp;</el-radio>
+                  </span>
+                  <span v-else>
+                    <span
+                      v-for="i in 5"
+                      :key=i
+                    >
+                      &nbsp;&nbsp;&nbsp;
+                    </span>
+                  </span>
+                  <el-input
+                    size="small"
+                    v-model.number="item.left"
+                    class="inputWidth"
+                  ></el-input>&nbsp;&nbsp; {{ $t('memberCard.send') }} &nbsp;&nbsp;
+                  <el-input
+                    size="small"
+                    v-model.number="item.right"
+                    class="inputWidth"
+                  >
+                  </el-input>&nbsp;&nbsp;{{ $t('memberCard.score') }}&nbsp;&nbsp;<img
+                    v-if="index === 0"
+                    style="cursor:pointer"
+                    :src="$imageHost +'/image/admin/sign_jia.png' "
+                    @click="handleToAddIntegral()"
+                  >
+
+                  <img
+                    v-else
+                    style="cursor:pointer"
+                    :src="$imageHost +'/image/admin/sign_del.png' "
+                    @click="handleToDelIntegral(index)"
+                  >
+                </div>
+              </div>
+              <div class="shoppingFullBottom">
+                <span>
+                  <el-radio
+                    v-model="form.scoreType"
+                    label="1"
+                  >{{ $t('memberCard.shopEachFull') }}&nbsp;&nbsp;</el-radio>
+                </span>
+                <el-input
+                  size="small"
+                  v-model="buyEach"
+                  class="inputWidth"
+                ></el-input>&nbsp;&nbsp;{{ $t('memberCard.send') }}&nbsp;&nbsp;
+                <el-input
+                  size="small"
+                  v-model="scoreEach"
+                  class="inputWidth"
+                ></el-input>&nbsp;&nbsp;{{ $t('memberCard.score') }}
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item
+            prop="storeScore"
+            :label="$t('scoreCfg.storeSend') + '：'"
+          >
+            <el-switch
+              v-model="form.storeScore"
+              active-color="#f7931e"
+              active-value='on'
+              inactive-value=''
+            >
+            </el-switch>
+            <span style="display:inline-block;margin:0 20px">{{form.storeScore? $t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="color:#999">{{$t('scoreCfg.storeSendDescOne')}}</span>
+          </el-form-item>
+          <el-form-item
+            prop="loginScore"
+            :label="$t('scoreCfg.loginSendScore') + '：'"
+          >
+            <el-switch
+              v-model="form.loginScore"
+              active-color="#f7931e"
+              active-value='on'
+              inactive-value=''
+            >
+            </el-switch>
+            <span style="display:inline-block;margin:0 20px">{{form.loginScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="color:#999">{{$t('scoreCfg.loginDescOne')}}</span>
+            <div
+              v-if="form.loginScore"
+              class="hiddenLoginDiv"
+            >
+              <span>{{$t('scoreCfg.loginSend')}}</span>
+              <span>
+                <el-input-number
+                  size="small"
+                  v-model="form.scoreLogin"
+                  controls-position="right"
+                  :min="1"
+                  :max="100000"
+                ></el-input-number>{{$t('scoreCfg.score')}}
+                <span style="color:#f66">{{$t('scoreCfg.loginDescTwo')}}</span>
+              </span>
+
+            </div>
+          </el-form-item>
+          <el-form-item
+            prop="signInScore"
+            :label="$t('scoreCfg.signSendScore') + '：'"
+          >
+            <el-switch
+              v-model="form.signInScore"
+              active-color="#f7931e"
+              active-value='on'
+              inactive-value=''
+            >
+            </el-switch>
+            <span style="display:inline-block;margin:0 20px">{{form.signInScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="color:#999;margin-right:10px;display:inline-block">{{$t('scoreCfg.signDescOne')}}</span><i
+              @click="handleToCheckMember()"
+              style="cursor:pointer;color:#5a8bff"
+            >{{$t('scoreCfg.view')}}</i>
+            <div
+              v-if="form.signInScore"
+              class="hiddenLoginDiv"
+            >
+              <div
+                v-for="(item,index) in signInput"
+                :key="index"
+                style="margin-bottom:5px"
+              >
+                <span>{{$t('scoreCfg.continueSign')}}{{ index + 1 }}{{$t('scoreCfg.daySend')}}</span>
+                <el-input
+                  v-model.number="item.input"
+                  size="small"
+                  style="width: 80px;"
+                ></el-input>
+                <span>{{$t('scoreCfg.score')}}</span>
+                <span
+                  @click="handleToAdd()"
+                  v-if="index===0"
+                  style="cursor:pointer"
+                >
+                  <img :src="$imageHost+'/image/admin/sign_jia.png'">
+                </span>
+                <span
+                  @click="handleToDel(index)"
+                  v-if="index>0&&index===(signInput.length-1)"
+                  style="cursor:pointer"
+                >
+                  <img :src="$imageHost+'/image/admin/sign_del.png'">
+                </span>
+              </div>
+
+            </div>
+          </el-form-item>
+        </div>
+
+      </el-form>
+
     </div>
-    <div
-      class="content"
-      style="margin-top:0"
-    >
-      <span>{{$t('scoreCfg.exchange')}}</span>
-      <div class="radioDiv">
-        {{$t('scoreCfg.formula')}}
-      </div>
+
+    <!-- 底部 -->
+    <div class="footer">
+      <el-button
+        size="small"
+        type="primary"
+        :disabled="submitStatus"
+        @click="saveScoreHandler"
+      >保存</el-button>
     </div>
   </div>
 </template>
 <script>
+import { userScoreConfigUpdate, getScoreConfigRequest } from '@/api/admin/memberManage/scoreManage/scoreCfg.js'
 export default {
-  props: ['message'],
   data () {
+    // 自定义校验
+    var validateScoreLimit = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择积分有效期'))
+      } else if (value === '1' && (!this.form.scoreYear || !this.form.scoreMonth || !this.form.scoreDay)) {
+        callback(new Error('请完整填写积分有效期'))
+      } else if (value === '2' && (!this.form.scoreLimitNumber || !this.form.scorePeriod)) {
+        callback(new Error('请完整填写积分有效期'))
+      } else {
+        callback()
+      }
+    }
+    var validatePayLimit = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择积分支付限制'))
+      } else if (value === '1' && !this.form.scorePayNum) {
+        callback(new Error('请完整填写积分支付限制'))
+      } else {
+        callback()
+      }
+    }
+    var validateRatio = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请填写积分抵扣比例'))
+      } else {
+        callback()
+      }
+    }
+    // 购物积分
+    var validateshopping = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请填写购物送积分'))
+      } else {
+        callback()
+      }
+    }
+    var validateLogin = (rule, value, callback) => {
+      if (value === 'on' && !this.form.scoreLogin) {
+        callback(new Error('请填写登录积分'))
+      } else {
+        callback()
+      }
+    }
+    var validateSignIn = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请填写签到积分'))
+      } else {
+        callback()
+      }
+    }
     return {
-      radio: '0',
-      yearValue: '4',
+      submitStatus: false,
+      // 开始
       yearOptions: null,
-      mounthValue: '4',
       mounthOptions: [
         {
           value: '0',
@@ -166,7 +448,6 @@ export default {
           value: '12',
           label: '12'
         }],
-      dayValue: '4',
       dayOptions: [
         {
           value: '0',
@@ -265,8 +546,7 @@ export default {
           value: '31',
           label: '31'
         }],
-      integralNum: '',
-      integralDateValue: '2',
+
       integralDateOptions: [{
         value: '1',
         label: '日'
@@ -277,7 +557,59 @@ export default {
       {
         value: '30',
         label: '月'
-      }]
+      }],
+      // 购物送积分
+      shopFullArr: [
+        {
+          left: 100,
+          right: 100
+        }
+      ],
+      buyEach: null,
+      scoreEach: null,
+      // 签到送积分
+      signData: 1,
+      signInput: [
+        {
+          input: 10
+        }
+      ],
+
+      form: {
+        scoreLimit: '0', // 积分有效期类型
+        scoreDay: '',
+        scoreMonth: '',
+        scoreYear: '',
+        scoreLimitNumber: '',
+        scorePeriod: '',
+
+        scorePayLimit: '0', // 积分支付限制
+        scorePayNum: '',
+        scoreDiscountRatio: '', // 积分抵扣比例
+
+        shoppingScore: 'on', // 购物送积分
+        scoreType: '0', // 类型
+        buy: [], // 满多少送多少
+        score: [],
+        buyEach: [], // 每满多少送多少
+        scoreEach: [],
+        storeScore: 'on', // 门店买单送积分
+        loginScore: 'on', // 登录送积分
+        scoreLogin: 1, // 登录积分
+        signInScore: 'on', // 签到送积分
+        signScore: [] // 签到积分
+      },
+      // 校验表单
+      fromRules: {
+        scoreLimit: { required: true, validator: validateScoreLimit, trigger: 'blur' },
+        scorePayLimit: { required: true, validator: validatePayLimit, trigger: 'blur' },
+        scoreDiscountRatio: { required: true, validator: validateRatio, trigger: 'blur' },
+        shoppingScore: { required: true, validator: validateshopping, trigger: 'change' },
+        loginScore: { required: true, validator: validateLogin, trigger: 'change' },
+        signInScore: { required: true, validator: validateSignIn, trigger: 'change' }
+      }
+      // 结束
+
     }
   },
   watch: {
@@ -293,54 +625,202 @@ export default {
         value: '30',
         label: this.$t('scoreCfg.month')
       }]
-
       this.dayOptions[0].label = this.$t('scoreCfg.choose')
       this.mounthOptions[0].label = this.$t('scoreCfg.choose')
       this.yearOptions = this.$t('scoreCfg.yearOptions')
     },
-    mounthValue (newData) {
-      console.log('299')
+    'form.scoreMonth' (newData) {
       if (newData === '0') {
-        this.dayValue = ''
+        this.form.scoreDay = ''
       }
-    },
-    message () {
-      console.log('数据传递成功')
-    },
-    '$store.state.util.integralDataNotice' (newData) {
-      console.log(newData)
-      console.log('正在监控积分通用规则')
-      let obj = {
-        radio: this.message.radio
-      }
-      switch (this.message.radio) {
-        case '1':
-          obj.yearValue = this.message.yearValue
-          obj.mounthValue = this.message.mounthValue
-          obj.dayValue = this.message.dayValue
-          break
-        case '2':
-          obj.integralNum = this.message.integralNum
-          obj.integralDateValue = this.message.integralDateValue
-      }
-      console.log(obj)
-      this.$emit('toNoticeSend', obj, 0)
     }
   },
   mounted () {
     this.langDefault()
+    this.getScoreHandler()
   },
   methods: {
+    // 获取积分配置
+    getScoreHandler () {
+      getScoreConfigRequest().then((res) => {
+        if (res.error === 0) {
+          this.$message.success('获取积分配置')
+          var data = res.content
+          this.form.scoreLimit = data.scoreLimit
+          this.form.scoreDay = data.scoreDay
+          this.form.scoreMonth = data.scoreMonth
+          this.form.scoreYear = data.scoreYear
+          this.form.scoreLimitNumber = data.scoreLimitNumber
+          this.form.scorePeriod = data.scorePeriod
 
+          this.form.scorePayLimit = data.scorePayLimit
+          this.form.scorePayNum = data.scorePayNum
+          this.form.scoreDiscountRatio = data.scoreDiscountRatio
+
+          // 购物送积分
+          if (data.shoppingScore === '1') {
+            this.form.shoppingScore = 'on'
+          } else {
+            this.form.shoppingScore = ''
+          }
+          this.form.scoreType = data.scoreType
+          this.shopFullArr = []
+          if (this.form.scoreType === '0') {
+            this.form.buy = data.buy
+            data.buy.forEach((item, index) => {
+              this.shopFullArr.push({ left: item })
+            })
+            this.form.score = data.buyScore
+            this.shopFullArr.forEach((val, key) => {
+              data.buyScore.forEach((item, index) => {
+                if (key === index) {
+                  val.right = item
+                }
+              })
+            })
+          } else {
+            this.form.buyEach = data.buyEach
+            this.form.scoreEach = data.buyEachScore
+            this.buyEach = this.form.buyEach[0]
+            this.scoreEach = this.form.scoreEach[0]
+          }
+
+          // 门店买单送积分
+          if (data.storeScore === '1') {
+            this.form.storeScore = 'on'
+          } else {
+            this.form.storeScore = ''
+          }
+
+          // 登陆送积分
+          if (data.loginScore === '1') {
+            this.form.loginScore = 'on'
+          } else {
+            this.form.loginScore = ''
+          }
+          this.form.scoreLogin = data.scoreLogin
+
+          // 签到送积分
+          this.form.signScore = data.signScore
+          this.signInput = []
+          data.signScore.forEach((item, index) => {
+            this.signInput.push({ input: item })
+          })
+
+          console.log(this.form)
+        }
+      })
+    },
+
+    // 保存积分配置
+    saveScoreHandler () {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          // 购物送积分
+          if (this.form.scoreType === '0') {
+            this.form.buy = []
+            this.form.score = []
+            this.shopFullArr.forEach((item, index) => {
+              this.form.buy.push(item.left)
+              this.form.score.push(item.right)
+            })
+          } else {
+            this.buyEach[0] = this.buyEach
+            this.scoreEach = this.scoreEach
+          }
+          // 签到积分
+          this.form.signScore = []
+          this.signInput.forEach((item, index) => {
+            this.form.signScore.push(item.input)
+          })
+
+          console.log(this.form)
+          userScoreConfigUpdate(this.form).then((res) => {
+            if (res.error === 0) {
+              this.$message.success(this.$t('memberCard.scoreSaveSuccess'))
+            }
+          })
+        }
+      })
+    },
+
+    // 3- 添加购物满
+    handleToAddIntegral () {
+      this.shopFullArr.push({
+        left: null,
+        right: null
+      })
+    },
+    // 4- 删除购物满
+    handleToDelIntegral (index) {
+      this.shopFullArr.splice(index, 1)
+    },
+    // 签到送积分点击添加icon
+    handleToAdd () {
+      let obj = {
+        input: ''
+      }
+      this.signInput.push(obj)
+      this.signData++
+    },
+    // 签到送积分点击删除icon
+    handleToDel (index) {
+      this.signData--
+      this.signInput.splice(index, 1)
+      console.log(this.signInput, index)
+    },
+    //  查看签到会员点击
+    handleToCheckMember () {
+      this.$router.push({
+        name: 'viewSigninMembers'
+      })
+    },
+
+    // 积分校验
+    checkScoreLimit (value) {
+      var re = /^[1-9]\d*00$/
+      if (!re.test(value)) {
+        this.$message.warning('积分支付限制填写不正确')
+      }
+    },
+    checkScoreRatio (value) {
+      var re = /^(?:[1-9]?\d|100)$/
+      if (!value || !re.test(value)) {
+        this.$message.warning('积分抵扣比例填写不正确')
+      }
+      if (!value) {
+        this.form.scoreDiscountRatio = 50
+      }
+    },
+    checkScore (value) {
+      var re = /^[1-9]\d*$/
+      if (!value) {
+        this.$message.warning('请填写积分')
+      }
+      if (!re.test(value)) {
+        this.$message.warning('积分填写不正确')
+      }
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
+.inputWidth {
+  width: 170px;
+}
+.selectWidth {
+  width: 100px;
+}
 .integralRule {
+  background: #fff;
+  // padding: 15px 25px;
+  padding-top: 0;
   .top {
     padding-bottom: 10px;
+    margin-bottom: 10px;
   }
   .title {
+    margin-bottom: 20px;
     span {
       display: inline-block;
       margin-left: 20px;
@@ -383,4 +863,146 @@ export default {
     }
   }
 }
+// 开始
+.shoppingFullBottom,
+.noneIntegralDiv {
+  margin-top: 20px;
+  // padding-left: 54px;
+  display: flex;
+  align-items: center;
+
+  /deep/ .el-input {
+    width: 8%;
+    .el-input__inner {
+      width: 100%;
+    }
+  }
+}
+.shoppingFullBottom .el-input {
+  width: 8%;
+  .el-input__inner {
+    width: 100%;
+  }
+}
+.integralManagement {
+  padding: 10px;
+  padding-bottom: 68px;
+  min-width: 100%;
+  font-size: 14px;
+  height: 100%;
+  position: relative;
+  overflow-y: auto;
+  .integralManagementMain {
+    position: relative;
+    background-color: #fff;
+    overflow: hidden;
+    overflow-y: auto;
+    padding: 15px 25px;
+  }
+  .integralUsage {
+    margin-top: 10px;
+    .title {
+      span {
+        display: inline-block;
+        margin-left: 20px;
+        border-left: 2px solid #5a8bff;
+        height: 14px;
+        width: 8px;
+        margin-bottom: -1px;
+      }
+      height: 40px;
+      line-height: 40px;
+      background: #eef1f6;
+      font-size: 14px;
+      i {
+        display: inline-block;
+        margin-left: 30px;
+      }
+    }
+    .intLimit {
+      .intLimitTop {
+        margin: 20px 0;
+        display: flex;
+        /deep/ .el-input-number {
+          margin: 0 10px;
+        }
+        span {
+          margin-right: 10px;
+        }
+      }
+      .intLimitFooter {
+        span {
+          height: 32px;
+          line-height: 32px;
+        }
+      }
+    }
+    .intContent {
+      margin-top: 20px;
+      .intTitle {
+        display: inline-block;
+        width: 100px;
+        text-align: right;
+        margin-right: 10px;
+      }
+      .loginDiv {
+        display: flex;
+        .hiddenLoginDiv {
+          padding-left: 20px;
+          margin: 20px 0;
+          display: flex;
+          span {
+            height: 32px;
+            line-height: 32px;
+          }
+          div {
+            margin: 0 10px;
+          }
+        }
+      }
+    }
+    .signDiv {
+      display: flex;
+      .hiddenLoginDiv {
+        padding-left: 20px;
+        margin: 20px 0;
+        div {
+          /deep/ .el-input {
+            width: 70px;
+            margin: 0 20px;
+          }
+          display: flex;
+          span {
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+          }
+          span:nth-of-type(2) {
+            margin-right: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+// 结束
+.footer {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  background: #fff;
+  border-top: 1px solid #e4e7ed;
+}
+// .footer {
+//   position: absolute;
+//   bottom: 0;
+//   right: 27px;
+//   left: 160px;
+//   height: 52px;
+//   padding: 10px 0;
+//   background-color: #fff;
+//   text-align: center;
+//   border-top: 1px solid #eee;
+//   z-index: 99;
+// }
 </style>

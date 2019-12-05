@@ -8,7 +8,7 @@
           <div class="leftContent">
             <div
               class="show_pass"
-              v-html="example"
+              v-html="editMsg"
             >
             </div>
           </div>
