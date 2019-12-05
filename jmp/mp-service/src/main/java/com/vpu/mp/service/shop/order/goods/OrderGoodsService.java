@@ -25,6 +25,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -246,10 +247,10 @@ public class OrderGoodsService extends ShopBaseService{
             productSn(goods.getProductInfo().getPrdSn()).
             goodsNumber(goods.getGoodsNumber()).
             marketPrice(goods.getProductInfo().getPrdMarketPrice()).
-            goodsPrice(goods.getProductInfo().getPrdPrice()).
+            goodsPrice(goods.getProductPrice()).
             goodsAttr(goods.getProductInfo().getPrdDesc()).
             //TODO 需要考虑
-            goodsAttrId("").
+            goodsAttrId(StringUtils.EMPTY).
             goodsImg(goods.getGoodsInfo().getGoodsImg()).
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
@@ -279,7 +280,7 @@ public class OrderGoodsService extends ShopBaseService{
             purchasePriceId(null).
             purchasePriceRuleId(null).
             reducePriceId(null).
-            firstSpecialId(null).
+            firstSpecialId(goods.getFirstSpecialId() == null ? NumberUtils.INTEGER_ZERO : goods.getFirstSpecialId()).
             isCardExclusive(goods.getGoodsInfo().getIsCardExclusive()).
             promoteInfo(null).
             build();

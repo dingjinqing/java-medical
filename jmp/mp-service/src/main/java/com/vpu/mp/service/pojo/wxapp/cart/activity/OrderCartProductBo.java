@@ -29,6 +29,8 @@ public class OrderCartProductBo {
 
     private Map<Integer, OrderCartProduct> map;
 
+    private List<Integer> productIds;
+
     private OrderCartProductBo(List<OrderCartProduct> info) {
         this.info = info;
     }
@@ -37,12 +39,23 @@ public class OrderCartProductBo {
         return new OrderCartProductBo(CollectionUtils.isEmpty(info) ? Collections.emptyList() : info);
     }
 
+    private void initMap(){
+        map = info.stream().collect(Collectors.toMap(OrderCartProduct::getProductId, Function.identity()));
+    }
+
+    private void initProductIds(){
+        productIds = getAll().stream().map(OrderCartProductBo.OrderCartProduct::getProductId).collect(Collectors.toList());
+    }
+
     public List<OrderCartProduct> getAll(){
         return info;
     }
 
-    private void initMap(){
-        map = info.stream().collect(Collectors.toMap(OrderCartProduct::getProductId, Function.identity()));
+    public List<Integer> getProductIds(){
+        if(CollectionUtils.isEmpty(productIds)){
+            initProductIds();
+        }
+        return productIds;
     }
 
     public OrderCartProduct get(Integer productId){
@@ -88,6 +101,13 @@ public class OrderCartProductBo {
             Optional<Integer> first = activityInfo.stream()
                 .filter(activity -> activity.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)&&activity.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL))
                 .map(GoodsActivityInfo::getActivityId).findFirst();
+            return first.orElse(null);
+        }
+
+        public BigDecimal getGradeCardPrice(){
+            Optional<BigDecimal> first = activityInfo.stream()
+                .filter(activity -> activity.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE)&&activity.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL))
+                .map(GoodsActivityInfo::getMemberPrice).findFirst();
             return first.orElse(null);
         }
 

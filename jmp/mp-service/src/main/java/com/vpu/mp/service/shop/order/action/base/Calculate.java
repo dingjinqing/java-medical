@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.action.base;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -10,6 +11,8 @@ import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -520,6 +523,24 @@ public class Calculate extends ShopBaseService {
         for (OrderGoodsBo bo : orderGoods) {
             bo.setIsCanReturn(isCanReturn != null ? isCanReturn : goodsReturnCfg.get(bo.getGoodsId()));
         }
+    }
+
+    public UniteMarkeingtRecalculateBo uniteMarkeingtRecalculate(OrderBeforeParam.Goods goods, OrderCartProductBo.OrderCartProduct uniteMarkeingt){
+        //TODO 分销改价
+
+        //首单特惠
+        if(uniteMarkeingt != null && uniteMarkeingt.getFirstSpecialPrice() != null) {
+            return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getFirstSpecialPrice(), BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL, uniteMarkeingt.getFirstSpecialId());
+        }
+
+        //限时降价
+
+        //会员价
+        if(uniteMarkeingt != null && uniteMarkeingt.getGradeCardPrice() != null){
+            return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getGradeCardPrice(), BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE, null);
+        }
+
+        return UniteMarkeingtRecalculateBo.create(goods.getProductPrice(), BaseConstant.ACTIVITY_TYPE_GENERAL, null);
     }
 
 }

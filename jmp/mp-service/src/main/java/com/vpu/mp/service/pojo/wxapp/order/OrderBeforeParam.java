@@ -88,7 +88,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		/**促销折扣均摊到每件商品的折扣*/
 		private BigDecimal perDiscount;
         /**营销活动类型*/
-        private Integer goodsPriceAction;
+        private Byte goodsPriceAction;
 		/**以下为后台产生逻辑值initGoods*/
 		private Integer straId;
 		private Integer purchasePriceId;

@@ -195,6 +195,10 @@ public enum JsonResultCode {
     CODE_ORDER_UPDATE_STOCK_FAIL(120083, JsonResultMessage.MSG_ORDER_UPDATE_STOCK_FAIL),
     /**下单数据库执行异常*/
     CODE_ORDER_DATABASE_ERROR(120084, JsonResultMessage.MSG_ORDER_DATABASE_ERROR),
+    /**最小限购{名称}{数量}*/
+    CODE_ORDER_GOODS_LIMIT_MIN(120085, JsonResultMessage.MSG_ORDER_GOODS_LIMIT_MIN),
+    /**最大限购*/
+    CODE_ORDER_GOODS_LIMIT_MAX(120086, JsonResultMessage.MSG_ORDER_GOODS_LIMIT_MAX),
 
     /**
      * 去支付

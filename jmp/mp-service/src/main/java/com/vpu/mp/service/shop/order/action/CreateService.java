@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
@@ -23,6 +24,7 @@ import com.vpu.mp.service.shop.activity.factory.OrderBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.OrderCreatePayBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.activity.processor.FirstSpecialProcessor;
+import com.vpu.mp.service.shop.activity.processor.GradeCardProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -140,6 +142,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private FirstSpecialProcessor firstSpecialProcessor;
+
+    @Autowired
+    private GradeCardProcessor gradeCardProcessor;
     
     @Override
     public OrderServiceCode getServiceCode() {
@@ -406,6 +411,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
             OrderCartProductBo orderCartProductBo = OrderCartProductBo.create(param.getOrderCartProductBo());
             firstSpecialProcessor.doOrderOperation(param.getWxUserInfo().getUserId(), DateUtil.getSqlTimestamp(), orderCartProductBo, param.getStoreId());
+            gradeCardProcessor.doOrderOperation(userCard.getUserGrade(param.getWxUserInfo().getUserId()), orderCartProductBo);
             //初始化订单商品
             vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), orderCartProductBo, param.getStoreId()));
         }
@@ -433,6 +439,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             temp.setGoodsInfo(goods.get(temp.getGoodsId()));
             //校验
             checkGoodsAndProduct(temp);
+            //初始化商品价格
+            temp.setProductPrice(temp.getProductInfo().getPrdPrice());
         }
         logger().info("processParamGoods end");
     }
@@ -489,23 +497,17 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         logger().info("initOrderGoods开始");
         // 会员卡类型
         Byte cardType = StringUtil.isBlank(memberCardNo) ? null : userCard.getCardType(memberCardNo);
-        // 会员等级
-        String userGrade = userCard.getUserGrade(userId);
+
         //
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
 
-            //TODO 扫码构改规格信息
-
+            //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
+            UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()));
             //TODO 分销改价（return）
 
             //TODO 首单特惠（return）
-            OrderCartProductBo.OrderCartProduct firstSpecial = uniteMarkeingtBo.get(temp.getProductId());
-            if(firstSpecial != null && firstSpecial.getFirstSpecialPrice() != null) {
-                temp.setGoodsPriceAction(3);
-                temp.setProductPrice(firstSpecial.getFirstSpecialPrice());
-                temp.setFirstSpecialId(firstSpecial.getFirstSpecialId());
-            }
+
             //会员等级->限时降价/等级会员卡专享价格/商品价格（三取一）return
             //限时降价
 
@@ -513,7 +515,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
             //预售商品，不支持现购买
 
-            //非加价购 && 非限次卡，限购
+            //非加价购 && 非限次卡
+            if(Boolean.TRUE) {
+                if(temp.getGoodsInfo().getLimitBuyNum() > 0 && temp.getGoodsNumber() < temp.getGoodsInfo().getLimitBuyNum()){
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最小限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
+                }
+                if(temp.getGoodsInfo().getLimitMaxNum() > 0 && temp.getGoodsNumber() > temp.getGoodsInfo().getLimitMaxNum()){
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最大限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
+                }
+            }
 
             //price 副本
 
@@ -523,7 +533,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
             //判断副本与实际计算价格大小、
 
-            //初始化ordergoods
+
+            //非加价购 改价
+            if(Boolean.TRUE) {
+                temp.setProductPrice(calculateResult.getPrice());
+                temp.setGoodsPriceAction(calculateResult.getActivityType());
+            }
 
             //TODO temp goodsprice 取规格
             boList.add(orderGoods.initOrderGoods(temp));

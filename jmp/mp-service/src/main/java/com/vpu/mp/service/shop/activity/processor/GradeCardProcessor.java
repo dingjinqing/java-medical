@@ -5,6 +5,9 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
@@ -129,6 +132,23 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
                     CartActivityInfo gradePriceInfo = new CartActivityInfo();
                     gradePriceInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
                     gradePriceInfo.setMemberPriceType(gradePrice.getGradePrice());
+                }
+            });
+        });
+    }
+
+    public void doOrderOperation(String grade, OrderCartProductBo productBo){
+        if(grade.equals(CardConstant.LOWEST_GRADE)) {
+            return;
+        }
+        List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(grade, productBo.getProductIds());
+        productBo.getAll().forEach(goods -> {
+            // 会员等级
+            userCartGradePrice.forEach(gradePrice -> {
+                if (goods.getProductId().equals(gradePrice.getPrdId())) {
+                    GoodsActivityInfo goodsActivityInfo = new GoodsActivityInfo();
+                    goodsActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
+                    goodsActivityInfo.setMemberPrice(gradePrice.getGradePrice());
                 }
             });
         });

@@ -483,6 +483,8 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_UPDATE_STOCK_FAIL = "order_update_stock_fail";
     public static final String MSG_ORDER_WXPAY_UNIFIEDORDER_FAIL = "order_wxpay_unifiedorder_fail";
     public static final String MSG_ORDER_DATABASE_ERROR = "order_database_error";
+    public static final String MSG_ORDER_GOODS_LIMIT_MIN = "MSG_ORDER_GOODS_LIMIT_MIN";
+    public static final String MSG_ORDER_GOODS_LIMIT_MAX = "MSG_ORDER_GOODS_LIMIT_MAX";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "_order_topay_status_not_wait_pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order_topay_bk_pay_not_start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order_topay_expired";

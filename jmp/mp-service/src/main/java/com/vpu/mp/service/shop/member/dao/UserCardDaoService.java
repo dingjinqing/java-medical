@@ -129,8 +129,6 @@ public class UserCardDaoService extends ShopBaseService{
 
 	/**
 	 * 获取有效用户会员卡列表
-	 * @param cardType -1所有可用卡  卡类型
-	 * @param type 0线上 1线下
 	 */
 	public List<ValidUserCardBean> getValidCardList(Integer userId){
 		return getValidCardList(userId,MCARD_TP_ALL,CARD_ONLINE);
@@ -433,6 +431,15 @@ public class UserCardDaoService extends ShopBaseService{
 				.and(GRADE_PRD.PRD_ID.in(prdIdList)).fetchInto(UserCardGradePriceBo.class);
 
 	}
+
+    public List<UserCardGradePriceBo> getUserCartGradePrice(String grade, List<Integer> prdIdList) {
+        return db().select(MEMBER_CARD.CARD_NAME, MEMBER_CARD.GRADE, GRADE_PRD.GOODS_ID, GRADE_PRD.PRD_ID,
+            GRADE_PRD.GRADE_PRICE)
+            .from(GRADE_PRD)
+            .where(GRADE_PRD.PRD_ID.in(prdIdList).and(GRADE_PRD.GRADE.eq(grade)))
+            .fetchInto(UserCardGradePriceBo.class);
+
+    }
 
     /**
      * 王帅

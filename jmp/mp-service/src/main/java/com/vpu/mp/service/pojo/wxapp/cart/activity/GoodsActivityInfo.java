@@ -31,7 +31,7 @@ public class GoodsActivityInfo extends GoodsActivityBaseMp {
     /**
      * 会员价格
      */
-    private BigDecimal memberPriceType;
+    private BigDecimal memberPrice;
 
     /**
      * 秒杀价格

@@ -379,7 +379,6 @@ public class UserCardService extends ShopBaseService {
 
 	/**
 	 * 添加会员卡
-	 * @param isActive 是否直接激活  {@link UCARD_ACT_NO}
 	 */
 	public void addUserCard(Integer userId, List<UserCardParam> cardList, boolean isActivate) throws MpException {
 
@@ -721,9 +720,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 通过用户id，获取用户所有的会员卡列表
-	 *
-	 * @param userId
+     * 获取用户所有的会员卡列表
 	 * @return
 	 */
 	public PageResult<WxAppUserCardVo> getAllCardsOfUser(SearchCardParam param) {
@@ -895,6 +892,16 @@ public class UserCardService extends ShopBaseService {
 	public List<UserCardGradePriceBo> getUserCartGradePrice(Integer userId, List<Integer> prdIdList) {
 		return userCardDao.getUserCartGradePrice(userId,prdIdList);
 	}
+
+    /**
+     * 获取商品的等级会员价
+     *
+     * @param grade    等级
+     * @param prdIdList 规格ids
+     */
+    public List<UserCardGradePriceBo> getUserCartGradePrice(String grade, List<Integer> prdIdList) {
+        return userCardDao.getUserCartGradePrice(grade,prdIdList);
+    }
 
     /**
      * 筛选会员专享商品
