@@ -377,13 +377,14 @@ export default {
         callback()
       }
     }
-    var validateRatio = (rule, value, callback) => {
-      if (!value) {
-        this.form.scoreDiscountRatio = 50
-      } else {
-        callback()
-      }
-    }
+    // var validateRatio = (rule, value, callback) => {
+    //   if (!value || value === '' || value === null) {
+    //     // this.form.scoreDiscountRatio = 50
+    //     callback(new Error('请填写积分抵扣比例'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     // 购物积分
     var validateshopping = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
@@ -426,7 +427,6 @@ export default {
     }
     return {
       submitStatus: false,
-      // 开始
       yearOptions: null,
       mounthOptions: [
         {
@@ -624,13 +624,11 @@ export default {
       fromRules: {
         scoreLimit: { required: true, validator: validateScoreLimit, trigger: 'blur' },
         scorePayLimit: { required: true, validator: validatePayLimit, trigger: 'blur' },
-        scoreDiscountRatio: { required: true, validator: validateRatio, trigger: 'blur' },
+        // scoreDiscountRatio: { required: true, validator: validateRatio, trigger: 'blur' },
         shoppingScore: { required: true, validator: validateshopping, trigger: 'change' },
         loginScore: { required: true, validator: validateLogin, trigger: 'change' },
         signInScore: { required: true, validator: validateSignIn, trigger: 'change' }
       }
-      // 结束
-
     }
   },
   watch: {
@@ -654,6 +652,11 @@ export default {
       if (newData === '0') {
         this.form.scoreDay = ''
       }
+    },
+    'form.scoreDiscountRatio': function (val) {
+      if (!val || val === '' || val === null) {
+        this.form.scoreDiscountRatio = 50
+      }
     }
   },
   mounted () {
@@ -664,7 +667,7 @@ export default {
     // 获取积分配置
     getScoreHandler () {
       getScoreConfigRequest().then((res) => {
-        if (res.error === 0) {
+        if (res.error === 0 && res.content) {
           this.$message.success('获取积分配置')
           var data = res.content
           this.form.scoreLimit = data.scoreLimit

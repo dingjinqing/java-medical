@@ -16,8 +16,10 @@
             src="http://mpdevimg2.weipubao.cn/image/admin/shop_beautify/phone_tops.png"
             alt=""
           >
-          <div class="leftPass">
-
+          <div
+            class="leftPass"
+            v-html="editMsg"
+          >
           </div>
         </div>
         <div class="rightContent">
@@ -43,14 +45,10 @@
             </el-form-item>
             <el-form-item label="页面内容：">
               <p class="template">使用模板文案</p>
-              <TinymceEditor />
-              <!-- <TinymceEditor
-                ref='edit'
-                @input="handleToGetText"
-                :value='moduleSaveData.rich_text'
-                :height='100'
-                :imageSize=[360,360]
-              /> -->
+              <TinymceEditor
+                v-model="content"
+                @input="input"
+              />
             </el-form-item>
           </el-form>
         </div>
@@ -79,17 +77,20 @@ export default {
       form: {
         submitStatus: false,
         title: '分销员推广测试',
-        moduleSaveData: {
-          rich_text: '' // 文本内容
-        }
+        // 文本内容
+        content: `111111111111内容`
       }
     }
   },
   methods: {
+    // 编辑器输入内容获取
+    input (val) {
+      console.log(val)
+    },
+
     // 获得编辑器输入内容
     handleToGetText (res) {
       console.log(res)
-      this.moduleSaveData.rich_text = res
     },
 
     // 获取

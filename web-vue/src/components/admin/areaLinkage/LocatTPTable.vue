@@ -288,7 +288,6 @@ export default {
     },
     validateMoney (rule, value, callback) {
       // 非负数
-      // var re = /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/
       var re = /^\d+(\.\d{1,2})?$/
       if (value === '') {
         callback(new Error('请填写运费'))
