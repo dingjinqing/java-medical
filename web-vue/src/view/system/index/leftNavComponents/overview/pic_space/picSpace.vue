@@ -1,13 +1,16 @@
 <template>
-  <h1>我是项目概览</h1>
+  <div>
+    图片空间部分
+  </div>
 </template>
 
 <script>
+
 export default {
-  name: 'overview'
+  name: 'picSpace'
+
 }
+
 </script>
-
 <style scoped>
-
 </style>

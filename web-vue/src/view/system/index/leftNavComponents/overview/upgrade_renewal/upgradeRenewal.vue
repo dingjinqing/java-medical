@@ -1,13 +1,14 @@
 <template>
-  <h1>我是项目概览</h1>
+  <div>
+    <h1>升级续费申请</h1>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'overview'
+  name: 'upgradeRenewal'
 }
 </script>
 
 <style scoped>
-
 </style>

@@ -1,10 +1,12 @@
 <template>
-  <h1>我是项目概览</h1>
+  <div class="container">
+    <router-view />
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'overview'
+  name: 'index'
 }
 </script>
 

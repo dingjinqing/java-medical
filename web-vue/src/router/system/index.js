@@ -5,13 +5,13 @@ const routes = [
     meta: {
       title: '概览'
     },
-    component: () => import('@/view/system_new/layout/index'),
+    component: () => import('@/view/system/layout/index'),
     // redirect: '/system/overview/overview_index',
     children: [
       // 概述子路由
       {
         path: 'overview_index',
-        component: () => import('@/view/system_new/views/overview/overview_index/overview'),
+        component: () => import('@/view/system/index/leftNavComponents/overview/overview_index/overview'),
         name: 'overview',
         meta: {
           title: '概览',
@@ -20,8 +20,16 @@ const routes = [
         }
       },
       {
+        path: 'login_log',
+        component: () => import('@/view/system/index/leftNavComponents/overview/loginLog'),
+        name: 'loginLog',
+        meta: {
+          title: '登录日志'
+        }
+      },
+      {
         path: 'upgrade_renewal',
-        component: () => import('@/view/system_new/views/overview/upgrade_renewal/upgradeRenewal'),
+        component: () => import('@/view/system/index/leftNavComponents/overview/upgrade_renewal/upgradeRenewal'),
         name: 'upgradeRenewal',
         meta: {
           title: '升级续费申请'
@@ -29,7 +37,7 @@ const routes = [
       },
       {
         path: 'pic_space',
-        component: () => import('@/view/system_new/views/overview/pic_space/picSpace'),
+        component: () => import('@/view/system/index/leftNavComponents/overview/pic_space/picSpace'),
         name: 'picSpace',
         meta: {
           title: '图片空间'
@@ -40,7 +48,7 @@ const routes = [
 
   {
     path: '/system/store_management',
-    component: () => import('@/view/system_new/layout/index'),
+    component: () => import('@/view/system/layout/index'),
     name: 'storeManagementMain',
     meta: {
       title: '店铺管理'
@@ -49,7 +57,7 @@ const routes = [
     children: [
       {
         path: 'account_list',
-        component: () => import('@/view/system_new/views/store_management/account_list/accountList'),
+        component: () => import('@/view/system/index/leftNavComponents/store_management/account_list/accountList'),
         name: 'accountList',
         meta: {
           title: '店铺账户列表'
@@ -57,7 +65,7 @@ const routes = [
       },
       {
         path: 'shop_list',
-        component: () => import('@/view/system_new/views/store_management/shop_list/shopList'),
+        component: () => import('@/view/system/index/leftNavComponents/store_management/shop_list/shopList'),
         name: 'shopList',
         meta: {
           title: '店铺列表'
@@ -65,7 +73,7 @@ const routes = [
       },
       {
         path: 'publish_list',
-        component: () => import('@/view/system_new/views/store_management/publish_list/pshopList'),
+        component: () => import('@/view/system/index/leftNavComponents/store_management/publish_list/pshopList'),
         name: 'pshopList',
         meta: {
           title: '发布列表'
@@ -73,7 +81,7 @@ const routes = [
       },
       {
         path: 'program_manage/:page/:appId',
-        component: () => import('@/view/system_new/views/store_management/program_management/programManage'),
+        component: () => import('@/view/system/index/leftNavComponents/store_management/program_management/programManage'),
         name: 'programManage',
         meta: {
           title: '小程序版本'
@@ -81,7 +89,7 @@ const routes = [
       },
       {
         path: 'versionList',
-        component: () => import('@/view/system_new/views/store_management/version_list/versionList'),
+        component: () => import('@/view/system/index/leftNavComponents/store_management/version_list/versionList'),
         name: 'versionList',
         meta: {
           title: '版本列表'
@@ -89,7 +97,7 @@ const routes = [
       },
       {
         path: 'backgroundTaskList',
-        component: () => import('@/view/system_new/views/store_management/program_management/backgroundTaskList'),
+        component: () => import('@/view/system/index/leftNavComponents/store_management/program_management/backgroundTaskList'),
         name: 'backgroundTaskList',
         meta: {
           title: '后台任务列表',
@@ -105,13 +113,13 @@ const routes = [
     meta: {
       title: '订单管理'
     },
-    component: () => import('@/view/system_new/layout/index'),
+    component: () => import('@/view/system/layout/index'),
     redirect: '/system/order_management/order_statistics',
     children: [
       // 订单管理子路由
       {
         path: 'order_statistics',
-        component: () => import('@/view/system_new/views/order_management/order_statistics/orderStatistics'),
+        component: () => import('@/view/system/index/leftNavComponents/order_management/order_statistics/orderStatistics'),
         name: 'orderStatistics',
         meta: {
           title: '订单统计'
@@ -119,7 +127,7 @@ const routes = [
       },
       {
         path: 'order_list',
-        component: () => import('@/view/system_new/views/order_management/order_list/orderList'),
+        component: () => import('@/view/system/index/leftNavComponents/order_management/order_list/orderList'),
         name: 'orderList',
         meta: {
           title: '订单列表'
