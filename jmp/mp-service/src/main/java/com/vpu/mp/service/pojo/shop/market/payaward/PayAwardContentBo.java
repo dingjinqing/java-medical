@@ -20,7 +20,7 @@ public class PayAwardContentBo {
     /**
      * 奖励类型
      */
-    private Integer giftType;
+    private Byte giftType;
     /**
      * 优惠卷
      */
