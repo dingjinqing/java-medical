@@ -170,7 +170,7 @@
               <span style="color: #999">最多可添加5次支付的奖励</span>
               <div
                 class="addReward"
-                @click="addItem()"
+                @click="addPayRewardItem()"
               > +添加奖励</div>
             </div>
           </div>
@@ -192,7 +192,7 @@
                   v-if="index>0"
                   class="el-icon-delete "
                   style="color:#409eff;cursor:pointer"
-                  @click="deleteItem(index)"
+                  @click="deletePayRewardItem(index)"
                 ></i>
               </div>
             </el-form-item>
@@ -207,25 +207,25 @@
                 class="itemOptions"
               >
                 <div style="margin-top:13px">
-                  <el-radio label="0">无奖品</el-radio>
-                  <el-radio label="1">普通优惠券</el-radio>
-                  <el-radio label="2">分裂优惠券</el-radio>
+                  <el-radio :label="0">无奖品</el-radio>
+                  <el-radio :label="1">普通优惠券</el-radio>
+                  <el-radio :label="2">分裂优惠券</el-radio>
                 </div>
                 <div style="margin-top:10px">
-                  <el-radio label="3">幸运大抽奖</el-radio>
-                  <el-radio label="4">余额</el-radio>
-                  <el-radio label="5">奖品</el-radio>
+                  <el-radio :label="3">幸运大抽奖</el-radio>
+                  <el-radio :label="4">余额</el-radio>
+                  <el-radio :label="5">奖品</el-radio>
                 </div>
                 <div style="margin-top:10px">
-                  <el-radio label="6">积分</el-radio>
-                  <el-radio label="7">自定义</el-radio>
+                  <el-radio :label="6">积分</el-radio>
+                  <el-radio :label="7">自定义</el-radio>
                 </div>
               </el-radio-group>
             </el-form-item>
 
             <!-- 普通优惠券 -->
             <el-form-item
-              v-if="item.giftType==='1'"
+              v-if="item.giftType===1"
               label="普通优惠券："
               prop="awardList[index].ordinaryCoupon"
               :rules="{
@@ -291,7 +291,7 @@
 
             <!-- 分裂优惠券 -->
             <el-form-item
-              v-if=" params.awardList[index].giftType ==='2'"
+              v-if="params.awardList[index].giftType === 2 "
               label="分裂优惠券："
               prop="awardList[index].splitCoupon"
               :rules="{
@@ -368,7 +368,7 @@
 
             <!-- 幸运大抽奖 -->
             <el-form-item
-              v-if="item.giftType==='3'"
+              v-if="item.giftType === 3"
               label="幸运大抽奖："
               class="luckyDraw"
               prop="awardList[index].lotteryId"
@@ -394,7 +394,7 @@
 
             <!-- 余额 -->
             <el-form-item
-              v-if="params.awardList[index].giftType==='4'"
+              v-if="params.awardList[index].giftType === 4"
               label="余额："
               prop='awardList[index].accountNumber'
               :rules="[{
@@ -410,7 +410,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="item.giftType==='5'"
+              v-if="item.giftType === 5"
               label="奖品："
               required
             >
@@ -428,7 +428,7 @@
                       <th width="50%">商品名称</th>
                       <th width="10%">价格</th>
                       <th width="20%">库存</th>
-                      <th width="20%">操作</th>
+                      <th width="20%">状态</th>
                     </tr>
                   </thead>
                   <tbody class="tbody">
@@ -440,7 +440,7 @@
                             style="width:40px;height:40px; float: left"
                           >
                             <el-image
-                              :src="params.awardList[index].customImage"
+                              :src="params.awardList[index].goodsImg"
                               fit="contain"
                               style="width:100%; height: 100%;"
                             ></el-image>
@@ -469,7 +469,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="item.giftType==='5'"
+              v-if="item.giftType === 5"
               label="赠品有效期："
               prop="awardList[idnex].keepDays"
               :rules="{
@@ -488,7 +488,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="item.giftType==='6'"
+              v-if="item.giftType === 6"
               label="积分："
               prop="awardList[index].scoreNumber"
               :rules="{
@@ -504,7 +504,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="item.giftType === '7' "
+              v-if="item.giftType === 7"
               label="活动图片："
               prop="awardList[index].image"
               :rules="{
@@ -517,7 +517,7 @@
                   @click="handleImage(index)"
                 >
                   <el-image
-                    :src="$imageHost + '/' + params.awardList[index].image"
+                    :src="$imageHost + '/' + params.awardList[index].customImage"
                     fit="contain"
                     style=" width:100%; height: 100%;"
                   ></el-image>
@@ -527,7 +527,7 @@
               </div>
             </el-form-item>
             <el-form-item
-              v-if="item.giftType ==='7'"
+              v-if="item.giftType === 7"
               label="设置链接："
               prop="awardList[index].customLink"
               :rules="{
@@ -546,7 +546,7 @@
             </el-form-item>
 
             <el-form-item
-              v-if="item.giftType !== '0'"
+              v-if="item.giftType !== 0"
               label="奖品份数："
               prop="awardList[index].awardNumber"
               :rules="{
@@ -648,10 +648,10 @@ export default {
     AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   mounted () {
-    this.getIsGonigAct()
+    this.getIsGonigLotteryActivity()
     if (this.$route.query.id > 0) {
-      this.idInfo = this.$route.query.id
-      this.fetchData()
+      this.params.id = this.$route.query.id
+      this.fetchCurrentActivityData()
     }
   },
   filters: {
@@ -736,36 +736,26 @@ export default {
         actFirst: '', //  优先级
         goodsAreaType: 1, // 商品范围类型
         goodsIds: '', // 商品id
-        goodsCarIds: '', // 商品平台分类
+        goodsCatIds: '', // 商品平台分类
         goodsSortIds: '', // 商品商家分类
         minPayMoney: '', // 最少支付金额
         limitTimes: '', // 每个用户参与次数
 
         awardList: [
           {
-            giftType: '0',
+            giftType: 0,
             productId: '', // 奖品ID
             keepDays: '', // 赠品有效期
             accountNumber: '', // 账户余额
             scoreNumber: '', // 积分余额
             awardNumber: '', // 奖品份数
-            customImage: [], // 自定义活动图片
+            // goodsImg: '', //
+            customImage: 'image/admin/btn_add.png', // 自定义活动图片
             customLink: '', // 自定义图片
             lotteryId: '', // 下拉框
             couponIds: [], // 优惠券ID
-            couponList: [
-              // { // 页面优惠券
-              //   actCode: '',
-              //   denomination: '',
-              //   id: '',
-              //   randomMin: '',
-              //   randomMax: '',
-              //   couponCenterLimit: '',
-              //   couponCenterNumber: ''
-              // }
-            ],
+            couponList: [],
 
-            image: 'image/admin/btn_add.png',
             ordinaryCoupon: [], // 普通优惠券
             splitCoupon: [], // 分裂优惠券
             ordinaryCouponIdList: [], // 普通优惠券ID数组
@@ -800,9 +790,9 @@ export default {
   },
   methods: {
     // 添加奖励 - 增加对应的支付奖励次数
-    addItem () {
+    addPayRewardItem () {
       let obj = {
-        'giftType': '0',
+        'giftType': 0,
         'productId': '',
         'keepDays': '',
         'accountNumber': '',
@@ -812,23 +802,13 @@ export default {
         'splitCoupon': [],
         'splitCouponIdList': [],
         'ordinaryCouponIdList': [],
-        'image': 'image/admin/btn_add.png',
+        'customImage': 'image/admin/btn_add.png',
         'customLink': '',
         'goodsId': this.choosingGoodsDateFlag1,
         'shopCategoryIds': this.shopCategoryIds,
         'platformCategoryIds': this.platformCategoryIds,
         'couponIds': [],
-        'couponList': [
-          // {
-          //   'actCode': '',
-          //   'denomination': '',
-          //   'id': '',
-          //   'randomMin': '',
-          //   'randomMax': '',
-          //   'couponCenterLimit': '',
-          //   'couponCenterNumber': ''
-          // }
-        ]
+        'couponList': []
       }
       if (this.params.awardList.length < 5) {
         this.params.awardList.push(obj)
@@ -839,7 +819,7 @@ export default {
     },
 
     // 删除奖励
-    deleteItem (index) {
+    deletePayRewardItem (index) {
       console.log(this.params.awardList)
       this.params.awardList.splice(index, 1)
       console.log(index)
@@ -847,7 +827,6 @@ export default {
 
     // 普通优惠券弹窗调起 currentIndex为当前的添加的Item的索引值
     handleToCallDialog1 (item, currentIndex) {
-      // console.log(item, currentIndex, 'currentIndex---')
       let arr = []
       item.ordinaryCoupon.forEach(item => {
         arr.push(item.id)
@@ -864,7 +843,7 @@ export default {
       this.params.awardList[this.currentModelIndex].couponIds = data.map(item => item.id)
       this.params.awardList[this.currentModelIndex].ordinaryCoupon = data
 
-      if (this.params.awardList[this.currentModelIndex].giftType === '1') {
+      if (this.params.awardList[this.currentModelIndex].giftType === 1) {
         this.params.awardList[this.currentModelIndex].couponList = []
         this.params.awardList[this.currentModelIndex].ordinaryCoupon.map((item, index) => {
           this.params.awardList[this.currentModelIndex].couponList.push(Object.assign({}, item, {
@@ -882,6 +861,7 @@ export default {
     // 删除普通优惠券
     deleteCouponImg (item, index, currentIndex) {
       console.log(currentIndex)
+      console.log(this.params.awardList[currentIndex])
       let added = this.params.awardList[currentIndex].ordinaryCouponIdList.map(item => item.id)
       this.emptySelect = added
       this.params.awardList[currentIndex].ordinaryCoupon.splice(index, 1)
@@ -900,11 +880,12 @@ export default {
     },
     // 分裂优惠券处理
     addDisCouponHandle (disCouponData) {
+      this.params.awardList[this.currentModelIndex].couponIds = disCouponData.map(item => item.id)
       this.params.awardList[this.currentModelIndex].splitCoupon = disCouponData
 
-      if (this.params.awardList[this.currentModelIndex].giftType === '2') {
+      if (this.params.awardList[this.currentModelIndex].giftType === 2) {
         this.params.awardList[this.currentModelIndex].couponList = []
-        this.params.awardList[this.currentModelIndex].splitCoupon.map((item, index) => {
+        this.params.awardList[this.currentModelIndex].splitCoupon.forEach((item, index) => {
           this.params.awardList[this.currentModelIndex].couponList.push(Object.assign({}, item, {
             actCode: item.actCode,
             denomination: item.denomination,
@@ -1002,7 +983,7 @@ export default {
 
     // 活动图片替换
     avatarSelectHandle (val) {
-      this.params.awardList[this.currentModelIndex].image = val.imgPath
+      this.params.awardList[this.currentModelIndex].customImage = val.imgPath
       console.log(val.imgPath, this.params.awardList[this.currentModelIndex], 'current awardList item')
     },
 
@@ -1037,7 +1018,7 @@ export default {
       this.params.awardList[this.currentModelIndex].productId = res.goodsId
       this.params.awardList[this.currentModelIndex].goodsShow = true
       this.params.awardList[this.currentModelIndex].goodsName = res.goodsName
-      this.params.awardList[this.currentModelIndex].customImage = res.goodsImg
+      this.params.awardList[this.currentModelIndex].goodsImg = res.goodsImg
       this.params.awardList[this.currentModelIndex].goodsPrice = res.prdMinShopPrice
       this.params.awardList[this.currentModelIndex].goodsNumber = res.goodsNumber
       console.log(this.params.awardList, this.params.awardList[this.currentModelIndex], 'console log awardiList value===')
@@ -1045,13 +1026,24 @@ export default {
     },
 
     // 点击编辑按钮跳转过来获取对应的信息
-    fetchData () {
-      getPayRewardInfo({ id: this.idInfo }).then(res => {
-        console.log(res)
+    fetchCurrentActivityData () {
+      getPayRewardInfo({ id: this.params.id }).then(res => {
+        console.log(res.content, 'get jump data')
+        console.log(res.content.awardContentList)
         if (res.error === 0) {
           this.handleData(res.content)
-          console.log(res.content)
-          this.params = Object.assign({}, this.params, res.content)
+
+          // this.params.awardList = res.content.awardContentList
+          // this.params = Object.assign({}, this.params, res.content)
+          this.$set(this.params, 'awardList', res.content.awardContentList)
+          this.params.awardList[this.currentModelIndex].ordinaryCoupon = this.params.awardList[this.currentModelIndex].couponView
+          this.params.awardList[this.currentModelIndex].ordinaryCouponIdList = this.params.awardList[this.currentModelIndex].couponIds
+          this.params.awardList[this.currentModelIndex].splitCoupon = this.params.awardList[this.currentModelIndex].couponView
+          this.params.awardList[this.currentModelIndex].splitCouponIdList = this.params.awardList[this.currentModelIndex].couponIds
+
+          console.log(this.ordinaryCoupon, 'get ordinaryCoupon')
+          console.log(this.params, 'get reuturnParams')
+
           if (res.content.startTime && res.content.endTime) {
             this.dateInterval = [new Date(res.content.startTime), new Date(res.content.endTime)]
           }
@@ -1061,10 +1053,11 @@ export default {
 
     // 对获取到的信息进行处理
     handleData (data) {
+      console.log(data, 'receiveData')
       this.params.activityNames = data.activityNames
       // this.params.startTime = data.startTime
       // this.params.endTime = data.endTime
-      this.params.timeType = data.timeType //  缺少时间类型字段
+      this.params.timeType = data.timeType
       this.params.actFirst = data.actFirst
       this.params.goodsAreaType = data.goodsAreaType
       this.params.goodsIds = data.goodsIds // 商品id
@@ -1077,15 +1070,39 @@ export default {
 
     // 添加支付有礼活动接口调用
     activitySave () {
-      let obj = {
-        goodsIds: String(this.choosingGoodsDateFlag1), // 商品ID
-        goodsCarIds: String(this.platformCategoryIds), // 商家平台分类
-        goodsSortIds: String(this.shopCategoryIds) // 商品商家分类
+      this.$refs.payRewardForm.validate(valid => {
+        console.log(valid, 'valid--')
+        if (valid) {
+          let obj = {
+            goodsIds: String(this.choosingGoodsDateFlag1), // 商品ID
+            goodsCatIds: String(this.platformCategoryIds), // 商家平台分类
+            goodsSortIds: String(this.shopCategoryIds) // 商品商家分类
+          }
+          let requestParams = Object.assign(this.params, obj)
+          console.log(this.params.id, 'this.params.id', this.requestParams, 'this.requestParams', this.params, 'this.params')
+          if (this.params.id === '') {
+            this.addActivity(requestParams)
+          } else {
+            this.updateActivity(requestParams)
+          }
+        } else {
+          console.log('submit error')
+          return false
+        }
+      })
+    },
 
-      }
-      let requestParams = Object.assign(this.params, obj)
-      console.log(requestParams, 'requestParams')
-      console.log(this.params, 'this.params')
+    // 新增支付有礼活动
+    addActivity (requestParams) {
+      // let obj = {
+      //   goodsIds: String(this.choosingGoodsDateFlag1), // 商品ID
+      //   goodsCatIds: String(this.platformCategoryIds), // 商家平台分类
+      //   goodsSortIds: String(this.shopCategoryIds) // 商品商家分类
+
+      // }
+      // let requestParams = Object.assign(this.params, obj)
+      // console.log(requestParams, 'requestParams')
+      // console.log(this.params, 'this.params')
       addPayRewardAct(requestParams).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -1096,9 +1113,9 @@ export default {
       }).catch(err => console.log(err))
     },
 
-    getIsGonigAct () {
+    // 支付奖励-幸运大抽奖-下拉框选项
+    getIsGonigLotteryActivity () {
       isGoingAct().then(res => {
-        console.log(res)
         if (res.error === 0) {
           this.options = res.content.dataList
         }
@@ -1106,15 +1123,28 @@ export default {
     },
 
     // 更新支付有礼活动接口调用
-    updateActSave () {
-      updatePayReward(this.params).then(res => {
-        console.log(res)
+    updateActivity (requestParams) {
+      // let obj1 = {
+      //   id: this.idInfo,
+      //   goodsIds: String(this.choosingGoodsDateFlag1), // 商品ID
+      //   goodsCatIds: String(this.platformCategoryIds), // 商家平台分类
+      //   goodsSortIds: String(this.shopCategoryIds) // 商品商家分类
+
+      // }
+      // let updateRequestParams = Object.assign(this.params, obj1)
+      // console.log(updateRequestParams, 'updateRequestParams')
+      requestParams.id = this.params.id
+      updatePayReward(requestParams).then(res => {
+        if (res.error === 0) {
+          this.$message.success('更新成功')
+        } else {
+          this.$message.warning('更新失败')
+        }
       }).catch(err => console.log(err))
     }
 
   }
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -1212,6 +1242,7 @@ export default {
         }
         .triggerCondition {
           .noneBlock {
+            margin-left: 80px;
             .noneBlockList {
               margin-bottom: 10px;
               display: flex;
@@ -1293,19 +1324,6 @@ export default {
             padding: 8px 10px;
           }
         }
-        // .logo_span {
-        //   display: inline-block;
-        //   width: 15%;
-        //   height: 20px;
-        //   line-height: 20px;
-        //   position: absolute;
-        //   bottom: 0;
-        //   left: 0;
-        //   color: #fff;
-        //   background: rgba(0, 0, 0, 0.5);
-        //   text-align: center;
-        //   font-size: 12px;
-        // }
         .tips {
           margin-top: 10px;
           line-height: 1.4;
