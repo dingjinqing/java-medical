@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
@@ -119,13 +120,14 @@ public class AdminTestController extends AdminBaseController {
 		Map<String, String> v3 = new LinkedHashMap<>();
 		v3.put("value", "你中奖了");
 		data.put("thing3", v3);
+		Boolean sendMessage=false;
 		try {
-			subservice.sendMessage(195, SubscribeMessageConfig.draw_result, data, null);
+			 sendMessage = subservice.sendMessage(195, SubcribeTemplateCategory.DRAW_RESULT, data, null);
 		} catch (WxErrorException e) {
 			
 			e.printStackTrace();
 		}
-		return null;
+		return success(sendMessage);
 		
 	}
 }
