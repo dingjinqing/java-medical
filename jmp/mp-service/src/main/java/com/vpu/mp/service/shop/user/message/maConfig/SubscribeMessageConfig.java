@@ -40,7 +40,7 @@ public enum SubscribeMessageConfig {
 
 	refund_result_307(SubcribeTemplateCategory.REFUND_RESULT, 307, 1435, "退款通知",
 			"退款金额{{amount2.DATA}}订单号{{character_string4.DATA}}申请时间{{date3.DATA}}商品名称{{thing5.DATA}}退款状态{{thing6.DATA}}",
-			new int[] { 2, 4, 3, 5 });
+			new int[] { 2,4,3,5,6 });
 	/** 服装/鞋/箱包 307结束 **/
 
 	/** 模板名称，小程序端发送名称找对应要用那个 */
