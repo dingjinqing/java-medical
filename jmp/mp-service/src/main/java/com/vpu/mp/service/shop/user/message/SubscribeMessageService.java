@@ -247,7 +247,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @param templateIdRecord
 	 */
 	public void incrementSubscribeNum(SubscribeMessageRecord templateIdRecord) {
-		templateIdRecord.setSuccessNum(templateIdRecord.getSuccessNum() + 1);
+		templateIdRecord.setSuccessNum(templateIdRecord.getSuccessNum() == null ? 0 : templateIdRecord.getSuccessNum() + 1);
 		int update = templateIdRecord.update();
 		logger().info("增加用户的发送成功数"+update);
 	}
