@@ -117,7 +117,7 @@
                       >{{$t('imgageDalog.OriginalImg')}}</a>
                       <a
                         :title="$t('pageDecoration.cutOutPictures')"
-                        @click="handleCropper(item.imgPath,item.imgCatId,item.imgId,item.imgUrl)"
+                        @click="handleCropper(item.imgPath,item.imgCatId,item.imgId,item.imgUrl,item.imgWidth,item.imgHeight)"
                       >
                         {{$t('pageDecoration.cropper')}}
                       </a>
@@ -641,13 +641,15 @@ export default {
     },
     // 图片精确查询--------------end
     // 裁剪弹窗调起
-    handleCropper (path, catid, imgid, url) {
+    handleCropper (path, catid, imgid, url, width, height) {
       let obj = {
         path: path,
         catid: catid,
         imgid: imgid,
         url: url,
-        index: 2
+        index: 2,
+        imgWidth: width,
+        imgHeight: height
       }
       console.log(1)
       this.$store.commit('TOCHANGE_RECRUITMENTDIALOG', obj)

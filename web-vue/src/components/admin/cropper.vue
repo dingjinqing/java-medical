@@ -156,7 +156,9 @@ export default {
       imgID: '',
       cropperFlagP: '',
       disabled: true, // 用户是否可以自定义输入
-      saveScaleW: null // 保存缩放后的背景图片宽度
+      saveScaleW: null, // 保存缩放后的背景图片宽度
+      orignWidth: '',
+      orignHeight: ''
     }
   },
   computed: {
@@ -176,6 +178,8 @@ export default {
       this.imgID = obj.imgid
       this.cropperFlagP = obj.index
       this.option.img = obj.url
+      this.orignWidth = obj.imgWidth
+      this.orignHeight = obj.imgHeight
       if (obj.imgWidth > 150) {
         this.saveScaleW = 150
       } else {
@@ -259,6 +263,11 @@ export default {
     handleSave () {
       // console.log(this.imgPath, this.cropperTopInput_one, this.cropperTopInput_two, this.cropMovingX, this.cropMovingY, this.previews.img.width, this.previews.img.height, 98, this.imgCatId, this.imgID)
       // console.log(this.previews)
+      if (!this.cropperTopInput_one) {
+        this.cropperTopInput_one = this.orignWidth
+      } else if (!this.cropperTopInput_two) {
+        this.cropperTopInput_two = this.orignHeight
+      }
       console.log(this.cropMovingX, this.cropMovingY, this.cropperTopInput_one, this.cropperTopInput_two, this.previews.w, this.previews.h)
       let obj = {
         remoteImgPath: this.imgPath,
