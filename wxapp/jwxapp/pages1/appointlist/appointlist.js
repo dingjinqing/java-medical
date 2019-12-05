@@ -167,7 +167,8 @@ global.wxPage({
   // 去支付
   toPay: function (e) {
     let order_sn = e.currentTarget.dataset.order_sn
-    let form_id = e.detail.formId
+    let orderId = e.currentTarget.dataset.order_id
+    // let form_id = e.detail.formId
     util.api('/api/wxapp/store/service/submitReservation', function (res) {
       if (res.error == 0) {
         if (typeof (res.content.timeStamp) != 'undefined') {
@@ -208,7 +209,7 @@ global.wxPage({
         });
         return false;
       }
-    }, { orderSn: order_sn, form_id: form_id })
+    }, { orderSn: order_sn, orderId: orderId, userId: util.getCache('user_id') })
   },
 
   /**
