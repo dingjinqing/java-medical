@@ -258,7 +258,7 @@ public class SubscribeMessageService extends ShopBaseService {
 				logger().info("成功的templateId："+success.getTemplateId()+"插入结果"+insert);		
 			}else {
 				record.setStatus((byte)1);
-				record.setCanUseNum(record.getCanUseNum()+1);
+				record.setCanUseNum(record.getCanUseNum()==null?0:record.getCanUseNum()+1);
 				int update = record.update();
 				logger().info("成功的templateId："+success.getTemplateId()+"更新结果"+update);				
 			}
