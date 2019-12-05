@@ -5,7 +5,6 @@
   >
     <!-- <div v-if="flag"> -->
     <Editor
-      :key="1"
       id="cnTinymce"
       v-model="myValue"
       :init="cnInit"
@@ -16,6 +15,7 @@
   </div>
 </template>
 <script>
+import { tichTextUpLoadRequest } from '@/api/admin/util.js'
 import tinymce from 'tinymce/tinymce'
 import Editor from '@tinymce/tinymce-vue'
 import 'tinymce/themes/silver/theme'
@@ -74,12 +74,26 @@ export default {
         // 此处为图片上传处理函数，这个直接用了base64的图片形式上传图片，
         // 如需ajax上传可参考https://www.tiny.cloud/docs/configure/file-image-upload/#images_upload_handler
         images_upload_handler: (blobInfo, success, failure) => {
-          console.log(blobInfo.filename(), blobInfo.uri(), blobInfo)
+          console.log(blobInfo.blob())
           const img = 'data:image/jpeg;base64,' + blobInfo.base64()
-          console.log(img)
-          success(img)
+          let newImg = new Image()
+          newImg.src = img
+          newImg.onload = function () {
+            // 打印
+            let obj = {
+              'needImgWidth': newImg.width,
+              'imgCatId': 0,
+              'needImgHeight': newImg.height,
+              'base64Image': img
+            }
+            tichTextUpLoadRequest(obj).then(res => {
+              console.log(res)
+            })
+          }
+          // success(img)
         }
-      }
+      },
+      tinymceName: 'cnTinymce'
     }
   },
   mounted () {
@@ -114,17 +128,22 @@ export default {
       this.myValue = newValue
     },
     myValue (newValue) {
+      console.log(newValue)
       this.$emit('input', newValue)
     },
     lang (type) {
-      tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'cnTinymce')
+      // tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'cnTinymce')
       if (type === 'zh_CN') {
         this.cnInit.language = 'zh_CN'
+        this.cnInit.language_url = `http://${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`
       } else {
         delete this.cnInit.language
         delete this.cnInit.language_url
       }
-      tinymce.EditorManager.execCommand('mceAddEditor', true, 'cnTinymce')
+      console.log(tinymce)
+      this.$nextTick(() => {
+        // tinymce.EditorManager.execCommand('mceAddEditor', true, 'cnTinymce')
+      })
     }
   }
 }

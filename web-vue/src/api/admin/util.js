@@ -24,3 +24,12 @@ export function signruleRequest (data) {
     method: 'get'
   })
 }
+
+// 富文本编辑器图片上传
+export function tichTextUpLoadRequest (data) {
+  return service({
+    url: '/admin/image/base64/uploadOneImgae',
+    method: 'post',
+    data: data
+  })
+}
