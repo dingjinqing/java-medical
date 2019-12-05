@@ -6,6 +6,8 @@ import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.overView.LoginRecordVo;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.overview.*;
@@ -17,9 +19,8 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record1;
-import org.jooq.Select;
-import org.jooq.SortField;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +31,12 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.vpu.mp.db.main.tables.Article.ARTICLE;
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopVersion.SHOP_VERSION;
+import static com.vpu.mp.db.main.tables.UserLoginRecord.USER_LOGIN_RECORD;
 import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -250,6 +254,51 @@ public class ShopOverviewService extends MainBaseService {
         vo.setDataShop(dataShop);
         log.debug("主库的统计数据整完了");
         return vo;
+    }
+
+    /**
+     * 用户登录日志
+     * @param param
+     * @return
+     */
+    public PageResult<LoginRecordVo> loginRecord(LoginRecordVo param){
+        SelectConditionStep<? extends Record> select = db().select(USER_LOGIN_RECORD.SHOP_ID, USER_LOGIN_RECORD.SHOP_NAME, USER_LOGIN_RECORD.SYS_ID,
+                USER_LOGIN_RECORD.USER_ID, USER_LOGIN_RECORD.USER_NAME, USER_LOGIN_RECORD.ADD_TIME, USER_LOGIN_RECORD.USER_IP, USER_LOGIN_RECORD.ACCOUNT_TYPE, MP_AUTH_SHOP.NICK_NAME)
+                .from(USER_LOGIN_RECORD.leftJoin(MP_AUTH_SHOP).on(USER_LOGIN_RECORD.SHOP_ID.eq(MP_AUTH_SHOP.SHOP_ID)))
+                .where(DSL.trueCondition());
+        buildOptions(select,param);
+
+        PageResult<LoginRecordVo> list = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), LoginRecordVo.class);
+        return list;
+    }
+
+    /**
+     * 用户登录日志条件查询
+     * @param select
+     * @param param
+     */
+    private void buildOptions(SelectConditionStep<? extends Record> select,LoginRecordVo param){
+        if(param.getShopId() != null) {
+            select.and(USER_LOGIN_RECORD.SHOP_ID.eq(param.getShopId()));
+        }
+        if(isNotEmpty(param.getShopName())){
+            select.and(USER_LOGIN_RECORD.SHOP_NAME.eq(param.getShopName()));
+        }
+        if(param.getSysId() != null){
+            select.and(USER_LOGIN_RECORD.SYS_ID.eq(param.getSysId()));
+        }
+        if(isNotEmpty(param.getUserName())){
+            select.and(USER_LOGIN_RECORD.USER_NAME.eq(param.getUserName()));
+        }
+        if(param.getStartAddTime() != null){
+            select.and(USER_LOGIN_RECORD.ADD_TIME.ge(param.getStartAddTime()));
+        }
+        if(param.getEndAddTime() != null){
+            select.and(USER_LOGIN_RECORD.ADD_TIME.le(param.getEndAddTime()));
+        }
+        if(param.getAccountType() != null){
+            select.and(USER_LOGIN_RECORD.ACCOUNT_TYPE.eq(param.getAccountType()));
+        }
     }
 
 }
