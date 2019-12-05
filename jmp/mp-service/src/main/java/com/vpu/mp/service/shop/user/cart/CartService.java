@@ -316,23 +316,16 @@ public class CartService extends ShopBaseService {
     }
 
     /**
-     * 获取当前购物车商品
-     * @return
+     * 获取当前购物车选中商品
      */
     public List<OrderBeforeParam.Goods> getCartCheckedData(Integer userId, Integer storeId){
-        List<OrderBeforeParam.Goods> goodsList =new ArrayList<>();
-        List<CartRecord> cartRecords = db().selectFrom(CART)
+        //TODO 后期加参数
+        return db().select(CART.GOODS_ID, CART.PRODUCT_ID, CART.GOODS_NUMBER)
+                .from(CART)
                 .where(CART.IS_CHECKED.eq(CartConstant.CART_IS_CHECKED))
                 .and(CART.USER_ID.eq(userId))
                 .and(CART.STORE_ID.eq(storeId))
-                .fetch();
-        cartRecords.forEach(cartRecord -> {
-            OrderBeforeParam.Goods goods =new OrderBeforeParam.Goods();
-            goods.setGoodsId(cartRecord.getGoodsId());
-            goods.setProductId(cartRecord.getProductId());
-            goods.setGoodsNumber(cartRecord.getGoodsNumber().intValue());
-            goodsList.add(goods);
-        });
-        return goodsList;
+                .orderBy(CART.REC_ID.desc())
+                .fetchInto(OrderBeforeParam.Goods.class);
     }
 }

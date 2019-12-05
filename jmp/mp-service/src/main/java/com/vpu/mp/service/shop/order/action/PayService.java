@@ -117,12 +117,10 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         //规格信息,key proId
         Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(orderGoods.stream().map(Goods::getProductId).distinct().collect(Collectors.toList()));
         for (Goods temp : orderGoods) {
-            GoodsSpecProductRecord product = productInfo.get(temp.getProductId());
-            if(product == null) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST);
-            }
+            temp.setProductInfo(productInfo.get(temp.getProductId()));
+            temp.setGoodsInfo(goodsRecords.get(temp.getGoodsId()));
             try {
-                createOrder.checkGoodsAndProduct(goodsRecords.get(temp.getGoodsId()), temp);
+                createOrder.checkGoodsAndProduct(temp);
             } catch (MpException e) {
                 return ExecuteResult.create(e.getErrorCode(), e.getMessage(), e.getCodeParam());
             }

@@ -163,10 +163,17 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
         }
     }
 
-    public void doOrderOperation(Integer userId, Timestamp date, List<OrderCartProductBo> productBos, Integer storeId){
+    /**
+     *
+     * @param userId
+     * @param date
+     * @param productBo
+     * @param storeId
+     */
+    public void doOrderOperation(Integer userId, Timestamp date, OrderCartProductBo productBo, Integer storeId){
         boolean isNewUser = orderInfoService.isNewUser(userId);
         if (isNewUser){
-            List<Integer> productIds =productBos.stream().map(OrderCartProductBo::getProductId).collect(Collectors.toList());
+            List<Integer> productIds =productBo.getAll().stream().map(OrderCartProductBo.OrderCartProduct::getProductId).collect(Collectors.toList());
             List<FirstSpecialProductBo> specialPrdIdList = firstSpecialProcessorDao.getGoodsFirstSpecialPrdId(productIds,date).into(FirstSpecialProductBo.class);
             if (specialPrdIdList != null && specialPrdIdList.size() > 0) {
                 log.debug("新用户触发首单特惠活动FirstSpecialProductBo:"+Util.toJson(specialPrdIdList));
@@ -177,7 +184,7 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                 // 选中的商品数量
                 AtomicReference<Integer> checkedGoodsNum = new AtomicReference<>(0);
                 specialPrdIdList.forEach(firstSpecial -> {
-                    productBos.forEach(product -> {
+                    productBo.getAll().forEach(product -> {
                         if (firstSpecial.getPrdId().equals(product.getProductId())) {
                             log.debug("首单特惠商品[getPrdId:"+firstSpecial.getPrdId()+"]");
                             GoodsActivityInfo firstActivityInfo = new GoodsActivityInfo();
@@ -210,7 +217,7 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
                 });
                 if (goodsNum.get() >= limitGoodsNum){
                     log.debug("选中商品过多,触发首单特惠商品数(种类)限制[goodsNum:"+goodsNum+",limitGoodsNum:"+limitGoodsNum+"]");
-                    productBos.forEach(goods->{
+                    productBo.getAll().forEach(goods->{
                         GoodsActivityInfo actInfo = goods.getActivityInfo().stream().filter(activity -> activity.getStatus().equals(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).findFirst().orElse(null);
                         if (actInfo!=null && BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL.equals(actInfo.getActivityType()) && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
                             if (Objects.equals(goods.getIsChecked(), CartConstant.CART_IS_CHECKED)) {

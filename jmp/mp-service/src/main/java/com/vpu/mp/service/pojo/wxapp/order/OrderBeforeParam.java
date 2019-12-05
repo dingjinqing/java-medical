@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -10,11 +11,13 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 
+import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import lombok.Getter;
@@ -93,14 +96,26 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private String promoteInfo;
 		/**以下为后台产生逻辑值directPurchase*/
         /** 规格价 */
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         private BigDecimal productPrice;
-		private Integer productNumbers;
-		private Byte goodsType;
-		private Byte isFirstSpecial;
+		private Integer firstSpecialId;
 		/**方便计算*/
 		@JsonIgnore
 		private GoodsSpecProductRecord productInfo;
+        @JsonIgnore
+        private GoodsRecord goodsInfo;
 	}
+
+    /**
+     * 获取商品计算首单特惠活动。。。
+     */
+    public List<OrderCartProductBo.OrderCartProduct> getOrderCartProductBo(){
+        List<OrderCartProductBo.OrderCartProduct> result = new ArrayList<>(goods.size());
+        goods.forEach(x->{
+            result.add(new OrderCartProductBo.OrderCartProduct(x.productId, x.goodsNumber));
+        });
+        return result;
+    }
 
 	/**
 	 * 获取当前购买商品ids

@@ -37,7 +37,8 @@ public class CreateOrderBo {
     private InvoiceVo invoice;
     private OrderMemberVo currencyMember;
     private OrderCouponVo currencyCupon;
-    private List<OrderGoodsBo> orderGoodsBo;
+    @Builder.Default
+    private List<OrderGoodsBo> orderGoodsBo = null;
     private Integer orderId;
 
     public void intoRecord(OrderInfoRecord orderRecord){

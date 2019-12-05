@@ -24,6 +24,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -234,14 +235,13 @@ public class OrderGoodsService extends ShopBaseService{
     /**
      * 初始化数据
      * @param goods 输入参数
-     * @param goodsRecord 商品record
      */
-    public OrderGoodsBo initOrderGoods(OrderBeforeParam.Goods goods, GoodsRecord goodsRecord) {
+    public OrderGoodsBo initOrderGoods(OrderBeforeParam.Goods goods) {
         logger().info("initOrderGoods初始化数据开始");
         OrderGoodsBo bo = OrderGoodsBo.builder().
             goodsId(goods.getGoodsId()).
-            goodsName(goodsRecord.getGoodsName()).
-            goodsSn(goodsRecord.getGoodsSn()).
+            goodsName(goods.getGoodsInfo().getGoodsName()).
+            goodsSn(goods.getGoodsInfo().getGoodsSn()).
             productId(goods.getProductId()).
             productSn(goods.getProductInfo().getPrdSn()).
             goodsNumber(goods.getGoodsNumber()).
@@ -250,7 +250,7 @@ public class OrderGoodsService extends ShopBaseService{
             goodsAttr(goods.getProductInfo().getPrdDesc()).
             //TODO 需要考虑
             goodsAttrId("").
-            goodsImg(goodsRecord.getGoodsImg()).
+            goodsImg(goods.getGoodsInfo().getGoodsImg()).
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
             //TODO 需要考虑 是否赠品
@@ -261,26 +261,26 @@ public class OrderGoodsService extends ShopBaseService{
             goodsScore(0).
             //TODO 需要考虑 商品成长值
             goodsGrowth(0).
-            goodsType(goods.getGoodsType()).
+            goodsType(goods.getGoodsInfo().getGoodsType()).
             discountedGoodsPrice(goods.getProductPrice()).
-            discountedTotalPrice(BigDecimalUtil.multiply(goods.getProductPrice(), BigDecimal.valueOf(goods.getGoodsNumber()))).
+            discountedTotalPrice(BigDecimalUtil.multiply(goods.getProductPrice(), new BigDecimal(goods.getGoodsNumber()))).
             costPrice(goods.getProductInfo().getPrdCostPrice()).
             //TODO 逐级计算折扣
-            discountDetail("").
-            deliverTemplateId(goodsRecord.getDeliverTemplateId()).
+            discountDetail(StringUtils.EMPTY).
+            deliverTemplateId(goods.getGoodsInfo().getDeliverTemplateId()).
             //TODO 规格质量
-            goodsWeight(goodsRecord.getGoodsWeight()).
+            goodsWeight(goods.getGoodsInfo().getGoodsWeight()).
             //TODO 后续处理
             userCoupon(null).
-            catId(goodsRecord.getCatId()).
-            sortId(goodsRecord.getSortId()).
-            brandId(goodsRecord.getBrandId()).
+            catId(goods.getGoodsInfo().getCatId()).
+            sortId(goods.getGoodsInfo().getSortId()).
+            brandId(goods.getGoodsInfo().getBrandId()).
             goodsPriceAction(goods.getGoodsPriceAction()).
             purchasePriceId(null).
             purchasePriceRuleId(null).
             reducePriceId(null).
             firstSpecialId(null).
-            isCardExclusive(goodsRecord.getIsCardExclusive()).
+            isCardExclusive(goods.getGoodsInfo().getIsCardExclusive()).
             promoteInfo(null).
             build();
         logger().info("initOrderGoods初始化数据结束，参数为：",bo.toString());
