@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
-public class WxAppConfigControllor extends WxAppBaseController {
+public class WxAppConfigController extends WxAppBaseController {
 
 	/**
 	 * 
