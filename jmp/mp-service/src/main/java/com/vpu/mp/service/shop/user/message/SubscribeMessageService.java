@@ -190,37 +190,43 @@ public class SubscribeMessageService extends ShopBaseService {
 	public String[] getTemplateId(String[] data) throws WxErrorException {
 		//获取所有类目id
 		List<Integer> getcategoryList = getcategoryList();
-		List<SubscribeMessageConfig> titleList=new ArrayList<SubscribeMessageConfig>();
-		for(int i=0;i<data.length;i++ ) {
-			for (Integer category : getcategoryList) {
+		SubscribeMessageConfig[] titleList=new SubscribeMessageConfig[data.length];
+		for (Integer category : getcategoryList) {
+			for (int i = 0; i < data.length; i++) {
 				SubscribeMessageConfig byTempleName = SubscribeMessageConfig.getByTempleName(category, data[i]);
-				if(byTempleName==null) {
-					logger().info("appid："+getMaAppId()+"。数据："+data[i]+"在类目"+category+"暂时未定义，请补充程序");
+				if (byTempleName == null) {
+					logger().info("appid：" + getMaAppId() + "。数据：" + data[i] + "在类目" + category + "暂时未定义，请补充程序");
+				} else {
+					logger().info("添加的TempleName为" + byTempleName.getTitle());
+					titleList[i]=byTempleName;
+					break;
 				}
-				logger().info("添加的TempleName为"+byTempleName.getTitle());
-				titleList.add(byTempleName);
-			}			
+			}
 		}
 		logger().info("titleList为"+titleList);
-		String[] retult=new String[]{};
+		String[] retult=new String[data.length];
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		List<WxOpenSubscribeTemplate> data2 = templateList.getData();
 		if(data2.size()!=0) {
-			for(int i=0;i<titleList.size();i++) {
+			for(int i=0;i<titleList.length;i++) {
 				for(WxOpenSubscribeTemplate template:data2) {
-					boolean contains = template.getTitle().contains(titleList.get(i).getTitle());
-					if(contains) {
-						//存在，直接赋值
-						retult[i]=template.getPriTmplId();
+					if(titleList[i]==null) {
+						retult[i]=addTemplate(titleList[i]);
 					}else {
-						//不存在，新建
-						retult[i]=addTemplate(titleList.get(i));
+						boolean contains = template.getTitle().contains(titleList[i].getTitle());
+						if(contains) {
+							//存在，直接赋值
+							retult[i]=template.getPriTmplId();
+						}else {
+							//不存在，新建
+							retult[i]=addTemplate(titleList[i]);
+						}						
 					}
 				}
 			}			
 		}else {
-			for(int i=0;i<titleList.size();i++) {
-				retult[i]=addTemplate(titleList.get(i));
+			for(int i=0;i<titleList.length;i++) {
+				retult[i]=addTemplate(titleList[i]);
 			}	
 		}
 		return retult;
