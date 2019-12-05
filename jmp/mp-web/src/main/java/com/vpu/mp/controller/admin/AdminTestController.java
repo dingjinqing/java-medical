@@ -146,4 +146,18 @@ public class AdminTestController extends AdminBaseController {
 		return success(sendMessage);
 		
 	}
+	
+	@RequestMapping(value = "/api/admin/test/getNeedTemplateId")
+	public JsonResult getNeedTemplateId() {
+		String[] data = { SubcribeTemplateCategory.DRAW_RESULT, SubcribeTemplateCategory.INVITE_SUCCESS};
+		String[] templateId = {};
+		try {
+			templateId = subservice.getTemplateId(data);
+		} catch (WxErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return success(templateId);
+
+	}
 }
