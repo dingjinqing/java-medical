@@ -56,6 +56,7 @@ public enum SubscribeMessageConfig {
 	/** 开发者自行组合好的模板关键词列表 */
 	private int[] kidList;
 
+	
 	/**
 	 * 根据类目和模板名称找到需要的模板
 	 * 

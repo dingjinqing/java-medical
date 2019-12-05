@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.user.message;
 import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,7 +60,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public List<Integer> getcategoryList() throws WxErrorException {
+	private List<Integer> getcategoryList() throws WxErrorException {
 		WxOpenMaSubScribeGetCategoryResult templateCategory = open.getMaExtService().getTemplateCategory(getMaAppId());
 		if (templateCategory != null) {
 			List<Integer> list = new ArrayList<Integer>();
@@ -180,13 +181,47 @@ public class SubscribeMessageService extends ShopBaseService {
 
 	}
 	
-	//返回前端需要的TemplateId
-	public void getTemplateId(String data) {
-
+	/**
+	 * 返回前端需要的TemplateId
+	 * @param data
+	 * @return
+	 * @throws WxErrorException
+	 */
+	public String[] getTemplateId(String[] data) throws WxErrorException {
+		//获取所有类目id
+		List<Integer> getcategoryList = getcategoryList();
+		List<SubscribeMessageConfig> titleList=new ArrayList<SubscribeMessageConfig>();
+		for(int i=0;i<data.length;i++ ) {
+			for (Integer category : getcategoryList) {
+				SubscribeMessageConfig byTempleName = SubscribeMessageConfig.getByTempleName(category, data[i]);
+				if(byTempleName==null) {
+					logger().info("appid："+getMaAppId()+"。数据："+data[i]+"在类目"+category+"暂时未定义，请补充程序");
+				}
+				titleList.add(byTempleName);
+			}			
+		}
+		String[] retult=new String[]{};
+		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
+		List<WxOpenSubscribeTemplate> data2 = templateList.getData();
+		for(int i=0;i<titleList.size();i++) {
+			for(WxOpenSubscribeTemplate template:data2) {
+				boolean contains = template.getTitle().contains(titleList.get(i).getTitle());
+				if(contains) {
+					//存在，直接赋值
+					retult[i]=template.getPriTmplId();
+				}else {
+					//不存在，新建
+					retult[i]=addTemplate(titleList.get(i));
+				}
+			}
+		}
+		return retult;
 	}
+	
+	
 
 	/**
-	 *  添加模板
+	 *  带校验的添加模板
 	 * @param templateId
 	 * @param config
 	 * @return
@@ -194,17 +229,26 @@ public class SubscribeMessageService extends ShopBaseService {
 	 */
 	public String addTemplate(String templateId, SubscribeMessageConfig config) throws WxErrorException {
 		if (!checkTemplate(templateId)) {
-			// 创建模板
-			WxOpenMaSubscribeAddTemplateResult addTemplate = open.getMaExtService().addTemplate(getMaAppId(),
-					String.valueOf(config.getTid()), config.getKidList(), config.getTitle());
-			logger().info("创建模板" + addTemplate.getErrmsg() + "  " + addTemplate.getErrcode());
-			if (addTemplate.isSuccess()) {
-				return addTemplate.getPriTmplId();
-			}
+			return addTemplate(config);
 		}
 		return templateId;
 	}
 
+	/**
+	 * 添加模板
+	 * @param config
+	 * @return
+	 * @throws WxErrorException
+	 */
+	private String addTemplate(SubscribeMessageConfig config) throws WxErrorException {
+		WxOpenMaSubscribeAddTemplateResult addTemplate = open.getMaExtService().addTemplate(getMaAppId(),
+				String.valueOf(config.getTid()), config.getKidList(), config.getTitle());
+		logger().info("创建模板" + addTemplate.getErrmsg() + "  " + addTemplate.getErrcode());
+		if (addTemplate.isSuccess()) {
+			return addTemplate.getPriTmplId();
+		}
+		return null;
+	}
 	/**
 	 * 当前帐号下的个人模板列表中是否有要用的templateId，有：true；没有false
 	 * 
@@ -234,11 +278,13 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @param templateIdRecord
 	 */
 	public void decrementSubscribeNum(SubscribeMessageRecord templateIdRecord) {
-		if (templateIdRecord.getCanUseNum() >= 1) {
-			templateIdRecord.setCanUseNum(templateIdRecord.getCanUseNum() - 1);
-			int update = templateIdRecord.update();
-			logger().info("减少用户订阅数"+update);
+		Integer canUseNum = templateIdRecord.getCanUseNum() - 1;
+		templateIdRecord.setCanUseNum(canUseNum);
+		if(canUseNum==0) {
+			templateIdRecord.setStatus((byte)0);
 		}
+		int update = templateIdRecord.update();
+		logger().info("减少用户订阅数" + update);
 	}
 
 	/**
