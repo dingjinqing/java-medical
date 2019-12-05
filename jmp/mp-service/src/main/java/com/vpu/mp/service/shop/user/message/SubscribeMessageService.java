@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	private UserService userService;
 
 	// 获取小程序的AppId
-	public String getMaInfo() {
+	private String getMaAppId() {
 		MpAuthShopRecord authShop = saas.shop.mp.getAuthShopByShopId(getShopId());
 		if (null == authShop) {
 			// 没有小程序，报错
@@ -53,9 +54,13 @@ public class SubscribeMessageService extends ShopBaseService {
 		return authShop.getAppId();
 	}
 
-	// 获得类目
-	public List<Integer> getcategory() throws WxErrorException {
-		WxOpenMaSubScribeGetCategoryResult templateCategory = open.getMaExtService().getTemplateCategory(getMaInfo());
+	/**
+	 * 获得类目列表
+	 * @return
+	 * @throws WxErrorException
+	 */
+	public List<Integer> getcategoryList() throws WxErrorException {
+		WxOpenMaSubScribeGetCategoryResult templateCategory = open.getMaExtService().getTemplateCategory(getMaAppId());
 		if (templateCategory != null) {
 			List<Integer> list = new ArrayList<Integer>();
 			for (WxOpenSubscribeCategory wxcat : templateCategory.getData()) {
@@ -64,6 +69,31 @@ public class SubscribeMessageService extends ShopBaseService {
 			return list;
 		}
 		return null;
+	}
+	/**
+	 * 获取所需的类目Id ,找第一个符合的
+	 * @return
+	 * @throws WxErrorException 
+	 */
+	public Integer getcategoryId(String templateName) throws WxErrorException {
+		List<Integer> getcategoryList = getcategoryList();
+		if (getcategoryList == null) {
+			// 抛错
+			logger().info("AppId：" + getMaAppId() + " 获取类目失败");
+			return 0;
+		}
+		//已经定义的类目ID
+		Set<Integer> idList = SubscribeMessageConfig.getSecondIdList();
+		int id=0;
+		for (Integer ids : getcategoryList) {
+			for (Integer haveId:idList) {
+				if(ids.equals(haveId)) {
+					id=haveId;
+				}
+			}
+		}
+		return id;
+		
 	}
 
 	/**
@@ -97,34 +127,32 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public Boolean sendMessage(Integer userId, SubscribeMessageConfig config, Map<String, Map<String, String>> data,
+	public Boolean sendMessage(Integer userId,String templateName, Map<String, Map<String, String>> data,
 			String page) throws WxErrorException {
 		UserRecord user = userService.getUserByUserId(userId);
 		if (null == user) {
 			logger().info("userId：" + userId + " 在店铺：" + getShopId() + "不存在");
 			return false;
 		}
-		List<Integer> templateCategory = getcategory();
-		if (templateCategory == null) {
-			// 抛错
-			logger().info("AppId：" + getMaInfo() + " 获取类目失败");
-			return false;
-		}
+		
+		
 		// 类目ID
-		Integer secondId = config.getId();
-		if (!templateCategory.contains(secondId)) {
+		Integer secondId = getcategoryId(templateName);
+		if (secondId==0) {
 			// 没有在现在版本定义的订阅消息中，直接发公众号
-			logger().info("AppId：" + getMaInfo() + " 的账号对应类目ID：" + secondId + "不在当前版本定义的订阅消息中，准备发送公众号");
+			logger().info("AppId：" + getMaAppId() + " 的账号对应类目ID：" + secondId + "不在当前版本定义的订阅消息中，准备发送公众号");
 			// TODO发送到公众号
 			return false;
 		}
 		// 获取当前帐号下的个人模板列表
-		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaInfo());
+		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		if (!templateList.isSuccess()) {
-			logger().info("获取AppId：" + getMaInfo() + " 的账号下的个人模板失败，准备发送公众号");
+			logger().info("获取AppId：" + getMaAppId() + " 的账号下的个人模板失败，准备发送公众号");
 			// TODO发送到公众号
 			return false;
 		}
+		
+		SubscribeMessageConfig config = SubscribeMessageConfig.getByTempleName(secondId, templateName);
 		// 发送用的TemplateId
 		SubscribeMessageRecord templateIdRecord = getCommonTemplateId(user, String.valueOf(config.getTid()));
 		if (StringUtils.isEmpty(templateIdRecord)) {
@@ -134,7 +162,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		// 小程序中是否配置了这个模板
 		templateId = addTemplate(templateIdRecord.getTemplateId(), config);
 
-		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaInfo(), user.getWxOpenid(), templateId, page,
+		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaAppId(), user.getWxOpenid(), templateId, page,
 				data);
 		boolean success = sendResult.isSuccess();
 		logger().info("发送结果" + success);
@@ -151,12 +179,23 @@ public class SubscribeMessageService extends ShopBaseService {
 		return false;
 
 	}
+	
+	//返回前端需要的TemplateId
+	public void getTemplateId(String data) {
 
-	// 添加模板
+	}
+
+	/**
+	 *  添加模板
+	 * @param templateId
+	 * @param config
+	 * @return
+	 * @throws WxErrorException
+	 */
 	public String addTemplate(String templateId, SubscribeMessageConfig config) throws WxErrorException {
 		if (!checkTemplate(templateId)) {
 			// 创建模板
-			WxOpenMaSubscribeAddTemplateResult addTemplate = open.getMaExtService().addTemplate(getMaInfo(),
+			WxOpenMaSubscribeAddTemplateResult addTemplate = open.getMaExtService().addTemplate(getMaAppId(),
 					String.valueOf(config.getTid()), config.getKidList(), config.getTitle());
 			logger().info("创建模板" + addTemplate.getErrmsg() + "  " + addTemplate.getErrcode());
 			if (addTemplate.isSuccess()) {
@@ -174,7 +213,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @throws WxErrorException
 	 */
 	public boolean checkTemplate(String templateId) throws WxErrorException {
-		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaInfo());
+		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		if (templateList.isSuccess()) {
 			List<WxOpenSubscribeTemplate> data = templateList.getData();
 			for (WxOpenSubscribeTemplate template : data) {
@@ -184,7 +223,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			}
 			return false;
 		} else {
-			logger().info("获取当前AppId：" + getMaInfo() + "下的个人模板列表失效");
+			logger().info("获取当前AppId：" + getMaAppId() + "下的个人模板列表失效");
 			return false;
 		}
 	}
@@ -197,7 +236,8 @@ public class SubscribeMessageService extends ShopBaseService {
 	public void decrementSubscribeNum(SubscribeMessageRecord templateIdRecord) {
 		if (templateIdRecord.getCanUseNum() >= 1) {
 			templateIdRecord.setCanUseNum(templateIdRecord.getCanUseNum() - 1);
-			templateIdRecord.update();
+			int update = templateIdRecord.update();
+			logger().info("减少用户订阅数"+update);
 		}
 	}
 
@@ -207,8 +247,9 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @param templateIdRecord
 	 */
 	public void incrementSubscribeNum(SubscribeMessageRecord templateIdRecord) {
-		templateIdRecord.setCanUseNum(templateIdRecord.getCanUseNum() + 1);
-		templateIdRecord.update();
+		templateIdRecord.setSuccessNum(templateIdRecord.getSuccessNum() + 1);
+		int update = templateIdRecord.update();
+		logger().info("增加用户的发送成功数"+update);
 	}
 
 	/**
@@ -218,6 +259,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	 */
 	public void modifySubscribeStatus(SubscribeMessageRecord templateIdRecord) {
 		templateIdRecord.setStatus((byte) 0);
-		templateIdRecord.update();
+		int update = templateIdRecord.update();
+		logger().info(" 更新消息订阅状态"+update);
 	}
 }
