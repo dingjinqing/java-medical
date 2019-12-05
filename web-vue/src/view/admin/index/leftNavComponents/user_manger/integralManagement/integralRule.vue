@@ -386,16 +386,17 @@ export default {
     }
     // 购物积分
     var validateshopping = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
       if (value === 'on' && this.form.scoreType === '0') {
         this.shopFullArr.forEach((item, index) => {
           for (let i in item) {
-            if (!item[i]) {
-              callback(new Error('请填写购物送积分'))
+            if (!item[i] || !re.test(item[i])) {
+              callback(new Error('购物送积分填写不正确'))
             }
           }
         })
-      } else if (value === 'on' && this.form.scoreType === '1' && (!this.buyEach || !this.scoreEach)) {
-        callback(new Error('请填写购物送积分'))
+      } else if (value === 'on' && this.form.scoreType === '1' && (!this.buyEach || !this.scoreEach || !re.test(this.buyEach) || !re.test(this.scoreEach))) {
+        callback(new Error('购物送积分填写不正确'))
       } else {
         callback()
       }
@@ -408,11 +409,12 @@ export default {
       }
     }
     var validateSignIn = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
       if (value === 'on') {
         this.signInput.forEach((item, index) => {
           for (let i in item) {
-            if (!item[i]) {
-              callback(new Error('请填写签到积分'))
+            if (!item[i] || !re.test(item[i])) {
+              callback(new Error('签到积分填写不正确'))
             }
           }
         })
