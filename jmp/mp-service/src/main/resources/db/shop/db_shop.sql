@@ -4811,7 +4811,7 @@ CREATE TABLE `b2c_subscribe_message` (
   `template_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '模板ID',
   `template_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '模板编号',
   `status` tinyint(1) DEFAULT '1' COMMENT '1 正常 0 取消授权',
-  `can_use_num` int(11) DEFAULT NULL COMMENT '可使用数',
+  `can_use_num` int(11) DEFAULT '0' COMMENT '可使用数',
   `success_num` int(11) DEFAULT '0' COMMENT '发送成功数',
   `add_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,

@@ -1307,3 +1307,7 @@ MODIFY COLUMN `status` tinyint(1) not null default '1' COMMENT '是否启用，1
 -- 修改默认值
 ALTER TABLE `b2c_reduce_price`
 MODIFY COLUMN `period_action` tinyint(1) NOT NULL DEFAULT '0' COMMENT '周期类型：0:不进行周期重复  1:每天 2:每月 3:每周';
+
+--修改默认值
+ALTER TABLE `b2c_subscribe_message` 
+CHANGE COLUMN `can_use_num` `can_use_num` INT(11) NULL DEFAULT 0 COMMENT '可使用数' ;
