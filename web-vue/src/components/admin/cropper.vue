@@ -262,11 +262,13 @@ export default {
     // 裁剪图片保存
     handleSave () {
       // console.log(this.imgPath, this.cropperTopInput_one, this.cropperTopInput_two, this.cropMovingX, this.cropMovingY, this.previews.img.width, this.previews.img.height, 98, this.imgCatId, this.imgID)
-      // console.log(this.previews)
+      console.log(this.orignWidth, this.orignHeight, this.cropperTopInput_two)
       if (!this.cropperTopInput_one) {
         this.cropperTopInput_one = this.orignWidth
-      } else if (!this.cropperTopInput_two) {
+      }
+      if (!this.cropperTopInput_two) {
         this.cropperTopInput_two = this.orignHeight
+        console.log(this.cropperTopInput_two)
       }
       console.log(this.cropMovingX, this.cropMovingY, this.cropperTopInput_one, this.cropperTopInput_two, this.previews.w, this.previews.h)
       let obj = {

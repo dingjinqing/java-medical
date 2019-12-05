@@ -227,7 +227,10 @@
         >确 定</el-button>
       </span>
     </el-dialog>
-    <Cropper :allowToInput='true' />
+    <Cropper
+      :allowToInput='true'
+      @handleToResetPage='handleToResetPage'
+    />
   </div>
 </template>
 <script>
@@ -657,6 +660,11 @@ export default {
     clickUserPic (flag) {
       console.log(flag)
       this.clickUserPicFlag = flag
+      this.detailImgsSearch()
+    },
+    handleToResetPage () {
+      this.currentPage3 = 1
+      console.log('触发')
       this.detailImgsSearch()
     }
   }
