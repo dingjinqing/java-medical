@@ -7,7 +7,8 @@ global.wxPage({
     imageUrl: util.getImageUrl(""),
     dataList: [],
     pageParams: null,
-    showFilterDialog:false
+    showFilterDialog:false,
+    action:1, //测试用后续删除
   },
 
   /**

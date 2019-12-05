@@ -1,10 +1,139 @@
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
-  <view class="filter-content" animation="{{animation}}">
+  <view class="filter-content" animation="{{animation}}" style="height:calc(100% - {{navHeight}}px);">
     <view class="sort-item">
-      <view class="back">
+      <view class="back" bindtap="bindClose">
         <image src="{{imageUrl}}/image/wxapp/category_back.png"></image>
       </view>
       <view class="center-title">更多分类</view>
+    </view>
+    <view class="sort-item" bindtap="toogleChange">
+      <view class="sort-name">服装(10)</view>
+      <view class="arrow">
+        <image src="/images/comment_down.png" class="{{ changeStatus ? 'up' : '' }}"></image>
+      </view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
+    </view>
+    <view class="sort-item" wx:if="{{changeStatus}}">
+      <view class="sort-name second">服装(10)</view>
     </view>
   </view>
 </v-popup>

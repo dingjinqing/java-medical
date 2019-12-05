@@ -1,9 +1,10 @@
 .filter-content{
   width: 600rpx;
   background-color: #fff;
-  height: 100%;
   border-top: 1rpx solid #eee;
   transform: translateX(600rpx);
+  overflow-y: auto;
+  position: relative;
 }
 .filter-item{
   padding: 0 20rpx;
@@ -39,7 +40,7 @@
   background-color: #f7f7f7;
   width:170rpx;
   text-align: center;
-  margin-left: 28rpx;
+  margin-left: 25rpx;
   border: 1rpx solid transparent;
   margin-top: 20rpx;
 }
@@ -54,7 +55,7 @@
   width: 266rpx;
 }
 .item-content > .item.brand:nth-child(even){
-  margin-left: 30rpx;
+  margin-left: 26rpx;
 }
 .item-content > .item.brand:nth-child(odd){
   margin-left: 0;
@@ -67,4 +68,22 @@
   background: #f7f7f7;
   border-radius: 30rpx;
   margin: 20rpx 0 0 0;
+}
+.filter-footer{
+  width: 100%;
+  text-align: center;
+  display: flex;
+  position: absolute;
+  bottom: 0;
+}
+.filter-footer > view{
+  flex: 1;
+  line-height: 90rpx;
+}
+.filter-footer > .reset{
+  color: #666;
+  background-color:#fff;
+}
+.filter-footer > .confirm{
+  color: #fff;
 }

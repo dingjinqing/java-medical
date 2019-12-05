@@ -1,7 +1,92 @@
 .filter-content{
   width: 600rpx;
   background-color: #fff;
-  height: 100%;
   border-top: 1rpx solid #eee;
   transform: translateX(600rpx);
+  overflow-y: auto;
+  position: relative;
+}
+.no_width{
+  width: auto;
+}
+.brand_list > .brand_info:last-of-type{
+  border-bottom: none;
+}
+.brand_title{
+  line-height: 64rpx;
+  background-color: #ededed;
+  font-size: 26rpx;
+  color: #666;
+  padding-left: 24rpx;
+}
+.brand_info{
+  margin-left: 24rpx;
+  padding: 20rpx 0;
+  font-size: 0;
+  border-bottom: 1rpx solid #eeeeee;
+  display: flex;
+  align-items:center;
+}
+.brand_img{
+  width: 80rpx;
+  height: 80rpx;
+  vertical-align: middle;
+}
+.brand_name{
+  overflow: hidden;
+  font-size: 26rpx;
+  margin-left: 10rpx;
+  color: #333;
+  word-break: break-all;
+  /* text-overflow: hidden; */
+  padding-right: 40rpx;
+}
+.zimu text{
+  font-size: 24rpx;
+  color: #666;
+  padding: 0 8rpx;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  flex-direction:column;
+}
+.clearfix::after{
+  content: "";
+  display: block;
+  clear: both
+}
+.zimu{
+  position: absolute;
+  top: 40rpx;
+  right: 12rpx;
+  border-radius: 4rpx;
+  display: flex;
+  flex-wrap:wrap;
+  flex-direction:column;
+  text-align: center;
+  height: 90%;
+  overflow:hidden;
+}
+.sort-item{
+  display: flex;
+  border-bottom: 1rpx solid #eee;
+  align-items: center;
+  height: 100rpx;
+}
+.sort-item > .back{
+  width: 60rpx;
+  text-align: center;
+  display: flex;
+  z-index: 2;
+}
+.sort-item > .back > image{
+  width: 14rpx;
+  height: 28rpx;
+  vertical-align: middle;
+  margin: auto;
+}
+.sort-item > .center-title{
+  flex: 1;
+  text-align: center;
+  margin-left: -60rpx;
 }
