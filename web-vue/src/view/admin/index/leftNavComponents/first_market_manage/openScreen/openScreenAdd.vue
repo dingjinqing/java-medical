@@ -557,7 +557,7 @@ export default {
             this.dateInterval = [new Date(res.content.startDate), new Date(res.content.endDate)]
           }
           if (res.content.mrkingVoucherId && res.content.couponView && res.content.couponView.length > 0) {
-            if (res.content.activityAction === 3) {
+            if (res.content.activityAction === 1) {
               this.couponSelected = res.content.couponView
             } else if (res.content.activityAction === 6) {
               this.disCouponSelected = res.content.couponView
