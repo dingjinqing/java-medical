@@ -1,10 +1,8 @@
 <template>
   <div class="integralManagement">
     <div class="integralManagementMain">
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick"
-      >
+      <el-tabs v-model="activeName">
+        <!-- @tab-click="handleClick" -->
         <el-tab-pane
           :label="$t('scoreCfg.scoreRuleSetting')"
           name="first"
