@@ -12,6 +12,7 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author: 王兵兵
@@ -32,12 +33,16 @@ public class CouponMpService extends ShopBaseService {
             CouponPageDecorationVo couponVo = getCouponPageDecorationVo(coupon.getCouponId());
 
             //赋值该优惠券的可用状态，优先显示已领取
-            if(couponVo.getReceivePerPerson() > 0){
+            if(couponVo == null){
+                couponVo = new CouponPageDecorationVo();
+                //已领取或领取达到极限
+                couponVo.setStatus((byte)6);
+            } else if(couponVo.getReceivePerPerson() > 0){
                 //用户已 领取/发放 优惠券数
                 int getCouponAmount = getUserCouponAmount(coupon.getCouponId(),userId);
                 if(getCouponAmount >= couponVo.getReceivePerPerson()){
                     //已领取或领取达到极限
-                    couponVo.setStatus((byte)-1);
+                    couponVo.setStatus((byte)5);
                 }
             }else if(couponVo.getEnabled().equals(BaseConstant.COUPON_ENABLED_DISABLED)){
                 //停用
@@ -68,6 +73,7 @@ public class CouponMpService extends ShopBaseService {
     }
 
     private CouponPageDecorationVo getCouponPageDecorationVo(int couponId){
-        return db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchSingle().into(CouponPageDecorationVo.class);
+        Optional<CouponPageDecorationVo> vo =  db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOptionalInto(CouponPageDecorationVo.class);
+        return vo.orElse(null);
     }
 }
