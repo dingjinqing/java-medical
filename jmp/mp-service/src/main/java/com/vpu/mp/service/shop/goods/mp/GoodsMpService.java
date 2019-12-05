@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.goods.mp;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -370,7 +371,8 @@ public class GoodsMpService extends ShopBaseService {
             if (record != null) {
                 capsule.setVideoHeight(record.get(UPLOADED_VIDEO.VIDEO_HEIGHT));
                 capsule.setVideoWidth(record.get(UPLOADED_VIDEO.VIDEO_WIDTH));
-                capsule.setGoodsVideoSize(record.get(UPLOADED_VIDEO.VIDEO_SIZE) * 1.0 / 1024 / 1024);
+                double size = record.get(UPLOADED_VIDEO.VIDEO_SIZE) * 1.0 / 1024 / 1024;
+                capsule.setGoodsVideoSize(BigDecimalUtil.setDoubleScale(size,2,true));
             }
         }
         return capsule;
