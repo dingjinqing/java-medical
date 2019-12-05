@@ -197,23 +197,31 @@ public class SubscribeMessageService extends ShopBaseService {
 				if(byTempleName==null) {
 					logger().info("appid："+getMaAppId()+"。数据："+data[i]+"在类目"+category+"暂时未定义，请补充程序");
 				}
+				logger().info("添加的TempleName为"+byTempleName.getTitle());
 				titleList.add(byTempleName);
 			}			
 		}
+		logger().info("titleList为"+titleList);
 		String[] retult=new String[]{};
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		List<WxOpenSubscribeTemplate> data2 = templateList.getData();
-		for(int i=0;i<titleList.size();i++) {
-			for(WxOpenSubscribeTemplate template:data2) {
-				boolean contains = template.getTitle().contains(titleList.get(i).getTitle());
-				if(contains) {
-					//存在，直接赋值
-					retult[i]=template.getPriTmplId();
-				}else {
-					//不存在，新建
-					retult[i]=addTemplate(titleList.get(i));
+		if(data2.size()!=0) {
+			for(int i=0;i<titleList.size();i++) {
+				for(WxOpenSubscribeTemplate template:data2) {
+					boolean contains = template.getTitle().contains(titleList.get(i).getTitle());
+					if(contains) {
+						//存在，直接赋值
+						retult[i]=template.getPriTmplId();
+					}else {
+						//不存在，新建
+						retult[i]=addTemplate(titleList.get(i));
+					}
 				}
-			}
+			}			
+		}else {
+			for(int i=0;i<titleList.size();i++) {
+				retult[i]=addTemplate(titleList.get(i));
+			}	
 		}
 		return retult;
 	}
