@@ -353,8 +353,9 @@
                   class="addInfo"
                   @click="handleToCallDialog2(item, index)"
                   style="line-height: normal"
-                  v-if="params.awardList[index].splitCoupon.length < 1"
                 >
+                  <!-- v-if="params.awardList[index].splitCoupon.length < 1" -->
+
                   <el-image
                     fit="scale-down"
                     :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
@@ -630,6 +631,7 @@
       @resultGoodsRow="addGiftDialog"
       :tuneUpChooseGoods="isShowChoosingGoodsDialog"
       :singleElection="true"
+      :loadProduct="true"
       :chooseGoodsBack="chooseGoodsIdList"
     />
   </div>
@@ -1015,12 +1017,12 @@ export default {
     // 返回商品信息 选状态选中的商品全部信息
     addGiftDialog (res) {
       console.log(res, 'goodInfo')
-      this.params.awardList[this.currentModelIndex].productId = res.goodsId
+      this.params.awardList[this.currentModelIndex].productId = res.prdId
       this.params.awardList[this.currentModelIndex].goodsShow = true
       this.params.awardList[this.currentModelIndex].goodsName = res.goodsName
       this.params.awardList[this.currentModelIndex].goodsImg = res.goodsImg
-      this.params.awardList[this.currentModelIndex].goodsPrice = res.prdMinShopPrice
-      this.params.awardList[this.currentModelIndex].goodsNumber = res.goodsNumber
+      this.params.awardList[this.currentModelIndex].goodsPrice = res.prdPrice
+      this.params.awardList[this.currentModelIndex].goodsNumber = res.prdNumber
       console.log(this.params.awardList, this.params.awardList[this.currentModelIndex], 'console log awardiList value===')
       this.$forceUpdate()
     },
@@ -1032,15 +1034,15 @@ export default {
         console.log(res.content.awardContentList)
         if (res.error === 0) {
           this.handleData(res.content)
-
-          // this.params.awardList = res.content.awardContentList
-          // this.params = Object.assign({}, this.params, res.content)
           this.$set(this.params, 'awardList', res.content.awardContentList)
+          // if (this.params.awardList[this.currentModelIndex].giftType === 1) {
           this.params.awardList[this.currentModelIndex].ordinaryCoupon = this.params.awardList[this.currentModelIndex].couponView
           this.params.awardList[this.currentModelIndex].ordinaryCouponIdList = this.params.awardList[this.currentModelIndex].couponIds
+          // }
+          // if (this.params.awardList[this.currentModelIndex].giftType === 2) {
           this.params.awardList[this.currentModelIndex].splitCoupon = this.params.awardList[this.currentModelIndex].couponView
           this.params.awardList[this.currentModelIndex].splitCouponIdList = this.params.awardList[this.currentModelIndex].couponIds
-
+          // }
           console.log(this.ordinaryCoupon, 'get ordinaryCoupon')
           console.log(this.params, 'get reuturnParams')
 
@@ -1055,8 +1057,6 @@ export default {
     handleData (data) {
       console.log(data, 'receiveData')
       this.params.activityNames = data.activityNames
-      // this.params.startTime = data.startTime
-      // this.params.endTime = data.endTime
       this.params.timeType = data.timeType
       this.params.actFirst = data.actFirst
       this.params.goodsAreaType = data.goodsAreaType
@@ -1065,7 +1065,6 @@ export default {
       this.params.goodsSortIds = data.goodsSortIds // 商家商家分类
       this.params.minPayMoney = data.minPayMoney
       this.params.limitTimes = data.limitTimes
-      // this.params.lotteryId = data.lotteryId
     },
 
     // 添加支付有礼活动接口调用
@@ -1094,15 +1093,6 @@ export default {
 
     // 新增支付有礼活动
     addActivity (requestParams) {
-      // let obj = {
-      //   goodsIds: String(this.choosingGoodsDateFlag1), // 商品ID
-      //   goodsCatIds: String(this.platformCategoryIds), // 商家平台分类
-      //   goodsSortIds: String(this.shopCategoryIds) // 商品商家分类
-
-      // }
-      // let requestParams = Object.assign(this.params, obj)
-      // console.log(requestParams, 'requestParams')
-      // console.log(this.params, 'this.params')
       addPayRewardAct(requestParams).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -1124,15 +1114,6 @@ export default {
 
     // 更新支付有礼活动接口调用
     updateActivity (requestParams) {
-      // let obj1 = {
-      //   id: this.idInfo,
-      //   goodsIds: String(this.choosingGoodsDateFlag1), // 商品ID
-      //   goodsCatIds: String(this.platformCategoryIds), // 商家平台分类
-      //   goodsSortIds: String(this.shopCategoryIds) // 商品商家分类
-
-      // }
-      // let updateRequestParams = Object.assign(this.params, obj1)
-      // console.log(updateRequestParams, 'updateRequestParams')
       requestParams.id = this.params.id
       updatePayReward(requestParams).then(res => {
         if (res.error === 0) {
