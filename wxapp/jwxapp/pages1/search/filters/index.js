@@ -1,12 +1,12 @@
 var base = require("../../../components/popup/base/base.js");
+var filterBase = require("./filter_base/filter_base.js");
 global.wxComponent({
-  mixins: [base],
+  mixins: [base, filterBase],
 
   /**
    * 组件的属性列表
    */
   properties: {
-    navHeight: Number
   },
 
   /**
@@ -26,22 +26,6 @@ global.wxComponent({
     },
     showBrand(){
       this.setData({ showBrandDialog:true })
-    }
-  },
-  observers:{
-    'show':function(val){
-      let animation = wx.createAnimation({
-        duration: 600,
-        timingFunction: 'ease'
-      })
-      if(val === true){
-        animation.translateX(0).step()
-      } else {
-        animation.translateX('600rpx').step()
-      }
-      this.setData({
-        animation: animation.export()
-      })
     }
   }
 });
