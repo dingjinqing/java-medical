@@ -211,7 +211,6 @@ create table `b2c_goods`
     `sale_time`                 timestamp               default current_timestamp comment '上架时间',
     `limit_buy_num`             int(11)        not null default '0' comment '最少起购数量，0不限购',
     `unit`                      varchar(60)    not null default '' comment '商品单位',
-    `add_sale_num`              int(11)        not null default '0' comment '虚假销量',
     `limit_max_num`             int(11)        not null default 0 comment '最多起购数量，0不限购',
     `sale_type`                 tinyint(1)     not null default '0' comment '上架状态,0立即上架， 1审核通过 2 加入仓库',
     `sort_id`                   int(11)        not null default '0',

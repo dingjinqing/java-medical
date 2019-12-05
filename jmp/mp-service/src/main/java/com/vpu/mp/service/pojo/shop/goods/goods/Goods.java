@@ -98,7 +98,7 @@ public class Goods {
     /**
      * 初始销量
      */
-    private Integer addSaleNum;
+    private Integer baseSale;
     /**
      * 运费模板id
      */

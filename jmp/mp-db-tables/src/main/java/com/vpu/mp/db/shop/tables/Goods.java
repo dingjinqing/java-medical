@@ -32,7 +32,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Goods extends TableImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = 79510156;
+    private static final long serialVersionUID = -809741260;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods</code>
@@ -113,9 +113,9 @@ public class Goods extends TableImpl<GoodsRecord> {
     public final TableField<GoodsRecord, String> GOODS_DESC = createField("goods_desc", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods.goods_img</code>. 商品主图
+     * The column <code>mini_shop_471752.b2c_goods.goods_img</code>.
      */
-    public final TableField<GoodsRecord, String> GOODS_IMG = createField("goods_img", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "商品主图");
+    public final TableField<GoodsRecord, String> GOODS_IMG = createField("goods_img", org.jooq.impl.SQLDataType.VARCHAR(500).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods.is_on_sale</code>. 是否在售，1在售，0下架
@@ -183,20 +183,14 @@ public class Goods extends TableImpl<GoodsRecord> {
     public final TableField<GoodsRecord, Integer> LIMIT_BUY_NUM = createField("limit_buy_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "最少起购数量，0不限购");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods.limit_max_num</code>. 最多起购数量，0不限购
-     */
-    public final TableField<GoodsRecord, Integer> LIMIT_MAX_NUM = createField("limit_max_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "最多起购数量，0不限购");
-
-    /**
      * The column <code>mini_shop_471752.b2c_goods.unit</code>. 商品单位
      */
     public final TableField<GoodsRecord, String> UNIT = createField("unit", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "商品单位");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods.add_sale_num</code>. 初始销量
-
+     * The column <code>mini_shop_471752.b2c_goods.limit_max_num</code>. 最多起购数量，0不限购
      */
-    public final TableField<GoodsRecord, Integer> ADD_SALE_NUM = createField("add_sale_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "初始销量\r\n");
+    public final TableField<GoodsRecord, Integer> LIMIT_MAX_NUM = createField("limit_max_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "最多起购数量，0不限购");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods.sale_type</code>. 上架状态,0立即上架， 1审核通过 2 加入仓库
@@ -204,9 +198,9 @@ public class Goods extends TableImpl<GoodsRecord> {
     public final TableField<GoodsRecord, Byte> SALE_TYPE = createField("sale_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "上架状态,0立即上架， 1审核通过 2 加入仓库");
 
     /**
-     * The column <code>mini_shop_471752.b2c_goods.sort_id</code>. 平台分类
+     * The column <code>mini_shop_471752.b2c_goods.sort_id</code>.
      */
-    public final TableField<GoodsRecord, Integer> SORT_ID = createField("sort_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "平台分类");
+    public final TableField<GoodsRecord, Integer> SORT_ID = createField("sort_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods.goods_video</code>. 视频
@@ -329,7 +323,7 @@ public class Goods extends TableImpl<GoodsRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.GOODS_CAT_ID, Indexes.GOODS_GOODS_ID, Indexes.GOODS_GOODS_ID_2, Indexes.GOODS_GOODS_SN, Indexes.GOODS_PRIMARY, Indexes.GOODS_SHOP_ID);
+        return Arrays.<Index>asList(Indexes.GOODS_CAT_ID, Indexes.GOODS_GOODS_ID, Indexes.GOODS_GOODS_ID_2, Indexes.GOODS_GOODS_SN, Indexes.GOODS_SHOP_ID);
     }
 
     /**
@@ -344,16 +338,8 @@ public class Goods extends TableImpl<GoodsRecord> {
      * {@inheritDoc}
      */
     @Override
-    public UniqueKey<GoodsRecord> getPrimaryKey() {
-        return Keys.KEY_B2C_GOODS_PRIMARY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<UniqueKey<GoodsRecord>> getKeys() {
-        return Arrays.<UniqueKey<GoodsRecord>>asList(Keys.KEY_B2C_GOODS_PRIMARY, Keys.KEY_B2C_GOODS_GOODS_ID, Keys.KEY_B2C_GOODS_GOODS_SN);
+        return Arrays.<UniqueKey<GoodsRecord>>asList(Keys.KEY_B2C_GOODS_GOODS_ID, Keys.KEY_B2C_GOODS_GOODS_SN);
     }
 
     /**
