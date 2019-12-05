@@ -102,7 +102,14 @@
               ></i>
             </div>
             <div class="ruleContent">
-              <el-form-item label="包邮条件：">
+              <el-form-item
+                label="包邮条件："
+                :prop="`ruleList[${index}].conType`"
+                :rules="[
+                    { required: true, message: '包邮规则不能为空', trigger: 'blur' },
+                    { validator: (rule, value, callback)=>{validatePostal(rule, value, callback, item.money, item.num)}, trigger: ['blur', 'change'] }
+                  ]"
+              >
                 <el-radio-group v-model="item.conType">
                   <el-radio :label="0">满金额</el-radio>
                   <el-radio :label="1">满件数</el-radio>
@@ -136,7 +143,14 @@
                   </span>
                 </div>
               </el-form-item>
-              <el-form-item label="包邮区域：">
+              <el-form-item
+                label="包邮区域："
+                style="margin: 20px 0;"
+                :prop="`ruleList[${index}].areaList`"
+                :rules="[
+                    { required: true, validator: (rule, value, callback)=>{validateArea(rule, value, callback, item.areaList)}, trigger: ['blur', 'change'] },
+                  ]"
+              >
                 <el-button
                   size="small"
                   type="primary"
@@ -222,9 +236,9 @@ export default {
       }
     }
     var validateLevel = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*$/
       if (!re.test(value)) {
-        callback(new Error('活动等级为0或者正整数'))
+        callback(new Error('活动等级为正整数'))
       } else {
         callback()
       }
@@ -490,6 +504,7 @@ export default {
 
     // 获取返回的数据
     changeRegionList (value) {
+      console.log(value)
       this.$message.success('添加区域成功!')
       this.form.ruleList.forEach((item, index) => {
         if (index === this.areaIndex) {
@@ -506,8 +521,31 @@ export default {
           this.innerObjJ = value.innerObj
         }
       })
-    }
+    },
 
+    // 校验包邮规则
+    validatePostal (rule, value, callback, money, num) {
+      var reMoney = /^\d+(\.\d{1,2})?$/
+      var reNum = /^(0|\+?[1-9][0-9]*)$/
+      if (value === 0 && (!money || !reMoney.test(money))) {
+        callback(new Error('请正确填写金额'))
+      } else if (value === 1 && (!num || !reNum.test(num))) {
+        callback(new Error('请正确填写件数'))
+      } else if (value === 2 && (!money || !reMoney.test(money) || !num || !reNum.test(num))) {
+        callback(new Error('请正确填写金额和件数'))
+      } else {
+        callback()
+      }
+    },
+
+    // 校验包邮区域
+    validateArea (rule, value, callback, area) {
+      if (!area || area.length === 0) {
+        callback(new Error('包邮区域不能为空'))
+      } else {
+        callback()
+      }
+    }
   }
 }
 </script>
