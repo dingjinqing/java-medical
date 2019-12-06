@@ -829,19 +829,25 @@ export default {
 
     // 普通优惠券弹窗调起 currentIndex为当前的添加的Item的索引值
     handleToCallDialog1 (item, currentIndex) {
+      console.log(currentIndex, 'currentIndex')
+      // 改变对应的当前模块的index
+      this.currentModelIndex = currentIndex
+      console.log(item, 'item--')
+      console.log(this.params, 'itemParams--')
       let arr = []
       item.ordinaryCoupon.forEach(item => {
+        console.log(item, 'what is item')
         arr.push(item.id)
+        console.log(arr, 'item coupon id')
       })
       this.emptySelect = arr
       this.$nextTick(() => {
         this.addCouponVisible = !this.addCouponVisible
       })
-      // 改变对应的当前模块的index
-      this.currentModelIndex = currentIndex
     },
     // 普通优惠券数据处理回显处理
     addCouponHandle (data) {
+      console.log(data, 'coupon data')
       this.params.awardList[this.currentModelIndex].couponIds = data.map(item => item.id)
       this.params.awardList[this.currentModelIndex].ordinaryCoupon = data
 
@@ -1034,17 +1040,26 @@ export default {
         console.log(res.content.awardContentList)
         if (res.error === 0) {
           this.handleData(res.content)
+          console.log(this.params, 'before')
           this.$set(this.params, 'awardList', res.content.awardContentList)
-          // if (this.params.awardList[this.currentModelIndex].giftType === 1) {
-          this.params.awardList[this.currentModelIndex].ordinaryCoupon = this.params.awardList[this.currentModelIndex].couponView
-          this.params.awardList[this.currentModelIndex].ordinaryCouponIdList = this.params.awardList[this.currentModelIndex].couponIds
-          // }
-          // if (this.params.awardList[this.currentModelIndex].giftType === 2) {
-          this.params.awardList[this.currentModelIndex].splitCoupon = this.params.awardList[this.currentModelIndex].couponView
-          this.params.awardList[this.currentModelIndex].splitCouponIdList = this.params.awardList[this.currentModelIndex].couponIds
-          // }
+          console.log(this.params, 'this.params')
+          if (this.params.awardList[this.currentModelIndex].giftType === 1) {
+            this.params.awardList[this.currentModelIndex].ordinaryCoupon = this.params.awardList[this.currentModelIndex].couponView
+            this.params.awardList[this.currentModelIndex].ordinaryCouponIdList = this.params.awardList[this.currentModelIndex].couponIds
+            console.log(this.params, 'result params')
+          }
+          if (this.params.awardList[this.currentModelIndex].giftType === 2) {
+            this.params.awardList[this.currentModelIndex].splitCoupon = this.params.awardList[this.currentModelIndex].couponView
+            this.params.awardList[this.currentModelIndex].splitCouponIdList = this.params.awardList[this.currentModelIndex].couponIds
+          }
           console.log(this.ordinaryCoupon, 'get ordinaryCoupon')
           console.log(this.params, 'get reuturnParams')
+
+          this.params.awardList[this.currentModelIndex].goodsShow = true
+          this.params.awardList[this.currentModelIndex].goodsName = this.params.awardList[this.currentModelIndex].product.goodsName + this.params.awardList[this.currentModelIndex].product.prdDesc
+          this.params.awardList[this.currentModelIndex].goodsImg = this.params.awardList[this.currentModelIndex].product.goodsImg
+          this.params.awardList[this.currentModelIndex].goodsPrice = this.params.awardList[this.currentModelIndex].product.prdPrice
+          this.params.awardList[this.currentModelIndex].goodsNumber = this.params.awardList[this.currentModelIndex].product.prdNumber
 
           if (res.content.startTime && res.content.endTime) {
             this.dateInterval = [new Date(res.content.startTime), new Date(res.content.endTime)]
