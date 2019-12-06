@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods.es.goods;
 
 import com.vpu.mp.service.foundation.es.annotation.EsFiled;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
+import com.vpu.mp.service.foundation.es.annotation.EsSearch;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import lombok.Data;
 
@@ -308,11 +309,13 @@ public class EsGoods  {
     /**
      * 商品的其他图片(不包含主图)
      */
+    @EsFiled(name=EsSearchName.SECONDARY_GOODS_IMAGES,type = EsFiledTypeConstant.KEYWORD,doc_values = false,index = false)
     private List<String> secondaryGoodsImages;
 
     /**
      * 视频信息(JSON字符串包含：url,image,size,width,height,id)
      */
+    @EsFiled(name=EsSearchName.VIDEO_INFO_JSON,type = EsFiledTypeConstant.KEYWORD,doc_values = false,index = false)
     private String videoInfo;
 
     /**
@@ -326,4 +329,9 @@ public class EsGoods  {
      */
     @EsFiled(name=EsSearchName.PRD_JSON,type = EsFiledTypeConstant.KEYWORD,doc_values = false,index = false)
     private String prdJson;
+    /**
+     * 是不是默认规格
+     */
+    @EsFiled(name=EsSearchName.DEFAULT_PRD,type = EsFiledTypeConstant.BOOL,doc_values = false)
+    private Boolean defPrd;
 }

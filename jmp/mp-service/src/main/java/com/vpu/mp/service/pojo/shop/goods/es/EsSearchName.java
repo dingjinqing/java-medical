@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.goods.es;
 
-import lombok.Getter;
-
 /**
  * es和goods 字段映射关系
  * @author 卢光耀
@@ -81,7 +79,9 @@ public interface EsSearchName {
 
 
     String PRD_JSON = "prd_json";
-
+    String VIDEO_INFO_JSON = "video_info_json";
+    String DEFAULT_PRD = "default_prd";
+    String SECONDARY_GOODS_IMAGES = "secondary_goods_images";
 
 
 }

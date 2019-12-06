@@ -71,7 +71,8 @@ public class EsBaseSearchService extends ShopBaseService {
         MAX_SPEC_PRD_PRICE,
         MIN_SPEC_PRD_PRICE,
         FREIGHT_TEMPLATE_ID,
-        PRD_JSON
+        PRD_JSON,
+        BASE_SALE
     };
 
 

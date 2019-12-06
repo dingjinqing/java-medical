@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.goods;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -22,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
@@ -47,6 +50,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -1745,5 +1749,44 @@ public class GoodsService extends ShopBaseService {
     	}
 		return list;
 
+    }
+    /**
+     * 商品图片列表
+     * @param goodsIds goods id
+     * @return Map<goodsid,List<url>>
+     */
+    public Map<Integer,List<String>> getGoodsImageList(List<Integer> goodsIds){
+        Map<Integer,Result<GoodsImgRecord>> fetch = db().selectFrom(GOODS_IMG)
+            .where(GOODS_IMG.GOODS_ID.in(goodsIds))
+            .orderBy(GOODS_IMG.IMG_DESC.desc()).fetchGroups(GOODS_IMG.GOODS_ID);
+        Map<Integer,List<String>> imgUrlMap = Maps.newHashMap();
+        if ( fetch.isEmpty() ){
+            return imgUrlMap;
+        }
+        fetch.forEach((key, value) -> {
+            List<String> urls = value.stream()
+                .map(y -> getImgFullUrlUtil(y.getImgUrl()))
+                .collect(Collectors.toList());
+            imgUrlMap.put(key, urls);
+        });
+        return imgUrlMap;
+    }
+
+    public Map<Integer, GoodsVideoBo> getGoodsVideo(List<Integer> goodsIds) {
+        Result<Record7<Integer, Integer, Integer, Integer, String, String, Integer>> fetch = db().
+            select(GOODS.GOODS_ID,UPLOADED_VIDEO.VIDEO_ID,UPLOADED_VIDEO.VIDEO_HEIGHT,
+                UPLOADED_VIDEO.VIDEO_WIDTH,GOODS.GOODS_VIDEO,GOODS.GOODS_VIDEO_IMG,GOODS.GOODS_VIDEO_SIZE).
+            from(UPLOADED_VIDEO).
+            leftJoin(GOODS).
+            on(GOODS.GOODS_VIDEO_ID.eq(UPLOADED_VIDEO.VIDEO_ID)).
+            where(GOODS.GOODS_ID.in(goodsIds)).fetch();
+        List<GoodsVideoBo> bos = Lists.newArrayList();
+        fetch.forEach(x->{
+            GoodsVideoBo bo = new GoodsVideoBo(x);
+            bo.setImgUrl(getImgFullUrlUtil(bo.getImgUrl()));
+            bo.setUrl(getVideoFullUrlUtil(bo.getUrl(),true));
+            bos.add(bo);
+        });
+        return bos.stream().collect(Collectors.toMap(GoodsVideoBo::getId, Function.identity()));
     }
 }

@@ -1,10 +1,7 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.google.common.collect.Lists;
-import com.vpu.mp.db.shop.tables.records.BargainRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsLabelCoupleRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -17,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.*;
@@ -93,6 +91,8 @@ public class EsAssemblyDataService extends ShopBaseService {
             }
         });
         Map<Integer, List<GoodsGradePrd>> goodsGradePrdMap = goodsService.selectGoodsGradePrdByGoodsIds(goodsIds);
+        Map<Integer, GoodsVideoBo> goodsVideoMap = goodsService.getGoodsVideo(goodsIds);
+        Map<Integer,List<String>> imageUrlMap = goodsService.getGoodsImageList(goodsIds);
         Map<Integer, BigDecimal> goodsShowPriceMap = goodsPriceService.getShowPriceByIdAndType(goodsTypeMap);
         Map<Integer, Result<GoodsSpecProductRecord>> goodsProductMap = goodsSpecProductService.selectByGoodsIds(goodsIds);
         Map<Integer, List<SysCatevo>> goodsCatInfoMap = getCatInfoByGoodsIds(goodsCatMap);
@@ -112,6 +112,12 @@ public class EsAssemblyDataService extends ShopBaseService {
             if (validationMap(goodsGradePrdMap, goodsId)) {
                 assemblyVipPriceImp(esGoods, goodsGradePrdMap.get(goodsId));
             }
+            if( validationMap(imageUrlMap,goodsId) ){
+                esGoods.setSecondaryGoodsImages(imageUrlMap.get(goodsId));
+            }
+            if( validationMap(goodsVideoMap,goodsId) ){
+                esGoods.setVideoInfo(Util.toJson(goodsVideoMap.get(goodsId)));
+            }
             if (validationMap(goodsShowPriceMap, goodsId)) {
                 esGoods.setShowPrice(goodsShowPriceMap.get(goodsId));
             } else {
@@ -120,9 +126,14 @@ public class EsAssemblyDataService extends ShopBaseService {
             if (validationMap(goodsProductMap, goodsId)) {
                 List<GoodsSpecProductRecord> list = goodsProductMap.get(goodsId);
                 list.sort(Comparator.comparing(GoodsSpecProductRecord::getPrdPrice));
-                List<BigDecimal> specPrdPrices = new LinkedList<>();
+                List<BigDecimal> specPrdPrices = Lists.newLinkedList();
                 List<GoodsPrdMpVo> voList = Lists.newArrayList();
                 StringBuilder prdSns = new StringBuilder();
+                if( list.size() == 1 && StringUtils.isBlank(list.get(0).getPrdSpecs()) ){
+                    esGoods.setDefPrd(true);
+                }else{
+                    esGoods.setDefPrd(false);
+                }
                 list.forEach(x -> {
                     voList.add(new GoodsPrdMpVo(x));
                     specPrdPrices.add(x.getPrdPrice());

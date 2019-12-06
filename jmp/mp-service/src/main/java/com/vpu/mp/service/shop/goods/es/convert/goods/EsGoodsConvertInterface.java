@@ -27,8 +27,7 @@ public interface EsGoodsConvertInterface<T> {
         target.setGoodsId(source.getGoodsId());
         target.setGoodsName(source.getGoodsName());
         target.setGoodsSaleNum(source.getGoodsSaleNum());
-        //TODO  ESGoods中尚未加入下面字段
-        target.setDefaultPrd(false);
+        target.setDefaultPrd(source.getDefPrd());
     }
 
 }

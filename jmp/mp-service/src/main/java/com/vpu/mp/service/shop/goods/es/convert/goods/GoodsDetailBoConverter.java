@@ -3,10 +3,10 @@ package com.vpu.mp.service.shop.goods.es.convert.goods;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.ReferenceType;
 import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ import java.util.List;
 */
 public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDetailMpBo> {
 
-    private final static ObjectMapper mapper = new ObjectMapper();
+    private final static ObjectMapper MAPPER = new ObjectMapper();
     @Override
     public GoodsDetailMpBo convert(EsGoods esGoods) {
         GoodsDetailMpBo bo = new GoodsDetailMpBo();
@@ -43,17 +44,21 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
 
         List<String> secondaryGoodsImages = esGoods.getSecondaryGoodsImages();
         if( secondaryGoodsImages != null && !secondaryGoodsImages.isEmpty() ){
+            secondaryGoodsImages.add(0,esGoods.getGoodsImg());
             bo.setGoodsImgs(secondaryGoodsImages);
+        }else{
+            bo.setGoodsImgs(Collections.singletonList(esGoods.getGoodsImg()));
         }
         if( StringUtils.isNotBlank(esGoods.getVideoInfo()) ){
-            JsonNode node = Util.toJsonNode(esGoods.getVideoInfo());
+            GoodsVideoBo node = Util.parseJson(esGoods.getVideoInfo(),GoodsVideoBo.class);
             if (node != null) {
-                bo.setGoodsVideoId(node.get("id").asInt());
-                bo.setGoodsVideoImg(node.get("img").asText());
-                bo.setGoodsVideoSize(node.get("size").asDouble());
-                bo.setGoodsVideo(node.get("url").asText());
-                bo.setVideoWidth(node.get("width").asInt());
-                bo.setVideoHeight(node.get("height").asInt());
+                bo.setGoodsVideoId(node.getId());
+                bo.setGoodsVideoImg(node.getImgUrl());
+                Double size = node.getSize()*1.0/1024/1024;
+                bo.setGoodsVideoSize(BigDecimalUtil.setDoubleScale(size,2,true));
+                bo.setGoodsVideo(node.getUrl());
+                bo.setVideoWidth(node.getWidth());
+                bo.setVideoHeight(node.getHeight());
             }
         }
         bo.setDeliverTemplateId(esGoods.getFreightTemplateId());
@@ -66,6 +71,7 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
         bo.setBrandId(esGoods.getBrandId());
         bo.setBrandName(esGoods.getBrandName());
         bo.setGoodsWeight(esGoods.getGoodsWeight());
+        bo.setGoodsNumber(esGoods.getGoodsNumber());
 //        o.getAsString()
 
         return bo;
@@ -95,7 +101,6 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
                         bo.setGradeCardPrice(gradePrdList);
                     }
                 }
-
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -104,7 +109,7 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
     }
     private List<GoodsPrdMpVo> strToGoodsPrdMpVos(String jsonStr){
         try {
-            return mapper.readValue(jsonStr,new TypeReference<List<GoodsPrdMpVo>>(){});
+            return MAPPER.readValue(jsonStr,new TypeReference<List<GoodsPrdMpVo>>(){});
         } catch (IOException e) {
             e.printStackTrace();
             return null;
