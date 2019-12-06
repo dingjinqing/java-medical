@@ -7,6 +7,8 @@ import { cn as selectLinks } from './views/admin_new/cn/components/selectLinks/s
 // 官网
 // 申请试用国际化
 import { cn as indexApply } from './views/index/cn/applyCn'
+// 官网首页移动端国际化
+import { cn as indexMobile } from './views/index/cn/indexMobileCn'
 // system 店铺管理系列国际化
 // 小程序版本
 import {
@@ -1014,7 +1016,8 @@ const cn = {
   messageHint, // 全局消息国际化
   brandManagement, // 商品品牌国际化
   selectLinks, // 选择链接弹窗国际化
-  indexApply // 申请试用国际化
+  indexApply, // 申请试用国际化
+  indexMobile // 官网首页移动端国际化
 }
 
 export default cn

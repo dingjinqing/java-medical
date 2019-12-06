@@ -40,10 +40,15 @@ const routes = [
       }
     ]
   },
-  {
+  { // 移动端打开官网试用
     path: '/index/home/applyMobile',
     name: 'applyMobile',
     component: () => import('@/view/index/ontrialComponents/applyMobile')
+  },
+  { // 移动端打开官网首页
+    path: '/index/home/indexMobile',
+    name: 'indexMobile',
+    component: () => import('@/view/index/indexMobile')
   }
 ]
 export default routes

@@ -42,16 +42,18 @@ export default {
     if (this.$route.meta.defaultTurn) {
       this.defaultFlag = this.$route.meta.defaultTurn
     }
+    // 初始化判断打开的设备
+    this.isMobile()
   },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      // 因为当钩子执行前，组件实例还没被创建
-      // vm 就是当前组件的实例相当于上面的 this，所以在 next 方法里你就可以把 vm 当 this 来用了。
-      // console.log(from)// 当前组件的实例
-      // if (from.name === 'indexLogin') {
-      //   vm.$destroy()
-      // }
-    })
+  methods: {
+    // 判断当前打开页面的设备
+    isMobile () {
+      let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
+      console.log(flag)
+      if (flag) {
+        this.$router.push({ name: 'indexMobile' })
+      }
+    }
   }
 }
 </script>

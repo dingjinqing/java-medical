@@ -331,7 +331,7 @@ export default {
 
 <style>
 /* 重写标页码样式 */
-.swiper-pagination .swiper-pagination-bullet {
+.advan .swiper-pagination .swiper-pagination-bullet {
   color: #fff;
   display: inline-block;
   flex: 1;
@@ -351,12 +351,12 @@ export default {
   box-sizing: border-box;
 }
 /* 重写标页码选中时样式 */
-.swiper-pagination-bullet-active {
+.advan .swiper-pagination-bullet-active {
   background-color: #fff !important;
   color: #5a8bff !important;
   opacity: 1;
 }
-.swiper-pagination {
+.advan .swiper-pagination {
   /* margin-top: -50px; */
   width: 631px;
   margin: 0px auto 0px;
@@ -368,7 +368,7 @@ export default {
   position: absolute;
   left: 30%;
 }
-.swiper-container {
+.advan .swiper-container {
   position: relative;
   top: 100px;
 }
