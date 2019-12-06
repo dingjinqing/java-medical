@@ -43,6 +43,26 @@ public class AdminDistributionController extends AdminBaseController{
 		int result = shop().config.distributionCfg.setDistributionCfg(param);
 		return this.success(result);
 	}
+
+	/**
+	 * 获取分销推广文案
+	 * @return
+	 */
+	@GetMapping("/admin/distribution/document/get")
+	public JsonResult getDistributionDocument(){
+		DistributionDocumentParam distributionDocument = shop().config.distributionCfg.getDistributionDocument();
+		return this.success(distributionDocument);
+	}
+
+	/**
+	 * 设置分销推广文案
+	 * @return
+	 */
+	@PostMapping("/admin/distribution/document/set")
+	public JsonResult setDistributionDocument(@RequestBody DistributionDocumentParam param){
+		int result = shop().config.distributionCfg.setDistributionDocument(param);
+		return this.success(result);
+	}
 	
 	//返利策略配置
 	/**
