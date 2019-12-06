@@ -46,29 +46,29 @@
       >
         <el-table-column
           prop="name"
-          label="活动名称"
+          :label="$t('shipping.name')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="startTime"
-          label="创建时间"
+          :label="$t('shipping.startTime')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="typeText"
-          label="活动商品"
+          :label="$t('shipping.typeText')"
           align="center"
         >
           <template slot-scope="scope">
-            <div v-if="scope.row.type === 0">全部商品</div>
-            <div v-if="scope.row.type === 1">部分商品</div>
+            <div v-if="scope.row.type === 0">{{ this.$t('shipping.typeAll') }}</div>
+            <div v-if="scope.row.type === 1">{{ this.$t('shipping.typeNum') }}</div>
           </template>
         </el-table-column>
         <el-table-column
           prop="ruleText"
-          label="包邮规则"
+          :label="$t('shipping.ruleText')"
           align="center"
         >
           <template slot-scope="scope">
@@ -76,36 +76,36 @@
               v-for="(item, index) in scope.row.ruleList"
               :key="index"
             >
-              <div v-if="item.conType === 0">满 {{ item.money }} 元包邮；<br></div>
-              <div v-if="item.conType === 1">满 {{ item.num }} 件包邮；<br></div>
-              <div v-if="item.conType === 2">满 {{ item.money }} 元包邮，满 {{ item.num }} 件包邮；<br></div>
+              <div v-if="item.conType === 0">{{ this.$t('shipping.ruleTip1') }} {{ item.money }} {{ this.$t('shipping.ruleTip2') }}{{ this.$t('shipping.ruleTip4') }}；<br></div>
+              <div v-if="item.conType === 1">{{ this.$t('shipping.ruleTip1') }} {{ item.num }} {{ this.$t('shipping.ruleTip3') }}{{ this.$t('shipping.ruleTip4') }}；<br></div>
+              <div v-if="item.conType === 2">{{ this.$t('shipping.ruleTip1') }} {{ item.money }} {{ this.$t('shipping.ruleTip2') }}{{ this.$t('shipping.ruleTip4') }}，{{ this.$t('shipping.ruleTip1') }} {{ item.num }} {{ this.$t('shipping.ruleTip3') }}{{ this.$t('shipping.ruleTip4') }}；<br></div>
             </div>
           </template>
         </el-table-column>
         <el-table-column
           prop="expireTypeText"
-          label="有效期"
+          :label="$t('shipping.expireTypeText')"
           align="center"
         >
           <template slot-scope="scope">
-            <div v-if="scope.row.expireType === 0">{{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}</div>
-            <div v-if="scope.row.expireType === 1">永久有效</div>
+            <div v-if="scope.row.expireType === 0">{{scope.row.startTime}}<br>{{ this.$t('shipping.to') }}<br>{{scope.row.endTime}}</div>
+            <div v-if="scope.row.expireType === 1">{{ this.$t('shipping.expireTypeAll') }}</div>
           </template>
         </el-table-column>
         <el-table-column
           prop="level"
-          label="优先级"
+          :label="$t('shipping.level')"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="statusText"
-          label="活动状态"
+          :label="$t('shipping.statusText')"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          label="操作"
+          :label="$t('shipping.option')"
           align="center"
         >
           <template slot-scope="scope">

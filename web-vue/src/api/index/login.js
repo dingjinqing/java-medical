@@ -1,6 +1,6 @@
 import request from '@/util/request'
 
-//  登录  -接口
+//  登录     -接口
 
 // 登录
 export function loginRequest (riid) {
