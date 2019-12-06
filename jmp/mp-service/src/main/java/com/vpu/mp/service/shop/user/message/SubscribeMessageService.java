@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.user.message;
 import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -240,12 +241,14 @@ public class SubscribeMessageService extends ShopBaseService {
 			for (int i = 0; i < titleList.length; i++) {
 				for (WxOpenSubscribeTemplate template : data2) {
 					boolean contains = template.getTitle().contains(titleList[i].getTitle());
-					if (contains) {
-						// 存在，直接赋值
-						results[i]=new TemplateVo(template.getPriTmplId(), titleList[i].getId());
-					} else {
-						// 不存在，新建
-						results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId());
+					if(null==results[i]) {
+						if (contains) {
+							// 存在，直接赋值
+							results[i]=new TemplateVo(template.getPriTmplId(), titleList[i].getId());
+						} else {
+							// 不存在，新建
+							results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId());
+						}						
 					}
 				}
 			}
@@ -340,7 +343,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	private String addTemplate(SubscribeMessageConfig config) throws WxErrorException {
 		WxOpenMaSubscribeAddTemplateResult addTemplate = open.getMaExtService().addTemplate(getMaAppId(),
 				String.valueOf(config.getTid()), config.getKidList(), config.getTitle());
-		logger().info("创建模板" + addTemplate.getErrmsg() + "  " + addTemplate.getErrcode());
+		logger().info("创建模板" + config.getTitle()+"。结果："+addTemplate.getErrmsg() + "  " + addTemplate.getErrcode());
 		if (addTemplate.isSuccess()) {
 			
 			return addTemplate.getPriTmplId();
