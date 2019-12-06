@@ -1,13 +1,13 @@
-<v-popup show="{{show}}" bind:close="bindClose" close_pos="{{!true? '' : 'outer'}}" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="{{!false? 'outer-bottom' : 'outer'}}" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
     <!-- !无奖励&&!优惠券 no-coupon -->
-    <view class="pay-award-bg {{!true? 'no-coupon':''}}" style="{{!true ? 'background:#FFDFBB;' : 'background:#f66 url('+imageUrl+'image/wxapp/pay_award_coupon_top_bg.png) no-repeat left -16rpx / 100%;' }}">
-      <block wx:if="{{!true}}">
+    <view class="pay-award-bg {{!false? 'no-coupon':''}}" style="{{!false ? 'background:#FFDFBB;' : 'background:#f66 url('+imageUrl+'image/wxapp/pay_award_coupon_top_bg.png) no-repeat left -16rpx / 100%;' }}">
+      <block wx:if="{{!false}}">
         <image class="no-coupon-top-behind-bg" src="{{imageUrl}}image/wxapp/award_bg.png"></image>
-        <image class="no-coupon-top-bg" mode="widthFix" src="{{imageUrl}}image/wxapp/is_award1.png"></image>
+        <image class="no-coupon-top-bg" src="{{imageUrl}}image/wxapp/is_award1.png"></image>
         <text class="no-coupon-title">恭 喜 您 !</text>
       </block>
       <!-- 无奖励||优惠券 -->
-      <view class="act-title">支付有礼</view>
+      <!-- <view class="act-title">支付有礼</view> -->
       <!-- 优惠券 && length>0 -->
       <!-- <view class="coupon-content">
         <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
@@ -33,13 +33,13 @@
         <image src="{{imageUrl}}image/wxapp/share_dis.jpg" lazy-load="{{true}}"></image>
       </view> -->
       <!-- 无奖励 -->
-      <view class="no_award">
+      <!-- <view class="no_award">
         <image src="{{imageUrl}}image//wxapp/paygift_no_award.png" lazy-load="{{true}}"></image>
         <text>很抱歉! 奖励领光啦! </text>
-      </view>
+      </view> -->
 
       <!-- no-coupon -->
-      <block wx:if="{{!true}}">
+      <block wx:if="{{!false}}">
         <view class="no-coupon-info">
           <text class="info-title">获得余额</text>
           <!-- 非奖品非优惠券 -->
@@ -50,8 +50,8 @@
           </view> -->
           <!-- 奖品信息 -->
           <view class="gift-name">台式家用简约书桌办公桌带书架学习约书桌办公桌带书架学习</view>
-          <image class="gift-image" src="{{imageUrl}}image/wxapp/img1.jpg"></image>
-          <text class="gift-tips">已放入“我的奖品”快领取把</text>
+            <image class="gift-image" src="{{imageUrl}}image/wxapp/img1.jpg"></image>
+            <text class="gift-tips">已放入“我的奖品”快领取把</text>
         </view>
       </block>
       <!-- 步骤 === true -->
