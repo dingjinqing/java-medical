@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/bottom/bottom",
+    "pages/account/account",
     "pages/index/index",
     "pages/userinfo/userinfo",
     "pages/webview/webview",
@@ -46,6 +47,10 @@
     {
       "root": "pages1",
       "pages": [
+        "appointorder/appointorder",
+        "appointinfo/appointinfo",
+        "appointlist/appointlist",
+        "balance/balance",
         "integral/integral",
         "distribution/distribution",
         "distributionorder/distributionorder",
@@ -55,9 +60,7 @@
         "scancode/scancode",
         "comment/comment",
         "history/history",
-        "appointorder/appointorder",
-        "appointinfo/appointinfo",
-        "appointlist/appointlist",
+       
         "search/search"
       ]
     }

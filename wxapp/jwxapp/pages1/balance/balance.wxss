@@ -1,0 +1,99 @@
+/* pages1/balance/balance.wxss */
+page{
+  background: #f5f5f5;
+}
+.main-container{
+  margin-top: 2rpx;
+  min-height: 970rpx;
+}
+.clearfix::after{
+  content: "";
+  display: block;
+  clear: both
+}
+.balace_top{
+  background: #fff;
+  width: 750rpx;
+  text-align: center;
+  padding: 50rpx 0;
+  padding-bottom: 60rpx;
+  margin-bottom: 20rpx;
+}
+.top_img1{
+  width: 220rpx;
+  height: 140rpx;
+  margin: 0 auto;
+  margin-bottom: 40rpx;
+}
+.top_word1{
+  font-size: 24rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+  width: 100%;
+  text-align: center;
+}
+.top_word2{
+  font-size: 50rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 40rpx;
+  width: 100%;
+  text-align: center;
+}
+.top_word3{
+  font-size: 26rpx;
+  color: #666;
+  width: 100%;
+  text-align: center;
+}
+.top_word2 text{
+  font-size: 72rpx;
+}
+.top_img2{
+  width: 28rpx;
+  height: 28rpx;
+  position: relative;
+  top: 5rpx
+}
+.to_record{
+  background: #fff;
+  width: 750rpx;
+  margin-bottom: 40rpx;
+}
+.to_withdraw{
+  margin-left: 20rpx;
+  width: 700rpx;
+  padding-right: 30rpx;
+  border-bottom: 2rpx solid #eee;
+  font-size: 26rpx;
+  color: #333;
+  height: 80rpx;
+  line-height: 80rpx;
+}
+.to_withdraw .re_img1{
+  width: 40rpx;
+  margin-right: 15rpx;
+  float: left;
+  margin-top: 20rpx;
+}
+.to_withdraw view{
+  float: left
+}
+.to_withdraw .re_img2{
+  width: 15rpx;
+  float: right;
+  margin-top: 28rpx;
+}
+.btn_get_money{
+  width: 702rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  color: #fff;
+  font-size: 30rpx;
+  margin: 0 auto;
+  border-radius: 8rpx;
+  background: linear-gradient(right,#f66,#ff9292);
+  background: -webkit-linear-gradient(right,#f66,#ff9292);
+  background: -moz-linear-gradient(right,#f66,#ff9292);
+}
