@@ -95,12 +95,19 @@ export default {
       },
       shareDialog: false, // 分享弹窗
       shareImg: '',
-      sharePath: ''
+      sharePath: '',
+
+      contentTip1: '',
+      contentTip2: '',
+      contentText: ''
     }
   },
   watch: {
     lang () {
-      this.form.content = this.$t('distribution.contentText')
+      this.contentTip1 = this.$t('distribution.contentTip1')
+      this.contentTip2 = this.$t('distribution.contentTip2')
+      this.contentText = this.$t('distribution.contentText')
+      this.form.content = this.contentTip2 + this.contentText
     }
   },
   mounted () {
@@ -109,12 +116,6 @@ export default {
     this.getClickHandler()
   },
   methods: {
-    // 编辑器输入内容获取
-    input (val) {
-      this.content = val
-      console.log(this.content)
-    },
-
     // 获取
     getClickHandler () {
 
@@ -126,7 +127,7 @@ export default {
 
     // 使用模板文案
     templateCopyHandler () {
-
+      this.form.content = this.contentTip1 + this.contentText
     },
 
     // 复制

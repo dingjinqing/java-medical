@@ -98,8 +98,15 @@ export const en = {
   rebateSaveSuccess: 'Save Success!',
 
   // 分销推广文案
-  contentText: `
+  contentTip1: `
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; color: #e53333; font-size: 18px; font-weight: bold;">The following description template, please modify it according to the situation, for reference only.</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">Friends, welcome to join us</p>
+  `,
+  contentTip2: `
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; color: #e53333; font-size: 18px; font-weight: bold;"><span style="font-size: 12px; font-weight: normal;">Friends, welcome to join us</span></p>
+  `,
+  contentText: `
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">We are the XXX operations team and are dedicated to providing you with comprehensive support for your sales efforts.</p>
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>

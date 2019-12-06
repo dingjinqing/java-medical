@@ -103,8 +103,15 @@ export const cn = {
   rebateSaveSuccess: '保存成功!',
 
   // 分销推广文案
-  contentText: `
+  contentTip1: `
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; color: #e53333; font-size: 18px; font-weight: bold;">以下说明模版，请根据情况自行修改，仅供参考。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">小伙伴，欢迎加入我们</p>
+  `,
+  contentTip2: `
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; color: #e53333; font-size: 18px; font-weight: bold;"><span style="font-size: 12px; font-weight: normal;">小伙伴，欢迎加入我们</span></p>
+  `,
+  contentText: `
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">我们是XXX运营团队，竭诚为你的销售工作提供完善的支持。</p>
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
