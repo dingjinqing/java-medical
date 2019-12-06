@@ -203,7 +203,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			wxDatalist.add(new WxMaSubscribeMessageData(names.get(i), values[0]));
 		}
 		postData.setPage(page);
-		postData.setTemplate_id(templateId);
+		postData.setTemplateId(templateId);
 		postData.setTouser(touser);
 		return postData;
 		

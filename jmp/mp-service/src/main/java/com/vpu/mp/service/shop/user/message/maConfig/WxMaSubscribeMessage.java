@@ -3,12 +3,13 @@ package com.vpu.mp.service.shop.user.message.maConfig;
 import java.io.Serializable;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.shop.user.message.jsonBuilder.WxMaSubscribeGsonBuilder;
 
 import cn.binarywang.wx.miniapp.util.json.WxMaGsonBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 
 @Data
 @NoArgsConstructor
@@ -21,14 +22,14 @@ public class WxMaSubscribeMessage implements Serializable {
 
 	private String touser;
 
-	private String template_id;
+	private String templateId;
 
 	private String page;
 
 	private List<WxMaSubscribeMessageData> data;
 
 	public String toJson() {
-		return WxMaGsonBuilder.create().toJson(this);
+		return WxMaSubscribeGsonBuilder.create().toJson(this);
 	}
 
 }
