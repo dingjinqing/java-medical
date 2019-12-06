@@ -46,6 +46,24 @@ export function setDistribution (data) {
   })
 }
 
+// 设置推广文案
+export function setDocument (data) {
+  return service({
+    url: '/api/admin/distribution/document/set',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取推广文案
+export function getDocument (data) {
+  return service({
+    url: '/api/admin/distribution/document/get',
+    method: 'get',
+    data: data
+  })
+}
+
 // 分销员等级配置
 // 设置分销员等级配置
 export function setDistributionLevel (data) {

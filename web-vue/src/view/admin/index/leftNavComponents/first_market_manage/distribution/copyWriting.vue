@@ -18,7 +18,7 @@
           >
           <div
             class="leftPass"
-            v-html="form.content"
+            v-html="form.document"
           ></div>
         </div>
         <div class="rightContent">
@@ -28,10 +28,10 @@
             label-width="100px"
           >
             <el-form-item label="分享地址：">
-              <span>{{ form.pageText }}</span>
+              <span>{{ pageText }}</span>
               <span
                 class="text"
-                v-clipboard:copy="form.pageText"
+                v-clipboard:copy="pageText"
                 v-clipboard:success="copyHandler"
               >复制</span>
               <span
@@ -54,7 +54,7 @@
                 class="template"
                 @click="templateCopyHandler"
               >使用模板文案</p>
-              <TinymceEditor v-model="form.content" />
+              <TinymceEditor v-model="form.document" />
             </el-form-item>
           </el-form>
         </div>
@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import { setDocument, getDocument } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor'), // 富文本编辑器
@@ -88,15 +89,16 @@ export default {
   },
   data () {
     return {
+      pageText: 'pages/distributionspread/distributionspread',
       form: {
-        pageText: 'pages/distributionspread/distributionspread',
         title: '分销员推广测试',
-        content: '' // 文本内容
+        document: '' // 文本内容
       },
       shareDialog: false, // 分享弹窗
       shareImg: '',
       sharePath: '',
 
+      templateFlag: false,
       contentTip1: '',
       contentTip2: '',
       contentText: ''
@@ -107,7 +109,7 @@ export default {
       this.contentTip1 = this.$t('distribution.contentTip1')
       this.contentTip2 = this.$t('distribution.contentTip2')
       this.contentText = this.$t('distribution.contentText')
-      this.form.content = this.contentTip2 + this.contentText
+      this.getClickHandler()
     }
   },
   mounted () {
@@ -118,16 +120,36 @@ export default {
   methods: {
     // 获取
     getClickHandler () {
-
+      getDocument().then((res) => {
+        if (res.error === 0) {
+          if (res.content) {
+            this.form = res.content
+          } else {
+            if (this.templateFlag === true) {
+              this.form.document = this.contentTip1 + this.contentText
+            } else {
+              this.form.document = this.contentTip2 + this.contentText
+            }
+          }
+          this.$message.success('获取推广文案')
+        }
+      })
     },
 
     // 保存
     saveClickHandler () {
+      console.log(this.form)
+      setDocument(this.form).then((res) => {
+        if (res.error === 0) {
+          this.$message.success('保存成功!')
+        }
+      })
     },
 
     // 使用模板文案
     templateCopyHandler () {
-      this.form.content = this.contentTip1 + this.contentText
+      this.templateFlag = true
+      this.form.document = this.contentTip1 + this.contentText
     },
 
     // 复制
