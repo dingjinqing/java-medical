@@ -70,11 +70,19 @@
   top: -90rpx;
   right: 50rpx;
 }
+.popup .outer-bottom {
+  top: auto;
+  bottom: -100rpx;
+  right: 50%;
+  transform: translateX(50%);
+}
 
 .vertical-line {
   display: none;
 }
-
+.close-container.outer{
+  z-index: 0;
+}
 .outer .vertical-line {
   display: block;
   margin: 0 auto;
