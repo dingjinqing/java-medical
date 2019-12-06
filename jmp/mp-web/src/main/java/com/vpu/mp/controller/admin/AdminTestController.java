@@ -116,31 +116,12 @@ public class AdminTestController extends AdminBaseController {
 	
 	@RequestMapping(value = "/api/admin/test/sendTest")
 	public JsonResult testSend() {
-		WxMaSubscribeMessage data=new WxMaSubscribeMessage();
-		String content = SubscribeMessageConfig.draw_result_307.getContent();
-		List<String> names = RegexUtil.getSubStrList("{{", ".", content);
-		List<WxMaSubscribeMessageData> wxDatalist = new ArrayList<WxMaSubscribeMessageData>();
-		String[][] sdata = new String[][] { { "金坷垃抽奖" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
-		for (int i = 0, len = sdata.length; i < len; i++) {
-			String[] values = sdata[i];
-			wxDatalist.add(new WxMaSubscribeMessageData(names.get(i), values[0]));
-		}
-		data.setData(wxDatalist);
-		
-		WxMaSubscribeMessage data2=new WxMaSubscribeMessage();
-		String content2 = SubscribeMessageConfig.user_grade_307.getContent();
-		List<String> names2 = RegexUtil.getSubStrList("{{", ".", content2);
-		List<WxMaSubscribeMessageData> wxDatalist2 = new ArrayList<WxMaSubscribeMessageData>();
-		String[][] sdata2 = new String[][] { { "金色传说" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "出货啦" } };
-		for (int i = 0, len = sdata2.length; i < len; i++) {
-			String[] values = sdata2[i];
-			wxDatalist.add(new WxMaSubscribeMessageData(names2.get(i), values[0]));
-		}
-		data2.setData(wxDatalist2);
+		String[][] data = new String[][] { { "金坷垃抽奖" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
+		String[][] data2 = new String[][] { { "金色传说" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "出货啦" } };
 		Boolean sendMessage=false;
 		try {
-			 sendMessage = subservice.sendMessage(195, SubscribeMessageConfig.draw_result_307.getTempleName(), data, null);
-			 sendMessage = subservice.sendMessage(195, SubscribeMessageConfig.user_grade_307.getTempleName(), data2, null);
+			 sendMessage = subservice.sendMessage(195, SubcribeTemplateCategory.DRAW_RESULT, data, null);
+			 sendMessage = subservice.sendMessage(195,  SubcribeTemplateCategory.INVITE_SUCCESS, data2, null);
 		} catch (WxErrorException e) {
 			
 			e.printStackTrace();
