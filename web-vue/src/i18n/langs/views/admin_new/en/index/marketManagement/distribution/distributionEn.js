@@ -136,6 +136,14 @@ export const en = {
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">4）Mailbox：xxx@xxx.com</p>
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">Whether it is sales, reconciliation, or settlement issues, please consult through the above methods。</p>
   `,
+  pageTip: 'If the system enables the distributor review function, the copy is displayed on the user application page. Or the distributor can invite other users to register as distributors in the distribution center. At this time, ordinary users can view the promotion copy by clicking the invitation link.',
+  shareAddress: 'Share Address',
+  writingTitle: 'Page Title',
+  writingTitleTip: 'Please fill in the page title',
+  writingCopy: 'Copy',
+  writingShare: 'Share Now',
+  writingContent: 'Page Content',
+  writingTemplate: 'Use template copy',
 
   // -----------------分销员等级配置---------------
   levelTip: 'Tip: every time you modify the distributor level, a large number of distributors will be affected. Please operate carefully',

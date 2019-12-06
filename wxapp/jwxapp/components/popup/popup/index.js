@@ -16,7 +16,7 @@ global.wxComponent({
     vertical: {
       type: String,
       value: "center", // top center bottom fill
-      observer(newVal, oldVal, changedPath) {
+      observer (newVal, oldVal, changedPath) {
         if (this.data.horizon == 'init' && (newVal == 'top' || newVal == 'bottom')) {
           this.setData({
             horizon: "fill"
@@ -26,13 +26,13 @@ global.wxComponent({
     },
     close_pos: {
       type: String,
-      value: "outer", // outer inner mask-corner
+      value: "outer", // outer inner mask-corner outer-bottom
     }
   },
   data: {
     margin_top_nav: 0
   },
-  ready() {
+  ready () {
     if (!this.data.close_img_url) {
       var img = this.data.close_pos == 'inner' ? "close_icon" : "split_btn1";
       this.data.close_img_url = this.data.imageUrl + "image/wxapp/" + img + ".png";

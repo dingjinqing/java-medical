@@ -141,6 +141,14 @@ export const cn = {
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">4）邮箱：xxx@xxx.com</p>
     <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">无论是销售、对账，还是结算问题，请通过以上方式咨询。</p>
   `,
+  pageTip: '若系统开启分销员审核功能，则该文案展示在用户申请页面。或分销员可在分销中心邀请其他用户注册为分销员，此时普通用户通过邀请链接点击也是查看该推广文案。',
+  shareAddress: '分享地址',
+  writingTitle: '页面标题',
+  writingTitleTip: '请填写页面标题',
+  writingCopy: '复制',
+  writingShare: '立即分享',
+  writingContent: '页面内容',
+  writingTemplate: '使用模板文案',
 
   // -----------------分销员等级配置---------------
   levelTip: '提示：每次修改分销员等级，将会有大量分销员受到影响，请谨慎操作',
