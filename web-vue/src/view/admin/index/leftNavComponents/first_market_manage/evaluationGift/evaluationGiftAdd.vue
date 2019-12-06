@@ -20,7 +20,7 @@
                 <div class="img-content">
                   <div
                     class="no-custom-img"
-                    v-if="!form.customizeImgPath"
+                    v-if="!form.awardImg"
                   >
                     <el-image
                       :src="$imageHost+ '/image/admin/no_custom_img.png'"
@@ -30,7 +30,7 @@
                   </div>
                   <el-image
                     v-else
-                    :src="$imageHost + '/' +form.customizeImgPath"
+                    :src="$imageHost + '/' +form.awardImg"
                     style="width:100%;height:100%;"
                     fit="fit"
                   ></el-image>
@@ -50,42 +50,107 @@
             :mode="form"
             :rules="rules"
           >
-            <el-form-item label="活动名称：">
-              <el-input placeholder="最多支持10个字"></el-input>
+            <el-form-item
+              label="活动名称："
+              prop="name"
+            >
+              <el-input
+                v-model="form.name"
+                maxlength="10"
+                show-word-limit
+                style="width:200px;"
+                placeholder="最多支持10个字"
+              ></el-input>
             </el-form-item>
-            <el-form-item label="活动有效期：">
+            <el-form-item
+              label="活动有效期："
+              prop="isForever"
+            >
               <div>
-                <el-radio>固定时间</el-radio>
+                <el-radio
+                  v-model="form.isForever"
+                  :label="0"
+                >固定时间</el-radio>
                 <el-date-picker
+                  v-show="form.isForever === 0"
+                  v-model="period"
                   type="datetimerange"
                   start-placeholder="生效时间"
                   range-separator="至"
                   end-placeholder="过期时间"
                   style="width: 320px;"
+                  format="yyyy-MM-dd hh:mm"
                 ></el-date-picker>
               </div>
               <div>
-                <el-radio>永久有效</el-radio>
+                <el-radio
+                  v-model="form.isForever"
+                  :label="1"
+                >永久有效</el-radio>
               </div>
             </el-form-item>
-            <el-form-item label="优先级：">
-              <el-input-number controls-position="right"></el-input-number>
+            <el-form-item
+              label="优先级："
+              prop="level"
+            >
+              <el-input-number
+                v-model.number="form.level"
+                controls-position="right"
+                :min="0"
+              ></el-input-number>
+              <p class="tips">用于区分不同评价有礼活动的优先级，请填写正整数，数值越大优先级越高</p>
             </el-form-item>
-            <el-form-item label="触发条件：">
+            <el-form-item
+              label="触发条件："
+              prop="goodsType"
+            >
               <div>
                 <label>商品条件</label>
-                <el-radio-group>
-                  <el-radio>全部商品</el-radio>
-                  <el-radio>指定商品</el-radio>
-                  <el-radio>实际评价数量较少商品</el-radio>
+                <el-radio-group
+                  v-model="form.goodsType"
+                  class="goods-type-radio-group"
+                >
+                  <el-radio :label="1">全部商品</el-radio>
+                  <el-radio :label="2">指定商品</el-radio>
+                  <el-radio :label="3">实际评价数量较少商品</el-radio>
                 </el-radio-group>
+              </div>
+              <div>
+                <el-button @click="chooseGoodsDialog">+ 选择商品</el-button>
+              </div>
+              <div>
+                实际评论数量少于<el-input-number
+                  v-model="form.commentNum"
+                  style="width:90px;"
+                  controls-position="right"
+                ></el-input-number>的商品
               </div>
               <div>
                 <label>评价条件</label>
-                <el-radio-group>
-                  <el-radio>评价即送</el-radio>
-                  <el-radio>自定义</el-radio>
+                <el-radio-group
+                  v-model="form.commentType"
+                  class="goods-type-radio-group"
+                >
+                  <el-radio :label="1">评价即送</el-radio>
+                  <el-radio :label="2">自定义</el-radio>
                 </el-radio-group>
+              </div>
+              <div>
+                <div class="flex-block">
+                  <el-checkbox v-model="form.hasPicNum">晒图</el-checkbox>
+                  <el-checkbox v-model="form.hasFiveStars">五星好评</el-checkbox>
+                  <div>
+                    <el-checkbox v-model="form.hasCommentWords">心得超过</el-checkbox>
+                    <span>
+                      <el-input-number
+                        v-model="form.commentWords"
+                        style="width:90px;"
+                        controls-position="right"
+                      ></el-input-number>字
+                    </span>
+                  </div>
+                </div>
+                <p class="tips">以上条件为"且"的关系</p>
               </div>
             </el-form-item>
           </el-form>
@@ -99,60 +164,90 @@
             :mode="form"
             :rules="rules"
           >
-            <el-form-item label="评价奖励：">
-              <el-radio-group>
-                <el-radio>积分</el-radio>
-                <el-radio>优惠券</el-radio>
-                <el-radio>余额</el-radio>
-                <el-radio>幸运大抽奖</el-radio>
-                <el-radio>自定义</el-radio>
+            <el-form-item
+              label="评价奖励："
+              prop="awardType"
+            >
+              <el-radio-group
+                v-model="form.awardType"
+                class="award-type-radio-group"
+              >
+                <el-radio :label="1">积分</el-radio>
+                <el-radio :label="2">优惠券</el-radio>
+                <el-radio :label="3">余额</el-radio>
+                <el-radio :label="4">幸运大抽奖</el-radio>
+                <el-radio :label="5">自定义</el-radio>
               </el-radio-group>
-            </el-form-item>
-            <el-form-item label="积分：">
-              <el-input-number controls-position="right"></el-input-number>
-            </el-form-item>
-            <el-form-item label="优惠券：">
-              <el-select v-model="form.selectCoupon">
-                <el-option
-                  label="未选择"
-                  value=""
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="余额：">
-              <el-input placeholder="请输入金额"></el-input>
-            </el-form-item>
-            <el-form-item label="幸运大抽奖：">
-              <selectPayRewardAct></selectPayRewardAct>
-            </el-form-item>
-            <el-form-item label="自定义：">
-              <div
-                class="uploaded-add"
-                v-if="form.customizeImgPath"
-                @click="selectImgHandle"
-                @mouseenter="hoverImgHandle"
-                @mouseleave="hoverImgHandle"
+              <el-form-item label="积分：">
+                <el-input-number
+                  v-model="form.score"
+                  controls-position="right"
+                ></el-input-number>
+              </el-form-item>
+              <el-form-item label="优惠券：">
+                <el-select v-model="form.activityId">
+                  <el-option
+                    label="未选择"
+                    value=""
+                  ></el-option>
+                </el-select>
+                <p class="tips">优惠券可用库存0份</p>
+              </el-form-item>
+              <el-form-item label="余额：">
+                <el-input
+                  v-model="form.account"
+                  placeholder="请输入金额"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="幸运大抽奖：">
+                <selectPayRewardAct v-model="form.activityId"></selectPayRewardAct>
+              </el-form-item>
+              <el-form-item label="活动图片：">
+                <div
+                  class="uploaded-add"
+                  v-if="form.awardImg"
+                  @click="selectImgHandle"
+                  @mouseenter="hoverImgHandle"
+                  @mouseleave="hoverImgHandle"
+                >
+                  <el-image
+                    :src="$imageHost+ '/' + form.awardImg"
+                    class="uploaded-img"
+                  ></el-image>
+                  <p
+                    class="uploaded-tip"
+                    :hidden="!uploadHover"
+                  >{{$t('openScreenAdd.reselect')}}</p>
+                </div>
+                <div
+                  v-if="!form.awardImg"
+                  class="upload-add"
+                  :style="'background-image:url('+$imageHost+'/image/admin/btn_add.png);'"
+                  @click="selectImgHandle"
+                >
+                </div>
+                <span class="upload-tip">{{$t('openScreenAdd.recommendedSize')}}560px * 700px</span>
+              </el-form-item>
+              <el-form-item label="活动链接：">
+                <el-input
+                  v-model="form.customizeUrl"
+                  size="small"
+                  style="width:170px;"
+                ></el-input>
+                <el-button
+                  size="small"
+                  @click="selectLinksVisible = !selectLinksVisible"
+                >选择链接</el-button>
+              </el-form-item>
+              <el-form-item
+                label="奖品份数："
+                prop="awardNum"
               >
-                <el-image
-                  :src="$imageHost+ '/' + form.customizeImgPath"
-                  class="uploaded-img"
-                ></el-image>
-                <p
-                  class="uploaded-tip"
-                  :hidden="!uploadHover"
-                >{{$t('openScreenAdd.reselect')}}</p>
-              </div>
-              <div
-                v-if="!form.customizeImgPath"
-                class="upload-add"
-                :style="'background-image:url('+$imageHost+'/image/admin/btn_add.png);'"
-                @click="selectImgHandle"
-              >
-              </div>
-              <span class="upload-tip">{{$t('openScreenAdd.recommendedSize')}}560px * 700px</span>
-            </el-form-item>
-            <el-form-item label="奖品份数：">
-              <el-input-number controls-position="right"></el-input-number>
+                <el-input-number
+                  v-model="form.awardNum"
+                  controls-position="right"
+                ></el-input-number>
+              </el-form-item>
             </el-form-item>
             <el-form-item label="赠送限制：">
               <el-checkbox>同一商品仅首次评价送礼</el-checkbox>
@@ -166,8 +261,16 @@
         type="primary"
         size="small"
         style="width: 90px;"
+        @click="saveOrderInfo"
       >保存</el-button>
     </div>
+
+    <!-- 选择商品 -->
+    <choosingGoods
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      :chooseGoodsBack="chooseGoods"
+      @result="chooseGoodsHandle"
+    ></choosingGoods>
 
     <!-- 选择图片 -->
     <ImageDalog
@@ -186,22 +289,68 @@
 </template>
 
 <script>
+import { addEvaluationGift } from '@/api/admin/marketManage/evaluationGift.js'
+import('@/util/date')
+
 export default {
   components: {
     selectPayRewardAct: () => import('@/components/admin/marketManage/selectPayRewardAct'),
     ImageDalog: () => import('@/components/admin/imageDalog'),
-    selectLinks: () => import('@/components/admin/selectLinks')
+    selectLinks: () => import('@/components/admin/selectLinks'),
+    choosingGoods: () => import('@/components/admin/choosingGoods')
   },
   data () {
     return {
-      form: {},
+      period: [], // 活动时间段
+      form: {
+        name: '',
+        isForever: 0,
+        startTime: '',
+        endTime: '',
+        level: '',
+        goodsType: 1, // 商品类型 1全部商品 2指定商品 3 实际品论比较少的商品
+        goodsIds: '', // 对应商品
+        commentNum: '', // 评论数量
+        commentType: 1, // 评价类型 1评价即送 2自定义
+        commentWords: '', // 评论字数限制字数
+        hasCommentWords: '', // 评论字数限制
+        hasPicNum: 0, // 晒图数量
+        hasFiveStars: 0, // 五星好评
+        awardType: 1, // 奖品类型 1积分 2优惠卷 3 余额 4 幸运大抽奖 5 自定义
+        score: '', // 积分数
+        activityId: '', // 活动id,优惠价或者抽奖
+        account: '', // 用户余额
+        awardNum: '', // 奖品份数
+        sendNum: '', // 奖品送出数量
+        awardPath: '', // 设置链接
+        awardImg: '', // 活动图片
+        firstCommentGoods: 0 // 同一商品仅首次评价送礼
+      },
       rules: {},
+      tuneUpChooseGoods: false, // 选择商品
+      chooseGoods: [], // 商品回显 id数组
       imageDalogVisible: false, // 选择图片
       uploadHover: false,
       selectLinksVisible: false // 选择链接
     }
   },
+  watch: {
+    period: function (newVal) {
+      if (newVal) {
+        this.$set(this.form, 'startTime', newVal[0].format('yyyy-MM-dd hh:mm:ss'))
+        this.$set(this.form, 'endTime', newVal[1].format('yyyy-MM-dd hh:mm:ss'))
+      }
+    }
+  },
   methods: {
+    // 选择商品
+    chooseGoodsDialog () {
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    chooseGoodsHandle (goods) {
+      console.log(goods)
+    },
+    // 选择图片
     selectImgHandle () {
       this.imageDalogVisible = !this.imageDalogVisible
     },
@@ -212,6 +361,17 @@ export default {
     },
     handleSelectImg (img) {
       console.log(img)
+    },
+    saveOrderInfo () {
+      let params = {}
+      if (!params) {
+        return false
+      }
+      addEvaluationGift(params).then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+        }
+      })
     }
   }
 }
@@ -226,6 +386,14 @@ export default {
     padding-top: 20px;
     max-width: 900px;
     min-width: 700px;
+    .flex-block {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+    }
+    .tips {
+      color: #999;
+    }
     .page-left {
       width: 323px;
       .left-wrap {
@@ -362,10 +530,21 @@ export default {
       .span-tip {
         color: #999;
       }
+      .award-type-radio-group {
+        .el-radio {
+          line-height: 32px;
+        }
+      }
+      .goods-type-radio-group {
+        .el-radio {
+          margin-right: 10px;
+        }
+      }
     }
   }
   .footer {
     position: fixed;
+    z-index: 10;
     right: 0;
     bottom: 0;
     width: calc(100% - 150px);

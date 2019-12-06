@@ -39,6 +39,7 @@
             label="触发条件"
             prop="commentType"
             align="center"
+            :formatter="commentTypeFmt"
           ></el-table-column>
           <el-table-column
             label="活动有效期"
@@ -53,8 +54,9 @@
           </el-table-column>
           <el-table-column
             label="活动奖励"
-            prop="goodsType"
+            prop="awardType"
             align="center"
+            :formatter="awardTypeFmt"
           ></el-table-column>
           <el-table-column
             label="优先级"
@@ -65,6 +67,7 @@
             label="活动状态"
             prop="status"
             align="center"
+            :formatter="statusFmt"
           ></el-table-column>
           <el-table-column
             label="操作"
@@ -173,6 +176,50 @@ export default {
           this.pageParams = Object.assign({}, res.content.page)
         }
       })
+    },
+    commentTypeFmt (row, column) {
+      let commentType = row.commentType
+      if (commentType === 1) {
+        return '评价即送'
+      } else if (commentType === 2) {
+        return '自定义'
+      } else {
+        return '未处理'
+      }
+    },
+    awardTypeFmt (row, column) {
+      let awardType = row.awardType
+      switch (awardType) {
+        case 1:
+          return '积分'
+        case 2:
+          return '优惠券'
+        case 3:
+          return '余额'
+        case 4:
+          return '幸运大抽奖'
+        case 5:
+          return '自定义'
+      }
+    },
+    statusFmt (row, column) {
+      let status = row.status
+      let text = ''
+      switch (status) {
+        case 1:
+          text = '进行中'
+          break
+        case 2:
+          text = '未开始'
+          break
+        case 3:
+          text = '已结束'
+          break
+        case 4:
+          text = '已停用'
+          break
+      }
+      return text
     },
     addTabHandle () {
       if (this.tabInfo.length === 5) {
