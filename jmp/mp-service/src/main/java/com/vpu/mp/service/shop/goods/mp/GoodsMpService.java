@@ -107,17 +107,17 @@ public class GoodsMpService extends ShopBaseService {
      */
     private List<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param) {
         // 手动推荐展示但是未指定商品数据
-        boolean specifiedNoContent = (!GoodsConstant.AUTO_REOCMMEND.equals(param.getRecommendType())) && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
+        boolean specifiedNoContent = (!GoodsConstant.AUTO_RECOMMEND.equals(param.getRecommendType())) && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
         if (specifiedNoContent) {
             return new ArrayList<>();
         }
-        Condition condition = buildPageIndexCondition(param);
 
         List<GoodsListMpBo> goodsListCapsules;
-        // 自动推荐拼接排序条件
-        if (!GoodsConstant.AUTO_REOCMMEND.equals(param.getRecommendType())) {
-            goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, null, null, param.getGoodsItems());
+        // 手动推荐拼接排序条件
+        if (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) {
+            goodsListCapsules = findActivityGoodsListCapsulesDao(null, null, null, null, param.getGoodsItems());
         } else {
+            Condition condition = buildPageIndexCondition(param);
             List<SortField<?>> orderFields = new ArrayList<>();
             if (GoodsListMpParam.SALE_NUM_SORT.equals(param.getSortType())) {
                 orderFields.add(GOODS.GOODS_SALE_NUM.desc());
@@ -138,7 +138,7 @@ public class GoodsMpService extends ShopBaseService {
      * @return 拼接后的条件
      */
     private Condition buildPageIndexCondition(GoodsListMpParam param) {
-        // 获取在售商品且商品数量大于0
+        // 获取在售商品
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
         // 是否展示售罄
@@ -195,7 +195,12 @@ public class GoodsMpService extends ShopBaseService {
         return condition;
     }
 
-
+    /**
+     * 通过商品id集合回去对应的数据信息
+     * @param goodsIds  商品id集合
+     * @param userId 用户id集合
+     * @return {@link GoodsListMpParam}集
+     */
     public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds, Integer userId) {
         List<GoodsListMpBo> goodsListCapsules;
         GoodsListMpParam param = new GoodsListMpParam();
@@ -205,7 +210,7 @@ public class GoodsMpService extends ShopBaseService {
             // 从es获取
             goodsListCapsules = getPageIndexGoodsListFromEs(param);
         } catch (Exception e) {
-            goodsListCapsules = getGoodsListNormalFromDb(goodsIds, null, null);
+            goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
         }
         disposeGoodsList(goodsListCapsules, userId);
 
@@ -216,19 +221,13 @@ public class GoodsMpService extends ShopBaseService {
      * 通过商品id集合回去对应的数据信息
      *
      * @param goodsIds     商品id集合
-     * @param currentPages 当前页
-     * @param pagesRows    查询数据条数
      * @return {@link GoodsListMpParam}集
      */
-    private List<GoodsListMpBo> getGoodsListNormalFromDb(List<Integer> goodsIds, Integer currentPages, Integer pagesRows) {
+    private List<GoodsListMpBo> getGoodsListNormalFromDb(List<Integer> goodsIds) {
         if (goodsIds == null) {
             return new ArrayList<>();
         }
-        if (currentPages != null) {
-            currentPages -= 1;
-        }
-        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.GOODS_ID.in(goodsIds));
-        return findActivityGoodsListCapsulesDao(condition, null, currentPages, pagesRows, goodsIds);
+        return findActivityGoodsListCapsulesDao(null, null, null, null, goodsIds);
     }
 
     /**
@@ -301,6 +300,10 @@ public class GoodsMpService extends ShopBaseService {
 
         if (condition != null) {
             condition = condition.and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        }
+
+        if (goodsIds != null) {
+            condition = condition.and(GOODS.GOODS_ID.in(goodsIds));
         }
 
         if (orderFields == null || orderFields.size() == 0) {

@@ -33,7 +33,7 @@ public class GoodsConstant {
     /**************** 结束 *****************/
 
     /**************** 小程序-装修商品-手动推荐或自动推荐 *****************/
-    public final static Byte AUTO_REOCMMEND = 0;
+    public final static Byte AUTO_RECOMMEND = 0;
     public final static Byte POINT_RECOMMEND = 1;
 
     /**************** 营销活动启用和停止状态 *****************/
