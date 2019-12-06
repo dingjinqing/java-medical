@@ -1,7 +1,9 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.RegexUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
+import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessage;
+import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessageData;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
@@ -87,59 +93,54 @@ public class AdminTestController extends AdminBaseController {
 		return success(result);
 	}
 		
-	@RequestMapping(value = "/api/admin/test/send")
-	public JsonResult send() throws Exception {
-		String appId = "wxbb38922409fdaa24";
-		String toUser =  this.request.getParameter("toUser");
-		String templateId =  this.request.getParameter("templateId");
-		String page= this.request.getParameter("page");
-		
-		Map<String, Map<String, String>> data = new LinkedHashMap<>();
-		Map<String, String> v1 = new LinkedHashMap<>();
-		v1.put("value", "活动内容");
-		data.put("thing1", v1);
-		
-		Map<String, String> v2 = new LinkedHashMap<>();
-		v2.put("value", "活动地址");
-		data.put("thing6", v2);
-		
-		WxOpenResult result = open.getMaExtService().sendTemplate(appId, toUser, templateId, page, data);
-		return success(result);
-	}
-	
+//	@RequestMapping(value = "/api/admin/test/send")
+//	public JsonResult send() throws Exception {
+//		String appId = "wxbb38922409fdaa24";
+//		String toUser =  this.request.getParameter("toUser");
+//		String templateId =  this.request.getParameter("templateId");
+//		String page= this.request.getParameter("page");
+//		
+//		Map<String, Map<String, String>> data = new LinkedHashMap<>();
+//		Map<String, String> v1 = new LinkedHashMap<>();
+//		v1.put("value", "活动内容");
+//		data.put("thing1", v1);
+//		
+//		Map<String, String> v2 = new LinkedHashMap<>();
+//		v2.put("value", "活动地址");
+//		data.put("thing6", v2);
+//		
+//		WxOpenResult result = open.getMaExtService().sendTemplate(appId, toUser, templateId, page, data);
+//		return success(result);
+//	}
+//	
 	
 	@RequestMapping(value = "/api/admin/test/sendTest")
 	public JsonResult testSend() {
-		Map<String, Map<String, String>> data = new LinkedHashMap<>();
-		Map<String, String> v1 = new LinkedHashMap<>();
-		v1.put("value", "测试抽奖活动");
-		data.put("thing1", v1);
+		WxMaSubscribeMessage data=new WxMaSubscribeMessage();
+		String content = SubscribeMessageConfig.draw_result_307.getContent();
+		List<String> names = RegexUtil.getSubStrList("{{", ".", content);
+		List<WxMaSubscribeMessageData> wxDatalist = new ArrayList<WxMaSubscribeMessageData>();
+		String[][] sdata = new String[][] { { "金坷垃抽奖" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
+		for (int i = 0, len = sdata.length; i < len; i++) {
+			String[] values = sdata[i];
+			wxDatalist.add(new WxMaSubscribeMessageData(names.get(i), values[0]));
+		}
+		data.setData(wxDatalist);
 		
-		Map<String, String> v2 = new LinkedHashMap<>();
-		v2.put("value", "2019-12-04");
-		data.put("date2", v2);
-		
-		Map<String, String> v3 = new LinkedHashMap<>();
-		v3.put("value", "你中奖了");
-		data.put("thing3", v3);
-		
-		Map<String, Map<String, String>> data2 = new LinkedHashMap<>();
-		Map<String, String> v21 = new LinkedHashMap<>();
-		v21.put("value", "测试邀请成功");
-		data2.put("name1", v21);
-		
-		Map<String, String> v22 = new LinkedHashMap<>();
-		v22.put("value", "金坷垃");
-		data2.put("name2", v22);
-		
-		Map<String, String> v23 = new LinkedHashMap<>();
-		v23.put("value", "2019-12-05");
-		data2.put("time3", v23);
-
+		WxMaSubscribeMessage data2=new WxMaSubscribeMessage();
+		String content2 = SubscribeMessageConfig.user_grade_307.getContent();
+		List<String> names2 = RegexUtil.getSubStrList("{{", ".", content2);
+		List<WxMaSubscribeMessageData> wxDatalist2 = new ArrayList<WxMaSubscribeMessageData>();
+		String[][] sdata2 = new String[][] { { "金色传说" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "出货啦" } };
+		for (int i = 0, len = sdata2.length; i < len; i++) {
+			String[] values = sdata2[i];
+			wxDatalist.add(new WxMaSubscribeMessageData(names2.get(i), values[0]));
+		}
+		data2.setData(wxDatalist2);
 		Boolean sendMessage=false;
 		try {
-			 sendMessage = subservice.sendMessage(195, SubcribeTemplateCategory.DRAW_RESULT, data, null);
-			 sendMessage = subservice.sendMessage(195, SubcribeTemplateCategory.INVITE_SUCCESS, data2, null);
+			 sendMessage = subservice.sendMessage(195, SubscribeMessageConfig.draw_result_307.getTempleName(), data, null);
+			 sendMessage = subservice.sendMessage(195, SubscribeMessageConfig.user_grade_307.getTempleName(), data2, null);
 		} catch (WxErrorException e) {
 			
 			e.printStackTrace();
