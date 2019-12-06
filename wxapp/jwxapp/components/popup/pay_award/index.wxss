@@ -1,12 +1,17 @@
+.pay-award-content{
+  position: relative;
+}
 .pay-award-bg{
   width: 546rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 3;
   position: relative;
-  overflow: hidden;
   border-radius: 20rpx;
+  z-index: 1;
+}
+.no-coupon{
+  width: 492rpx;
 }
 .act-title{
   line-height: 120rpx;
@@ -79,6 +84,11 @@
   color: #fff;
   line-height: 36rpx;
 }
+.step-item.active{
+  border-style: solid;
+  color: #f66;
+  background-color: #fff;
+}
 .act-desc{
   width: 425rpx;
   color: #fff;
@@ -118,4 +128,92 @@
 .no_award > text{
   font-size: 30rpx;
   color: #ffe251;
+}
+.no-coupon-top-behind-bg{
+  position: absolute;
+  top: -300rpx;
+  z-index: -1;
+}
+.no-coupon-top-bg{
+  width: 570rpx;
+  position: absolute;
+  top: -210rpx;
+  left: -40rpx;
+  z-index: 3;
+}
+.no-coupon-title{
+  position: absolute;
+  color: #fff;
+  font-size: 42rpx;
+  font-weight: 600;
+  z-index: 3;
+  top: -65rpx;
+}
+.no-coupon-info{
+  margin-top: 70rpx;
+  width: 425rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #e97600;
+}
+.no-coupon-info > .info-title{
+  font-size: 36rpx;
+  margin-bottom: 20rpx;
+}
+.no-coupon-info > .no-gift-info{
+  font-weight: 600;
+  font-size: 36rpx;
+  margin-bottom: 20rpx;
+}
+.no-gift-tips{
+  display: flex;
+  box-sizing: border-box;
+  height: 78rpx;
+  border-top: 1rpx dashed rgba(233, 118, 0, 0.3);
+  border-bottom: 1rpx dashed rgba(233, 118, 0, 0.3);
+  align-items: center;
+  width: 100%;
+}
+.no-gift-tips > text{
+  color: #EF943E;
+}
+.no-gift-tips > text:nth-child(1){
+  flex: 1
+}
+.gift-name{
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 20rpx;
+}
+.gift-image{
+  width: 172rpx;
+  height: 172rpx;
+  border: 6rpx solid #fff;
+  border-radius: 10rpx;
+}
+.gift-tips{
+  width: 100%;
+  text-align: center;
+  color: #666;
+  line-height: 70rpx;
+  border-bottom: 1rpx dashed rgba(233, 118, 0, 0.3);
+}
+.no-coupon .step-item{
+  border-color:#F7BE82;
+  color: #EF943E;
+}
+.no-coupon .step-item.active{
+  color: #fff;
+  border-color:#E97600;
+  background-color: #E97600;
+}
+.no-coupon .act-desc{
+  color: #EF943E;
+}
+.no-coupon .btn-ok{
+  color:  #EF943E;
+  border-color: #EF943E;
 }

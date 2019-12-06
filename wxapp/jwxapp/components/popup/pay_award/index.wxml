@@ -1,56 +1,79 @@
-<v-popup show="{{show}}" bind:close="bindClose" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
-  <view class="pay-award-bg" style="background:#f66 url({{imageUrl}}image/wxapp/pay_award_coupon_top_bg.png) no-repeat left -16rpx / 100%;;">
-    <!-- 无奖励||优惠券 -->
-    <view class="act-title">支付有礼</view>
-    <!-- 优惠券 && length>0 -->
-    <!-- <view class="coupon-content">
-      <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
-        <view class="coupon-l">￥<text>30</text></view>
-        <view class="coupon-r"><text>满150可用</text></view>
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="{{!true? '' : 'outer'}}" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
+    <!-- !无奖励&&!优惠券 no-coupon -->
+    <view class="pay-award-bg {{!true? 'no-coupon':''}}" style="{{!true ? 'background:#FFDFBB;' : 'background:#f66 url('+imageUrl+'image/wxapp/pay_award_coupon_top_bg.png) no-repeat left -16rpx / 100%;' }}">
+      <block wx:if="{{!true}}">
+        <image class="no-coupon-top-behind-bg" src="{{imageUrl}}image/wxapp/award_bg.png"></image>
+        <image class="no-coupon-top-bg" mode="widthFix" src="{{imageUrl}}image/wxapp/is_award1.png"></image>
+        <text class="no-coupon-title">恭 喜 您 !</text>
+      </block>
+      <!-- 无奖励||优惠券 -->
+      <view class="act-title">支付有礼</view>
+      <!-- 优惠券 && length>0 -->
+      <!-- <view class="coupon-content">
+        <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
+          <view class="coupon-l">￥<text>30</text></view>
+          <view class="coupon-r"><text>满150可用</text></view>
+        </view>
+        <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
+          <view class="coupon-l">￥<text>30</text></view>
+          <view class="coupon-r"><text>满150可用</text></view>
+        </view>
+        <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
+          <view class="coupon-l">￥<text>30</text></view>
+          <view class="coupon-r"><text>满150可用</text></view>
+        </view>
+      </view> -->
+      <!-- 优惠券 && length>0 -->
+      <!-- <view class="coupon-tips">
+        <text>优惠券已放入个人中心</text>
+        <text>去看看 ></text>
+      </view> -->
+      <!-- 自定义 === true -->
+      <!-- <view class="custom-item">
+        <image src="{{imageUrl}}image/wxapp/share_dis.jpg" lazy-load="{{true}}"></image>
+      </view> -->
+      <!-- 无奖励 -->
+      <view class="no_award">
+        <image src="{{imageUrl}}image//wxapp/paygift_no_award.png" lazy-load="{{true}}"></image>
+        <text>很抱歉! 奖励领光啦! </text>
       </view>
-      <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
-        <view class="coupon-l">￥<text>30</text></view>
-        <view class="coupon-r"><text>满150可用</text></view>
+
+      <!-- no-coupon -->
+      <block wx:if="{{!true}}">
+        <view class="no-coupon-info">
+          <text class="info-title">获得余额</text>
+          <!-- 非奖品非优惠券 -->
+          <!-- <text class="no-gift-info">1元</text>
+          <view class="no-gift-tips">
+            <text>积分已放入个人中心</text>
+            <text>去看看 ></text>
+          </view> -->
+          <!-- 奖品信息 -->
+          <view class="gift-name">台式家用简约书桌办公桌带书架学习约书桌办公桌带书架学习</view>
+          <image class="gift-image" src="{{imageUrl}}image/wxapp/img1.jpg"></image>
+          <text class="gift-tips">已放入“我的奖品”快领取把</text>
+        </view>
+      </block>
+      <!-- 步骤 === true -->
+      <view class="step-content">
+        <view class="step-item active">
+          1
+        </view>
+        <view class="step-item active">
+          2
+        </view>
+        <view class="step-item">
+          3
+        </view>
+        <view class="step-item">
+          4
+        </view>
+        <view class="step-item">
+          5
+        </view>
       </view>
-      <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
-        <view class="coupon-l">￥<text>30</text></view>
-        <view class="coupon-r"><text>满150可用</text></view>
-      </view>
-    </view> -->
-    <!-- 优惠券 && length>0 -->
-    <!-- <view class="coupon-tips">
-      <text>优惠券已放入个人中心</text>
-      <text>去看看 ></text>
-    </view> -->
-    <!-- 自定义 === true -->
-    <!-- <view class="custom-item">
-      <image src="{{imageUrl}}image/wxapp/share_dis.jpg" lazy-load="{{true}}"></image>
-    </view> -->
-    <!-- 无奖励 -->
-    <!-- <view class="no_award">
-      <image src="{{imageUrl}}image//wxapp/paygift_no_award.png" lazy-load="{{true}}"></image>
-      <text>很抱歉！奖励领光啦！</text>
-    </view> -->
-    <!-- 步骤 === true -->
-    <view class="step-content">
-      <view class="step-item">
-        1
-      </view>
-      <view class="step-item">
-        2
-      </view>
-      <view class="step-item">
-        3
-      </view>
-      <view class="step-item">
-        4
-      </view>
-      <view class="step-item">
-        5
-      </view>
+      <text class="act-desc">第3次在店铺内购买“指定商品”且“订单金额满100元”，可获得“20元优惠券；30元优惠券”</text>
+      <view class="btn-ok" bindtap="bindClose">知道了</view>
     </view>
-    <!-- 步骤 === true -->
-    <text class="act-desc">第3次在店铺内购买“指定商品”且“订单金额满100元”，可获得“20元优惠券；30元优惠券”</text>
-    <view class="btn-ok" bindtap="bindClose">知道了</view>
-  </view>
+  
 </v-popup>
