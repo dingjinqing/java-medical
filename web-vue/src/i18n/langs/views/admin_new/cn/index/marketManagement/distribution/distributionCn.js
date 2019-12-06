@@ -102,6 +102,39 @@ export const cn = {
   rebateSave: '保存',
   rebateSaveSuccess: '保存成功!',
 
+  // 分销推广文案
+  contentText: `
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; color: #e53333; font-size: 18px; font-weight: bold;"><span style="font-size: 12px; font-weight: normal;">小伙伴，欢迎加入我们</span></p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">我们是XXX运营团队，竭诚为你的销售工作提供完善的支持。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">我们诚挚邀请你加入我们的分销员推广计划，无任何成本即可成为XXX的分销员，一起分享收获的喜悦。你只需将高品质商品分享推荐给他人，收获他人的感谢的同时，挣得属于自己的利润。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">1. 返利说明</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">1）买家购买返利商品，下单支付成功，则邀请该用户注册的分销员可获得佣金返利；佣金值=商品实际支付金额*佣金比例。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">2）邀请新用户注册，或者分享给已经注册的但没有邀请人的用户都算作该分销员邀请的用户。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">3）订单支付成功做返利佣金为待返利状态，交易完成则该佣金返利成功，自动提现到分销员的用户余额中。交易完成前发生退款的订单，相应的分销员返利佣金为已退款返利失败状态。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">4）仅在线支付的订单算作业绩，即微信支付、余额支付（会员卡余额、用户余额）、货到付款的订单计算返利佣金。例如买家购买返利商品A价格为100元，该买家使用了20元的优惠券，其余金额使用微信支付，返利比例为10%，则该邀请该买家的分销员可获得返利佣金为（100-20）*10%=8元。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">5）买家仅返利商品，该买家的邀请人可获得返利佣金，购买普通商品不返利。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">2. 结算说明</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">1）返利佣金比例为X%。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">2）返利有效期X50，（用户被分销员邀请注册开始计算，在该天数限制内该用户购买分销商品给分销员计算佣金返利，一旦超过该天数，则不再给分销员佣金返利)。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">3. 其他说明</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">1）分享前，请确定商品页面有【&middot;&middot;&middot;】按钮；</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">2）销售过程中有任何疑问，请直接联系商家；</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">3）已售出商品的任何售后问题，由本商城处理；</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">4）不传播或者扩散有关于政治、色情等任何违法的信息，一经发现，则立即封号，如果触犯任何法律相关问题，商城不负任何责任；</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">5）以上内容解释权归本商城所有。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">4. 联系方式</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">1）联络人</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">2）手机：1234567889</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">3）分销员QQ交流群：12345678</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">4）邮箱：xxx@xxx.com</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">无论是销售、对账，还是结算问题，请通过以上方式咨询。</p>
+  `,
+
   // -----------------分销员等级配置---------------
   levelTip: '提示：每次修改分销员等级，将会有大量分销员受到影响，请谨慎操作',
   levelText: '升级规则',

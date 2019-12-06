@@ -97,6 +97,39 @@ export const en = {
   rebateSave: 'Save',
   rebateSaveSuccess: 'Save Success!',
 
+  // 分销推广文案
+  contentText: `
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; color: #e53333; font-size: 18px; font-weight: bold;"><span style="font-size: 12px; font-weight: normal;">Friends, welcome to join us</span></p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">We are the XXX operations team and are dedicated to providing you with comprehensive support for your sales efforts.</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">We sincerely invite you to join our distributor promotion program, and become a distributor of XXX at no cost to share the joy of harvest together. You only need to share and recommend high-quality products to others, while gaining thanks from others, you can earn your own profits.</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">1. Rebate description</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">1）If the buyer purchases the rebate product and the order is paid successfully, the distributor who registered the user is invited to get a commission rebate; the commission value = the actual payment amount of the product * the commission ratio.</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">2）Inviting new users to register, or sharing to users who have registered but did not invite people are counted as users invited by the distributor.</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">3）The rebate commission for the successful payment of the order is in the state of rebate. When the transaction is completed, the rebate commission is successful and it is automatically withdrawn to the user balance of the distributor. For orders that have a refund before the transaction is completed, the corresponding rebate commission for the distributor is the status of the failed refund.</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">4）Orders paid only online are counted as performance, that is, WeChat payment, balance payment (member card balance, user balance), cash on delivery orders calculate rebate commissions. For example, if the buyer purchases rebate A at a price of 100 yuan, the buyer uses a 20 yuan coupon, and the remaining amount is paid by WeChat, and the rebate ratio is 10%, then the distributor who invited the buyer can get a rebate commission of ( 100-20) * 10% = 8 yuan.</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">5）The buyer only rebates the goods, the inviter of the buyer can get the rebate commission, and the ordinary goods are not rebate.</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">2. Settlement instructions</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">1）The rebate commission ratio is X%.</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">2）The rebate is valid for X50. (The user is invited to start the registration by the distributor to start the calculation. Within the limit of the number of days, the user purchases the distributed products and calculates the commission rebate for the distributor. Once the number of days exceeds, the commission is not given to the distributor.</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">&nbsp;</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">3. Other instructions</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">1）Before sharing, please make sure the product page has【&middot;&middot;&middot;】button；</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">2）If you have any questions during the sales process, please contact the merchant directly；</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">3）Any after-sale problems of the sold products will be handled by the mall；</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">4）Does not spread or spread any illegal information about politics, pornography, etc. Once found, it will be immediately titled. If you violate any legal related issues, the mall will not bear any responsibility；</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">5）The right to interpret the above content belongs to this mall。</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">4. Contact information</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">1）Contact person</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">2）Mobile phone：1234567889</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">3）Distributor QQ exchange group：12345678</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">4）Mailbox：xxx@xxx.com</p>
+    <p style="overflow-wrap: break-word; margin: 5px 0px; font-family: 'sans serif', tahoma, verdana, helvetica; font-size: 12px;">Whether it is sales, reconciliation, or settlement issues, please consult through the above methods。</p>
+  `,
+
   // -----------------分销员等级配置---------------
   levelTip: 'Tip: every time you modify the distributor level, a large number of distributors will be affected. Please operate carefully',
   levelText: 'Upgrade Rules',

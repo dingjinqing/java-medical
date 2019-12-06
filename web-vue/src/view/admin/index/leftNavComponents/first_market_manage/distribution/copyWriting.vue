@@ -18,9 +18,8 @@
           >
           <div
             class="leftPass"
-            v-html="editMsg"
-          >
-          </div>
+            v-html="form.content"
+          ></div>
         </div>
         <div class="rightContent">
           <el-form
@@ -29,9 +28,16 @@
             label-width="100px"
           >
             <el-form-item label="分享地址：">
-              <span>pages/distributionspread/distributionspread</span>
-              <span class="text">复制</span>
-              <span class="text">立即分享</span>
+              <span>{{ form.pageText }}</span>
+              <span
+                class="text"
+                v-clipboard:copy="form.pageText"
+                v-clipboard:success="copyHandler"
+              >复制</span>
+              <span
+                class="text"
+                @click="shareHandler"
+              >立即分享</span>
             </el-form-item>
             <el-form-item label="页面标题：">
               <el-input
@@ -44,11 +50,11 @@
               ></el-input>
             </el-form-item>
             <el-form-item label="页面内容：">
-              <p class="template">使用模板文案</p>
-              <TinymceEditor
-                v-model="content"
-                @input="input"
-              />
+              <p
+                class="template"
+                @click="templateCopyHandler"
+              >使用模板文案</p>
+              <TinymceEditor v-model="form.content" />
             </el-form-item>
           </el-form>
         </div>
@@ -60,37 +66,53 @@
       <el-button
         size="small"
         type="primary"
-        :disabled="submitStatus"
         @click="saveClickHandler"
       >{{ $t('seckill.save') }}</el-button>
     </div>
+
+    <!-- 分享弹窗 -->
+    <ShareDialog
+      :show="shareDialog"
+      :imgPath="shareImg"
+      :pagePath="sharePath"
+      @close="shareDialog=false"
+    />
   </div>
 </template>
 
 <script>
 export default {
   components: {
-    TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor') // 富文本编辑器
+    TinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor'), // 富文本编辑器
+    ShareDialog: () => import('@/components/admin/shareDialog') // 分享弹窗
   },
   data () {
     return {
       form: {
-        submitStatus: false,
+        pageText: 'pages/distributionspread/distributionspread',
         title: '分销员推广测试',
-        // 文本内容
-        content: `111111111111内容`
-      }
+        content: '' // 文本内容
+      },
+      shareDialog: false, // 分享弹窗
+      shareImg: '',
+      sharePath: ''
     }
+  },
+  watch: {
+    lang () {
+      this.form.content = this.$t('distribution.contentText')
+    }
+  },
+  mounted () {
+    // 初始化数据
+    this.langDefault()
+    this.getClickHandler()
   },
   methods: {
     // 编辑器输入内容获取
     input (val) {
-      console.log(val)
-    },
-
-    // 获得编辑器输入内容
-    handleToGetText (res) {
-      console.log(res)
+      this.content = val
+      console.log(this.content)
     },
 
     // 获取
@@ -100,7 +122,27 @@ export default {
 
     // 保存
     saveClickHandler () {
-      this.submitStatus = false
+    },
+
+    // 使用模板文案
+    templateCopyHandler () {
+
+    },
+
+    // 复制
+    copyHandler (e) {
+      this.$message.success({ message: this.$t('seckill.copySuccess') })
+    },
+
+    // 分享
+    shareHandler () {
+      this.shareDialog = !this.shareDialog
+      // shareSeckillList(id).then((res) => {
+      //   if (res.error === 0) {
+      //     this.shareImg = res.content.imageUrl
+      //     this.sharePath = res.content.pagePath
+      //   }
+      // })
     }
   }
 
