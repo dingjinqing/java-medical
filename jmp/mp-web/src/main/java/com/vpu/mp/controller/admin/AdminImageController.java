@@ -102,6 +102,9 @@ public class AdminImageController extends AdminBaseController {
     @PostMapping(value = "/admin/image/base64/uploadOneImgae")
     private JsonResult uploadBase64File(@RequestBody @Valid UploadImageParam param) throws IOException {
         MultipartFile multipartFile = FileUtil.base64MutipartFile(param.base64Image);
+        if (multipartFile==null){
+            return this.fail(JsonResultCode.CODE_IMGAE_FORMAT_INVALID);
+        }
         // 校验
         ResultMessage jsonResultCode = shop().image.validImageParam(param, multipartFile.getSize(),multipartFile.getContentType(),multipartFile.getInputStream());
         if (!jsonResultCode.getFlag()) {

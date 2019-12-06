@@ -1,5 +1,6 @@
 package com.vpu.mp.service.foundation.util;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.vpu.mp.service.pojo.shop.base.BASE64DecodedMultipartFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
@@ -107,20 +108,25 @@ public class FileUtil {
 
     /**
      * base64 转文件
-     * @param imgStr
+     * @param base64Str
      * @return
      */
-    public static MultipartFile base64MutipartFile(String imgStr) {
+    public static MultipartFile base64MutipartFile(String base64Str) {
         try {
-            String[] baseStr = imgStr.split(",");
-            byte[] b = Base64.getDecoder().decode(imgStr);
+            String[] baseStr = base64Str.split(",");
+            boolean isLegal = baseStr[0].matches("^data:.+/.+;base64");
+            if (isLegal){
+                return null;
+            }
+            byte[] b = Base64.getDecoder().decode(base64Str);
             for (int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {
-                    b[i] += 256;
+                    b[i] += 256;/////////
                 }
             }
             return new BASE64DecodedMultipartFile(b, baseStr[0]);
         } catch (Exception e) {
+            log.debug("base64转文件失败");
             e.printStackTrace();
             return null;
         }

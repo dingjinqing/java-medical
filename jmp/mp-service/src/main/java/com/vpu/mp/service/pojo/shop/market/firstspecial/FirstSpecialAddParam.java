@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 
 /**
  * @author: 王兵兵
@@ -33,6 +34,7 @@ public class FirstSpecialAddParam {
 
     /** 活动优先级 */
     @NotNull
+    @Range(min = 0,max = 100)
     private Byte first;
 
     /** 限购数量 */

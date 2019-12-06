@@ -349,9 +349,10 @@ public class ImageService extends ShopBaseService implements ImageDefault {
     BufferedImage bufferImage = null;
     try {
       bufferImage = ImageIO.read(fileStream);
-    } catch (IOException e) {
+    } catch (Exception e) {
       return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
     }
+    int type = bufferImage.getType();
     if (bufferImage == null || bufferImage.getWidth(null) <= 0 || bufferImage.getHeight(null) <= 0) {
       return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
     }

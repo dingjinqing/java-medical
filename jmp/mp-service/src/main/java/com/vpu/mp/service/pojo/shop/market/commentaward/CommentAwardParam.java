@@ -1,7 +1,14 @@
 package com.vpu.mp.service.pojo.shop.market.commentaward;
 
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -9,13 +16,16 @@ import java.sql.Timestamp;
  * @author 孔德成
  * @date 2019/8/20 13:58
  */
-@Data
+@Getter
+@Setter
 public class CommentAwardParam {
 
+    @NotNull(groups = UpdateGroup.class)
     private Integer    id;
     /**
      * 活动名称
      */
+    @NotNull
     private String     name;
     /**
      * 开始时间
@@ -28,14 +38,18 @@ public class CommentAwardParam {
     /**
      * 永久有效  1
      */
+    @NotNull
     private Byte       isForever;
     /**
      * 优先级
      */
+    @Range(min = 0,max = 100)
     private Integer    leve;
     /**
      * 商品类型 1全部商品 2指定商品 3 实际品论比较少的商品
      */
+    @NotNull
+    @Range(min = 1,max = 3)
     private Byte       goodsType;
     /**
      * 对应商品
@@ -48,6 +62,8 @@ public class CommentAwardParam {
     /**
      * 评价类型 1评价即送 2 自定义
      */
+    @NotNull
+    @Range(min = 1,max = 2)
     private Byte       commentType;
     /**
      * 评价字数条件
@@ -76,10 +92,12 @@ public class CommentAwardParam {
     /**
      * 用户余额
      */
+    @DecimalMin("0")
     private BigDecimal account;
     /**
      * 奖品份数
      */
+    @Min(0)
     private Integer    awardNum;
     /**
      * 奖品送出数量
@@ -96,14 +114,6 @@ public class CommentAwardParam {
     /**
      * 首次评价商品
      */
+    @NotNull
     private Byte       firstCommentGoods;
-    /**
-     * 状态  1启用
-     */
-    private Byte       status;
-    /**
-     *  1 删除
-     */
-    private Byte       delFlag;
-
 }

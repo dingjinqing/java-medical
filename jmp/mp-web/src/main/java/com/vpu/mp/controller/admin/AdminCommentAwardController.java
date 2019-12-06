@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +13,9 @@ import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardIdParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListVo;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardParam;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * 评价有礼
@@ -28,7 +33,7 @@ public class AdminCommentAwardController extends AdminBaseController {
      * @return Json
      */
     @PostMapping("/add")
-    public JsonResult addCommentAwardActivity(@RequestBody  CommentAwardParam param) {
+    public JsonResult addCommentAwardActivity(@RequestBody @Valid CommentAwardParam param) {
         int flag = shop().commentAward.addCommentAwardActivity(param);
         if (flag==0){
             return fail();
@@ -42,7 +47,7 @@ public class AdminCommentAwardController extends AdminBaseController {
      * @return json
      */
     @PostMapping("/update")
-    public JsonResult updateCommentAwardActivity(@RequestBody CommentAwardParam param){
+    public JsonResult updateCommentAwardActivity(@RequestBody @Validated(UpdateGroup.class) CommentAwardParam param){
         int flag = shop().commentAward.updateCommentAwardActivity(param);
         if (flag==0){
             return fail();
@@ -56,7 +61,7 @@ public class AdminCommentAwardController extends AdminBaseController {
      * @return  json
      */
     @PostMapping("/change/status")
-    public JsonResult changeCommentAwardActivity( @RequestBody CommentAwardIdParam param){
+    public JsonResult changeCommentAwardActivity( @RequestBody @Valid CommentAwardIdParam param){
         int flag = shop().commentAward.changeCommentAwardActivity(param.getId());
         if (flag==0){
             return fail();
@@ -70,7 +75,7 @@ public class AdminCommentAwardController extends AdminBaseController {
      * @return json
      */
     @PostMapping("/get")
-    public JsonResult getCommentAwardActivity( @RequestBody CommentAwardIdParam param){
+    public JsonResult getCommentAwardActivity( @RequestBody @Valid CommentAwardIdParam param){
         shop().commentAward.getCommentAwardActivity(param.getId());
         return success();
     }
@@ -81,7 +86,7 @@ public class AdminCommentAwardController extends AdminBaseController {
      * @return
      */
     @PostMapping("/list")
-    public JsonResult getCommentAwardActivityList( @RequestBody CommentAwardListParam param){
+    public JsonResult getCommentAwardActivityList( @RequestBody @NotNull CommentAwardListParam param){
         PageResult<CommentAwardListVo> pageResult = shop().commentAward.getCommentAwardActivityList(param);
         return success(pageResult);
     }
