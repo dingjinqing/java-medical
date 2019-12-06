@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Part;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 /**
@@ -162,7 +163,7 @@ public class AdminShopImageController extends AdminBaseController {
    * @throws Exception
    */
   @PostMapping(value = "/admin/account/image/makeCrop")
-  public JsonResult makeCrop(@RequestBody ShopCropImageParam param) throws Exception {
+  public JsonResult makeCrop(@RequestBody @Valid ShopCropImageParam param) throws Exception {
     AdminTokenAuthInfo adminInfo = adminAuth.user();
     if (adminInfo == null) {
       return fail(JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED);
@@ -200,7 +201,7 @@ public class AdminShopImageController extends AdminBaseController {
    * @return
    */
   @PostMapping("/admin/account/image/batch/delete")
-  public JsonResult batchDeleteImage(@RequestBody BatchDeleteImageParam param) {
+  public JsonResult batchDeleteImage(@RequestBody @NotNull BatchDeleteImageParam param) {
     AdminTokenAuthInfo adminInfo = adminAuth.user();
     if (adminInfo == null) {
       return fail(JsonResultCode.CODE_ACCOUNT_LOGIN_EXPIRED);

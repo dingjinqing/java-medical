@@ -45,6 +45,10 @@ public class CommentAwardListVo {
      * 状态  1启用
      */
     private Byte       status;
+    /**
+     * 状态
+     */
+    private Byte       currentStatus;
 
     /**
      * 优先级

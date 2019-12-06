@@ -23,6 +23,10 @@ public class ProductSmallInfoVo {
      */
     private String prdDesc;
     /**
+     * 商品图片
+     */
+    private String goodsImg;
+    /**
      * 规格数量
      */
     private Integer prdNumber;

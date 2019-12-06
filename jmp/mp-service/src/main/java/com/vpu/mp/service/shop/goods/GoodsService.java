@@ -1536,7 +1536,7 @@ public class GoodsService extends ShopBaseService {
      * @return
      */
     public ProductSmallInfoVo getProductVoInfoByProductId(Integer productId){
-        return db().select(GOODS.GOODS_NAME,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS.IS_ON_SALE)
+        return db().select(GOODS.GOODS_NAME,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS.GOODS_IMG,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS.IS_ON_SALE)
                 .from(GOODS_SPEC_PRODUCT)
                 .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
                 .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOneInto(ProductSmallInfoVo.class);

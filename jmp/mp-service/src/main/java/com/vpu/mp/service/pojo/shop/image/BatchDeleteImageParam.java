@@ -2,7 +2,10 @@ package com.vpu.mp.service.pojo.shop.image;
 
 import java.util.List;
 
+import com.vpu.mp.service.foundation.validator.ListValid;
 import lombok.Data;
+
+import javax.validation.constraints.Size;
 
 /**
  * @author 孔德成
@@ -11,6 +14,7 @@ import lombok.Data;
 @Data
 public class BatchDeleteImageParam {
 
+    @ListValid(min = 0)
     List<Integer> imageIds;
 
 }

@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.Tables.COMMENT_AWARD;
 
 import java.sql.Timestamp;
 
+import com.vpu.mp.service.foundation.util.Util;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
@@ -107,7 +108,11 @@ public class CommentAwardService extends ShopBaseService {
                 .from(COMMENT_AWARD)
                 .where(COMMENT_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildParam(select,param);
-        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), CommentAwardListVo.class);
+        PageResult<CommentAwardListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), CommentAwardListVo.class);
+        pageResult.getDataList().forEach(commentaward->{
+            commentaward.setCurrentStatus(Util.getActStatus(commentaward.getStatus(),commentaward.getStartTime(),commentaward.getEndTime(),commentaward.getIsForever()));
+        });
+        return pageResult;
     }
 
     private void buildParam(SelectConditionStep<? extends Record> select, CommentAwardListParam param) {
