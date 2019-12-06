@@ -10,8 +10,10 @@ import lombok.Data;
  */
 @Data
 public class SubcribeTemplateCategory {
-	// 'audit', 'user_grade', 'score_change', 'order_deliver', 'draw_result',
-	// 'draw_result', 'refund_result',
+
+	/**
+	 * 去SubscribeMessageConfig中找templeName相同的，对应就是需要的
+	 */
 
 	/** 抽奖结果通知 */
 	public static final String DRAW_RESULT = "draw_result";

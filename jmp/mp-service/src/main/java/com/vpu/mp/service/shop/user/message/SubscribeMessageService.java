@@ -3,9 +3,7 @@ package com.vpu.mp.service.shop.user.message;
 import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +14,14 @@ import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessage;
+import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessageData;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.wechat.OpenPlatform;
-import com.vpu.mp.service.wechat.api.WxOpenMaSubscribeService;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.WxOpenSubscribeCategory;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
@@ -79,7 +78,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @return
 	 * @throws WxErrorException 
 	 */
-	public Integer getcategoryId(String templateName) throws WxErrorException {
+	public Integer getcategoryId() throws WxErrorException {
 		List<Integer> getcategoryList = getcategoryList();
 		if (getcategoryList == null) {
 			// 抛错
@@ -125,13 +124,13 @@ public class SubscribeMessageService extends ShopBaseService {
 	/**
 	 * 发送订阅消息
 	 * @param userId
-	 * @param config
+	 * @param templateName 在SubcribeTemplateCategory中定义的类
 	 * @param data
 	 * @param page
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public Boolean sendMessage(Integer userId,String templateName, WxMaSubscribeMessage data,
+	public Boolean sendMessage(Integer userId,String templateName,String[][] data,
 			String page) throws WxErrorException {
 		UserRecord user = userService.getUserByUserId(userId);
 		if (null == user) {
@@ -141,7 +140,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		
 		
 		// 类目ID
-		Integer secondId = getcategoryId(templateName);
+		Integer secondId = getcategoryId();
 		if (secondId==0) {
 			// 没有在现在版本定义的订阅消息中，直接发公众号
 			logger().info("AppId：" + getMaAppId() + " 的账号对应类目ID：" + secondId + "不在当前版本定义的订阅消息中，准备发送公众号");
@@ -163,13 +162,12 @@ public class SubscribeMessageService extends ShopBaseService {
 			return false;
 		}
 		String templateId = templateIdRecord.getTemplateId();
+		
 		// 小程序中是否配置了这个模板
 		templateId = addTemplate(templateIdRecord.getTemplateId(), config);
-
-		data.setPage(page);
-		data.setTemplate_id(templateId);
-		data.setTouser(user.getWxOpenid());
-		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaAppId(),data);
+		//拼装报文
+		WxMaSubscribeMessage postData = assembleData(data, config, page, templateId, user.getWxOpenid());
+		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaAppId(),postData);
 		boolean success = sendResult.isSuccess();
 		logger().info("发送结果" + success);
 		if (success) {
@@ -184,6 +182,31 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return false;
 
+	}
+	/**
+	 * 拼装发送的消息
+	 * @param data
+	 * @param config
+	 * @param page
+	 * @param templateId
+	 * @param touser
+	 * @return
+	 */
+	
+	private WxMaSubscribeMessage assembleData(String[][] data,SubscribeMessageConfig config,String page,String templateId,String touser) {
+		WxMaSubscribeMessage postData=new WxMaSubscribeMessage();
+		String content = config.getContent();
+		List<String> names = RegexUtil.getSubStrList("{{", ".", content);
+		List<WxMaSubscribeMessageData> wxDatalist = new ArrayList<WxMaSubscribeMessageData>();
+		for (int i = 0, len = data.length; i < len; i++) {
+			String[] values = data[i];
+			wxDatalist.add(new WxMaSubscribeMessageData(names.get(i), values[0]));
+		}
+		postData.setPage(page);
+		postData.setTemplate_id(templateId);
+		postData.setTouser(touser);
+		return postData;
+		
 	}
 	
 	/**
