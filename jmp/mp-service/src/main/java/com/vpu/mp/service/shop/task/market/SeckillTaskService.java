@@ -79,7 +79,12 @@ public class SeckillTaskService  extends ShopBaseService {
      * @return
      */
     private List<SeckillVo> getSecKillWithMonitor(){
-        List<SeckillVo> res = db().select(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime())).and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))).fetchInto(SeckillVo.class);
+        List<SeckillVo> res = db().select(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.SK_ID).from(SEC_KILL_DEFINE).where(
+            SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+            .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(SEC_KILL_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime()))
+            .and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))
+        ).fetchInto(SeckillVo.class);
         for(SeckillVo seckill : res){
             List<SecKillProductVo> seckillProduct = db().select(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(seckill.getSkId())).fetchInto(SecKillProductVo.class);
             seckill.setSecKillProduct(seckillProduct);

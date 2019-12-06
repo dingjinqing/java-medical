@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -42,7 +43,7 @@ public class FullReductionProcessorDao extends ShopBaseService {
             ));
 
         condition = MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL.getCode())
-            .and(MRKING_STRATEGY.STATUS.eq(GoodsConstant.USE_STATUS)).and(MRKING_STRATEGY.START_TIME.lt(date))
+            .and(MRKING_STRATEGY.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(MRKING_STRATEGY.START_TIME.lt(date))
             .and(MRKING_STRATEGY.END_TIME.gt(date)).and(condition);
 
         int count = db().fetchCount(MRKING_STRATEGY, condition);

@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * 商品状态变化监控定时任务
+ * 商品相关监控定时任务
  *
  */
 @Component

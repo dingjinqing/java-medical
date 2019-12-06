@@ -1134,4 +1134,14 @@ public class OrderInfoService extends ShopBaseService {
 				.groupBy(TABLE.USER_ID).fetch().getValues(TABLE.USER_ID, Integer.class);
 	}
 
+    /**
+     * 批量改为待发货
+     * @param orderSnList
+     */
+	public void batchChangeToWaitDeliver(List<String> orderSnList){
+	    if(orderSnList != null && orderSnList.size() > 0){
+	        db().update(TABLE).set(TABLE.ORDER_STATUS, ORDER_WAIT_DELIVERY).where(TABLE.ORDER_SN.in(orderSnList)).execute();
+        }
+    }
+
 }

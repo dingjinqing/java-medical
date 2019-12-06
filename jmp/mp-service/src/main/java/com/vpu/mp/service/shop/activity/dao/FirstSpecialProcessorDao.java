@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.db.shop.tables.records.FirstSpecialProductRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -42,7 +43,7 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
    public  Map<Integer,  Result<Record3<Integer, Integer, BigDecimal>>> getGoodsFirstSpecialForListInfo(List<Integer> goodsIds, Timestamp date){
        Map<Integer, Result<Record2<Integer, Integer>>> firstSpecials = db().select(FIRST_SPECIAL.ID, FIRST_SPECIAL_GOODS.GOODS_ID).from(FIRST_SPECIAL).innerJoin(FIRST_SPECIAL_GOODS).on(FIRST_SPECIAL.ID.eq(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID))
            .where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-           .and(FIRST_SPECIAL.STATUS.eq(GoodsConstant.USE_STATUS))
+           .and(FIRST_SPECIAL.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
            .and(FIRST_SPECIAL_GOODS.GOODS_ID.in(goodsIds))
            .and(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_YES)
                .or(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_NO).and(FIRST_SPECIAL.START_TIME.lt(date).and(FIRST_SPECIAL.END_TIME.gt(date)))))
@@ -71,7 +72,7 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
                 .from(FIRST_SPECIAL_PRODUCT)
                 .leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL.ID.eq(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID))
                 .where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .and(FIRST_SPECIAL.STATUS.eq(GoodsConstant.USE_STATUS))
+                .and(FIRST_SPECIAL.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
                 .and(FIRST_SPECIAL_PRODUCT.PRD_ID.in(productIdList))
                 .and(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_YES)
                         .or(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_NO).and(FIRST_SPECIAL.START_TIME.lt(date)

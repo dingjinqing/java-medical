@@ -41,6 +41,26 @@ import com.vpu.mp.service.shop.member.MemberService;
 @Service
 public class GroupBuyListService  extends ShopBaseService {
 
+    /**
+     * 拼团中
+     */
+    public static final Byte STATUS_ONGOING = 0;
+    /**
+     * 拼团成功
+     */
+    public static final Byte STATUS_SUCCESS = 1;
+    /**
+     * 拼团失败
+     */
+    public static final Byte STATUS_FAILED = 2;
+    /**
+     * 未支付
+     */
+    public static final Byte STATUS_WAIT_PAY = -1;
+
+    public static final Byte IS_GROUPER_Y = 1;
+    public static final Byte IS_GROUPER_N = 0;
+
     private static final String GROUP_ORDER_NUM = "groupOrderNum";
 
     @Autowired
@@ -58,7 +78,6 @@ public class GroupBuyListService  extends ShopBaseService {
         SelectHavingStep<Record2<Integer, Integer>> table = db()
                 .select(GROUP_BUY_LIST.ACTIVITY_ID, DSL.count(GROUP_BUY_LIST.ID).as(GROUP_ORDER_NUM))
                 .from(GROUP_BUY_LIST)
-                .where(GROUP_BUY_LIST.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
                 .groupBy(GROUP_BUY_LIST.ACTIVITY_ID);
 
         SelectConditionStep<? extends Record> records = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.NAME, GOODS.GOODS_NAME, GROUP_BUY_DEFINE.ACTIVITY_TYPE,
@@ -145,7 +164,7 @@ public class GroupBuyListService  extends ShopBaseService {
      */
     public PageResult<GroupBuyDetailListVo> detailGroupBuyList(GroupBuyDetailParam param) {
         SelectConditionStep<Record3<Integer, String, String>> table = db().select(GROUP_BUY_LIST.GOODS_ID,USER.MOBILE,USER.USERNAME).from(GROUP_BUY_LIST).leftJoin(USER).on(USER.USER_ID.eq(GROUP_BUY_LIST.USER_ID))
-                .where(GROUP_BUY_LIST.IS_GROUPER.eq((byte) 1));
+                .where(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y));
         SelectConditionStep<? extends Record> select = db().select(
                 GROUP_BUY_LIST.STATUS,
                 GROUP_BUY_LIST.ORDER_SN,

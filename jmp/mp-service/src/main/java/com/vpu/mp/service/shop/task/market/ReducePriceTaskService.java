@@ -64,7 +64,12 @@ public class ReducePriceTaskService  extends ShopBaseService {
      * @return
      */
     private List<Integer> getCurrentReducePriceGoodsIdList(){
-        List<ReducePriceRecord> reducePriceRecordList =  db().select().from(REDUCE_PRICE).where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(REDUCE_PRICE.START_TIME.lt(DateUtil.getLocalDateTime())).and(REDUCE_PRICE.END_TIME.gt(DateUtil.getLocalDateTime()))).fetchInto(ReducePriceRecord.class);
+        List<ReducePriceRecord> reducePriceRecordList =  db().select().from(REDUCE_PRICE).where(
+            REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+            .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(REDUCE_PRICE.START_TIME.lt(DateUtil.getLocalDateTime()))
+            .and(REDUCE_PRICE.END_TIME.gt(DateUtil.getLocalDateTime()))
+        ).fetchInto(ReducePriceRecord.class);
         List<Integer> reducePriceIds = new ArrayList<>();
         reducePriceRecordList.forEach(reducePriceRecord -> {
             if(isValidPeriodReducePriceAct(reducePriceRecord)){

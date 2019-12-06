@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -37,7 +38,7 @@ public class ReducePriceProcessorDao extends ShopBaseService {
         Map<Integer, List<Record2<Integer, Integer>>> goodsGroup = db().select(REDUCE_PRICE.ID, REDUCE_PRICE_GOODS.GOODS_ID).from(REDUCE_PRICE)
             .innerJoin(REDUCE_PRICE_GOODS).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
             .where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(REDUCE_PRICE.STATUS.eq(GoodsConstant.USE_STATUS))
+            .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(REDUCE_PRICE_GOODS.GOODS_ID.in(goodsIds))
             .and(REDUCE_PRICE.END_TIME.gt(date))
             .orderBy(REDUCE_PRICE.CREATE_TIME)

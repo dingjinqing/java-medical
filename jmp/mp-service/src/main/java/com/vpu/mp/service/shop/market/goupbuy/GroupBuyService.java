@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.market.goupbuy;
 
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -47,8 +46,6 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-import static com.vpu.mp.service.pojo.shop.goods.GoodsConstant.STOP_STATUS;
-import static com.vpu.mp.service.pojo.shop.goods.GoodsConstant.USE_STATUS;
 
 /**
  * @author 孔德成
@@ -59,7 +56,11 @@ import static com.vpu.mp.service.pojo.shop.goods.GoodsConstant.USE_STATUS;
 @Primary
 public class GroupBuyService extends ShopBaseService {
 
-
+    /**
+     * 是否默认成团
+     */
+    public static final Byte IS_DEFAULT_Y = 1;
+    public static final Byte IS_DEFAULT_N = 0;
 
     @Autowired
     private GroupBuyListService groupBuyListService;
@@ -85,7 +86,7 @@ public class GroupBuyService extends ShopBaseService {
             Integer stock = groupBuy.getProduct().stream().mapToInt(GroupBuyProductParam::getStock).sum();
             //拼团信息
             GroupBuyDefineRecord groupBuyDefineRecord = db().newRecord(GROUP_BUY_DEFINE, groupBuy);
-            groupBuyDefineRecord.setStatus(status == true ? USE_STATUS : STOP_STATUS);
+            groupBuyDefineRecord.setStatus(status == true ? ACTIVITY_STATUS_NORMAL : ACTIVITY_STATUS_DISABLE);
             groupBuyDefineRecord.setStock(stock.shortValue());
             groupBuyDefineRecord.insert();
             //拼团商品规格价格信息
@@ -193,7 +194,7 @@ public class GroupBuyService extends ShopBaseService {
     public GroupBuyDetailVo detailGroupBuy(Integer id) {
         Record record = db().select().from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)
             .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+            .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
         ).fetchOne();
         if (record == null) {
             return null;
@@ -234,7 +235,7 @@ public class GroupBuyService extends ShopBaseService {
     public Boolean validGroupGoods(Integer id, Integer goodsId, Timestamp startTime, Timestamp endTime) {
         Condition where  =GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId)
                 .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-                .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+                .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                 .and(GROUP_BUY_DEFINE.START_TIME.le(endTime))
                 .and(GROUP_BUY_DEFINE.END_TIME.ge(startTime));
         if (id!=null){
@@ -352,7 +353,7 @@ public class GroupBuyService extends ShopBaseService {
             .leftJoin(GROUP_BUY_DEFINE)
             .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
             .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+            .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
             .and(GROUP_BUY_DEFINE.STOCK.notEqual((short) 0))
             .and(GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId))
             .and(GROUP_BUY_DEFINE.START_TIME.lessThan(date))
@@ -373,7 +374,7 @@ public class GroupBuyService extends ShopBaseService {
             .leftJoin(GROUP_BUY_DEFINE)
             .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
             .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-            .and(GROUP_BUY_DEFINE.STATUS.eq(USE_STATUS))
+            .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
             .and(GROUP_BUY_DEFINE.STOCK.notEqual((short) 0))
             .and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
             .and(GROUP_BUY_DEFINE.START_TIME.lessThan(date))

@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 public class CouponPageDecorationVo {
     /**
      * 优惠券状态：
-     *-1已领取或领取达到极限 1正常可用 2过期 3已抢光 4停用
+     * 1正常可用 2过期 3已抢光 4停用 5已领取或领取达到极限 6优惠券不存在
      */
     private Byte status = 1;
 

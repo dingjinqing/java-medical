@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -29,7 +29,7 @@ public class BargainProcessorDao extends ShopBaseService {
         return db().select(BARGAIN.ID, BARGAIN.GOODS_ID, BARGAIN.BARGAIN_TYPE, BARGAIN.FLOOR_PRICE, BARGAIN.EXPECTATION_PRICE)
             .from(BARGAIN)
             .where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(BARGAIN.STATUS.eq(GoodsConstant.USE_STATUS))
+            .and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(BARGAIN.GOODS_ID.in(goodsIds))
             .and(BARGAIN.START_TIME.lt(date))
             .and(BARGAIN.END_TIME.gt(date))

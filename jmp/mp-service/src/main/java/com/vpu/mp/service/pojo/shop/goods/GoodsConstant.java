@@ -36,9 +36,6 @@ public class GoodsConstant {
     public final static Byte AUTO_RECOMMEND = 0;
     public final static Byte POINT_RECOMMEND = 1;
 
-    /**************** 营销活动启用和停止状态 *****************/
-    public final static Byte USE_STATUS = 1;
-    public final static Byte STOP_STATUS = 0;
     /**************** 结束 *****************/
 
     /*** 销售状态：在售*/

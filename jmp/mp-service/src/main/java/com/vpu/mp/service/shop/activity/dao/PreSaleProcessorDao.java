@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -38,7 +39,7 @@ public class PreSaleProcessorDao extends ShopBaseService {
             .from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
             .where(PRESALE.GOODS_ID.in(goodsIds))
             .and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-            .and(PRESALE.STATUS.eq(GoodsConstant.USE_STATUS))
+            .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(condition)
             .orderBy(PRESALE_PRODUCT.PRESALE_PRICE.asc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE.GOODS_ID)));

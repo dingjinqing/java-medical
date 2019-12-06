@@ -1,23 +1,32 @@
 package com.vpu.mp.service.shop.task.market;
 
+import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.bo.GroupBuyListScheduleBo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyProductVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GroupBuyDefine.GROUP_BUY_DEFINE;
 import static com.vpu.mp.db.shop.tables.GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE;
+import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -30,8 +39,13 @@ public class GroupBuyTaskService  extends ShopBaseService {
     @Autowired
     private GoodsService goodsService;
     @Autowired
+    private OrderInfoService orderInfoService;
+    @Autowired
     private EsDataUpdateMqService esDataUpdateMqService;
 
+    /**
+     * 监控goodsType
+     */
     public void monitorGoodsType(){
         //目前Goods表里还是拼团类型的商品
         List<Integer> pastGroupBuyGoodsIdList = getPastGroupBuyGoodsId();
@@ -63,6 +77,43 @@ public class GroupBuyTaskService  extends ShopBaseService {
     }
 
     /**
+     * 处理拼团订单
+     */
+    public void monitorOrder(){
+        //所有需要处理的团(状态是拼团中，但已超过24小时有效期)
+        List<GroupBuyListScheduleBo> groups = getClosedGroup();
+        groups.forEach(group -> {
+            //下属的所有拼团中记录
+            List<GroupBuyListRecord> listRecords = getGroupRecordsByGroupId(group.getGroupId());
+            if(GroupBuyService.IS_DEFAULT_Y.equals(group.getIsDefault())){
+                //设置了默认成团，将生成虚拟的参团记录，并将已参团用户的订单置为待发货状态
+                transaction(()->{
+                    //randUserNum 需要随机生成的参团记录数
+                    int randUserNum = group.getLimitAmount() - listRecords.size();
+                    if(randUserNum > 0){
+                        insertRandGroupBuyList(group,randUserNum);
+                    }
+                    List<String> orderSnList = listRecords.stream().map(GroupBuyListRecord::getOrderSn).collect(toList());
+                    orderInfoService.batchChangeToWaitDeliver(orderSnList);
+                    // TODO 同步订单状态到CRM
+                    // TODO 向用户发送拼团成功消息
+                });
+            }else{
+                //未设置默认成团，拼团失败，将已参团用户的订单发起退款
+                transaction(()->{
+                    if(StringUtil.isNotEmpty(group.getRewardCouponId())){
+                        //拼团失败发放优惠券
+
+                    }
+                });
+            }
+        });
+
+    }
+
+
+
+    /**
      * 当前所有goodsType还是拼团的商品ID（某些商品可能已经过期，需要更新回普通商品）
      * @return
      */
@@ -75,7 +126,15 @@ public class GroupBuyTaskService  extends ShopBaseService {
      * @return
      */
     private List<Integer> getCurrentGroupBuyGoodsIdList(){
-        List<Integer> res =  db().selectDistinct(GROUP_BUY_DEFINE.GOODS_ID).from(GROUP_BUY_DEFINE).leftJoin(GOODS).on(GROUP_BUY_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID)).where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(GROUP_BUY_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime())).and(GROUP_BUY_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime())).and(GROUP_BUY_DEFINE.STOCK.gt((short)0)).and(GOODS.GOODS_NUMBER.gt(0))).fetchInto(Integer.class);
+        List<Integer> res =  db().selectDistinct(GROUP_BUY_DEFINE.GOODS_ID).from(GROUP_BUY_DEFINE).leftJoin(GOODS).on(GROUP_BUY_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
+            .where(
+                GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+                .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+                .and(GROUP_BUY_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime()))
+                .and(GROUP_BUY_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))
+                .and(GROUP_BUY_DEFINE.STOCK.gt((short)0))
+                .and(GOODS.GOODS_NUMBER.gt(0))
+            ).fetchInto(Integer.class);
         return res;
     }
 
@@ -106,15 +165,79 @@ public class GroupBuyTaskService  extends ShopBaseService {
     }
 
     /**
-     * 当前有效的进行中拼团
+     * 当前有效的进行中拼团活动
      * @return
      */
     private List<GroupBuyDetailVo> getGroupBuyWithMonitor(List<Integer> goodsIds){
-        List<GroupBuyDetailVo> res = db().select(GROUP_BUY_DEFINE.STOCK,GROUP_BUY_DEFINE.GOODS_ID,GROUP_BUY_DEFINE.ID).from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(GROUP_BUY_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime())).and(GROUP_BUY_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))).and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds)).fetchInto(GroupBuyDetailVo.class);
+        List<GroupBuyDetailVo> res = db().select(GROUP_BUY_DEFINE.STOCK,GROUP_BUY_DEFINE.GOODS_ID,GROUP_BUY_DEFINE.ID).from(GROUP_BUY_DEFINE).where(
+            GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+            .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(GROUP_BUY_DEFINE.START_TIME.lt(DateUtil.getLocalDateTime()))
+            .and(GROUP_BUY_DEFINE.END_TIME.gt(DateUtil.getLocalDateTime()))
+            .and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
+        ).fetchInto(GroupBuyDetailVo.class);
         for(GroupBuyDetailVo groupBuy : res){
             List<GroupBuyProductVo> groupBuyProduct = db().select(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID,GROUP_BUY_PRODUCT_DEFINE.STOCK,GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID).from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(groupBuy.getId())).fetchInto(GroupBuyProductVo.class);
             groupBuy.setProductList(groupBuyProduct);
         }
         return res;
+    }
+
+    /**
+     * 已经结束的团（距开团时间已超过24小时）
+     * @return
+     */
+    private List<GroupBuyListScheduleBo> getClosedGroup(){
+        return db().select(GROUP_BUY_DEFINE.GOODS_ID,GROUP_BUY_DEFINE.NAME,GROUP_BUY_DEFINE.IS_DEFAULT,GROUP_BUY_DEFINE.LIMIT_AMOUNT,GROUP_BUY_DEFINE.REWARD_COUPON_ID,GROUP_BUY_LIST.ACTIVITY_ID,GROUP_BUY_LIST.GROUP_ID,GROUP_BUY_LIST.ORDER_SN,GROUP_BUY_LIST.START_TIME)
+            .from(GROUP_BUY_LIST.leftJoin(GROUP_BUY_DEFINE).on(GROUP_BUY_LIST.ACTIVITY_ID.eq(GROUP_BUY_DEFINE.ID)))
+            .where(
+                GROUP_BUY_LIST.STATUS.eq(GroupBuyListService.STATUS_ONGOING)
+                .and(GROUP_BUY_LIST.IS_GROUPER.eq(GroupBuyListService.IS_GROUPER_Y))
+                .and(GROUP_BUY_LIST.START_TIME.lt(DateUtil.getDalyedDateTime(-3600*24)))
+            ).fetchInto(GroupBuyListScheduleBo.class);
+    }
+
+    /**
+     * 一个团里的正在拼团
+     * @param groupId
+     * @return
+     */
+    private List<GroupBuyListRecord> getGroupRecordsByGroupId(int groupId){
+        return db().select().from(GROUP_BUY_LIST).where(
+            GROUP_BUY_LIST.GROUP_ID.eq(groupId)
+            .and(GROUP_BUY_LIST.STATUS.eq(GroupBuyListService.STATUS_ONGOING))
+        ).fetchInto(GroupBuyListRecord.class);
+    }
+
+    /**
+     * 更新一个团下所有的参团状态
+     * @param groupId
+     * @param status
+     */
+    private void updateGroupBuyListStatus(int groupId,byte status){
+        db().update(GROUP_BUY_LIST).set(GROUP_BUY_LIST.STATUS,status).set(GROUP_BUY_LIST.END_TIME,DateUtil.getLocalDateTime()).where(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).execute();
+    }
+
+    /**
+     * 插入randNum个伪造的参团记录
+     * @param group
+     * @param randNum
+     */
+    private void insertRandGroupBuyList(GroupBuyListScheduleBo group,int randNum){
+        GroupBuyListRecord record = db().newRecord(GROUP_BUY_LIST);
+        record.setActivityId(group.getActivityId());
+        record.setGoodsId(group.getGoodsId());
+        record.setGroupId(group.getGroupId());
+        //userId为0时代表该记录为伪造参团记录
+        record.setUserId(0);
+        record.setStatus(GroupBuyListService.STATUS_SUCCESS);
+        record.setOrderSn("");
+        record.setStartTime(group.getStartTime());
+        record.setEndTime(DateUtil.getLocalDateTime());
+        List<GroupBuyListRecord> list = new ArrayList<>();
+        for(int i = 0;i < randNum;i++){
+            list.add(record);
+        }
+        db().batchInsert(list).execute();
     }
 }

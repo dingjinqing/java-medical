@@ -19,4 +19,9 @@ public class JedisKeyConstant {
      * goods lock(库存、销量)
      */
     public static final String GOODS_LOCK = "lock:goods:";
+
+    /**
+     * 拼团处理订单定时任务
+     */
+    public static final String TASK_JOB_LOCK_ORDER_GROUP_BUY = "lock:task:order:group_buy:";
 }
