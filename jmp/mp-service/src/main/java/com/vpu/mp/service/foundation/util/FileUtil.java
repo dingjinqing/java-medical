@@ -3,9 +3,14 @@ package com.vpu.mp.service.foundation.util;
 import com.vpu.mp.service.pojo.shop.base.BASE64DecodedMultipartFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.BASE64Decoder;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Base64;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -108,9 +113,7 @@ public class FileUtil {
     public static MultipartFile base64MutipartFile(String imgStr) {
         try {
             String[] baseStr = imgStr.split(",");
-            BASE64Decoder base64Decoder = new BASE64Decoder();
-            byte[] b = new byte[0];
-            b = base64Decoder.decodeBuffer(baseStr[1]);
+            byte[] b = Base64.getDecoder().decode(imgStr);
             for (int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {
                     b[i] += 256;
