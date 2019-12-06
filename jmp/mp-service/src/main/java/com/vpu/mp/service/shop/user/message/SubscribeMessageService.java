@@ -241,6 +241,10 @@ public class SubscribeMessageService extends ShopBaseService {
 			for (int i = 0; i < titleList.length; i++) {
 				for (WxOpenSubscribeTemplate template : data2) {
 					boolean contains = template.getTitle().contains(titleList[i].getTitle());
+					logger().info("已经配置的模板："+template.getTitle());
+					logger().info("需要配置的模板："+titleList[i].getTitle());
+					logger().info("比较："+contains);
+					logger().info("results["+i+"]"+results[i]);
 					if(null==results[i]) {
 						if (contains) {
 							// 存在，直接赋值
