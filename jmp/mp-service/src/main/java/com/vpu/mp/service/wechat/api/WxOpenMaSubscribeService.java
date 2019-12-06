@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessage;
 import com.vpu.mp.service.wechat.bean.open.WxOpenGetResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
@@ -185,16 +186,8 @@ public interface WxOpenMaSubscribeService extends WxOpenMaMpHttpBase {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	default WxOpenResult sendTemplate(String appId, String toUser, String templateId, String page,
-			Map<String, Map<String, String>> data) throws WxErrorException {
-		Map<String, Object> param = new HashMap<>();
-		param.put("touser", toUser);
-		param.put("template_id", templateId);
-		if(!StringUtils.isEmpty(page)) {
-			param.put("page", page);
-		}
-		param.put("data", data);
-		String json = post(appId, WX_SUBSCRIBE_SEND, Util.toJson(param));
+	default WxOpenResult sendTemplate(String appId, WxMaSubscribeMessage param) throws WxErrorException {
+		String json = post(appId, WX_SUBSCRIBE_SEND, param.toJson());
 		return WxOpenGetResult.fromJson(json);
 	}
 }

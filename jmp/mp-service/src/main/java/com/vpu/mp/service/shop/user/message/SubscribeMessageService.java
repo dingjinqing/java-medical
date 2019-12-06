@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
+import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessage;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import com.vpu.mp.service.wechat.api.WxOpenMaSubscribeService;
@@ -130,7 +131,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public Boolean sendMessage(Integer userId,String templateName, Map<String, Map<String, String>> data,
+	public Boolean sendMessage(Integer userId,String templateName, WxMaSubscribeMessage data,
 			String page) throws WxErrorException {
 		UserRecord user = userService.getUserByUserId(userId);
 		if (null == user) {
@@ -165,8 +166,10 @@ public class SubscribeMessageService extends ShopBaseService {
 		// 小程序中是否配置了这个模板
 		templateId = addTemplate(templateIdRecord.getTemplateId(), config);
 
-		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaAppId(), user.getWxOpenid(), templateId, page,
-				data);
+		data.setPage(page);
+		data.setTemplate_id(templateId);
+		data.setTouser(user.getWxOpenid());
+		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaAppId(),data);
 		boolean success = sendResult.isSuccess();
 		logger().info("发送结果" + success);
 		if (success) {
