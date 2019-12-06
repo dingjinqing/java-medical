@@ -546,7 +546,7 @@ export default {
       getStore(params).then(res => {
         if (res.error === 0) {
           if (res.content.storeImgs) {
-            let storeImgs = JSON.parse(res.content.storeImgs)
+            res.content.storeImgs = JSON.parse(res.content.storeImgs)
           }
           if (res.content.service) {
             let services = JSON.parse(res.content.service)
