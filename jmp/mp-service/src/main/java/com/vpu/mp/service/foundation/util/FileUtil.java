@@ -121,7 +121,7 @@ public class FileUtil {
             byte[] b = Base64.getDecoder().decode(base64Str);
             for (int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {
-                    b[i] += 256;/////////
+                    b[i] += 256;
                 }
             }
             return new BASE64DecodedMultipartFile(b, baseStr[0]);
