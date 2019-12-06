@@ -117,7 +117,7 @@ public class AdminTestController extends AdminBaseController {
 	@RequestMapping(value = "/api/admin/test/sendTest")
 	public JsonResult testSend() {
 		String[][] data = new String[][] { { "金坷垃抽奖" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
-		String[][] data2 = new String[][] { { "金色传说" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "出货啦" } };
+		String[][] data2 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("YYYY-MM-dd HH:mm:ss")}};
 		Boolean sendMessage=false;
 		try {
 			 sendMessage = subservice.sendMessage(195, SubcribeTemplateCategory.DRAW_RESULT, data, null);
