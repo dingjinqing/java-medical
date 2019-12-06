@@ -89,7 +89,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         System.out.println(param);
         SelectWhereStep<? extends Record> select = db()
             .select(XCX_CUSTOMER_PAGE.PAGE_ID, XCX_CUSTOMER_PAGE.PAGE_NAME, XCX_CUSTOMER_PAGE.CREATE_TIME,
-                XCX_CUSTOMER_PAGE.PAGE_TYPE,XCX_CUSTOMER_PAGE.CAT_ID, PAGE_CLASSIFICATION.NAME)
+                XCX_CUSTOMER_PAGE.PAGE_TYPE, XCX_CUSTOMER_PAGE.CAT_ID, PAGE_CLASSIFICATION.NAME)
             .from(XCX_CUSTOMER_PAGE
                 .leftJoin(PAGE_CLASSIFICATION)
                 .on(XCX_CUSTOMER_PAGE.CAT_ID.eq(PAGE_CLASSIFICATION.ID)));
@@ -414,7 +414,7 @@ public class ShopMpDecorationService extends ShopBaseService {
      */
     public ShareQrCodeVo getMpQrCode(Integer pageId) {
 
-        String pathParam="page="+pageId;
+        String pathParam = "page=" + pageId;
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INDEX, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
@@ -666,6 +666,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     /**
      * 优惠券需要setNeedRequest
+     *
      * @param objectMapper
      * @param node
      * @param user
@@ -680,6 +681,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     /**
      * 会员卡需要setNeedRequest
+     *
      * @param objectMapper
      * @param node
      * @param user
@@ -736,21 +738,21 @@ public class ShopMpDecorationService extends ShopBaseService {
             while (elements.hasNext()) {
                 Entry<String, JsonNode> node = elements.next();
                 String key = node.getKey();
-                if (key.equals(keyIdx)&&key.startsWith("c_")) {
+                if (key.equals(keyIdx) && key.startsWith("c_")) {
                     String moduleName = node.getValue().get("module_name").asText();
                     switch (moduleName) {
                         case ModuleConstant.M_GOODS:
-                            return this.convertGoodsForModule(objectMapper,node,user);
+                            return this.convertGoodsForModule(objectMapper, node, user);
                         case ModuleConstant.M_COUPON:
-                            return this.convertCouponForModule(objectMapper,node,user);
+                            return this.convertCouponForModule(objectMapper, node, user);
                         case ModuleConstant.M_CARD:
-                            return this.convertMemberCardForModule(objectMapper,node,user);
+                            return this.convertMemberCardForModule(objectMapper, node, user);
                         //TODO case
                     }
                 }
             }
         } catch (Exception e) {
-            logger().error("小程序首页装修模块内容转换错误,pageContent:{}",pageContent);
+            logger().error("小程序首页装修模块内容转换错误,pageContent:{}", pageContent);
             e.printStackTrace();
         }
         return null;
@@ -758,6 +760,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     /**
      * 商品模块
+     *
      * @param objectMapper
      * @param node
      * @param user
@@ -769,7 +772,7 @@ public class ShopMpDecorationService extends ShopBaseService {
         Integer userId = user.getUserId();
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(moduleGoods.getRecommendType());
-        param.setGoodsItems(moduleGoods.getGoodsItems());
+        param.setGoodsItems(moduleGoods.getGoodsItems() == null ? new ArrayList<>() : moduleGoods.getGoodsItems());
         param.setKeywords(moduleGoods.getKeywords());
         param.setMinPrice(moduleGoods.getMinPrice());
         param.setMaxPrice(moduleGoods.getMaxPrice());
@@ -787,13 +790,14 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     /**
      * 优惠券模块
+     *
      * @param objectMapper
      * @param node
      * @param user
      * @return
      * @throws IOException
      */
-    private  List<CouponPageDecorationVo> convertCouponForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+    private List<CouponPageDecorationVo> convertCouponForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleCoupon moduleCoupon = objectMapper.readValue(node.getValue().toString(), ModuleCoupon.class);
         Integer userId = user.getUserId();
 
@@ -803,6 +807,7 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     /**
      * 会员卡模块
+     *
      * @param objectMapper
      * @param node
      * @param user

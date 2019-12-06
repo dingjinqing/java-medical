@@ -92,7 +92,7 @@ public class GoodsListMpParam extends BasePageParam{
     private Integer goodsNum;
 
     /**
-     * 是否展示售罄商品 1展示 0否
+     * 是否展示售罄商品 true展示 false否
      */
-    private Byte soldOutGoodsShow;
+    private Boolean soldOutGoodsShow;
 }

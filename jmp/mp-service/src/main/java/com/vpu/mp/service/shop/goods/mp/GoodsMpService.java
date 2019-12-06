@@ -24,6 +24,7 @@ import com.vpu.mp.service.shop.order.action.base.Calculate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +75,15 @@ public class GoodsMpService extends ShopBaseService {
      */
     public List<? extends GoodsListMpVo> getPageIndexGoodsList(GoodsListMpParam param, Integer userId) {
         List<GoodsListMpBo> goodsListCapsules;
+        // 是否展示售罄
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        if (GoodsConstant.SOLD_OUT_GOODS_SHOW.equals(soldOutGoods)) {
+            param.setSoldOutGoodsShow(true);
+        } else {
+            param.setSoldOutGoodsShow(false);
+        }
+
+
         try {
             // 从es获取
             goodsListCapsules = getPageIndexGoodsListFromEs(param);
@@ -111,13 +121,13 @@ public class GoodsMpService extends ShopBaseService {
         if (specifiedNoContent) {
             return new ArrayList<>();
         }
-
+        Condition condition = buildPageIndexCondition(param);
         List<GoodsListMpBo> goodsListCapsules;
         // 手动推荐拼接排序条件
         if (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) {
-            goodsListCapsules = findActivityGoodsListCapsulesDao(null, null, null, null, param.getGoodsItems());
+            goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, null, null, param.getGoodsItems());
         } else {
-            Condition condition = buildPageIndexCondition(param);
+
             List<SortField<?>> orderFields = new ArrayList<>();
             if (GoodsListMpParam.SALE_NUM_SORT.equals(param.getSortType())) {
                 orderFields.add(GOODS.GOODS_SALE_NUM.desc());
@@ -142,11 +152,11 @@ public class GoodsMpService extends ShopBaseService {
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
         // 是否展示售罄
-        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
-        if (soldOutGoods == 1) {
+        if (!param.getSoldOutGoodsShow()) {
             condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
-        if (0 != param.getRecommendType()) {
+        // 指定商品列表
+        if (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) {
             condition = condition.and(GOODS.GOODS_ID.in(param.getGoodsItems()));
             return condition;
         }
@@ -219,7 +229,6 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 通过商品id集合回去对应的数据信息
-     *
      * @param goodsIds     商品id集合
      * @return {@link GoodsListMpParam}集
      */
@@ -227,7 +236,7 @@ public class GoodsMpService extends ShopBaseService {
         if (goodsIds == null) {
             return new ArrayList<>();
         }
-        return findActivityGoodsListCapsulesDao(null, null, null, null, goodsIds);
+        return findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), null, null, null, goodsIds);
     }
 
     /**
@@ -297,13 +306,8 @@ public class GoodsMpService extends ShopBaseService {
      * @return {@link GoodsListMpBo}
      */
     private List<GoodsListMpBo> findActivityGoodsListCapsulesDao(Condition condition, List<SortField<?>> orderFields, Integer offset, Integer limit, List<Integer> goodsIds) {
-
-        if (condition != null) {
-            condition = condition.and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
-        }
-
-        if (goodsIds != null) {
-            condition = condition.and(GOODS.GOODS_ID.in(goodsIds));
+        if (condition == null) {
+            condition = DSL.noCondition();
         }
 
         if (orderFields == null || orderFields.size() == 0) {
