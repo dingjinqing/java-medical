@@ -62,8 +62,8 @@
           align="center"
         >
           <template slot-scope="scope">
-            <div v-if="scope.row.type === 0">{{ this.$t('shipping.typeAll') }}</div>
-            <div v-if="scope.row.type === 1">{{ this.$t('shipping.typeNum') }}</div>
+            <div v-if="scope.row.type === 0">{{ $t('shipping.typeAll') }}</div>
+            <div v-if="scope.row.type === 1">{{ $t('shipping.typeNum') }}</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -76,9 +76,9 @@
               v-for="(item, index) in scope.row.ruleList"
               :key="index"
             >
-              <div v-if="item.conType === 0">{{ this.$t('shipping.ruleTip1') }} {{ item.money }} {{ this.$t('shipping.ruleTip2') }}{{ this.$t('shipping.ruleTip4') }}；<br></div>
-              <div v-if="item.conType === 1">{{ this.$t('shipping.ruleTip1') }} {{ item.num }} {{ this.$t('shipping.ruleTip3') }}{{ this.$t('shipping.ruleTip4') }}；<br></div>
-              <div v-if="item.conType === 2">{{ this.$t('shipping.ruleTip1') }} {{ item.money }} {{ this.$t('shipping.ruleTip2') }}{{ this.$t('shipping.ruleTip4') }}，{{ this.$t('shipping.ruleTip1') }} {{ item.num }} {{ this.$t('shipping.ruleTip3') }}{{ this.$t('shipping.ruleTip4') }}；<br></div>
+              <div v-if="item.conType === 0">{{ $t('shipping.ruleTip1') }} {{ item.money }} {{ $t('shipping.ruleTip2') }}{{ $t('shipping.ruleTip4') }}；<br></div>
+              <div v-if="item.conType === 1">{{ $t('shipping.ruleTip1') }} {{ item.num }} {{ $t('shipping.ruleTip3') }}{{ $t('shipping.ruleTip4') }}；<br></div>
+              <div v-if="item.conType === 2">{{ $t('shipping.ruleTip1') }} {{ item.money }} {{ $t('shipping.ruleTip2') }}{{ $t('shipping.ruleTip4') }}，{{ $t('shipping.ruleTip1') }} {{ item.num }} {{ $t('shipping.ruleTip3') }}{{ $t('shipping.ruleTip4') }}；<br></div>
             </div>
           </template>
         </el-table-column>
@@ -88,8 +88,8 @@
           align="center"
         >
           <template slot-scope="scope">
-            <div v-if="scope.row.expireType === 0">{{scope.row.startTime}}<br>{{ this.$t('shipping.to') }}<br>{{scope.row.endTime}}</div>
-            <div v-if="scope.row.expireType === 1">{{ this.$t('shipping.expireTypeAll') }}</div>
+            <div v-if="scope.row.expireType === 0">{{scope.row.startTime}}<br>{{ $t('shipping.to') }}<br>{{scope.row.endTime}}</div>
+            <div v-if="scope.row.expireType === 1">{{ $t('shipping.expireTypeAll') }}</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -246,14 +246,14 @@ export default {
     // 添加
     addHandler () {
       this.isEdite = false
-      this.showTabAddGroup('添加满包邮活动')
+      this.showTabAddGroup(this.$t('shipping.addShipping'))
     },
 
     // 编辑
     editHandler (id, row) {
       this.editId = id
       this.isEdite = true
-      this.showTabAddGroup('编辑满包邮活动')
+      this.showTabAddGroup(this.$t('shipping.editShipping'))
     },
 
     showTabAddGroup (title) {
