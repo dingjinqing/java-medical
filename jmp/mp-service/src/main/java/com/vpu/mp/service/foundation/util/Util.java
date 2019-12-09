@@ -686,6 +686,9 @@ public class Util {
      */
     public static Byte getActStatus(Byte status,Timestamp startTime,Timestamp endTime,Byte isForever){
         if (BaseConstant.ACTIVITY_NOT_FOREVER.equals(isForever)){
+        	if(Objects.isNull(startTime)||Objects.isNull(endTime)){
+        		return BaseConstant.NAVBAR_TYPE_NOT_STARTED;
+			}
             Timestamp now  =DateUtil.getLocalDateTime();
             if (Objects.equals(status, BaseConstant.ACTIVITY_STATUS_NORMAL)){
                 if (now.compareTo(startTime)<0){

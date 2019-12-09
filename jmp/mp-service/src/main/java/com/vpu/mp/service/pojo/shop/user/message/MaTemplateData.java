@@ -7,7 +7,8 @@ import lombok.Data;
 @Builder
 public class MaTemplateData {
 
-    private MaTemplateConfig config;
+	/**参考SubcribeTemplateCategory*/
+    private String config;
 
     private String[][] data;
 }
