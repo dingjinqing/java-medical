@@ -73,34 +73,52 @@
             label="操作"
             align="center"
           >
-            <template slot-scope="{row}">
+            <template slot-scope="{row, index}">
               <div>
-                <el-tooltip content="停用">
+                <el-tooltip
+                  content="停用"
+                  v-show="row.status == 1|| row.status == 2"
+                >
                   <i
                     class="el-icon-circle-close iconSpan"
                     @click="edit('stop', row)"
                   ></i>
                 </el-tooltip>
-                <el-tooltip content="启用">
+                <el-tooltip
+                  content="启用"
+                  v-show="row.status == 4"
+                >
                   <i
                     class="el-icon-circle-check iconSpan"
                     @click="edit('action', row)"
                   ></i>
                 </el-tooltip>
-                <el-tooltip content="编辑">
+                <el-tooltip
+                  content="编辑"
+                  v-show="row.status == 1 || row.status == 2"
+                >
                   <i
                     class="el-icon-edit-outline iconSpan"
                     @click="edit('edit', row)"
                   ></i>
                 </el-tooltip>
-                <el-tooltip content="删除">
+                <el-tooltip
+                  content="删除"
+                  v-show="row.status == 3||row.status == 4"
+                >
                   <i
                     class="el-icon-delete iconSpan"
-                    @click="edit('delete', row)"
+                    @click="edit('delete', row, index)"
                   ></i>
                 </el-tooltip>
-                <el-tooltip content="活动明细">
-                  <span class="iconfont iconmingxi1 iconSpan"></span>
+                <el-tooltip
+                  content="活动明细"
+                  v-show="row.stauts != 2"
+                >
+                  <span
+                    class="iconfont iconmingxi1 iconSpan"
+                    @click="edit('detail', row)"
+                  ></span>
                 </el-tooltip>
               </div>
             </template>
@@ -164,7 +182,6 @@ export default {
   },
   mounted () {
     this.langDefault()
-    this.initDataList()
   },
   methods: {
     initDataList () {
@@ -213,7 +230,7 @@ export default {
           text = '未开始'
           break
         case 3:
-          text = '已结束'
+          text = '已过期'
           break
         case 4:
           text = '已停用'

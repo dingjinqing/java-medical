@@ -44,15 +44,16 @@
         </div>
       </div>
       <div class="page-right">
-        <div class="right-top">
-          <header>活动信息</header>
-          <el-form
-            ref="activityInfoForm"
-            size="small"
-            label-width="110px"
-            :mode="form"
-            :rules="rules"
-          >
+        <el-form
+          ref="activityInfoForm"
+          size="small"
+          label-width="110px"
+          :model="form"
+          :rules="rules"
+        >
+          <div class="right-top">
+            <header>活动信息</header>
+
             <el-form-item
               label="活动名称："
               prop="name"
@@ -100,6 +101,7 @@
                 v-model.number="form.level"
                 controls-position="right"
                 :min="0"
+                :max="100"
               ></el-input-number>
               <p class="tips">用于区分不同评价有礼活动的优先级，请填写正整数，数值越大优先级越高</p>
             </el-form-item>
@@ -177,17 +179,10 @@
                 <p class="tips">以上条件为"且"的关系</p>
               </div>
             </el-form-item>
-          </el-form>
-        </div>
-        <div class="right-bottom">
-          <header>评价奖励</header>
-          <el-form
-            ref="evaluationAwardForm"
-            size="small"
-            label-width="110px"
-            :mode="form"
-            :rules="rules"
-          >
+          </div>
+          <div class="right-bottom">
+            <header>评价奖励</header>
+
             <el-form-item
               label="评价奖励："
               prop="awardType"
@@ -206,7 +201,8 @@
               <el-form-item
                 label="积分："
                 v-if="form.awardType === 1"
-                label-width="100px"
+                label-width="110px"
+                prop="score"
               >
                 <el-input-number
                   v-model="form.score"
@@ -217,7 +213,7 @@
               <el-form-item
                 label="优惠券："
                 v-else-if="form.awardType === 2"
-                label-width="100px"
+                label-width="110px"
               >
                 <el-select v-model="form.activityId">
                   <el-option
@@ -230,24 +226,29 @@
               <el-form-item
                 label="余额："
                 v-else-if="form.awardType === 3"
-                label-width="100px"
+                label-width="110px"
+                prop="account"
               >
-                <el-input
-                  v-model="form.account"
+                <el-input-number
+                  v-model.number="form.account"
                   placeholder="请输入金额"
-                ></el-input>
+                  controls-position="right"
+                  :min="0"
+                ></el-input-number>
               </el-form-item>
               <el-form-item
                 label="幸运大抽奖："
                 v-else-if="form.awardType === 4"
-                label-width="100px"
+                label-width="110px"
+                prop="activityId"
               >
                 <selectPayRewardAct v-model="form.activityId"></selectPayRewardAct>
               </el-form-item>
               <div v-else-if="form.awardType === 5">
                 <el-form-item
                   label="活动图片："
-                  label-width="100px"
+                  label-width="110px"
+                  prop="awardImg"
                 >
                   <div
                     class="uploaded-add"
@@ -276,7 +277,8 @@
                 </el-form-item>
                 <el-form-item
                   label="活动链接："
-                  label-width="100px"
+                  label-width="110px"
+                  prop="awardPath"
                 >
                   <el-input
                     v-model="form.awardPath"
@@ -292,7 +294,7 @@
               <el-form-item
                 label="奖品份数："
                 prop="awardNum"
-                label-width="100px"
+                label-width="110px"
               >
                 <el-input-number
                   v-model="form.awardNum"
@@ -308,8 +310,8 @@
                 :false-label="0"
               >同一商品仅首次评价送礼</el-checkbox>
             </el-form-item>
-          </el-form>
-        </div>
+          </div>
+        </el-form>
       </div>
     </div>
     <div class="footer">
@@ -356,10 +358,26 @@ export default {
     choosingGoods: () => import('@/components/admin/choosingGoods')
   },
   data () {
+    let that = this
+    // 验证活动时间
     function validValidityPeriod (rule, value, callback) {
-      if (this.form.isForever === 0) {
-        if (this.form.startTime || this.form.endTime) {
+      if (that.form.isForever === 0) {
+        if (!that.form.startTime || !that.form.endTime) {
           callback(new Error('请输入活动时间'))
+        }
+      }
+      callback()
+    }
+    // 验证触发条件
+    function validGoodsType (rule, value, callback) {
+      if (that.form.goodsType === 2 && that.form.goodsIds === '') {
+        callback(new Error('请选择活动商品'))
+      } else if (that.form.goodsType === 3 && !that.form.commentNum) {
+        callback(new Error('请输入限定的评价数量'))
+      }
+      if (that.form.commentType === 2) {
+        if (that.form.hasFiveStars === 0 && that.form.hasPicNum === 0 && !that.form.hasCommentWords) {
+          callback(new Error('请选择至少一种评价条件'))
         }
       }
       callback()
@@ -392,7 +410,26 @@ export default {
       },
       rules: {
         name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
-        isForever: [{ required: true }, { validator: validValidityPeriod }]
+        isForever: [{ required: true }, { validator: validValidityPeriod }],
+        level: [{ required: true, message: '请输入活动优先级', trigger: 'blur' }],
+        goodsType: [{ required: true }, { validator: validGoodsType }],
+        score: [
+          { required: true, message: '请输入积分', trigger: 'blur' },
+          { type: 'number', min: 1, message: '请输入大于0的数字', trigger: 'blur' }
+        ],
+        account: [
+          { required: true, message: '请输入余额', trigger: 'blur' },
+          { type: 'number', min: 1, message: '请输入大于0的数字', trigger: 'blur' }
+        ],
+        activityId: [
+          { required: true, message: '请选择活动', trigger: 'blur' }
+        ],
+        awardImg: [{ required: true, message: '请选择活动图片', trigger: 'blur' }],
+        awardPath: [{ required: true, message: '请设置活动链接', trigger: 'blur' }],
+        awardNum: [
+          { required: true, message: '请输入奖品份数', trigger: 'blur' },
+          { type: 'number', min: 1, message: '请输入大于0的数字', trigger: 'blur' }
+        ]
       },
       tuneUpChooseGoods: false, // 选择商品
       chooseGoods: [], // 商品回显 id数组
@@ -458,14 +495,16 @@ export default {
       this.$set(this.form, 'awardImg', img.imgPath)
     },
     saveOrderInfo () {
-      let params = Object.assign({}, this.form)
-      if (params) {
-        console.log(params)
-        return false
-      }
-      addEvaluationGift(params).then(res => {
-        if (res.error === 0) {
-          console.log(res.content)
+      let that = this
+      that.$refs.activityInfoForm.validate((valid) => {
+        if (valid) {
+          let params = Object.assign({}, that.form)
+          console.log(params)
+          addEvaluationGift(params).then(res => {
+            if (res.error === 0) {
+              console.log(res.content)
+            }
+          })
         }
       })
     }
