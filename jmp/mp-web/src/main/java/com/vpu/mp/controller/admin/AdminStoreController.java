@@ -525,9 +525,9 @@ public class AdminStoreController extends AdminBaseController{
     	switch (param.getVerifyPay().byteValue()) {
 	    	/** 会员卡核销 */
             case ServiceOrderService.VERIFY_PAY_TYPE_MEMBER_CARD:
-                if(param.getCountDis() == null) {
-                    return fail(JsonResultCode.CODE_PARAM_ERROR);
-                }
+//                if(param.getCountDis() == null) {
+//                    return fail(JsonResultCode.CODE_PARAM_ERROR);
+//                }
                 if(param.getReduce() == null) {
                     return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_BALANCE_IS_NULL);
                 }

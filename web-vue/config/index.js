@@ -12,7 +12,11 @@ module.exports = {
     proxyTable: {
       '/vpb': {
         target: 'http://jmpdev.weipubao.cn',
+<<<<<<< HEAD
         // target: 'http://localhost:8086',
+=======
+        //target: 'http://localhost:8086',
+>>>>>>> 02a29d1db146a1f87c5c77e8e9a1cd9e53d7443d
         // target: 'http://localhost:8086',
 
         changeOrigin: true,

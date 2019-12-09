@@ -151,6 +151,7 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
                     GoodsActivityInfo goodsActivityInfo = new GoodsActivityInfo();
                     goodsActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
                     goodsActivityInfo.setMemberPrice(gradePrice.getGradePrice());
+                    goods.getActivityInfo().add(goodsActivityInfo);
                 }
             });
         });
