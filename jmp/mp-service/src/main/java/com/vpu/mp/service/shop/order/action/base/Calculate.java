@@ -525,7 +525,14 @@ public class Calculate extends ShopBaseService {
         }
     }
 
+    /**
+     * 计算实际规格价（统一营销（普通商品营销））
+     * @param goods
+     * @param uniteMarkeingt
+     * @return
+     */
     public UniteMarkeingtRecalculateBo uniteMarkeingtRecalculate(OrderBeforeParam.Goods goods, OrderCartProductBo.OrderCartProduct uniteMarkeingt){
+        logger().info("uniteMarkeingtRecalculate start");
         //TODO 分销改价
 
         //首单特惠
