@@ -125,6 +125,54 @@ public final  class  BaseConstant {
      */
     public final static Byte COUPON_TYPE_SPLIT =1;
 
+    //b2c_customer_avail_coupons的优惠券来源get_source
+    /**
+     * 1表单送券
+     */
+    public final static Byte GET_SOURCE_FORM =1;
+    /**
+     * 2支付送券
+     */
+    public final static Byte GET_SOURCE_PAY =2;
+    /**
+     * 3活动送券
+     */
+    public final static Byte GET_SOURCE_ACT =3;
+    /**
+     * 4积分兑换
+     */
+    public final static Byte GET_SOURCE_INTEGRAL =4;
+    /**
+     * 5直接领取
+     */
+    public final static Byte GET_SOURCE_DIRECT_RECEIVE =5;
+    /**
+     * 6分裂优惠券
+     */
+    public final static Byte GET_SOURCE_SPLIT =6;
+    /**
+     * 7crm领券
+     */
+    public final static Byte GET_SOURCE_CRM =7;
+    /**
+     * 8幸运大抽奖
+     */
+    public final static Byte GET_SOURCE_LUCKY_DRAW =8;
+    /**
+     * 9定向发券
+     */
+    public final static Byte GET_SOURCE_GIVE =9;
+
+    //accessMode
+    /**
+     * 0发放
+     */
+    public final static Byte ACCESS_MODE_ISSUE =0;
+    /**
+     * 1领取
+     */
+    public final static Byte ACCESS_MODE_RECEIVE =1;
+
     //*********************前端活动状态***************************************/
     /**
      * 进行中
