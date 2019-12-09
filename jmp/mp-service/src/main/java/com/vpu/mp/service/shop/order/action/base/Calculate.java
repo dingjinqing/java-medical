@@ -532,7 +532,7 @@ public class Calculate extends ShopBaseService {
      * @return
      */
     public UniteMarkeingtRecalculateBo uniteMarkeingtRecalculate(OrderBeforeParam.Goods goods, OrderCartProductBo.OrderCartProduct uniteMarkeingt){
-        logger().info("uniteMarkeingtRecalculate start,参数为{}", uniteMarkeingt);
+        logger().info("uniteMarkeingtRecalculate start,参数为:{}", uniteMarkeingt);
         //TODO 分销改价
 
         //首单特惠
