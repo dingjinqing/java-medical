@@ -1,13 +1,8 @@
 package com.vpu.mp.service.foundation.util;
 
-import javax.imageio.ImageIO;
-
-import com.thoughtworks.xstream.core.util.Base64Encoder;
-
-import lombok.extern.slf4j.Slf4j;
-
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -16,6 +11,13 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
+import com.thoughtworks.xstream.core.util.Base64Encoder;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 图片的处理
@@ -155,6 +157,26 @@ public final class ImageUtil {
 		return "data:image/png;base64," + encode;
 	}
 
+	/**
+	 * 生成字体，思源黑体
+	 * @param style  Font.BOLD
+	 * @param size   大小
+	 * @return
+	 */
+	public static Font SourceHanSansCN(Integer style, Integer size) {
+		Font actionJsonBase = new Font(null, style, size);
+		InputStream loadFile = Util.loadFile("font/wxapp/SourceHanSansCN-Normal.ttf");
+		try {
+			Font createFont = Font.createFont(Font.TRUETYPE_FONT, loadFile);
+			actionJsonBase = createFont.deriveFont(style, size);
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return actionJsonBase;
+
+	}
 
 
 }
