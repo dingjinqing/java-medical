@@ -65,12 +65,11 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
                 capsule.setLabel(allGoodsMap.get(GoodsConstant.LABEL_GTA_DEFAULT_VALUE));
             }
         });
-
     }
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
-        if (goodsDetailMpBo.getLabels() != null) {
+        if (goodsDetailMpBo.getIsDisposedByEs()) {
             return;
         }
         List<String> labels = goodsLabelProcessorDao.getGoodsDetailLabels(param.getGoodsId(),param.getCatId(),param.getSortId());

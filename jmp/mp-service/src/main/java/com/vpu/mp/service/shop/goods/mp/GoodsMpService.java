@@ -268,6 +268,7 @@ public class GoodsMpService extends ShopBaseService {
                 goodsDetailMpBo.setDelFlag(DelFlag.NORMAL_VALUE);
                 return goodsDetailMpBo;
             }
+            goodsDetailMpBo.setIsDisposedByEs(true);
         } catch (Exception e) {
             log.debug("尝试DB获取商品详情");
             goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
