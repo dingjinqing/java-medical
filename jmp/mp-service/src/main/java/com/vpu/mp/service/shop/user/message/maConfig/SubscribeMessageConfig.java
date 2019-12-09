@@ -1,8 +1,9 @@
 package com.vpu.mp.service.shop.user.message.maConfig;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -56,7 +57,15 @@ public enum SubscribeMessageConfig {
 	/** 开发者自行组合好的模板关键词列表 */
 	private int[] kidList;
 
-	
+    @JsonCreator
+    public static SubscribeMessageConfig getConfig(String id){
+        for(SubscribeMessageConfig item : values()){
+            if(item.getId().equals(id) ){
+                return item;
+            }
+        }
+        return null;
+    }
 	/**
 	 * 根据类目和模板名称找到需要的模板
 	 * 
