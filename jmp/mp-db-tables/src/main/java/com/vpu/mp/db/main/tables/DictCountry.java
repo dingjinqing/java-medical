@@ -7,7 +7,6 @@ package com.vpu.mp.db.main.tables;
 import com.vpu.mp.db.main.Indexes;
 import com.vpu.mp.db.main.Keys;
 import com.vpu.mp.db.main.MiniMain;
-import com.vpu.mp.db.main.tables.records.DictCountryRecord;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -15,6 +14,7 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
+import com.vpu.mp.db.main.tables.records.DictCountryRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Index;
@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCountry extends TableImpl<DictCountryRecord> {
 
-    private static final long serialVersionUID = -152065693;
+    private static final long serialVersionUID = 1282908385;
 
     /**
      * The reference instance of <code>mini_main.b2c_dict_country</code>
@@ -62,6 +62,11 @@ public class DictCountry extends TableImpl<DictCountryRecord> {
     public final TableField<DictCountryRecord, Integer> COUNTRY_ID = createField("country_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>mini_main.b2c_dict_country.en_short_name</code>.
+     */
+    public final TableField<DictCountryRecord, String> EN_SHORT_NAME = createField("en_short_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false), this, "");
+
+    /**
      * The column <code>mini_main.b2c_dict_country.name</code>.
      */
     public final TableField<DictCountryRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false), this, "");
@@ -74,12 +79,12 @@ public class DictCountry extends TableImpl<DictCountryRecord> {
     /**
      * The column <code>mini_main.b2c_dict_country.en_name</code>.
      */
-    public final TableField<DictCountryRecord, String> EN_NAME = createField("en_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<DictCountryRecord, String> EN_NAME = createField("en_name", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>mini_main.b2c_dict_country.created</code>.
      */
-    public final TableField<DictCountryRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<DictCountryRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>mini_main.b2c_dict_country</code> table reference
