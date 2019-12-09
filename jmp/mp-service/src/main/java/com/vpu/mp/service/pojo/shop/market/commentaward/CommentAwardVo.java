@@ -97,15 +97,5 @@ public class CommentAwardVo {
      * 首次评价商品
      */
     private Byte       firstCommentGoods;
-    /**
-     * 状态  1启用
-     */
-    private Byte       status;
-    /**
-     *  1 删除
-     */
-    private Byte       delFlag;
 
-    private Timestamp  createTime;
-    private Timestamp  updateTime;
 }
