@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -1788,5 +1789,23 @@ public class GoodsService extends ShopBaseService {
             bos.add(bo);
         });
         return bos.stream().collect(Collectors.toMap(GoodsVideoBo::getId, Function.identity()));
+    }
+
+    /**
+     * 手动上架所有待上架商品
+     * 待上架商品：商品是指定时间上架的商品，且指定时间小于当前时间 （saleType=1 待上架，state!=2 审核未违规）
+     */
+    public void onSaleGoods(){
+        List<Integer> goodsIds = db().select().from(GOODS)
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.IS_ON_SALE.eq(GoodsConstant.OFF_SALE))
+            .and(GOODS.GOODS_NUMBER.gt(0)).and(GOODS.STATE.ne(GoodsConstant.INVALIDATE_OFF_SALE))
+            .and(GOODS.SALE_TYPE.eq(GoodsConstant.POINT_TIME_TO_ON_SALE)).and(GOODS.SALE_TIME.le(DateUtil.getLocalDateTime()))
+            .fetch(GOODS.GOODS_ID);
+
+        db().update(GOODS).set(GOODS.IS_ON_SALE,GoodsConstant.ON_SALE).where(GOODS.GOODS_ID.in(goodsIds)).execute();
+
+        if (esUtilSearchService.esState()){
+            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+        }
     }
 }

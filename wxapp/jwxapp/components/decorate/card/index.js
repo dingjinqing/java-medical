@@ -9,7 +9,7 @@ global.wxComponent({
       // 根据背景类型来判断是采用背景颜色还是背景图片
       console.log(newVal, 'cardData')
       // 暂时改变字段调试
-      // newVal.status = -1
+      newVal.status = -1
       // 处理背景
       if (newVal.bg_type == 0) {
         newVal.bg = newVal.bg_color = newVal.bg_color || '#e6cb96';
@@ -25,7 +25,7 @@ global.wxComponent({
       var _this = this;
       console.log(d)
       // if (d.is_pay == 1 || d.is_pay == 2) {
-      //   util.jumpLink('/pages/usercardinfo/usercardinfo?card_id=' + d.card_id, )
+      //   util.jumpLink('/pages/cardinfo/cardinfo?card_id=' + d.card_id, )
       //   return false;
       // }
       // util.api('/api/card/getcard', function(res) {
@@ -43,7 +43,7 @@ global.wxComponent({
       //       util.showModal('', text);
       //       return;
       //     } else {
-      //       if(d.card_type != 1){
+      //       if(d.card_type != '1'){
       //         _this.data.m.status = 1;
       //         _this.$set();
       //         _this.$emit('get_card_success', {
@@ -59,7 +59,7 @@ global.wxComponent({
       // var card_no = res.content.card_no || res.content
 
       // if (d.activation == 1) {
-      //   util.jumpLink('/pages/usercardinfo/usercardinfo?card_no=' + card_no);
+      //   util.jumpLink('/pages/cardinfo/cardinfo?card_no=' + card_no);
       // } else {
       //   util.showModal('提示', '领取成功，可在个人中心查看', function () {
       //     console.log('触发')
@@ -77,9 +77,9 @@ global.wxComponent({
       // })
     },
     viewCard(e) {
-      // var d = this.eventData(e);
-      // var _this = this;
-      // util.jumpLink('/pages/usercardinfo/usercardinfo?card_id=' + d.card_id)
+      var d = this.eventData(e);
+      var _this = this;
+      util.jumpLink('/pages/cardinfo/cardinfo?card_id=' + d.card_id)
     }
   }
 });

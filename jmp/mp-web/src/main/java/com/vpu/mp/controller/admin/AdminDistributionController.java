@@ -44,6 +44,11 @@ public class AdminDistributionController extends AdminBaseController{
 		return this.success(result);
 	}
 
+	public JsonResult setDistributionQrCode(){
+        //TODO:分销二维码
+        return this.success();
+    }
+
 	/**
 	 * 获取分销推广文案
 	 * @return

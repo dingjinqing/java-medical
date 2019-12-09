@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.user.message;
 import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -245,24 +246,23 @@ public class SubscribeMessageService extends ShopBaseService {
 						// 存在，直接赋值
 						flag = true;
 						logger().info("已经定义了模板："+titleList[i].getTitle());
-						results[i] = new TemplateVo(template.getPriTmplId(), titleList[i].getId());
+						results[i] = new TemplateVo(template.getPriTmplId(), titleList[i].getId(),titleList[i].getTempleName());
 					}
 				}
 				if (!flag) {
 					logger().info("没有定义模板："+titleList[i].getTitle());
-					results[i] = new TemplateVo(addTemplate(titleList[i]), titleList[i].getId());
+					results[i] = new TemplateVo(addTemplate(titleList[i]), titleList[i].getId(),titleList[i].getTempleName());
 				}
 			}
 
 		}else {
 			for(int i=0;i<titleList.length;i++) {
 				logger().info("没有定义模板："+titleList[i].getTitle());
-				results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId());
+				results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId(),titleList[i].getTempleName());
 			}	
 		}
 		return results;
 	}
-	
 	
 
 	/**
@@ -274,11 +274,13 @@ public class SubscribeMessageService extends ShopBaseService {
 		List<TemplateVo> successs = param.getAccept();
 		List<TemplateVo> rejects = param.getReject();
 		List<TemplateVo> bans = param.getBan();
+		
 		for(TemplateVo success:successs) {
+			SubscribeMessageConfig successConfig = SubscribeMessageConfig.getByTempleName(success.getId(), success.getTempleName());
 			SubscribeMessageRecord record = db().selectFrom(SUBSCRIBE_MESSAGE)
 					.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
 					.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(success.getTemplateId())
-							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(success.getId()))))
+							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(successConfig.getTid()))))
 					.fetchAny();
 			if(record==null) {
 				SubscribeMessageRecord insertRecord=db().newRecord(SUBSCRIBE_MESSAGE);
@@ -298,10 +300,11 @@ public class SubscribeMessageService extends ShopBaseService {
 			}
 		}
 		for (TemplateVo reject:rejects) {
+			SubscribeMessageConfig rejectConfig = SubscribeMessageConfig.getByTempleName(reject.getId(), reject.getTempleName());
 			SubscribeMessageRecord rejrecord = db().selectFrom(SUBSCRIBE_MESSAGE)
 					.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
 					.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(reject.getTemplateId())
-							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(reject.getId()))))
+							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(rejectConfig.getTid()))))
 					.fetchAny();
 			if(rejrecord!=null) {
 				rejrecord.setStatus((byte)1);
@@ -311,10 +314,11 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		
 		for (TemplateVo ban:bans) {
+			SubscribeMessageConfig banConfig = SubscribeMessageConfig.getByTempleName(ban.getId(), ban.getTempleName());
 			SubscribeMessageRecord rejrecord = db().selectFrom(SUBSCRIBE_MESSAGE)
 					.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
 					.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(ban.getTemplateId())
-							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(ban.getId()))))
+							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(banConfig.getTid()))))
 					.fetchAny();
 			if(rejrecord!=null) {
 				rejrecord.setStatus((byte)2);
@@ -362,17 +366,21 @@ public class SubscribeMessageService extends ShopBaseService {
 	 */
 	public boolean checkTemplate(String templateId) throws WxErrorException {
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
+		logger().info("传入的templateId："+templateId);
 		if (templateList.isSuccess()) {
+			//账户下的模板
 			List<WxOpenSubscribeTemplate> data = templateList.getData();
+			Boolean flag = false;
 			for (WxOpenSubscribeTemplate template : data) {
+				logger().info("循环的template："+template);
 				if (template.getPriTmplId().equals(templateId)) {
-					return true;
+					flag=true;
 				}
 			}
-			return false;
+			return flag;
 		} else {
 			logger().info("获取当前AppId：" + getMaAppId() + "下的个人模板列表失效");
-			return false;
+			throw new RuntimeException("获取当前AppId：" + getMaAppId() + "下的个人模板列表失效");
 		}
 	}
 
