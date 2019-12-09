@@ -316,7 +316,13 @@ import {
 import {
   en as openScreenDetail
 } from './views/admin_new/en/index/marketManagement/openScreen/openScreenDetailEn'
-
+// 评价有礼
+import {
+  en as evaluationGiftList
+} from './views/admin_new/en/index/marketManagement/evaluationGift/evaluationGiftListEn'
+import {
+  en as evaluationGiftAdd
+} from './views/admin_new/en/index/marketManagement/evaluationGift/evaluationGiftAddEn'
 // 订单管理系列模块化
 import {
   en as order
@@ -950,6 +956,8 @@ const en = {
   openScreen, // 开屏有礼
   openScreenAdd, // 开屏有礼添加
   openScreenDetail, // 开屏有礼活动详情
+  evaluationGiftList, // 评价有礼列表
+  evaluationGiftAdd, // 评价有礼新增编辑
 
   dateTimePicker, // 选择时间
 

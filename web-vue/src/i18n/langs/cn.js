@@ -323,7 +323,13 @@ import {
 import {
   cn as openScreenDetail
 } from './views/admin_new/cn/index/marketManagement/openScreen/openScreenDetailCn'
-
+// 评价有礼列表
+import {
+  cn as evaluationGiftList
+} from './views/admin_new/cn/index/marketManagement/evaluationGift/evaluationGiftListCn'
+import {
+  cn as evaluationGiftAdd
+} from './views/admin_new/cn/index/marketManagement/evaluationGift/evaluationGiftAddCn'
 // 订单管理系列模块化
 // 订单通用
 import {
@@ -958,6 +964,8 @@ const cn = {
   openScreen, // 开屏有礼
   openScreenAdd, // 开屏有礼添加
   openScreenDetail, // 开屏有礼活动详情
+  evaluationGiftList, // 评价有礼列表
+  evaluationGiftAdd,
 
   // 会员管理
   memberCard, // 会员管理-会员卡
