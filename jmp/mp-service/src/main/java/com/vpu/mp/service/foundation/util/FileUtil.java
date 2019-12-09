@@ -1,6 +1,5 @@
 package com.vpu.mp.service.foundation.util;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.vpu.mp.service.pojo.shop.base.BASE64DecodedMultipartFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
