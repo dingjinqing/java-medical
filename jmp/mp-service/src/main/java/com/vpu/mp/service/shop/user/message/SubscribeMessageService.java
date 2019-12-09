@@ -363,16 +363,18 @@ public class SubscribeMessageService extends ShopBaseService {
 	public boolean checkTemplate(String templateId) throws WxErrorException {
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		if (templateList.isSuccess()) {
+			//账户下的模板
 			List<WxOpenSubscribeTemplate> data = templateList.getData();
+			Boolean flag = false;
 			for (WxOpenSubscribeTemplate template : data) {
 				if (template.getPriTmplId().equals(templateId)) {
-					return true;
+					flag=true;
 				}
 			}
-			return false;
+			return flag;
 		} else {
 			logger().info("获取当前AppId：" + getMaAppId() + "下的个人模板列表失效");
-			return false;
+			throw new RuntimeException("获取当前AppId：" + getMaAppId() + "下的个人模板列表失效");
 		}
 	}
 
