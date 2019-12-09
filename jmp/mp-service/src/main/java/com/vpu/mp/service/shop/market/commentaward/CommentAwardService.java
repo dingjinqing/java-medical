@@ -86,8 +86,9 @@ public class CommentAwardService extends ShopBaseService {
      * @return commentAwardVo
      */
     public CommentAwardVo getCommentAwardActivity(Integer id) {
-       return  db().select().from(COMMENT_AWARD)
+        CommentAwardVo commentAwardVo = db().select().from(COMMENT_AWARD)
                 .where(COMMENT_AWARD.ID.eq(id)).fetchOneInto(CommentAwardVo.class);
+        return commentAwardVo;
     }
 
 

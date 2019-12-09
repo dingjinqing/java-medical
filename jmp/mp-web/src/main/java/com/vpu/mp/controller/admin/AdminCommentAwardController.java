@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
+import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardVo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,8 +91,8 @@ public class AdminCommentAwardController extends AdminBaseController {
      */
     @PostMapping("/get")
     public JsonResult getCommentAwardActivity( @RequestBody @Valid CommentAwardIdParam param){
-        shop().commentAward.getCommentAwardActivity(param.getId());
-        return success();
+        CommentAwardVo commentAwardActivity = shop().commentAward.getCommentAwardActivity(param.getId());
+        return success(commentAwardActivity);
     }
 
     /**
