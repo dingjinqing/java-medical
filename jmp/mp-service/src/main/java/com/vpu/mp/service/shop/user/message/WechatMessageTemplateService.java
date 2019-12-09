@@ -19,6 +19,7 @@ import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
 import com.vpu.mp.service.shop.config.ShopMsgTemplateConfigService;
 import com.vpu.mp.service.shop.market.message.MessageTemplateService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.shop.user.user.UserService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
@@ -65,6 +66,8 @@ public class WechatMessageTemplateService extends ShopBaseService {
     private MpOfficialAccountUserService accountUserService;
 
     private MpAuthShopService mpAuthShopService;
+    @Autowired
+    private SubscribeMessageService subscribeMessageService;
 
     @PostConstruct
     public void init(){
@@ -80,10 +83,12 @@ public class WechatMessageTemplateService extends ShopBaseService {
      * @return 是否发送成功
      */
     public Boolean sendMessage(RabbitMessageParam param,WxUserInfo info) {
-        String formId = getFormId(info.getUserId());
+    	Integer type = param.getType();
+    	//type大于2000为小程序
+        //String formId = getFormId(info.getUserId());
         Boolean success = Boolean.TRUE;
-        if( param.getMaTemplateData() != null && StringUtils.isNotBlank(formId) ){
-            success = sendMaMessage(param,info,formId);
+        if( param.getMaTemplateData() != null && (type>2000)){
+            success = sendMaMessage(param,info);
             if(!success){
 //                ServiceMessageRecord record =
             }
@@ -125,27 +130,17 @@ public class WechatMessageTemplateService extends ShopBaseService {
      * @param formId 发消息必须
      * @return 是否发送成功
      */
-    public Boolean sendMaMessage(RabbitMessageParam param,WxUserInfo info,String formId) {
-        MaTemplateData data = param.getMaTemplateData();
-        MaTemplateConfig config =data.getConfig();
-        List<String> names = RegexUtil.getSubStrList("{{",".",config.getContent());
-        List<WxMaTemplateData> wxDatalist = new ArrayList<>();
-        for (int i = 0,len = data.getData().length; i < len; i++) {
-            String[] values = data.getData()[i];
-            wxDatalist.add(new WxMaTemplateData(
-                names.get(i),
-                values[0],
-                values.length==2?values[1]:config.getColors().get(names.get(i))
-            ));
-        }
-        try {
-            maTemplateService.sendMaTemplateMessage(info.getMaAppId(),info.getMaOpenId(),
-                wxDatalist,config,param.getEmphasisKeyword(),param.getPage(),formId);
-        } catch (WxErrorException e) {
-            e.printStackTrace();
-            return Boolean.FALSE;
-        }
-        return Boolean.TRUE;
+    public Boolean sendMaMessage(RabbitMessageParam param,WxUserInfo info) {
+    	MaTemplateData maTemplateData = param.getMaTemplateData();
+    	String[][] data = maTemplateData.getData();
+    	try {
+			subscribeMessageService.sendMessage(info.getUserId(), maTemplateData.getConfig(), data, param.getPage());
+		} catch (WxErrorException e) {
+			e.printStackTrace();
+			return Boolean.FALSE;
+		}
+    	
+    	 return Boolean.TRUE;
     }
 
     /**
@@ -196,7 +191,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
                 .build();
     		resultList.add(info);
     		return resultList;
-    	}else if( type.equals(RabbitParamConstant.Type.GENERAL_TYPE) ){
+    	}else if( type.equals(RabbitParamConstant.Type.GENERAL_TYPE)||type>2000 ){
             String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
             List<UserRecord> userList = userService.getUserRecordByIds(userIdList);
             Map<Integer,UserRecord> userMap = userList.stream()

@@ -249,10 +249,10 @@
           <template>
             <el-radio-group v-model="chargeParam.verifyPay">
               <div>
-              <el-radio :label="0">门店买单</el-radio>
+                <el-radio :label="0">门店买单</el-radio>
               </div>
               <div>
-              <el-radio :label="1">会员卡</el-radio>
+                <el-radio :label="1">会员卡</el-radio>
                 <el-input
                   v-if="chargeParam.verifyPay === 1"
                   style="width: 30%"
@@ -276,7 +276,7 @@
                 </el-input>
               </div>
               <div>
-              <el-radio :label="2">账户余额</el-radio>
+                <el-radio :label="2">账户余额</el-radio>
                 <el-input
                   v-if="chargeParam.verifyPay === 2"
                   style="width: 30%"
@@ -324,8 +324,13 @@
           <el-input
             style="width: 40%"
             placeholder="选择会员"
-            v-model="reservation.subscriber">
+            v-model="userRowData.userName">
           </el-input>
+          <el-button
+            type="primary"
+            size="small"
+            @click="hanldeModifyPerson()"
+          >选择会员</el-button>
         </div>
         <div>
           * 手机号：
@@ -339,6 +344,7 @@
           * 预约到店时间：
           <el-date-picker
             v-model="dateTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             type="datetime"
             placeholder="选择到店日期时间"
             align="right"
@@ -396,6 +402,11 @@
         >{{$t('tradeConfiguration.cancel')}}</el-button>
       </span>
     </el-dialog>
+    <!--选择会员弹窗组件-->
+    <ChooseUser
+      :dialogVisible.sync="modifypersonDialogVisible"
+      @rowData="dealRowData"
+    />
   </div>
 </template>
 
@@ -404,9 +415,13 @@ import { getList, detail, addMessage, add, charge, cancel, techList } from '@/ap
 import { getAllService } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
-  components: { pagination },
+  components: {
+    pagination,
+    ChooseUser: () => import('@/components/admin/chooseUser')
+  },
   data () {
     return {
+      userRowData: {},
       // 日期时间
       pickerOptions: {
         shortcuts: [{
@@ -496,6 +511,7 @@ export default {
       },
       // 新建预约入参
       reservation: {
+        storeId: 0,
         userId: 0,
         subscriber: '',
         mobile: '',
@@ -507,7 +523,10 @@ export default {
         adminMessage: ''
       },
       tableData: [],
-      pageParams: {},
+      pageParams: {
+        currentPage: 0,
+        pageRows: 10
+      },
       tabSwitch: '-1',
       tabInfo: [{
         title: '所有预约',
@@ -526,7 +545,8 @@ export default {
         name: '3'
       }],
       storeId: 0,
-      serviceId: 0
+      serviceId: 0,
+      modifypersonDialogVisible: false
     }
   },
   created () {
@@ -556,6 +576,19 @@ export default {
     // 技师下拉
     getTechList () {
       let obj = {
+        storeId: this.storeId,
+        serviceId: this.serviceId
+      }
+      techList(obj).then(res => {
+        if (res.error === 0) {
+          this.reservationTech = res.content
+        }
+      })
+    },
+    // 可用会员卡下拉
+    getMemberCardList () {
+      let obj = {
+        userId: 0,
         storeId: this.storeId,
         serviceId: this.serviceId
       }
@@ -608,14 +641,19 @@ export default {
       this.reservation.technicianName = this.reservationTech.find((item) => {
         return item.id === this.reservation.technicianId
       }).technicianName
-      this.reservation.serviceDate = this.dateTime
+      this.reservation.serviceDate = this.dateTime.split(' ')[0]
+      this.reservation.servicePeriod = this.dateTime.split(' ')[1]
+      this.reservation.subscriber = this.userRowData.userName
+      this.reservation.userId = this.userRowData.userId
+      this.reservation.storeId = this.storeId
       add(this.reservation).then(res => {
         if (res.error === 0) {
           this.$message.success('添加成功')
           this.initDataList()
+          this.showReservation = false
         }
         this.$message.error('添加失败')
-        this.showMessage = false
+        this.showReservation = false
       })
     },
     // 添加留言弹窗-点击触发弹窗
@@ -738,12 +776,49 @@ export default {
           })
         }
       })
+    },
+    // 吊起选择会员组件
+    hanldeModifyPerson () {
+      this.modifypersonDialogVisible = true
+    },
+    // 会员组件 返回数据处理
+    dealRowData (data) {
+      this.userRowData = data
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .table_list {
+    position: relative;
+    .table_footer {
+      background: #666;
+    }
+  }
+  .content {
+    margin-top: 10px;
+  }
+  .la
+  .modifypersonDivTop .el-input__inner {
+    width: 140px !important;
+  }
+  .modifypersonDivTop,
+  .modifypersonDivTop > div {
+    display: flex;
+  }
+  .modifypersonDivTop > div > span {
+    line-height: 32px;
+    height: 32px;
+    display: block;
+    width: 56px;
+  }
+  .baseInfo .el-dialog__body {
+    padding-bottom: 0 !important;
+  }
+  .baseInfo .el-dialog__footer {
+    border-top: 1px solid #eee;
+  }
   .technician_list_page {
     margin: 0 25px;
     .list_info {

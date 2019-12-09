@@ -6,7 +6,7 @@
           class="el-icon-warning"
           style="color: #E6A23C;"
         ></i>
-        <span>若系统开启分销员审核功能，则该文案展示在用户申请页面。或分销员可在分销中心邀请其他用户注册为分销员，此时普通用户通过邀请链接点击也是查看该推广文案。</span>
+        <span>{{ $t('distribution.pageTip') }}</span>
       </div>
       <div class="content">
         <div class="leftContent">
@@ -27,21 +27,21 @@
             :model="form"
             label-width="100px"
           >
-            <el-form-item label="分享地址：">
+            <el-form-item :label="$t('distribution.shareAddress') + '：'">
               <span>{{ pageText }}</span>
               <span
                 class="text"
                 v-clipboard:copy="pageText"
                 v-clipboard:success="copyHandler"
-              >复制</span>
+              >{{ $t('distribution.writingCopy') }}</span>
               <span
                 class="text"
                 @click="shareHandler"
-              >立即分享</span>
+              >{{ $t('distribution.writingShare') }}</span>
             </el-form-item>
-            <el-form-item label="页面标题：">
+            <el-form-item :label="$t('distribution.writingTitle') + '：'">
               <el-input
-                placeholder="请填写页面标题"
+                :placeholder="$t('distribution.writingTitleTip')"
                 maxlength="20"
                 show-word-limit
                 size="small"
@@ -49,11 +49,11 @@
                 style="width: 170px;"
               ></el-input>
             </el-form-item>
-            <el-form-item label="页面内容：">
+            <el-form-item :label="$t('distribution.writingContent') + '：'">
               <p
                 class="template"
                 @click="templateCopyHandler"
-              >使用模板文案</p>
+              >{{ $t('distribution.writingTemplate') }}</p>
               <TinymceEditor v-model="form.document" />
             </el-form-item>
           </el-form>
@@ -141,7 +141,7 @@ export default {
       console.log(this.form)
       setDocument(this.form).then((res) => {
         if (res.error === 0) {
-          this.$message.success('保存成功!')
+          this.$message.success(this.$t('distribution.rebateSaveSuccess'))
         }
       })
     },

@@ -1,25 +1,20 @@
 package com.vpu.mp.controller.admin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
-import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
-import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessage;
-import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessageData;
 import com.vpu.mp.service.wechat.OpenPlatform;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
@@ -142,5 +137,23 @@ public class AdminTestController extends AdminBaseController {
 		}
 		return success(templateId);
 
+	}
+	
+	
+	@RequestMapping(value = "/api/admin/test/sendTestByMq")
+	public JsonResult testSendByMq() {
+		String[][] data = new String[][] { { "金坷垃抽奖" }, { Util.getdate("YYYY-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
+		ArrayList<Integer> arrayList = new ArrayList<Integer>();
+		arrayList.add(195);
+		RabbitMessageParam param = RabbitMessageParam.builder()
+				.maTemplateData(
+						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())
+				.page(null).shopId(adminAuth.user().getLoginShopId())
+				.userIdList(arrayList)
+				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), adminAuth.user().getLoginShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
+		String[][] data2 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("YYYY-MM-dd HH:mm:ss")}};
+		return success();
+		
 	}
 }

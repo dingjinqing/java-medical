@@ -11,31 +11,31 @@
         :label-position="'right'"
       >
         <el-form-item
-          label="活动名称："
+          :label="$t('shipping.name') + '：'"
           prop="name"
         >
           <el-input
             v-model="form.name"
-            placeholder="请填写活动名称"
+            :placeholder="$t('shipping.nameTip')"
             size="small"
             style="width: 170px;"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="活动时间："
+          :label="$t('shipping.activeTime') + '：'"
           prop="expireType"
         >
           <div>
             <el-radio
               v-model="form.expireType"
               :label='0'
-            >固定时间段</el-radio>
+            >{{ this.$t('shipping.expireTypeFixed') }}</el-radio>
             <el-date-picker
               v-model="form.validity"
               type="datetimerange"
               value-format="yyyy-MM-dd HH:mm:ss"
               format="yyyy-MM-dd HH:mm:ss"
-              range-separator="至"
+              :range-separator="$t('shipping.to')"
               :start-placeholder="$t('ordinaryCoupon.startTime')"
               :end-placeholder="$t('ordinaryCoupon.endTime')"
               size="small"
@@ -46,24 +46,24 @@
             <el-radio
               v-model="form.expireType"
               :label='1'
-            >永久有效</el-radio>
+            >{{ this.$t('shipping.expireTypeAll') }}</el-radio>
           </div>
 
         </el-form-item>
         <el-form-item
-          label="优先级："
+          :label="$t('shipping.level') + '：'"
           prop="level"
         >
           <el-input
             v-model="form.level"
-            placeholder="请填写活动优先级"
+            :placeholder="$t('shipping.levelTip1')"
             size="small"
             style="width: 170px;"
           ></el-input>
-          <span style="margin-left: 10px;color: #ccc;">用于区分不同满包邮活动得优先级，请填写正整数，数值越大优先级越大</span>
+          <span style="margin-left: 10px;color: #ccc;">{{ $t('shipping.levelTip2') }}</span>
         </el-form-item>
         <el-form-item
-          label="添加商品："
+          :label="$t('shipping.addCommodities') + '：'"
           prop="type"
         >
           <el-radio-group v-model="form.type">
@@ -86,7 +86,7 @@
           </div>
         </el-form-item>
         <el-form-item
-          label="包邮规则："
+          :label="$t('shipping.ruleText') + '：'"
           prop="ruleList"
         >
           <div
@@ -95,7 +95,7 @@
             :key="index"
           >
             <div class="ruleName">
-              <span class="ruleNum">规则 {{ index + 1 }}</span>
+              <span class="ruleNum">{{ $t('shipping.rule') }} {{ index + 1 }}</span>
               <i
                 class="el-icon-delete-solid ruleIcon"
                 @click="deleteRule(index)"
@@ -103,7 +103,7 @@
             </div>
             <div class="ruleContent">
               <el-form-item
-                label="包邮条件："
+                :label="$t('shipping.shippingConditions') + '：'"
                 :prop="`ruleList[${index}].conType`"
                 :rules="[
                     { required: true, message: '包邮规则不能为空', trigger: 'blur' },
@@ -111,40 +111,40 @@
                   ]"
               >
                 <el-radio-group v-model="item.conType">
-                  <el-radio :label="0">满金额</el-radio>
-                  <el-radio :label="1">满件数</el-radio>
-                  <el-radio :label="2">满金额或满件数</el-radio>
+                  <el-radio :label="0">{{ $t('shipping.ruleTip5') }}</el-radio>
+                  <el-radio :label="1">{{ $t('shipping.ruleTip6') }}</el-radio>
+                  <el-radio :label="2">{{ $t('shipping.ruleTip7') }}</el-radio>
                 </el-radio-group>
                 <div>
                   <span v-if="item.conType === 0">
-                    满 <el-input
+                    {{ $t('shipping.ruleTip1') }} <el-input
                       v-model="item.money"
                       size="small"
                       style="width: 80px;"
-                    ></el-input> 元
+                    ></el-input> {{ $t('shipping.ruleTip2') }}
                   </span>
                   <span v-if="item.conType === 1">
-                    满 <el-input
+                    {{ $t('shipping.ruleTip1') }} <el-input
                       v-model="item.num"
                       size="small"
                       style="width: 80px;"
-                    ></el-input> 件
+                    ></el-input> {{ $t('shipping.ruleTip3') }}
                   </span>
                   <span v-if="item.conType === 2">
-                    满 <el-input
+                    {{ $t('shipping.ruleTip1') }} <el-input
                       v-model="item.money"
                       size="small"
                       style="width: 80px;"
-                    ></el-input> 元， <el-input
+                    ></el-input> {{ $t('shipping.ruleTip2') }}， <el-input
                       v-model="item.num"
                       size="small"
                       style="width: 80px;"
-                    ></el-input> 件
+                    ></el-input> {{ $t('shipping.ruleTip3') }}
                   </span>
                 </div>
               </el-form-item>
               <el-form-item
-                label="包邮区域："
+                :label="$t('shipping.shippingArea') + '：'"
                 style="margin: 20px 0;"
                 :prop="`ruleList[${index}].areaList`"
                 :rules="[
@@ -155,7 +155,7 @@
                   size="small"
                   type="primary"
                   @click="areaHandler(index)"
-                >选择包邮区域</el-button>
+                >{{ $t('shipping.areaTip') }}</el-button>
                 <div>
                   <span
                     v-for="(val, key) in item.areaList"
@@ -172,7 +172,7 @@
             type="primary"
             size="small"
             @click="addRule"
-          ><i class="el-icon-plus"></i> 添加规则</el-button>
+          ><i class="el-icon-plus"></i> {{ $t('shipping.addRule') }}</el-button>
         </el-form-item>
       </el-form>
 
@@ -376,6 +376,20 @@ export default {
             this.platClass = data.recommendSortId.split(',')
           }
           this.form.ruleList = data.ruleList
+
+          // 包邮区域数据回显
+          this.form.ruleList.forEach((item, index) => {
+            item.areaList = []
+            item.area = item.area.split(',')
+            item.area.forEach((val, key) => {
+              val = Number(val)
+              this.locationList.forEach((ele, num) => {
+                if (ele.provinceId === val) {
+                  item.areaList.push(ele.provinceName)
+                }
+              })
+            })
+          })
         }
       })
     },
@@ -399,7 +413,7 @@ export default {
             // 添加满包邮
             addShipping(this.form).then((res) => {
               if (res.error === 0) {
-                this.$message.success({ message: '添加成功' })
+                this.$message.success({ message: this.$t('shipping.addSuccess') })
                 this.$emit('addShippingSubmit')
               }
             })
@@ -410,7 +424,7 @@ export default {
             obj.id = this.editId
             updateShipping(obj).then((res) => {
               if (res.error === 0) {
-                this.$message.success({ message: '修改成功' })
+                this.$message.success({ message: this.$t('shipping.editSuccess') })
                 this.$emit('addShippingSubmit')
               }
             })
@@ -443,7 +457,6 @@ export default {
 
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
-      console.log('选择商品弹窗回调显示:', row)
       this.goodsInfoRow = row
       this.goodsInfo = []
       this.goodsInfoRow.map((item, index) => {
@@ -452,7 +465,6 @@ export default {
     },
     // 选择商家分类/平台分类弹窗回调显示
     busClassDialogResult (row) {
-      console.log('选择商家分类/平台分类弹窗回调显示:', row)
       if (this.flag === 1) {
         // 商家分类
         this.busClassRow = row
@@ -505,7 +517,7 @@ export default {
     // 获取返回的数据
     changeRegionList (value) {
       console.log(value)
-      this.$message.success('添加区域成功!')
+      // this.$message.success('添加区域成功!')
       this.form.ruleList.forEach((item, index) => {
         if (index === this.areaIndex) {
           this.form.ruleList[index].area = value.idList
@@ -566,7 +578,7 @@ export default {
   background-color: #fff;
   text-align: center;
   border-top: 1px solid #eee;
-  z-index: 99;
+  z-index: 9;
 }
 .shareContent a {
   text-decoration: none;
