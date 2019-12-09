@@ -70,11 +70,18 @@ var base = {
         })
         console.log(arr)
         let newArr = []
+        let specArr = []
         arr.forEach(item => {
           if (JSON.stringify(item) != '{}') {
             newArr.push(item)
           }
         })
+        if (newArr.length > 2) {
+          specArr.push(newArr[0])
+          specArr.push(newArr[1])
+          item.activityLabelData = specArr
+          return
+        }
         item.activityLabelData = newArr
       })
     },

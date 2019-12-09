@@ -1,0 +1,12 @@
+<v-popup show="{{show}}" bindtap="bindClose" bind:close="bindClose" horizon="center" vertical="bottom" close_pos="inner">
+  <view class="selected-content">
+    <view class="title">
+      <text>已选商品</text>
+      <text class="edit">编辑</text>
+    </view>
+    <view class="goods-content">
+      <v-single-col-goods />
+    </view>
+    <view class="footer"></view>
+  </view>
+</v-popup>

@@ -1,0 +1,7 @@
+<!-- 砍价详情：pages/bargaininfo/bargaininfo.wxml -->
+<include src="../common/header.wxml" />
+<view class="main-container">
+  <view class="top"></view>
+  <view class="center"></view>
+</view>
+<include src="../common/footer.wxml" />

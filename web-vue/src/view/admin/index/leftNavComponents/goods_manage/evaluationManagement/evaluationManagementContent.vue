@@ -137,10 +137,16 @@ export default {
     max-width: 250px;
     display: flex;
     margin-left: 15px;
-    > span {
+    & > span {
       min-width: 80px;
       font-size: 14px;
     }
+  }
+}
+.filters_item {
+  & > span {
+    min-width: 80px;
+    font-size: 14px;
   }
 }
 </style>
