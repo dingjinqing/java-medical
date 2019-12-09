@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
@@ -436,7 +437,7 @@ public class UserCardDaoService extends ShopBaseService{
         return db().select( GRADE_PRD.GOODS_ID, GRADE_PRD.PRD_ID,
             GRADE_PRD.GRADE_PRICE)
             .from(GRADE_PRD)
-            .where(GRADE_PRD.PRD_ID.in(prdIdList).and(GRADE_PRD.GRADE.eq(grade)))
+            .where(GRADE_PRD.PRD_ID.in(prdIdList).and(GRADE_PRD.GRADE.eq(grade)).and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(UserCardGradePriceBo.class);
 
     }
