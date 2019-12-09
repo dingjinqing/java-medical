@@ -376,6 +376,20 @@ export default {
             this.platClass = data.recommendSortId.split(',')
           }
           this.form.ruleList = data.ruleList
+
+          // 包邮区域数据回显
+          this.form.ruleList.forEach((item, index) => {
+            item.areaList = []
+            item.area = item.area.split(',')
+            item.area.forEach((val, key) => {
+              val = Number(val)
+              this.locationList.forEach((ele, num) => {
+                if (ele.provinceId === val) {
+                  item.areaList.push(ele.provinceName)
+                }
+              })
+            })
+          })
         }
       })
     },
