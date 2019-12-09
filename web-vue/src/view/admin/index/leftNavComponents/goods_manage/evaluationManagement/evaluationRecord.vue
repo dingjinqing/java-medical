@@ -358,6 +358,9 @@ export default {
     }
   },
   mounted () {
+    if (this.$route.query.award_activity_id) {
+      this.$set(this.searchParams, 'awardActivityId', this.$route.query.award_activity_id)
+    }
     this.initDataList()
   },
   methods: {

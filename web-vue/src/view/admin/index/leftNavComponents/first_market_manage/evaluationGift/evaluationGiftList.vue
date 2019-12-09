@@ -72,9 +72,10 @@
           <el-table-column
             label="操作"
             align="center"
+            width="136"
           >
             <template slot-scope="{row, index}">
-              <div>
+              <div class="operate-wrap">
                 <el-tooltip
                   content="停用"
                   v-show="row.status == 1|| row.status == 2"
@@ -253,6 +254,7 @@ export default {
       }
     },
     edit (operate, row) {
+      let that = this
       switch (operate) {
         case 'stop':
           break
@@ -263,6 +265,12 @@ export default {
         case 'delete':
           break
         case 'detail':
+          that.$router.push({
+            name: 'comment',
+            query: {
+              award_activity_id: row.id
+            }
+          })
           break
       }
     }
@@ -297,6 +305,17 @@ export default {
       font-size: 22px;
       color: #5a8bff;
       cursor: pointer;
+    }
+    .operate-wrap {
+      width: 136px;
+      overflow: hidden;
+      .el-tooltip {
+        float: left;
+        margin-right: 8px;
+        &:not(:first-child) {
+          margin-left: 15px;
+        }
+      }
     }
   }
 }
