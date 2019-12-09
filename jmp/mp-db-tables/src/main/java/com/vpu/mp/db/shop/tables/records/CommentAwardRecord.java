@@ -101,16 +101,16 @@ public class CommentAwardRecord extends UpdatableRecordImpl<CommentAwardRecord> 
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_comment_award.leve</code>. 优先级
+     * Setter for <code>mini_shop_4748160.b2c_comment_award.level</code>. 优先级
      */
-    public void setLeve(Integer value) {
+    public void setLevel(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_comment_award.leve</code>. 优先级
+     * Getter for <code>mini_shop_4748160.b2c_comment_award.level</code>. 优先级
      */
-    public Integer getLeve() {
+    public Integer getLevel() {
         return (Integer) get(5);
     }
 
@@ -420,7 +420,7 @@ public class CommentAwardRecord extends UpdatableRecordImpl<CommentAwardRecord> 
     /**
      * Create a detached, initialised CommentAwardRecord
      */
-    public CommentAwardRecord(Integer id, String name, Timestamp startTime, Timestamp endTime, Byte isForever, Integer leve, Byte goodsType, String goodsIds, Integer commentNum, Byte commentType, Integer commentWords, Byte hasPicNum, Byte hasFiveStars, Integer awardType, Integer score, String activityId, BigDecimal account, Integer awardNum, Integer sendNum, String awardPath, String awardImg, Byte firstCommentGoods, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime) {
+    public CommentAwardRecord(Integer id, String name, Timestamp startTime, Timestamp endTime, Byte isForever, Integer level, Byte goodsType, String goodsIds, Integer commentNum, Byte commentType, Integer commentWords, Byte hasPicNum, Byte hasFiveStars, Integer awardType, Integer score, String activityId, BigDecimal account, Integer awardNum, Integer sendNum, String awardPath, String awardImg, Byte firstCommentGoods, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime) {
         super(CommentAward.COMMENT_AWARD);
 
         set(0, id);
@@ -428,7 +428,7 @@ public class CommentAwardRecord extends UpdatableRecordImpl<CommentAwardRecord> 
         set(2, startTime);
         set(3, endTime);
         set(4, isForever);
-        set(5, leve);
+        set(5, level);
         set(6, goodsType);
         set(7, goodsIds);
         set(8, commentNum);

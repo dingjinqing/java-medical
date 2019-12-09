@@ -53,7 +53,7 @@ public class CommentAwardListVo {
     /**
      * 优先级
      */
-    private Integer    leve;
+    private Integer    level;
 
 
 }
