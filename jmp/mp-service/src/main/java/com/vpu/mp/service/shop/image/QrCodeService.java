@@ -176,12 +176,12 @@ public class QrCodeService extends ShopBaseService {
     	// 设置背景
     	setCardBgType(bgImg,card);
     	// 设置卡名称
-    	ImageUtil.addFont(bgImg, card.getCardName(), new Font(null, Font.BOLD, 30), 150, 70,
+    	ImageUtil.addFont(bgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 150, 70,
 				Color.WHITE);
     	// 设置折扣
     	if(null != card.getDiscount()) {
     		String dis = card.getDiscount().toString()+" 折";
-        	ImageUtil.addFont(bgImg, dis, new Font(null, Font.BOLD, 22), 500, 180,
+        	ImageUtil.addFont(bgImg, dis, ImageUtil.SourceHanSansCN(Font.BOLD, 22), 500, 180,
     				Color.WHITE);
     	}
     	// 会员卡号

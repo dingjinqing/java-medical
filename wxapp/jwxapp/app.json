@@ -26,8 +26,7 @@
     "pages/storelist/storelist",
     "pages/storeinfo/storeinfo",
     "pages/checkout/checkout",
-    "pages/servicecomment/servicecomment",
-    "pages/bargaininfo/bargaininfo"
+    "pages/servicecomment/servicecomment"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -61,8 +60,7 @@
         "scancode/scancode",
         "comment/comment",
         "history/history",
-        "search/search",
-        "fullship/fullship"
+        "search/search"
       ]
     }
   ],
