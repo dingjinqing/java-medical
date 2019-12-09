@@ -384,6 +384,10 @@ import {
 import {
   en as storeManage
 } from './views/admin_new/en/index/storeManagement/storeManage/storeManageEn'
+// 门店列表-门店管理-预约管理
+import {
+  en as reservationManage
+} from './views/admin_new/en/index/storeManagement/storeManage/reservation/reservationEn'
 // 门店列表-门店管理-服务管理
 import {
   en as serviceManage
@@ -1010,6 +1014,7 @@ const en = {
   brandManagement, // 商品品牌国际化
   selectLinks, // 选择链接弹窗国际化
   indexApply, // 申请试用
-  indexMobile //  官网首页移动端国际化
+  indexMobile, //  官网首页移动端国际化
+  reservationManage // 预约管理
 }
 export default en

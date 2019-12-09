@@ -409,6 +409,10 @@ import {
 import {
   cn as serviceAdd
 } from './views/admin_new/cn/index/storeManagement/storeManage/service/serviceAddCn'
+// 门店列表-预约管理
+import {
+  cn as reservationManage
+} from './views/admin_new/cn/index/storeManagement/storeManage/reservation/reservationCn'
 // 门店列表-技师管理
 import {
   cn as technicianManage
@@ -1017,7 +1021,8 @@ const cn = {
   brandManagement, // 商品品牌国际化
   selectLinks, // 选择链接弹窗国际化
   indexApply, // 申请试用国际化
-  indexMobile // 官网首页移动端国际化
+  indexMobile, // 官网首页移动端国际化
+  reservationManage // 预约管理
 }
 
 export default cn
