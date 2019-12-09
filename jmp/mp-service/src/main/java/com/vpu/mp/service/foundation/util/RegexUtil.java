@@ -9,9 +9,10 @@ import java.util.regex.Pattern;
 public class RegexUtil {
 
     private static final List<String> STR = Arrays.asList(
-       new String[] { "\\", "$", "(", ")", "*", "+", ".", "[", "]", "?", "^", "{", "}", "|" });
+        "\\", "$", "(", ")", "*", "+", ".", "[", "]", "?", "^", "{", "}", "|");
 
 
+    private static final String PATTERN = "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
 
     public static List<String> getSubStrList(String first,String lastStr,String content){
         List<String> result = new ArrayList<>();
@@ -34,5 +35,8 @@ public class RegexUtil {
             result.add(m.group());
         }
         return result;
+    }
+    public static boolean checkUrl(String url){
+        return Pattern.matches(PATTERN,url);
     }
 }
