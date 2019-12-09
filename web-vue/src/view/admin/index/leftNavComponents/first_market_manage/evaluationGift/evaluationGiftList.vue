@@ -47,7 +47,7 @@
           >
             <template slot-scope="{row}">
               <div v-if="row.isForever == 0">
-                {{row.startTime}} 至 {{row.endTime}}
+                {{row.startTime}} <p>至</p> {{row.endTime}}
               </div>
               <div v-else>永久有效</div>
             </template>
@@ -65,9 +65,9 @@
           ></el-table-column>
           <el-table-column
             label="活动状态"
-            prop="status"
+            prop="currentStatus"
             align="center"
-            :formatter="statusFmt"
+            :formatter="currentStatusFmt"
           ></el-table-column>
           <el-table-column
             label="操作"
@@ -78,7 +78,8 @@
               <div class="operate-wrap">
                 <el-tooltip
                   content="停用"
-                  v-show="row.status == 1|| row.status == 2"
+                  placement="top"
+                  v-if="row.currentStatus == 1|| row.currentStatus == 2"
                 >
                   <i
                     class="el-icon-circle-close iconSpan"
@@ -87,7 +88,8 @@
                 </el-tooltip>
                 <el-tooltip
                   content="启用"
-                  v-show="row.status == 4"
+                  placement="top"
+                  v-if="row.currentStatus == 4"
                 >
                   <i
                     class="el-icon-circle-check iconSpan"
@@ -96,7 +98,8 @@
                 </el-tooltip>
                 <el-tooltip
                   content="编辑"
-                  v-show="row.status == 1 || row.status == 2"
+                  placement="top"
+                  v-if="row.currentStatus == 1 || row.currentStatus == 2"
                 >
                   <i
                     class="el-icon-edit-outline iconSpan"
@@ -105,7 +108,8 @@
                 </el-tooltip>
                 <el-tooltip
                   content="删除"
-                  v-show="row.status == 3||row.status == 4"
+                  placement="top"
+                  v-if="row.currentStatus == 3 || row.currentStatus == 4"
                 >
                   <i
                     class="el-icon-delete iconSpan"
@@ -114,7 +118,8 @@
                 </el-tooltip>
                 <el-tooltip
                   content="活动明细"
-                  v-show="row.stauts != 2"
+                  placement="top"
+                  v-if="row.stauts != 2"
                 >
                   <span
                     class="iconfont iconmingxi1 iconSpan"
@@ -131,13 +136,16 @@
         >
         </pagination>
       </div>
-      <addEvaluationGift v-if="activeTab === '5'"></addEvaluationGift>
+      <addEvaluationGift
+        v-if="activeTab === '5'"
+        @changeTabAct="changeTabActHandle"
+      ></addEvaluationGift>
     </div>
   </div>
 </template>
 
 <script>
-import { getEvaluationGiftList } from '@/api/admin/marketManage/evaluationGift.js'
+import { getEvaluationGiftList, toggleEvaluationGift, deleteEvaluationGift } from '@/api/admin/marketManage/evaluationGift.js'
 export default {
   components: {
     addEvaluationGift: () => import('./evaluationGiftAdd'),
@@ -174,8 +182,23 @@ export default {
       handler: function (newVal) {
         if (newVal && newVal !== '5') {
           this.$set(this.queryParams, 'navType', Number(newVal))
+          this.$router.replace({ query: {} })
           this.closeAddTab()
           this.initDataList()
+        }
+      },
+      immediate: false
+    },
+    '$route.query.id': {
+      handler: function (newVal) {
+        if (newVal) {
+          if (this.tabInfo.length === 5) {
+            this.tabInfo.push({
+              title: '编辑评价有礼活动',
+              name: '5'
+            })
+          }
+          this.activeTab = '5'
         }
       },
       immediate: true
@@ -220,10 +243,10 @@ export default {
           return '自定义'
       }
     },
-    statusFmt (row, column) {
-      let status = row.status
+    currentStatusFmt (row, column) {
+      let currentStatus = row.currentStatus
       let text = ''
-      switch (status) {
+      switch (currentStatus) {
         case 1:
           text = '进行中'
           break
@@ -255,24 +278,71 @@ export default {
     },
     edit (operate, row) {
       let that = this
+      let id = row.id
       switch (operate) {
         case 'stop':
+          that.$confirm('确认要停用该活动吗？', '提醒').then(() => {
+            that.toggleEvaluationGiftcurrentStatus(id)
+          })
           break
         case 'action':
+          that.$confirm('确定要启用该活动吗？', '提醒').then(() => {
+            that.toggleEvaluationGiftcurrentStatus(id)
+          })
           break
         case 'edit':
+          that.$router.push({
+            query: {
+              id: id
+            }
+          })
           break
         case 'delete':
+          that.$confirm('确定要删除该活动吗？', '提醒').then(() => {
+            that.deleteEvaluationGiftHandle(id)
+          })
           break
         case 'detail':
           that.$router.push({
             name: 'comment',
             query: {
-              award_activity_id: row.id
+              award_activity_id: id
             }
           })
           break
       }
+    },
+    // 在新增编辑页更新tab
+    changeTabActHandle (data) {
+      this.activeTab = String(data)
+    },
+    toggleEvaluationGiftcurrentStatus (id) {
+      let that = this
+      let params = {
+        id: id
+      }
+      toggleEvaluationGift(params).then(res => {
+        if (res.error === 0) {
+          that.$message.success(res.message)
+          that.initDataList()
+        } else {
+          that.$message.error(res.message)
+        }
+      })
+    },
+    deleteEvaluationGiftHandle (id) {
+      let that = this
+      let params = {
+        id: id
+      }
+      deleteEvaluationGift(params).then(res => {
+        if (res.error === 0) {
+          that.$message.success(res.message)
+          that.initDataList()
+        } else {
+          that.$message.error(res.message)
+        }
+      })
     }
   }
 }

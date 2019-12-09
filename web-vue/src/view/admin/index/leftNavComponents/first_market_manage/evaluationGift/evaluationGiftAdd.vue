@@ -214,13 +214,9 @@
                 label="优惠券："
                 v-else-if="form.awardType === 2"
                 label-width="110px"
+                prop="activityId"
               >
-                <el-select v-model="form.activityId">
-                  <el-option
-                    label="未选择"
-                    value=""
-                  ></el-option>
-                </el-select>
+                <selectCouponAct v-model="form.activityId"></selectCouponAct>
                 <p class="tips">优惠券可用库存0份</p>
               </el-form-item>
               <el-form-item
@@ -347,12 +343,13 @@
 </template>
 
 <script>
-import { addEvaluationGift } from '@/api/admin/marketManage/evaluationGift.js'
+import { addEvaluationGift, updateEvaluationGift, getEvaluationGift } from '@/api/admin/marketManage/evaluationGift.js'
 import('@/util/date')
 
 export default {
   components: {
     selectPayRewardAct: () => import('@/components/admin/marketManage/selectPayRewardAct'),
+    selectCouponAct: () => import('@/components/admin/marketManage/selectCouponAct'),
     ImageDalog: () => import('@/components/admin/imageDalog'),
     selectLinks: () => import('@/components/admin/selectLinks'),
     choosingGoods: () => import('@/components/admin/choosingGoods')
@@ -383,6 +380,7 @@ export default {
       callback()
     }
     return {
+      id: '',
       period: [], // 活动时间段
       form: {
         name: '',
@@ -460,7 +458,27 @@ export default {
       immediate: true
     }
   },
+  mounted () {
+    if (this.$route.query.id) {
+      this.id = this.$route.query.id
+      this.initEvaluationInfo()
+    }
+  },
   methods: {
+    initEvaluationInfo () {
+      let params = {
+        id: this.id
+      }
+      getEvaluationGift(params).then(res => {
+        if (res.error === 0) {
+          if (res.content.goodsIds) {
+            this.chooseGoods = JSON.parse(res.content.goodsIds)
+          }
+          this.period = [new Date(res.content.startTime), new Date(res.content.endTime)]
+          this.form = Object.assign({}, this.form, res.content)
+        }
+      })
+    },
     // 选择商品
     chooseGoodsDialog () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
@@ -500,11 +518,23 @@ export default {
         if (valid) {
           let params = Object.assign({}, that.form)
           console.log(params)
-          addEvaluationGift(params).then(res => {
-            if (res.error === 0) {
-              console.log(res.content)
-            }
-          })
+          if (this.id) {
+            // 修改
+            updateEvaluationGift(params).then(res => {
+              if (res.error === 0) {
+                that.$message.success('更新成功')
+                that.$emit('changeTabAct', '1')
+              }
+            })
+          } else {
+            // 新增
+            addEvaluationGift(params).then(res => {
+              if (res.error === 0) {
+                that.$message.success('添加成功')
+                that.$emit('changeTabAct', '1')
+              }
+            })
+          }
         }
       })
     }
