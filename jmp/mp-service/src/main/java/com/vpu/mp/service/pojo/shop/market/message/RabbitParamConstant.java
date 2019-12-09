@@ -19,6 +19,11 @@ public class RabbitParamConstant {
          */
         public static final Integer MP_TEMPLE_TYPE=1002;
 
+        
+        /**
+         * 小程序订阅消息，小程序请以2开头。切大于2000 否则发不出去
+         */
+        public static final Integer MA_SUBSCRIBEMESSAGE_TYPE=2001;
 
 //    可以参考
 //    const TEMPLATE_TYPE_ORDER = 1;          // 订单类型

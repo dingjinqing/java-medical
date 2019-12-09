@@ -143,7 +143,8 @@ public class MessageTemplateService extends ShopBaseService {
             .set(record)
             .returning(TEMPLATE_CONFIG.ID,TEMPLATE_CONFIG.PAGE_LINK,TEMPLATE_CONFIG.TITLE,TEMPLATE_CONFIG.CONTENT)
             .fetchOne();
-        createTaskJob(shopId, assemblyRabbitMessageParam(templateConfigRecord,userIdStr,shopId),param);
+        //TODO 需要改
+       // createTaskJob(shopId, assemblyRabbitMessageParam(templateConfigRecord,userIdStr,shopId),param);
     }
 
     /**
@@ -153,32 +154,32 @@ public class MessageTemplateService extends ShopBaseService {
      * @param shopId 门店ID
      * @return {@link RabbitMessageParam}
      */
-    private RabbitMessageParam assemblyRabbitMessageParam(TemplateConfigRecord templateConfigRecord,String userIdStr,Integer shopId ){
-        return RabbitMessageParam.builder()
-            .shopId(shopId)
-            .type(RabbitParamConstant.Type.GENERAL_TYPE)
-            .page(templateConfigRecord.getPageLink())
-            .messageTemplateId(templateConfigRecord.getId())
-            .userIdList(Arrays.stream(userIdStr.split(",")).map(Integer::parseInt).collect(Collectors.toList()))
-            .maTemplateData(MaTemplateData.builder()
-                .config(MaTemplateConfig.ACTIVITY_CONFIG)
-                .data(new String[][]{
-                    {templateConfigRecord.getTitle()},
-                    {templateConfigRecord.getContent()}
-                })
-                .build())
-            .mpTemplateData(MpTemplateData.builder()
-                .config(MpTemplateConfig.ACTIVITY_CONFIG)
-                .data(new String[][]{
-                    {""},
-                    {templateConfigRecord.getTitle()},
-                    {templateConfigRecord.getContent()},
-                    {DateUtil.getLocalDateTime().toString()},
-                    {"点击查看详情"}
-                })
-                .build())
-            .build();
-    }
+//    private RabbitMessageParam assemblyRabbitMessageParam(TemplateConfigRecord templateConfigRecord,String userIdStr,Integer shopId ){
+//        return RabbitMessageParam.builder()
+//            .shopId(shopId)
+//            .type(RabbitParamConstant.Type.GENERAL_TYPE)
+//            .page(templateConfigRecord.getPageLink())
+//            .messageTemplateId(templateConfigRecord.getId())
+//            .userIdList(Arrays.stream(userIdStr.split(",")).map(Integer::parseInt).collect(Collectors.toList()))
+//            .maTemplateData(MaTemplateData.builder()
+//                .config(MaTemplateConfig.ACTIVITY_CONFIG)
+//                .data(new String[][]{
+//                    {templateConfigRecord.getTitle()},
+//                    {templateConfigRecord.getContent()}
+//                })
+//                .build())
+//            .mpTemplateData(MpTemplateData.builder()
+//                .config(MpTemplateConfig.ACTIVITY_CONFIG)
+//                .data(new String[][]{
+//                    {""},
+//                    {templateConfigRecord.getTitle()},
+//                    {templateConfigRecord.getContent()},
+//                    {DateUtil.getLocalDateTime().toString()},
+//                    {"点击查看详情"}
+//                })
+//                .build())
+//            .build();
+//    }
 
     /**
      * 创建TaskJob
