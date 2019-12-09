@@ -1,7 +1,9 @@
 package com.vpu.mp.schedule;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.saas.SaasApplication;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -10,6 +12,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalTime;
+
 /**
  * 商品相关监控定时任务
  *
@@ -17,7 +21,8 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableScheduling
 @EnableAsync
-@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "off")
+
+@Slf4j
 public class GoodsScheduleTask {
 
     @Autowired
@@ -66,6 +71,17 @@ public class GoodsScheduleTask {
         Result<ShopRecord> result = saas.shop.getAll();
         result.forEach((r)->{saas.getShopApp(r.getShopId()).
             shopTaskService.footprintDeleteTaskService.deleteFootprint();});
+    }
+
+    /**
+     * 商品自动上架
+     * 每一分钟执行一次
+     */
+    @Scheduled(cron = "* */1 * * * ?")
+    public void autoOnSaleGoods(){
+        log.debug("准备执行定时任务：minute"+ LocalTime.now().getMinute());
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r)-> saas.getShopApp(r.getShopId()).goods.onSaleGoods());
     }
 
 }
