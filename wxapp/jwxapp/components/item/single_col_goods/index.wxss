@@ -44,3 +44,7 @@
 .goods-info-bottom > .iconfont{
   font-size: 60rpx;
 }
+.edit{
+  line-height: 200rpx;
+  margin-right: 20rpx;
+}

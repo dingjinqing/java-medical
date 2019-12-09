@@ -2,10 +2,10 @@
   <view class="selected-content">
     <view class="title">
       <text>已选商品</text>
-      <text class="edit">编辑</text>
+      <text class="edit" bindtap="editToogle">{{isEdit ? '完成':'编辑'}}</text>
     </view>
     <view class="goods-content">
-      <v-single-col-goods />
+      <v-single-col-goods is-edit="{{isEdit}}" />
     </view>
     <view class="footer"></view>
   </view>

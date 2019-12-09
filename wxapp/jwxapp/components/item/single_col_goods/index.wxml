@@ -1,4 +1,7 @@
 <view class="goods-item">
+  <view class="edit" wx:if="{{isEdit}}">
+    <text class="iconfont iconshanchu1" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
+  </view>
   <view class="all-image">
     <image class="goods-image" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191128/orzXrXUbYs0qruLPrsRH.jpg"></image>
   </view>
