@@ -10,3 +10,14 @@
   position: absolute;
   right: 110rpx;
 }
+.footer{
+  line-height: 80rpx;
+  display: flex;
+}
+.footer > view{
+  flex: 1.5;
+  text-align: center;
+}
+.footer > view.confirm{
+  flex: 1;
+}
