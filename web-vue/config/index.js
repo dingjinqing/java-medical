@@ -11,8 +11,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/vpb': {
-        target: 'http://jmpdev.weipubao.cn',
-        // target: 'http://localhost:8086',
+        //target: 'http://jmpdev.weipubao.cn',
+        target: 'http://localhost:8086',
         // target: 'http://localhost:8086',
 
         changeOrigin: true,

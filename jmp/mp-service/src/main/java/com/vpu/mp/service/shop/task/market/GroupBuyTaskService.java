@@ -1,9 +1,11 @@
 package com.vpu.mp.service.shop.task.market;
 
-import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -13,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.bo.GroupBuyListScheduleBo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
@@ -113,9 +116,8 @@ public class GroupBuyTaskService  extends ShopBaseService {
                 transaction(()->{
                     //更改参团状态
                     updateGroupBuyListStatus(group.getGroupId(),GroupBuyListService.STATUS_FAILED);
-
-                    //TODO 退款
-
+                    //退款
+                    refund(orderSnList);
                 });
                 if(StringUtil.isNotEmpty(group.getRewardCouponId())){
                     //拼团失败发放优惠券
@@ -266,10 +268,21 @@ public class GroupBuyTaskService  extends ShopBaseService {
      */
     private void refund(List<String> orderSnList){
         orderSnList.forEach(orderSn->{
+            OrderInfoRecord orderInfo = orderInfoService.getOrderByOrderSn(orderSn);
             RefundParam param = new RefundParam();
-            param.setIsMp(OrderConstant.IS_MP_ADMIN);
-
+            param.setAction((byte)OrderServiceCode.RETURN.ordinal());//1是退款
+            param.setIsMp(OrderConstant.IS_MP_AUTO);
+            param.setOrderSn(orderSn);
+            param.setOrderId(orderInfo.getOrderId());
+            param.setReturnType(OrderConstant.RT_ONLY_MONEY);
+            param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()));
+            param.setShippingFee(orderInfo.getShippingFee());
             ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
+            if(executeResult != null && !executeResult.isSuccess()){
+                throw new BusinessException(executeResult.getErrorCode());
+                //退款失败
+                //TODO log记录或其他处理
+            }
         });
     }
 }
