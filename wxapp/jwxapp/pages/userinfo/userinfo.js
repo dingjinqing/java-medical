@@ -31,7 +31,7 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
+  onLoad: function (options) {
     user_block = 0;
     sex_index = 0;
     this.setData({
@@ -60,7 +60,7 @@ global.wxPage({
     wx.showLoading({
       title: "加载中"
     });
-    setTimeout(function() {
+    setTimeout(function () {
       wx.hideLoading();
       user_block = 1;
       that.setData({
@@ -69,7 +69,7 @@ global.wxPage({
     }, 500);
     util.api(
       "/api/wxapp/account/setting",
-      function(res) {
+      function (res) {
         if (res.error == 0) {
           user_info = res.content;
           // 头像
@@ -130,13 +130,13 @@ global.wxPage({
       {}
     );
   },
-  toSave: function(e) {
+  toSave: function (e) {
     var that = this;
-    setTimeout(function() {
+    setTimeout(function () {
       that.bind_submit(e);
     }, 100);
   },
-  bind_submit: function(e) {
+  bind_submit: function (e) {
     user_info = {};
     // user_info.is_setting = 1;
     user_info.isSetting = 1;
@@ -195,18 +195,18 @@ global.wxPage({
     }
     util.api(
       "/api/wxapp/account/setting",
-      function(res) {
+      function (res) {
         if (res.error == 0) {
           if (act == 1) {
-            util.toast_success("激活成功", function() {
-              setTimeout(function() {
+            util.toast_success("激活成功", function () {
+              setTimeout(function () {
                 wx.navigateBack({
                   delta: 2
                 });
               }, 2000);
             });
           } else {
-            util.toast_success("保存成功", function() {});
+            util.toast_success("保存成功", function () { });
           }
         } else {
           util.toast_fail(res.message);
@@ -215,25 +215,25 @@ global.wxPage({
       user_info
     );
   },
-  bindDateChange: function(e) {
+  bindDateChange: function (e) {
     dates = e.detail.value;
     this.setData({
       dates: e.detail.value
     });
   },
-  bindRegionChange: function(e) {
+  bindRegionChange: function (e) {
     region = e.detail.value;
     this.setData({
       region: e.detail.value
     });
   },
-  bindSexChange: function(e) {
+  bindSexChange: function (e) {
     sex_index = e.detail.value;
     this.setData({
       sex_index: e.detail.value
     });
   },
-  inputBlur: function(e) {
+  inputBlur: function (e) {
     if (/^1[3456789]\d{9}$/.test(e.detail.value)) {
       mobile = e.detail.value;
     } else {
@@ -241,10 +241,10 @@ global.wxPage({
       return false;
     }
   },
-  realName: function(e) {
+  realName: function (e) {
     real_name = e.detail.value;
   },
-  getUserInfo: function(e) {
+  getUserInfo: function (e) {
     var that = this;
     var canIUse = wx.canIUse("button.open-type.getUserInfo");
     if (e.detail.userInfo) {
@@ -262,7 +262,7 @@ global.wxPage({
           user_info: user_info,
           user_avatar: that.data.user_avatar
         });
-        util.api("/api/wxapp/account/updateUser", function(res) {}, {
+        util.api("/api/wxapp/account/updateUser", function (res) { }, {
           iv: e.detail.iv,
           encrypted_data: e.detail.encryptedData,
           username: user_name,
@@ -283,7 +283,7 @@ global.wxPage({
               user_info: user_info,
               user_avatar: that.data.user_avatar
             });
-            util.api("/api/wxapp/account/updateUser", function(res) {}, {
+            util.api("/api/wxapp/account/updateUser", function (res) { }, {
               encrypted_data: e.detail.encryptedData,
               iv: e.detail.iv,
               username: user_name,
@@ -297,22 +297,22 @@ global.wxPage({
       });
     }
   },
-  getPhoneNumber: function(e) {
+  getPhoneNumber: function (e) {
     var that = this;
     if (e.detail.errMsg == "getPhoneNumber:ok") {
       var iv = e.detail.iv;
       var encryptedData = e.detail.encryptedData;
-      util.checkSession(function() {
+      util.checkSession(function () {
         that.parseMobile(iv, encryptedData);
       });
     }
   },
   // 解析手机号
-  parseMobile: function(iv, data) {
+  parseMobile: function (iv, data) {
     var that = this;
     util.api(
       "/api/wxapp/wxdecrypt",
-      function(res) {
+      function (res) {
         if (res.error == 0) {
           util.setCache("mobile", res.content.phoneNumber);
           mobile = res.content.phoneNumber;
@@ -320,48 +320,12 @@ global.wxPage({
             mobile: mobile
           });
         } else if (res.error == 41001) {
-          util.wxLogin(function() {});
+          util.wxLogin(function () { });
         } else {
-          util.showModal("提示", "授权失败，请重试！", function() {}, false);
+          util.showModal("提示", "授权失败，请重试！", function () { }, false);
         }
       },
       { iv: iv, crypt_data: data }
     );
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function() {},
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function() {},
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {},
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {},
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function() {
-    wx.stopPullDownRefresh();
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function() {},
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function() {}
+  }
 });

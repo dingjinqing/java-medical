@@ -204,7 +204,7 @@ global.wxComponent({
         _this.loadMoreData();
       }, 1000);
     },
-    // 会员卡  card 模块点击
+    // 会员卡  
     onGetCardSuccess(card) {
 
     },

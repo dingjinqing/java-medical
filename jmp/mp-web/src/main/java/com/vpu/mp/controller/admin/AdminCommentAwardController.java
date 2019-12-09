@@ -56,6 +56,20 @@ public class AdminCommentAwardController extends AdminBaseController {
     }
 
     /**
+     * 删除
+     * @param param CommentAwardActivity
+     * @return json
+     */
+    @PostMapping("/delete")
+    public JsonResult deleteCommentAwardActivity(@RequestBody @Valid CommentAwardIdParam param){
+        int flag = shop().commentAward.deleteCommentAwardActivity(param);
+        if (flag==0){
+            return fail();
+        }
+        return success();
+    }
+
+    /**
      * 跟新状态
      * @param param id
      * @return  json
