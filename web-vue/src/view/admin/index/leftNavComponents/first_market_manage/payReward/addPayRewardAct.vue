@@ -651,9 +651,12 @@ export default {
   },
   mounted () {
     this.getIsGonigLotteryActivity()
+
     if (this.$route.query.id > 0) {
       this.params.id = this.$route.query.id
       this.fetchCurrentActivityData()
+    } else {
+      this.addPayRewardItem()
     }
   },
   filters: {
@@ -744,26 +747,24 @@ export default {
         limitTimes: '', // 每个用户参与次数
 
         awardList: [
-          {
-            giftType: 0,
-            productId: '', // 奖品ID
-            keepDays: '', // 赠品有效期
-            accountNumber: '', // 账户余额
-            scoreNumber: '', // 积分余额
-            awardNumber: '', // 奖品份数
-            // goodsImg: '', //
-            customImage: 'image/admin/btn_add.png', // 自定义活动图片
-            customLink: '', // 自定义图片
-            lotteryId: '', // 下拉框
-            couponIds: [], // 优惠券ID
-            couponList: [],
+          // {
+          //   giftType: 0,
+          //   productId: '', // 奖品ID
+          //   keepDays: '', // 赠品有效期
+          //   accountNumber: '', // 账户余额
+          //   scoreNumber: '', // 积分余额
+          //   awardNumber: '', // 奖品份数
+          //   customImage: 'image/admin/btn_add.png', // 自定义活动图片
+          //   customLink: '', // 自定义图片
+          //   lotteryId: '', // 下拉框
+          //   couponIds: [], // 优惠券ID
+          //   couponList: [],
 
-            ordinaryCoupon: [], // 普通优惠券
-            splitCoupon: [], // 分裂优惠券
-            ordinaryCouponIdList: [], // 普通优惠券ID数组
-            splitCouponIdList: [] // 分裂优惠券ID数组
-
-          }
+          //   ordinaryCoupon: [], // 普通优惠券
+          //   splitCoupon: [], // 分裂优惠券
+          //   ordinaryCouponIdList: [], // 普通优惠券ID数组
+          //   splitCouponIdList: [] // 分裂优惠券ID数组
+          // }
         ]
       },
       rules: {
@@ -815,6 +816,7 @@ export default {
       if (this.params.awardList.length < 5) {
         this.params.awardList.push(obj)
         console.log(this.params.awardList)
+        return obj
       } else {
         this.$message.warning('最多可添加5个规则！')
       }
@@ -1037,29 +1039,60 @@ export default {
     fetchCurrentActivityData () {
       getPayRewardInfo({ id: this.params.id }).then(res => {
         console.log(res.content, 'get jump data')
-        console.log(res.content.awardContentList)
         if (res.error === 0) {
           this.handleData(res.content)
-          console.log(this.params, 'before')
-          this.$set(this.params, 'awardList', res.content.awardContentList)
           console.log(this.params, 'this.params')
-          if (this.params.awardList[this.currentModelIndex].giftType === 1) {
-            this.params.awardList[this.currentModelIndex].ordinaryCoupon = this.params.awardList[this.currentModelIndex].couponView
-            this.params.awardList[this.currentModelIndex].ordinaryCouponIdList = this.params.awardList[this.currentModelIndex].couponIds
-            console.log(this.params, 'result params')
-          }
-          if (this.params.awardList[this.currentModelIndex].giftType === 2) {
-            this.params.awardList[this.currentModelIndex].splitCoupon = this.params.awardList[this.currentModelIndex].couponView
-            this.params.awardList[this.currentModelIndex].splitCouponIdList = this.params.awardList[this.currentModelIndex].couponIds
-          }
+          let index = 0
+          // this.params = res.content
+          res.content.awardContentList.forEach(awad => {
+            this.addPayRewardItem()
+            this.params.awardList[index].giftType = awad.giftType
+            this.params.awardList[index].productId = awad.productId
+            this.params.awardList[index].keepDays = awad.keepDays
+            this.params.awardList[index].accountNumber = awad.accountNumber
+            this.params.awardList[index].scoreNumber = awad.scoreNumber
+            this.params.awardList[index].awardNumber = awad.awardNumber
+            this.params.awardList[index].customImage = awad.customImage
+            this.params.awardList[index].customLink = awad.customLink
+            this.params.awardList[index].lotteryId = awad.lotteryId
+
+            // this.params.awardList[index] = awad
+
+            if (awad.giftType === 1) {
+              this.params.awardList[index].ordinaryCoupon = awad.couponView
+              this.params.awardList[index].ordinaryCouponIdList = awad.couponIds
+              this.$forceUpdate()
+            }
+            if (awad.giftType === 2) {
+              this.params.awardList[index].splitCoupon = awad.couponView
+              this.params.awardList[index].splitCouponIdList = awad.couponIds
+              this.$forceUpdate()
+            }
+            if (awad.giftType === 5) {
+              // this.params.awardList[index].productId = awad.productId
+              this.params.awardList[index].goodsShow = true
+              this.params.awardList[index].goodsName = awad.product.goodsName + awad.product.prdDesc
+              this.params.awardList[index].goodsImg = this.$imageHost + '/' + awad.product.goodsImg
+              console.log(this.params.awardList[index])
+              console.log(this.params.awardList[index].goodsImg)
+              this.params.awardList[index].goodsPrice = awad.product.prdPrice
+              this.params.awardList[index].goodsNumber = awad.product.prdNumber
+            }
+            index++
+          })
+
           console.log(this.ordinaryCoupon, 'get ordinaryCoupon')
           console.log(this.params, 'get reuturnParams')
-
-          this.params.awardList[this.currentModelIndex].goodsShow = true
-          this.params.awardList[this.currentModelIndex].goodsName = this.params.awardList[this.currentModelIndex].product.goodsName + this.params.awardList[this.currentModelIndex].product.prdDesc
-          this.params.awardList[this.currentModelIndex].goodsImg = this.params.awardList[this.currentModelIndex].product.goodsImg
-          this.params.awardList[this.currentModelIndex].goodsPrice = this.params.awardList[this.currentModelIndex].product.prdPrice
-          this.params.awardList[this.currentModelIndex].goodsNumber = this.params.awardList[this.currentModelIndex].product.prdNumber
+          // res.content.awardList.forEach(goodsItem => {
+          //   console.log(goodsItem, 'goodsItem')
+          //   this.params.awardList[this.currentModelIndex].goodsShow = true
+          //   this.params.awardList[this.currentModelIndex].goodsName = this.params.awardList[this.currentModelIndex].product.goodsName + this.params.awardList[this.currentModelIndex].product.prdDesc
+          //   this.params.awardList[this.currentModelIndex].goodsImg = this.$imageHost + '/' + this.params.awardList[this.currentModelIndex].product.goodsImg
+          //   console.log(this.params.awardList[this.currentModelIndex])
+          //   console.log(this.params.awardList[this.currentModelIndex].goodsImg)
+          //   this.params.awardList[this.currentModelIndex].goodsPrice = this.params.awardList[this.currentModelIndex].product.prdPrice
+          //   this.params.awardList[this.currentModelIndex].goodsNumber = this.params.awardList[this.currentModelIndex].product.prdNumber
+          // })
 
           if (res.content.startTime && res.content.endTime) {
             this.dateInterval = [new Date(res.content.startTime), new Date(res.content.endTime)]
