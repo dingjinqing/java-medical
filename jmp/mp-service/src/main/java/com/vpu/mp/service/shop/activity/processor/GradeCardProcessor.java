@@ -138,6 +138,7 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
     }
 
     public void doOrderOperation(String grade, OrderCartProductBo productBo){
+        log.info("会员价计算start");
         if(grade.equals(CardConstant.LOWEST_GRADE)) {
             return;
         }
@@ -146,11 +147,13 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
             // 会员等级
             userCartGradePrice.forEach(gradePrice -> {
                 if (goods.getProductId().equals(gradePrice.getPrdId())) {
+                    log.info("规格：{},会员价 ：{}",gradePrice.getPrdId(), gradePrice.getGradePrice());
                     GoodsActivityInfo goodsActivityInfo = new GoodsActivityInfo();
                     goodsActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
                     goodsActivityInfo.setMemberPrice(gradePrice.getGradePrice());
                 }
             });
         });
+        log.info("会员价计算end");
     }
 }
