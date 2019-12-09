@@ -374,7 +374,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			return flag;
 		} else {
 			logger().info("获取当前AppId：" + getMaAppId() + "下的个人模板列表失效");
-			throw new RuntimeException("获取当前AppId：" + getMaAppId() + "下的个人模板列表失效");
+			throw new RuntimeException("获取当前AppId：" + getMaAppId() + " 下的个人模板列表失效");
 		}
 	}
 
