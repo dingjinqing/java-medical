@@ -21,35 +21,35 @@ global.wxComponent({
     },
 
     bindFetchCoupon(e) {
-      // var d = this._form_data;
-      // var _this = this;
-      // var m = this.data.m;
-      // if (this._input_vali != d.vali) {
-      //   util.toast_fail('领取码错误');
-      // } else {
-      //   util.api("/api/wxapp/coupon/get", function (res) {
-      //     if (res.error == 0) {
-      //       if (res.content == 0) {
-      //         util.showModal('提示', '您已领取的个数已达到可领取限制');
-      //         m.isCoupon = 0;
-      //         m['coupon_arr'][d.coupon_key].status = -1;
-      //         _this.$set();
-      //       } else {
-      //         util.toast_success('领取成功', function () {
-      //           m.isCoupon = 0;
-      //           m['coupon_arr'][d.coupon_key].status = -1;
-      //           _this.$set();
-      //         });
-      //       }
-      //     } else {
-      //       util.toast_fail('领取失败');
-      //     }
-      //   }, {
-      //     code: d.code,
-      //     form_id: d.form_id,
-      //     open_id: d.open_id
-      //   })
-      // }
+      var d = this._form_data;
+      var _this = this;
+      var m = this.data.m;
+      if (this._input_vali != d.vali) {
+        util.toast_fail('领取码错误');
+      } else {
+        util.api("/api/wxapp/coupon/get", function (res) {
+          if (res.error == 0) {
+            if (res.content == 0) {
+              util.showModal('提示', '您已领取的个数已达到可领取限制');
+              m.isCoupon = 0;
+              m['coupon_arr'][d.coupon_key].status = -1;
+              _this.$set();
+            } else {
+              util.toast_success('领取成功', function () {
+                m.isCoupon = 0;
+                m['coupon_arr'][d.coupon_key].status = -1;
+                _this.$set();
+              });
+            }
+          } else {
+            util.toast_fail('领取失败');
+          }
+        }, {
+          code: d.code,
+          form_id: d.form_id,
+          open_id: d.open_id
+        })
+      }
     },
     bindGetCoupon(e) {
       var d = this.eventData(e);
@@ -68,39 +68,39 @@ global.wxComponent({
       m['coupon_arr'][d.key].disableds = true;
       this.$set();
       console.log(d.exclusive)
-      // if ((d.vali != '' && d.vali != undefined) || d.use_score == 1 ||
-      //   (d.exclusive != '' && d.exclusive == 1)) {
-      //   util.jumpLink('/pages/getcoupon/getcoupon?code=' + d.code);
-      // } else {
-      //   wx.showLoading({
-      //     title: '领取中···',
-      //   })
-      //   if (m['coupon_arr'][d.key].disableds == true) {
-      //     util.api('/api/wxapp/coupon/get?code=' + d.code, function (res) {
-      //       wx.hideLoading();
-      //       if (res.error == 0) {
-      //         if (res.content == 0) {
-      //           util.showModal('提示', '您已领取的个数已达到可领取限制');
-      //           m.isCoupon = 0;
-      //           m['coupon_arr'][d.key].status = -1;
-      //           m['coupon_arr'][d.key].disableds = false;
-      //           _this.$set();
-      //         } else {
-      //           util.toast_success('领取成功', function () {
-      //             m['coupon_arr'][d.key].status = -1;
-      //             m['coupon_arr'][d.key].disableds = false;
-      //             _this.$set();
-      //           });
-      //         }
-      //       } else {
-      //         util.toast_fail(res.message.msg);
-      //       }
-      //     }, {
-      //       form_id: _this._form_data.form_id,
-      //       open_id: _this._form_data.open_id
-      //     });
-      //   }
-      // }
+      if ((d.vali != '' && d.vali != undefined) || d.use_score == 1 ||
+        (d.exclusive != '' && d.exclusive == 1)) {
+        util.jumpLink('/pages/getcoupon/getcoupon?code=' + d.code);
+      } else {
+        wx.showLoading({
+          title: '领取中···',
+        })
+        if (m['coupon_arr'][d.key].disableds == true) {
+          // util.api('/api/wxapp/coupon/get?code=' + d.code, function (res) {
+          //   wx.hideLoading();
+          //   if (res.error == 0) {
+          //     if (res.content == 0) {
+          //       util.showModal('提示', '您已领取的个数已达到可领取限制');
+          //       m.isCoupon = 0;
+          //       m['coupon_arr'][d.key].status = -1;
+          //       m['coupon_arr'][d.key].disableds = false;
+          //       _this.$set();
+          //     } else {
+          //       util.toast_success('领取成功', function () {
+          //         m['coupon_arr'][d.key].status = -1;
+          //         m['coupon_arr'][d.key].disableds = false;
+          //         _this.$set();
+          //       });
+          //     }
+          //   } else {
+          //     util.toast_fail(res.message.msg);
+          //   }
+          // }, {
+          //   form_id: _this._form_data.form_id,
+          //   open_id: _this._form_data.open_id
+          // });
+        }
+      }
       console.log(e, d)
 
     },
