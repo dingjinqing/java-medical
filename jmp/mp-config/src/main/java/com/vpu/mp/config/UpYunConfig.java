@@ -1,9 +1,10 @@
 package com.vpu.mp.config;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import lombok.Data;
+import java.util.regex.Pattern;
 
 /**
  * 
@@ -13,6 +14,7 @@ import lombok.Data;
 @Configuration
 @Data
 public class UpYunConfig {
+    private static final String PATTERN = "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
 
 	@Value(value = "${uyun.image.sv}")
 	protected String server;
@@ -36,11 +38,17 @@ public class UpYunConfig {
 	protected String videoDomain;
 
 	public String videoUrl(String path) {
-		return "http://" + this.videoDomain + path;
+        if( Pattern.matches(PATTERN,path) ){
+            return path;
+        }
+	    return "http://" + this.videoDomain + path;
 	}
 	
 	public String imageUrl(String path) {
-		return "http://" + this.videoDomain + path;
+        if( Pattern.matches(PATTERN,path) ){
+            return path;
+        }
+	    return "http://" + this.videoDomain + path;
 	}
 
 }
