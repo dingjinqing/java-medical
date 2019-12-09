@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.user.message;
 import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -239,25 +238,25 @@ public class SubscribeMessageService extends ShopBaseService {
 		List<WxOpenSubscribeTemplate> data2 = templateList.getData();
 		if (data2.size() != 0) {
 			for (int i = 0; i < titleList.length; i++) {
+				Boolean flag = false;
 				for (WxOpenSubscribeTemplate template : data2) {
 					boolean contains = template.getTitle().contains(titleList[i].getTitle());
-					logger().info("已经配置的模板："+template.getTitle());
-					logger().info("需要配置的模板："+titleList[i].getTitle());
-					logger().info("比较："+contains);
-					logger().info("results["+i+"]"+results[i]);
-					if(null==results[i]) {
-						if (contains) {
-							// 存在，直接赋值
-							results[i]=new TemplateVo(template.getPriTmplId(), titleList[i].getId());
-						} else {
-							// 不存在，新建
-							results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId());
-						}						
+					if (contains) {
+						// 存在，直接赋值
+						flag = true;
+						logger().info("已经定义了模板："+titleList[i].getTitle());
+						results[i] = new TemplateVo(template.getPriTmplId(), titleList[i].getId());
 					}
 				}
+				if (!flag) {
+					logger().info("没有定义模板："+titleList[i].getTitle());
+					results[i] = new TemplateVo(addTemplate(titleList[i]), titleList[i].getId());
+				}
 			}
+
 		}else {
 			for(int i=0;i<titleList.length;i++) {
+				logger().info("没有定义模板："+titleList[i].getTitle());
 				results[i]=new TemplateVo(addTemplate(titleList[i]), titleList[i].getId());
 			}	
 		}
