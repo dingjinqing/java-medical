@@ -1228,7 +1228,7 @@ const routes = [
   },
   // 微信好物圈
   {
-    path: 'admin/home/main/wechateGoodsCicle',
+    path: '/admin/home/main/wechateGoodsCicle',
     name: 'wechateGoodsCicle',
     meta: {
       crumbTitle: 'router.wechateGoodsCicle',
@@ -1241,7 +1241,7 @@ const routes = [
   },
   // 支付有礼
   {
-    path: 'admin/home/main/payReward',
+    path: '/admin/home/main/payReward',
     name: 'payreward',
     meta: {
       crumbTitle: 'router.payreward',
@@ -1254,7 +1254,7 @@ const routes = [
   },
   // 支付有礼 - 添加支付有礼活动
   {
-    path: 'admin/home/main/addPayRewardAct',
+    path: '/admin/home/main/addPayRewardAct',
     name: 'addPayRewardAct',
     meta: {
       crumbTitle: 'router.addPayRewardAct',
@@ -1267,7 +1267,7 @@ const routes = [
   },
   // 支付有礼 - 活动明细页面
   {
-    path: 'admin/home/main/PayRewardActDetails',
+    path: '/admin/home/main/PayRewardActDetails',
     name: 'activityDetails',
     meta: {
       crumbTitle: 'router.activityDetails',
@@ -1276,6 +1276,34 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/payReward/activityDetails'
+      )
+  },
+  // 满折满减 - 列表明细页面
+  {
+    path: '/admin/home/main/fullDiscountFullCut',
+    name: 'full_cut',
+    meta: {
+      crumbTitle: 'router.full_cut',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/fullDiscountFullCut/fullCut'
+      )
+  },
+  // 满折满减 - 添加满折满减活动
+  {
+    path: '/admin/home/main/fullCutActivity',
+    name: 'fullCutActivity',
+    meta: {
+      crumbTitle: 'router.fullCutActivity',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/fullDiscountFullCut/fullCutAdd'
       )
   }
 ]

@@ -297,7 +297,10 @@
 
       <div class="box2">
         <!-- 满折满减 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="to('full_cut')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/mzmj.png'"
               alt=""
