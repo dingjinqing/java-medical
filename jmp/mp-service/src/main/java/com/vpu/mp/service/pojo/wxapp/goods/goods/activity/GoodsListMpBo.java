@@ -19,9 +19,6 @@ import java.util.List;
 @Getter
 @Setter
 public class GoodsListMpBo extends GoodsListMpVo {
-    /**是否从ES获取数据*/
-    @JsonIgnore
-    private Boolean isDisposedByEs = false;
 
     //************ElasticSearch中的数据**************start
     /** 平台、商家、品牌分类id */

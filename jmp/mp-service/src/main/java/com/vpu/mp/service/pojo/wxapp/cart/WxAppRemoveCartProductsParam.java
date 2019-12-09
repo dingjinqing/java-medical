@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart;
 
+import com.vpu.mp.service.foundation.validator.ListValid;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.util.List;
 @Setter
 public class WxAppRemoveCartProductsParam {
 
-    @NotNull
+
+    @ListValid(min = 1)
     private List<Integer> recIds;
 }

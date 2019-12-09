@@ -41,7 +41,7 @@ public class WxAppCartController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/add")
-    public JsonResult addGoodsToCart(@RequestBody WxAppAddGoodsToCartParam param){
+    public JsonResult addGoodsToCart(@RequestBody @Valid WxAppAddGoodsToCartParam param){
         WxAppSessionUser user = wxAppAuth.user();
         // 检查库存数量
         Integer productNumber = shop().cart.getCartProductNumber(user.getUserId(), param.getPrdId())+param.getGoodsNumber();
@@ -88,7 +88,7 @@ public class WxAppCartController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/removes")
-    public JsonResult close(@RequestBody WxAppRemoveCartProductsParam param){
+    public JsonResult close(@RequestBody @Valid WxAppRemoveCartProductsParam param){
         WxAppSessionUser user = wxAppAuth.user();
         shop().cart.removeCartProductByIds(user.getUserId(),param.getRecIds());
         return success();

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +11,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class GoodsBaseMp {
+public class  GoodsBaseMp {
+    /**是否从ES获取数据*/
+    @JsonIgnore
+    private Boolean isDisposedByEs = false;
     //************ElasticSearch中的数据**************start
     /**商品ID*/
     protected Integer goodsId;
