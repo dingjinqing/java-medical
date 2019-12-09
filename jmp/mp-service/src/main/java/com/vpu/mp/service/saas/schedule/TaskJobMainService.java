@@ -134,7 +134,7 @@ public class TaskJobMainService extends MainBaseService {
      */
     public  void  getAndSendMessage(){
         String uuid = Util.randomId();
-        if( jedisManager.addLock(JedisKeyConstant.TASK_JOB_LOCK,uuid,60*60) ){
+        if( jedisManager.addLock(JedisKeyConstant.TASK_JOB_LOCK,uuid,60*60*1000) ){
             db().transaction(configuration -> {
 
                 Result<Record4<Integer,String,String,Integer>> result = DSL.using(configuration)
