@@ -16,4 +16,5 @@ import lombok.NoArgsConstructor;
 public class TemplateVo {
 	private String templateId;
 	private Integer id;
+	private String templeName;
 }
