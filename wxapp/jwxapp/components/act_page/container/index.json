@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "v-selected":"/components/act_page/selected-goods/index"
+  }
+}

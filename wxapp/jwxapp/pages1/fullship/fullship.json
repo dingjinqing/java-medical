@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "v-container":"/components/act_page/container/index",
+    "v-single-col-goods":"/components/item/single_col_goods/index"
+  }
+}
