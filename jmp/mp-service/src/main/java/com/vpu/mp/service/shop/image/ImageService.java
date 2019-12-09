@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.image.CropImageParam;
@@ -35,6 +36,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
@@ -43,6 +45,9 @@ import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CAT
 @Service
 @Slf4j
 public class ImageService extends ShopBaseService implements ImageDefault {
+
+
+
 
   @Autowired public ImageCategoryService category;
 
@@ -54,7 +59,10 @@ public class ImageService extends ShopBaseService implements ImageDefault {
 
   @Override
   public String imageUrl(String relativePath) {
-    return domainConfig.imageUrl(relativePath);
+      if(RegexUtil.checkUrl(relativePath)){
+          return relativePath;
+      }
+      return domainConfig.imageUrl(relativePath);
   }
 
   @Override

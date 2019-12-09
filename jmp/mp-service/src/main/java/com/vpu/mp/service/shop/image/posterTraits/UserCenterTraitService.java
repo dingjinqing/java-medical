@@ -112,9 +112,11 @@ public class UserCenterTraitService extends ShopBaseService {
 		ShopRecord shop = saas.shop.getShopById(getShopId());
 		//分享给你一个好店铺
 		String titel1 = Util.translateMessage(shop.getShopLanguage(), JsonResultCode.WX_SHARESHOP.getMessage(),"messages",null);
+		logger().info("titel1:"+titel1);
 		ImageUtil.addFont(backgroundImage, titel1, new Font(null, Font.BOLD, 22), 180, 145, Color.GRAY);
 		//扫一扫上面的二维码，进店选购商品
 		String titel2 = Util.translateMessage(shop.getShopLanguage(), JsonResultCode.WX_SCAN_QRSHOP.getMessage(),"messages",null);
+		logger().info("titel2:"+titel2);
 		ImageUtil.addFont(backgroundImage, titel2, new Font(null, Font.BOLD, 22), 120, 750, Color.GRAY);
 
 		// 合并头像图片
