@@ -73,9 +73,9 @@ public class CommentAward extends TableImpl<CommentAwardRecord> {
     public final TableField<CommentAwardRecord, Byte> IS_FOREVER = createField("is_forever", org.jooq.impl.SQLDataType.TINYINT, this, "是否永久");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_comment_award.leve</code>. 优先级
+     * The column <code>mini_shop_4748160.b2c_comment_award.level</code>. 优先级
      */
-    public final TableField<CommentAwardRecord, Integer> LEVE = createField("leve", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "优先级");
+    public final TableField<CommentAwardRecord, Integer> LEVEL = createField("level", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "优先级");
 
     /**
      * The column <code>mini_shop_4748160.b2c_comment_award.goods_type</code>. 触发条件 1全部商品 2指定商品 3 实际品论比较少的商品
