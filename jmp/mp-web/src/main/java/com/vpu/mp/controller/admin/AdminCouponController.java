@@ -49,7 +49,7 @@ public class AdminCouponController extends AdminBaseController{
 	}
 
 	/**
-	 *获得所有可发放优惠券
+	 *获得所有可发放优惠券 -下拉框
 	 * @return
 	 */
 	@PostMapping("/admin/coupon/all")
