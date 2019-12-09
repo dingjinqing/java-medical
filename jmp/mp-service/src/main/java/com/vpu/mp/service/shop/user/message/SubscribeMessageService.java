@@ -362,11 +362,13 @@ public class SubscribeMessageService extends ShopBaseService {
 	 */
 	public boolean checkTemplate(String templateId) throws WxErrorException {
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
+		logger().info("传入的templateId："+templateId);
 		if (templateList.isSuccess()) {
 			//账户下的模板
 			List<WxOpenSubscribeTemplate> data = templateList.getData();
 			Boolean flag = false;
 			for (WxOpenSubscribeTemplate template : data) {
+				logger().info("循环的template："+template);
 				if (template.getPriTmplId().equals(templateId)) {
 					flag=true;
 				}
