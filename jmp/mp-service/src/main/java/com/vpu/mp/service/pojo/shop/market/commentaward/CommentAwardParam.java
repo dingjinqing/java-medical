@@ -44,7 +44,7 @@ public class CommentAwardParam {
      * 优先级
      */
     @Range(min = 0,max = 100)
-    private Integer    leve;
+    private Integer    level;
     /**
      * 商品类型 1全部商品 2指定商品 3 实际品论比较少的商品
      */

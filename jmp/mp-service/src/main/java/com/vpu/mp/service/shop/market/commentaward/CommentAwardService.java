@@ -103,7 +103,7 @@ public class CommentAwardService extends ShopBaseService {
                         COMMENT_AWARD.START_TIME,
                         COMMENT_AWARD.END_TIME,
                         COMMENT_AWARD.COMMENT_TYPE,
-                        COMMENT_AWARD.LEVE,
+                        COMMENT_AWARD.LEVEL,
                         COMMENT_AWARD.STATUS)
                 .from(COMMENT_AWARD)
                 .where(COMMENT_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
