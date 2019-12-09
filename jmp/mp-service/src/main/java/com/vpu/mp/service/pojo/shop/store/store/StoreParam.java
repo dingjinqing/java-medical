@@ -1,7 +1,10 @@
 package com.vpu.mp.service.pojo.shop.store.store;
 
+import com.vpu.mp.service.pojo.wxapp.store.ValidCon;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.Positive;
 
 /**
  * @author 王兵兵
@@ -11,6 +14,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class StoreParam {
-	private Integer   storeId;
+    @Positive(groups = ValidCon.class)
+    private Integer   storeId;
 	private Integer   posShopId;
+    @Positive(groups = ValidCon.class)
+    private Integer userId;
 }

@@ -77,7 +77,7 @@ public class GoodsScheduleTask {
      * 商品自动上架
      * 每一分钟执行一次
      */
-    @Scheduled(cron = "* */1 * * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     public void autoOnSaleGoods(){
         log.debug("准备执行定时任务：minute"+ LocalTime.now().getMinute());
         Result<ShopRecord> result = saas.shop.getAll();
