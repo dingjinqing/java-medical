@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.cart.list;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -106,7 +107,7 @@ public class WxAppCartGoods {
     /**
      * 活动列表
      */
-    private List<CartActivityInfo> cartActivityInfos;
+    private List<CartActivityInfo> cartActivityInfos =new ArrayList<>();
     /**
      * 商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品
      */

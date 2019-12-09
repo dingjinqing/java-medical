@@ -561,7 +561,7 @@ public class GoodsCommentService extends ShopBaseService {
         db().select(COMMENT_AWARD.ID)
             .from(COMMENT_AWARD)
             .where(COMMENT_AWARD.ID.in(actIds))
-            .orderBy(COMMENT_AWARD.LEVE.desc())
+            .orderBy(COMMENT_AWARD.LEVEL.desc())
             .limit(NumberUtils.INTEGER_ONE)
             .fetchOptionalInto(Integer.class)
             .orElseThrow(() -> new RuntimeException("未找到对应活动id"));

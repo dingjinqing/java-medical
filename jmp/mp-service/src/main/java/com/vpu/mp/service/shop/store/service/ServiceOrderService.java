@@ -284,6 +284,8 @@ public class ServiceOrderService extends ShopBaseService {
         param.setType(ORDER_TYPE_ADMIN_CREATE);
         param.setMoneyPaid(getServiceMoneyPaid(param.getServiceId()));
         ServiceOrderRecord record = new ServiceOrderRecord();
+        record.setOrderStatus(ORDER_STATUS_WAIT_PAY);
+        record.setOrderStatusName(ORDER_STATUS_NAME_WAIT_PAY);
         this.assign(param, record);
         return db().executeInsert(record) > 0 ? true : false;
     }
@@ -663,6 +665,16 @@ public class ServiceOrderService extends ShopBaseService {
      */
     public void updateServiceOrder(Integer orderId, Map<Field<?>, ?> map) {
         db().update(SERVICE_ORDER).set(map).where(SERVICE_ORDER.ORDER_ID.eq(orderId)).execute();
+    }
+
+    /**
+     * Update service order.更新服务订单信息
+     *
+     * @param orderSn the order sn
+     * @param map     the map
+     */
+    public void updateServiceOrder(String orderSn, Map<Field<?>, ?> map) {
+        db().update(SERVICE_ORDER).set(map).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).execute();
     }
 
     /**

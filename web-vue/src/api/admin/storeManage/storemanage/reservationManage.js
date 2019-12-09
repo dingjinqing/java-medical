@@ -15,9 +15,8 @@ export function getList (data) {
 // 预约详情
 export function detail (data) {
   return service({
-    url: '/api/admin/store/service/reserve/detail',
-    method: 'post',
-    data: data
+    url: `/api/admin/store/service/reserve/detail?orderSn=${data}`,
+    method: 'get'
   })
 }
 
@@ -61,6 +60,15 @@ export function cancel (data) {
 export function techList (data) {
   return service({
     url: '/api/admin/store/services/technician/getTechByStoreService',
+    method: 'post',
+    data: data
+  })
+}
+
+// 可用会员卡列表下拉
+export function availableCard (data) {
+  return service({
+    url: '/api/admin/user/card/available',
     method: 'post',
     data: data
   })

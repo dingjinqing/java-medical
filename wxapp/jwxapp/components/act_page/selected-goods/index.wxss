@@ -1,0 +1,12 @@
+.selected-content{
+  height: 800rpx;
+  background-color: #fff;
+}
+.title{
+  line-height: 80rpx;
+  text-align: center;
+}
+.title .edit{
+  position: absolute;
+  right: 110rpx;
+}

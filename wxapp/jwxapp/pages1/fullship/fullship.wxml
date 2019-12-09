@@ -1,0 +1,6 @@
+<include src="/pages/common/header.wxml" />
+<v-container>
+  <view slot="goods-content">
+    <v-single-col-goods />
+  </view>
+</v-container>

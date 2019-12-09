@@ -11,8 +11,8 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
-import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
+import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 
 
 /**
@@ -48,10 +48,9 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
                 JsonNode maData = j_node.findValue(key);
                 if( maData.size()>0 ){
                     String[][] data = assemblyArray(maData);
-                    MaTemplateConfig config = MaTemplateConfig.getConfig(maData.findPath("config").asText());
                     MaTemplateData ma = MaTemplateData.builder()
                         .data(data)
-                        .config(config)
+                        .config(maData.findValue("config").textValue())
                         .build();
                     param.setMaTemplateData(ma);
                 }

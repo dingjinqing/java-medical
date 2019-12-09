@@ -538,10 +538,10 @@ public class StoreReservation extends ShopBaseService {
      * @param serviceOrder the service order
      */
     public void sendReservationPaySuccessMessage(ServiceOrderRecord serviceOrder) {
-        // TODO 判定是使用公众号发送模板消息还是小程序发送
+        // TODO 判定是使用公众号发送模板消息还是小程序发送  【 应该用队列】
         if (messageTemplateService.chooseMessageTemplate(null, null, null, null)) {
             //  发送小程序模版消息
-            messageTemplateService.sendMaMessage(null, null, null);
+            messageTemplateService.sendMaMessage(null, null);
         } else {
             //发送公众号模版消息
             messageTemplateService.sendMpMessage(null, null);

@@ -4665,7 +4665,7 @@ create table `b2c_comment_award`
     `start_time`          timestamp    null default null comment '开始时间',
     `end_time`            timestamp    null default null comment '结束时间',
     `is_forever`          tinyint(1)        default null comment '是否永久',
-    `leve`                int(9)            default '1' comment '优先级',
+    `level`                int(9)            default '1' comment '优先级',
     `goods_type`          tinyint(4)   not null comment '触发条件 1全部商品 2指定商品 3 实际品论比较少的商品',
     `goods_ids`           varchar(199)      default null comment '对应商品',
     `comment_num`         int(8)            default null comment '品论数',

@@ -61,7 +61,8 @@
         "scancode/scancode",
         "comment/comment",
         "history/history",
-        "search/search"
+        "search/search",
+        "fullship/fullship"
       ]
     }
   ],
