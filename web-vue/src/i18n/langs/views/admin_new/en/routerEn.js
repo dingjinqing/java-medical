@@ -14,6 +14,8 @@ export const en = {
   goods_summary: ['Overview', 'Goods Statistics'],
   // 概况 用户统计
   user_summary: ['Overview', 'User Statistics'],
+  // 概况 概况统计
+  analysis_basic: ['Overview', 'overview Statistics'],
 
   // 概况 用户画像
   analysis_portrait: ['Overview', 'User portrait'],
