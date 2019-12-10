@@ -4,7 +4,10 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-
+    isEdit:{
+      type:Boolean,
+      value:false
+    }
   },
 
   /**
