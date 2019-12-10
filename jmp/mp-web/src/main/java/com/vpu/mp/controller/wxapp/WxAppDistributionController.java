@@ -2,10 +2,8 @@ package com.vpu.mp.controller.wxapp;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
@@ -43,4 +41,17 @@ public class WxAppDistributionController extends WxAppBaseController{
 		int res = shop().mpDistribution.distributorApply(param);
 		return this.success(res);
 	}
+
+    /**
+     * 获取分销员审核状态
+     * @param param
+     * @return
+     */
+    @PostMapping("distributor/apply/detail")
+	public JsonResult getDistributorApplyDetail(@RequestBody DistributorApplyDetailParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        DistributorApplyDetailParam info = shop().mpDistribution.getDistributorApplyDetail(param);
+        return this.success(info);
+    }
 }
