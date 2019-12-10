@@ -31,6 +31,10 @@ public class GoodsActivityInfo extends GoodsActivityBaseMp {
      */
     private BigDecimal firstSpecialPrice;
     /**
+     * 首单特惠限购数量
+     */
+    private Integer firstSpecialNumber;
+    /**
      * 会员价格
      */
     private BigDecimal memberPrice;
