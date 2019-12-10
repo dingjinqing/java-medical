@@ -69,7 +69,7 @@ public class ServiceCommentService extends ShopBaseService {
         List<String> imgList = Util.json2Object(imgs, new TypeReference<List<String>>() {
         }, false);
         if (CollectionUtils.isNotEmpty(imgList)) {
-            return domainConfig.imageUrl(imgList.get(INTEGER_ONE));
+            return domainConfig.imageUrl(imgList.get(INTEGER_ZERO));
         } else {
             return org.apache.commons.lang3.StringUtils.EMPTY;
         }
