@@ -76,4 +76,6 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private String sellerRemark;
 	@JsonIgnore
 	private String verifyCode;
+	/**退定金模式1:自动退定金0:不退定金*/
+	private Byte bkReturnType;
 }

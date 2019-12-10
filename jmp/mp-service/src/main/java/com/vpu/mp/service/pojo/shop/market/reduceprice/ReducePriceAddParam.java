@@ -62,6 +62,9 @@ public class ReducePriceAddParam {
     /** 超限购买设置标记，1禁止超限购买，0超限全部恢复原价 */
     private Byte limitFlag;
 
+    /** 优先级 */
+    private Byte first;
+
     /** 分享设置 */
     @NotNull
     private ShopShareConfig shareConfig;

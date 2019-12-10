@@ -286,7 +286,7 @@ public class PackSaleService extends ShopBaseService {
 	 */
 	public PageResult<? extends OrderListInfoVo> getOrderList(PackSaleOrderPageParam param) {
 		OrderPageListQueryParam orderParam = param.convert2OrderParam();
-		PageResult<? extends OrderListInfoVo> pageList = orderReadService.getPageList(orderParam);
+		PageResult<? extends OrderListInfoVo> pageList = orderReadService.getPageList(orderParam).getList();
 		return  pageList;
 	}
 

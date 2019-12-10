@@ -5,6 +5,9 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
+import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
+import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +20,12 @@ import java.util.List;
  * 2019年7月17日
  */
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class AdminDistributionController extends AdminBaseController{
-	@Override
-    protected ShopApplication shop() {
-        return saas.getShopApp(471752);
-    }
+//	@Override
+//    protected ShopApplication shop() {
+//        return saas.getShopApp(471752);
+//    }
 	//分销配置
 	/**
 	 * 获取分销配置
@@ -562,7 +565,7 @@ public class AdminDistributionController extends AdminBaseController{
 	
 	/**
 	 * 提现审核详情
-	 * @param orderSn
+	 * @param id
 	 * @return
 	 */
 	@GetMapping("/admin/distribution/withdraw/detail")
@@ -570,4 +573,25 @@ public class AdminDistributionController extends AdminBaseController{
 		DistributorWithdrawDetailVo detail = shop().withdraw.getWithdrawDetail(id);
 		return this.success(detail);
 	}
+
+    /**
+     * 分销员审核列表
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/distributor/check/list")
+	public JsonResult distributorCheckList(@RequestBody DistributorCheckListParam param){
+        PageResult<DistributorCheckListVo> distributorCheckList = shop().distributorCheck.getDistributorCheckList(param);
+
+        for(DistributorCheckListVo list:distributorCheckList.dataList){
+            //转换行业码对应的名称
+            String industryInfo = MemberIndustryEnum.getNameByCode(list.getIndustryInfo(),getLang());
+            list.setIndustryName(industryInfo);
+
+            //教育程度
+            String education = MemberEducationEnum.getNameByCode(list.getEducation(),getLang());
+            list.setEducationName(education);
+        }
+        return this.success(distributorCheckList);
+    }
 }

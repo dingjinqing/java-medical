@@ -234,7 +234,8 @@ export default {
         storeId: 0,
         mobile: '',
         technicianName: '',
-        commstar: 0
+        commstar: 0,
+        flag: 1
       },
       tableData: [],
       multipleSelection: [],

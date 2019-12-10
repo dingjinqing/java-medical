@@ -623,9 +623,9 @@ public class CouponGiveService extends ShopBaseService {
                   .execute();
           // 得到成功条数
           successList.add(rows);
-          // 如果是限制库存类型 则优惠券库存-1
+          // 如果是限制库存类型且库存不为0 则优惠券库存-1
           if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
-              && couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
+              && !couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
             db().update(MRKING_VOUCHER)
                 .set(MRKING_VOUCHER.SURPLUS, (couponDetails.getSurplus() - 1))
                 .where(MRKING_VOUCHER.ID.eq(Integer.parseInt(couponId)))

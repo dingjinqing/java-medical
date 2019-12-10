@@ -1,10 +1,7 @@
 package com.vpu.mp.service.shop.task;
 
 import com.vpu.mp.service.shop.task.goods.FootprintDeleteTaskService;
-import com.vpu.mp.service.shop.task.market.BargainTaskService;
-import com.vpu.mp.service.shop.task.market.GroupBuyTaskService;
-import com.vpu.mp.service.shop.task.market.ReducePriceTaskService;
-import com.vpu.mp.service.shop.task.market.SeckillTaskService;
+import com.vpu.mp.service.shop.task.market.*;
 import com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService;
 import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +24,9 @@ public class ShopTaskService {
 
     @Autowired
     public BargainTaskService bargainTaskService;
+
+    @Autowired
+    public PreSaleTaskService preSaleTaskService;
 
     /**
      * The Goods task service.概况模块-商品统计

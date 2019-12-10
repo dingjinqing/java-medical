@@ -1319,3 +1319,7 @@ CHANGE COLUMN `leve` `level` int(9) NULL DEFAULT 1 COMMENT '优先级' AFTER `is
 -- 添加字段
 ALTER TABLE `b2c_mrking_voucher` 
 ADD COLUMN `recommend_type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '支付有礼跳转链接 1:全部商品可用 2：指定商品可用' AFTER `validity_type`;
+
+-- 添加字段
+ALTER TABLE `b2c_reduce_price`
+ADD COLUMN `first` tinyint(1) NOT NULL DEFAULT 1 COMMENT '优先级';

@@ -165,7 +165,7 @@ public class PaymentService extends ShopBaseService {
 			 */
 			if (orderInfo.getBkOrderPaid() == OrderConstant.BK_PAY_NO) {
 				// 未支付时
-				if (orderInfo.getOrderPayWay() == OrderConstant.PAY_WAY_BARGIAN) {
+				if (orderInfo.getOrderPayWay() == OrderConstant.PAY_WAY_DEPOSIT) {
 					// 定金尾款支付方式时，先标记定金已支付
                     orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FRONT);
 
