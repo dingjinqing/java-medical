@@ -63,10 +63,10 @@ export default {
       langName: 'zh_CN',
       cnInit: {
         selector: '#cnTinymce',
-        language_url: `http://${window.location.host}/static/tinymce/tinymce_languages/langs/zh_CN.js`,
+        language_url: `http://${window.location.host}/static/tinymce_languages/langs/zh_CN.js`,
         language: 'zh_CN',
         height: 450,
-        skin_url: `http://${window.location.host}/static/tinymce/skins/ui/oxide`,
+        skin_url: `http://${window.location.host}/static/skins/ui/oxide`,
         plugins: this.plugins,
         toolbar: this.toolbar,
         branding: false,
