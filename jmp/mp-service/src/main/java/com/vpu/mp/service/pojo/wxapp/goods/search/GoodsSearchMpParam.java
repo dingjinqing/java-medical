@@ -31,9 +31,14 @@ public class GoodsSearchMpParam {
     /**品牌id集合*/
     private List<Integer> brandIds;
 
-    /**活动类型id集合*/
+    /**活动类型集合*/
     private List<Integer> activityTypes;
 
     /**标签id集合*/
     private List<Integer> labelIds;
+
+    /**排序字段*/
+    private SortItemEnum sortItem;
+    /**排序方向*/
+    private SortDirectionEnum sortDirection;
 }
