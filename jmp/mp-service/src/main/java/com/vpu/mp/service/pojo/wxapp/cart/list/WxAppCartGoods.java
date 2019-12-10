@@ -159,7 +159,7 @@ public class WxAppCartGoods {
         cartGoodsInfo.setGoodsImg(goodsImg);
         cartGoodsInfo.setGoodsName(goodsName);
         cartGoodsInfo.setGoodsSpecs(goodsSpecs);
-        cartGoodsInfo.setActivityInfos(cartActivityInfos);
+//        cartGoodsInfo.setActivityInfos(cartActivityInfos);
         return cartGoodsInfo;
     }
 }

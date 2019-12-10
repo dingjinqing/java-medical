@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 
 /**
@@ -133,6 +134,16 @@ public enum MemberIndustryEnum {
 	public static String getNameByCode(int code) {
 		return map.get(code).getName();
 	}
+
+    /**
+     * 自定义语言  常乐
+     * @param code 行业数字代号
+     * @param lang 语言
+     * @return
+     */
+    public static String getNameByCode(int code,String lang) {
+        return Util.translateMessage(lang,map.get(code).getName(),"","member");
+    }
 	
 	public static MemberIndustryEnum valueOf(int code) {
 		return map.get(code);

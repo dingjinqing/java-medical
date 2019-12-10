@@ -1,11 +1,14 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.google.common.base.Supplier;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartGoodsInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
@@ -26,7 +29,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 小程序-商品列表-处理最终价格信息
@@ -155,8 +160,8 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
     public void doCartOperation(WxAppCartBo cartBo) {
         log.debug("WxAppCartBo:"+Util.toJson(cartBo));
         WxAppCartListVo cartListVo = new WxAppCartListVo();
-        List<CartGoodsInfo> cartGoodsInfoList =cartGoodsToInfo(cartBo.getCartGoodsList());
-        List<CartGoodsInfo> invalidCartGoodsInfoList =cartGoodsToInfo(cartBo.getInvalidCartList());
+        List<CartGoodsInfo> cartGoodsInfoList =cartGoodsToInfo(cartBo.getCartGoodsList(),cartBo.getOrderCartProductBo());
+        List<CartGoodsInfo> invalidCartGoodsInfoList =cartGoodsToInfo(cartBo.getInvalidCartList(), cartBo.getOrderCartProductBo());
         BigDecimal totalPrice  =new BigDecimal(0);
         byte isAllCheck  = 1;
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
@@ -173,10 +178,13 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
         cartBo.setCartListVo(cartListVo);
     }
 
-    private  List<CartGoodsInfo> cartGoodsToInfo( List<WxAppCartGoods> cartGoodsList){
+    private  List<CartGoodsInfo> cartGoodsToInfo(List<WxAppCartGoods> cartGoodsList, OrderCartProductBo orderCartProductBo){
         List<CartGoodsInfo> cartGoodsInfoList =new ArrayList<>();
         cartGoodsList.forEach(goods->{
-            cartGoodsInfoList.add(goods.toInfo());
+            CartGoodsInfo cartGoodsInfo = goods.toInfo();
+            List<GoodsActivityInfo> collect = new ArrayList<>(orderCartProductBo.get(cartGoodsInfo.getPrdId()).getActivityInfo().values());
+            cartGoodsInfo.setActivityInfos(collect);
+            cartGoodsInfoList.add(cartGoodsInfo);
         });
         return cartGoodsInfoList;
     }

@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
@@ -306,6 +307,17 @@ public class GoodsMpService extends ShopBaseService {
         //TODO es 反推待实现
         return new GoodsSearchFilterConditionMpVo();
     }
+
+    /**
+     * 搜索小程序商品信息
+     * @param param 商品信息过滤条件
+     * @return 搜索出来的商品信息
+     */
+    public List<GoodsListMpVo> searchGoods(GoodsSearchMpParam param){
+        //TODO Es搜索
+        return null;
+    }
+
 
     /**
      * 根据过滤条件获取商品列表中的商品信息，

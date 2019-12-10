@@ -6,11 +6,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 
 /**
 * @author 黄壮壮
@@ -44,14 +47,24 @@ public class WxAppCardController extends WxAppBaseController {
 		}
 		return success(userCardDetail);
 	}
-	/**
-	 * 领取会员卡
-	 */
-//	@PostMapping(value="/api/card/getcard")
-//	public JsonResult getCard() {
-//		logger().info("领取会员卡");
-//		
-//		return success();
-//	}
+
+	@PostMapping(value="/api/card/judgement")
+	public JsonResult userCardJudgement(@RequestBody UserIdAndCardIdParam param) {
+		logger().info("判断是否有会员卡");
+		shop().user.userCard.userCardJudgement(param);
+		return success();
+	}
 	
+	@PostMapping(value="/api/card/getCard")
+	public JsonResult getCard(@RequestBody UserIdAndCardIdParam param) {
+		logger().info("领取会员卡");
+		WxAppSessionUser user = wxAppAuth.user();
+		param.setUserId(user.getUserId());
+		try {
+			return success(shop().user.userCard.getCard(param));
+		} catch (MpException e) {
+			return fail(e.getErrorCode());
+		}
+		
+	}
 }

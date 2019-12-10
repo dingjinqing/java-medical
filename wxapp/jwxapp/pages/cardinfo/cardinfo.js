@@ -13,22 +13,65 @@ global.wxPage({
    */
   onLoad: function (options) {
     let cardNo = options.card_no ? options.card_no : null
-    this.requestCardInfo(cardNo)
+    let cardId = options.cardId ? options.cardId : null
+    this.requestCardInfo(cardNo, cardId)
   },
-  requestCardInfo(cardNo) {
-    // util.api('/api/card/detail',res => {
-    //   let cardInfo = res.content
-    //   cardInfo.cardExpireTime = this.getCardExpireTime(cardInfo);
-    //   cardInfo.cardBgStyle = this.getCardBg(cardInfo);
-    //   cardInfo.cardTypeName = this.getTypeName(cardInfo.cardType);
-    //   cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
-    //   cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
-    //   cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
-    //   this.getUpgradeCondition(cardInfo)
-    //   this.setData({
-    //     cardInfo:res.content
-    //   })
-    // }, { cardNo: cardNo })
+  requestCardInfo(cardNo, cardId) {
+    if (cardNo) {  //  从个人中心会员卡列表进入
+      util.api('/api/card/detail', res => {
+        let cardInfo = res.content
+        cardInfo.cardExpireTime = this.getCardExpireTime(cardInfo);
+        cardInfo.cardBgStyle = this.getCardBg(cardInfo);
+        cardInfo.cardTypeName = this.getTypeName(cardInfo.cardType);
+        cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
+        cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
+        cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
+        this.getUpgradeCondition(cardInfo)
+        this.setData({
+          cardInfo: res.content
+        })
+      }, { cardNo: cardNo })
+    } else if (cardId) {  // 从首页进入
+      util.api('/api/card/judgement', function (res) {
+        console.log(res.content);
+        if (res.content.card_info.is_delete == 1) {
+          util.showModal('提示', '该会员卡已失效', function () {
+            util.reLaunch({
+              url: '/pages/index/index'
+            })
+          });
+          return;
+        }
+        if (res.content.card_info.flag == 2) {
+          util.showModal('提示', '该会员卡已停用', function () {
+            util.reLaunch({
+              url: '/pages/index/index'
+            })
+          });
+          return;
+        }
+        if (res.content.card_info.flag == 3) {
+          util.showModal('提示', '该会员卡已过期', function () {
+            util.reLaunch({
+              url: '/pages/index/index'
+            })
+          });
+          return;
+        }
+        let cardInfo = res.content
+        cardInfo.cardExpireTime = this.getCardExpireTime(cardInfo);
+        cardInfo.cardBgStyle = this.getCardBg(cardInfo);
+        cardInfo.cardTypeName = this.getTypeName(cardInfo.cardType);
+        cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
+        cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
+        cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
+        this.getUpgradeCondition(cardInfo)
+        this.setData({
+          cardInfo: res.content
+        })
+      }, { cardId: cardId })
+    }
+
   },
   // 获取会员卡过期时间
   getCardExpireTime(cardItem) {

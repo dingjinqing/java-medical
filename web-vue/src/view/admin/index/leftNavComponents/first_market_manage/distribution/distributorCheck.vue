@@ -1,32 +1,42 @@
 <template>
-  <div class="content">
+  <div class="tab_content">
     <div class="table_list">
       <div class="select_info">
         <div class="leftarea">
-          <span>手机号</span>
-          <el-input size="small"></el-input>
+          <span>手机号：</span>
+          <el-input
+            v-model="searchForm.mobile"
+            size="small"
+            class="inputWidth"
+          ></el-input>
         </div>
         <div class="leftarea">
-          <span>昵称</span>
-          <el-input size="small"></el-input>
+          <span>昵称：</span>
+          <el-input
+            v-model="searchForm.nickName"
+            size="small"
+            class="inputWidth"
+          ></el-input>
         </div>
         <div class="midarea">
-          <span>申请时间</span>
+          <span>申请时间：</span>
           <el-date-picker
-            v-model="value1"
+            v-model="searchForm.startTime"
             type="date"
             placeholder="选择日期"
             size="small"
             value-format="yyyy-MM-dd"
+            class="inputWidth"
           >
           </el-date-picker>
           <span>至</span>
           <el-date-picker
-            v-model="value1"
+            v-model="searchForm.endTime"
             type="date"
             placeholder="选择日期"
             size="small"
             value-format="yyyy-MM-dd"
+            class="inputWidth"
           >
           </el-date-picker>
         </div>
@@ -34,68 +44,14 @@
           <el-button
             type="primary"
             size="small"
+            @click="initDataList"
           >查询</el-button>
         </div>
       </div>
-      <!-- <el-table
-        class="version-manage-table"
-        header-row-class-name="tableClss"
-        border
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="actName"
-          label="活动名称"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="validDate"
-          label="活动有效期"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="rewardType"
-          label="奖励类型"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="marketStore"
-          label="奖励库存"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="recNum"
-          label="已领取奖励数量"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="actState"
-          label="活动状态"
-          align="center"
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop=""
-          label="操作"
-          align="center"
-        >
-        </el-table-column>
-      </el-table> -->
 
       <el-tabs
         v-model="activeName"
-        @tab-click="handleClick"
+        @tab-click="initDataList"
       >
         <el-tab-pane
           label="待审核分销员"
@@ -111,24 +67,58 @@
         ></el-tab-pane>
       </el-tabs>
       <div>
-        <table class="checkList">
+        <table
+          class="checkList"
+          v-for="(item, index) in tableData"
+          :key="index"
+        >
           <tr class='title'>
-            <td colspan="6">ID:</td>
-            <td>分销员分组</td>
-            <td>审核状态</td>
-            <td>操作</td>
-          </tr>
-          <tr>
-            <td>真实姓名</td>
-            <td>常乐</td>
-            <td>手机号</td>
-            <td>13716024041</td>
-            <td>身份证号</td>
-            <td>214423452232561</td>
-            <td rowspan="5"><span style="margin-top:45%">北京一区</span></td>
-            <td rowspan="5">未审核</td>
-            <td rowspan="5">
+            <td
+              colspan="6"
+              style="text-align: left;"
+            >
+              <div class="header">ID: {{ item.idCard }}</div>
+              <div class="header">昵称：<span class="active">{{ item.name }}</span></div>
+              <div class="header">手机号：{{ item.mobile }}</div>
+              <div class="header">申请时间：{{ item.startTime }}</div>
+              <div class="header">邀请码：</div>
+            </td>
 
+            <td style="width: 120px;">分销员分组</td>
+            <td style="width: 100px;">审核状态</td>
+            <td style="width: 170px;">操作</td>
+          </tr>
+
+          <tr>
+            <td v-if="item.idCard !== ''">真实姓名</td>
+            <td v-if="item.idCard !== ''">{{ item.name }}</td>
+            <td v-if="item.idCard !== ''">手机号</td>
+            <td v-if="item.idCard !== ''">{{ item.mobile }}</td>
+            <td v-if="item.idCard !== ''">身份证号</td>
+            <td v-if="item.idCard !== ''">{{ item.idCard }}</td>
+            <td
+              colspan="6"
+              v-if="item.idCard === ''"
+              class="middle"
+            >无需提交个人信息</td>
+            <td
+              rowspan="5"
+              class="middle"
+            >
+              <p>{{ item.group }}</p>
+              <p
+                class="active"
+                @click="setGroupHandler"
+              >设置</p>
+            </td>
+            <td
+              rowspan="5"
+              class="middle"
+            >{{ item.status }}</td>
+            <td
+              rowspan="5"
+              class="middle"
+            >
               <el-button
                 size="small"
                 type="primary"
@@ -142,53 +132,176 @@
               >不通过</el-button>
             </td>
           </tr>
-          <tr>
+          <tr v-if="item.idCard !== ''">
             <td>性别</td>
-            <td>男</td>
+            <td>{{ item.sex }}</td>
             <td>生日</td>
-            <td>1987.03.21</td>
+            <td>{{ item.birthday }}</td>
             <td>婚姻状况</td>
-            <td>未婚</td>
+            <td>{{ item.marry }}</td>
 
           </tr>
-          <tr>
+          <tr v-if="item.idCard !== ''">
             <td>教育程度</td>
-            <td>小学</td>
+            <td>{{ item.education }}</td>
             <td>所在行业</td>
-            <td>互联网</td>
+            <td>{{ item.industry }}</td>
             <td>所在地</td>
-            <td>朔州</td>
+            <td>{{ item.location }}</td>
 
           </tr>
-          <tr>
+          <tr v-if="item.idCard !== ''">
             <td>备注</td>
-            <td colspan="5">7个工作日没审核通过，联系110</td>
+            <td colspan="5">{{ item.note }}</td>
           </tr>
-          <tr>
+          <tr v-if="item.idCard !== ''">
             <td>图片</td>
             <td colspan="5">6</td>
           </tr>
         </table>
+
+        <Pagination
+          :page-params.sync="pageParams"
+          @pagination="initDataList"
+        />
+
+        <!-- 分销员分组弹窗 -->
+        <el-dialog
+          title="设置分销员分组"
+          :visible.sync="dialogVisible"
+          width="25%"
+          center
+        >
+          <span>选择分组：</span>
+          <el-select
+            v-model="selectValue"
+            placeholder="请选择分组"
+            size="small"
+            style="width: 170px;"
+          >
+            <el-option
+              v-for="(item, index) in selectData"
+              :key="index"
+              :label="item.groupName"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button
+              size="small"
+              @click="dialogVisible = false"
+            >取 消</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="dialogVisible = false"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
+import { distributionGroup } from '@/api/admin/marketManage/distribution.js'
 export default {
+  components: {
+    Pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
-      value1: '',
-      activeName: ''
+      // 搜索
+      searchForm: {
+        mobile: '',
+        nikeName: '',
+        startTime: '',
+        endTime: ''
+      },
+      activeName: 'first',
+      pageParams: {}, // 分页
+      requestParams: {},
+      // 表格数据
+      tableData: [{
+        name: 'name1',
+        mobile: 'mobile1',
+        idCard: 'idCard1',
+        group: 'group1',
+        status: '待审核',
+        sex: 'sex1',
+        birthday: 'birthday1',
+        marry: 'marry1',
+        education: 'education1',
+        industry: 'industry1',
+        location: 'location1',
+        note: '7个工作日没审核通过，联系110'
+      }, {
+        name: 'name2',
+        mobile: 'mobile2',
+        idCard: 'idCard2',
+        group: 'group2',
+        status: '待审核',
+        sex: 'sex2',
+        birthday: 'birthday2',
+        marry: 'marry2',
+        education: 'education2',
+        industry: 'industry2',
+        location: 'location2',
+        note: '备注信息'
+      }, {
+        name: '',
+        mobile: '',
+        idCard: '',
+        group: 'group1',
+        status: '待审核',
+        sex: '',
+        birthday: '',
+        marry: '',
+        education: '',
+        industry: '',
+        location: '',
+        note: ''
+      }],
+
+      // 分销员分组弹窗
+      dialogVisible: false,
+      selectValue: '',
+      selectData: []
     }
   },
-  methods: {
-    // handleCurrentChange (tab) {
+  watch: {
+    lang () {
 
-    // }
-    handleClick (tab, event) {
-      console.log(tab, event)
+    }
+  },
+  mounted () {
+    // 初始化数据
+    this.langDefault()
+    this.initDataList()
+    this.getDistributionGroup()
+  },
+  methods: {
+    initDataList () {
+
+    },
+
+    // 获取分销员分组
+    getDistributionGroup () {
+      distributionGroup(this.pageParams).then((res) => {
+        if (res.error === 0) {
+          this.selectData = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
+    },
+
+    // 设置分销员分组
+    setGroupHandler () {
+      this.dialogVisible = !this.dialogVisible
     }
   }
 
@@ -196,38 +309,26 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-.content {
-  padding: 10px;
+.tab_content {
   min-width: 100%;
   font-size: 14px;
   height: 100%;
   .main {
     position: relative;
     background-color: #fff;
-    padding: 10px 20px 10px 20px;
   }
 }
-/deep/ .tableClss th {
-  background-color: #f5f5f5;
-  border: none;
-  height: 36px;
-  font-weight: bold;
-  color: #000;
-  padding: 8px 10px;
-}
-
 .table_list {
   position: relative;
   background-color: #fff;
-  padding: 0px 20px 10px 20px;
   .select_info {
     display: flex;
     margin: 10px 0px;
     .leftarea {
       display: flex;
-      margin-right: 30px;
-      :first-child {
-        margin-right: 10px;
+      margin-right: 50px;
+      .inputWidth {
+        width: 170px;
       }
     }
     .rightarea {
@@ -278,15 +379,34 @@ export default {
     border: 1px solid lightgray;
   }
   td {
-    padding-left: 10px;
     text-align: center;
     border: 1px solid lightgray;
   }
   .checkList {
     width: 100%;
+    margin-bottom: 20px;
   }
   .title {
     background-color: #eee;
+  }
+  .header {
+    display: inline-block;
+    width: 15%;
+  }
+  .header:nth-child(1) {
+    margin-left: 10px;
+  }
+  .header:nth-child(4),
+  .header:nth-child(5) {
+    width: 25%;
+  }
+  .active {
+    color: #5a8bff;
+    cursor: pointer;
+  }
+  .middle {
+    display: table-cell;
+    vertical-align: middle;
   }
 }
 </style>

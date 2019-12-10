@@ -108,7 +108,6 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 	/**
 	 * 	退会员卡余额
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @throws MpException 
 	 */
@@ -116,7 +115,6 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		if(BigDecimalUtil.compareTo(money, null) == 0) {
 			return;
 		}
-		
 		/**
 		 * 交易记录信息
 		 */
@@ -126,10 +124,6 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 				.tradeType(RecordTradeEnum.TYPE_CRASH_MCARD_ACCOUNT_REFUND.val())
 				.tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
 				.build();
-				
-				
-				
-		
 		UserCardData userCardData = UserCardData.newBuilder().
 		userId(order.getUserId()).
 		cardId(order.getCardId()).
@@ -147,7 +141,6 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 	/**
 	 * 	退余额
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @throws MpException 
 	 */
@@ -177,7 +170,6 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 	/**
 	 * 	积分退款
 	 * @param order
-	 * @param returnOrder
 	 * @param money
 	 * @return
 	 * @throws MpException
