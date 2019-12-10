@@ -1,0 +1,15 @@
+<v-popup show="{{show}}" bindtap="bindClose" bind:close="bindClose" horizon="center" vertical="bottom" close_pos="inner">
+  <view class="selected-content">
+    <view class="title">
+      <text>已选商品</text>
+      <text class="edit" bindtap="editToogle">{{isEdit ? '完成':'编辑'}}</text>
+    </view>
+    <view class="goods-content">
+      <v-single-col-goods is-edit="{{isEdit}}" />
+    </view>
+    <view class="footer">
+      <view>已选：1</view>
+      <view class="confirm">确定</view>
+    </view>
+  </view>
+</v-popup>

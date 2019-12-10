@@ -5,44 +5,44 @@
       <!--条件搜索-->
       <div class="list_info">
         <label style="font-size: 14px;">
-          预约手机号
+          {{$t('reservationManage.mobile')}}
           <el-input
             size="small"
             class="filter_input"
-            :placeholder="$t('technicianList.technicianName')"
+            :placeholder="$t('reservationManage.mobile')"
             v-model="queryParams.mobile"
           ></el-input>
         </label>
         <label style="font-size: 14px;">
-          预约起始时间
+          {{$t('reservationManage.reservationStartTime')}}
           <el-date-picker
             v-model="queryParams.serviceDateStart"
             type="date"
             size="small"
-            placeholder="选择日期">
+            :placeholder="$t('reservationManage.reservationStartTime')">
           </el-date-picker>
         </label>
         <label style="font-size: 14px;">
-          预约结束时间
+          {{$t('reservationManage.reservationEndTime')}}
           <el-date-picker
             v-model="queryParams.serviceDateEnd"
             type="date"
             size="small"
-            placeholder="选择日期">
+            :placeholder="$t('reservationManage.reservationEndTime')">
           </el-date-picker>
         </label>
         <label style="font-size: 14px;">
-          技师
+          {{$t('reservationManage.technician')}}
           <el-input
             size="small"
             class="filter_input"
-            placeholder="技师"
+            :placeholder="$t('reservationManage.technician')"
             v-model="queryParams.technicianName"
           ></el-input>
         </label>
         <el-input
           type="tel"
-          placeholder="请输入预约人姓名服务名查询"
+          :placeholder="$t('reservationManage.keywords')"
           style="width: 170px;"
           size="small"
           v-model="queryParams.keywords"
@@ -57,7 +57,7 @@
           type="primary"
           size="small"
           @click="showMess3"
-        >新建预约活动</el-button>
+        >{{$t('reservationManage.newActive')}}</el-button>
       </div>
       <div>
         <el-tabs
@@ -86,71 +86,71 @@
             }"
           >
             <el-table-column
-              label="预约人"
+              :label="$t('reservationManage.subscriber')"
               prop="subscriber"
             >
             </el-table-column>
             <el-table-column
-              label="服务名称"
+              :label="$t('reservationManage.serviceName')"
               prop="serviceName"
             >
             </el-table-column>
             <el-table-column
-              label="预约手机号"
+              :label="$t('reservationManage.mobile')"
               prop="mobile"
             ></el-table-column>
             <el-table-column
-              label="预约到店时间"
+              :label="$t('reservationManage.serviceDate')"
               prop="serviceDate"
             ></el-table-column>
             <el-table-column
-              label="技师"
+              :label="$t('reservationManage.technician')"
               prop="technicianName"
             ></el-table-column>
             <el-table-column
-              label="预约支付金额"
+              :label="$t('reservationManage.serviceSubsist')"
               prop="serviceSubsist"
             ></el-table-column>
             <el-table-column
-              label="留言"
+              :label="$t('reservationManage.message')"
               prop="addMessage"
             ></el-table-column>
             <el-table-column
-              label="操作"
+              :label="$t('reservationManage.operate')"
               prop="operate"
               align="center"
             >
               <template slot-scope="{ row }">
                 <div style="margin-top:10px;">
-                  <el-tooltip :content="$t('technicianList.shiftManagement')">
+                  <el-tooltip :content="$t('reservationManage.addMessage')">
                     <span
                       class="iconSpan"
                       @click="showMess(row.orderSn)"
-                    >添加备注 </span>
+                    >{{$t('reservationManage.addMessage')}} </span>
                   </el-tooltip>
-                  <el-tooltip :content="$t('technicianList.edit')">
+                  <el-tooltip :content="$t('reservationManage.seeDetails')">
                     <span
                       class="iconSpan"
                       @click="click2Detail(row.orderSn)"
-                    >查看详情</span>
+                    >{{$t('reservationManage.seeDetails')}}</span>
                   </el-tooltip>
-                  <el-tooltip :content="$t('technicianList.edit')">
+                  <el-tooltip :content="$t('reservationManage.seeEvluation')">
                     <span
                       class="iconSpan"
                       @click="edit('edit', row)"
-                    >查看评价</span>
+                    >{{$t('reservationManage.seeEvluation')}}</span>
                   </el-tooltip>
-                  <el-tooltip :content="$t('technicianList.edit')">
+                  <el-tooltip :content="$t('reservationManage.cancel')">
                     <span
                       class="iconSpan"
-                      @click="showMess1(row.orderSn)"
-                    >取消</span>
+                      @click="showMess1(row.orderId, row.orderSn)"
+                    >{{$t('reservationManage.cancel')}}</span>
                   </el-tooltip>
-                  <el-tooltip :content="$t('technicianList.edit')">
+                  <el-tooltip :content="$t('reservationManage.charge')">
                     <span
                       class="iconSpan"
                       @click="showMess2(row.orderId, row.orderSn, row.userId)"
-                    >核销</span>
+                    >{{$t('reservationManage.charge')}}</span>
                   </el-tooltip>
                 </div>
               </template>
@@ -167,7 +167,7 @@
     </div>
     <!-- 添加备注弹窗 -->
     <el-dialog
-      title="添加备注"
+      :title="$t('reservationManage.addMessage')"
       :visible.sync="showMessage"
       :close-on-click-modal='false'
       width=50%
@@ -176,7 +176,7 @@
         <el-input
           type="textarea"
           :rows="2"
-          placeholder="请输入备注"
+          :placeholder="$t('reservationManage.message')"
           v-model="adminMessage">
         </el-input>
       </div>
@@ -197,7 +197,7 @@
     </el-dialog>
     <!-- 取消弹窗 -->
     <el-dialog
-      title="取消预约"
+      :title="$t('reservationManage.cancelReservation')"
       :visible.sync="showCancel"
       :close-on-click-modal='false'
       width=50%
@@ -206,7 +206,7 @@
         <el-input
           type="textarea"
           :rows="2"
-          placeholder="请输入取消原因"
+          :placeholder="$t('reservationManage.cancelReason')"
           v-model="cancelReason">
         </el-input>
       </div>
@@ -227,68 +227,67 @@
     </el-dialog>
     <!-- 核销弹窗 -->
     <el-dialog
-      title="核销预约"
+      :title="$t('reservationManage.charge')"
       :visible.sync="showCharge"
       :close-on-click-modal='false'
-      width=50%
+      width=40%
     >
       <div class="table_list">
         <div>
-          请输入核销码：
+          {{$t('reservationManage.chargeCode')}}：
           <el-input
             style="width: 40%"
-            placeholder="请输入核销码"
+            :placeholder="$t('reservationManage.chargeCode')"
             v-model="chargeParam.verifyCode">
           </el-input>
         </div>
         <br>
-        <div>
+        <div style="margin-top: 20px">
           <el-row>
-            <el-col>请选择核销方式：</el-col>
+            <el-col>{{$t('reservationManage.chargeType')}}：</el-col>
           </el-row>
           <template>
             <el-radio-group v-model="chargeParam.verifyPay">
-              <div>
-                <el-radio :label="0">门店买单</el-radio>
+              <div style="margin-top: 20px">
+                <el-radio :label="0">{{$t('reservationManage.storeBuy')}}</el-radio>
               </div>
-              <div>
-                <el-radio :label="1">会员卡</el-radio>
+              <div style="margin-top: 20px">
+                <el-radio :label="1">{{$t('reservationManage.memberCard')}}</el-radio>
+                <template v-if="chargeParam.verifyPay === 1">
+                  <el-select v-model="chargeParam.cardId" clearable :placeholder="$t('reservationManage.memberCard')">
+                    <el-option
+                      v-for="item in availableCard"
+                      :key="item.cardId"
+                      :label="item.cardName"
+                      :value="item.cardId">
+                    </el-option>
+                  </el-select>
+                </template>
                 <el-input
                   v-if="chargeParam.verifyPay === 1"
-                  style="width: 30%"
-                  size="small"
-                  placeholder="可用会员卡下拉列表"
-                  v-model="chargeParam.cardId">
-                </el-input>
-                <el-input
-                  v-if="chargeParam.verifyPay === 1"
-                  style="width: 30%"
-                  size="small"
-                  placeholder="请输入金额或次数"
+                  style="width: 20%"
+                  :placeholder="$t('reservationManage.reduceOrLimit')"
                   v-model="chargeParam.reduce">
                 </el-input>
                 <el-input
                   v-if="chargeParam.verifyPay === 1"
-                  style="width: 30%"
-                  size="small"
-                  placeholder="请输入扣除原因"
+                  style="width: 20%"
+                  :placeholder="$t('reservationManage.season')"
                   v-model="chargeParam.reason">
                 </el-input>
               </div>
-              <div>
-                <el-radio :label="2">账户余额</el-radio>
+              <div style="margin-top: 20px">
+                <el-radio :label="2">{{$t('reservationManage.balance')}}</el-radio>
                 <el-input
                   v-if="chargeParam.verifyPay === 2"
                   style="width: 30%"
-                  size="small"
                   placeholder="99999999999999"
                   v-model.number="chargeParam.balance">
                 </el-input>
                 <el-input
                   v-if="chargeParam.verifyPay === 2"
                   style="width: 30%"
-                  size="small"
-                  placeholder="请输入扣除原因"
+                  :placeholder="$t('reservationManage.season')"
                   v-model="chargeParam.reason">
                 </el-input>
               </div>
@@ -313,48 +312,67 @@
     </el-dialog>
     <!-- 后台添加预约弹窗 -->
     <el-dialog
-      title="新增预约"
+      :title="$t('reservationManage.newActive')"
       :visible.sync="showReservation"
       :close-on-click-modal='false'
-      width=50%
+      width=30%
     >
       <div class="table_list">
         <div>
-          * 预约人：
-          <el-input
-            style="width: 40%"
-            placeholder="选择会员"
-            v-model="userRowData.userName">
-          </el-input>
-          <el-button
-            type="primary"
-            size="small"
-            @click="hanldeModifyPerson()"
-          >选择会员</el-button>
+          <el-row :gutter="15" class="row_style">
+            <el-col :span="5">
+               <span class="span_asterisk">*</span> {{$t('reservationManage.subscriber')}}：
+            </el-col>
+            <el-col :span="10">
+              <el-input
+                :placeholder="$t('reservationManage.chooseUser')"
+                v-model="userRowData.userName">
+              </el-input>
+              <el-button
+                type="primary"
+                @click="hanldeModifyPerson()"
+              >{{$t('reservationManage.chooseUser')}}</el-button>
+            </el-col>
+          </el-row>
         </div>
         <div>
-          * 手机号：
-          <el-input
-            style="width: 40%"
-            placeholder="请填写预约人手机号"
-            v-model="reservation.mobile">
-          </el-input>
+          <el-row :gutter="15" class="row_style">
+            <el-col :span="5">
+              <span class="span_asterisk">*</span> {{$t('reservationManage.mobile')}}：
+            </el-col>
+            <el-col :span="10">
+                <el-input
+                :placeholder="$t('reservationManage.mobile')"
+                v-model="reservation.mobile">
+              </el-input>
+            </el-col>
+          </el-row>
         </div>
         <div>
-          * 预约到店时间：
-          <el-date-picker
+          <el-row :gutter="15" class="row_style">
+            <el-col :span="5">
+          <span class="span_asterisk">*</span> {{$t('reservationManage.serviceDate')}}：
+            </el-col>
+            <el-col :span="10">
+            <el-date-picker
             v-model="dateTime"
             value-format="yyyy-MM-dd HH:mm:ss"
             type="datetime"
-            placeholder="选择到店日期时间"
+            :placeholder="$t('reservationManage.serviceDate')"
             align="right"
             :picker-options="pickerOptions">
           </el-date-picker>
+            </el-col>
+          </el-row>
         </div>
         <div>
-          * 预约服务：
-          <template>
-            <el-select v-model="reservation.serviceId" clearable placeholder="请选择服务"
+          <el-row :gutter="15" class="row_style">
+            <el-col :span="5">
+          <span class="span_asterisk">*</span> {{$t('reservationManage.serviceName')}}：
+            </el-col>
+            <el-col :span="10">
+            <template>
+            <el-select v-model="reservation.serviceId" clearable :placeholder="$t('reservationManage.serviceName')"
                        @change="changeEvent()">
               <el-option
                 v-for="item in reservationService"
@@ -364,11 +382,17 @@
               </el-option>
             </el-select>
           </template>
+            </el-col>
+          </el-row>
         </div>
         <div>
-          * 预约技师：
-          <template>
-            <el-select v-model="reservation.technicianId" clearable placeholder="请选择技师">
+          <el-row :gutter="15" class="row_style">
+            <el-col :span="5">
+          <span class="span_asterisk">*</span> {{$t('reservationManage.technician')}}：
+            </el-col>
+            <el-col :span="10">
+            <template>
+            <el-select v-model="reservation.technicianId" clearable :placeholder="$t('reservationManage.technician')">
               <el-option
                 v-for="item in reservationTech"
                 :key="item.id"
@@ -377,14 +401,21 @@
               </el-option>
             </el-select>
           </template>
+            </el-col>
+          </el-row>
         </div>
         <div>
-          备注：
-          <el-input
-            style="width: 40%"
-            placeholder="备注不超过200字"
+          <el-row :gutter="15" class="row_style">
+            <el-col :span="5">
+          {{$t('reservationManage.message')}}：
+            </el-col>
+            <el-col :span="10">
+            <el-input
+            :placeholder="$t('reservationManage.messageLimit')"
             v-model="reservation.adminMessage">
           </el-input>
+            </el-col>
+          </el-row>
         </div>
       </div>
       <span
@@ -411,7 +442,7 @@
 </template>
 
 <script>
-import { getList, detail, addMessage, add, charge, cancel, techList } from '@/api/admin/storeManage/storemanage/reservationManage'
+import { getList, availableCard, addMessage, add, charge, cancel, techList } from '@/api/admin/storeManage/storemanage/reservationManage'
 import { getAllService } from '@/api/admin/storeManage/storemanage/serviceManage'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -460,9 +491,13 @@ export default {
         technicianId: 3,
         technicianName: '服务'
       }],
+      // 可用会员卡下拉
+      availableCard: [],
       // 备注
       adminMessage: '',
       orderSn: '',
+      orderId: 0,
+      userId: 0,
       showMessage: false,
       // 取消预约原因
       cancelReason: '',
@@ -503,7 +538,7 @@ export default {
         verifyPay: 0,
         cardId: null,
         cardNo: null,
-        reduce: null,
+        reduce: '',
         balance: null,
         reason: '',
         account: null,
@@ -529,19 +564,19 @@ export default {
       },
       tabSwitch: '-1',
       tabInfo: [{
-        title: '所有预约',
+        title: this.$t('reservationManage.alReservation'),
         name: '-1'
       }, {
-        title: '待支付',
+        title: this.$t('reservationManage.waitPay'),
         name: '0'
       }, {
-        title: '带服务',
+        title: this.$t('reservationManage.waitService'),
         name: '1'
       }, {
-        title: '已取消',
+        title: this.$t('reservationManage.canceled'),
         name: '2'
       }, {
-        title: '已完成',
+        title: this.$t('reservationManage.finished'),
         name: '3'
       }],
       storeId: 0,
@@ -588,13 +623,12 @@ export default {
     // 可用会员卡下拉
     getMemberCardList () {
       let obj = {
-        userId: 0,
-        storeId: this.storeId,
-        serviceId: this.serviceId
+        userId: this.userId,
+        storeId: this.storeId
       }
-      techList(obj).then(res => {
+      availableCard(obj).then(res => {
         if (res.error === 0) {
-          this.reservationTech = res.content
+          this.availableCard = res.content
         }
       })
     },
@@ -679,20 +713,13 @@ export default {
         this.showMessage = false
       })
     },
-    // 查看详情
-    toDetail (param) {
-      detail().then(res => {
-        if (res.error === 0) {
-
-        }
-      })
-    },
     // 查看评价
     evaluation () {
 
     },
     // 取消弹窗-点击触发弹窗
-    showMess1 (orderSn) {
+    showMess1 (orderId, orderSn) {
+      this.orderId = orderId
       this.orderSn = orderSn
       this.showCancel = true
     },
@@ -704,7 +731,7 @@ export default {
     cancel () {
       let obj = {
         'orderSn': this.orderSn,
-        'orderId': 0,
+        'orderId': this.orderId,
         'cancelReason': this.cancelReason
       }
       cancel(obj).then(res => {
@@ -720,6 +747,8 @@ export default {
       this.chargeParam.orderId = orderId
       this.chargeParam.orderSn = orderSn
       this.chargeParam.userId = parseInt(userId)
+      this.userId = parseInt(userId)
+      this.getMemberCardList()
       this.showCharge = true
     },
     // 关闭核销弹窗
@@ -728,9 +757,26 @@ export default {
     },
     // 核销
     charge () {
+      switch (this.chargeParam.verifyPay) {
+        case 0:
+          break
+        case 1:
+          if (this.availableCard === null) {
+            this.$message.error('无可用会员卡')
+            break
+          }
+          this.chargeParam.cardNo = this.availableCard.find((item) => {
+            return item.cardId === this.chargeParam.cardId
+          }).cardNo
+          break
+        case 2:
+          break
+      }
       charge(this.chargeParam).then(res => {
         if (res.error === 0) {
           this.$message.success('核销成功')
+          this.showCharge = false
+          this.initDataList()
         }
         this.$message.error('核销失败')
         this.showCancel = false
@@ -791,9 +837,19 @@ export default {
 
 <style lang="scss" scoped>
   .table_list {
+    margin-left: 20px;
     position: relative;
     .table_footer {
       background: #666;
+    }
+    .span_asterisk {
+      color: #cc0000;
+    }
+    .span_text {
+      text-align: right;
+    }
+    .row_style{
+      margin-top: 10px;
     }
   }
   .content {
@@ -822,6 +878,7 @@ export default {
   .technician_list_page {
     margin: 0 25px;
     .list_info {
+      margin-top: 20px;
       padding-bottom: 10px;
       .filter_input {
         width: 170px;

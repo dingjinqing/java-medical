@@ -92,18 +92,18 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
 
     /*****************商品详情处理******************/
     @Override
-    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-        List<GoodsDetailMpBo.GradePrd> gradeCards = capsule.getGradeCardPrice();
-        if (gradeCards == null) {
+    public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
+        List<GoodsDetailMpBo.GradePrd> gradeCards = goodsDetailMpBo.getGradeCardPrice();
+        if (goodsDetailMpBo.getIsDisposedByEs()) {
             log.debug("会员价格查询");
             List<GradePrdRecord> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
             gradeCards = goodsGradeGradePrice.stream().map(x -> x.into(GoodsDetailMpBo.GradePrd.class)).collect(Collectors.toList());
-            capsule.setGradeCardPrice(gradeCards);
+            goodsDetailMpBo.setGradeCardPrice(gradeCards);
         }
 
         Map<Integer, BigDecimal> gradePriceMap = gradeCards.stream().collect(Collectors.toMap(GoodsDetailMpBo.GradePrd::getPrdId, GoodsDetailMpBo.GradePrd::getGradePrice, (x1, x2) -> x1));
 
-        List<GoodsPrdMpVo> products = capsule.getProducts();
+        List<GoodsPrdMpVo> products = goodsDetailMpBo.getProducts();
         products.forEach(prd -> {
             if (gradePriceMap.get(prd.getPrdId()) != null) {
                 prd.setPrdLinePrice(prd.getPrdRealPrice());
@@ -151,6 +151,7 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
                     GoodsActivityInfo goodsActivityInfo = new GoodsActivityInfo();
                     goodsActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
                     goodsActivityInfo.setMemberPrice(gradePrice.getGradePrice());
+                    goods.getActivityInfo().add(goodsActivityInfo);
                 }
             });
         });

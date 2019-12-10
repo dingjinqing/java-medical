@@ -1,0 +1,48 @@
+.filter {
+  height: 100rpx;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-bottom: 1rpx solid #eee;
+}
+.input_box {
+  line-height: 60rpx;
+  border: 2rpx solid #eee;
+  width: 700rpx;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  border-radius: 10rpx;
+}
+.input_box icon {
+  padding: 0 20rpx;
+  line-height: 1;
+  vertical-align: middle;
+}
+.input_box > input {
+  flex: 1;
+}
+.footer{
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+}
+.footer > view{
+  flex: 1;
+  line-height: 100rpx;
+  text-align: center;
+  color: #fff;
+  background-color:#fff;
+}
+.footer > .selected-price{
+  flex: 1.5;
+  text-align: left;
+  padding-left: 20rpx;
+  color: #666;
+}
+.footer > .selected-price > text{
+  font-weight: 600;
+}

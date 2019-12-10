@@ -21,8 +21,7 @@ import java.time.LocalTime;
 @Component
 @EnableScheduling
 @EnableAsync
-
-@Slf4j
+@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "off")
 public class GoodsScheduleTask {
 
     @Autowired
@@ -77,9 +76,8 @@ public class GoodsScheduleTask {
      * 商品自动上架
      * 每一分钟执行一次
      */
-    @Scheduled(cron = "* */1 * * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     public void autoOnSaleGoods(){
-        log.debug("准备执行定时任务：minute"+ LocalTime.now().getMinute());
         Result<ShopRecord> result = saas.shop.getAll();
         result.forEach((r)-> saas.getShopApp(r.getShopId()).goods.onSaleGoods());
     }

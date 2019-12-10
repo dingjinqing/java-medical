@@ -1,11 +1,13 @@
 var util = require("../../../../utils/util.js");
 var base = require("../../../popup/base/base.js");
+var coupon = require("../../../../common/service/coupon.js")
 global.wxComponent({
   mixins: [base],
   properties: {
     coupon_list: Array
   },
   methods: {
+    ...coupon,
     bindGetCoupon(e) {
       var d = this.eventData(e);
       d.form_id = e.detail.form_id;

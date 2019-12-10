@@ -44,8 +44,7 @@ import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_CANCELED;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_NAME_CANCELED;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.*;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -525,9 +524,9 @@ public class AdminStoreController extends AdminBaseController{
     	switch (param.getVerifyPay().byteValue()) {
 	    	/** 会员卡核销 */
             case ServiceOrderService.VERIFY_PAY_TYPE_MEMBER_CARD:
-                if(param.getCountDis() == null) {
-                    return fail(JsonResultCode.CODE_PARAM_ERROR);
-                }
+//                if(param.getCountDis() == null) {
+//                    return fail(JsonResultCode.CODE_PARAM_ERROR);
+//                }
                 if(param.getReduce() == null) {
                     return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_BALANCE_IS_NULL);
                 }
@@ -576,7 +575,7 @@ public class AdminStoreController extends AdminBaseController{
     		updateParam.setFinishedTime(DateUtil.getLocalDateTime());
     		updateParam.setVerifyAdmin(adminAuth.user().getUserName());
     		updateParam.setOrderStatus(ServiceOrderService.ORDER_STATUS_FINISHED);
-
+            updateParam.setOrderStatusName(ORDER_STATUS_NAME_FINISHED);
     		updateParam.setVerifyType(ServiceOrderService.VERIFY_TYPE_ADMIN);
     		FieldsUtil.assignNotNull(param, updateParam);
 

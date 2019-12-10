@@ -25,7 +25,7 @@ global.wxPage({
       if (res.error == 0) {
         _this.setData({
           isOk: true,
-          userQrCode: res.message
+          userQrCode: res.content
         })
       }else{
         _this.setData({

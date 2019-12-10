@@ -504,6 +504,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
             //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
             UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()));
+            logger().info("calculateResult:{}", calculateResult);
             //TODO 分销改价（return）
 
             //TODO 首单特惠（return）

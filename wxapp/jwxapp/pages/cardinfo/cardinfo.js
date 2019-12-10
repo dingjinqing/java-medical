@@ -16,20 +16,6 @@ global.wxPage({
     this.requestCardInfo(cardNo)
   },
   requestCardInfo(cardNo) {
-    //测试
-    let cardInfo = {
-      // cardTypeName: '普通卡',
-      // cardName: '测试1',
-      // money: 100,
-      // exchangSurplus: 10,
-      // surplus: 1,
-      // userCardCreateTime: '2019/1/1'
-    }
-    this.setData({
-      cardInfo: cardInfo
-    })
-
-
     // util.api('/api/card/detail',res => {
     //   let cardInfo = res.content
     //   cardInfo.cardExpireTime = this.getCardExpireTime(cardInfo);
@@ -76,6 +62,7 @@ global.wxPage({
   getCardStatus(cardItem) {
 
   },
+  // 展示二维码
   showQrCode() {
     let qrCode = this.data.cardInfo.qrCode
     this.setData({
@@ -83,6 +70,7 @@ global.wxPage({
       showQrcode: true
     })
   },
+  // 等级卡  等级详情
   getUpgradeCondition(cardInfo) {
     if (cardInfo.cardType !== 2 || !cardInfo.nextGradeCard) return
     if (cardInfo.nextGradeCard.gradeConditionJson.gradeScore) {
@@ -101,57 +89,10 @@ global.wxPage({
     }
 
   },
+  // 拨号
   phoneCall: function (e) {
     wx.makePhoneCall({
       phoneNumber: this.data.cardInfo.mobile
     })
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
   }
 })

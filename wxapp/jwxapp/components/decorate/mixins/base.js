@@ -68,7 +68,21 @@ var base = {
           // 处理价格上方显示的label条
           this.handleToActivitiesLabel(item, itemC, arr)
         })
-        item.activityLabelData = arr
+        console.log(arr)
+        let newArr = []
+        let specArr = []
+        arr.forEach(item => {
+          if (JSON.stringify(item) != '{}') {
+            newArr.push(item)
+          }
+        })
+        if (newArr.length > 2) {
+          specArr.push(newArr[0])
+          specArr.push(newArr[1])
+          item.activityLabelData = specArr
+          return
+        }
+        item.activityLabelData = newArr
       })
     },
     // 处理价格上方显示的label条
@@ -89,9 +103,6 @@ var base = {
           break
         case 10:
           obj.text = this.$t("components.decorate.advanceSale")
-          break
-        case 18:
-          obj.text = this.$t("components.decorate.firstSpecialOffer")
           break
         case 19:
           if (itemC.actCode === 'voucher') {
@@ -114,11 +125,11 @@ var base = {
         case 21:
           obj.text = this.$t("components.decorate.fullMemberDiscount")
           break
-        case 22:
-          obj.text = this.$t("components.decorate.membershipExclusive")
-          break
       }
-      arr.push(obj)
+      if ((itemC.activityType != 22) || (itemC.activityType != 18)) {
+        arr.push(obj)
+      }
+
       console.log(item, itemC)
     }
   }

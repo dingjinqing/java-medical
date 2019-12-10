@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -16,12 +17,12 @@ import java.util.List;
  * 2019年7月17日
  */
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class AdminDistributionController extends AdminBaseController{
-//	@Override
-//    protected ShopApplication shop() {
-//        return saas.getShopApp(471752);
-//    }
+	@Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
 	//分销配置
 	/**
 	 * 获取分销配置
@@ -44,9 +45,14 @@ public class AdminDistributionController extends AdminBaseController{
 		return this.success(result);
 	}
 
-	public JsonResult setDistributionQrCode(){
-        //TODO:分销二维码
-        return this.success();
+    /**
+     * 获取推广文案二维码
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/admin/distribution/share/code")
+    public JsonResult getDistributionShareCode() throws Exception {
+        return success(shop().config.distributionCfg.getShareQrCode());
     }
 
 	/**
