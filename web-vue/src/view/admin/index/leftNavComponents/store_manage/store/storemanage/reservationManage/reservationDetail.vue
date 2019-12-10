@@ -65,6 +65,7 @@
               'background-color':'#f5f5f5',
               'border':'none'
             }"
+          >
             <el-table-column
               :label="$t('reservationManage.serviceName')"
               prop="serviceName"
