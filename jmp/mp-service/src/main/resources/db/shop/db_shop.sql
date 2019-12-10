@@ -2989,6 +2989,7 @@ create table `b2c_reduce_price`
     `update_time`       timestamp            default current_timestamp on update current_timestamp comment '最后修改时间',
     `share_config`      text comment '分享设置',
     `limit_flag`        tinyint(1)           default '0' comment '超限购买设置标记，1禁止超限购买，0超限全部恢复原价',
+    `first` tinyint(1) NOT NULL DEFAULT 1 COMMENT '优先级',
     primary key (`id`)
 );
 --  限时减价活动商品

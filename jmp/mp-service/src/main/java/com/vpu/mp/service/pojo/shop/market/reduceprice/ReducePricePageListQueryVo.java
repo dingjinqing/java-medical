@@ -21,6 +21,9 @@ public class ReducePricePageListQueryVo {
     /** 商品数量 */
     private Integer goodsAmount;
 
+    /** 优先级 */
+    private Byte first;
+
     /** 开始时间 */
     private Timestamp startTime;
 
