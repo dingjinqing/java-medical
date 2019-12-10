@@ -1,12 +1,14 @@
+<!--
+***  满折满减列表页面
+-->
 <template>
   <div class="fullCut">
     <div class="mainContent">
       <!-- tab切换内容部分 -->
       <statusTab
-        v-model="params.navType"
+        v-model="params.state"
         :activityName="activityName"
         :standard="true"
-        @click="tableDataSearch()"
       />
 
       <div class="addActivity">
@@ -36,10 +38,8 @@
           prop="type"
           label="活动类型"
           align="center"
+          :formatter="formatStatus"
         >
-          <template slot-scope="scope">
-            {{scope.row.type | formatStatus(item.status)}}
-          </template>
         </el-table-column>
         <el-table-column
           prop=""
@@ -80,12 +80,62 @@
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="operate"
           label="操作"
           align="center"
         >
+          <template slot-scope="scope">
+            <div class="opt">
+              <el-tooltip
+                content="编辑"
+                placement="top"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
+              >
+                <span
+                  class="el-icon-edit-outline"
+                  @click="editHandle(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="启用"
+                placement="top"
+                v-if=" scope.row.status === 4"
+              >
+                <span
+                  class="el-icon-circle-check"
+                  @click="openHandle(scope.row)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="停用"
+                placement="top"
+                v-if="scope.row.status === 1 || scope.row.status === 2"
+              >
+                <span
+                  class="el-icon-circle-close"
+                  @click="closeHandle(scope.row)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="删除"
+                placement="top"
+                v-if="scope.row.status === 0 || scope.row.status === 3 || scope.row.status === 4"
+              >
+                <span
+                  class="el-icon-delete"
+                  @click="deleteHandle(scope.row.id)"
+                ></span>
+              </el-tooltip>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
+      <div class="footer">
+        <pagination
+          :page-params.sync="params"
+          @pagination="tableDataSearch"
+        />
+      </div>
 
     </div>
   </div>
@@ -102,34 +152,64 @@ export default {
     return {
       activityName: '满折满减',
       params: {
-        navType: '1'
+        'state': 1,
+        'currentPage': 1,
+        'pageRows': 20
       },
       tableData: []
     }
   },
-  mounted () {
+  watch: {
+    'params.state' (n, o) {
+      console.log(123)
+      this.tableDataSearch()
+    }
+  },
+  created () {
     this.tableDataSearch()
   },
   methods: {
     tableDataSearch () {
-      let obj = {
-        'currentPage': 1
-      }
-      fullCutTableDataSearchApi(obj).then(res => {
+      fullCutTableDataSearchApi(this.params).then(res => {
         if (res.error === 0) {
           console.log(res)
+          this.params = Object.assign(res.content.page, this.params)
           this.tableData = res.content.dataList
-          console.log(this.tableData, 'tableData')
           this.tableData.map((item, index) => {
             item.statusText = this.getActStatusString(item.status)
           })
         }
       }).catch(err => console.log(err))
     },
+    formatStatus (row, column) {
+      switch (row.type) {
+        case 1: row.type = '每满减'
+          break
+        case 2: row.type = '满减'
+          break
+        case 3: row.type = '满折'
+          break
+        case 4: row.type = '仅第X件打折'
+          break
+      }
+      return row.type
+    },
     addActivity () {
       this.$router.push({
         name: 'fullCutActivity'
       })
+    },
+    editHandle () {
+
+    },
+    openHandle () {
+
+    },
+    closeHandle () {
+
+    },
+    deleteHandle () {
+
     }
   }
 
@@ -158,6 +238,14 @@ export default {
     padding: 15px;
     margin-top: 10px;
     background-color: #fff;
+    .opt {
+      text-align: center;
+      color: #5a8bff;
+      span {
+        cursor: pointer;
+        font-size: 22px;
+      }
+    }
   }
 }
 </style>
