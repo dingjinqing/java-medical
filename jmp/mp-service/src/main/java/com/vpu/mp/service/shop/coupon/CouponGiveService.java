@@ -827,4 +827,10 @@ public class CouponGiveService extends ShopBaseService {
     db().executeInsert(couponsRecord);
     return couponSn;
   }
+  
+  public void sendVoucher(Integer userId,List<Integer> couponIds,Integer giveId,Integer source,Byte isContinue) {
+	  for(Integer id: couponIds) {
+		  // TODO 批量发放优惠券给会员
+	  }
+  }
 }

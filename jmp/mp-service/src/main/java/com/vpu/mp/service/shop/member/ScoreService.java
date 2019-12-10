@@ -524,7 +524,7 @@ public class ScoreService extends ShopBaseService {
 				// 升级
 				userCardService.updateGrade(data.getUserId(),null, UPGRADE);
 			} catch (MpException e) {
-				e.printStackTrace();
+				logger().info("没有可升级的会员卡");
 			}
 		}
 	}

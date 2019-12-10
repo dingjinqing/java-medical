@@ -82,6 +82,7 @@ import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
@@ -2135,4 +2136,43 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 
         return vo;
     }
+
+	public List<MemberCardRecord> getGradeCardList(String grade) {
+		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
+			.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
+			.and(MEMBER_CARD.GRADE.greaterThan(grade))
+			.and(MEMBER_CARD.DEL_FLAG.eq((byte)0))
+			.orderBy(MEMBER_CARD.GRADE)
+			.fetchInto(MemberCardRecord.class);
+		
+	}
+	
+	public List<MemberCardRecord> getGradeCardList() {
+		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
+			.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
+			.and(MEMBER_CARD.DEL_FLAG.eq((byte)0))
+			.orderBy(MEMBER_CARD.GRADE)
+			.fetchInto(MemberCardRecord.class);
+		
+	}
+
+	public void sendCoupon(MemberCardRecord mCard, Integer userId, Integer cardId) {
+		if(NumberUtils.BYTE_ZERO.equals(mCard.getSendCouponSwitch()))
+			return;
+		String[] sendCouponIds = mCard.getSendCouponIds().split(",");
+		List<Integer> sendCouponList = new ArrayList();
+		for(String id: sendCouponIds) {
+			sendCouponList.add(Integer.parseInt(id));
+		}
+		//send_coupon_type:0送券，1送优惠券礼包
+		if(NumberUtils.BYTE_ZERO.equals(mCard.getSendCouponType()) && sendCouponList.size()>0) {
+			couponGiveService.sendVoucher(userId,sendCouponList,cardId,19,(byte)1);
+		}else if(NumberUtils.BYTE_ONE.equals(mCard.getSendCouponType()) || sendCouponList.size()>0){
+			// TODO  
+			logger().info("虚拟商品下单");
+			// cardOrder.createCardOrder()
+		}
+		
+	}
+	
 }
