@@ -3,89 +3,38 @@ import service from '@/util/request.js'
 /**
  * 评价管理
  */
-// 技师列表
-export function getTechnicianList (data) {
+// 分页查询服务评价
+export function getList (data) {
   return service({
-    url: '/api/admin/store/services/technician/list',
+    url: '/api/admin/store/services/comment/list',
     method: 'post',
     data: data
   })
 }
 
-// 技师分组下拉
-export function getTechnicianGroup (data) {
+// 删除服务评价
+export function batchDel (data) {
   return service({
-    url: '/api/admin/store/services/technician/group/all/' + data.storeId,
-    method: 'get'
-  })
-}
-
-// 获取服务列表
-export function getServiceList (data) {
-  return service({
-    url: '/api/admin/store/service/list',
+    url: '/api/admin/store/services/comment/delete',
     method: 'post',
     data: data
   })
 }
 
-// 添加技师
-export function addTechnicianApi (data) {
+// 服务评价审核通过
+export function pass (data) {
   return service({
-    url: '/api/admin/store/services/technician/add',
+    url: '/api/admin/store/services/comment/pass',
     method: 'post',
     data: data
   })
 }
 
-// 读取技师信息
-export function getTechnician (data) {
+// 服务评价审核拒绝
+export function refuse (data) {
   return service({
-    url: '/api/admin/store/services/technician/select/' + data.id,
-    method: 'get'
-  })
-}
-
-// 更新技师信息
-export function updateTechnicianApi (data) {
-  return service({
-    url: '/api/admin/store/services/technician/update',
+    url: '/api/admin/store/services/comment/refuse',
     method: 'post',
     data: data
-  })
-}
-
-// 技师分组列表
-export function getTechnicianGroupList (data) {
-  return service({
-    url: '/api/admin/store/services/technician/group/list',
-    method: 'post',
-    data: data
-  })
-}
-
-// 添加技师分组
-export function addTechnicianGroup (data) {
-  return service({
-    url: '/api/admin/store/services/technician/group/add',
-    method: 'post',
-    data: data
-  })
-}
-
-// 更新技师分组
-export function updateTechnicianGroup (data) {
-  return service({
-    url: '/api/admin/store/services/technician/group/update',
-    method: 'post',
-    data: data
-  })
-}
-
-// 删除技师分组
-export function deleteTechnicianGroup (data) {
-  return service({
-    url: '/api/admin/store/services/technician/delete/' + data.id,
-    method: 'post'
   })
 }

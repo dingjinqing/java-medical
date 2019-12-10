@@ -1,8 +1,10 @@
 import service from '@/util/request.js'
 
-export function fullCutTableDataSearch () {
+export function fullCutTableDataSearchApi (data) {
   return service({
-    url: ''
+    url: '/api/admin/market/fullcut/list',
+    method: 'post',
+    data: data
   })
 }
 

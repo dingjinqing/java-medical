@@ -22,20 +22,24 @@
     <div class="table_list">
       <el-table
         header-row-class-name="tableClss"
+        :data="tableData"
         border
         style="width: 100%"
       >
         <el-table-column
-          prop=""
+          prop="actName"
           label="活动名称"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="type"
           label="活动类型"
           align="center"
         >
+          <template slot-scope="scope">
+            {{scope.row.type | formatStatus(item.status)}}
+          </template>
         </el-table-column>
         <el-table-column
           prop=""
@@ -48,15 +52,29 @@
           label="优惠规则"
           align="center"
         >
+          <template slot-scope="scope">
+            <div
+              v-for="(item, index) in scope.row.condition"
+              :key="index"
+            >
+              满{{item.fullMoney}}元减{{item.reduceMoney}}
+              <!-- 满{{item.fullMoney}}元打{{item.discount}}折
+              满{{item.fullMoney}}件减{{item.reduceMoney}}
+              每满{{item.fullMoney}}件减{{iteme.reduceMoney}} -->
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           prop=""
           label="有效期"
           align="center"
         >
+          <template slot-scope="scope">
+            {{scope.row.startTime}}<br />至<br />{{scope.row.endTime}}
+          </template>
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="statusText"
           label="状态"
           align="center"
         >
@@ -74,7 +92,7 @@
 </template>
 
 <script>
-// import {}
+import { fullCutTableDataSearchApi } from '@/api/admin/marketManage/fullDiscountFullCut'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination.vue'
 
@@ -85,12 +103,28 @@ export default {
       activityName: '满折满减',
       params: {
         navType: '1'
-      }
+      },
+      tableData: []
     }
+  },
+  mounted () {
+    this.tableDataSearch()
   },
   methods: {
     tableDataSearch () {
-
+      let obj = {
+        'currentPage': 1
+      }
+      fullCutTableDataSearchApi(obj).then(res => {
+        if (res.error === 0) {
+          console.log(res)
+          this.tableData = res.content.dataList
+          console.log(this.tableData, 'tableData')
+          this.tableData.map((item, index) => {
+            item.statusText = this.getActStatusString(item.status)
+          })
+        }
+      }).catch(err => console.log(err))
     },
     addActivity () {
       this.$router.push({
