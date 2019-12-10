@@ -1315,3 +1315,7 @@ CHANGE COLUMN `can_use_num` `can_use_num` INT(11) NULL DEFAULT 0 COMMENT '可使
 --  孔德成 修改字段名称
 ALTER TABLE `b2c_comment_award`
 CHANGE COLUMN `leve` `level` int(9) NULL DEFAULT 1 COMMENT '优先级' AFTER `is_forever`;
+
+-- 添加字段
+ALTER TABLE `b2c_mrking_voucher` 
+ADD COLUMN `recommend_type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '支付有礼跳转链接 1:全部商品可用 2：指定商品可用' AFTER `validity_type`;

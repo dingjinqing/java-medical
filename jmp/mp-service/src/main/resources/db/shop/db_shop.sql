@@ -751,6 +751,7 @@ create table `b2c_mrking_voucher`
     `score_number`         int(6)         not null default 0 comment '需要积分数',
     `card_id`              text comment '专属会员卡',
     `validity_type`        tinyint(1)   default '0' comment '优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效',
+    `recommend_type`       tinyint(1)              not null  default '1' comment '支付有礼跳转链接 1:全部商品可用 2：指定商品可用',
     `validity_hour`        mediumint(11) default 0  null comment '优惠券有效小时数',
     `validity_minute`       mediumint(11) default 0  null comment '优惠券有效分钟数',
     `expiration_date`      timestamp               comment 'validity_type为1是的过期时间',
