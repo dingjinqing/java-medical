@@ -110,6 +110,8 @@ public class OrderConstant {
 	public final static byte GOODS_TYPE_SWEEP_CODE_BUY = 100;
 
 	/**退货状态*/
+    /** 退货的默认状态 */
+    public final static byte REFUND_DEFAULT_STATUS = 0;
 	/**审核中,退款且退货申请*/
 	public final static byte  REFUND_STATUS_AUDITING = 1;
 	/**审核通过,更新卖家的收货地址信息*/
@@ -124,8 +126,6 @@ public class OrderConstant {
 	public final static byte  REFUND_STATUS_REFUSE = 6;
 	/**退款/退货 撤销*/
 	public final static byte  REFUND_STATUS_CLOSE = 7;
-	/** 退货的默认状态 */
-	public final static byte REFUND_DEFAULT_STATUS = 0;
 	/**
 	 * 	支付code
 	 */
@@ -509,4 +509,12 @@ public class OrderConstant {
      * 是否是购物车
      */
     public static final Byte CART_Y = 1;
+
+    /**
+     * admin订单搜索导航
+     */
+    public static final byte SEARCH_WAIT_DELIVERY = 1;
+    public static final byte SEARCH_WAIT_TAKEDELIVER = 2;
+    public static final byte SEARCH_RETURNING = 3;
+    public static final byte SEARCH_RETURN_COMPLETED = 4;
 }
