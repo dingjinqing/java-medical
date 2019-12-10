@@ -35,8 +35,8 @@ public class AdminCouponGiveController extends AdminBaseController{
 	/**
 	 * 优惠券明细
 	 *
-	 * @param param
-	 * @return
+	 * @param param 定向发券活动基础信息
+	 * @return 定向发券活动明细
 	 */
 	@PostMapping("/detail")
 	public JsonResult getDetail(@RequestBody CouponGiveDetailParam param) {
@@ -49,8 +49,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 	/**
 	 * 发优惠券
 	 *
-	 * @param param
-	 * @return
+	 * @param param 定向发券活动的筛选条件
 	 */
 	@PostMapping("/grant")
 	public JsonResult insertGrant(@RequestBody CouponGiveGrantParam param) {
@@ -62,8 +61,8 @@ public class AdminCouponGiveController extends AdminBaseController{
 	/**
 	 * 优惠券弹窗
 	 *
-	 * @param param
-	 * @return
+	 * @param param 选填：优惠券类型和名称
+	 * @return 优惠券信息
 	 */
 	@PostMapping("/pop")
 	public JsonResult getPopWindow(@RequestBody CouponGivePopParam param) {
@@ -73,8 +72,7 @@ public class AdminCouponGiveController extends AdminBaseController{
 	/**
 	 * 废除优惠券
 	 *
-	 * @param param
-	 * @return
+	 * @param param 优惠券id
 	 */
 	@PostMapping("/delete")
 	public JsonResult deleteCoupon(@RequestBody CouponGiveDeleteParam param) {
