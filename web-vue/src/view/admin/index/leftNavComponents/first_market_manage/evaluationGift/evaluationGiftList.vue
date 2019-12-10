@@ -206,6 +206,7 @@ export default {
   },
   mounted () {
     this.langDefault()
+    this.initDataList()
   },
   methods: {
     initDataList () {
