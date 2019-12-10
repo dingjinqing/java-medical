@@ -44,17 +44,18 @@
         </div>
       </div>
       <div class="page-right">
-        <div class="right-top">
-          <header>活动信息</header>
-          <el-form
-            ref="activityInfoForm"
-            size="small"
-            label-width="110px"
-            :mode="form"
-            :rules="rules"
-          >
+        <el-form
+          ref="activityInfoForm"
+          size="small"
+          label-width="110px"
+          :model="form"
+          :rules="rules"
+        >
+          <div class="right-top">
+            <header>{{$t('evaluationGiftAdd.eventInfo')}}</header>
+
             <el-form-item
-              label="活动名称："
+              :label="$t('evaluationGiftAdd.eventName')"
               prop="name"
             >
               <el-input
@@ -62,25 +63,25 @@
                 maxlength="10"
                 show-word-limit
                 style="width:200px;"
-                placeholder="最多支持10个字"
+                :placeholder="$t('evaluationGiftAdd.max10')"
               ></el-input>
             </el-form-item>
             <el-form-item
-              label="活动有效期："
+              :label="$t('evaluationGiftAdd.activityPeriod')"
               prop="isForever"
             >
               <div>
                 <el-radio
                   v-model="form.isForever"
                   :label="0"
-                >固定时间</el-radio>
+                >{{$t('evaluationGiftAdd.fixedTime')}}</el-radio>
                 <el-date-picker
                   v-show="form.isForever === 0"
                   v-model="period"
                   type="datetimerange"
-                  start-placeholder="生效时间"
-                  range-separator="至"
-                  end-placeholder="过期时间"
+                  :start-placeholder="$t('evaluationGiftAdd.effectiveTime')"
+                  :range-separator="$t('evaluationGiftAdd.to')"
+                  :end-placeholder="$t('evaluationGiftAdd.expireTime')"
                   style="width: 320px;"
                   format="yyyy-MM-dd hh:mm"
                 ></el-date-picker>
@@ -89,60 +90,61 @@
                 <el-radio
                   v-model="form.isForever"
                   :label="1"
-                >永久有效</el-radio>
+                >{{$t('evaluationGiftAdd.permanent')}}</el-radio>
               </div>
             </el-form-item>
             <el-form-item
-              label="优先级："
+              :label="$t('evaluationGiftAdd.priority')"
               prop="level"
             >
               <el-input-number
                 v-model.number="form.level"
                 controls-position="right"
                 :min="0"
+                :max="100"
               ></el-input-number>
-              <p class="tips">用于区分不同评价有礼活动的优先级，请填写正整数，数值越大优先级越高</p>
+              <p class="tips">{{$t('evaluationGiftAdd.priorityTip')}}</p>
             </el-form-item>
             <el-form-item
-              label="触发条件："
+              :label="$t('evaluationGiftAdd.triggerCondition')"
               prop="goodsType"
             >
               <div>
-                <label style="font-weight:bold;">商品条件</label>
+                <label style="font-weight:bold;">{{$t('evaluationGiftAdd.productCondition')}}</label>
                 <el-radio-group
                   v-model="form.goodsType"
                   class="goods-type-radio-group"
                   @change="goodsTypeChange"
                 >
-                  <el-radio :label="1">全部商品</el-radio>
-                  <el-radio :label="2">指定商品</el-radio>
-                  <el-radio :label="3">实际评价数量较少商品</el-radio>
+                  <el-radio :label="1">{{$t('evaluationGiftAdd.allProducts')}}</el-radio>
+                  <el-radio :label="2">{{$t('evaluationGiftAdd.designated')}}</el-radio>
+                  <el-radio :label="3">{{$t('evaluationGiftAdd.lessReviews')}}</el-radio>
                 </el-radio-group>
               </div>
               <div v-if="form.goodsType === 2">
-                <el-button @click="chooseGoodsDialog">+ 选择商品</el-button>
+                <el-button @click="chooseGoodsDialog">+ {{$t('evaluationGiftAdd.sleectProduct')}}</el-button>
                 <el-button
                   v-if="chooseGoods && chooseGoods.length > 0"
                   type="text"
                   @click="chooseGoodsDialog"
-                >已选择商品：{{chooseGoods.length}}件商品</el-button>
+                >{{$t('evaluationGiftAdd.selectedProduct')}}{{chooseGoods.length}}{{$t('evaluationGiftAdd.items')}}</el-button>
               </div>
               <div v-else-if="form.goodsType === 3">
-                实际评论数量少于<el-input-number
+                {{$t('evaluationGiftAdd.lessThan')}}<el-input-number
                   v-model="form.commentNum"
                   style="width:90px;"
                   controls-position="right"
                   :min="0"
-                ></el-input-number>的商品
+                ></el-input-number>{{$t('evaluationGiftAdd.products')}}
               </div>
               <div>
-                <label style="font-weight:bold;">评价条件</label>
+                <label style="font-weight:bold;">{{$t('evaluationGiftAdd.evaluationCond')}}</label>
                 <el-radio-group
                   v-model="form.commentType"
                   class="goods-type-radio-group"
                 >
-                  <el-radio :label="1">评价即送</el-radio>
-                  <el-radio :label="2">自定义</el-radio>
+                  <el-radio :label="1">{{$t('evaluationGiftAdd.evaluateSend')}}</el-radio>
+                  <el-radio :label="2">{{$t('evaluationGiftAdd.custom')}}</el-radio>
                 </el-radio-group>
               </div>
               <div v-if="form.commentType === 2">
@@ -151,45 +153,38 @@
                     v-model="form.hasPicNum"
                     :true-label="1"
                     :false-label="0"
-                  >晒图</el-checkbox>
+                  >{{$t('evaluationGiftAdd.blueprint')}}</el-checkbox>
                   <el-checkbox
                     v-model="form.hasFiveStars"
                     :true-label="1"
                     :false-label="0"
-                  >五星好评</el-checkbox>
+                  >{{$t('evaluationGiftAdd.five_star')}}</el-checkbox>
                   <div>
                     <el-checkbox
                       v-model="form.hasCommentWords"
                       :true-label="1"
                       :false-label="0"
                       @change="hasCommentWordsChange"
-                    >心得超过</el-checkbox>
+                    >{{$t('evaluationGiftAdd.exceeded')}}</el-checkbox>
                     <span>
                       <el-input-number
                         v-model="form.commentWords"
                         style="width:90px;"
                         controls-position="right"
                         :min="0"
-                      ></el-input-number>字
+                      ></el-input-number>{{$t('evaluationGiftAdd.word')}}
                     </span>
                   </div>
                 </div>
-                <p class="tips">以上条件为"且"的关系</p>
+                <p class="tips">{{$t('evaluationGiftAdd.andRelationShip')}}</p>
               </div>
             </el-form-item>
-          </el-form>
-        </div>
-        <div class="right-bottom">
-          <header>评价奖励</header>
-          <el-form
-            ref="evaluationAwardForm"
-            size="small"
-            label-width="110px"
-            :mode="form"
-            :rules="rules"
-          >
+          </div>
+          <div class="right-bottom">
+            <header>{{$t('evaluationGiftAdd.reward')}}</header>
+
             <el-form-item
-              label="评价奖励："
+              :label="$t('evaluationGiftAdd.reward')+'：'"
               prop="awardType"
               class="award-wrap"
             >
@@ -197,16 +192,17 @@
                 v-model="form.awardType"
                 class="award-type-radio-group"
               >
-                <el-radio :label="1">积分</el-radio>
-                <el-radio :label="2">优惠券</el-radio>
-                <el-radio :label="3">余额</el-radio>
-                <el-radio :label="4">幸运大抽奖</el-radio>
-                <el-radio :label="5">自定义</el-radio>
+                <el-radio :label="1">{{$t('evaluationGiftAdd.score')}}</el-radio>
+                <el-radio :label="2">{{$t('evaluationGiftAdd.coupon')}}</el-radio>
+                <el-radio :label="3">{{$t('evaluationGiftAdd.balance')}}</el-radio>
+                <el-radio :label="4">{{$t('evaluationGiftAdd.luckyDraw')}}</el-radio>
+                <el-radio :label="5">{{$t('evaluationGiftAdd.custom')}}</el-radio>
               </el-radio-group>
               <el-form-item
-                label="积分："
+                :label="$t('evaluationGiftAdd.score')+'：'"
                 v-if="form.awardType === 1"
-                label-width="100px"
+                label-width="110px"
+                prop="score"
               >
                 <el-input-number
                   v-model="form.score"
@@ -215,39 +211,40 @@
                 ></el-input-number>
               </el-form-item>
               <el-form-item
-                label="优惠券："
+                :label="$t('evaluationGiftAdd.coupon')+'：'"
                 v-else-if="form.awardType === 2"
-                label-width="100px"
+                label-width="110px"
+                prop="activityId"
               >
-                <el-select v-model="form.activityId">
-                  <el-option
-                    label="未选择"
-                    value=""
-                  ></el-option>
-                </el-select>
-                <p class="tips">优惠券可用库存0份</p>
+                <selectCouponAct v-model="form.activityId"></selectCouponAct>
+                <p class="tips">{{$t('evaluationGiftAdd.Canuse0')}}</p>
               </el-form-item>
               <el-form-item
-                label="余额："
+                :label="$t('evaluationGiftAdd.balance')+'：'"
                 v-else-if="form.awardType === 3"
-                label-width="100px"
+                label-width="110px"
+                prop="account"
               >
-                <el-input
-                  v-model="form.account"
-                  placeholder="请输入金额"
-                ></el-input>
+                <el-input-number
+                  v-model.number="form.account"
+                  :placeholder="$t('evaluationGiftAdd.inputAmount')"
+                  controls-position="right"
+                  :min="0"
+                ></el-input-number>
               </el-form-item>
               <el-form-item
-                label="幸运大抽奖："
+                :label="$t('evaluationGiftAdd.luckyDraw')+'：'"
                 v-else-if="form.awardType === 4"
-                label-width="100px"
+                label-width="110px"
+                prop="activityId"
               >
                 <selectPayRewardAct v-model="form.activityId"></selectPayRewardAct>
               </el-form-item>
               <div v-else-if="form.awardType === 5">
                 <el-form-item
-                  label="活动图片："
-                  label-width="100px"
+                  :label="$t('evaluationGiftAdd.activityPicture')"
+                  label-width="110px"
+                  prop="awardImg"
                 >
                   <div
                     class="uploaded-add"
@@ -275,8 +272,9 @@
                   <span class="upload-tip">{{$t('openScreenAdd.recommendedSize')}}560px * 700px</span>
                 </el-form-item>
                 <el-form-item
-                  label="活动链接："
-                  label-width="100px"
+                  :label="$t('evaluationGiftAdd.activityLink')"
+                  label-width="110px"
+                  prop="awardPath"
                 >
                   <el-input
                     v-model="form.awardPath"
@@ -286,13 +284,13 @@
                   <el-button
                     size="small"
                     @click="selectLinksVisible = !selectLinksVisible"
-                  >选择链接</el-button>
+                  >{{$t('evaluationGiftAdd.selectLink')}}</el-button>
                 </el-form-item>
               </div>
               <el-form-item
-                label="奖品份数："
+                :label="$t('evaluationGiftAdd.numPrizes')"
                 prop="awardNum"
-                label-width="100px"
+                label-width="110px"
               >
                 <el-input-number
                   v-model="form.awardNum"
@@ -301,15 +299,15 @@
                 ></el-input-number>
               </el-form-item>
             </el-form-item>
-            <el-form-item label="赠送限制：">
+            <el-form-item :label="$t('evaluationGiftAdd.giftLimit')">
               <el-checkbox
                 v-model="form.firstCommentGoods"
                 :true-label="1"
                 :false-label="0"
-              >同一商品仅首次评价送礼</el-checkbox>
+              >{{$t('evaluationGiftAdd.firstEvaluation')}}</el-checkbox>
             </el-form-item>
-          </el-form>
-        </div>
+          </div>
+        </el-form>
       </div>
     </div>
     <div class="footer">
@@ -318,7 +316,7 @@
         size="small"
         style="width: 90px;"
         @click="saveOrderInfo"
-      >保存</el-button>
+      >{{$t('evaluationGiftAdd.save')}}</el-button>
     </div>
 
     <!-- 选择商品 -->
@@ -345,26 +343,44 @@
 </template>
 
 <script>
-import { addEvaluationGift } from '@/api/admin/marketManage/evaluationGift.js'
+import { addEvaluationGift, updateEvaluationGift, getEvaluationGift } from '@/api/admin/marketManage/evaluationGift.js'
 import('@/util/date')
 
 export default {
   components: {
     selectPayRewardAct: () => import('@/components/admin/marketManage/selectPayRewardAct'),
+    selectCouponAct: () => import('@/components/admin/marketManage/selectCouponAct'),
     ImageDalog: () => import('@/components/admin/imageDalog'),
     selectLinks: () => import('@/components/admin/selectLinks'),
     choosingGoods: () => import('@/components/admin/choosingGoods')
   },
   data () {
+    let that = this
+    // 验证活动时间
     function validValidityPeriod (rule, value, callback) {
-      if (this.form.isForever === 0) {
-        if (this.form.startTime || this.form.endTime) {
-          callback(new Error('请输入活动时间'))
+      if (that.form.isForever === 0) {
+        if (!that.form.startTime || !that.form.endTime) {
+          callback(new Error(that.$t('evaluationGiftAdd.pitime')))
+        }
+      }
+      callback()
+    }
+    // 验证触发条件
+    function validGoodsType (rule, value, callback) {
+      if (that.form.goodsType === 2 && that.form.goodsIds === '') {
+        callback(new Error(that.$t('evaluationGiftAdd.psproducts')))
+      } else if (that.form.goodsType === 3 && !that.form.commentNum) {
+        callback(new Error(that.$t('evaluationGiftAdd.pinumber')))
+      }
+      if (that.form.commentType === 2) {
+        if (that.form.hasFiveStars === 0 && that.form.hasPicNum === 0 && !that.form.hasCommentWords) {
+          callback(new Error(that.$t('evaluationGiftAdd.pscondition')))
         }
       }
       callback()
     }
     return {
+      id: '',
       period: [], // 活动时间段
       form: {
         name: '',
@@ -391,8 +407,27 @@ export default {
         firstCommentGoods: 0 // 同一商品仅首次评价送礼
       },
       rules: {
-        name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
-        isForever: [{ required: true }, { validator: validValidityPeriod }]
+        name: [{ required: true, message: this.$t('evaluationGiftAdd.piname'), trigger: 'blur' }],
+        isForever: [{ required: true }, { validator: validValidityPeriod }],
+        level: [{ required: true, message: this.$t('evaluationGiftAdd.pipriority'), trigger: 'blur' }],
+        goodsType: [{ required: true }, { validator: validGoodsType }],
+        score: [
+          { required: true, message: this.$t('evaluationGiftAdd.pipoins'), trigger: 'blur' },
+          { type: 'number', min: 1, message: this.$t('evaluationGiftAdd.pigreater0'), trigger: 'blur' }
+        ],
+        account: [
+          { required: true, message: this.$t('evaluationGiftAdd.pibalance'), trigger: 'blur' },
+          { type: 'number', min: 1, message: this.$t('evaluationGiftAdd.pigreater0'), trigger: 'blur' }
+        ],
+        activityId: [
+          { required: true, message: this.$t('evaluationGiftAdd.psevent'), trigger: 'blur' }
+        ],
+        awardImg: [{ required: true, message: this.$t('evaluationGiftAdd.pspicture'), trigger: 'blur' }],
+        awardPath: [{ required: true, message: this.$t('evaluationGiftAdd.pslink'), trigger: 'blur' }],
+        awardNum: [
+          { required: true, message: this.$t('evaluationGiftAdd.piNumPrizes'), trigger: 'blur' },
+          { type: 'number', min: 1, message: this.$t('evaluationGiftAdd.pigreater0'), trigger: 'blur' }
+        ]
       },
       tuneUpChooseGoods: false, // 选择商品
       chooseGoods: [], // 商品回显 id数组
@@ -423,7 +458,27 @@ export default {
       immediate: true
     }
   },
+  mounted () {
+    if (this.$route.query.id) {
+      this.id = this.$route.query.id
+      this.initEvaluationInfo()
+    }
+  },
   methods: {
+    initEvaluationInfo () {
+      let params = {
+        id: this.id
+      }
+      getEvaluationGift(params).then(res => {
+        if (res.error === 0) {
+          if (res.content.goodsIds) {
+            this.chooseGoods = JSON.parse(res.content.goodsIds)
+          }
+          this.period = [new Date(res.content.startTime), new Date(res.content.endTime)]
+          this.form = Object.assign({}, this.form, res.content)
+        }
+      })
+    },
     // 选择商品
     chooseGoodsDialog () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
@@ -458,14 +513,28 @@ export default {
       this.$set(this.form, 'awardImg', img.imgPath)
     },
     saveOrderInfo () {
-      let params = Object.assign({}, this.form)
-      if (params) {
-        console.log(params)
-        return false
-      }
-      addEvaluationGift(params).then(res => {
-        if (res.error === 0) {
-          console.log(res.content)
+      let that = this
+      that.$refs.activityInfoForm.validate((valid) => {
+        if (valid) {
+          let params = Object.assign({}, that.form)
+          console.log(params)
+          if (this.id) {
+            // 修改
+            updateEvaluationGift(params).then(res => {
+              if (res.error === 0) {
+                that.$message.success(that.$t('evaluationGiftAdd.updateSuccessed'))
+                that.$emit('changeTabAct', '1')
+              }
+            })
+          } else {
+            // 新增
+            addEvaluationGift(params).then(res => {
+              if (res.error === 0) {
+                that.$message.success(that.$t('evaluationGiftAdd.addSuccessed'))
+                that.$emit('changeTabAct', '1')
+              }
+            })
+          }
         }
       })
     }

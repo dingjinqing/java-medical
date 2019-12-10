@@ -10,6 +10,5 @@ import lombok.Data;
 public class GoodsBrandMpVo {
     private Integer id;
     private String brandName;
-    private String eName;
     private String logo;
 }

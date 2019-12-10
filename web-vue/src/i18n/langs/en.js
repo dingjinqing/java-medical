@@ -316,7 +316,13 @@ import {
 import {
   en as openScreenDetail
 } from './views/admin_new/en/index/marketManagement/openScreen/openScreenDetailEn'
-
+// 评价有礼
+import {
+  en as evaluationGiftList
+} from './views/admin_new/en/index/marketManagement/evaluationGift/evaluationGiftListEn'
+import {
+  en as evaluationGiftAdd
+} from './views/admin_new/en/index/marketManagement/evaluationGift/evaluationGiftAddEn'
 // 订单管理系列模块化
 import {
   en as order
@@ -384,6 +390,10 @@ import {
 import {
   en as storeManage
 } from './views/admin_new/en/index/storeManagement/storeManage/storeManageEn'
+// 门店列表-门店管理-预约管理
+import {
+  en as reservationManage
+} from './views/admin_new/en/index/storeManagement/storeManage/reservation/reservationEn'
 // 门店列表-门店管理-服务管理
 import {
   en as serviceManage
@@ -950,6 +960,8 @@ const en = {
   openScreen, // 开屏有礼
   openScreenAdd, // 开屏有礼添加
   openScreenDetail, // 开屏有礼活动详情
+  evaluationGiftList, // 评价有礼列表
+  evaluationGiftAdd, // 评价有礼新增编辑
 
   dateTimePicker, // 选择时间
 
@@ -1010,6 +1022,7 @@ const en = {
   brandManagement, // 商品品牌国际化
   selectLinks, // 选择链接弹窗国际化
   indexApply, // 申请试用
-  indexMobile //  官网首页移动端国际化
+  indexMobile, //  官网首页移动端国际化
+  reservationManage // 预约管理
 }
 export default en

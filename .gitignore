@@ -1,0 +1,15 @@
+wxapp/jwxapp/project.config.json
+wxapp/jwxapp/ext.json
+
+#VS Code
+.vscode/
+
+#IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+#ºöÂÔjava±àÒëÎÄ¼ş
+/jmp/**/target/
+/gen/target/

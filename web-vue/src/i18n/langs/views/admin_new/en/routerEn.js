@@ -408,6 +408,10 @@ export const en = {
   addPayRewardAct: ['Marketing management', 'Pay Reward'],
   // 营销管理 支付有礼 活动明细
   activityDetails: ['Marketing management', 'Pay Reward', 'Activity Details'],
+  // 营销管理 满折满减
+  full_cut: ['Marketing management', 'Full Discount Full Cut'],
+  // 营销管理 添加满折满减活动
+  fullCutActivity: ['Marketing management', 'Add Full Discount Full Cut Activity'],
 
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],

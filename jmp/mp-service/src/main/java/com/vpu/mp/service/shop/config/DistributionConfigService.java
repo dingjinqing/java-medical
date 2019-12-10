@@ -1,6 +1,10 @@
 package com.vpu.mp.service.shop.config;
 
 import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.image.QrCodeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -20,6 +24,9 @@ public class DistributionConfigService extends BaseShopConfigService{
 	final public static Byte ENABLE_STATUS = 1;
 
 	final public static String INVITE_DOCUMENT = "invite_document";
+
+    @Autowired
+    private QrCodeService qrCode;
 	
 	/**
 	 * 获取返利配置
@@ -38,6 +45,20 @@ public class DistributionConfigService extends BaseShopConfigService{
 	public int setDistributionCfg(DistributionParam config) {
 		return this.setJsonObject(K_FANLI, config);
 	}
+
+    /**
+     * 获取推广文案分享二维码
+     */
+    public ShareQrCodeVo getShareQrCode() {
+
+//        String pathParam = Null;
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.REBATE_POPULARIZE_DOCUMENT);
+
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.REBATE_POPULARIZE_DOCUMENT.getPathUrl(null));
+        return vo;
+    }
 
 	/**
 	 * 获取分销推广文案

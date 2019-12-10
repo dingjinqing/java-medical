@@ -44,11 +44,10 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
 
         List<String> secondaryGoodsImages = esGoods.getSecondaryGoodsImages();
         if( secondaryGoodsImages != null && !secondaryGoodsImages.isEmpty() ){
-            secondaryGoodsImages.add(0,esGoods.getGoodsImg());
+//            secondaryGoodsImages.add(0,esGoods.getGoodsImg());
             bo.setGoodsImgs(secondaryGoodsImages);
-        }else{
-            bo.setGoodsImgs(Collections.singletonList(esGoods.getGoodsImg()));
         }
+        bo.setGoodsImg(esGoods.getGoodsImg());
         if( StringUtils.isNotBlank(esGoods.getVideoInfo()) ){
             GoodsVideoBo node = Util.parseJson(esGoods.getVideoInfo(),GoodsVideoBo.class);
             if (node != null) {

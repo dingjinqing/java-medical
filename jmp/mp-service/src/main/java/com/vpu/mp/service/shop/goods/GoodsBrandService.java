@@ -378,7 +378,7 @@ public class GoodsBrandService extends ShopBaseService {
      * @return 相同开头名称的处于同一个list集合中。
      */
     public List<GoodsBrandMpPinYinVo> getAllBrandGroupByPinYinNameMp(){
-        List<GoodsBrandMpVo> pinYinVos = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.E_NAME, GOODS_BRAND.LOGO)
+        List<GoodsBrandMpVo> pinYinVos = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.LOGO)
             .from(GOODS_BRAND)
             .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.CREATE_TIME)
             .fetchInto(GoodsBrandMpVo.class);
@@ -411,7 +411,6 @@ public class GoodsBrandService extends ShopBaseService {
             GoodsBrandMpPinYinVo t = retList.removeFirst();
             retList.addLast(t);
         }
-
         return retList;
     }
 

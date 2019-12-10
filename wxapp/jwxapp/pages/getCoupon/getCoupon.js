@@ -14,7 +14,7 @@ Page({
    */
   data: {
     imageUrl: "http://miniimg.cn/",
-    detailInfo:{}
+    detailInfo:{},
   },
 
   /**
@@ -26,7 +26,7 @@ Page({
     util.api("api/wxapp/coupon/detail",function(res){
       if(res.error == 0){
         _this.setData({
-          detailInfo : res.content
+          detailInfo : res.content,
         })
       }
     },{couponSn:couponSn})

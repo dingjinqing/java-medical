@@ -54,6 +54,11 @@ export default {
     }
   },
   mounted () {
+    // 标签模块跳转
+    if (this.$route.query.name) {
+      console.log(this.$route.query.name)
+    }
+
     console.log(this.flagIndex)
     console.log(this.membershipdetailflag, this.flagIndex)
     switch (this.membershipdetailflag) {
@@ -72,14 +77,11 @@ export default {
         break
     }
     // this.flagIndex = this.membershipdetailflag
-    // this.
   },
   beforeCreate () {
     console.log('beforeCreate.')
   },
   created () {
-    console.log(this.$route.params.tagName)
-    console.log('created')
   }
 }
 </script>

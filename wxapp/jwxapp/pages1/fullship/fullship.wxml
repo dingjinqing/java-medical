@@ -1,0 +1,21 @@
+<include src="/pages/common/header.wxml" />
+<v-container>
+  <view slot="goods-content" class="goods-content">
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+    <v-single-col-goods />
+  </view>
+</v-container>

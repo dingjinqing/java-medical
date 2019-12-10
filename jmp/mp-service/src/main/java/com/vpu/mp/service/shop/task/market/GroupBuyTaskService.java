@@ -1,19 +1,26 @@
 package com.vpu.mp.service.shop.task.market;
 
-import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.bo.GroupBuyListScheduleBo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyProductVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +84,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
     }
 
     /**
-     * 处理拼团订单
+     * 监控并处理拼团订单
      */
     public void monitorOrder(){
         //所有需要处理的团(状态是拼团中，但已超过24小时有效期)
@@ -85,27 +92,40 @@ public class GroupBuyTaskService  extends ShopBaseService {
         groups.forEach(group -> {
             //下属的所有拼团中记录
             List<GroupBuyListRecord> listRecords = getGroupRecordsByGroupId(group.getGroupId());
+            List<String> orderSnList = listRecords.stream().map(GroupBuyListRecord::getOrderSn).collect(toList());
             if(GroupBuyService.IS_DEFAULT_Y.equals(group.getIsDefault())){
                 //设置了默认成团，将生成虚拟的参团记录，并将已参团用户的订单置为待发货状态
                 transaction(()->{
                     //randUserNum 需要随机生成的参团记录数
                     int randUserNum = group.getLimitAmount() - listRecords.size();
                     if(randUserNum > 0){
+                        //生成虚拟的参团记录
                         insertRandGroupBuyList(group,randUserNum);
                     }
-                    List<String> orderSnList = listRecords.stream().map(GroupBuyListRecord::getOrderSn).collect(toList());
+                    //更改订单状态
                     orderInfoService.batchChangeToWaitDeliver(orderSnList);
-                    // TODO 同步订单状态到CRM
-                    // TODO 向用户发送拼团成功消息
+                    //更改参团状态
+                    updateGroupBuyListStatus(group.getGroupId(),GroupBuyListService.STATUS_SUCCESS);
                 });
+
+                // TODO 同步订单状态到CRM
+                // TODO 向用户发送拼团成功消息（小程序 || 公众号）
             }else{
                 //未设置默认成团，拼团失败，将已参团用户的订单发起退款
                 transaction(()->{
-                    if(StringUtil.isNotEmpty(group.getRewardCouponId())){
-                        //拼团失败发放优惠券
-
-                    }
+                    //更改参团状态
+                    updateGroupBuyListStatus(group.getGroupId(),GroupBuyListService.STATUS_FAILED);
+                    //退款
+                    refund(orderSnList);
                 });
+                if(StringUtil.isNotEmpty(group.getRewardCouponId())){
+                    //拼团失败发放优惠券
+                    CouponGiveQueueParam newParam = new CouponGiveQueueParam(
+                        getShopId(), listRecords.stream().map(GroupBuyListRecord::getUserId).collect(toList()), group.getActivityId(), group.getRewardCouponId().split(","), BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_ACT);
+                    //队列异步发放
+                    saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
+                }
+
             }
         });
 
@@ -239,5 +259,29 @@ public class GroupBuyTaskService  extends ShopBaseService {
             list.add(record);
         }
         db().batchInsert(list).execute();
+    }
+
+    /**
+     * 对多个拼团失败订单自动退款
+     * @param orderSnList
+     */
+    private void refund(List<String> orderSnList){
+        orderSnList.forEach(orderSn->{
+            OrderInfoRecord orderInfo = orderInfoService.getOrderByOrderSn(orderSn);
+            RefundParam param = new RefundParam();
+            param.setAction((byte)OrderServiceCode.RETURN.ordinal());//1是退款
+            param.setIsMp(OrderConstant.IS_MP_AUTO);
+            param.setOrderSn(orderSn);
+            param.setOrderId(orderInfo.getOrderId());
+            param.setReturnType(OrderConstant.RT_ONLY_MONEY);
+            param.setReturnMoney(orderInfo.getMoneyPaid().add(orderInfo.getScoreDiscount()).add(orderInfo.getUseAccount()).add(orderInfo.getMemberCardBalance()));
+            param.setShippingFee(orderInfo.getShippingFee());
+            ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
+            if(executeResult != null && !executeResult.isSuccess()){
+                throw new BusinessException(executeResult.getErrorCode());
+                //退款失败
+                //TODO log记录或其他处理
+            }
+        });
     }
 }

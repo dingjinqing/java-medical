@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
@@ -268,6 +269,7 @@ public class GoodsMpService extends ShopBaseService {
                 goodsDetailMpBo.setDelFlag(DelFlag.NORMAL_VALUE);
                 return goodsDetailMpBo;
             }
+            goodsDetailMpBo.setIsDisposedByEs(true);
         } catch (Exception e) {
             log.debug("尝试DB获取商品详情");
             goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
@@ -292,6 +294,17 @@ public class GoodsMpService extends ShopBaseService {
         capsuleParam.setLon(param.getLon());
         processorFactory.doProcess(goodsDetailMpBo, capsuleParam);
         return goodsDetailMpBo;
+    }
+
+
+    /**
+     * 小程序端-商品搜索界面-可使用搜索条件数据初始化
+     * 由ES反向推到可用数据
+     * @return {@link GoodsSearchFilterConditionMpVo}
+     */
+    public GoodsSearchFilterConditionMpVo getGoodsSearchFilterCondition(){
+        //TODO es 反推待实现
+        return new GoodsSearchFilterConditionMpVo();
     }
 
     /**
@@ -383,10 +396,4 @@ public class GoodsMpService extends ShopBaseService {
         return capsule;
     }
 
-    /**
-     * 商品列表
-     */
-    public void goodsPage(){
-
-    }
 }

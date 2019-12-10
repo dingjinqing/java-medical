@@ -29,5 +29,18 @@ module.exports = {
     limitedPriceReduction: '限时降价，立即查看',
     yuanChopAway: '元砍走',
     element: '元',
-    establishaProvince: '开团立省'
+    establishaProvince: '开团立省',
+    assemble: '拼团',
+    bargain: '砍价',
+    seckill: '秒杀',
+    limitedPriceReduction: '限时降价',
+    advanceSale: '预售',
+    firstSpecialOffer: '首单特惠',
+    full: '满',
+    reduce: '减',
+    coupon: '优惠卷',
+    hit: '打',
+    fullReduction: '满减',
+    fullMemberDiscount: '会员满减价',
+    membershipExclusive: '会员专享'
 }

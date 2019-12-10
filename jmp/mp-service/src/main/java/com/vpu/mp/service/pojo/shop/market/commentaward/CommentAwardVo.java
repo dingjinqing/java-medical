@@ -32,7 +32,7 @@ public class CommentAwardVo {
     /**
      * 优先级
      */
-    private Integer    leve;
+    private Integer    level;
     /**
      * 商品类型 1全部商品 2指定商品 3 实际品论比较少的商品
      */
@@ -97,15 +97,5 @@ public class CommentAwardVo {
      * 首次评价商品
      */
     private Byte       firstCommentGoods;
-    /**
-     * 状态  1启用
-     */
-    private Byte       status;
-    /**
-     *  1 删除
-     */
-    private Byte       delFlag;
 
-    private Timestamp  createTime;
-    private Timestamp  updateTime;
 }

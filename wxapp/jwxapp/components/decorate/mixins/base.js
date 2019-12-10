@@ -68,7 +68,21 @@ var base = {
           // 处理价格上方显示的label条
           this.handleToActivitiesLabel(item, itemC, arr)
         })
-        item.activityLabelData = arr
+        console.log(arr)
+        let newArr = []
+        let specArr = []
+        arr.forEach(item => {
+          if (JSON.stringify(item) != '{}') {
+            newArr.push(item)
+          }
+        })
+        if (newArr.length > 2) {
+          specArr.push(newArr[0])
+          specArr.push(newArr[1])
+          item.activityLabelData = specArr
+          return
+        }
+        item.activityLabelData = newArr
       })
     },
     // 处理价格上方显示的label条
@@ -76,49 +90,46 @@ var base = {
       let obj = {}
       switch (itemC.activityType) {
         case 1:
-          obj.text = '拼团'
+          obj.text = this.$t("components.decorate.assemble")
           break
         case 3:
-          obj.text = '砍价'
+          obj.text = this.$t("components.decorate.bargain")
           break
         case 5:
-          obj.text = '秒杀'
+          obj.text = this.$t("components.decorate.seckill")
           break
         case 6:
-          obj.text = '限时降价'
+          obj.text = this.$t("components.decorate.limitedPriceReduction")
           break
         case 10:
-          obj.text = '预售'
-          break
-        case 18:
-          obj.text = '首单特惠'
+          obj.text = this.$t("components.decorate.advanceSale")
           break
         case 19:
           if (itemC.actCode === 'voucher') {
             if (itemC.useConsumeRestrict === 1) {
-              obj.text = `满${itemC.leastConsume}减￥${itemC.denomination}`
+              obj.text = `${this.$t("components.decorate.full")}${itemC.leastConsume}${this.$t("components.decorate.reduce")}￥${itemC.denomination}`
             } else {
-              obj.text = `优惠卷减￥${itemC.denomination}`
+              obj.text = `${this.$t("components.decorate.coupon")}${this.$t("components.decorate.reduce")}￥${itemC.denomination}`
             }
           } else if (itemC.actCode === 'discount') {
             if (itemC.useConsumeRestrict === 1) {
-              obj.text = `满${itemC.leastConsume}打￥${itemC.denomination}`
+              obj.text = `${this.$t("components.decorate.full")}${itemC.leastConsume}${this.$t("components.decorate.hit")}￥${itemC.denomination}`
             } else {
-              obj.text = `优惠卷打￥${itemC.denomination}折`
+              obj.text = `${this.$t("components.decorate.coupon")}${this.$t("components.decorate.hit")}￥${itemC.denomination}${this.$t("decorate.fracture")}`
             }
           }
           break
         case 20:
-          obj.text = '满减'
+          obj.text = this.$t("components.decorate.fullReduction")
           break
         case 21:
-          obj.text = '会员满减价'
-          break
-        case 22:
-          obj.text = '会员专享'
+          obj.text = this.$t("components.decorate.fullMemberDiscount")
           break
       }
-      arr.push(obj)
+      if ((itemC.activityType != 22) || (itemC.activityType != 18)) {
+        arr.push(obj)
+      }
+
       console.log(item, itemC)
     }
   }

@@ -44,6 +44,7 @@ import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.*;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -465,7 +466,7 @@ public class AdminStoreController extends AdminBaseController{
     	param.setOrderStatus(ServiceOrderService.ORDER_STATUS_WAIT_SERVICE);
     	countingData.setWaitService(shop().store.serviceOrder.getCountData(param));
     	/**已取消*/
-    	param.setOrderStatus(ServiceOrderService.ORDER_STATUS_CANCELED);
+        param.setOrderStatus(ORDER_STATUS_CANCELED);
     	countingData.setCanceled(shop().store.serviceOrder.getCountData(param));
     	/**已完成*/
     	param.setOrderStatus(ServiceOrderService.ORDER_STATUS_FINISHED);
@@ -523,9 +524,9 @@ public class AdminStoreController extends AdminBaseController{
     	switch (param.getVerifyPay().byteValue()) {
 	    	/** 会员卡核销 */
             case ServiceOrderService.VERIFY_PAY_TYPE_MEMBER_CARD:
-                if(param.getCountDis() == null) {
-                    return fail(JsonResultCode.CODE_PARAM_ERROR);
-                }
+//                if(param.getCountDis() == null) {
+//                    return fail(JsonResultCode.CODE_PARAM_ERROR);
+//                }
                 if(param.getReduce() == null) {
                     return fail(JsonResultCode.CODE_SERVICE_ORDER_VERIFY_BALANCE_IS_NULL);
                 }
@@ -574,7 +575,7 @@ public class AdminStoreController extends AdminBaseController{
     		updateParam.setFinishedTime(DateUtil.getLocalDateTime());
     		updateParam.setVerifyAdmin(adminAuth.user().getUserName());
     		updateParam.setOrderStatus(ServiceOrderService.ORDER_STATUS_FINISHED);
-
+            updateParam.setOrderStatusName(ORDER_STATUS_NAME_FINISHED);
     		updateParam.setVerifyType(ServiceOrderService.VERIFY_TYPE_ADMIN);
     		FieldsUtil.assignNotNull(param, updateParam);
 
@@ -601,6 +602,8 @@ public class AdminStoreController extends AdminBaseController{
     	ServiceOrderUpdateParam updateParam = new ServiceOrderUpdateParam();
 		updateParam.setCancelledTime(DateUtil.getLocalDateTime());
 		FieldsUtil.assignNotNull(param, updateParam);
+        updateParam.setOrderStatus(ORDER_STATUS_CANCELED);
+        updateParam.setOrderStatusName(ORDER_STATUS_NAME_CANCELED);
 		if(shop().store.serviceOrder.serviceOrderUpdate(updateParam)) {
 
             /** TODO:队列发送模板消息，通知用户预约取消 */
