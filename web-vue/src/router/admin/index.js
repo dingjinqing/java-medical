@@ -71,16 +71,17 @@ const routes = [{
             '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/noticeDetail'
           )
       },
+      // 概况 - 概况统计页面
       {
         path: '/admin/home/main/overviewStatistics',
         name: 'analysis_basic',
         meta: {
-          crumbTitle: '',
+          crumbTitle: 'router.analysis_basic',
           meta: 'first_web_manage'
         },
         component: () =>
           import(
-            '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics'
+            '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics/overviewStatistics'
           )
       },
       {
@@ -92,7 +93,7 @@ const routes = [{
         },
         component: () =>
           import(
-            '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics'
+            '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics/overviewStatistics'
           )
       },
       {

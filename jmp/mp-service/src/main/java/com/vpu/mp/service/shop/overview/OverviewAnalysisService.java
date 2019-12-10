@@ -1,32 +1,21 @@
 package com.vpu.mp.service.shop.overview;
 
-import static com.vpu.mp.db.shop.Tables.MP_DAILY_VISIT;
-import static com.vpu.mp.db.shop.Tables.MP_SUMMARY_TREND;
-import static com.vpu.mp.db.shop.Tables.MP_VISIT_PAGE;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PropertiesUtil;
+import com.vpu.mp.service.pojo.shop.overview.analysis.*;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PropertiesUtil;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDateParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDayAgoVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisMonthAgoVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageListVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisWeekAgoVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisYesterdayVo;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 
 /**
@@ -38,148 +27,130 @@ import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisYesterdayV
 @Service
 
 public class OverviewAnalysisService extends ShopBaseService {
+    /** 自定义常量 */
+    private static final Integer ONE_DAY = 1;
+    private static final Integer TWO_DAYS = 2;
+    private static final Integer EIGHT_DAYS = 8;
+    private static final Integer THIRTY_ONE_DAYS = 31;
+
 
 	/**
 	 * 查询昨日概况
 	 * 
-	 * @param param
-	 * @return List<OverviewAnalysisYesterdayVo>
+	 * @return 昨日概况详情(基础信息+变化率)
 	 */
 	
-	public List<OverviewAnalysisYesterdayVo> yesterdayAnalysis(OverviewAnalysisDateParam param) {
-		
-		String dayAgoTime = getDate("2");
-		String weekAgoTime = getDate("8");
-		String monthAgoTime = getDate("10");
-		
-		List<OverviewAnalysisDayAgoVo> dayAgoVo = db()
-				.select(MP_DAILY_VISIT.SESSION_CNT, MP_DAILY_VISIT.VISIT_PV, MP_DAILY_VISIT.VISIT_UV,
-						MP_DAILY_VISIT.VISIT_UV_NEW, MP_SUMMARY_TREND.SHARE_PV, MP_SUMMARY_TREND.SHARE_UV)
-				.from(MP_DAILY_VISIT, MP_SUMMARY_TREND)
-				.where(MP_DAILY_VISIT.REF_DATE.eq(dayAgoTime))
-				.and(MP_SUMMARY_TREND.REF_DATE.eq(dayAgoTime))
-				.fetchInto(OverviewAnalysisDayAgoVo.class);
-		
-		List<OverviewAnalysisWeekAgoVo> weekAgoVo = db()
-				.select(MP_DAILY_VISIT.SESSION_CNT, MP_DAILY_VISIT.VISIT_PV, MP_DAILY_VISIT.VISIT_UV,
-						MP_DAILY_VISIT.VISIT_UV_NEW, MP_SUMMARY_TREND.SHARE_PV, MP_SUMMARY_TREND.SHARE_UV)
-				.from(MP_DAILY_VISIT, MP_SUMMARY_TREND)
-				.where(MP_DAILY_VISIT.REF_DATE.eq(weekAgoTime))
-				.and(MP_SUMMARY_TREND.REF_DATE.eq(weekAgoTime))
-				.fetchInto(OverviewAnalysisWeekAgoVo.class);
-		
-		List<OverviewAnalysisMonthAgoVo> monthAgoVo = db()
-				.select(MP_DAILY_VISIT.SESSION_CNT, MP_DAILY_VISIT.VISIT_PV, MP_DAILY_VISIT.VISIT_UV,
-						MP_DAILY_VISIT.VISIT_UV_NEW, MP_SUMMARY_TREND.SHARE_PV, MP_SUMMARY_TREND.SHARE_UV)
-				.from(MP_DAILY_VISIT, MP_SUMMARY_TREND)
-				.where(MP_DAILY_VISIT.REF_DATE.eq(monthAgoTime))
-				.and(MP_SUMMARY_TREND.REF_DATE.eq(monthAgoTime))
-				.fetchInto(OverviewAnalysisMonthAgoVo.class);
-		
-		List<OverviewAnalysisYesterdayVo> overviewAnalysisYesterdayVos = db()
-				.select(MP_DAILY_VISIT.SESSION_CNT, MP_DAILY_VISIT.VISIT_PV, MP_DAILY_VISIT.VISIT_UV,
-						MP_DAILY_VISIT.VISIT_UV_NEW, MP_SUMMARY_TREND.SHARE_PV, MP_SUMMARY_TREND.SHARE_UV)
-				.from(MP_DAILY_VISIT, MP_SUMMARY_TREND)
-				.where(MP_DAILY_VISIT.REF_DATE.eq(param.getDateYesterdayStr()))
-				.and(MP_SUMMARY_TREND.REF_DATE.eq(param.getDateYesterdayStr()))
-				.fetchInto(OverviewAnalysisYesterdayVo.class);
-		
-		double sessionCntDayRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getSessionCnt() - (double)dayAgoVo.get(0).getSessionCnt())
-				/(double)dayAgoVo.get(0).getSessionCnt();
-		overviewAnalysisYesterdayVos.get(0).setSessionCntDayRate(sessionCntDayRate);
-		double sessionCntWeekRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getSessionCnt() - (double)weekAgoVo.get(0).getSessionCnt())
-				/(double)weekAgoVo.get(0).getSessionCnt();
-		overviewAnalysisYesterdayVos.get(0).setSessionCntWeekRate(sessionCntWeekRate);
-		double sessionCntMonthRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getSessionCnt() - (double)monthAgoVo.get(0).getSessionCnt())
-				/(double)monthAgoVo.get(0).getSessionCnt();
-		overviewAnalysisYesterdayVos.get(0).setSessionCntMonthRate(sessionCntMonthRate);
-		
-		double visitPvDayRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getVisitPv()-(double)dayAgoVo.get(0).getVisitPv())
-				/(double)dayAgoVo.get(0).getVisitPv();
-		overviewAnalysisYesterdayVos.get(0).setVisitPvDayRate(visitPvDayRate);
-		double visitPvWeekRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getVisitPv()-(double)weekAgoVo.get(0).getVisitPv())
-				/(double)weekAgoVo.get(0).getVisitPv();
-		overviewAnalysisYesterdayVos.get(0).setVisitPvWeekRate(visitPvWeekRate);
-		double visitPvMonthRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getVisitPv()-(double)monthAgoVo.get(0).getVisitPv())
-				/(double)monthAgoVo.get(0).getVisitPv();
-		overviewAnalysisYesterdayVos.get(0).setVisitPvMonthRate(visitPvMonthRate);
-		
-		double visitUvDayRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getVisitUv()-(double)dayAgoVo.get(0).getVisitUv())
-				/(double)dayAgoVo.get(0).getVisitUv();
-		overviewAnalysisYesterdayVos.get(0).setVisitUvDayRate(visitUvDayRate);
-		double visitUvWeekRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getVisitUv()-(double)weekAgoVo.get(0).getVisitUv())
-				/(double)weekAgoVo.get(0).getVisitUv();
-		overviewAnalysisYesterdayVos.get(0).setVisitUvWeekRate(visitUvWeekRate);
-		double visitUvMonthRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getVisitUv()-(double)monthAgoVo.get(0).getVisitUv())
-				/(double)monthAgoVo.get(0).getVisitUv();
-		overviewAnalysisYesterdayVos.get(0).setVisitUvMonthRate(visitUvMonthRate);
-		
-		double visitUvNewDayRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getVisitUvNew()-(double)dayAgoVo.get(0).getVisitUvNew())
-				/(double)dayAgoVo.get(0).getVisitUvNew();
-		overviewAnalysisYesterdayVos.get(0).setVisitUvNewDayRate(visitUvNewDayRate);
-		double visitUvNewWeekRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getVisitUvNew()-(double)weekAgoVo.get(0).getVisitUvNew())
-				/(double)weekAgoVo.get(0).getVisitUvNew();
-		overviewAnalysisYesterdayVos.get(0).setVisitUvNewWeekRate(visitUvNewWeekRate);
-		double visitUvNewMonthRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getVisitUvNew()-(double)monthAgoVo.get(0).getVisitUvNew())
-				/(double)monthAgoVo.get(0).getVisitUvNew();
-		overviewAnalysisYesterdayVos.get(0).setVisitUvNewMonthRate(visitUvNewMonthRate);
-		
-		double sharePvDayRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getSharePv()-(double)dayAgoVo.get(0).getSharePv())
-				/(double)dayAgoVo.get(0).getSharePv();
-		overviewAnalysisYesterdayVos.get(0).setSharePvDayRate(sharePvDayRate);
-		double sharePvWeekRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getSharePv()-(double)weekAgoVo.get(0).getSharePv())
-				/(double)weekAgoVo.get(0).getSharePv();
-		overviewAnalysisYesterdayVos.get(0).setSharePvWeekRate(sharePvWeekRate);
-		double sharePvMonthRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getSharePv()-(double)monthAgoVo.get(0).getSharePv())
-				/(double)monthAgoVo.get(0).getSharePv();
-		overviewAnalysisYesterdayVos.get(0).setSharePvMonthRate(sharePvMonthRate);
-		
-		double shareUvDayRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getShareUv()-(double)dayAgoVo.get(0).getShareUv())
-				/(double)dayAgoVo.get(0).getShareUv();
-		overviewAnalysisYesterdayVos.get(0).setShareUvDayRate(shareUvDayRate);
-		double shareUvWeekRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getShareUv()-(double)weekAgoVo.get(0).getShareUv())
-				/(double)weekAgoVo.get(0).getShareUv();
-		overviewAnalysisYesterdayVos.get(0).setShareUvWeekRate(shareUvWeekRate);
-		double shareUvMonthRate = 
-				((double)overviewAnalysisYesterdayVos.get(0).getShareUv()-(double)monthAgoVo.get(0).getShareUv())
-				/(double)monthAgoVo.get(0).getShareUv();
-		overviewAnalysisYesterdayVos.get(0).setShareUvMonthRate(shareUvMonthRate);
-		
-		return overviewAnalysisYesterdayVos;
+	public List<YesterdayStatisticsVo> yesterdayAnalysis() {
+		//得到昨日、前一日、前一周、前一月的时间
+	    String basicTime = getDate(ONE_DAY);
+		String oneDayAgoTime = getDate(TWO_DAYS);
+		String oneWeekAgoTime = getDate(EIGHT_DAYS);
+		String oneMonthAgoTime = getDate(THIRTY_ONE_DAYS);
+        //得到昨日的数据
+        YesterdayVo yesterdayVo = db().select(MP_DAILY_VISIT.SESSION_CNT,MP_DAILY_VISIT.VISIT_PV,
+            MP_DAILY_VISIT.VISIT_UV, MP_DAILY_VISIT.VISIT_UV_NEW,MP_SUMMARY_TREND.SHARE_PV,MP_SUMMARY_TREND.SHARE_UV)
+            .from(MP_DAILY_VISIT)
+            .leftJoin(MP_SUMMARY_TREND).on(MP_DAILY_VISIT.REF_DATE.eq(MP_SUMMARY_TREND.REF_DATE))
+            .where(MP_DAILY_VISIT.REF_DATE.eq(basicTime))
+            .fetchOneInto(YesterdayVo.class);
+        //得到一天前的数据
+        OneDayAgoVo oneDayAgoVo = db().select(MP_DAILY_VISIT.SESSION_CNT,MP_DAILY_VISIT.VISIT_PV,
+            MP_DAILY_VISIT.VISIT_UV, MP_DAILY_VISIT.VISIT_UV_NEW,MP_SUMMARY_TREND.SHARE_PV,MP_SUMMARY_TREND.SHARE_UV)
+            .from(MP_DAILY_VISIT)
+            .leftJoin(MP_SUMMARY_TREND).on(MP_DAILY_VISIT.REF_DATE.eq(MP_SUMMARY_TREND.REF_DATE))
+            .where(MP_DAILY_VISIT.REF_DATE.eq(oneDayAgoTime))
+            .fetchOneInto(OneDayAgoVo.class);
+        //得到一周前的数据
+        OneWeekAgoVo oneWeekAgoVo = db().select(MP_DAILY_VISIT.SESSION_CNT,MP_DAILY_VISIT.VISIT_PV,
+            MP_DAILY_VISIT.VISIT_UV, MP_DAILY_VISIT.VISIT_UV_NEW,MP_SUMMARY_TREND.SHARE_PV,MP_SUMMARY_TREND.SHARE_UV)
+            .from(MP_DAILY_VISIT)
+            .leftJoin(MP_SUMMARY_TREND).on(MP_DAILY_VISIT.REF_DATE.eq(MP_SUMMARY_TREND.REF_DATE))
+            .where(MP_DAILY_VISIT.REF_DATE.eq(oneWeekAgoTime))
+            .fetchOneInto(OneWeekAgoVo.class);
+        //得到一月前的数据
+        OneMonthAgoVo oneMonthAgoVo = db().select(MP_DAILY_VISIT.SESSION_CNT,MP_DAILY_VISIT.VISIT_PV,
+            MP_DAILY_VISIT.VISIT_UV, MP_DAILY_VISIT.VISIT_UV_NEW,MP_SUMMARY_TREND.SHARE_PV,MP_SUMMARY_TREND.SHARE_UV)
+            .from(MP_DAILY_VISIT)
+            .leftJoin(MP_SUMMARY_TREND).on(MP_DAILY_VISIT.REF_DATE.eq(MP_SUMMARY_TREND.REF_DATE))
+            .where(MP_DAILY_VISIT.REF_DATE.eq(oneMonthAgoTime))
+            .fetchOneInto(OneMonthAgoVo.class);
+        //当前数据为空则抛出异常
+        if(yesterdayVo==null||oneDayAgoVo==null||oneWeekAgoVo==null||oneMonthAgoVo==null){
+            throw new BusinessException(JsonResultCode.OVERVIEW_YESTERDAY_ANALYSIS_DATA_NULL);
+        }
+        //打开次数
+        YesterdayStatisticsVo sessionCount = getYesterdayDetail("sessionCount",yesterdayVo.getSessionCnt(),oneDayAgoVo.getSessionCnt(),oneWeekAgoVo.getSessionCnt(),oneMonthAgoVo.getSessionCnt());
+        //访问次数
+        YesterdayStatisticsVo visitPv = getYesterdayDetail("visitPv",yesterdayVo.getVisitPv(),oneDayAgoVo.getVisitPv(),oneWeekAgoVo.getVisitPv(),oneMonthAgoVo.getVisitPv());
+        //访问人数
+        YesterdayStatisticsVo visitUv = getYesterdayDetail("visitUv",yesterdayVo.getVisitUv(),oneDayAgoVo.getVisitUv(),oneWeekAgoVo.getVisitUv(),oneMonthAgoVo.getVisitUv());
+        //新访问用户数
+        YesterdayStatisticsVo visitUvNew = getYesterdayDetail("visitUvNew",yesterdayVo.getVisitUvNew(),oneDayAgoVo.getVisitUvNew(),oneWeekAgoVo.getVisitUvNew(),oneMonthAgoVo.getVisitUvNew());
+        //分享次数
+        YesterdayStatisticsVo sharePv = getYesterdayDetail("sharePv",yesterdayVo.getSharePv(),oneDayAgoVo.getSharePv(),oneWeekAgoVo.getSharePv(),oneMonthAgoVo.getSharePv());
+        //分享人数
+        YesterdayStatisticsVo shareUv = getYesterdayDetail("shareUv",yesterdayVo.getShareUv(),oneDayAgoVo.getShareUv(),oneWeekAgoVo.getShareUv(),oneMonthAgoVo.getShareUv());
+        List<YesterdayStatisticsVo> result = new ArrayList<>();
+        result.add(sessionCount);
+        result.add(visitPv);
+        result.add(visitUv);
+        result.add(visitUvNew);
+        result.add(sharePv);
+        result.add(shareUv);
+        return result;
+	}
+    /**
+     *得到之前的某一天(字符串类型)
+     *@param days N天前
+     *@return preDay(String)
+     */
+    public String getDate(Integer days) {
+        //格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        //获取当前时间
+        Calendar c = Calendar.getInstance();
+        //计算指定日期
+        c.add(Calendar.DATE, - days);
+        Date time = c.getTime();
+        //返回格式化后的String日期
+        return sdf.format(time);
+    }
+    /**
+     * 计算变化率
+     * @param oldData 旧数据
+     * @param newData 新数据
+     * @return 变化率 四舍五入保留两位小数
+     */
+    private Double getChangeRate(Integer oldData,Integer newData){
+        //除数为空，返回null
+        if (oldData.equals(NumberUtils.INTEGER_ZERO)){
+            return null;
+        }
+        //四舍五入并保留两位小数
+        double doubleChangeRate = ((double) newData-(double)oldData)/(double)oldData*(double)100;
+        BigDecimal changeRate = new BigDecimal(doubleChangeRate).setScale(2, RoundingMode.HALF_UP);
+        return  changeRate.doubleValue();
+    }
 
-	}
-	/**
-	 *得到之前的某一天
-	 *@param days
-	 *@return preDay
-	 */
-	public String getDate(String days) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");                
-	    Calendar c = Calendar.getInstance();           
-	    c.add(Calendar.DATE, - Integer.valueOf(days));           
-	    Date time = c.getTime();         
-	    String preDay = sdf.format(time);
-	    System.out.println("preDay"+preDay);
-	    return preDay;
-	}
-	
+    /**
+     * 得到昨日概况详情
+     * @param name 内容名称
+     * @param yesterdayData 昨日数据
+     * @param oneDayAgoData 前一天数据
+     * @param oneWeekAgoData 前一周数据
+     * @param oneMonthAgoData 前一月数据
+     * @return 概况详情(基础信息+变化率)
+     */
+	private YesterdayStatisticsVo getYesterdayDetail(String name, Integer yesterdayData, Integer oneDayAgoData, Integer oneWeekAgoData, Integer oneMonthAgoData){
+        YesterdayStatisticsVo details = new YesterdayStatisticsVo(){{
+            setDataName(name);
+            setDataNumber(yesterdayData);
+            setDayRate(getChangeRate(oneDayAgoData,yesterdayData));
+            setWeekRate(getChangeRate(oneWeekAgoData,yesterdayData));
+            setMonthRate(getChangeRate(oneMonthAgoData,yesterdayData));
+        }};
+        return details;
+    }
 	/**
 	 *折线图综合概况统计
 	 *@Param param

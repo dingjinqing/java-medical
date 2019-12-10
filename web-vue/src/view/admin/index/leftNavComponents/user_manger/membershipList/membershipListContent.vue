@@ -868,6 +868,7 @@ import SetUpMemCDialog from '@/view/admin/index/leftNavComponents/user_manger/me
 import SelectingUsersDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/selectingUsersDialog'
 export default {
   components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog },
+  props: ['labelText'],
   data () {
     return {
       minixLabel: '',
@@ -1007,8 +1008,8 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.params.tagName)
-    this.labelVal = this.$route.params.tagName
+    // console.log(this.$route.params.tagName)
+    // this.labelVal = this.$route.params.tagName
     console.log('会员列表 created ')
     // 初始化会员列表数据
     this.defaultTabelListData()
@@ -1028,6 +1029,10 @@ export default {
     ...mapActions(['ToTurnMemberShipDetail', 'toHandleSetUpMemDialog', 'toHandleSelectingUsersDialog']),
     // 初始化会员列表数据
     defaultTabelListData () {
+      debugger
+      if (this.labelText) {
+        this.labelVal = this.labelText
+      }
       this.options_one = this.$t('membershipIntroduction.options_one')
       this.options_two = this.$t('membershipIntroduction.options_two')
       this.options_three = this.$t('membershipIntroduction.options_three')
