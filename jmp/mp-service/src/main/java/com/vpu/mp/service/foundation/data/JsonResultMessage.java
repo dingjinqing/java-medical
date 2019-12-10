@@ -381,12 +381,13 @@ public class JsonResultMessage {
 	public static final String CARD_ACTIVATE_FAIL = "card.activate.fail";
 
 	public static final String MSG_LIMIT_CARD_AVAIL_SEND_NONE="card.avail.send.none";
+	public static final String MSG_LIMIT_CARD_AVAIL_SEND_ALL="card.avail.send.all";
 	public static final String MSG_CARD_SEND_REPEAT="card.send.repeat";
 	public static final String MSG_CARD_GRADE_NONE="card.grade.none";
 
 	// 用户卡
 	public static final String USER_CARD_NONE = "user.card.none";
-
+	public static final String MSG_CARD_RECEIVE_FAIL = "card.receive.fail";
 	/**
 	 * 概览
 	 */
@@ -679,5 +680,6 @@ public class JsonResultMessage {
      *  微信支付
      */
     public static final String MSG_WX_PAY_PREPAY_ID_IS_NULL ="wx_pay_prepay_id_is_null";
+
 
 }
