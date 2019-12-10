@@ -51,6 +51,8 @@ public class WxAppCardController extends WxAppBaseController {
 	@PostMapping(value="/api/card/judgement")
 	public JsonResult userCardJudgement(@RequestBody UserIdAndCardIdParam param) {
 		logger().info("判断是否有会员卡");
+		WxAppSessionUser user = wxAppAuth.user();
+		param.setUserId(user.getUserId());
 		shop().user.userCard.userCardJudgement(param);
 		return success();
 	}
