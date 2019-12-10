@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.store.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -10,6 +12,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -102,6 +105,12 @@ public class ServiceOrderService extends ShopBaseService {
      */
     @Autowired
     public UserCardService userCardService;
+
+    /**
+     * The Domain config.
+     */
+    @Autowired
+    public DomainConfig domainConfig;
 
     /**
      * 订单状态 0：待付款，1：待服务，2：已取消，3：已完成
@@ -210,7 +219,7 @@ public class ServiceOrderService extends ShopBaseService {
     }
 
     public ServiceOrderDetailVo getServiceOrderDetail(String orderSn) {
-        Record vo =
+        ServiceOrderDetailVo vo =
             db().select(
                 SERVICE_ORDER.ORDER_ID, SERVICE_ORDER.SERVICE_ID, SERVICE_ORDER.STORE_ID, SERVICE_ORDER.ORDER_SN, SERVICE_ORDER.ORDER_STATUS, SERVICE_ORDER.ORDER_STATUS_NAME, SERVICE_ORDER.SUBSCRIBER,
                 SERVICE_ORDER.MOBILE, SERVICE_ORDER.TECHNICIAN_NAME, SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.ADD_MESSAGE,
@@ -219,12 +228,12 @@ public class ServiceOrderService extends ShopBaseService {
                 STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_PRICE, STORE_SERVICE.SERVICE_SUBSIST, STORE_SERVICE.SERVICE_IMG
             ).
                 from(SERVICE_ORDER).leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID)).
-                where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne();
-        if (vo == null) {
-            return null;
-        } else {
-            return vo.into(ServiceOrderDetailVo.class);
-        }
+                where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).limit(INTEGER_ONE).fetchOneInto(ServiceOrderDetailVo.class);
+        List<String> imgList = Util.json2Object(vo.getServiceImg(), new TypeReference<List<String>>() {
+        }, false);
+        imgList.forEach((e) -> e = domainConfig.imageUrl(e));
+        vo.setServiceImg(CollectionUtils.isNotEmpty(imgList) ? imgList.get(INTEGER_ONE) : org.apache.commons.lang3.StringUtils.EMPTY);
+        return vo;
     }
 
     public Boolean addServiceOrderAdminMessage(ServiceOrderAdminMessageParam param) {

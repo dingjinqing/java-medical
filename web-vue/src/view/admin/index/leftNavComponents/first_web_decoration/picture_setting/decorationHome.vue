@@ -30,7 +30,7 @@
             <div id="listLeft">
               <div
                 v-for="(item,key) in nowShowLeftModules"
-                :key="key"
+                :key="item.id"
                 class="picTextConDivList"
                 :class="item.flag?'third_drag':''"
                 :dataId="item.id"
@@ -522,6 +522,7 @@ export default {
               item.flag = false
             }
           })
+          this.nowShowLeftModules = []
           switch (activeName) {
             case 'first':
               this.nowShowLeftModules = this.pivTextConArr
@@ -532,6 +533,7 @@ export default {
             case 'third':
               this.nowShowLeftModules = this.marketingTextConArr
           }
+          console.log('触发')
           this.$nextTick(() => {
             this.init_drag_event()
           })

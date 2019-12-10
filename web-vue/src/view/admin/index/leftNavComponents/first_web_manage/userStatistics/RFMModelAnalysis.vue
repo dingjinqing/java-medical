@@ -15,7 +15,6 @@
         >
         </el-date-picker>
         <span>之前的成交客户数据</span>
-        {{this.payTime}}
       </div>
       <div class="queryIndex">
         查询指标：

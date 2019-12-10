@@ -10,6 +10,8 @@ export const cn = {
   goods_summary: ['概况', '商品统计'],
   // 概况 用户统计
   user_summary: ['概况', '用户统计'],
+  // 概况 概况统计
+  analysis_basic: ['概况', '概况统计'],
 
   // 概况 用户画像
   analysis_portrait: ['概况', '用户画像'],
@@ -278,6 +280,10 @@ export const cn = {
   addPayRewardAct: ['营销管理', '支付有礼'],
   // 营销管理 支付有礼
   activityDetails: ['营销管理', '支付有礼', '活动明细'],
+  // 营销管理 满折满减
+  full_cut: ['营销管理', '满折满减'],
+  // 营销管理 添加满折满减活动
+  fullCutActivity: ['营销管理', '满折满减活动'],
 
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],

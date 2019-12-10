@@ -7,12 +7,12 @@
       @tab-click="tabClickHandle"
     >
       <el-tab-pane
-        :label="$t('serviceManage.serviceList')"
+        label="评价记录"
         name="first"
       >
       </el-tab-pane>
       <el-tab-pane
-        :label="$t('serviceManage.classificationManagement')"
+        label="评价审核"
         name="second"
       >
       </el-tab-pane>
@@ -46,6 +46,7 @@ export default {
     this.id = this.$route.query.id
     this.businessHours = this.$route.query.businessHours
     this.langDefault()
+    this.initStatus()
   },
   mounted () {
   },
@@ -73,27 +74,15 @@ export default {
             }
           })
           break
-        case 'third':
-          this.$router.push({
-            name: 'store_storemanage_service_add',
-            query: {
-              id: this.id,
-              businessHours: this.$route.query.businessHours,
-              businessType: this.$route.query.businessType
-            }
-          })
-          break
       }
     },
     initStatus () {
       let route = this.$route
       let name = route.name
-      if (name === 'store_storemanage_service_list') {
+      if (name === 'store_storemanage_reservation_record') {
         this.activeName = 'first'
-      } else if (name === 'store_storemanage_service_classify') {
+      } else if (name === 'store_storemanage_reservation_review') {
         this.activeName = 'second'
-      } else if (name === 'store_storemanage_service_add') {
-        this.activeName = 'third'
       }
     }
   }

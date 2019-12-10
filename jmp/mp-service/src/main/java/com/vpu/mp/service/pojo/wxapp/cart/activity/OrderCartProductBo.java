@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.cart.activity;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import jodd.util.CollectionUtil;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +32,8 @@ public class OrderCartProductBo {
     private Map<Integer, OrderCartProduct> map;
 
     private List<Integer> productIds;
+
+
 
     private OrderCartProductBo(List<OrderCartProduct> info) {
         this.info = info;
@@ -65,17 +69,6 @@ public class OrderCartProductBo {
         return map.get(productId);
     }
 
-    public BigDecimal getFirstSpecialPrice(Integer productId){
-        if(map == null) {
-            initMap();
-        }
-        if(map.get(productId) == null) {
-            return null;
-        }else {
-            return map.get(productId).getFirstSpecialPrice();
-        }
-    }
-
     @Getter
     @Setter
     @ToString
@@ -83,32 +76,24 @@ public class OrderCartProductBo {
         private Integer productId;
         private Integer goodsNumber;
         private Byte isChecked;
-        private List<GoodsActivityInfo> activityInfo =new ArrayList<>();
+        /**
+         * 商品活动信息
+         * k 活动类型
+         */
+        private Map<Byte ,GoodsActivityInfo> activityInfo =new HashMap<>();
 
         public OrderCartProduct(Integer productId, Integer goodsNumber) {
+            //商品结算默认选中
+            this(productId,goodsNumber, CartConstant.CART_IS_CHECKED);
+        }
+        public OrderCartProduct(Integer productId, Integer goodsNumber,byte isChecked) {
             this.productId = productId;
             this.goodsNumber = goodsNumber;
+            this.isChecked =isChecked;
         }
 
-        public BigDecimal getFirstSpecialPrice(){
-            Optional<BigDecimal> first = activityInfo.stream()
-                .filter(activity -> activity.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)&&activity.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL))
-                .map(GoodsActivityInfo::getFirstSpecialPrice).findFirst();
-            return first.orElse(null);
-        }
-
-        public Integer getFirstSpecialId(){
-            Optional<Integer> first = activityInfo.stream()
-                .filter(activity -> activity.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)&&activity.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL))
-                .map(GoodsActivityInfo::getActivityId).findFirst();
-            return first.orElse(null);
-        }
-
-        public BigDecimal getGradeCardPrice(){
-            Optional<BigDecimal> first = activityInfo.stream()
-                .filter(activity -> activity.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE)&&activity.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL))
-                .map(GoodsActivityInfo::getMemberPrice).findFirst();
-            return first.orElse(null);
+        public GoodsActivityInfo getActivity(Byte activityType){
+             return activityInfo.get(activityType);
         }
 
     }

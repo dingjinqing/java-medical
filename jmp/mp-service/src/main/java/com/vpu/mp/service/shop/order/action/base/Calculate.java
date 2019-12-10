@@ -44,6 +44,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
+
 /**
  * @author 王帅
  */
@@ -536,15 +539,15 @@ public class Calculate extends ShopBaseService {
         //TODO 分销改价
 
         //首单特惠
-        if(uniteMarkeingt != null && uniteMarkeingt.getFirstSpecialPrice() != null) {
-            return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getFirstSpecialPrice(), BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL, uniteMarkeingt.getFirstSpecialId());
+        if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice() != null) {
+            return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice(), ACTIVITY_TYPE_FIRST_SPECIAL, uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getActivityId());
         }
 
         //限时降价
 
         //会员价
-        if(uniteMarkeingt != null && uniteMarkeingt.getGradeCardPrice() != null){
-            return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getGradeCardPrice(), BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE, null);
+        if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice() != null){
+            return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice(), ACTIVITY_TYPE_MEMBER_GRADE, null);
         }
 
         return UniteMarkeingtRecalculateBo.create(goods.getProductPrice(), BaseConstant.ACTIVITY_TYPE_GENERAL, null);

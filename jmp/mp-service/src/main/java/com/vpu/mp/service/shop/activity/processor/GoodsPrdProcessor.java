@@ -54,7 +54,7 @@ public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListPro
     /*****************商品详情处理******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
-        if (goodsDetailMpBo.getIsDisposedByEs()) {
+        if (!goodsDetailMpBo.getIsDisposedByEs()) {
             List<GoodsSpecProductRecord> prdInfos = goodsPrdProcessorDao.getGoodsDetailPrds(param.getGoodsId());
             List<GoodsPrdMpVo> prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());
             goodsDetailMpBo.setProducts(prdMpVos);

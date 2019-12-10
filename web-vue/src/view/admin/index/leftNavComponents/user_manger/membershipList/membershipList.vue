@@ -2,7 +2,10 @@
   <div>
     <!-- <Crumbs :mTitle="M_title" /> -->
 
-    <MembershipListContent v-if="flagIndex===0" />
+    <MembershipListContent
+      v-if="flagIndex===0"
+      :labelText="labelText"
+    />
     <MembershipInformation v-if="flagIndex===1" />
     <ReceiveDetail v-if="flagIndex===2" />
     <BalanceDetail v-if="flagIndex===3" />
@@ -21,7 +24,8 @@ export default {
   components: { MembershipListContent, MembershipInformation, ReceiveDetail, BalanceDetail, IntegralDetail },
   data () {
     return {
-      flagIndex: 0
+      flagIndex: 0,
+      labelText: ''
     }
   },
   computed: {
@@ -54,6 +58,12 @@ export default {
     }
   },
   mounted () {
+    // 标签模块跳转
+    if (this.$route.query.name) {
+      console.log(this.$route.query.name)
+      this.labelText = this.$route.query.name
+    }
+
     console.log(this.flagIndex)
     console.log(this.membershipdetailflag, this.flagIndex)
     switch (this.membershipdetailflag) {
@@ -72,14 +82,11 @@ export default {
         break
     }
     // this.flagIndex = this.membershipdetailflag
-    // this.
   },
   beforeCreate () {
     console.log('beforeCreate.')
   },
   created () {
-    console.log(this.$route.params.tagName)
-    console.log('created')
   }
 }
 </script>

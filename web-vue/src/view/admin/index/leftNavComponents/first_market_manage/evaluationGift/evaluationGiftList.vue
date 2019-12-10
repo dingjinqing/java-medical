@@ -18,7 +18,7 @@
         size="small"
         @click="addTabHandle"
         v-show="activeTab !== '5'"
-      >添加评价有礼活动</el-button>
+      >{{$t('evaluationGiftList.addEvaluationAct')}}</el-button>
     </div>
     <div class="center">
       <div
@@ -31,53 +31,53 @@
           header-row-class-name="tableClss"
         >
           <el-table-column
-            label="活动名称"
+            :label="$t('evaluationGiftList.eventName')"
             prop="name"
             align="center"
           ></el-table-column>
           <el-table-column
-            label="触发条件"
+            :label="$t('evaluationGiftList.triggerCondition')"
             prop="commentType"
             align="center"
             :formatter="commentTypeFmt"
           ></el-table-column>
           <el-table-column
-            label="活动有效期"
+            :label="$t('evaluationGiftList.activityPeriod')"
             align="center"
           >
             <template slot-scope="{row}">
               <div v-if="row.isForever == 0">
-                {{row.startTime}} <p>至</p> {{row.endTime}}
+                {{row.startTime}} <p>{{$t('evaluationGiftList.to')}}</p> {{row.endTime}}
               </div>
-              <div v-else>永久有效</div>
+              <div v-else>{{$t('evaluationGiftList.permanent')}}</div>
             </template>
           </el-table-column>
           <el-table-column
-            label="活动奖励"
+            :label="$t('evaluationGiftList.activityReward')"
             prop="awardType"
             align="center"
             :formatter="awardTypeFmt"
           ></el-table-column>
           <el-table-column
-            label="优先级"
+            :label="$t('evaluationGiftList.priority')"
             prop="level"
             align="center"
           ></el-table-column>
           <el-table-column
-            label="活动状态"
+            :label="$t('evaluationGiftList.status')"
             prop="currentStatus"
             align="center"
             :formatter="currentStatusFmt"
           ></el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('evaluationGiftList.operate')"
             align="center"
             width="136"
           >
             <template slot-scope="{row, index}">
               <div class="operate-wrap">
                 <el-tooltip
-                  content="停用"
+                  :content="$t('evaluationGiftList.disabled')"
                   placement="top"
                   v-if="row.currentStatus == 1|| row.currentStatus == 2"
                 >
@@ -87,7 +87,7 @@
                   ></i>
                 </el-tooltip>
                 <el-tooltip
-                  content="启用"
+                  :content="$t('evaluationGiftList.enabled')"
                   placement="top"
                   v-if="row.currentStatus == 4"
                 >
@@ -97,7 +97,7 @@
                   ></i>
                 </el-tooltip>
                 <el-tooltip
-                  content="编辑"
+                  :content="$t('evaluationGiftList.edit')"
                   placement="top"
                   v-if="row.currentStatus == 1 || row.currentStatus == 2"
                 >
@@ -107,7 +107,7 @@
                   ></i>
                 </el-tooltip>
                 <el-tooltip
-                  content="删除"
+                  :content="$t('evaluationGiftList.delete')"
                   placement="top"
                   v-if="row.currentStatus == 3 || row.currentStatus == 4"
                 >
@@ -117,7 +117,7 @@
                   ></i>
                 </el-tooltip>
                 <el-tooltip
-                  content="活动明细"
+                  :content="$t('evaluationGiftList.eventDetails')"
                   placement="top"
                   v-if="row.stauts != 2"
                 >
@@ -154,19 +154,19 @@ export default {
   data () {
     return {
       tabInfo: [{
-        title: '全部评价有礼活动',
+        title: this.$t('evaluationGiftList.allEvaluation'),
         name: '0'
       }, {
-        title: '进行中',
+        title: this.$t('evaluationGiftList.processing'),
         name: '1'
       }, {
-        title: '未开始',
+        title: this.$t('evaluationGiftList.notStarted'),
         name: '2'
       }, {
-        title: '已过期',
+        title: this.$t('evaluationGiftList.expired'),
         name: '3'
       }, {
-        title: '已停用',
+        title: this.$t('evaluationGiftList.terminated'),
         name: '4'
       }],
       activeTab: '1',
@@ -194,7 +194,7 @@ export default {
         if (newVal) {
           if (this.tabInfo.length === 5) {
             this.tabInfo.push({
-              title: '编辑评价有礼活动',
+              title: this.$t('evaluationGiftList.editEvaluation'),
               name: '5'
             })
           }
@@ -202,10 +202,51 @@ export default {
         }
       },
       immediate: true
+    },
+    lang (val) {
+      if (this.tabInfo.length === 5) {
+        this.tabInfo = [{
+          title: this.$t('evaluationGiftList.allEvaluation'),
+          name: '0'
+        }, {
+          title: this.$t('evaluationGiftList.processing'),
+          name: '1'
+        }, {
+          title: this.$t('evaluationGiftList.notStarted'),
+          name: '2'
+        }, {
+          title: this.$t('evaluationGiftList.expired'),
+          name: '3'
+        }, {
+          title: this.$t('evaluationGiftList.terminated'),
+          name: '4'
+        }]
+      } else {
+        this.tabInfo = [{
+          title: this.$t('evaluationGiftList.allEvaluation'),
+          name: '0'
+        }, {
+          title: this.$t('evaluationGiftList.processing'),
+          name: '1'
+        }, {
+          title: this.$t('evaluationGiftList.notStarted'),
+          name: '2'
+        }, {
+          title: this.$t('evaluationGiftList.expired'),
+          name: '3'
+        }, {
+          title: this.$t('evaluationGiftList.terminated'),
+          name: '4'
+        }, {
+          title: this.$t('evaluationGiftList.addEvaluationAct'),
+          name: '5'
+        }]
+      }
     }
   },
   mounted () {
     this.langDefault()
+    this.initDataList()
   },
   methods: {
     initDataList () {
@@ -221,26 +262,26 @@ export default {
     commentTypeFmt (row, column) {
       let commentType = row.commentType
       if (commentType === 1) {
-        return '评价即送'
+        return this.$t('evaluationGiftList.evaluateSend')
       } else if (commentType === 2) {
-        return '自定义'
+        return this.$t('evaluationGiftList.custom')
       } else {
-        return '未处理'
+        return this.$t('evaluationGiftList.unprocess')
       }
     },
     awardTypeFmt (row, column) {
       let awardType = row.awardType
       switch (awardType) {
         case 1:
-          return '积分'
+          return this.$t('evaluationGiftList.integral')
         case 2:
-          return '优惠券'
+          return this.$t('evaluationGiftList.coupon')
         case 3:
-          return '余额'
+          return this.$t('evaluationGiftList.balance')
         case 4:
-          return '幸运大抽奖'
+          return this.$t('evaluationGiftList.luckyDraw')
         case 5:
-          return '自定义'
+          return this.$t('evaluationGiftList.custom')
       }
     },
     currentStatusFmt (row, column) {
@@ -248,16 +289,16 @@ export default {
       let text = ''
       switch (currentStatus) {
         case 1:
-          text = '进行中'
+          text = this.$t('evaluationGiftList.processing')
           break
         case 2:
-          text = '未开始'
+          text = this.$t('evaluationGiftList.notStarted')
           break
         case 3:
-          text = '已过期'
+          text = this.$t('evaluationGiftList.expired')
           break
         case 4:
-          text = '已停用'
+          text = this.$t('evaluationGiftList.terminated')
           break
       }
       return text
@@ -265,7 +306,7 @@ export default {
     addTabHandle () {
       if (this.tabInfo.length === 5) {
         this.tabInfo.push({
-          title: '添加评价有礼活动',
+          title: this.$t('evaluationGiftList.addEvaluationAct'),
           name: '5'
         })
         this.activeTab = '5'
@@ -281,12 +322,12 @@ export default {
       let id = row.id
       switch (operate) {
         case 'stop':
-          that.$confirm('确认要停用该活动吗？', '提醒').then(() => {
+          that.$confirm(that.$t('evaluationGiftList.ayDisable'), that.$t('evaluationGiftList.remind')).then(() => {
             that.toggleEvaluationGiftcurrentStatus(id)
           })
           break
         case 'action':
-          that.$confirm('确定要启用该活动吗？', '提醒').then(() => {
+          that.$confirm(that.$t('evaluationGiftList.ayEnable'), that.$t('evaluationGiftList.remind')).then(() => {
             that.toggleEvaluationGiftcurrentStatus(id)
           })
           break
@@ -298,7 +339,7 @@ export default {
           })
           break
         case 'delete':
-          that.$confirm('确定要删除该活动吗？', '提醒').then(() => {
+          that.$confirm(that.$t('evaluationGiftList.ayDelete'), that.$t('evaluationGiftList.remind')).then(() => {
             that.deleteEvaluationGiftHandle(id)
           })
           break

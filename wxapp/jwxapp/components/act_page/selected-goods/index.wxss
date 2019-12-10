@@ -1,12 +1,40 @@
 .selected-content{
   height: 800rpx;
   background-color: #fff;
+  position: relative;
+  width:750rpx;
+}
+.goods-content{
+  position: absolute;
+  overflow-y: auto;
+  top: 80rpx;
+  bottom: 100rpx;
+  left: 0;
+  right: 0;
 }
 .title{
   line-height: 80rpx;
   text-align: center;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #eee;
 }
 .title .edit{
   position: absolute;
   right: 110rpx;
+}
+.footer{
+  line-height: 100rpx;
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.footer > view{
+  flex: 1.5;
+  text-align: center;
+  color: #666;
+}
+.footer > view.confirm{
+  flex: 1;
+  color: #fff;
 }

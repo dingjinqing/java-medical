@@ -1,23 +1,14 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.overview.analysis.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisDateParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisPageVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectParam;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisSelectVo;
-import com.vpu.mp.service.pojo.shop.overview.analysis.OverviewAnalysisYesterdayVo;
 
 /**
  * 概况统计控制器
@@ -32,15 +23,14 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 	
 	/**
 	 * 昨日概况统计
-	 * @param param
-	 * @return JsonResult
+	 * @return 基础信息和变化率
 	 */
-	@PostMapping("/yesterday")
-	public JsonResult yesterdayAnalysis(@RequestBody OverviewAnalysisDateParam param) {
+	@GetMapping("/yesterday")
+	public JsonResult yesterdayAnalysis() {
 		
-		List<OverviewAnalysisYesterdayVo> overviewAnalysisYesterdayVos = shop().overview.overviewAnalysisService.yesterdayAnalysis(param);
+		List<YesterdayStatisticsVo> yesterdayStatisticsVos = shop().overview.overviewAnalysisService.yesterdayAnalysis();
 		
-		return success(overviewAnalysisYesterdayVos);
+		return success(yesterdayStatisticsVos);
 	}
 	
 	/**

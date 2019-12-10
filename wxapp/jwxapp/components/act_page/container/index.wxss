@@ -5,6 +5,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  box-sizing: border-box;
   border-bottom: 1rpx solid #eee;
 }
 .input_box {
