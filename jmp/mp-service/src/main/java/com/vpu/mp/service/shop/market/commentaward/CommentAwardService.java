@@ -1,9 +1,14 @@
 package com.vpu.mp.service.shop.market.commentaward;
 
 import static com.vpu.mp.db.shop.Tables.COMMENT_AWARD;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_IS_FOREVER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 
 import java.sql.Timestamp;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardIdParam;
 import org.jooq.Record;
@@ -28,16 +33,7 @@ import javax.validation.Valid;
 @Service
 public class CommentAwardService extends ShopBaseService {
 
-    /**
-     * 启用状态  0 停用 1 启用
-     */
-    private static final byte USE_STATUS = 1;
-    private static final byte STOP_STATUS = 0;
-    /**
-     * 有效期 0 固定期限 1永久有效
-     */
-    private static final byte FIXED_EXPIRE = 0;
-    private static final byte NEVER_EXPIRE  = 1;
+
     /**
      * 添加
      * @param param commentAward
@@ -70,11 +66,11 @@ public class CommentAwardService extends ShopBaseService {
     public int changeCommentAwardActivity(Integer id) {
         Byte status = db().select(COMMENT_AWARD.STATUS).from(COMMENT_AWARD)
                 .where(COMMENT_AWARD.ID.eq(id)).fetchOne().component1();
-        if (status!=null&&status==STOP_STATUS){
-            return db().update(COMMENT_AWARD).set(COMMENT_AWARD.STATUS, USE_STATUS)
+        if (ACTIVITY_STATUS_DISABLE.equals(status)){
+            return db().update(COMMENT_AWARD).set(COMMENT_AWARD.STATUS, ACTIVITY_STATUS_NORMAL)
                     .where(COMMENT_AWARD.ID.eq(id)).execute();
         }else {
-           return  db().update(COMMENT_AWARD).set(COMMENT_AWARD.STATUS,STOP_STATUS)
+           return  db().update(COMMENT_AWARD).set(COMMENT_AWARD.STATUS,ACTIVITY_STATUS_DISABLE)
                     .where(COMMENT_AWARD.ID.eq(id)).execute();
         }
     }
@@ -123,23 +119,23 @@ public class CommentAwardService extends ShopBaseService {
         Timestamp nowTime =new Timestamp(System.currentTimeMillis());
         if (param.getNavType()!=null){
             switch (param.getNavType()){
-                case 1:
-                    select.and(COMMENT_AWARD.IS_FOREVER.eq(NEVER_EXPIRE))
-                            .or(COMMENT_AWARD.START_TIME.lt(nowTime)
-                                    .and(COMMENT_AWARD.END_TIME.gt(nowTime)));
+                case BaseConstant.NAVBAR_TYPE_ONGOING:
+                    select.and(COMMENT_AWARD.IS_FOREVER.eq(ACTIVITY_IS_FOREVER)
+                            .or(COMMENT_AWARD.START_TIME.lt(nowTime).and(COMMENT_AWARD.END_TIME.gt(nowTime))))
+                            .and(COMMENT_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                     break;
-                case 2:
-                    select.and(COMMENT_AWARD.IS_FOREVER.eq(NEVER_EXPIRE))
+                case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
+                    select.and(COMMENT_AWARD.IS_FOREVER.eq(ACTIVITY_NOT_FOREVER))
                             .and(COMMENT_AWARD.START_TIME.gt(nowTime))
-                            .and(COMMENT_AWARD.STATUS.eq(USE_STATUS));
+                            .and(COMMENT_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                     break;
-                case 3:
-                    select.and(COMMENT_AWARD.IS_FOREVER.eq(FIXED_EXPIRE))
+                case BaseConstant.NAVBAR_TYPE_FINISHED:
+                    select.and(COMMENT_AWARD.IS_FOREVER.eq(ACTIVITY_NOT_FOREVER))
                             .and(COMMENT_AWARD.END_TIME.lt(nowTime))
-                            .and(COMMENT_AWARD.STATUS.eq(USE_STATUS));
+                            .and(COMMENT_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                     break;
-                case 4:
-                    select.and(COMMENT_AWARD.STATUS.eq(STOP_STATUS));
+                case BaseConstant.NAVBAR_TYPE_DISABLED:
+                    select.and(COMMENT_AWARD.STATUS.eq(ACTIVITY_STATUS_DISABLE));
                     break;
                 default:
             }

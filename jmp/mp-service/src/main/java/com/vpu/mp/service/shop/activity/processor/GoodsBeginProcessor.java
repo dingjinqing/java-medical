@@ -4,10 +4,13 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,5 +55,13 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
             }
         });
+
+        // 初始化活动list
+        List<OrderCartProductBo.OrderCartProduct> orderCartProductList =new ArrayList<>(cartBo.getProductIdList().size());
+        cartBo.getCartGoodsList().forEach(goods->{
+            orderCartProductList.add(new OrderCartProductBo.OrderCartProduct(goods.getPrdId(), goods.getGoodsNumber(),goods.getIsChecked()));
+        });
+        cartBo.setOrderCartProductBo(OrderCartProductBo.create(orderCartProductList));
+
     }
 }

@@ -426,7 +426,8 @@ public class CouponService extends ShopBaseService {
      */
     public List<CouponAllVo> getCouponAll(Boolean isHasStock) {
         Timestamp nowTime = new Timestamp(System.currentTimeMillis());
-        SelectConditionStep<Record6<Integer, String, String, Byte, Integer, Byte>> couponAllVos = db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ALIAS_CODE, MRKING_VOUCHER.TYPE, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
+        SelectConditionStep<Record6<Integer, String, String, Byte, Integer, Byte>> couponAllVos = db()
+                .select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ALIAS_CODE, MRKING_VOUCHER.TYPE, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
                 .from(MRKING_VOUCHER)
 //                .(MRKING_VOUCHER.TYPE.eq(BaseConstant.COUPON_TYPE_NORMAL))
                 .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
