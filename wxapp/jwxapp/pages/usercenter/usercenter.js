@@ -90,21 +90,18 @@ global.wxPage({
     })
   },
   to_where: function (e) {
-    util.navigateTo({
-      url: "/pages/distributionspread/distributionspread",
-    })
-    // var judge_statuss = e.currentTarget.dataset.judge_status;
-    // var is_distributors = e.currentTarget.dataset.is_distributor;
-    // if (is_distributors == 0 && judge_statuss == 1) {
-    //   util.navigateTo({
-    //     url: "/pages/distributionspread/distributionspread",
-    //   })
-    // } else {
-    //   var names = e.currentTarget.dataset.names;
-    //   util.navigateTo({
-    //     url: '/pages/distribution/distribution?names=' + names,
-    //   })
-    // }
+    var judge_statuss = e.currentTarget.dataset.judge_status;
+    var is_distributors = e.currentTarget.dataset.is_distributor;
+    if (is_distributors == 0 && judge_statuss == 1) {
+      util.navigateTo({
+        url: "/pages/distributionspread/distributionspread",
+      })
+    } else {
+      var names = e.currentTarget.dataset.names;
+      util.navigateTo({
+        url: '/pages/distribution/distribution?names=' + names,
+      })
+    }
   },
   toSign: function (e) {
     is_sign = 1;

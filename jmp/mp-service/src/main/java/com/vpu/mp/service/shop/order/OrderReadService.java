@@ -147,18 +147,22 @@ public class OrderReadService extends ShopBaseService {
 	 * @param param
 	 * @return PageResult
 	 */
-	public PageResult<? extends OrderListInfoVo> getPageList(OrderPageListQueryParam param) {
+	public OrderQueryVo getPageList(OrderPageListQueryParam param) {
 		logger.info("订单综合查询开始");
+		OrderQueryVo result = new OrderQueryVo();
 		//退款退货订单查询(其主表不同,所以走分支逻辑)
 		if(param.searchType != null && param.searchType == 1) {
-			return getReturnPageList(param);
+            result.setList(getReturnPageList(param));
+			return result;
 		}
+
 		PageResult<OrderListInfoVo> pageResult = new PageResult<>();
+        result.setList(pageResult);
 		//得到订单号(包含主订单和正常订单)
-		PageResult<String> orderSn = orderInfo.getOrderSns(param);
+		PageResult<String> orderSn = orderInfo.getOrderSns(param, result);
 		pageResult.setPage(orderSn.getPage());
 		if(orderSn.getDataList().size() < 1) {
-			return pageResult;
+			return result;
 		}
 		//查询出全部订单按照主订单分组，正常订单的key为orderSn
 		Map<String, List<OrderListInfoVo>> allOrder = orderInfo.getOrders(orderSn.getDataList());
@@ -219,7 +223,7 @@ public class OrderReadService extends ShopBaseService {
 		}
 		pageResult.setDataList(mainOrderList);
 		logger.info("订单综合查询结束");
-		return pageResult;
+		return result;
 	}
 
 

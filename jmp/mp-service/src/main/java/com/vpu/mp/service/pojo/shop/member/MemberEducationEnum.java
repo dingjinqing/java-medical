@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member;
 
+import com.vpu.mp.service.foundation.util.Util;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +56,17 @@ public enum MemberEducationEnum {
 		MemberEducationEnum obj = valueOf(code);
 		return obj.getName();
 	}
+
+    /**
+     * 自定义语言  常乐
+     * @param code 教育程度数字代号
+     * @param lang 语言
+     * @return
+     */
+    public static String getNameByCode(int code,String lang) {
+        MemberEducationEnum obj = valueOf(code);
+        return Util.translateMessage(lang, obj.getName(),"","member");
+    }
 	
 	public int getCode() {
 		return code;

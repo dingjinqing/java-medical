@@ -80,12 +80,14 @@
                 &nbsp;<el-input
                   class="form_input"
                   size="small"
+                  v-model="fullMoney"
                 ></el-input>&nbsp;元，
                 <span v-if="activityType === '2' || activityType === '1'">减</span>
                 <span v-if="activityType === '3'">打</span>
                 &nbsp;<el-input
                   class="form_input"
                   size="small "
+                  v-model="reduceMoney"
                 ></el-input>&nbsp;
                 <span v-if="activityType === '2' || activityType === '1'">元</span>
                 <span v-if="activityType === '3'">折</span>
@@ -110,12 +112,14 @@
                 &nbsp;<el-input
                   class="form_input"
                   size="small"
+                  v-model="amount"
                 ></el-input>&nbsp;件，
                 <span v-if="activityType === '2' || activityType === '1'">减</span>
                 <span v-if="activityType === '3'">打</span>
                 &nbsp;<el-input
                   class="form_input"
                   size="small "
+                  v-model="discounts"
                 ></el-input>&nbsp;
                 <span v-if="activityType === '2' || activityType === '1'">元</span>
                 <span v-if="activityType === '3'">折</span>
@@ -168,8 +172,48 @@
               label="1"
             >指定商品</el-radio>
             <section v-if="activityGoods === '1'">
-              <div class="add_goods_btn"> + 选商品</div>
+              <div
+                class="add_goods_btn"
+                @click="chooseGoodsHandler"
+              > + 选择商品</div>
               <div class="add_goods_btn"> + 选择平台分类</div>
+              <div class="goods_area">
+                <table
+                  class="goods_table"
+                  width="100%"
+                >
+                  <thead>
+                    <tr>
+                      <th width="45%">商品名称</th>
+                      <th width="15%">价格</th>
+                      <th width="15%">库存</th>
+                      <th width="15%">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    class="tbody"
+                    v-for="item in goodsList"
+                    :key="item.name"
+                  >
+                    <tr>
+                      <td>
+                        <div class="goods_info">
+                          <div class="goods_img">
+                            <img
+                              src=""
+                              alt=""
+                            >
+                          </div>
+                          <div class="goods_name">{{item.goodsName}}</div>
+                        </div>
+                      </td>
+                      <td>￥{{item.shopPrice}}</td>
+                      <td>{{item.goodsNumber}}</td>
+                      <td>删除</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <div class="add_goods_btn"> + 选择商家分类</div>
               <div class="add_goods_btn"> + 选择商品标签</div>
               <div class="add_goods_btn"> + 选择商品品牌</div>
@@ -196,6 +240,12 @@
 
         </el-form>
       </div>
+      <ChoosingGoods
+        :tuneUpChooseGoods='tuneUpChooseGoodsDialog'
+        :chooseGoodsBack="selectedGoodsList"
+        @resultGoodsDatas="returnGoodsData"
+        @result="selectedGoodsIdList"
+      />
 
     </div>
 
@@ -211,8 +261,10 @@
 
 <script>
 import { addFullCutActivityApi } from '@/api/admin/marketManage/fullDiscountFullCut'
+import ChoosingGoods from '@/components/admin/choosingGoods'
 
 export default {
+  components: { ChoosingGoods },
   data () {
     return {
       activeName: '5',
@@ -221,7 +273,7 @@ export default {
       activityLevel: '',
       activityType: '1',
       timeInterval: [],
-      activityGoods: '0',
+      activityGoods: '1',
       discount: '1',
       vipActivity: '',
       memberCardInfo: '',
@@ -240,12 +292,28 @@ export default {
       }, {
         value: '选项5',
         label: '北京烤鸭'
-      }]
+      }],
+      fullMoney: '',
+      reduceMoney: '',
+      amount: '',
+      discounts: '',
+      tuneUpChooseGoodsDialog: false,
+      selectedGoodsList: [],
+      goodsList: [
+        // {
+        //   goodsName: '',
+        //   goodsImg: '',
+        //   goodsNumber: '',
+        //   shopPrice: '',
+        //   init: ''
+        // }
+      ]
 
     }
   },
   methods: {
     handleClick (tab) {
+      console.log(tab, 'tabChange')
       this.$nextTick(() => {
         if (tab.index !== '5') {
           this.$router.push({
@@ -291,6 +359,20 @@ export default {
     },
     addFullCutItem () {
       // let full_cut_item {}
+    },
+    // 调起选择商品弹窗
+    chooseGoodsHandler () {
+      this.tuneUpChooseGoodsDialog = !this.tuneUpChooseGoodsDialog
+    },
+    // 返回选中的商品的信息
+    returnGoodsData (val) {
+      console.log(val, 'goodsInfo')
+      this.goodsList = val
+      this.selectedGoodsList = val.map(item => item.goodsId)
+      console.log(this.selectedGoodsList, 'selectedGoodsList')
+    },
+    selectedGoodsIdList (data) {
+      console.log(data, 'goodsId')
     }
   }
 
@@ -333,6 +415,52 @@ export default {
         background: #fff;
         cursor: pointer;
         margin: 20px 0;
+      }
+      .goods_area {
+        max-width: 528px;
+        height: 300px;
+        padding-right: 10px;
+        // border: 1px solid #000;
+        overflow-x: hidden !important;
+        .goods_table {
+          margin-bottom: 0;
+          margin-top: 0;
+          border: 1px solid #ddd;
+          thead tr {
+            background: #f8f8f8;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            th {
+              border: 1px solid #ddd;
+            }
+          }
+          tbody tr {
+            text-align: center;
+            td {
+              padding: 10px;
+              border: 1px solid #ddd;
+            }
+          }
+        }
+      }
+      .goods_area::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+      .goods_area::-webkit-scrollbar-track {
+        background: #fff;
+        border-radius: 2px;
+      }
+      .goods_area::-webkit-scrollbar-thumb {
+        background: #dddddd;
+        border-radius: 2px;
+      }
+      .goods_area::-webkit-scrollbar-thumb:hover {
+        background: #747474;
+      }
+      .goods_area::-webkit-scrollbar-corner {
+        background: #fff;
       }
     }
   }
