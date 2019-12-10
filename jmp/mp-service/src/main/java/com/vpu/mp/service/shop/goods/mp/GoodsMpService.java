@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
@@ -295,6 +296,17 @@ public class GoodsMpService extends ShopBaseService {
         return goodsDetailMpBo;
     }
 
+
+    /**
+     * 小程序端-商品搜索界面-可使用搜索条件数据初始化
+     * 由ES反向推到可用数据
+     * @return {@link GoodsSearchFilterConditionMpVo}
+     */
+    public GoodsSearchFilterConditionMpVo getGoodsSearchFilterCondition(){
+        //TODO es 反推待实现
+        return new GoodsSearchFilterConditionMpVo();
+    }
+
     /**
      * 根据过滤条件获取商品列表中的商品信息，
      * 返回结果的顺序和goodsIds的顺序一致,若果查询的结果在goodsId中不存在则默认添加至返回列表的末尾
@@ -384,10 +396,4 @@ public class GoodsMpService extends ShopBaseService {
         return capsule;
     }
 
-    /**
-     * 商品列表
-     */
-    public void goodsPage(){
-
-    }
 }

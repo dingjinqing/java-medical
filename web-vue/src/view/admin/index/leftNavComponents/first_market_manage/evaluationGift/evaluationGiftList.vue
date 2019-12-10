@@ -202,6 +202,46 @@ export default {
         }
       },
       immediate: true
+    },
+    lang (val) {
+      if (this.tabInfo.length === 5) {
+        this.tabInfo = [{
+          title: this.$t('evaluationGiftList.allEvaluation'),
+          name: '0'
+        }, {
+          title: this.$t('evaluationGiftList.processing'),
+          name: '1'
+        }, {
+          title: this.$t('evaluationGiftList.notStarted'),
+          name: '2'
+        }, {
+          title: this.$t('evaluationGiftList.expired'),
+          name: '3'
+        }, {
+          title: this.$t('evaluationGiftList.terminated'),
+          name: '4'
+        }]
+      } else {
+        this.tabInfo = [{
+          title: this.$t('evaluationGiftList.allEvaluation'),
+          name: '0'
+        }, {
+          title: this.$t('evaluationGiftList.processing'),
+          name: '1'
+        }, {
+          title: this.$t('evaluationGiftList.notStarted'),
+          name: '2'
+        }, {
+          title: this.$t('evaluationGiftList.expired'),
+          name: '3'
+        }, {
+          title: this.$t('evaluationGiftList.terminated'),
+          name: '4'
+        }, {
+          title: this.$t('evaluationGiftList.addEvaluationAct'),
+          name: '5'
+        }]
+      }
     }
   },
   mounted () {

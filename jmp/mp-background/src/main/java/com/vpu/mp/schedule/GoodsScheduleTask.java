@@ -62,6 +62,20 @@ public class GoodsScheduleTask {
     }
 
     /**
+     * 1.监控砍价，更新商品类型
+     * 2.关闭失效的砍价发起记录
+     * 每一分钟执行一次
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void monitorBargainGoods() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r)->{
+            saas.getShopApp(r.getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
+            saas.getShopApp(r.getShopId()).shopTaskService.bargainTaskService.closeBargainRecord();
+        });
+    }
+
+    /**
      * 删除用户足迹
      * 每三个月执行一次
      */
