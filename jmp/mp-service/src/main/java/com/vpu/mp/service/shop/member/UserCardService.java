@@ -1189,7 +1189,6 @@ public class UserCardService extends ShopBaseService {
 						}
 						vo.setCardNo(cardNoList.get(0));
 						return vo;
-						
 					}
 				}else {
 					logger().info("领取失败");
