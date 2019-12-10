@@ -77,7 +77,7 @@
               >
                 <span
                   class="el-icon-user-solid iconStyle"
-                  @click="viewUserHanlder"
+                  @click="viewUserHanlder(scope.row.tagName)"
                 ></span>
               </el-tooltip>
             </template>
@@ -242,8 +242,13 @@ export default {
     },
 
     // 查看用户明细
-    viewUserHanlder () {
-      this.$router.push({ name: 'user_list' })
+    viewUserHanlder (name) {
+      this.$router.push({
+        path: '/admin/home/main/membershipList',
+        query: {
+          name: name
+        }
+      })
     }
 
   }
