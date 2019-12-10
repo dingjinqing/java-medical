@@ -21,7 +21,7 @@ import java.time.LocalTime;
 @Component
 @EnableScheduling
 @EnableAsync
-@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "off")
+@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
 public class GoodsScheduleTask {
 
     @Autowired
