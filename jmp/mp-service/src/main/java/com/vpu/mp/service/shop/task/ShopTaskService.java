@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.task;
 
 import com.vpu.mp.service.shop.task.goods.FootprintDeleteTaskService;
+import com.vpu.mp.service.shop.task.market.BargainTaskService;
 import com.vpu.mp.service.shop.task.market.GroupBuyTaskService;
 import com.vpu.mp.service.shop.task.market.ReducePriceTaskService;
 import com.vpu.mp.service.shop.task.market.SeckillTaskService;
@@ -23,6 +24,9 @@ public class ShopTaskService {
 
     @Autowired
     public GroupBuyTaskService groupBuyTaskService;
+
+    @Autowired
+    public BargainTaskService bargainTaskService;
 
     /**
      * The Goods task service.概况模块-商品统计

@@ -31,9 +31,22 @@ public class GoodsSearchMpParam {
     /**品牌id集合*/
     private List<Integer> brandIds;
 
-    /**活动类型id集合*/
+    /**活动类型集合*/
     private List<Integer> activityTypes;
 
     /**标签id集合*/
     private List<Integer> labelIds;
+
+    /**是否展示售罄商品
+     * {@link com.vpu.mp.service.pojo.shop.goods.GoodsConstant#SOLD_OUT_GOODS_SHOW 展示售罄
+     */
+    private Byte soldOutGoods;
+
+    /**商品优惠券码*/
+    private String couponSn;
+
+    /**排序字段*/
+    private SortItemEnum sortItem;
+    /**排序方向*/
+    private SortDirectionEnum sortDirection;
 }

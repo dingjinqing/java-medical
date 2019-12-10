@@ -29,6 +29,15 @@ public class CardUtil {
 	public static boolean isGradeCard(Byte cardType) {
 		return CardConstant.MCARD_TP_GRADE.equals(cardType);
 	}
-	
+	/**
+	 * 	是否为限次卡
+	 */
+	public static boolean isLimitCard(Byte cardType) {
+		return CardConstant.MCARD_TP_LIMIT.equals(cardType);
+	}
+
+	public static boolean isNormalCard(Byte cardType) {
+		return  CardConstant.MCARD_TP_NORMAL.equals(cardType);
+	}
 	
 }

@@ -22,6 +22,6 @@ public class CommentAwardListParam {
      */
     @NotNull
     @Range(min = 0,max = 4)
-    private Integer navType;
+    private Byte navType;
 
 }

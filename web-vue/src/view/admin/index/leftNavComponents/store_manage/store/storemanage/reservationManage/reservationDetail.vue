@@ -3,52 +3,52 @@
       <div class="main">
         <div class="navBox">
             <el-row  :gutter="20">
-              <el-col :span="5">订单号：{{this.detailData.orderSn}}</el-col>
-              <el-col :span="10"> 订单状态： {{this.detailData.orderStatusName}}</el-col>
+              <el-col :span="5">{{$t('reservationManage.orderSn')}}：{{this.detailData.orderSn}}</el-col>
+              <el-col :span="10"> {{$t('reservationManage.orderStatus')}}： {{this.detailData.orderStatusName}}</el-col>
             </el-row>
             <el-steps :active="stepActive" finish-status="success" simple style="margin-top: 20px; width: 50%">
-              <el-step title="买家已预约" ></el-step>
-              <el-step title="订单完成" ></el-step>
+              <el-step :title="$t('reservationManage.alreadyReservation')" ></el-step>
+              <el-step :title="$t('reservationManage.orderComplete')" ></el-step>
             </el-steps>
           <div style="margin-top: 10px">
             <el-row>
               <el-col :span="8">
                 <div class="boder_style">
                   <el-row  :gutter="20" class="row_style">
-                    <el-col :span="10" style="font: 16px solid;">订单信息</el-col>
+                    <el-col :span="10" style="font: 16px solid;">{{$t('reservationManage.orderInfo')}}</el-col>
                   </el-row>
                   <el-row  :gutter="20" class="row_style">
-                    <el-col :span="10"  class="col_style"> 订单状态： {{this.detailData.orderStatusName}}</el-col>
-                    <el-col :span="10" class="col_style">订单金额： {{this.detailData.orderAmount}}</el-col>
+                    <el-col :span="10"  class="col_style"> {{$t('reservationManage.orderStatus')}}： {{this.detailData.orderStatusName}}</el-col>
+                    <el-col :span="10" class="col_style">{{$t('reservationManage.orderAmount')}}： {{this.detailData.orderAmount}}</el-col>
                   </el-row>
                   <el-row  :gutter="20" class="row_style">
-                    <el-col :span="10" class="col_style"> 预约到店时间： {{this.detailData.serviceDate}} {{this.detailData.servicePeriod}}</el-col>
-                    <el-col :span="10" class="col_style">门店： {{this.detailData.orderAmount}}</el-col>
+                    <el-col :span="10" class="col_style"> {{$t('reservationManage.serviceDate')}}： {{this.detailData.serviceDate}} {{this.detailData.servicePeriod}}</el-col>
+                    <el-col :span="10" class="col_style">{{$t('reservationManage.store')}}： {{this.detailData.orderAmount}}</el-col>
                   </el-row>
                   <el-row  :gutter="20" class="row_style">
-                    <el-col :span="10" class="col_style"> 订单号： {{this.detailData.orderSn}}</el-col>
-                    <el-col :span="10" class="col_style">预约技师： {{this.detailData.technicianName}}</el-col>
+                    <el-col :span="10" class="col_style"> {{$t('reservationManage.orderSn')}}： {{this.detailData.orderSn}}</el-col>
+                    <el-col :span="10" class="col_style">{{$t('reservationManage.technician')}}： {{this.detailData.technicianName}}</el-col>
                   </el-row>
                 </div>
               </el-col>
               <el-col :span="8" :offset="1">
                 <div class="boder_style">
                   <el-row  :gutter="20" class="row_style">
-                    <el-col :span="10">用户信息</el-col>
+                    <el-col :span="10">{{$t('reservationManage.userInfo')}}</el-col>
                   </el-row>
                   <el-row  :gutter="20" class="row_style">
-                    <el-col :span="10" class="col_style"> 预约人： {{this.detailData.subscriber}}</el-col>
-                    <el-col :span="10" class="col_style">手机号： {{this.detailData.mobile}}</el-col>
+                    <el-col :span="10" class="col_style"> {{$t('reservationManage.subscriber')}}： {{this.detailData.subscriber}}</el-col>
+                    <el-col :span="10" class="col_style"> {{$t('reservationManage.mobile')}}： {{this.detailData.mobile}}</el-col>
                   </el-row>
                   <el-row  :gutter="20" class="row_style">
-                    <el-col :span="10" class="col_style"> 买家留言： {{this.detailData.addMessage}}</el-col>
+                    <el-col :span="10" class="col_style"> {{$t('reservationManage.message')}}： {{this.detailData.addMessage}}</el-col>
                   </el-row>
                 </div>
               </el-col>
             </el-row>
             <div style="margin-top: 20px">
               <el-row :gutter="6">
-                <el-col :span="2"><img src="http://mpdevimg2.weipubao.cn/image/admin/since-edit.png" class="add_text" style="cursor: pointer" alt="">  卖家备注：</el-col>
+                <el-col :span="2"><img src="http://mpdevimg2.weipubao.cn/image/admin/since-edit.png" class="add_text" style="cursor: pointer" alt="">  {{$t('reservationManage.adminMessage')}}：</el-col>
                 <el-col :span="4" class="col_style">{{this.detailData.adminMessage}}</el-col>
               </el-row>
             </div>
@@ -67,28 +67,34 @@
             }"
           >
             <el-table-column
-              label="服务"
+              :label="$t('reservationManage.serviceName')"
               prop="serviceName"
             >
+              <template slot-scope="{ row }">
+                <el-tooltip>
+                  <span><img :src="row.serviceImg" style="cursor: pointer" alt=""> </span>
+                    <span>{{row.serviceName}} </span>
+                </el-tooltip>
+              </template>
             </el-table-column>
             <el-table-column
-              label="总价"
+              :label="$t('reservationManage.serviceFee')"
               prop="servicePrice"
             >
             </el-table-column>
             <el-table-column
-              label="订单状态"
+              :label="$t('reservationManage.orderStatus')"
               prop="orderStatusName"
             ></el-table-column>
           </el-table>
           <el-row style="margin-top: 10px; text-align: right">
-            <el-col>实收款： <span style="color: #cc0000"> ￥ {{this.detailData.moneyPaid}}</span>
+            <el-col>{{$t('reservationManage.moneyPaid')}}： <span style="color: #cc0000"> ￥ {{this.detailData.moneyPaid}}</span>
               <el-button
                 type="primary"
                 size="small"
                 @click="confirmDone"
                 v-if="detailData.orderStatus === 1"
-              >确认完成</el-button>
+              >{{$t('reservationManage.confirmDone')}}</el-button>
             </el-col>
           </el-row>
         </div>
@@ -106,21 +112,21 @@
             }"
           >
             <el-table-column
-              label="核销码"
+              :label="$t('reservationManage.chargeCode')"
               prop="verifyCode"
             >
             </el-table-column>
             <el-table-column
-              label="核销人"
+              :label="$t('reservationManage.verifyAdmin')"
               prop="verifyAdmin"
             >
             </el-table-column>
             <el-table-column
-              label="核销时间"
+              :label="$t('reservationManage.verifyDate')"
               prop="finishedTime"
             ></el-table-column>
             <el-table-column
-              label="核销方式"
+              :label="$t('reservationManage.chargeType')"
               prop="verifyPay"
             ></el-table-column>
           </el-table>
@@ -137,7 +143,8 @@ export default {
       orderSn: '',
       tableData: [],
       detailData: {},
-      stepActive: 0
+      stepActive: 0,
+      imgs: []
     }
   },
   created () {
@@ -150,15 +157,17 @@ export default {
       detail(this.orderSn).then(res => {
         if (res.error === 0) {
           this.detailData = res.content
+          this.imgs = JSON.parse(res.content.serviceImg)
+          this.detailData.serviceImg = this.imgs[0]
           switch (this.detailData.verifyPay) {
             case 0:
-              this.detailData.verifyPay = '门店买单'
+              this.detailData.verifyPay = this.$t('reservationManage.storeBuy')
               break
             case 1:
-              this.detailData.verifyPay = '会员卡'
+              this.detailData.verifyPay = this.$t('reservationManage.memberCard')
               break
             case 2:
-              this.detailData.verifyPay = '余额'
+              this.detailData.verifyPay = this.$t('reservationManage.balance')
               break
           }
           this.tableData.push(this.detailData)

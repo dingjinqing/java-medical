@@ -7,6 +7,10 @@ global.wxComponent({
     isEdit:{
       type:Boolean,
       value:false
+    },
+    enableNumEdit:{
+      type:Boolean,
+      value:false
     }
   },
 

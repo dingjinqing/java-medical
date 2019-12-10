@@ -15,9 +15,8 @@
           <RFMModelAnalysis />
         </el-tab-pane>
       </el-tabs>
-
     </div>
-    <userOverview />
+    <userOverview v-if="userStatistics === 'first'" />
 
   </div>
 </template>
@@ -25,12 +24,11 @@
 <script>
 import userOverview from './userOverview'
 import RFMModelAnalysis from './RFMModelAnalysis'
-
 export default {
   components: { userOverview, RFMModelAnalysis },
   data () {
     return {
-      userStatistics: 'second'
+      userStatistics: 'first'
     }
   }
 }

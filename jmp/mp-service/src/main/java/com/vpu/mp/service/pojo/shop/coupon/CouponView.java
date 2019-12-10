@@ -37,6 +37,8 @@ public class CouponView {
     private Timestamp startTime;
     /** 优惠券有效期结束时间 */
     private Timestamp endTime;
+    /** 支付有礼跳转链接 1:全部商品可用 2：指定商品可用 */
+    private Byte recommendType;
     /** 指定商品可用的商品ID串，为空时为全部商品可用 */
     private String recommendGoodsId;
     /** 指定平台分类可用的平台分类ID串，为空时为全部平台分类可用 */
