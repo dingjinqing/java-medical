@@ -94,7 +94,7 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
     @Override
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
         List<GoodsDetailMpBo.GradePrd> gradeCards = goodsDetailMpBo.getGradeCardPrice();
-        if (goodsDetailMpBo.getIsDisposedByEs()) {
+        if (!goodsDetailMpBo.getIsDisposedByEs()) {
             log.debug("会员价格查询");
             List<GradePrdRecord> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
             gradeCards = goodsGradeGradePrice.stream().map(x -> x.into(GoodsDetailMpBo.GradePrd.class)).collect(Collectors.toList());
