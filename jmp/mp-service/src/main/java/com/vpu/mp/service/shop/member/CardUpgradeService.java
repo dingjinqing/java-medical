@@ -16,9 +16,9 @@ import com.vpu.mp.service.shop.member.dao.CardUpgradeDao;
 public class CardUpgradeService extends ShopBaseService{
 	@Autowired
 	private CardUpgradeDao cardUpgradeDao;
-	public void recordCardUpdateGrade(Integer userId,MemberCardRecord oldCard, MemberCardRecord newCard) {
+	public void recordCardUpdateGrade(Integer userId,MemberCardRecord oldCard, MemberCardRecord newCard,String option) {
 		logger().info("保存会员卡升级信息");
-		cardUpgradeDao.insert(userId,oldCard,newCard);
+		cardUpgradeDao.insert(userId,oldCard,newCard,option);
 	}
 
 }

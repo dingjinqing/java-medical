@@ -274,19 +274,24 @@ public class CartService extends ShopBaseService {
      * @param recId
      * @return
      */
-    public byte switchCheckedProduct(Integer userId, Integer recId) {
-        CartRecord cartRecord = db().newRecord(CART);
-        cartRecord.setRecId(recId.longValue());
-        cartRecord.setUserId(userId);
-        cartRecord.refresh();
-        if (Objects.equals(cartRecord.getIsChecked(), CartConstant.CART_IS_CHECKED)) {
-            cartRecord.setIsChecked(CartConstant.CART_NO_CHECKED);
-            cartRecord.update();
-            return CartConstant.CART_NO_CHECKED;
-        }
-        cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);
-        cartRecord.update();
-        return CartConstant.CART_IS_CHECKED;
+    public int switchCheckedProduct(Integer userId, Integer recId, Byte isChecked) {
+        return db().update(CART).set(CART.IS_CHECKED, isChecked)
+                .where(CART.USER_ID.eq(userId))
+                .and(CART.REC_ID.eq(recId.longValue())).execute();
+
+    }
+    /**
+     * 购物车中的商品选择状态
+     *
+     * @param userId
+     * @param productId
+     * @return
+     */
+    public int switchCheckedByProductId(Integer userId, Integer productId, Byte isChecked) {
+        return db().update(CART).set(CART.IS_CHECKED, isChecked)
+                .where(CART.USER_ID.eq(userId))
+                .and(CART.PRODUCT_ID.eq(productId)).execute();
+
     }
 
     /**

@@ -15,7 +15,7 @@ import static com.vpu.mp.db.shop.Tables.CARD_UPGRADE;
 @Service
 public class CardUpgradeDao extends ShopBaseService {
 
-	public void insert(Integer userId,MemberCardRecord oldCard, MemberCardRecord newCard) {
+	public void insert(Integer userId,MemberCardRecord oldCard, MemberCardRecord newCard,String option) {
 		CardUpgradeRecordBuilder
 			.create(db().newRecord(CARD_UPGRADE))
 			.userId(userId)
@@ -26,7 +26,7 @@ public class CardUpgradeDao extends ShopBaseService {
 			.oldCardName(oldCard.getCardName())
 			.newCardName(newCard.getCardName())
 			.gradeCondition(newCard.getGradeCondition())
-			.operate("Admin option")
+			.operate(option)
 			.build()
 			.insert();
 	}

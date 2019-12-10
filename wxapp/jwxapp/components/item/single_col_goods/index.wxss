@@ -4,6 +4,7 @@
   height: 200rpx;
   background-color: #fff;
   display: flex;
+  -webkit-overflow-scrolling : touch;
 }
 .goods-item > .all-image{
   width: 200rpx;
@@ -47,4 +48,22 @@
 .edit{
   line-height: 200rpx;
   margin-right: 20rpx;
+}
+.num-cfg{
+  text-align: center;
+  display: flex;
+  border: 1rpx solid #eee;
+}
+.num-cfg > input{
+  width: 60rpx;
+}
+.num-cfg > text{
+  width: 40rpx;
+  line-height: 45rpx;
+}
+.num-cfg > text.num-minus{
+  border-right: 1rpx solid #eee;
+}
+.num-cfg > text.num-plus{
+  border-left: 1rpx solid #eee;
 }

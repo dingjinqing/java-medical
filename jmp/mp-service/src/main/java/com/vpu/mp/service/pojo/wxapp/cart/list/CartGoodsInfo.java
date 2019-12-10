@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
+import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -81,6 +82,6 @@ public class CartGoodsInfo {
     /**
      * 活动类型
      */
-    private List<CartActivityInfo> activityInfos;
+    private List<GoodsActivityInfo> activityInfos;
 
 }

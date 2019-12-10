@@ -12,7 +12,16 @@
         <text class="realPrice" style="color:{{main_setting.comColor}}">￥<text style="font-size:36rpx;">4000.00</text></text>
         <text class="linePrice">￥5500.00</text>
       </view>
-      <text class="iconfont icongouwuche1" style="color:{{main_setting.comColor}}"></text>
+      <block wx:if="{{!enableNumEdit}}">
+        <text class="iconfont icongouwuche1" style="color:{{main_setting.comColor}}"></text>
+      </block>
+      <block wx:else>
+        <view class="num-cfg">
+          <text class="num-minus">-</text>
+          <input type="number"></input>
+          <text class="num-plus">+</text>
+        </view>
+      </block>
    </view>
   </view>
 </view>
