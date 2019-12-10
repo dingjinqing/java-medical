@@ -22,7 +22,7 @@
   width: auto;
 }
 .item_line {
-  height: 2rpx;
+  height: 1rpx;
   background-color: #eee;
   width: 700rpx;
   margin: 0 auto;
