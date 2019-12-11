@@ -523,4 +523,12 @@ public class OrderConstant {
     public static final byte SEARCH_WAIT_TAKEDELIVER = 2;
     public static final byte SEARCH_RETURNING = 3;
     public static final byte SEARCH_RETURN_COMPLETED = 4;
+
+    /**
+     * 淘客订单类型：0：普通订单，1：京东订单，2：淘宝订单
+     */
+    public static final Byte TK_NORMAL = 0;
+    public static final Byte TK_JD = 1;
+    public static final Byte TK_TB = 2;
+
 }
