@@ -39,29 +39,11 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 	 *@return
 	 */
 	@PostMapping("/select")
-	public JsonResult getSelect(@RequestBody OverviewAnalysisSelectParam param) {
-		String startTime="7";
-		String endTime;
-		//**  获得今日时间（字符串格式精确到日）*/
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-		Date now = new Date();
-		String dateNowStr = simpleDateFormat.format(now);
+	public JsonResult getSelect(@RequestBody VisitTrendParam param) {
+
+		VisitTrendVo visitTrendVo = shop().overview.overviewAnalysisService.getVisitTrend(param);
 		
-		String tempStartTime = param.getStartTime();
-		startTime = tempStartTime!=null ? tempStartTime: getDate(startTime);
-		startTime = "7".equals(tempStartTime) ? getDate(startTime) : startTime;
-		startTime = "30".equals(tempStartTime) ? getDate(startTime) : startTime;
-		
-		param.setStartTime(startTime);
-		System.out.println(startTime);
-		
-		String tempEndTime = param.getEndTime();
-		endTime = StringUtils.isEmpty(tempEndTime) ? dateNowStr : tempEndTime;
-		param.setEndTime(endTime);		
-		
-		List<OverviewAnalysisSelectVo> overviewAnalysisSelectVos = shop().overview.overviewAnalysisService.getSelect(param);
-		
-		return success(overviewAnalysisSelectVos);
+		return success(visitTrendVo);
 	}
 	
 	public String getDate(String days) {
