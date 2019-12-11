@@ -87,7 +87,6 @@
       >
         <el-input-number
           v-model="goodsProductInfo.goodsWeight"
-          step-strictly
           size="small"
           controls-position="right"
           :min="0"
