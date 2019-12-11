@@ -539,14 +539,14 @@ public class Calculate extends ShopBaseService {
         //TODO 分销改价
 
         //首单特惠
-        if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice() != null) {
+        if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL) != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice() != null) {
             return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice(), ACTIVITY_TYPE_FIRST_SPECIAL, uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getActivityId());
         }
 
         //限时降价
 
         //会员价
-        if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice() != null){
+        if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE) != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice() != null){
             return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice(), ACTIVITY_TYPE_MEMBER_GRADE, null);
         }
 
