@@ -464,7 +464,7 @@ public class UserCardService extends ShopBaseService {
 	 */
 	public String sendCard(Integer userId, MemberCardRecord card, boolean isActivate) throws MemberCardNullException {
 		logger().info("给用户发送会员卡");
-		if (MCARD_DF_YES.equals(card.getDelFlag())) {
+		if (CardUtil.isCardDeleted(card.getDelFlag())) {
 			throw new MemberCardNullException();
 		}
 		UserCardRecord newCard = createNewUserCard(userId, card, isActivate);

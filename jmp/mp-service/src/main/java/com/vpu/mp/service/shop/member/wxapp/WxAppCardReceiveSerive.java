@@ -36,9 +36,9 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 	private JedisManager jedis;
 	/**
 	 * 领取会员卡通过码
-	 * @throws CardReceiveFailException 
+	 * @throws MpException 
 	 */
-	public void receiveCard(ReceiveCardParam param) throws CardReceiveFailException {
+	public void receiveCard(ReceiveCardParam param) throws MpException {
 		MemberCardRecord mCard = memberCardServie.getCardById(param.getCardId());
 		
 		if(!CardUtil.isValidCard(mCard)) {
@@ -51,10 +51,11 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_NOCODE);
 		}
 		
+		CardReceiveCodeRecord record = null;
 		if(CardUtil.isReceiveByCode(mCard.getReceiveAction())) {
-			checkReceiveCardByCode(param);
-		}else if(CardUtil.isReceiveByPwd(mCard.getReceiveAction())){
-			checkReceiveCardByPwd(param);
+			record = checkReceiveCardByCode(param);
+		}else {
+			record = checkReceiveCardByPwd(param);
 		}
 		
 		String cacheKey = String.format("receive_card_code:%s%s_%s",getShopId(),param.getCardId(),param.getCode());
@@ -63,16 +64,14 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 			logger().info("正在生成卡，请勿提交");
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_GENERATE);
 		}
-		jedis.set(cacheKey, "1", 1);
+		jedis.set(cacheKey, "1", 2);
 		String cardNo = null;
-		try {
-			List<String> cardNoList = userCardService.addUserCard(param.getUserId(), param.getCardId());
-			if(cardNoList!=null && cardNoList.size()>1) {
-				cardNo = cardNoList.get(0);
-			}
-		} catch (MpException e) {
-			logger().info("添加用户卡失败");
+	
+		List<String> cardNoList = userCardService.addUserCard(param.getUserId(), param.getCardId());
+		if(cardNoList!=null && cardNoList.size()>0) {
+			cardNo = cardNoList.get(0);
 		}
+		
 		
 		if(StringUtils.isBlank(cardNo)) {
 			logger().info("您已经有此会员卡");
@@ -84,6 +83,7 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 		cardReceiveCodeService.updateRow(
 					CardReceiveCodeRecordBuilder
 					.create()
+					.id(record.getId())
 					.userId(param.getUserId())
 					.receiveTime(DateUtil.getLocalDateTime())
 					.cardNo(cardNo)
@@ -98,7 +98,7 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 	/**
 	 * 领取会员卡通过卡号加密码
 	 */
-	private void checkReceiveCardByPwd(ReceiveCardParam param) throws CardReceiveFailException{
+	private CardReceiveCodeRecord checkReceiveCardByPwd(ReceiveCardParam param) throws CardReceiveFailException{
 		if(StringUtils.isBlank(param.getCardNo()) 
 				|| StringUtils.isBlank(param.getCardPwd())) {
 			logger().info("请填写卡号或密码");
@@ -114,13 +114,14 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 			logger().info("请输入有效的卡号或密码");
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_VALIDPWD);
 		}
+		return cardCodeInfo;
 	}
 
 	/**
 	 * 领取会员卡通过领取码
 	 * @throws CardReceiveFailException 
 	 */
-	private void checkReceiveCardByCode(ReceiveCardParam param) throws CardReceiveFailException {
+	private CardReceiveCodeRecord checkReceiveCardByCode(ReceiveCardParam param) throws CardReceiveFailException {
 		logger().info("通过领取码领取会员卡");
 		CardReceiveCodeRecord record = cardReceiveCodeService.getUserHasCode(param.getUserId(), param.getCode());
 		if(record != null) {
@@ -131,8 +132,9 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 		CardReceiveCodeRecord cardCodeInfo = cardReceiveCodeService.getCardCode(param.getCardId(), param.getCode());
 		
 		if(cardCodeInfo == null) {
-			logger().info("没有检测到用户输入的领取码");
+			logger().info("没有检测到用户输入的领取码,或该领取码已经被使用");
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_VALIDCODE);
 		}
+		return cardCodeInfo;
 	}
 }

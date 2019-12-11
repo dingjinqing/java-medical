@@ -80,9 +80,9 @@ public class WxAppCardController extends WxAppBaseController {
 		param.setUserId(wxAppAuth.user().getUserId());
 		try {
 			shop().user.wxUserCardService.receiveCard(param);
-		} catch (CardReceiveFailException e) {
+		} catch (MpException e) {
 			return fail(e.getErrorCode());
-		}
+		} 
 		return success();
 	}
 }

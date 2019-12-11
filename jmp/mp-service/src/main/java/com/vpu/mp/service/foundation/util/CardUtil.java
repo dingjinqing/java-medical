@@ -1,7 +1,9 @@
 package com.vpu.mp.service.foundation.util;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -150,6 +152,9 @@ public class CardUtil {
 	 * 解析优惠券id
 	 */
 	public static List<Integer> parseCouponList(String couponList){
+		if(StringUtils.isBlank(couponList)) {
+			return new ArrayList<Integer>();
+		}
 		return Util.splitValueToList(couponList);
 	}
 	
@@ -160,6 +165,15 @@ public class CardUtil {
 	public static boolean isCardAvailable(Byte flag) {
 		return CardConstant.MCARD_FLAG_USING.equals(flag);
 	}
+	
+	/**
+	 * 卡是否已经删除
+	 * @return true: 已删除；false: 未删除
+	 */
+	public static boolean isCardDeleted(Byte type) {
+		return CardConstant.MCARD_DF_YES.equals(type);
+	}
+	
 	/**
 	 * 卡是否有效
 	 * @return true: 有效；false: 无效
