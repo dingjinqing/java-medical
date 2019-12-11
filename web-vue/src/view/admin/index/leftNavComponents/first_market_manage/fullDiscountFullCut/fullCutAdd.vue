@@ -313,6 +313,7 @@ export default {
   },
   methods: {
     handleClick (tab) {
+      console.log(tab, 'tabChange')
       this.$nextTick(() => {
         if (tab.index !== '5') {
           this.$router.push({

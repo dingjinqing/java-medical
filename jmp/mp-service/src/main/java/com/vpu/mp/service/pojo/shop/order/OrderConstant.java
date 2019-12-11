@@ -277,11 +277,17 @@ public class OrderConstant {
 	/**买家取消订单*/
 	public final static byte SIMPLE_OPERATE_CANCEL = 1;
 	/**
-	 * 定金尾款支付状态，先定金后尾款。order_pay_way=1时有效，0未支付，1定金已支付，2尾款已支付
+	 * 定金尾款支付状态bk_order_paid，先定金后尾款。order_pay_way=1时有效，0未支付，1定金已支付，2尾款已支付
 	 */
     public final static byte BK_PAY_NO = 0;
     public final static byte BK_PAY_FRONT = 1;
     public final static byte BK_PAY_FINISH = 2;
+
+    /**
+     * 退定金模式bk_return_type。order_pay_way=1时有效，退定金模式1:自动退定金0:不退定金
+     */
+    public final static byte BK_RETURN_TYPE_N = 0;
+    public final static byte BK_RETURN_TYPE_Y = 1;
 
 	/**
 	 * 综合查询：支付方式
@@ -360,7 +366,7 @@ public class OrderConstant {
 	/** 全款 **/
     public static final byte PAY_WAY_FULL = 0;
     /** 定金 **/
-    public static final byte PAY_WAY_BARGIAN = 1;
+    public static final byte PAY_WAY_DEPOSIT = 1;
     /** 好友代付 **/
     public static final byte PAY_WAY_FRIEND_PAYMENT = 2;
 

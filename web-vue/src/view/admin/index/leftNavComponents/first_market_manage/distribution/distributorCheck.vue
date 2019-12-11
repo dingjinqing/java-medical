@@ -7,14 +7,16 @@
           <el-input
             v-model="searchForm.mobile"
             size="small"
+            clearable
             class="inputWidth"
           ></el-input>
         </div>
         <div class="leftarea">
           <span>昵称：</span>
           <el-input
-            v-model="searchForm.nickName"
+            v-model="searchForm.username"
             size="small"
+            clearable
             class="inputWidth"
           ></el-input>
         </div>
@@ -25,7 +27,7 @@
             type="date"
             placeholder="选择日期"
             size="small"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             class="inputWidth"
           >
           </el-date-picker>
@@ -35,7 +37,7 @@
             type="date"
             placeholder="选择日期"
             size="small"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             class="inputWidth"
           >
           </el-date-picker>
@@ -77,25 +79,41 @@
               colspan="6"
               style="text-align: left;"
             >
-              <div class="header">ID: {{ item.idCard }}</div>
-              <div class="header">昵称：<span class="active">{{ item.name }}</span></div>
-              <div class="header">手机号：{{ item.mobile }}</div>
-              <div class="header">申请时间：{{ item.startTime }}</div>
-              <div class="header">邀请码：</div>
+              <div class="header">ID: {{ item.userId }}</div>
+              <div class="header">昵称：<span class="active">{{ item.username }}</span></div>
+              <div
+                class="header"
+                v-if="item.mobile"
+              >手机号：{{ item.mobile }}</div>
+              <div
+                class="header"
+                v-if="item.createTime"
+              >申请时间：{{ item.createTime }}</div>
+              <div
+                class="header"
+                v-if="item.createTime"
+              >邀请码：</div>
             </td>
 
             <td style="width: 120px;">分销员分组</td>
             <td style="width: 100px;">审核状态</td>
-            <td style="width: 170px;">操作</td>
+            <td
+              style="width: 170px;"
+              v-if="item.status === 0"
+            >操作</td>
+            <td
+              style="width: 170px;"
+              v-if="item.status === 2"
+            >未通过原因</td>
           </tr>
 
           <tr>
             <td v-if="item.idCard !== ''">真实姓名</td>
-            <td v-if="item.idCard !== ''">{{ item.name }}</td>
+            <td v-if="item.idCard !== ''">{{ item.realName ? item.realName : '无' }}</td>
             <td v-if="item.idCard !== ''">手机号</td>
-            <td v-if="item.idCard !== ''">{{ item.mobile }}</td>
+            <td v-if="item.idCard !== ''">{{ item.mobile ? item.mobile : '无' }}</td>
             <td v-if="item.idCard !== ''">身份证号</td>
-            <td v-if="item.idCard !== ''">{{ item.idCard }}</td>
+            <td v-if="item.idCard !== ''">{{ item.userId ? item.userId : '无' }}</td>
             <td
               colspan="6"
               v-if="item.idCard === ''"
@@ -105,11 +123,11 @@
               rowspan="5"
               class="middle"
             >
-              <p>{{ item.group }}</p>
-              <p
+              <!-- <p>{{ item.group }}</p> -->
+              <!-- <p
                 class="active"
-                @click="setGroupHandler"
-              >设置</p>
+                @click="setGroupHandler(item.userId, item.group)"
+              >设置</p> -->
             </td>
             <td
               rowspan="5"
@@ -118,6 +136,7 @@
             <td
               rowspan="5"
               class="middle"
+              v-if="item.status === 0"
             >
               <el-button
                 size="small"
@@ -131,84 +150,92 @@
                 plain
               >不通过</el-button>
             </td>
+            <td
+              rowspan="5"
+              class="middle"
+              v-if="item.status === 2"
+            >
+
+            </td>
           </tr>
           <tr v-if="item.idCard !== ''">
             <td>性别</td>
-            <td>{{ item.sex }}</td>
+            <td>{{ item.sex ? item.sex : '无' }}</td>
             <td>生日</td>
-            <td>{{ item.birthday }}</td>
+            <td>{{ item.birthdayYear ? item.birthdayYear - item.birthdayMonth - item.birthdayDay : '无' }}</td>
             <td>婚姻状况</td>
-            <td>{{ item.marry }}</td>
+            <td>{{ item.maritalStatus ? item.maritalStatus : '无' }}</td>
 
           </tr>
           <tr v-if="item.idCard !== ''">
             <td>教育程度</td>
-            <td>{{ item.education }}</td>
+            <td>{{ item.educationName ? item.educationName : '无' }}</td>
             <td>所在行业</td>
-            <td>{{ item.industry }}</td>
+            <td>{{ item.industryName ? item.industryName : '无' }}</td>
             <td>所在地</td>
-            <td>{{ item.location }}</td>
+            <td>{{ item.address ? item.address : '无' }}</td>
 
           </tr>
           <tr v-if="item.idCard !== ''">
             <td>备注</td>
-            <td colspan="5">{{ item.note }}</td>
+            <td colspan="5"></td>
           </tr>
           <tr v-if="item.idCard !== ''">
             <td>图片</td>
-            <td colspan="5">6</td>
+            <td colspan="5"></td>
           </tr>
         </table>
 
+        <!-- 分页 -->
         <Pagination
           :page-params.sync="pageParams"
           @pagination="initDataList"
         />
-
-        <!-- 分销员分组弹窗 -->
-        <el-dialog
-          title="设置分销员分组"
-          :visible.sync="dialogVisible"
-          width="25%"
-          center
-        >
-          <span>选择分组：</span>
-          <el-select
-            v-model="selectValue"
-            placeholder="请选择分组"
-            size="small"
-            style="width: 170px;"
-          >
-            <el-option
-              v-for="(item, index) in selectData"
-              :key="index"
-              :label="item.groupName"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
-          <span
-            slot="footer"
-            class="dialog-footer"
-          >
-            <el-button
-              size="small"
-              @click="dialogVisible = false"
-            >取 消</el-button>
-            <el-button
-              type="primary"
-              size="small"
-              @click="dialogVisible = false"
-            >确 定</el-button>
-          </span>
-        </el-dialog>
       </div>
+
+      <!-- 分销员分组弹窗 -->
+      <el-dialog
+        title="设置分销员分组"
+        :visible.sync="dialogVisible"
+        width="25%"
+        center
+      >
+        <span>选择分组：</span>
+        <el-select
+          v-model="selectValue"
+          placeholder="请选择分组"
+          size="small"
+          style="width: 170px;"
+        >
+          <el-option
+            v-for="(item, index) in selectData"
+            :key="index"
+            :label="item.groupName"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            size="small"
+            @click="dialogVisible = false"
+          >取 消</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="saveGroupHandler"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { distributionGroup } from '@/api/admin/marketManage/distribution.js'
+import { getCheckList, distributionGroup } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
@@ -218,57 +245,41 @@ export default {
       // 搜索
       searchForm: {
         mobile: '',
-        nikeName: '',
+        username: '',
         startTime: '',
         endTime: ''
       },
       activeName: 'first',
-      pageParams: {}, // 分页
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      }, // 分页
       requestParams: {},
       // 表格数据
       tableData: [{
-        name: 'name1',
-        mobile: 'mobile1',
-        idCard: 'idCard1',
-        group: 'group1',
-        status: '待审核',
-        sex: 'sex1',
-        birthday: 'birthday1',
-        marry: 'marry1',
-        education: 'education1',
-        industry: 'industry1',
-        location: 'location1',
-        note: '7个工作日没审核通过，联系110'
-      }, {
-        name: 'name2',
-        mobile: 'mobile2',
-        idCard: 'idCard2',
-        group: 'group2',
-        status: '待审核',
-        sex: 'sex2',
-        birthday: 'birthday2',
-        marry: 'marry2',
-        education: 'education2',
-        industry: 'industry2',
-        location: 'location2',
-        note: '备注信息'
-      }, {
-        name: '',
-        mobile: '',
-        idCard: '',
-        group: 'group1',
-        status: '待审核',
-        sex: '',
-        birthday: '',
-        marry: '',
-        education: '',
-        industry: '',
-        location: '',
-        note: ''
+        userId: '', // 用户id
+        username: '', // 昵称
+        mobile: '', // 手机号
+        createTime: '', // 申请时间
+        // 邀请码
+        realName: '', // 真实姓名
+        // 身份证号
+        sex: '', // 性别
+        birthdayYear: '', // 出生年
+        birthdayMonth: '', // 出生月
+        birthdayDay: '', // 出生日
+        maritalStatus: '', // 婚姻状况
+        educationName: '', // 受教育程度
+        industryName: '', // 行业
+        address: '' // 所在地址
+        // 备注
+        // 图片
       }],
 
       // 分销员分组弹窗
       dialogVisible: false,
+      groupId: '',
+      groupName: '',
       selectValue: '',
       selectData: []
     }
@@ -286,7 +297,46 @@ export default {
   },
   methods: {
     initDataList () {
+      this.requestParams.mobile = this.searchForm.mobile
+      this.requestParams.username = this.searchForm.username
+      this.requestParams.startTime = this.searchForm.startTime
+      this.requestParams.endTime = this.searchForm.endTime
+      this.requestParams.currentPage = this.pageParams.currentPage
+      this.requestParams.pageRows = this.pageParams.pageRows
+      console.log(this.requestParams)
+      getCheckList(this.requestParams).then((res) => {
+        if (res.error === 0) {
+          this.handleData(res.content.dataList)
+          this.pageParams = res.content.page
+        }
+      })
+    },
 
+    // 表格数据处理
+    handleData (data) {
+      data.forEach(item => {
+        // 性别
+        if (item.sex === 'f') {
+          item.sex = '女'
+        } else if (item.sex === 'm') {
+          item.sex = '男'
+        }
+        // 婚姻状况
+        if (item.maritalStatus === 1) {
+          item.maritalStatus = '未婚'
+        } else if (item.maritalStatus === 2) {
+          item.maritalStatus = '已婚'
+        }
+        // 审核状态
+        if (item.status === 0) {
+          item.status = '待审核'
+        } else if (item.status === 1) {
+          item.status = '已通过'
+        } else if (item.status === 2) {
+          item.status = '未通过'
+        }
+      })
+      this.tableData = data
     },
 
     // 获取分销员分组
@@ -300,8 +350,33 @@ export default {
     },
 
     // 设置分销员分组
-    setGroupHandler () {
+    setGroupHandler (id, value) {
       this.dialogVisible = !this.dialogVisible
+      // 数据回显
+      this.groupId = id
+      this.selectData.forEach((item, index) => {
+        if (item.groupName === value) {
+          this.selectValue = item.id
+          this.groupName = item.groupName
+        }
+      })
+    },
+
+    // 保存分销员分组
+    saveGroupHandler () {
+      this.dialogVisible = false
+      // 获取下拉框的label
+      this.selectData.forEach((item, index) => {
+        if (item.id === this.selectValue) {
+          this.groupName = item.groupName
+        }
+      })
+      // 赋值给表格
+      this.tableData.forEach((item, index) => {
+        if (item.userId === this.groupId) {
+          item.group = this.groupName
+        }
+      })
     }
   }
 

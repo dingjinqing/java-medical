@@ -595,6 +595,7 @@ export default {
     },
     // 点击tab框
     handleClick (tab) {
+      console.log(tab)
       this.$nextTick(() => {
         if (tab.index !== '5') {
           this.$router.push({

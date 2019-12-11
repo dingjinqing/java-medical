@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePrice extends TableImpl<ReducePriceRecord> {
 
-    private static final long serialVersionUID = -540140735;
+    private static final long serialVersionUID = -1440400638;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_reduce_price</code>
@@ -79,9 +79,9 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
     public final TableField<ReducePriceRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束日期");
 
     /**
-     * The column <code>mini_shop_471752.b2c_reduce_price.period_action</code>. 周期类型：1:每天 2:每月 3:每周
+     * The column <code>mini_shop_471752.b2c_reduce_price.period_action</code>. 周期类型：0:不进行周期重复  1:每天 2:每月 3:每周
      */
-    public final TableField<ReducePriceRecord, Byte> PERIOD_ACTION = createField("period_action", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "周期类型：1:每天 2:每月 3:每周");
+    public final TableField<ReducePriceRecord, Byte> PERIOD_ACTION = createField("period_action", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "周期类型：0:不进行周期重复  1:每天 2:每月 3:每周");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.point_time</code>. 时间段
@@ -157,6 +157,11 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
      * The column <code>mini_shop_471752.b2c_reduce_price.limit_flag</code>. 超限购买设置标记，1禁止超限购买，0超限全部恢复原价
      */
     public final TableField<ReducePriceRecord, Byte> LIMIT_FLAG = createField("limit_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "超限购买设置标记，1禁止超限购买，0超限全部恢复原价");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_reduce_price.first</code>. 优先级
+     */
+    public final TableField<ReducePriceRecord, Byte> FIRST = createField("first", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "优先级");
 
     /**
      * Create a <code>mini_shop_471752.b2c_reduce_price</code> table reference

@@ -76,6 +76,17 @@ public class GoodsScheduleTask {
     }
 
     /**
+     * 监控预售，更新商品类型
+     * 每一分钟执行一次
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void monitorPreSaleGoods() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r)->{saas.getShopApp(r.getShopId()).
+            shopTaskService.preSaleTaskService.monitorGoodsType();});
+    }
+
+    /**
      * 删除用户足迹
      * 每三个月执行一次
      */
