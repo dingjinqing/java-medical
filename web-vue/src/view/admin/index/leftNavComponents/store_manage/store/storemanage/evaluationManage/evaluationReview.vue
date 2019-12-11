@@ -3,7 +3,7 @@
     <div class="technician_list_page">
       <div class="list_info">
         <label style="font-size: 14px;">
-          订单号：
+          {{$t('reservationManage.orderSn')}}：
           <el-input
             size="small"
             class="filter_input"
@@ -12,7 +12,7 @@
           ></el-input>
         </label>
         <label style="font-size: 14px;">
-          服务名称：
+          {{$t('reservationManage.serviceName')}}：
           <el-input
             size="small"
             class="filter_input"
@@ -21,7 +21,7 @@
           ></el-input>
         </label>
         <label style="font-size: 14px;">
-          会员手机号：
+          {{$t('reservationManage.userMobile')}}：
           <el-input
             size="small"
             class="filter_input"
@@ -54,7 +54,7 @@
           ></el-option>
         </el-select>
         </template>
-        <label style="font-size: 14px;">评价星级： </label>
+        <label style="font-size: 14px;">{{$t('reservationManage.commentStar')}}： </label>
         <!-- 评价星级下拉 -->
         <template>
           <el-select
@@ -94,17 +94,17 @@
             width="55">
           </el-table-column>
           <el-table-column
-            label="服务信息"
+            :label="$t('reservationManage.serviceInfo')"
           >
             <template slot-scope="{ row }">
               <el-row :gutter=20>
                 <el-col :span="20">
-                  <label style="font-size: 14px;">订单号： {{row.orderSn}}</label>
+                  <label style="font-size: 14px;">{{$t('reservationManage.orderSn')}}： {{row.orderSn}}</label>
                 </el-col>
               </el-row>
               <el-row :gutter=20>
                 <el-col :span="5">
-                  <img :src="row.serviceImg">
+                  <img :src="row.serviceImg" style="width: 48px; height: 48px">
                 </el-col>
                 <el-col :span="15">
                   <label style="font-size: 14px;">{{row.serviceName}}</label>
@@ -129,13 +129,13 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="评价内容"
+            :label="$t('reservationManage.commentInfo')"
           >
             <template slot-scope="{ row }">
               <el-row :gutter=20>
                 <el-col :span="20">
                   <label style="font-size: 14px;">评分： {{row.commstar}}</label>
-                  <img :src="imgHost + '/image/admin/comstar_{{row.commstar}}.png'" alt="">
+                  <img :src="imgHost + '/image/admin/comstar_{{row.commstar}}.png'" alt="" style="width: 65px; height: 65px">
                 </el-col>
               </el-row>
               <el-row :gutter=20>
@@ -144,22 +144,22 @@
                 </el-col>
               </el-row>
               <el-row :gutter=20>
-                <el-col :span="20">
-                  <img :src="row.commImg">
+                <el-col :span="20" v-if="row.commImg">
+                  <img :src="row.commImg" style="width: 65px; height: 65px">
                 </el-col>
               </el-row>
             </template>
           </el-table-column>
           <el-table-column
-            label="技师名称"
+            :label="$t('reservationManage.technician')"
             prop="technicianName"
           ></el-table-column>
           <el-table-column
-            label="评价时间"
+            :label="$t('reservationManage.commentTime')"
             prop="createTime"
           ></el-table-column>
           <el-table-column
-            label="匿名评价"
+            :label="$t('reservationManage.Ncomment')"
             prop="anonymousflag"
           ></el-table-column>
           <el-table-column
@@ -167,7 +167,7 @@
             prop="flag"
           ></el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('reservationManage.operate')"
             prop="operate"
             align="center"
           >
@@ -177,21 +177,21 @@
                   <span
                     class="iconSpan"
                     @click="singleDelete(row.id)"
-                  >删除</span>
+                  >{{$t('reservationManage.del')}}</span>
                 </el-tooltip>
                 <el-tooltip :content="$t('technicianList.edit')">
                   <span
                     class="iconSpan"
-                    v-if="row.flag!==1"
+                    v-if="returnTrue(row.flag, 1)"
                     @click="singlePass(row.id)"
-                  >通过</span>
+                  >{{$t('reservationManage.pass')}}</span>
                 </el-tooltip>
                 <el-tooltip :content="$t('technicianList.edit')">
                   <span
                     class="iconSpan"
-                    v-if="row.flag===0"
+                    v-if="returnTrue(row.flag, 2)"
                     @click="singleRefuse(row.id)"
-                  >拒绝</span>
+                  >{{$t('reservationManage.refuse')}}</span>
                 </el-tooltip>
               </div>
             </template>
@@ -251,22 +251,22 @@ export default {
       }],
       starSelect: [{
         label: 0,
-        value: '全部'
+        value: this.$t('reservationManage.all')
       }, {
         label: 1,
-        value: '一星'
+        value: this.$t('reservationManage.oneStar')
       }, {
         label: 2,
-        value: '二星'
+        value: this.$t('reservationManage.towStar')
       }, {
         label: 3,
-        value: '三星'
+        value: this.$t('reservationManage.threeStar')
       }, {
         label: 4,
-        value: '四星'
+        value: this.$t('reservationManage.fourStar')
       }, {
         label: 5,
-        value: '五星'
+        value: this.$t('reservationManage.fiveStar')
       }],
       queryParams: {
         orderSn: '',
@@ -289,6 +289,13 @@ export default {
     this.initDataList()
   },
   methods: {
+    returnTrue (flag, num) {
+      if (flag.toString() === num.toString()) {
+        return false
+      } else {
+        return true
+      }
+    },
     handleSelectionChange (val) {
       this.multipleSelection = val
       console.log(this.multipleSelection)
