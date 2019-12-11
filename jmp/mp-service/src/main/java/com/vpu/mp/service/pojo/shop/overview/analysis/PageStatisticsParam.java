@@ -9,10 +9,7 @@ import javax.validation.constraints.NotNull;
  * @date 2019年7月15日
  */
 @Data
-public class VisitTrendParam {
-    /** 访问趋势标识 */
-    @NotNull
-    private Integer action = 1;
+public class PageStatisticsParam {
     /** 日期类型 7:最近7天 30:最近30天 0:自定义 */
     @NotNull
     private Integer type = 7;
