@@ -14,8 +14,9 @@ global.wxPage({
     click_more: imageUrl + '/image/wxapp/backward_right.png',
     img_noperson: imageUrl + 'image/wxapp/icon_group2.png',
     showPoster: false,
+    clock: '', // 活动倒计时
 
-    pin_content: {
+    groupbuyInfo: {
       is_delete: 0, // 是否已删除
       is_bind_mobile: 0, // 是否需要绑定手机号
       have_order_flag: 1, // activity_type = 2 && = 1判断是不是老用户
@@ -124,14 +125,14 @@ global.wxPage({
     })
     util.api('/api/wxapp/groupbuy/info', function (res) {
       if (res.error === 0) {
-        console.log(res.content)
         // 倒计时
-        var pin_content = res.content
-        var remainingTime = pin_content.remainingTime
+        var groupbuyInfo = res.content;
+        if (groupbuyInfo.isDelete)
+          var remainingTime = groupbuyInfo.remainingTime
         var totalSeconds = remainingTime.hour * 60 * 60 + remainingTime.minute * 60 + remainingTime.second
         that.countdown(totalSeconds)
         this.setData({
-          pin_content: res.content
+          groupbuyInfo: res.content
         })
       } else {
         util.showModal('提示', '该活动已失效', function () {
@@ -141,7 +142,7 @@ global.wxPage({
         });
         return;
       }
-    }, { groupId: groupId })
+    }, { groupId: 4 })
   },
 
   countdown (totalSeconds) {
@@ -181,7 +182,7 @@ global.wxPage({
     let that = this
     // 将用户更新为老用户
     // 判断是否要去绑定手机号
-    if (this.data.pin_content.is_bind_mobile && util.getCache('mobile') === '') {
+    if (this.data.groupbuyInfo.is_bind_mobile && util.getCache('mobile') === '') {
       util.checkSession(function () {
         this.setData({
           is_block: 1
@@ -194,7 +195,7 @@ global.wxPage({
     // 关闭规格弹窗
     this.bindCloseSpec();
     // 限制数量
-    if (pin_content.goodsInfo.pinGoodsNum == 0) {
+    if (groupbuyInfo.goodsInfo.pinGoodsNum == 0) {
       util.showModal('提示', '该商品库存不足，无法购买', function () { }, false)
     } else {
       var choose_list = this.getChooseList();
@@ -299,9 +300,9 @@ global.wxPage({
    */
   onShareAppMessage: function () {
     return {
-      title: pin_content.pinInfo.limitAmount + '人拼购仅需' + pin_content.goodsInfo.pinShopPrice + '元，' + pin_content.goodsInfo.goodsName,
-      imageUrl: imageUrl + pin_content.share_img,
-      path: '/pages/groupbuyinfo/groupbuyinfo?group_id=' + group_id + '&pin_group_id=' + pin_content.pinInfo.id + '&invite_id' + util.getCache('user_id')
+      title: groupbuyInfo.pinInfo.limitAmount + '人拼购仅需' + groupbuyInfo.goodsInfo.pinShopPrice + '元，' + groupbuyInfo.goodsInfo.goodsName,
+      imageUrl: imageUrl + groupbuyInfo.share_img,
+      path: '/pages/groupbuyinfo/groupbuyinfo?group_id=' + group_id + '&pin_group_id=' + groupbuyInfo.pinInfo.id + '&invite_id' + util.getCache('user_id')
     }
   }
 })

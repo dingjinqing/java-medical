@@ -1,37 +1,37 @@
 <!-- 拼团详情：pages/groupbuyinfo/groupbuyinfo.wxml -->
 <include src="../common/header.wxml" />
 <view class='main-container'>
-  <block wx:if="{{pin_content.is_delete == 0}}">
+  <block wx:if="{{groupbuyInfo.is_delete == 0}}">
     <!-- 拼团商品信息 -->
     <view class='group_goods clearfix'>
       <view class='goods_image'>
-        <image src='{{pin_content.goodsInfo.goodsImg}}' />
+        <image src='{{groupbuyInfo.goodsInfo.goodsImg}}' />
       </view>
       <view class='goods_info'>
-        <view class='goods_name'>{{pin_content.goodsInfo.goodsName}}</view>
+        <view class='goods_name'>{{groupbuyInfo.goodsInfo.goodsName}}</view>
         <view class='goods_price'>
           <view>
-            {{pin_content.pinInfo.limitAmount}}人拼团价
+            {{groupbuyInfo.pinInfo.limitAmount}}人拼团价
             <text decode="{{true}}" space="{{true}}">&nbsp;&nbsp;</text>
             ￥
-            <text style='font-size:32rpx;'>{{pin_content.goodsInfo.pinShopPrice}}</text>
+            <text style='font-size:32rpx;'>{{groupbuyInfo.goodsInfo.pinShopPrice}}</text>
           </view>
           <view class='ori_price'>
             单买价
             <text decode="{{true}}" space="{{true}}">&nbsp;&nbsp;</text>
-            ￥{{pin_content.goodsInfo.shopPrice}}
+            ￥{{groupbuyInfo.goodsInfo.shopPrice}}
           </view>
         </view>
       </view>
     </view>
     <!-- 已经成团人数 -->
     <view class='grouped_info'>
-      <view class='trace_person trace' wx:if="{{pin_content.canPinGroup.status != 2}}">
+      <view class='trace_person trace' wx:if="{{groupbuyInfo.canPinGroup.status != 2}}">
         还差
-        <text>{{pin_content.pinInfo.limitNum}}人</text>
+        <text>{{groupbuyInfo.pinInfo.limitNum}}人</text>
         拼团成功
       </view>
-      <view class='trace_times trace' wx:if="{{pin_content.canPinGroup.status != 1}}">
+      <view class='trace_times trace' wx:if="{{groupbuyInfo.canPinGroup.status != 1}}">
         剩余
         <text decode="{{true}}" space="{{true}}">&nbsp;</text>
         <text>{{clock}}</text>
@@ -39,51 +39,51 @@
         结束
       </view>
       <view class='grouped_person'>
-        <block wx:for="{{pin_content.pin_user_list}}" wx:key="index">
+        <block wx:for="{{groupbuyInfo.pin_user_list}}" wx:key="index">
           <view>
             <image src='{{item.user_avatar}}' mode='widthFix' />
           </view>
         </block>
-        <view wx:if="{{pin_content.pinInfo.show_noperson > 0}}">
+        <view wx:if="{{groupbuyInfo.pinInfo.show_noperson > 0}}">
           <image src='{{img_noperson}}' mode='widthFix' />
         </view>
-        <view wx:if="{{pin_content.pinInfo.show_noperson > 1}}">
+        <view wx:if="{{groupbuyInfo.pinInfo.show_noperson > 1}}">
           <image src='{{img_noperson}}' mode='widthFix' />
         </view>
-        <view wx:if="{{pin_content.pinInfo.show_noperson > 2}}">
+        <view wx:if="{{groupbuyInfo.pinInfo.show_noperson > 2}}">
           <image src='{{img_noperson}}' mode='widthFix' />
         </view>
-        <view wx:if="{{pin_content.pinInfo.show_noperson > 3}}">
+        <view wx:if="{{groupbuyInfo.pinInfo.show_noperson > 3}}">
           <image src='{{img_noperson}}' mode='widthFix' />
         </view>
-        <view wx:if="{{pin_content.pinInfo.limit_amount > 5}}">
+        <view wx:if="{{groupbuyInfo.pinInfo.limit_amount > 5}}">
           <image src='{{img_otherperson}}' mode='widthFix' />
         </view>
       </view>
       <block wx:if="{{getsq == true || click_num == true}}">
-        <view class='btn_to_group' data-group_type="{{pin_content.pinInfo.activity_type}}" bindtap='toJoin' wx:if="{{pin_content.canPinGroup.status == 0}}">
+        <view class='btn_to_group' data-group_type="{{groupbuyInfo.pinInfo.activity_type}}" bindtap='toJoin' wx:if="{{groupbuyInfo.canPinGroup.status == 0}}">
           我要参团
         </view>
-        <button class='btn_to_group buttins' open-type="share" wx:if="{{pin_content.canPinGroup.status == 3}}">
+        <button class='btn_to_group buttins' open-type="share" wx:if="{{groupbuyInfo.canPinGroup.status == 3}}">
           立即分享
         </button>
       </block>
       <block wx:else>
-        <button class='btn_to_group' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{pin_content.canPinGroup.status == 0}}" data-ct="{{0}}">
+        <button class='btn_to_group' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.canPinGroup.status == 0}}" data-ct="{{0}}">
           我要参团
         </button>
-        <button class='btn_to_group buttins' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{pin_content.canPinGroup.status == 3}}">
+        <button class='btn_to_group buttins' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.canPinGroup.status == 3}}">
           立即分享
         </button>
       </block>
-      <view class='btn_to_group' wx:if="{{pin_content.canPinGroup.status == 1}}">本次团购已结束</view>
-      <view class='btn_to_group' wx:if="{{pin_content.canPinGroup.status == 2}}">该团人数已满</view>
-      <view class='btn_to_group' wx:if="{{pin_content.canPinGroup.status == 4}}">
+      <view class='btn_to_group' wx:if="{{groupbuyInfo.canPinGroup.status == 1}}">本次团购已结束</view>
+      <view class='btn_to_group' wx:if="{{groupbuyInfo.canPinGroup.status == 2}}">该团人数已满</view>
+      <view class='btn_to_group' wx:if="{{groupbuyInfo.canPinGroup.status == 4}}">
         该活动您的参团个数已达上限
       </view>
     </view>
     <!-- 老带新团 -->
-    <view class="lead_newcomer" wx:if="{{pin_content.pinInfo.activity_type==2}}">
+    <view class="lead_newcomer" wx:if="{{groupbuyInfo.pinInfo.activity_type==2}}">
       <view class="lead_title" style="background:url({{imageUrl}}image/wxapp/old_customer_bg.png) no-repeat bottom;background-size:100%">
         <text>老带新团</text>
       </view>
@@ -135,7 +135,7 @@
       </view>
     </view>
     <!-- 选择规格（包含无规格情况） -->
-    <v-sel-spec gd="{{pin_content.goodsInfo}}" show="{{show_spec}}" hide_cell="true" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange"></v-sel-spec>
+    <v-sel-spec gd="{{groupbuyInfo.goodsInfo}}" show="{{show_spec}}" hide_cell="true" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange"></v-sel-spec>
     <!-- 拼团规格弹框 -->
     <!-- fenxiang弹框 -->
     <view class='share_bg' style='display:{{is_share == 1?"block":"none"}}'>
