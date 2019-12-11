@@ -18,5 +18,6 @@ public class ArticleListQueryParam {
 	private String keywords;
 	/**排序条件 eg:name,asc;time,desc*/
 	private String sortName;
-	private Page page;
+	public Integer currentPage;
+	public Integer pageRows;
 }
