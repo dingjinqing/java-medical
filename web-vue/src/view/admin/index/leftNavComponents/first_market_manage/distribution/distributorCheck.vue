@@ -198,7 +198,7 @@
         :visible.sync="dialogVisible"
         width="25%"
         center
-        close-on-click-modal=false
+        :close-on-click-modal="false"
       >
         <span>选择分组：</span>
         <el-select
@@ -237,7 +237,7 @@
         :visible.sync="failDialogVisible"
         width="35%"
         center
-        close-on-click-modal=false
+        :close-on-click-modal="false"
       >
         <div class="failTip">
           <i
