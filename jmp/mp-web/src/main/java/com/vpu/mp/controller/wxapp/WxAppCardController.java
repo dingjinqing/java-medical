@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +13,9 @@ import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
+import com.vpu.mp.service.pojo.shop.member.ucard.ReceiveCardParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 
 /**
@@ -66,7 +69,20 @@ public class WxAppCardController extends WxAppBaseController {
 			return success(shop().user.userCard.getCard(param));
 		} catch (MpException e) {
 			return fail(e.getErrorCode());
+		}	
+	}
+	/**
+	 * 用户通过领取码领取会员卡
+	 */
+	@PostMapping(value="/api/wxapp/card/code/receive")
+	public JsonResult receiveCard(@RequestBody @Validated ReceiveCardParam param) {
+		logger().info("用户通过领取码领取会员卡");
+		param.setUserId(wxAppAuth.user().getUserId());
+		try {
+			shop().user.wxUserCardService.receiveCard(param);
+		} catch (CardReceiveFailException e) {
+			return fail(e.getErrorCode());
 		}
-		
+		return success();
 	}
 }

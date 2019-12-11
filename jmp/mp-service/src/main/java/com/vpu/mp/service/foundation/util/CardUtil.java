@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 /**
 * @author 黄壮壮
@@ -52,11 +53,34 @@ public class CardUtil {
 	 * 卡是否需要购买
 	 */
 	public static boolean isNeedToBuy(Byte isPay) {
-		return NumberUtils.BYTE_ZERO.equals(isPay);
+		return CardConstant.MCARD_ISP_BUY.equals(isPay);
+	}
+	
+	/**
+	 * 卡领取是否需要码
+	 * @return true: 需要；false: 不需要
+	 */
+	public static boolean isNeedReceiveCode(Byte isPay) {
+		return CardConstant.MCARD_ISP_CODE.equals(isPay);
+	}
+	/**
+	 * 卡领取需要领取码
+	 * @return true: 需要 ; false: 不需要
+	 */
+	public static boolean isReceiveByCode(Byte type) {
+		return CardConstant.MCARD_REA_CODE.equals(type);
+	}
+	
+	/**
+	 * 卡领取需要密码
+	 */
+	public static boolean isReceiveByPwd(Byte type) {
+		return CardConstant.MCARD_REA_PWD.equals(type);
 	}
 	
 	/**
 	 * 卡是否永久有效
+	 * @return true: 需要 ; false: 不需要
 	 */
 	public static boolean isCardTimeForever(Byte expireType) {
 		return CardConstant.MCARD_ET_FOREVER.equals(expireType);
@@ -71,6 +95,7 @@ public class CardUtil {
 	
 	/**
 	 * 卡是否过期
+	 * @return true: 已经过期，false: 未过期
 	 */
 	public static boolean isCardExpired(Timestamp endTime) {
 		return DateUtil.getLocalDateTime().after(endTime);
@@ -93,16 +118,24 @@ public class CardUtil {
 	}
 	
 	/**
+	 * 是否开卡送券
+	 * @return true: 开卡送优惠券；false: 开卡不送优惠券
+	 */
+	public static boolean isOpenCardSendCoupon(Byte type) {
+		return CardConstant.MCARD_SEND_COUPON_ON.equals(type);
+	}
+	
+	/**
 	 * 送优惠券
 	 */
 	public static boolean isSendCoupon(Byte type) {
-		return NumberUtils.BYTE_ZERO.equals(type);
+		return CardConstant.MCARD_COUPON_TYPE.equals(type);
 	}
 	/**
 	 * 送优惠卷礼包
 	 */
 	public static boolean isSendCouponPack(Byte type) {
-		return NumberUtils.BYTE_ONE.equals(type);
+		return CardConstant.MCARD_COUPON_PACK_TYPE.equals(type);
 	}
 	
 	/**
@@ -118,5 +151,29 @@ public class CardUtil {
 	 */
 	public static List<Integer> parseCouponList(String couponList){
 		return Util.splitValueToList(couponList);
+	}
+	
+	/**
+	 * 卡是否可用
+	 * @reture true: 可用；false: 不可用
+	 */
+	public static boolean isCardAvailable(Byte flag) {
+		return CardConstant.MCARD_FLAG_USING.equals(flag);
+	}
+	/**
+	 * 卡是否有效
+	 * @return true: 有效；false: 无效
+	 */
+	public static boolean isValidCard(MemberCardRecord card) {
+		if(card==null) {
+			return false;
+		}
+		if(isCardFixTime(card.getExpireType()) && isCardExpired(card.getEndTime())) {
+			return false;
+		}
+		if(!isCardAvailable(card.getFlag())) {
+			return false;
+		}
+		return true;
 	}
 }

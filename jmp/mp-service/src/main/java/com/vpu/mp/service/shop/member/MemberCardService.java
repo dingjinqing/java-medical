@@ -86,7 +86,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep7;
-import org.jooq.InsertValuesStep8;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
@@ -106,6 +105,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -187,7 +187,7 @@ public class MemberCardService extends ShopBaseService {
 	@Autowired
 	private CardVerifyService cardVerifyService;
 	@Autowired
-	private CardReceiveCode cardReceiveCode;
+	private CardReceiveCodeService cardReceiveCode;
 	@Autowired
 	private GoodsCardCoupleService goodsCardCoupleService;
 	@Autowired
@@ -2157,15 +2157,10 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	}
 
 	public void sendCoupon(MemberCardRecord mCard, Integer userId, Integer cardId) {
-		if(NumberUtils.BYTE_ZERO.equals(mCard.getSendCouponSwitch()))
+		if(CardUtil.isOpenCardSendCoupon(mCard.getSendCouponSwitch()))
 			return;
-		String[] sendCouponIds = mCard.getSendCouponIds().split(",");
-		List<Integer> sendCouponList = new ArrayList();
-		for(String id: sendCouponIds) {
-			sendCouponList.add(Integer.parseInt(id));
-		}
-		//send_coupon_type:0送券，1送优惠券礼包
-		if(NumberUtils.BYTE_ZERO.equals(mCard.getSendCouponType()) && sendCouponList.size()>0) {
+		List<Integer> sendCouponList = CardUtil.parseCouponList(mCard.getSendCouponIds());
+		if(CardUtil.isSendCoupon(mCard.getSendCouponType()) && sendCouponList.size()>0) {
 			couponGiveService.sendVoucher(userId,sendCouponList,cardId,19,(byte)1);
 		}else if(NumberUtils.BYTE_ONE.equals(mCard.getSendCouponType()) || sendCouponList.size()>0){
 			// TODO  
