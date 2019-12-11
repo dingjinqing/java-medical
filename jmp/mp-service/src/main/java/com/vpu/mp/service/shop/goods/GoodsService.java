@@ -1430,6 +1430,11 @@ public class GoodsService extends ShopBaseService {
             .and(GRADE_PRD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(GoodsGradePrd.class)
             .stream().collect(Collectors.groupingBy(GoodsGradePrd::getGoodsId));
     }
+    public  Result<GoodsSpecProductRecord>  getProductByGoodsId(Integer goodsId){
+        Result<GoodsSpecProductRecord> fetch = db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetch();
+        return fetch;
+    }
+
     /**
      * 获取商品专享会员卡
      *

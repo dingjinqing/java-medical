@@ -4,7 +4,7 @@ package com.vpu.mp.service.pojo.shop.market.groupbuy;
  * @author 孔德成
  * @date 2019/12/10 16:18
  */
-public class GroupBuyConstant {
+public interface GroupBuyConstant {
 
     //*********** 是否是团长  **************
     /**
@@ -27,6 +27,10 @@ public class GroupBuyConstant {
 
     //*********** 拼团状态 ******************
     /**
+     * 未支付
+     */
+    public static final Byte STATUS_WAIT_PAY = -1;
+    /**
      * 拼团中
      */
     public static final Byte STATUS_ONGOING = 0;
@@ -34,6 +38,10 @@ public class GroupBuyConstant {
      * 拼团成功
      */
     public static final Byte STATUS_SUCCESS = 1;
+    /**
+     * 拼团成功 (默认成团)
+     */
+    public static final Byte STATUS_DEFAULT_SUCCESS =3;
     /**
      * 拼团失败
      */

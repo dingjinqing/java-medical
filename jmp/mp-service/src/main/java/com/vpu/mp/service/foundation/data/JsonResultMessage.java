@@ -208,7 +208,8 @@ public class JsonResultMessage {
 	 */
 	public static final String GROUP_BUY_ADD_ACTIVITY_STOP_STATUS="group.buy.add.activity.stop.status";
 	public static final String GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING="group.buy.activity.goods.overlapping";
-
+	public static final String GROUP_BUY_GROUPID_DOES_NOT_EXIST="group.buy.groupId.does.not.exist";
+	public static final String GROUP_BUY_ACTIVITY_STATUS_DISABLE="group.buy.activity.status.disable";
     /**
      * 营销-秒杀
      */
