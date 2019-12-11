@@ -5,7 +5,7 @@ const routes = [
     meta: {
       title: '概览'
     },
-    component: () => import('@/view/system/layout/index'),
+    component: () => import('@/view/system/layout'),
     // redirect: '/system/overview/overview_index',
     children: [
       // 概述子路由
@@ -21,7 +21,7 @@ const routes = [
       },
       {
         path: 'login_log',
-        component: () => import('@/view/system/index/leftNavComponents/overview/loginLog'),
+        component: () => import('@/view/system/index/leftNavComponents/overview/loginLog/loginLog'),
         name: 'loginLog',
         meta: {
           title: '登录日志'
@@ -48,7 +48,7 @@ const routes = [
 
   {
     path: '/system/store_management',
-    component: () => import('@/view/system/layout/index'),
+    component: () => import('@/view/system/layout'),
     name: 'storeManagementMain',
     meta: {
       title: '店铺管理'
@@ -113,7 +113,7 @@ const routes = [
     meta: {
       title: '订单管理'
     },
-    component: () => import('@/view/system/layout/index'),
+    component: () => import('@/view/system/layout'),
     redirect: '/system/order_management/order_statistics',
     children: [
       // 订单管理子路由
