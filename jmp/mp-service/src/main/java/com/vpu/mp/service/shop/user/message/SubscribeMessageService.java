@@ -275,6 +275,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		List<TemplateVo> rejects = param.getReject();
 		List<TemplateVo> bans = param.getBan();
 		if(successs!=null) {
+			logger().info("进入success的");
 			for(TemplateVo success:successs) {
 				SubscribeMessageConfig successConfig = SubscribeMessageConfig.getByTempleName(success.getId(), success.getTempleName());
 				SubscribeMessageRecord record = db().selectFrom(SUBSCRIBE_MESSAGE)
@@ -301,6 +302,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			}			
 		}
 		if(rejects!=null) {
+			logger().info("进入rejects的");
 			for (TemplateVo reject:rejects) {
 				SubscribeMessageConfig rejectConfig = SubscribeMessageConfig.getByTempleName(reject.getId(), reject.getTempleName());
 				SubscribeMessageRecord rejrecord = db().selectFrom(SUBSCRIBE_MESSAGE)
@@ -316,6 +318,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			}			
 		}
 		if(bans!=null) {
+			logger().info("进入bans的");
 			for (TemplateVo ban:bans) {
 				SubscribeMessageConfig banConfig = SubscribeMessageConfig.getByTempleName(ban.getId(), ban.getTempleName());
 				SubscribeMessageRecord rejrecord = db().selectFrom(SUBSCRIBE_MESSAGE)
