@@ -182,7 +182,7 @@
                 <el-tooltip :content="$t('technicianList.edit')">
                   <span
                     class="iconSpan"
-                    v-if="returnTrue(row.flag, 1)"
+                    v-if="row.flag!==1"
                     @click="singlePass(row.id)"
                   >{{$t('reservationManage.pass')}}</span>
                 </el-tooltip>
