@@ -53,7 +53,7 @@ public class WxAppCardController extends WxAppBaseController {
 		logger().info("判断是否有会员卡");
 		WxAppSessionUser user = wxAppAuth.user();
 		param.setUserId(user.getUserId());
-		shop().user.userCard.userCardJudgement(param);
+		shop().user.userCard.userCardJudgement(param,getLang());
 		return success();
 	}
 	

@@ -99,6 +99,8 @@ public class UserCardVo {
 	private List<GoodsSmallVo> goodsList;
 	// 门店信息
 	private List<StoreBasicVo> storeInfoList;
+	// 优惠券列表
+	private List<UserCardCoupon> coupons;
 	// 优惠券礼包
 	private UserCardCouponPack couponPack;
 	// 升级进度

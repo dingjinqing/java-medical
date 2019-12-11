@@ -1,8 +1,10 @@
 package com.vpu.mp.service.foundation.util;
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 /**
 * @author 黄壮壮
@@ -94,12 +96,27 @@ public class CardUtil {
 	 * 送优惠券
 	 */
 	public static boolean isSendCoupon(Byte type) {
-		return NumberUtils.BYTE_ONE.equals(type);
+		return NumberUtils.BYTE_ZERO.equals(type);
 	}
 	/**
 	 * 送优惠卷礼包
 	 */
 	public static boolean isSendCouponPack(Byte type) {
 		return NumberUtils.BYTE_ONE.equals(type);
+	}
+	
+	/**
+	 * 解析卡的使用门店
+	 */
+	public static List<Integer> parseStoreList(String storeList){
+		return Util.json2Object(storeList, new TypeReference<List<Integer>>() {
+        }, false);
+	}
+	
+	/**
+	 * 解析优惠券id
+	 */
+	public static List<Integer> parseCouponList(String couponList){
+		return Util.splitValueToList(couponList);
 	}
 }
