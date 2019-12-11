@@ -340,8 +340,8 @@ export default {
       this.searchParams.pageRows = this.pageParams.pageRows
       list(this.searchParams).then(res => {
         console.log(res)
-        this.pageParams = res.content.page
-        this.refundOrderList = res.content.dataList
+        this.pageParams = res.content.list.page
+        this.refundOrderList = res.content.list.dataList
       }).catch(() => {
       })
     },

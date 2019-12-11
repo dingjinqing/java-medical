@@ -23,6 +23,8 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.ArticleListQueryParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleParam;
 import com.vpu.mp.service.pojo.saas.article.ArticleVo;
+import com.vpu.mp.service.pojo.saas.article.category.ArticleStatusParam;
+import com.vpu.mp.service.pojo.saas.article.category.ArticlesClass;
 import com.vpu.mp.service.saas.region.CityService;
 
 /**
@@ -163,6 +165,36 @@ public class ArticleService extends MainBaseService {
 		//更新访问量
 		db().update(ARTICLE).set(ARTICLE.PV, integer ==null ? 0 : integer + 1);
 		return	article==null?null:article.into(ArticleVo.class);
+	}
+	
+	/**
+	 * 变更状态
+	 * @param param
+	 * @return
+	 */
+	public boolean updateStatus(ArticleStatusParam param) {
+		if (StringUtils.isEmpty(param.getStatus())) {
+			return false;
+		}
+		String status = param.getStatus();
+		ArticleRecord record = db().selectFrom(ARTICLE).where(ARTICLE.ARTICLE_ID.eq(param.getArticleId())).fetchAny();
+		if(record==null) {
+			return false;
+		}
+		int update = 0;
+		if (status.equals(ArticlesClass.OK)) {
+			// 状态为1
+			record.setStatus(ArticlesClass.ok);
+			update = record.update();
+		}
+		if (status.equals(ArticlesClass.CANCEL)) {
+			// 状态为1
+			record.setStatus(ArticlesClass.cancel);
+			update = record.update();
+		} else {
+			return false;
+		}
+		return update == 0 ? false : true;
 	}
 
 }

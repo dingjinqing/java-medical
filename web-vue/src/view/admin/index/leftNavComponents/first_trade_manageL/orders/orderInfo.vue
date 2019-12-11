@@ -665,7 +665,7 @@ export default {
     nodesDialog: () => import('./addNotes'),
     deliveryDialog: () => import('./deliveryDialog')
   },
-  data() {
+  data () {
     return {
       order: {},
       showNodes: false,
@@ -716,18 +716,18 @@ export default {
       showDelivery: false
     }
   },
-  created() {
+  created () {
     this.arrayToMap()
     this.search(this.$route.query.orderSn)
     this.langDefault()
   },
   watch: {
-    lang() {
+    lang () {
       this.arrayToMap()
     }
   },
   methods: {
-    shipTableMethod({ row, column, rowIndex, columnIndex }) {
+    shipTableMethod ({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 0) {
         return {
           colspan: 3,
@@ -735,12 +735,12 @@ export default {
         }
       }
     },
-    columnStyle({ row, column, rowIndex, columnIndex }) {
+    columnStyle ({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 0) {
         return 'no_padding'
       }
     },
-    search(orderSn) {
+    search (orderSn) {
       this.searchParam.orderSn = orderSn
       info(this.searchParam).then(res => {
         this.order = res.content
@@ -748,7 +748,7 @@ export default {
       }).catch(() => {
       })
     },
-    arrayToMap() {
+    arrayToMap () {
       this.returnTypeMap = new Map(this.$t('order.returnTypeList'))
       this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
       this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
@@ -766,11 +766,11 @@ export default {
         '5': this.$t('order.returnStatusList')[8][1]
       }
     },
-    addNodes() {
+    addNodes () {
       this.showNodes = true
       this.notesOrderSn = this.searchParam.orderSn
     },
-    seeDetails(orderSn) {
+    seeDetails (orderSn) {
       console.log(orderSn)
       this.$router.push({
         name: 'orderInfo',
@@ -779,7 +779,7 @@ export default {
         }
       })
     },
-    manualReturn(orderSn, orderId, orderTime) {
+    manualReturn (orderSn, orderId, orderTime) {
       this.$router.push({
         name: 'manualRefund',
         query: {
@@ -789,18 +789,18 @@ export default {
         }
       })
     },
-    showAddressInfo(Address) {
+    showAddressInfo (Address) {
       this.showAddress = true
       this.itemAddressInfo = Address
     },
-    toogleShow() {
+    toogleShow () {
       this.showStatus = !this.showStatus
     },
-    deliver(orderInfo) {
+    deliver (orderInfo) {
       this.showDelivery = true
       this.orderItemInfo = orderInfo
     },
-    verify(orderInfo) {
+    verify (orderInfo) {
       let obj = {
         orderId: orderInfo.orderId,
         orderSn: orderInfo.orderSn,
@@ -812,7 +812,7 @@ export default {
       verify(obj).then(res => {
       })
     },
-    close(orderInfo) {
+    close (orderInfo) {
       let obj = {
         orderId: orderInfo.orderId,
         orderSn: orderInfo.orderSn,
@@ -821,7 +821,7 @@ export default {
       close(obj).then(res => {
       })
     },
-    finish(orderInfo) {
+    finish (orderInfo) {
       let obj = {
         orderId: orderInfo.orderId,
         orderSn: orderInfo.orderSn,
@@ -832,14 +832,14 @@ export default {
     }
   },
   computed: {
-    statusKey() {
+    statusKey () {
       if (this.order.orderStatus === 3 || this.order.orderStatus === 5 || this.order.orderStatus === 6) {
         return `${this.order.orderStatus}-${this.order.deliverType}`
       } else {
         return `${this.order.orderStatus}`
       }
     },
-    showShippingInfo() {
+    showShippingInfo () {
       let mainFlag = this.order.shippingList
       let childFlag = null
       if (this.order.childOrders != null) {
@@ -853,7 +853,7 @@ export default {
         return true
       }
     },
-    showReturnInfo() {
+    showReturnInfo () {
       let mainFlag = this.order.refundList
       let childFlag = null
       if (this.order.childOrders != null) {
@@ -867,7 +867,7 @@ export default {
         return true
       }
     },
-    showShippingList() {
+    showShippingList () {
       let shippingList = []
       if (this.order.shippingList != null) {
         shippingList = shippingList.concat(this.order.shippingList)
@@ -881,7 +881,7 @@ export default {
       }
       return shippingList
     },
-    showReturnList() {
+    showReturnList () {
       let refundList = []
       if (this.order.refundList != null) {
         refundList = refundList.concat(this.order.refundList)
@@ -895,7 +895,7 @@ export default {
       }
       return refundList
     },
-    orderList() {
+    orderList () {
       let orderList = []
       orderList = orderList.concat(this.order)
       if (this.order.childOrders != null) {
