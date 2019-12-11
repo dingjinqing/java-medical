@@ -2,9 +2,8 @@ package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
 
-import ch.qos.logback.core.util.InterruptUtil;
 import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyStatusVaild;
 import org.springframework.validation.annotation.Validated;
@@ -18,7 +17,6 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
@@ -30,6 +28,8 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyParam;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+
+import java.sql.Timestamp;
 
 /**
  * 团购、多人平团
@@ -62,8 +62,9 @@ public class AdminGroupBuyController extends AdminBaseController {
      */
     @PostMapping("/admin/market/groupbuy/add")
     public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
+        Timestamp date = DateUtil.getLocalDateTime();
         //校验活动商品是否叠加 (并发不安全)
-        Boolean flag = shop().groupBuy.validGroupGoods(null,param.getGoodsId(),param.getStartTime(),param.getEndTime());
+        Boolean flag = shop().groupBuy.validGroupGoods(null,param.getGoodsId(),param.getStartTime(),param.getEndTime(),date);
         if (!flag){
             return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
         }
@@ -152,7 +153,8 @@ public class AdminGroupBuyController extends AdminBaseController {
             return success();
         }
         if(param.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL)){
-            Boolean flag = shop().groupBuy.validGroupGoods(groupBuyRecord.getId(),groupBuyRecord.getGoodsId(),groupBuyRecord.getStartTime(),groupBuyRecord.getEndTime());
+            Timestamp date = DateUtil.getLocalDateTime();
+            Boolean flag = shop().groupBuy.validGroupGoods(groupBuyRecord.getId(),groupBuyRecord.getGoodsId(),groupBuyRecord.getStartTime(),groupBuyRecord.getEndTime(), date);
             if (!flag){
                 return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
             }

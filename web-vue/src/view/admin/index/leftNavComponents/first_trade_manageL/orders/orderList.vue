@@ -275,20 +275,12 @@
           <template v-for="item in tabsOrderStatus">
             <el-tab-pane
               :label="item.label"
+              :name="item.value"
               :key="item.value"
-              v-if="item.value === '4'"
+              v-if="item.value === '3'"
             >
               <span slot="label">
-                <span>待发货<span class="wait_num">0</span></span>/<span>待核销<span class="wait_num">0</span></span>
-              </span>
-            </el-tab-pane>
-            <el-tab-pane
-              :label="item.label"
-              :key="item.value"
-              v-else-if="item.value === '8'"
-            >
-              <span slot="label">
-                <span>退货/退款中<span class="wait_num">0</span></span>
+                <span>待发货<span class="wait_num">{{count['1']}}</span></span>/<span>待核销<span class="wait_num">{{count['2']}}</span></span>
               </span>
             </el-tab-pane>
             <el-tab-pane
@@ -826,7 +818,7 @@ export default {
         provinceCode: null,
         cityCode: null,
         districtCode: null,
-        orderStatus2: null
+        orderStatus2: '-1'
       },
       orderTime: null,
       completeTime: null,
@@ -837,18 +829,18 @@ export default {
       tagList: [
       ],
       tabsOrderStatus: [
-        { value: null, label: '全部' },
-        { value: '1', label: '待付款' },
-        { value: '2', label: '待发货/待核销' },
-        { value: '3', label: '已发货' },
-        { value: '4', label: '已收货/已核销' },
-        { value: '5', label: '已完成' },
-        { value: '6', label: '退货退款中' },
-        { value: '7', label: '已关闭' },
-        { value: '8', label: '追星订单' }
+        { value: '-1', label: '全部' },
+        { value: '0', label: '待付款' },
+        { value: '3', label: '待发货/待核销' },
+        { value: '4', label: '已发货' },
+        { value: '5', label: '已收货/已自提' },
+        { value: '6', label: '已完成' },
+        { value: '7', label: '退货退款中' },
+        { value: '2', label: '已关闭' }
       ],
       orderList: [
       ],
+      count: {},
       showNodes: false,
       showDelivery: false,
       orderItemInfo: {},
@@ -875,6 +867,16 @@ export default {
         this.adminReload()
       }
     },
+    'searchParams.orderStatus': {
+      handler (val) {
+        if ([null, 0, 3, 4, 5, 6, 7, 2].includes(val)) {
+          this.searchParams.orderStatus2 = val === null ? '-1' : String(val)
+        } else {
+          this.searchParams.orderStatus2 = null
+        }
+      },
+      immediate: true
+    },
     completeTime (val) {
       this.searchParams.finishedTimeStart = val ? val[0] : null
       this.searchParams.finishedTimeEnd = val ? val[1] : null
@@ -886,7 +888,9 @@ export default {
   },
   methods: {
     handleClick (data) {
-      console.log(data)
+      this.searchParams.orderStatus = Number(data.name)
+      if (data.name === '-1') this.searchParams.orderStatus = null
+      this.search()
     },
     handleAreaData (data) {
       this.searchParams.provinceCode = data.province
@@ -913,6 +917,7 @@ export default {
         console.log(res)
         this.pageParams = res.content.list.page
         this.orderList = res.content.list.dataList
+        this.count = res.content.count
       }).catch(() => {
       })
     },

@@ -60,6 +60,7 @@ public class DistributorCheckService extends ShopBaseService{
         if(param.getEndTime() != null){
             select.and(DISTRIBUTOR_APPLY.CREATE_TIME.ge(param.getEndTime()));
         }
+        select.and(DISTRIBUTOR_APPLY.STATUS.eq(param.getNav()));
         select.orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc());
     }
 

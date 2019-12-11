@@ -1,0 +1,151 @@
+<!-- 拼团详情：pages/groupbuyinfo/groupbuyinfo.wxml -->
+<include src="../common/header.wxml" />
+<view class='main-container'>
+  <block wx:if="{{pin_content.is_delete == 0}}">
+    <!-- 拼团商品信息 -->
+    <view class='group_goods clearfix'>
+      <view class='goods_image'>
+        <image src='{{pin_content.goodsInfo.goodsImg}}' />
+      </view>
+      <view class='goods_info'>
+        <view class='goods_name'>{{pin_content.goodsInfo.goodsName}}</view>
+        <view class='goods_price'>
+          <view>
+            {{pin_content.pinInfo.limitAmount}}人拼团价
+            <text decode="{{true}}" space="{{true}}">&nbsp;&nbsp;</text>
+            ￥
+            <text style='font-size:32rpx;'>{{pin_content.goodsInfo.pinShopPrice}}</text>
+          </view>
+          <view class='ori_price'>
+            单买价
+            <text decode="{{true}}" space="{{true}}">&nbsp;&nbsp;</text>
+            ￥{{pin_content.goodsInfo.shopPrice}}
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 已经成团人数 -->
+    <view class='grouped_info'>
+      <view class='trace_person trace' wx:if="{{pin_content.canPinGroup.status != 2}}">
+        还差
+        <text>{{pin_content.pinInfo.limitNum}}人</text>
+        拼团成功
+      </view>
+      <view class='trace_times trace' wx:if="{{pin_content.canPinGroup.status != 1}}">
+        剩余
+        <text decode="{{true}}" space="{{true}}">&nbsp;</text>
+        <text>{{clock}}</text>
+        <text decode="{{true}}" space="{{true}}">&nbsp;</text>
+        结束
+      </view>
+      <view class='grouped_person'>
+        <block wx:for="{{pin_content.pin_user_list}}" wx:key="index">
+          <view>
+            <image src='{{item.user_avatar}}' mode='widthFix' />
+          </view>
+        </block>
+        <view wx:if="{{pin_content.pinInfo.show_noperson > 0}}">
+          <image src='{{img_noperson}}' mode='widthFix' />
+        </view>
+        <view wx:if="{{pin_content.pinInfo.show_noperson > 1}}">
+          <image src='{{img_noperson}}' mode='widthFix' />
+        </view>
+        <view wx:if="{{pin_content.pinInfo.show_noperson > 2}}">
+          <image src='{{img_noperson}}' mode='widthFix' />
+        </view>
+        <view wx:if="{{pin_content.pinInfo.show_noperson > 3}}">
+          <image src='{{img_noperson}}' mode='widthFix' />
+        </view>
+        <view wx:if="{{pin_content.pinInfo.limit_amount > 5}}">
+          <image src='{{img_otherperson}}' mode='widthFix' />
+        </view>
+      </view>
+      <block wx:if="{{getsq == true || click_num == true}}">
+        <view class='btn_to_group' data-group_type="{{pin_content.pinInfo.activity_type}}" bindtap='toJoin' wx:if="{{pin_content.canPinGroup.status == 0}}">
+          我要参团
+        </view>
+        <button class='btn_to_group buttins' open-type="share" wx:if="{{pin_content.canPinGroup.status == 3}}">
+          立即分享
+        </button>
+      </block>
+      <block wx:else>
+        <button class='btn_to_group' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{pin_content.canPinGroup.status == 0}}" data-ct="{{0}}">
+          我要参团
+        </button>
+        <button class='btn_to_group buttins' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{pin_content.canPinGroup.status == 3}}">
+          立即分享
+        </button>
+      </block>
+      <view class='btn_to_group' wx:if="{{pin_content.canPinGroup.status == 1}}">本次团购已结束</view>
+      <view class='btn_to_group' wx:if="{{pin_content.canPinGroup.status == 2}}">该团人数已满</view>
+      <view class='btn_to_group' wx:if="{{pin_content.canPinGroup.status == 4}}">
+        该活动您的参团个数已达上限
+      </view>
+    </view>
+    <!-- 老带新团 -->
+    <view class="lead_newcomer" wx:if="{{pin_content.pinInfo.activity_type==2}}">
+      <view class="lead_title" style="background:url({{imageUrl}}image/wxapp/old_customer_bg.png) no-repeat bottom;background-size:100%">
+        <text>老带新团</text>
+      </view>
+      <text class="lead_tips">所有用户都可以开团，但只有新用户才能参团哦</text>
+    </view>
+    <!-- 拼团规则 -->
+    <view class='group_info' bindtap='toRule'>
+      <view class='gf_top'>
+        <view>拼团规则</view>
+        <view>
+          详细规则
+          <image src='{{click_more}}' mode='widthFix' />
+        </view>
+      </view>
+      <view class='rule_info'>
+        <view class='rf_each'>
+          <view>1</view>
+          <view>选择商品，付款开团/参团</view>
+        </view>
+        <view class='rf_each'>
+          <view>2</view>
+          <view>邀请好友，支付参团</view>
+        </view>
+        <view class='rf_each'>
+          <view>3</view>
+          <view>满员发货，不满自动退款</view>
+        </view>
+      </view>
+    </view>
+    <!-- 下载海报 -->
+    <v-poster show="{{showPoster}}"></v-poster>
+    <!-- 推荐商品 start -->
+    <v-goods-recommend page-name='groupbuyitem'></v-goods-recommend>
+    <!-- 推荐商品 end -->
+    <!-- 绑定手机号弹窗 -->
+    <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以去购买商品" />
+    <!-- 老用户弹窗 -->
+    <view class="old_customer_bg" catchtouchmove="ture" style='display:{{is_old_customer == 1 ? "block":"none"}}'>
+      <view class="zhezhao" catchtap="not_show_customer"></view>
+      <view class="old_customer_content">
+        <text class="old_customer_title">您是老用户啦</text>
+        <text class="old_customer_tips">“老带新团”只有新用户可以参团哦！可以去开个新团享受更多优惠。</text>
+        <view class="customer_button">
+          <view class="cancel" bindtap="not_show_customer">取消</view>
+          <view class="confirm">
+            <text bindtap='openGroup'>我要开团</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 选择规格（包含无规格情况） -->
+    <v-sel-spec gd="{{pin_content.goodsInfo}}" show="{{show_spec}}" hide_cell="true" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange"></v-sel-spec>
+    <!-- 拼团规格弹框 -->
+    <!-- fenxiang弹框 -->
+    <view class='share_bg' style='display:{{is_share == 1?"block":"none"}}'>
+      <view class='zhezhao' catchtap='not_show_share'></view>
+      <view class='share_content'>
+        <image src='{{pictorial}}'></image>
+        <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>保存图片</view>
+        <view class='save_tips'>保存图片到本地相册</view>
+      </view>
+    </view>
+  </block>
+</view>
+<include src="../common/footer.wxml" />

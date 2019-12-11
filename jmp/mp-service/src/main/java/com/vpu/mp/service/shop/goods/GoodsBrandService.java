@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.goods;
 import com.vpu.mp.db.shop.tables.records.BrandClassifyRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.jedis.data.GoodsBrandDataHelper;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ChineseToPinYinUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -42,6 +43,8 @@ public class GoodsBrandService extends ShopBaseService {
 
     @Autowired
     ImageService imageService;
+    @Autowired
+    GoodsBrandDataHelper goodsBrandDataHelper;
 
     /**
      * 分页获取品牌信息
@@ -105,6 +108,24 @@ public class GoodsBrandService extends ShopBaseService {
         return condition;
     }
 
+
+    public List<GoodsBrandMpVo> getGoodsBrandVoById(List<Integer> ids){
+        Objects.requireNonNull(ids);
+        if( ids.isEmpty() ){
+            return null;
+        }
+        Condition condition;
+        if ( ids.size() == 1 ){
+            condition = GOODS_BRAND.ID.eq(ids.get(0));
+        }else{
+            condition = GOODS_BRAND.ID.in(ids);
+        }
+        return db().select(GOODS_BRAND.ID,GOODS_BRAND.BRAND_NAME,GOODS_BRAND.LOGO).
+            from(GOODS_BRAND).
+            where(condition).
+            fetchInto(GoodsBrandMpVo.class);
+    }
+
     /**
      * 添加品牌
      * @param goodsBrand
@@ -121,6 +142,8 @@ public class GoodsBrandService extends ShopBaseService {
                     .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
                     .execute();
             }
+            //cache update
+            goodsBrandDataHelper.update(Collections.singletonList(goodsBrand.getId()));
         });
     }
 
@@ -145,6 +168,8 @@ public class GoodsBrandService extends ShopBaseService {
         db().update(GOODS).set(GOODS.BRAND_ID, DEFAULT_GOODS_BRAND_ID)
             .where(GOODS.BRAND_ID.in(brandIds))
             .execute();
+        //cache update
+        goodsBrandDataHelper.delete(brandIds);
     }
 
     /**

@@ -112,7 +112,9 @@ public class EsManager {
             EsGoodsLabel goodsLabel = (EsGoodsLabel)object;
             request.id(goodsLabel.getShopId().toString()+goodsLabel.getGoodsId().toString()+goodsLabel.getId().toString());
         }
-        request.source(Objects.requireNonNull(Util.toJson(object, ES_FILED_SERIALIZER)), XContentType.JSON);
+        String objectJsonStr = Util.toJson(object, ES_FILED_SERIALIZER);
+        Objects.requireNonNull(objectJsonStr);
+        request.source(objectJsonStr, XContentType.JSON);
         return request;
     }
 
@@ -122,6 +124,9 @@ public class EsManager {
      * @throws IOException 索引失败的异常（自己捕获处理）
      */
     public void batchDocuments(BulkRequest request) throws IOException {
+        if( request.requests().isEmpty() ){
+            return ;
+        }
         BulkResponse response =  restHighLevelClient.bulk(request,RequestOptions.DEFAULT);
 
         //TODO ElasticSearch索引失败处理机制后续开发(走队列，失败的数据存入main库的一张表中)

@@ -1,7 +1,10 @@
 package com.vpu.mp.service.pojo.saas.article.category;
 
+import java.sql.Timestamp;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 /**
  * 
  * @author wangshuai
@@ -12,4 +15,7 @@ import lombok.NoArgsConstructor;
 public class ArticleCategoryVo {
 	private Integer categoryId;
 	private String categoryName;
+	private Byte useFooterNav;
+	private Timestamp addTime;
+	private Timestamp updateTime;
 }

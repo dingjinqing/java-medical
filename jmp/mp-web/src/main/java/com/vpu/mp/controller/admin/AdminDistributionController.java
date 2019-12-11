@@ -582,16 +582,23 @@ public class AdminDistributionController extends AdminBaseController{
     @PostMapping("/admin/distribution/distributor/check/list")
 	public JsonResult distributorCheckList(@RequestBody DistributorCheckListParam param){
         PageResult<DistributorCheckListVo> distributorCheckList = shop().distributorCheck.getDistributorCheckList(param);
-
+        System.out.print(distributorCheckList.dataList);
         for(DistributorCheckListVo list:distributorCheckList.dataList){
             //转换行业码对应的名称
-            String industryInfo = MemberIndustryEnum.getNameByCode(list.getIndustryInfo(),getLang());
-            list.setIndustryName(industryInfo);
-
-            //教育程度
-            String education = MemberEducationEnum.getNameByCode(list.getEducation(),getLang());
-            list.setEducationName(education);
+            if(list.getIndustryInfo() != null){
+                String industryInfo = MemberIndustryEnum.getNameByCode(list.getIndustryInfo(),getLang());
+                list.setIndustryName(industryInfo);
+            }
+            if(list.getEducation() != null){
+                //教育程度
+                String education = MemberEducationEnum.getNameByCode(list.getEducation(),getLang());
+                list.setEducationName(education);
+            }
         }
         return this.success(distributorCheckList);
     }
+
+//    public JsonResult applyPass(@RequestBody DistributionApplyOptParam param){
+//
+//    }
 }
