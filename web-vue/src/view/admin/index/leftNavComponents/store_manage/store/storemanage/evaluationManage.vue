@@ -7,12 +7,12 @@
       @tab-click="tabClickHandle"
     >
       <el-tab-pane
-        label="评价记录"
+        :label="$t('reservationManage.commentRecord')"
         name="first"
       >
       </el-tab-pane>
       <el-tab-pane
-        label="评价审核"
+        :label="$t('reservationManage.commentCharge')"
         name="second"
       >
       </el-tab-pane>
