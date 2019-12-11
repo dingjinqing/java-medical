@@ -39,12 +39,15 @@ import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyProductInfo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyStatusInfo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.goods.GoodsSpecService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.user.UserService;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -55,6 +58,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -92,7 +96,9 @@ public class GroupBuyService extends ShopBaseService {
     @Autowired
     private GoodsService goodsService;
     @Autowired
-    private GoodsSpecService goodsSpecService;
+    private OrderInfoService orderInfoService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     private GoodsSpecProductService goodsSpecProductService;
     @Autowired
@@ -518,7 +524,7 @@ public class GroupBuyService extends ShopBaseService {
         ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(userId, date,activityId, groupId, IS_GROUPER_N);
         //拼团活动
         GroupBuyDefineRecord groupBuy = getGroupBuyRecord(activityId);
-        Result<Record> groupBuyProductRecord = db().select().from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId)).fetch();
+        Result<Record2<BigDecimal, Short>> groupBuyProductRecord = db().select(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,GROUP_BUY_PRODUCT_DEFINE.STOCK).from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId)).fetch();
         //商品
         GoodsRecord goodsRecord = goodsService.getGoodsById(groupBuy.getGoodsId()).get();
         //规格
@@ -528,12 +534,16 @@ public class GroupBuyService extends ShopBaseService {
         List<GoodsPrdMpVo> prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());
         //用户
         List<GroupBuyUserInfo> userList = groupBuyListService.getPinUserList(groupId);
-        groupBuy.getCreateTime();
-
+        boolean newUser = orderInfoService.isNewUser(userId);
+        // $shop->shop_cfg->getShopCfg('bind_mobile');
+        Byte bindMobile = shopCommonConfigService.getBindMobile();
+        Integer groupBuyStock = groupBuyProductRecord.stream().mapToInt(Record2<BigDecimal, Short>::component2).sum();
+        BigDecimal maxPrice =groupBuyProductRecord.stream().map(Record2<BigDecimal, Short>::component1).distinct().max(BigDecimal::compareTo).get();
+        BigDecimal minPrice =groupBuyProductRecord.stream().map(Record2<BigDecimal, Short>::component1).distinct().min(BigDecimal::compareTo).get();
         long dateDiff =date.getTime()-	createTime.getTime();
-        long hour = (dateDiff / (60 * 60 * 1000));
-        long min = dateDiff %  (60 * 60 * 1000) / (60 * 1000);
-        long s = dateDiff% (60 * 60 * 1000)%(60*1000) / 1000 ;
+        long hour = 24- (dateDiff / (60 * 60 * 1000));
+        long min = 60- dateDiff %  (60 * 60 * 1000) / (60 * 1000);
+        long s = 60- dateDiff% (60 * 60 * 1000)%(60*1000) / 1000 ;
 
         GroupBuyInfoVo groupBuyInfo =new GroupBuyInfoVo();
         GroupBuyGoodsInfo goods =new GroupBuyGoodsInfo();
@@ -541,6 +551,9 @@ public class GroupBuyService extends ShopBaseService {
         goods.setGoodsImg(goodsRecord.getGoodsImg());
         goods.setGoodsName(goodsRecord.getGoodsName());
         goods.setGoodsNumber(goodsRecord.getGoodsNumber());
+        goods.setGroupBuygoodsNum(groupBuyStock);
+        goods.setMaxGroupBuyPrice(maxPrice);
+        goods.setMinGroupBuyPrice(minPrice);
         GroupBuyStatusInfo statusInfo =new GroupBuyStatusInfo();
         statusInfo.setStatus(resultMessage.getJsonResultCode().getCode());
         statusInfo.setMessage(Util.translateMessage(lang,resultMessage.getJsonResultCode().getMessage(),"messages"));
@@ -552,6 +565,8 @@ public class GroupBuyService extends ShopBaseService {
         groupBuyInfo.setHour(Math.toIntExact(hour));
         groupBuyInfo.setMinute(Math.toIntExact(min));
         groupBuyInfo.setSecond(Math.toIntExact(s));
+        groupBuyInfo.setBindMobile(bindMobile);
+        groupBuyInfo.setNewUser(newUser);
         return groupBuyInfo;
     }
 

@@ -4,6 +4,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -22,11 +23,11 @@ public class GroupBuyGoodsInfo {
     /**
      * 拼团价格区间
      */
-    private String maxGroupBuyPrice;
+    private BigDecimal maxGroupBuyPrice;
     /**
      * 拼团最低价
      */
-    private String minGroupBuyPrice;
+    private BigDecimal minGroupBuyPrice;
     /**
      * 拼团库存
      */

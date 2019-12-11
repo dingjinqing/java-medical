@@ -20,7 +20,8 @@ public class GroupBuyInfoVo {
     private Integer hour;
     private Integer minute;
     private Integer second;
-
+    private Byte bindMobile;
+    private Boolean newUser;
     /**
      * 状态信息
      */
