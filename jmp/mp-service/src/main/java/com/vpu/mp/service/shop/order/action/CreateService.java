@@ -197,7 +197,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //活动生成ordergodos;
                 orderGoodsBos = null;
             }else {
-                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), null, param.getStoreId());
+                //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
+                OrderCartProductBo orderCartProductBo = OrderCartProductBo.create(param.getOrderCartProductBo());
+                firstSpecialProcessor.doOrderOperation(param.getWxUserInfo().getUserId(), DateUtil.getSqlTimestamp(), orderCartProductBo, param.getStoreId());
+                gradeCardProcessor.doOrderOperation(userCard.getUserGrade(param.getWxUserInfo().getUserId()), orderCartProductBo);
+                //初始化订单商品
+                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), orderCartProductBo, param.getStoreId());
             }
             orderBo = initCreateOrderBo(param);
             orderBo.setOrderGoodsBo(orderGoodsBos);
