@@ -17,6 +17,7 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.main.tables.records.ArticleCategoryRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Page;
@@ -40,10 +41,7 @@ public class ArticleCategoryService extends MainBaseService {
 	 * 
 	 */
 	public PageResult<ArticleCategoryVo> getPageList(ArtCategoryListQuertParam param) {
-		SelectWhereStep<Record2<Integer, String>> select = db().select(
-				ARTICLE_CATEGORY.CATEGORY_ID,
-				ARTICLE_CATEGORY.CATEGORY_NAME
-				).from(ARTICLE_CATEGORY);
+		SelectWhereStep<ArticleCategoryRecord> select = db().selectFrom(ARTICLE_CATEGORY);
 		if(!StringUtils.isEmpty(param.getKeyWord())) {
 			select.where(ARTICLE_CATEGORY.CATEGORY_NAME.like(likeValue(param.getKeyWord())));
 		}
