@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ArticleCategoryRecord extends UpdatableRecordImpl<ArticleCategoryRecord> implements Record5<Integer, String, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -53713886;
+    private static final long serialVersionUID = 222849609;
 
     /**
      * Setter for <code>mini_main.b2c_article_category.category_id</code>.
@@ -61,16 +61,16 @@ public class ArticleCategoryRecord extends UpdatableRecordImpl<ArticleCategoryRe
     }
 
     /**
-     * Setter for <code>mini_main.b2c_article_category.del_state</code>. 0未删除,1删除
+     * Setter for <code>mini_main.b2c_article_category.use_footer_nav</code>. 是否用于底部导航
      */
-    public void setDelState(Byte value) {
+    public void setUseFooterNav(Byte value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_article_category.del_state</code>. 0未删除,1删除
+     * Getter for <code>mini_main.b2c_article_category.use_footer_nav</code>. 是否用于底部导航
      */
-    public Byte getDelState() {
+    public Byte getUseFooterNav() {
         return (Byte) get(2);
     }
 
@@ -155,7 +155,7 @@ public class ArticleCategoryRecord extends UpdatableRecordImpl<ArticleCategoryRe
      */
     @Override
     public Field<Byte> field3() {
-        return ArticleCategory.ARTICLE_CATEGORY.DEL_STATE;
+        return ArticleCategory.ARTICLE_CATEGORY.USE_FOOTER_NAV;
     }
 
     /**
@@ -195,7 +195,7 @@ public class ArticleCategoryRecord extends UpdatableRecordImpl<ArticleCategoryRe
      */
     @Override
     public Byte component3() {
-        return getDelState();
+        return getUseFooterNav();
     }
 
     /**
@@ -235,7 +235,7 @@ public class ArticleCategoryRecord extends UpdatableRecordImpl<ArticleCategoryRe
      */
     @Override
     public Byte value3() {
-        return getDelState();
+        return getUseFooterNav();
     }
 
     /**
@@ -277,7 +277,7 @@ public class ArticleCategoryRecord extends UpdatableRecordImpl<ArticleCategoryRe
      */
     @Override
     public ArticleCategoryRecord value3(Byte value) {
-        setDelState(value);
+        setUseFooterNav(value);
         return this;
     }
 
@@ -326,12 +326,12 @@ public class ArticleCategoryRecord extends UpdatableRecordImpl<ArticleCategoryRe
     /**
      * Create a detached, initialised ArticleCategoryRecord
      */
-    public ArticleCategoryRecord(Integer categoryId, String categoryName, Byte delState, Timestamp addTime, Timestamp updateTime) {
+    public ArticleCategoryRecord(Integer categoryId, String categoryName, Byte useFooterNav, Timestamp addTime, Timestamp updateTime) {
         super(ArticleCategory.ARTICLE_CATEGORY);
 
         set(0, categoryId);
         set(1, categoryName);
-        set(2, delState);
+        set(2, useFooterNav);
         set(3, addTime);
         set(4, updateTime);
     }
