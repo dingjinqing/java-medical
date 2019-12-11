@@ -250,7 +250,10 @@ export default {
         endTime: ''
       },
       activeName: 'first',
-      pageParams: {}, // 分页
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      }, // 分页
       requestParams: {},
       // 表格数据
       tableData: [{
@@ -300,6 +303,7 @@ export default {
       this.requestParams.endTime = this.searchForm.endTime
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
+      console.log(this.requestParams)
       getCheckList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
