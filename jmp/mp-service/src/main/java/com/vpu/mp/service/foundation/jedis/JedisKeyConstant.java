@@ -14,6 +14,8 @@ public class JedisKeyConstant {
 
     /**商品品牌*/
     public static final String GOODS_BRAND = "goods:brand:shop-id_";
+    /**商家分类*/
+    public static final String GOODS_SORT= "goods:sort:shop-id_";
 
     /**
      * goods lock(库存、销量)

@@ -6,6 +6,7 @@ import java.util.Map;
 
 public interface DataHelperInterface<T> {
 
+    Integer TIME_OUT = 60*60*24*15;
 
     List<T> get(List<Integer> ids);
 

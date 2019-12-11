@@ -28,7 +28,7 @@ public class GoodsBrandDataHelper extends ShopBaseService implements DataHelperI
     @Autowired
     ImageService imageService;
 
-    private final static Integer TIME_OUT = 60*60*24*15;
+
 
     @Override
     public List<GoodsBrandMpVo> get(List<Integer> ids) {
@@ -69,8 +69,7 @@ public class GoodsBrandDataHelper extends ShopBaseService implements DataHelperI
         if( vos.isEmpty() ){
             return ;
         }
-        GoodsBrandMpVo vo = vos.get(0);
-        jedisManager.addToHash(getKey(),id.toString(),Util.toJson(vo),TIME_OUT);
+        batchUpdate(vos);
     }
 
     private void updateLogoPath(List<GoodsBrandMpVo> vos){
