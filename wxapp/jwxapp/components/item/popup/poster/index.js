@@ -7,7 +7,8 @@ global.wxComponent({
    */
   properties: {
     image:{
-      optionalTypes: [String, Array],
+      type: String,
+      optionalTypes: [Array],
       value:''
     }
   },
