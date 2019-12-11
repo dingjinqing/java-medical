@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.record;
 
 import static com.vpu.mp.db.shop.tables.OrderAction.ORDER_ACTION;
 
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.OrderAction;
@@ -34,7 +35,13 @@ public class OrderActionService extends ShopBaseService{
 		if(param.getWxUserInfo() != null){
 			record.setUserOpenid(param.getWxUserInfo().getWxUser().getOpenId());
 		}
+
 		record.setActionNote(desc);
+
+        if(param.getIsMp() != null && OrderConstant.IS_MP_AUTO == param.getIsMp()){
+            record.setActionUser("cron");
+            record.setActionNote("自动任务," + record.getActionNote());
+        }
 		record.insert();
 	}
 	

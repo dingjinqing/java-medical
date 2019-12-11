@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.thoughtworks.xstream.core.util.Cloneables;
 import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
@@ -41,6 +40,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
+import org.jooq.DatePart;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -269,6 +269,9 @@ public class OrderInfoService extends ShopBaseService {
 		if(param.finishedTimeEnd != null){
 			select.where(ORDER_INFO.FINISHED_TIME.le(param.finishedTimeEnd));
 		}
+		if(param.getIsStar() != null){
+		    select.where(TABLE.STAR_FLAG.eq(param.getIsStar()));
+        }
 		//拼团退款失败订单
 		if(param.pinStatus != null && param.pinStatus.length != 0){
 			select.innerJoin(GROUP_BUY_LIST).on(ORDER_INFO.ORDER_SN.eq(GROUP_BUY_LIST.ORDER_SN));
@@ -657,7 +660,7 @@ public class OrderInfoService extends ShopBaseService {
 	 */
 	public void setPayCodeList(OrderListInfoVo order ,List<String> prizesSns) {
 		ArrayList<Byte> payCodes = new ArrayList<Byte>(OrderConstant.SEARCH_PAY_WAY_WXPAY);
-		if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0 ) {
+		if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0 || BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
 			/**余额*/
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_USE_ACCOUNT);
 		}
@@ -793,6 +796,40 @@ public class OrderInfoService extends ShopBaseService {
             db().update(TABLE).set(TABLE.PREPAY_ID, prepayId).where(TABLE.ORDER_ID.eq(orderId)).execute();
         }
     }
+
+    /**
+     * 自动任务获取可关闭订单(过滤定金未支付订单)
+     */
+    public Result<OrderInfoRecord> getCanAutoCloseOrders( ){
+        return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).
+            and(TABLE.EXPIRE_TIME.le(DateUtil.getSqlTimestamp())).
+            and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
+            and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO))).
+            fetch();
+    }
+
+    /**
+     * 自动任务获取可收货订单
+     */
+    public Result<OrderInfoRecord> getCanAutoReceiveOrders( ){
+        return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED).
+            and(TABLE.DELIVER_TYPE.in(OrderConstant.DELIVER_TYPE_COURIER, OrderConstant.CITY_EXPRESS_SERVICE)).
+            and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
+            and(DSL.timestampAdd(TABLE.SHIPPING_TIME, TABLE.RETURN_DAYS_CFG, DatePart.DAY).le(DSL.now()))).
+            fetch();
+    }
+
+    /**
+     * 自动任务获取可完成订单
+     */
+    public Result<OrderInfoRecord> autoFinishOrders( ){
+        return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_RECEIVED).
+            and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
+            and(DSL.timestampAdd(TABLE.SHIPPING_TIME, TABLE.ORDER_TIMEOUT_DAYS, DatePart.DAY).le(DSL.now()))).
+            fetch();
+    }
+
+    /*********c********************************************分割线以下与订单模块没有直接联系********************************************************/
 	/**
 	 * 根据用户id获取累计消费金额
 	 */

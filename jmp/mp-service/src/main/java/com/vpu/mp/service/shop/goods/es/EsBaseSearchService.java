@@ -306,4 +306,29 @@ public class EsBaseSearchService extends ShopBaseService {
         List<EsGoods> list = searchEsGoods(assemblySearchRequest(sourceBuilder,EsGoodsConstant.GOODS_INDEX_NAME));
         return list.size()>0?list.get(0):null;
     }
+
+    /**
+     * 获取agg条件（针对商品标签，根据商品id）
+     *
+     * @return AggregationBuilder
+     */
+    protected AggregationBuilder assemblyLabelAggregationBuilderByGoodsId(){
+        return esAggregationHandler.assemblyLabelAggregationBuilderByGoodsId();
+    }
+    /**
+     * 获取agg条件（针对商品，根据商家分类）
+     *
+     * @return AggregationBuilder
+     */
+    protected AggregationBuilder assemblySortAggregationBuilder(){
+        return esAggregationHandler.assemblySortAggregationBuilder();
+    }
+    /**
+     * 获取agg条件（针对商品标签，根据标签id）
+     *
+     * @return AggregationBuilder
+     */
+    protected AggregationBuilder assemblyLabelAggregationBuilderByCount(){
+        return esAggregationHandler.assemblyLabelAggregationBuilderByCount();
+    }
 }

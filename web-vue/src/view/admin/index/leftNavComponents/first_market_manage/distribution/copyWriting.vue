@@ -50,10 +50,10 @@
               ></el-input>
             </el-form-item>
             <el-form-item :label="$t('distribution.writingContent') + '：'">
-              <p
+              <span
                 class="template"
                 @click="templateCopyHandler"
-              >{{ $t('distribution.writingTemplate') }}</p>
+              >{{ $t('distribution.writingTemplate') }}</span>
               <TinymceEditor v-model="form.document" />
             </el-form-item>
           </el-form>

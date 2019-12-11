@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableScheduling
 @EnableAsync
-@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "off")
+@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
 public class OrderScheduleTask {
     @Autowired
     private SaasApplication saas;
@@ -55,6 +55,42 @@ public class OrderScheduleTask {
         Result<ShopRecord> result = saas.shop.getAll();
         result.forEach((r)->{
                 saas.getShopApp(r.getShopId()).shopTaskService.preSaleTaskService.monitorOrder();
+        });
+    }
+
+    /**
+     * 订单关闭
+     * 每分钟执行一次
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void close(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.close();
+        });
+    }
+
+    /**
+     * 收货
+     * 每天00：05执行
+     */
+    @Scheduled(cron = "0 5 0 * * ?")
+    public void receive(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.receive();
+        });
+    }
+
+    /**
+     * 完成订单
+     * 每十分钟一次
+     */
+    @Scheduled(cron = "0 */10 * * * ?")
+    public void finish(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.finish();
         });
     }
 }

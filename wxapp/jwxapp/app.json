@@ -63,7 +63,8 @@
         "comment/comment",
         "history/history",
         "search/search",
-        "fullship/fullship"
+        "fullship/fullship",
+        "groupbuyinfo/groupbuyinfo"
       ]
     }
   ],

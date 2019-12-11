@@ -6,7 +6,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.pojo.shop.overview.analysis.*;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.TableField;
+import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +32,22 @@ public class OverviewAnalysisService extends ShopBaseService {
     private static final Integer TWO_DAYS = 2;
     private static final Integer EIGHT_DAYS = 8;
     private static final Integer THIRTY_ONE_DAYS = 31;
+    /** 日期标识符 */
+    private static final Integer CUSTOM_DAYS = 0;
+    /** 活动标识符 */
+    private static final Integer VISIT_TOTAL = 1;
+    private static final Integer SESSION_CNT= 2;
+    private static final Integer VISIT_PV= 3;
+    private static final Integer VISIT_UV= 4;
+    private static final Integer VISIT_UV_NEW= 5;
+    private static final Integer SHARE_PV= 6;
+    private static final Integer SHARE_UV= 7;
+    private static final Integer STAY_TIME_UV= 8;
+    private static final Integer STAY_TIME_SESSION= 9;
+    /** 页面统计 */
+    private static final String PAGE_OTHER = "page.other";
 
-
-	/**
+    /**
 	 * 查询昨日概况
 	 * 
 	 * @return 昨日概况详情(基础信息+变化率)
@@ -153,94 +166,134 @@ public class OverviewAnalysisService extends ShopBaseService {
     }
 	/**
 	 *折线图综合概况统计
-	 *@Param param
-	 *@return
+	 *@param param 时间、数据类型、日期类型
+	 *@return 起止时间和每日数据
 	 */
-	public List<OverviewAnalysisSelectVo> getSelect(OverviewAnalysisSelectParam param) {
-		
-		TableField<?,?> numCondition = MP_SUMMARY_TREND.VISIT_TOTAL;
-		
-		numCondition = param.getSessionCnt()!=null ? MP_DAILY_VISIT.SESSION_CNT: numCondition;
-		numCondition = param.getVisitPv()!=null ? MP_DAILY_VISIT.VISIT_PV : numCondition;
-		numCondition = param.getVisitUv()!=null ? MP_DAILY_VISIT.VISIT_UV: numCondition;
-		numCondition = param.getSharePv()!=null ? MP_SUMMARY_TREND.SHARE_PV: numCondition;
-		numCondition = param.getShareUv()!=null ? MP_SUMMARY_TREND.SHARE_UV: numCondition;
-		numCondition = param.getVisitUvNew()!=null ? MP_DAILY_VISIT.VISIT_UV_NEW : numCondition;
-		numCondition = param.getStayTimeUv()!=null ? MP_DAILY_VISIT.STAY_TIME_UV: numCondition;
-		numCondition = param.getStayTimeSession()!=null ? MP_DAILY_VISIT.STAY_TIME_SESSION : numCondition;
-		
-		List<OverviewAnalysisSelectVo> overviewAnalysisSelectVos;
-		if(param.getShareUv()!=null||param.getSharePv()!=null) {
-			overviewAnalysisSelectVos = 
-					db().select(MP_SUMMARY_TREND.REF_DATE,numCondition.as("num"))
-						.from(MP_SUMMARY_TREND)
-						.where(MP_SUMMARY_TREND.REF_DATE.between(param.getStartTime(), param.getEndTime()))
-						.orderBy(MP_SUMMARY_TREND.REF_DATE.asc())
-						.fetchInto(OverviewAnalysisSelectVo.class);
-			
-		}else if (param.getSessionCnt()!=null||param.getVisitPv()!=null ||param.getVisitUv()!=null 
-				||param.getVisitUvNew()!=null||param.getStayTimeUv()!=null||param.getStayTimeSession()!=null) {
-			overviewAnalysisSelectVos = 
-					db().select(MP_DAILY_VISIT.REF_DATE,numCondition.as("num"))
-						.from(MP_DAILY_VISIT)
-						.where(MP_DAILY_VISIT.REF_DATE.between(param.getStartTime(), param.getEndTime()))
-						.orderBy(MP_DAILY_VISIT.REF_DATE.asc())
-						.fetchInto(OverviewAnalysisSelectVo.class);
-		}else {
-			overviewAnalysisSelectVos = 
-					db().select(MP_SUMMARY_TREND.REF_DATE,numCondition.as("num"))
-						.from(MP_SUMMARY_TREND)
-						.where(MP_SUMMARY_TREND.REF_DATE.greaterOrEqual(param.getStartTime()))
-						.orderBy(MP_SUMMARY_TREND.REF_DATE.asc())
-						.fetchInto(OverviewAnalysisSelectVo.class);
-		}
-		
-		return overviewAnalysisSelectVos;
+	public VisitTrendVo getVisitTrend(VisitTrendParam param) {
+		//得到时间
+        if (!param.getType().equals(CUSTOM_DAYS)){
+            param.setStartTime(getDate(param.getType()));
+            param.setEndTime(getDate(NumberUtils.INTEGER_ONE));
+        }
+        //设置返回时间
+        VisitTrendVo result = new VisitTrendVo();
+        result.setStartTime(param.getStartTime());
+        result.setEndTime(param.getEndTime());
+        //设置查找内容
+        Map<Integer, Field<?>> action = new HashMap<Integer,Field<?>>(9){{
+            put(VISIT_TOTAL,MP_SUMMARY_TREND.VISIT_TOTAL);
+            put(SESSION_CNT,MP_DAILY_VISIT.SESSION_CNT);
+            put(VISIT_PV,MP_DAILY_VISIT.VISIT_PV);
+            put(VISIT_UV,MP_DAILY_VISIT.VISIT_UV);
+            put(VISIT_UV_NEW,MP_DAILY_VISIT.VISIT_UV_NEW);
+            put(SHARE_PV,MP_SUMMARY_TREND.SHARE_PV);
+            put(SHARE_UV,MP_SUMMARY_TREND.SHARE_UV);
+            put(STAY_TIME_UV,MP_DAILY_VISIT.STAY_TIME_UV);
+            put(STAY_TIME_SESSION,MP_DAILY_VISIT.STAY_TIME_SESSION);
+        }};
+        //定义每日数据
+        List<VisitTrendDaily> dailyData;
+        //不同数据查找不同的数据库
+        if (param.getAction().equals(VISIT_TOTAL)||param.getAction().equals(SHARE_PV)||param.getAction().equals(SHARE_UV)){
+            dailyData = getLessDailyData(action.get(param.getAction()),param.getStartTime(),param.getEndTime());
+        }else {
+            dailyData = getMoreDailyData(action.get(param.getAction()),param.getStartTime(),param.getEndTime());
+        }
+        //设置数据
+        result.setDailyData(dailyData);
+        return result;
 	}
-	
-	/**
+
+    /**
+     * 得到活动类型为1,6,7的数据
+     * @param field 字段名
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 对应数据
+     */
+	private List<VisitTrendDaily> getLessDailyData(Field<?> field,String startTime,String endTime){
+        List<VisitTrendDaily> dailyData = db().select(MP_SUMMARY_TREND.REF_DATE.as("date"),field.as("number"))
+            .from(MP_SUMMARY_TREND)
+            .where(MP_SUMMARY_TREND.REF_DATE.between(startTime,endTime))
+            .fetchInto(VisitTrendDaily.class);
+        return dailyData;
+    }
+    /**
+     * 得到活动类型为2,3,4,5,8,9的数据
+     * @param field 字段名
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 对应数据
+     */
+    private List<VisitTrendDaily> getMoreDailyData(Field<?> field,String startTime,String endTime){
+        List<VisitTrendDaily> dailyData = db().select(MP_DAILY_VISIT.REF_DATE.as("date"),field.as("number"))
+            .from(MP_DAILY_VISIT)
+            .where(MP_DAILY_VISIT.REF_DATE.between(startTime,endTime))
+            .fetchInto(VisitTrendDaily.class);
+        return dailyData;
+    }
+
+
+    /**
 	 *页面访问次数统计
-	 *@Param param
+	 *@param param
 	 *@return
 	 */
-	private static final String PAGE_OTHER = "page.other";
-	public OverviewAnalysisPageVo getPageInfo(OverviewAnalysisPageParam param) {
-		
-		List<OverviewAnalysisPageListVo> overviewAnalysisPageVos;
-		overviewAnalysisPageVos = 
-				db().select(MP_VISIT_PAGE.PAGE_PATH,
-						DSL.sum(MP_VISIT_PAGE.PAGE_VISIT_PV).as("pageVisitPv"))
+	public PageStatisticsVo getPageInfo(PageStatisticsParam param) {
+        //得到时间
+        if (!param.getType().equals(CUSTOM_DAYS)){
+            param.setStartTime(getDate(param.getType()));
+            param.setEndTime(getDate(NumberUtils.INTEGER_ONE));
+        }
+        //设置返回时间
+        PageStatisticsVo result = new PageStatisticsVo();
+        result.setStartTime(param.getStartTime());
+        result.setEndTime(param.getEndTime());
+        //获取单个页面访问数据
+		List<PageListVo> pageListVos = db().select(MP_VISIT_PAGE.PAGE_PATH, DSL.sum(MP_VISIT_PAGE.PAGE_VISIT_PV).as("pageVisitPv"))
 				.from(MP_VISIT_PAGE)
 				.where(MP_VISIT_PAGE.REF_DATE.between(param.getStartTime(), param.getEndTime()))
 				.groupBy(MP_VISIT_PAGE.PAGE_PATH)
-				.fetchInto(OverviewAnalysisPageListVo.class);
-		int total = 
-				db().select(
-						DSL.sum(MP_VISIT_PAGE.PAGE_VISIT_PV).as("total"))
+                .orderBy(DSL.sum(MP_VISIT_PAGE.PAGE_VISIT_PV).as("pageVisitPv").desc())
+				.fetchInto(PageListVo.class);
+		//计算访问总数
+		Integer total = db().select(DSL.sum(MP_VISIT_PAGE.PAGE_VISIT_PV))
 				.from(MP_VISIT_PAGE)
 				.where(MP_VISIT_PAGE.REF_DATE.between(param.getStartTime(), param.getEndTime()))
-				.fetchInto(Integer.class).get(0);
-		for(OverviewAnalysisPageListVo overviewAnalysisPageVo:overviewAnalysisPageVos) {
-			overviewAnalysisPageVo.setPageName(pageNameOf(overviewAnalysisPageVo.getPagePath()));
-			overviewAnalysisPageVo.setRate(((double)overviewAnalysisPageVo.getPageVisitPv()/(double)total));
+				.fetchOneInto(Integer.class);
+		for(PageListVo pageListVo:pageListVos) {
+            pageListVo.setPageName(pageNameOf(pageListVo.getPagePath()));
+            pageListVo.setRate(getRate(pageListVo.getPageVisitPv(),total));
 		}
-		OverviewAnalysisPageVo vo = new OverviewAnalysisPageVo();
-		vo.setList(overviewAnalysisPageVos);
-		return vo;
+		result.setList(pageListVos);
+		return result;
 	}
-
-	
 	 /**
      * 获取路径对应的页面名称
      */
     private String pageNameOf(String pagePath) {
         return Optional.ofNullable(pageMap().get(pagePath)).orElse(PAGE_OTHER);
     }
-
     /**
      * 路径和页面名称对应关系
      */
     private Map<String, String> pageMap() {
         return PropertiesUtil.toMap("visit/pages.properties");
+    }
+    /**
+     * 计算占比
+     * @param singleData 单个数据
+     * @param totalData 总数据
+     * @return 占比 四舍五入保留两位小数
+     */
+    private Double getRate(Integer singleData,Integer totalData){
+        //除数为空，返回null
+        if (totalData.equals(NumberUtils.INTEGER_ZERO)){
+            return null;
+        }
+        //四舍五入并保留两位小数
+        double doubleRate = ((double)singleData)/(double)totalData*(double)100;
+        BigDecimal rate = new BigDecimal(doubleRate).setScale(2, RoundingMode.HALF_UP);
+        return  rate.doubleValue();
     }
 }

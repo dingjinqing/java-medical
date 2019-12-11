@@ -3,7 +3,10 @@ package com.vpu.mp.service.shop.order.action;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -82,4 +85,23 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 		return null;
 	}
 
+    /**
+     * 自动任务:完成订单
+     */
+    public void autoFinishOrders(){
+        Result<OrderInfoRecord> orders = orderInfo.autoFinishOrders();
+        for (OrderInfoRecord order : orders) {
+            OrderOperateQueryParam param = new OrderOperateQueryParam();
+            param.setAction(Integer.valueOf(OrderServiceCode.FINISH.ordinal()).byteValue());
+            param.setIsMp(OrderConstant.IS_MP_AUTO);
+            param.setOrderId(order.getOrderId());
+            param.setOrderSn(order.getOrderSn());
+            ExecuteResult result = execute(param);
+            if(result == null || result.isSuccess()) {
+                logger().info("订单自动任务,完成成功,orderSn:{}", order.getOrderSn());
+            }else {
+                logger().error("订单自动任务,完成失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getErrorCode().toString() , result.getErrorParam());
+            }
+        }
+    }
 }
