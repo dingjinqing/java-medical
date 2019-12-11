@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableScheduling
 @EnableAsync
-@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "off")
+@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
 public class OrderScheduleTask {
     @Autowired
     private SaasApplication saas;

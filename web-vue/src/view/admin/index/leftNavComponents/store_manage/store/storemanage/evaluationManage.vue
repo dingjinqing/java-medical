@@ -7,12 +7,12 @@
       @tab-click="tabClickHandle"
     >
       <el-tab-pane
-        label="评价记录"
+        :label="$t('reservationManage.commentRecord')"
         name="first"
       >
       </el-tab-pane>
       <el-tab-pane
-        label="评价审核"
+        :label="$t('reservationManage.commentCharge')"
         name="second"
       >
       </el-tab-pane>
@@ -26,8 +26,10 @@ export default {
   data () {
     return {
       id: null,
-      businessHours: null,
-      activeName: 'first'
+      activeName: 'first',
+      tab: {
+        name: 'first'
+      }
     }
   },
   watch: {
@@ -37,18 +39,21 @@ export default {
         console.log(newName)
       }
     },
-    '$route.name': function (newVal) {
+    $route: function (newVal) {
       console.log('route', newVal)
       this.initStatus()
     }
   },
   created () {
     this.id = this.$route.query.id
-    this.businessHours = this.$route.query.businessHours
     this.langDefault()
     this.initStatus()
   },
   mounted () {
+    this.id = this.$route.query.id
+    this.langDefault()
+    this.initStatus()
+    this.tabClickHandle(this.tab)
   },
   methods: {
     tabClickHandle (tab) {

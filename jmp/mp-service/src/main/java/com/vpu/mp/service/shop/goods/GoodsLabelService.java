@@ -4,7 +4,6 @@ package com.vpu.mp.service.shop.goods;
 import com.vpu.mp.db.shop.tables.records.GoodsLabelRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
-import com.vpu.mp.service.foundation.jedis.data.LabelDataHelper;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.goods.label.*;

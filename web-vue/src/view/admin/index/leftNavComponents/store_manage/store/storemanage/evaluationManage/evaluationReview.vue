@@ -39,7 +39,7 @@
           ></el-input>
         </label>
         <!-- 审核状态下拉 -->
-        <label style="font-size: 14px;">审核状态：</label>
+        <label style="font-size: 14px;">{{$t('reservationManage.chargeStatus')}}：</label>
         <template>
           <el-select
           size="small"
@@ -113,17 +113,17 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="用户信息"
+            :label="$t('reservationManage.userInfo')"
           >
             <template slot-scope="{ row }">
               <el-row :gutter=20>
                 <el-col :span="20">
-                  <label style="font-size: 14px;">用户名： {{row.username}}</label>
+                  <label style="font-size: 14px;">{{$t('reservationManage.username')}}： {{row.username}}</label>
                 </el-col>
               </el-row>
               <el-row :gutter=20>
                 <el-col :span="20">
-                  <label style="font-size: 14px;">手机号： {{row.mobile}}</label>
+                  <label style="font-size: 14px;">{{$t('reservationManage.userMobile')}}： {{row.mobile}}</label>
                 </el-col>
               </el-row>
             </template>
@@ -134,13 +134,13 @@
             <template slot-scope="{ row }">
               <el-row :gutter=20>
                 <el-col :span="20">
-                  <label style="font-size: 14px;">评分： {{row.commstar}}</label>
+                  <label style="font-size: 14px;">{{$t('reservationManage.commentScore')}}： {{row.commstar}}</label>
                   <img :src="imgHost + '/image/admin/comstar_{{row.commstar}}.png'" alt="" style="width: 65px; height: 65px">
                 </el-col>
               </el-row>
               <el-row :gutter=20>
                 <el-col :span="20">
-                  <label style="font-size: 14px;">评价：{{row.commNote}}</label>
+                  <label style="font-size: 14px;">{{$t('reservationManage.comment')}}：{{row.commNote}}</label>
                 </el-col>
               </el-row>
               <el-row :gutter=20>
@@ -163,7 +163,7 @@
             prop="anonymousflag"
           ></el-table-column>
           <el-table-column
-            label="审核状态"
+            :label="$t('reservationManage.chargeStatus')"
             prop="flag"
           ></el-table-column>
           <el-table-column
@@ -182,7 +182,7 @@
                 <el-tooltip :content="$t('technicianList.edit')">
                   <span
                     class="iconSpan"
-                    v-if="returnTrue(row.flag, 1)"
+                    v-if="row.flag!==1"
                     @click="singlePass(row.id)"
                   >{{$t('reservationManage.pass')}}</span>
                 </el-tooltip>
@@ -204,17 +204,17 @@
                 type="primary"
                 size="small"
                 @click="batchDelete"
-              >批量删除</el-button>
+              >{{$t('reservationManage.batchDel')}}</el-button>
               <el-button
                 type="primary"
                 size="small"
                 @click="batchPass"
-              >批量通过</el-button>
+              >{{$t('reservationManage.batchPass')}}</el-button>
               <el-button
                 type="primary"
                 size="small"
                 @click="batchRefuse"
-              >批量拒绝</el-button>
+              >{{$t('reservationManage.batchRefuse')}}</el-button>
             </el-col>
             <el-col :span="9">
               <pagination
@@ -238,16 +238,16 @@ export default {
     return {
       chargeStatus: [{
         label: -1,
-        value: '全部'
+        value: this.$t('reservationManage.all')
       }, {
         label: 0,
-        value: '待审核'
+        value: this.$t('reservationManage.beCharge')
       }, {
         label: 1,
-        value: '通过'
+        value: this.$t('reservationManage.pass')
       }, {
         label: 2,
-        value: '未通过'
+        value: this.$t('reservationManage.unpass')
       }],
       starSelect: [{
         label: 0,
@@ -464,13 +464,13 @@ export default {
             }
             switch (item.flag) {
               case 0:
-                item.flag = '未审批'
+                item.flag = this.$t('reservationManage.beCharge')
                 break
               case 1:
-                item.flag = '审批通过'
+                item.flag = this.$t('reservationManage.pass')
                 break
               case 2:
-                item.flag = '审批未通过'
+                item.flag = this.$t('reservationManage.unpass')
                 break
             }
           })
