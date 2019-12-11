@@ -7,6 +7,7 @@ export const en = {
   subscriber: 'Reservation',
   serviceName: 'service name',
   mobile: 'Appoint mobile phone number',
+  userMobile: 'Member phone number',
   serviceDate: 'Appointment time',
   serviceSubsist: 'Payment amount by appointment',
   message: 'Message / Remark',
