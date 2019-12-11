@@ -15,7 +15,6 @@ import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
  * 订单普通写操作
  * 
  * @author 王帅 2019/7/22
- * @param <E>
  */
 @Service
 public class OrderWriteService extends ShopBaseService {
@@ -37,7 +36,7 @@ public class OrderWriteService extends ShopBaseService {
 	/**
 	 * 	卖家备注
 	 * 
-	 * @param SellerRemarkParam
+	 * @param param
 	 * @return boolean
 	 */
 	public SellerRemarkVo sellerRemark(SellerRemarkParam param) {

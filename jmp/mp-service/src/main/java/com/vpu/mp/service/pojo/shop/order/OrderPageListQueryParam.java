@@ -50,7 +50,8 @@ public class OrderPageListQueryParam {
 	public Byte payWay;
 	/**规格编码*/
 	public String productSn;
-	
+	/**标星订单*/
+	public Byte isStar;
 	/**
 	 * 拼团退款失败单
 	 */
