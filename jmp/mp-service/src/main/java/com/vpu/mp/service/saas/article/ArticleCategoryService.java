@@ -3,8 +3,13 @@ package com.vpu.mp.service.saas.article;
 import static com.vpu.mp.db.main.tables.Article.ARTICLE;
 import static com.vpu.mp.db.main.tables.ArticleCategory.ARTICLE_CATEGORY;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jooq.DSLContext;
 import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectSeekStep1;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
@@ -40,6 +45,24 @@ public class ArticleCategoryService extends MainBaseService {
 		Page page = param.getPage();
 		return getPageResult(select,page.getCurrentPage(),page.getPageRows(),ArticleCategoryVo.class);
 
+	}
+	
+	
+	/**
+	 * 查询文章分类,不分类
+	 * 
+	 */
+	public List<ArticleCategoryVo> getCategoryList() {
+		SelectSeekStep1<Record2<Integer, String>, Integer> select = db().select(
+				ARTICLE_CATEGORY.CATEGORY_ID,
+				ARTICLE_CATEGORY.CATEGORY_NAME
+				).from(ARTICLE_CATEGORY).where(ARTICLE_CATEGORY.DEL_STATE.equal(DelFlag.NORMAL.getCode())).orderBy(ARTICLE_CATEGORY.CATEGORY_ID.asc());
+		Result<Record2<Integer, String>> fetch = select.fetch();
+		List<ArticleCategoryVo> into =new ArrayList<ArticleCategoryVo>();
+		if(fetch!=null) {
+			 into = fetch.into(ArticleCategoryVo.class);
+		}
+		return into;
 	}
 	/**
 	 * 文章类型新增

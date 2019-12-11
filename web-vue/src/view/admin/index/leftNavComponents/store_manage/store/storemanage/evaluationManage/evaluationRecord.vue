@@ -113,17 +113,17 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="用户信息"
+            :label="$t('reservationManage.userInfo')"
           >
             <template slot-scope="{ row }">
               <el-row :gutter=20>
                 <el-col :span="20">
-                  <label style="font-size: 14px;">用户名： {{row.username}}</label>
+                  <label style="font-size: 14px;">{{$t('reservationManage.username')}}： {{row.username}}</label>
                 </el-col>
               </el-row>
               <el-row :gutter=20>
                 <el-col :span="20">
-                  <label style="font-size: 14px;">手机号： {{row.mobile}}</label>
+                  <label style="font-size: 14px;">{{$t('reservationManage.userMobile')}}： {{row.mobile}}</label>
                 </el-col>
               </el-row>
             </template>

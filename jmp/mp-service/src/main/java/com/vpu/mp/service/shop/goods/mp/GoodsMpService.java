@@ -140,6 +140,7 @@ public class GoodsMpService extends ShopBaseService {
             }
             goodsListCapsules = findActivityGoodsListCapsulesDao(condition, orderFields, 0, param.getGoodsNum(), null);
         }
+        logger().debug("商品列表数据信息："+goodsListCapsules.toString());
         return goodsListCapsules;
     }
 
@@ -199,7 +200,7 @@ public class GoodsMpService extends ShopBaseService {
         if (GoodsListMpParam.GOODS_TYPE_IS_CARD_EXCLUSIVE.equals(param.getGoodsType())) {
             condition = condition.and(GOODS.IS_CARD_EXCLUSIVE.eq(GoodsConstant.CARD_EXCLUSIVE));
         } else {
-            if (param.getGoodsType() != null) {
+            if (param.getGoodsType() != null && param.getGoodsType() != 0) {
                 condition = condition.and(GOODS.GOODS_TYPE.eq(param.getGoodsType()));
             }
         }
@@ -209,8 +210,9 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 通过商品id集合回去对应的数据信息
-     * @param goodsIds  商品id集合
-     * @param userId 用户id集合
+     *
+     * @param goodsIds 商品id集合
+     * @param userId   用户id集合
      * @return {@link GoodsListMpParam}集
      */
     public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds, Integer userId) {
@@ -231,7 +233,8 @@ public class GoodsMpService extends ShopBaseService {
 
     /**
      * 通过商品id集合回去对应的数据信息
-     * @param goodsIds     商品id集合
+     *
+     * @param goodsIds 商品id集合
      * @return {@link GoodsListMpParam}集
      */
     private List<GoodsListMpBo> getGoodsListNormalFromDb(List<Integer> goodsIds) {
@@ -261,9 +264,9 @@ public class GoodsMpService extends ShopBaseService {
     public GoodsDetailMpVo getGoodsDetailMp(GoodsDetailMpParam param) {
         GoodsDetailMpBo goodsDetailMpBo;
         try {
-           log.debug("尝试es获取商品详情");
+            log.debug("尝试es获取商品详情");
             goodsDetailMpBo = esGoodsSearchMpService.queryGoodsById(param.getGoodsId());
-            log.debug("商品详情信息 {}",goodsDetailMpBo);
+            log.debug("商品详情信息 {}", goodsDetailMpBo);
             // 商品已删除，在es内不存在
             if (goodsDetailMpBo == null) {
                 goodsDetailMpBo = new GoodsDetailMpBo();
@@ -274,9 +277,9 @@ public class GoodsMpService extends ShopBaseService {
         } catch (Exception e) {
             log.debug("尝试DB获取商品详情");
             goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
-            log.debug("商品详情信息 {}",goodsDetailMpBo);
+            log.debug("商品详情信息 {}", goodsDetailMpBo);
             // 商品从数据库内查询，但是数据已经被删除
-            if (goodsDetailMpBo==null) {
+            if (goodsDetailMpBo == null) {
                 goodsDetailMpBo = new GoodsDetailMpBo();
                 goodsDetailMpBo.setDelFlag(DelFlag.NORMAL_VALUE);
                 return goodsDetailMpBo;
@@ -297,23 +300,24 @@ public class GoodsMpService extends ShopBaseService {
         return goodsDetailMpBo;
     }
 
-
     /**
      * 小程序端-商品搜索界面-可使用搜索条件数据初始化
      * 由ES反向推到可用数据
+     *
      * @return {@link GoodsSearchFilterConditionMpVo}
      */
-    public GoodsSearchFilterConditionMpVo getGoodsSearchFilterCondition(){
+    public GoodsSearchFilterConditionMpVo getGoodsSearchFilterCondition() {
         //TODO es 反推待实现
         return new GoodsSearchFilterConditionMpVo();
     }
 
     /**
      * 搜索小程序商品信息
+     *
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
-    public List<GoodsListMpVo> searchGoods(GoodsSearchMpParam param){
+    public List<GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
         //TODO Es搜索
         return null;
     }
@@ -343,7 +347,7 @@ public class GoodsMpService extends ShopBaseService {
         Select<?> select = null;
 
         SelectSeekStepN<Record12<Integer, String, Byte, BigDecimal, BigDecimal, Integer, Integer, String, Integer, Integer, Integer, Integer>> record12 =
-            db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+            db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE.as("activity_type"), GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
                 GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
                 GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
                 .from(GOODS).where(condition).orderBy(orderFields);
@@ -377,11 +381,11 @@ public class GoodsMpService extends ShopBaseService {
         Record record1 = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
             GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DELIVER_TEMPLATE_ID, GOODS.DELIVER_PLACE, GOODS.GOODS_WEIGHT, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
             GOODS.GOODS_IMG, GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
-            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP,GOODS.GOODS_PAGE_ID,GOODS.GOODS_DESC)
+            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_PAGE_ID, GOODS.GOODS_DESC)
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
         if (record1 == null) {
-            log.debug("商品详情-{}已被从数据库真删除",goodsId);
+            log.debug("商品详情-{}已被从数据库真删除", goodsId);
             return null;
         }
 
@@ -402,7 +406,7 @@ public class GoodsMpService extends ShopBaseService {
                 capsule.setVideoHeight(record.get(UPLOADED_VIDEO.VIDEO_HEIGHT));
                 capsule.setVideoWidth(record.get(UPLOADED_VIDEO.VIDEO_WIDTH));
                 double size = record.get(UPLOADED_VIDEO.VIDEO_SIZE) * 1.0 / 1024 / 1024;
-                capsule.setGoodsVideoSize(BigDecimalUtil.setDoubleScale(size,2,true));
+                capsule.setGoodsVideoSize(BigDecimalUtil.setDoubleScale(size, 2, true));
             }
         }
         return capsule;

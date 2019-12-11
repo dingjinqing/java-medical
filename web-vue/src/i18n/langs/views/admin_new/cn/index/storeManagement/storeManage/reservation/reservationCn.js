@@ -73,5 +73,9 @@ export const cn = {
   beCharge: '待审核',
   pass: '通过',
   unpass: '未通过',
-  refuse: '拒绝'
+  refuse: '拒绝',
+  username: '用户名',
+  chargeStatus: '审核状态',
+  commentRecord: '评价记录',
+  commentCharge: '评价审核'
 }

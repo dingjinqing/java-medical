@@ -139,7 +139,7 @@ public class OrderGoodsService extends ShopBaseService{
 				//状态
 				goods.set(TABLE.REFUND_STATUS, returnOrderRecord.getRefundStatus());
 				//此次退款退货数量
-				int returnNum = returnGoodsMap.get(goods.getRecId()) == null ? 0 : returnGoodsMap.get(goods.getRecId()).getGoodsNumber();
+				int returnNum = returnOrderRecord.getReturnType().equals(OrderConstant.RT_MANUAL) ? 0 : (returnGoodsMap.get(goods.getRecId()) == null ? 0 : returnGoodsMap.get(goods.getRecId()).getGoodsNumber());
 				//修改退货退款商品数量
 				goods.setReturnNumber(goods.getReturnNumber() + returnNum);
 				break;
