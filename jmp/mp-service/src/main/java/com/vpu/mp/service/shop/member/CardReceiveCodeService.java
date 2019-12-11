@@ -18,7 +18,7 @@ import com.vpu.mp.service.shop.member.dao.CardReceiveCodeDao;
 * @Description: 
 */
 @Service
-public class CardReceiveCode extends ShopBaseService {
+public class CardReceiveCodeService extends ShopBaseService {
 	@Autowired private CardReceiveCodeDao cardReceiveCodeDao;
 	
 	/**
@@ -49,6 +49,12 @@ public class CardReceiveCode extends ShopBaseService {
 		if(batchIdSet.size()>0) {
 		cardReceiveCodeDao.deleteBatchId(batchIdSet);
 		}
+	}
+	/**
+	 * 获取用户的领取码
+	 */
+	public void getUserHasCode() {
+		
 	}
 	
 	private Set<Integer> getBatchIdByCardId(Integer cardId){
@@ -91,4 +97,6 @@ public class CardReceiveCode extends ShopBaseService {
 		set.removeAll(commonSet);
 		return set;
 	}
+	
+	
 }

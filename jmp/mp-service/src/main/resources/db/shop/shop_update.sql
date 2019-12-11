@@ -1323,3 +1323,7 @@ ADD COLUMN `recommend_type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '支付有礼�
 -- 添加字段
 ALTER TABLE `b2c_reduce_price`
 ADD COLUMN `first` tinyint(1) NOT NULL DEFAULT 1 COMMENT '优先级';
+
+-- 添加字段
+ALTER TABLE `b2c_card_receive_code` 
+ADD COLUMN `status` tinyint(1) DEFAULT 0 COMMENT '1: 可用 0：禁用' AFTER `error_msg`;
