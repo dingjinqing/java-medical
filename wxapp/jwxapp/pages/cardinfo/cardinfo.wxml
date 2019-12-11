@@ -239,5 +239,5 @@
   </view>
   <include src="../common/footer.wxml" />
 
-  <v-poster poster-image="{{qrCode}}" show="{{showQrcode}}" />
+  <v-poster image="{{qrCode}}" show="{{showQrcode}}" />
 </view>
