@@ -216,6 +216,11 @@ public class JsonResultMessage {
 
     public static final String SHARE_REWARD_COUPON_NUM_LIMIT = "share.reward.coupon.num.limit";
 
+    /**
+     * 营销-砍价
+     */
+    public static final String BARGAIN_CONFLICTING_ACT_TIME="bargain.conflicting.act.time";
+
 
     /**
      * 文章_分类

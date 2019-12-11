@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.bargain;
 
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -338,5 +339,21 @@ public class BargainService extends ShopBaseService  {
         vo.setImageUrl(imageUrl);
         vo.setPagePath(QrCodeTypeEnum.BARGAIN_ITEM.getPathUrl(pathParam));
         return vo;
+    }
+
+    /**
+     * 判断是否已经有有进行中的商品
+     * @param goodsId       商品ID
+     * @param startTime     起始时间
+     * @param endTime       终止时间
+     * @return bool
+     */
+    public boolean isOnGoingBargain(int goodsId,Timestamp startTime,Timestamp endTime){
+        Record r = db().select(BARGAIN.ID).from(BARGAIN).where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.GOODS_ID.eq(goodsId)).and(isConflictingActTime(startTime,endTime))).fetchOne();
+        return r != null;
+    }
+
+    private Condition isConflictingActTime(Timestamp startTime,Timestamp endTime){
+        return (BARGAIN.START_TIME.gt(startTime).and(BARGAIN.START_TIME.lt(endTime))).or(BARGAIN.END_TIME.gt(startTime).and(BARGAIN.END_TIME.lt(endTime))).or(BARGAIN.START_TIME.lt(startTime).and(BARGAIN.END_TIME.gt(endTime)));
     }
 }
