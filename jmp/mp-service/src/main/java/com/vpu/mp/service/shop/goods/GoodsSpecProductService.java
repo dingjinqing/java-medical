@@ -439,4 +439,16 @@ public class GoodsSpecProductService extends ShopBaseService {
 	public int getPrdNumberByPrdId(int prdId){
         return db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId)).fetchOptionalInto(Integer.class).orElse(0);
     }
+
+    /**
+     * 获取商品的所有规格信息
+     * @param goodsId
+     * @return
+     */
+    public List<GoodsSpecProductRecord> getGoodsDetailPrds(Integer goodsId){
+        return db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,
+                GOODS_SPEC_PRODUCT.PRD_SPECS, GOODS_SPEC_PRODUCT.PRD_DESC)
+                .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).orderBy(GOODS_SPEC_PRODUCT.PRD_ID)
+                .fetchInto(GoodsSpecProductRecord.class);
+    }
 }

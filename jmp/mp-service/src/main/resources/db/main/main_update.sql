@@ -95,3 +95,7 @@ CHANGE COLUMN `invite_source` `invite_source`  varchar(32)   default null commen
 ALTER TABLE `mini_main`.`b2c_user_login_record` 
 ADD COLUMN `account_type` TINYINT(1) NULL COMMENT '登录日志账户类型：0店铺登录日志，1系统账号登录日志' ;
 
+--文章分类
+ALTER TABLE `mini_main`.`b2c_article_category` 
+CHANGE COLUMN `del_state` `use_footer_nav` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否用于底部导航' ;
+

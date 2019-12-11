@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.market.goupbuy;
 
 
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -8,6 +10,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -18,34 +21,56 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyEditParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyAnalysisVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyParam;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyProductVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyShareConfigVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyGoodsInfo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyInfoVo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyProductInfo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyStatusInfo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.goods.GoodsSpecService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.user.UserService;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
 
 /**
  * @author 孔德成
@@ -68,7 +93,14 @@ public class GroupBuyService extends ShopBaseService {
     private OrderReadService orderReadService;
     @Autowired
     private CouponService couponService;
-
+    @Autowired
+    private GoodsService goodsService;
+    @Autowired
+    private OrderInfoService orderInfoService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private GoodsSpecProductService goodsSpecProductService;
     @Autowired
     private QrCodeService qrCode;
 
@@ -230,14 +262,17 @@ public class GroupBuyService extends ShopBaseService {
      * 校验商品是否有叠加
      *
      * @param
+     * @param date
      * @return 0
      */
-    public Boolean validGroupGoods(Integer id, Integer goodsId, Timestamp startTime, Timestamp endTime) {
+    public Boolean validGroupGoods(Integer id, Integer goodsId, Timestamp startTime, Timestamp endTime, Timestamp date) {
         Condition where  =GROUP_BUY_DEFINE.GOODS_ID.eq(goodsId)
                 .and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
                 .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                 .and(GROUP_BUY_DEFINE.START_TIME.le(endTime))
-                .and(GROUP_BUY_DEFINE.END_TIME.ge(startTime));
+                .and(GROUP_BUY_DEFINE.END_TIME.ge(startTime))
+                .and(GROUP_BUY_DEFINE.END_TIME.gt(date))
+                .and(GROUP_BUY_DEFINE.START_TIME.lt(date));
         if (id!=null){
             where.and(GROUP_BUY_DEFINE.ID.notEqual(id));
         }
@@ -443,6 +478,12 @@ public class GroupBuyService extends ShopBaseService {
         logger().error("拼团相关联的{}号商品不存在",goodsId);
     }
 
+    /**
+     *  活动实付金额
+     * @param discountMoneyList
+     * @param timestamp
+     * @return
+     */
     private ActiveDiscountMoney getDiscountMoneyByDate(List<ActiveDiscountMoney> discountMoneyList, Timestamp timestamp) {
         for (ActiveDiscountMoney data : discountMoneyList) {
             if (data!=null&&timestamp.equals(data.getCreateTime())) {
@@ -452,6 +493,12 @@ public class GroupBuyService extends ShopBaseService {
         return null;
     }
 
+    /**
+     * 活动用户数量
+     * @param list
+     * @param timestamp
+     * @return
+     */
     private OrderActivityUserNum getUserNum(List<OrderActivityUserNum> list, Timestamp timestamp) {
         for (OrderActivityUserNum activityUserNum : list) {
             if (activityUserNum!=null&& timestamp.equals(activityUserNum.getDate())) {
@@ -460,5 +507,69 @@ public class GroupBuyService extends ShopBaseService {
         }
         return null;
     }
+
+    /**
+     * 活动详情
+     *
+     * @param userId
+     * @param createTime
+     * @param groupId
+     * @param activityId
+     * @param lang
+     * @return
+     */
+    public GroupBuyInfoVo getGroupBuyInfo(Integer userId, Timestamp createTime, Integer groupId, Integer activityId, String lang){
+        Timestamp date =DateUtil.getLocalDateTime();
+        // 拼团状态
+        ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(userId, date,activityId, groupId, IS_GROUPER_N);
+        //拼团活动
+        GroupBuyDefineRecord groupBuy = getGroupBuyRecord(activityId);
+        Result<Record2<BigDecimal, Short>> groupBuyProductRecord = db().select(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,GROUP_BUY_PRODUCT_DEFINE.STOCK).from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId)).fetch();
+        //商品
+        GoodsRecord goodsRecord = goodsService.getGoodsById(groupBuy.getGoodsId()).get();
+        //规格
+        List<GroupBuyProductInfo> product =  goodsService.getProductByGoodsId(groupBuy.getGoodsId()).into(GroupBuyProductInfo.class);
+        //sku
+        List<GoodsSpecProductRecord> prdInfos = goodsSpecProductService.getGoodsDetailPrds(groupBuy.getGoodsId());
+        List<GoodsPrdMpVo> prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());
+        //用户
+        List<GroupBuyUserInfo> userList = groupBuyListService.getPinUserList(groupId);
+        boolean newUser = orderInfoService.isNewUser(userId);
+        // $shop->shop_cfg->getShopCfg('bind_mobile');
+        Byte bindMobile = shopCommonConfigService.getBindMobile();
+        Integer groupBuyStock = groupBuyProductRecord.stream().mapToInt(Record2<BigDecimal, Short>::component2).sum();
+        BigDecimal maxPrice =groupBuyProductRecord.stream().map(Record2<BigDecimal, Short>::component1).distinct().max(BigDecimal::compareTo).get();
+        BigDecimal minPrice =groupBuyProductRecord.stream().map(Record2<BigDecimal, Short>::component1).distinct().min(BigDecimal::compareTo).get();
+        long dateDiff =date.getTime()-	createTime.getTime();
+        long hour = 24- (dateDiff / (60 * 60 * 1000));
+        long min = 60- dateDiff %  (60 * 60 * 1000) / (60 * 1000);
+        long s = 60- dateDiff% (60 * 60 * 1000)%(60*1000) / 1000 ;
+
+        GroupBuyInfoVo groupBuyInfo =new GroupBuyInfoVo();
+        GroupBuyGoodsInfo goods =new GroupBuyGoodsInfo();
+        goods.setGoodsId(goodsRecord.getGoodsId());
+        goods.setGoodsImg(goodsRecord.getGoodsImg());
+        goods.setGoodsName(goodsRecord.getGoodsName());
+        goods.setGoodsNumber(goodsRecord.getGoodsNumber());
+        goods.setGroupBuygoodsNum(groupBuyStock);
+        goods.setMaxGroupBuyPrice(maxPrice);
+        goods.setMinGroupBuyPrice(minPrice);
+        GroupBuyStatusInfo statusInfo =new GroupBuyStatusInfo();
+        statusInfo.setStatus(resultMessage.getJsonResultCode().getCode());
+        statusInfo.setMessage(Util.translateMessage(lang,resultMessage.getJsonResultCode().getMessage(),"messages"));
+        groupBuyInfo.setGoodsInfo(goods);
+        groupBuyInfo.setProductList(product);
+        groupBuyInfo.setPrdSpecsList(prdMpVos);
+        groupBuyInfo.setStatusInfo(statusInfo);
+        groupBuyInfo.setUserInfoList(userList);
+        groupBuyInfo.setHour(Math.toIntExact(hour));
+        groupBuyInfo.setMinute(Math.toIntExact(min));
+        groupBuyInfo.setSecond(Math.toIntExact(s));
+        groupBuyInfo.setBindMobile(bindMobile);
+        groupBuyInfo.setNewUser(newUser);
+        return groupBuyInfo;
+    }
+
+
 
 }
