@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class ArticleCategoryVo {
 	private Integer categoryId;
 	private String categoryName;
-	private Byte useFootNav;
+	private Byte useFooterNav;
 	private Timestamp addTime;
-	private Timestamp updaTimestamp;
+	private Timestamp updateTime;
 }
