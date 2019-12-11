@@ -37,7 +37,8 @@ public class GoodsSearchMpParam {
     /**标签id集合*/
     private List<Integer> labelIds;
 
-    /**是否展示售罄商品
+    /**
+     * 是否展示售罄商品,从service层获取
      * {@link com.vpu.mp.service.pojo.shop.goods.GoodsConstant#SOLD_OUT_GOODS_SHOW 展示售罄
      */
     private Byte soldOutGoods;

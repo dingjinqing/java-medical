@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ArticleCategory extends TableImpl<ArticleCategoryRecord> {
 
-    private static final long serialVersionUID = 1919728517;
+    private static final long serialVersionUID = -355336999;
 
     /**
      * The reference instance of <code>mini_main.b2c_article_category</code>
@@ -65,22 +65,22 @@ public class ArticleCategory extends TableImpl<ArticleCategoryRecord> {
     /**
      * The column <code>mini_main.b2c_article_category.category_name</code>.
      */
-    public final TableField<ArticleCategoryRecord, String> CATEGORY_NAME = createField("category_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("''", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<ArticleCategoryRecord, String> CATEGORY_NAME = createField("category_name", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>mini_main.b2c_article_category.del_state</code>. 0未删除,1删除
+     * The column <code>mini_main.b2c_article_category.use_footer_nav</code>. 是否用于底部导航
      */
-    public final TableField<ArticleCategoryRecord, Byte> DEL_STATE = createField("del_state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0未删除,1删除");
+    public final TableField<ArticleCategoryRecord, Byte> USE_FOOTER_NAV = createField("use_footer_nav", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否用于底部导航");
 
     /**
      * The column <code>mini_main.b2c_article_category.add_time</code>. 添加时间
      */
-    public final TableField<ArticleCategoryRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
+    public final TableField<ArticleCategoryRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "添加时间");
 
     /**
      * The column <code>mini_main.b2c_article_category.update_time</code>. 更新时间
      */
-    public final TableField<ArticleCategoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<ArticleCategoryRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * Create a <code>mini_main.b2c_article_category</code> table reference

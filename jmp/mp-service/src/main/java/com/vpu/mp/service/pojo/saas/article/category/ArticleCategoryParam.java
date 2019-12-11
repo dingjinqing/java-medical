@@ -17,4 +17,6 @@ public class ArticleCategoryParam {
 	private Integer categoryId;
 	@NotBlank(message = JsonResultMessage.ARTICLE_CATEGORY_CATEGORYNAME_ISNULL)
 	private String categoryName;
+	/**是否用于底部导航  ok:使用。cancel：不使用 */
+	private String useFooterNav;
 }
