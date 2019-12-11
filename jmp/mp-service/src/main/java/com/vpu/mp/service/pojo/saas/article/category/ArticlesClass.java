@@ -14,4 +14,6 @@ public class ArticlesClass {
 	public static final String CANCEL = "cancel";
 	public static final Byte ok = 1;
 	public static final Byte cancel = 0;
+	public static final Byte cuo = -1;
+	
 }

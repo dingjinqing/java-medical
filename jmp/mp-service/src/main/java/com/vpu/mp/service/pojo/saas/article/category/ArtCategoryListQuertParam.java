@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.saas.article.category;
 
-import com.vpu.mp.service.foundation.util.Page;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 /**
@@ -12,5 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ArtCategoryListQuertParam {
-	Page page;
+	public Integer pageRows;
+	public Integer currentPage;
+	public String keyWord;
 }

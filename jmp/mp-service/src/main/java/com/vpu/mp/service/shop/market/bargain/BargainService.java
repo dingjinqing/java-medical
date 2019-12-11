@@ -169,6 +169,8 @@ public class BargainService extends ShopBaseService  {
 			record.setShareConfig(Util.toJson(param.getShareConfig()));
 		}
 		db().executeUpdate(record);
+		//刷新goodsType
+		saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
 	}
 
     /**
@@ -181,6 +183,8 @@ public class BargainService extends ShopBaseService  {
             set(BARGAIN.DEL_TIME,DateUtil.getLocalDateTime()).
             where(BARGAIN.ID.eq(id)).
             execute();
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
     }
 	
 	/**

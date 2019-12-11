@@ -34,6 +34,10 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.GroupBuyDefine.GROUP_BUY_DEFINE;
 import static com.vpu.mp.db.shop.tables.GroupBuyProductDefine.GROUP_BUY_PRODUCT_DEFINE;
 import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_FAILED;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -105,7 +109,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
                     //更改订单状态
                     orderInfoService.batchChangeToWaitDeliver(orderSnList);
                     //更改参团状态
-                    updateGroupBuyListStatus(group.getGroupId(),GroupBuyListService.STATUS_SUCCESS);
+                    updateGroupBuyListStatus(group.getGroupId(),STATUS_SUCCESS);
                 });
 
                 // TODO 同步订单状态到CRM
@@ -114,7 +118,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
                 //未设置默认成团，拼团失败，将已参团用户的订单发起退款
                 transaction(()->{
                     //更改参团状态
-                    updateGroupBuyListStatus(group.getGroupId(),GroupBuyListService.STATUS_FAILED);
+                    updateGroupBuyListStatus(group.getGroupId(),STATUS_FAILED);
                     //退款
                     refund(orderSnList);
                 });
@@ -211,8 +215,8 @@ public class GroupBuyTaskService  extends ShopBaseService {
         return db().select(GROUP_BUY_DEFINE.GOODS_ID,GROUP_BUY_DEFINE.NAME,GROUP_BUY_DEFINE.IS_DEFAULT,GROUP_BUY_DEFINE.LIMIT_AMOUNT,GROUP_BUY_DEFINE.REWARD_COUPON_ID,GROUP_BUY_LIST.ACTIVITY_ID,GROUP_BUY_LIST.GROUP_ID,GROUP_BUY_LIST.ORDER_SN,GROUP_BUY_LIST.START_TIME)
             .from(GROUP_BUY_LIST.leftJoin(GROUP_BUY_DEFINE).on(GROUP_BUY_LIST.ACTIVITY_ID.eq(GROUP_BUY_DEFINE.ID)))
             .where(
-                GROUP_BUY_LIST.STATUS.eq(GroupBuyListService.STATUS_ONGOING)
-                .and(GROUP_BUY_LIST.IS_GROUPER.eq(GroupBuyListService.IS_GROUPER_Y))
+                GROUP_BUY_LIST.STATUS.eq(STATUS_ONGOING)
+                .and(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y))
                 .and(GROUP_BUY_LIST.START_TIME.lt(DateUtil.getDalyedDateTime(-3600*24)))
             ).fetchInto(GroupBuyListScheduleBo.class);
     }
@@ -225,7 +229,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
     private List<GroupBuyListRecord> getGroupRecordsByGroupId(int groupId){
         return db().select().from(GROUP_BUY_LIST).where(
             GROUP_BUY_LIST.GROUP_ID.eq(groupId)
-            .and(GROUP_BUY_LIST.STATUS.eq(GroupBuyListService.STATUS_ONGOING))
+            .and(GROUP_BUY_LIST.STATUS.eq(STATUS_ONGOING))
         ).fetchInto(GroupBuyListRecord.class);
     }
 
@@ -250,7 +254,7 @@ public class GroupBuyTaskService  extends ShopBaseService {
         record.setGroupId(group.getGroupId());
         //userId为0时代表该记录为伪造参团记录
         record.setUserId(0);
-        record.setStatus(GroupBuyListService.STATUS_SUCCESS);
+        record.setStatus(STATUS_SUCCESS);
         record.setOrderSn("");
         record.setStartTime(group.getStartTime());
         record.setEndTime(DateUtil.getLocalDateTime());
