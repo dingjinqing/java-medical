@@ -6,11 +6,10 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    isMultiple:{
-      type:Boolean,
-      value:false
-    },
-    posterImage:String
+    image:{
+      optionalTypes: [String, Array],
+      value:''
+    }
   },
 
   /**
@@ -25,13 +24,9 @@ global.wxComponent({
    */
   methods: {
     saveImage(){
-      console.log(this.data.isMultiple)
-      util.base64ImageHandle(this.data.posterImage,res=>{
+      util.base64ImageHandle(this.data.image,res=>{
         console.log(res)
       })
-      if (this.data.isMultiple){
-
-      }
       this.bindClose()
     }
   }

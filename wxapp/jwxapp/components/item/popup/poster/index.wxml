@@ -1,7 +1,7 @@
 <v-popup bind:close="bindClose" show="{{show}}" vertical="center" hide_close="{{true}}" close_pos="inner" bindtap='bindClose'>
  <view class="poster-container">
   <view class="poster-img">
-    <image src="{{posterImage}}"></image>
+    <image src="{{image}}"></image>
   </view>
   <view class="save-button" style="background-color:{{main_setting.comColor}}" bindtap="saveImage">保存图片</view>
   <view class="tips">保存图片到本地相册</view>

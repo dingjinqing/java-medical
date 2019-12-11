@@ -21,4 +21,4 @@
   </view>
 </v-popup>
 
-<v-poster is-multiple="{{isMultiple}}" poster-image="{{posterImage}}" show="{{showPoster}}" />
+<v-poster image="{{posterImage}}" show="{{showPoster}}" />

@@ -269,6 +269,9 @@ public class OrderInfoService extends ShopBaseService {
 		if(param.finishedTimeEnd != null){
 			select.where(ORDER_INFO.FINISHED_TIME.le(param.finishedTimeEnd));
 		}
+		if(param.getIsStar() != null){
+		    select.where(TABLE.STAR_FLAG.eq(param.getIsStar()));
+        }
 		//拼团退款失败订单
 		if(param.pinStatus != null && param.pinStatus.length != 0){
 			select.innerJoin(GROUP_BUY_LIST).on(ORDER_INFO.ORDER_SN.eq(GROUP_BUY_LIST.ORDER_SN));
@@ -657,7 +660,7 @@ public class OrderInfoService extends ShopBaseService {
 	 */
 	public void setPayCodeList(OrderListInfoVo order ,List<String> prizesSns) {
 		ArrayList<Byte> payCodes = new ArrayList<Byte>(OrderConstant.SEARCH_PAY_WAY_WXPAY);
-		if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0 ) {
+		if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0 || BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
 			/**余额*/
 			payCodes.add(OrderConstant.SEARCH_PAY_WAY_USE_ACCOUNT);
 		}
