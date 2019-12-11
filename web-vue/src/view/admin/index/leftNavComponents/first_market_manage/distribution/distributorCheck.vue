@@ -79,7 +79,7 @@
               colspan="6"
               style="text-align: left;"
             >
-              <div class="header">ID: {{ item.userId }}</div>
+              <div class="header">ID：{{ item.userId }}</div>
               <div class="header">昵称：<span class="active">{{ item.username }}</span></div>
               <div
                 class="header"
@@ -89,10 +89,7 @@
                 class="header"
                 v-if="item.createTime"
               >申请时间：{{ item.createTime }}</div>
-              <div
-                class="header"
-                v-if="item.createTime"
-              >邀请码：</div>
+              <!-- <div class="header">邀请码：</div> -->
             </td>
 
             <td style="width: 120px;">分销员分组</td>
@@ -108,15 +105,15 @@
           </tr>
 
           <tr>
-            <td v-if="item.idCard !== ''">真实姓名</td>
-            <td v-if="item.idCard !== ''">{{ item.realName ? item.realName : '无' }}</td>
-            <td v-if="item.idCard !== ''">手机号</td>
-            <td v-if="item.idCard !== ''">{{ item.mobile ? item.mobile : '无' }}</td>
-            <td v-if="item.idCard !== ''">身份证号</td>
-            <td v-if="item.idCard !== ''">{{ item.userId ? item.userId : '无' }}</td>
+            <td v-if="item.userId !== ''">真实姓名</td>
+            <td v-if="item.userId !== ''">{{ item.realName ? item.realName : '无' }}</td>
+            <td v-if="item.userId !== ''">手机号</td>
+            <td v-if="item.userId !== ''">{{ item.mobile ? item.mobile : '无' }}</td>
+            <td v-if="item.userId !== ''">身份证号</td>
+            <td v-if="item.userId !== ''">{{ item.userId ? item.userId : '无' }}</td>
             <td
               colspan="6"
-              v-if="item.idCard === ''"
+              v-if="item.userId === ''"
               class="middle"
             >无需提交个人信息</td>
             <td
@@ -142,12 +139,14 @@
                 size="small"
                 type="primary"
                 plain
+                @click="passHandler(item.id)"
               >通过</el-button>
 
               <el-button
                 size="small"
                 type="info"
                 plain
+                @click="noPassHandler(item.id)"
               >不通过</el-button>
             </td>
             <td
@@ -158,7 +157,7 @@
 
             </td>
           </tr>
-          <tr v-if="item.idCard !== ''">
+          <tr v-if="item.userId !== ''">
             <td>性别</td>
             <td>{{ item.sex ? item.sex : '无' }}</td>
             <td>生日</td>
@@ -167,7 +166,7 @@
             <td>{{ item.maritalStatus ? item.maritalStatus : '无' }}</td>
 
           </tr>
-          <tr v-if="item.idCard !== ''">
+          <tr v-if="item.userId !== ''">
             <td>教育程度</td>
             <td>{{ item.educationName ? item.educationName : '无' }}</td>
             <td>所在行业</td>
@@ -176,11 +175,11 @@
             <td>{{ item.address ? item.address : '无' }}</td>
 
           </tr>
-          <tr v-if="item.idCard !== ''">
+          <tr v-if="item.userId !== ''">
             <td>备注</td>
             <td colspan="5"></td>
           </tr>
-          <tr v-if="item.idCard !== ''">
+          <tr v-if="item.userId !== ''">
             <td>图片</td>
             <td colspan="5"></td>
           </tr>
@@ -199,6 +198,7 @@
         :visible.sync="dialogVisible"
         width="25%"
         center
+        close-on-click-modal=false
       >
         <span>选择分组：</span>
         <el-select
@@ -230,6 +230,46 @@
           >确 定</el-button>
         </span>
       </el-dialog>
+
+      <!-- 不通过弹窗 -->
+      <el-dialog
+        title="审核不通过原因"
+        :visible.sync="failDialogVisible"
+        width="35%"
+        center
+        close-on-click-modal=false
+      >
+        <div class="failTip">
+          <i
+            class="el-icon-warning"
+            style="color: #E6A23C; font-size: 14px;"
+          ></i>
+          <span> 原因提交后不可修改，请谨慎提交</span>
+        </div>
+        <el-input
+          v-model="textarea"
+          type="textarea"
+          :rows="8"
+          maxlength="150"
+          show-word-limit
+        >
+        </el-input>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            size="small"
+            @click="cancelPassHandler"
+          >取 消</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="surePassHandler"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+
     </div>
   </div>
 </template>
@@ -250,15 +290,58 @@ export default {
         endTime: ''
       },
       activeName: 'first',
+      // 分页
       pageParams: {
         currentPage: 1,
         pageRows: 20
-      }, // 分页
+      },
       requestParams: {},
       // 表格数据
       tableData: [{
-        userId: '', // 用户id
-        username: '', // 昵称
+        id: 1,
+        userId: '111111', // 用户id
+        status: 0,
+        username: '待审核', // 昵称
+        mobile: '17823456789', // 手机号
+        createTime: '2019-01-01 00:00:00', // 申请时间
+        // 邀请码
+        realName: '', // 真实姓名
+        // 身份证号
+        sex: '', // 性别
+        birthdayYear: '', // 出生年
+        birthdayMonth: '', // 出生月
+        birthdayDay: '', // 出生日
+        maritalStatus: '', // 婚姻状况
+        educationName: '', // 受教育程度
+        industryName: '', // 行业
+        address: '' // 所在地址
+        // 备注
+        // 图片
+      }, {
+        id: 2,
+        userId: '222222', // 用户id
+        status: 1,
+        username: '审核通过', // 昵称
+        mobile: '', // 手机号
+        createTime: '', // 申请时间
+        // 邀请码
+        realName: '', // 真实姓名
+        // 身份证号
+        sex: '', // 性别
+        birthdayYear: '', // 出生年
+        birthdayMonth: '', // 出生月
+        birthdayDay: '', // 出生日
+        maritalStatus: '', // 婚姻状况
+        educationName: '', // 受教育程度
+        industryName: '', // 行业
+        address: '' // 所在地址
+        // 备注
+        // 图片
+      }, {
+        id: 3,
+        userId: '333333', // 用户id
+        status: 2,
+        username: '未通过', // 昵称
         mobile: '', // 手机号
         createTime: '', // 申请时间
         // 邀请码
@@ -281,7 +364,11 @@ export default {
       groupId: '',
       groupName: '',
       selectValue: '',
-      selectData: []
+      selectData: [],
+
+      // 审核不通过弹窗
+      failDialogVisible: false,
+      textarea: ''
     }
   },
   watch: {
@@ -303,7 +390,6 @@ export default {
       this.requestParams.endTime = this.searchForm.endTime
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
-      console.log(this.requestParams)
       getCheckList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
@@ -377,6 +463,30 @@ export default {
           item.group = this.groupName
         }
       })
+    },
+
+    // 审核通过
+    passHandler (id) {
+      this.$message.success('审核通过!')
+      // this.initDataList()
+    },
+
+    // 审核不通过
+    noPassHandler (id) {
+      this.failDialogVisible = !this.failDialogVisible
+    },
+
+    // 取消审核不通过
+    cancelPassHandler () {
+      this.failDialogVisible = false
+      this.textarea = ''
+    },
+
+    // 确定审核不通过
+    surePassHandler () {
+      this.failDialogVisible = false
+      this.textarea = ''
+      // this.initDataList()
     }
   }
 
@@ -456,6 +566,7 @@ export default {
   td {
     text-align: center;
     border: 1px solid lightgray;
+    min-width: 120px;
   }
   .checkList {
     width: 100%;
@@ -471,9 +582,12 @@ export default {
   .header:nth-child(1) {
     margin-left: 10px;
   }
-  .header:nth-child(4),
-  .header:nth-child(5) {
+  .header:nth-child(4) {
     width: 25%;
+  }
+  .header:nth-child(3),
+  .header:nth-child(5) {
+    width: 20%;
   }
   .active {
     color: #5a8bff;
@@ -483,5 +597,18 @@ export default {
     display: table-cell;
     vertical-align: middle;
   }
+}
+.failTip {
+  height: 30px;
+  line-height: 30px;
+  color: rgb(102, 102, 102);
+  font-size: 12px;
+  background-color: rgb(255, 247, 235);
+  padding: 0px 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(255, 213, 163);
+  border-image: initial;
+  margin-bottom: 10px;
 }
 </style>
