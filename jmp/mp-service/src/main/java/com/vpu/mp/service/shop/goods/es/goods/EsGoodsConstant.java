@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.goods.es.goods;
 
 /**
- * EsGoods常量类
+ * Es常量类
  * @author 卢光耀
  * @date 2019/10/10 10:11 上午
  *

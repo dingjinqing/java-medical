@@ -41,11 +41,6 @@ global.wxComponent({
   /**
    * 组件的方法列表
    */
-  lifetimes: {
-    ready() {
-      console.log(this);
-    }
-  },
   methods: {
     specDialogShow() {
       this.setData({

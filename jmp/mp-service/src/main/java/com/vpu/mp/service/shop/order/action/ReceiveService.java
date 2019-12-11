@@ -2,7 +2,11 @@ package com.vpu.mp.service.shop.order.action;
 
 import java.util.Arrays;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +45,10 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 	
 	@Autowired
 	private OrderActionService orderAction;
-	
+
+	@Autowired
+    private ReturnOrderGoodsService returnGoods;
+
 	@Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.RECEIVE;
@@ -53,7 +60,7 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 	}
 
 	/**
-	 * 	订单收货目前支持已发货状态下商品全部收货（不支持部分收货）
+	 * 	订单收货目前只支持已发货状态下商品全部收货（不支持部分收货）
 	 */
 	@Override
 	public ExecuteResult execute(OrderOperateQueryParam param) {
@@ -77,4 +84,31 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 		return null;
 	}
 
+    /**
+     * 自动任务收货
+     */
+    public void autoReceiveOrders(){
+        Result<OrderInfoRecord> orders = orderInfo.getCanAutoReceiveOrders();
+        for (OrderInfoRecord order : orders) {
+            if(order.getDeliverType().equals(OrderConstant.CITY_EXPRESS_SERVICE) && order.getShippingId() > 0){
+                //TODO 同城配送
+                continue;
+            }
+            if(CollectionUtils.isNotEmpty(returnGoods.getRefundGoodsByStatus(order.getOrderSn(), OrderConstant.SUCCESS_RETURNING))){
+                //存在退款不可自动收货
+                continue;
+            }
+            OrderOperateQueryParam param = new OrderOperateQueryParam();
+            param.setAction(Integer.valueOf(OrderServiceCode.RECEIVE.ordinal()).byteValue());
+            param.setIsMp(OrderConstant.IS_MP_AUTO);
+            param.setOrderId(order.getOrderId());
+            param.setOrderSn(order.getOrderSn());
+            ExecuteResult result = execute(param);
+            if(result == null || result.isSuccess()) {
+                logger().info("订单自动任务,收货成功,orderSn:{}", order.getOrderSn());
+            }else {
+                logger().error("订单自动任务,收货失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getErrorCode().toString() , result.getErrorParam());
+            }
+        }
+    }
 }

@@ -5,6 +5,8 @@ import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.sort.*;
+import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.SortGroupByParentParam;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
 /**
@@ -491,5 +494,22 @@ public class GoodsSortService extends ShopBaseService {
             return null;
         }
         return record.into(SortRecord.class);
+    }
+
+    public List<GoodsSortCacheInfo> getGoodsSortCacheInfoById(List<Integer> ids) {
+        Objects.requireNonNull(ids);
+        if( ids.isEmpty() ){
+            return null;
+        }
+        Condition condition;
+        if ( ids.size() == 1 ){
+            condition = SORT.SORT_ID.eq(ids.get(0));
+        }else{
+            condition = SORT.SORT_ID.in(ids);
+        }
+        return db().select(SORT.SORT_ID,SORT.SORT_NAME,SORT.LEVEL,SORT.PARENT_ID).
+            from(SORT).
+            where(condition).
+            fetchInto(GoodsSortCacheInfo.class);
     }
 }

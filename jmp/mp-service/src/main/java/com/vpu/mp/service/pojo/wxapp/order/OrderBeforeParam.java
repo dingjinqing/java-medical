@@ -98,7 +98,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         /** 规格价 */
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         private BigDecimal productPrice;
-		private Integer firstSpecialId;
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
+        private Integer firstSpecialId;
 		/**方便计算*/
 		@JsonIgnore
 		private GoodsSpecProductRecord productInfo;
