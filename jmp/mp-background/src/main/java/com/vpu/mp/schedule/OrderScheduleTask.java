@@ -33,7 +33,7 @@ public class OrderScheduleTask {
      * 每一分钟执行一次
      */
     @Scheduled(cron = "0 */1 * * * ?")
-    public void monitorSeckillGoods() {
+    public void monitorGroupBuyOrders() {
         Result<ShopRecord> result = saas.shop.getAll();
         result.forEach((r)->{
             String uuid = Util.randomId();
@@ -43,6 +43,18 @@ public class OrderScheduleTask {
                 saas.getShopApp(r.getShopId()).shopTaskService.groupBuyTaskService.monitorOrder();
                 jedisManager.releaseLock(key,uuid);
             }
+        });
+    }
+
+    /**
+     * 预售订单自动关闭
+     * 每一分钟执行一次
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void monitorPreSaleOrders() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r)->{
+                saas.getShopApp(r.getShopId()).shopTaskService.preSaleTaskService.monitorOrder();
         });
     }
 }

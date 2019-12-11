@@ -102,7 +102,7 @@ public class ReducePriceService extends ShopBaseService {
      *
      */
     public PageResult<ReducePricePageListQueryVo> getPageList(ReducePricePageListQueryParam param) {
-        SelectWhereStep<? extends Record> select = db().select(REDUCE_PRICE.ID,REDUCE_PRICE.NAME,REDUCE_PRICE.START_TIME,REDUCE_PRICE.END_TIME,REDUCE_PRICE.STATUS).
+        SelectWhereStep<? extends Record> select = db().select(REDUCE_PRICE.ID,REDUCE_PRICE.FIRST,REDUCE_PRICE.NAME,REDUCE_PRICE.START_TIME,REDUCE_PRICE.END_TIME,REDUCE_PRICE.STATUS).
             from(REDUCE_PRICE);
         if(param.getState() > 0) {
             /** 状态过滤*/

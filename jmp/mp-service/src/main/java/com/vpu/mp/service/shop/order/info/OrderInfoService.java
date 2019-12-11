@@ -33,7 +33,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.service.foundation.util.RandomUtil;
+import com.thoughtworks.xstream.core.util.Cloneables;
+import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
@@ -42,6 +43,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
@@ -143,16 +145,52 @@ public class OrderInfoService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult<String> getOrderSns(OrderPageListQueryParam param){
+	public PageResult<String> getOrderSns(OrderPageListQueryParam param, OrderQueryVo result){
 		SelectJoinStep<Record1<String>> mainOrder = db().select(TABLE.ORDER_SN).from(TABLE);
 		//存在子单但是显示不易子单为主所以查询需过滤子单
 		mainOrder.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
 		buildOptions(mainOrder, param);
-        mainOrder.orderBy(ORDER_INFO.ORDER_ID.desc());
+		//数量查询
+        calculateOrderCount(mainOrder, param , result);
+        mainOrder.orderBy(TABLE.ORDER_ID.desc());
 		//得到订单号
 		return getPageResult(mainOrder,param.getCurrentPage(),param.getPageRows(),String.class);
 	}
 
+    /**
+     * 计算部分订单数量
+     * @param select
+     * @param result
+     */
+	private void calculateOrderCount(SelectJoinStep<?> select, OrderPageListQueryParam param, OrderQueryVo result){
+        Map<Byte, Integer> count = new HashMap<>(OrderConstant.SEARCH_RETURN_COMPLETED);
+        for (int i = 1; i <= OrderConstant.SEARCH_RETURN_COMPLETED ; i++) {
+            count.put(Integer.valueOf(i).byteValue(), calculateOrderCount(param, Integer.valueOf(i).byteValue()));
+        }
+        result.setCount(count);
+    }
+
+    private Integer calculateOrderCount(OrderPageListQueryParam param, byte type){
+        SelectJoinStep<Record1<String>> select = db().select(TABLE.ORDER_SN).from(TABLE);
+        //存在子单但是显示不易子单为主所以查询需过滤子单
+        select.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
+        buildOptions(select, param);
+        switch(type){
+            case OrderConstant.SEARCH_WAIT_DELIVERY:
+                //待发货
+                return db().fetchCount(select.where(TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY).and(TABLE.DELIVER_TYPE.in(OrderConstant.DELIVER_TYPE_COURIER, OrderConstant.CITY_EXPRESS_SERVICE))));
+            case OrderConstant.SEARCH_WAIT_TAKEDELIVER:
+                //待核销
+                return db().fetchCount(select.where(TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY).and(TABLE.DELIVER_TYPE.in(OrderConstant.DELIVER_TYPE_SELF))));
+            case OrderConstant.SEARCH_RETURNING:
+                //退款中
+                return db().fetchCount(select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING, OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+            case OrderConstant.SEARCH_RETURN_COMPLETED:
+                //退完成
+                return db().fetchCount(select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_FINISH)));
+        }
+        return 0;
+    }
 	/**
 	  * 构造综合查询条件
 	  * @param select
@@ -160,7 +198,7 @@ public class OrderInfoService extends ShopBaseService {
 	  * @return
 	  */
 	 public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
-		//输入商品名称需要join order_goods表
+	     //输入商品名称需要join order_goods表
 		if(!StringUtils.isBlank(param.goodsName) || !StringUtils.isBlank(param.productSn)){
 			select.innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID));
 			if(!StringUtils.isBlank(param.goodsName)) {

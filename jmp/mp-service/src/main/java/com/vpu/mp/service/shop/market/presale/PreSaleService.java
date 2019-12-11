@@ -114,9 +114,9 @@ public class PreSaleService extends ShopBaseService {
                 TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS, TABLE.PRE_START_TIME_2, TABLE.PRE_END_TIME_2,
                 DSL.count(ORDER.ORDER_ID).as(ORDER_QUANTITY),
                 DSL.count(ORDER.ORDER_ID)
-                    .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_BARGIAN)).as(BARGAIN_PAID_QUANTITY),
+                    .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)).as(BARGAIN_PAID_QUANTITY),
                 DSL.count(ORDER.ORDER_ID)
-                    .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_BARGIAN)
+                    .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)
                         .and(ORDER.BK_ORDER_PAID.gt((byte) 0))).as(TAIL_PAID_QUANTITY),
                 DSL.countDistinct(ORDER.USER_ID).as(ORDER_USER_QUANTITY),
                 DSL.coalesce(DSL.sum(ORDER_GOODS.GOODS_NUMBER), 0).as(BOUGHT_QUANTITY)

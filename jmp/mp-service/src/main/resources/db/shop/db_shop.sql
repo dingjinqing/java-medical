@@ -751,6 +751,7 @@ create table `b2c_mrking_voucher`
     `score_number`         int(6)         not null default 0 comment '需要积分数',
     `card_id`              text comment '专属会员卡',
     `validity_type`        tinyint(1)   default '0' comment '优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效',
+    `recommend_type`       tinyint(1)              not null  default '1' comment '支付有礼跳转链接 1:全部商品可用 2：指定商品可用',
     `validity_hour`        mediumint(11) default 0  null comment '优惠券有效小时数',
     `validity_minute`       mediumint(11) default 0  null comment '优惠券有效分钟数',
     `expiration_date`      timestamp               comment 'validity_type为1是的过期时间',
@@ -2988,6 +2989,7 @@ create table `b2c_reduce_price`
     `update_time`       timestamp            default current_timestamp on update current_timestamp comment '最后修改时间',
     `share_config`      text comment '分享设置',
     `limit_flag`        tinyint(1)           default '0' comment '超限购买设置标记，1禁止超限购买，0超限全部恢复原价',
+    `first` tinyint(1) NOT NULL DEFAULT 1 COMMENT '优先级',
     primary key (`id`)
 );
 --  限时减价活动商品

@@ -1,5 +1,5 @@
 .act_content {
-  padding: 20rpx 30rpx;
+  padding: 20rpx 15rpx;
   display: flex;
   color: #fff;
   align-items: center;
@@ -28,6 +28,9 @@
 }
 .act_left > .marking_price {
   font-size: 24rpx;
+  text-decoration: line-through;
+  align-self: flex-end;
+  margin-bottom: 6rpx;
 }
 .countdown {
   font-size: 0;

@@ -57,8 +57,23 @@ public class ServiceCommentService extends ShopBaseService {
 			.on(COMMENT_SERVICE.TECHNICIAN_ID.eq(SERVICE_TECHNICIAN.ID));
 		SelectConditionStep<?> select = buildOptions(selectFrom,param);
 		select.orderBy(COMMENT_SERVICE.CREATE_TIME);
-		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ServiceCommentVo.class);
-	}
+        PageResult<ServiceCommentVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), ServiceCommentVo.class);
+        result.dataList.forEach((e) -> {
+            e.setServiceImg(imgDomain(e.getServiceImg()));
+            e.setCommImg(imgDomain(e.getCommImg()));
+        });
+        return result;
+    }
+
+    public String imgDomain(String imgs) {
+        List<String> imgList = Util.json2Object(imgs, new TypeReference<List<String>>() {
+        }, false);
+        if (CollectionUtils.isNotEmpty(imgList)) {
+            return domainConfig.imageUrl(imgList.get(INTEGER_ZERO));
+        } else {
+            return org.apache.commons.lang3.StringUtils.EMPTY;
+        }
+    }
 
 	/**
 	 * @param selectFrom

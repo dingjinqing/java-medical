@@ -911,8 +911,8 @@ export default {
       }
       list(obj).then(res => {
         console.log(res)
-        this.pageParams = res.content.page
-        this.orderList = res.content.dataList
+        this.pageParams = res.content.list.page
+        this.orderList = res.content.list.dataList
       }).catch(() => {
       })
     },

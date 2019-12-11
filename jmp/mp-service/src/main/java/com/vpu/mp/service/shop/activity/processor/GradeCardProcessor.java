@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GRADE_PRD;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
  * 等级价格
@@ -83,10 +84,10 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
             // 如果商品是会员专享的话则价格显示会员价的价格，但是提示信息显示会员专享，就不会执行下面if内语句（ps:filterParam处已经过滤掉了首单特惠）
             if (!capsule.getProcessedTypes().contains(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE)) {
                 GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
-                activity.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
+                activity.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
                 capsule.getGoodsActivities().add(activity);
             }
-            capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
+            capsule.getProcessedTypes().add(ACTIVITY_TYPE_MEMBER_GRADE);
         });
     }
 
@@ -94,7 +95,7 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
     @Override
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
         List<GoodsDetailMpBo.GradePrd> gradeCards = goodsDetailMpBo.getGradeCardPrice();
-        if (goodsDetailMpBo.getIsDisposedByEs()) {
+        if (!goodsDetailMpBo.getIsDisposedByEs()) {
             log.debug("会员价格查询");
             List<GradePrdRecord> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
             gradeCards = goodsGradeGradePrice.stream().map(x -> x.into(GoodsDetailMpBo.GradePrd.class)).collect(Collectors.toList());
@@ -130,7 +131,7 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
             userCartGradePrice.forEach(gradePrice -> {
                 if (goods.getPrdId().equals(gradePrice.getPrdId())) {
                     CartActivityInfo gradePriceInfo = new CartActivityInfo();
-                    gradePriceInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
+                    gradePriceInfo.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
                     gradePriceInfo.setMemberPriceType(gradePrice.getGradePrice());
                 }
             });
@@ -149,9 +150,9 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
                 if (goods.getProductId().equals(gradePrice.getPrdId())) {
                     log.info("规格：{},会员价 ：{}",gradePrice.getPrdId(), gradePrice.getGradePrice());
                     GoodsActivityInfo goodsActivityInfo = new GoodsActivityInfo();
-                    goodsActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE);
+                    goodsActivityInfo.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
                     goodsActivityInfo.setMemberPrice(gradePrice.getGradePrice());
-                    goods.getActivityInfo().add(goodsActivityInfo);
+                    goods.getActivityInfo().put(ACTIVITY_TYPE_MEMBER_GRADE,goodsActivityInfo);
                 }
             });
         });

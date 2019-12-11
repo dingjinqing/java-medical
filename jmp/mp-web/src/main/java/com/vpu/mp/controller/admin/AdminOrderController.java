@@ -48,8 +48,7 @@ public class AdminOrderController extends AdminBaseController {
 	 */
 	@PostMapping("/list")
 	public JsonResult orderList(@RequestBody OrderPageListQueryParam param) {
-		PageResult<? extends OrderListInfoVo> result = shop().readOrder.getPageList(param);
-		return success(result);
+		return success(shop().readOrder.getPageList(param));
 	}
 
 	/**

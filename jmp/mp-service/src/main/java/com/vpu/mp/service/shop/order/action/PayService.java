@@ -130,7 +130,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         try {
             String orderSn;
             BigDecimal money;
-            if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_BARGIAN) && order.getBkOrderPaid().equals(OrderConstant.BK_PAY_FRONT)) {
+            if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_DEPOSIT) && order.getBkOrderPaid().equals(OrderConstant.BK_PAY_FRONT)) {
                 orderSn = order.getOrderSn() + OrderConstant.BK_SN_SUFFIX;
                 money = order.getBkOrderMoney();
             }else {

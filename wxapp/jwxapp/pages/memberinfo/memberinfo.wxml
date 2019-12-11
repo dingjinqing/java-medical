@@ -105,7 +105,7 @@
       <view wx:if='{{if_rebate_group == 1}}'>
         <text class='main_txt'>分销员分组</text>
         <view class='main_ipt main_picker' style='background:url({{imageUrl}}image/wxapp/right_into.png) no-repeat right;background-size:16rpx;'>
-          <picker mode="selector" value="{{group_select}}"  bindchange="bindGroupChange" range='{{group_arr}}'>  
+          <picker mode="selector" value="{{group_select}}"  bindchange="bindGroupChange" range='{{group_arr}}'>
             <view class="picker">  
               {{group_arr[group_select]}}  
             </view>   

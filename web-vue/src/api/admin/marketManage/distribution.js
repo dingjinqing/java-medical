@@ -387,3 +387,12 @@ export function cancleDefaultGroup (data) {
     data: data
   })
 }
+
+// 分销员审核列表
+export function getCheckList (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/check/list',
+    method: 'post',
+    data: data
+  })
+}

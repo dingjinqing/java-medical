@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
+import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -24,6 +25,16 @@ public class WxAppCartBo {
     private List<Integer> productIdList;
     private List<Integer> goodsIdList;
     private Timestamp date;
+    private Integer storeId;
+
+    /**
+     * 商品活动信息
+     */
+    private OrderCartProductBo orderCartProductBo;
+
+
+
+
     /**
      * 商品列表
      */

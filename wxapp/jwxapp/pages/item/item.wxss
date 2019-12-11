@@ -17,3 +17,46 @@
 .pledge-content .pledge-item > text {
   vertical-align: middle;
 }
+.join-group > image{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 10rpx;
+}
+.join-group > .user-name{
+  flex: 1;
+}
+.join-group > .join{
+  border-radius: 8rpx;
+  color: #fff;
+  padding: 8rpx 20rpx;
+}
+.join-group > .join-item-info{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20rpx;
+}
+.join-group > .join-item-info > text:last-of-type{
+  color: #666;
+}
+.group{
+  background-color: #fff;
+  color: #666;
+}
+.group > view{
+  display: flex;
+  align-items: center;
+  word-break: break-all;
+}
+.group > view > text{
+  flex: 1;
+}
+.group > view > view{
+  width: 36rpx;
+  height: 36rpx;
+  border: 1rpx solid #666;
+  text-align: center;
+  border-radius: 50%;
+  margin-right: 10rpx;
+}
