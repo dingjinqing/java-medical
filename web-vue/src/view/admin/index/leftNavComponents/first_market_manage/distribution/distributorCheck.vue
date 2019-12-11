@@ -80,7 +80,10 @@
               style="text-align: left;"
             >
               <div class="header">ID：{{ item.userId }}</div>
-              <div class="header">昵称：<span class="active">{{ item.username }}</span></div>
+              <div class="header">昵称：<span
+                  class="active"
+                  @click="detailHandler(item.userId)"
+                >{{ item.username }}</span></div>
               <div
                 class="header"
                 v-if="item.mobile"
@@ -120,11 +123,11 @@
               rowspan="5"
               class="middle"
             >
-              <!-- <p>{{ item.group }}</p> -->
-              <!-- <p
+              <p>{{ item.group }}</p>
+              <p
                 class="active"
                 @click="setGroupHandler(item.userId, item.group)"
-              >设置</p> -->
+              >设置</p>
             </td>
             <td
               rowspan="5"
@@ -185,12 +188,13 @@
           </tr>
         </table>
 
-        <!-- 分页 -->
-        <Pagination
-          :page-params.sync="pageParams"
-          @pagination="initDataList"
-        />
       </div>
+
+      <!-- 分页 -->
+      <Pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
 
       <!-- 分销员分组弹窗 -->
       <el-dialog
@@ -231,7 +235,7 @@
         </span>
       </el-dialog>
 
-      <!-- 不通过弹窗 -->
+      <!-- 审核不通过弹窗 -->
       <el-dialog
         title="审核不通过原因"
         :visible.sync="failDialogVisible"
@@ -297,67 +301,69 @@ export default {
       },
       requestParams: {},
       // 表格数据
-      tableData: [{
-        id: 1,
-        userId: '111111', // 用户id
-        status: 0,
-        username: '待审核', // 昵称
-        mobile: '17823456789', // 手机号
-        createTime: '2019-01-01 00:00:00', // 申请时间
-        // 邀请码
-        realName: '', // 真实姓名
-        // 身份证号
-        sex: '', // 性别
-        birthdayYear: '', // 出生年
-        birthdayMonth: '', // 出生月
-        birthdayDay: '', // 出生日
-        maritalStatus: '', // 婚姻状况
-        educationName: '', // 受教育程度
-        industryName: '', // 行业
-        address: '' // 所在地址
-        // 备注
-        // 图片
-      }, {
-        id: 2,
-        userId: '222222', // 用户id
-        status: 1,
-        username: '审核通过', // 昵称
-        mobile: '', // 手机号
-        createTime: '', // 申请时间
-        // 邀请码
-        realName: '', // 真实姓名
-        // 身份证号
-        sex: '', // 性别
-        birthdayYear: '', // 出生年
-        birthdayMonth: '', // 出生月
-        birthdayDay: '', // 出生日
-        maritalStatus: '', // 婚姻状况
-        educationName: '', // 受教育程度
-        industryName: '', // 行业
-        address: '' // 所在地址
-        // 备注
-        // 图片
-      }, {
-        id: 3,
-        userId: '333333', // 用户id
-        status: 2,
-        username: '未通过', // 昵称
-        mobile: '', // 手机号
-        createTime: '', // 申请时间
-        // 邀请码
-        realName: '', // 真实姓名
-        // 身份证号
-        sex: '', // 性别
-        birthdayYear: '', // 出生年
-        birthdayMonth: '', // 出生月
-        birthdayDay: '', // 出生日
-        maritalStatus: '', // 婚姻状况
-        educationName: '', // 受教育程度
-        industryName: '', // 行业
-        address: '' // 所在地址
-        // 备注
-        // 图片
-      }],
+      tableData: [
+        // {
+        //   id: 1,
+        //   userId: '111111', // 用户id
+        //   status: 0,
+        //   username: '待审核', // 昵称
+        //   mobile: '17823456789', // 手机号
+        //   createTime: '2019-01-01 00:00:00', // 申请时间
+        //   // 邀请码
+        //   realName: '', // 真实姓名
+        //   // 身份证号
+        //   sex: '', // 性别
+        //   birthdayYear: '', // 出生年
+        //   birthdayMonth: '', // 出生月
+        //   birthdayDay: '', // 出生日
+        //   maritalStatus: '', // 婚姻状况
+        //   educationName: '', // 受教育程度
+        //   industryName: '', // 行业
+        //   address: '' // 所在地址
+        //   // 备注
+        //   // 图片
+        // }, {
+        //   id: 2,
+        //   userId: '222222', // 用户id
+        //   status: 1,
+        //   username: '审核通过', // 昵称
+        //   mobile: '', // 手机号
+        //   createTime: '', // 申请时间
+        //   // 邀请码
+        //   realName: '', // 真实姓名
+        //   // 身份证号
+        //   sex: '', // 性别
+        //   birthdayYear: '', // 出生年
+        //   birthdayMonth: '', // 出生月
+        //   birthdayDay: '', // 出生日
+        //   maritalStatus: '', // 婚姻状况
+        //   educationName: '', // 受教育程度
+        //   industryName: '', // 行业
+        //   address: '' // 所在地址
+        //   // 备注
+        //   // 图片
+        // }, {
+        //   id: 3,
+        //   userId: '333333', // 用户id
+        //   status: 2,
+        //   username: '未通过', // 昵称
+        //   mobile: '', // 手机号
+        //   createTime: '', // 申请时间
+        //   // 邀请码
+        //   realName: '', // 真实姓名
+        //   // 身份证号
+        //   sex: '', // 性别
+        //   birthdayYear: '', // 出生年
+        //   birthdayMonth: '', // 出生月
+        //   birthdayDay: '', // 出生日
+        //   maritalStatus: '', // 婚姻状况
+        //   educationName: '', // 受教育程度
+        //   industryName: '', // 行业
+        //   address: '' // 所在地址
+        //   // 备注
+        //   // 图片
+        // }
+      ],
 
       // 分销员分组弹窗
       dialogVisible: false,
@@ -487,6 +493,11 @@ export default {
       this.failDialogVisible = false
       this.textarea = ''
       // this.initDataList()
+    },
+
+    // 跳转会员列表编辑
+    detailHandler (id) {
+
     }
   }
 
