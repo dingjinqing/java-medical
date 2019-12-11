@@ -49,7 +49,7 @@ public class ArticleService extends MainBaseService {
 				ARTICLE_CATEGORY.CATEGORY_NAME).from(ARTICLE)
 				.leftJoin(ARTICLE_CATEGORY).on(ARTICLE.CATEGORY_ID.eq(ARTICLE_CATEGORY.CATEGORY_ID));
 		select = this.buildOptions(select, param);
-		return getPageResult(select,param.getPage().getCurrentPage(),param.getPage().getPageRows(),ArticleVo.class);
+		return getPageResult(select,param.getCurrentPage(),param.getPageRows(),ArticleVo.class);
 		
 	}
 
