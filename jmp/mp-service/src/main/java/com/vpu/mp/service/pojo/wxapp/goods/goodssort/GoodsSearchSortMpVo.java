@@ -9,14 +9,55 @@ import java.util.List;
  * @author 李晓冰
  * @date 2019年12月09日
  */
-@Data
 public class GoodsSearchSortMpVo {
     /**商家分类id*/
     private Integer sortId;
     /**商家分类名称*/
     private String sortName;
     /**关联商品数量*/
-    private Integer goodsNum;
+    private Long goodsNum;
 
     private List<? extends GoodsSearchSortMpVo> children;
+
+    public GoodsSearchSortMpVo(){}
+    public GoodsSearchSortMpVo(Integer sortId,String sortName){
+        this.sortId = sortId;
+        this.sortName = sortName;
+    }
+    public GoodsSearchSortMpVo(Integer sortId,String sortName,Long goodsNum){
+        this.sortId = sortId;
+        this.sortName = sortName;
+        this.goodsNum = goodsNum;
+    }
+    public Integer getSortId() {
+        return sortId;
+    }
+
+    public void setSortId(Integer sortId) {
+        this.sortId = sortId;
+    }
+
+    public String getSortName() {
+        return sortName;
+    }
+
+    public void setSortName(String sortName) {
+        this.sortName = sortName;
+    }
+
+    public Long getGoodsNum() {
+        return goodsNum;
+    }
+
+    public void setGoodsNum(Long goodsNum) {
+        this.goodsNum = goodsNum;
+    }
+
+    public List<? extends GoodsSearchSortMpVo> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<? extends GoodsSearchSortMpVo> children) {
+        this.children = children;
+    }
 }

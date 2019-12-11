@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -258,6 +259,8 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public GroupBuyService groupBuy;
+	@Autowired
+	public GroupBuyListService groupBuyList;
 	/**
 	 * 会员
 	 */
@@ -504,7 +507,7 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public MpCouponService mpCoupon;
-	
+
 	/**
 	 * 小程序订阅消息
 	 */

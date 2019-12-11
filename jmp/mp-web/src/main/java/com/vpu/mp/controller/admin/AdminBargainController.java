@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,6 +66,9 @@ public class AdminBargainController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/add")
 	public JsonResult addBargain(@RequestBody @Valid BargainAddParam param) {
+        if(shop().bargain.isOnGoingBargain(param.getGoodsId(),param.getStartTime(),param.getEndTime())){
+            return fail(JsonResultCode.BARGAIN_CONFLICTING_ACT_TIME);
+        }
 		shop().bargain.addBargain(param);
         return success();
 	}

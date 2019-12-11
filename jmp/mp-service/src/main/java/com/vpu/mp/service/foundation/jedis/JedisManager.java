@@ -177,7 +177,11 @@ public class JedisManager {
 			return result;
 		}
 	}
-
+    public List<String> batchGetHash(String key,String[] field){
+        try(Jedis jedis = getJedisPool().getResource()){
+            return jedis.hmget(key,field);
+        }
+    }
 	/**
 	 *  从redis获取数据(批量)
 	 * @param key 键值
@@ -221,7 +225,13 @@ public class JedisManager {
 			jedis.expire(key,timeOut);
 		}
 	}
-	public void delFoHash(String key, String... field){
+    public void addToHash(String key,String fieldKey,String filed,Integer timeOut){
+        try (Jedis jedis = getJedisPool().getResource()){
+            jedis.hset(key,fieldKey,filed);
+            jedis.expire(key,timeOut);
+        }
+    }
+	public void delHash(String key, String... field){
 		try (Jedis jedis = getJedisPool().getResource()){
 			jedis.hdel(key,field);
 		}

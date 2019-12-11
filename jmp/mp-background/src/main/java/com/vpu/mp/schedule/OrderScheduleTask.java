@@ -57,4 +57,40 @@ public class OrderScheduleTask {
                 saas.getShopApp(r.getShopId()).shopTaskService.preSaleTaskService.monitorOrder();
         });
     }
+
+    /**
+     * 订单关闭
+     * 每分钟执行一次
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void close(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.close();
+        });
+    }
+
+    /**
+     * 收货
+     * 每天00：05执行
+     */
+    @Scheduled(cron = "0 5 0 * * ?")
+    public void receive(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.receive();
+        });
+    }
+
+    /**
+     * 完成订单
+     * 每十分钟一次
+     */
+    @Scheduled(cron = "0 */10 * * * ?")
+    public void finish(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.finish();
+        });
+    }
 }

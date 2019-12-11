@@ -31,15 +31,40 @@ public class SystemArticleController extends SystemBaseController{
 		PageResult<ArticleVo> pageList = saas.article.getPageList(param);
 		return success(pageList);
 	}
+	/**
+	 * 文章分类，分页查询
+	 * @param param
+	 * @return
+	 */
 	@PostMapping("/category/list")
 	public JsonResult getCategory(@RequestBody ArtCategoryListQuertParam param) {
 		PageResult<ArticleCategoryVo> pageList = saas.articleCategory.getPageList(param);
 		return success(pageList);
 	}
+	
+	/**
+	 * 获取分类下对应文章数量
+	 * @param arArticleCategory
+	 * @return
+	 */
+	@PostMapping("/category/listNum")
+	public JsonResult getNumCategory(@RequestBody ArticleCategoryParam arArticleCategory) {
+		return success(saas.articleCategory.findNumByCategory(arArticleCategory));
+	}
+	/**
+	 * 所有的文章分类
+	 * @return
+	 */
 	@PostMapping("/category/allList")
 	public JsonResult getCategory() {
 		return success(saas.articleCategory.getCategoryList());
 	}
+	
+	/**
+	 * 删除文章分类
+	 * @param input
+	 * @return
+	 */
 	@PostMapping("/category/delete")
     public JsonResult deleteCategory(@RequestBody ArticleCategoryParam input) {
 		if(null == input.getCategoryId()) {
@@ -48,6 +73,11 @@ public class SystemArticleController extends SystemBaseController{
 		return saas.articleCategory.deleteArticleCategory(input)?success():fail();
 	}
 
+	/**
+	 * 添加文章分类
+	 * @param input
+	 * @return
+	 */
 	@PostMapping("/category/add")
     public JsonResult insertCategory(@RequestBody @Valid ArticleCategoryParam input) {
 		if(saas.articleCategory.isExist(input.getCategoryName())) {

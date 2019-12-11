@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "拼团详情",
+  "usingComponents": {
+    "v-poster": "/components/item/popup/poster/index"
+  }
+}

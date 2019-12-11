@@ -15,9 +15,19 @@
         <text class="title">商品分类</text>
       </view>
       <view class="item-content">
-        <view class="item">无商品1级</view>
-        <view class="item">男鞋</view>
-        <view class="item more" bindtap="showSort">更多...</view>
+        <!-- 一级分类三个及以下 -->
+        <block wx:if="{{sorts.length <= 2}}">
+          <block wx:for="{{sort}}" wx:for-item="sortItem" wx:key="sortId">
+            <view class="item" data-sort-id="{{sortItem.sortId}}" >{{sortItem.sortName}}</view>
+          </block>
+        </block>
+        <!-- 三个以上 -->
+        <block wx:else>
+          <block wx:for="{{sort}}" wx:for-item="sortItem" wx:for-item="sortIndex" wx:key="sortId">
+            <view class="item" wx:if="{{sortIndex < 2}}" data-sort-id="{{sortItem.sortId}}" >{{sortItem.sortName}}</view>
+          </block>
+          <view class="item more" bindtap="showSort">更多...</view>
+        </block>
       </view>
     </view>
     <view class="filter-item">
@@ -25,11 +35,16 @@
         <text class="title">品牌</text>
       </view>
       <view class="item-content">
-        <view class="item brand">阿瑟东撒的</view>
-        <view class="item brand">阿瑟东撒的</view>
-        <view class="item brand">阿瑟东撒的</view>
-        <view class="item brand">阿瑟东撒的</view>
-        <view class="item brand">阿瑟东撒的</view>
+        <block wx:if="{{formatGoodsBrands.length <= 5}}">
+          <block wx:for="{{formatGoodsBrands}}" wx:for-item="brandItem" wx:key="id">
+            <view class="item brand" >{{brandItem.brandName}}</view>
+          </block>
+        </block>
+        <block wx:else>
+          <block wx:for="{{formatGoodsBrands}}" wx:for-item="brandItem" wx:for-index="brandIndex" wx:key="id">
+            <view class="item brand"  wx:if="{{brandIndex < 5}}">{{brandItem.brandName}}</view>
+          </block>
+        </block>
         <view class="item brand more" bindtap="showBrand">更多...</view>
       </view>
     </view>
@@ -51,11 +66,9 @@
         <text class="title">商品标签</text>
       </view>
       <view class="item-content">
-        <view class="item">限时降价</view>
-        <view class="item">今日特价</view>
-        <view class="item">特价商品</view>
-        <view class="item">人气推荐</view>
-        <view class="item">新品首发</view>
+        <block wx:for="{{goodsLabels}}" wx:for-item="labelItem" wx:key="labelId">
+          <view class="item" >{{labelItem.labelName}}</view>
+        </block>
       </view>
     </view>
     <view class="filter-footer">
