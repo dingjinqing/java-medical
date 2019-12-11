@@ -1,5 +1,12 @@
 package com.vpu.mp.controller.system;
 
+import javax.validation.Valid;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -9,12 +16,7 @@ import com.vpu.mp.service.pojo.saas.article.ArticleVo;
 import com.vpu.mp.service.pojo.saas.article.category.ArtCategoryListQuertParam;
 import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryParam;
 import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryVo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
+import com.vpu.mp.service.pojo.saas.article.category.ArticleStatusParam;
 
 /**
  * 文章与其分类控制器
@@ -90,5 +92,19 @@ public class SystemArticleController extends SystemBaseController{
 			return fail(JsonResultCode.CODE_ARTICLE_ARTICLEID_ISNULL);
 		}
 		return success(saas.article.get(article.getArticleId()));
+	}
+    
+    /**
+     * 状态变更
+     * @param param
+     * @return
+     */
+    @PostMapping("/updateStatus")
+    public JsonResult updateStatus(@RequestBody ArticleStatusParam param) {
+		if(null == param.getArticleId()) {
+			return fail(JsonResultCode.CODE_ARTICLE_ARTICLEID_ISNULL);
+		}
+		boolean updateStatus = saas.article.updateStatus(param);
+		return updateStatus?success():fail();
 	}
 }
