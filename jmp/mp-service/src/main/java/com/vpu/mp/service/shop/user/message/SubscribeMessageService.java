@@ -274,57 +274,61 @@ public class SubscribeMessageService extends ShopBaseService {
 		List<TemplateVo> successs = param.getAccept();
 		List<TemplateVo> rejects = param.getReject();
 		List<TemplateVo> bans = param.getBan();
-		
-		for(TemplateVo success:successs) {
-			SubscribeMessageConfig successConfig = SubscribeMessageConfig.getByTempleName(success.getId(), success.getTempleName());
-			SubscribeMessageRecord record = db().selectFrom(SUBSCRIBE_MESSAGE)
-					.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
-					.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(success.getTemplateId())
-							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(successConfig.getTid()))))
-					.fetchAny();
-			if(record==null) {
-				SubscribeMessageRecord insertRecord=db().newRecord(SUBSCRIBE_MESSAGE);
-				insertRecord.setUserId(userId);
-				UserRecord user = userService.getUserByUserId(userId);
-				insertRecord.setWxOpenid(user.getWxOpenid());
-				insertRecord.setTemplateId(success.getTemplateId());
-				insertRecord.setTemplateNo(String.valueOf(success.getId()));
-				insertRecord.setCanUseNum(1);
-				int insert = insertRecord.insert();
-				logger().info("成功的templateId："+success.getTemplateId()+"插入结果"+insert);		
-			}else {
-				record.setStatus((byte)1);
-				record.setCanUseNum(record.getCanUseNum()==null?1:record.getCanUseNum()+1);
-				int update = record.update();
-				logger().info("成功的templateId："+success.getTemplateId()+"更新结果"+update);				
-			}
+		if(successs!=null) {
+			for(TemplateVo success:successs) {
+				SubscribeMessageConfig successConfig = SubscribeMessageConfig.getByTempleName(success.getId(), success.getTempleName());
+				SubscribeMessageRecord record = db().selectFrom(SUBSCRIBE_MESSAGE)
+						.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
+						.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(success.getTemplateId())
+								.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(successConfig.getTid()))))
+						.fetchAny();
+				if(record==null) {
+					SubscribeMessageRecord insertRecord=db().newRecord(SUBSCRIBE_MESSAGE);
+					insertRecord.setUserId(userId);
+					UserRecord user = userService.getUserByUserId(userId);
+					insertRecord.setWxOpenid(user.getWxOpenid());
+					insertRecord.setTemplateId(success.getTemplateId());
+					insertRecord.setTemplateNo(String.valueOf(success.getId()));
+					insertRecord.setCanUseNum(1);
+					int insert = insertRecord.insert();
+					logger().info("成功的templateId："+success.getTemplateId()+"插入结果"+insert);		
+				}else {
+					record.setStatus((byte)1);
+					record.setCanUseNum(record.getCanUseNum()==null?1:record.getCanUseNum()+1);
+					int update = record.update();
+					logger().info("成功的templateId："+success.getTemplateId()+"更新结果"+update);				
+				}
+			}			
 		}
-		for (TemplateVo reject:rejects) {
-			SubscribeMessageConfig rejectConfig = SubscribeMessageConfig.getByTempleName(reject.getId(), reject.getTempleName());
-			SubscribeMessageRecord rejrecord = db().selectFrom(SUBSCRIBE_MESSAGE)
-					.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
-					.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(reject.getTemplateId())
-							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(rejectConfig.getTid()))))
-					.fetchAny();
-			if(rejrecord!=null) {
-				rejrecord.setStatus((byte)1);
-				int update = rejrecord.update();
-				logger().info("拒绝的templateId："+reject.getTemplateId()+"更新结果"+update);	
-			}
+		if(rejects!=null) {
+			for (TemplateVo reject:rejects) {
+				SubscribeMessageConfig rejectConfig = SubscribeMessageConfig.getByTempleName(reject.getId(), reject.getTempleName());
+				SubscribeMessageRecord rejrecord = db().selectFrom(SUBSCRIBE_MESSAGE)
+						.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
+						.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(reject.getTemplateId())
+								.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(rejectConfig.getTid()))))
+						.fetchAny();
+				if(rejrecord!=null) {
+					rejrecord.setStatus((byte)1);
+					int update = rejrecord.update();
+					logger().info("拒绝的templateId："+reject.getTemplateId()+"更新结果"+update);	
+				}
+			}			
 		}
-		
-		for (TemplateVo ban:bans) {
-			SubscribeMessageConfig banConfig = SubscribeMessageConfig.getByTempleName(ban.getId(), ban.getTempleName());
-			SubscribeMessageRecord rejrecord = db().selectFrom(SUBSCRIBE_MESSAGE)
-					.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
-					.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(ban.getTemplateId())
-							.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(banConfig.getTid()))))
-					.fetchAny();
-			if(rejrecord!=null) {
-				rejrecord.setStatus((byte)2);
-				int update = rejrecord.update();
-				logger().info("已被后台封禁的templateId："+ban.getTemplateId()+"更新结果"+update);	
-			}
+		if(bans!=null) {
+			for (TemplateVo ban:bans) {
+				SubscribeMessageConfig banConfig = SubscribeMessageConfig.getByTempleName(ban.getId(), ban.getTempleName());
+				SubscribeMessageRecord rejrecord = db().selectFrom(SUBSCRIBE_MESSAGE)
+						.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId))
+						.and(SUBSCRIBE_MESSAGE.TEMPLATE_ID.eq(ban.getTemplateId())
+								.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(banConfig.getTid()))))
+						.fetchAny();
+				if(rejrecord!=null) {
+					rejrecord.setStatus((byte)2);
+					int update = rejrecord.update();
+					logger().info("已被后台封禁的templateId："+ban.getTemplateId()+"更新结果"+update);	
+				}
+			}			
 		}
 	}
 	/**
