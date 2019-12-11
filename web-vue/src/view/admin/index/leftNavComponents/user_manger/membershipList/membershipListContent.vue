@@ -1029,7 +1029,6 @@ export default {
     ...mapActions(['ToTurnMemberShipDetail', 'toHandleSetUpMemDialog', 'toHandleSelectingUsersDialog']),
     // 初始化会员列表数据
     defaultTabelListData () {
-      debugger
       if (this.labelText) {
         this.labelVal = this.labelText
       }
