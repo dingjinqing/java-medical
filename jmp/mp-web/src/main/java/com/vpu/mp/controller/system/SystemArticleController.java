@@ -34,6 +34,10 @@ public class SystemArticleController extends SystemBaseController{
 		PageResult<ArticleCategoryVo> pageList = saas.articleCategory.getPageList(param);
 		return success(pageList);
 	}
+	@PostMapping("/category/allList")
+	public JsonResult getCategory() {
+		return success(saas.articleCategory.getCategoryList());
+	}
 	@PostMapping("/category/delete")
     public JsonResult deleteCategory(@RequestBody ArticleCategoryParam input) {
 		if(null == input.getCategoryId()) {
