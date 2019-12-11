@@ -107,7 +107,7 @@ global.wxPage({
   },
   // 展示二维码
   showQrCode() {
-    let qrCode = this.data.cardInfo.qrCode
+    let qrCode = [this.data.cardInfo.qrCode]
     this.setData({
       qrCode,
       showQrcode: true

@@ -15,5 +15,5 @@ public class VisitTrendVo {
 	/** 结束日期 */
 	private String endTime;
 	/** 每日数据 */
-	private List<VisitTrendDaily> daliyData;
+	private List<VisitTrendDaily> dailyData;
 }
