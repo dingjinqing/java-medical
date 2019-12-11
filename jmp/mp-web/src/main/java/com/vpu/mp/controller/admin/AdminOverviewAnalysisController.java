@@ -2,12 +2,9 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.overview.analysis.*;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,55 +32,27 @@ public class AdminOverviewAnalysisController extends AdminBaseController{
 	
 	/**
 	 *折线图综合查询
-	 *@Param param
-	 *@return
+	 *@param param 种类与日期
+	 *@return 折线图数据
 	 */
 	@PostMapping("/select")
-	public JsonResult getSelect(@RequestBody VisitTrendParam param) {
+	public JsonResult getSelect(@RequestBody @Validated VisitTrendParam param) {
 
 		VisitTrendVo visitTrendVo = shop().overview.overviewAnalysisService.getVisitTrend(param);
 		
 		return success(visitTrendVo);
 	}
-	
-	public String getDate(String days) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");                
-	    Calendar c = Calendar.getInstance();           
-	    c.add(Calendar.DATE, - Integer.valueOf(days));           
-	    Date time = c.getTime();         
-	    String preDay = sdf.format(time);
-	    System.out.println("preDay"+preDay);
-	    return preDay;
-	}
-	
+
 	/**
 	 *页面访问数量查询
-	 *@Param param
-	 *@return
+	 *@param param 种类与日期
+	 *@return 统计数据
 	 */
 	@PostMapping("/pagelist")
-	public JsonResult getPageInfo(@RequestBody OverviewAnalysisPageParam param) {
-		String startTime="7";
-		String endTime;
-		//**  获得今日时间（字符串格式精确到日）*/
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-		Date now = new Date();
-		String dateNowStr = simpleDateFormat.format(now);
+	public JsonResult getPageInfo(@RequestBody @Validated PageStatisticsParam param) {
+
+		PageStatisticsVo pageStatisticsVo = shop().overview.overviewAnalysisService.getPageInfo(param);
 		
-		String tempStartTime = param.getStartTime();
-		startTime = tempStartTime!=null ? tempStartTime: getDate(startTime);
-		startTime = "7".equals(tempStartTime) ? getDate(startTime) : startTime;
-		startTime = "30".equals(tempStartTime) ? getDate(startTime) : startTime;
-		
-		param.setStartTime(startTime);
-		System.out.println(startTime);
-		
-		String tempEndTime = param.getEndTime();
-		endTime = StringUtils.isEmpty(tempEndTime) ? dateNowStr : tempEndTime;
-		param.setEndTime(endTime);		
-		
-		OverviewAnalysisPageVo overviewAnalysisPageVos = shop().overview.overviewAnalysisService.getPageInfo(param);
-		
-		return i18nSuccess(overviewAnalysisPageVos);
+		return i18nSuccess(pageStatisticsVo);
 	}
 }
