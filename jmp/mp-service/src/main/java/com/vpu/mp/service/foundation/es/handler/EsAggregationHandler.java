@@ -1,9 +1,14 @@
 package com.vpu.mp.service.foundation.es.handler;
 
+import com.vpu.mp.service.foundation.es.EsAggregationName;
+import com.vpu.mp.service.pojo.shop.goods.es.EsLabelName;
+import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
 import com.vpu.mp.service.pojo.shop.goods.es.Fact;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.TopHitsAggregationBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -29,5 +34,52 @@ public class EsAggregationHandler {
             //这里查询数量暂时设置为50，有需要再扩展
             .size(50))
             .collect(Collectors.toList());
+    }
+
+    /**
+     * assembly LabelAggregationBuilder by goodsId
+     *
+     * @return {@link AggregationBuilder}
+     */
+    public AggregationBuilder assemblyLabelAggregationBuilderByGoodsId(){
+        AggregationBuilder aggregationBuilder = AggregationBuilders.terms(EsLabelName.GOODS_ID)
+            .field(EsLabelName.GOODS_ID);
+        TopHitsAggregationBuilder topHitsAggregationBuilder = AggregationBuilders
+            .topHits(EsAggregationName.LABEL_NAME)
+            .fetchSource(EsAggregationName.LABEL_AGGREGATION_SOURCE,null)
+            .sort(EsLabelName.TYPE, SortOrder.ASC)
+            .sort(EsLabelName.LEVEL,SortOrder.ASC)
+            .sort(EsLabelName.CREATE_TIME,SortOrder.DESC);
+        return aggregationBuilder.subAggregation(topHitsAggregationBuilder);
+    }
+    /**
+     * assembly LabelAggregationBuilder for count
+     *
+     * @return {@link AggregationBuilder}
+     */
+    public AggregationBuilder assemblyLabelAggregationBuilderByCount(){
+        AggregationBuilder aggregationBuilder = AggregationBuilders.terms(EsLabelName.ID)
+            .field(EsLabelName.ID);
+        TopHitsAggregationBuilder topHitsAggregationBuilder = AggregationBuilders
+            .topHits(EsAggregationName.LABEL_NAME)
+            .fetchSource(EsAggregationName.LABEL_AGGREGATION_SOURCE,null)
+            .sort(EsLabelName.LEVEL,SortOrder.ASC)
+            .sort(EsLabelName.CREATE_TIME,SortOrder.DESC)
+            //去重
+            .size(1);
+        return aggregationBuilder.subAggregation(topHitsAggregationBuilder);
+    }
+    /**
+     * assembly SortAggregationBuilder by sortId
+     *
+     * @return {@link AggregationBuilder}
+     */
+    public AggregationBuilder assemblySortAggregationBuilder(){
+        AggregationBuilder aggregationBuilder = AggregationBuilders.terms(EsSearchName.SORT_ID)
+            .field(EsSearchName.SORT_ID);
+        TopHitsAggregationBuilder topHitsAggregationBuilder = AggregationBuilders
+            .topHits(EsAggregationName.SORT_NAME)
+            .fetchSource(EsAggregationName.SORT_AGGREGATION_SOURCE,null);
+        return aggregationBuilder.subAggregation(topHitsAggregationBuilder);
     }
 }

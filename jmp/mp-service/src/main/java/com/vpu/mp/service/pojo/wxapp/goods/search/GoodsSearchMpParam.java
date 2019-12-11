@@ -38,7 +38,7 @@ public class GoodsSearchMpParam {
     private List<Integer> labelIds;
 
     /**是否展示售罄商品
-     * {@link com.vpu.mp.service.pojo.shop.goods.GoodsConstant#SOLD_OUT_GOODS_SHOW 展示售罄
+     * {@link com.vpu.mp.service.pojo.shop.goods.GoodsConstant#SOLD_OUT_GOODS_SHOW} 展示售罄
      */
     private Byte soldOutGoods;
 

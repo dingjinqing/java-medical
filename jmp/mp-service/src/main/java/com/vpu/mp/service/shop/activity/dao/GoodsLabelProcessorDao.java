@@ -54,7 +54,7 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
         Map<Byte,Map<Integer, GoodsLabelMpVo>> returnMap = new HashMap<>(4);
 
         goodsLabelsMap.forEach((key,value)->{
-            Map<Integer, GoodsLabelMpVo> innerMap = new HashMap<>();
+            Map<Integer, GoodsLabelMpVo> innerMap = new HashMap<>(value.size());
             returnMap.put(key,innerMap);
             value.forEach((innerKey,innerValue)->{
                 GoodsLabelMpVo labelInfo = new GoodsLabelMpVo();

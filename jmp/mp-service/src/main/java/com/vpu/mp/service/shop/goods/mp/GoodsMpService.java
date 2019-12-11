@@ -85,7 +85,6 @@ public class GoodsMpService extends ShopBaseService {
             param.setSoldOutGoodsShow(false);
         }
 
-
         try {
             // 从es获取
             goodsListCapsules = getPageIndexGoodsListFromEs(param);
@@ -119,7 +118,7 @@ public class GoodsMpService extends ShopBaseService {
      */
     private List<GoodsListMpBo> getPageIndexGoodsListFromDb(GoodsListMpParam param) {
         // 手动推荐展示但是未指定商品数据
-        boolean specifiedNoContent = (!GoodsConstant.AUTO_RECOMMEND.equals(param.getRecommendType())) && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
+        boolean specifiedNoContent = (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) && (param.getGoodsItems() == null || param.getGoodsItems().size() == 0);
         if (specifiedNoContent) {
             return new ArrayList<>();
         }
@@ -129,7 +128,6 @@ public class GoodsMpService extends ShopBaseService {
         if (GoodsConstant.POINT_RECOMMEND.equals(param.getRecommendType())) {
             goodsListCapsules = findActivityGoodsListCapsulesDao(condition, null, null, null, param.getGoodsItems());
         } else {
-
             List<SortField<?>> orderFields = new ArrayList<>();
             if (GoodsListMpParam.SALE_NUM_SORT.equals(param.getSortType())) {
                 orderFields.add(GOODS.GOODS_SALE_NUM.desc());
@@ -154,8 +152,8 @@ public class GoodsMpService extends ShopBaseService {
         // 获取在售商品
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
-        // 是否展示售罄
-        if (!param.getSoldOutGoodsShow()) {
+        // 展示售罄商品
+        if (param.getSoldOutGoodsShow()) {
             condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
         // 指定商品列表
@@ -351,6 +349,7 @@ public class GoodsMpService extends ShopBaseService {
                 GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
                 GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID)
                 .from(GOODS).where(condition).orderBy(orderFields);
+
         select = record12;
 
         // 拼接分页
@@ -363,6 +362,7 @@ public class GoodsMpService extends ShopBaseService {
 
         if (goodsIds != null) {
             Map<Integer, GoodsListMpBo> map = select.fetchMap(GOODS.GOODS_ID, GoodsListMpBo.class);
+            // 按照顺序排列商品，remove 和 addAll操作：针对根据条件查询后商品数量大于goodsIds数量的情况
             returnList = goodsIds.stream().filter(id -> map.get(id) != null).map(map::remove).collect(Collectors.toList());
             returnList.addAll(map.values());
         } else {
