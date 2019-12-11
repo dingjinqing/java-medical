@@ -497,7 +497,7 @@
                            currency:'-' + currencyPool[order.currency][lang][1],
                            reduceMoney:(order.memberCardReduce / order.goodsAmount).toFixed(2),
                            goodsAmount:order.goodsAmount}) :
-                       ('-' + currencyPool[order.currency][lang][1] + $t('order.memberCard')+'：'+order.memberCardReduce)
+                       ($t('order.memberCard')+'：'+ '-' + currencyPool[order.currency][lang][1] + order.memberCardReduce)
                     }}
                   </span>
                 </p>
