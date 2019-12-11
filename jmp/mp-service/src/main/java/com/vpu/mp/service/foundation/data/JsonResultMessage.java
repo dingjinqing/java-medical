@@ -208,13 +208,19 @@ public class JsonResultMessage {
 	 */
 	public static final String GROUP_BUY_ADD_ACTIVITY_STOP_STATUS="group.buy.add.activity.stop.status";
 	public static final String GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING="group.buy.activity.goods.overlapping";
-
+	public static final String GROUP_BUY_GROUPID_DOES_NOT_EXIST="group.buy.groupId.does.not.exist";
+	public static final String GROUP_BUY_ACTIVITY_STATUS_DISABLE="group.buy.activity.status.disable";
     /**
      * 营销-秒杀
      */
     public static final String SECKILL_CONFLICTING_ACT_TIME="seckill.conflicting.act.time";
 
     public static final String SHARE_REWARD_COUPON_NUM_LIMIT = "share.reward.coupon.num.limit";
+
+    /**
+     * 营销-砍价
+     */
+    public static final String BARGAIN_CONFLICTING_ACT_TIME="bargain.conflicting.act.time";
 
 
     /**
