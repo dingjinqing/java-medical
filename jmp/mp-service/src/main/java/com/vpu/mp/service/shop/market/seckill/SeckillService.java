@@ -183,6 +183,8 @@ public class SeckillService extends ShopBaseService{
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }
         db().executeUpdate(record);
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
     }
 
     /**
@@ -195,6 +197,8 @@ public class SeckillService extends ShopBaseService{
             set(SEC_KILL_DEFINE.DEL_TIME,DateUtil.getLocalDateTime()).
             where(SEC_KILL_DEFINE.SK_ID.eq(skId)).
             execute();
+        //刷新goodsType
+        saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
     }
 
     /**
