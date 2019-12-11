@@ -491,13 +491,13 @@
                   <span>
                     {{
                        (order.exchang == 1 && goodsTypeArray.indexOf($t('goodsTypeList')[14][0]) !== -1) ?
-                         $t('limitedCard',{
+                         $t('order.limitedCard',{
                            cardName:order.cardName,
                            cardNo:order.cardNo,
                            currency:'-' + currencyPool[order.currency][lang][1],
                            reduceMoney:(order.memberCardReduce / order.goodsAmount).toFixed(2),
                            goodsAmount:order.goodsAmount}) :
-                       ('-' + currencyPool[order.currency][lang][1] + $t('limitedCard')+'：'+order.memberCardReduce)
+                       ('-' + currencyPool[order.currency][lang][1] + $t('order.memberCard')+'：'+order.memberCardReduce)
                     }}
                   </span>
                 </p>
@@ -529,8 +529,8 @@
                   <span>
                     {{
                        (goodsTypeArray.indexOf($t('goodsTypeList')[5][0] == -1)) ?
-                       ($t('scoreDiscount') +'-'+ currencyPool[order.currency][lang][1] + order.useAccount.toFixed(2)) :
-                       ($t('scoreExchange') +'-'+ currencyPool[order.currency][lang][1] + order.useAccount.toFixed(2))
+                       ($t('order.scoreDiscount') +'-'+ currencyPool[order.currency][lang][1] + order.useAccount.toFixed(2)) :
+                       ($t('order.scoreExchange') +'-'+ currencyPool[order.currency][lang][1] + order.useAccount.toFixed(2))
                     }}
                   </span>
                 </p>
