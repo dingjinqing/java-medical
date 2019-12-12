@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
+import static com.vpu.mp.service.foundation.data.JsonResult.LANGUAGE_TYPE_MSG;
 
 /**
  * @author 新国，孔德成
@@ -260,7 +261,7 @@ public class ImageCategoryService extends ShopBaseService {
     public List<CategoryTreeItemVo> getImageCategoryForTree(String lang) {
         List<CategoryTreeItemVo> result = new ArrayList<CategoryTreeItemVo>();
         CategoryTreeItemVo root = new CategoryTreeItemVo();
-        root.setName(Util.translateMessage(lang, JsonResultMessage.MSG_IMAGE_CATEGORY_IMGCATNAME_ROOT_NAME,"message"));
+        root.setName(Util.translateMessage(lang, JsonResultMessage.MSG_IMAGE_CATEGORY_IMGCATNAME_ROOT_NAME, LANGUAGE_TYPE_MSG));
         Result<UploadedImageCategoryRecord> records = this.getAll();
         this.getImageCategoryTree(root, records, root.getLevel());
         result.add(root);
@@ -286,7 +287,7 @@ public class ImageCategoryService extends ShopBaseService {
                 root.getChild().add(child);
                 categoryTreeItemList.remove(item);
                 i--;
-                getImageCategoryTree(child, categoryTreeItemList, level );
+                getImageCategoryTree(child, categoryTreeItemList, level+1 );
             }
         }
         return root;
