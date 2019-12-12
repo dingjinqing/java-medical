@@ -299,6 +299,13 @@ export default {
       } else {
         return false
       }
+    },
+    handleEditAccount (data) {
+      let params = {
+        'articleId': data.articleId,
+        'flag': 4
+      }
+      this.$emit('editShow', params)
     }
   }
 }
