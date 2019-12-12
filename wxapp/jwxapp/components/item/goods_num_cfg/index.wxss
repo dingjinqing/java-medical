@@ -24,6 +24,7 @@
 .num_cfg input {
   flex: 1;
   text-align: center;
+  height: 54rpx;
 }
 .not-tap {
   background-color: #eee;
