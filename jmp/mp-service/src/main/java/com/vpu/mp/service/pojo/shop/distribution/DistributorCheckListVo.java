@@ -21,7 +21,7 @@ public class DistributorCheckListVo {
      */
 	private Integer status;
     /**
-     *
+     *审核内容（不通过原因）
      */
 	private String msg;
 	private Integer delFlag;
@@ -85,5 +85,10 @@ public class DistributorCheckListVo {
      * 教育程度名称
      */
 	private String educationName;
+
+    /**
+     * 审核时间
+     */
+	private Timestamp updateTime;
 
 }

@@ -125,7 +125,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/membershipCardDetail'
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/normalCardDetail'
       )
   },
   // 限次会员卡详情页
@@ -139,7 +139,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/membershipCardDetail'
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/limitCardDetail'
       )
   },
   // 等级会员卡详情页
@@ -153,7 +153,7 @@ const routes = [
     },
     component: () =>
       import(
-        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/membershipCardDetail'
+        '@/view/admin/index/leftNavComponents/user_manger/membershipCard/gradeCardDetail'
       )
   },
   // 持卡会员

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
@@ -14,6 +14,6 @@ import java.util.List;
 public class CategoryTreeItemVo {
 	private Integer id = 0;
 	private String name ;
-	private Integer level=1;
+	private Integer level=0;
 	private List<CategoryTreeItemVo> child=new ArrayList<>();
 }

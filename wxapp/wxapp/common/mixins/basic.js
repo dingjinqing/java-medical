@@ -2,8 +2,8 @@ var util = require("../../utils/util.js");
 var basic = {
   getRect(selector, all) {
     var _this = this;
-    return new Promise(function(resolve) {
-      wx.createSelectorQuery().in(_this)[all ? 'selectAll' : 'select'](selector).boundingClientRect(function(rect) {
+    return new Promise(function (resolve) {
+      wx.createSelectorQuery().in(_this)[all ? 'selectAll' : 'select'](selector).boundingClientRect(function (rect) {
         if (all && Array.isArray(rect) && rect.length) {
           resolve(rect);
         }
@@ -41,7 +41,7 @@ var basic = {
     this._timers = this._timers || {};
     name = "interval_" + name;
     var fn = (type == 'interval') ? setInterval : setTimeout;
-    this._timers[name] = fn(function() {
+    this._timers[name] = fn(function () {
       cb();
     }, seps);
   },

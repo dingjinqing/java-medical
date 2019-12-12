@@ -26,6 +26,7 @@ public class EsQueryBuilderHandler {
     public BoolQueryBuilder assemblySearchBuilder(List<FieldProperty> propertyList ) {
         BoolQueryBuilder resultQueryBuilder = QueryBuilders.boolQuery();
         List<TermQueryBuilder> termQueryBuilders = Lists.newArrayList();
+        List<TermsQueryBuilder> termsQueryBuilders = Lists.newArrayList();
         List<MatchQueryBuilder> matchQueryBuilders = Lists.newArrayList();
         List<RangeQueryBuilder> rangeQueryBuilders = Lists.newArrayList();
         for( FieldProperty x: propertyList ) {
@@ -36,7 +37,12 @@ public class EsQueryBuilderHandler {
             }
 
             if( x.getOperator().equals(Operator.EQ) ){
-                termQueryBuilders.add(QueryBuilders.termQuery(x.getSearchName(),x.getValue()));
+                if ( x.isUseFullQuery() ){
+                    termsQueryBuilders.add(QueryBuilders.termsQuery(x.getSearchName(),(List<?>)x.getValue()));
+                }else{
+                    termQueryBuilders.add(QueryBuilders.termQuery(x.getSearchName(),x.getValue()));
+                }
+
             }else if( x.getOperator().equals(Operator.SIM) ){
                 matchQueryBuilders.add(QueryBuilders.matchQuery(x.getSearchName(),x.getValue()));
             }else if( x.getOperator().equals(Operator.LT) ){
@@ -56,6 +62,9 @@ public class EsQueryBuilderHandler {
         }
         if(!termQueryBuilders.isEmpty()){
             termQueryBuilders.forEach(resultQueryBuilder::must);
+        }
+        if(!termsQueryBuilders.isEmpty()){
+            termsQueryBuilders.forEach(resultQueryBuilder::must);
         }
         if(!rangeQueryBuilders.isEmpty()){
             rangeQueryBuilders.forEach(resultQueryBuilder::must);

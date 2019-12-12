@@ -2,6 +2,12 @@ package com.vpu.mp.service.pojo.shop.member.account;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 
 import lombok.Data;
 @Data
@@ -29,7 +35,9 @@ public class UserCardVo {
 	private Integer sorce;
 	private String buyScore;
 	private Byte expireType;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Timestamp startTime;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Timestamp endTime;
 	private Integer receiveDay;
 	private Byte dateType;
@@ -43,6 +51,7 @@ public class UserCardVo {
 	private Integer sendMoney;
 	private String chargeMoney;
 	private Integer useTime;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String storeList;
 	private Integer count;
 	private Byte delFlag;
@@ -61,6 +70,7 @@ public class UserCardVo {
 	private Byte receiveAction;
 	private Byte isExchang;
 	private Byte storeUseSwitch;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String exchangGoods;
 	private Byte exchangFreight;
 	private Integer exchangCount;
@@ -73,5 +83,28 @@ public class UserCardVo {
 	
 	// 用户是否有此卡
 	private Boolean isGet;
-
+	// 卡是否可用  1 可用，-1不可用
+	private Integer status;
+	@JsonProperty("startTime")
+	private LocalDate startDate;
+	@JsonProperty("endTime")
+	private LocalDate endDate;
+	// 头像
+	private String shopAvatar;
+	// 累积消费
+	private BigDecimal paidAmount;
+	// 累积积分
+	private Integer scoreAmount;
+	private Byte bindMobile;
+	private List<GoodsSmallVo> goodsList;
+	// 门店信息
+	private List<StoreBasicVo> storeInfoList;
+	// 优惠券列表
+	private List<UserCardCoupon> coupons;
+	// 优惠券礼包
+	private UserCardCouponPack couponPack;
+	// 升级进度
+	private NextGradeCardVo next;
+	private Timestamp buyTime;
+	private WxAppCardExamineVo isExamine;
 }

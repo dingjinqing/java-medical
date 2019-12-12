@@ -81,6 +81,16 @@ export default {
     }
   },
   watch: {
+    'val': {
+      handler (newName, oldName) {
+        console.log(newName)
+        this.noneBlockVipArr[this.goodsType].num = this.val.choosedGoodsId.length
+        this.noneBlockVipArr[this.storeType].num = this.val.choosedStoreId.length
+        this.noneBlockVipArr[this.platformType].num = this.val.choosedPlatformId.length
+        this.noneBlockVipArr[this.brandType].num = this.val.choosedBrandId.length
+      },
+      deep: true
+    },
     'ruleForm.powerOwnGoods': {
       handler (newName, oldName) {
         this.val.powerOwnGoods = newName
@@ -119,10 +129,6 @@ export default {
   },
   created () {
     this.noneBlockVipArr = this.$t('memberCard.noneBlockVipArr')
-    this.initGoodsId(this.ruleForm.choosedGoodsId)
-    this.initStoreId(this.ruleForm.choosedStoreId)
-    this.initPlatformId(this.ruleForm.choosedPlatformId)
-    this.initBrandId(this.ruleForm.choosedBrandId)
   },
   data () {
     return {

@@ -174,6 +174,11 @@ public class Util {
 		}
 		return null;
 	}
+	
+	public static Map<String,Object> convertPojoToMap(Object obj){
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.convertValue(obj, new TypeReference<Map<String, Object>>() {});
+	}
 
     public static <T> T json2Object(String json, TypeReference<T> reference, boolean failOnUnknownProperties) {
         if (StringUtils.isBlank(json)) {

@@ -11,7 +11,6 @@
         :label="$t('memberCard.memberEffectiveTime')"
         prop="fixedDate"
         class="date-item"
-        :rules="[{required: true}]"
       >
         <div class='fixdate'>
           <el-radio
@@ -26,7 +25,7 @@
             :range-separator="$t('memberCard.to')"
             :start-placeholder="$t('memberCard.startDate')"
             :end-placeholder="$t('memberCard.overDate')"
-            value-format="yyyy-MM-dd HH-mm-ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
             :default-time="['00:00:00','23:59:59']"
             size="small"
           >
@@ -110,14 +109,19 @@ export default {
       handler (newName, oldName) {
         this.val.expiredType = newName
         this.ruleForm = this.val
-        this.validateExpiredType()
+        if (oldName) {
+          this.validateExpiredType()
+        }
       },
       immediate: true
     },
     'ruleForm.fixedDate': {
       handler (newName, oldName) {
-        this.val.fixedDate = newName
-        this.ruleForm = this.val
+        console.log(newName, oldName)
+        if (oldName !== undefined) {
+          this.val.fixedDate = newName
+          this.ruleForm = this.val
+        }
       },
       immediate: true
     },
@@ -139,6 +143,7 @@ export default {
   data () {
     let validateFixDate = (rule, value, callback) => {
       if (this.ruleForm.expiredType === '0') {
+        console.log(this.ruleForm.fixedDate)
         if (this.ruleForm.fixedDate) {
           callback()
         } else {
@@ -152,6 +157,8 @@ export default {
       if (this.ruleForm.expiredType === '1') {
         if (this.checkReceiveError(value)) {
           callback(new Error('请输入有效期'))
+        } else {
+          callback()
         }
       }
       callback()
@@ -183,7 +190,9 @@ export default {
       } else if (this.ruleForm.expiredType === '1') {
         this.$refs.ruleForm.validateField('fixedDate')
       } else {
-        this.$refs.ruleForm.validate()
+        this.$refs.ruleForm.validate(valid => {
+          console.log(valid)
+        })
       }
     }
   }
@@ -193,6 +202,11 @@ export default {
 .effective-time {
   .date-item {
     padding-left: 100px;
+    /deep/ .el-form-item__label:before {
+      content: "*";
+      color: #f56c6c;
+      margin-right: 4px;
+    }
     /deep/ .el-select {
       width: 150px;
       margin-right: 2px;

@@ -13,12 +13,12 @@ import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
 import com.vpu.mp.service.shop.goods.GoodsBrandService;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class GoodsBrandDataHelper extends ShopBaseService implements DataHelperInterface<GoodsBrandMpVo>{
 
     @Autowired
@@ -43,10 +43,17 @@ public class GoodsBrandDataHelper extends ShopBaseService implements DataHelperI
         results = resultStrs.stream().
             map(x-> Util.parseJson(x,GoodsBrandMpVo.class)).
             collect(Collectors.toList());
-        if ( results.size() >= ids.size() ){
+        if ( !results.contains(null) ){
             return results;
         }
-        List<Integer> needIds = ids.stream().filter(x->!ids.contains(x)).collect(Collectors.toList());
+        results.removeIf(Objects::isNull);
+        List<Integer> queryedIds = results.parallelStream().map(GoodsBrandMpVo::getId).collect(Collectors.toList());
+        List<Integer> needIds;
+        if( queryedIds.isEmpty() ){
+            needIds = ids;
+        }else{
+            needIds =  ids.parallelStream().filter(x->!queryedIds.contains(x)).collect(Collectors.toList());
+        }
         List<GoodsBrandMpVo> queryVos = goodsBrandService.getGoodsBrandVoById(needIds);
         if( queryVos.isEmpty() ){
             return results;
@@ -98,6 +105,9 @@ public class GoodsBrandDataHelper extends ShopBaseService implements DataHelperI
 
     public List<GoodsBrandMpPinYinVo> getAndGroup(List<Integer> ids) {
         List<GoodsBrandMpVo> vos = get(ids);
+        if( vos.isEmpty() ){
+            return null;
+        }
         TreeMap<String,List<GoodsBrandMpVo>> treeMap = Maps.newTreeMap();
         for (GoodsBrandMpVo vo : vos) {
             String c = ChineseToPinYinUtil.getStartAlphabet(vo.getBrandName());

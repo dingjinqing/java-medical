@@ -3,8 +3,10 @@ package com.vpu.mp.service.shop.order.action;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -75,6 +77,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		if(!OrderOperationJudgment.mpIsClose(order)) {
+            logger().error("该订单不能关闭");
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_NOT_CLOSE);
 		}
 		try {
@@ -100,35 +103,22 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 	        //预售订单特殊处理
             if(order.getBkReturnType() != null && order.getBkReturnType().equals(OrderConstant.BK_RETURN_TYPE_Y)){
                 //设置了自动退款
-                if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
-                    //积分
-                    refundScoreDiscount(order, order.getScoreDiscount());
-                }
-                if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
-                    refundUseAccount(order, order.getUseAccount());
-                    //余额
-                }
-                if(BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
-                    //卡余额
-                    refundMemberCardBalance(order, order.getMemberCardBalance());
-                }
                 if(BigDecimalUtil.compareTo(order.getMoneyPaid(), null) > 0) {
                     returnMethod.refundMoneyPaid(order,0,order.getMoneyPaid());
                 }
             }
-        }else{
-            if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
-                //积分
-                refundScoreDiscount(order, order.getScoreDiscount());
-            }
-            if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
-                refundUseAccount(order, order.getUseAccount());
-                //余额
-            }
-            if(BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
-                //卡余额
-                refundMemberCardBalance(order, order.getMemberCardBalance());
-            }
+        }
+        if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
+            //积分
+            refundScoreDiscount(order, order.getScoreDiscount());
+        }
+        if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
+            refundUseAccount(order, order.getUseAccount());
+            //余额
+        }
+        if(BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
+            //卡余额
+            refundMemberCardBalance(order, order.getMemberCardBalance());
         }
 	}
 	/**
@@ -227,4 +217,25 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		//调用退积分接口
 		recordMemberTrade.updateUserEconomicData(scoreData);
 	}
+
+    /**
+     * 自动任务关闭订单
+     */
+	public void autoCloseOrders(){
+        Result<OrderInfoRecord> orders = orderInfo.getCanAutoCloseOrders();
+        orders.forEach(order->{
+            OrderOperateQueryParam param = new OrderOperateQueryParam();
+            param.setAction(Integer.valueOf(OrderServiceCode.CLOSE.ordinal()).byteValue());
+            param.setIsMp(OrderConstant.IS_MP_AUTO);
+            param.setOrderId(order.getOrderId());
+            param.setOrderSn(order.getOrderSn());
+            ExecuteResult result = execute(param);
+            if(result == null || result.isSuccess()) {
+                //TODO 退优惠券
+                logger().info("订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
+            }else {
+                logger().error("订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getErrorCode().toString() , result.getErrorParam());
+            }
+        });
+    }
 }

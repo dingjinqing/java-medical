@@ -1,6 +1,8 @@
 package com.vpu.mp.controller.wxapp;
 
 
+import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +14,11 @@ import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
+import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardParam;
+import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
+import com.vpu.mp.service.pojo.shop.member.ucard.ReceiveCardParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 
 /**
@@ -47,14 +53,21 @@ public class WxAppCardController extends WxAppBaseController {
 		}
 		return success(userCardDetail);
 	}
-
+	
+	/**
+	 * 领取会员卡判断
+	 */
 	@PostMapping(value="/api/card/judgement")
 	public JsonResult userCardJudgement(@RequestBody UserIdAndCardIdParam param) {
 		logger().info("判断是否有会员卡");
-		shop().user.userCard.userCardJudgement(param);
+		WxAppSessionUser user = wxAppAuth.user();
+		param.setUserId(user.getUserId());
+		shop().user.userCard.userCardJudgement(param,getLang());
 		return success();
 	}
-	
+	/**
+	 * 领取会员卡
+	 */
 	@PostMapping(value="/api/card/getCard")
 	public JsonResult getCard(@RequestBody UserIdAndCardIdParam param) {
 		logger().info("领取会员卡");
@@ -64,7 +77,37 @@ public class WxAppCardController extends WxAppBaseController {
 			return success(shop().user.userCard.getCard(param));
 		} catch (MpException e) {
 			return fail(e.getErrorCode());
-		}
-		
+		}	
 	}
+	/**
+	 * 用户通过领取码领取会员卡
+	 */
+	@PostMapping(value="/api/wxapp/card/code/receive")
+	public JsonResult receiveCard(@RequestBody @Validated ReceiveCardParam param) {
+		logger().info("用户通过领取码领取会员卡");
+		param.setUserId(wxAppAuth.user().getUserId());
+		try {
+			shop().user.wxUserCardService.receiveCard(param);
+		} catch (MpException e) {
+			return fail(e.getErrorCode());
+		} 
+		return success();
+	}
+	
+	/**
+	 * 	获取会员卡激活信息
+	 */
+	@PostMapping(value="/api/wxapp/activation/card")
+	public JsonResult activationCard(@RequestBody @Validated ActivateCardParam param) {
+		logger().info("获取会员卡激活信息"+param);
+		param.setUserId(this.wxAppAuth.user().getUserId());
+		ActivateCardVo vo = shop().user.wxUserCardService.activationCard(param,getLang());
+		if(NumberUtils.INTEGER_ONE.equals(param.getIsSetting())) {
+			return success();
+		}else if(vo != null){
+			return this.success(vo);
+		}
+		return fail();
+	}
+	
 }

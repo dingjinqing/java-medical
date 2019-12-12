@@ -12,5 +12,11 @@
         <v-product wx:elif="{{module.component_name == 'v-product'}}" module="{{module}}" />
        <!--商品广告-->
         <v-advimg wx:elif="{{module.component_name == 'v-advimg'}}" module="{{module}}" />
+        <!--店铺公告-->
+        <v-shop-announce wx:elif="{{module.component_name == 'v-shop-announce'}}" module="{{module}}" />
+        <!--店招设置-->
+        <v-shop wx:elif="{{module.component_name == 'v-shop'}}" module="{{module}}" />
+        <!--轮播图-->
+         <v-carousel wx:elif="{{module.component_name == 'v-carousel'}}" module="{{module}}" />
     </block>
 </view>

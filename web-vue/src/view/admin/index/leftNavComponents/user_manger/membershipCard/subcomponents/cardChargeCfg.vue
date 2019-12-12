@@ -277,10 +277,6 @@ export default {
       .yuan-info {
         margin-left: 20px;
       }
-      .inputWidth {
-        width: 170px;
-        background: red;
-      }
     }
   }
   .card-charge-middle {
