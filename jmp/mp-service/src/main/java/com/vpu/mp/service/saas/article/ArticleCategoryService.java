@@ -74,9 +74,22 @@ public class ArticleCategoryService extends MainBaseService {
 	 */
 	
 	public boolean insertArticleCategory(ArticleCategoryParam arArticleCategory) {
+		Byte useFooterNav = extracted(arArticleCategory);
+		if(useFooterNav.equals(ArticlesClass.cuo)) {
+			logger().info("传入参数错误，传入参数为："+arArticleCategory.getUseFooterNav());
+			return false;
+		}
+		int num = db().insertInto(ARTICLE_CATEGORY)
+				.set(ARTICLE_CATEGORY.CATEGORY_NAME, arArticleCategory.getCategoryName())
+				.set(ARTICLE_CATEGORY.USE_FOOTER_NAV, useFooterNav).execute();
+		return num > 0 ? true : false;
+	}
+
+
+	private Byte extracted(ArticleCategoryParam arArticleCategory) {
 		Byte useFooterNav=-1;
 		if(StringUtils.isEmpty(arArticleCategory.getUseFooterNav())) {
-			return false;
+			return -1;
 		}
 		String useFooterNav2 = arArticleCategory.getUseFooterNav();
 		if(useFooterNav2.equals(ArticlesClass.OK)) {
@@ -85,13 +98,7 @@ public class ArticleCategoryService extends MainBaseService {
 		if(useFooterNav2.equals(ArticlesClass.CANCEL)) {
 			useFooterNav=0;
 		}
-		if(useFooterNav.equals(ArticlesClass.cuo)) {
-			return false;
-		}
-		int num = db().insertInto(ARTICLE_CATEGORY)
-				.set(ARTICLE_CATEGORY.CATEGORY_NAME, arArticleCategory.getCategoryName())
-				.set(ARTICLE_CATEGORY.USE_FOOTER_NAV, useFooterNav).execute();
-		return num > 0 ? true : false;
+		return useFooterNav;
 	}
 	
 	/**
@@ -109,8 +116,14 @@ public class ArticleCategoryService extends MainBaseService {
 	}
 
 	public boolean updateArticleCategory(ArticleCategoryParam arArticleCategory) {
-		int num = db().update(ARTICLE_CATEGORY)
-			.set(ARTICLE_CATEGORY.CATEGORY_NAME, arArticleCategory.getCategoryName()).where(ARTICLE_CATEGORY.CATEGORY_ID.eq(arArticleCategory.getCategoryId())).execute();
+		Byte useFooterNav = extracted(arArticleCategory);
+		if(useFooterNav.equals(ArticlesClass.cuo)) {
+			logger().info("传入参数错误，传入参数为："+arArticleCategory.getUseFooterNav());
+			return false;
+		}
+		int num = db().update(ARTICLE_CATEGORY).set(ARTICLE_CATEGORY.CATEGORY_NAME, arArticleCategory.getCategoryName())
+				.set(ARTICLE_CATEGORY.USE_FOOTER_NAV, useFooterNav)
+				.where(ARTICLE_CATEGORY.CATEGORY_ID.eq(arArticleCategory.getCategoryId())).execute();
 		return  num > 0 ? true : false;
 	}
 	
