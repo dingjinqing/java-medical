@@ -2,7 +2,9 @@ package com.vpu.mp.service.pojo.shop.member;
 
 import com.vpu.mp.service.foundation.util.Util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,4 +78,12 @@ public enum MemberEducationEnum {
 		return name;
 	}
 	
+	public static List<String> getAllEducation(){
+		List<String> eduList = new ArrayList<String>(); 
+		int length = MemberEducationEnum.values().length;
+		for(int i=0;i<length;i++) {
+			eduList.add(MemberEducationEnum.getNameByCode(i));
+		}
+		return eduList;
+	}
 }

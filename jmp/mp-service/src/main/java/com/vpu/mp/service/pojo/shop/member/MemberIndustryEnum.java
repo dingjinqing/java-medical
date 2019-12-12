@@ -173,4 +173,12 @@ public enum MemberIndustryEnum {
 		}
 		return industryList;
 	}
+	
+	public static List<String> getAllIndustryName(){
+		List<String> res = new ArrayList<String>();
+		for(int i=0;i<MemberIndustryEnum.values().length;i++) {
+			res.add(getNameByCode(i));
+		}
+		return res;
+	}
 }
