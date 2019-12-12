@@ -582,6 +582,12 @@ export default {
 
       console.log(this.form)
 
+      if (this.form.goodsId === '') {
+        this.$message.warning({ message: '请选择商品!' })
+        this.submitStatus = false
+        return
+      }
+
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.isEdite === false) {
