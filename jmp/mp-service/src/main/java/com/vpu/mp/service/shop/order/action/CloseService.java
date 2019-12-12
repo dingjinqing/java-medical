@@ -77,6 +77,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		if(!OrderOperationJudgment.mpIsClose(order)) {
+            logger().error("该订单不能关闭");
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_NOT_CLOSE);
 		}
 		try {

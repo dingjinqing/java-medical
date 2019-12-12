@@ -79,6 +79,20 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         return getAllLabelInfos(response);
     }
 
+    /**
+     * get goodsId by LabelId
+     *
+     * @param labelIds goodsLabel id
+     * @param type {@link EsGoodsConstant#GOODS_DETAIL_PAGE} page source
+     * @return List<EsGoodsLabel>
+     */
+    public List<Integer> getGoodsIdsByLabelIds(List<Integer> labelIds,Byte type) throws IOException {
+        Integer shopId = getShopId();
+        SearchRequest searchRequest = assemblySearchRequestByLabelId(shopId,labelIds,type);
+        SearchResponse response = search(searchRequest);
+        return getGoodsIds(response);
+    }
+
     private List<EsGoodsLabel> getAllLabelInfos(SearchResponse response) {
         List<EsGoodsLabel> list= Lists.newArrayList();
         Aggregations aggregations = response.getAggregations();
@@ -133,6 +147,21 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         });
         return map;
     }
+    /**
+     * SearchResponse convert
+     * @param response SearchResponse
+     * @return Map<Integer,List<EsGoodsLabel>>
+     */
+    private List<Integer> getGoodsIds(SearchResponse response){
+        List<Integer> goodsIds = Lists.newArrayList();
+        Aggregations aggregations = response.getAggregations();
+        Terms goodsAggregation = aggregations.get(EsLabelName.GOODS_ID);
+        goodsAggregation.getBuckets().forEach(x->{
+            Integer key = Integer.valueOf(x.getKey().toString());
+            goodsIds.add(key);
+        });
+        return goodsIds;
+    }
 
     /**
      * assembly SearchRequest by goodsIds
@@ -147,6 +176,24 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource();
         searchSourceBuilder.query(assemblyQueryBuilder(shopId,null,goodsIds,type));
         searchSourceBuilder.aggregation(assemblyLabelAggregationBuilderByGoodsId());
+        //not need to return query data
+        searchSourceBuilder.size(0);
+        searchRequest.source(searchSourceBuilder);
+        return searchRequest;
+    }
+    /**
+     * assembly SearchRequest by labelIds
+     *
+     * @param shopId shop id
+     * @param labelIds label id
+     * @param type {@link EsGoodsConstant#GOODS_DETAIL_PAGE} page source
+     * @return {@link SearchRequest}
+     */
+    private SearchRequest assemblySearchRequestByLabelId(Integer shopId,List<Integer> labelIds,Byte type){
+        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_INDEX_NAME);
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource();
+        searchSourceBuilder.query(assemblyQueryBuilder(shopId,labelIds,null,type));
+        searchSourceBuilder.aggregation(AggregationBuilders.terms(EsLabelName.GOODS_ID).field(EsLabelName.GOODS_ID));
         //not need to return query data
         searchSourceBuilder.size(0);
         searchRequest.source(searchSourceBuilder);

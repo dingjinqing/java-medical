@@ -309,6 +309,7 @@ public class GoodsMpService extends ShopBaseService {
         try {
             return esGoodsSearchMpService.getGoodsParam();
         } catch (Exception e) {
+            e.printStackTrace();
             logger().debug("es 小程序-商品搜索-条件反推错误："+e.getMessage());
             return new GoodsSearchFilterConditionMpVo();
         }

@@ -152,9 +152,7 @@ public class ShopImageManageService extends MainBaseService implements ImageDefa
     }
     Result<ShopUploadedImageCategoryRecord> record1 =
         db().selectFrom(SHOP_UPLOADED_IMAGE_CATEGORY)
-            .where(
-                SHOP_UPLOADED_IMAGE_CATEGORY.CAT_IDS.like(
-                    this.prefixLikeValue(record.getCatIds() + ",")))
+            .where(SHOP_UPLOADED_IMAGE_CATEGORY.CAT_IDS.like(this.prefixLikeValue(record.getCatIds() + ",")))
             .fetch();
     record1.add(record);
     return record1;
@@ -228,8 +226,7 @@ public class ShopImageManageService extends MainBaseService implements ImageDefa
     return result;
   }
 
-  private void getImageCategoryTree(
-      ShopCategoryTreeItemVo root, Result<ShopUploadedImageCategoryRecord> records, int level) {
+  private void getImageCategoryTree(ShopCategoryTreeItemVo root, Result<ShopUploadedImageCategoryRecord> records, int level) {
     for (int i = 0; i < records.size(); i++) {
       ShopUploadedImageCategoryRecord item = records.get(i);
       if (root.getId().equals(item.getImgCatParentId())) {
@@ -296,8 +293,7 @@ public class ShopImageManageService extends MainBaseService implements ImageDefa
    * @param uploadPath
    * @return
    */
-  public ShopUploadedImageRecord addImageToDb(
-      ShopUploadImageParam param, Part file, UploadPath uploadPath, Integer sysId) {
+  public ShopUploadedImageRecord addImageToDb(ShopUploadImageParam param, Part file, UploadPath uploadPath, Integer sysId) {
     ShopUploadedImageRecord image = db().newRecord(SHOP_UPLOADED_IMAGE);
     image.setImgName(uploadPath.getFilname());
     image.setImgPath(uploadPath.relativeFilePath);

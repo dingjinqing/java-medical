@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.market.goupbuy;
 
 
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
@@ -34,23 +33,22 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyDefineInfo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyGoodsInfo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyInfoVo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyProductInfo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyStatusInfo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
-import com.vpu.mp.service.shop.goods.GoodsSpecService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import com.vpu.mp.service.shop.user.user.UserService;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -58,7 +56,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -85,7 +82,6 @@ public class GroupBuyService extends ShopBaseService {
      * 是否默认成团
      */
     public static final Byte IS_DEFAULT_Y = 1;
-    public static final Byte IS_DEFAULT_N = 0;
 
     @Autowired
     private GroupBuyListService groupBuyListService;
@@ -523,45 +519,48 @@ public class GroupBuyService extends ShopBaseService {
         // 拼团状态
         ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(userId, date,activityId, groupId, IS_GROUPER_N);
         //拼团活动
-        GroupBuyDefineRecord groupBuy = getGroupBuyRecord(activityId);
-        Result<Record2<BigDecimal, Short>> groupBuyProductRecord = db().select(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,GROUP_BUY_PRODUCT_DEFINE.STOCK).from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId)).fetch();
+        GroupBuyDefineInfo groupBuy = getGroupBuyRecord(activityId).into(GroupBuyDefineInfo.class);
+        Result<Record3<Integer,BigDecimal, Short>> groupBuyProductRecord = db().select(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID,GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,GROUP_BUY_PRODUCT_DEFINE.STOCK).from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId)).fetch();
         //商品
-        GoodsRecord goodsRecord = goodsService.getGoodsById(groupBuy.getGoodsId()).get();
-        //规格
-        List<GroupBuyProductInfo> product =  goodsService.getProductByGoodsId(groupBuy.getGoodsId()).into(GroupBuyProductInfo.class);
+        GroupBuyGoodsInfo goodsRecord = goodsService.getGoodsById(groupBuy.getGoodsId()).get().into(GroupBuyGoodsInfo.class);
         //sku
         List<GoodsSpecProductRecord> prdInfos = goodsSpecProductService.getGoodsDetailPrds(groupBuy.getGoodsId());
         List<GoodsPrdMpVo> prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());
+        prdMpVos.forEach(prd->{
+            groupBuyProductRecord.forEach(groupPrd->{
+                //拼团规格价修改
+                if (prd.getPrdId().equals(groupPrd.component1())){
+                    prd.setPrdLinePrice(prd.getPrdRealPrice());
+                    prd.setPrdRealPrice(groupPrd.component2());
+                    prd.setPrdNumber(groupPrd.component3().intValue());
+                }
+            });
+        });
         //用户
         List<GroupBuyUserInfo> userList = groupBuyListService.getPinUserList(groupId);
         boolean newUser = orderInfoService.isNewUser(userId);
-        // $shop->shop_cfg->getShopCfg('bind_mobile');
+        //是否需要绑定手机号
         Byte bindMobile = shopCommonConfigService.getBindMobile();
-        Integer groupBuyStock = groupBuyProductRecord.stream().mapToInt(Record2<BigDecimal, Short>::component2).sum();
-        BigDecimal maxPrice =groupBuyProductRecord.stream().map(Record2<BigDecimal, Short>::component1).distinct().max(BigDecimal::compareTo).get();
-        BigDecimal minPrice =groupBuyProductRecord.stream().map(Record2<BigDecimal, Short>::component1).distinct().min(BigDecimal::compareTo).get();
+        Integer groupBuyStock = groupBuyProductRecord.stream().mapToInt(Record3<Integer,BigDecimal, Short>::component3).sum();
+        BigDecimal maxPrice =groupBuyProductRecord.stream().map(Record3<Integer,BigDecimal, Short>::component2).distinct().max(BigDecimal::compareTo).get();
+        BigDecimal minPrice =groupBuyProductRecord.stream().map(Record3<Integer,BigDecimal, Short>::component2).distinct().min(BigDecimal::compareTo).get();
         long dateDiff =date.getTime()-	createTime.getTime();
         long hour = 24- (dateDiff / (60 * 60 * 1000));
         long min = 60- dateDiff %  (60 * 60 * 1000) / (60 * 1000);
         long s = 60- dateDiff% (60 * 60 * 1000)%(60*1000) / 1000 ;
 
         GroupBuyInfoVo groupBuyInfo =new GroupBuyInfoVo();
-        GroupBuyGoodsInfo goods =new GroupBuyGoodsInfo();
-        goods.setGoodsId(goodsRecord.getGoodsId());
-        goods.setGoodsImg(goodsRecord.getGoodsImg());
-        goods.setGoodsName(goodsRecord.getGoodsName());
-        goods.setGoodsNumber(goodsRecord.getGoodsNumber());
-        goods.setGroupBuygoodsNum(groupBuyStock);
-        goods.setMaxGroupBuyPrice(maxPrice);
-        goods.setMinGroupBuyPrice(minPrice);
+        goodsRecord.setGroupBuygoodsNum(groupBuyStock);
+        goodsRecord.setMaxGroupBuyPrice(maxPrice);
+        goodsRecord.setMinGroupBuyPrice(minPrice);
         GroupBuyStatusInfo statusInfo =new GroupBuyStatusInfo();
         statusInfo.setStatus(resultMessage.getJsonResultCode().getCode());
         statusInfo.setMessage(Util.translateMessage(lang,resultMessage.getJsonResultCode().getMessage(),"messages"));
-        groupBuyInfo.setGoodsInfo(goods);
-        groupBuyInfo.setProductList(product);
+        groupBuyInfo.setGoodsInfo(goodsRecord);
         groupBuyInfo.setPrdSpecsList(prdMpVos);
         groupBuyInfo.setStatusInfo(statusInfo);
         groupBuyInfo.setUserInfoList(userList);
+        groupBuyInfo.setGroupBuyDefineInfo(groupBuy);
         groupBuyInfo.setHour(Math.toIntExact(hour));
         groupBuyInfo.setMinute(Math.toIntExact(min));
         groupBuyInfo.setSecond(Math.toIntExact(s));

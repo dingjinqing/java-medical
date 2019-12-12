@@ -182,6 +182,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						finishUpdateInfo(order , rOrder , param);
 					}
 				} catch (MpException e) {
+				    //TODO 处理异常状态，判断是否需要回滚
 					throw new MpException(e.getErrorCode());
 				} catch (DataAccessException e) {
 					Throwable cause = e.getCause();
@@ -451,7 +452,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			boolean result = returnMethod.refundMethods(entry.getKey(), order, returnOrder.getRetId(), currentReturn);
 			if(!result) {
 				logger.error("优先级退款调用refundMethods失败,orderSn:{},retId:{},优先级为:{}",order.getOrderSn(),returnOrder.getRetId(),key);
-				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_ING_RETURNMETHOD_ERROR);
+				throw new MpException(JsonResultCode.CODE_ORDER_RETURNING_RETURN_METHOD_ERROR);
 			}
 			//微信退款后续处理标识
 			if(key.equals(orderInfo.PS_MONEY_PAID)){
@@ -589,7 +590,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		}
 		//查询参数校验
 		if(CollectionUtils.isEmpty(check.getRefundGoods())) {
-			logger.error("订单sn:{},{}时，未选择商品",param.getOrderSn(),OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
+			logger.error("订单sn:{},{}时，已无可退商品",param.getOrderSn(),OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_GOODS_RETURN_COMPLETED);
 		}
 		

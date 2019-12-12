@@ -10,7 +10,6 @@ module.exports = {
         if (all && Array.isArray(rect) && rect.length) {
           resolve(rect);
         }
-        console.log(rect)
         if (!all && rect) {
           resolve(rect);
         }

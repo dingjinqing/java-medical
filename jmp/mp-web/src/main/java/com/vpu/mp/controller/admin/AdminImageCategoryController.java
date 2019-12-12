@@ -1,19 +1,18 @@
 package com.vpu.mp.controller.admin;
 
 
-import javax.validation.Valid;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryIDParam;
+import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
+import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryRenameParam;
+import com.vpu.mp.service.pojo.shop.image.category.UploadedImageCategoryParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryIDParam;
-import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
-import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryRenameParam;
-import com.vpu.mp.service.pojo.shop.image.category.UploadedImageCategoryParam;
+import javax.validation.Valid;
 
 /**
  * 图片分组列表
@@ -47,7 +46,10 @@ public class AdminImageCategoryController extends AdminBaseController {
      */
     @PostMapping("/admin/image/category/delete")
     public JsonResult deleteImageCategory(@RequestBody @Valid ImageCategoryIDParam param) {
-        shop().imageCatgory.removeCategory(param.getImgCatId());
+        int i = shop().imageCatgory.removeCategory(param.getImgCatId());
+        if (i==0){
+            return fail();
+        }
         return success();
     }
 
@@ -59,7 +61,10 @@ public class AdminImageCategoryController extends AdminBaseController {
      */
     @PostMapping("/admin/image/category/move")
     public JsonResult moveImageCategory(@RequestBody @Valid UploadedImageCategoryParam param) {
-        shop().imageCatgory.moveCategory(param.getImgCatId(),param.getImgCatParentId());
+        int i = shop().imageCatgory.moveCategory(param.getImgCatId(), param.getImgCatParentId());
+        if (i==0){
+            return fail();
+        }
         return success();
     }
 
@@ -83,7 +88,7 @@ public class AdminImageCategoryController extends AdminBaseController {
      */
     @GetMapping("/admin/image/category/list")
     public JsonResult getImageCategoryList() {
-        return success(shop().imageCatgory.getImageCategoryForTree(0));
+        return success(shop().imageCatgory.getImageCategoryForTree(getLang()));
     }
 
 

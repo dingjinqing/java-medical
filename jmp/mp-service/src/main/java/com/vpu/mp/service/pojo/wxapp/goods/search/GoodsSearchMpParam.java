@@ -52,4 +52,7 @@ public class GoodsSearchMpParam extends BasePageParam {
     private SortItemEnum sortItem;
     /**排序方向*/
     private SortDirectionEnum sortDirection;
+
+
+    private List<Integer> goodsIds;
 }

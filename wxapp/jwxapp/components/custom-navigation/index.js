@@ -1,12 +1,14 @@
 var util = require("../../utils/util.js");
+var fix_top = require("../common/fix_top.js");
 global.wxComponent({
+  mixins: [fix_top],
   /**
    * 组件的属性列表
    */
   properties: {
-    has_bottom:Boolean,
-    page_name:String,
-    bgColor:String,
+    has_bottom: Boolean,
+    page_name: String,
+    bgColor: String,
     is_first_page: {
       type: Number,
       value: 0
@@ -18,19 +20,21 @@ global.wxComponent({
    */
   data: {
     height: 0,
-    show_back:false,
-    show_bottom:true,
-    page_title:""
+    show_back: false,
+    show_bottom: true,
+    page_title: ""
   },
-  ready(){
+  ready() {
     let that = this;
     var height = 0;
     if (typeof wx.getMenuButtonBoundingClientRect === 'function') {
       height = wx.getMenuButtonBoundingClientRect().bottom
+      this.startFixed(height + 8);
     } else {
       wx.getSystemInfo({
         success: (res) => {
           height = res.statusBarHeight * 3
+          this.startFixed(height + 8);
         }
       })
     }
@@ -59,11 +63,11 @@ global.wxComponent({
     },
     //返回到首页
     _backhome() {
-      util.jumpLink('/pages/index/index','reLaunch')
+      util.jumpLink('/pages/index/index', 'reLaunch')
     }
   }
 })
-function getTitle(pageUrl,that){
+function getTitle(pageUrl, that) {
   let lastindex = pageUrl.lastIndexOf('/');
   var lastSegment = pageUrl.substring(lastindex + 1);
   var title = that.$t("components.navigation.title." + lastSegment)

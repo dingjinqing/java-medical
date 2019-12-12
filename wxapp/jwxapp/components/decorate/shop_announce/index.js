@@ -1,5 +1,5 @@
 var base = require("../mixins/base.js");
-var fix_top = require("../mixins/fix_top.js");
+var fix_top = require("../../common/fix_top.js");
 global.wxComponent({
   mixins: [base, fix_top],
   data: {
@@ -59,32 +59,31 @@ global.wxComponent({
     },
     onPageScroll(e) {
       // console.log(e)
-      var _this = this;
-      var m = this.data.m;
-      if (m.announce_position === '1') {
-        // console.log("触发", m.cur_idx)
-        this.getRect(`#${m.cur_idx}`).then(function (rect) {
-          // console.log(rect)
-          var top = _this.getFixeTop();
-          // console.log(rect, top)
-          var top = 66
-          if (!m.fixed && rect.top <= top) {
-            m.fixed = true;
-            m.fix_height = rect.height;
-            m.top = top;
-            // console.log(top)
-            _this.startFixed(rect.height);
-            _this.$set();
-          } else {
-            if (m.fixed && rect.top > top) {
-              m.fixed = false;
-              _this.stopFixed();
-              _this.$set();
-            }
-          }
-          // console.log(m)
-        })
-      }
+      // var _this = this;
+      // var m = this.data.m;
+      // if (m.announce_position === '1') {
+      //   // console.log("触发", m.cur_idx)
+      //   this.getRect(`#${m.cur_idx}`).then(function (rect) {
+      //     // console.log(rect)
+      //     var top = _this.getFixeTop();
+      //     console.log(rect, top)
+      //     if (!m.fixed && rect.top <= top) {
+      //       m.fixed = true;
+      //       m.fix_height = rect.height;
+      //       m.top = top
+      //       // console.log(top)
+      //       _this.startFixed(rect.height);
+      //       _this.$set();
+      //     } else {
+      //       if (m.fixed && rect.top > top) {
+      //         m.fixed = false;
+      //         _this.stopFixed();
+      //         _this.$set();
+      //       }
+      //     }
+      //     // console.log(m)
+      //   })
+      // }
     }
   }
 });

@@ -82,6 +82,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		if(!OrderOperationJudgment.mpIsCancel(order)) {
+            logger().error("该订单不能取消");
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_NOT_CANCEL);
 		}
 		try {
@@ -216,9 +217,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 	
 	/**
 	 * 	TODO 需要问一下   更新库存和销量
-	 * @param returnGoods
 	 * @param order
-	 * @param goodsType
 	 */
 	public void updateStockAndSales(OrderInfoVo order) {
 		//TODO 对接pos erp未完成
