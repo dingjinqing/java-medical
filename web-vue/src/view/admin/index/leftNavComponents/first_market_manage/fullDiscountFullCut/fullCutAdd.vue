@@ -74,7 +74,11 @@
                 label="1"
                 v-model="discount"
               >满金额</el-radio>
-              <section style="display:flex;margin-left: 25px">
+              <section
+                style="display:flex;margin-left: 25px"
+                v-for="(item, index) in conditionAddParams"
+                :key="index"
+              >
                 <span v-if="activityType === '2' || activityType === '3'">满</span>
                 <span v-if="activityType === '1'">每满</span>
                 &nbsp;<el-input
@@ -171,6 +175,7 @@
               v-model="activityGoods"
               label="1"
             >指定商品</el-radio>
+
             <section v-if="activityGoods === '1'">
               <div
                 class="add_goods_btn"
@@ -213,6 +218,7 @@
                   </tbody>
                 </table>
               </div>
+
               <div
                 class="add_goods_btn"
                 @click="selectPlatform"
@@ -330,6 +336,7 @@
                   </tr>
                 </tbody>
               </table>
+
               <div
                 class="add_goods_btn"
                 @click="seclectGoodsBrand"
@@ -378,6 +385,7 @@
               size="small"
               :multiple='true'
               @change="getMemberCardName"
+              v-if="vipActivity === true"
             >
               <el-option
                 v-for="item in memberCardNameList"
@@ -390,6 +398,7 @@
 
         </el-form>
       </div>
+
       <!-- 选择商品弹窗 -->
       <ChoosingGoods
         :tuneUpChooseGoods='tuneUpChooseGoodsDialog'
@@ -404,6 +413,7 @@
         :classFlag=1
         @BusClassTrueDetailData="returnBusinessData"
       />
+
       <!-- 选择平台分类弹窗 -->
       <AddingBusClassDialog
         :dialogVisible.sync="tuneUpPlatformDialog"
@@ -438,7 +448,7 @@
 </template>
 
 <script>
-import { addFullCutActivityApi, memberCardActivityName } from '@/api/admin/marketManage/fullDiscountFullCut'
+import { addFullCutActivityApi, memberCardActivityName, getOneFullCutActivityInfo } from '@/api/admin/marketManage/fullDiscountFullCut'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import AddingBusClassDialog from '@/components/admin/addingBusClassDialog'
 import AddBrandDialog from '@/components/admin/addBrandDialog'
@@ -449,10 +459,11 @@ export default {
   data () {
     return {
       activeName: '5',
+      id: '',
       aaa: 1,
       activityName: '',
       activityLevel: '',
-      activityType: '1',
+      activityType: '2',
       timeInterval: [],
       activityGoods: '1',
       fullMoney: '',
@@ -494,6 +505,13 @@ export default {
   },
   mounted () {
     this.memberCardActivityName()
+    console.log(this.$router, 'this.$router.id')
+    if (this.$router.query.id > 0) {
+      this.id = this.$router.query.id
+      this.fetchCurrentActivityData()
+    } else {
+      this.submit()
+    }
   },
   methods: {
     handleClick (tab) {
@@ -549,11 +567,11 @@ export default {
         startTime: this.startTime,
         endTime: this.endTime,
         strategyPriority: this.activityLevel,
-        recommendGoodsId: this.selectedGoodsIdList, // 指定商品
-        recommendCatId: this.platformIdList, // 指定平台
-        recommendSortId: this.bussinessIdList, // 指定商家
-        recommendBrandId: this.goodsBrandIdList, // 指定品牌
-        cardId: this.cardId // 会员专享活动
+        recommendGoodsId: String(this.selectedGoodsIdList), // 指定商品
+        recommendCatId: String(this.platformIdList), // 指定平台
+        recommendSortId: String(this.bussinessIdList), // 指定商家
+        recommendBrandId: String(this.goodsBrandIdList), // 指定品牌
+        cardId: String(this.cardId) // 会员专享活动
       }
       addFullCutActivityApi(obj).then(res => {
         console.log(res)
@@ -652,6 +670,14 @@ export default {
     },
     deleteSelectedLabel () {
 
+    },
+    fetchCurrentActivityData () {
+      let obj = {}
+      getOneFullCutActivityInfo(obj).then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+        }
+      }).catch(err => console.log(err))
     }
   }
 
