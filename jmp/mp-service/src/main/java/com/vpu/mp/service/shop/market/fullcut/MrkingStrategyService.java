@@ -87,6 +87,7 @@ public class MrkingStrategyService extends ShopBaseService {
         if(res.dataList != null){
             for(MrkingStrategyPageListQueryVo mrkingStrategy : res.dataList){
                 mrkingStrategy.setCondition(this.getMrkingStrategyCondition(mrkingStrategy.getId()));
+                mrkingStrategy.setCurrentState(Util.getActStatus(mrkingStrategy.getStatus(),mrkingStrategy.getStartTime(),mrkingStrategy.getEndTime()));
             }
         }
 
