@@ -131,17 +131,23 @@
               class="middle"
               v-if="activeName === '0'"
             >
-              <p>{{ item.group }}</p>
+              <p v-if="item.groupData">{{ item.groupData.groupName }}</p>
               <p
                 class="active"
-                @click="setGroupHandler(item.userId, item.group)"
+                v-if="item.groupData"
+                @click="setGroupHandler(item.userId, item.groupData.id)"
+              >{{ $t('distribution.reviewSet') }}</p>
+              <p
+                class="active"
+                v-if="!item.groupData"
+                @click="setGroupHandler(item.userId)"
               >{{ $t('distribution.reviewSet') }}</p>
             </td>
             <td
               rowspan="5"
               class="middle"
               v-if="activeName !== '0'"
-            >2019-12-12 00:00:00</td>
+            >{{ item.updateTime }}</td>
             <td
               rowspan="5"
               class="middle"
@@ -155,21 +161,21 @@
                 size="small"
                 type="primary"
                 plain
-                @click="passHandler(item.id)"
+                @click="reviewPassHandler(item)"
               >{{ $t('distribution.passBtn') }}</el-button>
 
               <el-button
                 size="small"
                 type="info"
                 plain
-                @click="noPassHandler(item.id)"
+                @click="reviewNoPassHandler(item)"
               >{{ $t('distribution.noPassBtn') }}</el-button>
             </td>
             <td
               rowspan="5"
               class="middle"
               v-if="activeName === '2'"
-            >不通过理由</td>
+            >{{ item.msg }}</td>
 
           </tr>
           <tr v-if="item.userId !== ''">
@@ -291,7 +297,7 @@
 </template>
 
 <script>
-import { getCheckList, distributionGroup } from '@/api/admin/marketManage/distribution.js'
+import { getCheckList, distributionGroup, getCheckPass, getCheckRefuse } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
@@ -305,26 +311,25 @@ export default {
         startTime: '',
         endTime: ''
       },
-      activeName: '0',
+      activeName: '0', // tab值
       // 分页
       pageParams: {
         currentPage: 1,
         pageRows: 10
       },
       requestParams: {},
-      // 表格数据
-      tableData: [],
+      tableData: [], // 表格数据
 
       // 分销员分组弹窗
       dialogVisible: false,
-      groupId: '',
-      groupName: '',
-      selectValue: '',
-      selectData: [],
+      groupId: '', // 编辑表格id
+      selectValue: '', // 分销分组值
+      selectData: [], // 分销分组数据
 
       // 审核不通过弹窗
       failDialogVisible: false,
-      textarea: ''
+      failData: {}, // 审核不通过数据
+      textarea: '' // 审核不通过说明
     }
   },
   watch: {
@@ -358,6 +363,7 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.forEach(item => {
+        data.groupData = {}
         // 性别
         if (item.sex === 'f') {
           item.sex = '女'
@@ -393,44 +399,58 @@ export default {
     },
 
     // 设置分销员分组
-    setGroupHandler (id, value) {
+    setGroupHandler (userId, id) {
       this.dialogVisible = !this.dialogVisible
       // 数据回显
-      this.groupId = id
-      this.selectData.forEach((item, index) => {
-        if (item.groupName === value) {
-          this.selectValue = item.id
-          this.groupName = item.groupName
-        }
-      })
+      this.groupId = userId
+      if (id) {
+        this.selectData.forEach((item, index) => {
+          if (item.id === id) {
+            this.selectValue = item.id
+          }
+        })
+      } else {
+        this.selectValue = ''
+      }
     },
 
     // 保存分销员分组
     saveGroupHandler () {
       this.dialogVisible = false
-      // 获取下拉框的label
+      // 获取下拉框的值
       this.selectData.forEach((item, index) => {
         if (item.id === this.selectValue) {
-          this.groupName = item.groupName
-        }
-      })
-      // 赋值给表格
-      this.tableData.forEach((item, index) => {
-        if (item.userId === this.groupId) {
-          item.group = this.groupName
+          // 赋值给表格
+          this.tableData.forEach((val, key) => {
+            if (val.userId === this.groupId) {
+              val.groupData = item
+            }
+          })
         }
       })
     },
 
     // 审核通过
-    passHandler (id) {
-      this.$message.success(this.$t('distribution.reviewPass') + '!')
-      // this.initDataList()
+    reviewPassHandler (data) {
+      var groupId = 0
+      if (data.groupData) {
+        groupId = data.groupData.id
+      }
+      getCheckPass({
+        id: data.id,
+        groupId: groupId
+      }).then((res) => {
+        if (res.error === 0) {
+          this.$message.success(this.$t('distribution.reviewPass') + '!')
+          this.initDataList()
+        }
+      })
     },
 
-    // 审核不通过
-    noPassHandler (id) {
+    // 审核不通过弹窗
+    reviewNoPassHandler (data) {
       this.failDialogVisible = !this.failDialogVisible
+      this.failData = data
     },
 
     // 取消审核不通过
@@ -441,9 +461,22 @@ export default {
 
     // 确定审核不通过
     surePassHandler () {
-      this.failDialogVisible = false
-      this.textarea = ''
-      // this.initDataList()
+      var groupId = 0
+      if (this.failData.groupData) {
+        groupId = this.failData.groupData.id
+      }
+      getCheckRefuse({
+        id: this.failData.id,
+        groupId: groupId,
+        msg: this.textarea
+      }).then((res) => {
+        if (res.error === 0) {
+          this.$message.success('审核不通过成功!')
+          this.failDialogVisible = false
+          this.textarea = ''
+          this.initDataList()
+        }
+      })
     },
 
     // 跳转会员详情

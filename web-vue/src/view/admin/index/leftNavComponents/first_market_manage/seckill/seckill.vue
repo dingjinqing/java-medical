@@ -117,7 +117,7 @@
               <el-tooltip
                 :content="$t('seckill.stop')"
                 placement="top"
-                v-if="scope.row.currentState === 2 || scope.row.currentState === 3"
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2 || scope.row.currentState === 3"
               >
                 <span
                   style="font-size: 22px;"

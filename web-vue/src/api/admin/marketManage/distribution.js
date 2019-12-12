@@ -1,6 +1,6 @@
 import service from '@/util/request.js'
 
-// 分销配置
+// -------------分销配置--------------------
 // 获取分销配置
 export function getDistribution (data) {
   return service({
@@ -64,7 +64,7 @@ export function getDocument (data) {
   })
 }
 
-// 分销员等级配置
+// -------------分销员等级配置-------------------
 // 设置分销员等级配置
 export function setDistributionLevel (data) {
   return service({
@@ -101,7 +101,7 @@ export function startDistribution (data) {
   })
 }
 
-// 返利策略配置
+// -------------返利策略配置---------------------
 // 获取返利策略列表
 export function getPolicyList (data) {
   return service({
@@ -388,10 +388,29 @@ export function cancleDefaultGroup (data) {
   })
 }
 
+// -------------分销员审核--------------------
 // 分销员审核列表
 export function getCheckList (data) {
   return service({
     url: '/api/admin/distribution/distributor/check/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// 分销审核通过
+export function getCheckPass (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/check/pass',
+    method: 'post',
+    data: data
+  })
+}
+
+// 分销审核不通过
+export function getCheckRefuse (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/check/refuse',
     method: 'post',
     data: data
   })

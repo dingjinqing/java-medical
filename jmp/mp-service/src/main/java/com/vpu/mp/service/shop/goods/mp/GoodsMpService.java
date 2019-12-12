@@ -16,6 +16,8 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
@@ -90,6 +92,7 @@ public class GoodsMpService extends ShopBaseService {
             // 从es获取
             goodsListCapsules = getPageIndexGoodsListFromEs(param);
         } catch (Exception e) {
+            logger().debug("小程序-es-搜索商品错误:"+e.getMessage());
             goodsListCapsules = getPageIndexGoodsListFromDb(param);
         }
         disposeGoodsList(goodsListCapsules, userId);
@@ -104,10 +107,6 @@ public class GoodsMpService extends ShopBaseService {
      */
     private List<GoodsListMpBo> getPageIndexGoodsListFromEs(GoodsListMpParam param) throws IOException {
         PageResult<GoodsListMpBo> goodsListMpBoPageResult = esGoodsSearchMpService.queryGoodsByParam(param);
-        List<GoodsListMpBo> dataList = goodsListMpBoPageResult.dataList;
-        if (dataList != null) {
-            dataList.forEach(x -> x.setIsDisposedByEs(true));
-        }
         return goodsListMpBoPageResult.dataList;
     }
 
@@ -223,6 +222,7 @@ public class GoodsMpService extends ShopBaseService {
             // 从es获取
             goodsListCapsules = getPageIndexGoodsListFromEs(param);
         } catch (Exception e) {
+            logger().debug("小程序-es-搜索商品错误:"+e.getMessage());
             goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
         }
         disposeGoodsList(goodsListCapsules, userId);
@@ -309,6 +309,7 @@ public class GoodsMpService extends ShopBaseService {
         try {
             return esGoodsSearchMpService.getGoodsParam();
         } catch (Exception e) {
+            e.printStackTrace();
             logger().debug("es 小程序-商品搜索-条件反推错误："+e.getMessage());
             return new GoodsSearchFilterConditionMpVo();
         }
@@ -320,26 +321,70 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
-    public List<? extends GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
-        List<GoodsListMpBo> goodsListMpBos;
-        try {
-            PageResult<GoodsListMpBo> pageResult = esGoodsSearchMpService.queryGoodsByParam(param);
-            goodsListMpBos = pageResult.getDataList();
-        } catch (IOException e) {
-            logger().debug("小程序-商品搜索异常："+e.getMessage());
-            if (param.getKeyWords() != null) {
-                Condition condition = buildPageIndexCondition(new GoodsListMpParam());
-                condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
-                goodsListMpBos = findActivityGoodsListCapsulesDao(condition, null, param.getCurrentPage(), param.getPageRows(), null);
-            } else {
-                return null;
-            }
+    public PageResult<? extends GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
+        PageResult<GoodsListMpBo> pageResult =null;
+
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        if (GoodsConstant.SOLD_OUT_GOODS_SHOW.equals(soldOutGoods)) {
+            param.setSoldOutGoodsShow(true);
+        } else {
+            param.setSoldOutGoodsShow(false);
         }
-        disposeGoodsList(goodsListMpBos,param.getUserId());
-        return goodsListMpBos;
+
+        try {
+            pageResult  = esGoodsSearchMpService.queryGoodsByParam(param);
+        } catch (Exception e) {
+            logger().debug("小程序-商品搜索异常："+e.getMessage());
+            pageResult = searchGoodsFromDb(param);
+        }
+        disposeGoodsList(pageResult.dataList,param.getUserId());
+
+        return pageResult;
     }
 
+    /**
+     * 数据库搜索商品
+     * @param param 搜索条件
+     * @return 搜索到的内容
+     */
+    private PageResult<GoodsListMpBo> searchGoodsFromDb(GoodsSearchMpParam param){
+        GoodsListMpParam proxyParam = new GoodsListMpParam();
+        proxyParam.setKeywords(param.getKeyWords());
+        proxyParam.setSoldOutGoodsShow(param.getSoldOutGoodsShow());
+        Condition condition = buildPageIndexCondition(proxyParam);
 
+        SelectConditionStep<Record12<Integer, String, Byte, BigDecimal, BigDecimal, Integer, Integer, String, Integer, Integer, Integer, Integer>> select =
+            db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE.as("activity_type"), GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+            GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
+            GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID).from(GOODS).where(condition);
+
+        buildOrderFields(select,param);
+
+        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsListMpBo.class);
+    }
+
+    /**
+     * 排序字段拼接
+     * @param select 待排序语句
+     * @param param 请求条件
+     */
+    private void buildOrderFields(SelectConditionStep<?> select,GoodsSearchMpParam param){
+        if (SortItemEnum.SALE_NUM.equals(param.getSortItem())) {
+            if (SortDirectionEnum.DESC.equals(param.getSortDirection())) {
+                select.orderBy(GOODS.GOODS_SALE_NUM.desc(), GOODS.CREATE_TIME.desc());
+            } else {
+                select.orderBy(GOODS.GOODS_SALE_NUM.asc(), GOODS.CREATE_TIME.desc());
+            }
+        } else {
+            // 默认价格排序
+            if (SortDirectionEnum.DESC.equals(param.getSortDirection())){
+                select.orderBy(GOODS.SHOP_PRICE.desc(), GOODS.CREATE_TIME.desc());
+            } else {
+                select.orderBy(GOODS.SHOP_PRICE.asc(), GOODS.CREATE_TIME.desc());
+            }
+        }
+
+    }
     /**
      * 根据过滤条件获取商品列表中的商品信息，
      * 返回结果的顺序和goodsIds的顺序一致,若果查询的结果在goodsId中不存在则默认添加至返回列表的末尾

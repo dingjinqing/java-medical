@@ -1,26 +1,26 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.Tables.CHANNEL;
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
-import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.TAG;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
-import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
-import static com.vpu.mp.db.shop.Tables.CHANNEL;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_DAYS;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_DAYS;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_CHANNAL_PAGE;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
+import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_SCAN_QRCODE;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_SCAN_QRCODE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_NOT_ACQUIRED;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_CHANNAL_PAGE;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_DAYS;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_DAYS;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
@@ -84,9 +85,9 @@ import com.vpu.mp.service.saas.area.AreaSelectService;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
+import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
-import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 
 /**
  * 
@@ -563,12 +564,12 @@ public class MemberService extends ShopBaseService {
 	 * @return 用户信息，不会为null
 	 */
 	public MemberBasicInfoVo getMemberInfo(Integer userId) {
-		MemberBasicInfoVo member= memberDao.getMemberInfo(userId);
-		return member != null ? member: new MemberBasicInfoVo();
+		return memberDao.getMemberInfo(userId);
 	}
 	
 	public Integer getUserScore(Integer userId) {
-		return getMemberInfo(userId).getScore();
+		MemberBasicInfoVo member = getMemberInfo(userId);
+		return member != null ? member.getScore():NumberUtils.INTEGER_ZERO;
 	}
 	/**
 	 * 获取分销信息

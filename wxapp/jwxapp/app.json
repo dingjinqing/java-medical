@@ -43,7 +43,8 @@
     }
   },
   "usingComponents": {
-    "v-navigation": "/components/custom-navigation/index"
+    "v-navigation": "/components/custom-navigation/index",
+    "v-popup-get-phone-number": "/components/popup/get-phone-number/index"
   },
   "subpackages": [
     {

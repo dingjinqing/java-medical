@@ -22,17 +22,28 @@ import java.util.Objects;
 public class WxAppGroupBuyController extends WxAppBaseController {
 
 
-
-
+    /**
+     * 拼团详情
+     * @param param
+     * @return
+     */
     @PostMapping("/api/wxapp/groupbuy/info")
     public JsonResult getGroupBuyInfo(@RequestBody @Valid GroupBuyInfoParam param){
         WxAppSessionUser user = wxAppAuth.user();
         GroupBuyListRecord groupBuyList = shop().groupBuyList.getGroupBuyListByGroupId(param.getGroupId());
         if (Objects.isNull(groupBuyList)){
-//            logger().debug("拼团不存在或已经删除,[groupId:{}]",param.getGroupId());
+            logger().debug("拼团不存在或已经删除,[groupId:{}]",param.getGroupId());
             return fail(JsonResultCode.GROUP_BUY_GROUPID_DOES_NOT_EXIST);
         }
         GroupBuyInfoVo groupBuyInfo = shop().groupBuy.getGroupBuyInfo(user.getUserId(),groupBuyList.getCreateTime(), param.getGroupId(),groupBuyList.getActivityId(),getLang());
         return success(groupBuyInfo);
+    }
+
+    /**
+     * 获取分享图片
+     * @return
+     */
+    public JsonResult getShareImage(){
+        return success();
     }
 }

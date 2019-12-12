@@ -47,6 +47,7 @@ global.wxComponent({
               { specName: specItem[1], isChecked: true }
             ];
           } else {
+            if (specList[specItem[0]].some(item => item.specName === specItem[1])) return;
             specList[specItem[0]] = [
               ...specList[specItem[0]],
               { specName: specItem[1], isChecked: false }

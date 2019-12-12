@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -258,5 +256,19 @@ public final class DateUtil {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dateFormat);
         LocalDateTime parse = LocalDateTime.parse(date, dtf);
         return Timestamp.valueOf(parse);
+    }
+
+    /**
+     * The constant DATE_1970.
+     */
+    public static final Date DATE_1970 = new Date(0);
+
+    /**
+     * Gets 1970 time stamp.
+     *
+     * @return the 1970 time stamp
+     */
+    public static Timestamp get1970TimeStamp() {
+        return Timestamp.from(DATE_1970.toInstant());
     }
 }

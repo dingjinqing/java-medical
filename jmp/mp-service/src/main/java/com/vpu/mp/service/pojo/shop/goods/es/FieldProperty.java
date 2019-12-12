@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import org.elasticsearch.index.query.QueryBuilder;
 
+import java.util.List;
+
 /**
  *
  * @author 卢光耀
@@ -18,15 +20,19 @@ public class FieldProperty {
 
     private Object value;
 
+    private boolean useFullQuery;
+
     public FieldProperty(String searchName,Object value){
         this.operator = Operator.EQ;
         this.searchName = searchName;
         this.value = value;
+        this.useFullQuery = value instanceof List;
     }
     public FieldProperty(String searchName,Object value,Operator operator){
         this.operator = operator;
         this.searchName = searchName;
         this.value = value;
+        this.useFullQuery = value instanceof List;
     }
 
     public String getSearchName() {
@@ -49,7 +55,14 @@ public class FieldProperty {
         return value;
     }
 
+    public boolean isUseFullQuery() {
+        return useFullQuery;
+    }
+
     public void setValue(Object value) {
         this.value = value;
+        this.useFullQuery = value instanceof List;
     }
+
+
 }

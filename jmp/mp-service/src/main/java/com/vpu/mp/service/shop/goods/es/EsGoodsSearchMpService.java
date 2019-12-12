@@ -22,6 +22,7 @@ import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsDetailBoConverter;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsListMpBoConverter;
 import com.vpu.mp.service.shop.goods.es.convert.param.GoodsListMpConverter;
+import com.vpu.mp.service.shop.goods.es.convert.param.GoodsSearchMpConverter;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
@@ -111,9 +112,10 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
      */
     public PageResult<GoodsListMpBo> queryGoodsByParam(GoodsSearchMpParam mpParam) throws IOException {
         Integer shopId = getShopId();
-
+        if( mpParam.getLabelIds() != null && !mpParam.getLabelIds().isEmpty() ){
+            mpParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(mpParam.getLabelIds(),EsGoodsConstant.GOODS_SEARCH_PAGE));
+        }
         EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);
-
         try {
             PageResult<EsGoods> esGoodsPage = searchGoodsPageByParam(param);
             return esPageConvertVoPage(esGoodsPage);
@@ -147,38 +149,47 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
         Terms sortAggregation = aggregations.get(EsSearchName.SORT_ID);
         List<Integer> sortIds = Lists.newArrayList();
         Map<Integer,Long> sortNumberMap = Maps.newHashMap();
-        sortAggregation.getBuckets().forEach(x->{
-            Integer sortId = Integer.valueOf(x.getKeyAsString());
-            sortNumberMap.put(sortId,x.getDocCount());
-            sortIds.add(sortId);
-        });
-        Map<Short,List<GoodsSortCacheInfo>> sortInfoMap =sortDataHelper.getAndGroup(sortIds);
-        Map<Integer,List<GoodsSortCacheInfo>> childGroupMap = sortInfoMap.get(GoodsConstant.SECOND_LEVEL).stream().
-            collect(Collectors.groupingBy(GoodsSortCacheInfo::getParentId));
-        sortInfoMap.get(GoodsConstant.ROOT_LEVEL).forEach(x->{
-            GoodsSearchSortMpVo sortVo = new GoodsSearchSortMpVo(x.getSortId(),x.getSortName());
-            Long numbers = sortNumberMap.getOrDefault(x.getSortId(),0L);
-            List<GoodsSortCacheInfo> childSortInfos = childGroupMap.get(x.getSortId());
-            if( childSortInfos != null && !childGroupMap.isEmpty() ){
-                List<GoodsSearchSortMpVo> childVos = Lists.newArrayList();
-                for(GoodsSortCacheInfo y: childSortInfos  ){
-                    Long childNum = sortNumberMap.getOrDefault(y.getSortId(),0L);
-                    childVos.add(new GoodsSearchSortMpVo(y.getSortId(),y.getSortName(),childNum));
-                    numbers+=childNum;
-                }
-                sortVo.setGoodsNum(numbers);
-                sortVo.setChildren(childVos);
+        for(  Terms.Bucket bucket :  sortAggregation.getBuckets()){
+            Integer sortId = Integer.valueOf(bucket.getKeyAsString());
+            if( sortId == 0){
+                continue;
             }
-            sortVos.add(sortVo);
-        });
-        vo.setSorts(sortVos);
+            sortNumberMap.put(sortId,bucket.getDocCount());
+            sortIds.add(sortId);
+        }
+        Map<Short,List<GoodsSortCacheInfo>> sortInfoMap =sortDataHelper.getAndGroup(sortIds);
+        if( !sortInfoMap.isEmpty() ){
+            Map<Integer,List<GoodsSortCacheInfo>> childGroupMap = sortInfoMap.get(GoodsConstant.SECOND_LEVEL).stream().
+                collect(Collectors.groupingBy(GoodsSortCacheInfo::getParentId));
+            sortInfoMap.get(GoodsConstant.ROOT_LEVEL).forEach(x->{
+                GoodsSearchSortMpVo sortVo = new GoodsSearchSortMpVo(x.getSortId(),x.getSortName());
+                Long numbers = sortNumberMap.getOrDefault(x.getSortId(),0L);
+                List<GoodsSortCacheInfo> childSortInfos = childGroupMap.get(x.getSortId());
+                if( childSortInfos != null && !childGroupMap.isEmpty() ){
+                    List<GoodsSearchSortMpVo> childVos = Lists.newArrayList();
+                    for(GoodsSortCacheInfo y: childSortInfos  ){
+                        Long childNum = sortNumberMap.getOrDefault(y.getSortId(),0L);
+                        childVos.add(new GoodsSearchSortMpVo(y.getSortId(),y.getSortName(),childNum));
+                        numbers+=childNum;
+                    }
+                    sortVo.setGoodsNum(numbers);
+                    sortVo.setChildren(childVos);
+                }
+                sortVos.add(sortVo);
+            });
+            vo.setSorts(sortVos);
+        }
+
 
         Terms goodsBrandAggregation = aggregations.get(EsSearchName.BRAND_ID);
         List<Integer> brandIds = Lists.newArrayList();
-        goodsBrandAggregation.getBuckets().forEach(x->{
-            Integer brandId = Integer.valueOf(x.getKeyAsString());
+        for(  Terms.Bucket bucket :  goodsBrandAggregation.getBuckets()){
+            Integer brandId = Integer.valueOf(bucket.getKeyAsString());
+            if( brandId == 0){
+                continue;
+            }
             brandIds.add(brandId);
-        });
+        }
         List<GoodsBrandMpPinYinVo> brandVos = goodsBrandDataHelper.getAndGroup(brandIds);
         vo.setGoodsBrands(brandVos);
 
@@ -200,7 +211,7 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
      */
     private SearchRequest assemblySearchRequestForWxGoodsParam(){
         Integer shopId = getShopId();
-        SearchRequest request = new SearchRequest(EsGoodsConstant.LABEL_INDEX_NAME);
+        SearchRequest request = new SearchRequest(EsGoodsConstant.GOODS_INDEX_NAME);
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.fetchSource(false);
         sourceBuilder.query(QueryBuilders.termQuery(EsSearchName.SHOP_ID,shopId));
@@ -243,7 +254,7 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
      * @return {@link EsSearchParam}
      */
     private EsSearchParam assemblyEsSearchParam(GoodsSearchMpParam mpParam,Integer shopId){
-        return EsConvertFactory.getParamConvert(GoodsListMpConverter.class).convert(mpParam,shopId);
+        return EsConvertFactory.getParamConvert(GoodsSearchMpConverter.class).convert(mpParam,shopId);
     }
 
 

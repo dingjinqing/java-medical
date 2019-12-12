@@ -249,11 +249,11 @@ public class GroupBuyListService extends ShopBaseService {
             }
             if (groupBuyRecord.getStartTime().compareTo(date) >0){
                 logger().debug("活动未开始[activityId:{}]",activityId);
-                return ResultMessage.builder().build();
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_STATUS_NOTSTART).build();
             }
             if (groupBuyRecord.getEndTime().compareTo(date)<0){
                 logger().debug("活动已经结束[activityId:{}]",activityId);
-                return ResultMessage.builder().build();
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_STATUS_END).build();
             }
             List<Integer> statusList = Arrays.asList(1,0);
             Integer count = db().selectCount().from(GROUP_BUY_LIST)
@@ -263,25 +263,25 @@ public class GroupBuyListService extends ShopBaseService {
                     .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_SUCCESS)).fetchOneInto(Integer.class);
             if (!groupBuyRecord.getOpenLimit().equals(OPEN_LIMIT_N.shortValue())&&groupBuyRecord.getOpenLimit()>count){
                 logger().debug("该活动开团个数已经达到上限[activityId:{}]",activityId);
-                return ResultMessage.builder().build();
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_OPEN_LIMIT_MAX).build();
             }
         }else {
             GroupBuyListRecord groupBuyListRecord = db().selectFrom(GROUP_BUY_LIST).where(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y))
                     .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).fetchOne();
             if (groupBuyListRecord.getStatus().equals(STATUS_FAILED)){
                 logger().debug("该团已经取消");
-                return ResultMessage.builder().build();
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_STATUS_CANCEL).build();
             }
             if (groupBuyListRecord.getStatus().equals(STATUS_SUCCESS)){
                 logger().debug("该团人数已经满了");
-                return ResultMessage.builder().build();
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX).build();
             }
             Integer count = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.IS_GROUPER.eq(isGrouper))
                     .and(GROUP_BUY_LIST.USER_ID.eq(userId))
                     .and(GROUP_BUY_LIST.STATUS.in(STATUS_SUCCESS, STATUS_ONGOING)).fetchOneInto(Integer.class);
             if (!groupBuyRecord.getJoinLimit().equals(JOIN_LIMIT_N.shortValue())&&groupBuyRecord.getJoinLimit()<=count){
                 logger().debug("该活动参团个数已经达到上限[activityId:{}]",activityId);
-                return ResultMessage.builder().build();
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX).build();
             }
         }
         return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_SUCCESS).flag(true).build();

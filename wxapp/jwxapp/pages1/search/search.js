@@ -8,7 +8,18 @@ global.wxPage({
     dataList: [],
     pageParams: null,
     showFilterDialog:false,
-    action:1, //测试用后续删除
+    keyWords:null,
+    sortItem:0,
+    sortDirection:1,
+    couponSn:null,
+    filterData:{
+      minPrice:null,
+      maxPrice:null,
+      sortId:null,
+      brandIds:[],
+      activityTypes:[],
+      labelIds:[]
+    }
   },
 
   /**
@@ -26,26 +37,58 @@ global.wxPage({
     let currentPage = this.data.pageParams
       ? this.data.pageParams.currentPage
       : 1;
-    let api = parseInt(this.data.action) === 1 ? '/api/wxapp/order/goods/history' : 'api/wxapp/footprint/list'
     util.api(
-      api,
+      '/api/wxapp/goods/search',
       res => {
+        console.log(res)
         if (res.error === 0) {
-          let dataList = res.content.day
           this.setData({
             pageParams: res.content.page,
-            ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
+            ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.dataList
           });
         }
       },
       {
         currentPage: currentPage,
         pageRows: 20,
-        userId: util.getCache('user_id')
+        keyWords:this.data.keyWords,
+        sortItem:this.data.sortItem,
+        sortDirection: this.data.sortDirection,
+        couponSn: this.data.couponSn,
+        ...this.data.filterData
       }
     );
   },
-
+  // 获取
+  getSelectedData(data){
+    let { selectedSort: sortId, selectedBrands: brandIds, selectedLabels: labelIds, selectedActTypes: activityTypes, minPrice, maxPrice} = data.detail
+    console.log(data)
+    this.setData({
+      filterData:{
+        minPrice,
+        maxPrice,
+        sortId,
+        brandIds,
+        labelIds,
+        activityTypes
+      },
+      'pageParams.currentPage': 1,
+      dataList: []
+    })
+    this.requestList()
+  },
+  changeInput(e){
+    this.setData({
+      keyWords: e.detail.value
+    })
+  },
+  inputSearch(){
+    this.setData({
+      'pageParams.currentPage': 1,
+      dataList:[]
+    })
+    this.requestList()
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

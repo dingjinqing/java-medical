@@ -58,6 +58,7 @@ public class JsonResultMessage {
 	public static final String MSG_IMAGE_CATEGORY_IMGCATID_NOT_NULL = "image.category.imgCatId.notNull";
 	public static final String MSG_IMAGE_CATEGORY_IMGCATPARENTID_NOT_NULL = "image.category.imgCatParentId.notNull";
 	public static final String MSG_IMAGE_CATEGORY_IMGCATNAME_NOT_NULL = "image.category.imgCatName.notNull";
+	public static final String MSG_IMAGE_CATEGORY_IMGCATNAME_ROOT_NAME = "image.category.imgCatName.root.name";
 
 	public static final String MSG_VIDEO_UPLOAD_FAILED = "video.upload.failed";
 	public static final String MSG_VIDEO_FORMAT_INVALID = "video.format.invalid";
@@ -210,6 +211,12 @@ public class JsonResultMessage {
 	public static final String GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING="group.buy.activity.goods.overlapping";
 	public static final String GROUP_BUY_GROUPID_DOES_NOT_EXIST="group.buy.groupId.does.not.exist";
 	public static final String GROUP_BUY_ACTIVITY_STATUS_DISABLE="group.buy.activity.status.disable";
+	public static final String GROUP_BUY_ACTIVITY_STATUS_NOTSTART="group.buy.activity.status.not.start";
+	public static final String GROUP_BUY_ACTIVITY_STATUS_END="group.buy.activity.status.end";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_STATUS_CANCEL="group.buy.activity.group.status.cancel";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_OPEN_LIMIT_MAX="group.buy.activity.group.open.limit.max";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
     /**
      * 营销-秒杀
      */
@@ -414,98 +421,100 @@ public class JsonResultMessage {
 	/**
 	 * 订单
 	 */
-	public static final String MSG_ORDER = "order";
-    public static final String MSG_ORDER_ORDER_SN_NOT_NULL = "order_sn_not_null";
-    public static final String MSG_ORDER_ORDER_ID_NOT_NULL = "order_id_not_null";
-
-    public static final String MSG_ORDER_OPERATE_NO_INSTANCEOF = "order_operate_no_instanceof";
-	public static final String MSG_ORDER_RETID_NOT_NULL = "order_retid_not_null";
-	public static final String MSG_ORDER_RETURN_ORDER_SN_NOT_NULL = "order_return_order_sn_not_null";
-	public static final String MSG_ORDER_ORDERSN_NOT_NULL = "order_ordersn_not_null";
-	public static final String MSG_ORDER_REMARK_NOT_NULL = "order_remark_not_null";
-	public static final String MSG_ORDER_REMARK_TYPE_NOT_NULL = "order_remark_type_not_null";
-	public static final String MSG_ORDER_RETURN_WX_FAILL ="order_return_wx_fail";
-	public static final String MSG_ORDER_RETURN_METHOD_REFLECT_ERROR = "order_return_method_reflect_error";
-	public static final String MSG_ORDER_RETURN_AFTER_RETURNAMOUNT_GREAT_THAN_ZERO ="order_return_after_returnamount_great_than_zero";
-	public static final String MSG_ORDER_RETURN_ING_RETURNMETHOD_ERROR = "order_return_ing_returnmethod_error";
-	public static final String MSG_ORDER_RETURN_MANUAL_INCONSISTENT_AMOUNT = "order_return_manual_inconsistent_amount";
-	public static final String MSG_ORDER_FINISH_RETURN_STATUS_ERROR = "order_finish_return_status_error";
-	public static final String MSG_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION = "order_return_rollback_no_mpexception";
-	public static final String MSG_ORDER_RETURN_MONEY_EXCEEDED = "order_return_money_exceeded";
-	public static final String MSG_ORDER_RETURN_STATUS_NOT_SATISFIED = "order_return_status_not_satisfied";
-	public static final String MSG_ORDER_RETURN_WXPAYREFUND_NO_RECORD = "order_return_wxpayrefund_no_record";
-	public static final String MSG_ORDER_RETURN_WXPAYREFUND_ERROR = "order_return_wxpayrefund_error";
-	public static final String MSG_ORDER_RETURN_NOT_SUPPORT_RETURN_TYPE = "order_return_not_support_return_type";
-	public static final String MSG_ORDER_RETURN_NO_SELECT_GOODS = "order_return_no_select_goods";
-	public static final String MSG_ORDER_RETURN_NOT_NULL_RETURNTYPE = "order_return_not_null_returntype";
-	public static final String MSG_ORDER_RETURN_NOT_NULL_RETURNMONEY = "order_return_not_null_returnmoney";
-	public static final String MSG_ORDER_RETURN_NOT_NULL_SHIPPINGFEE = "order_return_not_null_shippingfee";
-	public static final String MSG_ORDER_RETURN_GOODS_RETURN_COMPLETED = "order_return_goods_return_completed";
-	public static final String MSG_ORDER_RETURN_GOODS_RETURN_NUMBER_ERROR = "order_return_goods_return_number_error";
-	public static final String MSG_ORDER_RETURN_NUMBER_ERROR = "order_return_number_error";
-	public static final String MSG_ORDER_RETURN_GOODS_NO_CAN_RETURN = "order_return_goods_no_can_return";
-	public static final String MSG_ORDER_RETURN_MANUAL_MONEY_ERROR = "order_return_manual_money_error";
-	public static final String MSG_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR = "order_return_operation_not_supported_because_status_error";
-	public static final String MSG_ORDER_RETURN_AGREE_RETURN_BECAUSE_STATUS_ERROR = "order_return_agree_return_because_status_error";
-	public static final String MSG_ORDER_RETURN_RETURN_SHIPPING_FEE_EXCESS = "order_return_return_shipping_fee_excess";
-	public static final String MSG_ORDER_RETURN_RETURN_SHIPPING_FEE_NOT_ZERO = "order_return_return_shipping_fee_not_zero";
-	public static final String MSG_ORDER_CANCEL_NOT_CANCEL = "order_cancel_not_cancel";
-	public static final String MSG_ORDER_CANCEL_FAIL = "order_cancel_fail";
-	public static final String MSG_ORDER_CLOSE_NOT_CLOSE = "order_close_not_close";
-	public static final String MSG_ORDER_CLOSE_FAIL = "order_close_fail";
-	public static final String MSG_ORDER_RETURN_RETURN_ORDER_NOT_EXIST = "order_return_return_order_not_exist";
-	public static final String MSG_ORDER_VERIFY_OPERATION_NOT_SUPPORTED = "order_verify_operation_not_supported";
-	public static final String MSG_ORDER_VERIFY_CODE_ERROR = "order_verify_code_error";
-	public static final String MSG_ORDER_FINISH_OPERATION_NOT_SUPPORTED = "order_finish_operation_not_supported";
-	public static final String MSG_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED = "order_receive_operation_not_supported";
-	public static final String MSG_ORDER_REMIND_OPERATION_NOT_SUPPORTED = "order_remind_operation_not_supported";
-	public static final String MSG_ORDER_REMIND_OPERATION_LIMIT ="order_remind_operation_limit";
-	public static final String MSG_ORDER_REMIND_OPERATION_LIMIT_TODAY = "order_remind_operation_limit_today";
-	public static final String MSG_ORDER_VERIFY_IFCHECK_NOT_NULL = "order_verify_ifcheck_not_null";
-	public static final String MSG_ORDER_EXTEND_RECEIVE_TIME_NOT_NULL = "order_extend_receive_time_not_null";
-	public static final String MSG_ORDER_EXTEND_RECEIVE_ONLY_ONE ="order_extend_receive_only_one";
-	public static final String MSG_ORDER_EXTEND_RECEIVE_NO_SHIPPED = "order_extend_receive_no_shipped";
-	public static final String MSG_ORDER_EXTEND_RECEIVE_NOT_SUPPORTED ="order_extend_receive_not_supported";
-	public static final String MSG_ORDER_EXTEND_RECEIVE_TIME_NOT_LT_AUTOTIME ="order_extend_receive_time_not_lt_autotime";
-	public static final String MSG_ORDER_EXTEND_RECEIVE_NOW_AUTOTIME_INTERVAL_GT_TWO_DAYS ="order_extend_receive_now_autotime_interval_gt_two_days";
-	public static final String MSG_ORDER_EXTEND_RECEIVE_ADMIN_SET_MORE_TIME ="order_extend_receive_admin_set_more_time";
-	public static final String MSG_ORDER_DELETE_OPERATION_NOT_SUPPORTED = "order_delete_operation_not_supported";
-	/**下单参数*/
-	public static final String MSG_ORDER_GOODS_NOT_EXIST = "order_goods_not_exist";
-	public static final String MSG_ORDER_GOODS_NO_SALE = "order_goods_no_sale";
-	public static final String MSG_ORDER_GOODS_OUT_OF_STOCK = "order_goods_out_of_stock";
-    public static final String MSG_ORDER_GOODS_NO_ZERO = "order_goods_no_zero";
-    public static final String MSG_ORDER_CALCULATE_SHIPPING_FEE_ERROR = "order_calculate_shipping_fee_error";
-    public static final String MSG_ORDER_PAY_WAY_NO_NULL = "ORDER_PAY_WAY_NO_NULL";
-    public static final String MSG_ORDER_ADDRESS_NO_NULL = "order_address_no_null";
-    public static final String MSG_ORDER_CARD_INVALID = "order_card_invalid";
-    public static final String MSG_ORDER_COUPON_INVALID = "order_coupon_invalid";
-    public static final String MSG_ORDER_DELIVER_TYPE_NO_NULL = "order_deliver_type_no_null";
-    public static final String MSG_ORDER_SCORE_NOT_ENOUGH = "order_score_not_enough";
-    public static final String MSG_ORDER_ACCOUNT_NOT_ENOUGH = "order_account_not_enough";
-    public static final String MSG_ORDER_CARD_NOT_ENOUGH = "order_card_not_enough";
-    public static final String MSG_ORDER_AMOUNT_CHANGE = "order_amount_change";
-    public static final String MSG_ORDER_SCORE_LIMIT = "order_score_limit";
-    public static final String MSG_ORDER_MCARD_TP_LIMIT_LIMIT = "order_mcard_tp_limit_limit";
-    public static final String MSG_ORDER_DELIVER_TYPE_NO_SUPPORT = "order_deliver_type_no_support";
-    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_WX = "order_pay_way_no_support_wx";
-    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_COD = "order_pay_way_no_support_cod" ;
-    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_ACCOUNT = "order_pay_way_no_support_account";
-    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_SCORE = "order_pay_way_no_support_score";
-    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_CARD = "order_pay_way_no_support_card";
-    public static final String MSG_ORDER_GOODS_NO_EXIST = "order_goods_no_exist";
-    public static final String MSG_ORDER_GOODS_LOW_STOCK = "order_goods_low_stock";
-    public static final String MSG_ORDER_GOODS_GET_LOCK_FAIL = "order_goods_get_lock_fail";
-    public static final String MSG_ORDER_UPDATE_STOCK_FAIL = "order_update_stock_fail";
-    public static final String MSG_ORDER_WXPAY_UNIFIEDORDER_FAIL = "order_wxpay_unifiedorder_fail";
-    public static final String MSG_ORDER_DATABASE_ERROR = "order_database_error";
-    public static final String MSG_ORDER_GOODS_LIMIT_MIN = "MSG_ORDER_GOODS_LIMIT_MIN";
-    public static final String MSG_ORDER_GOODS_LIMIT_MAX = "MSG_ORDER_GOODS_LIMIT_MAX";
-    public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "_order_topay_status_not_wait_pay";
-    public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order_topay_bk_pay_not_start";
-    public static final String MSG_ORDER_TOPAY_EXPIRED = "order_topay_expired";
+    public static final String MSG_ORDER = "order";
+    public static final String MSG_ORDER_ORDER_SN_NOT_NULL = "order.sn.not.null";
+    public static final String MSG_ORDER_ORDER_ID_NOT_NULL = "order.id.not.null";
+    public static final String MSG_ORDER_OPERATE_NO_INSTANCEOF = "order.operate.no.instanceof";
+    public static final String MSG_ORDER_NOT_EXIST = "order.not.exist";
+    public static final String MSG_ORDER_RETID_NOT_NULL = "order.retid.not.null";
+    public static final String MSG_ORDER_RETURN_ORDER_SN_NOT_NULL = "order.return.order.sn.not.null";
+    public static final String MSG_ORDER_REMARK_NOT_NULL = "order.remark.not.null";
+    public static final String MSG_ORDER_REMARK_TYPE_NOT_NULL = "order.remark.type.not.null";
+    public static final String MSG_ORDER_RETURN_WX_FAILL = "order.return.wx.fail";
+    public static final String MSG_ORDER_RETURN_METHOD_REFLECT_ERROR = "order.return.method.reflect.error";
+    public static final String MSG_ORDER_RETURN_AFTER_RETURNAMOUNT_GREAT_THAN_ZERO = "order.return.after.returnamount.great.than.zero";
+    public static final String MSG_ORDER_RETURNING_RETURN_METHOD_ERROR = "order.returning.return.method.error";
+    public static final String MSG_ORDER_RETURN_MANUAL_INCONSISTENT_AMOUNT = "order.return.manual.inconsistent.amount";
+    public static final String MSG_ORDER_FINISH_RETURN_STATUS_ERROR = "order.finish.return.status.error";
+    public static final String MSG_ORDER_RETURN_ROLLBACK_NO_MPEXCEPTION = "order.return.rollback.no.mpexception";
+    public static final String MSG_ORDER_RETURN_MONEY_EXCEEDED = "order.return.money.exceeded";
+    public static final String MSG_ORDER_RETURN_STATUS_NOT_SATISFIED = "order.return.status.not.satisfied";
+    public static final String MSG_ORDER_RETURN_WXPAYREFUND_NO_RECORD = "order.return.wxpayrefund.no.record";
+    public static final String MSG_ORDER_RETURN_WXPAYREFUND_ERROR = "order.return.wxpayrefund.error";
+    public static final String MSG_ORDER_RETURN_NOT_SUPPORT_RETURN_TYPE = "order.return.not.support.return.type";
+    public static final String MSG_ORDER_RETURN_NO_SELECT_GOODS = "order.return.no.select.goods";
+    public static final String MSG_ORDER_RETURN_NOT_NULL_RETURNTYPE = "order.return.not.null.returntype";
+    public static final String MSG_ORDER_RETURN_NOT_NULL_RETURNMONEY = "order.return.not.null.returnmoney";
+    public static final String MSG_ORDER_RETURN_NOT_NULL_SHIPPINGFEE = "order.return.not.null.shippingfee";
+    public static final String MSG_ORDER_RETURN_GOODS_RETURN_COMPLETED = "order.return.goods.return.completed";
+    public static final String MSG_ORDER_RETURN_GOODS_RETURN_NUMBER_ERROR = "order.return.goods.return.number.error";
+    public static final String MSG_ORDER_RETURN_GOODS_NO_CAN_RETURN = "order.return.goods.no.can.return";
+    public static final String MSG_ORDER_RETURN_MANUAL_MONEY_ERROR = "order.return.manual.money.error";
+    public static final String MSG_ORDER_RETURN_OPERATION_NOT_SUPPORTED_BECAUSE_STATUS_ERROR = "order.return.operation.not.supported.because.status.error";
+    public static final String MSG_ORDER_RETURN_RETURN_SHIPPING_FEE_EXCESS = "order.return.return.shipping.fee.excess";
+    public static final String MSG_ORDER_RETURN_RETURN_SHIPPING_FEE_NOT_ZERO = "order.return.return.shipping.fee.not.zero";
+    public static final String MSG_ORDER_CANCEL_NOT_CANCEL = "order.cancel.not.cancel";
+    public static final String MSG_ORDER_CANCEL_FAIL = "order.cancel.fail";
+    public static final String MSG_ORDER_CLOSE_NOT_CLOSE = "order.close.not.close";
+    public static final String MSG_ORDER_CLOSE_FAIL = "order.close.fail";
+    public static final String MSG_ORDER_RETURN_RETURN_ORDER_NOT_EXIST = "order.return.return.order.not.exist";
+    public static final String MSG_ORDER_VERIFY_OPERATION_NOT_SUPPORTED = "order.verify.operation.not.supported";
+    public static final String MSG_ORDER_VERIFY_CODE_ERROR = "order.verify.code.error";
+    public static final String MSG_ORDER_FINISH_OPERATION_NOT_SUPPORTED = "order.finish.operation.not.supported";
+    public static final String MSG_ORDER_RECEIVE_OPERATION_NOT_SUPPORTED = "order.receive.operation.not.supported";
+    public static final String MSG_ORDER_REMIND_OPERATION_NOT_SUPPORTED = "order.remind.operation.not.supported";
+    public static final String MSG_ORDER_REMIND_OPERATION_LIMIT = "order.remind.operation.limit";
+    public static final String MSG_ORDER_REMIND_OPERATION_LIMIT_TODAY = "order.remind.operation.limit.today";
+    public static final String MSG_ORDER_VERIFY_IFCHECK_NOT_NULL = "order.verify.ifcheck.not.null";
+    public static final String MSG_ORDER_EXTEND_RECEIVE_TIME_NOT_NULL = "order.extend.receive.time.not.null";
+    public static final String MSG_ORDER_EXTEND_RECEIVE_ONLY_ONE = "order.extend.receive.only.one";
+    public static final String MSG_ORDER_EXTEND_RECEIVE_NO_SHIPPED = "order.extend.receive.no.shipped";
+    public static final String MSG_ORDER_EXTEND_RECEIVE_NOT_SUPPORTED = "order.extend.receive.not.supported";
+    public static final String MSG_ORDER_EXTEND_RECEIVE_TIME_NOT_LT_AUTOTIME = "order.extend.receive.time.not.lt.autotime";
+    public static final String MSG_ORDER_EXTEND_RECEIVE_NOW_AUTOTIME_INTERVAL_GT_TWO_DAYS = "order.extend.receive.now.autotime.interval.gt.two.days";
+    public static final String MSG_ORDER_EXTEND_RECEIVE_ADMIN_SET_MORE_TIME = "order.extend.receive.admin.set.more.time";
+    public static final String MSG_ORDER_DELETE_OPERATION_NOT_SUPPORTED = "order.delete.operation.not.supported";
+    /**下单参数*/
+    public static final String MSG_ORDER_GOODS_NOT_EXIST = "order.goods.not.exist";
+    public static final String MSG_ORDER_GOODS_NO_SALE = "order.goods.no.sale";
+    public static final String MSG_ORDER_GOODS_OUT_OF_STOCK = "order.goods.out.of.stock";
+    public static final String MSG_ORDER_GOODS_NO_ZERO = "order.goods.no.zero";
+    public static final String MSG_ORDER_CALCULATE_SHIPPING_FEE_ERROR = "order.calculate.shipping.fee.error";
+    public static final String MSG_ORDER_PAY_WAY_NO_NULL = "order.pay.way.no.null";
+    public static final String MSG_ORDER_ADDRESS_NO_NULL = "order.address.no.null";
+    public static final String MSG_ORDER_CARD_INVALID = "order.card.invalid";
+    public static final String MSG_ORDER_COUPON_INVALID = "order.coupon.invalid";
+    public static final String MSG_ORDER_DELIVER_TYPE_NO_NULL = "order.deliver.type.no.null";
+    public static final String MSG_ORDER_SCORE_NOT_ENOUGH = "order.score.not.enough";
+    public static final String MSG_ORDER_ACCOUNT_NOT_ENOUGH = "order.account.not.enough";
+    public static final String MSG_ORDER_CARD_NOT_ENOUGH = "order.card.not.enough";
+    public static final String MSG_ORDER_AMOUNT_CHANGE = "order.amount.change";
+    public static final String MSG_ORDER_SCORE_LIMIT = "order.score.limit";
+    public static final String MSG_ORDER_MCARD_TP_LIMIT_LIMIT = "order.mcard.tp.limit.limit";
+    public static final String MSG_ORDER_DELIVER_TYPE_NO_SUPPORT = "order.deliver.type.no.support";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_WX = "order.pay.way.no.support.wx";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_COD = "order.pay.way.no.support.cod" ;
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_ACCOUNT = "order.pay.way.no.support.account";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_SCORE = "order.pay.way.no.support.score";
+    public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_CARD = "order.pay.way.no.support.card";
+    public static final String MSG_ORDER_GOODS_NO_EXIST = "order.goods.no.exist";
+    public static final String MSG_ORDER_GOODS_LOW_STOCK = "order.goods.low.stock";
+    public static final String MSG_ORDER_GOODS_GET_LOCK_FAIL = "order.goods.get.lock.fail";
+    public static final String MSG_ORDER_UPDATE_STOCK_FAIL = "order.update.stock.fail";
+    public static final String MSG_ORDER_WXPAY_UNIFIEDORDER_FAIL = "order.wxpay.unifiedorder.fail";
+    public static final String MSG_ORDER_DATABASE_ERROR = "order.database.error";
+    public static final String MSG_ORDER_GOODS_LIMIT_MIN = "order.goods.limit.min";
+    public static final String MSG_ORDER_GOODS_LIMIT_MAX = "order.goods.limit.max";
+    public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
+    public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
+    public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
     /**订单支付*/
-    public static final String MSG_ORDER_NOT_TO_WAIT_DELIVER = "order_not_to_wait_deliver";
+    public static final String MSG_ORDER_NOT_TO_WAIT_DELIVER = "order.not.to.wait.deliver";
+    /**订单发货*/
+    public static final String MSG_ORDER_SHIPPING_SHIPPINGNO_NOT_NULL = "order.shipping.shippingno.not.null";
+    public static final String MSG_ORDER_SHIPPING_SHIPPINGID_NOT_NULL = "order.shipping.shippingid.not.null";
+    public static final String MSG_ORDER_SHIPPING_SHIPGOODS_NOT_NULL = "order.shipping.shipgoods.not.null";
+
 
     public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
 	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
@@ -695,6 +704,5 @@ public class JsonResultMessage {
      *  微信支付
      */
     public static final String MSG_WX_PAY_PREPAY_ID_IS_NULL ="wx_pay_prepay_id_is_null";
-
 
 }

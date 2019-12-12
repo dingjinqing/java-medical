@@ -297,10 +297,11 @@ export default {
   },
   watch: {
     clickNode_ (newData, oldData) {
+      console.log(newData, 'ssss')
       this.Initialization_nodeClick(newData)
     },
     allNodes_ (newData, oldData) {
-      // console.log(newData)
+      console.log(newData)
       // 初始化图片查询数据
       if (newData.content) {
         this.Initialization_allTree(newData)
@@ -440,11 +441,16 @@ export default {
         fd.append('needImgWidth', img.width)
         fd.append('needImgHeight', img.height)
         fd.append('imgCatId', _this.firstNodeId)
+        localStorage.setItem('contentType', 'application/x-www-form-urlencoded;charset=UTF-8')
         upmoreImgsRequest(fd).then((res) => {
           console.log(res)
           if (res.error === 0) {
+            localStorage.setItem('contentType', 'application/json;charset=UTF-8')
             _this.detailImgsSearch()
           }
+        }).catch(err => {
+          console.log(err)
+          localStorage.setItem('contentType', 'application/json;charset=UTF-8')
         })
       }
       img.src = _URL.createObjectURL(file)
@@ -660,7 +666,7 @@ export default {
     clickUserPic (flag) {
       console.log(flag)
       this.clickUserPicFlag = flag
-      this.detailImgsSearch()
+      // this.detailImgsSearch()
     },
     handleToResetPage () {
       this.currentPage3 = 1
