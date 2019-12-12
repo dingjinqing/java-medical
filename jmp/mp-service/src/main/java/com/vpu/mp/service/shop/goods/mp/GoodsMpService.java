@@ -62,11 +62,12 @@ public class GoodsMpService extends ShopBaseService {
     ProcessorFactoryBuilder processorFactoryBuilder;
 
     @Autowired
+    EsGoodsSearchMpService esGoodsSearchMpService;
+
+    @Autowired
     protected UpYunConfig upYunConfig;
     @Autowired
     protected Calculate calculate;
-    @Autowired
-    protected EsGoodsSearchMpService esGoodsSearchMpService;
 
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
@@ -305,8 +306,12 @@ public class GoodsMpService extends ShopBaseService {
      * @return {@link GoodsSearchFilterConditionMpVo}
      */
     public GoodsSearchFilterConditionMpVo getGoodsSearchFilterCondition() {
-        //TODO es 反推待实现
-        return new GoodsSearchFilterConditionMpVo();
+        try {
+            return esGoodsSearchMpService.getGoodsParam();
+        } catch (Exception e) {
+            logger().debug("es 小程序-商品搜索-条件反推错误："+e.getMessage());
+            return new GoodsSearchFilterConditionMpVo();
+        }
     }
 
     /**
@@ -315,9 +320,20 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
-    public List<GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
-        //TODO Es搜索
-        return null;
+    public PageResult<? extends GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
+        PageResult<GoodsListMpBo> pageResult=new PageResult<>();
+        try {
+            pageResult= esGoodsSearchMpService.queryGoodsByParam(param);
+        } catch (IOException e) {
+            logger().debug("小程序-商品搜索异常："+e.getMessage());
+            if (param.getKeyWords() != null) {
+                Condition condition = buildPageIndexCondition(new GoodsListMpParam());
+                condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
+                pageResult.dataList =  findActivityGoodsListCapsulesDao(condition,null,param.getCurrentPage(),param.getPageRows(),null);
+            }
+        }
+        disposeGoodsList(pageResult.dataList,param.getUserId());
+        return pageResult;
     }
 
 

@@ -117,7 +117,6 @@ export default {
     },
     'ruleForm.fixedDate': {
       handler (newName, oldName) {
-        debugger
         console.log(newName, oldName)
         if (oldName !== undefined) {
           this.val.fixedDate = newName
@@ -143,7 +142,6 @@ export default {
   },
   data () {
     let validateFixDate = (rule, value, callback) => {
-      debugger
       if (this.ruleForm.expiredType === '0') {
         console.log(this.ruleForm.fixedDate)
         if (this.ruleForm.fixedDate) {
