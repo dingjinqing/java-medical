@@ -95,15 +95,22 @@
               <div class="header">邀请码：</div>
             </td>
 
-            <td style="width: 120px;">分销员分组</td>
+            <td
+              style="width: 120px;"
+              v-if="activeName === '0'"
+            >分销员分组</td>
+            <td
+              style="width: 170px;"
+              v-if="activeName !== '0'"
+            >审核时间</td>
             <td style="width: 100px;">审核状态</td>
             <td
               style="width: 170px;"
-              v-if="item.status === '待审核'"
+              v-if="activeName === '0'"
             >操作</td>
             <td
               style="width: 170px;"
-              v-if="item.status === '未通过'"
+              v-if="activeName === '2'"
             >未通过原因</td>
           </tr>
 
@@ -122,6 +129,7 @@
             <td
               rowspan="5"
               class="middle"
+              v-if="activeName === '0'"
             >
               <p>{{ item.group }}</p>
               <p
@@ -132,11 +140,16 @@
             <td
               rowspan="5"
               class="middle"
+              v-if="activeName !== '0'"
+            >2019-12-12 00:00:00</td>
+            <td
+              rowspan="5"
+              class="middle"
             >{{ item.status }}</td>
             <td
               rowspan="5"
               class="middle"
-              v-if="item.status === '待审核'"
+              v-if="activeName === '0'"
             >
               <el-button
                 size="small"
@@ -155,10 +168,9 @@
             <td
               rowspan="5"
               class="middle"
-              v-if="item.status === '未通过'"
-            >
+              v-if="activeName === '2'"
+            >不通过理由</td>
 
-            </td>
           </tr>
           <tr v-if="item.userId !== ''">
             <td>性别</td>
@@ -527,17 +539,14 @@ export default {
   }
   .header {
     display: inline-block;
-    width: 15%;
-  }
-  .header:nth-child(1) {
-    margin-left: 10px;
-  }
-  .header:nth-child(4) {
     width: 25%;
   }
-  .header:nth-child(3),
-  .header:nth-child(5) {
-    width: 20%;
+  .header:first-child {
+    margin-left: 10px;
+    width: 15%;
+  }
+  .header:nth-child(2) {
+    width: 18%;
   }
   .active {
     color: #5a8bff;

@@ -58,9 +58,9 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
             if (goodsIdMap.get(capsule.getGoodsId()) != null) {
                 capsule.setLabel(goodsIdMap.get(capsule.getGoodsId()));
             } else if (catIdMap.get(capsule.getCatId()) != null) {
-                capsule.setLabel(goodsIdMap.get(capsule.getCatId()));
+                capsule.setLabel(catIdMap.get(capsule.getCatId()));
             } else if (sortIdMap.get(capsule.getSortId()) != null) {
-                capsule.setLabel(goodsIdMap.get(capsule.getSortId()));
+                capsule.setLabel(sortIdMap.get(capsule.getSortId()));
             } else if (allGoodsMap.size() > 0) {
                 capsule.setLabel(allGoodsMap.get(GoodsConstant.LABEL_GTA_DEFAULT_VALUE));
             }
