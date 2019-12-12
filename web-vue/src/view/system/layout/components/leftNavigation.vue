@@ -78,7 +78,8 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/system/icon_left/essay_admin.png',
             imgUrl_h: this.$imageHost + '/image/system/icon_left/essay_admin_h.png',
-            span: '文章管理'
+            span: '文章管理',
+            routeName: 'essayAdmin'
           },
           {
             imgUrl: this.$imageHost + '/image/system/icon_left/picture_space.png',
