@@ -44,18 +44,19 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
         Condition catIdsCondition = GOODS_LABEL_COUPLE.GTA_ID.in(catIds).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.CATTYPE.getCode()));
         Condition sortIdsCondition = GOODS_LABEL_COUPLE.GTA_ID.in(sortIds).and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode()));
         Condition allGoodsCondition =  GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode());
-
+        // 先根据标签关联类型进行分组，然后组内再根据具体的类型id值分组
         Map<Byte, Map<Integer, List<Record4<String, Short, Byte, Integer>>>> goodsLabelsMap = db().select(GOODS_LABEL.NAME, GOODS_LABEL.LIST_PATTERN, GOODS_LABEL_COUPLE.TYPE, GOODS_LABEL_COUPLE.GTA_ID).from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
             .where(GOODS_LABEL.GOODS_LIST.eq(GoodsConstant.SHOW_LABEL)).and(GOODS_LABEL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(goodsIdsCondition.or(catIdsCondition).or(sortIdsCondition).or(allGoodsCondition))
-            .orderBy(GOODS_LABEL.LEVEL.asc(), GOODS_LABEL.CREATE_TIME)
+            .orderBy(GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME)
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GOODS_LABEL_COUPLE.TYPE), Collectors.groupingBy(x -> x.get(GOODS_LABEL_COUPLE.GTA_ID))));
 
         Map<Byte,Map<Integer, GoodsLabelMpVo>> returnMap = new HashMap<>(4);
-
+        // 遍历4中分组类型
         goodsLabelsMap.forEach((key,value)->{
             Map<Integer, GoodsLabelMpVo> innerMap = new HashMap<>(value.size());
             returnMap.put(key,innerMap);
+            // 遍历类型中的每一种类型id
             value.forEach((innerKey,innerValue)->{
                 GoodsLabelMpVo labelInfo = new GoodsLabelMpVo();
                 Record4<String, Short, Byte, Integer> record4 = innerValue.get(0);
@@ -64,7 +65,7 @@ public class GoodsLabelProcessorDao extends ShopBaseService {
                 innerMap.put(innerKey,labelInfo);
             });
         });
-
+        // 添加默认值，防止出现空指针
         returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(),new HashMap<>(0));
         returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.CATTYPE.getCode(),new HashMap<>(0));
         returnMap.putIfAbsent(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode(),new HashMap<>(0));
