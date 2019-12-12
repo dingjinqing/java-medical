@@ -201,8 +201,8 @@ public class EsAssemblyDataService extends ShopBaseService {
 
     private void assemblyBrandAndSale(EsGoods esGoods) {
         Integer brandId = esGoods.getBrandId();
-        if (brandId == null) {
-            log.error("商品【{}】没有设置商家分类", esGoods.getGoodsId());
+        if (brandId == null || brandId == 0) {
+            log.warn("商品【{}】没有设置商品品牌", esGoods.getGoodsId());
             return;
         }
         esGoods.setBrandName(
