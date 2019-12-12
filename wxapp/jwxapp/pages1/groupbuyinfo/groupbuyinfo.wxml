@@ -1,20 +1,33 @@
 <!-- 拼团详情：pages/groupbuyinfo/groupbuyinfo.wxml -->
-<include src="../common/header.wxml" />
+<include src="/pages/common/header.wxml" />
 <view class='main-container'>
-  <block wx:if="{{groupbuyInfo.is_delete == 0}}">
+  <block>
+    <!-- 下载海报 -->
+    <block wx:if="{{ islogin }}">
+      <view class='share_img_btn' wx:if='{{!(groupbuyInfo.statusInfo.status == 0) }}' bindtap='go_share'>
+        <view>下载</view>
+        <view>海报</view>
+      </view>
+    </block>
+    <block wx:else>
+      <button class='share_img_btn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+        <view>下载</view>
+        <view>海报</view>
+      </button>
+    </block>
     <!-- 拼团商品信息 -->
     <view class='group_goods clearfix'>
       <view class='goods_image'>
-        <image src='{{groupbuyInfo.goodsInfo.goodsImg}}' />
+        <image wx:if="{{groupbuyInfo.goodsInfo.goodsImg}}" src='{{imageUrl}}{{groupbuyInfo.goodsInfo.goodsImg}}' />
       </view>
       <view class='goods_info'>
         <view class='goods_name'>{{groupbuyInfo.goodsInfo.goodsName}}</view>
         <view class='goods_price'>
           <view>
-            {{groupbuyInfo.pinInfo.limitAmount}}人拼团价
+            {{groupbuyInfo.groupBuyDefineInfo.limitAmount}}人拼团价
             <text decode="{{true}}" space="{{true}}">&nbsp;&nbsp;</text>
             ￥
-            <text style='font-size:32rpx;'>{{groupbuyInfo.goodsInfo.pinShopPrice}}</text>
+            <text style='font-size:32rpx;'>{{groupbuyInfo.goodsInfo.minGroupBuyPrice}}</text>
           </view>
           <view class='ori_price'>
             单买价
@@ -26,12 +39,12 @@
     </view>
     <!-- 已经成团人数 -->
     <view class='grouped_info'>
-      <view class='trace_person trace' wx:if="{{groupbuyInfo.canPinGroup.status != 2}}">
+      <view class='trace_person trace' wx:if="{{groupbuyInfo.statusInfo.status != 2}}">
         还差
-        <text>{{groupbuyInfo.pinInfo.limitNum}}人</text>
+        <text>{{groupbuyInfo.groupBuyDefineInfo.show_noperson}}人</text>
         拼团成功
       </view>
-      <view class='trace_times trace' wx:if="{{groupbuyInfo.canPinGroup.status != 1}}">
+      <view class='trace_times trace' wx:if="{{groupbuyInfo.statusInfo.status != 1}}">
         剩余
         <text decode="{{true}}" space="{{true}}">&nbsp;</text>
         <text>{{clock}}</text>
@@ -39,51 +52,51 @@
         结束
       </view>
       <view class='grouped_person'>
-        <block wx:for="{{groupbuyInfo.pin_user_list}}" wx:key="index">
+        <block wx:for="{{groupbuyInfo.userInfoList}}" wx:key="index">
           <view>
-            <image src='{{item.user_avatar}}' mode='widthFix' />
+            <image src='{{item.userAvatar}}' mode='widthFix' />
           </view>
         </block>
-        <view wx:if="{{groupbuyInfo.pinInfo.show_noperson > 0}}">
+        <view wx:if="{{groupbuyInfo.groupBuyDefineInfo.show_noperson > 0}}">
           <image src='{{img_noperson}}' mode='widthFix' />
         </view>
-        <view wx:if="{{groupbuyInfo.pinInfo.show_noperson > 1}}">
+        <view wx:if="{{groupbuyInfo.groupBuyDefineInfo.show_noperson > 1}}">
           <image src='{{img_noperson}}' mode='widthFix' />
         </view>
-        <view wx:if="{{groupbuyInfo.pinInfo.show_noperson > 2}}">
+        <view wx:if="{{groupbuyInfo.groupBuyDefineInfo.show_noperson > 2}}">
           <image src='{{img_noperson}}' mode='widthFix' />
         </view>
-        <view wx:if="{{groupbuyInfo.pinInfo.show_noperson > 3}}">
+        <view wx:if="{{groupbuyInfo.groupBuyDefineInfo.show_noperson > 3}}">
           <image src='{{img_noperson}}' mode='widthFix' />
         </view>
-        <view wx:if="{{groupbuyInfo.pinInfo.limit_amount > 5}}">
+        <view wx:if="{{groupbuyInfo.groupBuyDefineInfo.limit_amount > 5}}">
           <image src='{{img_otherperson}}' mode='widthFix' />
         </view>
       </view>
-      <block wx:if="{{getsq == true || click_num == true}}">
-        <view class='btn_to_group' data-group_type="{{groupbuyInfo.pinInfo.activity_type}}" bindtap='toJoin' wx:if="{{groupbuyInfo.canPinGroup.status == 0}}">
+      <block wx:if="{{islogin == true}}">
+        <view class='btn_to_group' bindtap='toJoin' wx:if="{{groupbuyInfo.statusInfo.status == 0}}">
           我要参团
         </view>
-        <button class='btn_to_group buttins' open-type="share" wx:if="{{groupbuyInfo.canPinGroup.status == 3}}">
+        <button class='btn_to_group buttins' open-type="share" wx:if="{{groupbuyInfo.statusInfo.status == 3}}">
           立即分享
         </button>
       </block>
       <block wx:else>
-        <button class='btn_to_group' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.canPinGroup.status == 0}}" data-ct="{{0}}">
+        <button class='btn_to_group' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.statusInfo.status == 0}}" data-ct="{{0}}">
           我要参团
         </button>
-        <button class='btn_to_group buttins' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.canPinGroup.status == 3}}">
+        <button class='btn_to_group buttins' open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if="{{groupbuyInfo.statusInfo.status == 3}}">
           立即分享
         </button>
       </block>
-      <view class='btn_to_group' wx:if="{{groupbuyInfo.canPinGroup.status == 1}}">本次团购已结束</view>
-      <view class='btn_to_group' wx:if="{{groupbuyInfo.canPinGroup.status == 2}}">该团人数已满</view>
-      <view class='btn_to_group' wx:if="{{groupbuyInfo.canPinGroup.status == 4}}">
+      <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 1}}">本次团购已结束</view>
+      <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 2}}">该团人数已满</view>
+      <view class='btn_to_group' wx:if="{{groupbuyInfo.statusInfo.status == 4}}">
         该活动您的参团个数已达上限
       </view>
     </view>
     <!-- 老带新团 -->
-    <view class="lead_newcomer" wx:if="{{groupbuyInfo.pinInfo.activity_type==2}}">
+    <view class="lead_newcomer" wx:if="{{groupbuyInfo.groupBuyDefineInfo.activityType==2}}">
       <view class="lead_title" style="background:url({{imageUrl}}image/wxapp/old_customer_bg.png) no-repeat bottom;background-size:100%">
         <text>老带新团</text>
       </view>
@@ -114,12 +127,12 @@
       </view>
     </view>
     <!-- 下载海报 -->
-    <v-poster show="{{showPoster}}"></v-poster>
+    <v-poster image="{{posterImg}}" show="{{showPoster}}"></v-poster>
     <!-- 推荐商品 start -->
     <v-goods-recommend page-name='groupbuyitem'></v-goods-recommend>
     <!-- 推荐商品 end -->
     <!-- 绑定手机号弹窗 -->
-    <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以去购买商品" />
+    <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{isBlock == 1}}" content="您需要绑定手机号才可以去购买商品" />
     <!-- 老用户弹窗 -->
     <view class="old_customer_bg" catchtouchmove="ture" style='display:{{is_old_customer == 1 ? "block":"none"}}'>
       <view class="zhezhao" catchtap="not_show_customer"></view>
@@ -137,7 +150,23 @@
     <!-- 选择规格（包含无规格情况） -->
     <v-sel-spec gd="{{groupbuyInfo.goodsInfo}}" show="{{show_spec}}" hide_cell="true" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange"></v-sel-spec>
     <!-- 拼团规格弹框 -->
-    <!-- fenxiang弹框 -->
+    <!-- 选择规格弹窗 -->
+    <v-spec-dialog show="{{showSpec}}" bind:close="specDialogClose" products-info="{{productsInfo}}" bindproductData="getProductData">
+      <view slot="num-cfg">
+        <view class="spec-num clearfix">
+          <text>购买数量：(最少2件，最多4件)</text>
+          <view class="spec-num-btns">
+            <text class="spec-num-btn">-</text>
+            <input class="spec-num-input" type="text" />
+            <text class="spec-num-btn">+</text>
+          </view>
+        </view>
+      </view>
+      <view slot="footer" class='modal_footer' style='padding-bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>
+        <view class='modal_footer_now' bindtap="OneClickBuy">一键参团</view>
+      </view>
+    </v-spec-dialog>
+    <!-- 分享弹框 -->
     <view class='share_bg' style='display:{{is_share == 1?"block":"none"}}'>
       <view class='zhezhao' catchtap='not_show_share'></view>
       <view class='share_content'>
@@ -148,4 +177,4 @@
     </view>
   </block>
 </view>
-<include src="../common/footer.wxml" />
+<include src="/pages/common/footer.wxml" />
