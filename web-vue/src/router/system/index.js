@@ -20,7 +20,7 @@ const routes = [{
     },
     {
       path: 'login_log',
-      component: () => import('@/view/system/index/leftNavComponents/overview/loginLog'),
+      component: () => import('@/view/system/index/leftNavComponents/overview/loginLog/loginLog'),
       name: 'loginLog',
       meta: {
         title: '登录日志'
