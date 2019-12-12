@@ -121,7 +121,22 @@ export default {
         this.ruleForm = this.val
       },
       immediate: true
+    },
+    'ruleForm.valid': {
+      handler (newName, oldName) {
+        this.val.valid = newName
+        this.ruleForm = this.val
+      },
+      immediate: true
     }
+  },
+  mounted () {
+    this.$on('checkRule', () => {
+      this.$refs.ruleForm.validate((valid) => {
+        console.log(valid)
+        this.ruleForm.valid = valid
+      })
+    })
   },
   data () {
     var validateCardName = (rule, value, callback) => {

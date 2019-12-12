@@ -10,6 +10,7 @@
           <cardNameAndBg
             :val="cardNameAndBg"
             @input="initCardNameAndBg"
+            ref="cardNameAndBg"
           ></cardNameAndBg>
           <scoreDiscount
             :val="disCountData"
@@ -159,11 +160,14 @@ export default {
       mobile: '1234'
     }
     return {
+      cardId: null,
+      cardType: null,
       cardNameAndBg: {
         cardName: '来自主页',
         bgType: '0',
         bgColor: '',
-        bgImg: ''
+        bgImg: '',
+        valid: false
       },
       disCountData: {
         powerDiscount: true,
@@ -238,6 +242,7 @@ export default {
       }
     },
     getCardDetailInfoById (id) {
+      console.log(id, this.cardId)
       getCardDetailInfoRequest({ id }).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -248,7 +253,7 @@ export default {
       })
     },
     bindBackAndFrontEndData (data) {
-      this.cardId = data.cardId
+      this.cardId = data.id
       this.cardNameAndBg.cardName = data.cardName
       this.cardNameAndBg.bgType = String(data.bgType)
       this.cardNameAndBg.bgColor = data.bgColor
@@ -496,8 +501,8 @@ export default {
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine
       }
-
       console.log(obj)
+      console.log(this.cardId)
       if (this.cardId) {
         // 更新会员卡
         console.log('更新会员卡')

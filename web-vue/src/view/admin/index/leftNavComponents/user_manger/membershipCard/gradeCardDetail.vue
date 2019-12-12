@@ -14,6 +14,7 @@
           <cardNameAndBg
             :val="cardNameAndBg"
             @input="initCardNameAndBg"
+            ref="cardNameAndBg"
           ></cardNameAndBg>
           <scoreDiscount
             :val="disCountData"
@@ -120,7 +121,8 @@ export default {
         cardName: '来自主页',
         bgType: '0',
         bgColor: '',
-        bgImg: ''
+        bgImg: '',
+        valid: false
       },
       disCountData: {
         powerDiscount: true,
@@ -179,6 +181,7 @@ export default {
     this.dataDefault()
   },
   methods: {
+
     dataDefault () {
       this.cardType = Number(this.$route.query.cardType)
       this.cardId = Number(this.$route.query.cardId)
@@ -200,7 +203,7 @@ export default {
     },
     bindBackAndFrontEndData (data) {
       this.cardAvailableCfgData.flag = String(data.flag)
-      this.cardId = data.cardId
+      this.cardId = data.id
       this.cardNameAndBg.cardName = data.cardName
       this.cardNameAndBg.bgType = String(data.bgType)
       this.cardNameAndBg.bgColor = data.bgColor
@@ -308,8 +311,16 @@ export default {
     handleToSave () {
       console.log('保存')
       // 检验通过
+      console.log(this.cardNameAndBg)
+      this.$refs.cardNameAndBg.$emit('checkRule')
+
+      if (this.cardNameAndBg.valid) {
+        // 保存数据
+        this.prepareCardData()
+      }
+
       // 保存数据
-      this.prepareCardData()
+      // this.prepareCardData()
     },
     dealWithDynamicArrayData () {
       // 积分
