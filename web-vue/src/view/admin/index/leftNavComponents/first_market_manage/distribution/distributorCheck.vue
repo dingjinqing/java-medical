@@ -3,7 +3,7 @@
     <div class="table_list">
       <div class="select_info">
         <div class="leftarea">
-          <span>手机号：</span>
+          <span>{{ $t('distribution.reviewMobile') + '：' }}</span>
           <el-input
             v-model="searchForm.mobile"
             size="small"
@@ -12,7 +12,7 @@
           ></el-input>
         </div>
         <div class="leftarea">
-          <span>昵称：</span>
+          <span>{{ $t('distribution.reviewName') + '：' }}</span>
           <el-input
             v-model="searchForm.username"
             size="small"
@@ -21,21 +21,21 @@
           ></el-input>
         </div>
         <div class="midarea">
-          <span>申请时间：</span>
+          <span>{{ $t('distribution.reviewTime') + '：' }}</span>
           <el-date-picker
             v-model="searchForm.startTime"
             type="date"
-            placeholder="选择日期"
+            :placeholder="$t('distribution.reviewSelect')"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
             class="inputWidth"
           >
           </el-date-picker>
-          <span>至</span>
+          <span>{{ $t('distribution.to') }}</span>
           <el-date-picker
             v-model="searchForm.endTime"
             type="date"
-            placeholder="选择日期"
+            :placeholder="$t('distribution.reviewSelect')"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
             class="inputWidth"
@@ -47,7 +47,7 @@
             type="primary"
             size="small"
             @click="initDataList"
-          >查询</el-button>
+          >{{ $t('distribution.reviewSearch') }}</el-button>
         </div>
       </div>
 
@@ -56,15 +56,15 @@
         @tab-click="initDataList"
       >
         <el-tab-pane
-          label="待审核分销员"
+          :label="$t('distribution.reviewBy')"
           name="0"
         ></el-tab-pane>
         <el-tab-pane
-          label="审核通过"
+          :label="$t('distribution.reviewPass')"
           name="1"
         ></el-tab-pane>
         <el-tab-pane
-          label="未通过"
+          :label="$t('distribution.reviewNoPass')"
           name="2"
         ></el-tab-pane>
       </el-tabs>
@@ -80,68 +80,74 @@
               style="text-align: left;"
             >
               <div class="header">ID：{{ item.userId }}</div>
-              <div class="header">昵称：<span
+              <div class="header">{{ $t('distribution.reviewName') + '：' }}<span
                   class="active"
                   @click="detailHandler(item.userId)"
                 >{{ item.username }}</span></div>
               <div
                 class="header"
                 v-if="item.mobile"
-              >手机号：{{ item.mobile }}</div>
+              >{{ $t('distribution.reviewMobile') + '：' }}{{ item.mobile }}</div>
               <div
                 class="header"
                 v-if="item.createTime"
-              >申请时间：{{ item.createTime }}</div>
-              <div class="header">邀请码：</div>
+              >{{ $t('distribution.reviewTime') + '：' }}{{ item.createTime }}</div>
+              <!-- <div class="header">邀请码：</div> -->
             </td>
 
             <td
               style="width: 120px;"
               v-if="activeName === '0'"
-            >分销员分组</td>
+            >{{ $t('distribution.reviewGroup') }}</td>
             <td
               style="width: 170px;"
               v-if="activeName !== '0'"
-            >审核时间</td>
-            <td style="width: 100px;">审核状态</td>
+            >{{ $t('distribution.reviewDate') }}</td>
+            <td style="width: 100px;">{{ $t('distribution.reviewStatus') }}</td>
             <td
               style="width: 170px;"
               v-if="activeName === '0'"
-            >操作</td>
+            >{{ $t('distribution.reviewOption') }}</td>
             <td
               style="width: 170px;"
               v-if="activeName === '2'"
-            >未通过原因</td>
+            >{{ $t('distribution.noPassReason') }}</td>
           </tr>
 
           <tr>
-            <td v-if="item.userId !== ''">真实姓名</td>
-            <td v-if="item.userId !== ''">{{ item.realName ? item.realName : '无' }}</td>
-            <td v-if="item.userId !== ''">手机号</td>
-            <td v-if="item.userId !== ''">{{ item.mobile ? item.mobile : '无' }}</td>
-            <td v-if="item.userId !== ''">身份证号</td>
-            <td v-if="item.userId !== ''">{{ item.userId ? item.userId : '无' }}</td>
+            <td v-if="item.userId !== ''">{{ $t('distribution.reviewRealName') }}</td>
+            <td v-if="item.userId !== ''">{{ item.realName ? item.realName : $t('distribution.reviewNo') }}</td>
+            <td v-if="item.userId !== ''">{{ $t('distribution.reviewMobile') }}</td>
+            <td v-if="item.userId !== ''">{{ item.mobile ? item.mobile : $t('distribution.reviewNo') }}</td>
+            <td v-if="item.userId !== ''">{{ $t('distribution.reviewId') }}</td>
+            <td v-if="item.userId !== ''">{{ item.userId ? item.userId : $t('distribution.reviewNo') }}</td>
             <td
               colspan="6"
               v-if="item.userId === ''"
               class="middle"
-            >无需提交个人信息</td>
+            >{{ $t('distribution.reviewTip') }}</td>
             <td
               rowspan="5"
               class="middle"
               v-if="activeName === '0'"
             >
-              <p>{{ item.group }}</p>
+              <p v-if="item.groupData">{{ item.groupData.groupName }}</p>
               <p
                 class="active"
-                @click="setGroupHandler(item.userId, item.group)"
-              >设置</p>
+                v-if="item.groupData"
+                @click="setGroupHandler(item.userId, item.groupData.id)"
+              >{{ $t('distribution.reviewSet') }}</p>
+              <p
+                class="active"
+                v-if="!item.groupData"
+                @click="setGroupHandler(item.userId)"
+              >{{ $t('distribution.reviewSet') }}</p>
             </td>
             <td
               rowspan="5"
               class="middle"
               v-if="activeName !== '0'"
-            >2019-12-12 00:00:00</td>
+            >{{ item.updateTime }}</td>
             <td
               rowspan="5"
               class="middle"
@@ -155,15 +161,15 @@
                 size="small"
                 type="primary"
                 plain
-                @click="passHandler(item.id)"
-              >通过</el-button>
+                @click="reviewPassHandler(item)"
+              >{{ $t('distribution.passBtn') }}</el-button>
 
               <el-button
                 size="small"
                 type="info"
                 plain
-                @click="noPassHandler(item.id)"
-              >不通过</el-button>
+                @click="reviewNoPassHandler(item)"
+              >{{ $t('distribution.noPassBtn') }}</el-button>
             </td>
             <td
               rowspan="5"
@@ -173,29 +179,29 @@
 
           </tr>
           <tr v-if="item.userId !== ''">
-            <td>性别</td>
-            <td>{{ item.sex ? item.sex : '无' }}</td>
-            <td>生日</td>
-            <td>{{ item.birthdayYear ? item.birthdayYear - item.birthdayMonth - item.birthdayDay : '无' }}</td>
-            <td>婚姻状况</td>
-            <td>{{ item.maritalStatus ? item.maritalStatus : '无' }}</td>
+            <td>{{ $t('distribution.reviewSex') }}</td>
+            <td>{{ item.sex ? item.sex : $t('distribution.reviewNo') }}</td>
+            <td>{{ $t('distribution.reviewBirthday') }}</td>
+            <td>{{ item.birthdayYear ? item.birthdayYear - item.birthdayMonth - item.birthdayDay : $t('distribution.reviewNo') }}</td>
+            <td>{{ $t('distribution.reviewMarital') }}</td>
+            <td>{{ item.maritalStatus ? item.maritalStatus : $t('distribution.reviewNo') }}</td>
 
           </tr>
           <tr v-if="item.userId !== ''">
-            <td>教育程度</td>
-            <td>{{ item.educationName ? item.educationName : '无' }}</td>
-            <td>所在行业</td>
-            <td>{{ item.industryName ? item.industryName : '无' }}</td>
-            <td>所在地</td>
-            <td>{{ item.address ? item.address : '无' }}</td>
+            <td>{{ $t('distribution.reviewEducation') }}</td>
+            <td>{{ item.educationName ? item.educationName : $t('distribution.reviewNo') }}</td>
+            <td>{{ $t('distribution.reviewIndustry') }}</td>
+            <td>{{ item.industryName ? item.industryName : $t('distribution.reviewNo') }}</td>
+            <td>{{ $t('distribution.reviewAddress') }}</td>
+            <td>{{ item.address ? item.address : $t('distribution.reviewNo') }}</td>
 
           </tr>
           <tr v-if="item.userId !== ''">
-            <td>备注</td>
+            <td>{{ $t('distribution.reviewNote') }}</td>
             <td colspan="5"></td>
           </tr>
           <tr v-if="item.userId !== ''">
-            <td>图片</td>
+            <td>{{ $t('distribution.reviewImg') }}</td>
             <td colspan="5"></td>
           </tr>
         </table>
@@ -210,16 +216,16 @@
 
       <!-- 分销员分组弹窗 -->
       <el-dialog
-        title="设置分销员分组"
+        :title="$t('distribution.reviewTitle1')"
         :visible.sync="dialogVisible"
         width="25%"
         center
         :close-on-click-modal="false"
       >
-        <span>选择分组：</span>
+        <span>{{ $t('distribution.selectGroup') + '：' }}</span>
         <el-select
           v-model="selectValue"
-          placeholder="请选择分组"
+          :placeholder="$t('distribution.selectGroup')"
           size="small"
           style="width: 170px;"
         >
@@ -238,18 +244,18 @@
           <el-button
             size="small"
             @click="dialogVisible = false"
-          >取 消</el-button>
+          >{{ $t('distribution.cancleBtn') }}</el-button>
           <el-button
             type="primary"
             size="small"
             @click="saveGroupHandler"
-          >确 定</el-button>
+          >{{ $t('distribution.confirmBt') }}</el-button>
         </span>
       </el-dialog>
 
       <!-- 审核不通过弹窗 -->
       <el-dialog
-        title="审核不通过原因"
+        :title="$t('distribution.reviewTitle2')"
         :visible.sync="failDialogVisible"
         width="35%"
         center
@@ -260,7 +266,7 @@
             class="el-icon-warning"
             style="color: #E6A23C; font-size: 14px;"
           ></i>
-          <span> 原因提交后不可修改，请谨慎提交</span>
+          <span> {{ $t('distribution.reviewTitleTip') }}</span>
         </div>
         <el-input
           v-model="textarea"
@@ -277,12 +283,12 @@
           <el-button
             size="small"
             @click="cancelPassHandler"
-          >取 消</el-button>
+          >{{ $t('distribution.cancleBtn') }}</el-button>
           <el-button
             type="primary"
             size="small"
             @click="surePassHandler"
-          >确 定</el-button>
+          >{{ $t('distribution.confirmBt') }}</el-button>
         </span>
       </el-dialog>
 
@@ -291,7 +297,7 @@
 </template>
 
 <script>
-import { getCheckList, distributionGroup } from '@/api/admin/marketManage/distribution.js'
+import { getCheckList, distributionGroup, getCheckPass, getCheckRefuse } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
@@ -305,26 +311,25 @@ export default {
         startTime: '',
         endTime: ''
       },
-      activeName: '0',
+      activeName: '0', // tab值
       // 分页
       pageParams: {
         currentPage: 1,
         pageRows: 10
       },
       requestParams: {},
-      // 表格数据
-      tableData: [],
+      tableData: [], // 表格数据
 
       // 分销员分组弹窗
       dialogVisible: false,
-      groupId: '',
-      groupName: '',
-      selectValue: '',
-      selectData: [],
+      groupId: '', // 编辑表格id
+      selectValue: '', // 分销分组值
+      selectData: [], // 分销分组数据
 
       // 审核不通过弹窗
       failDialogVisible: false,
-      textarea: ''
+      failData: {}, // 审核不通过数据
+      textarea: '' // 审核不通过说明
     }
   },
   watch: {
@@ -358,6 +363,7 @@ export default {
     // 表格数据处理
     handleData (data) {
       data.forEach(item => {
+        data.groupData = {}
         // 性别
         if (item.sex === 'f') {
           item.sex = '女'
@@ -371,11 +377,11 @@ export default {
           item.maritalStatus = '已婚'
         }
         // 审核状态
-        if (item.status === 0) {
+        if (this.activeName === '0') {
           item.status = '待审核'
-        } else if (item.status === 1) {
+        } else if (this.activeName === '1') {
           item.status = '已通过'
-        } else if (item.status === 2) {
+        } else if (this.activeName === '2') {
           item.status = '未通过'
         }
       })
@@ -393,44 +399,58 @@ export default {
     },
 
     // 设置分销员分组
-    setGroupHandler (id, value) {
+    setGroupHandler (userId, id) {
       this.dialogVisible = !this.dialogVisible
       // 数据回显
-      this.groupId = id
-      this.selectData.forEach((item, index) => {
-        if (item.groupName === value) {
-          this.selectValue = item.id
-          this.groupName = item.groupName
-        }
-      })
+      this.groupId = userId
+      if (id) {
+        this.selectData.forEach((item, index) => {
+          if (item.id === id) {
+            this.selectValue = item.id
+          }
+        })
+      } else {
+        this.selectValue = ''
+      }
     },
 
     // 保存分销员分组
     saveGroupHandler () {
       this.dialogVisible = false
-      // 获取下拉框的label
+      // 获取下拉框的值
       this.selectData.forEach((item, index) => {
         if (item.id === this.selectValue) {
-          this.groupName = item.groupName
-        }
-      })
-      // 赋值给表格
-      this.tableData.forEach((item, index) => {
-        if (item.userId === this.groupId) {
-          item.group = this.groupName
+          // 赋值给表格
+          this.tableData.forEach((val, key) => {
+            if (val.userId === this.groupId) {
+              val.groupData = item
+            }
+          })
         }
       })
     },
 
     // 审核通过
-    passHandler (id) {
-      this.$message.success('审核通过!')
-      // this.initDataList()
+    reviewPassHandler (data) {
+      var groupId = 0
+      if (data.groupData) {
+        groupId = data.groupData.id
+      }
+      getCheckPass({
+        id: data.id,
+        groupId: groupId
+      }).then((res) => {
+        if (res.error === 0) {
+          this.$message.success(this.$t('distribution.reviewPass') + '!')
+          this.initDataList()
+        }
+      })
     },
 
-    // 审核不通过
-    noPassHandler (id) {
+    // 审核不通过弹窗
+    reviewNoPassHandler (data) {
       this.failDialogVisible = !this.failDialogVisible
+      this.failData = data
     },
 
     // 取消审核不通过
@@ -441,14 +461,32 @@ export default {
 
     // 确定审核不通过
     surePassHandler () {
-      this.failDialogVisible = false
-      this.textarea = ''
-      // this.initDataList()
+      var groupId = 0
+      if (this.failData.groupData) {
+        groupId = this.failData.groupData.id
+      }
+      getCheckRefuse({
+        id: this.failData.id,
+        groupId: groupId,
+        msg: this.textarea
+      }).then((res) => {
+        if (res.error === 0) {
+          this.$message.success('审核不通过成功!')
+          this.failDialogVisible = false
+          this.textarea = ''
+          this.initDataList()
+        }
+      })
     },
 
-    // 跳转会员列表编辑
-    detailHandler (id) {
-
+    // 跳转会员详情
+    detailHandler (userId) {
+      this.$router.push({
+        name: 'membershipInformation',
+        query: {
+          userId: userId
+        }
+      })
     }
   }
 

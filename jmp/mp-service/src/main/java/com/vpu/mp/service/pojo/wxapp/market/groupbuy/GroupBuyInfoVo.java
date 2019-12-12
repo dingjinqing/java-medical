@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.wxapp.market.groupbuy;
 
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
-import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,8 +18,15 @@ public class GroupBuyInfoVo {
     private Integer hour;
     private Integer minute;
     private Integer second;
+    /**
+     * 是否需要绑定手机号
+     */
     private Byte bindMobile;
     private Boolean newUser;
+    /**
+     * 拼团信息
+     */
+    private GroupBuyDefineInfo groupBuyDefineInfo;
     /**
      * 状态信息
      */
@@ -34,10 +39,6 @@ public class GroupBuyInfoVo {
      * 拼团商品信息
      */
     private  GroupBuyGoodsInfo goodsInfo;
-    /**
-     * 规格信息
-     */
-    private List<GroupBuyProductInfo> productList;
     /**
      * 商品sku
      */

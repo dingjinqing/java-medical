@@ -15,3 +15,11 @@ export function addFullCutActivityApi (data) {
     data: data
   })
 }
+
+export function memberCardActivityName (data) {
+  return service({
+    url: '/api/admin/member/card/all/get',
+    methods: 'post',
+    data: data
+  })
+}
