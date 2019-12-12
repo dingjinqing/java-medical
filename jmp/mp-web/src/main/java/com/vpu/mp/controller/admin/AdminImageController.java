@@ -75,7 +75,7 @@ public class AdminImageController extends AdminBaseController {
      * @throws Exception
      */
     @PostMapping(value = "/admin/image/uploadOneImgae")
-    protected JsonResult uploadOneFile(@RequestBody @Valid UploadImageParam param, Part file) throws IOException {
+    protected JsonResult uploadOneFile(@Valid UploadImageParam param, Part file) throws IOException {
         // 校验
         ResultMessage jsonResultCode = shop().image.validImageParam(param, file);
         if (!jsonResultCode.getFlag()) {
