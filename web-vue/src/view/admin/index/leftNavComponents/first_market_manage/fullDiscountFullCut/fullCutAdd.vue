@@ -376,12 +376,14 @@
               v-model="memberCardInfo"
               placeholder="请选择"
               size="small"
+              :multiple='true'
+              @change="getMemberCardName"
             >
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in memberCardNameList"
+                :key="item.id"
+                :label="item.cardName"
+                :value="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -391,7 +393,7 @@
       <!-- 选择商品弹窗 -->
       <ChoosingGoods
         :tuneUpChooseGoods='tuneUpChooseGoodsDialog'
-        :chooseGoodsBack="selectedGoodsList"
+        :chooseGoodsBack="selectedGoodsIdList"
         @resultGoodsDatas="returnGoodsData"
       />
 
@@ -460,15 +462,11 @@ export default {
       discount: '1',
       vipActivity: '',
       memberCardInfo: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }],
+      memberCardNameList: [],
+      memberCardNameIdLidt: [],
+      cardId: [],
       tuneUpChooseGoodsDialog: false,
-      selectedGoodsList: [],
+      selectedGoodsIdList: [],
       conditionAddParams: [],
       goodsList: [],
       tuneUpBussDialog: false,
@@ -494,6 +492,9 @@ export default {
       this.endTime = newVal[1]
     }
   },
+  mounted () {
+    this.memberCardActivityName()
+  },
   methods: {
     handleClick (tab) {
       console.log(tab, 'tabChange')
@@ -508,10 +509,18 @@ export default {
         }
       })
     },
-    getMemberCardName () {
+    memberCardActivityName () {
       memberCardActivityName().then(res => {
-        console.log(res)
+        console.log(res, 'memberCardActivityName')
+        this.memberCardNameList = res.content
+        this.memberCardNameIdLidt = res.content.map(item => item.id)
+        console.log(this.memberCardNameIdLidt, 'memberCardNameIdLidt')
       })
+    },
+    getMemberCardName (val) {
+      console.log(val, 'get value')
+      this.cardId = val
+      console.log(this.cardId, 'saveMemberIdList')
     },
     getTabName () {
       // if (this.$route.query.id) {
@@ -539,7 +548,12 @@ export default {
         ],
         startTime: this.startTime,
         endTime: this.endTime,
-        strategyPriority: this.activityLevel
+        strategyPriority: this.activityLevel,
+        recommendGoodsId: this.selectedGoodsIdList, // 指定商品
+        recommendCatId: this.platformIdList, // 指定平台
+        recommendSortId: this.bussinessIdList, // 指定商家
+        recommendBrandId: this.goodsBrandIdList, // 指定品牌
+        cardId: this.cardId // 会员专享活动
       }
       addFullCutActivityApi(obj).then(res => {
         console.log(res)
@@ -566,8 +580,8 @@ export default {
     returnGoodsData (val) {
       console.log(val, 'goodsInfo')
       this.goodsList = val
-      this.selectedGoodsList = val.map(item => item.goodsId)
-      console.log(this.selectedGoodsList, 'selectedGoodsList')
+      this.selectedGoodsIdList = val.map(item => item.goodsId)
+      console.log(this.selectedGoodsIdList, 'selectedGoodsIdList')
     },
     // selectedGoodsIdList (data) {
     //   console.log(data, 'goodsId')
@@ -581,7 +595,7 @@ export default {
     returnPlateformData (val) {
       console.log(val, 'platform data')
       this.platformList = val
-      // this.platformIdList = val.map(item)
+      this.platformIdList = val.map(item => item.catId)
     },
     editPlateformClassification () {
       this.tuneUpPlatformDialog = !this.tuneUpPlatformDialog

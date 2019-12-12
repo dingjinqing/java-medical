@@ -19,7 +19,7 @@ export function addFullCutActivityApi (data) {
 export function memberCardActivityName (data) {
   return service({
     url: '/api/admin/member/card/all/get',
-    methods: 'post',
+    method: 'post',
     data: data
   })
 }
