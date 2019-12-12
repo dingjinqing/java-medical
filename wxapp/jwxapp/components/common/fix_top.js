@@ -1,4 +1,4 @@
-var util = require("../../../utils/util.js");
+var util = require("../../utils/util.js");
 
 var fix_top = {
   properties: {
@@ -15,6 +15,7 @@ var fix_top = {
       this._page = page;
       page._fix_comps = page._fix_comps || [];
       page._fix_comps.push(this._top);
+      console.log(this)
     },
     detached() {
       var comps = this._page._fix_comps;
@@ -25,6 +26,7 @@ var fix_top = {
           break;
         }
       }
+      console.log(this)
     }
   },
 
@@ -38,8 +40,8 @@ var fix_top = {
       this._top.height = 0;
     },
     getFixeTop() {
-      console.log(this._page._fix_comps)
       var fixTop = 0;
+      console.log(this)
       var comps = this._page._fix_comps;
       for (var i = 0; i < comps.length; i++) {
         if (comps[i].comp === this) {
