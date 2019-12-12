@@ -249,7 +249,7 @@ export default {
       })
     },
     bindBackAndFrontEndData (data) {
-      this.cardId = data.cardId
+      this.cardId = data.id
       this.cardNameAndBg.cardName = data.cardName
       this.cardNameAndBg.bgType = String(data.bgType)
       this.cardNameAndBg.bgColor = data.bgColor
