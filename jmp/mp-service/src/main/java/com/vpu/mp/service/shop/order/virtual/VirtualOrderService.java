@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.virtual;
 
+import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -186,4 +187,9 @@ public class VirtualOrderService extends ShopBaseService {
             return true;
         }
     }
+    
+    public VirtualOrderRecord getInfoByNo(String cardNo) {
+    	return  db().selectFrom(VIRTUAL_ORDER).where(VIRTUAL_ORDER.CARD_NO.eq(cardNo)).fetchAny();
+    }
+    
 }

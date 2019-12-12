@@ -33,5 +33,8 @@ public class MrkingStrategyPageListQueryVo {
     /** 活动状态：0停用，1启用 */
     private Byte status;
 
-
+    /**
+     * 当前活动状态：1进行中，2未开始，3已过期，4已停用
+     */
+    private Byte currentState;
 }

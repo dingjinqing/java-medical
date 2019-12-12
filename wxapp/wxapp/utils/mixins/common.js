@@ -1,7 +1,7 @@
 var nav = require("../base/nav.js")
 var pages = require("../init/pages.js")
 
-module.exports  = {
+module.exports = {
   getRect(selector, all) {
     var _this = this;
     return new Promise(function (resolve) {

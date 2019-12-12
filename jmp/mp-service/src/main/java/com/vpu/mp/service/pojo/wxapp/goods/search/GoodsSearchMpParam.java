@@ -1,6 +1,8 @@
 package com.vpu.mp.service.pojo.wxapp.goods.search;
 
-import lombok.Data;
+import com.vpu.mp.service.pojo.shop.base.BasePageParam;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,8 +12,9 @@ import java.util.List;
  * @author 李晓冰
  * @date 2019年12月09日
  */
-@Data
-public class GoodsSearchMpParam {
+@Getter
+@Setter
+public class GoodsSearchMpParam extends BasePageParam {
 
     /**用户id，controller 层获取*/
     private Integer userId;

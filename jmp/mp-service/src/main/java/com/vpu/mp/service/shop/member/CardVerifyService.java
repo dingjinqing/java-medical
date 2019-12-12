@@ -199,4 +199,9 @@ public class CardVerifyService extends ShopBaseService {
 		CardExamineRecord cardEx = getCardExamineRecordById(id);
 		return memberCardService.getCardById(cardEx.getCardId());
 	}
+    
+    
+    public CardExamineRecord getStatusByNo(String cardNo) {
+    	return verifyDao.getStatusByNo(cardNo);
+    }
 }

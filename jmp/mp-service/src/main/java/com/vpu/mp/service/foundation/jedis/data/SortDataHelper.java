@@ -44,10 +44,17 @@ public class SortDataHelper extends ShopBaseService implements DataHelperInterfa
         results = resultStrs.stream().
             map(x-> Util.parseJson(x,GoodsSortCacheInfo.class)).
             collect(Collectors.toList());
-        if ( results.size() >= ids.size() ){
+        if ( !results.contains(null) ){
             return results;
         }
-        List<Integer> needIds = ids.stream().filter(x->!ids.contains(x)).collect(Collectors.toList());
+        results.removeIf(Objects::isNull);
+        List<Integer> queryedIds = results.parallelStream().map(GoodsSortCacheInfo::getSortId).collect(Collectors.toList());
+        List<Integer> needIds;
+        if( queryedIds.isEmpty() ){
+            needIds = ids;
+        }else{
+            needIds =  ids.parallelStream().filter(x->!queryedIds.contains(x)).collect(Collectors.toList());
+        }
 
         List<GoodsSortCacheInfo> queryVos = goodsSortServices.getGoodsSortCacheInfoById(needIds);
         if( queryVos.isEmpty() ){
@@ -92,6 +99,9 @@ public class SortDataHelper extends ShopBaseService implements DataHelperInterfa
     public Map<Short,List<GoodsSortCacheInfo>> getAndGroup(List<Integer> ids){
         Map<Short,List<GoodsSortCacheInfo>> results = Maps.newHashMap();
         List<GoodsSortCacheInfo> infos = get(ids);
+        if( infos.isEmpty() ){
+            return results;
+        }
         Map<Short,List<GoodsSortCacheInfo>> levelMap =
             infos.stream().collect(Collectors.groupingBy(GoodsSortCacheInfo::getLevel));
         results.put(GoodsConstant.SECOND_LEVEL,levelMap.get(GoodsConstant.ROOT_LEVEL));
@@ -102,4 +112,5 @@ public class SortDataHelper extends ShopBaseService implements DataHelperInterfa
         results.put(GoodsConstant.ROOT_LEVEL,parentInfos);
         return results;
     }
+
 }

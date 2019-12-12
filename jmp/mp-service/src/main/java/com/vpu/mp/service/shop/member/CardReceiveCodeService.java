@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
+import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.member.dao.CardReceiveCodeDao;
 
@@ -18,7 +19,7 @@ import com.vpu.mp.service.shop.member.dao.CardReceiveCodeDao;
 * @Description: 
 */
 @Service
-public class CardReceiveCode extends ShopBaseService {
+public class CardReceiveCodeService extends ShopBaseService {
 	@Autowired private CardReceiveCodeDao cardReceiveCodeDao;
 	
 	/**
@@ -50,7 +51,24 @@ public class CardReceiveCode extends ShopBaseService {
 		cardReceiveCodeDao.deleteBatchId(batchIdSet);
 		}
 	}
-	
+	/**
+	 * 获取用户的领取码
+	 * @return 
+	 */
+	public CardReceiveCodeRecord getUserHasCode(Integer userId,String code) {
+		return cardReceiveCodeDao.getUserHasCode(userId,code);
+	}
+	public CardReceiveCodeRecord getUserHasCode(Integer userId, String cardNo, String cardPwd) {
+		return cardReceiveCodeDao.getUserHasCode(userId,cardNo,cardPwd);
+		
+	}
+	public CardReceiveCodeRecord getCardCode(Integer cardId,String code) {
+		 return cardReceiveCodeDao.getCardCode(cardId,code);
+	}
+	public CardReceiveCodeRecord getCardPwd(Integer cardId, String cardNo, String cardPwd) {
+		return cardReceiveCodeDao.getCardPwd(cardId,cardNo,cardPwd);
+		
+	}
 	private Set<Integer> getBatchIdByCardId(Integer cardId){
 		List<CardBatchRecord> cBatchList = getAvailableCardBatchByCardId(cardId);
 		if(cBatchList == null) {
@@ -91,4 +109,13 @@ public class CardReceiveCode extends ShopBaseService {
 		set.removeAll(commonSet);
 		return set;
 	}
+	
+	public void updateRow(CardReceiveCodeRecord cardReceiveCodeRecord) {
+		cardReceiveCodeDao.updateRecord(cardReceiveCodeRecord);
+	}
+
+
+
+
+	
 }

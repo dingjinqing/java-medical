@@ -1,15 +1,18 @@
 package com.vpu.mp.service.pojo.shop.image;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 public class ImageListQueryParam {
 
 	/**
@@ -19,6 +22,7 @@ public class ImageListQueryParam {
 	/**
 	 * 分组id
 	 */
+	@NonNull
 	public Integer imgCatId;
 	/**
 	 * 关键词

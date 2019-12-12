@@ -15,7 +15,7 @@
           :style="'backgroundColor:'+moduleSaveData.bg_color"
         >
           <img :src="$imageHost+'/image/admin/m_shop_announce.png'">
-          <span :style="'color:'+moduleSaveData.font_color">{{moduleSaveData.shop_text}}</span>
+          <span :style="'color:'+moduleSaveData.font_color+';overflow:hidden'">{{moduleSaveData.shop_text}}</span>
         </div>
       </div>
       <!--模块编辑区结束-->
@@ -167,6 +167,7 @@ export default {
     align-items: center;
     padding-left: 10px;
     background: rgb(252, 249, 221);
+    width: 379px;
     img {
       width: 17px;
       height: 14px;

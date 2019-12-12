@@ -394,6 +394,14 @@ public class JsonResultMessage {
 	// 用户卡
 	public static final String USER_CARD_NONE = "user.card.none";
 	public static final String MSG_CARD_RECEIVE_FAIL = "card.receive.fail";
+	public static final String MSG_CARD_RECEIVE_INVALID = "member.card.receive.invalid";
+	public static final String MSG_CARD_RECEIVE_NOCODE  = "member.card.receive.nocode";
+	public static final String MSG_CARD_RECEIVE_GENERATE  = "member.card.receive.generate";
+	public static final String MSG_CARD_RECEIVE_ALREADYHAS  = "member.card.receive.alreadyHas";
+	public static final String MSG_CARD_RECEIVE_PWD  = "member.card.receive.pwd";
+	public static final String MSG_CARD_RECEIVE_GOTOLOOK  = "member.card.receive.gotolook";
+	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
+	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
 	/**
 	 * 概览
 	 */

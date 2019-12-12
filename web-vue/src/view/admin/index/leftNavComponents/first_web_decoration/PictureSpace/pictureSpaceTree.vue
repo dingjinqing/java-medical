@@ -440,11 +440,16 @@ export default {
         fd.append('needImgWidth', img.width)
         fd.append('needImgHeight', img.height)
         fd.append('imgCatId', _this.firstNodeId)
+        localStorage.setItem('contentType', 'application/x-www-form-urlencoded;charset=UTF-8')
         upmoreImgsRequest(fd).then((res) => {
           console.log(res)
           if (res.error === 0) {
+            localStorage.setItem('contentType', 'application/json;charset=UTF-8')
             _this.detailImgsSearch()
           }
+        }).catch(err => {
+          console.log(err)
+          localStorage.setItem('contentType', 'application/json;charset=UTF-8')
         })
       }
       img.src = _URL.createObjectURL(file)

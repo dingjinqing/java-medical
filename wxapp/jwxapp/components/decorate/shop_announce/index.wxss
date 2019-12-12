@@ -1,0 +1,32 @@
+.announce_container{
+    height: 80rpx;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    display: flex;
+  }
+  .shop_img{
+    width: 80rpx;
+    height: 80rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rpx;
+  }
+  .shop_img image{
+    width: 34rpx;
+    height: 28rpx;
+  }
+  .shop_content{
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+  .shop_text{
+    height: 80rpx;
+    line-height: 80rpx;
+    white-space: nowrap;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }

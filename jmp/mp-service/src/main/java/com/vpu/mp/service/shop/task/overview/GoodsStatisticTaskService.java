@@ -740,4 +740,14 @@ public class GoodsStatisticTaskService extends ShopBaseService {
             .set(field, fieldValue)
             .execute();
     }
+
+    // 商品订单成交金额
+    public BigDecimal goodsOrderTurnover(Timestamp startTime, Timestamp endTime) {
+        return null;
+    }
+
+    // 会员卡订单成交金额
+    public BigDecimal cardOrderTurnover(Timestamp startTime, Timestamp endTime) {
+        return null;
+    }
 }
