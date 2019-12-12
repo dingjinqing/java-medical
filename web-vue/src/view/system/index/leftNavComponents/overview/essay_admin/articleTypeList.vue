@@ -345,7 +345,7 @@ export default {
     addOption () {
       let param = {
         'categoryName': this.form.categoryName,
-        'useFooterNav': this.form.useFootNav === '1' ? 'cancel' : 'ok'
+        'useFooterNav': this.form.useFootNav === '1' ? 'ok' : 'cancel'
       }
       addCategoryRequest(param).then((res) => {
         console.log(res)

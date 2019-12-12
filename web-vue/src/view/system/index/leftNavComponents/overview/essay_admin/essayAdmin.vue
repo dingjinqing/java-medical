@@ -9,7 +9,10 @@
       name="first"
       label="文章列表"
     >
-      <articleList v-if="firstShow" />
+      <articleList
+        @editShow="show"
+        v-if="firstShow"
+      />
     </el-tab-pane>
     <el-tab-pane
       name="second"
@@ -21,7 +24,23 @@
       name="third"
       label="文章发布"
     >
-      <articleAdd v-if="thirdShow" />
+      <articleAdd
+        @show="show"
+        v-if="thirdShow"
+      />
+    </el-tab-pane>
+
+    <el-tab-pane
+      v-if="fourthShow"
+      name="fourth"
+      label="文章编辑"
+    >
+      <articleAdd
+        :isEdit="isEdit"
+        :articleId="articleId"
+        @show="show"
+        v-if="fourthShow"
+      />
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -45,7 +64,10 @@ export default {
       sendData: null,
       firstShow: true,
       secondShow: false,
-      thirdShow: false
+      thirdShow: false,
+      fourthShow: false,
+      isEdit: false,
+      articleId: null
     }
   },
   created () {
@@ -56,20 +78,50 @@ export default {
     }
   },
   methods: {
+    show (data) {
+      console.log('接受')
+      console.log(data)
+      if (data.flag === 2) {
+        this.tabActive = 'second'
+        this.firstShow = false
+        this.secondShow = true
+        this.thirdShow = false
+        this.fourthShow = false
+      }
+      if (data.flag === 4) {
+        this.tabActive = 'fourth'
+        this.firstShow = false
+        this.secondShow = false
+        this.thirdShow = false
+        this.fourthShow = true
+        this.isEdit = true
+        this.articleId = data.articleId
+      }
+      if (data.flag === 1) {
+        this.tabActive = 'first'
+        this.firstShow = true
+        this.secondShow = false
+        this.thirdShow = false
+        this.fourthShow = false
+      }
+    },
     handleClick (tab, event) {
       if (this.tabActive === 'first') {
         this.firstShow = true
         this.secondShow = false
         this.thirdShow = false
+        this.fourthShow = false
       } if (this.tabActive === 'second') {
         this.firstShow = false
         this.secondShow = true
         this.thirdShow = false
+        this.fourthShow = false
       }
       if (this.tabActive === 'third') {
         this.firstShow = false
         this.secondShow = false
         this.thirdShow = true
+        this.fourthShow = false
       }
     }
   },

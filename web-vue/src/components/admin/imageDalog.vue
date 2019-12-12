@@ -459,7 +459,7 @@ export default {
         'imgCatId': this.firstNodeId,
         'keywords': this.imgNameInput,
         'searchNeed': 1,
-        'pageRows': 8,
+        'pageRows': 10,
         'needImgWidth': width,
         'needImgHeight': height,
         'uploadSortId': this.value

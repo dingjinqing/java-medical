@@ -211,6 +211,12 @@ public class JsonResultMessage {
 	public static final String GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING="group.buy.activity.goods.overlapping";
 	public static final String GROUP_BUY_GROUPID_DOES_NOT_EXIST="group.buy.groupId.does.not.exist";
 	public static final String GROUP_BUY_ACTIVITY_STATUS_DISABLE="group.buy.activity.status.disable";
+	public static final String GROUP_BUY_ACTIVITY_STATUS_NOTSTART="group.buy.activity.status.not.start";
+	public static final String GROUP_BUY_ACTIVITY_STATUS_END="group.buy.activity.status.end";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_STATUS_CANCEL="group.buy.activity.group.status.cancel";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_OPEN_LIMIT_MAX="group.buy.activity.group.open.limit.max";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
     /**
      * 营销-秒杀
      */

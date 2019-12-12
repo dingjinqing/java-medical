@@ -51,7 +51,7 @@ export const cn = {
   refresh: '刷新',
   pleaseChoose: '请选择',
   newBrandClassification: '新建品牌分类',
-  manageBrandClassification: '管路品牌分类',
+  manageBrandClassification: '管理品牌分类',
   brandPriority: '品牌优先级',
   setAsRecommendedBrand: '设为推荐品牌',
   yes: '是',

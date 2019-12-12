@@ -728,6 +728,8 @@ export default {
     },
     // 获取商品ids
     choosingGoodsResult (row) {
+      console.log(row)
+
       this.goodsRow = row
       this.form.goodsId = row.goodsId
       if (Object.keys(row).length === 0) {

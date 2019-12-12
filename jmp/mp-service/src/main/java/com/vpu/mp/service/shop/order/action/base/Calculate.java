@@ -31,6 +31,7 @@ import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -344,9 +345,9 @@ public class Calculate extends ShopBaseService {
         logger().info("计算运费start");
         BigDecimal result = BigDecimal.ZERO;
         //处理过程中局部内部类
-        @NoArgsConstructor
         @Getter
         @Setter
+        @ToString
         class Total {
             private List<OrderGoodsBo> bos = Lists.newArrayList();
             private Integer totalNumber = 0;
@@ -363,14 +364,15 @@ public class Calculate extends ShopBaseService {
             Total total = totalMaps.get(bo.getDeliverTemplateId());
             total.getBos().add(bo);
             total.setTotalNumber(total.getTotalNumber() + bo.getGoodsNumber());
-            total.setTotalPrice(total.getTotalPrice().add(bo.getGoodsPrice()));
-            total.setTotalWeight(total.getTotalWeight().add(bo.getGoodsWeight()));
+            total.setTotalPrice(total.getTotalPrice().add(bo.getDiscountedTotalPrice()));
+            total.setTotalWeight(total.getTotalWeight().add(BigDecimalUtil.multiply(bo.getGoodsWeight(), new BigDecimal(bo.getGoodsNumber()))));
             bo.getDeliverTemplateId();
         }
 
         for (Map.Entry<Integer, Total> entry : totalMaps.entrySet()) {
             Integer templateId = entry.getKey();
             Total total = entry.getValue();
+            logger().info("计算运费模板id:{},参数:{}", templateId, total);
             BigDecimal shippingFeeByTemplate = null;
             try {
                 if (districtCode == null || districtCode.equals(0)) {
