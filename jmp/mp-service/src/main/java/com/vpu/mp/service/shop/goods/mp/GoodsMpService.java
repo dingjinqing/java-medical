@@ -320,20 +320,23 @@ public class GoodsMpService extends ShopBaseService {
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
-    public PageResult<? extends GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
-        PageResult<GoodsListMpBo> pageResult=new PageResult<>();
+    public List<? extends GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
+        List<GoodsListMpBo> goodsListMpBos;
         try {
-            pageResult= esGoodsSearchMpService.queryGoodsByParam(param);
+            PageResult<GoodsListMpBo> pageResult = esGoodsSearchMpService.queryGoodsByParam(param);
+            goodsListMpBos = pageResult.getDataList();
         } catch (IOException e) {
             logger().debug("小程序-商品搜索异常："+e.getMessage());
             if (param.getKeyWords() != null) {
                 Condition condition = buildPageIndexCondition(new GoodsListMpParam());
                 condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
-                pageResult.dataList =  findActivityGoodsListCapsulesDao(condition,null,param.getCurrentPage(),param.getPageRows(),null);
+                goodsListMpBos = findActivityGoodsListCapsulesDao(condition, null, param.getCurrentPage(), param.getPageRows(), null);
+            } else {
+                return null;
             }
         }
-        disposeGoodsList(pageResult.dataList,param.getUserId());
-        return pageResult;
+        disposeGoodsList(goodsListMpBos,param.getUserId());
+        return goodsListMpBos;
     }
 
 
