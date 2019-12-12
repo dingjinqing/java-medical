@@ -40,13 +40,14 @@ public class WxAppCardActivationService extends ShopBaseService {
 		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());		
 		List<String> fields = cardVerifyService.getActiveRequiredFieldWithHump(uCard.getActivationCfg());
 		UserInfo user = userService.getUserInfo(param.getUserId());
-		
+		if(user == null) {
+			return null;
+		}
 		Map<String, Object> userMap = Util.convertPojoToMap(user);
 		userMap.entrySet().removeIf(e->!fields.contains(e.getKey()));
 		dealWithAddressCode(userMap);
 		
 		List<String> allEducation = MemberEducationEnum.getAllEducation(lang);
-		
 		List<String> allIndustryName = MemberIndustryEnum.getAllIndustryName(lang);
 		
 		

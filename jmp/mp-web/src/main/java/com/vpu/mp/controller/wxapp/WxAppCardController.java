@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -45,6 +46,7 @@ public class WxAppCardController extends WxAppBaseController {
 	@PostMapping(value="/api/card/detail")
 	public JsonResult getUserCardDetail(@RequestBody UserCardParam param) {
 		logger().info("WxAppCardController: request for card detail");
+		param.setUserId(wxAppAuth.user().getUserId());
 		WxAppUserCardVo userCardDetail;
 		try {
 			userCardDetail = shop().user.userCard.getUserCardDetail(param);
@@ -95,7 +97,7 @@ public class WxAppCardController extends WxAppBaseController {
 	}
 	
 	/**
-	 * 	获取会员卡激活信息
+	 * 	会员卡激活
 	 */
 	@PostMapping(value="/api/wxapp/activation/card")
 	public JsonResult activationCard(@RequestBody @Validated ActivateCardParam param) {
@@ -109,5 +111,5 @@ public class WxAppCardController extends WxAppBaseController {
 		}
 		return fail();
 	}
-	
+
 }
