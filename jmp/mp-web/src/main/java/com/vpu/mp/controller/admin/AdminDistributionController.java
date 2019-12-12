@@ -598,7 +598,25 @@ public class AdminDistributionController extends AdminBaseController{
         return this.success(distributorCheckList);
     }
 
-//    public JsonResult applyPass(@RequestBody DistributionApplyOptParam param){
-//
-//    }
+    /**
+     * 分销员审核通过
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/distributor/check/pass")
+    public JsonResult applyPass(@RequestBody DistributionApplyOptParam param){
+        boolean res = shop().distributorCheck.applyPass(param);
+        return this.success(res);
+    }
+
+    /**
+     * 分销员审核拒绝
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/distributor/check/refuse")
+    public JsonResult applyRefuse(@RequestBody DistributionApplyOptParam param){
+        boolean res = shop().distributorCheck.applyRefuse(param);
+        return this.success(res);
+    }
 }
