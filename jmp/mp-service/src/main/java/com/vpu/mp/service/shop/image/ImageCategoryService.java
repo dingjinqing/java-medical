@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.image;
 
 import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
@@ -253,16 +254,15 @@ public class ImageCategoryService extends ShopBaseService {
     /**
      * 得到Tree图片目录列表
      *
-     * @param openId
      * @return
+     * @param lang
      */
-    public List<CategoryTreeItemVo> getImageCategoryForTree(Integer openId) {
+    public List<CategoryTreeItemVo> getImageCategoryForTree(String lang) {
         List<CategoryTreeItemVo> result = new ArrayList<CategoryTreeItemVo>();
         CategoryTreeItemVo root = new CategoryTreeItemVo();
-        root.setName("我的图片");
-        root.setId(openId);
+        root.setName(Util.translateMessage(lang, JsonResultMessage.MSG_IMAGE_CATEGORY_IMGCATNAME_ROOT_NAME,"message"));
         Result<UploadedImageCategoryRecord> records = this.getAll();
-        this.getImageCategoryTree(root, records, 2);
+        this.getImageCategoryTree(root, records, root.getLevel());
         result.add(root);
         return result;
     }
@@ -282,11 +282,11 @@ public class ImageCategoryService extends ShopBaseService {
                 CategoryTreeItemVo child = new CategoryTreeItemVo();
                 child.setId(item.getImgCatId());
                 child.setName(item.getImgCatName());
-                child.setLevel(level);
+                child.setLevel(level+1);
                 root.getChild().add(child);
                 categoryTreeItemList.remove(item);
                 i--;
-                getImageCategoryTree(child, categoryTreeItemList, level + 1);
+                getImageCategoryTree(child, categoryTreeItemList, level );
             }
         }
         return root;

@@ -88,7 +88,7 @@ public class AdminImageCategoryController extends AdminBaseController {
      */
     @GetMapping("/admin/image/category/list")
     public JsonResult getImageCategoryList() {
-        return success(shop().imageCatgory.getImageCategoryForTree(0));
+        return success(shop().imageCatgory.getImageCategoryForTree(getLang()));
     }
 
 

@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.image.UploadImageCatNameVo;
 import com.vpu.mp.service.pojo.shop.image.UploadImageParam;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import com.vpu.mp.service.pojo.shop.image.UploadedImageVo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,7 +76,7 @@ public class AdminImageController extends AdminBaseController {
      * @throws Exception
      */
     @PostMapping(value = "/admin/image/uploadOneImgae")
-    protected JsonResult uploadOneFile( UploadImageParam param, Part file) throws IOException {
+    protected JsonResult uploadOneFile(@Validated UploadImageParam param, Part file) throws IOException {
         // 校验
         ResultMessage jsonResultCode = shop().image.validImageParam(param, file);
         if (!jsonResultCode.getFlag()) {

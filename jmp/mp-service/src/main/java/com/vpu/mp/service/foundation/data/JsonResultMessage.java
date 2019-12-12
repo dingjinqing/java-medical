@@ -58,6 +58,7 @@ public class JsonResultMessage {
 	public static final String MSG_IMAGE_CATEGORY_IMGCATID_NOT_NULL = "image.category.imgCatId.notNull";
 	public static final String MSG_IMAGE_CATEGORY_IMGCATPARENTID_NOT_NULL = "image.category.imgCatParentId.notNull";
 	public static final String MSG_IMAGE_CATEGORY_IMGCATNAME_NOT_NULL = "image.category.imgCatName.notNull";
+	public static final String MSG_IMAGE_CATEGORY_IMGCATNAME_ROOT_NAME = "image.category.imgCatName.root.name";
 
 	public static final String MSG_VIDEO_UPLOAD_FAILED = "video.upload.failed";
 	public static final String MSG_VIDEO_FORMAT_INVALID = "video.format.invalid";
