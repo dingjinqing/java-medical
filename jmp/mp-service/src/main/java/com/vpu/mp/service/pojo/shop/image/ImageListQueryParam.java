@@ -1,47 +1,49 @@
 package com.vpu.mp.service.pojo.shop.image;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 
 /**
- * 
+ *
  * @author 新国
  *
  */
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 public class ImageListQueryParam {
 
 	/**
 	 * 页码
 	 */
-	public Integer page;
+	private Integer page;
 	/**
 	 * 分组id
 	 */
-	public Integer imgCatId;
+	@NonNull
+	private Integer imgCatId;
 	/**
 	 * 关键词
 	 */
-	public String keywords;
+	private String keywords;
 	/**
 	 * 每页显示的个数
 	 */
-	public  Integer pageRows;
+	private  Integer pageRows;
 	/**
 	 * 更多需求 1.开启 0关闭
 	 */
-	public Integer searchNeed;
+	private Integer searchNeed;
 	/**
 	 * 宽度要求 （更多）
 	 */
-	public Integer needImgWidth;
+	private Integer needImgWidth;
 	/**
 	 * 高度需求（更多）
 	 */
-	public Integer needImgHeight;
+	private Integer needImgHeight;
 	/**
 	 * 排序
 	 */
-	public Integer uploadSortId;
+	private Integer uploadSortId;
 };

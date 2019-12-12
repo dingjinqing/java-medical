@@ -118,6 +118,16 @@ export default {
     }
   },
   watch: {
+    'val': {
+      handler (newName, oldName) {
+        console.log(newName)
+        this.noneBlockDiscArr[this.goodsType].num = this.val.choosedGoodsId.length
+        this.noneBlockDiscArr[this.storeType].num = this.val.choosedStoreId.length
+        this.noneBlockDiscArr[this.platformType].num = this.val.choosedPlatformId.length
+        this.noneBlockDiscArr[this.brandType].num = this.val.choosedBrandId.length
+      },
+      deep: true
+    },
     'ruleForm.discount': {
       handler (newName, oldName) {
         this.val.discount = newName
@@ -197,10 +207,6 @@ export default {
   },
   created () {
     this.noneBlockDiscArr = this.$t('memberCard.noneBlockDiscArr')
-    this.initGoodsId(this.ruleForm.choosedGoodsId)
-    this.initStoreId(this.ruleForm.choosedStoreId)
-    this.initPlatformId(this.ruleForm.choosedPlatformId)
-    this.initBrandId(this.ruleForm.choosedBrandId)
   },
   mounted () {
 

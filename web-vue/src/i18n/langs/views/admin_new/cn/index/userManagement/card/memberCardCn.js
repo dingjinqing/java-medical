@@ -131,7 +131,7 @@ export const cn = {
   storeName: '门店名称',
   delete: '删除',
   addStore: '添加门店',
-  useNeedKnow: '使用须知: ',
+  useNeedKnow: '使用须知：',
   contactPhone: '联系电话：',
   pleaseInput: '请输入内容',
   getSetting: '领取设置',
@@ -162,5 +162,84 @@ export const cn = {
   detailSend: '购物满100送100积分',
   codeArr: ['领取码', '增加批次', '废除批次', '生成/导入记录'],
   scoreSaveSuccess: '积分配置成功',
-  saveSuccess: '保存成功'
+  saveSuccess: '保存成功',
+  noneBlockDiscArr: [
+    {
+      name: '添加商品',
+      num: '',
+      info: '已选择商品',
+      unit: '件'
+    },
+    {
+      name: '添加商品分类',
+      num: '',
+      info: '已选择分类',
+      unit: '个分类'
+    },
+    {
+      name: '添加平台分类',
+      num: '',
+      info: '已选择分类',
+      unit: '个分类'
+    },
+    {
+      name: '添加品牌',
+      num: '',
+      info: '已选择品牌',
+      unit: '个品牌'
+    }
+  ],
+  noneBlockVipArr: [
+    {
+      name: '添加商品',
+      num: '',
+      info: '已选择商品',
+      unit: '件'
+    },
+    {
+      name: '添加商品分类',
+      num: '',
+      info: '已选择分类',
+      unit: '个分类'
+    },
+    {
+      name: '添加平台分类',
+      num: '',
+      info: '已选择分类',
+      unit: '个分类'
+    },
+    {
+      name: '添加品牌',
+      num: '',
+      info: '已选择品牌',
+      unit: '个品牌'
+    }
+  ],
+  dateSelectOptions: [{
+    value: '0',
+    label: '日'
+  }, {
+    value: '1',
+    label: '周'
+  }, {
+    value: '2',
+    label: '月'
+  }],
+  timeDay: '日内有效',
+  timeWeek: '周内有效',
+  timeMonth: '月内有效',
+  suiteableGoods: '适用商品',
+  cardStartUse: '本卡是否启用',
+  startUse: '启用',
+  stopUse: '停用',
+  cardGrade: '会员卡等级',
+  chooseGrade: '请选择等级',
+  gradeConditionTip: '数字越大等级越高，当会员满足相应条件时会自动发放对应等级的会员卡',
+  amountTip: '仅包含微信、余额支付',
+  gradeAmountCon: '累积消费总额达到',
+  gradeScore: '累积积分达到',
+  or: '或',
+  gradeTip: '低等级用户满足升级条件会自动升级为高等级卡',
+  gradeSetting: '升级设置',
+  save: '保存'
 }

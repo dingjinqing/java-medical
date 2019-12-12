@@ -6,7 +6,7 @@
         <view>
         <icon size="13" type="search" role="img"></icon>
         </view>
-        <input placeholder="请输入搜索关键字"></input>
+        <input placeholder="请输入搜索关键字" bindconfirm="inputSearch" bindinput="changeInput" value="{{keyWords}}"></input>
       </view>
     </view>
     <view class="condition">
@@ -16,15 +16,13 @@
     </view>
     <view class="content">
       <block wx:if="{{dataList[0].length}}">
-         <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
-            <block wx:for="{{pageItem}}" wx:key="itemIndex" wx:for-index="itemIndex">
-              <view class="goods_content">
-              <block wx:for="{{item.goodsList}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">
-                <v-double-col-goods goods-data="{{goodsItem}}"/>
-              </block>
-              </view>
+        <view class="goods_content">
+          <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+            <block wx:for="{{pageItem}}" wx:for-item="goodsItem" wx:key="itemIndex" wx:for-index="itemIndex">
+              <v-double-col-goods goods-data="{{goodsItem}}"/>
             </block>
           </block>
+        </view>
       </block>
       <block wx:else>
         <view class="is-null" >
@@ -34,7 +32,7 @@
       </block>
     </view>
   </view>
-  <v-filter show="{{showFilterDialog}}" nav-height="{{margin_top_nav + 8}}"/>
-  <v-pay-award show="{{true}}"/>
+  <v-filter show="{{showFilterDialog}}" bindconfirm="getSelectedData" nav-height="{{margin_top_nav + 8}}"/>
+  <!-- <v-pay-award show="{{true}}"/> -->
   <include src="/pages/common/footer.wxml"/>
 </view>

@@ -84,6 +84,7 @@ var base = {
         }
         item.activityLabelData = newArr
       })
+      console.log(goodsData)
     },
     // 处理价格上方显示的label条
     handleToActivitiesLabel(item, itemC, arr) {

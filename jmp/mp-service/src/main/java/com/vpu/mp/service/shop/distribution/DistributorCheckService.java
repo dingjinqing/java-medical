@@ -2,9 +2,11 @@ package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionApplyOptParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListVo;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
@@ -60,6 +62,7 @@ public class DistributorCheckService extends ShopBaseService{
         if(param.getEndTime() != null){
             select.and(DISTRIBUTOR_APPLY.CREATE_TIME.ge(param.getEndTime()));
         }
+        select.and(DISTRIBUTOR_APPLY.STATUS.eq(param.getNav()));
         select.orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc());
     }
 
@@ -71,5 +74,66 @@ public class DistributorCheckService extends ShopBaseService{
      */
     public Integer distributionReviewTimeout(Integer nDays) {
         return db().fetchCount(DISTRIBUTOR_APPLY, DISTRIBUTOR_APPLY.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+    }
+
+    /**
+     * 分销审核通过
+     * @param param
+     * @return
+     */
+    public boolean applyPass(DistributionApplyOptParam param){
+        //获取申请信息
+        Integer userId = db().select(DISTRIBUTOR_APPLY.USER_ID).from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.ID.eq(param.getId())).fetchOne().into(Integer.class);
+
+        this.transaction(() -> {
+            //更新审核状态
+            changeApplyStatus(param.getId(),(byte)1);
+            //更新分销身份状态，分组情况
+            updateApplyGroup(userId,param.getGroupId());
+        });
+        //TODO：更改分销员的返利信息
+        //TODO：操作记录
+        return true;
+    }
+
+    public boolean applyRefuse(DistributionApplyOptParam param){
+        //获取申请信息
+        Integer userId = db().select(DISTRIBUTOR_APPLY.USER_ID).from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.ID.eq(param.getId())).fetchOne().into(Integer.class);
+
+        this.transaction(() -> {
+            //更新审核状态
+            changeApplyStatus(param.getId(),(byte)2);
+            //添加审核内容
+            if(isNotEmpty(param.getMsg())){
+                db().update(DISTRIBUTOR_APPLY).set(DISTRIBUTOR_APPLY.MSG,param.getMsg()).where(DISTRIBUTOR_APPLY.ID.eq(param.getId())).execute();
+            }
+        });
+        //TODO:操作记录
+        return true;
+    }
+
+    /**
+     * 更新分销审核状态
+     * @param id 申请id
+     * @param status 审核状态 1：通过；2：拒绝
+     */
+    private void changeApplyStatus(Integer id,Byte status){
+        db().update(DISTRIBUTOR_APPLY)
+            .set(DISTRIBUTOR_APPLY.STATUS, status)
+            .where(DISTRIBUTOR_APPLY.ID.eq(id))
+            .execute();
+    }
+
+    /**
+     * 设置审核更新数据
+     * @param userId 申请人id
+     * @param GroupId 分组id
+     */
+    private void updateApplyGroup(Integer userId,Integer GroupId){
+        db().update(USER)
+            .set(USER.IS_DISTRIBUTOR, (byte)1)
+            .set(USER.INVITE_GROUP,GroupId)
+            .where(USER.USER_ID.eq(userId))
+            .execute();
     }
 }

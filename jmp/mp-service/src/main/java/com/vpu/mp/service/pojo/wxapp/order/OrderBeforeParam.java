@@ -81,7 +81,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private Integer goodsId;
 		private BigDecimal goodsPrice;
 		/**购买数量*/
-		@NotNull(message = JsonResultMessage.MSG_ORDER_ORDERSN_NOT_NULL)
+		@NotNull(message = JsonResultMessage.MSG_ORDER_GOODS_NO_ZERO)
 		private Integer goodsNumber;
 		@NotNull
 		private Integer productId;
@@ -98,7 +98,8 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         /** 规格价 */
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         private BigDecimal productPrice;
-		private Integer firstSpecialId;
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        private Integer firstSpecialId;
 		/**方便计算*/
 		@JsonIgnore
 		private GoodsSpecProductRecord productInfo;

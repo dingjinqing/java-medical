@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -52,8 +53,8 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
      * 将指定时间转化为自定义时间供后续统一处理
      */
     private void formatDate(ProductOverviewParam param) {
-        param.setStartTime(java.sql.Date.valueOf(LocalDate.now().minusDays(param.getDynamicDate())));
-        param.setEndTime(java.sql.Date.valueOf(LocalDate.now()));
+        param.setStartTime(Timestamp.valueOf(LocalDate.now().minusDays(param.getDynamicDate()).atStartOfDay()));
+        param.setEndTime(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
     }
 
     /**

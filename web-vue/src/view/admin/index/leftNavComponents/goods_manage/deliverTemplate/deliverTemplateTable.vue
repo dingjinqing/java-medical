@@ -46,7 +46,7 @@
             </el-table-column>
             <el-table-column
               prop="first_num"
-              label="首件（件）"
+              :label="listType === `list` ? '首件（件）' : '首重（公斤）'"
               align="center"
             >
             </el-table-column>

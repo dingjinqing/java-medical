@@ -18,16 +18,6 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            :label="$t('brandManagement.brandName')+'：'"
-            prop="NameEnlishInput"
-          >
-            <el-input
-              size="small"
-              v-model="ruleForm.NameEnlishInput"
-              :placeholder="$t('brandManagement.inputPlaceText')"
-            ></el-input>
-          </el-form-item>
-          <el-form-item
             :label="$t('brandManagement.brand')+'Logo：'"
             prop="logoImgUrl"
           >
@@ -108,7 +98,7 @@
               <span style="color:#999">{{$t('brandManagement.bottomTips')}}</span>
             </div>
           </el-form-item>
-          <el-form-item :label="$t('brandManagement.yes')+'：'">
+          <el-form-item :label="$t('brandManagement.addMerchandise')+'：'">
             <div
               class="brand_title"
               style="margin-left:16px"
@@ -442,6 +432,11 @@ export default {
       classificationSelectRequest().then((res) => {
         console.log(res)
         if (res.error === 0) {
+          let obj = {
+            classifyId: 0,
+            classifyName: '请选择'
+          }
+          res.content.unshift(obj)
           this.options = res.content
         }
       })
@@ -453,7 +448,7 @@ export default {
           this.ruleForm.name = res.content.brandName
           this.ruleForm.NameEnlishInput = res.content.ename
           this.ruleForm.logoImgUrl = res.content.fullUrlLogo
-
+          console.log(res.content.classifyId)
           this.ruleForm.classSelectValue = res.content.classifyId
           this.ruleForm.firstInput = res.content.first
           console.log(res.content.isRecommend)

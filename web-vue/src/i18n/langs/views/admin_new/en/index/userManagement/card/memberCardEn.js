@@ -164,5 +164,50 @@ export const en = {
   detailSend: 'EACH 100 SEND 100',
   codeArr: ['CODE', 'ADD-BATCH', 'DEL-BATCH', 'GENERATE/IMPORT-RECORD'],
   scoreSaveSuccess: 'SCORE CONFIG SUCCESS',
-  saveSuccess: 'SUCCESS'
+  saveSuccess: 'SUCCESS',
+  noneBlockDiscArr: [
+    {
+      name: 'ADD GOODS',
+      num: ''
+    },
+    {
+      name: 'ADD STORES',
+      num: ''
+    },
+    {
+      name: 'ADD PLAT',
+      num: ''
+    },
+    {
+      name: 'ADD BRAND',
+      num: ''
+    }
+  ],
+  dateSelectOptions: [{
+    value: '0',
+    label: 'DAY'
+  }, {
+    value: '1',
+    label: 'WEEK'
+  }, {
+    value: '2',
+    label: 'MONTH'
+  }],
+  timeDay: 'days effect',
+  timeWeek: 'week effect',
+  timeMonth: 'month effect',
+  suiteableGoods: 'suite goods',
+  cardStartUse: 'Card Status',
+  startUse: 'ON',
+  stopUse: 'OFF',
+  cardGrade: 'GRADE',
+  chooseGrade: 'CHOOSE',
+  gradeConditionTip: 'Digital grade level, when the member meets the corresponding conditions, the membership card of the corresponding level will be automatically assigned',
+  amountTip: 'Only include WeChat and balance payment',
+  gradeAmountCon: 'Grade Amount',
+  gradeScore: 'Grade Score',
+  or: 'OR',
+  gradeTip: 'Low-level users automatically upgrade to high-level cards when they meet the upgrade conditions',
+  gradeSetting: 'Grade Setting',
+  save: 'save'
 }

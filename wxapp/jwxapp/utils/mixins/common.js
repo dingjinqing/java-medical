@@ -112,9 +112,9 @@ module.exports = {
     pages.notify(this, "*", eventName, ...args);
   },
   $t(code, valueObj = {}) {
-    return i18n.trans(code,valueObj);
+    return i18n.trans(code, valueObj);
   },
-  getLocale(){
+  getLocale() {
     return i18n.getLocale();
   },
   getLocalePack() {

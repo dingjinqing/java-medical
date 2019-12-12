@@ -203,7 +203,7 @@ public class OrderOperationJudgment {
 	/**
 	 * 订单是否可以完成
 	 * @param order
-	 * @return
+	 * @return true可完成； false不可完
 	 */
 	public static boolean mpIsFinish(OrderListInfoVo order , Integer isReturnCount) {
 		if(order.getOrderStatus() == OrderConstant.ORDER_RECEIVED) {

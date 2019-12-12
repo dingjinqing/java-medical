@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -565,14 +566,34 @@ public class UserCardDaoService extends ShopBaseService{
             .on(Tables.USER_CARD.CARD_ID.eq(Tables.MEMBER_CARD.ID)).where(USER_CARD.CARD_NO.eq(cardNo)).fetchAny();
     }
 
-	public UserCardVo getUserCardJudge(UserIdAndCardIdParam param) {
-		logger().info("查询用户"+param.getUserId()+"的会员卡"+param.getCardId());
+    public UserCardVo getUserCardJudge(UserIdAndCardIdParam param) {
+    	logger().info("查询用户"+param.getUserId()+"的会员卡"+param.getCardId());
+    	Condition condition = DSL.noCondition();
+    	if(param.getUserId()!=null) {
+    		condition = condition.and(USER_CARD.USER_ID.eq(param.getUserId()));
+    	}
+    	if(param.getCardId() != null) {
+    		condition = condition.and(USER_CARD.CARD_ID.eq(param.getCardId()));
+    	}
+    	
+    	return getUserCard(condition);
+    }
+ 
+    public UserCardVo getUserCardByCardNo(String cardNo) {
+    	Condition condition = DSL.noCondition();
+    	if(!StringUtils.isBlank(cardNo)) {
+    		condition = condition.and(USER_CARD.CARD_NO.eq(cardNo));
+    	}
+    	return getUserCard(condition);
+    }
+    
+	public UserCardVo getUserCard(Condition condition) {
+		
 		return db().select(USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.FLAG.as("uFlag"),USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,USER_CARD.IS_DEFAULT,
 				USER_CARD.MONEY,USER_CARD.SURPLUS,USER_CARD.EXCHANG_SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.CREATE_TIME.as("uCreateTime"),MEMBER_CARD.asterisk())
 			.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
-			.where(USER_CARD.CARD_ID.eq(param.getCardId()))
+			.where(condition)
 			.and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING))
-			.and(USER_CARD.USER_ID.eq(param.getUserId()))
 			.fetchAnyInto(UserCardVo.class);
 	}
 	

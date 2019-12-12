@@ -205,9 +205,11 @@ public class GoodsDeliverTemplateService extends ShopBaseService{
         logger().info("默认模板计算运费:{}", template);
         if(OrderConstant.DEFAULT_SHIPPING_FEE_TEMPLATE_UNITY.equals(template.getTemplateName())){
             //统一模板
+            logger().info("统一模板");
             return template.getPrice();
         }else if(OrderConstant.DEFAULT_SHIPPING_FEE_TEMPLATE_FREE_LIMIT.equals(template.getTemplateName())){
             //满包邮
+            logger().info("满包邮");
             return BigDecimalUtil.compareTo(totalPrica, template.getFeeLimit()) == -1 ? template.getPrice() : BigDecimal.ZERO;
         }else {
             throw new MpException(JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR);

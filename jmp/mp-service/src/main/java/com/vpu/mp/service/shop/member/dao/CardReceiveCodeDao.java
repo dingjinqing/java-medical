@@ -6,9 +6,13 @@ import static com.vpu.mp.db.shop.Tables.CARD_RECEIVE_CODE;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
+import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 
@@ -103,4 +107,79 @@ public class CardReceiveCodeDao extends ShopBaseService {
 			.where(CARD_BATCH.ID.in(batchIdSet))
 			.execute();
 	}
+
+	public CardReceiveCodeRecord getRow(Condition condition) {
+		return db().selectFrom(CARD_RECEIVE_CODE)
+			.where(condition)
+			.fetchAny();
+	}
+
+	public CardReceiveCodeRecord getUserHasCode(Integer userId, String code) {
+		Condition condition = DSL.noCondition();
+		if(userId!=null) {
+			condition = condition.and(CARD_RECEIVE_CODE.USER_ID.eq(userId));
+		}
+		if(code != null) {
+			condition = condition.and(CARD_RECEIVE_CODE.CODE.eq(code));
+		}	
+		return getRow(condition);
+	}
+
+	public CardReceiveCodeRecord getUserHasCode(Integer userId, String cardNo, String cardPwd) {
+		Condition condition = DSL.noCondition();
+		if(userId!=null) {
+			condition = condition.and(CARD_RECEIVE_CODE.USER_ID.eq(userId));
+		}
+		if(cardNo != null) {
+			condition = condition.and(CARD_RECEIVE_CODE.CARD_NO.eq(cardNo));
+		}
+		if(cardPwd != null) {
+			condition = condition.and(CARD_RECEIVE_CODE.CARD_PWD.eq(cardPwd));
+		}
+		return getRow(condition);
+	}
+	
+	private Condition getValidCondition() {
+		Condition condition = DSL.noCondition();
+		condition = condition
+				.and(CARD_RECEIVE_CODE.DEL_FLAG.eq(CBATCH_DF_NO))
+				.and(CARD_RECEIVE_CODE.USER_ID.eq(0))
+				.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())
+				.and(CARD_RECEIVE_CODE.STATUS.eq((byte)1));
+		return condition;
+	}
+	public CardReceiveCodeRecord getCardCode(Integer cardId, String code) {
+		Condition condition = getValidCondition();
+		if(cardId!=null) {
+			condition = condition.and(CARD_RECEIVE_CODE.CARD_ID.eq(cardId));
+		}
+		if(code != null) {
+			condition = condition.and(CARD_RECEIVE_CODE.CODE.eq(code));
+		}
+		return getRow(condition);
+	}
+	
+	public CardReceiveCodeRecord getCardPwd(Integer cardId, String cardNo, String cardPwd) {
+		Condition condition = getValidCondition();
+		if(cardId!=null) {
+			condition = condition.and(CARD_RECEIVE_CODE.CARD_ID.eq(cardId));
+		}
+		if(!StringUtils.isBlank(cardNo)) {
+			condition = condition.and(CARD_RECEIVE_CODE.CARD_NO.eq(cardNo));
+		}
+		if(!StringUtils.isBlank(cardPwd)) {
+			condition = condition.and(CARD_RECEIVE_CODE.CARD_PWD.eq(cardPwd));
+		}
+		return getRow(condition);
+	}
+	
+	
+	public void updateRecord(CardReceiveCodeRecord cardReceiveCodeRecord) {
+		db().executeUpdate(cardReceiveCodeRecord, CARD_RECEIVE_CODE.ID.eq(cardReceiveCodeRecord.getId()));
+	}
+
+
+
+
+	
 }

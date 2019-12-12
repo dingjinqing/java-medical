@@ -32,7 +32,7 @@
           </el-form-item>
           <!-- 运费 -->
           <el-form-item
-            v-if="isShow"
+            v-if="isShow === true"
             prop="price"
           >
             <span>运费：</span>
@@ -45,7 +45,7 @@
           </el-form-item>
           <!-- 订单金额 -->
           <el-form-item
-            v-else
+            v-if="isShow === false"
             prop="feeLimit"
           >
             <span> 订单金额>=</span>
@@ -57,7 +57,7 @@
             <span>元时包邮,否则运费为</span>
             <el-input
               size="small"
-              v-model.number="formData.price"
+              v-model="formData.price"
               style="width:80px"
             ></el-input>
             <span>元</span>
@@ -146,11 +146,10 @@ export default {
   methods: {
     // 选中运费模板的时候
     handleChange (val) {
-      console.log(val)
       switch (val) {
-        case '统一运费': this.isShow = true
+        case 0: this.isShow = true
           break
-        case '满额包邮': this.isShow = false
+        case 1: this.isShow = false
           break
       }
     },
