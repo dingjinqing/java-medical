@@ -52,6 +52,7 @@ public class DeleteService  extends ShopBaseService implements IorderOperate <Or
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
 		if(!OrderOperationJudgment.isDelete(order)) {
+            logger().error("该订单不可删除");
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_DELETE_OPERATION_NOT_SUPPORTED);
 		}		
 		orderInfo.delete(order);
