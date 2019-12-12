@@ -36,7 +36,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
@@ -159,7 +158,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
         .and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
         .and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0));
 
-    if (param.imgCatId != null && param.imgCatId > 0) {
+    if (param.imgCatId != null) {
       List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.imgCatId));
       select.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imgCatIds.toArray(new Integer[0])));
     }

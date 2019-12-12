@@ -613,7 +613,6 @@ export default {
       changeCardStatueRequest(data).then(res => {
         if (res.error === 0) {
           console.log('停止成功')
-
           this.loadAllPageData()
           this.getBackEndData({ 'currentPage': 0,
             'pageRows': 100,
