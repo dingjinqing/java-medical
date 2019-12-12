@@ -1,29 +1,48 @@
 <template>
-  <div class="">
-    <div class="yesterday">昨日概况</div>
-    <div class="basic">累计访问用户数-最近7天</div>
-    <div class="page">页面统计-最近7天</div>
+  <div class="total-content">
+    <div class="container">
+      <yesterdayStatistics class="distance" />
+    </div>
   </div>
 </template>
 <script>
-export default {
+    import yesterdayStatistics from './yesterdayStatistics.vue'
 
+    export default {
+  components: {yesterdayStatistics},
+  data () {
+    return {}
+  }
 }
 </script>
-<style scoped>
-  .yesterday{
-    background-color: white;
-    margin: 10px;
-    height: 300px;
+<style lang="scss" scoped>
+  .total-content {
+    font-size: 14px;
+    margin-top: 10px;
+      .container {
+        position: relative;
+          .distance {
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+          }
+      }
   }
-  .basic{
-    background-color: white;
-    margin: 10px;
-    height: 300px;
-  }
-  .page{
-    background-color: white;
-    margin: 10px;
-    height: 300px;
-  }
+  /*.yesterday {*/
+  /*  background-color: white;*/
+  /*  margin: 10px;*/
+  /*  height: 300px;*/
+  /*}*/
+
+  /*.basic {*/
+  /*  background-color: white;*/
+  /*  margin: 10px;*/
+  /*  height: 300px;*/
+  /*}*/
+
+  /*.page {*/
+  /*  background-color: white;*/
+  /*  margin: 10px;*/
+  /*  height: 300px;*/
+  /*}*/
 </style>
