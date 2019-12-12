@@ -1,27 +1,29 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.overview.Tuple2;
 import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorParam;
 import com.vpu.mp.service.pojo.shop.overview.realtime.CoreIndicatorVo;
 import com.vpu.mp.service.pojo.shop.overview.realtime.RealTimeVo;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @Author:liufei
- * @Date:2019/7/19
- * @Description:
+ * The type Admin real time overview controller.
+ *
+ * @author liufei
+ * @date 2019 /7/19
  */
 @RestController
 public class AdminRealTimeOverviewController extends AdminBaseController {
 
     /**
      * 实时概况
-     * @return
+     *
+     * @param param the param
+     * @return json result
      */
     @PostMapping("/api/admin/realtimeoverview/realTime")
     public JsonResult realTime(@RequestBody @Validated CoreIndicatorParam param){
@@ -33,7 +35,9 @@ public class AdminRealTimeOverviewController extends AdminBaseController {
 
     /**
      * 核心指标
-     * @return
+     *
+     * @param param the param
+     * @return json result
      */
     @PostMapping("/api/admin/realtimeoverview/coreIndicator")
     public JsonResult coreIndicator(@RequestBody @Validated CoreIndicatorParam param){

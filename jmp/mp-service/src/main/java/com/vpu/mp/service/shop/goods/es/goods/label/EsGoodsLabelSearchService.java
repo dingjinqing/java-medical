@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.goods.es.goods.label;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.vpu.mp.db.shop.tables.GoodsLabel;
 import com.vpu.mp.service.foundation.es.EsAggregationName;
 import com.vpu.mp.service.foundation.es.EsManager;
 import com.vpu.mp.service.foundation.util.Util;
@@ -22,9 +21,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.ParsedTopHits;
-import org.elasticsearch.search.aggregations.metrics.TopHitsAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -41,10 +38,7 @@ import java.util.Map;
 @Slf4j
 public class EsGoodsLabelSearchService extends EsBaseSearchService {
 
-    /**
-     * default goods label aggregation return data
-     */
-    private final static String[] AGGREGATION_SOURCE = {EsLabelName.NAME,EsLabelName.ID,EsLabelName.LIST_PATTERN};
+
 
 
     /**
@@ -73,6 +67,40 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         SearchResponse response = search(searchRequest);
         return getLabelForGoodsNumbers(response);
     }
+
+    /**
+     * get goodsLabel by count
+     *
+     * @return List<EsGoodsLabel>
+     */
+    public List<EsGoodsLabel> getLabelForAllGoods() throws IOException {
+        SearchRequest searchRequest = assemblySearchRequestForCount();
+        SearchResponse response = search(searchRequest);
+        return getAllLabelInfos(response);
+    }
+
+    private List<EsGoodsLabel> getAllLabelInfos(SearchResponse response) {
+        List<EsGoodsLabel> list= Lists.newArrayList();
+        Aggregations aggregations = response.getAggregations();
+        Terms goodsAggregation = aggregations.get(EsLabelName.ID);
+        goodsAggregation.getBuckets().forEach(x->
+            assemblyEsGoodsLabels(list, x.getAggregations())
+        );
+        return list;
+    }
+
+    private void assemblyEsGoodsLabels(List<EsGoodsLabel> list, Aggregations aggregations) {
+        ParsedTopHits topHits = aggregations.get(EsAggregationName.LABEL_NAME);
+        if( topHits != null ){
+            for( SearchHit hit:topHits.getHits().getHits() ){
+                String labelStr = hit.getSourceAsString();
+                EsGoodsLabel esGoodsLabel = Util.parseJson(labelStr,EsGoodsLabel.class, EsManager.ES_FILED_SERIALIZER);
+                list.add(esGoodsLabel);
+            }
+        }
+    }
+
+
     /**
      * SearchResponse convert
      * @param response SearchResponse
@@ -100,14 +128,7 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         goodsAggregation.getBuckets().forEach(x->{
             Integer key = Integer.valueOf(x.getKey().toString());
             List<EsGoodsLabel> values= Lists.newArrayList();
-            ParsedTopHits topHits = x.getAggregations().get(EsAggregationName.LABEL_NAME);
-            if( topHits != null ){
-                for( SearchHit hit:topHits.getHits().getHits() ){
-                    String labelStr = hit.getSourceAsString();
-                    EsGoodsLabel esGoodsLabel = Util.parseJson(labelStr,EsGoodsLabel.class,EsManager.ES_FILED_SERIALIZER);
-                    values.add(esGoodsLabel);
-                }
-            }
+            assemblyEsGoodsLabels(values, x.getAggregations());
             map.put(key,values);
         });
         return map;
@@ -125,7 +146,7 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_INDEX_NAME);
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource();
         searchSourceBuilder.query(assemblyQueryBuilder(shopId,null,goodsIds,type));
-        searchSourceBuilder.aggregation(assemblyAggregationBuilderByGoodsId());
+        searchSourceBuilder.aggregation(assemblyLabelAggregationBuilderByGoodsId());
         //not need to return query data
         searchSourceBuilder.size(0);
         searchRequest.source(searchSourceBuilder);
@@ -149,20 +170,19 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         return searchRequest;
     }
     /**
-     * assembly AggregationBuilder by goodsId
+     * assembly SearchRequest for count goods
      *
-     * @return {@link AggregationBuilder}
+     * @return {@link SearchRequest}
      */
-    private AggregationBuilder assemblyAggregationBuilderByGoodsId(){
-        AggregationBuilder aggregationBuilder = AggregationBuilders.terms(EsLabelName.GOODS_ID)
-            .field(EsLabelName.GOODS_ID);
-        TopHitsAggregationBuilder topHitsAggregationBuilder = AggregationBuilders
-            .topHits(EsAggregationName.LABEL_NAME)
-            .fetchSource(AGGREGATION_SOURCE,null)
-            .sort(EsLabelName.TYPE, SortOrder.ASC)
-            .sort(EsLabelName.LEVEL,SortOrder.ASC)
-            .sort(EsLabelName.CREATE_TIME,SortOrder.DESC);
-        return aggregationBuilder.subAggregation(topHitsAggregationBuilder);
+    private SearchRequest assemblySearchRequestForCount(){
+        SearchRequest searchRequest = new SearchRequest(EsGoodsConstant.LABEL_INDEX_NAME);
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().
+            query(QueryBuilders.termQuery(EsLabelName.SHOP_ID,getShopId())).
+            aggregation(assemblyLabelAggregationBuilderByCount());
+        //not need to return query data
+        searchSourceBuilder.size(0);
+        searchRequest.source(searchSourceBuilder);
+        return searchRequest;
     }
     /**
      * assembly AggregationBuilder by labelId
@@ -173,6 +193,7 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         return AggregationBuilders.terms(EsLabelName.ID)
             .field(EsLabelName.ID);
     }
+
     /**
      * assembly QueryBuilder
      *

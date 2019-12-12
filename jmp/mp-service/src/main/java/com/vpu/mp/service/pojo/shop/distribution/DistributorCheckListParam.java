@@ -33,4 +33,8 @@ public class DistributorCheckListParam {
 
     private Integer currentPage;
     private Integer pageRows;
+    /**
+     * tab状态 0：待审核；1：审核通过；2：未通过
+     */
+    private Byte nav;
 }

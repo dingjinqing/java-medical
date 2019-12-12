@@ -43,8 +43,9 @@ global.wxComponent({
         module['is_first_touch'] = 1;
         // 当前图片域名
         module['imageUrl'] = 'http://jmpdevimg.weipubao.cn'
+        console.log(pageInfo)
         // 模块间距字段  
-        module['margin_bot'] = pageInfo.page_cfg.show_margin == 1 ? pageInfo.page_cfg.margin_val : 0;
+        module['margin_bot'] = pageInfo.page_cfg && pageInfo.page_cfg.show_margin == 1 ? pageInfo.page_cfg.margin_val : 0;
         // 是否需要请求数据
         module['need_request'] = module['need_request'] || false;
         pageData.push(module);

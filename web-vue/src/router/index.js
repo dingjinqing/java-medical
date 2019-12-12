@@ -37,6 +37,11 @@ const baseRoutes = [{
   path: '/wxapp/sign/help', // 小程序内积分点击跳转静态页面
   name: 'signrule',
   component: () => import('@/view/admin/layout/signrule')
+},
+{
+  path: '/wxapp/group/help', // 小程序内跳转拼团规则
+  name: 'groupbuy',
+  component: () => import('@/view/admin/layout/groupbuy')
 }
 ]
 const routes = baseRoutes.concat(

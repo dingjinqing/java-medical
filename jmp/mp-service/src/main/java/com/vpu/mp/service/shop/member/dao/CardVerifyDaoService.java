@@ -145,5 +145,11 @@ public class CardVerifyDaoService extends ShopBaseService {
 	public CardExamineRecord selectRecordById(Integer id) {
 		return db().selectFrom(CARD_EXAMINE).where(CARD_EXAMINE.ID.eq(id)).fetchAny();
 	}
+
+
+	public CardExamineRecord getStatusByNo(String cardNo) {
+		return db().selectFrom(CARD_EXAMINE).where(CARD_EXAMINE.CARD_NO.eq(cardNo)).orderBy(CARD_EXAMINE.ID.desc())
+				.fetchAny();
+	}
 	
 }
