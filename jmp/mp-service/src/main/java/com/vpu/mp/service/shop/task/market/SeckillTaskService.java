@@ -45,7 +45,6 @@ public class SeckillTaskService  extends ShopBaseService {
                 unpaidGoodsNum += seckillService.seckillList.getUnpaidSeckillNumberByPrd(seckill.getSkId(),secKillProduct.getProductId());
             }
             int goodsNumber = goodsService.getGoodsView(seckill.getGoodsId()).getGoodsNumber();
-            logger().info("%%%%%% " + seckill.getStock() +" %%% " + unpaidGoodsNum + " %%% " + goodsNumber);
             if(seckill.getStock() + unpaidGoodsNum > 0 && goodsNumber + unpaidGoodsNum > 0){
                 //只有处于进行中的、当前还有库存的秒杀活动所锁定的goodsId
                 currentSeckillGoodsIdList.add(seckill.getGoodsId());
@@ -54,7 +53,7 @@ public class SeckillTaskService  extends ShopBaseService {
         //求差集
         List<Integer> changeToNormalGoodsIds = Util.diffList(pastSeckillGoodsIdList,currentSeckillGoodsIdList);
         List<Integer> changeToActGoodsIds = Util.diffList(currentSeckillGoodsIdList,pastSeckillGoodsIdList);
-        logger().info("%%%%%% " + pastSeckillGoodsIdList +" %%% " + currentSeckillGoodsIdList + " %%% " + changeToNormalGoodsIds+ " %%% " + changeToActGoodsIds);
+
         if(changeToNormalGoodsIds != null && changeToNormalGoodsIds.size() > 0){
             //活动已失效，将goodsType改回去
             goodsService.changeToNormalType(changeToNormalGoodsIds);
