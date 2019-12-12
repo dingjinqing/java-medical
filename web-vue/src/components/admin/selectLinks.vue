@@ -410,11 +410,14 @@ export default {
 <style>
 .links .el-dialog.is-fullscreen {
   width: 52% !important;
+  overflow-y: hidden !important;
 }
 .links .el-dialog__footer {
   position: absolute;
   bottom: 0;
   right: 0;
+  width: 100%;
+  background: #fff;
 }
 .links .el-dialog__header {
   text-align: center;
