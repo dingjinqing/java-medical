@@ -408,6 +408,9 @@ export default {
 }
 </style>
 <style>
+.links .top_left .el-input {
+  width: auto !important;
+}
 .links .el-dialog.is-fullscreen {
   width: 52% !important;
   overflow-y: hidden !important;
