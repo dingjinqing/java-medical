@@ -57,7 +57,7 @@
             <span>元时包邮,否则运费为</span>
             <el-input
               size="small"
-              v-model.number="formData.price"
+              v-model="formData.price"
               style="width:80px"
             ></el-input>
             <span>元</span>
