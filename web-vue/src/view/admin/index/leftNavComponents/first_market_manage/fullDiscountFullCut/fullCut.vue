@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import { fullCutTableDataSearchApi, memberCardActivity } from '@/api/admin/marketManage/fullDiscountFullCut'
+import { fullCutTableDataSearchApi } from '@/api/admin/marketManage/fullDiscountFullCut'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination.vue'
 
