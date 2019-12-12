@@ -101,11 +101,11 @@ public class WxAppCardController extends WxAppBaseController {
 	public JsonResult activationCard(@RequestBody @Validated ActivateCardParam param) {
 		logger().info("获取会员卡激活信息"+param);
 		param.setUserId(this.wxAppAuth.user().getUserId());
-		ActivateCardVo vo = shop().user.wxUserCardService.activationCard(param);
+		ActivateCardVo vo = shop().user.wxUserCardService.activationCard(param,getLang());
 		if(NumberUtils.INTEGER_ONE.equals(param.getIsSetting())) {
-			
-		}else {
-			return this.i18nSuccess(vo);
+			return success();
+		}else if(vo != null){
+			return this.success(vo);
 		}
 		return fail();
 	}

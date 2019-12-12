@@ -27,13 +27,13 @@ public class WxUserCardService extends ShopBaseService {
 		wxAppCardReceiveSerive.receiveCard(param);
 	}
 
-	public ActivateCardVo activationCard(ActivateCardParam param) {
+	public ActivateCardVo activationCard(ActivateCardParam param, String lang) {
 		if(NumberUtils.BYTE_ONE.equals(param.getIsSetting())) {
-			logger().info("获取会员卡激活信息");
-			return wxAppCardActivationService.getActivationCard(param);
-		}else {
 			logger().info("设置会员卡激活信息");
 			wxAppCardActivationService.setActivationCard(param);
+		}else {
+			logger().info("获取会员卡激活信息");
+			return wxAppCardActivationService.getActivationCard(param,lang);
 		}
 		return null;
 	}

@@ -36,18 +36,18 @@ public class WxAppCardActivationService extends ShopBaseService {
 	/**
 	 * 	获取会员卡激活数据
 	 */
-	public ActivateCardVo getActivationCard(ActivateCardParam param) {
+	public ActivateCardVo getActivationCard(ActivateCardParam param,String lang) {
 		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());		
-		List<String> fields = cardVerifyService.getActiveRequiredField(uCard.getActivationCfg());
+		List<String> fields = cardVerifyService.getActiveRequiredFieldWithHump(uCard.getActivationCfg());
 		UserInfo user = userService.getUserInfo(param.getUserId());
 		
 		Map<String, Object> userMap = Util.convertPojoToMap(user);
 		userMap.entrySet().removeIf(e->!fields.contains(e.getKey()));
 		dealWithAddressCode(userMap);
 		
-		List<String> allEducation = MemberEducationEnum.getAllEducation();
+		List<String> allEducation = MemberEducationEnum.getAllEducation(lang);
 		
-		List<String> allIndustryName = MemberIndustryEnum.getAllIndustryName();
+		List<String> allIndustryName = MemberIndustryEnum.getAllIndustryName(lang);
 		
 		
 		//TODO 订阅消息
@@ -66,7 +66,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 		String provinceCode = "provinceCode";
 		String cityCode = "cityCode";
 		String districtCode = "districtCode";
-		
+		// 100000 110000 110100在省，市，区中都对应无效值
 		Integer provinceId = userMap.get(provinceCode)==null? 100000:(Integer)userMap.get(provinceCode);
 		Integer cityId = userMap.get(cityCode)==null?110000:(Integer)userMap.get(cityCode);
 		Integer districtId = userMap.get(districtCode)==null?110100:(Integer)userMap.get(districtCode);	

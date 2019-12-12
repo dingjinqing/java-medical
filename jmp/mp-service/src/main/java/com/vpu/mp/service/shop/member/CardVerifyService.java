@@ -92,7 +92,7 @@ public class CardVerifyService extends ShopBaseService {
 	}
 
     /**
-	 * 获取需要激活的信息
+	 * 获取需要激活的信息有下划线
 	 */
 	public List<String> getActiveRequiredField(String activationCfg) {
 		List<String> keyL = CardUtil.parseActivationCfg(activationCfg);
@@ -101,6 +101,18 @@ public class CardVerifyService extends ShopBaseService {
 		dealWithActivateAddress(keyL);
 		return keyL;
 	}
+	
+    /**
+	 * 获取需要激活的信息有下划线
+	 */
+	public List<String> getActiveRequiredFieldWithHump(String activationCfg) {
+		List<String> keyL = CardUtil.parseActivationCfg(activationCfg);
+		dealWithActivateBirthday(keyL);
+		dealWithActivateAddress(keyL);
+		formatKeyToHump(keyL);
+		return keyL;
+	}
+	
 
     /**
 	 *  驼峰到下划线
@@ -108,6 +120,16 @@ public class CardVerifyService extends ShopBaseService {
 	private static void formatKeyToUnderline(List<String> keyL) {
 		for(int i=0;i<keyL.size();i++) {
 			String v = Util.humpToUnderline(keyL.get(i));
+			keyL.set(i, v);
+		}
+	}
+	/**
+	 * 下划线到驼峰
+	 * @param keyL
+	 */
+	private static void formatKeyToHump(List<String> keyL) {
+		for(int i=0;i<keyL.size();i++) {
+			String v = Util.underlineToHump(keyL.get(i));
 			keyL.set(i, v);
 		}
 	}
