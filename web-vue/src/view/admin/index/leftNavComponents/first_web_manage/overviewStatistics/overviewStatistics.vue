@@ -6,9 +6,9 @@
   </div>
 </template>
 <script>
-    import yesterdayStatistics from './yesterdayStatistics.vue'
+import yesterdayStatistics from './yesterdayStatistics.vue'
 
-    export default {
+export default {
   components: {yesterdayStatistics},
   data () {
     return {}

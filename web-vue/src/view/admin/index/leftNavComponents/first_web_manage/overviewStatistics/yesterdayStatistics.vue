@@ -26,9 +26,9 @@
 </template>
 
 <script>
-    import {yesterdayAnalysis} from '@/api/admin/firstWebManage/overviewStatistics/overviewStatistics.js'
+import {yesterdayAnalysis} from '@/api/admin/firstWebManage/overviewStatistics/overviewStatistics.js'
 
-    export default {
+export default {
   data () {
     return {
       table: [],
