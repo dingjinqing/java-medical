@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -57,7 +58,7 @@ public class CardVerifyService extends ShopBaseService {
 	}
 
     /**
-	 * 根据激活需要的信息，更新用户详情
+	 * 	根据激活需要的信息，更新用户详情
 	 */
 	private void updateUserDetailAccordToVerifyData(Integer id) {
 		logger().info("更新用户详情");
@@ -68,7 +69,8 @@ public class CardVerifyService extends ShopBaseService {
 	}
 
 	private UserDetailRecord getUserActiveData(Integer id) {
-		List<String> keyL = getActiveRequiredField(id);
+		MemberCardRecord card = getCard(id);
+		List<String> keyL = getActiveRequiredField(card.getActivationCfg());
 
         CardExamineRecord cEx = getCardExamineRecordById(id);
 		// 准备数据
@@ -90,34 +92,64 @@ public class CardVerifyService extends ShopBaseService {
 	}
 
     /**
-	 * 获取需要激活的信息
+	 * 获取需要激活的信息有下划线
 	 */
-	private List<String> getActiveRequiredField(Integer id) {
-		MemberCardRecord card = getCard(id);
-		String[] key = card.getActivationCfg().split(",");
-		List<String> keyL = new ArrayList<>(Arrays.asList(key));
+	public List<String> getActiveRequiredField(String activationCfg) {
+		List<String> keyL = CardUtil.parseActivationCfg(activationCfg);
 		formatKeyToUnderline(keyL);
 		dealWithActivateBirthday(keyL);
+		dealWithActivateAddress(keyL);
 		return keyL;
 	}
+	
+    /**
+	 * 获取需要激活的信息有下划线
+	 */
+	public List<String> getActiveRequiredFieldWithHump(String activationCfg) {
+		List<String> keyL = CardUtil.parseActivationCfg(activationCfg);
+		dealWithActivateBirthday(keyL);
+		dealWithActivateAddress(keyL);
+		formatKeyToHump(keyL);
+		return keyL;
+	}
+	
 
     /**
 	 *  驼峰到下划线
 	 */
-	private void formatKeyToUnderline(List<String> keyL) {
+	private static void formatKeyToUnderline(List<String> keyL) {
 		for(int i=0;i<keyL.size();i++) {
 			String v = Util.humpToUnderline(keyL.get(i));
 			keyL.set(i, v);
 		}
 	}
+	/**
+	 * 下划线到驼峰
+	 * @param keyL
+	 */
+	private static void formatKeyToHump(List<String> keyL) {
+		for(int i=0;i<keyL.size();i++) {
+			String v = Util.underlineToHump(keyL.get(i));
+			keyL.set(i, v);
+		}
+	}
 
-    private void dealWithActivateBirthday(List<String> keylist) {
+    private  static void dealWithActivateBirthday(List<String> keylist) {
 		String birthDay = "birthday";
 		if(keylist.contains(birthDay)) {
 			keylist.removeIf("birthday"::equals);
 			keylist.addAll(Arrays.asList("birthday_year","birthday_month","birthday_day"));
 		}
 	}
+    
+    private static void dealWithActivateAddress(List<String> keyList) {
+    	String address = "address";
+    	if(keyList.contains(address)) {
+    		keyList.removeIf(address::equals);
+    		keyList.addAll(new ArrayList<String>(Arrays.asList("province_code","city_code","district_code")));
+    	}
+    }
+    
 
 	/**
 	 * 获取未处理的激活审核信息

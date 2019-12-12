@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * author liufei
@@ -23,4 +24,18 @@ public class ProductOverviewParam {
     protected int brandId;
     /** 商品标签id */
     protected int labelId;
+    public Timestamp start;
+    public Timestamp end;
+
+    public ProductOverviewParam clear() {
+        this.dynamicDate = 0;
+        this.startTime = null;
+        this.endTime = null;
+        this.sortId = 0;
+        this.brandId = 0;
+        this.labelId = 0;
+        this.start = null;
+        this.end = null;
+        return this;
+    }
 }

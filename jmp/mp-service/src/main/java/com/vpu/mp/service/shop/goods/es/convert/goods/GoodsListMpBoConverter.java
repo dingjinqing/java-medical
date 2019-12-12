@@ -27,6 +27,8 @@ public class GoodsListMpBoConverter implements EsGoodsConvertInterface<GoodsList
         bo.setMarketPrice(esGoods.getMarketPrice());
         bo.setShopPrice(esGoods.getShopPrice());
 
+        //设置是通过es返回的数据
+        bo.setIsDisposedByEs(true);
         return bo;
     }
 }

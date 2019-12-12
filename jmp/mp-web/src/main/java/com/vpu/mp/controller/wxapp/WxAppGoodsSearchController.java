@@ -29,9 +29,6 @@ public class WxAppGoodsSearchController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/goods/search")
     public JsonResult searchGoods(@RequestBody GoodsSearchMpParam param) {
-        // 是否展示售罄
-        Byte soldOutGoods = shop().config.shopCommonConfigService.getShopCommonCfg().getSoldOutGoods();
-        param.setSoldOutGoods(soldOutGoods);
         return success(shop().goodsMp.searchGoods(param));
     }
 }

@@ -172,7 +172,7 @@ rgba(91, 158, 164, 0.8),
   display: flex;
 }
 .title_label {
-  padding: 1px 4px;
+  padding: 1px 2px;
   border-radius: 2px;
   border: 1px solid #408080;
   color: #408080;
