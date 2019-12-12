@@ -1,7 +1,24 @@
 package com.vpu.mp.service.saas.image;
 
-import static com.vpu.mp.db.main.tables.UploadedImage.UPLOADED_IMAGE;
-import static com.vpu.mp.db.main.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
+import com.UpYun;
+import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.db.main.tables.records.UploadedImageRecord;
+import com.vpu.mp.service.foundation.image.ImageDefault;
+import com.vpu.mp.service.foundation.service.MainBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
+import com.vpu.mp.service.pojo.shop.image.UploadImageCatNameVo;
+import com.vpu.mp.service.pojo.shop.image.UploadPath;
+import org.apache.commons.io.FileUtils;
+import org.jooq.Record;
+import org.jooq.SelectWhereStep;
+import org.jooq.SortField;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,26 +31,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
-import org.jooq.SortField;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.UpYun;
-import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.config.UpYunConfig;
-import com.vpu.mp.db.main.tables.records.UploadedImageRecord;
-import com.vpu.mp.service.foundation.image.ImageDefault;
-import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
-import com.vpu.mp.service.pojo.shop.image.UploadImageCatNameVo;
-import com.vpu.mp.service.pojo.shop.image.UploadPath;
+import static com.vpu.mp.db.main.tables.UploadedImage.UPLOADED_IMAGE;
+import static com.vpu.mp.db.main.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
+import static com.vpu.mp.service.pojo.shop.image.ImageConstant.IMG_CAT_ID_MY_IMAGE;
+import static com.vpu.mp.service.pojo.shop.image.ImageConstant.IMG_CAT_ID_USER_IMAGE;
 
 /**
  * @author 新国
@@ -124,7 +125,7 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
                 .on(UPLOADED_IMAGE.IMG_CAT_ID.eq(DSL.cast(UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID, Integer.class)));
         select = this.buildOptions(select, param);
         select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
-        return this.getPageResult(select, param.page,param.pageRows, UploadImageCatNameVo.class);
+        return this.getPageResult(select, param.getPage(),param.getPageRows(), UploadImageCatNameVo.class);
     }
 
 
@@ -151,26 +152,33 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
                 .and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
                 .and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0));
 
-        if (param.imgCatId != null && param.imgCatId > 0) {
-            List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.imgCatId));
+        if (param.getImgCatId().equals(IMG_CAT_ID_MY_IMAGE)){
+            //我的图
+            select.where(UPLOADED_IMAGE.IMG_CAT_ID.notEqual(IMG_CAT_ID_USER_IMAGE));
+        }else if (param.getImgCatId().equals(IMG_CAT_ID_USER_IMAGE)){
+            //用户上传
+            select.where(UPLOADED_IMAGE.IMG_CAT_ID.eq(IMG_CAT_ID_USER_IMAGE));
+        }else {
+            List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.getImgCatId()));
             select.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imgCatIds.toArray(new Integer[0])));
         }
-        if (!StringUtils.isBlank(param.keywords)) {
-            select.where(UPLOADED_IMAGE.IMG_NAME.like(this.likeValue(param.keywords)));
+
+        if (!StringUtils.isBlank(param.getKeywords())) {
+            select.where(UPLOADED_IMAGE.IMG_NAME.like(this.likeValue(param.getKeywords())));
         }
-        if (param.searchNeed != null && param.searchNeed == 1) {
-            if (param.needImgWidth != null && param.needImgWidth > 0) {
-                select.where(UPLOADED_IMAGE.IMG_WIDTH.eq(param.needImgWidth));
+        if (param.getSearchNeed() != null && param.getSearchNeed() == 1) {
+            if (param.getNeedImgWidth() != null && param.getNeedImgWidth() > 0) {
+                select.where(UPLOADED_IMAGE.IMG_WIDTH.eq(param.getNeedImgWidth()));
             }
-            if (param.needImgHeight != null && param.needImgHeight > 0) {
-                select.where(UPLOADED_IMAGE.IMG_HEIGHT.eq(param.needImgHeight));
+            if (param.getNeedImgHeight() != null && param.getNeedImgHeight() > 0) {
+                select.where(UPLOADED_IMAGE.IMG_HEIGHT.eq(param.getNeedImgHeight()));
             }
         }
         SortField<?>[] sortFields = {UPLOADED_IMAGE.CREATE_TIME.desc(), UPLOADED_IMAGE.CREATE_TIME.asc(),
                 UPLOADED_IMAGE.IMG_SIZE.desc(), UPLOADED_IMAGE.IMG_SIZE.asc(), UPLOADED_IMAGE.IMG_NAME.desc(),
                 UPLOADED_IMAGE.IMG_NAME.asc()};
-        if (param.uploadSortId != null && param.uploadSortId >= 0 && param.uploadSortId < sortFields.length) {
-            select.orderBy(sortFields[param.uploadSortId]);
+        if (param.getUploadSortId() != null && param.getUploadSortId() >= 0 && param.getUploadSortId() < sortFields.length) {
+            select.orderBy(sortFields[param.getUploadSortId()]);
         } else {
             select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
         }

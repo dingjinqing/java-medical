@@ -5,6 +5,7 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.UploadedImageRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -39,12 +40,13 @@ import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
+import static com.vpu.mp.service.pojo.shop.image.ImageConstant.IMG_CAT_ID_MY_IMAGE;
+import static com.vpu.mp.service.pojo.shop.image.ImageConstant.IMG_CAT_ID_USER_IMAGE;
 
 /** @author 新国 */
 @Service
 @Slf4j
 public class ImageService extends ShopBaseService implements ImageDefault {
-
 
 
 
@@ -133,7 +135,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
     select = this.buildOptions(select, param);
     select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
 
-    return this.getPageResult(select, param.page, param.pageRows, UploadImageCatNameVo.class);
+    return this.getPageResult(select, param.getPage(), param.getPageRows(), UploadImageCatNameVo.class);
   }
 
   public List<Integer> convertIntegerArray(List<Integer> array) {
@@ -147,28 +149,30 @@ public class ImageService extends ShopBaseService implements ImageDefault {
    * @param param
    * @return
    */
-  public SelectWhereStep<Record> buildOptions(
-      SelectWhereStep<Record> select, ImageListQueryParam param) {
+  public SelectWhereStep<Record> buildOptions(SelectWhereStep<Record> select, ImageListQueryParam param) {
     if (param == null) {
       return select;
     }
-    Byte noDel = 0;
-    select
-        .where(UPLOADED_IMAGE.DEL_FLAG.eq(noDel))
-        .and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
-        .and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0));
-
-    List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.imgCatId));
-    select.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imgCatIds.toArray(new Integer[0])));
-    if (!StringUtils.isBlank(param.keywords)) {
-      select.where(UPLOADED_IMAGE.IMG_NAME.like(this.likeValue(param.keywords)));
+    select.where(UPLOADED_IMAGE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+    if (param.getImgCatId().equals(IMG_CAT_ID_MY_IMAGE)){
+      //我的图
+      select.where(UPLOADED_IMAGE.IMG_CAT_ID.notEqual(IMG_CAT_ID_USER_IMAGE));
+    }else if (param.getImgCatId().equals(IMG_CAT_ID_USER_IMAGE)){
+      //用户上传
+      select.where(UPLOADED_IMAGE.IMG_CAT_ID.eq(IMG_CAT_ID_USER_IMAGE));
+    }else {
+      List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.getImgCatId()));
+      select.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imgCatIds.toArray(new Integer[0])));
     }
-    if (param.searchNeed != null && param.searchNeed == 1) {
-      if (param.needImgWidth != null && param.needImgWidth > 0) {
-        select.where(UPLOADED_IMAGE.IMG_WIDTH.eq(param.needImgWidth));
+    if (!StringUtils.isBlank(param.getKeywords())) {
+      select.where(UPLOADED_IMAGE.IMG_NAME.like(this.likeValue(param.getKeywords())));
+    }
+    if (param.getSearchNeed() != null && param.getSearchNeed() == 1) {
+      if (param.getNeedImgWidth() != null && param.getNeedImgWidth() > 0) {
+        select.where(UPLOADED_IMAGE.IMG_WIDTH.eq(param.getNeedImgWidth()));
       }
-      if (param.needImgHeight != null && param.needImgHeight > 0) {
-        select.where(UPLOADED_IMAGE.IMG_HEIGHT.eq(param.needImgHeight));
+      if (param.getNeedImgHeight() != null && param.getNeedImgHeight() > 0) {
+        select.where(UPLOADED_IMAGE.IMG_HEIGHT.eq(param.getNeedImgHeight()));
       }
     }
     SortField<?>[] sortFields = {
@@ -179,10 +183,8 @@ public class ImageService extends ShopBaseService implements ImageDefault {
       UPLOADED_IMAGE.IMG_NAME.desc(),
       UPLOADED_IMAGE.IMG_NAME.asc()
     };
-    if (param.uploadSortId != null
-        && param.uploadSortId >= 0
-        && param.uploadSortId < sortFields.length) {
-      select.orderBy(sortFields[param.uploadSortId]);
+    if (param.getUploadSortId() != null && param.getUploadSortId() >= 0 && param.getUploadSortId() < sortFields.length) {
+      select.orderBy(sortFields[param.getUploadSortId()]);
     } else {
       select.orderBy(UPLOADED_IMAGE.IMG_ID.desc());
     }
