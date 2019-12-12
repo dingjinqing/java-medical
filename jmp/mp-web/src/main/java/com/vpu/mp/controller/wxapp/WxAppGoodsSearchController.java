@@ -2,7 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +16,7 @@ public class WxAppGoodsSearchController extends WxAppBaseController{
      * 搜索界面获取初始化搜索数据
      * @return {@link com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo}
      */
-    @GetMapping("/api/wxapp/goods/search/init")
+    @PostMapping("/api/wxapp/goods/search/init")
     public JsonResult getGoodsSearchFilterCondition() {
         return success(shop().goodsMp.getGoodsSearchFilterCondition());
     }
@@ -27,7 +27,7 @@ public class WxAppGoodsSearchController extends WxAppBaseController{
      * @param param
      * @return
      */
-    @GetMapping("/api/wxapp/goods/search")
+    @PostMapping("/api/wxapp/goods/search")
     public JsonResult searchGoods(@RequestBody GoodsSearchMpParam param) {
         // 是否展示售罄
         Byte soldOutGoods = shop().config.shopCommonConfigService.getShopCommonCfg().getSoldOutGoods();

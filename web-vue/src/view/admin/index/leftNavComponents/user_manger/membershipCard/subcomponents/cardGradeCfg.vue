@@ -54,7 +54,7 @@
       >
         <div class="grade-choose">
           <el-select
-            v-model="ruleForm.chooseGrade"
+            v-model="ruleForm.gradeValue"
             :placeholder="$t('memberCard.cardGrade')"
             size="small"
           >
@@ -97,6 +97,15 @@ export default {
       set () {
         this.$emit('input', this.ruleForm)
       }
+    }
+  },
+  watch: {
+    'ruleForm': {
+      handler (newName, oldName) {
+        this.val = newName
+        this.ruleForm = this.val
+      },
+      deep: true
     }
   },
   data () {

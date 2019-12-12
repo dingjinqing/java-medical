@@ -3817,6 +3817,7 @@ create table `b2c_card_receive_code`
     `user_id`      int(11)      not null default 0 comment '领取人',
     `receive_time` timestamp    null     default null comment '领取时间',
     `error_msg`    varchar(200) null comment '错误说明',
+    `status`       tinyint(1)   		default 0  null   comment '1: 可用 0：禁用',
     `del_flag`     tinyint(1)   not null default 0,
     `del_time`     timestamp    null     default null comment '删除时间',
     `create_time`  timestamp             default current_timestamp,

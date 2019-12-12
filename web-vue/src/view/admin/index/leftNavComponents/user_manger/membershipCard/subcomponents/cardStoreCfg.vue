@@ -78,12 +78,13 @@
         >
           <div class="use-time">
             <span>允许适用时间</span>
-            <el-checkbox>工作日 </el-checkbox>
-            <el-checkbox>双休日 </el-checkbox>
+            <el-checkbox v-model="ruleForm.workday">工作日 </el-checkbox>
+            <el-checkbox v-model="ruleForm.weekend">双休日 </el-checkbox>
           </div>
           <div class="use-num">
             <span>允许适用</span>
             <el-input-number
+              v-model="ruleForm.count"
               size="small"
               :controls="false"
               :min="0"
@@ -117,6 +118,7 @@ export default {
   computed: {
     ruleForm: {
       get () {
+        this.initUseTime(this.useTime)
         return this.val
       },
       set () {
@@ -128,6 +130,7 @@ export default {
     'ruleForm': {
       handler (newName, oldName) {
         this.val = newName
+        this.val.useTime = this.calcUseTime()
         this.ruleForm = this.val
       },
       deep: true
@@ -135,10 +138,38 @@ export default {
   },
   data () {
     return {
-      chooseStoreDialogVisiable: false
+      chooseStoreDialogVisiable: false,
+      workday: true,
+      weekend: false
     }
   },
   methods: {
+    initUseTime (useTime) {
+      if (useTime === '0') {
+        this.initWorkDayAndWeekend(true, true)
+      } else if (useTime === '1') {
+        this.initWorkDayAndWeekend(true, false)
+      } else if (useTime === '2') {
+        this.initWorkDayAndWeekend(false, true)
+      } else {
+        this.initWorkDayAndWeekend(true, true)
+      }
+    },
+    initWorkDayAndWeekend (workday, weekend) {
+      this.workday = workday
+      this.weekend = weekend
+    },
+    calcUseTime () {
+      if (this.workDay && this.weekend) {
+        return '0'
+      } else if (this.workDay) {
+        return '1'
+      } else if (this.weekend) {
+        return '2'
+      } else {
+        return '0'
+      }
+    },
     callChooseStoreDialog () {
       this.chooseStoreDialogVisiable = !this.chooseStoreDialogVisiable
       console.log(this.ruleForm.choosedStore)

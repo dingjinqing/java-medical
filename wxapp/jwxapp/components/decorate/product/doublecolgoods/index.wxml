@@ -2,7 +2,7 @@
 <view class='product-item two_column' wx:if="{{m.col_type =='1'}}" style='{{m.goods_module_style == 1 ? "width:720rpx;padding: 0 15rpx;" : ""}}background:{{m.goods_module_bg == 0 ? "": m.goods_bg_color}}'>
     <block wx:for="{{m.goodsListData}}" wx:key="key" wx:for-item="item" wx:for-index="index">
       <view class='each_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="{{item.activityType == 10?'bindTopre':'bindJumpLink'}}"
-        data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.cur_idx}}' data-url="pages/item/item?goodsId={{item.goodsId}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.activityType}}' wx:if='{{ item.activityType !=3 && item.activityType !=1 && item.activityType !=5}}'>
+        data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.cur_idx}}' data-url="pages/item/item?goodsId={{item.goodsId}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.activityType}}'>
         <view class='product-image'>
           <include src="../goodscommon/labelcommon.wxml" />
         </view>

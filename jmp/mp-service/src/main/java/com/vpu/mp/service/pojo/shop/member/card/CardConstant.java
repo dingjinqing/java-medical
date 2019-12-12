@@ -117,6 +117,13 @@ public class CardConstant {
 	/** send_coupon_type 送惠类型：1优惠券礼包 */
 	public static final Byte MCARD_CTP_PACKAGE = 1;
 	
+	/** send_coupon_switch 开卡送券：0不是，1是 */
+	public static final Byte MCARD_SEND_COUPON_OFF = 0;
+	public static final Byte MCARD_SEND_COUPON_ON = 1;
+
+	/** send_coupon_type 送惠类型：0优惠券，1优惠券礼包*/
+	public static final Byte MCARD_COUPON_TYPE = 0;
+	public static final Byte MCARD_COUPON_PACK_TYPE = 1;
 	
 	// 是否专属购买商品 0 不是 1 是
 
