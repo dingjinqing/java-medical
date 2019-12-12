@@ -115,7 +115,6 @@ export default {
       isHoldUserPicColorFlga: false // 用户图片点击控制背景颜色flag
     }
   },
-
   created () {
     this.refresh()
   },
@@ -456,6 +455,7 @@ export default {
 <style scoped>
 .tree_container {
   width: 160px;
+  background: #e6e9f0;
 }
 #menu_ {
   position: fixed;
@@ -488,10 +488,15 @@ export default {
 }
 .is-always-shadow {
   height: 100%;
+  overflow: auto;
 }
 .ly-tree-container {
   //   margin: 20px 0 20px 20px;
   //   width: 60%;
+
+  .el-tree {
+    background-color: #e6e9f0 !important;
+  }
   padding: 20px;
   .menu {
     display: flex !important;
@@ -611,5 +616,10 @@ export default {
   &:hover {
     background-color: #f3f3f3 !important;
   }
+}
+</style>
+<style lang="scss" scoped>
+/deep/ .el-card {
+  background-color: #e6e9f0;
 }
 </style>
