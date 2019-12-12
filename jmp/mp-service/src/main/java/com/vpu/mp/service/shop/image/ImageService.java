@@ -158,10 +158,8 @@ public class ImageService extends ShopBaseService implements ImageDefault {
         .and(UPLOADED_IMAGE.IMG_WIDTH.gt(0))
         .and(UPLOADED_IMAGE.IMG_HEIGHT.gt(0));
 
-    if (param.imgCatId != null) {
-      List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.imgCatId));
-      select.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imgCatIds.toArray(new Integer[0])));
-    }
+    List<Integer> imgCatIds = convertIntegerArray(category.getChildCategoryIds(param.imgCatId));
+    select.where(UPLOADED_IMAGE.IMG_CAT_ID.in(imgCatIds.toArray(new Integer[0])));
     if (!StringUtils.isBlank(param.keywords)) {
       select.where(UPLOADED_IMAGE.IMG_NAME.like(this.likeValue(param.keywords)));
     }

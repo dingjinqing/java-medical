@@ -1,23 +1,22 @@
 package com.vpu.mp.service.shop.image;
 
-import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
+import com.vpu.mp.service.pojo.shop.video.category.CategoryTreeItemVo;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.UploadedImageCategoryRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
-import com.vpu.mp.service.pojo.shop.video.category.CategoryTreeItemVo;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
 
 /**
  * @author 新国，孔德成
@@ -26,18 +25,14 @@ import com.vpu.mp.service.pojo.shop.video.category.CategoryTreeItemVo;
 
 public class ImageCategoryService extends ShopBaseService {
 
-    private static final String ROOT_NAME = "我的图片";
-
-    // TODO: 2019/8/1  find_in_set()
     /**
      * 添加分类
      *
      * @param cat
      * @return
      */
-    public Boolean addCategory(ImageCategoryParam cat) {
+    public void addCategory(ImageCategoryParam cat) {
         UploadedImageCategoryRecord record = db().newRecord(UPLOADED_IMAGE_CATEGORY, cat);
-        record.setShopId(getShopId());
         record.insert();
         //父节点不是顶节点，查询父节点的ids
         if (!cat.getImgCatParentId().equals(0)) {
@@ -45,13 +40,13 @@ public class ImageCategoryService extends ShopBaseService {
             if (parent != null) {
                 record.setCatIds(parent.getCatIds() + "," + record.getImgCatId());
                 record.setLevel((byte) (parent.getLevel() + 1));
-                return record.update() > 0;
+                record.update();
             }
         }
         record.setImgCatParentId(0);
         record.setCatIds(String.valueOf(record.getImgCatId()));
         record.setLevel((byte) 1);
-        return record.update() > 0;
+        record.update();
     }
 
     /**
@@ -156,19 +151,12 @@ public class ImageCategoryService extends ShopBaseService {
      */
     public int moveCategory(Integer catId, Integer newParentId) {
         UploadedImageCategoryRecord record = this.getCategoryById(catId);
-        if (record == null) {
-            return 0;
-        }
-        UploadedImageCategoryRecord parentRecord = newParentId == 0 ? null : this.getCategoryById(newParentId);
-        Integer levelDiff = parentRecord != null ? parentRecord.getLevel() + 1 - record.getLevel()
-                : 0 - record.getLevel();
+        UploadedImageCategoryRecord parentRecord = this.getCategoryById(newParentId);
+        Integer levelDiff =  parentRecord.getLevel() + 1 - record.getLevel();
         String oldCatIdsPrefix = record.getCatIds();
-        String newCatIdPreifx = parentRecord != null ? parentRecord.getCatIds() + "," + record.getImgCatId()
-                : record.getImgCatId().toString();
+        String newCatIdPreifx =  parentRecord.getCatIds() + "," + record.getImgCatId() ;
         return db().update(UPLOADED_IMAGE_CATEGORY)
-                .set(UPLOADED_IMAGE_CATEGORY.CAT_IDS,
-                        DSL.concat(newCatIdPreifx,
-                                DSL.substring(UPLOADED_IMAGE_CATEGORY.CAT_IDS, oldCatIdsPrefix.length() + 1)))
+                .set(UPLOADED_IMAGE_CATEGORY.CAT_IDS, DSL.concat(newCatIdPreifx, DSL.substring(UPLOADED_IMAGE_CATEGORY.CAT_IDS, oldCatIdsPrefix.length() + 1)))
                 .set(UPLOADED_IMAGE_CATEGORY.LEVEL, UPLOADED_IMAGE_CATEGORY.LEVEL.add(levelDiff))
                 .where(UPLOADED_IMAGE_CATEGORY.CAT_IDS.like(this.prefixLikeValue(oldCatIdsPrefix)))
                 .execute();
@@ -271,7 +259,7 @@ public class ImageCategoryService extends ShopBaseService {
     public List<CategoryTreeItemVo> getImageCategoryForTree(Integer openId) {
         List<CategoryTreeItemVo> result = new ArrayList<CategoryTreeItemVo>();
         CategoryTreeItemVo root = new CategoryTreeItemVo();
-        root.setName(ROOT_NAME);
+        root.setName("我的图片");
         root.setId(openId);
         Result<UploadedImageCategoryRecord> records = this.getAll();
         this.getImageCategoryTree(root, records, 2);

@@ -12,6 +12,8 @@ import lombok.Setter;
 @Setter
 public class GroupBuyDefineInfo {
 
+    private Integer goodsId;
+
     /**
      * 拼团id
      */
