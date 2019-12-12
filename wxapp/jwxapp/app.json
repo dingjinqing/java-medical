@@ -27,7 +27,8 @@
     "pages/storeinfo/storeinfo",
     "pages/checkout/checkout",
     "pages/servicecomment/servicecomment",
-    "pages/bargaininfo/bargaininfo"
+    "pages/bargaininfo/bargaininfo",
+    "components/decorate/shop_announce/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -62,7 +63,8 @@
         "comment/comment",
         "history/history",
         "search/search",
-        "fullship/fullship"
+        "fullship/fullship",
+        "groupbuyinfo/groupbuyinfo"
       ]
     }
   ],

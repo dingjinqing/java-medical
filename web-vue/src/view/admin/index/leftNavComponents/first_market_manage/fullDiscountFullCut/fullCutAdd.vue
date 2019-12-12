@@ -176,7 +176,6 @@
                 class="add_goods_btn"
                 @click="chooseGoodsHandler"
               > + 选择商品</div>
-              <div class="add_goods_btn"> + 选择平台分类</div>
               <div class="goods_area">
                 <table
                   class="goods_table"
@@ -200,7 +199,7 @@
                         <div class="goods_info">
                           <div class="goods_img">
                             <img
-                              src=""
+                              :src="item.goodsImg"
                               alt=""
                             >
                           </div>
@@ -209,14 +208,163 @@
                       </td>
                       <td>￥{{item.shopPrice}}</td>
                       <td>{{item.goodsNumber}}</td>
-                      <td>删除</td>
+                      <td @click="deleteGoods()">删除</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div class="add_goods_btn"> + 选择商家分类</div>
-              <div class="add_goods_btn"> + 选择商品标签</div>
-              <div class="add_goods_btn"> + 选择商品品牌</div>
+              <div
+                class="add_goods_btn"
+                @click="selectPlatform"
+              > + 选择平台分类</div>
+              <table class="brand_table">
+                <tbody>
+                  <tr>
+                    <th
+                      style="border-bottom: 1px solid #ddd"
+                      width="100%"
+                    >
+                      平台分类
+                      <div class="operate">
+                        <span
+                          class="edit"
+                          @click="editPlateformClassification"
+                        >编辑</span>
+                        <span
+                          class="delete"
+                          @click="deletePlateformClassfication"
+                        >删除</span>
+                      </div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <div class="exampleWrapper">
+                      <span class="example">示例：</span>
+                      <span class="first_cat">一级分类</span>
+                      <span class="second_cat">二级分类</span>
+                    </div>
+                    <div
+                      class="bussinessGoodsName"
+                      v-for="(item, index) in platformList"
+                      :key="index"
+                    >
+                      <span>{{item.catName}}</span>
+                    </div>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div
+                class="add_goods_btn"
+                @click="selectBussiness"
+              > + 选择商家分类</div>
+              <table class="brand_table">
+                <tbody>
+                  <tr>
+                    <th
+                      style="border-bottom: 1px solid #ddd"
+                      width="100%"
+                    >
+                      商家分类
+                      <div class="operate">
+                        <span
+                          class="edit"
+                          @click="editBussinessClassification"
+                        >编辑</span>
+                        <span
+                          class="delete"
+                          @click="deleteBussinessClassfication"
+                        >删除</span>
+                      </div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <div class="exampleWrapper">
+                      <span class="example">示例：</span>
+                      <span class="first_cat">一级分类</span>
+                      <span class="second_cat">二级分类</span>
+                    </div>
+                    <div
+                      class="bussinessGoodsName"
+                      v-for="(item, index) in bussinessList"
+                      :key="index"
+                    >
+                      <span>{{item.sortName}}</span>
+                    </div>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div
+                class="add_goods_btn"
+                @click="selectGoodsLabel"
+              > + 选择商品标签</div>
+              <table class="brand_table">
+                <tbody>
+                  <tr>
+                    <th
+                      style="border-bottom: 1px solid #ddd"
+                      width="100%"
+                    >
+                      已选标签
+                      <div class="operate">
+                        <span
+                          class="edit"
+                          @click="editSelectedLabel"
+                        >编辑</span>
+                        <span
+                          class="delete"
+                          @click="deleteSelectedLabel"
+                        >删除</span>
+                      </div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <div
+                      class="goodsName"
+                      v-for="(item, index) in labelNameList"
+                      :key="index"
+                    >
+                      <span>{{item.name}}</span>
+                    </div>
+                  </tr>
+                </tbody>
+              </table>
+              <div
+                class="add_goods_btn"
+                @click="seclectGoodsBrand"
+              > + 选择商品品牌</div>
+              <table class="brand_table">
+                <tbody>
+                  <tr>
+                    <th
+                      style="border-bottom: 1px solid #ddd"
+                      width="100%"
+                    >
+                      已选品牌
+                      <div class="operate">
+                        <span
+                          class="edit"
+                          @click="editSelectedBrand"
+                        >编辑</span>
+                        <span
+                          class="delete"
+                          @click="deleteSelectedBrand"
+                        >删除</span>
+                      </div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <div
+                      class="goodsName"
+                      v-for="(item, index) in goodsNameList"
+                      :key="index"
+                    >
+                      <span>{{item.brandName}}</span>
+                    </div>
+                  </tr>
+                </tbody>
+              </table>
             </section>
           </el-form-item>
 
@@ -240,13 +388,41 @@
 
         </el-form>
       </div>
+      <!-- 选择商品弹窗 -->
       <ChoosingGoods
         :tuneUpChooseGoods='tuneUpChooseGoodsDialog'
         :chooseGoodsBack="selectedGoodsList"
         @resultGoodsDatas="returnGoodsData"
-        @result="selectedGoodsIdList"
       />
 
+      <!-- 选择商家分类弹窗  -->
+      <AddingBusClassDialog
+        :dialogVisible.sync="tuneUpBussDialog"
+        :backDataArr='bussinessIdList'
+        :classFlag=1
+        @BusClassTrueDetailData="returnBusinessData"
+      />
+      <!-- 选择平台分类弹窗 -->
+      <AddingBusClassDialog
+        :dialogVisible.sync="tuneUpPlatformDialog"
+        :backDataArr='platformIdList'
+        :classFlag=2
+        @BusClassTrueDetailData="returnPlateformData"
+      />
+
+      <!-- 选择商品标签 -->
+      <SelectGoodsLabel
+        :callAddProductLabel.sync="tuneUpSelectGoodsLabelDialog"
+        :brandBackData="labelNameIdList"
+        @handleToGetBackData="returnGoodsLabelData"
+      />
+
+      <!-- 选择商品品牌弹窗 -->
+      <AddBrandDialog
+        :callAddBrand.sync="tuneUpBrandDialog"
+        :brandBackData="goodsBrandIdList"
+        @handleToGetBackData="returnGoodsBrandData"
+      />
     </div>
 
     <div class="save_button">
@@ -260,11 +436,14 @@
 </template>
 
 <script>
-import { addFullCutActivityApi } from '@/api/admin/marketManage/fullDiscountFullCut'
+import { addFullCutActivityApi, memberCardActivityName } from '@/api/admin/marketManage/fullDiscountFullCut'
 import ChoosingGoods from '@/components/admin/choosingGoods'
+import AddingBusClassDialog from '@/components/admin/addingBusClassDialog'
+import AddBrandDialog from '@/components/admin/addBrandDialog'
+import SelectGoodsLabel from '@/components/admin/addProductLabel'
 
 export default {
-  components: { ChoosingGoods },
+  components: { ChoosingGoods, AddingBusClassDialog, AddBrandDialog, SelectGoodsLabel },
   data () {
     return {
       activeName: '5',
@@ -274,6 +453,10 @@ export default {
       activityType: '1',
       timeInterval: [],
       activityGoods: '1',
+      fullMoney: '',
+      reduceMoney: '',
+      amount: '',
+      discounts: '',
       discount: '1',
       vipActivity: '',
       memberCardInfo: '',
@@ -283,32 +466,32 @@ export default {
       }, {
         value: '选项2',
         label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
       }],
-      fullMoney: '',
-      reduceMoney: '',
-      amount: '',
-      discounts: '',
       tuneUpChooseGoodsDialog: false,
       selectedGoodsList: [],
-      goodsList: [
-        // {
-        //   goodsName: '',
-        //   goodsImg: '',
-        //   goodsNumber: '',
-        //   shopPrice: '',
-        //   init: ''
-        // }
-      ]
+      conditionAddParams: [],
+      goodsList: [],
+      tuneUpBussDialog: false,
+      tuneUpPlatformDialog: false,
+      startTime: '',
+      endTime: '',
+      tuneUpBrandDialog: false,
+      tuneUpSelectGoodsLabelDialog: false,
+      goodsNameList: [],
+      goodsBrandIdList: [],
+      labelNameList: [],
+      labelNameIdList: [],
+      bussinessList: [],
+      bussinessIdList: [],
+      platformList: [],
+      platformIdList: []
 
+    }
+  },
+  watch: {
+    timeInterval: function (newVal) {
+      this.startTime = newVal[0]
+      this.endTime = newVal[1]
     }
   },
   methods: {
@@ -325,6 +508,11 @@ export default {
         }
       })
     },
+    getMemberCardName () {
+      memberCardActivityName().then(res => {
+        console.log(res)
+      })
+    },
     getTabName () {
       // if (this.$route.query.id) {
       if (this.aaa) {
@@ -336,43 +524,120 @@ export default {
     },
     submit () {
       let obj = {
-        actName: this.activeName,
+        actName: this.activityName,
         type: this.activityType,
-        actType: this.goodsType,
-        'conditionAddParams': [
+        actType: this.activityGoods,
+        conditionAddParams: [
           {
-            'fullMoney': '1.223',
-            'reduceMoney': '0.22'
+            fullMoney: 333,
+            reduceMoney: 32
           },
           {
-            'fullMoney': '2.223',
-            'reduceMoney': '0.42'
+            fullMoney: 503,
+            reduceMoney: 102
           }
         ],
-        'startTime': '2019-08-12 00:00:00',
-        'endTime': '2019-12-12 00:00:00',
-        'strategyPriority': '2'
+        startTime: this.startTime,
+        endTime: this.endTime,
+        strategyPriority: this.activityLevel
       }
       addFullCutActivityApi(obj).then(res => {
         console.log(res)
+        if (res.error === 0) {
+          this.$message.success('保存成功')
+        } else {
+          this.$message.warning()
+        }
       })
     },
     addFullCutItem () {
-      // let full_cut_item {}
+      let obj = {
+        'fullMoney': '',
+        'reduceMoney': '',
+        'amount': '',
+        'discount': ''
+      }
+      this.conditionAddParams.push(obj)
     },
-    // 调起选择商品弹窗
+    // 选择商品数据处理
     chooseGoodsHandler () {
       this.tuneUpChooseGoodsDialog = !this.tuneUpChooseGoodsDialog
     },
-    // 返回选中的商品的信息
     returnGoodsData (val) {
       console.log(val, 'goodsInfo')
       this.goodsList = val
       this.selectedGoodsList = val.map(item => item.goodsId)
       console.log(this.selectedGoodsList, 'selectedGoodsList')
     },
-    selectedGoodsIdList (data) {
-      console.log(data, 'goodsId')
+    // selectedGoodsIdList (data) {
+    //   console.log(data, 'goodsId')
+    // },
+    deleteGoods () { },
+
+    // 选择平台、商家分类数据处理
+    selectPlatform () {
+      this.tuneUpPlatformDialog = !this.tuneUpPlatformDialog
+    },
+    returnPlateformData (val) {
+      console.log(val, 'platform data')
+      this.platformList = val
+      // this.platformIdList = val.map(item)
+    },
+    editPlateformClassification () {
+      this.tuneUpPlatformDialog = !this.tuneUpPlatformDialog
+    },
+    deletePlateformClassfication () {
+
+    },
+
+    selectBussiness () {
+      this.tuneUpBussDialog = !this.tuneUpBussDialog
+    },
+    returnBusinessData (val) {
+      console.log(val, 'buiness data--')
+      this.bussinessList = val
+      this.bussinessIdList = val.map(item => item.sortId)
+      console.log(this.bussinessIdList, 'bussinessIdList')
+    },
+    editBussinessClassification () {
+      this.tuneUpBussDialog = !this.tuneUpBussDialog
+    },
+    deleteBussinessClassfication () {
+
+    },
+
+    // 选择商品品牌数据处理
+    seclectGoodsBrand () {
+      this.tuneUpBrandDialog = !this.tuneUpBrandDialog
+    },
+    returnGoodsBrandData (val) {
+      this.goodsNameList = val
+      let idList = val.map(item => item.id)
+      this.goodsBrandIdList = idList
+    },
+    editSelectedBrand () {
+      this.tuneUpBrandDialog = !this.tuneUpBrandDialog
+    },
+    deleteSelectedBrand () {
+      console.log('deleteSelectedBrand')
+    },
+
+    // 选择商品标签数据处理
+    selectGoodsLabel () {
+      this.tuneUpSelectGoodsLabelDialog = true
+    },
+    returnGoodsLabelData (val) {
+      console.log(val, 'label id')
+      this.labelNameList = val
+      let labelIdList = val.map(item => item.id)
+      this.labelNameIdList = labelIdList
+      console.log(this.labelNameIdList, 'label name id list')
+    },
+    editSelectedLabel () {
+      this.tuneUpSelectGoodsLabelDialog = !this.tuneUpSelectGoodsLabelDialog
+    },
+    deleteSelectedLabel () {
+
     }
   }
 
@@ -420,11 +685,8 @@ export default {
         max-width: 528px;
         height: 300px;
         padding-right: 10px;
-        // border: 1px solid #000;
         overflow-x: hidden !important;
         .goods_table {
-          margin-bottom: 0;
-          margin-top: 0;
           border: 1px solid #ddd;
           thead tr {
             background: #f8f8f8;
@@ -440,6 +702,18 @@ export default {
             td {
               padding: 10px;
               border: 1px solid #ddd;
+              .goods_info {
+                display: flex;
+                .goods_img {
+                  width: 40px;
+                  height: 40px;
+                  margin-right: 10px;
+                  img {
+                    width: 100%;
+                    height: 100%;
+                  }
+                }
+              }
             }
           }
         }
@@ -461,6 +735,82 @@ export default {
       }
       .goods_area::-webkit-scrollbar-corner {
         background: #fff;
+      }
+      .platformClassification {
+        max-width: 528px;
+        border: 1px solid #ddd;
+        thead tr {
+          background: #f8f8f8;
+        }
+      }
+      .brand_table {
+        width: 528px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        background: #fff;
+        th {
+          padding: 10px 5px;
+          text-align: center;
+          background-color: #f8f8f8;
+          line-height: 20px;
+          .operate {
+            margin-right: 6px;
+            float: right;
+            span {
+              cursor: pointer;
+            }
+            .edit {
+              margin-right: 10px;
+            }
+          }
+        }
+        .exampleWrapper {
+          line-height: 50px;
+          height: 50px;
+          border-bottom: 1px solid #eee;
+          .example {
+            margin-left: 20px;
+          }
+          span {
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: #666;
+          }
+          .first_cat {
+            border: 1px solid #b9d2ff;
+            background-color: #f0f5ff;
+          }
+          .second_cat {
+            margin-left: 15px;
+            border: 1px solid #ffe2b8;
+            background-color: #fffaf2;
+          }
+        }
+        .goodsName {
+          display: inline-block;
+          span {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            margin-left: 10px;
+            display: inline-block;
+            line-height: 20px;
+          }
+        }
+        .bussinessGoodsName {
+          display: inline-block;
+          padding: 0 0 16px 20px;
+          span {
+            display: inline-block;
+            padding: 4px 10px;
+            margin: 16px 10px 0 0;
+            border-radius: 20px;
+            line-height: 35px;
+            color: #666;
+            border: 1px solid #b9d2ff;
+            background-color: #f0f5ff;
+          }
+        }
       }
     }
   }

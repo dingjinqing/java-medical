@@ -57,15 +57,15 @@
       >
         <el-tab-pane
           label="待审核分销员"
-          name="first"
+          name="0"
         ></el-tab-pane>
         <el-tab-pane
           label="审核通过"
-          name="second"
+          name="1"
         ></el-tab-pane>
         <el-tab-pane
           label="未通过"
-          name="third"
+          name="2"
         ></el-tab-pane>
       </el-tabs>
       <div>
@@ -92,18 +92,25 @@
                 class="header"
                 v-if="item.createTime"
               >申请时间：{{ item.createTime }}</div>
-              <!-- <div class="header">邀请码：</div> -->
+              <div class="header">邀请码：</div>
             </td>
 
-            <td style="width: 120px;">分销员分组</td>
+            <td
+              style="width: 120px;"
+              v-if="activeName === '0'"
+            >分销员分组</td>
+            <td
+              style="width: 170px;"
+              v-if="activeName !== '0'"
+            >审核时间</td>
             <td style="width: 100px;">审核状态</td>
             <td
               style="width: 170px;"
-              v-if="item.status === 0"
+              v-if="activeName === '0'"
             >操作</td>
             <td
               style="width: 170px;"
-              v-if="item.status === 2"
+              v-if="activeName === '2'"
             >未通过原因</td>
           </tr>
 
@@ -122,6 +129,7 @@
             <td
               rowspan="5"
               class="middle"
+              v-if="activeName === '0'"
             >
               <p>{{ item.group }}</p>
               <p
@@ -132,11 +140,16 @@
             <td
               rowspan="5"
               class="middle"
+              v-if="activeName !== '0'"
+            >2019-12-12 00:00:00</td>
+            <td
+              rowspan="5"
+              class="middle"
             >{{ item.status }}</td>
             <td
               rowspan="5"
               class="middle"
-              v-if="item.status === 0"
+              v-if="activeName === '0'"
             >
               <el-button
                 size="small"
@@ -155,10 +168,9 @@
             <td
               rowspan="5"
               class="middle"
-              v-if="item.status === 2"
-            >
+              v-if="activeName === '2'"
+            >不通过理由</td>
 
-            </td>
           </tr>
           <tr v-if="item.userId !== ''">
             <td>性别</td>
@@ -293,77 +305,15 @@ export default {
         startTime: '',
         endTime: ''
       },
-      activeName: 'first',
+      activeName: '0',
       // 分页
       pageParams: {
         currentPage: 1,
-        pageRows: 20
+        pageRows: 10
       },
       requestParams: {},
       // 表格数据
-      tableData: [
-        // {
-        //   id: 1,
-        //   userId: '111111', // 用户id
-        //   status: 0,
-        //   username: '待审核', // 昵称
-        //   mobile: '17823456789', // 手机号
-        //   createTime: '2019-01-01 00:00:00', // 申请时间
-        //   // 邀请码
-        //   realName: '', // 真实姓名
-        //   // 身份证号
-        //   sex: '', // 性别
-        //   birthdayYear: '', // 出生年
-        //   birthdayMonth: '', // 出生月
-        //   birthdayDay: '', // 出生日
-        //   maritalStatus: '', // 婚姻状况
-        //   educationName: '', // 受教育程度
-        //   industryName: '', // 行业
-        //   address: '' // 所在地址
-        //   // 备注
-        //   // 图片
-        // }, {
-        //   id: 2,
-        //   userId: '222222', // 用户id
-        //   status: 1,
-        //   username: '审核通过', // 昵称
-        //   mobile: '', // 手机号
-        //   createTime: '', // 申请时间
-        //   // 邀请码
-        //   realName: '', // 真实姓名
-        //   // 身份证号
-        //   sex: '', // 性别
-        //   birthdayYear: '', // 出生年
-        //   birthdayMonth: '', // 出生月
-        //   birthdayDay: '', // 出生日
-        //   maritalStatus: '', // 婚姻状况
-        //   educationName: '', // 受教育程度
-        //   industryName: '', // 行业
-        //   address: '' // 所在地址
-        //   // 备注
-        //   // 图片
-        // }, {
-        //   id: 3,
-        //   userId: '333333', // 用户id
-        //   status: 2,
-        //   username: '未通过', // 昵称
-        //   mobile: '', // 手机号
-        //   createTime: '', // 申请时间
-        //   // 邀请码
-        //   realName: '', // 真实姓名
-        //   // 身份证号
-        //   sex: '', // 性别
-        //   birthdayYear: '', // 出生年
-        //   birthdayMonth: '', // 出生月
-        //   birthdayDay: '', // 出生日
-        //   maritalStatus: '', // 婚姻状况
-        //   educationName: '', // 受教育程度
-        //   industryName: '', // 行业
-        //   address: '' // 所在地址
-        //   // 备注
-        //   // 图片
-        // }
-      ],
+      tableData: [],
 
       // 分销员分组弹窗
       dialogVisible: false,
@@ -390,6 +340,7 @@ export default {
   },
   methods: {
     initDataList () {
+      this.requestParams.nav = Number(this.activeName)
       this.requestParams.mobile = this.searchForm.mobile
       this.requestParams.username = this.searchForm.username
       this.requestParams.startTime = this.searchForm.startTime
@@ -588,17 +539,14 @@ export default {
   }
   .header {
     display: inline-block;
-    width: 15%;
-  }
-  .header:nth-child(1) {
-    margin-left: 10px;
-  }
-  .header:nth-child(4) {
     width: 25%;
   }
-  .header:nth-child(3),
-  .header:nth-child(5) {
-    width: 20%;
+  .header:first-child {
+    margin-left: 10px;
+    width: 15%;
+  }
+  .header:nth-child(2) {
+    width: 18%;
   }
   .active {
     color: #5a8bff;

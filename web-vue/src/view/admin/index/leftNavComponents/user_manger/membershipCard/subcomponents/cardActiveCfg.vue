@@ -47,11 +47,11 @@
           <div class="active-bottom">
             <div class="exmine-tip">{{ $t('memberCard.isactiveInfo') }}</div>
             <el-radio
-              v-model="ruleForm.examineRadio"
+              v-model="ruleForm.examine"
               label="0"
             >{{ $t('memberCard.noExmine') }}</el-radio>
             <el-radio
-              v-model="ruleForm.examineRadio"
+              v-model="ruleForm.examine"
               label="1"
             >{{ $t('memberCard.yesExmine') }}</el-radio>
           </div>

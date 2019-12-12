@@ -1,5 +1,7 @@
-var base = require("../../../components/popup/base/base.js");
-var filterBase = require("./filter_base/filter_base.js");
+
+const base = require("../../../components/popup/base/base.js");
+const filterBase = require("./filter_base/filter_base.js");
+const util = require('../../../utils/util.js');
 global.wxComponent({
   mixins: [base, filterBase],
 
@@ -8,7 +10,22 @@ global.wxComponent({
    */
   properties: {
   },
-
+  lifetimes:{
+    attached(){
+      util.api('/api/wxapp/goods/search/init',res=>{
+        if(res.error === 0){
+          let { sorts, goodsBrands, activityTypes, goodsLabels } = res.content
+          this.setData({
+            sorts,
+            goodsBrands,
+            activityTypes,
+            goodsLabels,
+            formatGoodsBrands: this.getFormatBrand(goodsBrands)
+          })
+        }
+      })
+    }
+  },
   /**
    * 组件的初始数据
    */
@@ -26,6 +43,13 @@ global.wxComponent({
     },
     showBrand(){
       this.setData({ showBrandDialog:true })
+    },
+    getFormatBrand(goodsBrands){
+      let arr = []
+      Object.values(goodsBrands).forEach(item=>{
+        arr = [...b,...item]
+      })
+      return arr
     }
   }
 });

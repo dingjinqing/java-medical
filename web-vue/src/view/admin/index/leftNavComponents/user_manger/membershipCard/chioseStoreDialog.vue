@@ -77,7 +77,7 @@
         >
           <el-button
             size="small"
-            @click="$emit('update:dialogVisible', false)"
+            @click="dialogVisible = false"
           >取 消</el-button>
           <el-button
             type="primary"
@@ -94,9 +94,8 @@
 import { storeList } from '@/api/admin/storeManage/store'
 export default {
   props: {
-    dialogVisible: {
-      type: Boolean,
-      default: () => false
+    tuneUpChooseStore: {
+      type: Boolean
     },
     storeBackData: {
       type: Array,
@@ -105,6 +104,7 @@ export default {
   },
   data () {
     return {
+      dialogVisible: false,
       currentPage: 1,
       totle: 1,
       pageCount: 1,
@@ -113,10 +113,9 @@ export default {
     }
   },
   watch: {
-    dialogVisible (data) {
-      if (data) {
-        this.makeTableShowItemSelected(this.getSelectItems())
-      }
+    tuneUpChooseStore (data) {
+      this.dialogVisible = true
+      this.makeTableShowItemSelected(this.getSelectItems())
     },
     allChecked (newData) {
       console.log(newData)
@@ -209,10 +208,9 @@ export default {
         }
       })
       console.log(arr)
-      // this.$http.$emit('chioseSureData', arr)
-
       this.$emit('getChoosedStore', this.checkBoxData)
-      this.$emit('update:dialogVisible', false)
+      this.dialogVisible = false
+      // this.$emit('update:dialogVisible', false)
       this.$refs.multipleTable.clearSelection()
     },
     getSelectItems () {
@@ -227,6 +225,10 @@ export default {
       return selectedItems
     },
     makeTableShowItemSelected (selectedItems) {
+      console.log(selectedItems)
+      this.$nextTick(() => {
+        this.$refs.multipleTable.clearSelection()
+      })
       if (selectedItems) {
         selectedItems.forEach(row => {
           this.$nextTick(() => {

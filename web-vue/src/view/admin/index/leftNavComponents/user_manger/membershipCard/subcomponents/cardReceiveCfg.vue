@@ -148,6 +148,7 @@
               <div class="send-num">
                 <span>发送总量：</span>
                 <el-input-number
+                  v-model="ruleForm.stock"
                   :controls="false"
                   :min="0"
                   :max="999999999"
@@ -161,6 +162,7 @@
               <div class="person-receive-num">
                 <span>领取限制：每人限领</span>
                 <el-input-number
+                  v-model="ruleForm.limits"
                   :controls="false"
                   :min="0"
                   :max="999999999"

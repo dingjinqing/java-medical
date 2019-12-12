@@ -100,7 +100,7 @@ public class PaymentService extends ShopBaseService {
                 //会员卡充值订单统一支付回调
                 break;
             case "M":
-                //会员卡充值订单统一支付回调
+                //购买会员卡虚拟订单统一支付回调
                 break;
             case "T":
                 //代付/子订单统一支付回调
