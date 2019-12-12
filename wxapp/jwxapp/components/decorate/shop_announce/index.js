@@ -25,12 +25,12 @@ global.wxComponent({
         that.setData({
           shopContentWidth: rect.width
         })
-        // that.initAnimation(that.data.m.shop_text);
+        that.initAnimation(that.data.m.shop_text);
       });
       console.log(m, 'announce')
     },
     onShow() {
-      // this.initAnimation(this.data.m.shop_text);
+      this.initAnimation(this.data.m.shop_text);
     },
     initAnimation: function (shop_announce_Text) {
       var length = shop_announce_Text.length * 16   // 文字宽度
