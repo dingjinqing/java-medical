@@ -22,11 +22,11 @@ public final class ShipParam extends OrderOperateQueryParam{
 	/**
 	 * TODO 
 	 */
-	@NotBlank(message = JsonResultMessage.MSG_ORDER)
+	@NotBlank(message = JsonResultMessage.MSG_ORDER_SHIPPING_SHIPPINGNO_NOT_NULL)
 	private String shippingNo;
-	@NotNull(message = JsonResultMessage.MSG_ORDER)
+	@NotNull(message = JsonResultMessage.MSG_ORDER_SHIPPING_SHIPPINGID_NOT_NULL)
 	private Byte shippingId;
-	@NotNull(message = JsonResultMessage.MSG_ORDER)
+	@NotNull(message = JsonResultMessage.MSG_ORDER_SHIPPING_SHIPGOODS_NOT_NULL)
 	private ShipGoods[] shipGoods;
 	
 	@Getter

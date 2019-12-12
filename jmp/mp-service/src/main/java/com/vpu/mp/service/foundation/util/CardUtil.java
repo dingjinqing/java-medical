@@ -1,6 +1,7 @@
 package com.vpu.mp.service.foundation.util;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -159,6 +160,16 @@ public class CardUtil {
 	}
 	
 	/**
+	 * 	解析激活配置信息
+	 */
+	public static List<String> parseActivationCfg(String activationCfg){
+		if(StringUtils.isBlank(activationCfg)) {
+			return new ArrayList<String>();
+		}
+		return new ArrayList<String>(Arrays.<String>asList(activationCfg.split(",")));
+	}
+	
+	/**
 	 * 卡是否可用
 	 * @reture true: 可用；false: 不可用
 	 */
@@ -190,4 +201,6 @@ public class CardUtil {
 		}
 		return true;
 	}
+	
+
 }

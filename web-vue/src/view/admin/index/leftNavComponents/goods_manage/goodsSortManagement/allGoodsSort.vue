@@ -143,7 +143,8 @@ export default {
     },
     /* 删除商品分类 */
     deleteGoodsSortClicked (row) {
-      this.$confirm(this.$t('goodsSorts.goodsSortDeleteMsg'), this.$t('goodsSorts.goodsSortDeleteTip'), {
+      let deleteMsg = row.level === 0 ? this.$t('goodsSorts.goodsSortDeleteMsg') : this.$t('goodsSorts.goodsSortDeleteSecondMsg')
+      this.$confirm(deleteMsg, this.$t('goodsSorts.goodsSortDeleteTip'), {
         confirmButtonText: this.$t('goodsSorts.ok'),
         cancelButtonText: this.$t('goodsSorts.cancel'),
         type: 'warning'

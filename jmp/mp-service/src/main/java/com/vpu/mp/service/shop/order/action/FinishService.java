@@ -76,7 +76,13 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 			
 			orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_FINISHED);
 			
-			//TODO else
+			//TODO 更新分销员等级
+
+            //TODO 赠送积分
+
+            //TODO 更新分销员等级
+
+            //TODO 更新分销员等级
 		});
 		//action操作
 		orderAction.addRecord(order, param, OrderConstant.ORDER_RECEIVED, "完成订单");

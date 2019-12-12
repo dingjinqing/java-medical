@@ -13,6 +13,6 @@ import lombok.Data;
 
 @Data
 public class OrderParam {
-	@NotBlank(message = JsonResultMessage.MSG_ORDER_ORDERSN_NOT_NULL)
+	@NotBlank(message = JsonResultMessage.MSG_ORDER_ORDER_SN_NOT_NULL)
 	private String orderSn;
 }

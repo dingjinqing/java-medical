@@ -120,7 +120,7 @@ public enum MemberIndustryEnum {
 	private int code;
 	/**受教育程度*/
 	private String name;
-	private static Map<Integer,MemberIndustryEnum> map = new HashMap();
+	private static Map<Integer,MemberIndustryEnum> map = new HashMap<>();
 	static {
 		for(MemberIndustryEnum item: MemberIndustryEnum.values()) {
 			map.put(item.code, item);
@@ -132,7 +132,8 @@ public enum MemberIndustryEnum {
 	}
 	
 	public static String getNameByCode(int code) {
-		return map.get(code).getName();
+		MemberIndustryEnum memberIndustryEnum = map.get(code);
+		return memberIndustryEnum.getName();
 	}
 
     /**
@@ -172,5 +173,13 @@ public enum MemberIndustryEnum {
 			industryList.add(new IndustryVo(item.code,item.getName()));
 		}
 		return industryList;
+	}
+	
+	public static List<String> getAllIndustryName(String lang){
+		List<String> res = new ArrayList<String>();
+		for(int i=1;i<=MemberIndustryEnum.values().length;i++) {
+			res.add(getNameByCode(i,lang));
+		}
+		return res;
 	}
 }

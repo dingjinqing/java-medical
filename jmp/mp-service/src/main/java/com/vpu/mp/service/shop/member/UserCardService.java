@@ -1241,7 +1241,7 @@ public class UserCardService extends ShopBaseService {
 			userCardJudgeVo.setCardInfo(userCard);
 			return userCardJudgeVo;
 		}else{
-			UserCardVo uCard = userCardDao.getUserCardByCardNo(userCard.getCardNo());
+			UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
 			uCard.setIsGet(isGet);
 			if(uCard.getExpireTime()!=null) {
 				uCard.setStartDate(uCard.getStartTime().toLocalDateTime().toLocalDate());
@@ -1521,5 +1521,9 @@ public class UserCardService extends ShopBaseService {
 				.where(USER_CARD.USER_ID.eq(userId).and(USER_CARD.CARD_ID.eq(cardId))).fetchAny();
 		return rec != null ? rec.getCardNo() : null;
 	}
-
+	
+	public UserCardVo getUserCardByCardNo(String cardNo){
+		return userCardDao.getUserCardByCardNo(cardNo);
+	}
+	
 }

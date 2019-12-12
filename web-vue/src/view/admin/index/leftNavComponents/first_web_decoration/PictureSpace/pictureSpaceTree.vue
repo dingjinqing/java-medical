@@ -297,10 +297,11 @@ export default {
   },
   watch: {
     clickNode_ (newData, oldData) {
+      console.log(newData, 'ssss')
       this.Initialization_nodeClick(newData)
     },
     allNodes_ (newData, oldData) {
-      // console.log(newData)
+      console.log(newData)
       // 初始化图片查询数据
       if (newData.content) {
         this.Initialization_allTree(newData)
@@ -665,7 +666,7 @@ export default {
     clickUserPic (flag) {
       console.log(flag)
       this.clickUserPicFlag = flag
-      this.detailImgsSearch()
+      // this.detailImgsSearch()
     },
     handleToResetPage () {
       this.currentPage3 = 1
