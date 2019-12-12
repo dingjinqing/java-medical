@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -156,8 +157,8 @@ public class CommodityStatisticsService extends ShopBaseService {
      * @return the product overview vo
      */
     public ProductOverviewVo customizeDayOverview(ProductOverviewParam param) {
-        LocalDate start = param.getStartTime().toLocalDate();
-        LocalDate end = param.getEndTime().toLocalDate();
+        LocalDate start = param.getStartTime().toLocalDateTime().toLocalDate();
+        LocalDate end = param.getEndTime().toLocalDateTime().toLocalDate();
         long days = end.toEpochDay() - start.toEpochDay();
         LocalDate prefixStart = start.minusDays(days);
 
@@ -220,12 +221,12 @@ public class CommodityStatisticsService extends ShopBaseService {
         }
         data.setVisit2paid(divideWithOutCheck(BigDecimal.valueOf(data.getPaidGoodsNum()), BigDecimal.valueOf(data.getVisitedGoodsNum())));
 
-        LocalDate start = param.getStartTime().toLocalDate();
-        LocalDate end = param.getEndTime().toLocalDate();
+        LocalDate start = param.getStartTime().toLocalDateTime().toLocalDate();
+        LocalDate end = param.getEndTime().toLocalDateTime().toLocalDate();
         long days = end.toEpochDay() - start.toEpochDay();
         LocalDate prefixStart = start.minusDays(days);
         // 计算得到前一段等长的起止日期
-        param.setStartTime(Date.valueOf(prefixStart));
+        param.setStartTime(Timestamp.valueOf(prefixStart.atStartOfDay()));
         param.setEndTime(param.getStartTime());
 
         ProductOverviewVo prefixData = ProductOverviewVo.builder()

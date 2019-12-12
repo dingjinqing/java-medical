@@ -101,8 +101,8 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     public int getSaleGoodsNumber(ProductOverviewParam param) {
         // 基本筛选条件 : 备份时间当天, 商品数量大于0, 在架状态 TODO 备份时间不确定
-        Condition baseCondition = BAK.BAK_DATE.greaterThan(param.getStartTime())
-            .and(BAK.BAK_DATE.le(param.getEndTime()))
+        Condition baseCondition = BAK.BAK_DATE.greaterThan(Date.valueOf(param.getStartTime().toLocalDateTime().toLocalDate()))
+            .and(BAK.BAK_DATE.le(Date.valueOf(param.getEndTime().toLocalDateTime().toLocalDate())))
             .and(BAK.GOODS_NUMBER.greaterThan(INTEGER_ZERO))
             .and(BAK.IS_ON_SALE.eq(BYTE_ONE));
 
@@ -128,8 +128,8 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     private Map<Integer, Integer> commonBuilder(ProductOverviewParam param, Field<?> field) {
         // 基本筛选条件
-        Condition baseCondition = USER_GR.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(param.getStartTime().toLocalDate().atStartOfDay()))
-            .and(USER_GR.CREATE_TIME.lessThan(Timestamp.valueOf(param.getEndTime().toLocalDate().atStartOfDay())));
+        Condition baseCondition = USER_GR.CREATE_TIME.greaterOrEqual(param.getStartTime())
+            .and(USER_GR.CREATE_TIME.lessThan(param.getEndTime()));
         SelectJoinStep<?> joinStep = db().select(min(USER_GR.GOODS_ID), cast(field, Integer.class)).from(USER_GR);
         return selectBuilder(param, joinStep, USER_GR.GOODS_ID, baseCondition, field);
     }
@@ -234,8 +234,8 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     private Map<Integer, Integer> commonBuilder1(ProductOverviewParam param, Field<?> field) {
         // 基本筛选条件
-        Condition baseCondition = CART.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(param.getStartTime().toLocalDate().atStartOfDay()))
-            .and(CART.CREATE_TIME.lessThan(Timestamp.valueOf(param.getEndTime().toLocalDate().atStartOfDay())));
+        Condition baseCondition = CART.CREATE_TIME.greaterOrEqual(param.getStartTime())
+            .and(CART.CREATE_TIME.lessThan(param.getEndTime()));
         SelectJoinStep<?> joinStep = db().select(min(CART.GOODS_ID), cast(field, Integer.class)).from(CART);
         return selectBuilder(param, joinStep, CART.GOODS_ID, baseCondition, field);
     }
@@ -350,8 +350,8 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the int
      */
     private Map<Integer, Integer> commonBuilder2(ProductOverviewParam param, Field<?> field, Condition extCondition) {
-        Condition baseConditon = ORDER_I.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(param.getStartTime().toLocalDate().atStartOfDay()))
-            .and(ORDER_I.CREATE_TIME.lessThan(Timestamp.valueOf(param.getEndTime().toLocalDate().atStartOfDay())))
+        Condition baseConditon = ORDER_I.CREATE_TIME.greaterOrEqual(param.getStartTime())
+            .and(ORDER_I.CREATE_TIME.lessThan(param.getEndTime()))
             .and(ORDER_I.IS_COD.eq(BYTE_ZERO).or(ORDER_I.IS_COD.eq(BYTE_ONE).and(ORDER_I.SHIPPING_TIME.isNotNull())))
             .and(ORDER_I.ORDER_SN.notEqual(ORDER_I.MAIN_ORDER_SN))
             .and(extCondition);
@@ -376,8 +376,8 @@ public class GoodsStatisticTaskService extends ShopBaseService {
     public void insertOverview() {
         TYPE_LIST.forEach((e) -> db().executeInsert(createOverviewRecord(new ProductOverviewParam() {{
             setDynamicDate(e);
-            setStartTime(Date.valueOf(LocalDate.now().minusDays(e)));
-            setEndTime(Date.valueOf(LocalDate.now()));
+            setStartTime(Timestamp.valueOf(LocalDate.now().minusDays(e).atStartOfDay()));
+            setEndTime(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
         }})));
     }
 
@@ -664,14 +664,12 @@ public class GoodsStatisticTaskService extends ShopBaseService {
     public void insertGoodsSummary() {
         TYPE_LIST.forEach((e) -> {
             Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
-            Date startDate = Date.valueOf(LocalDate.now().minusDays(e));
-            Date endDate = Date.valueOf(LocalDate.now());
-            Timestamp startTimeStamp = Timestamp.valueOf(startDate.toLocalDate().atStartOfDay());
-            Timestamp endTimeStamp = Timestamp.valueOf(endDate.toLocalDate().atStartOfDay());
+            Timestamp startTimeStamp = Timestamp.valueOf(LocalDate.now().minusDays(e).atStartOfDay());
+            Timestamp endTimeStamp = Timestamp.valueOf(LocalDate.now().atStartOfDay());
             ProductOverviewParam param = new ProductOverviewParam() {{
                 setDynamicDate(e);
-                setStartTime(startDate);
-                setEndTime(endDate);
+                setStartTime(startTimeStamp);
+                setEndTime(endTimeStamp);
             }};
             // 商品UV数
             getSingleGoodsUv(param).forEach((K, v) -> {
