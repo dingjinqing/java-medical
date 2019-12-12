@@ -48,6 +48,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -519,20 +520,30 @@ public class GroupBuyService extends ShopBaseService {
         ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(userId, date,activityId, groupId, IS_GROUPER_N);
         //拼团活动
         GroupBuyDefineInfo groupBuy = getGroupBuyRecord(activityId).into(GroupBuyDefineInfo.class);
-        Result<Record2<BigDecimal, Short>> groupBuyProductRecord = db().select(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,GROUP_BUY_PRODUCT_DEFINE.STOCK).from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId)).fetch();
+        Result<Record3<Integer,BigDecimal, Short>> groupBuyProductRecord = db().select(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID,GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,GROUP_BUY_PRODUCT_DEFINE.STOCK).from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId)).fetch();
         //商品
         GroupBuyGoodsInfo goodsRecord = goodsService.getGoodsById(groupBuy.getGoodsId()).get().into(GroupBuyGoodsInfo.class);
         //sku
         List<GoodsSpecProductRecord> prdInfos = goodsSpecProductService.getGoodsDetailPrds(groupBuy.getGoodsId());
         List<GoodsPrdMpVo> prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());
+        prdMpVos.forEach(prd->{
+            groupBuyProductRecord.forEach(groupPrd->{
+                //拼团规格价修改
+                if (prd.getPrdId().equals(groupPrd.component1())){
+                    prd.setPrdLinePrice(prd.getPrdRealPrice());
+                    prd.setPrdRealPrice(groupPrd.component2());
+                    prd.setPrdNumber(groupPrd.component3().intValue());
+                }
+            });
+        });
         //用户
         List<GroupBuyUserInfo> userList = groupBuyListService.getPinUserList(groupId);
         boolean newUser = orderInfoService.isNewUser(userId);
         //是否需要绑定手机号
         Byte bindMobile = shopCommonConfigService.getBindMobile();
-        Integer groupBuyStock = groupBuyProductRecord.stream().mapToInt(Record2<BigDecimal, Short>::component2).sum();
-        BigDecimal maxPrice =groupBuyProductRecord.stream().map(Record2<BigDecimal, Short>::component1).distinct().max(BigDecimal::compareTo).get();
-        BigDecimal minPrice =groupBuyProductRecord.stream().map(Record2<BigDecimal, Short>::component1).distinct().min(BigDecimal::compareTo).get();
+        Integer groupBuyStock = groupBuyProductRecord.stream().mapToInt(Record3<Integer,BigDecimal, Short>::component3).sum();
+        BigDecimal maxPrice =groupBuyProductRecord.stream().map(Record3<Integer,BigDecimal, Short>::component2).distinct().max(BigDecimal::compareTo).get();
+        BigDecimal minPrice =groupBuyProductRecord.stream().map(Record3<Integer,BigDecimal, Short>::component2).distinct().min(BigDecimal::compareTo).get();
         long dateDiff =date.getTime()-	createTime.getTime();
         long hour = 24- (dateDiff / (60 * 60 * 1000));
         long min = 60- dateDiff %  (60 * 60 * 1000) / (60 * 1000);

@@ -14,6 +14,10 @@ public class GroupBuyDefineInfo {
 
     private Integer goodsId;
 
+
+    private Integer limitBuyNum;
+    private Integer limitMaxNum;
+
     /**
      * 拼团id
      */
