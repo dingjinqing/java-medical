@@ -11,6 +11,7 @@ export const en = {
   goodsSortOperate: 'Operate',
   goodsSortDeleteTip: 'Tip',
   goodsSortDeleteMsg: 'The children of this sort would be delete too when you delete this sort,are you sure?',
+  goodsSortDeleteSecondMsg: 'Are you sure to delete it？',
   ok: 'Ok',
   cancel: 'Cancel',
   edit: 'Edit',
