@@ -560,6 +560,7 @@ public class GroupBuyService extends ShopBaseService {
         groupBuyInfo.setPrdSpecsList(prdMpVos);
         groupBuyInfo.setStatusInfo(statusInfo);
         groupBuyInfo.setUserInfoList(userList);
+        groupBuyInfo.setGroupBuyDefineInfo(groupBuy);
         groupBuyInfo.setHour(Math.toIntExact(hour));
         groupBuyInfo.setMinute(Math.toIntExact(min));
         groupBuyInfo.setSecond(Math.toIntExact(s));

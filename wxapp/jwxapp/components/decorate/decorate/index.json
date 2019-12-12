@@ -7,6 +7,8 @@
     "v-coupon": "../coupon/index",
     "v-product": "../product/index",
     "v-advimg": "../advimg/index",
-    "v-shop-announce": "../shop_announce/index"
+    "v-shop-announce": "../shop_announce/index",
+    "v-shop": "../shop/index",
+    "v-carousel": "../carousel/index"
   }
 }

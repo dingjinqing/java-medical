@@ -22,6 +22,7 @@ import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsDetailBoConverter;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsListMpBoConverter;
 import com.vpu.mp.service.shop.goods.es.convert.param.GoodsListMpConverter;
+import com.vpu.mp.service.shop.goods.es.convert.param.GoodsSearchMpConverter;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
@@ -111,9 +112,10 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
      */
     public PageResult<GoodsListMpBo> queryGoodsByParam(GoodsSearchMpParam mpParam) throws IOException {
         Integer shopId = getShopId();
-
+        if( mpParam.getLabelIds() != null && !mpParam.getLabelIds().isEmpty() ){
+            mpParam.setGoodsIds(esGoodsLabelSearchService.getGoodsIdsByLabelIds(mpParam.getLabelIds(),EsGoodsConstant.GOODS_SEARCH_PAGE));
+        }
         EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);
-
         try {
             PageResult<EsGoods> esGoodsPage = searchGoodsPageByParam(param);
             return esPageConvertVoPage(esGoodsPage);
@@ -252,7 +254,7 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
      * @return {@link EsSearchParam}
      */
     private EsSearchParam assemblyEsSearchParam(GoodsSearchMpParam mpParam,Integer shopId){
-        return EsConvertFactory.getParamConvert(GoodsListMpConverter.class).convert(mpParam,shopId);
+        return EsConvertFactory.getParamConvert(GoodsSearchMpConverter.class).convert(mpParam,shopId);
     }
 
 

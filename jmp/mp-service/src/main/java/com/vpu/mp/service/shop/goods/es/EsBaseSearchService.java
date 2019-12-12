@@ -208,8 +208,8 @@ public class EsBaseSearchService extends ShopBaseService {
         result.setDataList(searchEsGoods(assemblySearchRequest(sourceBuilder,EsGoodsConstant.GOODS_INDEX_NAME)));
         return result;
     }
-    SearchSourceBuilder getSearchSourceBuilderAndPage(PageResult<EsGoods> result,String indexName,EsSearchParam param,
-                                                      String[] includeSource,String[] excludeSource) throws IOException {
+    private SearchSourceBuilder getSearchSourceBuilderAndPage(PageResult<EsGoods> result, String indexName, EsSearchParam param,
+                                                              String[] includeSource, String[] excludeSource) throws IOException {
         SearchSourceBuilder sourceBuilder = SearchSourceBuilder.searchSource();
         if( param == null ){
             return sourceBuilder;
