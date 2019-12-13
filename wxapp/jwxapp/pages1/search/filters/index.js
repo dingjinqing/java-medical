@@ -53,9 +53,7 @@ global.wxComponent({
     getFormatBrand(goodsBrands){
       if (!goodsBrands) return null
       let arr = []
-      Object.values(goodsBrands).forEach(item=>{
-        arr = [...b,...item]
-      })
+      goodsBrands.forEach(item=>item.goodsBrands.forEach(brands=>arr.push(brands)))
       return arr
     },
     reset(){
@@ -86,7 +84,8 @@ global.wxComponent({
     },
     // 选择品牌
     chooseBrands(e){
-      let {brandId} = e.currentTarget.dataset
+      console.log(e)
+      let { brandId } = e.detail.brandId ? e.detail : e.currentTarget.dataset
       let selectedBrands = this.data.selectedBrands
       let idx = selectedBrands.indexOf(brandId)
       if (idx === -1) {
@@ -95,14 +94,15 @@ global.wxComponent({
         selectedBrands.splice(idx,1)
       }
       this.setData({ selectedBrands })
+      console.log(this.data.selectedBrands)
     },
     // 选择标签
     chooseLabels(e){
       let { labelId } = e.currentTarget.dataset
       let selectedLabels = this.data.selectedLabels
-      let idx = selectedLabels.indexOf(brandId)
+      let idx = selectedLabels.indexOf(labelId)
       if (idx === -1) {
-        selectedLabels.push(brandId)
+        selectedLabels.push(labelId)
       } else {
         selectedLabels.splice(idx, 1)
       }

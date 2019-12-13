@@ -1,6 +1,3 @@
-.content{
-  height: 1200rpx;
-}
 .filter {
   height: 100rpx;
   background-color: #fff;

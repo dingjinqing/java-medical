@@ -1,10 +1,4 @@
-<wxs module="filter">
-  var includes = function(arr,target) {
-    if(arr.length === 0) return false
-    return arr.indexOf(target) === -1 ? false : true
-  }
-  module.exports.includes = includes;
-</wxs>
+<wxs src="./filter.wxs" module="filter"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
   <view class="filter-content" animation="{{animation}}" style="height:calc(100% - {{navHeight}}px);">
     <view class="filter-item">
@@ -40,16 +34,17 @@
     <view class="filter-item" wx:if="{{formatGoodsBrands}}">
       <view class="item-title-content">
         <text class="title">品牌</text>
+        <text class="right-info" style="color:{{main_setting.comColor}};">{{filter.getBrandsName(selectedBrands,formatGoodsBrands)}}</text>
       </view>
       <view class="item-content">
         <block wx:if="{{formatGoodsBrands.length <= 5}}">
           <block wx:for="{{formatGoodsBrands}}" wx:for-item="brandItem" wx:key="id">
-            <view class="item brand" data-brand-id="{{brandItem.id}}" style="{{filter.includes(selectedBrands,brandItem.id) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}">{{brandItem.brandName}}</view>
+            <view class="item brand" data-brand-id="{{brandItem.id}}" bindtap="chooseBrands" style="{{filter.includes(selectedBrands,brandItem.id) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}">{{brandItem.brandName}}</view>
           </block>
         </block>
         <block wx:else>
           <block wx:for="{{formatGoodsBrands}}" wx:for-item="brandItem" wx:for-index="brandIndex" wx:key="id">
-            <view class="item brand" data-brand-id="{{brandItem.id}}" style="{{filter.includes(selectedBrands,brandItem.id) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}" wx:if="{{brandIndex < 5}}">{{brandItem.brandName}}</view>
+            <view class="item brand" data-brand-id="{{brandItem.id}}" bindtap="chooseBrands" style="{{filter.includes(selectedBrands,brandItem.id) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}" wx:if="{{brandIndex < 5}}">{{brandItem.brandName}}</view>
           </block>
         </block>
         <view class="item brand more" bindtap="showBrand">更多...</view>
@@ -73,8 +68,8 @@
         <text class="title">商品标签</text>
       </view>
       <view class="item-content">
-        <block wx:for="{{goodsLabels}}" wx:for-item="labelItem" wx:key="labelId">
-          <view class="item" data-label-id="{{labelItem.labelId}}" bindtap="chooseLabels" style="{{filter.includes(selectedLabels,labelItem.labelId) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}">{{labelItem.labelName}}</view>
+        <block wx:for="{{goodsLabels}}" wx:for-item="labelItem" wx:key="id">
+          <view class="item" data-label-id="{{labelItem.id}}" bindtap="chooseLabels" style="{{filter.includes(selectedLabels,labelItem.id) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}">{{labelItem.name}}</view>
         </block>
       </view>
     </view>
@@ -85,4 +80,4 @@
   </view>
 </v-popup>
 <v-sort-filter show="{{showSortDialog}}" sorts="{{sorts}}" nav-height="{{navHeight}}"/>
-<v-brand-filter show="{{showBrandDialog}}" goods-brands="{{goodsBrands}}" nav-height="{{navHeight}}"/>
+<v-brand-filter show="{{showBrandDialog}}" goods-brands="{{goodsBrands}}" selected-brands="{{selectedBrands}}" bindchoose="chooseBrands" nav-height="{{navHeight}}"/>
