@@ -21,7 +21,7 @@
         </div>
         <div>
           <span class="summary">摘要：</span>
-          <span>{{ detailData.keyword }}</span>
+          <span>{{ detailData.desc }}</span>
         </div>
       </div>
       <div
@@ -53,8 +53,6 @@ export default {
       noticeDetailRequest({ articleId: this.id }).then((res) => {
         if (res.error === 0) {
           this.detailData = res.content
-          console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-          console.log(this.detailData)
         }
       })
     }
