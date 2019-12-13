@@ -1528,7 +1528,7 @@ public class UserCardService extends ShopBaseService {
 	
 	public void updateActivationTime(String cardNo,Timestamp time) {
 		if(time==null) {
-			time = DateUtil.getLocalTimeDate();
+			time = DateUtil.getLocalDateTime();
 		}
 		userCardDao.updateActivationTime(cardNo,time);
 	}

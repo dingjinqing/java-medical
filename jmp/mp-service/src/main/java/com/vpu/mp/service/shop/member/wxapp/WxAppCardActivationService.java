@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.member.wxapp;
 
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,6 +96,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 			return null;
 		}
 		Map<String, Object> userMap = Util.convertPojoToMap(obj);
+		userMap = changeKeyFromUnderlineToHump(userMap);
 		userMap.entrySet().removeIf(e->!fields.contains(e.getKey()));
 		return userMap;
 	}
@@ -133,7 +135,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 	public void setActivationCard(ActivateCardParam param) throws CardActivateException {
 		logger().info("设置会员卡激活信息");
 		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());	
-		if(uCard !=null) {
+		if(uCard ==null) {
 			logger().info("激活失败");
 			throw new CardActivateException();
 		}
@@ -146,17 +148,20 @@ public class WxAppCardActivationService extends ShopBaseService {
 			activeData.put("cardNo",param.getCardNo());
 			activeData.put("cardId",uCard.getCardId());
 			activeData.put("userId",uCard.getUserId());
-			activeData.put("createTime", DateUtil.getLocalDateTime());
+		
+			
 			if(CardUtil.isCardExamine(uCard.getExamine())) {
 				activeData.put("status",CardVerifyConstant.VSTAT_CHECKING);
 			}else {
 				activeData.put("status",CardVerifyConstant.VSTAT_PASS);
 			}
+			Map<String, Object> data = changeKeyFromHumpToUnderline(activeData);
 			
 			this.transaction(()->{
+				
 				// update userdetail by activate data
 				UserDetailRecord userDetailRecord = new UserDetailRecord();
-				userDetailRecord.fromMap(activeData);
+				userDetailRecord.fromMap(data);
 				memberService.updateUserDetail(userDetailRecord);
 				
 				// update usercard activate time
@@ -164,7 +169,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 				
 				// add data into card examine
 				CardExamineRecord cardExamineRecord = db().newRecord(CARD_EXAMINE);
-				cardExamineRecord.fromMap(activeData);
+				cardExamineRecord.fromMap(data);
 				cardExamineRecord.insert();
 				// send coupon
 				memberCardService.sendCoupon(uCard.getUserId(), uCard.getCardId());
@@ -172,6 +177,36 @@ public class WxAppCardActivationService extends ShopBaseService {
 		}
 		
 	}
+	
+	/**
+	 *	 将map的驼峰key转化为下划线形式
+	 * @param map
+	 * @return
+	 */
+	private Map<String, Object> changeKeyFromHumpToUnderline(Map<String,Object> map) {
+		Map<String,Object> myMap = new HashMap<>();
+		map.entrySet().forEach(item->{
+			String key = Util.humpToUnderline(item.getKey());
+			myMap.put(key,item.getValue());
+		});
+		return myMap;
+	}
+	
+	/**
+	 *	 将map的驼峰key转化为下划线形式
+	 * @param map
+	 * @return
+	 */
+	private Map<String, Object> changeKeyFromUnderlineToHump(Map<String,Object> map) {
+		Map<String,Object> myMap = new HashMap<>();
+		map.entrySet().forEach(item->{
+			String key = Util.underlineToHump(item.getKey());
+			myMap.put(key,item.getValue());
+		});
+		return myMap;
+	}
+	
+	
 	
 	/**
 	 *	 设置激活的地址信息
