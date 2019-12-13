@@ -1057,7 +1057,7 @@ export default {
 
     // 公告详情
     noticeDetail (id) {
-      this.$router.push({ name: 'notice_detail_view', query: { id: id } })
+      this.$router.push({ path: '/admin/home/shopMain', query: { id: id, change_components: '8' } })
     },
 
     // 切换轮播图
