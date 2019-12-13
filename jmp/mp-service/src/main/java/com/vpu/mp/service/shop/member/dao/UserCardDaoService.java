@@ -607,4 +607,8 @@ public class UserCardDaoService extends ShopBaseService{
 		db().update(USER_CARD).set(USER_CARD.ACTIVATION_TIME, time).where(USER_CARD.CARD_NO.eq(cardNo)).execute();
 	}
 
+	public void updateIsDefault(Condition condition, Byte defaultCardSignal) {
+		db().update(USER_CARD).set(USER_CARD.IS_DEFAULT, defaultCardSignal).where(condition).execute();
+	}
+
 }

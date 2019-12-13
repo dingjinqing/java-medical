@@ -42,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,6 +93,7 @@ import com.vpu.mp.service.pojo.shop.member.exception.LimitCardAvailSendNoneExcep
 import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
@@ -1556,6 +1558,22 @@ public class UserCardService extends ShopBaseService {
 			time = DateUtil.getLocalDateTime();
 		}
 		userCardDao.updateActivationTime(cardNo,time);
+	}
+
+	/**
+	 *	 设置默认会员卡
+	 */
+	public void setDefault(DefaultCardParam param) {
+		logger().info("设置默认会员卡");
+		transaction(()->{
+			Condition condition = DSL.noCondition();
+			// set user card all 0
+			condition = condition.and(USER_CARD.USER_ID.eq(param.getUserId()));
+			userCardDao.updateIsDefault(condition,NumberUtils.BYTE_ZERO);
+			// only set card 1 by cardNo
+			condition = condition.and(USER_CARD.CARD_NO.eq(param.getCardNo()));
+			userCardDao.updateIsDefault(condition,NumberUtils.BYTE_ONE);
+		});
 	}
 	
 }
