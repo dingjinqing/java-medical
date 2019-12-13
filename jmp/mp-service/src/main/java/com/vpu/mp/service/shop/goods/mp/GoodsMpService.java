@@ -382,6 +382,26 @@ public class GoodsMpService extends ShopBaseService {
             condition = condition.and(GOODS.BRAND_ID.in(param.getBrandIds()));
         }
 
+        if (param.getLabelIds() != null && param.getLabelIds().size() > 0) {
+            Result<Record2<Integer, Byte>> labelCoupleList = goodsLabelMpService.getGoodsLabelsCoupleTypeInfoByIds(param.getLabelIds());
+            boolean allType = false;
+            List<Integer> gtaGoodsIds = new ArrayList<>();
+            for (int i = 0; i < labelCoupleList.size(); i++) {
+                Record2<Integer, Byte> record2 = labelCoupleList.get(i);
+                if (GoodsLabelCoupleTypeEnum.ALLTYPE.getCode().equals(record2.get(GOODS_LABEL_COUPLE.TYPE))) {
+                    allType = true;
+                    break;
+                }
+                if (GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode().equals(record2.get(GOODS_LABEL_COUPLE.TYPE))) {
+                   gtaGoodsIds.add(record2.get(GOODS_LABEL_COUPLE.GTA_ID));
+                }
+            }
+            if (!allType) {
+                condition = condition.and(GOODS.GOODS_ID.in(gtaGoodsIds));
+            }
+
+        }
+
         return condition;
     }
 

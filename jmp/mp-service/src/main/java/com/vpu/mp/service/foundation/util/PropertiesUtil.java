@@ -1,13 +1,12 @@
 package com.vpu.mp.service.foundation.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -26,12 +25,24 @@ public class PropertiesUtil {
     public static Map<String, String> toMap(String filePath) {
         Properties properties = new Properties();
 //        URL url = ClassLoader.getSystemResource(filePath);
-        URL url = PropertiesUtil.class.getClassLoader().getResource(filePath);
-        log.info("文件地址为："+url);
+//        URL url = ClassLoader.getSystemResourceAsStream(filePath);
+//        URL url = PropertiesUtil.class.getClassLoader().getResource(filePath);
+//        log.info("文件地址为："+url);
+        InputStream inputStream = ClassLoader.getSystemResourceAsStream(filePath);
+        ClassPathResource resource = new ClassPathResource(filePath);
+
         try {
-            log.info("properties要load的内容为："+new FileInputStream(new File(url.getFile())));
-            properties.load(new FileInputStream(new File(url.getFile())));
-        } catch (IOException e) {
+            if (Objects.isNull(inputStream)) {
+                log.debug("以方式【ClassLoader.getSystemResourceAsStream(filePath)】获取资源文件失败！");
+
+                inputStream = resource.getInputStream();
+                if (Objects.isNull(inputStream)) {
+                    log.debug("以方式【new ClassPathResource(filePath)】获取资源文件失败！");
+                }
+            }
+//            properties.load(new FileInputStream(new File(url.getFile())));
+            properties.load(inputStream);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         log.info("转换完成的properties："+properties);
