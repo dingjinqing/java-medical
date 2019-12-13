@@ -45,7 +45,8 @@ public class GoodsBrandService extends ShopBaseService {
     ImageService imageService;
     @Autowired
     GoodsBrandDataHelper goodsBrandDataHelper;
-
+    @Autowired
+    GoodsService goodsService;
     /**
      * 分页获取品牌信息
      * @param param 分页参数
@@ -397,20 +398,41 @@ public class GoodsBrandService extends ShopBaseService {
         return count > 0;
     }
 
+    /**
+     * 获取关联了商品的品牌数据，按照名称拼音进行组织
+     * @return 相同开头名称的处于同一个list集合中。
+     */
+    public List<GoodsBrandMpPinYinVo> getBrandAssociatedWithGoodsGroupByPinYinNameMp(){
+        List<Integer> goodsBrandIds = goodsService.getGoodsBrandIds();
+        List<GoodsBrandMpVo> goodsBrandMpVos = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.LOGO).from(GOODS_BRAND)
+            .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS_BRAND.ID.in(goodsBrandIds)))
+            .fetchInto(GoodsBrandMpVo.class);
+
+        return disposeBrandToGroupByPinYinNameMp(goodsBrandMpVos);
+    }
 
     /**
      * 查询所有有效的品牌，按照名称拼音进行组织
      * @return 相同开头名称的处于同一个list集合中。
      */
     public List<GoodsBrandMpPinYinVo> getAllBrandGroupByPinYinNameMp(){
-        List<GoodsBrandMpVo> pinYinVos = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.LOGO)
+        List<GoodsBrandMpVo> goodsBrandMpVos = db().select(GOODS_BRAND.ID, GOODS_BRAND.BRAND_NAME, GOODS_BRAND.LOGO)
             .from(GOODS_BRAND)
             .where(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(GOODS_BRAND.FIRST.desc(), GOODS_BRAND.CREATE_TIME)
             .fetchInto(GoodsBrandMpVo.class);
 
+        return disposeBrandToGroupByPinYinNameMp(goodsBrandMpVos);
+    }
+
+    /**
+     * 将{@link GoodsBrandMpVo} 按照名称拼音（或英文单词）首字母进行分组
+     * @param goodsBrandMpVos 待分组品牌列表
+     * @return 处理后的分组对象列表{@link GoodsBrandMpPinYinVo}
+     */
+    private List<GoodsBrandMpPinYinVo> disposeBrandToGroupByPinYinNameMp(List<GoodsBrandMpVo> goodsBrandMpVos){
         // 处理拼音
         TreeMap<String,List<GoodsBrandMpVo>> treeMap = new TreeMap<>();
-        for (GoodsBrandMpVo pinYinVo : pinYinVos) {
+        for (GoodsBrandMpVo pinYinVo : goodsBrandMpVos) {
             String c = ChineseToPinYinUtil.getStartAlphabet(pinYinVo.getBrandName());
             pinYinVo.setLogo(getImgFullUrlUtil(pinYinVo.getLogo()));
 

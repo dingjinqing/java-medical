@@ -24,8 +24,8 @@ public class WxAppGoodsSearchController extends WxAppBaseController{
 
     /**
      * 小程序-商品搜索
-     * @param param
-     * @return
+     * @param param 商品搜索条件
+     * @return 搜索结果
      */
     @PostMapping("/api/wxapp/goods/search")
     public JsonResult searchGoods(@RequestBody GoodsSearchMpParam param) {

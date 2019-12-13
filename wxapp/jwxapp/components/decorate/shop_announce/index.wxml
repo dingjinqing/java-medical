@@ -1,4 +1,4 @@
-<view id="{{m.cur_idx}}" style="min-height:{{m.fix_height}}px" >
+<view id="{{m.cur_idx}}" style="min-height:{{m.fix_height}}px;z-index:10" >
     <view  class='announce_container' style="background-color:{{m.bg_color}};{{m.fixed ? 'top:'+m.top+'px;position:fixed;z-index:9;width:750rpx;':''}}">
 
   <view class='shop_img'>
