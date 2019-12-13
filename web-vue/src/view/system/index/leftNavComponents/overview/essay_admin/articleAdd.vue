@@ -3,10 +3,14 @@
     <div class="main">
       <el-form
         ref="form"
+        :rules="rules"
         :model="form"
         label-width="80px"
       >
-        <el-form-item label="标题">
+        <el-form-item
+          label="标题"
+          prop="title"
+        >
           <el-input
             size="small"
             style="width: 300px;"
@@ -16,6 +20,7 @@
         <el-form-item label="文章分类">
           <el-select
             size="small"
+            prop="categoryId"
             v-model="form.categoryId"
             placeholder="请文章分类"
           >
@@ -101,26 +106,26 @@
         <el-form-item>
           <el-button
             type="primary"
-            @click="add"
+            @click="submitForm('form')"
           >保存</el-button>
           <el-button>取消</el-button>
         </el-form-item>
       </el-form>
-      <ImageDalog
-        :tuneUp="showImageDialog"
-        pageIndex='pictureSpace'
-        :isDraggable="true"
-        :imageSize="[290,220]"
-        @handleSelectImg='imgDialogSelectedCallback'
-      />
     </div>
+    <ImageDalog
+      :tuneUp="showImageDialog"
+      pageIndex='pictureSpace'
+      :isDraggable="true"
+      :imageSize="[290,220]"
+      @handleSelectImg='imgDialogSelectedCallback'
+    />
   </div>
 </template>
 
 <script>
 import { getCategoryRequest, addArticleRequest, getArticleRequest, updateArticleRequest } from '@/api/system/essayAdmin.js'
 import TinymceEditor from '@/components/admin/tinymceEditor/tinymceEditor'
-import ImageDalog from '@/components/admin/imageDalog'
+import ImageDalog from '@/components/system/systemImageDalog'
 export default {
   name: 'articleAdd',
   components: {
@@ -156,7 +161,15 @@ export default {
         imgUrl: ''
       },
       showImageDialog: false,
-      imgHost: `${this.$imageHost}`
+      imgHost: `${this.$imageHost}`,
+      rules: {
+        title: [
+          { required: true, message: '请输入标题', trigger: 'blur' }
+        ],
+        categoryId: [
+          { required: true, message: '请选择文章分类', trigger: 'change' }
+        ]
+      }
     }
   },
   mounted () {
@@ -206,6 +219,15 @@ export default {
         }
       }).catch(() => {
         this.$message.error('保存失败')
+      })
+    },
+    submitForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.add()
+        } else {
+          return false
+        }
       })
     },
     add () {
