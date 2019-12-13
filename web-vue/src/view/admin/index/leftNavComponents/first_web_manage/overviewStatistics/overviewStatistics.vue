@@ -2,14 +2,16 @@
   <div class="total-content">
     <div class="container">
       <yesterdayStatistics class="distance" />
+      <visitTrendStatistics class="distance" />
     </div>
   </div>
 </template>
 <script>
-import yesterdayStatistics from './yesterdayStatistics.vue'
+import yesterdayStatistics from './yesterdayStatistics'
+import visitTrendStatistics from './visitTrendStatistics'
 
 export default {
-  components: {yesterdayStatistics},
+  components: {yesterdayStatistics, visitTrendStatistics},
   data () {
     return {}
   }

@@ -152,6 +152,10 @@ export default {
     },
     /* 删除推荐分类子类 */
     deleteSortChild (index) {
+      if (this.recommendSortChildren.length === 1) {
+        this.$message.info({message: this.$t('goodsRecommendSorts.recommendSortChildrenNotNull')})
+        return
+      }
       this.recommendSortChildren.splice(index, 1)
     },
     /* 选择图标 */

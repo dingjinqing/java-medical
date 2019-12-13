@@ -42,7 +42,7 @@ public class ProvinceService extends MainBaseService {
     /**
      * 通过名字查询省id
      * @param provinceName 名称
-     * @return provinceId ro null 没有查到放回null
+     * @return provinceId or null 没有查到放回null
      */
 	public Integer getProvinceIdByName(String provinceName){
 	    return db().select(DICT_PROVINCE.PROVINCE_ID).from(DICT_PROVINCE)

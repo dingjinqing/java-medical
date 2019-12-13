@@ -201,6 +201,11 @@ public class CardUtil {
 		}
 		return true;
 	}
-	
-
+	/**
+	 * 	卡是否需要审核
+	 * 	@return true: 需要审核；false: 不需要审核
+	 */
+	public static boolean isCardExamine(Byte type) {
+		return CardConstant.MCARD_EXAMINE_ON.equals(type);
+	}
 }

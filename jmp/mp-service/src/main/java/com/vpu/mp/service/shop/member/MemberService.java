@@ -44,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.db.shop.tables.records.UserTagRecord;
@@ -730,7 +731,9 @@ public class MemberService extends ShopBaseService {
 				.orderBy(USER_IMPORT_DETAIL.ID.desc()).fetchAny();
 	}
 	
-	
+	public void updateUserDetail(UserDetailRecord record) {
+		memberDao.updateUserDetail(record);
+	}
 	
 	
 }

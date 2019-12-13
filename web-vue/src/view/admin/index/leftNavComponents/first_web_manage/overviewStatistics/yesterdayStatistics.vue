@@ -8,19 +8,57 @@
     <div class="table-data">
       <div
         class="fromItem"
-        v-for="item in table"
-        :key="item.name"
       >
-        <div>{{item.name}}</div>
+        <div>{{this.table[0].name}}</div>
         <div
           class="num"
           style="color: #5A8BFF"
-        >{{item.dataNumber}}
+        >{{this.table[0].dataNumber}}
         </div>
-        <div>日 {{item.dayRate}}</div>
-        <div>月 {{item.monthRate}}</div>
-        <div>周 {{item.weekRate}}</div>
+        <div>日 {{this.table[0].dayRate}}%</div>
+        <div>月 {{this.table[0].monthRate}}%</div>
+        <div>周 {{this.table[0].weekRate}}%</div>
       </div>
+      <div
+        class="fromItem"
+      >
+        <div>{{this.table[1].name}}/{{this.table[2].name}}</div>
+        <div
+          class="num"
+          style="color: #5A8BFF"
+        >{{this.table[1].dataNumber}}/{{this.table[2].dataNumber}}
+        </div>
+        <div>日 {{this.table[1].dayRate}}% / {{this.table[2].dayRate}}%</div>
+        <div>月 {{this.table[1].monthRate}}% / {{this.table[2].monthRate}}%</div>
+        <div>周 {{this.table[1].weekRate}}% / {{this.table[2].weekRate}}%</div>
+      </div>
+      <div
+        class="fromItem"
+      >
+        <div>{{this.table[3].name}}</div>
+        <div
+          class="num"
+          style="color: #5A8BFF"
+        >{{this.table[3].dataNumber}}
+        </div>
+        <div>日 {{this.table[3].dayRate}}%</div>
+        <div>月 {{this.table[3].monthRate}}%</div>
+        <div>周 {{this.table[3].weekRate}}%</div>
+      </div>
+      <div
+        class="fromItem"
+      >
+        <div>{{this.table[4].name}}/{{this.table[5].name}}</div>
+        <div
+          class="num"
+          style="color: #5A8BFF"
+        >{{this.table[4].dataNumber}}/{{this.table[5].dataNumber}}
+        </div>
+        <div>日 {{this.table[4].dayRate}}% / {{this.table[5].dayRate}}%</div>
+        <div>月 {{this.table[4].monthRate}}% / {{this.table[5].monthRate}}%</div>
+        <div>周 {{this.table[4].weekRate}}% / {{this.table[5].weekRate}}%</div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -39,6 +77,14 @@ export default {
     this.loadData()
   },
   methods: {
+    handleNull (rate) {
+      console.log(rate)
+      if (rate == null) {
+        return '-'
+      }
+      console.log(rate)
+      return rate
+    },
     loadData () {
       yesterdayAnalysis().then(res => {
         console.log('昨日概况数据', res.content)
@@ -60,7 +106,7 @@ export default {
               monthRate: this.originalData[1].monthRate
             },
             {
-              name: '访问人数',
+              name: '人数',
               dataNumber: this.originalData[2].dataNumber,
               dayRate: this.originalData[2].dayRate,
               weekRate: this.originalData[2].weekRate,
@@ -81,11 +127,11 @@ export default {
               monthRate: this.originalData[4].monthRate
             },
             {
-              name: '分享人数',
+              name: '人数',
               dataNumber: this.originalData[5].dataNumber,
               dayRate: this.originalData[5].dayRate,
               weekRate: this.originalData[5].weekRate,
-              monthRate: this.originalData[5].monthRate
+              monthRate: this.handleNull(this.originalData[5].monthRate)
             }
           ]
         }

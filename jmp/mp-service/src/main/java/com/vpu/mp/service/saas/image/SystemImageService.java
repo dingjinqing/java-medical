@@ -4,12 +4,17 @@ import com.UpYun;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.main.tables.records.UploadedImageRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.base.ResultMessage;
+import com.vpu.mp.service.pojo.shop.image.CropImageParam;
 import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
 import com.vpu.mp.service.pojo.shop.image.UploadImageCatNameVo;
+import com.vpu.mp.service.pojo.shop.image.UploadImageParam;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
 import org.apache.commons.io.FileUtils;
 import org.jooq.Record;
@@ -30,6 +35,9 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.Part;
 
 import static com.vpu.mp.db.main.tables.UploadedImage.UPLOADED_IMAGE;
 import static com.vpu.mp.db.main.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
@@ -53,12 +61,15 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
 
 
     @Override
-   	public String imageUrl(String relativePath) {
-    	if(!StringUtils.isEmpty(relativePath)) {
-    		return domainConfig.imageUrl(relativePath);
-    	}
-    	return null;
-   	}
+	public String imageUrl(String relativePath) {
+		if (!StringUtils.isEmpty(relativePath)) {
+			if (RegexUtil.checkUrl(relativePath)) {
+				return relativePath;
+			}
+			return domainConfig.imageUrl(relativePath);
+		}
+		return null;
+	}
 
    	@Override
    	public String fullPath(String relativePath) {
@@ -205,7 +216,27 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
     public UploadedImageRecord getImageFromImagePath(String imagePath) {
         return db().selectFrom(UPLOADED_IMAGE).where(UPLOADED_IMAGE.IMG_PATH.eq(imagePath)).fetchAny();
     }
+    
+    
+    public UploadedImageRecord addImageToDb(UploadImageParam param, Part file, UploadPath uploadPath) {
+    	 return addImageToDb(param,file.getSubmittedFileName(),file.getContentType(), (int) file.getSize(),uploadPath);
+    }
 
+    public UploadedImageRecord addImageToDb(CropImageParam param, UploadPath uploadPath) {
+        UploadedImageRecord image = db().newRecord(UPLOADED_IMAGE);
+        image.setImgName(baseFilename(uploadPath.getFilname()));
+        image.setImgPath(uploadPath.relativeFilePath);
+        image.setImgType(uploadPath.extension);
+        image.setImgOrigFname(param.remoteImgPath);
+        image.setImgSize(param.getSize());
+        image.setImgUrl(uploadPath.getImageUrl());
+        image.setImgWidth(param.getCropWidth());
+        image.setImgHeight(param.getCropHeight());
+        image.setImgCatId(param.getImgCatId());
+        image.insert();
+        return image;
+      }
+    
     /**
      * 保存图片到数据库
      *
@@ -215,32 +246,48 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
      * @param catId
      * @return
      */
-    public UploadedImageRecord addImageToDb(String relativePath, String imageName, String originFileName,
-                                            Integer catId) throws IOException {
-        String fullPath = fullPath(relativePath);
-        File file = new File(fullPath);
-        if (file.exists()) {
-            BufferedImage imageInfo = getImageInfo(fullPath);
-            if (imageInfo == null) {
-                return null;
-            }
-            UploadedImageRecord image = db().newRecord(UPLOADED_IMAGE);
-            image.setImgName(imageName == null ? file.getName() : imageName);
-            image.setImgPath(relativePath);
-            image.setImgType(this.getImageExension(fullPath));
-            image.setImgOrigFname(originFileName == null ? file.getName() : originFileName);
-            image.setImgSize((int) (file.length()));
-            image.setImgUrl(this.imageUrl(relativePath));
-            image.setImgWidth(imageInfo.getWidth());
-            image.setImgHeight(imageInfo.getHeight());
-            image.setImgCatId(catId == null ? 0 : catId);
-            image.setShopId(this.getShopId());
-            image.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
-            image.insert();
-            return image;
-        }
-        return null;
+    public UploadedImageRecord addImageToDb(UploadImageParam param, String submitName,String  contentType,Integer fileSize, UploadPath uploadPath){
+        UploadedImageRecord image = db().newRecord(UPLOADED_IMAGE);
+        image.setImgName(baseFilename(submitName));
+        image.setImgOrigFname(submitName);
+        image.setImgType(contentType);
+        image.setImgSize(new Long(fileSize).intValue());
+        image.setImgPath(uploadPath.relativeFilePath);
+        image.setImgUrl(uploadPath.getImageUrl());
+        image.setImgWidth(param.getNeedImgWidth());
+        image.setImgHeight(param.getNeedImgHeight());
+        image.setImgCatId(param.getImgCatId());
+        image.insert();
+        image.insert();
+        return image;
     }
+    
+	public UploadedImageRecord addImageToDb(String relativePath, String imageName, String originFileName, Integer catId)
+			throws IOException {
+		String fullPath = fullPath(relativePath);
+		File file = new File(fullPath);
+		if (file.exists()) {
+			BufferedImage imageInfo = getImageInfo(fullPath);
+			if (imageInfo == null) {
+				return null;
+			}
+			UploadedImageRecord image = db().newRecord(UPLOADED_IMAGE);
+			image.setImgName(imageName == null ? file.getName() : imageName);
+			image.setImgPath(relativePath);
+			image.setImgType(this.getImageExension(fullPath));
+			image.setImgOrigFname(originFileName == null ? file.getName() : originFileName);
+			image.setImgSize((int) (file.length()));
+			image.setImgUrl(this.imageUrl(relativePath));
+			image.setImgWidth(imageInfo.getWidth());
+			image.setImgHeight(imageInfo.getHeight());
+			image.setImgCatId(catId == null ? 0 : catId);
+			image.setShopId(this.getShopId());
+			image.setCreateTime(Timestamp.valueOf(LocalDateTime.now()));
+			image.insert();
+			return image;
+		}
+		return null;
+	}
 
     /**
      * 得到图片信息
@@ -347,5 +394,60 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
 		}
 		return steam;
 	}
+	
+	  /**
+	   * 校验添加图片参数
+	   *
+	   * @param param 入参
+	   * @param file
+	   * @return jsonResultCode, object
+	   */
+	  public ResultMessage validImageParam(UploadImageParam param, Part file) throws IOException {
+	    return validImageParam(param,file.getSize(),file.getContentType(),file.getInputStream());
+	  }
+
+	  /**
+	   * 校验添加图片参数
+	   *
+	   * @param param 入参
+	   * @param fileSize
+	   * @return jsonResultCode, object
+	   */
+	  public ResultMessage validImageParam(UploadImageParam param, long fileSize, String fileType, InputStream fileStream) {
+	    Integer maxSize = 5 * 1024 * 1024;
+	    if (fileSize > maxSize) {
+	      return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_UPLOAD_GT_5M).build();
+	    }
+	    if (!validImageType(fileType)) {
+	      return ResultMessage.builder()
+	          .jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID)
+	          .build();
+	    }
+	    BufferedImage bufferImage = null;
+	    try {
+	      bufferImage = ImageIO.read(fileStream);
+	    } catch (Exception e) {
+	      return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
+	    }
+	    int type = bufferImage.getType();
+	    if (bufferImage == null || bufferImage.getWidth(null) <= 0 || bufferImage.getHeight(null) <= 0) {
+	      return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_IMGAE_FORMAT_INVALID).build();
+	    }
+	    if (param.needImgWidth != null || param.needImgHeight != null) {
+	      if (param.needImgWidth != null && param.needImgWidth != bufferImage.getWidth()) {
+	        return ResultMessage.builder()
+	            .jsonResultCode(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_WIDTH)
+	            .message(param.needImgWidth)
+	            .build();
+	      }
+	      if (param.needImgHeight != null && param.needImgHeight != bufferImage.getHeight()) {
+	        return ResultMessage.builder()
+	            .jsonResultCode(JsonResultCode.CODE_IMGAE_UPLOAD_EQ_HEIGHT)
+	            .message(param.needImgHeight)
+	            .build();
+	      }
+	    }
+	    return ResultMessage.builder().flag(true).build();
+	  }
 
 }

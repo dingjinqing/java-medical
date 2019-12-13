@@ -42,7 +42,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="strategyPriority"
           label="优先级"
           align="center"
         >
@@ -89,18 +89,19 @@
               <el-tooltip
                 content="编辑"
                 placement="top"
-                v-if="scope.row.status === 1 || scope.row.status === 2"
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
                   class="el-icon-edit-outline"
-                  @click="editHandle(scope.row.id)"
+                  @click="editHandle(scope.row)"
                 ></span>
               </el-tooltip>
               <el-tooltip
                 content="启用"
                 placement="top"
-                v-if=" scope.row.status === 4"
+                v-else
               >
+                <!-- v-if="scope.row.currentState === 4" -->
                 <span
                   class="el-icon-circle-check"
                   @click="openHandle(scope.row)"
@@ -109,7 +110,7 @@
               <el-tooltip
                 content="停用"
                 placement="top"
-                v-if="scope.row.status === 1 || scope.row.status === 2"
+                v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
                 <span
                   class="el-icon-circle-close"
@@ -119,7 +120,7 @@
               <el-tooltip
                 content="删除"
                 placement="top"
-                v-if="scope.row.status === 0 || scope.row.status === 3 || scope.row.status === 4"
+                v-if="scope.row.currentState === 3 || scope.row.currentState === 4"
               >
                 <span
                   class="el-icon-delete"
@@ -142,7 +143,7 @@
 </template>
 
 <script>
-import { fullCutTableDataSearchApi } from '@/api/admin/marketManage/fullDiscountFullCut'
+import { fullCutTableDataSearchApi, updateFullCut } from '@/api/admin/marketManage/fullDiscountFullCut'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination.vue'
 
@@ -161,11 +162,10 @@ export default {
   },
   watch: {
     'params.state' (n, o) {
-      console.log(123)
       this.tableDataSearch()
     }
   },
-  created () {
+  mounted () {
     this.tableDataSearch()
   },
   methods: {
@@ -176,7 +176,7 @@ export default {
           this.params = Object.assign(res.content.page, this.params)
           this.tableData = res.content.dataList
           this.tableData.map((item, index) => {
-            item.statusText = this.getActStatusString(item.status)
+            item.statusText = this.getActStatusString(item.currentState)
           })
         }
       }).catch(err => console.log(err))
@@ -194,19 +194,55 @@ export default {
       }
       return row.type
     },
-    addActivity () {
+    addActivity (id) {
       this.$router.push({
         name: 'fullCutActivity'
       })
     },
-    editHandle () {
-
+    editHandle (id) {
+      console.log(id, 'activity id')
+      this.$router.push({
+        name: 'fullCutActivity',
+        query: {
+          id: id
+        }
+      })
     },
-    openHandle () {
-
+    openHandle (row) {
+      let openParams = {
+        'id': row.id,
+        'state': row.currentState
+      }
+      this.$confirm('确定要启用吗？', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateFullCut(openParams).then(res => {
+          if (res.error === 0) {
+            this.$message.success({ message: '启用成功' })
+            this.tableDataSearch()
+          }
+        }).catch(err => console.log(err))
+      })
     },
-    closeHandle () {
-
+    closeHandle (row) {
+      let stopParams = {
+        'id': row.id,
+        'state': row.currentState
+      }
+      this.$confirm('确定要停用吗？', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateFullCut(stopParams).then(res => {
+          if (res.error === 0) {
+            this.$message.success({ message: '停用成功' })
+            this.tableDataSearch()
+          }
+        }).catch(err => console.log(err))
+      })
     },
     deleteHandle () {
 

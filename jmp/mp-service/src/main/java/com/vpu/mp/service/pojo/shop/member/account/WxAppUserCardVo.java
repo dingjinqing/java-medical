@@ -24,6 +24,8 @@ public class WxAppUserCardVo extends UserCardParam {
 	final static Byte PERMANENT = 2;
 	final static Byte NON_RENEWAL = 0;
 	final static Byte AVAILABLE_RENEWAL = 1;
+	// 过期状态
+	private Integer status;
 	// 是否过期
 	protected Byte expire;
 	// 是否可续费
