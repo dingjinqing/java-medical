@@ -444,14 +444,10 @@ global.wxPage({
     let { groupbuyInfo, shareImg, groupId } = this.data
     let title = groupbuyInfo.groupBuyDefineInfo.limitAmount + '人拼购仅需' + groupbuyInfo.goodsInfo.minGroupBuyPrice + '元，' + groupbuyInfo.goodsInfo.goodsName
     let path = '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
-    console.log(title, path)
-    // return {
-    //   title: '你是一只小老虎',
-    //   imageUrl: 'http://jmpdevimg.weipubao.cn/upload/245547/image/20191114/OcA1RaXFu0VnXkucxYLY.jpeg',
-    //   path: '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
-    // }
     return {
-      title: 'aaa'
+      title: title,
+      imageUrl: imageUrl + 'image/wxapp/backward_right.png',
+      path: path
     }
   }
 })
