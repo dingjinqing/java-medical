@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
@@ -63,8 +64,8 @@ public class WxAppCardController extends WxAppBaseController {
 		logger().info("判断是否有会员卡");
 		WxAppSessionUser user = wxAppAuth.user();
 		param.setUserId(user.getUserId());
-		shop().user.userCard.userCardJudgement(param,getLang());
-		return success();
+		UserCardJudgeVo vo = shop().user.userCard.userCardJudgement(param,getLang());
+		return success(vo);
 	}
 	/**
 	 * 领取会员卡

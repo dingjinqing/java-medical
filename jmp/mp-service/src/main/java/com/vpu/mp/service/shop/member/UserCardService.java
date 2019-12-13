@@ -785,6 +785,31 @@ public class UserCardService extends ShopBaseService {
 		if (card == null) {
 			throw new UserCardNullException();
 		}
+		
+		if(card.getExpireTime()!=null) {
+			card.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
+			card.setEndDate(card.getEndTime().toLocalDateTime().toLocalDate());
+			card.setExpireType(NumberUtils.BYTE_ZERO);
+		}else {
+			card.setExpireType(CardConstant.MCARD_ET_FOREVER);
+		}
+		if (!CardUtil.isCardTimeForever(card.getExpireType())) {
+			if (CardUtil.isCardFixTime(card.getExpireType()) && CardUtil.isCardExpired(card.getEndTime())) {
+				logger().info("卡过期");
+				card.setStatus(-1);
+			} else {
+				card.setStatus(1);
+			}
+
+			if (CardUtil.isCardFixTime(card.getExpireType())) {
+				card.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
+				card.setEndDate(card.getEndTime().toLocalDateTime().toLocalDate());
+			}
+		} else {
+			card.setStatus(1);
+		}
+		
+		
 		dealWithUserCardDetailInfo(card);
 		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
