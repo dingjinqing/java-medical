@@ -16,24 +16,24 @@ global.wxApp({
     imageUrl: util.getImageUrl(""),
     shopId: util.getShopId()
   },
-  onLaunch: function(options) {
-    updateManager.onCheckForUpdate(function(res) {})
-    updateManager.onUpdateReady(function() {
+  onLaunch: function (options) {
+    updateManager.onCheckForUpdate(function (res) { })
+    updateManager.onUpdateReady(function () {
       wx.showModal({
         title: '更新提示',
         content: '新版本已经准备好，是否重启应用？',
-        success: function(res) {
+        success: function (res) {
           if (res.confirm) {
             updateManager.applyUpdate()
           }
         }
       })
     })
-    updateManager.onUpdateFailed(function() {})
+    updateManager.onUpdateFailed(function () { })
     util.setCache('launchScene', JSON.stringify(options));
   },
 
-  onShow: function(options) {
+  onShow: function (options) {
     if (util.getCache('user_id')) {
       if (util.getCache('geographic_location') == 1) {
         util.getUserLocation(function (location) {
@@ -52,7 +52,7 @@ global.wxApp({
     util.setCache('is_login', 1);
     util.removeCache('isPageJumping')
   },
-  getDistance: function(lat1, lng1, lat2, lng2) {
+  getDistance: function (lat1, lng1, lat2, lng2) {
     return util.getDistance(lat1, lng1, lat2, lng2);
   },
   onPageNotFound(res) {
@@ -60,6 +60,6 @@ global.wxApp({
     var url = util.getPath(res.path, res.query);
     var url2 = util.validUrl(url);
     if (!util.equalUrl(url, url2))
-      util.jumpLink(url2,"redirectTo");
+      util.jumpLink(url2, "redirectTo");
   },
 })
