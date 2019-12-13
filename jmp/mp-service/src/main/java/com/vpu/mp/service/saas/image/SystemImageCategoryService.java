@@ -1,6 +1,7 @@
 package com.vpu.mp.service.saas.image;
 
 import static com.vpu.mp.db.main.tables.UploadedImageCategory.UPLOADED_IMAGE_CATEGORY;
+import static com.vpu.mp.service.foundation.data.JsonResult.LANGUAGE_TYPE_MSG;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.UploadedImageCategoryRecord;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.category.ImageCategoryParam;
@@ -279,6 +281,21 @@ public class SystemImageCategoryService extends MainBaseService {
         return result;
     }
 
+    /**
+     * 得到Tree图片目录列表
+     *
+     * @return
+     * @param lang
+     */
+    public List<CategoryTreeItemVo> getImageCategoryForTree(String lang) {
+        List<CategoryTreeItemVo> result = new ArrayList<CategoryTreeItemVo>();
+        CategoryTreeItemVo root = new CategoryTreeItemVo();
+        root.setName(Util.translateMessage(lang, JsonResultMessage.MSG_IMAGE_CATEGORY_IMGCATNAME_ROOT_NAME, LANGUAGE_TYPE_MSG));
+        Result<UploadedImageCategoryRecord> records = this.getAll();
+        this.getImageCategoryTree(root, records, root.getLevel());
+        result.add(root);
+        return result;
+    }
     /**
      * 遍历图片标签树
      *

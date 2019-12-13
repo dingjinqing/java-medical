@@ -15,24 +15,24 @@ global.wxApp({
     imageUrl: util.getImageUrl(""),
     shopId: util.getShopId()
   },
-  onLaunch: function(options) {
+  onLaunch: function (options) {
     locale.loadLocalePack();
-    updateManager.onCheckForUpdate(function(res) {})
-    updateManager.onUpdateReady(function() {
+    updateManager.onCheckForUpdate(function (res) { })
+    updateManager.onUpdateReady(function () {
       wx.showModal({
         title: i18n.trans("common.info.updateTip"),
         content: i18n.trans("common.info.newVersionReadyWhetherRestartApp"),
-        success: function(res) {
+        success: function (res) {
           if (res.confirm) {
             updateManager.applyUpdate()
           }
         }
       })
     })
-    updateManager.onUpdateFailed(function() {})
+    updateManager.onUpdateFailed(function () { })
   },
 
-  onShow: function(options) {
+  onShow: function (options) {
 
   },
 
@@ -41,6 +41,6 @@ global.wxApp({
     var url = util.getPath(res.path, res.query);
     var url2 = util.validUrl(url);
     if (!util.equalUrl(url, url2))
-      util.jumpLink(url2,"redirectTo");
+      util.jumpLink(url2, "redirectTo");
   },
 })

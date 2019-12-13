@@ -426,17 +426,26 @@ export default {
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
-    defaultGrandClass () {
+    defaultGrandClass (flag) {
       console.log(this.editGoodsId)
       // 品牌分类下拉框数据获取
       classificationSelectRequest().then((res) => {
         console.log(res)
         if (res.error === 0) {
-          let obj = {
-            classifyId: 0,
-            classifyName: '请选择'
+          if (flag) {
+            this.$message.success({
+              message: '刷新成功',
+              showClose: true
+            })
           }
-          res.content.unshift(obj)
+          if (res.content.length) {
+            let obj = {
+              classifyId: 0,
+              classifyName: '请选择'
+            }
+            res.content.unshift(obj)
+          }
+
           this.options = res.content
         }
       })
@@ -534,71 +543,67 @@ export default {
     // 刷新
     handleRefresh () {
       // 品牌分类初始化获取
-      this.defaultGrandClass()
+      this.defaultGrandClass(true)
     },
     // 保存
     saveShopStyle () {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          if (!(this.ruleForm.firstInput >= 1 && this.ruleForm.firstInput <= 100)) {
-            this.$message.error({
-              message: '品牌优先级必须在1~100之间',
-              type: 'success'
+          console.log(this.saveImgUrl)
+          console.log(this.editGoodsId)
+          if (this.editGoodsId !== 'add') {
+            let obj = {
+              'id': this.editGoodsId,
+              'brandName': this.ruleForm.name,
+              'logo': this.saveImgUrl,
+              'first': this.ruleForm.firstInput,
+              'classifyId': this.ruleForm.classSelectValue,
+              'isRecommend': this.ruleForm.radio,
+              'goodsIds': this.ruleForm.goodsIdsArr,
+              'oldGoodsIds': this.oldGoodsIds,
+              'ename': this.ruleForm.NameEnlishInput
+            }
+            brandUpdateGetRequest(obj).then((res) => {
+              console.log(res)
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '保存成功',
+                  type: 'success'
+                })
+              } else if (res.error === 131001) {
+                this.$message.error({
+                  message: '品牌名称已存在',
+                  type: 'success'
+                })
+              }
             })
           } else {
-            console.log(this.saveImgUrl)
-            console.log(this.editGoodsId)
-            if (this.editGoodsId !== 'add') {
-              let obj = {
-                'id': this.editGoodsId,
-                'brandName': this.ruleForm.name,
-                'logo': this.saveImgUrl,
-                'first': this.ruleForm.firstInput,
-                'classifyId': this.ruleForm.classSelectValue,
-                'isRecommend': this.ruleForm.radio,
-                'goodsIds': this.ruleForm.goodsIdsArr,
-                'oldGoodsIds': this.oldGoodsIds,
-                'ename': this.ruleForm.NameEnlishInput
-              }
-              brandUpdateGetRequest(obj).then((res) => {
-                console.log(res)
-                if (res.error === 0) {
-                  this.$message.success({
-                    message: '保存成功',
-                    type: 'success'
-                  })
-                } else if (res.error === 131001) {
-                  this.$message.error({
-                    message: '品牌名称已存在',
-                    type: 'success'
-                  })
-                }
-              })
-            } else {
-              let obj = {
-                'brandName': this.ruleForm.name,
-                'ename': this.ruleForm.NameEnlishInput,
-                'logo': this.saveImgUrl,
-                'first': this.ruleForm.firstInput,
-                'isRecommend': this.ruleForm.radio,
-                'classifyId': this.ruleForm.classSelectValue,
-                'goodsIds': this.ruleForm.goodsIdsArr
-              }
-              brandAddRequest(obj).then((res) => {
-                console.log(res)
-                if (res.error === 0) {
-                  this.$message.success({
-                    message: '保存成功',
-                    type: 'success'
-                  })
-                } else if (res.error === 131001) {
-                  this.$message.error({
-                    message: '品牌名称已存在',
-                    type: 'success'
-                  })
-                }
-              })
+            let obj = {
+              'brandName': this.ruleForm.name,
+              'ename': this.ruleForm.NameEnlishInput,
+              'logo': this.saveImgUrl,
+              'first': this.ruleForm.firstInput,
+              'isRecommend': this.ruleForm.radio,
+              'classifyId': this.ruleForm.classSelectValue,
+              'goodsIds': this.ruleForm.goodsIdsArr
             }
+            brandAddRequest(obj).then((res) => {
+              console.log(res)
+              if (res.error === 0) {
+                this.$message.success({
+                  message: '保存成功',
+                  type: 'success'
+                })
+                this.$router.push({
+                  name: 'brand'
+                })
+              } else if (res.error === 131001) {
+                this.$message.error({
+                  message: '品牌名称已存在',
+                  type: 'success'
+                })
+              }
+            })
           }
         }
       })

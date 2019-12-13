@@ -23,7 +23,7 @@ export const cn = {
   save: '保存',
   brand: '品牌',
   priority: '优先级',
-  includeProductQuantity: '包含商品数量',
+  includeProductQuantity: '包含品牌数量',
   classificationPriority: '分类优先级',
   operation: '操作',
   brandClassifyName: '品牌分类名称',

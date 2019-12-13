@@ -1,4 +1,4 @@
-package com.vpu.mp.service.shop.image.posterTraits;
+package com.vpu.mp.service.shop.image.postertraits;
 
 import org.springframework.stereotype.Service;
 
@@ -7,7 +7,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import static com.vpu.mp.db.shop.tables.Pictorial.PICTORIAL;
 
 /**
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年10月17日 下午5:19:04

@@ -52,6 +52,67 @@
             <text wx:else>满{{act_info.least_consume}}元可用</text>
           </view>
         </view>
+        
+      </view> <!--使用限制END  -->
+
+      <!-- 兑换所需积分  -->
+      <view class="coupon-time" wx:if="{{act_info.use_score == 1}}">        
+        <text style="color:#888;">兑换所需积分：</text>
+        <text class="coupon-score-number">{{act_info.score_number}}积分</text>  
+        <text class="coupon-user-score" wx:if="{{act_info.from == 1 && act_info.can_fetch_num > 0 && act_info.have_expired == 0}}">当前拥有{{act_info.user_score_number}}积分</text>
+        <text class="coupon-user-score" wx:else>已兑换</text>
+      </view> <!--兑换所需积分END  -->
+
+      <!--领取明细  -->
+      <view class="coupon-get">
+        <form>
+          <block wx:if="{{act_info.from == 1 && act_info.can_fetch_num > 0 && act_info.have_expired == 0 && act_info.is_can_buy == 1}}">
+            <view class="coupon-vw-int" wx:if="{{act_info.validation_code != null  }}">
+              <input class="coupon-input" placeholder="请输入领取码" bindinput='bindBlur'></input>
+            </view> 
+            <view class="coupon-vw-btn" wx:if="{{act_info.from == 1}}">
+            <form report-submit='true' bindsubmit='fetch_coupon'>
+              <button class="coupon-button" form-type='submit' style='color:{{comColor}};border-color:{{comColor}}' disabled='{{disableds}}'>{{act_info.use_score ? '立即兑换' : '立即领取'}}</button>    
+            </form>   
+            </view> 
+          </block>
+          <block wx:if="{{act_info.from == 1 && act_info.is_exclusive == 1 && act_info.is_can_buy == 0 && act_info.can_fetch_num > 0 && act_info.have_expired == 0}}">
+            <view class="coupon-vw-btn">
+              <button class="coupon-button" style='margin-top:0' bindtap="top_more" style='color:{{comColor}};border-color:{{comColor}}'>开通会员</button>       
+            </view> 
+          </block>
+          <block wx:if="{{act_info.is_used == 0 && act_info.is_expire == 0}}">
+            <view class="coupon-vw-btn">
+              <button class="coupon-button" style='margin-top:0' bindtap="to_search" style='color:{{comColor}};border-color:{{comColor}}'>立即使用</button>       
+            </view> 
+          </block>
+          <block wx:if="{{act_info.is_used == 1 || act_info.is_expire == 1 || (act_info.from == 1 && act_info.can_fetch_num <= 0) || act_info.have_expired == 1}}">
+            <view class="coupon-use-btn">
+              <button class="coupon-mine" bindtap="myCoupon" style='color:{{comColor}};border-color:{{comColor}}'>我的优惠券</button> 
+              <button class="coupon-shop" bindtap="visitshop" style='color:{{comColor}};border-color:{{comColor}}'>进店看看</button>         
+            </view> 
+          </block>
+        
+        </form>    
+      </view> <!--领取明细END  -->
+
+      <!--使用限制  -->
+      <view class="coupon-limit">
+        <view class='limit_left'>使用限制：</view>
+        <view class='limit_right'>
+          <view class='goods_limit'>
+            <text class="coupon-time-btm" style="color:#353535;" wx:if="{{act_info.recommend_goods_id == null & act_info.recommend_cat_id == null }}">无商品限制</text>
+        <text class="coupon-time-btm" wx:if="{{act_info.recommend_goods_id != null || act_info.recommend_cat_id != null}}">部分商品可使用</text>
+          </view>
+          <view class='price_limit' wx:if='{{act_info.from == 0}}'>
+            <text wx:if="{{act_info.limit_order_amount == null || act_info.limit_order_amount == 0}}">无价格限制</text>
+            <text wx:else>{{act_info.act_desc}}</text>
+          </view>
+          <view class='price_limit' wx:if='{{act_info.from == 1}}'>
+            <text wx:if="{{act_info.least_consume == 0 || act_info.least_consume == null}}">无价格限制</text>
+            <text wx:else>满{{act_info.least_consume}}元可用</text>
+          </view>
+        </view>
       </view> <!--使用限制END  -->
     </block>
   </view>

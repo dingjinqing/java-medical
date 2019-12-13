@@ -5,7 +5,7 @@
 let util = require("../../utils/util.js")
 let config = require("../../utils/config.js")
 var app = getApp();
-// var imageUrl = app.globalData.imageUrl
+var imageUrl = app.globalData.imageUrl
 var couponSn;
 Page({
 
