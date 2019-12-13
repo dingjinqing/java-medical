@@ -1121,7 +1121,7 @@ public class GoodsService extends ShopBaseService {
 
             //更新es
             if (esUtilSearchService.esState()){
-                esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+                esGoodsCreateService.deleteEsGoods(goodsIds,getShopId());
             }
         });
     }
