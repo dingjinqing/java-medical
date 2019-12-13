@@ -1,23 +1,34 @@
 package com.vpu.mp.service.shop.member.wxapp;
 
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+
 import java.util.List;
 import java.util.Map;
 
+import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
+import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;
+import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.shop.member.CardVerifyService;
+import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.user.user.UserService;
 /**
@@ -32,24 +43,35 @@ public class WxAppCardActivationService extends ShopBaseService {
 	private CardVerifyService cardVerifyService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private MemberService memberService;
+	@Autowired
+	private MemberCardService memberCardService;
+	
+	final static String PROVINCE_CODE = "provinceCode";
+	final static String CITY_CODE = "cityCode";
+	final static String DISTRICT_CODE = "districtCode";
+	// 100000 110000 110100在省，市，区中都对应无效值
+	final static Integer DEFAULT_PROVINCEID = 100000;
+	final static Integer DEFAULT_CITYID = 110000;
+	final static Integer DEFAULT_DISTRICTID = 110100;
 	
 	/**
 	 * 	获取会员卡激活数据
 	 */
 	public ActivateCardVo getActivationCard(ActivateCardParam param,String lang) {
+		logger().info("获取会员卡激活信息");
 		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());		
 		List<String> fields = cardVerifyService.getActiveRequiredFieldWithHump(uCard.getActivationCfg());
 		UserInfo user = userService.getUserInfo(param.getUserId());
 		if(user == null) {
 			return null;
 		}
-		Map<String, Object> userMap = Util.convertPojoToMap(user);
-		userMap.entrySet().removeIf(e->!fields.contains(e.getKey()));
+		Map<String, Object> userMap = filterActiveOption(fields, user);
 		dealWithAddressCode(userMap);
 		
 		List<String> allEducation = MemberEducationEnum.getAllEducation(lang);
 		List<String> allIndustryName = MemberIndustryEnum.getAllIndustryName(lang);
-		
 		
 		//TODO 订阅消息
 		
@@ -62,28 +84,43 @@ public class WxAppCardActivationService extends ShopBaseService {
 				.build();
 	}
 	
+	/**
+	 * 	过滤激活选项
+	 * @param fields 激活的选项
+	 * @param obj 包含的数据
+	 * @return Map<String,Object> 激活的选项值
+	 */
+	public Map<String, Object> filterActiveOption(List<String> fields, Object obj) {
+		if(obj == null) {
+			return null;
+		}
+		Map<String, Object> userMap = Util.convertPojoToMap(obj);
+		userMap.entrySet().removeIf(e->!fields.contains(e.getKey()));
+		return userMap;
+	}
+	
 	private void dealWithAddressCode(Map<String, Object> userMap) {
 		logger().info("处理用户地址信息");
-		String provinceCode = "provinceCode";
-		String cityCode = "cityCode";
-		String districtCode = "districtCode";
-		// 100000 110000 110100在省，市，区中都对应无效值
-		Integer provinceId = userMap.get(provinceCode)==null? 100000:(Integer)userMap.get(provinceCode);
-		Integer cityId = userMap.get(cityCode)==null?110000:(Integer)userMap.get(cityCode);
-		Integer districtId = userMap.get(districtCode)==null?110100:(Integer)userMap.get(districtCode);	
+		
+		Integer provinceId = userMap.get(PROVINCE_CODE)==null? 
+				DEFAULT_PROVINCEID:(Integer)userMap.get(PROVINCE_CODE);
+		Integer cityId = userMap.get(CITY_CODE)==null?
+				DEFAULT_CITYID:(Integer)userMap.get(CITY_CODE);
+		Integer districtId = userMap.get(DISTRICT_CODE)==null?
+				DEFAULT_DISTRICTID:(Integer)userMap.get(DISTRICT_CODE);	
 		
 		DictProvinceRecord provinceName = saas.region.province.getProvinceName(provinceId);	
 		DictCityRecord cityName = saas.region.city.getCityName(cityId);
 		DictDistrictRecord districtName = saas.region.district.getDistrictName(districtId);
 		
 		if(provinceName!=null) {
-			userMap.put(provinceCode, provinceName.getName());
+			userMap.put(PROVINCE_CODE, provinceName.getName());
 		}
 		if(cityName != null) {
-			userMap.put(cityCode, cityName.getName());
+			userMap.put(CITY_CODE, cityName.getName());
 		}
 		if(districtName != null) {
-			userMap.put(districtCode, districtName.getName());
+			userMap.put(DISTRICT_CODE, districtName.getName());
 		}
 	}
 	
@@ -91,9 +128,78 @@ public class WxAppCardActivationService extends ShopBaseService {
 
 	/**
 	 * 	设置会员卡激活数据
+	 * @throws CardActivateException  激活失败
 	 */
-	public void setActivationCard(ActivateCardParam param) {
+	public void setActivationCard(ActivateCardParam param) throws CardActivateException {
+		logger().info("设置会员卡激活信息");
+		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());	
+		if(uCard !=null) {
+			logger().info("激活失败");
+			throw new CardActivateException();
+		}
+		List<String> fields = cardVerifyService.getActiveRequiredFieldWithHump(uCard.getActivationCfg());
+		Map<String, Object> activeData = this.filterActiveOption(fields, param.getActivateOption());
 		
+		if(activeData != null ) {
+			// prepare card examine data 
+			setActiveAddressInfo(activeData);
+			activeData.put("cardNo",param.getCardNo());
+			activeData.put("cardId",uCard.getCardId());
+			activeData.put("userId",uCard.getUserId());
+			activeData.put("createTime", DateUtil.getLocalDateTime());
+			if(CardUtil.isCardExamine(uCard.getExamine())) {
+				activeData.put("status",CardVerifyConstant.VSTAT_CHECKING);
+			}else {
+				activeData.put("status",CardVerifyConstant.VSTAT_PASS);
+			}
+			
+			this.transaction(()->{
+				// update userdetail by activate data
+				UserDetailRecord userDetailRecord = new UserDetailRecord();
+				userDetailRecord.fromMap(activeData);
+				memberService.updateUserDetail(userDetailRecord);
+				
+				// update usercard activate time
+				userCardService.updateActivationTime(param.getCardNo(), null);
+				
+				// add data into card examine
+				CardExamineRecord cardExamineRecord = db().newRecord(CARD_EXAMINE);
+				cardExamineRecord.fromMap(activeData);
+				cardExamineRecord.insert();
+				// send coupon
+				memberCardService.sendCoupon(uCard.getUserId(), uCard.getCardId());
+			});
+		}
+		
+	}
+	
+	/**
+	 *	 设置激活的地址信息
+	 */
+	private void setActiveAddressInfo(Map<String, Object> activeData) {
+		// get and set provinceId
+		String provinceName = (String)activeData.get(PROVINCE_CODE);
+		Integer provinceId = DEFAULT_PROVINCEID;
+		if(!StringUtils.isBlank(provinceName)) {
+			provinceId = saas.region.province.getProvinceIdByName(provinceName);
+		}
+		activeData.put(PROVINCE_CODE,provinceId);
+		
+		// get and set cityId
+		String cityName = (String)activeData.get(CITY_CODE);
+		Integer cityId = DEFAULT_CITYID;
+		if(!StringUtils.isBlank(cityName)) {
+			cityId = saas.region.city.getCityIdByNameAndProvinceId(provinceId, cityName);
+		}
+		activeData.put(CITY_CODE,cityId);
+		
+		// get and set districtId
+		String districtName = (String)activeData.get(DISTRICT_CODE);
+		Integer districtId = DEFAULT_DISTRICTID;
+		if(!StringUtils.isBlank(districtName)) {
+			districtId = saas.region.district.getDistrictIdByNameAndCityId(cityId, districtName);
+		}
+		activeData.put(DISTRICT_CODE,districtId);
 	}
 	
 

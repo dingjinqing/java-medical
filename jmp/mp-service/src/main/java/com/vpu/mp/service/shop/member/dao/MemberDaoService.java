@@ -685,4 +685,8 @@ public class MemberDaoService extends ShopBaseService {
 	private boolean isNotBlank(String val) {
 		return !StringUtils.isBlank(val);
 	}
+	
+	public void updateUserDetail(UserDetailRecord record) {
+		db().executeUpdate(record, USER_DETAIL.USER_ID.eq(record.getUserId()));
+	}
 }

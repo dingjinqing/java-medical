@@ -412,7 +412,7 @@ public class UserCardService extends ShopBaseService {
 			throws MpException {
 
 		stopUserLimitCard(cardList);
-		List<String> cardNoList = new ArrayList();
+		List<String> cardNoList = new ArrayList<>();
 		for (UserCardParam card : cardList) {
 			MemberCardRecord mCard = cardDao.getCardById(card.getCardId());
 			if (isLimitCard(mCard)) {
@@ -1425,7 +1425,7 @@ public class UserCardService extends ShopBaseService {
 					} else {
 						if (NumberUtils.BYTE_ZERO.equals(mCard.getActivation())
 								&& CardUtil.isNormalCard(mCard.getCardType())) {
-							memberCardService.sendCoupon(mCard, param.getUserId(), param.getCardId());
+							memberCardService.sendCoupon(param.getUserId(), param.getCardId());
 						}
 						vo.setCardNo(cardNoList.get(0));
 						return vo;
@@ -1524,6 +1524,13 @@ public class UserCardService extends ShopBaseService {
 	
 	public UserCardVo getUserCardByCardNo(String cardNo){
 		return userCardDao.getUserCardByCardNo(cardNo);
+	}
+	
+	public void updateActivationTime(String cardNo,Timestamp time) {
+		if(time==null) {
+			time = DateUtil.getLocalTimeDate();
+		}
+		userCardDao.updateActivationTime(cardNo,time);
 	}
 	
 }

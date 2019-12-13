@@ -82,6 +82,13 @@ public class CardConstant {
 	public static final Byte MCARD_ACT_NO = 0;
 	// 需要激活
 	public static final Byte MCARD_ACT_YES = 1;
+	/**
+	 * 	 是否审核 0不审核 1审核
+	 */
+	// 0不审核
+	public static final Byte MCARD_EXAMINE_ON=0;
+	//  1审核
+	public static final Byte MCARD_EXAMINE_OFF=1;
 
 	/** date_type 天数类型 0:日*/
 	public static final Byte MCARD_DT_DAY = 0;
