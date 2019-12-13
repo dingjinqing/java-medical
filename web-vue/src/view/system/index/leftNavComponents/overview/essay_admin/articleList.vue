@@ -58,11 +58,16 @@
       <el-table-column
         prop="headPic"
         align="center"
-        :formatter="headPicFormatter"
         label="头图"
       >
+        <template slot-scope="scope">
+          <span v-if="scope.row.headPic === null">无</span>
+          <el-image
+            v-if="scope.row.headPic !== null"
+            :src="scope.row.headPic"
+          ></el-image>
+        </template>
       </el-table-column>
-
       <el-table-column
         prop="updateTime"
         align="center"
@@ -334,5 +339,13 @@ export default {
   padding: 4px;
   border-radius: 5px;
   background-color: #739e73;
+}
+.el-image {
+  width: 50px;
+  height: 48px;
+}
+.el-image:hover {
+  width: 100%;
+  height: 100%;
 }
 </style>
