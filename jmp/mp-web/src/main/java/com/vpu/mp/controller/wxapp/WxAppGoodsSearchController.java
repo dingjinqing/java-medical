@@ -29,6 +29,8 @@ public class WxAppGoodsSearchController extends WxAppBaseController{
      */
     @PostMapping("/api/wxapp/goods/search")
     public JsonResult searchGoods(@RequestBody GoodsSearchMpParam param) {
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
         return success(shop().goodsMp.searchGoods(param));
     }
 }

@@ -4,6 +4,8 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.label.GoodsLabelMpVo;
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,5 +43,18 @@ public class GoodsLabelMpService extends ShopBaseService {
             .and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode()).or(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode())))
             .orderBy(GOODS_LABEL.LEVEL.desc(),GOODS_LABEL.CREATE_TIME.desc())
             .fetchInto(GoodsLabelMpVo.class);
+    }
+
+    /**
+     * 根据标签id集合，查询对应的标签数据
+     * @param labelIds 商品标签id集合
+     * @return 商品信息
+     */
+    public Result<Record2<Integer, Byte>>  getGoodsLabelsCoupleTypeInfoByIds(List<Integer> labelIds) {
+        return db().select(GOODS_LABEL_COUPLE.GTA_ID, GOODS_LABEL_COUPLE.TYPE).from(GOODS_LABEL_COUPLE)
+            .where(GOODS_LABEL_COUPLE.LABEL_ID.in(labelIds))
+            .and(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode())
+                .or(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode())))
+            .fetch();
     }
 }
