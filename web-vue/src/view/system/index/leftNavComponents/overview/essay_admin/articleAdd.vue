@@ -152,6 +152,9 @@ export default {
         keyword: null,
         title: null
       },
+      imageVo: {
+        imgUrl: ''
+      },
       showImageDialog: false,
       imgHost: `${this.$imageHost}`
     }
@@ -216,6 +219,9 @@ export default {
       } else {
         this.form.status = 0
       }
+      if (this.form.goodsImgs.length > 0) {
+        this.form.headPic = this.form.goodsImgs[0].imgPath
+      }
       console.log(this.form)
       if (this.isEdit) {
         console.log('更新啦')
@@ -236,7 +242,7 @@ export default {
           this.$message.error(res.message)
         }
       }).catch(() => {
-        this.$message.error('失败')
+        this.$message.error('添加失败')
       })
     },
     toArticleTypeList () {
@@ -262,11 +268,17 @@ export default {
           this.form.keyword = res.content.keyword
           this.form.status = res.content.status === 1
           this.form.title = res.content.title
+          console.log(res.content.headPic)
+          if (res.content.headPic !== null) {
+            this.imageVo.imgUrl = res.content.headPic
+            this.form.goodsImgs.push(this.imageVo)
+          }
+          console.log(this.form.goodsImgs)
         } else {
           this.$message.error(res.message)
         }
       }).catch(() => {
-        this.$message.error('失败')
+        this.$message.error('获取文章信息失败')
       })
     },
     updateArticleOption () {
