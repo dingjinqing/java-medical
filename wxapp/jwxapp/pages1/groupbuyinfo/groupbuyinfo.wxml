@@ -154,11 +154,16 @@
     <v-spec-dialog show="{{showSpec}}" bind:close="specDialogClose" products-info="{{productsInfo}}" bindproductData="getProductData">
       <view slot="num-cfg">
         <view class="spec-num clearfix">
-          <text>购买数量：(最少2件，最多4件)</text>
+          <text>购买数量：(最少{{groupbuyInfo.groupBuyDefineInfo.limitBuyNum}}件，</text>
+          <text>最多{{groupbuyInfo.groupBuyDefineInfo.limitMaxNum}}件)</text>
           <view class="spec-num-btns">
-            <text class="spec-num-btn">-</text>
-            <input class="spec-num-input" type="text" />
-            <text class="spec-num-btn">+</text>
+            <text class="spec-num-btn" bindtap="bindMinus" style='background:{{specInfo.goodsNum <= groupbuyInfo.groupBuyDefineInfo.limitBuyNum ? "#eee" : "#fff"}};color:{{specInfo.goodsNum <= groupbuyInfo.groupBuyDefineInfo.limitBuyNum ? "#ccc" : "#666"}}'>
+              <text>-</text>
+            </text>
+            <input class="spec-num-input" type="text" bindblur="specNumInputChange" value="{{specInfo.goodsNum}}" />
+            <text class="spec-num-btn" bindtap="bindPlus" style='background:{{specInfo.goodsNum>= groupbuyInfo.groupBuyDefineInfo.limitMaxNum? "#eee" : "#fff"}};color:{{specInfo.goodsNum>= groupbuyInfo.groupBuyDefineInfo.limitMaxNum ? "#ccc" : "#666"}}'>
+              <text>+</text>
+            </text>
           </view>
         </view>
       </view>

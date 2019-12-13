@@ -21,12 +21,16 @@ global.wxPage({
       groupBuyDefineInfo: {} // 拼团信息
     }, // 拼团信息
     showSpec: false, // 显示规格弹窗
-    specInfo: {}, // 规格信息
+    has_spec: false, // 是否有规格
+    specInfo: {
+      goodsNum: 0
+    }, // 规格信息
     productsInfo: {
       products: [], // 商品规格
     }, // 规格组件需要数据
     islogin: false, // 是否已登录
-    isBlock: 0 // 显示绑定手机号
+    isBlock: 0, // 显示绑定手机号
+    shareImg: '' // 分享的图片
   },
 
   /**
@@ -43,6 +47,14 @@ global.wxPage({
     })
     // 判断用户是否登录
     that.judgeLogin()
+
+    that.getGroupBuyInfo()
+
+    that.getShareImg()
+  },
+
+  getGroupBuyInfo () {
+    let that = this
     // 获取拼团信息
     util.api('/api/wxapp/groupbuy/info', function (res) {
       if (res.error === 0) {
@@ -66,8 +78,9 @@ global.wxPage({
         that.countdown(totalSeconds)
 
         // 规格弹窗信息
-        let defaultPrd = groupbuyInfo.prdSpecsList.length <= 1 ? true : false;
+        let defaultPrd = groupbuyInfo.prdSpecsList && groupbuyInfo.prdSpecsList.length >= 0 ? false : true;
         groupbuyInfo.groupBuyDefineInfo.defaultPrd = defaultPrd
+        // 规格选择组件需要的数据
         let productsInfo = {
           defaultPrd: defaultPrd, // 是否不是多规格,默认只有一个规格
           goodsImgs: [imageUrl + groupbuyInfo.goodsInfo.goodsImg],
@@ -78,6 +91,7 @@ global.wxPage({
         }
 
         that.setData({
+          has_spec: !defaultPrd,
           groupbuyInfo: groupbuyInfo,
           productsInfo: productsInfo
         })
@@ -107,6 +121,17 @@ global.wxPage({
         islogin: true,
       })
     }
+  },
+
+  getShareImg () {
+    let that = this
+    util.api('/api/wxapp/groupbuy/share/image', function (res) {
+      if (res.error === 0) {
+        that.setData({
+          shareImg: res.content
+        })
+      }
+    }, { groupId: 4 })
   },
 
   // 倒计时
@@ -148,13 +173,33 @@ global.wxPage({
       util.showModal('提示', '您是老用户啦,“老带新团”只有新用户可以参团哦！可以去开个新团享受更多优惠。', function () {
         util.alert('我要开团')
       }, true, '取消', '我要开团')
+      return false;
     } else {
-      this.OneClickBuy(e);
+      if (this.data.has_spec) {
+        this.setData({
+          showSpec: true
+        })
+        this.initSpecInfo()
+      } else {
+        this.OneClickBuy(e);
+      }
     }
   },
 
+  initSpecInfo () {
+    let specInfo = this.data.specInfo
+    let groupbuyInfo = this.data.groupbuyInfo
+    if (specInfo.goodsNum === undefined) {
+      specInfo.goodsNum = groupbuyInfo.groupBuyDefineInfo.limitBuyNum
+    }
+    this.setData({
+      specInfo: specInfo
+    })
+  },
+
+  // 在一键开团时再校验规格
   checkSelBuy () {
-    if (!this.data.groupbuyInfo.groupBuyDefineInfo.defaultPrd) {
+    if (this.data.has_spec && Object.keys(this.data.specInfo).length == 0) {
       if (this.data.showSpec) util.alert("请选择规格！")
       this.setData({
         showSpec: true
@@ -171,6 +216,7 @@ global.wxPage({
     return true;
   },
 
+  // 一键开团
   OneClickBuy (e) {
     let that = this
     let groupbuyInfo = that.data.groupbuyInfo
@@ -201,6 +247,7 @@ global.wxPage({
         prdId: specInfo.prdId ? specInfo.prdId : groupbuyInfo.goodsInfo.goodsId,
         productId: specInfo.prdId ? specInfo.prdId : groupbuyInfo.goodsInfo.goodsId
       }]
+      console.log(goodsList)
       util.navigateTo({
         url: "/pages/checkout/checkout?order_type=pin_group&goodsList=" + JSON.stringify(goodsList) + "&group_id=" + this.data.groupId
       })
@@ -209,16 +256,56 @@ global.wxPage({
 
   getUserInfo: function (e) {
     let that = this;
-    util.getUserInfoCommon(e, function (userInfo) {
-      if (userInfo) {
-        console.log(userInfo)
+    if (util.getUserInfoCommon) {
+      util.getUserInfoCommon(e, function (userInfo) {
+        if (userInfo) {
+          console.log(userInfo)
+          that.setData({
+            islogin: true
+          })
+        }
+      });
+    } else {
+      var canIUse = wx.canIUse('button.open-type.getUserInfo');
+      if (e.detail.userInfo) {
+        if (canIUse) {
+          var user_avatar = e.detail.userInfo.avatarUrl;
+          var user_name = e.detail.userInfo.nickName;
+          util.setCache("nickName", user_name);
+          util.setCache("avatarUrl", user_avatar);
+          util.api('/api/wxapp/account/updateUser', function (res) {
+          }, {
+            username: user_name,
+            user_avatar: user_avatar
+          });
+        } else {
+          wx.getUserInfo({
+            success: res => {
+              var user_avatar = e.detail.userInfo.avatarUrl;
+              var user_name = e.detail.userInfo.nickName;
+              util.setCache("nickName", user_name);
+              util.setCache("avatarUrl", user_avatar);
+              util.api('/api/wxapp/account/updateUser', function (res) {
+              }, {
+                username: user_name,
+                user_avatar: user_avatar
+              });
+            }
+          })
+        }
         that.setData({
           islogin: true
         })
       }
-    });
+    }
     if (e.currentTarget.dataset.ct == 0) {
-      that.OneClickBuy(e);
+      if (that.data.has_spec) {
+        this.setData({
+          showSpec: true
+        })
+      } else {
+        that.OneClickBuy(e);
+      }
     }
   },
 
@@ -238,6 +325,7 @@ global.wxPage({
     util.jumpToWeb('/wxapp/group/help')
   },
 
+  // 规格关闭
   specDialogClose () {
     this.setData({
       showSpec: false
@@ -245,10 +333,58 @@ global.wxPage({
   },
 
   getProductData (data) {
-    console.log(data)
+    data = Object.assign({}, this.data.specInfo, data)
     this.setData({
       specInfo: data
     })
+  },
+
+  // 验证输入数量
+  specNumInputChange (e) {
+    let value = Number(e.detail.value)
+    let that = this
+    if (isNaN(value)) {
+      util.showModal('提示', '请输入数字')
+      that.setData({
+        'specInfo.goodsNum': this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum
+      })
+      return false
+    }
+    if (value > this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum) {
+      util.showModal('提示', '不能超过限定数量', function () { })
+      that.setData({
+        'specInfo.goodsNum': this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum
+      })
+      return false
+    }
+    that.setData({
+      'specInfo.goodsNum': value
+    })
+  },
+
+  bindMinus () {
+    let goodsNum = this.data.specInfo.goodsNum
+    if (goodsNum <= this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum) {
+      return false;
+    }
+    goodsNum--
+    this.setData({
+      'specInfo.goodsNum': goodsNum
+    })
+  },
+  bindPlus () {
+    let goodsNum = this.data.specInfo.goodsNum
+    if (goodsNum >= this.data.groupbuyInfo.groupBuyDefineInfo.limitMaxNum) {
+      return false;
+    }
+    goodsNum++
+    this.setData({
+      'specInfo.goodsNum': goodsNum
+    })
+  },
+
+  updateSpecGoodsNum () {
+
   },
 
   /**
@@ -302,11 +438,11 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    let groupbuyInfo = this.data.groupbuyInfo
+    let { groupbuyInfo, shareImg, groupId } = this.data
     return {
       title: groupbuyInfo.groupBuyDefineInfo.limitAmount + '人拼购仅需' + groupbuyInfo.goodsInfo.minGroupBuyPrice + '元，' + groupbuyInfo.goodsInfo.goodsName,
-      imageUrl: imageUrl + groupbuyInfo.share_img,
-      path: '/pages/groupbuyinfo/groupbuyinfo?group_id=' + group_id + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
+      imageUrl: shareImg,
+      path: '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
     }
   }
 })
