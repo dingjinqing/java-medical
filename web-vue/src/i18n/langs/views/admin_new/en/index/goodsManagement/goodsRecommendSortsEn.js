@@ -35,5 +35,6 @@ export const en = {
   add: 'Add',
   sortNameNotNull: 'Sort name can\'t be null',
   pleaseInputRightPriority: 'Please input the right priority',
-  pleaseInputSortImg: 'Please input sort img'
+  pleaseInputSortImg: 'Please input sort img',
+  recommendSortChildrenNotNull: 'Recommend sort children can not be null'
 }
