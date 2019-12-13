@@ -24,7 +24,10 @@
           <span>{{ detailData.keyword }}</span>
         </div>
       </div>
-      <div class="sectionContent"></div>
+      <div
+        class="sectionContent"
+        v-html="detailData.content"
+      ></div>
     </div>
   </div>
 </template>
@@ -50,6 +53,8 @@ export default {
       noticeDetailRequest({ articleId: this.id }).then((res) => {
         if (res.error === 0) {
           this.detailData = res.content
+          console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+          console.log(this.detailData)
         }
       })
     }
@@ -112,6 +117,7 @@ export default {
       margin-top: 20px;
       min-height: 300px;
       background: #f1f1f1;
+      text-align: left;
     }
   }
 }
