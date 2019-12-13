@@ -1,11 +1,9 @@
 package com.vpu.mp.service.foundation.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -25,16 +23,13 @@ public class PropertiesUtil {
      */
     public static Map<String, String> toMap(String filePath) {
         Properties properties = new Properties();
-        URL url = ClassLoader.getSystemResource(filePath);
-        log.info("文件地址为："+url.getFile());
+        ClassPathResource resource = new ClassPathResource(filePath);
         try {
-            log.info("生成的file为："+new File(url.getFile()));
-            log.info("properties要load的内容为："+new FileInputStream(new File(url.getFile())));
-            properties.load(new FileInputStream(new File(url.getFile())));
-        } catch (IOException e) {
+            InputStream inputStream = resource.getInputStream();
+            properties.load(inputStream);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info("转换完成的properties："+properties);
         HashMap<String, String> map = new HashMap<>(100);
         properties.forEach((k, v) -> map.put((String) k, (String) v));
         return map;
