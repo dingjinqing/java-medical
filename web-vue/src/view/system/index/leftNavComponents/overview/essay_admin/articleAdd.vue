@@ -269,8 +269,10 @@ export default {
           this.form.status = res.content.status === 1
           this.form.title = res.content.title
           console.log(res.content.headPic)
-          this.imageVo.imgUrl = res.content.headPic
-          this.form.goodsImgs.push(this.imageVo)
+          if (res.content.headPic !== null) {
+            this.imageVo.imgUrl = res.content.headPic
+            this.form.goodsImgs.push(this.imageVo)
+          }
           console.log(this.form.goodsImgs)
         } else {
           this.$message.error(res.message)
