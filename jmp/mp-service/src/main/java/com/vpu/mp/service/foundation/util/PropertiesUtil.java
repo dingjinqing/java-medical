@@ -25,10 +25,10 @@ public class PropertiesUtil {
      */
     public static Map<String, String> toMap(String filePath) {
         Properties properties = new Properties();
-        URL url = ClassLoader.getSystemResource(filePath);
+//        URL url = ClassLoader.getSystemResource(filePath);
+        URL url = PropertiesUtil.class.getClassLoader().getResource(filePath);
         log.info("文件地址为："+url);
         try {
-            log.info("生成的file为："+new File(url.getFile()));
             log.info("properties要load的内容为："+new FileInputStream(new File(url.getFile())));
             properties.load(new FileInputStream(new File(url.getFile())));
         } catch (IOException e) {
