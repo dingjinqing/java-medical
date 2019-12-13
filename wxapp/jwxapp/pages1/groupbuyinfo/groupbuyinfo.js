@@ -12,7 +12,7 @@ global.wxPage({
     groupId: '',
     pinGroupId: '',
     imageUrl: app.globalData.imageUrl,
-    click_more: imageUrl + '/image/wxapp/backward_right.png',
+    click_more: imageUrl + 'image/wxapp/backward_right.png',
     img_noperson: imageUrl + 'image/wxapp/icon_group2.png',
     showPoster: false, // 下载海报弹窗
     posterImg: '', // 海报图片 base64字符串
@@ -38,6 +38,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+    console.log(options.invite_id)
     let that = this
     let groupId = options.group_id
     let pinGroupId = options.pin_group_id
@@ -128,7 +129,8 @@ global.wxPage({
     util.api('/api/wxapp/groupbuy/share/image', function (res) {
       if (res.error === 0) {
         that.setData({
-          shareImg: res.content
+          shareImg: String(res.content),
+          posterImg: [String(res.content)]
         })
       }
     }, { groupId: 4 })
@@ -318,6 +320,7 @@ global.wxPage({
     this.setData({
       showPoster: true
     })
+    wx.hideLoading();
   },
 
   // 拼团规则
@@ -437,12 +440,18 @@ global.wxPage({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function (res) {
     let { groupbuyInfo, shareImg, groupId } = this.data
+    let title = groupbuyInfo.groupBuyDefineInfo.limitAmount + '人拼购仅需' + groupbuyInfo.goodsInfo.minGroupBuyPrice + '元，' + groupbuyInfo.goodsInfo.goodsName
+    let path = '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
+    console.log(title, path)
+    // return {
+    //   title: '你是一只小老虎',
+    //   imageUrl: 'http://jmpdevimg.weipubao.cn/upload/245547/image/20191114/OcA1RaXFu0VnXkucxYLY.jpeg',
+    //   path: '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
+    // }
     return {
-      title: groupbuyInfo.groupBuyDefineInfo.limitAmount + '人拼购仅需' + groupbuyInfo.goodsInfo.minGroupBuyPrice + '元，' + groupbuyInfo.goodsInfo.goodsName,
-      imageUrl: shareImg,
-      path: '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
+      title: 'aaa'
     }
   }
 })

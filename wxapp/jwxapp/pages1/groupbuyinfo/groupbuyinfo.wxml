@@ -128,27 +128,8 @@
     </view>
     <!-- 下载海报 -->
     <v-poster image="{{posterImg}}" show="{{showPoster}}"></v-poster>
-    <!-- 推荐商品 start -->
-    <v-goods-recommend page-name='groupbuyitem'></v-goods-recommend>
-    <!-- 推荐商品 end -->
     <!-- 绑定手机号弹窗 -->
     <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{isBlock == 1}}" content="您需要绑定手机号才可以去购买商品" />
-    <!-- 老用户弹窗 -->
-    <view class="old_customer_bg" catchtouchmove="ture" style='display:{{is_old_customer == 1 ? "block":"none"}}'>
-      <view class="zhezhao" catchtap="not_show_customer"></view>
-      <view class="old_customer_content">
-        <text class="old_customer_title">您是老用户啦</text>
-        <text class="old_customer_tips">“老带新团”只有新用户可以参团哦！可以去开个新团享受更多优惠。</text>
-        <view class="customer_button">
-          <view class="cancel" bindtap="not_show_customer">取消</view>
-          <view class="confirm">
-            <text bindtap='openGroup'>我要开团</text>
-          </view>
-        </view>
-      </view>
-    </view>
-    <!-- 选择规格（包含无规格情况） -->
-    <v-sel-spec gd="{{groupbuyInfo.goodsInfo}}" show="{{show_spec}}" hide_cell="true" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange"></v-sel-spec>
     <!-- 拼团规格弹框 -->
     <!-- 选择规格弹窗 -->
     <v-spec-dialog show="{{showSpec}}" bind:close="specDialogClose" products-info="{{productsInfo}}" bindproductData="getProductData">
