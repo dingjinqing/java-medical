@@ -3,15 +3,17 @@
     <div class="container">
       <yesterdayStatistics class="distance" />
       <visitTrendStatistics class="distance" />
+      <pageStatistics class="distance" />
     </div>
   </div>
 </template>
 <script>
 import yesterdayStatistics from './yesterdayStatistics'
 import visitTrendStatistics from './visitTrendStatistics'
+import pageStatistics from './pageStatistics'
 
 export default {
-  components: {yesterdayStatistics, visitTrendStatistics},
+  components: {yesterdayStatistics, visitTrendStatistics, pageStatistics},
   data () {
     return {}
   }
@@ -30,21 +32,4 @@ export default {
           }
       }
   }
-  /*.yesterday {*/
-  /*  background-color: white;*/
-  /*  margin: 10px;*/
-  /*  height: 300px;*/
-  /*}*/
-
-  /*.basic {*/
-  /*  background-color: white;*/
-  /*  margin: 10px;*/
-  /*  height: 300px;*/
-  /*}*/
-
-  /*.page {*/
-  /*  background-color: white;*/
-  /*  margin: 10px;*/
-  /*  height: 300px;*/
-  /*}*/
 </style>
