@@ -1,9 +1,9 @@
 package com.vpu.mp.service.foundation.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URL;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
+
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -13,6 +13,7 @@ import java.util.Properties;
  *
  * @author 郑保乐
  */
+@Slf4j
 public class PropertiesUtil {
 
     /**
@@ -22,10 +23,11 @@ public class PropertiesUtil {
      */
     public static Map<String, String> toMap(String filePath) {
         Properties properties = new Properties();
-        URL url = ClassLoader.getSystemResource(filePath);
+        ClassPathResource resource = new ClassPathResource(filePath);
         try {
-            properties.load(new FileInputStream(new File(url.getFile())));
-        } catch (IOException e) {
+            InputStream inputStream = resource.getInputStream();
+            properties.load(inputStream);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         HashMap<String, String> map = new HashMap<>(100);

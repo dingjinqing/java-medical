@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.label;
 
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
-import lombok.Data;
 
 /**
  * 商品标签
@@ -9,27 +8,30 @@ import lombok.Data;
  * @date 2019年12月09日
  */
 public class GoodsLabelMpVo {
-    private Integer labelId;
-    private String labelName;
+    private Integer id;
+    private String name;
+
+    public GoodsLabelMpVo() {
+    }
 
     public GoodsLabelMpVo(EsGoodsLabel esGoodsLabel){
-        this.labelId = esGoodsLabel.getId();
-        this.labelName = esGoodsLabel.getName();
+        this.id = esGoodsLabel.getId();
+        this.name = esGoodsLabel.getName();
     }
 
-    public Integer getLabelId() {
-        return labelId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setLabelId(Integer labelId) {
-        this.labelId = labelId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getLabelName() {
-        return labelName;
+    public String getName() {
+        return name;
     }
 
-    public void setLabelName(String labelName) {
-        this.labelName = labelName;
+    public void setName(String name) {
+        this.name = name;
     }
 }

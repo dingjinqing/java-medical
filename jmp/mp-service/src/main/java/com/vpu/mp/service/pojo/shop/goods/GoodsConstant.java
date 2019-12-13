@@ -64,6 +64,11 @@ public class GoodsConstant {
      * 下架
      */
     public static final Byte OFF_SALE = 0;
+
+    /**
+     * 商品默认品牌id值
+     */
+    public static final Integer GOODS_DEFAULT_BRAND_ID=0;
     /**
      * 商品违规下架
      */

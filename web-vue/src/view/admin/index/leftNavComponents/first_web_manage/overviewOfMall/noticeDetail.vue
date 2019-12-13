@@ -21,10 +21,13 @@
         </div>
         <div>
           <span class="summary">摘要：</span>
-          <span>{{ detailData.keyword }}</span>
+          <span>{{ detailData.desc }}</span>
         </div>
       </div>
-      <div class="sectionContent"></div>
+      <div
+        class="sectionContent"
+        v-html="detailData.content"
+      ></div>
     </div>
   </div>
 </template>
@@ -112,6 +115,7 @@ export default {
       margin-top: 20px;
       min-height: 300px;
       background: #f1f1f1;
+      text-align: left;
     }
   }
 }

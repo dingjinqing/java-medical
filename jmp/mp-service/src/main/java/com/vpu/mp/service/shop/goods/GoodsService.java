@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.goods;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
+import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.decoration.ChooseLinkService;
 import com.vpu.mp.service.shop.decoration.ShopMpDecorationService;
 import com.vpu.mp.service.shop.goods.es.EsFactSearchService;
@@ -112,6 +114,8 @@ public class GoodsService extends ShopBaseService {
     private EsGoodsCreateService esGoodsCreateService;
     @Autowired
     private EsUtilSearchService esUtilSearchService;
+    @Autowired
+    private ConfigService configService;
 
     /**
      * 获取全品牌，标签，商家分类数据,平台分类数据
@@ -666,6 +670,23 @@ public class GoodsService extends ShopBaseService {
             fetchOne().into(GoodsView.class);
         goodsView.setGoodsImg(getImgFullUrlUtil(goodsView.getGoodsImg()));
         return goodsView;
+    }
+
+    /**
+     * 获取所有商品所关联的有效品牌id集合
+     * @return 品牌id集合
+     */
+    public List<Integer>getGoodsBrandIds(){
+        Condition condition =  GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())
+            .and(Tables.GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE)).and(GOODS.BRAND_ID.ne(GoodsConstant.GOODS_DEFAULT_BRAND_ID));
+        // 是否展示售罄
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        // 不展示售罄商品
+        if (!GoodsConstant.SOLD_OUT_GOODS_SHOW.equals(soldOutGoods)) {
+            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
+        }
+
+        return db().select(GOODS.BRAND_ID).from(GOODS).where(condition).fetch(GOODS.BRAND_ID);
     }
 
     /**

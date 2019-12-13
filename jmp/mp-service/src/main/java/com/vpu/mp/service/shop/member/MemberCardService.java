@@ -2156,7 +2156,11 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 		
 	}
 
-	public void sendCoupon(MemberCardRecord mCard, Integer userId, Integer cardId) {
+	public void sendCoupon(Integer userId, Integer cardId) {
+		MemberCardRecord mCard = getCardById(cardId);
+		if(mCard==null) {
+			return;
+		}
 		if(CardUtil.isOpenCardSendCoupon(mCard.getSendCouponSwitch()))
 			return;
 		List<Integer> sendCouponList = CardUtil.parseCouponList(mCard.getSendCouponIds());

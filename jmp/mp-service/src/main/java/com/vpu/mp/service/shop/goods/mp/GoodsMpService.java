@@ -152,8 +152,8 @@ public class GoodsMpService extends ShopBaseService {
         // 获取在售商品
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
-        // 展示售罄商品
-        if (param.getSoldOutGoodsShow()) {
+        // 不展示售罄商品
+        if (!param.getSoldOutGoodsShow()) {
             condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
         // 指定商品列表
@@ -309,15 +309,16 @@ public class GoodsMpService extends ShopBaseService {
         try {
             return esGoodsSearchMpService.getGoodsParam();
         } catch (Exception e) {
-            e.printStackTrace();
             logger().debug("es 小程序-商品搜索-条件反推错误："+e.getMessage());
-            return new GoodsSearchFilterConditionMpVo();
+            GoodsSearchFilterConditionMpVo vo =new GoodsSearchFilterConditionMpVo();
+            vo.setGoodsBrands(goodsBrandSortMp.getGoodsSearchFilterCondition());
+            vo.setGoodsLabels(goodsLabelMpService.getGoodsSearchFilterCondition());
+            return vo;
         }
     }
 
     /**
      * 搜索小程序商品信息
-     *
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
@@ -348,10 +349,8 @@ public class GoodsMpService extends ShopBaseService {
      * @return 搜索到的内容
      */
     private PageResult<GoodsListMpBo> searchGoodsFromDb(GoodsSearchMpParam param){
-        GoodsListMpParam proxyParam = new GoodsListMpParam();
-        proxyParam.setKeywords(param.getKeyWords());
-        proxyParam.setSoldOutGoodsShow(param.getSoldOutGoodsShow());
-        Condition condition = buildPageIndexCondition(proxyParam);
+
+        Condition condition = buildCondition(param);
 
         SelectConditionStep<Record12<Integer, String, Byte, BigDecimal, BigDecimal, Integer, Integer, String, Integer, Integer, Integer, Integer>> select =
             db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE.as("activity_type"), GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
@@ -361,6 +360,49 @@ public class GoodsMpService extends ShopBaseService {
         buildOrderFields(select,param);
 
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsListMpBo.class);
+    }
+
+    /**
+     * 商品搜索-db-条件拼接
+     * @param param 搜索条件
+     * @return
+     */
+    private Condition buildCondition(GoodsSearchMpParam param) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+
+        if (!param.getSoldOutGoodsShow()) {
+            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
+        }
+
+        if (param.getKeyWords() != null) {
+            condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
+        }
+
+        if (param.getBrandIds() != null && param.getBrandIds().size() > 0) {
+            condition = condition.and(GOODS.BRAND_ID.in(param.getBrandIds()));
+        }
+
+        if (param.getLabelIds() != null && param.getLabelIds().size() > 0) {
+            Result<Record2<Integer, Byte>> labelCoupleList = goodsLabelMpService.getGoodsLabelsCoupleTypeInfoByIds(param.getLabelIds());
+            boolean allType = false;
+            List<Integer> gtaGoodsIds = new ArrayList<>();
+            for (int i = 0; i < labelCoupleList.size(); i++) {
+                Record2<Integer, Byte> record2 = labelCoupleList.get(i);
+                if (GoodsLabelCoupleTypeEnum.ALLTYPE.getCode().equals(record2.get(GOODS_LABEL_COUPLE.TYPE))) {
+                    allType = true;
+                    break;
+                }
+                if (GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode().equals(record2.get(GOODS_LABEL_COUPLE.TYPE))) {
+                   gtaGoodsIds.add(record2.get(GOODS_LABEL_COUPLE.GTA_ID));
+                }
+            }
+            if (!allType) {
+                condition = condition.and(GOODS.GOODS_ID.in(gtaGoodsIds));
+            }
+
+        }
+
+        return condition;
     }
 
     /**
