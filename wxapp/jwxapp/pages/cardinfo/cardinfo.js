@@ -12,11 +12,13 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let cardNo = options.card_no ? options.card_no : null
+    let cardNo = options.cardNo ? options.cardNo : null
     let cardId = options.cardId ? options.cardId : null
+    console.log(options)
     this.requestCardInfo(cardNo, cardId)
   },
   requestCardInfo(cardNo, cardId) {
+    console.log(cardNo, cardId)
     if (cardNo) {  //  从个人中心会员卡列表进入
       util.api('/api/card/detail', res => {
         let cardInfo = res.content
