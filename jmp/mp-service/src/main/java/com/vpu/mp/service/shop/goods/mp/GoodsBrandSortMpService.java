@@ -230,4 +230,11 @@ public class GoodsBrandSortMpService extends ShopBaseService{
         return content;
     }
 
+    /**
+     * 获取小程序商品搜索页-搜索条件-品牌信息
+     * @return 品牌信息{@link GoodsBrandMpPinYinVo}
+     */
+    public  List<GoodsBrandMpPinYinVo> getGoodsSearchFilterCondition() {
+        return goodsBrandService.getBrandAssociatedWithGoodsGroupByPinYinNameMp();
+    }
 }
