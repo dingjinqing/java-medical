@@ -40,10 +40,8 @@ global.wxComponent({
     },
     run(length, windowWidth) {
       var that = this
-      that.clearTimers()
-      that.createTimer("timeout", "name", function () {
+      that.createTimer("interval", "name", function () {
         if (--that.data.marqueeDistance < -length) {
-          that.clearTimers()
           that.setData({
             marqueeDistance: that.data.shopContentWidth
           })
@@ -58,20 +56,15 @@ global.wxComponent({
       }, 20)
     },
     onPageScroll(e) {
-      // console.log(e)
       var _this = this;
       var m = this.data.m;
       if (m.announce_position === '1') {
-        // console.log("触发", m.cur_idx)
         this.getRect(`#${m.cur_idx}`).then(function (rect) {
-          // console.log(rect)
           var top = _this.getFixeTop();
-          console.log(rect, top)
           if (!m.fixed && rect.top <= top) {
             m.fixed = true;
             m.fix_height = rect.height;
             m.top = top
-            // console.log(top)
             _this.startFixed(rect.height);
             _this.$set();
           } else {
@@ -81,7 +74,6 @@ global.wxComponent({
               _this.$set();
             }
           }
-          // console.log(m)
         })
       }
     }

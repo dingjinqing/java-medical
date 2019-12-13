@@ -42,7 +42,6 @@ var fix_top = {
     },
     getFixeTop() {
       var fixTop = 0;
-      console.log(this)
       var comps = this._page._fix_comps;
       for (var i = 0; i < comps.length; i++) {
         if (comps[i].comp === this) {

@@ -39,18 +39,21 @@
             size="small"
             type="primary"
             @click="handleToQueryData()"
-          >查询</el-button>
+          >{{btnText}}</el-button>
         </div>
-        <!-- <div class="dialogMiddle">
+        <div
+          class="dialogMiddle"
+          v-if="btnText==='筛选'"
+        >
           <div class="topList">
             <span>品牌来源:</span>
             <el-select
-              v-model="fromValue"
+              v-model="brandSourcesVal"
               placeholder="请选择品牌来源"
               size="small"
             >
               <el-option
-                v-for="item in fromOptions"
+                v-for="item in brandSources"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -58,7 +61,7 @@
               </el-option>
             </el-select>
           </div>
-        </div> -->
+        </div>
         <div class="footer">
           <el-table
             class="version-manage-table"
@@ -140,6 +143,10 @@ export default {
     brandBackData: { // 回显数据
       type: Array,
       default: () => []
+    },
+    btnText: { // 按钮文字
+      type: String,
+      default: () => '查询'
     }
   },
   data () {
@@ -172,7 +179,22 @@ export default {
         label: '666'
       }],
       tableData: [],
-      backFlag: false
+      backFlag: false,
+      brandSourcesVal: 0,
+      brandSources: [
+        {
+          value: 0,
+          label: '请选择品牌来源'
+        },
+        {
+          value: 1,
+          label: '自营品牌'
+        },
+        {
+          value: 2,
+          label: '非自营品牌'
+        }
+      ]
     }
   },
   watch: {

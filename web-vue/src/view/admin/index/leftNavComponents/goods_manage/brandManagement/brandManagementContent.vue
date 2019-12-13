@@ -359,27 +359,21 @@
                   @click="deleGrand(scope.row.id)"
                 ></span>
               </el-tooltip>
-
-              <el-tooltip
-                :content="$t('allGoodsLabel.update')"
-                placement="top"
+              <span
                 v-if="!hiddle_1"
-              >
-                <span
-                  class="el-icon-edit-outline operateSpan"
-                  @click="handlePagingEditGoods(scope.row)"
-                ></span>
-              </el-tooltip>
-              <el-tooltip
-                :content="$t('allGoodsLabel.delete')"
-                placement="top"
+                @click="handleToAddBrand()"
+                style="color:#5a8bff;cursor:pointer"
+              >添加品牌</span>
+              <span
+                @click="handlePagingEditGoods(scope.row)"
                 v-if="!hiddle_1"
-              >
-                <span
-                  class="el-icon-delete operateSpan"
-                  @click="delePagingGrand(scope.row.classifyId)"
-                ></span>
-              </el-tooltip>
+                style="color:#5a8bff;cursor:pointer"
+              >编辑</span>
+              <span
+                @click="delePagingGrand(scope.row.classifyId)"
+                v-if="!hiddle_1"
+                style="color:#5a8bff;cursor:pointer"
+              >删除</span>
             </template>
           </el-table-column>
 
@@ -447,6 +441,12 @@
         >{{$t('brandManagement.sure')}}</el-button>
       </span>
     </el-dialog>
+    <!--添加商品品牌弹窗-->
+    <AddBrandDialog
+      :callAddBrand.sync="brandDialogFlag"
+      @handleToGetBackData="handleToGetBackData"
+      btnText="筛选"
+    />
   </div>
 </template>
 <script>
@@ -454,7 +454,9 @@ import { mapActions } from 'vuex'
 import pagination from '@/components/admin/pagination/pagination'
 import { saveShowBrandgetRequest, showBrandgetRequest, pagingBrandUpdateRequest, pagingBrandDelRequest, pagingBrandQueryRequest, brandAllGetRequest, brandDeleteGetRequest, classificationSelectRequest, addGrandClassRequest } from '@/api/admin/brandManagement.js'
 export default {
-  components: { pagination },
+  components: { pagination,
+    AddBrandDialog: () => import('@/components/admin/addBrandDialog')
+  },
   data () {
     return {
       // 结束时间校验
@@ -510,7 +512,9 @@ export default {
       delDialogVisible: false, // 删除二次提醒弹窗flag
       delFlag: true,
       brandId: null,
-      classifyId: null
+      classifyId: null,
+      secondGrandName: '',
+      brandDialogFlag: false
     }
   },
   props: ['turnIndex'],
@@ -542,9 +546,9 @@ export default {
     }
   },
   computed: {
-    secondGrandName () {
-      return this.$t('brandManagement.brandName')
-    },
+    // secondGrandName () {
+    //   return this.$t('brandManagement.brandName')
+    // },
     optionsIsClss () {
       return this.$t('brandManagement.optionsIsClss')
     },
@@ -557,21 +561,24 @@ export default {
   },
   mounted () {
     console.log(this.$route)
+    this.restaurants = this.loadAll()
     if (this.$route.params.toSecond) {
       this.activeName = 'second'
+      let tab = { index: '1' }
+      this.handleClick(tab)
+    } else {
+      // 初始化全部商品数据
+      this.defaultAllBrandData()
+      console.log(this.turnIndex)
+      if (this.turnIndex === 1) {
+        this.activeName = 'second'
+        this.hiddle_1 = false
+        this.bottomDivFlag = true
+        this.secondGrandName = '分类名称'
+        // 初始化品牌分类页数据
+        this.defaultPageingGrand()
+      }
     }
-    // 初始化全部商品数据
-    this.defaultAllBrandData()
-    console.log(this.turnIndex)
-    if (this.turnIndex === 1) {
-      this.activeName = 'second'
-      this.hiddle_1 = false
-      this.bottomDivFlag = true
-      this.secondGrandName = '分类名称'
-      // 初始化品牌分类页数据
-      this.defaultPageingGrand()
-    }
-    this.restaurants = this.loadAll()
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitEditGoodsId']),
@@ -607,6 +614,14 @@ export default {
 
       let arr = ['商品管理', '品牌管理']
       this.changeCrumbstitle(arr)
+    },
+    // 调起添加品牌弹窗
+    handleToAddBrand () {
+      this.brandDialogFlag = true
+    },
+    // 商品品牌弹窗回传数据
+    handleToGetBackData (res) {
+      console.log(res)
     },
     // tap切换
     handleClick (tab, event) {
