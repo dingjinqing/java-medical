@@ -35,7 +35,6 @@ public class UserCenterTraitService extends ShopBaseService {
 	@Autowired
 	public PictorialService pService;
 
-
 	private final static byte PSTATUS_ZERO = 0;
 	private final static byte PSTATUS_ONE = 1;
 
