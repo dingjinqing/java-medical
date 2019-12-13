@@ -7,6 +7,7 @@ import com.vpu.mp.db.main.tables.records.UploadedImageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
 import com.vpu.mp.service.pojo.shop.image.UploadImageCatNameVo;
@@ -53,12 +54,15 @@ public class SystemImageService extends MainBaseService implements ImageDefault 
 
 
     @Override
-   	public String imageUrl(String relativePath) {
-    	if(!StringUtils.isEmpty(relativePath)) {
-    		return domainConfig.imageUrl(relativePath);
-    	}
-    	return null;
-   	}
+	public String imageUrl(String relativePath) {
+		if (!StringUtils.isEmpty(relativePath)) {
+			if (RegexUtil.checkUrl(relativePath)) {
+				return relativePath;
+			}
+			return domainConfig.imageUrl(relativePath);
+		}
+		return null;
+	}
 
    	@Override
    	public String fullPath(String relativePath) {

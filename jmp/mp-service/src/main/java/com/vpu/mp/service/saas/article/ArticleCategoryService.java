@@ -3,24 +3,19 @@ package com.vpu.mp.service.saas.article;
 import static com.vpu.mp.db.main.tables.Article.ARTICLE;
 import static com.vpu.mp.db.main.tables.ArticleCategory.ARTICLE_CATEGORY;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.ArticleCategoryRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.MainBaseService;
-import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.article.category.ArtCategoryListQuertParam;
 import com.vpu.mp.service.pojo.saas.article.category.ArticleCategoryParam;

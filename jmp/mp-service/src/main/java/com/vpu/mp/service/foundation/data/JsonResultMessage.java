@@ -91,6 +91,7 @@ public class JsonResultMessage {
 	public static final String GOODS_SORT_NAME_EXIST = "goods.sort.name.exist";
 	public static final String GOODS_SORT_NAME_IS_NULL = "goods.sort.name.is.null";
 	public static final String GOODS_SORT_ID_IS_NULL = "goods.sort.id.is.null";
+	public static final String GOODS_RECOMMEND_SORT_CHILDREN_NOT_NULL="goods.recommend.sort.children.not.null";
 
 	public static final String GOODS_LABEL_NAME_EXIST = "goods.label.name.exist";
 	public static final String GOODS_LABEL_NOT_EXIST = "goods.label.not.exist";
