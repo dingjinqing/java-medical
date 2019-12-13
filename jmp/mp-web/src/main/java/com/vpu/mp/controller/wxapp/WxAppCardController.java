@@ -19,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
+import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ReceiveCardParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 
@@ -115,6 +116,17 @@ public class WxAppCardController extends WxAppBaseController {
 		} catch (CardActivateException e) {
 			return fail(e.getErrorCode());
 		}
+	}
+	
+	/**
+	 * 	设置默认会员卡
+	 */
+	@PostMapping(value="/api/wxapp/card/default")
+	public JsonResult setDefault(@RequestBody @Validated DefaultCardParam param) {
+		logger().info("设置默认会员卡");
+		param.setUserId(wxAppAuth.user().getUserId());
+		shop().user.wxUserCardService.setDefault(param);
+		return success();
 	}
 
 }

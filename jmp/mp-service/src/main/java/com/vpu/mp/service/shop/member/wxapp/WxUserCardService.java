@@ -9,7 +9,9 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
+import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ReceiveCardParam;
+import com.vpu.mp.service.shop.member.UserCardService;
 /**
  * @author 黄壮壮
  * 	小程序会员卡服务
@@ -20,6 +22,8 @@ public class WxUserCardService extends ShopBaseService {
 	private WxAppCardReceiveSerive wxAppCardReceiveSerive;
 	@Autowired
 	private WxAppCardActivationService wxAppCardActivationService;
+	@Autowired 
+	private UserCardService userCardService;
 	/**
 	 * 通过领取码领取会员卡
 	 * @throws MpException 
@@ -38,6 +42,13 @@ public class WxUserCardService extends ShopBaseService {
 			return wxAppCardActivationService.getActivationCard(param,lang);
 		}
 		return null;
+	}
+	/**
+	 * 	设置为默认会员卡
+	 */
+	public void setDefault(DefaultCardParam param) {
+		userCardService.setDefault(param);
+		
 	}
 
 }
