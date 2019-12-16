@@ -325,7 +325,7 @@ public class UserCardService extends ShopBaseService {
 		Integer cardId = null;
 		if (!StringUtils.isBlank(uGrade)) {
 			List<MemberCardRecord> gradeCard = getAvailGradeCard();
-
+			gradeCard.removeIf(item->item.getGrade().compareTo(uGrade)<1);
 			Integer userTotalScore = scoreService.getAccumulationScore(userId);
 			BigDecimal amount = distributorLevelService.getTotalSpend(userId).getTotal();
 

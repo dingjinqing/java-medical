@@ -179,12 +179,13 @@ public class StatisticalTableInsert extends ShopBaseService {
                 db().insertInto(DISTRIBUTION_TAG,
                     DISTRIBUTION_TAG.REF_DATE
                     , DISTRIBUTION_TAG.TYPE
-                    , DISTRIBUTION_TAG.TAG
+                    , DISTRIBUTION_TAG.TAG_ID
+                    , DISTRIBUTION_TAG.TAG_NAME
                     , DISTRIBUTION_TAG.PAY_USER_NUM
                     , DISTRIBUTION_TAG.PAY_ORDER_NUM
                     , DISTRIBUTION_TAG.PAY_ORDER_MONEY
                     , DISTRIBUTION_TAG.PAY_GOODS_NUMBER)
-                    .values(Date.valueOf(today.toLocalDate()), e, v.value2(), v.value3(), v.value4(), v.value5(), v.value6())
+                    .values(Date.valueOf(today.toLocalDate()), e, k, v.value2(), v.value3(), v.value4(), v.value5(), v.value6())
                     .onDuplicateKeyUpdate()
                     .set(DISTRIBUTION_TAG.PAY_USER_NUM, v.value3())
                     .set(DISTRIBUTION_TAG.PAY_ORDER_NUM, v.value4())
@@ -196,9 +197,10 @@ public class StatisticalTableInsert extends ShopBaseService {
                 db().insertInto(DISTRIBUTION_TAG,
                     DISTRIBUTION_TAG.REF_DATE
                     , DISTRIBUTION_TAG.TYPE
-                    , DISTRIBUTION_TAG.TAG
+                    , DISTRIBUTION_TAG.TAG_ID
+                    , DISTRIBUTION_TAG.TAG_NAME
                     , DISTRIBUTION_TAG.HAS_MOBILE_NUM)
-                    .values(Date.valueOf(today.toLocalDate()), e, v.value2(), v.value3())
+                    .values(Date.valueOf(today.toLocalDate()), e, k, v.value2(), v.value3())
                     .onDuplicateKeyUpdate()
                     .set(DISTRIBUTION_TAG.HAS_MOBILE_NUM, v.value3())
                     .execute();
@@ -207,9 +209,10 @@ public class StatisticalTableInsert extends ShopBaseService {
                 db().insertInto(DISTRIBUTION_TAG,
                     DISTRIBUTION_TAG.REF_DATE
                     , DISTRIBUTION_TAG.TYPE
-                    , DISTRIBUTION_TAG.TAG
+                    , DISTRIBUTION_TAG.TAG_ID
+                    , DISTRIBUTION_TAG.TAG_NAME
                     , DISTRIBUTION_TAG.HAS_USER_NUM)
-                    .values(Date.valueOf(today.toLocalDate()), e, v.value2(), v.value3())
+                    .values(Date.valueOf(today.toLocalDate()), e, k, v.value2(), v.value3())
                     .onDuplicateKeyUpdate()
                     .set(DISTRIBUTION_TAG.HAS_USER_NUM, v.value3())
                     .execute();
