@@ -2787,19 +2787,20 @@ create table `b2c_user_summary_trend`
 create table `b2c_distribution_tag`
 (
     `id`                   int(11)         not null auto_increment,
-    `ref_date`         date           default null comment '日期',
-    `type`             tinyint(2)     default null comment '1,7,30',
-    `tag`              varchar(50)    default null comment '标签',
-    `pay_order_num`    int(11)        default null comment '付款订单数',
-    `pay_order_money`  decimal(10, 2) default null comment '付款金额',
-    `pay_user_num`     int(11)        default null comment '付款人数',
-    `pay_goods_number` int(11)        default null comment '付款商品件数',
-    `has_mobile_num`   int(11)        default null comment '下单有手机号的用户',
-    `has_user_num`     int null       default 0 comment '用户数',
+    `ref_date`         date     not null comment '日期',
+    `type`             tinyint(1)     not null comment '1,7,30',
+    `tag_id` int(11) not null COMMENT '标签id',
+    `tag_name` varchar(50) not null COMMENT '标签内容',
+    `pay_order_num`    int(11)        default 0 comment '付款订单数',
+    `pay_order_money`  decimal(10, 2) default 0.0 comment '付款金额',
+    `pay_user_num`     int(11)        default 0 comment '付款人数',
+    `pay_goods_number` int(11)        default 0 comment '付款商品件数',
+    `has_mobile_num`   int(11)        default 0 comment '下单有手机号的用户',
+    `has_user_num`     int(11)       default 0 comment '用户数',
     `create_time`      timestamp      default current_timestamp,
     `update_time`      timestamp      default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`),
-    key `date_type` (`ref_date`, `type`) using btree
+    unique index `date_type_tag` (`ref_date`, `type`, `tag_id`) using btree
 );
 
 -- 交易订单地区分布
