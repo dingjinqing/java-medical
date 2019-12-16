@@ -816,9 +816,17 @@ public class UserCardService extends ShopBaseService {
 		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
 		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
-
+		logger().info("卡的校验状态");
+		CardExamineRecord  cardExamine = cardVerifyService.getStatusByNo(param.getCardNo());
+		if(cardExamine != null) {
+			WxAppCardExamineVo cardExamineVo = new WxAppCardExamineVo();
+			cardExamineVo.setPassTime(cardExamine.getPassTime());
+			cardExamineVo.setRefuseTime(cardExamine.getRefuseTime());
+			cardExamineVo.setRefuseDesc(cardExamine.getRefuseDesc());
+			cardExamineVo.setStatus(cardExamine.getStatus());
+			card.setIsExamine(cardExamineVo);
+		}
 		
-
 		// TODO 开卡送卷
 		setQrCode(card);
 

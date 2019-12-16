@@ -27,6 +27,8 @@ public class MemberBasicInfoVo {
 	private String mobile;
 	/** 积分 */
 	private Integer score;
+	/** 余额 */
+	private BigDecimal account;
 	/** OpenId */
 	private String wxOpenid;
 	/** 门店来源-1未录入0后台>0为门店 */
