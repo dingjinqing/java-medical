@@ -18,7 +18,7 @@ public class GoodsVideoBo {
     public GoodsVideoBo(){}
 
     public GoodsVideoBo(Record record){
-        this.id = record.get(GOODS.GOODS_VIDEO_ID);
+        this.id = record.get(UPLOADED_VIDEO.VIDEO_ID);
         this.size = record.get(GOODS.GOODS_VIDEO_SIZE);
         this.url = record.get(GOODS.GOODS_VIDEO);
         this.imgUrl = record.get(GOODS.GOODS_VIDEO_IMG);
