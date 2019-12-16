@@ -1428,6 +1428,9 @@ public class UserCardService extends ShopBaseService {
 		if (param.getCardId() != null) {
 			if (gCard == null) {
 				MemberCardRecord mCard = memberCardService.getCardById(param.getCardId());
+				if(mCard == null) {
+					return null;
+				}
 				if (NumberUtils.BYTE_ZERO.equals(mCard.getIsPay())) {
 					int hasSendUser = userCardDao.getHasSendUser(param);
 					int hasSend = userCardDao.getHasSend(param.getCardId());

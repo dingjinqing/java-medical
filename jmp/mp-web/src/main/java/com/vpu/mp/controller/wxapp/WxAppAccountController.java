@@ -94,7 +94,7 @@ public class WxAppAccountController extends WxAppBaseController {
 	@PostMapping("/api/wxapp/user/account/withdraw")
 	public JsonResult getUserAccountWithdraw() {
 		WxAppSessionUser user = this.wxAppAuth.user();
-		this.shop().member.account.getUserAccountWithdraw(user.getUserId());
+		shop().member.account.getUserAccountWithdraw(user.getUserId());
 		return success();
 	}
 	
