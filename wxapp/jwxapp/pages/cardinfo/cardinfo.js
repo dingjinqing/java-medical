@@ -1,4 +1,10 @@
 let util = require('../../utils/util.js');
+var is_fullprice = 0
+var code = 0;
+var seckillId = 0;
+var goods_id = 0;
+var gift_id = 0;
+var card_info = [];
 global.wxPage({
 
   /**
@@ -6,7 +12,10 @@ global.wxPage({
    */
   data: {
     imageUrl: util.getImageUrl(""),
-    carStatus: ''
+    carStatus: '', // 卡状态
+    bottomBtnText: '', // 底部按钮文字
+    btnType: null, // 底部按钮类型
+    get_type: 0
   },
 
   /**
@@ -16,6 +25,15 @@ global.wxPage({
     let cardNo = options.cardNo ? options.cardNo : null
     let cardId = options.cardId ? options.cardId : null
     this.requestCardInfo(cardNo, cardId)
+    if (options.is_fullprice) {  // 
+      is_fullprice = options.is_fullprice;
+    } else {
+      is_fullprice = 0
+    }
+    seckillId = options.seckillId ? options.seckillId : 0;
+    code = options.code ? options.code : 0;
+    goods_id = options.goods_id ? options.goods_id : 0;
+    gift_id = options.gift_id ? options.gift_id : 0;
     console.log(cardNo, cardId)
   },
   requestCardInfo(cardNo, cardId) {
@@ -41,10 +59,20 @@ global.wxPage({
         cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
         this.getUpgradeCondition(cardInfo)
         this.setData({
-          cardInfo: res.content
+          cardInfo: cardInfo
         })
+        console.log(cardInfo)
+        this.handleToJudgementBottom(cardInfo) // 判断底部按钮
+        if (cardInfo.status == 1 && cardInfo.flag == 1) {
+          this.setData({
+            is_block: 0
+          })
+        }
       }, { cardNo: cardNo })
-    } else if (cardId) {  // 从首页进入
+    } else if (cardId) {
+      that.setData({
+        get_type: 1
+      })
       util.api('/api/card/judgement', function (res) {
         console.log(res);
         if (res.content.cardInfo.delFlag == 1) {
@@ -92,6 +120,11 @@ global.wxPage({
         that.setData({
           cardInfo: cardInfo
         })
+        if (cardInfo.status == 1 && cardInfo.flag == 1) {
+          that.setData({
+            is_block: 0
+          })
+        }
       }, { cardId: cardId })
     }
 
@@ -160,5 +193,199 @@ global.wxPage({
     wx.makePhoneCall({
       phoneNumber: this.data.cardInfo.mobile
     })
+  },
+  // 判断底部按钮
+  handleToJudgementBottom(carInfo) {
+    console.log(carInfo)
+    let text = ''
+    let type = null
+    if (carInfo.isPay == 1 && !carInfo.cardNo) {//判断是否立即开通
+      text = '立即开通'
+      type = 1
+    }
+    if (carInfo.status) {
+      if (!carInfo.cardNo && (carInfo.isPay == 0 || carInfo.isPay == 2)) {
+        text = '领取会员卡'
+        type = 2
+      } else if (carInfo.activation == 1 && carInfo.activationTime == null && carInfo.cardNo) {
+        text = '激活会员卡'
+        type = 3
+      } else if (carInfo.isDefault == 0 && carInfo.cardNo) {
+        text = '设置默认会员卡'
+        type = 4
+      } else {
+        text = '默认会员卡'
+      }
+    }
+    if (!carInfo.cardNo && carInfo.cardType == 2 && carInfo.status) {
+      text = '领取会员卡'
+      type = 2
+    }
+    this.setData({
+      bottomBtnText: text,
+      btnType: type
+    })
+  },
+  // 处理底部按钮点击
+  handleToBtn(e) {
+    console.log(e)
+    console.log(this.data.cardInfo)
+    switch (e.currentTarget.dataset.btntype) {
+      case 1:
+        this.getCard(e.currentTarget.dataset.cardid)
+        break
+      case 2:
+        this.getUserCard()
+        break
+      case 3:
+        this.getUsing(e)
+        break
+      case 4:
+        this.setDefault(e)
+        break
+    }
+  },
+  // 立即开通
+  getCard(cardId) {
+    console.log(this.data.bindMobile)
+    var that = this;
+    if (this.data.bindMobile == 1 && util.getCache('mobile') == '') {
+      util.checkSession(function () {
+        that.setData({
+          is_block: is_block = 1
+        })
+      })
+      return false;
+    }
+    util.api('/api/card/judgement', function (res) {
+      if (res.error == 0) {
+        if (res.content.status == 0) {
+          util.toast_fail('此卡已存在');
+        } else {
+          if (is_fullprice == 0 && code == 0 && seckillId == 0 && goods_id == 0) {
+            util.redirectTo({
+              url: '/pages/cardCheckout/cardCheckout?cardId=' + cardId
+            })
+          } else {
+            util.redirectTo({
+              url: '/pages/cardCheckout/cardCheckout?cardId=' + cardId + "&isFullprice=" + is_fullprice + "&code=" + code + "&seckillId=" + seckillId + '&goodsId=' + goods_id,
+            })
+          }
+        }
+      }
+    }, { cardId: cardId })
+  },
+  // 领取会员卡
+  getUserCard() {
+    var that = this;
+    that.data.cardInfo.buyScore = '';
+    var cardId = that.data.cardInfo.cardId;
+    var card = {};
+    card.cardId = cardId;
+    card_info = JSON.stringify(card);
+    console.log(that.data.card_info)
+    if (that.data.cardInfo.isPay == 2) {
+      if (that.data.cardInfo.receiveAction == 1) {
+        var receiveAction = 1
+      } else {
+        var receiveAction = 2
+      }
+      that.setData({
+        is_receive: 1,
+        receive_action: receiveAction
+      })
+    } else {
+      util.api('/api/card/getcard', function (res) {
+        if (res.error == 0) {
+          if (res.content.isMostGrade) {
+            util.toast_fail('当前等级已最高');
+            return;
+          } else if (res.content.gradeCard) {
+            var text = '没有达到该卡的条件';
+            if (res.content.gradeCard.score > 0) {
+              text = '累积积分未达到' + res.content.gradeCard.score + '积分';
+            }
+            if (res.content.gradeCard.amount > 0) {
+              text = text + ' 累积消费金额未达到' + res.content.gradeCard.amount + '元';
+            }
+            util.showModal('提示', text, function (res) {
+              return false;
+            }, false);
+            return;
+          } else if (res.content == -1) {
+            util.toast_fail('此卡已存在');
+          } else {
+            util.toast_success('领取成功', function () {
+              if (card_activation == 1) {
+                setTimeout(function () {
+                  util.navigateTo({
+                    url: '/pages/memberinfo/memberinfo?act=1&cardNo=' + res.content + '&examine=' + that.data.cardInfo.examine + "&is_fullprice=" + is_fullprice + "&code=" + code + "&seckillId=" + seckillId + '&goods_id=' + goods_id + "&gift_id=" + gift_id
+                  })
+                }, 2000);
+              } else {
+                if (is_fullprice == 0 && code == 0 && seckillId == 0 && goods_id == 0 && gift_id == 0) {
+                  setTimeout(function () {
+                    util.redirectTo({
+                      url: '/pages/usercardlist/usercardlist',
+                    })
+                  }, 2000);
+                } else if (parseInt(gift_id)) {
+                  util.redirectTo({
+                    url: 'pages1/presentchoose/presentchoose?gift_id=' + gift_id,
+                  })
+                } else if (parseInt(is_fullprice)) {
+                  util.redirectTo({
+                    url: '/pages/fullprice/fullprice?identity_id=' + is_fullprice,
+                  })
+                } else if (parseInt(seckillId)) {
+                  util.redirectTo({
+                    url: '/pages/seckillitem/seckillitem?sk_id=' + seckillId,
+                  })
+                } else if (parseInt(goods_id)) {
+                  util.redirectTo({
+                    url: '/pages/item/item?good_id=' + goods_id,
+                  })
+                } else {
+                  util.redirectTo({
+                    url: '/pages/getcoupon/getcoupon?code=' + code,
+                  })
+                }
+              }
+            });
+          }
+        } else {
+          util.toast_fail('领取失败');
+        }
+      }, { cardInfo: card_info, getType: that.data.get_type })
+    }
+  },
+  // 激活会员卡
+  getUsing(e) {
+    if (is_fullprice == 0 && code == 0 && seckillId == 0 && goods_id == 0) {
+      util.redirectTo({
+        url: '/pages/memberinfo/memberinfo?act=1&card_no=' + e.currentTarget.dataset.cardno + '&examine=' + card_info.examine,
+      })
+    } else {
+      util.redirectTo({
+        url: '/pages/memberinfo/memberinfo?act=1&card_no=' + e.currentTarget.dataset.cardno + '&examine=' + card_info.examine + "&is_fullprice=" + is_fullprice + "&code=" + code + "&seckillId=" + seckillId + '&goods_id=' + goods_id
+      })
+    }
+  },
+  // 设置默认会员卡
+  setDefault(e) {
+    console.log(e.currentTarget.dataset)
+    var that = this;
+    util.api('/api/wxapp/card/default', function (res) {
+      console.log(res)
+      if (res.error == 0) {
+        card_info.is_default = 1;
+        that.setData({
+          card_info: card_info
+        })
+        util.toast_success('设置成功');
+      } else {
+        util.toast_fail('设置失败');
+      }
+    }, { cardNo: e.currentTarget.dataset.cardno })
   }
 })
