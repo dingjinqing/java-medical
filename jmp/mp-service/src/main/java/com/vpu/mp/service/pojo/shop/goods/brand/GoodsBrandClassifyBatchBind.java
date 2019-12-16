@@ -14,5 +14,5 @@ public class GoodsBrandClassifyBatchBind {
     /** 品牌分类id */
     private Integer classifyId;
     /** 待绑定的品牌id集合 */
-    private List<Integer> ids;
+    private List<Integer> brandIds;
 }

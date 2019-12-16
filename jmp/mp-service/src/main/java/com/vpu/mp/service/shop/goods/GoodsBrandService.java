@@ -386,7 +386,7 @@ public class GoodsBrandService extends ShopBaseService {
      */
     public void classifyBatchBind(GoodsBrandClassifyBatchBind param) {
         db().update(GOODS_BRAND).set(GOODS_BRAND.CLASSIFY_ID, param.getClassifyId())
-            .where(GOODS_BRAND.ID.in(param.getIds()))
+            .where(GOODS_BRAND.ID.in(param.getBrandIds()))
             .execute();
     }
 

@@ -180,7 +180,7 @@ public class AdminGoodsBrandController extends AdminBaseController {
             return fail(JsonResultCode.GOODS_BRAND_CALSSIFY_ID_IS_NULL);
         }
 
-        if (param.getIds() == null || param.getIds().size() == 0) {
+        if (param.getBrandIds() == null || param.getBrandIds().size() == 0) {
             return success();
         }
 
