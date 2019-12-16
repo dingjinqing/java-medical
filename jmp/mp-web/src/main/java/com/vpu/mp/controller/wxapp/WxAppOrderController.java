@@ -180,7 +180,7 @@ public class WxAppOrderController extends WxAppBaseController{
 	@PostMapping("/addtest")
 	public JsonResult test(){
 		List<String> list=new ArrayList<String>();
-		list.add("P201911221415189750");
+		list.add("P201911221631543263");
 		list.add("P201911221635533137");
 		Boolean addCommonOrders = shop().recommendService.orderMallService.addCommonOrders(wxAppAuth.user().getUserId(), list);
 		if(addCommonOrders) {
