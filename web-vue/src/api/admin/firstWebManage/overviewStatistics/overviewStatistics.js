@@ -20,7 +20,7 @@ export function getSelect (data) {
 //  页面概况
 export function getPageInfo (data) {
   return service({
-    url: '/api/admin/overview/analysis/pagelist',
+    url: `/api/admin/overview/analysis/pagelist`,
     method: 'post',
     data: data
   })

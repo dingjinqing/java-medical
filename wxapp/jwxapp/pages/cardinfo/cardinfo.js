@@ -5,21 +5,34 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    imageUrl: util.getImageUrl("")
+    imageUrl: util.getImageUrl(""),
+    carStatus: ''
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let cardNo = options.card_no ? options.card_no : null
+    let cardNo = options.cardNo ? options.cardNo : null
     let cardId = options.cardId ? options.cardId : null
     this.requestCardInfo(cardNo, cardId)
+    console.log(cardNo, cardId)
   },
   requestCardInfo(cardNo, cardId) {
+    let that = this
     if (cardNo) {  //  从个人中心会员卡列表进入
       util.api('/api/card/detail', res => {
+        console.log(res)
         let cardInfo = res.content
+        if (cardInfo.activation) {
+          this.setData({
+            carStatus: "已领取"
+          })
+        } else {
+          this.setData({
+            carStatus: "未激活"
+          })
+        }
         cardInfo.cardExpireTime = this.getCardExpireTime(cardInfo);
         cardInfo.cardBgStyle = this.getCardBg(cardInfo);
         cardInfo.cardTypeName = this.getTypeName(cardInfo.cardType);
@@ -33,8 +46,8 @@ global.wxPage({
       }, { cardNo: cardNo })
     } else if (cardId) {  // 从首页进入
       util.api('/api/card/judgement', function (res) {
-        console.log(res.content);
-        if (res.content.card_info.is_delete == 1) {
+        console.log(res);
+        if (res.content.cardInfo.delFlag == 1) {
           util.showModal('提示', '该会员卡已失效', function () {
             util.reLaunch({
               url: '/pages/index/index'
@@ -42,7 +55,7 @@ global.wxPage({
           });
           return;
         }
-        if (res.content.card_info.flag == 2) {
+        if (res.content.cardInfo.flag == 2) {
           util.showModal('提示', '该会员卡已停用', function () {
             util.reLaunch({
               url: '/pages/index/index'
@@ -50,7 +63,7 @@ global.wxPage({
           });
           return;
         }
-        if (res.content.card_info.flag == 3) {
+        if (res.content.cardInfo.status == -1) {
           util.showModal('提示', '该会员卡已过期', function () {
             util.reLaunch({
               url: '/pages/index/index'
@@ -58,16 +71,26 @@ global.wxPage({
           });
           return;
         }
-        let cardInfo = res.content
-        cardInfo.cardExpireTime = this.getCardExpireTime(cardInfo);
-        cardInfo.cardBgStyle = this.getCardBg(cardInfo);
-        cardInfo.cardTypeName = this.getTypeName(cardInfo.cardType);
+        let cardInfo = res.content.cardInfo
+        console.log(cardInfo)
+        if (cardInfo.activation) {
+          that.setData({
+            carStatus: "已领取"
+          })
+        } else {
+          that.setData({
+            carStatus: "未激活"
+          })
+        }
+        cardInfo.cardExpireTime = that.getCardExpireTime(cardInfo);
+        cardInfo.cardBgStyle = that.getCardBg(cardInfo);
+        cardInfo.cardTypeName = that.getTypeName(cardInfo.cardType);
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
         cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
-        this.getUpgradeCondition(cardInfo)
-        this.setData({
-          cardInfo: res.content
+        that.getUpgradeCondition(cardInfo)
+        that.setData({
+          cardInfo: cardInfo
         })
       }, { cardId: cardId })
     }
@@ -82,7 +105,7 @@ global.wxPage({
   },
   // 获取会员卡背景
   getCardBg(cardItem) {
-    console.log(cardItem);
+    console.log(cardItem, this.data.imageUrl);
     switch (cardItem.bgType) {
       case 0:
         return `background-color:${cardItem.bgColor};`;

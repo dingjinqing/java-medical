@@ -22,8 +22,11 @@ import java.util.Objects;
 public class WxAppGroupBuyController extends WxAppBaseController {
 
 
-
-
+    /**
+     * 拼团详情
+     * @param param
+     * @return
+     */
     @PostMapping("/api/wxapp/groupbuy/info")
     public JsonResult getGroupBuyInfo(@RequestBody @Valid GroupBuyInfoParam param){
         WxAppSessionUser user = wxAppAuth.user();
@@ -34,5 +37,15 @@ public class WxAppGroupBuyController extends WxAppBaseController {
         }
         GroupBuyInfoVo groupBuyInfo = shop().groupBuy.getGroupBuyInfo(user.getUserId(),groupBuyList.getCreateTime(), param.getGroupId(),groupBuyList.getActivityId(),getLang());
         return success(groupBuyInfo);
+    }
+
+    /**
+     * 获取分享图片
+     * @return
+     */
+    @PostMapping("/api/wxapp/groupbuy/share/image")
+    public JsonResult getShareImage(@RequestBody @Valid GroupBuyInfoParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        return success(shop().groupBuy.getGroupBuyShareBase64Image(user.getUserId(),param.getGroupId()));
     }
 }

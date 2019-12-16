@@ -687,10 +687,7 @@
         <div class="right-notice">
           <div class="right-title">
             <span>{{ this.$t('overview.noticeTitle') }}</span>
-            <a
-              href="/admin/home/main/overviewOfMall/noticeList"
-              class="gengduo"
-            >{{ this.$t('overview.noticeMore') }}
+            <a class="gengduo"><span @click="toList">{{ this.$t('overview.noticeMore') }}</span>
               <img
                 :src="image + '/image/admin/new_ov/go.png'"
                 alt=""
@@ -1060,7 +1057,7 @@ export default {
 
     // 公告详情
     noticeDetail (id) {
-      this.$router.push({ name: 'notice_detail_view', query: { id: id } })
+      this.$router.push({ path: '/admin/home/shopMain', query: { id: id, change_components: '8' } })
     },
 
     // 切换轮播图
@@ -1104,6 +1101,14 @@ export default {
           if (this.shopInfo.expireTimeStatus === '1') {
             this.shopInfo.businessStateNes = this.$t('overview.userExpired')
           }
+        }
+      })
+    },
+    toList () {
+      this.$router.push({
+        path: '/admin/home/shopMain',
+        query: {
+          change_components: '7'
         }
       })
     },

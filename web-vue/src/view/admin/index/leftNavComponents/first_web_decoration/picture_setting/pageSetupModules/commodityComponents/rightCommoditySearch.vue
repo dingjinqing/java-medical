@@ -100,6 +100,17 @@
           </span>
 
         </div>
+        <div class="container">
+          <span>显示位置：</span>
+          <el-radio
+            v-model="data.search_position"
+            label="0"
+          >固定位置</el-radio>
+          <el-radio
+            v-model="data.search_position"
+            label="1"
+          >滚动到顶部固定</el-radio>
+        </div>
       </div>
       <!--模块私有end-->
     </div>

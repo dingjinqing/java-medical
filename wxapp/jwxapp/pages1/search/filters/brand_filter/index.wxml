@@ -1,3 +1,4 @@
+<wxs src="../filter.wxs" module="filter"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
   <view class="filter-content" animation="{{animation}}" style="height:calc(100% - {{navHeight}}px);">
     <view class="sort-item">
@@ -7,18 +8,18 @@
       <view class="center-title">更多品牌</view>
     </view>
     <scroll-view class="no_width" scroll-y scroll-with-animation scroll-into-view="{{item_id}}" style="height:calc(100% - 104rpx);overflow-y:auto;overflow-x:hidden">
-      <view class="brand_list" wx:for="{{brand_info}}" wx:key="index" id="{{item.character}}">
+      <view class="brand_list" wx:for="{{goodsBrands}}" wx:key="index" id="{{item.character}}">
         <view class="brand_title">{{item.character}}</view>
-        <view class="brand_info clearfix" bindtap="{{is_search == '1' ? 'search_brand' : 'to_search'}}" wx:for="{{item.goodsBrands}}" data-brand_id="{{item2.id}}" wx:key="index" wx:for-item="item2" wx:if="{{index != 'goods_sale_num'}}">
+        <view class="brand_info clearfix" bindtap="chooseBrand" wx:for="{{item.goodsBrands}}" data-brand-id="{{item2.id}}" wx:key="index" wx:for-item="item2">
           <image src='{{item2.logo}}' class="brand_img">
           </image>
-          <view class="brand_name" style="color:{{item2.isCheck == 1 ? comColor : ''}};">{{item2.brandName}}</view>
+          <view class="brand_name" style="{{filter.includes(selectedBrands,item2.id) && 'color:'+main_setting.comColor+';'}}">{{item2.brandName}}</view>
         </view>
       </view>
     </scroll-view>
     <view class="zimu">
       <block wx:for="{{brand_keys}}" wx:key="index">
-        <text bindtap='scrollToView' data-id="{{item.character}}">{{item.character}}</text>
+        <text bindtap='scrollToView' data-id="{{item}}">{{item}}</text>
       </block>
     </view>
   </view>

@@ -127,7 +127,7 @@
         <!-- 我要送礼 -->
         <div
           class="voucher box_style"
-          @click="giveGift"
+          @click="to('giveGift')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/wysl.png'"
@@ -520,15 +520,6 @@ export default {
           this.$http.$emit('jurisdictionDialog')
         }
       })
-    },
-    // 我要送礼
-    giveGift () {
-      this.$router.push(
-        {
-          name: 'giveGift',
-          params: { tabSwitch: 'inProgress' }
-        }
-      )
     }
   }
 }

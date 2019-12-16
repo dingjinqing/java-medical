@@ -88,11 +88,16 @@ public class AdminGoodsSortController extends AdminBaseController {
     }
 
     /**
-     *  推荐商品批量新增接口
+     *  推荐商家分类批量新增接口
      * @param param {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsRecommendSortParam} 推荐分类
      */
     @PostMapping("/api/admin/goods/sort/recommend/add")
     public JsonResult insertRecommendSort(@RequestBody GoodsRecommendSortParam param) {
+
+        // 推荐分类子分类不可为空
+        if (param.getChildren() == null || param.getChildren().size() == 0) {
+            return fail(JsonResultCode.GOODS_RECOMMEND_SORT_CHILDREN_NOT_NULL);
+        }
 
         //如果提交的内容内部有重复
         List<String> sortsNames = new ArrayList<>();

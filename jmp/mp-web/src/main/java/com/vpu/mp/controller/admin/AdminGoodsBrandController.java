@@ -102,20 +102,6 @@ public class AdminGoodsBrandController extends AdminBaseController {
         return success(goodsBrands);
     }
 
-    @PostMapping("/api/admin/goods/brand/batch/update")
-    public JsonResult batchUpdateBrand(@RequestBody GoodsBrandBatchParam param){
-        if (param.getClassifyId() == null) {
-            return fail(JsonResultCode.GOODS_BRAND_CALSSIFY_ID_IS_NULL);
-        }
-
-        if (param.getIds() == null || param.getIds().size() == 0) {
-            return success();
-        }
-
-        shop().goods.goodsBrand.batchUpdateBrand(param);
-
-        return success();
-    }
 
     /**
      * 品牌分类分页查询
@@ -183,6 +169,25 @@ public class AdminGoodsBrandController extends AdminBaseController {
         return success();
     }
 
+    /**
+     * 品牌批量绑定至品牌分类
+     * @param param {@link GoodsBrandClassifyBatchBind}
+     * @return {@link JsonResult}
+     */
+    @PostMapping("/api/admin/goods/brand/classify/batch/bind")
+    public JsonResult classifyBatchBind(@RequestBody GoodsBrandClassifyBatchBind param){
+        if (param.getClassifyId() == null) {
+            return fail(JsonResultCode.GOODS_BRAND_CALSSIFY_ID_IS_NULL);
+        }
+
+        if (param.getBrandIds() == null || param.getBrandIds().size() == 0) {
+            return success();
+        }
+
+        shop().goods.goodsBrand.classifyBatchBind(param);
+
+        return success();
+    }
 
     @PostMapping("/api/admin/goods/brand/config/set")
     public JsonResult setBrandConfig(@RequestBody GoodsBrandConfig config){

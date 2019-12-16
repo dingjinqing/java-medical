@@ -43,6 +43,7 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.image.postertraits.GroupBuyPictorialService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.jooq.Condition;
@@ -99,6 +100,8 @@ public class GroupBuyService extends ShopBaseService {
     private GoodsSpecProductService goodsSpecProductService;
     @Autowired
     private QrCodeService qrCode;
+    @Autowired
+    private GroupBuyPictorialService groupBuyPictorialService;
 
     /**
      * 添加拼团活动
@@ -571,4 +574,7 @@ public class GroupBuyService extends ShopBaseService {
 
 
 
+    public String getGroupBuyShareBase64Image(Integer userId,Integer groupId){
+        return groupBuyPictorialService.getGroupBuyShareBase64Image(userId,groupId);
+    }
 }

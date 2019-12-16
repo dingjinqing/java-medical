@@ -42,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,6 +93,7 @@ import com.vpu.mp.service.pojo.shop.member.exception.LimitCardAvailSendNoneExcep
 import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
@@ -412,7 +414,7 @@ public class UserCardService extends ShopBaseService {
 			throws MpException {
 
 		stopUserLimitCard(cardList);
-		List<String> cardNoList = new ArrayList();
+		List<String> cardNoList = new ArrayList<>();
 		for (UserCardParam card : cardList) {
 			MemberCardRecord mCard = cardDao.getCardById(card.getCardId());
 			if (isLimitCard(mCard)) {
@@ -785,13 +787,46 @@ public class UserCardService extends ShopBaseService {
 		if (card == null) {
 			throw new UserCardNullException();
 		}
+		
+		if(card.getExpireTime()!=null) {
+			card.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
+			card.setEndDate(card.getEndTime().toLocalDateTime().toLocalDate());
+			card.setExpireType(NumberUtils.BYTE_ZERO);
+		}else {
+			card.setExpireType(CardConstant.MCARD_ET_FOREVER);
+		}
+		if (!CardUtil.isCardTimeForever(card.getExpireType())) {
+			if (CardUtil.isCardFixTime(card.getExpireType()) && CardUtil.isCardExpired(card.getEndTime())) {
+				logger().info("卡过期");
+				card.setStatus(-1);
+			} else {
+				card.setStatus(1);
+			}
+
+			if (CardUtil.isCardFixTime(card.getExpireType())) {
+				card.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
+				card.setEndDate(card.getEndTime().toLocalDateTime().toLocalDate());
+			}
+		} else {
+			card.setStatus(1);
+		}
+		
+		
 		dealWithUserCardDetailInfo(card);
 		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
 		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
-
+		logger().info("卡的校验状态");
+		CardExamineRecord  cardExamine = cardVerifyService.getStatusByNo(param.getCardNo());
+		if(cardExamine != null) {
+			WxAppCardExamineVo cardExamineVo = new WxAppCardExamineVo();
+			cardExamineVo.setPassTime(cardExamine.getPassTime());
+			cardExamineVo.setRefuseTime(cardExamine.getRefuseTime());
+			cardExamineVo.setRefuseDesc(cardExamine.getRefuseDesc());
+			cardExamineVo.setStatus(cardExamine.getStatus());
+			card.setIsExamine(cardExamineVo);
+		}
 		
-
 		// TODO 开卡送卷
 		setQrCode(card);
 
@@ -1241,7 +1276,7 @@ public class UserCardService extends ShopBaseService {
 			userCardJudgeVo.setCardInfo(userCard);
 			return userCardJudgeVo;
 		}else{
-			UserCardVo uCard = userCardDao.getUserCardByCardNo(userCard.getCardNo());
+			UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
 			uCard.setIsGet(isGet);
 			if(uCard.getExpireTime()!=null) {
 				uCard.setStartDate(uCard.getStartTime().toLocalDateTime().toLocalDate());
@@ -1425,7 +1460,7 @@ public class UserCardService extends ShopBaseService {
 					} else {
 						if (NumberUtils.BYTE_ZERO.equals(mCard.getActivation())
 								&& CardUtil.isNormalCard(mCard.getCardType())) {
-							memberCardService.sendCoupon(mCard, param.getUserId(), param.getCardId());
+							memberCardService.sendCoupon(param.getUserId(), param.getCardId());
 						}
 						vo.setCardNo(cardNoList.get(0));
 						return vo;
@@ -1521,5 +1556,32 @@ public class UserCardService extends ShopBaseService {
 				.where(USER_CARD.USER_ID.eq(userId).and(USER_CARD.CARD_ID.eq(cardId))).fetchAny();
 		return rec != null ? rec.getCardNo() : null;
 	}
+	
+	public UserCardVo getUserCardByCardNo(String cardNo){
+		return userCardDao.getUserCardByCardNo(cardNo);
+	}
+	
+	public void updateActivationTime(String cardNo,Timestamp time) {
+		if(time==null) {
+			time = DateUtil.getLocalDateTime();
+		}
+		userCardDao.updateActivationTime(cardNo,time);
+	}
 
+	/**
+	 *	 设置默认会员卡
+	 */
+	public void setDefault(DefaultCardParam param) {
+		logger().info("设置默认会员卡");
+		transaction(()->{
+			Condition condition = DSL.noCondition();
+			// set user card all 0
+			condition = condition.and(USER_CARD.USER_ID.eq(param.getUserId()));
+			userCardDao.updateIsDefault(condition,NumberUtils.BYTE_ZERO);
+			// only set card 1 by cardNo
+			condition = condition.and(USER_CARD.CARD_NO.eq(param.getCardNo()));
+			userCardDao.updateIsDefault(condition,NumberUtils.BYTE_ONE);
+		});
+	}
+	
 }

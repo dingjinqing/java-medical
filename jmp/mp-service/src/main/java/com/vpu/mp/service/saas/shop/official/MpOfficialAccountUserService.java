@@ -45,4 +45,10 @@ public class MpOfficialAccountUserService extends MainBaseService {
             .and(MP_OFFICIAL_ACCOUNT_USER.SUBSCRIBE.eq((byte)1))
             .fetchAnyInto(MP_OFFICIAL_ACCOUNT_USER);
     }
+    
+    
+    
+    public void getOpenIdFromMpOpenId(String officialAccountAppId,String mpAppId) {
+    	
+    }
 }

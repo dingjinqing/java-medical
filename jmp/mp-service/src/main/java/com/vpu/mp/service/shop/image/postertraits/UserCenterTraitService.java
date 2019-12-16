@@ -1,17 +1,4 @@
-package com.vpu.mp.service.shop.image.posterTraits;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package com.vpu.mp.service.shop.image.postertraits;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -22,10 +9,21 @@ import com.vpu.mp.service.pojo.shop.image.UserCenterTraitVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.shop.user.user.UserService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.imageio.ImageIO;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * 生成分享图片
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年10月17日 下午5:09:19
@@ -95,7 +93,7 @@ public class UserCenterTraitService extends ShopBaseService {
 		try {
 			avatarImage = ImageIO.read(new URL(userInfo.getUserAvatar()));
 		} catch (Exception e) {
-			//小程序获取头像失败 
+			//小程序获取头像失败
 			vo.setMsg(JsonResultCode.WX_GETHEAD_FAIL);
 			vo.setStatus(PSTATUS_ZERO);
 			logger().error(e.getMessage(), e);

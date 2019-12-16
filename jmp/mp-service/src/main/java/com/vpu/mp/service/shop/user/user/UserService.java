@@ -55,6 +55,7 @@ import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.wxapp.WxUserCardService;
 import com.vpu.mp.service.shop.order.info.MpOrderInfoService;
@@ -106,6 +107,8 @@ public class UserService extends ShopBaseService {
 	@Autowired
 	public WxUserCardService wxUserCardService;
 	
+	@Autowired
+	public AccountService accountService;
 	
 	private int[] userActiveEnter = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
 			1038, 1042, 1014, 1043, 1045, 1046, 1052, 1053, 1056, 1057, 1058, 1064, 1067, 1068, 1071, 1072, 1073, 1074,

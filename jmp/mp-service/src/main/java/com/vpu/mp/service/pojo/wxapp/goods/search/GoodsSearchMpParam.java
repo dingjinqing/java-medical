@@ -40,10 +40,10 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**标签id集合*/
     private List<Integer> labelIds;
 
-    /**是否展示售罄商品
+    /**是否展示售罄商品,service层获取
      * {@link com.vpu.mp.service.pojo.shop.goods.GoodsConstant#SOLD_OUT_GOODS_SHOW} 展示售罄
      */
-    private Byte soldOutGoods;
+    private Boolean soldOutGoodsShow;
 
     /**商品优惠券码*/
     private String couponSn;

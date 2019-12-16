@@ -16,6 +16,8 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
@@ -90,6 +92,7 @@ public class GoodsMpService extends ShopBaseService {
             // 从es获取
             goodsListCapsules = getPageIndexGoodsListFromEs(param);
         } catch (Exception e) {
+            logger().debug("小程序-es-搜索商品错误:"+e.getMessage());
             goodsListCapsules = getPageIndexGoodsListFromDb(param);
         }
         disposeGoodsList(goodsListCapsules, userId);
@@ -104,10 +107,6 @@ public class GoodsMpService extends ShopBaseService {
      */
     private List<GoodsListMpBo> getPageIndexGoodsListFromEs(GoodsListMpParam param) throws IOException {
         PageResult<GoodsListMpBo> goodsListMpBoPageResult = esGoodsSearchMpService.queryGoodsByParam(param);
-        List<GoodsListMpBo> dataList = goodsListMpBoPageResult.dataList;
-        if (dataList != null) {
-            dataList.forEach(x -> x.setIsDisposedByEs(true));
-        }
         return goodsListMpBoPageResult.dataList;
     }
 
@@ -153,8 +152,8 @@ public class GoodsMpService extends ShopBaseService {
         // 获取在售商品
         Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
 
-        // 展示售罄商品
-        if (param.getSoldOutGoodsShow()) {
+        // 不展示售罄商品
+        if (!param.getSoldOutGoodsShow()) {
             condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
         }
         // 指定商品列表
@@ -223,6 +222,7 @@ public class GoodsMpService extends ShopBaseService {
             // 从es获取
             goodsListCapsules = getPageIndexGoodsListFromEs(param);
         } catch (Exception e) {
+            logger().debug("小程序-es-搜索商品错误:"+e.getMessage());
             goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
         }
         disposeGoodsList(goodsListCapsules, userId);
@@ -309,38 +309,124 @@ public class GoodsMpService extends ShopBaseService {
         try {
             return esGoodsSearchMpService.getGoodsParam();
         } catch (Exception e) {
-            e.printStackTrace();
             logger().debug("es 小程序-商品搜索-条件反推错误："+e.getMessage());
-            return new GoodsSearchFilterConditionMpVo();
+            GoodsSearchFilterConditionMpVo vo =new GoodsSearchFilterConditionMpVo();
+            vo.setGoodsBrands(goodsBrandSortMp.getGoodsSearchFilterCondition());
+            vo.setGoodsLabels(goodsLabelMpService.getGoodsSearchFilterCondition());
+            return vo;
         }
     }
 
     /**
      * 搜索小程序商品信息
-     *
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
-    public List<? extends GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
-        List<GoodsListMpBo> goodsListMpBos;
-        try {
-            PageResult<GoodsListMpBo> pageResult = esGoodsSearchMpService.queryGoodsByParam(param);
-            goodsListMpBos = pageResult.getDataList();
-        } catch (IOException e) {
-            logger().debug("小程序-商品搜索异常："+e.getMessage());
-            if (param.getKeyWords() != null) {
-                Condition condition = buildPageIndexCondition(new GoodsListMpParam());
-                condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
-                goodsListMpBos = findActivityGoodsListCapsulesDao(condition, null, param.getCurrentPage(), param.getPageRows(), null);
-            } else {
-                return null;
-            }
+    public PageResult<? extends GoodsListMpVo> searchGoods(GoodsSearchMpParam param) {
+        PageResult<GoodsListMpBo> pageResult =null;
+
+        Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
+        if (GoodsConstant.SOLD_OUT_GOODS_SHOW.equals(soldOutGoods)) {
+            param.setSoldOutGoodsShow(true);
+        } else {
+            param.setSoldOutGoodsShow(false);
         }
-        disposeGoodsList(goodsListMpBos,param.getUserId());
-        return goodsListMpBos;
+
+        try {
+            pageResult  = esGoodsSearchMpService.queryGoodsByParam(param);
+        } catch (Exception e) {
+            logger().debug("小程序-商品搜索异常："+e.getMessage());
+            pageResult = searchGoodsFromDb(param);
+        }
+        disposeGoodsList(pageResult.dataList,param.getUserId());
+
+        return pageResult;
     }
 
+    /**
+     * 数据库搜索商品
+     * @param param 搜索条件
+     * @return 搜索到的内容
+     */
+    private PageResult<GoodsListMpBo> searchGoodsFromDb(GoodsSearchMpParam param){
 
+        Condition condition = buildCondition(param);
+
+        SelectConditionStep<Record12<Integer, String, Byte, BigDecimal, BigDecimal, Integer, Integer, String, Integer, Integer, Integer, Integer>> select =
+            db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE.as("activity_type"), GOODS.SHOP_PRICE, GOODS.MARKET_PRICE,
+            GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_IMG,
+            GOODS.GOODS_NUMBER, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID).from(GOODS).where(condition);
+
+        buildOrderFields(select,param);
+
+        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsListMpBo.class);
+    }
+
+    /**
+     * 商品搜索-db-条件拼接
+     * @param param 搜索条件
+     * @return
+     */
+    private Condition buildCondition(GoodsSearchMpParam param) {
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+
+        if (!param.getSoldOutGoodsShow()) {
+            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
+        }
+
+        if (param.getKeyWords() != null) {
+            condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
+        }
+
+        if (param.getBrandIds() != null && param.getBrandIds().size() > 0) {
+            condition = condition.and(GOODS.BRAND_ID.in(param.getBrandIds()));
+        }
+
+        if (param.getLabelIds() != null && param.getLabelIds().size() > 0) {
+            Result<Record2<Integer, Byte>> labelCoupleList = goodsLabelMpService.getGoodsLabelsCoupleTypeInfoByIds(param.getLabelIds());
+            boolean allType = false;
+            List<Integer> gtaGoodsIds = new ArrayList<>();
+            for (int i = 0; i < labelCoupleList.size(); i++) {
+                Record2<Integer, Byte> record2 = labelCoupleList.get(i);
+                if (GoodsLabelCoupleTypeEnum.ALLTYPE.getCode().equals(record2.get(GOODS_LABEL_COUPLE.TYPE))) {
+                    allType = true;
+                    break;
+                }
+                if (GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode().equals(record2.get(GOODS_LABEL_COUPLE.TYPE))) {
+                   gtaGoodsIds.add(record2.get(GOODS_LABEL_COUPLE.GTA_ID));
+                }
+            }
+            if (!allType) {
+                condition = condition.and(GOODS.GOODS_ID.in(gtaGoodsIds));
+            }
+
+        }
+
+        return condition;
+    }
+
+    /**
+     * 排序字段拼接
+     * @param select 待排序语句
+     * @param param 请求条件
+     */
+    private void buildOrderFields(SelectConditionStep<?> select,GoodsSearchMpParam param){
+        if (SortItemEnum.SALE_NUM.equals(param.getSortItem())) {
+            if (SortDirectionEnum.DESC.equals(param.getSortDirection())) {
+                select.orderBy(GOODS.GOODS_SALE_NUM.desc(), GOODS.CREATE_TIME.desc());
+            } else {
+                select.orderBy(GOODS.GOODS_SALE_NUM.asc(), GOODS.CREATE_TIME.desc());
+            }
+        } else {
+            // 默认价格排序
+            if (SortDirectionEnum.DESC.equals(param.getSortDirection())){
+                select.orderBy(GOODS.SHOP_PRICE.desc(), GOODS.CREATE_TIME.desc());
+            } else {
+                select.orderBy(GOODS.SHOP_PRICE.asc(), GOODS.CREATE_TIME.desc());
+            }
+        }
+
+    }
     /**
      * 根据过滤条件获取商品列表中的商品信息，
      * 返回结果的顺序和goodsIds的顺序一致,若果查询的结果在goodsId中不存在则默认添加至返回列表的末尾
@@ -401,7 +487,7 @@ public class GoodsMpService extends ShopBaseService {
         Record record1 = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_TYPE, GOODS.GOODS_SALE_NUM, GOODS.BASE_SALE, GOODS.GOODS_NUMBER,
             GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS_BRAND.BRAND_NAME, GOODS.DELIVER_TEMPLATE_ID, GOODS.DELIVER_PLACE, GOODS.GOODS_WEIGHT, GOODS.DEL_FLAG, GOODS.IS_ON_SALE,
             GOODS.GOODS_IMG, GOODS.GOODS_VIDEO_ID, GOODS.GOODS_VIDEO, GOODS.GOODS_VIDEO_IMG, GOODS.GOODS_VIDEO_SIZE,
-            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_PAGE_ID, GOODS.GOODS_DESC)
+            GOODS.LIMIT_BUY_NUM, GOODS.LIMIT_MAX_NUM, GOODS.IS_CARD_EXCLUSIVE, GOODS.IS_PAGE_UP, GOODS.GOODS_PAGE_ID,GOODS.GOODS_AD,GOODS.GOODS_DESC)
             .from(GOODS).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
             .where(GOODS.GOODS_ID.eq(goodsId)).fetchAny();
         if (record1 == null) {
@@ -410,13 +496,12 @@ public class GoodsMpService extends ShopBaseService {
         }
 
         GoodsDetailMpBo capsule = record1.into(GoodsDetailMpBo.class);
-        if (DelFlag.NORMAL_VALUE.equals(capsule.getDelFlag())) {
+        if (DelFlag.DISABLE_VALUE.equals(capsule.getDelFlag())) {
             return capsule;
         }
 
         // 图片处理
-        List<String> imgs = db().select().from(GOODS_IMG).where(GOODS_IMG.IMG_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
-        capsule.getGoodsImgs().add(capsule.getGoodsImg());
+        List<String> imgs = db().select().from(GOODS_IMG).where(GOODS_IMG.GOODS_ID.eq(goodsId)).fetch(GOODS_IMG.IMG_URL);
         capsule.getGoodsImgs().addAll(imgs);
         //处理视频长度和宽度
         if (capsule.getGoodsVideoId() != null) {

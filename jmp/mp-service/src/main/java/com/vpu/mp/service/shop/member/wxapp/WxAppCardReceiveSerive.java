@@ -22,7 +22,7 @@ import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
 /**
  * @author 黄壮壮
- * 领取会员卡服务
+ * 	领取会员卡服务
  */
 @Service
 public class WxAppCardReceiveSerive extends ShopBaseService {
@@ -91,7 +91,7 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 				);
 		
 		// 开卡送优惠券
-		memberCardServie.sendCoupon(mCard, param.getUserId(), param.getCardId());
+		memberCardServie.sendCoupon(param.getUserId(), param.getCardId());
 		
 	}
 	

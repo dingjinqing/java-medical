@@ -210,7 +210,7 @@ export default {
       lang: '',
       labelWidth: 120,
       goodsProductInfo: {
-        deliverTemplateId: null,
+        deliverTemplateId: 0,
         goodsWeight: null,
         deliverPlace: null,
         isCardExclusive: false,
@@ -220,7 +220,7 @@ export default {
       /* 运费模板辅助数据 */
       // 当前选中的运费模板，用来展示模板的详细信息使用,此处初始化用的undefined,当没有运费模板的时候在进行大括号插值显示的时候判断使用
       deliverTemplateCurrentData: {
-        deliverTemplateId: null,
+        deliverTemplateId: 0,
         deliverTemplateTitleDesc: null,
         deliverTemplateAreasDesc: [],
         freeDeliverTemplateAreasDesc: []
@@ -330,7 +330,7 @@ export default {
     parseDeliverTemplateDefaultData (data) {
       let content = JSON.parse(data.content)
       let retData = {}
-      retData.deliverTemplateId = null
+      retData.deliverTemplateId = 0
 
       let deliverTemplateTitleDesc5 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc5') // "订单满"
       let deliverTemplateTitleDesc6 = this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateTitleDesc6') // "包邮，否则运费为"
@@ -367,8 +367,8 @@ export default {
           let content = res.content
           // 模板信息被删除，则展示默认模板信息
           if (content === null) {
-            this.goodsProductInfo.deliverTemplateId = null
-            this.deliverTemplateChange(null)
+            this.goodsProductInfo.deliverTemplateId = 0
+            this.deliverTemplateChange(0)
           } else {
             this.deliverTemplateCurrentData = this.parseDeliverTemplateData(content)
           }
@@ -392,7 +392,7 @@ export default {
           })
         })
         this.deliverTemplateData.unshift({
-          deliverTemplateId: null,
+          deliverTemplateId: 0,
           templateName: this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverTemplateDefault')
         })
         // 刷新时回显使用
@@ -443,7 +443,7 @@ export default {
 
     /* 回显运费模板 */
     _initDeliverTemplateId (goodsData) {
-      this.goodsProductInfo.deliverTemplateId = goodsData.deliverTemplateId === 0 ? null : goodsData.deliverTemplateId
+      this.goodsProductInfo.deliverTemplateId = goodsData.deliverTemplateId
       this.deliverTemplateChange(goodsData.deliverTemplateId)
     },
     /* 初始化专享会员卡 */

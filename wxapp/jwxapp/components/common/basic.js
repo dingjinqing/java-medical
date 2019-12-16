@@ -1,5 +1,5 @@
-var util = require("../../utils/util.js");
-var common_basic = require("../../common/mixins/basic.js");
+var util = require('../../utils/util.js');
+var common_basic = require('../../common/mixins/basic.js');
 
 var basic = {
   options: {
@@ -12,11 +12,11 @@ var basic = {
     name: String, // 组件名称
     imageUrl: {
       type: String,
-      value: util.getImageUrl("")
+      value: util.getImageUrl('')
     },
     baseUrl: {
       type: String,
-      value: util.getUrl("")
+      value: util.getUrl('')
     }
   },
   lifetimes: {
@@ -25,7 +25,7 @@ var basic = {
     },
     detached() {
       this.onDetatch();
-    },
+    }
   },
   attached() {
     this.onAttach();
@@ -41,16 +41,15 @@ var basic = {
       var page = util.getCurrentPage();
       if (page && page.addComponent) page.addComponent(this);
       if (page && page._getColors) this.setData(page._getColors());
-      this.$emit("attached", this);
+      this.$emit('attached', this);
     },
     onDetatch() {
       var page = util.getCurrentPage();
-      if (page && page.removeComponent)
-        page.removeComponent(this);
-      this.$emit("detached", this);
+      if (page && page.removeComponent) page.removeComponent(this);
+      this.$emit('detached', this);
       this.clearTimers(); // 清除计时器
     },
-    ...common_basic,
+    ...common_basic
   }
 };
 

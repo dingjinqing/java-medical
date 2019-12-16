@@ -5,11 +5,13 @@ import com.vpu.mp.db.shop.tables.records.GoodsOverviewSummaryRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -33,40 +35,40 @@ public class GoodsStatisticTaskService extends ShopBaseService {
     /**
      * The constant BAK.
      */
-    private static final GoodsBak BAK = GoodsBak.GOODS_BAK.as("BAK");
+    public static final GoodsBak BAK = GoodsBak.GOODS_BAK.as("BAK");
     /**
      * The constant LABEL.
      */
-    private static final GoodsLabelCouple LABEL = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("LABEL");
+    public static final GoodsLabelCouple LABEL = GoodsLabelCouple.GOODS_LABEL_COUPLE.as("LABEL");
     /**
      * The constant USER_GR.
      */
-    private static final UserGoodsRecord USER_GR = UserGoodsRecord.USER_GOODS_RECORD.as("USER_GR");
+    public static final UserGoodsRecord USER_GR = UserGoodsRecord.USER_GOODS_RECORD.as("USER_GR");
     /**
      * The constant CART.
      */
-    private static final UserCartRecord CART = UserCartRecord.USER_CART_RECORD.as("CART");
+    public static final UserCartRecord CART = UserCartRecord.USER_CART_RECORD.as("CART");
     /**
      * The constant ORDER_G.
      */
-    private static final OrderGoods ORDER_G = OrderGoods.ORDER_GOODS.as("ORDER_G");
+    public static final OrderGoods ORDER_G = OrderGoods.ORDER_GOODS.as("ORDER_G");
     /**
      * The constant ORDER_I.
      */
-    private static final OrderInfo ORDER_I = OrderInfo.ORDER_INFO.as("ORDER_I");
+    public static final OrderInfo ORDER_I = OrderInfo.ORDER_INFO.as("ORDER_I");
     /**
      * The constant WX_SR.
      */
-    private static final WxShoppingRecommend WX_SR = WxShoppingRecommend.WX_SHOPPING_RECOMMEND.as("WX_SR");
+    public static final WxShoppingRecommend WX_SR = WxShoppingRecommend.WX_SHOPPING_RECOMMEND.as("WX_SR");
     /**
      * The constant COLLECTION.
      */
-    private static final UserCollection COLLECTION = UserCollection.USER_COLLECTION.as("COLLECTION");
+    public static final UserCollection COLLECTION = UserCollection.USER_COLLECTION.as("COLLECTION");
 
     /**
      * The constant SHARE.
      */
-    private static final ShareRecord SHARE = ShareRecord.SHARE_RECORD.as("SHARE");
+    public static final ShareRecord SHARE = ShareRecord.SHARE_RECORD.as("SHARE");
 
     /**
      * Condition builder condition.
@@ -99,8 +101,8 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     public int getSaleGoodsNumber(ProductOverviewParam param) {
         // 基本筛选条件 : 备份时间当天, 商品数量大于0, 在架状态 TODO 备份时间不确定
-        Condition baseCondition = BAK.BAK_DATE.greaterThan(param.getStartTime())
-            .and(BAK.BAK_DATE.le(param.getEndTime()))
+        Condition baseCondition = BAK.BAK_DATE.greaterThan(Date.valueOf(param.getStartTime().toLocalDateTime().toLocalDate()))
+            .and(BAK.BAK_DATE.le(Date.valueOf(param.getEndTime().toLocalDateTime().toLocalDate())))
             .and(BAK.GOODS_NUMBER.greaterThan(INTEGER_ZERO))
             .and(BAK.IS_ON_SALE.eq(BYTE_ONE));
 
@@ -126,8 +128,8 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     private Map<Integer, Integer> commonBuilder(ProductOverviewParam param, Field<?> field) {
         // 基本筛选条件
-        Condition baseCondition = USER_GR.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(param.getStartTime().toLocalDate().atStartOfDay()))
-            .and(USER_GR.CREATE_TIME.lessThan(Timestamp.valueOf(param.getEndTime().toLocalDate().atStartOfDay())));
+        Condition baseCondition = USER_GR.CREATE_TIME.greaterOrEqual(param.getStartTime())
+            .and(USER_GR.CREATE_TIME.lessThan(param.getEndTime()));
         SelectJoinStep<?> joinStep = db().select(min(USER_GR.GOODS_ID), cast(field, Integer.class)).from(USER_GR);
         return selectBuilder(param, joinStep, USER_GR.GOODS_ID, baseCondition, field);
     }
@@ -149,7 +151,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the int
      */
     public int getGoodsUv(ProductOverviewParam param) {
-        return commonBuilder(param, countDistinct(USER_GR.USER_ID)).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+        return getSingleGoodsUv(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
     /**
@@ -169,7 +171,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the goods pv
      */
     public int getGoodsPv(ProductOverviewParam param) {
-        return commonBuilder(param, sum(USER_GR.COUNT)).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+        return getSingleGoodsPv(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
     /**
@@ -189,7 +191,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the int
      */
     public int addCartUserNum(ProductOverviewParam param) {
-        return commonBuilder1(param, countDistinct(CART.USER_ID)).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+        return addSingleCartUserNum(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
     /**
@@ -209,7 +211,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the add cart goods number
      */
     public int getAddCartGoodsNumber(ProductOverviewParam param) {
-        return commonBuilder1(param, sum(CART.NUM)).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+        return getSingleAddCartGoodsNumber(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
     /**
@@ -232,8 +234,8 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     private Map<Integer, Integer> commonBuilder1(ProductOverviewParam param, Field<?> field) {
         // 基本筛选条件
-        Condition baseCondition = CART.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(param.getStartTime().toLocalDate().atStartOfDay()))
-            .and(CART.CREATE_TIME.lessThan(Timestamp.valueOf(param.getEndTime().toLocalDate().atStartOfDay())));
+        Condition baseCondition = CART.CREATE_TIME.greaterOrEqual(param.getStartTime())
+            .and(CART.CREATE_TIME.lessThan(param.getEndTime()));
         SelectJoinStep<?> joinStep = db().select(min(CART.GOODS_ID), cast(field, Integer.class)).from(CART);
         return selectBuilder(param, joinStep, CART.GOODS_ID, baseCondition, field);
     }
@@ -266,7 +268,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the int
      */
     public int paidGoodsNum(ProductOverviewParam param) {
-        return commonBuilder2(param, sum(ORDER_G.GOODS_NUMBER), EXT_CONDITION).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+        return singlePaidGoodsNum(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
     /**
@@ -286,7 +288,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the int
      */
     public int paidUv(ProductOverviewParam param) {
-        return commonBuilder2(param, count(ORDER_I.USER_ID), EXT_CONDITION).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+        return singlePaidUv(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
     /**
@@ -306,7 +308,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the int
      */
     public int getPayOrderGoodsNum(ProductOverviewParam param) {
-        return commonBuilder2(param, sum(ORDER_G.GOODS_NUMBER), TRUE_CONDITION).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+        return getSinglePayOrderGoodsNum(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
 
     /**
@@ -348,8 +350,8 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the int
      */
     private Map<Integer, Integer> commonBuilder2(ProductOverviewParam param, Field<?> field, Condition extCondition) {
-        Condition baseConditon = ORDER_I.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(param.getStartTime().toLocalDate().atStartOfDay()))
-            .and(ORDER_I.CREATE_TIME.lessThan(Timestamp.valueOf(param.getEndTime().toLocalDate().atStartOfDay())))
+        Condition baseConditon = ORDER_I.CREATE_TIME.greaterOrEqual(param.getStartTime())
+            .and(ORDER_I.CREATE_TIME.lessThan(param.getEndTime()))
             .and(ORDER_I.IS_COD.eq(BYTE_ZERO).or(ORDER_I.IS_COD.eq(BYTE_ONE).and(ORDER_I.SHIPPING_TIME.isNotNull())))
             .and(ORDER_I.ORDER_SN.notEqual(ORDER_I.MAIN_ORDER_SN))
             .and(extCondition);
@@ -374,8 +376,8 @@ public class GoodsStatisticTaskService extends ShopBaseService {
     public void insertOverview() {
         TYPE_LIST.forEach((e) -> db().executeInsert(createOverviewRecord(new ProductOverviewParam() {{
             setDynamicDate(e);
-            setStartTime(Date.valueOf(LocalDate.now().minusDays(e)));
-            setEndTime(Date.valueOf(LocalDate.now()));
+            setStartTime(Timestamp.valueOf(LocalDate.now().minusDays(e).atStartOfDay()));
+            setEndTime(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
         }})));
     }
 
@@ -662,14 +664,12 @@ public class GoodsStatisticTaskService extends ShopBaseService {
     public void insertGoodsSummary() {
         TYPE_LIST.forEach((e) -> {
             Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
-            Date startDate = Date.valueOf(LocalDate.now().minusDays(e));
-            Date endDate = Date.valueOf(LocalDate.now());
-            Timestamp startTimeStamp = Timestamp.valueOf(startDate.toLocalDate().atStartOfDay());
-            Timestamp endTimeStamp = Timestamp.valueOf(endDate.toLocalDate().atStartOfDay());
+            Timestamp startTimeStamp = Timestamp.valueOf(LocalDate.now().minusDays(e).atStartOfDay());
+            Timestamp endTimeStamp = Timestamp.valueOf(LocalDate.now().atStartOfDay());
             ProductOverviewParam param = new ProductOverviewParam() {{
                 setDynamicDate(e);
-                setStartTime(startDate);
-                setEndTime(endDate);
+                setStartTime(startTimeStamp);
+                setEndTime(endTimeStamp);
             }};
             // 商品UV数
             getSingleGoodsUv(param).forEach((K, v) -> {
@@ -741,13 +741,71 @@ public class GoodsStatisticTaskService extends ShopBaseService {
             .execute();
     }
 
-    // 商品订单成交金额
+    /**
+     * Order user money big decimal.成交金额(排除货到付款非发货)
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the big decimal
+     */
+    public BigDecimal orderUserMoney(Timestamp startTime, Timestamp endTime) {
+        // todo 商品订单成交金额+会员卡订单成交金额
+        return goodsOrderTurnover(startTime, endTime).add(cardOrderTurnover(startTime, endTime)).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * The constant ORDER_SN_CONDITION.
+     */
+    public static final Condition ORDER_SN_CONDITION = ORDER_I.ORDER_SN.eq(ORDER_I.MAIN_ORDER_SN).or(ORDER_I.MAIN_ORDER_SN.eq(StringUtils.EMPTY));
+
+    /**
+     * Goods order turnover big decimal.商品订单成交金额
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the big decimal
+     */
     public BigDecimal goodsOrderTurnover(Timestamp startTime, Timestamp endTime) {
+        return db().select(ORDER_I.MONEY_PAID.add(ORDER_I.USE_ACCOUNT).add(ORDER_I.MEMBER_CARD_BALANCE))
+            .from(ORDER_I).where(STATUS_CONDITION)
+            .and(ORDER_SN_CONDITION)
+            .and(ORDER_I.CREATE_TIME.ge(startTime)).and(ORDER_I.CREATE_TIME.lessThan(endTime))
+            .fetchOneInto(BigDecimal.class);
+    }
+
+    /**
+     * Card order turnover big decimal.会员卡订单（虚拟订单）成交金额
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the big decimal
+     */
+    public BigDecimal cardOrderTurnover(Timestamp startTime, Timestamp endTime) {
+/*        return db().select(CARD_ORDER.MONEY_PAID.add(CARD_ORDER.USE_ACCOUNT).add(CARD_ORDER.MEMBER_CARD_BALANCE))
+            .from(CARD_ORDER).where(CARD_ORDER.ORDER_STATUS.eq(BYTE_ONE))
+            .and(CARD_ORDER.CREATE_TIME.ge(startTime)).and(CARD_ORDER.CREATE_TIME.lessThan(endTime))
+            .fetchOneInto(BigDecimal.class);*/
         return null;
     }
 
-    // 会员卡订单成交金额
-    public BigDecimal cardOrderTurnover(Timestamp startTime, Timestamp endTime) {
-        return null;
+    /**
+     * Single goods clinch num map.每件商品的成交（订单状态大于3为成交）件数(排除货到付款非发货)
+     *
+     * @param param the param
+     * @return the map
+     */
+    public Map<Integer, Integer> singleGoodsClinchNum(ProductOverviewParam param) {
+        return commonBuilder2(param, count(ORDER_G.GOODS_NUMBER), EXT_CONDITION);
     }
+
+    /**
+     * All goods clinch num long.所有商品的总成交件数
+     *
+     * @param param the param
+     * @return the long
+     */
+    public long allGoodsClinchNum(ProductOverviewParam param) {
+        return singleGoodsClinchNum(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
+    }
+
 }

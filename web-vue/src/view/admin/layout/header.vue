@@ -6,7 +6,10 @@
 
     <div class="right">
       <div class="right_main">
-        <img src="../../../assets/adminImg/notice_ld.png">
+        <img
+          src="../../../assets/adminImg/notice_ld.png"
+          @click="toList"
+        >
       </div>
     </div>
     <div
@@ -289,6 +292,14 @@ export default {
       })
 
       console.log(this.lang)
+    },
+    toList () {
+      this.$router.push({
+        path: '/admin/home/shopMain',
+        query: {
+          change_components: '7'
+        }
+      })
     }
   }
 }

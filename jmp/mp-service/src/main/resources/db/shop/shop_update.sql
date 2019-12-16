@@ -1325,5 +1325,30 @@ ALTER TABLE `b2c_reduce_price`
 ADD COLUMN `first` tinyint(1) NOT NULL DEFAULT 1 COMMENT '优先级';
 
 -- 添加字段
-ALTER TABLE `b2c_card_receive_code` 
+ALTER TABLE `b2c_card_receive_code`
 ADD COLUMN `status` tinyint(1) DEFAULT 0 COMMENT '1: 可用 0：禁用' AFTER `error_msg`;
+
+-- 购物车 `b2c_cart` 孔德成
+drop table if exists `b2c_cart`;
+create table `b2c_cart`
+(
+    `cart_id`        int(11)        not null auto_increment,
+    `store_id`       int(11)        not null default '0' comment '门店id',
+    `user_id`        int(11)        not null default '0' comment '用户id',
+    `goods_id`       int(11)        not null default '0' comment '商品id',
+    `goods_sn`       varchar(60)    not null default '' comment '商品sn',
+    `goods_name`     varchar(120)   not null default '' comment '商品名称',
+    `goods_specs`    text comment '例如,颜色:黑色',
+    `product_id`     int(11)        not null default '0' comment '规格产品id',
+    `prd_sn`         varchar(60)    not null default '' comment '规格sn',
+    `goods_price`    decimal(10, 2) not null default '0.00' comment '商品价格',
+    `is_checked`     tinyint(1)     not null default 0 comment '是否选中',
+    `cart_number`    smallint(5)    not null default '0' comment '数量',
+    `original_price` decimal(10, 2) not null default '0.00' comment '加入购物车时的价格',
+    `type`           tinyint(1)     not null default '0' comment '类型 0 普通 ',
+    `extend_id`      int(11)        not null default '0' comment '扩展字段:对应type的类型 ',
+    `create_time`    timestamp               default current_timestamp,
+    `update_time`    timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`cart_id`),
+    KEY `user_id` (`cart_id`,`store_id`) USING BTREE
+);

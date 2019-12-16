@@ -407,11 +407,11 @@ public class OrderReadService extends ShopBaseService {
 				return;
 			}
 			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING
-					&& shopReturnConfig.getReturnShoppingDays() != null
+                && shopReturnConfig.getReturnShippingDays() != null
 					) {
 				//买家已提交物流信息，商家在return_shopping_days日内未处理，系统将默认同意退款退货，并自动退款给买家。
-				vo.setReturnShoppingDays(rOrder.getShippingOrRefundTime().toInstant()
-						.plus(Duration.ofDays(shopReturnConfig.getReturnShoppingDays())).toEpochMilli());
+                vo.setReturnShippingDays(rOrder.getShippingOrRefundTime().toInstant()
+                    .plus(Duration.ofDays(shopReturnConfig.getReturnShippingDays())).toEpochMilli());
 				return;
 			}
 			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDIT_PASS

@@ -7,6 +7,8 @@
     <ServiceAuthList v-if="flag3" />
     <ServiceAuthListDetail v-if="flag6" />
     <serviceSubUserList v-if="flag1" />
+    <noticeList v-if="flag7" />
+    <noticeDetail v-if="flag8" />
   </div>
 </template>
 <script>
@@ -24,7 +26,9 @@ export default {
     AccountSettings: () => import('./accountSettings'),
     ServiceAuthList: () => import('./serviceAuthList'),
     ServiceAuthListDetail: () => import('./serviceAuthListDetail'),
-    serviceSubUserList: () => import('./serviceSubUserList')
+    serviceSubUserList: () => import('./serviceSubUserList'),
+    noticeList: () => import('./noticeList'),
+    noticeDetail: () => import('./noticeDetail')
   },
 
   data () {
@@ -35,7 +39,9 @@ export default {
       flag2: false,
       flag3: false,
       flag4: false,
-      flag6: false
+      flag6: false,
+      flag7: false,
+      flag8: false
     }
   },
   watch: {
@@ -65,6 +71,8 @@ export default {
       this.flag3 = false
       this.flag4 = false
       this.flag6 = false
+      this.flag7 = false
+      this.flag8 = false
     },
     changeComponents () {
       this.defaluteData()
@@ -88,6 +96,14 @@ export default {
             break
           case '6':
             this.flag6 = true
+            break
+          case '7':
+            this.flag7 = true
+            break
+          case '8':
+            this.flag8 = true
+            console.log('传的id')
+            console.log(this.$route.query.id)
             break
           default:
             this.flag4 = true

@@ -117,7 +117,8 @@ export default {
             box_color: '#eee', // 框体颜色
             back_color: '#fff', // 背景颜色
             search_sort: '0', // 商家分类是否显示
-            sort_bg_color: '#666666' // 图标颜色
+            sort_bg_color: '#666666', // 图标颜色
+            search_position: '0' // 滚动位置
           }
           break
         case 10: // 商品分组模块

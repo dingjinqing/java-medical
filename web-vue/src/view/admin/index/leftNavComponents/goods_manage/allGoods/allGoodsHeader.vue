@@ -163,7 +163,8 @@ import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
 // api导入
 import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 // 工具导入
-import { format } from '@/util/date'
+import { startOrEndDayWithFormat } from '@/util/date'
+
 export default {
   name: 'allGoodsHeader',
   props: ['initSortCatParams'],
@@ -233,8 +234,8 @@ export default {
         brandName: this.getBrandNameById(this.goodsFilterFormData.brandId),
         sourceName: this.getSourceNameById(this.goodsFilterFormData.source),
         typeName: this.getTypeNameById(this.goodsFilterFormData.goodsType),
-        saleTimeStart: format(this.goodsFilterFormData.saleTimeStart),
-        saleTimeEnd: format(this.goodsFilterFormData.saleTimeEnd),
+        saleTimeStart: startOrEndDayWithFormat(this.goodsFilterFormData.saleTimeStart, true),
+        saleTimeEnd: startOrEndDayWithFormat(this.goodsFilterFormData.saleTimeEnd, false),
         lowShopPrice: this.goodsFilterFormData.lowShopPrice,
         highShopPrice: this.goodsFilterFormData.highShopPrice
       }
@@ -344,8 +345,8 @@ export default {
       let retData = {
         ...this.goodsFilterFormData
       }
-      retData.saleTimeStart = format(this.goodsFilterFormData.saleTimeStart)
-      retData.saleTimeEnd = format(this.goodsFilterFormData.saleTimeEnd)
+      retData.saleTimeStart = startOrEndDayWithFormat(this.goodsFilterFormData.saleTimeStart, true)
+      retData.saleTimeEnd = startOrEndDayWithFormat(this.goodsFilterFormData.saleTimeEnd, false)
 
       return retData
     },

@@ -175,7 +175,7 @@
               rowspan="5"
               class="middle"
               v-if="activeName === '2'"
-            >不通过理由</td>
+            >{{ item.msg }}</td>
 
           </tr>
           <tr v-if="item.userId !== ''">
