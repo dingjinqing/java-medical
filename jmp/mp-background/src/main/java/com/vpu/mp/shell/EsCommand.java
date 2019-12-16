@@ -1,11 +1,12 @@
 package com.vpu.mp.shell;
 
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import com.github.fonimus.ssh.shell.SshShellHelper;
+import com.github.fonimus.ssh.shell.commands.SshShellComponent;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.service.saas.SaasApplication;
+import com.vpu.mp.thread.es.EsThreadConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellCommandGroup;
@@ -13,15 +14,10 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 import org.springframework.shell.standard.ShellOption;
 
-import com.github.fonimus.ssh.shell.SshShellHelper;
-import com.github.fonimus.ssh.shell.commands.SshShellComponent;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.goods.es.EsTaskParam;
-import com.vpu.mp.service.saas.SaasApplication;
-import com.vpu.mp.thread.es.EsThreadConfig;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 @Slf4j
 @SshShellComponent
 @ShellCommandGroup("ElasticSearch Commands")

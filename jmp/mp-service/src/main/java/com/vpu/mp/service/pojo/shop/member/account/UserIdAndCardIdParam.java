@@ -6,4 +6,5 @@ import lombok.Data;
 public class UserIdAndCardIdParam {
 	private Integer userId;
 	private Integer cardId;
+	private Byte getType;
 }

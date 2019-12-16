@@ -807,4 +807,5 @@ public class GoodsStatisticTaskService extends ShopBaseService {
     public long allGoodsClinchNum(ProductOverviewParam param) {
         return singleGoodsClinchNum(param).values().stream().reduce(INTEGER_ZERO, Integer::sum);
     }
+
 }

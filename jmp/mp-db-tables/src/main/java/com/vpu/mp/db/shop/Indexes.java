@@ -31,8 +31,6 @@ public class Indexes {
     // -------------------------------------------------------------------------
     public static final Index CART_PRIMARY = Indexes0.CART_PRIMARY;
     public static final Index CART_USER_ID = Indexes0.CART_USER_ID;
-    public static final Index CART_BACKUPS_PRIMARY = Indexes0.CART_BACKUPS_PRIMARY;
-    public static final Index CART_BACKUPS_USER_ID = Indexes0.CART_BACKUPS_USER_ID;
     public static final Index COOPEN_ACTIVITY_PRIMARY = Indexes0.COOPEN_ACTIVITY_PRIMARY;
     public static final Index COOPEN_ACTIVITY_RECORDS_PRIMARY = Indexes0.COOPEN_ACTIVITY_RECORDS_PRIMARY;
     public static final Index COMMENT_GOODS_PRIMARY = Indexes0.COMMENT_GOODS_PRIMARY;
@@ -112,7 +110,7 @@ public class Indexes {
     public static final Index DISTRIBUTION_ORDER_PAY_ORDER_MONEY = Indexes0.DISTRIBUTION_ORDER_PAY_ORDER_MONEY;
     public static final Index DISTRIBUTION_ORDER_REF_DATE = Indexes0.DISTRIBUTION_ORDER_REF_DATE;
     public static final Index DISTRIBUTION_STRATEGY_PRIMARY = Indexes0.DISTRIBUTION_STRATEGY_PRIMARY;
-    public static final Index DISTRIBUTION_TAG_DATE_TYPE = Indexes0.DISTRIBUTION_TAG_DATE_TYPE;
+    public static final Index DISTRIBUTION_TAG_DATE_TYPE_TAG = Indexes0.DISTRIBUTION_TAG_DATE_TYPE_TAG;
     public static final Index DISTRIBUTION_TAG_PRIMARY = Indexes0.DISTRIBUTION_TAG_PRIMARY;
     public static final Index DISTRIBUTION_WITHDRAW_ORDER_SN = Indexes0.DISTRIBUTION_WITHDRAW_ORDER_SN;
     public static final Index DISTRIBUTION_WITHDRAW_PRIMARY = Indexes0.DISTRIBUTION_WITHDRAW_PRIMARY;
@@ -554,7 +552,7 @@ public class Indexes {
         public static Index DISTRIBUTION_ORDER_PAY_ORDER_MONEY = Internal.createIndex("pay_order_money", DistributionOrder.DISTRIBUTION_ORDER, new OrderField[] { DistributionOrder.DISTRIBUTION_ORDER.PAY_ORDER_MONEY }, false);
         public static Index DISTRIBUTION_ORDER_REF_DATE = Internal.createIndex("ref_date", DistributionOrder.DISTRIBUTION_ORDER, new OrderField[] { DistributionOrder.DISTRIBUTION_ORDER.REF_DATE }, false);
         public static Index DISTRIBUTION_STRATEGY_PRIMARY = Internal.createIndex("PRIMARY", DistributionStrategy.DISTRIBUTION_STRATEGY, new OrderField[] { DistributionStrategy.DISTRIBUTION_STRATEGY.ID }, true);
-        public static Index DISTRIBUTION_TAG_DATE_TYPE = Internal.createIndex("date_type", DistributionTag.DISTRIBUTION_TAG, new OrderField[] { DistributionTag.DISTRIBUTION_TAG.REF_DATE, DistributionTag.DISTRIBUTION_TAG.TYPE }, false);
+        public static Index DISTRIBUTION_TAG_DATE_TYPE_TAG = Internal.createIndex("date_type_tag", DistributionTag.DISTRIBUTION_TAG, new OrderField[]{DistributionTag.DISTRIBUTION_TAG.REF_DATE, DistributionTag.DISTRIBUTION_TAG.TYPE, DistributionTag.DISTRIBUTION_TAG.TAG_ID}, true);
         public static Index DISTRIBUTION_TAG_PRIMARY = Internal.createIndex("PRIMARY", DistributionTag.DISTRIBUTION_TAG, new OrderField[]{DistributionTag.DISTRIBUTION_TAG.ID}, true);
         public static Index DISTRIBUTION_WITHDRAW_ORDER_SN = Internal.createIndex("order_sn", DistributionWithdraw.DISTRIBUTION_WITHDRAW, new OrderField[] { DistributionWithdraw.DISTRIBUTION_WITHDRAW.ORDER_SN }, true);
         public static Index DISTRIBUTION_WITHDRAW_PRIMARY = Internal.createIndex("PRIMARY", DistributionWithdraw.DISTRIBUTION_WITHDRAW, new OrderField[] { DistributionWithdraw.DISTRIBUTION_WITHDRAW.ID }, true);
@@ -931,7 +929,5 @@ public class Indexes {
         public static Index SUBSCRIBE_MESSAGE_WX_OPENID = Internal.createIndex("wx_openid", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.WX_OPENID }, false);
         public static Index CART_PRIMARY = Internal.createIndex("PRIMARY", Cart.CART, new OrderField[] { Cart.CART.CART_ID }, true);
         public static Index CART_USER_ID = Internal.createIndex("user_id", Cart.CART, new OrderField[] { Cart.CART.CART_ID, Cart.CART.STORE_ID }, false);
-        public static Index CART_BACKUPS_PRIMARY = Internal.createIndex("PRIMARY", CartBackups.CART_BACKUPS, new OrderField[] { CartBackups.CART_BACKUPS.CART_ID }, true);
-        public static Index CART_BACKUPS_USER_ID = Internal.createIndex("user_id", CartBackups.CART_BACKUPS, new OrderField[] { CartBackups.CART_BACKUPS.CART_ID, CartBackups.CART_BACKUPS.STORE_ID }, false);
     }
 }

@@ -245,14 +245,12 @@ public class Keys {
     public static final Identity<UserRfmSummaryRecord, Integer> IDENTITY_USER_RFM_SUMMARY = Identities0.IDENTITY_USER_RFM_SUMMARY;
     public static final Identity<SubscribeMessageRecord, Long> IDENTITY_SUBSCRIBE_MESSAGE = Identities0.IDENTITY_SUBSCRIBE_MESSAGE;
     public static final Identity<CartRecord, Integer> IDENTITY_CART = Identities0.IDENTITY_CART;
-    public static final Identity<CartBackupsRecord, Integer> IDENTITY_CART_BACKUPS = Identities0.IDENTITY_CART_BACKUPS;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = UniqueKeys0.KEY_B2C_CART_PRIMARY;
-    public static final UniqueKey<CartBackupsRecord> KEY_B2C_CART_BACKUPS_PRIMARY = UniqueKeys0.KEY_B2C_CART_BACKUPS_PRIMARY;
     public static final UniqueKey<CoopenActivityRecord> KEY_B2C_COOPEN_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_COOPEN_ACTIVITY_PRIMARY;
     public static final UniqueKey<CoopenActivityRecordsRecord> KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY = UniqueKeys0.KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY;
     public static final UniqueKey<PayAwardRecord> KEY_B2C_PAY_AWARD_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_PRIMARY;
@@ -305,6 +303,7 @@ public class Keys {
     public static final UniqueKey<DistributionWithdrawRecord> KEY_B2C_DISTRIBUTION_WITHDRAW_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTION_WITHDRAW_PRIMARY;
     public static final UniqueKey<DistributionWithdrawRecord> KEY_B2C_DISTRIBUTION_WITHDRAW_ORDER_SN = UniqueKeys0.KEY_B2C_DISTRIBUTION_WITHDRAW_ORDER_SN;
     public static final UniqueKey<DistributionTagRecord> KEY_B2C_DISTRIBUTION_TAG_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTION_TAG_PRIMARY;
+    public static final UniqueKey<DistributionTagRecord> KEY_B2C_DISTRIBUTION_TAG_DATE_TYPE_TAG = UniqueKeys0.KEY_B2C_DISTRIBUTION_TAG_DATE_TYPE_TAG;
     public static final UniqueKey<DistributorApplyRecord> KEY_B2C_DISTRIBUTOR_APPLY_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTOR_APPLY_PRIMARY;
     public static final UniqueKey<DistributorGroupRecord> KEY_B2C_DISTRIBUTOR_GROUP_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTOR_GROUP_PRIMARY;
     public static final UniqueKey<DistributorLevelRecord> KEY_B2C_DISTRIBUTOR_LEVEL_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTOR_LEVEL_PRIMARY;
@@ -712,12 +711,10 @@ public class Keys {
         public static Identity<UserRfmSummaryRecord, Integer> IDENTITY_USER_RFM_SUMMARY = Internal.createIdentity(UserRfmSummary.USER_RFM_SUMMARY, UserRfmSummary.USER_RFM_SUMMARY.ID);
         public static Identity<SubscribeMessageRecord, Long> IDENTITY_SUBSCRIBE_MESSAGE = Internal.createIdentity(SubscribeMessage.SUBSCRIBE_MESSAGE, SubscribeMessage.SUBSCRIBE_MESSAGE.REC_ID);
         public static Identity<CartRecord, Integer> IDENTITY_CART = Internal.createIdentity(Cart.CART, Cart.CART.CART_ID);
-        public static Identity<CartBackupsRecord, Integer> IDENTITY_CART_BACKUPS = Internal.createIdentity(CartBackups.CART_BACKUPS, CartBackups.CART_BACKUPS.CART_ID);
     }
 
     private static class UniqueKeys0 {
         public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = Internal.createUniqueKey(Cart.CART, "KEY_b2c_cart_PRIMARY", Cart.CART.CART_ID);
-        public static final UniqueKey<CartBackupsRecord> KEY_B2C_CART_BACKUPS_PRIMARY = Internal.createUniqueKey(CartBackups.CART_BACKUPS, "KEY_b2c_cart_backups_PRIMARY", CartBackups.CART_BACKUPS.CART_ID);
         public static final UniqueKey<CoopenActivityRecord> KEY_B2C_COOPEN_ACTIVITY_PRIMARY = Internal.createUniqueKey(CoopenActivity.COOPEN_ACTIVITY, "KEY_b2c_coopen_activity_PRIMARY", CoopenActivity.COOPEN_ACTIVITY.ID);
         public static final UniqueKey<CoopenActivityRecordsRecord> KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY = Internal.createUniqueKey(CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS, "KEY_b2c_coopen_activity_records_PRIMARY", CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS.ID);
         public static final UniqueKey<PayAwardRecord> KEY_B2C_PAY_AWARD_PRIMARY = Internal.createUniqueKey(PayAward.PAY_AWARD, "KEY_b2c_pay_award_PRIMARY", PayAward.PAY_AWARD.ID);
@@ -767,6 +764,7 @@ public class Keys {
         public static final UniqueKey<DecorateLinkRecord> KEY_B2C_DECORATE_LINK_PRIMARY = Internal.createUniqueKey(DecorateLink.DECORATE_LINK, "KEY_b2c_decorate_link_PRIMARY", DecorateLink.DECORATE_LINK.ID);
         public static final UniqueKey<DeliverFeeTemplateRecord> KEY_B2C_DELIVER_FEE_TEMPLATE_PRIMARY = Internal.createUniqueKey(DeliverFeeTemplate.DELIVER_FEE_TEMPLATE, "KEY_b2c_deliver_fee_template_PRIMARY", DeliverFeeTemplate.DELIVER_FEE_TEMPLATE.DELIVER_TEMPLATE_ID);
         public static final UniqueKey<DistributionTagRecord> KEY_B2C_DISTRIBUTION_TAG_PRIMARY = Internal.createUniqueKey(DistributionTag.DISTRIBUTION_TAG, "KEY_b2c_distribution_tag_PRIMARY", DistributionTag.DISTRIBUTION_TAG.ID);
+        public static final UniqueKey<DistributionTagRecord> KEY_B2C_DISTRIBUTION_TAG_DATE_TYPE_TAG = Internal.createUniqueKey(DistributionTag.DISTRIBUTION_TAG, "KEY_b2c_distribution_tag_date_type_tag", DistributionTag.DISTRIBUTION_TAG.REF_DATE, DistributionTag.DISTRIBUTION_TAG.TYPE, DistributionTag.DISTRIBUTION_TAG.TAG_ID);
         public static final UniqueKey<DistributionStrategyRecord> KEY_B2C_DISTRIBUTION_STRATEGY_PRIMARY = Internal.createUniqueKey(DistributionStrategy.DISTRIBUTION_STRATEGY, "KEY_b2c_distribution_strategy_PRIMARY", DistributionStrategy.DISTRIBUTION_STRATEGY.ID);
         public static final UniqueKey<DistributionWithdrawRecord> KEY_B2C_DISTRIBUTION_WITHDRAW_PRIMARY = Internal.createUniqueKey(DistributionWithdraw.DISTRIBUTION_WITHDRAW, "KEY_b2c_distribution_withdraw_PRIMARY", DistributionWithdraw.DISTRIBUTION_WITHDRAW.ID);
         public static final UniqueKey<DistributionWithdrawRecord> KEY_B2C_DISTRIBUTION_WITHDRAW_ORDER_SN = Internal.createUniqueKey(DistributionWithdraw.DISTRIBUTION_WITHDRAW, "KEY_b2c_distribution_withdraw_order_sn", DistributionWithdraw.DISTRIBUTION_WITHDRAW.ORDER_SN);

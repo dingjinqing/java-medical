@@ -29,7 +29,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	@PostMapping("/trend")
 	public JsonResult getTrend(@RequestBody DateParam param) {
 	    //得到客户概况和变化趋势
-		TrendVo result = shop().overview.overviewUserAnalysisService.getTrend(param);
+		TrendVo result = shop().overview.userAnalysisService.getTrend(param);
         //返回计算结果
 		return success(result);
 
@@ -44,7 +44,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	@PostMapping("/active")
 	public JsonResult getActive(@RequestBody DateParam param) {
         //得到用户活跃情况
-	    ActiveTotalVo result = shop().overview.overviewUserAnalysisService
+	    ActiveTotalVo result = shop().overview.userAnalysisService
 				.getActive(param);
         //返回计算结果
 		return success(result);
@@ -60,7 +60,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	@PostMapping("/vip")
 	public JsonResult getVip(@RequestBody DateParam param) {
         //得到会员统计情况
-		VipVo result = shop().overview.overviewUserAnalysisService
+		VipVo result = shop().overview.userAnalysisService
 				.getVip(param);
 
 		return success(result);
@@ -76,7 +76,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	@PostMapping("/order")
 	public JsonResult getOrder(@RequestBody DateParam param) {
         //得到成交用户情况
-		OrderVo result = shop().overview.overviewUserAnalysisService
+		OrderVo result = shop().overview.userAnalysisService
 				.getOrder(param);
 		return success(result);
 	}
@@ -89,7 +89,7 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
 	 */
 	@PostMapping("/rebuy")
 	public JsonResult getRebuyTrend(@RequestBody RebuyParam param) {
-		RebuyVo result = shop().overview.overviewUserAnalysisService
+		RebuyVo result = shop().overview.userAnalysisService
 				.getRebuyTrend(param);
 		return success(result);
 	}
@@ -103,12 +103,12 @@ public class AdminOverviewUserAnalysisController extends AdminBaseController {
     @PostMapping("/rfm")
     public JsonResult getRFMAnalysis(@RequestBody RFMParam param) {
      //判断指定日期有无数据
-     Boolean data = shop().overview.overviewUserAnalysisService.getRFMData(param);
+     Boolean data = shop().overview.userAnalysisService.getRFMData(param);
      if (!data){
          return fail(JsonResultMessage.OVERVIEW_USER_ANALYSIS_RFM_NULL);
      }
      //得到RFM数据
-     List<RFMVo> rfmVoList = shop().overview.overviewUserAnalysisService.getRFMAnalysis(param);
+     List<RFMVo> rfmVoList = shop().overview.userAnalysisService.getRFMAnalysis(param);
      return success(rfmVoList);
     }
 }

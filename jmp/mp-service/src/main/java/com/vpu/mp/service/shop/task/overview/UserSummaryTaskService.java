@@ -5,16 +5,27 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
+import org.jooq.Record3;
+import org.jooq.Record6;
 import org.jooq.impl.DSL;
+import org.jooq.lambda.tuple.Tuple2;
+import org.jooq.lambda.tuple.Tuple3;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
+import static com.vpu.mp.db.shop.tables.Tag.TAG;
+import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.*;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 /**
  * The type User summary task service.
@@ -147,6 +158,27 @@ public class UserSummaryTaskService extends ShopBaseService {
     }
 
     /**
+     * Pay new user money big decimal.老用户成交金额(排除货到付款非发货)
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the big decimal
+     */
+    public BigDecimal payOldUserMoney(Timestamp startTime, Timestamp endTime) {
+        BigDecimal totalMoney = BIGDECIMAL_ZERO;
+        Map<Integer, BigDecimal> userMoney = payUserMoney(startTime, endTime);
+        // 拿到历史成交用户集合
+        Set<Integer> users = payUserCollection(DateUtil.get1970TimeStamp(), startTime);
+        for (Map.Entry<Integer, BigDecimal> entry : userMoney.entrySet()) {
+            if (users.contains(entry.getKey())) {
+                totalMoney = totalMoney.add(entry.getValue());
+            }
+        }
+        // TODO 虚拟订单会员卡订单成交金额
+        return totalMoney;
+    }
+
+    /**
      * Pay user money map.指定时间内每一位用户成交金额(排除货到付款非发货)
      *
      * @param startTime the start time
@@ -161,6 +193,64 @@ public class UserSummaryTaskService extends ShopBaseService {
             .groupBy(ORDER_I.USER_ID)
             .orderBy(ORDER_I.CREATE_TIME)
             .fetchMap(ORDER_I.USER_ID, BigDecimal.class);
+    }
+
+    /**
+     * Pay user money map.指定时间内每一位用户成交件数(排除货到付款非发货)
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, Integer> payUserGoodsNum(Timestamp startTime, Timestamp endTime) {
+        return db().select(ORDER_I.USER_ID, DSL.sum(ORDER_G.GOODS_NUMBER).cast(Integer.class))
+            .from(ORDER_I).leftJoin(ORDER_G).on(ORDER_I.ORDER_SN.eq(ORDER_G.ORDER_SN))
+            .where(STATUS_CONDITION)
+            .and(ORDER_I.ORDER_SN.eq(ORDER_I.MAIN_ORDER_SN).or(ORDER_I.MAIN_ORDER_SN.eq(StringUtils.EMPTY)))
+            .and(ORDER_I.CREATE_TIME.ge(startTime)).and(ORDER_I.CREATE_TIME.lessThan(endTime))
+            .groupBy(ORDER_I.USER_ID)
+            .orderBy(ORDER_I.CREATE_TIME)
+            .fetchMap(ORDER_I.USER_ID, Integer.class);
+    }
+
+    /**
+     * Pay new user money big decimal.新用户成交件数(排除货到付款非发货)
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the big decimal
+     */
+    public int payNewUserGoodsNum(Timestamp startTime, Timestamp endTime) {
+        int totalNum = INTEGER_ZERO;
+        Map<Integer, Integer> userMoney = payUserGoodsNum(startTime, endTime);
+        // 拿到历史成交用户集合
+        Set<Integer> users = payUserCollection(DateUtil.get1970TimeStamp(), startTime);
+        for (Map.Entry<Integer, Integer> entry : userMoney.entrySet()) {
+            if (!users.contains(entry.getKey())) {
+                totalNum += entry.getValue();
+            }
+        }
+        return totalNum;
+    }
+
+    /**
+     * Pay new user money big decimal.旧用户成交件数(排除货到付款非发货)
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the big decimal
+     */
+    public int payOldUserGoodsNum(Timestamp startTime, Timestamp endTime) {
+        int totalNum = INTEGER_ZERO;
+        Map<Integer, Integer> userMoney = payUserGoodsNum(startTime, endTime);
+        // 拿到历史成交用户集合
+        Set<Integer> users = payUserCollection(DateUtil.get1970TimeStamp(), startTime);
+        for (Map.Entry<Integer, Integer> entry : userMoney.entrySet()) {
+            if (users.contains(entry.getKey())) {
+                totalNum += entry.getValue();
+            }
+        }
+        return totalNum;
     }
 
     /**
@@ -237,5 +327,116 @@ public class UserSummaryTaskService extends ShopBaseService {
      * Gets tag user.获得标签用户
      */
     public void getTagUser() {
+    }
+
+    /**
+     * Gets recency type.
+     *
+     * @param time the time
+     * @return the recency type
+     */
+    public Map<Integer, Tuple2<Timestamp, Timestamp>> getRecencyType(LocalDateTime time) {
+        return new HashMap<Integer, Tuple2<Timestamp, Timestamp>>(7) {{
+            put(1, new Tuple2<>(Timestamp.valueOf(time), Timestamp.valueOf(time.minusDays(5))));
+            put(2, new Tuple2<>(Timestamp.valueOf(time.minusDays(10)), Timestamp.valueOf(time.minusDays(5))));
+            put(3, new Tuple2<>(Timestamp.valueOf(time.minusDays(30)), Timestamp.valueOf(time.minusDays(10))));
+            put(4, new Tuple2<>(Timestamp.valueOf(time.minusDays(90)), Timestamp.valueOf(time.minusDays(30))));
+            put(5, new Tuple2<>(Timestamp.valueOf(time.minusDays(180)), Timestamp.valueOf(time.minusDays(90))));
+            put(6, new Tuple2<>(Timestamp.valueOf(time.minusDays(365)), Timestamp.valueOf(time.minusDays(180))));
+            put(7, new Tuple2<>(DateUtil.get1970TimeStamp(), Timestamp.valueOf(time.minusDays(365))));
+        }};
+    }
+
+    /**
+     * Gets rfm data.获取每个用户的下单数量和成交金额
+     *
+     * @param start the start
+     * @param end   the end
+     * @return the rfm data
+     */
+    public Map<Integer, Record3<Integer, Integer, BigDecimal>> getRFMData(Timestamp start, Timestamp end) {
+        return db().select(ORDER_I.USER_ID, DSL.count(ORDER_I.USER_ID), DSL.sum(ORDER_I.MONEY_PAID).add(DSL.sum(ORDER_I.USE_ACCOUNT)).add(DSL.sum(ORDER_I.MEMBER_CARD_BALANCE)))
+            .from(ORDER_I)
+            .where(STATUS_CONDITION).and(ORDER_SN_CONDITION)
+            .and(ORDER_I.CREATE_TIME.ge(start)).and(ORDER_I.CREATE_TIME.lessThan(end))
+            .groupBy(ORDER_I.USER_ID)
+            .fetchMap(ORDER_I.USER_ID);
+    }
+
+    /**
+     * Reduce rfm data tuple 3.
+     *
+     * @param rfmData the rfm data
+     * @param action  the action
+     * @return the tuple 3
+     */
+    @SuppressWarnings({"unchecked"})
+    public Tuple3<Integer, Integer, BigDecimal> reduceRfmData(Map<Integer, Record3<Integer, Integer, BigDecimal>> rfmData, Predicate<Integer> action) {
+        Stream<Record3<Integer, Integer, BigDecimal>> stream = rfmData.values().stream().filter((r) -> action.test(r.value2()));
+        int payUserNum = stream.mapToInt(Record3::value1).sum();
+        int orderNum = stream.mapToInt(Record3::value2).sum();
+        BigDecimal totalPaidMoney = stream.map(Record3::value3).reduce(BIGDECIMAL_ZERO, BigDecimal::add);
+        return new Tuple3(payUserNum, orderNum, totalPaidMoney);
+    }
+
+    /**
+     * Gets tag data.每个标签下所有用户 付款人数，付款订单数，付款金额，付款商品件数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the tag data
+     */
+    public Map<Integer, Record6<Integer, String, Integer, Integer, BigDecimal, Integer>> getTagData(Timestamp startTime, Timestamp endTime) {
+        return db().select(USER_TAG.TAG_ID
+            , TAG.TAG_NAME
+            , DSL.countDistinct(ORDER_I.USER_ID)
+            , DSL.count(ORDER_I.USER_ID)
+            , DSL.sum(ORDER_I.MONEY_PAID).add(DSL.sum(ORDER_I.USE_ACCOUNT)).add(DSL.sum(ORDER_I.MEMBER_CARD_BALANCE))
+            , DSL.count(ORDER_G.GOODS_NUMBER))
+            .from(ORDER_I).leftJoin(USER_TAG).on(ORDER_I.USER_ID.eq(USER_TAG.USER_ID))
+            .leftJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID))
+            .leftJoin(ORDER_G).on(ORDER_I.ORDER_SN.eq(ORDER_G.ORDER_SN))
+            .where(ORDER_SN_CONDITION).and(STATUS_CONDITION)
+            .and(ORDER_I.CREATE_TIME.ge(startTime)).and(ORDER_I.CREATE_TIME.lessThan(endTime))
+            .groupBy(USER_TAG.TAG_ID)
+            .having(USER_TAG.TAG_ID.greaterThan(INTEGER_ZERO))
+            .fetchMap(USER_TAG.TAG_ID);
+    }
+
+    /**
+     * Tag user has mobile num map.标签用户付款且有手机号的用户数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, Record3<Integer, String, Integer>> tagUserHasMobileNum(Timestamp startTime, Timestamp endTime) {
+        return db().select(USER_TAG.TAG_ID
+            , TAG.TAG_NAME
+            , DSL.countDistinct(ORDER_I.USER_ID))
+            .from(ORDER_I).leftJoin(USER_TAG).on(ORDER_I.USER_ID.eq(USER_TAG.USER_ID))
+            .leftJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID))
+            .leftJoin(User.USER).on(User.USER.USER_ID.eq(ORDER_I.USER_ID))
+            .where(ORDER_SN_CONDITION).and(STATUS_CONDITION)
+            .and(ORDER_I.CREATE_TIME.ge(startTime)).and(ORDER_I.CREATE_TIME.lessThan(endTime))
+            .and(User.USER.MOBILE.isNotNull())
+            .groupBy(USER_TAG.TAG_ID)
+            .having(USER_TAG.TAG_ID.greaterThan(INTEGER_ZERO))
+            .fetchMap(USER_TAG.TAG_ID);
+    }
+
+    /**
+     * Tag user num map.标签用户数
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the map
+     */
+    public Map<Integer, Record3<Integer, String, Integer>> tagUserNum(Timestamp startTime, Timestamp endTime) {
+        return db().select(USER_TAG.TAG_ID, TAG.TAG_NAME, DSL.countDistinct(USER_TAG.USER_ID)).from(USER_TAG)
+            .leftJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID))
+            .where(USER_TAG.CREATE_TIME.ge(startTime)).and(USER_TAG.CREATE_TIME.lessThan(endTime))
+            .groupBy(USER_TAG.TAG_ID)
+            .fetchMap(USER_TAG.TAG_ID);
     }
 }

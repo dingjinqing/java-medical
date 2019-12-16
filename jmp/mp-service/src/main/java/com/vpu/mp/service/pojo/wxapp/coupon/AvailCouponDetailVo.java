@@ -24,6 +24,14 @@ public class AvailCouponDetailVo {
 	 * 优惠券码
 	 */
 	public Timestamp startTime;
+    /**
+     * 优惠类型 discount:打折；voucher：优惠减价
+     */
+	public String actCode;
+    /**
+     * 面额/打折
+     */
+	public BigDecimal denomination;
 	/**
 	 * 有效期结束时间
 	 */
@@ -44,5 +52,42 @@ public class AvailCouponDetailVo {
 	 * 是否已使用 0 未使用 1 已使用 2过期吧 3 废除
 	 */
 	public Integer isUsed;
+    /**
+     * 适用商品
+     */
+	public String recommendGoodsId;
+    /**
+     * 适用分类
+     */
+    public String recommendSortId;
+    /**
+     * 适用品牌
+     */
+    public String recommendCatId;
+    /**
+     * 是否积分兑换
+     */
+    public Byte useScore;
+    /**
+     * 需要积分数
+     */
+    public Integer scoreNumber;
+    /**
+     * 有效期类型
+     */
+    private Byte validityType;
+    /**有效天数*/
+    private Integer validity;
+    /**有效小时*/
+    private Integer validityHour;
+    /**有效分钟*/
+    private Integer validityMinute;
+
+    /**是否存在使用门槛 0否 1是*/
+    private Byte useConsumeRestrict;
+    /**
+     * 满多少可用
+     */
+    private BigDecimal leastConsume;
 }
 

@@ -630,6 +630,7 @@ public class UserService extends ShopBaseService {
 		if (userGrade.equals(CardConstant.LOWEST_GRADE)) {
 			logger().info("进入用户等级为0");
 			try {
+				data.put("get_grade", 0);
 				userCard.updateGrade(userId, null, (byte) 1);
 			} catch (Exception e) {
 				logger().error("userGrade为0时报错");
@@ -640,6 +641,7 @@ public class UserService extends ShopBaseService {
 			logger().info("进入用户等级为其他");
 			try {
 				int isGet = userCard.updateGrade(userId, null, (byte) 0); // 上面方法返回值is_get
+				logger().info("isGet的值为"+isGet);
 				if (isGet > 0) {
 					data.put("get_grade", 1);
 				} else {

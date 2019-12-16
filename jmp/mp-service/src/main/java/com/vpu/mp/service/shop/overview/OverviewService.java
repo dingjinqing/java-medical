@@ -1,9 +1,8 @@
 package com.vpu.mp.service.shop.overview;
 
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 
 /**
  * @author liangchen
@@ -12,6 +11,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 @Service
 public class OverviewService extends ShopBaseService{
 	@Autowired public OverviewAnalysisService overviewAnalysisService;
-	@Autowired public OverviewUserAnalysisService overviewUserAnalysisService;
-	@Autowired public OverviewSearchAnalysisService overviewSearchAnalysisService;
+	@Autowired public UserAnalysisService userAnalysisService;
+	@Autowired public SearchAnalysisService searchAnalysisService;
 }

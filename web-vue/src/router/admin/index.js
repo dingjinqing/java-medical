@@ -84,6 +84,19 @@ const routes = [{
                 '@/view/admin/index/leftNavComponents/first_web_manage/overviewStatistics/overviewStatistics'
               )
       },
+      // 概况 - 搜索统计
+      {
+        path: '/admin/home/main/searchStatistics',
+        name: 'search_summary',
+        meta: {
+          crumbTitle: 'router.search_summary',
+          meta: 'first_web_manage'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/searchStatistics/searchStatistics'
+          )
+      },
       {
         path: '/admin/home/main/realtimeoverview',
         name: 'situation',

@@ -44,7 +44,7 @@ public class EsGoodsCreateService extends BaseShopConfigService {
      */
     public void createEsGoodsIndex(Integer goodsId,Integer shopId){
         deleteEsGoods(goodsId,shopId);
-        commitEdGoodsIndex(esAssemblyDataService.assemblyEsGoods(goodsId, shopId));
+        batchCommitEsGoodsIndex(esAssemblyDataService.assemblyEsGoods(Collections.singletonList(goodsId), shopId));
     }
 
     /**

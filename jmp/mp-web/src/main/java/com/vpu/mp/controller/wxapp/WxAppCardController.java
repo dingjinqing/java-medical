@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardGetParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
@@ -72,12 +73,15 @@ public class WxAppCardController extends WxAppBaseController {
 	 * 领取会员卡
 	 */
 	@PostMapping(value="/api/card/getCard")
-	public JsonResult getCard(@RequestBody UserIdAndCardIdParam param) {
+	public JsonResult getCard(@RequestBody UserCardGetParam param) {
+		UserIdAndCardIdParam para = new UserIdAndCardIdParam();
 		logger().info("领取会员卡");
 		WxAppSessionUser user = wxAppAuth.user();
-		param.setUserId(user.getUserId());
+		para.setUserId(user.getUserId());
+		para.setGetType(param.getGetType());
+		para.setCardId(param.getCardInfo().getCardId());
 		try {
-			return success(shop().user.userCard.getCard(param));
+			return success(shop().user.userCard.getCard(para));
 		} catch (MpException e) {
 			return fail(e.getErrorCode());
 		}	
@@ -104,7 +108,6 @@ public class WxAppCardController extends WxAppBaseController {
 	public JsonResult activationCard(@RequestBody @Validated ActivateCardParam param) {
 		logger().info("获取会员卡激活信息"+param);
 		param.setUserId(this.wxAppAuth.user().getUserId());
-		
 		try {
 			ActivateCardVo vo = shop().user.wxUserCardService.activationCard(param,getLang());
 			if(NumberUtils.BYTE_ONE.equals(param.getIsSetting())) {

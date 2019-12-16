@@ -18,8 +18,11 @@ global.wxPage({
    */
   onLoad: function(options) {
     if (!options.goodsId) return;
+    let {goodsId,activityId=null,activityType=null} = options
     this.setData({
-      goodsId: options.goodsId
+      goodsId,
+      activityId,
+      activityType
     });
     this.requestGoodsInfo().then(res => {
       this.requestPledge(res);
@@ -27,8 +30,8 @@ global.wxPage({
   },
   // 获取活动倒计时
   getActStatus(e) {
-    let second = e.detail;
-    // console.log(second);
+    let {canBuy} = e.detail;
+    console.log(canBuy)
   },
   // 商品详情请求
   requestGoodsInfo() {
@@ -42,11 +45,14 @@ global.wxPage({
             this.getCouponInfo(res.content);
             this.getGoodsDescInfo(res.content);
             this.getComment(res.content)
+            this.getActivity(res.content)
             resolve(res.content);
           }
         },
         {
           goodsId: this.data.goodsId,
+          activityId:this.data.activityId,
+          activityType:this.data.activityType,
           userId: util.getCache("user_id"),
           lon:null,
           lat:null
@@ -120,6 +126,7 @@ global.wxPage({
       goodsName,
       goodsSaleNum,
       labels,
+      goodsAd,
       defaultPrd,
       products,
       goodsNumber,
@@ -132,6 +139,7 @@ global.wxPage({
     let info = {
       goodsId,
       goodsName,
+      goodsAd,
       goodsSaleNum,
       labels,
       defaultPrd,
@@ -165,6 +173,12 @@ global.wxPage({
     this.setData({
       showSpec: false,
       triggerButton:''
+    })
+  },
+  getActivity({activity}){
+    if(!activity) return
+    this.setData({
+      activity
     })
   },
   /**

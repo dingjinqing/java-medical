@@ -13,4 +13,8 @@ public class AvailCouponDetailParam {
 	 * 优惠券码
 	 */
 	public String couponSn;
+    /**
+     * 优惠券活动ID
+     */
+	public Integer couponId;
 }

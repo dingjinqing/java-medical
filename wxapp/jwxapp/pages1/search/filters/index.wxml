@@ -50,7 +50,7 @@
         <view class="item brand more" bindtap="showBrand">更多...</view>
       </view>
     </view>
-    <view class="filter-item">
+    <view class="filter-item" wx:if="{{false}}">
       <view class="item-title-content">
         <text class="title">活动商品</text>
       </view>

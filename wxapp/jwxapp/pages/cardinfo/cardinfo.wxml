@@ -235,7 +235,7 @@
   </view>
   
   <view class="flex_footer">
-    <view class="footer_btn">设置默认会员卡</view>
+    <view class="footer_btn" data-btnType="{{btnType}}" data-cardNo="{{cardInfo.cardNo}}" data-cardId="{{cardInfo.cardId}}" style='background:{{comColor}}' bindtap="handleToBtn">{{bottomBtnText}}</view>
   </view>
   <include src="../common/footer.wxml" />
 
