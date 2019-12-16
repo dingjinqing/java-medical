@@ -28,9 +28,9 @@
             >
               <el-option
                 v-for="item in classOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :key="item.classifyId"
+                :label="item.classifyName"
+                :value="item.classifyId"
               >
               </el-option>
             </el-select>
@@ -40,27 +40,6 @@
             type="primary"
             @click="handleToQueryData()"
           >{{btnText}}</el-button>
-        </div>
-        <div
-          class="dialogMiddle"
-          v-if="btnText==='筛选'"
-        >
-          <div class="topList">
-            <span>品牌来源:</span>
-            <el-select
-              v-model="brandSourcesVal"
-              placeholder="请选择品牌来源"
-              size="small"
-            >
-              <el-option
-                v-for="item in brandSources"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
         </div>
         <div class="footer">
           <el-table
@@ -133,7 +112,7 @@
   </div>
 </template>
 <script>
-import { brandAllGetRequest } from '@/api/admin/brandManagement.js'
+import { brandAllGetRequest, classificationSelectRequest, batchBind } from '@/api/admin/brandManagement.js'
 export default {
   props: {
     callAddBrand: { // 弹窗调起
@@ -280,6 +259,13 @@ export default {
           this.backFlag = true
         }
       })
+      classificationSelectRequest().then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+          res.content.unshift({ classifyName: this.$t('brandManagement.whole'), classifyId: '' })
+          this.classOptions = res.content
+        }
+      })
     },
     changeFun (val) {
       if (val.length) {
@@ -302,13 +288,34 @@ export default {
     // 确定事件
     handleToSure () {
       let arr = []
+      let idArr = []
       this.tableData.forEach(item => {
         if (item.ischeck) {
           arr.push(item)
+          idArr.push(item.id)
         }
       })
-      this.$emit('handleToGetBackData', arr)
-      this.$emit('update:callAddBrand', false)
+      let obj = {
+        classifyId: this.classValue,
+        brandIds: idArr
+      }
+      batchBind(obj).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success({
+            message: '添加成功',
+            showClose: true
+          })
+          this.$emit('handleToGetBackData', arr)
+          this.$emit('update:callAddBrand', false)
+        } else if (res.error === 131006) {
+          this.$message.error({
+            message: '请选择品牌分类',
+            showClose: true
+          })
+        }
+      })
+      console.log(this.classValue, arr)
     }
   }
 }

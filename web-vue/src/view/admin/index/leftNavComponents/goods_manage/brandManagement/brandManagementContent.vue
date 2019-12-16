@@ -624,6 +624,7 @@ export default {
     // 商品品牌弹窗回传数据
     handleToGetBackData (res) {
       console.log(res)
+      this.defaultPageingGrand()
     },
     // tap切换
     handleClick (tab, event) {
@@ -662,7 +663,7 @@ export default {
       }
     },
     defaultPageingGrand () {
-      console.log(this.timeValue2[0], this.timeValue2[1])
+      console.log(startOrEndDayWithFormat(this.classifyBrandStartTime, true), startOrEndDayWithFormat(this.classifyBrandEndTime, false))
       let obj = {
         classifyName: this.classifyName,
         startAddTime: startOrEndDayWithFormat(this.classifyBrandStartTime, true),
