@@ -306,8 +306,8 @@ public class AccountService extends ShopBaseService {
 		// 已绑定公众号 
 		if(wxapp!=null && !StringUtils.isBlank(wxapp.getLinkOfficialAppId())) {
 			String wxOpenId = memberService.getUserWxOpenId(userId);
-			
 		}
+		
 		return vo;
 		
 	}

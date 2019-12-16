@@ -250,7 +250,7 @@ public class UserCardService extends ShopBaseService {
 	 * 会员卡升级检测并升级
 	 * 
 	 * @param type 是否领取 1领取 0只是检测
-	 * @return 检测的结果
+	 * @return cardId（当type为0时为检测可升级的卡id,type为1时为领取后的卡id),0为没有可升级的卡
 	 */
 	public Integer updateGrade(Integer userId, Integer cardId, Byte type) throws MpException {
 		assert userId != null : "userId required";
@@ -266,17 +266,16 @@ public class UserCardService extends ShopBaseService {
 				// 检测可升级到的卡
 				cardId = checkCardCanUpgrade(userId);
 			}
-
 			if (cardId == null) {
 				logger().info("没有可升级的等级会员卡");
-				throw new MemberCardNullException(JsonResultCode.CODE_CARD_GRADE_NONE);
+				return 0;
 			} else if (type == 0) {
 				logger().info(String.format("检测到可领取等级卡 %d", cardId));
 				// 仅仅检测是否可领取等级卡
 				return cardId;
 			}
 		}
-		return null;
+		return 0;
 	}
 
 	private Integer checkAndUpgradeUserCard(Integer userId) throws MpException {
@@ -1429,6 +1428,9 @@ public class UserCardService extends ShopBaseService {
 		if (param.getCardId() != null) {
 			if (gCard == null) {
 				MemberCardRecord mCard = memberCardService.getCardById(param.getCardId());
+				if(mCard == null) {
+					return null;
+				}
 				if (NumberUtils.BYTE_ZERO.equals(mCard.getIsPay())) {
 					int hasSendUser = userCardDao.getHasSendUser(param);
 					int hasSend = userCardDao.getHasSend(param.getCardId());

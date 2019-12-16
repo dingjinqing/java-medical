@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.task.market;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
@@ -58,7 +59,7 @@ public class SeckillTaskService  extends ShopBaseService {
             //活动已失效，将goodsType改回去
             goodsService.changeToNormalType(changeToNormalGoodsIds);
             //异步更新ES
-            esDataUpdateMqService.addEsGoodsIndex(changeToNormalGoodsIds,getShopId());
+            esDataUpdateMqService.addEsGoodsIndex(changeToNormalGoodsIds,getShopId(), DBOperating.UPDATE);
             //TODO 记录变动
         }
 
@@ -68,7 +69,7 @@ public class SeckillTaskService  extends ShopBaseService {
             //刷新秒杀库存
             seckillService.updateSeckillProcudtStock(changeToActGoodsIds);
             //异步更新ES
-            esDataUpdateMqService.addEsGoodsIndex(changeToActGoodsIds,getShopId());
+            esDataUpdateMqService.addEsGoodsIndex(changeToActGoodsIds,getShopId(), DBOperating.UPDATE);
             //TODO 记录变动
         }
 
