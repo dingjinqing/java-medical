@@ -28,10 +28,6 @@ public class Tables {
     public static final Cart CART = Cart.CART;
 
     /**
-     * The table <code>mini_shop_4748160.b2c_cart_backups</code>.
-     */
-    public static final CartBackups CART_BACKUPS =CartBackups.CART_BACKUPS;
-    /**
      * The table <code>mini_shop_4748160.b2c_coopen_activity</code>.
      */
     public static final CoopenActivity COOPEN_ACTIVITY = com.vpu.mp.db.shop.tables.CoopenActivity.COOPEN_ACTIVITY;

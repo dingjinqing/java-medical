@@ -27,7 +27,7 @@ import static com.vpu.mp.db.shop.Tables.USER_SUMMARY_TREND;
  * @date 2019年7月18日
  */
 @Service
-public class OverviewUserAnalysisService extends ShopBaseService {
+public class UserAnalysisService extends ShopBaseService {
 
   /**
    * 查询客户概况及趋势
