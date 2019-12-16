@@ -158,7 +158,7 @@ public class TransactionStatisticsService extends ShopBaseService {
      * 固定日期数据查询
      */
     private PageResult<LabelAnalysisVo> fixedLabelAnalysis(LabelAnalysisParam param){
-        SelectConditionStep<Record7<String, Integer, Integer, BigDecimal, Integer, Integer, Integer>> conditionStep = db().select(dt.TAG.as("tagName")
+        SelectConditionStep<Record7<String, Integer, Integer, BigDecimal, Integer, Integer, Integer>> conditionStep = db().select(dt.TAG_NAME.as("tagName")
                 ,dt.PAY_USER_NUM.as("paidUserNum")
                 ,dt.PAY_ORDER_NUM.as("paidNum")
                 ,dt.PAY_ORDER_MONEY.as("paidMoney")
