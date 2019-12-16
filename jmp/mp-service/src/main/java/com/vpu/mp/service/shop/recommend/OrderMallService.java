@@ -126,6 +126,7 @@ public class OrderMallService extends ShopMallBaseService {
 					new OrderDetailPage("/pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn()));
 			orderList.setExtInfo(extInfo);
 		}
+		logger().info("要发送的数据"+orderList);
 		List<OrderList> list = new ArrayList<OrderList>();
 		list.add(orderList);
 		JsonRootBean jsonRootBean = new JsonRootBean(list);

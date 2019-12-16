@@ -5,9 +5,12 @@ package com.vpu.mp.service.pojo.shop.recommend.order;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Tainted;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 
@@ -16,6 +19,7 @@ import lombok.Data;
  * 2019年11月12日 上午10:55:19
  */
 @Data
+@ToString
 public class OrderList {
 
 	@JsonProperty(value = "order_id")
