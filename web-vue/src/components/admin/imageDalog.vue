@@ -330,6 +330,11 @@ export default {
     },
     '$store.getters.picSpaceCropperFlag' () {
       this.queryImgs()
+    },
+    dialogTableVisible (newData) {
+      if (!newData) {
+        document.querySelector('body').setAttribute('style', 'overflow: auto')
+      }
     }
   },
   mounted () {

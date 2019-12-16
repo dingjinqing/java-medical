@@ -1,5 +1,7 @@
 package com.vpu.mp.service.foundation.es;
 
+import com.vpu.mp.service.foundation.email.EmailMsgTemplate;
+import com.vpu.mp.service.foundation.email.EmailService;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledSerializer;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,7 +48,12 @@ public class EsManager {
     @Qualifier("esConfig")
     private RestHighLevelClient restHighLevelClient;
 
+    @Autowired
+    private EmailService emailService;
+
     public static final EsFiledSerializer ES_FILED_SERIALIZER = new EsFiledSerializer();
+
+    private final static String EMAIL_TO_USER = "luguangyao@huice.com";
 
     /**
      * 通用搜索方法
@@ -128,14 +136,22 @@ public class EsManager {
             return ;
         }
         BulkResponse response =  restHighLevelClient.bulk(request,RequestOptions.DEFAULT);
-
-        //TODO ElasticSearch索引失败处理机制后续开发(走队列，失败的数据存入main库的一张表中)
         if( response.hasFailures() ){
+            String table = EmailMsgTemplate.TableTemplate.table;
+            String idTh = String.format(EmailMsgTemplate.TableTemplate.th,"id");
+            String msgTh = String.format(EmailMsgTemplate.TableTemplate.th,"msg");
+            String tr = String.format(EmailMsgTemplate.TableTemplate.tr,idTh+msgTh);
+            StringBuilder tableContext = new StringBuilder(tr);
             for(BulkItemResponse itemResponse: response){
                 if( itemResponse.isFailed() ){
-
+                    String td = String.format(EmailMsgTemplate.TableTemplate.td,itemResponse.getId());
+                    String td2 = String.format(EmailMsgTemplate.TableTemplate.td,itemResponse.getFailureMessage());
+                    String msgTr = String.format(EmailMsgTemplate.TableTemplate.tr,td+td2);
+                    tableContext.append(msgTr);
                 }
             }
+            emailService.sendHtmlMessage(EMAIL_TO_USER,"ElasticSearch Error Message",
+                new Date()+String.format(table, tableContext.toString()));
             log.error("ERROR");
         }
     }
