@@ -80,6 +80,18 @@ public class StatisticsScheduleTask {
     }
 
     /**
+     * 交易统计数据
+     */
+    @Scheduled(cron = "8 4 0 * * ?")
+    public void tradeStatistics() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r) -> {
+            ShopApplication shop = saas.getShopApp(r.getShopId());
+            shop.shopTaskService.statisticalTableInsert.insertTradesRecordSummary();
+        });
+    }
+
+    /**
      * Real time statistics.
      * 每小时实时统计过去一个小时内产生的数据
      */
