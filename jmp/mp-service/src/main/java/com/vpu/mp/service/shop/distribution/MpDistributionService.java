@@ -35,12 +35,8 @@ public class MpDistributionService extends ShopBaseService{
         if(cfg.getJudgeStatus() == 0){//不用审核，自动成为分销员
             DistributorApplyDetailParam res = db().select().from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.USER_ID.eq(param.getUserId())).
                 orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc()).limit(1).fetchOne().into(DistributorApplyDetailParam.class);
-            int rest = db().update(DISTRIBUTOR_APPLY).set(DISTRIBUTOR_APPLY.STATUS, (byte) 1).where(DISTRIBUTOR_APPLY.ID.eq(res.getId())).execute();
+            db().update(DISTRIBUTOR_APPLY).set(DISTRIBUTOR_APPLY.STATUS, (byte) 1).where(DISTRIBUTOR_APPLY.ID.eq(res.getId())).execute();
         }
-
-
-        //TODO :分组
-		//默认分组：有上级的属于上级分组，无上级的取后台配置默认分组
         return re;
 		
 	}

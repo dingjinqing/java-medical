@@ -18,6 +18,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -25,12 +26,17 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
+import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
+import com.vpu.mp.service.pojo.shop.member.account.AccountWithdrawVo;
 import com.vpu.mp.service.pojo.shop.member.builder.UserAccountRecordBuilder;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
+import com.vpu.mp.service.shop.config.DistributionConfigService;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.distribution.UserTotalFanliService;
 import com.vpu.mp.service.shop.member.dao.AccountDao;
 import com.vpu.mp.service.shop.member.dao.UserAccountDao;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
@@ -46,8 +52,9 @@ public class AccountService extends ShopBaseService {
 	@Autowired private RecordTradeService recordTradeService;
 	@Autowired private UserAccountDao uAccountDao;
 	@Autowired private AccountDao accountDao;
-
-	
+	@Autowired private UserTotalFanliService userTotalFanliService;
+	@Autowired private DistributionConfigService distributionConfigService;
+	@Autowired private ShopCommonConfigService shopCommonConfigService;
 	/**
 	 * 会员余额变动
 	 * @param param 余额对象参数
@@ -274,6 +281,35 @@ public class AccountService extends ShopBaseService {
 	
 	private boolean isNull(Object obj) {
 		return obj == null;
+	}
+	
+	/**
+	 * 	获取用户的余额和提现金额
+	 */
+	public AccountWithdrawVo getUserAccountWithdraw(Integer userId) {
+		logger().info("获取用户的余额和提现金额");
+		AccountWithdrawVo vo = new AccountWithdrawVo();
+		BigDecimal account = memberService.getUserAccount(userId);
+		BigDecimal withDraw = userTotalFanliService.getTotalMoney(userId);
+		DistributionParam distributionCfg = distributionConfigService.getDistributionCfg();
+		Byte bindMobile = shopCommonConfigService.getBindMobile();
+		MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(getShopId());
+		//可提现金额小于余额是以可提现金额为主
+		if(withDraw.compareTo(account)<1) {
+			vo.setWithdraw(withDraw);
+		}else {
+			vo.setWithdraw(account);
+		}
+		vo.setAccount(account);
+		vo.setWithdrawStatus(distributionCfg.getWithdrawStatus());
+		vo.setWithdrawSource(distributionCfg.getWithdrawSource());
+		// 已绑定公众号 
+		if(wxapp!=null && !StringUtils.isBlank(wxapp.getLinkOfficialAppId())) {
+			String wxOpenId = memberService.getUserWxOpenId(userId);
+		}
+		
+		return vo;
+		
 	}
 
 

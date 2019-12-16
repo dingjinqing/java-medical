@@ -35,7 +35,7 @@ public class WxAppUserCardVo extends UserCardParam {
 	protected String avatar;
 	protected String qrCode;
 	protected NextGradeCardVo nextGradeCard;
-	
+	protected WxAppCardExamineVo isExamine;
 	
 	
 	// 使用商品列表

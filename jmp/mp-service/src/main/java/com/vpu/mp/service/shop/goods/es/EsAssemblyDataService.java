@@ -48,16 +48,6 @@ public class EsAssemblyDataService extends ShopBaseService {
     @Autowired
     private GoodsService goodsService;
     @Autowired
-    private GroupBuyService groupBuyService;
-    @Autowired
-    private BargainService bargainService;
-    @Autowired
-    private SeckillService seckillService;
-    @Autowired
-    private ReducePriceService reducePriceService;
-    @Autowired
-    private PreSaleService preSaleService;
-    @Autowired
     private GoodsSpecProductService goodsSpecProductService;
     @Autowired
     private GoodsSortService goodsSortService;
@@ -175,43 +165,6 @@ public class EsAssemblyDataService extends ShopBaseService {
     }
 
 
-    public EsGoods assemblyEsGoods(Integer goodsId, Integer shopId) {
-        Optional<GoodsRecord> goodsRecordOptional = goodsService.getGoodsById(goodsId);
-        if (!goodsRecordOptional.isPresent()) {
-            return null;
-        }
-        GoodsRecord goods = goodsRecordOptional.get();
-        EsGoods esGoods = assemblyEsGoods(goods, shopId);
-
-        //封装会员价格
-        assemblyVipPrice(esGoods);
-        //封装展示价格
-        assemblyShowPrice(esGoods);
-        //封装商家编码
-        assemblyPrdSns(esGoods);
-        //封装平台分类相关信息
-        assemblyCatInfo(esGoods);
-        //封装商家分类相关信息
-        assemblySortInfo(esGoods);
-        //封装品牌、销量
-        assemblyBrandAndSale(esGoods);
-
-        return esGoods;
-    }
-
-    private void assemblyBrandAndSale(EsGoods esGoods) {
-        Integer brandId = esGoods.getBrandId();
-        if (brandId == null || brandId == 0) {
-            log.warn("商品【{}】没有设置商品品牌", esGoods.getGoodsId());
-            return;
-        }
-        esGoods.setBrandName(
-            goodsBrandService.listGoodsBrandNameByIds(Collections.singletonList(brandId))
-                .get(brandId)
-                .getBrandName()
-        );
-    }
-
     private Map<Integer, GoodsBrandSelectListVo> batchAssemblyBrandAndSale(Set<Integer> brandIds) {
         return goodsBrandService.listGoodsBrandNameByIds(new ArrayList<>(brandIds));
     }
@@ -248,20 +201,6 @@ public class EsAssemblyDataService extends ShopBaseService {
         return esGoods;
     }
 
-    /**
-     * 封装商家分类相关信息
-     *
-     * @param esGoods
-     */
-    private void assemblySortInfo(EsGoods esGoods) {
-        Integer sortId = esGoods.getSortId();
-        if (sortId == null) {
-            log.error("商品【{}】没有设置商家分类", esGoods.getGoodsId());
-            return;
-        }
-        List<Sort> list = new ArrayList<>(goodsSortService.getParentSortsByChildId(Collections.singletonList(sortId)).values());
-        assemblySortInfoImp(esGoods, list);
-    }
 
     /**
      * 封装商家分类相关信息实现
@@ -293,18 +232,6 @@ public class EsAssemblyDataService extends ShopBaseService {
         return resultMap;
     }
 
-    /**
-     * 封装平台分类相关信息
-     *
-     * @param esGoods ES映射实体类
-     */
-    private void assemblyCatInfo(EsGoods esGoods) {
-        List<SysCatevo> list = SysCatServiceHelper.getSysCateVosByCatId(esGoods.getCatId());
-        if (list.isEmpty()) {
-            return;
-        }
-        batchAssemblyCatInfoImp(esGoods, list);
-    }
 
     private void batchAssemblyCatInfoImp(EsGoods esGoods, List<SysCatevo> list) {
         StringBuilder categoryName = new StringBuilder();
@@ -319,28 +246,6 @@ public class EsAssemblyDataService extends ShopBaseService {
             }
         });
         esGoods.setCatName(categoryName.toString());
-    }
-
-    public void assemblyCatInfo(Integer esGoods) {
-        List<Integer> list = new ArrayList<>();
-        list.add(73);
-        list.add(74);
-        List<SysCatevo> list1 = SysCatServiceHelper.getSysCateVoByCatIds(list);
-        System.out.println(list.size());
-    }
-
-    /**
-     * 封装商家编码
-     *
-     * @param esGoods ES映射实体类
-     */
-    private void assemblyPrdSns(EsGoods esGoods) {
-        List<GoodsSpecProduct> list = goodsSpecProductService.selectByGoodsId(esGoods.getGoodsId());
-        if (list.isEmpty()) {
-            return;
-        }
-        list.sort(Comparator.comparing(GoodsSpecProduct::getPrdPrice));
-        esGoods.setPrdSns(list.stream().map(GoodsSpecProduct::getPrdSn).collect(Collectors.joining(",")));
     }
 
     private void batchAssemblyShowPrice(List<EsGoods> goodsList) {
@@ -359,84 +264,6 @@ public class EsAssemblyDataService extends ShopBaseService {
 
     }
 
-    /**
-     * 封装展示价格
-     *
-     * @param esGoods ES映射实体类
-     */
-    private void assemblyShowPrice(EsGoods esGoods) {
-        Byte goodsType = esGoods.getGoodsType();
-        Integer goodsId = esGoods.getGoodsId();
-        BigDecimal shopPrice = esGoods.getShopPrice();
-        BigDecimal showPrice = null;
-        Timestamp now = DateUtil.getLocalDateTime();
-        if (goodsType.equals(OrderConstant.GOODS_TYPE_PIN_GROUP)) {
-            List<Record2<Integer, BigDecimal>> resultList = groupBuyService.getGroupBuyProductByGoodsId(goodsId, now);
-            if (!resultList.isEmpty()) {
-                List<BigDecimal> showPriceList = resultList.stream()
-                    .map(x -> x.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE))
-                    .sorted(BigDecimal::compareTo)
-                    .collect(Collectors.toList());
-                showPrice = showPriceList.get(0);
-            } else {
-                outPutLog(now, goodsId, goodsType);
-            }
-        }
-        if (goodsType.equals(OrderConstant.GOODS_TYPE_BARGAIN)) {
-            BargainRecord record = bargainService.getBargainRecordByGoodsId(goodsId, now);
-            if (null != record) {
-                showPrice = record.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) ?
-                    record.getFloorPrice() : record.getExpectationPrice();
-            } else {
-                outPutLog(now, goodsId, goodsType);
-            }
-        }
-        if (goodsType.equals(OrderConstant.GOODS_TYPE_SECKILL)) {
-            Integer secId = seckillService.getSecKillIdByGoodsId(goodsId, now);
-            if (secId != null) {
-                List<SecKillProductVo> resultList = seckillService.getSecKillProductVo(secId);
-                showPrice = resultList.stream()
-                    .map(SecKillProductVo::getSecKillPrice)
-                    .sorted(BigDecimal::compareTo)
-                    .collect(Collectors.toList())
-                    .get(0);
-            } else {
-                outPutLog(now, goodsId, goodsType);
-            }
-        }
-        if (goodsType.equals(OrderConstant.GOODS_TYPE_REDUCE_PRICE)) {
-            BigDecimal resultPrice = reducePriceService.getShowPriceByGoodsId(goodsId, now);
-            if (null != resultPrice) {
-                showPrice = resultPrice;
-            } else {
-                outPutLog(now, goodsId, goodsType);
-            }
-        }
-        if (goodsType.equals(OrderConstant.GOODS_TYPE_PRE_SALE)) {
-            Optional<Record2<Integer, BigDecimal>> record2Optional =
-                preSaleService.getPresaleProductRecordByGoodsId(goodsId, now);
-            if (record2Optional.isPresent()) {
-                showPrice = record2Optional.get().get(PRESALE_PRODUCT.PRESALE_PRICE);
-            } else {
-                outPutLog(now, goodsId, goodsType);
-            }
-        }
-        if (showPrice != null) {
-            esGoods.setShowPrice(showPrice);
-        } else {
-            esGoods.setShowPrice(shopPrice);
-        }
-    }
-
-    /**
-     * 封装会员价格
-     *
-     * @param esGoods target
-     */
-    private void assemblyVipPrice(EsGoods esGoods) {
-        List<GoodsGradePrd> goodsGradePrdList = goodsService.selectGoodsGradePrd(esGoods.getGoodsId());
-        assemblyVipPriceImp(esGoods, goodsGradePrdList);
-    }
 
     private void assemblyVipPriceImp(EsGoods esGoods, List<GoodsGradePrd> goodsGradePrdList) {
         if (!goodsGradePrdList.isEmpty()) {

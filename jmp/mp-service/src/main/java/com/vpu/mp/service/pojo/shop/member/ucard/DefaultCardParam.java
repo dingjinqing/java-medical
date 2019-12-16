@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member.ucard;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 /** 
@@ -12,7 +12,7 @@ public class DefaultCardParam {
 	/**
 	 * 	会员卡号
 	 */
-	@NotNull
+	@NotBlank
 	private String cardNo;
 	private Integer userId;
 }
