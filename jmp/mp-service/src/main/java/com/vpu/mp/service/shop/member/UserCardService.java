@@ -325,7 +325,7 @@ public class UserCardService extends ShopBaseService {
 		Integer cardId = null;
 		if (!StringUtils.isBlank(uGrade)) {
 			List<MemberCardRecord> gradeCard = getAvailGradeCard();
-
+			gradeCard.removeIf(item->item.getGrade().compareTo(uGrade)<1);
 			Integer userTotalScore = scoreService.getAccumulationScore(userId);
 			BigDecimal amount = distributorLevelService.getTotalSpend(userId).getTotal();
 
@@ -1428,6 +1428,9 @@ public class UserCardService extends ShopBaseService {
 		if (param.getCardId() != null) {
 			if (gCard == null) {
 				MemberCardRecord mCard = memberCardService.getCardById(param.getCardId());
+				if(mCard == null) {
+					return null;
+				}
 				if (NumberUtils.BYTE_ZERO.equals(mCard.getIsPay())) {
 					int hasSendUser = userCardDao.getHasSendUser(param);
 					int hasSend = userCardDao.getHasSend(param.getCardId());

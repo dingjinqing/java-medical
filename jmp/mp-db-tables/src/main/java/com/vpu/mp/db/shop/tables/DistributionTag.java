@@ -33,7 +33,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DistributionTag extends TableImpl<DistributionTagRecord> {
 
-    private static final long serialVersionUID = -478048536;
+    private static final long serialVersionUID = -1210480662;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_distribution_tag</code>
@@ -56,42 +56,47 @@ public class DistributionTag extends TableImpl<DistributionTagRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_distribution_tag.ref_date</code>. 日期
      */
-    public final TableField<DistributionTagRecord, Date> REF_DATE = createField("ref_date", org.jooq.impl.SQLDataType.DATE, this, "日期");
+    public final TableField<DistributionTagRecord, Date> REF_DATE = createField("ref_date", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "日期");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_tag.type</code>. 1,7,30
      */
-    public final TableField<DistributionTagRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT, this, "1,7,30");
+    public final TableField<DistributionTagRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "1,7,30");
 
     /**
-     * The column <code>mini_shop_471752.b2c_distribution_tag.tag</code>. 标签
+     * The column <code>mini_shop_471752.b2c_distribution_tag.tag_id</code>. 标签id
      */
-    public final TableField<DistributionTagRecord, String> TAG = createField("tag", org.jooq.impl.SQLDataType.VARCHAR(50), this, "标签");
+    public final TableField<DistributionTagRecord, Integer> TAG_ID = createField("tag_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "标签id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_distribution_tag.tag_name</code>. 标签内容
+     */
+    public final TableField<DistributionTagRecord, String> TAG_NAME = createField("tag_name", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "标签内容");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_tag.pay_order_num</code>. 付款订单数
      */
-    public final TableField<DistributionTagRecord, Integer> PAY_ORDER_NUM = createField("pay_order_num", org.jooq.impl.SQLDataType.INTEGER, this, "付款订单数");
+    public final TableField<DistributionTagRecord, Integer> PAY_ORDER_NUM = createField("pay_order_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "付款订单数");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_tag.pay_order_money</code>. 付款金额
      */
-    public final TableField<DistributionTagRecord, BigDecimal> PAY_ORDER_MONEY = createField("pay_order_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "付款金额");
+    public final TableField<DistributionTagRecord, BigDecimal> PAY_ORDER_MONEY = createField("pay_order_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "付款金额");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_tag.pay_user_num</code>. 付款人数
      */
-    public final TableField<DistributionTagRecord, Integer> PAY_USER_NUM = createField("pay_user_num", org.jooq.impl.SQLDataType.INTEGER, this, "付款人数");
+    public final TableField<DistributionTagRecord, Integer> PAY_USER_NUM = createField("pay_user_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "付款人数");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_tag.pay_goods_number</code>. 付款商品件数
      */
-    public final TableField<DistributionTagRecord, Integer> PAY_GOODS_NUMBER = createField("pay_goods_number", org.jooq.impl.SQLDataType.INTEGER, this, "付款商品件数");
+    public final TableField<DistributionTagRecord, Integer> PAY_GOODS_NUMBER = createField("pay_goods_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "付款商品件数");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_tag.has_mobile_num</code>. 下单有手机号的用户
      */
-    public final TableField<DistributionTagRecord, Integer> HAS_MOBILE_NUM = createField("has_mobile_num", org.jooq.impl.SQLDataType.INTEGER, this, "下单有手机号的用户");
+    public final TableField<DistributionTagRecord, Integer> HAS_MOBILE_NUM = createField("has_mobile_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "下单有手机号的用户");
 
     /**
      * The column <code>mini_shop_471752.b2c_distribution_tag.has_user_num</code>. 用户数
@@ -154,7 +159,7 @@ public class DistributionTag extends TableImpl<DistributionTagRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DISTRIBUTION_TAG_DATE_TYPE, Indexes.DISTRIBUTION_TAG_PRIMARY);
+        return Arrays.<Index>asList(Indexes.DISTRIBUTION_TAG_DATE_TYPE_TAG, Indexes.DISTRIBUTION_TAG_PRIMARY);
     }
 
     /**
@@ -178,7 +183,7 @@ public class DistributionTag extends TableImpl<DistributionTagRecord> {
      */
     @Override
     public List<UniqueKey<DistributionTagRecord>> getKeys() {
-        return Arrays.<UniqueKey<DistributionTagRecord>>asList(Keys.KEY_B2C_DISTRIBUTION_TAG_PRIMARY);
+        return Arrays.<UniqueKey<DistributionTagRecord>>asList(Keys.KEY_B2C_DISTRIBUTION_TAG_PRIMARY, Keys.KEY_B2C_DISTRIBUTION_TAG_DATE_TYPE_TAG);
     }
 
     /**
