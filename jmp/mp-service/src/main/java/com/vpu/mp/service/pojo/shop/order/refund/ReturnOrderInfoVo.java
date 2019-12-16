@@ -1,13 +1,12 @@
 package com.vpu.mp.service.pojo.shop.order.refund;
 
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
-
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-
-import lombok.Data;
 
 @Data
 public class ReturnOrderInfoVo {
@@ -19,7 +18,7 @@ public class ReturnOrderInfoVo {
 	private List<OperatorRecord> operatorRecord;
 	private Long returnMoneyDays;
 	private Long returnAddressDays;
-	private Long returnShoppingDays;
+    private Long returnShippingDays;
 	private Long returnAuditPassNotShoppingDays;
 	private BigDecimal canReturnShippingFee;
 	/** order info */
@@ -60,7 +59,7 @@ public class ReturnOrderInfoVo {
 // $can_refund['shipping_fee']
 /**
  * 总退款金额：￥<span class="text-warning refund-money">0.00</span> =
- * 
+ *
  * @if($order->bk_order_money > 0)退尾款：￥<span class="text-warning
  *                            refund-bk-order-money">0.00</span>@endif +
  *                            退会员卡余额：￥<span class="text-warning
@@ -93,33 +92,33 @@ public class ReturnOrderInfoVo {
  * 买家未在商家审核退款申请之后7日内，提交退货物流（或商家未确认收货），退款申请已自动撤销refund_cancel_time
  * 买家已自动撤销refund_cancel_time 提交物流 商家未收货，拒绝退款退货 商家退款，退款成功
  */
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
