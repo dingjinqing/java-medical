@@ -40,10 +40,7 @@ public class MiniShop_471752 extends SchemaImpl {
      */
     public final Cart CART = com.vpu.mp.db.shop.tables.Cart.CART;
 
-    /**
-     * The table <code>mini_shop_4748160.b2c_cart_backups</code>.
-     */
-    public final CartBackups CART_BACKUPS = com.vpu.mp.db.shop.tables.CartBackups.CART_BACKUPS;
+
     /**
      * The table <code>mini_shop_4748160.b2c_give_gift_activity</code>.
      */

@@ -309,37 +309,30 @@ create table `b2c_goods_spec_product`
     key `gsp_prd_sn` (`prd_sn`)
 );
 
--- -- --  购物车 `b2c_cart`
--- drop table if exists `b2c_cart`;
+
+-- 购物车 `b2c_cart` 孔德成
+# drop table if exists `b2c_cart`;
 create table `b2c_cart`
 (
-    `rec_id`       bigint(20)     not null auto_increment,
-    `shop_id`      int(11)        not null default '0' comment '店铺id',
-    `store_id`     int(11)        not null default '0' comment '门店id',
-    `user_id`      int(11)        not null default '0',
-    `goods_id`     int(11)        not null default '0',
-    `goods_sn`     varchar(60)    not null default '',
-    `product_id`   int(11)        not null default '0' comment '规格产品id',
-    `prd_sn`       varchar(60)    not null default '',
-    `goods_name`   varchar(120)   not null default '',
-    `market_price` decimal(10, 2) not null default '0.00',
-    `goods_price`  decimal(10, 2) not null default '0.00',
-    `goods_number` smallint(5)    not null default '0',
-    `goods_specs`  text comment '例如,颜色:黑色',
-    `parent_id`    int(11)        not null default 0 comment '该商品的父商品id，没有该值为0 ，有的话那该商品就是该id的配件',
-    `rec_type`     tinyint(1)     not null default '0' comment '购物车商品类型，0，普通 1，团够 2，拍卖 3，夺宝奇兵',
-    `is_gift`      smallint       not null default '0',
-    `is_buynow`    tinyint(1)     not null default 0 comment '',
-    `strategy`     varchar(191)   not null default '' comment '参与的优惠活动,json格式',
-    `action`       tinyint(1)     not null default '0' comment '商品活动类型：1：加价购主商品， 2： 满折满减',
-    `identity_id`  int(11)        not null default '0' comment '关联id: 如：加价购id, 满折满减id',
-    `extend_id`    int(11)        not null default '0' comment '扩展字段: 如：换购挡位id',
-    `is_checked`   tinyint(1)     not null default 0 comment '是否选中',
-    `platform`     varchar(20)             default null comment '平台：如 crm',
-    `extend_info`  varchar(200)            default null comment '扩展内容：如crm的promote_info',
-    `create_time`  timestamp               default current_timestamp,
-    `update_time`  timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
-    primary key (`rec_id`)
+    `cart_id`        int(11)        not null auto_increment,
+    `store_id`       int(11)        not null default '0' comment '门店id',
+    `user_id`        int(11)        not null default '0' comment '用户id',
+    `goods_id`       int(11)        not null default '0' comment '商品id',
+    `goods_sn`       varchar(60)    not null default '' comment '商品sn',
+    `goods_name`     varchar(120)   not null default '' comment '商品名称',
+    `goods_specs`    text comment '例如,颜色:黑色',
+    `product_id`     int(11)        not null default '0' comment '规格产品id',
+    `prd_sn`         varchar(60)    not null default '' comment '规格sn',
+    `goods_price`    decimal(10, 2) not null default '0.00' comment '商品价格',
+    `is_checked`     tinyint(1)     not null default 0 comment '是否选中',
+    `cart_number`    smallint(5)    not null default '0' comment '数量',
+    `original_price` decimal(10, 2) not null default '0.00' comment '加入购物车时的价格',
+    `type`           tinyint(1)     not null default '0' comment '类型 0 普通 ',
+    `extend_id`      int(11)        not null default '0' comment '扩展字段:对应type的类型 ',
+    `create_time`    timestamp               default current_timestamp,
+    `update_time`    timestamp               default current_timestamp on update current_timestamp comment '最后修改时间',
+    primary key (`cart_id`),
+    KEY `user_id` (`cart_id`,`store_id`) USING BTREE
 );
 
 -- -- --  b2c_uploaded_image 上传图片表
