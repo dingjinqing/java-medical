@@ -6,7 +6,7 @@
     </view>
     <v-goods-info goods-info="{{goodsInfo}}" bindshareMoments="onShareAppMessage">
       <!--轮播图下方，商品信息上方插槽 -->
-      <v-act-content bindactStatus="getActStatus"/>
+      <v-act-content bindactStatus="getActStatus" activity="{{activity}}"/>
     </v-goods-info>
     <!-- 发货地 -->
     <view class="flex_outside_box" wx:if="{{goodsInfo.deliverPlace}}">
