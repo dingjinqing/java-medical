@@ -157,10 +157,10 @@
                       >{{item.goodsName}}</div>
                       <div
                         class="activityContainer"
-                        :style="data.col_type==='4'?'display:flex':''"
+                        :style="(data.col_type==='4'||data.col_type==='1')?'display:flex':''"
                       >
                         <div
-                          :style="data.col_type!=='4'?'margin-top:10px;':(data.col_type==='4'&&indexC===1)?'margin-top:0;margin-left:5px':''"
+                          :style="((data.col_type==='4'||data.col_type==='1')&&indexC===1)?'margin-left:5px':'margin-top:5px'"
                           v-for="(itemC,indexC) in item.goodsActivities"
                           :key="indexC"
                           class="activitySpan"
@@ -400,7 +400,15 @@ export default {
     handleToActivity (newData) {
       let goodSData = newData.goodsListData
       goodSData.forEach((item, index) => {
+        console.log(item)
         // 处理每一个商品当前要显示的活动
+        let arr = []
+        if (item.goodsActivities.length > 2) {
+          console.log(item)
+          arr[0] = item.goodsActivities[0]
+          arr[1] = item.goodsActivities[1]
+          item.goodsActivities = arr
+        }
         this.handleToEveryGoods(item, index, goodSData)
       })
     },

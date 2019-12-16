@@ -22,7 +22,7 @@
             class="coupon_list_top"
             :style="'color:'+backgroundColor+';'"
           >
-            {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.actCode==='discount'?$t('coupon.fracture'):''}}</i></span>
+            {{item.act_code==='discount'?'':'¥'}}<span>{{item.denomination}}<i style="font-size:14px">{{item.act_code==='discount'?$t('coupon.fracture'):''}}</i></span>
           </div>
           <div class="coupon_list_center">
             <div
