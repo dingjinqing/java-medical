@@ -26,10 +26,11 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.Cart.CART;
 
 
@@ -64,8 +65,8 @@ public class CartService extends ShopBaseService {
     public WxAppCartListVo getCartList(Integer userId) {
         WxAppCartListVo cartListVo;
         // 查询购物车记录
-        Result<? extends Record> records = db().select(CART.REC_ID, CART.GOODS_NAME, CART.IS_CHECKED, CART.GOODS_SPECS,
-                CART.IDENTITY_ID, CART.GOODS_PRICE, CART.EXTEND_ID, CART.GOODS_NUMBER,
+        Result<? extends Record> records = db().select(
+                CART.CART_ID,CART.IS_CHECKED, CART.GOODS_NAME,  CART.GOODS_SPECS, CART.GOODS_PRICE, CART.EXTEND_ID, CART.CART_NUMBER,
                 GOODS.GOODS_ID, GOODS.SORT_ID, GOODS.CAT_ID, GOODS.BRAND_ID, GOODS.GOODS_IMG, GOODS.LIMIT_BUY_NUM,
                 GOODS.LIMIT_MAX_NUM, GOODS.GOODS_TYPE, GOODS.DEL_FLAG, GOODS.IS_ON_SALE, GOODS.IS_CARD_EXCLUSIVE,
                 GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_IMG
@@ -73,8 +74,7 @@ public class CartService extends ShopBaseService {
                 .from(CART)
                 .innerJoin(GOODS).on(GOODS.GOODS_ID.eq(CART.GOODS_ID))
                 .innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(CART.PRODUCT_ID))
-                .where(CART.USER_ID.eq(userId)).orderBy(CART.REC_ID.desc()).fetch();
-
+                .where(CART.USER_ID.eq(userId)).orderBy(CART.CART_ID.desc()).fetch();
         List<WxAppCartGoods> cartGoodsList = records.into(WxAppCartGoods.class);
         List<Integer> productIdList = records.getValues(GOODS_SPEC_PRODUCT.PRD_ID);
         List<Integer> goodsIdList = records.getValues(GOODS.GOODS_ID).stream().distinct().collect(Collectors.toList());
@@ -90,11 +90,6 @@ public class CartService extends ShopBaseService {
 
     }
 
-
-    public int setCartGoodsFail(Integer recId) {
-        return db().update(CART).set(CART.ACTION, (byte) 0).set(CART.IDENTITY_ID, 0).set(CART.EXTEND_ID, 0).set(CART.IS_CHECKED, (byte) 0)
-                .where(CART.REC_ID.eq(recId.longValue())).execute();
-    }
 
     /**
      * 检查商品
@@ -147,7 +142,7 @@ public class CartService extends ShopBaseService {
      * @return
      */
     public Short getCartProductNumber(Integer userId, Integer prdId) {
-        Record1<Short> product = db().select(CART.GOODS_NUMBER).from(CART).where(CART.USER_ID.eq(userId)).and(CART.PRODUCT_ID.eq(prdId)).and(CART.EXTEND_ID.eq(0))
+        Record1<Short> product = db().select(CART.CART_NUMBER).from(CART).where(CART.USER_ID.eq(userId)).and(CART.PRODUCT_ID.eq(prdId)).and(CART.EXTEND_ID.eq(0))
                 .and(CART.STORE_ID.eq(0)).fetchOne();
         if (product != null) {
             return product.component1();
@@ -163,7 +158,7 @@ public class CartService extends ShopBaseService {
      * @param goodsNumber
      * @return
      */
-    public Long addSpecProduct(Integer userId, Integer prdId, Integer goodsNumber) {
+    public Integer addSpecProduct(Integer userId, Integer prdId, Integer goodsNumber) {
         CartRecord cartRecord = db().selectFrom(CART).where(CART.USER_ID.eq(userId).and(CART.PRODUCT_ID.eq(prdId))).fetchOne();
         if (cartRecord == null) {
             Record goodsProduct = goodsService.getGoodsByProductId(prdId);
@@ -172,34 +167,33 @@ public class CartService extends ShopBaseService {
             cartRecord = db().newRecord(CART);
             cartRecord.setUserId(userId);
             cartRecord.setGoodsSn(goodsRecord.getGoodsSn());
-            cartRecord.setGoodsNumber(goodsNumber.shortValue());
+            cartRecord.setCartNumber(goodsNumber.shortValue());
             cartRecord.setGoodsId(goodsRecord.getGoodsId());
             cartRecord.setGoodsName(goodsRecord.getGoodsName());
             cartRecord.setGoodsSpecs(productRecord.getPrdSpecs());
             cartRecord.setProductId(prdId);
-            cartRecord.setMarketPrice(productRecord.getPrdMarketPrice());
             cartRecord.setGoodsPrice(productRecord.getPrdPrice());
             cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);
             cartRecord.insert();
         } else {
-            cartRecord.setGoodsNumber((short) (goodsNumber + cartRecord.getGoodsNumber()));
+            cartRecord.setCartNumber((short) (goodsNumber + cartRecord.getCartNumber()));
             cartRecord.update();
         }
-        return cartRecord.getRecId();
+        return cartRecord.getCartId();
     }
 
     /**
      * 删除购物车商品
      *
      * @param userId
-     * @param recId
+     * @param cartId
      */
-    public void removeCartProductById(Integer userId, Long recId) {
-        db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.REC_ID.eq(recId)).execute();
+    public void removeCartProductById(Integer userId, Integer cartId) {
+        db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.CART_ID.eq(cartId)).execute();
     }
 
     public int removeCartProductByIds(Integer userId, List<Integer> recIds) {
-        return db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.REC_ID.in(recIds)).execute();
+        return db().delete(CART).where(CART.USER_ID.eq(userId)).and(CART.CART_ID.in(recIds)).execute();
     }
 
     /**
@@ -236,7 +230,7 @@ public class CartService extends ShopBaseService {
         //校验
         ResultMessage resultMessage = checkProductNumber(productId, goodsNumber);
         if (resultMessage.getFlag()) {
-            db().update(CART).set(CART.GOODS_NUMBER, goodsNumber.shortValue()).set(CART.IS_CHECKED, (byte) 1).where(CART.USER_ID.eq(userId))
+            db().update(CART).set(CART.CART_NUMBER, goodsNumber.shortValue()).set(CART.IS_CHECKED, (byte) 1).where(CART.USER_ID.eq(userId))
                     .and(CART.STORE_ID.eq(storeId)).and(CART.PRODUCT_ID.eq(productId)).execute();
         }
         return resultMessage;
@@ -251,7 +245,7 @@ public class CartService extends ShopBaseService {
      * @return
      */
     public int getUserCartGoodsNumber(Integer user, Integer storeId) {
-        BigDecimal goodsNum = db().select(DSL.sum(CART.GOODS_NUMBER)).from(CART).leftJoin(STORE_GOODS).on(CART.PRODUCT_ID.eq(STORE_GOODS.PRD_ID))
+        BigDecimal goodsNum = db().select(DSL.sum(CART.CART_NUMBER)).from(CART).leftJoin(STORE_GOODS).on(CART.PRODUCT_ID.eq(STORE_GOODS.PRD_ID))
                 .where(STORE_GOODS.IS_ON_SALE.eq((byte) 1)).and(STORE_GOODS.STORE_ID.eq(storeId))
                 .and(CART.STORE_ID.eq(storeId)).and(CART.USER_ID.eq(user)).fetchOne().component1();
         return goodsNum.intValue();
@@ -260,24 +254,24 @@ public class CartService extends ShopBaseService {
     /**
      * 根据recid获取所有信息
      *
-     * @param recid
+     * @param carId
      * @return
      */
-    public CartRecord getInfoByRecid(Long recid) {
-        return db().selectFrom(CART).where(CART.REC_ID.eq(recid)).fetchAny();
+    public CartRecord getInfoByRecid(Integer carId) {
+        return db().selectFrom(CART).where(CART.CART_ID.eq(carId)).fetchAny();
     }
 
     /**
      * 购物车中的商品选择状态
      *
      * @param userId
-     * @param recId
+     * @param carId
      * @return
      */
-    public int switchCheckedProduct(Integer userId, Integer recId, Byte isChecked) {
+    public int switchCheckedProduct(Integer userId, Integer carId, Byte isChecked) {
         return db().update(CART).set(CART.IS_CHECKED, isChecked)
                 .where(CART.USER_ID.eq(userId))
-                .and(CART.REC_ID.eq(recId.longValue())).execute();
+                .and(CART.CART_ID.eq(carId)).execute();
 
     }
     /**
@@ -298,14 +292,14 @@ public class CartService extends ShopBaseService {
      * 修改选中状态
      *
      * @param userId
-     * @param recIds    id
+     * @param carIds    id
      * @param isChecked 1 选中 0 没选中
      * @return
      */
-    public int switchCheckedProduct(Integer userId, List<Integer> recIds, Byte isChecked) {
+    public int switchCheckedProduct(Integer userId, List<Integer> carIds, Byte isChecked) {
         return db().update(CART).set(CART.IS_CHECKED, isChecked)
                 .where(CART.USER_ID.eq(userId))
-                .and(CART.REC_ID.in(recIds)).execute();
+                .and(CART.CART_ID.in(carIds)).execute();
     }
 
     /**
@@ -316,7 +310,7 @@ public class CartService extends ShopBaseService {
      * @return num
      */
     public Integer cartGoodsNum(Integer userId, Integer goodsId) {
-        return db().select(DSL.sum(CART.GOODS_NUMBER).as("")).from(CART)
+        return db().select(DSL.sum(CART.CART_NUMBER)).from(CART)
                 .where(CART.USER_ID.eq(userId))
                 .and(CART.GOODS_ID.eq(goodsId)).fetchOneInto(Integer.class);
     }
@@ -326,12 +320,12 @@ public class CartService extends ShopBaseService {
      */
     public List<OrderBeforeParam.Goods> getCartCheckedData(Integer userId, Integer storeId){
         //TODO 后期加参数
-        return db().select(CART.GOODS_ID, CART.PRODUCT_ID, CART.GOODS_NUMBER)
+        return db().select(CART.GOODS_ID, CART.PRODUCT_ID, CART.CART_NUMBER)
                 .from(CART)
                 .where(CART.IS_CHECKED.eq(CartConstant.CART_IS_CHECKED))
                 .and(CART.USER_ID.eq(userId))
                 .and(CART.STORE_ID.eq(storeId))
-                .orderBy(CART.REC_ID.desc())
+                .orderBy(CART.CART_ID.desc())
                 .fetchInto(OrderBeforeParam.Goods.class);
     }
 }

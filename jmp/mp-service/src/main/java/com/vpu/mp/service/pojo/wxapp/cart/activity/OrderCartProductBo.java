@@ -1,24 +1,17 @@
 package com.vpu.mp.service.pojo.wxapp.cart.activity;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
-import jodd.util.CollectionUtil;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 购物车订单 商品数据数据
@@ -56,16 +49,12 @@ public class OrderCartProductBo {
     }
 
     public List<Integer> getProductIds(){
-        if(CollectionUtils.isEmpty(productIds)){
-            initProductIds();
-        }
+        initProductIds();
         return productIds;
     }
 
     public OrderCartProduct get(Integer productId){
-        if(map == null) {
-            initMap();
-        }
+        initMap();
         return map.get(productId);
     }
 

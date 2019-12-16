@@ -36,6 +36,15 @@ public class MiniShop_471752 extends SchemaImpl {
     public static final MiniShop_471752 MINI_SHOP_471752 = new MiniShop_471752();
 
     /**
+     * The table <code>mini_shop_4748160.b2c_cart</code>.
+     */
+    public final Cart CART = com.vpu.mp.db.shop.tables.Cart.CART;
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_cart_backups</code>.
+     */
+    public final CartBackups CART_BACKUPS = com.vpu.mp.db.shop.tables.CartBackups.CART_BACKUPS;
+    /**
      * The table <code>mini_shop_4748160.b2c_give_gift_activity</code>.
      */
     public final GiveGiftActivity GIVE_GIFT_ACTIVITY = com.vpu.mp.db.shop.tables.GiveGiftActivity.GIVE_GIFT_ACTIVITY;
@@ -159,10 +168,6 @@ public class MiniShop_471752 extends SchemaImpl {
      */
     public final CardUpgrade CARD_UPGRADE = CardUpgrade.CARD_UPGRADE;
 
-    /**
-     * The table <code>mini_shop_471752.b2c_cart</code>.
-     */
-    public final Cart CART = Cart.CART;
 
     /**
      * The table <code>mini_shop_471752.b2c_channel</code>.

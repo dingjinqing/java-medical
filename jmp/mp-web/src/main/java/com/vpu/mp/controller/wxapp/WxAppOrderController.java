@@ -1,11 +1,19 @@
 package com.vpu.mp.controller.wxapp;
 
-import javax.validation.Valid;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RequestUtil;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
@@ -15,17 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
-import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
-import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
-
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -202,16 +200,16 @@ public class WxAppOrderController extends WxAppBaseController{
 
 	@PostMapping("/cart/addtest")
 	public JsonResult test2(){
-		List<Long> list=new ArrayList<Long>();
-		list.add(1L);
-		list.add(3L);
-		list.add(4L);
-		list.add(5L);
-		list.add(6L);
-		list.add(7L);
-		list.add(8L);
-		list.add(9L);
-		list.add(10L);
+		List<Integer> list=new ArrayList<>();
+		list.add(1);
+		list.add(3);
+		list.add(4);
+		list.add(5);
+		list.add(6);
+		list.add(7);
+		list.add(8);
+		list.add(9);
+		list.add(10);
 		Boolean addCommonOrders = shop().recommendService.collectionMallService.addCartRows(wxAppAuth.user().getUserId(), list);
 		if(addCommonOrders) {
 			return success();

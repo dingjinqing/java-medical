@@ -1,13 +1,5 @@
 package com.vpu.mp.service.shop.recommend;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jooq.Record;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -23,14 +15,20 @@ import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import com.vpu.mp.service.wechat.api.impl.WxOpenMaServiceExtraImpl;
-
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
+import org.jooq.Record;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 好物圈关于收藏
- * 
+ *
  * @author zhaojianqiang
  *
  *         2019年11月13日 下午4:00:35
@@ -49,12 +47,12 @@ public class CollectionMallService extends ShopMallBaseService {
 
 	/**
 	 * 同步用户添加商品到微信购物单
-	 * 
+	 *
 	 * @param userId
 	 * @param cartRecIds
 	 * @return
 	 */
-	public Boolean addCartRows(Integer userId, List<Long> cartRecIds) {
+	public Boolean addCartRows(Integer userId, List<Integer> cartRecIds) {
 		String openId = check(userId);
 		if (null == openId) {
 			return false;
@@ -62,7 +60,7 @@ public class CollectionMallService extends ShopMallBaseService {
 
 		JsonCollectBean param = new JsonCollectBean();
 		List<SkuProductList> skuProductList = new ArrayList<SkuProductList>();
-		for (Long recid : cartRecIds) {
+		for (Integer recid : cartRecIds) {
 			SkuProductList skuProduct = new SkuProductList();
 			CartRecord cart = cartService.getInfoByRecid(recid);
 			if (null == cart) {
@@ -102,7 +100,7 @@ public class CollectionMallService extends ShopMallBaseService {
 			SendCollectBean bean=new SendCollectBean(1, param,getShopId());
 			saas.taskJobMainService.dispatchImmediately(bean,SendCollectBean.class.getName(),getShopId(),TaskJobEnum.WX_ADDSHOPPINGLIST.getExecutionType());
 			//WxOpenResult result = addshoppinglistAdd(param);
-			//return result.isSuccess();	
+			//return result.isSuccess();
 			return true;
 		}
 		return false;
@@ -115,7 +113,7 @@ public class CollectionMallService extends ShopMallBaseService {
 	 * @param cartRecIds
 	 * @return
 	 */
-	public Boolean clearCartRows(Integer userId, List<Long> cartRecIds) {
+	public Boolean clearCartRows(Integer userId, List<Integer> cartRecIds) {
 		String openId = check(userId);
 		if (null == openId) {
 			return false;
@@ -123,7 +121,7 @@ public class CollectionMallService extends ShopMallBaseService {
 		JsonCollectBean param = new JsonCollectBean();
 		param.setUserOpenId(openId);
 		List<SkuProductList> skuProductList = new ArrayList<SkuProductList>();
-		for (Long recid : cartRecIds) {
+		for (Integer recid : cartRecIds) {
 			SkuProductList skuProduct = new SkuProductList();
 			CartRecord cart = cartService.getInfoByRecid(recid);
 			if (null == cart) {
@@ -144,7 +142,7 @@ public class CollectionMallService extends ShopMallBaseService {
 
 	/**
 	 * 删除收藏
-	 * 
+	 *
 	 * @param jsonRootBean
 	 * @return
 	 */
@@ -166,7 +164,7 @@ public class CollectionMallService extends ShopMallBaseService {
 
 	/**
 	 * 更新收藏
-	 * 
+	 *
 	 * @param jsonRootBean
 	 * @return
 	 */
