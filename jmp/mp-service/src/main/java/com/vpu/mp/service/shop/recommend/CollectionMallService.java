@@ -141,7 +141,7 @@ public class CollectionMallService extends ShopMallBaseService {
 	}
 
 	/**
-	 * 删除收藏
+	 * 删除收藏，消费者，不要直接调用
 	 *
 	 * @param jsonRootBean
 	 * @return
@@ -163,7 +163,7 @@ public class CollectionMallService extends ShopMallBaseService {
 	}
 
 	/**
-	 * 更新收藏
+	 * 更新收藏，消费者，不要直接调用
 	 *
 	 * @param jsonRootBean
 	 * @return

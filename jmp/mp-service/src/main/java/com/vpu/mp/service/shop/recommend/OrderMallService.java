@@ -184,7 +184,7 @@ public class OrderMallService extends ShopMallBaseService {
 
 
 	/**
-	 * 更新商品
+	 * 更新商品，消费者，不要直接调用
 	 * 
 	 * @param jsonRootBean
 	 * @return
@@ -206,7 +206,7 @@ public class OrderMallService extends ShopMallBaseService {
 	}
 
 	/**
-	 * 导入商品
+	 * 导入商品，消费者，不要直接调用
 	 * 
 	 * @param jsonRootBean
 	 * @return

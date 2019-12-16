@@ -9,54 +9,54 @@
       <div
         class="fromItem"
       >
-        <div>{{this.table[0].name}}</div>
+        <div style="color: #9a9a9a">{{this.table[0].name}}</div>
         <div
           class="num"
-          style="color: #5A8BFF"
+          style="color: black"
         >{{this.table[0].dataNumber}}
         </div>
-        <div>日 {{this.table[0].dayRate}}%</div>
-        <div>月 {{this.table[0].monthRate}}%</div>
-        <div>周 {{this.table[0].weekRate}}%</div>
+        <div class ="rate"><span style="color: #9a9a9a">日</span> {{this.table[0].dayRate}}</div>
+        <div class ="rate"><span style="color: #9a9a9a">周</span> {{this.table[0].weekRate}}</div>
+        <div class ="rate"><span style="color: #9a9a9a">月</span> {{this.table[0].monthRate}}</div>
       </div>
       <div
         class="fromItem"
       >
-        <div>{{this.table[1].name}}/{{this.table[2].name}}</div>
+        <div style="color: #9a9a9a">{{this.table[1].name}}/{{this.table[2].name}}</div>
         <div
           class="num"
-          style="color: #5A8BFF"
+          style="color: black"
         >{{this.table[1].dataNumber}}/{{this.table[2].dataNumber}}
         </div>
-        <div>日 {{this.table[1].dayRate}}% / {{this.table[2].dayRate}}%</div>
-        <div>月 {{this.table[1].monthRate}}% / {{this.table[2].monthRate}}%</div>
-        <div>周 {{this.table[1].weekRate}}% / {{this.table[2].weekRate}}%</div>
+        <div class ="rate"><span style="color: #9a9a9a">日</span> {{this.table[1].dayRate}} / {{this.table[2].dayRate}}</div>
+        <div class ="rate"><span style="color: #9a9a9a">周</span> {{this.table[1].weekRate}} / {{this.table[2].weekRate}}</div>
+        <div class ="rate"><span style="color: #9a9a9a">月</span> {{this.table[1].monthRate}} / {{this.table[2].monthRate}}</div>
       </div>
       <div
         class="fromItem"
       >
-        <div>{{this.table[3].name}}</div>
+        <div style="color: #9a9a9a">{{this.table[3].name}}</div>
         <div
           class="num"
-          style="color: #5A8BFF"
+          style="color: black"
         >{{this.table[3].dataNumber}}
         </div>
-        <div>日 {{this.table[3].dayRate}}%</div>
-        <div>月 {{this.table[3].monthRate}}%</div>
-        <div>周 {{this.table[3].weekRate}}%</div>
+        <div class ="rate"><span style="color: #9a9a9a">日</span> {{this.table[3].dayRate}}</div>
+        <div class ="rate"><span style="color: #9a9a9a">周</span> {{this.table[3].weekRate}}</div>
+        <div class ="rate"><span style="color: #9a9a9a">月</span> {{this.table[3].monthRate}}</div>
       </div>
       <div
         class="fromItem"
       >
-        <div>{{this.table[4].name}}/{{this.table[5].name}}</div>
+        <div style="color: #9a9a9a">{{this.table[4].name}}/{{this.table[5].name}}</div>
         <div
           class="num"
-          style="color: #5A8BFF"
+          style="color: black"
         >{{this.table[4].dataNumber}}/{{this.table[5].dataNumber}}
         </div>
-        <div>日 {{this.table[4].dayRate}}% / {{this.table[5].dayRate}}%</div>
-        <div>月 {{this.table[4].monthRate}}% / {{this.table[5].monthRate}}%</div>
-        <div>周 {{this.table[4].weekRate}}% / {{this.table[5].weekRate}}%</div>
+        <div class ="rate"><span style="color: #9a9a9a">日</span> {{this.table[4].dayRate}} / {{this.table[5].dayRate}}</div>
+        <div class ="rate"><span style="color: #9a9a9a">周</span> {{this.table[4].weekRate}} / {{this.table[5].weekRate}}</div>
+        <div class ="rate"><span style="color: #9a9a9a">月</span> {{this.table[4].monthRate}} / {{this.table[5].monthRate}}</div>
       </div>
 
     </div>
@@ -81,9 +81,11 @@ export default {
       console.log(rate)
       if (rate == null) {
         return '-'
+      } else {
+        return rate + '%'
       }
-      console.log(rate)
-      return rate
+      // console.log(rate)
+      // return rate
     },
     loadData () {
       yesterdayAnalysis().then(res => {
@@ -94,43 +96,43 @@ export default {
             {
               name: '打开次数',
               dataNumber: this.originalData[0].dataNumber,
-              dayRate: this.originalData[0].dayRate,
-              weekRate: this.originalData[0].weekRate,
-              monthRate: this.originalData[0].monthRate
+              dayRate: this.handleNull(this.originalData[0].dayRate),
+              weekRate: this.handleNull(this.originalData[0].weekRate),
+              monthRate: this.handleNull(this.originalData[0].monthRate)
             },
             {
               name: '访问次数',
               dataNumber: this.originalData[1].dataNumber,
-              dayRate: this.originalData[1].dayRate,
-              weekRate: this.originalData[1].weekRate,
-              monthRate: this.originalData[1].monthRate
+              dayRate: this.handleNull(this.originalData[1].dayRate),
+              weekRate: this.handleNull(this.originalData[1].weekRate),
+              monthRate: this.handleNull(this.originalData[1].monthRate)
             },
             {
               name: '人数',
               dataNumber: this.originalData[2].dataNumber,
-              dayRate: this.originalData[2].dayRate,
-              weekRate: this.originalData[2].weekRate,
-              monthRate: this.originalData[2].monthRate
+              dayRate: this.handleNull(this.originalData[2].dayRate),
+              weekRate: this.handleNull(this.originalData[2].weekRate),
+              monthRate: this.handleNull(this.originalData[2].monthRate)
             },
             {
               name: '新访问用户数',
               dataNumber: this.originalData[3].dataNumber,
-              dayRate: this.originalData[3].dayRate,
-              weekRate: this.originalData[3].weekRate,
-              monthRate: this.originalData[3].monthRate
+              dayRate: this.handleNull(this.originalData[3].dayRate),
+              weekRate: this.handleNull(this.originalData[3].weekRate),
+              monthRate: this.handleNull(this.originalData[3].monthRate)
             },
             {
               name: '分享次数',
               dataNumber: this.originalData[4].dataNumber,
-              dayRate: this.originalData[4].dayRate,
-              weekRate: this.originalData[4].weekRate,
-              monthRate: this.originalData[4].monthRate
+              dayRate: this.handleNull(this.originalData[4].dayRate),
+              weekRate: this.handleNull(this.originalData[4].weekRate),
+              monthRate: this.handleNull(this.originalData[4].monthRate)
             },
             {
               name: '人数',
               dataNumber: this.originalData[5].dataNumber,
-              dayRate: this.originalData[5].dayRate,
-              weekRate: this.originalData[5].weekRate,
+              dayRate: this.handleNull(this.originalData[5].dayRate),
+              weekRate: this.handleNull(this.originalData[5].weekRate),
               monthRate: this.handleNull(this.originalData[5].monthRate)
             }
           ]
@@ -179,6 +181,9 @@ export default {
         }
         :nth-of-type(3) {
           margin-top: 10px;
+        }
+        .rate{
+          margin-bottom: 5px;
         }
       }
     }
