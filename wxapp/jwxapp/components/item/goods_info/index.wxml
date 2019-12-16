@@ -13,7 +13,7 @@
       </view>
     </view>
   </view>
-  <view class="goods_ad" >带上你的美，闪亮你的世界</view>
+  <view class="goods_ad" wx:if="{{goodsInfo.goodsAd}}">{{goodsInfo.goodsAd}}</view>
   <view class="goods_price_info">
     <view class="goods_price" style='color:{{main_setting.comColor}}'>
       <text>￥</text><text>{{goodsPrice}}</text>

@@ -18,8 +18,11 @@ global.wxPage({
    */
   onLoad: function(options) {
     if (!options.goodsId) return;
+    let {goodsId,activityId=null,activityType=null} = options
     this.setData({
-      goodsId: options.goodsId
+      goodsId,
+      activityId,
+      activityType
     });
     this.requestGoodsInfo().then(res => {
       this.requestPledge(res);
@@ -47,6 +50,8 @@ global.wxPage({
         },
         {
           goodsId: this.data.goodsId,
+          activityId:this.data.activityId,
+          activityType:this.data.activityType,
           userId: util.getCache("user_id"),
           lon:null,
           lat:null
@@ -120,6 +125,7 @@ global.wxPage({
       goodsName,
       goodsSaleNum,
       labels,
+      goodsAd,
       defaultPrd,
       products,
       goodsNumber,
@@ -132,6 +138,7 @@ global.wxPage({
     let info = {
       goodsId,
       goodsName,
+      goodsAd,
       goodsSaleNum,
       labels,
       defaultPrd,

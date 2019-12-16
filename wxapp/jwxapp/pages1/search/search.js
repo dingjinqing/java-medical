@@ -59,7 +59,7 @@ global.wxPage({
       }
     );
   },
-  // 获取
+  // 获取右侧筛选信息
   getSelectedData(data){
     let { selectedSort: sortId, selectedBrands: brandIds, selectedLabels: labelIds, selectedActTypes: activityTypes, minPrice, maxPrice} = data.detail
     console.log(data)
