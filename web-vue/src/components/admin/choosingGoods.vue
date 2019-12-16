@@ -4,7 +4,7 @@
     <el-dialog
       title="选择商品"
       :visible.sync="choiseGooddialogVisible"
-      width="70%"
+      width="1075px"
       :modal-append-to-body="false"
     >
       <div
@@ -16,18 +16,32 @@
       </div>
       <div class="choiseDialog">
         <div>
-          <ul>
-            <li>
-              <sortCatTreeSelect ref="catTree" :filterGoodsInfo="initSortCatParams" treeType="cat" :selectedId.sync="requestParam.catId"/>
-            </li>
-            <li>
-              <sortCatTreeSelect ref="sortTree" :filterGoodsInfo="initSortCatParams" treeType="sort" :selectedId.sync="requestParam.goodsSortId"/>
-            </li>
-            <li>商品标签：
+          <section
+            style="padding-left:30px;display: flex;"
+            class="chooseCondiction"
+          >
+            <sortCatTreeSelect
+              ref="catTree"
+              :filterGoodsInfo="initSortCatParams"
+              treeType="cat"
+              :treeStyle="initPlateformWidth"
+              :selectedId.sync="requestParam.catId"
+            />
+            <div style="margin: 0 30px;">
+              <sortCatTreeSelect
+                ref="sortTree"
+                :filterGoodsInfo="initSortCatParams"
+                treeType="sort"
+                :treeStyle="initPlateformWidth"
+                :selectedId.sync="requestParam.goodsSortId"
+              />
+            </div>
+            <div>商品标签：
               <el-select
                 v-model="requestParam.goodsLabelId"
                 placeholder="请选择商品标签"
                 size="small"
+                style="width:140px;margin-left:-4px"
               >
                 <el-option
                   v-for="item in goodsLabelOptions"
@@ -37,8 +51,11 @@
                 >
                 </el-option>
               </el-select>
-            </li>
-            <li class="rangeLi">商品价格范围：
+            </div>
+            <div
+              class="rangeLi"
+              style="margin-left:30px;"
+            >商品价格范围：
               <el-input
                 v-model="requestParam.shopPriceLow"
                 placeholder="请输入内容"
@@ -49,14 +66,15 @@
                 placeholder="请输入内容"
                 size="small"
               ></el-input>
-            </li>
-          </ul>
+            </div>
+          </section>
           <ul>
             <li>商品名称：
               <el-input
                 v-model="requestParam.goodsName"
                 placeholder="请输入商品名称"
                 size="small"
+                style="width:140px"
               ></el-input>
             </li>
             <li>商品货号：
@@ -64,6 +82,7 @@
                 v-model="requestParam.goodsSn"
                 placeholder="请输入商品货号"
                 size="small"
+                style="width:140px"
               ></el-input>
             </li>
             <li>商品品牌：
@@ -71,6 +90,7 @@
                 v-model="requestParam.goodsBrandId"
                 placeholder="请选择商品品牌"
                 size="small"
+                style="width:140px"
               >
                 <el-option
                   v-for="item in goodsBrandOptions"
@@ -95,6 +115,7 @@
                 type="info"
                 plain
                 size="small"
+                class="resetCondition"
               >重置筛选条件</el-button>
             </div>
             <div style="padding: 10px;">
@@ -180,20 +201,18 @@
 
           <div class="tablefooter">
             <div
-              style="display: block;float: left;margin-left: 15px;"
               v-if="!singleElection"
+              class="selectAll"
             >
               <el-checkbox
                 v-model="checkAllFlag"
                 @change="checkedAllRow(checkAllFlag)"
-              ></el-checkbox><i class="tdTopText">选择全部</i>
+              >选择全部</el-checkbox>
             </div>
-            <div style="display: block;float: right">
-              <pagination
-                :page-params.sync="pageParams"
-                @pagination="paginationChange"
-              />
-            </div>
+            <pagination
+              :page-params.sync="pageParams"
+              @pagination="paginationChange"
+            />
           </div>
 
         </div>
@@ -278,6 +297,11 @@ export default {
         isSaleOut: false,
         // 查询商品时值为1，规格查询值为2
         selectType: this.loadProduct ? 2 : 1
+      }
+    },
+    initPlateformWidth: function () {
+      return {
+        selectSize: 'small'
       }
     }
   },
@@ -367,7 +391,7 @@ export default {
     /* 初始化 */
     _initFilterDatas () {
       // 过滤条件下拉框数据
-      return getGoodsFilterItem({needGoodsLabel: true, needGoodsBrand: true}).then((res) => {
+      return getGoodsFilterItem({ needGoodsLabel: true, needGoodsBrand: true }).then((res) => {
         if (!res) return
         if (res.error === 0) {
           this.goodsLabelOptions = res.content.goodsLabels
@@ -569,8 +593,11 @@ export default {
 </script>
 <style scoped>
 .middleBbtnDiv {
-  padding: 10px 30px;
+  padding: 15px 30px 5px;
   display: flex;
+}
+.middleBbtnDiv .resetCondition {
+  margin: 0;
 }
 .table_container {
   padding: 10px 30px;
@@ -605,9 +632,9 @@ ul li {
 ul li:nth-of-type(1) {
   margin-top: 0;
 }
-.choiseDialog {
+/* .choiseDialog {
   overflow-y: auto;
-}
+} */
 .choiseDialog ul {
   display: flex;
   margin-top: 10px;
@@ -620,9 +647,6 @@ ul li:nth-of-type(1) {
 }
 .choiseDialog ul li:nth-of-type(3) {
   margin-right: 30px;
-}
-.middleBbtnDiv {
-  padding: 10px 30px;
 }
 table {
   border: 1px solid #eff1f5;
@@ -747,9 +771,6 @@ img {
   float: left !important;
   margin-right: 0 !important;
 }
-/* .choosingGoods_Container .el-input__inner {
-  width: 140px !important;
-} */
 ._Container .rangeLi .el-input__inner {
   width: 70px !important;
 }
@@ -767,19 +788,36 @@ img {
 <style lang="scss" scoped>
 .tablefooter {
   background-color: #fff;
-  height: 50px;
-  line-height: 50px;
   color: #333;
-  font-size: 14px;
-  display: block;
-  justify-content: normal;
-  padding-right: 10px;
-  /deep/ .el-pagination {
-    display: flex;
-    align-items: center;
-    .el-pager {
-      display: flex;
-      align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0 20px 20px;
+  .el_pagination__editor {
+    .el-input {
+      /deep/.el-input__inner {
+        width: 50px;
+      }
+    }
+  }
+}
+</style>
+<style lang="scss" scoped>
+.choiseDialog .chooseCondiction {
+  margin-top: 10px;
+  height: 40px;
+  line-height: 40px;
+  /deep/ .el-form--inline {
+    .el-form-item {
+      margin-bottom: 0;
+      margin-right: 0;
+      .el-form-item__label {
+        padding: 0;
+      }
+      /deep/ .el-form-item__content {
+        .el-input__inner {
+          width: 140px;
+        }
+      }
     }
   }
 }

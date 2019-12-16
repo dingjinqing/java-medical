@@ -68,6 +68,30 @@ public class StatisticsScheduleTask {
     }
 
     /**
+     * 标签成交分析统计数据
+     */
+    @Scheduled(cron = "8 3 0 * * ?")
+    public void userLabelStatistics() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r) -> {
+            ShopApplication shop = saas.getShopApp(r.getShopId());
+            shop.shopTaskService.statisticalTableInsert.insertDistributionTag();
+        });
+    }
+
+    /**
+     * 交易统计数据
+     */
+    @Scheduled(cron = "8 4 0 * * ?")
+    public void tradeStatistics() {
+        Result<ShopRecord> result = saas.shop.getAll();
+        result.forEach((r) -> {
+            ShopApplication shop = saas.getShopApp(r.getShopId());
+            shop.shopTaskService.statisticalTableInsert.insertTradesRecordSummary();
+        });
+    }
+
+    /**
      * Real time statistics.
      * 每小时实时统计过去一个小时内产生的数据
      */

@@ -830,7 +830,7 @@ img {
   margin-left: 15px;
 }
 </style>
-<style>
+<style scoped>
 /* .addBrand .el-input {
   width: auto !important;
 } */

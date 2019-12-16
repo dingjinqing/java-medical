@@ -94,6 +94,7 @@ public class CollectionMallService extends ShopMallBaseService {
 			skuProductList.add(skuProduct);
 
 		}
+		logger().info("skuProductList的大小"+skuProductList.size());
 		if(skuProductList.size()>0) {
 			param.setSkuProductList(skuProductList);
 			param.setUserOpenId(openId);
@@ -103,6 +104,7 @@ public class CollectionMallService extends ShopMallBaseService {
 			//return result.isSuccess();
 			return true;
 		}
+		logger().info("没有数据");
 		return false;
 
 	}

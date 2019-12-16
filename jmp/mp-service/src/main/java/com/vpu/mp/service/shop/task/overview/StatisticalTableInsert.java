@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.task.overview;
 
 import com.vpu.mp.db.shop.tables.records.TradesRecord;
+import com.vpu.mp.db.shop.tables.records.TradesRecordSummaryRecord;
 import com.vpu.mp.db.shop.tables.records.UserRfmSummaryRecord;
 import com.vpu.mp.db.shop.tables.records.UserSummaryTrendRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static com.vpu.mp.db.shop.tables.DistributionTag.DISTRIBUTION_TAG;
 import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.TYPE_LIST;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
@@ -41,6 +43,12 @@ public class StatisticalTableInsert extends ShopBaseService {
      */
     @Autowired
     GoodsStatisticTaskService goodsStatistic;
+
+    /**
+     * The Trade task service.
+     */
+    @Autowired
+    TradeTaskService tradeTaskService;
 
     /**
      * Insert trades. b2c_trades表，每小时（整点）统计一次数据插入一条记录（统计历史数据，昨天数据）
@@ -143,6 +151,9 @@ public class StatisticalTableInsert extends ShopBaseService {
         return record;
     }
 
+    /**
+     * Insert user rfm summary.
+     */
     public void insertUserRfmSummary() {
         userSummary.getRecencyType(LocalDate.now().atStartOfDay()).forEach((k, v) -> {
             Map<Integer, Record3<Integer, Integer, BigDecimal>> rfmData = userSummary.getRFMData(v.v1(), v.v2());
@@ -163,5 +174,76 @@ public class StatisticalTableInsert extends ShopBaseService {
             setOrderNum(tuple3.v2());
             setTotalPaidMoney(tuple3.v3());
         }};
+    }
+
+    /**
+     * Insert distribution tag.
+     */
+    public void insertDistributionTag() {
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        TYPE_LIST.forEach((e) -> {
+            userSummary.getTagData(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)).forEach((k, v) -> {
+                db().insertInto(DISTRIBUTION_TAG,
+                    DISTRIBUTION_TAG.REF_DATE
+                    , DISTRIBUTION_TAG.TYPE
+                    , DISTRIBUTION_TAG.TAG_ID
+                    , DISTRIBUTION_TAG.TAG_NAME
+                    , DISTRIBUTION_TAG.PAY_USER_NUM
+                    , DISTRIBUTION_TAG.PAY_ORDER_NUM
+                    , DISTRIBUTION_TAG.PAY_ORDER_MONEY
+                    , DISTRIBUTION_TAG.PAY_GOODS_NUMBER)
+                    .values(Date.valueOf(today.toLocalDate()), e, k, v.value2(), v.value3(), v.value4(), v.value5(), v.value6())
+                    .onDuplicateKeyUpdate()
+                    .set(DISTRIBUTION_TAG.PAY_USER_NUM, v.value3())
+                    .set(DISTRIBUTION_TAG.PAY_ORDER_NUM, v.value4())
+                    .set(DISTRIBUTION_TAG.PAY_ORDER_MONEY, v.value5())
+                    .set(DISTRIBUTION_TAG.PAY_GOODS_NUMBER, v.value6())
+                    .execute();
+            });
+            userSummary.tagUserHasMobileNum(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)).forEach((k, v) -> {
+                db().insertInto(DISTRIBUTION_TAG,
+                    DISTRIBUTION_TAG.REF_DATE
+                    , DISTRIBUTION_TAG.TYPE
+                    , DISTRIBUTION_TAG.TAG_ID
+                    , DISTRIBUTION_TAG.TAG_NAME
+                    , DISTRIBUTION_TAG.HAS_MOBILE_NUM)
+                    .values(Date.valueOf(today.toLocalDate()), e, k, v.value2(), v.value3())
+                    .onDuplicateKeyUpdate()
+                    .set(DISTRIBUTION_TAG.HAS_MOBILE_NUM, v.value3())
+                    .execute();
+            });
+            userSummary.tagUserNum(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)).forEach((k, v) -> {
+                db().insertInto(DISTRIBUTION_TAG,
+                    DISTRIBUTION_TAG.REF_DATE
+                    , DISTRIBUTION_TAG.TYPE
+                    , DISTRIBUTION_TAG.TAG_ID
+                    , DISTRIBUTION_TAG.TAG_NAME
+                    , DISTRIBUTION_TAG.HAS_USER_NUM)
+                    .values(Date.valueOf(today.toLocalDate()), e, k, v.value2(), v.value3())
+                    .onDuplicateKeyUpdate()
+                    .set(DISTRIBUTION_TAG.HAS_USER_NUM, v.value3())
+                    .execute();
+            });
+        });
+    }
+
+    /**
+     * Insert trades record summary.
+     */
+    public void insertTradesRecordSummary() {
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        TradesRecordSummaryRecord record = new TradesRecordSummaryRecord();
+        TYPE_LIST.forEach((e) -> {
+            record.reset();
+            record.setRefDate(Date.valueOf(today.toLocalDate()));
+            record.setType(e);
+            record.setIncomeTotalMoney(tradeTaskService.getTotalIncomeMoney(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
+            record.setOutgoMoney(tradeTaskService.getTotalExpensesMoney(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
+            record.setIncomeRealMoney(record.getIncomeTotalMoney().subtract(record.getOutgoMoney()));
+            record.setIncomeTotalScore(tradeTaskService.getTotalIncomeScore(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
+            record.setOutgoScore(tradeTaskService.getTotalExpensesScore(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
+            record.setIncomeRealScore(record.getIncomeTotalScore().subtract(record.getOutgoScore()));
+            db().executeInsert(record);
+        });
     }
 }

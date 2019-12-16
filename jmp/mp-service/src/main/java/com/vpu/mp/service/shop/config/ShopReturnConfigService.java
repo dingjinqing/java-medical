@@ -191,7 +191,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     /**
-     * 更新退换货配置
+     * 	更新退换货配置
      * {@value com.vpu.mp.service.pojo.shop.config.trade.TradeConstant#FIELD_CLAZZ}
      */
     public void updateReturnConfig(ReturnConfigParam param) {
