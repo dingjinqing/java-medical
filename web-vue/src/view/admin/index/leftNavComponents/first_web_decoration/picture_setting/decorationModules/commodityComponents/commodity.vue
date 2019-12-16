@@ -69,9 +69,10 @@
                       <!--限时降价图形-->
                       <div
                         class="labelStyle1"
+                        style="height:auto;width:44px"
                         v-if="(item.label?item.label.listPattern:-1)===1&&data.hide_label==='1'"
                       >
-                        <span style="display: inline;">{{item.label.name}}</span>
+                        <span style="display: block;word-break: break-all;width: 34px;white-space: pre-wrap;">{{item.label.name}}</span>
                       </div>
                       <div
                         class="labelStyle2"
