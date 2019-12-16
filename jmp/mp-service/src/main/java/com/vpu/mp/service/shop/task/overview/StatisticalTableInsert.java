@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static com.vpu.mp.db.shop.tables.DistributionTag.DISTRIBUTION_TAG;
 import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.TYPE_LIST;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
@@ -143,6 +144,9 @@ public class StatisticalTableInsert extends ShopBaseService {
         return record;
     }
 
+    /**
+     * Insert user rfm summary.
+     */
     public void insertUserRfmSummary() {
         userSummary.getRecencyType(LocalDate.now().atStartOfDay()).forEach((k, v) -> {
             Map<Integer, Record3<Integer, Integer, BigDecimal>> rfmData = userSummary.getRFMData(v.v1(), v.v2());
@@ -163,5 +167,53 @@ public class StatisticalTableInsert extends ShopBaseService {
             setOrderNum(tuple3.v2());
             setTotalPaidMoney(tuple3.v3());
         }};
+    }
+
+    /**
+     * Insert distribution tag.
+     */
+    public void insertDistributionTag() {
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        TYPE_LIST.forEach((e) -> {
+            userSummary.getTagData(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)).forEach((k, v) -> {
+                db().insertInto(DISTRIBUTION_TAG,
+                    DISTRIBUTION_TAG.REF_DATE
+                    , DISTRIBUTION_TAG.TYPE
+                    , DISTRIBUTION_TAG.TAG
+                    , DISTRIBUTION_TAG.PAY_USER_NUM
+                    , DISTRIBUTION_TAG.PAY_ORDER_NUM
+                    , DISTRIBUTION_TAG.PAY_ORDER_MONEY
+                    , DISTRIBUTION_TAG.PAY_GOODS_NUMBER)
+                    .values(Date.valueOf(today.toLocalDate()), e, v.value2(), v.value3(), v.value4(), v.value5(), v.value6())
+                    .onDuplicateKeyUpdate()
+                    .set(DISTRIBUTION_TAG.PAY_USER_NUM, v.value3())
+                    .set(DISTRIBUTION_TAG.PAY_ORDER_NUM, v.value4())
+                    .set(DISTRIBUTION_TAG.PAY_ORDER_MONEY, v.value5())
+                    .set(DISTRIBUTION_TAG.PAY_GOODS_NUMBER, v.value6())
+                    .execute();
+            });
+            userSummary.tagUserHasMobileNum(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)).forEach((k, v) -> {
+                db().insertInto(DISTRIBUTION_TAG,
+                    DISTRIBUTION_TAG.REF_DATE
+                    , DISTRIBUTION_TAG.TYPE
+                    , DISTRIBUTION_TAG.TAG
+                    , DISTRIBUTION_TAG.HAS_MOBILE_NUM)
+                    .values(Date.valueOf(today.toLocalDate()), e, v.value2(), v.value3())
+                    .onDuplicateKeyUpdate()
+                    .set(DISTRIBUTION_TAG.HAS_MOBILE_NUM, v.value3())
+                    .execute();
+            });
+            userSummary.tagUserNum(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)).forEach((k, v) -> {
+                db().insertInto(DISTRIBUTION_TAG,
+                    DISTRIBUTION_TAG.REF_DATE
+                    , DISTRIBUTION_TAG.TYPE
+                    , DISTRIBUTION_TAG.TAG
+                    , DISTRIBUTION_TAG.HAS_USER_NUM)
+                    .values(Date.valueOf(today.toLocalDate()), e, v.value2(), v.value3())
+                    .onDuplicateKeyUpdate()
+                    .set(DISTRIBUTION_TAG.HAS_USER_NUM, v.value3())
+                    .execute();
+            });
+        });
     }
 }
