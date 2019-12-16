@@ -28,11 +28,13 @@ public class FreeShippingGoodsService extends ShopBaseService {
      * @param searchText 查询条件
      */
     public void freeShipGoodsList(Integer userId,Integer ruleId,Integer searchText){
+        // 获取规则
         FreeShippingRecord freeShippingById = freeShipService.getFreeShippingById(ruleId);
-        /**
-         * 获取售罄商品展示设置
-         */
+        //获取规则详情
+        //获取售罄商品展示设置
         Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
+
+        //es
 
 
     }

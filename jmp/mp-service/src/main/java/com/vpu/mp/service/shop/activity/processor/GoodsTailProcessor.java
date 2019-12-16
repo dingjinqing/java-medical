@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.activity.processor;
 
-import com.google.common.base.Supplier;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.Util;
@@ -29,9 +28,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 小程序-商品列表-处理最终价格信息
@@ -166,7 +163,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
         byte isAllCheck  = 1;
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
-                totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getGoodsNumber())));
+                totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
             }else {
                 isAllCheck=0;
             }

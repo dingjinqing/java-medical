@@ -71,7 +71,6 @@ public class Keys {
     public static final Identity<VirtualOrderRecord, Integer> IDENTITY_VIRTUAL_ORDER = Identities0.IDENTITY_VIRTUAL_ORDER;
     public static final Identity<CardReceiveCodeRecord, Integer> IDENTITY_CARD_RECEIVE_CODE = Identities0.IDENTITY_CARD_RECEIVE_CODE;
     public static final Identity<CardUpgradeRecord, Integer> IDENTITY_CARD_UPGRADE = Identities0.IDENTITY_CARD_UPGRADE;
-    public static final Identity<CartRecord, Long> IDENTITY_CART = Identities0.IDENTITY_CART;
     public static final Identity<ChannelRecord, Integer> IDENTITY_CHANNEL = Identities0.IDENTITY_CHANNEL;
     public static final Identity<ChannelRecordRecord, Integer> IDENTITY_CHANNEL_RECORD = Identities0.IDENTITY_CHANNEL_RECORD;
     public static final Identity<ChannelStatisticalRecord, Integer> IDENTITY_CHANNEL_STATISTICAL = Identities0.IDENTITY_CHANNEL_STATISTICAL;
@@ -245,10 +244,15 @@ public class Keys {
     public static final Identity<PayAwardRecordRecord, Integer> IDENTITY_PAY_AWARD_RECORD = Identities0.IDENTITY_PAY_AWARD_RECORD;
     public static final Identity<UserRfmSummaryRecord, Integer> IDENTITY_USER_RFM_SUMMARY = Identities0.IDENTITY_USER_RFM_SUMMARY;
     public static final Identity<SubscribeMessageRecord, Long> IDENTITY_SUBSCRIBE_MESSAGE = Identities0.IDENTITY_SUBSCRIBE_MESSAGE;
-    
+    public static final Identity<CartRecord, Integer> IDENTITY_CART = Identities0.IDENTITY_CART;
+    public static final Identity<CartBackupsRecord, Integer> IDENTITY_CART_BACKUPS = Identities0.IDENTITY_CART_BACKUPS;
+
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+
+    public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = UniqueKeys0.KEY_B2C_CART_PRIMARY;
+    public static final UniqueKey<CartBackupsRecord> KEY_B2C_CART_BACKUPS_PRIMARY = UniqueKeys0.KEY_B2C_CART_BACKUPS_PRIMARY;
     public static final UniqueKey<CoopenActivityRecord> KEY_B2C_COOPEN_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_COOPEN_ACTIVITY_PRIMARY;
     public static final UniqueKey<CoopenActivityRecordsRecord> KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY = UniqueKeys0.KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY;
     public static final UniqueKey<PayAwardRecord> KEY_B2C_PAY_AWARD_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_PRIMARY;
@@ -283,7 +287,6 @@ public class Keys {
     public static final UniqueKey<VirtualOrderRecord> KEY_B2C_VIRTUAL_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_VIRTUAL_ORDER_PRIMARY;
     public static final UniqueKey<CardReceiveCodeRecord> KEY_B2C_CARD_RECEIVE_CODE_PRIMARY = UniqueKeys0.KEY_B2C_CARD_RECEIVE_CODE_PRIMARY;
     public static final UniqueKey<CardUpgradeRecord> KEY_B2C_CARD_UPGRADE_PRIMARY = UniqueKeys0.KEY_B2C_CARD_UPGRADE_PRIMARY;
-    public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = UniqueKeys0.KEY_B2C_CART_PRIMARY;
     public static final UniqueKey<ChannelRecord> KEY_B2C_CHANNEL_PRIMARY = UniqueKeys0.KEY_B2C_CHANNEL_PRIMARY;
     public static final UniqueKey<ChannelRecordRecord> KEY_B2C_CHANNEL_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_CHANNEL_RECORD_PRIMARY;
     public static final UniqueKey<ChannelStatisticalRecord> KEY_B2C_CHANNEL_STATISTICAL_PRIMARY = UniqueKeys0.KEY_B2C_CHANNEL_STATISTICAL_PRIMARY;
@@ -489,7 +492,7 @@ public class Keys {
     public static final UniqueKey<UserCollectionRecord> KEY_B2C_USER_COLLECTION_PRIMARY = UniqueKeys0.KEY_B2C_USER_COLLECTION_PRIMARY;
     public static final UniqueKey<UserRfmSummaryRecord> KEY_B2C_USER_RFM_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_USER_RFM_SUMMARY_PRIMARY;
     public static final UniqueKey<SubscribeMessageRecord> KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY = UniqueKeys0.KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY;
-    
+
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -535,7 +538,6 @@ public class Keys {
         public static Identity<VirtualOrderRecord, Integer> IDENTITY_VIRTUAL_ORDER = Internal.createIdentity(VirtualOrder.VIRTUAL_ORDER, VirtualOrder.VIRTUAL_ORDER.ORDER_ID);
         public static Identity<CardReceiveCodeRecord, Integer> IDENTITY_CARD_RECEIVE_CODE = Internal.createIdentity(CardReceiveCode.CARD_RECEIVE_CODE, CardReceiveCode.CARD_RECEIVE_CODE.ID);
         public static Identity<CardUpgradeRecord, Integer> IDENTITY_CARD_UPGRADE = Internal.createIdentity(CardUpgrade.CARD_UPGRADE, CardUpgrade.CARD_UPGRADE.ID);
-        public static Identity<CartRecord, Long> IDENTITY_CART = Internal.createIdentity(Cart.CART, Cart.CART.REC_ID);
         public static Identity<ChannelRecord, Integer> IDENTITY_CHANNEL = Internal.createIdentity(Channel.CHANNEL, Channel.CHANNEL.ID);
         public static Identity<ChannelRecordRecord, Integer> IDENTITY_CHANNEL_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.ChannelRecord.CHANNEL_RECORD, com.vpu.mp.db.shop.tables.ChannelRecord.CHANNEL_RECORD.ID);
         public static Identity<ChannelStatisticalRecord, Integer> IDENTITY_CHANNEL_STATISTICAL = Internal.createIdentity(ChannelStatistical.CHANNEL_STATISTICAL, ChannelStatistical.CHANNEL_STATISTICAL.ID);
@@ -709,9 +711,13 @@ public class Keys {
         public static final Identity<UserCollectionRecord, Integer> IDENTITY_USER_COLLECTION = Identities0.IDENTITY_USER_COLLECTION;
         public static Identity<UserRfmSummaryRecord, Integer> IDENTITY_USER_RFM_SUMMARY = Internal.createIdentity(UserRfmSummary.USER_RFM_SUMMARY, UserRfmSummary.USER_RFM_SUMMARY.ID);
         public static Identity<SubscribeMessageRecord, Long> IDENTITY_SUBSCRIBE_MESSAGE = Internal.createIdentity(SubscribeMessage.SUBSCRIBE_MESSAGE, SubscribeMessage.SUBSCRIBE_MESSAGE.REC_ID);
+        public static Identity<CartRecord, Integer> IDENTITY_CART = Internal.createIdentity(Cart.CART, Cart.CART.CART_ID);
+        public static Identity<CartBackupsRecord, Integer> IDENTITY_CART_BACKUPS = Internal.createIdentity(CartBackups.CART_BACKUPS, CartBackups.CART_BACKUPS.CART_ID);
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = Internal.createUniqueKey(Cart.CART, "KEY_b2c_cart_PRIMARY", Cart.CART.CART_ID);
+        public static final UniqueKey<CartBackupsRecord> KEY_B2C_CART_BACKUPS_PRIMARY = Internal.createUniqueKey(CartBackups.CART_BACKUPS, "KEY_b2c_cart_backups_PRIMARY", CartBackups.CART_BACKUPS.CART_ID);
         public static final UniqueKey<CoopenActivityRecord> KEY_B2C_COOPEN_ACTIVITY_PRIMARY = Internal.createUniqueKey(CoopenActivity.COOPEN_ACTIVITY, "KEY_b2c_coopen_activity_PRIMARY", CoopenActivity.COOPEN_ACTIVITY.ID);
         public static final UniqueKey<CoopenActivityRecordsRecord> KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY = Internal.createUniqueKey(CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS, "KEY_b2c_coopen_activity_records_PRIMARY", CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS.ID);
         public static final UniqueKey<PayAwardRecord> KEY_B2C_PAY_AWARD_PRIMARY = Internal.createUniqueKey(PayAward.PAY_AWARD, "KEY_b2c_pay_award_PRIMARY", PayAward.PAY_AWARD.ID);
@@ -746,7 +752,6 @@ public class Keys {
         public static final UniqueKey<VirtualOrderRecord> KEY_B2C_VIRTUAL_ORDER_PRIMARY = Internal.createUniqueKey(VirtualOrder.VIRTUAL_ORDER, "KEY_b2c_virtual_order_PRIMARY", VirtualOrder.VIRTUAL_ORDER.ORDER_ID);
         public static final UniqueKey<CardReceiveCodeRecord> KEY_B2C_CARD_RECEIVE_CODE_PRIMARY = Internal.createUniqueKey(CardReceiveCode.CARD_RECEIVE_CODE, "KEY_b2c_card_receive_code_PRIMARY", CardReceiveCode.CARD_RECEIVE_CODE.ID);
         public static final UniqueKey<CardUpgradeRecord> KEY_B2C_CARD_UPGRADE_PRIMARY = Internal.createUniqueKey(CardUpgrade.CARD_UPGRADE, "KEY_b2c_card_upgrade_PRIMARY", CardUpgrade.CARD_UPGRADE.ID);
-        public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = Internal.createUniqueKey(Cart.CART, "KEY_b2c_cart_PRIMARY", Cart.CART.REC_ID);
         public static final UniqueKey<ChannelRecord> KEY_B2C_CHANNEL_PRIMARY = Internal.createUniqueKey(Channel.CHANNEL, "KEY_b2c_channel_PRIMARY", Channel.CHANNEL.ID);
         public static final UniqueKey<ChannelRecordRecord> KEY_B2C_CHANNEL_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.ChannelRecord.CHANNEL_RECORD, "KEY_b2c_channel_record_PRIMARY", com.vpu.mp.db.shop.tables.ChannelRecord.CHANNEL_RECORD.ID);
         public static final UniqueKey<ChannelStatisticalRecord> KEY_B2C_CHANNEL_STATISTICAL_PRIMARY = Internal.createUniqueKey(ChannelStatistical.CHANNEL_STATISTICAL, "KEY_b2c_channel_statistical_PRIMARY", ChannelStatistical.CHANNEL_STATISTICAL.ID);

@@ -17,11 +17,11 @@ public class WxAppCartGoods {
     /**
      * 购物车;id
      */
-    private Long recId;
+    private Integer cartId;
     /**
      * 购物车数量
      */
-    private Integer goodsNumber;
+    private Integer cartNumber;
     /**
      * 购物车商品价格(添加购物车是价格)
      */
@@ -50,7 +50,7 @@ public class WxAppCartGoods {
     /**
      * 平台分类
      */
-    private Integer cartId;
+    private Integer platformId;
     /**
      * 品牌分类
      */
@@ -128,10 +128,7 @@ public class WxAppCartGoods {
      * 1会员卡 2限时降价 3,4 首单特惠
      */
     private Byte goodsPriceAction;
-    /**
-     * 关联ID 加价购ID， 满折满减ID
-     */
-    private Integer identityId;
+
     /**
      * 扩展字段: 如：换购挡位ID
      */
@@ -143,11 +140,11 @@ public class WxAppCartGoods {
      */
     public CartGoodsInfo toInfo() {
         CartGoodsInfo cartGoodsInfo = new CartGoodsInfo();
-        cartGoodsInfo.setRecId(recId);
+        cartGoodsInfo.setCartId(cartId);
         cartGoodsInfo.setGoodsId(getGoodsId());
         cartGoodsInfo.setPrdId(prdId);
         cartGoodsInfo.setGoodsStatus(goodsStatus);
-        cartGoodsInfo.setCartNumber(goodsNumber);
+        cartGoodsInfo.setCartNumber(cartNumber);
         cartGoodsInfo.setIsChecked(isChecked);
         cartGoodsInfo.setCartPrice(getPrdPrice());
         cartGoodsInfo.setPrdPrice(prdPrice);
