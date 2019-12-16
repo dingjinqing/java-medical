@@ -55,7 +55,6 @@ import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.wxapp.WxUserCardService;
 import com.vpu.mp.service.shop.order.info.MpOrderInfoService;
@@ -106,6 +105,7 @@ public class UserService extends ShopBaseService {
 	
 	@Autowired
 	public WxUserCardService wxUserCardService;
+	
 	
 	private int[] userActiveEnter = { 1001, 1005, 1006, 1019, 1020, 1024, 1026, 1027, 1023, 1028, 1034, 1035, 1037,
 			1038, 1042, 1014, 1043, 1045, 1046, 1052, 1053, 1056, 1057, 1058, 1064, 1067, 1068, 1071, 1072, 1073, 1074,
@@ -630,6 +630,7 @@ public class UserService extends ShopBaseService {
 		if (userGrade.equals(CardConstant.LOWEST_GRADE)) {
 			logger().info("进入用户等级为0");
 			try {
+				data.put("get_grade", 0);
 				userCard.updateGrade(userId, null, (byte) 1);
 			} catch (Exception e) {
 				logger().error("userGrade为0时报错");
@@ -640,6 +641,7 @@ public class UserService extends ShopBaseService {
 			logger().info("进入用户等级为其他");
 			try {
 				int isGet = userCard.updateGrade(userId, null, (byte) 0); // 上面方法返回值is_get
+				logger().info("isGet的值为"+isGet);
 				if (isGet > 0) {
 					data.put("get_grade", 1);
 				} else {
