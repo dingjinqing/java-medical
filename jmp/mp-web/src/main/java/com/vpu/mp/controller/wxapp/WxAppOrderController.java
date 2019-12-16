@@ -180,16 +180,8 @@ public class WxAppOrderController extends WxAppBaseController{
 	@PostMapping("/addtest")
 	public JsonResult test(){
 		List<String> list=new ArrayList<String>();
-		list.add("P201900000000000000");
-		list.add("P201900000000000001");
-		list.add("P201900000000000002");
-		list.add("P201900000000000003");
-		list.add("P201900000000000004");
-		list.add("P201900000000000005");
-		list.add("P201900000000000006");
-		list.add("P201900000000000007");
-		list.add("P201900000000000008");
-		list.add("P201900000000000009");
+		list.add("P201911221415189750");
+		list.add("P201911221635533137");
 		Boolean addCommonOrders = shop().recommendService.orderMallService.addCommonOrders(wxAppAuth.user().getUserId(), list);
 		if(addCommonOrders) {
 			return success();
@@ -201,15 +193,8 @@ public class WxAppOrderController extends WxAppBaseController{
 	@PostMapping("/cart/addtest")
 	public JsonResult test2(){
 		List<Integer> list=new ArrayList<>();
-		list.add(1);
-		list.add(3);
-		list.add(4);
-		list.add(5);
-		list.add(6);
-		list.add(7);
-		list.add(8);
-		list.add(9);
-		list.add(10);
+		list.add(60);
+		list.add(62);
 		Boolean addCommonOrders = shop().recommendService.collectionMallService.addCartRows(wxAppAuth.user().getUserId(), list);
 		if(addCommonOrders) {
 			return success();
