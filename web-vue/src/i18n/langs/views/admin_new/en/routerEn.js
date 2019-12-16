@@ -15,7 +15,9 @@ export const en = {
   // 概况 用户统计
   user_summary: ['Overview', 'User Statistics'],
   // 概况 概况统计
-  analysis_basic: ['Overview', 'overview Statistics'],
+  analysis_basic: ['Overview', 'Overview Statistics'],
+  // 概况 搜索统计
+  search_summary: ['Overview', 'Search Statistics'],
 
   // 概况 用户画像
   analysis_portrait: ['Overview', 'User portrait'],

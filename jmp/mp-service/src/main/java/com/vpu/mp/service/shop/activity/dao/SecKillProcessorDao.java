@@ -78,7 +78,7 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setEndTime(secKill.getEndTime());
         seckillVo.setCardId(secKill.getCardId());
         seckillVo.setShareConfig(Util.parseJson(secKill.getShareConfig(), ShopShareConfig.class));
-        seckillVo.setSecKillPrds(this.getSecKillPrd(secKill.getSkId()));
+        seckillVo.setActProducts(this.getSecKillPrd(secKill.getSkId()));
         return seckillVo;
     }
 

@@ -2,12 +2,10 @@ package com.vpu.mp.service.pojo.wxapp.cart.list;
 
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,10 +29,6 @@ public class WxAppCartBo {
      * 商品活动信息
      */
     private OrderCartProductBo orderCartProductBo;
-
-
-
-
     /**
      * 商品列表
      */

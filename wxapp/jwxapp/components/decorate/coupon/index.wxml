@@ -20,12 +20,12 @@
               </view>
             </view>
             <view class="coupon_list_bottom">
-              <form report-submit='true' class="get_coupon"  bindsubmit="bindGetCoupon" data-idx="{{m.idx}}" data-vali="{{item.validationCode}}" data-exclusive="{{item.cardId}}" data-code="{{item.aliasCode}}" data-key="{{index}}" data-use_score="{{item.use_score}}" data-score_number="{{item.score_number}}" data-coupon_id="{{item.coupon_id}}">
-                <button form-type='submit' wx:if="{{ m.coupon_arr.length == 1 && !item.status }}" style='background: {{comColor}} url("{{m.imageUrl}}/image/admin/coupon_border_y.png") repeat-y left;background-size: 10rpx;height:200rpx;line-height:200rpx;font-size:28rpx' disabled='{{item.disableds}}'>{{item.is_exclusive == 1 ? '会员领取' : item.use_score == 1 ? item.score_number + '积分 兑换' : '领取'}}</button>
-                <button form-type='submit' plain="false" wx:if="{{ m.coupon_arr.length > 1 && !item.status }}" style='background: {{comColor}} url("{{m.imageUrl}}/image/admin/coupon_border.png") repeat-x top;background-size: 16rpx;margin-top: 10rpx;' disabled='{{item.disableds}}'>{{item.is_exclusive == 1 ? '会员领取' : item.use_score == 1 ? item.score_number + '积分 兑换' : '领取'}}</button>
-                <!-- 领取之后查看详情 -->
-                <view wx:if="{{ m.coupon_arr.length == 1 && item.status == -1}}" class="coupon_list_bottom" bindtap='bindJumpLink' data-url='/pages/couponlist/couponlist' style='background: {{somColor}} url("{{m.imageUrl}}/image/admin/coupon_border_y.png") repeat-y left;background-size: 10rpx;color:{{comColor}}'>立即查看 ></view>
-                <view wx:if="{{ m.coupon_arr.length > 1 && item.status == -1}}" class="coupon_list_bottom" style='background:{{somColor}} url("{{m.imageUrl}}/image/admin/coupon_border.png") repeat-x top;background-size: 16rpx;margin-top: 10rpx;color:{{comColor}};' bindtap='bindJumpLink' data-url='/pages/coupon/coupon'>立即查看 ></view>
+              <form report-submit='true' class="get_coupon"  bindsubmit="bindGetCoupon" data-idx="{{m.idx}}" data-vali="{{item.validationCode}}" data-exclusive="{{item.cardId}}" data-code="{{item.aliasCode}}" data-key="{{index}}" data-use_score="{{item.use_score}}" data-coupon_id="{{item.coupon_id}}" data-item="{{ item }}">
+                <button form-type='submit' wx:if="{{ m.coupon_arr.length == 1 && !item.status }}" style='background: {{comColor}} url("{{m.imageUrl}}/image/admin/coupon_border_y.png") repeat-y left;background-size: 10rpx;height:200rpx;line-height:200rpx;font-size:28rpx'>{{item.is_exclusive == 1 ? '会员领取' : item.use_score == 1 ? item.score_number + '积分 兑换' : '领取'}}</button>
+                <button form-type='submit' plain="false" wx:if="{{ m.coupon_arr.length > 1 && !item.status }}" style='background: {{comColor}} url("{{m.imageUrl}}/image/admin/coupon_border.png") repeat-x top;background-size: 16rpx;margin-top: 10rpx;'>{{item.is_exclusive == 1 ? '会员领取' : item.use_score == 1 ? item.score_number + '积分 兑换' : '领取'}}</button>
+                <!-- 领取之后查看详情样式 -->
+                <view wx:if="{{ m.coupon_arr.length == 1 && item.status == -1}}" class="coupon_list_bottom" bindtap='bindJumpLink' data-url='/pages/coupon/coupon' style='background: {{somColor}} url("{{m.imageUrl}}/image/admin/coupon_border_y.png") repeat-y left;background-size: 10rpx;color:{{comColor}};width: 100%;'>立即查看 ></view>
+                <view wx:if="{{ m.coupon_arr.length > 1 && item.status == -1}}" class="coupon_list_bottom" style='background:{{somColor}} url("{{m.imageUrl}}/image/admin/coupon_border.png") repeat-x top;background-size: 16rpx;margin-top: 10rpx;color:{{comColor}};width: 100%;' bindtap='bindJumpLink' data-url='/pages/coupon/coupon'>立即查看 ></view>
               </form>
             </view>
           </view>

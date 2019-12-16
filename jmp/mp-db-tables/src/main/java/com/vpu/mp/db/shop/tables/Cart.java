@@ -8,14 +8,6 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -28,6 +20,12 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.Generated;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -43,10 +41,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Cart extends TableImpl<CartRecord> {
 
-    private static final long serialVersionUID = 1855569453;
+    private static final long serialVersionUID = 1527362770;
 
     /**
-     * The reference instance of <code>mini_shop_471752.b2c_cart</code>
+     * The reference instance of <code>mini_shop_4748160.b2c_cart</code>
      */
     public static final Cart CART = new Cart();
 
@@ -59,151 +57,106 @@ public class Cart extends TableImpl<CartRecord> {
     }
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.rec_id</code>.
+     * The column <code>mini_shop_4748160.b2c_cart.cart_id</code>.
      */
-    public final TableField<CartRecord, Long> REC_ID = createField("rec_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<CartRecord, Integer> CART_ID = createField("cart_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.shop_id</code>. 店铺id
+     * The column <code>mini_shop_4748160.b2c_cart.store_id</code>. 门店id
      */
-    public final TableField<CartRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "店铺id");
+    public final TableField<CartRecord, Integer> STORE_ID = createField("store_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "门店id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.store_id</code>. 门店id
+     * The column <code>mini_shop_4748160.b2c_cart.user_id</code>. 用户id
      */
-    public final TableField<CartRecord, Integer> STORE_ID = createField("store_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "门店id");
+    public final TableField<CartRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.user_id</code>.
+     * The column <code>mini_shop_4748160.b2c_cart.goods_id</code>. 商品id
      */
-    public final TableField<CartRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<CartRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.goods_id</code>.
+     * The column <code>mini_shop_4748160.b2c_cart.goods_sn</code>. 商品sn
      */
-    public final TableField<CartRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<CartRecord, String> GOODS_SN = createField("goods_sn", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "商品sn");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.goods_sn</code>.
+     * The column <code>mini_shop_4748160.b2c_cart.goods_name</code>. 商品名称
      */
-    public final TableField<CartRecord, String> GOODS_SN = createField("goods_sn", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<CartRecord, String> GOODS_NAME = createField("goods_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "商品名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.product_id</code>. 规格产品id
-     */
-    public final TableField<CartRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "规格产品id");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_cart.prd_sn</code>.
-     */
-    public final TableField<CartRecord, String> PRD_SN = createField("prd_sn", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_cart.goods_name</code>.
-     */
-    public final TableField<CartRecord, String> GOODS_NAME = createField("goods_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_cart.market_price</code>.
-     */
-    public final TableField<CartRecord, BigDecimal> MARKET_PRICE = createField("market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_cart.goods_price</code>.
-     */
-    public final TableField<CartRecord, BigDecimal> GOODS_PRICE = createField("goods_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_cart.goods_number</code>.
-     */
-    public final TableField<CartRecord, Short> GOODS_NUMBER = createField("goods_number", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_cart.goods_specs</code>. 例如,颜色:黑色
+     * The column <code>mini_shop_4748160.b2c_cart.goods_specs</code>. 例如,颜色:黑色
      */
     public final TableField<CartRecord, String> GOODS_SPECS = createField("goods_specs", org.jooq.impl.SQLDataType.CLOB, this, "例如,颜色:黑色");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.parent_id</code>. 该商品的父商品id，没有该值为0 ，有的话那该商品就是该id的配件
+     * The column <code>mini_shop_4748160.b2c_cart.product_id</code>. 规格产品id
      */
-    public final TableField<CartRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "该商品的父商品id，没有该值为0 ，有的话那该商品就是该id的配件");
+    public final TableField<CartRecord, Integer> PRODUCT_ID = createField("product_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "规格产品id");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.rec_type</code>. 购物车商品类型，0，普通 1，团够 2，拍卖 3，夺宝奇兵
+     * The column <code>mini_shop_4748160.b2c_cart.prd_sn</code>. 规格sn
      */
-    public final TableField<CartRecord, Byte> REC_TYPE = createField("rec_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "购物车商品类型，0，普通 1，团够 2，拍卖 3，夺宝奇兵");
+    public final TableField<CartRecord, String> PRD_SN = createField("prd_sn", org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "规格sn");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.is_gift</code>.
+     * The column <code>mini_shop_4748160.b2c_cart.goods_price</code>. 商品价格
      */
-    public final TableField<CartRecord, Short> IS_GIFT = createField("is_gift", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
+    public final TableField<CartRecord, BigDecimal> GOODS_PRICE = createField("goods_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "商品价格");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.is_buynow</code>.
+     * The column <code>mini_shop_4748160.b2c_cart.is_checked</code>. 是否选中
      */
-    public final TableField<CartRecord, Byte> IS_BUYNOW = createField("is_buynow", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<CartRecord, Byte> IS_CHECKED = createField("is_checked", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否选中");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.strategy</code>. 参与的优惠活动,json格式
+     * The column <code>mini_shop_4748160.b2c_cart.cart_number</code>. 数量
      */
-    public final TableField<CartRecord, String> STRATEGY = createField("strategy", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "参与的优惠活动,json格式");
+    public final TableField<CartRecord, Short> CART_NUMBER = createField("cart_number", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "数量");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.action</code>. 商品活动类型：1：加价购主商品， 2： 满折满减
+     * The column <code>mini_shop_4748160.b2c_cart.original_price</code>. 加入购物车时的价格
      */
-    public final TableField<CartRecord, Byte> ACTION = createField("action", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "商品活动类型：1：加价购主商品， 2： 满折满减");
+    public final TableField<CartRecord, BigDecimal> ORIGINAL_PRICE = createField("original_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "加入购物车时的价格");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.identity_id</code>. 关联id: 如：加价购id, 满折满减id
+     * The column <code>mini_shop_4748160.b2c_cart.type</code>. 类型 0 普通
      */
-    public final TableField<CartRecord, Integer> IDENTITY_ID = createField("identity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "关联id: 如：加价购id, 满折满减id");
+    public final TableField<CartRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "类型 0 普通 ");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.extend_id</code>. 扩展字段: 如：换购挡位id
+     * The column <code>mini_shop_4748160.b2c_cart.extend_id</code>. 扩展字段:对应type的类型
      */
-    public final TableField<CartRecord, Integer> EXTEND_ID = createField("extend_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "扩展字段: 如：换购挡位id");
+    public final TableField<CartRecord, Integer> EXTEND_ID = createField("extend_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "扩展字段:对应type的类型 ");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.is_checked</code>. 是否选中
+     * The column <code>mini_shop_4748160.b2c_cart.create_time</code>.
      */
-    public final TableField<CartRecord, Byte> IS_CHECKED = createField("is_checked", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否选中");
+    public final TableField<CartRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.platform</code>. 平台：如 crm
+     * The column <code>mini_shop_4748160.b2c_cart.update_time</code>. 最后修改时间
      */
-    public final TableField<CartRecord, String> PLATFORM = createField("platform", org.jooq.impl.SQLDataType.VARCHAR(20), this, "平台：如 crm");
+    public final TableField<CartRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * The column <code>mini_shop_471752.b2c_cart.extend_info</code>. 扩展内容：如crm的promote_info
-     */
-    public final TableField<CartRecord, String> EXTEND_INFO = createField("extend_info", org.jooq.impl.SQLDataType.VARCHAR(200), this, "扩展内容：如crm的promote_info");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_cart.create_time</code>.
-     */
-    public final TableField<CartRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
-     * The column <code>mini_shop_471752.b2c_cart.update_time</code>. 最后修改时间
-     */
-    public final TableField<CartRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
-
-    /**
-     * Create a <code>mini_shop_471752.b2c_cart</code> table reference
+     * Create a <code>mini_shop_4748160.b2c_cart</code> table reference
      */
     public Cart() {
         this(DSL.name("b2c_cart"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_cart</code> table reference
+     * Create an aliased <code>mini_shop_4748160.b2c_cart</code> table reference
      */
     public Cart(String alias) {
         this(DSL.name(alias), CART);
     }
 
     /**
-     * Create an aliased <code>mini_shop_471752.b2c_cart</code> table reference
+     * Create an aliased <code>mini_shop_4748160.b2c_cart</code> table reference
      */
     public Cart(Name alias) {
         this(alias, CART);
@@ -234,14 +187,14 @@ public class Cart extends TableImpl<CartRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.CART_PRIMARY);
+        return Arrays.<Index>asList(Indexes.CART_PRIMARY, Indexes.CART_USER_ID);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Identity<CartRecord, Long> getIdentity() {
+    public Identity<CartRecord, Integer> getIdentity() {
         return Keys.IDENTITY_CART;
     }
 

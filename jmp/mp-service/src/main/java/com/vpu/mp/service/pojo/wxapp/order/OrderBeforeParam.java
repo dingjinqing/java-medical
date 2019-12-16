@@ -1,5 +1,20 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,24 +23,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
-
-import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 /**
- * 
+ *
  * @author 王帅
  *
  */
@@ -40,6 +39,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     private Integer activityId;
     @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_ADDRESS_NO_NULL)
 	private Integer addressId;
+    @Valid
 	private List<Goods> goods;
     @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_DELIVER_TYPE_NO_NULL)
     private Byte deliverType;

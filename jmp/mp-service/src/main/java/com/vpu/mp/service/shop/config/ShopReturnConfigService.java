@@ -52,7 +52,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     /**
      * 买家已提交物流信息，商家在return_address_days日内未处理，系统将默认同意退款退货，并自动退款给买家。
      */
-    final public static String K_RETURN_SHOPPING_DAYS = "return_shopping_days";
+    final public static String K_RETURN_SHIPPING_DAYS = "return_shipping_days";
 
     /**
      * 商家同意退款退货，买家在7日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
@@ -112,12 +112,12 @@ public class ShopReturnConfigService extends BaseShopConfigService {
         return returnAddressDays !=null ? this.set(K_RETURN_ADDRESS_DAYS, returnAddressDays,Byte.class) : -1;
     }
 
-    public Byte getReturnShoppingDays() {
-        return this.get(K_RETURN_SHOPPING_DAYS, Byte.class, BYTE_ZERO);
+    public Byte getReturnShippingDays() {
+        return this.get(K_RETURN_SHIPPING_DAYS, Byte.class, BYTE_ZERO);
     }
 
-    public int setReturnShoppingDays(Byte returnShoppingDays) {
-        return returnShoppingDays !=null ? this.set(K_RETURN_SHOPPING_DAYS, returnShoppingDays,Byte.class) : -1;
+    public int setReturnShippingDays(Byte returnShippingDays) {
+        return returnShippingDays != null ? this.set(K_RETURN_SHIPPING_DAYS, returnShippingDays, Byte.class) : -1;
     }
 
     public Byte getReturnPassDays() {
@@ -217,12 +217,12 @@ public class ShopReturnConfigService extends BaseShopConfigService {
             param.setReturnAddressDays(BYTE_ZERO);
             param.setReturnMoneyDays(BYTE_ZERO);
             param.setReturnPassDays(BYTE_ZERO);
-            param.setReturnShoppingDays(BYTE_ZERO);
+            param.setReturnShippingDays(BYTE_ZERO);
         } else {
             param.setReturnAddressDays(BYTE_ZERO.equals(param.getReturnAddressDays()) ? BYTE_SEVEN : param.getReturnAddressDays());
             param.setReturnMoneyDays(BYTE_ZERO.equals(param.getReturnMoneyDays()) ? BYTE_SEVEN : param.getReturnMoneyDays());
             param.setReturnPassDays(BYTE_ZERO.equals(param.getReturnPassDays()) ? BYTE_SEVEN : param.getReturnPassDays());
-            param.setReturnShoppingDays(BYTE_ZERO.equals(param.getReturnShoppingDays()) ? BYTE_SEVEN : param.getReturnShoppingDays());
+            param.setReturnShippingDays(BYTE_ZERO.equals(param.getReturnShippingDays()) ? BYTE_SEVEN : param.getReturnShippingDays());
         }
 
     }

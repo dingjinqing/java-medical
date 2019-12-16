@@ -40,5 +40,5 @@ public class SeckillMpVo extends GoodsActivityBaseMp {
     private ShopShareConfig shareConfig;
 
     /** 秒杀规格 */
-    private List<SecKillPrdMpVo> secKillPrds;
+    private List<SecKillPrdMpVo> actProducts;
 }
