@@ -111,7 +111,7 @@ public class ProductMallService extends ShopMallBaseService {
 	
 	
 	/**
-	 * 更新或导入物品信息
+	 * 更新或导入物品信息，这是消费者，不要直接调用
 	 * 
 	 * @param jsonRootBean
 	 * @return

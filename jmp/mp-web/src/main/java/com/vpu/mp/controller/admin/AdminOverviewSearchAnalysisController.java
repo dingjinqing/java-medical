@@ -1,20 +1,19 @@
 package com.vpu.mp.controller.admin;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.overview.searchanalysis.SearchHistoryParam;
+import com.vpu.mp.service.pojo.shop.overview.searchanalysis.SearchHistoryVo;
+import com.vpu.mp.service.pojo.shop.overview.searchanalysis.SearchHotWordsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.overview.searchanalysis.OverviewSearchAnalysisHistoryParam;
-import com.vpu.mp.service.pojo.shop.overview.searchanalysis.OverviewSearchAnalysisHistoryVo;
-import com.vpu.mp.service.pojo.shop.overview.searchanalysis.OverviewSearchAnalysisHotVo;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 搜索统计控制器
@@ -32,7 +31,7 @@ public class AdminOverviewSearchAnalysisController extends AdminBaseController{
 	 *@return
 	 */
 	@PostMapping("/history")
-	public JsonResult getSearchHistory(@RequestBody OverviewSearchAnalysisHistoryParam param) {
+	public JsonResult getSearchHistory(@RequestBody SearchHistoryParam param) {
 		String startTime="7";
 		String endTime;
 		//**  获得今日时间（字符串格式精确到日）*/
@@ -54,9 +53,9 @@ public class AdminOverviewSearchAnalysisController extends AdminBaseController{
 		String endTail = " 23:59:59";
 		String endTimeTotal = endTime+endTail; 
 		param.setEndTime(endTimeTotal);		
-		List<OverviewSearchAnalysisHistoryVo> overviewSearchAnalysisHistoryVos = shop().overview.overviewSearchAnalysisService.getSearchHistory(param);
+		List<SearchHistoryVo> searchHistoryVos = shop().overview.searchAnalysisService.getSearchHistory(param);
 		
-		return success(overviewSearchAnalysisHistoryVos);
+		return success(searchHistoryVos);
 		
 	}
 	
@@ -81,7 +80,7 @@ public class AdminOverviewSearchAnalysisController extends AdminBaseController{
 	 *@return
 	 */
 	@PostMapping("/hot")
-	public JsonResult getHotSearchHistory(@RequestBody OverviewSearchAnalysisHistoryParam param) {
+	public JsonResult getHotSearchHistory(@RequestBody SearchHistoryParam param) {
 		String startTime="7";
 		String endTime;
 		//**  获得今日时间（字符串格式精确到日）*/
@@ -103,9 +102,9 @@ public class AdminOverviewSearchAnalysisController extends AdminBaseController{
 		String endTail = " 23:59:59";
 		String endTimeTotal = endTime+endTail; 
 		param.setEndTime(endTimeTotal);		
-		List<OverviewSearchAnalysisHotVo> overviewSearchAnalysisHotVos = shop().overview.overviewSearchAnalysisService.getHotSearchHistory(param);
+		List<SearchHotWordsVo> searchHotWordsVos = shop().overview.searchAnalysisService.getHotSearchHistory(param);
 		
-		return success(overviewSearchAnalysisHotVos);
+		return success(searchHotWordsVos);
 		
 	}
 	

@@ -15,8 +15,6 @@ global.wxPage({
   onLoad: function (options) {
     let cardNo = options.cardNo ? options.cardNo : null
     let cardId = options.cardId ? options.cardId : null
-    // let cardNo = null
-    // let cardId = 839
     this.requestCardInfo(cardNo, cardId)
     console.log(cardNo, cardId)
   },
@@ -75,6 +73,15 @@ global.wxPage({
         }
         let cardInfo = res.content.cardInfo
         console.log(cardInfo)
+        if (cardInfo.activation) {
+          that.setData({
+            carStatus: "已领取"
+          })
+        } else {
+          that.setData({
+            carStatus: "未激活"
+          })
+        }
         cardInfo.cardExpireTime = that.getCardExpireTime(cardInfo);
         cardInfo.cardBgStyle = that.getCardBg(cardInfo);
         cardInfo.cardTypeName = that.getTypeName(cardInfo.cardType);
@@ -83,7 +90,7 @@ global.wxPage({
         cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
         that.getUpgradeCondition(cardInfo)
         that.setData({
-          cardInfo: res.content
+          cardInfo: cardInfo
         })
       }, { cardId: cardId })
     }

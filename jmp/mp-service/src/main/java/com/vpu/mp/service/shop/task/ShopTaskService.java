@@ -1,13 +1,10 @@
 package com.vpu.mp.service.shop.task;
 
 import com.vpu.mp.service.shop.task.goods.FootprintDeleteTaskService;
-import com.vpu.mp.service.shop.task.market.BargainTaskService;
-import com.vpu.mp.service.shop.task.market.GroupBuyTaskService;
-import com.vpu.mp.service.shop.task.market.PreSaleTaskService;
-import com.vpu.mp.service.shop.task.market.ReducePriceTaskService;
-import com.vpu.mp.service.shop.task.market.SeckillTaskService;
+import com.vpu.mp.service.shop.task.market.*;
 import com.vpu.mp.service.shop.task.order.OrderTaskService;
 import com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService;
+import com.vpu.mp.service.shop.task.overview.StatisticalTableInsert;
 import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,5 +41,8 @@ public class ShopTaskService {
 
     @Autowired
     public FootprintDeleteTaskService footprintDeleteTaskService;
+
+    @Autowired
+    public StatisticalTableInsert statisticalTableInsert;
 }
 

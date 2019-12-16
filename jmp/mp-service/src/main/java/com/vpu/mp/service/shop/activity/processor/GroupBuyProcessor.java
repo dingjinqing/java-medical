@@ -1,10 +1,13 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GroupBuyListMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +22,12 @@ import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 
 /**
+ * 商品列表,下单
  * @author 李晓冰
  * @date 2019年10月29日
  */
 @Service
-public class GroupBuyProcessor implements ProcessorPriority,ActivityGoodsListProcessor {
+public class GroupBuyProcessor implements ProcessorPriority,ActivityGoodsListProcessor ,OrderCreatePayBeforeProcessor{
 
     @Autowired
     GroupBuyProcessorDao groupBuyProcessorDao;
@@ -54,5 +58,24 @@ public class GroupBuyProcessor implements ProcessorPriority,ActivityGoodsListPro
             bo.getGoodsActivities().add(activity);
             bo.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
         });
+    }
+
+    /**
+     *  初始化参数
+     * @param param
+     */
+    @Override
+    public void initMarketOrderCreateParam(CreateParam param) {
+
+    }
+
+    /**
+     *  保存订单数据
+     * @param order
+     * @throws MpException
+     */
+    @Override
+    public void processAfterOrderCreate(OrderBeforeVo order) throws MpException {
+
     }
 }

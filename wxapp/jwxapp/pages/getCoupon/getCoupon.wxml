@@ -2,20 +2,20 @@
 <include src="../common/header.wxml"/>
 <view class='main-container'>
   <view class="coupon-container">
-    <!--优惠券名称  -->
     <block>
-    <!-- style='background:#ff6666;' -->
-      <view class="coupon-name" style="background:{{ detailInfo.type == 1 ? '#ff6666' :'#ccc' }}">
+      <!--优惠券名称  -->
+      <view class="coupon-name" style="background:{{ detailInfo.type == 3 ? '#ccc' : '#ff6666' }}">
         <view class="vip_exclusive" wx:if="{{detailInfo.is_exclusive == 1}}">会员专享</view>
         <text class="name-top" wx:if="{{detailInfo.id !=''}}">{{detailInfo.actName}}</text>
         <text class="name-top" wx:else>优惠券名称</text>
         <text class="name-bottom" wx:if="{{detailInfo.type == 0}}">￥{{detailInfo.amount}}</text>
         <text class="name-bottom" wx:else>{{detailInfo.amount}}折</text>  
-         <!--未使用  -->
+        <!--未使用  -->
         <block wx:if="{{detailInfo.isUsed == 0}}"> 
             <image src="{{imageUrl}}image/wxapp/no_use_bg1.png" class="coupon-top-img" mode="widthFix"></image> 
         </block> 
-       </view>
+      </view> <!--优惠券名称END  -->
+
         <!--有效日期  -->
       <view class="coupon-time clearfix">        
         <view style="color:#888;" class='cou_bom_tit'>有效日期：</view>
@@ -54,6 +54,16 @@
         </view>
         
       </view> <!--使用限制END  -->
+
+      <!-- 领取方式 -->
+      <!-- <view class='coupon_get_type' wx:if='{{act_info.access_mode == 2}}' bindtap='to_cou_package'>
+          <view class='cgt_time'>领取时间：{{ act_info.created }}</view>
+          <view class='cgt_word clearfix'>
+              <view class='cw_left'>领取方式：优惠券包</view>
+              <view class='cw_right'>查看 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image></view>
+          </view>
+      </view> -->
+      <!-- 领取方式end -->
 
       <!-- 兑换所需积分  -->
       <view class="coupon-time" wx:if="{{act_info.use_score == 1}}">        
@@ -96,24 +106,13 @@
         </form>    
       </view> <!--领取明细END  -->
 
-      <!--使用限制  -->
-      <view class="coupon-limit">
-        <view class='limit_left'>使用限制：</view>
-        <view class='limit_right'>
-          <view class='goods_limit'>
-            <text class="coupon-time-btm" style="color:#353535;" wx:if="{{act_info.recommend_goods_id == null & act_info.recommend_cat_id == null }}">无商品限制</text>
-        <text class="coupon-time-btm" wx:if="{{act_info.recommend_goods_id != null || act_info.recommend_cat_id != null}}">部分商品可使用</text>
-          </view>
-          <view class='price_limit' wx:if='{{act_info.from == 0}}'>
-            <text wx:if="{{act_info.limit_order_amount == null || act_info.limit_order_amount == 0}}">无价格限制</text>
-            <text wx:else>{{act_info.act_desc}}</text>
-          </view>
-          <view class='price_limit' wx:if='{{act_info.from == 1}}'>
-            <text wx:if="{{act_info.least_consume == 0 || act_info.least_consume == null}}">无价格限制</text>
-            <text wx:else>满{{act_info.least_consume}}元可用</text>
-          </view>
+      <!--使用说明  --> 
+      <view class="coupon-direct" wx:if="{{act_info.use_explain != null}}">
+        <text style="color:#888;">使用说明：</text>
+        <view class="coupon-direct-btm">
+          <text>{{act_info.use_explain}}</text>
         </view>
-      </view> <!--使用限制END  -->
+      </view> <!--使用说明END  -->
     </block>
   </view>
 </view>

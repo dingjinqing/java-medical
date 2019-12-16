@@ -16,6 +16,22 @@ export const parseDate = dateStr => {
   return m.toDate()
 }
 
+/*
+* 1.使用date的年月日
+* 2.当startOrEnd = true 时间使用 00:00:00 当startOrEnd = false 时间使用 59:59:59
+* 拼接1和2的结果作为最终待格式化日期
+*/
+export const startOrEndDayWithFormat = (date, startOrEnd) => {
+  if (!date) {
+    return null
+  }
+  if (startOrEnd) {
+    return moment(date).startOf('day').format('YYYY-MM-DD HH:mm:ss')
+  } else {
+    return moment(date).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+  }
+}
+
 export const range = range => ({
   v1: range[0],
   v2: range[1]

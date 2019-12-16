@@ -99,7 +99,7 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
         // 规格会员价和图片路径处理
         products.forEach(prd-> prd.setPrdImg(getImgFullUrlUtil(prd.getPrdImg())));
         // 商品图片和视频路径地址处理
-        List<String> goodsImgs = new ArrayList<>(goodsDetailMpBo.getGoodsImgs().size());
+        List<String> goodsImgs = new ArrayList<>(goodsDetailMpBo.getGoodsImgs().size()+1);
         goodsDetailMpBo.getGoodsImgs().add(0,goodsDetailMpBo.getGoodsImg());
         goodsDetailMpBo.getGoodsImgs().forEach(img-> goodsImgs.add(getImgFullUrlUtil(img)));
         goodsDetailMpBo.setGoodsImgs(goodsImgs);
