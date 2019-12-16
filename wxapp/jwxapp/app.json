@@ -65,7 +65,8 @@
         "history/history",
         "search/search",
         "fullship/fullship",
-        "groupbuyinfo/groupbuyinfo"
+        "groupbuyinfo/groupbuyinfo",
+        "returnorder/returnorder"
       ]
     }
   ],

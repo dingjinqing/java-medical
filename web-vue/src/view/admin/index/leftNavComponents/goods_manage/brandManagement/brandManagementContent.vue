@@ -361,7 +361,7 @@
               </el-tooltip>
               <span
                 v-if="!hiddle_1"
-                @click="handleToAddBrand()"
+                @click="handleToAddBrand(scope.row.classifyId)"
                 style="color:#5a8bff;cursor:pointer"
               >添加品牌</span>
               <span
@@ -445,6 +445,7 @@
     <AddBrandDialog
       :callAddBrand.sync="brandDialogFlag"
       @handleToGetBackData="handleToGetBackData"
+      :classification="classification"
       btnText="筛选"
     />
   </div>
@@ -516,7 +517,8 @@ export default {
       brandId: null,
       classifyId: null,
       secondGrandName: '',
-      brandDialogFlag: false
+      brandDialogFlag: false,
+      classification: null
     }
   },
   props: ['turnIndex'],
@@ -618,7 +620,8 @@ export default {
       this.changeCrumbstitle(arr)
     },
     // 调起添加品牌弹窗
-    handleToAddBrand () {
+    handleToAddBrand (id) {
+      this.classification = id
       this.brandDialogFlag = true
     },
     // 商品品牌弹窗回传数据

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.task.overview;
 
 import com.vpu.mp.db.shop.tables.records.TradesRecord;
+import com.vpu.mp.db.shop.tables.records.TradesRecordSummaryRecord;
 import com.vpu.mp.db.shop.tables.records.UserRfmSummaryRecord;
 import com.vpu.mp.db.shop.tables.records.UserSummaryTrendRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -42,6 +43,12 @@ public class StatisticalTableInsert extends ShopBaseService {
      */
     @Autowired
     GoodsStatisticTaskService goodsStatistic;
+
+    /**
+     * The Trade task service.
+     */
+    @Autowired
+    TradeTaskService tradeTaskService;
 
     /**
      * Insert trades. b2c_trades表，每小时（整点）统计一次数据插入一条记录（统计历史数据，昨天数据）
@@ -217,6 +224,26 @@ public class StatisticalTableInsert extends ShopBaseService {
                     .set(DISTRIBUTION_TAG.HAS_USER_NUM, v.value3())
                     .execute();
             });
+        });
+    }
+
+    /**
+     * Insert trades record summary.
+     */
+    public void insertTradesRecordSummary() {
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        TradesRecordSummaryRecord record = new TradesRecordSummaryRecord();
+        TYPE_LIST.forEach((e) -> {
+            record.reset();
+            record.setRefDate(Date.valueOf(today.toLocalDate()));
+            record.setType(e);
+            record.setIncomeTotalMoney(tradeTaskService.getTotalIncomeMoney(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
+            record.setOutgoMoney(tradeTaskService.getTotalExpensesMoney(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
+            record.setIncomeRealMoney(record.getIncomeTotalMoney().subtract(record.getOutgoMoney()));
+            record.setIncomeTotalScore(tradeTaskService.getTotalIncomeScore(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
+            record.setOutgoScore(tradeTaskService.getTotalExpensesScore(Timestamp.valueOf(today.minusDays(e)), Timestamp.valueOf(today)));
+            record.setIncomeRealScore(record.getIncomeTotalScore().subtract(record.getOutgoScore()));
+            db().executeInsert(record);
         });
     }
 }

@@ -30,8 +30,8 @@ global.wxPage({
   },
   // 获取活动倒计时
   getActStatus(e) {
-    let second = e.detail;
-    // console.log(second);
+    let {canBuy} = e.detail;
+    console.log(canBuy)
   },
   // 商品详情请求
   requestGoodsInfo() {
@@ -45,6 +45,7 @@ global.wxPage({
             this.getCouponInfo(res.content);
             this.getGoodsDescInfo(res.content);
             this.getComment(res.content)
+            this.getActivity(res.content)
             resolve(res.content);
           }
         },
@@ -172,6 +173,12 @@ global.wxPage({
     this.setData({
       showSpec: false,
       triggerButton:''
+    })
+  },
+  getActivity({activity}){
+    if(!activity) return
+    this.setData({
+      activity
     })
   },
   /**

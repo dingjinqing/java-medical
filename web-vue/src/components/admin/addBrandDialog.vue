@@ -126,6 +126,10 @@ export default {
     btnText: { // 按钮文字
       type: String,
       default: () => '查询'
+    },
+    classification: { // 分类id
+      type: Number,
+      default: -1
     }
   },
   data () {
@@ -295,26 +299,33 @@ export default {
           idArr.push(item.id)
         }
       })
-      let obj = {
-        classifyId: this.classValue,
-        brandIds: idArr
-      }
-      batchBind(obj).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          this.$message.success({
-            message: '添加成功',
-            showClose: true
-          })
-          this.$emit('handleToGetBackData', arr)
-          this.$emit('update:callAddBrand', false)
-        } else if (res.error === 131006) {
-          this.$message.error({
-            message: '请选择品牌分类',
-            showClose: true
-          })
+      console.log(this.classification)
+      if (this.classification !== -1) {
+        let obj = {
+          classifyId: this.classification,
+          brandIds: idArr
         }
-      })
+        batchBind(obj).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success({
+              message: '添加成功',
+              showClose: true
+            })
+            this.$emit('handleToGetBackData', arr)
+            this.$emit('update:callAddBrand', false)
+          } else if (res.error === 131006) {
+            this.$message.error({
+              message: '请选择品牌分类',
+              showClose: true
+            })
+          }
+        })
+      } else {
+        this.$emit('handleToGetBackData', arr)
+        this.$emit('update:callAddBrand', false)
+      }
+
       console.log(this.classValue, arr)
     }
   }
