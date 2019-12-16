@@ -36,7 +36,6 @@ public class WxAppCouponController extends WxAppBaseController {
 	@Autowired
 	private ScoreService score;
 
-	
 	/**
 	 * 用户优惠券列表
 	 * @param param
@@ -63,6 +62,17 @@ public class WxAppCouponController extends WxAppBaseController {
 		AvailCouponDetailVo couponDetail = shop().coupon.getCouponDetail(param);
 		return this.success(couponDetail);
 	}
+
+    /**
+     * 积分兑换优惠券，兑换详情页
+     * @param param
+     * @return
+     */
+    @PostMapping("/detail/byScore")
+    public JsonResult CouponDetailByScore(@RequestBody AvailCouponDetailParam param) {
+        AvailCouponDetailVo couponDetail = shop().coupon.getCouponDetailByScore(param);
+        return this.success(couponDetail);
+    }
 
 	/**
 	 * 用户立即领取优惠券
