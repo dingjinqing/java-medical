@@ -62,7 +62,10 @@ public class WxAppCardActivationService extends ShopBaseService {
 	 */
 	public ActivateCardVo getActivationCard(ActivateCardParam param,String lang) {
 		logger().info("获取会员卡激活信息");
-		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());		
+		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());	
+		if(uCard == null) {
+			return null;
+		}
 		List<String> fields = cardVerifyService.getActiveRequiredFieldWithHump(uCard.getActivationCfg());
 		UserInfo user = userService.getUserInfo(param.getUserId());
 		if(user == null) {
@@ -70,6 +73,13 @@ public class WxAppCardActivationService extends ShopBaseService {
 		}
 		Map<String, Object> userMap = filterActiveOption(fields, user);
 		dealWithAddressCode(userMap);
+		// add username for wxapp front end
+		userMap.put("username",user.getUsername());
+		userMap.put("invitationCode",user.getInvitationCode());
+		fields.add("username");
+		fields.add("invitationCode");
+		
+		
 		
 		List<String> allEducation = MemberEducationEnum.getAllEducation(lang);
 		List<String> allIndustryName = MemberIndustryEnum.getAllIndustryName(lang);
