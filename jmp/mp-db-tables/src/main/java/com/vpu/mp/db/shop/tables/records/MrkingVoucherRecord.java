@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingVoucherRecord extends UpdatableRecordImpl<MrkingVoucherRecord> {
 
-    private static final long serialVersionUID = 2118230311;
+    private static final long serialVersionUID = 871908471;
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.id</code>.
@@ -549,157 +549,143 @@ public class MrkingVoucherRecord extends UpdatableRecordImpl<MrkingVoucherRecord
     }
 
     /**
-     * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.recommend_type</code>. 支付有礼跳转链接 1:全部商品可用 2：指定商品可用
-     */
-    public void setRecommendType(Byte value) {
-        set(37, value);
-    }
-
-    /**
-     * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.recommend_type</code>. 支付有礼跳转链接 1:全部商品可用 2：指定商品可用
-     */
-    public Byte getRecommendType() {
-        return (Byte) get(37);
-    }
-
-    /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.validity_hour</code>. 优惠券有效小时数
      */
     public void setValidityHour(Integer value) {
-        set(38, value);
+        set(37, value);
     }
 
     /**
      * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.validity_hour</code>. 优惠券有效小时数
      */
     public Integer getValidityHour() {
-        return (Integer) get(38);
+        return (Integer) get(37);
     }
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.validity_minute</code>. 优惠券有效分钟数
      */
     public void setValidityMinute(Integer value) {
-        set(39, value);
+        set(38, value);
     }
 
     /**
      * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.validity_minute</code>. 优惠券有效分钟数
      */
     public Integer getValidityMinute() {
-        return (Integer) get(39);
+        return (Integer) get(38);
     }
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.expiration_date</code>. validity_type为1是的过期时间
      */
     public void setExpirationDate(Timestamp value) {
-        set(40, value);
+        set(39, value);
     }
 
     /**
      * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.expiration_date</code>. validity_type为1是的过期时间
      */
     public Timestamp getExpirationDate() {
-        return (Timestamp) get(40);
+        return (Timestamp) get(39);
     }
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
-        set(41, value);
+        set(40, value);
     }
 
     /**
      * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.create_time</code>.
      */
     public Timestamp getCreateTime() {
-        return (Timestamp) get(41);
+        return (Timestamp) get(40);
     }
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
-        set(42, value);
+        set(41, value);
     }
 
     /**
      * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
-        return (Timestamp) get(42);
+        return (Timestamp) get(41);
     }
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.limit_surplus_flag</code>. 是否限制库存：0限制，1不限制
      */
     public void setLimitSurplusFlag(Byte value) {
-        set(43, value);
+        set(42, value);
     }
 
     /**
      * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.limit_surplus_flag</code>. 是否限制库存：0限制，1不限制
      */
     public Byte getLimitSurplusFlag() {
-        return (Byte) get(43);
+        return (Byte) get(42);
     }
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.random_min</code>. 分裂优惠卷随机金额最低
      */
     public void setRandomMin(BigDecimal value) {
-        set(44, value);
+        set(43, value);
     }
 
     /**
      * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.random_min</code>. 分裂优惠卷随机金额最低
      */
     public BigDecimal getRandomMin() {
-        return (BigDecimal) get(44);
+        return (BigDecimal) get(43);
     }
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.random_max</code>. 分裂优惠卷随机金额最高
      */
     public void setRandomMax(BigDecimal value) {
-        set(45, value);
+        set(44, value);
     }
 
     /**
      * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.random_max</code>. 分裂优惠卷随机金额最高
      */
     public BigDecimal getRandomMax() {
-        return (BigDecimal) get(45);
+        return (BigDecimal) get(44);
     }
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.receive_per_num</code>. 分裂优惠券领券人数是否限制 0不限制 1限制
      */
     public void setReceivePerNum(Byte value) {
-        set(46, value);
+        set(45, value);
     }
 
     /**
      * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.receive_per_num</code>. 分裂优惠券领券人数是否限制 0不限制 1限制
      */
     public Byte getReceivePerNum() {
-        return (Byte) get(46);
+        return (Byte) get(45);
     }
 
     /**
      * Setter for <code>jmini_shop_444801.b2c_mrking_voucher.receive_num</code>. 分裂优惠券可领券人数
      */
     public void setReceiveNum(Integer value) {
-        set(47, value);
+        set(46, value);
     }
 
     /**
      * Getter for <code>jmini_shop_444801.b2c_mrking_voucher.receive_num</code>. 分裂优惠券可领券人数
      */
     public Integer getReceiveNum() {
-        return (Integer) get(47);
+        return (Integer) get(46);
     }
 
     // -------------------------------------------------------------------------
@@ -728,7 +714,7 @@ public class MrkingVoucherRecord extends UpdatableRecordImpl<MrkingVoucherRecord
     /**
      * Create a detached, initialised MrkingVoucherRecord
      */
-    public MrkingVoucherRecord(Integer id, String actCode, String actName, Timestamp startTime, Timestamp endTime, BigDecimal denomination, Integer totalAmount, Byte type, Integer surplus, Byte useConsumeRestrict, BigDecimal leastConsume, String useExplain, Byte enabled, Short receivePerPerson, Byte suitGoods, Byte togetherUsed, Byte permitShare, Byte remindOwner, Short giveoutAmount, Short giveoutPerson, Short receiveAmount, Short receivePerson, Short usedAmount, String aliasCode, String validationCode, String recommendGoodsId, String recommendCatId, String recommendSortId, Integer validity, Byte delFlag, Byte action, String identityId, String recommendProductId, Byte useScore, Integer scoreNumber, String cardId, Byte validityType, Byte recommendType, Integer validityHour, Integer validityMinute, Timestamp expirationDate, Timestamp createTime, Timestamp updateTime, Byte limitSurplusFlag, BigDecimal randomMin, BigDecimal randomMax, Byte receivePerNum, Integer receiveNum) {
+    public MrkingVoucherRecord(Integer id, String actCode, String actName, Timestamp startTime, Timestamp endTime, BigDecimal denomination, Integer totalAmount, Byte type, Integer surplus, Byte useConsumeRestrict, BigDecimal leastConsume, String useExplain, Byte enabled, Short receivePerPerson, Byte suitGoods, Byte togetherUsed, Byte permitShare, Byte remindOwner, Short giveoutAmount, Short giveoutPerson, Short receiveAmount, Short receivePerson, Short usedAmount, String aliasCode, String validationCode, String recommendGoodsId, String recommendCatId, String recommendSortId, Integer validity, Byte delFlag, Byte action, String identityId, String recommendProductId, Byte useScore, Integer scoreNumber, String cardId, Byte validityType, Integer validityHour, Integer validityMinute, Timestamp expirationDate, Timestamp createTime, Timestamp updateTime, Byte limitSurplusFlag, BigDecimal randomMin, BigDecimal randomMax, Byte receivePerNum, Integer receiveNum) {
         super(MrkingVoucher.MRKING_VOUCHER);
 
         set(0, id);
@@ -768,16 +754,15 @@ public class MrkingVoucherRecord extends UpdatableRecordImpl<MrkingVoucherRecord
         set(34, scoreNumber);
         set(35, cardId);
         set(36, validityType);
-        set(37, recommendType);
-        set(38, validityHour);
-        set(39, validityMinute);
-        set(40, expirationDate);
-        set(41, createTime);
-        set(42, updateTime);
-        set(43, limitSurplusFlag);
-        set(44, randomMin);
-        set(45, randomMax);
-        set(46, receivePerNum);
-        set(47, receiveNum);
+        set(37, validityHour);
+        set(38, validityMinute);
+        set(39, expirationDate);
+        set(40, createTime);
+        set(41, updateTime);
+        set(42, limitSurplusFlag);
+        set(43, randomMin);
+        set(44, randomMax);
+        set(45, receivePerNum);
+        set(46, receiveNum);
     }
 }

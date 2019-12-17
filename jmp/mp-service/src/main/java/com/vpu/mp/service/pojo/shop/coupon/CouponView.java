@@ -53,4 +53,8 @@ public class CouponView {
      * 分裂优惠卷随机金额最高
      */
     private BigDecimal randomMax;
+    /**
+     * 0:全店通用,1:指定店铺
+     */
+    private Byte suitGoods;
 }
