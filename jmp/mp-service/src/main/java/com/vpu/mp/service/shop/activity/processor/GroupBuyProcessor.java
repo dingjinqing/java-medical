@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GroupBuyListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
@@ -33,6 +34,7 @@ import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_CHEAP_Y;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 
 /**
@@ -136,14 +138,18 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Acti
             groupBuyProductList.setOrderSn(order.getOrderSn());
             groupBuyProductList.setUserId(param.getWxUserInfo().getUserId());
             groupBuyProductList.setIsGrouper(param.getIsGrouper());
-            groupBuyProductList.setStatus(STATUS_WAIT_PAY);
             groupBuyProductList.setStartTime(param.getDate());
+            if (order.getOrderStatus()>= OrderConstant.ORDER_WAIT_DELIVERY){
+                groupBuyProductList.setStatus(STATUS_WAIT_PAY);
+            }else {
+                groupBuyProductList.setStatus(STATUS_ONGOING);
+            }
             int save = groupBuyProductList.insert();
             if (save!=1){
                 throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
             }
             groupBuyProductList.refresh();
-            log.debug("开团成功,团长userid{},团groupId",groupBuyProductList.getUserId(),groupBuyProductList.getId());
+            log.debug("开团成功,团长useri:d{},团groupId:{}",groupBuyProductList.getUserId(),groupBuyProductList.getId());
             if (groupBuyProductList.getIsGrouper().equals(IS_GROUPER_Y)){
                 groupBuyProductList.setGroupId(groupBuyProductList.getId());
                 groupBuyProductList.update();
