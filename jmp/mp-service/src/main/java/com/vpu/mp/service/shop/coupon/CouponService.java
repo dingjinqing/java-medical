@@ -663,7 +663,15 @@ public class CouponService extends ShopBaseService {
     	for (CouponWxVo couponWxVo : list) {
     		String couponName = couponWxVo.getActName();
     		List<Integer> userIdList=new ArrayList<Integer>();
-    		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByOpenId(couponWxVo.getWxOpenid());
+    		if(StringUtils.isEmpty(couponWxVo.getWxUnionId())) {
+    			logger().info("用户"+couponWxVo.getWxOpenid()+"没有关注公众号");
+    			continue;
+    		}
+    		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByUnionId(couponWxVo.getWxUnionId());
+    		if(wxUserInfo==null) {
+    			logger().info("表中没有数据"+couponWxVo.getWxUnionId());
+    			continue;
+    		}
     		userIdList.add(wxUserInfo.getRecId());
     		logger().info("userIdList"+userIdList);
     		String[][] data = new String[][] { {keyword1,"#173177"},{null,"#173177"},{couponName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{null,"#173177"}};
@@ -689,7 +697,7 @@ public class CouponService extends ShopBaseService {
 		LocalDateTime localDateTime2 = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), 23, 59,59);
 		Timestamp time = Timestamp.valueOf(localDateTime.plus(1, ChronoUnit.DAYS));
 		Timestamp time2 = Timestamp.valueOf(localDateTime2.plus(1, ChronoUnit.DAYS));
-		Result<Record> fetch = db().select(CUSTOMER_AVAIL_COUPONS.asterisk(), MRKING_VOUCHER.ACT_NAME, USER.WX_OPENID)
+		Result<Record> fetch = db().select(CUSTOMER_AVAIL_COUPONS.asterisk(), MRKING_VOUCHER.ACT_NAME, USER.WX_OPENID,USER.WX_UNION_ID)
 				.from(CUSTOMER_AVAIL_COUPONS, MRKING_VOUCHER, USER)
 				.where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)
 						.and(USER.USER_ID.eq(CUSTOMER_AVAIL_COUPONS.USER_ID))
