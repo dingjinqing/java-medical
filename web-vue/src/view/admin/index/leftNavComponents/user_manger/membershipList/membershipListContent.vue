@@ -533,7 +533,10 @@
       >
         <div class="setUpDialogDiv">
           <p>你可以在这里编辑该会员的会员卡信息，添加/删除会员卡，注意：需要激活的会员卡直接发放到用户</p>
-          <div class="setUpDialogMain">
+          <div
+            class="setUpDialogMain"
+            style="overflow-y: auto;height: 500px"
+          >
             <div class="setUpcommon">
               <span>普通会员卡</span>
               <div class="setUpContainer">

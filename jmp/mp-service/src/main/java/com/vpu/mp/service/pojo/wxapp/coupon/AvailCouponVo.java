@@ -48,4 +48,9 @@ public class AvailCouponVo {
 	 * 是否已使用 0 未使用 1 已使用 2过期吧 3 废除
 	 */
 	public Integer isUsed;
+
+    private long remainDays;
+    private long remainHours;
+    private long remainMinutes;
+    private long remainSeconds;
 }

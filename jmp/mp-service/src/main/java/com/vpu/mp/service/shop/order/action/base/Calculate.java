@@ -504,6 +504,7 @@ public class Calculate extends ShopBaseService {
      * @return map<goodsid, no / ys>
      */
     public Map<Integer, Byte> getGoodsReturnCfg(List<OrderGoodsBo> orderGoods) {
+
         return Maps.newHashMap();
     }
 
@@ -514,10 +515,10 @@ public class Calculate extends ShopBaseService {
      * @param goodsType  商品类型
      * @param posFlag    pos标识
      */
-    public void setGoodsReturnCfg(List<OrderGoodsBo> orderGoods, String goodsType, Byte posFlag) {
+    public void setGoodsReturnCfg(List<OrderGoodsBo> orderGoods, List<Byte> goodsType, Byte posFlag) {
         Byte isCanReturn = null;
         Map<Integer, Byte> goodsReturnCfg = null;
-        if (Lists.newArrayList(OrderInfoService.orderTypeToArray(goodsType)).contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)) {
+        if (goodsType.contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)) {
             isCanReturn = OrderConstant.IS_CAN_RETURN_N;
         } else if (posFlag != null && OrderConstant.YES == posFlag) {
             isCanReturn = OrderConstant.IS_CAN_RETURN_Y;
@@ -525,6 +526,8 @@ public class Calculate extends ShopBaseService {
         if (isCanReturn == null) {
             goodsReturnCfg = getGoodsReturnCfg(orderGoods);
         }
+        //TODO 等刘飞修改完
+        isCanReturn = OrderConstant.IS_CAN_RETURN_Y;
         for (OrderGoodsBo bo : orderGoods) {
             bo.setIsCanReturn(isCanReturn != null ? isCanReturn : goodsReturnCfg.get(bo.getGoodsId()));
         }

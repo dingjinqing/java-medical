@@ -24,7 +24,7 @@ import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
  * 限时降价 返利
  */
 @Service
-public class ReducePriceProcessor implements ProcessorPriority,ActivityGoodsListProcessor {
+public class ReducePriceProcessor implements Processor,ActivityGoodsListProcessor {
     @Autowired
     ReducePriceProcessorDao reducePriceProcessorDao;
 
@@ -33,6 +33,12 @@ public class ReducePriceProcessor implements ProcessorPriority,ActivityGoodsList
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_REDUCE_PRICE_PRIORITY;
     }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE;
+    }
+
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {

@@ -48,9 +48,9 @@ global.wxComponent({
           }
 
         }, {
-            iv: e.detail.iv,
-            crypt_data: e.detail.encryptedData
-          })
+          iv: e.detail.iv,
+          crypt_data: e.detail.encryptedData
+        })
       }
     }
   }

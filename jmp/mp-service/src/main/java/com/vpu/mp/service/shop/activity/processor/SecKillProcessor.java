@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -41,7 +42,7 @@ import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DE
  */
 @Service
 @Slf4j
-public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority,OrderBeforeProcessor,OrderCreatePayBeforeProcessor{
+public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,OrderBeforeProcessor,CreateOrderProcessor{
     @Autowired
     SecKillProcessorDao secKillProcessorDao;
     /*****处理器优先级*****/
@@ -49,6 +50,12 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_SEC_KILL_PRIORITY;
     }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_SEC_KILL;
+    }
+
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
@@ -80,7 +87,6 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
         if(param.getActivityId() != null && param.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_SEC_KILL)){
             //处理之前capsule中需要有商品的基本信息
             capsule.setActivity(secKillProcessorDao.getDetailSeckillInfo(param.getActivityId(),param.getUserId(),capsule));
-            System.out.println("zzzzszzzzzzzzzzzzzzzz   "+capsule.getProducts());
         }
     }
     //*********************************购物车********************************
@@ -128,7 +134,7 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
      * @param param
      */
     @Override
-    public void initMarketOrderCreateParam(CreateParam param) {
+    public void processInitCheckedOrderCreate(CreateParam param) {
         secKillProcessorDao.setOrderPrdSeckillPrice(param);
     }
 
@@ -139,7 +145,14 @@ public class SecKillProcessor implements ActivityGoodsListProcessor,GoodsDetailP
      * @throws MpException
      */
     @Override
-    public void processAfterOrderCreate(OrderBeforeVo order) throws MpException {
-        secKillProcessorDao.processSeckillStock(order);
+    public void processSaveOrderInfo(CreateParam param, OrderInfoRecord order) throws MpException {
+        secKillProcessorDao.processSeckillStock(param,order);
     }
+
+    @Override
+    public void processStockAndSales(CreateParam param) throws MpException {
+
+    }
+
+
 }

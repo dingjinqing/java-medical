@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class WxAppCouponController extends WxAppBaseController {
 	 * @return
 	 */
 	@PostMapping("/list")
-	public JsonResult availCoupon(@RequestBody AvailCouponParam param) {
+	public JsonResult availCoupon(@RequestBody AvailCouponParam param) throws ParseException {
 		AvailCouponListVo list = new AvailCouponListVo();
 		Integer userId = wxAppAuth.user().getUserId();
 		param.setUserId(userId);

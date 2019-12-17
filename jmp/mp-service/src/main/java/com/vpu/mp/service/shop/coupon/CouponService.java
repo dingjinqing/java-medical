@@ -11,7 +11,6 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
@@ -20,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
@@ -33,15 +33,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
@@ -311,18 +306,63 @@ public class CouponService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageResult<AvailCouponVo> getCouponByUser(AvailCouponParam param) {
+    public PageResult<AvailCouponVo> getCouponByUser(AvailCouponParam param) throws ParseException {
         //某用户全部优惠券
-    	SelectJoinStep<? extends Record> select = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
+        SelectJoinStep<? extends Record> select = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
             CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID)
             .from(CUSTOMER_AVAIL_COUPONS
-            .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)));
+                .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)));
 
-    	//根据优惠券使用状态、过期状态条件筛选
-    	MpBuildOptions(select, param);
-    	SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
-    	PageResult<AvailCouponVo> list = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
-    	return list;
+        //根据优惠券使用状态、过期状态条件筛选
+        MpBuildOptions(select, param);
+        SelectConditionStep<? extends Record> sql = select.where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(param.getUserId()));
+        PageResult<AvailCouponVo> lists = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
+        for (AvailCouponVo list:lists.dataList){
+            ExpireTimeVo remain = getExpireTime(list.getEndTime());
+            list.setRemainDays(remain.getRemainDays());
+            list.setRemainHours(remain.getRemainHours());
+            list.setRemainMinutes(remain.getRemainMinutes());
+            list.setRemainSeconds(remain.getRemainSeconds());
+        }
+        return lists;
+    }
+
+    /**
+     * 优惠券到期倒计时
+     * @param  endDate 到期时间
+     * @return
+     */
+    public ExpireTimeVo getExpireTime(Timestamp endDate){
+        //当前时间戳
+        long time = new Date().getTime();
+        //优惠券到期时间戳
+        long time1 = endDate.getTime();
+        //还剩总过期秒数
+        long remainSecondsAll = time1 - time;
+        if(remainSecondsAll > 0){
+            //剩余天数
+            long remainDays = remainSecondsAll / (24 * 3600 * 1000);
+            //去除天数的剩余秒
+            long dSeconds = remainSecondsAll % (24 * 3600 * 1000);
+
+            //剩余小时
+            long remainHours = dSeconds / (3600 *1000);
+            //去除小时剩余秒数
+            long hSeconds = dSeconds % (3600 * 1000);
+
+            //剩余分钟数
+            long remainMinutes = hSeconds / (60 * 1000);
+            //去除分钟剩余秒数
+            long remainSeconds = dSeconds % (60 * 1000) / 1000;
+            ExpireTimeVo expireTime = new ExpireTimeVo();
+            expireTime.setRemainDays(remainDays);
+            expireTime.setRemainHours(remainHours);
+            expireTime.setRemainMinutes(remainMinutes);
+            expireTime.setRemainSeconds(remainSeconds);
+            return expireTime;
+        }else{
+            return null;
+        }
     }
 
     /**
@@ -356,7 +396,13 @@ public class CouponService extends ShopBaseService {
             .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(param.couponSn))
             .fetchOne();
             if(record != null){
-                return record.into(AvailCouponDetailVo.class);
+                AvailCouponDetailVo list = record.into(AvailCouponDetailVo.class);
+                ExpireTimeVo remain = getExpireTime(list.getEndTime());
+                list.setRemainDays(remain.getRemainDays());
+                list.setRemainHours(remain.getRemainHours());
+                list.setRemainMinutes(remain.getRemainMinutes());
+                list.setRemainSeconds(remain.getRemainSeconds());
+                return list;
             }else{
                 return null;
             }
@@ -655,7 +701,13 @@ public class CouponService extends ShopBaseService {
     }
     
     //将要过期的优惠券醒通知。 后台定时每天执行一次，获取明天即将过期的优惠券，通知用户使用
-    public void expiringCouponNotify() {
+    public String expiringCouponNotify(Integer shopId) {
+    	//查找shopId对应的公众号
+    	String officeAppId = saas.shop.mp.findOffcialByShopId(shopId);
+    	if(officeAppId==null) {
+    		logger().info("店铺"+shopId+"没有关注公众号");
+    		return null;
+    	}
     	List<CouponWxVo> list = getExpiringCouponList();
     	System.out.println(list.toString());
     	String page="pages/couponlist/couponlist";
@@ -667,7 +719,7 @@ public class CouponService extends ShopBaseService {
     			logger().info("用户"+couponWxVo.getWxOpenid()+"没有关注公众号");
     			continue;
     		}
-    		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByUnionId(couponWxVo.getWxUnionId());
+    		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByUnionIdAndAppId(couponWxVo.getWxUnionId(),officeAppId);
     		if(wxUserInfo==null) {
     			logger().info("表中没有数据"+couponWxVo.getWxUnionId());
     			continue;
@@ -684,6 +736,7 @@ public class CouponService extends ShopBaseService {
 			logger().info("准备发");
 			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 		}
+		return null;
 		
     }
     

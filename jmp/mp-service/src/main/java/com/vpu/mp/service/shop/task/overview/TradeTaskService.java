@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import static com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD;
+import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -67,7 +68,7 @@ public class TradeTaskService extends ShopBaseService {
             .where(TRADES_RECORD.CREATE_TIME.ge(startTime).and(TRADES_RECORD.CREATE_TIME.lessThan(endTime)))
             .and(TRADES_RECORD.TRADE_CONTENT.eq(content))
             .and(TRADES_RECORD.TRADE_FLOW.eq(flow))
-            .fetchOneInto(BigDecimal.class);
+            .fetchOptionalInto(BigDecimal.class).orElse(BIGDECIMAL_ZERO);
     }
 
 }

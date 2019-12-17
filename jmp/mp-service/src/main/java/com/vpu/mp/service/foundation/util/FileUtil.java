@@ -114,10 +114,10 @@ public class FileUtil {
         try {
             String[] baseStr = base64Str.split(",");
             boolean isLegal = baseStr[0].matches("^data:.+/.+;base64");
-            if (isLegal){
+            if (!isLegal){
                 return null;
             }
-            byte[] b = Base64.getDecoder().decode(base64Str);
+            byte[] b = Base64.getDecoder().decode(baseStr[1]);
             for (int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {
                     b[i] += 256;

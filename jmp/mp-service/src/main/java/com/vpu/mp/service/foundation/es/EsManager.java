@@ -206,6 +206,7 @@ public class EsManager {
      */
     public void deleteIndexByQuery(DeleteByQueryRequest request){
         try {
+            log.info("\n本次搜索条件【{}】",request.toString());
             BulkByScrollResponse bulkResponse =
                 restHighLevelClient.deleteByQuery(request, RequestOptions.DEFAULT);
 

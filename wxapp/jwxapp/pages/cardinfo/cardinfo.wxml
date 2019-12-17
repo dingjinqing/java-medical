@@ -240,4 +240,31 @@
   <include src="../common/footer.wxml" />
 
   <v-poster image="{{qrCode}}" show="{{showQrcode}}" />
+  <!-- 绑定手机号弹窗 -->
+<v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以开通会员卡" />
+<!--领取码弹窗-->
+<view class='zhezhao_coupon' wx:if="{{is_receive == 1}}" bindtap='closeIpt'></view>
+<view class='coupon_code' wx:if="{{receive_action == 1}}">
+  <view>
+    <view class='code_ipt'>
+      <input placeholder="请输入领取码" bindinput='bindCode' />
+    </view>
+    <view class='code_btn'>
+      <view bindtap='closeIpt'>取消</view>
+      <view bindtap='fetchCard' style='color:{{comColor}}'>确认</view>
+    </view>
+  </view>
+</view>
+<view class="coupon_code" wx:if="{{receive_action == 2}}">
+  <view>
+    <view class="code_ipt">
+      <input placeholder="请输入卡号" bindinput='bindCardNum' />
+      <input placeholder="请输入密码" bindinput='bindCardPwd' />
+    </view>
+    <view class='code_btn'>
+      <view bindtap='closeIpt'>取消</view>
+      <view bindtap='fetchCard' style='color:{{comColor}}'>确认</view>
+    </view>
+  </view>
+</view>
 </view>
