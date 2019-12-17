@@ -37,7 +37,12 @@ public abstract class BaseMarketingBaseVo {
      * @return 折扣比例
      */
     public BigDecimal initRatio (){
-        ratio = BigDecimalUtil.divide(totalDiscount ,totalPrice, RoundingMode.FLOOR);
+        //总价可以为0
+        if (totalPrice.equals(BigDecimal.ZERO)){
+            ratio =BigDecimal.ZERO;
+        }else {
+            ratio = BigDecimalUtil.divide(totalDiscount ,totalPrice, RoundingMode.FLOOR);
+        }
         return ratio;
     }
 
