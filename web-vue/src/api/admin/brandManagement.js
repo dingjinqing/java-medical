@@ -195,3 +195,11 @@ export function test (data) {
     data: data
   })
 }
+
+export function batchBind (data) {
+  return service({
+    url: '/api/admin/goods/brand/classify/batch/bind',
+    method: 'post',
+    data: data
+  })
+}
