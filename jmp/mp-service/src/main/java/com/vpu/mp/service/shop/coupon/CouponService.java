@@ -294,7 +294,7 @@ public class CouponService extends ShopBaseService {
         return db().select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.DENOMINATION,
                 MRKING_VOUCHER.USE_CONSUME_RESTRICT, MRKING_VOUCHER.LEAST_CONSUME, MRKING_VOUCHER.SURPLUS,
                 MRKING_VOUCHER.VALIDITY_TYPE, MRKING_VOUCHER.START_TIME, MRKING_VOUCHER.END_TIME, MRKING_VOUCHER.VALIDITY,
-                MRKING_VOUCHER.VALIDITY_HOUR, MRKING_VOUCHER.VALIDITY_MINUTE,MRKING_VOUCHER.RANDOM_MAX,MRKING_VOUCHER.RANDOM_MIN,MRKING_VOUCHER.RECOMMEND_TYPE)
+                MRKING_VOUCHER.VALIDITY_HOUR, MRKING_VOUCHER.VALIDITY_MINUTE,MRKING_VOUCHER.RANDOM_MAX,MRKING_VOUCHER.RANDOM_MIN,MRKING_VOUCHER.SUIT_GOODS)
             .from(MRKING_VOUCHER)
             .where(MRKING_VOUCHER.ID.in(ids)).and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchInto(CouponView.class);
@@ -701,7 +701,13 @@ public class CouponService extends ShopBaseService {
     }
     
     //将要过期的优惠券醒通知。 后台定时每天执行一次，获取明天即将过期的优惠券，通知用户使用
-    public void expiringCouponNotify() {
+    public String expiringCouponNotify(Integer shopId) {
+    	//查找shopId对应的公众号
+    	String officeAppId = saas.shop.mp.findOffcialByShopId(shopId);
+    	if(officeAppId==null) {
+    		logger().info("店铺"+shopId+"没有关注公众号");
+    		return null;
+    	}
     	List<CouponWxVo> list = getExpiringCouponList();
     	System.out.println(list.toString());
     	String page="pages/couponlist/couponlist";
@@ -713,7 +719,7 @@ public class CouponService extends ShopBaseService {
     			logger().info("用户"+couponWxVo.getWxOpenid()+"没有关注公众号");
     			continue;
     		}
-    		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByUnionId(couponWxVo.getWxUnionId());
+    		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByUnionIdAndAppId(couponWxVo.getWxUnionId(),officeAppId);
     		if(wxUserInfo==null) {
     			logger().info("表中没有数据"+couponWxVo.getWxUnionId());
     			continue;
@@ -730,6 +736,7 @@ public class CouponService extends ShopBaseService {
 			logger().info("准备发");
 			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 		}
+		return null;
 		
     }
     

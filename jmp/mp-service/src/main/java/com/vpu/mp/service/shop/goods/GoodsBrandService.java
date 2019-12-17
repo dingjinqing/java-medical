@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.goods.brand.*;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandClassifyNameMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.jooq.Condition;
 import org.jooq.Record;
@@ -47,6 +48,8 @@ public class GoodsBrandService extends ShopBaseService {
     GoodsBrandDataHelper goodsBrandDataHelper;
     @Autowired
     GoodsService goodsService;
+    @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
     /**
      * 分页获取品牌信息
      * @param param 分页参数
@@ -153,7 +156,12 @@ public class GoodsBrandService extends ShopBaseService {
      * @param brandId
      */
     public void delete(Integer brandId) {
-        transaction(() -> deleteGoodsBrand(Collections.singletonList(brandId)));
+        transaction(
+            () ->
+        {
+            deleteGoodsBrand(Collections.singletonList(brandId));
+            esDataUpdateMqService.updateEsGoodsIndexByBrandId(brandId,getShopId());
+        });
     }
 
     private void deleteGoodsBrand(List<Integer> brandIds) {
@@ -194,6 +202,7 @@ public class GoodsBrandService extends ShopBaseService {
                     .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
                     .execute();
             }
+            esDataUpdateMqService.updateEsGoodsIndexByBrandId(goodsBrand.getId(),getShopId());
         });
     }
 
@@ -440,11 +449,7 @@ public class GoodsBrandService extends ShopBaseService {
             String c = ChineseToPinYinUtil.getStartAlphabet(pinYinVo.getBrandName());
             pinYinVo.setLogo(getImgFullUrlUtil(pinYinVo.getLogo()));
 
-            List<GoodsBrandMpVo> list = treeMap.get(c);
-            if (list == null) {
-                list = new ArrayList<>();
-                treeMap.put(c,list);
-            }
+            List<GoodsBrandMpVo> list = treeMap.computeIfAbsent(c, k -> new ArrayList<>());
             list.add(pinYinVo);
         }
 

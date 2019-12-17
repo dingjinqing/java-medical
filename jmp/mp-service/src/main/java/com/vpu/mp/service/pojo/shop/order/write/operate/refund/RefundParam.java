@@ -53,14 +53,11 @@ public final class RefundParam extends OrderOperateQueryParam {
 	 * 		走退款逻辑（param.）：商家同意买家退款、商家确认收货并退款
 	 */
 	private Byte returnOperate;
-	/**
-	 * 对退款退货订单的操作flag
-	 */
-	private Byte returnOperateFlag;
+
 	/**
 	 * mp端操作（除申请请求参数）参数：退货提交物流、撤销退款
 	 */
-	private String shippingType;
+        private String shippingType;
 	private String shippingNo;
 	private String phone;
 	/**

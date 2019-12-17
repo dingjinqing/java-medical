@@ -75,7 +75,7 @@ public class MpOfficialAccountUserService extends MainBaseService {
     	return db().fetchAny(MP_OFFICIAL_ACCOUNT_USER,MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId));
     }
     
-    public MpOfficialAccountUserRecord getUserByUnionId(String unionId) {
-    	return db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId)).fetchAny();
+    public MpOfficialAccountUserRecord getUserByUnionIdAndAppId(String unionId,String appId) {
+    	return db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId).and(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId))).fetchAny();
     }
 }

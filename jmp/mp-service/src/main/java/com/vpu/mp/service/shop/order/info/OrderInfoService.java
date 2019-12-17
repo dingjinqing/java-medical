@@ -1,5 +1,39 @@
 package com.vpu.mp.service.shop.order.info;
 
+import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
+import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.sum;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -35,43 +69,9 @@ import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
-import org.jooq.impl.DefaultDSLContext;
 import org.jooq.tools.StringUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
-import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
 
 /**
  * Table:order_info
@@ -829,7 +829,22 @@ public class OrderInfoService extends ShopBaseService {
             fetch();
     }
 
-    /*********c********************************************分割线以下与订单模块没有直接联系********************************************************/
+    /**
+     * 得到即将过期未支付的订单列表。每1分钟执行一次，取还有10分钟就要过期未支付的订单列表
+     */
+    public Result<OrderInfoRecord> getExpiringNoPayOrderList(){
+        Instant now = Instant.now();
+        return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).
+            and(TABLE.EXPIRE_TIME.between(
+                Timestamp.from(now.plusSeconds(10 * 60)),
+                Timestamp.from(now.plusSeconds(11 * 60)))).
+            and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO)).
+            and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
+            and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).
+            fetch();
+    }
+
+    /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
 	/**
 	 * 根据用户id获取累计消费金额
 	 */
@@ -1217,6 +1232,17 @@ public class OrderInfoService extends ShopBaseService {
 	    if(orderSnList != null && orderSnList.size() > 0){
 	        db().update(TABLE).set(TABLE.ORDER_STATUS, ORDER_WAIT_DELIVERY).where(TABLE.ORDER_SN.in(orderSnList)).execute();
         }
+    }
+
+    /**
+     * Overdue delivery integer.发货逾期
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Integer overdueDelivery(Integer nDays) {
+        return db().fetchCount(TABLE, TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
+            .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
     }
 
 }
