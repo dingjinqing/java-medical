@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.coupon;
 
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -10,9 +11,14 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -28,13 +34,18 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
 import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.USER;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -642,4 +653,54 @@ public class CouponService extends ShopBaseService {
                 .execute();
         }
     }
+    
+    //将要过期的优惠券醒通知。 后台定时每天执行一次，获取明天即将过期的优惠券，通知用户使用
+    public void expiringCouponNotify() {
+    	List<CouponWxVo> list = getExpiringCouponList();
+    	System.out.println(list.toString());
+    	String page="pages/couponlist/couponlist";
+    	String keyword1="xxx优惠券";
+    	for (CouponWxVo couponWxVo : list) {
+    		String couponName = couponWxVo.getActName();
+    		List<Integer> userIdList=new ArrayList<Integer>();
+    		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByOpenId(couponWxVo.getWxOpenid());
+    		userIdList.add(wxUserInfo.getRecId());
+    		logger().info("userIdList"+userIdList);
+    		String[][] data = new String[][] { {keyword1,"#173177"},{null,"#173177"},{couponName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{null,"#173177"}};
+			RabbitMessageParam param = RabbitMessageParam.builder()
+					.mpTemplateData(
+							MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(data).build())
+					.page(page).shopId(getShopId()).userIdList(userIdList)
+					.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+			//shopApp.wechatMessageTemplateService.sendMpMessage(param, info);
+			logger().info("准备发");
+			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
+		}
+		
+    }
+    
+    /**
+     * 获取明天即将过期的优惠券
+     * @return
+     */
+	public List<CouponWxVo> getExpiringCouponList() {
+		LocalDateTime date = LocalDateTime.now();
+		LocalDateTime localDateTime = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), 00, 00,00);
+		LocalDateTime localDateTime2 = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), 23, 59,59);
+		Timestamp time = Timestamp.valueOf(localDateTime.plus(1, ChronoUnit.DAYS));
+		Timestamp time2 = Timestamp.valueOf(localDateTime2.plus(1, ChronoUnit.DAYS));
+		Result<Record> fetch = db().select(CUSTOMER_AVAIL_COUPONS.asterisk(), MRKING_VOUCHER.ACT_NAME, USER.WX_OPENID)
+				.from(CUSTOMER_AVAIL_COUPONS, MRKING_VOUCHER, USER)
+				.where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)
+						.and(USER.USER_ID.eq(CUSTOMER_AVAIL_COUPONS.USER_ID))
+						.and(CUSTOMER_AVAIL_COUPONS.START_TIME.lt(DateUtil.getLocalDateTime())
+								.and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(time)).and(CUSTOMER_AVAIL_COUPONS.END_TIME
+										.le(time2).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0)))))
+				.fetch();
+		List<CouponWxVo> into = new ArrayList<CouponWxVo>();
+		if (fetch != null) {
+			into = fetch.into(CouponWxVo.class);
+		}
+		return into;
+	}
 }
