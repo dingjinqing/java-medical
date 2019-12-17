@@ -4,9 +4,14 @@ import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUN
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
@@ -48,14 +53,29 @@ public class MpOfficialAccountUserService extends MainBaseService {
     
     
     
-    public void getOpenIdFromMpOpenId(String officialAccountAppId,String mpAppId) {
-    	MpOfficialAccountUserRecord mp = getUser(mpAppId);
+    public void getOpenIdFromMpOpenId(String officialAccountAppId,String mpAppId,String mpOpenId) {
+    	MpAuthShopRecord mp = saas.shop.mp.getAuthShopByAppId(mpAppId);
     	if(mp != null) {
-    		
+    		UserRecord user = this.saas.getShopApp(mp.getShopId()).user.getUserFromOpenId(mpOpenId);
+    		if(user != null && !StringUtils.isBlank(user.getWxUnionId())) {
+    			
+    		}
     	}
+ 
+    }
+    
+    public void getUserByUnionId(String appId,String openId) {
+    	Condition condition = DSL.noCondition();
+    	condition = condition
+    			.and(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId))
+    			.and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId));		
     }
     
     public MpOfficialAccountUserRecord getUser(String appId) {
     	return db().fetchAny(MP_OFFICIAL_ACCOUNT_USER,MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId));
+    }
+    
+    public MpOfficialAccountUserRecord getUserByUnionId(String unionId) {
+    	return db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId)).fetchAny();
     }
 }

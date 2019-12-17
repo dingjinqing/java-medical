@@ -327,7 +327,7 @@ public class EsGoods  {
     /**
      * 商品规格信息JSON(暂时先这样，后期看下是否有必要单独建个索引)
      */
-    @EsFiled(name=EsSearchName.PRD_JSON,type = EsFiledTypeConstant.KEYWORD,doc_values = false,index = false)
+    @EsFiled(name=EsSearchName.PRD_JSON,type = EsFiledTypeConstant.TEXT,doc_values = false,index = false)
     private String prdJson;
     /**
      * 是不是默认规格

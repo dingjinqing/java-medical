@@ -44,3 +44,12 @@ export function updateFullCut (data) {
     data: data
   })
 }
+
+// 删除满折满减活动
+export function deleteActivity (data) {
+  return service({
+    url: '/api/admin/market/fullcut/del',
+    method: 'post',
+    data: data
+  })
+}

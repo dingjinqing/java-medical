@@ -1084,7 +1084,7 @@ export default {
             'pageContent': JSON.stringify(data),
             'pagePublishContent': JSON.stringify(data),
             'pageState': pageState,
-            'catId': this.pageSetData.cat_id,
+            'catId': Number(this.pageSetData.cat_id),
             'last_cur_idx': this.cur_idx
           }
           editSave(editParams).then((res) => {

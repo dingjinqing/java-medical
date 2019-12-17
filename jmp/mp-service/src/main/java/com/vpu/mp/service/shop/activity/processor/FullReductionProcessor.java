@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @date 2019年10月30日
  */
 @Service
-public class FullReductionProcessor implements ProcessorPriority,ActivityGoodsListProcessor {
+public class FullReductionProcessor implements Processor,ActivityGoodsListProcessor {
 
     @Autowired
     FullReductionProcessorDao fullReductionProcessorDao;
@@ -28,6 +28,12 @@ public class FullReductionProcessor implements ProcessorPriority,ActivityGoodsLi
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_FULL_REDUCTION_PRIORITY;
     }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_GENERAL;
+    }
+
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {

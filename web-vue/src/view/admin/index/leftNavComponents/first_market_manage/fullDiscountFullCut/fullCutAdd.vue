@@ -38,7 +38,7 @@
           <!-- 活动名称 -->
           <el-form-item label="活动名称：">
             <el-input
-              v-model="activityName"
+              v-model="params.actName"
               placeholder="请输入活动名称"
               size="small"
               class="form_input"
@@ -48,7 +48,7 @@
           <!-- 活动优先级 -->
           <el-form-item label="活动优先级：">
             <el-input
-              v-model="activityLevel"
+              v-model="params.strategyPriority"
               placeholder="请输入活动优先级"
               class="form_input"
               size="small"
@@ -58,7 +58,7 @@
 
           <!-- 活动类型 -->
           <el-form-item label="活动类型：">
-            <el-radio-group v-model="activityType">
+            <el-radio-group v-model="params.type">
               <el-radio label="2">满减</el-radio>
               <el-radio label="1">每满减</el-radio>
               <el-radio label="3">满折</el-radio>
@@ -69,74 +69,199 @@
 
           <!-- 满减金额 -->
           <el-form-item label="满减金额：">
-            <div v-if="activityType !== '4'">
+            <div v-if="params.type !== '4'">
               <el-radio
                 label="1"
-                v-model="discount"
+                v-model="fullDeduction"
               >满金额</el-radio>
+
               <section
-                style="display:flex;margin-left: 25px"
                 v-for="(item, index) in conditionAddParams"
                 :key="index"
               >
-                <span v-if="activityType === '2' || activityType === '3'">满</span>
-                <span v-if="activityType === '1'">每满</span>
+                <div
+                  style="display:flex;margin-left: 25px"
+                  v-if="params.type === '2'"
+                >
+                  <span>满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    v-model="conditionAddParams[index].fullMoney"
+                  ></el-input>&nbsp;元，
+                  <span>减</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small "
+                    v-model="conditionAddParams[index].reduceMoney"
+                  ></el-input>&nbsp;
+                  <span>元</span>
+                  <div class="iconAdd">
+                    <img
+                      v-if="index === 0"
+                      :src="$imageHost + '/image/admin/sign_jia.png'"
+                      alt=""
+                      @click="addFullCutItem1()"
+                    >
+                    <img
+                      v-else
+                      style="cursor:pointer"
+                      :src="$imageHost +'/image/admin/sign_del.png' "
+                      @click="deleteFullCutItem1(index)"
+                    >
+                  </div>
+                </div>
+              </section>
+
+              <div v-if="params.type === '1'">
+                <span>每满</span>
                 &nbsp;<el-input
                   class="form_input"
                   size="small"
-                  v-model="fullMoney"
                 ></el-input>&nbsp;元，
-                <span v-if="activityType === '2' || activityType === '1'">减</span>
-                <span v-if="activityType === '3'">打</span>
+                <span>减</span>
                 &nbsp;<el-input
                   class="form_input"
-                  size="small "
-                  v-model="reduceMoney"
-                ></el-input>&nbsp;
-                <span v-if="activityType === '2' || activityType === '1'">元</span>
-                <span v-if="activityType === '3'">折</span>
+                  size="small"
+                ></el-input>&nbsp;元
+              </div>
+
+              <section
+                v-for="(item, index) in conditionAddParams"
+                :key="index"
+              >
                 <div
-                  class="iconAdd"
-                  @click="addFullCutItem()"
+                  style="display:flex;margin-left: 25px"
+                  v-if="params.type === '3'"
                 >
-                  <img
-                    :src="$imageHost + '/image/admin/sign_jia.png'"
-                    alt=""
-                  >
+                  <span>满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    v-model="conditionAddParams[index].fullMoney"
+                  ></el-input>&nbsp;元，
+                  <span>打</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small "
+                    v-model="conditionAddParams[index].reduceMoney"
+                  ></el-input>&nbsp;
+                  <span>折</span>
+                  <div class="iconAdd">
+                    <img
+                      v-if="index === 0"
+                      :src="$imageHost + '/image/admin/sign_jia.png'"
+                      alt=""
+                      @click="addFullCutItem3()"
+                    >
+                    <img
+                      v-else
+                      style="cursor:pointer"
+                      :src="$imageHost +'/image/admin/sign_del.png' "
+                      @click="deleteFullCutItem3(index)"
+                    >
+                  </div>
                 </div>
               </section>
 
               <el-radio
                 label="2"
-                v-model="discount"
+                v-model="fullDeduction"
               >满件数</el-radio>
-              <section style="display:flex;margin-left: 25px">
-                <span v-if="activityType === '2' || activityType === '3'">满</span>
-                <span v-if="activityType === '1'">每满</span>
-                &nbsp;<el-input
-                  class="form_input"
-                  size="small"
-                  v-model="amount"
-                ></el-input>&nbsp;件，
-                <span v-if="activityType === '2' || activityType === '1'">减</span>
-                <span v-if="activityType === '3'">打</span>
-                &nbsp;<el-input
-                  class="form_input"
-                  size="small "
-                  v-model="discounts"
-                ></el-input>&nbsp;
-                <span v-if="activityType === '2' || activityType === '1'">元</span>
-                <span v-if="activityType === '3'">折</span>
-                <div class="iconAdd">
-                  <img
-                    :src="$imageHost + '/image/admin/sign_jia.png'"
-                    alt=""
-                  >
+
+              <section
+                v-for="(item, index) in conditionAddParams"
+                :key="index"
+              >
+                <div
+                  style="display:flex;margin-left: 25px"
+                  v-if="params.type === '2'"
+                >
+                  <span>满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    v-model="conditionAddParams[index].fullMoney"
+                  ></el-input>&nbsp;件，
+                  <span>减</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small "
+                    v-model="conditionAddParams[index].reduceMoney"
+                  ></el-input>&nbsp;
+                  <span>元</span>
+                  <div class="iconAdd">
+                    <img
+                      v-if="index === 0"
+                      :src="$imageHost + '/image/admin/sign_jia.png'"
+                      alt=""
+                      @click="addFullCutItem3()"
+                    >
+                    <img
+                      v-else
+                      style="cursor:pointer"
+                      :src="$imageHost +'/image/admin/sign_del.png' "
+                      @click="deleteFullCutItem3()"
+                    >
+                  </div>
                 </div>
+              </section>
+
+              <section>
+                <div v-if="params.type === '1'">
+                  <span>每满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                  ></el-input>&nbsp;件，
+                  <span>减</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                  ></el-input>&nbsp;元
+                </div>
+
+                <section
+                  v-for="(item, index) in conditionAddParams"
+                  :key="index"
+                >
+                  <div
+                    style="display:flex;margin-left: 25px"
+                    v-if="params.type === '3'"
+                  >
+                    <span>满</span>
+                    &nbsp;<el-input
+                      class="form_input"
+                      size="small"
+                      v-model="conditionAddParams[index].fullMoney"
+                    ></el-input>&nbsp;件，
+                    <span>打</span>
+                    &nbsp;<el-input
+                      class="form_input"
+                      size="small "
+                      v-model="conditionAddParams[index].reduceMoney"
+                    ></el-input>&nbsp;
+                    <span>折</span>
+                    <div class="iconAdd">
+                      <img
+                        v-if="index === 0"
+                        :src="$imageHost + '/image/admin/sign_jia.png'"
+                        alt=""
+                        @click="addFullCutItem4()"
+                      >
+                      <img
+                        v-else
+                        style="cursor:pointer"
+                        :src="$imageHost +'/image/admin/sign_del.png' "
+                        @click="deleteFullCutItem4()"
+                      >
+                    </div>
+                  </div>
+                </section>
               </section>
             </div>
 
-            <div v-if="activityType === '4'">
+            <div v-if="params.type === '4'">
               <div>
                 第&nbsp;<el-input
                   class="form_input"
@@ -153,7 +278,7 @@
           <!-- 有效期 -->
           <el-form-item label="有效期：">
             <el-date-picker
-              v-model="timeInterval"
+              v-model="params.timeInterval"
               type="datetimerange"
               size="small"
               range-separator="至"
@@ -167,16 +292,16 @@
           <!-- 活动商品 -->
           <el-form-item label="活动商品：">
             <el-radio
-              v-model="activityGoods"
+              v-model="params.actType"
               label="0"
             >全部商品</el-radio>
             <br>
             <el-radio
-              v-model="activityGoods"
+              v-model="params.actType"
               label="1"
             >指定商品</el-radio>
 
-            <section v-if="activityGoods === '1'">
+            <section v-if="params.actType === '1'">
               <div
                 class="add_goods_btn"
                 @click="chooseGoodsHandler"
@@ -377,7 +502,7 @@
 
           <!-- 会员专享活动 -->
           <el-form-item label="会员专享活动：">
-            <el-checkbox v-model="vipActivity">用户持会员卡可以参与活动</el-checkbox>
+            <el-checkbox v-model="cardId">用户持会员卡可以参与活动</el-checkbox>
             <br>
             <el-select
               v-model="memberCardInfo"
@@ -385,7 +510,7 @@
               size="small"
               :multiple='true'
               @change="getMemberCardName"
-              v-if="vipActivity === true"
+              v-if="cardId === true"
             >
               <el-option
                 v-for="item in memberCardNameList"
@@ -458,56 +583,73 @@ export default {
   components: { ChoosingGoods, AddingBusClassDialog, AddBrandDialog, SelectGoodsLabel },
   data () {
     return {
+      params: {
+        actName: '',
+        strategyPriority: '',
+        id: '',
+        type: '2',
+        condition: [],
+        timeInterval: [],
+        startTime: '',
+        endTime: '',
+        status: '',
+        recommendGoods: null,
+        memberCards: null,
+        fullMoney: '',
+        reduceMoney: '',
+        amount: '',
+        discount: '',
+        actType: '0'
+      },
       activeName: '5',
-      id: '',
-      aaa: 1,
-      activityName: '',
-      activityLevel: '',
-      activityType: '2',
-      timeInterval: [],
-      activityGoods: '1',
-      fullMoney: '',
-      reduceMoney: '',
-      amount: '',
-      discounts: '',
-      discount: '1',
-      vipActivity: '',
+      fullDeduction: '1',
+      aaa: 11,
       memberCardInfo: '',
-      memberCardNameList: [],
+      memberCardNameList: [], // 会员专享活动
       memberCardNameIdLidt: [],
-      cardId: [],
+      cardId: [], // 会员专享改变时的id值
+      flag: null,
+      conditionAddParams: [{
+        fullMoney: '',
+        reduceMoney: '',
+        amount: '',
+        discount: ''
+      }],
+
+      // 选择商品
       tuneUpChooseGoodsDialog: false,
       selectedGoodsIdList: [],
-      conditionAddParams: [],
       goodsList: [],
-      tuneUpBussDialog: false,
-      tuneUpPlatformDialog: false,
-      startTime: '',
-      endTime: '',
+      // 选择商品品牌
       tuneUpBrandDialog: false,
-      tuneUpSelectGoodsLabelDialog: false,
       goodsNameList: [],
       goodsBrandIdList: [],
+      // 选择商品标签
+      tuneUpSelectGoodsLabelDialog: false,
       labelNameList: [],
       labelNameIdList: [],
+      // 选择商家分类
+      tuneUpBussDialog: false,
       bussinessList: [],
       bussinessIdList: [],
+      // 选择平台分类
+      tuneUpPlatformDialog: false,
       platformList: [],
       platformIdList: []
 
     }
   },
   watch: {
-    timeInterval: function (newVal) {
-      this.startTime = newVal[0]
-      this.endTime = newVal[1]
+    'params.timeInterval': function (newVal) {
+      this.params.startTime = newVal[0]
+      this.params.endTime = newVal[1]
     }
   },
   mounted () {
     this.memberCardActivityName()
-    console.log(this.$router, 'this.$router.id')
-    if (this.$router.query.id > 0) {
-      this.id = this.$router.query.id
+    console.log(this.$route.query, 'this.$router.id')
+    if (this.$route.query.id > 0) {
+      this.params.id = this.$route.query.id
       this.fetchCurrentActivityData()
     } else {
       this.submit()
@@ -541,19 +683,17 @@ export default {
       console.log(this.cardId, 'saveMemberIdList')
     },
     getTabName () {
-      // if (this.$route.query.id) {
-      if (this.aaa) {
-        return '添加满折满减活动'
-      } else {
+      if (this.$route.query.id) {
         return '修改满折满减活动'
+      } else {
+        return '添加满折满减活动'
       }
-      // console.log(111)
     },
     submit () {
       let obj = {
-        actName: this.activityName,
-        type: this.activityType,
-        actType: this.activityGoods,
+        actName: this.params.actName,
+        type: this.params.type,
+        actType: this.params.actType,
         conditionAddParams: [
           {
             fullMoney: 333,
@@ -564,9 +704,9 @@ export default {
             reduceMoney: 102
           }
         ],
-        startTime: this.startTime,
-        endTime: this.endTime,
-        strategyPriority: this.activityLevel,
+        startTime: this.params.startTime,
+        endTime: this.params.endTime,
+        strategyPriority: this.params.strategyPriority,
         recommendGoodsId: String(this.selectedGoodsIdList), // 指定商品
         recommendCatId: String(this.platformIdList), // 指定平台
         recommendSortId: String(this.bussinessIdList), // 指定商家
@@ -582,7 +722,7 @@ export default {
         }
       })
     },
-    addFullCutItem () {
+    addFullCutItem1 () {
       let obj = {
         'fullMoney': '',
         'reduceMoney': '',
@@ -590,6 +730,45 @@ export default {
         'discount': ''
       }
       this.conditionAddParams.push(obj)
+    },
+    deleteFullCutItem1 (index) {
+      this.conditionAddParams.splice(index, 1)
+    },
+    addFullCutItem2 () {
+      let obj = {
+        'fullMoney': '',
+        'reduceMoney': '',
+        'amount': '',
+        'discount': ''
+      }
+      this.conditionAddParams.push(obj)
+    },
+    deleteFullCutItem2 (index) {
+      this.conditionAddParams.splice(index, 1)
+    },
+    addFullCutItem3 () {
+      let obj = {
+        'fullMoney': '',
+        'reduceMoney': '',
+        'amount': '',
+        'discount': ''
+      }
+      this.conditionAddParams.push(obj)
+    },
+    deleteFullCutItem3 (index) {
+      this.conditionAddParams.splice(index, 1)
+    },
+    addFullCutItem4 () {
+      let obj = {
+        'fullMoney': '',
+        'reduceMoney': '',
+        'amount': '',
+        'discount': ''
+      }
+      this.conditionAddParams.push(obj)
+    },
+    deleteFullCutItem4 (index) {
+      this.conditionAddParams.splice(index, 1)
     },
     // 选择商品数据处理
     chooseGoodsHandler () {
@@ -601,9 +780,6 @@ export default {
       this.selectedGoodsIdList = val.map(item => item.goodsId)
       console.log(this.selectedGoodsIdList, 'selectedGoodsIdList')
     },
-    // selectedGoodsIdList (data) {
-    //   console.log(data, 'goodsId')
-    // },
     deleteGoods () { },
 
     // 选择平台、商家分类数据处理
@@ -672,10 +848,10 @@ export default {
 
     },
     fetchCurrentActivityData () {
-      let obj = {}
-      getOneFullCutActivityInfo(obj).then(res => {
+      console.log(this.id)
+      getOneFullCutActivityInfo({ id: this.id }).then(res => {
         if (res.error === 0) {
-          console.log(res.content)
+          console.log(res)
         }
       }).catch(err => console.log(err))
     }

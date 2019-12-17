@@ -22,6 +22,7 @@ import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,26 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Condition;
-import org.jooq.DatePart;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.UpdateSetMoreStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -67,11 +48,30 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Condition;
+import org.jooq.DatePart;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.UpdateSetMoreStep;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 
 /**
  * Table:order_info
@@ -829,7 +829,22 @@ public class OrderInfoService extends ShopBaseService {
             fetch();
     }
 
-    /*********c********************************************分割线以下与订单模块没有直接联系********************************************************/
+    /**
+     * 得到即将过期未支付的订单列表。每1分钟执行一次，取还有10分钟就要过期未支付的订单列表
+     */
+    public Result<OrderInfoRecord> getExpiringNoPayOrderList(){
+        Instant now = Instant.now();
+        return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).
+            and(TABLE.EXPIRE_TIME.between(
+                Timestamp.from(now.plusSeconds(10 * 60)),
+                Timestamp.from(now.plusSeconds(11 * 60)))).
+            and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO)).
+            and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
+            and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).
+            fetch();
+    }
+
+    /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
 	/**
 	 * 根据用户id获取累计消费金额
 	 */
@@ -1166,8 +1181,8 @@ public class OrderInfoService extends ShopBaseService {
 
         return 0;
     }
-    
-    
+
+
 	/**
 	 * 该时间之后有下单的用户ID列表
 	 */
@@ -1175,7 +1190,7 @@ public class OrderInfoService extends ShopBaseService {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY)).and(TABLE.CREATE_TIME.ge(time))
 				.groupBy(TABLE.USER_ID).fetch().getValues(TABLE.USER_ID, Integer.class);
 	}
-	
+
 	/**
 	 * 该时间之前有下单的用户ID列表
 	 */
@@ -1183,7 +1198,7 @@ public class OrderInfoService extends ShopBaseService {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY)).and(TABLE.CREATE_TIME.le(time))
 				.groupBy(TABLE.USER_ID).fetch().getValues(TABLE.USER_ID);
 	}
-	
+
 	/**
 	 * 获取大于等于该购买次数的用户Id列表
 	 */
@@ -1191,7 +1206,7 @@ public class OrderInfoService extends ShopBaseService {
 		return db().select(TABLE.USER_ID).from(TABLE).groupBy(TABLE.USER_ID).having(DSL.count(TABLE.USER_ID).ge(cnt))
 				.fetch().getValues(TABLE.USER_ID, Integer.class);
 	}
-	
+
 	/**
 	 * 获取小于等于该购买次数的用户Id列表
 	 */
@@ -1199,7 +1214,7 @@ public class OrderInfoService extends ShopBaseService {
 		return db().selectFrom(TABLE).groupBy(TABLE.USER_ID).having(DSL.count(TABLE.USER_ID).le(cnt)).fetch()
 				.getValues(TABLE.USER_ID, Integer.class);
 	}
-	
+
 	/**
 	 * 通过商品id获取购买过该商品的用户id列表
 	 */
@@ -1217,6 +1232,17 @@ public class OrderInfoService extends ShopBaseService {
 	    if(orderSnList != null && orderSnList.size() > 0){
 	        db().update(TABLE).set(TABLE.ORDER_STATUS, ORDER_WAIT_DELIVERY).where(TABLE.ORDER_SN.in(orderSnList)).execute();
         }
+    }
+
+    /**
+     * Overdue delivery integer.发货逾期
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Integer overdueDelivery(Integer nDays) {
+        return db().fetchCount(TABLE, TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
+            .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
     }
 
 }

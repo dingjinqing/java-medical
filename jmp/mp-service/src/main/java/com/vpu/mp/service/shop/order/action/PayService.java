@@ -191,4 +191,16 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         atomicOperation.updateStockAndSales(orderInfo, goods, false);
         //TODO 异常订单处理等等
     }
+
+    /**
+     * 将要过期的未支付订单，进行支付提醒通知。 定时每分钟执行，获取10分钟后过期的订单，通知用户支付
+     */
+    public void autoExpiringNoPayOrderNotify(){
+        Result<OrderInfoRecord> orders = orderInfo.getExpiringNoPayOrderList();
+        orders.forEach(order->{
+            //TODO 小程序消息推送
+        });
+
+    }
+
 }

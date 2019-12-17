@@ -5,6 +5,9 @@ var seckillId = 0;
 var goods_id = 0;
 var gift_id = 0;
 var card_info = [];
+var card_code = '';
+var card_num = '';
+var card_pwd = '';
 global.wxPage({
 
   /**
@@ -22,9 +25,11 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    console.log(options)
     let cardNo = options.cardNo ? options.cardNo : null
     let cardId = options.cardId ? options.cardId : null
-    this.requestCardInfo(cardNo, cardId)
+    var card_list = options.card_list;
+    this.requestCardInfo(cardNo, cardId, card_list)
     if (options.is_fullprice) {  // 
       is_fullprice = options.is_fullprice;
     } else {
@@ -34,40 +39,47 @@ global.wxPage({
     code = options.code ? options.code : 0;
     goods_id = options.goods_id ? options.goods_id : 0;
     gift_id = options.gift_id ? options.gift_id : 0;
+
     console.log(cardNo, cardId)
   },
   requestCardInfo(cardNo, cardId) {
     let that = this
-    if (cardNo) {  //  从个人中心会员卡列表进入
+    if (cardNo) {
       util.api('/api/card/detail', res => {
         console.log(res)
         let cardInfo = res.content
         if (cardInfo.activation) {
-          this.setData({
+          that.setData({
             carStatus: "已领取"
           })
         } else {
-          this.setData({
+          that.setData({
             carStatus: "未激活"
           })
         }
-        cardInfo.cardExpireTime = this.getCardExpireTime(cardInfo);
-        cardInfo.cardBgStyle = this.getCardBg(cardInfo);
-        cardInfo.cardTypeName = this.getTypeName(cardInfo.cardType);
+        cardInfo.cardExpireTime = that.getCardExpireTime(cardInfo);
+        cardInfo.cardBgStyle = that.getCardBg(cardInfo);
+        cardInfo.cardTypeName = that.getTypeName(cardInfo.cardType);
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
         cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
-        this.getUpgradeCondition(cardInfo)
-        this.setData({
+        that.getUpgradeCondition(cardInfo)
+        that.setData({
           cardInfo: cardInfo
         })
         console.log(cardInfo)
-        this.handleToJudgementBottom(cardInfo) // 判断底部按钮
+        that.handleToJudgementBottom(cardInfo) // 判断底部按钮
         if (cardInfo.status == 1 && cardInfo.flag == 1) {
-          this.setData({
+          that.setData({
             is_block: 0
           })
         }
+        if (card_list) {
+          that.setData({
+            card_list: card_list
+          })
+        }
+
       }, { cardNo: cardNo })
     } else if (cardId) {
       that.setData({
@@ -194,6 +206,9 @@ global.wxPage({
       phoneNumber: this.data.cardInfo.mobile
     })
   },
+  bindGetPhoneNumberOk: function (e) {
+    mobile = e.detail.phoneNumber;
+  },
   // 判断底部按钮
   handleToJudgementBottom(carInfo) {
     console.log(carInfo)
@@ -229,7 +244,6 @@ global.wxPage({
   // 处理底部按钮点击
   handleToBtn(e) {
     console.log(e)
-    console.log(this.data.cardInfo)
     switch (e.currentTarget.dataset.btntype) {
       case 1:
         this.getCard(e.currentTarget.dataset.cardid)
@@ -361,13 +375,14 @@ global.wxPage({
   },
   // 激活会员卡
   getUsing(e) {
+    console.log(this.data.cardInfo.examine)
     if (is_fullprice == 0 && code == 0 && seckillId == 0 && goods_id == 0) {
       util.redirectTo({
-        url: '/pages/memberinfo/memberinfo?act=1&card_no=' + e.currentTarget.dataset.cardno + '&examine=' + card_info.examine,
+        url: '/pages/memberinfo/memberinfo?act=1&cardNo=' + e.currentTarget.dataset.cardno + '&examine=' + this.data.cardInfo.examine
       })
     } else {
       util.redirectTo({
-        url: '/pages/memberinfo/memberinfo?act=1&card_no=' + e.currentTarget.dataset.cardno + '&examine=' + card_info.examine + "&is_fullprice=" + is_fullprice + "&code=" + code + "&seckillId=" + seckillId + '&goods_id=' + goods_id
+        url: '/pages/memberinfo/memberinfo?act=1&cardNo=' + e.currentTarget.dataset.cardno + '&examine=' + this.data.cardInfo.examine + "&is_fullprice=" + is_fullprice + "&code=" + code + "&seckillId=" + seckillId + '&goods_id=' + goods_id
       })
     }
   },
@@ -387,5 +402,66 @@ global.wxPage({
         util.toast_fail('设置失败');
       }
     }, { cardNo: e.currentTarget.dataset.cardno })
+  },
+  closeIpt() {
+    this.setData({
+      is_receive: 0,
+      receive_action: 0
+    })
+  },
+  bindCode(e) {
+    card_code = e.detail.value;
+  },
+  bindCardNum(e) {
+    card_num = e.detail.value;
+  },
+  bindCardPwd(e) {
+    card_pwd = e.detail.value;
+  },
+  fetchCard() {
+    var that = this;
+    util.api('/api/wxapp/card/code/receive', function (res) {
+      console.log(res)
+      if (res.error == 0) {
+        if (res.content.isMostGrade) {
+          util.toast_fail('当前等级已最高');
+          return;
+        } else if (res.content.gradeCard) {
+          var text = '没有达到该卡的条件';
+          if (res.content.gradeCard.score > 0) {
+            text = '累积积分未达到' + res.content.gradeCard.score + '积分';
+          }
+          if (res.content.gradeCard.amount > 0) {
+            text = text + ' 累积消费金额未达到' + res.content.gradeCard.amount + '元';
+          }
+          util.showModal('提示', text, function (res) {
+            return false;
+          }, false);
+          return;
+        } else if (res.content == -1) {
+          util.toast_fail('此卡已存在');
+        } else {
+          util.toast_success('领取成功', function () {
+            if (that.data.carInfo.activation) {
+              setTimeout(function () {
+                util.navigateTo({
+                  url: '/pages/memberinfo/memberinfo?act=1&card_no=' + res.content + '&examine=' + that.data.cardInfo.examine,
+                })
+              }, 2000);
+            } else {
+              setTimeout(function () {
+                util.redirectTo({
+                  url: '/pages/usercardlist/usercardlist',
+                })
+              }, 2000);
+            }
+          });
+        }
+      } else {
+        util.showModal('', res.message, function () {
+          return false;
+        }, false);
+      }
+    }, { cardId: that.data.cardInfo.cardId, code: card_code, cardNo: card_num, cardPwd: card_pwd })
   }
 })

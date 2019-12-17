@@ -4,7 +4,7 @@
     <view class="goods-image">
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
-    <v-goods-info goods-info="{{goodsInfo}}" bindshareMoments="onShareAppMessage">
+    <v-goods-info goods-info="{{goodsInfo}}" activity="{{activity}}" bindshareMoments="onShareAppMessage">
       <!--轮播图下方，商品信息上方插槽 -->
       <v-act-content bindactStatus="getActStatus" activity="{{activity}}"/>
     </v-goods-info>
@@ -18,7 +18,7 @@
     <!-- 优惠券&促销信息-->
     <v-coupon-promotion coupon-list="{{couponList}}"/>
     <!--  选择规格（包含无规格情况）  -->
-    <v-sel-spec products-info="{{goodsInfo}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
+    <v-sel-spec products-info="{{goodsInfo}}" can-buy="{{canBuy}}" activity="{{activity}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
       <!--  服务信息  -->
       <view class="flex_box" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
         <view class="item_left">
@@ -37,70 +37,72 @@
       <view class="item_line" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}"></view>
     </v-sel-spec>
     <!-- 拼团提示 -->
-    <view class="flex_outside_box" >
-      <view class="flex_box">
-        <view class="item_left"><text style="color:{{comColor}}">4个</text>小伙伴正在开团，可直接参与</view>
+    <block wx:if="{{activity.activityType === 1}}">
+      <view class="flex_outside_box" >
+        <view class="flex_box">
+          <view class="item_left"><text style="color:{{comColor}}">4个</text>小伙伴正在开团，可直接参与</view>
+        </view>
+        <view class="item_line"></view>
+        <view class="flex_box join-group">
+          <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
+          <text class="user-name">方框</text>
+          <view class="join-item-info">
+            <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
+            <text>剩余23:14:15</text>
+          </view>
+          <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
+        </view>
+        <view class="item_line"></view>
+        <view class="flex_box join-group">
+          <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
+          <text class="user-name">方框</text>
+          <view class="join-item-info">
+            <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
+            <text>剩余23:14:15</text>
+          </view>
+          <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
+        </view>
+        <view class="item_line"></view>
+        <view class="flex_box join-group">
+          <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
+          <text class="user-name">方框</text>
+          <view class="join-item-info">
+            <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
+            <text>剩余23:14:15</text>
+          </view>
+          <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
+        </view>
+        <view class="item_line"></view>
+        <view class="flex_box join-group">
+          <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
+          <text class="user-name">方框</text>
+          <view class="join-item-info">
+            <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
+            <text>剩余23:14:15</text>
+          </view>
+          <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
+        </view>
+      </view>
+      <view class="flex_outside_box" >
+        <view class="flex_box">
+          <view class="item_left">拼团规则</view>
+          <view class="item_right">详细规则></view>
+        </view>
       </view>
       <view class="item_line"></view>
-      <view class="flex_box join-group">
-        <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
-        <text class="user-name">方框</text>
-        <view class="join-item-info">
-          <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
-          <text>剩余23:14:15</text>
-        </view>
-        <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
+      <view class="flex_box group">
+        <view><view>1</view><text>选择商品，付款开团/参团</text></view>
+        <view><view>2</view><text>邀请好友,支付参团</text></view>
+        <view><view>3</view><text>满员发货，不满自动退款</text></view>
       </view>
-      <view class="item_line"></view>
-      <view class="flex_box join-group">
-        <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
-        <text class="user-name">方框</text>
-        <view class="join-item-info">
-          <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
-          <text>剩余23:14:15</text>
-        </view>
-        <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
-      </view>
-      <view class="item_line"></view>
-      <view class="flex_box join-group">
-        <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
-        <text class="user-name">方框</text>
-        <view class="join-item-info">
-          <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
-          <text>剩余23:14:15</text>
-        </view>
-        <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
-      </view>
-      <view class="item_line"></view>
-      <view class="flex_box join-group">
-        <image src="https://wx.qlogo.cn/mmopen/vi_32/cJdxuzY2jJbd1BKUkd2JaCicP4ibedlknGUQsHA92PhmV8a9LsPYaHRL2ibpXw6ryUX0vquf3bhaCvydMejIk6icNw/132"></image>
-        <text class="user-name">方框</text>
-        <view class="join-item-info">
-          <text>还差 <text style="color:{{comColor}}">1人</text> 成团</text>
-          <text>剩余23:14:15</text>
-        </view>
-        <view class="join" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去参团</view>
-      </view>
-    </view>
-    <view class="flex_outside_box" >
-      <view class="flex_box">
-        <view class="item_left">拼团规则</view>
-        <view class="item_right">详细规则></view>
-      </view>
-    </view>
-    <view class="item_line"></view>
+    </block>
     
-    <view class="flex_box group">
-      <view><view>1</view><text>选择商品，付款开团/参团</text></view>
-      <view><view>2</view><text>邀请好友,支付参团</text></view>
-      <view><view>3</view><text>满员发货，不满自动退款</text></view>
-    </view>
     <!-- 用户评价 -->
     <v-comment comment="{{comment}}"/>
 
     <!-- 商品详情 -->
-    <!-- <v-goods-detail goods-desc-info="{{goodsDescInfo}}"/> -->
+    <v-goods-detail goods-desc-info="{{goodsDescInfo}}"/>
   </view>
-  <v-item-footer product-info="{{productInfo}}" isDefaultPrd="{{goodsInfo.defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
+  <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" can-buy="{{canBuy}}" activity="{{activity}}" isDefaultPrd="{{goodsInfo.defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
   <include src="../common/footer.wxml" />
 </view>

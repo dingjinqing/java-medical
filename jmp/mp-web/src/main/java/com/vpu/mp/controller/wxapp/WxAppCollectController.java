@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.service.pojo.wxapp.collection.AddAndCancelCollectionParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,4 +39,29 @@ public class WxAppCollectController extends WxAppBaseController{
 		int res = shop().collect.cancalCollect(param);
 		return this.success(res);
 	}
+
+    /**
+     * 添加商品收藏
+     * @author 李晓冰
+     * @param param {@link AddAndCancelCollectionParam}
+     * @return {@link JsonResult}
+     */
+	@PostMapping("/add/collect")
+	public JsonResult addCollection(@RequestBody AddAndCancelCollectionParam param){
+	    Integer userId=wxAppAuth.user().getUserId();
+	    String userName = wxAppAuth.user().getUsername();
+        shop().collect.addCollection(param,userId,userName);
+        return success();
+    }
+
+    /**
+     * 取消商品收藏
+     * @param param {@link AddAndCancelCollectionParam}
+     * @return  {@link JsonResult}
+     */
+    @PostMapping("/cancel/collect")
+    public JsonResult cancelCollection(@RequestBody AddAndCancelCollectionParam param) {
+        shop().collect.cancelCollection(param,wxAppAuth.user().getUserId());
+        return success();
+    }
 }

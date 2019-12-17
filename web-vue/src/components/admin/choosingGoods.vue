@@ -209,10 +209,12 @@
                 @change="checkedAllRow(checkAllFlag)"
               >选择全部</el-checkbox>
             </div>
-            <pagination
-              :page-params.sync="pageParams"
-              @pagination="paginationChange"
-            />
+            <div class="paginationInfo">
+              <pagination
+                :page-params.sync="pageParams"
+                @pagination="paginationChange"
+              />
+            </div>
           </div>
 
         </div>
@@ -230,7 +232,7 @@
       >
         <el-button
           size="small"
-          @click="choiseGooddialogVisible = false"
+          @click="cancleBtnHandle"
         >取 消</el-button>
         <el-button
           type="primary"
@@ -462,6 +464,25 @@ export default {
         // 在售商品
         isOnSale: 1,
         isSaleOut: false
+      }
+    },
+    // 取消
+    cancleBtnHandle () {
+      this.choiseGooddialogVisible = false
+      this.requestParam = {
+        currentPage: 1,
+        pageRows: 3,
+        // 在售商品
+        isOnSale: 1,
+        isSaleOut: false,
+        catId: null,
+        sortId: null,
+        labelId: null,
+        lowShopPrice: null,
+        highShopPrice: null,
+        goodsName: null,
+        goodsSn: null,
+        brandId: null
       }
     },
     /* 确定 */
@@ -789,9 +810,13 @@ img {
 .tablefooter {
   background-color: #fff;
   color: #333;
-  display: flex;
-  justify-content: space-between;
   padding: 20px 0 20px 20px;
+  .selectAll {
+    float: left;
+  }
+  .paginationInfo {
+    float: right;
+  }
   .el_pagination__editor {
     .el-input {
       /deep/.el-input__inner {

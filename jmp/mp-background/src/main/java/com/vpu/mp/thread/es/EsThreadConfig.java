@@ -70,7 +70,7 @@ public class EsThreadConfig {
             }
             nextNumber = endNumber;
             log.info("listSize【{}】",list.size());
-            saas.getShopApp(shopId).esGoodsCreateService.batchCreateEsGoodsIndex(needIds,shopId);
+            saas.getShopApp(shopId).esGoodsCreateService.batchUpdateEsGoodsIndex(needIds,shopId);
             log.info("\n第【{}】批建立成功",i);
         }
         log.info("\n店铺【{}】索引建立完成，共耗时{}ms",shopId,stopwatch.elapsed(TimeUnit.MILLISECONDS));

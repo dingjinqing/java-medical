@@ -35,7 +35,7 @@ public class ESGoodsListener implements BaseRabbitHandler {
         if( DBOperating.DELETE.equals(param.getOperate()) ){
             esGoodsCreateService.deleteEsGoods(ids,shopId);
         }else{
-            esGoodsCreateService.batchCreateEsGoodsIndex(ids,shopId);
+            esGoodsCreateService.batchUpdateEsGoodsIndex(ids,shopId);
         }
 
     }

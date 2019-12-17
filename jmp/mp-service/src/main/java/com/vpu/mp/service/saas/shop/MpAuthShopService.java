@@ -1435,16 +1435,18 @@ public class MpAuthShopService extends MainBaseService {
 						String firest="为你精心准备了关注礼品，快来点击查看吧!";
 						String page="pages/auth/auth";//String page="pages/auth/auth";pages/index/index
 						String content="点击进入小程序";
-						//List<WxMpTemplateData> keywordValues = fexMessage(record, firest, shopName, content, page, null);
-						ShopApplication shopApp = saas.getShopApp(authShopRecord.getShopId());
-						WxUserInfo info=WxUserInfo.builder().mpAppId(appId).mpOpenId(userInfo.getOpenId()).maAppId(authShopRecord.getAppId()).build();
+						//ShopApplication shopApp = saas.getShopApp(authShopRecord.getShopId());
+						//WxUserInfo info=WxUserInfo.builder().mpAppId(appId).mpOpenId(userInfo.getOpenId()).maAppId(authShopRecord.getAppId()).build();
+						MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
+						List<Integer> userIdList = new ArrayList<Integer>();
+						userIdList.add(user.getRecId());
 						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{null,"#173177"}};
 						RabbitMessageParam param = RabbitMessageParam.builder()
 								.mpTemplateData(
 										MpTemplateData.builder().config(MpTemplateConfig.PUSHMSG).data(data).build())
-								.page(page).shopId(authShopRecord.getShopId())
+								.page(page).shopId(authShopRecord.getShopId()).userIdList(userIdList)
 								.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
-						shopApp.wechatMessageTemplateService.sendMpMessage(param, info);
+						//shopApp.wechatMessageTemplateService.sendMpMessage(param, info);
 						saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), authShopRecord.getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 					}
 				}

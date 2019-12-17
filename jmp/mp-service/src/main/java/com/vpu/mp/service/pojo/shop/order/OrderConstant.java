@@ -207,12 +207,13 @@ public class OrderConstant {
 
 	/**
 	 * return_order return_type
-	 * 退-退款类型:0仅退款 1:退货退款 2:仅退运费 3:手动退款
+	 * 退-退款类型:0仅退款 1:退货退款 2:仅退运费 3:手动退款 4:换货
 	 */
 	public final static byte RT_ONLY_MONEY = 0;
 	public final static byte RT_GOODS = 1;
 	public final static byte RT_ONLY_SHIPPING_FEE = 2;
 	public final static byte RT_MANUAL = 3;
+	public final static byte RT_CHANGE = 4;
 
 	public final static String[] RETURN_TYPE_CN = {
 			"仅退款",
@@ -417,14 +418,6 @@ public class OrderConstant {
 	public static final byte SHIPPED = 3;
 	public static final byte FINISHED = 4;
 	public static final byte RETURNING = 5;
-
-	/**
-	 * 退款类型
-	 */
-	/** 只退款 */
-	public static final Byte RETURN_TYPE_MONEY = 0;
-	/** 退货又退款 */
-	public static final Byte RETURN_TYPE_BOTH = 1;
 
 	/**
 	 * 是否货到付款订单

@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.image.BatchDeleteImageParam;
 import com.vpu.mp.service.pojo.shop.image.BatchMoveImageParam;
 import com.vpu.mp.service.pojo.shop.image.CropImageParam;
 import com.vpu.mp.service.pojo.shop.image.ImageListQueryParam;
+import com.vpu.mp.service.pojo.shop.image.UploadBase64Group;
 import com.vpu.mp.service.pojo.shop.image.UploadImageCatNameVo;
 import com.vpu.mp.service.pojo.shop.image.UploadImageParam;
 import com.vpu.mp.service.pojo.shop.image.UploadPath;
@@ -101,7 +102,7 @@ public class AdminImageController extends AdminBaseController {
 
 
     @PostMapping(value = "/admin/image/base64/uploadOneImgae")
-    private JsonResult uploadBase64File(UploadImageParam param) throws IOException {
+    private JsonResult uploadBase64File(@RequestBody @Validated(UploadBase64Group.class) UploadImageParam param) throws IOException {
         MultipartFile multipartFile = FileUtil.base64MutipartFile(param.base64Image);
         if (multipartFile==null){
             return this.fail(JsonResultCode.CODE_IMGAE_FORMAT_INVALID);

@@ -107,3 +107,6 @@ view,text,input{
     width: 140rpx;
     height: 140rpx;
 }
+.must_choose {
+  color: #e64340;
+}

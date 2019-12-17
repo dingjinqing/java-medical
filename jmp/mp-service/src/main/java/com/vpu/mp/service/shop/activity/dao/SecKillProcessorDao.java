@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -8,13 +9,18 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SecKillPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SeckillMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
-import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Record3;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 
 /**
  * @author 李晓冰
@@ -59,10 +65,10 @@ public class SecKillProcessorDao extends ShopBaseService {
      * 组装输出详情页的秒杀信息
      * @param skId
      * @param userId
-     * @param goodsNumber
+     * @param capsule
      * @return
      */
-    public SeckillMpVo getDetailSeckillInfo(Integer skId,Integer userId,Integer goodsNumber){
+    public SeckillMpVo getDetailSeckillInfo(Integer skId,Integer userId,GoodsDetailMpBo capsule){
         SeckillMpVo seckillVo = new SeckillMpVo();
 
         SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne().into(SecKillDefineRecord.class);
@@ -70,7 +76,7 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setActivityId(skId);
         seckillVo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
 
-        seckillVo.setActState(this.canApplySecKill(secKill,goodsNumber,userId));
+        seckillVo.setActState(this.canApplySecKill(secKill,capsule.getGoodsNumber(),userId));
         seckillVo.setStock(secKill.getStock());
         seckillVo.setLimitAmount(secKill.getLimitAmount());
         seckillVo.setLimitPaytime(secKill.getLimitPaytime());
@@ -78,7 +84,7 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setEndTime(secKill.getEndTime());
         seckillVo.setCardId(secKill.getCardId());
         seckillVo.setShareConfig(Util.parseJson(secKill.getShareConfig(), ShopShareConfig.class));
-        seckillVo.setActProducts(this.getSecKillPrd(secKill.getSkId()));
+        seckillVo.setActProducts(this.getSecKillPrd(secKill.getSkId(),capsule));
         return seckillVo;
     }
 
@@ -136,8 +142,15 @@ public class SecKillProcessorDao extends ShopBaseService {
      * @param skId
      * @return
      */
-    private List<SecKillPrdMpVo> getSecKillPrd(Integer skId){
-        return db().select(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchInto(SecKillPrdMpVo.class);
+    private List<SecKillPrdMpVo> getSecKillPrd(Integer skId,GoodsDetailMpBo capsule){
+        List<SecKillPrdMpVo> list = db().select(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchInto(SecKillPrdMpVo.class);
+
+        //填入原价，方便计算
+        Map<Integer,BigDecimal> prdPriceMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId,GoodsPrdMpVo::getPrdRealPrice));
+        list.forEach(vo->{
+            vo.setPrdPrice(prdPriceMap.get(vo.getProductId()));
+        });
+        return list;
     }
 
     /**
@@ -158,8 +171,8 @@ public class SecKillProcessorDao extends ShopBaseService {
      * 秒杀下单-库存处理
      * @param order
      */
-    public void processSeckillStock(OrderBeforeVo order) throws MpException {
-        for(OrderGoodsBo goods : order.getOrderGoods()){
+    public void processSeckillStock(CreateParam param, OrderInfoRecord order) throws MpException {
+        for(OrderGoodsBo goods : param.getBos()){
             int seckillStock = db().select(SEC_KILL_DEFINE.STOCK).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).fetchSingle().into(Integer.class);
             if(seckillStock - goods.getGoodsNumber() < 0){
                 //秒杀库存不足
@@ -177,4 +190,5 @@ public class SecKillProcessorDao extends ShopBaseService {
         }
 
     }
+
 }

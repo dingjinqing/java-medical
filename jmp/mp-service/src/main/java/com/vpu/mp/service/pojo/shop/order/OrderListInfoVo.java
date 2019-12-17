@@ -99,4 +99,5 @@ public class OrderListInfoVo {
 	private Boolean canFinish;
 	private Boolean canDeliver;
 	private Boolean canVerify;
+    private Boolean showReturnInfo;
 }
