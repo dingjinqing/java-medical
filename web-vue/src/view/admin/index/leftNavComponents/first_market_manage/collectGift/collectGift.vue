@@ -1,13 +1,13 @@
 <template>
   <div class="collectGift">
     <div class="main">
-      <div class="top">
+      <div class="collectGiftTips">
         <!-- 左边 文字 -->
-        <div class="left">
+        <div class="leftTips">
           <div class="top1">收藏有礼</div>
           <div class="top2">引导用户将您的店铺小程序添加至微信”我的小程序“可有效提升店铺小程序打开率，用户活跃度等多项指标。</div>
           <div>注：1、由于微信的限制，系统无法获知用户是否已收藏小程序，此功能仅作为引导性提示。</div>
-          <div style="margin-top: 10px;margin-bottom: 10px;padding-left: 28px">2、会出现用户未收藏或取消收藏小程序也获得收藏奖励的情况，请知悉。</div>
+          <div class="top3">2、会出现用户未收藏或取消收藏小程序也获得收藏奖励的情况，请知悉。</div>
         </div>
         <!-- 右边 开关配置 -->
         <div class="right">
@@ -17,24 +17,40 @@
             inactive-color="#ddd"
           >
           </el-switch>
-          <span style="color: rgb(153, 153, 153);">{{this.switchValue === true ? '已开启' : '已关闭' }}</span>
+          <span class="switch">{{this.switchValue === true ? '已开启' : '已关闭' }}</span>
         </div>
       </div>
 
       <!-- 下半部分 -->
       <div
-        class="mid"
+        class="collectGiftSetting"
         v-show="this.switchValue"
       >
         <!-- 轮播图 -->
-        <div class="midleft">
-
+        <div class="carousel">
+          <el-carousel
+            trigger="click"
+            arrow="never"
+            height="410px"
+            indicator-position="outside"
+          >
+            <el-carousel-item
+              v-for="(item,index) in carouselList"
+              :key="index"
+            >
+              <img
+                :src="item.src"
+                alt=""
+                style="height: 100%; width: 100%;"
+              >
+            </el-carousel-item>
+          </el-carousel>
         </div>
         <!-- 活动内容 -->
-        <div class="midright">
+        <div class="activitySetting">
           <el-form
-            label-width="150px"
-            labelPosition='right'
+            label-width="90px"
+            labelPosition='left'
             :rules="rules"
             :model="form"
             size="small"
@@ -70,22 +86,32 @@
                 v-model="form.logo"
                 label="1"
               >自定义</el-radio>
-              <!-- 图片弹窗 -->
+              <!-- 图标区域-默认 -->
+              <div
+                v-if="form.logo == 0"
+                class="defaultGift"
+              >
+                <img
+                  :src="$imageHost + collectGiftImage"
+                  alt=""
+                >
+              </div>
+              <!-- 图标区域-自定义  -->
               <div
                 style="display: flex;align-items: center;flex-wrap: wrap;"
-                v-if="this.form.logo==1"
+                v-if="form.logo == 1"
               >
-                <span
+                <!-- <span
                   @click="deleteGoodsImg()"
                   v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
                   class="deleteIcon"
-                >×</span>
+                >×</span> -->
                 <div
                   @click="addGoodsImg"
                   class="ImgWrap"
                 >
                   <el-image
-                    style="width: 80px; height: 80px"
+                    style="width: 70px; height: 70px"
                     :src="srcList.src"
                     fit="scale-down"
                   ></el-image>
@@ -100,7 +126,7 @@
               label="收藏奖励"
               prop="reward"
             >
-              <div>
+              <div class="collectReward">
                 <!-- 积分 -->
                 <el-checkbox
                   label="积分"
@@ -108,7 +134,7 @@
                 ></el-checkbox>
                 <el-input
                   size="small"
-                  style="width: 180px"
+                  style="width: 170px"
                   v-model="score"
                 ></el-input>
                 积分
@@ -118,46 +144,63 @@
                   label="优惠券"
                   v-model="coupon"
                 ></el-checkbox>
-                <div class="middleContainer">
-                  <div>
+                <div class="couponContent">
+                  <div class="middleContainer">
                     <div
                       v-for="(item,index) in couponData"
                       :key="index"
                       class="addInfo"
-                      style="margin-right: 5px;"
+                      style="margin-right: 15px;"
                     >
                       <section
                         class="couponImgWrapper"
                         style="line-height:normal"
                       >
-                        <div class="coupon_list_top">
+                        <div
+                          class="coupon_list_top"
+                          v-if="item.actCode==='voucher'"
+                        >
                           <span>￥</span>
                           <span class="number">{{item.denomination}}</span>
+                        </div>
+                        <div
+                          class="coupon_list_top"
+                          v-if="item.actCode==='discount'"
+                        >
+                          <span style="font-size: 20px">{{item.denomination}}</span>
+                          <span style="font-size: 14px">折</span>
                         </div>
                         <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                         <div class="coupon_center_number">剩余{{item.surplus}}张</div>
                         <div
                           class="coupon_list_bottom"
                           style="font-size:12px"
-                        >领取</div>
+                        >
+                          <span v-if="item.scoreNumber === 0">领取</span>
+                          <div v-if="item.scoreNumber !== 0">
+                            <span>{{item.scoreNumber}}</span>积分 兑换
+                          </div>
+                        </div>
                       </section>
                       <span
                         @click="deleteCouponImg(index)"
                         class="deleteIcon"
                       >×</span>
                     </div>
+                    <div
+                      class="addInfo"
+                      @click="handleToCallDialog()"
+                      v-if="couponData.length < 5"
+                    >
+                      <el-image
+                        fit="scale-down"
+                        :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                        style="width: 78px;height:78px;cursor:pointer"
+                      ></el-image>
+                      <p style="color:#bbb">添加优惠券</p>
+                    </div>
                   </div>
-                  <div
-                    class="addInfo"
-                    @click="handleToCallDialog()"
-                    v-if="couponData.length < 5"
-                  >
-                    <el-image
-                      fit="scale-down"
-                      :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                      style="width: 78px;height:78px;cursor:pointer"
-                    ></el-image>
-                  </div>
+                  <div class="textTips">最多添加5张优惠券，已过期和已停用的优惠券不能添加</div>
                 </div>
               </div>
             </el-form-item>
@@ -168,6 +211,7 @@
       <ImageDalog
         pageIndex='pictureSpace'
         :tuneUp="showImageDialog"
+        :imageSize="[150,150]"
         @handleSelectImg='imgDialogSelectedCallback'
       />
       <!--添加优惠卷弹窗-->
@@ -235,16 +279,22 @@ export default {
         logo: '0',
         reward: ''
       },
+      carouselList: [
+        { src: 'http://mpdevimg2.weipubao.cn/image/admin/collect_slide1.png' },
+        { src: 'http://mpdevimg2.weipubao.cn/image/admin/collect_slide2.png' },
+        { src: 'http://mpdevimg2.weipubao.cn/image/admin/collect_slide3.jpg' }
+      ],
+      collectGiftImage: '/image/wxapp/collect_gifts.png',
       // 表单校验
       rules: {
         actTime: [
           { required: true, message: `请选择活动时间`, trigger: 'blur' }
         ],
         logo: [
-          { validator: validateLogo, trigger: 'change' }
+          { required: true, validator: validateLogo, trigger: 'change' }
         ],
         reward: [
-          { validator: validateReward, trigger: 'change' }
+          { required: true, validator: validateReward, trigger: 'change' }
         ]
       },
 
@@ -270,12 +320,10 @@ export default {
       data: ''
     }
   },
-  created () {
-    this.selectInfo()
-  },
   mounted () {
     // 初始化国际化语言
     this.langDefault()
+    this.selectInfo()
   },
   methods: {
     selectInfo () {
@@ -416,11 +464,11 @@ export default {
     // 图片点击回调函数
     imgDialogSelectedCallback (src) {
       this.srcList.src = src.imgUrl
-    },
-    // 删除图片
-    deleteGoodsImg () {
-      this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
     }
+    // 删除图片
+    // deleteGoodsImg () {
+    //   this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
+    // }
   },
   filters: {
     formatLeastConsume (useConsumeRestrict, leastConsume) {
@@ -438,161 +486,175 @@ export default {
 .collectGift {
   padding: 10px;
   .main {
-    padding: 10px;
+    padding: 15px;
+    margin-bottom: 50px;
     background: #fff;
-    .top {
-      background-color: #f2f2f2;
+    .collectGiftTips {
       height: 120px;
-      padding: 10px;
-      font-family: "微软雅黑";
-      font-size: 14px;
+      padding: 10px 15px;
       display: flex;
       justify-content: space-between;
-      .left {
+      background-color: #f5f5f5;
+      .leftTips {
+        font-size: 13px;
+        color: #333;
         .top1 {
-          font-size: 20px;
           margin-bottom: 10px;
+          font-size: 16px;
           font-weight: bold;
         }
         .top2 {
-          font-size: 14px;
           margin-bottom: 10px;
           font-weight: bold;
+          color: #000;
+        }
+        .top3 {
+          margin-top: 10px;
+          margin-bottom: 10px;
+          padding-left: 28px;
+        }
+        .switch {
+          color: rgb(153, 153, 153);
         }
       }
     }
 
-    .mid {
+    .collectGiftSetting {
+      width: 800px;
+      padding-top: 10px;
+      margin: 0 auto;
       display: flex;
-      .midleft {
-        background: rgb(219, 216, 216);
-        width: 500px;
-        height: 500px;
+      justify-content: center;
+      .carousel {
+        width: 232px;
       }
-      .midright {
+      .activitySetting {
         margin-top: 20px;
+        margin-left: 30px;
+        .defaultGift {
+          width: 70px;
+          height: 82px;
+          margin-top: 5px;
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
       }
     }
   }
 
   .footer {
-    padding: 10px 10px 10px 10px;
-    text-align: center;
-    background: #f8f8f8;
-    margin-top: 10px;
     position: fixed;
     bottom: 0;
-    z-index: 1;
-    width: 90%;
+    right: 30px;
+    left: 160px;
+    text-align: center;
+    background: #fff;
+    padding: 10px;
   }
 }
 .ImgWrap {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   border: 1px solid #ccc;
-  margin: 5px 5px;
+  margin: 5px 10px 5px 0;
   position: relative;
 }
-.deleteIcon {
-  width: 17px;
-  height: 17px;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  line-height: 17px;
-  text-align: center;
-  position: relative;
-  top: -41px;
-  right: -95px;
-  cursor: pointer;
-  opacity: 0.8;
+.inputTip {
+  color: #999;
+  margin-left: 5px;
 }
-.ImgWrap .moveIcon {
-  width: 17px;
-  height: 17px;
-  display: none;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  line-height: 17px;
-  text-align: center;
-  position: absolute;
-  bottom: 0px;
-  cursor: pointer;
-  opacity: 0.8;
-}
-.ImgWrap:hover .moveIcon {
-  display: block;
-}
-.middleContainer {
-  display: flex;
-  .deleteIcon {
-    position: relative;
-    width: 17px !important;
-    height: 17px;
-    line-height: 17px;
-    top: -118px;
-    left: 45px;
-    cursor: pointer;
-    opacity: 0.8;
-    color: #fff;
-    background: #ccc;
-    border: 1px solid #ccc;
-    border-radius: 50%;
-    text-align: center;
+/deep/.collectReward {
+  .el-checkbox {
+    margin-right: 10px;
   }
 }
-.addInfo {
-  display: inline-block;
-  position: relative;
-  width: 100px;
-  height: 101px;
-  margin-bottom: 10px;
-  background: #fff;
-  border: 1px solid #e4e4e4;
-  cursor: pointer;
-  text-align: center;
-  img {
-    margin-top: 10px;
-  }
-  p {
-    line-height: normal;
-    margin-top: -30px;
-    color: #999;
-  }
-  .couponImgWrapper {
-    width: 100%;
-    height: 100%;
-    border: 1px solid #fbb;
-    border-radius: 10px;
-    .coupon_list_top {
-      margin-top: 10px;
-      color: #f60;
-      :nth-of-type(2) {
-        font-size: 20px;
-        font-weight: bold;
+.couponContent {
+  width: 400px;
+  padding: 20px;
+  margin: 10px 0 0;
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  background: #f8f8f8;
+  .middleContainer {
+    display: inline-block;
+    .addInfo {
+      float: left;
+      width: 100px;
+      height: 101px;
+      margin-bottom: 20px;
+      background: #fff;
+      border: 1px solid #e4e4e4;
+      border-radius: 10px;
+      margin-right: 20px;
+      cursor: pointer;
+      text-align: center;
+      img {
+        margin-top: 10px;
+      }
+      p {
+        line-height: normal;
+        margin-top: -30px;
+        color: #999;
+      }
+      .deleteIcon {
+        position: relative;
+        width: 17px;
+        height: 17px;
+        top: -114px;
+        left: 48px;
+        cursor: pointer;
+        opacity: 0.8;
+        color: #fff;
+        background: #ccc;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        text-align: center;
+      }
+      .couponImgWrapper {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #fbb;
+        border-radius: 10px;
+        .coupon_list_top {
+          margin-top: 10px;
+          color: #f60;
+          span {
+            font-weight: bold;
+          }
+          :nth-of-type(2) {
+            font-size: 20px;
+            font-weight: bold;
+          }
+        }
+        .coupon_center_limit {
+          height: 20px;
+          color: #f60;
+          font-size: 12px !important;
+        }
+        .coupon_center_number {
+          height: 20px;
+          color: #fbb;
+        }
+        .coupon_list_bottom {
+          height: 24px;
+          line-height: 30px;
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
+          color: #fff;
+          background: #f66;
+          background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
+          background-repeat: repeat-x;
+        }
       }
     }
-    .coupon_center_limit {
-      height: 20px;
-      color: #f60;
-      font-size: 12px !important;
-    }
-    .coupon_center_number {
-      height: 20px;
-      color: #fbb;
-    }
-    .coupon_list_bottom {
-      height: 24px;
-      line-height: 30px;
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
-      color: #fff;
-      background: #f66;
-      background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
-      background-repeat: repeat-x;
-    }
+  }
+  .textTips {
+    color: #bbb;
+    margin-top: -10px;
+    font-size: 12px;
+    line-height: 24px;
   }
 }
 </style>
