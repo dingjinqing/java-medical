@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods;
 
 import com.google.common.base.Functions;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.sort.*;
@@ -9,6 +10,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.SortGroupByParentParam;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.image.ImageService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
@@ -32,6 +34,9 @@ public class GoodsSortService extends ShopBaseService {
 
     @Autowired
     protected ImageService imageService;
+
+    @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
 
     /**
      * 分类列表
@@ -180,7 +185,9 @@ public class GoodsSortService extends ShopBaseService {
                 }
                 db().update(SORT).set(SORT.HAS_CHILD,GoodsConstant.HAS_CHILD).where(SORT.SORT_ID.eq(param.getParentId())).execute();
             }
+            esDataUpdateMqService.updateEsGoodsIndexBySortId(sortRecord.getSortId(),getShopId());
         });
+
     }
 
     /**
@@ -256,6 +263,7 @@ public class GoodsSortService extends ShopBaseService {
                         .where(SORT.SORT_ID.eq(sortRecord.getParentId())).execute();
                 }
             }
+            esDataUpdateMqService.updateEsGoodsIndexBySortId(sortId,getShopId());
         });
     }
 
@@ -543,5 +551,13 @@ public class GoodsSortService extends ShopBaseService {
             from(SORT).
             where(condition).
             fetchInto(GoodsSortCacheInfo.class);
+    }
+
+
+    public List<Integer> getChildSortIdsBySortId(Integer sortId){
+        return db().select(SORT.SORT_ID).
+            from(SORT).
+            where(SORT.PARENT_ID.eq(sortId)).
+            fetch(SORT.SORT_ID);
     }
 }

@@ -2,12 +2,16 @@ package com.vpu.mp.service.shop.goods.es;
 
 
 import com.vpu.mp.config.mq.RabbitConfig;
+import com.vpu.mp.db.shop.tables.GoodsBrand;
 import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.jedis.data.label.MqEsGoodsLabel;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.es.EsGoodsMqParam;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.GoodsSortService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +26,15 @@ import java.util.List;
  *
 */
 @Service
-public class EsDataUpdateMqService extends BaseShopConfigService {
+public class EsDataUpdateMqService extends ShopBaseService {
 
     @Autowired
     private RabbitmqSendService rabbitmqSendService;
+
+    @Autowired
+    private GoodsService goodsService;
+    @Autowired
+    private GoodsSortService goodsSortService;
 
 
 
@@ -43,6 +52,32 @@ public class EsDataUpdateMqService extends BaseShopConfigService {
         rabbitmqSendService.sendMessage(RabbitConfig.EXCHANGE_ES,RabbitConfig.BINDING_ES_GOODS_KEY,
             Util.toJson(param),param.getClass().getName());
 
+    }
+    /**
+     *  update EsGoods data by brand id
+     * @param brandId goods brand id
+     * @param shopId shop id
+     */
+    public void updateEsGoodsIndexByBrandId(Integer brandId,Integer shopId){
+        List<Integer> goodsIds = goodsService.getGoodsIdByBrandId(brandId);
+        if( goodsIds.isEmpty() ){
+            return ;
+        }
+        addEsGoodsIndex(goodsIds,shopId,DBOperating.UPDATE);
+    }
+    /**
+     *  update EsGoods data by sortId id
+     * @param sortId goods sortId id
+     * @param shopId shop id
+     */
+    public void updateEsGoodsIndexBySortId(Integer sortId,Integer shopId){
+        List<Integer> sortIds = goodsSortService.getChildSortIdsBySortId(sortId);
+        sortIds.add(sortId);
+        List<Integer> goodsIds = goodsService.getGoodsIdBySortId(sortIds);
+        if( goodsIds.isEmpty() ){
+            return ;
+        }
+        addEsGoodsIndex(goodsIds,shopId,DBOperating.UPDATE);
     }
     /**
      * update {@link EsGoodsLabel} data by labelId/goodsId

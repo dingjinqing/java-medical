@@ -1,16 +1,20 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.EsManager;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.support.WriteRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -20,7 +24,7 @@ import java.util.stream.Collectors;
 */
 @Slf4j
 @Service
-public class EsGoodsCreateService extends BaseShopConfigService {
+public class EsGoodsCreateService extends ShopBaseService {
 
     @Autowired
     private EsManager esManager;
@@ -28,29 +32,30 @@ public class EsGoodsCreateService extends BaseShopConfigService {
     private EsAssemblyDataService esAssemblyDataService;
 
     /**
-     * 批量更新es数据（新增/修改调用）
-     * @param goodsIds
-     * @param shopId
+     * 批量更新es数据（修改调用）
+     * @param goodsIds goodsId List
+     * @param shopId shop id
      */
-    public void batchCreateEsGoodsIndex( List<Integer> goodsIds,Integer shopId){
+    public void batchUpdateEsGoodsIndex( List<Integer> goodsIds,Integer shopId){
         List<EsGoods> esGoodsList = esAssemblyDataService.assemblyEsGoods(goodsIds, shopId);
         deleteEsGoods(goodsIds,shopId);
-        batchCommitEsGoodsIndex(esGoodsList);
+        batchCommitEsGoodsIndex(getIndexRequest(esGoodsList));
     }
 
     /**
-     * 单个更新es数据（新增/修改调用）
+     * 单个更新es数据（修改调用）
      * @param goodsId 商品id
      */
-    public void createEsGoodsIndex(Integer goodsId,Integer shopId){
+    public void updateEsGoodsIndex(Integer goodsId,Integer shopId){
+        List<EsGoods> esGoodsList = esAssemblyDataService.assemblyEsGoods(Collections.singletonList(goodsId), shopId);
         deleteEsGoods(goodsId,shopId);
-        batchCommitEsGoodsIndex(esAssemblyDataService.assemblyEsGoods(Collections.singletonList(goodsId), shopId));
+        batchCommitEsGoodsIndex(getIndexRequest(esGoodsList),WriteRequest.RefreshPolicy.IMMEDIATE);
     }
 
     /**
      * 单个删除es数据（删除调用）
-     * @param goodsId
-     * @param shopId
+     * @param goodsId goodsId
+     * @param shopId shop id
      */
     public void deleteEsGoods(Integer goodsId,Integer shopId){
         try {
@@ -61,8 +66,8 @@ public class EsGoodsCreateService extends BaseShopConfigService {
     }
     /**
      * 批量删除es数据（删除调用）
-     * @param goodsIds
-     * @param shopId
+     * @param goodsIds goodsId List
+     * @param shopId shop id
      */
     public void deleteEsGoods(List<Integer> goodsIds,Integer shopId){
         try {
@@ -72,23 +77,47 @@ public class EsGoodsCreateService extends BaseShopConfigService {
             e.printStackTrace();
         }
     }
-    private void commitEdGoodsIndex(EsGoods esGoods){
-        try{
-            esManager.createDocuments(esManager.assemblyRequest(EsGoodsConstant.GOODS_INDEX_NAME,esGoods));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    private void batchCommitEsGoodsIndex(List<EsGoods> list){
-        BulkRequest requests = new BulkRequest();
-        for( EsGoods goods: list ){
-            requests.add(esManager.assemblyRequest(EsGoodsConstant.GOODS_INDEX_NAME,goods));
-        }
+    /**
+     * 提交数据更新请求到es
+     * @param requests 更新请求集合
+     * @param policy 刷新策略
+     */
+    private void batchCommitEsGoodsIndex(List<IndexRequest> requests,WriteRequest.RefreshPolicy policy){
+        BulkRequest bulkRequest = new BulkRequest();
+        requests.forEach(bulkRequest::add);
+        bulkRequest.setRefreshPolicy(policy);
         try {
-            esManager.batchDocuments(requests);
+            esManager.batchDocuments(bulkRequest);
         } catch (IOException e) {
             log.error("批量建立索引失败");
         }
+    }
+
+    /**
+     * 提交数据更新请求到es（使用默认刷新策略）
+     * @param requests 更新请求集合
+     */
+    private void batchCommitEsGoodsIndex(List<IndexRequest> requests){
+        batchCommitEsGoodsIndex(requests,WriteRequest.RefreshPolicy.NONE);
+    }
+
+    /**
+     * 通过要更新的数据封装更新请求
+     * @param goods 要更新的数据
+     * @return 更新请求
+     */
+    private IndexRequest getIndexRequest(EsGoods goods){
+        return esManager.assemblyRequest(EsGoodsConstant.GOODS_INDEX_NAME,goods);
+    }
+    /**
+     * 通过要更新的数据封装更新请求
+     * @param goodsList 要更新的数据集合
+     * @return 更新请求
+     */
+    private List<IndexRequest> getIndexRequest(List<EsGoods> goodsList){
+        return goodsList.stream().
+            map(x->esManager.assemblyRequest(EsGoodsConstant.GOODS_INDEX_NAME,x)).
+            collect(Collectors.toList());
     }
 }
