@@ -73,6 +73,9 @@ public class WxAppUserCardVo extends UserCardParam {
 		if(!hasExpireTime() && isPermanent()) {
 			return false;
 		}
+		if(getExpireTime()==null) {
+			return false;
+		}
 		return getExpireTime().before(DateUtil.getLocalDateTime());
 		
 	}

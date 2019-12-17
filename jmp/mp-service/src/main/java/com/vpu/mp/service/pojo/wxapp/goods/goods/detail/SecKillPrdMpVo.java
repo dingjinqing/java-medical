@@ -18,6 +18,9 @@ public class SecKillPrdMpVo {
     /** 规格秒杀价 */
     private BigDecimal secKillPrice;
 
+    /** 规格原价，方便计算 */
+    private BigDecimal prdPrice;
+
     /** 规格秒杀库存 */
     private Integer stock;
 

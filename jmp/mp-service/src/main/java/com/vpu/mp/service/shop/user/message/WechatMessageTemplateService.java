@@ -86,15 +86,18 @@ public class WechatMessageTemplateService extends ShopBaseService {
     	Integer type = param.getType();
     	//type大于2000为小程序
         //String formId = getFormId(info.getUserId());
+    	logger().info("小程序和公众号发送其中一个");
         Boolean success = Boolean.TRUE;
         if( param.getMaTemplateData() != null && (type>2000)){
+        	logger().info("发小程序");
             success = sendMaMessage(param,info);
             if(!success){
 //                ServiceMessageRecord record =
             }
         }
 
-        if( !success && param.getMpTemplateData() != null && info.getIsSubscribe() ){
+		if ((param.getMpTemplateData() != null && type < 2000)|| !success && param.getMpTemplateData() != null) {
+			logger().info("发公众号");
             success = sendMpMessage(param,info);
         }
         if( success ){
@@ -180,16 +183,18 @@ public class WechatMessageTemplateService extends ShopBaseService {
     public List<WxUserInfo> getUserInfoList(List<Integer> userIdList,Integer type,Integer shopId) {
     	List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
     	if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE) ) {
-    		MpOfficialAccountUserRecord accountUserListByRecord =
-                accountUserService.getAccountUserListByRecid(userIdList.get(0));
-    		//通过shopId得到小程序信息
-    		MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
-    		WxUserInfo info=WxUserInfo.builder()
-                .mpAppId(accountUserListByRecord.getAppId())
-                .mpOpenId(accountUserListByRecord.getOpenid())
-                .maAppId(authShopByShopId.getAppId())
-                .build();
-    		resultList.add(info);
+    		for(Integer userId:userIdList) {
+    			MpOfficialAccountUserRecord accountUserListByRecord =
+    					accountUserService.getAccountUserListByRecid(userId);
+    			//通过shopId得到小程序信息
+    			MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
+    			WxUserInfo info=WxUserInfo.builder()
+    					.mpAppId(accountUserListByRecord.getAppId())
+    					.mpOpenId(accountUserListByRecord.getOpenid())
+    					.maAppId(authShopByShopId.getAppId())
+    					.build();    			
+    			resultList.add(info);
+    		}
     		return resultList;
     	}else if( type.equals(RabbitParamConstant.Type.GENERAL_TYPE)||type>2000 ){
             String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);

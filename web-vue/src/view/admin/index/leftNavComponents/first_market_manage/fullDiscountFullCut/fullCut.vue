@@ -99,9 +99,8 @@
               <el-tooltip
                 content="启用"
                 placement="top"
-                v-else
+                v-if="scope.row.currentState === 4"
               >
-                <!-- v-if="scope.row.currentState === 4" -->
                 <span
                   class="el-icon-circle-check"
                   @click="openHandle(scope.row)"
@@ -143,7 +142,7 @@
 </template>
 
 <script>
-import { fullCutTableDataSearchApi, updateFullCut } from '@/api/admin/marketManage/fullDiscountFullCut'
+import { fullCutTableDataSearchApi, updateFullCut, deleteActivity } from '@/api/admin/marketManage/fullDiscountFullCut'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination.vue'
 
@@ -199,19 +198,19 @@ export default {
         name: 'fullCutActivity'
       })
     },
-    editHandle (id) {
-      console.log(id, 'activity id')
+    editHandle (row) {
+      console.log(row.id, 'activity id')
       this.$router.push({
         name: 'fullCutActivity',
         query: {
-          id: id
+          id: row.id
         }
       })
     },
     openHandle (row) {
       let openParams = {
         'id': row.id,
-        'state': row.currentState
+        'status': 1
       }
       this.$confirm('确定要启用吗？', {
         confirmButtonText: '确认',
@@ -223,13 +222,15 @@ export default {
             this.$message.success({ message: '启用成功' })
             this.tableDataSearch()
           }
-        }).catch(err => console.log(err))
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消启用' })
       })
     },
     closeHandle (row) {
       let stopParams = {
         'id': row.id,
-        'state': row.currentState
+        'status': 0
       }
       this.$confirm('确定要停用吗？', {
         confirmButtonText: '确认',
@@ -241,11 +242,26 @@ export default {
             this.$message.success({ message: '停用成功' })
             this.tableDataSearch()
           }
-        }).catch(err => console.log(err))
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消停用' })
       })
     },
-    deleteHandle () {
-
+    deleteHandle (id) {
+      this.$confirm('确认要删除吗？', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteActivity({ id: id }).then(res => {
+          if (res.error === 0) {
+            this.$message.success({ message: '删除成功 ' })
+            this.tableDataSearch()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消删除' })
+      })
     }
   }
 

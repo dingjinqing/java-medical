@@ -97,6 +97,4 @@ public class WxAppAccountController extends WxAppBaseController {
 		shop().member.account.getUserAccountWithdraw(user.getUserId());
 		return success();
 	}
-	
-	
 }
