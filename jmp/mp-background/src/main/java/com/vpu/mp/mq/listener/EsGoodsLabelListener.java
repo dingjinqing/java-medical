@@ -5,6 +5,7 @@ import com.vpu.mp.config.mq.RabbitConfig;
 import com.vpu.mp.service.foundation.jedis.data.label.MqEsGoodsLabel;
 import com.vpu.mp.service.foundation.mq.handler.BaseRabbitHandler;
 import com.vpu.mp.service.saas.SaasApplication;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -21,6 +22,7 @@ import java.util.List;
  * @date 2019/11/21
  *
 */
+@Slf4j
 @Component
 @RabbitListener(queues = { RabbitConfig.QUEUE_ES_LABEL }, containerFactory = "simpleRabbitListenerContainerFactory")
 public class EsGoodsLabelListener implements BaseRabbitHandler {
@@ -32,6 +34,7 @@ public class EsGoodsLabelListener implements BaseRabbitHandler {
     @RabbitHandler
     public void success(@Payload MqEsGoodsLabel param, Message message, Channel channel) throws IOException {
         Integer shopId = param.getShopId();
+        log.info("\n【ES商品标签】开始处理来自{}店铺的数据",shopId);
         List<Integer> goodsIds = param.getGoodsIds();
         List<Integer> labelIds = param.getLabelIds();
         if( goodsIds != null && !goodsIds.isEmpty() ){

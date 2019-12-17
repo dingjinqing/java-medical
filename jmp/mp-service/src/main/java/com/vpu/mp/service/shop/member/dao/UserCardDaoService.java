@@ -207,7 +207,7 @@ public class UserCardDaoService extends ShopBaseService{
 
 	private SelectConditionStep<Record> selectValidCardCondition(Integer userId, Byte[] cardType) {
 		return selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
-							.and(USER_CARD.FLAG.eq(MCARD_DF_NO))
+							.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
 							.and(MEMBER_CARD.CARD_TYPE.in(cardType))
 							.and(
 									(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
@@ -307,6 +307,16 @@ public class UserCardDaoService extends ShopBaseService{
 				.fetchAnyInto(WxAppUserCardVo.class);
 	}
 	
+	/**
+	 * 获取会员卡详情
+	 */
+	public UserCardParam getUserCardInfo(Integer userId,Integer cardId) {
+		return wxUserCardSelectSql()
+				.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+				.where(USER_CARD.USER_ID.eq(userId))
+				.and(USER_CARD.CARD_ID.eq(cardId))
+				.fetchAnyInto(WxAppUserCardVo.class);
+	}
 
     public int getHasSend(Integer cardId){
 		return db().selectCount().from(USER_CARD).where(USER_CARD.CARD_ID.eq(cardId)).execute();
@@ -453,7 +463,7 @@ public class UserCardDaoService extends ShopBaseService{
      */
 	public OrderMemberVo getValidByCardNo(String cardNo){
         ValidUserCardBean validUserCardBean = selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
-            .and(USER_CARD.FLAG.eq(MCARD_DF_NO))
+            .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(
                 (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
                     .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
@@ -485,7 +495,7 @@ public class UserCardDaoService extends ShopBaseService{
      */
     public OrderMemberVo getOrderGradeCard(Integer userId){
         OrderMemberVo orderMemberVo = selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
-            .and(USER_CARD.FLAG.eq(MCARD_DF_NO))
+            .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
             .and(
                 (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
@@ -610,5 +620,27 @@ public class UserCardDaoService extends ShopBaseService{
 	public void updateIsDefault(Condition condition, Byte defaultCardSignal) {
 		db().update(USER_CARD).set(USER_CARD.IS_DEFAULT, defaultCardSignal).where(condition).execute();
 	}
-
+	/**
+	 * 获取查询user card有效的卡条件
+	 * @return
+	 */
+	public Condition getUserCardValidCondition() {
+		Condition condition = DSL.noCondition();
+		
+		// 卡使用中，未被废除
+		condition = condition.and(USER_CARD.FLAG.eq(UCARD_FG_USING));
+		
+		// 卡未过期，或卡本身是永久有效
+		condition = condition.and(
+				(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
+                .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER)));
+		
+		// 卡的使用时间，针对限次卡
+		condition = condition.and(
+				(MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
+                .or(MEMBER_CARD.USE_TIME.isNull())
+				);
+		return condition;
+	}
+	
 }

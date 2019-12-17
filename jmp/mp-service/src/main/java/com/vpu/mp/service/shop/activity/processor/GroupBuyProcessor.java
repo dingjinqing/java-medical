@@ -1,15 +1,17 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GroupBuyListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
@@ -27,10 +29,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.GROUP_ID_PREFIX;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_CHEAP_Y;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 
 /**
@@ -40,7 +44,7 @@ import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STAT
  */
 @Slf4j
 @Service
-public class GroupBuyProcessor implements Processor,ActivityGoodsListProcessor ,CreateOrderProcessor{
+public class GroupBuyProcessor extends ShopBaseService implements Processor,ActivityGoodsListProcessor ,CreateOrderProcessor{
 
     @Autowired
     GroupBuyProcessorDao groupBuyProcessorDao;
@@ -92,26 +96,24 @@ public class GroupBuyProcessor implements Processor,ActivityGoodsListProcessor ,
         Byte isGrouper =param.getGroupId()==null?IS_GROUPER_Y:IS_GROUPER_N;
         log.debug("拼团订单");
         if (isGrouper.equals(IS_GROUPER_Y)){
-            //生成groupId
-            String groupId = IncrSequenceUtil.generateOrderSn(GROUP_ID_PREFIX);
-            param.setGroupId(Integer.valueOf(groupId));
             param.setIsGrouper(IS_GROUPER_Y);
         }else {
             param.setIsGrouper(IS_GROUPER_N);
         }
-        log.debug("团长-IsGrouper:{}-groupId:{}",param.getIsGrouper(),param.getGroupId());
+        log.info("团长-IsGrouper:{}-groupId:{}",param.getIsGrouper(),param.getGroupId());
         //校验活动
         ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(param.getWxUserInfo().getUserId(), param.getDate(), param.getActivityId(), param.getGroupId(), isGrouper);
         if (!resultMessage.getFlag()) {
             throw new MpException(resultMessage.getJsonResultCode(), null, resultMessage.getMessages().toArray(new String[0]));
         }
+        GroupBuyDefineRecord groupBuyRecord = groupBuyProcessorDao.getGroupBuyRecord(param.getActivityId());
         for (OrderBeforeParam.Goods goods :param.getGoods()){
             //拼团规格库存校验
             GroupBuyProductDefineRecord groupBuyProduct = groupBuyProcessorDao.getGroupBuyProduct(param.getActivityId(), goods.getProductId());
             if (goods.getGoodsNumber()>groupBuyProduct.getStock()){
                 throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
             }
-            if (isGrouper.equals(IS_GROUPER_Y)){
+            if (isGrouper.equals(IS_GROUPER_Y)&&groupBuyRecord.getIsGrouperCheap().equals(IS_GROUPER_CHEAP_Y)){
                 goods.setProductPrice(groupBuyProduct.getGrouperPrice());
             }else {
                 goods.setProductPrice(groupBuyProduct.getGroupPrice());
@@ -129,25 +131,36 @@ public class GroupBuyProcessor implements Processor,ActivityGoodsListProcessor ,
     @Override
     public void processSaveOrderInfo(CreateParam param, OrderInfoRecord order) throws MpException {
         for (OrderBeforeParam.Goods goods :param.getGoods()){
-            GroupBuyListRecord groupBuyProductList = new GroupBuyListRecord();
+            GroupBuyListRecord groupBuyProductList = db().newRecord(GROUP_BUY_LIST);
             groupBuyProductList.setActivityId(param.getActivityId());
             groupBuyProductList.setGoodsId(goods.getGoodsId());
-            groupBuyProductList.setGroupId(param.getGroupId());
+            groupBuyProductList.setGroupId(param.getGroupId()==null?0:param.getGroupId());
             groupBuyProductList.setOrderSn(order.getOrderSn());
             groupBuyProductList.setUserId(param.getWxUserInfo().getUserId());
             groupBuyProductList.setIsGrouper(param.getIsGrouper());
-            groupBuyProductList.setStatus(STATUS_WAIT_PAY);
             groupBuyProductList.setStartTime(param.getDate());
-            int save = groupBuyProcessorDao.save(groupBuyProductList);
+            if (order.getOrderStatus()>= OrderConstant.ORDER_WAIT_DELIVERY){
+                groupBuyProductList.setStatus(STATUS_WAIT_PAY);
+            }else {
+                groupBuyProductList.setStatus(STATUS_ONGOING);
+            }
+            int save = groupBuyProductList.insert();
             if (save!=1){
                 throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
             }
+            groupBuyProductList.refresh();
+            log.debug("开团成功,团长useri:d{},团groupId:{}",groupBuyProductList.getUserId(),groupBuyProductList.getId());
+            if (groupBuyProductList.getIsGrouper().equals(IS_GROUPER_Y)){
+                groupBuyProductList.setGroupId(groupBuyProductList.getId());
+                groupBuyProductList.update();
+            }
+
         }
     }
 
     /**
      * 改库存
-     * @param param CreateParam
+     * @param param CreateParams
      * @throws MpException
      */
     @Override
