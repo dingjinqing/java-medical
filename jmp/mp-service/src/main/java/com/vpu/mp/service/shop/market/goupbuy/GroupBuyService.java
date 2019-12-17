@@ -140,6 +140,17 @@ public class GroupBuyService extends ShopBaseService {
     }
 
     /**
+     * 根据id获取拼团规格商品详情
+     * @param activityId 活动id
+     * @param productId 规格id
+     * @return {@link GroupBuyProductDefineRecord}
+     */
+    public GroupBuyProductDefineRecord getGroupBuyProduct(Integer activityId, Integer productId){
+        return db().selectFrom(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId))
+                .and(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID.eq(productId)).fetchOne();
+    }
+
+    /**
      * 删除
      *
      * @param id id

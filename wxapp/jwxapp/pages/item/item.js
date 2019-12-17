@@ -137,7 +137,8 @@ global.wxPage({
       limitBuyNum,
       limitMaxNum,
       deliverPlace,
-      deliverPrice
+      deliverPrice,
+      isCollected
     } = goodsInfo;
     let info = {
       goodsId,
@@ -152,7 +153,8 @@ global.wxPage({
       limitBuyNum,
       limitMaxNum,
       deliverPlace,
-      deliverPrice
+      deliverPrice,
+      isCollected
     };
     this.setData({
       goodsInfo: info

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
@@ -37,5 +38,50 @@ public class GroupBuyProcessorDao extends GroupBuyService {
             .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
             .orderBy(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE.asc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_DEFINE.GOODS_ID)));
+    }
+
+    /**
+     * 保存
+     * @param groupBuyProductList
+     * @return
+     */
+    public int save(GroupBuyListRecord groupBuyProductList) {
+       return db().executeInsert(groupBuyProductList);
+    }
+
+    /**
+     *  修改拼团库存和销量
+     * @param activityId
+     * @param productId
+     * @param goodsNumber 商品数量
+     * @return
+     */
+    public boolean updateGroupBuyStock(Integer activityId, Integer productId, Integer goodsNumber) {
+        //规格库存`
+        int prdFlag = db().update(GROUP_BUY_PRODUCT_DEFINE)
+                .set(GROUP_BUY_PRODUCT_DEFINE.STOCK, GROUP_BUY_PRODUCT_DEFINE.STOCK.minus(goodsNumber))
+                .set(GROUP_BUY_PRODUCT_DEFINE.SALE_NUM, GROUP_BUY_PRODUCT_DEFINE.SALE_NUM.add(goodsNumber))
+                .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId))
+                .and(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID.eq(productId))
+                .and(GROUP_BUY_PRODUCT_DEFINE.STOCK.ge(goodsNumber.shortValue())).execute();
+        if (prdFlag==1){
+            //总库存
+            int tolFlag = db().update(GROUP_BUY_DEFINE)
+                    .set(GROUP_BUY_DEFINE.STOCK, GROUP_BUY_DEFINE.STOCK.minus(goodsNumber))
+                    .set(GROUP_BUY_DEFINE.SALE_NUM, GROUP_BUY_DEFINE.SALE_NUM.add(goodsNumber))
+                    .where(GROUP_BUY_DEFINE.ID.eq(activityId))
+                    .and(GROUP_BUY_PRODUCT_DEFINE.STOCK.ge(goodsNumber.shortValue())).execute();
+            if (tolFlag==1){
+                return true;
+            }else {
+                db().update(GROUP_BUY_PRODUCT_DEFINE)
+                        .set(GROUP_BUY_PRODUCT_DEFINE.STOCK, GROUP_BUY_PRODUCT_DEFINE.STOCK.add(goodsNumber))
+                        .set(GROUP_BUY_PRODUCT_DEFINE.SALE_NUM, GROUP_BUY_PRODUCT_DEFINE.SALE_NUM.minus(goodsNumber))
+                        .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId))
+                        .and(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID.eq(productId))
+                        .and(GROUP_BUY_PRODUCT_DEFINE.STOCK.ge(goodsNumber.shortValue())).execute();
+            }
+        }
+        return false;
     }
 }
