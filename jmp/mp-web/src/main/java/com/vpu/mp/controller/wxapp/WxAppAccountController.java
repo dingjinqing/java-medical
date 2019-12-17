@@ -39,6 +39,7 @@ public class WxAppAccountController extends WxAppBaseController {
 		logger().info("更新用户昵称，头像");
 		Integer shopId = wxAppAuth.shopId();
 		ShopApplication shopApp = saas.getShopApp(shopId);
+		param.setUserId(wxAppAuth.user().getUserId());
 		boolean updateUser = shopApp.user.updateUser(param, WxAppAuth.TOKEN_PREFIX);
 		if(updateUser) {
 			return success();

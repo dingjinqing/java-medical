@@ -790,8 +790,13 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param) throws UserCardNullException {
-
-		WxAppUserCardVo card = (WxAppUserCardVo) userCardDao.getUserCardInfo(param.getCardNo());
+		WxAppUserCardVo card = null;
+		if(param.getCardId() != null) {
+			card = (WxAppUserCardVo) userCardDao.getUserCardInfo(param.getUserId(),param.getCardId());
+		}else {
+			card = (WxAppUserCardVo) userCardDao.getUserCardInfo(param.getCardNo());
+		}
+		
 		if (card == null) {
 			throw new UserCardNullException();
 		}
@@ -1375,7 +1380,7 @@ public class UserCardService extends ShopBaseService {
 			for (CouponView coupon : couponList) {
 				// 国际化 UserCardCoupon
 				UserCardCoupon uc = new UserCardCoupon();
-				if (NumberUtils.BYTE_ONE.equals(coupon.getRecommendType())) {
+				if (NumberUtils.BYTE_ZERO.equals(coupon.getSuitGoods())) {
 					uc.setCouponCondition(Util.translateMessage(lang, "user.card.coupon.condition.all", "member"));
 				} else {
 					uc.setCouponCondition(Util.translateMessage(lang, "user.card.coupon.condition.part", "member"));
@@ -1456,7 +1461,15 @@ public class UserCardService extends ShopBaseService {
 							throw new LimitCardAvailSendNoneException(JsonResultCode.CODE_LIMIT_CARD_AVAIL_SEND_ALL);
 						}
 					}
-					List<String> cardNoList = addUserCard(param.getUserId(), param.getCardId());
+					
+					List<String> cardNoList = null;
+					// 普通卡只能领一张
+					if(CardUtil.isNormalCard(mCard.getCardType())) {
+						
+						cardNoList = addUserCard(param.getUserId(), param.getCardId());
+					}else {
+						cardNoList = addUserCard(param.getUserId(), param.getCardId());
+					}
 					if (cardNoList == null || cardNoList.size() < 1) {
 						logger().info("领取失败");
 						throw new CardReceiveFailException();
@@ -1596,6 +1609,17 @@ public class UserCardService extends ShopBaseService {
 			condition = condition.and(USER_CARD.CARD_NO.eq(param.getCardNo()));
 			userCardDao.updateIsDefault(condition,NumberUtils.BYTE_ONE);
 		});
+	}
+	
+	/**
+	 * 检测用户是否拥有此卡，此卡未被废除
+	 * @param userId 
+	 * @param cardId
+	 * @return true 用户持有持卡 false: 用户没有此卡
+	 */
+	public boolean checkUserHasAvailCard(Integer userId,Integer cardId){
+		
+		return false;
 	}
 	
 }
