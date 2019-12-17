@@ -79,7 +79,7 @@ public class GoodsDetailBoConverter implements EsGoodsConvertInterface<GoodsDeta
     private void assemblyGrdPrice(EsGoods esGoods,GoodsDetailMpBo bo){
         List<GoodsDetailMpBo.GradePrd> gradePrdList = Lists.newArrayList();
         String vipGeneral = "v";
-        for (int i = 0; i < 9; i++) {
+        for (int i = 1; i < 10; i++) {
             try {
                 String vipLevel = vipGeneral + i;
                 Field f = EsGoods.class.getDeclaredField(vipLevel);

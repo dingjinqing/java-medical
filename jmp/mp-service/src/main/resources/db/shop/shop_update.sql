@@ -1374,6 +1374,6 @@ create table `b2c_distribution_tag`
     unique index `date_type_tag` (`ref_date`, `type`, `tag_id`) using btree
 );
 
---  拼团记录 团id自增
-ALTER TABLE `b2c_group_buy_list`
-MODIFY COLUMN `group_id` int(11) NOT NULL DEFAULT 0 AUTO_INCREMENT COMMENT '拼团id' AFTER `goods_id`;
+
+-- 黄壮壮 删除字段
+ALTER TABLE `b2c_mrking_voucher` DROP COLUMN `recommend_type`;

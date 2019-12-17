@@ -1,13 +1,16 @@
 <template>
   <div class="total-content">
     <div class="container">
-     搜索统计
+      <historyStatistics class="distance" />
+      <hotWordsStatistics class="distance" />
     </div>
   </div>
 </template>
 <script>
-
+import historyStatistics from './historyStatistics'
+import hotWordsStatistics from './hotWordsStatistics'
 export default {
+  components: {historyStatistics, hotWordsStatistics},
   data () {
     return {}
   }
