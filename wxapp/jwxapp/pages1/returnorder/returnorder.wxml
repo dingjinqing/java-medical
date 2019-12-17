@@ -5,8 +5,8 @@
   <block>
     <view class="order-header">
       <text class="activity-type-mark" wx:if="{{orderInfo.activityType != ''}}">拼团</text>
-      <text>订单编号：P201912120948377058</text>
-      <button class="copy-button">复制</button>
+      <text>订单编号：{{orderSn}}</text>
+      <button class="copy-button" bindtap="copyOrder">复制</button>
     </view>
     <view class="order-info" style="padding-bottom:0;">
       <view>
@@ -14,25 +14,27 @@
         售后类型
       </view>
       <view class="order-info-type">
-        <text class="order-type" style="{{ orderType == 0 ? 'border: 1px solid #f66;color: #f66;background: url('+type_active+') right bottom/30rpx no-repeat' : '' }}">退货/退款</text>
-        <text class="order-type" style="{{ orderType == 1 ? 'border: 1px solid #f66;color: #f66;background: url('+type_active+') right bottom/30rpx no-repeat;' : '' }}">仅退款</text>
-        <text class="order-type" style="{{ orderType == 2 ? 'border: 1px solid #f66;color: #f66;background: url('+type_active+') right bottom/30rpx no-repeat;' : '' }}">换货</text>
+        <block wx:for="{{orderTypes}}" wx:key="{{index}}">
+          <text class="order-type" bindtap="toggleType" data-id="{{item.id}}" style="{{ orderType == item.id ? 'border: 1px solid #f66;color: #f66;background: url('+type_active+') right bottom/30rpx no-repeat' : '' }}">{{item.name}}</text>
+        </block>
       </view>
-      <view class="order-goods-info">
+      <view class="order-goods-info" wx:for="{{goodsInfo}}" wx:key="{{index}}" bindtap="toggleGoodsSelect" data-index="{{index}}" data-sku="{{item.productId}}">
         <view class="order-goods-check-wrap">
-          <text class="iconfont iconduoxuanbiankuang order-goods-check"></text>
-          <text class="iconfont iconduoxuan order-goods-check"></text>
+          <text wx:if="{{!item.checked}}" class="iconfont iconduoxuanbiankuang order-goods-check"></text>
+          <text wx:else class="iconfont iconduoxuan order-goods-check"></text>
         </view>
         <view class="order-goods-info-details">
           <view class="order-goods-img">
-            <image class="goods-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg" mode="widthFix"></image>
+            <image class="goods-img" src="{{imageUrl + item.goodsImg}}" mode="widthFix"></image>
           </view>
-          <view>
-            <view class="goods-name">强盗</view>
-            <view class="goods-spec">颜色：乃亮绿</view>
+          <view class="goods-wrap">
+            <view class="goods-name">{{item.goodsName}}</view>
+            <view class="goods-spec" style="opacity:{{item.goodsAttr?1:0}}">
+              {{item.goodsAttr}}
+            </view>
             <view class="goods-price">
-              <text>价格：￥333.00</text>
-              <text>可退货商品数量：1</text>
+              <text>价格：￥{{item.goodsPrice}}</text>
+              <text>可退货商品数量：{{item.returnable}}</text>
             </view>
           </view>
         </view>
@@ -42,20 +44,28 @@
       <view class="order-flex">
         <text><text class="order-required">*</text>申请原因：</text>
         <view class="order-flex">
-          <text>协商一致退款</text>
-          <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
+          <picker mode="selector" bindchange="bindPickerChange" wx:if='{{orderType != 4}}' value="{{reasoneIndex}}" range="{{reasone}}">
+            <view>
+              <text>{{reasone[reasoneIndex]}}</text>
+              <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
+            </view>
+          </picker>
+          <picker mode="selector" bindchange="bindPickerChange" wx:if='{{orderType == 4}}' value="{{reasoneIndex}}" range="{{reasone_huan}}">
+            <text>{{reasone_huan[reasoneIndex]}}</text>
+            <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
+          </picker>
         </view>
       </view>
     </view>
     <view class="order-info">
       <text><text class="order-place">*</text>退款金额：</text>
-      <text>￥0.00</text>
+      <text><text style="color:{{comColor}}">￥{{ returnMoney }}</text></text>
     </view>
     <view class="order-info">
       <view>
         <text class="order-place">*</text>
         <text>申请说明：</text>
-        <text class="order-remark">可不填</text>
+        <text class="order-remark">（可不填）</text>
       </view>
       <view class="order-textarea">
         <textarea placeholder="请输入0-200字的申请说明"></textarea>
@@ -70,12 +80,12 @@
   </block>
   <!-- 申请详情 -->
   <block>
-    <view class="order-header-red">
+    <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
       <view class="order-header-h">等待商家处理售后申请</view>
       <view class="order-header-p">如果商家同意：退款将在3日内返还您的支付账户</view>
       <view class="order-header-p">如果商家拒绝：您可以重新创建售后申请</view>
     </view>
-    <view class="order-header-red">
+    <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
       <view class="order-header-h">商家同意后申请</view>
       <view class="order-header-p">审核售后申请时间：2019-12-16 10:20:12</view>
       <view class="order-header-p">注：请提交物流信息，商家将尽快处理您的订单</view>
@@ -106,89 +116,118 @@
     </view>
     <view class="order-block">
       <view class="order-block-title">售后详情</view>
-      <view class="order-block-content">
-        <image src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg"></image>
-        <view>
+      <view class="order-block-goods">
+        <image class="order-block-goods-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg"></image>
+        <view class="order-block-goods-info">
           <view>拼团测试商品</view>
-          <view>
+          <view class="order-block-goods-price">
             <text>￥29.00</text>
             <text>X1</text>
           </view>
         </view>
       </view>
-      <view>
-        <view>
-          售后类型：
+      <view class="order-block-goods-detail">
+        <view class="order-block-detail-item">
+          <text class="details-item-title">售后类型：</text>
           <text>退款退货</text>
         </view>
-        <view>
-          退款金额：
+        <view class="order-block-detail-item">
+          <text class="details-item-title">退款金额：</text>
           <text>24.00元</text>
         </view>
-        <view>
-          运费金额：
+        <view class="order-block-detail-item">
+          <text class="details-item-title">运费金额：</text>
           <text>0.00元</text>
         </view>
-        <view>
-          申请原因：
+        <view class="order-block-detail-item">
+          <text class="details-item-title">申请原因：</text>
           <text>多拍/不想要</text>
         </view>
-        <view>
-          申请凭证：
-          <block>
-            <image src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg"></image>
-          </block>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">申请凭证：</text>
+          <view class="details-item-content">
+            <block>
+              <image class="details-item-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg"></image>
+            </block>
+          </view>
         </view>
       </view>
     </view>
-    <view class="order-info">
-      <view>订单信息</view>
-      <view>
-        <view>
-          <text>拼团</text>
-          订单编号：P201912131128549803
+    <view class="order-block">
+      <view class="order-block-title">订单信息</view>
+      <view class="order-block-content">
+        <view class="order-block-detail-item">
+          <text class="activity-type-mark fl">拼团</text>
+          <text class="details-item-title">订单编号：</text>
+          <text>P201912131128549803</text>
         </view>
-        <view>售后编号：R201912161020122397</view>
-        <view>申请日期：2019-12-16 10:20:12</view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">售后编号：</text>
+          <text class="details-item-content">R201912161020122397</text>
+        </view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">申请日期：</text>
+          <text class="details-item-content">2019-12-16 10:20:12</text>
+        </view>
       </view>
     </view>
-    <view>
-      <button>联系客服</button>
+    <view class="customer-wrap">
+      <button class="customer-btn" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>联系客服</button>
     </view>
   </block>
   <!-- 填写退货物流 -->
   <block>
-    <view class="order-info">
-      <view>退货地址：北京</view>
-      <view>邮政编码：1231</view>
-      <view>收件人：蒋得新</view>
-      <view>联系电话：13200090120</view>
+    <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <view class="order-header-h">
+        <text class="order-place2">*</text>
+        退货给商家
+      </view>
     </view>
     <view class="order-info">
-      <label>物流公司：</label>
-      <text>
+      <view class="order-block-detail-item">
+        <text class="order-place2">*</text>
+        退货地址：北京
+      </view>
+      <view class="order-block-detail-item">
+        <text class="order-place2">*</text>
+        邮政编码：1231
+      </view>
+      <view class="order-block-detail-item">
+        <text class="order-place2">*</text>
+        收件人：蒋得新
+      </view>
+      <view>
+        <text class="order-place2">*</text>
+        联系电话：13200090120
+      </view>
+    </view>
+    <view class="order-info order-flex">
+      <text><text class="order-required">*</text>物流公司：</text>
+      <view>
         <text>申通快递</text>
-        <image src="" mode="widthFix"></image>
-      </text>
+        <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
+      </view>
+    </view>
+    <view class="order-info order-flex">
+      <text><text class="order-required">*</text>运单号码：</text>
+      <input class="order-flex-1" placeholder="请填写运单号码"></input>
+    </view>
+    <view class="order-info order-flex">
+      <text><text class="order-required">*</text>联系电话：</text>
+      <input class="order-flex-1" placeholder="请填写电话"></input>
     </view>
     <view class="order-info">
-      <text>运单号码：</text>
-      <input placeholder="请填写运单号码"></input>
-    </view>
-    <view class="order-info">
-      <text>联系电话：</text>
-      <input placeholder="请填写电话"></input>
-    </view>
-    <view class="order-info">
-      <text>上传凭证：</text>
-      <view class="order-upload"></view>
+      <text class="order-left"><text class="order-place2">*</text>上传凭证：</text>
+      <view class="order-upload order-left">
+        <image class="order-upload-addicon" src="http://mpdevimg2.weipubao.cn//image/wxapp/return_img_icom.png"></image>
+      </view>
     </view>
   </block>
   <view class="order-footer">
-    <form report-submit='true' bindsubmit='submit' class='ipx_en' wx:if='{{ (return_type == 4 && bottom.subscribe_message) || !bottom.subscribe_message }}'>
+    <form report-submit='true' bindsubmit='submit' class='ipx_en' wx:if='{{ (orderType == 4 && bottom.subscribe_message) || !bottom.subscribe_message }}'>
       <button form-type='submit' class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>提交申请</button>
     </form>
-    <form bindtap="toSubscribeMessage" class='ipx_en' wx:if='{{return_type != 4 && bottom.subscribe_message }}'>
+    <form bindtap="toSubscribeMessage" class='ipx_en' wx:if='{{orderType != 4 && bottom.subscribe_message }}'>
       <button class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>提交申请</button>
     </form>
   </view>
