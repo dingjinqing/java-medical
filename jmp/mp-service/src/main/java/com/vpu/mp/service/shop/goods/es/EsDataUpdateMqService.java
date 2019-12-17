@@ -91,7 +91,7 @@ public class EsDataUpdateMqService extends ShopBaseService {
         if(goodsIds != null && !goodsIds.isEmpty()){
             param.setGoodsIds(goodsIds);
         }
-        if( goodsIds != null && !goodsIds.isEmpty() ){
+        if( labelIds != null && !labelIds.isEmpty() ){
             param.setLabelIds(labelIds);
         }
         param.setOperating(operating);
