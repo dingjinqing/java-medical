@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.GoodsSummary.GOODS_SUMMARY;
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.BIGDECIMAL_ZERO;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_THREE;
 import static org.apache.commons.lang3.math.NumberUtils.*;
@@ -749,7 +750,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the big decimal
      */
     public BigDecimal orderUserMoney(Timestamp startTime, Timestamp endTime) {
-        // todo 商品订单成交金额+会员卡订单成交金额
+        // 商品订单成交金额+会员卡订单成交金额
         return goodsOrderTurnover(startTime, endTime).add(cardOrderTurnover(startTime, endTime)).setScale(2, RoundingMode.HALF_UP);
     }
 
@@ -766,26 +767,25 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the big decimal
      */
     public BigDecimal goodsOrderTurnover(Timestamp startTime, Timestamp endTime) {
-        return db().select(ORDER_I.MONEY_PAID.add(ORDER_I.USE_ACCOUNT).add(ORDER_I.MEMBER_CARD_BALANCE))
+        return db().select(DSL.sum(ORDER_I.MONEY_PAID.add(ORDER_I.USE_ACCOUNT).add(ORDER_I.MEMBER_CARD_BALANCE)))
             .from(ORDER_I).where(STATUS_CONDITION)
             .and(ORDER_SN_CONDITION)
             .and(ORDER_I.CREATE_TIME.ge(startTime)).and(ORDER_I.CREATE_TIME.lessThan(endTime))
-            .fetchOneInto(BigDecimal.class);
+            .fetchOptionalInto(BigDecimal.class).orElse(BIGDECIMAL_ZERO);
     }
 
     /**
-     * Card order turnover big decimal.会员卡订单（虚拟订单）成交金额
+     * Card order turnover big decimal.（虚拟订单）成交金额
      *
      * @param startTime the start time
      * @param endTime   the end time
      * @return the big decimal
      */
     public BigDecimal cardOrderTurnover(Timestamp startTime, Timestamp endTime) {
-/*        return db().select(CARD_ORDER.MONEY_PAID.add(CARD_ORDER.USE_ACCOUNT).add(CARD_ORDER.MEMBER_CARD_BALANCE))
-            .from(CARD_ORDER).where(CARD_ORDER.ORDER_STATUS.eq(BYTE_ONE))
-            .and(CARD_ORDER.CREATE_TIME.ge(startTime)).and(CARD_ORDER.CREATE_TIME.lessThan(endTime))
-            .fetchOneInto(BigDecimal.class);*/
-        return null;
+        return db().select(VIRTUAL_ORDER.MONEY_PAID.add(VIRTUAL_ORDER.USE_ACCOUNT).add(VIRTUAL_ORDER.MEMBER_CARD_BALANCE))
+            .from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.ORDER_STATUS.eq(BYTE_ONE))
+            .and(VIRTUAL_ORDER.CREATE_TIME.ge(startTime)).and(VIRTUAL_ORDER.CREATE_TIME.lessThan(endTime))
+            .fetchOptionalInto(BigDecimal.class).orElse(BIGDECIMAL_ZERO);
     }
 
     /**
