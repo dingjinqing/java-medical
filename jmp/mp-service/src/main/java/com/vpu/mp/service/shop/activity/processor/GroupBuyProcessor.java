@@ -7,7 +7,6 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.GROUP_ID_PREFIX;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
@@ -92,9 +90,6 @@ public class GroupBuyProcessor implements Processor,ActivityGoodsListProcessor ,
         Byte isGrouper =param.getGroupId()==null?IS_GROUPER_Y:IS_GROUPER_N;
         log.debug("拼团订单");
         if (isGrouper.equals(IS_GROUPER_Y)){
-            //生成groupId
-            String groupId = IncrSequenceUtil.generateOrderSn(GROUP_ID_PREFIX);
-            param.setGroupId(Integer.valueOf(groupId));
             param.setIsGrouper(IS_GROUPER_Y);
         }else {
             param.setIsGrouper(IS_GROUPER_N);
