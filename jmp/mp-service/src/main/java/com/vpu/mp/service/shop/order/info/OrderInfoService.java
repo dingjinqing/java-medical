@@ -35,26 +35,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Condition;
-import org.jooq.DatePart;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.UpdateSetMoreStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -1236,8 +1216,8 @@ public class OrderInfoService extends ShopBaseService {
 
         return 0;
     }
-    
-    
+
+
 	/**
 	 * 该时间之后有下单的用户ID列表
 	 */
@@ -1245,7 +1225,7 @@ public class OrderInfoService extends ShopBaseService {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY)).and(TABLE.CREATE_TIME.ge(time))
 				.groupBy(TABLE.USER_ID).fetch().getValues(TABLE.USER_ID, Integer.class);
 	}
-	
+
 	/**
 	 * 该时间之前有下单的用户ID列表
 	 */
@@ -1253,7 +1233,7 @@ public class OrderInfoService extends ShopBaseService {
 		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.ge(ORDER_WAIT_DELIVERY)).and(TABLE.CREATE_TIME.le(time))
 				.groupBy(TABLE.USER_ID).fetch().getValues(TABLE.USER_ID);
 	}
-	
+
 	/**
 	 * 获取大于等于该购买次数的用户Id列表
 	 */
@@ -1261,7 +1241,7 @@ public class OrderInfoService extends ShopBaseService {
 		return db().select(TABLE.USER_ID).from(TABLE).groupBy(TABLE.USER_ID).having(DSL.count(TABLE.USER_ID).ge(cnt))
 				.fetch().getValues(TABLE.USER_ID, Integer.class);
 	}
-	
+
 	/**
 	 * 获取小于等于该购买次数的用户Id列表
 	 */
@@ -1269,7 +1249,7 @@ public class OrderInfoService extends ShopBaseService {
 		return db().selectFrom(TABLE).groupBy(TABLE.USER_ID).having(DSL.count(TABLE.USER_ID).le(cnt)).fetch()
 				.getValues(TABLE.USER_ID, Integer.class);
 	}
-	
+
 	/**
 	 * 通过商品id获取购买过该商品的用户id列表
 	 */

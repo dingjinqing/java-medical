@@ -660,7 +660,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             //商家已发货，买家发起退款退货申请，商家在 returnAddressDays日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收获地址
             Byte returnAddressDays = shopReturncfg.getReturnAddressDays();
             //买家已提交物流信息，商家在 returnShoppingDays 日内未处理，系统将默认同意退款退货，并自动退款给买家
-            Byte returnShoppingDays = shopReturncfg.getReturnShoppingDays();
+            Byte returnShoppingDays = shopReturncfg.getReturnShippingDays();
             //商家同意退款退货，买家在 returnPassDays 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
             Byte returnPassDays = shopReturncfg.getReturnPassDays();
             Result<ReturnOrderRecord> autoReturnOrder = returnOrder.getAutoReturnOrder(autoReturnTime, returnMoneyDays, returnAddressDays, returnShoppingDays, returnPassDays);
