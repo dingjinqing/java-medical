@@ -39,7 +39,7 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
  */
 @Service
 @Slf4j
-public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy {
+public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy {
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
     @Autowired
@@ -51,6 +51,11 @@ public class ExclusiveProcessor implements ProcessorPriority,ActivityGoodsListPr
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_CARD_EXCLUSIVE_PRIORITY;
+    }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE;
     }
 
     /*****************商品列表处理*******************/

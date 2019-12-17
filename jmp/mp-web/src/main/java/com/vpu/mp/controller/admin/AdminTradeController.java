@@ -206,4 +206,23 @@ public class AdminTradeController extends AdminBaseController {
             }
         }
     }
+
+    /**
+     * Schedule test json result.概览定时任务测试
+     *
+     * @return the json result
+     */
+    @GetMapping("/api/admin/schedule/test")
+    public JsonResult scheduleTest() {
+        shop().shopTaskService.statisticalTableInsert.insertTradesNow();
+        shop().shopTaskService.statisticalTableInsert.insertTradesRecordSummary();
+        shop().shopTaskService.statisticalTableInsert.insertDistributionTag();
+        shop().shopTaskService.statisticalTableInsert.insertUserRfmSummary();
+        shop().shopTaskService.statisticalTableInsert.insertUserSummaryTrend();
+        shop().shopTaskService.statisticalTableInsert.insertTrades();
+        shop().shopTaskService.goodsStatisticTaskService.insertGoodsSummary();
+        shop().shopTaskService.goodsStatisticTaskService.insertOverview();
+        return success();
+    }
+
 }
