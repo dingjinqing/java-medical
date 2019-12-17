@@ -701,7 +701,13 @@ public class CouponService extends ShopBaseService {
     }
     
     //将要过期的优惠券醒通知。 后台定时每天执行一次，获取明天即将过期的优惠券，通知用户使用
-    public void expiringCouponNotify() {
+    public String expiringCouponNotify(Integer shopId) {
+    	//查找shopId对应的公众号
+    	String officeAppId = saas.shop.mp.findOffcialByShopId(shopId);
+    	if(officeAppId==null) {
+    		logger().info("店铺"+shopId+"没有关注公众号");
+    		return null;
+    	}
     	List<CouponWxVo> list = getExpiringCouponList();
     	System.out.println(list.toString());
     	String page="pages/couponlist/couponlist";
@@ -713,7 +719,7 @@ public class CouponService extends ShopBaseService {
     			logger().info("用户"+couponWxVo.getWxOpenid()+"没有关注公众号");
     			continue;
     		}
-    		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByUnionId(couponWxVo.getWxUnionId());
+    		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByUnionIdAndAppId(couponWxVo.getWxUnionId(),officeAppId);
     		if(wxUserInfo==null) {
     			logger().info("表中没有数据"+couponWxVo.getWxUnionId());
     			continue;
@@ -730,6 +736,7 @@ public class CouponService extends ShopBaseService {
 			logger().info("准备发");
 			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 		}
+		return null;
 		
     }
     
