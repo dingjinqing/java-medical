@@ -93,5 +93,9 @@ public class AvailCouponDetailVo {
      * 用户可用积分
      */
     private Integer canUseScore;
+    private long remainDays;
+    private long remainHours;
+    private long remainMinutes;
+    private long remainSeconds;
 }
 

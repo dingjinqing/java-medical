@@ -49,7 +49,7 @@ public class AtomicOperation extends ShopBaseService {
     public void updateStockAndSales(OrderInfoRecord order, @RedisLockKeys List<OrderGoodsBo> goodsBo, boolean limit) throws MpException {
         log.info("AtomicOperation.updateStockAndSales订单库存销量更新start,订单号{},商品{}", order.getOrderId(), goodsBo);
         if(Boolean.FALSE) {
-            //TOOD 营销
+            //todo 营销
         }else {
 
         }
@@ -118,6 +118,7 @@ public class AtomicOperation extends ShopBaseService {
         List<BatchUpdateGoodsNumAndSaleNumForOrderParam> updateGoods = new ArrayList<>(updateGoodsMap.values());
         //商品库存更新
         goodsService.batchUpdateGoodsNumsAndSaleNumsForOrder(updateGoods);
+        //
         //TODO 活动库存更新
         log.info("AtomicOperation.updateStockAndSales订单库存销量更新end");
     }

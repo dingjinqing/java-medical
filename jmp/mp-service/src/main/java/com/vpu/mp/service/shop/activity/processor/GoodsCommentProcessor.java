@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
  * @date 2019年11月04日
  */
 @Service
-public class GoodsCommentProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor{
+public class GoodsCommentProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     GoodsCommentProcessorDao goodsCommentProcessorDao;
     @Autowired
@@ -31,6 +32,12 @@ public class GoodsCommentProcessor implements ProcessorPriority,ActivityGoodsLis
     public Byte getPriority() {
         return 0;
     }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_GENERAL;
+    }
+
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {

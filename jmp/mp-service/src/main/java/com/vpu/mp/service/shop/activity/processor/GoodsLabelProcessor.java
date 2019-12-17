@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -21,7 +22,7 @@ import java.util.Map;
  */
 @Service
 @Slf4j
-public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor {
+public class GoodsLabelProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor {
 
     @Autowired
     GoodsLabelProcessorDao goodsLabelProcessorDao;
@@ -30,6 +31,12 @@ public class GoodsLabelProcessor implements ProcessorPriority,ActivityGoodsListP
     public Byte getPriority() {
         return 0;
     }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_GENERAL;
+    }
+
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {

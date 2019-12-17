@@ -1,16 +1,14 @@
 package com.vpu.mp.service.pojo.wxapp.order.goods;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
-import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
- * 
+ *
  * @author 王帅
  *
  */
@@ -40,6 +38,9 @@ public class OrderGoodsBo {
 	private Integer goodsScore;
 	private Integer goodsGrowth;
 	private BigDecimal discountedGoodsPrice;
+	/**
+	 * 折后现价总价
+	 */
 	private BigDecimal discountedTotalPrice;
 	/**折扣详情*/
 	private String discountDetail;
@@ -65,7 +66,7 @@ public class OrderGoodsBo {
 	private Byte activityType;
 	private Integer activityId;
 	private Integer activityRule;
-	
+
 	/**
 	 * Table:goods字段
 	 */

@@ -1,4 +1,4 @@
-// components/item/itemInfo/index.js
+const util = require("../../../utils/util.js");
 const priceName = {5:{prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice'}}
 global.wxComponent({
   /**
@@ -10,6 +10,9 @@ global.wxComponent({
       value: null,
       observer(data) {
         this.getPrice(data);
+        this.setData({
+          isCollected:data.isCollected
+        })
       }
     },
     activity:{
@@ -72,6 +75,24 @@ global.wxComponent({
     },
     shareMoments(){
       this.triggerEvent('shareMoments')
-    }
+    },
+    // 切换收藏
+    toogleCollect(){
+      let {goodsId} = this.data.goodsInfo
+      const apiMap = new Map([
+        [true,{api:'/api/wxapp/cancel/collect',msg:'已取消',error:'取消失败'}],
+        [false,{api:'/api/wxapp/add/collect',msg:'收藏成功',error:'收藏失败'}]
+      ])
+      util.api(apiMap.get(this.data.isCollected).api,res=>{
+        if(res.error === 0){
+          util.toast_success(apiMap.get(this.data.isCollected).msg)
+          this.setData({
+            isCollected:!this.data.isCollected
+          })
+        } else {
+          util.toast_fail(apiMap.get(this.data.isCollected).error)
+        }
+      },{goodsId})
+    },
   }
 });
