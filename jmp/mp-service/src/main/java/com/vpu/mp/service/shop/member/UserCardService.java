@@ -1432,6 +1432,9 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	public CardReceiveVo getCard(UserIdAndCardIdParam param) throws MpException {
+		if(param.getCardId()==null) {
+			return null;
+		}
 		CardReceiveVo vo = new CardReceiveVo();
 		MemberCardRecord gCard = getGradeCard(param);
 		if (param.getCardId() != null) {

@@ -81,8 +81,8 @@ public class WxAppCardActivationService extends ShopBaseService {
 		
 		
 		
-		List<String> allEducation = MemberEducationEnum.getAllEducation(lang);
-		List<String> allIndustryName = MemberIndustryEnum.getAllIndustryName(lang);
+		List<String> allEducation = MemberEducationEnum.getAllEducation(lang,true);
+		List<String> allIndustryName = MemberIndustryEnum.getAllIndustryName(lang,true);
 		
 		//TODO 订阅消息
 		
@@ -246,7 +246,4 @@ public class WxAppCardActivationService extends ShopBaseService {
 		}
 		activeData.put(DISTRICT_CODE,districtId);
 	}
-	
-
-
 }
