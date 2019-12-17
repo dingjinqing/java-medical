@@ -34,6 +34,6 @@ public class MaMpScheduleTask {
     public void monitorSeckillGoods() {
 		log.info("卡券到期提醒");
         Result<ShopRecord> result = saas.shop.getAll();
-        result.forEach((r)->{saas.getShopApp(r.getShopId()).coupon.expiringCouponNotify();});
+        result.forEach((r)->{saas.getShopApp(r.getShopId()).coupon.expiringCouponNotify(r.getShopId());});
     }
 }
