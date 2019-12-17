@@ -30,6 +30,9 @@ public final class DateUtil {
 	public static final String DATE_MYSQL_SIMPLE="%Y-%m-%d";
 
 	private static final Integer MILLI_SECOND = 1000;
+	
+	public static final String DATE_FORMAT_FULL_BEGIN="yyyy-MM-dd 00:00:00";
+	public static final String DATE_FORMAT_FULL_END="yyyy-MM-dd 23:59:59";
 
 	/**
 	 * 转换日期格式输出

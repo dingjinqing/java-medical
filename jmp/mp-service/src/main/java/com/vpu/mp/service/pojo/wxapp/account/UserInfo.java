@@ -63,5 +63,6 @@ public class UserInfo {
 	private String bankNo;
 	private String userAvatar;
 	private String inviteName;
+	private Integer invitationCode;
 
 }

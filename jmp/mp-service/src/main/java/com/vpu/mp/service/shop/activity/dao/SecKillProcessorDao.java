@@ -8,6 +8,8 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SecKillPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SeckillMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -59,10 +61,10 @@ public class SecKillProcessorDao extends ShopBaseService {
      * 组装输出详情页的秒杀信息
      * @param skId
      * @param userId
-     * @param goodsNumber
+     * @param capsule
      * @return
      */
-    public SeckillMpVo getDetailSeckillInfo(Integer skId,Integer userId,Integer goodsNumber){
+    public SeckillMpVo getDetailSeckillInfo(Integer skId,Integer userId,GoodsDetailMpBo capsule){
         SeckillMpVo seckillVo = new SeckillMpVo();
 
         SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne().into(SecKillDefineRecord.class);
@@ -70,7 +72,7 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setActivityId(skId);
         seckillVo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
 
-        seckillVo.setActState(this.canApplySecKill(secKill,goodsNumber,userId));
+        seckillVo.setActState(this.canApplySecKill(secKill,capsule.getGoodsNumber(),userId));
         seckillVo.setStock(secKill.getStock());
         seckillVo.setLimitAmount(secKill.getLimitAmount());
         seckillVo.setLimitPaytime(secKill.getLimitPaytime());
@@ -78,7 +80,7 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setEndTime(secKill.getEndTime());
         seckillVo.setCardId(secKill.getCardId());
         seckillVo.setShareConfig(Util.parseJson(secKill.getShareConfig(), ShopShareConfig.class));
-        seckillVo.setActProducts(this.getSecKillPrd(secKill.getSkId()));
+        seckillVo.setActProducts(this.getSecKillPrd(secKill.getSkId(),capsule));
         return seckillVo;
     }
 
@@ -136,8 +138,15 @@ public class SecKillProcessorDao extends ShopBaseService {
      * @param skId
      * @return
      */
-    private List<SecKillPrdMpVo> getSecKillPrd(Integer skId){
-        return db().select(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchInto(SecKillPrdMpVo.class);
+    private List<SecKillPrdMpVo> getSecKillPrd(Integer skId,GoodsDetailMpBo capsule){
+        List<SecKillPrdMpVo> list = db().select(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchInto(SecKillPrdMpVo.class);
+
+        //填入原价，方便计算
+        Map<Integer,BigDecimal> prdPriceMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId,GoodsPrdMpVo::getPrdRealPrice));
+        list.forEach(vo->{
+            vo.setPrdPrice(prdPriceMap.get(vo.getProductId()));
+        });
+        return list;
     }
 
     /**
@@ -177,4 +186,5 @@ public class SecKillProcessorDao extends ShopBaseService {
         }
 
     }
+
 }

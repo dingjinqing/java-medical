@@ -27,7 +27,12 @@ public enum MpTemplateConfig {
     PUSHMSG(
             "OPENTM411665252",
             "反馈结果通知",
-            "{{first.DATA}}回复者：{{keyword1.DATA}}回复时间：{{keyword2.DATA}}回复内容：{{keyword3.DATA}}{{remark.DATA}}");
+            "{{first.DATA}}回复者：{{keyword1.DATA}}回复时间：{{keyword2.DATA}}回复内容：{{keyword3.DATA}}{{remark.DATA}}"),
+    
+    COUPON_EXPIRE(
+            "OPENTM408237933",
+            "服务到期提醒",
+            "{{first.DATA}}业务号码：{{keyword1.DATA}}业务类型：{{keyword2.DATA}}到期时间：{{keyword3.DATA}}{{remark.DATA}}");
 	
 	/**
 	 * 模板编号
