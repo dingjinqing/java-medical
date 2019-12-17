@@ -89,5 +89,9 @@ public class AvailCouponDetailVo {
      * 满多少可用
      */
     private BigDecimal leastConsume;
+    /**
+     * 用户可用积分
+     */
+    private Integer canUseScore;
 }
 
