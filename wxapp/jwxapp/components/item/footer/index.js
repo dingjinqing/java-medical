@@ -40,6 +40,20 @@ global.wxComponent({
           })
         }
       }
+    },
+    activity:{
+      type:Object,
+      value:null,
+      observer(val){
+        console.log(val)
+      }
+    },
+    canBuy:{
+      type:Boolean,
+      value:true,
+      observer(val){
+        console.log(val)
+      }
     }
   },
 

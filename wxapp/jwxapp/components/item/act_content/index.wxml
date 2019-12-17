@@ -1,8 +1,8 @@
 <view class="act_content" wx:if="{{activity}}" style='background:-webkit-linear-gradient(left,{{main_setting.linColor}},{{main_setting.comColor1}})'>
   <view class="act_left">
     <text class="label">{{actName}}</text>
-    <text class="goods_price">￥<text class="price">500.00</text></text>
-    <text class="marking_price">￥900.00</text>
+    <text class="goods_price">￥<text class="price">{{prdRealPrice}}</text></text>
+    <text class="marking_price">￥{{prdLinePrice}}</text>
   </view>
   <view class="act_right" wx:if="{{actStatusName}}">
     <text>{{actStatusName}}</text>

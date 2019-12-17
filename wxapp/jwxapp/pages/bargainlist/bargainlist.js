@@ -7,7 +7,8 @@ global.wxPage({
   data: {
     pageParams:null,
     dataList:null,
-    navType:0
+    navType:0,
+    imageUrl: util.getImageUrl("")
   },
 
 
