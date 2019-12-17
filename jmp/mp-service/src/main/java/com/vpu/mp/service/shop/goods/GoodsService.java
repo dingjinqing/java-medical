@@ -722,7 +722,7 @@ public class GoodsService extends ShopBaseService {
             insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
             //更新es
             if (esUtilSearchService.esState()) {
-                esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
+                esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(),getShopId());
             }
         });
     }
@@ -1027,7 +1027,7 @@ public class GoodsService extends ShopBaseService {
             //更新es
             List<Integer> goodsIds = goodsRecords.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
             if (esUtilSearchService.esState()) {
-                esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds,getShopId());
             }
         });
     }
@@ -1051,7 +1051,7 @@ public class GoodsService extends ShopBaseService {
         goodsLabelCouple.batchInsert(goodsLabelCouples);
         //更新es
         if (esUtilSearchService.esState()){
-            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+            esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds,getShopId());
         }
     }
 
@@ -1105,7 +1105,7 @@ public class GoodsService extends ShopBaseService {
             //更新es
             List<Integer> goodsIds = goodsRecordsForUpdate.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
             if (esUtilSearchService.esState()){
-                esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds,getShopId());
             }
         });
     }
@@ -1205,7 +1205,7 @@ public class GoodsService extends ShopBaseService {
 
             //es更新
             if (esUtilSearchService.esState()){
-                esGoodsCreateService.createEsGoodsIndex(goods.getGoodsId(),getShopId());
+                esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(),getShopId());
             }
         });
     }
@@ -1718,7 +1718,7 @@ public class GoodsService extends ShopBaseService {
 
             try {
                 if (esUtilSearchService.esState()){
-                    esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+                    esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds,getShopId());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1831,7 +1831,7 @@ public class GoodsService extends ShopBaseService {
         db().update(GOODS).set(GOODS.IS_ON_SALE,GoodsConstant.ON_SALE).where(GOODS.GOODS_ID.in(goodsIds)).execute();
 
         if (esUtilSearchService.esState()){
-            esGoodsCreateService.batchCreateEsGoodsIndex(goodsIds,getShopId());
+            esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds,getShopId());
         }
     }
 }
