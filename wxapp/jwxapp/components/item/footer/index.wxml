@@ -10,10 +10,10 @@
       <view class="cart_goods_num" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">{{cartNum}}</view>
     </view>
   </block>
-  <view class="footer_flex_view" bindtap="leftClick" wx:if="{{leftButtonShow}}" style='color:{{(main_setting.comColor != "#ff6666" || !main_setting.comColor)?"#fff":"#f66"}};background:{{main_setting.commonColor}}'>
+  <view class="footer_flex_view" bindtap="leftClick" wx:if="{{leftButtonShow && activity.activityType !== 5}}" style='color:{{(main_setting.comColor != "#ff6666" || !main_setting.comColor)?"#fff":"#f66"}};background:{{main_setting.commonColor}}'>
     <text>{{leftButtonName}}</text>
   </view>
-  <view class="footer_flex_view" bindtap="rightClick" wx:if="{{rightButtonShow}}" style='color:{{(main_setting.comColor != "#ff6666" || !main_setting.comColor)?"#fff":"#f66"}};background:{{main_setting.comColor}};' >
+  <view class="footer_flex_view" bindtap="rightClick" wx:if="{{rightButtonShow}}" style='color:{{!canBuy ? "#fff" : (main_setting.comColor != "#ff6666" || !main_setting.comColor)?"#fff":"#f66"}};background:{{!canBuy ? "#666" : main_setting.comColor}};' >
     <text>{{rightButtonName}}</text>
   </view>
 </view>

@@ -11,7 +11,8 @@ global.wxPage({
     product: null,
     pledgeInfo: null,
     limitInfo: null,
-    productInfo: null
+    productInfo: null,
+    canBuy:true
   },
   /**
    * 生命周期函数--监听页面加载
@@ -31,7 +32,9 @@ global.wxPage({
   // 获取活动倒计时
   getActStatus(e) {
     let {canBuy} = e.detail;
-    console.log(canBuy)
+    this.setData({
+      canBuy
+    })
   },
   // 商品详情请求
   requestGoodsInfo() {
