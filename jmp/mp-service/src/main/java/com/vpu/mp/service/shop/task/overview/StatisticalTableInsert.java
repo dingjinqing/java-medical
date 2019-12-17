@@ -140,10 +140,11 @@ public class StatisticalTableInsert extends ShopBaseService {
         record.setNewOrderUserData(goodsStatistic.newCustomerTranNum(start, end));
         record.setOldOrderUserData(goodsStatistic.oldCustomerTranNum(start, end));
         record.setTotalPaidMoney(goodsStatistic.orderUserMoney(start, end));
+        record.setPayGoodsNumber(userSummary.payUserGoodsNum(start, end).values().stream().reduce(INTEGER_ZERO, Integer::sum));
         record.setNewPayGoodsNumber(userSummary.payNewUserGoodsNum(start, end));
         record.setOldPayGoodsNumber(userSummary.payOldUserGoodsNum(start, end));
         record.setNewPaidMoney(userSummary.payNewUserMoney(start, end));
-        record.setOldPaidMoney(userSummary.payNewUserMoney(start, end));
+        record.setOldPaidMoney(userSummary.payOldUserMoney(start, end));
         record.setPayOrderNum(userSummary.orderNum(start, end));
         record.setLoginPv(userSummary.getPv(start, end));
         record.setOrderNum(userSummary.generateOrderNum(start, end));
@@ -162,6 +163,9 @@ public class StatisticalTableInsert extends ShopBaseService {
                 UserRfmSummaryRecord record = createUserRfmSummary(tuple3, k, n);
                 db().executeInsert(record);
             });
+            Tuple3<Integer, Integer, BigDecimal> tuple3 = userSummary.reduceRfmData(rfmData, (e) -> e >= 5);
+            UserRfmSummaryRecord record = createUserRfmSummary(tuple3, k, 5);
+            db().executeInsert(record);
         });
     }
 
