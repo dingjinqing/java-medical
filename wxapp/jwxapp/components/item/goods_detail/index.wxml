@@ -7,7 +7,7 @@
     </view>
     <view class="item_line"></view>
     <view class="goods_detail">
-      <rich-text nodes="{{goodsDescInfo.goodsDesc}}"></rich-text>
+      <rich-text nodes="{{goodsDesc}}"></rich-text>
     </view>
   </view>
 
