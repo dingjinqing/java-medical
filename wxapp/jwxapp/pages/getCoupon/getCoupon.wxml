@@ -102,6 +102,7 @@
       <!--领取明细  -->
       <view class="coupon-get">
         <form>
+        
           <block wx:if="{{detailType == 1}}">
             <view class="coupon-vw-int" wx:if="{{act_info.validationCode != null  }}">
               <input class="coupon-input" placeholder="请输入领取码" bindinput='bindBlur'></input>
@@ -127,16 +128,10 @@
 
           <block wx:if="{{act_info.isUsed == 1 || act_info.is_expire == 1 || (act_info.from == 1 && act_info.can_fetch_num <= 0) || act_info.have_expired == 1}}">
             <view class="coupon-use-btn">
-              <button class="coupon-mine" bindtap="myCoupon" style='color:{{comColor}};border-color:{{comColor}}'>我的优惠券</button> 
-              <button class="coupon-shop" bindtap="visitshop" style='color:{{comColor}};border-color:{{comColor}}'>进店看看</button>         
+              <button class="coupon-mine" bindtap="myCoupon" style='color:{{comColor}};border-color:{{comColor}}'>我的优惠券</button>
+              <button class="coupon-shop" bindtap="visitshop" style='color:{{comColor}};border-color:{{comColor}}'>进店看看</button>
             </view> 
           </block>
-
-
-
-
-
-
 
         </form>    
       </view> <!--领取明细END  -->

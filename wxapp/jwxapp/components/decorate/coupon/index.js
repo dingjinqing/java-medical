@@ -60,10 +60,14 @@ global.wxComponent({
         util.api('/api/wxapp/coupon/get', function (res) {
           wx.hideLoading();
           if (res.error == 0) {
-            util.toast_success('领取成功', function () {
-              m['coupon_arr'][d.key].status = -1;
-              _this.$set();
-            });
+            if (res.content == null) {
+              util.toast_success('领取成功', function () {
+                m['coupon_arr'][d.key].status = -1;
+                _this.$set();
+              });
+            } else {
+              util.toast_fail(res.content);
+            }
           } else {
             util.toast_fail(res.message.msg);
           }
