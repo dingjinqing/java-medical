@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
+import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import jodd.util.StringUtil;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -62,6 +63,9 @@ public class CouponService extends ShopBaseService {
 
     @Autowired
     public CouponHoldService couponHold;
+
+    @Autowired
+    private ScoreDaoService scoreDao;
 
     private String aliasCode;
 
