@@ -3,7 +3,6 @@
 <view class='main-container'>
   <view class="container">
     <view class="top">
-     <!-- style='top:{{margin_top_nav+18}}px' -->
         <view class="{{this_type == 1 ? 'use' : ''}}" bindtap="change" data-name="can" style='color:{{this_type == 1 ? comColor :"" }};border-bottom-color:{{this_type == 1 ? comColor : ""}}'>
           未使用({{unusedNum}})
         </view>
@@ -17,7 +16,6 @@
     <view class="cou_area">
         <block> 
             <view bindtap="couponDetail" data-couponSn="{{item.couponSn}}" wx:for="{{allCoupon}}" wx:if="{{allCoupon != ''}}" wx:key="index" style="margin-bottom: 20rpx;overflow: hidden;">
-              <!-- <view class="left" style='background:{{comColor}}'> -->
               <view class="left" style="background:{{ this_type == 1 ? '#ff6666' :'#ccc' }}">
                 <view class="vip_exclusive" wx:if="{{item.is_exclusive == 1}}">会员</view>
                 <view class='coupon_xian'>

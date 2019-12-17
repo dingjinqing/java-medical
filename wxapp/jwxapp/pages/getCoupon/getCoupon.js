@@ -7,6 +7,12 @@ let config = require("../../utils/config.js")
 var app = getApp();
 var imageUrl = app.globalData.imageUrl
 var couponSn;
+
+var couponId;
+var vali;
+var input_vali;
+var goods_ids;
+var total_micro_second;
 Page({
 
   /**
@@ -23,7 +29,10 @@ Page({
    */
   onLoad: function (options) {
     var _this = this;
+    goods_ids = options.goods_id;
+ 
     if (options.couponSn) {
+      couponSn = options.couponSn
       // 个人中心查看详情
       util.api("api/wxapp/coupon/detail",function(res){
         if(res.error == 0){
@@ -36,6 +45,7 @@ Page({
         }
       },{couponSn:options.couponSn})
     } else {
+      couponId = options.couponId
       // 装修界面查看详情
       util.api("api/wxapp/coupon/detail/byScore",function(res){
         if(res.error == 0){
@@ -98,9 +108,10 @@ Page({
 
   //立即领取
   fetch_coupon: function (e) {
-    vali = this.data.act_info.validation_code;
-    form_id = e.detail.formId;
-    open_id = util.getCache("openid");
+    // 领取码
+    vali = this.data.act_info.validationCode;
+    // form_id = e.detail.formId;
+    // open_id = util.getCache("openid");
     if (vali != null) {
       if (input_vali != vali) {
         util.toast_fail('领取码错误');
@@ -127,12 +138,14 @@ Page({
           } else {
             util.toast_fail(res.message.msg);
           }
-        }, { code: code, form_id: form_id, open_id: open_id })
+        }, { 
+          couponId: d.coupon_id,
+        })
       }
     } else {
       var that = this;
-      if (this.data.act_info.use_score == 1) {
-        let showTitle = '是否使用' + this.data.act_info.score_number + '积分兑换此优惠券';
+      if (this.data.act_info.useScore == 1) {
+        let showTitle = '是否使用' + this.data.act_info.scoreNumber + '积分兑换此优惠券';
         util.showModal(showTitle, '', function () {
           that.getUserCoupon();
         }, true);
@@ -140,6 +153,28 @@ Page({
         that.getUserCoupon();
       }
     }
+  },
+
+  getUserCoupon: function () {
+    util.api("/api/wxapp/coupon/get", function (res) {
+      if (res.error == 0) {
+        util.toast_success('领取成功', function () {
+          setTimeout(function () {
+            if (goods_ids) {
+              util.navigateTo({
+                url: '/pages/item/item?goods_id=' + goods_ids,
+              })
+            } else {
+              util.navigateTo({
+                url: '/pages/index/index',
+              })
+            }
+          }, 2000);
+        });
+      } else {
+        util.toast_fail(res.message.msg);
+      }
+    }, { couponId: couponId }, '', true)
   },
 
   // 立即使用
