@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
 
-    private static final long serialVersionUID = 407982778;
+    private static final long serialVersionUID = -21049834;
 
     /**
      * The reference instance of <code>jmini_shop_444801.b2c_mrking_voucher</code>
@@ -122,11 +122,6 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
      * The column <code>jmini_shop_444801.b2c_mrking_voucher.enabled</code>.
      */
     public final TableField<MrkingVoucherRecord, Byte> ENABLED = createField("enabled", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
-
-    /**
-     * The column <code>jmini_shop_444801.b2c_mrking_voucher.is_random</code>. 是否需要积分兑换
-     */
-    public final TableField<MrkingVoucherRecord, Byte> IS_RANDOM = createField("is_random", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否需要积分兑换");
 
     /**
      * The column <code>jmini_shop_444801.b2c_mrking_voucher.receive_per_person</code>. 每人限领张数
@@ -286,17 +281,17 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
     /**
      * The column <code>jmini_shop_444801.b2c_mrking_voucher.random_min</code>. 分裂优惠卷随机金额最低
      */
-    public final TableField<MrkingVoucherRecord, Integer> RANDOM_MIN = createField("random_min", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分裂优惠卷随机金额最低");
+    public final TableField<MrkingVoucherRecord, BigDecimal> RANDOM_MIN = createField("random_min", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "分裂优惠卷随机金额最低");
 
     /**
      * The column <code>jmini_shop_444801.b2c_mrking_voucher.random_max</code>. 分裂优惠卷随机金额最高
      */
-    public final TableField<MrkingVoucherRecord, Integer> RANDOM_MAX = createField("random_max", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分裂优惠卷随机金额最高");
+    public final TableField<MrkingVoucherRecord, BigDecimal> RANDOM_MAX = createField("random_max", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "分裂优惠卷随机金额最高");
 
     /**
      * The column <code>jmini_shop_444801.b2c_mrking_voucher.receive_per_num</code>. 分裂优惠券领券人数是否限制 0不限制 1限制
      */
-    public final TableField<MrkingVoucherRecord, Short> RECEIVE_PER_NUM = createField("receive_per_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "分裂优惠券领券人数是否限制 0不限制 1限制");
+    public final TableField<MrkingVoucherRecord, Byte> RECEIVE_PER_NUM = createField("receive_per_num", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "分裂优惠券领券人数是否限制 0不限制 1限制");
 
     /**
      * The column <code>jmini_shop_444801.b2c_mrking_voucher.receive_num</code>. 分裂优惠券可领券人数

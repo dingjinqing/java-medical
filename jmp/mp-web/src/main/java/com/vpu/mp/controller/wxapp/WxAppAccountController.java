@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppCommonParam;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.ShopApplication;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -85,5 +86,15 @@ public class WxAppAccountController extends WxAppBaseController {
 		}
 		return fail(code);
 		
+	}
+	
+	/**
+	 * 	获取用户的余额和提现金额
+	 */
+	@PostMapping("/api/wxapp/user/account/withdraw")
+	public JsonResult getUserAccountWithdraw() {
+		WxAppSessionUser user = this.wxAppAuth.user();
+		shop().member.account.getUserAccountWithdraw(user.getUserId());
+		return success();
 	}
 }

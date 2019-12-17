@@ -6,7 +6,7 @@ import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.jedis.data.label.MqEsGoodsLabel;
 import com.vpu.mp.service.foundation.mq.RabbitmqSendService;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.goods.es.EsTaskParam;
+import com.vpu.mp.service.pojo.shop.goods.es.EsGoodsMqParam;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +35,10 @@ public class EsDataUpdateMqService extends BaseShopConfigService {
      * @param goodsIds goodsIdList
      * @param shopId shop id
      */
-    public void addEsGoodsIndex(List<Integer> goodsIds,Integer shopId){
-        EsTaskParam param = new EsTaskParam();
+    public void addEsGoodsIndex(List<Integer> goodsIds,Integer shopId,DBOperating operating){
+        EsGoodsMqParam param = new EsGoodsMqParam();
         param.setIdList(goodsIds);
+        param.setOperate(operating);
         param.setShopId(shopId);
         rabbitmqSendService.sendMessage(RabbitConfig.EXCHANGE_ES,RabbitConfig.BINDING_ES_GOODS_KEY,
             Util.toJson(param),param.getClass().getName());

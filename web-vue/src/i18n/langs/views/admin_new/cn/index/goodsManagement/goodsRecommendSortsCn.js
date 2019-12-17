@@ -35,5 +35,6 @@ export const cn = {
   add: '添加',
   sortNameNotNull: '分类名称不可为空',
   pleaseInputRightPriority: '请输入正确分类优先级',
-  pleaseInputSortImg: '请选择分类图标'
+  pleaseInputSortImg: '请选择分类图标',
+  recommendSortChildrenNotNull: '推荐分类子分类至少需要一项'
 }

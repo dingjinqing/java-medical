@@ -22,7 +22,7 @@ button::after {
 } */
 
 .coupon_list {
-  width: 30%;
+  width: 31%;
   border-radius: 10rpx;
   text-align: center;
   overflow: hidden;
@@ -31,6 +31,10 @@ button::after {
   margin-bottom: 20rpx;
   background: #fff;
   border: 2rpx solid #f66;
+}
+
+.coupon_list:last-child {
+  margin-right: none
 }
 
 .lingguode {
@@ -53,9 +57,13 @@ button::after {
 }
 
 .coupon_list_center {
-  height: 80rpx;
+  height: 66rpx;
   color: #f66;
   font-size: 24rpx;
+}
+
+.coupon_center_limit{
+  padding-top: 2rpx;
 }
 
 .coupon_center_number {
@@ -70,7 +78,8 @@ button::after {
 }
 
 .coupon_list1 {
-  height: 200rpx;
+  width: 100%;
+  /* height: 200rpx; */
 }
 
 .coupon_list1 .coupon_list_bottom {
@@ -95,6 +104,11 @@ button::after {
   text-align: left;
   font-size: 28rpx;
   margin-top: 70rpx;
+  height: 80rpx;
+}
+
+.coupon_list1 .coupon_center_limit{
+  padding-top: 15rpx;
 }
 
 .coupon_list1 .coupon_list_top text {
@@ -129,8 +143,9 @@ button::after {
 }
 
 .coupon_list2 {
-  display: block;
-  float: left;
+  width: 48%;
+  /* display: block; */
+  /* float: left; */
 }
 
 view .coupon_list2:last-child {

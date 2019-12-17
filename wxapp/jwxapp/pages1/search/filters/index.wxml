@@ -1,3 +1,4 @@
+<wxs src="./filter.wxs" module="filter"></wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="right" vertical="fill" bindtap='bindClose'>
   <view class="filter-content" animation="{{animation}}" style="height:calc(100% - {{navHeight}}px);">
     <view class="filter-item">
@@ -5,12 +6,12 @@
         <text class="title">价格区间</text>
       </view>
       <view class="item-content price">
-        <input type="number" class="item price" placeholder="最低价"></input>
+        <input type="number" class="item price" placeholder="最低价" data-target="min" bindinput="changeInput" value="{{minPrice}}"></input>
         <view class="small-line"></view>
-        <input type="number" class="item price" placeholder="最高价"></input>
+        <input type="number" class="item price" placeholder="最高价" data-target="max" bindinput="changeInput" value="{{maxPrice}}"></input>
       </view>
     </view>
-    <view class="filter-item">
+    <view class="filter-item" wx:if="{{sorts}}">
       <view class="item-title-content">
         <text class="title">商品分类</text>
       </view>
@@ -18,37 +19,38 @@
         <!-- 一级分类三个及以下 -->
         <block wx:if="{{sorts.length <= 2}}">
           <block wx:for="{{sort}}" wx:for-item="sortItem" wx:key="sortId">
-            <view class="item" data-sort-id="{{sortItem.sortId}}" >{{sortItem.sortName}}</view>
+            <view class="item" data-sort-id="{{sortItem.sortId}}" bindtap="chooseSort" style="{{sortItem.sortId === selectedSort && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}">{{sortItem.sortName}}</view>
           </block>
         </block>
         <!-- 三个以上 -->
         <block wx:else>
           <block wx:for="{{sort}}" wx:for-item="sortItem" wx:for-item="sortIndex" wx:key="sortId">
-            <view class="item" wx:if="{{sortIndex < 2}}" data-sort-id="{{sortItem.sortId}}" >{{sortItem.sortName}}</view>
+            <view class="item" wx:if="{{sortIndex < 2}}" data-sort-id="{{sortItem.sortId}}" bindtap="chooseSort" style="{{sortItem.sortId === selectedSort && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}">{{sortItem.sortName}}</view>
           </block>
           <view class="item more" bindtap="showSort">更多...</view>
         </block>
       </view>
     </view>
-    <view class="filter-item">
+    <view class="filter-item" wx:if="{{formatGoodsBrands}}">
       <view class="item-title-content">
         <text class="title">品牌</text>
+        <text class="right-info" style="color:{{main_setting.comColor}};">{{filter.getBrandsName(selectedBrands,formatGoodsBrands)}}</text>
       </view>
       <view class="item-content">
         <block wx:if="{{formatGoodsBrands.length <= 5}}">
           <block wx:for="{{formatGoodsBrands}}" wx:for-item="brandItem" wx:key="id">
-            <view class="item brand" >{{brandItem.brandName}}</view>
+            <view class="item brand" data-brand-id="{{brandItem.id}}" bindtap="chooseBrands" style="{{filter.includes(selectedBrands,brandItem.id) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}">{{brandItem.brandName}}</view>
           </block>
         </block>
         <block wx:else>
           <block wx:for="{{formatGoodsBrands}}" wx:for-item="brandItem" wx:for-index="brandIndex" wx:key="id">
-            <view class="item brand"  wx:if="{{brandIndex < 5}}">{{brandItem.brandName}}</view>
+            <view class="item brand" data-brand-id="{{brandItem.id}}" bindtap="chooseBrands" style="{{filter.includes(selectedBrands,brandItem.id) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}" wx:if="{{brandIndex < 5}}">{{brandItem.brandName}}</view>
           </block>
         </block>
         <view class="item brand more" bindtap="showBrand">更多...</view>
       </view>
     </view>
-    <view class="filter-item">
+    <view class="filter-item" wx:if="{{false}}">
       <view class="item-title-content">
         <text class="title">活动商品</text>
       </view>
@@ -61,21 +63,21 @@
         <view class="item">支付有礼</view>
       </view>
     </view>
-    <view class="filter-item">
+    <view class="filter-item" wx:if="{{goodsLabels}}">
       <view class="item-title-content">
         <text class="title">商品标签</text>
       </view>
       <view class="item-content">
-        <block wx:for="{{goodsLabels}}" wx:for-item="labelItem" wx:key="labelId">
-          <view class="item" >{{labelItem.labelName}}</view>
+        <block wx:for="{{goodsLabels}}" wx:for-item="labelItem" wx:key="id">
+          <view class="item" data-label-id="{{labelItem.id}}" bindtap="chooseLabels" style="{{filter.includes(selectedLabels,labelItem.id) && 'background:'+main_setting.somColor+';color:'+main_setting.comColor+';border-color:'+main_setting.comColor+';'}}">{{labelItem.name}}</view>
         </block>
       </view>
     </view>
     <view class="filter-footer">
-      <view class="reset">重置</view>
-      <view class="confirm" style="background-color:{{main_setting.comColor}};">确认</view>
+      <view class="reset" bindtap="reset">重置</view>
+      <view class="confirm" bindtap="confirm" style="background-color:{{main_setting.comColor}};">确认</view>
     </view>
   </view>
 </v-popup>
-<v-sort-filter show="{{showSortDialog}}" nav-height="{{navHeight}}"/>
-<v-brand-filter show="{{showBrandDialog}}" nav-height="{{navHeight}}"/>
+<v-sort-filter show="{{showSortDialog}}" sorts="{{sorts}}" nav-height="{{navHeight}}"/>
+<v-brand-filter show="{{showBrandDialog}}" goods-brands="{{goodsBrands}}" selected-brands="{{selectedBrands}}" bindchoose="chooseBrands" nav-height="{{navHeight}}"/>

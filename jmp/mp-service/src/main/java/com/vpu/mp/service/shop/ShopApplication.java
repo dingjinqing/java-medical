@@ -38,7 +38,7 @@ import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.ImageCategoryService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.image.posterTraits.UserCenterTraitService;
+import com.vpu.mp.service.shop.image.postertraits.UserCenterTraitService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.channel.ChannelService;
 import com.vpu.mp.service.shop.market.channel.ChannelStatisticalService;

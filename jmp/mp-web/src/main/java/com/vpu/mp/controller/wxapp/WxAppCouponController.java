@@ -30,13 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/wxapp/coupon")
 public class WxAppCouponController extends WxAppBaseController {
-	@Autowired
-	private ScoreDaoService scoreDao;
 
-	@Autowired
-	private ScoreService score;
-
-	
 	/**
 	 * 用户优惠券列表
 	 * @param param
@@ -64,6 +58,20 @@ public class WxAppCouponController extends WxAppBaseController {
 		return this.success(couponDetail);
 	}
 
+    /**
+     * 积分兑换优惠券，兑换详情页
+     * @param param
+     * @return
+     */
+    @PostMapping("/detail/byScore")
+    public JsonResult CouponDetailByScore(@RequestBody AvailCouponDetailParam param) {
+        Integer userId = wxAppAuth.user().getUserId();
+        Integer canUseScore = shop().member.score.getTotalAvailableScoreById(userId);
+        AvailCouponDetailVo couponDetail = shop().coupon.getCouponDetailByScore(param);
+        couponDetail.setCanUseScore(canUseScore);
+        return this.success(couponDetail);
+    }
+
 	/**
 	 * 用户立即领取优惠券
 	 * @return
@@ -80,25 +88,21 @@ public class WxAppCouponController extends WxAppBaseController {
 		if (StringUtils.isEmpty(couponData)) {
 			return this.success("领取失败");
 		}
-
 		//是否过期
 		if (couponData.getValidity() <= 0 && couponData.getValidityHour() <= 0 && couponData.getValidityMinute() <= 0 && couponData.getEndTime().before(nowDate)) {
 			return this.success("优惠券已过期");
 		}
-
 		//是否停用
 		if (couponData.getEnabled() == 0) {
 			return this.success("优惠券已停用");
 		}
-
 		//库存判断
 		if (couponData.getLimitSurplusFlag() == 0 && couponData.getSurplus() <= 0) {
 			return this.success("优惠券库存不足");
 		}
-
 		//积分兑换判断
 		if (couponData.getUseScore() == 1 && couponData.getScoreNumber() > 0) {
-			int availCoupon = scoreDao.calculateAvailableScore(userId);
+			int availCoupon = shop().member.score.getTotalAvailableScoreById(userId);
 
 			//查看用户可用积分
 			if (couponData.getScoreNumber() > availCoupon) {
@@ -116,9 +120,8 @@ public class WxAppCouponController extends WxAppBaseController {
 				Byte tradeType = 4;
 				/** -资金流向 */
 				Byte tradeFlow = 1;
-
 				try {
-					score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
+					shop().member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
 				} catch (MpException e) {
 					logger().info("积分更新失败");
 					return fail(e.getErrorCode().getMessage());
@@ -126,7 +129,6 @@ public class WxAppCouponController extends WxAppBaseController {
 				return this.success();
 			}
 		}
-
 		//判断优惠券领取限制
 		if(couponData.getReceivePerPerson().intValue() != 0){//有限制领取
 			Integer alreadyGet = shop().mpCoupon.couponAlreadyGet(userId, couponData.getId());

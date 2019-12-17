@@ -55,14 +55,16 @@ public class ScoreDaoService extends ShopBaseService {
 									.where(USER_SCORE.USER_ID.eq(userId))
 									.and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
 									.and(USER_SCORE.EXPIRE_TIME.ge(DateUtil.getLocalDateTime()).or(USER_SCORE.EXPIRE_TIME.isNull()))
-									.fetchAnyInto(Integer.class);
+									.fetchOptionalInto(Integer.class)
+									.orElse(NumberUtils.INTEGER_ZERO);
 		logger().info("计算所有可用积分为： "+availableScore);
-		return isNotNull(availableScore)?availableScore:NumberUtils.INTEGER_ZERO;
+		return availableScore;
 	} 
 	
 	/**
 	 * 计算从现在到指定时间的可用积分
 	 * @param endTime 指定的时间
+	 * @return Integer 积分
 	 */
 	public Integer calculateWillExpireSoonScore(Timestamp endTime,Integer userId) {
 		Integer willExpireSoonScore = db().select(sum(USER_SCORE.USABLE_SCORE))
@@ -70,10 +72,11 @@ public class ScoreDaoService extends ShopBaseService {
 			.where(USER_SCORE.USER_ID.eq(userId))
 			.and(USER_SCORE.STATUS.in(AVAILABLE_SCORE_STATUS_LIST))
 			.and(USER_SCORE.EXPIRE_TIME.between(DateUtil.getLocalDateTime(), endTime))
-			.fetchAnyInto(Integer.class);
+			.fetchOptionalInto(Integer.class)
+			.orElse(NumberUtils.INTEGER_ZERO);
 	
 		logger().info("计算在指定时间 "+endTime+" 所有可用积分为： "+willExpireSoonScore);
-		return isNotNull(willExpireSoonScore)?willExpireSoonScore:NumberUtils.INTEGER_ZERO;
+		return willExpireSoonScore;
 	}
 	
 	/**

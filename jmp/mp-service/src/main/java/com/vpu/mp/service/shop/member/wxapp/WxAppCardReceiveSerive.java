@@ -91,7 +91,7 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 				);
 		
 		// 开卡送优惠券
-		memberCardServie.sendCoupon(mCard, param.getUserId(), param.getCardId());
+		memberCardServie.sendCoupon(param.getUserId(), param.getCardId());
 		
 	}
 	

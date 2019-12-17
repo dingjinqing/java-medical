@@ -556,7 +556,7 @@ public class UserService extends ShopBaseService {
 	 * 我的订单
 	 * @param userId
 	 * @param data
-	 * @return
+	 * @return 
 	 */
 	public List<Map<String, Object>> parseMyOrder(Integer userId, List<Map<String, Object>> data) {
 		Map<Byte, Integer> orderStatusNum = mpOrderInfoService.getOrderStatusNum(userId, false);
@@ -630,6 +630,7 @@ public class UserService extends ShopBaseService {
 		if (userGrade.equals(CardConstant.LOWEST_GRADE)) {
 			logger().info("进入用户等级为0");
 			try {
+				data.put("get_grade", 0);
 				userCard.updateGrade(userId, null, (byte) 1);
 			} catch (Exception e) {
 				logger().error("userGrade为0时报错");
@@ -640,6 +641,7 @@ public class UserService extends ShopBaseService {
 			logger().info("进入用户等级为其他");
 			try {
 				int isGet = userCard.updateGrade(userId, null, (byte) 0); // 上面方法返回值is_get
+				logger().info("isGet的值为"+isGet);
 				if (isGet > 0) {
 					data.put("get_grade", 1);
 				} else {
@@ -762,7 +764,7 @@ public class UserService extends ShopBaseService {
 		User c = USER.as("c");
 		return  db().select(a.USER_ID, a.USERNAME,a.INVITE_ID, a.USER_CID, a.MOBILE, a.USER_CODE, a.WX_OPENID, a.CREATE_TIME,a.WECHAT,
 				a.FANLI_GRADE, a.USER_GRADE, a.ACCOUNT, a.DISCOUNT, a.WX_UNION_ID, a.DEVICE,a.UNIT_PRICE,a.IS_DISTRIBUTOR,
-				a.INVITE_GROUP,a.DISTRIBUTOR_LEVEL,a.INVITE_TIME,a.DISCOUNT_GRADE, a.DEL_FLAG, a.DEL_TIME, a.GROWTH, a.SCORE,
+				a.INVITE_GROUP,a.DISTRIBUTOR_LEVEL,a.INVITE_TIME,a.DISCOUNT_GRADE, a.DEL_FLAG, a.DEL_TIME, a.GROWTH, a.SCORE,a.INVITATION_CODE,
 				b.SEX, b.BIRTHDAY_YEAR, b.BIRTHDAY_MONTH, b.BIRTHDAY_DAY, b.REAL_NAME, b.PROVINCE_CODE,b.CITY_CODE, b.DISTRICT_CODE, b.ADDRESS, b.MARITAL_STATUS,
 				b.MONTHLY_INCOME, b.CID,b.EDUCATION, b.INDUSTRY_INFO, b.BIG_IMAGE, b.BANK_USER_NAME, b.SHOP_BANK,b.BANK_NO, b.USER_AVATAR, c.USERNAME.as("invite_name")).from(a)
 		.leftJoin(b).on(a.USER_ID.eq(b.USER_ID)).leftJoin(c).on(a.INVITE_ID.eq(c.USER_ID)).where(a.USER_ID.eq(userId)).fetchAny().into(UserInfo.class);
@@ -907,4 +909,15 @@ public class UserService extends ShopBaseService {
     public void updateFields(Condition condition, Map<Field<?>, ?> fields) {
         db().update(USER).set(fields).where(condition).execute();
     }
+    /**
+     * 根据用户openId获取用户数据
+     * @param openId
+     * @return UserRecord
+     */
+	public UserRecord getUserFromOpenId(String openId) {
+		if(StringUtils.isBlank(openId)) {
+			return null;
+		}
+		return db().selectFrom(USER).where(USER.WX_OPENID.eq(openId)).fetchAny();
+	}
 }

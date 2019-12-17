@@ -14,7 +14,6 @@ global.wxComponent({
       type: Object,
       value: {},
       observer(newVal, oldVal) {
-        console.log(newVal, '222')
         if (newVal) this.processModuleData(newVal);
       }
     }

@@ -29,6 +29,8 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index CART_PRIMARY = Indexes0.CART_PRIMARY;
+    public static final Index CART_USER_ID = Indexes0.CART_USER_ID;
     public static final Index COOPEN_ACTIVITY_PRIMARY = Indexes0.COOPEN_ACTIVITY_PRIMARY;
     public static final Index COOPEN_ACTIVITY_RECORDS_PRIMARY = Indexes0.COOPEN_ACTIVITY_RECORDS_PRIMARY;
     public static final Index COMMENT_GOODS_PRIMARY = Indexes0.COMMENT_GOODS_PRIMARY;
@@ -84,7 +86,6 @@ public class Indexes {
     public static final Index CARD_RECEIVE_CODE_CARD_ID = Indexes0.CARD_RECEIVE_CODE_CARD_ID;
     public static final Index CARD_RECEIVE_CODE_PRIMARY = Indexes0.CARD_RECEIVE_CODE_PRIMARY;
     public static final Index CARD_UPGRADE_PRIMARY = Indexes0.CARD_UPGRADE_PRIMARY;
-    public static final Index CART_PRIMARY = Indexes0.CART_PRIMARY;
     public static final Index CHANNEL_PRIMARY = Indexes0.CHANNEL_PRIMARY;
     public static final Index CHANNEL_RECORD_PRIMARY = Indexes0.CHANNEL_RECORD_PRIMARY;
     public static final Index CHANNEL_RECORD_USER_ID = Indexes0.CHANNEL_RECORD_USER_ID;
@@ -109,7 +110,7 @@ public class Indexes {
     public static final Index DISTRIBUTION_ORDER_PAY_ORDER_MONEY = Indexes0.DISTRIBUTION_ORDER_PAY_ORDER_MONEY;
     public static final Index DISTRIBUTION_ORDER_REF_DATE = Indexes0.DISTRIBUTION_ORDER_REF_DATE;
     public static final Index DISTRIBUTION_STRATEGY_PRIMARY = Indexes0.DISTRIBUTION_STRATEGY_PRIMARY;
-    public static final Index DISTRIBUTION_TAG_DATE_TYPE = Indexes0.DISTRIBUTION_TAG_DATE_TYPE;
+    public static final Index DISTRIBUTION_TAG_DATE_TYPE_TAG = Indexes0.DISTRIBUTION_TAG_DATE_TYPE_TAG;
     public static final Index DISTRIBUTION_TAG_PRIMARY = Indexes0.DISTRIBUTION_TAG_PRIMARY;
     public static final Index DISTRIBUTION_WITHDRAW_ORDER_SN = Indexes0.DISTRIBUTION_WITHDRAW_ORDER_SN;
     public static final Index DISTRIBUTION_WITHDRAW_PRIMARY = Indexes0.DISTRIBUTION_WITHDRAW_PRIMARY;
@@ -525,7 +526,6 @@ public class Indexes {
         public static Index CARD_RECEIVE_CODE_CARD_ID = Internal.createIndex("card_id", CardReceiveCode.CARD_RECEIVE_CODE, new OrderField[] { CardReceiveCode.CARD_RECEIVE_CODE.CARD_ID }, false);
         public static Index CARD_RECEIVE_CODE_PRIMARY = Internal.createIndex("PRIMARY", CardReceiveCode.CARD_RECEIVE_CODE, new OrderField[] { CardReceiveCode.CARD_RECEIVE_CODE.ID }, true);
         public static Index CARD_UPGRADE_PRIMARY = Internal.createIndex("PRIMARY", CardUpgrade.CARD_UPGRADE, new OrderField[] { CardUpgrade.CARD_UPGRADE.ID }, true);
-        public static Index CART_PRIMARY = Internal.createIndex("PRIMARY", Cart.CART, new OrderField[] { Cart.CART.REC_ID }, true);
         public static Index CHANNEL_PRIMARY = Internal.createIndex("PRIMARY", Channel.CHANNEL, new OrderField[] { Channel.CHANNEL.ID }, true);
         public static Index CHANNEL_RECORD_PRIMARY = Internal.createIndex("PRIMARY", ChannelRecord.CHANNEL_RECORD, new OrderField[] { ChannelRecord.CHANNEL_RECORD.ID }, true);
         public static Index CHANNEL_RECORD_USER_ID = Internal.createIndex("user_id", ChannelRecord.CHANNEL_RECORD, new OrderField[] { ChannelRecord.CHANNEL_RECORD.USER_ID }, false);
@@ -552,7 +552,7 @@ public class Indexes {
         public static Index DISTRIBUTION_ORDER_PAY_ORDER_MONEY = Internal.createIndex("pay_order_money", DistributionOrder.DISTRIBUTION_ORDER, new OrderField[] { DistributionOrder.DISTRIBUTION_ORDER.PAY_ORDER_MONEY }, false);
         public static Index DISTRIBUTION_ORDER_REF_DATE = Internal.createIndex("ref_date", DistributionOrder.DISTRIBUTION_ORDER, new OrderField[] { DistributionOrder.DISTRIBUTION_ORDER.REF_DATE }, false);
         public static Index DISTRIBUTION_STRATEGY_PRIMARY = Internal.createIndex("PRIMARY", DistributionStrategy.DISTRIBUTION_STRATEGY, new OrderField[] { DistributionStrategy.DISTRIBUTION_STRATEGY.ID }, true);
-        public static Index DISTRIBUTION_TAG_DATE_TYPE = Internal.createIndex("date_type", DistributionTag.DISTRIBUTION_TAG, new OrderField[] { DistributionTag.DISTRIBUTION_TAG.REF_DATE, DistributionTag.DISTRIBUTION_TAG.TYPE }, false);
+        public static Index DISTRIBUTION_TAG_DATE_TYPE_TAG = Internal.createIndex("date_type_tag", DistributionTag.DISTRIBUTION_TAG, new OrderField[]{DistributionTag.DISTRIBUTION_TAG.REF_DATE, DistributionTag.DISTRIBUTION_TAG.TYPE, DistributionTag.DISTRIBUTION_TAG.TAG_ID}, true);
         public static Index DISTRIBUTION_TAG_PRIMARY = Internal.createIndex("PRIMARY", DistributionTag.DISTRIBUTION_TAG, new OrderField[]{DistributionTag.DISTRIBUTION_TAG.ID}, true);
         public static Index DISTRIBUTION_WITHDRAW_ORDER_SN = Internal.createIndex("order_sn", DistributionWithdraw.DISTRIBUTION_WITHDRAW, new OrderField[] { DistributionWithdraw.DISTRIBUTION_WITHDRAW.ORDER_SN }, true);
         public static Index DISTRIBUTION_WITHDRAW_PRIMARY = Internal.createIndex("PRIMARY", DistributionWithdraw.DISTRIBUTION_WITHDRAW, new OrderField[] { DistributionWithdraw.DISTRIBUTION_WITHDRAW.ID }, true);
@@ -927,5 +927,7 @@ public class Indexes {
         public static Index SUBSCRIBE_MESSAGE_TEMPLATE_NO = Internal.createIndex("template_no", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.TEMPLATE_NO }, false);
         public static Index SUBSCRIBE_MESSAGE_USER_ID = Internal.createIndex("user_id", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.USER_ID }, false);
         public static Index SUBSCRIBE_MESSAGE_WX_OPENID = Internal.createIndex("wx_openid", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.WX_OPENID }, false);
+        public static Index CART_PRIMARY = Internal.createIndex("PRIMARY", Cart.CART, new OrderField[] { Cart.CART.CART_ID }, true);
+        public static Index CART_USER_ID = Internal.createIndex("user_id", Cart.CART, new OrderField[] { Cart.CART.CART_ID, Cart.CART.STORE_ID }, false);
     }
 }

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods.es;
 
 
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,13 +17,15 @@ import java.util.List;
 */
 @Data
 @Builder
-public class EsTaskParam {
+public class EsGoodsMqParam {
 
     private List<Integer> idList;
 
     private Integer shopId;
+
+    private DBOperating operate;
     @Tolerate
-    public EsTaskParam(){
+    public EsGoodsMqParam(){
 
     }
 }

@@ -359,27 +359,21 @@
                   @click="deleGrand(scope.row.id)"
                 ></span>
               </el-tooltip>
-
-              <el-tooltip
-                :content="$t('allGoodsLabel.update')"
-                placement="top"
+              <span
                 v-if="!hiddle_1"
-              >
-                <span
-                  class="el-icon-edit-outline operateSpan"
-                  @click="handlePagingEditGoods(scope.row)"
-                ></span>
-              </el-tooltip>
-              <el-tooltip
-                :content="$t('allGoodsLabel.delete')"
-                placement="top"
+                @click="handleToAddBrand(scope.row.classifyId)"
+                style="color:#5a8bff;cursor:pointer"
+              >添加品牌</span>
+              <span
+                @click="handlePagingEditGoods(scope.row)"
                 v-if="!hiddle_1"
-              >
-                <span
-                  class="el-icon-delete operateSpan"
-                  @click="delePagingGrand(scope.row.classifyId)"
-                ></span>
-              </el-tooltip>
+                style="color:#5a8bff;cursor:pointer"
+              >编辑</span>
+              <span
+                @click="delePagingGrand(scope.row.classifyId)"
+                v-if="!hiddle_1"
+                style="color:#5a8bff;cursor:pointer"
+              >删除</span>
             </template>
           </el-table-column>
 
@@ -447,14 +441,25 @@
         >{{$t('brandManagement.sure')}}</el-button>
       </span>
     </el-dialog>
+    <!--添加商品品牌弹窗-->
+    <AddBrandDialog
+      :callAddBrand.sync="brandDialogFlag"
+      @handleToGetBackData="handleToGetBackData"
+      :classification="classification"
+      btnText="筛选"
+    />
   </div>
 </template>
 <script>
 import { mapActions } from 'vuex'
 import pagination from '@/components/admin/pagination/pagination'
 import { saveShowBrandgetRequest, showBrandgetRequest, pagingBrandUpdateRequest, pagingBrandDelRequest, pagingBrandQueryRequest, brandAllGetRequest, brandDeleteGetRequest, classificationSelectRequest, addGrandClassRequest } from '@/api/admin/brandManagement.js'
+// 工具导入
+import { startOrEndDayWithFormat } from '@/util/date'
 export default {
-  components: { pagination },
+  components: { pagination,
+    AddBrandDialog: () => import('@/components/admin/addBrandDialog')
+  },
   data () {
     return {
       // 结束时间校验
@@ -510,7 +515,10 @@ export default {
       delDialogVisible: false, // 删除二次提醒弹窗flag
       delFlag: true,
       brandId: null,
-      classifyId: null
+      classifyId: null,
+      secondGrandName: '',
+      brandDialogFlag: false,
+      classification: null
     }
   },
   props: ['turnIndex'],
@@ -542,9 +550,9 @@ export default {
     }
   },
   computed: {
-    secondGrandName () {
-      return this.$t('brandManagement.brandName')
-    },
+    // secondGrandName () {
+    //   return this.$t('brandManagement.brandName')
+    // },
     optionsIsClss () {
       return this.$t('brandManagement.optionsIsClss')
     },
@@ -557,21 +565,24 @@ export default {
   },
   mounted () {
     console.log(this.$route)
+    this.restaurants = this.loadAll()
     if (this.$route.params.toSecond) {
       this.activeName = 'second'
+      let tab = { index: '1' }
+      this.handleClick(tab)
+    } else {
+      // 初始化全部商品数据
+      this.defaultAllBrandData()
+      console.log(this.turnIndex)
+      if (this.turnIndex === 1) {
+        this.activeName = 'second'
+        this.hiddle_1 = false
+        this.bottomDivFlag = true
+        this.secondGrandName = '分类名称'
+        // 初始化品牌分类页数据
+        this.defaultPageingGrand()
+      }
     }
-    // 初始化全部商品数据
-    this.defaultAllBrandData()
-    console.log(this.turnIndex)
-    if (this.turnIndex === 1) {
-      this.activeName = 'second'
-      this.hiddle_1 = false
-      this.bottomDivFlag = true
-      this.secondGrandName = '分类名称'
-      // 初始化品牌分类页数据
-      this.defaultPageingGrand()
-    }
-    this.restaurants = this.loadAll()
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitEditGoodsId']),
@@ -607,6 +618,16 @@ export default {
 
       let arr = ['商品管理', '品牌管理']
       this.changeCrumbstitle(arr)
+    },
+    // 调起添加品牌弹窗
+    handleToAddBrand (id) {
+      this.classification = id
+      this.brandDialogFlag = true
+    },
+    // 商品品牌弹窗回传数据
+    handleToGetBackData (res) {
+      console.log(res)
+      this.defaultPageingGrand()
     },
     // tap切换
     handleClick (tab, event) {
@@ -645,22 +666,11 @@ export default {
       }
     },
     defaultPageingGrand () {
-      let start = ''
-      let end = ''
-      console.log(this.classifyBrandStartTime, this.classifyBrandEndTime)
-      if (this.classifyBrandStartTime) {
-        start = this.classifyBrandStartTime.getFullYear() + '-' + (this.classifyBrandStartTime.getMonth() + 1) + '-' + this.classifyBrandStartTime.getDate() + ' 00:00:00'
-      }
-
-      if (this.classifyBrandEndTime) {
-        end = this.classifyBrandEndTime.getFullYear() + '-' + (this.classifyBrandEndTime.getMonth() + 1) + '-' + this.classifyBrandEndTime.getDate() + ' 00:00:00'
-      }
-      console.log(start, end)
-      console.log(this.timeValue2[0], this.timeValue2[1])
+      console.log(startOrEndDayWithFormat(this.classifyBrandStartTime, true), startOrEndDayWithFormat(this.classifyBrandEndTime, false))
       let obj = {
         classifyName: this.classifyName,
-        startAddTime: start,
-        endAddTime: end,
+        startAddTime: startOrEndDayWithFormat(this.classifyBrandStartTime, true),
+        endAddTime: startOrEndDayWithFormat(this.classifyBrandEndTime, false),
         currentPge: 1,
         pageRows: 20
       }
@@ -924,21 +934,10 @@ export default {
     },
     // 筛选
     handleSXevent () {
-      // console.log(this.valueClss)
-      console.log(this.value9)
-      let start = ''
-      let end = ''
-      if (this.brandStartTime) {
-        start = this.brandStartTime.getFullYear() + '-' + (this.brandStartTime.getMonth() + 1) + '-' + this.brandStartTime.getDate() + ' 00:00:00'
-      } else if (this.brandEndTime) {
-        end = this.brandEndTime.getFullYear() + '-' + (this.brandEndTime.getMonth() + 1) + '-' + this.brandEndTime.getDate() + ' 00:00:00'
-      }
-
-      console.log(this.brandStartTime, this.brandEndTime)
       let obj = {
         'brandName': this.state3,
-        'startAddTime': start,
-        'endAddTime': end,
+        'startAddTime': startOrEndDayWithFormat(this.brandStartTime, true),
+        'endAddTime': startOrEndDayWithFormat(this.brandEndTime, false),
         'classifyId': this.valueClss,
         'isRecommend': this.valueIsClss,
         'currentPage': 1,

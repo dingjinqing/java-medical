@@ -12,8 +12,8 @@ global.wxComponent({
     productInfo:{
       type: Object,
       value: null,
-      observer(val){
-        this.getCardNum()
+      observer(newVal,oldVal){
+        if (newVal.goodsId && !oldVal) this.getCartNum()
       }
     },
     triggerButton:{
@@ -39,6 +39,20 @@ global.wxComponent({
             leftButtonShow:true
           })
         }
+      }
+    },
+    activity:{
+      type:Object,
+      value:null,
+      observer(val){
+        console.log(val)
+      }
+    },
+    canBuy:{
+      type:Boolean,
+      value:true,
+      observer(val){
+        console.log(val)
       }
     }
   },
@@ -66,7 +80,7 @@ global.wxComponent({
       if (this.checkOrigin('right')) return
       this.toCheckOut()
     },
-    getCardNum(){
+    getCartNum(){
       let { goodsId } = this.data.productInfo
       util.api('/api/wxapp/cart/goods/num',res=>{
         if(res.error === 0){
@@ -84,7 +98,7 @@ global.wxComponent({
         res => {
           if(res.error === 0){
             util.toast_success('添加成功')
-            this.getCardNum()
+            this.getCartNum()
           } else {
             util.toast_fail('添加失败')
           }

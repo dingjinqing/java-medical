@@ -34,11 +34,11 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
         //删除的,下架的--移动到失效列表
         List<WxAppCartGoods> invalidGoodsList = cartBo.getCartGoodsList().stream().filter(goods -> {
             if (goods.getGoodsId() == null || goods.getPrdId() == null|| goods.getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
-                log.debug("商品删除的"+"[getRecId:"+goods.getRecId()+",getGoodsName: "+goods.getGoodsName()+",getDelFlag:"+ goods.getDelFlag()+"]");
+                log.debug("商品删除的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getDelFlag:"+ goods.getDelFlag()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_DELETE);
                 return true;
             }else if (goods.getIsOnSale().equals(GoodsConstant.OFF_SALE)){
-                log.debug("商品下架的"+"[getRecId:"+goods.getRecId()+",getGoodsName: "+goods.getGoodsName()+",getIsOnSale:"+ goods.getIsOnSale()+"]");
+                log.debug("商品下架的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getIsOnSale:"+ goods.getIsOnSale()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_OFF_SALE);
                 return true;
             }
@@ -59,7 +59,7 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
         // 初始化活动list
         List<OrderCartProductBo.OrderCartProduct> orderCartProductList =new ArrayList<>(cartBo.getProductIdList().size());
         cartBo.getCartGoodsList().forEach(goods->{
-            orderCartProductList.add(new OrderCartProductBo.OrderCartProduct(goods.getPrdId(), goods.getGoodsNumber(),goods.getIsChecked()));
+            orderCartProductList.add(new OrderCartProductBo.OrderCartProduct(goods.getPrdId(), goods.getCartNumber(),goods.getIsChecked()));
         });
         cartBo.setOrderCartProductBo(OrderCartProductBo.create(orderCartProductList));
 

@@ -18,7 +18,7 @@ public class CartGoodsInfo {
     /**
      * 购物车;id
      */
-    private Long recId;
+    private Integer cartId;
     /**
      * 商品id
      */

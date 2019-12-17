@@ -89,3 +89,30 @@ export function editCategoryRequest (data) {
     data: data
   })
 }
+
+// 增加文章
+export function addArticleRequest (data) {
+  return service({
+    url: '/api/system/article/add',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取单一文章信息
+export function getArticleRequest (data) {
+  return service({
+    url: '/api/system/article/get',
+    method: 'post',
+    data: data
+  })
+}
+
+// 更新单一文章信息
+export function updateArticleRequest (data) {
+  return service({
+    url: '/api/system/article/update',
+    method: 'post',
+    data: data
+  })
+}

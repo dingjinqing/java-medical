@@ -1,12 +1,14 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods;
 
-        import lombok.Data;
+        import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author 李晓冰
  * @date 2019年11月11日
  */
-@Data
+@Getter
+@Setter
 public class GoodsActivityBaseMp {
     protected Integer activityId;
     protected Byte activityType;

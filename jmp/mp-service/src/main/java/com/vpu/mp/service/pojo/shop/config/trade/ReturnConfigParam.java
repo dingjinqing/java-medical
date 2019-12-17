@@ -19,8 +19,8 @@ public class ReturnConfigParam {
     public Byte returnMoneyDays;
     @JsonProperty(value = "return_address_days")
     public Byte returnAddressDays;
-    @JsonProperty(value = "return_shopping_days")
-    public Byte returnShoppingDays;
+    @JsonProperty(value = "return_shipping_days")
+    public Byte returnShippingDays;
     @JsonProperty(value = "return_pass_days")
     public Byte returnPassDays;
     @JsonProperty(value = "is_refund_coupon")

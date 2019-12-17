@@ -28,9 +28,9 @@
             >
               <el-option
                 v-for="item in classOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :key="item.classifyId"
+                :label="item.classifyName"
+                :value="item.classifyId"
               >
               </el-option>
             </el-select>
@@ -39,26 +39,8 @@
             size="small"
             type="primary"
             @click="handleToQueryData()"
-          >查询</el-button>
+          >{{btnText}}</el-button>
         </div>
-        <!-- <div class="dialogMiddle">
-          <div class="topList">
-            <span>品牌来源:</span>
-            <el-select
-              v-model="fromValue"
-              placeholder="请选择品牌来源"
-              size="small"
-            >
-              <el-option
-                v-for="item in fromOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-        </div> -->
         <div class="footer">
           <el-table
             class="version-manage-table"
@@ -130,7 +112,7 @@
   </div>
 </template>
 <script>
-import { brandAllGetRequest } from '@/api/admin/brandManagement.js'
+import { brandAllGetRequest, classificationSelectRequest, batchBind } from '@/api/admin/brandManagement.js'
 export default {
   props: {
     callAddBrand: { // 弹窗调起
@@ -140,6 +122,14 @@ export default {
     brandBackData: { // 回显数据
       type: Array,
       default: () => []
+    },
+    btnText: { // 按钮文字
+      type: String,
+      default: () => '查询'
+    },
+    classification: { // 分类id
+      type: Number,
+      default: -1
     }
   },
   data () {
@@ -172,7 +162,22 @@ export default {
         label: '666'
       }],
       tableData: [],
-      backFlag: false
+      backFlag: false,
+      brandSourcesVal: 0,
+      brandSources: [
+        {
+          value: 0,
+          label: '请选择品牌来源'
+        },
+        {
+          value: 1,
+          label: '自营品牌'
+        },
+        {
+          value: 2,
+          label: '非自营品牌'
+        }
+      ]
     }
   },
   watch: {
@@ -258,6 +263,13 @@ export default {
           this.backFlag = true
         }
       })
+      classificationSelectRequest().then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+          res.content.unshift({ classifyName: this.$t('brandManagement.whole'), classifyId: '' })
+          this.classOptions = res.content
+        }
+      })
     },
     changeFun (val) {
       if (val.length) {
@@ -280,13 +292,41 @@ export default {
     // 确定事件
     handleToSure () {
       let arr = []
+      let idArr = []
       this.tableData.forEach(item => {
         if (item.ischeck) {
           arr.push(item)
+          idArr.push(item.id)
         }
       })
-      this.$emit('handleToGetBackData', arr)
-      this.$emit('update:callAddBrand', false)
+      console.log(this.classification)
+      if (this.classification !== -1) {
+        let obj = {
+          classifyId: this.classification,
+          brandIds: idArr
+        }
+        batchBind(obj).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success({
+              message: '添加成功',
+              showClose: true
+            })
+            this.$emit('handleToGetBackData', arr)
+            this.$emit('update:callAddBrand', false)
+          } else if (res.error === 131006) {
+            this.$message.error({
+              message: '请选择品牌分类',
+              showClose: true
+            })
+          }
+        })
+      } else {
+        this.$emit('handleToGetBackData', arr)
+        this.$emit('update:callAddBrand', false)
+      }
+
+      console.log(this.classValue, arr)
     }
   }
 }

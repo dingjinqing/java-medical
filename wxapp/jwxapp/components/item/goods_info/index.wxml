@@ -13,7 +13,7 @@
       </view>
     </view>
   </view>
-  <view class="goods_ad" >带上你的美，闪亮你的世界</view>
+  <view class="goods_ad" wx:if="{{goodsInfo.goodsAd}}">{{goodsInfo.goodsAd}}</view>
   <view class="goods_price_info">
     <view class="goods_price" style='color:{{main_setting.comColor}}'>
       <text>￥</text><text>{{goodsPrice}}</text>
@@ -24,11 +24,12 @@
     <text class="label-content_style" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">{{item}}</text>
   </view>
   <view class="flex-wrap">
-    <view class="flex-item">库存：{{goodsInfo.goodsNumber}}个</view>
-    <view class="flex-item">销量：{{goodsInfo.goodsSaleNum}}</view>
+    <view class="flex-item" wx:if="{{activity.activityType === 5}}">剩余可秒杀数量：{{activity.stock}}个</view>
+    <view class="flex-item" wx:else>库存：{{goodsInfo.goodsNumber}}个</view>
+    <view class="flex-item" wx:if="{{activity.activityType !== 5}}">销量：{{goodsInfo.goodsSaleNum}}</view>
     <view class="flex-item">运费：{{goodsInfo.deliverPrice}}</view>
   </view>
-  <view class="flex-wrap" wx:if="TODO">
+  <view class="flex-wrap" wx:if="{{activity.activityType !== 5}}">
     <view class="flex-item">配送：快递</view>
     <view class="flex-item">门店自提 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
     <view class="flex-item">同城配送 <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>

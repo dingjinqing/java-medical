@@ -5,7 +5,6 @@ import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.sort.*;
-import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
@@ -17,10 +16,11 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
 /**
@@ -42,6 +42,11 @@ public class GoodsSortService extends ShopBaseService {
         List<SortRecord> sortRecords = getSortListDao(param);
         List<GoodsSortListVo> retList = new ArrayList<>(sortRecords.size());
 
+        // 处理推荐分类的图片和链接路径
+        if (GoodsConstant.RECOMMEND_SORT.equals(param.getType())) {
+            disposeRecommendSortList(sortRecords);
+        }
+
         sortRecords.forEach(record->{
             GoodsSortListVo vo = record.into(GoodsSortListVo.class);
             vo.setSortImg(getImgFullUrlUtil(vo.getSortImg()));
@@ -49,6 +54,23 @@ public class GoodsSortService extends ShopBaseService {
         });
 
         return retList;
+    }
+
+    /**
+     * 处理推荐父分类的图片和图片链接为其第一个子推荐分类
+     * @param sortRecords 待处理推荐父分类
+     */
+    private void disposeRecommendSortList(@NotNull List<SortRecord> sortRecords){
+        Map<Integer, SortRecord> sortMap = sortRecords.stream().collect(Collectors.toMap(SortRecord::getSortId, Function.identity()));
+        List<SortRecord> children = getChildrenByParentIdsDao(sortMap.keySet());
+        Map<Integer, List<SortRecord>> childrenParentIdMap = children.stream().collect(Collectors.groupingBy(SortRecord::getParentId));
+
+        childrenParentIdMap.forEach((k,v)->{
+            SortRecord sortRecord = sortMap.get(k);
+            SortRecord child = v.get(0);
+            sortRecord.setSortImg(child.getSortImg());
+            sortRecord.setImgLink(child.getImgLink());
+        });
     }
 
     /**
@@ -437,6 +459,7 @@ public class GoodsSortService extends ShopBaseService {
             .fetchInto(SortRecord.class);
     }
 
+
     /**
      * 根据指定sortId集合查询商家分类集合
      * @return SortRecord集合
@@ -446,6 +469,15 @@ public class GoodsSortService extends ShopBaseService {
             .fetchInto(SortRecord.class);
     }
 
+    /**
+     * 根据parentId查询所有子节点
+     * @param parentIds 父节点id集合
+     * @return 子节点集合
+     */
+    private List<SortRecord> getChildrenByParentIdsDao(Collection<Integer> parentIds) {
+        return db().select().from(SORT).where(SORT.PARENT_ID.in(parentIds)).orderBy(SORT.FIRST.desc(),SORT.CREATE_TIME.desc(),SORT.SORT_ID.asc())
+               .fetchInto(SortRecord.class);
+    }
     /**
      * 根据传入的父id集合迭代查询所有子孙分类id集合（包含传入的id集合）
      * @param parentIds 父id集合

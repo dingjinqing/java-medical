@@ -11,7 +11,7 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
+  onLoad: function (options) {
     this.requestList();
   },
   requestList() {
@@ -122,17 +122,17 @@ global.wxPage({
     }
   },
   // 获取会员卡停用/删除状态图片
-  getCardStopImage(cardItem){
-    if(cardItem.cardType === 2 && cardItem.flag === 2){
+  getCardStopImage(cardItem) {
+    if (cardItem.cardType === 2 && cardItem.flag === 2) {
       return `${this.data.imageUrl}image/wxapp/card_stop.png`
     }
-    if (cardItem.expire === 1){
+    if (cardItem.expire === 1) {
       return `${this.data.imageUrl}image/wxapp/card_out_time.png`
     }
     return ``
   },
   // 获取会员卡过期时间
-  getCardExpireTime(cardItem){
+  getCardExpireTime(cardItem) {
     if (cardItem.cardType === 2) return null
     if (cardItem.expireType === 2) return `永久有效`
     if (cardItem.expire === 1) return `此卡已过期，如需继续使用请联系商家`
@@ -144,11 +144,11 @@ global.wxPage({
     util.showModal(
       '',
       '您确定要删除该会员卡？',
-      function() {
+      function () {
         var animate = '';
         util.api(
           '/api/wxapp/card/del',
-          function(res) {
+          function (res) {
             if (res.error === 0) {
             }
           },
@@ -161,40 +161,15 @@ global.wxPage({
     );
   },
   // 查看会员卡详情
-  checkDetail(e){
-    console.log(111)
+  checkDetail(e) {
+    console.log(111, this.data.dataList[e.currentTarget.dataset.data_idx][e.currentTarget.dataset.item_idx])
     let card_no = this.data.dataList[e.currentTarget.dataset.data_idx][e.currentTarget.dataset.item_idx].cardNo
-    util.jumpLink(`pages/cardinfo/cardinfo?card_no=${card_no}`,'navigateTo')
+    util.jumpLink(`pages/cardinfo/cardinfo?cardNo=${card_no}`, 'navigateTo')
   },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function() {},
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function() {},
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function() {},
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function() {},
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function() {},
-
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function() {
+  onReachBottom: function () {
     if (
       this.data.pageParams &&
       this.data.pageParams.currentPage === this.data.pageParams.lastPage
@@ -209,5 +184,5 @@ global.wxPage({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function() {}
+  onShareAppMessage: function () { }
 });

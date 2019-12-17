@@ -146,7 +146,7 @@ button::after {
 }
 
 .coupon-button {
-  width: 30%;
+  width: 45%;
   height: 70rpx;
 
   border: 1rpx solid #f66;

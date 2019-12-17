@@ -21,6 +21,12 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>mini_shop_4748160.b2c_cart</code>.
+     */
+    public static final Cart CART = Cart.CART;
+
     /**
      * The table <code>mini_shop_4748160.b2c_coopen_activity</code>.
      */
@@ -161,11 +167,6 @@ public class Tables {
      * The table <code>mini_shop_471752.b2c_card_upgrade</code>.
      */
     public static final CardUpgrade CARD_UPGRADE = CardUpgrade.CARD_UPGRADE;
-
-    /**
-     * The table <code>mini_shop_471752.b2c_cart</code>.
-     */
-    public static final Cart CART = Cart.CART;
 
     /**
      * The table <code>mini_shop_471752.b2c_channel</code>.

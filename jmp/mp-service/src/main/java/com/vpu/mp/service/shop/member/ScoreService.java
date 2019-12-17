@@ -4,17 +4,18 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
+import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.USED_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.IS_FROM_REFUND_Y;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_SCORE;
+import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_NOW;
+import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_YMD;
 import static com.vpu.mp.service.shop.member.UserCardService.UPGRADE;
-
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -24,13 +25,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record7;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.apache.commons.lang3.StringUtils;
 
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.TradesRecordRecord;
@@ -43,20 +44,17 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
-import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.shop.member.score.SignData;
+import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
+import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
-
-import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_YMD;
-import static com.vpu.mp.service.shop.member.BaseScoreCfgService.SCORE_LT_NOW;
 /**
  * 
  * @author 黄壮壮
@@ -240,7 +238,7 @@ public class ScoreService extends ShopBaseService {
 	 * @param orderSn 订单号
 	 * @return UserScoreRecord
 	 */
-	private UserScoreRecord getScoreRecordByOrderSn(Integer userId, String orderSn) {
+	public UserScoreRecord getScoreRecordByOrderSn(Integer userId, String orderSn) {
 		 return db().selectFrom(USER_SCORE).where(USER_SCORE.USER_ID.eq(userId))
 					.and(USER_SCORE.ORDER_SN.eq(orderSn))
 					.orderBy(USER_SCORE.CREATE_TIME)
@@ -262,7 +260,7 @@ public class ScoreService extends ShopBaseService {
 	 * @param userId
 	 * @param totalScore
 	 */
-	private void updateUserScore(Integer userId, Integer totalScore) {
+	public void updateUserScore(Integer userId, Integer totalScore) {
 		db().update(USER).set(USER.SCORE, totalScore).where(USER.USER_ID.eq(userId)).execute();
 	}
 
@@ -271,7 +269,7 @@ public class ScoreService extends ShopBaseService {
 	 * 
 	 * @param userId
 	 */
-	private Integer getTotalAvailableScoreById(Integer userId) {
+	public Integer getTotalAvailableScoreById(Integer userId) {
 		return scoreDao.calculateAvailableScore(userId);
 	}
 
@@ -344,7 +342,7 @@ public class ScoreService extends ShopBaseService {
 	 * @param userId 用户id
 	 * @return UserScoreRecord
 	 */
-	private UserScoreRecord getEarlyUsableRecord(Integer userId) {
+	public UserScoreRecord getEarlyUsableRecord(Integer userId) {
 		return scoreDao.getTheEarliestUsableUserScoreRecord(userId);
 	}
 

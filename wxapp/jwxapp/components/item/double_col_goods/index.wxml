@@ -32,9 +32,9 @@
     <!--限时降价商品图片tip-->
     <view wx:if="{{goosItem.isLimitedPrice}}" class="reduce_price">{{i18n.$t(localePack,'components.decorate.limitedPriceReduction')}}</view>
     <!--砍价-->
-    <view wx:if="{{goosItem.isBargain}}" class="bargain">{{item.realPrice===null?"0.00":item.realPrice}}{{i18n.$t(localePack,'components.decorate.yuanChopAway')}}</view>
+    <view wx:if="{{goosItem.isBargain}}" class="bargain">{{goosItem.realPrice===null?"0.00":goosItem.realPrice}}{{i18n.$t(localePack,'components.decorate.yuanChopAway')}}</view>
     <!--多人拼团-->
-    <view wx:if="{{goosItem.assemble}}" class="bargain">{{i18n.$t(localePack,'components.decorate.establishaProvince')}}{{item.discountPrice===null?"0.00":item.discountPrice}}{{i18n.$t(localePack,'components.decorate.element')}}</view>
+    <view wx:if="{{goosItem.assemble}}" class="bargain">{{i18n.$t(localePack,'components.decorate.establishaProvince')}}{{goosItem.discountPrice===null?"0.00":goosItem.discountPrice}}{{i18n.$t(localePack,'components.decorate.element')}}</view>
   </view>
   <view class="goods_bottom">
     <view class="goods_name {{goosItem.activityLabelData.length > 0 ? 'one_line' : 'two_lines'}}">{{goosItem.goodsName}}</view>

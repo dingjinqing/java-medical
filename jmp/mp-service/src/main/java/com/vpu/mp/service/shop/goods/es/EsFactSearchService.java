@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParam;
 import com.vpu.mp.service.foundation.es.EsSearchSourceBuilderParamBuilder;
+import com.vpu.mp.service.foundation.jedis.data.SortDataHelper;
 import com.vpu.mp.service.pojo.saas.category.SysCategorySelectTreeVo;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
@@ -10,6 +11,7 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsFilterItemInitVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectTreeVo;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
+import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
@@ -31,8 +33,9 @@ import java.util.*;
 */
 @Service
 public class EsFactSearchService extends EsBaseSearchService{
+
     @Autowired
-    private GoodsSortService goodsSortService;
+    SortDataHelper sortDataHelper;
 
     public GoodsFilterItemInitVo assemblyFactByAdminGoodsListInit(GoodsFilterItemInitParam initParam) throws Exception {
         GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
@@ -148,7 +151,7 @@ public class EsFactSearchService extends EsBaseSearchService{
         Map<Integer,Integer> sortMap = assemblySortFactDataToMap(aggregations);
         List<Integer> sortIds = new ArrayList<>(sortMap.keySet());
         //TODO 暂时先走数据库,后期做改造走缓存
-        List<Sort> result = goodsSortService.getList(sortIds);
+        List<GoodsSortCacheInfo> result = sortDataHelper.get(sortIds);
         List<GoodsSortSelectTreeVo> retList = new ArrayList<>(result.size());
         result.forEach(x->{
             GoodsSortSelectTreeVo vo =new GoodsSortSelectTreeVo();
@@ -156,7 +159,7 @@ public class EsFactSearchService extends EsBaseSearchService{
             vo.setSortName(x.getSortName());
             vo.setParentId(x.getParentId());
             vo.setLevel(x.getLevel().byteValue());
-            vo.setHasChild(x.getHasChild());
+            vo.setHasChild(x.getParentId().equals(0)?(byte)1:(byte)0);
             vo.setGoodsSumNum(sortMap.get(x.getSortId()));
         });
         return retList;
