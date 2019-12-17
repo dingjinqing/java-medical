@@ -20,13 +20,18 @@ import java.util.stream.Collectors;
  * @date 2019年11月01日
  */
 @Service
-public class BargainProcessor implements ProcessorPriority,ActivityGoodsListProcessor {
+public class BargainProcessor implements Processor,ActivityGoodsListProcessor {
     @Autowired
     BargainProcessorDao bargainProcessorDao;
     /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_BARGAIN_PRIORITY;
+    }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_BARGAIN;
     }
 
     /*****装修商品列表*****/

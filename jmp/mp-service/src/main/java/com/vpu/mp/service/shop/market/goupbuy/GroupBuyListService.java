@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -255,7 +254,6 @@ public class GroupBuyListService extends ShopBaseService {
                 logger().debug("活动已经结束[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_STATUS_END).build();
             }
-            List<Integer> statusList = Arrays.asList(1,0);
             Integer count = db().selectCount().from(GROUP_BUY_LIST)
                     .where(GROUP_BUY_LIST.USER_ID.eq(userId))
                     .and(GROUP_BUY_LIST.ACTIVITY_ID.eq(activityId))
