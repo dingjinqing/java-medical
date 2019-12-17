@@ -1373,3 +1373,7 @@ create table `b2c_distribution_tag`
     primary key (`id`),
     unique index `date_type_tag` (`ref_date`, `type`, `tag_id`) using btree
 );
+
+
+-- 黄壮壮 删除字段
+ALTER TABLE `b2c_mrking_voucher` DROP COLUMN `recommend_type`;
