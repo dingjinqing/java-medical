@@ -1,8 +1,9 @@
 package com.vpu.mp.service.pojo.shop.image;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -20,7 +21,7 @@ public class ImageListQueryParam {
 	/**
 	 * 分组id
 	 */
-	@NonNull
+	@NotNull
 	private Integer imgCatId;
 	/**
 	 * 关键词

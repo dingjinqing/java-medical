@@ -1,38 +1,52 @@
 package com.vpu.mp.service.shop.order.action;
 
-import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.OrderCreatePayBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.activity.processor.FirstSpecialProcessor;
 import com.vpu.mp.service.shop.activity.processor.GradeCardProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
+import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
-import com.vpu.mp.service.shop.member.MemberService;
-import com.vpu.mp.service.shop.order.action.base.Calculate;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.BaseScoreCfgService;
+import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
+import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.invoice.InvoiceService;
 import com.vpu.mp.service.shop.order.must.OrderMustService;
 import com.vpu.mp.service.shop.order.trade.OrderPayService;
@@ -46,27 +60,12 @@ import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
-import com.vpu.mp.service.shop.config.TradeService;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
-import com.vpu.mp.service.shop.member.AddressService;
-import com.vpu.mp.service.shop.member.UserCardService;
-import com.vpu.mp.service.shop.order.action.base.IorderOperate;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
@@ -145,7 +144,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private GradeCardProcessor gradeCardProcessor;
-    
+    /**
+     * 营销活动processorFactory (拼团)
+     */
+   @Autowired(required = false)
+    private OrderCreatePayBeforeMpProcessorFactory processorFactory;
+
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.CREATE;
@@ -185,6 +189,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         final OrderBeforeVo orderBeforeVo;
         //订单入库后数据
         OrderInfoRecord orderAfterRecord = null;
+
         //order before data ready
         try {
             //设置规格和商品信息、基础校验规格与商品
@@ -192,10 +197,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //TODO 营销相关
             if(null != param.getActivityId() && null != param.getActivityType()) {
                 //初始化param里营销相关的内容（活动价格等）
-                OrderCreatePayBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderCreatePayBeforeMpProcessorFactory.class);
-                processorFactory.initMarketOrderCreateParam(param);
+                processorFactory.processInitCheckedOrderCreate(param);
                 //活动生成ordergodos;
-                orderGoodsBos = null;
+                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getStoreId());
             }else {
                 //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
                 OrderCartProductBo orderCartProductBo = OrderCartProductBo.create(param.getOrderCartProductBo());
@@ -235,12 +239,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //商品退款退货配置
-                calculate.setGoodsReturnCfg(orderBo.getOrderGoodsBo(), order.getGoodsType(), order.getPosFlag());
+                calculate.setGoodsReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order.getPosFlag());
                 orderGoods.addRecord(order, orderBo.getOrderGoodsBo());
                 //必填信息
                 must.addRecord(param.getMust());
                 //TODO exchang、好友助力
                 orderBo.setOrderId(order.getOrderId());
+                //保存营销活动信息
+                processorFactory.processSaveOrderInfo(param,order);
             });
         orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
         createVo.setOrderSn(orderAfterRecord.getOrderSn());
@@ -248,7 +254,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             OrderConstant.PAY_CODE_BALANCE_PAY.equals(orderAfterRecord.getPayCode()) ||
             (OrderConstant.PAY_CODE_SCORE_PAY.equals(orderAfterRecord.getPayCode()) && BigDecimalUtil.compareTo(orderAfterRecord.getMoneyPaid(), BigDecimal.ZERO) == 0))) {
                 //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
-                atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo(), false);
+            processorFactory.processStockAndSales(param);
+            atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo(), false);
+
         }
     } catch (DataAccessException e) {
         logger().error("下单捕获mp异常", e);
@@ -547,6 +555,24 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             }
 
             //TODO temp goodsprice 取规格
+            boList.add(orderGoods.initOrderGoods(temp));
+        }
+        param.setBos(boList);
+        return boList;
+    }
+
+    /**
+     * 营销、非营销处理后初始化orderGoods对象
+     * @param param 结算参数
+     * @param goods 购买商品列表
+     * @param storeId   门店id
+     * @throws MpException 校验异常
+     * @return  bo
+     */
+    public List<OrderGoodsBo> initOrderGoods(OrderBeforeParam param, List<Goods> goods,Integer storeId) throws MpException {
+        logger().info("initOrderGoods开始");
+        List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
+        for (Goods temp : goods) {
             boList.add(orderGoods.initOrderGoods(temp));
         }
         param.setBos(boList);

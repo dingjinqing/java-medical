@@ -10,7 +10,7 @@ global.wxComponent({
     }
   },
   data:{
-    showVideo:false
+    swiperPlay:true
   },
   /**
    * 组件的方法列表
@@ -23,10 +23,11 @@ global.wxComponent({
         urls: this.data.goodsMedia.goodsImgs
       })
     },
-    playVideo(){
-      this.setData({
-        showVideo: true
-      })
-    }
+    swiperEnd(){
+      this.setData({swiperPlay:false})
+    },
+    swiperStart(){
+      this.setData({swiperPlay:true})
+    },
   }
 })

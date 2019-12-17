@@ -194,7 +194,6 @@ public class BaseShopConfigService extends ShopBaseService {
 	 *
 	 * @param  <T>
 	 * @param  key
-	 * @param  toClass
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")

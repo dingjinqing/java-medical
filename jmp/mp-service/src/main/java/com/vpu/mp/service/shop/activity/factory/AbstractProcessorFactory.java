@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.activity.factory;
 
-import com.vpu.mp.service.shop.activity.processor.ProcessorPriority;
+import com.vpu.mp.service.shop.activity.processor.Processor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +24,10 @@ public abstract class AbstractProcessorFactory<P,T> {
     protected List<P> processors = new ArrayList<>();
 
     @Autowired(required = false)
-    private List<ProcessorPriority> sortProcessors;
+    private List<Processor> sortProcessors;
 
     protected void sort(){
-        sortProcessors.sort(Comparator.comparing(ProcessorPriority::getPriority));
+        sortProcessors.sort(Comparator.comparing(Processor::getPriority));
     }
 
     @PostConstruct

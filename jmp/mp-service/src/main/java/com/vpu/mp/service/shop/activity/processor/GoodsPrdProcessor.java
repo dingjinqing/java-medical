@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
@@ -25,7 +26,7 @@ import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
  */
 @Service
 @Slf4j
-public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor{
+public class GoodsPrdProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     GoodsPrdProcessorDao goodsPrdProcessorDao;
 
@@ -34,6 +35,12 @@ public class GoodsPrdProcessor implements ProcessorPriority,ActivityGoodsListPro
     public Byte getPriority() {
         return 0;
     }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_GENERAL;
+    }
+
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {

@@ -11,7 +11,8 @@ global.wxPage({
     product: null,
     pledgeInfo: null,
     limitInfo: null,
-    productInfo: null
+    productInfo: null,
+    canBuy:true
   },
   /**
    * 生命周期函数--监听页面加载
@@ -30,8 +31,10 @@ global.wxPage({
   },
   // 获取活动倒计时
   getActStatus(e) {
-    let second = e.detail;
-    // console.log(second);
+    let {canBuy} = e.detail;
+    this.setData({
+      canBuy
+    })
   },
   // 商品详情请求
   requestGoodsInfo() {
@@ -45,6 +48,7 @@ global.wxPage({
             this.getCouponInfo(res.content);
             this.getGoodsDescInfo(res.content);
             this.getComment(res.content)
+            this.getActivity(res.content)
             resolve(res.content);
           }
         },
@@ -133,7 +137,8 @@ global.wxPage({
       limitBuyNum,
       limitMaxNum,
       deliverPlace,
-      deliverPrice
+      deliverPrice,
+      isCollected
     } = goodsInfo;
     let info = {
       goodsId,
@@ -148,7 +153,8 @@ global.wxPage({
       limitBuyNum,
       limitMaxNum,
       deliverPlace,
-      deliverPrice
+      deliverPrice,
+      isCollected
     };
     this.setData({
       goodsInfo: info
@@ -172,6 +178,12 @@ global.wxPage({
     this.setData({
       showSpec: false,
       triggerButton:''
+    })
+  },
+  getActivity({activity}){
+    if(!activity) return
+    this.setData({
+      activity
     })
   },
   /**

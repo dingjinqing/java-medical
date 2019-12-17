@@ -1,10 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.coopen;
 
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
-import com.vpu.mp.service.pojo.wxapp.store.StorePayOrder;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
@@ -35,7 +32,7 @@ public class CoopenParam implements Default {
     /**
      * 针对用户
      */
-    @NonNull
+    @NotNull
     private Byte       action;
     /**
      * 名称名称

@@ -23,7 +23,7 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
  * @date 2019年11月01日
  */
 @Service
-public class PreSaleProcessor implements ProcessorPriority,ActivityGoodsListProcessor {
+public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor {
     @Autowired
     PreSaleProcessorDao preSaleProcessorDao;
 
@@ -32,6 +32,12 @@ public class PreSaleProcessor implements ProcessorPriority,ActivityGoodsListProc
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_PRE_SALE_PRIORITY;
     }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_PRE_SALE;
+    }
+
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {

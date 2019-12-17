@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.image;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,5 +25,6 @@ public class UploadImageParam {
   /**
    * base64格式的图片
    */
+  @NotNull(groups = UploadBase64Group.class)
   public String base64Image;
 };
