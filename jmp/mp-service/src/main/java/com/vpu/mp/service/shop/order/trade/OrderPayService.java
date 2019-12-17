@@ -26,6 +26,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
+import org.jooq.impl.DefaultDSLContext;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -174,6 +175,7 @@ public class OrderPayService extends ShopBaseService{
         if(BigDecimalUtil.compareTo(money, null) == 0) {
             return;
         }
+        DefaultDSLContext db1 = db();
         AccountData accountData = AccountData.newBuilder().
             userId(order.getUserId()).
             orderSn(order.getOrderSn()).

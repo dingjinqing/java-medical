@@ -188,3 +188,64 @@
 .current-condition{
   color: #d0b27c;
 }
+.zhezhao_coupon {
+  width: 750rpx;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 99;
+}
+
+.coupon_code {
+  position: fixed;
+  top: 30%;
+  width: 100%;
+  z-index: 999;
+  padding: 0 80rpx;
+  box-sizing: border-box;
+}
+
+.coupon_code>view {
+  background: white;
+  border-radius: 5px;
+}
+
+.coupon_code>view .code_ipt {
+  padding: 50rpx;
+  border-bottom: 1px solid #eee;
+  box-sizing: border-box;
+}
+
+.code_ipt input {
+  border: 1px solid #ddd;
+  width: 100%;
+  height: 80rpx;
+  padding-left: 20rpx;
+  font-size: 26rpx;
+  box-sizing: border-box;
+  border-radius: 4rpx;
+}
+
+.code_ipt input+input {
+  margin-top: 30rpx;
+}
+.code_btn {
+  display: flex;
+}
+
+.code_btn view {
+  flex: 1;
+  height: 90rpx;
+  line-height: 90rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.code_btn view:last-child {
+  color: #f66;
+  border-left: 1px solid #eee;
+}
