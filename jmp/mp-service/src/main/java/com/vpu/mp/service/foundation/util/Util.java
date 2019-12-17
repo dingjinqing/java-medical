@@ -174,7 +174,7 @@ public class Util {
 		}
 		return null;
 	}
-	
+
 	public static Map<String,Object> convertPojoToMap(Object obj){
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.convertValue(obj, new TypeReference<Map<String, Object>>() {});
@@ -713,5 +713,30 @@ public class Util {
                 return BaseConstant.NAVBAR_TYPE_DISABLED;
             }
         }
+    }
+
+    // 地球半径
+    private static final double EARTH_RADIUS = 6378.137;
+
+    /**
+     * Gets distance.
+     *
+     * @param lng1 the lng 1
+     * @param lat1 the lat 1
+     * @param lng2 the lng 2
+     * @param lat2 the lat 2
+     * @return the distance
+     */
+    public static double getDistance(double lng1, double lat1, double lng2, double lat2) {
+        double RAD = Math.PI / 180.0;
+        double radLat1 = lat1 * RAD;
+        double radLat2 = lat2 * RAD;
+        double a = radLat1 - radLat2;
+        double b = (lng1 - lng2) * RAD;
+        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+            Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+        s = s * EARTH_RADIUS;
+        s = Math.round(s * 10000d) / 10000d;
+        return s;
     }
 }
