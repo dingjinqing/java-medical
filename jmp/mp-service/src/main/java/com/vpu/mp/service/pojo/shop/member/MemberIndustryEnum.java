@@ -174,9 +174,15 @@ public enum MemberIndustryEnum {
 		}
 		return industryList;
 	}
-	
 	public static List<String> getAllIndustryName(String lang){
+		return getAllIndustryName(lang,false);
+	}
+	public static List<String> getAllIndustryName(String lang,boolean choose){
 		List<String> res = new ArrayList<String>();
+		if(choose) {
+			// 请选择
+			res.add(Util.translateMessage(lang,"member.please.choose","","member"));
+		}
 		for(int i=1;i<=MemberIndustryEnum.values().length;i++) {
 			res.add(getNameByCode(i,lang));
 		}

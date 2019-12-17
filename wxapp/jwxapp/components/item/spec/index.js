@@ -26,12 +26,21 @@ global.wxComponent({
       observer(val){
         console.log(val)
       }
+    },
+    activity:{
+      type:Object,
+      value:null,
+    },
+    canBuy:{
+      type:Boolean,
+      value:true
     }
   },
 
   /**
    * 组件的初始数据
    */
+
   data: {
     showSpec: false,
     product: null,
