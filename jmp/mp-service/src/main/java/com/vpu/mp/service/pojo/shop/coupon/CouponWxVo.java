@@ -38,5 +38,6 @@ public class CouponWxVo {
 	private Timestamp updateTime;
 	private String actName;
 	private String wxOpenid;
+	private String wxUnionId;
 
 }

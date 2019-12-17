@@ -77,13 +77,25 @@ public enum MemberEducationEnum {
 	public String getName() {
 		return name;
 	}
-	
-	public static List<String> getAllEducation(String lang){
+	/**
+	 * 获取所有教育名称
+	 * @param lang 语言
+	 * @param choose true 加入"请选择"，false，没有此项
+	 */
+	public static List<String> getAllEducation(String lang,boolean choose){
 		List<String> eduList = new ArrayList<String>(); 
+		if(choose) {
+			// 请选择
+			eduList.add(Util.translateMessage(lang,"member.please.choose","","member"));
+		}
 		int length = MemberEducationEnum.values().length;
 		for(int i=0;i<length;i++) {
 			eduList.add(MemberEducationEnum.getNameByCode(i,lang));
 		}
 		return eduList;
+	}
+	
+	public static List<String> getAllEducation(String lang){
+		return getAllEducation(lang,false);
 	}
 }

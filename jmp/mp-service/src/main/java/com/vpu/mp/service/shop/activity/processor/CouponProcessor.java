@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
@@ -29,7 +30,7 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
  */
 @Service
 @Slf4j
-public class CouponProcessor implements ProcessorPriority,ActivityGoodsListProcessor,GoodsDetailProcessor{
+public class CouponProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor{
     @Autowired
     CouponProcessorDao couponProcessorDao;
 
@@ -38,6 +39,12 @@ public class CouponProcessor implements ProcessorPriority,ActivityGoodsListProce
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_COUPON_PRIORITY;
     }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_COUPON;
+    }
+
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {

@@ -8,7 +8,6 @@ import com.vpu.mp.service.pojo.shop.market.firstspecial.FirstSpecialProductBo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
-import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -27,7 +26,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -41,7 +39,7 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRS
  */
 @Service
 @Slf4j
-public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsListProcessor, ActivityCartListStrategy {
+public class FirstSpecialProcessor implements Processor, ActivityGoodsListProcessor, ActivityCartListStrategy {
 
     @Autowired
     FirstSpecialProcessorDao firstSpecialProcessorDao;
@@ -57,6 +55,11 @@ public class FirstSpecialProcessor implements ProcessorPriority, ActivityGoodsLi
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_FIRST_SPECIAL_PRIORITY;
+    }
+
+    @Override
+    public Byte getActivityType() {
+        return ACTIVITY_TYPE_FIRST_SPECIAL;
     }
 
     /*****************商品列表处理*******************/

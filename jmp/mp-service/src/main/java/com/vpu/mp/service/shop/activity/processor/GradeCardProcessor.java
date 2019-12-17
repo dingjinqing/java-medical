@@ -38,7 +38,7 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMB
  */
 @Service
 @Slf4j
-public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListProcessor, GoodsDetailProcessor, ActivityCartListStrategy {
+public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor, GoodsDetailProcessor, ActivityCartListStrategy {
 
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
@@ -49,6 +49,11 @@ public class GradeCardProcessor implements ProcessorPriority, ActivityGoodsListP
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_MEMBER_GRADE_PRIORITY;
+    }
+
+    @Override
+    public Byte getActivityType() {
+        return ACTIVITY_TYPE_MEMBER_GRADE;
     }
 
     /*****************商品列表处理*******************/

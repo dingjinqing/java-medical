@@ -37,7 +37,7 @@ import java.util.Optional;
  */
 @Service
 @Slf4j
-public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy ,ProcessorPriority{
+public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy {
     @Autowired
     TailProcessorDao tailProcessorDao;
     @Autowired
@@ -52,6 +52,12 @@ public class GoodsTailProcessor implements ActivityGoodsListProcessor,GoodsDetai
     public Byte getPriority() {
         return Byte.MAX_VALUE;
     }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_GENERAL;
+    }
+
     /*****************商品列表处理*******************/
     @Override
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {

@@ -1,9 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.cart;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import reactor.util.annotation.NonNull;
+
+import javax.validation.constraints.NotNull;
 
 /**
  *  删除购物车商品参数
@@ -14,6 +14,6 @@ import reactor.util.annotation.NonNull;
 @Setter
 public class WxAppRemoveCartProductParam {
 
-    @NonNull
+    @NotNull
     private Integer recId;
 }

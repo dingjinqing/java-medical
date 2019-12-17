@@ -1,8 +1,8 @@
-<swiper class="swiper" autoplay="true" circular="true" indicator-dots='true' indicator-active-color="#fff">
+<swiper class="swiper" autoplay="{{swiperPlay}}" circular="true" indicator-dots='true' indicator-active-color="#fff">
   <swiper-item wx:if="{{goodsMedia.goodsVideoImg}}" class="video-content">
     <!-- <image src="{{imageUrl}}image/wxapp/play_btn.png" class="playBtn"></image>
     <image src="{{goodsMedia.goodsVideoImg}}" class="slide-image" mode="aspectFit" bindtap="playVideo"></image> -->
-    <video src="{{goodsMedia.goodsVideo}}"></video>
+    <video bindplay="swiperEnd" bindpause="swiperStart" bindended="swiperStart" src="{{goodsMedia.goodsVideo}}"></video>
   </swiper-item>
   <block wx:for="{{goodsMedia.goodsImgs}}" wx:key="index" wx:for-index="index">
     <swiper-item>

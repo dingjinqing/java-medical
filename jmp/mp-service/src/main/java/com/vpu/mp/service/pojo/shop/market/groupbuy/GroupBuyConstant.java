@@ -6,6 +6,8 @@ package com.vpu.mp.service.pojo.shop.market.groupbuy;
  */
 public interface GroupBuyConstant {
 
+    String GROUP_ID_PREFIX="GROUP_ID";
+
     //*********** 是否是团长  **************
     /**
      * 是
