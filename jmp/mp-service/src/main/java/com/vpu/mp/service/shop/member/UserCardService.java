@@ -258,9 +258,10 @@ public class UserCardService extends ShopBaseService {
 		if (cardId != null) {
 			// 直接升级
 			updateUserGradeCard(userId, cardId);
+			return 0;
 		} else {
 			if (TP_RECEIVE_ONE.equals(type) || TP_RECEIVE_TWO.equals(type)) {
-				// 检测升级
+				// 检测并升级
 				cardId = checkAndUpgradeUserCard(userId);
 			} else if (TP_CHECK.equals(type)) {
 				// 检测可升级到的卡
@@ -273,13 +274,19 @@ public class UserCardService extends ShopBaseService {
 				logger().info(String.format("检测到可领取等级卡 %d", cardId));
 				// 仅仅检测是否可领取等级卡
 				return cardId;
+			}else {
+				return cardId;
 			}
+			
 		}
-		return 0;
 	}
 
 	private Integer checkAndUpgradeUserCard(Integer userId) throws MpException {
 		Integer cardId = null;
+		// 获取用户累积获得积分和累积消费总额
+		Integer userTotalScore = scoreService.getAccumulationScore(userId);
+		BigDecimal amount = getUserTotalSpendAmount(userId);
+		
 		// 获取等级卡列表等级升序
 		List<MemberCardRecord> gCardList = getAvailGradeCard();
 
@@ -289,13 +296,15 @@ public class UserCardService extends ShopBaseService {
 			// 用户第一次领取会员卡，给用户分配一级会员卡
 			MemberCardRecord gCard = gCardList.get(0);
 			logger().info("给用户分配等级卡: " + gCard.getCardName() + "等级: " + gCard.getGrade());
-			addUserCard(userId, gCard.getId());
+			// 升级条件
+			GradeConditionJson gradeCondition = getGradeCondition(userTotalScore, amount, gCard);
+			if (isSatisfyUpgradeCondition(userTotalScore, amount, gradeCondition)) {
+				addUserCard(userId, gCard.getId());
+			}
 			uGrade = userCardDao.getUserCardGrade(userId);
 		}
 
-		// 获取用户累积获得积分和累积消费总额
-		Integer userTotalScore = scoreService.getAccumulationScore(userId);
-		BigDecimal amount = getUserTotalSpendAmount(userId);
+
 
 		for (MemberCardRecord gCard : gCardList) {
 			if (!StringUtils.isBlank(gCard.getGradeCondition())) {
