@@ -116,7 +116,7 @@ global.wxPage({
     let orderSn = e.currentTarget.dataset.ordersn;
     let openid = util.getCache('openid');
     let form_id = e.detail.formId;
-    util.api('/api/wxapp/store/service/submitReservation', function (res) {
+    util.api('/api/wxapp/store/service/reservationContinuePay', function (res) {
       if (res.error == 0) {
         if (typeof (res.content.timeStamp) != 'undefined') {
           wx.requestPayment({
@@ -128,13 +128,13 @@ global.wxPage({
             'success': function (res) {
               util.toast_success('支付成功');
               util.navigateTo({
-                url: '/pages/appointinfo/appointinfo?orderSn=' + orderSn,
+                url: '/pages/appointinfo/appointinfo?order_sn=' + orderSn,
               })
             },
             'fail': function (res) {
               util.toast_fail('支付失败');
               util.navigateTo({
-                url: '/pages/appointinfo/appointinfo?orderSn=' + orderSn,
+                url: '/pages/appointinfo/appointinfo?order_sn=' + orderSn,
               })
             },
             'complete': function (res) {
@@ -143,7 +143,7 @@ global.wxPage({
         } else {
           util.toast_fail('支付失败');
           util.redirectTo({
-            url: '/pages/appointinfo/appointinfo?orderSn=' + orderSn,
+            url: '/pages/appointinfo/appointinfo?order_sn=' + orderSn,
           })
         }
       } else if (e.error == 400002) {
