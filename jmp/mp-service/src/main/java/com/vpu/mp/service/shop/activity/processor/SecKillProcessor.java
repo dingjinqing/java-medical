@@ -87,7 +87,6 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
         if(param.getActivityId() != null && param.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_SEC_KILL)){
             //处理之前capsule中需要有商品的基本信息
             capsule.setActivity(secKillProcessorDao.getDetailSeckillInfo(param.getActivityId(),param.getUserId(),capsule));
-            System.out.println("zzzzszzzzzzzzzzzzzzzz   "+capsule.getProducts());
         }
     }
     //*********************************购物车********************************
