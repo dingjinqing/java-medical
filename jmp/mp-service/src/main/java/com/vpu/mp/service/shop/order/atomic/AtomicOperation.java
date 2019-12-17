@@ -15,7 +15,6 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

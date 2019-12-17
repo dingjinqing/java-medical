@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.action;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,8 +12,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.config.trade.ReturnBusinessAddressParam;
+import com.vpu.mp.service.pojo.shop.config.trade.ReturnConfigParam;
+import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
@@ -87,7 +94,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	private ReturnStatusChangeService returnStatusChange;
 	@Autowired
 	public RecordAdminActionService record;
-	
+    @Autowired
+    public ShopReturnConfigService shopReturncfg;
+
 	@Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.RETURN;
@@ -132,7 +141,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						} else {
 							//通过退款查询获取可退信息
 							RefundVo check = (RefundVo)query(param);
-							//校验  生成退款订单、
+							//校验  生成退款订单
 							rOrder = notOnlyReturnShippingFee(param , order , check);
 							//生成退款商品
 							returnGoods = returnOrderGoods.add(param, rOrder, check);
@@ -155,12 +164,18 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 					 * 商家发起：
 					 * 		不需走退款逻辑：2拒绝仅退款请求与买家提交物流商家拒绝退款、3同意退货请求、4拒绝退货申请、
 					 * 		走退款逻辑（param.returnOperate == null）：商家同意买家退款、商家确认收货并退款、后台手动退款
+                     * 自动任务：
+                     *      买家发起仅退款申请后，商家在returnMoneyDays日内未处理，系统将自动退款。
+                     *      商家已发货，买家发起退款退货申请，商家在 returnAddressDays日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收获地址
+                     *      买家已提交物流信息，商家在 returnShoppingDays 日内未处理，系统将默认同意退款退货，并自动退款给买家
+                     *      商家同意退款退货，买家在 returnPassDays 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
+                     *
 					 */
 					if(param.getReturnOperate() != null) {
 						//响应订单操作
 						returnOrder.responseReturnOperate(param, rOrder);
 						//订单状态记录
-						orderAction.addRecord(order, param, order.getOrderStatus() , "保存订单操作之前状态，"+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]+"_"+OrderConstant.RETURN_OPERATE[param.getReturnOperate()]+",falg:"+param.getReturnOperateFlag()+"之前订单状态");
+						orderAction.addRecord(order, param, order.getOrderStatus() , "保存订单操作之前状态，"+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]+"_"+OrderConstant.RETURN_OPERATE[param.getReturnOperate()]+"之前订单状态");
 						// 更新订单信息
 						orderInfo.updateInReturn(rOrder, null, null);
 						//更新orderGoods表
@@ -168,7 +183,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						//更新退款商品行success状态
 						returnOrderGoods.updateSucess(rOrder.getRefundStatus(),returnGoods);
 						//退款订单记录
-						returnStatusChange.addRecord(rOrder, param.getIsMp(), OrderConstant.RETURN_OPERATE[param.getReturnOperate()]+",falg:"+param.getReturnOperateFlag());
+						returnStatusChange.addRecord(rOrder, param.getIsMp(), OrderConstant.RETURN_OPERATE[param.getReturnOperate()]);
 						return;
 					}
 					if(param.getIsMp() == OrderConstant.IS_MP_Y) {
@@ -631,6 +646,61 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 				returnTypes[1] = false;
 			}
 		}
-		
 	}
+
+    /**
+     * 自动处理退货退款订单
+     */
+    public void autoReturnOrder(){
+        if(OrderConstant.YES == shopReturncfg.getAutoReturn()){
+            //自动退款退货设置开关开启时间
+            Timestamp autoReturnTime = shopReturncfg.getAutoReturnTime();
+            //买家发起仅退款申请后，商家在returnMoneyDays日内未处理，系统将自动退款。
+            Byte returnMoneyDays = shopReturncfg.getReturnMoneyDays();
+            //商家已发货，买家发起退款退货申请，商家在 returnAddressDays日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收获地址
+            Byte returnAddressDays = shopReturncfg.getReturnAddressDays();
+            //买家已提交物流信息，商家在 returnShoppingDays 日内未处理，系统将默认同意退款退货，并自动退款给买家
+            Byte returnShoppingDays = shopReturncfg.getReturnShoppingDays();
+            //商家同意退款退货，买家在 returnPassDays 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
+            Byte returnPassDays = shopReturncfg.getReturnPassDays();
+            Result<ReturnOrderRecord> autoReturnOrder = returnOrder.getAutoReturnOrder(autoReturnTime, returnMoneyDays, returnAddressDays, returnShoppingDays, returnPassDays);
+            autoReturnOrder.forEach(order->{
+                RefundParam param = new RefundParam();
+                param.setAction(Integer.valueOf(OrderServiceCode.RETURN.ordinal()).byteValue());
+                param.setIsMp(OrderConstant.IS_MP_AUTO);
+                param.setOrderId(order.getOrderId());
+                param.setOrderSn(order.getOrderSn());
+                param.setRetId(order.getRetId());
+                param.setReturnType(order.getReturnType());
+                param.setReturnMoney(order.getMoney());
+                param.setShippingFee(order.getShippingFee());
+                if(order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && order.getReturnType().equals(OrderConstant.RT_ONLY_MONEY)) {
+                    //买家发起退款申请后，商家在 returnMoneyDays 日内未处理，系统将自动退款
+                    param.setReturnOperate(null);
+                }else if(order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDITING) && (order.getReturnType().equals(OrderConstant.RT_GOODS) || order.getReturnType().equals(OrderConstant.RT_CHANGE))) {
+                    //商家已发货，买家发起退款退货申请，商家在 ? 日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收获地址
+                    param.setReturnOperate(OrderConstant.RETURN_OPERATE_ADMIN_AGREE_RETURN);
+                    ReturnBusinessAddressParam defaultAddress = shopReturncfg.getDefaultAddress();
+                    if(defaultAddress != null) {
+                        param.setConsignee(defaultAddress.getConsignee());
+                        param.setReturnAddress(defaultAddress.getReturnAddress());
+                        param.setMerchantTelephone(defaultAddress.getMerchantTelephone());
+                        param.setZipCode(defaultAddress.getZipCode());
+                    }
+                }else if(order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING) && order.getReturnType().equals(OrderConstant.RT_GOODS)) {
+                    //买家已提交物流信息，商家在 ? 日内未处理，系统将默认同意退款退货，并自动退款给买家
+                    param.setReturnOperate(null);
+                }else if(order.getRefundStatus().equals(OrderConstant.REFUND_STATUS_AUDIT_PASS) && order.getReturnType().equals(OrderConstant.RT_GOODS)) {
+                    //商家同意退款退货，买家在 ? 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动撤销。
+                    param.setReturnOperate(OrderConstant.RETURN_OPERATE_MP_REVOKE);
+                }
+                ExecuteResult result = execute(param);
+                if(result == null || result.isSuccess()) {
+                    logger().info("订单自动任务,完成成功,orderSn:{}", order.getOrderSn());
+                }else {
+                    logger().error("订单自动任务,完成失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getErrorCode().toString() , result.getErrorParam());
+                }
+            });
+        }
+    }
 }

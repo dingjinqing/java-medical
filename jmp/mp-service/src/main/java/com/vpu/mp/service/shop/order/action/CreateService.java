@@ -235,7 +235,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //商品退款退货配置
-                calculate.setGoodsReturnCfg(orderBo.getOrderGoodsBo(), order.getGoodsType(), order.getPosFlag());
+                calculate.setGoodsReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order.getPosFlag());
                 orderGoods.addRecord(order, orderBo.getOrderGoodsBo());
                 //必填信息
                 must.addRecord(param.getMust());

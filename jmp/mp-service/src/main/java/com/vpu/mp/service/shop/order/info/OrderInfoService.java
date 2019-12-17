@@ -22,9 +22,11 @@ import static org.jooq.impl.DSL.sum;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -829,7 +831,22 @@ public class OrderInfoService extends ShopBaseService {
             fetch();
     }
 
-    /*********c********************************************分割线以下与订单模块没有直接联系********************************************************/
+    /**
+     * 得到即将过期未支付的订单列表。每1分钟执行一次，取还有10分钟就要过期未支付的订单列表
+     */
+    public Result<OrderInfoRecord> getExpiringNoPayOrderList(){
+        Instant now = Instant.now();
+        return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY).
+            and(TABLE.EXPIRE_TIME.between(
+                Timestamp.from(now.plusSeconds(10 * 60)),
+                Timestamp.from(now.plusSeconds(11 * 60)))).
+            and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_NO)).
+            and(TABLE.TK_ORDER_TYPE.eq(OrderConstant.TK_NORMAL)).
+            and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).
+            fetch();
+    }
+
+    /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
 	/**
 	 * 根据用户id获取累计消费金额
 	 */
@@ -1217,6 +1234,17 @@ public class OrderInfoService extends ShopBaseService {
 	    if(orderSnList != null && orderSnList.size() > 0){
 	        db().update(TABLE).set(TABLE.ORDER_STATUS, ORDER_WAIT_DELIVERY).where(TABLE.ORDER_SN.in(orderSnList)).execute();
         }
+    }
+
+    /**
+     * Overdue delivery integer.发货逾期
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Integer overdueDelivery(Integer nDays) {
+        return db().fetchCount(TABLE, TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
+            .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
     }
 
 }

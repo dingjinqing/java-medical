@@ -482,6 +482,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_CALCULATE_SHIPPING_FEE_ERROR = "order.calculate.shipping.fee.error";
     public static final String MSG_ORDER_PAY_WAY_NO_NULL = "order.pay.way.no.null";
     public static final String MSG_ORDER_ADDRESS_NO_NULL = "order.address.no.null";
+    public static final String MSG_ORDER_AMOUNT_NO_NULL = "order.amount.no.null";
     public static final String MSG_ORDER_CARD_INVALID = "order.card.invalid";
     public static final String MSG_ORDER_COUPON_INVALID = "order.coupon.invalid";
     public static final String MSG_ORDER_DELIVER_TYPE_NO_NULL = "order.deliver.type.no.null";

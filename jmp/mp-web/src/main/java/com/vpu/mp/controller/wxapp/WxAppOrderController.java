@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import javax.validation.Valid;
 
 import com.vpu.mp.service.foundation.util.RequestUtil;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
@@ -85,7 +86,7 @@ public class WxAppOrderController extends WxAppBaseController{
     }
 
 	/**
-	 * 	退款、退货创建
+	 * 	退款、退货创建页面
 	 */
 	@PostMapping("/refund/query")
 	public JsonResult mpRefundGoodsList(@RequestBody @Valid OrderOperateQueryParam param) {
@@ -158,14 +159,31 @@ public class WxAppOrderController extends WxAppBaseController{
 		return success(shop().readOrder.statistic(param));
 	}
 
-	/**
-	 * 统计数量
-	 */
-	@PostMapping("/before")
-	public JsonResult before(@RequestBody @Valid OrderBeforeParam param) {
-		param.setWxUserInfo(wxAppAuth.user());
-		return null;
-	}
+    /**
+     * 售后中心退款订单列表(存在退款)
+     * @param param
+     * @return
+     */
+	public JsonResult mpReturnList(@RequestBody @Valid OrderParam param){
+        try {
+            return success(shop().readOrder.mpReturnList(param));
+        } catch (MpException e) {
+            return fail(e.getErrorCode(), e.getCodeParam());
+        }
+    }
+
+    /**
+     * 售后中心退款订单详情(存在退款)
+     * @param param
+     * @return
+     */
+    public JsonResult mpReturnInfo(@RequestBody @Valid ReturnOrderParam param){
+        try {
+            return success(shop().readOrder.getReturnOrder(param));
+        } catch (MpException e) {
+            return fail(e.getErrorCode(), e.getCodeParam());
+        }
+    }
 
 	/**
 	 * 历史购买

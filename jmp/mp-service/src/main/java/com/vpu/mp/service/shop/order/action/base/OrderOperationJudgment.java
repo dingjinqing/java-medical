@@ -352,7 +352,7 @@ public class OrderOperationJudgment {
 		//退款
 		source.setIsReturnMoney(isReturnMoney(target, OrderConstant.IS_MP_Y) ? YES : NO);
 		//退货
-		source.setIsReturnMoney(mpIsReturnGoods(target) ? YES : NO);;
+		source.setIsReturnGoods(mpIsReturnGoods(target) ? YES : NO);;
 		//取消
 		source.setIsCancel(mpIsCancel(target) ? YES : NO);
 		//删除

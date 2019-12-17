@@ -8,6 +8,16 @@ import java.lang.annotation.Target;
 
 /**
  * redis批量锁
+ * 以下三注解配合使用
+ * @RedisLock（方法注解；必选）
+ * @RedisLockKeys(方法形参注解；必选)
+ * @RedisLockField（自定义类型属性；非必选）
+ * param type eg:
+ *               List<jdk自带类型> List<自定义类型>
+ *               jdk自带类型
+ *               自定义类型
+ *               (jdk自带类型支持基本类型包装类、string等)
+ * 实际redis key 为 @RedisLock.prefix + shopId + obj.toString()
  * @author 王帅
  */
 @Retention(RetentionPolicy.RUNTIME)

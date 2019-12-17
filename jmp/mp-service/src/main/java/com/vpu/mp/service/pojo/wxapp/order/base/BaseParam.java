@@ -4,6 +4,7 @@ import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 基础param
@@ -12,6 +13,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class BaseParam {
 	private WxAppSessionUser wxUserInfo;
 }

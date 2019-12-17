@@ -61,7 +61,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     /**会员卡抵扣金额*/
     private BigDecimal cardBalance;
     /**支付方式*/
-    @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_PAY_WAY_NO_NULL)
+    @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_AMOUNT_NO_NULL)
     private Byte orderPayWay;
 	@JsonIgnore
 	/**方便查找*/

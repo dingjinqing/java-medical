@@ -96,8 +96,4 @@ public class OrderGoodsBo {
 	private Integer firstSpecialId;
 	/**是否可以配送*/
 	private Byte isShipping;
-
-	public String getKey(){
-	    return goodsId.toString();
-    }
 }

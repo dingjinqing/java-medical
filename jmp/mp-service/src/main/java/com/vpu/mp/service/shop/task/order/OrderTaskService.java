@@ -3,7 +3,9 @@ package com.vpu.mp.service.shop.task.order;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.order.action.CloseService;
 import com.vpu.mp.service.shop.order.action.FinishService;
+import com.vpu.mp.service.shop.order.action.PayService;
 import com.vpu.mp.service.shop.order.action.ReceiveService;
+import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,12 @@ public class OrderTaskService extends ShopBaseService {
 
     @Autowired
     private FinishService finish;
+
+    @Autowired
+    private PayService pay;
+
+    @Autowired
+    private ReturnService refund;
 
     /**
      * 订单自动关闭
@@ -52,5 +60,23 @@ public class OrderTaskService extends ShopBaseService {
         logger().info("订单自动完成定时任务start,shop:{}", getShopId());
         finish.autoFinishOrders();
         logger().info("订单自动完成定时任务end");
+    }
+
+    /**
+     * 订单未支付通知
+     */
+    public void expiringNoPayOrderNotify(){
+        logger().info("订单未支付通知定时任务start,shop:{}", getShopId());
+        pay.autoExpiringNoPayOrderNotify();
+        logger().info("订单未支付通知定时任务end");
+    }
+
+    /**
+     * 退货退款
+     */
+    public void autoReturnOrder(){
+        logger().info("订单未支付通知定时任务start,shop:{}", getShopId());
+        refund.autoReturnOrder();
+        logger().info("订单未支付通知定时任务end");
     }
 }

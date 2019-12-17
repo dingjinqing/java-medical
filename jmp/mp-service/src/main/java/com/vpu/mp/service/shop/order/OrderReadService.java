@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -33,6 +34,8 @@ import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
@@ -41,6 +44,8 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.refund.AfterSaleServiceVo;
+import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
@@ -48,6 +53,7 @@ import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
+import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.ShipService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -142,6 +148,8 @@ public class OrderReadService extends ShopBaseService {
     private GoodsMpService goodsMpService;
     @Autowired
     private FootPrintService footPrintService;
+    @Autowired
+    private ReturnService returnService;
 	/**
 	 * 订单查询
 	 * @param param
@@ -262,7 +270,7 @@ public class OrderReadService extends ShopBaseService {
 				sOrderSns.add(order.getOrderSn());
 			}
 			//add退货款信息
-			if(order.getRefundStatus() != (byte)0 ) {
+			if(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS) {
 				rOrderSns.add(order.getOrderSn());
 			}
 		}
@@ -277,11 +285,11 @@ public class OrderReadService extends ShopBaseService {
 		//TODO 查询订单是否为活动奖品
 		List<String> prizesSns = Collections.emptyList();
 		//把退*商品信息插入退*订单信息中
-		refundByOrderSn.forEach((k,v)->{
-			v.forEach(rOrder->{
-				rOrder.setOrderReturnGoodsVo(refundGoodsByOrderSn.get(rOrder.getRetId()));
-			});
-		});
+		refundByOrderSn.forEach((k,v)->
+			v.forEach(rOrder->
+				rOrder.setOrderReturnGoodsVo(refundGoodsByOrderSn.get(rOrder.getRetId()))
+			)
+		);
 		//查询订单订单是否存在退款中订单
 		Map<Integer, Integer> returningCount = returnOrder.getOrderCount(orderIds.toArray(new Integer[orderIds.size()]), OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		//构造order
@@ -564,7 +572,7 @@ public class OrderReadService extends ShopBaseService {
 		}
 		//好物圈
 
-		//拼团
+		//TODO 拼团
 		if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_PIN_GROUP).toString()) != -1){
 
 		}else if(orderType.indexOf(Byte.valueOf(OrderConstant.GOODS_TYPE_GROUP_DRAW).toString()) != -1) {
@@ -721,6 +729,49 @@ public class OrderReadService extends ShopBaseService {
 	public Map<Byte, Integer> statistic(OrderListParam param) {
 		return mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), false);
 	}
+
+    /**
+     * 小程序端点击售后中心展示数据(曾经退过)
+     * @param param
+     */
+    public AfterSaleServiceVo mpReturnList(OrderParam param) throws MpException {
+        AfterSaleServiceVo vo = new AfterSaleServiceVo();
+        OrderInfoRecord order = orderInfo.getOrderByOrderSn(param.getOrderSn());
+        vo.setOrderSn(order.getOrderSn());
+        vo.setCreateTime(order.getCreateTime());
+        //展示退款操作页面
+        OrderOperateQueryParam query = new OrderOperateQueryParam();
+        query.setIsMp(OrderConstant.IS_MP_Y);
+        query.setOrderSn(order.getOrderSn());
+        query.setOrderId(order.getOrderId());
+        RefundVo operateInfo = (RefundVo) returnService.query(query);
+        if(operateInfo != null && CollectionUtils.isNotEmpty(operateInfo.getRefundGoods())){
+            vo.setReturnFlag(YES);
+        }else {
+            vo.setReturnFlag(NO);
+        }
+        //退款记录
+        Result<ReturnOrderRecord> rOrders = returnOrder.getRefundByOrderSn(param.getOrderSn());
+        vo.setReturnOrderlist(new ArrayList<>(rOrders.size()));
+        rOrders.forEach(rOrder->{
+                ReturnOrderListMp returnOrderListMp = new ReturnOrderListMp();
+                //买家；商家（包含定时任务）
+                ReturnStatusChangeRecord lastOperator = returnStatusChange.getLastOperator(rOrder.getRetId());
+                returnOrderListMp.setRole(OrderConstant.IS_MP_Y == lastOperator.getType() ? OrderConstant.IS_MP_Y : OrderConstant.IS_MP_ADMIN);
+                returnOrderListMp.setRefundStatus(rOrder.getRefundStatus());
+                returnOrderListMp.setCreateTime(rOrder.getCreateTime());
+                returnOrderListMp.setFinishTime(lastOperator.getCreateTime());
+                returnOrderListMp.setReturnType(rOrder.getReturnType());
+                returnOrderListMp.setReasonType(rOrder.getReasonType());
+                returnOrderListMp.setMoney(rOrder.getMoney());
+                returnOrderListMp.setShippingFee(rOrder.getShippingFee());
+                returnOrderListMp.setRefundRefuseReason(rOrder.getRefundRefuseReason());
+                vo.getReturnOrderlist().add(returnOrderListMp);
+        });
+        return vo;
+    }
+
+    /*********************************************************************************************************/
 
 	/**
 	 * 分裂营销活动的活动数据分析的订单部分数据
@@ -892,7 +943,7 @@ public class OrderReadService extends ShopBaseService {
                 //退货退款信息
                 OrderConciseRefundInfoVo returnInfo = returnOrderGoods.getOrderGoodsReturnInfo(order.getRecId());
                 if(returnInfo != null){
-                    order.setReturnTime(OrderConstant.RETURN_TYPE_MONEY.equals(returnInfo.getReturnType()) ? returnInfo.getApplyTime() : returnInfo.getShippingOrRefundTime());
+                    order.setReturnTime(OrderConstant.RT_ONLY_MONEY == returnInfo.getReturnType() ? returnInfo.getApplyTime() : returnInfo.getShippingOrRefundTime());
                     order.setReturnFinishTime(returnInfo.getRefundSuccessTime());
                     order.setReturnOrderMoney(returnOrderGoods.getReturnGoodsMoney(order.getRecId()));
                 }
@@ -975,9 +1026,5 @@ public class OrderReadService extends ShopBaseService {
 		// 安装日期分组
 		footPrintService.byDateGroup(orderGoodsHistoryVos,footprintDaylist);
 		return footprintListVo;
-	}
-
-	public void getUserDistrictCode(Integer userId){
-
 	}
 }

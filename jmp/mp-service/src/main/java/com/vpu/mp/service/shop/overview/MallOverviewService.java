@@ -15,6 +15,7 @@ import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -59,6 +60,9 @@ public class MallOverviewService extends ShopBaseService {
 
     @Autowired
     public DistributorCheckService distributorCheckService;
+
+    @Autowired
+    private OrderInfoService orderInfo;
 
     @Autowired
     public ReturnOrderService returnOrderService;
@@ -211,7 +215,7 @@ public class MallOverviewService extends ShopBaseService {
     private AssiDataOrder orderNav(ShopAssistantParam param) {
         return AssiDataOrder.builder()
             //  发货逾期
-            .deliver(returnOrderService.overdueDelivery(param.getDeliverOver()))
+            .deliver(orderInfo.overdueDelivery(param.getDeliverOver()))
             //  退款申请逾期
             .refund(returnOrderService.refundOverdue(param.getRefundOver()))
             .build().ruleHandler();
