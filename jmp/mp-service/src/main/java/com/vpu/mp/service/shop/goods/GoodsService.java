@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -35,6 +36,7 @@ import com.vpu.mp.service.shop.goods.es.EsFactSearchService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
+import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
@@ -112,6 +114,8 @@ public class GoodsService extends ShopBaseService {
     private EsGoodsSearchService esGoodsSearchService;
     @Autowired
     private EsGoodsCreateService esGoodsCreateService;
+    @Autowired
+    private EsGoodsLabelCreateService esGoodsLabelCreateService;
     @Autowired
     private EsUtilSearchService esUtilSearchService;
     @Autowired
@@ -723,6 +727,7 @@ public class GoodsService extends ShopBaseService {
             //更新es
             if (esUtilSearchService.esState()) {
                 esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(),getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
             }
         });
     }
@@ -1028,6 +1033,7 @@ public class GoodsService extends ShopBaseService {
             List<Integer> goodsIds = goodsRecords.stream().map(GoodsRecord::getGoodsId).collect(Collectors.toList());
             if (esUtilSearchService.esState()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds,getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
             }
         });
     }
@@ -1052,6 +1058,7 @@ public class GoodsService extends ShopBaseService {
         //更新es
         if (esUtilSearchService.esState()){
             esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds,getShopId());
+            esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
         }
     }
 
@@ -1143,6 +1150,7 @@ public class GoodsService extends ShopBaseService {
             //更新es
             if (esUtilSearchService.esState()){
                 esGoodsCreateService.deleteEsGoods(goodsIds,getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.DELETE);
             }
         });
     }
@@ -1206,6 +1214,7 @@ public class GoodsService extends ShopBaseService {
             //es更新
             if (esUtilSearchService.esState()){
                 esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(),getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
             }
         });
     }
@@ -1818,6 +1827,31 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     * 根据品牌id获取商品id
+     * @param brandId 品牌id
+     * @return goodsId list
+     */
+    public List<Integer> getGoodsIdByBrandId(Integer brandId){
+        return db().select(GOODS.GOODS_ID).
+            from(GOODS).
+            where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
+            and(GOODS.BRAND_ID.eq(brandId)).
+            fetch(GOODS.GOODS_ID);
+    }
+    /**
+     * 根据sortId list获取商品id
+     * @param sortIds 品牌id
+     * @return goodsId list
+     */
+    public List<Integer> getGoodsIdBySortId(List<Integer> sortIds){
+        return db().select(GOODS.GOODS_ID).
+            from(GOODS).
+            where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
+            and(GOODS.SORT_ID.in(sortIds)).
+            fetch(GOODS.GOODS_ID);
+    }
+
+    /**
      * 手动上架所有待上架商品
      * 待上架商品：商品是指定时间上架的商品，且指定时间小于当前时间 （saleType=1 待上架，state!=2 审核未违规）
      */
@@ -1832,6 +1866,8 @@ public class GoodsService extends ShopBaseService {
 
         if (esUtilSearchService.esState()){
             esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds,getShopId());
+            esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds,DBOperating.UPDATE);
+
         }
     }
 }

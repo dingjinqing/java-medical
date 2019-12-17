@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.EsManager;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 */
 @Slf4j
 @Service
-public class EsGoodsCreateService extends BaseShopConfigService {
+public class EsGoodsCreateService extends ShopBaseService {
 
     @Autowired
     private EsManager esManager;

@@ -19,6 +19,7 @@ import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
@@ -101,23 +102,22 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
      * @param goodsId 商品ID
      */
     @SuppressWarnings("unchecked")
-    @Deprecated
-    public void createEsLabelIndexForGoodsId(Integer goodsId, DBOperating operating){
+    public void createEsLabelIndexForGoodsId(Integer goodsId){
         Integer shopId = getShopId();
         Set<Integer> sortIds = Sets.newHashSet();
         Set<Integer> categoryIds = Sets.newHashSet();
         List<Map<String,Object>> goodsInfoList = getGoodsInfoByParam(Collections.singletonList(goodsId),null,null);
         for( Map<String,Object> infoMap: goodsInfoList ){
-            sortIds.addAll((ArrayList<Integer>)infoMap.get(EsSearchName.FULL_SORT_ID));
-            categoryIds.addAll((ArrayList<Integer>)infoMap.get(EsSearchName.FULL_CAT_ID));
+            sortIds.addAll((ArrayList<Integer>)infoMap.getOrDefault(EsSearchName.FULL_SORT_ID,Lists.newArrayList()));
+            categoryIds.addAll((ArrayList<Integer>)infoMap.getOrDefault(EsSearchName.FULL_CAT_ID,Lists.newArrayList()));
         }
         Condition condition = GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.CATTYPE.getCode())
             .and(GOODS_LABEL_COUPLE.GTA_ID.in(categoryIds));
-        condition.or(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode())
+        condition = condition.or(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode())
             .and(GOODS_LABEL_COUPLE.GTA_ID.in(sortIds)));
-        condition.or(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode())
+        condition = condition.or(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode())
             .and(GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId)));
-        condition.or(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode()));
+        condition = condition.or(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode()));
         List<GoodsLabelCouple> goodsLabelCouples = goodsLabelCoupleService.getGoodsLabelCouple(condition);
         GoodsLabelTypeInfo labelTypeInfo = GoodsLabelTypeInfo.convert(goodsLabelCouples);
         Map<Integer, GoodsLabelRecord> labelInfoMap = goodsLabelService
@@ -128,7 +128,7 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
 
         deleteIndexByIds(shopId,Collections.singletonList(goodsId),null);
 
-        batchCommitEsGoodsIndex(esGoodsLabelList);
+        batchCommitEsGoodsIndex(esGoodsLabelList, WriteRequest.RefreshPolicy.IMMEDIATE);
     }
 
     private void createEsLabelIndexForLabelId(List<Integer> labelIds){
@@ -281,7 +281,7 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
         if( sortIds != null && !sortIds.isEmpty() ){
             searchList.add( new FieldProperty(EsSearchName.FULL_SORT_ID,sortIds));
         }
-        if( sortIds != null && !sortIds.isEmpty() ){
+        if( goodsIds != null && !goodsIds.isEmpty() ){
             searchList.add( new FieldProperty(EsSearchName.GOODS_ID,goodsIds));
         }
         param.setSearchList(searchList);
@@ -299,7 +299,15 @@ public class EsGoodsLabelCreateService extends ShopBaseService {
      * @param goodsLabelList {List<EsGoodsLabel> }
      */
     private void batchCommitEsGoodsIndex(List<EsGoodsLabel> goodsLabelList){
+        batchCommitEsGoodsIndex(goodsLabelList, WriteRequest.RefreshPolicy.NONE);
+    }
+    /**
+     * 批量提交商品标签ES数据
+     * @param goodsLabelList {List<EsGoodsLabel> }
+     */
+    private void batchCommitEsGoodsIndex(List<EsGoodsLabel> goodsLabelList, WriteRequest.RefreshPolicy policy){
         BulkRequest requests = new BulkRequest();
+        requests.setRefreshPolicy(policy);
         for( EsGoodsLabel goodsLabel: goodsLabelList ){
             requests.add(esManager.assemblyRequest(EsGoodsConstant.LABEL_INDEX_NAME,goodsLabel));
         }
