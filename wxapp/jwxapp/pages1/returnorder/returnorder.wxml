@@ -73,8 +73,8 @@
     </view>
     <view class="order-info">
       <text class="order-left"><text class="order-place">*</text>上传凭证：</text>
-      <view class="order-upload order-left">
-        <image class="order-upload-addicon" src="http://mpdevimg2.weipubao.cn//image/wxapp/return_img_icom.png"></image>
+      <view class="order-upload order-left" bindtap="uploadRefundImg">
+        <image class="order-upload-addicon" src="{{add_img}}"></image>
       </view>
     </view>
   </block>
@@ -218,8 +218,8 @@
     </view>
     <view class="order-info">
       <text class="order-left"><text class="order-place2">*</text>上传凭证：</text>
-      <view class="order-upload order-left">
-        <image class="order-upload-addicon" src="http://mpdevimg2.weipubao.cn//image/wxapp/return_img_icom.png"></image>
+      <view class="order-upload order-left" bindtap="uploadRefundImg">
+        <image class="order-upload-addicon" src="{{add_img}}"></image>
       </view>
     </view>
   </block>

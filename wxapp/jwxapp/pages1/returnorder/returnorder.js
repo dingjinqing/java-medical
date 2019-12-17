@@ -12,6 +12,7 @@ global.wxPage({
     imageUrl: imageUrl,
     type_active: imageUrl + 'image/wxapp/con_btn_success.png',
     click_look: imageUrl + 'image/wxapp/click_look.png',
+    add_img: imageUrl + '/image/wxapp/return_img_icom.png',
     orderInfo: {
       activityType: 1
     },
@@ -25,6 +26,7 @@ global.wxPage({
     reasone_huan: ['协商一致换货', '商品与页面描述不符', '发错货', '商品损坏', '其他'], // 换货原因
     reasoneIndex: 0, // 选中的原因
     returnMoney: 0.00, //退款金额
+    uploadedImg: [], // 已经上传的图片
   },
 
   /**
@@ -145,6 +147,12 @@ global.wxPage({
     this.setData({
       reasoneIndex: index
     })
+  },
+
+  // 上传凭证
+  uploadRefundImg () {
+    console.log('upload')
+
   },
 
   /**
