@@ -52,23 +52,32 @@ public class MpOfficialAccountUserService extends MainBaseService {
     }
     
     
-    
-    public void getOpenIdFromMpOpenId(String officialAccountAppId,String mpAppId,String mpOpenId) {
+    /**
+     * 通过小程序用户OpenId得到公众号用户的openId
+     * @param officialAccountAppId 公众号AppId
+     * @param mpAppId 小程序AppId
+     * @param mpOpenId 小程序openId
+     * @return
+     */
+    public String getOpenIdFromMpOpenId(String officialAccountAppId,String mpAppId,String mpOpenId) {
     	MpAuthShopRecord mp = saas.shop.mp.getAuthShopByAppId(mpAppId);
     	if(mp != null) {
     		UserRecord user = this.saas.getShopApp(mp.getShopId()).user.getUserFromOpenId(mpOpenId);
     		if(user != null && !StringUtils.isBlank(user.getWxUnionId())) {
-    			
+    			MpOfficialAccountUserRecord accountUser = getUserByUnionId(officialAccountAppId,user.getWxUnionId());
+    			return accountUser != null ? accountUser.getOpenid():null;
     		}
     	}
+    	return null;
  
     }
     
-    public void getUserByUnionId(String appId,String openId) {
+    public MpOfficialAccountUserRecord getUserByUnionId(String appId,String openId) {
     	Condition condition = DSL.noCondition();
     	condition = condition
     			.and(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId))
-    			.and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId));		
+    			.and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId));
+    	return db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(condition).fetchAny();
     }
     
     public MpOfficialAccountUserRecord getUser(String appId) {

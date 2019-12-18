@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.shop.member.account.AccountWithdrawVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccoountInfoVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
@@ -95,7 +96,7 @@ public class WxAppAccountController extends WxAppBaseController {
 	@PostMapping("/api/wxapp/user/account/withdraw")
 	public JsonResult getUserAccountWithdraw() {
 		WxAppSessionUser user = this.wxAppAuth.user();
-		shop().member.account.getUserAccountWithdraw(user.getUserId());
-		return success();
+		AccountWithdrawVo vo = shop().member.account.getUserAccountWithdraw(user.getUserId());
+		return success(vo);
 	}
 }
