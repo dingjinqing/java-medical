@@ -18,6 +18,16 @@ public interface GroupBuyConstant {
      */
     public static final Byte IS_GROUPER_N = 0;
 
+    //************ 是否团长优惠***********************/0：不开启，1：开启
+    /**
+     * 是
+     */
+    public static final Byte IS_GROUPER_CHEAP_Y = 1;
+    /**
+     * 否
+     */
+    public static final Byte IS_GROUPER_CHEAP_N = 0;
+
     //********** 开团限制 0不限制**************
 
     public static final Byte OPEN_LIMIT_N = 0;

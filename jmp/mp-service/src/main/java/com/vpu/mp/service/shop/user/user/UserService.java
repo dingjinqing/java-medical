@@ -431,6 +431,7 @@ public class UserService extends ShopBaseService {
 		logger().info("获取sessionKey"+StringUtils.isEmpty(sessionKey));
 		WxMaUserInfo userInfo = maService.getUserService().getUserInfo(sessionKey,
 				param.getEncryptedData(), param.getIv());
+		logger().info("获取用户信息"+userInfo.toString());
 		if (userInfo != null) {
 			if (!userInfo.getUnionId().equals(record.getWxUnionId())) {
 				db().update(USER).set(USER.WX_UNION_ID, userInfo.getUnionId()).where(USER.USER_ID.eq(userId)).execute();

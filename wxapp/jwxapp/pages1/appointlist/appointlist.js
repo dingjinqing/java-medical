@@ -169,7 +169,7 @@ global.wxPage({
     let order_sn = e.currentTarget.dataset.order_sn
     let orderId = e.currentTarget.dataset.order_id
     // let form_id = e.detail.formId
-    util.api('/api/wxapp/store/service/submitReservation', function (res) {
+    util.api('/api/wxapp/store/service/reservationContinuePay', function (res) {
       if (res.error == 0) {
         if (typeof (res.content.timeStamp) != 'undefined') {
           wx.requestPayment({

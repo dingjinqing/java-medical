@@ -42,8 +42,6 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -257,6 +255,9 @@ public class StoreWxService extends ShopBaseService {
             });
         }
         // 设置图片和距离
+        Double lat1 = location.getLatitude();
+        Double lon1 = location.getLongitude();
+        log.debug("用户地理位置为：经度【{}】，维度【{}】", lat1, lon1);
         storeList.forEach(s -> {
             String storeImgs = s.getStoreImgs();
             log.debug("门店宣传图列表为:{}", storeImgs);
@@ -268,10 +269,8 @@ public class StoreWxService extends ShopBaseService {
             } else {
                 s.setStoreImgs(null);
             }
-            Double lat1 = location.getLatitude();
-            Double lon1 = location.getLatitude();
             if (lat1 != null && lon1 != null) {
-                double distance = getDistance(lat1, lon1, Double.parseDouble(s.getLatitude()), Double.parseDouble(s.getLongitude()));
+                double distance = Util.getDistance(lat1, lon1, Double.parseDouble(s.getLatitude()), Double.parseDouble(s.getLongitude()));
                 log.debug("门店 {} 距离用户位置 {} km", s.getStoreName(), distance);
                 s.setDistance(distance);
             } else {
@@ -303,32 +302,6 @@ public class StoreWxService extends ShopBaseService {
         } else {
             return null;
         }
-    }
-
-    /**
-     * Gets distance.计算门店距离,单位km(两个经纬度之间的距离)目前使用的是 Haversine method 计算方法
-     *
-     * @param lat1 the lat 1
-     * @param lon1 the lon 1
-     * @param lat2 the lat 2
-     * @param lon2 the lon 2
-     * @return the distance
-     */
-    public double getDistance(double lat1, double lon1, double lat2, double lon2) {
-        double radLat1 = rad(lat1);
-        double radLat2 = rad(lat2);
-        double a = radLat1 - radLat2;
-        double b = rad(lon1) - rad(lon2);
-        double s = 2 * Math.asin(Math.sqrt(Math.abs(Math.pow(Math.sin(a / 2), 2) +
-            Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2))));
-        double EARTH_RADIUS = 6371.393;
-        s = s * EARTH_RADIUS;
-//        s = Math.round(s * 1000);
-        return new BigDecimal(s).setScale(2, RoundingMode.HALF_UP).doubleValue();
-    }
-
-    private double rad(double d) {
-        return d * Math.PI / 180.0;
     }
 
     /**

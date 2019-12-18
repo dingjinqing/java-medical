@@ -67,10 +67,10 @@ public class RedisLockAspect extends ShopBaseService {
             }
         }
         //keys实参
-        if(args[keyIndex.intValue()] instanceof List){
+        if(args[keyIndex] instanceof List){
             //集合类
-            List<Object> keyObjs = (List<Object>) args[keyIndex.intValue()];
-            if(args[keyIndex.intValue()].getClass().getClassLoader() == null){
+            List<Object> keyObjs = (List<Object>) args[keyIndex];
+            if(keyObjs.get(0).getClass().getClassLoader() == null){
                 //jdk自带类型
                 for (Object keyObj : keyObjs) {
                     keys.add(keyObj.toString());

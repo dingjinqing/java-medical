@@ -4,7 +4,7 @@
       class="prev"
       @click="prevWeek"
     >
-      <img src="/static/image/admin/sche_prev.png">
+      <img :src="$imageHost+'/image/admin/sche_prev.png'">
     </div>
     <div class="week_date">
       <div>{{startDate|formatDate}}</div>
@@ -15,7 +15,7 @@
       class="next"
       @click="nextWeek"
     >
-      <img src="/static/image/admin/sche_next.png">
+      <img :src="$imageHost+'/image/admin/sche_next.png'">
     </div>
   </div>
 </template>

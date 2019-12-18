@@ -42,7 +42,9 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
      * @throws MpException
      */
     public void processInitCheckedOrderCreate(CreateParam param) throws MpException {
-        processorMap.get(param.getActivityType()).processInitCheckedOrderCreate(param);
+        if (param.getActivityId()!=null){
+            processorMap.get(param.getActivityType()).processInitCheckedOrderCreate(param);
+        }
     }
 
     /**
@@ -51,7 +53,9 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
      * @param order
      */
     public void processSaveOrderInfo(CreateParam param, OrderInfoRecord order) throws MpException {
-        processorMap.get(param.getActivityType()).processSaveOrderInfo(param,order);
+        if (param.getActivityId()!=null){
+            processorMap.get(param.getActivityType()).processSaveOrderInfo(param,order);
+        }
     }
 
     /**
@@ -60,7 +64,9 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
      * @throws MpException
      */
     public void processStockAndSales(CreateParam param) throws MpException {
-        processorMap.get(param.getActivityType()).processStockAndSales(param);
+        if (param.getActivityId()!=null){
+            processorMap.get(param.getActivityType()).processStockAndSales(param);
+        }
     }
 }
 
