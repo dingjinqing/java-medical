@@ -1,5 +1,8 @@
 export const en = {
   // 退换货配置
+  afterconfig: 'After-sales configuration',
+  activeafterconfig: 'When enabled, the store will support returns / refunds',
+  supportreturn: 'Support exchange',
   title: 'Return configuration',
   returnconfig: 'Return configuration',
   cannotreturngoods: 'Specified product is not supported',
@@ -32,5 +35,8 @@ export const en = {
   merchant_telephone: 'Receiving phone number:',
   zip_code: 'Zip code:',
   return_address: 'return address:',
-  save: 'save'
+  save: 'save',
+  afterstockconfig: 'After-sale product inventory configuration',
+  addgoodstock: 'Product refund after return, exchange, increase the original product inventory',
+  notaddgoodstock: 'Product refunds, returns and exchanges will not increase the original product inventory'
 }

@@ -1,5 +1,8 @@
 export const cn = {
   // 退换货配置
+  afterconfig: '售后配置',
+  activeafterconfig: '启用后，店铺将支持退货/退款服务',
+  supportreturn: '支持换货',
   title: '退换货配置',
   returnconfig: '退货配置',
   cannotreturngoods: '指定商品不支持',
@@ -32,5 +35,8 @@ export const cn = {
   merchant_telephone: '收件电话：',
   zip_code: '邮编：',
   return_address: '退货地址：',
-  save: '保存'
+  save: '保存',
+  afterstockconfig: '售后商品库存配置',
+  addgoodstock: '商品退款退货、换货后，增加原商品库存',
+  notaddgoodstock: '商品退款退货、换货后，不增加原商品库存'
 }

@@ -13,6 +13,7 @@ var vali;
 var input_vali;
 var goods_ids;
 var total_micro_second;
+var set_time_out;
 Page({
 
   /**
@@ -28,6 +29,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    clearTimeout(set_time_out);
     var _this = this;
     goods_ids = options.goods_id;
  
@@ -71,8 +73,9 @@ Page({
       res.content.is_expire = 0;
     }
     // 倒计时
-    if (res.content.remain_seconds_all > 0 && res.content.remain_days == 0) {
-      total_micro_second = res.content.remain_seconds_all;
+    if (res.content.remainDays == 0) {
+      // total_micro_second = res.content.remain_seconds_all;
+      total_micro_second = res.content.remainHours * 3600 + res.content.remainMinutes * 60 + res.content.remainSeconds;
       if (total_micro_second > 0) {
         _this.countdown(_this);
       } else {
