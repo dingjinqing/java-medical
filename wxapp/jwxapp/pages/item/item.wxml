@@ -103,6 +103,6 @@
     <!-- 商品详情 -->
     <v-goods-detail goods-desc-info="{{goodsDescInfo}}"/>
   </view>
-  <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" can-buy="{{canBuy}}" activity="{{activity}}" isDefaultPrd="{{goodsInfo.defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
+  <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" dealt-act="{{dealtAct}}" activity="{{activity}}" isDefaultPrd="{{goodsInfo.defaultPrd}}" bindshowSpecDialog="showSpecDialog"/>
   <include src="../common/footer.wxml" />
 </view>
