@@ -512,9 +512,6 @@ export default {
           case 'm_voucher':
             newArr[index] = 'm_coupon'
             break
-          case 'm_voucher':
-            newArr[index] = 'm_coupon'
-            break
           case 'm_integral_goods':
             newArr[index] = 'm_integral'
             break
