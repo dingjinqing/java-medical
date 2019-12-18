@@ -49,8 +49,8 @@ global.wxComponent({
       }
     },
     canBuy:{
-      type:Boolean,
-      value:true,
+      type:Object,
+      value:null,
       observer(val){
         console.log(val)
       }
@@ -73,11 +73,12 @@ global.wxComponent({
    */
   methods: {
     leftClick(){
-      if (this.checkOrigin('left')) return
+      if (this.checkOrigin('left')) return //判断商品详情页点击 底部footer按钮
       this.addCart()
     },
     rightClick(){
       if (this.checkOrigin('right')) return
+      if (!this.data.canBuy) util.showModal('提示','失败',()=>{},'','','确认')
       this.toCheckOut()
     },
     getCartNum(){
