@@ -310,7 +310,7 @@ public class WechatTaskService extends ShopBaseService {
         return isHavingData(table, data);
     }
     private boolean isHavingData(Table<?> table,Field<String> date){
-        int count =db().selectCount().from(table).where(table.field("ref_date",String.class).eq(date)).execute();
+        int count =db().selectCount().from(table).where(table.field("ref_date",String.class).eq(date)).fetchOneInto(Integer.class);
         return count > 0;
     }
 }
