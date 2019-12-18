@@ -16,7 +16,6 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -68,27 +67,39 @@ public class RedisLockAspect extends ShopBaseService {
             }
         }
         //keys实参
-        if(args[keyIndex.intValue()] instanceof List){
+        if(args[keyIndex] instanceof List){
             //集合类
-            List<Object> keyObjs = (List<Object>) args[keyIndex.intValue()];
-            //获取fields
-            Field[] keyObjFields = keyObjs.get(0).getClass().getDeclaredFields();
-            //key field name
-            String keyFieldName = null;
-            //
-            for (int i = 0, length = keyObjFields.length; i < length; i++) {
-                if(keyObjFields[i].isAnnotationPresent(RedisLockField.class)){
-                    keyFieldName = keyObjFields[i].getName();
-                    break;
+            List<Object> keyObjs = (List<Object>) args[keyIndex];
+            if(keyObjs.get(0).getClass().getClassLoader() == null){
+                //jdk自带类型
+                for (Object keyObj : keyObjs) {
+                    keys.add(keyObj.toString());
+                }
+            }else {
+                //获取fields
+                Field[] keyObjFields = keyObjs.get(0).getClass().getDeclaredFields();
+                //key field name
+                String keyFieldName = null;
+                //
+                for (int i = 0, length = keyObjFields.length; i < length; i++) {
+                    if(keyObjFields[i].isAnnotationPresent(RedisLockField.class)){
+                        keyFieldName = keyObjFields[i].getName();
+                        break;
+                    }
+                }
+                //初始化keys
+                keys = new ArrayList<>(keyObjs.size());
+                for (Object keyObj : keyObjs) {
+                    keys.add(PropertyUtils.getProperty(keyObj, keyFieldName).toString());
                 }
             }
-            //初始化keys
-            keys = new ArrayList<>(keyObjs.size());
-            for (Object keyObj : keyObjs) {
-                keys.add(PropertyUtils.getProperty(keyObj, keyFieldName).toString());
-            }
-        }else {
-            //非集合类
+
+        } else if(args[keyIndex.intValue()].getClass().getClassLoader() == null) {
+            //非集合类型但是为jdk自带类型
+            keys = new ArrayList<>(1);
+            keys.add(args[keyIndex.intValue()].toString());
+        } else {
+            //非集合类但是为自定义类型
             //获取fields
             Field[] keyObjFields = args[keyIndex.intValue()].getClass().getDeclaredFields();
             String keyFieldName = null;

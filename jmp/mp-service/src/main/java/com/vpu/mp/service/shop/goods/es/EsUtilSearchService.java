@@ -88,9 +88,9 @@ public class EsUtilSearchService extends EsBaseSearchService{
         BoolQueryBuilder bool = QueryBuilders.boolQuery();
         param.getSearchList().forEach(x->{
             if( x.getValue() instanceof List ){
-                bool.should(QueryBuilders.termsQuery(x.getSearchName(),x.getValue()));
+                bool.must(QueryBuilders.termsQuery(x.getSearchName(),(List)x.getValue()));
             }else{
-                bool.should(QueryBuilders.termQuery(x.getSearchName(),x.getValue()));
+                bool.must(QueryBuilders.termQuery(x.getSearchName(),x.getValue()));
             }
         });
         EsSearchSourceBuilderParam sourceBuilderParam = EsSearchSourceBuilderParamBuilder.builder()

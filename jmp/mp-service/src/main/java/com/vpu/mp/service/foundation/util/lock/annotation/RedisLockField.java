@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * redis批量锁参数注释规定使用List<String>
+ * redis批量锁参数
+ * 标注自定义类型属性
  * @author 王帅
  */
 @Retention(RetentionPolicy.RUNTIME)

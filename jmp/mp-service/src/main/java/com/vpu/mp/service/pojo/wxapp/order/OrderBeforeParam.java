@@ -65,7 +65,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	/** 是否是团长*/
 	private Byte isGrouper;
     /**支付方式*/
-    @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_PAY_WAY_NO_NULL)
+    @NotNull(groups = {CreateOrderValidatedGroup.class}, message = JsonResultMessage.MSG_ORDER_AMOUNT_NO_NULL)
     private Byte orderPayWay;
 	@JsonIgnore
 	/**方便查找*/

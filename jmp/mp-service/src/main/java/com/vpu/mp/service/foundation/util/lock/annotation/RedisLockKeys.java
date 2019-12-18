@@ -6,7 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * redis批量锁参数注释规定使用List<String>
+ * redis批量锁keys
+ * keys type : list<Object> or Object
+ * Object type : jdk自带类型 如基本类型包装类、string等
+ *               自定义类型 需要配合@RedisLockField注解该自定义类型的属性
  * @author 王帅
  */
 @Retention(RetentionPolicy.RUNTIME)

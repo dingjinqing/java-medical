@@ -93,4 +93,28 @@ public class OrderScheduleTask {
             saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.finish();
         });
     }
+
+    /**
+     * 订单未支付通知
+     * 每分钟执行一次
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void expiringNoPayOrderNotify(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.expiringNoPayOrderNotify();
+        });
+    }
+
+    /**
+     * 自动处理退款退货
+     * 每分钟执行一次
+     */
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void autoCloseReturnOrder(){
+        Result<ShopRecord> shops = saas.shop.getAll();
+        shops.forEach((shop)->{
+            saas.getShopApp(shop.getShopId()).shopTaskService.orderTaskService.autoReturnOrder();
+        });
+    }
 }

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.MpOfficialAccount.MP_OFFICIAL_ACCOUNT;
 import static com.vpu.mp.db.main.tables.MpOfficialAccountUser.MP_OFFICIAL_ACCOUNT_USER;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
@@ -21,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Record11;
 import org.jooq.Record13;
 import org.jooq.Record2;
@@ -68,10 +70,8 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
-import com.vpu.mp.service.pojo.shop.user.user.WxUserInfo;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
-import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.decoration.AppletsJumpService;
 import com.vpu.mp.service.wechat.api.WxOpenAccountService;
 import com.vpu.mp.service.wechat.bean.ma.MpWxMaOpenCommitExtInfo;
@@ -1614,5 +1614,23 @@ public class MpAuthShopService extends MainBaseService {
 		if(param.getIsEnabled()!=null) {
 			selectFrom.where(SHOP.IS_ENABLED.eq(param.getIsEnabled()));
 		}
+	}
+	
+	
+	/**
+	 * 根据shopId获取小程序对应的公众号
+	 * @param shopId
+	 * @return
+	 */
+	public String findOffcialByShopId(Integer shopId) {
+		Record1<String> fetchAny = db().select(MP_OFFICIAL_ACCOUNT.APP_ID).from(MP_AUTH_SHOP, MP_OFFICIAL_ACCOUNT)
+				.where(MP_AUTH_SHOP.LINK_OFFICIAL_APP_ID.eq(MP_OFFICIAL_ACCOUNT.APP_ID)
+						.and(MP_AUTH_SHOP.SHOP_ID.eq(shopId)))
+				.fetchAny();
+		String into=null;
+		if(fetchAny!=null) {
+			into = fetchAny.into(String.class);
+		}
+		return into;
 	}
 }

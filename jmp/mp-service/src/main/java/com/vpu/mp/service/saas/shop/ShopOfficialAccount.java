@@ -385,27 +385,32 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @param unionId
 	 * @param openId
 	 */
-	public void addOrUpdateUser(String appId, MpOfficialAccountUserRecord record, String unionId, String openId) {
+	public Integer addOrUpdateUser(String appId, MpOfficialAccountUserRecord record, String unionId, String openId) {
 		MpOfficialAccountUserRecord fetchAny = MP_OFFICIAL_ACCOUNT_USER.newRecord();
-		if (StringUtils.isEmpty(unionId)) {
+		if ((!StringUtils.isEmpty(appId)) && (!StringUtils.isEmpty(openId))) {
 			// 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。
 			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER)
 					.where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId)))
 					.fetchAny();
-		} else {
-			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId)
-					.and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId)).and(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId)))
+		} else if ((!StringUtils.isEmpty(appId)) && (!StringUtils.isEmpty(unionId))) {
+			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER)
+					.where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId)))
 					.fetchAny();
+		}else {
+			logger().info("addOrUpdateUser invalid data, data:");
+			return 0;
 		}
+		int execute=0;
 		if (fetchAny == null) {
 			// 插入
-			db().executeInsert(record);
+			 execute = db().executeInsert(record);
 		} else {
 			// 更新
 			record.setRecId(fetchAny.getRecId());
-			db().executeUpdate(record);
+			execute = db().executeUpdate(record);
 		}
 		syncSubOfficialUser(appId, record, unionId, openId);
+		return execute;
 	}
 
 	/**

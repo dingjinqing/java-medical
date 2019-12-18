@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
 
-    private static final long serialVersionUID = -21049834;
+    private static final long serialVersionUID = 1695284034;
 
     /**
      * The reference instance of <code>jmini_shop_444801.b2c_mrking_voucher</code>
@@ -242,11 +242,6 @@ public class MrkingVoucher extends TableImpl<MrkingVoucherRecord> {
      * The column <code>jmini_shop_444801.b2c_mrking_voucher.validity_type</code>. 优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效
      */
     public final TableField<MrkingVoucherRecord, Byte> VALIDITY_TYPE = createField("validity_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "优惠券有效期类型标记，1领取后开始指定时间段内有效，0固定时间段有效");
-
-    /**
-     * The column <code>jmini_shop_444801.b2c_mrking_voucher.recommend_type</code>. 支付有礼跳转链接 1:全部商品可用 2：指定商品可用
-     */
-    public final TableField<MrkingVoucherRecord, Byte> RECOMMEND_TYPE = createField("recommend_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "支付有礼跳转链接 1:全部商品可用 2：指定商品可用");
 
     /**
      * The column <code>jmini_shop_444801.b2c_mrking_voucher.validity_hour</code>. 优惠券有效小时数

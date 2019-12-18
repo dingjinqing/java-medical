@@ -294,17 +294,17 @@ public class OrderGoodsService extends ShopBaseService{
      * @param bos 商品
      */
     public void addRecord(OrderInfoRecord order, List<OrderGoodsBo> bos){
-        boolean isAllNotReturn = true;
+        int isReturNnum = 0;
         List<OrderGoodsRecord> records = new ArrayList<>(bos.size());
         for (OrderGoodsBo bo : bos) {
             bo.setOrderId(order.getOrderId());
             bo.setOrderSn(order.getOrderSn());
-            if(bo.getIsCanReturn() != null && bo.getIsCanReturn() == OrderConstant.YES){
-                isAllNotReturn = false;
+            if(bo.getIsCanReturn() != null && bo.getIsCanReturn() == OrderConstant.IS_CAN_RETURN_N){
+                isReturNnum++;
             }
             records.add(db().newRecord(TABLE, bo));
         }
-        if(isAllNotReturn){
+        if(bos.size() == isReturNnum){
             order.setReturnTypeCfg(OrderConstant.CFG_RETURN_TYPE_N);
             order.store();
         }
