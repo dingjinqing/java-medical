@@ -44,7 +44,7 @@ public class WechatTaskService extends ShopBaseService {
     Logger logger= LoggerFactory.getLogger(WechatTaskService.class);
     private static final String CONTENT = "wechat-context";
     private static final ThreadLocal<String> local = ThreadLocal.withInitial(() -> {
-        LocalDate date = LocalDate.now();
+        LocalDate date = LocalDate.now().minusDays(1);
         DateTimeFormatter faDateTimeFormatter = DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT);
         return date.format(faDateTimeFormatter);
     });

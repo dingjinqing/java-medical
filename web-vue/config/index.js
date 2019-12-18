@@ -11,13 +11,6 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {
-      '/vpb': {
-        target: 'http://' + devenv.API_DOMAIN.replace(/"/g,''),
-        changeOrigin: true,
-        pathRewrite: { '^/vpb': '' }
-      }
-    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
