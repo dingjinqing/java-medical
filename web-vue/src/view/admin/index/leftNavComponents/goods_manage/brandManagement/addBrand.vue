@@ -427,7 +427,7 @@ export default {
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
     defaultGrandClass (flag) {
-      console.log(this.editGoodsId)
+      console.log(this.$route.query.brandId)
       // 品牌分类下拉框数据获取
       classificationSelectRequest().then((res) => {
         console.log(res)
@@ -450,7 +450,7 @@ export default {
         }
       })
       // 是否是编辑判断
-      if (this.editGoodsId !== 'add') {
+      if (this.editGoodsId !== 'add' && !this.$route.query.brandId) {
         if (!this.editGoodsId) return
         queryGoodsIdRequest(this.editGoodsId).then((res) => {
           console.log(res)
