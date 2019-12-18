@@ -23,6 +23,9 @@ service.interceptors.request.use(
     // console.log(config.url.split('/')[2])
 
     config.headers['Content-Type'] = localStorage.getItem('contentType')
+    if(!config.headers['Content-Type']) {
+      config.headers['Content-Type'] = 'application/json;charset=UTF-8'
+    }
     // console.log(Cookies.get('V-Token'))
     if (config.url.split('/')[2] === 'admin') {
       config.headers['V-Token'] = Cookies.get('V-Index-Token')

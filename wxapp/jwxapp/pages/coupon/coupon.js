@@ -124,6 +124,12 @@ global.wxPage({
     util.jumpLink('/pages/getCoupon/getCoupon?couponSn=' + couponSn);
   },
 
+  // 券购搜素
+  to_search: function (opt) {
+    var coupon_sn = opt.currentTarget.dataset.coupon_sn;
+    util.jumpLink('/pages/searchs/search?coupon_sn=' + coupon_sn);
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

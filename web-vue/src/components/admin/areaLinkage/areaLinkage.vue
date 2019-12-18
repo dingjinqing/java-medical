@@ -28,7 +28,7 @@
       >
         <el-option value="">请选择市</el-option>
         <el-option
-          v-for="item in this.city"
+          v-for="item in city"
           :key="item.cityId"
           :label="item.cityName"
           :value="item.cityId"
@@ -45,7 +45,7 @@
       >
         <el-option value="">请选择区县</el-option>
         <el-option
-          v-for="item in this.areaDistrict"
+          v-for="item in areaDistrict"
           :key="item.districtId"
           :label="item.districtName"
           :value="item.districtId"
@@ -57,7 +57,9 @@
   </div>
 </template>
 <script>
-import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import chinaData from '@/assets/china-data'
+import { deepCloneObj } from '@/util/deepCloneObj'
+// import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 export default {
   name: 'areaLinkage',
   props: {
@@ -92,40 +94,63 @@ export default {
       return this.values
     }
   },
-  created () {
-    this.getData()
+  watch: {
+    // 编辑数据回显
+    provinceCode (val) {
+      this.values.province = Number(val)
+      this.choseProvince(this.values.province)
+    }
+    // cityCode (val) {
+    //   this.values.city = Number(val)
+    //   this.choseCity(this.values.city)
+    // }
+  },
+  mounted () {
+    // this.getData()
+    this.initHandler()
   },
   methods: {
-    // 获取省市区弹窗
-    getData () {
-      let that = this
-      getAreaSelect().then(res => {
-        // console.log(res)
-        const { error, content } = res
-        if (error === 0) {
-          this.province = content
-          if (that.provinceCode) {
-            that.$set(that.values, 'province', Number(that.provinceCode))
-            that.choseProvince(Number(that.provinceCode))
-            that.choseCity(Number(that.cityCode))
-            if (that.cityCode) {
-              that.$set(that.values, 'city', Number(that.cityCode))
-            }
-            that.choseDistrict(Number(that.districtCode))
-            if (that.districtCode) {
-              that.$set(that.values, 'district', Number(that.districtCode))
-            }
-          }
-        }
-      }).catch(err => console.log(err))
+    // 初始化数据
+    initHandler () {
+      this.province = deepCloneObj(chinaData)
     },
+
+    // 获取省市区弹窗
+    // getData () {
+    //   let that = this
+    //   getAreaSelect().then(res => {
+    //     // console.log(res)
+    //     const { error, content } = res
+    //     if (error === 0) {
+    //       this.province = content
+    //       if (that.provinceCode) {
+    //         that.$set(that.values, 'province', Number(that.provinceCode))
+    //         that.choseProvince(Number(that.provinceCode))
+    //         that.choseCity(Number(that.cityCode))
+    //         if (that.cityCode) {
+    //           that.$set(that.values, 'city', Number(that.cityCode))
+    //         }
+    //         that.choseDistrict(Number(that.districtCode))
+    //         if (that.districtCode) {
+    //           that.$set(that.values, 'district', Number(that.districtCode))
+    //         }
+    //       }
+    //     }
+    //   }).catch(err => console.log(err))
+    // },
+
     // 选择省份
     choseProvince (val) {
       // if (val === ``) return
       this.values.city = ``
       this.values.district = ``
+
       if (val) {
         this.city = this.province.find((item, index) => val === item['provinceId'])['areaCity']
+        if (this.cityCode) {
+          this.values.city = Number(this.cityCode)
+          this.choseCity(this.values.city)
+        }
       } else {
         this.city = []
       }
@@ -146,11 +171,16 @@ export default {
       this.$emit('areaData', this.area)
       this.$emit('areaChange', this.areas)
     },
+
     // 选择市
     choseCity (val) {
       // if (val === ``) return
+
       if (val) {
         this.areaDistrict = this.city.find((item, index) => val === item['cityId'])['areaDistrict']
+        if (this.districtCode) {
+          this.values.district = Number(this.districtCode)
+        }
       } else {
         this.areaDistrict = []
       }
@@ -170,6 +200,7 @@ export default {
       this.$emit('areaData', this.area)
       this.$emit('areaChange', this.areas)
     },
+
     choseDistrict (val) {
       let district = this.areaDistrict.find(data => val === data.districtId)
       if (district) {

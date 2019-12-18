@@ -143,6 +143,8 @@ export default {
         tooltip: {
           trigger: 'axis'
         },
+        legend: {
+        },
         grid: {
           left: '8%',
           right: '4%',
@@ -155,18 +157,79 @@ export default {
           },
           type: 'category',
           // boundaryGap: false,
-          data: this.chartChange.hotWords
+          // data: this.chartChange.hotWords
+          data: []
         },
         yAxis: {
           type: 'value'
         },
         series: [
+          // {
+          //   name: '搜索次数',
+          //   type: 'bar',
+          //   barWidth: '60%',
+          //   // type: 'line',
+          //   data: this.chartChange.count
+          // }
           {
-            name: '搜索次数',
+            name: this.chartChange.hotWords[0],
             type: 'bar',
-            barWidth: '60%',
-            // type: 'line',
-            data: this.chartChange.count
+            barWidth: '7%',
+            data: [this.chartChange.count[0]]
+          },
+          {
+            name: this.chartChange.hotWords[1],
+            type: 'bar',
+            barWidth: '7%',
+            data: [this.chartChange.count[1]]
+          },
+          {
+            name: this.chartChange.hotWords[2],
+            type: 'bar',
+            barWidth: '7%',
+            data: [this.chartChange.count[2]]
+          },
+          {
+            name: this.chartChange.hotWords[3],
+            type: 'bar',
+            barWidth: '7%',
+            data: [this.chartChange.count[3]]
+          },
+          {
+            name: this.chartChange.hotWords[4],
+            type: 'bar',
+            barWidth: '7%',
+            data: [this.chartChange.count[4]]
+          },
+          {
+            name: this.chartChange.hotWords[5],
+            type: 'bar',
+            barWidth: '7%',
+            data: [this.chartChange.count[5]]
+          },
+          {
+            name: this.chartChange.hotWords[6],
+            type: 'bar',
+            barWidth: '7%',
+            data: [this.chartChange.count[6]]
+          },
+          {
+            name: this.chartChange.hotWords[7],
+            type: 'bar',
+            barWidth: '7%',
+            data: [this.chartChange.count[7]]
+          },
+          {
+            name: this.chartChange.hotWords[8],
+            type: 'bar',
+            barWidth: '7%',
+            data: [this.chartChange.count[8]]
+          },
+          {
+            name: this.chartChange.hotWords[9],
+            type: 'bar',
+            barWidth: '7%',
+            data: [this.chartChange.count[9]]
           }
         ],
         color: '#3398DB'

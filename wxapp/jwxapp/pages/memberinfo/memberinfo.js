@@ -1,15 +1,12 @@
 
 var app = new getApp();
 var util = require('../../utils/util.js');
-var imageUrl = app.globalData.imageUrl;
 var mobile = util.getCache('mobile');
 var dates;
 var region = ['', '', ''];
 var real_name = '';
 var remarks = '';
 var sex_index = 0;
-var act = 0;
-var user_block = 0;
 var card_no;
 var id_num = '';
 var marry_index = 0;
@@ -94,8 +91,6 @@ global.wxPage({
     user_nick_name = '';
     real_name = '';
     marry_index = 0;
-    region: ['', '', ''];
-    dates: '选择您的生日';
     var that = this;
     that.setData({
       user_block: 0,

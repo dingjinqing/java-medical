@@ -81,10 +81,8 @@ public class WxAppCouponController extends WxAppBaseController {
 	public JsonResult getCoupon(@RequestBody mpGetCouponParam param) {
 		Integer userId = wxAppAuth.user().getUserId();
 		Timestamp nowDate = new Timestamp(System.currentTimeMillis());
-		System.out.println(userId);
 		//判断领取限制
 		CouponListVo couponData = shop().mpCoupon.getCouponData(param);
-		System.out.println(couponData);
 		//通过alias_code查看优惠券是否存在
 		if (StringUtils.isEmpty(couponData)) {
 			return this.success("领取失败");
@@ -104,17 +102,17 @@ public class WxAppCouponController extends WxAppBaseController {
 		//积分兑换判断
 		if (couponData.getUseScore() == 1 && couponData.getScoreNumber() > 0) {
 			int availCoupon = shop().member.score.getTotalAvailableScoreById(userId);
-
 			//查看用户可用积分
 			if (couponData.getScoreNumber() > availCoupon) {
+			    System.out.println(123);
 				return this.success("积分不足 ");
 			} else {
-				ScoreParam scoreParam = new ScoreParam();
-				scoreParam.setScore(couponData.getScoreNumber());
+                System.out.println(123);
+                ScoreParam scoreParam = new ScoreParam();
+				scoreParam.setScore(-(couponData.getScoreNumber()));
 				scoreParam.setScoreStatus(ScoreStatusConstant.USED_SCORE_STATUS);
 				scoreParam.setDesc("score");
 				scoreParam.setRemark("领取优惠券");
-
 				Integer subAccountId = 0;
 
 				/** -交易明细类型 */
@@ -124,33 +122,33 @@ public class WxAppCouponController extends WxAppBaseController {
 				try {
 					shop().member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
 				} catch (MpException e) {
+				    System.out.println(22222);
 					logger().info("积分更新失败");
 					return fail(e.getErrorCode().getMessage());
 				}
-				return this.success();
 			}
 		}
+        CouponGiveQueueParam couponParam = new CouponGiveQueueParam();
+        List<Integer> userIds = new ArrayList();
+        String[] couponArray = {couponData.getId().toString()};
+        userIds.add(userId);
+        couponParam.setUserIds(userIds);
+        couponParam.setActId(0);
+        couponParam.setCouponArray(couponArray);
+        couponParam.setAccessMode((byte) 1);
+        couponParam.setGetSource((byte) 5);
 		//判断优惠券领取限制
 		if(couponData.getReceivePerPerson().intValue() != 0){//有限制领取
 			Integer alreadyGet = shop().mpCoupon.couponAlreadyGet(userId, couponData.getId());
-			System.out.println(11);
-			System.out.println(alreadyGet);
-				if(couponData.getReceivePerPerson() > alreadyGet){
-					//添加优惠券到用户，调用定向发券通用方法
-					CouponGiveQueueParam couponParam = new CouponGiveQueueParam();
-					List<Integer> userIds = new ArrayList();
-					 String[] couponArray = {couponData.getId().toString()};
-					userIds.add(userId);
-
-					couponParam.setUserIds(userIds);
-					couponParam.setActId(0);
-					couponParam.setCouponArray(couponArray);
-					couponParam.setAccessMode((byte) 1);
-					couponParam.setGetSource((byte) 5);
-					List<Integer> res = shop().coupon.couponGiveService.handlerCouponGive(couponParam);
-				}
-
-		}
-		return this.success();
+            if(couponData.getReceivePerPerson() > alreadyGet){
+                //添加优惠券到用户，调用定向发券通用方法
+                List<Integer> res = shop().coupon.couponGiveService.handlerCouponGive(couponParam);
+            }else{
+                return this.success("领取次数已达上线");
+            }
+		}else{
+            List<Integer> res = shop().coupon.couponGiveService.handlerCouponGive(couponParam);
+        }
+		return this.success("领取成功");
 	}
 }
