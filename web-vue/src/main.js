@@ -21,7 +21,7 @@ Vue.use(VCharts);
 // 复制粘贴
 import VueClipboard from 'vue-clipboard2';
 Vue.use(VueClipboard);
-Vue.prototype.$imageHost = 'http://jmpdevimg.weipubao.cn';
+Vue.prototype.$imageHost = 'http://'+process.env.IMAGE_DOMAIN;
 Vue.prototype.$imageHostDev = `@/assets/image/admin/`;
 // 全局事件总线
 Vue.prototype.$http = new Vue();
