@@ -295,7 +295,7 @@
           <el-link
             type="primary"
             :underline="false"
-            @click.native="$router.push({name: 'addBrand'})"
+            @click.native="$router.push({name: 'addBrand', query:{brandId:true}})"
             href="#"
             style="margin:0 5px;"
           >{{$t('goodsAddEditInfo.basicInfoOther.goodsBrandNew')}}</el-link>

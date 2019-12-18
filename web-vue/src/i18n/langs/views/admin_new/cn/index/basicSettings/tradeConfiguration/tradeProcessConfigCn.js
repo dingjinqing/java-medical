@@ -76,5 +76,10 @@ export const cn = {
   ordercreadid: '下单人身份证号码',
   realname: '收货人真实姓名',
   creadid: '收货人身份证号码',
-  custominfo: '自定义信息'
+  custominfo: '自定义信息',
+  stocksubconfig: '商品库存扣减设置（注：秒杀、拼团抽奖活动除外）',
+  paythensub: '付款后扣减库存（推荐）',
+  paythensubnote: '适用于商品库存充裕的业务。优点：可以有效的防止用户下单不付款，减少用户恶拍的风险。缺点：可能会出现商品超卖的情况，最后导致订单不能正常完成。',
+  orderthensub: '下单时扣减库存',
+  orderthensubnote: '适用于对商品库存数量较为敏感的业务。优点：不会出现商品超卖的情况。缺点：可能会出现用户恶拍（既拍下订单后不付款），导致其他用户无法购买的情况。'
 }

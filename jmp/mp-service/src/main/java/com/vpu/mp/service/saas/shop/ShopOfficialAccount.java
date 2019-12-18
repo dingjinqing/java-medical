@@ -490,6 +490,7 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @param openId
 	 */
 	public void syncSubOfficialUser(String appId, MpOfficialAccountUserRecord record, String unionId, String openId) {
+		logger().info("同步公众号用户到从库");
 		com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord into = record.into(com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord.class);
 		Result<MpAuthShopRecord> officialAccountMps = saas.shop.mp.getOfficialAccountMps(appId);
 		for (MpAuthShopRecord mpAuthShopRecord : officialAccountMps) {

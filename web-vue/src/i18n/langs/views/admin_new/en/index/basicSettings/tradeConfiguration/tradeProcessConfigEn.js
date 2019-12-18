@@ -76,5 +76,11 @@ export const en = {
   ordercreadid: 'Single ID card number',
   realname: 'Consignee real name',
   creadid: 'Consignee ID number',
-  custominfo: 'Custom information'
+  custominfo: 'Custom information',
+  stocksubconfig: 'Product inventory deduction settings (Note: Except spikes and group sweepstakes)',
+  paythensub: 'Deduct inventory after payment (recommended)',
+  paythensubnote: 'Suitable for businesses with ample product inventory. Advantages: It can effectively prevent users from placing orders without paying, reducing the risk of bad shots by users. Disadvantages: There may be oversold items, which ultimately leads to the order not being completed normally.',
+  orderthensub: 'Deduct inventory when placing an order',
+  orderthensubnote: 'It is suitable for businesses that are sensitive to the quantity of product inventory. Pros: No oversold conditions. Disadvantages: There may be bad shots by users (that is, they do not pay after taking an order), resulting in the situation that other users cannot purchase.'
+
 }
