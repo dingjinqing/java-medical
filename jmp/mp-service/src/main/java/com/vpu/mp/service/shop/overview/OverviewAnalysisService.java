@@ -1,7 +1,5 @@
 package com.vpu.mp.service.shop.overview;
 
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PropertiesUtil;
 import com.vpu.mp.service.pojo.shop.overview.analysis.*;
@@ -65,32 +63,32 @@ public class OverviewAnalysisService extends ShopBaseService {
             .from(MP_DAILY_VISIT)
             .leftJoin(MP_SUMMARY_TREND).on(MP_DAILY_VISIT.REF_DATE.eq(MP_SUMMARY_TREND.REF_DATE))
             .where(MP_DAILY_VISIT.REF_DATE.eq(basicTime))
-            .fetchOneInto(YesterdayVo.class);
+            .fetchOptionalInto(YesterdayVo.class)
+            .orElse(new YesterdayVo());
         //得到一天前的数据
         OneDayAgoVo oneDayAgoVo = db().select(MP_DAILY_VISIT.SESSION_CNT,MP_DAILY_VISIT.VISIT_PV,
             MP_DAILY_VISIT.VISIT_UV, MP_DAILY_VISIT.VISIT_UV_NEW,MP_SUMMARY_TREND.SHARE_PV,MP_SUMMARY_TREND.SHARE_UV)
             .from(MP_DAILY_VISIT)
             .leftJoin(MP_SUMMARY_TREND).on(MP_DAILY_VISIT.REF_DATE.eq(MP_SUMMARY_TREND.REF_DATE))
             .where(MP_DAILY_VISIT.REF_DATE.eq(oneDayAgoTime))
-            .fetchOneInto(OneDayAgoVo.class);
+            .fetchOptionalInto(OneDayAgoVo.class)
+            .orElse(new OneDayAgoVo());
         //得到一周前的数据
         OneWeekAgoVo oneWeekAgoVo = db().select(MP_DAILY_VISIT.SESSION_CNT,MP_DAILY_VISIT.VISIT_PV,
             MP_DAILY_VISIT.VISIT_UV, MP_DAILY_VISIT.VISIT_UV_NEW,MP_SUMMARY_TREND.SHARE_PV,MP_SUMMARY_TREND.SHARE_UV)
             .from(MP_DAILY_VISIT)
             .leftJoin(MP_SUMMARY_TREND).on(MP_DAILY_VISIT.REF_DATE.eq(MP_SUMMARY_TREND.REF_DATE))
             .where(MP_DAILY_VISIT.REF_DATE.eq(oneWeekAgoTime))
-            .fetchOneInto(OneWeekAgoVo.class);
+            .fetchOptionalInto(OneWeekAgoVo.class)
+            .orElse(new OneWeekAgoVo());
         //得到一月前的数据
         OneMonthAgoVo oneMonthAgoVo = db().select(MP_DAILY_VISIT.SESSION_CNT,MP_DAILY_VISIT.VISIT_PV,
             MP_DAILY_VISIT.VISIT_UV, MP_DAILY_VISIT.VISIT_UV_NEW,MP_SUMMARY_TREND.SHARE_PV,MP_SUMMARY_TREND.SHARE_UV)
             .from(MP_DAILY_VISIT)
             .leftJoin(MP_SUMMARY_TREND).on(MP_DAILY_VISIT.REF_DATE.eq(MP_SUMMARY_TREND.REF_DATE))
             .where(MP_DAILY_VISIT.REF_DATE.eq(oneMonthAgoTime))
-            .fetchOneInto(OneMonthAgoVo.class);
-        //当前数据为空则抛出异常
-        if(yesterdayVo==null||oneDayAgoVo==null||oneWeekAgoVo==null||oneMonthAgoVo==null){
-            throw new BusinessException(JsonResultCode.OVERVIEW_YESTERDAY_ANALYSIS_DATA_NULL);
-        }
+            .fetchOptionalInto(OneMonthAgoVo.class)
+            .orElse(new OneMonthAgoVo());
         //打开次数
         YesterdayStatisticsVo sessionCount = getYesterdayDetail("sessionCount",yesterdayVo.getSessionCnt(),oneDayAgoVo.getSessionCnt(),oneWeekAgoVo.getSessionCnt(),oneMonthAgoVo.getSessionCnt());
         //访问次数
@@ -135,14 +133,17 @@ public class OverviewAnalysisService extends ShopBaseService {
      * @return 变化率 四舍五入保留两位小数
      */
     private Double getChangeRate(Integer oldData,Integer newData){
-        //除数为空，返回null
-        if (oldData.equals(NumberUtils.INTEGER_ZERO)){
+        //数据为空，返回null
+        if (oldData == null || newData == null){
             return null;
+        }else if (oldData.equals(NumberUtils.INTEGER_ZERO)){
+            return null;
+        }else {
+            //四舍五入并保留两位小数
+            double doubleChangeRate = ((double) newData-(double)oldData)/(double)oldData*(double)100;
+            BigDecimal changeRate = new BigDecimal(doubleChangeRate).setScale(2, RoundingMode.HALF_UP);
+            return  changeRate.doubleValue();
         }
-        //四舍五入并保留两位小数
-        double doubleChangeRate = ((double) newData-(double)oldData)/(double)oldData*(double)100;
-        BigDecimal changeRate = new BigDecimal(doubleChangeRate).setScale(2, RoundingMode.HALF_UP);
-        return  changeRate.doubleValue();
     }
 
     /**
