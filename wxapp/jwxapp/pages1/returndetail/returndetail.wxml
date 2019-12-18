@@ -1,0 +1,103 @@
+<!-- pages1/returedetail/returndetail.wxml -->
+<include src="/pages/common/header.wxml" />
+<!-- 售后详情 -->
+<view class="main-container">
+  <!-- 申请详情 -->
+  <block>
+    <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <view class="order-header-h">等待商家处理售后申请</view>
+      <view class="order-header-p">如果商家同意：退款将在3日内返还您的支付账户</view>
+      <view class="order-header-p">如果商家拒绝：您可以重新创建售后申请</view>
+    </view>
+    <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <view class="order-header-h">商家同意后申请</view>
+      <view class="order-header-p">审核售后申请时间：2019-12-16 10:20:12</view>
+      <view class="order-header-p">注：请提交物流信息，商家将尽快处理您的订单</view>
+    </view>
+    <view class="order-header-detail">
+      <block>
+        若商家在
+        <text class="order-header-time" style='color:{{comColor}}'>1天02时40分30秒</text>
+        内未处理，则申请达成并退款给您
+      </block>
+      <block>
+        请在
+        <text class="order-header-time" style='color:{{comColor}}'>1天02时40分30秒</text>
+        内退货给商家，否则本次售后申请将自动关闭
+      </block>
+    </view>
+    <view class="order-header-btns">
+      <text class="order-header-btn">查看订单</text>
+      <text class="order-header-btn">提交物流</text>
+      <text class="order-header-btn">撤销申请</text>
+      <text class="order-header-btn">查看订单</text>
+    </view>
+    <view class="order-info">
+      <view class="order-flex">
+        <text>协商记录</text>
+        <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
+      </view>
+    </view>
+    <view class="order-block">
+      <view class="order-block-title">售后详情</view>
+      <view class="order-block-goods">
+        <image class="order-block-goods-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg"></image>
+        <view class="order-block-goods-info">
+          <view>拼团测试商品</view>
+          <view class="order-block-goods-price">
+            <text>￥29.00</text>
+            <text>X1</text>
+          </view>
+        </view>
+      </view>
+      <view class="order-block-goods-detail">
+        <view class="order-block-detail-item">
+          <text class="details-item-title">售后类型：</text>
+          <text>退款退货</text>
+        </view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">退款金额：</text>
+          <text>24.00元</text>
+        </view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">运费金额：</text>
+          <text>0.00元</text>
+        </view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">申请原因：</text>
+          <text>多拍/不想要</text>
+        </view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">申请凭证：</text>
+          <view class="details-item-content">
+            <block>
+              <image class="details-item-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg"></image>
+            </block>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="order-block">
+      <view class="order-block-title">订单信息</view>
+      <view class="order-block-content">
+        <view class="order-block-detail-item">
+          <text class="activity-type-mark fl">拼团</text>
+          <text class="details-item-title">订单编号：</text>
+          <text>P201912131128549803</text>
+        </view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">售后编号：</text>
+          <text class="details-item-content">R201912161020122397</text>
+        </view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">申请日期：</text>
+          <text class="details-item-content">2019-12-16 10:20:12</text>
+        </view>
+      </view>
+    </view>
+    <view class="customer-wrap">
+      <button class="customer-btn" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>联系客服</button>
+    </view>
+  </block>
+</view>
+<include src="/pages/common/footer.wxml" />

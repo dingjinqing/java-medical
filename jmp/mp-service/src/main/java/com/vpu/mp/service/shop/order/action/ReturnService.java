@@ -117,7 +117,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             logger.error("退款退货执行异常，订单不存在");
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
-		try {
+		//result
+        ExecuteResult result = ExecuteResult.create();
+        try {
 			transaction(()->{
 				try {
 					//退款订单
@@ -152,6 +154,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						orderInfo.updateInReturn(rOrder, null, null);
 						//退款订单记录
 						returnStatusChange.addRecord(rOrder, param.getIsMp(), "生成退款退货订单信息："+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
+					    //返回退款订单号
+                        result.setResult(rOrder.getReturnOrderSn());
 					}
 					//退款商品为空则初始化
 					if(CollectionUtils.isEmpty(returnGoods)) {
@@ -221,7 +225,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		}
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RETURN.code }), new String[] {param.getOrderSn()});
-		return null;
+		return result;
 	}
 
 	@Override

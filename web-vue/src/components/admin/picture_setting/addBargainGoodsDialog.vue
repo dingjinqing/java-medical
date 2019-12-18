@@ -36,7 +36,7 @@
             <template slot-scope="{row}">
               <div>
                 <el-image
-                  :src='$imageHost + "/" + row.goodsImg'
+                  :src="$imageHost + '/' + row.goodsImg"
                   style="width:40px;height:40px;"
                 ></el-image>
                 <span>{{row.goodsName}}</span>

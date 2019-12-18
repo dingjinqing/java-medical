@@ -30,6 +30,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.member.account.AccountNumberVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
@@ -327,7 +328,24 @@ public class AccountService extends ShopBaseService {
 		}
 		return vo;
 	}
-
+	
+	/**
+	 * 获取用户账户信息
+	 * @param userId
+	 * @return AccountNumberVo 用户
+	 */
+	public AccountNumberVo getUserAccountNumber(Integer userId) {
+		UserRecord user = memberService.getUserRecordById(userId);
+		if(user == null) {
+			return null;
+		}
+		return AccountNumberVo
+				.builder()
+				.score(user.getScore())
+				.account(user.getAccount())
+				.build();
+			
+	}
 
 }
 

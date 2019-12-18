@@ -67,7 +67,8 @@
         "search/search",
         "fullship/fullship",
         "groupbuyinfo/groupbuyinfo",
-        "returnorder/returnorder"
+        "returnorder/returnorder",
+        "returndetail/returndetail"
       ]
     }
   ],

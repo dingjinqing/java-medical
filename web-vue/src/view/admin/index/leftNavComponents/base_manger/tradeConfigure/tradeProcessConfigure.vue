@@ -24,6 +24,26 @@
       </div>
     </el-card>
 
+    <!--    商品库存扣减设置（注：秒杀、拼团抽奖活动除外）-->
+    <section class="settingWrapper">
+      <div class="title">
+        <span></span>
+        {{$t('tradeConfiguration.stocksubconfig')}}
+      </div>
+      <div class="settingContent">
+        <el-radio-group v-model="tradeProcessConfig.is_lock">
+          <div class="topandbottom">
+            <el-radio :label="1"> {{$t('tradeConfiguration.paythensub')}}<label class="onText">{{$t('tradeConfiguration.paythensubnote')}}</label>
+            </el-radio>
+          </div>
+          <div class="topandbottom">
+            <el-radio :label="0">{{$t('tradeConfiguration.orderthensub')}}  <label class="onText">{{$t('tradeConfiguration.orderthensubnote')}}</label>
+            </el-radio>
+          </div>
+        </el-radio-group>
+      </div>
+    </section>
+
     <!-- 待付款订单取消时间设置 -->
     <section class="settingWrapper">
       <div class="title">
@@ -689,6 +709,7 @@ export default {
       shippingExpress: false,
       extenReceiveGoods: false,
       tradeProcessConfig: {
+        is_lock: 0,
         cancel_time: null,
         drawback_days: null,
         order_timeout_days: null,
@@ -1103,16 +1124,23 @@ export default {
         margin-bottom: -1px;
       }
     }
-
     .settingContent {
       height: 60px;
       line-height: 60px;
       padding-left: 10px;
       color: #666;
 
+      .topandbottom {
+        margin-top: 10px;;
+        margin-bottom: 10px;
+      }
       .inputWidth {
         width: 65px;
         margin: 0 5px;
+      }
+      .onText {
+        margin-left: 20px;
+        color: #999;
       }
     }
 
@@ -1185,7 +1213,10 @@ export default {
   .settingWrapper:nth-of-type(1) {
     margin-top: 20px;
   }
-
+  .onText {
+    margin-left: 20px;
+    color: #999;
+  }
   .requiredInfo {
     .necessaryGoodsInfo {
       height: 60px;

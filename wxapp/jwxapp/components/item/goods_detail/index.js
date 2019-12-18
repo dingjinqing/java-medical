@@ -9,11 +9,9 @@ global.wxComponent({
       type:Object,
       value:null,
       observer(val){
-        this.setData({goodsDesc:util.filterRichText(val.goodsDesc)})
+        if(val.goodsDesc) this.setData({goodsDesc:util.filterRichText(val.goodsDesc)})
         if (val.goodsPageId) {
           decorate.requestDecoratePageData(val.goodsPageId, 0, this.processWindowData.bind(this));
-          console.log(val.goodsDesc)
-          
           this.setData({
             pageUp: val.isPageUp === 0 ? ['Page', 'Desc'] : ['Desc', 'Page'],
           })

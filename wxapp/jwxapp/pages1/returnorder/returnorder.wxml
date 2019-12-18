@@ -14,11 +14,11 @@
         售后类型
       </view>
       <view class="order-info-type">
-        <block wx:for="{{orderTypes}}" wx:key="{{index}}">
-          <text class="order-type" bindtap="toggleType" data-id="{{item.id}}" style="{{ orderType == item.id ? 'border: 1px solid #f66;color: #f66;background: url('+type_active+') right bottom/30rpx no-repeat' : '' }}">{{item.name}}</text>
+        <block wx:for="{{returnTypes}}" wx:key="index">
+          <text class="order-type" bindtap="toggleType" data-id="{{item.id}}" style="{{ returnType == item.id ? 'border: 1px solid #f66;color: #f66;background: url('+type_active+') right bottom/30rpx no-repeat' : '' }}">{{item.name}}</text>
         </block>
       </view>
-      <view class="order-goods-info" wx:for="{{goodsInfo}}" wx:key="{{index}}" bindtap="toggleGoodsSelect" data-index="{{index}}" data-sku="{{item.productId}}">
+      <view class="order-goods-info" wx:for="{{goodsInfo}}" wx:key="index" bindtap="toggleGoodsSelect" data-index="{{index}}" data-sku="{{item.productId}}">
         <view class="order-goods-check-wrap">
           <text wx:if="{{!item.checked}}" class="iconfont iconduoxuanbiankuang order-goods-check"></text>
           <text wx:else class="iconfont iconduoxuan order-goods-check"></text>
@@ -44,13 +44,13 @@
       <view class="order-flex">
         <text><text class="order-required">*</text>申请原因：</text>
         <view class="order-flex">
-          <picker mode="selector" bindchange="bindPickerChange" wx:if='{{orderType != 4}}' value="{{reasoneIndex}}" range="{{reasone}}">
+          <picker mode="selector" bindchange="bindPickerChange" wx:if='{{returnType != 4}}' value="{{reasoneIndex}}" range="{{reasone}}">
             <view>
               <text>{{reasone[reasoneIndex]}}</text>
               <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
             </view>
           </picker>
-          <picker mode="selector" bindchange="bindPickerChange" wx:if='{{orderType == 4}}' value="{{reasoneIndex}}" range="{{reasone_huan}}">
+          <picker mode="selector" bindchange="bindPickerChange" wx:if='{{returnType == 4}}' value="{{reasoneIndex}}" range="{{reasone_huan}}">
             <text>{{reasone_huan[reasoneIndex]}}</text>
             <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
           </picker>
@@ -68,12 +68,16 @@
         <text class="order-remark">（可不填）</text>
       </view>
       <view class="order-textarea">
-        <textarea placeholder="请输入0-200字的申请说明"></textarea>
+        <textarea placeholder="请输入0-200字的申请说明" bindblur="reasonDescInput" value="{{reasonDesc}}"></textarea>
       </view>
     </view>
     <view class="order-info">
       <text class="order-left"><text class="order-place">*</text>上传凭证：</text>
-      <view class="order-upload order-left" bindtap="uploadRefundImg">
+      <view class="order-upload order-left" wx:for="{{uploadedImg}}" wx:key="index">
+        <image class="order-upload-img" src="{{imageUrl + item.imgPath}}" mode="cover" />
+        <image src='{{dele_service}}' class="order-upload-delete" bindtap='delImage' data-idx="{{index}}"></image>
+      </view>
+      <view class="order-upload order-left" bindtap="uploadRefundImg" wx:if="{{uploadedImg.length < 3}}">
         <image class="order-upload-addicon" src="{{add_img}}"></image>
       </view>
     </view>
@@ -224,10 +228,10 @@
     </view>
   </block>
   <view class="order-footer">
-    <form report-submit='true' bindsubmit='submit' class='ipx_en' wx:if='{{ (orderType == 4 && bottom.subscribe_message) || !bottom.subscribe_message }}'>
+    <form report-submit='true' bindsubmit='submitRefund' class='ipx_en' wx:if='{{ (returnType == 4 && bottom.subscribe_message) || !bottom.subscribe_message }}'>
       <button form-type='submit' class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>提交申请</button>
     </form>
-    <form bindtap="toSubscribeMessage" class='ipx_en' wx:if='{{orderType != 4 && bottom.subscribe_message }}'>
+    <form bindtap="toSubscribeMessage" class='ipx_en' wx:if='{{returnType != 4 && bottom.subscribe_message }}'>
       <button class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>提交申请</button>
     </form>
   </view>

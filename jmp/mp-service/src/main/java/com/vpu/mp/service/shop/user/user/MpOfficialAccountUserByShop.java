@@ -24,21 +24,24 @@ public class MpOfficialAccountUserByShop extends ShopBaseService{
 	 */
 	public void addOrUpdateUser(String appId, MpOfficialAccountUserRecord record, String unionId, String openId) {
 		MpOfficialAccountUserRecord fetchAny = MP_OFFICIAL_ACCOUNT_USER.newRecord();
-		if (StringUtils.isEmpty(unionId)) {
+		logger().info("这个的店铺库的。注意");
+		if ((!StringUtils.isEmpty(appId)) && (!StringUtils.isEmpty(openId))) {
 			// 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。
 			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER)
 					.where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId)))
 					.fetchAny();
-		} else {
+		} else if ((!StringUtils.isEmpty(appId)) && (!StringUtils.isEmpty(unionId))) {
 			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER).where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId)
-					.and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId)).and(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId)))
+					.and(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId)))
 					.fetchAny();
 		}
 		if (fetchAny == null) {
 			// 插入
+			logger().info("同步插入");
 			db().executeInsert(record);
 		} else {
 			// 更新
+			logger().info("同步更新");
 			record.setRecId(fetchAny.getRecId());
 			db().executeUpdate(record);
 		}

@@ -27,8 +27,7 @@ public class UserAccountDao extends ShopBaseService {
 	public PageResult<AccountPageListVo> getPageListOfAccountDetails(AccountPageListParam param) {
 
 		SelectJoinStep<? extends Record> select = db()
-				.select(USER.USERNAME, USER.MOBILE, USER_ACCOUNT.ORDER_SN, USER_ACCOUNT.AMOUNT,
-						USER_ACCOUNT.CREATE_TIME, USER_ACCOUNT.REMARK)
+				.select(USER.USERNAME, USER.MOBILE, USER_ACCOUNT.asterisk())
 				.from(USER_ACCOUNT.join(USER).on(USER.USER_ID.eq(USER_ACCOUNT.USER_ID)));
 
 		buildOptions(select, param);
