@@ -1423,7 +1423,7 @@ public class MpAuthShopService extends MainBaseService {
 			logger().debug("开始绑定公众号");
 			//公众号获取用户信息
 			WxMpUser userInfo = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getUserService().userInfo(inMessage.getFromUser());
-			logger().debug("用户Openid"+userInfo.getOpenId()+"开始绑定公众号"+appId);
+			logger().debug("用户Openid："+userInfo.getOpenId()+"开始绑定公众号："+appId);
 			if(userInfo!=null) {
 				MpOfficialAccountUserRecord record=MP_OFFICIAL_ACCOUNT_USER.newRecord();
 				record.setOpenid(userInfo.getOpenId());
@@ -1443,7 +1443,7 @@ public class MpAuthShopService extends MainBaseService {
 				//得到公众号关联的小程序
 				Result<MpAuthShopRecord> officialAccountMps = getOfficialAccountMps(appId);
 				boolean parseAccountInfo = saas.shop.account.parseAccountInfo(appId, inMessage.getEventKey(), record.getOpenid());
-				logger().debug("'parseAccountInfo result "+parseAccountInfo);
+				logger().info("parseAccountInfo result "+parseAccountInfo);
 				if(parseAccountInfo) {
 					logger().debug("用户Openid"+userInfo.getOpenId()+"组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒");
 					//packageResponseMsg 组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒'
