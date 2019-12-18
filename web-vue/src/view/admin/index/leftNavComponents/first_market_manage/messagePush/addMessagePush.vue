@@ -396,8 +396,8 @@ export default {
     chooseSelect,
     memberListDialog,
     choosingGoods,
-    getUserDialog },
-  data () {
+    getUserDialog  },
+  data() {
     return {
 
       checkedData: [], // 初始化弹窗选中的行
@@ -600,7 +600,7 @@ export default {
     }
   },
   watch: {
-    senAction (newVal, oldVal) {
+    senAction(newVal, oldVal) {
       switch (newVal) {
         case 1:
           this.startTime = this.moment().format('YYYY-MM-DD HH:mm:ss')
@@ -617,10 +617,10 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.initData()
   },
-  mounted () {
+  mounted() {
     // 初始化国际化语言
     this.langDefault()
   },
@@ -633,12 +633,12 @@ export default {
     }
   },
   methods: {
-    handleChooseData (data) {
+    handleChooseData(data) {
       this.$message({ message: `已经选择了${data.length}条数据！`, type: 'success' })
       this.checkedData = data
     },
     // 初始化数据
-    initData () {
+    initData() {
       this.$http.$on('result', res => {
         console.log(res)
       })
@@ -651,7 +651,7 @@ export default {
       }).catch(err => console.log(err))
     },
     // 保存并发送
-    handleSaveAndSend () {
+    handleSaveAndSend() {
       const params = {
         name: this.formData.name,
         title: this.formData.title,
@@ -686,37 +686,37 @@ export default {
       }).catch(err => console.log(err))
     },
     // 获取时间
-    getTime (val) {
+    getTime(val) {
       this.time = val
       this.startTime = val.startTime
       this.endTime = val.endTime
     },
-    getTime2 (val) {
+    getTime2(val) {
       this.time = val
       this.startTime = val.startTime
     },
     // 关闭会员弹窗
-    closeDialog () {
+    closeDialog() {
       this.dialogOff = false
       this.whetherShowDialog = false
       this.dialogVisible = false
     },
     // 添加会员
-    handleAddMember () {
+    handleAddMember() {
       if (this.params.onClickUser === false) {
         return
       }
       this.dialogOff = true
     },
     // getUserIdList
-    getUserIdList (val) {
+    getUserIdList(val) {
       console.log(val)
       this.params.userIdList = this.formatUserIdList(val)
       this.memberNum = val.length // 把选中的数组长度赋值给已选会员数
       // 当添加会员后 发送获取人数接口
       this.fetchUserList(this.params)
     },
-    formatUserIdList (userIdList) {
+    formatUserIdList(userIdList) {
       let arr = []
       userIdList.forEach(item => {
         arr.push(item.userId
@@ -725,11 +725,11 @@ export default {
       return arr
     },
     // getContent
-    getContent (res) {
+    getContent(res) {
       this.formData.content = res.content
       this.templateId = res.id
     },
-    customRuleInfoValChange (val) {
+    customRuleInfoValChange(val) {
       console.log(val)
       if (val === `指定时间内有登录记录`) {
         this.showTime = true
@@ -745,7 +745,7 @@ export default {
       }
     },
     // 输入框发生变化的shih
-    handleIpt (item) {
+    handleIpt(item) {
       console.log(item)
       const { key, ipt } = item
       for (let a in this.params.customRuleInfo) {
@@ -772,7 +772,7 @@ export default {
       this.fetchUserList(this.params)
     },
     // 删除自定义
-    handleDelCustomize (val) {
+    handleDelCustomize(val) {
       // 自定义勾选状态为false 删除不可点
       if (this.params.onClickCustomRule === false) {
         return
@@ -815,7 +815,7 @@ export default {
       }
     },
     // 添加为模板
-    handleAddTemplate () {
+    handleAddTemplate() {
       console.log(this.formData.content)
       if (this.formData.content === ``) { }
       contentAddApi({
@@ -830,7 +830,7 @@ export default {
       }).catch(err => console.log(err))
     },
     // handleShowBtn
-    handleShowBtn () {
+    handleShowBtn() {
       if (this.formData.content !== ``) {
         this.isShowBtn = true
       } else {
@@ -838,21 +838,21 @@ export default {
       }
     },
     // 选择链接
-    handleChooseLink () {
+    handleChooseLink() {
       this.tuneUpSelectLink = !this.tuneUpSelectLink
     },
     // 选择模板
-    choosTemplate () {
+    choosTemplate() {
       this.whetherShowDialog = true
     },
     // 选择商品
-    handleChooseGoods () {
+    handleChooseGoods() {
       if (this.params.onClickGoods === false) {
         return
       }
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
-    getRes (ids, urls) {
+    getRes(ids, urls) {
       if (ids.length > 3) {
         this.$message.warning('最多选择3个商品')
       } else {
@@ -863,7 +863,7 @@ export default {
       }
     },
     // 删除图片
-    handleDelImg (id) {
+    handleDelImg(id) {
       if (this.params.onClickGoods === false) {
         return
       }
@@ -872,12 +872,12 @@ export default {
       this.fetchUserList(this.params)
     },
     // 获取选中的path
-    getPath (res) {
+    getPath(res) {
       console.log(res)
       this.pageLink = res
     },
     // 获取持有属于的值
-    getChooseSelectVal (val) {
+    getChooseSelectVal(val) {
       const { onClickCard, cardIdsList, onClickTag, tagIdList } = val
       this.params.onClickCard = onClickCard
       this.params.cardIdsList = cardIdsList
@@ -907,11 +907,11 @@ export default {
           break
       }
     },
-    handleGetUser () {
+    handleGetUser() {
       this.dialogVisible = true
     },
     // 获取发送人群数量
-    fetchUserList (params) {
+    fetchUserList(params) {
       getUserNumberApi(params).then(res => {
         const { error, content } = res
         if (error === 0) {
@@ -924,26 +924,26 @@ export default {
       }).catch(err => console.log(err))
     },
     // 加购人群发生变化的时候
-    handleOnClickNoPayChange (val) {
+    handleOnClickNoPayChange(val) {
       // 获取发送人群的数量
       console.log(this.params)
       this.fetchUserList(this.params)
     },
     // 指定购买商品人群发生变化的时候
-    handleOnClickGoodsChange (val) {
+    handleOnClickGoodsChange(val) {
       console.log(this.params)
       this.fetchUserList(this.params)
     },
     // 选择指定的会员状态发生变化的时候
-    handleOnClickUserChange (val) {
+    handleOnClickUserChange(val) {
       console.log(this.params)
       this.fetchUserList(this.params)
     },
     // 当自定义发生变化的时候
-    handleOnClickCustomRuleChange (val) {
+    handleOnClickCustomRuleChange(val) {
       this.fetchUserList(this.params)
     },
-    loginStartAndLoginEnd (val) {
+    loginStartAndLoginEnd(val) {
       const { startTime, endTime } = val
       this.loginStart = startTime
       this.loginEnd = endTime
