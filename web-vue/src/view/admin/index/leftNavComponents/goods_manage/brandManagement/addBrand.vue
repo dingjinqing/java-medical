@@ -570,6 +570,9 @@ export default {
                   message: '保存成功',
                   type: 'success'
                 })
+                this.$router.push({
+                  name: 'brand'
+                })
               } else if (res.error === 131001) {
                 this.$message.error({
                   message: '品牌名称已存在',

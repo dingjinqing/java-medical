@@ -54,7 +54,7 @@ public class WechatTaskService extends ShopBaseService {
     }
 
     public void beginDailyTask(){
-        Date date = java.sql.Date.valueOf(LocalDate.now());
+        Date date = java.sql.Date.valueOf(LocalDate.now().minusDays(1));
         WxMaAnalysisService service = getServiceByShopId(getShopId());
 
         this.getDailyRetainInfo(service,date);

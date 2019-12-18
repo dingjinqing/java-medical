@@ -1,15 +1,12 @@
 
 var app = new getApp();
 var util = require('../../utils/util.js');
-var imageUrl = app.globalData.imageUrl;
 var mobile = util.getCache('mobile');
 var dates;
 var region = ['', '', ''];
 var real_name = '';
 var remarks = '';
 var sex_index = 0;
-var act = 0;
-var user_block = 0;
 var card_no;
 var id_num = '';
 var marry_index = 0;
@@ -94,8 +91,6 @@ global.wxPage({
     user_nick_name = '';
     real_name = '';
     marry_index = 0;
-    region: ['', '', ''];
-    dates: '选择您的生日';
     var that = this;
     that.setData({
       user_block: 0,
@@ -142,63 +137,16 @@ global.wxPage({
           var user_info = res.content.data;
           var fi_arr = res.content.fields;
           console.log(fi_arr)
-          for (var i in fi_arr) {
-            if (fi_arr[i] == 'username') {
-              that.setData({
-                if_username: 1
-              })
+          let keyArr = ['if_username', 'if_mobile', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu']
+          let valArr = ['username', 'mobile', 'realName', 'invitation_code', 'cid', 'industryInfo', 'cityCode', 'sex', 'birthdayYear', 'maritalStatus', 'education']
+          fi_arr.map((item, index) => {
+            var val = keyArr[valArr.indexOf(fi_arr[index])]
+            let obj = {}
+            obj[val] = 1
+            if (valArr.indexOf(fi_arr[index]) != -1) {
+              that.setData(obj)
             }
-            if (fi_arr[i] == 'mobile') {
-              that.setData({
-                if_mobile: 1
-              })
-            }
-            if (fi_arr[i] == 'realName') {
-              that.setData({
-                if_realname: 1
-              })
-            }
-            if (fi_arr[i] == 'invitation_code') {
-              that.setData({
-                if_invitation_code: 1
-              })
-            }
-            if (fi_arr[i] == 'cid') {
-              that.setData({
-                if_cid: 1
-              })
-            }
-            if (fi_arr[i] == 'industryInfo') {
-              that.setData({
-                if_work: 1
-              })
-            }
-            if (fi_arr[i] == 'cityCode') {
-              that.setData({
-                if_citydoce: 1
-              })
-            }
-            if (fi_arr[i] == 'sex') {
-              that.setData({
-                if_sex: 1
-              })
-            }
-            if (fi_arr[i] == 'birthdayYear') {
-              that.setData({
-                if_birthdayyear: 1
-              })
-            }
-            if (fi_arr[i] == 'maritalStatus') {
-              that.setData({
-                if_mar: 1
-              })
-            }
-            if (fi_arr[i] == 'education') {
-              that.setData({
-                if_edu: 1
-              })
-            }
-          }
+          })
           // 会员昵称
           if (user_info.username) {
             user_nick_name = user_info.username
@@ -554,34 +502,6 @@ global.wxPage({
       util.showModal("提示", "请上传图片");
       return;
     }
-
-    // if (!distribution) user_info.card_no = card_no;
-    // if (that.data.op != '') {
-    //   var check_op = that.data.op;
-    //   for (var i = 0; i < check_op.length; i++) {
-    //     if (check_op[i].option_ver == 1) {
-    //       if (check_op[i].custom_type == 1) {
-    //         var op_arr = check_op[i].option_arr;
-    //         var count = 0;
-    //         for (var j = 0; j < op_arr.length; j++) {
-    //           if (op_arr[j].checked && op_arr[j].checked == true) count++;
-    //         }
-    //         if (count == 0) {
-    //           util.showModal("提示", "请选择多选选项");
-    //           return;
-    //         }
-    //       }
-    //       if (check_op[i].custom_type == 2) {
-    //         if (!check_op[i].text || check_op[i].text == '') {
-    //           util.showModal("提示", "请填写文本");
-    //           return;
-    //         }
-    //       }
-    //     }
-    //   }
-    //   var dd = JSON.stringify(check_op);
-    //   user_info.custom_options = dd;
-    // }
     return true
   },
   bindDateChange(e) {

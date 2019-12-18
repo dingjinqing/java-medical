@@ -140,44 +140,6 @@
           </view>
         </block>
       </view>
-
-      <block wx:for='{{op}}' wx:key='k1'>
-        <block wx:if='{{item.custom_type == 0}}'>
-          <view class="cutom_title">
-            <text class="must_choose" wx:if='{{item.option_ver == 1}}'>*</text>{{item.custom_title}}
-          </view>
-          <block wx:for='{{item.option_arr}}' wx:for-item='options' wx:for-index='idx' wx:key='key2'>
-            <view class="single_choice" bindtap="choice" data-idx='{{idx}}' data-checked='{{options.checked}}' data-index='{{index}}' data-type='0'>
-              <text class="iconfont  {{options.checked == true ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{options.checked == true ? comColor : '#333'}}"></text>
-              <text class="op_text">{{options.option_title}}</text>
-            </view>
-          </block>
-        </block>
-        <block wx:if='{{item.custom_type == 1}}'>
-          <view class="cutom_title">
-            <text class="must_choose" wx:if='{{item.option_ver == 1}}'>*</text>{{item.custom_title}}
-          </view>
-          <block wx:for='{{item.option_arr}}' wx:for-item='options' wx:for-index='idx' wx:key='key2'>
-
-            <view class="mul_choice" bindtap="choice" data-idx='{{idx}}' data-checked='{{options.checked}}' data-index='{{index}}' data-type='1'>
-              <image src="{{ checkbox_no }}" mode='widthFix' wx:if='{{options.checked != true}}' />
-              <text class='iconfont iconduoxuan' style='font-size:36rpx;color:{{comColor}};width:30rpx;' wx:else></text>
-                 <text class="op_text">{{options.option_title}}</text>
-            </view>
-
-          </block>
-
-        </block>
-        <block wx:if='{{item.custom_type == 2}}'>
-          <view class="cutom_title" style="border-bottom:none">
-            <text class="must_choose" wx:if='{{item.option_ver == 1}}'>*</text>{{item.custom_title}}
-          </view>
-          <view class="custom_area">
-            <textarea bindblur='textBlur' value="{{ item.text }}" data-index='{{index}}'></textarea>
-          </view>
-        </block>
-      </block>
-
     </view>
     <view class='footer'>
       <form report-submit='true' bindsubmit='toSave'>

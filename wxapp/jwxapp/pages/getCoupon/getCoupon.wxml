@@ -8,8 +8,8 @@
         <view class="vip_exclusive" wx:if="{{act_info.is_exclusive == 1}}">会员专享</view>
         <text class="name-top" wx:if="{{act_info.id !=''}}">{{act_info.actName}}</text>
         <text class="name-top" wx:else>优惠券名称</text>
-        <text class="name-bottom" wx:if="{{act_info.denomination}}">￥{{act_info.denomination}}</text>
-        <text class="name-bottom" wx:if="{{act_info.amount}}">{{act_info.amount}}折</text> 
+        <text class="name-bottom" wx:if="{{act_info.actCode == 'voucher'}}">￥{{act_info.denomination}}</text>
+        <text class="name-bottom" wx:if="{{act_info.actCode == 'discount'}}">{{act_info.denomination}}折</text> 
         <!-- 图标 -->
         <!--未使用  -->
         <block wx:if="{{act_info.isUsed == 0&act_info.is_expire == 0&&act_info.from == 0}}"> 
@@ -94,15 +94,14 @@
       <view class="coupon-time" wx:if="{{act_info.useScore == 1}}">        
         <text style="color:#888;">兑换所需积分：</text>
         <text class="coupon-score-number">{{act_info.scoreNumber}}积分</text> 
-        <text class="coupon-user-score" wx:if="{{detailType == 1}}">当前拥有599积分</text> 
-        <!-- <text class="coupon-user-score" wx:if="{{act_info.from == 1 && act_info.can_fetch_num > 0 && act_info.have_expired == 0}}">当前拥有{{act_info.user_scoreNumber}}积分</text> -->
+        <text class="coupon-user-score" wx:if="{{detailType == 1}}">当前拥有{{act_info.canUseScore}}积分</text> 
         <text class="coupon-user-score" wx:else>已兑换</text>
       </view> <!--兑换所需积分END  -->
 
       <!--领取明细  -->
       <view class="coupon-get">
         <form>
-        
+
           <block wx:if="{{detailType == 1}}">
             <view class="coupon-vw-int" wx:if="{{act_info.validationCode != null  }}">
               <input class="coupon-input" placeholder="请输入领取码" bindinput='bindBlur'></input>

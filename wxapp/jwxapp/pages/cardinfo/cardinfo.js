@@ -42,7 +42,7 @@ global.wxPage({
 
     console.log(cardNo, cardId)
   },
-  requestCardInfo(cardNo, cardId) {
+  requestCardInfo(cardNo, cardId, card_list) {
     let that = this
     if (cardNo) {
       util.api('/api/card/detail', res => {

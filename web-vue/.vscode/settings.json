@@ -29,5 +29,8 @@
   },
   "minapp-vscode.disableAutoConfig": true,
   "window.zoomLevel": 0,
-  "files.autoSave": "off"
+  "files.autoSave": "off",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }
