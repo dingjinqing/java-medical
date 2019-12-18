@@ -565,4 +565,13 @@ public class AdminGoodsController extends AdminBaseController {
         List<? extends GoodsListMpVo> goodsList = shop().goodsMp.getPageIndexGoodsList(goodsListMpParam, null);
         return success(goodsList);
     }
+
+    /**
+     * 小程序test
+     *
+     */
+    @PostMapping("/api/admin/goods/test")
+    public void test() {
+        shop().shopTaskService.wechatTaskService.beginDailyTask();
+    }
 }
