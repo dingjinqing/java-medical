@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.auth.WxAppAuth;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.AccountNumberVo;
+import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
+import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountWithdrawVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccoountInfoVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
@@ -101,7 +104,7 @@ public class WxAppAccountController extends WxAppBaseController {
 	}
 	
 	/**
-	 * 获取用户账户信息
+	 * 获取用户余额-积分信息
 	 */
 	@PostMapping("/api/wxapp/user/number")
 	public JsonResult getUserAccountNumber() {
@@ -111,4 +114,15 @@ public class WxAppAccountController extends WxAppBaseController {
 		}
 		return success(vo);
 	}
+	
+	/**
+	 * 获取用户余额明细
+	 */
+	@PostMapping("/api/wxapp/account/list")
+	public JsonResult getUserAccountList(@RequestBody AccountPageListParam param) {
+		param.setUserId(wxAppAuth.user().getUserId());
+		PageResult<AccountPageListVo> res = shop().member.account.getPageListOfAccountDetails(param,getLang());
+		return success(res.dataList);
+	}
+	
 }
