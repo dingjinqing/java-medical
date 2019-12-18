@@ -28,7 +28,7 @@
       >
         <el-option value="">请选择市</el-option>
         <el-option
-          v-for="item in this.city"
+          v-for="item in city"
           :key="item.cityId"
           :label="item.cityName"
           :value="item.cityId"
@@ -45,7 +45,7 @@
       >
         <el-option value="">请选择区县</el-option>
         <el-option
-          v-for="item in this.areaDistrict"
+          v-for="item in areaDistrict"
           :key="item.districtId"
           :label="item.districtName"
           :value="item.districtId"
@@ -57,7 +57,9 @@
   </div>
 </template>
 <script>
-import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
+import chinaData from '@/assets/china-data'
+import { deepCloneObj } from '@/util/deepCloneObj'
+// import { getAreaSelect } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 export default {
   name: 'areaLinkage',
   props: {
@@ -93,32 +95,38 @@ export default {
     }
   },
   created () {
-    this.getData()
+    // this.getData()
+    this.initHandler()
   },
   methods: {
-    // 获取省市区弹窗
-    getData () {
-      let that = this
-      getAreaSelect().then(res => {
-        // console.log(res)
-        const { error, content } = res
-        if (error === 0) {
-          this.province = content
-          if (that.provinceCode) {
-            that.$set(that.values, 'province', Number(that.provinceCode))
-            that.choseProvince(Number(that.provinceCode))
-            that.choseCity(Number(that.cityCode))
-            if (that.cityCode) {
-              that.$set(that.values, 'city', Number(that.cityCode))
-            }
-            that.choseDistrict(Number(that.districtCode))
-            if (that.districtCode) {
-              that.$set(that.values, 'district', Number(that.districtCode))
-            }
-          }
-        }
-      }).catch(err => console.log(err))
+    // 初始化数据
+    initHandler () {
+      this.province = deepCloneObj(chinaData)
     },
+
+    // 获取省市区弹窗
+    // getData () {
+    //   let that = this
+    //   getAreaSelect().then(res => {
+    //     // console.log(res)
+    //     const { error, content } = res
+    //     if (error === 0) {
+    //       this.province = content
+    //       if (that.provinceCode) {
+    //         that.$set(that.values, 'province', Number(that.provinceCode))
+    //         that.choseProvince(Number(that.provinceCode))
+    //         that.choseCity(Number(that.cityCode))
+    //         if (that.cityCode) {
+    //           that.$set(that.values, 'city', Number(that.cityCode))
+    //         }
+    //         that.choseDistrict(Number(that.districtCode))
+    //         if (that.districtCode) {
+    //           that.$set(that.values, 'district', Number(that.districtCode))
+    //         }
+    //       }
+    //     }
+    //   }).catch(err => console.log(err))
+    // },
     // 选择省份
     choseProvince (val) {
       // if (val === ``) return

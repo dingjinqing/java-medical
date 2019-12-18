@@ -8,8 +8,8 @@
         <view class="vip_exclusive" wx:if="{{act_info.is_exclusive == 1}}">会员专享</view>
         <text class="name-top" wx:if="{{act_info.id !=''}}">{{act_info.actName}}</text>
         <text class="name-top" wx:else>优惠券名称</text>
-        <text class="name-bottom" wx:if="{{act_info.denomination}}">￥{{act_info.denomination}}</text>
-        <text class="name-bottom" wx:if="{{act_info.amount}}">{{act_info.amount}}折</text> 
+        <text class="name-bottom" wx:if="{{act_info.actCode == 'voucher'}}">￥{{act_info.denomination}}</text>
+        <text class="name-bottom" wx:if="{{act_info.actCode == 'discount'}}">{{act_info.denomination}}折</text> 
         <!-- 图标 -->
         <!--未使用  -->
         <block wx:if="{{act_info.isUsed == 0&act_info.is_expire == 0&&act_info.from == 0}}"> 
