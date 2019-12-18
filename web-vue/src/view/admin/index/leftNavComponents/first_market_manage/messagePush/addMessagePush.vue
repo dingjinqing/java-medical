@@ -1064,16 +1064,16 @@ export default {
             .leftMainConCenterReject {
               padding: 10px 12px;
               border-top: 1px solid #eee;
-              background: url(../../../../../../../static/image/wxapp/click_look.png)
-                no-repeat 95%;
+              // background: url(../../../../../../../static/image/wxapp/click_look.png)
+              // no-repeat 95%;
               -webkit-background-size: 6px;
               background-size: 6px;
             }
             .leftMainConCenterComeIn {
               padding: 10px 12px;
               border-top: 1px solid #eee;
-              background: url(../../../../../../../static/image/wxapp/click_look.png)
-                no-repeat 95%;
+              // background: url(../../../../../../../static/image/wxapp/click_look.png)
+              // no-repeat 95%;
               -webkit-background-size: 6px;
               background-size: 6px;
             }

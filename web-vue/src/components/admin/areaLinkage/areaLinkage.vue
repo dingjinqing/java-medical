@@ -94,7 +94,18 @@ export default {
       return this.values
     }
   },
-  created () {
+  watch: {
+    // 编辑数据回显
+    provinceCode (val) {
+      this.values.province = Number(val)
+      this.choseProvince(this.values.province)
+    }
+    // cityCode (val) {
+    //   this.values.city = Number(val)
+    //   this.choseCity(this.values.city)
+    // }
+  },
+  mounted () {
     // this.getData()
     this.initHandler()
   },
@@ -127,13 +138,19 @@ export default {
     //     }
     //   }).catch(err => console.log(err))
     // },
+
     // 选择省份
     choseProvince (val) {
       // if (val === ``) return
       this.values.city = ``
       this.values.district = ``
+
       if (val) {
         this.city = this.province.find((item, index) => val === item['provinceId'])['areaCity']
+        if (this.cityCode) {
+          this.values.city = Number(this.cityCode)
+          this.choseCity(this.values.city)
+        }
       } else {
         this.city = []
       }
@@ -154,11 +171,16 @@ export default {
       this.$emit('areaData', this.area)
       this.$emit('areaChange', this.areas)
     },
+
     // 选择市
     choseCity (val) {
       // if (val === ``) return
+
       if (val) {
         this.areaDistrict = this.city.find((item, index) => val === item['cityId'])['areaDistrict']
+        if (this.districtCode) {
+          this.values.district = Number(this.districtCode)
+        }
       } else {
         this.areaDistrict = []
       }
@@ -178,6 +200,7 @@ export default {
       this.$emit('areaData', this.area)
       this.$emit('areaChange', this.areas)
     },
+
     choseDistrict (val) {
       let district = this.areaDistrict.find(data => val === data.districtId)
       if (district) {
