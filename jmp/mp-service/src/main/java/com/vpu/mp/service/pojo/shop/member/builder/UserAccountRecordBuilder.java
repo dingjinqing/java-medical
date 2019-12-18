@@ -78,6 +78,11 @@ public class UserAccountRecordBuilder {
 		userAccountRecord.setSource(source);
 		return this;
 	}
+	
+	public UserAccountRecordBuilder withdrawStatus (Byte withdrawStatus) {
+		userAccountRecord.setWithdrawStatus(withdrawStatus);
+		return this;
+	}
 
 	public UserAccountRecordBuilder settleAccount (BigDecimal settleAccount) {
 		userAccountRecord.setSettleAccount(settleAccount);

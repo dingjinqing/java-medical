@@ -1,15 +1,16 @@
 var base = require("../mixins/base.js");
 var util = require("../../../utils/util.js")
-// var activity_goods = require("../common/activity_goods.js");
+var activity_goods = require("../common/activity_goods.js");
 
 global.wxComponent({
-  mixins: [base],
+  mixins: [base, activity_goods],
   methods: {
     onPropChange(newVal, oldVal, changedPath) {
-      // var m = this.data.m = newVal;
-      // this.formatActivityBeginTime(m.bargain_goods);
-      // this.startActivityTimer('bargain', this._getLeftSecs(m));
-      // newVal.bottom = util.getCache("bottom");
+      var m = this.data.m = newVal;
+      this.formatActivityBeginTime(m.bargain_goods);
+      console.log(m, 'kanjia')
+      this.startActivityTimer('bargain', this._getLeftSecs(m));
+      newVal.bottom = util.getCache("bottom");
     },
     _getLeftSecs(m) {
       // var time_arr = {};

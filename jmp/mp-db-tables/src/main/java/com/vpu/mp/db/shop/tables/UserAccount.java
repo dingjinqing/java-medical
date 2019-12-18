@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserAccount extends TableImpl<UserAccountRecord> {
 
-    private static final long serialVersionUID = -4652756;
+    private static final long serialVersionUID = 1848225041;
 
     /**
      * The reference instance of <code>jmini_shop_444801.b2c_user_account</code>
@@ -86,7 +86,7 @@ public class UserAccount extends TableImpl<UserAccountRecord> {
     /**
      * The column <code>jmini_shop_444801.b2c_user_account.admin_note</code>. 操作员备注
      */
-    public final TableField<UserAccountRecord, String> ADMIN_NOTE = createField("admin_note", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false), this, "操作员备注");
+    public final TableField<UserAccountRecord, String> ADMIN_NOTE = createField("admin_note", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "操作员备注");
 
     /**
      * The column <code>jmini_shop_444801.b2c_user_account.payment</code>. 支付方式
@@ -107,6 +107,11 @@ public class UserAccount extends TableImpl<UserAccountRecord> {
      * The column <code>jmini_shop_444801.b2c_user_account.source</code>. 1:分销来源，0:充值
      */
     public final TableField<UserAccountRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:分销来源，0:充值");
+
+    /**
+     * The column <code>jmini_shop_444801.b2c_user_account.withdraw_status</code>. 0未提现或部分统计1已统计
+     */
+    public final TableField<UserAccountRecord, Byte> WITHDRAW_STATUS = createField("withdraw_status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0未提现或部分统计1已统计");
 
     /**
      * The column <code>jmini_shop_444801.b2c_user_account.settle_account</code>. 更新后的余额

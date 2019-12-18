@@ -1,16 +1,20 @@
 export const cn = {
   // 退换货配置
+  afterconfig: '售后配置',
+  activeafterconfig: '启用后，店铺将支持退货/退款服务',
+  supportreturn: '支持换货',
   title: '退换货配置',
   returnconfig: '退货配置',
-  cannotreturngoods: '除不可退换货商品外，其他均可退换',
-  canreturngoods: '除可退换货商品外，其他均不可退换',
+  cannotreturngoods: '指定商品不支持',
+  canreturngoods: '指定商品支持',
+  allgoods: '全部商品支持',
   choosecannotreturn: '选择不可退换货商品',
   choosecanreturn: '选择可退换货商品',
 
   activated: '已开启',
   inactived: '已关闭',
 
-  ordernecessaryinfo: '下单必填信息设置',
+  ordernecessaryinfo: '退款退券',
   ordernecessarydesc: '开启后，未完成的订单全额退款时会将优惠券退还给买家',
 
   autoreturn: '自动退款/退货设置',
@@ -31,5 +35,8 @@ export const cn = {
   merchant_telephone: '收件电话：',
   zip_code: '邮编：',
   return_address: '退货地址：',
-  save: '保存'
+  save: '保存',
+  afterstockconfig: '售后商品库存配置',
+  addgoodstock: '商品退款退货、换货后，增加原商品库存',
+  notaddgoodstock: '商品退款退货、换货后，不增加原商品库存'
 }

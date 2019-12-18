@@ -27,11 +27,14 @@ public class ReturnConfigParam {
     public Byte isReturnCoupon;
     @JsonProperty(value = "business_address")
     public ReturnBusinessAddressParam businessAddress;
+    @JsonProperty(value = "post_sale_status")
+    public Byte postSaleStatus;
+    @JsonProperty(value = "order_can_exchange")
+    public Byte orderCanExchange;
     @JsonProperty(value = "return_change_goods_status")
     public Byte returnChangeGoodsStatus;
     @JsonProperty(value = "order_return_goods_package")
     public GoodsPackageParam orderReturnGoodsPackage;
-
-
-
+    @JsonProperty(value = "auto_return_goods_stock")
+    public Byte autoReturnGoodsStock;
 }

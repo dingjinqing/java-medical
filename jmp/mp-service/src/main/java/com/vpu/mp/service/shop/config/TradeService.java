@@ -71,6 +71,14 @@ public class TradeService extends BaseShopConfigService {
      * 是否启用自提
      */
     final public static String K_FETCH = "fetch";
+
+    /**
+     * 商品库存扣减设置（注：秒杀、拼团抽奖活动除外）
+     * 0：付款后扣减库存（推荐） 适用于商品库存充裕的业务。优点：可以有效的防止用户下单不付款，减少用户恶拍的风险。缺点：可能会出现商品超卖的情况，最后导致订单不能正常完成。
+     * 1：下单时扣减库存 适用于对商品库存数量较为敏感的业务。优点：不会出现商品超卖的情况。缺点：可能会出现用户恶拍（既拍下订单后不付款），导致其他用户无法购买的情况。
+     */
+    final public static String K_IS_LOCK = "is_lock";
+
     /**
      * 拍下未付款订单12小时10分钟内未付款，自动取消订单
      * cancel_time保存形式为分钟，例如：730
@@ -199,6 +207,15 @@ public class TradeService extends BaseShopConfigService {
     public int setFetch(Byte fetch) {
         assert (fetch == (byte) 0 || fetch == (byte) 1);
         return this.set(K_FETCH, fetch, Byte.class);
+    }
+
+    public Byte getIsLock() {
+        return this.get(K_IS_LOCK, Byte.class, BYTE_ZERO);
+    }
+
+    public int setIsLock(Byte isLock) {
+        assert (isLock == (byte) 0 || isLock == (byte) 1);
+        return this.set(K_IS_LOCK, isLock, Byte.class);
     }
 
     /**
