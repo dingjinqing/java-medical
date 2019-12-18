@@ -1,10 +1,9 @@
 'use strict';
 const merge = require('webpack-merge');
-const devEnv = require('./dev.env');
+const prodEnv = require('./prod.env');
 
-module.exports = merge(devEnv, {
+module.exports = merge(prodEnv, {
   NODE_ENV: '"testing"',
-  FILE_NAME: '"test"',
-  API_DOMAIN: '"localhost:8086"',
-  IMAGE_DOMAIN: '"localhost:8080"'
+  API_DOMAIN: '"jmptest.weipubao.cn"',
+  IMAGE_DOMAIN: '"jmptestimg.weipubao.cn"'
 });
