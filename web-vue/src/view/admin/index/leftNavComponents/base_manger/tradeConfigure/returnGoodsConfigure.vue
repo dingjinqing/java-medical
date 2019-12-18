@@ -3,7 +3,7 @@
     <!--    售后配置-->
     <section class="configureWrapper">
       <div class="title">
-        <span></span>售后配置
+        <span></span>{{$t('returnconfiguration.afterconfig')}}
         <el-switch
           v-model="afterSalesConfiguration"
           active-color="#13ce66"
@@ -11,7 +11,7 @@
           style="margin: 0 10px;"
         ></el-switch>
         {{this.afterSalesConfiguration?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}
-        <label class="onText">启用后，店铺将支持退货/退款服务</label>
+        <label class="onText">{{$t('returnconfiguration.activeafterconfig')}}</label>
       </div>
     </section>
     <!-- 退货配置 -->
@@ -21,7 +21,7 @@
         <div style="margin-top: 20px">
           <template>
             <!-- `checked` 为 true 或 false -->
-            <el-checkbox v-model="orderCanExchange"><label>支持换货</label></el-checkbox>
+            <el-checkbox v-model="orderCanExchange"><label>{{$t('returnconfiguration.supportreturn')}}</label></el-checkbox>
           </template>
         </div>
         <el-radio-group
@@ -225,12 +225,12 @@
     <section class="configureWrapper">
       <div class="title">
         <span></span>
-        售后商品库存配置
+        {{$t('returnconfiguration.afterstockconfig')}}
       </div>
       <div class="configureContent baseInfo">
         <el-radio-group v-model="returnParam.auto_return_goods_stock">
-          <el-radio :label="1">商品退款退货、换货后，增加原商品库存</el-radio>
-          <el-radio :label="0">商品退款退货、换货后，不增加原商品库存</el-radio>
+          <el-radio :label="1">{{$t('returnconfiguration.addgoodstock')}}</el-radio>
+          <el-radio :label="0">{{$t('returnconfiguration.notaddgoodstock')}}</el-radio>
         </el-radio-group>
       </div>
     </section>
