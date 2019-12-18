@@ -13,20 +13,22 @@ global.wxPage({
     type_active: imageUrl + 'image/wxapp/con_btn_success.png',
     click_look: imageUrl + 'image/wxapp/click_look.png',
     add_img: imageUrl + '/image/wxapp/return_img_icom.png',
+    dele_service: imageUrl + '/image/admin/dele_service.png',
     orderInfo: {
       activityType: 1
     },
-    orderType: 0, // 选择的操作:退款退货、仅退款、换货
+    returnType: 0, // 选择的操作:1退款退货、0仅退款、4换货
     orderSn: '', // 订单号
     orderId: '', // 订单id
-    orderTypes: [], // 本订单支持的操作
+    returnTypes: [], // 本订单支持的操作
     goodsInfo: [], // 商品信息
     selectGoodIds: [], // 选择的商品
-    reasone: ['协商一致退款', '未按约定时间发货', '缺货', '多拍/不想要', '其他'], // 退货退款原因
+    reasone: ['协商一致退款', '未按约定时间发货', '缺货', '拍错/多拍/不想要', '其他'], // 退货退款原因
     reasone_huan: ['协商一致换货', '商品与页面描述不符', '发错货', '商品损坏', '其他'], // 换货原因
     reasoneIndex: 0, // 选中的原因
     returnMoney: 0.00, //退款金额
     uploadedImg: [], // 已经上传的图片
+    reasonDesc: '', // 申请说明
   },
 
   /**
@@ -84,7 +86,7 @@ global.wxPage({
           }
         })
         that.setData({
-          orderTypes: supportTypes,
+          returnTypes: supportTypes,
           orderInfo: orderInfo,
           goodsInfo: goodsInfo ? goodsInfo : []
         })
@@ -110,9 +112,9 @@ global.wxPage({
   // 切换售后类型
   toggleType (e) {
     let id = e.currentTarget.dataset.id
-    if (id === this.data.orderType) return false
+    if (id === this.data.returnType) return false
     this.setData({
-      orderType: id
+      returnType: id
     })
   },
 
@@ -149,10 +151,82 @@ global.wxPage({
     })
   },
 
+  reasonDescInput (e) {
+    let value = e.detail.value
+    this.setData({
+      reasonDesc: value
+    })
+  },
+
   // 上传凭证
   uploadRefundImg () {
-    console.log('upload')
+    let that = this
+    let uploadedImg = that.data.uploadedImg
+    util.uploadImage(1, function (res) {
+      if (res.data) {
+        let data = JSON.parse(res.data)
+        if (data.error === 0) {
+          let img = data.content
+          if (uploadedImg.length < 3) {
+            uploadedImg.push(img)
+            that.setData({
+              uploadedImg: uploadedImg
+            })
+          }
+        }
+      }
+    })
+  },
 
+  delImage (e) {
+    let index = e.currentTarget.dataset.idx
+    let uploadedImg = this.data.uploadedImg
+    uploadedImg.splice(index, 1)
+    this.setData({
+      uploadedImg: uploadedImg
+    })
+  },
+
+  // 提交退款退货申请
+  submitRefund () {
+    let that = this
+    let selectGoods = that.data.goodsInfo.filter(data => data.checked).map(item => {
+      return {
+        recId: item.recId,
+        returnNumber: item.returnable, // 可退数量
+        money: item.discountedGoodsPrice
+      }
+    })
+    let uploadedImgs = that.data.uploadedImg.map(item => {
+      return item.imgPath
+    })
+    let params = {
+      orderId: that.data.orderId,
+      orderSn: that.data.orderSn,
+      action: 1, // 查询类型：0.发货查询 1.退款退货查询
+      returnType: that.data.returnType,
+      returnMoney: that.data.returnMoney,
+      shippingFee: 0,// 退运费金额
+      reasonType: that.data.reasoneIndex, // 申请原因
+      reasonDesc: that.data.reasonDesc, // 申请说明
+      voucherImages: JSON.stringify(uploadedImgs),// 凭证图片
+      shipGoods: selectGoods
+    }
+    console.log(params)
+    if (selectGoods.length === 0) {
+      util.showModal('提示', '请选择商品')
+      return false
+    }
+    util.api('/api/wxapp/order/refund', function (res) {
+      if (res.error === 0) {
+        let content = res.content
+        console.log(content)
+        util.toast_success('申请成功')
+        util.navigateTo({
+          url: '/pages/returndetail/returndetail?order_sn=' + that.data.orderSn + '&red_id=""'
+        })
+      }
+    }, params)
   },
 
   /**

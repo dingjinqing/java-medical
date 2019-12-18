@@ -91,8 +91,12 @@ public class GoodsLabelService extends ShopBaseService {
             param.setId(record.getId());
             insertGoodsLabelCouple(param);
             //update elasticSearch data
-            esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.INSERT,
-                null,Collections.singletonList(record.getId()));
+            try {
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.INSERT,
+                    null,Collections.singletonList(record.getId()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -110,10 +114,15 @@ public class GoodsLabelService extends ShopBaseService {
                 .where(GOODS_LABEL.ID.eq(id))
                 .execute();
             goodsLabelCoupleService.deleteByGoodsLabelId(id);
+            //update elasticSearch data
+            try {
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.DELETE,
+                    null,Collections.singletonList(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
-        //update elasticSearch data
-        esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.DELETE,
-            null,Collections.singletonList(id));
+
     }
 
     /**
@@ -147,18 +156,21 @@ public class GoodsLabelService extends ShopBaseService {
      * 修改商品标签
      * @param {@link com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelAddAndUpdateParam}
      */
-    public int update(GoodsLabelAddAndUpdateParam param) {
+    public void update(GoodsLabelAddAndUpdateParam param) {
         transaction(() -> {
             DefaultDSLContext db = db();
             GoodsLabelRecord record = db().newRecord(GOODS_LABEL,param);
             record.update();
             goodsLabelCoupleService.deleteByGoodsLabelId(param.getId());
             insertGoodsLabelCouple(param);
+            //update elasticSearch data
+            try {
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE,
+                    null,Collections.singletonList(param.getId()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
-        //update elasticSearch data
-        esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE,
-            null,Collections.singletonList(param.getId()));
-        return 0;
     }
 
     /**
@@ -175,8 +187,12 @@ public class GoodsLabelService extends ShopBaseService {
                 goodsLabelCoupleService.batchInsertCatTypeGoodsLabelCouple(param.getId(), param.getCatIds());
             }
             //update elasticSearch data
-            esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.INSERT,
-                null,Collections.singletonList(param.getId()));
+            try {
+                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.INSERT,
+                    null,Collections.singletonList(param.getId()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 
