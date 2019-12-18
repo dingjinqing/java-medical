@@ -2,15 +2,16 @@ export const cn = {
   // 退换货配置
   title: '退换货配置',
   returnconfig: '退货配置',
-  cannotreturngoods: '除不可退换货商品外，其他均可退换',
-  canreturngoods: '除可退换货商品外，其他均不可退换',
+  cannotreturngoods: '指定商品不支持',
+  canreturngoods: '指定商品支持',
+  allgoods: '全部商品支持',
   choosecannotreturn: '选择不可退换货商品',
   choosecanreturn: '选择可退换货商品',
 
   activated: '已开启',
   inactived: '已关闭',
 
-  ordernecessaryinfo: '下单必填信息设置',
+  ordernecessaryinfo: '退款退券',
   ordernecessarydesc: '开启后，未完成的订单全额退款时会将优惠券退还给买家',
 
   autoreturn: '自动退款/退货设置',

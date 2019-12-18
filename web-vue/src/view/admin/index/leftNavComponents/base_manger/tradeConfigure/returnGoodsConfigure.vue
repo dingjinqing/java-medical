@@ -1,13 +1,34 @@
 <template>
   <div class="returnGoodsConfigure">
+    <!--    售后配置-->
+    <section class="configureWrapper">
+      <div class="title">
+        <span></span>售后配置
+        <el-switch
+          v-model="afterSalesConfiguration"
+          active-color="#13ce66"
+          inactive-color="#f7931e"
+          style="margin: 0 10px;"
+        ></el-switch>
+        {{this.afterSalesConfiguration?$t('tradeConfiguration.activated'):$t('tradeConfiguration.inactived')}}
+        <label class="onText">启用后，店铺将支持退货/退款服务</label>
+      </div>
+    </section>
     <!-- 退货配置 -->
-    <section class="returnGoods">
+    <section class="returnGoods" v-if="this.afterSalesConfiguration">
       <div class='title'>{{$t('returnconfiguration.returnconfig')}}：</div>
       <div class="content">
+        <div style="margin-top: 20px">
+          <template>
+            <!-- `checked` 为 true 或 false -->
+            <el-checkbox v-model="orderCanExchange"><label>支持换货</label></el-checkbox>
+          </template>
+        </div>
         <el-radio-group
           v-model="returnParam.return_change_goods_status"
           class="requirement"
         >
+          <el-radio :label="2">{{$t('returnconfiguration.allgoods')}}</el-radio>
           <el-radio :label="1">{{$t('returnconfiguration.cannotreturngoods')}} </el-radio>
           <el-radio :label="0">{{$t('returnconfiguration.canreturngoods')}}</el-radio>
         </el-radio-group>
@@ -200,6 +221,19 @@
         </div>
       </div>
     </section>
+<!--    售后商品库存配置-->
+    <section class="configureWrapper">
+      <div class="title">
+        <span></span>
+        售后商品库存配置
+      </div>
+      <div class="configureContent baseInfo">
+        <el-radio-group v-model="returnParam.auto_return_goods_stock">
+          <el-radio :label="1">商品退款退货、换货后，增加原商品库存</el-radio>
+          <el-radio :label="0">商品退款退货、换货后，不增加原商品库存</el-radio>
+        </el-radio-group>
+      </div>
+    </section>
 
     <!-- 商家默认收货地址 -->
     <section class="configureWrapper">
@@ -299,6 +333,8 @@ export default {
   },
   data () {
     return {
+      afterSalesConfiguration: true,
+      orderCanExchange: true,
       // 商品弹窗回调数据
       goodsInfo: [],
       goodsInfoRow: [],
@@ -329,8 +365,11 @@ export default {
       tuneUpProductLabel: false,
       classFlag: 0,
       returnParam: {
+        post_sale_status: 1,
+        order_can_exchange: 1,
         return_change_goods_status: 0,
         is_refund_coupon: 0,
+        auto_return_goods_stock: 1,
         auto_return: 0,
         return_money_days: 7,
         return_address_days: 7,
@@ -452,10 +491,26 @@ export default {
           this.busClassN = this.busClass.length
           this.platClass = this.returnParam.order_return_goods_package.add_cate
           this.platN = this.platClass.length
+          this.afterSalesConfiguration = this.number2boolean(this.returnParam.post_sale_status)
+          this.orderCanExchange = this.number2boolean(this.returnParam.order_can_exchange)
         } else {
           this.$message.error('操作失败，请稍后重试！')
         }
       })
+    },
+    number2boolean (configValue) {
+      if (configValue === 1) {
+        return true
+      } else if (configValue === 0) {
+        return false
+      }
+    },
+    boolean2number (booleanValue) {
+      if (booleanValue === true) {
+        return 1
+      } else if (booleanValue === false) {
+        return 0
+      }
     },
     // 更新配置项
     updateConfig () {
@@ -465,6 +520,8 @@ export default {
       this.returnParam.order_return_goods_package.add_brand = this.brand
       this.returnParam.order_return_goods_package.add_sort = this.busClass
       this.returnParam.order_return_goods_package.add_cate = this.platClass
+      this.returnParam.post_sale_status = this.boolean2number(this.afterSalesConfiguration)
+      this.returnParam.order_can_exchange = this.boolean2number(this.orderCanExchange)
       console.log(JSON.parse(JSON.stringify(this.returnParam)))
       retrunUpdate(this.returnParam).then(res => {
         console.log(res)
@@ -563,6 +620,10 @@ export default {
         width: 20px;
         margin-bottom: -1px;
       }
+    }
+    .onText {
+      margin-left: 20px;
+      color: #999;
     }
     .configureContent {
       padding-left: 10px;
