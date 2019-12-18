@@ -175,6 +175,7 @@ public class WxAppOrderController extends WxAppBaseController{
      * @param param
      * @return
      */
+    @PostMapping("/refund/list")
     public JsonResult mpReturnInfo(@RequestBody @Valid ReturnOrderParam param){
         try {
             return success(shop().readOrder.getReturnOrder(param));
