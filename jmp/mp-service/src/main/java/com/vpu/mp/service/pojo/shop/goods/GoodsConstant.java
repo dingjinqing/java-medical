@@ -70,6 +70,10 @@ public class GoodsConstant {
      */
     public static final Integer GOODS_DEFAULT_BRAND_ID=0;
     /**
+     * 商品标签可以展示的最大数量
+     */
+    public static final Integer GOODS_LABEL_MAX_COUNT=5;
+    /**
      * 商品违规下架
      */
     public static final Byte INVALIDATE_OFF_SALE = 2;
