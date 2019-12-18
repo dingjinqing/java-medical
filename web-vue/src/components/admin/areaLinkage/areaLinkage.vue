@@ -75,9 +75,9 @@ export default {
         district: `请选择区县`
       },
       values: {
-        province: ``,
-        city: ``,
-        district: ``
+        province: null,
+        city: null,
+        district: null
       },
       areas: {
         province: {},
@@ -86,7 +86,9 @@ export default {
       },
       province: [],
       city: [],
-      areaDistrict: []
+      areaDistrict: [],
+
+      editType: false
     }
   },
   computed: {
@@ -97,13 +99,10 @@ export default {
   watch: {
     // 编辑数据回显
     provinceCode (val) {
+      this.editType = true
       this.values.province = Number(val)
       this.choseProvince(this.values.province)
     }
-    // cityCode (val) {
-    //   this.values.city = Number(val)
-    //   this.choseCity(this.values.city)
-    // }
   },
   mounted () {
     // this.getData()
@@ -142,18 +141,19 @@ export default {
     // 选择省份
     choseProvince (val) {
       // if (val === ``) return
-      this.values.city = ``
-      this.values.district = ``
-
       if (val) {
         this.city = this.province.find((item, index) => val === item['provinceId'])['areaCity']
-        if (this.cityCode) {
+        if (this.editType === true) {
           this.values.city = Number(this.cityCode)
           this.choseCity(this.values.city)
+        } else {
+          this.values.city = ``
+          this.values.district = ``
         }
       } else {
         this.city = []
       }
+
       let province = this.province.find(data => val === data.provinceId)
       if (province) {
         this.areas.province = {
@@ -178,12 +178,16 @@ export default {
 
       if (val) {
         this.areaDistrict = this.city.find((item, index) => val === item['cityId'])['areaDistrict']
-        if (this.districtCode) {
+        if (this.editType === true) {
           this.values.district = Number(this.districtCode)
+          this.choseDistrict(this.values.district)
+        } else {
+          this.values.district = ``
         }
       } else {
         this.areaDistrict = []
       }
+
       let city = this.city.find(data => val === data.cityId)
       if (city) {
         this.areas.city = {
@@ -202,6 +206,8 @@ export default {
     },
 
     choseDistrict (val) {
+      this.editType = false
+
       let district = this.areaDistrict.find(data => val === data.districtId)
       if (district) {
         this.areas.district = {
