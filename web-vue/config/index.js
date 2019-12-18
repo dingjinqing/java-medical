@@ -9,9 +9,21 @@ const devenv = require("../config/dev.env");
 module.exports = {
   dev: {
     // Paths
+<<<<<<< HEAD
     assetsSubDirectory: "static",
     assetsPublicPath: "/",
 
+=======
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/',
+    // proxyTable: {
+    //   '/vpb': {
+    //     target: 'http://' + devenv.API_DOMAIN.replace(/"/g, ''),
+    //     changeOrigin: true,
+    //     pathRewrite: { '^/vpb': '' }
+    //   }
+    // },
+>>>>>>> 87950d0a175b36954e3b1e65dfbea44ffb0daf7d
     // Various Dev Server settings
     host: "localhost", // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined

@@ -11,6 +11,8 @@ import com.vpu.mp.auth.WxAppAuth;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawSumDetailVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountNumberVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
 import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
@@ -125,4 +127,17 @@ public class WxAppAccountController extends WxAppBaseController {
 		return success(res.dataList);
 	}
 	
+	/**
+	 * 提现记录
+	 */
+	@PostMapping("/api/wxapp/distributor/withdraw/list")
+	public JsonResult withdrawList(@RequestBody DistributorWithdrawListParam param) {
+		param.setUserId(wxAppAuth.user().getUserId());
+		DistributorWithdrawSumDetailVo vo = shop().withdraw.withdrawList(param);
+		if(vo == null ) {
+			return fail();
+		}else {
+			return success(vo);
+		}
+	}
 }

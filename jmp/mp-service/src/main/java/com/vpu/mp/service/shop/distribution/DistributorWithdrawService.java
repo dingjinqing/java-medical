@@ -1,16 +1,23 @@
 package com.vpu.mp.service.shop.distribution;
 
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_WITHDRAW;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+
+import java.math.BigDecimal;
+
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawDetailVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListVo;
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
-import org.springframework.stereotype.Service;
-
-import static com.vpu.mp.db.shop.Tables.*;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawSumDetailVo;
 
 /**
  * 分销提现相关
@@ -110,4 +117,32 @@ public class DistributorWithdrawService extends ShopBaseService{
 		return db().selectFrom(DISTRIBUTION_WITHDRAW).where(DISTRIBUTION_WITHDRAW.USER_ID.eq(userId)).fetchAny();
 	}
 	
+	/**
+	 * 获取已提现金额
+	 * @return 
+	 */
+	public BigDecimal getDoneWithDraw(Integer userId) {
+		return db().select(DSL.sum(DISTRIBUTION_WITHDRAW.WITHDRAW_CASH))
+					.from(DISTRIBUTION_WITHDRAW)
+					.where(DISTRIBUTION_WITHDRAW.USER_ID.eq(userId))
+					.and(DISTRIBUTION_WITHDRAW.STATUS.eq((byte)4))
+					.fetchOptionalInto(BigDecimal.class)
+					.orElse(BigDecimal.ZERO);
+	}
+	
+	/**
+	 * 提现记录
+	 * @param param
+	 * @return
+	 */
+	public DistributorWithdrawSumDetailVo withdrawList(DistributorWithdrawListParam param) {
+	
+		PageResult<DistributorWithdrawListVo> data = getWithdrawList(param);
+		BigDecimal doneWithDraw = getDoneWithDraw(param.getUserId());
+		return DistributorWithdrawSumDetailVo
+				.builder()
+				.data(data)
+				.withdrawCrash(doneWithDraw)
+				.build();
+	}
 }
