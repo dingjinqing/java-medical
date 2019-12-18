@@ -35,8 +35,8 @@
                     </block> 
                   </view>
                   <view class="click_to_detail">{{item.is_all_goods}}</view>
-                  <view class="time_canuse" wx:if='{{item.remain_days != 0}}'>{{item.startTime}}-{{item.endTime}}</view>
-                  <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remain_days == 0}}'>
+                  <view class="time_canuse" wx:if='{{item.remainDays != 0}}'>{{item.startTime}}-{{item.endTime}}</view>
+                  <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remainDays == 0}}'>
                     <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[0]}}</text>:
                     <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[1]}}</text>:
                     <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[2]}}</text>

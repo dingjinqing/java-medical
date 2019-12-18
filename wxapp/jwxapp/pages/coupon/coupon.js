@@ -5,6 +5,7 @@
 let util = require("../../utils/util.js")
 let config = require("../../utils/config.js")
 var app = getApp();
+var set_time_out;
 // pages/test/test.js
 global.wxPage({
 
@@ -25,7 +26,8 @@ global.wxPage({
     usedNum: 0,
     expiredNum:0,
     this_type: 1,
-    cou_list: {},
+    // cou_list: {},
+    cou_list: [],
     allCoupon:{},
     page: 1,
   },
@@ -67,6 +69,14 @@ global.wxPage({
             }
           })
         }
+        // 倒计时
+        for (var i = 0; i < _this.data.allCoupon.length; i++) {
+          _this.data.allCoupon[i].remain_seconds_all = _this.data.allCoupon[i].remainHours * 3600 + _this.data.allCoupon[i].remainMinutes + _this.data.allCoupon[i].remainSeconds;
+        }
+        if (_this.data.allCoupon.length > 0) {
+          _this.countdown(_this, _this.data.allCoupon);
+        }
+        
         _this.setData({
           allCoupon: _this.data.allCoupon
         }) 
@@ -82,6 +92,25 @@ global.wxPage({
         return false;
       }
     }, {page: page_id,nav:nav});
+  },
+
+  countdown: function (that, dataList) {
+    set_time_out = setTimeout(function () {
+      // 放在最后--
+      for (var i in dataList) {
+        dataList[i].remain_seconds_all -= 1;
+        if (dataList[i].remain_seconds_all < 0 || dataList[i].remain_seconds_all == NaN) {
+          dataList[i].time_tips = "";
+        } else {
+          dataList[i].time_tips = util.dateformat(dataList[i].remain_seconds_all);
+          console.log(dataList[i].time_tips)
+        }
+      }
+      that.countdown(that, dataList);
+      that.setData({
+        allCoupon: dataList
+      });
+    }, 1000)
   },
 
   /**
