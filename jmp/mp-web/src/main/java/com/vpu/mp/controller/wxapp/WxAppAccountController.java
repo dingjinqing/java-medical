@@ -131,7 +131,7 @@ public class WxAppAccountController extends WxAppBaseController {
 	 * 提现记录
 	 */
 	@PostMapping("/api/wxapp/distributor/withdraw/list")
-	public JsonResult withdrawList(DistributorWithdrawListParam param) {
+	public JsonResult withdrawList(@RequestBody DistributorWithdrawListParam param) {
 		param.setUserId(wxAppAuth.user().getUserId());
 		DistributorWithdrawSumDetailVo vo = shop().withdraw.withdrawList(param);
 		if(vo == null ) {
