@@ -222,14 +222,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectgoods')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="goodsN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="goodsN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="goodsN"
-            ></el-input>  件 商品
+            ></el-input> 件 商品
           </div>
         </div>
 
@@ -242,14 +245,17 @@
             <img :src="src">
             <span>{{$t('tradeConfiguration.selectplant')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="platN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="platN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="platN"
-            ></el-input>  个 平台分类
+            ></el-input> 个 平台分类
           </div>
         </div>
         <div
@@ -258,17 +264,20 @@
           style="margin: 10px 0"
         >
           <div class="noneBlockLeft">
-          <img :src="src">
-          <span>{{$t('tradeConfiguration.selectshop')}}</span>
+            <img :src="src">
+            <span>{{$t('tradeConfiguration.selectshop')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="busClassN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="busClassN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="busClassN"
-            ></el-input>  个 商家分类
+            ></el-input> 个 商家分类
           </div>
         </div>
         <div
@@ -277,17 +286,20 @@
           style="margin: 10px 0"
         >
           <div class="noneBlockLeft">
-          <img :src="src">
-          <span>{{$t('tradeConfiguration.selectlabel')}}</span>
+            <img :src="src">
+            <span>{{$t('tradeConfiguration.selectlabel')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="labelN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="labelN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="labelN"
-            ></el-input>  个 商品标签
+            ></el-input> 个 商品标签
           </div>
         </div>
         <div
@@ -296,17 +308,20 @@
           style="margin: 10px 0"
         >
           <div class="noneBlockLeft">
-          <img :src="src">
-          <span>{{$t('tradeConfiguration.selectbrand')}}</span>
+            <img :src="src">
+            <span>{{$t('tradeConfiguration.selectbrand')}}</span>
           </div>
-          <div class="noneBlockRight" v-if="brandN">已选择：
+          <div
+            class="noneBlockRight"
+            v-if="brandN"
+          >已选择：
             <el-input
               size="mini"
               style="width:50px"
               :disabled="true"
               placeholder="0"
               v-model.number="brandN"
-            ></el-input>  个 商品品牌
+            ></el-input> 个 商品品牌
           </div>
         </div>
       </div>
@@ -342,7 +357,12 @@
           <!-- 发货地址部分 -->
           <div class="addressContent">
             <span class="address">{{$t('tradeConfiguration.selectaddress')}}</span>
-            <areaLinkage @areaData="handleAreaData"/>
+            <areaLinkage
+              :provinceCode="addresssConf.province_code"
+              :cityCode="addresssConf.city_code"
+              :districtCode="addresssConf.district_code"
+              @areaData="handleAreaData"
+            />
             <el-input
               size="small"
               style="width:180px"
@@ -353,23 +373,23 @@
           <div class="expressTable">
             <table>
               <thead>
-              <tr>
-                <td>{{$t('tradeConfiguration.logiscompany')}}</td>
-                <td>{{$t('tradeConfiguration.account')}}</td>
-                <td>{{$t('tradeConfiguration.status')}}</td>
-                <td>{{$t('tradeConfiguration.operation')}}</td>
-              </tr>
+                <tr>
+                  <td>{{$t('tradeConfiguration.logiscompany')}}</td>
+                  <td>{{$t('tradeConfiguration.account')}}</td>
+                  <td>{{$t('tradeConfiguration.status')}}</td>
+                  <td>{{$t('tradeConfiguration.operation')}}</td>
+                </tr>
               </thead>
               <tbody>
-              <tr
-                v-for="item in expressCompany"
-                :key="item.delivery_name"
-              >
-                <td style="width:190px">{{item.delivery_name}}</td>
-                <td style="width:150px">{{item.biz_id}}</td>
-                <td style="width:90px">{{item.status_code}}</td>
-                <td style="color:#5A8BFF;cursor:pointer;width:70px">{{item.operate}}</td>
-              </tr>
+                <tr
+                  v-for="item in expressCompany"
+                  :key="item.delivery_name"
+                >
+                  <td style="width:190px">{{item.delivery_name}}</td>
+                  <td style="width:150px">{{item.biz_id}}</td>
+                  <td style="width:90px">{{item.status_code}}</td>
+                  <td style="color:#5A8BFF;cursor:pointer;width:70px">{{item.operate}}</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -503,12 +523,12 @@
 <script>
 import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
 import pagination from '@/components/admin/pagination/pagination'
-import {tradeSelect, tradeUpdate} from '@/api/admin/basicConfiguration/tradeConfiguration.js'
+import { tradeSelect, tradeUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import ProductLabel from '@/components/admin/addProductLabel'
 import BrandDialog from '@/components/admin/addBrandDialog'
 import BusClassDialog from '@/components/admin/addingBusClassDialog'
-import {storeList, batchUpdateStore} from '@/api/admin/storeManage/store'
+import { storeList, batchUpdateStore } from '@/api/admin/storeManage/store'
 
 export default {
   components: {
@@ -525,8 +545,8 @@ export default {
   watch: {
     lang () {
       this.deliverMethods = [
-        {code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false},
-        {code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false}
+        { code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false },
+        { code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false }
       ]
       this.isRequiredInfo = [
         {
@@ -553,7 +573,7 @@ export default {
           content: this.$t('tradeConfiguration.creadid'),
           value: false
         },
-        {code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false}
+        { code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false }
       ]
     },
     allChecked (newData) {
@@ -622,8 +642,8 @@ export default {
       // 弹窗结果区分标识 1商家分类;2平台分类
       flag: 0,
       deliverMethods: [
-        {code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false},
-        {code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false}
+        { code: 'express', name: '快递', title: this.$t('tradeConfiguration.opendelivery'), value: false },
+        { code: 'fetch', name: '自提', title: this.$t('tradeConfiguration.openpack'), value: false }
       ],
       isRequiredInfo: [
         {
@@ -650,7 +670,7 @@ export default {
           content: this.$t('tradeConfiguration.creadid'),
           value: false
         },
-        {code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false}
+        { code: 'custom', info: this.$t('tradeConfiguration.custominfo'), value: false }
       ],
       invoice: false,
       serviceTerms: false,
@@ -662,7 +682,7 @@ export default {
       showStoreDialog: false,
       pageParams: {},
       expressCompany: [
-        {delivery_name: '百世快递', biz_id: '', status_code: '未签约', operate: '签约'}
+        { delivery_name: '百世快递', biz_id: '', status_code: '未签约', operate: '签约' }
       ],
       cancelHour: 0,
       cancelMinute: 0,
@@ -721,11 +741,11 @@ export default {
       ],
       brandClassify: '',
       classifyList: [
-        {value: 1, label: '运动品牌'},
-        {value: 2, label: '奢侈品'},
-        {value: 3, label: '电子产品'},
-        {value: 4, label: 'SONY'},
-        {value: 5, label: '商品测试'}
+        { value: 1, label: '运动品牌' },
+        { value: 2, label: '奢侈品' },
+        { value: 3, label: '电子产品' },
+        { value: 4, label: 'SONY' },
+        { value: 5, label: '商品测试' }
       ],
       allChecked: false,
       allCheckFlag: false,
@@ -832,6 +852,9 @@ export default {
     },
     // 更新配置项
     updateConfig () {
+      console.log(this.addresssConf)
+      console.log(this.tradeProcessConfig.shop_address)
+
       this.tradeProcessConfig.cancel_time = this.cancelHour * 60 + this.cancelMinute
       this.tradeProcessConfig.shop_address = JSON.stringify(this.addresssConf)
       this.deliverMethods.map((item, index) => {
@@ -920,7 +943,7 @@ export default {
     // 更新门店自提状态
     updateSetPick () {
       var updateParam = []
-      const stores = this.storeParamList.map(({storeId, autoPick}) => ({storeId, autoPick}))
+      const stores = this.storeParamList.map(({ storeId, autoPick }) => ({ storeId, autoPick }))
       updateParam = stores
       updateParam.map((item, index) => {
         item.autoPick = this.boolean2number(item.autoPick)
@@ -940,6 +963,10 @@ export default {
       this.showStoreDialog = true
     },
     handleAreaData (val) {
+      this.addresssConf.province_code = val.province
+      this.addresssConf.city_code = val.city
+      this.addresssConf.district_code = val.district
+
       this.province = val['province']
     },
     // 配置弹出取消按钮点击
@@ -1031,200 +1058,200 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-  .tradeProcessConfigure {
-    padding-bottom: 20px;
+.tradeProcessConfigure {
+  padding-bottom: 20px;
 
-    .deliverMethods {
-      position: relative;
-      width: 80%;
-      padding-top: 0 !important;
+  .deliverMethods {
+    position: relative;
+    width: 80%;
+    padding-top: 0 !important;
 
-      .deliverContent {
-        height: 50px;
-        line-height: 50px;
-        border-bottom: 1px solid #eee;
+    .deliverContent {
+      height: 50px;
+      line-height: 50px;
+      border-bottom: 1px solid #eee;
 
-        :nth-of-type(3) {
-          margin-left: 15px;
-          color: #999;
-          font-size: 12px;
-        }
+      :nth-of-type(3) {
+        margin-left: 15px;
+        color: #999;
+        font-size: 12px;
+      }
 
-        .takeByself {
-          position: absolute;
-          color: #5a8bff;
-          right: 90px;
-          cursor: pointer;
-        }
+      .takeByself {
+        position: absolute;
+        color: #5a8bff;
+        right: 90px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .settingWrapper {
+    font-size: 13px;
+
+    .title {
+      height: 40px;
+      line-height: 40px;
+      background: #eef1f6;
+      padding-left: 16px;
+
+      span {
+        display: inline-block;
+        border-left: 2px solid #5a8bff;
+        height: 14px;
+        width: 8px;
+        margin-bottom: -1px;
       }
     }
 
-    .settingWrapper {
-      font-size: 13px;
+    .settingContent {
+      height: 60px;
+      line-height: 60px;
+      padding-left: 10px;
+      color: #666;
 
-      .title {
-        height: 40px;
-        line-height: 40px;
-        background: #eef1f6;
-        padding-left: 16px;
+      .inputWidth {
+        width: 65px;
+        margin: 0 5px;
+      }
+    }
 
-        span {
-          display: inline-block;
-          border-left: 2px solid #5a8bff;
-          height: 14px;
-          width: 8px;
-          margin-bottom: -1px;
-        }
+    .delay {
+      height: 35px;
+      line-height: 35px;
+    }
+
+    .top {
+      margin-top: 15px;
+    }
+
+    .bottom {
+      margin: 0 0 15px 10px;
+    }
+
+    .WeChatExpress {
+      font-size: 14px;
+
+      div {
+        margin-bottom: 10px;
       }
 
-      .settingContent {
-        height: 60px;
-        line-height: 60px;
-        padding-left: 10px;
-        color: #666;
-
-        .inputWidth {
-          width: 65px;
-          margin: 0 5px;
-        }
+      .switchText {
+        line-height: 25px;
+        color: #333;
+        width: 85px;
+        margin: 15px 20px 0 10px;
       }
 
-      .delay {
-        height: 35px;
-        line-height: 35px;
-      }
-
-      .top {
+      .expressInfo {
         margin-top: 15px;
-      }
 
-      .bottom {
-        margin: 0 0 15px 10px;
-      }
-
-      .WeChatExpress {
-        font-size: 14px;
-
-        div {
-          margin-bottom: 10px;
-        }
-
-        .switchText {
+        .grayText {
+          color: #999;
           line-height: 25px;
+        }
+
+        .addressContent {
           color: #333;
-          width: 85px;
-          margin: 15px 20px 0 10px;
-        }
-
-        .expressInfo {
-          margin-top: 15px;
-
-          .grayText {
-            color: #999;
-            line-height: 25px;
-          }
-
-          .addressContent {
-            color: #333;
-            display: flex;
-
-            .address {
-              line-height: 25px;
-              margin-right: 20px;
-            }
-          }
-
-          .expressTable {
-            width: 500px;
-            line-height: 35px;
-
-            table {
-              width: 100%;
-              text-align: center;
-
-              thead {
-                background: #f5f5f5;
-              }
-
-              tbody td {
-                border: 1px solid #eee;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .settingWrapper:nth-of-type(1) {
-      margin-top: 20px;
-    }
-
-    .requiredInfo {
-      .necessaryGoodsInfo {
-        height: 60px;
-        line-height: 60px;
-        color: #666;
-      }
-
-      .goodsWrapper {
-        margin: 10px 0;
-        .noneBlockList {
-          margin-bottom: 10px;
           display: flex;
-          .noneBlockLeft {
-            line-height: 30px;
-            height: 30px;
-            width: 120px;
-            text-align: left;
-            color: #5a8bff;
-            border: 1px solid #ccc;
-            background: #fff;
-            cursor: pointer;
-            padding-left: 5px;
+
+          .address {
+            line-height: 25px;
             margin-right: 20px;
           }
-          .noneBlockRight {
-            color: #5a8bff;
-            cursor: pointer;
-            height: 30px;
-            line-height: 30px;
-          }
         }
-      }
-    }
 
-    .btn {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      margin-top: 30px;
-    }
+        .expressTable {
+          width: 500px;
+          line-height: 35px;
 
-    /deep/ .tableClss th {
-      background-color: #f5f5f5;
-      border: none;
-      height: 36px;
-      padding: 8px 10px;
-      color: #333;
-    }
+          table {
+            width: 100%;
+            text-align: center;
 
-    .table_list {
-      position: relative;
+            thead {
+              background: #f5f5f5;
+            }
 
-      .table_footer {
-        background: #666;
-      }
-    }
-
-    .chooseGoodsBrand {
-      .selectCondition {
-        display: flex;
-        margin-bottom: 15px;
-
-        .brandClassify {
-          margin: 0 30px 0 20px;
+            tbody td {
+              border: 1px solid #eee;
+            }
+          }
         }
       }
     }
   }
+
+  .settingWrapper:nth-of-type(1) {
+    margin-top: 20px;
+  }
+
+  .requiredInfo {
+    .necessaryGoodsInfo {
+      height: 60px;
+      line-height: 60px;
+      color: #666;
+    }
+
+    .goodsWrapper {
+      margin: 10px 0;
+      .noneBlockList {
+        margin-bottom: 10px;
+        display: flex;
+        .noneBlockLeft {
+          line-height: 30px;
+          height: 30px;
+          width: 120px;
+          text-align: left;
+          color: #5a8bff;
+          border: 1px solid #ccc;
+          background: #fff;
+          cursor: pointer;
+          padding-left: 5px;
+          margin-right: 20px;
+        }
+        .noneBlockRight {
+          color: #5a8bff;
+          cursor: pointer;
+          height: 30px;
+          line-height: 30px;
+        }
+      }
+    }
+  }
+
+  .btn {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 30px;
+  }
+
+  /deep/ .tableClss th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    padding: 8px 10px;
+    color: #333;
+  }
+
+  .table_list {
+    position: relative;
+
+    .table_footer {
+      background: #666;
+    }
+  }
+
+  .chooseGoodsBrand {
+    .selectCondition {
+      display: flex;
+      margin-bottom: 15px;
+
+      .brandClassify {
+        margin: 0 30px 0 20px;
+      }
+    }
+  }
+}
 </style>

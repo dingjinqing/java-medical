@@ -28,7 +28,8 @@
     "pages/checkout/checkout",
     "pages/servicecomment/servicecomment",
     "pages/bargaininfo/bargaininfo",
-    "components/decorate/shop_announce/index"
+    "components/decorate/shop_announce/index",
+    "components/decorate/bargain/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",

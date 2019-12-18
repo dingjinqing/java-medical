@@ -14,11 +14,14 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_RE
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountRecord;
+import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -292,7 +295,12 @@ public class AccountService extends ShopBaseService {
 		BigDecimal account = memberService.getUserAccount(userId);
 		BigDecimal withDraw = userTotalFanliService.getTotalMoney(userId);
 		DistributionParam distributionCfg = distributionConfigService.getDistributionCfg();
+		if(distributionCfg!=null) {
+			vo.setWithdrawStatus(distributionCfg.getWithdrawStatus());
+			vo.setWithdrawSource(distributionCfg.getWithdrawSource());
+		}
 		Byte bindMobile = shopCommonConfigService.getBindMobile();
+		vo.setIsBindMobile(bindMobile);
 		MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(getShopId());
 		//可提现金额小于余额是以可提现金额为主
 		if(withDraw.compareTo(account)<1) {
@@ -301,15 +309,23 @@ public class AccountService extends ShopBaseService {
 			vo.setWithdraw(account);
 		}
 		vo.setAccount(account);
-		vo.setWithdrawStatus(distributionCfg.getWithdrawStatus());
-		vo.setWithdrawSource(distributionCfg.getWithdrawSource());
+
 		// 已绑定公众号 
 		if(wxapp!=null && !StringUtils.isBlank(wxapp.getLinkOfficialAppId())) {
 			String wxOpenId = memberService.getUserWxOpenId(userId);
+			Byte subscribe = NumberUtils.BYTE_ZERO;
+			String isPublicUser = saas.shop.mpOfficialAccountUserService.getOpenIdFromMpOpenId(wxapp.getLinkOfficialAppId(), wxapp.getAppId(), wxOpenId);
+			if(!StringUtils.isBlank(isPublicUser)) {
+				MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(wxapp.getLinkOfficialAppId(),isPublicUser);
+				subscribe = user.getSubscribe();
+			}
+			vo.setIsPublicUser(subscribe);
+			MpOfficialAccountRecord officialAccount = saas.shop.mpOfficialAccountService.getOfficialAccountByAppid(wxapp.getLinkOfficialAppId());
+			if(officialAccount != null) {
+				vo.setNickName(officialAccount.getNickName());
+			}
 		}
-		
 		return vo;
-		
 	}
 
 

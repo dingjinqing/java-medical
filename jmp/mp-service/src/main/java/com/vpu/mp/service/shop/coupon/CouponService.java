@@ -711,7 +711,8 @@ public class CouponService extends ShopBaseService {
     	List<CouponWxVo> list = getExpiringCouponList();
     	System.out.println(list.toString());
     	String page="pages/couponlist/couponlist";
-    	String keyword1="xxx优惠券";
+    	String keyword1="尊敬的用户，您的优惠券";
+    	String keyword11="即将到期";
     	for (CouponWxVo couponWxVo : list) {
     		String couponName = couponWxVo.getActName();
     		List<Integer> userIdList=new ArrayList<Integer>();
@@ -726,7 +727,10 @@ public class CouponService extends ShopBaseService {
     		}
     		userIdList.add(wxUserInfo.getRecId());
     		logger().info("userIdList"+userIdList);
-    		String[][] data = new String[][] { {keyword1,"#173177"},{null,"#173177"},{couponName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{null,"#173177"}};
+			String[][] data = new String[][] { { keyword1 + couponName + keyword11, "#173177" }, { "", "#173177" },
+					{ couponName, "#173177" },
+					{ DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, couponWxVo.getEndTime()), "#173177" },
+					{ "", "#173177" } };
 			RabbitMessageParam param = RabbitMessageParam.builder()
 					.mpTemplateData(
 							MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(data).build())

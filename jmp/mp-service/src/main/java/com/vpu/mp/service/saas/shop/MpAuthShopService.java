@@ -26,6 +26,7 @@ import org.jooq.Record1;
 import org.jooq.Record11;
 import org.jooq.Record13;
 import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
@@ -63,6 +64,7 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpAuthShopListVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpDeployQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOperateVo;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
+import com.vpu.mp.service.pojo.saas.shop.officeAccount.MaMpBindParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
 import com.vpu.mp.service.pojo.shop.market.message.BatchUploadCodeParam;
@@ -926,6 +928,11 @@ public class MpAuthShopService extends MainBaseService {
 			}
 		}
 	}
+	
+	public int updateBindOpenAppId(String appId, String bindAppId) {
+		return db().update(MP_AUTH_SHOP).set(MP_AUTH_SHOP.BIND_OPEN_APP_ID, bindAppId)
+				.where(MP_AUTH_SHOP.APP_ID.eq(appId)).execute();
+	}
 
 	/**
 	 * 用接口绑定小程序或者公众号appId到开放平台账号
@@ -978,6 +985,24 @@ public class MpAuthShopService extends MainBaseService {
 	public Result<MpAuthShopRecord> getSamePrincipalMpApps(String principalName) {
 		return db().fetch(MP_AUTH_SHOP,
 				MP_AUTH_SHOP.PRINCIPAL_NAME.eq(principalName).and(MP_AUTH_SHOP.IS_AUTH_OK.eq((byte) 1)));
+	}
+	
+	/**
+	 * 小程序
+	 * @param principalName
+	 * @return
+	 */
+	public List<MaMpBindParam> getSamePrincipalMaList(String principalName) {
+		Result<Record3<String, String, String>> fetch = db()
+				.select(MP_AUTH_SHOP.APP_ID, MP_AUTH_SHOP.BIND_OPEN_APP_ID,DSL.field("2", String.class).as("type")).from(MP_AUTH_SHOP)
+				.where(MP_AUTH_SHOP.PRINCIPAL_NAME.eq(principalName)
+						.and(MP_AUTH_SHOP.IS_AUTH_OK.eq((byte) 1)))
+				.fetch();
+		List<MaMpBindParam> into =new ArrayList<MaMpBindParam>();
+		if(fetch!=null) {
+			into = fetch.into(MaMpBindParam.class);
+		}
+		return into;
 	}
 
     /**

@@ -8,14 +8,9 @@ import router from '@/router/index.js'
 let baseURL = ''
 if (process.env.NODE_ENV === 'development') {
   baseURL = '/vpb'
-  // localStorage.setItem('V-ImageHost', 'http://mpimg2.weipubao.cn')
 } else if (process.env.NODE_ENV === 'testing') {
-  // baseURL = 'https://www.ceshi.com'
 } else if (process.env.NODE_ENV === 'production') {
-  // baseURL = 'https://www.production.com'
-  // localStorage.setItem('V-ImageHost', 'http://mpimg2.weipubao.cn')
 }
-// console.log(process.env.NODE_ENV, baseURL)
 
 // 创建axios实例
 const service = axios.create({
@@ -28,6 +23,9 @@ service.interceptors.request.use(
     // console.log(config.url.split('/')[2])
 
     config.headers['Content-Type'] = localStorage.getItem('contentType')
+    if(!config.headers['Content-Type']) {
+      config.headers['Content-Type'] = 'application/json;charset=UTF-8'
+    }
     // console.log(Cookies.get('V-Token'))
     if (config.url.split('/')[2] === 'admin') {
       config.headers['V-Token'] = Cookies.get('V-Index-Token')

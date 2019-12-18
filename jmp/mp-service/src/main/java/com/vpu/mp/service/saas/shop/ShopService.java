@@ -13,9 +13,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import org.jooq.DatePart;
-import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record11;
@@ -48,6 +46,8 @@ import com.vpu.mp.service.pojo.saas.shop.version.VersionNumberConfig;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
+import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
+import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
 
@@ -97,7 +97,8 @@ public class ShopService extends MainBaseService {
 
     @Autowired
     public MpOfficialAccountUserService mpOfficialAccountUserService;
-    
+    @Autowired
+    public MpOfficialAccountService mpOfficialAccountService;
     @Autowired
     public MpBackProcessService backProcessService;
     
