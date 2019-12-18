@@ -140,7 +140,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						if(OrderConstant.RT_ONLY_SHIPPING_FEE == param.getReturnType()) {
 							//生成退款订单
 							rOrder = returnShippingFee(param,order);
-                            result.setResult(rOrder.getReturnOrderSn());
 						} else {
 							//通过退款查询获取可退信息
 							RefundVo check = (RefundVo)query(param);
@@ -155,6 +154,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						orderInfo.updateInReturn(rOrder, null, null);
 						//退款订单记录
 						returnStatusChange.addRecord(rOrder, param.getIsMp(), "生成退款退货订单信息："+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
+					    //返回退款订单号
+                        result.setResult(rOrder.getReturnOrderSn());
 					}
 					//退款商品为空则初始化
 					if(CollectionUtils.isEmpty(returnGoods)) {
