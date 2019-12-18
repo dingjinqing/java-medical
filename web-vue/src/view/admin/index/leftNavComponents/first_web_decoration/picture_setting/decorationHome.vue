@@ -263,7 +263,7 @@ export default {
     OfficialAccount: () => import('./decorationModules/graphicAndTextComponents/officialAccount'), // 公众号模块
     CustomerServiceModule: () => import('./decorationModules/graphicAndTextComponents/customerServiceModule') // 客服模块
   },
-  data () {
+  data() {
     return {
       saveTwoDialogVisible: false, // 二次弹窗flag
       leftComClass: false, // 左边组件库适配中英文
@@ -326,7 +326,7 @@ export default {
     }
   },
   watch: {
-    showModulesList (newData) {
+    showModulesList(newData) {
       console.log(this.nowRightShowIndex, newData)
       console.log(newData)
       this.$http.$emit('modulesClick', this.nowRightShowIndex)
@@ -336,25 +336,25 @@ export default {
         this.zbFlag = false
       }
     },
-    nowRightShowIndex (newData) {
+    nowRightShowIndex(newData) {
       console.log(newData, this.activeName, this.nowRightModulesData)
       this.handleToModuleHight()
     },
-    activeName (newData) {
+    activeName(newData) {
       this.initLeftModulesShow(newData)
     },
-    lang () {
+    lang() {
       this.pivTextConArr = this.$t('decorationHome.pivTextConArr')
       this.goodsTextConArr = this.$t('decorationHome.goodsTextConArr')
       this.marketingTextConArr = this.$t('decorationHome.marketingTextConArr')
       this.initLeftModulesShow(this.activeName)
     }
   },
-  updated () {
+  updated() {
     console.log(this.nowRightShowIndex)
     this.$http.$emit('modulesClick', this.nowRightShowIndex)
   },
-  mounted () {
+  mounted() {
     // 初始化语言
     this.langDefault()
     console.log(this.$route)
@@ -417,7 +417,7 @@ export default {
   },
   methods: {
     // 模块名称转化
-    handleToTurnModulesName (data) {
+    handleToTurnModulesName(data) {
       let showModuleArr = []
       let arr = JSON.parse(JSON.stringify(data))
       arr.forEach(item => {
@@ -427,7 +427,7 @@ export default {
       this.showModulesList = showModuleArr
     },
     // 模块名数据池
-    modulesName (name) {
+    modulesName(name) {
       let moduleNameId = null
       switch (name) {
         case 'm_card':
@@ -501,24 +501,52 @@ export default {
       }
       return moduleNameId
     },
+    handleToTurnField(fieldArr) {
+      let newArr = JSON.parse(JSON.stringify(fieldArr))
+      fieldArr.map((item, index) => {
+        switch (item) {
+          case 'm_member_card':
+            newArr[index] = 'm_card'
+            console.log(item)
+            break
+          case 'm_voucher':
+            newArr[index] = 'm_coupon'
+            break
+          case 'm_voucher':
+            newArr[index] = 'm_coupon'
+            break
+          case 'm_integral_goods':
+            newArr[index] = 'm_integral'
+            break
+          case 'm_seckill_goods':
+            newArr[index] = 'm_seckill'
+            break
+        }
+      })
+      console.log(newArr)
+      return newArr
+    },
     // 初始化左侧模块显示
-    initLeftModulesShow (activeName) {
+    initLeftModulesShow(activeName) {
+      // 可配置权限池
+      let arrField = ['m_card', 'm_coupon', 'm_bargain', 'm_video', 'm_integral', 'm_seckill', 'm_group_draw', 'm_pin_integration']
       getModulesJusList().then(res => {
         console.log(res)
         if (res.error === 0) {
           let arr = res.content
+          let checArr = this.handleToTurnField(arr)
           this.pivTextConArr.forEach((item, index) => {
-            if (arr.indexOf(item.name) !== -1) {
+            if ((checArr.indexOf(item.name) === -1) && (arrField.indexOf(item.name) !== -1)) {
               item.flag = false
             }
           })
           this.goodsTextConArr.forEach((item, index) => {
-            if (arr.indexOf(item.name) !== -1) {
+            if ((checArr.indexOf(item.name) === -1) && (arrField.indexOf(item.name) !== -1)) {
               item.flag = false
             }
           })
           this.marketingTextConArr.forEach((item, index) => {
-            if (arr.indexOf(item.name) !== -1) {
+            if ((checArr.indexOf(item.name) === -1) && (arrField.indexOf(item.name) !== -1)) {
               item.flag = false
             }
           })
@@ -541,12 +569,12 @@ export default {
       })
     },
     // 页面设置回显
-    hanelToPageSet (res) {
+    hanelToPageSet(res) {
       console.log(res)
       this.pageSetData = res
     },
     // 初始化拖拽事件
-    init_drag_event () {
+    init_drag_event() {
       let this_ = this
       // 左侧模块向中间区域拖拽
       $('.third_drag').draggable({
@@ -595,7 +623,7 @@ export default {
       })
     },
     // 左侧模块拖拽开始start处理函数
-    highlignt_row_item (pos) {
+    highlignt_row_item(pos) {
       let this_ = this
       let p = $('.drag_area').offset()
       console.log(p, '--', pos, '--', $('.drag_area').width(), $('.drag_area').height())
@@ -620,7 +648,7 @@ export default {
       }
     },
     // 中间模块拖拽接收
-    handleToAcceptDrag () {
+    handleToAcceptDrag() {
       let this_ = this
       // console.log('test')
       $('.drag_area').droppable({
@@ -712,7 +740,7 @@ export default {
       })
     },
     // 左侧模块拖入中间区域后，中间区域数据处理函数
-    handleToMiddleAcceptData (insertModulesId, showModulesList, insert, index) {
+    handleToMiddleAcceptData(insertModulesId, showModulesList, insert, index) {
       // 判断id是否为-1，若是则插入尾部，否则插入指定位置
       console.log(insertModulesId, index)
       if (insertModulesId === -1 || this.isAddBottom) {
@@ -736,7 +764,7 @@ export default {
       }
     },
     // 中间区域元素开始拖动时处理函数
-    handleToStart ({ oldIndex }) {
+    handleToStart({ oldIndex }) {
       console.log(oldIndex)
 
       this.middleHereFlag = true
@@ -760,7 +788,7 @@ export default {
       this.isDragging = true
     },
     // 中间区域元素停止拖动是处理函数
-    handleToEnd (e) {
+    handleToEnd(e) {
       // let this_ = this
       console.log(this.oldIndex, this.newIndex, this.oldElement)
 
@@ -801,7 +829,7 @@ export default {
       })
     },
     // 中间区域模块icon点击数据接收统一处理
-    handleToClickIcon ({ direction, flag }) {
+    handleToClickIcon({ direction, flag }) {
       console.log(1111)
       this.topAreaFlag = false
       switch (direction) {
@@ -858,7 +886,7 @@ export default {
       }
     },
     // 中间模块是否删除弹窗点击确定事件
-    handleToSureDelete (flag) {
+    handleToSureDelete(flag) {
       console.log(this.modulesData)
       let newArr3 = JSON.parse(JSON.stringify(this.showModulesList))
       console.log(this.nowRightShowIndex)
@@ -903,27 +931,27 @@ export default {
       console.log(this.showModulesList, this.modulesData)
     },
     // 中间区域拖拽插入数据处理
-    middleDragData (res) {
+    middleDragData(res) {
       console.log(res)
       this.newIndex = res
     },
     // 顶部滑动
-    dragTopOver () {
+    dragTopOver() {
       console.log('滑过顶部')
       this.topAreaFlag = true
     },
     // 顶部划出
-    dragTopOut () {
+    dragTopOut() {
       this.topAreaFlag = false
     },
     // 模块点击
-    handleToClickModule (index) {
+    handleToClickModule(index) {
       console.log(index)
       this.$http.$emit('modulesClick', index)
       // this.handleToModuleHight()
     },
     // 当前高亮模块数据处理向右侧传递事件
-    handleToModuleHight () {
+    handleToModuleHight() {
       let flag = true
       this.showModulesList.forEach(item => {
         if (item === -1) {
@@ -955,7 +983,7 @@ export default {
       console.log(this.showModulesList, this.modulesData)
     },
     // 当中间模块数组showModulesList被插入新的数据时、保存数组处理函数
-    handleToSaveModules (showModulesList, modulesData) {
+    handleToSaveModules(showModulesList, modulesData) {
       console.log(this.showModulesList, this.modulesData)
       if (this.showModulesList.length > this.modulesData.length) {
         console.log(this.showModulesList[this.nowRightShowIndex])
@@ -991,7 +1019,7 @@ export default {
       // })
     },
     //  点击左侧模块加到中间模块队列底部并高亮
-    handleToClickLeftModule (id, flag) {
+    handleToClickLeftModule(id, flag) {
       console.log(id, flag)
       if (!flag) return
       this.showModulesList.push(id)
@@ -1003,17 +1031,17 @@ export default {
       })
     },
     // 当中部模块数据排序发生变化时处理保存模块数组的排序
-    handleToSortModulesData (insert, obj) {
+    handleToSortModulesData(insert, obj) {
       console.log(insert, this.showModulesList, this.modulesData)
       if (this.showModulesList.length <= 1) return
       console.log(insert, this.showModulesList, this.modulesData)
     },
     // 右侧点击页面设置重置中部显示
-    handleToClearIndex () {
+    handleToClearIndex() {
       this.nowRightShowIndex = null
     },
     // 右侧编辑回显数据
-    handleToBackMiddleData (data) {
+    handleToBackMiddleData(data) {
       console.log(data)
       this.modulesData[this.nowRightShowIndex] = data
       console.log(this.modulesData)
@@ -1022,11 +1050,11 @@ export default {
       console.log(data)
     },
     // 二次保存并发布确认
-    handleToSaveTwo (flag) {
+    handleToSaveTwo(flag) {
       this.handleToSave(0)
     },
     // 保存处理事件
-    handleToSave (flag) {
+    handleToSave(flag) {
       let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
       // 对模块某些数据进行非空校验
       let judgeFlag = this.handleToJudgeModulesData(saveMosulesData)
@@ -1122,7 +1150,7 @@ export default {
       console.log(params)
     },
     // 底部保存等按钮点击统一处理
-    handleToFooter (flag) {
+    handleToFooter(flag) {
       console.log(flag)
       let saveMosulesData = JSON.parse(JSON.stringify(this.modulesData))
       // 对模块某些数据进行非空校验

@@ -182,7 +182,7 @@ export default {
     ImageDalog: () => import('@/components/admin/imageDalog'),
     ChoosingGoods: () => import('@/components/admin/choosingGoods')
   },
-  data () {
+  data() {
     var validatePassLogoImgUrl = (rule, value, callback) => { // 自定义校验品牌Logo
       if (value === '') {
         callback(new Error('请选择品牌Logo'))
@@ -394,7 +394,7 @@ export default {
     ...mapGetters(['goodsIds', 'editGoodsId'])
   },
   watch: {
-    checkedAll (newData, oldData) {
+    checkedAll(newData, oldData) {
       if (newData === true) {
         this.trList.map((item, index) => {
           item.ischecked = true
@@ -406,7 +406,7 @@ export default {
       }
     },
     goodsIds_: {
-      handler (newData, oldData) {
+      handler(newData, oldData) {
         this.ruleForm.goodsIdsArr = [...new Set(newData)]
         this.selectgoodsNum = this.ruleForm.goodsIdsArr.length
         console.log(this.ruleForm.goodsIdsArr)
@@ -414,7 +414,7 @@ export default {
       immediate: true
     }
   },
-  mounted () {
+  mounted() {
     // 初始化语言
     this.langDefault()
     // 传递crumbsTitle
@@ -426,7 +426,7 @@ export default {
   },
   methods: {
     ...mapActions(['changeCrumbstitle', 'transmitGoodsIds']),
-    defaultGrandClass (flag) {
+    defaultGrandClass(flag) {
       console.log(this.editGoodsId)
       // 品牌分类下拉框数据获取
       classificationSelectRequest().then((res) => {
@@ -474,11 +474,11 @@ export default {
       }
     },
     // 新建品牌分类弹窗
-    handleNewBuild () {
+    handleNewBuild() {
       this.dialogVisible = true
     },
     // 添加品牌分类
-    handleAddGrandClass () {
+    handleAddGrandClass() {
       let obj = {
         'classifyName': this.brandName,
         'first': this.classificationName
@@ -504,7 +504,7 @@ export default {
       this.dialogVisible = false
     },
     // 跳转到品牌分类
-    handleTurnManClassPage () {
+    handleTurnManClassPage() {
       this.$router.push({
         name: 'brand',
         params: {
@@ -513,40 +513,40 @@ export default {
       })
     },
     // 页码改变
-    handleCurrentChange () {
+    handleCurrentChange() {
       this.defaultGrandClass()
     },
     // 点击选择商品按钮
-    handleClickChoiseGood () {
+    handleClickChoiseGood() {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
-    handleToGetGoods (data) { // 商品弹窗选中数据回传函数
+    handleToGetGoods(data) { // 商品弹窗选中数据回传函数
       console.log(data)
       this.ruleForm.goodsIdsArr = data
       this.selectgoodsNum = data.length
     },
     // 选择商品弹窗确定
-    handleChoiseGooddialog () {
+    handleChoiseGooddialog() {
       this.transmitGoodsIds(this.ruleForm.goodsIdsArr)
       this.choiseGooddialogVisible = false
     },
     // 调用图片弹窗
-    handleImgDailog () {
+    handleImgDailog() {
       this.tuneUp = !this.tuneUp
     },
     // 图片弹窗选中
-    handleSelectImg (res) {
+    handleSelectImg(res) {
       console.log(res, this.saveImgUrl)
       this.saveImgUrl = res.imgPath
       this.ruleForm.logoImgUrl = res.imgUrl
     },
     // 刷新
-    handleRefresh () {
+    handleRefresh() {
       // 品牌分类初始化获取
       this.defaultGrandClass(true)
     },
     // 保存
-    saveShopStyle () {
+    saveShopStyle() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           console.log(this.saveImgUrl)
@@ -569,6 +569,9 @@ export default {
                 this.$message.success({
                   message: '保存成功',
                   type: 'success'
+                })
+                this.$router.push({
+                  name: 'brand'
                 })
               } else if (res.error === 131001) {
                 this.$message.error({
