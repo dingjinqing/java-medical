@@ -117,7 +117,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             logger.error("退款退货执行异常，订单不存在");
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST);
 		}
-		try {
+		//result
+        ExecuteResult result = ExecuteResult.create();
+        try {
 			transaction(()->{
 				try {
 					//退款订单
@@ -138,6 +140,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						if(OrderConstant.RT_ONLY_SHIPPING_FEE == param.getReturnType()) {
 							//生成退款订单
 							rOrder = returnShippingFee(param,order);
+                            result.setResult(rOrder.getReturnOrderSn());
 						} else {
 							//通过退款查询获取可退信息
 							RefundVo check = (RefundVo)query(param);
@@ -221,7 +224,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		}
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RETURN.code }), new String[] {param.getOrderSn()});
-		return null;
+		return result;
 	}
 
 	@Override
