@@ -45,8 +45,8 @@ public class WechatTaskService extends ShopBaseService {
     private static final String CONTENT = "wechat-context";
     private static final ThreadLocal<String> local = ThreadLocal.withInitial(() -> {
         LocalDate date = LocalDate.now();
-        return new SimpleDateFormat(DateUtil.DATE_FORMAT_SHORT).
-                format(date.minusDays(1));
+        DateTimeFormatter faDateTimeFormatter = DateTimeFormatter.ofPattern(DateUtil.DATE_FORMAT_SHORT);
+        return date.format(faDateTimeFormatter);
     });
 
     private WxMaAnalysisService getServiceByShopId(Integer shopId) {
@@ -304,7 +304,7 @@ public class WechatTaskService extends ShopBaseService {
     }
     private boolean validationData(Object o,Table<?> table){
         if( o == null ){
-            return true;
+            return false;
         }
         Field<String> data = DSL.val(local.get());
         return isHavingData(table, data);
