@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.saas.shop.mp.MpOfficeAccountVo;
+import com.vpu.mp.service.pojo.saas.shop.officeAccount.MaMpBindParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOAPayManageParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
@@ -31,8 +32,11 @@ import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.Result;
 import org.jooq.SelectOnConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -114,6 +118,23 @@ public class ShopOfficialAccount extends MainBaseService {
 				MP_OFFICIAL_ACCOUNT.PRINCIPAL_NAME.eq(principalName).and(MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq((byte) 1)));
 	}
 
+	/**
+	 * 公众号
+	 * @param principalName
+	 * @return
+	 */
+	public List<MaMpBindParam> getSamePrincipalOfficeList(String principalName) {
+		Result<Record3<String, String, String>> fetch = db()
+				.select(MP_OFFICIAL_ACCOUNT.APP_ID, MP_OFFICIAL_ACCOUNT.BIND_OPEN_APP_ID,DSL.field("1", String.class).as("type")).from(MP_OFFICIAL_ACCOUNT)
+				.where(MP_OFFICIAL_ACCOUNT.PRINCIPAL_NAME.eq(principalName)
+						.and(MP_OFFICIAL_ACCOUNT.IS_AUTH_OK.eq((byte) 1)))
+				.fetch();
+		List<MaMpBindParam> into =new ArrayList<MaMpBindParam>();
+		if(fetch!=null) {
+			into = fetch.into(MaMpBindParam.class);
+		}
+		return into;
+	}
 	/**
 	 * 提现配置
      *
@@ -224,24 +245,42 @@ public class ShopOfficialAccount extends MainBaseService {
      *
 	 * @param appId
 	 */
-	public void bindAllSamePrincipalOpenAppId(MpOfficialAccountRecord record) throws WxErrorException {
-		Result<MpOfficialAccountRecord> samePrincipalMpApps = getSamePrincipalOffice(record.getPrincipalName());
+	public void bindAllSamePrincipalOpenAppId(String principalName) throws WxErrorException {
+		logger().info("传入的principalName："+principalName);
+		if (!principalName.equals("个人")) {
+			List<MaMpBindParam> apps = getSamePrincipalOfficeList(principalName);
+			List<MaMpBindParam> samePrincipalMaList = saas.shop.mp.getSamePrincipalMaList(principalName);
+			apps.addAll(samePrincipalMaList);
+			bindSamePrincipalApps(apps);
+		}
+	}
+
+	public void bindSamePrincipalApps(List<MaMpBindParam> apps) throws WxErrorException {
 		String openAppId = null;
-		// 遍历所有主体相同的号，查找不为空的openAppId
-		for (MpOfficialAccountRecord mShopRecord : samePrincipalMpApps) {
-			if (!StringUtils.isEmpty(mShopRecord.getBindOpenAppId())) {
-				openAppId = mShopRecord.getBindOpenAppId();
-				break;
+		for (MaMpBindParam app : apps) {
+			if (!StringUtils.isEmpty(app.getBindOpenAppId())) {
+				openAppId = app.getBindOpenAppId();
 			}
 		}
-		for (MpOfficialAccountRecord mRecord : samePrincipalMpApps) {
-			openAppId = saas.shop.mp.bindOpenAppId(false, mRecord.getAppId(), openAppId);
-			if (!openAppId.equals(mRecord.getBindOpenAppId())) {
+		logger().info("绑定的bindOpenAppId为" + openAppId);
+		for (MaMpBindParam app : apps) {
+			openAppId = saas.shop.mp.bindOpenAppId(false, app.getAppId(), openAppId);
+			if (!openAppId.equals(app.getBindOpenAppId())) {
 				// 更新数据库
-				mRecord.setBindOpenAppId(openAppId);
-				db().executeUpdate(mRecord);
+				if (app.getType().equals("1")) {
+					// 公众号
+					int execute = db().update(MP_OFFICIAL_ACCOUNT).set(MP_OFFICIAL_ACCOUNT.BIND_OPEN_APP_ID, openAppId)
+							.where(MP_OFFICIAL_ACCOUNT.APP_ID.eq(app.getAppId())).execute();
+					logger().info("公众号："+app.getAppId()+"更新bindOpenAppId："+openAppId+"结果："+execute);
+				}
+				if (app.getType().equals("2")) {
+					// 小程序
+					int updateBindOpenAppId = saas.shop.mp.updateBindOpenAppId(app.getAppId(), openAppId);
+					logger().info("小程序："+app.getAppId()+"更新bindOpenAppId："+openAppId+"结果："+updateBindOpenAppId);
+				}
 			}
 		}
+
 	}
 
 	public String getMpQrCode(String appId, String qrcodeUrl) {
