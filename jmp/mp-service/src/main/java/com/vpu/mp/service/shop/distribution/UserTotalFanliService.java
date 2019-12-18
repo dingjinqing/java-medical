@@ -14,7 +14,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.distribution.UserTotalFanliVo;
 /**
  * @author 黄壮壮
- * 	用户返利服务
+ * 	 用户返利服务
  */
 @Service
 public class UserTotalFanliService extends ShopBaseService {
