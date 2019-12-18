@@ -2,15 +2,16 @@ export const en = {
   // 退换货配置
   title: 'Return configuration',
   returnconfig: 'Return configuration',
-  cannotreturngoods: 'Except for non-returnable goods, others can be returned',
-  canreturngoods: 'Except for returnable goods, others are not refundable.',
+  cannotreturngoods: 'Specified product is not supported',
+  canreturngoods: 'Designated product support.',
+  allgoods: 'All product support',
   choosecannotreturn: 'Choose non-returnable goods',
   choosecanreturn: 'Choose returnable goods',
 
   activated: 'Activated',
   inactived: 'Inactived',
 
-  ordernecessaryinfo: 'Order required information setting',
+  ordernecessaryinfo: 'Refund',
   ordernecessarydesc: 'When opened, the coupon will be returned to the buyer when the outstanding order is fully refunded.',
 
   autoreturn: 'Automatic refund/return settings',

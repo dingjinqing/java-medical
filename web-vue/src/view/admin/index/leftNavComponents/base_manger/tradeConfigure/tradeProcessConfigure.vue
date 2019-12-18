@@ -24,6 +24,26 @@
       </div>
     </el-card>
 
+    <!--    商品库存扣减设置（注：秒杀、拼团抽奖活动除外）-->
+    <section class="settingWrapper">
+      <div class="title">
+        <span></span>
+        商品库存扣减设置（注：秒杀、拼团抽奖活动除外）
+      </div>
+      <div class="settingContent">
+        <el-radio-group v-model="tradeProcessConfig.is_lock">
+          <div class="topandbottom">
+            <el-radio :label="1"> 付款后扣减库存（推荐）<label class="onText">适用于商品库存充裕的业务。优点：可以有效的防止用户下单不付款，减少用户恶拍的风险。缺点：可能会出现商品超卖的情况，最后导致订单不能正常完成。</label>
+            </el-radio>
+          </div>
+          <div class="topandbottom">
+            <el-radio :label="0">下单时扣减库存  <label class="onText">适用于对商品库存数量较为敏感的业务。优点：不会出现商品超卖的情况。缺点：可能会出现用户恶拍（既拍下订单后不付款），导致其他用户无法购买的情况。</label>
+            </el-radio>
+          </div>
+        </el-radio-group>
+      </div>
+    </section>
+
     <!-- 待付款订单取消时间设置 -->
     <section class="settingWrapper">
       <div class="title">
@@ -689,6 +709,7 @@ export default {
       shippingExpress: false,
       extenReceiveGoods: false,
       tradeProcessConfig: {
+        is_lock: 0,
         cancel_time: null,
         drawback_days: null,
         order_timeout_days: null,
@@ -1103,16 +1124,23 @@ export default {
         margin-bottom: -1px;
       }
     }
-
     .settingContent {
       height: 60px;
       line-height: 60px;
       padding-left: 10px;
       color: #666;
 
+      .topandbottom {
+        margin-top: 10px;;
+        margin-bottom: 10px;
+      }
       .inputWidth {
         width: 65px;
         margin: 0 5px;
+      }
+      .onText {
+        margin-left: 20px;
+        color: #999;
       }
     }
 
@@ -1185,7 +1213,10 @@ export default {
   .settingWrapper:nth-of-type(1) {
     margin-top: 20px;
   }
-
+  .onText {
+    margin-left: 20px;
+    color: #999;
+  }
   .requiredInfo {
     .necessaryGoodsInfo {
       height: 60px;
