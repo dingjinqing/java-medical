@@ -1377,3 +1377,7 @@ create table `b2c_distribution_tag`
 
 -- 黄壮壮 删除字段
 ALTER TABLE `b2c_mrking_voucher` DROP COLUMN `recommend_type`;
+
+-- 黄壮壮 添加字段
+ALTER TABLE `b2c_user_account` 
+ADD COLUMN `withdraw_status` tinyint(1) DEFAULT 0 COMMENT '0未提现或部分统计1已统计' AFTER `source`;
