@@ -3,19 +3,22 @@ package com.vpu.mp.controller.wxapp;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.auth.WxAppAuth;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.auth.WxAppAuth;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.account.AccountNumberVo;
+import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
+import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountWithdrawVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccoountInfoVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
-import com.vpu.mp.service.pojo.wxapp.login.WxAppCommonParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.ShopApplication;
 
@@ -95,8 +98,31 @@ public class WxAppAccountController extends WxAppBaseController {
 	 */
 	@PostMapping("/api/wxapp/user/account/withdraw")
 	public JsonResult getUserAccountWithdraw() {
-		WxAppSessionUser user = this.wxAppAuth.user();
+		WxAppSessionUser user = wxAppAuth.user();
 		AccountWithdrawVo vo = shop().member.account.getUserAccountWithdraw(user.getUserId());
 		return success(vo);
 	}
+	
+	/**
+	 * 获取用户余额-积分信息
+	 */
+	@PostMapping("/api/wxapp/user/number")
+	public JsonResult getUserAccountNumber() {
+		AccountNumberVo vo = shop().member.account.getUserAccountNumber(wxAppAuth.user().getUserId());
+		if(vo==null) {
+			return fail();
+		}
+		return success(vo);
+	}
+	
+	/**
+	 * 获取用户余额明细
+	 */
+	@PostMapping("/api/wxapp/account/list")
+	public JsonResult getUserAccountList(@RequestBody AccountPageListParam param) {
+		param.setUserId(wxAppAuth.user().getUserId());
+		PageResult<AccountPageListVo> res = shop().member.account.getPageListOfAccountDetails(param,getLang());
+		return success(res.dataList);
+	}
+	
 }
