@@ -162,6 +162,7 @@ public class WxAppOrderController extends WxAppBaseController{
      * @param param
      * @return
      */
+    @PostMapping("/refund/list")
 	public JsonResult mpReturnList(@RequestBody @Valid OrderParam param){
         try {
             return success(shop().readOrder.mpReturnList(param));
@@ -171,10 +172,11 @@ public class WxAppOrderController extends WxAppBaseController{
     }
 
     /**
-     * 售后中心退款订单详情(存在退款)
+     * 售后中心退款订单详情
      * @param param
      * @return
      */
+    @PostMapping("/refund/info")
     public JsonResult mpReturnInfo(@RequestBody @Valid ReturnOrderParam param){
         try {
             return success(shop().readOrder.getReturnOrder(param));

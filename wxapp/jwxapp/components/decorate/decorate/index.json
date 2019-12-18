@@ -9,6 +9,7 @@
     "v-advimg": "../advimg/index",
     "v-shop-announce": "../shop_announce/index",
     "v-shop": "../shop/index",
-    "v-carousel": "../carousel/index"
+    "v-carousel": "../carousel/index",
+    "v-bargain": "../bargain/index"
   }
 }

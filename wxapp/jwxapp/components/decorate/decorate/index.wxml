@@ -18,5 +18,7 @@
         <v-shop wx:elif="{{module.component_name == 'v-shop'}}" module="{{module}}" />
         <!--轮播图-->
          <v-carousel wx:elif="{{module.component_name == 'v-carousel'}}" module="{{module}}" />
+         <!--砍价-->
+         <v-bargain wx:elif="{{module.component_name == 'v-bargain'}}" module="{{module}}" />
     </block>
 </view>

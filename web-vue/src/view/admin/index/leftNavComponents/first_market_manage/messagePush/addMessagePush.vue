@@ -37,8 +37,14 @@
                   <div class="h1title">{{formData.title===``?this.$t(`messagePush.businessTitle`):formData.title}}</div>
                 </div>
                 <div class="leftMainConCenterCon"><span>{{$t(`messagePush.businessContent`)}}</span><span class="xxx">{{formData.content===``?`xxx`:formData.content}}</span></div>
-                <div class="leftMainConCenterComeIn"><span>进入小程序查看</span></div>
-                <div class="leftMainConCenterReject"><span>拒收通知</span></div>
+                <div
+                  class="leftMainConCenterComeIn"
+                  :style="'background: url('+ $imageHost +'/image/wxapp/click_look.png) no-repeat 95%;'"
+                ><span>进入小程序查看</span></div>
+                <div
+                  class="leftMainConCenterReject"
+                  :style="'background: url('+$imageHost + '/image/wxapp/click_look.png) no-repeat 95%;'"
+                ><span>拒收通知</span></div>
 
               </div>
             </div>
@@ -396,7 +402,8 @@ export default {
     chooseSelect,
     memberListDialog,
     choosingGoods,
-    getUserDialog },
+    getUserDialog
+  },
   data () {
     return {
 
@@ -1065,7 +1072,7 @@ export default {
               padding: 10px 12px;
               border-top: 1px solid #eee;
               // background: url(../../../../../../../static/image/wxapp/click_look.png)
-              // no-repeat 95%;
+              //   no-repeat 95%;
               -webkit-background-size: 6px;
               background-size: 6px;
             }
@@ -1073,7 +1080,7 @@ export default {
               padding: 10px 12px;
               border-top: 1px solid #eee;
               // background: url(../../../../../../../static/image/wxapp/click_look.png)
-              // no-repeat 95%;
+              //   no-repeat 95%;
               -webkit-background-size: 6px;
               background-size: 6px;
             }

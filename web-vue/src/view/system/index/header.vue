@@ -91,7 +91,7 @@ export default {
       click_nav_index: ''
     }
   },
-  mounted() {
+  mounted () {
     // 初始化登录
     this.judgeuserinfo()
     // 初始化语言
@@ -103,7 +103,7 @@ export default {
   methods: {
     ...Vuex.mapActions(['changesysNavLeft']),
     // 初始化顶部导航 通过传入的路由的meta值来进行对应的匹配
-    judgeHeader() {
+    judgeHeader () {
       // console.log(this.$route)
       this.changesysNavLeft(this.$route.meta)
       let meta = this.$route.meta
@@ -139,7 +139,7 @@ export default {
       }
     },
     // 初始化登录
-    judgeuserinfo() {
+    judgeuserinfo () {
       if (Cookies.get('V-Token')) {
         this.user_flag = true
         this.username = localStorage.getItem('V-Username')
@@ -149,7 +149,7 @@ export default {
       }
     },
     // 用户选项点击
-    handle_user_list(index) {
+    handle_user_list (index) {
       switch (index) {
         case 0:
           this.$emit('change_components', '0')
@@ -190,25 +190,25 @@ export default {
       }
     },
     // 鼠标划入
-    user_enter(index) {
+    user_enter (index) {
       this.log_menu_show = true
       if (index === 'undefined') return 0
       this.changeColorIndex = index
     },
-    header_nav_over(index) {
+    header_nav_over (index) {
       this.nav_index = index
     },
     // 鼠标划出
-    user_leave(index) {
+    user_leave (index) {
       this.log_menu_show = false
       if (!index) return 0
       this.changeColorIndex = ''
     },
-    header_nav_leave(index) {
+    header_nav_leave (index) {
       this.nav_index = null
     },
     // 顶部导航点击 通过传入路由的name来默认匹配每一次点击后的第一个页面
-    headerNavClick(index) {
+    headerNavClick (index) {
       this.click_nav_index = index
       switch (index) {
         case 0:

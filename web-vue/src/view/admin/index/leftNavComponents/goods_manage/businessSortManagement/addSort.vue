@@ -170,7 +170,10 @@
             type="primary"
             :underline="false"
           >修改</el-link>
-          <section class="sort_icon">
+          <section
+            class="sort_icon"
+            :style="'background:url('+$imageHost+'/image/admin/sort_moren.png) center center / 70px 70px no-repeat'"
+          >
             <span class="change_icon">更换图标</span>
           </section>
           <span class="tips">150*140</span>
@@ -327,8 +330,6 @@ export default {
   border: 1px solid #e5e5e5;
   position: relative;
   margin-right: 10px;
-  background: url("../../../../../../../static/image/admin/sort_moren.png")
-    center center / 70px 70px no-repeat;
 }
 .change_icon {
   position: absolute;

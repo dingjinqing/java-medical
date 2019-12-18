@@ -4,6 +4,8 @@
 
 const path = require('path')
 
+const devenv = require('../config/dev.env')
+
 module.exports = {
   dev: {
     // Paths
@@ -11,9 +13,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/vpb': {
-        target: 'http://jmpdev.weipubao.cn',
-        // target: 'http://localhost:8086',
-
+        target: 'http://' + devenv.API_DOMAIN.replace(/"/g,''),
         changeOrigin: true,
         pathRewrite: { '^/vpb': '' }
       }

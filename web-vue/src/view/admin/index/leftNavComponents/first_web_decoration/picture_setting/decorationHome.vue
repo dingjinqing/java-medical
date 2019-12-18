@@ -501,24 +501,52 @@ export default {
       }
       return moduleNameId
     },
+    handleToTurnField (fieldArr) {
+      let newArr = JSON.parse(JSON.stringify(fieldArr))
+      fieldArr.map((item, index) => {
+        switch (item) {
+          case 'm_member_card':
+            newArr[index] = 'm_card'
+            console.log(item)
+            break
+          case 'm_voucher':
+            newArr[index] = 'm_coupon'
+            break
+          case 'm_voucher':
+            newArr[index] = 'm_coupon'
+            break
+          case 'm_integral_goods':
+            newArr[index] = 'm_integral'
+            break
+          case 'm_seckill_goods':
+            newArr[index] = 'm_seckill'
+            break
+        }
+      })
+      console.log(newArr)
+      return newArr
+    },
     // 初始化左侧模块显示
     initLeftModulesShow (activeName) {
+      // 可配置权限池
+      let arrField = ['m_card', 'm_coupon', 'm_bargain', 'm_video', 'm_integral', 'm_seckill', 'm_group_draw', 'm_pin_integration']
       getModulesJusList().then(res => {
         console.log(res)
         if (res.error === 0) {
           let arr = res.content
+          let checArr = this.handleToTurnField(arr)
           this.pivTextConArr.forEach((item, index) => {
-            if (arr.indexOf(item.name) !== -1) {
+            if ((checArr.indexOf(item.name) === -1) && (arrField.indexOf(item.name) !== -1)) {
               item.flag = false
             }
           })
           this.goodsTextConArr.forEach((item, index) => {
-            if (arr.indexOf(item.name) !== -1) {
+            if ((checArr.indexOf(item.name) === -1) && (arrField.indexOf(item.name) !== -1)) {
               item.flag = false
             }
           })
           this.marketingTextConArr.forEach((item, index) => {
-            if (arr.indexOf(item.name) !== -1) {
+            if ((checArr.indexOf(item.name) === -1) && (arrField.indexOf(item.name) !== -1)) {
               item.flag = false
             }
           })
