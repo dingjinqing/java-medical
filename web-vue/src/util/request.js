@@ -8,14 +8,9 @@ import router from '@/router/index.js'
 let baseURL = ''
 if (process.env.NODE_ENV === 'development') {
   baseURL = '/vpb'
-  // localStorage.setItem('V-ImageHost', 'http://mpimg2.weipubao.cn')
 } else if (process.env.NODE_ENV === 'testing') {
-  // baseURL = 'https://www.ceshi.com'
 } else if (process.env.NODE_ENV === 'production') {
-  // baseURL = 'https://www.production.com'
-  // localStorage.setItem('V-ImageHost', 'http://mpimg2.weipubao.cn')
 }
-// console.log(process.env.NODE_ENV, baseURL)
 
 // 创建axios实例
 const service = axios.create({

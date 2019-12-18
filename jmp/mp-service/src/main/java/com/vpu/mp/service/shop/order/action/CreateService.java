@@ -825,8 +825,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     //拼团
                     logger().info("订单状态:{}", OrderConstant.ORDER_PIN_PAYED_GROUPING);
                     order.setOrderStatus(OrderConstant.ORDER_PIN_PAYED_GROUPING);
-                }
-                else {
+                } else {
                     logger().info("订单状态:{}", OrderConstant.ORDER_WAIT_DELIVERY);
                     order.setOrderStatus(OrderConstant.ORDER_WAIT_DELIVERY);
                 }
