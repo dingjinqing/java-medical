@@ -66,7 +66,7 @@ public class AdminWechatController extends AdminBaseController {
 					return ("公众号已经授权给其他账号！");
 				}
 				MpOfficialAccountRecord addMpOfficialAccountInfo = saas.shop.officeAccount.addMpOfficialAccountInfo(sysId, authorizerInfo);
-				saas.shop.officeAccount.bindAllSamePrincipalOpenAppId(addMpOfficialAccountInfo);
+				saas.shop.officeAccount.bindAllSamePrincipalOpenAppId(addMpOfficialAccountInfo.getPrincipalName());
 				logger().info("公众号authorizerInfo", authorizerInfo);
 				return "redirect:" + this.mainUrl("/admin/home/main/base_manger/authok");
 
@@ -88,8 +88,8 @@ public class AdminWechatController extends AdminBaseController {
 				}
 				logger().debug("查询出的值2：" + mp);
 				MpAuthShopRecord addMpAuthAccountInfo = saas.shop.mp.addMpAuthAccountInfo(appId, shopId);
-				saas.shop.mp.bindAllSamePrincipalOpenAppId(addMpAuthAccountInfo);
-
+				saas.shop.officeAccount.bindAllSamePrincipalOpenAppId(addMpAuthAccountInfo.getPrincipalName());
+				//saas.shop.mp.bindAllSamePrincipalOpenAppId(addMpAuthAccountInfo);
 				logger().info("小程序getQueryAuth", queryAuthResult);
 				return "redirect:" + this.mainUrl("/admin/home/main/base_manger/authok");
 			}

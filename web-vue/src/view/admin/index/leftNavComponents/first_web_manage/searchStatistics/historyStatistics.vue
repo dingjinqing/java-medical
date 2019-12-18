@@ -159,7 +159,7 @@ export default {
           type: 'category',
           // boundaryGap: false,
           // data: this.chartChange.hotWords
-          data: []
+          data: ['']
         },
         yAxis: {
           type: 'value'
