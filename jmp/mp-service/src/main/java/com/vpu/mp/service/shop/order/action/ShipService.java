@@ -76,7 +76,7 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 		if(canBeShipped == null || canBeShipped.size() == 0) {
 			//无可发货信息
 			logger.error("发货时无可发货商品");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
 		}
 		Map<Integer, OrderGoodsVo> cbsMap = canBeShipped.stream().collect(Collectors.toMap(OrderGoodsVo::getRecId, Function.identity()));
 		ShipGoods[] shipGoods = param.getShipGoods();
@@ -100,11 +100,11 @@ public class ShipService extends ShopBaseService implements IorderOperate<OrderO
 			if(cbsMap.get(recId) == null) {
 				logger.error("商品不可发货或已发货,order_goods_rec_id:"+recId);
 				//该商品不可发货或已发货
-				return ExecuteResult.create(JsonResultCode.CODE_ORDER);
+				return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
 			}else if(cbsMap.get(recId).getGoodsNumber() < sendNumber ) {
 				logger.error("商品发货数量大于可发货数量,order_goods_rec_id:"+recId);
 				//发货数量大于可发货数量
-				return ExecuteResult.create(JsonResultCode.CODE_ORDER);
+				return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
 			}else if(cbsMap.get(recId).getGoodsNumber() > sendNumber ) {
 				flag = true;
 			}

@@ -250,9 +250,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             });
         orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
         createVo.setOrderSn(orderAfterRecord.getOrderSn());
-        if(!(OrderConstant.PAY_CODE_COD.equals(orderAfterRecord.getPayCode()) ||
+        if(OrderConstant.PAY_CODE_COD.equals(orderAfterRecord.getPayCode()) ||
             OrderConstant.PAY_CODE_BALANCE_PAY.equals(orderAfterRecord.getPayCode()) ||
-            (OrderConstant.PAY_CODE_SCORE_PAY.equals(orderAfterRecord.getPayCode()) && BigDecimalUtil.compareTo(orderAfterRecord.getMoneyPaid(), BigDecimal.ZERO) == 0))) {
+            (OrderConstant.PAY_CODE_SCORE_PAY.equals(orderAfterRecord.getPayCode()) && BigDecimalUtil.compareTo(orderAfterRecord.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
                 //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
             processorFactory.processStockAndSales(param);
             atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo(), false);
@@ -268,7 +268,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
     } catch (Exception e) {
         logger().error("下单捕获mp异常", e);
-        return ExecuteResult.create(JsonResultCode.CODE_ORDER);
+        return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
     }
         //购物车删除
         if(OrderConstant.CART_Y.equals(param.getIsCart())){
