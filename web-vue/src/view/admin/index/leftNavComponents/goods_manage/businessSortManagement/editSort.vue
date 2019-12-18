@@ -186,7 +186,7 @@
 <script>
 // import { addSort } from '@/api/admin/goodsSort/goodsSort'
 export default {
-  data() {
+  data () {
     return {
       addSortRadio_radio: '1',
       // 一级分类
@@ -231,11 +231,11 @@ export default {
       isShowTips: false
     }
   },
-  created() {
+  created () {
 
   },
   methods: {
-    addFirst() {
+    addFirst () {
       // let params = {
       //   'sortName': '男装', // 分类名称
       //   'parentId': 0, // 父节点id,默认值0表示一级节点
@@ -249,19 +249,19 @@ export default {
 
       // addSort(params).then(res => console.log(res)).catch(err => console.log(err))
     },
-    addImg() {
+    addImg () {
       alert('添加图片')
     },
-    addLink() {
+    addLink () {
       alert('添加链接')
     },
-    showTips() {
+    showTips () {
       this.isShowTips = true
     },
-    hiddenTips() {
+    hiddenTips () {
       this.isShowTips = false
     },
-    save_one() {
+    save_one () {
       this.addFirst()
     }
   }

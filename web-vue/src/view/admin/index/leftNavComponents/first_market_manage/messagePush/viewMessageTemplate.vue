@@ -209,7 +209,7 @@ export default {
   components: {
     dateTimePicker
   },
-  data() {
+  data () {
     return {
       /**
        *
@@ -273,10 +273,10 @@ export default {
       deep: true
     }
   },
-  created() {
+  created () {
     this.fetchData()
   },
-  mounted() {
+  mounted () {
 
   },
   filters: {
@@ -289,7 +289,7 @@ export default {
   },
   // 方法
   methods: {
-    fetchData() {
+    fetchData () {
       getDetailApi(this.id).then(res => {
         const { error, content } = res
         if (error === 0) {
