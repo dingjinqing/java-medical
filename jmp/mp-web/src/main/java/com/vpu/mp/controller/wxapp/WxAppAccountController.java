@@ -3,22 +3,28 @@ package com.vpu.mp.controller.wxapp;
 import java.util.List;
 import java.util.Map;
 
-import com.vpu.mp.auth.WxAppAuth;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.auth.WxAppAuth;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawSumDetailVo;
+import com.vpu.mp.service.pojo.shop.member.account.AccountNumberVo;
+import com.vpu.mp.service.pojo.shop.member.account.AccountPageListParam;
+import com.vpu.mp.service.pojo.shop.member.account.AccountPageListVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountWithdrawVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccoountInfoVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
 import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
 import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
-import com.vpu.mp.service.pojo.wxapp.login.WxAppCommonParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.ShopApplication;
 
+import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import me.chanjar.weixin.common.error.WxErrorException;
 
 /**
@@ -95,8 +101,63 @@ public class WxAppAccountController extends WxAppBaseController {
 	 */
 	@PostMapping("/api/wxapp/user/account/withdraw")
 	public JsonResult getUserAccountWithdraw() {
-		WxAppSessionUser user = this.wxAppAuth.user();
+		WxAppSessionUser user = wxAppAuth.user();
 		AccountWithdrawVo vo = shop().member.account.getUserAccountWithdraw(user.getUserId());
 		return success(vo);
+	}
+	
+	/**
+	 * 获取用户余额-积分信息
+	 */
+	@PostMapping("/api/wxapp/user/number")
+	public JsonResult getUserAccountNumber() {
+		AccountNumberVo vo = shop().member.account.getUserAccountNumber(wxAppAuth.user().getUserId());
+		if(vo==null) {
+			return fail();
+		}
+		return success(vo);
+	}
+	
+	/**
+	 * 获取用户余额明细
+	 */
+	@PostMapping("/api/wxapp/account/list")
+	public JsonResult getUserAccountList(@RequestBody AccountPageListParam param) {
+		param.setUserId(wxAppAuth.user().getUserId());
+		PageResult<AccountPageListVo> res = shop().member.account.getPageListOfAccountDetails(param,getLang());
+		return success(res.dataList);
+	}
+	
+	/**
+	 * 提现记录
+	 */
+	@PostMapping("/api/wxapp/distributor/withdraw/list")
+	public JsonResult withdrawList(@RequestBody DistributorWithdrawListParam param) {
+		param.setUserId(wxAppAuth.user().getUserId());
+		DistributorWithdrawSumDetailVo vo = shop().withdraw.withdrawList(param);
+		if(vo == null ) {
+			return fail();
+		}else {
+			return success(vo);
+		}
+	}
+	
+	/**
+	 * 获取用户手机号的解密
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/api/wxapp/wxdecrypt")
+	public JsonResult wxDecryptData(@RequestBody WxAppAccountParam param) {
+		logger().info("获取用户手机号的解密");
+		Integer shopId = wxAppAuth.shopId();
+		ShopApplication shopApp = saas.getShopApp(shopId);
+		param.setUserId(wxAppAuth.user().getUserId());
+		WxMaPhoneNumberInfo updateUser = shopApp.user.wxDecryptData(param, WxAppAuth.TOKEN_PREFIX);
+		if(updateUser!=null) {
+			return success(updateUser.getPhoneNumber());
+		}
+		return fail();
+		
 	}
 }

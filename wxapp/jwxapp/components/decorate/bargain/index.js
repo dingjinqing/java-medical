@@ -1,17 +1,20 @@
 var base = require("../mixins/base.js");
 var util = require("../../../utils/util.js")
-// var activity_goods = require("../common/activity_goods.js");
+var activity_goods = require("../common/activity_goods.js");
 
 global.wxComponent({
-  mixins: [base],
+  mixins: [base, activity_goods],
   methods: {
-    onPropChange(newVal, oldVal, changedPath) {
-      // var m = this.data.m = newVal;
-      // this.formatActivityBeginTime(m.bargain_goods);
-      // this.startActivityTimer('bargain', this._getLeftSecs(m));
-      // newVal.bottom = util.getCache("bottom");
+    onPropChange (newVal, oldVal, changedPath) {
+      var m = this.data.m = newVal;
+      this.formatActivityBeginTime(m.bargain_goods);
+
+      this.startActivityTimer('bargain', this._getLeftSecs(m));
+      newVal.bottom = util.getCache("bottom");
+      console.log(m, 'kanjia')
+
     },
-    _getLeftSecs(m) {
+    _getLeftSecs (m) {
       // var time_arr = {};
       // for (var i in m.bargain_goods) {
       //   m.bargain_goods[i].remaining_time -= m.elapse_secs;
@@ -19,7 +22,7 @@ global.wxComponent({
       // }
       // return time_arr;
     },
-    toSubscribeMessage(e) {
+    toSubscribeMessage (e) {
       // var that = this;
       // var d = this.eventData(e);
       // util.toSubscribeMessage(d.template_ids, 'invite', function () {
@@ -27,10 +30,10 @@ global.wxComponent({
       //   that.bindToBargain(e);
       // })
     },
-    bindToBargain(e) {
+    bindToBargain (e) {
       // var d = this.eventData(e);
       // var _this = this;
-      // if (d.is_delete == 1) {
+      // if (d.goods_is_delete == 1) {
       //   util.showModal('提示', '商品已删除');
       // } else if (d.is_on_sale == 0 || d.goods_number <= 0) {
       //   util.showModal('提示', '商品已下架');

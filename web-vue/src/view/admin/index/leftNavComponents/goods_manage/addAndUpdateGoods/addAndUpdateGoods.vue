@@ -203,7 +203,7 @@ export default {
       // 如果是从商品基本信息跳转验证基础信息正确性
       if (this.stepData.currentStep === 1) {
         // 数据验证失败，或者直接从第一步跳到第三步
-        if (!this.$refs.goodsProductInfoCmp.validateFormData() || nextStep === 3) {
+        if (!this.$refs.goodsProductInfoCmp.validateFormData()) {
           return
         } else {
           // 验证成功，缓存对应的数据

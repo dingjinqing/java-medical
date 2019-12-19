@@ -1,16 +1,20 @@
 export const en = {
   // 退换货配置
+  afterconfig: 'After-sales configuration',
+  activeafterconfig: 'When enabled, the store will support returns / refunds',
+  supportreturn: 'Support exchange',
   title: 'Return configuration',
   returnconfig: 'Return configuration',
-  cannotreturngoods: 'Except for non-returnable goods, others can be returned',
-  canreturngoods: 'Except for returnable goods, others are not refundable.',
+  cannotreturngoods: 'Specified product is not supported',
+  canreturngoods: 'Designated product support.',
+  allgoods: 'All product support',
   choosecannotreturn: 'Choose non-returnable goods',
   choosecanreturn: 'Choose returnable goods',
 
   activated: 'Activated',
   inactived: 'Inactived',
 
-  ordernecessaryinfo: 'Order required information setting',
+  ordernecessaryinfo: 'Refund',
   ordernecessarydesc: 'When opened, the coupon will be returned to the buyer when the outstanding order is fully refunded.',
 
   autoreturn: 'Automatic refund/return settings',
@@ -31,5 +35,8 @@ export const en = {
   merchant_telephone: 'Receiving phone number:',
   zip_code: 'Zip code:',
   return_address: 'return address:',
-  save: 'save'
+  save: 'save',
+  afterstockconfig: 'After-sale product inventory configuration',
+  addgoodstock: 'Product refund after return, exchange, increase the original product inventory',
+  notaddgoodstock: 'Product refunds, returns and exchanges will not increase the original product inventory'
 }

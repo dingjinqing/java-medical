@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.wxapp.order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustParam;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
@@ -13,7 +12,6 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
 /**
  * 下单参数
@@ -45,8 +43,7 @@ public class CreateParam extends OrderBeforeParam{
     /**用户ip*/
     @JsonIgnore
     private String clientIp;
-    /**下单时间*/
-    private Timestamp date = DateUtil.getLocalDateTime();
+
     public void intoRecord(OrderInfoRecord orderRecord){
         //user
         orderRecord.setUserId(getWxUserInfo().getUserId());

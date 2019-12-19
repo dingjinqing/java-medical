@@ -21,6 +21,8 @@ public class OrderProcessParam {
      */
     @JsonProperty(value = "fetch")
     public Byte fetch;
+    @JsonProperty(value = "is_lock")
+    public Byte isLock;
     /**
      * The Cancel time.拍下未付款订单12小时10分钟内未付款，自动取消订单
      */

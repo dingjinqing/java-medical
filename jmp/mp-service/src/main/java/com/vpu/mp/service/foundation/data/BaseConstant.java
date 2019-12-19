@@ -30,7 +30,6 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_REBATE = 2;
     /** 砍价商品 */
     public final static Byte ACTIVITY_TYPE_BARGAIN = 3;
-
     /** 积分兑换商品 */
     public final static Byte ACTIVITY_TYPE_INTEGRAL = 4;
     /** 秒杀商品 */
@@ -61,14 +60,16 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_GIVE_GIFT = 17;
     /** 首单特惠 */
     public final static Byte ACTIVITY_TYPE_FIRST_SPECIAL = 18;
+    /** 支付有礼 */
+    public final static byte ACTIVITY_TYPE_PAY_AWARD = 19;
     /** 优惠券活动 */
-    public final static Byte ACTIVITY_TYPE_COUPON = 19;
+    public final static Byte ACTIVITY_TYPE_COUPON = 20;
     /** 满折满减*/
-    public final static Byte ACTIVITY_TYPE_FULL_REDUCTION = 20;
+    public final static Byte ACTIVITY_TYPE_FULL_REDUCTION = 21;
     /** 等级会员特殊照顾（不是营销活动）*/
-    public final static Byte ACTIVITY_TYPE_MEMBER_GRADE = 21;
+    public final static Byte ACTIVITY_TYPE_MEMBER_GRADE = 22;
     /** 会员专享型（不是营销活动）*/
-    public final static Byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 22;
+    public final static Byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 23;
     /** 代付订单 */
     public final static Byte ACTIVITY_TYPE_PAY_FOR_ANOTHER = 99;
     /** 扫码购订单 */
@@ -201,5 +202,14 @@ public final  class  BaseConstant {
      */
     public final static Byte ACTIVITY_NOT_FOREVER =0;
 
+    //**************************商品范围******************************************/
+    /**
+     * 全部商品
+     */
+    public final static Byte GOODS_AREA_TYPE_ALL=1;
+    /**
+     * 部分商品
+     */
+    public final static Byte GOODS_AREA_TYPE_SECTION=0;
 
 }

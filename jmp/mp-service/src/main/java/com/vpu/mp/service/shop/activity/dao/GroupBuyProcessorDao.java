@@ -70,7 +70,7 @@ public class GroupBuyProcessorDao extends GroupBuyService {
                     .set(GROUP_BUY_DEFINE.STOCK, GROUP_BUY_DEFINE.STOCK.minus(goodsNumber))
                     .set(GROUP_BUY_DEFINE.SALE_NUM, GROUP_BUY_DEFINE.SALE_NUM.add(goodsNumber))
                     .where(GROUP_BUY_DEFINE.ID.eq(activityId))
-                    .and(GROUP_BUY_PRODUCT_DEFINE.STOCK.ge(goodsNumber.shortValue())).execute();
+                    .and(GROUP_BUY_DEFINE.STOCK.ge(goodsNumber.shortValue())).execute();
             if (tolFlag==1){
                 return true;
             }else {

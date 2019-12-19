@@ -19,6 +19,8 @@ import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.BYTE_SEVEN
 import static com.vpu.mp.service.pojo.shop.config.trade.TradeConstant.FIELD_CLAZZ;
 import static com.vpu.mp.service.shop.config.TradeService.selectInvoke;
 import static com.vpu.mp.service.shop.config.TradeService.updateInvoke;
+import static com.vpu.mp.service.shop.store.store.StoreWxService.BYTE_TWO;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
@@ -70,7 +72,17 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     final public static String K_BUSINESS_ADDRESS = "business_address";
 
     /**
-     * 退换货配置选项，可退换(0)，还是不可退还(1)
+     * 售后配置，关闭(0)，开启(1)
+     */
+    final public static String K_POST_SALE_STATUS = "post_sale_status";
+
+    /**
+     * 是否支持退换货，关闭(0)，开启(1)
+     */
+    final public static String K_ORDER_CAN_EXCHANGE = "order_can_exchange";
+
+    /**
+     * 退换货配置选项，指定部分商品支持可退换(0)，指定部分商品不支持可退换(1)，全部商品支持退换货（2）
      */
     final public static String K_RETURN_CHANGE_GOODS_STATUS = "return_change_goods_status";
 
@@ -78,6 +90,11 @@ public class ShopReturnConfigService extends BaseShopConfigService {
      * 退换货配置（包括商品，平台分类，商家分类，商品品牌，商品标签）
      */
     final public static String K_ORDER_RETURN_GOODS_PACKAGE = "order_return_goods_package";
+
+    /**
+     * 售后商品库存配置，商品退款退货、换货后，不增加原商品库存 (0)，商品退款退货、换货后，增加原商品库存(1)
+     */
+    final public static String K_AUTO_RETURN_GOODS_STOCK = "auto_return_goods_stock";
 
     public Byte getAutoReturn() {
         return this.get(K_AUTO_RETURN, Byte.class, BYTE_ZERO);
@@ -160,6 +177,33 @@ public class ShopReturnConfigService extends BaseShopConfigService {
 
     public int setOrderReturnGoodsPackage(GoodsPackageParam orderReturnGoodsPackage) {
         return orderReturnGoodsPackage !=null ? this.setJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, orderReturnGoodsPackage) : -1;
+    }
+
+    public Byte getPostSaleStatus() {
+        return this.getJsonObject(K_POST_SALE_STATUS, Byte.class, BYTE_ONE);
+    }
+
+    public int setPostSaleStatus(Byte postSaleStatus) {
+        assert (postSaleStatus.equals(BYTE_ZERO) || postSaleStatus.equals(BYTE_ONE));
+        return this.set(K_POST_SALE_STATUS, postSaleStatus, Byte.class);
+    }
+
+    public Byte getOrderCanExchange() {
+        return this.getJsonObject(K_ORDER_CAN_EXCHANGE, Byte.class, BYTE_ZERO);
+    }
+
+    public int setOrderCanExchange(Byte orderCanExchange) {
+        assert (orderCanExchange.equals(BYTE_ZERO) || orderCanExchange.equals(BYTE_ONE) || orderCanExchange.equals(BYTE_TWO));
+        return this.set(K_ORDER_CAN_EXCHANGE, orderCanExchange, Byte.class);
+    }
+
+    public Byte getAutoReturnGoodsStock() {
+        return this.getJsonObject(K_AUTO_RETURN_GOODS_STOCK, Byte.class, BYTE_ONE);
+    }
+
+    public int setAutoReturnGoodsStock(Byte autoReturnGoodsStock) {
+        assert (autoReturnGoodsStock.equals(BYTE_ZERO) || autoReturnGoodsStock.equals(BYTE_ONE));
+        return this.set(K_AUTO_RETURN_GOODS_STOCK, autoReturnGoodsStock, Byte.class);
     }
 
     /**

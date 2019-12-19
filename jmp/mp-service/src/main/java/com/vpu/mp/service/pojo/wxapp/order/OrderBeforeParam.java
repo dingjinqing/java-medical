@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.write.operate.AbstractOrderOperateQueryParam;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -16,7 +17,7 @@ import lombok.ToString;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,13 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     @JsonIgnore
     /**方便查找*/
     private List<OrderGoodsBo> bos;
+	/**方便查找*/
+	/** 订单业务处理方法*/
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private OrderCartProductBo orderCartProductBo;
+	/**下单时间*/
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private Timestamp date = DateUtil.getLocalDateTime();
 	/**
 	 * 商品参数
 	 * @author 王帅
@@ -114,12 +122,14 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     /**
      * 获取商品计算首单特惠活动。。。
      */
-    public List<OrderCartProductBo.OrderCartProduct> getOrderCartProductBo(){
-        List<OrderCartProductBo.OrderCartProduct> result = new ArrayList<>(goods.size());
-        goods.forEach(x->{
-            result.add(new OrderCartProductBo.OrderCartProduct(x.productId, x.goodsNumber));
-        });
-        return result;
+    public OrderCartProductBo getOrderCartProductBo(){
+    	if (orderCartProductBo==null){
+			orderCartProductBo= OrderCartProductBo.create(null);
+			goods.forEach(x->{
+				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.productId, x.goodsNumber));
+			});
+		}
+        return orderCartProductBo;
     }
 
 	/**

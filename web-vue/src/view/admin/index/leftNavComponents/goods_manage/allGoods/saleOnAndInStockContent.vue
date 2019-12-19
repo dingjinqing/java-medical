@@ -7,9 +7,10 @@
         border
         style="width: 100%"
       >
+        <!-- 复选框 -->
         <el-table-column
           align="center"
-          width="70px"
+          width="50"
           label=""
         >
           <template slot-scope="scope">
@@ -18,30 +19,18 @@
         </el-table-column>
         <!-- 商品名称图片 -->
         <el-table-column
-          align="center"
+          align="left"
           prop="goodsName"
           :label="$t('allGoods.allGoodsData.goodsName')"
-          width="200px"
+          width="230"
         >
           <template slot-scope="scope">
-            <div style="overflow: hidden;">
-              <div class="goodsNameLeft">
-                <img
-                  style="width: 100%; height: 100%;"
-                  :src="scope.row.goodsImg"
-                >
-              </div>
-              <div class="goodsNameRight">
-                <span
-                  v-if="scope.row.sourceName !== null"
-                  class="goodsTypeSpanWrap"
-                >{{scope.row.sourceName}}</span>
-                <span
-                  v-if="scope.row.goodsTypeName !== null"
-                  class="goodsSourceSpanWrap"
-                >{{scope.row.goodsTypeName}}</span>
+            <div class="nameImgWrap">
+              <img class="imgItem" :src="scope.row.goodsImg">
+              <div class="nameItem" :title="scope.row.goodsName">
+                <span v-if="scope.row.sourceName !== null" class="goodsTypeSpanWrap">{{scope.row.sourceName}}</span>
+                <span v-if="scope.row.goodsTypeName !== null" class="goodsSourceSpanWrap">{{scope.row.goodsTypeName}}</span>
                 <span>{{scope.row.goodsName}}</span>
-                <!-- {{scope.row.goodsName}} -->
               </div>
             </div>
           </template>
@@ -49,7 +38,7 @@
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.shopPrice')"
-          width="120px"
+          width="100"
         >
           <template slot-scope="{row}">
             <!--非默认规格-->
@@ -71,11 +60,11 @@
                 ></span>
               </span>
               <input v-else
-                :id="'shopPrice_'+row.goodsId"
-                v-model.number="row.shopPriceOld"
-                @change="shopPriceChange(row)"
-                @blur="row.shopPriceEdit = false"
-                class="editInput"
+                     :id="'shopPrice_'+row.goodsId"
+                     v-model.number="row.shopPriceOld"
+                     @change="shopPriceChange(row)"
+                     @blur="row.shopPriceEdit = false"
+                     class="editInput"
               />
             </template>
           </template>
@@ -83,31 +72,36 @@
         <el-table-column
           align="center"
           prop="goodsSn"
-          width="120px"
+          width="100"
           :label="$t('allGoods.allGoodsData.goodsSn')"
         />
+        <!--平台分类-->
         <el-table-column
           align="center"
           prop="catName"
           :label="$t('allGoods.allGoodsData.cat')"
-          width="100px"
+          width="100"
         />
+        <!--商家分类-->
         <el-table-column
           align="center"
           prop="sortName"
           :label="$t('allGoods.allGoodsData.sort')"
-          width="100px"
+          width="100"
         />
+        <!--商品品牌-->
         <el-table-column
           align="center"
           prop="brandName"
           :label="$t('allGoods.allGoodsData.goodsBrand')"
+          width="100"
         >
         </el-table-column>
+        <!--商品库存-->
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.goodsNumber')"
-          width="120px"
+          width="130"
         >
           <template slot-scope="{row,$index}">
             <span v-if="row.prdId === null">{{row.goodsNumber}}</span>
@@ -134,33 +128,28 @@
         <el-table-column
           align="center"
           prop="goodsSaleNum"
+          width="80"
           :label="$t('allGoods.allGoodsData.saleNumber')"
         />
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.goodsLabel')"
-          width="160px"
+          width="150"
         >
           <template slot-scope="{row}">
-            <div style="overflow: hidden;">
-              <div style="max-width:96px; float: left;">
-                <span
-                  v-for="(item,index) in row.goodsLabels"
-                  :key="index"
-                  class="goodsLabelSpanWrap"
-                >{{item.name}}</span>
+            <div style="display: flex;justify-content: flex-end;align-items: center;">
+              <div>
+                <span v-for="(item,index) in row.goodsLabels" :key="index" class="goodsLabelSpanWrap">{{item.name}}</span>
               </div>
-              <div
-                style="width: 50px;float:right;color:#5a8bff;cursor: pointer;"
-                @click="tdLabelSetClick(row)"
-              >{{$t('allGoods.allGoodsData.setting')}}</div>
+              <div style="width:40px;flex-shrink:0;cursor: pointer;" @click="tdLabelSetClick(row)">
+                {{$t('allGoods.allGoodsData.setting')}}
+              </div>
             </div>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.operate')"
-          width="160px"
         >
           <template slot-scope="{row,$index}">
             <el-tooltip
@@ -278,19 +267,21 @@
       </div>
       <div
         v-if="goodsLabelData.labelSelectedOptions.length>0"
-        style="display: flex;flex-wrap: wrap;align-items:center;margin-top: 10px;"
+        style="display: flex;margin-top: 10px;"
       >
-        <div> {{this.$t('allGoods.allGoodsData.selected')}}：</div>
-        <div
-          class="selectedWrap"
-          v-for="(item,index) in goodsLabelData.labelSelectedOptions"
-          :key="index"
-        >
-          {{item.name}}
-          <span
-            @click="tdDeleteLabel(item,index)"
-            class="deleteIcon"
-          >×</span>
+        <div style="width:45px;flex-shrink:0;">{{this.$t('allGoods.allGoodsData.selected')}}：</div>
+        <div class="labelSelectedWrapPanel">
+          <div
+            class="labelSelectedWrap"
+            v-for="(item,index) in goodsLabelData.labelSelectedOptions"
+            :key="index"
+          >
+            {{item.name}}
+            <span
+              @click="tdDeleteLabel(item,index)"
+              class="deleteIcon"
+            >×</span>
+          </div>
         </div>
       </div>
       <div slot="footer">
@@ -449,6 +440,8 @@ export default {
         goodsId: this.goodsLabelData.currentRow.goodsId,
         labelIds: []
       }
+      this.goodsLabelData.isShow = false
+      this.goodsLabelData.labelSelectedOptions = this.goodsLabelData.labelSelectedOptions.slice(0, 5)
       this.goodsLabelData.labelSelectedOptions.forEach(item => param.labelIds.push(item.id))
       updateLabelByGoodsId(param).then((res) => {
         if (res.error !== 0) {
@@ -458,7 +451,6 @@ export default {
         this.goodsLabelData.labelSelectedOptions = []
         this.goodsLabelData.labelSelectOptions = []
         this.goodsLabelData.currentRow = null
-        this.goodsLabelData.isShow = false
         this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
       })
     },
@@ -553,16 +545,16 @@ export default {
             // case 1: item.goodsTypeName = '拼团商品'
             case 1: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[0]
               break
-            // case 2: item.goodsTypeName = '分销'
+              // case 2: item.goodsTypeName = '分销'
             case 2: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[1]
               break
-            // case 3: item.goodsTypeName = '砍价商品'
+              // case 3: item.goodsTypeName = '砍价商品'
             case 3: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[2]
               break
-            // case 4: item.goodsTypeName = '积分商品'
+              // case 4: item.goodsTypeName = '积分商品'
             case 4: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[3]
               break
-            // case 5: item.goodsTypeName = '秒杀商品'
+              // case 5: item.goodsTypeName = '秒杀商品'
             case 5: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[4]
               break
             default:
@@ -593,87 +585,102 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/deep/.tableClass th {
-  background-color: #f5f5f5;
-  border: none;
-  height: 36px;
-  font-weight: bold;
-  color: #000;
-  padding: 8px 10px;
-}
-.goodsSourceSpanWrap {
-  border: 1px solid #ef8115;
-  color: #ef8115;
-  border-radius: 3px;
-  padding: 2px;
-  margin-right: 2px;
-}
-.goodsNameLeft {
-  width: 70px;
-  height: 70px;
-  float: left;
-}
-.goodsNameRight {
-  width: 100px;
-  height: 70px;
-  float: left;
-  margin-left: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-}
-.goodsTypeSpanWrap {
-  border: 1px solid #ff3f3f;
-  color: #ff3f3f;
-  border-radius: 3px;
-  // padding: 2px;
-  margin-right: 2px;
-}
-.goodsLabelSpanWrap {
-  border: 1px solid #cccccc;
-  color: #666;
-  border-radius: 3px;
-  padding: 2px;
-  margin-right: 2px;
-  display: inline-block;
-}
-.selectedWrap {
-  min-width: 70px;
-  height: 22px;
-  border: 1px solid #ccc;
-  line-height: 22px;
-  text-align: center;
-  padding: 0px 5px;
-  margin: 0px 5px;
-  background-color: #fff;
-  position: relative;
-}
-.selectedWrap .deleteIcon {
-  width: 17px;
-  height: 17px;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  line-height: 17px;
-  text-align: center;
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  cursor: pointer;
-  opacity: 0.8;
-}
-.iconSpan {
-  font-size: 22px;
-  color: #5a8bff;
-  cursor: pointer !important;
-}
-.editInput {
-  width: 80px;
-  height: 25px;
-  border: 1px solid #ccc;
-  text-align: center;
-}
+  /deep/.tableClass th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
+  }
+  .nameImgWrap{
+    display: flex;
+  }
+  .nameImgWrap::after{
+    content: '';
+    display: block;
+    clear: both;
+  }
+  .imgItem{
+    width: 60px;
+    height: 60px;
+    border-radius: 2px;
+    border: 1px solid #ccc;
+    margin: 2px 7px 0 0;
+  }
+  .nameItem {
+    flex: 1;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+  .goodsSourceSpanWrap {
+    border: 1px solid #ef8115;
+    color: #ef8115;
+    border-radius: 3px;
+    padding: 0px 2px;
+  }
+  .goodsTypeSpanWrap {
+    border: 1px solid #ff3f3f;
+    color: #ff3f3f;
+    border-radius: 3px;
+    padding: 0px 2px;
+  }
+  .goodsLabelSpanWrap {
+    border: 1px solid #cccccc;
+    color: #666;
+    border-radius: 3px;
+    padding:0px 2px;
+    margin-right: 2px;
+    display: inline-block;
+  }
+  .labelSelectedWrapPanel{
+    background-color: #f8f8f8;
+    width: 80%;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .labelSelectedWrap {
+    border: 1px solid #ccc;
+    text-align: center;
+    background-color: #fff;
+    position: relative;
+    padding: 5px 5px;
+    margin-right: 10px;
+    margin-top: 10px;
+    flex-shrink: 0;
+  }
+  .labelSelectedWrap .deleteIcon {
+    width: 13px;
+    height: 13px;
+    color: #fff;
+    background: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    line-height: 10px;
+    text-align: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    cursor: pointer;
+    opacity: 0.8;
+  }
+  .iconSpan {
+    font-size: 22px;
+    color: #5a8bff;
+    cursor: pointer !important;
+    margin-top: 5px;
+  }
+  .editInput {
+    width: 80px;
+    height: 25px;
+    border: 1px solid #ccc;
+    text-align: center;
+  }
 </style>

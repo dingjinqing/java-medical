@@ -135,9 +135,10 @@ page{
 }
 .right .time_canuse{
   position: absolute;
-  top: 140rpx;
+  /* top: 140rpx; */
   font-size: 11px;
   padding-left: 20rpx;
+  bottom: 15rpx;
 }
 .right .click_to_detail{
   position: absolute;

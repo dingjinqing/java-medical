@@ -425,13 +425,16 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @param openId
 	 */
 	public Integer addOrUpdateUser(String appId, MpOfficialAccountUserRecord record, String unionId, String openId) {
+		logger().info("添加或更新用户");
 		MpOfficialAccountUserRecord fetchAny = MP_OFFICIAL_ACCOUNT_USER.newRecord();
 		if ((!StringUtils.isEmpty(appId)) && (!StringUtils.isEmpty(openId))) {
 			// 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。
+			logger().info("appId："+appId+" openId:"+openId);
 			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER)
 					.where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.OPENID.eq(openId)))
 					.fetchAny();
 		} else if ((!StringUtils.isEmpty(appId)) && (!StringUtils.isEmpty(unionId))) {
+			logger().info("appId："+appId+" unionId:"+unionId);
 			fetchAny = db().selectFrom(MP_OFFICIAL_ACCOUNT_USER)
 					.where(MP_OFFICIAL_ACCOUNT_USER.APP_ID.eq(appId).and(MP_OFFICIAL_ACCOUNT_USER.UNIONID.eq(unionId)))
 					.fetchAny();
@@ -442,9 +445,11 @@ public class ShopOfficialAccount extends MainBaseService {
 		int execute=0;
 		if (fetchAny == null) {
 			// 插入
+			logger().info("插入");
 			 execute = db().executeInsert(record);
 		} else {
 			// 更新
+			logger().info("更新");
 			record.setRecId(fetchAny.getRecId());
 			execute = db().executeUpdate(record);
 		}
@@ -485,6 +490,7 @@ public class ShopOfficialAccount extends MainBaseService {
 	 * @param openId
 	 */
 	public void syncSubOfficialUser(String appId, MpOfficialAccountUserRecord record, String unionId, String openId) {
+		logger().info("同步公众号用户到从库");
 		com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord into = record.into(com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord.class);
 		Result<MpAuthShopRecord> officialAccountMps = saas.shop.mp.getOfficialAccountMps(appId);
 		for (MpAuthShopRecord mpAuthShopRecord : officialAccountMps) {

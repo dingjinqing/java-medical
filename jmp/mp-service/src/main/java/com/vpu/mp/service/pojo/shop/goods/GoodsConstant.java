@@ -70,6 +70,10 @@ public class GoodsConstant {
      */
     public static final Integer GOODS_DEFAULT_BRAND_ID=0;
     /**
+     * 商品标签可以展示的最大数量
+     */
+    public static final Integer GOODS_LABEL_MAX_COUNT=5;
+    /**
      * 商品违规下架
      */
     public static final Byte INVALIDATE_OFF_SALE = 2;
@@ -106,6 +110,12 @@ public class GoodsConstant {
 
     /***展示售罄商品*/
     public static final Byte SOLD_OUT_GOODS_SHOW = 1;
+
+    /**
+     * 1默认规格，0自定义规格（多规格）
+     */
+    public static final Byte IS_DEFAULT_PRODUCT_Y = 1;
+    public static final Byte IS_DEFAULT_PRODUCT_N = 0;
 
     /**
      * 小程序-商品分类页面-目录项类型码

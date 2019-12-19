@@ -582,7 +582,10 @@ public class GoodsService extends ShopBaseService {
 
         dataList.forEach(item -> {
             // 设置标签名称
-            item.setGoodsLabels(goodsLabels.getOrDefault(item.getGoodsId(),new ArrayList<>()));
+            List<GoodsLabelSelectListVo> labelSelectListVos = goodsLabels.getOrDefault(item.getGoodsId(), new ArrayList<>());
+            item.setGoodsLabels(labelSelectListVos.size()>GoodsConstant.GOODS_LABEL_MAX_COUNT?
+                labelSelectListVos.subList(0,GoodsConstant.GOODS_LABEL_MAX_COUNT):labelSelectListVos);
+
             // 设置图片绝对地址
             item.setGoodsImg(getImgFullUrlUtil(item.getGoodsImg()));
             item.setPrdImg(getImgFullUrlUtil(item.getPrdImg()));
@@ -1869,5 +1872,13 @@ public class GoodsService extends ShopBaseService {
             esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds,DBOperating.UPDATE);
 
         }
+    }
+
+    /**
+     * 取单个完整Goods
+     * @return
+     */
+    public GoodsRecord getGoodsRecordById(int goodsId){
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptionalInto(GoodsRecord.class).orElse(null);
     }
 }

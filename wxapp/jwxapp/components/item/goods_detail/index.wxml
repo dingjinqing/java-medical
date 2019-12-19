@@ -1,5 +1,5 @@
 <block wx:for="{{pageUp}}" wx:key="*this">
-  <view class="flex_outside_box" wx:if="{{item === 'Desc'}}">
+  <view class="flex_outside_box" wx:if="{{item === 'Desc' && goodsDesc}}">
     <view class="flex_box">
       <view class="item_left">
         商品详情
@@ -11,7 +11,7 @@
     </view>
   </view>
 
-  <view class="flex_outside_box" wx:if="{{item === 'Page'}}">
+  <view class="flex_outside_box" wx:if="{{item === 'Page' && pageContent}}">
     <v-decorate name='v-decorate' class="v-decorate" page_content="{{pageContent}}" />
   </view>
 </block>

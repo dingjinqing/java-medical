@@ -14,7 +14,6 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GroupBuyListMpVo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
@@ -88,10 +87,10 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Acti
     //*********** 下单 *****************
     /**
      *  下单 初始化参数 校验
-     * @param param CreateParam
+     * @param param OrderBeforeParam
      */
     @Override
-    public void processInitCheckedOrderCreate(CreateParam param) throws MpException {
+    public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         //团长,团id
         Byte isGrouper =param.getGroupId()==null?IS_GROUPER_Y:IS_GROUPER_N;
         log.debug("拼团订单");
@@ -124,12 +123,12 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Acti
 
     /**
      * 保存订单
-     * @param param CreateParam
+     * @param param OrderBeforeParam
      * @param order OrderInfoRecord
      * @throws MpException
      */
     @Override
-    public void processSaveOrderInfo(CreateParam param, OrderInfoRecord order) throws MpException {
+    public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         for (OrderBeforeParam.Goods goods :param.getGoods()){
             GroupBuyListRecord groupBuyProductList = db().newRecord(GROUP_BUY_LIST);
             groupBuyProductList.setActivityId(param.getActivityId());
@@ -164,7 +163,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Acti
      * @throws MpException
      */
     @Override
-    public void processStockAndSales(CreateParam param) throws MpException {
+    public void processStockAndSales(OrderBeforeParam param) throws MpException {
         for (OrderBeforeParam.Goods goods :param.getGoods()){
             boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());
             if (!b){

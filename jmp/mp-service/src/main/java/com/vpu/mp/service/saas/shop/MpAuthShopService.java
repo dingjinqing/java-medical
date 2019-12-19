@@ -165,10 +165,13 @@ public class MpAuthShopService extends MainBaseService {
 		record.setAuthorizerInfo(Util.toJson(authorizerInfo));
 		record.setPrincipalName(authorizerInfo.getPrincipalName());
 		record.setQrcodeUrl(getMpQrCode(appId, authorizerInfo));
+		record.setBindOpenAppId("");//表中非空，塞入空值
 		if (this.getAuthShopByAppId(appId) == null) {
+			logger().info("插入");
 			record.insert();
 			// TODO: log operation
 		} else {
+			logger().info("更新");
 			record.update();
 			// TODO: log operation
 		}
@@ -1423,7 +1426,7 @@ public class MpAuthShopService extends MainBaseService {
 			logger().debug("开始绑定公众号");
 			//公众号获取用户信息
 			WxMpUser userInfo = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getUserService().userInfo(inMessage.getFromUser());
-			logger().debug("用户Openid"+userInfo.getOpenId()+"开始绑定公众号"+appId);
+			logger().debug("用户Openid："+userInfo.getOpenId()+"开始绑定公众号："+appId);
 			if(userInfo!=null) {
 				MpOfficialAccountUserRecord record=MP_OFFICIAL_ACCOUNT_USER.newRecord();
 				record.setOpenid(userInfo.getOpenId());
@@ -1443,7 +1446,7 @@ public class MpAuthShopService extends MainBaseService {
 				//得到公众号关联的小程序
 				Result<MpAuthShopRecord> officialAccountMps = getOfficialAccountMps(appId);
 				boolean parseAccountInfo = saas.shop.account.parseAccountInfo(appId, inMessage.getEventKey(), record.getOpenid());
-				logger().debug("'parseAccountInfo result "+parseAccountInfo);
+				logger().info("parseAccountInfo result "+parseAccountInfo);
 				if(parseAccountInfo) {
 					logger().debug("用户Openid"+userInfo.getOpenId()+"组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒");
 					//packageResponseMsg 组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒'
@@ -1465,7 +1468,7 @@ public class MpAuthShopService extends MainBaseService {
 						MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
 						List<Integer> userIdList = new ArrayList<Integer>();
 						userIdList.add(user.getRecId());
-						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{null,"#173177"}};
+						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{"","#173177"}};
 						RabbitMessageParam param = RabbitMessageParam.builder()
 								.mpTemplateData(
 										MpTemplateData.builder().config(MpTemplateConfig.PUSHMSG).data(data).build())

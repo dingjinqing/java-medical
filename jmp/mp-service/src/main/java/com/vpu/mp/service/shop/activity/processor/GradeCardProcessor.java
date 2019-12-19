@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
@@ -15,6 +17,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +41,7 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMB
  */
 @Service
 @Slf4j
-public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor, GoodsDetailProcessor, ActivityCartListStrategy {
+public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor, GoodsDetailProcessor, ActivityCartListStrategy,CreateOrderProcessor {
 
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
@@ -143,8 +146,9 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
         });
     }
 
-    public void doOrderOperation(String grade, OrderCartProductBo productBo){
+    public void doOrderOperation(OrderCartProductBo productBo) {
         log.info("会员价计算start");
+        String grade = userCardService.getUserGrade(productBo.getUserId());
         if(grade.equals(CardConstant.LOWEST_GRADE)) {
             return;
         }
@@ -162,5 +166,20 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
             });
         });
         log.info("会员价计算end");
+    }
+
+    @Override
+    public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        doOrderOperation(param.getOrderCartProductBo());
+    }
+
+    @Override
+    public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processStockAndSales(OrderBeforeParam param) throws MpException {
+
     }
 }

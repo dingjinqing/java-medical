@@ -1,13 +1,5 @@
 package com.vpu.mp.config;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Validator;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.internal.engine.MessageInterpolatorContext;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
@@ -19,6 +11,13 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 
 /**
  * @author liufei
@@ -102,7 +101,7 @@ public class ValidatorConfig {
         return new AcceptHeaderLocaleResolver() {
             @Override
             public Locale resolveLocale(HttpServletRequest request) {
-                Locale defaultLocale = Locale.US;
+                Locale defaultLocale = Locale.SIMPLIFIED_CHINESE;
                 if (defaultLocale != null && request.getHeader("V-Lang") == null) {
                     return defaultLocale;
                 }

@@ -5,12 +5,7 @@ import vm from '../main'
 import router from '@/router/index.js'
 
 // 环境的切换
-let baseURL = ''
-if (process.env.NODE_ENV === 'development') {
-  baseURL = '/vpb'
-} else if (process.env.NODE_ENV === 'testing') {
-} else if (process.env.NODE_ENV === 'production') {
-}
+let baseURL = 'http://' + process.env.API_DOMAIN + '/'
 
 // 创建axios实例
 const service = axios.create({

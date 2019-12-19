@@ -4,7 +4,7 @@ var util = require("../../../utils/util.js")
 global.wxComponent({
   mixins: [base],
   methods: {
-    onPropChange(newVal, oldVal, changedPath) {
+    onPropChange (newVal, oldVal, changedPath) {
 
       // 根据背景类型来判断是采用背景颜色还是背景图片
       console.log(newVal, 'cardData')
@@ -20,7 +20,7 @@ global.wxComponent({
       console.log(newVal)
       // shop_img、activation字段在第二个接口
     },
-    bindGetCard(e) {
+    bindGetCard (e) {
       var d = this.eventData(e);
       var _this = this;
       console.log(d)
@@ -75,10 +75,11 @@ global.wxComponent({
         cardId: d.card_id
       })
     },
-    viewCard(e) {
+    viewCard (e) {
       var d = this.eventData(e);
+      console.log(d)
       var _this = this;
-      util.jumpLink('/pages/cardinfo/cardinfo?card_id=' + d.card_id)
+      util.jumpLink('/pages/cardinfo/cardinfo?cardId=' + d.card_id)
     }
   }
 });
