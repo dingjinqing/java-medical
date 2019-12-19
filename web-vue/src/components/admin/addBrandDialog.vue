@@ -55,9 +55,9 @@
               width="100"
               type="selection"
             >
-              <template slot-scope="scope">
+              <!-- <template slot-scope="scope">
                 <el-checkbox v-model="scope.row.ischeck"></el-checkbox>
-              </template>
+              </template> -->
             </el-table-column>
             <el-table-column
               prop="brandName"
@@ -272,6 +272,7 @@ export default {
       })
     },
     changeFun (val) {
+      console.log(val)
       if (val.length) {
         this.tableData.forEach((item, index) => {
           item.ischeck = true

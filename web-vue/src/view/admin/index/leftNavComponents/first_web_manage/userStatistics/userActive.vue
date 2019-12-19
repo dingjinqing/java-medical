@@ -1,6 +1,6 @@
 <template>
   <section class="label">
-    <div class="labelItem">用户活跃</div>
+    <div class="labelItem">{{$t('userStatistics.userActive')}}</div>
     <el-select
       v-model="timeSelect"
       size="small"
@@ -15,7 +15,7 @@
         :value="item.value"
       ></el-option>
     </el-select>
-    <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+    <span>{{this.startDate.year}}{{$t('userStatistics.year')}}{{this.startDate.month}}{{$t('userStatistics.month')}}{{this.startDate.day}}{{$t('userStatistics.day')}} - {{this.endDate.year}}{{$t('userStatistics.year')}}{{this.endDate.month}}{{$t('userStatistics.month')}}{{this.endDate.day}}{{$t('userStatistics.day')}}</span>
 
     <!-- 表格数据部分 -->
     <div class="fromWrapper">
@@ -35,7 +35,7 @@
           >
             <div
               slot="content"
-              style="width: 400px;height: 90px;line-height: 30px;font-size: 14px;"
+              style="width: 400px;line-height: 30px;font-size: 14px;"
             >
               <section style="display: flex">
                 <div style="width: 30%;color:#999">{{item.title}}</div>
@@ -68,6 +68,11 @@ import echarts from 'echarts'
 import { userActive } from '@/api/admin/firstWebManage/userStatistics/userStatistics.js'
 
 export default {
+  watch: {
+    lang () {
+      this.timeRange = this.$t('userStatistics.timeRange')
+    }
+  },
   created () {
     this.initData()
   },
@@ -80,11 +85,12 @@ export default {
   data () {
     return {
       timeSelect: 1,
-      timeRange: [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' }
-      ],
+      // timeRange: [
+      //   { value: 1, label: '最新1天' },
+      //   { value: 7, label: '最新7天' },
+      //   { value: 30, label: '最新30天' }
+      // ],
+      timeRange: this.$t('userStatistics.timeRange'),
       params: 1,
       originalData: {
         accessNumber: '', // 访问会员数
@@ -179,38 +185,38 @@ export default {
 
       this.table = [
         {
-          name: '访问会员数',
-          title: '访问会员数',
-          content: '筛选时间内，访问过店铺的用户数量,一人多次访问记为一人',
-          title1: '访问会员数占比',
-          content1: '筛选时间内，访问用户数 / 累积用户数',
+          name: this.$t('userStatistics.visitMemberNumber'),
+          title: this.$t('userStatistics.visitMemberNumber'),
+          content: this.$t('userStatistics.visitTips'),
+          title1: this.$t('userStatistics.visitMemberRate'),
+          content1: this.$t('userStatistics.visiCoumpute'),
           number: this.originalData.accessNumber,
           rate: this.originalData.accessNumberRate
         },
         {
-          name: '领券会员数',
-          title: '领券会员数',
-          content: '筛选时间内，领取了优惠券的用户数，一人多次领券记为一人',
-          title1: '领券会员数占比',
-          content1: '筛选时间内，领券用户数/ 访问用户数',
+          name: this.$t('userStatistics.getCouponNumber'),
+          title: this.$t('userStatistics.getCouponNumber'),
+          content: this.$t('userStatistics.getCouponTips'),
+          title1: this.$t('userStatistics.getCouponRate'),
+          content1: this.$t('userStatistics.getCouponCoumpute'),
           number: this.originalData.getCouponNumber,
           rate: this.originalData.getCouponNumberRate
         },
         {
-          name: '加购会员数',
-          title: '加购会员数',
-          content: '筛选时间内，将商品添加购物车的用户数，一人多次添加购物车记为一人',
-          title1: '加购会员数占比',
-          content1: '筛选时间内，加购用户数/ 访问用户数',
+          name: this.$t('userStatistics.addBuyMember'),
+          title: this.$t('userStatistics.addBuyMember'),
+          content: this.$t('userStatistics.addBuyMemberTips'),
+          title1: this.$t('userStatistics.addBuyMemberRate'),
+          content1: this.$t('userStatistics.addBuyMemberCoumpute'),
           number: this.originalData.addBuyNumber,
           rate: this.originalData.orderUserDataRate
         },
         {
-          name: '成交会员数',
-          title: '成交会员数',
-          content: '筛选时间内，付款成功的用户数，一人多次付款成功记为一人',
-          title1: '成交会员数占比',
-          content1: '筛选时间内，成交用户数/ 访问用户数',
+          name: this.$t('userStatistics.tradeSuccessNumber'),
+          title: this.$t('userStatistics.tradeSuccessNumber'),
+          content: this.$t('userStatistics.tradeSuccessNumberTips'),
+          title1: this.$t('userStatistics.tradeSuccessNumberRate'),
+          content1: this.$t('userStatistics.tradeSuccessNumberCoumpute'),
           number: this.originalData.successNumber,
           rate: this.originalData.successNumberRate
         }
@@ -240,22 +246,22 @@ export default {
         },
         series: [
           {
-            name: '访问会员数 ',
+            name: this.$t('userStatistics.visitMemberNumber'),
             type: 'line',
             data: this.chartAccessNumber
           },
           {
-            name: '领券会员数',
+            name: this.$t('userStatistics.getCouponNumber'),
             type: 'line',
             data: this.chartGetCouponNumber
           },
           {
-            name: '加购会员数',
+            name: this.$t('userStatistics.addBuyMember'),
             type: 'line',
             data: this.chartAddBuyNumber
           },
           {
-            name: '成交会员数',
+            name: this.$t('userStatistics.tradeSuccessNumber'),
             type: 'line',
             data: this.chartSuccessNumber
           }

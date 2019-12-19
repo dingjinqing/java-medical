@@ -22,14 +22,26 @@
           align="left"
           prop="goodsName"
           :label="$t('allGoods.allGoodsData.goodsName')"
-          width="230"
+          width="200"
         >
           <template slot-scope="scope">
             <div class="nameImgWrap">
-              <img class="imgItem" :src="scope.row.goodsImg">
-              <div class="nameItem" :title="scope.row.goodsName">
-                <span v-if="scope.row.sourceName !== null" class="goodsTypeSpanWrap">{{scope.row.sourceName}}</span>
-                <span v-if="scope.row.goodsTypeName !== null" class="goodsSourceSpanWrap">{{scope.row.goodsTypeName}}</span>
+              <img
+                class="imgItem"
+                :src="scope.row.goodsImg"
+              >
+              <div
+                class="nameItem"
+                :title="scope.row.goodsName"
+              >
+                <span
+                  v-if="scope.row.sourceName !== null"
+                  class="goodsTypeSpanWrap"
+                >{{scope.row.sourceName}}</span>
+                <span
+                  v-if="scope.row.goodsTypeName !== null"
+                  class="goodsSourceSpanWrap"
+                >{{scope.row.goodsTypeName}}</span>
                 <span>{{scope.row.goodsName}}</span>
               </div>
             </div>
@@ -59,12 +71,13 @@
                   @click="shopPriceAndGoodsNumberEditClick(row,'price')"
                 ></span>
               </span>
-              <input v-else
-                     :id="'shopPrice_'+row.goodsId"
-                     v-model.number="row.shopPriceOld"
-                     @change="shopPriceChange(row)"
-                     @blur="row.shopPriceEdit = false"
-                     class="editInput"
+              <input
+                v-else
+                :id="'shopPrice_'+row.goodsId"
+                v-model.number="row.shopPriceOld"
+                @change="shopPriceChange(row)"
+                @blur="row.shopPriceEdit = false"
+                class="editInput"
               />
             </template>
           </template>
@@ -87,21 +100,21 @@
           align="center"
           prop="sortName"
           :label="$t('allGoods.allGoodsData.sort')"
-          width="100"
+          width="90"
         />
         <!--商品品牌-->
         <el-table-column
           align="center"
           prop="brandName"
           :label="$t('allGoods.allGoodsData.goodsBrand')"
-          width="100"
+          width="90"
         >
         </el-table-column>
         <!--商品库存-->
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.goodsNumber')"
-          width="130"
+          width="120"
         >
           <template slot-scope="{row,$index}">
             <span v-if="row.prdId === null">{{row.goodsNumber}}</span>
@@ -134,14 +147,21 @@
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.goodsLabel')"
-          width="150"
+          width="130"
         >
           <template slot-scope="{row}">
             <div style="display: flex;justify-content: flex-end;align-items: center;">
               <div>
-                <span v-for="(item,index) in row.goodsLabels" :key="index" class="goodsLabelSpanWrap">{{item.name}}</span>
+                <span
+                  v-for="(item,index) in row.goodsLabels"
+                  :key="index"
+                  class="goodsLabelSpanWrap"
+                >{{item.name}}</span>
               </div>
-              <div style="width:40px;flex-shrink:0;cursor: pointer;" @click="tdLabelSetClick(row)">
+              <div
+                style="width:40px;flex-shrink:0;cursor: pointer;"
+                @click="tdLabelSetClick(row)"
+              >
                 {{$t('allGoods.allGoodsData.setting')}}
               </div>
             </div>
@@ -219,24 +239,38 @@
     </div>
 
     <!--预览商品太阳码-->
-    <el-dialog
-      :visible.sync="qrCodeData.isShow"
-      :title="$t('allGoods.allGoodsData.shareGoodsTitle')"
-      width="350px"
-    >
-      <div style="text-align: center;">
-        <el-image
-          fit="scale-down"
-          :src="qrCodeData.imgFullUrl"
-          style="width: 250px; height: 230px;"
-        />
-        <el-input
-          v-model="qrCodeData.pageUrl"
-          disabled
-        />
-        <span>{{this.$t('allGoods.allGoodsData.copy')}}</span>
-      </div>
-    </el-dialog>
+    <div class="qrCodeDialogWrap">
+      <el-dialog
+        :visible.sync="qrCodeData.isShow"
+        :title="$t('allGoods.allGoodsData.shareGoodsTitle')"
+        width="400px"
+      >
+        <div style="text-align: center;">
+          <img
+            :src="qrCodeData.imgFullUrl"
+            alt
+            style="width: 180px;height: 180px;border: none;"
+          />
+          <a
+            :href="qrCodeData.imgFullUrl"
+            download=""
+            class="downLoadQrImg"
+          >下载二维码</a>
+          <div style="text-align: left;padding: 5px 5px 5px 50px;">
+            <el-input
+              ref="qrCodePageUrlInput"
+              v-model="qrCodeData.pageUrl"
+              size="small"
+              style="width:230px;"
+            />
+            <span
+              @click="copyPageUrlClick"
+              class="copyQrCodeUrl"
+            >{{this.$t('allGoods.allGoodsData.copy')}}</span>
+          </div>
+        </div>
+      </el-dialog>
+    </div>
 
     <!--标签设置-->
     <el-dialog
@@ -502,6 +536,10 @@ export default {
         this.qrCodeData.isShow = true
       })
     },
+    copyPageUrlClick () {
+      this.$refs.qrCodePageUrlInput.select()
+      document.execCommand('Copy')
+    },
     /* 操作确认弹框 */
     _$confirm (questionMessage, confirmMesage, confirmCallback, cancelCallback) {
       this.$confirm(questionMessage, this.$t('allGoods.allGoodsData.tip'), {
@@ -545,16 +583,16 @@ export default {
             // case 1: item.goodsTypeName = '拼团商品'
             case 1: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[0]
               break
-              // case 2: item.goodsTypeName = '分销'
+            // case 2: item.goodsTypeName = '分销'
             case 2: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[1]
               break
-              // case 3: item.goodsTypeName = '砍价商品'
+            // case 3: item.goodsTypeName = '砍价商品'
             case 3: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[2]
               break
-              // case 4: item.goodsTypeName = '积分商品'
+            // case 4: item.goodsTypeName = '积分商品'
             case 4: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[3]
               break
-              // case 5: item.goodsTypeName = '秒杀商品'
+            // case 5: item.goodsTypeName = '秒杀商品'
             case 5: item.goodsTypeName = this.$t('allGoods.allGoodsData.goodsType')[4]
               break
             default:
@@ -585,102 +623,132 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  /deep/.tableClass th {
-    background-color: #f5f5f5;
-    border: none;
-    height: 36px;
-    font-weight: bold;
-    color: #000;
-    padding: 8px 10px;
-  }
-  .nameImgWrap{
-    display: flex;
-  }
-  .nameImgWrap::after{
-    content: '';
-    display: block;
-    clear: both;
-  }
-  .imgItem{
-    width: 60px;
-    height: 60px;
-    border-radius: 2px;
-    border: 1px solid #ccc;
-    margin: 2px 7px 0 0;
-  }
-  .nameItem {
-    flex: 1;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    overflow: hidden;
-  }
-  .goodsSourceSpanWrap {
-    border: 1px solid #ef8115;
-    color: #ef8115;
-    border-radius: 3px;
-    padding: 0px 2px;
-  }
-  .goodsTypeSpanWrap {
-    border: 1px solid #ff3f3f;
-    color: #ff3f3f;
-    border-radius: 3px;
-    padding: 0px 2px;
-  }
-  .goodsLabelSpanWrap {
-    border: 1px solid #cccccc;
-    color: #666;
-    border-radius: 3px;
-    padding:0px 2px;
-    margin-right: 2px;
-    display: inline-block;
-  }
-  .labelSelectedWrapPanel{
-    background-color: #f8f8f8;
-    width: 80%;
-    border: 1px solid #ccc;
-    padding: 10px;
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .labelSelectedWrap {
-    border: 1px solid #ccc;
-    text-align: center;
-    background-color: #fff;
-    position: relative;
-    padding: 5px 5px;
-    margin-right: 10px;
-    margin-top: 10px;
-    flex-shrink: 0;
-  }
-  .labelSelectedWrap .deleteIcon {
-    width: 13px;
-    height: 13px;
-    color: #fff;
-    background: #ccc;
-    border: 1px solid #ccc;
-    border-radius: 50%;
-    line-height: 10px;
-    text-align: center;
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    cursor: pointer;
-    opacity: 0.8;
-  }
-  .iconSpan {
-    font-size: 22px;
-    color: #5a8bff;
-    cursor: pointer !important;
-    margin-top: 5px;
-  }
-  .editInput {
-    width: 80px;
-    height: 25px;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
+/deep/.tableClass th {
+  background-color: #f5f5f5;
+  border: none;
+  height: 36px;
+  font-weight: bold;
+  color: #000;
+  padding: 8px 10px;
+}
+.nameImgWrap {
+  display: flex;
+}
+.nameImgWrap::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.imgItem {
+  width: 60px;
+  height: 60px;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  margin: 2px 7px 0 0;
+}
+.nameItem {
+  flex: 1;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.goodsSourceSpanWrap {
+  border: 1px solid #ef8115;
+  color: #ef8115;
+  border-radius: 3px;
+  padding: 0px 2px;
+}
+.goodsTypeSpanWrap {
+  border: 1px solid #ff3f3f;
+  color: #ff3f3f;
+  border-radius: 3px;
+  padding: 0px 2px;
+}
+.goodsLabelSpanWrap {
+  border: 1px solid #cccccc;
+  color: #666;
+  border-radius: 3px;
+  padding: 0px 2px;
+  margin-right: 2px;
+  display: inline-block;
+}
+.labelSelectedWrapPanel {
+  background-color: #f8f8f8;
+  width: 80%;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.labelSelectedWrap {
+  border: 1px solid #ccc;
+  text-align: center;
+  background-color: #fff;
+  position: relative;
+  padding: 5px 5px;
+  margin-right: 10px;
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+.labelSelectedWrap .deleteIcon {
+  width: 13px;
+  height: 13px;
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  line-height: 10px;
+  text-align: center;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.iconSpan {
+  font-size: 22px;
+  color: #5a8bff;
+  cursor: pointer !important;
+  margin-top: 5px;
+}
+.editInput {
+  width: 80px;
+  height: 25px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+/deep/.qrCodeDialogWrap .el-dialog__header {
+  background-color: transparent;
+}
+/deep/.qrCodeDialogWrap .el-dialog__body {
+  padding: 5px;
+}
+.downLoadQrImg {
+  color: #999;
+  font-size: 16px;
+  display: inline-block;
+  height: 40px;
+  line-height: 40px;
+  width: 100%;
+  text-align: center;
+  margin-left: 0;
+  border-bottom: 1px solid #eee;
+  text-decoration: none;
+}
+.copyQrCodeUrl {
+  display: inline-block;
+  margin-left: 5px;
+  color: #5a8bff;
+  background: #fff;
+  border: none;
+  height: 35px;
+  line-height: 35px;
+  font-size: 16px;
+  cursor: pointer;
+}
 </style>

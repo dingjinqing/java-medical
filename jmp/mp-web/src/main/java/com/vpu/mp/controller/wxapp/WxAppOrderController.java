@@ -144,7 +144,7 @@ public class WxAppOrderController extends WxAppBaseController{
 		try {
 			return success(shop().readOrder.mpGet(param));
 		} catch (MpException e) {
-			return fail(e.getErrorCode());
+			return fail(e.getErrorCode(), e.getCodeParam());
 		}
 	}
 

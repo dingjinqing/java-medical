@@ -1,7 +1,7 @@
 <template>
   <section class="label">
     <div class="labelItem">
-      会员统计
+      {{$t('userStatistics.memberStatistics')}}
       <el-tooltip
         effect="light"
         placement="bottom-start"
@@ -12,7 +12,7 @@
         >
           <section
             style="display: flex"
-            v-for="item in tipsList"
+            v-for="item in memberTipsList"
             :key="item.title"
           >
             <div style="width: 30%;color:#999">{{item.title}}</div>
@@ -36,7 +36,7 @@
         :value="item.value"
       ></el-option>
     </el-select>
-    <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+    <span>{{this.startDate.year}}{{$t('userStatistics.year')}}{{this.startDate.month}}{{$t('userStatistics.month')}}{{this.startDate.day}}{{$t('userStatistics.day')}} - {{this.endDate.year}}{{$t('userStatistics.year')}}{{this.endDate.month}}{{$t('userStatistics.month')}}{{this.endDate.day}}{{$t('userStatistics.day')}}</span>
 
     <!-- 表格数据部分 -->
     <div class="fromWrapper">
@@ -50,7 +50,7 @@
           class="num"
           style="color: #5A8BFF"
         >{{item.number}}</div>
-        <div>较前一日 {{item.rate}}</div>
+        <div>{{$t('userStatistics.compareLastDay')}} {{item.rate}}</div>
       </div>
     </div>
 
@@ -61,6 +61,11 @@
 import { menberStatistics } from '@/api/admin/firstWebManage/userStatistics/userStatistics.js'
 
 export default {
+  watch: {
+    lang () {
+      this.timeRange = this.$t('userStatistics.timeRange')
+    }
+  },
   created () {
     this.initData()
   },
@@ -72,30 +77,32 @@ export default {
   data () {
     return {
       timeSelect: 1,
-      timeRange: [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' }
-      ],
+      // timeRange: [
+      //   { value: 1, label: '最新1天' },
+      //   { value: 7, label: '最新7天' },
+      //   { value: 30, label: '最新30天' }
+      // ],
+      timeRange: this.$t('userStatistics.timeRange'),
       params: 1,
-      tipsList: [
-        {
-          title: '累积会员数',
-          content: '截至到筛选时间的最后一天，店铺的会员累积人数'
-        },
-        {
-          title: '新增会员数',
-          content: '筛选时间内，通过领取会员卡，新成为会员的客户数量'
-        },
-        {
-          title: '升级会员数',
-          content: '筛选时间内，通过会员规则升级的会员数量，一人多次升级记为一人'
-        },
-        {
-          title: '储值会员数',
-          content: '筛选时间内，进行储值的会员数量，一人多次储值记为一人'
-        }
-      ],
+      // memberTipsList: [
+      //   {
+      //     title: '累积会员数',
+      //     content: '截至到筛选时间的最后一天，店铺的会员累积人数'
+      //   },
+      //   {
+      //     title: '新增会员数',
+      //     content: '筛选时间内，通过领取会员卡，新成为会员的客户数量'
+      //   },
+      //   {
+      //     title: '升级会员数',
+      //     content: '筛选时间内，通过会员规则升级的会员数量，一人多次升级记为一人'
+      //   },
+      //   {
+      //     title: '储值会员数',
+      //     content: '筛选时间内，进行储值的会员数量，一人多次储值记为一人'
+      //   }
+      // ],
+      memberTipsList: this.$t('userStatistics.memberTipsList'),
       table: [],
       originalData: {
         accumulationNumber: '', // 积累会员数
@@ -175,22 +182,22 @@ export default {
 
       this.table = [
         {
-          name: '累积会员数',
+          name: this.$t('userStatistics.cumulateMemberNumber'),
           number: this.originalData.accumulationNumber,
           rate: this.originalData.accumulationNumberRate
         },
         {
-          name: '新增会员数',
+          name: this.$t('userStatistics.addMemberNumber'),
           number: this.originalData.addNumber,
           rate: this.originalData.addNumberRate
         },
         {
-          name: '升级会员数',
+          name: this.$t('userStatistics.updateMemberNumber'),
           number: this.originalData.updateNumber,
           rate: this.originalData.updateNumberRate
         },
         {
-          name: '储值会员数',
+          name: this.$t('userStatistics.chargeMemberNumber'),
           number: this.originalData.chargeNumber,
           rate: this.originalData.chargeNumberRate
         }

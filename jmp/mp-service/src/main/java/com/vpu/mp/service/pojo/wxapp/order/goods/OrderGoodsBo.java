@@ -95,6 +95,8 @@ public class OrderGoodsBo {
 	private Integer reducePriceId;
 	/**首单特惠活动id*/
 	private Integer firstSpecialId;
-	/**是否可以配送*/
+	/**包邮*/
+    private Integer freeShip;
+    /**是否可以配送*/
 	private Byte isShipping;
 }

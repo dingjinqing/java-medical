@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
+import com.vpu.mp.service.pojo.shop.config.trade.ReturnConfigParam;
 import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -21,6 +22,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
+import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
@@ -40,6 +42,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +71,8 @@ public class Calculate extends ShopBaseService {
     private OrderInfoService orderInfoService;
     @Autowired
     private UserLoginRecordService userLoginRecordService;
+    @Autowired
+    private ShopReturnConfigService returnCfg;
 
 
     /**
@@ -503,9 +508,83 @@ public class Calculate extends ShopBaseService {
      * @param orderGoods 商品
      * @return map<goodsid, no / ys>
      */
-    public Map<Integer, Byte> getGoodsReturnCfg(List<OrderGoodsBo> orderGoods) {
+    public void getGoodsReturnCfg(List<OrderGoodsBo> orderGoods) {
+        Byte returnChangeGoodsStatus = returnCfg.getReturnChangeGoodsStatus();
+        if(2 ==returnChangeGoodsStatus){
+            //全部支持
+            orderGoods.forEach(goods->{
+                goods.setIsCanReturn(OrderConstant.IS_CAN_RETURN_Y);
+            });
+        }else{
+            //规则
+            GoodsPackageParam rule = returnCfg.getOrderReturnGoodsPackage();
+            if (rule.getAddGoods() != null) {
+                //goodsId校验
+                ArrayList<Integer> goodsIds = Lists.newArrayList(rule.getAddGoods());
+                goodsIds.retainAll(orderGoods.stream().map(OrderGoodsBo::getGoodsId).collect(Collectors.toList()));
+                if (CollectionUtils.isNotEmpty(goodsIds)) {
+                    goodsIds.forEach(goodsId->{
+                        orderGoods.forEach(goods->{
+                            if(goods.getGoodsId().equals(goodsId)) {
+                                goods.setIsCanReturn(returnChangeGoodsStatus == 0 ? OrderConstant.IS_CAN_RETURN_Y : OrderConstant.IS_CAN_RETURN_N);
+                            }
+                        });
+                    });
+                }
+            }
 
-        return Maps.newHashMap();
+            if (rule.getAddCate() != null) {
+                //cateId校验
+                ArrayList<Integer> cateIds = Lists.newArrayList(rule.getAddCate());
+                cateIds.retainAll(orderGoods.stream().map(OrderGoodsBo::getCatId).collect(Collectors.toList()));
+                if (CollectionUtils.isNotEmpty(cateIds)) {
+                    cateIds.forEach(cateId->{
+                        orderGoods.forEach(goods->{
+                            if(goods.getCatId().equals(cateId)) {
+                                goods.setIsCanReturn(returnChangeGoodsStatus == 0 ? OrderConstant.IS_CAN_RETURN_Y : OrderConstant.IS_CAN_RETURN_N);
+                            }
+                        });
+                    });
+                }
+            }
+
+            if (rule.getAddSort() != null) {
+                //sortId校验
+                ArrayList<Integer> sortIds = Lists.newArrayList(rule.getAddSort());
+                sortIds.retainAll(orderGoods.stream().map(OrderGoodsBo::getSortId).collect(Collectors.toList()));
+                if (CollectionUtils.isNotEmpty(sortIds)) {
+                    sortIds.forEach(sortId->{
+                        orderGoods.forEach(goods->{
+                            if(goods.getSortId().equals(sortId)) {
+                                goods.setIsCanReturn(returnChangeGoodsStatus == 0 ? OrderConstant.IS_CAN_RETURN_Y : OrderConstant.IS_CAN_RETURN_N);
+                            }
+                        });
+                    });
+                }
+            }
+
+            if (rule.getAddBrand() != null) {
+                //brandId校验
+                ArrayList<Integer> brandIds = Lists.newArrayList(rule.getAddBrand());
+                brandIds.retainAll(orderGoods.stream().map(OrderGoodsBo::getBrandId).collect(Collectors.toList()));
+                if (CollectionUtils.isNotEmpty(brandIds)) {
+                    brandIds.forEach(brandId->{
+                        orderGoods.forEach(goods->{
+                            if(goods.getBrandId().equals(brandId)) {
+                                goods.setIsCanReturn(returnChangeGoodsStatus == 0 ? OrderConstant.IS_CAN_RETURN_Y : OrderConstant.IS_CAN_RETURN_N);
+                            }
+                        });
+                    });
+                }
+            }
+
+            //设置null值
+            orderGoods.forEach(goods->{
+                if(goods.getIsCanReturn() == null) {
+                    goods.setIsCanReturn(returnChangeGoodsStatus == 0 ? OrderConstant.IS_CAN_RETURN_N : OrderConstant.IS_CAN_RETURN_Y);
+                }
+            });
+        }
     }
 
     /**
@@ -517,20 +596,21 @@ public class Calculate extends ShopBaseService {
      */
     public void setGoodsReturnCfg(List<OrderGoodsBo> orderGoods, List<Byte> goodsType, Byte posFlag) {
         Byte isCanReturn = null;
-        Map<Integer, Byte> goodsReturnCfg = null;
-        if (goodsType.contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)) {
+        //售后开关
+        Byte saleSwitch = returnCfg.getPostSaleStatus();
+        if (saleSwitch.equals(OrderConstant.NO) || goodsType.contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)) {
             isCanReturn = OrderConstant.IS_CAN_RETURN_N;
         } else if (posFlag != null && OrderConstant.YES == posFlag) {
             isCanReturn = OrderConstant.IS_CAN_RETURN_Y;
         }
         if (isCanReturn == null) {
-            goodsReturnCfg = getGoodsReturnCfg(orderGoods);
+            getGoodsReturnCfg(orderGoods);
+        }else{
+            for (OrderGoodsBo bo : orderGoods) {
+                bo.setIsCanReturn(isCanReturn);
+            }
         }
-        //TODO 等刘飞修改完
-        isCanReturn = OrderConstant.IS_CAN_RETURN_Y;
-        for (OrderGoodsBo bo : orderGoods) {
-            bo.setIsCanReturn(isCanReturn != null ? isCanReturn : goodsReturnCfg.get(bo.getGoodsId()));
-        }
+
     }
 
     /**
