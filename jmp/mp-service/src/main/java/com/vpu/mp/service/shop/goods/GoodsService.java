@@ -1873,4 +1873,12 @@ public class GoodsService extends ShopBaseService {
 
         }
     }
+
+    /**
+     * 取单个完整Goods
+     * @return
+     */
+    public GoodsRecord getGoodsRecordById(int goodsId){
+        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptionalInto(GoodsRecord.class).orElse(null);
+    }
 }

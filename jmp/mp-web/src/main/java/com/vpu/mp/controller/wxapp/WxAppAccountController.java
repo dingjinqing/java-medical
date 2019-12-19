@@ -24,6 +24,7 @@ import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.shop.ShopApplication;
 
+import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import me.chanjar.weixin.common.error.WxErrorException;
 
 /**
@@ -139,5 +140,24 @@ public class WxAppAccountController extends WxAppBaseController {
 		}else {
 			return success(vo);
 		}
+	}
+	
+	/**
+	 * 获取用户手机号的解密
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/api/wxapp/wxdecrypt")
+	public JsonResult wxDecryptData(@RequestBody WxAppAccountParam param) {
+		logger().info("获取用户手机号的解密");
+		Integer shopId = wxAppAuth.shopId();
+		ShopApplication shopApp = saas.getShopApp(shopId);
+		param.setUserId(wxAppAuth.user().getUserId());
+		WxMaPhoneNumberInfo updateUser = shopApp.user.wxDecryptData(param, WxAppAuth.TOKEN_PREFIX);
+		if(updateUser!=null) {
+			return success(updateUser.getPhoneNumber());
+		}
+		return fail();
+		
 	}
 }
