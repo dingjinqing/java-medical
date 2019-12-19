@@ -13,14 +13,14 @@ global.wxComponent({
     page_content: {
       type: Object,
       value: {},
-      observer(newVal, oldVal) {
+      observer (newVal, oldVal) {
         if (newVal) this.processModuleData(newVal);
       }
     }
   },
   methods: {
     // 处理模块渲染数据
-    processModuleData(page_content) {
+    processModuleData (page_content) {
       if (!page_content) return;
 
       console.log(page_content, '111', module)
@@ -66,7 +66,7 @@ global.wxComponent({
       this.startLoadingMoreTimer();
     },
     // 加载详细信息
-    loadMoreData() {
+    loadMoreData () {
       console.log(this._loaded)
       var data = {}
       var l = this._loaded = this._loaded || {}
@@ -134,7 +134,7 @@ global.wxComponent({
       // }
     },
     // 请求装修模块详细数据
-    requestPageModule(idx) {
+    requestPageModule (idx) {
       var _this = this;
       util.api('/api/wxapp/page/module', function (d) {
         console.log(d, _this.page_id)
@@ -146,7 +146,7 @@ global.wxComponent({
       });
     },
     // 更新模块数据
-    refreshModule(idx, moduleContent) {
+    refreshModule (idx, moduleContent) {
       var data = {};
       let cur_idx = Number(idx.split('_')[1])
       console.log(this._pageData, cur_idx)
@@ -169,14 +169,14 @@ global.wxComponent({
       }
 
     },
-    _timerConvertModule(m) {
+    _timerConvertModule (m) {
       if (!m) return m;
       if (m.component_name == 'v-bargain' || m.component_name == 'v-pinlottery') {
         m.elapse_secs = this.elapse_secs
       }
       return m;
     },
-    detectLoadingMore() {
+    detectLoadingMore () {
       console.log('触发', this._gettingRect, this._loadedOk, this._windowHeight)
       if (this._gettingRect) return;
       if (this._loadedOk) return;
@@ -194,7 +194,7 @@ global.wxComponent({
       });
     },
     // 逐步加载其他模块，解决iphone滚动事件问题。
-    startLoadingMoreTimer() {
+    startLoadingMoreTimer () {
       if (!this._op_system) this._op_system = wx.getSystemInfoSync().system;
       if (this._op_system.indexOf("iOS") == -1) return;
       var _this = this;
@@ -205,11 +205,11 @@ global.wxComponent({
       }, 1000);
     },
     // 会员卡  
-    onGetCardSuccess(card) {
+    onGetCardSuccess (card) {
 
     },
     //  模块名称汇总
-    _convertComponentName(tmplateName) {
+    _convertComponentName (tmplateName) {
       let modules = {
         "m_scroll_image": "v-carousel",
         "m_goods_search": "v-search",
