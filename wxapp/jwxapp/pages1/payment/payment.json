@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "v-recommend":"/components/item/recommend/index"
+  }
+}

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.seckill;
 
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -9,6 +10,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleSecKill;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -220,7 +222,7 @@ public class SeckillService extends ShopBaseService{
         return res;
     }
 
-    public List<SecKillProductVo> getSecKillProductVo(Integer skId){
+    private List<SecKillProductVo> getSecKillProductVo(Integer skId){
         return  db().select(SEC_KILL_PRODUCT_DEFINE.SKPRO_ID,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK,SEC_KILL_PRODUCT_DEFINE.STOCK).
             from(SEC_KILL_PRODUCT_DEFINE).innerJoin(GOODS_SPEC_PRODUCT).on(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).
             where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetch().into(SecKillProductVo.class);
@@ -543,6 +545,82 @@ public class SeckillService extends ShopBaseService{
         List<Integer> seckillCardIds = Util.splitValueToList(cardIds);
         validCardIds.removeAll(seckillCardIds);
         return (validCardIds != null && validCardIds.size() > 0);
+    }
+
+    /**
+     * 取单个活动
+     * @param actId
+     * @return
+     */
+    private SecKillDefineRecord getSeckillActById(int actId){
+        return db().selectFrom(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(actId)).fetchOptionalInto(SecKillDefineRecord.class).orElse(null);
+    }
+
+    /**
+     * 一个秒杀下的规格
+     * @param skId
+     * @return
+     */
+    private List<SecKillProductDefineRecord> getSeckillProductList(Integer skId){
+        return db().selectFrom(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchInto(SecKillProductDefineRecord.class);
+    }
+
+    /**
+     * 小程序装修秒杀模块显示异步调用
+     * @param moduleSecKill
+     * @return
+     */
+    public ModuleSecKill getPageIndexSeckill(ModuleSecKill moduleSecKill){
+        moduleSecKill.getSeckillGoods().forEach(seckillGoods->{
+            SecKillDefineRecord seckill = getSeckillActById(seckillGoods.getActId());
+            GoodsRecord goodsInfo = saas.getShopApp(getShopId()).goods.getGoodsRecordById(seckill.getGoodsId());
+
+            //set goods info
+            seckillGoods.setGoodsId(seckill.getGoodsId());
+            seckillGoods.setGoodsName(goodsInfo.getGoodsName());
+            seckillGoods.setGoodsImg(goodsInfo.getGoodsImg());
+            seckillGoods.setGoodsPrice(goodsInfo.getShopPrice());
+            seckillGoods.setGoodsIsDelete(goodsInfo.getDelFlag());
+            seckillGoods.setIsOnSale(goodsInfo.getIsOnSale());
+            seckillGoods.setGoodsNumber(goodsInfo.getGoodsNumber());
+
+            //set prd info
+            seckillGoods.setIsPrd(goodsInfo.getIsDefaultProduct());
+            seckillGoods.setMaxPrice(saas.getShopApp(getShopId()).goods.goodsSpecProductService.getMaxPrdPrice(goodsInfo.getGoodsId()));
+
+            //set act info
+            seckillGoods.setActBeginTime(seckill.getStartTime());
+            seckillGoods.setActEndTime(seckill.getEndTime());
+            seckillGoods.setActDelFlag(seckill.getDelFlag());
+            seckillGoods.setActStatus(seckill.getStatus());
+            seckillGoods.setSeckillSaleNum(seckill.getSaleNum());
+            seckillGoods.setSeckillNum(seckill.getStock() > goodsInfo.getGoodsNumber() ? goodsInfo.getGoodsNumber() : seckill.getStock());
+            seckillGoods.setBaseSale(goodsInfo.getBaseSale() > 0 ? goodsInfo.getBaseSale() : 0);
+            seckillGoods.setSecPrice(getMinProductSecPrice(seckill.getSkId()));
+            seckillGoods.setSecPriceInt(new BigDecimal(seckillGoods.getSecPrice().intValue()).compareTo(seckillGoods.getSecPrice()) == 0 ? (byte)1 : (byte)0);
+
+            int unpaidSecPrdNum = 0;
+            if(seckill.getDelFlag().equals(DelFlag.NORMAL_VALUE)){
+                List<SecKillProductDefineRecord> seckillProducts = getSeckillProductList(seckill.getSkId());
+                for(SecKillProductDefineRecord prd : seckillProducts){
+                    unpaidSecPrdNum += seckillList.getUnpaidSeckillNumberByPrd(seckill.getSkId(),prd.getProductId());
+                }
+            }
+            seckillGoods.setUnpaidGoodsNum(unpaidSecPrdNum);
+            if(seckill.getStartTime().after(DateUtil.getLocalDateTime())){
+                //未开始
+                seckillGoods.setTimeState((byte)0);
+                seckillGoods.setRemainingTime(seckill.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime());
+            }else if(seckill.getEndTime().after(DateUtil.getLocalDateTime())){
+                //进行中
+                seckillGoods.setTimeState((byte)1);
+                seckillGoods.setRemainingTime(seckill.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime());
+            }else{
+                //已结束
+                seckillGoods.setTimeState((byte)2);
+            }
+        });
+        return moduleSecKill;
     }
 
 

@@ -359,7 +359,6 @@ public class BargainService extends ShopBaseService  {
     /**
      * 小程序装修砍价模块显示异步调用
      * @param moduleBargain
-     * @param userId
      * @return
      */
     public ModuleBargain getPageIndexBargain(ModuleBargain moduleBargain){
