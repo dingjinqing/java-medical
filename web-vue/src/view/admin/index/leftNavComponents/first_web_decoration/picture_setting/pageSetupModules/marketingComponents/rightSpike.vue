@@ -145,7 +145,7 @@ export default {
           this.tableData = this.modulesData.seckill_goods.map(function (row) {
             return {
               goodsId: row.goods_id,
-              skid: row.act_id,
+              skId: row.act_id,
               secPrice: row.sec_price,
               goodsImg: row.goods_img,
               goodsName: row.goods_name,
