@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class  GoodsPageListVo {
     private String brandName;
     private Integer goodsNumber;
     private Integer goodsSaleNum;
-    private List<GoodsLabelSelectListVo> goodsLabels;
+    private List<GoodsLabelSelectListVo> goodsLabels = new ArrayList<>();
     /**
      * 商品对应的规格数据,未使用
      */
