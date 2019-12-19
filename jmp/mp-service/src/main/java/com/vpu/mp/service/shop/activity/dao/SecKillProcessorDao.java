@@ -13,7 +13,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SecKillPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SeckillMpVo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
@@ -171,7 +170,7 @@ public class SecKillProcessorDao extends ShopBaseService {
      * 秒杀下单-库存处理
      * @param order
      */
-    public void processSeckillStock(CreateParam param, OrderInfoRecord order) throws MpException {
+    public void processSeckillStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         for(OrderGoodsBo goods : param.getBos()){
             int seckillStock = db().select(SEC_KILL_DEFINE.STOCK).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).fetchSingle().into(Integer.class);
             if(seckillStock - goods.getGoodsNumber() < 0){

@@ -788,7 +788,7 @@ public class OrderReadService extends ShopBaseService {
 
 	/**
 	 *
-	 *
+	 *	活动实付总金额 活动优惠总金额
 	 * @param goodType
 	 * @param activityId
 	 * @param startTime
@@ -1029,5 +1029,9 @@ public class OrderReadService extends ShopBaseService {
 		// 安装日期分组
 		footPrintService.byDateGroup(orderGoodsHistoryVos,footprintDaylist);
 		return footprintListVo;
+	}
+
+	public void  getOrderDiscountedAmount(String orderSn){
+
 	}
 }

@@ -1,20 +1,28 @@
 package com.vpu.mp.service.shop.market.payaward;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecord;
+import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant;
-import com.vpu.mp.service.pojo.shop.market.payaward.*;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardContentBo;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardIdParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListVo;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListVo;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.order.OrderReadService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +32,10 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_IS_FOREVER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 
 /**
  * 支付有礼
@@ -44,6 +54,10 @@ public class PayAwardService extends ShopBaseService {
     private CouponService couponService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private OrderReadService orderReadService;
+    @Autowired
+    private OrderInfoService orderInfoService;
     /**
      * 添加
      *
@@ -103,6 +117,15 @@ public class PayAwardService extends ShopBaseService {
      */
     public PayAwardVo getPayAwardId(Integer id) {
         PayAwardRecord record = db().selectFrom(PAY_AWARD).where(PAY_AWARD.ID.eq(id)).fetchOne();
+        return recordToPayAwardVo(record);
+    }
+
+    /**
+     * PayAwardRecord转
+     * @param record PayAwardRecord
+     * @return PayAwardVo
+     */
+    private PayAwardVo recordToPayAwardVo(PayAwardRecord record) {
         PayAwardVo payAwardVo = record.into(PayAwardVo.class);
         if (record.getAwardList() != null && !record.getAwardList().isEmpty()) {
             payAwardVo.setAwardContentList(Util.json2Object(record.getAwardList(), new TypeReference<List<PayAwardContentBo>>() {
@@ -137,20 +160,20 @@ public class PayAwardService extends ShopBaseService {
                 .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         switch (param.getNavType()) {
             case BaseConstant.NAVBAR_TYPE_ONGOING:
-                select.and(PAY_AWARD.TIME_TYPE.eq(BaseConstant.ACTIVITY_IS_FOREVER).or(
-                        PAY_AWARD.TIME_TYPE.eq(BaseConstant.ACTIVITY_NOT_FOREVER)
+                select.and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_IS_FOREVER).or(
+                        PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER)
                                 .and(PAY_AWARD.START_TIME.lt(nowTime))
                                 .and(PAY_AWARD.END_TIME.gt(nowTime))))
                         .and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL));
                 break;
             case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                      .and(PAY_AWARD.TIME_TYPE.eq(BaseConstant.ACTIVITY_NOT_FOREVER))
+                      .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
                       .and(PAY_AWARD.START_TIME.gt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_FINISHED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                      .and(PAY_AWARD.TIME_TYPE.eq(BaseConstant.ACTIVITY_NOT_FOREVER))
+                      .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
                       .and(PAY_AWARD.END_TIME.lt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_DISABLED:
@@ -196,6 +219,63 @@ public class PayAwardService extends ShopBaseService {
      */
     public PageResult<PayAwardRecordListVo> getPayRewardRecordList(PayAwardRecordListParam param) {
         return payAwardRecordService.getPayRewardRecordList(param);
+
+    }
+
+    /**
+     * 获取正在进行中的活动
+     * @return
+     * @param date
+     */
+    public PayAwardVo  getGoingPayAward(Timestamp date){
+        PayAwardRecord record = db().selectFrom(PAY_AWARD)
+                .where(PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
+                .and(
+                        PAY_AWARD.TIME_TYPE.eq(ACTIVITY_IS_FOREVER)
+                                .or(
+                                        PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER)
+                                                .and(PAY_AWARD.START_TIME.le(date))
+                                                .and(PAY_AWARD.END_TIME.gt(date))
+                                )
+                ).orderBy(PAY_AWARD.ACT_FIRST.desc(), PAY_AWARD.CREATE_TIME.desc())
+                .fetchOne();
+         return recordToPayAwardVo(record);
+    }
+
+    /**
+     * 获取订单的支付有礼活动
+     * @param orderSn
+     */
+    public void getOrderPayAward(String orderSn){
+        //查询orderSN支付有礼活动记录
+        PayAwardRecordRecord payAwardRecord = payAwardRecordService.getPayAwardRecordByOrderSn(orderSn);
+        if (payAwardRecord==null){
+            logger().info("订单orderSn:{},没有参与支付有礼活动",orderSn);
+            return;
+        }
+        //获取正在进行的活动
+        PayAwardVo goingPayAward = getGoingPayAward(payAwardRecord.getCreateTime());
+        if (goingPayAward==null){
+            logger().info("当前没有进行中的支付有礼活动");
+            return;
+        }
+        if (goingPayAward!=null&&payAwardRecord.getId().equals(payAwardRecord.getAwardId())){
+
+        }
+        //用户全部参与的支付有礼活动
+
+
+
+
+
+        //获取订单的折后价格
+//        OrderInfoRecord orderByOrderSn = orderInfoService.getOrderByOrderSn(orderSn);
+//        OrderListInfoVo into = orderByOrderSn.into(OrderListInfoVo.class);
+//        BigDecimal orderFinalAmount = orderInfoService.getOrderFinalAmount(into,false);
+//        //判断是否符合支付有礼活动
+
+
 
     }
 }

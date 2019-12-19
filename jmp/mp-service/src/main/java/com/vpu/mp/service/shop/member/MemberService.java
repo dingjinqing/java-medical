@@ -573,7 +573,12 @@ public class MemberService extends ShopBaseService {
 	 */
 	public Integer getUserScore(Integer userId) {
 		MemberBasicInfoVo member = getMemberInfo(userId);
-		return member != null ? member.getScore():NumberUtils.INTEGER_ZERO;
+		if(member != null && member.getScore() != null) {
+			return member.getScore();
+		}else {
+			return NumberUtils.INTEGER_ZERO;
+		}
+		
 	}
 	
 	/**
@@ -581,7 +586,11 @@ public class MemberService extends ShopBaseService {
 	 */
 	public BigDecimal getUserAccount(Integer userId) {
 		MemberBasicInfoVo member = getMemberInfo(userId);
-		return member != null ?member.getAccount():BigDecimal.ZERO;
+		if(member != null && member.getAccount() != null) {
+			return member.getAccount();
+		}else {
+			return BigDecimal.ZERO;
+		}
 	}
 	/**
 	 * 	获取用户微信openid
