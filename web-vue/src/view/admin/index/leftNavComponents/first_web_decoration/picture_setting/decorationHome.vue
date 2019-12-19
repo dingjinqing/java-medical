@@ -117,6 +117,7 @@
                   <div
                     v-for="(item,index) in showModulesList"
                     :key="index"
+                    style="width:383px"
                   >
                     <!--模块-->
                     <div

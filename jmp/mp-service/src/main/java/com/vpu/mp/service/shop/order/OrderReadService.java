@@ -396,13 +396,12 @@ public class OrderReadService extends ShopBaseService {
 				|| shopReturnConfig.getAutoReturnTime().after(DateUtil.getSqlTimestamp())) {
 			return;
 		}
-
 		if (rOrder.getReturnType() != OrderConstant.RT_GOODS
 				&& rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING
 				&& shopReturnConfig.getReturnMoneyDays() != null) {
 			//买家发起仅退款申请后，商家在return_money_days日内未处理，系统将自动退款
 			vo.setReturnMoneyDays(rOrder.getShippingOrRefundTime().toInstant()
-					.plus(Duration.ofDays(shopReturnConfig.getReturnMoneyDays())).toEpochMilli());
+					.plus(Duration.ofDays(shopReturnConfig.getReturnMoneyDays())).plusMillis(System.currentTimeMillis()).toEpochMilli());
 			return;
 		}
 		if (rOrder.getReturnType() == OrderConstant.RT_GOODS) {
