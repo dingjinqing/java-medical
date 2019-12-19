@@ -771,7 +771,8 @@ export default {
         goods_module_bg: '0', // 背景颜色 0与页面一致  1自定义 y
         goods_bg_color: '#f5f5f5', // 背景自定义颜色 y
         goodsListData: [] // 传递商品列表数据
-      }
+      },
+      initRequestFlag: false // 初始化接收的数据是否已存在商品数据
     }
   },
   watch: {
@@ -804,9 +805,13 @@ export default {
             })
 
             // 初始化调取模块推荐接口
-            this.handleToGetModulesGoods(this.modulesData)
+            if (!this.modulesData.goodsListData.length) {
+              this.initRequestFlag = true
+              this.handleToGetModulesGoods(this.modulesData)
+            } else {
+              this.initRequestFlag = false
+            }
           }
-
           console.log(this.data)
         }
         console.log(newData, this.modulesData, this.data)
@@ -846,15 +851,17 @@ export default {
         let styleParams = this.handleToChangeStyle(1)
         callBackData.col_type = styleParams
 
-        console.log(callBackData)
+        console.log(this.goodsListData)
         // 若模块推荐中数据改变处理函数
-        if (judgeChangeFlag) {
-          this.handleToGetModulesGoods(callBackData)
-        } else {
-          callBackData.goodsListData = this.goodsListData
-          this.$emit('handleToBackData', callBackData)
+        if (this.initRequestFlag) {
+          if (judgeChangeFlag) {
+            this.handleToGetModulesGoods(callBackData)
+          } else {
+            callBackData.goodsListData = this.goodsListData
+            this.$emit('handleToBackData', callBackData)
+          }
         }
-
+        this.initRequestFlag = true
         console.log(styleParams)
       },
       deep: true

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.bargain;
 
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -8,6 +9,8 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleBargain;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -297,23 +300,6 @@ public class BargainService extends ShopBaseService  {
     }
 
     /**
-     * 根据商品id获取处于可使用状态的砍价记录信息
-     * @param goodsId 商品id
-     * @return BargainRecord
-     */
-    public BargainRecord getBargainRecordByGoodsId(Integer goodsId,Timestamp timestamp){
-        if (timestamp == null) {
-            timestamp = Timestamp.valueOf(LocalDateTime.now());
-        }
-	    return db().select(BARGAIN.ID,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.EXPECTATION_PRICE)
-            .from(BARGAIN)
-            .where(BARGAIN.STATUS.eq(STATUS_NORMAL))
-            .and(BARGAIN.GOODS_ID.eq(goodsId))
-            .and(BARGAIN.START_TIME.lt(timestamp))
-            .and(BARGAIN.END_TIME.gt(timestamp))
-            .fetchOneInto(BARGAIN);
-    }
-    /**
      * 根据商品id获取砍价信息
      * @param goodsIds 商品id
      * @param date 当前时间
@@ -360,4 +346,68 @@ public class BargainService extends ShopBaseService  {
     private Condition isConflictingActTime(Timestamp startTime,Timestamp endTime){
         return (BARGAIN.START_TIME.gt(startTime).and(BARGAIN.START_TIME.lt(endTime))).or(BARGAIN.END_TIME.gt(startTime).and(BARGAIN.END_TIME.lt(endTime))).or(BARGAIN.START_TIME.lt(startTime).and(BARGAIN.END_TIME.gt(endTime)));
     }
+
+    /**
+     * 取单个活动
+     * @param actId
+     * @return
+     */
+    private BargainRecord getBargainActById(int actId){
+        return db().select().from(BARGAIN).where(BARGAIN.ID.eq(actId)).fetchOptionalInto(BargainRecord.class).orElse(null);
+    }
+
+    /**
+     * 小程序装修砍价模块显示异步调用
+     * @param moduleBargain
+     * @param userId
+     * @return
+     */
+    public ModuleBargain getPageIndexBargain(ModuleBargain moduleBargain, int userId){
+        moduleBargain.getBargainGoods().forEach(bargainGoods->{
+            BargainRecord bargain = getBargainActById(bargainGoods.getActId());
+            GoodsRecord goodsInfo = saas.getShopApp(getShopId()).goods.getGoodsRecordById(bargain.getGoodsId());
+
+            //set goods info
+            bargainGoods.setGoodsId(goodsInfo.getGoodsId());
+            bargainGoods.setGoodsName(goodsInfo.getGoodsName());
+            bargainGoods.setGoodsImg(goodsInfo.getGoodsImg());
+            bargainGoods.setGoodsPrice(goodsInfo.getShopPrice());
+            bargainGoods.setUnit(goodsInfo.getUnit());
+            bargainGoods.setGoodsIsDelete(goodsInfo.getDelFlag());
+            bargainGoods.setIsOnSale(goodsInfo.getIsOnSale());
+            bargainGoods.setGoodsNumber(goodsInfo.getGoodsNumber());
+
+            //set prd info
+            bargainGoods.setIsPrd(goodsInfo.getIsDefaultProduct());
+            if(goodsInfo.getIsDefaultProduct().equals(GoodsConstant.IS_DEFAULT_PRODUCT_Y)){
+                bargainGoods.setMaxPrice(goodsInfo.getShopPrice());
+            }else{
+                bargainGoods.setMaxPrice(saas.getShopApp(getShopId()).goods.goodsSpecProductService.getMaxPrdPrice(goodsInfo.getGoodsId()));
+            }
+
+            //set bargain info
+            bargainGoods.setBargainPrice(bargain.getBargainType() == BARGAIN_TYPE_RANDOM ? bargain.getFloorPrice() : bargain.getExpectationPrice());
+            bargainGoods.setActBeginTime(bargain.getStartTime());
+            bargainGoods.setActEndTime(bargain.getEndTime());
+            bargainGoods.setActDelFlag(bargain.getDelFlag());
+            bargainGoods.setActStatus(bargain.getStatus());
+            bargainGoods.setBargainNum(bargain.getStock());
+            if(bargain.getStartTime().after(DateUtil.getLocalDateTime())){
+                //未开始
+                bargainGoods.setTimeState((byte)0);
+                bargainGoods.setRemainingTime(bargain.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime());
+            }else if(bargain.getEndTime().after(DateUtil.getLocalDateTime())){
+                //进行中
+                bargainGoods.setTimeState((byte)1);
+                bargainGoods.setRemainingTime(bargain.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime());
+            }else{
+                //已结束
+                bargainGoods.setTimeState((byte)2);
+            }
+
+        });
+
+        return moduleBargain;
+    }
+
 }

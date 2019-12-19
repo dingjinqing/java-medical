@@ -165,11 +165,13 @@ public class MpAuthShopService extends MainBaseService {
 		record.setAuthorizerInfo(Util.toJson(authorizerInfo));
 		record.setPrincipalName(authorizerInfo.getPrincipalName());
 		record.setQrcodeUrl(getMpQrCode(appId, authorizerInfo));
-		record.setBindOpenAppId("");//非空，塞入空值
+		record.setBindOpenAppId("");//表中非空，塞入空值
 		if (this.getAuthShopByAppId(appId) == null) {
+			logger().info("插入");
 			record.insert();
 			// TODO: log operation
 		} else {
+			logger().info("更新");
 			record.update();
 			// TODO: log operation
 		}
