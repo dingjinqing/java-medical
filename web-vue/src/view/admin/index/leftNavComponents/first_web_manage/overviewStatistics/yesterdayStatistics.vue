@@ -15,9 +15,9 @@
           style="color: black"
         >{{this.table[0].dataNumber}}
         </div>
-        <div class ="rate"><span style="color: #9a9a9a">日</span> {{this.table[0].dayRate}}</div>
-        <div class ="rate"><span style="color: #9a9a9a">周</span> {{this.table[0].weekRate}}</div>
-        <div class ="rate"><span style="color: #9a9a9a">月</span> {{this.table[0].monthRate}}</div>
+        <div class ="rate"><span style="color: #9a9a9a">日</span><span class="demo">{{this.table[0].dayRate}}</span></div>
+        <div class ="rate"><span style="color: #9a9a9a">周</span> <span class="demo">{{this.table[0].weekRate}}</span></div>
+        <div class ="rate"><span style="color: #9a9a9a">月</span> <span class="demo">{{this.table[0].monthRate}}</span></div>
       </div>
       <div
         class="fromItem"
@@ -28,9 +28,9 @@
           style="color: black"
         >{{this.table[1].dataNumber}}/{{this.table[2].dataNumber}}
         </div>
-        <div class ="rate"><span style="color: #9a9a9a">日</span> {{this.table[1].dayRate}} / {{this.table[2].dayRate}}</div>
-        <div class ="rate"><span style="color: #9a9a9a">周</span> {{this.table[1].weekRate}} / {{this.table[2].weekRate}}</div>
-        <div class ="rate"><span style="color: #9a9a9a">月</span> {{this.table[1].monthRate}} / {{this.table[2].monthRate}}</div>
+        <div class ="rate"><span style="color: #9a9a9a">日</span> <span class="demo">{{this.table[1].dayRate}}</span> / <span class="demo">{{this.table[2].dayRate}}</span></div>
+        <div class ="rate"><span style="color: #9a9a9a">周</span> <span class="demo">{{this.table[1].weekRate}}</span> / <span class="demo">{{this.table[2].weekRate}}</span></div>
+        <div class ="rate"><span style="color: #9a9a9a">月</span> <span class="demo">{{this.table[1].monthRate}}</span> / <span class="demo">{{this.table[2].monthRate}}</span></div>
       </div>
       <div
         class="fromItem"
@@ -77,6 +77,23 @@ export default {
     this.loadData()
   },
   methods: {
+    handleColor () {
+      var numColor = document.getElementsByClassName('demo')
+      console.log('数组:', numColor)
+      console.log('数组长度:', numColor.length)
+      for (var i = 0; i < numColor.length; i++) {
+        console.log('单个:', numColor[i])
+        console.log('循环内的数:', numColor[i].innerText)
+        if (numColor[i].innerText === '-') {
+          numColor[i].style.color = 'green'
+        } else if (numColor[i].innerText.substring(0, numColor[i].innerText.length - 1) < 0) {
+          console.log('循环内的数去掉百分号:', numColor[i].innerText.substring(0, numColor[i].innerText.length - 1))
+          numColor[i].style.color = 'red'
+        } else {
+          numColor[i].style.color = 'blue'
+        }
+      }
+    },
     handleNull (rate) {
       console.log(rate)
       if (rate == null) {
@@ -136,6 +153,7 @@ export default {
               monthRate: this.handleNull(this.originalData[5].monthRate)
             }
           ]
+          this.handleColor()
         }
       }).catch(err => console.log(err))
     }
