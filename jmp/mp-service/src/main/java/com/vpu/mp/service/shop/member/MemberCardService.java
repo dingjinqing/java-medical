@@ -159,6 +159,7 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.member.card.GradeCardService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -196,6 +197,8 @@ public class MemberCardService extends ShopBaseService {
 	private StoreService storeService;
 	@Autowired
 	private QrCodeService qrCodeService;
+	@Autowired
+	private GradeCardService gradeCardService;
 
 	/**
 	 * 添加会员卡
@@ -2172,6 +2175,10 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 			// cardOrder.createCardOrder()
 		}
 		
+	}
+	
+	public List<String> getAllNoDeleteCardGrade(){
+		return gradeCardService.getAllNoDeleteCardGrade();
 	}
 	
 }
