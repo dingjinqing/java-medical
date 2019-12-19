@@ -49,7 +49,7 @@ global.wxComponent({
 
         }, {
           iv: e.detail.iv,
-          crypt_data: e.detail.encryptedData
+          encrypted_data: e.detail.encryptedData
         })
       }
     }
