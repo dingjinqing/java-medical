@@ -165,6 +165,7 @@ public class MpAuthShopService extends MainBaseService {
 		record.setAuthorizerInfo(Util.toJson(authorizerInfo));
 		record.setPrincipalName(authorizerInfo.getPrincipalName());
 		record.setQrcodeUrl(getMpQrCode(appId, authorizerInfo));
+		record.setBindOpenAppId("");//非空，塞入空值
 		if (this.getAuthShopByAppId(appId) == null) {
 			record.insert();
 			// TODO: log operation
@@ -1465,7 +1466,7 @@ public class MpAuthShopService extends MainBaseService {
 						MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
 						List<Integer> userIdList = new ArrayList<Integer>();
 						userIdList.add(user.getRecId());
-						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{null,"#173177"}};
+						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("YYYY-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{"","#173177"}};
 						RabbitMessageParam param = RabbitMessageParam.builder()
 								.mpTemplateData(
 										MpTemplateData.builder().config(MpTemplateConfig.PUSHMSG).data(data).build())
