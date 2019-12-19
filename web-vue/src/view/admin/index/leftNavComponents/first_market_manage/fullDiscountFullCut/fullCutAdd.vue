@@ -357,9 +357,6 @@
           <el-form-item
             label="活动商品："
             prop="actType"
-            :rules="{
-              required: true
-            }"
           >
             <el-radio
               v-model="params.actType"
@@ -651,6 +648,22 @@ import SelectGoodsLabel from '@/components/admin/addProductLabel'
 export default {
   components: { ChoosingGoods, AddingBusClassDialog, AddBrandDialog, SelectGoodsLabel },
   data () {
+    // 自定义校验规则
+    var validateLevel = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if (!re.test(value)) {
+        callback(new Error('活动等级为正整数'))
+      } else {
+        callback(new Error('请输入活动优先级'))
+      }
+    }
+    var validateActType = (rule, value, callback) => {
+      if (value === 1 && (this.goodList.length === 0 || this.goodsNameList.length === 0 || this.labelNameList.length === 0 || this.bussinessList.length === 0 || this.platformList === 0)) {
+        callback(new Error('请选择商品信息'))
+      } else {
+        callback()
+      }
+    }
     return {
       params: {
         actName: '',
@@ -738,9 +751,10 @@ export default {
 
       rules: {
         actName: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
-        strategyPriority: [{ required: true, message: '请输入活动优先级', trigger: 'blur' }],
+        strategyPriority: { required: true, validator: validateLevel, trigger: 'blur' },
         type: [{ required: true, message: '请选择活动类型', trigger: 'change' }],
-        timeInterval: [{ required: true, message: '请选择时间', trigger: 'blur' }]
+        timeInterval: [{ required: true, message: '请选择时间', trigger: 'blur' }],
+        actType: { required: true, validator: validateActType, trigger: 'change' }
       }
 
     }
