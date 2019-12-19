@@ -177,7 +177,7 @@ export default {
         let datas = this.tableData.map(function (row, i) {
           return {
             goods_id: row.goodsId,
-            act_id: row.skid,
+            act_id: row.skId,
             sec_price: row.secPrice,
             sale_num: row.saleNum,
             goods_img: row.goodsImg,
