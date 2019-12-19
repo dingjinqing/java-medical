@@ -630,6 +630,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                     return this.convertCouponForIndex(objectMapper, node, user);
                 case ModuleConstant.M_CARD:
                     return this.convertCardForIndex(objectMapper, node, user);
+                case ModuleConstant.M_BARGAIN:
+                    return this.convertBargainForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -696,6 +698,21 @@ public class ShopMpDecorationService extends ShopBaseService {
         ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
         moduleCard.setNeedRequest(true);
         return moduleCard;
+    }
+
+    /**
+     * 会员卡需要setNeedRequest
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleBargain convertBargainForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
+        moduleBargain.setNeedRequest(true);
+        return moduleBargain;
     }
 
     /**
@@ -839,10 +856,9 @@ public class ShopMpDecorationService extends ShopBaseService {
      */
     private ModuleBargain convertBargainForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
-        Integer userId = user.getUserId();
 
         // 转换实时信息
-        return bargainService.getPageIndexBargain(moduleBargain, userId);
+        return bargainService.getPageIndexBargain(moduleBargain);
     }
 
 }
