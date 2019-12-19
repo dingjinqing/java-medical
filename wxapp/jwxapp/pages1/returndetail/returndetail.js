@@ -17,6 +17,8 @@ global.wxPage({
     returnType: 0, // 仅退款0 退货退款1
     totalMicroSecond: 0, // 倒计时总秒数
     clock: '', // 倒计时
+    goodsImages: [], // 申请凭证图
+    voucherImages: [], // 提交物流时凭证图
   },
 
   /**
@@ -38,12 +40,29 @@ global.wxPage({
         let orderInfo = res.content
         let refundStatus = Number(orderInfo.refundStatus)
         let returnType = Number(orderInfo.returnType)
-        // 处理数据
+        let totalMicroSecond = 0; // 倒计时总秒数
+        // 倒计时
+        if (refundStatus === 4 && returnType === 0) {
+          totalMicroSecond = orderInfo.returnMoneyDays
+        } else if (refundStatus === 1 && returnType === 1) {
+          totalMicroSecond = orderInfo.returnAddressDays
+        } else if (refundStatus === 4 && returnType === 1) {
+          totalMicroSecond = orderInfo.returnShoppingDays
+        } else if (refundStatus === 2) {
+          totalMicroSecond = orderInfo.returnAuditPassNotShoppingDays
+        }
+        // 申请时凭证图
+        let goodsImages = JSON.parse(orderInfo.goodsImages)
+        let voucherImages = JSON.parse(orderInfo.voucherImages)
         that.setData({
           orderInfo: orderInfo,
           refundStatus: refundStatus,
-          returnType: returnType
+          returnType: returnType,
+          totalMicroSecond: totalMicroSecond,
+          goodsImages: goodsImages,
+          voucherImages: voucherImages
         })
+        that.countdown()
       }
     }, { returnOrderSn: that.data.returnSn })
   },

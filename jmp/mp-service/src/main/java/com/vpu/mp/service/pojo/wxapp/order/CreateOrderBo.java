@@ -29,8 +29,7 @@ import java.util.List;
 @Builder
 @ToString
 public class CreateOrderBo {
-    @Builder.Default
-    private List<Byte> orderType = Lists.newArrayList();
+    private List<Byte> orderType;
     private StorePojo store;
     private UserAddressVo address;
     private PaymentVo payment;

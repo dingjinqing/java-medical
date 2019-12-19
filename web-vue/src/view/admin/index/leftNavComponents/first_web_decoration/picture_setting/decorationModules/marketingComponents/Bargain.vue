@@ -43,8 +43,8 @@
           </li>
           <li
             class="bargain_default_li"
-            v-for="good in data.bargain_goods"
-            :key="good.goods_id"
+            v-for="(good,index) in data.bargain_goods"
+            :key="index"
           >
             <div
               class="bargain_default_img"
@@ -119,8 +119,8 @@
           </li>
           <li
             class="bargain_default_li"
-            v-for="good in data.bargain_goods"
-            :key="good.goods_id"
+            v-for="(good,index) in data.bargain_goods"
+            :key="index"
           >
             <div
               class="bargain_default_img"

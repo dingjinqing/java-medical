@@ -3,13 +3,13 @@
     <div class="userStatistics_content">
       <el-tabs v-model="userStatistics">
         <el-tab-pane
-          label="用户概况"
+          :label="$t('userStatistics.userOverview')"
           name="first"
         >
         </el-tab-pane>
 
         <el-tab-pane
-          label="RFM模型分析"
+          :label="$t('userStatistics.modelAnalysis')"
           name="second"
         >
           <RFMModelAnalysis />

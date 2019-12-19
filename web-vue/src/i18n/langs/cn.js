@@ -67,6 +67,9 @@ import {
 import {
   cn as tradesStatistics
 } from './views/admin_new/cn/index/overview/tradesStatistics/tradesStatisticsCn'
+import {
+  cn as userStatistics
+} from './views/admin_new/cn/index/overview/userStatistics/userStatisticsCn'
 
 // 用户画像
 import {
@@ -906,6 +909,7 @@ const cn = {
   taskList,
   // 用户画像
   userportrait,
+  userStatistics, // 用户统计
 
   // 小程序管理
   pictureSetting,
