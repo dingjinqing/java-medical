@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.overview;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.overview.*;
@@ -125,11 +126,11 @@ public class MallOverviewService extends ShopBaseService {
                 , USER_SUMMARY_TREND.TOTAL_PAID_MONEY.as("totalPaidSum")
                 , USER_SUMMARY_TREND.ORDER_USER_DATA.as("paidUserNum")
             ).from(USER_SUMMARY_TREND).where(USER_SUMMARY_TREND.REF_DATE.eq(java.sql.Date.valueOf(LocalDate.now())))
-                .and(USER_SUMMARY_TREND.TYPE.eq(screeningTime)).fetchOneInto(DataDemonstrationVo.class);
+                .and(USER_SUMMARY_TREND.TYPE.eq(screeningTime)).fetchOptionalInto(DataDemonstrationVo.class).orElse(vo);
         }
-        BigDecimal orderNum = new BigDecimal(vo.getOrderNum());
-        BigDecimal userVisitNum = new BigDecimal(vo.getUserVisitNum());
-        BigDecimal paidNum = new BigDecimal(vo.getPaidOrderNum());
+        BigDecimal orderNum = BigDecimalUtil.valueOf(vo.getOrderNum());
+        BigDecimal userVisitNum = BigDecimalUtil.valueOf(vo.getUserVisitNum());
+        BigDecimal paidNum = BigDecimalUtil.valueOf(vo.getPaidOrderNum());
         vo.setUv2order(divideWithOutCheck(orderNum, userVisitNum));
         vo.setUv2paid(divideWithOutCheck(paidNum, userVisitNum));
         vo.setOrder2paid(divideWithOutCheck(paidNum, orderNum));
