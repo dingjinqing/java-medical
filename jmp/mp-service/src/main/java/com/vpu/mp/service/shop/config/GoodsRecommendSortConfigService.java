@@ -16,10 +16,6 @@ public class GoodsRecommendSortConfigService extends BaseShopConfigService {
     @Autowired ImageService imageService;
 
     final static String K_RECOMMEND_SORT = "recommend_sort";
-
-    final static String K1="recommendSortStatus";
-    final static String K2="recommendSortImgPath";
-    final static String K3="recommendImgLink";
     /**
      *  获取推荐分类配置信息
      * @return

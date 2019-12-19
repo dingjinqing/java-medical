@@ -141,22 +141,24 @@ export default {
       handler (newData) {
         console.log('newData:', newData, this.modulesData)
         this.data = this.modulesData
-        this.tableData = this.modulesData.seckill_goods.map(function (row) {
-          return {
-            goodsId: row.goods_id,
-            skid: row.act_id,
-            secPrice: row.sec_price,
-            goodsImg: row.goods_img,
-            goodsName: row.goods_name,
-            shopPrice: row.goods_price,
-            stock: row.seckill_num,
-            startTime: row.act_begin_time,
-            status: row.act_status,
-            isOnSale: row.is_on_sale,
-            isDelete: row.is_delete,
-            endTime: row.act_end_time
-          }
-        })
+        if (this.modulesData.seckill_goods) {
+          this.tableData = this.modulesData.seckill_goods.map(function (row) {
+            return {
+              goodsId: row.goods_id,
+              skId: row.act_id,
+              secPrice: row.sec_price,
+              goodsImg: row.goods_img,
+              goodsName: row.goods_name,
+              shopPrice: row.goods_price,
+              stock: row.seckill_num,
+              startTime: row.act_begin_time,
+              status: row.act_status,
+              isOnSale: row.is_on_sale,
+              isDelete: row.is_delete,
+              endTime: row.act_end_time
+            }
+          })
+        }
       },
       immediate: true
     },
@@ -175,7 +177,7 @@ export default {
         let datas = this.tableData.map(function (row, i) {
           return {
             goods_id: row.goodsId,
-            act_id: row.skid,
+            act_id: row.skId,
             sec_price: row.secPrice,
             sale_num: row.saleNum,
             goods_img: row.goodsImg,

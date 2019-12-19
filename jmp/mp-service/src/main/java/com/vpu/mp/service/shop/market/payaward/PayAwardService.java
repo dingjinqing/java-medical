@@ -127,6 +127,9 @@ public class PayAwardService extends ShopBaseService {
      * @return PayAwardVo
      */
     private PayAwardVo recordToPayAwardVo(PayAwardRecord record) {
+        if (record==null){
+            return new PayAwardVo();
+        }
         PayAwardVo payAwardVo = record.into(PayAwardVo.class);
         if (record.getAwardList() != null && !record.getAwardList().isEmpty()) {
             payAwardVo.setAwardContentList(Util.json2Object(record.getAwardList(), new TypeReference<List<PayAwardContentBo>>() {
@@ -169,13 +172,13 @@ public class PayAwardService extends ShopBaseService {
                 break;
             case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                      .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
-                      .and(PAY_AWARD.START_TIME.gt(nowTime));
+                        .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
+                        .and(PAY_AWARD.START_TIME.gt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_FINISHED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                      .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
-                      .and(PAY_AWARD.END_TIME.lt(nowTime));
+                        .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
+                        .and(PAY_AWARD.END_TIME.lt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_DISABLED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_DISABLE));
@@ -240,9 +243,9 @@ public class PayAwardService extends ShopBaseService {
                                                 .and(PAY_AWARD.END_TIME.gt(date))
                                 )
                 ).orderBy(PAY_AWARD.ACT_FIRST.desc(), PAY_AWARD.CREATE_TIME.desc())
-                .limit(1,0)
+                .limit(0,1)
                 .fetchOne();
-         return recordToPayAwardVo(record);
+        return recordToPayAwardVo(record);
     }
 
     /**
@@ -256,10 +259,10 @@ public class PayAwardService extends ShopBaseService {
     }
 
 
-        /**
-         * 获取订单的支付有礼活动
-         * @param orderSn
-         */
+    /**
+     * 获取订单的支付有礼活动
+     * @param orderSn
+     */
     public PayAwardOrderVo getOrderPayAward(String orderSn){
         //查询orderSN支付有礼活动记录
         PayAwardRecordRecord payAwardRecord = payAwardRecordService.getPayAwardRecordByOrderSn(orderSn);
@@ -269,11 +272,14 @@ public class PayAwardService extends ShopBaseService {
         }
         //获取正在进行的活动
         PayAwardVo payAward = getPayAwardById(payAwardRecord.getAwardId());
+        if (payAward.getAwardContentList().size()<payAwardRecord.getAwardTimes()){
+            return null;
+        }
         PayAwardContentBo payAwardContentBo =payAward.getAwardContentList().get(payAwardRecord.getAwardTimes());
         PayAwardOrderVo payAwardOrderVo = new PayAwardOrderVo();
         payAwardOrderVo.setPayAwardContentBo(payAwardContentBo);
         payAwardOrderVo.setPayAwardSize(payAward.getAwardContentList().size());
-        payAwardOrderVo.setCurrentAwardTimes(payAwardRecord.getAwardTimes());
+        payAwardOrderVo.setCurrentAwardTimes(payAwardRecord.getAwardTimes()+1);
         return payAwardOrderVo;
     }
 
