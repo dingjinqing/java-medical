@@ -68,6 +68,8 @@ global.wxPage({
           _this.countdown(_this, _this.data.allCoupon);
         }
 
+        console.log(_this.data.allCoupon)
+
         _this.setData({
           allCoupon: _this.data.allCoupon
         }) 

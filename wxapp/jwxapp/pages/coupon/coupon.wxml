@@ -34,9 +34,11 @@
                       使用条件:无门槛(不含运费)
                     </block> 
                   </view>
-                  <view class="click_to_detail">{{item.is_all_goods}}</view>
-                  <view class="time_canuse" wx:if='{{item.remainDays != 0}}'>{{item.startTime}}-{{item.endTime}}</view>
-                  <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remainDays == 0}}'>
+                  <!-- <view class="click_to_detail">{{item.is_all_goods}}</view> -->
+                  <view class="click_to_detail" wx:if="{{item.isUsed == 0}}">全部商品可用</view>
+                  <view class="click_to_detail" wx:else>部分商品可用</view>
+                  <view class="time_canuse" wx:if='{{item.remainDays != 0 || item.remain_seconds_all <= 0}}'>{{item.startTime}} - {{item.endTime}}</view>
+                  <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remainDays == 0 && item.remain_seconds_all > 0}}'>
                     <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[0]}}</text>:
                     <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[1]}}</text>:
                     <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[2]}}</text>
