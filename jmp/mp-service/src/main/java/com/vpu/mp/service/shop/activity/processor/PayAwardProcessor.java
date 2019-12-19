@@ -143,6 +143,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor,Crea
             CouponGiveQueueParam couponGive =new CouponGiveQueueParam();
             couponGive.setUserIds(Arrays.asList(param.getWxUserInfo().getUserId()));
             couponGive.setCouponArray(couponArray);
+            couponGive.setActId(payAward.getId());
+            couponGive.setAccessMode((byte) 0);
             couponGive.setGetSource(COUPON_GIVE_SOURCE_PAY_AWARD);
             List<Integer> sendData = couponGiveService.handlerCouponGive(couponGive);
             PayAwardRecordRecord payAwardRecordRecord =db().newRecord(PAY_AWARD_RECORD);

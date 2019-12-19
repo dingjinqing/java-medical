@@ -524,4 +524,8 @@ public class OrderConstant {
     public static final Byte TK_JD = 1;
     public static final Byte TK_TB = 2;
 
+    /**
+     * 交易售后配置
+     */
+
 }

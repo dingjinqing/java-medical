@@ -38,7 +38,7 @@
   </view>
   <block wx:for='{{user_center}}' wx:key='key'>
     <!-- 我的资产 -->
-    <view class='my_account each_model {{page_style==1?"":"each_model_radius"}}' wx:if='{{item.module_name == "account_money" && item.is_show == 1}}'>
+    <view class='my_account each_model {{page_style==1?"":"each_model_radius"}}' wx:if='{{item.module_name == "account_money" && item.is_show == 1 && audit_state != 1}}'>
       <view class='ma_title' wx:if='{{item.title != "" && item.title != null}}'>{{item.title}}</view>
       <view class='ma_content'>
         <block wx:for='{{item.content}}' wx:key='key' wx:for-item='item1'>

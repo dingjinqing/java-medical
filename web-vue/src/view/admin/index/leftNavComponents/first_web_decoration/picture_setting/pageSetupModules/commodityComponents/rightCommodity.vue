@@ -829,6 +829,11 @@ export default {
         this.data.cart_btn = false
       }
     },
+    'data.recommend_type' (newData) {
+      if (newData === '1') {
+        // this.goodsListData = []
+      }
+    },
     // 监控该模块右边数据操作
     copyData: {
       handler (newData, oldData) {
@@ -851,13 +856,13 @@ export default {
         let styleParams = this.handleToChangeStyle(1)
         callBackData.col_type = styleParams
 
-        console.log(this.goodsListData)
+        console.log(this.goodsListData, this.data.goods_items)
         // 若模块推荐中数据改变处理函数
         if (this.initRequestFlag) {
-          if (judgeChangeFlag) {
+          if (judgeChangeFlag && callBackData.recommend_type === '0') {
             this.handleToGetModulesGoods(callBackData)
           } else {
-            callBackData.goodsListData = this.goodsListData
+            callBackData.goodsListData = this.data.goods_items
             this.$emit('handleToBackData', callBackData)
           }
         }
@@ -1162,14 +1167,7 @@ export default {
       console.log(resCopy, this.data.goods_items)
       // 添加
       resCopy.forEach((item, index) => {
-        if (item !== -1) {
-          let obj = {
-            goodsName: item.goodsName,
-            goodsImg: item.goodsImg,
-            goodsId: item.goodsId
-          }
-          this.data.goods_items.push(obj)
-        }
+        this.data.goods_items.push(item)
       })
       console.log(this.data)
     },

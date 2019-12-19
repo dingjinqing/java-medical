@@ -1,6 +1,6 @@
 <template>
   <section class="label">
-    <div class="labelItem">用户复购趋势</div>
+    <div class="labelItem">{{$t('userStatistics.userBuyAgainTrend')}}</div>
     <el-select
       v-model="timeSelect"
       size="small"
@@ -21,12 +21,12 @@
       type="week"
       format="yyyy 第 WW 周"
       value-format="yyyy-MM-dd"
-      placeholder="选择周"
+      :placeholder="$t('userStatistics.selectWeek')"
       @change="handleWeek"
       :picker-options="{firstDayOfWeek: 1}"
     >
     </el-date-picker>
-    <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+    <span>{{this.startDate.year}}{{$t('userStatistics.year')}}{{this.startDate.month}}{{$t('userStatistics.month')}}{{this.startDate.day}}{{$t('userStatistics.day')}} - {{this.endDate.year}}{{$t('userStatistics.year')}}{{this.endDate.month}}{{$t('userStatistics.month')}}{{this.endDate.day}}{{$t('userStatistics.day')}}</span>
 
     <!-- echarts图表部分 -->
     <div id="userBuyCharts"></div>
@@ -54,7 +54,7 @@ export default {
   },
   data () {
     return {
-      timeSelect: '自然周',
+      timeSelect: this.$t('userStatistics.naturalWeek'),
       Monday: '',
       timeRange: [
         { value: 1, label: '自然周' }

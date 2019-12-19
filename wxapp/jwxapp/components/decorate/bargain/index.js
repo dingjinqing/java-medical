@@ -15,12 +15,12 @@ global.wxComponent({
 
     },
     _getLeftSecs (m) {
-      // var time_arr = {};
-      // for (var i in m.bargain_goods) {
-      //   m.bargain_goods[i].remaining_time -= m.elapse_secs;
-      //   time_arr[m.bargain_goods[i].act_id] = m.bargain_goods[i].remaining_time;
-      // }
-      // return time_arr;
+      var time_arr = {};
+      for (var i in m.bargain_goods) {
+        m.bargain_goods[i].remaining_time -= m.elapse_secs;
+        time_arr[m.bargain_goods[i].act_id] = m.bargain_goods[i].remaining_time;
+      }
+      return time_arr;
     },
     toSubscribeMessage (e) {
       // var that = this;
