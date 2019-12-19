@@ -14,7 +14,7 @@ export const cn = {
   brandDisplaySettings: '品牌展示设置',
   showTop: '将全部品牌展示在商品分类页',
   switchTips: '开启后，将在商品分类页展示全部品牌列表',
-  viewExamples: '查看实例',
+  viewExamples: '查看示例',
   recommendBrand: '推荐品牌',
   recommendTitle: '推荐标题',
   showStyle: '展示样式',
