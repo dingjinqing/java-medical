@@ -94,6 +94,9 @@ import {
 import {
   en as userportrait
 } from './views/admin_new/en/index/overview/userportrait/userportraitEn'
+import {
+  en as userStatistics
+} from './views/admin_new/en/index/overview/userStatistics/userStatisticsEn'
 
 // 小程序管理系列国际化
 // 页面装修
@@ -900,6 +903,7 @@ const en = {
   taskList,
   // 用户画像
   userportrait,
+  userStatistics, // 用户统计
 
   // 小程序管理
   pictureSetting,
