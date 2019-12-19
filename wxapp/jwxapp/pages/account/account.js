@@ -25,11 +25,11 @@ global.wxPage({
     var that = this;
     wx.hideShareMenu();
     if (!util.check_setting(options)) return;
-    // util.api('/api/wxapp/user/number', function (res) {
-    //   that.setData({
-    //     num: res.content.account
-    //   })
-    // }, {})
+    util.api('/api/wxapp/user/number', function (res) {
+      that.setData({
+        num: res.content.account
+      })
+    }, {})
 
     get_accout(that);
   },
@@ -48,28 +48,29 @@ global.wxPage({
       return;
     }
     that.data.page = that.data.page + 1;
-    // util.api('/api/wxapp/account/list', function (res) {
-    //   var account_listL = res.content;
-    //   var ar_r = account_listL.data;
-    //   if (ar_r.length > 0) {
-    //     account_list = ar_r
-    //   }
-    //   that.setData({
-    //     account_list: that.data.account_list.concat(account_list)
-    //   })
-    // }, { pageNo: that.data.page })
+    util.api('/api/wxapp/account/list', function (res) {
+      var account_listL = res.content;
+      var ar_r = account_listL.data;
+      if (ar_r.length > 0) {
+        account_list = ar_r
+      }
+      that.setData({
+        account_list: that.data.account_list.concat(account_list)
+      })
+    }, { pageNo: that.data.page })
   },
 })
 function get_accout(that) {
-  // util.api('/api/wxapp/account/list', function (res) {
-  //   var account_listL = res.content;
-  //   that.data.last_page = account_listL.last_page;
-  //   var ar_r = account_listL.data;
-  //   if (ar_r.length > 0) {
-  //     account_list = ar_r
-  //   }
-  //   that.setData({
-  //     account_list: account_list
-  //   })
-  // }, { pageNo: that.data.page })
+  util.api('/api/wxapp/account/list', function (res) {
+    // var account_listL = res.content;
+    // that.data.last_page = account_listL.last_page;
+    // var ar_r = account_listL.data;
+    // if (ar_r.length > 0) {
+    //   account_list = ar_r
+    // }
+    that.setData({
+      // account_list: account_list
+      account_list: res.content
+    })
+  }, { pageNo: that.data.page })
 }

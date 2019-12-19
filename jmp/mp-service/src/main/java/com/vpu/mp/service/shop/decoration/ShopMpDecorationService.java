@@ -36,6 +36,7 @@ import com.vpu.mp.service.shop.coupon.CouponMpService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -72,6 +73,9 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     @Autowired
     protected CouponMpService couponMpService;
+
+    @Autowired
+    protected BargainService bargainService;
 
     @Autowired
     private QrCodeService qrCode;
@@ -626,6 +630,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                     return this.convertCouponForIndex(objectMapper, node, user);
                 case ModuleConstant.M_CARD:
                     return this.convertCardForIndex(objectMapper, node, user);
+                case ModuleConstant.M_BARGAIN:
+                    return this.convertBargainForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -695,6 +701,21 @@ public class ShopMpDecorationService extends ShopBaseService {
     }
 
     /**
+     * 会员卡需要setNeedRequest
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleBargain convertBargainForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
+        moduleBargain.setNeedRequest(true);
+        return moduleBargain;
+    }
+
+    /**
      * 获取指定装修模块数据
      *
      * @param param 请求模块参数 {@link com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam}
@@ -747,6 +768,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                             return this.convertCouponForModule(objectMapper, node, user);
                         case ModuleConstant.M_CARD:
                             return this.convertMemberCardForModule(objectMapper, node, user);
+                        case ModuleConstant.M_BARGAIN:
+                            return this.convertBargainForModule(objectMapper, node, user);
                         //TODO case
                     }
                 }
@@ -820,6 +843,22 @@ public class ShopMpDecorationService extends ShopBaseService {
 
         // 转换实时信息
         return member.card.getPageIndexMemberCard(moduleCard.getCardId(), userId);
+    }
+
+    /**
+     * 砍价模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleBargain convertBargainForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
+
+        // 转换实时信息
+        return bargainService.getPageIndexBargain(moduleBargain);
     }
 
 }

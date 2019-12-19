@@ -5,7 +5,7 @@
     <div class="tradesContainer">
       <section class="label">
         <div class="labelName">
-          <div class="labelItem">地域分布</div>
+          <div class="labelItem">{{$t('tradesStatistics.areaDistribute')}}</div>
           <div class="labelInfo">
             <el-tooltip
               effect="light"
@@ -16,7 +16,7 @@
                 style="width: 500px;line-height: 30px;font-size: 14px;padding:10px 5px 10px 10px"
               >
                 <section
-                  v-for="item in tipsList"
+                  v-for="item in areaTipsList"
                   :key="item.title"
                   style="display: flex"
                 >
@@ -34,7 +34,7 @@
           size="small"
           @change="selectMonthHandler"
           value-format="yyyy-MM"
-          placeholder="选择月"
+          :placeholder="$t('tradesStatistics.selectMonth')"
           class="selectMonth"
         >
         </el-date-picker>
@@ -56,37 +56,37 @@
               >
                 <el-table-column
                   prop="province"
-                  label="Top省份"
+                  :label="$t('tradesStatistics.province')"
                   sortable
                   align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="totalDealMoney"
-                  label="付款金额"
+                  :label="$t('tradesStatistics.paymentAmount')"
                   sortable
                   align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="orderUserNum"
-                  label="付款人数"
+                  :label="$t('tradesStatistics.paymentNumber')"
                   sortable
                   align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="uv"
-                  label="访客数"
+                  :label="$t('tradesStatistics.visitorNumber')"
                   sortable
                   align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="uv2paid"
-                  label="访问-付款转化率"
+                  :label="$t('tradesStatistics.visitToPayRate')"
                   sortable
                   align="center"
                 ></el-table-column>
                 <el-table-column
                   prop="orderNum"
-                  label="订单数"
+                  :label="$t('tradesStatistics.orderNumber')"
                   sortable
                   align="center"
                 ></el-table-column>
@@ -107,6 +107,11 @@ import { tradeAreaApi } from '@/api/admin/firstWebManage/tradesStatistics/trades
 
 export default {
   name: 'echarts',
+  watch: {
+    lang () {
+      this.areaTipsList = this.$t('tradesStatistics.areaTipsList')
+    }
+  },
   created () {
     this.initDataList()
   },
@@ -138,13 +143,14 @@ export default {
       maxTradeMoney: '',
       minTradeMoney: '',
       timeSelect: '',
-      tipsList: [
-        { title: '付款金额', content: '统计时间内，该地域访问用户的所有付款订单金额之和（拼团在成团时计入付款金额；货到付款在发货时计入付款金额，不剔除退款金额）' },
-        { title: '付款人数', content: '统计时间内，该地域访问用户中下单并且付款成功的客户数，一人多次付款记为一人（不剔除退款订单）' },
-        { title: '访客数', content: '统计时间内，该地域访问用户的所有访客数' },
-        { title: '访问-付款转化率', content: '统计时间内，该地域付款人数/该地域访客数' },
-        { title: '订单数', content: '统计时间内，该地区收货订单数 ' }
-      ]
+      // areaTipsList: [
+      //   { title: '付款金额', content: '统计时间内，该地域访问用户的所有付款订单金额之和（拼团在成团时计入付款金额；货到付款在发货时计入付款金额，不剔除退款金额）' },
+      //   { title: '付款人数', content: '统计时间内，该地域访问用户中下单并且付款成功的客户数，一人多次付款记为一人（不剔除退款订单）' },
+      //   { title: '访客数', content: '统计时间内，该地域访问用户的所有访客数' },
+      //   { title: '访问-付款转化率', content: '统计时间内，该地域付款人数/该地域访客数' },
+      //   { title: '订单数', content: '统计时间内，该地区收货订单数 ' }
+      // ]
+      areaTipsList: this.$t('tradesStatistics.areaTipsList')
     }
   },
   methods: {

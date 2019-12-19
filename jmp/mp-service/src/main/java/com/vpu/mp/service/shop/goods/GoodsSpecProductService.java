@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -450,5 +451,14 @@ public class GoodsSpecProductService extends ShopBaseService {
                 GOODS_SPEC_PRODUCT.PRD_SPECS, GOODS_SPEC_PRODUCT.PRD_DESC)
                 .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).orderBy(GOODS_SPEC_PRODUCT.PRD_ID)
                 .fetchInto(GoodsSpecProductRecord.class);
+    }
+
+    /**
+     * 取同商品最大的一个规格价
+     * @param goodsId
+     * @return
+     */
+    public BigDecimal getMaxPrdPrice(int goodsId){
+        return db().select(DSL.max(GOODS_SPEC_PRODUCT.PRD_PRICE)).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchOptionalInto(BigDecimal.class).orElse(BigDecimal.ZERO);
     }
 }

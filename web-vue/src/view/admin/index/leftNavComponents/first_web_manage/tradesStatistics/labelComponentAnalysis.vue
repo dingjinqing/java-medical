@@ -4,7 +4,7 @@
     <div class="tradesContainer">
       <section class="label">
         <div class="labelItem">
-          标签成分分析
+          {{$t('tradesStatistics.labelComponentsAnalysis')}}
           <el-tooltip
             effect="light"
             placement="right-start"
@@ -14,7 +14,7 @@
               style="width: 500px;line-height: 30px;font-size: 14px;padding:10px 5px 10px 10px"
             >
               <section
-                v-for="item in tipsList"
+                v-for="item in labelTipsList"
                 :key="item.title"
                 style="display: flex"
               >
@@ -26,7 +26,7 @@
           </el-tooltip>
         </div>
         <div class="labelItem time">
-          <span>时间筛选</span>
+          <span>{{$t('tradesStatistics.timeSelect')}}</span>
           <el-select
             v-model="timeSelect"
             size="small"
@@ -49,12 +49,12 @@
             @change="customDate"
             value-format="yyyy-MM-dd HH:mm:ss"
             range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :start-placeholder="$t('tradesStatistics.startTime')"
+            :end-placeholder="$t('tradesStatistics.endTime')"
             class="custom"
           >
           </el-date-picker>
-          <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+          <span>{{this.startDate.year}}{{$t('tradesStatistics.year')}}{{this.startDate.month}}{{$t('tradesStatistics.month')}}{{this.startDate.day}}{{$t('tradesStatistics.day')}} - {{this.endDate.year}}{{$t('tradesStatistics.year')}}{{this.endDate.month}}{{$t('tradesStatistics.month')}}{{this.endDate.day}}{{$t('tradesStatistics.day')}}</span>
         </div>
 
         <!-- 表格数据部分 -->
@@ -68,43 +68,43 @@
           >
             <el-table-column
               prop="tagName"
-              label="标签"
+              :label="$t('tradesStatistics.label')"
               sortable
               align="center"
             ></el-table-column>
             <el-table-column
               prop="userNum"
-              label="用户数"
+              :label="$t('tradesStatistics.userNumber')"
               sortable
               align="center"
             ></el-table-column>
             <el-table-column
               prop="userNumWithPhone"
-              label="有手机号客户数"
+              :label="$t('tradesStatistics.hasMobileNumber')"
               sortable
               align="center"
             ></el-table-column>
             <el-table-column
               prop="paidNum"
-              label="付款笔数"
+              :label="$t('tradesStatistics.payTimes')"
               sortable
               align="center"
             ></el-table-column>
             <el-table-column
               prop="paidMoney"
-              label="付款金额（元）"
+              :label="$t('tradesStatistics.payMoney')"
               sortable
               align="center"
             ></el-table-column>
             <el-table-column
               prop="paidUserNum"
-              label="付款人数"
+              :label="$t('tradesStatistics.paymentNumber')"
               sortable
               align="center"
             ></el-table-column>
             <el-table-column
               prop="paidGoodsNum"
-              label="付款商品件数"
+              :label="$t('tradesStatistics.payGoodsNumber')"
               sortable
               align="center"
             ></el-table-column>
@@ -128,6 +128,12 @@ import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { pagination },
   name: 'echarts',
+  watch: {
+    lang () {
+      this.labelTipsList = this.$t('tradesStatistics.labelTipsList')
+      this.timeRange = this.$t('tradesStatistics.timeRange')
+    }
+  },
   created () {
     this.initDataList()
   },
@@ -139,12 +145,13 @@ export default {
       value1: '',
       // 标签成分分析
       custom: true,
-      timeRange: [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' },
-        { value: 0, label: '自定义' }
-      ],
+      // timeRange: [
+      //   { value: 1, label: '最新1天' },
+      //   { value: 7, label: '最新7天' },
+      //   { value: 30, label: '最新30天' },
+      //   { value: 0, label: '自定义' }
+      // ],
+      timeRange: this.$t('tradesStatistics.timeRange'),
       startDate: {
         year: '',
         month: '',
@@ -167,13 +174,14 @@ export default {
         'currentPage': 1,
         'pageRows': 20
       },
-      tipsList: [
-        { title: '付款笔数', content: '统计时间内，该标签下客户的成功付款订单数，一个订单对应唯一一个订单号（拼团在成团时计入付款订单；货到付款在发货时计入付款订单，不剔除退款订单）' },
-        { title: '付款金额（元）', content: '统计时间内，该标签下客户的所有付款订单金额之和（拼团在成团时计入付款金额；货到付款在发货时计入付款金额，不剔除退款金额）' },
-        { title: '付款人数', content: '统计时间内，该标签下客户下单并且付款成功的客户数，一人多次付款记为一人（不剔除退款订单）' },
-        { title: '付款商品件数', content: '统计时间内， 该标签下客户成功付款订单的商品件数之和（不剔除退款订单）' },
-        { title: '有手机号客户数', content: '统计时间内， 该标签下下单并且付款成功的有手机号码的客户数（不剔除退款订单）' }
-      ]
+      // labelTipsList: [
+      //   { title: '付款笔数', content: '统计时间内，该标签下客户的成功付款订单数，一个订单对应唯一一个订单号（拼团在成团时计入付款订单；货到付款在发货时计入付款订单，不剔除退款订单）' },
+      //   { title: '付款金额（元）', content: '统计时间内，该标签下客户的所有付款订单金额之和（拼团在成团时计入付款金额；货到付款在发货时计入付款金额，不剔除退款金额）' },
+      //   { title: '付款人数', content: '统计时间内，该标签下客户下单并且付款成功的客户数，一人多次付款记为一人（不剔除退款订单）' },
+      //   { title: '付款商品件数', content: '统计时间内， 该标签下客户成功付款订单的商品件数之和（不剔除退款订单）' },
+      //   { title: '有手机号客户数', content: '统计时间内， 该标签下下单并且付款成功的有手机号码的客户数（不剔除退款订单）' }
+      // ]
+      labelTipsList: this.$t('tradesStatistics.labelTipsList')
     }
   },
   methods: {

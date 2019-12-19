@@ -13,7 +13,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    page_id:0,
+    page_id:1,
     can_used_flag: true,
     cou_used_flag: false,
     cou_guoqi_flag: false,
@@ -25,10 +25,8 @@ global.wxPage({
     unusedNum:0,
     usedNum: 0,
     expiredNum:0,
-    this_type: 1,
-    // cou_list: {},
-    cou_list: [],
-    allCoupon:{},
+    this_type: 0,
+    allCoupon:[],
     page: 1,
   },
  
@@ -37,21 +35,19 @@ global.wxPage({
    */
   onLoad: function (options) {
     var _this = this;
-    var page_id = 1;
-    _this.dataList(page_id);
-    console.log(_this.allCoupon)
+    _this.dataList()
   },
 
   /**
    * 优惠券列表
    */
-  dataList: function (page_id=0,nav){
+  dataList: function (){
     var _this = this;
     wx.showLoading({
       title: '加载中···',
     })
+    clearTimeout(set_time_out);
     util.api('/api/wxapp/coupon/list', function (res) {
-      console.log(res)
       if (res.error == 0) {
         _this.setData({
           unusedNum: res.content.unusedNum,
@@ -60,40 +56,36 @@ global.wxPage({
           allCoupon: res.content.couponList.dataList
         }) 
         // 格式化时间
-        console.log(_this.data.allCoupon)
-        if (_this.data.allCoupon) {
+        if (_this.data.allCoupon.length > 0) {
           _this.data.allCoupon.forEach(function (item) {
             if (item.startTime && item.endTime) {
               item.startTime = item.startTime.toString().slice(0, 10)
               item.endTime = item.endTime.toString().slice(0, 10)
             }
+            item.remain_seconds_all = item.remainHours * 3600 + item.remainMinutes * 60 + item.remainSeconds
           })
-        }
-        // 倒计时
-        for (var i = 0; i < _this.data.allCoupon.length; i++) {
-          _this.data.allCoupon[i].remain_seconds_all = _this.data.allCoupon[i].remainHours * 3600 + _this.data.allCoupon[i].remainMinutes + _this.data.allCoupon[i].remainSeconds;
-        }
-        if (_this.data.allCoupon.length > 0) {
+          // 倒计时
           _this.countdown(_this, _this.data.allCoupon);
         }
-        
+
+        console.log(_this.data.allCoupon)
+
         _this.setData({
           allCoupon: _this.data.allCoupon
         }) 
         wx.hideLoading();
-        _this.setData({
-          cou_list: res.content.unused,
-        })
-        
       } else {
         util.showModal("提示", res.message, function () {
           util.jumpLink("pages/index/index", 'redirectTo');
         }, false);
         return false;
       }
-    }, {page: page_id,nav:nav});
+    }, { nav: _this.data.this_type });
   },
 
+  /**
+   * 倒计时
+   */
   countdown: function (that, dataList) {
     set_time_out = setTimeout(function () {
       // 放在最后--
@@ -106,10 +98,10 @@ global.wxPage({
           console.log(dataList[i].time_tips)
         }
       }
-      that.countdown(that, dataList);
       that.setData({
         allCoupon: dataList
       });
+      that.countdown(that, dataList);
     }, 1000)
   },
 
@@ -117,32 +109,26 @@ global.wxPage({
    * 优惠券状态tab切换
    */
   change: function (e) {
-   
     var _this = this;
     var name = e.target.dataset.name;
     console.log(name)
     if (name == 'can') {
       _this.setData({
-        this_type: 1,
-        cou_list: this.data.allCoupon.unused
+        this_type: 0,
       }) 
-      this.dataList(0,0)
     }
     if (name == 'used') {
       _this.setData({
-        this_type:2,
-        cou_list: this.data.allCoupon.used
+        this_type:1,
       }) 
-      this.dataList(0,1)
     }
     if (name == 'time') {
       _this.setData({
-        this_type: 3,
-        cou_list: this.data.allCoupon.expired
+        this_type: 2,
       })
-      this.dataList(0,2)
     }
-    _this.data.page = 1;
+    _this.dataList()
+    // _this.data.page = 1;
   },
 
   /**
@@ -153,58 +139,11 @@ global.wxPage({
     util.jumpLink('/pages/getCoupon/getCoupon?couponSn=' + couponSn);
   },
 
-  // 券购搜素
+  /**
+   * 券购搜素
+   */
   to_search: function (opt) {
     var coupon_sn = opt.currentTarget.dataset.coupon_sn;
     util.jumpLink('/pages/searchs/search?coupon_sn=' + coupon_sn);
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
   }
 })
