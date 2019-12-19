@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.overview;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.overview.*;
@@ -19,7 +18,6 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Comparator;
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +25,14 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.DeliverFeeTemplate.DELIVER_FEE_TEMPLATE;
 import static com.vpu.mp.db.shop.tables.RecommendGoods.RECOMMEND_GOODS;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
+import static com.vpu.mp.db.shop.tables.UserSummaryTrend.USER_SUMMARY_TREND;
 import static com.vpu.mp.db.shop.tables.XcxCustomerPage.XCX_CUSTOMER_PAGE;
 import static com.vpu.mp.service.foundation.util.BigDecimalUtil.divideWithOutCheck;
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ZERO;
@@ -99,23 +99,34 @@ public class MallOverviewService extends ShopBaseService {
     }
     private DataDemonstrationVo getDataDemonstration(byte screeningTime){
         DataDemonstrationVo vo = new DataDemonstrationVo();
-        Condition orderInfoTime = OrderInfo.ORDER_INFO.CREATE_TIME.
-                compare(Comparator.GREATER_OR_EQUAL,Util.getEarlyTimeStamp(new Date(),(-screeningTime+1)));
-        Condition userLoginRecordTime = UserLoginRecord.USER_LOGIN_RECORD.CREATE_TIME.
-                compare(Comparator.GREATER_OR_EQUAL,Util.getEarlyTimeStamp(new Date(),(-screeningTime+1)));
-        Condition payOrderCon = OrderInfo.ORDER_INFO.ORDER_STATUS.compare(Comparator.GREATER_OR_EQUAL,(byte)3);
-        vo.setUserVisitNum(db().fetchCount(UserLoginRecord.USER_LOGIN_RECORD,userLoginRecordTime));
-        vo.setPaidOrderNum(db().fetchCount(OrderInfo.ORDER_INFO,orderInfoTime.and(payOrderCon)));
-        vo.setOrderUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
-            .from(OrderInfo.ORDER_INFO).where(orderInfoTime).fetchOneInto(Integer.class));
-        vo.setOrderNum(db().fetchCount(OrderInfo.ORDER_INFO,orderInfoTime));
-        vo.setTotalPaidSum(db().select(sum(OrderInfo.ORDER_INFO.MONEY_PAID))
-                .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
-            .fetchOneInto(Integer.class));
-        vo.setPaidUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
-                .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
-            .fetchOneInto(Integer.class));
+        // 当天数据实时统计返回
+        if (screeningTime == 0) {
+            Condition orderInfoTime = OrderInfo.ORDER_INFO.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
+            Condition userLoginRecordTime = UserLoginRecord.USER_LOGIN_RECORD.CREATE_TIME.ge(Timestamp.valueOf(LocalDate.now().atStartOfDay()));
+            Condition payOrderCon = OrderInfo.ORDER_INFO.ORDER_STATUS.ge((byte) 3);
 
+            vo.setUserVisitNum(db().fetchCount(UserLoginRecord.USER_LOGIN_RECORD, userLoginRecordTime));
+            vo.setPaidOrderNum(db().fetchCount(OrderInfo.ORDER_INFO, orderInfoTime.and(payOrderCon)));
+            vo.setOrderUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
+                .from(OrderInfo.ORDER_INFO).where(orderInfoTime).fetchOneInto(Integer.class));
+            vo.setOrderNum(db().fetchCount(OrderInfo.ORDER_INFO, orderInfoTime));
+            vo.setTotalPaidSum(db().select(sum(OrderInfo.ORDER_INFO.MONEY_PAID))
+                .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
+                .fetchOneInto(Integer.class));
+            vo.setPaidUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
+                .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
+                .fetchOneInto(Integer.class));
+        } else {
+            // 历史数据从统计表中获取返回
+            vo = db().select(USER_SUMMARY_TREND.LOGIN_DATA.as("userVisitNum")
+                , USER_SUMMARY_TREND.ORDER_NUM.as("orderNum")
+                , USER_SUMMARY_TREND.ORDER_USER_NUM.as("orderUserNum")
+                , USER_SUMMARY_TREND.PAY_ORDER_NUM.as("paidOrderNum")
+                , USER_SUMMARY_TREND.TOTAL_PAID_MONEY.as("totalPaidSum")
+                , USER_SUMMARY_TREND.ORDER_USER_DATA.as("paidUserNum")
+            ).from(USER_SUMMARY_TREND).where(USER_SUMMARY_TREND.REF_DATE.eq(java.sql.Date.valueOf(LocalDate.now())))
+                .and(USER_SUMMARY_TREND.TYPE.eq(screeningTime)).fetchOneInto(DataDemonstrationVo.class);
+        }
         BigDecimal orderNum = new BigDecimal(vo.getOrderNum());
         BigDecimal userVisitNum = new BigDecimal(vo.getUserVisitNum());
         BigDecimal paidNum = new BigDecimal(vo.getPaidOrderNum());
