@@ -148,7 +148,6 @@ export default {
       previews: {},
       cropperTopInput_one: 52,
       cropperTopInput_two: 52,
-      cropperTopInput_three: 1,
       cropMovingX: '',
       cropMovingY: '',
       imgPath: '',
@@ -165,6 +164,9 @@ export default {
     ...mapGetters(['cropperFlag']),
     cropperFlag_ () {
       return this.cropperFlag
+    },
+    cropperTopInput_three () {
+      return this.cropperTopInput_one / this.cropperTopInput_two
     }
   },
   watch: {
@@ -192,6 +194,7 @@ export default {
         if (newData) {
           this.cropperTopInput_one = newData[0]
           this.cropperTopInput_two = newData[1]
+          this.option.fixedNumber = [newData[0], newData[1]]
         }
       },
       immediate: true
