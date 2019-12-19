@@ -31,7 +31,7 @@ global.wxComponent({
       type:Object,
       value:null,
     },
-    canBuy:{
+    dealtAct:{
       type:Object,
       value:null
     }

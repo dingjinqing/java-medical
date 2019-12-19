@@ -26,17 +26,17 @@ global.wxPage({
     if (!util.check_setting(options)) return;
     var that = this;
     wx.hideShareMenu();
-    // util.api('/api/wxapp/user/account/withdraw', function (res) {
-    //   if (res.error == 0) {
-    //     account_info = res.content;
-    //     is_bind_mobile = account_info.is_bind_mobile;
-    //     is_block = 0;
-    //     that.setData({
-    //       account_info: account_info,
-    //       is_block: is_block
-    //     })
-    //   }
-    // }, {})
+    util.api('/api/wxapp/user/account/withdraw', function (res) {
+      if (res.error == 0) {
+        account_info = res.content;
+        is_bind_mobile = account_info.is_bind_mobile;
+        is_block = 0;
+        that.setData({
+          account_info: account_info,
+          is_block: is_block
+        })
+      }
+    }, {})
   },
   give_tips: function () {
     util.showModal("提示", "账户余额中已返利佣金可提现");
@@ -56,7 +56,7 @@ global.wxPage({
   // 提现
   to_money: function () {
     var that = this;
-    if (account_info.withdraw_status == 0 || account_info.withdraw_status == null) {
+    if (account_info.withdrawStatus == 0 || account_info.withdrawStatus == null) {
       util.showModal("提示", "系统暂时不支持提现");
       return false
     }

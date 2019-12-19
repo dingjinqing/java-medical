@@ -48,7 +48,7 @@ global.wxComponent({
         console.log(val)
       }
     },
-    canBuy:{
+    dealtAct:{
       type:Object,
       value:null,
       observer(val){

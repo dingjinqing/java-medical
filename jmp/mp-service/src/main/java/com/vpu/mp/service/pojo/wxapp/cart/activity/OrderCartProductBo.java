@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,30 +20,30 @@ import java.util.stream.Collectors;
  * @author 孔德成
  * @date 2019/12/4 15:54
  */
+@Getter
+@Setter
 public class OrderCartProductBo {
-
-    private List<OrderCartProduct> info;
+    /**
+     * 下单时间
+     */
+    private   Timestamp date;
+    /**
+     * 用户id
+     */
+    private Integer userId;
+    /**
+     * 店铺id
+     */
+    private Integer storeId;
+    private List<OrderCartProduct> info =new ArrayList<>();
 
     private Map<Integer, OrderCartProduct> map;
 
     private List<Integer> productIds;
 
 
-
-    private OrderCartProductBo(List<OrderCartProduct> info) {
-        this.info = info;
-    }
-
     public static OrderCartProductBo create(List<OrderCartProduct> info){
         return new OrderCartProductBo(CollectionUtils.isEmpty(info) ? Collections.emptyList() : info);
-    }
-
-    private void initMap(){
-        map = info.stream().collect(Collectors.toMap(OrderCartProduct::getProductId, Function.identity()));
-    }
-
-    private void initProductIds(){
-        productIds = getAll().stream().map(OrderCartProductBo.OrderCartProduct::getProductId).collect(Collectors.toList());
     }
 
     public List<OrderCartProduct> getAll(){
@@ -58,10 +60,22 @@ public class OrderCartProductBo {
         return map.get(productId);
     }
 
+    private OrderCartProductBo(List<OrderCartProduct> info) {
+        this.info = info;
+    }
+
+    private void initMap(){
+        map = info.stream().collect(Collectors.toMap(OrderCartProduct::getProductId, Function.identity()));
+    }
+
+    private void initProductIds(){
+        productIds = getAll().stream().map(OrderCartProductBo.OrderCartProduct::getProductId).collect(Collectors.toList());
+    }
     @Getter
     @Setter
     @ToString
     public static class OrderCartProduct{
+
         private Integer productId;
         private Integer goodsNumber;
         private Byte isChecked;

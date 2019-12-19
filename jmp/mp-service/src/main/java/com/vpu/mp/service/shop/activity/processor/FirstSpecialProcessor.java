@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -11,6 +13,8 @@ import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.FirstSpecialProcessorDao;
 import com.vpu.mp.service.shop.config.FirstSpecialConfigService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -22,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,7 +42,7 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRS
  */
 @Service
 @Slf4j
-public class FirstSpecialProcessor implements Processor, ActivityGoodsListProcessor, ActivityCartListStrategy {
+public class FirstSpecialProcessor implements Processor, ActivityGoodsListProcessor, ActivityCartListStrategy,CreateOrderProcessor {
 
     @Autowired
     FirstSpecialProcessorDao firstSpecialProcessorDao;
@@ -101,21 +104,18 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        doOrderOperation(cartBo.getUserId(),cartBo.getDate(),cartBo.getOrderCartProductBo(),cartBo.getStoreId());
+        doOrderOperation(cartBo.getOrderCartProductBo());
     }
 
     /**
      *
-     * @param userId
-     * @param date
      * @param productBo
-     * @param storeId
      */
-    public void doOrderOperation(Integer userId, Timestamp date, OrderCartProductBo productBo, Integer storeId) {
-        boolean isNewUser = orderInfoService.isNewUser(userId);
+    public void doOrderOperation(OrderCartProductBo productBo) {
+        boolean isNewUser = orderInfoService.isNewUser(productBo.getUserId());
         if (isNewUser) {
             List<Integer> productIds = productBo.getAll().stream().map(OrderCartProductBo.OrderCartProduct::getProductId).collect(Collectors.toList());
-            List<FirstSpecialProductBo> specialPrdIdList = firstSpecialProcessorDao.getGoodsFirstSpecialPrdId(productIds, date).into(FirstSpecialProductBo.class);
+            List<FirstSpecialProductBo> specialPrdIdList = firstSpecialProcessorDao.getGoodsFirstSpecialPrdId(productIds, productBo.getDate()).into(FirstSpecialProductBo.class);
             if (specialPrdIdList != null && specialPrdIdList.size() > 0) {
                 log.debug("新用户触发首单特惠活动FirstSpecialProductBo:" + Util.toJson(specialPrdIdList));
                 // 活动商品数量
@@ -139,7 +139,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                     //不可继续添加
                                     log.debug("商品数量超过活动数量限制,不可选中[getGoodsNumber:" + product.getGoodsNumber() + ",getLimitAmount:" + firstSpecial.getLimitAmount() + "]");
                                     product.setIsChecked(CartConstant.CART_NO_CHECKED);
-                                    cartService.switchCheckedByProductId(userId,product.getProductId(),CartConstant.CART_NO_CHECKED);
+                                    cartService.switchCheckedByProductId(productBo.getUserId(),product.getProductId(),CartConstant.CART_NO_CHECKED);
                                     firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
                                 }
                             }
@@ -173,5 +173,20 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
 
             }
         }
+    }
+
+    @Override
+    public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        doOrderOperation(param.getOrderCartProductBo());
+    }
+
+    @Override
+    public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processStockAndSales(OrderBeforeParam param) throws MpException {
+
     }
 }

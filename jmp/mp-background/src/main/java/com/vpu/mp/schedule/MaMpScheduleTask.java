@@ -28,9 +28,9 @@ public class MaMpScheduleTask {
     @Autowired
     private  SaasApplication saas;
 	/**
-     * 卡券到期提醒，测试，每天十点
+     * 卡券到期提醒，每天11：30
 	 */
-	@Scheduled(cron = "0 15 10 ? * *")
+	@Scheduled(cron = "0 30 11 * * ?")
     public void monitorSeckillGoods() {
 		log.info("卡券到期提醒");
         Result<ShopRecord> result = saas.shop.getAll();

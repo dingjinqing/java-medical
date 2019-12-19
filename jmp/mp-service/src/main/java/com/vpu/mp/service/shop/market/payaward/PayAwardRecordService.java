@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.payaward;
 
+import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
@@ -53,5 +54,13 @@ public class PayAwardRecordService  extends ShopBaseService {
         }
     }
 
+    /**
+     * 查询支付有礼记录
+     * @param orderSn
+     * @return
+     */
+    public PayAwardRecordRecord getPayAwardRecordByOrderSn(String orderSn){
+         return db().selectFrom(PAY_AWARD_RECORD).where(PAY_AWARD_RECORD.ORDER_SN.eq(orderSn)).fetchOne();
+    }
 
 }

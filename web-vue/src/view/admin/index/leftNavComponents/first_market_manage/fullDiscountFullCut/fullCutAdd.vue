@@ -34,9 +34,17 @@
       </div>
 
       <div class="full_cut_content">
-        <el-form label-width="120px">
+        <el-form
+          label-width="120px"
+          :rules="rules"
+          :model="params"
+          ref="params"
+        >
           <!-- 活动名称 -->
-          <el-form-item label="活动名称：">
+          <el-form-item
+            label="活动名称："
+            prop="actName"
+          >
             <el-input
               v-model="params.actName"
               placeholder="请输入活动名称"
@@ -46,7 +54,10 @@
           </el-form-item>
 
           <!-- 活动优先级 -->
-          <el-form-item label="活动优先级：">
+          <el-form-item
+            label="活动优先级："
+            prop="strategyPriority"
+          >
             <el-input
               v-model="params.strategyPriority"
               placeholder="请输入活动优先级"
@@ -57,7 +68,10 @@
           </el-form-item>
 
           <!-- 活动类型 -->
-          <el-form-item label="活动类型：">
+          <el-form-item
+            label="活动类型："
+            prop="type"
+          >
             <el-radio-group v-model="params.type">
               <el-radio label="2">满减</el-radio>
               <el-radio label="1">每满减</el-radio>
@@ -77,9 +91,9 @@
 
               <section
                 v-for="(item, index) in conditionAddParams"
-                :key="index"
+                :key="'info'+ index"
               >
-                <div
+                <section
                   style="display:flex;margin-left: 25px"
                   v-if="params.type === '2'"
                 >
@@ -99,6 +113,62 @@
                   <div class="iconAdd">
                     <img
                       v-if="index === 0"
+                      :src="$imageHost + '/image/admin/sign_jia.png'"
+                      alt=""
+                      @click="addFullCutItem()"
+                    >
+                    <img
+                      v-else
+                      style="cursor:pointer"
+                      :src="$imageHost +'/image/admin/sign_del.png' "
+                      @click="deleteFullCutItem(index)"
+                    >
+                  </div>
+                </section>
+              </section>
+
+              <div
+                v-if="params.type === '1'"
+                style="margin-left: 25px"
+              >
+                <span>每满</span>
+                &nbsp;<el-input
+                  class="form_input"
+                  size="small"
+                  v-model="conditionAddParamsD.fullMoney"
+                ></el-input>&nbsp;元，
+                <span>减</span>
+                &nbsp;<el-input
+                  class="form_input"
+                  size="small"
+                  v-model="conditionAddParamsD.reduceMoney"
+                ></el-input>&nbsp;元
+              </div>
+
+              <section
+                v-for="(item, indexA) in conditionAddParams1"
+                :key="'info1'+indexA"
+              >
+                <section
+                  style="display:flex;margin-left: 25px"
+                  v-if="params.type === '3'"
+                >
+                  <span>满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    v-model="conditionAddParams1[indexA].fullMoney"
+                  ></el-input>&nbsp;元，
+                  <span>打</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small "
+                    v-model="conditionAddParams1[indexA].reduceMoney"
+                  ></el-input>&nbsp;
+                  <span>折</span>
+                  <div class="iconAdd">
+                    <img
+                      v-if="indexA === 0"
                       :src="$imageHost + '/image/admin/sign_jia.png'"
                       alt=""
                       @click="addFullCutItem1()"
@@ -107,73 +177,59 @@
                       v-else
                       style="cursor:pointer"
                       :src="$imageHost +'/image/admin/sign_del.png' "
-                      @click="deleteFullCutItem1(index)"
+                      @click="deleteFullCutItem1(indexA)"
                     >
                   </div>
-                </div>
-              </section>
-
-              <div v-if="params.type === '1'">
-                <span>每满</span>
-                &nbsp;<el-input
-                  class="form_input"
-                  size="small"
-                ></el-input>&nbsp;元，
-                <span>减</span>
-                &nbsp;<el-input
-                  class="form_input"
-                  size="small"
-                ></el-input>&nbsp;元
-              </div>
-
-              <section
-                v-for="(item, index) in conditionAddParams"
-                :key="index"
-              >
-                <div
-                  style="display:flex;margin-left: 25px"
-                  v-if="params.type === '3'"
-                >
-                  <span>满</span>
-                  &nbsp;<el-input
-                    class="form_input"
-                    size="small"
-                    v-model="conditionAddParams[index].fullMoney"
-                  ></el-input>&nbsp;元，
-                  <span>打</span>
-                  &nbsp;<el-input
-                    class="form_input"
-                    size="small "
-                    v-model="conditionAddParams[index].reduceMoney"
-                  ></el-input>&nbsp;
-                  <span>折</span>
-                  <div class="iconAdd">
-                    <img
-                      v-if="index === 0"
-                      :src="$imageHost + '/image/admin/sign_jia.png'"
-                      alt=""
-                      @click="addFullCutItem3()"
-                    >
-                    <img
-                      v-else
-                      style="cursor:pointer"
-                      :src="$imageHost +'/image/admin/sign_del.png' "
-                      @click="deleteFullCutItem3(index)"
-                    >
-                  </div>
-                </div>
+                </section>
               </section>
 
               <el-radio
                 label="2"
                 v-model="fullDeduction"
               >满件数</el-radio>
-
-              <section
+              <!-- <section
                 v-for="(item, index) in conditionAddParams"
                 :key="index"
               >
-                <div
+                <section style="display:flex;margin-left: 25px">
+                  <span v-if="params.type === '2' || params.type === '3'">满</span>
+                  <span v-if="params.type === '1'">每满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    v-model="conditionAddParams[index].amount"
+                  ></el-input>&nbsp;件，
+                  <span v-if="params.type === '2' || params.type === '1'">减</span>
+                  <span v-if="params.type === '3'">打</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small "
+                    v-model="conditionAddParams[index].discount"
+                  ></el-input>&nbsp;
+                  <span v-if="params.type === '2' || params.type === '1'">元</span>
+                  <span v-if="params.type === '3'">折</span>
+                  <div class="iconAdd">
+                    <img
+                      v-if="index === 0 "
+                      :src="$imageHost + '/image/admin/sign_jia.png'"
+                      alt=""
+                      @click="addFullCutItems()"
+                    >
+                    <img
+                      v-else
+                      style="cursor:pointer"
+                      :src="$imageHost +'/image/admin/sign_del.png' "
+                      @click="deleteFullCutItems(index)"
+                    >
+                  </div>
+                </section>
+              </section> -->
+
+              <section
+                v-for="(item, indexB) in conditionAddParamsB"
+                :key="'info2'+indexB"
+              >
+                <section
                   style="display:flex;margin-left: 25px"
                   v-if="params.type === '2'"
                 >
@@ -181,81 +237,84 @@
                   &nbsp;<el-input
                     class="form_input"
                     size="small"
-                    v-model="conditionAddParams[index].fullMoney"
+                    v-model="conditionAddParamsB[indexB].fullMoney"
                   ></el-input>&nbsp;件，
                   <span>减</span>
                   &nbsp;<el-input
                     class="form_input"
                     size="small "
-                    v-model="conditionAddParams[index].reduceMoney"
+                    v-model="conditionAddParamsB[indexB].reduceMoney"
                   ></el-input>&nbsp;
                   <span>元</span>
                   <div class="iconAdd">
                     <img
-                      v-if="index === 0"
+                      v-if="indexB === 0"
                       :src="$imageHost + '/image/admin/sign_jia.png'"
                       alt=""
-                      @click="addFullCutItem3()"
+                      @click="addFullCutItemB()"
                     >
                     <img
                       v-else
                       style="cursor:pointer"
                       :src="$imageHost +'/image/admin/sign_del.png' "
-                      @click="deleteFullCutItem3()"
+                      @click="deleteFullCutItemB(indexB)"
                     >
                   </div>
-                </div>
+                </section>
               </section>
 
-              <section>
-                <div v-if="params.type === '1'">
-                  <span>每满</span>
-                  &nbsp;<el-input
-                    class="form_input"
-                    size="small"
-                  ></el-input>&nbsp;件，
-                  <span>减</span>
-                  &nbsp;<el-input
-                    class="form_input"
-                    size="small"
-                  ></el-input>&nbsp;元
-                </div>
+              <div
+                v-if="params.type === '1'"
+                style="margin-left: 25px"
+              >
+                <span>每满</span>
+                &nbsp;<el-input
+                  class="form_input"
+                  size="small"
+                  v-model="conditionAddParamsD.amount"
+                ></el-input>&nbsp;件，
+                <span>减</span>
+                &nbsp;<el-input
+                  class="form_input"
+                  size="small"
+                  v-model="conditionAddParamsD.discount"
+                ></el-input>&nbsp;元
+              </div>
 
+              <section
+                v-for="(item, indexC) in conditionAddParamsC"
+                :key="'info3'+indexC"
+              >
                 <section
-                  v-for="(item, index) in conditionAddParams"
-                  :key="index"
+                  style="display:flex;margin-left: 25px"
+                  v-if="params.type === '3'"
                 >
-                  <div
-                    style="display:flex;margin-left: 25px"
-                    v-if="params.type === '3'"
-                  >
-                    <span>满</span>
-                    &nbsp;<el-input
-                      class="form_input"
-                      size="small"
-                      v-model="conditionAddParams[index].fullMoney"
-                    ></el-input>&nbsp;件，
-                    <span>打</span>
-                    &nbsp;<el-input
-                      class="form_input"
-                      size="small "
-                      v-model="conditionAddParams[index].reduceMoney"
-                    ></el-input>&nbsp;
-                    <span>折</span>
-                    <div class="iconAdd">
-                      <img
-                        v-if="index === 0"
-                        :src="$imageHost + '/image/admin/sign_jia.png'"
-                        alt=""
-                        @click="addFullCutItem4()"
-                      >
-                      <img
-                        v-else
-                        style="cursor:pointer"
-                        :src="$imageHost +'/image/admin/sign_del.png' "
-                        @click="deleteFullCutItem4()"
-                      >
-                    </div>
+                  <span>满</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small"
+                    v-model="conditionAddParamsC[indexC].fullMoney"
+                  ></el-input>&nbsp;件，
+                  <span>打</span>
+                  &nbsp;<el-input
+                    class="form_input"
+                    size="small "
+                    v-model="conditionAddParamsC[indexC].reduceMoney"
+                  ></el-input>&nbsp;
+                  <span>折</span>
+                  <div class="iconAdd">
+                    <img
+                      v-if="indexC === 0"
+                      :src="$imageHost + '/image/admin/sign_jia.png'"
+                      alt=""
+                      @click="addFullCutItemC()"
+                    >
+                    <img
+                      v-else
+                      style="cursor:pointer"
+                      :src="$imageHost +'/image/admin/sign_del.png' "
+                      @click="deleteFullCutItemC(indexC)"
+                    >
                   </div>
                 </section>
               </section>
@@ -266,17 +325,22 @@
                 第&nbsp;<el-input
                   class="form_input"
                   size="small"
+                  v-model="conditionAddParamsE[0].amount"
                 ></el-input>&nbsp;件，
                 打&nbsp;<el-input
                   class="form_input"
                   size="small"
+                  v-model="conditionAddParamsE[0].discount"
                 ></el-input>&nbsp;折
               </div>
             </div>
           </el-form-item>
 
           <!-- 有效期 -->
-          <el-form-item label="有效期：">
+          <el-form-item
+            label="有效期："
+            prop="timeInterval"
+          >
             <el-date-picker
               v-model="params.timeInterval"
               type="datetimerange"
@@ -290,7 +354,10 @@
           </el-form-item>
 
           <!-- 活动商品 -->
-          <el-form-item label="活动商品：">
+          <el-form-item
+            label="活动商品："
+            prop="actType"
+          >
             <el-radio
               v-model="params.actType"
               label="0"
@@ -510,7 +577,6 @@
               size="small"
               :multiple='true'
               @change="getMemberCardName"
-              v-if="cardId === true"
             >
               <el-option
                 v-for="item in memberCardNameList"
@@ -582,6 +648,22 @@ import SelectGoodsLabel from '@/components/admin/addProductLabel'
 export default {
   components: { ChoosingGoods, AddingBusClassDialog, AddBrandDialog, SelectGoodsLabel },
   data () {
+    // 自定义校验规则
+    var validateLevel = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if (!re.test(value)) {
+        callback(new Error('活动等级为正整数'))
+      } else {
+        callback(new Error('请输入活动优先级'))
+      }
+    }
+    var validateActType = (rule, value, callback) => {
+      if (value === 1 && (this.goodList.length === 0 || this.goodsNameList.length === 0 || this.labelNameList.length === 0 || this.bussinessList.length === 0 || this.platformList === 0)) {
+        callback(new Error('请选择商品信息'))
+      } else {
+        callback()
+      }
+    }
     return {
       params: {
         actName: '',
@@ -615,6 +697,36 @@ export default {
         amount: '',
         discount: ''
       }],
+      conditionAddParams1: [{
+        fullMoney: '',
+        reduceMoney: '',
+        amount: '',
+        discount: ''
+      }],
+      conditionAddParamsB: [{
+        fullMoney: '',
+        reduceMoney: '',
+        amount: '',
+        discount: ''
+      }],
+      conditionAddParamsC: [{
+        fullMoney: '',
+        reduceMoney: '',
+        amount: '',
+        discount: ''
+      }],
+      conditionAddParamsD: [{
+        fullMoney: '',
+        reduceMoney: '',
+        amount: '',
+        discount: ''
+      }],
+      conditionAddParamsE: [{
+        fullMoney: '',
+        reduceMoney: '',
+        amount: '',
+        discount: ''
+      }],
 
       // 选择商品
       tuneUpChooseGoodsDialog: false,
@@ -635,7 +747,15 @@ export default {
       // 选择平台分类
       tuneUpPlatformDialog: false,
       platformList: [],
-      platformIdList: []
+      platformIdList: [],
+
+      rules: {
+        actName: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+        strategyPriority: { required: true, validator: validateLevel, trigger: 'blur' },
+        type: [{ required: true, message: '请选择活动类型', trigger: 'change' }],
+        timeInterval: [{ required: true, message: '请选择时间', trigger: 'blur' }],
+        actType: { required: true, validator: validateActType, trigger: 'change' }
+      }
 
     }
   },
@@ -690,20 +810,25 @@ export default {
       }
     },
     submit () {
+      // let conditionResult = []
+      // if (this.params.type === '4') {
+      //   console.log(this.conditionAddParamsE, 'conditionAddParamsE')
+      //   conditionResult = this.conditionAddParamsE
+      // }
+      // console.log(conditionResult, 'conditionResult')
       let obj = {
         actName: this.params.actName,
         type: this.params.type,
         actType: this.params.actType,
-        conditionAddParams: [
-          {
-            fullMoney: 333,
-            reduceMoney: 32
-          },
-          {
-            fullMoney: 503,
-            reduceMoney: 102
-          }
-        ],
+        // conditionAddParams: [
+        //   {
+        //     fullMoney: 333,
+        //     reduceMoney: 32,
+        //     amount: 10,
+        //     discount: 1
+        //   }
+        // ],
+        conditionAddParams: this.conditionAddParams,
         startTime: this.params.startTime,
         endTime: this.params.endTime,
         strategyPriority: this.params.strategyPriority,
@@ -718,9 +843,22 @@ export default {
         if (res.error === 0) {
           this.$message.success('保存成功')
         } else {
-          this.$message.warning()
+          this.$message.warning('保存失败')
         }
       })
+    },
+    addFullCutItem () {
+      let obj = {
+        'fullMoney': '',
+        'reduceMoney': '',
+        'amount': '',
+        'discount': ''
+      }
+      this.conditionAddParams.push(obj)
+      console.log(this.conditionAddParams)
+    },
+    deleteFullCutItem (index) {
+      this.conditionAddParams.splice(index, 1)
     },
     addFullCutItem1 () {
       let obj = {
@@ -729,46 +867,37 @@ export default {
         'amount': '',
         'discount': ''
       }
-      this.conditionAddParams.push(obj)
+      this.conditionAddParams1.push(obj)
+      console.log(this.conditionAddParams1)
     },
-    deleteFullCutItem1 (index) {
-      this.conditionAddParams.splice(index, 1)
+    deleteFullCutItem1 (indexA) {
+      this.conditionAddParams1.splice(indexA, 1)
     },
-    addFullCutItem2 () {
+    addFullCutItemB () {
       let obj = {
         'fullMoney': '',
         'reduceMoney': '',
         'amount': '',
         'discount': ''
       }
-      this.conditionAddParams.push(obj)
+      this.conditionAddParamsB.push(obj)
+      console.log(this.conditionAddParamsB)
     },
-    deleteFullCutItem2 (index) {
-      this.conditionAddParams.splice(index, 1)
+    deleteFullCutItemB (index) {
+      this.conditionAddParamsB.splice(index, 1)
     },
-    addFullCutItem3 () {
+    addFullCutItemC () {
       let obj = {
         'fullMoney': '',
         'reduceMoney': '',
         'amount': '',
         'discount': ''
       }
-      this.conditionAddParams.push(obj)
+      this.conditionAddParamsC.push(obj)
+      console.log(this.conditionAddParamsC)
     },
-    deleteFullCutItem3 (index) {
-      this.conditionAddParams.splice(index, 1)
-    },
-    addFullCutItem4 () {
-      let obj = {
-        'fullMoney': '',
-        'reduceMoney': '',
-        'amount': '',
-        'discount': ''
-      }
-      this.conditionAddParams.push(obj)
-    },
-    deleteFullCutItem4 (index) {
-      this.conditionAddParams.splice(index, 1)
+    deleteFullCutItemC (index) {
+      this.conditionAddParamsC.splice(index, 1)
     },
     // 选择商品数据处理
     chooseGoodsHandler () {
