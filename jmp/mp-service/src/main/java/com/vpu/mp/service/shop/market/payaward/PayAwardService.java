@@ -240,6 +240,7 @@ public class PayAwardService extends ShopBaseService {
                                                 .and(PAY_AWARD.END_TIME.gt(date))
                                 )
                 ).orderBy(PAY_AWARD.ACT_FIRST.desc(), PAY_AWARD.CREATE_TIME.desc())
+                .limit(1,0)
                 .fetchOne();
          return recordToPayAwardVo(record);
     }
@@ -267,15 +268,6 @@ public class PayAwardService extends ShopBaseService {
             return null;
         }
         //获取正在进行的活动
-        PayAwardVo goingPayAward = getGoingPayAward(payAwardRecord.getCreateTime());
-        if (goingPayAward==null){
-            logger().info("当前没有进行中的支付有礼活动");
-            return null;
-        }
-        if (!payAwardRecord.getId().equals(payAwardRecord.getAwardId())){
-            logger().info("活动不一致");
-            return null;
-        }
         PayAwardVo payAward = getPayAwardById(payAwardRecord.getAwardId());
         PayAwardContentBo payAwardContentBo =payAward.getAwardContentList().get(payAwardRecord.getAwardTimes());
         PayAwardOrderVo payAwardOrderVo = new PayAwardOrderVo();
