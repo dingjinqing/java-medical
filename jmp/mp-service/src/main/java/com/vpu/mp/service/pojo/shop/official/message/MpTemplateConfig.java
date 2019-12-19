@@ -32,7 +32,12 @@ public enum MpTemplateConfig {
     COUPON_EXPIRE(
             "OPENTM408237933",
             "服务到期提醒",
-            "{{first.DATA}}业务号码：{{keyword1.DATA}}业务类型：{{keyword2.DATA}}到期时间：{{keyword3.DATA}}{{remark.DATA}}");
+            "{{first.DATA}}业务号码：{{keyword1.DATA}}业务类型：{{keyword2.DATA}}到期时间：{{keyword3.DATA}}{{remark.DATA}}"),
+	
+    APPOINTMENT_REMINDER(
+            "OPENTM414204481",
+            "预约到期提醒",
+            "{{first.DATA}}单据号：{{keyword1.DATA}}开始时间：{{keyword2.DATA}}{{remark.DATA}}");
 	
 	/**
 	 * 模板编号
