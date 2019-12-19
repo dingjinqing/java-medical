@@ -34,6 +34,11 @@ public class UserTotalFanliService extends ShopBaseService {
 	 */
 	public BigDecimal getTotalMoney(Integer userId) {
 		UserTotalFanliVo userRebate = getUserRebate(userId);
-		return userRebate != null ? userRebate.getTotalMoney(): BigDecimal.ZERO;
+		if(userRebate != null && userRebate.getTotalMoney() != null) {
+			return userRebate.getTotalMoney();
+		}else {
+			return  BigDecimal.ZERO;
+		}
+		
 	}
 }
