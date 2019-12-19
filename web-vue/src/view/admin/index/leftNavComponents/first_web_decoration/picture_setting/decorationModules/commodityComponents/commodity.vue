@@ -336,15 +336,17 @@ export default {
         console.log(newData)
         if (newData) {
           this.data = newData
-          // 处理显示活动
-          this.handleToActivity(newData)
+          this.$nextTick(() => {
+            // 处理显示活动
+            this.handleToActivity(newData)
 
-          console.log(newData)
-          if (newData.goodsListData.length) {
-            this.goodsFlag = true
-          } else {
-            this.goodsFlag = false
-          }
+            let arr = JSON.parse(JSON.stringify(this.data.goodsListData))
+            if (arr.length) {
+              this.goodsFlag = true
+            } else {
+              this.goodsFlag = false
+            }
+          })
         }
         console.log(newData, this.goodsFlag)
       },

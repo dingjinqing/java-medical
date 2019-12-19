@@ -38,6 +38,7 @@ global.wxComponent({
         if (!componentName) continue;
         // 模块名称
         module['component_name'] = componentName
+        module.elapse_secs = 0;
         module['main_setting'] = page_content.main_setting;
         module['is_first_touch'] = 1;
         // 当前图片域名

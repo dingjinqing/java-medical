@@ -4,15 +4,17 @@ var util = require("../../../utils/util.js")
 global.wxComponent({
   mixins: [base],
   methods: {
-    onPropChange(newVal, oldVal, changedPath) {
+    onPropChange (newVal, oldVal, changedPath) {
       for (var j in newVal.coupon_arr) {
         newVal.coupon_arr[j].denomination = parseFloat(newVal.coupon_arr[j].denomination);
+        Object.assign(newVal.coupon_arr[j], newVal[j])
       }
       newVal.isCoupon = 0;
-      console.log(newVal)
+      console.log(newVal, '+++++++++++++++++++')
+
     },
 
-    bindFetchCoupon(e) {
+    bindFetchCoupon (e) {
       var d = this._form_data;
       var _this = this;
       var m = this.data.m;
@@ -37,14 +39,14 @@ global.wxComponent({
             util.toast_fail('领取失败');
           }
         }, {
-            code: d.code,
-            form_id: d.form_id,
-            open_id: d.open_id
-          })
+          code: d.code,
+          form_id: d.form_id,
+          open_id: d.open_id
+        })
       }
     },
 
-    bindGetCoupon(e) {
+    bindGetCoupon (e) {
       var d = this.eventData(e);
       var m = this.data.m;
       var _this = this;
@@ -72,15 +74,15 @@ global.wxComponent({
             util.toast_fail(res.message.msg);
           }
         }, {
-            couponId: d.coupon_id
-          });
+          couponId: d.coupon_id
+        });
       }
     },
 
-    bindCodeBlur(e) {
+    bindCodeBlur (e) {
       this._input_code = e.detail.value;
     },
-    bindClose(e) {
+    bindClose (e) {
       this.data.m.isCoupon = 0;
       this.$set();
     },

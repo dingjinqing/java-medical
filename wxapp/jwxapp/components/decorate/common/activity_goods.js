@@ -8,14 +8,15 @@ var activity_goods = {
      * @param {string} name 计时器名称
      * @param {object} left_secs 返回剩余秒数对象
      */
-    startActivityTimer(name, left_secs, format_time_cb = null) {
+    startActivityTimer (name, left_secs, format_time_cb = null) {
+      console.log(name, left_secs)
       this._left_secs = this._left_secs || {};
       this._left_secs[name] = left_secs;
       var _this = this;
       var m = this.data.m;
       m.times_arr = m.times_arr || {};
 
-      function timerProc() {
+      function timerProc () {
         var m = _this.data.m;
         var remain = _this._left_secs[name];
         var count = 0,
@@ -44,7 +45,7 @@ var activity_goods = {
      * 活动商品开始时间通用格式化
      * @param {object} goods
      */
-    formatActivityBeginTime(goods) {
+    formatActivityBeginTime (goods) {
       if (!goods) return;
       for (var i in goods) {
         var g = goods[i];
@@ -57,7 +58,7 @@ var activity_goods = {
     /**
      * 跳转到原商品
      */
-    navigateToItem(goods_id) {
+    navigateToItem (goods_id) {
       util.api("/api/wxapp/goods", function (data) {
         if (data.error === 0) {
           util.jumpLink('/pages/item/item?goods_id=' + goods_id)
@@ -69,7 +70,7 @@ var activity_goods = {
         goods_id: goods_id
       })
     },
-    bindToKanJia(e) {
+    bindToKanJia (e) {
       var d = this.eventData(e);
       var choose_info = (d.group == 1) ? this.data.m.first_group_goods[d.zhujian] : this.data.m.goods_items[d.zhujian];
       var choose_list = {};
