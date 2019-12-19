@@ -381,6 +381,7 @@ public class CouponService extends ShopBaseService {
     		//根据有效 开始时间、结束时间判断
             select.where(CUSTOMER_AVAIL_COUPONS.END_TIME.le(now));
     	}
+    	select.orderBy(CUSTOMER_AVAIL_COUPONS.ID.desc());
     }
 
     /**
