@@ -35,7 +35,7 @@
                   <block wx:if='{{item.validityMinute > 0}}'>{{item.validityMinute}}分钟</block>内有效
                 </view>
               </block>
-              <form report-submit='true' class="get_new_coupon" wx:if="{{item.canFetch}}" bindsubmit="bindGetCoupon" data-coupon="{{index}}" data-exclusive="{{item.isCardExclusive}}" data-use_score="{{item.useScore}}" data-id="{{ item.id }}" data-item="{{ item }}">
+              <form report-submit='true' class="get_new_coupon" wx:if="{{item.canFetch}}" bindsubmit="bindGetCoupon" data-coupon="{{index}}" data-exclusive="{{item.isCardExclusive}}" data-use_score="{{item.useScore}}" data-coupon_id="{{ item.id }}">
                 <button form-type='submit' plain="false" disabled='{{item.disableds}}' style='background:{{main_setting.somColor}};color:{{main_setting.comColor}}'>立即领取</button>
               </form>
               <view class="get_new_coupon got_coupon" wx:else>

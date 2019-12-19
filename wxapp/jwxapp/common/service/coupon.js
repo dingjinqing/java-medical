@@ -1,22 +1,22 @@
 var util = require("../../utils/util.js");
 var coupon = {
   getCoupon(d, cb) {
-    util.api('api/wxapp/coupon/get?', function (res) {
+    util.api('api/wxapp/coupon/get', function (res) {
       wx.hideLoading();
       if (res.error == 0) {
-        if (res.content == 0) {
-          util.showModal('提示', '您已领取的个数已达到可领取限制');
-          cb(res.content);
-        } else {
+        if (res.content == '领取成功') {
           util.toast_success('领取成功', function () {
             cb(res.content);
           });
+        } else {
+          util.toast_fail(res.content);
+          cb(res.content);
         }
       } else {
-        util.toast_fail(res.message.msg);
+        util.toast_fail('领取失败');
       }
     }, {
-        cuponId: d.coupon
+        cuponId: d
         // form_id: d.form_id,
         // open_id: util.getCache("openid")
       });

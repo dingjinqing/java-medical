@@ -40,4 +40,17 @@ public class GoodsListMpVo extends GoodsBaseMp {
     /**指定该商品的详情页营销活动id*/
     protected Integer activityId;
 
+    @Override
+    public String toString() {
+        return "GoodsListMpVo{" +
+            "goodsImg='" + goodsImg + '\'' +
+            ", activityType=" + activityType +
+            ", commentNum=" + commentNum +
+            ", linePrice=" + linePrice +
+            ", realPrice=" + realPrice +
+            ", label=" + label +
+            ", goodsActivities=" + goodsActivities +
+            ", activityId=" + activityId +
+            '}'+super.toString();
+    }
 }

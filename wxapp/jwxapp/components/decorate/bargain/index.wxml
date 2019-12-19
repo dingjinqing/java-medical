@@ -1,37 +1,51 @@
 <view class="bargain-container">
-  <view class='all_zero_bargain clearfix'>
-<view class='each_bargain' data-link="pages/bargainitem/bargainitem?bargain_id={{item.act_id}}"  
-          catchtap="bindToBargain" data-is_prd='{{item.is_prd}}' data-idx="{{m.cur_idx}}" wx:for='{{m.bargain_goods}}' wx:if='{{m.list_style == 0 && !m.bottom.subscribe_message}}' 
-          data-goods_price='{{item.goods_price}}' data-bargain_id='{{item.act_id}}' data-prd_id='{{item.prd_id}}' data-goods_id='{{item.goods_id}}' data-act_delet="{{item.act_del_flag}}" wx:key='key' 
-          data-is_on_sale="{{item.is_on_sale}}"  data-act_status="{{item.act_status}}" data-is_delete='{{item.is_delete}}' data-time_state="{{item.time_state}}">
-      <view class='each_img'> 
-        <image class="sell_out" wx:if ='{{item.bargain_num == 0}}'  src="{{m.imageUrl}}/image/wxapp/goods_sell_out.png"></image>
-        <image src="{{m.imageUrl+'/'+item.goods_img}}"></image>
-        <view class='daojishi' wx:if='{{item.is_delete == 1}}'>商品已删除</view>
-        <view class='daojishi' wx:elif='{{item.is_delete == 0 && item.is_on_sale == 0}}'>商品已下架</view>
-        <view class='daojishi' wx:elif='{{item.time_state == 2&&item.is_delete==0&&item.act_del_flag == 0 || m.times_arr[item.act_id] == 0}}'>活动已结束</view>
-        <view class='daojishi' wx:elif='{{item.act_status == 1 && item.act_del_flag == 0 }}'>活动已停用</view>
-        <view class='daojishi' wx:elif='{{item.act_del_flag == 1}}'>活动已删除</view>
-        <view class='daojishi' wx:elif='{{m.goods_count_down==true &&item.time_state == 0&&item.is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0}}'>{{item.format_begin_time}} 开始</view>
-        <view class='daojishi' 
-              wx:elif='{{m.goods_count_down==true &&item.time_state == 1&&item.is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0&&item.act_status == 0&&item.is_on_sale == 1}}'>
-              距结束：{{m.times_arr[item.act_id]}}
-        </view>
-      </view>
-      <view class='price_info'>
-        <text class='zero' style='color:{{comColor}}'>￥<text>{{item.bargain_price}}</text></text>
-        <text class='original_price' wx:if="{{m.goods_price == true && item.max_price != null}}">￥{{item.max_price}}</text>
-      </view>
-      <view class='goods_names'>{{item.goods_name}}</view>
-      <view class='number_info clearfix'>
-        <view class='more_unit'>仅剩{{item.bargain_num}}{{item.unit}}</view>
-        <view class='free_ntn' wx:if="{{m.free_btn == true && item.act_del_flag != 1 && item.is_delete != 1 && m.times_arr[item.act_id] != 0 && item.act_status != 1 && item.is_on_sale != 0 && !(item.time_state == 2&&item.act_del_flag == 0)}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去砍价</view>
-        <view class='orig_ntn' wx:if="{{item.act_del_flag == 1 || item.is_delete == 1 || m.times_arr[item.act_id] == 0 || item.act_status == 1 || item.is_on_sale == 0 || (m.goods_count_down==true &&item.time_state == 2&&item.is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0)}}"
-          style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>原价购买</view>
-      </view>
-    </view>
+	<view class='all_zero_bargain clearfix'>
+		<view
+		 class='each_bargain'
+		 data-link="pages/bargainitem/bargainitem?bargain_id={{item.act_id}}"
+		 catchtap="bindToBargain"
+		 data-is_prd='{{item.is_prd}}'
+		 data-idx="{{m.cur_idx}}"
+		 wx:for='{{m.bargain_goods}}'
+		 wx:if='{{m.list_style == 0 && !m.bottom.subscribe_message}}'
+		 data-goods_price='{{item.goods_price}}'
+		 data-bargain_id='{{item.act_id}}'
+		 data-prd_id='{{item.prd_id}}'
+		 data-goods_id='{{item.goods_id}}'
+		 data-act_delet="{{item.act_del_flag}}"
+		 wx:key='key'
+		 data-is_on_sale="{{item.is_on_sale}}"
+		 data-act_status="{{item.act_status}}"
+		 data-is_delete='{{item.goods_is_delete}}'
+		 data-time_state="{{item.time_state}}"
+		>
+			<view class='each_img'>
+				<image class="sell_out" wx:if='{{item.bargain_num == 0}}' src="{{m.imageUrl}}/image/wxapp/goods_sell_out.png" />
+				<image src="{{m.imageUrl+'/'+item.goods_img}}" />
+				<view class='daojishi' wx:if='{{item.goods_is_delete == 1}}'>商品已删除</view>
+				<view class='daojishi' wx:elif='{{item.goods_is_delete == 0 && item.is_on_sale == 0}}'>商品已下架</view>
+				<view class='daojishi' wx:elif='{{item.time_state == 2&&item.goods_is_delete==0&&item.act_del_flag == 0 || m.times_arr[item.act_id] == 0}}'>活动已结束</view>
+				<view class='daojishi' wx:elif='{{item.act_status == 1 && item.act_del_flag == 0 }}'>活动已停用</view>
+				<view class='daojishi' wx:elif='{{item.act_del_flag == 1}}'>活动已删除</view>
+				<view class='daojishi' wx:elif='{{m.goods_count_down==true &&item.time_state == 0&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0}}'>{{item.format_begin_time}} 开始</view>
+				<view class='daojishi' wx:elif='{{m.goods_count_down==true &&item.time_state == 1&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0&&item.act_status == 0&&item.is_on_sale == 1}}'>
+					距结束：{{m.times_arr[item.act_id]}}
+				</view>
+			</view>
+			<view class='price_info'>
+				<text class='zero' style='color:{{comColor}}'>￥<text>{{item.bargain_price}}</text>
+				</text>
+				<text class='original_price' wx:if="{{m.goods_price == true && item.max_price != null}}">￥{{item.max_price}}</text>
+			</view>
+			<view class='goods_names'>{{item.goods_name}}</view>
+			<view class='number_info clearfix'>
+				<view class='more_unit'>仅剩{{item.bargain_num}}{{item.unit}}</view>
+				<view class='free_ntn' wx:if="{{m.free_btn == true && item.act_del_flag != 1 && item.goods_is_delete != 1 && m.times_arr[item.act_id] != 0 && item.act_status != 1 && item.is_on_sale != 0 && !(item.time_state == 2&&item.act_del_flag == 0)}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>去砍价</view>
+				<view class='orig_ntn' wx:if="{{item.act_del_flag == 1 || item.goods_is_delete == 1 || m.times_arr[item.act_id] == 0 || item.act_status == 1 || item.is_on_sale == 0 || (m.goods_count_down==true &&item.time_state == 2&&item.goods_is_delete==0&&m.times_arr[item.act_id]!=0&&item.act_del_flag == 0)}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>原价购买</view>
+			</view>
+		</view>
 
+	</view>
 
-  </view>
-      
-  </view>
+</view>
+

@@ -15,7 +15,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.dao.SecKillProcessorDao;
@@ -134,7 +134,7 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
      * @param param
      */
     @Override
-    public void processInitCheckedOrderCreate(CreateParam param) {
+    public void processInitCheckedOrderCreate(OrderBeforeParam param) {
         secKillProcessorDao.setOrderPrdSeckillPrice(param);
     }
 
@@ -145,12 +145,12 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
      * @throws MpException
      */
     @Override
-    public void processSaveOrderInfo(CreateParam param, OrderInfoRecord order) throws MpException {
+    public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         secKillProcessorDao.processSeckillStock(param,order);
     }
 
     @Override
-    public void processStockAndSales(CreateParam param) throws MpException {
+    public void processStockAndSales(OrderBeforeParam param) throws MpException {
 
     }
 

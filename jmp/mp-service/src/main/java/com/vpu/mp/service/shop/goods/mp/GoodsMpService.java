@@ -24,6 +24,7 @@ import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
+import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +67,8 @@ public class GoodsMpService extends ShopBaseService {
 
     @Autowired
     EsGoodsSearchMpService esGoodsSearchMpService;
-
+    @Autowired
+    private EsUtilSearchService esUtilSearchService;
     @Autowired
     protected UpYunConfig upYunConfig;
     @Autowired
@@ -89,13 +91,23 @@ public class GoodsMpService extends ShopBaseService {
             param.setSoldOutGoodsShow(false);
         }
 
-        try {
-            // 从es获取
-            goodsListCapsules = getPageIndexGoodsListFromEs(param);
-        } catch (Exception e) {
-            logger().debug("小程序-es-搜索商品错误:" + e.getMessage());
+        if (esUtilSearchService.esState()) {
+            try {
+                // 从es获取
+                log.debug("小程序-es-搜索商品列表");
+                goodsListCapsules = getPageIndexGoodsListFromEs(param);
+                log.debug("小程序-es-搜索商品列表结果:{}",goodsListCapsules);
+            } catch (Exception e) {
+                log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
+                goodsListCapsules = getPageIndexGoodsListFromDb(param);
+                log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
+            }
+        } else {
+            log.debug("小程序-db-搜索商品列表");
             goodsListCapsules = getPageIndexGoodsListFromDb(param);
+            log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
         }
+
         disposeGoodsList(goodsListCapsules, userId);
         return goodsListCapsules;
     }
@@ -219,13 +231,23 @@ public class GoodsMpService extends ShopBaseService {
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(GoodsConstant.POINT_RECOMMEND);
         param.setGoodsItems(goodsIds);
-        try {
-            // 从es获取
-            goodsListCapsules = getPageIndexGoodsListFromEs(param);
-        } catch (Exception e) {
-            logger().debug("小程序-es-搜索商品错误:" + e.getMessage());
+        if (esUtilSearchService.esState()) {
+            try {
+                // 从es获取
+                log.debug("小程序-es-搜索商品列表");
+                goodsListCapsules = getPageIndexGoodsListFromEs(param);
+                log.debug("小程序-es-搜索商品列表结果:{}",goodsListCapsules);
+            } catch (Exception e) {
+                log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
+                goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
+                log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
+            }
+        } else {
+            log.debug("小程序-db-搜索商品列表");
             goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
+            log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
         }
+
         disposeGoodsList(goodsListCapsules, userId);
 
         return goodsListCapsules;
@@ -263,26 +285,36 @@ public class GoodsMpService extends ShopBaseService {
      */
     public GoodsDetailMpVo getGoodsDetailMp(GoodsDetailMpParam param) {
         GoodsDetailMpBo goodsDetailMpBo;
-        try {
-            log.debug("尝试es获取商品详情");
-            goodsDetailMpBo = esGoodsSearchMpService.queryGoodsById(param.getGoodsId());
-            log.debug("商品详情信息 {}", goodsDetailMpBo);
-            // 商品已删除，在es内不存在
-            if (goodsDetailMpBo == null) {
-                goodsDetailMpBo = new GoodsDetailMpBo();
-                goodsDetailMpBo.setDelFlag(DelFlag.NORMAL_VALUE);
-                return goodsDetailMpBo;
+
+        if (esUtilSearchService.esState()) {
+            try {
+                log.debug("小程序-es-搜索商品详情");
+                goodsDetailMpBo = esGoodsSearchMpService.queryGoodsById(param.getGoodsId());
+                log.debug("小程序-es-搜索商品详情结果:{}", goodsDetailMpBo);
+                // 商品已删除，在es内不存在
+                if (goodsDetailMpBo == null) {
+                    return createDeletedGoodsDetailMpVo();
+                }
+                goodsDetailMpBo.setIsDisposedByEs(true);
+            } catch (Exception e) {
+                log.debug("小程序-es-搜索商品详情错误-转换db获取数据:" + e.getMessage());
+                goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
+                log.debug("小程序-db-搜索商品详情结果 {}", goodsDetailMpBo);
+                // 商品从数据库内查询，但是数据已经被删除
+                if (goodsDetailMpBo == null) {
+                    return createDeletedGoodsDetailMpVo();
+                }
+                if (DelFlag.DISABLE_VALUE.equals(goodsDetailMpBo.getDelFlag())) {
+                    return goodsDetailMpBo;
+                }
             }
-            goodsDetailMpBo.setIsDisposedByEs(true);
-        } catch (Exception e) {
-            log.debug("尝试DB获取商品详情");
+        } else {
+            log.debug("小程序-db-搜索商品详情信息");
             goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
-            log.debug("商品详情信息 {}", goodsDetailMpBo);
+            log.debug("小程序-db-搜索商品详情信息 {}", goodsDetailMpBo);
             // 商品从数据库内查询，但是数据已经被删除
             if (goodsDetailMpBo == null) {
-                goodsDetailMpBo = new GoodsDetailMpBo();
-                goodsDetailMpBo.setDelFlag(DelFlag.NORMAL_VALUE);
-                return goodsDetailMpBo;
+                return createDeletedGoodsDetailMpVo();
             }
             if (DelFlag.DISABLE_VALUE.equals(goodsDetailMpBo.getDelFlag())) {
                 return goodsDetailMpBo;
@@ -301,21 +333,45 @@ public class GoodsMpService extends ShopBaseService {
     }
 
     /**
+     * 创建一个处于删除状态的vo
+     * @return {@link GoodsDetailMpVo}
+     */
+    private GoodsDetailMpVo createDeletedGoodsDetailMpVo(){
+        GoodsDetailMpBo goodsDetailMpBo = new GoodsDetailMpBo();
+        goodsDetailMpBo.setDelFlag(DelFlag.NORMAL_VALUE);
+        return goodsDetailMpBo;
+    }
+
+    /**
      * 小程序端-商品搜索界面-可使用搜索条件数据初始化
      * 由ES反向推到可用数据
      *
      * @return {@link GoodsSearchFilterConditionMpVo}
      */
     public GoodsSearchFilterConditionMpVo getGoodsSearchFilterCondition() {
-        try {
-            return esGoodsSearchMpService.getGoodsParam();
-        } catch (Exception e) {
-            logger().debug("es 小程序-商品搜索-条件反推错误：" + e.getMessage());
-            GoodsSearchFilterConditionMpVo vo = new GoodsSearchFilterConditionMpVo();
-            vo.setGoodsBrands(goodsBrandSortMp.getGoodsSearchFilterCondition());
-            vo.setGoodsLabels(goodsLabelMpService.getGoodsSearchFilterCondition());
-            return vo;
+        if (esUtilSearchService.esState()){
+            try {
+                log.debug("小程序-es-商品搜索条件反推");
+                return esGoodsSearchMpService.getGoodsParam();
+            } catch (Exception e) {
+                log.debug("小程序-es-商品搜索条件反推错误-转换db获取数据:" + e.getMessage());
+                return getGoodsSearchFilterConditionFromDb();
+            }
+        } else {
+            log.debug("小程序-db-商品搜索条件反推");
+            return getGoodsSearchFilterConditionFromDb();
         }
+    }
+
+    /**
+     * 从数据库反小程序端商品搜索条件
+     * @return {@link GoodsSearchFilterConditionMpVo}
+     */
+    private GoodsSearchFilterConditionMpVo getGoodsSearchFilterConditionFromDb(){
+        GoodsSearchFilterConditionMpVo vo = new GoodsSearchFilterConditionMpVo();
+        vo.setGoodsBrands(goodsBrandSortMp.getGoodsSearchFilterCondition());
+        vo.setGoodsLabels(goodsLabelMpService.getGoodsSearchFilterCondition());
+        return vo;
     }
 
     /**
@@ -334,14 +390,20 @@ public class GoodsMpService extends ShopBaseService {
             param.setSoldOutGoodsShow(false);
         }
 
-        try {
-            pageResult = esGoodsSearchMpService.queryGoodsByParam(param);
-        } catch (Exception e) {
-            logger().debug("小程序-商品搜索异常：" + e.getMessage());
+        if (esUtilSearchService.esState()) {
+            try {
+                log.debug("小程序-es-搜索商品");
+                pageResult = esGoodsSearchMpService.queryGoodsByParam(param);
+            } catch (Exception e) {
+                log.debug("小程序-es-搜索商品-转换db获取数据:" + e.getMessage());
+                pageResult = searchGoodsFromDb(param);
+            }
+        } else {
+            log.debug("小程序-db-搜索商品");
             pageResult = searchGoodsFromDb(param);
         }
-        disposeGoodsList(pageResult.dataList, param.getUserId());
 
+        disposeGoodsList(pageResult.dataList, param.getUserId());
         return pageResult;
     }
 

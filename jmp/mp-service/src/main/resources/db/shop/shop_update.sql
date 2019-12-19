@@ -1381,3 +1381,5 @@ ALTER TABLE `b2c_mrking_voucher` DROP COLUMN `recommend_type`;
 -- 黄壮壮 添加字段
 ALTER TABLE `b2c_user_account` 
 ADD COLUMN `withdraw_status` tinyint(1) DEFAULT 0 COMMENT '0未提现或部分统计1已统计' AFTER `source`;
+
+alter table `b2c_goods` add column `is_default_product` tinyint(1)  not null default 1 comment '1默认规格，0自定义规格（多规格）',drop column `add_sale_num`;

@@ -10,12 +10,12 @@
       <view class='account_list'>
         <view class='clearfix'>
           <view class='fl'>{{ item.remark }}</view>
-          <view class='fr' wx:if="{{ item.is_paid == 0 }}"><block wx:if='{{item.amount >0}}'>+</block>{{ item.amount }}</view>
-          <view class='fr' wx:if="{{ item.is_paid == 1 }}"><block wx:if='{{item.amount >0}}'>+</block>{{ item.amount }}</view>
-          <view class='fr' wx:if="{{ item.is_paid == 2 }}">{{ item.amount }}</view>
+          <view class='fr' wx:if="{{ item.isPaid == 0 }}"><block wx:if='{{item.amount >0}}'>+</block>{{ item.amount }}</view>
+          <view class='fr' wx:if="{{ item.isPaid == 1 }}"><block wx:if='{{item.amount >0}}'>-</block>{{ item.amount }}</view>
+          <view class='fr' wx:if="{{ item.isPaid == 2 }}">{{ item.amount }}</view>
         </view>
-        <view wx:if="{{item.remark == '评价有礼获得'}}">{{item.order_sn}}</view>
-        <text>{{ item.add_time }}</text>
+        <view wx:if="{{item.remark == '评价有礼获得'}}">{{item.orderSn}}</view>
+        <text>{{ item.createTime }}</text>
       </view>
     </block>
     <view class='load_style' wx:if="{{is_load == 1}}">加载中...</view>

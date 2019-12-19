@@ -90,6 +90,7 @@ public class UserCardVo {
 	@JsonProperty("endTime")
 	private LocalDate endDate;
 	// 头像
+	@JsonProperty("avatar")
 	private String shopAvatar;
 	// 累积消费
 	private BigDecimal paidAmount;

@@ -5,6 +5,8 @@
     "pages/index/index",
     "pages/userinfo/userinfo",
     "pages/webview/webview",
+    "pages/widthdraw/widthdraw",
+    "pages/widthdrawrecord/widthdrawrecord",
     "pages/memberinfo/memberinfo",
     "pages/newsearch/newsearch",
     "pages/store/store",
@@ -68,7 +70,8 @@
         "fullship/fullship",
         "groupbuyinfo/groupbuyinfo",
         "returnorder/returnorder",
-        "returndetail/returndetail"
+        "returndetail/returndetail",
+        "returnorderlist/returnorderlist"
       ]
     }
   ],

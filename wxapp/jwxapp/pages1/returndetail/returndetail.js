@@ -11,24 +11,29 @@ global.wxPage({
   data: {
     imageUrl: imageUrl,
     click_look: imageUrl + 'image/wxapp/click_look.png',
+    returnSn: '', // 退货订单号
+    orderInfo: {}, // 订单信息
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let orderSn = options.order_sn
+    let returnSn = options.return_sn
+    this.setData({
+      returnSn: returnSn
+    })
     this.initData()
   },
 
   // 获取申请订单详情
   initData () {
-    util.api('/api/wxapp/order/refund/info', function(res) {
+    let that = this
+    util.api('/api/wxapp/order/refund/info', function (res) {
       if (res.error === 0) {
-        console.log(res.content)
-
+        that.orderInfo = res.content
       }
-    }, {})
+    }, { returnOrderSn: that.data.returnSn })
   },
 
   /**

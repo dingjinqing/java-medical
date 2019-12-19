@@ -30,8 +30,6 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.OrderCreatePayBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
-import com.vpu.mp.service.shop.activity.processor.FirstSpecialProcessor;
-import com.vpu.mp.service.shop.activity.processor.GradeCardProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -139,11 +137,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private CartService cart;
 
-    @Autowired
-    private FirstSpecialProcessor firstSpecialProcessor;
-
-    @Autowired
-    private GradeCardProcessor gradeCardProcessor;
     /**
      * 营销活动processorFactory (拼团)
      */
@@ -194,19 +187,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         try {
             //设置规格和商品信息、基础校验规格与商品
             processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
-            //TODO 营销相关
+            //TODO 营销相关 活动校验或活动参数初始化
+            processorFactory.processInitCheckedOrderCreate(param);
             if(null != param.getActivityId() && null != param.getActivityType()) {
-                //初始化param里营销相关的内容（活动价格等）
-                processorFactory.processInitCheckedOrderCreate(param);
                 //活动生成ordergodos;
                 orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getStoreId());
             }else {
                 //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
-                OrderCartProductBo orderCartProductBo = OrderCartProductBo.create(param.getOrderCartProductBo());
-                firstSpecialProcessor.doOrderOperation(param.getWxUserInfo().getUserId(), DateUtil.getSqlTimestamp(), orderCartProductBo, param.getStoreId());
-                gradeCardProcessor.doOrderOperation(userCard.getUserGrade(param.getWxUserInfo().getUserId()), orderCartProductBo);
                 //初始化订单商品
-                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), orderCartProductBo, param.getStoreId());
+                orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getOrderCartProductBo(), param.getStoreId());
             }
             orderBo = initCreateOrderBo(param);
             orderBo.setOrderGoodsBo(orderGoodsBos);
@@ -256,7 +245,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
             processorFactory.processStockAndSales(param);
             atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo(), false);
-
         }
     } catch (DataAccessException e) {
         logger().error("下单捕获mp异常", e);
@@ -422,11 +410,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             processParamGoodsByMarket(param, param.getStoreId());
         } else {
             //普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
-            OrderCartProductBo orderCartProductBo = OrderCartProductBo.create(param.getOrderCartProductBo());
-            firstSpecialProcessor.doOrderOperation(param.getWxUserInfo().getUserId(), DateUtil.getSqlTimestamp(), orderCartProductBo, param.getStoreId());
-            gradeCardProcessor.doOrderOperation(userCard.getUserGrade(param.getWxUserInfo().getUserId()), orderCartProductBo);
+            processorFactory.processInitCheckedOrderCreate(param);
             //初始化订单商品
-            vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), orderCartProductBo, param.getStoreId()));
+            vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getOrderCartProductBo(), param.getStoreId()));
         }
 
         //据处理过的param和其他信息填充下单确认页返回信息
