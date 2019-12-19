@@ -63,4 +63,16 @@ public class PayAwardRecordService  extends ShopBaseService {
          return db().selectFrom(PAY_AWARD_RECORD).where(PAY_AWARD_RECORD.ORDER_SN.eq(orderSn)).fetchOne();
     }
 
+    /**
+     * 获取参于次数
+     * @param userId 用户id
+     * @param awardId
+     * @return  参与次数
+     */
+    public Integer getJoinAwardCount(Integer userId, Integer awardId) {
+        Integer integer = db().selectCount().from(PAY_AWARD_RECORD)
+                .where(PAY_AWARD_RECORD.AWARD_ID.eq(awardId))
+                .and(PAY_AWARD_RECORD.USER_ID.eq(userId)).fetchOneInto(Integer.class);
+        return integer;
+    }
 }

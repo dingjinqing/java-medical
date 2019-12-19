@@ -28,12 +28,17 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
     }
 
     /**
-     * 普通优惠卷
+     * 一般营销  首单特惠 会员专享
      */
     private final static List<Byte> generalActivity = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
             BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
             BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
+    );
+    /**
+     * 全局的活动  支付有礼
+     */
+    private final static List<Byte> globaActivity = Arrays.asList(
+            BaseConstant.ACTIVITY_TYPE_PAY_AWARD
     );
 
     /**
@@ -45,16 +50,25 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
      */
     private List<CreateOrderProcessor> processorGeneralList;
 
+    /**
+     * 全局营销
+     */
+    private List<CreateOrderProcessor> processorGlobalList;
+
     @Override
     @PostConstruct
     protected void init(){
         super.init();
         processorMap = new HashMap<>(processors.size());
         processorGeneralList=new ArrayList<>(processors.size());
+        processorGlobalList=new ArrayList<>(processors.size());
         for (CreateOrderProcessor processor : processors) {
             processorMap.put(processor.getActivityType(), processor);
             if (generalActivity.contains(processor.getActivityType())){
                 processorGeneralList.add(processor);
+            }
+            if (globaActivity.contains(processor.getActivityType())){
+                processorGlobalList.add(processor);
             }
         }
     }
@@ -74,6 +88,10 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
                 processor.processInitCheckedOrderCreate(param);
             }
         }
+        for (CreateOrderProcessor processor : processorGlobalList) {
+            //全局活动
+            processor.processInitCheckedOrderCreate(param);
+        }
     }
 
     /**
@@ -87,8 +105,12 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
             processorMap.get(param.getActivityType()).processSaveOrderInfo(param,order);
         }else {
             for (CreateOrderProcessor processor : processorGeneralList) {
-                processor.processInitCheckedOrderCreate(param);
+                processor.processSaveOrderInfo(param,order);
             }
+        }
+        for (CreateOrderProcessor processor : processorGlobalList) {
+            //全局活动
+            processor.processSaveOrderInfo(param,order);
         }
     }
 
@@ -103,8 +125,12 @@ public class OrderCreatePayBeforeMpProcessorFactory extends AbstractProcessorFac
             processorMap.get(param.getActivityType()).processStockAndSales(param);
         }else {
             for (CreateOrderProcessor processor : processorGeneralList) {
-                processor.processInitCheckedOrderCreate(param);
+                processor.processStockAndSales(param);
             }
+        }
+        for (CreateOrderProcessor processor : processorGlobalList) {
+            //全局活动
+            processor.processStockAndSales(param);
         }
     }
 }
