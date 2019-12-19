@@ -30,7 +30,6 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_REBATE = 2;
     /** 砍价商品 */
     public final static Byte ACTIVITY_TYPE_BARGAIN = 3;
-
     /** 积分兑换商品 */
     public final static Byte ACTIVITY_TYPE_INTEGRAL = 4;
     /** 秒杀商品 */
@@ -203,5 +202,14 @@ public final  class  BaseConstant {
      */
     public final static Byte ACTIVITY_NOT_FOREVER =0;
 
+    //**************************商品范围******************************************/
+    /**
+     * 全部商品
+     */
+    public final static Byte GOODS_AREA_TYPE_ALL=1;
+    /**
+     * 部分商品
+     */
+    public final static Byte GOODS_AREA_TYPE_SECTION=0;
 
 }
