@@ -92,32 +92,40 @@
             <span><em style="color: red;">*</em>{{$t('addAndUpdateGoodsLabel.labelStyle')+':'}}</span>
             <div style="margin-top: 5px;display: flex;justify-content: space-around;">
               <div style="flex-grow: 1;text-align: center;">
-                <div>图片1</div>
+                <div class="imgWrap" @click="goodsLabelData.listPattern=1">
+                  <img :src="$imageHost+'/image/admin/new_label_2.jpg'">
+                </div>
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="1"
-                >{{""}}</el-radio>
+                >样式1</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
-                <div>图片2</div>
+                <div class="imgWrap" @click="goodsLabelData.listPattern=2">
+                  <img :src="$imageHost+'/image/admin/new_label_3.jpg'">
+                </div>
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="2"
-                >{{""}}</el-radio>
+                >样式2</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
-                <div>图片3</div>
+                <div class="imgWrap" @click="goodsLabelData.listPattern=3">
+                  <img :src="$imageHost+'/image/admin/new_label_1.jpg'">
+                </div>
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="3"
-                >{{""}}</el-radio>
+                >样式3</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
-                <div>图片4</div>
+                <div class="imgWrap" @click="goodsLabelData.listPattern=4">
+                  <img :src="$imageHost+'/image/admin/new_label_4.jpg'">
+                </div>
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="4"
-                >{{""}}</el-radio>
+                >样式4</el-radio>
               </div>
             </div>
           </div>
@@ -403,6 +411,9 @@ export default {
   border: 1px solid #eee;
   border-radius: 5px;
   background: #f8f8f8;
+}
+.imgWrap{
+  cursor: pointer;
 }
 /deep/.tableClass th {
   background-color: #f5f5f5;

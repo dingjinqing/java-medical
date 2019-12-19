@@ -13,6 +13,10 @@ global.wxPage({
     click_look: imageUrl + 'image/wxapp/click_look.png',
     returnSn: '', // 退货订单号
     orderInfo: {}, // 订单信息
+    refundStatus: 0, // 订单状态
+    returnType: 0, // 仅退款0 退货退款1
+    totalMicroSecond: 0, // 倒计时总秒数
+    clock: '', // 倒计时
   },
 
   /**
@@ -31,9 +35,63 @@ global.wxPage({
     let that = this
     util.api('/api/wxapp/order/refund/info', function (res) {
       if (res.error === 0) {
-        that.orderInfo = res.content
+        let orderInfo = res.content
+        let refundStatus = Number(orderInfo.refundStatus)
+        let returnType = Number(orderInfo.returnType)
+        // 处理数据
+        that.setData({
+          orderInfo: orderInfo,
+          refundStatus: refundStatus,
+          returnType: returnType
+        })
       }
     }, { returnOrderSn: that.data.returnSn })
+  },
+
+  // 倒计时
+  countdown: function () {
+    let that = this;
+    let timer;
+    that.setData({
+      clock: that.dateFormat(totalMicroSecond)
+    })
+    if (totalMicroSecond <= 0) {
+      that.setData({
+        clock: '已经截止'
+      })
+      if (timer) {
+        clearTimeout(timer)
+      }
+      return false;
+    }
+    timer = setTimeout(function () {
+      totalMicroSecond -= 1;
+      that.countdown()
+    }, 1000);
+  },
+
+  // 时间格式化输出，如3:25:19 86。每10ms都会调用一次
+  dateformat: function (micro_second) {
+    // 秒数
+    var second = Math.floor(micro_second);
+    //天数位
+    var date = Math.floor(second / 86400);
+    // 小时位
+    var hr = Math.floor((second - date * 24 * 3600) / 3600);
+    if (hr < 10) {
+      hr = "0" + hr;
+    }
+    // 分钟位
+    var min = Math.floor((second - hr * 60 * 60 - date * 24 * 3600) / 60);
+    if (min < 10) {
+      min = "0" + min;
+    }
+    // 秒位
+    var sec = second % 60;
+    if (sec < 10) {
+      sec = "0" + sec;
+    }
+    return date + "天" + hr + '时' + min + "分" + sec + "秒";
   },
 
   /**

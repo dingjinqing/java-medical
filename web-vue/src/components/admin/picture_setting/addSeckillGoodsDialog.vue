@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { seckillList } from '@/api/admin/marketManage/seckill.js'
+import { dialogSeckillList } from '@/api/admin/marketManage/seckill.js'
 export default {
   name: 'addSpikeGoods',
   components: {
@@ -123,9 +123,9 @@ export default {
     initData () {
       let that = this
       let params = Object.assign({
-        state: [1]
+        state: [1, 2]
       }, this.queryParams, this.pageParams)
-      seckillList(params).then(res => {
+      dialogSeckillList(params).then(res => {
         console.log('content:', res.content)
         if (res.error === 0) {
           that.pageParams = Object.assign({}, res.content.page)
