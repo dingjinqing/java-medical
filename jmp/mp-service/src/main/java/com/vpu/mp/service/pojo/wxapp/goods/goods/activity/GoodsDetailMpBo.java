@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +36,7 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
     @JsonIgnore
     private Integer goodsVideoId;
     @JsonIgnore
-    private List<GradePrd> gradeCardPrice;
+    private List<GradePrd> gradeCardPrice = new ArrayList<>();
     //************ElasticSearch中的数据**************end
 
     @Data
@@ -52,4 +53,18 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
     /**商品主图*/
     @JsonIgnore
     private String goodsImg;
+
+    @Override
+    public String toString() {
+        return "GoodsDetailMpBo{" +
+            "catId=" + catId +
+            ", sortId=" + sortId +
+            ", baseSale=" + baseSale +
+            ", isOnSale=" + isOnSale +
+            ", goodsVideoId=" + goodsVideoId +
+            ", gradeCardPrice=" + gradeCardPrice +
+            ", processedTypes=" + processedTypes +
+            ", goodsImg='" + goodsImg + '\'' +
+            '}'+super.toString();
+    }
 }
