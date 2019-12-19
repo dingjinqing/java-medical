@@ -430,17 +430,17 @@ export default {
       let template = {}
       if (this.isRegion) {
         template = {
-          first_num: 0,
+          first_num: 1,
           first_fee: 0,
-          continue_num: 0,
+          continue_num: 1,
           continue_fee: 0
         }
       } else {
         template = {
           fee_0_condition: 1, // 1.件数，2.金额，3：件数+金额
-          fee_0_con1_num: 0, // 件数的时候的最小件数
+          fee_0_con1_num: 1, // 件数的时候的最小件数
           fee_0_con2_num: 0, // 金额的时候的最小金额
-          fee_0_con3_num: 0, // 第三种的最小件数
+          fee_0_con3_num: 1, // 第三种的最小件数
           fee_0_con3_fee: 0 // 第三种的最小金额
         }
       }
