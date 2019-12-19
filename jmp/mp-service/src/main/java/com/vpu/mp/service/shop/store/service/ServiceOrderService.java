@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -34,16 +35,20 @@ import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreService.STORE_SERVICE;
@@ -756,5 +761,29 @@ public class ServiceOrderService extends ShopBaseService {
     public ServiceOrderRecord getRecord(String orderSn) {
         return db().selectFrom(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne();
     }
+    
+    /**
+     * 还有一小时就开始的预约服务
+     * @return
+     */
+    public List<StoreAppointmentRemindVo> getDealServiceOrder() {
+    	Timestamp timeStampPlus = DateUtil.getTimeStampPlus(1, ChronoUnit.HOURS);
+    	//当前时间一小时之后
+    	String date = DateUtil.dateFormat("HH:mm", timeStampPlus);
+    	List<StoreAppointmentRemindVo> into=new ArrayList<StoreAppointmentRemindVo>();
+		Result<Record> fetch = db().select(SERVICE_ORDER.asterisk(), USER.WX_OPENID, USER.WX_UNION_ID)
+				.from(SERVICE_ORDER, USER)
+				.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(SERVICE_ORDER.USER_ID.eq(USER.USER_ID))
+						.and(SERVICE_ORDER.ORDER_STATUS.eq(ORDER_STATUS_WAIT_PAY)
+								.and(SERVICE_ORDER.SERVICE_DATE.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE)))
+								.and(DSL.left(SERVICE_ORDER.SERVICE_PERIOD,5).eq(date))))
+				.fetch();
+		logger().info("查询");
+		if(fetch!=null) {
+			into = fetch.into(StoreAppointmentRemindVo.class);
+		}
+		return into;
+    }
+    
 
 }

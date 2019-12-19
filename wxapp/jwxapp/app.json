@@ -70,7 +70,8 @@
         "fullship/fullship",
         "groupbuyinfo/groupbuyinfo",
         "returnorder/returnorder",
-        "returndetail/returndetail"
+        "returndetail/returndetail",
+        "returnorderlist/returnorderlist"
       ]
     }
   ],

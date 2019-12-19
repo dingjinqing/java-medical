@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardContentBo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardIdParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListVo;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardOrderVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
@@ -244,38 +245,45 @@ public class PayAwardService extends ShopBaseService {
     }
 
     /**
-     * 获取订单的支付有礼活动
-     * @param orderSn
+     * 获取活动
+     * @param payAwardId
+     * @return
      */
-    public void getOrderPayAward(String orderSn){
+    public PayAwardVo  getPayAwardById(Integer payAwardId){
+        PayAwardRecord payAwardRecord = db().selectFrom(PAY_AWARD).where(PAY_AWARD.ID.eq(payAwardId)).fetchOne();
+        return recordToPayAwardVo(payAwardRecord);
+    }
+
+
+        /**
+         * 获取订单的支付有礼活动
+         * @param orderSn
+         */
+    public PayAwardOrderVo getOrderPayAward(String orderSn){
         //查询orderSN支付有礼活动记录
         PayAwardRecordRecord payAwardRecord = payAwardRecordService.getPayAwardRecordByOrderSn(orderSn);
         if (payAwardRecord==null){
             logger().info("订单orderSn:{},没有参与支付有礼活动",orderSn);
-            return;
+            return null;
         }
         //获取正在进行的活动
         PayAwardVo goingPayAward = getGoingPayAward(payAwardRecord.getCreateTime());
         if (goingPayAward==null){
             logger().info("当前没有进行中的支付有礼活动");
-            return;
+            return null;
         }
-        if (goingPayAward!=null&&payAwardRecord.getId().equals(payAwardRecord.getAwardId())){
-
+        if (!payAwardRecord.getId().equals(payAwardRecord.getAwardId())){
+            logger().info("活动不一致");
+            return null;
         }
-        //用户全部参与的支付有礼活动
-
-
-
-
-
-        //获取订单的折后价格
-//        OrderInfoRecord orderByOrderSn = orderInfoService.getOrderByOrderSn(orderSn);
-//        OrderListInfoVo into = orderByOrderSn.into(OrderListInfoVo.class);
-//        BigDecimal orderFinalAmount = orderInfoService.getOrderFinalAmount(into,false);
-//        //判断是否符合支付有礼活动
-
-
-
+        PayAwardVo payAward = getPayAwardById(payAwardRecord.getAwardId());
+        PayAwardContentBo payAwardContentBo =payAward.getAwardContentList().get(payAwardRecord.getAwardTimes());
+        PayAwardOrderVo payAwardOrderVo = new PayAwardOrderVo();
+        payAwardOrderVo.setPayAwardContentBo(payAwardContentBo);
+        payAwardOrderVo.setPayAwardSize(payAward.getAwardContentList().size());
+        payAwardOrderVo.setCurrentAwardTimes(payAwardRecord.getAwardTimes());
+        return payAwardOrderVo;
     }
+
+
 }

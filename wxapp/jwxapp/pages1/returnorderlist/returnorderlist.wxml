@@ -1,0 +1,44 @@
+<!-- pages1/returnorderlist/returnorderlist.wxml -->
+<include src="/pages/common/header.wxml" />
+<!-- 退款进度 -->
+<view class="main-container">
+  <view class="header">
+    <view>订单号：P201912111535548071</view>
+    <view>下单时间:2019-12-11 15:35:54</view>
+  </view>
+  <view class="content">
+    <view>售后编号：R201912181436055127</view>
+    <view class="order-info">
+      <view class="order-header">
+        <text>买家</text>
+        <view>
+          <text>等待卖家退款</text>
+          <image class="order-icon" src="{{click_look}}" mode="widthFix" />
+        </view>
+      </view>
+      <view class="order-content">
+        <view>
+          <text class="order-item-title">申请售后时间：</text>
+          <text>2019-12-18 14:36:05</text>
+        </view>
+        <view>
+          <text class="order-item-title">售后类型：</text>
+          <text>仅退款</text>
+        </view>
+        <view>
+          <text class="order-item-title">申请原因：</text>
+          <text>缺货</text>
+        </view>
+        <view>
+          <text class="order-item-title">退款金额：</text>
+          <text>￥24.00</text>
+        </view>
+        <view>
+          <text class="order-item-title">运费金额：</text>
+          <text>￥20.00</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<include src="/pages/common/footer.wxml" />

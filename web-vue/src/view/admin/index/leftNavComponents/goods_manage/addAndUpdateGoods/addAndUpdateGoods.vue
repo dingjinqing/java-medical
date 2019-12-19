@@ -177,6 +177,10 @@ export default {
   methods: {
     /* 手动卸载组件并重新装载 */
     reloadCmp () {
+      if (this.isUpdateWrap.isUpdate) {
+        this.$router.push({ name: 'goods_add' })
+      }
+
       this.reload = false
       this.$nextTick(() => {
         this.reload = true
@@ -339,7 +343,7 @@ export default {
           })
           throw new Error(res.message)
         } else {
-          return res.content
+          return res.content || goodsData.goodsId
         }
       }).then(goodsId => {
         return getGoodsQrCode(goodsId)
@@ -349,7 +353,7 @@ export default {
       })
     },
     returnGoodsList () {
-      this.$router.push({ name: 'soldOutGoods' })
+      this.$router.push({ name: 'goodsForSale' })
     },
     /* 初始化待修改商品数据 */
     _initDataForUpdate (goodsId) {

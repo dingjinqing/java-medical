@@ -79,4 +79,40 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
      * 服务承诺信息
      */
     private  List<PledgeInfo> pledgeList;
+
+    @Override
+    public String toString() {
+        return "GoodsDetailMpVo{" +
+            "goodsImgs=" + goodsImgs +
+            ", goodsVideo='" + goodsVideo + '\'' +
+            ", goodsVideoImg='" + goodsVideoImg + '\'' +
+            ", goodsVideoSize=" + goodsVideoSize +
+            ", videoWidth=" + videoWidth +
+            ", videoHeight=" + videoHeight +
+            ", limitBuyNum=" + limitBuyNum +
+            ", limitMaxNum=" + limitMaxNum +
+            ", isExclusive=" + isExclusive +
+            ", isPageUp=" + isPageUp +
+            ", goodsPageId=" + goodsPageId +
+            ", goodsDesc='" + goodsDesc + '\'' +
+            ", goodsAd='" + goodsAd + '\'' +
+            ", brandId=" + brandId +
+            ", brandName='" + brandName + '\'' +
+            ", deliverTemplateId=" + deliverTemplateId +
+            ", deliverPlace='" + deliverPlace + '\'' +
+            ", goodsWeight=" + goodsWeight +
+            ", products=" + products +
+            ", userCanBuy=" + userCanBuy +
+            ", labels=" + labels +
+            ", deliverPrice=" + deliverPrice +
+            ", delFlag=" + delFlag +
+            ", isCollected=" + isCollected +
+            ", comment=" + comment +
+            ", coupons=" + coupons +
+            ", memberCards=" + memberCards +
+            ", activity=" + activity +
+            ", pledgeSwitch=" + pledgeSwitch +
+            ", pledgeList=" + pledgeList +
+            '}'+super.toString();
+    }
 }

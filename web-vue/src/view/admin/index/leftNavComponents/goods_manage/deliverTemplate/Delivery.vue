@@ -87,6 +87,7 @@
       <el-form-item label="配送区域：">
         <LocatTPTable
           ref="regionData"
+          :flag="flag"
           :isRegion="true"
           appointContent="指定配送区域和运费"
           :editLocation="delivery.contentParam.areaParam"
@@ -103,6 +104,7 @@
       <el-form-item v-if="delivery.contentParam.has_fee_0_condition === 1">
         <LocatTPTable
           ref="freeShippingData"
+          :flag="flag"
           :isRegion="false"
           appointContent="指定可包邮配送区域和条件"
           :editLocation="delivery.contentParam.feeConditionParam"

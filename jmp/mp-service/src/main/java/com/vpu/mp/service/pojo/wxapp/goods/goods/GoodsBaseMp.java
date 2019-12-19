@@ -26,4 +26,17 @@ public class  GoodsBaseMp {
     /**商品数量*/
     protected Integer goodsNumber;
     //************ElasticSearch中的数据**************end
+
+
+    @Override
+    public String toString() {
+        return "GoodsBaseMp{" +
+            "isDisposedByEs=" + isDisposedByEs +
+            ", goodsId=" + goodsId +
+            ", goodsName='" + goodsName + '\'' +
+            ", goodsSaleNum=" + goodsSaleNum +
+            ", defaultPrd=" + defaultPrd +
+            ", goodsNumber=" + goodsNumber +
+            '}';
+    }
 }
