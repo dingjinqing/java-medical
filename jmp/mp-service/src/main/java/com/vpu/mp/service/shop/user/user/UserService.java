@@ -956,6 +956,7 @@ public class UserService extends ShopBaseService {
 				parseJson.setWxUser(wxUser);
 				jedis.set(token, Util.toJson(parseJson));
 			}
+			return phoneNoInfo;
 		}
 		return null;
 		
