@@ -61,7 +61,7 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
         cartBo.getCartGoodsList().forEach(goods->{
             orderCartProductList.add(new OrderCartProductBo.OrderCartProduct(goods.getPrdId(), goods.getCartNumber(),goods.getIsChecked()));
         });
-        cartBo.setOrderCartProductBo(OrderCartProductBo.create(orderCartProductList));
+        cartBo.setOrderCartProductBo(new  OrderCartProductBo(orderCartProductList));
 
     }
 }

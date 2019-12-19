@@ -362,7 +362,7 @@ public class BargainService extends ShopBaseService  {
      * @param userId
      * @return
      */
-    public ModuleBargain getPageIndexBargain(ModuleBargain moduleBargain, int userId){
+    public ModuleBargain getPageIndexBargain(ModuleBargain moduleBargain){
         moduleBargain.getBargainGoods().forEach(bargainGoods->{
             BargainRecord bargain = getBargainActById(bargainGoods.getActId());
             GoodsRecord goodsInfo = saas.getShopApp(getShopId()).goods.getGoodsRecordById(bargain.getGoodsId());

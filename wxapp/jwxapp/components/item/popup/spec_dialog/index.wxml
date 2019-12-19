@@ -1,12 +1,25 @@
+<wxs module="filter">
+  // 规格价格
+  getActPrd = function(basePrd,actPrds){
+    if(!basePrd || !actPrds) return
+    var target = actPrds.filter(function(item){
+      return item.prdId === basePrd.prdId
+    })
+    return target[0]
+  }
+  module.exports = {
+    getActPrd: getActPrd
+  }
+</wxs>
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="bottom" bindtap='bindClose'>
   <view class="dialog-box">
     <view class="desc-box">
       <image class="prd-img" src="{{checkedProduct.prdImg ? checkedProduct.prdImg : productsInfo.goodsImgs[0]}}"></image>
       <view class="desc-info">
         <view class="info">
-          <text class="price" style="color:{{main_setting.comColor}};">￥{{checkedProduct.prdRealPrice}}</text>
-          <text class="marking-price">￥{{checkedProduct.prdLinePrice}}</text>
-          <text>库存：{{checkedProduct.prdNumber}}</text>
+          <text class="price" style="color:{{main_setting.comColor}};">￥{{activity ? filter.getActPrd(checkedProduct,activityPrds).prdRealPrice :checkedProduct.prdRealPrice}}</text>
+          <text class="marking-price">￥{{activity ? filter.getActPrd(checkedProduct,activityPrds).prdLinePrice :checkedProduct.prdLinePrice}}</text>
+          <text>库存：{{activity ? filter.getActPrd(checkedProduct,activityPrds).prdNumber :checkedProduct.prdNumber}}</text>
         </view>
         <image class="close-img" src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="bindClose"></image>
       </view>

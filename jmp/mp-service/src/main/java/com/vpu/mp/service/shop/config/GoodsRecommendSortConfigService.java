@@ -6,9 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author 李晓冰
  * @date 2019年08月06日
@@ -28,11 +25,7 @@ public class GoodsRecommendSortConfigService extends BaseShopConfigService {
      * @return
      */
     public GoodsRecommendSortConfig getRecommendSortConfig() {
-        Map jsonObject = getJsonObject(K_RECOMMEND_SORT, Map.class, new HashMap());
-        GoodsRecommendSortConfig config = new GoodsRecommendSortConfig();
-        config.setRecommendSortStatus((Integer) jsonObject.get(K1));
-        config.setRecommendSortImgPath((String) jsonObject.get(K2));
-        config.setRecommendImgLink((String) jsonObject.get(K3));
+        GoodsRecommendSortConfig config = getJsonObject(K_RECOMMEND_SORT, GoodsRecommendSortConfig.class, new GoodsRecommendSortConfig());
         config.setRecommendSortImg(getImgFullUrlUtil(config.getRecommendSortImgPath()));
         return config;
     }
@@ -42,11 +35,7 @@ public class GoodsRecommendSortConfigService extends BaseShopConfigService {
      * @param recommendSortConfig 配置信息
      */
     public void setRecommendSortConfig(GoodsRecommendSortConfig recommendSortConfig) {
-        Map<String,Object> map=new HashMap<>(3);
-        map.put("recommendSortStatus",recommendSortConfig.getRecommendSortStatus());
-        map.put("recommendSortImgPath",recommendSortConfig.getRecommendSortImgPath());
-        map.put("recommendImgLink",recommendSortConfig.getRecommendImgLink());
-        setJsonObject(K_RECOMMEND_SORT,map);
+       setJsonObject(K_RECOMMEND_SORT,recommendSortConfig);
     }
     /**
      * 将相对路劲修改为全路径

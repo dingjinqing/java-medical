@@ -9,6 +9,15 @@ export function seckillList (data) {
   })
 }
 
+// 秒杀活动弹窗
+export function dialogSeckillList (data) {
+  return service({
+    url: '/api/admin/decorate/seckill/list',
+    method: 'post',
+    data: data
+  })
+}
+
 // 添加保存秒杀活动
 export function addSeckillList (data) {
   return service({

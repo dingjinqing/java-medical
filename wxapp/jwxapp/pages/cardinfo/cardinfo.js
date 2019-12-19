@@ -42,7 +42,7 @@ global.wxPage({
 
     console.log(cardNo, cardId)
   },
-  requestCardInfo(cardNo, cardId, card_list) {
+  requestCardInfo (cardNo, cardId, card_list) {
     let that = this
     if (cardNo) {
       util.api('/api/card/detail', res => {
@@ -112,6 +112,7 @@ global.wxPage({
           return;
         }
         let cardInfo = res.content.cardInfo
+        that.handleToJudgementBottom(cardInfo) // 判断底部按钮
         console.log(cardInfo)
         if (cardInfo.activation) {
           that.setData({
@@ -142,14 +143,14 @@ global.wxPage({
 
   },
   // 获取会员卡过期时间
-  getCardExpireTime(cardItem) {
+  getCardExpireTime (cardItem) {
     if (cardItem.cardType === 2) return null
     if (cardItem.expireType === 2) return `永久有效`
     if (cardItem.expire === 1) return `此卡已过期，如需继续使用请联系商家`
     return `${cardItem.startDate} 至 ${cardItem.endDate}`
   },
   // 获取会员卡背景
-  getCardBg(cardItem) {
+  getCardBg (cardItem) {
     console.log(cardItem, this.data.imageUrl);
     switch (cardItem.bgType) {
       case 0:
@@ -159,7 +160,7 @@ global.wxPage({
     }
   },
   // 获取卡类型
-  getTypeName(cardType) {
+  getTypeName (cardType) {
     switch (cardType) {
       case 0:
         return '普通卡';
@@ -170,11 +171,11 @@ global.wxPage({
     }
   },
   // 获取会员卡领取状态
-  getCardStatus(cardItem) {
+  getCardStatus (cardItem) {
 
   },
   // 展示二维码
-  showQrCode() {
+  showQrCode () {
     let qrCode = [this.data.cardInfo.qrCode]
     this.setData({
       qrCode,
@@ -182,7 +183,7 @@ global.wxPage({
     })
   },
   // 等级卡  等级详情
-  getUpgradeCondition(cardInfo) {
+  getUpgradeCondition (cardInfo) {
     if (cardInfo.cardType !== 2 || !cardInfo.nextGradeCard) return
     if (cardInfo.nextGradeCard.gradeConditionJson.gradeScore) {
       this.setData({
@@ -210,7 +211,7 @@ global.wxPage({
     mobile = e.detail.phoneNumber;
   },
   // 判断底部按钮
-  handleToJudgementBottom(carInfo) {
+  handleToJudgementBottom (carInfo) {
     console.log(carInfo)
     let text = ''
     let type = null
@@ -236,13 +237,14 @@ global.wxPage({
       text = '领取会员卡'
       type = 2
     }
+    console.log(text, type)
     this.setData({
       bottomBtnText: text,
       btnType: type
     })
   },
   // 处理底部按钮点击
-  handleToBtn(e) {
+  handleToBtn (e) {
     console.log(e)
     switch (e.currentTarget.dataset.btntype) {
       case 1:
@@ -260,7 +262,7 @@ global.wxPage({
     }
   },
   // 立即开通
-  getCard(cardId) {
+  getCard (cardId) {
     console.log(this.data.bindMobile)
     var that = this;
     if (this.data.bindMobile == 1 && util.getCache('mobile') == '') {
@@ -290,7 +292,7 @@ global.wxPage({
     }, { cardId: cardId })
   },
   // 领取会员卡
-  getUserCard() {
+  getUserCard () {
     var that = this;
     that.data.cardInfo.buyScore = '';
     var cardId = that.data.cardInfo.cardId;
@@ -374,7 +376,7 @@ global.wxPage({
     }
   },
   // 激活会员卡
-  getUsing(e) {
+  getUsing (e) {
     console.log(this.data.cardInfo.examine)
     if (is_fullprice == 0 && code == 0 && seckillId == 0 && goods_id == 0) {
       util.redirectTo({
@@ -387,7 +389,7 @@ global.wxPage({
     }
   },
   // 设置默认会员卡
-  setDefault(e) {
+  setDefault (e) {
     console.log(e.currentTarget.dataset)
     var that = this;
     util.api('/api/wxapp/card/default', function (res) {
@@ -403,22 +405,22 @@ global.wxPage({
       }
     }, { cardNo: e.currentTarget.dataset.cardno })
   },
-  closeIpt() {
+  closeIpt () {
     this.setData({
       is_receive: 0,
       receive_action: 0
     })
   },
-  bindCode(e) {
+  bindCode (e) {
     card_code = e.detail.value;
   },
-  bindCardNum(e) {
+  bindCardNum (e) {
     card_num = e.detail.value;
   },
-  bindCardPwd(e) {
+  bindCardPwd (e) {
     card_pwd = e.detail.value;
   },
-  fetchCard() {
+  fetchCard () {
     var that = this;
     util.api('/api/wxapp/card/code/receive', function (res) {
       console.log(res)

@@ -31,12 +31,13 @@
       <template v-if="isRegion">
         <el-table-column
           prop="first_num"
-          label="首件（件）"
+          :label="flag === 0 ? '首件（件）' : '首件（公斤）'"
         >
           <template slot-scope="scope">
             <el-form
               :ref="'firstNum' + scope.$index"
               :model="scope.row"
+              style="height: 60px;"
             >
               <el-form-item
                 prop="first_num"
@@ -58,10 +59,11 @@
             <el-form
               :ref="'firstFee' + scope.$index"
               :model="scope.row"
+              style="height: 60px;"
             >
               <el-form-item
                 prop="first_fee"
-                :rules="[{validator: validateMoney, message: '格式不正确', trigger: 'blur'}]"
+                :rules="[{validator: validateMoney, trigger: 'blur'}]"
               >
                 <el-input
                   v-model="scope.row.first_fee"
@@ -73,12 +75,13 @@
         </el-table-column>
         <el-table-column
           prop="continue_num"
-          label="续件（件）"
+          :label="flag === 0 ? '续件（件）' : '续件（公斤）'"
         >
           <template slot-scope="scope">
             <el-form
               :ref="'continueNum' + scope.$index"
               :model="scope.row"
+              style="height: 60px;"
             >
               <el-form-item
                 prop="continue_num"
@@ -100,10 +103,11 @@
             <el-form
               :ref="'continueFee' + scope.$index"
               :model="scope.row"
+              style="height: 60px;"
             >
               <el-form-item
                 prop="continue_fee"
-                :rules="[{validator: validateMoney, message: '格式不正确', trigger: 'blur'}]"
+                :rules="[{validator: validateMoney, trigger: 'blur'}]"
               >
                 <el-input
                   v-model="scope.row.continue_fee"
@@ -125,6 +129,7 @@
               :ref="'columnForm' + scope.$index"
               :model="scope.row"
               :inline="true"
+              style="height: 60px;"
             >
               <el-form-item>
                 <el-select
@@ -133,7 +138,7 @@
                 >
                   <el-option
                     :value="1"
-                    label="件数"
+                    :label="flag === 0 ? '件数' : '公斤数'"
                   ></el-option>
                   <el-option
                     :value="2"
@@ -141,7 +146,7 @@
                   ></el-option>
                   <el-option
                     :value="3"
-                    label="件数+金额"
+                    :label="flag === 0 ? '件数+金额' : '公斤数+金额'"
                   ></el-option>
                 </el-select>
               </el-form-item>
@@ -149,18 +154,18 @@
                 v-if="scope.row.fee_0_condition === 1"
                 label="满"
                 prop="fee_0_con1_num"
-                :rules="[{ validator: validateNum, message:'包邮件数不能小于1', trigger: 'blur' }]"
+                :rules="[{ validator: validateNum, trigger: 'blur' }]"
               >
                 <el-input
                   v-model="scope.row.fee_0_con1_num"
                   style="width:80px"
-                ></el-input>件包邮
+                ></el-input>{{ flag === 0 ? '件' : '公斤' }}包邮
               </el-form-item>
               <el-form-item
                 v-if="scope.row.fee_0_condition === 2"
                 label="满"
                 prop="fee_0_con2_num"
-                :rules="[{ validator: validateMoney, message:'包邮金额不能小于1', trigger: 'blur' }]"
+                :rules="[{ validator: validateMoney, trigger: 'blur' }]"
               >
                 <el-input
                   v-model="scope.row.fee_0_con2_num"
@@ -171,7 +176,7 @@
                 v-if="scope.row.fee_0_condition === 3"
                 label="满"
                 prop="fee_0_con3_num"
-                :rules="[{ validator: validateNum, message:'包邮件数不能小于1', trigger: 'blur' }]"
+                :rules="[{ validator: validateNum, trigger: 'blur' }]"
               >
                 <el-input
                   v-model="scope.row.fee_0_con3_num"
@@ -180,9 +185,9 @@
               </el-form-item>
               <el-form-item
                 v-if="scope.row.fee_0_condition === 3"
-                label="件，"
+                :label="flag === 0 ? '件，' : '公斤，'"
                 prop="fee_0_con3_fee"
-                :rules="[{ validator: validateMoney,  message:'包邮金额不能小于1', trigger: 'blur' }]"
+                :rules="[{ validator: validateMoney,  trigger: 'blur' }]"
               >
                 <el-input
                   v-model="scope.row.fee_0_con3_fee"
@@ -223,6 +228,11 @@ export default {
   components: { LocatTP },
   mixins: [RulesMixins, publicMixins],
   props: {
+    // 判断普通 / 运费
+    flag: {
+      type: Number,
+      required: true
+    },
     // 判断是包邮还是配送
     isRegion: {
       type: Boolean,
@@ -430,17 +440,17 @@ export default {
       let template = {}
       if (this.isRegion) {
         template = {
-          first_num: 0,
+          first_num: 1,
           first_fee: 0,
-          continue_num: 0,
+          continue_num: 1,
           continue_fee: 0
         }
       } else {
         template = {
           fee_0_condition: 1, // 1.件数，2.金额，3：件数+金额
-          fee_0_con1_num: 0, // 件数的时候的最小件数
+          fee_0_con1_num: 1, // 件数的时候的最小件数
           fee_0_con2_num: 0, // 金额的时候的最小金额
-          fee_0_con3_num: 0, // 第三种的最小件数
+          fee_0_con3_num: 1, // 第三种的最小件数
           fee_0_con3_fee: 0 // 第三种的最小金额
         }
       }

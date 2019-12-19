@@ -9,7 +9,7 @@
       >
         <el-table-column
           align="center"
-          width="70px"
+          width="50"
           label=""
         >
           <template slot-scope="scope">
@@ -18,26 +18,17 @@
         </el-table-column>
         <!-- 商品名称图片 -->
         <el-table-column
-          align="center"
+          align="left"
           prop="goodsName"
           :label="$t('allGoods.allGoodsData.goodsName')"
-          width="180px"
+          width="230"
         >
           <template slot-scope="{row}">
-            <div>
-              <img
-                style="width: 70px;height: 70px;float: left;"
-                :src="row.prdImg"
-              >
-              <div style="padding:10px;">
-                <span
-                  v-if="row.sourceName !== null"
-                  class="goodsTypeSpanWrap"
-                >{{row.sourceName}}</span>
-                <span
-                  v-if="row.goodsTypeName !== null"
-                  class="goodsSourceSpanWrap"
-                >{{row.goodsTypeName}}</span>
+            <div class="nameImgWrap">
+              <img class="imgItem" :src="row.prdImg">
+              <div class="nameItem" :title="row.prdDesc === ''?row.goodsName+$t('allGoods.allGoodsData.noPrdSn'):row.goodsName+row.prdDesc">
+                <span v-if="row.sourceName !== null" class="goodsTypeSpanWrap">{{row.sourceName}}</span>
+                <span v-if="row.goodsTypeName !== null" class="goodsSourceSpanWrap">{{row.goodsTypeName}}</span>
                 {{row.goodsName}}
                 <span v-if="row.prdDesc === ''">
                   ({{$t('allGoods.allGoodsData.noPrdSn')}})
@@ -52,6 +43,7 @@
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.shopPrice')"
+          width="100"
         >
           <template slot-scope="{row}">
             <span v-if="!row.prdPriceEdit">
@@ -76,26 +68,31 @@
           align="center"
           prop="prdSn"
           :label="$t('allGoods.allGoodsData.prdSn')"
+          width="100"
         />
         <el-table-column
           align="center"
           prop="catName"
           :label="$t('allGoods.allGoodsData.cat')"
+          width="100"
         />
         <el-table-column
           align="center"
           prop="sortName"
           :label="$t('allGoods.allGoodsData.sort')"
+          width="100"
         />
         <el-table-column
           align="center"
           prop="brandName"
           :label="$t('allGoods.allGoodsData.goodsBrand')"
+          width="100"
         >
         </el-table-column>
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.goodsNumber')"
+          width="130"
         >
           <template slot-scope="{row}">
             <span v-if="!row.prdNumberEdit">
@@ -119,21 +116,16 @@
         <el-table-column
           align="center"
           :label="$t('allGoods.allGoodsData.goodsLabel')"
-          min-width="120px"
+          width="150"
         >
           <template slot-scope="{row}">
-            <div style="">
-              <div style="width:120px; float: left;">
-                <span
-                  v-for="(item,index) in row.goodsLabels"
-                  :key="index"
-                  class="goodsLabelSpanWrap"
-                >{{item.name}}</span>
+            <div style="display: flex;justify-content: flex-end;align-items: center;">
+              <div>
+                <span v-for="(item,index) in row.goodsLabels" :key="index" class="goodsLabelSpanWrap">{{item.name}}</span>
               </div>
-              <div
-                style="width: 50px;float:right;color:#5a8bff;cursor: pointer;"
-                @click="tdLabelSetClick(row)"
-              >{{$t('allGoods.allGoodsData.setting')}}</div>
+              <div style="width:40px;flex-shrink:0;cursor: pointer;" @click="tdLabelSetClick(row)">
+                {{$t('allGoods.allGoodsData.setting')}}
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -201,7 +193,7 @@
         <span>{{$t('allGoods.allGoodsData.goodsLabel')}}：</span>
         <el-select
           v-model="goodsLabelData.labelSelectedTempVal"
-          :placeholder="$t('allGoods.allGoodsData.chooseCategory')"
+          :placeholder="$t('allGoods.allGoodsData.chooseGoodsLabel')"
           size="small"
           @change="tdLabelSelectChange"
           style="width:170px;"
@@ -216,11 +208,11 @@
       </div>
       <div
         v-if="goodsLabelData.labelSelectedOptions.length>0"
-        style="display: flex;flex-wrap: wrap;align-items:center;margin-top: 10px;"
+        style="display: flex;margin-top: 10px;"
       >
-        <div>{{$t('allGoods.allGoodsData.selected')}}：</div>
-        <div
-          class="selectedWrap"
+        <div style="width:45px;flex-shrink:0;">{{this.$t('allGoods.allGoodsData.selected')}}：</div>
+        <div class="labelSelectedWrapPanel">
+          <div class="labelSelectedWrap"
           v-for="(item,index) in goodsLabelData.labelSelectedOptions"
           :key="index"
         >
@@ -229,6 +221,7 @@
             @click="tdDeleteLabel(item,index)"
             class="deleteIcon"
           >×</span>
+        </div>
         </div>
       </div>
       <div slot="footer">
@@ -505,47 +498,77 @@ export default {
   color: #000;
   padding: 8px 10px;
 }
+.nameImgWrap{
+  display: flex;
+}
+.nameImgWrap::after{
+  content: '';
+  display: block;
+  clear: both;
+}
+.imgItem{
+  width: 60px;
+  height: 60px;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  margin: 2px 7px 0 0;
+}
+.nameItem {
+  flex: 1;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
 .goodsSourceSpanWrap {
   border: 1px solid #ef8115;
   color: #ef8115;
   border-radius: 3px;
-  padding: 2px;
-  margin-right: 2px;
+  padding: 0px 2px;
 }
 .goodsTypeSpanWrap {
   border: 1px solid #ff3f3f;
   color: #ff3f3f;
   border-radius: 3px;
-  padding: 2px;
-  margin-right: 2px;
+  padding: 0px 2px;
 }
 .goodsLabelSpanWrap {
   border: 1px solid #cccccc;
   color: #666;
   border-radius: 3px;
-  padding: 2px;
+  padding:0px 2px;
   margin-right: 2px;
   display: inline-block;
 }
-.selectedWrap {
-  min-width: 70px;
-  height: 22px;
+.labelSelectedWrapPanel{
+  background-color: #f8f8f8;
+  width: 80%;
   border: 1px solid #ccc;
-  line-height: 22px;
+  padding: 10px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.labelSelectedWrap {
+  border: 1px solid #ccc;
   text-align: center;
-  padding: 0px 5px;
-  margin: 0px 5px;
   background-color: #fff;
   position: relative;
+  padding: 5px 5px;
+  margin-right: 10px;
+  margin-top: 10px;
+  flex-shrink: 0;
 }
-.selectedWrap .deleteIcon {
-  width: 17px;
-  height: 17px;
+.labelSelectedWrap .deleteIcon {
+  width: 13px;
+  height: 13px;
   color: #fff;
   background: #ccc;
   border: 1px solid #ccc;
   border-radius: 50%;
-  line-height: 17px;
+  line-height: 10px;
   text-align: center;
   position: absolute;
   top: -8px;

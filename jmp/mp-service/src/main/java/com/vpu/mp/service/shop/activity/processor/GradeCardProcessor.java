@@ -104,7 +104,7 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
         List<GoodsDetailMpBo.GradePrd> gradeCards = goodsDetailMpBo.getGradeCardPrice();
         if (!goodsDetailMpBo.getIsDisposedByEs()) {
-            log.debug("会员价格查询");
+            log.debug("小程序-会员价格查询");
             List<GradePrdRecord> goodsGradeGradePrice = memberCardProcessorDao.getGoodsGradeGradePrice(param.getUserId(), param.getGoodsId());
             gradeCards = goodsGradeGradePrice.stream().map(x -> x.into(GoodsDetailMpBo.GradePrd.class)).collect(Collectors.toList());
             goodsDetailMpBo.setGradeCardPrice(gradeCards);

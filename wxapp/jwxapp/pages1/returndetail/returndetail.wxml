@@ -2,35 +2,97 @@
 <include src="/pages/common/header.wxml" />
 <!-- 售后详情 -->
 <view class="main-container">
-  <!-- 申请详情 -->
   <block>
-    <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
-      <view class="order-header-h">等待商家处理售后申请</view>
-      <view class="order-header-p">如果商家同意：退款将在3日内返还您的支付账户</view>
-      <view class="order-header-p">如果商家拒绝：您可以重新创建售后申请</view>
-    </view>
-    <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
-      <view class="order-header-h">商家同意后申请</view>
-      <view class="order-header-p">审核售后申请时间：2019-12-16 10:20:12</view>
-      <view class="order-header-p">注：请提交物流信息，商家将尽快处理您的订单</view>
-    </view>
+    <block wx:if="{{refundStatus === 1||refundStatus === 4}}">
+      <!-- 买家仅退款，退货退款，填写物流[查看订单]申请后，等待商家审核[撤销申请，查看订单] -->
+      <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+        <view class="order-header-h">等待商家处理售后申请</view>
+        <view class="order-header-p">如果商家同意：退款将在3日内返还您的支付账户</view>
+        <view class="order-header-p">如果商家拒绝：您可以重新创建售后申请</view>
+      </view>
+    </block>
+    <block wx:elif="{{refundStatus === 2}}">
+      <!-- 商家同意买家退货退款申请[查看订单，提交物流，撤销申请] -->
+      <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+        <view class="order-header-h">商家同意售后申请</view>
+        <view class="order-header-p">审核售后申请时间：2019-12-16 10:20:12</view>
+        <view class="order-header-p">注：请提交物流信息，商家将尽快处理您的订单</view>
+      </view>
+    </block>
+    <block wx:elif="{{refundStatus === 3}}">
+      <!-- 卖家拒绝售后申请[查看订单] -->
+      <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+        <view class="order-header-h">卖家拒绝售后申请</view>
+        <view class="order-header-p">审核售后申请时间：2019-12-16 10:20:12</view>
+        <view class="order-header-p">拒绝理由：不符合退货申请条件</view>
+      </view>
+    </block>
+    <block wx:elif="{{refundStatus === 6}}">
+      <!-- 买家提交物流后，卖家拒绝申请[创建售后申请，查看订单] -->
+      <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+        <view class="order-header-h">商家拒绝您的售后申请，如有疑问请联系商家或重新创建售后申请</view>
+        <view class="order-header-p">审核售后申请时间：2019-12-16 10:20:12</view>
+      </view>
+    </block>
+    <block wx:elif="{{refundStatus === 7}}">
+      <!-- 买家撤销申请[查看订单] -->
+      <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+        <view class="order-header-h">买家撤销售后申请</view>
+        <view class="order-header-p">撤销售后申请时间：2019-12-19 14:24:19</view>
+        <view class="order-header-p">买家主动撤销售后申请</view>
+      </view>
+    </block>
+    <block wx:elif="{{refundStatus === 5}}">
+      <!-- 商家同意退款申请完成退款[查看订单] -->
+      <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+        <view class="order-header-h">商家售后完成</view>
+        <view class="order-header-p">售后完成时间：2019-12-19 14:06:57</view>
+      </view>
+    </block>
     <view class="order-header-detail">
-      <block>
+      <block wx:if="{{refundStatus === 1||refundStatus === 4}}">
         若商家在
         <text class="order-header-time" style='color:{{comColor}}'>1天02时40分30秒</text>
-        内未处理，则申请达成并退款给您
+        内未处理，则申请达成并退款给您。
       </block>
-      <block>
+      <block wx:elif="{{refundStatus === 4&& returnType === 1}}">
         请在
         <text class="order-header-time" style='color:{{comColor}}'>1天02时40分30秒</text>
-        内退货给商家，否则本次售后申请将自动关闭
+        内退货给商家，否则本次售后申请将自动关闭。
       </block>
+      <block wx:elif="{{refundStatus === 6}}">拒绝原因：买家物流延误</block>
+      <block wx:elif="{{refundStatus === 5}}">注：您的售后申请已经处理完成，请查看付款账户的余额，本次维权结束。</block>
     </view>
     <view class="order-header-btns">
+      <text class="order-header-btn" wx:if="{{refundStatus === 2}}">提交物流</text>
+      <text class="order-header-btn" wx:if="{{!(refundStatus === 4 && returnType === 1)}}">撤销申请</text>
+      <text class="order-header-btn" wx:if="{{refundStatus === 6}}">创建售后申请</text>
       <text class="order-header-btn">查看订单</text>
-      <text class="order-header-btn">提交物流</text>
-      <text class="order-header-btn">撤销申请</text>
-      <text class="order-header-btn">查看订单</text>
+    </view>
+    <view class="order-block" wx:if="{{refundStatus === 4 && returnType === 1}}">
+      <view class="order-block-title">退货物流</view>
+      <view class="order-block-content">
+        <view class="order-block-detail-item">
+          <text class="details-item-title">物流公司：</text>
+          <text>韵达快递</text>
+        </view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">运单号码：</text>
+          <text>31435433321434</text>
+        </view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">联系电话：</text>
+          <text>17283302134</text>
+        </view>
+        <view class="order-block-detail-item">
+          <text class="details-item-title">退货凭证：</text>
+          <view class="details-item-content">
+            <block>
+              <image class="details-item-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg"></image>
+            </block>
+          </view>
+        </view>
+      </view>
     </view>
     <view class="order-info">
       <view class="order-flex">
@@ -68,6 +130,10 @@
           <text>多拍/不想要</text>
         </view>
         <view class="order-block-detail-item">
+          <text class="details-item-title">申请说明：</text>
+          <text>不想要</text>
+        </view>
+        <view class="order-block-detail-item">
           <text class="details-item-title">申请凭证：</text>
           <view class="details-item-content">
             <block>
@@ -96,7 +162,7 @@
       </view>
     </view>
     <view class="customer-wrap">
-      <button class="customer-btn" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>联系客服</button>
+      <button open-type="contact" class="customer-btn" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>联系客服</button>
     </view>
   </block>
 </view>
