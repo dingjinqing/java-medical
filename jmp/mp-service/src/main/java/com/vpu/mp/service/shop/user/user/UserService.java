@@ -50,6 +50,7 @@ import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam.PathQuery;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser.WxUserInfo;
 import com.vpu.mp.service.saas.shop.ShopImageManageService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -63,6 +64,7 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.user.collection.UserCollectionService;
 
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.api.WxOpenMaService;
@@ -920,5 +922,42 @@ public class UserService extends ShopBaseService {
 			return null;
 		}
 		return db().selectFrom(USER).where(USER.WX_OPENID.eq(openId)).fetchAny();
+	}
+	
+	//解析手机号
+	public WxMaPhoneNumberInfo wxDecryptData(WxAppAccountParam param,String tokenPrefix) {
+		Integer userId=param.getUserId();
+		Integer shopId = this.getShopId();
+		WxOpenMaService maService = saas.shop.mp.getMaServiceByShopId(shopId);
+		String sessionKey = jedis.get(getSessionKey(shopId, userId));
+		logger().info("解析手机号获取sessionKey"+StringUtils.isEmpty(sessionKey));
+		WxMaPhoneNumberInfo phoneNoInfo = maService.getUserService().getPhoneNoInfo(sessionKey,param.getEncryptedData(), param.getIv());
+		logger().info("获取手机号"+phoneNoInfo);
+		if(phoneNoInfo!=null) {
+			UserInfo userInfo = getUserInfo(userId);
+			if(StringUtils.isEmpty(userInfo.getMobile())) {
+				//TODO 短信平台
+				 //$this->shop()->serviceRequest->smsPlatform->addMobile($shopInfo->seller_account_action, $shopInfo->seller_account, $objData['data']->purePhoneNumber);
+			}
+			if(StringUtils.isEmpty(phoneNoInfo.getPhoneNumber())) {
+				logger().info("userId："+userId+"没有手机号");
+				return null;
+			}
+			String phoneNumber = phoneNoInfo.getPhoneNumber();
+			int execute = db().update(USER).set(USER.MOBILE,phoneNumber).where(USER.USER_ID.eq(userId)).execute();
+			logger().info("更新用户userId："+userId+"手机号,结果"+execute);
+			String token = tokenPrefix + Util.md5(shopId + "_" +userId);
+			String json = jedis.get(token);
+			WxAppSessionUser parseJson = Util.parseJson(json, WxAppSessionUser.class);
+			if(!phoneNumber.equals(parseJson.getWxUser().getMobile())) {
+				logger().info("redis更新用户手机号");
+				WxUserInfo wxUser = parseJson.getWxUser();
+				wxUser.setMobile(phoneNumber);
+				parseJson.setWxUser(wxUser);
+				jedis.set(token, Util.toJson(parseJson));
+			}
+		}
+		return null;
+		
 	}
 }
