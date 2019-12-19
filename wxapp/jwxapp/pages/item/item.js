@@ -22,9 +22,9 @@ const actBaseInfo = {
       prdLinePrice: 'prdPrice'
     },
     countDownInfo: {
-      canCountDown:[0,3],
-      3:'startTime',
-      0:'endTime'
+      canCountDown: [0, 3],
+      3: 'startTime',
+      0: 'endTime'
     }
   }
 }
@@ -42,7 +42,7 @@ global.wxPage({
     limitInfo: null,
     productInfo: null,
     canBuy: true,
-    actBarInfo:{}
+    actBarInfo: {}
   },
   /**
    * 生命周期函数--监听页面加载
@@ -91,8 +91,11 @@ global.wxPage({
   },
   // 商品详情-自定以内容
   getGoodsDescInfo({
-    goodsDesc = null, isPageUp = 0, goodsPageId = null
+    goodsDesc = null,
+    isPageUp = 0,
+    goodsPageId = null
   }) {
+    console.log(goodsDesc)
     this.setData({
       goodsDescInfo: {
         goodsDesc,
@@ -102,19 +105,19 @@ global.wxPage({
     })
   },
   // 商品评价信息
-  getComment(goodsInfo) {
-    let {
-      comment
-    } = goodsInfo
+  getComment({
+    comment
+  }) {
     this.setData({
       comment
     })
   },
   // 服务承诺请求
-  requestPledge(goodsInfo) {
-    let {
-      brandId = null, goodsId, sortId = null
-    } = goodsInfo;
+  requestPledge({
+    brandId = null,
+    goodsId,
+    sortId = null
+  }) {
     util.api(
       "/api/wxapp/config/pledge/list",
       res => {
@@ -131,14 +134,16 @@ global.wxPage({
     );
   },
   // 获取规格信息
-  getProduct(data) {
-    let {
+  getProduct({
+    detail,
+    detail: {
       prdNumber,
       limitBuyNum,
       limitMaxNum
-    } = data.detail;
+    }
+  }) {
     this.setData({
-      product: data.detail,
+      product: detail,
       limitInfo: {
         prdNumber,
         limitBuyNum,
@@ -154,12 +159,11 @@ global.wxPage({
     console.log(this.data.productInfo);
   },
   // 获取商品轮播图/视频
-  getMediaInfo(goodsInfo) {
-    let {
-      goodsImgs,
-      goodsVideo,
-      goodsVideoImg
-    } = goodsInfo;
+  getMediaInfo({
+    goodsImgs,
+    goodsVideo,
+    goodsVideoImg
+  }) {
     this.setData({
       goodsMediaInfo: {
         goodsImgs,
@@ -169,23 +173,22 @@ global.wxPage({
     });
   },
   // 获取商品基本信息
-  getGoodsInfo(goodsInfo) {
-    let {
-      goodsId,
-      goodsName,
-      goodsSaleNum,
-      labels,
-      goodsAd,
-      defaultPrd,
-      products,
-      goodsNumber,
-      goodsImgs,
-      limitBuyNum,
-      limitMaxNum,
-      deliverPlace,
-      deliverPrice,
-      isCollected
-    } = goodsInfo;
+  getGoodsInfo({
+    goodsId,
+    goodsName,
+    goodsSaleNum,
+    labels,
+    goodsAd,
+    defaultPrd,
+    products,
+    goodsNumber,
+    goodsImgs,
+    limitBuyNum,
+    limitMaxNum,
+    deliverPlace,
+    deliverPrice,
+    isCollected
+  }) {
     let info = {
       goodsId,
       goodsName,
@@ -234,59 +237,79 @@ global.wxPage({
   getActivity({
     activity
   }) {
-    if(!activity) return
+    if (!activity) return
     this.getCountDown(activity)
     this.setData({
       activity,
-      'actBarInfo.actName':this.getActName(activity),
-      'actBarInfo.actStatusName':this.getActStatusName(activity),
-      'actBarInfo.prdRealPrice':this.getMin(activity.actProducts.map(item => {let {[actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]:prdRealPrice} = item; return prdRealPrice})),
-      'actBarInfo.prdLinePrice':this.getMin(activity.actProducts.map(item => {let {[actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]:prdLinePrice} = item; return prdLinePrice}))
+      'actBarInfo.actName': this.getActName(activity),
+      'actBarInfo.actStatusName': this.getActStatusName(activity),
+      'actBarInfo.prdRealPrice': this.getMin(activity.actProducts.map(item => {
+        let {
+          [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice
+        } = item;
+        return prdRealPrice
+      })),
+      'actBarInfo.prdLinePrice': this.getMin(activity.actProducts.map(item => {
+        let {
+          [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice
+        } = item;
+        return prdLinePrice
+      }))
     })
   },
   // 获取actBar活动名称
-  getActName({activityType}){
-    if(!activityType) return null
+  getActName({
+    activityType
+  }) {
+    if (!activityType) return null
     return actBaseInfo[activityType].actName
   },
   // 获取actBar活动状态
-  getActStatusName({actState,activityType}){
+  getActStatusName({
+    actState,
+    activityType
+  }) {
     return actBaseInfo[activityType]['actStatus'][actState] || null
   },
   // 获取actBar活动倒计时
-  getCountDown({activityType,actState,endTime,startTime}){
-    if(!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
-    let total_micro_second = Math.round((new Date(actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime:endTime).getTime() - new Date().getTime()) / 1000)
-    this.countdown(total_micro_second,actState,activityType)
+  getCountDown({
+    activityType,
+    actState,
+    endTime,
+    startTime
+  }) {
+    if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
+    let total_micro_second = Math.round((new Date(actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime).getTime() - new Date().getTime()) / 1000)
+    this.countdown(total_micro_second, actState, activityType)
   },
   // 获取最小值
   getMin(arr) {
     return Math.min(...arr);
   },
   // 倒计时
-  countdown(total_micro_second,actState,activityType) {
+  countdown(total_micro_second, actState, activityType) {
     let clock =
-      total_micro_second <= 0
-        ? "已经截至"
-        : util.dateformat(total_micro_second);
+      total_micro_second <= 0 ?
+      "已经截至" :
+      util.dateformat(total_micro_second);
     this.setData({
       'actBarInfo.clock': clock
     });
     console.log(total_micro_second)
-    if(actBaseInfo[activityType]['countDownInfo'][actState] === 'endTime' && total_micro_second > 0){
+    if (actBaseInfo[activityType]['countDownInfo'][actState] === 'endTime' && total_micro_second > 0) {
       this.setData({
-        canBuy:true
+        'dealtAct.canBuy': true
       })
     } else {
       this.setData({
-        canBuy:false
+        'dealtAct.canBuy': false
       })
     }
     if (total_micro_second <= 0) return;
     this.setData({
       actBartime: setTimeout(() => {
         total_micro_second -= 1;
-        this.countdown(total_micro_second,actState,activityType);
+        this.countdown(total_micro_second, actState, activityType);
       }, 1000)
     });
   },
