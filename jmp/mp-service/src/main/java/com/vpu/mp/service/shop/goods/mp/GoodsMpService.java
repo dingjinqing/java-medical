@@ -100,10 +100,12 @@ public class GoodsMpService extends ShopBaseService {
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
                 goodsListCapsules = getPageIndexGoodsListFromDb(param);
+                log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
             }
         } else {
             log.debug("小程序-db-搜索商品列表");
             goodsListCapsules = getPageIndexGoodsListFromDb(param);
+            log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
         }
 
         disposeGoodsList(goodsListCapsules, userId);
@@ -238,10 +240,12 @@ public class GoodsMpService extends ShopBaseService {
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
                 goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
+                log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
             }
         } else {
             log.debug("小程序-db-搜索商品列表");
             goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
+            log.debug("小程序-db-搜索商品列表结果:{}",goodsListCapsules);
         }
 
         disposeGoodsList(goodsListCapsules, userId);
@@ -295,7 +299,7 @@ public class GoodsMpService extends ShopBaseService {
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品详情错误-转换db获取数据:" + e.getMessage());
                 goodsDetailMpBo = getGoodsDetailMpInfoDao(param.getGoodsId());
-                log.debug("小程序-db-搜索商品详情信息 {}", goodsDetailMpBo);
+                log.debug("小程序-db-搜索商品详情结果 {}", goodsDetailMpBo);
                 // 商品从数据库内查询，但是数据已经被删除
                 if (goodsDetailMpBo == null) {
                     return createDeletedGoodsDetailMpVo();

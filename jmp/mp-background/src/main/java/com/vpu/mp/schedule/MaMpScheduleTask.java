@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.saas.SaasApplication;
+import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +35,20 @@ public class MaMpScheduleTask {
     public void monitorSeckillGoods() {
 		log.info("卡券到期提醒");
         Result<ShopRecord> result = saas.shop.getAll();
-        result.forEach((r)->{saas.getShopApp(r.getShopId()).coupon.expiringCouponNotify(r.getShopId());});
+		result.forEach((r) -> {
+			saas.getShopApp(r.getShopId()).shopTaskService.maMpScheduleTaskService.expiringCouponNotify();
+		});
     }
+	
+	/**
+	 * 预约服务提前一小时提醒,每分钟
+	 */
+	@Scheduled(cron = "0 */1 * * * ?")
+	public void AppointmentRemindCommand() {
+		log.info("预约服务提前一小时提醒");
+        Result<ShopRecord> result = saas.shop.getAll();
+		result.forEach((r) -> {
+			saas.getShopApp(r.getShopId()).shopTaskService.maMpScheduleTaskService.sendAppointmentRemind();
+		});
+	}
 }
