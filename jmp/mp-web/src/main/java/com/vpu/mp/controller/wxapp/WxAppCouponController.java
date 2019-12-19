@@ -104,10 +104,8 @@ public class WxAppCouponController extends WxAppBaseController {
 			int availCoupon = shop().member.score.getTotalAvailableScoreById(userId);
 			//查看用户可用积分
 			if (couponData.getScoreNumber() > availCoupon) {
-			    System.out.println(123);
 				return this.success("积分不足 ");
 			} else {
-                System.out.println(123);
                 ScoreParam scoreParam = new ScoreParam();
 				scoreParam.setScore(-(couponData.getScoreNumber()));
 				scoreParam.setScoreStatus(ScoreStatusConstant.USED_SCORE_STATUS);
@@ -122,7 +120,6 @@ public class WxAppCouponController extends WxAppBaseController {
 				try {
 					shop().member.score.updateMemberScore(scoreParam,subAccountId,userId, tradeType,tradeFlow,"");
 				} catch (MpException e) {
-				    System.out.println(22222);
 					logger().info("积分更新失败");
 					return fail(e.getErrorCode().getMessage());
 				}

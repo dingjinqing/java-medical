@@ -9,7 +9,7 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(data) {
-        this.getPrice(data);
+        if(!this.data.activity) this.getPrice(data);
         this.setData({
           isCollected:data.isCollected
         })

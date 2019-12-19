@@ -19,7 +19,7 @@ const PageSettings = {
     ['onUnload'],
     ['onPullDownRefresh'],
     ['onReachBottom'],
-    ['onShareAppMessage'],
+    // ['onShareAppMessage'],
     ['onPageScroll'],
     ['onTabItemTap'],
     ['onResize'],

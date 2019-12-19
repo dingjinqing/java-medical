@@ -10,7 +10,7 @@
   </view>
 </view>
 
-<v-spec-dialog show="{{showSpec}}" bind:close="bindClose" products-info="{{productsInfo}}" bindproductData="getProductData">
+<v-spec-dialog show="{{showSpec}}" activity="{{activity}}" bind:close="bindClose" products-info="{{productsInfo}}" bindproductData="getProductData">
   <v-goods-num-cfg slot="num-cfg" origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
   <v-item-footer slot="footer" dealt-act="{{dealtAct}}" activity="{{activity}}"  origin="spec" product-info="{{productInfo}}" trigger-button="{{triggerButton}}" bindclose="bindClose"/>
 </v-spec-dialog>

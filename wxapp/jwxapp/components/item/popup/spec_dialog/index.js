@@ -1,4 +1,7 @@
 const base = require("../../../popup/base/base.js");
+const actPrdType = {
+  5:{prdRealPrice:'secKillPrice',prdLinePrice:'prdPrice'}
+}
 global.wxComponent({
   mixins: [base],
   /**
@@ -9,16 +12,37 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(val) {
-        console.log(val)
         if (val.defaultPrd === true){
+          // 活动规格限制
+          let actLimit = {}
+          if(this.data.activity){
+            actLimit.limitMaxNum = this.data.activity.limitAmount
+            actLimit.prdNumber = this.data.activity.actProducts[0].stock
+          }
           this.triggerEvent("productData", {
             goodsId: val.goodsId,
             ...val.products[0],
             limitBuyNum:val.limitBuyNum,
-            limitMaxNum:val.limitMaxNum
+            limitMaxNum:val.limitMaxNum,
+            ...actLimit
           });
         } else {
           this.formatSpec(val.products);
+        }
+      }
+    },
+    activity:{
+      type:Object,
+      value:null,
+      observer(newVal,oldVal){
+        if(newVal!==oldVal){
+          console.log(newVal.actProducts)
+          let activityPrds = newVal.actProducts.map(({productId:prdId,stock:prdNumber,[actPrdType[newVal.activityType].prdRealPrice]:prdRealPrice,[actPrdType[newVal.activityType].prdLinePrice]:prdLinePrice }) => {
+            return {prdId,prdNumber,prdRealPrice,prdLinePrice}
+          })
+          this.setData({
+            activityPrds
+          })
         }
       }
     }
@@ -90,12 +114,19 @@ global.wxComponent({
         checkedProduct: productTarget
       });
       let { limitBuyNum, limitMaxNum } = this.data.productsInfo;
+      let actLimit = {}
+      // 活动规格的限购数量
+      if(this.data.activity){
+        actLimit.limitMaxNum = this.data.activity.limitAmount
+        actLimit.prdNumber = this.data.activityPrds.find(item=>item.prdId === productTarget.prdId).prdNumber
+      }
       console.log(productTarget)
       this.triggerEvent("productData", {
         goodsId: this.data.productsInfo.goodsId,
         ...productTarget,
         limitBuyNum,
-        limitMaxNum
+        limitMaxNum,
+        ...actLimit
       });
     },
     bindClose(){
