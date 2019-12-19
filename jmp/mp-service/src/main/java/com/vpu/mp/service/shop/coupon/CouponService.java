@@ -319,10 +319,12 @@ public class CouponService extends ShopBaseService {
         PageResult<AvailCouponVo> lists = getPageResult(sql, param.getCurrentPage(), param.getPageRows(), AvailCouponVo.class);
         for (AvailCouponVo list:lists.dataList){
             ExpireTimeVo remain = getExpireTime(list.getEndTime());
-            list.setRemainDays(remain.getRemainDays());
-            list.setRemainHours(remain.getRemainHours());
-            list.setRemainMinutes(remain.getRemainMinutes());
-            list.setRemainSeconds(remain.getRemainSeconds());
+            if(remain != null){
+                list.setRemainDays(remain.getRemainDays());
+                list.setRemainHours(remain.getRemainHours());
+                list.setRemainMinutes(remain.getRemainMinutes());
+                list.setRemainSeconds(remain.getRemainSeconds());
+            }
         }
         return lists;
     }

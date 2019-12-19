@@ -112,6 +112,12 @@ public class GoodsConstant {
     public static final Byte SOLD_OUT_GOODS_SHOW = 1;
 
     /**
+     * 1默认规格，0自定义规格（多规格）
+     */
+    public static final Byte IS_DEFAULT_PRODUCT_Y = 1;
+    public static final Byte IS_DEFAULT_PRODUCT_N = 0;
+
+    /**
      * 小程序-商品分类页面-目录项类型码
      * 1全部品牌，2推荐品牌，3推荐品牌列表展示，4推荐品牌按分类展示，
      * 5推荐分类，6普通分类，7商品内容
