@@ -16,10 +16,10 @@
         </el-form-item>
         <el-form-item :label="$t('goodsRecommendSorts.goodsSortHeadImg') + '：'">
           <img
-            v-if="recommendSortCfg.recommendSortImgObj === null"
+            v-if="recommendSortCfg.recommendSortImgObj.imgUrl === null"
             @click="chooseSortImg"
             style=" display:block;width: 230px;height: 90px;cursor:pointer;"
-            :src="$imageHost+'/image/admin/addSort/add_simple.png'"
+            :src="$imageHost+'/image/admin/add_simple.png'"
           />
           <div
             v-else
@@ -167,7 +167,10 @@ export default {
     return {
       recommendSortCfg: {
         recommendSortStatus: 1,
-        recommendSortImgObj: {},
+        recommendSortImgObj: {
+          imgUrl: null,
+          imgPath: null
+        },
         recommendImgLink: null
       },
       imgDialogShow: true,
@@ -187,7 +190,7 @@ export default {
     },
     /* 删除图标 */
     deleteSortImg () {
-      this.recommendSortCfg.recommendSortImgObj = {}
+      this.recommendSortCfg.recommendSortImgObj = {imgUrl: null, imgPath: null}
     },
     /* 选择链接 */
     chooseImgLink () {

@@ -22,19 +22,32 @@ global.wxComponent({
         util.toast_fail('领取码错误');
       } else {
         util.api("/api/wxapp/coupon/get", function (res) {
+
           if (res.error == 0) {
-            if (res.content == 0) {
-              util.showModal('提示', '您已领取的个数已达到可领取限制');
-              m.isCoupon = 0;
-              m['coupon_arr'][d.coupon_key].status = -1;
-              _this.$set();
-            } else {
+            if (res.content == '领取成功') {
               util.toast_success('领取成功', function () {
                 m.isCoupon = 0;
                 m['coupon_arr'][d.coupon_key].status = -1;
                 _this.$set();
               });
+            } else {
+              util.toast_fail(res.content);
+              m.isCoupon = 0;
+              m['coupon_arr'][d.coupon_key].status = -1;
+              _this.$set();
             }
+            // if (res.content == 0) {
+            //   util.showModal('提示', '您已领取的个数已达到可领取限制');
+            //   m.isCoupon = 0;
+            //   m['coupon_arr'][d.coupon_key].status = -1;
+            //   _this.$set();
+            // } else {
+            //   util.toast_success('领取成功', function () {
+            //     m.isCoupon = 0;
+            //     m['coupon_arr'][d.coupon_key].status = -1;
+            //     _this.$set();
+            //   });
+            // }
           } else {
             util.toast_fail('领取失败');
           }
@@ -62,7 +75,7 @@ global.wxComponent({
         util.api('/api/wxapp/coupon/get', function (res) {
           wx.hideLoading();
           if (res.error == 0) {
-            if (res.content == null) {
+            if (res.content == '领取成功') {
               util.toast_success('领取成功', function () {
                 m['coupon_arr'][d.key].status = -1;
                 _this.$set();
@@ -71,7 +84,7 @@ global.wxComponent({
               util.toast_fail(res.content);
             }
           } else {
-            util.toast_fail(res.message.msg);
+            util.toast_fail('领取失败');
           }
         }, {
           couponId: d.coupon_id

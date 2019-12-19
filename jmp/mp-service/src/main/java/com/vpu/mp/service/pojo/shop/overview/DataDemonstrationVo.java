@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 /**
- * @Author:liufei
- * @Date:2019/7/15
- * @Description: 商城概览-数据展示-出参
+ * @author liufei
+ * @date 2019/7/15
+ * 商城概览-数据展示-出参
  */
 @Data
 @Component
@@ -19,7 +19,9 @@ public class DataDemonstrationVo {
     private int paidOrderNum;
     /** 下单用户数 */
     private int orderUserNum;
-    /** 下单数 */
+    /**
+     * 下单笔数
+     */
     private int orderNum;
     /** 总支付金额 */
     private int totalPaidSum;

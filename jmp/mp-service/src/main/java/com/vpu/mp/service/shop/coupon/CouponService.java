@@ -66,7 +66,8 @@ public class CouponService extends ShopBaseService {
 
     /**可用会员卡*/
     public static final byte COUPON_IS_USED_STATUS_AVAIL = 0;
-
+    /**优惠券状态：使用*/
+    public static final byte COUPON_IS_USED_STATUS_USED = 1;
     /**普通优惠券*/
     public static final byte COUPON_TYPE_NORMAL = 0;
 
@@ -381,6 +382,7 @@ public class CouponService extends ShopBaseService {
     		//根据有效 开始时间、结束时间判断
             select.where(CUSTOMER_AVAIL_COUPONS.END_TIME.le(now));
     	}
+    	select.orderBy(CUSTOMER_AVAIL_COUPONS.ID.desc());
     }
 
     /**
@@ -545,7 +547,7 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
-     * 获取优惠券列
+     * 获取优惠券
      * 王帅
      * @param couponSn no
      * @return 优惠卷
@@ -613,6 +615,21 @@ public class CouponService extends ShopBaseService {
             : BigDecimal.ZERO;
         }
         return BigDecimal.ZERO;
+    }
+
+    /**
+     * 王帅
+     * 使用优惠券
+     * @param id id
+     * @param orderSn 订单号
+     */
+    public void use(Integer id, String orderSn){
+        db().update(CUSTOMER_AVAIL_COUPONS)
+            .set(CUSTOMER_AVAIL_COUPONS.IS_USED, COUPON_IS_USED_STATUS_USED)
+            .set(CUSTOMER_AVAIL_COUPONS.USED_TIME, DateUtil.getSqlTimestamp())
+            .set(CUSTOMER_AVAIL_COUPONS.ORDER_SN, orderSn)
+            .where(CUSTOMER_AVAIL_COUPONS.ID.eq(id))
+            .execute();
     }
 
     /**
