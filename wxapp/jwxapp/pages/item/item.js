@@ -37,7 +37,6 @@ global.wxPage({
     goodsMediaInfo: null,
     goodsInfo: null,
     couponList: null,
-    product: null,
     pledgeInfo: null,
     limitInfo: null,
     productInfo: null,
@@ -70,12 +69,12 @@ global.wxPage({
         "/api/wxapp/goods/detail",
         res => {
           if (res.error === 0) {
+            this.getActivity(res.content)
             this.getMediaInfo(res.content);
             this.getGoodsInfo(res.content);
             this.getCouponInfo(res.content);
             this.getGoodsDescInfo(res.content);
             this.getComment(res.content)
-            this.getActivity(res.content)
             resolve(res.content);
           }
         }, {
@@ -89,13 +88,12 @@ global.wxPage({
       );
     });
   },
-  // 商品详情-自定以内容
+  // 商品详情-自定义内容
   getGoodsDescInfo({
     goodsDesc = null,
     isPageUp = 0,
     goodsPageId = null
   }) {
-    console.log(goodsDesc)
     this.setData({
       goodsDescInfo: {
         goodsDesc,
@@ -135,7 +133,6 @@ global.wxPage({
   },
   // 获取规格信息
   getProduct({
-    detail,
     detail: {
       prdNumber,
       limitBuyNum,
@@ -143,7 +140,6 @@ global.wxPage({
     }
   }) {
     this.setData({
-      product: detail,
       limitInfo: {
         prdNumber,
         limitBuyNum,
@@ -153,6 +149,7 @@ global.wxPage({
   },
   // 获取选中规格详情
   getProductInfo(data) {
+    console.log(data)
     this.setData({
       productInfo: data.detail
     });
@@ -295,7 +292,6 @@ global.wxPage({
     this.setData({
       'actBarInfo.clock': clock
     });
-    console.log(total_micro_second)
     if (actBaseInfo[activityType]['countDownInfo'][actState] === 'endTime' && total_micro_second > 0) {
       this.setData({
         'dealtAct.canBuy': true
@@ -349,6 +345,8 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    console.log(1)
+    return {
+      title:'已删除title'
+    }
   }
 });
