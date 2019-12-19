@@ -26,7 +26,9 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.requestList()
+    this.loadFilter(options).then(()=>{
+      this.requestList()
+    })
   },
   showFilter(){
     this.setData({
@@ -88,6 +90,21 @@ global.wxPage({
       dataList:[]
     })
     this.requestList()
+  },
+  loadFilter(options){
+    return new Promise((resolve, reject) => {
+      let target = {}
+      Object.keys(options).forEach(item=>{
+        target[item] = options[item]
+      })
+      this.setData({
+        filterData:{
+          ...this.data.filterData,
+          ...target
+        }
+      })
+      resolve()
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
