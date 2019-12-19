@@ -219,24 +219,22 @@
     </div>
 
     <!--预览商品太阳码-->
-    <el-dialog
-      :visible.sync="qrCodeData.isShow"
-      :title="$t('allGoods.allGoodsData.shareGoodsTitle')"
-      width="350px"
-    >
-      <div style="text-align: center;">
-        <el-image
-          fit="scale-down"
-          :src="qrCodeData.imgFullUrl"
-          style="width: 250px; height: 230px;"
-        />
-        <el-input
-          v-model="qrCodeData.pageUrl"
-          disabled
-        />
-        <span>{{this.$t('allGoods.allGoodsData.copy')}}</span>
-      </div>
-    </el-dialog>
+    <div class="qrCodeDialogWrap">
+      <el-dialog
+        :visible.sync="qrCodeData.isShow"
+        :title="$t('allGoods.allGoodsData.shareGoodsTitle')"
+        width="400px"
+      >
+        <div style="text-align: center;">
+          <img  :src="qrCodeData.imgFullUrl" alt style="width: 180px;height: 180px;border: none;"/>
+          <a :href="qrCodeData.imgFullUrl" download="" class="downLoadQrImg">下载二维码</a>
+          <div style="text-align: left;padding: 5px 5px 5px 50px;">
+            <el-input ref="qrCodePageUrlInput" v-model="qrCodeData.pageUrl" size="small" style="width:230px;"/>
+            <span @click="copyPageUrlClick" class="copyQrCodeUrl">{{this.$t('allGoods.allGoodsData.copy')}}</span>
+          </div>
+        </div>
+      </el-dialog>
+    </div>
 
     <!--标签设置-->
     <el-dialog
@@ -502,6 +500,10 @@ export default {
         this.qrCodeData.isShow = true
       })
     },
+    copyPageUrlClick () {
+      this.$refs.qrCodePageUrlInput.select()
+      document.execCommand('Copy')
+    },
     /* 操作确认弹框 */
     _$confirm (questionMessage, confirmMesage, confirmCallback, cancelCallback) {
       this.$confirm(questionMessage, this.$t('allGoods.allGoodsData.tip'), {
@@ -682,5 +684,35 @@ export default {
     height: 25px;
     border: 1px solid #ccc;
     text-align: center;
+  }
+
+  /deep/.qrCodeDialogWrap .el-dialog__header{
+    background-color:transparent;
+  }
+  /deep/.qrCodeDialogWrap .el-dialog__body{
+    padding: 5px;
+  }
+  .downLoadQrImg{
+    color: #999;
+    font-size: 16px;
+    display: inline-block;
+    height: 40px;
+    line-height: 40px;
+    width: 100%;
+    text-align: center;
+    margin-left: 0;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+  }
+  .copyQrCodeUrl{
+    display: inline-block;
+    margin-left: 5px;
+    color: #5A8BFF;
+    background: #fff;
+    border: none;
+    height: 35px;
+    line-height: 35px;
+    font-size: 16px;
+    cursor: pointer;
   }
 </style>

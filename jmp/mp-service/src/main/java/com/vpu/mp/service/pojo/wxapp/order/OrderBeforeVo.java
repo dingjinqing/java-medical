@@ -134,7 +134,6 @@ public class OrderBeforeVo {
     private Byte isBalancePay;
     /**默认支付配置->积分*/
     private Byte isScorePay;
-
     /**
      * 默认配送方式 0 ，1 ，2
      * @return

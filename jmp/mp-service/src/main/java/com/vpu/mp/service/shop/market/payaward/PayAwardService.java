@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardContentBo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardIdParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListVo;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardOrderVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
@@ -126,6 +127,9 @@ public class PayAwardService extends ShopBaseService {
      * @return PayAwardVo
      */
     private PayAwardVo recordToPayAwardVo(PayAwardRecord record) {
+        if (record==null){
+            return new PayAwardVo();
+        }
         PayAwardVo payAwardVo = record.into(PayAwardVo.class);
         if (record.getAwardList() != null && !record.getAwardList().isEmpty()) {
             payAwardVo.setAwardContentList(Util.json2Object(record.getAwardList(), new TypeReference<List<PayAwardContentBo>>() {
@@ -168,13 +172,13 @@ public class PayAwardService extends ShopBaseService {
                 break;
             case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                      .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
-                      .and(PAY_AWARD.START_TIME.gt(nowTime));
+                        .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
+                        .and(PAY_AWARD.START_TIME.gt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_FINISHED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_NORMAL))
-                      .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
-                      .and(PAY_AWARD.END_TIME.lt(nowTime));
+                        .and(PAY_AWARD.TIME_TYPE.eq(ACTIVITY_NOT_FOREVER))
+                        .and(PAY_AWARD.END_TIME.lt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_DISABLED:
                 select.and(PAY_AWARD.STATUS.eq(ACTIVITY_STATUS_DISABLE));
@@ -239,43 +243,45 @@ public class PayAwardService extends ShopBaseService {
                                                 .and(PAY_AWARD.END_TIME.gt(date))
                                 )
                 ).orderBy(PAY_AWARD.ACT_FIRST.desc(), PAY_AWARD.CREATE_TIME.desc())
+                .limit(0,1)
                 .fetchOne();
-         return recordToPayAwardVo(record);
+        return recordToPayAwardVo(record);
     }
+
+    /**
+     * 获取活动
+     * @param payAwardId
+     * @return
+     */
+    public PayAwardVo  getPayAwardById(Integer payAwardId){
+        PayAwardRecord payAwardRecord = db().selectFrom(PAY_AWARD).where(PAY_AWARD.ID.eq(payAwardId)).fetchOne();
+        return recordToPayAwardVo(payAwardRecord);
+    }
+
 
     /**
      * 获取订单的支付有礼活动
      * @param orderSn
      */
-    public void getOrderPayAward(String orderSn){
+    public PayAwardOrderVo getOrderPayAward(String orderSn){
         //查询orderSN支付有礼活动记录
         PayAwardRecordRecord payAwardRecord = payAwardRecordService.getPayAwardRecordByOrderSn(orderSn);
         if (payAwardRecord==null){
             logger().info("订单orderSn:{},没有参与支付有礼活动",orderSn);
-            return;
+            return null;
         }
         //获取正在进行的活动
-        PayAwardVo goingPayAward = getGoingPayAward(payAwardRecord.getCreateTime());
-        if (goingPayAward==null){
-            logger().info("当前没有进行中的支付有礼活动");
-            return;
+        PayAwardVo payAward = getPayAwardById(payAwardRecord.getAwardId());
+        if (payAward.getAwardContentList().size()<payAwardRecord.getAwardTimes()){
+            return null;
         }
-        if (goingPayAward!=null&&payAwardRecord.getId().equals(payAwardRecord.getAwardId())){
-
-        }
-        //用户全部参与的支付有礼活动
-
-
-
-
-
-        //获取订单的折后价格
-//        OrderInfoRecord orderByOrderSn = orderInfoService.getOrderByOrderSn(orderSn);
-//        OrderListInfoVo into = orderByOrderSn.into(OrderListInfoVo.class);
-//        BigDecimal orderFinalAmount = orderInfoService.getOrderFinalAmount(into,false);
-//        //判断是否符合支付有礼活动
-
-
-
+        PayAwardContentBo payAwardContentBo =payAward.getAwardContentList().get(payAwardRecord.getAwardTimes());
+        PayAwardOrderVo payAwardOrderVo = new PayAwardOrderVo();
+        payAwardOrderVo.setPayAwardContentBo(payAwardContentBo);
+        payAwardOrderVo.setPayAwardSize(payAward.getAwardContentList().size());
+        payAwardOrderVo.setCurrentAwardTimes(payAwardRecord.getAwardTimes()+1);
+        return payAwardOrderVo;
     }
+
+
 }

@@ -91,6 +91,9 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Acti
      */
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        //拼团不使用优惠券和会员卡
+        param.setMemberCardNo(null);
+        param.setCouponSn(null);
         //团长,团id
         Byte isGrouper =param.getGroupId()==null?IS_GROUPER_Y:IS_GROUPER_N;
         log.debug("拼团订单");

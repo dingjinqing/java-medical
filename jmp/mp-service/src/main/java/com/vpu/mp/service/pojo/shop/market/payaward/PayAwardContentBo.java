@@ -4,6 +4,7 @@ import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@ToString
 public class PayAwardContentBo {
 
     /**
@@ -71,6 +73,10 @@ public class PayAwardContentBo {
      * 奖品份数
      */
     private Integer awardNumber;
+    /**
+     * 发送份数
+     */
+    private Integer sendNumber=0;
 
 
 }

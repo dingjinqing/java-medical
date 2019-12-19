@@ -10,9 +10,11 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -311,7 +313,37 @@ public class OrderGoodsService extends ShopBaseService{
         db().batchInsert(records).execute();
     }
 
-
+    /**
+     * 获取订单商品的活动类型
+     * @param bos
+     * @return
+     */
+    public Set<Byte> getGoodsType(List<OrderGoodsBo> bos){
+        HashSet<Byte> type = new HashSet<>();
+        for(OrderGoodsBo bo : bos){
+            if(bo.getPurchasePriceRuleId() != null){
+                //加价购活动
+                type.add(OrderConstant.GOODS_TYPE_PURCHASE_PRICE);
+            }
+            if(bo.getReducePriceId() != null){
+                //限时降价
+                type.add(OrderConstant.GOODS_TYPE_REDUCE_PRICE);
+            }
+            if(bo.getFirstSpecialId() != null){
+                //首单特惠
+                type.add(OrderConstant.GOODS_TYPE_FIRST_SPECIAL);
+            }
+            if(bo.getGiftId() != null){
+                //赠品
+                type.add(OrderConstant.GOODS_TYPE_GIFT);
+            }
+            if(bo.getFreeShip() != null){
+                //满包邮
+                type.add(OrderConstant.GOODS_TYPE_FREESHIP_ORDER);
+            }
+        }
+        return type;
+    }
 	/**
 	 *  购买商品记录(三个月内)
 	 * @param userId  用户ID

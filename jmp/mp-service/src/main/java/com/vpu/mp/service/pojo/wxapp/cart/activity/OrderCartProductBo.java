@@ -4,11 +4,9 @@ import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +40,10 @@ public class OrderCartProductBo {
     private List<Integer> productIds;
 
 
-    public static OrderCartProductBo create(List<OrderCartProduct> info){
-        return new OrderCartProductBo(CollectionUtils.isEmpty(info) ? Collections.emptyList() : info);
+    public OrderCartProductBo() {
+    }
+    public OrderCartProductBo(List<OrderCartProduct> info) {
+        this.info = info;
     }
 
     public List<OrderCartProduct> getAll(){
@@ -54,14 +54,9 @@ public class OrderCartProductBo {
         initProductIds();
         return productIds;
     }
-
     public OrderCartProduct get(Integer productId){
         initMap();
         return map.get(productId);
-    }
-
-    private OrderCartProductBo(List<OrderCartProduct> info) {
-        this.info = info;
     }
 
     private void initMap(){
