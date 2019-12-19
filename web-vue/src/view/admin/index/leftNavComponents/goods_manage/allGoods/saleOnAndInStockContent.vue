@@ -22,6 +22,7 @@
           align="left"
           prop="goodsName"
           :label="$t('allGoods.allGoodsData.goodsName')"
+          width="230"
         >
           <template slot-scope="scope">
             <div class="nameImgWrap">

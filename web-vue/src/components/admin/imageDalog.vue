@@ -11,6 +11,7 @@
           @handleToResetPage='handleToResetPage'
           :imageSize='imageSize'
           :cropperFlagF='cropperFlagF'
+          :cropperDialog='cropperDialogF'
         />
         <div class="dialog_top">
           <el-upload
@@ -276,7 +277,8 @@ export default {
         scroll: true,
         animation: 300
       },
-      cropperFlagF: null
+      cropperFlagF: null,
+      cropperDialogF: false
     }
   },
   computed: {
