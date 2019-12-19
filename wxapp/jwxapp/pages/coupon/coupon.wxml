@@ -3,20 +3,20 @@
 <view class='main-container'>
   <view class="container">
     <view class="top">
-        <view class="{{this_type == 1 ? 'use' : ''}}" bindtap="change" data-name="can" style='color:{{this_type == 1 ? comColor :"" }};border-bottom-color:{{this_type == 1 ? comColor : ""}}'>
+        <view class="{{this_type == 0 ? 'use' : ''}}" bindtap="change" data-name="can" style='color:{{this_type == 0 ? comColor :"" }};border-bottom-color:{{this_type == 0 ? comColor : ""}}'>
           未使用({{unusedNum}})
         </view>
-        <view class="{{this_type == 2 ? 'use' : ''}}" bindtap="change" data-name="used" style='color:{{this_type == 2 ? comColor :"" }};border-bottom-color:{{this_type == 2 ? comColor : ""}}'>
+        <view class="{{this_type == 1 ? 'use' : ''}}" bindtap="change" data-name="used" style='color:{{this_type == 1 ? comColor :"" }};border-bottom-color:{{this_type == 1 ? comColor : ""}}'>
           已使用({{usedNum}})
         </view>
-        <view class="{{this_type == 3 ? 'use' : ''}}" bindtap="change" data-name="time" style='color:{{this_type == 3 ? comColor :"" }};border-bottom-color:{{this_type == 3 ? comColor : ""}}'>
+        <view class="{{this_type == 2 ? 'use' : ''}}" bindtap="change" data-name="time" style='color:{{this_type == 2 ? comColor :"" }};border-bottom-color:{{this_type == 2 ? comColor : ""}}'>
           已过期({{expiredNum}})
         </view>
     </view>
     <view class="cou_area">
         <block> 
-            <view bindtap="couponDetail" data-couponSn="{{item.couponSn}}" wx:for="{{allCoupon}}" wx:if="{{allCoupon != ''}}" wx:key="index" style="margin-bottom: 20rpx;overflow: hidden;">
-              <view class="left" style="background:{{ this_type == 1 ? '#ff6666' :'#ccc' }}">
+            <view bindtap="couponDetail" data-couponSn="{{item.couponSn}}" wx:for="{{allCoupon}}" wx:key="index" wx:if="{{allCoupon.length != 0}}"  style="margin-bottom: 20rpx;overflow: hidden;">
+              <view class="left" style="background:{{ this_type != 2 ? '#ff6666' :'#ccc' }}">
                 <view class="vip_exclusive" wx:if="{{item.is_exclusive == 1}}">会员</view>
                 <view class='coupon_xian'>
                   <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
@@ -43,11 +43,11 @@
                     <text style='color:#666'>后失效</text>
                   </view>
               </view>  
-              <view class="go_use" wx:if="{{ this_type == 1 }}" catchtap="to_search" data-coupon_sn="{{item.coupon_sn}}" style='color:{{comColor}}'>
+              <view class="go_use" wx:if="{{ this_type == 0 }}" catchtap="to_search" data-coupon_sn="{{item.coupon_sn}}" style='color:{{comColor}}'>
                 去使用
               </view>  
             </view>
-            <view class="no_cou" wx:if="{{cou_list == ''}}">
+            <view class="no_cou" wx:if="{{allCoupon.length == 0}}">
               <view class="icon_no"><image src='{{imageUrl}}image/wxapp/coupo-no.png' mode='widthFix'/></view>
               <view class="no_tips">您目前还没有优惠券</view>
             </view>
