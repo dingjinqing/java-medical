@@ -39,6 +39,7 @@ import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.BaseScoreCfgService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -179,12 +180,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //order goods
         List<OrderGoodsBo> orderGoodsBos;
         //OrderBeforeVo
-        final OrderBeforeVo orderBeforeVo;
+        OrderBeforeVo orderBeforeVo = OrderBeforeVo.builder().build();
         //订单入库后数据
         OrderInfoRecord orderAfterRecord = null;
 
         //order before data ready
         try {
+            //init
+            orderBo = initCreateOrderBo(param);
             //设置规格和商品信息、基础校验规格与商品
             processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
             //TODO 营销相关 活动校验或活动参数初始化
@@ -197,14 +200,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //初始化订单商品
                 orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getOrderCartProductBo(), param.getStoreId());
             }
-            orderBo = initCreateOrderBo(param);
             orderBo.setOrderGoodsBo(orderGoodsBos);
             //校验
             checkCreateOrderBo(orderBo, param);
-            orderBeforeVo = OrderBeforeVo.builder().
-                address(orderBo.getAddress()).
-                build();
             //处理orderBeforeVo
+            orderBeforeVo.setAddress(orderBo.getAddress());
             processOrderBeforeVo(param, orderBeforeVo, orderBo.getOrderGoodsBo());
             //校验
             checkOrder(orderBeforeVo, orderBo, param);
@@ -222,27 +222,30 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 processNormalActivity(order, orderBo, orderBeforeVo);
                 //计算其他数据（需关联去其他模块）
                 setOtherValue(order, orderBo, orderBeforeVo);
-                //订单入库
-                order.store();
-                order.refresh();
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //商品退款退货配置
                 calculate.setGoodsReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order.getPosFlag());
+                //TODO exchang、好友助力
+
+                //保存营销活动信息
+                processorFactory.processSaveOrderInfo(param,order);
+                //TODO 订单类型拼接(支付有礼)
+                orderBo.getOrderType().addAll(orderGoods.getGoodsType(orderGoodsBos));
+                order.setGoodsType(OrderInfoService.getGoodsTypeToInsert(orderBo.getOrderType()));
+                //订单入库
+                order.store();
                 orderGoods.addRecord(order, orderBo.getOrderGoodsBo());
                 //必填信息
                 must.addRecord(param.getMust());
-                //TODO exchang、好友助力
                 orderBo.setOrderId(order.getOrderId());
-                //保存营销活动信息
-                processorFactory.processSaveOrderInfo(param,order);
             });
         orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
         createVo.setOrderSn(orderAfterRecord.getOrderSn());
         if(OrderConstant.PAY_CODE_COD.equals(orderAfterRecord.getPayCode()) ||
             OrderConstant.PAY_CODE_BALANCE_PAY.equals(orderAfterRecord.getPayCode()) ||
             (OrderConstant.PAY_CODE_SCORE_PAY.equals(orderAfterRecord.getPayCode()) && BigDecimalUtil.compareTo(orderAfterRecord.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
-                //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
+            //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
             processorFactory.processStockAndSales(param);
             atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo(), false);
         }
@@ -278,6 +281,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     private CreateOrderBo initCreateOrderBo(CreateParam param) throws MpException {
         logger().info("初始化CreateOrderBo,start-end");
+        ArrayList<Byte> type = new ArrayList<Byte>();
+        if(null != param.getActivityId() && null != param.getActivityType()) {
+            type.add(param.getActivityType());
+        }
         return CreateOrderBo.builder().
             //地址
             address(address.get(param.getAddressId(), param.getWxUserInfo().getUserId())).
@@ -293,8 +300,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             currencyMember(StringUtil.isBlank(param.getMemberCardNo()) ? null : userCard.userCardDao.getValidByCardNo(param.getMemberCardNo())).
             //优惠卷
             currencyCupon(StringUtil.isBlank(param.getCouponSn()) ? null : coupon.getValidCoupons(param.getCouponSn())).
+            orderType(type).
             build();
-
     }
 
     /**
@@ -400,21 +407,16 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setPaymentList(getSupportPayment());
         //设置规格和商品信息、基础校验规格与商品
         processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
-        if (param.getActivityId() != null && param.getActivityType() != null) {
-            // 唯一并互斥的商品营销处理
-            // 可能的ActivityType ：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
-            OrderBeforeMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(OrderBeforeMpProcessorFactory.class);
-            processorFactory.doProcess(param,vo);
-
-            //营销购买
-            processParamGoodsByMarket(param, param.getStoreId());
-        } else {
-            //普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
-            processorFactory.processInitCheckedOrderCreate(param);
+        //TODO 营销相关 活动校验或活动参数初始化
+        processorFactory.processInitCheckedOrderCreate(param);
+        if(null != param.getActivityId() && null != param.getActivityType()) {
+            //活动生成ordergodos;
+            vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getStoreId()));
+        }else {
+            //TODO (统一入口处理)普通商品下单，不指定唯一营销活动时的订单处理（需要考虑首单特惠、限时降价、会员价、赠品、满折满减直接下单）
             //初始化订单商品
             vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getOrderCartProductBo(), param.getStoreId()));
         }
-
         //据处理过的param和其他信息填充下单确认页返回信息
         processBeforeVoInfo(param,param.getWxUserInfo().getUserId(), param.getStoreId(),vo);
     }
@@ -854,9 +856,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private void processNormalActivity(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         //TODO 分销
         //TODO 使用优惠券使用, CRM核销
+        if(beforeVo.getDefaultCoupon() != null) {
+            coupon.use(beforeVo.getDefaultCoupon().getId(), order.getOrderSn());
+        }
         //TODO 送赠品
-        // 拼接活动类型
-
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.config;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
@@ -172,7 +173,8 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public GoodsPackageParam getOrderReturnGoodsPackage() {
-        return this.getJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, GoodsPackageParam.class, null);
+        return this.getJsonObject(K_ORDER_RETURN_GOODS_PACKAGE, new TypeReference<GoodsPackageParam>() {
+        }, new GoodsPackageParam());
     }
 
     public int setOrderReturnGoodsPackage(GoodsPackageParam orderReturnGoodsPackage) {
