@@ -107,14 +107,14 @@ public class MallOverviewService extends ShopBaseService {
         vo.setUserVisitNum(db().fetchCount(UserLoginRecord.USER_LOGIN_RECORD,userLoginRecordTime));
         vo.setPaidOrderNum(db().fetchCount(OrderInfo.ORDER_INFO,orderInfoTime.and(payOrderCon)));
         vo.setOrderUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
-                .from(OrderInfo.ORDER_INFO).where(orderInfoTime).execute());
+            .from(OrderInfo.ORDER_INFO).where(orderInfoTime).fetchOneInto(Integer.class));
         vo.setOrderNum(db().fetchCount(OrderInfo.ORDER_INFO,orderInfoTime));
         vo.setTotalPaidSum(db().select(sum(OrderInfo.ORDER_INFO.MONEY_PAID))
                 .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
-                .execute());
+            .fetchOneInto(Integer.class));
         vo.setPaidUserNum(db().selectDistinct(count(OrderInfo.ORDER_INFO.USER_ID))
                 .from(OrderInfo.ORDER_INFO).where(orderInfoTime.and(payOrderCon))
-                .execute());
+            .fetchOneInto(Integer.class));
 
         BigDecimal orderNum = new BigDecimal(vo.getOrderNum());
         BigDecimal userVisitNum = new BigDecimal(vo.getUserVisitNum());
@@ -146,7 +146,7 @@ public class MallOverviewService extends ShopBaseService {
                 .on(gsp.GOODS_ID.eq(g.GOODS_ID))
                 .where(g.DEL_FLAG.eq((byte)0))
                 .and(gsp.PRD_NUMBER.eq(0))
-                .and(g.SOURCE.eq((byte)0)).execute());
+            .and(g.SOURCE.eq((byte) 0)).fetchOneInto(Integer.class));
         toDoItemVo.setProductEvaluationPr(db().fetchCount(CommentGoods.COMMENT_GOODS,CommentGoods.COMMENT_GOODS.DEL_FLAG.eq((byte)0)
                 .and(CommentGoods.COMMENT_GOODS.FLAG.eq((byte)0))));
         toDoItemVo.setDistributorPr(db().fetchCount(DistributorApply.DISTRIBUTOR_APPLY,DistributorApply.DISTRIBUTOR_APPLY.STATUS.eq((byte)0)));
