@@ -67,6 +67,7 @@
             >
             </el-option>
           </el-select>
+          <span v-if="valid" style="color: red;">请选择会员卡等级</span>
           <div class="grade-condition-tip">
             {{$t('memberCard.gradeConditionTip')}}
           </div>
@@ -81,13 +82,7 @@ export default {
   props: {
     val: {
       type: Object,
-      default: () => {
-        return {
-          gradeScore: null,
-          gradeCrash: null,
-          gradeValue: null
-        }
-      }
+      required: true
     }
   },
   computed: {
@@ -101,20 +96,59 @@ export default {
     }
   },
   watch: {
-    'ruleForm': {
+    'ruleForm.gradeScore': {
       handler (newName, oldName) {
-        this.val = newName
+        this.val.gradeScore = newName
         this.ruleForm = this.val
       },
-      deep: true
+      immediate: true
+    },
+    'ruleForm.gradeCrash': {
+      handler (newName, oldName) {
+        this.val.gradeCrash = newName
+        this.ruleForm = this.val
+      },
+      immediate: true
+    },
+    'ruleForm.gradeValue': {
+      handler (newName, oldName) {
+        console.log(this.recordGrade)
+        // 存储等级
+        if (this.recordGrade && oldName) {
+          this.recordGrade = false
+          this.gradeOptions.forEach(item => {
+            if (item.value === oldName) {
+              console.log(oldName, item.value)
+              item.disabled = false
+            }
+          })
+          console.log(this.gradeOptions)
+        }
+        this.val.gradeValue = newName
+        this.ruleForm = this.val
+        this.valid = false
+      },
+      immediate: true
     }
   },
   mounted () {
     this.initGradeOptions()
+    this.$on('checkRule', () => {
+      if (this.ruleForm.gradeValue) {
+        this.valid = false
+        this.ruleForm.valid = true
+      } else {
+        this.valid = true
+        this.$message.warning('请输入等级')
+      }
+    })
   },
   data () {
     return {
+      recordGrade: true,
+      valid: false,
       gradeOptions: [
+        { label: '请选择', value: null, disabled: false },
         { label: 'v1', value: 'v1', disabled: false },
         { label: 'v2', value: 'v2', disabled: false },
         { label: 'v3', value: 'v3', disabled: false },
@@ -130,6 +164,7 @@ export default {
   methods: {
     initGradeOptions () {
       getAllNoDeleteGradeCard().then(res => {
+        console.log(this.ruleForm.gradeValue)
         if (res.error === 0) {
           console.log(res.content)
           this.gradeOptions.forEach(item => {
