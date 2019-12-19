@@ -76,6 +76,7 @@
   </div>
 </template>
 <script>
+import {getAllNoDeleteGradeCard} from '@/api/admin/memberManage/memberCard.js'
 export default {
   props: {
     val: {
@@ -108,6 +109,9 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.initGradeOptions()
+  },
   data () {
     return {
       gradeOptions: [
@@ -121,6 +125,20 @@ export default {
         { label: 'v8', value: 'v8', disabled: false },
         { label: 'v9', value: 'v9', disabled: false }
       ]
+    }
+  },
+  methods: {
+    initGradeOptions () {
+      getAllNoDeleteGradeCard().then(res => {
+        if (res.error === 0) {
+          console.log(res.content)
+          this.gradeOptions.forEach(item => {
+            if (res.content.includes(item.value)) {
+              item.disabled = true
+            }
+          })
+        }
+      })
     }
   }
 }
