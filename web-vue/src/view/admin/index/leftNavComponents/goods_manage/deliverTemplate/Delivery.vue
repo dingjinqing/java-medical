@@ -143,8 +143,10 @@ export default {
   watch: {
     propDelivery: {
       handler: function (newVal, oldVal) {
-        // 编辑初始化
-        this.initData()
+        if (newVal) {
+          // 编辑初始化
+          this.initData()
+        }
       }
     },
     flag: {
@@ -208,6 +210,13 @@ export default {
       },
       updateId: null // 修改数据id
     }
+  },
+  mounted () {
+    // 页面初始化清空数据
+    this.$nextTick(() => {
+      // console.log(localStorage.getItem('V-tabIndex'))
+      this.clearData()
+    })
   },
   methods: {
     initData () {
@@ -317,6 +326,26 @@ export default {
           this.$emit('updateDelivery', obj)
         }
       }
+    },
+    clearData () {
+      // this.delivery = {
+      //   templateName: '',
+      //   flag: 0, // 默认添加普通
+      //   contentParam: {
+      //     limitParam: {
+      //       limit_deliver_area: 0,
+      //       area_list: 0,
+      //       area_text: '全国（其他地区）',
+      //       first_num: 1,
+      //       first_fee: 0,
+      //       continue_num: 1,
+      //       continue_fee: 0
+      //     },
+      //     areaParam: [],
+      //     has_fee_0_condition: 0,
+      //     feeConditionParam: []
+      //   }
+      // }
     }
   }
 }

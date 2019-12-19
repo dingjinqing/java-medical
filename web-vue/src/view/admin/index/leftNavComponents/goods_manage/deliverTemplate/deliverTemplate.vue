@@ -66,7 +66,6 @@ export default {
           label: `添加重量运费模板`,
           name: `/admin/home/main/goodsManage/deliverTemplate/deliverTemplateWeightAdd`
         }
-
       ]
 
     }
@@ -97,6 +96,7 @@ export default {
   // 方法
   methods: {
     handleClick (tab) {
+      localStorage.setItem('V-tabIndex', tab.index)
       this.$router.push(tab.name)
     }
   }
