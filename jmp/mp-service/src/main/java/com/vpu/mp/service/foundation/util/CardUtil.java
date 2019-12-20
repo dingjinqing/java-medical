@@ -30,6 +30,9 @@ public class CardUtil {
 	 *	@return true: 是，false: 不是
 	 */
 	public static boolean isBgImgType(Byte type) {
+		if(type==null) {
+			return false;
+		}
 		return CardConstant.MCARD_BGT_IMG.equals(type);
 	}
 	
