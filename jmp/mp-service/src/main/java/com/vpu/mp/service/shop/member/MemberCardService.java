@@ -2140,7 +2140,9 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
             }
         }
 
+        //图片域名
         vo.setShipImg(domainConfig.imageUrl(saas().shop.getShopAvatarById(getShopId())));
+        vo.setBgImg(domainConfig.imageUrl(vo.getBgImg()));
 
         return vo;
     }
