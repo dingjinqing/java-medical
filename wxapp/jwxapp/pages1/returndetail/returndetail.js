@@ -2,7 +2,7 @@
 var util = require('../../utils/util.js');
 var app = getApp();
 var imageUrl = app.globalData.imageUrl;
-
+var totalMicroSecond = 0; // 倒计时总秒数
 global.wxPage({
 
   /**
@@ -15,10 +15,14 @@ global.wxPage({
     orderInfo: {}, // 订单信息
     refundStatus: 0, // 订单状态
     returnType: 0, // 仅退款0 退货退款1
-    totalMicroSecond: 0, // 倒计时总秒数
     clock: '', // 倒计时
     goodsImages: [], // 申请凭证图
     voucherImages: [], // 提交物流时凭证图
+    returnGoods: [], // 售后商品
+    applicationTime: '', // 申请时间
+    return: ['仅退款', '退货退款', '仅退运费', '手动退款', '换货'], // 售后类型
+    reasone: ['协商一致退款', '未按约定时间发货', '缺货', '拍错/多拍/不想要', '其他'], // 退货退款原因
+    reasone_huan: ['协商一致换货', '商品与页面描述不符', '发错货', '商品损坏', '其他'], // 换货原因
   },
 
   /**
@@ -40,27 +44,34 @@ global.wxPage({
         let orderInfo = res.content
         let refundStatus = Number(orderInfo.refundStatus)
         let returnType = Number(orderInfo.returnType)
-        let totalMicroSecond = 0; // 倒计时总秒数
+        let applicationTime = ""
         // 倒计时
         if (refundStatus === 4 && returnType === 0) {
-          totalMicroSecond = orderInfo.returnMoneyDays
+          totalMicroSecond = orderInfo.returnMoneyDays / 1000
         } else if (refundStatus === 1 && returnType === 1) {
-          totalMicroSecond = orderInfo.returnAddressDays
+          totalMicroSecond = orderInfo.returnAddressDays / 1000
         } else if (refundStatus === 4 && returnType === 1) {
-          totalMicroSecond = orderInfo.returnShoppingDays
+          totalMicroSecond = orderInfo.returnShoppingDays / 1000
         } else if (refundStatus === 2) {
-          totalMicroSecond = orderInfo.returnAuditPassNotShoppingDays
+          totalMicroSecond = orderInfo.returnAuditPassNotShoppingDays / 1000
+        }
+        // 申请时间
+        if (refundStatus === 1 || refundStatus === 2) {
+          applicationTime = orderInfo.applyTime
+        } else {
+          applicationTime = orderInfo.shippingOrRefundTime
         }
         // 申请时凭证图
-        let goodsImages = JSON.parse(orderInfo.goodsImages)
-        let voucherImages = JSON.parse(orderInfo.voucherImages)
+        let goodsImages = JSON.parse(orderInfo.goodsImages) || []
+        let voucherImages = JSON.parse(orderInfo.voucherImages) || []
         that.setData({
           orderInfo: orderInfo,
           refundStatus: refundStatus,
           returnType: returnType,
-          totalMicroSecond: totalMicroSecond,
           goodsImages: goodsImages,
-          voucherImages: voucherImages
+          voucherImages: voucherImages,
+          returnGoods: orderInfo.returnGoods,
+          applicationTime: applicationTime
         })
         that.countdown()
       }
@@ -90,7 +101,7 @@ global.wxPage({
   },
 
   // 时间格式化输出，如3:25:19 86。每10ms都会调用一次
-  dateformat: function (micro_second) {
+  dateFormat: function (micro_second) {
     // 秒数
     var second = Math.floor(micro_second);
     //天数位
@@ -111,6 +122,10 @@ global.wxPage({
       sec = "0" + sec;
     }
     return date + "天" + hr + '时' + min + "分" + sec + "秒";
+  },
+
+  submitReturnLogistics () {
+
   },
 
   /**

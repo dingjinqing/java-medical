@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardContentBo;
@@ -17,7 +18,9 @@ import com.vpu.mp.service.shop.market.payaward.PayAwardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_RECORD;
@@ -136,28 +139,56 @@ public class PayAwardProcessor extends ShopBaseService implements Processor,Crea
         }
         logger().info("礼物发放数量");
         logger().info("校验支付金额是否合格");
+        switch (payAwardContentBo.getGiftType()){
+            case 0:
+                break;
+            case GIVE_TYPE_ORDINARY_COUPON:
+                logger().info("奖品:优惠卷");
+                List<Integer> integers =Util.stringToList(payAwardContentBo.getCouponIds());
+                String[] couponArray = new String[0];
+                if (integers != null) {
+                    couponArray = integers.stream().map(Object::toString).toArray(String[]::new);
+                }
+                CouponGiveQueueParam couponGive =new CouponGiveQueueParam();
+                couponGive.setUserIds(Collections.singletonList(param.getWxUserInfo().getUserId()));
+                couponGive.setCouponArray(couponArray);
+                couponGive.setActId(payAward.getId());
+                couponGive.setAccessMode((byte) 0);
+                couponGive.setGetSource(COUPON_GIVE_SOURCE_PAY_AWARD);
+                /**
+                 * 发送优惠卷
+                 */
+                CouponGiveQueueBo sendData = couponGiveService.handlerCouponGive(couponGive);
+                PayAwardRecordRecord payAwardRecordRecord =db().newRecord(PAY_AWARD_RECORD);
+                payAwardRecordRecord.setAwardId(payAward.getId());
+                payAwardRecordRecord.setAwardTimes(currentAward);
+                payAwardRecordRecord.setUserId(param.getWxUserInfo().getUserId());
+                payAwardRecordRecord.setOrderSn(order.getOrderSn());
+                payAwardRecordRecord.setGiftType(GIVE_TYPE_ORDINARY_COUPON);
+                payAwardRecordRecord.setSendData(Util.listToString(new ArrayList<>(sendData.getCouponSet())));
+                payAwardRecordRecord.setAwardData(payAwardContentBo.getCouponIds());
+                payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
+                payAwardRecordRecord.insert();
+                order.setPayAwardId(payAward.getId());
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            default:
+        }
         if (payAwardContentBo.getGiftType().equals(GIVE_TYPE_NO_PRIZE)){
 
         }else if (payAwardContentBo.getGiftType().equals(GIVE_TYPE_ORDINARY_COUPON)){
-            String[] couponArray = payAwardContentBo.getCouponIds().stream().map(Object::toString).toArray(String[]::new);
-            CouponGiveQueueParam couponGive =new CouponGiveQueueParam();
-            couponGive.setUserIds(Arrays.asList(param.getWxUserInfo().getUserId()));
-            couponGive.setCouponArray(couponArray);
-            couponGive.setActId(payAward.getId());
-            couponGive.setAccessMode((byte) 0);
-            couponGive.setGetSource(COUPON_GIVE_SOURCE_PAY_AWARD);
-            List<Integer> sendData = couponGiveService.handlerCouponGive(couponGive);
-            PayAwardRecordRecord payAwardRecordRecord =db().newRecord(PAY_AWARD_RECORD);
-            payAwardRecordRecord.setAwardId(payAward.getId());
-            payAwardRecordRecord.setAwardTimes(currentAward);
-            payAwardRecordRecord.setUserId(param.getWxUserInfo().getUserId());
-            payAwardRecordRecord.setOrderSn(order.getOrderSn());
-            payAwardRecordRecord.setGiftType(GIVE_TYPE_ORDINARY_COUPON);
-            payAwardRecordRecord.setSendData(Util.toJson(sendData));
-            payAwardRecordRecord.setAwardData(Util.toJson(couponArray));
-            payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
-            payAwardRecordRecord.insert();
-            order.setPayAwardId(payAward.getId());
+
         }
         //todo 未完待续
         logger().info("");

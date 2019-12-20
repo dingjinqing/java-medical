@@ -6,52 +6,52 @@
         style="display: flex"
         class="item"
       >
-        <span>领取时间</span>
+        <span>{{$t('payReward.getTime')}}</span>
         <div :style="{'display': 'flex'}">
           <el-date-picker
             v-model="params.receiveTimeBegin"
             type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
-            placeholder="选择开始时间"
+            :placeholder="$t('payReward.selectStartTime')"
             style="width:150px"
           >
           </el-date-picker>
-          <span class="to">至</span>
+          <span class="to">{{$t('payReward.to')}}</span>
           <el-date-picker
             v-model="params.receiveTimeEnd"
             type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
-            placeholder="选择结束时间"
+            :placeholder="$t('payReward.selectEndTime')"
             style="width:150px"
           >
           </el-date-picker>
         </div>
       </div>
       <div>
-        <span>手机号</span>
+        <span>{{$t('payReward.mobilePhone')}}</span>
         <el-input
           v-model="params.mobile"
           class="inputBox"
           size="small"
-          placeholder="请输入手机号"
+          :placeholder="$t('payReward.mobilePlaceholder')"
         ></el-input>
       </div>
       <div>
-        <span>用户昵称</span>
+        <span>{{$t('payReward.nickName')}}</span>
         <el-input
           v-model="params.userName"
           class="inputBox"
           size="small"
-          placeholder="请输入用户昵称"
+          :placeholder="$t('payReward.inputNickName')"
         ></el-input>
       </div>
       <div>
-        <span>活动奖励</span>
+        <span>{{$t('payReward.activityReward')}}</span>
         <el-select
           v-model="params.awardType"
-          placeholder="请选择"
+          :placeholder="$t('payReward.pleaceSelect')"
           size="small"
           class="inputBox"
           clearable
@@ -70,7 +70,7 @@
           size="small"
           type="primary"
           @click="handleSearch"
-        >查询</el-button>
+        >{{$t('payReward.query')}}</el-button>
       </div>
     </div>
 
@@ -84,35 +84,35 @@
       >
         <el-table-column
           prop="userId"
-          label="用户ID"
+          :label='$t("payReward.userId")'
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="username"
-          label="用户昵称"
+          :label="$t('payReward.nickName')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="mobile"
-          label="手机号"
+          :label="$t('payReward.mobilePhone')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="orderSn"
-          label="订单号"
+          :label="$t('payReward.order')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="giftType"
-          label="活动奖励"
+          :label="$t('payReward.activityReward')"
           align="center"
           :formatter="transformText"
         >
@@ -120,7 +120,7 @@
 
         <el-table-column
           prop="createTime"
-          label="领取时间"
+          :label="$t('payReward.getTime')"
           align="center"
         >
         </el-table-column>
@@ -156,10 +156,10 @@ export default {
         label: '无奖品'
       }, {
         value: '1',
-        label: '普通优惠卷'
+        label: '普通优惠券'
       }, {
         value: '2',
-        label: '分裂优惠卷'
+        label: '分裂优惠券'
       }, {
         value: '3',
         label: '幸运大抽奖'
@@ -211,7 +211,7 @@ export default {
           break
         case 1: row.giftType = '普通优惠券'
           break
-        case 2: row.giftType = '分裂优惠卷'
+        case 2: row.giftType = '分裂优惠券'
           break
         case 3: row.giftType = '幸运大抽奖'
           break

@@ -5,7 +5,7 @@ export const en = {
       'denomination': 'xx', // 面额
       'consume_text': 'Full XX use', // 使用门槛
       'receive_text': 'Remaining XX sheets', // 卡卷剩余数
-      'coupon_id': '', // 优惠卷id
+      'coupon_id': '', // 优惠券id
       'use_score': '0', // 是否可以积分兑换
       'score_number': 'xx', // 需要积分数
       'limitSurplusFlag': 0

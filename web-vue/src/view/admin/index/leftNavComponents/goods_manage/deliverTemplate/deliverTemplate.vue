@@ -67,7 +67,6 @@ export default {
           name: `/admin/home/main/goodsManage/deliverTemplate/deliverTemplateWeightAdd`
         }
       ]
-
     }
   },
   watch: {
@@ -96,7 +95,6 @@ export default {
   // 方法
   methods: {
     handleClick (tab) {
-      localStorage.setItem('V-tabIndex', tab.index)
       this.$router.push(tab.name)
     }
   }

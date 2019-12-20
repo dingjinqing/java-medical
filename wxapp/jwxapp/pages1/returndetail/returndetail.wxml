@@ -1,7 +1,7 @@
 <!-- pages1/returedetail/returndetail.wxml -->
 <include src="/pages/common/header.wxml" />
-<!-- 售后详情 -->
 <view class="main-container">
+  <!-- 售后详情 -->
   <block>
     <block wx:if="{{refundStatus === 1||refundStatus === 4}}">
       <!-- 买家仅退款，退货退款，填写物流[查看订单]申请后，等待商家审核[撤销申请，查看订单] -->
@@ -79,20 +79,23 @@
         </view>
         <view class="order-block-detail-item">
           <text class="details-item-title">运单号码：</text>
-          <text>31435433321434</text>
+          <text>{{orderInfo.shippingNo}}</text>
         </view>
         <view class="order-block-detail-item">
           <text class="details-item-title">联系电话：</text>
-          <text>17283302134</text>
+          <text>{{orderInfo.phone}}</text>
         </view>
-        <view class="order-block-detail-item">
+        <view wx:if="{{voucherImages.length}}" class="order-block-detail-item">
           <text class="details-item-title">退货凭证：</text>
           <view class="details-item-content">
-            <block>
-              <image class="details-item-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg"></image>
+            <block v-for="{{voucherImages}}">
+              <image class="details-item-img" src="{{imageUrl + item}}"></image>
             </block>
           </view>
         </view>
+      </view>
+      <view class="order-block-title">
+        <text class="order-header-btn">查看物流</text>
       </view>
     </view>
     <view class="order-info">
@@ -103,13 +106,13 @@
     </view>
     <view class="order-block">
       <view class="order-block-title">售后详情</view>
-      <view class="order-block-goods">
-        <image class="order-block-goods-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg"></image>
+      <view class="order-block-goods" wx:for="{{returnGoods}}" wx:key="index">
+        <image class="order-block-goods-img" src="{{imageUrl + item.goodsImg}}"></image>
         <view class="order-block-goods-info">
-          <view>拼团测试商品</view>
+          <view>{{item.goodsName}}</view>
           <view class="order-block-goods-price">
-            <text>￥29.00</text>
-            <text>X1</text>
+            <text>￥{{item.goodsPrice}}</text>
+            <text>X{{item.goodsNumber}}</text>
           </view>
         </view>
       </view>
@@ -117,7 +120,7 @@
         <view class="order-block-detail-item">
           <!-- 0仅退款 1:退货退款 2:仅退运费 3:手动退款 4:换货 -->
           <text class="details-item-title">售后类型：</text>
-          <text>{{orderInfo.returnType}}</text>
+          <text>{{return[orderInfo.returnType]}}</text>
         </view>
         <view class="order-block-detail-item">
           <text class="details-item-title">退款金额：</text>
@@ -132,19 +135,19 @@
         2	'缺货',
         3	'拍错/多拍/不想要',
         4	'其他' -->
-        <view class="order-block-detail-item">
+        <view class="order-block-detail-item" wx:if="{{orderInfo.reasonType !== ''}}">
           <text class="details-item-title">申请原因：</text>
-          <text>{{orderInfo.reasonType}}</text>
+          <text>{{reasone[orderInfo.reasonType]}}</text>
         </view>
-        <view class="order-block-detail-item">
+        <view class="order-block-detail-item" wx:if="{{orderInfo.reasonDesc}}">
           <text class="details-item-title">申请说明：</text>
           <text>{{orderInfo.reasonDesc}}</text>
         </view>
-        <view class="order-block-detail-item">
+        <view class="order-block-detail-item" wx:if="{{goodsImages && goodsImages.length}}">
           <text class="details-item-title">申请凭证：</text>
           <view class="details-item-content">
-            <block>
-              <image class="details-item-img" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg"></image>
+            <block wx:for="{{goodsImages}}" wx:key="index">
+              <image class="details-item-img" src="{{imageUrl + item}}"></image>
             </block>
           </view>
         </view>
@@ -156,15 +159,15 @@
         <view class="order-block-detail-item">
           <text class="activity-type-mark fl">拼团</text>
           <text class="details-item-title">订单编号：</text>
-          <text>P201912131128549803</text>
+          <text>{{orderInfo.orderSn}}</text>
         </view>
         <view class="order-block-detail-item">
           <text class="details-item-title">售后编号：</text>
-          <text class="details-item-content">R201912161020122397</text>
+          <text class="details-item-content">{{orderInfo.returnOrderSn}}</text>
         </view>
         <view class="order-block-detail-item">
           <text class="details-item-title">申请日期：</text>
-          <text class="details-item-content">2019-12-16 10:20:12</text>
+          <text class="details-item-content">{{applicationTime}}</text>
         </view>
       </view>
     </view>

@@ -186,8 +186,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
         //order before data ready
         try {
+            //初始化paramGoods
+            initParamGoods(param);
             //init
             orderBo = initCreateOrderBo(param);
+            //校验
+            checkCreateOrderBo(orderBo, param);
             //设置规格和商品信息、基础校验规格与商品
             processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
             //TODO 营销相关 活动校验或活动参数初始化
@@ -201,8 +205,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getWxUserInfo().getUserId(), param.getMemberCardNo(), param.getOrderCartProductBo(), param.getStoreId());
             }
             orderBo.setOrderGoodsBo(orderGoodsBos);
-            //校验
-            checkCreateOrderBo(orderBo, param);
+
             //处理orderBeforeVo
             orderBeforeVo.setAddress(orderBo.getAddress());
             processOrderBeforeVo(param, orderBeforeVo, orderBo.getOrderGoodsBo());
@@ -225,17 +228,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //商品退款退货配置
-                calculate.setGoodsReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order.getPosFlag());
+                calculate.setReturnCfg(orderBo.getOrderGoodsBo(), orderBo.getOrderType(), order);
                 //TODO exchang、好友助力
-
                 //保存营销活动信息
                 processorFactory.processSaveOrderInfo(param,order);
                 //TODO 订单类型拼接(支付有礼)
-                orderBo.getOrderType().addAll(orderGoods.getGoodsType(orderGoodsBos));
-                order.setGoodsType(OrderInfoService.getGoodsTypeToInsert(orderBo.getOrderType()));
                 //订单入库
+                order.setGoodsType(OrderInfoService.getGoodsTypeToInsert(orderBo.getOrderType()));
                 order.store();
-                orderGoods.addRecord(order, orderBo.getOrderGoodsBo());
+                orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
                 //必填信息
                 must.addRecord(param.getMust());
                 orderBo.setOrderId(order.getOrderId());
@@ -754,10 +755,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(BigDecimalUtil.compareTo(param.getOrderAmount(), vo.getOrderAmount()) != 0){
             throw new MpException(JsonResultCode.CODE_ORDER_AMOUNT_CHANGE, null, vo.getOrderAmount().toString());
         }
-        //不可配送（地址超出配送范围,请重新选择商品后下单）
-        if(vo.getCanShipping() == NO) {
-            throw new MpException(JsonResultCode.CODE_ORDER_CALCULATE_SHIPPING_FEE_ERROR);
-        }
         //积分抵扣金额不能超过
         if(BigDecimalUtil.compareTo(vo.getScoreDiscount(), vo.getScoreMaxDiscount()) == 1){
             throw new MpException(JsonResultCode.CODE_ORDER_SCORE_LIMIT);
@@ -781,7 +778,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param beforeVo
      */
     private void setOtherValue(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
-        //支付信息
+        //TODO 订单类型拼接(支付有礼)
+        orderBo.getOrderType().addAll(orderGoods.getGoodsType(orderBo.getOrderGoodsBo()));//支付信息
         if(BigDecimalUtil.add(beforeVo.getMoneyPaid(), beforeVo.getBkOrderMoney()).compareTo(BigDecimal.ZERO) == 0){
             logger().info("支付信息:余额支付");
             //非补款

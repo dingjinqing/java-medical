@@ -282,7 +282,7 @@
       @dialog-cancel="closeDialog"
       :dialogVisible="dialogVisible"
     />
-    <!--添加优惠卷弹窗-->
+    <!--添加优惠券弹窗-->
     <addCouponDialog
       @checkReturnFormat="handleToCheck"
       :tuneUpCoupon="showCouponDialog"
@@ -353,7 +353,7 @@ export default {
     }
     return {
       goodsNum: '',
-      // 优惠卷弹窗
+      // 优惠券弹窗
       couponDialogFlag: false,
       couponData: [],
       couponId: '',
@@ -530,7 +530,7 @@ export default {
       this.$http.$emit('V-AddCoupon', obj)
       this.showCouponDialog = !this.showCouponDialog
     },
-    // 优惠卷回调
+    // 优惠券回调
     handleToCheck (data) {
       console.log('coupon', data)
       let couponKey = []

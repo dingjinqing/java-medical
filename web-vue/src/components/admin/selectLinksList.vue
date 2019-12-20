@@ -157,7 +157,7 @@ export default {
           flagindex: '', title: '一口价'
         },
         {
-          flagindex: '', title: '优惠卷'
+          flagindex: '', title: '优惠券'
         },
         {
           flagindex: '', title: '会员卡'

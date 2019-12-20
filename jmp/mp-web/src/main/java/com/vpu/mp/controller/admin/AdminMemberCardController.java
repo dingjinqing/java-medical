@@ -279,6 +279,17 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success(shop().member.card.getBatchCfg(batchId));
 	}
 	
+	
+	/**
+	 * 获取等级卡所有等级
+	 */
+	@PostMapping("/card/all/grade")
+	public JsonResult getAvailableGradeCard() {
+		List<String> res = shop().member.card.getAllNoDeleteCardGrade();
+		return success(res);
+	}
+	
+	
 	/**
 	 * 领取会员卡
 	 */
@@ -313,6 +324,9 @@ public class AdminMemberCardController extends AdminBaseController {
 		}
 		return success();
 	}
+	
+	
+	
 	
 	
 	

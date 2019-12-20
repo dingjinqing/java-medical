@@ -30,7 +30,7 @@ export const cn = {
   socre: '积分',
   coupon: '优惠券',
   lottery: '幸运大抽奖',
-  addCoupon: '添加优惠卷',
+  addCoupon: '添加优惠券',
   refresh: '刷新',
   createLabel: '新建标签',
   manageLabel: '管理标签',

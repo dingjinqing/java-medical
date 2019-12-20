@@ -132,7 +132,7 @@ import {
 import {
   cn as fightGroup
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/fightGroupCn'
-// 小程序页面装修优惠卷模块国际化
+// 小程序页面装修优惠券模块国际化
 import {
   cn as coupon
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/couponCn'
@@ -305,7 +305,7 @@ import {
 // 支付有礼
 import {
   cn as payReward
-} from './views/admin_new/cn/index/marketManagement/payReward/payReward'
+} from './views/admin_new/cn/index/marketManagement/payReward/payRewardCn'
 // 首单特惠
 import {
   cn as firstSpecial
@@ -1019,7 +1019,7 @@ const cn = {
   addSeckillDialog, // 添加砍价活动商品弹窗
   spike, // 小程序装修秒杀模块
   fightGroup, // 小程序装修拼团抽奖模块
-  coupon, // 小程序页面装修优惠卷模块
+  coupon, // 小程序页面装修优惠券模块
   commodity, //  小程序页面装修商品模块
   pictureAds, //  小程序页面装修图片广告模块
   shopRecruit, // 小程序页面装修店招设置模块
