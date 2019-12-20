@@ -8,7 +8,6 @@
       <el-form-item
         class="card-store-item"
         :label="$t('memberCard.usingStore')"
-        :rules="[{required: true}]"
       >
         <div class="store-top">
           <el-radio
@@ -78,8 +77,12 @@
         >
           <div class="use-time">
             <span>允许适用时间</span>
-            <el-checkbox v-model="ruleForm.workday">工作日 </el-checkbox>
-            <el-checkbox v-model="ruleForm.weekend">双休日 </el-checkbox>
+            <el-checkbox v-model="workdayChecked">工作日 </el-checkbox>
+            <el-checkbox v-model="weekendChecked">双休日 </el-checkbox>
+            <span
+              class="suite-times"
+              v-if="timeValid"
+            >至少选择一项使用时间</span>
           </div>
           <div class="use-num">
             <span>允许适用</span>
@@ -92,6 +95,10 @@
             >
             </el-input-number>
             <span>次</span>
+            <span
+              class="suite-times"
+              v-if="countValid"
+            >请输入允许使用次数</span>
           </div>
         </div>
       </el-form-item>
@@ -118,7 +125,7 @@ export default {
   computed: {
     ruleForm: {
       get () {
-        this.initUseTime(this.useTime)
+        this.initUseTime(this.val.useTime)
         return this.val
       },
       set () {
@@ -130,23 +137,77 @@ export default {
     'ruleForm': {
       handler (newName, oldName) {
         this.val = newName
-        this.val.useTime = this.calcUseTime()
         this.ruleForm = this.val
       },
       deep: true
+    },
+    'ruleForm.count': {
+      handler (newName, oldName) {
+        if (this.countValid) {
+          if (typeof this.ruleForm.count === 'number') {
+            this.countValid = false
+          }
+        }
+      },
+      immediate: true
+    },
+    weekendChecked () {
+      if (this.weekendChecked) {
+        this.timeValid = false
+      }
+      let useTime = this.calcUseTime()
+      this.ruleForm.useTime = useTime
+    },
+    workdayChecked () {
+      if (this.workdayChecked) {
+        this.timeValid = false
+      }
+      let useTime = this.calcUseTime()
+      this.ruleForm.useTime = useTime
     }
+  },
+  mounted () {
+    this.$on('checkRule', () => {
+      console.log(typeof this.ruleForm.count)
+      // 使用时间检测
+      if (this.bothFalse) {
+        this.$message.warning('至少选择一项使用时间')
+        this.ruleForm.valid = false
+        this.timeValid = true
+        return
+      } else {
+        this.ruleForm.valid = true
+        this.timeValid = false
+      }
+      // 适用次数检测
+      if (typeof this.ruleForm.count === 'number') {
+        this.ruleForm.valid = true
+        this.countValid = false
+      } else {
+        this.$message.warning('请输入允许使用次数')
+        this.ruleForm.valid = false
+        this.countValid = true
+      }
+    })
   },
   data () {
     return {
       chooseStoreDialogVisiable: false,
-      workday: true,
-      weekend: false
+      workdayChecked: true,
+      weekendChecked: false,
+      countValid: false,
+      bothFalse: false,
+      timeValid: false
     }
   },
   methods: {
     initUseTime (useTime) {
       if (useTime === '0') {
-        this.initWorkDayAndWeekend(true, true)
+        if (this.bothFalse) {
+          this.initWorkDayAndWeekend(false, false)
+        } else {
+          this.initWorkDayAndWeekend(true, true)
+        }
       } else if (useTime === '1') {
         this.initWorkDayAndWeekend(true, false)
       } else if (useTime === '2') {
@@ -156,17 +217,21 @@ export default {
       }
     },
     initWorkDayAndWeekend (workday, weekend) {
-      this.workday = workday
-      this.weekend = weekend
+      this.workdayChecked = workday
+      this.weekendChecked = weekend
     },
     calcUseTime () {
-      if (this.workDay && this.weekend) {
+      if (this.workdayChecked && this.weekendChecked) {
+        this.bothFalse = false
         return '0'
-      } else if (this.workDay) {
+      } else if (this.workdayChecked) {
+        this.bothFalse = false
         return '1'
-      } else if (this.weekend) {
+      } else if (this.weekendChecked) {
+        this.bothFalse = false
         return '2'
       } else {
+        this.bothFalse = true
         return '0'
       }
     },
@@ -230,6 +295,10 @@ export default {
         span {
           margin-right: 20px;
         }
+        .suite-times {
+          color: #f56c6c;
+          font-size: 12px;
+        }
       }
       .use-num {
         span {
@@ -237,6 +306,11 @@ export default {
         }
         /deep/ .el-input {
           width: 90%;
+        }
+
+        .suite-times {
+          color: #f56c6c;
+          font-size: 12px;
         }
       }
     }

@@ -173,6 +173,19 @@ export default {
   },
   mounted () {
     this.dateSelectOptions = this.$t('memberCard.dateSelectOptions')
+    this.$on('checkRule', () => {
+      this.$refs.ruleForm.validate((valid) => {
+        console.log(valid)
+        this.ruleForm.valid = valid
+        if (!valid) {
+          if (this.ruleForm.expiredType === '0') {
+            this.$message.warning('请填写日期')
+          } else if (this.ruleForm.expiredType === '1') {
+            this.$message.warning('请输入有效期')
+          }
+        }
+      })
+    })
   },
   methods: {
     checkReceiveError (val) {

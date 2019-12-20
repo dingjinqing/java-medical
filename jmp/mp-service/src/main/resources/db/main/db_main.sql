@@ -604,17 +604,19 @@ create table `b2c_mp_deploy_history`
 #drop table if exists `b2c_mp_operate_log`;
 create table `b2c_mp_operate_log`
 (
-    `operate_id`    int(11)      not null auto_increment comment '自增ID',
-    `app_id`        varchar(191) not null default '' comment '小程序app_id',
-    `template_id`   int(11)      not null comment '小程序模板Id',
-    `operate_type`  tinyint      not null default 1 comment '操作类型',
-    `operate_state` tinyint      not null default 1 comment '操作状态:1成功 2失败',
-    `memo`          text comment '失败原因',
-    `create_time`   timestamp    not null default now() comment '记录时间',
-    primary key (`operate_id`),
-    key (`app_id`),
-    key (`operate_type`),
-    key (`template_id`)
+  `operate_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `app_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '小程序app_id',
+  `template_id` int(11) NOT NULL COMMENT '小程序模板Id',
+  `operate_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '操作类型',
+  `memo` text COLLATE utf8mb4_unicode_ci COMMENT '操作日志',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间',
+  `memo_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `memo_list` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `operate_state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '操作状态:1成功 2失败',
+  PRIMARY KEY (`operate_id`),
+  KEY `app_id` (`app_id`),
+  KEY `operate_type` (`operate_type`),
+  KEY `template_id` (`template_id`)
 );
 
 

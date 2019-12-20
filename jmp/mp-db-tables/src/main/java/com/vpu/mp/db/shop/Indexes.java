@@ -476,12 +476,14 @@ public class Indexes {
     public static final Index SUBSCRIBE_MESSAGE_TEMPLATE_NO = Indexes0.SUBSCRIBE_MESSAGE_TEMPLATE_NO;
     public static final Index SUBSCRIBE_MESSAGE_USER_ID = Indexes0.SUBSCRIBE_MESSAGE_USER_ID;
     public static final Index SUBSCRIBE_MESSAGE_WX_OPENID = Indexes0.SUBSCRIBE_MESSAGE_WX_OPENID;
+    public static final Index PAY_AWARD_PRIZE_PRIMARY = Indexes0.PAY_AWARD_PRIZE_PRIMARY;
+
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
-
     private static class Indexes0 {
+        public static Index PAY_AWARD_PRIZE_PRIMARY = Internal.createIndex("PRIMARY", PayAwardPrize.PAY_AWARD_PRIZE, new OrderField[] { PayAwardPrize.PAY_AWARD_PRIZE.ID }, true);
         public static Index COMMENT_AWARD_PRIMARY = Internal.createIndex("PRIMARY", CommentAward.COMMENT_AWARD, new OrderField[] { CommentAward.COMMENT_AWARD.ID }, true);
         public static Index GROUP_BUY_LIST_PRIMARY = Internal.createIndex("PRIMARY", GroupBuyList.GROUP_BUY_LIST, new OrderField[] { GroupBuyList.GROUP_BUY_LIST.ID }, true);
         public static Index GROUP_INTEGRATION_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE, new OrderField[] { GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE.ID }, true);

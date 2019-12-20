@@ -95,7 +95,7 @@ global.wxPage({
           dataList[i].time_tips = "";
         } else {
           dataList[i].time_tips = util.dateformat(dataList[i].remain_seconds_all);
-          console.log(dataList[i].time_tips)
+          // console.log(dataList[i].time_tips)
         }
       }
       that.setData({

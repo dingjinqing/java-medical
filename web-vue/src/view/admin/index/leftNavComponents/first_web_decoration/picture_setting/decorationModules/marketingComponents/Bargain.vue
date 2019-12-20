@@ -278,7 +278,11 @@ export default {
     backData: { // 模块公共
       handler (newData) {
         if (newData) {
-          this.data = newData
+          console.log(newData)
+          if (newData.bargain_goods.length) {
+            this.data = newData
+          }
+
         }
       },
       immediate: true,

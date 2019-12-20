@@ -1192,7 +1192,7 @@ public class UserCardService extends ShopBaseService {
 	public UserCardJudgeVo userCardJudgement(UserIdAndCardIdParam param,String lang) {
 		UserCardVo userCard = getUserCardJudge(param);
 		MemberCardRecord mCard = cardDao.getCardById(param.getCardId());
-
+		// null
 		boolean isGet = false;
 		if (userCard != null) {
 			logger().info("用户有此卡");
@@ -1292,8 +1292,12 @@ public class UserCardService extends ShopBaseService {
 			UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
 			uCard.setIsGet(isGet);
 			if(uCard.getExpireTime()!=null) {
-				uCard.setStartDate(uCard.getStartTime().toLocalDateTime().toLocalDate());
-				uCard.setEndDate(uCard.getEndTime().toLocalDateTime().toLocalDate());
+				if(uCard.getStartTime()!=null) {
+					uCard.setStartDate(uCard.getStartTime().toLocalDateTime().toLocalDate());
+				}
+				if(uCard.getEndTime()!=null) {
+					uCard.setEndDate(uCard.getEndTime().toLocalDateTime().toLocalDate());
+				}
 				uCard.setExpireType(NumberUtils.BYTE_ZERO);
 			}else {
 				uCard.setExpireType(CardConstant.MCARD_ET_FOREVER);
