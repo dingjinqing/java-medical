@@ -786,7 +786,8 @@ public class UserCardService extends ShopBaseService {
 	 * @return
 	 */
 	public String getCardAvatar() {
-		return saas().shop.getShopAvatarById(this.getShopId());
+		String relativePath = saas().shop.getShopAvatarById(this.getShopId());
+		return saas().getShopApp(getShopId()).image.imageUrl(relativePath);
 	}
 
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param) throws UserCardNullException {
@@ -1192,7 +1193,7 @@ public class UserCardService extends ShopBaseService {
 	public UserCardJudgeVo userCardJudgement(UserIdAndCardIdParam param,String lang) {
 		UserCardVo userCard = getUserCardJudge(param);
 		MemberCardRecord mCard = cardDao.getCardById(param.getCardId());
-
+		// null
 		boolean isGet = false;
 		if (userCard != null) {
 			logger().info("用户有此卡");
@@ -1292,8 +1293,12 @@ public class UserCardService extends ShopBaseService {
 			UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
 			uCard.setIsGet(isGet);
 			if(uCard.getExpireTime()!=null) {
-				uCard.setStartDate(uCard.getStartTime().toLocalDateTime().toLocalDate());
-				uCard.setEndDate(uCard.getEndTime().toLocalDateTime().toLocalDate());
+				if(uCard.getStartTime()!=null) {
+					uCard.setStartDate(uCard.getStartTime().toLocalDateTime().toLocalDate());
+				}
+				if(uCard.getEndTime()!=null) {
+					uCard.setEndDate(uCard.getEndTime().toLocalDateTime().toLocalDate());
+				}
 				uCard.setExpireType(NumberUtils.BYTE_ZERO);
 			}else {
 				uCard.setExpireType(CardConstant.MCARD_ET_FOREVER);
@@ -1326,6 +1331,8 @@ public class UserCardService extends ShopBaseService {
 				List<StoreBasicVo> storeList = storeService.getStoreListByStoreIds(storeIdList);
 				uCard.setStoreInfoList(storeList);
 			}
+			// 会员卡头像
+			
 			uCard.setShopAvatar(getCardAvatar());
 			
 			logger().info("虚拟卡订单下单时间");

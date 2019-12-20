@@ -18,8 +18,8 @@
           type="primary"
           size="small"
           @click="addActivity"
-        >添加支付有礼活动</el-button>
-        <div class="right">注：同一时间段仅会开展一个优先级最高的支付有礼活动</div>
+        >{{$t('payReward.addActivity')}}</el-button>
+        <div class="right">{{$t('payReward.activityTips')}}</div>
       </div>
     </div>
 
@@ -33,33 +33,33 @@
       >
         <el-table-column
           prop="activityNames"
-          label="活动名称"
+          :label="$t('payReward.actName')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="name"
-          label="触发条件"
+          :label="$t('payReward.triggerCondition')"
           align="center"
         >
           <template slot-scope="scope">
             {{scope.row.goodsAreaType === 1? '部分商品':'全部商品'}}
             <br>
-            满{{scope.row.minPayMoney===null?'0.00':scope.row.minPayMoney+".00"}}元
+            {{$t('payReward.full')}}{{scope.row.minPayMoney===null?'0.00':scope.row.minPayMoney+".00"}}{{$t('payReward.yuan')}}
           </template>
         </el-table-column>
 
         <el-table-column
           prop="vaildDate"
-          label="活动有效期"
+          :label="$t('payReward.validDate')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="awardContentList"
-          label="活动奖励"
+          :label="$t('payReward.activityReward')"
           align="center"
         >
           <template slot-scope="scope">
@@ -74,26 +74,26 @@
 
         <el-table-column
           prop="actFirst"
-          label="优先级"
+          :label="$t('payReward.priority')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
           prop="statusText"
-          label="活动状态"
+          :label="$t('payReward.activityStatus')"
           align="center"
         >
         </el-table-column>
 
         <el-table-column
-          label="操作"
+          :label="$t('payReward.operate')"
           align="center"
         >
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
-                content="编辑"
+                :content="$t('payReward.edit')"
                 placement="top"
                 v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
@@ -103,7 +103,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="启用"
+                :content="$t('payReward.enableUse')"
                 placement="top"
                 v-if=" scope.row.currentState === 4"
               >
@@ -113,7 +113,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="停用"
+                :content="$t('payReward.disableUse')"
                 placement="top"
                 v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
               >
@@ -123,7 +123,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="活动明细"
+                :content="$t('payReward.activityDetail')"
                 placement="top"
                 v-if="scope.row.currentState !== 2"
               >
@@ -133,7 +133,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t('payReward.delete')"
                 placement="top"
                 v-if="scope.row.currentState === 3 || scope.row.currentState === 4"
               >
@@ -170,6 +170,9 @@ export default {
   watch: {
     'param.navType' (n, o) {
       this.searchList()
+    },
+    lang () {
+      this.activityName = this.$t('payReward.payReward')
     }
   },
   created () {
@@ -177,7 +180,7 @@ export default {
   },
   data () {
     return {
-      activityName: '支付有礼',
+      activityName: this.$t('payReward.payReward'),
       tableData: [],
       param: {
         'navType': 0,
@@ -244,57 +247,59 @@ export default {
 
     // 删除支付有礼活动
     delPayRewardAct (id) {
-      this.$confirm('确认要删除吗？', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('payReward.confirmDelete'), {
+        confirmButtonText: this.$t('payReward.confirm'),
+        cancelButtonText: this.$t('payReward.cancel'),
         type: 'warning'
       }).then(() => {
         delPayRewardAct({ id: id }).then((res) => {
           if (res.error === 0) {
-            this.$message.success({ message: '删除成功' })
+            this.$message.success({ message: this.$t('payReward.deleteSucess') })
             this.searchList()
           }
         })
       }).catch(() => {
-        this.$message.info({ message: '已取消删除' })
+        this.$message.info({ message: this.$t('payReward.cancelDelete') })
       })
     },
 
     // 停用
     closeSwitch (row) {
-      this.$confirm('确认要停用吗？', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('payReward.confirmStop'), {
+        confirmButtonText: this.$t('payReward.confirm'),
+        cancelButtonText: this.$t('payReward.cancel'),
         type: 'warning'
       }).then(() => {
         actSwitch({
           id: row.id
         }).then((res) => {
           if (res.error === 0) {
-            this.$message.success({ message: '停用成功' })
+            this.$message.success({ message: this.$t('payReward.stopSuccess') })
             this.searchList()
           }
         })
       }).catch(() => {
+        this.$message.success({ message: this.$t('payReward.cancelStop') })
       })
     },
 
     // 启用
     openSwitch (row) {
-      this.$confirm('确认要启用吗？', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('payReward.confirmEnable'), {
+        confirmButtonText: this.$t('payReward.confirm'),
+        cancelButtonText: this.$t('payReward.cancel'),
         type: 'warning'
       }).then(() => {
         actSwitch({
           id: row.id
         }).then((res) => {
           if (res.error === 0) {
-            this.$message.success({ message: '启用成功' })
+            this.$message.success({ message: this.$t('payReward.enableSuccess') })
             this.searchList()
           }
         })
       }).catch(() => {
+        this.$message.success({ message: this.$t('payReward.cancelEnable') })
       })
     }
   },

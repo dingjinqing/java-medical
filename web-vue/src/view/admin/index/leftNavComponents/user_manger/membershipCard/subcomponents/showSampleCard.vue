@@ -183,7 +183,6 @@
         </div>
         <div v-if="index===4">
           <div
-            v-if="cardUsageCfgData.mobile"
             class="s-power-title"
             v-bind:style="getMiniLog(item)"
           >
@@ -195,7 +194,6 @@
         </div>
         <div v-if="index===5 && cardStoreCfgData">
           <div
-            v-if="cardUsageCfgData.mobile"
             class="s-power-title"
             v-bind:style="getMiniLog(item)"
           >

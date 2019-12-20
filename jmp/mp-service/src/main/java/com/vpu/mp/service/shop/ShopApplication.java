@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop;
 
+import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -147,6 +148,9 @@ public class ShopApplication {
 	 */
 	@Autowired
 	public OrderOperateFactory orderActionFactory;
+	/**快递公司*/
+	@Autowired
+    public ExpressService express;
 	@Autowired
 	public PageClassificationService pageClassification;
 	@Autowired

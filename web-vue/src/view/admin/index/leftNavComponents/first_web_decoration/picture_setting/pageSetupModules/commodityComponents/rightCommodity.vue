@@ -1382,6 +1382,7 @@ export default {
             height: 96px;
             border: 1px solid #e5e5e5;
             margin-bottom: 10px;
+            min-width: 124px;
             .type {
               p {
                 margin-top: 10px;
