@@ -59,6 +59,7 @@
             :range-separator="$t('seckill.to')"
             :start-placeholder="$t('seckill.startTime')"
             :end-placeholder="$t('seckill.endTime')"
+            :default-time="['00:00:00','23:59:59']"
             value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
           >

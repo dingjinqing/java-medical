@@ -70,6 +70,7 @@
                   :range-separator="$t('gift.to')"
                   :start-placeholder="$t('gift.startTime')"
                   :end-placeholder="$t('gift.endTime')"
+                  :default-time="['00:00:00','23:59:59']"
                   :disabled="ongoing"
                 >
                 </el-date-picker>
@@ -237,6 +238,7 @@
                     :range-separator="$t('gift.to')"
                     :start-placeholder="$t('gift.startTime')"
                     :end-placeholder="$t('gift.endTime')"
+                    :default-time="['00:00:00','23:59:59']"
                     :disabled="ongoing"
                   >
                   </el-date-picker>
