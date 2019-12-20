@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.action.base;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -592,15 +593,15 @@ public class Calculate extends ShopBaseService {
      *
      * @param orderGoods 商品
      * @param goodsType  商品类型
-     * @param posFlag    pos标识
+     * @param order    订单
      */
-    public void setGoodsReturnCfg(List<OrderGoodsBo> orderGoods, List<Byte> goodsType, Byte posFlag) {
+    public void setReturnCfg(List<OrderGoodsBo> orderGoods, List<Byte> goodsType, OrderInfoRecord order) {
         Byte isCanReturn = null;
         //售后开关
         Byte saleSwitch = returnCfg.getPostSaleStatus();
         if (saleSwitch.equals(OrderConstant.NO) || goodsType.contains(OrderConstant.GOODS_TYPE_GIVE_GIFT)) {
             isCanReturn = OrderConstant.IS_CAN_RETURN_N;
-        } else if (posFlag != null && OrderConstant.YES == posFlag) {
+        } else if (order.getPosFlag() != null && OrderConstant.YES == order.getPosFlag()) {
             isCanReturn = OrderConstant.IS_CAN_RETURN_Y;
         }
         if (isCanReturn == null) {
@@ -610,7 +611,11 @@ public class Calculate extends ShopBaseService {
                 bo.setIsCanReturn(isCanReturn);
             }
         }
-
+        if(orderGoods.stream().map(OrderGoodsBo::getIsCanReturn).max(Byte::compareTo).get().equals(OrderConstant.IS_CAN_RETURN_N)) {
+            //max不可能为null
+            //所有商品都为不可退则订单可退状态也改为不可退
+            order.setReturnTypeCfg(OrderConstant.CFG_RETURN_TYPE_N);
+        }
     }
 
     /**

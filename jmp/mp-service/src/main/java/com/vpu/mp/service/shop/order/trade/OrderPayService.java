@@ -22,6 +22,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
@@ -63,7 +64,8 @@ public class OrderPayService extends ShopBaseService{
     @Autowired
     private OrderInfoService order;
 
-
+    @Autowired
+    private OrderGoodsService orderGoods;
     /**
      * 订单系统内金额支付方法
      * @param order 订单
@@ -120,6 +122,17 @@ public class OrderPayService extends ShopBaseService{
     }
 
     public String getGoodsNameForPay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo) {
+        StringBuilder result = new StringBuilder(orderGoodsBo.get(0).getGoodsName());
+        if(result.length() > 32){
+            result.substring(0, 32);
+        }
+        result.append(orderGoodsBo.size() == 1 ? StringUtils.EMPTY : "等").append(orderInfo.getGoodsAmount()).append("件");
+        return result.toString();
+    }
+
+    public String getGoodsNameForPay(String orderSn) {
+        OrderInfoRecord orderInfo = order.getOrderByOrderSn(orderSn);
+        List<OrderGoodsBo> orderGoodsBo = orderGoods.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
         StringBuilder result = new StringBuilder(orderGoodsBo.get(0).getGoodsName());
         if(result.length() > 32){
             result.substring(0, 32);
