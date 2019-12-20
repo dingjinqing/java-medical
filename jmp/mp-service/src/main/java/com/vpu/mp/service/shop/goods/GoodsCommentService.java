@@ -29,7 +29,6 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -53,7 +52,6 @@ public class GoodsCommentService extends ShopBaseService {
   @Autowired private CouponGiveService couponGiveService;
   @Autowired private ScoreService scoreService;
   @Autowired private AccountService accountService;
-  @Autowired protected HttpServletRequest request;
   private static final int THREE = 3;
   private static final int FOUR = 4;
   private static final int FIVE = 5;
@@ -794,11 +792,7 @@ public class GoodsCommentService extends ShopBaseService {
       else if (param.getAwardType().equals(THREE)) {
         // 给当前用户赠送余额
         // 获取语言 用于国际化
-        String language =
-            org.springframework.util.StringUtils.isEmpty(request.getHeader("V-Lang"))
-                ? ""
-                : request.getHeader("V-Lang");
-        accountService.addUserAccount(
+          accountService.addUserAccount(
             new AccountParam() {
               {
                 setUserId(param.getUserId());
