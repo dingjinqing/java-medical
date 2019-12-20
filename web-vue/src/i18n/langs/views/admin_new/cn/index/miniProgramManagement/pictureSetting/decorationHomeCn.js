@@ -168,7 +168,7 @@ export const cn = {
     },
     {
       imgUrl: vm.$imageHost + '/image/admin/new_shop_beautify/deco_voucher.png',
-      text: '优惠卷',
+      text: '优惠券',
       id: 2,
       flag: true,
       name: 'm_coupon',

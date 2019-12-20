@@ -80,11 +80,11 @@ export const cn = {
   firstSpecialOffer: '首单特惠',
   full: '满',
   reduce: '减',
-  volumeReduction: '优惠卷减',
+  volumeReduction: '优惠券减',
   hit: '打',
   fracture: '折',
   membershipPrice: '会员价',
   membershipExclusive: '会员专享',
-  discountRoll: '优惠卷打',
+  discountRoll: '优惠券打',
   memberExclusive: '会员专享商品,立即查看'
 }

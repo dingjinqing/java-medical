@@ -20,6 +20,9 @@ global.wxPage({
     voucherImages: [], // 提交物流时凭证图
     returnGoods: [], // 售后商品
     applicationTime: '', // 申请时间
+    return: ['仅退款', '退货退款', '仅退运费', '手动退款', '换货'], // 售后类型
+    reasone: ['协商一致退款', '未按约定时间发货', '缺货', '拍错/多拍/不想要', '其他'], // 退货退款原因
+    reasone_huan: ['协商一致换货', '商品与页面描述不符', '发错货', '商品损坏', '其他'], // 换货原因
   },
 
   /**
@@ -41,6 +44,7 @@ global.wxPage({
         let orderInfo = res.content
         let refundStatus = Number(orderInfo.refundStatus)
         let returnType = Number(orderInfo.returnType)
+        let applicationTime = ""
         // 倒计时
         if (refundStatus === 4 && returnType === 0) {
           totalMicroSecond = orderInfo.returnMoneyDays / 1000
@@ -51,12 +55,12 @@ global.wxPage({
         } else if (refundStatus === 2) {
           totalMicroSecond = orderInfo.returnAuditPassNotShoppingDays / 1000
         }
+        // 申请时间
         if (refundStatus === 1 || refundStatus === 2) {
           applicationTime = orderInfo.applyTime
         } else {
           applicationTime = orderInfo.shippingOrRefundTime
         }
-        console.log(totalMicroSecond)
         // 申请时凭证图
         let goodsImages = JSON.parse(orderInfo.goodsImages) || []
         let voucherImages = JSON.parse(orderInfo.voucherImages) || []
@@ -118,6 +122,10 @@ global.wxPage({
       sec = "0" + sec;
     }
     return date + "天" + hr + '时' + min + "分" + sec + "秒";
+  },
+
+  submitReturnLogistics () {
+
   },
 
   /**

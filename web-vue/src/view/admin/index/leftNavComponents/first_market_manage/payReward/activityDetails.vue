@@ -156,10 +156,10 @@ export default {
         label: '无奖品'
       }, {
         value: '1',
-        label: '普通优惠卷'
+        label: '普通优惠券'
       }, {
         value: '2',
-        label: '分裂优惠卷'
+        label: '分裂优惠券'
       }, {
         value: '3',
         label: '幸运大抽奖'
@@ -211,7 +211,7 @@ export default {
           break
         case 1: row.giftType = '普通优惠券'
           break
-        case 2: row.giftType = '分裂优惠卷'
+        case 2: row.giftType = '分裂优惠券'
           break
         case 3: row.giftType = '幸运大抽奖'
           break

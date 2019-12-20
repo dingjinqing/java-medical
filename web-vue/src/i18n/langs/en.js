@@ -160,7 +160,7 @@ import {
 import {
   en as fightGroup
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/fightGroupEn'
-// 小程序页面装修优惠卷模块国际化
+// 小程序页面装修优惠券模块国际化
 import {
   en as coupon
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/couponEn'
@@ -1012,7 +1012,7 @@ const en = {
   addSeckillDialog, // 选择砍价活动商品弹窗
   spike, // 小程序装修秒杀模块
   fightGroup, // 小程序装修拼团抽奖模块
-  coupon, // 小程序页面装修优惠卷模块
+  coupon, // 小程序页面装修优惠券模块
   commodity, // 小程序页面装修商品模块
   pictureAds, // 小程序页面装修图片广告模块
   shopRecruit, // 小程序页面装修店招设置模块

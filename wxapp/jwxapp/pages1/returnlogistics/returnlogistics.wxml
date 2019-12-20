@@ -1,0 +1,60 @@
+<!-- pages1/returnlogistics/returnlogistics.wxml -->
+<include src="/pages/common/header.wxml" />
+<view class="main-container">
+  <!-- 填写退货物流 -->
+  <block>
+    <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
+      <view class="order-header-h">
+        <text class="order-place2">*</text>
+        请退货给商家
+      </view>
+    </view>
+    <view class="order-info">
+      <view class="order-block-detail-item">
+        <text class="order-place2">*</text>
+        退货地址：{{orderInfo.returnAddress}}
+      </view>
+      <view class="order-block-detail-item">
+        <text class="order-place2">*</text>
+        邮政编码：{{orderInfo.zipCode}}
+      </view>
+      <view class="order-block-detail-item">
+        <text class="order-place2">*</text>
+        收件人：{{orderInfo.consignee}}
+      </view>
+      <view>
+        <text class="order-place2">*</text>
+        联系电话：{{orderInfo.merchantTelephone}}
+      </view>
+    </view>
+    <view class="order-info order-flex">
+      <text><text class="order-required">*</text>物流公司：</text>
+      <view>
+        <text>申通快递</text>
+        <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
+      </view>
+    </view>
+    <view class="order-info order-flex">
+      <text><text class="order-required">*</text>运单号码：</text>
+      <input class="order-flex-1" placeholder="请填写运单号码"></input>
+    </view>
+    <view class="order-info order-flex">
+      <text><text class="order-required">*</text>联系电话：</text>
+      <input class="order-flex-1" placeholder="请填写电话"></input>
+    </view>
+    <view class="order-info">
+      <text class="order-left"><text class="order-place2">*</text>上传凭证：</text>
+      <view class="order-upload order-left" wx:for="{{uploadedImg}}" wx:key="index">
+        <image class="order-upload-img" src="{{imageUrl + item.imgPath}}" mode="cover" />
+        <image src='{{dele_service}}' class="order-upload-delete" bindtap='delImage' data-idx="{{index}}"></image>
+      </view>
+      <view class="order-upload order-left" bindtap="uploadRefundImg">
+        <image class="order-upload-addicon" src="{{add_img}}"></image>
+      </view>
+    </view>
+    <view class="order-footer">
+      <button class='footer-btn' bindtap="submitReturnLogistics" style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>提交退货物流信息</button>
+    </view>
+  </block>
+</view>
+<include src="/pages/common/footer.wxml" />

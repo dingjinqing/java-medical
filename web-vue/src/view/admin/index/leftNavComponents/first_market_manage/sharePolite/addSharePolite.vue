@@ -354,7 +354,7 @@
       @resultGoodsIds="choosingGoodsResult"
       :tuneUpChooseGoods="tuneUpChooseGoods"
     />
-    <!--添加优惠卷弹窗-->
+    <!--添加优惠券弹窗-->
     <addCouponDialog
       :singleElection="true"
       :tuneUpCoupon="tuneUpCoupon"
@@ -560,9 +560,9 @@ export default {
       // this.$http.$emit('V-AddCoupon', obj, 'choiseOne')
       this.tuneUpCoupon = !this.tuneUpCoupon
     },
-    // 优惠卷回调
+    // 优惠券回调
     handleToCheck (data) {
-      console.log('优惠卷', data)
+      console.log('优惠券', data)
       let arr = []
       let stock = []
       data.forEach(item => {

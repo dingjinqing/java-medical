@@ -282,7 +282,6 @@ export default {
           if (newData.bargain_goods.length) {
             this.data = newData
           }
-
         }
       },
       immediate: true,

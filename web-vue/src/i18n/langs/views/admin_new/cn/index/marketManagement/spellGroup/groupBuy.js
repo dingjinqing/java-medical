@@ -98,7 +98,7 @@ export const cn = {
   freeShipping: '免运费',
   shippingOptionComment: '使用原商品运费模板',
   consolationPrize: '鼓励奖',
-  addCoupon: '添加优惠卷',
+  addCoupon: '添加优惠券',
   consolationPrizeComment1: '买家拼团失败后给予一定奖励，可提升买家复购',
   consolationPrizeComment2: '最多添加5张优惠券，已过期和已停用的优惠券不能添加',
   lastWeek: '最近一周',
