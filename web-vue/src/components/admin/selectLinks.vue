@@ -78,7 +78,10 @@
             </li>
           </ul>
         </div>
-        <div class="right_box">
+        <div
+          class="right_box"
+          style="overflow:auto"
+        >
           <!-- <router-view></router-view> -->
           <!-- 动态组价 -->
           <!-- 组件会在 currentComponent 改变时改变 -->
@@ -405,6 +408,7 @@ export default {
   overflow-y: auto;
   padding: 8px;
   border-bottom: 1px solid #eee;
+  padding-bottom: 80px;
 }
 </style>
 <style>
