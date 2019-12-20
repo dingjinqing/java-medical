@@ -19,23 +19,23 @@ const orderStatusList = [
 var order = {
   // 好友代付
   // 退货中心
-  toReturnCenter(orderSn, isReturn) {
-    if (!isReturn) util.jumpLink("", "navigateTo");
-    if (isReturn) util.jumpLink("", "navigateTo");
+  toReturnCenter (orderSn, isReturn, orderId) {
+    if (!isReturn) util.jumpLink("/pages1/returnorder/returnorder?order_sn=" + orderSn + "&order_id=" + orderId, "navigateTo");
+    if (isReturn) util.jumpLink("/pages1/returnorderlist/returnorderlist?order_sn=" + orderSn + "&order_id=" + orderId, "navigateTo");
   },
   // 查看详情
-  viewInfo(orderSn) {
+  viewInfo (orderSn) {
     util.jumpLink(
       `/pages/orderinfo/orderinfo?orderSn=${orderSn}`,
       "navigateTo"
     );
   },
   // 查看评价
-  viewComment(orderSn) {
+  viewComment (orderSn) {
     util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
   },
   // 再次购买
-  addCart(orderSn, orderId) {
+  addCart (orderSn, orderId) {
     console.log(orderSn, orderId);
     util.api(
       "/api/wxapp/order/Repurchase",
@@ -54,14 +54,14 @@ var order = {
     );
   },
   // 删除订单
-  delOrder(orderSn, orderId) {
+  delOrder (orderSn, orderId) {
     util.showModal(
       "提示",
       "是否删除该订单",
       res => {
         util.api(
           "/api/wxapp/order/operation",
-          function(res) {
+          function (res) {
             if (res.error == 0) {
             }
           },
@@ -76,7 +76,7 @@ var order = {
     );
   },
   // 提醒发货
-  remindOrder(orderSn, orderId) {
+  remindOrder (orderSn, orderId) {
     util.api(
       "/api/wxapp/order/operation",
       res => {
@@ -94,14 +94,14 @@ var order = {
     );
   },
   // 取消订单
-  cancelOrder(orderSn, orderId) {
+  cancelOrder (orderSn, orderId) {
     util.showModal(
       "提示",
       "是否取消该订单",
-      function(res) {
+      function (res) {
         util.api(
           "/api/wxapp/order/operation",
-          function(res) {
+          function (res) {
             if (res.error == 0) {
               util.navigateTo({ url: "/pages/orderlist/orderlist" });
             }
@@ -117,7 +117,7 @@ var order = {
     );
   },
   // 过滤需要的参数
-  filterObj(obj, arr) {
+  filterObj (obj, arr) {
     if (typeof obj !== "object" || !Array.isArray(arr)) {
       throw new Error("参数格式不正确");
     }
@@ -134,7 +134,7 @@ var order = {
     return result;
   },
   // 订单下按钮事件
-  handleBtnEvent(e) {
+  handleBtnEvent (e) {
     let optionList = {
       orderInfo: (() => {
         return this.viewInfo;
@@ -171,7 +171,8 @@ var order = {
     if (operate_info === "returnCenter") {
       optionList[operate_info](
         e.currentTarget.dataset.order_sn,
-        e.currentTarget.dataset.is_return
+        e.currentTarget.dataset.is_return,
+        e.currentTarget.dataset.order_id
       );
     } else {
       optionList[operate_info](
@@ -180,7 +181,7 @@ var order = {
       );
     }
   },
-  getOrderStatus(orderData) {
+  getOrderStatus (orderData) {
     let typeArray = orderData.orderType;
     if (
       typeArray.indexOf("17") != -1 &&

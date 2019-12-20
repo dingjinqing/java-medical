@@ -4,17 +4,17 @@
     <view class="pay-info">
       <image src="{{imageUrl}}/image/wxapp/icon_payment.png"></image>
       <view>
-        <text>微信支付：<text style="color:{{comColor}}">￥699.00</text></text>
-        <text>余额支付：<text style="color:{{comColor}}">￥699.00</text></text>
-        <text>积分支付：<text style="color:{{comColor}}">￥699.00</text></text>
-        <text>会员卡余额支付：<text style="color:{{comColor}}">￥699.00</text></text>
+        <block wx:for="{{useInfo}}" wx:for-item="useItem" wx:key="index">
+          <text wx:if="{{useItem > 0}}">{{test[index]}}：<text style="color:{{comColor}}">{{index === 'useScore' ? useItem + '积分' : '￥' + useItem}}</text></text>
+        </block>
       </view>
     </view>
     <view class="button-info">
-      <view style="background-color:{{comColor}};color:#fff">查看订单</view>
-      <view>返回首页</view>
+      <view style="background-color:{{comColor}};color:#fff" bindtap="checkOrder">查看订单</view>
+      <view bindtap="goHome">返回首页</view>
     </view>
     <v-recommend />
   </view>
   <include src="../../pages/common/footer.wxml" />
+  <v-pay-award show="{{true}}" award-info="{{awardInfo}}"/>
 </view>
