@@ -772,7 +772,8 @@ export default {
         goods_bg_color: '#f5f5f5', // 背景自定义颜色 y
         goodsListData: [] // 传递商品列表数据
       },
-      initRequestFlag: false // 初始化接收的数据是否已存在商品数据
+      initRequestFlag: false, // 初始化接收的数据是否已存在商品数据
+      temporaryStorageGoods: [] // 手动推荐暂存商品信息
     }
   },
   watch: {
@@ -860,9 +861,10 @@ export default {
         // 若模块推荐中数据改变处理函数
         if (this.initRequestFlag) {
           if (judgeChangeFlag && callBackData.recommend_type === '0') {
-            this.handleToGetModulesGoods(callBackData)
-          } else {
-            callBackData.goodsListData = this.data.goods_items
+            this.handleToGetModulesGoods(callBackData, false)
+          } else if (callBackData.recommend_type === '1') {
+            // callBackData.goodsListData = this.data.goods_items
+            callBackData.goodsListData = this.temporaryStorageGoods
             this.$emit('handleToBackData', callBackData)
           }
         }
@@ -903,35 +905,55 @@ export default {
   },
   methods: {
     // 调取模块推荐中商品数据
-    handleToGetModulesGoods (initData) {
+    handleToGetModulesGoods (initData, flag) {
       console.log(initData)
       let goodsId = []
-      if (initData.goods_items.length) {
+      let num = null
+      let obj = {}
+      if (flag) {
+        if (!initData.goods_items.length) return
         initData.goods_items.forEach(item => {
           goodsId.push(item.goodsId)
         })
+        obj = {
+          'goods_num': goodsId.length,
+          'recommend_type': '1',
+          'goods_items': goodsId
+        }
+      } else {
+        if (initData.goods_items.length) {
+          initData.goods_items.forEach(item => {
+            goodsId.push(item.goodsId)
+          })
+        }
+        num = Number(initData.goods_num)
+        obj = {
+          'recommend_type': initData.recommend_type, // 商品显示方式 0自动推荐 1手动推荐
+          'goods_num': num, // 商品数量
+          'min_price': initData.min_price, // 商品最低价格
+          'max_price': initData.max_price, // 商品最高价格
+          'keywords': initData.keywords, // 关键词
+          'goods_area': initData.goods_area, // 商品范围
+          'goods_area_data': initData.goods_area_data, // 商品范围选定后弹窗选定的数据
+          'goods_type': Number(initData.goods_type), // 活动类型
+          'sort_type': Number(initData.sort_type), // 排序规则
+          'goods_items': goodsId // 商品列表数据
+        }
       }
+
+      console.log(goodsId)
       // 初始化接口传递参数
-      let obj = {
-        'recommend_type': initData.recommend_type, // 商品显示方式 0自动推荐 1手动推荐
-        'goods_num': Number(initData.goods_num), // 商品数量
-        'min_price': initData.min_price, // 商品最低价格
-        'max_price': initData.max_price, // 商品最高价格
-        'keywords': initData.keywords, // 关键词
-        'goods_area': initData.goods_area, // 商品范围
-        'goods_area_data': initData.goods_area_data, // 商品范围选定后弹窗选定的数据
-        'goods_type': Number(initData.goods_type), // 活动类型
-        'sort_type': Number(initData.sort_type), // 排序规则
-        'goods_items': goodsId // 商品列表数据
-      }
       queryDataList(obj).then((res) => {
         console.log(res)
         if (res.error === 0) {
           console.log(res.content)
           this.goodsListData = res.content
-          initData.goodsListData = res.content
+          this.data.goodsListData = res.content
           console.log(initData)
-          this.$emit('handleToBackData', initData)
+          if (flag) {
+            this.temporaryStorageGoods = res.content
+          }
+          this.$emit('handleToBackData', this.data)
         }
         console.log(res)
       })
@@ -1164,11 +1186,13 @@ export default {
           }
         })
       })
+
       console.log(resCopy, this.data.goods_items)
-      // 添加
       resCopy.forEach((item, index) => {
         this.data.goods_items.push(item)
       })
+      // 添加
+      this.handleToGetModulesGoods(this.data, true)
       console.log(this.data)
     },
     // 商品范围选中后显示添加按钮点击统一处理

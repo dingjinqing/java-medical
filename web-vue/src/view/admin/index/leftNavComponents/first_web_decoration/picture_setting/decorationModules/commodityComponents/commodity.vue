@@ -337,12 +337,11 @@ export default {
         if (newData) {
           this.data = newData
           this.$nextTick(() => {
-            // 处理显示活动
-            this.handleToActivity(newData)
-
-            let arr = JSON.parse(JSON.stringify(this.data.goodsListData))
+            let arr = JSON.parse(JSON.stringify(newData.goodsListData))
             if (arr.length) {
               this.goodsFlag = true
+              // 处理显示活动
+              this.handleToActivity(newData)
             } else {
               this.goodsFlag = false
             }
@@ -401,6 +400,7 @@ export default {
     },
     // 处理显示活动
     handleToActivity (newData) {
+      console.log(newData)
       let goodSData = newData.goodsListData
       goodSData.forEach((item, index) => {
         console.log(item)
