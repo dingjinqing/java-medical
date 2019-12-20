@@ -139,7 +139,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public Byte getReturnPassDays() {
-        return this.get(K_RETURN_PASS_DAYS, Byte.class, BYTE_ZERO);
+        return this.get(K_RETURN_PASS_DAYS, Byte.class, BYTE_SEVEN);
     }
 
     public int setReturnPassDays(Byte returnPassDays) {
