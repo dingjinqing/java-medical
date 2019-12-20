@@ -495,6 +495,7 @@ export default {
         case 1:
           this.cropperFlagF = 0
           queryHeadImgsRequest(obj).then((res) => {
+            debugger
             console.log(res)
             if (res.error === 0) {
               this.totalRows = res.content.page.totalRows
