@@ -57,6 +57,7 @@
               type="primary"
               :underline="false"
               href="#"
+              @click.native="jumpDeliverTemplateDetailInfo"
             >{{$t("goodsAddEditInfo.linkDetail")}}</el-link>
           </div>
           <div
@@ -224,8 +225,8 @@ export default {
         deliverTemplateId: 0,
         deliverTemplateTitleDesc: null,
         deliverTemplateAreasDesc: [],
-        freeDeliverTemplateAreasDesc: []
-
+        freeDeliverTemplateAreasDesc: [],
+        flag: null // 模板类型: 0-普通模板, 1-重量模板
       },
       /* 运费模板数据 */
       deliverTemplateData: [],
@@ -286,6 +287,8 @@ export default {
       let unit = data.flag === 0 ? deliverTemplateUnit1 : deliverTemplateUnit2
 
       let retData = {}
+      // 模板类型: 0-普通模板, 1-重量模板
+      retData.flag = data.flag
       retData.deliverTemplateId = data.deliverTemplateId
       let templateContent = data.content
       // 运费模板:'除可配送区域外，其他不可配送' 部分信息
@@ -348,6 +351,7 @@ export default {
       }
       retData.deliverTemplateAreasDesc = []
       retData.freeDeliverTemplateAreasDesc = []
+      retData.flag = 2
       return retData
     },
     /* 运费模板下拉框change处理函数 */
@@ -375,6 +379,7 @@ export default {
           }
         })
       }
+      console.log(this.deliverTemplateCurrentData)
     },
     /* 刷新运费模板 */
     deliverTemplateSelectRefresh () {
@@ -400,6 +405,22 @@ export default {
         this.goodsProductInfo.deliverTemplateId = this.deliverTemplateCurrentData.deliverTemplateId
         this.deliverTemplateChange(this.goodsProductInfo.deliverTemplateId)
       })
+    },
+    /* 跳转运费模板详情页 */
+    jumpDeliverTemplateDetailInfo () {
+      let flag = this.deliverTemplateCurrentData.flag
+      // 跳转默认模板
+      if (flag === 2) {
+        this.$router.push({path: '/admin/home/main/goodsManage/deliverTemplate/list'})
+      } else {
+        this.$router.push({
+          path: '/admin/home/main/goodsManage/deliverTemplate/deliverTemplateUpdate',
+          query: {
+            type: flag,
+            deliverTemplateId: this.deliverTemplateCurrentData.deliverTemplateId
+          }
+        })
+      }
     },
     /* 会员专享商品下拉框change */
     cardSelectChange () {
