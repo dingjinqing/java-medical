@@ -2,9 +2,15 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.payaward.*;
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardIdParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListVo;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListVo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +57,7 @@ public class AdminPayAwardController  extends AdminBaseController{
      * @return 失败信息
      */
     @PostMapping("/update")
-    public JsonResult updatePayAward(@RequestBody PayAwardParam param){
+    public JsonResult updatePayAward(@RequestBody @Validated(UpdateGroup.class) PayAwardParam param){
         Boolean flag = shop().payAward.updatePayAward(param);
         if (flag) {
             return success();
@@ -66,7 +72,7 @@ public class AdminPayAwardController  extends AdminBaseController{
      * @return 活动信息
      */
     @PostMapping("/get")
-    public JsonResult getPayAward(@RequestBody PayAwardIdParam param){
+    public JsonResult getPayAward(@RequestBody @Validated PayAwardIdParam param){
         PayAwardVo payAward = shop().payAward.getPayAwardId(param.getId());
         return success(payAward);
     }
@@ -77,7 +83,7 @@ public class AdminPayAwardController  extends AdminBaseController{
      * @return JsonResult
      */
     @PostMapping("/list")
-    public JsonResult getPayAwardList(@RequestBody PayAwardListParam param){
+    public JsonResult getPayAwardList(@RequestBody @Validated PayAwardListParam param){
         PageResult<PayAwardListVo> payAwardList = shop().payAward.getPayAwardList(param);
         return success(payAwardList);
     }
@@ -88,14 +94,14 @@ public class AdminPayAwardController  extends AdminBaseController{
      * @return JsonResult
      */
     @PostMapping("/change/status")
-    public JsonResult changeStatus(@RequestBody PayAwardIdParam param){
+    public JsonResult changeStatus(@RequestBody @Validated PayAwardIdParam param){
         shop().payAward.changeStatus(param);
         return success();
     }
 
 
     /**
-     * 活动停用启用
+     * 活动记录
      * @param param id
      * @return JsonResult
      */
