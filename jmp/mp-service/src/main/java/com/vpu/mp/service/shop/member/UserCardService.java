@@ -1287,6 +1287,8 @@ public class UserCardService extends ShopBaseService {
 			dealSendCouponInfo(userCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
+			userCard.setUserId(param.getUserId());
+			userCard.setCardId(param.getCardId());
 			userCardJudgeVo.setCardInfo(userCard);
 			return userCardJudgeVo;
 		}else{
@@ -1371,10 +1373,10 @@ public class UserCardService extends ShopBaseService {
 			dealSendCouponInfo(uCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
+			uCard.setUserId(param.getUserId());
+			uCard.setCardId(param.getCardId());
 			userCardJudgeVo.setCardInfo(uCard);
-			
 			return userCardJudgeVo;
-			
 		}
 	}
 
