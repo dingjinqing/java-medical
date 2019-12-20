@@ -179,7 +179,7 @@ export default {
     },
     getBgImg () {
       if (this.ruleForm.bgImg) {
-        return this.$imageHost + '/' + this.ruleForm.bgImg
+        return this.ruleForm.bgImg
       }
     },
     getDefaultBgImg () {
