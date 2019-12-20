@@ -2137,6 +2137,8 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
             }
         }
 
+        vo.setShipImg(saas().shop.getShopAvatarById(getShopId()));
+
         return vo;
     }
 
