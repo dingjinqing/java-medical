@@ -861,6 +861,7 @@ export default {
         callBackData.col_type = styleParams
 
         console.log(this.goodsListData, this.data.goods_items)
+        console.log(this.initRequestFlag, judgeChangeFlag, callBackData)
         // 若模块推荐中数据改变处理函数
         if (this.initRequestFlag) {
           if (judgeChangeFlag && callBackData.recommend_type === '0') {
@@ -869,6 +870,8 @@ export default {
             // callBackData.goodsListData = this.data.goods_items
             console.log(this.temporaryStorageGoods)
             callBackData.goodsListData = this.temporaryStorageGoods
+            this.$emit('handleToBackData', callBackData)
+          } else {
             this.$emit('handleToBackData', callBackData)
           }
         }
@@ -1109,7 +1112,13 @@ export default {
         item.isChecked = false
       })
       this.listTypeData[index].isChecked = true
-      this.data.col_type = index.toString()
+      if (index === 0) {
+        this.data.col_type = '4'
+      } else if (index === 4) {
+        this.data.col_type = '0'
+      } else {
+        this.data.col_type = index.toString()
+      }
     },
     // 模块标题图标点击
     handleToAddModulesImg () {
