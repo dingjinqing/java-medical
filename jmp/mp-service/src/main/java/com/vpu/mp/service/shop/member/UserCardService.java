@@ -786,7 +786,8 @@ public class UserCardService extends ShopBaseService {
 	 * @return
 	 */
 	public String getCardAvatar() {
-		return saas().shop.getShopAvatarById(this.getShopId());
+		String relativePath = saas().shop.getShopAvatarById(this.getShopId());
+		return saas().getShopApp(getShopId()).image.imageUrl(relativePath);
 	}
 
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param) throws UserCardNullException {
@@ -1330,6 +1331,8 @@ public class UserCardService extends ShopBaseService {
 				List<StoreBasicVo> storeList = storeService.getStoreListByStoreIds(storeIdList);
 				uCard.setStoreInfoList(storeList);
 			}
+			// 会员卡头像
+			
 			uCard.setShopAvatar(getCardAvatar());
 			
 			logger().info("虚拟卡订单下单时间");
