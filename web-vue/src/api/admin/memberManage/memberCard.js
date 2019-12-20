@@ -215,3 +215,12 @@ export function deleteUserCardRequest (data) {
     data
   })
 }
+
+// 废除会员卡
+export function getAllNoDeleteGradeCard () {
+  return service({
+    url: '/api/admin/member/card/all/grade',
+    method: 'post',
+    data: null
+  })
+}

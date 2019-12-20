@@ -135,6 +135,9 @@ export default {
       this.$refs.ruleForm.validate((valid) => {
         console.log(valid)
         this.ruleForm.valid = valid
+        if (!valid) {
+          this.$message.warning('请输入会员卡名称')
+        }
       })
     })
   },
