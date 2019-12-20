@@ -1244,5 +1244,18 @@ public class OrderInfoService extends ShopBaseService {
         return db().fetchCount(TABLE, TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
             .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
     }
+    
+    /**
+     * 获得待支付尾款的订单
+     * @param pinGroupId
+     * @return
+     */
+    public Result<OrderInfoRecord> getNoPayOrderByIdentityId(Integer pinGroupId) {
+		return db().selectFrom(TABLE).where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)
+				.and(TABLE.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)
+						.and(TABLE.BK_ORDER_PAID.eq(OrderConstant.BK_PAY_FRONT)).and(TABLE.ACTIVITY_ID.eq(pinGroupId)
+								.and(TABLE.GOODS_TYPE.eq(String.valueOf(OrderConstant.GOODS_TYPE_PRE_SALE)))))).fetch();
+		 
+    }
 
 }

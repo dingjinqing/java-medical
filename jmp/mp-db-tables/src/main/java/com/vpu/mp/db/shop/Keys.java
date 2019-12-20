@@ -245,11 +245,12 @@ public class Keys {
     public static final Identity<UserRfmSummaryRecord, Integer> IDENTITY_USER_RFM_SUMMARY = Identities0.IDENTITY_USER_RFM_SUMMARY;
     public static final Identity<SubscribeMessageRecord, Long> IDENTITY_SUBSCRIBE_MESSAGE = Identities0.IDENTITY_SUBSCRIBE_MESSAGE;
     public static final Identity<CartRecord, Integer> IDENTITY_CART = Identities0.IDENTITY_CART;
+    public static final Identity<PayAwardPrizeRecord, Integer> IDENTITY_PAY_AWARD_PRIZE = Identities0.IDENTITY_PAY_AWARD_PRIZE;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
-
+    public static final UniqueKey<PayAwardPrizeRecord> KEY_B2C_PAY_AWARD_PRIZE_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_PRIZE_PRIMARY;
     public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = UniqueKeys0.KEY_B2C_CART_PRIMARY;
     public static final UniqueKey<CoopenActivityRecord> KEY_B2C_COOPEN_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_COOPEN_ACTIVITY_PRIMARY;
     public static final UniqueKey<CoopenActivityRecordsRecord> KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY = UniqueKeys0.KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY;
@@ -711,9 +712,11 @@ public class Keys {
         public static Identity<UserRfmSummaryRecord, Integer> IDENTITY_USER_RFM_SUMMARY = Internal.createIdentity(UserRfmSummary.USER_RFM_SUMMARY, UserRfmSummary.USER_RFM_SUMMARY.ID);
         public static Identity<SubscribeMessageRecord, Long> IDENTITY_SUBSCRIBE_MESSAGE = Internal.createIdentity(SubscribeMessage.SUBSCRIBE_MESSAGE, SubscribeMessage.SUBSCRIBE_MESSAGE.REC_ID);
         public static Identity<CartRecord, Integer> IDENTITY_CART = Internal.createIdentity(Cart.CART, Cart.CART.CART_ID);
+        public static Identity<PayAwardPrizeRecord, Integer> IDENTITY_PAY_AWARD_PRIZE = Internal.createIdentity(PayAwardPrize.PAY_AWARD_PRIZE, PayAwardPrize.PAY_AWARD_PRIZE.ID);
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<PayAwardPrizeRecord> KEY_B2C_PAY_AWARD_PRIZE_PRIMARY = Internal.createUniqueKey(PayAwardPrize.PAY_AWARD_PRIZE, "KEY_b2c_pay_award_prize_PRIMARY", PayAwardPrize.PAY_AWARD_PRIZE.ID);
         public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = Internal.createUniqueKey(Cart.CART, "KEY_b2c_cart_PRIMARY", Cart.CART.CART_ID);
         public static final UniqueKey<CoopenActivityRecord> KEY_B2C_COOPEN_ACTIVITY_PRIMARY = Internal.createUniqueKey(CoopenActivity.COOPEN_ACTIVITY, "KEY_b2c_coopen_activity_PRIMARY", CoopenActivity.COOPEN_ACTIVITY.ID);
         public static final UniqueKey<CoopenActivityRecordsRecord> KEY_B2C_COOPEN_ACTIVITY_RECORDS_PRIMARY = Internal.createUniqueKey(CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS, "KEY_b2c_coopen_activity_records_PRIMARY", CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS.ID);

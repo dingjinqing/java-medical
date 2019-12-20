@@ -50,6 +50,7 @@
               >
               </el-input-number>
               <span>{{ $t('memberCard.yuan') }}</span>
+              <span v-if="payMoneyError" class="valid-check">请输入金额</span>
             </div>
             <div>
               <el-radio
@@ -68,6 +69,7 @@
               >
               </el-input-number>
               <span>{{ $t('memberCard.unitM') }}</span>
+              <span v-if="payScoreError" class="valid-check">请输入积分</span>
             </div>
           </div>
           <div
@@ -153,11 +155,12 @@
                   :min="0"
                   :max="999999999"
                   size="small"
+                  @blur="changeCheckStock"
                 >
                 </el-input-number>
                 <span>张</span>
                 <span class="send-tip">填0时为不限制</span>
-                <span>当前已方法： 1张</span>
+                <span>当前已领取： {{ruleForm.hasSend}}张</span>
               </div>
               <div class="person-receive-num">
                 <span>领取限制：每人限领</span>
@@ -167,6 +170,7 @@
                   :min="0"
                   :max="999999999"
                   size="small"
+                  @blur="changeCheckLimits"
                 >
                 </el-input-number>
                 <span>张</span>
@@ -203,6 +207,7 @@ export default {
   computed: {
     ruleForm: {
       get () {
+        console.log(this.val)
         return this.val
       },
       set () {
@@ -210,9 +215,38 @@ export default {
       }
     }
   },
+  mounted () {
+    this.$on('checkRule', () => {
+      if (this.ruleForm.isPay === '1') {
+        // check crash
+        if (this.ruleForm.payType === '0') {
+          if (typeof this.ruleForm.payMoney === 'undefined') {
+            this.$message.warning('请输入金额')
+            this.payMoneyError = true
+            this.payScoreError = false
+          }
+        } else if (this.ruleForm.payType === '1') {
+          if (typeof this.ruleForm.payScore === 'undefined') {
+            this.$message.warning('请输入积分')
+            this.payScoreError = true
+            this.payMoneyError = false
+          }
+        } else {
+          this.payMoneyError = false
+          this.payScoreError = false
+          this.ruleForm.valid = true
+        }
+        // check score
+      } else {
+        this.ruleForm.valid = true
+      }
+    })
+  },
   data () {
     return {
-      codeArr: null
+      codeArr: null,
+      payScoreError: false,
+      payMoneyError: false
     }
   },
   created () {
@@ -221,11 +255,71 @@ export default {
   watch: {
     lang () {
       this.codeArr = this.$t('memberCard.codeArr')
+    },
+    'ruleForm': {
+      handler (newName, oldName) {
+        this.val = newName
+        this.ruleForm = this.val
+      },
+      deep: true
+    },
+    'ruleForm.payType': {
+      handler (newName, oldName) {
+        if (this.ruleForm.payType === '0') {
+          this.payScoreError = false
+          if (this.ruleForm.payMoney === undefined) {
+            this.payMoneyError = true
+          }
+        } else if (this.ruleForm.payType === '1') {
+          this.payMoneyError = false
+          if (this.ruleForm.payScore === undefined) {
+            this.payScoreError = true
+          }
+        }
+      },
+      immediate: true
+    },
+    'ruleForm.payMoney': {
+      handler (newName, oldName) {
+        if (this.ruleForm.payType === '0') {
+          if (this.ruleForm.payMoney === undefined) {
+            this.payMoneyError = true
+          } else {
+            this.payMoneyError = false
+          }
+        }
+      },
+      immediate: true
+    },
+    'ruleForm.payScore': {
+      handler (newName, oldName) {
+        if (this.ruleForm.payType === '1') {
+          if (this.ruleForm.payScore === undefined) {
+            this.payScoreError = true
+          } else {
+            this.payScoreError = false
+          }
+        }
+      },
+      immediate: true
     }
+
   },
   methods: {
     handleCallCodeDialog (index, codeIndex) {
 
+    },
+    changeCheckStock () {
+      if (typeof this.ruleForm.stock === 'undefined') {
+        this.val.stock = 0
+        this.ruleForm = this.val
+      }
+    },
+    changeCheckLimits () {
+      if (typeof this.ruleForm.limits === 'undefined') {
+        this.val.limits = 0
+        this.ruleForm = this.val
+      }
     }
   }
 }
@@ -248,6 +342,10 @@ export default {
       border-radius: 4px;
       .receive-buy {
         padding: 5px 20px;
+        .valid-check{
+          color: #F56C6C;
+          font-size: 12px;
+        }
       }
       .receive-code {
         .receive-code-one {
@@ -324,6 +422,7 @@ export default {
             }
           }
           .person-receive-num {
+            margin-bottom: 10px;
             span {
               &:nth-of-type(1),
               &:nth-of-type(2) {

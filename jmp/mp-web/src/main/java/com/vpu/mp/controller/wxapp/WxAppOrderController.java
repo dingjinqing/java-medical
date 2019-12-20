@@ -160,7 +160,6 @@ public class WxAppOrderController extends WxAppBaseController{
     /**
      * 售后中心退款订单列表(存在退款)
      * @param param
-     * @return
      */
     @PostMapping("/refund/list")
 	public JsonResult mpReturnList(@RequestBody @Valid OrderParam param){
@@ -174,7 +173,6 @@ public class WxAppOrderController extends WxAppBaseController{
     /**
      * 售后中心退款订单详情
      * @param param
-     * @return
      */
     @PostMapping("/refund/info")
     public JsonResult mpReturnInfo(@RequestBody @Valid ReturnOrderParam param){
@@ -188,7 +186,6 @@ public class WxAppOrderController extends WxAppBaseController{
 	/**
 	 * 历史购买
 	 * @param param
-	 * @return
 	 */
 	@PostMapping("/goods/history")
 	public JsonResult getHistoryGoodsList(@RequestBody @Valid OrderGoodsHistoryListParam param){
@@ -196,6 +193,14 @@ public class WxAppOrderController extends WxAppBaseController{
 		FootprintListVo historyVos = shop().readOrder.buyingHistoryGoodsList(userId, param.getKeyword(), param.getCurrentPage(), param.getPageRows());
 		return success(historyVos);
 	}
+
+    /**
+     * 支持快递公司
+     */
+    @PostMapping("/express")
+	public JsonResult getExpress(){
+	    return success(shop().express.getEnabledList());
+    }
 
 	@PostMapping("/addtest")
 	public JsonResult test(){

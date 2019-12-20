@@ -180,6 +180,10 @@ export default {
       this.option.img = obj.url
       this.orignWidth = obj.imgWidth
       this.orignHeight = obj.imgHeight
+      let minWith = Math.min(obj.imgWidth, 150)
+      let minHeight = Math.max(obj.imgHeight, 150)
+      this.option.autoCropWidth = minWith
+      this.option.autoCropHeight = minHeight
       if (obj.imgWidth > 150) {
         this.saveScaleW = 150
       } else {
@@ -199,6 +203,7 @@ export default {
           }
 
           this.option.fixedNumber = [newData[0], newData[1]]
+
         }
       },
       immediate: true

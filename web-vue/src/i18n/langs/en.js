@@ -298,7 +298,7 @@ import {
 // 支付有礼
 import {
   en as payReward
-} from './views/admin_new/en/index/marketManagement/payReward/payReward'
+} from './views/admin_new/en/index/marketManagement/payReward/payRewardEn'
 // 首单特惠
 import {
   en as firstSpecial

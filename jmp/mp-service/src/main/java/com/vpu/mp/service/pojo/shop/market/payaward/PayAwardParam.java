@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.market.payaward;
 
-import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -73,6 +71,6 @@ public class PayAwardParam {
      */
     @Valid
     @Size(max = 5,min = 1)
-    private List<PayAwardContentBo> awardList;
+    private List<PayAwardPrizeParam> awardList;
 
 }

@@ -10,10 +10,12 @@
           <cardNameAndBg
             :val="cardNameAndBg"
             @input="initCardNameAndBg"
+            ref="cardNameAndBg"
           ></cardNameAndBg>
           <cardEffectTime
             :val="cardEffectTime"
             @input="initCardEffectTimeData"
+            ref="cardEffectTime"
           ></cardEffectTime>
           <cardSuiteGoodsCfg
             :val="cardSuiteGoodsCfgData"
@@ -23,6 +25,7 @@
           <cardStoreCfg
             :val="cardStoreCfgData"
             @input="initCardStoreCfgData"
+            ref="cardStoreCfgData"
           ></cardStoreCfg>
           <cardUsageCfg
             :val="cardUsageCfgData"
@@ -34,6 +37,7 @@
           <cardReceiveCfg
             :val="cardReceiveCfgData"
             @input="initCardReceiveCfgData"
+            ref="cardReceiveCfgData"
           ></cardReceiveCfg>
           <cardActiveCfg
             :val="cardActiveCfgData"
@@ -134,7 +138,8 @@ export default {
       expiredType: '0',
       fixedDate: null,
       receiveDay: '',
-      dateType: '0'
+      dateType: '0',
+      valid: false
     }
     let cardStoreCfgDataTmp = {
       cardType: 1,
@@ -146,20 +151,22 @@ export default {
           storeId: 10,
           storeName: '小猴店1'
         }
-      ]
+      ],
+      valid: false
     }
     let cardUsageCfgDataTmp = {
-      desc: 'hahaha',
-      mobile: '1234'
+      desc: null,
+      mobile: null
     }
     return {
       cardType: null,
       cardId: null,
       cardNameAndBg: {
-        cardName: '来自主页',
+        cardName: null,
         bgType: '0',
         bgColor: '',
-        bgImg: ''
+        bgImg: '',
+        valid: false
       },
       disCountData: {
         powerDiscount: true,
@@ -188,24 +195,27 @@ export default {
       cardStoreCfgData: cardStoreCfgDataTmp,
       cardUsageCfgData: cardUsageCfgDataTmp,
       cardSuiteGoodsCfgData: {
-        isExchange: '1',
+        isExchange: '0',
         exchangCount: '',
         exchangFreight: '0',
         exchangGoods: []
       },
       cardReceiveCfgData: {
-        isPay: '2',
+        cardType: 1,
+        isPay: '0',
         payType: '0',
         payMoney: '',
         payScore: '',
-        receiveAction: '0',
+        receiveAction: '1',
         stock: 0,
         limits: 0,
+        hasSend: 0,
         codeAddDivArr: [{ batchName: null, batchId: null }],
-        codeAddDivArrBottom: [{ pwdName: null, pwdId: null }]
+        codeAddDivArrBottom: [{ pwdName: null, pwdId: null }],
+        valid: false
       },
       cardActiveCfgData: {
-        activation: '1',
+        activation: '0',
         activationCfgBox: [],
         examine: '0'
       },
@@ -290,6 +300,7 @@ export default {
       this.cardReceiveCfgData.payType = String(data.payType)
       this.cardReceiveCfgData.payMoney = data.payMoney
       this.cardReceiveCfgData.payScore = data.payScore
+      this.cardReceiveCfgData.hasSend = data.hasSend
       this.cardReceiveCfgData.receiveAction = data.receiveAction === 0 ? '1' : String(data.receiveAction)
       if (data.batchList && this.cardReceiveCfgData.receiveAction === '1') {
         if (data.batchList.length > 0) {
@@ -389,8 +400,16 @@ export default {
     handleToSave () {
       console.log('保存')
       // 检验通过
-      // 保存数据
-      this.prepareCardData()
+      this.$refs.cardNameAndBg.$emit('checkRule')
+      this.$refs.cardEffectTime.$emit('checkRule')
+      this.$refs.cardStoreCfgData.$emit('checkRule')
+      this.$refs.cardReceiveCfgData.$emit('checkRule')
+
+      if (this.cardNameAndBg.valid && this.cardEffectTime.valid && this.cardStoreCfgData.valid && this.cardReceiveCfgData.valid) {
+        this.prepareCardData()
+      } else {
+        this.$message.error('保存失败')
+      }
     },
     prepareCardData () {
       let obj = {

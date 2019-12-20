@@ -82,6 +82,7 @@ import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.config.DomainConfig;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
@@ -159,6 +160,7 @@ import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.member.card.GradeCardService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -196,6 +198,10 @@ public class MemberCardService extends ShopBaseService {
 	private StoreService storeService;
 	@Autowired
 	private QrCodeService qrCodeService;
+	@Autowired
+	private GradeCardService gradeCardService;
+    @Autowired
+    protected DomainConfig domainConfig;
 
 	/**
 	 * 添加会员卡
@@ -704,14 +710,17 @@ public class MemberCardService extends ShopBaseService {
 				// 1.兑换次数2.运费策略 3. 商品id
 				cardBuilder
 				.isExchang(isExchange)
-				.exchangCount(card.getExchangCount())
-				.exchangFreight(card.getExchangFreight())
 				.exchangGoods(Util.listToString(card.getExchangGoods()));
 			} else {
 				cardBuilder.isExchang(MCARD_ISE_NON).exchangGoods(null);
 			}
 		} else if (isExchangAllGoods(isExchange)) {
 			cardBuilder.isExchang(isExchange).exchangGoods(null);
+		}
+		
+		if(CardUtil.isLimitCard(card.getCardType())) {
+			cardBuilder.exchangCount(card.getExchangCount())
+			.exchangFreight(card.getExchangFreight());
 		}
 	}
 
@@ -2134,6 +2143,10 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
             }
         }
 
+        //图片域名
+        vo.setShipImg(domainConfig.imageUrl(saas().shop.getShopAvatarById(getShopId())));
+        vo.setBgImg(domainConfig.imageUrl(vo.getBgImg()));
+
         return vo;
     }
 
@@ -2172,6 +2185,10 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 			// cardOrder.createCardOrder()
 		}
 		
+	}
+	
+	public List<String> getAllNoDeleteCardGrade(){
+		return gradeCardService.getAllNoDeleteCardGrade();
 	}
 	
 }

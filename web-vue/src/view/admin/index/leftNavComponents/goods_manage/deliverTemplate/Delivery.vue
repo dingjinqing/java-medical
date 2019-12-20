@@ -211,12 +211,9 @@ export default {
       updateId: null // 修改数据id
     }
   },
-  mounted () {
+  activated () {
     // 页面初始化清空数据
-    this.$nextTick(() => {
-      // console.log(localStorage.getItem('V-tabIndex'))
-      this.clearData()
-    })
+    this.clearData()
   },
   methods: {
     initData () {
@@ -328,24 +325,24 @@ export default {
       }
     },
     clearData () {
-      // this.delivery = {
-      //   templateName: '',
-      //   flag: 0, // 默认添加普通
-      //   contentParam: {
-      //     limitParam: {
-      //       limit_deliver_area: 0,
-      //       area_list: 0,
-      //       area_text: '全国（其他地区）',
-      //       first_num: 1,
-      //       first_fee: 0,
-      //       continue_num: 1,
-      //       continue_fee: 0
-      //     },
-      //     areaParam: [],
-      //     has_fee_0_condition: 0,
-      //     feeConditionParam: []
-      //   }
-      // }
+      this.delivery = {
+        templateName: '',
+        flag: 0, // 默认添加普通
+        contentParam: {
+          limitParam: {
+            limit_deliver_area: 0,
+            area_list: 0,
+            area_text: '全国（其他地区）',
+            first_num: 1,
+            first_fee: 0,
+            continue_num: 1,
+            continue_fee: 0
+          },
+          areaParam: [],
+          has_fee_0_condition: 0,
+          feeConditionParam: []
+        }
+      }
     }
   }
 }

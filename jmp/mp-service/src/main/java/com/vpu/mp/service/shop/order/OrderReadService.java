@@ -396,36 +396,35 @@ public class OrderReadService extends ShopBaseService {
 				|| shopReturnConfig.getAutoReturnTime().after(DateUtil.getSqlTimestamp())) {
 			return;
 		}
-		if (rOrder.getReturnType() != OrderConstant.RT_GOODS
+        long currentTimeMillis = System.currentTimeMillis();
+		//以下自动处理时间为时间间隔单位毫秒
+        if (rOrder.getReturnType() != OrderConstant.RT_GOODS
 				&& rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING
 				&& shopReturnConfig.getReturnMoneyDays() != null) {
 			//买家发起仅退款申请后，商家在return_money_days日内未处理，系统将自动退款
 			vo.setReturnMoneyDays(rOrder.getShippingOrRefundTime().toInstant()
-					.plus(Duration.ofDays(shopReturnConfig.getReturnMoneyDays())).plusMillis(System.currentTimeMillis()).toEpochMilli());
+					.plus(Duration.ofDays(shopReturnConfig.getReturnMoneyDays())).toEpochMilli() - currentTimeMillis);
 			return;
 		}
 		if (rOrder.getReturnType() == OrderConstant.RT_GOODS) {
 			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDITING
-					&& shopReturnConfig.getReturnAddressDays() != null
-					) {
+					&& shopReturnConfig.getReturnAddressDays() != null) {
 				//商家已发货，买家发起退款退货申请，商家在return_address_days日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收货地址
 				vo.setReturnAddressDays(rOrder.getApplyTime().toInstant()
-					.plus(Duration.ofDays(shopReturnConfig.getReturnAddressDays())).toEpochMilli());
+					.plus(Duration.ofDays(shopReturnConfig.getReturnAddressDays())).toEpochMilli() - currentTimeMillis);
 				return;
 			}
 			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING
-                && shopReturnConfig.getReturnShippingDays() != null
-					) {
+                && shopReturnConfig.getReturnShippingDays() != null) {
 				//买家已提交物流信息，商家在return_shopping_days日内未处理，系统将默认同意退款退货，并自动退款给买家。
                 vo.setReturnShippingDays(rOrder.getShippingOrRefundTime().toInstant()
-                    .plus(Duration.ofDays(shopReturnConfig.getReturnShippingDays())).toEpochMilli());
+                    .plus(Duration.ofDays(shopReturnConfig.getReturnShippingDays())).toEpochMilli() - currentTimeMillis);
 				return;
 			}
-			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDIT_PASS
-					) {
+			if(rOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDIT_PASS) {
 				//商家同意退款退货，买家在7日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
 				vo.setReturnAuditPassNotShoppingDays(rOrder.getApplyPassTime().toInstant()
-						.plus(Duration.ofDays(7)).toEpochMilli());
+						.plus(Duration.ofDays(shopReturnConfig.getReturnPassDays())).toEpochMilli() - currentTimeMillis);
 				return;
 			}
 		}

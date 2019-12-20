@@ -112,13 +112,14 @@ export default {
       this.areaTipsList = this.$t('tradesStatistics.areaTipsList')
     }
   },
-  created () {
-    this.initDataList()
-  },
+  // created () {
+  //   this.initDataList()
+  // },
   mounted () {
+    this.initDataList()
     this.langDefault()
     this.chinaConfigure()
-    // this.myChart = echarts.init(document.getElementById('charts'))
+    this.myChart = echarts.init(document.getElementById('charts'))
   },
   beforeDestroy () {
     if (!this.chart) {
@@ -143,13 +144,6 @@ export default {
       maxTradeMoney: '',
       minTradeMoney: '',
       timeSelect: '',
-      // areaTipsList: [
-      //   { title: '付款金额', content: '统计时间内，该地域访问用户的所有付款订单金额之和（拼团在成团时计入付款金额；货到付款在发货时计入付款金额，不剔除退款金额）' },
-      //   { title: '付款人数', content: '统计时间内，该地域访问用户中下单并且付款成功的客户数，一人多次付款记为一人（不剔除退款订单）' },
-      //   { title: '访客数', content: '统计时间内，该地域访问用户的所有访客数' },
-      //   { title: '访问-付款转化率', content: '统计时间内，该地域付款人数/该地域访客数' },
-      //   { title: '订单数', content: '统计时间内，该地区收货订单数 ' }
-      // ]
       areaTipsList: this.$t('tradesStatistics.areaTipsList')
     }
   },
@@ -163,13 +157,15 @@ export default {
     // 初始化加载数据
     initDataList () {
       // 交易地域分布
+      console.log(this.areaParams, 'this.areaParams')
       tradeAreaApi(this.areaParams).then(res => {
-        console.log(res)
+        console.log(res, 'result')
         if (res.error === 0) {
           this.areaData = res.content.vos
           console.log(this.areaData)
           this.maxTradeMoney = res.content.maxTotalDealMoney
           this.minTradeMoney = res.content.minTotalDealMoney
+          this.chinaConfigure()
         }
       }).catch(err => console.log(err))
     },
@@ -188,13 +184,10 @@ export default {
           itemHeight: '300px',
           min: this.minTradeMoney,
           max: this.maxTradeMoney,
-          // min: 1111,
-          // max: 1112,
-          text: ['北京', '新疆'],
-          // splitNumber: '10',
+          text: ['高', '低'],
           realtime: true,
           calculable: true,
-          color: ['orangered', 'lightskyblue']
+          color: ['#afe8ff', '#2a99c9']
         },
         geo: { // 这个是重点配置区
           map: 'china', // 表示中国地图
@@ -214,7 +207,7 @@ export default {
               borderRadius: '4px'
             },
             emphasis: {
-              areaColor: null, // 图标选择区域颜色
+              areaColor: 'yellow', // 图标选择区域颜色
               shadowOffsetX: 0,
               shadowOffsetY: 0,
               shadowBlur: 20,
@@ -276,14 +269,12 @@ export default {
         justify-content: space-between;
         width: 100%;
         height: 500px;
-        // border: 1px solid #000;
         .mapArea {
           width: 45%;
           #charts {
             height: 500px;
             width: 100%;
             position: relative;
-            // border: 10px solid #f40;
           }
         }
         .tableWrapper {

@@ -16,7 +16,7 @@ import java.util.List;
 public class PreSaleVo implements StatusContainer {
 
     /** 活动id **/
-    private Byte id;
+    private Integer id;
     /** 活动类型 **/
     private Byte presaleType;
     /** 活动名称 **/

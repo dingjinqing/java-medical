@@ -305,7 +305,7 @@ import {
 // 支付有礼
 import {
   cn as payReward
-} from './views/admin_new/cn/index/marketManagement/payReward/payReward'
+} from './views/admin_new/cn/index/marketManagement/payReward/payRewardCn'
 // 首单特惠
 import {
   cn as firstSpecial

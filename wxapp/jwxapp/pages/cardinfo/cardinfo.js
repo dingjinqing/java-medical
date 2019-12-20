@@ -18,7 +18,8 @@ global.wxPage({
     carStatus: '', // 卡状态
     bottomBtnText: '', // 底部按钮文字
     btnType: null, // 底部按钮类型
-    get_type: 0
+    get_type: 0,
+    cardId: null
   },
 
   /**
@@ -29,6 +30,7 @@ global.wxPage({
     let cardNo = options.cardNo ? options.cardNo : null
     let cardId = options.cardId ? options.cardId : null
     var card_list = options.card_list;
+    this.setData({ cardId: cardId })
     this.requestCardInfo(cardNo, cardId, card_list)
     if (options.is_fullprice) {  // 
       is_fullprice = options.is_fullprice;
@@ -422,6 +424,7 @@ global.wxPage({
   },
   fetchCard () {
     var that = this;
+    console.log(card_code, that.data.cardInfo)
     util.api('/api/wxapp/card/code/receive', function (res) {
       console.log(res)
       if (res.error == 0) {
@@ -464,6 +467,21 @@ global.wxPage({
           return false;
         }, false);
       }
-    }, { cardId: that.data.cardInfo.cardId, code: card_code, cardNo: card_num, cardPwd: card_pwd })
+    }, { cardId: that.data.cardId, code: card_code, cardNo: card_num, cardPwd: card_pwd })
+  },
+  // 点击使用门店
+  toStoreList () {
+    console.log(card_info)
+    if (card_info.store_name) {
+      util.jumpLink('/pages/storelist/storelist?card_id=' + card_info.card_id)
+    } else {
+      util.jumpLink('/pages/storelist/storelist')
+    }
+  },
+  // 点击使用记录
+  toCardRecord (e) {
+    util.navigateTo({
+      url: '/pages/usercardrecord/usercardrecord?card_no=' + e.currentTarget.dataset.card_no,
+    })
   }
 })
