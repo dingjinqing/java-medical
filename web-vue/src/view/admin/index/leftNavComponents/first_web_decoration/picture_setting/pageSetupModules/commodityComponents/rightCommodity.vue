@@ -787,6 +787,9 @@ export default {
             flag = true
           })
           if (flag) {
+            if (this.modulesData.recommend_type === '1') {
+              this.temporaryStorageGoods = this.modulesData.goods_items
+            }
             console.log(this.modulesData)
             // 需要转换的checkbox字段数组集合
             let getModulesData = JSON.parse(JSON.stringify(this.modulesData))
@@ -864,6 +867,7 @@ export default {
             this.handleToGetModulesGoods(callBackData, false)
           } else if (callBackData.recommend_type === '1') {
             // callBackData.goodsListData = this.data.goods_items
+            console.log(this.temporaryStorageGoods)
             callBackData.goodsListData = this.temporaryStorageGoods
             this.$emit('handleToBackData', callBackData)
           }
@@ -1169,6 +1173,7 @@ export default {
           break
       }
       this.data.goods_items = arr
+      this.handleToGetModulesGoods(this.data, true)
     },
     //  添加商品点击
     handleToAddGoods () {
