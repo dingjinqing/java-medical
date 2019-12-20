@@ -3,7 +3,7 @@ let config = require("../../utils/config.js")
 
 var footer = {
 
-  onLoad(options) {
+  onLoad (options) {
 
   },
 

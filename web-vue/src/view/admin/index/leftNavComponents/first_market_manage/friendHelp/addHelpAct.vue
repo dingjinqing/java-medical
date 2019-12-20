@@ -547,7 +547,7 @@
       :singleElection="true"
     >
     </choosingGoods>
-    <!--奖励类型-添加优惠卷-->
+    <!--奖励类型-添加优惠券-->
     <AddCouponDialog
       singleElection="true"
       @handleToCheck="handleToCheck"

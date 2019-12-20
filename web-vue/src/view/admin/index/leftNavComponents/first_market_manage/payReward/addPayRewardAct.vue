@@ -36,7 +36,7 @@
       <div class="rightContent">
         <!-- 活动配置区域 -->
         <section class="container">
-          <div class="title">活动配置</div>
+          <div class="title">{{$t('payReward.actSetting')}}</div>
           <el-form
             label-position="right"
             label-width="113px"
@@ -45,7 +45,7 @@
             :model="params"
           >
             <el-form-item
-              label="活动名称："
+              :label="$t('payReward.actName')"
               style="margin-top:15px"
               prop="activityNames"
             >
@@ -53,14 +53,14 @@
                 v-model="params.activityNames"
                 size="small"
                 style="width: 170px"
-                placeholder="最多支持10个字"
+                :placeholder="$t('payReward.maxWords')"
                 maxlength="10"
                 show-word-limit
               ></el-input>
             </el-form-item>
 
             <el-form-item
-              label="活动有效期："
+              :label="$t('payReward.validDate')"
               prop="timeType"
             >
               <div>
@@ -68,28 +68,28 @@
                   v-model="params.timeType"
                   :label="0"
                   style="margin-right: 20px;"
-                >固定时间</el-radio>
+                >{{$t('payReward.fixedTime')}}</el-radio>
                 <el-date-picker
                   v-model="dateInterval"
                   type="daterange"
                   style="width:240px;"
                   size="small"
-                  range-separator="至"
-                  start-placeholder="生效时间"
-                  end-placeholder="过期时间"
+                  :range-separator="$t('payReward.to')"
+                  :start-placeholder="$t('payReward.effectTime')"
+                  :end-placeholder="$t('payReward.expirationTime')"
                   :disabled="params.timeType === 1"
                 ></el-date-picker>
                 <div>
                   <el-radio
                     v-model="params.timeType"
                     :label="1"
-                  >永久有效</el-radio>
+                  >{{$t('payReward.foreverTime')}}</el-radio>
                 </div>
               </div>
             </el-form-item>
 
             <el-form-item
-              label="优先级："
+              :label="$t('payReward.priority') + '：'"
               prop="actFirst"
             >
               <el-input
@@ -97,20 +97,20 @@
                 size="small"
                 style="width:170px"
               ></el-input>
-              <div class="tips">用于区分不同支付有礼活动的优先级，请填写正整数，数值越大优先级越高</div>
+              <div class="tips">{{$t('payReward.levelTips')}}</div>
             </el-form-item>
 
             <el-form-item
-              label="触发条件："
+              :label="$t('payReward.triggerCondition')+ '：'"
               class="triggerCondition"
               prop="goodsAreaType"
             >
-              <span style="color: #999">以下条件为"且"的关系</span>
+              <span style="color: #999">{{$t('payReward.relationship')}}</span>
               <div>
-                <span>商品条件：</span>
+                <span>{{$t('payReward.goodsCondition')}}</span>
                 <el-radio-group v-model="params.goodsAreaType">
-                  <el-radio :label="1">全部商品</el-radio>
-                  <el-radio :label="2">部分商品</el-radio>
+                  <el-radio :label="1">{{$t('payReward.allGoods')}}</el-radio>
+                  <el-radio :label="2">{{$t('payReward.partOfGoods')}}</el-radio>
                 </el-radio-group>
                 <div
                   class="noneBlock"
@@ -129,34 +129,34 @@
                     <div
                       v-if="item.num"
                       class="noneBlockRight"
-                    >已选择分类：{{item.num}}个分类</div>
+                    >{{$t('payReward.selectedClassfication')}}{{item.num}}{{$t('payReward.selectedNumber')}}</div>
                   </div>
                 </div>
               </div>
               <div>
-                <span>支付条件：</span>
-                <span>每笔订单满</span>
+                <span>{{$t('payReward.payCondition')}}</span>
+                <span>{{$t('payReward.everyOrder')}}</span>
                 <el-input
                   v-model="params.minPayMoney"
                   size="small"
                   style="width: 100px"
                 ></el-input>
-                <span>元，参与活动</span>
+                <span>{{$t('payReward.everyOrderTips')}}</span>
               </div>
             </el-form-item>
 
             <el-form-item
-              label="参与限制："
+              :label="$t('payReward.joinConstraint')"
               prop="limitTimes"
             >
               <div>
-                <span>每个用户可参加</span>
+                <span>{{$t('payReward.everyJoin')}}</span>
                 <el-input
                   v-model="params.limitTimes"
                   size="small"
                   style="width: 100px;margin:0 5px"
                 ></el-input>
-                <span>次活动</span>
+                <span>{{$t('payReward.everyJoinTime')}}</span>
               </div>
             </el-form-item>
           </el-form>
@@ -165,13 +165,13 @@
         <!-- 支付奖励区域 -->
         <section class="container">
           <div class="pay_rewards">
-            <div class="name">支付奖励</div>
+            <div class="name">{{$t('payReward.payAward')}}</div>
             <div>
-              <span style="color: #999">最多可添加5次支付的奖励</span>
+              <span style="color: #999">{{$t('payReward.maxPayTimes')}}</span>
               <div
                 class="addReward"
                 @click="addPayRewardItem()"
-              > +添加奖励</div>
+              > +{{$t('payReward.addReward')}}</div>
             </div>
           </div>
           <el-form
@@ -199,7 +199,7 @@
 
             <!-- 支付奖励 -->
             <el-form-item
-              label="支付奖励："
+              :label="$t('payReward.payAward')"
               required
             >
               <el-radio-group
@@ -207,18 +207,18 @@
                 class="itemOptions"
               >
                 <div style="margin-top:13px">
-                  <el-radio :label="0">无奖品</el-radio>
-                  <el-radio :label="1">普通优惠券</el-radio>
-                  <el-radio :label="2">分裂优惠券</el-radio>
+                  <el-radio :label="0">{{$t('payReward.noPrize')}}</el-radio>
+                  <el-radio :label="1">{{$t('payReward.ordinaryCoupon')}}</el-radio>
+                  <el-radio :label="2">{{$t('payReward.splitCoupon')}}</el-radio>
                 </div>
                 <div style="margin-top:10px">
-                  <el-radio :label="3">幸运大抽奖</el-radio>
-                  <el-radio :label="4">余额</el-radio>
-                  <el-radio :label="5">奖品</el-radio>
+                  <el-radio :label="3">{{$t('payReward.luckyDraw')}}</el-radio>
+                  <el-radio :label="4">{{$t('payReward.leftMoney')}}</el-radio>
+                  <el-radio :label="5">{{$t('payReward.goods')}}</el-radio>
                 </div>
                 <div style="margin-top:10px">
-                  <el-radio :label="6">积分</el-radio>
-                  <el-radio :label="7">自定义</el-radio>
+                  <el-radio :label="6">{{$t('payReward.integral')}}</el-radio>
+                  <el-radio :label="7">{{$t('payReward.custome')}}</el-radio>
                 </div>
               </el-radio-group>
             </el-form-item>
@@ -226,7 +226,7 @@
             <!-- 普通优惠券 -->
             <el-form-item
               v-if="item.giftType===1"
-              label="普通优惠券："
+              :label="$t('payReward.ordinaryCoupon')+'：'"
               prop="awardList[index].ordinaryCoupon"
               :rules="{
                 required: true
@@ -254,7 +254,7 @@
                       v-if="itemC.actCode==='discount'"
                     >
                       <span style="font-size: 20px">{{itemC.denomination}}</span>
-                      <span style="font-size: 14px">折</span>
+                      <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
                     </div>
                     <div class="coupon_center_limit">{{itemC.useConsumeRestrict | formatLeastConsume(itemC.leastConsume)}}</div>
                     <div class="coupon_center_number">剩余{{itemC.surplus}}张</div>
@@ -283,16 +283,16 @@
                     :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
                     style="width: 78px;height:78px;cursor:pointer"
                   ></el-image>
-                  <p>添加优惠券</p>
+                  <p>{{$t('payReward.addCoupon')}}</p>
                 </div>
               </div>
-              <div class="textTips">最多可以添加5张优惠券，已过期和已停用的优惠券不能添加</div>
+              <div class="textTips">{{$t('payReward.maxCouponNumber')}}</div>
             </el-form-item>
 
             <!-- 分裂优惠券 -->
             <el-form-item
               v-if="params.awardList[index].giftType === 2 "
-              label="分裂优惠券："
+              :label="$t('payReward.splitCoupon')"
               prop="awardList[index].splitCoupon"
               :rules="{
                 required: true, message:'请选择分裂优惠券'
@@ -381,7 +381,7 @@
                 size="small"
                 style="width: 120px"
                 v-model="params.awardList[index].lotteryId"
-                placeholder="请选择抽奖活动"
+                :placeholder="$t('payReward.selectDrawAct')"
               >
                 <el-option
                   v-for="item in options"
@@ -390,7 +390,7 @@
                   :value="item.id"
                 ></el-option>
               </el-select>&nbsp;
-              <span>刷新</span> | <span @click="create">新建</span> | <span @click="manage">管理</span>
+              <span>{{$t('payReward.refresh')}}</span> | <span @click="create">{{$t('payReward.new')}}</span> | <span @click="manage">{{$t('payReward.manage')}}</span>
             </el-form-item>
 
             <!-- 余额 -->
@@ -406,19 +406,19 @@
                 v-model="params.awardList[index].accountNumber"
                 size="small"
                 style="width:120px"
-                placeholder="请输入余额"
+                :placeholder="$t('payReward.inputLeftMoney')"
               ></el-input>
             </el-form-item>
 
             <el-form-item
               v-if="item.giftType === 5"
-              label="奖品："
+              :label="$t('payReward.award')"
               required
             >
               <div
                 class="addGoodsWrapper"
                 @click="addGoods(index)"
-              >+&nbsp;添加奖品</div>
+              >+&nbsp;{{$t('payReward.addGift')}}</div>
               <div
                 v-if="true"
                 class="goods_modal"
@@ -426,10 +426,10 @@
                 <table>
                   <thead>
                     <tr style="background: #F8F8F8;">
-                      <th width="50%">商品名称</th>
-                      <th width="10%">价格</th>
-                      <th width="20%">库存</th>
-                      <th width="20%">状态</th>
+                      <th width="50%">{{$t('payReward.goodsName')}}</th>
+                      <th width="10%">{{$t('payReward.goodsPrice')}}</th>
+                      <th width="20%">{{$t('payReward.goodsNumber')}}</th>
+                      <th width="20%">{{$t('payReward.goodsStatus')}}</th>
                     </tr>
                   </thead>
                   <tbody class="tbody">
@@ -490,7 +490,7 @@
 
             <el-form-item
               v-if="item.giftType === 6"
-              label="积分："
+              :label="$t('payReward.integral')"
               prop="awardList[index].scoreNumber"
               :rules="{
                 required: true, message: '请输入积分', trigger: 'blur'
@@ -500,13 +500,13 @@
                 v-model="params.awardList[index].scoreNumber"
                 size="small"
                 style="width:120px"
-                placeholder="请输入积分"
+                :placeholder="$t('payReward.inputIntegral')"
               ></el-input>
             </el-form-item>
 
             <el-form-item
               v-if="item.giftType === 7"
-              label="活动图片："
+              :label="$t('payReward.actImg')+ '：'"
               prop="awardList[index].image"
               :rules="{
                 required: true, message:'请选择活动图片', trigger: 'blur'
@@ -524,12 +524,12 @@
                   ></el-image>
                   <!-- <span class="logo_span">重新选择</span> -->
                 </div>
-                <div style="margin-top:10px">建议尺寸：560px * 700px</div>
+                <div style="margin-top:10px">{{$t('payReward.imgSize')}}</div>
               </div>
             </el-form-item>
             <el-form-item
               v-if="item.giftType === 7"
-              label="设置链接："
+              :label="$t('payReward.settingLink')"
               prop="awardList[index].customLink"
               :rules="{
                 required: true, message: '请选择链接', trigger: 'blur'
@@ -543,12 +543,12 @@
               <span
                 @click="chooseSelect(index)"
                 class="selectLink"
-              >选择链接</span>
+              >{{$t('payReward.chooseLink')}}</span>
             </el-form-item>
 
             <el-form-item
               v-if="item.giftType !== 0"
-              label="奖品份数："
+              :label="$t('payReward.giftNumber')"
               prop="awardList[index].awardNumber"
               :rules="{
                 required: true, message: '请输入奖品份数', trigger:'blur'
@@ -560,9 +560,9 @@
                   size="small"
                   style="width:100px"
                 ></el-input>
-                <span>份(已发0份) </span>
-                <span>填写0表示不限制</span>
-                <div class="tips">发放人数达到奖品份数，后续用户无法再获取支付奖励</div>
+                <span>{{$t('payReward.giftTips1')}}</span>
+                <span>{{$t('payReward.giftTips2')}}</span>
+                <div class="tips">{{$t('payReward.giftTips3')}}</div>
               </div>
             </el-form-item>
           </el-form>
@@ -575,7 +575,7 @@
           size="small"
           type="primary"
           @click="activitySave"
-        >保存
+        >{{$t('payReward.save')}}
         </el-button>
       </div>
     </div>
@@ -588,7 +588,7 @@
       @BusClassTrueArr="getBusinessnPlatformSortData"
     />
 
-    <!-- 活动配置 - 添加普通优惠卷 -->
+    <!-- 活动配置 - 添加普通优惠券 -->
     <AddCouponDialog
       @handleToCheck="addCouponHandle"
       :tuneUpCoupon="addCouponVisible"
@@ -596,7 +596,7 @@
       :type=0
     />
 
-    <!--活动配置 - 添加分裂优惠卷-->
+    <!--活动配置 - 添加分裂优惠券-->
     <AddCouponDialog
       @handleToCheck="addDisCouponHandle"
       :tuneUpCoupon="showCouponDialog2"

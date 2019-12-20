@@ -59,7 +59,7 @@
       </div>
       <!--end-->
     </div>
-    <!--优惠卷弹窗-->
+    <!--优惠券弹窗-->
     <AddCouponDialog
       :tuneUpCoupon='tuneUpCoupon'
       :couponBack='couponBack'
@@ -91,13 +91,13 @@ export default {
       zhang: '', // 张 文字
       data: {
         coupon_arr: [
-          // 选中的优惠卷数组
+          // 选中的优惠券数组
           // {
           //   'act_code': 'voucher', // 是否是打折卷  discount：打折卷   voucher不是打折卷
           //   'denomination': '5', // 面额
           //   'consume_text': '无门槛', // 使用门槛
           //   'receive_text': '剩余93张', // 卡卷剩余数
-          //   'coupon_id': -1, // 优惠卷id
+          //   'coupon_id': -1, // 优惠券id
           //   'use_score': '0', // 是否可以积分兑换
           //   'score_number': '' // 需要积分数
           // }
@@ -154,7 +154,7 @@ export default {
     this.langDefault()
   },
   methods: {
-    // 点击添加优惠卷按钮
+    // 点击添加优惠券按钮
     handleToCallCouponDialog () {
       this.couponBack = []
       this.data.coupon_arr.forEach((item, index) => {
@@ -162,17 +162,17 @@ export default {
       })
       this.tuneUpCoupon = !this.tuneUpCoupon
     },
-    // 选择优惠卷弹窗数据后回调函数
+    // 选择优惠券弹窗数据后回调函数
     handleToCheck (res) {
       // let saveObj = {
       //   'module_name': 'm_coupon', // 模块名称
-      //   'coupon_arr': [ // 选中的优惠卷数组
+      //   'coupon_arr': [ // 选中的优惠券数组
       //     {
       //       'act_code': 'voucher', // 是否是打折卷  discount：打折卷   voucher不是打折卷
       //       'denomination': '5', // 面额
       //       'consume_text': '无门槛', // 使用门槛
       //       'receive_text': '剩余93张', // 卡卷剩余数
-      //       'coupon_id': '432', // 优惠卷id
+      //       'coupon_id': '432', // 优惠券id
       //       'use_score': '0', // 是否可以积分兑换
       //       'score_number': '' // 需要积分数
       //     }
@@ -181,7 +181,7 @@ export default {
       this.data.coupon_arr = []
       res.forEach((item, index) => {
         let useConsumeRestrict = ''
-        // 判断优惠卷是否已被选过
+        // 判断优惠券是否已被选过
         let isExistence = this.data.coupon_arr.filter((itemC, indexC) => {
           return itemC.coupon_id === item.id
         })
@@ -197,7 +197,7 @@ export default {
           'denomination': item.denomination, // 面额
           'consume_text': useConsumeRestrict, // 使用门槛
           'receive_text': `${this.surplus}${item.surplus}${this.zhang}`, // 卡卷剩余数
-          'coupon_id': item.id, // 优惠卷id
+          'coupon_id': item.id, // 优惠券id
           'use_score': item.useScore, // 是否可以积分兑换
           'score_number': item.scoreNumber, // 需要积分数
           'limitSurplusFlag': item.limitSurplusFlag
@@ -210,22 +210,22 @@ export default {
       })
       // let obj = {
       //   actCode: 'discount',
-      //   actName: '打折测试',  优惠卷名称
+      //   actName: '打折测试',  优惠券名称
       //   denomination: 5,    面额
-      //   endTime: '2019-09-20 00:00:00',  优惠卷有效期结束时间
+      //   endTime: '2019-09-20 00:00:00',  优惠券有效期结束时间
       //   id: 41,   id
       //   ischeck: true,
       //   leastConsume: 500,    满多少可用
       //   recommendCatId: null,  指定平台分类可用的平台分类ID串，为空时为全部平台分类可用
       //   recommendGoodsId: null,   指定商品可用的商品ID串，为空时为全部商品可用
       //   recommendSortId: null,   指定商家分类可用的商家分类ID串，为空时为全部商品商家分类可用
-      //   startTime: '2019-09-10 00:00:00',    优惠卷有效期开始时间
+      //   startTime: '2019-09-10 00:00:00',    优惠券有效期开始时间
       //   surplus: 22,  //剩余数量
       //   useConsumeRestrict: 1,   使用限制0：无限制   1:有限制
-      //   validity: 0,  优惠卷有效天数
-      //   validityHour: 0,  优惠卷有效小时数
-      //   validityMinute: 0,  优惠卷有效分钟数
-      //   validityType: 0,  优惠卷有效期类型标记
+      //   validity: 0,  优惠券有效天数
+      //   validityHour: 0,  优惠券有效小时数
+      //   validityMinute: 0,  优惠券有效分钟数
+      //   validityType: 0,  优惠券有效期类型标记
       //   useScore:'',   是否可以积分兑换
       //   scoreNumber:''  需要积分数
       // }
@@ -234,7 +234,7 @@ export default {
       console.log(res)
       this.nowShowCouponList = res
     },
-    // 点击优惠卷右上角删除icon
+    // 点击优惠券右上角删除icon
     handleToDelCoupon (index) {
       this.data.coupon_arr.splice(index, 1)
     }

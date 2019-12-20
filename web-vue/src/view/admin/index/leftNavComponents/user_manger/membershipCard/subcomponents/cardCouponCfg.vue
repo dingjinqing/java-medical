@@ -101,7 +101,7 @@
         </div>
       </el-form-item>
     </el-form>
-    <!--添加优惠卷-->
+    <!--添加优惠券-->
     <AddCouponDialog
       :tuneUpCoupon="couponDialogVisable"
       :couponBack="couponBack"

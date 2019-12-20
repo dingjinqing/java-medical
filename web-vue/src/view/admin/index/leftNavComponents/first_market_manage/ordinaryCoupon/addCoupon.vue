@@ -146,9 +146,10 @@
                         type="datetimerange"
                         value-format="yyyy-MM-dd HH:mm:ss"
                         format="yyyy-MM-dd HH:mm:ss"
-                        range-separator="至"
+                        :range-separator="$t('seckill.to')"
                         :start-placeholder="$t('ordinaryCoupon.startTime')"
                         :end-placeholder="$t('ordinaryCoupon.endTime')"
+                        :default-time="['00:00:00','23:59:59']"
                         size="small"
                       >
                       </el-date-picker>
@@ -447,7 +448,9 @@
                 <el-form-item
                   :label="$t('ordinaryCoupon.suitGoods') + '：'"
                   prop="suitGoods"
+                  :style="{height:param.suitGoods === 0 ?'90px':'240px'}"
                 >
+                  <!-- style="height: 240px;" -->
                   <div>
                     <p>
                       <el-radio
@@ -548,9 +551,9 @@ export default {
     // 自定义校验初始库存
     var validateSurplus = (rule, value, callback) => {
       var re = /^(0|\+?[1-9][0-9]*)$/
-      if (value === 1 && this.param.totalAmount === null) {
+      if (value === 0 && this.param.totalAmount === null) {
         callback(new Error(this.$t('ordinaryCoupon.validateSurplus')))
-      } else if (value === 1 && !re.test(this.param.totalAmount)) {
+      } else if (value === 0 && !re.test(this.param.totalAmount)) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
@@ -613,12 +616,8 @@ export default {
     }
     // 自定义校验可使用商品
     var validatesuitGoods = (rule, value, callback) => {
-      if (value === 1 && this.goodsInfo.length === 0) {
+      if (value === 1 && (this.goodsInfo.length === 0 && this.busClass.length === 0 && this.platClass.length === 0)) {
         callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods1')))
-      } else if (value === 1 && this.busClass.length === 0) {
-        callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods2')))
-      } else if (value === 1 && this.platClass.length === 0) {
-        callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods3')))
       } else {
         callback()
       }

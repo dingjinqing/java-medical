@@ -33,7 +33,7 @@ public class AdminPayAwardController  extends AdminBaseController{
      * @return 成功失败
      */
     @PostMapping("/add")
-    public JsonResult addPayAward(@RequestBody PayAwardParam param){
+    public JsonResult addPayAward(@RequestBody @Valid PayAwardParam param){
         Boolean flag = shop().payAward.addPayAward(param);
         if(!flag){
             return fail();

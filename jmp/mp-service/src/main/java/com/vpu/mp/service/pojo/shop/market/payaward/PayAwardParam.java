@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.payaward;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
@@ -36,7 +37,7 @@ public class PayAwardParam {
     /**
      * 优先级
      */
-    @Size(min = 0,max = 100)
+    @Range(min = 0,max = 100)
     private Integer actFirst;
     /**
      *  商品范围类型
