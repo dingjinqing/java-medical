@@ -15,6 +15,7 @@ public class PayAwardOrderVo {
      * 奖品类型
      */
     private PayAwardContentBo payAwardContentBo;
+    private PayAwardPrizeVo payAwardPrize;
     /**
      * 当前层级
      */
