@@ -150,8 +150,7 @@ public class MpOrderInfoService extends OrderInfoService{
 			break;
 		case OrderConstant.RETURNING:
 			//TODO 退款订单状态需要修改 
-			select.where(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_SHIPPED).
-				and(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING , OrderConstant.REFUND_STATUS_FINISH , OrderConstant.REFUND_STATUS_REFUSE)));
+			select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING , OrderConstant.REFUND_STATUS_FINISH , OrderConstant.REFUND_STATUS_REFUSE));
 			break;
 		default:
 			break;

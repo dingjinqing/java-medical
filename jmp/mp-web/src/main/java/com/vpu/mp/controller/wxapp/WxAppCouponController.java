@@ -8,10 +8,11 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant;
-import com.vpu.mp.service.pojo.wxapp.coupon.*;
-import com.vpu.mp.service.shop.member.ScoreService;
-import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponListVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,7 +48,7 @@ public class WxAppCouponController extends WxAppBaseController {
 		list.setCouponList(couponList);
 		return this.success(list);
 	}
-	
+
 	/**
 	 * 优惠券详情
 	 * @param param
@@ -139,12 +140,12 @@ public class WxAppCouponController extends WxAppBaseController {
 			Integer alreadyGet = shop().mpCoupon.couponAlreadyGet(userId, couponData.getId());
             if(couponData.getReceivePerPerson() > alreadyGet){
                 //添加优惠券到用户，调用定向发券通用方法
-                List<Integer> res = shop().coupon.couponGiveService.handlerCouponGive(couponParam);
+                shop().coupon.couponGiveService.handlerCouponGive(couponParam);
             }else{
                 return this.success("领取次数已达上线");
             }
 		}else{
-            List<Integer> res = shop().coupon.couponGiveService.handlerCouponGive(couponParam);
+           shop().coupon.couponGiveService.handlerCouponGive(couponParam);
         }
 		return this.success("领取成功");
 	}

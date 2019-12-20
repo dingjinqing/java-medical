@@ -136,6 +136,7 @@
                         v-model="param.validityType"
                         :label='0'
                         :disabled="editType"
+                        @change="validityTypeChange"
                       >{{ $t('ordinaryCoupon.fixedDate') }}</el-radio>
                     </p>
                     <p style="margin:15px 0;">
@@ -146,9 +147,10 @@
                         type="datetimerange"
                         value-format="yyyy-MM-dd HH:mm:ss"
                         format="yyyy-MM-dd HH:mm:ss"
-                        range-separator="至"
+                        :range-separator="$t('seckill.to')"
                         :start-placeholder="$t('ordinaryCoupon.startTime')"
                         :end-placeholder="$t('ordinaryCoupon.endTime')"
+                        :default-time="['00:00:00','23:59:59']"
                         size="small"
                       >
                       </el-date-picker>
@@ -158,6 +160,7 @@
                         v-model="param.validityType"
                         :label='1'
                         :disabled="editType"
+                        @change="validityTypeChange"
                         style="margin-right: 25px;"
                       >{{ $t('ordinaryCoupon.appoint') }}</el-radio>
                       <span>
@@ -193,6 +196,7 @@
                         v-model="param.limitSurplusFlag"
                         :label='0'
                         :disabled="editType"
+                        @change="limitSurplusFlagChange"
                       >{{ $t('ordinaryCoupon.surplusRadio1') }}</el-radio>
                       <span>
                         <el-input
@@ -209,6 +213,7 @@
                         v-model="param.limitSurplusFlag"
                         :label='1'
                         :disabled="editType"
+                        @change="limitSurplusFlagChange"
                       >{{ $t('ordinaryCoupon.surplusRadio2') }}</el-radio>
                     </div>
 
@@ -225,6 +230,7 @@
                         :label='2'
                         v-if="param.type==1"
                         :disabled="editType"
+                        @change="preferentialTypeChange"
                       >{{ $t('ordinaryCoupon.typeRadio1') }}</el-radio>
                       <el-input
                         :disabled="param.preferentialType==2 && !editType ?false:true"
@@ -247,6 +253,7 @@
                         v-model="param.preferentialType"
                         :label=0
                         :disabled="editType"
+                        @change="preferentialTypeChange"
                       >{{ $t('ordinaryCoupon.typeRadio2') }}</el-radio>
                       <span>
                         {{ $t('ordinaryCoupon.typeTip3') }}
@@ -264,6 +271,7 @@
                         v-model="param.preferentialType"
                         :label=1
                         :disabled="editType"
+                        @change="preferentialTypeChange"
                       >{{ $t('ordinaryCoupon.typeRadio3') }}</el-radio>
                       <el-input
                         :disabled="param.preferentialType==1 && !editType ?false:true"
@@ -279,17 +287,20 @@
                   :label="$t('ordinaryCoupon.isRandom') + '：'"
                   prop="useScore"
                   v-if="param.type==0"
+                  :style="{height: param.useScore === 1 ? '100px' : ''}"
                 >
                   <div>
                     <el-radio
                       v-model="param.useScore"
                       :label='0'
                       :disabled="editType"
+                      @change="useScoreChange"
                     >{{ $t('ordinaryCoupon.randomRadio1') }}</el-radio>
                     <el-radio
                       v-model="param.useScore"
                       :label='1'
                       :disabled="editType"
+                      @change="useScoreChange"
                     >{{ $t('ordinaryCoupon.randomRadio2') }}</el-radio>
                     <p v-if="param.useScore== 1">
                       <el-input
@@ -426,6 +437,7 @@
                         v-model="param.useConsumeRestrict"
                         :label='0'
                         :disabled="editType"
+                        @change="useConsumeRestrictChange"
                       >{{ $t('ordinaryCoupon.restrictRadio1') }}</el-radio>
                     </p>
                     <p>
@@ -433,6 +445,7 @@
                         v-model="param.useConsumeRestrict"
                         :label='1'
                         :disabled="editType"
+                        @change="useConsumeRestrictChange"
                       >{{ $t('ordinaryCoupon.restrictRadio2') }}&nbsp;<el-input
                           :disabled="param.useConsumeRestrict === 1 && !editType ? false : true"
                           size="small"
@@ -447,6 +460,7 @@
                 <el-form-item
                   :label="$t('ordinaryCoupon.suitGoods') + '：'"
                   prop="suitGoods"
+                  :style="{height:param.suitGoods === 1 ? '240px':''}"
                 >
                   <div>
                     <p>
@@ -454,6 +468,7 @@
                         v-model="param.suitGoods"
                         :label='0'
                         :disabled="editType"
+                        @change="suitGoodsChange"
                       >{{ $t('ordinaryCoupon.suitGoodsRadio1') }}</el-radio>
                     </p>
                     <p>
@@ -461,6 +476,7 @@
                         v-model="param.suitGoods"
                         :label='1'
                         :disabled="editType"
+                        @change="suitGoodsChange"
                       >{{ $t('ordinaryCoupon.suitGoodsRadio2') }}</el-radio>
                     </p>
                     <div v-if="param.suitGoods === 1">
@@ -548,9 +564,9 @@ export default {
     // 自定义校验初始库存
     var validateSurplus = (rule, value, callback) => {
       var re = /^(0|\+?[1-9][0-9]*)$/
-      if (value === 1 && this.param.totalAmount === null) {
+      if (value === 0 && this.param.totalAmount === null) {
         callback(new Error(this.$t('ordinaryCoupon.validateSurplus')))
-      } else if (value === 1 && !re.test(this.param.totalAmount)) {
+      } else if (value === 0 && !re.test(this.param.totalAmount)) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
       } else {
         callback()
@@ -562,10 +578,10 @@ export default {
       var re2 = /^((0\.[1-9]{1})|(([1-9]{1})(\.\d{1})?))$/
       if (value === 0 && this.param.denomination === null) {
         callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType1')))
-      } else if (value === 1 && this.param.denomination2 === null) {
-        callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType2')))
       } else if (value === 0 && !re.test(this.param.denomination)) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
+      } else if (value === 1 && this.param.denomination2 === null) {
+        callback(new Error(this.$t('ordinaryCoupon.validatePreferentialType2')))
       } else if (value === 1 && !re2.test(this.param.denomination2)) {
         callback(new Error(this.$t('ordinaryCoupon.validateDiscount')))
       } else if (value === 2 && (this.param.randomMin === null || this.param.randomMax === null)) {
@@ -613,12 +629,8 @@ export default {
     }
     // 自定义校验可使用商品
     var validatesuitGoods = (rule, value, callback) => {
-      if (value === 1 && this.goodsInfo.length === 0) {
+      if (value === 1 && (this.goodsInfo.length === 0 && this.busClass.length === 0 && this.platClass.length === 0)) {
         callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods1')))
-      } else if (value === 1 && this.busClass.length === 0) {
-        callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods2')))
-      } else if (value === 1 && this.platClass.length === 0) {
-        callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods3')))
       } else {
         callback()
       }
@@ -976,6 +988,26 @@ export default {
           this.platClass.push(item.catId)
         })
       }
+    },
+
+    // 切换触发校验
+    validityTypeChange (e) {
+      this.$refs['param'].validateField('validityType')
+    },
+    limitSurplusFlagChange (e) {
+      this.$refs['param'].validateField('limitSurplusFlag')
+    },
+    preferentialTypeChange (e) {
+      this.$refs['param'].validateField('preferentialType')
+    },
+    useScoreChange (e) {
+      this.$refs['param'].validateField('useScore')
+    },
+    useConsumeRestrictChange (e) {
+      this.$refs['param'].validateField('useConsumeRestrict')
+    },
+    suitGoodsChange (e) {
+      this.$refs['param'].validateField('suitGoods')
     }
   },
   computed: {
