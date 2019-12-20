@@ -5,7 +5,7 @@
 let util = require("../../utils/util.js")
 let config = require("../../utils/config.js")
 var app = getApp();
-var imageUrl = app.globalData.imageUrl
+// var imageUrl = app.globalData.imageUrl
 var couponSn;
 
 var couponId;
@@ -14,7 +14,7 @@ var input_vali;
 var goods_ids;
 var total_micro_second;
 var set_time_out;
-Page({
+global.wxPage({
 
   /**
    * 页面的初始数据

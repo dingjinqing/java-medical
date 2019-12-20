@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @Aspect
 @Slf4j
 @Component
-public class RedisLockAspect extends ShopBaseService {
+public final class RedisLockAspect extends ShopBaseService {
 
     @Autowired
     private JedisManager jedisManager;
@@ -64,6 +64,16 @@ public class RedisLockAspect extends ShopBaseService {
             if(null !=parameters[i].getDeclaredAnnotation(RedisLockKeys.class)){
                 keyIndex = i;
                 break;
+            }
+        }
+        if(keyIndex == null){
+            try {
+                log.info("非批量锁调用代理方法start");
+                joinPoint.proceed();
+                log.info("非批量锁调用代理方法end");
+            } catch (Throwable throwable) {
+                log.error("非批量锁调用代理方法异常");
+                //TODO
             }
         }
         //keys实参
@@ -142,7 +152,6 @@ public class RedisLockAspect extends ShopBaseService {
                     //获取批量锁失败
                     log.error("批量锁获取失败,当前获取到:", fail.toString());
                     releaseLocks(fail, value);
-                    Thread.sleep(200);
                 } else {
                     log.info("批量锁获取成功，准备调用代理方法");
                     //成功调用代理方法
@@ -168,9 +177,8 @@ public class RedisLockAspect extends ShopBaseService {
      * 添加锁
      * @param keys  锁list
      * @param value value
-     * @return 加锁成功的key
      */
-    public void addLocks(List<String> keys, String value, int expiredTime, List<String> fail) {
+    private void addLocks(List<String> keys, String value, int expiredTime, List<String> fail) {
         try (Jedis jedis = jedisManager.getJedisPool().getResource()) {
             Pipeline pipeline = jedis.pipelined();
             for (String key : keys) {
@@ -192,7 +200,7 @@ public class RedisLockAspect extends ShopBaseService {
      * @param keys  锁list
      * @param value value
      */
-    public void releaseLocks(List<String> keys, String value) {
+    private void releaseLocks(List<String> keys, String value) {
         if(CollectionUtils.isEmpty(keys)) {
             return;
         }

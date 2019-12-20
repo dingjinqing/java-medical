@@ -201,7 +201,7 @@
                     :key="goods.recId"
                   >
                     <img
-                      :src="$imageHost + goods.goodsImg"
+                      :src="$imageHost + '/' +goods.goodsImg"
                       alt=""
                     >
                     <div class="goods_info_right">
@@ -658,9 +658,7 @@ export default {
   },
   methods: {
     countdown: function () {
-      const end = Date.parse(new Date(this.autoTime))
-      const now = Date.parse(new Date())
-      const interval = end - now
+      const interval = this.autoTime
       let day = Math.floor(interval / (24 * 3600 * 1000))
       let hoursInterval = interval % (24 * 3600 * 1000)
       let hours = Math.floor(hoursInterval / (3600 * 1000))

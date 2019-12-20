@@ -43,12 +43,39 @@ public class MaMpScheduleTask {
 	/**
 	 * 预约服务提前一小时提醒,每分钟
 	 */
-	@Scheduled(cron = "0 */1 * * * ?")
+	@Scheduled(cron = "0 30 11 * * ?")
 	public void AppointmentRemindCommand() {
 		log.info("预约服务提前一小时提醒");
         Result<ShopRecord> result = saas.shop.getAll();
 		result.forEach((r) -> {
 			saas.getShopApp(r.getShopId()).shopTaskService.maMpScheduleTaskService.sendAppointmentRemind();
+		});
+	}
+	
+	
+	/**
+	 * 商家自定义模板消息 定时发送, 尾款未支付前N小时提醒,每分钟
+	 */
+	@Scheduled(cron = "0 */1 * * * ?")
+	public void sendTemplateMessage() {
+		log.info("商家自定义模板消息 定时发送");
+		Result<ShopRecord> result = saas.shop.getAll();
+		result.forEach((r) -> {
+			saas.getShopApp(r.getShopId()).shopTaskService.maMpScheduleTaskService.sendTemplateMessage();
+		});
+	}
+	
+	
+	
+	/**
+	 * 好友助力 发送模板消息，修改助力状态,每分钟
+	 */
+	@Scheduled(cron = "0 */1 * * * ?")
+	public void friendPromoteCommand() {
+		log.info("商家自定义模板消息 定时发送");
+		Result<ShopRecord> result = saas.shop.getAll();
+		result.forEach((r) -> {
+			saas.getShopApp(r.getShopId()).shopTaskService.maMpScheduleTaskService.friendPromoteCommand();
 		});
 	}
 }
