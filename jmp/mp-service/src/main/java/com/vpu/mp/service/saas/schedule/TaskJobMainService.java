@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import org.jooq.Record4;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -91,14 +92,18 @@ public class TaskJobMainService extends MainBaseService {
     }
 
     private String setTaskJobId(String jsonStr,String clzName,Integer jobId){
-            if(  !jsonStr.contains("taskJobId")&& assertContainsTaskJobId(clzName) ){
+            if( !jsonStr.contains("taskJobId")&& assertContainsTaskJobId(clzName) ){
                 String jobIdStr = "\"taskJobId\":"+jobId+",";
                 String resultString = jsonStr.replaceFirst("\\[\\{","[{"+jobIdStr);
                 if (!resultString.contains("taskJobId")) {
 					resultString = resultString.replaceFirst("\\{", "{"+jobIdStr);
 				}
                 return  resultString;
-            }else{
+            }else if( jsonStr.contains("\"taskJobId\":null") ){
+                String jobIdStr = "\"taskJobId\":"+jobId;
+                return jsonStr.replaceFirst("\"taskJobId\":null",jobIdStr);
+            }
+            else{
                 return jsonStr;
             }
     }
