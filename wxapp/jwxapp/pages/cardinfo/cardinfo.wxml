@@ -155,7 +155,7 @@
         </view>
       </view>
     </view>
-    <view class="card_item_title" wx:if="{{cardInfo.storeUseSwitch >= 0}}">
+    <view class="card_item_title" bindtap='toStoreList' wx:if="{{cardInfo.storeUseSwitch >= 0}}">
       <view class="item_title_left">
         <image mode="widthFix" src="{{imageUrl}}image/admin/store_icon.png"></image>
       </view>
@@ -190,7 +190,7 @@
         {{cardInfo.mobile}}
       </view>
     </view>
-    <view class="card_item_title" wx:if="{{ cardInfo.cardNo && cardInfo.cardType != 2}}">
+    <view class="card_item_title" bindtap='toCardRecord' wx:if="{{ cardInfo.cardNo && cardInfo.cardType != 2}}">
       <view class="item_title_left">
         <image mode="widthFix" src="{{imageUrl}}image/admin/user_card_record.png"></image>
       </view>

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_RECORD;
@@ -139,9 +141,14 @@ public class PayAwardProcessor extends ShopBaseService implements Processor,Crea
         if (payAwardContentBo.getGiftType().equals(GIVE_TYPE_NO_PRIZE)){
 
         }else if (payAwardContentBo.getGiftType().equals(GIVE_TYPE_ORDINARY_COUPON)){
-            String[] couponArray = payAwardContentBo.getCouponIds().stream().map(Object::toString).toArray(String[]::new);
+            List<Integer> integers = Util.json2Object(payAwardContentBo.getCouponIds(), new TypeReference<List<Integer>>() {
+            }, false);
+            String[] couponArray = new String[0];
+            if (integers != null) {
+                couponArray = integers.stream().map(Object::toString).toArray(String[]::new);
+            }
             CouponGiveQueueParam couponGive =new CouponGiveQueueParam();
-            couponGive.setUserIds(Arrays.asList(param.getWxUserInfo().getUserId()));
+            couponGive.setUserIds(Collections.singletonList(param.getWxUserInfo().getUserId()));
             couponGive.setCouponArray(couponArray);
             couponGive.setActId(payAward.getId());
             couponGive.setAccessMode((byte) 0);

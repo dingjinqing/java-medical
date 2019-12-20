@@ -37,5 +37,6 @@ public class MemberCardPageDecorationVo {
     private Byte dateType;
     private Integer limit;
     private Integer stock;
+    private String shipImg;
 
 }

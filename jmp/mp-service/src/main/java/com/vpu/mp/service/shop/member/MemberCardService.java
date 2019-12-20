@@ -82,6 +82,7 @@ import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
+import com.vpu.mp.config.DomainConfig;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
@@ -199,6 +200,8 @@ public class MemberCardService extends ShopBaseService {
 	private QrCodeService qrCodeService;
 	@Autowired
 	private GradeCardService gradeCardService;
+    @Autowired
+    protected DomainConfig domainConfig;
 
 	/**
 	 * 添加会员卡
@@ -2136,6 +2139,10 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
                 vo.setStatus((byte)1);
             }
         }
+
+        //图片域名
+        vo.setShipImg(domainConfig.imageUrl(saas().shop.getShopAvatarById(getShopId())));
+        vo.setBgImg(domainConfig.imageUrl(vo.getBgImg()));
 
         return vo;
     }
