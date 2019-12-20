@@ -330,7 +330,7 @@ public class OrderInfoService extends ShopBaseService {
      * 订单goodsType insert构造
      * @param orderType 订单类型
      */
-    private static String getGoodsTypeToInsert(List<Byte> orderType) {
+    public static String getGoodsTypeToInsert(List<Byte> orderType) {
         if(CollectionUtils.isEmpty(orderType)){
             orderType.add(OrderConstant.GOODS_TYPE_GENERAL);
         }

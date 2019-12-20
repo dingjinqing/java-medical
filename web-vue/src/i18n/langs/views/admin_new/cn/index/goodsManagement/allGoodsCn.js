@@ -24,9 +24,18 @@ export const cn = {
     goodsBrand: '商品品牌',
     chooseGoodsBrand: '请选择品牌',
     goodsSource: '商品来源',
-    goodsSourceOptions: ['请选择商品来源', '自营商品', '非自营商品'],
+    goodsSourceOptions: ['请选择商品来源', '自营', '非自营'],
     goodsType: '活动类型',
-    goodsTypeOptions: ['请选择活动类型', '拼团', '砍价', '秒杀', '限时降价', '加价购', '打包一口价', '定金膨胀'],
+    goodsTypeOptions: [
+      '请选择活动类型',
+      '拼团',
+      '砍价',
+      '秒杀',
+      '限时降价',
+      '加价购',
+      '打包一口价',
+      '定金膨胀'
+    ],
     shopPrice: '商品价格',
     inputShopPrice: '输入价格'
   },

@@ -359,10 +359,9 @@ public class BargainService extends ShopBaseService  {
     /**
      * 小程序装修砍价模块显示异步调用
      * @param moduleBargain
-     * @param userId
      * @return
      */
-    public ModuleBargain getPageIndexBargain(ModuleBargain moduleBargain, int userId){
+    public ModuleBargain getPageIndexBargain(ModuleBargain moduleBargain){
         moduleBargain.getBargainGoods().forEach(bargainGoods->{
             BargainRecord bargain = getBargainActById(bargainGoods.getActId());
             GoodsRecord goodsInfo = saas.getShopApp(getShopId()).goods.getGoodsRecordById(bargain.getGoodsId());

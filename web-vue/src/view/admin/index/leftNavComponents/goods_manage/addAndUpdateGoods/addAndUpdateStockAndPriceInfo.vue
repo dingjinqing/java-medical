@@ -220,7 +220,7 @@
         />
       </el-form-item>
       <!--商品会员价格复选框-->
-      <el-form-item :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsGradeMember')">
+      <el-form-item v-if="memberCards.length>0" :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsGradeMember')">
         <el-checkbox
           v-for="(item,index) in memberCards"
           v-model="item.checked"

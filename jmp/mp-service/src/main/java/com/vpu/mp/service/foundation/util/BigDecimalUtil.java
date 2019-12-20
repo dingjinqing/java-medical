@@ -154,6 +154,14 @@ public class BigDecimalUtil {
         return Objects.nonNull(target) && target.compareTo(BIGDECIMAL_ZERO) >= INTEGER_ZERO;
     }
 
+    public static BigDecimal valueOf(Integer num) {
+        if (Objects.isNull(num) || INTEGER_ZERO.equals(num)) {
+            return BIGDECIMAL_ZERO;
+        } else {
+            return BigDecimal.valueOf(num);
+        }
+    }
+
     /**
      * BigDecimal乘法：精度保留小数点后两位，采取RoundingMode
      *

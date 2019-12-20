@@ -87,6 +87,7 @@
       <el-form-item label="配送区域：">
         <LocatTPTable
           ref="regionData"
+          :flag="flag"
           :isRegion="true"
           appointContent="指定配送区域和运费"
           :editLocation="delivery.contentParam.areaParam"
@@ -103,6 +104,7 @@
       <el-form-item v-if="delivery.contentParam.has_fee_0_condition === 1">
         <LocatTPTable
           ref="freeShippingData"
+          :flag="flag"
           :isRegion="false"
           appointContent="指定可包邮配送区域和条件"
           :editLocation="delivery.contentParam.feeConditionParam"
@@ -141,8 +143,10 @@ export default {
   watch: {
     propDelivery: {
       handler: function (newVal, oldVal) {
-        // 编辑初始化
-        this.initData()
+        if (newVal) {
+          // 编辑初始化
+          this.initData()
+        }
       }
     },
     flag: {
@@ -206,6 +210,10 @@ export default {
       },
       updateId: null // 修改数据id
     }
+  },
+  activated () {
+    // 页面初始化清空数据
+    this.clearData()
   },
   methods: {
     initData () {
@@ -313,6 +321,26 @@ export default {
           obj.deliverTemplateId = this.updateId
           // 编辑保存
           this.$emit('updateDelivery', obj)
+        }
+      }
+    },
+    clearData () {
+      this.delivery = {
+        templateName: '',
+        flag: 0, // 默认添加普通
+        contentParam: {
+          limitParam: {
+            limit_deliver_area: 0,
+            area_list: 0,
+            area_text: '全国（其他地区）',
+            first_num: 1,
+            first_fee: 0,
+            continue_num: 1,
+            continue_fee: 0
+          },
+          areaParam: [],
+          has_fee_0_condition: 0,
+          feeConditionParam: []
         }
       }
     }

@@ -47,7 +47,17 @@ public class GoodsListMpBo extends GoodsListMpVo {
     @JsonIgnore
     private List<Byte> processedTypes = new ArrayList<>();
 
-
-
-
+    @Override
+    public String toString() {
+        return "GoodsListMpBo{" +
+            "catId=" + catId +
+            ", sortId=" + sortId +
+            ", brandId=" + brandId +
+            ", baseSale=" + baseSale +
+            ", shopPrice=" + shopPrice +
+            ", marketPrice=" + marketPrice +
+            ", prdMaxPrice=" + prdMaxPrice +
+            ", processedTypes=" + processedTypes +
+            '}'+super.toString();
+    }
 }

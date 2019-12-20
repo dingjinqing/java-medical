@@ -17,4 +17,13 @@ public class CouponConstant {
      * 分裂优惠卷
      */
     public static final byte COUPON_TYPE_SPILT =1;
+
+    //*********发卷来源   1表单送券2支付送券3活动送券4积分兑换5直接领取6分裂优惠券7crm领券8幸运大抽奖9定向发券
+    /**
+     * 支付送券
+     */
+    public static final byte COUPON_GIVE_SOURCE_PAY_AWARD=2;
+
+
+
 }

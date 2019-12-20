@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="label">
-      <div class="labelItem">成交用户分析</div>
+      <div class="labelItem">{{$t('userStatistics.userAnalysis')}}</div>
       <el-select
         v-model="timeSelect"
         size="small"
@@ -16,18 +16,18 @@
           :value="item.value"
         ></el-option>
       </el-select>
-      <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+      <span>{{this.startDate.year}}{{$t('userStatistics.year')}}{{this.startDate.month}}{{$t('userStatistics.month')}}{{this.startDate.day}}{{$t('userStatistics.day')}} - {{this.endDate.year}}{{$t('userStatistics.year')}}{{this.endDate.month}}{{$t('userStatistics.month')}}{{this.endDate.day}}{{$t('userStatistics.day')}}</span>
 
       <!-- 表格数据部分 -->
       <table class="table_list">
         <thead class="table_heard">
           <tr>
             <th>
-              客户类型
+              {{$t('userStatistics.customerType')}}
             </th>
             <th>
               <section class="table_icon">
-                <div>客户数</div>
+                <div>{{$t('userStatistics.customerNumber')}}</div>
                 <el-tooltip
                   class="item"
                   slot="content"
@@ -49,11 +49,11 @@
             </th>
             <th>
               <section class="table_icon">
-                <div>客户数占比</div>
+                <div>{{$t('userStatistics.customerNumberRate')}}</div>
                 <el-tooltip
                   class="item"
                   effect="light"
-                  content="客户数占比"
+                  :content="$t('userStatistics.customerNumberRate')"
                   placement="top"
                 >
                   <i class="el-icon-warning-outline icons"></i>
@@ -62,25 +62,25 @@
             </th>
             <th>
               <section class="table_icon">
-                <div>客单价</div>
+                <div>{{$t('userStatistics.singlePrice')}}</div>
                 <el-tooltip
                   class="item"
                   effect="light"
-                  content="客单价"
+                  :content="$t('userStatistics.singlePrice')"
                   placement="top"
                 >
                   <i class="el-icon-warning-outline icons"></i>
                 </el-tooltip>
               </section>
             </th>
-            <th>付款金额</th>
+            <th>{{$t('userStatistics.payMoney')}}</th>
             <th>
               <section class="table_icon">
-                <div>访问-付款转化率</div>
+                <div>{{$t('userStatistics.visitToPayRate')}}</div>
                 <el-tooltip
                   class="item"
                   effect="light"
-                  content="访问-付款转化率"
+                  :content="$t('userStatistics.visitToPayRate')"
                   placement="top"
                 >
                   <i class="el-icon-warning-outline icons"></i>
@@ -91,7 +91,7 @@
         </thead>
         <tbody>
           <tr>
-            <td>全部成交客户</td>
+            <td>{{$t('userStatistics.allTradeUser')}}</td>
             <td>
               <span>{{this.table_allUser.orderUserData}}</span>
               <span>{{this.table_allUser.orderUserDataTrend}}</span>
@@ -114,7 +114,7 @@
             </td>
           </tr>
           <tr>
-            <td>新成交客户</td>
+            <td>{{$t('userStatistics.newCustomer')}}</td>
             <td>
               <span>{{this.table_newUser.newOrderUserData}}</span>
               <span>{{this.table_newUser.newOrderUserDataTrend}}</span>
@@ -137,7 +137,7 @@
             </td>
           </tr>
           <tr>
-            <td>老成交用户</td>
+            <td>{{$t('userStatistics.oldCustomer')}}</td>
             <td>
               <span>{{this.table_oldUser.oldOrderUserData}}</span>
               <span>{{this.table_oldUser.oldOrderUserDataTrend}}</span>
@@ -160,16 +160,16 @@
             </td>
           </tr>
           <tr>
-            <td>趋势指标选择</td>
+            <td>{{$t('userStatistics.tradeIndex')}}</td>
             <td colspan="5">
               <el-radio-group
                 v-model="trendIndicator"
                 @change="handleSelect"
               >
-                <el-radio :label="1">客户数</el-radio>
-                <el-radio :label="2">客单价</el-radio>
-                <el-radio :label="3">付款金额</el-radio>
-                <el-radio :label="4">访问付款转化率</el-radio>
+                <el-radio :label="1">{{$t('userStatistics.customerNumber')}}</el-radio>
+                <el-radio :label="2">{{$t('userStatistics.singlePrice')}}</el-radio>
+                <el-radio :label="3">{{$t('userStatistics.payMoney')}}</el-radio>
+                <el-radio :label="4">{{$t('userStatistics.visitToPayRates')}}</el-radio>
               </el-radio-group>
 
             </td>
@@ -190,6 +190,11 @@ import echarts from 'echarts'
 import { userAnalysis } from '@/api/admin/firstWebManage/userStatistics/userStatistics.js'
 
 export default {
+  watch: {
+    lang () {
+      this.timeRange = this.$t('userStatistics.timeRange')
+    }
+  },
   created () {
     this.initData()
   },
@@ -202,11 +207,12 @@ export default {
   data () {
     return {
       timeSelect: 1,
-      timeRange: [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' }
-      ],
+      // timeRange: [
+      //   { value: 1, label: '最新1天' },
+      //   { value: 7, label: '最新7天' },
+      //   { value: 30, label: '最新30天' }
+      // ],
+      timeRange: this.$t('userStatistics.timeRange'),
       params: 1,
       tipsList: [
         {
@@ -276,53 +282,53 @@ export default {
       switch (index) {
         case 1:
           series = [{
-            name: '新成交客户数',
+            name: this.$t('userStatistics.newCustomer'),
             type: 'line',
-            stack: '总量',
+            stack: this.$t('userStatistics.total'),
             data: this.newUserNumberRenderList
           }, {
-            name: '老成交客户数',
+            name: this.$t('userStatistics.oldCustomer'),
             type: 'line',
-            stack: '总量',
+            stack: this.$t('userStatistics.total'),
             data: this.oldUserNumberRenderList
           }]
           break
         case 2:
           series = [{
-            name: '新成交客单价',
+            name: this.$t('userStatistics.newSinglePrice'),
             type: 'line',
-            stack: '总量',
+            stack: this.$t('userStatistics.total'),
             data: this.newUserPriceRenderList
           }, {
-            name: '老成交客单价',
+            name: this.$t('userStatistics.oldSinglePrice'),
             type: 'line',
-            stack: '总量',
+            stack: this.$t('userStatistics.total'),
             data: this.oldUserPriceRenderList
           }]
           break
         case 3:
           series = [{
-            name: '新成交付款金额',
+            name: this.$t('userStatistics.newPayMoney'),
             type: 'line',
-            stack: '总量',
+            stack: this.$t('userStatistics.total'),
             data: this.newUserPayRenderList
           }, {
-            name: '老成交付款金额',
+            name: this.$t('userStatistics.oldPayMoney'),
             type: 'line',
-            stack: '总量',
+            stack: this.$t('userStatistics.total'),
             data: this.oldUserPayRenderList
           }]
           break
         case 4:
           series = [{
-            name: '新成交访问-付款转化率',
+            name: this.$t('userStatistics.newTransformRate'),
             type: 'line',
-            stack: '总量',
+            stack: this.$t('userStatistics.total'),
             data: this.newUserTransformRenderList
           }, {
-            name: '老成交访问-付款转化率',
+            name: this.$t('userStatistics.oldTransformRate'),
             type: 'line',
-            stack: '总量',
+            stack: this.$t('userStatistics.total'),
             data: this.oldUserTransformRenderList
           }]
       }

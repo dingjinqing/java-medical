@@ -1,11 +1,11 @@
-// pages1/pages/groupbuyinfo/groupbuyinfo.js
-Page({
+var util = require('../../utils/util.js');
+global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    imageUrl: util.getImageUrl(""),
   },
 
   /**

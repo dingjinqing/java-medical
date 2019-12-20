@@ -11,7 +11,6 @@
         :label="$t('memberCard.memberPower')"
         prop="discount"
         class="discountItem first"
-        :rules="[{required: true}]"
       >
         <div class="discountDiv equity">
           <el-checkbox v-model="ruleForm.powerDiscount">
@@ -181,7 +180,7 @@ export default {
   },
   data () {
     var validateDiscount = (rule, value, callback) => {
-      if (!this.checkDiscountVal(value)) {
+      if (!this.checkDiscountVal(value) && this.ruleForm.powerDiscount) {
         callback(new Error('会员折扣请输入0-10的数字'))
       } else {
         callback()
@@ -200,7 +199,7 @@ export default {
       noneBlockDiscArr: [{ name: '', num: '' }],
       rules: {
         discount: [
-          { validator: validateDiscount, trigger: 'blur' }
+          { validator: validateDiscount, required: true, trigger: 'blur' }
         ]
       }
     }
@@ -209,7 +208,15 @@ export default {
     this.noneBlockDiscArr = this.$t('memberCard.noneBlockDiscArr')
   },
   mounted () {
-
+    this.$on('checkRule', () => {
+      this.$refs.ruleForm.validate((valid) => {
+        console.log(valid)
+        this.ruleForm.valid = valid
+        if (this.ruleForm.powerDiscount && !valid) {
+          this.$message.warning('会员折扣请输入0-10的数字')
+        }
+      })
+    })
   },
 
   methods: {

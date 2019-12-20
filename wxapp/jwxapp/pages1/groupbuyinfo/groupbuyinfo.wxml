@@ -129,8 +129,7 @@
     <!-- 下载海报 -->
     <v-poster image="{{posterImg}}" show="{{showPoster}}"></v-poster>
     <!-- 绑定手机号弹窗 -->
-    <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{isBlock == 1}}" content="您需要绑定手机号才可以去购买商品" />
-    <!-- 拼团规格弹框 -->
+    <v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{isBlock == 0}}" content="您需要绑定手机号才可以去购买商品" />
     <!-- 选择规格弹窗 -->
     <v-spec-dialog show="{{showSpec}}" bind:close="specDialogClose" products-info="{{productsInfo}}" bindproductData="getProductData">
       <view slot="num-cfg">

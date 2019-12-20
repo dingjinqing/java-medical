@@ -210,7 +210,7 @@ global.wxPage({
       reasonType: that.data.reasoneIndex, // 申请原因
       reasonDesc: that.data.reasonDesc, // 申请说明
       voucherImages: JSON.stringify(uploadedImgs),// 凭证图片
-      shipGoods: selectGoods
+      returnGoods: selectGoods
     }
     console.log(params)
     if (selectGoods.length === 0) {
@@ -220,10 +220,9 @@ global.wxPage({
     util.api('/api/wxapp/order/refund', function (res) {
       if (res.error === 0) {
         let content = res.content
-        console.log(content)
         util.toast_success('申请成功')
         util.navigateTo({
-          url: '/pages/returndetail/returndetail?order_sn=' + that.data.orderSn + '&red_id=""'
+          url: '/pages1/returndetail/returndetail?return_sn=' + content
         })
       }
     }, params)

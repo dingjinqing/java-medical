@@ -184,7 +184,7 @@
     <view class="order-header-red" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>
       <view class="order-header-h">
         <text class="order-place2">*</text>
-        退货给商家
+        请退货给商家
       </view>
     </view>
     <view class="order-info">

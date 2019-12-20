@@ -3,6 +3,7 @@
     <div class="recommend_container">
       <el-form
         :model="paramsData"
+        :rules="rules"
         ref="ruleForm"
         label-width="100px"
       >
@@ -15,38 +16,51 @@
             size="small"
             class="default_width"
           ></el-input>
-          <span class="tips">{{$t('recommend.eventNameTips')}}</span>
+          <span class="tips">{{ $t("recommend.eventNameTips") }}</span>
         </el-form-item>
         <el-form-item
           :label="$t('recommend.addingGoods') + '：'"
-          prop="name"
+          prop="chooseType"
         >
           <el-radio-group v-model="paramsData.chooseType">
-            <el-radio :label="0">{{$t('recommend.generalRecommendation')}}</el-radio>
-            <el-radio :label="1">{{$t('recommend.intelligentRecommendation')}}</el-radio>
+            <el-radio :label="0">{{
+              $t("recommend.generalRecommendation")
+            }}</el-radio>
+            <el-radio :label="1">{{
+              $t("recommend.intelligentRecommendation")
+            }}</el-radio>
           </el-radio-group>
           <p
             class="tips"
             v-if="paramsData.chooseType === 1"
-          >{{$t('recommend.recommendTips')}}</p>
-          <p>{{$t('recommend.recommendGoodsNum')}}：<el-input-number
+          >
+            {{ $t("recommend.recommendTips") }}
+          </p>
+          <p>
+            {{ $t("recommend.recommendGoodsNum") }}：<el-input-number
               v-model="paramsData.recommendNumber"
               :min="0"
               :controls="false"
               size="small"
               controls-position="right"
-            ></el-input-number> <span class="tips">{{$t('recommend.maxGoods')}}</span></p>
+            ></el-input-number>
+            <span class="tips">{{ $t("recommend.maxGoods") }}</span>
+          </p>
           <p
             class="tips"
             v-if="paramsData.chooseType === 0"
-          >{{$t('recommend.maxGoodsTips')}}</p>
+          >
+            {{ $t("recommend.maxGoodsTips") }}
+          </p>
           <div
             v-if="paramsData.chooseType === 0"
             class="choose_goods_content"
           >
             <el-radio-group v-model="paramsData.recommendType">
-              <el-radio :label="0">{{$t('recommend.allProducts')}}</el-radio>
-              <el-radio :label="1">{{$t('recommend.designatedProduct')}}</el-radio>
+              <el-radio :label="0">{{ $t("recommend.allProducts") }}</el-radio>
+              <el-radio :label="1">{{
+                $t("recommend.designatedProduct")
+              }}</el-radio>
             </el-radio-group>
             <div
               v-if="paramsData.recommendType === 1"
@@ -62,7 +76,7 @@
                 <span
                   class="count"
                   v-if="paramsData.recommendGoods.length > 0"
-                >已选择商品{{paramsData.recommendGoods.length}}件</span>
+                >已选择商品{{ paramsData.recommendGoods.length }}件</span>
               </div>
               <div class="choose_item">
                 <span
@@ -74,7 +88,9 @@
                 <span
                   class="count"
                   v-if="paramsData.recommendSortIds.length > 0"
-                >已选择商家分类{{paramsData.recommendSortIds.length}}个</span>
+                >已选择商家分类{{
+                    paramsData.recommendSortIds.length
+                  }}个</span>
               </div>
               <div class="choose_item">
                 <span
@@ -87,7 +103,7 @@
                   class="count"
                   v-if="paramsData.recommendCatIds.length > 0"
                 >
-                  已选择平台分类{{paramsData.recommendCatIds.length}}个
+                  已选择平台分类{{ paramsData.recommendCatIds.length }}个
                 </span>
               </div>
             </div>
@@ -95,12 +111,17 @@
         </el-form-item>
         <el-form-item
           :label="$t('recommend.applicationPage') + '：'"
-          prop="name"
+          prop="recommendUsePage"
         >
           <el-checkbox-group v-model="paramsData.recommendUsePage">
-            <template v-for="item in pageData">
+            <template v-for="item in paramsData.pageData">
               <p :key="item.mark">
-                <el-checkbox :label="item.mark">{{$t('recommend.pageList')[item.mark]}}</el-checkbox> <span class="tips">{{$t('recommend.pageListTips')[item.mark]}}</span>
+                <el-checkbox :label="item.mark">{{
+                  $t("recommend.pageList")[item.mark]
+                }}</el-checkbox>
+                <span class="tips">{{
+                  $t("recommend.pageListTips")[item.mark]
+                }}</span>
                 <el-popover
                   placement="right-start"
                   trigger="hover"
@@ -112,7 +133,9 @@
                   <span
                     slot="reference"
                     class="exempli"
-                  >{{$t('recommend.viewExample')}}</span>
+                  >{{
+                    $t("recommend.viewExample")
+                  }}</span>
                 </el-popover>
               </p>
             </template>
@@ -120,14 +143,18 @@
         </el-form-item>
         <el-form-item
           :label="$t('recommend.enabledState') + '：'"
-          prop="name"
+          prop="status"
         >
           <el-radio-group v-model="paramsData.status">
             <p class="status">
-              <el-radio :label="0">{{$t('recommend.enableNow')}}</el-radio> <span class="tips">{{$t('recommend.enableTips')}}</span>
+              <el-radio :label="0">{{ $t("recommend.enableNow") }}</el-radio>
+              <span class="tips">{{ $t("recommend.enableTips") }}</span>
             </p>
             <p class="status">
-              <el-radio :label="1">{{$t('recommend.temporarilyDisabled')}}</el-radio> <span class="tips">{{$t('recommend.disableTips')}}</span>
+              <el-radio :label="1">{{
+                $t("recommend.temporarilyDisabled")
+              }}</el-radio>
+              <span class="tips">{{ $t("recommend.disableTips") }}</span>
             </p>
           </el-radio-group>
         </el-form-item>
@@ -138,7 +165,9 @@
         @click="submit"
         type="primary"
         size="small"
-      >{{$t('recommend.save')}}</el-button>
+      >{{
+        $t("recommend.save")
+      }}</el-button>
     </div>
     <chooseGoods
       :tuneUpChooseGoods="showGoodsDialog"
@@ -148,14 +177,22 @@
     <sortDialog
       :dialogVisible.sync="showSortDialog"
       :classFlag="sortType"
-      :backDataArr="sortType === 1 ? paramsData.recommendSortIds : paramsData.recommendCatIds"
+      :backDataArr="
+        sortType === 1
+          ? paramsData.recommendSortIds
+          : paramsData.recommendCatIds
+      "
       @BusClassTrueArr="getSortIds"
     />
   </div>
 </template>
 
 <script>
-import { addRecommend, getRecommendInfo, updateRecommend } from '@/api/admin/goodsManage/goodsRecommend/goodsRecommend'
+import {
+  addRecommend,
+  getRecommendInfo,
+  updateRecommend
+} from '@/api/admin/goodsManage/goodsRecommend/goodsRecommend'
 export default {
   components: {
     chooseGoods: () => import('@/components/admin/choosingGoods'),
@@ -172,19 +209,61 @@ export default {
         recommendUsePage: [],
         recommendGoods: [],
         recommendSortIds: [],
-        recommendCatIds: []
+        recommendCatIds: [],
+        pageData: [
+          {
+            mark: 'cart',
+            imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_cart.png`
+          },
+          {
+            mark: 'orderlist',
+            imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_order.png`
+          },
+          {
+            mark: 'bargainitem',
+            imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_bargin.png`
+          },
+          {
+            mark: 'groupbuyitem',
+            imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_group.jpg`
+          },
+          {
+            mark: 'search',
+            imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_list.jpg`
+          },
+          {
+            mark: 'payment',
+            imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_success.jpg`
+          },
+          {
+            mark: 'order_complete',
+            imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_order_complete.jpg`
+          },
+          {
+            mark: 'new_search',
+            imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_search.jpg`
+          },
+          {
+            mark: 'item',
+            imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_item.jpg`
+          }
+        ]
       },
-      pageData: [
-        { mark: 'cart', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_cart.png` },
-        { mark: 'orderlist', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_order.png` },
-        { mark: 'bargainitem', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_bargin.png` },
-        { mark: 'groupbuyitem', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_group.jpg` },
-        { mark: 'search', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_list.jpg` },
-        { mark: 'payment', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_success.jpg` },
-        { mark: 'order_complete', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_order_complete.jpg` },
-        { mark: 'new_search', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_search.jpg` },
-        { mark: 'item', imgUrl: `${this.$imageHost}/image/admin/new_preview_image/recommend/ex_item.jpg` }
-      ],
+      rules: {
+        recommendName: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' }
+        ],
+        chooseType: [
+          { required: true, message: '请选择推荐类型', trigger: 'blur' }
+        ],
+        recommendUsePage: [
+          { required: true, message: '请选择应用页面', trigger: 'blur' }
+        ],
+        status: [
+          { required: true, message: '请选择是否启用', trigger: 'blur' }
+        ]
+      },
+
       showGoodsDialog: false,
       showSortDialog: false,
       sortType: 1
@@ -195,43 +274,53 @@ export default {
   },
   methods: {
     submit () {
-      let obj = {
-        ...this.paramsData
-      }
-      if (this.$route.query.id) {
-        updateRecommend(obj).then(res => {
-          if (res.error === 0) {
-            if (res.content === 'CODE_SUCCESS') {
-              this.$message.success({
-                message: '商品推荐修改成功！',
-                duration: 2000,
-                onClose: () => {
-                  this.$router.push({
-                    name: 'recommend'
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          if (this.paramsData.recommendType === 1 && this.paramsData.chooseType === 0 && this.paramsData.recommendGoods.length === 0 && this.paramsData.recommendSortIds.length === 0 && this.paramsData.recommendCatIds.length === 0) {
+            this.$message.error('请选择商品或分类')
+            return false
+          }
+          let obj = {
+            ...this.paramsData
+          }
+          if (this.$route.query.id) {
+            updateRecommend(obj).then(res => {
+              if (res.error === 0) {
+                if (res.content === 'CODE_SUCCESS') {
+                  this.$message.success({
+                    message: '商品推荐修改成功！',
+                    duration: 2000,
+                    onClose: () => {
+                      this.$router.push({
+                        name: 'recommend'
+                      })
+                    }
                   })
                 }
-              })
-            }
-          }
-        })
-      } else {
-        addRecommend(obj).then(res => {
-          console.log(res)
-          if (res.error === 0) {
-            if (res.content === 'CODE_SUCCESS') {
-              this.$message.success({
-                message: '商品推荐添加成功！',
-                duration: 2000,
-                onClose: () => {
-                  this.$router.push({
-                    name: 'recommend'
+              }
+            })
+          } else {
+            addRecommend(obj).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                if (res.content === 'CODE_SUCCESS') {
+                  this.$message.success({
+                    message: '商品推荐添加成功！',
+                    duration: 2000,
+                    onClose: () => {
+                      this.$router.push({
+                        name: 'recommend'
+                      })
+                    }
                   })
                 }
-              })
-            }
+              }
+            })
           }
-        })
-      }
+        } else {
+          return false
+        }
+      })
     },
     showGoods () {
       this.showGoodsDialog = !this.showGoodsDialog
@@ -259,9 +348,18 @@ export default {
         if (res.error === 0) {
           this.paramsData = {
             ...res.content,
-            recommendGoods: res.content.recommendGoods ? res.content.recommendGoods.map(item => { return item.goodsId }) : [],
-            recommendSortIds: res.content.recommendSortIds ? res.content.recommendSortIds : [],
-            recommendCatIds: res.content.recommendCatIds ? res.content.recommendCatIds : []
+            recommendGoods: res.content.recommendGoods
+              ? res.content.recommendGoods.map(item => {
+                return item.goodsId
+              })
+              : [],
+            recommendSortIds: res.content.recommendSortIds
+              ? res.content.recommendSortIds
+              : [],
+            recommendCatIds: res.content.recommendCatIds
+              ? res.content.recommendCatIds
+              : [],
+            pageData: this.paramsData.pageData
           }
         }
       })

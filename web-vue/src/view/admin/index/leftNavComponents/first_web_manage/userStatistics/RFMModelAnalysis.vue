@@ -1,23 +1,23 @@
 <template>
   <div class="modelAnalysis">
     <div class="modelAnalysis_content">
-      <div class="description">通过分析用户的最近消费时间(R)、消费频次(F)、消费金额(M)，可有效将用户分层。消费频次越大、消费金额越高的客户，其客户生命价值(LTV)越高。通过营销活动、会员体系等运营 方式，可有效提升用户贡献。</div>
+      <div class="description">{{$t('userStatistics.RFMInstructions')}}</div>
       <div class="payTime">
-        <span>最近付款时间在 </span>
+        <span>{{$t('userStatistics.lastPayTime')}} </span>
         <el-date-picker
           v-model="payTime"
           type="date"
           size="small"
-          placeholder="选择日期"
+          :placeholder="$t('userStatistics.selectDte')"
           class="inputTime"
           value-format="yyyy-MM-dd"
           @change="changeTime"
         >
         </el-date-picker>
-        <span>之前的成交客户数据</span>
+        <span>{{$t('userStatistics.beforeTradeData')}}</span>
       </div>
       <div class="queryIndex">
-        查询指标：
+        {{$t('userStatistics.queryIndex')}}
         <el-radio-group
           v-model="queryIndex"
           v-for="(item,index) in queryList"
@@ -46,7 +46,7 @@
           type="primary"
           class="searchBtn"
           @click="handleSearch"
-        >查询</el-button>
+        >{{$t('userStatistics.search')}}</el-button>
       </div>
       <div class="table">
         <table class="table_content">
@@ -54,8 +54,8 @@
             <tr>
               <th style="width: 200px;">
                 <div class="out">
-                  <b>消费频次(F)</b>
-                  <em>最近消费时间(R)</em>
+                  <b>{{$t('userStatistics.consumeFrequency')}}</b>
+                  <em>{{$t('userStatistics.lastCustomeTime')}}</em>
                 </div>
               </th>
               <th>F=1</th>
@@ -63,7 +63,7 @@
               <th>F=3</th>
               <th>F=4</th>
               <th>F>=5</th>
-              <th>合计</th>
+              <th>{{$t('userStatistics.summation')}}</th>
             </tr>
           </thead>
           <tbody>
@@ -204,7 +204,7 @@
               <td>34</td> -->
             </tr>
             <tr>
-              <td>合计</td>
+              <td>{{$t('userStatistics.summation')}}</td>
               <td
                 v-for="item in this.table.row8"
                 :key="item.userRate+Math.random()"
@@ -242,6 +242,12 @@ export default {
     }
   },
 
+  watch: {
+    lang () {
+      this.queryList = this.$t('userStatistics.queryList')
+    }
+  },
+
   created () {
     this.payTime = this.dateDefault
   },
@@ -267,11 +273,7 @@ export default {
         row7: []
       },
       queryIndex: 1,
-      queryList: [
-        { name: '用户数/占比', content: '在查询时间内各类已成交的用户数/占比' },
-        { name: '累计支付金额(元) ', content: '在查询时间内各类用户累计支付金额' },
-        { name: '客单价', content: '在查询时间内各区间的客单价' }
-      ]
+      queryList: this.$t('userStatistics.queryList')
     }
   },
   methods: {
@@ -333,12 +335,6 @@ export default {
       }
     }
     .queryIndex {
-      // display: flex;
-      // span {
-      //   display: block;
-      //   height: 30px;
-      //   line-height: 30px;
-      // }
       .radioSelect {
         display: flex;
         line-height: 30px;

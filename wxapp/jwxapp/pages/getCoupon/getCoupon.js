@@ -125,21 +125,25 @@ Page({
         })
         util.api("/api/wxapp/coupon/get", function (res) {
           if (res.error == 0) {
-            util.toast_success('领取成功', function () {
-              setTimeout(function () {
-                if (goods_ids) {
-                  util.navigateTo({
-                    url: '/pages/item/item?goods_id=' + goods_ids,
-                  })
-                } else {
-                  wx.navigateBack({
-                    url: '/pages/index/index',
-                  })
-                }
-              }, 2000);
-            });
+            if (res.content == '领取成功') {
+              util.toast_success('领取成功', function () {
+                setTimeout(function () {
+                  if (goods_ids) {
+                    util.navigateTo({
+                      url: '/pages/item/item?goods_id=' + goods_ids,
+                    })
+                  } else {
+                    wx.navigateBack({
+                      url: '/pages/index/index',
+                    })
+                  }
+                }, 2000);
+              });
+            } else {
+              util.toast_fail(res.content);
+            }
           } else {
-            util.toast_fail(res.message.msg);
+            util.toast_fail('领取失败');
           }
         }, { 
           couponId: d.coupon_id,
@@ -161,21 +165,25 @@ Page({
   getUserCoupon: function () {
     util.api("/api/wxapp/coupon/get", function (res) {
       if (res.error == 0) {
-        util.toast_success('领取成功', function () {
-          setTimeout(function () {
-            if (goods_ids) {
-              util.navigateTo({
-                url: '/pages/item/item?goods_id=' + goods_ids,
-              })
-            } else {
-              util.navigateTo({
-                url: '/pages/index/index',
-              })
-            }
-          }, 2000);
-        });
+        if (res.content == '领取成功') {
+          util.toast_success('领取成功', function () {
+            setTimeout(function () {
+              if (goods_ids) {
+                util.navigateTo({
+                  url: '/pages/item/item?goods_id=' + goods_ids,
+                })
+              } else {
+                util.navigateTo({
+                  url: '/pages/index/index',
+                })
+              }
+            }, 2000);
+          });
+        } else {
+          util.toast_fail(res.content);
+        }
       } else {
-        util.toast_fail(res.message.msg);
+        util.toast_fail('领取失败');
       }
     }, { couponId: couponId }, '', true)
   },

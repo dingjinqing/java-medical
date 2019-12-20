@@ -52,7 +52,6 @@ global.wxComponent({
       type:Object,
       value:null,
       observer(val){
-        console.log(val)
       }
     }
   },
@@ -78,7 +77,7 @@ global.wxComponent({
     },
     rightClick(){
       if (this.checkOrigin('right')) return
-      if (!this.data.canBuy) util.showModal('提示','失败',()=>{},'','','确认')
+      // if (!this.data.dealtAct) util.showModal('提示','失败',()=>{},'','','确认')
       this.toCheckOut()
     },
     getCartNum(){

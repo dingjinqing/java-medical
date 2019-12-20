@@ -60,6 +60,7 @@ public class TaskJobMainService extends MainBaseService {
         if( job.getType().equals(TaskJobsConstant.TYPE_ONCE) ){
             TaskJobsConstant.TaskJobEnum jobEnum = TaskJobsConstant.TaskJobEnum
                 .getTaskJobEnumByExecutionType(job.getExecutionType());
+            logger().info("发送job："+jobEnum.getExchangeName());
             rabbitmqSendService.sendMessage(jobEnum.getExchangeName(),
                 jobEnum.getRoutingKey(),setTaskJobId(job.getContent(),job.getClassName(),mainId),job.getClassName());
         }

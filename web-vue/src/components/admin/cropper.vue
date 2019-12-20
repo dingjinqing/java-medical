@@ -148,6 +148,7 @@ export default {
       previews: {},
       cropperTopInput_one: 52,
       cropperTopInput_two: 52,
+      cropperTopInput_three: 1,
       cropMovingX: '',
       cropMovingY: '',
       imgPath: '',
@@ -164,9 +165,6 @@ export default {
     ...mapGetters(['cropperFlag']),
     cropperFlag_ () {
       return this.cropperFlag
-    },
-    cropperTopInput_three () {
-      return this.cropperTopInput_one / this.cropperTopInput_two
     }
   },
   watch: {
@@ -194,6 +192,12 @@ export default {
         if (newData) {
           this.cropperTopInput_one = newData[0]
           this.cropperTopInput_two = newData[1]
+          if (newData[0] && newData[1]) {
+            this.cropperTopInput_three = newData[0] / newData[1]
+          } else {
+            this.cropperTopInput_three = 1
+          }
+
           this.option.fixedNumber = [newData[0], newData[1]]
         }
       },
@@ -232,12 +236,26 @@ export default {
       switch (index) {
         case 0:
           this.option.autoCropWidth = this.cropperTopInput_one
+          if (this.cropperTopInput_two !== '') {
+            this.cropperTopInput_three = this.cropperTopInput_one / this.cropperTopInput_three
+          } else if (this.cropperTopInput_three !== '') {
+            this.cropperTopInput_two = this.cropperTopInput_one / this.cropperTopInput_three
+          } else {
+            this.cropperTopInput_three = this.cropperTopInput_one / this.cropperTopInput_three
+          }
           break
         case 1:
           this.option.autoCropHeight = this.cropperTopInput_two
+          if (this.cropperTopInput_one !== '') {
+            this.cropperTopInput_three = this.cropperTopInput_one / this.cropperTopInput_three
+          } else if (this.cropperTopInput_three !== '') {
+            this.cropperTopInput_one = this.cropperTopInput_one * this.cropperTopInput_three
+          } else {
+            this.cropperTopInput_three = this.cropperTopInput_one / this.cropperTopInput_three
+          }
           break
         case 2:
-
+          console.log(index)
           if (this.cropperTopInput_one && !this.cropperTopInput_two) {
             this.cropperTopInput_two = this.cropperTopInput_one / this.cropperTopInput_three
           } else if (!this.cropperTopInput_one && this.cropperTopInput_two) {

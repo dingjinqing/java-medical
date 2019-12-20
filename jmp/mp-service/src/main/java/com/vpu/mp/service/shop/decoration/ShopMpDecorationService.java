@@ -37,6 +37,7 @@ import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
+import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -76,6 +77,10 @@ public class ShopMpDecorationService extends ShopBaseService {
 
     @Autowired
     protected BargainService bargainService;
+
+    @Autowired
+    protected SeckillService seckillService;
+
 
     @Autowired
     private QrCodeService qrCode;
@@ -630,6 +635,10 @@ public class ShopMpDecorationService extends ShopBaseService {
                     return this.convertCouponForIndex(objectMapper, node, user);
                 case ModuleConstant.M_CARD:
                     return this.convertCardForIndex(objectMapper, node, user);
+                case ModuleConstant.M_BARGAIN:
+                    return this.convertBargainForIndex(objectMapper, node, user);
+                case ModuleConstant.M_SECKILL:
+                    return this.convertSeckillForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他商品和营销模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -699,6 +708,36 @@ public class ShopMpDecorationService extends ShopBaseService {
     }
 
     /**
+     * 砍价需要setNeedRequest
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleBargain convertBargainForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
+        moduleBargain.setNeedRequest(true);
+        return moduleBargain;
+    }
+
+    /**
+     * 秒杀需要setNeedRequest
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleSecKill convertSeckillForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+        moduleSecKill.setNeedRequest(true);
+        return moduleSecKill;
+    }
+
+    /**
      * 获取指定装修模块数据
      *
      * @param param 请求模块参数 {@link com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam}
@@ -753,6 +792,8 @@ public class ShopMpDecorationService extends ShopBaseService {
                             return this.convertMemberCardForModule(objectMapper, node, user);
                         case ModuleConstant.M_BARGAIN:
                             return this.convertBargainForModule(objectMapper, node, user);
+                        case ModuleConstant.M_SECKILL:
+                            return this.convertSeckillForModule(objectMapper, node, user);
                         //TODO case
                     }
                 }
@@ -839,10 +880,25 @@ public class ShopMpDecorationService extends ShopBaseService {
      */
     private ModuleBargain convertBargainForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleBargain moduleBargain = objectMapper.readValue(node.getValue().toString(), ModuleBargain.class);
-        Integer userId = user.getUserId();
 
         // 转换实时信息
-        return bargainService.getPageIndexBargain(moduleBargain, userId);
+        return bargainService.getPageIndexBargain(moduleBargain);
+    }
+
+    /**
+     * 秒杀模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleSecKill convertSeckillForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+
+        // 转换实时信息
+        return seckillService.getPageIndexSeckill(moduleSecKill);
     }
 
 }

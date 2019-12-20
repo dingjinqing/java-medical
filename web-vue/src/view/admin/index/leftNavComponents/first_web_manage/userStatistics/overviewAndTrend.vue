@@ -1,6 +1,6 @@
 <template>
   <section class="label">
-    <div class="labelItem">客户概况及趋势</div>
+    <div class="labelItem">{{$t('userStatistics.userOverviewAndTrend')}}</div>
     <el-select
       v-model="timeSelect"
       size="small"
@@ -15,7 +15,7 @@
         :value="item.value"
       ></el-option>
     </el-select>
-    <span>{{this.startDate.year}}年{{this.startDate.month}}月{{this.startDate.day}}日 - {{this.endDate.year}}年{{this.endDate.month}}月{{this.endDate.day}}日</span>
+    <span>{{this.startDate.year}}{{$t('userStatistics.year')}}{{this.startDate.month}}{{$t('userStatistics.month')}}{{this.startDate.day}}{{$t('userStatistics.day')}} - {{this.endDate.year}}{{$t('userStatistics.year')}}{{this.endDate.month}}{{$t('userStatistics.month')}}{{this.endDate.day}}{{$t('userStatistics.day')}}</span>
 
     <!-- 表格数据部分 -->
     <div class="fromWrapper">
@@ -46,7 +46,7 @@
           class="num"
           style="color: #5A8BFF"
         >{{item.number}}</div>
-        <div>较前一月 {{item.rate}}</div>
+        <div>{{$t('userStatistics.compareLastMonth')}} {{item.rate}}</div>
       </div>
     </div>
 
@@ -61,6 +61,11 @@ import echarts from 'echarts'
 import { customerTrend } from '@/api/admin/firstWebManage/userStatistics/userStatistics.js'
 
 export default {
+  watch: {
+    lang () {
+      this.timeRange = this.$t('userStatistics.timeRange')
+    }
+  },
   created () {
     this.initData()
   },
@@ -73,11 +78,7 @@ export default {
   data () {
     return {
       timeSelect: 1,
-      timeRange: [
-        { value: 1, label: '最新1天' },
-        { value: 7, label: '最新7天' },
-        { value: 30, label: '最新30天' }
-      ],
+      timeRange: this.$t('userStatistics.timeRange'),
       value: 1,
       params: '1',
       originalData: {
@@ -169,20 +170,20 @@ export default {
 
       this.table = [
         {
-          name: '访客数',
-          content: '筛选时间内，店铺所有页面被访问的去重人数，一个人在筛选时间范围内访问多次只记为一个',
+          name: this.$t('userStatistics.visitNumber'),
+          content: this.$t('userStatistics.content1'),
           number: this.originalData.visitorsNumber,
           rate: this.originalData.visitorsNumberRate
         },
         {
-          name: '累积用户数',
-          content: '截至到筛选时间的最后一天，店铺的会员累积人数',
+          name: this.$t('userStatistics.userNumber'),
+          content: this.$t('userStatistics.content2'),
           number: this.originalData.userNumber,
           rate: this.originalData.userNumberRate
         },
         {
-          name: '用户成交数',
-          content: '筛选时间内，在店铺中付款成功的去重客户数，一个人在筛选时间范围内付款多次只记为一个',
+          name: this.$t('userStatistics.userTradeNumber'),
+          content: this.$t('userStatistics.content3'),
           number: this.originalData.tradeNumber,
           rate: this.originalData.tradeNumberRate
         }
@@ -213,17 +214,17 @@ export default {
         },
         series: [
           {
-            name: '访客数',
+            name: this.$t('userStatistics.visitNumber'),
             type: 'line',
             data: this.chartChange.visitorsNumber
           },
           {
-            name: '累积用户数',
+            name: this.$t('userStatistics.userNumber'),
             type: 'line',
             data: this.chartChange.userNumber
           },
           {
-            name: '成交用户数',
+            name: this.$t('userStatistics.userTradeNumber'),
             type: 'line',
             data: this.chartChange.tradeNumber
           }

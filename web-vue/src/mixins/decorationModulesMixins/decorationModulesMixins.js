@@ -44,32 +44,32 @@ export default {
         case 3: // 砍价
           obj = {
             module_name: 'm_bargain',
-            list_style: '0',
-            goods_price: true,
-            goods_count_down: true,
-            free_btn: true,
-            bargain_goods: []
+            list_style: '0', // 列表样式: 双列0，单列1
+            goods_price: true, // 是否显示 商品原价
+            goods_count_down: true, // 是否显示活动倒计时
+            free_btn: true, // 是否显示去砍价按钮
+            bargain_goods: [] // 商品列表
           }
           break
         case 5: // 秒杀
           obj = {
             module_name: 'm_seckill',
-            list_style: '0',
-            goods_price: true,
-            goods_count_down: true,
-            seckill_goods: []
+            list_style: '0', // 列表样式: 双列0，单列1
+            goods_price: true, // 是否显示 商品原价
+            goods_count_down: true, // 是否显示活动倒计时
+            seckill_goods: [] // 商品列表
           }
           break
         case 6: // 拼团抽奖
           obj = {
             module_name: 'm_group_draw',
-            group_draw_id: '',
-            name_set: '0',
-            group_draw_name: '',
-            show_clock: '1',
-            font_color: '#ffffff',
-            module_bg: '0',
-            module_img: ''
+            group_draw_id: '', // 拼团抽奖活动id
+            name_set: '0', // 是否使用默认活动标题 0 使用 1不使用
+            group_draw_name: '', // 自定义活动标题
+            show_clock: '1', // 是否显示活动倒计时 0 隐藏 1显示
+            font_color: '#ffffff', // 字体颜色
+            module_bg: '0', // 活动底图 0 默认 1自定义
+            module_img: '' // 活动底图路径
           }
           break
         case 8: // 商品模块

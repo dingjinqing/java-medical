@@ -66,7 +66,8 @@ public class CouponService extends ShopBaseService {
 
     /**可用会员卡*/
     public static final byte COUPON_IS_USED_STATUS_AVAIL = 0;
-
+    /**优惠券状态：使用*/
+    public static final byte COUPON_IS_USED_STATUS_USED = 1;
     /**普通优惠券*/
     public static final byte COUPON_TYPE_NORMAL = 0;
 
@@ -381,6 +382,7 @@ public class CouponService extends ShopBaseService {
     		//根据有效 开始时间、结束时间判断
             select.where(CUSTOMER_AVAIL_COUPONS.END_TIME.le(now));
     	}
+    	select.orderBy(CUSTOMER_AVAIL_COUPONS.ID.desc());
     }
 
     /**
@@ -545,7 +547,7 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
-     * 获取优惠券列
+     * 获取优惠券
      * 王帅
      * @param couponSn no
      * @return 优惠卷
@@ -613,6 +615,21 @@ public class CouponService extends ShopBaseService {
             : BigDecimal.ZERO;
         }
         return BigDecimal.ZERO;
+    }
+
+    /**
+     * 王帅
+     * 使用优惠券
+     * @param id id
+     * @param orderSn 订单号
+     */
+    public void use(Integer id, String orderSn){
+        db().update(CUSTOMER_AVAIL_COUPONS)
+            .set(CUSTOMER_AVAIL_COUPONS.IS_USED, COUPON_IS_USED_STATUS_USED)
+            .set(CUSTOMER_AVAIL_COUPONS.USED_TIME, DateUtil.getSqlTimestamp())
+            .set(CUSTOMER_AVAIL_COUPONS.ORDER_SN, orderSn)
+            .where(CUSTOMER_AVAIL_COUPONS.ID.eq(id))
+            .execute();
     }
 
     /**
@@ -701,51 +718,7 @@ public class CouponService extends ShopBaseService {
                 .execute();
         }
     }
-    
-    //将要过期的优惠券醒通知。 后台定时每天执行一次，获取明天即将过期的优惠券，通知用户使用
-    public String expiringCouponNotify(Integer shopId) {
-    	//查找shopId对应的公众号
-    	String officeAppId = saas.shop.mp.findOffcialByShopId(shopId);
-    	if(officeAppId==null) {
-    		logger().info("店铺"+shopId+"没有关注公众号");
-    		return null;
-    	}
-    	List<CouponWxVo> list = getExpiringCouponList();
-    	System.out.println(list.toString());
-    	String page="pages/couponlist/couponlist";
-    	String keyword1="尊敬的用户，您的优惠券";
-    	String keyword11="即将到期";
-    	for (CouponWxVo couponWxVo : list) {
-    		String couponName = couponWxVo.getActName();
-    		List<Integer> userIdList=new ArrayList<Integer>();
-    		if(StringUtils.isEmpty(couponWxVo.getWxUnionId())) {
-    			logger().info("用户"+couponWxVo.getWxOpenid()+"没有关注公众号");
-    			continue;
-    		}
-    		MpOfficialAccountUserRecord wxUserInfo = saas.shop.mpOfficialAccountUserService.getUserByUnionIdAndAppId(couponWxVo.getWxUnionId(),officeAppId);
-    		if(wxUserInfo==null) {
-    			logger().info("表中没有数据"+couponWxVo.getWxUnionId());
-    			continue;
-    		}
-    		userIdList.add(wxUserInfo.getRecId());
-    		logger().info("userIdList"+userIdList);
-			String[][] data = new String[][] { { keyword1 + couponName + keyword11, "#173177" }, { "", "#173177" },
-					{ couponName, "#173177" },
-					{ DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, couponWxVo.getEndTime()), "#173177" },
-					{ "", "#173177" } };
-			RabbitMessageParam param = RabbitMessageParam.builder()
-					.mpTemplateData(
-							MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(data).build())
-					.page(page).shopId(getShopId()).userIdList(userIdList)
-					.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
-			//shopApp.wechatMessageTemplateService.sendMpMessage(param, info);
-			logger().info("准备发");
-			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
-		}
-		return null;
-		
-    }
-    
+        
     /**
      * 获取明天即将过期的优惠券
      * @return

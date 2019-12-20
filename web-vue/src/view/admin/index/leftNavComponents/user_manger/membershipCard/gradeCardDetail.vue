@@ -19,6 +19,7 @@
           <scoreDiscount
             :val="disCountData"
             @input="initDiscountData"
+            ref="disCountData"
           ></scoreDiscount>
           <cardScoreCfg
             :val="cardScoreCfgData"
@@ -38,6 +39,7 @@
           <cardGradeCfg
             :val="cardGradeCfgData"
             @input="initCardGradeCfgData"
+            ref="cardGradeCfgData"
           ></cardGradeCfg>
         </div>
 
@@ -103,22 +105,18 @@ export default {
       shopingInputLeftM: 100,
       shopingInputRightM: 100,
       addIntegralArr: [
-        {
-          leftInput: 10,
-          rightInput: 20
-        }
       ]
     }
     let cardUsageCfgDataTmp = {
-      desc: 'hahaha',
-      mobile: '1234'
+      desc: '12',
+      mobile: '12'
     }
     let flagTmp = '2'
     return {
       cardId: null,
       cardType: cardTypeTmp,
       cardNameAndBg: {
-        cardName: '来自主页',
+        cardName: null,
         bgType: '0',
         bgColor: '',
         bgImg: '',
@@ -131,7 +129,8 @@ export default {
         choosedGoodsId: [],
         choosedStoreId: [],
         choosedPlatformId: [],
-        choosedBrandId: []
+        choosedBrandId: [],
+        valid: false
       },
       ownGoodsData: {
         powerOwnGoods: false,
@@ -153,7 +152,8 @@ export default {
       cardGradeCfgData: {
         gradeScore: null,
         gradeCrash: null,
-        gradeValue: null
+        gradeValue: null,
+        valid: false
       },
       cardActiveCfgData: {
         activation: '1',
@@ -310,11 +310,21 @@ export default {
     },
     handleToSave () {
       console.log('保存')
-      // 检验通过
-      console.log(this.cardNameAndBg)
       this.$refs.cardNameAndBg.$emit('checkRule')
 
-      if (this.cardNameAndBg.valid) {
+      // 检验通过
+      console.log(this.cardNameAndBg)
+      this.$refs.disCountData.$emit('checkRule')
+      this.$refs.cardGradeCfgData.$emit('checkRule')
+
+      // 权益判断
+      if (this.cardScoreCfgData.powerScore || this.ownGoodsData.powerOwnGoods || this.disCountData.powerDiscount) {
+
+      } else {
+        this.$message.warning('至少选择一项会员权益')
+      }
+
+      if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardGradeCfgData.valid) {
         // 保存数据
         this.prepareCardData()
       }

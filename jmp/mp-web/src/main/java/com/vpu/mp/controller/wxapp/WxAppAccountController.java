@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,7 @@ import com.vpu.mp.auth.WxAppAuth;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.mp.MpAuditStateVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawSumDetailVo;
 import com.vpu.mp.service.pojo.shop.member.account.AccountNumberVo;
@@ -159,5 +161,21 @@ public class WxAppAccountController extends WxAppBaseController {
 		}
 		return fail();
 		
+	}
+	
+	/**
+	 * 获取小程序审核状态
+	 * @return
+	 */
+	@PostMapping("/api/wxapp/auditState")
+	public JsonResult getAppAduitInfo() {
+		logger().info("获取小程序审核状态");
+		Integer shopId = wxAppAuth.shopId();
+		Boolean authOk = saas.shop.mp.isAuthOk(shopId);
+		if (!authOk) {
+			return fail(JsonResultCode.WX_MA_SHOP_HAS_NO_AP);
+		}
+		MpAuditStateVo appAuditInfo = saas.shop.mp.getAppAuditInfo(shopId);
+		return success(appAuditInfo.getAuditState());
 	}
 }
