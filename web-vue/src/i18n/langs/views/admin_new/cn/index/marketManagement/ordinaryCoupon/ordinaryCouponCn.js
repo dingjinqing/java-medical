@@ -104,7 +104,7 @@ export const cn = {
   validatePreferentialType2: '请填写优惠折扣!',
   validateisRandom: '请填写积分兑换!',
   validateuseConsumeRestrict: '请填写使用门槛!',
-  validatesuitGoods1: '请选择可使用商品!',
+  validatesuitGoods1: '请选择指定商品',
   validatesuitGoods2: '请选择指定商品分类!',
   validatesuitGoods3: '请选择指定平台分类!',
   validateType: '请选择优惠券类型',

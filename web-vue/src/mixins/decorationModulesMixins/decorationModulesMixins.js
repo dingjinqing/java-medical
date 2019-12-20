@@ -24,17 +24,17 @@ export default {
             pay_fee: '0.00'
           }
           break
-        case 2: // 优惠卷模块
+        case 2: // 优惠券模块
           obj = {
             module_name: 'm_coupon', // 模块名称
             coupon_arr: [
-              // 选中的优惠卷数组
+              // 选中的优惠券数组
               // {
               //   'act_code': 'voucher', // 是否是打折卷  discount：打折卷   voucher不是打折卷
               //   'denomination': '5', // 面额
               //   'consume_text': '无门槛', // 使用门槛
               //   'receive_text': '剩余93张', // 卡卷剩余数
-              //   'coupon_id': -1, // 优惠卷id
+              //   'coupon_id': -1, // 优惠券id
               //   'use_score': '0', // 是否可以积分兑换
               //   'score_number': '' // 需要积分数
               // }
@@ -409,12 +409,12 @@ export default {
               })
             }
             break
-          case 'm_coupon': // 优惠卷校验
+          case 'm_coupon': // 优惠券校验
             console.log(item)
             if (!item.coupon_arr.length) {
               flag = false
               this.$message.error({
-                message: '请选择优惠卷',
+                message: '请选择优惠券',
                 showClose: true
               })
             }

@@ -90,12 +90,25 @@ global.wxPage({
 
   // 校验商品数量
   checkNumber(e) {
-    console.log(e.detail.value)
-    console.log(e.target.dataset.prd_id)
-    debugger
-    if (e.detail.value.replace(/^[1-9]\d*$/, 1) == 1) {
-      // util.showModal("提示", "请填写真实姓名");
-    }
+    var value = Number(e.detail.value)
+    var prdId = e.target.dataset.prd_id
+    var limit_min = e.target.dataset.limit_min
+    var limit_max = e.target.dataset.limit_max
+    var allMoney = 0 // 总金额
+    this.data.canBuyGoodsList.forEach((item, index) => {
+      if (item.prdId == prdId) {
+        if ((value >= limit_min) && (value <= limit_max)) {
+          item.cartNumber = value
+        } else {
+          item.cartNumber = limit_min
+        }
+      }
+      allMoney += item.cartNumber * item.cartPrice
+    })
+    this.setData({
+      canBuyGoodsList: this.data.canBuyGoodsList,
+      totalPrice: allMoney
+    })
   },
 
   // 删除购物车商品

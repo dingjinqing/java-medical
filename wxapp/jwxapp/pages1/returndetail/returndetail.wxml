@@ -1,7 +1,7 @@
 <!-- pages1/returedetail/returndetail.wxml -->
 <include src="/pages/common/header.wxml" />
-<!-- 售后详情 -->
 <view class="main-container">
+  <!-- 售后详情 -->
   <block>
     <block wx:if="{{refundStatus === 1||refundStatus === 4}}">
       <!-- 买家仅退款，退货退款，填写物流[查看订单]申请后，等待商家审核[撤销申请，查看订单] -->
@@ -106,7 +106,7 @@
     </view>
     <view class="order-block">
       <view class="order-block-title">售后详情</view>
-      <view class="order-block-goods" wx:for="{{returnGoods}}">
+      <view class="order-block-goods" wx:for="{{returnGoods}}" wx:key="index">
         <image class="order-block-goods-img" src="{{imageUrl + item.goodsImg}}"></image>
         <view class="order-block-goods-info">
           <view>{{item.goodsName}}</view>
@@ -120,7 +120,7 @@
         <view class="order-block-detail-item">
           <!-- 0仅退款 1:退货退款 2:仅退运费 3:手动退款 4:换货 -->
           <text class="details-item-title">售后类型：</text>
-          <text>{{orderInfo.returnType}}</text>
+          <text>{{return[orderInfo.returnType]}}</text>
         </view>
         <view class="order-block-detail-item">
           <text class="details-item-title">退款金额：</text>
@@ -135,9 +135,9 @@
         2	'缺货',
         3	'拍错/多拍/不想要',
         4	'其他' -->
-        <view class="order-block-detail-item" wx:if="{{orderInfo.reasonType}}">
+        <view class="order-block-detail-item" wx:if="{{orderInfo.reasonType !== ''}}">
           <text class="details-item-title">申请原因：</text>
-          <text>{{orderInfo.reasonType}}</text>
+          <text>{{reasone[orderInfo.reasonType]}}</text>
         </view>
         <view class="order-block-detail-item" wx:if="{{orderInfo.reasonDesc}}">
           <text class="details-item-title">申请说明：</text>
@@ -146,7 +146,7 @@
         <view class="order-block-detail-item" wx:if="{{goodsImages && goodsImages.length}}">
           <text class="details-item-title">申请凭证：</text>
           <view class="details-item-content">
-            <block wx:for="{{goodsImages}}">
+            <block wx:for="{{goodsImages}}" wx:key="index">
               <image class="details-item-img" src="{{imageUrl + item}}"></image>
             </block>
           </view>

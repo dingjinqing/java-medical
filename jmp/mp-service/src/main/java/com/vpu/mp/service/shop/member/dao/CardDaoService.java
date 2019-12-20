@@ -36,6 +36,7 @@ import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
@@ -460,7 +461,16 @@ public class CardDaoService extends ShopBaseService {
 	 * 获取会员卡信息
 	 */
 	public MemberCardRecord getCardById(Integer cardId) {
-		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAny();
+		MemberCardRecord mCard = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchAny();
+		// 处理背景图片
+		if(mCard != null && CardUtil.isBgImgType(mCard.getBgType())) {
+			if(!StringUtils.isBlank(mCard.getBgImg())) {
+				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(mCard.getBgImg());
+				mCard.setBgImg(imageUrl);
+			}
+		}
+		return mCard;
+		
 	}
 
 	/**

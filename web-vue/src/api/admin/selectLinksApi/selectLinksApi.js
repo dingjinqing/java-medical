@@ -75,7 +75,7 @@ export function packageListRequest () {
     method: 'get'
   })
 }
-// 优惠卷
+// 优惠券
 export function voucherListRequest () {
   return service({
     url: '/api/admin/decorate/voucher/list',
