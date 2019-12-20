@@ -57,7 +57,7 @@ public class BargainGoodsBo {
     private Byte isPrd;
     @JsonProperty("prd_id")
     private Integer prdId;
-    @JsonProperty("max_rice")
+    @JsonProperty("max_price")
     private BigDecimal maxPrice;
 
     /***
