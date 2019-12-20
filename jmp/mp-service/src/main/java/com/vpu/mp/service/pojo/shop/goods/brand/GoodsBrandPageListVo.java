@@ -17,4 +17,6 @@ public class GoodsBrandPageListVo extends GoodsBrandBase{
     private Integer goodsNum;
     private Byte classifyFirst;
     private Timestamp createTime;
+    /** 是否推荐分类 0否1是*/
+    private Byte isRecommend;
 }
