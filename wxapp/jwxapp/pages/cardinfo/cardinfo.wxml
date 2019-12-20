@@ -5,7 +5,7 @@
       <view class="card_type">{{cardInfo.cardTypeName}}</view>
       <view class="card_info">
         <view class="card_surface_top">
-          <image mode="widthFix" class="shop_img" src="{{imageUrl}}{{cardInfo.avatar}}"></image>
+          <image mode="widthFix" class="shop_img" src="{{cardInfo.avatar}}"></image>
           <view class="card_name_box">
             <view class="card_name">{{cardInfo.cardName}} <text class="get_status">{{carStatus}}</text></view>
             <view class="card_exp" wx:if="{{cardInfo.cardType !== 2}}">有效期：{{cardInfo.cardExpireTime}}</view>

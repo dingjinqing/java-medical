@@ -1,78 +1,71 @@
-<v-popup show="{{show}}" bind:close="bindClose" close_pos="{{!false? 'outer-bottom' : 'outer'}}" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
-    <!-- !无奖励&&!优惠券 no-coupon -->
-    <view class="pay-award-bg {{!false? 'no-coupon':''}}" style="{{!false ? 'background:#FFDFBB;' : 'background:#f66 url('+imageUrl+'image/wxapp/pay_award_coupon_top_bg.png) no-repeat left -16rpx / 100%;' }}">
-      <block wx:if="{{!false}}">
+<wxs module="filter"> 
+  var includes = function (arr, target) {
+    if (arr.length === 0) return false
+    return arr.indexOf(target) === -1 ? false : true
+  }
+  module.exports = {
+    includes: includes
+  }
+</wxs>
+<v-popup show="{{show}}" bind:close="bindClose" close_pos="{{filter.includes([4,5,6],giftInfo.giftType) && hasGift ? 'outer-bottom' : 'outer'}}" hide_close="{{false}}" horizon="center" vertical="center" bindtap='bindClose'>
+    <!--  no-coupon -->
+    <view class="pay-award-bg {{DialogStyle}}" style="{{filter.includes([4,5,6],giftInfo.giftType) && hasGift ? 'background:#FFDFBB;' : 'background:#f66 url('+imageUrl+'image/wxapp/pay_award_coupon_top_bg.png) no-repeat left -16rpx / 100%;' }}">
+      <block wx:if="{{filter.includes([4,5,6],giftInfo.giftType) && hasGift}}">
         <image class="no-coupon-top-behind-bg" src="{{imageUrl}}image/wxapp/award_bg.png"></image>
         <image class="no-coupon-top-bg" src="{{imageUrl}}image/wxapp/is_award1.png"></image>
         <text class="no-coupon-title">恭 喜 您 !</text>
       </block>
       <!-- 无奖励||优惠券 -->
-      <!-- <view class="act-title">支付有礼</view> -->
+      <view class="act-title" wx:if="{{filter.includes([0,1],giftInfo.giftType) || !hasGift}}">支付有礼</view>
       <!-- 优惠券 && length>0 -->
-      <!-- <view class="coupon-content">
-        <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
-          <view class="coupon-l">￥<text>30</text></view>
-          <view class="coupon-r"><text>满150可用</text></view>
-        </view>
-        <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
-          <view class="coupon-l">￥<text>30</text></view>
-          <view class="coupon-r"><text>满150可用</text></view>
-        </view>
-        <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
-          <view class="coupon-l">￥<text>30</text></view>
-          <view class="coupon-r"><text>满150可用</text></view>
-        </view>
-      </view> -->
+      <view class="coupon-content" wx:if="{{giftInfo.giftType === 1 && hasGift}}">
+        <block wx:for="{{giftInfo.awardInfo.couponView}}" wx:key="*this">
+          <view class="coupon-item" style="background:url({{imageUrl}}image/wxapp/each_two_bg.png) no-repeat;background-size:100% 100%;">
+            <view class="coupon-l">￥<text>30</text></view>
+            <view class="coupon-r"><text>满150可用</text></view>
+          </view>
+        </block>
+      </view>
       <!-- 优惠券 && length>0 -->
-      <!-- <view class="coupon-tips">
+      <view class="coupon-tips" wx:if="{{giftInfo.giftType === 1 && hasGift}}">
         <text>优惠券已放入个人中心</text>
         <text>去看看 ></text>
-      </view> -->
+      </view>
       <!-- 自定义 === true -->
-      <!-- <view class="custom-item">
+      <view class="custom-item" wx:if="{{giftInfo.giftType === 7 && hasGift}}">
         <image src="{{imageUrl}}image/wxapp/share_dis.jpg" lazy-load="{{true}}"></image>
-      </view> -->
+      </view>
       <!-- 无奖励 -->
-      <!-- <view class="no_award">
+      <view class="no_award" wx:if="{{giftInfo.giftType!==0 && !hasGift}}">
         <image src="{{imageUrl}}image//wxapp/paygift_no_award.png" lazy-load="{{true}}"></image>
         <text>很抱歉! 奖励领光啦! </text>
-      </view> -->
+      </view>
 
       <!-- no-coupon -->
-      <block wx:if="{{!false}}">
+      <block wx:if="{{filter.includes([4,5,6],giftInfo.giftType) && hasGift}}">
         <view class="no-coupon-info">
-          <text class="info-title">获得余额</text>
+          <text class="info-title">获得{{giftInfo.giftType === 4 && '余额'}}</text>
           <!-- 非奖品非优惠券 -->
-          <!-- <text class="no-gift-info">1元</text>
-          <view class="no-gift-tips">
-            <text>积分已放入个人中心</text>
+          <text class="no-gift-info" wx:if="{{filter.includes([4,6],giftInfo.giftType)}}">{{giftInfo.giftType === 4 ? giftInfo.awardInfo.accountNumber + '元': giftInfo.awardInfo.scoreNumber +'积分'}}</text>
+          <view class="no-gift-tips" wx:if="{{filter.includes([4,6],giftInfo.giftType)}}">
+            <text>{{giftInfo.giftType === 4 ? '余额':'积分'}}</text>
             <text>去看看 ></text>
-          </view> -->
+          </view>
           <!-- 奖品信息 -->
-          <view class="gift-name">台式家用简约书桌办公桌带书架学习约书桌办公桌带书架学习</view>
+          <view class="gift-name" wx:if="{{giftInfo.giftType === 5}}">台式家用简约书桌办公桌带书架学习约书桌办公桌带书架学习</view>
             <image class="gift-image" src="{{imageUrl}}image/wxapp/img1.jpg"></image>
             <text class="gift-tips">已放入“我的奖品”快领取把</text>
         </view>
       </block>
       <!-- 步骤 === true -->
-      <view class="step-content">
-        <view class="step-item active">
-          1
-        </view>
-        <view class="step-item active">
-          2
-        </view>
-        <view class="step-item">
-          3
-        </view>
-        <view class="step-item">
-          4
-        </view>
-        <view class="step-item">
-          5
-        </view>
+      <view class="step-content" wx:if="{{stepInfo}}">
+        <block wx:for="{{stepInfo.stepList}}" wx:key="*this">
+          <view class="step-item {{item <= stepInfo.currentStep && 'active'}}">
+            {{item}}
+          </view>
+        </block>
       </view>
-      <text class="act-desc">第3次在店铺内购买“指定商品”且“订单金额满100元”，可获得“20元优惠券；30元优惠券”</text>
+      <text wx:if="{{stepInfo}}" class="act-desc">第3次在店铺内购买“指定商品”且“订单金额满100元”，可获得“20元优惠券；30元优惠券”</text>
       <view class="btn-ok" bindtap="bindClose">知道了</view>
     </view>
   
