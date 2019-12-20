@@ -2,6 +2,8 @@ package com.vpu.mp.service.shop.goods.es;
 
 import com.vpu.mp.service.foundation.es.annotation.EsFiled;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
+import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 /**
  * ES启动初始化
@@ -37,7 +40,11 @@ public class EsDataInitService implements InitializingBean {
     @Qualifier("esConfig")
     private RestHighLevelClient restHighLevelClient;
 
+    @Autowired
+    private JedisManager jedisManager;
+
     private void createIndex(String indexName) throws IOException {
+
         CreateIndexRequest createIndexRequest = new CreateIndexRequest(indexName);
         createIndexRequest.settings(Settings.builder()
             //由于现阶段的ElasticSearch的部署是单机版因此副分片数量设为0（副分片需要至少两个ES服务才能生效）
@@ -111,11 +118,15 @@ public class EsDataInitService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if(containIndex(EsGoodsConstant.GOODS_INDEX_NAME)){
-            createIndex(EsGoodsConstant.GOODS_INDEX_NAME);
-        }
-        if(containIndex(EsGoodsConstant.LABEL_INDEX_NAME)){
-            createIndex(EsGoodsConstant.LABEL_INDEX_NAME);
+        String requestId = UUID.randomUUID().toString();
+        if( jedisManager.addLock(JedisKeyConstant.ES_INIT, requestId,1000*60) ){
+            if(containIndex(EsGoodsConstant.GOODS_INDEX_NAME)){
+                createIndex(EsGoodsConstant.GOODS_INDEX_NAME);
+            }
+            if(containIndex(EsGoodsConstant.LABEL_INDEX_NAME)){
+                createIndex(EsGoodsConstant.LABEL_INDEX_NAME);
+            }
+            jedisManager.releaseLock(JedisKeyConstant.ES_INIT,requestId);
         }
     }
 }

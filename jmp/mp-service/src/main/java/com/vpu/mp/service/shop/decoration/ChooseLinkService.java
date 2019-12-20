@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
+import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.SelectJoinStep;
@@ -40,7 +41,7 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<GoodsLinkVo> getGoodsLink(GoodsLinkVo param) {
-		SelectJoinStep<Record4<Integer, String, String, String>> select = db()
+		SelectJoinStep<? extends Record> select = db()
 				.select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_SN,GOODS.GOODS_IMG)
 				.from(GOODS);
 		select = buildOptions(select, param);
@@ -54,7 +55,8 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public SelectJoinStep<Record4<Integer, String, String, String>> buildOptions(SelectJoinStep<Record4<Integer, String, String, String>> select, GoodsLinkVo param) {
+	public SelectJoinStep<? extends Record> buildOptions(SelectJoinStep<? extends Record> select, GoodsLinkVo param) {
+        select.where(GOODS.DEL_FLAG.eq((byte)1));
 		if(param.getKeyWords() != null) {
 			select.where(GOODS.GOODS_NAME.contains(param.getKeyWords()).or(GOODS.GOODS_SN.contains(param.getKeyWords())));
 		}
