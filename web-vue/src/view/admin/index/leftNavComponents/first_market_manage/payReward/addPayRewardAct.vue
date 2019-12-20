@@ -588,7 +588,7 @@
       @BusClassTrueArr="getBusinessnPlatformSortData"
     />
 
-    <!-- 活动配置 - 添加普通优惠卷 -->
+    <!-- 活动配置 - 添加普通优惠券 -->
     <AddCouponDialog
       @handleToCheck="addCouponHandle"
       :tuneUpCoupon="addCouponVisible"
@@ -596,7 +596,7 @@
       :type=0
     />
 
-    <!--活动配置 - 添加分裂优惠卷-->
+    <!--活动配置 - 添加分裂优惠券-->
     <AddCouponDialog
       @handleToCheck="addDisCouponHandle"
       :tuneUpCoupon="showCouponDialog2"

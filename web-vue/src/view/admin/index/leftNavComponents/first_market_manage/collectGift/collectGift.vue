@@ -214,7 +214,7 @@
         :imageSize="[150,150]"
         @handleSelectImg='imgDialogSelectedCallback'
       />
-      <!--添加优惠卷弹窗-->
+      <!--添加优惠券弹窗-->
       <addCouponDialog
         @checkReturnFormat="handleToCheck"
         :tuneUpCoupon="showCouponDialog"
@@ -306,7 +306,7 @@ export default {
       // 复选框
       score: '',
       scoreTemp: '',
-      // 优惠卷弹窗
+      // 优惠券弹窗
       couponDialogFlag: false,
       couponData: [],
       couponId: '',
@@ -423,7 +423,7 @@ export default {
         }
       })
     },
-    // 优惠卷回调
+    // 优惠券回调
     handleToCheck (data) {
       console.log('coupon', data)
       let couponKey = []
