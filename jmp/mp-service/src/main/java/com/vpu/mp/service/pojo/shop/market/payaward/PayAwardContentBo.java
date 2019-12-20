@@ -1,11 +1,13 @@
 package com.vpu.mp.service.pojo.shop.market.payaward;
 
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -18,7 +20,11 @@ import java.util.List;
 @Setter
 @ToString
 public class PayAwardContentBo {
-
+    /**
+     * id
+     */
+    @NotNull(groups = UpdateGroup.class)
+    private Integer id;
     /**
      * 奖励类型
      */
@@ -35,7 +41,7 @@ public class PayAwardContentBo {
     /**
      * 优惠卷ids
      */
-    private List<Integer> couponIds;
+    private String couponIds;
     /**
      * 积分
      */
@@ -76,7 +82,7 @@ public class PayAwardContentBo {
     /**
      * 发送份数
      */
-    private Integer sendNumber=0;
+    private Integer sendNum=0;
 
 
 }

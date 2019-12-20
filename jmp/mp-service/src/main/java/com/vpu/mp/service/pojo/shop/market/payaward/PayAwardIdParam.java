@@ -1,8 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.payaward;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author 孔德成
@@ -11,5 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PayAwardIdParam {
+    @NotNull
     private Integer    id;
 }

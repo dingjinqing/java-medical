@@ -1379,7 +1379,31 @@ create table `b2c_distribution_tag`
 ALTER TABLE `b2c_mrking_voucher` DROP COLUMN `recommend_type`;
 
 -- 黄壮壮 添加字段
-ALTER TABLE `b2c_user_account` 
+ALTER TABLE `b2c_user_account`
 ADD COLUMN `withdraw_status` tinyint(1) DEFAULT 0 COMMENT '0未提现或部分统计1已统计' AFTER `source`;
 
 alter table `b2c_goods` add column `is_default_product` tinyint(1)  not null default 1 comment '1默认规格，0自定义规格（多规格）',drop column `add_sale_num`;
+
+
+-- 支付有礼的奖品表 孔德成
+-- drop table if exists `b2c_pay_award_prize`;
+CREATE TABLE `b2c_pay_award_prize`
+(
+    `id`           int(9)         NOT NULL auto_increment,
+    `pay_award_id` int(9)         NOT NULL DEFAULT '0' COMMENT '支付有礼活动id',
+    `gift_type`    tinyint(1)     NOT NULL DEFAULT '0' COMMENT '奖品类型',
+    `coupon_ids`   varchar(255)   NOT NULL DEFAULT '' COMMENT '优惠卷',
+    `score_number` int(11)        NOT NULL DEFAULT '0' COMMENT '积分',
+    `account`      decimal(10, 2) NOT NULL DEFAULT '0.00' COMMENT '账户金额',
+    `lottery_id`   int(11)        NOT NULL DEFAULT '0' COMMENT '抽奖活动id',
+    `product_id`   int(11)        NOT NULL DEFAULT '0' COMMENT '规格id',
+    `keep_days`    int(9)         NOT NULL DEFAULT '0' COMMENT '赠品有效期',
+    `custom_image` varchar(255)   NOT NULL DEFAULT '' COMMENT '自定义图片',
+    `custom_link`  varchar(255)   NOT NULL DEFAULT '' COMMENT '自定义链接',
+    `award_number` int(11)        NOT NULL DEFAULT '0' COMMENT '奖品数量',
+    `send_num`     int(11)        NOT NULL DEFAULT '0' comment '已经发送数量',
+    PRIMARY KEY (`id`)
+);
+
+
+
