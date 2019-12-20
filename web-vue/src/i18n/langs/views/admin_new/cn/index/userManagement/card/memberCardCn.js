@@ -140,7 +140,7 @@ export const cn = {
   scoreBuy: '积分购买',
   unitM: '分',
   receiveCodeSetting: '领取码领取',
-  batchOne: '批次1',
+  batchOne: '批次',
   batchName: '批次名称',
   cardPassAndNo: '卡号+密码领取',
   isActiveted: '是否需要激活：',

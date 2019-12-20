@@ -15,6 +15,7 @@
           <scoreDiscount
             :val="disCountData"
             @input="initDiscountData"
+            ref="disCountData"
           ></scoreDiscount>
           <ownGoods
             :val="ownGoodsData"
@@ -23,18 +24,22 @@
           <cardScoreCfg
             :val="cardScoreCfgData"
             @input="initCardScoreCfgData"
+            ref="cardScoreCfgData"
           ></cardScoreCfg>
           <cardChargeCfg
             :val="cardChargeCfgData"
             @input="initCardChargeCfgData"
+            ref="cardChargeCfgData"
           ></cardChargeCfg>
           <cardCouponCfg
             :val="cardCouponCfgData"
             @input="initCardCouponCfgData"
+            ref="cardCouponCfgData"
           ></cardCouponCfg>
           <cardEffectTime
             :val="cardEffectTime"
             @input="initCardEffectTimeData"
+            ref="cardEffectTime"
           ></cardEffectTime>
           <cardStoreCfg
             :val="cardStoreCfgData"
@@ -50,6 +55,7 @@
           <cardReceiveCfg
             :val="cardReceiveCfgData"
             @input="initCardReceiveCfgData"
+            ref="cardReceiveCfgData"
           ></cardReceiveCfg>
           <cardActiveCfg
             :val="cardActiveCfgData"
@@ -126,7 +132,8 @@ export default {
           leftInput: 10,
           rightInput: 20
         }
-      ]
+      ],
+      valid: false
     }
     let cardChargeCfgDataTmp = {
       powerCard: true,
@@ -138,13 +145,15 @@ export default {
       chargeInputRightM: 100,
       addChargeArr: [],
       money: [],
-      getMoney: []
+      getMoney: [],
+      valid: false
     }
     let cardEffectTimeTmp = {
       expiredType: '0',
       fixedDate: null,
       receiveDay: '',
-      dateType: '0'
+      dateType: '0',
+      valid: false
     }
     let cardStoreCfgDataTmp = {
       storeListType: '0',
@@ -156,14 +165,14 @@ export default {
       ]
     }
     let cardUsageCfgDataTmp = {
-      desc: 'hahaha',
-      mobile: '1234'
+      desc: null,
+      mobile: null
     }
     return {
       cardId: null,
       cardType: null,
       cardNameAndBg: {
-        cardName: '来自主页',
+        cardName: null,
         bgType: '0',
         bgColor: '',
         bgImg: '',
@@ -176,7 +185,8 @@ export default {
         choosedGoodsId: [],
         choosedStoreId: [],
         choosedPlatformId: [],
-        choosedBrandId: []
+        choosedBrandId: [],
+        valid: false
       },
       ownGoodsData: {
         powerOwnGoods: false,
@@ -190,22 +200,24 @@ export default {
       cardCouponCfgData: {
         powerCoupon: true,
         couponType: '1',
-        couponIdList: []
+        couponIdList: [],
+        valid: false
       },
       cardEffectTime: cardEffectTimeTmp,
       cardStoreCfgData: cardStoreCfgDataTmp,
       cardUsageCfgData: cardUsageCfgDataTmp,
       cardReceiveCfgData: {
         cardType: 0,
-        isPay: '2',
+        isPay: '0',
         payType: '0',
         payMoney: '',
         payScore: '',
-        receiveAction: '0',
+        receiveAction: '1',
         stock: 0,
         limits: 0,
         codeAddDivArr: [{ batchName: null, batchId: null }],
-        codeAddDivArrBottom: [{ pwdName: null, pwdId: null }]
+        codeAddDivArrBottom: [{ pwdName: null, pwdId: null }],
+        valid: false
       },
       cardActiveCfgData: {
         activation: '1',
@@ -438,8 +450,28 @@ export default {
     handleToSave () {
       console.log('保存')
       // 检验通过
-      // 保存数据
-      this.prepareCardData()
+      this.$refs.cardNameAndBg.$emit('checkRule')
+      this.$refs.disCountData.$emit('checkRule')
+      this.$refs.cardScoreCfgData.$emit('checkRule')
+      this.$refs.cardChargeCfgData.$emit('checkRule')
+      this.$refs.cardCouponCfgData.$emit('checkRule')
+      this.$refs.cardEffectTime.$emit('checkRule')
+      this.$refs.cardReceiveCfgData.$emit('checkRule')
+      // 至少选择一项会员权益
+      if (this.disCountData.powerDiscount || this.ownGoodsData.powerOwnGoods ||
+            this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
+        // 检验都通过
+        if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&
+            this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid && this.cardReceiveCfgData.valid) {
+          this.$message.success('成功')
+        // 保存数据
+        // this.prepareCardData()
+        } else {
+          this.$message.error('失败')
+        }
+      } else {
+        this.$message.warning('至少选择一项会员权益')
+      }
     },
     prepareCardData () {
       this.dealWithDynamicArrayData()

@@ -27,7 +27,7 @@
             label="2"
           >{{ $t('memberCard.needReceiveCode') }}</el-radio>
         </div>
-        <div class="receive-bottom">
+        <div class="receive-bottom"  v-if="ruleForm.isPay!=='0'">
           <div
             v-if="ruleForm.isPay==='1'"
             class="receive-buy"
@@ -91,7 +91,7 @@
                   :key="index"
                 >
                   <div>
-                    <span>{{ $t('memberCard.batchOne') }}</span>
+                    <span>{{ $t('memberCard.batchOne') }} {{index+1}}</span>
                     <span>{{ $t('memberCard.batchName') }}</span>
                     <el-input
                       v-model="item.batchName"
@@ -120,7 +120,7 @@
                   :key="index"
                 >
                   <div>
-                    <span>{{ $t('memberCard.batchOne') }}</span>
+                    <span>{{ $t('memberCard.batchOne') }} {{index+1}} </span>
                     <span>{{ $t('memberCard.batchName') }}</span>
                     <el-input
                       v-model="item.pwdName"
@@ -182,10 +182,20 @@
 
       </el-form-item>
     </el-form>
+    <!--领取码弹窗-->
+    <ReceivingCodeDialog
+      :dialogVisible.sync="receiveCodeDialogVisible"
+      :batchName="currentBatchName"
+      :batchId="currentBatchId"
+      @generateReceiveCodeId="dealWithReceiveCodeId"
+    />
   </div>
 </template>
 <script>
 export default {
+  components: {
+    ReceivingCodeDialog: () => import('../receivingCodeDialog')
+  },
   props: {
     val: {
       type: Object,
@@ -244,6 +254,9 @@ export default {
   },
   data () {
     return {
+      receiveCodeDialogVisible: false,
+      currentBatchName: null,
+      currentBatchId: null,
       codeArr: null,
       payScoreError: false,
       payMoneyError: false
@@ -307,7 +320,43 @@ export default {
   },
   methods: {
     handleCallCodeDialog (index, codeIndex) {
+      // 领取码
+      switch (codeIndex) {
+        case 0:
+          // 领取码
+          this.showReceiveCodeDiaglog(index)
+          break
+        case 1:
+          // 添加批次
+          this.addBatchItem()
+          break
+        case 2:
+          // 删除批次
+          this.deleteBatchItem(index)
+          break
+      }
+    },
 
+    showReceiveCodeDiaglog (index) {
+      if (!this.ruleForm.codeAddDivArr[index].batchName) {
+        this.$message.warning('请填写批次名称')
+        return
+      }
+      this.receiveCodeDialogVisible = true
+      this.currentBatchName = this.ruleForm.codeAddDivArr[index].batchName
+      this.currentBatchId = this.ruleForm.codeAddDivArr[index].batchId
+    },
+    // 添加批次
+    addBatchItem () {
+      this.ruleForm.codeAddDivArr.push({ batchName: null, batchId: null })
+    },
+    // 删除批次
+    deleteBatchItem (index) {
+      if (this.ruleForm.codeAddDivArr.length === 1) {
+        this.$message.warning('最少保留一个批次')
+      } else {
+        this.ruleForm.codeAddDivArr.splice(index, 1)
+      }
     },
     changeCheckStock () {
       if (typeof this.ruleForm.stock === 'undefined') {
@@ -320,6 +369,9 @@ export default {
         this.val.limits = 0
         this.ruleForm = this.val
       }
+    },
+    dealWithReceiveCodeId () {
+
     }
   }
 }
