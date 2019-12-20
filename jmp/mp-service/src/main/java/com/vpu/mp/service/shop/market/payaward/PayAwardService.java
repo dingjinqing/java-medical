@@ -359,6 +359,7 @@ public class PayAwardService extends ShopBaseService {
 
         PayAwardPrizeRecord payAwardPrizeRecord = payAwardPrizeRecords.get(payAwardRecord.getAwardTimes());
         PayAwardPrizeVo prizeVo =new PayAwardPrizeVo();
+        prizeVo.setGiftType(payAwardPrizeRecord.getGiftType());
         switch (payAwardPrizeRecord.getGiftType()){
             case 0:
                 logger().info("无奖励");
@@ -367,7 +368,9 @@ public class PayAwardService extends ShopBaseService {
                 logger().info("优惠卷");
                 //已发的优惠卷
                 List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringToList(payAwardRecord.getSendData()));
-                prizeVo.setCouponView(couponViews);
+                if (couponViews.size()>0){
+                    prizeVo.setCouponView(couponViews);
+                }
                 break;
             case 2:
                 break;

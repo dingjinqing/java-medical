@@ -13,6 +13,12 @@ import java.util.List;
 @Getter
 @Setter
 public class PayAwardPrizeVo {
-
+    /**
+     * 奖励类型
+     */
+    private Byte giftType;
+    /**
+     * 优惠卷
+     */
     private List<CouponView> couponView;
 }
