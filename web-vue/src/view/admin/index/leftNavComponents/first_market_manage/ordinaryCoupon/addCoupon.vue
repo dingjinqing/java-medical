@@ -547,7 +547,7 @@ export default {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog')
   },
-  data() {
+  data () {
     // 自定义校验有效期
     var validateTime = (rule, value, callback) => {
       var re = /^(0|\+?[1-9][0-9]*)$/
@@ -745,7 +745,7 @@ export default {
       commInfo: []
     }
   },
-  mounted() {
+  mounted () {
     this.couponId = this.$route.query.id
 
     this.dataDefalut()
@@ -756,7 +756,7 @@ export default {
     this.noneBlockDiscArr = this.$t('ordinaryCoupon.noneBlockDiscArr')
   },
   methods: {
-    dataDefalut() {
+    dataDefalut () {
       this.$http.$on('result', res => {
         this.param.recommendGoodsId = res.join()
         this.noneBlockDiscArr[0].num = res.length
@@ -779,7 +779,7 @@ export default {
     },
 
     // 编辑回显
-    getOneInfo() {
+    getOneInfo () {
       updateCoupon(this.couponId).then(res => {
         if (res.error === 0) {
           console.log(res.content[0])
@@ -871,7 +871,7 @@ export default {
     },
 
     // 保存优惠券
-    saveCoupon() {
+    saveCoupon () {
       this.$refs['param'].validate((valid) => {
         if (valid) {
           // 面额/折
@@ -941,7 +941,7 @@ export default {
     },
 
     // 点击指定商品出现的添加类弹窗汇总
-    hanldeToAddGoodS(index) {
+    hanldeToAddGoodS (index) {
       console.log(index)
       switch (index) {
         case 0:
@@ -963,7 +963,7 @@ export default {
     },
 
     // 选择商品弹窗回调显示
-    choosingGoodsResult(row) {
+    choosingGoodsResult (row) {
       this.goodsInfoRow = row
       this.goodsInfo = []
       this.goodsInfoRow.map((item, index) => {
@@ -972,7 +972,7 @@ export default {
     },
 
     // 选择商家分类/平台分类弹窗回调显示
-    busClassDialogResult(row) {
+    busClassDialogResult (row) {
       if (this.flag === 1) {
         // 商家分类
         this.busClassRow = row
@@ -991,34 +991,34 @@ export default {
     },
 
     // 切换触发校验
-    validityTypeChange(e) {
+    validityTypeChange (e) {
       this.$refs['param'].validateField('validityType')
     },
-    limitSurplusFlagChange(e) {
+    limitSurplusFlagChange (e) {
       this.$refs['param'].validateField('limitSurplusFlag')
     },
-    preferentialTypeChange(e) {
+    preferentialTypeChange (e) {
       this.$refs['param'].validateField('preferentialType')
     },
-    useScoreChange(e) {
+    useScoreChange (e) {
       this.$refs['param'].validateField('useScore')
     },
-    useConsumeRestrictChange(e) {
+    useConsumeRestrictChange (e) {
       this.$refs['param'].validateField('useConsumeRestrict')
     },
-    suitGoodsChange(e) {
+    suitGoodsChange (e) {
       this.$refs['param'].validateField('suitGoods')
     }
   },
   computed: {
-    coupon_date_info() {
+    coupon_date_info () {
       if (this.param.validity || this.param.validityHour || this.param.validityMinute) {
         return `领券日开始${this.param.validity ? this.param.validity + '天' : ''}${this.param.validityHour ? this.param.validityHour + '时' : ''}${this.param.validityMinute ? this.param.validityMinute + '分' : ''}内有效`
       } else {
         return `领券日开始X天X时X分内有效`
       }
     },
-    coupon_date_datetimerange() {
+    coupon_date_datetimerange () {
       if (this.param.couponDate) {
         let dateStr = ''
         this.param.couponDate.map(item => {
@@ -1036,7 +1036,7 @@ export default {
         return `xxxx-xx-xx xx:xx:xx xxxx-xx-xx xx:xx:xx`
       }
     },
-    crlfFormat() {
+    crlfFormat () {
       return this.param.useExplain.replace(/\n/g, '<br />')
     }
   }
