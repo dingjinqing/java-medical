@@ -23,7 +23,8 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     is_block: 0,
-    page_style: 1
+    page_style: 1,
+    audit_state: 0 // 店铺审核状态
   },
   /**
    * 生命周期函数--监听页面加载
@@ -79,6 +80,13 @@ global.wxPage({
         that.setData({
           user_center: user_center,
           page_style: page_style
+        })
+      }
+    }, {})
+    util.api('/api/wxapp/auditState', function (res) {
+      if (res.error == 0) {
+        that.setData({
+          audit_state: res.content
         })
       }
     }, {})

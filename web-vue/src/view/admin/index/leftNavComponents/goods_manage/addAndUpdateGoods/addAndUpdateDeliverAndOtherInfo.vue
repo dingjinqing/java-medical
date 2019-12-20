@@ -102,6 +102,7 @@
         <el-input
           ref="deliverPlaceInput"
           v-model="goodsProductInfo.deliverPlace"
+          maxlength="15"
           size="small"
           style="width:170px;"
         />
@@ -202,7 +203,7 @@
 import { getExclusiveCardList } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 import { deliverTemplateNameListApi, getDeliverTemplateApi, getDeliverTemplateConfigApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 // js工具函数导入
-import { isStrBlank, isNumberBlank } from '@/util/typeUtil'
+import { isNumberBlank } from '@/util/typeUtil'
 import { format, parseDate } from '@/util/date'
 export default {
   data () {
@@ -490,12 +491,6 @@ export default {
     },
     /* 验证数据是否全部合法 */
     validateFormData () {
-      if (!isStrBlank(this.goodsProductInfo.deliverPlace) && this.goodsProductInfo.deliverPlace.length > 15) {
-        this.$message.warning({ message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.deliverPlaceTip'), type: 'warning' })
-        this.$refs.deliverPlaceInput.focus()
-        return false
-      }
-
       if (this.goodsProductInfo.saleType === 1) {
         if (this.goodsProductInfo.saleTime === null) {
           this.$message.warning({ message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeNotNll'), type: 'warning' })

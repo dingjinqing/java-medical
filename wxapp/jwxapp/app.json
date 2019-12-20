@@ -71,7 +71,8 @@
         "groupbuyinfo/groupbuyinfo",
         "returnorder/returnorder",
         "returndetail/returndetail",
-        "returnorderlist/returnorderlist"
+        "returnorderlist/returnorderlist",
+        "payment/payment"
       ]
     }
   ],

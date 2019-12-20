@@ -169,7 +169,7 @@ public class WxAppAccountController extends WxAppBaseController {
 	 */
 	@PostMapping("/api/wxapp/auditState")
 	public JsonResult getAppAduitInfo() {
-		logger().info("获取用户手机号的解密");
+		logger().info("获取小程序审核状态");
 		Integer shopId = wxAppAuth.shopId();
 		Boolean authOk = saas.shop.mp.isAuthOk(shopId);
 		if (!authOk) {

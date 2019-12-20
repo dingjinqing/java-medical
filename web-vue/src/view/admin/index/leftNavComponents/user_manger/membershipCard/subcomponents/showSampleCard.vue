@@ -57,7 +57,6 @@
           v-if="index===0"
         >
           <div
-            v-if="cardUsageCfgData.mobile"
             class="s-power-title"
             v-bind:style="getMiniLog(item)"
           >
@@ -82,7 +81,6 @@
         </div>
         <div v-if="index===1 && cardScoreCfgData">
           <div
-            v-if="cardUsageCfgData.mobile"
             class="s-power-title"
             v-bind:style="getMiniLog(item)"
           >
@@ -120,7 +118,7 @@
 
         <div v-if="index===2 && cardChargeCfgData">
           <div
-            v-if="cardUsageCfgData.mobile"
+            v-if="cardChargeCfgData.powerCard"
             class="s-power-title"
             v-bind:style="getMiniLog(item)"
           >

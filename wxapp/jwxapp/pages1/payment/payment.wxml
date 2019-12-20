@@ -1,0 +1,20 @@
+<view class="body">
+  <include src="../../pages/common/header.wxml" />
+  <view class="main-container">
+    <view class="pay-info">
+      <image src="{{imageUrl}}/image/wxapp/icon_payment.png"></image>
+      <view>
+        <text>微信支付：<text style="color:{{comColor}}">￥699.00</text></text>
+        <text>余额支付：<text style="color:{{comColor}}">￥699.00</text></text>
+        <text>积分支付：<text style="color:{{comColor}}">￥699.00</text></text>
+        <text>会员卡余额支付：<text style="color:{{comColor}}">￥699.00</text></text>
+      </view>
+    </view>
+    <view class="button-info">
+      <view style="background-color:{{comColor}};color:#fff">查看订单</view>
+      <view>返回首页</view>
+    </view>
+    <v-recommend />
+  </view>
+  <include src="../../pages/common/footer.wxml" />
+</view>
