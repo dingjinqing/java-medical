@@ -465,5 +465,20 @@ global.wxPage({
         }, false);
       }
     }, { cardId: that.data.cardInfo.cardId, code: card_code, cardNo: card_num, cardPwd: card_pwd })
+  },
+  // 点击使用门店
+  toStoreList () {
+    console.log(card_info)
+    if (card_info.store_name) {
+      util.jumpLink('/pages/storelist/storelist?card_id=' + card_info.card_id)
+    } else {
+      util.jumpLink('/pages/storelist/storelist')
+    }
+  },
+  // 点击使用记录
+  toCardRecord (e) {
+    util.navigateTo({
+      url: '/pages/usercardrecord/usercardrecord?card_no=' + e.currentTarget.dataset.card_no,
+    })
   }
 })
