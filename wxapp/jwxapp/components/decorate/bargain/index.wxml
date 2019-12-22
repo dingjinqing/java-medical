@@ -2,7 +2,7 @@
 	<view class='all_zero_bargain clearfix'>
 		<view
 		 class='each_bargain'
-		 data-link="pages/bargainitem/bargainitem?bargain_id={{item.act_id}}"
+		 data-link="pages/bargaininfo/bargaininfo?bargain_id={{item.act_id}}"
 		 catchtap="bindToBargain"
 		 data-is_prd='{{item.is_prd}}'
 		 data-idx="{{m.cur_idx}}"
@@ -18,6 +18,7 @@
 		 data-act_status="{{item.act_status}}"
 		 data-is_delete='{{item.goods_is_delete}}'
 		 data-time_state="{{item.time_state}}"
+		 data-goods_number="{{item.goods_number}}"
 		 style="{{m.list_style==1?'width:100%;display:flex;height:auto':''}}"
 		>
 			<view class='each_img' style="{{m.list_style==1?'width:260rpx;height:260rpx;margin-right:30rpx':''}}">

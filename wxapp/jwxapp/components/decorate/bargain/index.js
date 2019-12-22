@@ -33,7 +33,8 @@ global.wxComponent({
     bindToBargain (e) {
       var d = this.eventData(e);
       var _this = this;
-      if (d.goods_is_delete == 1) {
+      console.log(d)
+      if (d.is_delete == 1) {
         util.showModal('提示', '商品已删除');
       } else if (d.is_on_sale == 0 || d.goods_number <= 0) {
         util.showModal('提示', '商品已下架');
@@ -41,11 +42,13 @@ global.wxComponent({
         this.navigateToItem(d.goods_id);
       } else {
         if (d.is_prd == 1) {
+          console.log(d.link)
           util.jumpLink(d.link);
         } else if (d.is_prd == 0) {
           var choose_list = util.values(d, ['bargain_id', 'goods_id', 'goods_price', 'prd_id']);
           choose_list.user_id = util.getCache('user_id');
           util.api("/api/wxapp/bargain/apply", function (res) {
+            console.log(res)
             if (res.error == 0) {
               var data = res.content;
               var url = "/pages/bargaininfo/bargaininfo?record_id=" + data.record_id + "&bargain_money=" + data.bargain_money;
