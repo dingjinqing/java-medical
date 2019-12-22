@@ -463,11 +463,11 @@ export default {
         // 检验都通过
         if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&
             this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid && this.cardReceiveCfgData.valid) {
-          this.$message.success('成功')
+          // this.$message.success('成功')
         // 保存数据
-        // this.prepareCardData()
+          this.prepareCardData()
         } else {
-          this.$message.error('失败')
+          this.$message.error('保存失败')
         }
       } else {
         this.$message.warning('至少选择一项会员权益')

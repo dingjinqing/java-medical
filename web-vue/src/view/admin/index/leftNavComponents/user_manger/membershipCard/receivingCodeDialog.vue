@@ -1,10 +1,18 @@
 <template>
   <div class="addBrandDialog">
     <div class="addBrandDialogMain">
+      <el-form
+        :model="ruleForm"
+        status-icon
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+      >
       <el-dialog
         title="领取码"
         :visible.sync="dialogVisible"
         width="30%"
+        v-if="receiveAction===1"
       >
         <div class="top">
           <el-radio
@@ -92,6 +100,116 @@
           >确 定</el-button>
         </span>
       </el-dialog>
+
+      <!-- 卡号+密码 -->
+      <el-dialog
+        title="卡号+密码"
+        :visible.sync="dialogVisible"
+        width="30%"
+        v-if="receiveAction===2"
+      >
+
+        <div class="top">
+          <el-radio
+            v-model="action"
+            label="1"
+          >自动生成卡号+密码</el-radio>
+          <span style="margin-left: 20px;"> 将随机生成xxx组不重复卡号+密码，均由数字+字母组成</span>
+        </div>
+        <div v-if="action === '1'" style="margin-left: -100px;">
+          <el-form-item class="contentList">
+            <span style="color:#333">卡号前缀:</span>
+            <el-input
+              size="small"
+              v-model="ruleForm.codePrefix"
+              maxlength="4"
+            ></el-input>
+              <span>0-4个数字或字母</span>
+          </el-form-item>
+          <el-form-item class="contentList" prop="codeSize">
+            <div class="contentList">
+              <span style="color:#333">卡号位数:</span>
+              <el-input
+                size="small"
+                v-model="ruleForm.codeSize"
+              ></el-input>
+              <span>卡号组成位数，限制6-12位</span>
+            </div>
+          </el-form-item>
+          <el-form-item class="contentList" prop="cardPwdSize">
+            <div class="contentList">
+              <span style="color:#333">密码位数:</span>
+              <el-input
+                size="small"
+                v-model="ruleForm.cardPwdSize"
+              ></el-input>
+              <span>密码组成位数</span>
+            </div>
+          </el-form-item>
+          <el-form-item class="contentList">
+            <div
+              class="contentList"
+            >
+              <span style="color:#333">领取数量:</span>
+              <el-input
+                size="small"
+                v-model="ruleForm.number"
+              ></el-input>
+            </div>
+          </el-form-item>
+        </div>
+        <div class="top footer">
+          <el-radio
+            v-model="action"
+            label="2"
+          >导入卡号+密码</el-radio>
+          <span>需导入已有卡号+密码</span>
+        </div>
+        <div
+          class="bottomHidden"
+          v-if="action === '2'"
+        >
+          <div>
+            <span>第一步:</span>
+            <span><a href="http://mpdev.weipubao.cn/doc/会员卡号+密码模板.xls">下载导入模板</a></span>
+          </div>
+          <div>
+            <span>第二步:</span>
+            <span>导入卡号+密码</span>
+          </div>
+          <div class="handleToUpload">
+            <span>上传文件：</span>
+            <div class="pathClass">
+              {{fileName}}
+            </div>
+            <el-upload
+              class="upload-demo"
+              action=""
+              :limit="1"
+              :before-upload="beforeUpload"
+              :show-file-list='false'
+            >
+              <el-button
+                size="small"
+                type="primary"
+              >点击上传</el-button>
+
+            </el-upload>
+          </div>
+
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="$emit('update:dialogVisible', false)">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="handleSure"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+      </el-form>
     </div>
 
   </div>
@@ -111,16 +229,56 @@ export default {
     batchId: {
       type: Number,
       default: () => null
+    },
+    receiveAction: {
+      type: Number,
+      default: () => 2
     }
   },
   data () {
+    let validateCodeSize = (rule, value, callback) => {
+      if (value > 5 && value < 13) {
+        callback()
+      } else {
+        callback(new Error('请入正确的位数'))
+      }
+    }
+
+    let validateCardPwdSize = (rule, value, callback) => {
+      if (this.receiveAction === 2) {
+        if (Number(value) > 0) {
+          callback()
+        } else if (value === null || value === undefined) {
+          callback(new Error('请入正确的位数'))
+        } else {
+          callback(new Error('请入正确的位数'))
+        }
+      }
+    }
+
     return {
       action: '1',
       codePrefix: '',
       codeSize: '',
       number: '',
       fileList: [],
-      fileName: ''
+      fileName: '',
+      ruleForm: {
+        action: '1',
+        codePrefix: '',
+        codeSize: '',
+        number: '',
+        fileList: [],
+        fileName: ''
+      },
+      rules: {
+        codeSize: [
+          { validator: validateCodeSize, trigger: 'blur' }
+        ],
+        cardPwdSize: [
+          { validator: validateCardPwdSize, trigger: 'blur' }
+        ]
+      }
     }
   },
   watch: {
@@ -171,7 +329,9 @@ export default {
       return false
     },
     handleSure () {
+      // check input
       let data = {
+        receiveAction: this.receiveAction,
         action: this.action,
         batchName: this.batchName,
         codePrefix: this.codePrefix,
@@ -182,7 +342,6 @@ export default {
       console.log(data)
       this.generateReceiveBatch(data)
     },
-
     generateReceiveBatch (data) {
       createReceiveBatchRequest(data).then(res => {
         console.log(res)
@@ -214,10 +373,15 @@ export default {
       margin-left: -20px;
     }
   }
+  /deep/ .el-form-item {
+      margin-bottom: 0px;
+    }
+
   .contentList {
     margin-top: 10px;
     display: flex;
     align-items: center;
+
     /deep/ .el-input {
       width: 143px;
       margin: 0 10px;
