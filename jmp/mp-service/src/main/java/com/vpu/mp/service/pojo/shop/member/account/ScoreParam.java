@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.account;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,10 @@ import lombok.Data;
  */
 @Data
 public class ScoreParam {
+	/** 备注Id */
+	private Integer remarkId;
+	/** 备注数据 */
+	private List<String> remarkData;
 	/** -备注 */
 	private String remark;
 	/** -描述 */

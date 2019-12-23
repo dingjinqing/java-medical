@@ -43,7 +43,11 @@ public class RecordContentMessage {
     public static final String MSG_MEMBER_CARD_SEND = "member.content.card.send";
     /** 会员余额更新变动 */
     public static final String MSG_MEMBER_ACCOUNT = "member.content.account";
-
+    /** 会员积分更新变动*/
+    public static final String MSG_MEMBER_SCORE = "member.content.score";
+    
+    
+    
     /**
      * 	营销
      */
