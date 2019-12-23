@@ -50,9 +50,7 @@ var activity_goods = {
       for (var i in goods) {
         var g = goods[i];
         var time = g.act_begin_time || g.start_time;
-        console.log(time)
         g.format_begin_time = time.substr(5, 2) + "月" + time.substr(8, 2) + "日" + time.substr(11);
-        console.log(g)
       }
     },
     /**
