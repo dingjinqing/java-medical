@@ -544,8 +544,9 @@ public class CouponGiveService extends ShopBaseService {
    *
    * @param param 用户和优惠券信息
    */
-  public List<Integer> handlerCouponGive(CouponGiveQueueParam param) {
-    List<Integer> successList = new ArrayList<>();
+  public CouponGiveQueueBo handlerCouponGive(CouponGiveQueueParam param) {
+    CouponGiveQueueBo couponGiveBo =new CouponGiveQueueBo();
+    Integer successNum =0;
     // 插入user-coupon关联表
     for (String couponId : param.getCouponArray()) {
       // 得当当前优惠券信息
@@ -582,7 +583,7 @@ public class CouponGiveService extends ShopBaseService {
       if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
           && couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
         logger().info("所选优惠券库存不足");
-        break;
+        continue;
       }
       // 发券入库
       for (Integer userId : param.getUserIds()) {
@@ -594,35 +595,22 @@ public class CouponGiveService extends ShopBaseService {
         }
         // 库存足够，发券
         else {
-          Integer rows =
-              db().insertInto(
-                      CUSTOMER_AVAIL_COUPONS,
-                      CUSTOMER_AVAIL_COUPONS.TYPE,
-                      CUSTOMER_AVAIL_COUPONS.ACT_ID,
-                      CUSTOMER_AVAIL_COUPONS.USER_ID,
-                      CUSTOMER_AVAIL_COUPONS.ACT_DESC,
-                      CUSTOMER_AVAIL_COUPONS.AMOUNT,
-                      CUSTOMER_AVAIL_COUPONS.COUPON_SN,
-                      CUSTOMER_AVAIL_COUPONS.ACCESS_ID,
-                      CUSTOMER_AVAIL_COUPONS.START_TIME,
-                      CUSTOMER_AVAIL_COUPONS.END_TIME,
-                      CUSTOMER_AVAIL_COUPONS.ACCESS_MODE,
-                      CUSTOMER_AVAIL_COUPONS.GET_SOURCE)
-                  .values(
-                      type,
-                      Integer.valueOf(couponId),
-                      userId,
-                      couponDetails.getActName(),
-                      couponDetails.getDenomination(),
-                      getCouponSn(),
-                      param.getActId(),
-                      timeMap.get("startTime"),
-                      timeMap.get("endTime"),
-                      param.getAccessMode(),
-                      param.getGetSource())
-                  .execute();
+          CustomerAvailCouponsRecord customerAvailCouponsRecord = db().newRecord(CUSTOMER_AVAIL_COUPONS);
+          customerAvailCouponsRecord.setType(type);
+          customerAvailCouponsRecord.setActId(Integer.valueOf(couponId));
+          customerAvailCouponsRecord.setUserId(userId);
+          customerAvailCouponsRecord.setActDesc(couponDetails.getActName());
+          customerAvailCouponsRecord.setAmount( couponDetails.getDenomination());
+          customerAvailCouponsRecord.setCouponSn(getCouponSn());
+          customerAvailCouponsRecord.setAccessId(param.getActId());
+          customerAvailCouponsRecord.setStartTime(timeMap.get("startTime"));
+          customerAvailCouponsRecord.setEndTime( timeMap.get("endTime"));
+          customerAvailCouponsRecord.setAccessMode(param.getAccessMode());
+          customerAvailCouponsRecord.setGetSource(param.getGetSource());
+          customerAvailCouponsRecord.insert();
           // 得到成功条数
-          successList.add(rows);
+          successNum++;
+          couponGiveBo.getCouponSet().add(Integer.valueOf(couponId));
           // 如果是限制库存类型且库存不为0 则优惠券库存-1
           if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
               && !couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
@@ -638,7 +626,8 @@ public class CouponGiveService extends ShopBaseService {
     }
     //更新优惠券表发放/领取数量
     couponService.updateCouponGiveOrReceiveNum(param.getAccessMode(),param.getCouponArray());
-    return successList;
+    couponGiveBo.setSuccessSize(successNum);
+    return couponGiveBo;
   }
 
   /**
@@ -827,7 +816,7 @@ public class CouponGiveService extends ShopBaseService {
     db().executeInsert(couponsRecord);
     return couponSn;
   }
-  
+
   public void sendVoucher(Integer userId,List<Integer> couponIds,Integer giveId,Integer source,Byte isContinue) {
 	  for(Integer id: couponIds) {
 		  // TODO 批量发放优惠券给会员

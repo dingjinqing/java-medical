@@ -420,7 +420,7 @@
         :showTips="true"
       />
 
-      <!--添加优惠卷-->
+      <!--添加优惠券-->
       <addCouponDialog
         @handleToCheck="handleToCheck"
         :tuneUpCoupon="showCouponDialog"
@@ -530,7 +530,7 @@ export default {
       // 选中商品id
       goodsRow: {},
       goodsIds: [],
-      // 优惠卷弹窗
+      // 优惠券弹窗
       couponDialogFlag: false,
       couponList: [],
 

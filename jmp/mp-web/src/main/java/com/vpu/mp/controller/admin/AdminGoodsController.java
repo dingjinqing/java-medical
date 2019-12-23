@@ -296,8 +296,9 @@ public class AdminGoodsController extends AdminBaseController {
             return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
         }
 
-        //判断商品的规格属性的prdDesc和传入的规格键值是否能对应上
-        JsonResult result = isGoodsSpecProductDescRight(goods.getGoodsSpecProducts(), goods.getGoodsSpecs());
+        JsonResult result = success();
+            //判断商品的规格属性的prdDesc和传入的规格键值是否能对应上
+//        result = isGoodsSpecProductDescRight(goods.getGoodsSpecProducts(), goods.getGoodsSpecs());
         //传入的规格属性的prdDesc存在错误
         if (result.getError() != 0) {
             return result;

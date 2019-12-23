@@ -354,12 +354,10 @@ global.wxPage({
       couponSn,
       memberCardNo
     }
-    console.log(params)
     util.api('/api/wxapp/order/submit',res=>{
       if(res.error === 0){
+        let {orderSn} = res.content 
         if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo && paymentList.wxpay){
-          let {orderSn} = res.content 
-          console.log(res.content.webPayVo.appId, res.content.webPayVo.timeStamp, res.content.webPayVo.nonceStr, res.content.webPayVo.package, res.content.webPayVo.paySign)
           wx.requestPayment({
             'timeStamp': res.content.webPayVo.timeStamp,
             'nonceStr': res.content.webPayVo.nonceStr,
@@ -368,7 +366,7 @@ global.wxPage({
             'paySign': res.content.webPayVo.paySign,
             'success': function (res) {
               util.toast_success('支付成功');
-              util.jumpLink('pages/orderlist/orderlist', 'redirectTo')
+              util.jumpLink(`pages/payment/payment${this.getUrlParams({orderSn,useInfo:JSON.stringify({...this.data.usePayInfo})})}`, 'redirectTo')
             },
             'fail': function (res) {
               console.log(res)
@@ -377,7 +375,7 @@ global.wxPage({
             'complete': function (res) { }
           });
         } else {
-          util.jumpLink('pages/orderlist/orderlist','redirectTo')
+          util.jumpLink(`pages1/payment/payment${this.getUrlParams({orderSn,useInfo:JSON.stringify({...this.data.usePayInfo})})}`,'redirectTo')
         }
       } else {
         util.showModal('提示',res.message, function () {
@@ -385,6 +383,13 @@ global.wxPage({
         });
       }
     }, params)
+  },
+  //整合参数
+  getUrlParams(obj){
+    return Object.keys(obj).reduce((UrlStr,item,index)=>{
+      if(index !== 0) UrlStr += `&`
+      return UrlStr += `${item}=${obj[item]}`
+    },'?')
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

@@ -8,13 +8,6 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
-
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -27,6 +20,11 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.Generated;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -42,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayAwardRecord extends TableImpl<PayAwardRecordRecord> {
 
-    private static final long serialVersionUID = -324076034;
+    private static final long serialVersionUID = 361241513;
 
     /**
      * The reference instance of <code>mini_shop_4748160.b2c_pay_award_record</code>
@@ -73,6 +71,11 @@ public class PayAwardRecord extends TableImpl<PayAwardRecordRecord> {
     public final TableField<PayAwardRecordRecord, Integer> AWARD_ID = createField("award_id", org.jooq.impl.SQLDataType.INTEGER, this, "支付有礼活动id");
 
     /**
+     * The column <code>mini_shop_4748160.b2c_pay_award_record.award_prize_id</code>. 支付有礼的奖品Id
+     */
+    public final TableField<PayAwardRecordRecord, Integer> AWARD_PRIZE_ID = createField("award_prize_id", org.jooq.impl.SQLDataType.INTEGER, this, "支付有礼的奖品Id");
+
+    /**
      * The column <code>mini_shop_4748160.b2c_pay_award_record.order_sn</code>. 订单号
      */
     public final TableField<PayAwardRecordRecord, String> ORDER_SN = createField("order_sn", org.jooq.impl.SQLDataType.VARCHAR(50), this, "订单号");
@@ -83,9 +86,9 @@ public class PayAwardRecord extends TableImpl<PayAwardRecordRecord> {
     public final TableField<PayAwardRecordRecord, Byte> GIFT_TYPE = createField("gift_type", org.jooq.impl.SQLDataType.TINYINT, this, "礼物类型 0 无奖品 1普通优惠卷  2分裂优惠卷 3幸运大抽奖 4 余额 5 商品 6积分 7 自定义");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_pay_award_record.award_times</code>. 次数
+     * The column <code>mini_shop_4748160.b2c_pay_award_record.award_times</code>.
      */
-    public final TableField<PayAwardRecordRecord, Integer> AWARD_TIMES = createField("award_times", org.jooq.impl.SQLDataType.INTEGER, this, "领取时间");
+    public final TableField<PayAwardRecordRecord, Integer> AWARD_TIMES = createField("award_times", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>mini_shop_4748160.b2c_pay_award_record.award_data</code>.

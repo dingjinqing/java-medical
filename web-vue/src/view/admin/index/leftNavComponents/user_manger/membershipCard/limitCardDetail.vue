@@ -10,10 +10,12 @@
           <cardNameAndBg
             :val="cardNameAndBg"
             @input="initCardNameAndBg"
+            ref="cardNameAndBg"
           ></cardNameAndBg>
           <cardEffectTime
             :val="cardEffectTime"
             @input="initCardEffectTimeData"
+            ref="cardEffectTime"
           ></cardEffectTime>
           <cardSuiteGoodsCfg
             :val="cardSuiteGoodsCfgData"
@@ -23,6 +25,7 @@
           <cardStoreCfg
             :val="cardStoreCfgData"
             @input="initCardStoreCfgData"
+            ref="cardStoreCfgData"
           ></cardStoreCfg>
           <cardUsageCfg
             :val="cardUsageCfgData"
@@ -34,6 +37,7 @@
           <cardReceiveCfg
             :val="cardReceiveCfgData"
             @input="initCardReceiveCfgData"
+            ref="cardReceiveCfgData"
           ></cardReceiveCfg>
           <cardActiveCfg
             :val="cardActiveCfgData"
@@ -134,7 +138,8 @@ export default {
       expiredType: '0',
       fixedDate: null,
       receiveDay: '',
-      dateType: '0'
+      dateType: '0',
+      valid: false
     }
     let cardStoreCfgDataTmp = {
       cardType: 1,
@@ -146,20 +151,22 @@ export default {
           storeId: 10,
           storeName: '小猴店1'
         }
-      ]
+      ],
+      valid: false
     }
     let cardUsageCfgDataTmp = {
-      desc: 'hahaha',
-      mobile: '1234'
+      desc: null,
+      mobile: null
     }
     return {
       cardType: null,
       cardId: null,
       cardNameAndBg: {
-        cardName: '来自主页',
+        cardName: null,
         bgType: '0',
         bgColor: '',
-        bgImg: ''
+        bgImg: '',
+        valid: false
       },
       disCountData: {
         powerDiscount: true,
@@ -188,24 +195,27 @@ export default {
       cardStoreCfgData: cardStoreCfgDataTmp,
       cardUsageCfgData: cardUsageCfgDataTmp,
       cardSuiteGoodsCfgData: {
-        isExchange: '1',
+        isExchange: '0',
         exchangCount: '',
         exchangFreight: '0',
         exchangGoods: []
       },
       cardReceiveCfgData: {
-        isPay: '2',
+        cardType: 1,
+        isPay: '0',
         payType: '0',
         payMoney: '',
         payScore: '',
-        receiveAction: '0',
+        receiveAction: '1',
         stock: 0,
         limits: 0,
+        hasSend: 0,
         codeAddDivArr: [{ batchName: null, batchId: null }],
-        codeAddDivArrBottom: [{ pwdName: null, pwdId: null }]
+        codeAddDivArrBottom: [{ pwdName: null, pwdId: null }],
+        valid: false
       },
       cardActiveCfgData: {
-        activation: '1',
+        activation: '0',
         activationCfgBox: [],
         examine: '0'
       },
@@ -232,7 +242,6 @@ export default {
     dataDefault () {
       this.cardType = Number(this.$route.query.cardType)
       this.cardId = Number(this.$route.query.cardId)
-      console.log(this.cardId)
       if (this.cardId) {
         // 单张会员卡信息
         this.getCardDetailInfoById(this.cardId)
@@ -240,7 +249,6 @@ export default {
     },
     getCardDetailInfoById (id) {
       getCardDetailInfoRequest({ id }).then(res => {
-        console.log(res)
         if (res.error === 0) {
           // success
           // bind data from backend to frontend
@@ -290,6 +298,7 @@ export default {
       this.cardReceiveCfgData.payType = String(data.payType)
       this.cardReceiveCfgData.payMoney = data.payMoney
       this.cardReceiveCfgData.payScore = data.payScore
+      this.cardReceiveCfgData.hasSend = data.hasSend
       this.cardReceiveCfgData.receiveAction = data.receiveAction === 0 ? '1' : String(data.receiveAction)
       if (data.batchList && this.cardReceiveCfgData.receiveAction === '1') {
         if (data.batchList.length > 0) {
@@ -324,38 +333,30 @@ export default {
       return 'backgroundImage: url(' + item.backGroundImgUrl + ')'
     },
     initCardNameAndBg (val) {
-      console.log(val.bgImg)
       this.initSampleCardData(val)
       this.cardNameAndBg = val
     },
     initDiscountData (val) {
-      console.log('初始化折扣相关数据', val)
       this.initSampleCardDiscountData(val)
       this.disCountData = val
     },
     initOwnGoodsData (val) {
-      console.log('专享商品：', val)
       this.ownGoodsData = val
     },
 
     initCardScoreCfgData (val) {
-      console.log('积分获取', val)
       this.cardScoreCfgData = val
     },
     initCardChargeCfgData (val) {
-      console.log('余额获取', val)
       this.cardChargeCfgData = val
     },
     initCardEffectTimeData (val) {
-      console.log('会员有效时间：', val)
       this.cardEffectTime = val
     },
     initCardSuiteGoodsCfgData (val) {
-      console.log('适用商品：')
       this.cardSuiteGoodsCfgData = val
     },
     initCardCouponCfgData (val) {
-      console.log('优惠券获取', val)
       this.cardCouponCfgData = val
     },
     initCardStoreCfgData (val) {
@@ -363,19 +364,15 @@ export default {
       this.cardStoreCfgData = val
     },
     initCardUsageCfgData (val) {
-      console.log('使用须知', val)
       this.cardUsageCfgData = val
     },
     initCardReceiveCfgData (val) {
-      console.log('领取配置', val)
       this.cardReceiveCfgData = val
     },
     initCardActiveCfgData (val) {
-      console.log('激活配置', val)
       this.cardActiveCfgData = val
     },
     initSampleCardData (val) {
-      console.log('初始化示例会员卡')
       this.sampleCardData.bgColor = val.bgColor
       this.sampleCardData.cardName = val.cardName
       this.sampleCardData.bgImg = val.bgImg
@@ -387,10 +384,17 @@ export default {
       this.sampleCardData.discountGoodsType = val.discountGoodsType
     },
     handleToSave () {
-      console.log('保存')
       // 检验通过
-      // 保存数据
-      this.prepareCardData()
+      this.$refs.cardNameAndBg.$emit('checkRule')
+      this.$refs.cardEffectTime.$emit('checkRule')
+      this.$refs.cardStoreCfgData.$emit('checkRule')
+      this.$refs.cardReceiveCfgData.$emit('checkRule')
+
+      if (this.cardNameAndBg.valid && this.cardEffectTime.valid && this.cardStoreCfgData.valid && this.cardReceiveCfgData.valid) {
+        this.prepareCardData()
+      } else {
+        this.$message.error('保存失败')
+      }
     },
     prepareCardData () {
       let obj = {

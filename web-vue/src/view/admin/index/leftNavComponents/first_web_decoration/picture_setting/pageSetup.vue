@@ -37,7 +37,7 @@ export default {
     pageSetupMain: () => import('./pageSetupModules/pageSetupMain'), // 页面配置
     // 营销组件库
     RightMembershipCard: () => import('./pageSetupModules/marketingComponents/rightMembershipCard'), // 右侧会员卡配置页面
-    RightCoupon: () => import('./pageSetupModules/marketingComponents/rightCoupon'), // 右侧优惠卷配置页面
+    RightCoupon: () => import('./pageSetupModules/marketingComponents/rightCoupon'), // 右侧优惠券配置页面
     RightBargain: () => import('./pageSetupModules/marketingComponents/rightBargain'), // 右侧砍价配置页面
     RightSpike: () => import('./pageSetupModules/marketingComponents/rightSpike'), // 右侧秒杀配置页面
     RightFightGroup: () => import('./pageSetupModules/marketingComponents/rightFightGroup'), // 右侧拼团抽奖配置页面

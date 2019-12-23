@@ -179,4 +179,7 @@ public class Goods {
      * 成本价格，商品规格中的最低价格，（对于默认规格和自定义规格计算方式是一样的）
      */
     private BigDecimal costPrice;
+
+    /**是否是使用默认规格 0否 1是*/
+    private Byte isDefaultProduct;
 }

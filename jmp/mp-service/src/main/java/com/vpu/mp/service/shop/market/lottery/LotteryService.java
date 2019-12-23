@@ -1,33 +1,13 @@
 package com.vpu.mp.service.shop.market.lottery;
 
-import static com.vpu.mp.db.shop.Tables.LOTTERY;
-import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
-import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.Util;
-import org.checkerframework.checker.units.qual.A;
-import org.jooq.AggregateFunction;
-import org.jooq.Record7;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryShareRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
 import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
@@ -39,6 +19,24 @@ import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListV
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.shop.member.MemberService;
+import org.jooq.AggregateFunction;
+import org.jooq.Record7;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.LOTTERY;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
+import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 
 /**
  * @author 孔德成
@@ -119,9 +117,9 @@ public class LotteryService extends ShopBaseService {
         record.setId(lotteryId);
         record.refresh();
         if (ACTIVITY_STATUS_NORMAL.equals(record.getStatus())) {
-            record.setStatus(ACTIVITY_STATUS_NORMAL);
-        } else {
             record.setStatus(ACTIVITY_STATUS_DISABLE);
+        } else {
+            record.setStatus(ACTIVITY_STATUS_NORMAL);
         }
         return record.update();
     }
@@ -163,7 +161,7 @@ public class LotteryService extends ShopBaseService {
                         .and(LOTTERY.START_TIME.gt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_FINISHED:
-                select.and(LOTTERY.STATUS.gt(ACTIVITY_STATUS_NORMAL))
+                select.and(LOTTERY.STATUS.eq(ACTIVITY_STATUS_NORMAL))
                         .and(LOTTERY.END_TIME.lt(nowTime));
                 break;
             case BaseConstant.NAVBAR_TYPE_DISABLED:

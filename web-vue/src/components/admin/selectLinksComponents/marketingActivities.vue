@@ -51,7 +51,7 @@ export default {
       tbodyFlag: true,
       noImg: this.$imageHost + '/image/admin/no_data.png',
       navText: '',
-      couponFlag: false, // 优惠卷td flag
+      couponFlag: false, // 优惠券td flag
       path: '' //  显示和保存的路径
     }
   },

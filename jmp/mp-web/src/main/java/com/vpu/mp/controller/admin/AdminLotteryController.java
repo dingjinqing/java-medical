@@ -1,18 +1,8 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import org.jooq.Result;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
@@ -25,6 +15,14 @@ import com.vpu.mp.service.pojo.shop.market.lottery.LotteryVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
+import org.jooq.Result;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -40,7 +38,7 @@ public class AdminLotteryController extends AdminBaseController {
      * @return JsonResult
      */
     @PostMapping("/list")
-    public JsonResult getLotteryList(@RequestBody LotteryPageListParam param){
+    public JsonResult getLotteryList(@RequestBody @Valid LotteryPageListParam param){
         PageResult<LotteryPageListVo> result = shop().lottery.getLotteryList(param);
         return success(result);
     }
@@ -93,7 +91,7 @@ public class AdminLotteryController extends AdminBaseController {
      * @return json
      */
     @PostMapping("/change")
-    public JsonResult closeAndRestartById(@RequestBody LotteryByIdParam param){
+    public JsonResult closeAndRestartById(@RequestBody @Valid LotteryByIdParam param){
         Integer flag = shop().lottery.closeAndRestartById(param.getId());
         if (flag<1){
             return fail();
@@ -102,7 +100,7 @@ public class AdminLotteryController extends AdminBaseController {
     }
 
     @PostMapping("/delete")
-    public JsonResult deleteLottery(@RequestBody LotteryByIdParam param){
+    public JsonResult deleteLottery(@RequestBody @Valid LotteryByIdParam param){
         Integer flag = shop().lottery.deleteLottery(param.getId());
         if (flag<1){
             return fail();

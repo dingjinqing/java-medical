@@ -50,24 +50,22 @@ var activity_goods = {
       for (var i in goods) {
         var g = goods[i];
         var time = g.act_begin_time || g.start_time;
-        console.log(time)
         g.format_begin_time = time.substr(5, 2) + "月" + time.substr(8, 2) + "日" + time.substr(11);
-        console.log(g)
       }
     },
     /**
      * 跳转到原商品
      */
     navigateToItem (goods_id) {
-      util.api("/api/wxapp/goods", function (data) {
+      util.api("/api/wxapp/goods/detail", function (data) {
         if (data.error === 0) {
-          util.jumpLink('/pages/item/item?goods_id=' + goods_id)
+          util.jumpLink('/pages/item/item?goodsId=' + goods_id)
         } else {
           util.showModal('提示', data.message);
           return false;
         }
       }, {
-        goods_id: goods_id
+        goodsId: goods_id
       })
     },
     bindToKanJia (e) {

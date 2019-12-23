@@ -220,6 +220,18 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$on('checkRule', () => {
+      this.$refs.ruleForm.validate(valid => {
+        if (!valid) {
+          this.$message.warning('请输入赠送金额')
+          this.ruleForm.valid = false
+        } else {
+          this.ruleForm.valid = true
+        }
+      })
+    })
+  },
   data () {
     let validateSendMoney = (rule, value, callback) => {
       if (this.ruleForm.powerCard) {
@@ -267,6 +279,9 @@ export default {
     // /deep/ .el-form-item__error {
     //   padding-left: 200px;
     // }
+    /deep/ .el-form-item__error {
+      padding-left: 200px;
+    }
     .charge-item {
       padding-left: 100px;
       display: flex;

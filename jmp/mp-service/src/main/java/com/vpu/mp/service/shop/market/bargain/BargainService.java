@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.bargain;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -65,6 +66,8 @@ public class BargainService extends ShopBaseService  {
 
     @Autowired
     private QrCodeService qrCode;
+    @Autowired
+    protected DomainConfig domainConfig;
 	
 	/**
 	 * 启用状态 
@@ -369,7 +372,7 @@ public class BargainService extends ShopBaseService  {
             //set goods info
             bargainGoods.setGoodsId(goodsInfo.getGoodsId());
             bargainGoods.setGoodsName(goodsInfo.getGoodsName());
-            bargainGoods.setGoodsImg(goodsInfo.getGoodsImg());
+            bargainGoods.setGoodsImg(domainConfig.imageUrl(goodsInfo.getGoodsImg()));
             bargainGoods.setGoodsPrice(goodsInfo.getShopPrice());
             bargainGoods.setUnit(goodsInfo.getUnit());
             bargainGoods.setGoodsIsDelete(goodsInfo.getDelFlag());
@@ -394,11 +397,11 @@ public class BargainService extends ShopBaseService  {
             if(bargain.getStartTime().after(DateUtil.getLocalDateTime())){
                 //未开始
                 bargainGoods.setTimeState((byte)0);
-                bargainGoods.setRemainingTime(bargain.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime());
+                bargainGoods.setRemainingTime((bargain.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
             }else if(bargain.getEndTime().after(DateUtil.getLocalDateTime())){
                 //进行中
                 bargainGoods.setTimeState((byte)1);
-                bargainGoods.setRemainingTime(bargain.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime());
+                bargainGoods.setRemainingTime((bargain.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
             }else{
                 //已结束
                 bargainGoods.setTimeState((byte)2);

@@ -604,17 +604,19 @@ create table `b2c_mp_deploy_history`
 #drop table if exists `b2c_mp_operate_log`;
 create table `b2c_mp_operate_log`
 (
-    `operate_id`    int(11)      not null auto_increment comment '自增ID',
-    `app_id`        varchar(191) not null default '' comment '小程序app_id',
-    `template_id`   int(11)      not null comment '小程序模板Id',
-    `operate_type`  tinyint      not null default 1 comment '操作类型',
-    `operate_state` tinyint      not null default 1 comment '操作状态:1成功 2失败',
-    `memo`          text comment '失败原因',
-    `create_time`   timestamp    not null default now() comment '记录时间',
-    primary key (`operate_id`),
-    key (`app_id`),
-    key (`operate_type`),
-    key (`template_id`)
+  `operate_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `app_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '小程序app_id',
+  `template_id` int(11) NOT NULL COMMENT '小程序模板Id',
+  `operate_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '操作类型',
+  `memo` text COLLATE utf8mb4_unicode_ci COMMENT '操作日志',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间',
+  `memo_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `memo_list` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `operate_state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '操作状态:1成功 2失败',
+  PRIMARY KEY (`operate_id`),
+  KEY `app_id` (`app_id`),
+  KEY `operate_type` (`operate_type`),
+  KEY `template_id` (`template_id`)
 );
 
 
@@ -1825,3 +1827,33 @@ CREATE TABLE `b2c_task_job_content`
     `del_flag`    TINYINT(1)     DEFAULT '0' COMMENT '删除标识：0未删除，1已删除',
     PRIMARY KEY (`id`)
 );
+
+-- 定时任务定义表
+drop table if exists `b2c_cron_define`;
+CREATE TABLE `b2c_cron_define` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `class_name` varchar(128) NOT NULL COMMENT '定时任务完整类名',
+  `expression` varchar(32) NOT NULL COMMENT 'cron表达式',
+  `description` varchar(64) NOT NULL DEFAULT '' COMMENT '任务描述',
+    `result` tinyint(1) NOT NULL DEFAULT 0 COMMENT '执行结果,0:待执行;1:执行中；2已完成；3:执行失败',
+    `retries_num` tinyint(1) NOT NULL DEFAULT 0 COMMENT '失败重试次数,默认0不重试',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态,1:启用;0:停用',
+      `create_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cron_key` (`class_name`)
+) COMMENT='定时任务定义表';
+
+-- 定时任务执行结果记录表（只记录执行失败的记录）
+drop table if exists `b2c_cron_record`;
+CREATE TABLE `b2c_cron_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `cron_id` int(11) NOT NULL COMMENT '定时任务id',
+  `execute_num` tinyint(1) NOT NULL DEFAULT 0 COMMENT '执行次数（小于等于失败重试次数）',
+  `failed_reason` varchar(512) NOT NULL DEFAULT '' COMMENT '最后一次执行失败原因',
+        `create_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_id` (`cron_id`)
+) COMMENT='定时任务执行结果记录表';
+

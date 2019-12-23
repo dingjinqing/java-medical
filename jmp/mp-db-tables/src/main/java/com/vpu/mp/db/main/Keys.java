@@ -5,18 +5,17 @@ package com.vpu.mp.db.main;
 
 
 import com.vpu.mp.db.main.tables.*;
-import com.vpu.mp.db.main.tables.records.*;
-
-import javax.annotation.Generated;
-
 import com.vpu.mp.db.main.tables.records.ArticleRecord;
+import com.vpu.mp.db.main.tables.records.*;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
 
+import javax.annotation.Generated;
+
 
 /**
- * A class modelling foreign key relationships and constraints of tables of 
+ * A class modelling foreign key relationships and constraints of tables of
  * the <code>mini_main</code> schema.
  */
 @Generated(
@@ -32,6 +31,9 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final Identity<CronDefineRecord, Integer> IDENTITY_CRON_DEFINE = Identities0.IDENTITY_CRON_DEFINE;
+    public static final Identity<CronRecordRecord, Integer> IDENTITY_CRON_RECORD = Identities0.IDENTITY_CRON_RECORD;
+
     public static final Identity<TaskJobContentRecord, Integer> IDENTITY_TASK_JOB_CONTENT = Identities0.IDENTITY_TASK_JOB_CONTENT;
     public static final Identity<TaskJobMainRecord, Integer> IDENTITY_TASK_JOB_MAIN = Identities0.IDENTITY_TASK_JOB_MAIN;
     public static final Identity<ActivityStatisticsRecord, Integer> IDENTITY_ACTIVITY_STATISTICS = Identities0.IDENTITY_ACTIVITY_STATISTICS;
@@ -99,6 +101,10 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_CRON_DEFINE_PRIMARY;
+    public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_CRON_KEY = UniqueKeys0.KEY_B2C_CRON_DEFINE_CRON_KEY;
+    public static final UniqueKey<CronRecordRecord> KEY_B2C_CRON_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_CRON_RECORD_PRIMARY;
+    public static final UniqueKey<CronRecordRecord> KEY_B2C_CRON_RECORD_UNIQUE_ID = UniqueKeys0.KEY_B2C_CRON_RECORD_UNIQUE_ID;
 
     public static final UniqueKey<TaskJobContentRecord> KEY_B2C_TASK_JOB_CONTENT_PRIMARY = UniqueKeys0.KEY_B2C_TASK_JOB_CONTENT_PRIMARY;
     public static final UniqueKey<TaskJobMainRecord> KEY_B2C_TASK_JOB_MAIN_PRIMARY = UniqueKeys0.KEY_B2C_TASK_JOB_MAIN_PRIMARY;
@@ -206,6 +212,9 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<CronDefineRecord, Integer> IDENTITY_CRON_DEFINE = Internal.createIdentity(CronDefine.CRON_DEFINE, CronDefine.CRON_DEFINE.ID);
+        public static Identity<CronRecordRecord, Integer> IDENTITY_CRON_RECORD = Internal.createIdentity(CronRecord.CRON_RECORD, CronRecord.CRON_RECORD.ID);
+
         public static Identity<TaskJobContentRecord, Integer> IDENTITY_TASK_JOB_CONTENT = Internal.createIdentity(TaskJobContent.TASK_JOB_CONTENT, TaskJobContent.TASK_JOB_CONTENT.ID);
         public static Identity<TaskJobMainRecord, Integer> IDENTITY_TASK_JOB_MAIN = Internal.createIdentity(TaskJobMain.TASK_JOB_MAIN, TaskJobMain.TASK_JOB_MAIN.ID);
         public static Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Internal.createIdentity(ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY, ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
@@ -272,6 +281,11 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_PRIMARY = Internal.createUniqueKey(CronDefine.CRON_DEFINE, "KEY_b2c_cron_define_PRIMARY", CronDefine.CRON_DEFINE.ID);
+        public static final UniqueKey<CronDefineRecord> KEY_B2C_CRON_DEFINE_CRON_KEY = Internal.createUniqueKey(CronDefine.CRON_DEFINE, "KEY_b2c_cron_define_cron_key", CronDefine.CRON_DEFINE.CLASS_NAME);
+        public static final UniqueKey<CronRecordRecord> KEY_B2C_CRON_RECORD_PRIMARY = Internal.createUniqueKey(CronRecord.CRON_RECORD, "KEY_b2c_cron_record_PRIMARY", CronRecord.CRON_RECORD.ID);
+        public static final UniqueKey<CronRecordRecord> KEY_B2C_CRON_RECORD_UNIQUE_ID = Internal.createUniqueKey(CronRecord.CRON_RECORD, "KEY_b2c_cron_record_unique_id", CronRecord.CRON_RECORD.CRON_ID);
+
         public static final UniqueKey<TaskJobMainRecord> KEY_B2C_TASK_JOB_MAIN_PRIMARY = Internal.createUniqueKey(TaskJobMain.TASK_JOB_MAIN, "KEY_b2c_task_job_main_PRIMARY", TaskJobMain.TASK_JOB_MAIN.ID);
         public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = Internal.createUniqueKey(ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY, "KEY_b2c_shop_uploaded_image_category_PRIMARY", ShopUploadedImageCategory.SHOP_UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
         public static final UniqueKey<ActivityStatisticsRecord> KEY_B2C_ACTIVITY_STATISTICS_PRIMARY = Internal.createUniqueKey(ActivityStatistics.ACTIVITY_STATISTICS, "KEY_b2c_activity_statistics_PRIMARY", ActivityStatistics.ACTIVITY_STATISTICS.ID);

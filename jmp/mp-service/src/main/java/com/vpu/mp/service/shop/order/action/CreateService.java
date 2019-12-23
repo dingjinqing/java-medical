@@ -186,6 +186,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
         //order before data ready
         try {
+            //初始化paramGoods
+            initParamGoods(param);
             //init
             orderBo = initCreateOrderBo(param);
             //校验

@@ -11,13 +11,41 @@ global.wxPage({
   data: {
     imageUrl: imageUrl,
     click_look: imageUrl + 'image/wxapp/click_look.png',
+    orderSn: '',
+    returnFlag: 0, // 是否展示创建售后申请按钮
+    returnOrderList: [], // 售后单列表
+    createTime: '', // 下单时间
+
+    return: ['仅退款', '退货退款', '仅退运费', '手动退款', '换货'], // 售后类型
+    reasone: ['协商一致退款', '未按约定时间发货', '缺货', '拍错/多拍/不想要', '其他'], // 退货退款原因
+    reasone_huan: ['协商一致换货', '商品与页面描述不符', '发错货', '商品损坏', '其他'], // 换货原因
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let orderSn = options.order_sn
+    this.setData({
+      orderSn: orderSn
+    })
+    this.initData()
+  },
 
+  initData () {
+    let that = this
+    util.api('/api/wxapp/order/refund/list', function (res) {
+      if (res.error === 0) {
+        let content = res.content
+        that.setData({
+          returnFlag: content.returnFlag,
+          returnOrderList: content.returnOrderlist,
+          createTime: content.createTime
+        })
+      }
+    }, {
+      orderSn: that.data.orderSn
+    })
   },
 
   /**

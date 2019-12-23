@@ -27,7 +27,7 @@
             label="2"
           >{{ $t('memberCard.needReceiveCode') }}</el-radio>
         </div>
-        <div class="receive-bottom">
+        <div class="receive-bottom"  v-if="ruleForm.isPay!=='0'">
           <div
             v-if="ruleForm.isPay==='1'"
             class="receive-buy"
@@ -50,6 +50,7 @@
               >
               </el-input-number>
               <span>{{ $t('memberCard.yuan') }}</span>
+              <span v-if="payMoneyError" class="valid-check">请输入金额</span>
             </div>
             <div>
               <el-radio
@@ -68,6 +69,7 @@
               >
               </el-input-number>
               <span>{{ $t('memberCard.unitM') }}</span>
+              <span v-if="payScoreError" class="valid-check">请输入积分</span>
             </div>
           </div>
           <div
@@ -89,7 +91,7 @@
                   :key="index"
                 >
                   <div>
-                    <span>{{ $t('memberCard.batchOne') }}</span>
+                    <span>{{ $t('memberCard.batchOne') }} {{index+1}}</span>
                     <span>{{ $t('memberCard.batchName') }}</span>
                     <el-input
                       v-model="item.batchName"
@@ -118,7 +120,7 @@
                   :key="index"
                 >
                   <div>
-                    <span>{{ $t('memberCard.batchOne') }}</span>
+                    <span>{{ $t('memberCard.batchOne') }} {{index+1}} </span>
                     <span>{{ $t('memberCard.batchName') }}</span>
                     <el-input
                       v-model="item.pwdName"
@@ -153,11 +155,12 @@
                   :min="0"
                   :max="999999999"
                   size="small"
+                  @blur="changeCheckStock"
                 >
                 </el-input-number>
                 <span>张</span>
                 <span class="send-tip">填0时为不限制</span>
-                <span>当前已方法： 1张</span>
+                <span>当前已领取： {{ruleForm.hasSend}}张</span>
               </div>
               <div class="person-receive-num">
                 <span>领取限制：每人限领</span>
@@ -167,6 +170,7 @@
                   :min="0"
                   :max="999999999"
                   size="small"
+                  @blur="changeCheckLimits"
                 >
                 </el-input-number>
                 <span>张</span>
@@ -178,10 +182,21 @@
 
       </el-form-item>
     </el-form>
+    <!--领取码弹窗-->
+    <ReceivingCodeDialog
+      :dialogVisible.sync="receiveCodeDialogVisible"
+      :batchName="currentBatchName"
+      :batchId="currentBatchId"
+      :receiveAction="currentReceiveAction"
+      @generateReceiveCodeId="dealWithReceiveCodeId"
+    />
   </div>
 </template>
 <script>
 export default {
+  components: {
+    ReceivingCodeDialog: () => import('../receivingCodeDialog')
+  },
   props: {
     val: {
       type: Object,
@@ -203,6 +218,7 @@ export default {
   computed: {
     ruleForm: {
       get () {
+        console.log(this.val)
         return this.val
       },
       set () {
@@ -210,9 +226,45 @@ export default {
       }
     }
   },
+  mounted () {
+    this.$on('checkRule', () => {
+      if (this.ruleForm.isPay === '1') {
+        // check crash
+        if (this.ruleForm.payType === '0') {
+          if (typeof this.ruleForm.payMoney === 'undefined') {
+            this.$message.warning('请输入金额')
+            this.payMoneyError = true
+            this.payScoreError = false
+          }
+        } else if (this.ruleForm.payType === '1') {
+          if (typeof this.ruleForm.payScore === 'undefined') {
+            this.$message.warning('请输入积分')
+            this.payScoreError = true
+            this.payMoneyError = false
+          }
+        } else {
+          this.payMoneyError = false
+          this.payScoreError = false
+          this.ruleForm.valid = true
+        }
+        // check score
+      } else {
+        this.ruleForm.valid = true
+      }
+    })
+  },
   data () {
     return {
-      codeArr: null
+      receiveCodeDialogVisible: false,
+      codeReceiveAction: 1,
+      pwdReceiveAction: 2,
+      currentIndex: 0,
+      currentBatchName: null,
+      currentBatchId: null,
+      currentReceiveAction: 1,
+      codeArr: null,
+      payScoreError: false,
+      payMoneyError: false
     }
   },
   created () {
@@ -221,11 +273,147 @@ export default {
   watch: {
     lang () {
       this.codeArr = this.$t('memberCard.codeArr')
+    },
+    'ruleForm': {
+      handler (newName, oldName) {
+        this.val = newName
+        this.ruleForm = this.val
+      },
+      deep: true
+    },
+    'ruleForm.payType': {
+      handler (newName, oldName) {
+        if (this.ruleForm.payType === '0') {
+          this.payScoreError = false
+          if (this.ruleForm.payMoney === undefined) {
+            this.payMoneyError = true
+          }
+        } else if (this.ruleForm.payType === '1') {
+          this.payMoneyError = false
+          if (this.ruleForm.payScore === undefined) {
+            this.payScoreError = true
+          }
+        }
+      },
+      immediate: true
+    },
+    'ruleForm.payMoney': {
+      handler (newName, oldName) {
+        if (this.ruleForm.payType === '0') {
+          if (this.ruleForm.payMoney === undefined) {
+            this.payMoneyError = true
+          } else {
+            this.payMoneyError = false
+          }
+        }
+      },
+      immediate: true
+    },
+    'ruleForm.payScore': {
+      handler (newName, oldName) {
+        if (this.ruleForm.payType === '1') {
+          if (this.ruleForm.payScore === undefined) {
+            this.payScoreError = true
+          } else {
+            this.payScoreError = false
+          }
+        }
+      },
+      immediate: true
     }
+
   },
   methods: {
+    handleCallCodeDialogBottom (index, codeIndex) {
+      switch (codeIndex) {
+        case 0:
+          // 卡号+密码
+          this.showReceivePwdDiaglog(index)
+          break
+      }
+    },
+    showReceivePwdDiaglog (index) {
+      if (!this.ruleForm.codeAddDivArrBottom[index].pwdName) {
+        this.$message.warning('请填写批次名称')
+        return
+      }
+      debugger
+      console.log(this.receiveCodeDialogVisible)
+      this.receiveCodeDialogVisible = true
+      this.currentBatchName = this.ruleForm.codeAddDivArrBottom[index].pwdName
+      debugger
+      console.log(this.ruleForm.codeAddDivArrBottom)
+      this.currentBatchId = this.ruleForm.codeAddDivArrBottom[index].pwdId
+      console.log(this.currentBatchId)
+      this.currentReceiveAction = this.pwdReceiveAction
+      this.currentIndex = index
+    },
     handleCallCodeDialog (index, codeIndex) {
+      // 领取码
+      switch (codeIndex) {
+        case 0:
+          // 领取码
+          this.showReceiveCodeDiaglog(index)
+          break
+        case 1:
+          // 添加批次
+          this.addBatchItem()
+          break
+        case 2:
+          // 删除批次
+          this.deleteBatchItem(index)
+          break
+      }
+    },
 
+    showReceiveCodeDiaglog (index) {
+      if (!this.ruleForm.codeAddDivArr[index].batchName) {
+        this.$message.warning('请填写批次名称')
+        return
+      }
+      debugger
+      console.log(this.receiveCodeDialogVisible)
+      this.receiveCodeDialogVisible = true
+      this.currentBatchName = this.ruleForm.codeAddDivArr[index].batchName
+      this.currentBatchId = this.ruleForm.codeAddDivArr[index].batchId
+      this.currentReceiveAction = this.codeReceiveAction
+      this.currentIndex = index
+    },
+    // 添加批次
+    addBatchItem () {
+      this.ruleForm.codeAddDivArr.push({ batchName: null, batchId: null })
+    },
+    // 删除批次
+    deleteBatchItem (index) {
+      if (this.ruleForm.codeAddDivArr.length === 1) {
+        this.$message.warning('最少保留一个批次')
+      } else {
+        this.ruleForm.codeAddDivArr.splice(index, 1)
+      }
+    },
+    changeCheckStock () {
+      if (typeof this.ruleForm.stock === 'undefined') {
+        this.val.stock = 0
+        this.ruleForm = this.val
+      }
+    },
+    changeCheckLimits () {
+      if (typeof this.ruleForm.limits === 'undefined') {
+        this.val.limits = 0
+        this.ruleForm = this.val
+      }
+    },
+    dealWithReceiveCodeId (id) {
+      debugger
+      console.log(id)
+      if (this.currentReceiveAction === this.pwdReceiveAction) {
+        // 卡号+密码
+        console.log(this.ruleForm.codeAddDivArrBottom)
+        this.ruleForm.codeAddDivArrBottom[this.currentIndex].pwdId = id
+        console.log(this.ruleForm.codeAddDivArrBottom)
+      } else if (this.currentReceiveAction === this.codeReceiveAction) {
+        this.ruleForm.codeAddDivArr[this.currentIndex].batchId = id
+      }
     }
   }
 }
@@ -248,6 +436,10 @@ export default {
       border-radius: 4px;
       .receive-buy {
         padding: 5px 20px;
+        .valid-check{
+          color: #F56C6C;
+          font-size: 12px;
+        }
       }
       .receive-code {
         .receive-code-one {
@@ -324,6 +516,7 @@ export default {
             }
           }
           .person-receive-num {
+            margin-bottom: 10px;
             span {
               &:nth-of-type(1),
               &:nth-of-type(2) {

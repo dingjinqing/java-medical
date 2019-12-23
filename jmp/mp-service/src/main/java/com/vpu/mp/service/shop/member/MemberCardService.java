@@ -710,14 +710,17 @@ public class MemberCardService extends ShopBaseService {
 				// 1.兑换次数2.运费策略 3. 商品id
 				cardBuilder
 				.isExchang(isExchange)
-				.exchangCount(card.getExchangCount())
-				.exchangFreight(card.getExchangFreight())
 				.exchangGoods(Util.listToString(card.getExchangGoods()));
 			} else {
 				cardBuilder.isExchang(MCARD_ISE_NON).exchangGoods(null);
 			}
 		} else if (isExchangAllGoods(isExchange)) {
 			cardBuilder.isExchang(isExchange).exchangGoods(null);
+		}
+		
+		if(CardUtil.isLimitCard(card.getCardType())) {
+			cardBuilder.exchangCount(card.getExchangCount())
+			.exchangFreight(card.getExchangFreight());
 		}
 	}
 
@@ -1917,7 +1920,7 @@ InsertValuesStep7<UserCardRecord, Integer, Integer, String, Timestamp, Integer, 
 	private ServiceOrderDetailVo getServiceOrderInfo(String orderSn) {
 		return serviceOrderDao.getServiceOrderDetail(orderSn);
 	}
-
+	
 	public CardBatchVo generateCardCode(CardBatchParam param) {
 		logger().info("正在添加添加领取码");
 		System.out.println(param.getBatchId());

@@ -38,6 +38,7 @@
               :range-separator="$t('shipping.to')"
               :start-placeholder="$t('ordinaryCoupon.startTime')"
               :end-placeholder="$t('ordinaryCoupon.endTime')"
+              :default-time="['00:00:00','23:59:59']"
               size="small"
             >
             </el-date-picker>

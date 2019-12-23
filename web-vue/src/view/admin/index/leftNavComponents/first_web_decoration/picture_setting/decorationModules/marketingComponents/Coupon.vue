@@ -3,7 +3,7 @@
     class="membershipCard modules"
     @mouseover="mouseOver"
   >
-    <!--优惠卷模块-->
+    <!--优惠券模块-->
     <div
       class="showModule"
       :class="activeBorder?'activeBorder':''"
@@ -45,7 +45,7 @@
         </div>
 
       </div>
-      <!--单个优惠卷布局模块-->
+      <!--单个优惠券布局模块-->
       <div
         class="coupon_module"
         v-else

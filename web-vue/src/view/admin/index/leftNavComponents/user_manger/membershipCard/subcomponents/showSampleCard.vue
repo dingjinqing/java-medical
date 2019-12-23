@@ -183,7 +183,6 @@
         </div>
         <div v-if="index===4">
           <div
-            v-if="cardUsageCfgData.mobile"
             class="s-power-title"
             v-bind:style="getMiniLog(item)"
           >
@@ -195,7 +194,6 @@
         </div>
         <div v-if="index===5 && cardStoreCfgData">
           <div
-            v-if="cardUsageCfgData.mobile"
             class="s-power-title"
             v-bind:style="getMiniLog(item)"
           >
@@ -343,7 +341,8 @@ export default {
     getBgStyle () {
       console.log(this.bgImg)
       if (this.bgType === '1' && this.bgImg) {
-        return `backgroundImage:url(${this.$imageHost}/${this.bgImg});backgroundRepeat:no-repeat;background-size: 100% 100%;`
+        return `backgroundImage:url(${this.bgImg});backgroundRepeat:no-repeat;background-size: 100% 100%;`
+        // return `backgroundImage:url(${this.$imageHost}/${this.bgImg});backgroundRepeat:no-repeat;background-size: 100% 100%;`
       } else {
         return this.bgStyleComputed
       }

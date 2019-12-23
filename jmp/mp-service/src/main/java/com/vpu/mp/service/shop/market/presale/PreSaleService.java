@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
@@ -25,6 +26,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record14;
 import org.jooq.Record2;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
@@ -34,6 +36,8 @@ import org.springframework.util.Assert;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -577,6 +581,35 @@ public class PreSaleService extends ShopBaseService {
             .and(TABLE.STATUS.eq((byte)1))
             .fetchMap(SUB_TABLE.GOODS_ID,SUB_TABLE.PRESALE_PRICE);
     }
+    
+	/**
+	 * N小时前后的要结束的定金膨胀列表
+	 * 
+	 * @param hours
+	 * @param type 0:还没开始；1：开始
+	 * @return
+	 */
+	public List<PreSaleVo> getPreSaleListByHour(Integer hours,Byte type) {
+		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		SelectConditionStep<PresaleRecord> fetch = db().selectFrom(PRESALE)
+				.where(PRESALE.DEL_FLAG.eq(NOT_DELETED));
+		//还没开始
+		if(type.equals((byte) 0)) {
+			fetch.and(dateFormat(PRESALE.END_TIME, "yyyy-MM-dd HH:mm").eq(date));
+		}
+		//快开始
+		if(type.equals((byte) 1)) {
+			fetch.and(dateFormat(PRESALE.START_TIME, "yyyy-MM-dd HH:mm").eq(date));
+		}
+		Result<PresaleRecord> fetch2 = fetch.fetch();
+		List<PreSaleVo> into = new ArrayList<PreSaleVo>();
+		if (fetch != null) {
+			into = fetch2.into(PreSaleVo.class);
+		}
+		return into;
 
-
+	}
+	
+	
 }

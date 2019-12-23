@@ -65,9 +65,10 @@
                 <el-date-picker
                   v-model="form.actTime"
                   type="datetimerange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
+                  :range-separator="$t('seckill.to')"
+                  :start-placeholder="$t('seckill.startTime')"
+                  :end-placeholder="$t('seckill.endTime')"
+                  :default-time="['00:00:00','23:59:59']"
                   value-format="yyyy-MM-dd HH:mm:ss"
                 >
                 </el-date-picker>
@@ -214,7 +215,7 @@
         :imageSize="[150,150]"
         @handleSelectImg='imgDialogSelectedCallback'
       />
-      <!--添加优惠卷弹窗-->
+      <!--添加优惠券弹窗-->
       <addCouponDialog
         @checkReturnFormat="handleToCheck"
         :tuneUpCoupon="showCouponDialog"
@@ -306,7 +307,7 @@ export default {
       // 复选框
       score: '',
       scoreTemp: '',
-      // 优惠卷弹窗
+      // 优惠券弹窗
       couponDialogFlag: false,
       couponData: [],
       couponId: '',
@@ -423,7 +424,7 @@ export default {
         }
       })
     },
-    // 优惠卷回调
+    // 优惠券回调
     handleToCheck (data) {
       console.log('coupon', data)
       let couponKey = []

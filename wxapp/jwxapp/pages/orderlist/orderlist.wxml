@@ -16,71 +16,94 @@
         <view id="ALL" bindtap="handleChangeNav" style="{{scrollIntoId === 'ALL' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
           {{i18n.$t(localePack,"pages.order.navType.ALL")}}({{navStatusNum[0]}})
         </view>
-        <view id="WAIT_PAY" bindtap="handleChangeNav"  style="{{scrollIntoId === 'WAIT_PAY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.WAIT_PAY")}}({{navStatusNum[1]}})</view>
-        <view id="WAIT_DELIVERY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_DELIVERY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.WAIT_DELIVERY")}}({{navStatusNum[2]}})</view>
-        <view id="SHIPPED" bindtap="handleChangeNav" style="{{scrollIntoId === 'SHIPPED' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.SHIPPED")}}({{navStatusNum[3]}})</view>
-        <view id="RETURNING" bindtap="handleChangeNav" style="{{scrollIntoId === 'RETURNING' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">{{i18n.$t(localePack,"pages.order.navType.RETURNING")}}({{navStatusNum[5]}})</view>
+        <view id="WAIT_PAY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_PAY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
+          {{i18n.$t(localePack,"pages.order.navType.WAIT_PAY")}}({{navStatusNum[1]}})
+        </view>
+        <view id="WAIT_DELIVERY" bindtap="handleChangeNav" style="{{scrollIntoId === 'WAIT_DELIVERY' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
+          {{i18n.$t(localePack,"pages.order.navType.WAIT_DELIVERY")}}({{navStatusNum[2]}})
+        </view>
+        <view id="SHIPPED" bindtap="handleChangeNav" style="{{scrollIntoId === 'SHIPPED' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
+          {{i18n.$t(localePack,"pages.order.navType.SHIPPED")}}({{navStatusNum[3]}})
+        </view>
+        <view id="RETURNING" bindtap="handleChangeNav" style="{{scrollIntoId === 'RETURNING' ? 'color:' + comColor + ';border-bottom-color:' + comColor : ''}}">
+          {{i18n.$t(localePack,"pages.order.navType.RETURNING")}}({{navStatusNum[5]}})
+        </view>
       </scroll-view>
     </view>
     <view class="order_list">
-    <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
-      <block wx:for="{{pageItem}}" wx:key="orderSn" >
-        <view class="order_item">
-          <view class="order_sn_status {{item.partShipFlag === 1 ? 'partial_delivery' : ''}}">
-            <view class="partial_delivery_top">
-              <view class="order_mark"></view>
-              <view class="order_sn">{{i18n.$t(localePack,"pages.order.orderSn")}}：<text selectable>{{item.orderSn}}</text></view>
-            </view>
-            <view class="partial_delivery_bottom">
-              <view class="delivery_type" wx:if="{{item.partShipFlag === 1}}">
-                {{i18n.$t(localePack,"pages.order.deliveryType")}}：
-                <text>部分发货</text>
+      <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+        <block wx:for="{{pageItem}}" wx:key="orderSn">
+          <view class="order_item">
+            <view class="order_sn_status {{item.partShipFlag === 1 ? 'partial_delivery' : ''}}">
+              <view class="partial_delivery_top">
+                <view class="order_mark"></view>
+                <view class="order_sn">
+                  {{i18n.$t(localePack,"pages.order.orderSn")}}：
+                  <text selectable>{{item.orderSn}}</text>
+                </view>
               </view>
-              <view class="order_status" style="color:{{comColor}}">{{item.orderStatusName}}</view>
+              <view class="partial_delivery_bottom">
+                <view class="delivery_type" wx:if="{{item.partShipFlag === 1}}">
+                  {{i18n.$t(localePack,"pages.order.deliveryType")}}：
+                  <text>部分发货</text>
+                </view>
+                <view class="order_status" style="color:{{comColor}}">
+                  {{item.orderStatusName}}
+                </view>
+              </view>
+            </view>
+            <view wx:for="{{item.goods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="recId" class="goods_item">
+              <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
+              <view class="goods_info">
+                <view class="goods_name">{{goodsItem.goodsName}}</view>
+                <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
+                <view class="goods_price_num">
+                  <view class="goods_price" style="color:{{comColor}}">
+                    ￥
+                    <text>{{goodsItem.goodsPrice}}</text>
+                  </view>
+                  <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
+                </view>
+              </view>
+            </view>
+            <view class="order_pay_info">
+              <view class="pay_info">
+                <view class="pay_type">
+                  {{i18n.$t(localePack,"pages.order.payType")}}：
+                  <text>{{i18n.$t(localePack,"pages.order.payCode."+item.payCode)}}</text>
+                </view>
+                <view class="pay_money">
+                  {{i18n.$t(localePack,"pages.order.payMoney")}}：
+                  <text>￥{{item.moneyPaid}}</text>
+                </view>
+              </view>
+              <view class="presale_info" wx:if="{{item.bkOrderPaid === 1}}">
+                <view class="money">
+                  {{i18n.$t(localePack,"pages.order.presaleInfo")}}：
+                  <text>￥100.00</text>
+                </view>
+                <view class="time">
+                  {{i18n.$t(localePack,"pages.order.presaleTime")}}：2019-04-03 10:23 - 2019-04-04 10:23
+                </view>
+              </view>
+            </view>
+            <view class="order_button_box">
+              <block wx:for="{{item.operate}}" wx:for-item="operateItem" wx:key="operateKey" wx:for-index="operateKey">
+                <view wx:if="{{operateItem > 0}}" bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">
+                  {{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}
+                </view>
+              </block>
+              <!-- 售后中心 -->
+              <view bindtap="handleOperate" wx:if="{{item.isReturn || item.isReturnMoney || item.isReturnGoods}}" data-is_return="{{item.isReturn}}" data-operate_info="returnCenter" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">
+                {{i18n.$t(localePack,"pages.order.operateList.returnCenter")}}
+              </view>
+              <view bindtap="handleOperate" data-operate_info="orderInfo" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">
+                {{i18n.$t(localePack,"pages.order.operateList.orderInfo")}}
+              </view>
             </view>
           </view>
-          <view wx:for="{{item.goods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="recId" class="goods_item">
-            <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
-            <view class="goods_info">
-              <view class="goods_name">
-                {{goodsItem.goodsName}}
-              </view>
-              <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
-              <view class="goods_price_num">
-                <view class="goods_price" style="color:{{comColor}}">￥<text>{{goodsItem.goodsPrice}}</text></view>
-                <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
-              </view>
-            </view>
-          </view>
-          <view class="order_pay_info">
-            <view class="pay_info">
-              <view class="pay_type">
-                {{i18n.$t(localePack,"pages.order.payType")}}：
-                <text>{{i18n.$t(localePack,"pages.order.payCode."+item.payCode)}}</text>
-              </view>
-              <view class="pay_money">
-                {{i18n.$t(localePack,"pages.order.payMoney")}}：
-                <text>￥{{item.moneyPaid}}</text>
-              </view>
-            </view>
-            <view class="presale_info" wx:if="{{item.bkOrderPaid === 1}}">
-              <view class="money">
-                {{i18n.$t(localePack,"pages.order.presaleInfo")}}：
-                <text>￥100.00</text>
-              </view>
-              <view class="time">{{i18n.$t(localePack,"pages.order.presaleTime")}}：2019-04-03 10:23 - 2019-04-04 10:23</view>
-            </view>
-          </view>
-          <view class="order_button_box">
-            <block wx:for="{{item.operate}}" wx:for-item="operateItem" wx:key="operateKey" wx:for-index="operateKey">
-              <view wx:if="{{operateItem > 0}}" bindtap="handleOperate" data-operate_info="{{operateKey}}" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">{{i18n.$t(localePack,"pages.order.operateList." + operateKey)}}</view>
-            </block>
-            <view bindtap="handleOperate" wx:if="{{item.isReturnMoney || item.isReturnGoods}}" data-is_return="{{item.isReturn}}" data-operate_info="returnCenter" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">{{i18n.$t(localePack,"pages.order.operateList.returnCenter")}}</view>
-            <view bindtap="handleOperate" data-operate_info="orderInfo" data-order_sn="{{item.orderSn}}" data-order_id="{{item.orderId}}">{{i18n.$t(localePack,"pages.order.operateList.orderInfo")}}</view>
-          </view>
-        </view>
+        </block>
       </block>
-    </block>
     </view>
   </view>
   <include src="../common/footer.wxml" />

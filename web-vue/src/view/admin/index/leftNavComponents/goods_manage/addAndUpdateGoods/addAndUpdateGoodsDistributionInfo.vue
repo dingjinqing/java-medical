@@ -367,14 +367,16 @@ export default {
         goodsSharePostConfig: {}
       }
 
-      this.goodsDistributionInfo.goodsRebatePrices.forEach(item => {
-        retData.goodsRebatePrices.push({
-          prdDesc: item.prdDesc,
-          advisePrice: item.advisePrice,
-          minPrice: item.minPrice,
-          maxPrice: item.maxPrice
+      if (this.goodsDistributionInfo.canRebate) {
+        this.goodsDistributionInfo.goodsRebatePrices.forEach(item => {
+          retData.goodsRebatePrices.push({
+            prdDesc: item.prdDesc,
+            advisePrice: item.advisePrice,
+            minPrice: item.minPrice,
+            maxPrice: item.maxPrice
+          })
         })
-      })
+      }
 
       retData.goodsSharePostConfig.shareAction = this.goodsDistributionInfo.shareAction
       retData.goodsSharePostConfig.shareDoc = this.goodsDistributionInfo.shareDoc
