@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.seckill;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
@@ -67,6 +68,9 @@ public class SeckillService extends ShopBaseService{
 
     @Autowired
     private GoodsService goodsService;
+
+    @Autowired
+    protected DomainConfig domainConfig;
 
     /**
      * 秒杀活动列表分页数据
@@ -578,7 +582,7 @@ public class SeckillService extends ShopBaseService{
             //set goods info
             seckillGoods.setGoodsId(seckill.getGoodsId());
             seckillGoods.setGoodsName(goodsInfo.getGoodsName());
-            seckillGoods.setGoodsImg(goodsInfo.getGoodsImg());
+            seckillGoods.setGoodsImg(domainConfig.imageUrl(goodsInfo.getGoodsImg()));
             seckillGoods.setGoodsPrice(goodsInfo.getShopPrice());
             seckillGoods.setGoodsIsDelete(goodsInfo.getDelFlag());
             seckillGoods.setIsOnSale(goodsInfo.getIsOnSale());

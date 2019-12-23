@@ -57,15 +57,15 @@ var activity_goods = {
      * 跳转到原商品
      */
     navigateToItem (goods_id) {
-      util.api("/api/wxapp/goods", function (data) {
+      util.api("/api/wxapp/goods/detail", function (data) {
         if (data.error === 0) {
-          util.jumpLink('/pages/item/item?goods_id=' + goods_id)
+          util.jumpLink('/pages/item/item?goodsId=' + goods_id)
         } else {
           util.showModal('提示', data.message);
           return false;
         }
       }, {
-        goods_id: goods_id
+        goodsId: goods_id
       })
     },
     bindToKanJia (e) {
