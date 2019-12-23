@@ -107,7 +107,8 @@
               :label="$t('seckill.specifications')"
               prop="prdDesc"
               align="center"
-            ></el-table-column>
+            >
+            </el-table-column>
             <el-table-column
               :label="$t('seckill.shopPrice')"
               prop="prdPrice"
@@ -511,6 +512,11 @@ export default {
           this.form.goodsId = data.goods.goodsId
           this.getGoodsInfo(data.goodsId)
           this.form.secKillProduct = data.secKillProduct
+          this.form.secKillProduct.forEach((item, index) => {
+            if (item.prdDesc === '') {
+              item.prdDesc = data.goods.goodsName
+            }
+          })
           this.form.startTime = data.startTime
           this.form.endTime = data.endTime
           this.form.validity = [data.startTime, data.endTime]
@@ -597,6 +603,8 @@ export default {
               if (res.error === 0) {
                 this.$message.success({ message: '添加成功' })
                 this.$emit('addSeckillSubmit')
+              } else {
+                this.$message.warning({ message: res.message })
               }
             })
           } else {
@@ -610,6 +618,8 @@ export default {
               if (res.error === 0) {
                 this.$message.success({ message: '修改成功' })
                 this.$emit('addSeckillSubmit')
+              } else {
+                this.$message.warning({ message: res.message })
               }
             })
           }
@@ -640,6 +650,10 @@ export default {
       getAllGoodsProductList(this.form.goodsId).then(res => {
         res.content.forEach((item, index) => {
           item.index = index
+          // 单规格名称回显
+          if (item.prdDesc === '') {
+            item.prdDesc = this.goodsRow.goodsName
+          }
         })
         this.form.secKillProduct = res.content
         console.log(' this.form.secKillProduct ', this.form.secKillProduct)
