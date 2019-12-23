@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.saas.SaasApplication;
-import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 
 import lombok.extern.slf4j.Slf4j;
 
