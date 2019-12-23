@@ -460,16 +460,17 @@ public class ScoreService extends ShopBaseService {
 	}
 	
 	/**
-	 * 创建用户积分记录
+	 * 创建用户积分记录，发返1 为成功
 	 * @param data
 	 * @param adminUser
 	 * @param tradeType
 	 * @param tradeFlow
 	 */
-	public void addUserScore(UserScoreVo data, String adminUser, Byte tradeType, Byte tradeFlow) {
+	public Integer addUserScore(UserScoreVo data, String adminUser, Byte tradeType, Byte tradeFlow) {
 		// 生成新的充值记录
 		// 验证现有积分跟提交的积分是否一致
 		// 销毁score_dis
+		int insert=0;
 		try {
 
 			if (StringUtils.isEmpty(data.getRemark())) {
@@ -500,7 +501,7 @@ public class ScoreService extends ShopBaseService {
 			//TODO  UserScore.php $crmResult = shop($this->getShopId())->serviceRequest->crmApi->init();
 			
 			logger().info("开始插入");
-			int insert = record.insert();
+			insert = record.insert();
 			if(insert<=0) {
 				logger().info("插入失败");
 			}
@@ -508,6 +509,7 @@ public class ScoreService extends ShopBaseService {
 		} catch (Exception e) {
 			logger().error("addUserScore error, message:");
 			logger().error(e.getMessage(),e);
+			return -2;
 		}
 		//更新用户积分
 		Integer canUseScore  = getTotalAvailableScoreById(data.getUserId());
@@ -523,8 +525,10 @@ public class ScoreService extends ShopBaseService {
 				userCardService.updateGrade(data.getUserId(),null, UPGRADE);
 			} catch (MpException e) {
 				logger().info("没有可升级的会员卡");
+				return -1;
 			}
 		}
+		return insert;
 	}
 	
 	

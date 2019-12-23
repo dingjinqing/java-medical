@@ -517,7 +517,7 @@ public class SeckillService extends ShopBaseService{
         if(minStock <= 0){
             return 5;
         }
-        if(getUserSeckilledGoodsNumber(secKill.getSkId(),userId) >= secKill.getLimitAmount()){
+        if(secKill.getLimitAmount() > 0 && getUserSeckilledGoodsNumber(secKill.getSkId(),userId) >= secKill.getLimitAmount()){
             return 6;
         }
         if(StringUtil.isNotEmpty(secKill.getCardId()) && !userCardExclusiveSeckillIsValid(secKill.getCardId(),userId)){
@@ -614,11 +614,11 @@ public class SeckillService extends ShopBaseService{
             if(seckill.getStartTime().after(DateUtil.getLocalDateTime())){
                 //未开始
                 seckillGoods.setTimeState((byte)0);
-                seckillGoods.setRemainingTime(seckill.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime());
+                seckillGoods.setRemainingTime((seckill.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
             }else if(seckill.getEndTime().after(DateUtil.getLocalDateTime())){
                 //进行中
                 seckillGoods.setTimeState((byte)1);
-                seckillGoods.setRemainingTime(seckill.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime());
+                seckillGoods.setRemainingTime((seckill.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
             }else{
                 //已结束
                 seckillGoods.setTimeState((byte)2);

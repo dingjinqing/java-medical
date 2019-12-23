@@ -59,10 +59,10 @@ var helper = {
   // 倒计时处理时间的函数
   expandTime (seconds) {
     return {
-      date: Math.floor(seconds / 3600 / 24 / 1000),
-      hour: this.leftPad0(Math.floor(seconds / 3600 / 1000) % 24, 2),
-      minute: this.leftPad0(Math.floor(seconds / 60 / 1000) % 60, 2),
-      second: this.leftPad0(Math.floor(seconds / 1000) % 60, 2)
+      date: Math.floor(seconds / 3600 / 24),
+      hour: this.leftPad0(Math.floor(seconds / 3600) % 24, 2),
+      minute: this.leftPad0(Math.floor(seconds / 60) % 60, 2),
+      second: this.leftPad0(Math.floor(seconds) % 60, 2)
     };
   },
 

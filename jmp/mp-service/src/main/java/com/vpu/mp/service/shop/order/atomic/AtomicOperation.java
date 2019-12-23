@@ -9,6 +9,8 @@ import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.foundation.util.lock.annotation.operation.AddRedisLocks;
+import com.vpu.mp.service.foundation.util.lock.annotation.operation.ReleaseRedisLocks;
 import com.vpu.mp.service.pojo.shop.goods.goods.BatchUpdateGoodsNumAndSaleNumForOrderParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.BatchUpdateGoodsNumAndSaleNumForOrderParam.ProductNumInfo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -46,7 +48,23 @@ public class AtomicOperation extends ShopBaseService {
      * @throws MpException
      */
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
-    public void updateStockAndSales(OrderInfoRecord order, @RedisLockKeys List<OrderGoodsBo> goodsBo, boolean limit) throws MpException {
+    public void updateStockAndSalesByLock(OrderInfoRecord order, @RedisLockKeys List<OrderGoodsBo> goodsBo, boolean limit) throws MpException {
+        updateStockandSales(order, goodsBo, limit);
+    }
+
+
+
+    @AddRedisLocks(redisLock = @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK))
+    public void addLock(@RedisLockKeys List<OrderGoodsBo> goodsBo){
+        log.info("atomicOperation addLock end");
+    }
+
+    @ReleaseRedisLocks
+    public void releaseLocks(){
+        log.info("atomicOperation releaseLocks end");
+    }
+
+    public void updateStockandSales(OrderInfoRecord order, List<OrderGoodsBo> goodsBo, boolean limit) throws MpException {
         log.info("AtomicOperation.updateStockAndSales订单库存销量更新start,订单号{},商品{}", order.getOrderId(), goodsBo);
         if(Boolean.FALSE) {
             //todo 营销

@@ -27,7 +27,6 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
-import com.vpu.mp.service.shop.activity.factory.OrderBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.OrderCreatePayBeforeMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
@@ -39,7 +38,6 @@ import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.BaseScoreCfgService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.UserCardService;
-import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -240,28 +238,32 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //必填信息
                 must.addRecord(param.getMust());
                 orderBo.setOrderId(order.getOrderId());
+                //加锁
+                atomicOperation.addLock(orderBo.getOrderGoodsBo());
+                if(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
+                    OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
+                    (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
+                    //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
+                    processorFactory.processStockAndSales(param);
+                    atomicOperation.updateStockandSales(order, orderBo.getOrderGoodsBo(), false);
+                }
             });
-        orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
-        createVo.setOrderSn(orderAfterRecord.getOrderSn());
-        if(OrderConstant.PAY_CODE_COD.equals(orderAfterRecord.getPayCode()) ||
-            OrderConstant.PAY_CODE_BALANCE_PAY.equals(orderAfterRecord.getPayCode()) ||
-            (OrderConstant.PAY_CODE_SCORE_PAY.equals(orderAfterRecord.getPayCode()) && BigDecimalUtil.compareTo(orderAfterRecord.getMoneyPaid(), BigDecimal.ZERO) == 0)) {
-            //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
-            processorFactory.processStockAndSales(param);
-            atomicOperation.updateStockAndSales(orderAfterRecord, orderBo.getOrderGoodsBo(), false);
+            //释放锁
+            atomicOperation.releaseLocks();
+            orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
+            createVo.setOrderSn(orderAfterRecord.getOrderSn());
+        } catch (DataAccessException e) {
+            logger().error("下单捕获mp异常", e);
+            Throwable cause = e.getCause();
+            if (cause instanceof MpException) {
+                return ExecuteResult.create(((MpException) cause).getErrorCode(), null,  ((MpException) cause).getCodeParam());
+            } else {
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR);
+            }
+        } catch (Exception e) {
+            logger().error("下单捕获mp异常", e);
+            return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
         }
-    } catch (DataAccessException e) {
-        logger().error("下单捕获mp异常", e);
-        Throwable cause = e.getCause();
-        if (cause instanceof MpException) {
-            return ExecuteResult.create(((MpException) cause).getErrorCode(), null,  ((MpException) cause).getCodeParam());
-        } else {
-            return ExecuteResult.create(JsonResultCode.CODE_ORDER_DATABASE_ERROR);
-        }
-    } catch (Exception e) {
-        logger().error("下单捕获mp异常", e);
-        return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
-    }
         //购物车删除
         if(OrderConstant.CART_Y.equals(param.getIsCart())){
             cart.removeCartByProductIds(param.getWxUserInfo().getUserId(), param.getProductIds());

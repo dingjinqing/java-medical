@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2019/10/16 16:01
  */
 @Getter
-@Builder(builderMethodName = "builder")
+@Builder(builderMethodName ="builder")
 public class ResultMessage {
 
     @Builder.Default
