@@ -1,25 +1,5 @@
 package com.vpu.mp.service.shop.goods;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_BRAND;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT_BAK;
-import static com.vpu.mp.db.shop.Tables.SORT;
-import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -31,6 +11,20 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
 import com.vpu.mp.service.shop.store.store.StoreGoodsService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @author 李晓冰
@@ -130,6 +124,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据商品ids删除规格值
+     *
      * @param goodsIds
      * @param goodsIds
      */
@@ -158,6 +153,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据商品id查找对应sku
+     *
      * @param goodsId
      * @return
      */
@@ -167,12 +163,14 @@ public class GoodsSpecProductService extends ShopBaseService {
 
         return goodsSpecProducts;
     }
+
     /**
      * 根据商品id查找对应sku
+     *
      * @param goodsIds
      * @return
      */
-    public Map<Integer,Result<GoodsSpecProductRecord>> selectByGoodsIds(List<Integer> goodsIds) {
+    public Map<Integer, Result<GoodsSpecProductRecord>> selectByGoodsIds(List<Integer> goodsIds) {
         return db().selectFrom(GOODS_SPEC_PRODUCT)
             .where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
             .fetchGroups(GOODS_SPEC_PRODUCT.GOODS_ID);
@@ -180,6 +178,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据商品id查询对应的规格属性名值对象
+     *
      * @param goodsId 商品id
      * @return 规格属性名值对象
      */
@@ -190,10 +189,10 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据prdId修改商品规格信息并删除无用的（数据库中存在但是出入的对象集合中不存在）
+     *
      * @param goodsSpecProducts 规格对象集合
      */
     public void updateAndDeleteForGoodsUpdate(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs, Integer goodsId) {
-        DSLContext db = db();
 
         List<Integer> goodsSpecProductIds = goodsSpecProducts.stream().map(GoodsSpecProduct::getPrdId).collect(Collectors.toList());
 
@@ -202,20 +201,55 @@ public class GoodsSpecProductService extends ShopBaseService {
         //假删除规格名和值内数据
         goodsSpecService.deleteForGoodsUpdate(goodsSpecs, goodsId);
 
-        //修改准备
-        List<GoodsSpecProductRecord> listRecords = new ArrayList<>(goodsSpecProducts.size());
-        goodsSpecProducts.forEach(item -> {
-            GoodsSpecProductRecord record = db.newRecord(GOODS_SPEC_PRODUCT);
-            assign(item, record);
-            listRecords.add(record);
-        });
-        db.batchUpdate(listRecords).execute();
+        batchUpdateGoodsSku(goodsSpecProducts);
 
         goodsSpecService.updateForGoodsUpdate(goodsSpecs);
     }
 
+
+    private void batchUpdateGoodsSku(List<GoodsSpecProduct> goodsSpecProducts) {
+        if (goodsSpecProducts.size() == 0) {
+            return;
+        }
+        GoodsSpecProduct item = goodsSpecProducts.get(0);
+        DSLContext db = db();
+        System.out.println(GOODS_SPEC_PRODUCT.getName());
+        System.out.println(GOODS_SPEC_PRODUCT.getQualifiedName());
+        System.out.println(GOODS_SPEC_PRODUCT.getUnqualifiedName());
+        String sql = db.update(GOODS_SPEC_PRODUCT)
+            .set(GOODS_SPEC_PRODUCT.PRD_PRICE, item.getPrdPrice())
+            .set(GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE, item.getPrdMarketPrice())
+            .set(GOODS_SPEC_PRODUCT.PRD_COST_PRICE, item.getPrdCostPrice())
+            .set(GOODS_SPEC_PRODUCT.PRD_NUMBER, item.getPrdNumber())
+            .set(GOODS_SPEC_PRODUCT.PRD_SN, item.getPrdSn())
+            .set(GOODS_SPEC_PRODUCT.PRD_SPECS, item.getPrdSpecs())
+            .set(GOODS_SPEC_PRODUCT.PRD_DESC, item.getPrdDesc())
+            .set(GOODS_SPEC_PRODUCT.PRD_IMG, item.getPrdImg())
+            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(item.getPrdId()))
+            .getSQL();
+        Query query = db.query(sql);
+        BatchBindStep batchStep = db.batch(query);
+        int addedCount = 0;
+        final int batchCount = 500;
+
+        for (int i = 0; i < goodsSpecProducts.size(); i++) {
+            item = goodsSpecProducts.get(i);
+            addedCount++;
+            batchStep = batchStep.bind(item.getPrdPrice(), item.getPrdMarketPrice(), item.getPrdCostPrice(), item.getPrdNumber(), item.getPrdSn(),
+                item.getPrdSpecs(), item.getPrdDesc(),item.getPrdImg(), item.getPrdId());
+
+            if (addedCount == batchCount) {
+                batchStep.execute();
+                batchStep = db.batch(query);
+                addedCount = 0;
+            }
+        }
+        batchStep.execute();
+    }
+
     /**
      * 删除属于商品id但是不在prdIds集合内的所有项
+     *
      * @param prdIds  规格项id
      * @param goodsId 商品id
      */
@@ -242,6 +276,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 插入商品sku之前预处理器prdSpecs字段，目前用于用户填写了自己的sku
+     *
      * @param goodsSpecProducts 规格属性
      * @param goodsSpecs        规格名值
      * @param goodsId           商品id
@@ -277,21 +312,23 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据商品id集合查询出商品id和规格项的对应分组映射
+     *
      * @param goodsIds 商品id集合
      * @return map key: 商品id value:规格项集合
      */
-    public Map<Integer,List<GoodsSpecProduct>> selectGoodsSpecPrdGroup(List<Integer> goodsIds){
-         return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
+    public Map<Integer, List<GoodsSpecProduct>> selectGoodsSpecPrdGroup(List<Integer> goodsIds) {
+        return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.in(goodsIds))
             .fetch().intoGroups(GOODS_SPEC_PRODUCT.GOODS_ID, GoodsSpecProduct.class);
     }
 
     /**
      * 根据商品id查询出所有规格id和规格的详细信息map映射
+     *
      * @param goodsId 商品id
      * @return map key:规格id，value:规格详情
      */
     public Map<Integer, GoodsSpecProductRecord> selectSpecPrdIdMap(Integer goodsId) {
-       return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchMap(GOODS_SPEC_PRODUCT.PRD_ID);
+        return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchMap(GOODS_SPEC_PRODUCT.PRD_ID);
     }
 
     /**
@@ -305,32 +342,34 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 下单查询规格
+     *
      * @param proIds
      * @param storeId
      * @return
      */
     public Map<Integer, GoodsSpecProductRecord> selectSpecByProIds(List<Integer> proIds, Integer storeId) {
         //商品规格信息
-    	Map<Integer, GoodsSpecProductRecord> products = selectSpecByProIds(proIds);
-    	if(storeId == null || storeId.equals(NumberUtils.INTEGER_ZERO)) {
+        Map<Integer, GoodsSpecProductRecord> products = selectSpecByProIds(proIds);
+        if (storeId == null || storeId.equals(NumberUtils.INTEGER_ZERO)) {
             return products;
         }
-    	//门店商品规格信息
+        //门店商品规格信息
         Map<Integer, StoreGoodsListQueryVo> storeProducts = db().
-        		select(STORE_GOODS.PRODUCT_PRICE, STORE_GOODS.PRODUCT_NUMBER, STORE_GOODS.PRD_ID).
-        		from(STORE_GOODS).
-        		where(STORE_GOODS.IS_ON_SALE.eq(StoreGoodsService.ON_SALE)).and(STORE_GOODS.IS_SYNC.eq((byte) 1)).and(STORE_GOODS.STORE_ID.eq(storeId)).and(STORE_GOODS.PRD_ID.in(proIds)).
-        		fetchMap(STORE_GOODS.PRD_ID, StoreGoodsListQueryVo.class);
+            select(STORE_GOODS.PRODUCT_PRICE, STORE_GOODS.PRODUCT_NUMBER, STORE_GOODS.PRD_ID).
+            from(STORE_GOODS).
+            where(STORE_GOODS.IS_ON_SALE.eq(StoreGoodsService.ON_SALE)).and(STORE_GOODS.IS_SYNC.eq((byte) 1)).and(STORE_GOODS.STORE_ID.eq(storeId)).and(STORE_GOODS.PRD_ID.in(proIds)).
+            fetchMap(STORE_GOODS.PRD_ID, StoreGoodsListQueryVo.class);
         for (GoodsSpecProductRecord product : products.values()) {
-        	StoreGoodsListQueryVo  storeProduct = storeProducts.get(product.getPrdId());
-        	if(storeProduct != null) {
-        		//同步之后的规格价格、库存
-        		product.setPrdPrice(storeProduct.getProductPrice());
-        		product.setPrdNumber(storeProduct.getProductNumber());
-        	}
-		}
+            StoreGoodsListQueryVo storeProduct = storeProducts.get(product.getPrdId());
+            if (storeProduct != null) {
+                //同步之后的规格价格、库存
+                product.setPrdPrice(storeProduct.getProductPrice());
+                product.setPrdNumber(storeProduct.getProductNumber());
+            }
+        }
         return products;
     }
+
     /**
      * 根据id
      *
@@ -346,67 +385,70 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
-     *  获取门店商品信息
+     * 获取门店商品信息
+     *
      * @param productIds
      * @param storeId
      * @return
      */
-    public Result<? extends Record> getStoreProductAll(List<Integer> productIds, Integer storeId){
+    public Result<? extends Record> getStoreProductAll(List<Integer> productIds, Integer storeId) {
         Result<Record4<BigDecimal, Integer, Integer, Integer>> products = db().select(GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.GOODS_ID, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_ID)
-                .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(productIds)).fetch();
-        if (storeId!=null&&storeId>0){
+            .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(productIds)).fetch();
+        if (storeId != null && storeId > 0) {
             Result<Record3<BigDecimal, Integer, Integer>> storeGoods = db().select(STORE_GOODS.PRODUCT_PRICE, STORE_GOODS.PRODUCT_NUMBER, STORE_GOODS.PRD_ID).from(STORE_GOODS)
-                    .where(STORE_GOODS.IS_ON_SALE.eq((byte) 1)).and(STORE_GOODS.IS_SYNC.eq((byte) 1))
-                    .and(STORE_GOODS.STORE_ID.eq(storeId)).and(STORE_GOODS.PRD_ID.in(productIds)).fetch();
-            Map<Integer, BigDecimal> storeGoodsPrices =storeGoods.intoMap(STORE_GOODS.PRD_ID,STORE_GOODS.PRODUCT_PRICE);
-            Map<Integer, Integer> storeGoodsNumbers =storeGoods.intoMap(STORE_GOODS.PRD_ID,STORE_GOODS.PRODUCT_NUMBER);
-            products.stream().forEach(pro->{
+                .where(STORE_GOODS.IS_ON_SALE.eq((byte) 1)).and(STORE_GOODS.IS_SYNC.eq((byte) 1))
+                .and(STORE_GOODS.STORE_ID.eq(storeId)).and(STORE_GOODS.PRD_ID.in(productIds)).fetch();
+            Map<Integer, BigDecimal> storeGoodsPrices = storeGoods.intoMap(STORE_GOODS.PRD_ID, STORE_GOODS.PRODUCT_PRICE);
+            Map<Integer, Integer> storeGoodsNumbers = storeGoods.intoMap(STORE_GOODS.PRD_ID, STORE_GOODS.PRODUCT_NUMBER);
+            products.stream().forEach(pro -> {
                 if (storeGoods.getValues(STORE_GOODS.PRD_ID).contains(pro.get(GOODS_SPEC_PRODUCT.PRD_ID))) {
-                    pro.set(GOODS_SPEC_PRODUCT.PRD_PRICE,storeGoodsPrices.get(STORE_GOODS.PRD_ID));
-                    pro.set(GOODS_SPEC_PRODUCT.PRD_NUMBER,storeGoodsNumbers.get(STORE_GOODS.PRD_ID));
+                    pro.set(GOODS_SPEC_PRODUCT.PRD_PRICE, storeGoodsPrices.get(STORE_GOODS.PRD_ID));
+                    pro.set(GOODS_SPEC_PRODUCT.PRD_NUMBER, storeGoodsNumbers.get(STORE_GOODS.PRD_ID));
                 }
             });
         }
-        return  products;
+        return products;
     }
 
     /**
-     *  根据规格id集合获取对应的规格信息
+     * 根据规格id集合获取对应的规格信息
+     *
      * @param prdIds
      * @return GoodsPageListVo
      */
     public List<GoodsPageListVo> getProductsByProductIds(List<Integer> prdIds) {
-        List<GoodsPageListVo> goodsPageListVos = db().select(GOODS_SPEC_PRODUCT.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_SN,
-                GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_IMG,
-                GOODS.GOODS_NAME,GOODS.GOODS_IMG,SORT.SORT_NAME,GOODS_BRAND.BRAND_NAME)
-                .from(GOODS_SPEC_PRODUCT).innerJoin(GOODS).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
-                .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
-                .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(GOODS_SPEC_PRODUCT.PRD_ID.in(prdIds))
-                .fetchInto(GoodsPageListVo.class);
-        GoodsPageListParam pageListParam=new GoodsPageListParam();
+        List<GoodsPageListVo> goodsPageListVos = db().select(GOODS_SPEC_PRODUCT.GOODS_ID, GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_SN,
+            GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_IMG,
+            GOODS.GOODS_NAME, GOODS.GOODS_IMG, SORT.SORT_NAME, GOODS_BRAND.BRAND_NAME)
+            .from(GOODS_SPEC_PRODUCT).innerJoin(GOODS).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND).on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID))
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(GOODS_SPEC_PRODUCT.PRD_ID.in(prdIds))
+            .fetchInto(GoodsPageListVo.class);
+        GoodsPageListParam pageListParam = new GoodsPageListParam();
         pageListParam.setSelectType(GoodsPageListParam.GOODS_PRD_LIST);
-        goodsService.disposeGoodsPageListVo(goodsPageListVos,pageListParam);
+        goodsService.disposeGoodsPageListVo(goodsPageListVos, pageListParam);
         return goodsPageListVos;
     }
 
     /**
-     *  根据门店获取商品信息
+     * 根据门店获取商品信息
+     *
      * @param productId
      * @param storeId
      * @return
      */
-    public GoodsSpecProductRecord getStoreProductByProductIdAndStoreId(Integer productId, Integer storeId){
-        GoodsSpecProductRecord goodsSpecproduct = db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.GOODS_ID)
-                .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOneInto(GoodsSpecProductRecord.class);
-        if (goodsSpecproduct!=null&&storeId>0){
+    public GoodsSpecProductRecord getStoreProductByProductIdAndStoreId(Integer productId, Integer storeId) {
+        GoodsSpecProductRecord goodsSpecproduct = db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.GOODS_ID)
+            .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId)).fetchOneInto(GoodsSpecProductRecord.class);
+        if (goodsSpecproduct != null && storeId > 0) {
             // 如果有门店,门店价格和数量替换商品价格数量
             StoreGoodsRecord storeGoods = db().selectFrom(STORE_GOODS)
-                    .where(STORE_GOODS.PRD_ID.eq(productId))
-                    .and(STORE_GOODS.IS_ON_SALE.eq((byte) 1))
-                    .and(STORE_GOODS.IS_SYNC.eq((byte) 1))
-                    .and(STORE_GOODS.STORE_ID.eq(storeId)).fetchOne();
-            if (storeGoods!=null) {
+                .where(STORE_GOODS.PRD_ID.eq(productId))
+                .and(STORE_GOODS.IS_ON_SALE.eq((byte) 1))
+                .and(STORE_GOODS.IS_SYNC.eq((byte) 1))
+                .and(STORE_GOODS.STORE_ID.eq(storeId)).fetchOne();
+            if (storeGoods != null) {
                 goodsSpecproduct.setPrdPrice(storeGoods.getProductPrice());
                 goodsSpecproduct.setPrdNumber(storeGoods.getProductNumber());
             }
@@ -415,50 +457,53 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
 
-	/**
-	 * 转化规格商品格式 好物圈用
-	 *
-	 * @param prdDesc
-	 * @return
-	 */
-	public List<SkuAttrList> getSkuAttrList(String prdDesc) {
-		List<SkuAttrList> list = new ArrayList<SkuAttrList>();
-		if (StringUtils.isEmpty(prdDesc)) {
-			list.add(new SkuAttrList("", ""));
-		} else {
-			String[] split = prdDesc.split(PRD_VAL_DELIMITER);
-			list.add(new SkuAttrList(split[0], split[1]));
-		}
-		return list;
-	}
+    /**
+     * 转化规格商品格式 好物圈用
+     *
+     * @param prdDesc
+     * @return
+     */
+    public List<SkuAttrList> getSkuAttrList(String prdDesc) {
+        List<SkuAttrList> list = new ArrayList<SkuAttrList>();
+        if (StringUtils.isEmpty(prdDesc)) {
+            list.add(new SkuAttrList("", ""));
+        } else {
+            String[] split = prdDesc.split(PRD_VAL_DELIMITER);
+            list.add(new SkuAttrList(split[0], split[1]));
+        }
+        return list;
+    }
 
     /**
      * 取规格库存
+     *
      * @param prdId
      * @return
      */
-	public int getPrdNumberByPrdId(int prdId){
+    public int getPrdNumberByPrdId(int prdId) {
         return db().select(GOODS_SPEC_PRODUCT.PRD_NUMBER).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
      * 获取商品的所有规格信息
+     *
      * @param goodsId
      * @return
      */
-    public List<GoodsSpecProductRecord> getGoodsDetailPrds(Integer goodsId){
-        return db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,
-                GOODS_SPEC_PRODUCT.PRD_SPECS, GOODS_SPEC_PRODUCT.PRD_DESC)
-                .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).orderBy(GOODS_SPEC_PRODUCT.PRD_ID)
-                .fetchInto(GoodsSpecProductRecord.class);
+    public List<GoodsSpecProductRecord> getGoodsDetailPrds(Integer goodsId) {
+        return db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER,
+            GOODS_SPEC_PRODUCT.PRD_SPECS, GOODS_SPEC_PRODUCT.PRD_DESC)
+            .from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).orderBy(GOODS_SPEC_PRODUCT.PRD_ID)
+            .fetchInto(GoodsSpecProductRecord.class);
     }
 
     /**
      * 取同商品最大的一个规格价
+     *
      * @param goodsId
      * @return
      */
-    public BigDecimal getMaxPrdPrice(int goodsId){
+    public BigDecimal getMaxPrdPrice(int goodsId) {
         return db().select(DSL.max(GOODS_SPEC_PRODUCT.PRD_PRICE)).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchOptionalInto(BigDecimal.class).orElse(BigDecimal.ZERO);
     }
 }
