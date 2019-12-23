@@ -720,7 +720,7 @@ export default {
       if (item.bgType === 0) {
         return 'background-color:' + item.bgColor
       } else {
-        return 'backgroundImage:url(' + this.$imageHost + '/' + item.bgImg + ')' + ';backgroundRepeat:no-repeat;background-size: 100% 100%;'
+        return 'backgroundImage:url(' + item.bgImg + ')' + ';backgroundRepeat:no-repeat;background-size: 100% 100%;'
       }
     },
     // 跳转到会员卡详情页
