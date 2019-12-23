@@ -229,9 +229,10 @@ public class ScoreService extends ShopBaseService {
 				
 				//TODO  admin 操作记录
 				if (subAccountId == 0) {
+					String strScore = score>=0? "+"+score:""+score;
 					saas().getShopApp(getShopId()).record.insertRecord(
 							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
-							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), String.valueOf(score));
+							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
 				}
 				});
 		}catch(DataAccessException e) {
