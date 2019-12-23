@@ -12,6 +12,8 @@ global.wxPage({
     imageUrl: imageUrl,
     click_look: imageUrl + 'image/wxapp/click_look.png',
     returnSn: '', // 退货订单号
+    orderSn: '', // 订单号
+    orderId: '', // 订单id
     orderInfo: {}, // 订单信息
     refundStatus: 0, // 订单状态
     returnType: 0, // 仅退款0 退货退款1
@@ -30,8 +32,17 @@ global.wxPage({
    */
   onLoad: function (options) {
     let returnSn = options.return_sn
+    let orderSn = '', orderId = ''
+    if (options.order_sn) {
+      orderSn = options.order_sn
+    }
+    if (options.order_id) {
+      orderId = options.order_id
+    }
     this.setData({
-      returnSn: returnSn
+      returnSn: returnSn,
+      orderSn: orderSn,
+      orderId: orderId
     })
     this.initData()
   },
@@ -47,13 +58,13 @@ global.wxPage({
         let applicationTime = ""
         // 倒计时
         if (refundStatus === 4 && returnType === 0) {
-          totalMicroSecond = orderInfo.returnMoneyDays / 1000
+          totalMicroSecond = orderInfo.returnMoneyDays / 1000 || 0
         } else if (refundStatus === 1 && returnType === 1) {
-          totalMicroSecond = orderInfo.returnAddressDays / 1000
+          totalMicroSecond = orderInfo.returnAddressDays / 1000 || 0
         } else if (refundStatus === 4 && returnType === 1) {
-          totalMicroSecond = orderInfo.returnShoppingDays / 1000
+          totalMicroSecond = orderInfo.returnShippingDays / 1000 || 0
         } else if (refundStatus === 2) {
-          totalMicroSecond = orderInfo.returnAuditPassNotShoppingDays / 1000
+          totalMicroSecond = orderInfo.returnAuditPassNotShoppingDays / 1000 || 0
         }
         // 申请时间
         if (refundStatus === 1 || refundStatus === 2) {
@@ -66,6 +77,8 @@ global.wxPage({
         let voucherImages = JSON.parse(orderInfo.voucherImages) || []
         that.setData({
           orderInfo: orderInfo,
+          orderSn: orderInfo.orderSn,
+          orderId: orderInfo.orderId,
           refundStatus: refundStatus,
           returnType: returnType,
           goodsImages: goodsImages,
@@ -124,8 +137,50 @@ global.wxPage({
     return date + "天" + hr + '时' + min + "分" + sec + "秒";
   },
 
-  submitReturnLogistics () {
+  // 提交物流
+  submitPhysics (e) {
+    let returnSn = this.data.returnSn
+    util.navigateTo({
+      url: '/pages1/returnlogistics/returnlogistics?return_sn=' + returnSn
+    })
+  },
 
+  // 查看详情
+  viewOrder () {
+    let orderSn = this.data.orderSn
+    util.navigateTo({
+      url: 'pages/orderinfo/orderinfo?orderSn=' + orderSn
+    })
+  },
+
+  // 撤销申请
+  cancelApplication (e) {
+    let that = this
+    let orderInfo = that.data.orderInfo
+    let params = {
+      orderId: orderInfo.orderId,
+      retId: orderInfo.retId,
+      orderSn: orderInfo.orderSn,
+      action: 1,
+      returnoperate: 1
+    }
+    util.showModal('提示', '您确定要撤销该申请吗？', function () {
+      util.api('/api/wxapp/order/refund', function (res) {
+        if (res.error === 0) {
+          console.log(res.content)
+          util.toast_success('撤销成功')
+        } else {
+          util.toast_fail('撤销失败')
+        }
+      }, params)
+    }, true, '取消', '确定')
+  },
+
+  // 创建售后申请
+  createReturnOrder () {
+    util.navigateTo({
+      url: '/pages1/returnorder/returnorder?order_sn=' + this.data.orderSn + '&order_id=' + this.data.orderId
+    })
   },
 
   /**
