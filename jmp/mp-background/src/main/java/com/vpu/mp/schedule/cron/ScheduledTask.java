@@ -3,12 +3,16 @@ package com.vpu.mp.schedule.cron;
 import java.util.concurrent.ScheduledFuture;
 
 /**
+ * The type Scheduled task.
+ *
  * @author liufei
- * @date 12/20/19
- * 定时任务启动线程，可随时取消该定时任务线程
+ * @date 12 /20/19
  */
 public final class ScheduledTask {
 
+    /**
+     * The Future.
+     */
     volatile ScheduledFuture<?> future;
 
     /**

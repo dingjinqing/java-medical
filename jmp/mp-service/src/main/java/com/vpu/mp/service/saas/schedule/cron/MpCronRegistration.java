@@ -22,9 +22,10 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
+ * The type Mp cron registration.
+ *
  * @author liufei
- * @date 12/19/19
- * 加载db库中的定时任务返回给background使用
+ * @date 12 /19/19 加载db库中的定时任务返回给background使用
  */
 @Service
 public class MpCronRegistration extends MainBaseService {
@@ -40,10 +41,20 @@ public class MpCronRegistration extends MainBaseService {
         return scheduledCron;
     }
 
+    /**
+     * Is able boolean.
+     *
+     * @return the boolean
+     */
     public boolean isAble() {
         return Objects.nonNull(scheduledCron) && CollectionUtils.isNotEmpty(scheduledCron.values());
     }
 
+    /**
+     * Find all list.
+     *
+     * @return the list
+     */
     public List<CronDefineRecord> findAll() {
         if (isAble()) {
             return new ArrayList<>(scheduledCron.values());
@@ -54,6 +65,12 @@ public class MpCronRegistration extends MainBaseService {
         }
     }
 
+    /**
+     * Find by cron key cron define record.
+     *
+     * @param key the key
+     * @return the cron define record
+     */
     public CronDefineRecord findByCronKey(String key) {
         if (isAble()) {
             CronDefineRecord record = scheduledCron.get(key);
@@ -66,34 +83,71 @@ public class MpCronRegistration extends MainBaseService {
         return initScheduleData().get(key);
     }
 
+    /**
+     * Gets cron define by key.
+     *
+     * @param className the class name
+     * @return the cron define by key
+     */
     public CronDefineRecord getCronDefineByKey(String className) {
         return db().selectFrom(CRON_DEFINE).where(CRON_DEFINE.CLASS_NAME.eq(className)).fetchOneInto(CRON_DEFINE);
     }
 
+    /**
+     * Gets cron define by id.
+     *
+     * @param cronId the cron id
+     * @return the cron define by id
+     */
     public CronDefineRecord getCronDefineById(int cronId) {
         return db().selectFrom(CRON_DEFINE).where(CRON_DEFINE.ID.eq(cronId)).fetchOneInto(CRON_DEFINE);
     }
 
+    /**
+     * Insert cron define.
+     *
+     * @param param the param
+     */
     public void insertCronDefine(CronDefineParam param) {
         CronDefineRecord record = new CronDefineRecord();
         FieldsUtil.assignNotNull(param, record);
         db().executeInsert(record);
     }
 
+    /**
+     * Delete cron define.
+     *
+     * @param cronId the cron id
+     */
     public void deleteCronDefine(int cronId) {
         db().delete(CRON_DEFINE).where(CRON_DEFINE.ID.eq(cronId));
     }
 
+    /**
+     * Truncate cron define.
+     */
     public void truncateCronDefine() {
         db().truncate(CRON_DEFINE).restartIdentity();
     }
 
+    /**
+     * Update cron define.
+     *
+     * @param param the param
+     */
     public void updateCronDefine(CronDefineParam param) {
         CronDefineRecord record = new CronDefineRecord();
         FieldsUtil.assignNotNull(param, record);
         db().executeUpdate(record);
     }
 
+    /**
+     * Failed record.
+     *
+     * @param cronId       the cron id
+     * @param executeNum   the execute num
+     * @param failedReason the failed reason
+     */
     public void failedRecord(int cronId, byte executeNum, String failedReason) {
         db().insertInto(CRON_RECORD, CRON_RECORD.CRON_ID, CRON_RECORD.EXECUTE_NUM, CRON_RECORD.FAILED_REASON)
             .values(cronId, executeNum, failedReason)
@@ -105,6 +159,14 @@ public class MpCronRegistration extends MainBaseService {
         updateCronDefine(CronDefineParam.builder().id(cronId).status(BYTE_ZERO).result(CONDITION_THREE).build());
     }
 
+    /**
+     * Single field from record t.
+     *
+     * @param <T>    the type parameter
+     * @param cronId the cron id
+     * @param field  the field
+     * @return the t
+     */
     public <T> T singleFieldFromRecord(int cronId, Field<T> field) {
         return db().select(field).from(CRON_RECORD).where(CRON_RECORD.CRON_ID.eq(cronId)).fetchOne(field);
     }
