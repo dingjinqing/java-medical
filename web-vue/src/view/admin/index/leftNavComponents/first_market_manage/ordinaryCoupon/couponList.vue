@@ -118,7 +118,7 @@
         >
           <template slot-scope="scope">
             <span v-if="scope.row.limitSurplusFlag === 1">不限制</span>
-            <span v-if="scope.row.limitSurplusFlag === 0">{{ scope.row.surplus }} / {{ scope.row.totalAmount }}</span>
+            <span v-if="scope.row.limitSurplusFlag === 0">{{ scope.row.surplus }}/{{ scope.row.totalAmount }}</span>
           </template>
         </el-table-column>
         <el-table-column
