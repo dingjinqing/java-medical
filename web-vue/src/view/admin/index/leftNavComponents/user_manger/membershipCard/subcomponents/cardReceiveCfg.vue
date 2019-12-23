@@ -187,6 +187,7 @@
       :dialogVisible.sync="receiveCodeDialogVisible"
       :batchName="currentBatchName"
       :batchId="currentBatchId"
+      :receiveAction="currentReceiveAction"
       @generateReceiveCodeId="dealWithReceiveCodeId"
     />
   </div>
@@ -255,8 +256,12 @@ export default {
   data () {
     return {
       receiveCodeDialogVisible: false,
+      codeReceiveAction: 1,
+      pwdReceiveAction: 2,
+      currentIndex: 0,
       currentBatchName: null,
       currentBatchId: null,
+      currentReceiveAction: 1,
       codeArr: null,
       payScoreError: false,
       payMoneyError: false
@@ -319,6 +324,30 @@ export default {
 
   },
   methods: {
+    handleCallCodeDialogBottom (index, codeIndex) {
+      switch (codeIndex) {
+        case 0:
+          // 卡号+密码
+          this.showReceivePwdDiaglog(index)
+          break
+      }
+    },
+    showReceivePwdDiaglog (index) {
+      if (!this.ruleForm.codeAddDivArrBottom[index].pwdName) {
+        this.$message.warning('请填写批次名称')
+        return
+      }
+      debugger
+      console.log(this.receiveCodeDialogVisible)
+      this.receiveCodeDialogVisible = true
+      this.currentBatchName = this.ruleForm.codeAddDivArrBottom[index].pwdName
+      debugger
+      console.log(this.ruleForm.codeAddDivArrBottom)
+      this.currentBatchId = this.ruleForm.codeAddDivArrBottom[index].pwdId
+      console.log(this.currentBatchId)
+      this.currentReceiveAction = this.pwdReceiveAction
+      this.currentIndex = index
+    },
     handleCallCodeDialog (index, codeIndex) {
       // 领取码
       switch (codeIndex) {
@@ -342,9 +371,13 @@ export default {
         this.$message.warning('请填写批次名称')
         return
       }
+      debugger
+      console.log(this.receiveCodeDialogVisible)
       this.receiveCodeDialogVisible = true
       this.currentBatchName = this.ruleForm.codeAddDivArr[index].batchName
       this.currentBatchId = this.ruleForm.codeAddDivArr[index].batchId
+      this.currentReceiveAction = this.codeReceiveAction
+      this.currentIndex = index
     },
     // 添加批次
     addBatchItem () {
@@ -370,8 +403,17 @@ export default {
         this.ruleForm = this.val
       }
     },
-    dealWithReceiveCodeId () {
-
+    dealWithReceiveCodeId (id) {
+      debugger
+      console.log(id)
+      if (this.currentReceiveAction === this.pwdReceiveAction) {
+        // 卡号+密码
+        console.log(this.ruleForm.codeAddDivArrBottom)
+        this.ruleForm.codeAddDivArrBottom[this.currentIndex].pwdId = id
+        console.log(this.ruleForm.codeAddDivArrBottom)
+      } else if (this.currentReceiveAction === this.codeReceiveAction) {
+        this.ruleForm.codeAddDivArr[this.currentIndex].batchId = id
+      }
     }
   }
 }
