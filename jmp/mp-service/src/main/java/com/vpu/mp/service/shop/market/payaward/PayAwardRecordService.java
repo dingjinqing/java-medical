@@ -6,9 +6,12 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListVo;
 import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 
+import static com.vpu.mp.db.shop.Tables.PAY_AWARD_PRIZE;
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER;
 
@@ -74,5 +77,25 @@ public class PayAwardRecordService  extends ShopBaseService {
                 .where(PAY_AWARD_RECORD.AWARD_ID.eq(awardId))
                 .and(PAY_AWARD_RECORD.USER_ID.eq(userId)).fetchOneInto(Integer.class);
         return integer;
+    }
+
+    public Record2<Integer, Integer> getAwardSendNumber(Integer payAwardId, Integer prizeId) {
+        return db().select(PAY_AWARD_PRIZE.SEND_NUM,PAY_AWARD_PRIZE.AWARD_NUMBER).from(PAY_AWARD_PRIZE)
+                .where(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAwardId))
+                .and(PAY_AWARD_PRIZE.ID.eq(prizeId)).fetchOne();
+    }
+
+    /**
+     * 奖品是否是销量
+     * @param payAwardId
+     * @param prizeId
+     * @return
+     */
+    public Boolean canSendAward(Integer payAwardId,Integer prizeId){
+        Record1<Integer> count = db().selectCount().from(PAY_AWARD_PRIZE)
+                .where(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAwardId))
+                .and(PAY_AWARD_PRIZE.ID.eq(prizeId))
+                .and(PAY_AWARD_PRIZE.SEND_NUM.lt(PAY_AWARD_PRIZE.AWARD_NUMBER)).fetchOne();
+        return count != null && count.value1() > 0;
     }
 }

@@ -114,7 +114,7 @@
           >
             <template slot-scope="scope">
               <span
-                style="font-size: 22px;"
+                style="font-size: 22px;color: #5a8bff;"
                 class="el-icon-delete"
                 @click="deleteCoupon(scope.row.id)"
               ></span>

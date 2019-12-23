@@ -14,6 +14,10 @@ public class PayAwardConstant {
      * 已领取
      */
     public final static byte PAY_AWARD_GIVE_STATUS_RECEIVED = 1;
+    /**
+     * 还未领取
+     */
+    public final static byte PAY_AWARD_GIVE_STATUS_UNRECEIVED=0;
 
 
 
@@ -41,7 +45,23 @@ public class PayAwardConstant {
      */
     public final static byte GIVE_TYPE_SPLIT_COUPON = 2;
     /**
+     * 幸运大抽奖
+     */
+    public final static byte GIVE_TYPE_LOTTERY=3;
+    /**
+     * 余额
+     */
+    public final static byte GIVE_TYPE_BALANCE=4;
+    /**
      * 奖品
      */
-    public final static byte GIVE_TYPE_SPLIT_GOODS = 5;
+    public final static byte GIVE_TYPE_GOODS = 5;
+    /**
+     *积分
+     */
+    public final static byte GIVE_TYPE_SCORE =6;
+    /**
+     * 之定义
+     */
+    public final static byte GIVE_TYPE_CUSTOM=7;
 }

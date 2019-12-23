@@ -55,7 +55,7 @@ public class SeckillGoodsBo {
     private Byte isPrd;
     @JsonProperty("prd_id")
     private Integer prdId;
-    @JsonProperty("max_rice")
+    @JsonProperty("max_price")
     private BigDecimal maxPrice;
     /***
      * 0未开始，1进行中，2已结束

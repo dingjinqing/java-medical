@@ -10,7 +10,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardContentBo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardIdParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListParam;
@@ -44,8 +43,14 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_IS_FOREVE
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_BALANCE;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_CUSTOM;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_GOODS;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_LOTTERY;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_NO_PRIZE;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_ORDINARY_COUPON;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SPLIT_GOODS;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SCORE;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SPLIT_COUPON;
 
 /**
  * 支付有礼
@@ -218,10 +223,10 @@ public class PayAwardService extends ShopBaseService {
         fetch.forEach(awardPrize -> {
             PayAwardContentBo payAwardBo = awardPrize.into(PayAwardContentBo.class);
             payAwardBo.setAccountNumber(awardPrize.getAccount());
-            if (awardPrize.getGiftType().equals(GIVE_TYPE_ORDINARY_COUPON) || awardPrize.getGiftType().equals(PayAwardConstant.GIVE_TYPE_SPLIT_COUPON)) {
+            if (awardPrize.getGiftType().equals(GIVE_TYPE_ORDINARY_COUPON) || awardPrize.getGiftType().equals(GIVE_TYPE_SPLIT_COUPON)) {
                 List<CouponView> couponViewByIds = couponService.getCouponViewByIds(Util.stringToList(awardPrize.getCouponIds()));
                 payAwardBo.setCouponView(couponViewByIds);
-            } else if (awardPrize.getGiftType().equals(GIVE_TYPE_SPLIT_GOODS)) {
+            } else if (awardPrize.getGiftType().equals(GIVE_TYPE_GOODS)) {
                 ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(awardPrize.getProductId());
                 payAwardBo.setProduct(product);
             }
@@ -361,10 +366,11 @@ public class PayAwardService extends ShopBaseService {
         PayAwardPrizeVo prizeVo =new PayAwardPrizeVo();
         prizeVo.setGiftType(payAwardPrizeRecord.getGiftType());
         switch (payAwardPrizeRecord.getGiftType()){
-            case 0:
+            case GIVE_TYPE_NO_PRIZE:
                 logger().info("无奖励");
                 break;
             case GIVE_TYPE_ORDINARY_COUPON:
+            case GIVE_TYPE_SPLIT_COUPON:
                 logger().info("优惠卷");
                 //已发的优惠卷
                 List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringToList(payAwardRecord.getSendData()));
@@ -372,20 +378,22 @@ public class PayAwardService extends ShopBaseService {
                     prizeVo.setCouponView(couponViews);
                 }
                 break;
-            case 2:
+            case GIVE_TYPE_LOTTERY:
+                logger().info("幸运大抽奖");
                 break;
-            case 3:
+            case GIVE_TYPE_BALANCE:
+                logger().info("余额");
                 break;
-            case 4:
-                break;
-            case GIVE_TYPE_SPLIT_GOODS:
+            case GIVE_TYPE_GOODS:
                 logger().info("奖品");
                 ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(Integer.valueOf(payAwardRecord.getSendData()));
 
                 break;
-            case 6:
+            case GIVE_TYPE_SCORE:
+                logger().info("积分");
                 break;
-            case 7:
+            case GIVE_TYPE_CUSTOM:
+                logger().info("自定义");
                 break;
            default:
         }
