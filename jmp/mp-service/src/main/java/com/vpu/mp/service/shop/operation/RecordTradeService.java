@@ -58,7 +58,7 @@ public class RecordTradeService extends ShopBaseService{
 			Byte tradeFlow = accountData.getTradeFlow();
 			
 			
-			accountService.addUserAccount(accountParam, TradeOptParam.builder().tradeType(tradeType).tradeFlow(tradeFlow).build());
+			accountService.updateUserAccount(accountParam, TradeOptParam.builder().tradeType(tradeType).tradeFlow(tradeFlow).build());
 		}else if(data instanceof ScoreData) {
 			logger().info("积分变动");
 			/** 积分变动 */

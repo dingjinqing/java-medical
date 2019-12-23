@@ -312,9 +312,6 @@ public class AdminMemberCardController extends AdminBaseController {
 	                tradeType(RecordTradeEnum.TYPE_CRASH_MACCOUNT_REFUND.val()).
 	            //资金流量-支出
 	                tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
-		
-		
-
 		try {
 			shop().recordTradeService.updateUserEconomicData(UserCardData.newBuilder().userId(6).cardNo("4448016508219965").build());
 		} catch (MpException e) {
