@@ -11,8 +11,10 @@ import org.springframework.util.Assert;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 
 /**
+ * The type Cron initialize.
+ *
  * @author liufei
- * @date 12/20/19
+ * @date 12 /20/19
  */
 @Slf4j
 @Service

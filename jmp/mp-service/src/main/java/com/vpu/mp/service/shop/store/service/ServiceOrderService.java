@@ -440,7 +440,7 @@ public class ServiceOrderService extends ShopBaseService {
                     .tradeType(RecordTradeEnum.TYPE_CRASH_ACCOUNT_PAY.val())
                     .tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val())
                     .build();
-                accountService.addUserAccount(account, tradeOpt);
+                accountService.updateUserAccount(account, tradeOpt);
             } catch (MpException e) {
                 log.debug("余额抵扣失败：{}", e.getMessage());
                 throw new BusinessException(JsonResultCode.CODE_FAIL);
@@ -562,7 +562,7 @@ public class ServiceOrderService extends ShopBaseService {
             	.tradeType(tradeType)
             	.tradeFlow(tradeFlow)
             	.build();
-        saas.getShopApp(getShopId()).member.account.addUserAccount(accountData, tradeOpt);
+        saas.getShopApp(getShopId()).member.account.updateUserAccount(accountData, tradeOpt);
     }
 
 

@@ -20,9 +20,10 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * The type Cron task registrar.
+ *
  * @author liufei
- * @date 12/20/19
- * 定时任务管理器，负责创建，删除定时任务
+ * @date 12 /20/19 定时任务管理器，负责创建，删除定时任务
  */
 @Slf4j
 @Component
@@ -39,10 +40,20 @@ public class CronTaskRegistrar implements DisposableBean {
 
     private final Map<Runnable, ScheduledTask> scheduledTasks = new ConcurrentHashMap<>(32);
 
+    /**
+     * Gets scheduler.
+     *
+     * @return the scheduler
+     */
     public TaskScheduler getScheduler() {
         return this.taskScheduler;
     }
 
+    /**
+     * Enable schedule.
+     *
+     * @param param the param
+     */
     public void enableSchedule(CronDefineParam param) {
         try {
             Class<?> clazz = Class.forName(param.getClassName());
@@ -55,6 +66,11 @@ public class CronTaskRegistrar implements DisposableBean {
         }
     }
 
+    /**
+     * Disable schedule.
+     *
+     * @param param the param
+     */
     public void disableSchedule(CronDefineParam param) {
         try {
             Class<?> clazz = Class.forName(param.getClassName());
@@ -66,6 +82,11 @@ public class CronTaskRegistrar implements DisposableBean {
         }
     }
 
+    /**
+     * Execute schedule.
+     *
+     * @param param the param
+     */
     public void executeSchedule(CronDefineParam param) {
         try {
             Class<?> clazz = Class.forName(param.getClassName());
@@ -76,6 +97,12 @@ public class CronTaskRegistrar implements DisposableBean {
         }
     }
 
+    /**
+     * Gets cron task.
+     *
+     * @param className the class name
+     * @return the cron task
+     */
     public Runnable getCronTask(String className) {
         try {
             Class<?> clazz = Class.forName(className);
@@ -86,10 +113,21 @@ public class CronTaskRegistrar implements DisposableBean {
         }
     }
 
+    /**
+     * Add cron task.
+     *
+     * @param task           the task
+     * @param cronExpression the cron expression
+     */
     public void addCronTask(Runnable task, String cronExpression) {
         addCronTask(new CronTask(task, cronExpression));
     }
 
+    /**
+     * Add cron task.
+     *
+     * @param cronTask the cron task
+     */
     public void addCronTask(CronTask cronTask) {
         if (Objects.nonNull(cronTask)) {
             Runnable task = cronTask.getRunnable();
@@ -101,6 +139,11 @@ public class CronTaskRegistrar implements DisposableBean {
         }
     }
 
+    /**
+     * Remove cron task.
+     *
+     * @param task the task
+     */
     public void removeCronTask(Runnable task) {
         ScheduledTask scheduledTask = this.scheduledTasks.remove(task);
         if (Objects.nonNull(scheduledTask)) {
@@ -108,6 +151,12 @@ public class CronTaskRegistrar implements DisposableBean {
         }
     }
 
+    /**
+     * Schedule cron task scheduled task.
+     *
+     * @param cronTask the cron task
+     * @return the scheduled task
+     */
     public ScheduledTask scheduleCronTask(CronTask cronTask) {
         ScheduledTask scheduledTask = new ScheduledTask();
         // 启动定时任务，并加入到缓存列表中
@@ -122,31 +171,73 @@ public class CronTaskRegistrar implements DisposableBean {
         this.scheduledTasks.clear();
     }
 
+    /**
+     * Find all list.
+     *
+     * @return the list
+     */
     public List<CronDefineRecord> findAll() {
         return mpCronRegistration.findAll();
     }
 
+    /**
+     * Find by cron key cron define record.
+     *
+     * @param key the key
+     * @return the cron define record
+     */
     public CronDefineRecord findByCronKey(String key) {
         return mpCronRegistration.findByCronKey(key);
     }
 
+    /**
+     * Update status.
+     *
+     * @param result the result
+     */
     public void updateStatus(byte result) {
         mpCronRegistration.updateCronDefine(CronDefineParam.builder().result(result).build());
     }
 
+    /**
+     * Failed record.
+     *
+     * @param cronId       the cron id
+     * @param executeNum   the execute num
+     * @param failedReason the failed reason
+     */
     public void failedRecord(int cronId, byte executeNum, String failedReason) {
         mpCronRegistration.failedRecord(cronId, executeNum, failedReason);
     }
 
+    /**
+     * Single field from record t.
+     *
+     * @param <T>    the type parameter
+     * @param cronId the cron id
+     * @param field  the field
+     * @return the t
+     */
     public <T> T singleFieldFromRecord(int cronId, Field<T> field) {
         return mpCronRegistration.singleFieldFromRecord(cronId, field);
     }
 
+    /**
+     * Lock boolean.
+     *
+     * @param key the key
+     * @return the boolean
+     */
     public boolean lock(String key) {
         key = String.valueOf(key.hashCode());
         return jedisManager.addLock(key, key, 60);
     }
 
+    /**
+     * Release.
+     *
+     * @param key the key
+     */
     public void release(String key) {
         key = String.valueOf(key.hashCode());
         jedisManager.releaseLock(key, key);

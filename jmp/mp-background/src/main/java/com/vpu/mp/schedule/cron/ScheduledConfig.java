@@ -13,8 +13,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 /**
+ * The type Scheduled config.
+ *
  * @author liufei
- * @date 12/18/19
+ * @date 12 /18/19
  */
 @Configuration
 @EnableScheduling
@@ -44,6 +46,11 @@ public class ScheduledConfig implements SchedulingConfigurer {
         });*/
     }
 
+    /**
+     * Task scheduler task scheduler.
+     *
+     * @return the task scheduler
+     */
     @Bean
     public TaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();

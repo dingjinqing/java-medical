@@ -15,15 +15,25 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 /**
+ * The type Annotation aop.
+ *
  * @author liufei
- * @date 12/22/19
+ * @date 12 /22/19
  */
 @Aspect
 @Component
 public class AnnotationAop {
+    /**
+     * The Registrar.
+     */
     @Autowired
     CronTaskRegistrar registrar;
 
+    /**
+     * Log before v 1.
+     *
+     * @param joinPoint the join point
+     */
     @Before("execution(* CronRunnable.run(..))")
     public void logBeforeV1(JoinPoint joinPoint) {
         String className = joinPoint.getTarget().getClass().getName();
@@ -31,6 +41,17 @@ public class AnnotationAop {
         modifyAnnotation(CronRunnable.class, Retryable.class, "run", "maxAttempts", String.valueOf(num));
     }
 
+    /**
+     * Modify annotation annotation.
+     *
+     * @param className      the class name
+     * @param annotationName the annotation name
+     * @param methodName     the method name
+     * @param modifyField    the modify field
+     * @param paramName      the param name
+     * @param paramTypes     the param types
+     * @return the annotation
+     */
     public Annotation modifyAnnotation(Class className, Class annotationName, String methodName, String modifyField, String paramName, Class<?>... paramTypes) {
         try {
             Method method = className.getDeclaredMethod(methodName, paramTypes);
