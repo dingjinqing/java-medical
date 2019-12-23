@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -70,7 +71,8 @@ public class SecKillProcessorDao extends ShopBaseService {
     public SeckillMpVo getDetailSeckillInfo(Integer skId,Integer userId,GoodsDetailMpBo capsule){
         SeckillMpVo seckillVo = new SeckillMpVo();
 
-        SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOne().into(SecKillDefineRecord.class);
+        SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId).and(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
+            .fetchOne().into(SecKillDefineRecord.class);
 
         seckillVo.setActivityId(skId);
         seckillVo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
@@ -79,7 +81,12 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setStock(secKill.getStock());
         seckillVo.setLimitAmount(secKill.getLimitAmount());
         seckillVo.setLimitPaytime(secKill.getLimitPaytime());
-        seckillVo.setStartTime(secKill.getStartTime());
+        if (BaseConstant.ACTIVITY_STATUS_NOT_START.equals(seckillVo.getActState())) {
+            seckillVo.setRemainTime(secKill.getStartTime().getTime()- DateUtil.getLocalDateTime().getTime());
+        }
+        if (BaseConstant.ACTIVITY_STATUS_CAN_USE.equals(seckillVo.getActState())) {
+            seckillVo.setRemainTime(secKill.getEndTime().getTime()-DateUtil.getLocalDateTime().getTime());
+        }
         seckillVo.setEndTime(secKill.getEndTime());
         seckillVo.setCardId(secKill.getCardId());
         seckillVo.setShareConfig(Util.parseJson(secKill.getShareConfig(), ShopShareConfig.class));
