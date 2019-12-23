@@ -5,7 +5,9 @@ import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -132,11 +134,14 @@ public class RecordAdminActionService extends ShopBaseService {
 
 	private String splicingAdminRecordForContent(String templateIds, String datas, String language) {
 		StringBuilder sb = new StringBuilder();
-		Arrays.stream(templateIds.split(",")).forEach((id) -> {
-			sb.append(RecordContentTemplate.GOODS_CONTENT_ADD).append(",");
-		});
-		return Util.translateMessage(language, RecordContentTemplate.GOODS_CONTENT_ADD.getMessage(),
-				LANGUAGE_TYPE_RECORD, (Object[]) datas.split(","));
+
+		List<String> templateMsgList = Arrays.stream(templateIds.split(","))
+            .map(Integer::parseInt)
+            .map(RecordContentTemplate::getMessageByCode)
+            .collect(Collectors.toList());
+
+		return Util.translateMessage(language, templateMsgList,
+            LANGUAGE_TYPE_RECORD, (Object[]) datas.split(","));
 	}
 
 	private RecordAdminActionRecord getAdminRecord() {

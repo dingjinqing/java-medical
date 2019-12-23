@@ -8,6 +8,7 @@ var card_info = [];
 var card_code = '';
 var card_num = '';
 var card_pwd = '';
+var card_activation = 0;
 global.wxPage({
 
   /**
@@ -65,6 +66,9 @@ global.wxPage({
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
         cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
+        if (cardInfo.activation) {
+          card_activation = card_info.activation;
+        }
         that.getUpgradeCondition(cardInfo)
         that.setData({
           cardInfo: cardInfo
@@ -131,6 +135,9 @@ global.wxPage({
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
         cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
+        if (cardInfo.activation) {
+          card_activation = card_info.activation;
+        }
         that.getUpgradeCondition(cardInfo)
         that.setData({
           cardInfo: cardInfo
@@ -158,7 +165,7 @@ global.wxPage({
       case 0:
         return `background-color:${cardItem.bgColor};`;
       case 1:
-        return `background:url('${this.data.imageUrl}${cardItem.bgImg}') no-repeat top left / 100% 100%;`;
+        return `background:url('${cardItem.bgImg}') no-repeat top left / 100% 100%;`;
     }
   },
   // 获取卡类型
@@ -301,7 +308,6 @@ global.wxPage({
     var card = {};
     card.cardId = cardId;
     card_info = JSON.stringify(card);
-    console.log(that.data.card_info)
     if (that.data.cardInfo.isPay == 2) {
       if (that.data.cardInfo.receiveAction == 1) {
         var receiveAction = 1
@@ -313,7 +319,8 @@ global.wxPage({
         receive_action: receiveAction
       })
     } else {
-      util.api('/api/card/getcard', function (res) {
+      util.api('/api/card/getCard', function (res) {
+        console.log(res)
         if (res.error == 0) {
           if (res.content.isMostGrade) {
             util.toast_fail('当前等级已最高');
@@ -334,17 +341,18 @@ global.wxPage({
             util.toast_fail('此卡已存在');
           } else {
             util.toast_success('领取成功', function () {
+              console.log(card_activation, is_fullprice, code, seckillId, goods_id, gift_id)
               if (card_activation == 1) {
                 setTimeout(function () {
                   util.navigateTo({
-                    url: '/pages/memberinfo/memberinfo?act=1&cardNo=' + res.content + '&examine=' + that.data.cardInfo.examine + "&is_fullprice=" + is_fullprice + "&code=" + code + "&seckillId=" + seckillId + '&goods_id=' + goods_id + "&gift_id=" + gift_id
+                    url: '/pages/memberinfo/memberinfo?act=1&cardNo=' + res.content.cardNo + '&examine=' + that.data.cardInfo.examine + "&is_fullprice=" + is_fullprice + "&code=" + code + "&seckillId=" + seckillId + '&goods_id=' + goods_id + "&gift_id=" + gift_id
                   })
                 }, 2000);
               } else {
                 if (is_fullprice == 0 && code == 0 && seckillId == 0 && goods_id == 0 && gift_id == 0) {
                   setTimeout(function () {
                     util.redirectTo({
-                      url: '/pages/usercardlist/usercardlist',
+                      url: '/pages/cardlist/cardlist',
                     })
                   }, 2000);
                 } else if (parseInt(gift_id)) {
@@ -364,6 +372,7 @@ global.wxPage({
                     url: '/pages/item/item?good_id=' + goods_id,
                   })
                 } else {
+                  console.log(111)
                   util.redirectTo({
                     url: '/pages/getcoupon/getcoupon?code=' + code,
                   })
@@ -374,7 +383,7 @@ global.wxPage({
         } else {
           util.toast_fail('领取失败');
         }
-      }, { cardInfo: card_info, getType: that.data.get_type })
+      }, { cardId: Number(that.data.cardId), getType: that.data.get_type })
     }
   },
   // 激活会员卡

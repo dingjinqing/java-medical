@@ -1,11 +1,18 @@
 package com.vpu.mp.service.shop.market.friendpromote;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.jooq.DatePart;
+import org.jooq.Field;
+import org.jooq.Record;
 import org.jooq.Record6;
 import org.jooq.Record7;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingStep;
 import org.jooq.SelectWhereStep;
@@ -19,6 +26,7 @@ import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteAddParam;
@@ -50,7 +58,11 @@ public class FriendPromoteService extends ShopBaseService {
 	private static FriendPromoteActivity fpa = FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY.as("fpa");
 	private static FriendPromoteLaunch fpl = FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH.as("fpl");
 	private static FriendPromoteDetail fpd = FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.as("fpd");
-
+	
+	private static final Byte[] s=new Byte[] {(byte)0,(byte)1};
+	private static final byte ZERO = 0;
+	private static final byte ONE = 1;
+	private static final byte TWO = 2;
 	/**
 	 * 好友助力活动列表
 	 *
@@ -85,16 +97,16 @@ public class FriendPromoteService extends ShopBaseService {
 		}
 		/* 活动状态1进行中 */
 		if (FriendPromoteListParam.DOING == param.getActState()) {
-			sql = sql.and(fpa.IS_BLOCK.eq((byte) 0)).and(fpa.START_TIME.lessOrEqual(nowTime))
+			sql = sql.and(fpa.IS_BLOCK.eq(ZERO)).and(fpa.START_TIME.lessOrEqual(nowTime))
 					.and(fpa.END_TIME.greaterOrEqual(nowTime));
 		}
 		/* 活动状态2未开始 */
 		if (FriendPromoteListParam.TODO == param.getActState()) {
-			sql = sql.and(fpa.IS_BLOCK.eq((byte) 0)).and(fpa.START_TIME.greaterOrEqual(nowTime));
+			sql = sql.and(fpa.IS_BLOCK.eq(ZERO)).and(fpa.START_TIME.greaterOrEqual(nowTime));
 		}
 		/* 活动状态3已结束 */
 		if (FriendPromoteListParam.OUT_OF_DATE == param.getActState()) {
-			sql = sql.and(fpa.IS_BLOCK.eq((byte) 0)).and(fpa.END_TIME.lessOrEqual(nowTime));
+			sql = sql.and(fpa.IS_BLOCK.eq(ZERO)).and(fpa.END_TIME.lessOrEqual(nowTime));
 		}
 		/* 活动状态4已停用 */
 		if (FriendPromoteListParam.STOPPED == param.getActState()) {
@@ -368,4 +380,95 @@ public class FriendPromoteService extends ShopBaseService {
 		return selectFrom.fetchAny();
 	}
 	
+	/**
+	 * 获取结束前后
+	 * @param hours
+	 * @return
+	 */
+	public List<FriendPromoteSelectVo> getLaunchListByHour(Integer hours) {
+		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		Result<Record> fetch = db()
+				.select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE).from(fpl,
+						fpa)
+				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
+						.and(dateFormat(fpa.END_TIME, DateUtil.DATE_MYSQL_DAY).eq(date)))
+				.fetch();
+		List<FriendPromoteSelectVo> into = new ArrayList<FriendPromoteSelectVo>();
+		if (fetch != null) {
+			into = fetch.into(FriendPromoteSelectVo.class);
+		}
+		return into;
+	}
+	
+	/**
+	 * 获取助力失败列表
+	 * @param hours
+	 * @return
+	 */
+	public List<FriendPromoteSelectVo> getPromoteFailedList(Integer hours) {
+		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		Result<Record> fetch = db()
+				.select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE,fpa.FAILED_SEND_TYPE,fpa.FAILED_SEND_CONTENT).from(fpl,
+						fpa)
+				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(
+						fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
+								.and(dateFormat(fpl.LAUNCH_TIME, DateUtil.DATE_MYSQL_DAY).eq(date).or(fpa.END_TIME.eq(DateUtil.getLocalDateTime()))))
+				.fetch();
+		List<FriendPromoteSelectVo> into = new ArrayList<FriendPromoteSelectVo>();
+		if (fetch != null) {
+			into = fetch.into(FriendPromoteSelectVo.class);
+		}
+		return into;
+	}
+	
+	/**
+	 * 修改助力状态
+	 * @param staus
+	 * @param id
+	 * @return
+	 */
+	public int upPromoteInfo(Byte staus,Integer id) {
+		return db().update(fpl).set(fpl.PROMOTE_STATUS,staus ).where(fpl.ID.eq(id)).execute();
+	}
+	
+	/**
+	 * 助力失效前一小时
+	 * @param hours
+	 * @return
+	 */
+	public List<FriendPromoteSelectVo> getPromoteWaitReceiveList(Integer hours) {
+		logger().info("运行助力失效前一小时的sql");
+		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
+		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
+		SelectConditionStep<Record> where = db()
+				.select(fpl.asterisk(), fpa.ACT_CODE, fpa.ACT_NAME, fpa.REWARD_CONTENT, fpa.REWARD_TYPE).from(fpl, fpa)
+				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(fpa.REWARD_TYPE.in(s)).and(fpa.DEL_FLAG.eq(ZERO))
+						.and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ONE)));
+		Field<String> left = DSL.left(DSL.dateAdd(fpl.SUCCESS_TIME.cast(Date.class),
+				DSL.when(fpa.REWARD_DURATION_UNIT.eq(ZERO), fpa.REWARD_DURATION)
+						.when(fpa.REWARD_DURATION_UNIT.eq(ONE), fpa.REWARD_DURATION.multiply(24))
+						.when(fpa.REWARD_DURATION_UNIT.eq(TWO), fpa.REWARD_DURATION.multiply(7).multiply(24)).otherwise(1),
+				DatePart.HOUR).cast(String.class), 16);
+		where.and(left.eq(date));
+		Result<Record> fetch = where.fetch();
+		List<FriendPromoteSelectVo> into = new ArrayList<FriendPromoteSelectVo>();
+		if (fetch != null) {
+			into = fetch.into(FriendPromoteSelectVo.class);
+		}
+		return into;
+	}
+	
+	public FriendPromoteSelectVo getUserLaunchInfo(Integer launchId) {
+		Record fetchAny = db()
+				.select(fpl.asterisk(), fpa.ACT_CODE, fpa.ACT_NAME, fpa.REWARD_CONTENT, fpa.REWARD_TYPE,
+						fpa.FAILED_SEND_TYPE, fpa.FAILED_SEND_CONTENT)
+				.from(fpl, fpa).where(fpl.PROMOTE_ID.eq(fpa.ID).and(fpl.ID.eq(launchId))).fetchAny();
+		FriendPromoteSelectVo vo = null;
+		if (fetchAny != null) {
+			vo = fetchAny.into(FriendPromoteSelectVo.class);
+		}
+		return vo;
+	}
 }

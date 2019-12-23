@@ -32,7 +32,7 @@ global.wxPage({
     clearTimeout(set_time_out);
     var _this = this;
     goods_ids = options.goods_id;
- 
+
     if (options.couponSn) {
       couponSn = options.couponSn
       // 个人中心查看详情
@@ -41,9 +41,11 @@ global.wxPage({
           _this.initHandler(res, 0)
         } else {
           util.toast_fail('操作失败');
-          util.reLaunch({
-            url: '/pages/index/index',
-          })
+          setTimeout(function () {
+            util.reLaunch({
+              url: '/pages/index/index',
+            })
+          }, 2000);
         }
       },{couponSn:options.couponSn})
     } else {
@@ -54,9 +56,11 @@ global.wxPage({
           _this.initHandler(res, 1)
         } else {
           util.toast_fail('操作失败');
-          util.reLaunch({
-            url: '/pages/index/index',
-          })
+          setTimeout(function () {
+            util.reLaunch({
+              url: '/pages/index/index',
+            })
+          }, 2000);
         }
       }, {couponId:options.couponId})
     }

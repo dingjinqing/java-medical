@@ -752,21 +752,13 @@ public class OrderReadService extends ShopBaseService {
         Result<ReturnOrderRecord> rOrders = returnOrder.getRefundByOrderSn(param.getOrderSn());
         vo.setReturnOrderlist(new ArrayList<>(rOrders.size()));
         rOrders.forEach(rOrder->{
-                ReturnOrderListMp returnOrderListMp = new ReturnOrderListMp();
-                //买家；商家（包含定时任务）
+            ReturnOrderListMp returnOrderListMp = rOrder.into(ReturnOrderListMp.class);
+            //买家；商家（包含定时任务）
                 ReturnStatusChangeRecord lastOperator = returnStatusChange.getLastOperator(rOrder.getRetId());
                 //List<OperatorRecord> operatorRecord = returnStatusChange.getOperatorRecord(rOrder.getRetId());
                 returnOrderListMp.setRole(OrderConstant.IS_MP_Y == lastOperator.getType() ? OrderConstant.IS_MP_Y : OrderConstant.IS_MP_ADMIN);
-                returnOrderListMp.setReturnOrderSn(rOrder.getReturnOrderSn());
                 //returnOrderListMp.setOperatorRecord(operatorRecord);
-                returnOrderListMp.setRefundStatus(rOrder.getRefundStatus());
-                returnOrderListMp.setCreateTime(rOrder.getCreateTime());
                 returnOrderListMp.setFinishTime(lastOperator.getCreateTime());
-                returnOrderListMp.setReturnType(rOrder.getReturnType());
-                returnOrderListMp.setReasonType(rOrder.getReasonType());
-                returnOrderListMp.setMoney(rOrder.getMoney());
-                returnOrderListMp.setShippingFee(rOrder.getShippingFee());
-                returnOrderListMp.setRefundRefuseReason(rOrder.getRefundRefuseReason());
                 vo.getReturnOrderlist().add(returnOrderListMp);
         });
         return vo;

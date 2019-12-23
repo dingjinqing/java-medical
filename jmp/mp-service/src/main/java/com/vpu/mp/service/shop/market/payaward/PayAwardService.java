@@ -10,7 +10,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
-import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardContentBo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardIdParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListParam;
@@ -18,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardOrderVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardPrizeParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardPrizeVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListVo;
@@ -43,6 +43,14 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_IS_FOREVE
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_BALANCE;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_CUSTOM;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_GOODS;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_LOTTERY;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_NO_PRIZE;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_ORDINARY_COUPON;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SCORE;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SPLIT_COUPON;
 
 /**
  * 支付有礼
@@ -85,12 +93,13 @@ public class PayAwardService extends ShopBaseService {
 
     /**
      * 保存
-     *  @param param
+     *
+     * @param param
      * @param payAward
      * @return
      */
     private List<Integer> savePayAwardPrize(PayAwardParam param, PayAwardRecord payAward, Boolean addFlag) {
-        List<Integer> list =new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
         for (PayAwardPrizeParam awardBo : param.getAwardList()) {
             PayAwardPrizeRecord payAwardPrizeRecord = db().newRecord(PAY_AWARD_PRIZE);
             if (addFlag) {
@@ -99,34 +108,34 @@ public class PayAwardService extends ShopBaseService {
                 payAwardPrizeRecord.setId(awardBo.getId());
             }
             payAwardPrizeRecord.setPayAwardId(payAward.getId());
-            if (Objects.nonNull(awardBo.getCouponIds())){
+            if (Objects.nonNull(awardBo.getCouponIds())) {
                 payAwardPrizeRecord.setCouponIds(Util.listToString(awardBo.getCouponIds()));
             }
-            if (awardBo.getAccountNumber()!=null){
+            if (awardBo.getAccountNumber() != null) {
                 payAwardPrizeRecord.setAccount(awardBo.getAccountNumber());
             }
-            if (awardBo.getScoreNumber()!=null){
-                payAwardPrizeRecord.setScoreNumber(awardBo.getScoreNumber()==null?0:awardBo.getScoreNumber());
+            if (awardBo.getScoreNumber() != null) {
+                payAwardPrizeRecord.setScoreNumber(awardBo.getScoreNumber() == null ? 0 : awardBo.getScoreNumber());
             }
-            if (awardBo.getGiftType()!=null){
+            if (awardBo.getGiftType() != null) {
                 payAwardPrizeRecord.setGiftType(awardBo.getGiftType());
             }
-            if (awardBo.getLotteryId()!=null){
+            if (awardBo.getLotteryId() != null) {
                 payAwardPrizeRecord.setLotteryId(Optional.ofNullable(awardBo.getLotteryId()).orElse(0));
             }
-            if (awardBo.getProductId()!=null){
+            if (awardBo.getProductId() != null) {
                 payAwardPrizeRecord.setProductId(Optional.ofNullable(awardBo.getProductId()).orElse(0));
             }
-            if (awardBo.getKeepDays()!=null){
+            if (awardBo.getKeepDays() != null) {
                 payAwardPrizeRecord.setKeepDays(Optional.ofNullable(awardBo.getKeepDays()).orElse(0));
             }
-            if (awardBo.getCustomImage()!=null){
+            if (awardBo.getCustomImage() != null) {
                 payAwardPrizeRecord.setCustomImage(Optional.ofNullable(awardBo.getCustomImage()).orElse(""));
             }
-            if (awardBo.getCustomImage()!=null){
+            if (awardBo.getCustomImage() != null) {
                 payAwardPrizeRecord.setCustomLink(Optional.ofNullable(awardBo.getCustomLink()).orElse(""));
             }
-            if (awardBo.getAwardNumber()!=null){
+            if (awardBo.getAwardNumber() != null) {
                 payAwardPrizeRecord.setAwardNumber(Optional.ofNullable(awardBo.getAwardNumber()).orElse(0));
             }
             payAwardPrizeRecord.insert();
@@ -203,23 +212,25 @@ public class PayAwardService extends ShopBaseService {
     }
 
     /**
-     *  查询活动奖励
+     * 查询活动奖励
+     *
      * @param payAwardId
      * @return
      */
     private List<PayAwardContentBo> getPayAwardPrizeToBo(Integer payAwardId) {
         Result<PayAwardPrizeRecord> fetch = db().selectFrom(PAY_AWARD_PRIZE).where(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAwardId)).fetch();
-        List<PayAwardContentBo> awardContentList =new ArrayList<>();
+        List<PayAwardContentBo> awardContentList = new ArrayList<>();
         fetch.forEach(awardPrize -> {
             PayAwardContentBo payAwardBo = awardPrize.into(PayAwardContentBo.class);
             payAwardBo.setAccountNumber(awardPrize.getAccount());
-            if (awardPrize.getGiftType().equals(PayAwardConstant.GIVE_TYPE_ORDINARY_COUPON) || awardPrize.getGiftType().equals(PayAwardConstant.GIVE_TYPE_SPLIT_COUPON)) {
+            if (awardPrize.getGiftType().equals(GIVE_TYPE_ORDINARY_COUPON) || awardPrize.getGiftType().equals(GIVE_TYPE_SPLIT_COUPON)) {
                 List<CouponView> couponViewByIds = couponService.getCouponViewByIds(Util.stringToList(awardPrize.getCouponIds()));
                 payAwardBo.setCouponView(couponViewByIds);
-            } else if (awardPrize.getGiftType().equals(PayAwardConstant.GIVE_TYPE_SPLIT_GOODS)) {
+            } else if (awardPrize.getGiftType().equals(GIVE_TYPE_GOODS)) {
                 ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(awardPrize.getProductId());
                 payAwardBo.setProduct(product);
-            }            awardContentList.add(payAwardBo);
+            }
+            awardContentList.add(payAwardBo);
         });
         return awardContentList;
     }
@@ -348,14 +359,47 @@ public class PayAwardService extends ShopBaseService {
             return null;
         }
         //获取正在进行的活动
-        PayAwardVo payAward = getPayAwardById(payAwardRecord.getAwardId());
-        if (payAward.getAwardContentList().size() < payAwardRecord.getAwardTimes()) {
-            return null;
+        PayAwardRecord payAward = db().selectFrom(PAY_AWARD).where(PAY_AWARD.ID.eq(payAwardRecord.getAwardId())).fetchOne();
+        Result<PayAwardPrizeRecord> payAwardPrizeRecords = db().selectFrom(PAY_AWARD_PRIZE).where(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAwardRecord.getAwardId())).fetch();
+
+        PayAwardPrizeRecord payAwardPrizeRecord = payAwardPrizeRecords.get(payAwardRecord.getAwardTimes());
+        PayAwardPrizeVo prizeVo =new PayAwardPrizeVo();
+        prizeVo.setGiftType(payAwardPrizeRecord.getGiftType());
+        switch (payAwardPrizeRecord.getGiftType()){
+            case GIVE_TYPE_NO_PRIZE:
+                logger().info("无奖励");
+                break;
+            case GIVE_TYPE_ORDINARY_COUPON:
+            case GIVE_TYPE_SPLIT_COUPON:
+                logger().info("优惠卷");
+                //已发的优惠卷
+                List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringToList(payAwardRecord.getSendData()));
+                if (couponViews.size()>0){
+                    prizeVo.setCouponView(couponViews);
+                }
+                break;
+            case GIVE_TYPE_LOTTERY:
+                logger().info("幸运大抽奖");
+                break;
+            case GIVE_TYPE_BALANCE:
+                logger().info("余额");
+                break;
+            case GIVE_TYPE_GOODS:
+                logger().info("奖品");
+                ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(Integer.valueOf(payAwardRecord.getSendData()));
+
+                break;
+            case GIVE_TYPE_SCORE:
+                logger().info("积分");
+                break;
+            case GIVE_TYPE_CUSTOM:
+                logger().info("自定义");
+                break;
+           default:
         }
-        PayAwardContentBo payAwardContentBo = payAward.getAwardContentList().get(payAwardRecord.getAwardTimes());
         PayAwardOrderVo payAwardOrderVo = new PayAwardOrderVo();
-        payAwardOrderVo.setPayAwardContentBo(payAwardContentBo);
-        payAwardOrderVo.setPayAwardSize(payAward.getAwardContentList().size());
+        payAwardOrderVo.setPayAwardPrize(prizeVo);
+        payAwardOrderVo.setPayAwardSize(payAwardPrizeRecords.size());
         payAwardOrderVo.setCurrentAwardTimes(payAwardRecord.getAwardTimes() + 1);
         return payAwardOrderVo;
     }

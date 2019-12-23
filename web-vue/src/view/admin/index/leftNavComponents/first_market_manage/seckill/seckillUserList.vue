@@ -3,62 +3,56 @@
 
     <div class="main">
       <el-form label-width="100px">
-        <el-row :gutter=24>
-          <el-col :span="5">
-            <el-form-item :label="this.$t('seckill.mobile') + '：'">
-              <el-input
-                size="small"
-                v-model="requestParams.mobile"
-                :placeholder="this.$t('seckill.mobile')"
-                maxlength="11"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="5"
-            style="margin-left: -20px"
-          >
-            <el-form-item :label="this.$t('seckill.name') + '：'">
-              <el-input
-                size="small"
-                v-model="requestParams.username"
-                :placeholder="this.$t('seckill.name')"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="6"
-            style="margin-left: -20px"
-          >
-            <el-form-item :label="this.$t('seckill.goodsNum') + '：'">
-              <el-input
-                size="small"
-                v-model="requestParams.minGoodsAmount"
-                clearable
-                style="width: 90px;"
-              ></el-input>
-              {{ this.$t('seckill.to') }}
-              <el-input
-                size="small"
-                v-model="requestParams.maxGoodsAmount"
-                clearable
-                style="width: 90px;"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="1">
-            <el-button
-              size="small"
-              type="primary"
-              @click="initDataList"
-              style="margin: 4px 0 0 0"
-            >{{ this.$t('seckill.search') }}</el-button>
-          </el-col>
-        </el-row>
+        <el-form-item
+          :label="this.$t('seckill.mobile') + '：'"
+          class="item"
+        >
+          <el-input
+            size="small"
+            v-model="requestParams.mobile"
+            :placeholder="this.$t('seckill.mobile')"
+            maxlength="11"
+            clearable
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          :label="this.$t('seckill.name') + '：'"
+          class="item"
+        >
+          <el-input
+            size="small"
+            v-model="requestParams.username"
+            :placeholder="this.$t('seckill.name')"
+            clearable
+            class="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          :label="this.$t('seckill.goodsNum') + '：'"
+          class="item"
+        >
+          <el-input
+            size="small"
+            v-model="requestParams.minGoodsAmount"
+            clearable
+            style="width: 90px;"
+          ></el-input>
+          {{ this.$t('seckill.to') }}
+          <el-input
+            size="small"
+            v-model="requestParams.maxGoodsAmount"
+            clearable
+            style="width: 90px;"
+          ></el-input>
+        </el-form-item>
+        <el-button
+          size="small"
+          type="primary"
+          @click="initDataList"
+          class="item"
+          style="margin-left: 10px;"
+        >{{ this.$t('seckill.search') }}</el-button>
       </el-form>
     </div>
 
@@ -169,6 +163,9 @@ export default {
       .el-button {
         margin-left: 5px;
       }
+    }
+    .item {
+      display: inline-block;
     }
   }
 }

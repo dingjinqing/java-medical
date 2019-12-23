@@ -93,3 +93,32 @@
   margin-top: 4rpx;
   margin-left: 10rpx;
 }
+.order-content {
+  font-size: 26rpx;
+  color: #333;
+  padding: 0rpx 20rpx;
+  padding-bottom: 30rpx;
+}
+.order-item-title {
+  margin-bottom: 30rpx;
+}
+.order-item-title text {
+  color: #999;
+}
+.order-item-btn {
+  border-top: 2rpx solid #eee;
+  padding-top: 20rpx;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.item-btn {
+  width: 140rpx;
+  height: 50rpx;
+  border: 2rpx solid #f66;
+  border-radius: 8rpx;
+  text-align: center;
+  line-height: 50rpx;
+  margin-left: 30rpx;
+  color: #f66;
+}

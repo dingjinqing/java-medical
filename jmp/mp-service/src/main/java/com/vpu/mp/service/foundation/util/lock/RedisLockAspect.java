@@ -1,5 +1,6 @@
 package com.vpu.mp.service.foundation.util.lock;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
@@ -8,14 +9,19 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.foundation.util.lock.annotation.operation.AddRedisLocks;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -43,18 +49,46 @@ public final class RedisLockAspect extends ShopBaseService {
 
     private String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
+    private ThreadLocal<String> currentValue = ThreadLocal.withInitial(StringUtils.EMPTY::toString);
+
+    private ThreadLocal<List<String>> currentKeys = ThreadLocal.withInitial(Lists::newArrayList);
+
     @Around("@annotation(com.vpu.mp.service.foundation.util.lock.annotation.RedisLock)")
-    public void around(ProceedingJoinPoint joinPoint) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, MpException {
-        log.info("redis批量锁start");
+    public void around(ProceedingJoinPoint joinPoint) throws MpException {
+        log.info("redis环绕批量锁start");
         //keys
         List<String> keys = null;
         //开始时间
         long nano = System.nanoTime();
-        //
+        //获取签名
         Signature signature = joinPoint.getSignature();
         Object[] args = joinPoint.getArgs();
         //获取方法签名
         MethodSignature methodSignature = (MethodSignature) signature;
+        addLocks(joinPoint);
+        log.info("redis环绕批量锁调用代理方法start");
+        try {
+            joinPoint.proceed();
+        } catch (Throwable throwable) {
+            log.error("批量锁执行joinPoint.proceed()异常", throwable);
+            throw new MpException(JsonResultCode.CODE_ORDER_UPDATE_STOCK_FAIL);
+        }
+        log.info("redis环绕批量锁调用代理方法end");
+
+
+    }
+
+    /**
+     * 获取方法实参keys
+     * @param args 实参数组
+     * @param methodSignature 方法签名
+     * @return keys
+     * @throws IllegalAccessException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     */
+    private List<String> getKeys(Object[] args, MethodSignature methodSignature) throws MpException {
+        List<String> keys = Lists.newArrayList();
         //形参
         Parameter[] parameters = methodSignature.getMethod().getParameters();
         //key所在形参索引
@@ -67,14 +101,7 @@ public final class RedisLockAspect extends ShopBaseService {
             }
         }
         if(keyIndex == null){
-            try {
-                log.info("非批量锁调用代理方法start");
-                joinPoint.proceed();
-                log.info("非批量锁调用代理方法end");
-            } catch (Throwable throwable) {
-                log.error("非批量锁调用代理方法异常");
-                //TODO
-            }
+            return keys;
         }
         //keys实参
         if(args[keyIndex] instanceof List){
@@ -99,8 +126,14 @@ public final class RedisLockAspect extends ShopBaseService {
                 }
                 //初始化keys
                 keys = new ArrayList<>(keyObjs.size());
-                for (Object keyObj : keyObjs) {
-                    keys.add(PropertyUtils.getProperty(keyObj, keyFieldName).toString());
+                try {
+                    for (Object keyObj : keyObjs) {
+
+                        keys.add(PropertyUtils.getProperty(keyObj, keyFieldName).toString());
+                    }
+                }catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    log.error("redis获取锁PropertyUtils.getProperty错误");
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_GET_LOCK_FAIL, "redis获取锁PropertyUtils.getProperty错误");
                 }
             }
 
@@ -122,55 +155,14 @@ public final class RedisLockAspect extends ShopBaseService {
             }
             //初始化keys
             keys = new ArrayList<>(1);
-            keys.add(PropertyUtils.getProperty(args[keyIndex.intValue()], keyFieldName).toString());
-        }
-        //获取注解
-        RedisLock redisLockAnnotation = methodSignature.getMethod().getAnnotation(RedisLock.class);
-        //解锁时value
-        String value = Util.randomId();
-        //获取锁参数
-        for (int i = 0, length = args.length; i < length; i++) {
-            if (args[i].getClass().isAnnotationPresent(RedisLockKeys.class)) {
-                keys = (List<String>) args[i];
-                break;
+            try {
+                keys.add(PropertyUtils.getProperty(args[keyIndex.intValue()], keyFieldName).toString());
+            }catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                log.error("redis获取锁PropertyUtils.getProperty错误");
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_GET_LOCK_FAIL, "redis获取锁PropertyUtils.getProperty错误");
             }
         }
-        //去重
-        keys = keys.stream().distinct().collect(Collectors.toList());
-        //初始化key
-        for (int i = 0, length = keys.size(); i < length; i++) {
-            keys.set(i, new StringBuilder().append(redisLockAnnotation.prefix()).append(getShopId()).append(":").append(keys.get(i)).toString());
-        }
-        //获取失败时需要释放锁的list
-        List<String> fail = new ArrayList<>(keys.size());
-        try {
-            do {
-                fail.clear();
-                //加锁
-                addLocks(keys, value, redisLockAnnotation.expiredTime(), fail);
-                if (fail.size() < keys.size()) {
-                    //获取批量锁失败
-                    log.error("批量锁获取失败,当前获取到:", fail.toString());
-                    releaseLocks(fail, value);
-                } else {
-                    log.info("批量锁获取成功，准备调用代理方法");
-                    //成功调用代理方法
-                    joinPoint.proceed();
-                    log.info("调用代理方法成功");
-                    break;
-                }
-            } while (nano - System.nanoTime() < redisLockAnnotation.maxWait() * 1000000);
-            if(fail.size() != keys.size()){
-                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_GET_LOCK_FAIL);
-            }
-        } catch (Throwable throwable) {
-            log.error("批量锁执行joinPoint.proceed()异常");
-            throw new MpException(JsonResultCode.CODE_ORDER_UPDATE_STOCK_FAIL);
-        }finally {
-            log.info("释放redis锁");
-            //释放
-            releaseLocks(keys, value);
-        }
+        return keys;
     }
 
     /**
@@ -212,5 +204,67 @@ public final class RedisLockAspect extends ShopBaseService {
             }
             pipeline.sync();
         }
+    }
+
+    @Before("@annotation(com.vpu.mp.service.foundation.util.lock.annotation.operation.AddRedisLocks)")
+    public void addLocks(JoinPoint joinPoint) throws MpException {
+        log.info("AddRedisLocks,加redis锁start");
+        //keys
+        List<String> keys;
+        //开始时间
+        long nano = System.nanoTime();
+        //获取签名
+        Signature signature = joinPoint.getSignature();
+        //获取keys
+        keys = getKeys(joinPoint.getArgs(),(MethodSignature) signature);
+        //keys为空，则结束
+        if(CollectionUtils.isEmpty(keys)){
+            log.info("AddRedisLocks,加redis锁(keys is null)end");
+            return;
+        }
+        currentValue.set(Util.randomId());
+        //获取注解
+        ((MethodSignature) signature).getMethod().getAnnotations();
+        RedisLock redisLockAnnotation = ((MethodSignature) signature).getMethod().getAnnotation(RedisLock.class);
+        if(redisLockAnnotation == null){
+            AddRedisLocks addRedisLocks = ((MethodSignature) signature).getMethod().getAnnotation(AddRedisLocks.class);
+            redisLockAnnotation = addRedisLocks.redisLock();
+        }
+        //去重
+        keys = keys.stream().distinct().collect(Collectors.toList());
+        //初始化key
+        for (int i = 0, length = keys.size(); i < length; i++) {
+            keys.set(i, new StringBuilder().append(redisLockAnnotation.prefix()).append(getShopId()).append(":").append(keys.get(i)).toString());
+        }
+        //线程记录该次加锁keys
+        currentKeys.set(keys);
+        //获取失败时需要释放锁的list
+        List<String> fail = new ArrayList<>(keys.size());
+        do {
+            fail.clear();
+            //加锁
+            addLocks(keys, currentValue.get(), redisLockAnnotation.expiredTime(), fail);
+            if (fail.size() < keys.size()) {
+                //获取批量锁失败
+                log.error("批量锁获取失败,当前获取到:", fail.toString());
+                releaseLocks(fail, currentValue.get());
+            } else {
+                log.info("批量锁获取成功，执行后续方法");
+                break;
+            }
+        } while (nano - System.nanoTime() < redisLockAnnotation.maxWait() * 1000000);
+        if (fail.size() != keys.size()) {
+            //释放
+            releaseLocks(fail, currentValue.get());
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_GET_LOCK_FAIL);
+        }
+        log.info("AddRedisLocks,加redis锁end");
+    }
+
+    @Before("@annotation(com.vpu.mp.service.foundation.util.lock.annotation.operation.ReleaseRedisLocks)")
+    public void releaseLocks(JoinPoint joinPoint){
+        log.info("AddRedisLocks,释放redis锁start");
+        releaseLocks(currentKeys.get(), currentValue.get());
+        log.info("AddRedisLocks,释放redis锁end");
     }
 }

@@ -12,8 +12,6 @@ global.wxPage({
     imageUrl: imageUrl,
     click_look: imageUrl + 'image/wxapp/click_look.png',
     orderSn: '',
-    orderId: '',
-    retId: '',
     returnFlag: 0, // 是否展示创建售后申请按钮
     returnOrderList: [], // 售后单列表
     createTime: '', // 下单时间
@@ -28,12 +26,8 @@ global.wxPage({
    */
   onLoad: function (options) {
     let orderSn = options.order_sn
-    let orderId = options.order_id
-    let retId = options.ret_id
     this.setData({
-      orderSn: orderSn,
-      orderId: orderId,
-      retId: retId
+      orderSn: orderSn
     })
     this.initData()
   },
@@ -45,14 +39,12 @@ global.wxPage({
         let content = res.content
         that.setData({
           returnFlag: content.returnFlag,
-          returnOrderlist: content.returnOrderList,
+          returnOrderList: content.returnOrderlist,
           createTime: content.createTime
         })
       }
     }, {
-      orderSn: that.data.orderSn,
-      orderId: that.data.orderId,
-      retId: that.data.retId
+      orderSn: that.data.orderSn
     })
   },
 

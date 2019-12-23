@@ -341,7 +341,8 @@ export default {
     getBgStyle () {
       console.log(this.bgImg)
       if (this.bgType === '1' && this.bgImg) {
-        return `backgroundImage:url(${this.$imageHost}/${this.bgImg});backgroundRepeat:no-repeat;background-size: 100% 100%;`
+        return `backgroundImage:url(${this.bgImg});backgroundRepeat:no-repeat;background-size: 100% 100%;`
+        // return `backgroundImage:url(${this.$imageHost}/${this.bgImg});backgroundRepeat:no-repeat;background-size: 100% 100%;`
       } else {
         return this.bgStyleComputed
       }

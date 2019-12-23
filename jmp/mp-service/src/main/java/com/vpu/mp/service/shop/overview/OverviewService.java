@@ -13,4 +13,5 @@ public class OverviewService extends ShopBaseService{
 	@Autowired public OverviewAnalysisService overviewAnalysisService;
 	@Autowired public UserAnalysisService userAnalysisService;
 	@Autowired public SearchAnalysisService searchAnalysisService;
+	@Autowired public HotWordsService hotWordsService;
 }
