@@ -436,7 +436,6 @@ export default {
           case 23:
             this.data.goodsListData[index]['noShowActFlag'] = 23
             break
-
         }
       })
     }

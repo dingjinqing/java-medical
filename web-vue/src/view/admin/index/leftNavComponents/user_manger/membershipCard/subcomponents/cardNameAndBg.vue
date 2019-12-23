@@ -174,12 +174,13 @@ export default {
     },
     // 图片选中
     handleSelectImg (res) {
-      console.log(res.imgPath)
-      this.ruleForm.bgImg = res.imgPath
+      // this.ruleForm.bgImg = res.imgPath
+      this.ruleForm.bgImg = this.$imageHost + '/' + res.imgPath
+      console.log(this.ruleForm.bgImg)
     },
     getBgImg () {
       if (this.ruleForm.bgImg) {
-        return this.$imageHost + '/' + this.ruleForm.bgImg
+        return this.ruleForm.bgImg
       }
     },
     getDefaultBgImg () {

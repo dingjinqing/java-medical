@@ -195,6 +195,18 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$on('checkRule', () => {
+      this.$refs.ruleForm.validate((valid) => {
+        if (!valid) {
+          this.ruleForm.valid = false
+          this.$message.warning('请输入赠送积分')
+        } else {
+          this.ruleForm.valid = true
+        }
+      })
+    })
+  },
   data () {
     let validateScore = (rule, value, callback) => {
       if (this.ruleForm.powerScore) {

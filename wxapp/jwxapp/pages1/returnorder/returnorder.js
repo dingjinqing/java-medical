@@ -82,7 +82,7 @@ global.wxPage({
         goodsInfo.forEach(item => {
           item.checked = false
           if (!item.goodsImg) {
-            item.goodsImg = 'upload/245547/image/20191212/plaHOXplJV1NGrHmS6J6.jpg'
+            item.goodsImg = 'image/wxapp/no_order.png'
           }
         })
         that.setData({
