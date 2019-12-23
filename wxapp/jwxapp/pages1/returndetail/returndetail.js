@@ -11,6 +11,7 @@ global.wxPage({
   data: {
     imageUrl: imageUrl,
     click_look: imageUrl + 'image/wxapp/click_look.png',
+    userId: '',
     returnSn: '', // 退货订单号
     orderSn: '', // 订单号
     orderId: '', // 订单id
@@ -42,7 +43,8 @@ global.wxPage({
     this.setData({
       returnSn: returnSn,
       orderSn: orderSn,
-      orderId: orderId
+      orderId: orderId,
+      userId: util.getCache('user_id')
     })
     this.initData()
   },
