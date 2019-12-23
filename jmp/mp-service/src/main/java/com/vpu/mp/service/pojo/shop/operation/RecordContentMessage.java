@@ -45,11 +45,14 @@ public class RecordContentMessage {
     /** 会员余额更新变动 */
 	//public static final String MSG_MEMBER_ACCOUNT = "修改\"ID: %d  昵称: %s \"的余额 %s";
     public static final String MSG_MEMBER_ACCOUNT = "member.account";
+    
+    public static final String MSG_MEMBER_INTEGRALT = "member.integral";
 
     /**
      * 	营销
      */
     /** 秒杀活动添加 */
     public static final String MARKET_SECKILL_ADD = "market.seckill.add";
+
 
 }

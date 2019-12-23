@@ -596,11 +596,11 @@ public class PreSaleService extends ShopBaseService {
 				.where(PRESALE.DEL_FLAG.eq(NOT_DELETED));
 		//还没开始
 		if(type.equals((byte) 0)) {
-			fetch.and(dateFormat(PRESALE.END_TIME, "yyyy-MM-dd HH:mm").eq(date));
+			fetch.and(dateFormat(PRESALE.END_TIME, DateUtil.DATE_MYSQL_DAY).eq(date));
 		}
 		//快开始
 		if(type.equals((byte) 1)) {
-			fetch.and(dateFormat(PRESALE.START_TIME, "yyyy-MM-dd HH:mm").eq(date));
+			fetch.and(dateFormat(PRESALE.START_TIME, DateUtil.DATE_MYSQL_DAY).eq(date));
 		}
 		Result<PresaleRecord> fetch2 = fetch.fetch();
 		List<PreSaleVo> into = new ArrayList<PreSaleVo>();

@@ -42,7 +42,12 @@ public enum MpTemplateConfig {
     PAYMENT_REMINDER(
             "OPENTM401751289",
             "订单待付款提醒",
-            "{{first.DATA}}订单编号：{{keyword1.DATA}}支付金额：{{keyword2.DATA}}{{remark.DATA}}");
+            "{{first.DATA}}订单编号：{{keyword1.DATA}}支付金额：{{keyword2.DATA}}{{remark.DATA}}"),
+    
+    LOTTERY_RESULTS(
+            "OPENTM412181311",
+            "抽奖结果通知",
+            "{{first.DATA}}奖品名称：{{keyword1.DATA}}中奖时间：{{keyword2.DATA}}{{remark.DATA}}");
 	
 	/**
 	 * 模板编号

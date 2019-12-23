@@ -31,6 +31,8 @@ public enum   RecordContentTemplate {
 	MEMBER_CARD_SEND(4001,RecordContentMessage.MSG_MEMBER_CARD_SEND),
 	/** 会员-余额*/
 	MEMBER_ACCOUNT(4002,RecordContentMessage.MSG_MEMBER_ACCOUNT),
+	/** 会员-积分*/
+	MEMBER_INTEGRALT(4003,RecordContentMessage.MSG_MEMBER_INTEGRALT),
 
     /** 营销-秒杀 */
     MARKET_SECKILL_ADD(5001,RecordContentMessage.MARKET_SECKILL_ADD);
