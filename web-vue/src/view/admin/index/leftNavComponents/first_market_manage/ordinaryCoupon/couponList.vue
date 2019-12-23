@@ -1,12 +1,53 @@
 <template>
   <div class="content">
     <!-- tabs -->
-    <div class="main">
+    <!-- <div class="main">
       <statusTab
         v-model="nav"
         :activityName="activityName"
         :standard="true"
       />
+      <div class="wrapper">
+        <span>{{$t('ordinaryCouponList.couponName')}}：</span>
+        <el-input
+          size="small"
+          v-model="actName"
+          clearable
+          :placeholder="$t('ordinaryCouponList.inputPlaceholder')"
+          class='search_content'
+        >
+        </el-input>
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleClick"
+          class="btn"
+        >{{$t('ordinaryCouponList.search')}}</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="addCoupon()"
+          class="barginBtn"
+        >{{$t('ordinaryCouponList.addCoupon')}}</el-button>
+      </div>
+    </div> -->
+
+    <!-- tab -->
+    <div class="main">
+      <el-tabs
+        v-model="nav"
+        @tab-click="initDataList"
+        :lazy="true"
+      >
+        <el-tab-pane
+          v-for="(item, index) in tabInfo"
+          :key="index"
+          :label="item.title"
+          :name="item.name"
+        >
+        </el-tab-pane>
+      </el-tabs>
+
       <div class="wrapper">
         <span>{{$t('ordinaryCouponList.couponName')}}：</span>
         <el-input
@@ -256,9 +297,10 @@ export default {
   },
   data () {
     return {
-      nav: 0,
+      nav: '1',
+      tabInfo: this.$t('ordinaryCouponList.tabInfo'),
       actName: null, // 搜索条件
-      activityName: this.$t('ordinaryCouponList.coupon'),
+      activityNameactivityName: this.$t('ordinaryCouponList.coupon'),
       tableData: [],
       pageParams: {}, // 分页
       requestParams: {},
@@ -319,7 +361,7 @@ export default {
         } else {
           item.vaildDate = `${item.startTime}至${item.endTime} `
         }
-        item.receivePerson = `${item.receivePerson} /${item.receiveAmount}`
+        item.receivePerson = `${item.receivePerson}/${item.receiveAmount}`
         item.giveOutPerson = `${item.giveoutPerson}/${item.giveoutAmount}`
       })
       this.tableData = data
