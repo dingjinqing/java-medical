@@ -156,6 +156,7 @@ export const cn = {
     name: '4'
   }],
   changeStatusComment: '此操作将启用该活动, 是否继续?',
+  closeStatusComment: '此操作将停用该活动, 是否继续?',
   deleteComment: '此操作将删除该活动, 是否继续?',
   confirm: '确定',
   cancel: '取消',
@@ -189,5 +190,6 @@ export const cn = {
     label: '未成团'
   }],
   moreConfigure: '展开更多配置',
-  packUpConfigure: '收起更多配置'
+  packUpConfigure: '收起更多配置',
+  to: '至'
 }
