@@ -5,16 +5,14 @@ package com.vpu.mp.db.main;
 
 
 import com.vpu.mp.db.main.tables.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
+
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -36,6 +34,16 @@ public class MiniMain extends SchemaImpl {
      * The reference instance of <code>mini_main</code>
      */
     public static final MiniMain MINI_MAIN = new MiniMain();
+
+    /**
+     * 定时任务定义表
+     */
+    public final CronDefine CRON_DEFINE = com.vpu.mp.db.main.tables.CronDefine.CRON_DEFINE;
+
+    /**
+     * 定时任务执行结果记录表
+     */
+    public final CronRecord CRON_RECORD = com.vpu.mp.db.main.tables.CronRecord.CRON_RECORD;
 
     /**
      * The table <code>mini_main.b2c_activity_statistics</code>.
@@ -557,6 +565,8 @@ public class MiniMain extends SchemaImpl {
             UserLoginRecord.USER_LOGIN_RECORD,
             UserSummaryTrend.USER_SUMMARY_TREND,
             TaskJobContent.TASK_JOB_CONTENT,
-            TaskJobMain.TASK_JOB_MAIN);
+            TaskJobMain.TASK_JOB_MAIN,
+            CronDefine.CRON_DEFINE,
+            CronRecord.CRON_RECORD);
     }
 }

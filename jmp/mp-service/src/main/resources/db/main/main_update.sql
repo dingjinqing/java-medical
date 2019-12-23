@@ -79,11 +79,11 @@ CHANGE COLUMN `del_time` `del_time` TIMESTAMP NULL DEFAULT NULL COMMENT '删除�
 
 
 --更新字段长度，使主库和店铺库保持一致
-ALTER TABLE `b2c_user_detail` 
+ALTER TABLE `b2c_user_detail`
 CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL ;
 
 --更新字段长度，使主库和店铺库保持一致
-ALTER TABLE `b2c_user` 
+ALTER TABLE `b2c_user`
 CHANGE COLUMN `shop_id` `shop_id` INT(11) NOT NULL DEFAULT '0' ,
 CHANGE COLUMN `user_id` `user_id` INT(11) NOT NULL ,
 CHANGE COLUMN `user_pwd` `user_pwd` varchar(60) not null default '' comment '密码',
@@ -92,10 +92,39 @@ CHANGE COLUMN `invite_expiry_date` `invite_expiry_date` date  default null comme
 CHANGE COLUMN `invite_source` `invite_source`  varchar(32)   default null comment '邀请来源:groupbuy.拼团,bargain.砍价,integral.积分,seckill.秒杀,lottery.抽奖';
 
 --记录表更新
-ALTER TABLE `mini_main`.`b2c_user_login_record` 
+ALTER TABLE `mini_main`.`b2c_user_login_record`
 ADD COLUMN `account_type` TINYINT(1) NULL COMMENT '登录日志账户类型：0店铺登录日志，1系统账号登录日志' ;
 
 --文章分类
-ALTER TABLE `mini_main`.`b2c_article_category` 
+ALTER TABLE `mini_main`.`b2c_article_category`
 CHANGE COLUMN `del_state` `use_footer_nav` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否用于底部导航' ;
+
+-- 定时任务定义表
+drop table if exists `b2c_cron_define`;
+CREATE TABLE `b2c_cron_define` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `class_name` varchar(128) NOT NULL COMMENT '定时任务完整类名',
+  `expression` varchar(32) NOT NULL COMMENT 'cron表达式',
+  `description` varchar(64) NOT NULL DEFAULT '' COMMENT '任务描述',
+    `result` tinyint(1) NOT NULL DEFAULT 0 COMMENT '执行结果,0:待执行;1:执行中；2已完成；3:执行失败',
+    `retries_num` tinyint(1) NOT NULL DEFAULT 0 COMMENT '失败重试次数,默认0不重试',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态,1:启用;0:停用',
+      `create_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cron_key` (`class_name`)
+) COMMENT='定时任务定义表';
+
+-- 定时任务执行结果记录表（只记录执行失败的记录）
+drop table if exists `b2c_cron_record`;
+CREATE TABLE `b2c_cron_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `cron_id` int(11) NOT NULL COMMENT '定时任务id',
+  `execute_num` tinyint(1) NOT NULL DEFAULT 0 COMMENT '执行次数（小于等于失败重试次数）',
+  `failed_reason` varchar(512) NOT NULL DEFAULT '' COMMENT '最后一次执行失败原因',
+        `create_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`       TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_id` (`cron_id`)
+) COMMENT='定时任务执行结果记录表';
 

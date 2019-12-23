@@ -34,39 +34,31 @@ global.wxPage({
 
   // 更改选中状态
   checkedToggle(e) {
-    let recId = e.currentTarget.dataset.prd_id
+    let cartId = e.currentTarget.dataset.cart_id
     let isChecked = e.currentTarget.dataset.is_checked
     util.api('/api/wxapp/cart/switch', res => {
       if (res.error === 0) {
         this.requestCartList()
       }
-    }, { recIds: [recId], isChecked: isChecked })
-
-    // let recId = e.currentTarget.dataset.rec_id
-    // let idx = this.data.canBuyGoodsList.findIndex(item => item.recId === recId)
-    // util.api('/api/axapp/cart/switch',res=>{
-    //   if(res.error === 0){
-    //     this.requestCartList()
-    //   }
-    // }, { recIds: [recId], isChecked: this.data.canBuyGoodsList[idx].isChecked ? 0 : 1 })
+    }, { recIds: [cartId], isChecked: isChecked ? 0 : 1 })
   },
 
   // 更改全选状态
   changeAllChecked() {
-    let recIds = this.data.canBuyGoodsList.map(item => { return item.recId })
-    let isAllCheck = isAllCheck ? 0 : 1
+    let cartIds = this.data.canBuyGoodsList.map(item => { return item.cartId })
+    let isAllCheck = this.data.isAllCheck ? 0 : 1
     util.api('/api/wxapp/cart/switch', res => {
       if (res.error === 0) {
         this.requestCartList()
       }
-    }, { recIds, isChecked: isAllCheck })
+    }, { recIds: cartIds, isChecked: isAllCheck })
   },
 
   // 更改商品数量
   goodsNumChange(e) {
-    const type = e.currentTarget.dataset.type;
-    const prdId = e.currentTarget.dataset.prd_id;
-    const cartNumber = e.currentTarget.dataset.cart_number;
+    let type = e.currentTarget.dataset.type;
+    let prdId = e.currentTarget.dataset.prd_id;
+    let cartNumber = e.currentTarget.dataset.cart_number;
     util.api('/api/wxapp/cart/change', res => {
       if (res.error == 0) {
         this.requestCartList()
@@ -75,17 +67,6 @@ global.wxPage({
         productId: prdId,
         cartNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1
       })
-
-    // const type = e.currentTarget.dataset.type;
-    // const recId = e.currentTarget.dataset.rec_id;
-    // let target = this.data.canBuyGoodsList.find(item => { return item.recId === recId })
-    // util.api('/api/wxapp/cart/change', res => {
-    //   console.log(res)
-    //   this.requestCartList()
-    // }, {
-    //     productId: target.prdId,
-    //     cartNumber: type === 'add' ? target.cartNumber + 1 : target.cartNumber - 1
-    //   })
   },
 
   // 校验商品数量
@@ -113,30 +94,23 @@ global.wxPage({
 
   // 删除购物车商品
   delCartGoods(e) {
-    console.log(e.currentTarget.dataset)
-    // const recId = e.currentTarget.dataset.rec_id
-    const recId = e.currentTarget.dataset.prd_id
+    const cartId = e.currentTarget.dataset.cart_id
     util.api('/api/wxapp/cart/remove', (res) => {
       console.log(res)
       if (res.error === 0) {
         this.requestCartList()
       }
-    }, { recId: recId })
+    }, { recId: cartId })
   },
   
   // 清除无效购物车列表
   clearCart(){
-    let recIds = this.data.invalidGoodsList.map(item => {
-      return item.recId
-    })
+    let cartIds = this.data.invalidGoodsList.map(item => { return item.cartId })
     util.api('/api/wxapp/cart/removes',res=>{
-      console.log(res)
       if(res.error === 0){
         this.requestCartList()
       }
-    },{
-        recIds
-    })
+    },{ recIds: cartIds })
   },
   
   //触摸改变
