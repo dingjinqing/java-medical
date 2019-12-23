@@ -75,7 +75,6 @@ global.wxPage({
     var prdId = e.target.dataset.prd_id
     var limit_min = e.target.dataset.limit_min
     var limit_max = e.target.dataset.limit_max
-    var allMoney = 0 // 总金额
     this.data.canBuyGoodsList.forEach((item, index) => {
       if (item.prdId == prdId) {
         if ((value >= limit_min) && (value <= limit_max)) {
@@ -84,11 +83,9 @@ global.wxPage({
           item.cartNumber = limit_min
         }
       }
-      allMoney += item.cartNumber * item.cartPrice
     })
     this.setData({
       canBuyGoodsList: this.data.canBuyGoodsList,
-      totalPrice: allMoney
     })
   },
 
@@ -132,6 +129,7 @@ global.wxPage({
       });
     }
   },
+
   // //计算商品价格
   // getCartPrice(){
   //   const canBuyList = this.data.canBuyGoodsList.filter(item => { return item.isChecked === 1 })
@@ -143,6 +141,8 @@ global.wxPage({
   //     totalPrice: realPrice.substring(0, realPrice.length - 1)
   //   })
   // },
+
+  //  去结算
   toCheckOut(){
     let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item=>{
       let { goodsId, cartPrice: prdRealPrice, cartNumber: goodsNum, prdId } = item
@@ -150,55 +150,9 @@ global.wxPage({
     })
     util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify(goodsList)}`, "navigateTo")
   },
+  
+  // 列表无数据跳转
   toIndex(){
     util.jumpLink('pages/index/index','navigateTo')
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
   }
 })

@@ -12,6 +12,14 @@ global.wxComponent({
       this.startActivityTimer('bargain', this._getLeftSecs(m));
       newVal.bottom = util.getCache("bottom");
       console.log(m, 'kanjia')
+      let r = /(http|https):\/\/([\w.]+\/?)\S*/
+      m.bargain_goods.forEach(item => {
+        if (r.test(item.goods_img)) {
+          item.isShowImg = true
+        } else {
+          item.isShowImg = false
+        }
+      })
     },
     _getLeftSecs (m) {
       console.log(m)

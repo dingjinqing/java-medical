@@ -55,7 +55,7 @@
         <text class="order-header-time" style='color:{{comColor}}'>{{clock}}</text>
         内未处理，则申请达成并退款给您。
       </block>
-      <block wx:elif="{{refundStatus === 4&& returnType === 1}}">
+      <block wx:elif="{{refundStatus === 2&& returnType === 1}}">
         请在
         <text class="order-header-time" style='color:{{comColor}}'>{{clock}}</text>
         内退货给商家，否则本次售后申请将自动关闭。
@@ -64,10 +64,10 @@
       <block wx:elif="{{refundStatus === 5}}">注：您的售后申请已经处理完成，请查看付款账户的余额，本次维权结束。</block>
     </view>
     <view class="order-header-btns">
-      <text class="order-header-btn" wx:if="{{refundStatus === 2}}">提交物流</text>
-      <text class="order-header-btn" wx:if="{{!(refundStatus === 4 && returnType === 1)}}">撤销申请</text>
-      <text class="order-header-btn" wx:if="{{refundStatus === 6}}">创建售后申请</text>
-      <text class="order-header-btn">查看订单</text>
+      <text class="order-header-btn" bindtap="viewOrder">查看订单</text>
+      <text class="order-header-btn" wx:if="{{refundStatus === 2}}" bindtap="submitPhysics" style="color:{{comColor}};border-color:{{comColor}}">提交物流</text>
+      <text class="order-header-btn" wx:if="{{!(refundStatus === 4 && returnType === 1)}}" bindtap="cancelApplication">撤销申请</text>
+      <text class="order-header-btn" wx:if="{{refundStatus === 6}}" bindtap="createReturnOrder">创建售后申请</text>
     </view>
     <view class="order-block" wx:if="{{refundStatus === 4 && returnType === 1}}">
       <view class="order-block-title">退货物流</view>
@@ -85,10 +85,10 @@
           <text class="details-item-title">联系电话：</text>
           <text>{{orderInfo.phone}}</text>
         </view>
-        <view wx:if="{{voucherImages.length}}" class="order-block-detail-item">
+        <view wx:if="{{voucherImages.length > 0}}" class="order-block-detail-item">
           <text class="details-item-title">退货凭证：</text>
           <view class="details-item-content">
-            <block v-for="{{voucherImages}}">
+            <block wx:for="{{voucherImages}}">
               <image class="details-item-img" src="{{imageUrl + item}}"></image>
             </block>
           </view>

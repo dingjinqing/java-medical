@@ -519,6 +519,7 @@ export default {
         obj[`c_${item.cur_idx}`] = item
       })
       console.log(obj)
+      pageSetData['cat_id'] = Number(pageSetData['cat_id'])
       obj['page_cfg'] = pageSetData
       return obj
     }

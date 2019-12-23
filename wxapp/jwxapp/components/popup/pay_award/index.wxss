@@ -217,3 +217,33 @@
   color:  #EF943E;
   border-color: #EF943E;
 }
+.split-content{
+  height: 295rpx;
+  width: 100%;
+  position: relative;
+}
+.split-content .split-coupon{
+  font-size: 30rpx;
+  font-weight: 600;
+  color:#fb645e;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 40rpx;
+}
+.split-content .split-tips{
+  font-size: 34rpx;
+  color: #fff;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 20rpx;
+}
+.split-content .line{
+  position: absolute;
+  bottom: 0;
+  width: 425rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top: 1rpx dashed #fff;
+}

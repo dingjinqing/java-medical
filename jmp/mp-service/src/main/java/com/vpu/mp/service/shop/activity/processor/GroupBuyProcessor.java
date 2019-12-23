@@ -12,7 +12,11 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GroupBuyListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
@@ -43,7 +47,7 @@ import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STAT
  */
 @Slf4j
 @Service
-public class GroupBuyProcessor extends ShopBaseService implements Processor,ActivityGoodsListProcessor ,CreateOrderProcessor{
+public class GroupBuyProcessor extends ShopBaseService implements Processor,GoodsDetailProcessor,ActivityGoodsListProcessor ,CreateOrderProcessor{
 
     @Autowired
     GroupBuyProcessorDao groupBuyProcessorDao;
@@ -83,6 +87,27 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Acti
             bo.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
         });
     }
+
+    /*****************商品详情处理*******************/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        if (param.getActivityId() == null || !BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(param.getActivityType())) {
+            return;
+        }
+        log.debug("小程序-商品详情-拼团信息获取开始");
+        GroupBuyMpVo groupBuyInfo = groupBuyProcessorDao.getGroupBuyInfo(param.getUserId(), param.getActivityId());
+        List<GroupBuyPrdMpVo> groupBuyPrdInfos = groupBuyProcessorDao.getGroupBuyPrdInfo(param.getActivityId());
+        groupBuyInfo.setGroupBuyPrdMpVos(groupBuyPrdInfos);
+
+        int goodsNum = 0;
+        for (int i = 0; i < groupBuyPrdInfos.size(); i++) {
+            GroupBuyPrdMpVo vo = groupBuyPrdInfos.get(i);
+            goodsNum+=vo.getStock();
+        }
+        capsule.setGoodsNumber(goodsNum);
+        capsule.setActivity(groupBuyInfo);
+    }
+
 
     //*********** 下单 *****************
     /**
@@ -175,6 +200,4 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Acti
         }
 
     }
-
-
 }
