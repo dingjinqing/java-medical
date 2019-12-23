@@ -55,10 +55,10 @@
 .goods_info .goods_spec {
   color: #888;
   font-size: 24rpx;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   margin-top: 10rpx;
+  /* overflow: hidden; */
+  /* white-space: nowrap; */
+  /* text-overflow: ellipsis; */
 }
 .goods_info .goods_price{
   display: flex;
@@ -120,6 +120,7 @@
   background-color: #fff;
   width: 100%;
   box-sizing: border-box;
+  z-index: 999;
 }
 .flex_footer .footer_left {
   display: flex;

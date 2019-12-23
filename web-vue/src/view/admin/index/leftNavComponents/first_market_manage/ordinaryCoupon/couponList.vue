@@ -36,7 +36,7 @@
     <div class="main">
       <el-tabs
         v-model="nav"
-        @tab-click="initDataList"
+        @tab-click="handleClick"
         :lazy="true"
       >
         <el-tab-pane
@@ -131,7 +131,12 @@
           prop="vaildDate"
           :label="$t('ordinaryCouponList.validityDay')"
           align="center"
+          width="160"
         >
+          <template slot-scope="scope">
+            <span v-if="scope.row.validityType === 0">{{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}</span>
+            <span v-if="scope.row.validityType === 1">领取开始{{scope.row.validity}}天{{scope.row.validityHour}}小时{{scope.row.validityMinute}}分内有效</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="receivePerson"
@@ -356,11 +361,11 @@ export default {
         if (item.actCode === 'discount') {
           item.denomination = `打${item.denomination}折`
         }
-        if (item.validityType === 1) {
-          item.vaildDate = `领取开始${item.validity}天${item.validityHour}小时${item.validityMinute}分内有效`
-        } else {
-          item.vaildDate = `${item.startTime}至${item.endTime} `
-        }
+        // if (item.validityType === 1) {
+        //   item.vaildDate = `领取开始${item.validity}天${item.validityHour}小时${item.validityMinute}分内有效`
+        // } else {
+        //   item.vaildDate = `${item.startTime}至${item.endTime} `
+        // }
         item.receivePerson = `${item.receivePerson}/${item.receiveAmount}`
         item.giveOutPerson = `${item.giveoutPerson}/${item.giveoutAmount}`
       })

@@ -17,7 +17,6 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
-import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -188,7 +187,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         //订单商品
         List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
         //库存销量
-        atomicOperation.updateStockAndSales(orderInfo, goods, false);
+        atomicOperation.updateStockAndSalesByLock(orderInfo, goods, false);
         //TODO 异常订单处理等等
     }
 

@@ -1,7 +1,62 @@
 <template>
   <div class="content">
     <div class="main">
-      <div class="filters">
+      <el-form
+        label-width="100px"
+        style="margin-bottom: 10px;"
+      >
+        <div class="tabContent">
+          <el-form-item
+            :label="this.$t('couponReceive.mobile') + '：'"
+            class="item"
+          >
+            <el-input
+              v-model="searchData.mobile"
+              :placeholder="$t('couponReceive.mobilePlaceholder')"
+              size="small"
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            :label="this.$t('couponReceive.userNickName') + '：'"
+            class="item"
+          >
+            <el-input
+              v-model="searchData.userName"
+              :placeholder="$t('couponReceive.userNickNamePlaceholder')"
+              size="small"
+              class="inputWidth"
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            :label="this.$t('couponReceive.useState') + '：'"
+            class="item"
+          >
+            <el-select
+              v-model="searchData.useStatus"
+              size="small"
+              class="inputWidth"
+            >
+              <el-option
+                v-for="item in get_type_option"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-button
+            type="primary"
+            size="small"
+            @click="initDataList"
+            class="item"
+            style="margin-left: 10px;"
+          >{{$t('couponReceive.search')}}</el-button>
+        </div>
+
+      </el-form>
+
+      <!-- <div class="filters">
         <div class="filters_item">
           <div calss="mobile">{{$t('couponReceive.mobile')}}：</div>
           <el-input
@@ -42,7 +97,7 @@
             size="small"
           >{{$t('couponReceive.search')}}</el-button>
         </div>
-      </div>
+      </div> -->
       <div class="table_box">
         <el-table
           v-loading="loading"
@@ -264,6 +319,14 @@ export default {
 .content {
   padding: 10px;
   .main {
+    .tabContent {
+      background-color: #fff;
+      .item {
+        display: inline-block;
+        margin: 10px 0;
+      }
+    }
+
     .filters {
       display: flex;
       line-height: 32px;
