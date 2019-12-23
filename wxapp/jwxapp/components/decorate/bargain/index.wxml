@@ -2,7 +2,7 @@
 	<view class='all_zero_bargain clearfix'>
 		<view
 		 class='each_bargain'
-		 data-link="pages/bargainitem/bargainitem?bargain_id={{item.act_id}}"
+		 data-link="pages/item/item?activityId={{item.act_id}}&&activityType=3&&goodsId={{item.goods_id}}"
 		 catchtap="handleToBargain"
 		 data-is_prd='{{item.is_prd}}'
 		 data-idx="{{m.cur_idx}}"
