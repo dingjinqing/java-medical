@@ -21,6 +21,15 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+    /**
+     * 定时任务定义表
+     */
+    public static final CronDefine CRON_DEFINE = com.vpu.mp.db.main.tables.CronDefine.CRON_DEFINE;
+
+    /**
+     * 定时任务执行结果记录表
+     */
+    public static final CronRecord CRON_RECORD = com.vpu.mp.db.main.tables.CronRecord.CRON_RECORD;
 
     /**
      * The table <code>mini_main.b2c_activity_statistics</code>.
