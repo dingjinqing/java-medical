@@ -64,7 +64,7 @@ public class AccountService extends ShopBaseService {
 	 * @param param 余额对象参数
 	 * @param tradeOpt 交易操作数据
 	 */
-	public void  addUserAccount(AccountParam param, TradeOptParam tradeOpt) throws MpException {
+	public void  updateUserAccount(AccountParam param, TradeOptParam tradeOpt) throws MpException {
 		if (isNull(param.getUserId()) || isNull(param.getAmount())) {
 			logger().info("用户id或用户卡余额不能为空");
 			throw new MpException(CODE_MEMBER_ACCOUNT_UPDATE_FAIL);

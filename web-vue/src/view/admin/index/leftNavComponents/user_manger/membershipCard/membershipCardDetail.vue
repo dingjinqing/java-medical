@@ -392,7 +392,7 @@
                     class="couponList"
                     v-if="ruleForm.couponDiv==='1'"
                   >
-                    <!--添加的优惠卷列表-->
+                    <!--添加的优惠券列表-->
                     <div
                       class="couponLi"
                       v-for="(item,index) in couponList"
@@ -997,7 +997,7 @@
       :tuneUp="tuneUp"
       @handleSelectImg='handleSelectImg'
     />
-    <!--添加优惠卷-->
+    <!--添加优惠券-->
     <AddCouponDialog
       :tuneUpCoupon="tuneUpCoupon"
       :couponBack="couponBack"
@@ -1946,7 +1946,7 @@ export default {
     handleToDelRecharge (index) {
       this.ruleForm.addrechargeArr.splice(index, 1)
     },
-    // 调起添加优惠卷弹窗
+    // 调起添加优惠券弹窗
     handleToCallDialog () {
       let arr = [41, 40]
       this.tuneUpCoupon = !this.tuneUpCoupon
@@ -1954,12 +1954,12 @@ export default {
       this.couponBack = arr
       // this.$http.$emit('V-AddCoupon', obj)
     },
-    // 添加优惠卷弹窗回传
+    // 添加优惠券弹窗回传
     handleToCheck (data) {
       console.log(data)
       this.couponList = data
     },
-    // 删除优惠卷项
+    // 删除优惠券项
     handlToDelCouList (index) {
       this.couponList.splice(index, 1)
     },

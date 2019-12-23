@@ -721,7 +721,7 @@ export default {
         this.couponlist = res.content
       })
     },
-    // 新建优惠卷(跳转)
+    // 新建优惠券(跳转)
     createCouponList () {
       this.$router.push({ path: '/admin/home/main/addyCoupon', query: {} })
     },

@@ -1,7 +1,7 @@
 <template>
   <div class="couponDialog">
     <el-dialog
-      title="选择优惠卷"
+      title="选择优惠券"
       :visible.sync="dialogVisible"
       width="550px"
       :modal-append-to-body='false'
@@ -11,7 +11,7 @@
           <div class="top_leftDiv">
             <el-input
               v-model="couponInput"
-              placeholder="请输入优惠卷名称"
+              placeholder="请输入优惠券名称"
               size="small"
             ></el-input>
             <el-select
@@ -173,7 +173,7 @@ export default {
       })
       this.loading = false
     },
-    // 优惠卷选中
+    // 优惠券选中
     handleToClick (index) {
       if (this.singleElection) {
         this.dialogData.forEach(item => {
@@ -191,15 +191,15 @@ export default {
         if (item.ischeck) arr.push(item)
       })
       if (arr.length > 5 && !this.origin) {
-        this.$message.error('最多只能选择5张优惠卷哦~')
+        this.$message.error('最多只能选择5张优惠券哦~')
         return
       }
       if (arr.length > 10 && this.origin === 'couponPackage') {
-        this.$message.error('最多只能选择10种优惠卷哦~')
+        this.$message.error('最多只能选择10种优惠券哦~')
         return
       }
       if (arr.length > 6 && this.origin === 'decCouponPackage') {
-        this.$message.error('最多只能选择6种优惠卷哦~')
+        this.$message.error('最多只能选择6种优惠券哦~')
         return
       }
       this.$emit('handleToCheck', arr)

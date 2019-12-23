@@ -396,7 +396,7 @@ export default {
         hasCommentWords: 0, // 评论字数限制
         hasPicNum: 0, // 晒图数量
         hasFiveStars: 0, // 五星好评
-        awardType: 1, // 奖品类型 1积分 2优惠卷 3 余额 4 幸运大抽奖 5 自定义
+        awardType: 1, // 奖品类型 1积分 2优惠券 3 余额 4 幸运大抽奖 5 自定义
         score: '', // 积分数
         activityId: '', // 活动id,优惠价或者抽奖
         account: '', // 用户余额

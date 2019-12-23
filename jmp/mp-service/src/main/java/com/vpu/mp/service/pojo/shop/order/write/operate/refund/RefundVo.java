@@ -38,7 +38,6 @@ public class RefundVo {
 		private Integer goodsId;
 		private String goodsName;
 		private String goodsAttr;
-		@JsonIgnore
 		private String goodsImg;
 		@JsonIgnore
 		private Integer goodsNumber;

@@ -242,7 +242,6 @@ export default {
     dataDefault () {
       this.cardType = Number(this.$route.query.cardType)
       this.cardId = Number(this.$route.query.cardId)
-      console.log(this.cardId)
       if (this.cardId) {
         // 单张会员卡信息
         this.getCardDetailInfoById(this.cardId)
@@ -250,7 +249,6 @@ export default {
     },
     getCardDetailInfoById (id) {
       getCardDetailInfoRequest({ id }).then(res => {
-        console.log(res)
         if (res.error === 0) {
           // success
           // bind data from backend to frontend
@@ -335,38 +333,30 @@ export default {
       return 'backgroundImage: url(' + item.backGroundImgUrl + ')'
     },
     initCardNameAndBg (val) {
-      console.log(val.bgImg)
       this.initSampleCardData(val)
       this.cardNameAndBg = val
     },
     initDiscountData (val) {
-      console.log('初始化折扣相关数据', val)
       this.initSampleCardDiscountData(val)
       this.disCountData = val
     },
     initOwnGoodsData (val) {
-      console.log('专享商品：', val)
       this.ownGoodsData = val
     },
 
     initCardScoreCfgData (val) {
-      console.log('积分获取', val)
       this.cardScoreCfgData = val
     },
     initCardChargeCfgData (val) {
-      console.log('余额获取', val)
       this.cardChargeCfgData = val
     },
     initCardEffectTimeData (val) {
-      console.log('会员有效时间：', val)
       this.cardEffectTime = val
     },
     initCardSuiteGoodsCfgData (val) {
-      console.log('适用商品：')
       this.cardSuiteGoodsCfgData = val
     },
     initCardCouponCfgData (val) {
-      console.log('优惠券获取', val)
       this.cardCouponCfgData = val
     },
     initCardStoreCfgData (val) {
@@ -374,19 +364,15 @@ export default {
       this.cardStoreCfgData = val
     },
     initCardUsageCfgData (val) {
-      console.log('使用须知', val)
       this.cardUsageCfgData = val
     },
     initCardReceiveCfgData (val) {
-      console.log('领取配置', val)
       this.cardReceiveCfgData = val
     },
     initCardActiveCfgData (val) {
-      console.log('激活配置', val)
       this.cardActiveCfgData = val
     },
     initSampleCardData (val) {
-      console.log('初始化示例会员卡')
       this.sampleCardData.bgColor = val.bgColor
       this.sampleCardData.cardName = val.cardName
       this.sampleCardData.bgImg = val.bgImg
@@ -398,7 +384,6 @@ export default {
       this.sampleCardData.discountGoodsType = val.discountGoodsType
     },
     handleToSave () {
-      console.log('保存')
       // 检验通过
       this.$refs.cardNameAndBg.$emit('checkRule')
       this.$refs.cardEffectTime.$emit('checkRule')

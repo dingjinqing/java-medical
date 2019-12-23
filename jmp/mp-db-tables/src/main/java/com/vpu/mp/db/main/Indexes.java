@@ -5,12 +5,11 @@ package com.vpu.mp.db.main;
 
 
 import com.vpu.mp.db.main.tables.*;
-
-import javax.annotation.Generated;
-
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.Internal;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -29,6 +28,10 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index CRON_DEFINE_CRON_KEY = Indexes0.CRON_DEFINE_CRON_KEY;
+    public static final Index CRON_DEFINE_PRIMARY = Indexes0.CRON_DEFINE_PRIMARY;
+    public static final Index CRON_RECORD_PRIMARY = Indexes0.CRON_RECORD_PRIMARY;
+    public static final Index CRON_RECORD_UNIQUE_ID = Indexes0.CRON_RECORD_UNIQUE_ID;
 
     public static final Index TASK_JOB_CONTENT_PRIMARY = Indexes0.TASK_JOB_CONTENT_PRIMARY;
     public static final Index TASK_JOB_MAIN_PRIMARY = Indexes0.TASK_JOB_MAIN_PRIMARY;
@@ -213,6 +216,11 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index CRON_DEFINE_CRON_KEY = Internal.createIndex("cron_key", CronDefine.CRON_DEFINE, new OrderField[]{CronDefine.CRON_DEFINE.CLASS_NAME}, true);
+        public static Index CRON_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", CronDefine.CRON_DEFINE, new OrderField[]{CronDefine.CRON_DEFINE.ID}, true);
+        public static Index CRON_RECORD_PRIMARY = Internal.createIndex("PRIMARY", CronRecord.CRON_RECORD, new OrderField[]{CronRecord.CRON_RECORD.ID}, true);
+        public static Index CRON_RECORD_UNIQUE_ID = Internal.createIndex("unique_id", CronRecord.CRON_RECORD, new OrderField[]{CronRecord.CRON_RECORD.CRON_ID}, true);
+
         public static Index TASK_JOB_MAIN_PRIMARY = Internal.createIndex("PRIMARY", TaskJobMain.TASK_JOB_MAIN, new OrderField[] { TaskJobMain.TASK_JOB_MAIN.ID }, true);
         public static Index ACTIVITY_STATISTICS_PRIMARY = Internal.createIndex("PRIMARY", ActivityStatistics.ACTIVITY_STATISTICS, new OrderField[] { ActivityStatistics.ACTIVITY_STATISTICS.ID }, true);
         public static Index ALI_MINI_AGENT_AUTH_APP_ID = Internal.createIndex("auth_app_id", AliMiniAgent.ALI_MINI_AGENT, new OrderField[] { AliMiniAgent.ALI_MINI_AGENT.AUTH_APP_ID }, true);

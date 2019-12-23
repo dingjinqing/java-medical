@@ -3714,18 +3714,19 @@ CREATE TABLE `b2c_pay_award_prize`
 -- drop table if exists `b2c_pay_reward_record`;
 create table `b2c_pay_award_record`
 (
-    `id`          int(9) not null auto_increment,
-    `user_id`     int(9)       default null comment '用户id',
-    `award_id`    int(9)       default null comment '支付有礼活动id',
-    `order_sn`    varchar(50)  default null comment '订单号',
-    `gift_type`   tinyint(4)   default null comment '礼物类型 0 无奖品 1普通优惠卷  2分裂优惠卷 3幸运大抽奖 4 余额 5 商品 6积分 7 自定义',
-    `award_times` int(11)      default null comment '',
-    `award_data`  varchar(599) default null comment '',
-    `send_data`   varchar(599) default null comment '',
-    `status`      tinyint(1)   default null comment '',
-    `keep_days`   mediumint(5) default null,
-    `create_time` timestamp    default current_timestamp,
-    `update_time` timestamp    default current_timestamp on update current_timestamp comment '最后修改时间',
+    `id`             int(9) not null auto_increment,
+    `user_id`        int(9)       default null comment '用户id',
+    `award_id`       int(9)       default null comment '支付有礼活动id',
+    `award_prize_id` int(9)       default null comment '支付有礼的奖品Id',
+    `order_sn`       varchar(50)  default null comment '订单号',
+    `gift_type`      tinyint(4)   default null comment '礼物类型 0 无奖品 1普通优惠卷  2分裂优惠卷 3幸运大抽奖 4 余额 5 商品 6积分 7 自定义',
+    `award_times`    int(11)      default null comment '',
+    `award_data`     varchar(599) default null comment '',
+    `send_data`      varchar(599) default null comment '',
+    `status`         tinyint(1)   default null comment '',
+    `keep_days`      mediumint(5) default null,
+    `create_time`    timestamp    default current_timestamp,
+    `update_time`    timestamp    default current_timestamp on update current_timestamp comment '最后修改时间',
     primary key (`id`)
 );
 

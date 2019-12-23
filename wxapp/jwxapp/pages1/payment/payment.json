@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    "v-recommend":"/components/item/recommend/index"
+    "v-recommend":"/components/item/recommend/index",
+    "v-pay-award":"/components/popup/pay_award/index"
   }
 }

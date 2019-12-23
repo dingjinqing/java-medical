@@ -104,7 +104,7 @@ export const en = {
   validatePreferentialType2: 'Please fill in the discount!',
   validateisRandom: 'Please fill in the points exchange!',
   validateuseConsumeRestrict: 'Please fill in the use threshold!',
-  validatesuitGoods1: 'Please select available products!',
+  validatesuitGoods1: 'Please select the specified product',
   validatesuitGoods2: 'Please select the specified product classification!',
   validatesuitGoods3: 'Please select the specified platform classification!',
   validateType: 'Please select a coupon type',

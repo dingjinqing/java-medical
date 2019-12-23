@@ -1404,6 +1404,7 @@ CREATE TABLE `b2c_pay_award_prize`
     `send_num`     int(11)        NOT NULL DEFAULT '0' comment '已经发送数量',
     PRIMARY KEY (`id`)
 );
-
-
+-- 支付有礼记录增加 奖品id 孔德成
+ALTER TABLE `b2c_pay_award_record`
+ADD COLUMN `award_prize_id` int(9) NULL COMMENT '支付有礼的奖品Id' AFTER `award_id`;
 

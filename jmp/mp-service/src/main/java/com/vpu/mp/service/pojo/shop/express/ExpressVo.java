@@ -18,7 +18,6 @@ public class ExpressVo {
     private String    shippingDesc;
     private String    insure;
     private Byte      supportCod;
-    private Byte      enabled;
     private String    shippingPrint;
     private Byte      printModel;
     private Byte      shippingOrder;

@@ -427,7 +427,7 @@
         size="small"
       >{{$t('marketCommon.save')}}</el-button>
     </div>
-    <!--添加优惠卷-->
+    <!--添加优惠券-->
     <AddCouponDialog
       @handleToCheck="handleToCheck"
       :tuneUpCoupon="showCouponDialog"

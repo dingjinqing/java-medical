@@ -792,7 +792,7 @@ public class GoodsCommentService extends ShopBaseService {
       else if (param.getAwardType().equals(THREE)) {
         // 给当前用户赠送余额
         // 获取语言 用于国际化
-          accountService.addUserAccount(
+          accountService.updateUserAccount(
             new AccountParam() {
               {
                 setUserId(param.getUserId());

@@ -305,10 +305,12 @@ export default {
       align-items: center;
       /deep/ .el-input-number {
         width: 120px;
+        margin-left: 15px;
         /deep/ .el-input {
           width: 100%;
         }
       }
+
     }
     .equity {
       span {

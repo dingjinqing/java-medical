@@ -786,7 +786,8 @@ public class UserCardService extends ShopBaseService {
 	 * @return
 	 */
 	public String getCardAvatar() {
-		return saas().shop.getShopAvatarById(this.getShopId());
+		String relativePath = saas().shop.getShopAvatarById(this.getShopId());
+		return saas().getShopApp(getShopId()).image.imageUrl(relativePath);
 	}
 
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param) throws UserCardNullException {
@@ -799,6 +800,13 @@ public class UserCardService extends ShopBaseService {
 		
 		if (card == null) {
 			throw new UserCardNullException();
+		}
+		// 背景图片
+		if(CardUtil.isBgImgType(card.getBgType())) {
+			if(!StringUtils.isBlank(card.getBgImg())) {
+				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(card.getBgImg());
+				card.setBgImg(imageUrl);
+			}
 		}
 		
 		if(card.getExpireTime()!=null) {
@@ -1186,6 +1194,13 @@ public class UserCardService extends ShopBaseService {
 
 	public UserCardVo getUserCardJudge(UserIdAndCardIdParam param) {
 		UserCardVo userCard = userCardDao.getUserCardJudge(param);
+		// 处理背景图片
+		if(userCard != null && CardUtil.isBgImgType(userCard.getBgType())) {
+			if(!StringUtils.isBlank(userCard.getBgImg())) {
+				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(userCard.getBgImg());
+				userCard.setBgImg(imageUrl);
+			}
+		}
 		return userCard;
 	}
 	
@@ -1286,6 +1301,8 @@ public class UserCardService extends ShopBaseService {
 			dealSendCouponInfo(userCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
+			userCard.setUserId(param.getUserId());
+			userCard.setCardId(param.getCardId());
 			userCardJudgeVo.setCardInfo(userCard);
 			return userCardJudgeVo;
 		}else{
@@ -1330,7 +1347,10 @@ public class UserCardService extends ShopBaseService {
 				List<StoreBasicVo> storeList = storeService.getStoreListByStoreIds(storeIdList);
 				uCard.setStoreInfoList(storeList);
 			}
+			// 会员卡头像
+			
 			uCard.setShopAvatar(getCardAvatar());
+			// 背景图片
 			
 			logger().info("虚拟卡订单下单时间");
 			VirtualOrderRecord order = virtualOrderService.getInfoByNo(uCard.getCardNo());
@@ -1368,10 +1388,10 @@ public class UserCardService extends ShopBaseService {
 			dealSendCouponInfo(uCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
+			uCard.setUserId(param.getUserId());
+			uCard.setCardId(param.getCardId());
 			userCardJudgeVo.setCardInfo(uCard);
-			
 			return userCardJudgeVo;
-			
 		}
 	}
 
@@ -1589,7 +1609,14 @@ public class UserCardService extends ShopBaseService {
 	}
 	
 	public UserCardVo getUserCardByCardNo(String cardNo){
-		return userCardDao.getUserCardByCardNo(cardNo);
+		UserCardVo userCard = userCardDao.getUserCardByCardNo(cardNo);
+		if(userCard != null && CardUtil.isBgImgType(userCard.getBgType())) {
+			if(!StringUtils.isBlank(userCard.getBgImg())) {
+				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(userCard.getBgImg());
+				userCard.setBgImg(imageUrl);
+			}
+		}
+		return userCard;
 	}
 	
 	public void updateActivationTime(String cardNo,Timestamp time) {
@@ -1615,15 +1642,8 @@ public class UserCardService extends ShopBaseService {
 		});
 	}
 	
-	/**
-	 * 检测用户是否拥有此卡，此卡未被废除
-	 * @param userId 
-	 * @param cardId
-	 * @return true 用户持有持卡 false: 用户没有此卡
-	 */
-	public boolean checkUserHasAvailCard(Integer userId,Integer cardId){
-		
-		return false;
-	}
+	
+	
+	
 	
 }
