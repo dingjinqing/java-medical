@@ -12,10 +12,10 @@ global.wxComponent({
       observer(val){
         console.log(val)
         this.setStep(val)
+        this.getStyle(val.giftInfo)
         this.setData({
           giftInfo:val.giftInfo,
           hasGift:this.hasGift(val.giftInfo),
-          DialogStyle:this.getStyle(val.giftInfo)
         })
       }
     }
@@ -60,13 +60,18 @@ global.wxComponent({
       return giftInfo.awardInfo[params.get(giftInfo.giftType)] != null
     },
     getStyle(giftInfo){
+      let DialogStyle = 'background:#f66 url('+this.data.imageUrl+'image/wxapp/pay_award_coupon_top_bg.png) no-repeat left -16rpx / 100%;',DialogClass = ''
       if([4,5,6].includes(giftInfo.giftType) && this.hasGift(giftInfo)){
-        return 'no-coupon'
+        DialogClass =  'no-coupon'
+        DialogStyle = 'background:#FFDFBB;'
       } else if (giftInfo.giftType === 2 && this.hasGift(giftInfo)){
-        return 'split'
-      } else {
-        return ''
+        DialogClass = 'split'
+        DialogStyle = 'background:#fb645e;border-radius:0'
       }
+      this.setData({
+        DialogClass,
+        DialogStyle
+      })
     }
   }
 });
