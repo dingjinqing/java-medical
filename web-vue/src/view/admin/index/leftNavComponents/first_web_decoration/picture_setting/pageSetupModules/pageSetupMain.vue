@@ -18,9 +18,9 @@
         >
           <el-option
             v-for="item in classificationOptions"
-            :key="item.value"
+            :key="item.id"
             :label="item.name"
-            :value="item.name"
+            :value="item.id"
           >
           </el-option>
         </el-select>

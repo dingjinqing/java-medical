@@ -20,5 +20,7 @@
          <v-carousel wx:elif="{{module.component_name == 'v-carousel'}}" module="{{module}}" />
          <!--砍价-->
          <v-bargain wx:elif="{{module.component_name == 'v-bargain'}}" module="{{module}}" />
+        <!--秒杀-->
+        <v-seckill wx:elif="{{module.component_name == 'v-seckill'}}" module="{{module}}" />
     </block>
 </view>
