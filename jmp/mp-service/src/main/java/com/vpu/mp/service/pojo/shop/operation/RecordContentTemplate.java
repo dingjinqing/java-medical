@@ -49,5 +49,15 @@ public enum   RecordContentTemplate {
         this.code = code;
         this.message = message;
     }
+    public static String getMessageByCode(int code){
+         String result = "";
+         for(RecordContentTemplate record:  RecordContentTemplate.values() ){
+             if( code == record.getCode() ){
+                 result = record.getMessage();
+                 break;
+             }
+         }
+         return result;
+    }
 
 }
