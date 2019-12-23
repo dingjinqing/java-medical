@@ -151,11 +151,14 @@ public class ShopMpDecorationService extends ShopBaseService {
      * @return
      */
     public Integer addPage(XcxCustomerPageVo param) {
-        XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
-        this.assign(param, record);
-        record.insert();
-        int pageId = record.getPageId();
-        return pageId;
+        if(validJson(param.getPageContent()) && validJson(param.getPagePublishContent())){
+            XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
+            this.assign(param, record);
+            record.insert();
+            int pageId = record.getPageId();
+            return pageId;
+        }
+        return 0;
     }
 
     public int setPageCatId(Integer pageId, Integer catId) {
@@ -899,6 +902,21 @@ public class ShopMpDecorationService extends ShopBaseService {
 
         // 转换实时信息
         return seckillService.getPageIndexSeckill(moduleSecKill);
+    }
+
+    /**
+     * 验证格式
+     * @param json
+     * @return
+     */
+    private static final boolean validJson(String json){
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.readTree(json);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
 }

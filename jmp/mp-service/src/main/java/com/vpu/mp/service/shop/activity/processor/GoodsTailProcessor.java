@@ -72,7 +72,7 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             // 销量处理
             capsule.setGoodsSaleNum(capsule.getGoodsSaleNum()+capsule.getBaseSale());
             // 图片处理
-            capsule.setGoodsImg(getImgFullUrlUtil(capsule.getGoodsImg()));
+            capsule.setGoodsImg(imageService.getImgFullUrl(capsule.getGoodsImg()));
             // 商品最后活动信息设置
             Optional<GoodsActivityBaseMp> first = capsule.getGoodsActivities().stream().filter(x -> GoodsConstant.isNeedReturnActivity(x.getActivityType())).findFirst();
             if (first.isPresent()) {
@@ -103,11 +103,11 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         List<GoodsPrdMpVo> products = goodsDetailMpBo.getProducts();
 
         // 规格会员价和图片路径处理
-        products.forEach(prd-> prd.setPrdImg(getImgFullUrlUtil(prd.getPrdImg())));
+        products.forEach(prd-> prd.setPrdImg(imageService.getImgFullUrl(prd.getPrdImg())));
         // 商品图片和视频路径地址处理
         List<String> goodsImgs = new ArrayList<>(goodsDetailMpBo.getGoodsImgs().size()+1);
         goodsDetailMpBo.getGoodsImgs().add(0,goodsDetailMpBo.getGoodsImg());
-        goodsDetailMpBo.getGoodsImgs().forEach(img-> goodsImgs.add(getImgFullUrlUtil(img)));
+        goodsDetailMpBo.getGoodsImgs().forEach(img-> goodsImgs.add(imageService.getImgFullUrl(img)));
         goodsDetailMpBo.setGoodsImgs(goodsImgs);
         goodsDetailMpBo.setGoodsVideo(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideo(),true));
         goodsDetailMpBo.setGoodsVideoImg(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideoImg(),false));
@@ -125,19 +125,6 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         goodsDetailMpBo.setPledgeSwitch(Integer.parseInt(pledgeList.getPledgeSwitch()));
         goodsDetailMpBo.setPledgeList(pledgeList.getPledgeList());
 
-    }
-
-    /**
-     * 将相对路劲修改为全路径
-     * @param relativePath 相对路径
-     * @return null或全路径
-     */
-    private String getImgFullUrlUtil(String relativePath) {
-        if (StringUtils.isBlank(relativePath)) {
-            return null;
-        } else {
-            return imageService.imageUrl(relativePath);
-        }
     }
 
     /**

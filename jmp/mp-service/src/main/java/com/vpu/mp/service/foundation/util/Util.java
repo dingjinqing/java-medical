@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -411,6 +412,41 @@ public class Util {
 		String result =  accessor.getMessage(message, defaultMessage, locale);
 		return MessageFormat.format(result, args);
 	}
+    /**
+     * 转换语言(针对多个模版拼接而成的字符串)
+     *
+     * @param language
+     * @param messages
+     * @param defaultMessage 缺省内容
+     * @param languageType
+     * @return
+     */
+    public static String translateMessage(String language, List<String> messages, String defaultMessage, String languageType,Object ...args) {
+        List<Integer> address = Lists.newArrayList();
+        language = StringUtils.isBlank(language) ? "zh_CN" : language;
+        ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
+        source.setBasename("static/i18n/" + languageType);
+        source.setDefaultEncoding("UTF-8");
+        MessageSourceAccessor accessor = new MessageSourceAccessor(source);
+        String[] languages = language.split(UNDEER_LINE);
+        Locale locale = new Locale(languages[0], languages[1]);
+        StringBuilder result = new StringBuilder();
+        for( String msg: messages ){
+            result.append(accessor.getMessage(msg, msg, locale));
+        }
+        char[] charArray = result.toString().toCharArray();
+        for (int i = 0; i < charArray.length; i++) {
+            int a = (int)charArray[i];
+            //ASCII 匹配 '{'符号
+            if( a == 123 ){
+                address.add(i+1);
+            }
+        }
+        for (int i = 0; i < address.size(); i++) {
+            charArray[address.get(i)] = Character.forDigit(i, 10);
+        }
+        return MessageFormat.format(String.valueOf(charArray), args);
+    }
 
 	/**
 	 * 转换语言
@@ -422,6 +458,16 @@ public class Util {
 	public static String translateMessage(String language, String message, String languageType,Object ...args) {
 		return translateMessage(language, message, message, languageType,args);
 	}
+    /**
+     * 转换语言(针对多个模版拼接而成的字符串)
+     *
+     * @param language
+     * @param messages
+     * @return
+     */
+    public static String translateMessage(String language, List<String> messages, String languageType,Object ...args) {
+        return translateMessage(language, messages, null, languageType,args);
+    }
 
 	/***
 	 * 下划线命名转为驼峰命名

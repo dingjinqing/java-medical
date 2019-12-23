@@ -19,7 +19,7 @@ page {
 .coupon-top-img {
   width:98%;
   position:absolute;
-  bottom:-7rpx;
+  bottom:-8rpx;
   left:1%;
   right:0;
   z-index:999;

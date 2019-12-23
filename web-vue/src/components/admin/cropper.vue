@@ -203,7 +203,6 @@ export default {
           }
 
           this.option.fixedNumber = [newData[0], newData[1]]
-
         }
       },
       immediate: true

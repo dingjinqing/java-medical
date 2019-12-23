@@ -10,6 +10,7 @@
     "v-shop-announce": "../shop_announce/index",
     "v-shop": "../shop/index",
     "v-carousel": "../carousel/index",
-    "v-bargain": "../bargain/index"
+    "v-bargain": "../bargain/index",
+    "v-seckill": "../seckill/index"
   }
 }

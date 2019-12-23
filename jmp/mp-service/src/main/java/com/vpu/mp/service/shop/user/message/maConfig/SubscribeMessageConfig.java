@@ -98,4 +98,20 @@ public enum SubscribeMessageConfig {
 		}
 		return sets;
 	}
+	
+	/**
+	 * 根据templeName找tid，因为所有templeName相同的tid都一样。匹配到一个就行
+	 * @param templeName
+	 * @return
+	 */
+	public static Integer getTid(String templeName) {
+		SubscribeMessageConfig[] subscribeMessageConfigs = SubscribeMessageConfig.values();
+		for (int i = 0; i < subscribeMessageConfigs.length; i++) {
+			SubscribeMessageConfig subscribeMessageConfig = subscribeMessageConfigs[i];
+			if (subscribeMessageConfig.getTempleName().equals(templeName)) {
+				return subscribeMessageConfig.getTid();
+			}
+		}
+		return null;
+	}
 }

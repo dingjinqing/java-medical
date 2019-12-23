@@ -53,7 +53,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	@PostMapping(value = "/admin/decorate/page/add")
 	public JsonResult addPage(@RequestBody XcxCustomerPageVo param) {
 		Integer res = shop().mpDecoration.addPage(param);
-		return this.success(res);
+		return res > 0 ? this.success(res) : fail();
 	}
 
 	/**

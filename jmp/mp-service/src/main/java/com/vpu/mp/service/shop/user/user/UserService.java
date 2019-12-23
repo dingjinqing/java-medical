@@ -405,8 +405,8 @@ public class UserService extends ShopBaseService {
 		UserRecord record = getUserByUserId(userId);
 		UserDetailRecord userDetailRecord = getUserDetail(userId);
 		// 更新昵称
-		if (StringUtils.isNotEmpty(username)
-				&& (StringUtils.isEmpty(record.getUsername()) || (!username.equals(record.getUsername())))) {
+		if ((StringUtils.isNotEmpty(username)
+				&& (StringUtils.isEmpty(record.getUsername())) || (!username.equals(record.getUsername())))) {
 			db().update(USER).set(USER.USERNAME, username).where(USER.USER_ID.eq(param.getUserId())).execute();
 			db().update(USER_DETAIL).set(USER_DETAIL.USERNAME, username)
 					.where(USER_DETAIL.USER_ID.eq(param.getUserId())).execute();

@@ -91,7 +91,6 @@ public class DatabaseManager {
 				if (dbConfig == null) {
 					throw new RuntimeException("ShopId " + shopId + " Db not found");
 				}
-				dbConfig.host = "127.0.0.1";
 				HikariDataSource ds = datasourceManager.getDatasource(dbConfig);
 				db = getDsl(ds, dbConfig, shopId);
 				shopDsl.remove();

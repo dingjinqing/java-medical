@@ -139,6 +139,24 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$on('checkRule', () => {
+      if (this.ruleForm.powerCoupon) {
+        if (this.ruleForm.couponType === '1') {
+          if (this.ruleForm.couponIdList.length > 0) {
+            this.ruleForm.valid = true
+          } else {
+            this.ruleForm.valid = false
+            this.$message.warning('请选择开卡送优惠券')
+          }
+        } else {
+          this.ruleForm.valid = true
+        }
+      } else {
+        this.ruleForm.valid = true
+      }
+    })
+  },
   data () {
     return {
       couponDialogVisable: false,

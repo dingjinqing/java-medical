@@ -51,7 +51,7 @@ public class AdminMemberAccountController extends AdminBaseController {
 	@PostMapping("/api/admin/member/account/update")
 	public JsonResult updateMemberAccount(@RequestBody AccountParam param) {
 		try {
-			shop().member.account.addUserAccount(param,TradeOptParam.builder().build());
+			shop().member.account.updateUserAccount(param,TradeOptParam.builder().build());
 		} catch (MpException e) {
 			return this.fail(e.getErrorCode());
 		}

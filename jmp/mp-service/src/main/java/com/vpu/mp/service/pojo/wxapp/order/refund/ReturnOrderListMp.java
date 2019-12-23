@@ -25,8 +25,16 @@ public class ReturnOrderListMp {
     private Timestamp finishTime;
     private Byte returnType;
     private Byte reasonType;
+    private String reasonDesc;
     private BigDecimal money;
     private BigDecimal shippingFee;
+    /**申请凭证*/
+    private String goodsImages;
+    /**退货凭证（物流）*/
+    private String voucherImages;
+    private String shippingType;
+    private String shippingNo;
+    private String phone;
     /**拒绝原因*/
     private String refundRefuseReason;
 }

@@ -4,7 +4,7 @@
   <view class="coupon-container">
     <block>
       <!--优惠券名称  -->
-      <view class="coupon-name" style="background:{{ act_info.is_expire == 1 ? '#ccc' : comColor }}">
+      <view class="coupon-name" style="background:{{ act_info.is_expire == 1 ? '' : comColor }}">
         <view class="vip_exclusive" wx:if="{{act_info.is_exclusive == 1}}">会员专享</view>
         <text class="name-top" wx:if="{{act_info.id !=''}}">{{act_info.actName}}</text>
         <text class="name-top" wx:else>优惠券名称</text>
@@ -12,9 +12,12 @@
         <text class="name-bottom" wx:if="{{act_info.type === 1}}">{{act_info.amount}}折</text> 
         <!-- 图标 -->
         <!--未使用  -->
-        <block wx:if="{{act_info.isUsed == 0&act_info.is_expire == 0&&act_info.from == 0}}"> 
+        <block wx:if="{{act_info.isUsed == 0&act_info.is_expire == 0}}"> 
             <image src="{{imageUrl}}image/wxapp/no_use_bg1.png" class="coupon-top-img" mode="widthFix"></image>             
-        </block> 
+        </block>  
+        <!-- <block wx:if="{{act_info.isUsed == 0&act_info.is_expire == 0&&act_info.from == 0}}"> 
+            <image src="{{imageUrl}}image/wxapp/no_use_bg1.png" class="coupon-top-img" mode="widthFix"></image>             
+        </block>  -->
         <block wx:if="{{act_info.from == 1 && act_info.have_expired == 0}}"> 
           <!--已领完  -->
           <block wx:if="{{act_info.can_fetch_num <= 0}}">
@@ -62,7 +65,7 @@
                        <block wx:if='{{act_info.validityMinute > 0}}'>{{act_info.validityMinute}}分钟</block>内有效
         </view>
         <view class="coupon-time-btm" style="font-size:24rpx;" wx:if="{{(act_info.remainDays == -1) && (act_info.validity == null && act_info.validityHour == null && act_info.validityMinute == null)}}">{{act_info.start_time}} - {{act_info.end_time}}</view>  
-        <view wx:if='{{act_info.remainDays == -2}}'>该优惠券已过期</view>
+        <view wx:if='{{!act_info.remainDays}}'>该优惠券已过期</view>
       </view> <!--有效日期END  -->
 
       <!--使用限制  -->

@@ -357,8 +357,8 @@ public class CardDaoService extends ShopBaseService {
 	public Integer createCardBatch(CardBatchParam param) {
 		Record1<Integer> batchId = db()
 				.insertInto(CARD_BATCH, CARD_BATCH.ACTION, CARD_BATCH.CODE_PREFIX, CARD_BATCH.NAME,
-						CARD_BATCH.CODE_SIZE, CARD_BATCH.NUMBER)
-				.values(param.getAction(), param.getCodePrefix(), param.getBatchName(), param.getCodeSize(),
+						CARD_BATCH.CODE_SIZE,CARD_BATCH.CARD_PWD_SIZE, CARD_BATCH.NUMBER)
+				.values(param.getAction(), param.getCodePrefix(), param.getBatchName(), param.getCodeSize(),param.getCardPwdSize(),
 						param.getNumber())
 				.returningResult(CARD_BATCH.ID).fetchOne();
 

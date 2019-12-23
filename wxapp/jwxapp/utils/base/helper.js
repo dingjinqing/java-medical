@@ -2,42 +2,42 @@ var cache = require('./cache.js');
 var config = require('../config.js');
 
 var helper = {
-  getShopId() {
+  getShopId () {
     return config.shop_id;
   },
-  isStr(v) {
+  isStr (v) {
     return typeof v === 'string';
   },
-  isNum(v) {
+  isNum (v) {
     return typeof v === 'number';
   },
-  isArr(v) {
+  isArr (v) {
     return Array.isArray(v);
   },
-  isUndef(v) {
+  isUndef (v) {
     return v === undefined;
   },
-  isObject(v) {
+  isObject (v) {
     return v !== null && typeof v === 'object'
   },
-  isPlainObject(obj) {
+  isPlainObject (obj) {
     return _toString.call(obj) === '[object Object]';
   },
-  hasOwn(obj, key) {
+  hasOwn (obj, key) {
     var hasOwnProperty = Object.prototype.hasOwnProperty;
     return hasOwnProperty.call(obj, key)
   },
-  isFunc(v) {
+  isFunc (v) {
     return typeof v === 'function';
   },
-  isJson(str) {
+  isJson (str) {
     try {
       return (typeof JSON.parse(str) == "object");
     } catch (e) {
       return false;
     }
   },
-  toArray(list, start) {
+  toArray (list, start) {
     if (start === void 0) start = 0;
 
     var i = list.length - start;
@@ -48,7 +48,7 @@ var helper = {
     return rst;
   },
 
-  leftPad0(n, totalBits) {
+  leftPad0 (n, totalBits) {
     var ret = n + "";
     for (var i = ret.length; i < totalBits; i++) {
       ret = "0" + ret;
@@ -57,7 +57,7 @@ var helper = {
   },
 
   // 倒计时处理时间的函数
-  expandTime(seconds) {
+  expandTime (seconds) {
     return {
       date: Math.floor(seconds / 3600 / 24),
       hour: this.leftPad0(Math.floor(seconds / 3600) % 24, 2),
@@ -66,7 +66,7 @@ var helper = {
     };
   },
 
-  formatTime(date) {
+  formatTime (date) {
     return date.getFullYear() + "-" +
       this.leftPad0(date.getMonth() + 1, 2) + "-" +
       this.leftPad0(date.getDate(), 2) + " " +
@@ -75,7 +75,7 @@ var helper = {
       this.leftPad0(date.getSeconds(), 2);
   },
 
-  getDistance(lat1, lng1, lat2, lng2) {
+  getDistance (lat1, lng1, lat2, lng2) {
     lat1 = lat1 || 0;
     lng1 = lng1 || 0;
     lat2 = lat2 || 0;
@@ -89,7 +89,7 @@ var helper = {
     return (dis / 1000).toFixed(2);
   },
 
-  formatNumber(n) {
+  formatNumber (n) {
     n = n.toString()
     return n[1] ? n : '0' + n
   },
@@ -110,7 +110,7 @@ var helper = {
     return result;
   },
 
-  concatJson(json1, json2) {
+  concatJson (json1, json2) {
     var resultJson = {};
     for (var attr in json1) {
       resultJson[attr] = json1[attr];
@@ -121,14 +121,14 @@ var helper = {
     return resultJson;
   },
 
-  isIPhoneX() {
+  isIPhoneX () {
     var res = wx.getSystemInfoSync();
     var model = res.model
     return (model.search('iPhone X') != -1 || model.search('iPhone XS') != -1 ||
       model.search('iPhone XR') != -1 || model.search('iPhone XS Max') != -1)
   },
 
-  toast_success(title, back) {
+  toast_success (title, back) {
     wx.showToast({
       title: title,
       icon: 'success',
@@ -141,21 +141,21 @@ var helper = {
     })
   },
 
-  toast_fail(title) {
+  toast_fail (title) {
     wx.showToast({
       title: title,
       image: '/images/fail.png',
       duration: 2000,
     })
   },
-  alert(content, title = null, back = null, confirmText = null) {
+  alert (content, title = null, back = null, confirmText = null) {
     title = title || "提示";
     this.showModal(title, content, back, false, null, confirmText);
   },
-  confirm(title, content, back, cancelText, confirmText) {
+  confirm (title, content, back, cancelText, confirmText) {
     this.showModal(title, content, back, true, cancelText, confirmText);
   },
-  showModal(title, content, back, showCancel, cancelText, confirmText) {
+  showModal (title, content, back, showCancel, cancelText, confirmText) {
     cancelText = cancelText || "取消";
     confirmText = confirmText || '确定';
     showCancel = showCancel || false;
@@ -173,19 +173,19 @@ var helper = {
       }
     })
   },
-  getUserLocation(callBack, refresh, altitude) {
+  getUserLocation (callBack, refresh, altitude) {
     refresh = refresh ? true : false;
     var location = cache.getCache('userLocation');
     if (refresh || !location) {
       wx.getLocation({
         type: 'wgs84',
         altitude: altitude ? true : false,
-        success(res) {
+        success (res) {
           cache.setCache('userLocation', res)
           location = res;
           if (callBack) callBack(location);
         },
-        fail(res) {
+        fail (res) {
           if (callBack) callBack(location);
         }
       })
@@ -193,7 +193,7 @@ var helper = {
       if (callBack) callBack(location);
     }
   },
-  colorRgb(str, opacity) {
+  colorRgb (str, opacity) {
     var sColor = str.toLowerCase();
     if (sColor) {
       if (sColor.length === 4) {
@@ -213,7 +213,7 @@ var helper = {
       return sColor;
     }
   },
-  getDistance(lat1, lng1, lat2, lng2) {
+  getDistance (lat1, lng1, lat2, lng2) {
     lat1 = lat1 || 0;
     lng1 = lng1 || 0;
     lat2 = lat2 || 0;
@@ -226,11 +226,11 @@ var helper = {
     var dis = r * 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(rad1) * Math.cos(rad2) * Math.pow(Math.sin(b / 2), 2)))
     return (dis / 1000).toFixed(2);
   },
-  check_setting(o) {
+  check_setting (o) {
     // 兼容
     return true;
   },
-  values(obj, props) {
+  values (obj, props) {
     if (typeof obj != 'object') return {};
     var ret = {};
     for (var i in props) {
@@ -238,7 +238,7 @@ var helper = {
     }
     return ret;
   },
-  addHtmlProp(html, tag, prop, value) {
+  addHtmlProp (html, tag, prop, value) {
     var reg = new RegExp("(<" + tag + ")(>|\\s+[^>]*?>)", "gim");
     return html.replace(reg, function (arg0, arg1, arg2) {
       var reg2 = new RegExp(prop + "=\[\"'\](.*?)\['\"\]", "gim");
@@ -249,11 +249,11 @@ var helper = {
       }
     });
   },
-  filterRichText(rich_text) {
+  filterRichText (rich_text) {
     rich_text = this.addHtmlProp(rich_text, "img", "style", ";vertical-align:middle;max-width:100%;height:auto");
     return rich_text;
   },
-  proxyMethod(_this, method, queue, queue_before) {
+  proxyMethod (_this, method, queue, queue_before) {
     var old = _this[method];
     _this[method] = function () {
       if (queue_before) {
@@ -269,7 +269,7 @@ var helper = {
       }
     }
   },
-  base64ImageHandle(base64, cb) {
+  base64ImageHandle (base64, cb) {
     const that = this;
     const timestamp = new Date().getTime() + Math.ceil(Math.random() * 1000000);
     // 指定图片的临时路径
@@ -279,7 +279,7 @@ var helper = {
     const fsm = wx.getFileSystemManager();
     fsm.readdir({
       dirPath: `${wx.env.USER_DATA_PATH}`, /// 获取文件列表
-      success(res) {
+      success (res) {
         console.log(res)
         res.files.forEach((val) => { // 遍历文件列表里的数据
           fsm.unlink({
@@ -325,12 +325,12 @@ var helper = {
           }
         });
       },
-      fail(err) {
+      fail (err) {
         console.log(err)
       }
     })
   },
-  getColors() {
+  getColors () {
     let helpColor = cache.getCache("main_colors");
     let mainColor = cache.getCache("help_colors");
     var colors = {

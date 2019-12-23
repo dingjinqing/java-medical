@@ -277,6 +277,7 @@ global.wxPage({
   }) {
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
     let total_micro_second = Math.round((new Date(actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime).getTime() - new Date().getTime()) / 1000)
+    console.log(total_micro_second, actState, activityType)
     this.countdown(total_micro_second, actState, activityType)
   },
   // 获取最小值
@@ -285,6 +286,7 @@ global.wxPage({
   },
   // 倒计时
   countdown(total_micro_second, actState, activityType) {
+    this.getActCanBuy(total_micro_second,actState,activityType)
     let clock =
       total_micro_second <= 0 ?
       "已经截至" :
@@ -292,15 +294,6 @@ global.wxPage({
     this.setData({
       'actBarInfo.clock': clock
     });
-    if (actBaseInfo[activityType]['countDownInfo'][actState] === 'endTime' && total_micro_second > 0) {
-      this.setData({
-        'dealtAct.canBuy': true
-      })
-    } else {
-      this.setData({
-        'dealtAct.canBuy': false
-      })
-    }
     if (total_micro_second <= 0) return;
     this.setData({
       actBartime: setTimeout(() => {
@@ -308,6 +301,39 @@ global.wxPage({
         this.countdown(total_micro_second, actState, activityType);
       }, 1000)
     });
+  },
+  getActCanBuy(total_micro_second,actState,activityType){
+    const state = new Map([
+      [{actState:"endTime",second:true},()=>{
+        this.setData({
+          'dealtAct.canBuy': true
+        })
+      }],
+      [{actState:"endTime",second:false},()=>{
+        let actState = Object.keys(actBaseInfo[activityType]['actStatus']).find((k)=>{return actBaseInfo[activityType]['actStatus'][k] === '活动已结束'})
+        this.setData({
+          'dealtAct.canBuy': false,
+          'activity.actState': actState,
+          'actBarInfo.actStatusName': this.getActStatusName({...this.data.activity,actState}),
+        })
+        this.getCountDown(this.data.activity)
+      }],
+      [{actState:"startTime",second:true},()=>{
+        this.setData({
+          'dealtAct.canBuy': false,
+        })
+      }],
+      [{actState:"startTime",second:false},()=>{
+        let actState = Object.keys(actBaseInfo[activityType]['actStatus']).find((k)=>{return actBaseInfo[activityType]['actStatus'][k] === '距结束仅剩'})
+        this.setData({
+          'dealtAct.canBuy': true,
+          'activity.actState': actState,
+          'actBarInfo.actStatusName': this.getActStatusName({...this.data.activity,actState}),
+        })
+        this.getCountDown(this.data.activity)
+      }]
+    ])
+    ;[...state].find(([key])=>{return key.actState === actBaseInfo[activityType]['countDownInfo'][actState] && key.second === total_micro_second > 0})[1].call(this)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

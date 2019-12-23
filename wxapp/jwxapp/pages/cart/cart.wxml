@@ -9,7 +9,7 @@
                   <movable-view damping="100" x="{{item.x}}" out-of-bounds="true" direction="horizontal" bindchange="handleTouchChange" bindtouchend="handleTouchEnd" data-index="{{index}}">
                     <view class="flex_goods">
                         <view class="checkbox_box">
-                            <text class="iconfont {{item.isChecked === 0 ? 'icondanxuanbiankuang':'icondanxuan'}}" style="color:{{comColor}}" bindtap="checkedToggle" data-prd_id="{{item.prdId}}" data-is_checked="{{item.isChecked}}" data-rec_id="{{item.recId}}"></text>
+                            <text class="iconfont {{item.isChecked === 0 ? 'icondanxuanbiankuang':'icondanxuan'}}" style="color:{{comColor}}" bindtap="checkedToggle" data-cart_id="{{item.cartId}}" data-is_checked="{{item.isChecked}}"></text>
                         </view>
                         <view class="goods_item">
                             <view class="goods_img">
@@ -23,16 +23,16 @@
                                     <view class="goods_name">
                                         {{item.goodsName}}
                                     </view>
-                                    <view class="goods_spec" wx:if="{{item.goodsSpecs}}">
-                                        {{item.goodsSpecs}}
+                                    <view class="goods_spec" wx:if="{{item.prdDesc}}">
+                                        {{item.prdDesc}}
                                     </view>
                                 </view>
                                 <view class="goods_price">
                                     <view class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
                                     <view class="num_cfg">
-                                      <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.cartNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.prdId}}" data-cart_number="{{item.cartNumber}}" data-rec_id="{{item.recId}}" data-type="minus">-</view>
+                                      <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.cartNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.prdId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
                                       <input type="number" value="{{item.cartNumber}}" bindblur="checkNumber" data-prd_id="{{item.prdId}}" data-limit_min="{{item.limitBuyNum}}" data-limit_max="{{item.limitMaxNum}}"></input>
-                                      <view class="num_plus {{item.cartNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.cartNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.prdId}}" data-cart_number="{{item.cartNumber}}" data-rec_id="{{item.recId}}" data-type="add">+</view>
+                                      <view class="num_plus {{item.cartNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.cartNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.prdId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view>
                                     </view>
                                 </view>
                             </view>
@@ -40,7 +40,7 @@
                     </view>
                   </movable-view>
                 </movable-area>
-                <view class="goods_del" bindtap="delCartGoods" data-item="{{item}}" data-prd_id="{{item.prdId}}" data-rec_id="{{item.recId}}">
+                <view class="goods_del" bindtap="delCartGoods" data-cart_id="{{item.cartId}}">
                   删除
                 </view>
               </view> 
@@ -69,7 +69,7 @@
                                     {{item.goodsName}}
                                 </view>
                                 <view class="goods_spec">
-                                    {{item.goodsSpecs}}
+                                    {{item.prdDesc}}
                                 </view>
                             </view>
                         </view>
@@ -87,7 +87,7 @@
         </view>
 
         <!-- 底部按钮 -->
-        <view class="flex_footer" wx:if="{{canBuyGoodsList.length > 0}}" style="{{!isIpx ? 'bottom:110rpx;' :'bottom:160rpx'}}">
+        <view class="flex_footer" wx:if="{{canBuyGoodsList.length > 0}}" style="{{!isIpx ? 'bottom:110rpx' :'bottom:160rpx'}}">
             <view class="footer_left">
                 <text class="iconfont {{isAllCheck ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}}" bindtap="changeAllChecked"></text>
                 <text>全选</text>

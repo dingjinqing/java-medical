@@ -262,42 +262,32 @@ export default {
       return 'backgroundImage: url(' + item.backGroundImgUrl + ')'
     },
     initCardAvailableCfgData (val) {
-      console.log('卡状态', val)
       this.cardAvailableCfgData = val
     },
     initCardNameAndBg (val) {
-      console.log(val.bgImg)
       this.initSampleCardData(val)
       this.cardNameAndBg = val
     },
     initDiscountData (val) {
-      console.log('初始化折扣相关数据', val)
       this.initSampleCardDiscountData(val)
       this.disCountData = val
     },
     initOwnGoodsData (val) {
-      console.log('专享商品：', val)
       this.ownGoodsData = val
     },
     initCardScoreCfgData (val) {
-      console.log('积分获取', val)
       this.cardScoreCfgData = val
     },
     initCardGradeCfgData (val) {
-      console.log('初始化会员卡等级条件', val)
       this.cardGradeCfgData = val
-      console.log(this.cardGradeCfgData)
     },
     initCardUsageCfgData (val) {
-      console.log('使用须知', val)
       this.cardUsageCfgData = val
     },
     initCardActiveCfgData (val) {
-      console.log('激活设置')
       this.cardActiveCfgData = val
     },
     initSampleCardData (val) {
-      console.log('初始化示例会员卡')
       this.sampleCardData.bgColor = val.bgColor
       this.sampleCardData.cardName = val.cardName
       this.sampleCardData.bgImg = val.bgImg

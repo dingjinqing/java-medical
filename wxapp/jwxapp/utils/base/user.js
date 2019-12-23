@@ -48,7 +48,27 @@ var user = {
       }
     })
   },
-
+  toSubscribeMessage (templateIds, module_name, cb) {
+    var that = this;
+    if (wx.requestSubscribeMessage) {
+      wx.requestSubscribeMessage({
+        tmplIds: templateIds,
+        success (res) {
+          console.log(res);
+          that.api('/api/wxapp/common/subscribemessage', function (res) { }, { json_data: JSON.stringify(res), module_name: module_name })
+        },
+        fail (res) {
+          console.log(res);
+        },
+        complete (res) {
+          console.log(res);
+          cb();
+        }
+      })
+    } else {
+      cb();
+    }
+  },
   getUserInfoCommon (e, cb) {
     if (e.detail.userInfo) {
       var user_avatar = e.detail.userInfo.avatarUrl;

@@ -327,6 +327,7 @@
                     <el-select
                       v-model="param.receivePerPerson"
                       size="small"
+                      class="coupon_name_input"
                     >
                       <el-option
                         v-for="(item, index) in getLimit"
@@ -356,6 +357,7 @@
                         multiple
                         size="small"
                         :disabled="editType"
+                        class="coupon_name_input"
                       >
                         <el-option
                           v-for="item in cardList"
@@ -365,9 +367,18 @@
                         ></el-option>
                       </el-select>
                       <span class="card_links">
-                        <a>{{ $t('ordinaryCoupon.memberTip3') }}</a><span> | </span>
-                        <a>{{ $t('ordinaryCoupon.memberTip4') }}</a><span> | </span>
-                        <a>{{ $t('ordinaryCoupon.memberTip5') }}</a>
+                        <span
+                          class="member"
+                          @click="refresh()"
+                        >{{ $t('ordinaryCoupon.memberTip3') }}</span><span> | </span>
+                        <span
+                          class="member"
+                          @click="addMemberCard()"
+                        >{{ $t('ordinaryCoupon.memberTip4') }}</span><span> | </span>
+                        <span
+                          class="member"
+                          @click="manageMemberCard()"
+                        >{{ $t('ordinaryCoupon.memberTip5') }}</span>
                       </span>
                     </div>
                   </div>
@@ -749,6 +760,7 @@ export default {
     this.couponId = this.$route.query.id
 
     this.dataDefalut()
+    this.getCardList()
     if (this.couponId) {
       this.editType = true
       this.getOneInfo()
@@ -770,6 +782,9 @@ export default {
           this.noneBlockDiscArr[2].num = res.length
         }
       })
+    },
+
+    getCardList () {
       // 会员卡数据
       allCardApi().then((res) => {
         if (res.error === 0) {
@@ -988,6 +1003,22 @@ export default {
           this.platClass.push(item.catId)
         })
       }
+    },
+
+    // 刷新
+    refresh () {
+      this.getCardList()
+      this.$nextTick(() => {
+        this.$message.success('刷新成功')
+      })
+    },
+
+    addMemberCard () {
+      window.open('/admin/home/main/normalCardDetail')
+    },
+
+    manageMemberCard () {
+      window.open('/admin/home/main/user_card')
     },
 
     // 切换触发校验
@@ -1216,8 +1247,9 @@ export default {
     }
   }
 }
-.card_links > a {
+.card_links > .member {
   color: #409eff;
+  cursor: pointer;
 }
 .content_right_li {
   padding: 10px 0 0 0;
@@ -1239,7 +1271,7 @@ export default {
   margin-right: 15px;
 }
 .coupon_name_input {
-  width: 160px;
+  width: 170px;
 }
 .noneBlockList {
   margin-bottom: 10px;
