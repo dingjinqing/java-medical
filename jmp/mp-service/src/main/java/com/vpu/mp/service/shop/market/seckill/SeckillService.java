@@ -517,7 +517,7 @@ public class SeckillService extends ShopBaseService{
         if(minStock <= 0){
             return 5;
         }
-        if(getUserSeckilledGoodsNumber(secKill.getSkId(),userId) >= secKill.getLimitAmount()){
+        if(secKill.getLimitAmount() > 0 && getUserSeckilledGoodsNumber(secKill.getSkId(),userId) >= secKill.getLimitAmount()){
             return 6;
         }
         if(StringUtil.isNotEmpty(secKill.getCardId()) && !userCardExclusiveSeckillIsValid(secKill.getCardId(),userId)){
