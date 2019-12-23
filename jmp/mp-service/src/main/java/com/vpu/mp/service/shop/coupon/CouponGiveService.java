@@ -583,7 +583,7 @@ public class CouponGiveService extends ShopBaseService {
       if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
           && couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
         logger().info("所选优惠券库存不足");
-        break;
+        continue;
       }
       // 发券入库
       for (Integer userId : param.getUserIds()) {

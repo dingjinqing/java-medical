@@ -397,11 +397,11 @@ public class BargainService extends ShopBaseService  {
             if(bargain.getStartTime().after(DateUtil.getLocalDateTime())){
                 //未开始
                 bargainGoods.setTimeState((byte)0);
-                bargainGoods.setRemainingTime(bargain.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime());
+                bargainGoods.setRemainingTime((bargain.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
             }else if(bargain.getEndTime().after(DateUtil.getLocalDateTime())){
                 //进行中
                 bargainGoods.setTimeState((byte)1);
-                bargainGoods.setRemainingTime(bargain.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime());
+                bargainGoods.setRemainingTime((bargain.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
             }else{
                 //已结束
                 bargainGoods.setTimeState((byte)2);
