@@ -427,4 +427,21 @@ public class SubscribeMessageService extends ShopBaseService {
 		int update = templateIdRecord.update();
 		logger().info(" 更新消息订阅状态"+update);
 	}
+	
+	/**
+	 * 是否可用发送
+	 * @param userId
+	 * @param templateNo
+	 * @return
+	 */
+	public boolean getCanUse(Integer userId,Integer templateNo) {
+		SubscribeMessageRecord fetchAny = db().selectFrom(SUBSCRIBE_MESSAGE)
+				.where(SUBSCRIBE_MESSAGE.USER_ID.eq(userId)
+						.and(SUBSCRIBE_MESSAGE.TEMPLATE_NO.eq(String.valueOf(templateNo)))
+						.and(SUBSCRIBE_MESSAGE.STATUS.eq((byte)1).and(SUBSCRIBE_MESSAGE.CAN_USE_NUM.gt(0)))).fetchAny();
+		if(fetchAny==null) {
+			return false;
+		}
+		return true;
+	}
 }

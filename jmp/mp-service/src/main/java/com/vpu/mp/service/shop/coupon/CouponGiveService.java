@@ -822,4 +822,13 @@ public class CouponGiveService extends ShopBaseService {
 		  // TODO 批量发放优惠券给会员
 	  }
   }
+  
+  /**
+   * 根据Id获取优惠券信息
+   * @param id
+   * @return
+   */
+  public MrkingVoucherRecord getInfoById(Integer id) {
+	  return db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).fetchAny();
+  }
 }
