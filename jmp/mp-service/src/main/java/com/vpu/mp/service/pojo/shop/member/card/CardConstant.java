@@ -144,6 +144,7 @@ public class CardConstant {
 	// 4， 关联品牌分类 
 	public static final Byte COUPLE_TP_BRAND = 4;
 	public static final String BUTTON_ON = "on";
+	public static final String BUTTON_OFF = "off";
 
 
 
