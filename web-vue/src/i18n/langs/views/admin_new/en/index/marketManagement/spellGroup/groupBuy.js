@@ -180,5 +180,6 @@ export const en = {
   cancel: 'Cancel',
   cancelMessage: 'Cancelled',
   moreConfigure: 'Expand more configurations',
-  packUpConfigure: 'Fold up more configurations'
+  packUpConfigure: 'Fold up more configurations',
+  to: 'to'
 }

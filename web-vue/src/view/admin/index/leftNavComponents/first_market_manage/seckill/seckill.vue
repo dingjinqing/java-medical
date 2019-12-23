@@ -60,6 +60,7 @@
           prop="validity"
           :label="$t('seckill.validDate')"
           align="center"
+          width="160"
         >
           <template slot-scope="scope">
             {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.seckill;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
@@ -67,6 +68,9 @@ public class SeckillService extends ShopBaseService{
 
     @Autowired
     private GoodsService goodsService;
+
+    @Autowired
+    protected DomainConfig domainConfig;
 
     /**
      * 秒杀活动列表分页数据
@@ -513,7 +517,7 @@ public class SeckillService extends ShopBaseService{
         if(minStock <= 0){
             return 5;
         }
-        if(getUserSeckilledGoodsNumber(secKill.getSkId(),userId) >= secKill.getLimitAmount()){
+        if(secKill.getLimitAmount() > 0 && getUserSeckilledGoodsNumber(secKill.getSkId(),userId) >= secKill.getLimitAmount()){
             return 6;
         }
         if(StringUtil.isNotEmpty(secKill.getCardId()) && !userCardExclusiveSeckillIsValid(secKill.getCardId(),userId)){
@@ -578,7 +582,7 @@ public class SeckillService extends ShopBaseService{
             //set goods info
             seckillGoods.setGoodsId(seckill.getGoodsId());
             seckillGoods.setGoodsName(goodsInfo.getGoodsName());
-            seckillGoods.setGoodsImg(goodsInfo.getGoodsImg());
+            seckillGoods.setGoodsImg(domainConfig.imageUrl(goodsInfo.getGoodsImg()));
             seckillGoods.setGoodsPrice(goodsInfo.getShopPrice());
             seckillGoods.setGoodsIsDelete(goodsInfo.getDelFlag());
             seckillGoods.setIsOnSale(goodsInfo.getIsOnSale());
@@ -610,11 +614,11 @@ public class SeckillService extends ShopBaseService{
             if(seckill.getStartTime().after(DateUtil.getLocalDateTime())){
                 //未开始
                 seckillGoods.setTimeState((byte)0);
-                seckillGoods.setRemainingTime(seckill.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime());
+                seckillGoods.setRemainingTime((seckill.getStartTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
             }else if(seckill.getEndTime().after(DateUtil.getLocalDateTime())){
                 //进行中
                 seckillGoods.setTimeState((byte)1);
-                seckillGoods.setRemainingTime(seckill.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime());
+                seckillGoods.setRemainingTime((seckill.getEndTime().getTime() - DateUtil.getLocalDateTime().getTime())/1000);
             }else{
                 //已结束
                 seckillGoods.setTimeState((byte)2);
