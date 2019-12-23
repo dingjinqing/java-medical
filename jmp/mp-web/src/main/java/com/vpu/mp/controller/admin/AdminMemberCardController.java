@@ -269,7 +269,6 @@ public class AdminMemberCardController extends AdminBaseController {
 		CardBatchVo vo = shop().member.card.generateCardCode(param);
 		return success(vo);
 	}
-	
 	/**
 	 * 获取领取批次
 	 */
