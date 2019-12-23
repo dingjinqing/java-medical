@@ -111,6 +111,15 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	@Override
 	public ExecuteResult execute(RefundParam param) {
         logger.info("退款退货执行start(ReturnService)");
+        //校验
+        if(!Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_REVOKE).equals(param.getReturnOperate()) || !Byte.valueOf(OrderConstant.RETURN_OPERATE_MP_SUBMIT_SHIPPING).equals(param.getReturnOperate())){
+            if(param.getReturnMoney() == null){
+                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY);
+            }
+            if(param.getShippingFee() == null){
+                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE);
+            }
+        }
 		//获取订单详情
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {

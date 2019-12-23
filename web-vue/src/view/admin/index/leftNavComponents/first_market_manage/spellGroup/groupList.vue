@@ -62,6 +62,9 @@
           :label="$t('groupBuy.validDate')"
           align="center"
         >
+          <template slot-scope="scope">
+            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+          </template>
         </el-table-column>
         <el-table-column
           prop="statusText"
@@ -115,7 +118,7 @@
               >
                 <span
                   class="el-icon-circle-close"
-                  @click="changeStatus(scope.row.id,0)"
+                  @click="closeStatus(scope.row.id,0)"
                   v-if="scope.row.status==1"
                 > </span>
               </el-tooltip>
@@ -126,7 +129,7 @@
               >
                 <span
                   class="el-icon-circle-check"
-                  @click="changeStatus(scope.row.id,1)"
+                  @click="openStatus(scope.row.id,1)"
                   v-if="scope.row.status==0"
                 > </span>
               </el-tooltip>
@@ -290,7 +293,7 @@ export default {
     },
     handleData (tabData) {
       tabData.map((item, index) => {
-        item.vaildDate = `${item.startTime}` + this.$t('marketCommon.to') + `${item.endTime}`
+        // item.vaildDate = `${item.startTime}` + this.$t('marketCommon.to') + `${item.endTime}`
         item.statusText = this.getActStatusString(item.currentState)
         this.activityTypeText.forEach(entity => {
           if (entity.value === item.activityType) {
@@ -301,7 +304,35 @@ export default {
       })
       this.tableData = tabData
     },
-    changeStatus (id, status) {
+    closeStatus (id, status) {
+      console.log(id, 'id---', status)
+      this.$confirm(this.$t('groupBuy.closeStatusComment'), {
+        confirmButtonText: this.$t('groupBuy.confirm'),
+        cancelButtonText: this.$t('groupBuy.cancel'),
+        type: 'warning'
+      }).then(() => {
+        let param = {
+          'id': id,
+          'status': status
+        }
+        changeStatusActivity(param).then(res => {
+          console.log('change=>res = ' + res)
+          if (res.error === 0) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+          this.initDataList()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: this.$t('groupBuy.cancelMessage')
+        })
+      })
+    },
+    openStatus (id, status) {
+      console.log(id, 'id---', status)
       this.$confirm(this.$t('groupBuy.changeStatusComment'), {
         confirmButtonText: this.$t('groupBuy.confirm'),
         cancelButtonText: this.$t('groupBuy.cancel'),
@@ -401,7 +432,7 @@ export default {
       return this.tabInfo
     },
     addGroupBuySubmit () {
-      this.tabSwitch = '2'
+      this.tabSwitch = '1'
       this.initDataList()
     },
     groupBuyDetailList (id) {
@@ -478,7 +509,7 @@ export default {
   position: relative;
   margin-top: 10px;
   background-color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 15px;
 }
 
 .opt {
@@ -507,7 +538,6 @@ export default {
   margin-left: 65%;
 }
 .footer {
-  padding: 20px 0 20px 20px;
   display: flex;
   justify-content: flex-end;
   span {

@@ -4,7 +4,7 @@
 -->
 <template>
   <div>
-    <wrapper>
+    <div class="wrapper">
       <el-form
         ref="form"
         :model="form"
@@ -34,7 +34,7 @@
           <el-col :span="8">
             <el-input
               size="small"
-              v-model.trim="form.name"
+              v-model="form.name"
               style="width: 170px"
             ></el-input>
           </el-col>
@@ -73,6 +73,7 @@
                 v-model="form.isGrouperCheap"
                 :active-value=1
                 :inactive-value=0
+                active-color="#f7931e"
               ></el-switch>
             </div>
             <div class="prompt">
@@ -241,12 +242,11 @@
             v-model="form.validityDate"
             type="datetimerange"
             @change="dateChange(form.validityDate)"
-            :picker-options="pickerOptions"
-            range-separator="-"
+            :range-separator="$t('groupBuy.to')"
             :start-placeholder="$t('groupBuy.startDate')"
             :end-placeholder="$t('groupBuy.endDate')"
-            align="right"
             value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00','23:59:59']"
           >
           </el-date-picker>
         </el-form-item>
@@ -321,6 +321,7 @@
             v-model="form.isDefault"
             :active-value=1
             :inactive-value=0
+            active-color="#f7931e"
           ></el-switch>
           <div class="prompt">{{$t('groupBuy.openIsDefaultComment')}}</div>
         </el-form-item>
@@ -361,9 +362,19 @@
                     class="couponImgWrapper"
                     style="line-height: normal"
                   >
-                    <div class="coupon_list_top">
+                    <div
+                      class="coupon_list_top"
+                      v-if="item.actCode==='voucher'"
+                    >
                       <span>￥</span>
                       <span class="number">{{item.denomination}}</span>
+                    </div>
+                    <div
+                      class="coupon_list_top"
+                      v-if="item.actCode==='discount'"
+                    >
+                      <span>{{item.denomination}}</span>
+                      <span>{{$t('payReward.discount')}}</span>
                     </div>
                     <div class="coupon_center_limit">{{item.useConsumeRestrict |
                       formatLeastConsume(item.leastConsume)}}
@@ -372,7 +383,11 @@
                     <div
                       class="coupon_list_bottom"
                       style="font-size: 12px"
-                    >领取
+                    >
+                      <span v-if="item.scoreNumber === 0">领取</span>
+                      <div v-if="item.scoreNumber !== 0">
+                        <span>{{item.scoreNumber}}</span>积分 兑换
+                      </div>
                     </div>
                   </section>
                   <span
@@ -436,14 +451,13 @@
         >{{$t('marketCommon.ok')}}
         </el-button>
       </div>
-    </wrapper>
+    </div>
 
   </div>
 </template>
 <script>
 
 import { mapActions } from 'vuex'
-import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
@@ -454,7 +468,6 @@ import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 
 export default {
   components: {
-    wrapper,
     choosingGoods,
     addCouponDialog,
     actShare
@@ -536,34 +549,6 @@ export default {
 
       rewardCouponList: [],
       rewardCouponIds: [],
-      // 时间控件
-      pickerOptions: {
-        shortcuts: [{
-          text: this.$t('groupBuy.lastWeek'),
-          onClick (picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: this.$t('groupBuy.lastmonth'),
-          onClick (picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            picker.$emit('pick', [start, end])
-          }
-        }, {
-          text: this.$t('groupBuy.lastThreeMonths'),
-          onClick (picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
-        }]
-      },
       props: ['isEdite'],
       submitStatus: false,
       grouponType: [],
@@ -632,6 +617,7 @@ export default {
       console.log('this.isEdite', this.isEdite)
       if (this.isEdite) {
         let data = this.editData
+        console.log(data, 'init data')
         this.form.id = data.id
         this.form.activityType = data.activityType
         this.form.name = data.name
@@ -670,15 +656,18 @@ export default {
 
     // 获取优惠券信息
     getCouponList (ids) {
+      console.log(ids, 'ids--')
       this.rewardCouponList = []
       ids.map((item, index) => {
         updateCoupon(item).then((res) => {
           if (res.error === 0) {
             this.rewardCouponList.push(res.content[0])
+            console.log(this.rewardCouponList)
+            this.couponIdList = this.rewardCouponList.map(item => item.id)
+            console.log(this.couponIdList)
           }
         })
       })
-      this.couponIdList = this.getCouponIdsArray(this.rewardCouponList)
     },
 
     // 提交表单
@@ -747,6 +736,8 @@ export default {
     },
     // 确认选择优惠券-新增
     handleToCheck (data, index) {
+      console.log(data, 'coupon data---', index, 'index---')
+      this.couponIdList = data.map(item => item.id)
       if (this.rewardCouponList.length < 5) {
         this.rewardCouponList = data
         this.rewardCouponIds = []
@@ -762,22 +753,11 @@ export default {
     deleteCouponImg (index) {
       this.rewardCouponList.splice(index, 1)
       this.rewardCouponIds.splice(index, 1)
+      this.couponIdList.splice(index, 1)
     },
-    // 选择优惠券弹窗-砍价失败后向买家赠送
+    // 优惠券点击事件
     handleToCallDialog () {
       this.showCouponDialog = !this.showCouponDialog
-      this.couponIdList = this.getCouponIdsArray(this.rewardCouponList)
-    },
-    getCouponIdsArray (data) {
-      let res = []
-      data.forEach((item, index) => {
-        res.push(item)
-      })
-      return res
-    },
-
-    arrayToString (arr) {
-
     },
     // 活动时间时间选择
     dateChange (date) {
@@ -937,9 +917,10 @@ export default {
 }
 
 .wrapper {
-  margin: 10px 0 !important;
+  margin: 10px 0;
   padding: 10px 0;
-  margin-bottom: 80px !important;
+  margin-bottom: 80px;
+  background: #fff;
 }
 
 .tableHeader th {
