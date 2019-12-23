@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.saas.SaasApplication;
-import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,7 +42,7 @@ public class MaMpScheduleTask {
 	/**
 	 * 预约服务提前一小时提醒,每分钟
 	 */
-	@Scheduled(cron = "0 30 11 * * ?")
+	@Scheduled(cron = "0 */1 * * * ?")
 	public void AppointmentRemindCommand() {
 		log.info("预约服务提前一小时提醒");
         Result<ShopRecord> result = saas.shop.getAll();
@@ -58,7 +57,7 @@ public class MaMpScheduleTask {
 	 */
 	@Scheduled(cron = "0 */1 * * * ?")
 	public void sendTemplateMessage() {
-		log.info("商家自定义模板消息 定时发送");
+		log.info(" 尾款未支付前N小时提醒 定时发送");
 		Result<ShopRecord> result = saas.shop.getAll();
 		result.forEach((r) -> {
 			saas.getShopApp(r.getShopId()).shopTaskService.maMpScheduleTaskService.sendTemplateMessage();
@@ -72,7 +71,7 @@ public class MaMpScheduleTask {
 	 */
 	@Scheduled(cron = "0 */1 * * * ?")
 	public void friendPromoteCommand() {
-		log.info("商家自定义模板消息 定时发送");
+		log.info("好友助力 发送模板消息");
 		Result<ShopRecord> result = saas.shop.getAll();
 		result.forEach((r) -> {
 			saas.getShopApp(r.getShopId()).shopTaskService.maMpScheduleTaskService.friendPromoteCommand();

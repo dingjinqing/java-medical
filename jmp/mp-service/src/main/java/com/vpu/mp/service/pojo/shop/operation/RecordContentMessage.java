@@ -42,16 +42,17 @@ public class RecordContentMessage {
     /** 会员发放会员卡 */
     public static final String MSG_MEMBER_CARD_SEND = "member.content.card.send";
     /** 会员余额更新变动 */
+
     public static final String MSG_MEMBER_ACCOUNT = "member.content.account";
     /** 会员积分更新变动*/
-    public static final String MSG_MEMBER_SCORE = "member.content.score";
-    
-    
-    
+    public static final String MSG_MEMBER_INTEGRALT = "member.content.integral";
+
+
     /**
      * 	营销
      */
     /** 秒杀活动添加 */
     public static final String MARKET_SECKILL_ADD = "market.seckill.add";
+
 
 }

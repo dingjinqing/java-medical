@@ -28,6 +28,8 @@ public final class DateUtil {
 	public static final String DATE_FORMAT_FULL_NO_UNDERLINE = "yyyyMMddHHmmss";
 
 	public static final String DATE_MYSQL_SIMPLE="%Y-%m-%d";
+	
+	public static final String DATE_MYSQL_DAY="%Y-%m-%d %H:%i";
 
 	private static final Integer MILLI_SECOND = 1000;
 	

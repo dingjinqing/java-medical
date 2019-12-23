@@ -31,8 +31,9 @@ public enum   RecordContentTemplate {
 	MEMBER_CARD_SEND(4001,RecordContentMessage.MSG_MEMBER_CARD_SEND),
 	/** 会员-余额*/
 	MEMBER_ACCOUNT(4002,RecordContentMessage.MSG_MEMBER_ACCOUNT),
-	/**会员-积分 */
-	MEMBER_SCORE(4003,RecordContentMessage.MSG_MEMBER_SCORE),
+	/** 会员-积分*/
+	MEMBER_INTEGRALT(4003,RecordContentMessage.MSG_MEMBER_INTEGRALT),
+
 
     /** 营销-秒杀 */
     MARKET_SECKILL_ADD(5001,RecordContentMessage.MARKET_SECKILL_ADD);
@@ -50,6 +51,16 @@ public enum   RecordContentTemplate {
      RecordContentTemplate(int code, String message) {
         this.code = code;
         this.message = message;
+    }
+    public static String getMessageByCode(int code){
+         String result = "";
+         for(RecordContentTemplate record:  RecordContentTemplate.values() ){
+             if( code == record.getCode() ){
+                 result = record.getMessage();
+                 break;
+             }
+         }
+         return result;
     }
 
 }

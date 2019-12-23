@@ -583,7 +583,7 @@ public class CouponGiveService extends ShopBaseService {
       if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
           && couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
         logger().info("所选优惠券库存不足");
-        break;
+        continue;
       }
       // 发券入库
       for (Integer userId : param.getUserIds()) {
@@ -821,5 +821,14 @@ public class CouponGiveService extends ShopBaseService {
 	  for(Integer id: couponIds) {
 		  // TODO 批量发放优惠券给会员
 	  }
+  }
+  
+  /**
+   * 根据Id获取优惠券信息
+   * @param id
+   * @return
+   */
+  public MrkingVoucherRecord getInfoById(Integer id) {
+	  return db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).fetchAny();
   }
 }
