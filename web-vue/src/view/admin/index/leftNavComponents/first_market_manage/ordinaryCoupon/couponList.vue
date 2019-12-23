@@ -36,7 +36,7 @@
     <div class="main">
       <el-tabs
         v-model="nav"
-        @tab-click="initDataList"
+        @tab-click="handleClick"
         :lazy="true"
       >
         <el-tab-pane
