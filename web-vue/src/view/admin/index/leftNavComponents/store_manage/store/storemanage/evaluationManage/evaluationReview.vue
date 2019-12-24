@@ -132,10 +132,9 @@
             :label="$t('reservationManage.commentInfo')"
           >
             <template slot-scope="{ row }">
-              <el-row :gutter=20>
-                <el-col :span="20">
-                  <label style="font-size: 14px;">{{$t('reservationManage.commentScore')}}： {{row.commstar}}</label>
-                  <img :src="imgHost + '/image/admin/comstar_{{row.commstar}}.png'" alt="" style="width: 65px; height: 65px">
+              <el-row :gutter=22>
+                <el-col :span="22">
+                  <label style="font-size: 14px;">{{$t('reservationManage.commentScore')}}：<img :src="row.commstar" alt=""></label>
                 </el-col>
               </el-row>
               <el-row :gutter=20>
@@ -462,6 +461,7 @@ export default {
             } else {
               item.anonymousflag = '是'
             }
+            item.commstar = this.imgHost + '/image/admin/comstar_' + item.commstar + '.png'
             switch (item.flag) {
               case 0:
                 item.flag = this.$t('reservationManage.beCharge')

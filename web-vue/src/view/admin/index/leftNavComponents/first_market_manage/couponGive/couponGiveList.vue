@@ -6,22 +6,25 @@
         class="leftarea"
         style="margin-left: 30px;"
       >
-        {{$t('couponGive.actName')}}
+        {{$t('couponGive.actName') + '：'}}
         <el-input
           v-model="actName"
           placeholder="请输入发券活动名称"
           clearable
-          style="width: 300px;margin: 0 10px;"
+          size="small"
+          style="width: 170px;margin: 0 10px;"
         >
         </el-input>
         <el-button
           type="primary"
+          size="small"
           @click="handleSelect"
         >{{$t('couponGive.select')}}</el-button>
       </div>
       <div style="position: absolute;right: 20px;">
         <el-button
           type="primary"
+          size="small"
           @click="addAct"
         >{{$t('couponGive.giveCoupon')}}</el-button>
       </div>
@@ -122,28 +125,32 @@ export default {
       tableData: [],
       pageParams: {
         pageRows: 20
-      }
+      },
+      requestParam: {}
     }
   },
-  created () {
+  mounted () {
+    // 初始化数据
     this.handleSelect()
   },
   methods: {
-    // 分页信息查询
     handleSelect () {
-      this.pageParams.actName = this.actName
-      couponGiveList(this.pageParams).then(res => {
-        console.log('pageParams:', this.pageParams)
-        console.log('tableData:', res)
+      couponGiveList({
+        actName: this.actName,
+        page: {
+          currentPage: 1,
+          pageRows: 20
+        }
+      }).then((res) => {
         if (res.error === 0) {
-          this.handleData(res.content.dataList)
-          console.log('tableData:', res.content.dataList)
           this.pageParams = res.content.page
+          this.handleData(res.content.dataList)
         }
       }).catch(() => {
         this.$message.error(this.$t('couponGive.operationFailed'))
       })
     },
+
     // 表格数据处理
     handleData (data) {
       data.forEach((item, index) => {
@@ -202,11 +209,14 @@ export default {
       this.tableData = data
       console.log(data)
     },
+
     receiveDetails (id, couponId) {
       this.$router.push({
         path: `/admin/home/main/couponGive/receiveDetails/${id}/${couponId}`
       })
     },
+
+    // 发券
     addAct () {
       this.$router.push({
         path: `/admin/home/main/couponGive/grantCoupons`

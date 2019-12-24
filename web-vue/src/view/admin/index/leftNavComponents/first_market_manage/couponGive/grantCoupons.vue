@@ -13,19 +13,19 @@
           >
             <!-- 活动名称 -->
             <el-form-item
-              :label="$t('couponGive.actName')"
+              :label="$t('couponGive.actName') + '：'"
               prop="actName"
             >
               <el-input
                 size="small"
                 :placeholder="$t('couponGive.actNamePlaceholder')"
                 v-model="params.actName"
-                style="width: 220px"
+                style="width: 170px"
               ></el-input>
             </el-form-item>
             <!-- 参与活动人群 -->
             <el-form-item
-              :label="$t('couponGive.participants')"
+              :label="$t('couponGive.participants') + '：'"
               prop="crowd"
             >
               <div>
@@ -37,7 +37,7 @@
                   @change="handleOnClickNoPayChange"
                   v-model="params.onClickNoPay"
                 ></el-checkbox>
-                <span style="color:#999;fontSize:12px;margin-left:-15px">{{$t('couponGive.addCartTip')}}</span>
+                <span style="color:#999;fontSize:12px;">{{$t('couponGive.addCartTip')}}</span>
               </div>
               <div>
                 <el-checkbox
@@ -45,9 +45,15 @@
                   @change="handleOnClickGoodsChange"
                   v-model="params.onClickGoods"
                 ></el-checkbox>
-                <span style="color:#999;fontSize:12px">{{$t('couponGive.buyGoodsTip')}}</span>
+                <span
+                  style="color:#999;fontSize:12px"
+                  v-if="params.onClickGoods"
+                >{{$t('couponGive.buyGoodsTip')}}</span>
               </div>
-              <div class="chooseGoods">
+              <div
+                class="chooseGoods"
+                v-if="params.onClickGoods"
+              >
                 <div class="chooseGoodsLeft">{{$t('couponGive.chooseGoods')}}</div>
                 <ul class="imgList">
                   <li
@@ -87,13 +93,13 @@
                   @change="handleOnClickUserChange"
                   v-model="params.onClickUser"
                 ></el-checkbox>
-                <span style="margin-left:-15px">
+                <span v-if="params.onClickUser">
                   <el-button
                     @click="handleAddMember"
                     type="text"
                   >+ {{$t('couponGive.addMember')}}</el-button>
                 </span>
-                <span>{{$t('couponGive.selected')}} {{memberNum}} {{$t('couponGive.people')}}</span>
+                <span v-if="params.onClickUser">{{$t('couponGive.selected')}} {{memberNum}} {{$t('couponGive.people')}}</span>
               </div>
               <!-- 自定义 -->
               <div>
@@ -107,6 +113,7 @@
                   :disabled="!params.onClickCustomRule"
                   :placeholder="$t('couponGive.choose')"
                   size="small"
+                  style="width: 170px;"
                   @change="customRuleInfoValChange"
                 >
                   <el-option
@@ -134,7 +141,7 @@
                           @blur="handleIpt(item)"
                           @focus="handleIpt(item)"
                           :disabled="!params.onClickCustomRule"
-                          style="width:120px"
+                          style="width:170px"
                           size="small"
                           v-model="item.ipt"
                         > </el-input>
@@ -171,7 +178,7 @@
             </el-form-item>
             <!-- 选择优惠券 -->
             <el-form-item
-              :label="$t('couponGive.chooseCoupons')"
+              :label="$t('couponGive.chooseCoupons') + '：'"
               prop="coupon"
             >
               <div class="gray">{{$t('couponGive.couponTip')}}</div>
@@ -221,17 +228,19 @@
 
             <!-- 发送时间 -->
             <el-form-item
-              :label="$t('couponGive.grantTime')"
+              :label="$t('couponGive.grantTime') + '：'"
               prop="startTime"
             >
               <el-radio
                 label="0"
                 v-model="params.sendAction"
+                @change="sendActionChange"
               >{{$t('couponGive.immediatelyGrant')}}</el-radio>
               <br>
               <el-radio
                 label="1"
                 v-model="params.sendAction"
+                @change="sendActionChange"
               >{{$t('couponGive.regularlyGrant')}}</el-radio>
               <el-date-picker
                 type="datetime"
@@ -242,9 +251,16 @@
               >
               </el-date-picker>
             </el-form-item>
-            <el-form-item>
-              <span>预计发放用户数:{{this.userNumber}}人</span>
-            </el-form-item>
+            <div style="width: 90%;
+                    height: 45px;
+                    line-height: 45px;
+                    background-color: #fff7eb;
+                    border: 1px solid #ffd5a3;
+                    border-radius: 4px;
+                    color: #666;
+                    margin: 0 auto;
+                    padding-left: 10px;
+                    font-size: 14px;">预计发放用户数：{{this.userNumber}}人</div>
           </el-form>
         </div>
       </div>
@@ -323,18 +339,27 @@ export default {
     // AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   data () {
+    // 发放时间
     var validateTime = (rule, value, callback) => {
       if (this.params.sendAction === '1') {
-        if (value === '') {
+        if (!value) {
           callback(new Error('请填写发送时间'))
+        } else {
+          callback()
         }
-      } else { callback() }
+      } else {
+        callback()
+      }
     }
+    // 选择优惠券
     var validateCoupon = (rule, value, callback) => {
       if (this.couponData === undefined || this.couponData.length <= 0) {
         callback(new Error('请选择优惠券'))
-      } else { callback() }
+      } else {
+        callback()
+      }
     }
+    // 参与活动人群
     var validateCrowd = (rule, value, callback) => {
       if (this.params.onClickNoPay === false &&
         this.params.onClickGoods === false &&
@@ -343,13 +368,17 @@ export default {
         this.params.onClickUser === false &&
         this.params.onClickCustomRule === false) {
         callback(new Error('请至少选择一种类型发送人群'))
+      } else if (this.params.onClickGoods === true && (this.imgsList === undefined || this.imgsList.length <= 0)) {
+        callback(new Error('请选择商品'))
       } else if (this.params.onClickCard === true && (this.params.cardIdsList === undefined || this.params.cardIdsList.length <= 0)) {
         callback(new Error('请选择会员卡'))
       } else if (this.params.onClickTag === true && (this.params.tagIdsList === undefined || this.params.tagIdsList.length <= 0)) {
         callback(new Error('请选择标签'))
       } else if (this.params.onClickUser === true && (this.params.userIdList === undefined || this.params.userIdList.length <= 0)) {
         callback(new Error('请选择会员'))
-      } else { callback() }
+      } else {
+        callback()
+      }
     }
     return {
       goodsNum: '',
@@ -512,9 +541,6 @@ export default {
 
     }
   },
-  created () {
-
-  },
   mounted () {
     // 初始化国际化语言
     this.langDefault()
@@ -538,6 +564,9 @@ export default {
         couponKey.push(item.id)
       })
       this.couponData = data
+      // 实时校验
+      this.$refs['params'].validateField('coupon')
+
       this.couponId = couponKey.toString()
       console.log('conponId', couponKey.toString())
       console.log('conponData', this.couponData)
@@ -599,35 +628,23 @@ export default {
         'startTime': this.params.startTime
       }
       console.log('param:', param)
-      addActivity(param).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          // alert(`${this.$t('couponGive.operationSuccess')}`)
-          this.$message.success({ message: this.$t('couponGive.operationSuccess') })
-          this.$router.push({
-            path: `/admin/home/main/couponGive`
+
+      this.$refs['params'].validate((valid) => {
+        if (valid) {
+          addActivity(param).then(res => {
+            if (res.error === 0) {
+              this.$message.success('添加成功!')
+              this.$router.push({
+                path: `/admin/home/main/couponGive`
+              })
+            }
+          }).catch(() => {
+            this.$message.error(`${this.$t('couponGive.operationFailed')}`)
           })
+        } else {
+          return false
         }
-      }).catch(() => {
-        this.$message.error(`${this.$t('couponGive.operationFailed')}`)
       })
-      // this.$refs['params'].validate((valid) => {
-      //   if (valid) {
-      //     addActivity(param).then(res => {
-      //       console.log(res)
-      //       if (res.error === 0) {
-      //         alert(`${this.$t('couponGive.operationSuccess')}`)
-      //         this.$router.push({
-      //           path: `/admin/home/main/couponGive`
-      //         })
-      //       }
-      //     }).catch(() => {
-      //       this.$message.error(`${this.$t('couponGive.operationFailed')}`)
-      //     })
-      //   } else {
-      //     return false
-      //   }
-      // })
     },
     handleChooseData (data) {
       this.$message.success({
@@ -914,6 +931,9 @@ export default {
       } else {
         this.isShowBtn = false
       }
+    },
+    sendActionChange (e) {
+      this.$refs['params'].validateField('startTime')
     }
   },
   filters: {
