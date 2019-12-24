@@ -40,7 +40,7 @@ global.wxComponent({
         case 0:
           return `background-color:${cardItem.bgColor};`;
         case 1:
-          return `background:url('${this.data.imageUrl}${cardItem.bgImg}') no-repeat top left / 100% 100%;`;
+          return `background:url('${cardItem.bgImg}') no-repeat top left / 100% 100%;`;
       }
     },
     // 获取会员卡过期时间

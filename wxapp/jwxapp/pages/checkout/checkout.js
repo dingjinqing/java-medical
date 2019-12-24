@@ -58,7 +58,6 @@ global.wxPage({
       'params.isCart': goods[0].isCart //购物车来源|商品详情
     })
     this.requestOrder()
-    wx.hideShareMenu()
   },
   requestOrder() {
     util.api('/api/wxapp/order', res => {
@@ -430,13 +429,6 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
 
   }
 })

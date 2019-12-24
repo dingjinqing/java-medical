@@ -67,11 +67,23 @@ global.wxPage({
         "/api/wxapp/goods/detail",
         res => {
           if (res.error === 0) {
-            this.getMediaInfo(res.content);
+            let {comment,goodsImgs,goodsVideo,goodsVideoImg,coupons,goodsDesc = null,isPageUp = 0,goodsPageId = null }= res.content
+            this.setData({
+              comment,//评价
+              goodsMediaInfo:{
+                goodsImgs,//商品图片
+                goodsVideo,//商品视频
+                goodsVideoImg//视频封面
+              },
+              couponList:coupons,//优惠券
+              goodsDescInfo:{
+                goodsDesc,//商品描述
+                isPageUp,//描述上下位置
+                goodsPageId //页面模板ID
+              }
+            })
             this.getGoodsInfo(res.content);
-            this.getCouponInfo(res.content);
-            this.getGoodsDescInfo(res.content);
-            this.getComment(res.content)
+            // this.getActivity(res.content)
             resolve(res.content);
           }
         }, {
@@ -154,20 +166,6 @@ global.wxPage({
     });
     console.log(this.data.productInfo);
   },
-  // 获取商品轮播图/视频
-  getMediaInfo({
-    goodsImgs,
-    goodsVideo,
-    goodsVideoImg
-  }) {
-    this.setData({
-      goodsMediaInfo: {
-        goodsImgs,
-        goodsVideo,
-        goodsVideoImg
-      }
-    });
-  },
   // 获取商品基本信息
   getGoodsInfo({
     goodsId,
@@ -203,15 +201,6 @@ global.wxPage({
     };
     this.setData({
       goodsInfo: info
-    });
-  },
-  // 获取商品优惠券信息
-  getCouponInfo(goodsInfo) {
-    let {
-      coupons
-    } = goodsInfo;
-    this.setData({
-      couponList: coupons
     });
   },
   // 打开规格弹窗
@@ -275,7 +264,7 @@ global.wxPage({
     startTime
   }) {
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
-    let total_micro_second = Math.round((new Date(actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime).getTime() - new Date().getTime()) / 1000)
+    let total_micro_second = Math.round((actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime) / 1000)
     console.log(total_micro_second, actState, activityType)
     this.countdown(total_micro_second, actState, activityType)
   },
