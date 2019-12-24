@@ -238,12 +238,19 @@ public class ServiceOrderService extends ShopBaseService {
             ).
                 from(SERVICE_ORDER).leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID)).
                 where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).limit(INTEGER_ONE).fetchOneInto(ServiceOrderDetailVo.class);
-        List<String> imgList = Util.json2Object(vo.getServiceImg(), new TypeReference<List<String>>() {
-        }, false);
-        imgList.forEach((e) -> e = domainConfig.imageUrl(e));
-        vo.setServiceImg(CollectionUtils.isNotEmpty(imgList) ? imgList.get(INTEGER_ZERO) : org.apache.commons.lang3.StringUtils.EMPTY);
+        vo.setServiceImg(imgDomain(vo.getServiceImg()));
 //        imgList.stream().findFirst().orElse(org.apache.commons.lang3.StringUtils.EMPTY)
         return vo;
+    }
+
+    public String imgDomain(String imgs) {
+        List<String> imgList = Util.json2Object(imgs, new TypeReference<List<String>>() {
+        }, false);
+        if (CollectionUtils.isNotEmpty(imgList)) {
+            return domainConfig.imageUrl(imgList.get(INTEGER_ZERO));
+        } else {
+            return org.apache.commons.lang3.StringUtils.EMPTY;
+        }
     }
 
     public Boolean addServiceOrderAdminMessage(ServiceOrderAdminMessageParam param) {
