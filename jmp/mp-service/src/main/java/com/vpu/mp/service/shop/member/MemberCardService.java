@@ -792,8 +792,7 @@ public class MemberCardService extends ShopBaseService {
 				cardBuilder.sendCouponType(param.getCouponType());
 				if(param.getCouponPackage()!=null) {
 					cardBuilder.sendCouponIds(String.valueOf(param.getCouponPackage()));
-				}
-						
+				}		
 			}
 		}
 	}
@@ -1234,7 +1233,12 @@ public class MemberCardService extends ShopBaseService {
 			cardVo.setLegal(legal);
 			cardVo.setExchangCountLegal(exchangCountLegal);
 			cardVo.setLegalFlag(legalFlag);
-			
+			if(CardUtil.isBgImgType(cardVo.getBgType())) {
+				if(!StringUtils.isBlank(cardVo.getBgImg())) {
+					String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(cardVo.getBgImg());
+					cardVo.setBgImg(imageUrl);
+				}
+			}
 			if (MCARD_TP_NORMAL.equals(cardType)) {
 				vo.getNormalCard().add(cardVo);
 			} else if (MCARD_TP_LIMIT.equals(cardType)) {
