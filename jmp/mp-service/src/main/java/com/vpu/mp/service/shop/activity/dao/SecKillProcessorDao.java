@@ -71,23 +71,26 @@ public class SecKillProcessorDao extends ShopBaseService {
     public SeckillMpVo getDetailSeckillInfo(Integer skId,Integer userId,GoodsDetailMpBo capsule){
         SeckillMpVo seckillVo = new SeckillMpVo();
 
-        SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId).and(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
-            .fetchOne().into(SecKillDefineRecord.class);
+        SecKillDefineRecord secKill =db().selectFrom(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId).and(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
+            .fetchAny();
 
         seckillVo.setActivityId(skId);
         seckillVo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
 
         seckillVo.setActState(this.canApplySecKill(secKill,capsule.getGoodsNumber(),userId));
+        if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(seckillVo.getActState())) {
+            return  seckillVo;
+        }
+
         seckillVo.setStock(secKill.getStock());
         seckillVo.setLimitAmount(secKill.getLimitAmount());
         seckillVo.setLimitPaytime(secKill.getLimitPaytime());
         if (BaseConstant.ACTIVITY_STATUS_NOT_START.equals(seckillVo.getActState())) {
-            seckillVo.setRemainTime(secKill.getStartTime().getTime()- DateUtil.getLocalDateTime().getTime());
+            seckillVo.setStartTime(secKill.getStartTime().getTime()- DateUtil.getLocalDateTime().getTime());
+            seckillVo.setEndTime(secKill.getEndTime().getTime()-DateUtil.getLocalDateTime().getTime());
         }
-        if (BaseConstant.ACTIVITY_STATUS_CAN_USE.equals(seckillVo.getActState())) {
-            seckillVo.setRemainTime(secKill.getEndTime().getTime()-DateUtil.getLocalDateTime().getTime());
-        }
-        seckillVo.setEndTime(secKill.getEndTime());
+        seckillVo.setEndTime(secKill.getEndTime().getTime()-DateUtil.getLocalDateTime().getTime());
+
         seckillVo.setCardId(secKill.getCardId());
         seckillVo.setShareConfig(Util.parseJson(secKill.getShareConfig(), ShopShareConfig.class));
         seckillVo.setActProducts(this.getSecKillPrd(secKill.getSkId(),capsule));
