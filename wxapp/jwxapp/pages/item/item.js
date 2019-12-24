@@ -67,9 +67,11 @@ global.wxPage({
         "/api/wxapp/goods/detail",
         res => {
           if (res.error === 0) {
-            let {comment,goodsImgs,goodsVideo,goodsVideoImg,coupons,goodsDesc = null,isPageUp = 0,goodsPageId = null }= res.content
+            let {comment,goodsImgs,goodsVideo,goodsVideoImg,coupons,goodsDesc = null,isPageUp = 0,goodsPageId = null,deliverPlace, defaultPrd,activity,goodsNumber,goodsSaleNum,labels,goodsAd,isCollected,products,goodsName,deliverPrice}= res.content
             this.setData({
               comment,//评价
+              deliverPlace, //发货地
+              defaultPrd,//是否单规格
               goodsMediaInfo:{
                 goodsImgs,//商品图片
                 goodsVideo,//商品视频
@@ -80,9 +82,21 @@ global.wxPage({
                 goodsDesc,//商品描述
                 isPageUp,//描述上下位置
                 goodsPageId //页面模板ID
+              },
+              goodsInfo:{
+                activity,
+                defaultPrd,
+                goodsNumber,
+                goodsSaleNum,
+                labels,
+                goodsAd,
+                isCollected,
+                products,
+                goodsName,
+                deliverPrice
               }
             })
-            this.getGoodsInfo(res.content);
+            // this.getGoodsInfo(res.content);
             // this.getActivity(res.content)
             resolve(res.content);
           }
@@ -97,28 +111,6 @@ global.wxPage({
       );
     });
     this.requestPledge(await result)
-  },
-  // 商品详情-自定义内容
-  getGoodsDescInfo({
-    goodsDesc = null,
-    isPageUp = 0,
-    goodsPageId = null
-  }) {
-    this.setData({
-      goodsDescInfo: {
-        goodsDesc,
-        isPageUp,
-        goodsPageId
-      }
-    })
-  },
-  // 商品评价信息
-  getComment({
-    comment
-  }) {
-    this.setData({
-      comment
-    })
   },
   // 服务承诺请求
   requestPledge({
@@ -160,11 +152,9 @@ global.wxPage({
   },
   // 获取选中规格详情
   getProductInfo(data) {
-    console.log(data)
     this.setData({
       productInfo: data.detail
     });
-    console.log(this.data.productInfo);
   },
   // 获取商品基本信息
   getGoodsInfo({
@@ -180,7 +170,6 @@ global.wxPage({
     limitBuyNum,
     limitMaxNum,
     deliverPlace,
-    deliverPrice,
     isCollected
   }) {
     let info = {
