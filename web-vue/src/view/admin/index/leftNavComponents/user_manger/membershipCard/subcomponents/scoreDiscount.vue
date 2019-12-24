@@ -164,7 +164,7 @@ export default {
     },
     'ruleForm.choosedPlatformId': {
       handler (newName, oldName) {
-        this.val.choosedStoreId = newName
+        this.val.choosedPlatformId = newName
         this.ruleForm = this.val
       },
       immediate: true
@@ -286,10 +286,14 @@ export default {
     initPlatformId (idList) {
       this.ruleForm.choosedPlatformId = idList
       this.noneBlockDiscArr[this.platformType].num = idList.length
+      console.log(this.noneBlockDiscArr[this.platformType].num)
+      console.log(this.noneBlockDiscArr[this.storeType].num)
     },
     initBrandId (idList) {
       this.ruleForm.choosedBrandId = idList.map(({ id }) => id)
+      console.log(this.ruleForm.choosedBrandId)
       this.noneBlockDiscArr[this.brandType].num = idList.length
+      console.log(this.noneBlockDiscArr[this.brandType].num)
     }
   }
 }

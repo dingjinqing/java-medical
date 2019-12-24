@@ -108,8 +108,8 @@ export default {
       ]
     }
     let cardUsageCfgDataTmp = {
-      desc: '12',
-      mobile: '12'
+      desc: '',
+      mobile: ''
     }
     let flagTmp = '2'
     return {
