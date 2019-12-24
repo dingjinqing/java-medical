@@ -1,26 +1,27 @@
 <view id="decorate">
-    <block wx:for="{{pageData}}" wx:key="key" wx:for-item="module">
-       <!--搜索模块-->
-       <v-search wx:if="{{module.component_name == 'v-search'}}" module="{{module}}" />
-       <!--会员卡模块-->
-       <v-card wx:elif="{{module.component_name == 'v-card'}}" module="{{module}}" bind:get_card_success="onGetCardSuccess"/>
-       <!--图片导航模块-->
-        <v-imgnav wx:elif="{{module.component_name == 'v-imgnav'}}" module="{{module}}" />
-       <!--优惠卷模块-->
-       <v-coupon wx:elif="{{module.component_name == 'v-coupon'}}" module="{{module}}" />
-       <!--商品模块-->
-        <v-product wx:elif="{{module.component_name == 'v-product'}}" module="{{module}}" />
-       <!--商品广告-->
-        <v-advimg wx:elif="{{module.component_name == 'v-advimg'}}" module="{{module}}" />
-        <!--店铺公告-->
-        <v-shop-announce wx:elif="{{module.component_name == 'v-shop-announce'}}" module="{{module}}" />
-        <!--店招设置-->
-        <v-shop wx:elif="{{module.component_name == 'v-shop'}}" module="{{module}}" />
-        <!--轮播图-->
-         <v-carousel wx:elif="{{module.component_name == 'v-carousel'}}" module="{{module}}" />
-         <!--砍价-->
-         <v-bargain wx:elif="{{module.component_name == 'v-bargain'}}" module="{{module}}" />
-        <!--秒杀-->
-        <v-seckill wx:elif="{{module.component_name == 'v-seckill'}}" module="{{module}}" />
-    </block>
+	<block wx:for="{{pageData}}" wx:key="key" wx:for-item="module">
+		<!--搜索模块-->
+		<v-search wx:if="{{module.component_name == 'v-search'}}" module="{{module}}" />
+		<!--会员卡模块-->
+		<v-card wx:elif="{{module.component_name == 'v-card'}}" module="{{module}}" bind:get_card_success="onGetCardSuccess" />
+		<!--图片导航模块-->
+		<v-imgnav wx:elif="{{module.component_name == 'v-imgnav'}}" module="{{module}}" />
+		<!--优惠卷模块-->
+		<v-coupon wx:elif="{{module.component_name == 'v-coupon'}}" module="{{module}}" />
+		<!--商品模块-->
+		<v-product wx:elif="{{module.component_name == 'v-product'}}" module="{{module}}" />
+		<!--商品广告-->
+		<v-advimg wx:elif="{{module.component_name == 'v-advimg'}}" module="{{module}}" />
+		<!--店铺公告-->
+		<v-shop-announce wx:elif="{{module.component_name == 'v-shop-announce'}}" module="{{module}}" />
+		<!--店招设置-->
+		<v-shop wx:elif="{{module.component_name == 'v-shop'}}" module="{{module}}" />
+		<!--轮播图-->
+		<v-carousel wx:elif="{{module.component_name == 'v-carousel'}}" module="{{module}}" />
+		<!--砍价-->
+		<v-bargain wx:elif="{{module.component_name == 'v-bargain'}}" module="{{module}}" />
+		<!--秒杀-->
+		<v-seckill wx:elif="{{module.component_name == 'v-seckill'}}" module="{{module}}" />
+	</block>
 </view>
+
