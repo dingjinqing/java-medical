@@ -419,8 +419,100 @@
             </el-card>
           </el-form-item>
           <!-- 引入活动分享模块 -->
-          <el-form-item :label="$t('groupBuy.activitySharing') + '：'">
-            <actShare :shareConfig="form.share" />
+          <el-form-item
+            :label="$t('groupBuy.activitySharing') + '：'"
+            prop="share.shareImg"
+          >
+            <!-- <actShare :shareConfig="form.share" /> -->
+            <div class="shareContent">
+              <el-radio
+                v-model="form.share.shareAction"
+                :label=1
+              >默认样式</el-radio>
+              <el-popover
+                placement="right-start"
+                width="220"
+                trigger="hover"
+              >
+                <el-image :src="srcList.src1"></el-image>
+                <el-button
+                  slot="reference"
+                  type="text"
+                  style="margin: 0 20 0 0px"
+                >查看示例</el-button>
+              </el-popover>
+              <el-popover
+                placement="right-start"
+                width="220"
+                trigger="hover"
+              >
+                <el-image :src="srcList.src2"></el-image>
+                <el-button
+                  slot="reference"
+                  type="text"
+                >下载海报</el-button>
+              </el-popover>
+            </div>
+            <div>
+              <el-radio
+                v-model="form.share.shareAction"
+                :label=2
+              >自定义样式</el-radio>
+              <div
+                v-if="form.share.shareAction === 2"
+                style="margin-left: 25px"
+              >
+                <span>文案：</span>
+                <el-input
+                  v-model="form.share.shareDoc"
+                  size="small "
+                  style="width: 180px;"
+                ></el-input>
+              </div>
+              <div
+                v-if="form.share.shareAction === 2"
+                style="margin-left: 25px"
+              >
+                <span>分享图：</span>
+                <el-radio
+                  v-model="
+                form.share.shareImgAction"
+                  :label=1
+                >活动商品信息图</el-radio>
+                <div style="margin-left: 65px;">
+                  <el-radio
+                    v-model="form.share.shareImgAction"
+                    :label=2
+                  >自定义图片</el-radio>
+                </div>
+
+                <div
+                  style="display: flex"
+                  v-if="form.share.shareImgAction=== 2"
+                >
+                  <div
+                    class="imgContent"
+                    @click="addGoodsImg"
+                  >
+                    <div>
+                      <img
+                        v-if="form.share.shareImg === ''"
+                        src="http://jmpdevimg.weipubao.cn/image/admin/btn_add.png"
+                        alt=""
+                      >
+                      <img
+                        v-if="form.share.shareImg !== ''"
+                        :src="form.share.shareImg"
+                        alt=""
+                        class="shareImg"
+                      >
+                    </div>
+                  </div>
+                  <span class="picSizeTips">建议尺寸：800*800像素</span>
+                </div>
+              </div>
+            </div>
+
           </el-form-item>
         </div>
 
@@ -442,6 +534,14 @@
         :couponBack="couponIdList"
       />
 
+      <!-- 选择图片弹框 -->
+      <ImageDalog
+        pageIndex='pictureSpace'
+        :tuneUp="showImageDialog"
+        @handleSelectImg='handleSelectImg'
+        :imageSize="[800, 800]"
+      />
+
       <div class="footer">
         <el-button
           size="small"
@@ -460,6 +560,7 @@
 import { mapActions } from 'vuex'
 import choosingGoods from '@/components/admin/choosingGoods'
 import addCouponDialog from '@/components/admin/addCouponDialog'
+import ImageDalog from '@/components/admin/imageDalog'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
 import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
 import { addGroupBuyActivity, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
@@ -470,7 +571,8 @@ export default {
   components: {
     choosingGoods,
     addCouponDialog,
-    actShare
+    actShare,
+    ImageDalog
   },
   props: ['isEdite', 'editData'],
   filters: {
@@ -488,6 +590,21 @@ export default {
       console.log('校验时间')
       if (value === [] || value.length === 0) {
         return callback(new Error(this.$t('groupBuy.validityDateRules')))
+      }
+      callback()
+    }
+    var shareDocValid = (rule, value, callback) => {
+      console.log('校验文案')
+      console.log(rule, 'rule', value, 'value')
+      if (value === [] || value.length === 0) {
+        return callback(new Error('请输入活动文案'))
+      }
+      callback()
+    }
+    var shareImgValid = (rule, value, callback) => {
+      console.log('校验图片')
+      if (value === [] || value.length === 0) {
+        return callback(new Error('请选择活动图片'))
       }
       callback()
     }
@@ -511,10 +628,10 @@ export default {
         limitMaxNum: 0,
         limitBuyNum: 0,
         share: {
-          share_action: 1,
-          share_doc: '',
-          share_img_action: 1,
-          share_img: ''
+          shareAction: 1,
+          shareDoc: '',
+          shareImgAction: 1,
+          shareImg: ''
         },
         product: []
       },
@@ -538,7 +655,9 @@ export default {
         ],
         validityDate: [
           { validator: dateValid, trigger: 'blur' }
-        ]
+        ],
+        'share.shareDoc': [{ validator: shareDocValid, trigger: 'blur' }],
+        'share.shareImg': [{ validator: shareImgValid, trigger: 'change' }]
       },
       // 选中商品id
       goodsRow: {},
@@ -567,7 +686,12 @@ export default {
       showCouponDialog: false,
       couponIdList: [],
 
-      activeIndex: 0
+      activeIndex: 0,
+      srcList: {
+        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
+      },
+      showImageDialog: false
     }
   },
   mounted () {
@@ -804,6 +928,15 @@ export default {
         callback(new Error('拼团价格不能为空'))
       }
       callback()
+    },
+    addGoodsImg () {
+      this.showImageDialog = !this.showImageDialog
+    },
+    // 图片点击回调函数
+    handleSelectImg (res) {
+      if (res != null) {
+        this.form.share.shareImg = res.imgUrl
+      }
     }
   }
 }
@@ -947,5 +1080,24 @@ export default {
 .shareContent a {
   text-decoration: none;
   color: #409eff;
+}
+.imgContent {
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  line-height: 65px;
+  margin-left: 60px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.imgContent .shareImg {
+  width: 100%;
+  height: 100%;
+}
+.picSizeTips {
+  display: block;
+  line-height: 80px;
+  margin-left: 20px;
+  color: rgb(153, 153, 153);
 }
 </style>
