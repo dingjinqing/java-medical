@@ -611,16 +611,16 @@ export default {
         scorePayNum: '',
         scoreDiscountRatio: '', // 积分抵扣比例
 
-        shoppingScore: 'on', // 购物送积分
+        shoppingScore: 'off', // 购物送积分
         scoreType: '0', // 类型
         buy: [], // 满多少送多少
         score: [],
         buyEach: [], // 每满多少送多少
         scoreEach: [],
-        storeScore: 'on', // 门店买单送积分
-        loginScore: 'on', // 登录送积分
+        storeScore: 'off', // 门店买单送积分
+        loginScore: 'off', // 登录送积分
         scoreLogin: 1, // 登录积分
-        signInScore: 'on', // 签到送积分
+        signInScore: 'off', // 签到送积分
         signScore: [] // 签到积分
       },
       // 校验表单
@@ -665,7 +665,7 @@ export default {
     // 获取积分配置
     getScoreHandler () {
       getScoreConfigRequest().then((res) => {
-        if (res.error === 0 && res.content.scorePayLimit) {
+        if (res.error === 0 && res.content) {
           this.$message.success('获取积分配置')
           var data = res.content
           this.form.scoreLimit = data.scoreLimit
@@ -680,11 +680,7 @@ export default {
           this.form.scoreDiscountRatio = data.scoreDiscountRatio
 
           // 购物送积分
-          if (data.shoppingScore === '1') {
-            this.form.shoppingScore = 'on'
-          } else {
-            this.form.shoppingScore = ''
-          }
+          this.form.shoppingScore = data.shoppingScore
           this.form.scoreType = data.scoreType
           this.shopFullArr = []
           if (this.form.scoreType === '0') {
@@ -708,21 +704,14 @@ export default {
           }
 
           // 门店买单送积分
-          if (data.storeScore === '1') {
-            this.form.storeScore = 'on'
-          } else {
-            this.form.storeScore = ''
-          }
+          this.form.storeScore = data.storeScore
 
           // 登陆送积分
-          if (data.loginScore === '1') {
-            this.form.loginScore = 'on'
-          } else {
-            this.form.loginScore = ''
-          }
+          this.form.loginScore = data.loginScore
           this.form.scoreLogin = data.scoreLogin
 
           // 签到送积分
+          this.form.signInScore = data.signInScore
           this.form.signScore = data.signScore
           this.signInput = []
           data.signScore.forEach((item, index) => {

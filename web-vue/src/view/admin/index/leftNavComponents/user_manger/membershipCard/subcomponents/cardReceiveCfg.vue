@@ -32,6 +32,13 @@
             v-if="ruleForm.isPay==='1'"
             class="receive-buy"
           >
+          <el-form
+              :model="ruleForm"
+              :rules="rules"
+              ref="ruleForm"
+              label-width="100px"
+            >
+            <el-form-item style="margin-left: -100px;" prop="payMoney">
             <div>
               <el-radio
                 v-model="ruleForm.payType"
@@ -52,6 +59,8 @@
               <span>{{ $t('memberCard.yuan') }}</span>
               <span v-if="payMoneyError" class="valid-check">请输入金额</span>
             </div>
+            </el-form-item>
+            <el-form-item style="margin-left: -100px;" prop="payScore">
             <div>
               <el-radio
                 v-model="ruleForm.payType"
@@ -71,6 +80,8 @@
               <span>{{ $t('memberCard.unitM') }}</span>
               <span v-if="payScoreError" class="valid-check">请输入积分</span>
             </div>
+            </el-form-item>
+          </el-form>
           </div>
           <div
             v-if="ruleForm.isPay==='2'"
@@ -211,8 +222,20 @@ export default {
           payMoney: '',
           payScore: '',
           receiveAction: '2',
-          codeAddDivArr: [{ batchName: null, batchId: null }],
-          codeAddDivArrBottom: [{ pwdName: null, pwdId: null }]
+          codeAddDivArr: [
+            {
+              batchName: null,
+              batchId: null,
+              disabled: false
+            }
+          ],
+          codeAddDivArrBottom: [
+            {
+              pwdName: null,
+              pwdId: null,
+              disabled: false
+            }
+          ]
         }
       }
     }
@@ -280,6 +303,26 @@ export default {
     })
   },
   data () {
+    let validatePayScore = (rule, value, callback) => {
+      if (this.ruleForm.payType === '1') {
+        if (this.ruleForm.payScore === undefined) {
+          this.payScoreError = true
+        } else {
+          this.payScoreError = false
+          callback()
+        }
+      }
+    }
+    let validatePayMoney = (rule, value, callback) => {
+      if (this.ruleForm.payType === '0') {
+        if (this.ruleForm.payMoney === undefined) {
+          this.payMoneyError = true
+        } else {
+          this.payMoneyError = false
+          callback()
+        }
+      }
+    }
     return {
       receiveCodeDialogVisible: false,
       codeReceiveAction: 1,
@@ -291,7 +334,15 @@ export default {
       codeArr: null,
       payScoreError: false,
       payMoneyError: false,
-      receiveCodeError: false
+      receiveCodeError: false,
+      rules: {
+        payScore: [
+          { validator: validatePayScore, trigger: 'blur' }
+        ],
+        payMoney: [
+          { validator: validatePayMoney, trigger: 'blur' }
+        ]
+      }
     }
   },
   created () {
@@ -312,43 +363,12 @@ export default {
       handler (newName, oldName) {
         if (this.ruleForm.payType === '0') {
           this.payScoreError = false
-          if (this.ruleForm.payMoney === undefined) {
-            this.payMoneyError = true
-          }
         } else if (this.ruleForm.payType === '1') {
           this.payMoneyError = false
-          if (this.ruleForm.payScore === undefined) {
-            this.payScoreError = true
-          }
-        }
-      },
-      immediate: true
-    },
-    'ruleForm.payMoney': {
-      handler (newName, oldName) {
-        if (this.ruleForm.payType === '0') {
-          if (this.ruleForm.payMoney === undefined) {
-            this.payMoneyError = true
-          } else {
-            this.payMoneyError = false
-          }
-        }
-      },
-      immediate: true
-    },
-    'ruleForm.payScore': {
-      handler (newName, oldName) {
-        if (this.ruleForm.payType === '1') {
-          if (this.ruleForm.payScore === undefined) {
-            this.payScoreError = true
-          } else {
-            this.payScoreError = false
-          }
         }
       },
       immediate: true
     }
-
   },
   methods: {
     handleCallCodeDialogBottom (index, codeIndex) {

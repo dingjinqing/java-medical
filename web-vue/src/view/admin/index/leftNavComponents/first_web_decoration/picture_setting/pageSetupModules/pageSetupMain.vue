@@ -368,9 +368,10 @@ export default {
               }
               res.content.unshift(obj)
               this.classificationOptions = res.content
-              this.classificationOptions.forEach((res) => {
-                if (Number(res.id) === Number(newData.cat_id)) {
-                  this.pageClassify = res.name
+              console.log(res, this.classificationOptions, newData)
+              this.classificationOptions.forEach((item) => {
+                if (Number(item.id) === Number(newData.cat_id)) {
+                  this.pageClassify = item.name
                 }
               })
             }
@@ -399,9 +400,9 @@ export default {
       //       }
 
       //     })
-      this.classificationOptions.forEach((res) => {
-        if (res.name === newData) {
-          this.ruleForm.cat_id = res.id
+      this.classificationOptions.forEach((item) => {
+        if (item.id === newData) {
+          this.ruleForm.cat_id = item.id
         }
       })
     }

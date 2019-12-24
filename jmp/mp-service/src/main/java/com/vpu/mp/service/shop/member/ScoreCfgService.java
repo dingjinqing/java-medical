@@ -367,7 +367,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		String value = Util.toJson(param);
 		logger().info(value);
 		setScoreDocument(value);
-		this.set(SCORE_DOCUMENT, value);
 	}
 
 	/**
@@ -390,11 +389,13 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	}
 
     /**
-     * 积分模板页添加 addScore
+     * 	积分模板页添加 addScore
 	 */
 	public void addScoreCfgForDecoration(ShopCfgParam param) {
-		setScorePageId(""+param.getScorePageId());
+		if(param.getScorePageId() != null) {
+			setScorePageId(""+param.getScorePageId());
+		}else {
+			setScorePageId(null);
+		}
 	}
-
-
 }

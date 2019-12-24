@@ -185,6 +185,13 @@ global.wxPage({
     })
   },
 
+  // 协商记录跳转
+  toNegotiation () {
+    util.navigateTo({
+      url: '/pages1/returnrecord/returnrecord?order_sn=' + this.data.orderSn + '&order_id=' + this.data.orderId + '&return_sn=' + this.data.returnSn
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

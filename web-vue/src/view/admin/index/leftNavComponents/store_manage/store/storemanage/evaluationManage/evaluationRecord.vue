@@ -134,8 +134,7 @@
             <template slot-scope="{ row }">
               <el-row :gutter=20>
                 <el-col :span="20">
-                  <label style="font-size: 14px;">{{$t('reservationManage.commentScore')}}： {{row.commstar}}</label>
-                  <img :src="imgHost + '/image/admin/comstar_{{row.commstar}}.png'" alt="">
+                  <label style="font-size: 14px;">{{$t('reservationManage.commentScore')}}：<img :src="row.commstar" alt=""></label>
                 </el-col>
               </el-row>
               <el-row :gutter=20>
@@ -336,6 +335,7 @@ export default {
             } else {
               item.anonymousflag = '是'
             }
+            item.commstar = this.imgHost + '/image/admin/comstar_' + item.commstar + '.png'
           })
         }
       })

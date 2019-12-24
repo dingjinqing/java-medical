@@ -326,7 +326,7 @@ export default {
           obj = {
             module_name: 'm_shop',
             shop_name: '微铺宝电商运营',
-            shop_notice: '公告',
+            shop_notice: '',
             shop_bg_path: '/image/admin/shop_beautify/beau1.png',
             bg_url: '/image/admin/shop_beautify/beau1.png',
             bg_fullUrl: '',
