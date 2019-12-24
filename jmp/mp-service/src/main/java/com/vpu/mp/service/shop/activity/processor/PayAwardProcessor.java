@@ -173,7 +173,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
         payAwardRecordRecord.setGiftType(payAwardContentBo.getGiftType());
         // 定点杆添加支付有礼id
         order.setPayAwardId(payAward.getId());
-        sendaward(param, order, payAward, payAwardContentBo, payAwardRecordRecord);
+        sendAward(param, order, payAward, payAwardContentBo, payAwardRecordRecord);
         payAwardRecordRecord.insert();
     }
 
@@ -186,7 +186,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
      * @param payAwardRecordRecord
      * @throws MpException
      */
-    private void sendaward(OrderBeforeParam param, OrderInfoRecord order, PayAwardVo payAward, PayAwardContentBo payAwardContentBo, PayAwardRecordRecord payAwardRecordRecord) throws MpException {
+    private void sendAward(OrderBeforeParam param, OrderInfoRecord order, PayAwardVo payAward, PayAwardContentBo payAwardContentBo, PayAwardRecordRecord payAwardRecordRecord) throws MpException {
         switch (payAwardContentBo.getGiftType()) {
             case GIVE_TYPE_NO_PRIZE:
                 logger().info("无奖励");
