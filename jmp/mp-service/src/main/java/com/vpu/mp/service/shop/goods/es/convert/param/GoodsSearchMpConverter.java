@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -50,13 +51,13 @@ public class GoodsSearchMpConverter implements EsParamConvertInterface  {
         if( null != param.getSortId() ){
             propertyList.add(new FieldProperty(EsSearchName.FULL_SORT_ID,param.getSortId()));
         }
-        if( null != param.getBrandIds() ){
+        if( !CollectionUtils.isEmpty(param.getBrandIds()) ){
             propertyList.add(new FieldProperty(EsSearchName.BRAND_ID,param.getBrandIds()));
         }
-        if( null != param.getActivityTypes() ){
+        if( !CollectionUtils.isEmpty(param.getActivityTypes()) ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_TYPE,param.getActivityTypes()));
         }
-        if( null != param.getGoodsIds() ){
+        if( !CollectionUtils.isEmpty( param.getGoodsIds()) ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsIds()));
         }
         if( !propertyList.isEmpty() ){
