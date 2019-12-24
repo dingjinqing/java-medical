@@ -379,4 +379,17 @@ public class ImageService extends ShopBaseService implements ImageDefault {
     }
     return ResultMessage.builder().flag(true).build();
   }
+
+    /**
+     * 根据传入的图片相对路径拼接称绝对路径
+     * @param imgPath 图片相对路径
+     * @return 图片绝对路径
+     */
+  public String getImgFullUrl(String imgPath){
+      if (StringUtils.isBlank(imgPath)) {
+          return null;
+      } else {
+          return imageUrl(imgPath);
+      }
+  }
 }

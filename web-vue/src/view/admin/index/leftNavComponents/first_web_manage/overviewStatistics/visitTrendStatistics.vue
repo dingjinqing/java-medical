@@ -137,6 +137,10 @@ export default {
     },
     // 自定义时间
     customDate () {
+      this.chartChange = {
+        date: [],
+        number: []
+      }
       console.log('选择器的时间：', this.timeValue)
       this.param.startTime = this.timeValue[0]
       this.param.endTime = this.timeValue[1]

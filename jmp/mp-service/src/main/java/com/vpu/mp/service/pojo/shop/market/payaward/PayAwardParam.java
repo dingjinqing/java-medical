@@ -32,7 +32,7 @@ public class PayAwardParam {
      * 时间类型 0 定时 1永久
      */
     @NotNull
-    @Size(min = 0,max = 1)
+    @Range(min = 0,max = 1)
     private Byte timeType;
     /**
      * 优先级

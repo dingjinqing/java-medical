@@ -23,11 +23,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import com.vpu.mp.service.shop.goods.GoodsSpecService;
 import com.vpu.mp.service.shop.member.MemberService;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Record3;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectHavingStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,18 +32,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.JOIN_LIMIT_N;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.OPEN_LIMIT_N;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_DEFAULT_SUCCESS;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_FAILED;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
 
 /**
  * @author 孔德成
@@ -259,7 +245,7 @@ public class GroupBuyListService extends ShopBaseService {
                     .and(GROUP_BUY_LIST.ACTIVITY_ID.eq(activityId))
                     .and(GROUP_BUY_LIST.IS_GROUPER.eq(isGrouper))
                     .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_SUCCESS)).fetchOneInto(Integer.class);
-            if (!groupBuyRecord.getOpenLimit().equals(OPEN_LIMIT_N.shortValue())&&groupBuyRecord.getOpenLimit()>count){
+            if (!groupBuyRecord.getOpenLimit().equals(OPEN_LIMIT_N.shortValue())&&groupBuyRecord.getOpenLimit()<=count){
                 logger().debug("该活动开团个数已经达到上限[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_OPEN_LIMIT_MAX).build();
             }
@@ -284,6 +270,21 @@ public class GroupBuyListService extends ShopBaseService {
         }
         return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_SUCCESS).flag(true).build();
     }
+
+    /**
+     * 获取用或开启的有效拼团数量 进行中或已成功
+     * @param userId 用户id
+     * @param activityId 活动id
+     * @return 已参团的数量
+     */
+    public int getUserOpenGroupBuyActivityNum(Integer userId,Integer activityId){
+        return db().selectCount().from(GROUP_BUY_LIST)
+            .where(GROUP_BUY_LIST.USER_ID.eq(userId))
+            .and(GROUP_BUY_LIST.ACTIVITY_ID.eq(activityId))
+            .and(GROUP_BUY_LIST.IS_GROUPER.eq((byte) 1))
+            .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_SUCCESS)).fetchOneInto(Integer.class);
+    }
+
 
     /**
      * 拼团用户信息

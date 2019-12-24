@@ -627,7 +627,7 @@ public class Util {
      * String 转 List
      */
     public static List<Integer> stringToList(String idString) {
-        if (StringUtils.isEmpty(idString)) {
+        if (StringUtils.isBlank(idString)) {
             return Collections.emptyList();
         }
         return Arrays.stream(idString.split(",")).map(Integer::valueOf).collect(Collectors.toList());

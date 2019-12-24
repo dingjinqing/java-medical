@@ -212,4 +212,26 @@ public final  class  BaseConstant {
      */
     public final static Byte GOODS_AREA_TYPE_SECTION=0;
 
+    //************************小程序-商品详情-活动状态码值***************************************/
+    /** 0正常 */
+    public final static Byte ACTIVITY_STATUS_CAN_USE = 0;
+    /** 1该活动不存在 */
+    public final static Byte ACTIVITY_STATUS_NOT_HAS = 1;
+    /** 2该活动已停用 */
+    public final static Byte ACTIVITY_STATUS_STOP= 2;
+    /** 3该活动未开始 */
+    public final static Byte ACTIVITY_STATUS_NOT_START = 3;
+    /** 4该活动已结束 */
+    public final static Byte ACTIVITY_STATUS_END = 4;
+    /** 5商品已抢光 */
+    public final static Byte ACTIVITY_STATUS_NOT_HAS_NUM = 5;
+    /** 6该用户已达到活动参与上限或购买数量上限 */
+    public final static Byte ACTIVITY_STATUS_MAX_COUNT_LIMIT = 6;
+    /** 7该秒杀为会员专属，该用户没有对应会员卡 */
+    public final static Byte ACTIVITY_STATUS_NOT_HAS_MEMBER_CARD = 7;
+    /** 8参与活动的某规格无可使用活动数量 */
+    public final static Byte ACTIVITY_STATUS_PRD_NOT_HAS_NUM = 8;
+    /** 9有待支付对应订单 */
+    public final static Byte ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY = 8;
+
 }

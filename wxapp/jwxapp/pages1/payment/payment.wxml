@@ -16,5 +16,5 @@
     <v-recommend />
   </view>
   <include src="../../pages/common/footer.wxml" />
-  <v-pay-award show="{{true}}" award-info="{{awardInfo}}"/>
+  <v-pay-award show="{{payAwardDialog}}" award-info="{{awardInfo}}"/>
 </view>
