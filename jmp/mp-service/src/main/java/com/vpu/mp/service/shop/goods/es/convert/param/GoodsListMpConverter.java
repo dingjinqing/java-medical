@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
 import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
 import com.vpu.mp.service.pojo.shop.goods.es.Operator;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +41,9 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
         if( null != param.getCurrentPage() ){
             searchParam.setCurrentPage(param.getCurrentPage());
         }
-        if( null != param.getGoodsItems() && !param.getGoodsItems().isEmpty() ){
+        if(!CollectionUtils.isEmpty(param.getGoodsItems())){
             searchParam.setQueryByPage(false);
+            propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsItems()));
         }else{
             searchParam.setPageRows(param.getGoodsNum());
             searchParam.setQueryByPage(true);

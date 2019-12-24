@@ -718,9 +718,17 @@ export default {
 
       /** 会员卡背景 bgType 0： 背景色；1：背景图 */
       if (item.bgType === 0) {
-        return 'background-color:' + item.bgColor
+        if (item.bgColor) {
+          return 'background-color:' + item.bgColor
+        } else {
+          return 'background-color:#e6cb96'
+        }
       } else {
-        return 'backgroundImage:url(' + item.bgImg + ')' + ';backgroundRepeat:no-repeat;background-size: 100% 100%;'
+        if (item.bgImg) {
+          return 'backgroundImage:url(' + item.bgImg + ')' + ';backgroundRepeat:no-repeat;background-size: 100% 100%;'
+        } else {
+          return 'background-color:#e6cb96'
+        }
       }
     },
     // 跳转到会员卡详情页

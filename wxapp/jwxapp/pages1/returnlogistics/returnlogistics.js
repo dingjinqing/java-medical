@@ -18,23 +18,22 @@ global.wxPage({
     retId: '', // 退款订单id
     orderInfo: {}, // 订单信息
     uploadedImg: [], // 凭证图片
+    couriers: [], // 快递公司列表
+    courierIndex: 0,
+    shippingNo: '', // 物流号
+    phone: '', // 手机号
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let orderSn = options.order_sn
-    let orderId = options.order_id
     let returnSn = options.return_sn
-    let retId = options.ret_id
     this.setData({
-      orderSn: orderSn,
-      orderId: orderId,
-      returnSn: returnSn,
-      retId: retId
+      returnSn: returnSn
     })
     this.initData()
+    this.initCouriers()
   },
 
   initData () {
@@ -53,6 +52,48 @@ global.wxPage({
     }, { returnOrderSn: that.data.returnSn })
   },
 
+  // 快递公司列表
+  initCouriers () {
+    let that = this
+    util.api('/api/wxapp/order/express', function (res) {
+      if (res.error === 0) {
+        that.setData({
+          couriers: res.content
+        })
+      }
+    })
+  },
+
+  // 填写物流号
+  shippingNoBlur (e) {
+    let value = e.detail.value
+    if (!value) {
+      util.showModal('提示', '请填写运单号码！')
+    }
+    this.setData({
+      shippingNo: value
+    })
+  },
+
+  // 填写手机号
+  phoneBlur (e) {
+    let value = e.detail.value
+    if (!value) {
+      util.showModal('提示', '请填写手机号！')
+    }
+    if (/^1[3456789]\d{9}$/.test(e.detail.value)) {
+      this.setData({
+        phone: e.detail.value
+      })
+    } else {
+      util.showModal('提示', "请输入正确的手机号！");
+      this.setData({
+        phone: ''
+      })
+    }
+  },
+
+  // 上传凭证图片
   uploadRefundImg () {
     let that = this
     let uploadedImg = that.data.uploadedImg
@@ -71,25 +112,66 @@ global.wxPage({
       }
     })
   },
+
+  // 删除图片
+  delImage (e) {
+    let index = e.currentTarget.dataset.idx
+    this.data.uploadedImg.splice(index, 1)
+    this.setData({
+      uploadedImg: this.data.uploadedImg
+    })
+  },
+
+  // 提交物流
   submitReturnLogistics () {
+    let that = this
     let params = {
-      orderId: this.data.orderId,
-      retId: this.data.retId,
-      orderSn: that.data.orderSn,
+      orderId: this.data.orderInfo.orderId,
+      retId: this.data.orderInfo.retId,
+      orderSn: that.data.orderInfo.orderSn,
       action: 1,
       returnOperate: 0,
-      shippingType: that.data.orderInfo.shippingType,
-      shippingNo: that.data.orderInfo.shippingNo,
-      phone: that.data.orderInfo.phone,
-      voucherImages: JSON.stringify(that.data.uploadedImg)
+      shippingType: that.data.couriers[that.data.courierIndex].shippingId,
+      shippingNo: that.data.shippingNo, // 物流单号
+      phone: that.data.phone,
+      voucherImages: '',
+      returnType: that.data.orderInfo.returnType
     }
+    if (!params.shippingNo) {
+      util.showModal('提示', '请填写运单号码！')
+      return false;
+    }
+    if (!params.phone) {
+      util.showModal('提示', '请填写手机号码！')
+      return false;
+    }
+    if (!/^1[3456789]\d{9}$/.test(params.phone)) {
+      util.showModal('提示', "请输入正确的手机号！");
+      return false;
+    }
+    if (that.data.uploadedImg.length > 0) {
+      let voucherImages = that.data.uploadedImg.map(item => item.imgPath)
+      params.voucherImages = JSON.stringify(voucherImages)
+    }
+    console.log(params)
     util.api('/api/wxapp/order/refund', function (res) {
       if (res.error === 0) {
-        util.success_toast(res.message)
+        util.toast_success(res.message)
+        util.navigateTo({
+          url: '/pages1/returndetail/returndetail?return_sn=' + that.data.returnSn
+        })
       } else {
-        util.fail_toast(res.message)
+        util.toast_fail('抱歉，提交失败！')
       }
     }, params)
+  },
+
+  // 物流公司改变
+  bindCourierChange (e) {
+    let value = e.detail.value
+    this.setData({
+      courierIndex: value
+    })
   },
 
   /**

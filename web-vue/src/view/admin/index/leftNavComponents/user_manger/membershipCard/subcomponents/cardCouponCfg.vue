@@ -22,6 +22,7 @@
           class="send-coupon"
         >
           <div class="coupon-div-top">
+
             <div>
               <el-radio
                 v-model="ruleForm.couponType"
@@ -32,6 +33,7 @@
               <span class="coupon-info">
                 {{ $t('memberCard.offerInfo') }}
               </span>
+              <span v-if="couponError"  class="coupon-error-tip">请选择开卡送优惠券</span>
             </div>
             <div
               v-if="ruleForm.couponType==='1'"
@@ -148,6 +150,7 @@ export default {
           } else {
             this.ruleForm.valid = false
             this.$message.warning('请选择开卡送优惠券')
+            this.couponError = true
           }
         } else {
           this.ruleForm.valid = true
@@ -160,6 +163,7 @@ export default {
   data () {
     return {
       couponDialogVisable: false,
+      couponError: false,
       couponBack: [],
       couponList: []
     }
@@ -175,6 +179,7 @@ export default {
       this.couponList = val
       let res = val.map(({ id }) => id)
       this.ruleForm.couponIdList = res
+      this.couponError = false
     },
     handlToDelCouList (index) {
       console.log('删除优惠券', index)
@@ -193,6 +198,10 @@ export default {
     padding-left: 100px;
     .coupon-info {
       color: #9d9d9d;
+    }
+    .coupon-error-tip{
+      color: #F56C6C;
+      font-size: 12px;
     }
     .send-coupon {
       padding-left: 71px;

@@ -485,10 +485,10 @@ public class SeckillService extends ShopBaseService{
         byte res = this.canApplySecKill(secKill,goodsNumber,userId);
         if(res == 0){
             if(!this.checkSeckillProductStock(skId,productId)){
-                return 8;
+                return BaseConstant.ACTIVITY_STATUS_PRD_NOT_HAS_NUM;
             }
             if(seckillList.checkSeckillOrderWaitPay(skId,userId) != null){
-                return 9;
+                return BaseConstant.ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY;
             }
         }
         return res;
@@ -502,29 +502,29 @@ public class SeckillService extends ShopBaseService{
      */
     public Byte canApplySecKill(SecKillDefineRecord secKill,Integer goodsNumber,Integer userId) {
         if(secKill == null){
-            return 1;
+            return BaseConstant.ACTIVITY_STATUS_NOT_HAS;
         }
         if(BaseConstant.ACTIVITY_STATUS_DISABLE.equals(secKill.getStatus())){
-            return 2;
+            return BaseConstant.ACTIVITY_STATUS_STOP;
         }
         if(secKill.getStartTime().after(DateUtil.getLocalDateTime())){
-            return 3;
+            return BaseConstant.ACTIVITY_STATUS_NOT_START;
         }
         if(secKill.getEndTime().before(DateUtil.getLocalDateTime())){
-            return 4;
+            return BaseConstant.ACTIVITY_STATUS_END;
         }
         int minStock = goodsNumber < secKill.getStock() ? goodsNumber : secKill.getStock();
         if(minStock <= 0){
-            return 5;
+            return BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM;
         }
-        if(getUserSeckilledGoodsNumber(secKill.getSkId(),userId) >= secKill.getLimitAmount()){
-            return 6;
+        if(secKill.getLimitAmount() > 0 && getUserSeckilledGoodsNumber(secKill.getSkId(),userId) >= secKill.getLimitAmount()){
+            return BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT;
         }
         if(StringUtil.isNotEmpty(secKill.getCardId()) && !userCardExclusiveSeckillIsValid(secKill.getCardId(),userId)){
-            return 7;
+            return BaseConstant.ACTIVITY_STATUS_NOT_HAS_MEMBER_CARD;
         }
 
-        return 0;
+        return BaseConstant.ACTIVITY_STATUS_CAN_USE;
     }
 
     /**

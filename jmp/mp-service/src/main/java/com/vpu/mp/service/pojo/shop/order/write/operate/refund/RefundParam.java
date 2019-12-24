@@ -26,10 +26,8 @@ public final class RefundParam extends OrderOperateQueryParam {
 	@NotNull(message = JsonResultMessage.MSG_ORDER_RETURN_NOT_NULL_RETURNTYPE)
 	private Byte returnType;
 	private List<ReturnGoods> returnGoods;
-	@NotNull(message = JsonResultMessage.MSG_ORDER_RETURN_NOT_NULL_RETURNMONEY)
 	private BigDecimal returnMoney;
 	/**退运费金额*/
-	@NotNull(message = JsonResultMessage.MSG_ORDER_RETURN_NOT_NULL_SHIPPINGFEE)
 	private BigDecimal shippingFee;
 	private Byte reasonType;
 	private String reasonDesc;

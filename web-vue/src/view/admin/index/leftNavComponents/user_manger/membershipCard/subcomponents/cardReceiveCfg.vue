@@ -32,6 +32,13 @@
             v-if="ruleForm.isPay==='1'"
             class="receive-buy"
           >
+          <el-form
+              :model="ruleForm"
+              :rules="rules"
+              ref="ruleForm"
+              label-width="100px"
+            >
+            <el-form-item style="margin-left: -100px;" prop="payMoney">
             <div>
               <el-radio
                 v-model="ruleForm.payType"
@@ -52,6 +59,8 @@
               <span>{{ $t('memberCard.yuan') }}</span>
               <span v-if="payMoneyError" class="valid-check">请输入金额</span>
             </div>
+            </el-form-item>
+            <el-form-item style="margin-left: -100px;" prop="payScore">
             <div>
               <el-radio
                 v-model="ruleForm.payType"
@@ -71,11 +80,14 @@
               <span>{{ $t('memberCard.unitM') }}</span>
               <span v-if="payScoreError" class="valid-check">请输入积分</span>
             </div>
+            </el-form-item>
+          </el-form>
           </div>
           <div
             v-if="ruleForm.isPay==='2'"
             class="receive-code"
           >
+          <span class="receiveCodeError" v-if="receiveCodeError">至少生成一项领取码</span>
             <div class="receive-code-one">
 
               <el-radio
@@ -96,6 +108,7 @@
                     <el-input
                       v-model="item.batchName"
                       size="small"
+                      :disabled="item.disabled"
                     ></el-input>
                     <span
                       v-for="(codeItem,codeIndex) in codeArr"
@@ -125,6 +138,7 @@
                     <el-input
                       v-model="item.pwdName"
                       size="small"
+                      :disabled="item.disabled"
                     ></el-input>
                     <span
                       v-for="(codeItem,codeIndex) in codeArr"
@@ -208,8 +222,20 @@ export default {
           payMoney: '',
           payScore: '',
           receiveAction: '2',
-          codeAddDivArr: [{ batchName: null, batchId: null }],
-          codeAddDivArrBottom: [{ pwdName: null, pwdId: null }]
+          codeAddDivArr: [
+            {
+              batchName: null,
+              batchId: null,
+              disabled: false
+            }
+          ],
+          codeAddDivArrBottom: [
+            {
+              pwdName: null,
+              pwdId: null,
+              disabled: false
+            }
+          ]
         }
       }
     }
@@ -248,12 +274,55 @@ export default {
           this.ruleForm.valid = true
         }
         // check score
+      } else if (this.ruleForm.isPay === '2') {
+        // 领取码
+        if (Number(this.ruleForm.receiveAction) === this.codeReceiveAction) {
+          // 领取码
+          if (this.ruleForm.codeAddDivArr[0].batchId) {
+            this.ruleForm.valid = true
+            this.receiveCodeError = false
+          } else {
+            this.$message.warning('至少生成一项领取码')
+            this.ruleForm.valid = false
+            this.receiveCodeError = true
+          }
+        } else if (Number(this.ruleForm.receiveAction) === this.pwdReceiveAction) {
+          // 卡号+密码
+          if (this.ruleForm.codeAddDivArrBottom[0].pwdId) {
+            this.ruleForm.valid = true
+            this.receiveCodeError = false
+          } else {
+            this.$message.warning('至少生成一项领取码')
+            this.ruleForm.valid = false
+            this.receiveCodeError = true
+          }
+        }
       } else {
         this.ruleForm.valid = true
       }
     })
   },
   data () {
+    let validatePayScore = (rule, value, callback) => {
+      if (this.ruleForm.payType === '1') {
+        if (this.ruleForm.payScore === undefined) {
+          this.payScoreError = true
+        } else {
+          this.payScoreError = false
+          callback()
+        }
+      }
+    }
+    let validatePayMoney = (rule, value, callback) => {
+      if (this.ruleForm.payType === '0') {
+        if (this.ruleForm.payMoney === undefined) {
+          this.payMoneyError = true
+        } else {
+          this.payMoneyError = false
+          callback()
+        }
+      }
+    }
     return {
       receiveCodeDialogVisible: false,
       codeReceiveAction: 1,
@@ -264,7 +333,16 @@ export default {
       currentReceiveAction: 1,
       codeArr: null,
       payScoreError: false,
-      payMoneyError: false
+      payMoneyError: false,
+      receiveCodeError: false,
+      rules: {
+        payScore: [
+          { validator: validatePayScore, trigger: 'blur' }
+        ],
+        payMoney: [
+          { validator: validatePayMoney, trigger: 'blur' }
+        ]
+      }
     }
   },
   created () {
@@ -285,43 +363,12 @@ export default {
       handler (newName, oldName) {
         if (this.ruleForm.payType === '0') {
           this.payScoreError = false
-          if (this.ruleForm.payMoney === undefined) {
-            this.payMoneyError = true
-          }
         } else if (this.ruleForm.payType === '1') {
           this.payMoneyError = false
-          if (this.ruleForm.payScore === undefined) {
-            this.payScoreError = true
-          }
-        }
-      },
-      immediate: true
-    },
-    'ruleForm.payMoney': {
-      handler (newName, oldName) {
-        if (this.ruleForm.payType === '0') {
-          if (this.ruleForm.payMoney === undefined) {
-            this.payMoneyError = true
-          } else {
-            this.payMoneyError = false
-          }
-        }
-      },
-      immediate: true
-    },
-    'ruleForm.payScore': {
-      handler (newName, oldName) {
-        if (this.ruleForm.payType === '1') {
-          if (this.ruleForm.payScore === undefined) {
-            this.payScoreError = true
-          } else {
-            this.payScoreError = false
-          }
         }
       },
       immediate: true
     }
-
   },
   methods: {
     handleCallCodeDialogBottom (index, codeIndex) {
@@ -330,6 +377,29 @@ export default {
           // 卡号+密码
           this.showReceivePwdDiaglog(index)
           break
+        case 1:
+          this.addPwdBatchName()
+          break
+        case 2:
+          this.deletePwdBatchItem(index)
+      }
+    },
+    // 添加密码批次
+    addPwdBatchName () {
+      this.ruleForm.codeAddDivArrBottom.push(
+        {
+          pwdName: null,
+          pwdId: null,
+          disabled: false
+        }
+      )
+    },
+    // 删除密码批次
+    deletePwdBatchItem (index) {
+      if (this.ruleForm.codeAddDivArrBottom.length === 1) {
+        this.$message.warning('最少保留一个批次')
+      } else {
+        this.ruleForm.codeAddDivArrBottom.splice(index, 1)
       }
     },
     showReceivePwdDiaglog (index) {
@@ -337,11 +407,9 @@ export default {
         this.$message.warning('请填写批次名称')
         return
       }
-      debugger
       console.log(this.receiveCodeDialogVisible)
       this.receiveCodeDialogVisible = true
       this.currentBatchName = this.ruleForm.codeAddDivArrBottom[index].pwdName
-      debugger
       console.log(this.ruleForm.codeAddDivArrBottom)
       this.currentBatchId = this.ruleForm.codeAddDivArrBottom[index].pwdId
       console.log(this.currentBatchId)
@@ -371,7 +439,6 @@ export default {
         this.$message.warning('请填写批次名称')
         return
       }
-      debugger
       console.log(this.receiveCodeDialogVisible)
       this.receiveCodeDialogVisible = true
       this.currentBatchName = this.ruleForm.codeAddDivArr[index].batchName
@@ -381,7 +448,13 @@ export default {
     },
     // 添加批次
     addBatchItem () {
-      this.ruleForm.codeAddDivArr.push({ batchName: null, batchId: null })
+      this.ruleForm.codeAddDivArr.push(
+        {
+          batchName: null,
+          batchId: null,
+          disabled: false
+        }
+      )
     },
     // 删除批次
     deleteBatchItem (index) {
@@ -404,15 +477,18 @@ export default {
       }
     },
     dealWithReceiveCodeId (id) {
-      debugger
       console.log(id)
       if (this.currentReceiveAction === this.pwdReceiveAction) {
         // 卡号+密码
         console.log(this.ruleForm.codeAddDivArrBottom)
         this.ruleForm.codeAddDivArrBottom[this.currentIndex].pwdId = id
+        this.ruleForm.codeAddDivArrBottom[this.currentIndex].disabled = true
+        this.receiveCodeError = false
         console.log(this.ruleForm.codeAddDivArrBottom)
       } else if (this.currentReceiveAction === this.codeReceiveAction) {
         this.ruleForm.codeAddDivArr[this.currentIndex].batchId = id
+        this.ruleForm.codeAddDivArr[this.currentIndex].disabled = true
+        this.receiveCodeError = false
       }
     }
   }
@@ -441,7 +517,13 @@ export default {
           font-size: 12px;
         }
       }
+
       .receive-code {
+        .receiveCodeError{
+          padding: 5px 20px;
+          color: #F56C6C;
+          font-size: 12px;
+        }
         .receive-code-one {
           padding: 5px 20px;
           display: flex;

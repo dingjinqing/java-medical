@@ -16,7 +16,7 @@ global.wxPage({
       WAIT_PAY: 1,
       WAIT_DELIVERY: 2,
       SHIPPED: 3,
-      RETURNING: 4
+      RETURNING: 5
     },
     dataList: []
   },
