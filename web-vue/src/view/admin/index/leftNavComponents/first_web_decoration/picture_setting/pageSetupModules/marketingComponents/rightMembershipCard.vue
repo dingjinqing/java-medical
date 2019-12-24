@@ -26,7 +26,7 @@
               v-else
               @click="handlCallCardDialog()"
               class="selectCard"
-              :style="nowChecked.bg_type===0?`backgroundColor:${nowChecked.bg_color}`:`backgroundImage:url('${$imageHost}/${nowChecked.bg_img}')`"
+              :style="nowChecked.bg_type===0?`backgroundColor:${nowChecked.bg_color}`:`backgroundImage:url('${nowChecked.bg_img}')`"
             >
               <div>
                 <span class="card_name">{{nowChecked.card_name}}</span>
@@ -122,7 +122,7 @@
                     v-for="(item,index) in showCardList"
                     :key="index"
                     @click="handleToClickCard(index)"
-                    :style="item.bgType===0?`backgroundColor:${item.bgColor}`:`backgroundImage:url('${$imageHost}/${item.bgImg}')`"
+                    :style="item.bgType===0?`backgroundColor:${item.bgColor}`:`;backgroundImage:url(${item.bgImg})`"
                   >
                     <img
                       v-if="item.isChecked"
