@@ -35,7 +35,6 @@
             <el-tree
               :data="newArr"
               show-checkbox
-              default-expand-all
               node-key="sortId"
               empty-text=''
               ref="sortTree"
@@ -66,10 +65,7 @@
 import { cateListApi } from '@/api/admin/selectLinksApi/selectLinksApi'
 export default {
   props: {
-    dialogVisible: { // 弹窗调起flag
-      type: Boolean,
-      default: () => false
-    },
+    dialogVisible: Boolean, // 弹窗调起flag
     classFlag: Number,
     backDataArr: Array
   },
@@ -112,7 +108,10 @@ export default {
         this.defaultArr = []
         // 初始化数据
         this.defaultData(this.backDataArr, this.classFlag)
-      } else {
+      }
+    },
+    busClassDialogVisible (newData) {
+      if (!newData) {
         this.$emit('update:dialogVisible', false)
       }
     }
