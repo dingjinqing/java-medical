@@ -372,7 +372,7 @@ export default {
         callback(new Error('请选择商品'))
       } else if (this.params.onClickCard === true && (this.params.cardIdsList === undefined || this.params.cardIdsList.length <= 0)) {
         callback(new Error('请选择会员卡'))
-      } else if (this.params.onClickTag === true && (this.params.tagIdsList === undefined || this.params.tagIdsList.length <= 0)) {
+      } else if (this.params.onClickTag === true && (this.params.tagIdList === undefined || this.params.tagIdList.length <= 0)) {
         callback(new Error('请选择标签'))
       } else if (this.params.onClickUser === true && (this.params.userIdList === undefined || this.params.userIdList.length <= 0)) {
         callback(new Error('请选择会员'))
