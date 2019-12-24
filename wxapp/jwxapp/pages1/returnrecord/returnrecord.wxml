@@ -2,7 +2,7 @@
 <include src="/pages/common/header.wxml" />
 <view class='main-container'>
   <view class='order_goods'>
-    <view class='order_num' style='margin-bottom:20rpx;'>
+    <view class='order_num' style='margin-bottom:20rpx;' wx:if="{{orderInfo.type_icon}}">
       <text class='ps_type' wx:if='{{orderInfo.type_icon != ""}}'>{{orderInfo.type_icon}}</text>
       订单编号：{{orderInfo.orderSn}}
     </view>
