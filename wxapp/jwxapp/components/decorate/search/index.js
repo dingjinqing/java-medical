@@ -5,8 +5,9 @@ global.wxComponent({
   mixins: [base, fix_top],
   methods: {
     //  当传入的模块数据改变时触发
-    onPropChange(newVal, oldVal, changedPath) {
-      console.log(newVal)
+    onPropChange (newVal, oldVal, changedPath) {
+      console.log(newVal, 'search++++++++++++++++++++++++++++++++++++++++++++++')
+      newVal.fixed = false;
       if (newVal.search_font == 0) {
         newVal.height = '80rpx'
       } else if (newVal.search_font == 2) {
@@ -15,19 +16,21 @@ global.wxComponent({
         newVal.height = '68rpx'
       }
       newVal.cur_idx = `c_${newVal.cur_idx}`
-      newVal.fixed = false;
+
     },
-    bindSearchConfirm(e) {
+    bindSearchConfirm (e) {
       util.jumpLink('/pages/newsearch/newsearch');
     },
-    toSort(e) {
+    toSort (e) {
       util.jumpLink('/pages/sort/sort');
     },
-    onPageScroll(e) {
+    onPageScroll (e) {
       var _this = this;
       var m = this.data.m;
-      if (m.search_position == '1') {
-        this.getRect("#" + m.cur_idx).then(function (rect) {
+      console.log(m, +'1111')
+      if (m.search_position === '1') {
+        this.getRect(`#${m.cur_idx}`).then(function (rect) {
+          console.log(rect)
           var top = _this.getFixeTop();
           if (!m.fixed && rect.top <= top) {
             m.fixed = true;
@@ -36,6 +39,7 @@ global.wxComponent({
             _this.startFixed(rect.height);
             _this.$set();
           } else {
+            console.log(m.fixed, rect.top, top)
             if (m.fixed && rect.top > top) {
               m.fixed = false;
               _this.stopFixed();

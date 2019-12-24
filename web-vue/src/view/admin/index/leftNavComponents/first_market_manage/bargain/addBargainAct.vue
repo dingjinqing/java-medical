@@ -412,9 +412,10 @@
                 <div class="fontColor">{{$t('addBargainAct.couponLimitTip')}}</div>
               </el-card>
             </el-form-item>
-
             <!-- 引入活动分享模块 -->
-            <actShare :shareConfig="shareConfig" />
+            <el-form-item label="活动分享:">
+              <actShare :shareConfig="shareConfig" />
+            </el-form-item>
           </div>
 
         </el-form>
@@ -467,6 +468,7 @@ export default {
       getBargainByIsd(SimpleBargainParam).then((res) => {
         console.log(res)
         if (res.error === 0) {
+          console.log(res, 'res--')
           this.param = res.content
           this.param.effectiveDate = []
           this.param.effectiveDate.push(res.content.startTime)
@@ -474,6 +476,10 @@ export default {
           this.mrkingVoucherObjs = res.content.mrkingVoucherList
           this.rewardCouponObjs = res.content.rewardCouponList
           this.goodsRow.push(res.content.goods)
+          let resultConfig = JSON.parse(res.content.shareConfig)
+          console.log(resultConfig)
+          this.params.shareConfig = resultConfig
+          console.log(this.params.shareConfig)
         }
       })
     }
@@ -512,7 +518,13 @@ export default {
         floorPrice: 0,
         effectiveDate: '',
         goodsId: 0,
-        expectationPrice: 0
+        expectationPrice: 0,
+        shareConfig: {
+          'share_action': 1,
+          'share_doc': '',
+          'share_img_action': 1,
+          'share_img': ''
+        }
       },
       shareConfig: {
         'share_action': 1,
