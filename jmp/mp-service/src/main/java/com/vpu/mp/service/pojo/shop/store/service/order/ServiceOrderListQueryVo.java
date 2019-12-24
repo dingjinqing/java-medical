@@ -14,6 +14,7 @@ public class ServiceOrderListQueryVo {
 
 	private String orderSn;
     private Integer orderId;
+    private Byte orderStatus;
 
 
     /**

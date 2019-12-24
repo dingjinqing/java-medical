@@ -210,13 +210,25 @@ export default {
         cardType: 0,
         isPay: '0',
         payType: '0',
-        payMoney: '',
-        payScore: '',
+        payMoney: undefined,
+        payScore: undefined,
         receiveAction: '1',
         stock: 0,
         limits: 0,
-        codeAddDivArr: [{ batchName: null, batchId: null }],
-        codeAddDivArrBottom: [{ pwdName: null, pwdId: null }],
+        codeAddDivArr: [
+          {
+            batchName: null,
+            batchId: null,
+            disabled: false
+          }
+        ],
+        codeAddDivArrBottom: [
+          {
+            pwdName: null,
+            pwdId: null,
+            disabled: false
+          }
+        ],
         valid: false
       },
       cardActiveCfgData: {
@@ -358,22 +370,33 @@ export default {
         if (data.batchList.length > 0) {
           this.cardReceiveCfgData.codeAddDivArr = []
           data.batchList.forEach(item => {
-            this.cardReceiveCfgData.codeAddDivArr.push({ batchName: item.name, batchId: item.batchId })
+            this.cardReceiveCfgData.codeAddDivArr.push(
+              {
+                batchName: item.name,
+                batchId: item.batchId,
+                disabled: true
+              }
+            )
           })
         }
       } else {
-        this.cardReceiveCfgData.codeAddDivArr = [{ batchName: null, batchId: null }]
+        this.cardReceiveCfgData.codeAddDivArr = [{ batchName: null, batchId: null, disabled: false }]
       }
 
       if (data.batchList && this.cardReceiveCfgData.receiveAction === '2') {
         if (data.batchList.length > 0) {
           this.cardReceiveCfgData.codeAddDivArrBottom = []
           data.batchList.forEach(item => {
-            this.cardReceiveCfgData.codeAddDivArrBottom.push({ pwdName: item.name, pwdId: item.batchId })
+            this.cardReceiveCfgData.codeAddDivArrBottom.push(
+              {
+                pwdName: item.name,
+                pwdId: item.batchId,
+                disabled: true }
+            )
           })
         }
       } else {
-        this.cardReceiveCfgData.codeAddDivArrBottom = [{ pwdName: null, pwdId: null }]
+        this.cardReceiveCfgData.codeAddDivArrBottom = [{ pwdName: null, pwdId: null, disabled: false }]
       }
 
       // 激活条件
@@ -446,12 +469,12 @@ export default {
       this.$refs.cardReceiveCfgData.$emit('checkRule')
       // 至少选择一项会员权益
       if (this.disCountData.powerDiscount || this.ownGoodsData.powerOwnGoods ||
-            this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
+        this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
         // 检验都通过
         if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&
-            this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid && this.cardReceiveCfgData.valid) {
+          this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid && this.cardReceiveCfgData.valid) {
           // this.$message.success('成功')
-        // 保存数据
+          // 保存数据
           this.prepareCardData()
         } else {
           this.$message.error('保存失败')

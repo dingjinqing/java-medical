@@ -77,13 +77,10 @@ public class GroupBuyProcessorDao extends GroupBuyService {
 
         // 活动未开始
         if (BaseConstant.ACTIVITY_STATUS_NOT_START.equals(aByte)) {
-            vo.setRemainTime(groupBuyDefineRecord.getStartTime().getTime() - now.getTime());
+            vo.setStartTime(groupBuyDefineRecord.getStartTime().getTime() - now.getTime());
+            vo.setEndTime(groupBuyDefineRecord.getEndTime().getTime() - now.getTime());
         }
-        // 活动正在进行中
-        if (BaseConstant.ACTIVITY_STATUS_CAN_USE.equals(aByte)) {
-            vo.setRemainTime(groupBuyDefineRecord.getEndTime().getTime() - now.getTime());
-            vo.setEndTime(groupBuyDefineRecord.getEndTime());
-        }
+        vo.setEndTime(groupBuyDefineRecord.getEndTime().getTime() - now.getTime());
 
         /**是否团长优惠*/
         vo.setIsGrouperCheap(groupBuyDefineRecord.getIsGrouperCheap());

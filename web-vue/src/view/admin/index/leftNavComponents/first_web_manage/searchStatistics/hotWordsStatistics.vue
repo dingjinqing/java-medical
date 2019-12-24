@@ -105,6 +105,10 @@ export default {
     },
     // 自定义时间
     customDate () {
+      this.chartChange = {
+        date: [],
+        number: []
+      }
       this.param.startTime = this.timeValue[0].substring(0, 4) + '-' + this.timeValue[0].substring(4, 6) + '-' + this.timeValue[0].substring(6, 8) + ' 00:00:00'
       this.param.endTime = this.timeValue[1].substring(0, 4) + '-' + this.timeValue[1].substring(4, 6) + '-' + this.timeValue[1].substring(6, 8) + ' 23:59:59'
       console.log('选择器的时间：', this.param)
