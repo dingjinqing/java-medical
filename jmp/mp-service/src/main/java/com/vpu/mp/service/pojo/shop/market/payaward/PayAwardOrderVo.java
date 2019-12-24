@@ -23,4 +23,6 @@ public class PayAwardOrderVo {
      * 一共层级
      */
     private Integer payAwardSize=0;
+
+    private String message;
 }

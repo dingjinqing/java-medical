@@ -3,9 +3,7 @@ package com.vpu.mp.service.shop.member;
 
 import static com.vpu.mp.db.shop.Tables.USER;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
-import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.DAY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LANGUAGE_TYPE_MEMBER;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MONTH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.WEEK;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
@@ -22,6 +20,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -52,6 +51,8 @@ import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.shop.member.score.SignData;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.operation.RemarkScoreTemplate;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
@@ -126,16 +127,16 @@ public class ScoreService extends ShopBaseService {
 		/** 3. 准备数据  */
 
 		/** 3.1 处理备注  */
-		final String remark ;
-		if (StringUtils.isEmpty(param.getRemark())) {
-			/** -默认管理员操作 国际化*/
-			String value = ADMIN_OPERATION.val();
-			remark = Util.translateMessage(language,value,LANGUAGE_TYPE_MEMBER);
-			logger().info("remark: "+remark);
-		}else {
-			remark = param.getRemark();
+		if (param.getRemarkId() == null) {
+			if(param.getRemarkData()==null || param.getRemarkData().size()==0 ) {
+				// 默认管理员操作
+				param.setRemarkId(RemarkScoreTemplate.ADMIN_OPERATION.code);
+			}else {
+				// 用户输入
+				param.setRemarkId(RemarkScoreTemplate.USER_INPUT_MSG.code);
+			}
 		}
-
+		
 		/** 3.2 获取积分流水号  */
 		String flowOn = generateFlowNo();
 
@@ -172,7 +173,8 @@ public class ScoreService extends ShopBaseService {
 				//TODO 还有一些数据不知道从哪些业务传递过来的如goods_id,desc,identity_id 
 				userScoreRecord.setScore(score);
 				userScoreRecord.setUserId(userId);
-				userScoreRecord.setRemark(remark);
+				userScoreRecord.setRemarkId(String.valueOf(param.getRemarkId()));
+				userScoreRecord.setRemarkData(Util.listToString(param.getRemarkData()));
 				userScoreRecord.setAdminUser(String.valueOf(subAccountId));
 				userScoreRecord.setOrderSn(orderSn);
 				userScoreRecord.setFlowNo(flowOn);
@@ -223,7 +225,16 @@ public class ScoreService extends ShopBaseService {
 				
 				/** -交易记录表-记录交易的数据信息  */
 				insertTradesRecord(tradesRecord);
-			});
+				
+				
+				//TODO  admin 操作记录
+				if (subAccountId == 0) {
+					String strScore = score>=0? "+"+score:""+score;
+					saas().getShopApp(getShopId()).record.insertRecord(
+							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
+							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
+				}
+				});
 		}catch(DataAccessException e) {
 			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
 			throw e;

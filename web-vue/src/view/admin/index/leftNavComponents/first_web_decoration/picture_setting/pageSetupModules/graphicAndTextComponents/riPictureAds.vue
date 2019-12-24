@@ -332,6 +332,7 @@ export default {
             'can_show': '0', //  显示设置raido
             'whetherToExpand': '0'
           }
+          console.log(this.moduleSaveData)
           this.moduleSaveData.image_list.push(obj)
         })
       } else {

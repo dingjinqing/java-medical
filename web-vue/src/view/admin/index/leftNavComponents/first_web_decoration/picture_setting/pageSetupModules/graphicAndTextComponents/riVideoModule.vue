@@ -11,7 +11,7 @@
             class="videoZb"
             @click="handleToCallAddVideo()"
           >
-            <img :src="$imageHost+'/image/admin/add_video.png'">
+            <img :src="moduleSaveData.video_showpath?moduleSaveData.video_showpath:($imageHost+'/image/admin/add_video.png')">
           </div>
         </div>
         <div class="videoTips">
@@ -190,6 +190,10 @@ export default {
           justify-content: center;
           align-items: center;
           cursor: pointer;
+          img {
+            max-width: 150px;
+            max-height: 150px;
+          }
         }
         /deep/ .el-input {
           width: 200px;

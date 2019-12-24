@@ -968,17 +968,6 @@ export default {
         // this.nowRightModulesData = null
         this.nowRightModulesData = this.modulesData[this.nowRightShowIndex]
       })
-
-      console.log(this.nowRightModulesData, this.modulesData[this.nowRightShowIndex])
-      // this.$forceUpdate()
-      // this.nowRightShowMoudlesIndex  当前高亮模块类型的index
-      console.log(this.showModulesList, this.nowRightShowIndex)
-
-      console.log(this.nowRightShowMoudlesIndex)
-      console.log(this.modulesData, this.nowRightShowIndex)
-
-      // this.$store.commit('TOCHANGE_SENDMODULESDATA', this.modulesData[this.nowRightShowIndex])
-      console.log(this.showModulesList, this.modulesData)
     },
     // 当中间模块数组showModulesList被插入新的数据时、保存数组处理函数
     handleToSaveModules (showModulesList, modulesData) {

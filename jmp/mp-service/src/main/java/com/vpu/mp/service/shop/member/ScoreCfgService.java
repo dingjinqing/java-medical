@@ -24,7 +24,7 @@ import java.util.Map;
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
-
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_OFF;
 /**
  * 积分配置Service
  *
@@ -281,11 +281,36 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		}
 		logger().info("查询buyEach处理成功");
 		
+		// 处理门店买单送积分开关
+		Byte storeScore = getStoreScore();
+		if(ZERO.equals(storeScore)) {
+			vo.setStoreScore(BUTTON_OFF);
+		}else {
+			vo.setStoreScore(BUTTON_ON);
+		}
+		
+		// 处理积分开关
+		Byte shoppingScore = getShoppingScore();
+		if(ZERO.equals(shoppingScore)) {
+			vo.setShoppingScore(BUTTON_OFF);
+		}else {
+			vo.setShoppingScore(BUTTON_ON);
+		}
+		
+		// 处理登录送积分开关
+		Byte loginScore = getLoginScore();
+		if(ZERO.equals(loginScore)) {
+			vo.setLoginScore(BUTTON_OFF);
+		}else {
+			vo.setLoginScore(BUTTON_ON);
+		}
+		
         // 处理签到积分
-		//UserScoreSetValue userScore = getScoreValueThird("sign_in_score");
 		UserScoreSetValue userScore = getSignInScore();
 		if(userScore.getEnable()!=null && ONE == userScore.getEnable()) {
 			vo.setSignInScore(BUTTON_ON);
+		}else {
+			vo.setSignInScore(BUTTON_OFF);
 		}
 		logger().info("处理签到积分开关成功");
 
@@ -342,7 +367,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		String value = Util.toJson(param);
 		logger().info(value);
 		setScoreDocument(value);
-		this.set(SCORE_DOCUMENT, value);
 	}
 
 	/**
@@ -365,11 +389,13 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	}
 
     /**
-     * 积分模板页添加 addScore
+     * 	积分模板页添加 addScore
 	 */
 	public void addScoreCfgForDecoration(ShopCfgParam param) {
-		setScorePageId(""+param.getScorePageId());
+		if(param.getScorePageId() != null) {
+			setScorePageId(""+param.getScorePageId());
+		}else {
+			setScorePageId(null);
+		}
 	}
-
-
 }

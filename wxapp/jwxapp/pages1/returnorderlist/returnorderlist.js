@@ -12,6 +12,7 @@ global.wxPage({
     imageUrl: imageUrl,
     click_look: imageUrl + 'image/wxapp/click_look.png',
     orderSn: '',
+    orderId: '',
     returnFlag: 0, // 是否展示创建售后申请按钮
     returnOrderList: [], // 售后单列表
     createTime: '', // 下单时间
@@ -19,6 +20,8 @@ global.wxPage({
     return: ['仅退款', '退货退款', '仅退运费', '手动退款', '换货'], // 售后类型
     reasone: ['协商一致退款', '未按约定时间发货', '缺货', '拍错/多拍/不想要', '其他'], // 退货退款原因
     reasone_huan: ['协商一致换货', '商品与页面描述不符', '发错货', '商品损坏', '其他'], // 换货原因
+
+    voucherImages: [], // 物流凭证
   },
 
   /**
@@ -27,7 +30,8 @@ global.wxPage({
   onLoad: function (options) {
     let orderSn = options.order_sn
     this.setData({
-      orderSn: orderSn
+      orderSn: orderSn,
+      orderId: options.order_id ? options.order_id : ''
     })
     this.initData()
   },
@@ -37,7 +41,13 @@ global.wxPage({
     util.api('/api/wxapp/order/refund/list', function (res) {
       if (res.error === 0) {
         let content = res.content
+        content.returnOrderlist.forEach(function (item) {
+          if (item.voucherImages) {
+            item.voucherImages = JSON.parse(item.voucherImages)
+          }
+        })
         that.setData({
+          orderSn: content.orderSn,
           returnFlag: content.returnFlag,
           returnOrderList: content.returnOrderlist,
           createTime: content.createTime
@@ -45,6 +55,34 @@ global.wxPage({
       }
     }, {
       orderSn: that.data.orderSn
+    })
+  },
+
+  // 查看售后详情
+  toDetail (e) {
+    console.log(e)
+    let orderSn = this.data.orderSn
+    let order = e.currentTarget.dataset
+    let returnOrderSn = order.return_sn
+    let refundStatus = order.order_status
+    let returnType = order.order_type
+    util.navigateTo({
+      url: '/pages1/returndetail/returndetail?return_sn=' + returnOrderSn
+    })
+  },
+
+  // 创建售后申请
+  createReturnOrder (e) {
+    util.navigateTo({
+      url: '/pages1/returnorder/returnorder?order_sn=' + this.data.orderSn + '&order_id=' + this.data.orderId
+    })
+  },
+
+  // 提交物流
+  returnOrder (e) {
+    let returnOrderSn = e.currentTarget.dataset.return_sn
+    util.navigateTo({
+      url: '/pages1/returnlogistics/returnlogistics?return_sn=' + returnOrderSn
     })
   },
 
