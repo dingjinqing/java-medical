@@ -6,6 +6,7 @@
         :visible.sync="callAddBrand"
         width="50%"
         :modal-append-to-body='false'
+        :before-close="handleClose"
       >
         <div
           class="dialogTop"
@@ -43,6 +44,7 @@
         </div>
         <div class="footer">
           <el-table
+            ref="multipleTable"
             class="version-manage-table"
             header-row-class-name="tableClss"
             :data="tableData"
@@ -162,6 +164,7 @@ export default {
         label: '666'
       }],
       tableData: [],
+      checkBoxData: [],
       backFlag: false,
       brandSourcesVal: 0,
       brandSources: [
@@ -196,18 +199,29 @@ export default {
       }
     },
     callAddBrand (newData) {
+      console.log(newData)
       if (!newData) {
         this.$emit('update:callAddBrand', false)
       } else {
+        this.checkBoxData = []
         this.tableData.forEach(item => {
           item.ischeck = false
           if (this.brandBackData.length > 0) {
             this.brandBackData.forEach(itemC => {
               if (item.id === itemC) {
                 item.ischeck = true
+                this.checkBoxData.push(item)
               }
             })
           }
+        })
+        this.$nextTick(() => {
+          this.$refs.multipleTable.clearSelection()
+        })
+        this.checkBoxData.forEach(row => {
+          this.$nextTick(() => {
+            this.$refs.multipleTable.toggleRowSelection(row)
+          })
         })
       }
     },
@@ -274,8 +288,10 @@ export default {
     changeFun (val) {
       console.log(val)
       if (val.length) {
-        this.tableData.forEach((item, index) => {
-          item.ischeck = true
+        val.forEach((itemA, index) => {
+          this.tableData.forEach((itemB, index) => {
+            if (itemA.id === itemB.id) { itemB.ischeck = true }
+          })
         })
       } else {
         this.tableData.forEach((item, index) => {
@@ -289,6 +305,9 @@ export default {
     // 当前页改变
     handleCurrentChange () {
       this.handleToQueryData()
+    },
+    handleClose () {
+      this.$emit('update:callAddBrand', false)
     },
     // 确定事件
     handleToSure () {
