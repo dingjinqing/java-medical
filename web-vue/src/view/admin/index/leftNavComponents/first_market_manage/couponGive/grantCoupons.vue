@@ -631,16 +631,16 @@ export default {
 
       this.$refs['params'].validate((valid) => {
         if (valid) {
-          console.log('添加成功!')
-          // addActivity(param).then(res => {
-          //   if (res.error === 0) {
-          //     this.$router.push({
-          //       path: `/admin/home/main/couponGive`
-          //     })
-          //   }
-          // }).catch(() => {
-          //   this.$message.error(`${this.$t('couponGive.operationFailed')}`)
-          // })
+          addActivity(param).then(res => {
+            if (res.error === 0) {
+              this.$message.success('添加成功!')
+              this.$router.push({
+                path: `/admin/home/main/couponGive`
+              })
+            }
+          }).catch(() => {
+            this.$message.error(`${this.$t('couponGive.operationFailed')}`)
+          })
         } else {
           return false
         }
