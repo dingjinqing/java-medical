@@ -137,16 +137,16 @@
                   <el-tooltip :content="$t('reservationManage.seeEvluation')">
                     <span
                       class="iconSpan"
-                      @click="edit('edit', row)"
+                      @click="click2Evluation()"
                     >{{$t('reservationManage.seeEvluation')}}</span>
                   </el-tooltip>
-                  <el-tooltip :content="$t('reservationManage.cancel')">
+                  <el-tooltip :content="$t('reservationManage.cancel')" v-if="row.orderStatus == 1">
                     <span
                       class="iconSpan"
                       @click="showMess1(row.orderId, row.orderSn)"
                     >{{$t('reservationManage.cancel')}}</span>
                   </el-tooltip>
-                  <el-tooltip :content="$t('reservationManage.charge')">
+                  <el-tooltip :content="$t('reservationManage.charge')" v-if="row.orderStatus == 1">
                     <span
                       class="iconSpan"
                       @click="showMess2(row.orderId, row.orderSn, row.userId)"
@@ -649,6 +649,15 @@ export default {
         }
       }).catch(() => {
         this.$message.error('操作失败')
+      })
+    },
+    // 查看评价跳转
+    click2Evluation () {
+      this.$router.push({
+        name: 'store_storemanage_comment',
+        params: {
+          flag: true
+        }
       })
     },
     // 预约详情页跳转

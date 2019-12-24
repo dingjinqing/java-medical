@@ -100,6 +100,8 @@ create table `b2c_user_score`
     `order_sn`     varchar(20)  not null default '',
     `shop_id`      int(11)      not null default '0' comment '店铺id',
     `desc`         varchar(191) not null default '',
+    `remark_id`	   varchar(100) not null comment '备注模板id',
+    `remark_data`  varchar(200) default '' comment '备注模板数据',
     `remark`       varchar(1024) comment '备注',
     `create_time`  timestamp             default current_timestamp,
     `expire_time`  timestamp    null     default null,

@@ -1,7 +1,7 @@
 <swiper class="carou-swiper" circular='true' indicator-dots="true" autoplay="true" indicator-active-color="#fff" style='height:{{m.swiperHeight}}rpx;margin-bottom:{{m.margin_bot}}rpx'>
   <block wx:for="{{m.img_items}}" wx:key="index" wx:for-item="item" wx:if="{{!item.can_show ? true : (item.can_show == 0 ? true : (m.is_regular_customer == true ? false : true))}}">
     <swiper-item catchtap="bindJumpLink" data-is_first_touch="{{m.is_first_touch}}" data-url="{{item.title_link}}" data-idx='{{m.idx}}' wx:if='{{item.img_url}}'>
-      <image src="{{item.img_url}}!big?v=1" data-skip='{{m.is_preview != 1 || item.title_link}}' data-src="{{item.img_url}}" bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
+      <image src="{{item.img_url}}" data-skip='{{m.is_preview != 1 || item.title_link}}' data-src="{{item.img_url}}" bindtap="bindPreviewImage" lazy-load="{{true}}"></image>
     </swiper-item>
   </block>
 </swiper>

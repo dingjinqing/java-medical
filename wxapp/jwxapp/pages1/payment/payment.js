@@ -17,11 +17,11 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // let {orderSn,useInfo} = options
-    // this.setData({
-    //   orderSn,
-    //   useInfo:JSON.parse(useInfo)
-    // })
+    let {orderSn,useInfo} = options
+    this.setData({
+      orderSn,
+      useInfo:JSON.parse(useInfo)
+    })
     this.payGiftRequest()
   },
   checkOrder(){
@@ -42,7 +42,7 @@ global.wxPage({
       } else {
 
       }
-    },{orderSn:'P201912201743500206'})
+    },{orderSn:this.data.orderSn})
   },
   getAwardInfo({currentAwardTimes:currentStep,payAwardSize:totalStep,payAwardPrize:awardInfo}){
     const needParams = {

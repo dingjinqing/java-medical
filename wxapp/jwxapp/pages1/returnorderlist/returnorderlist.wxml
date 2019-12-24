@@ -8,7 +8,7 @@
       <view>下单时间: {{createTime}}</view>
     </view>
     <view class="order-header-btn" wx:if="{{returnFlag}}">
-      <button class="order-btn" bindtap="returnOrder" style='background:{{comColor}};' data-order_sn="{{order_sn}}">创建售后申请</button>
+      <button class="order-btn" bindtap="createReturnOrder" style='background:{{comColor}};' data-order_sn="{{orderSn}}" data-order_id="{{orderId}}">创建售后申请</button>
     </view>
   </view>
   <view class="content">
@@ -19,7 +19,7 @@
           <text class="order-role" wx:if="{{item.role == 0}}">商家</text>
           <text class="order-role" wx:elif="{{item.role == 1}}">买家</text>
           <text class="order-role" wx:else>系统</text>
-          <view class="order-status" style='color:{{comColor}}' bindtap="toDetail" data-order_sn="{{item.refundStatus}}" data-order_type="{{item.returnType}}">
+          <view class="order-status" style='color:{{comColor}}' bindtap="toDetail" data-return_sn="{{item.returnOrderSn}}" data-order_status="{{item.refundStatus}}" data-order_type="{{item.returnType}}">
             <text wx:if="{{item.refundStatus == 1}}">等待审核</text>
             <text wx:elif="{{item.refundStatus == 2}}">等待买家提交物流</text>
             <text wx:elif="{{item.refundStatus == 3 && item.returnType == 4}}">拒绝换货</text>
@@ -42,29 +42,41 @@
             </view>
             <view>
               <text class="order-item-title">售后类型：</text>
-              <text>{{item.returnType}}</text>
+              <text>{{return[item.returnType]}}</text>
             </view>
             <view>
               <text class="order-item-title">申请原因：</text>
-              <text>{{item.reasonType}}</text>
+              <text>{{reasone[item.refundStatus]}}</text>
             </view>
-            <view>
-              <text class="order-item-title">退款金额：</text>
-              <text>￥{{item.money}}</text>
-            </view>
-            <view>
-              <text class="order-item-title">退款积分：</text>
-              <text>2000</text>
-            </view>
-            <view>
-              <text class="order-item-title">运费金额：</text>
-              <text>￥{{item.shippingFee}}</text>
-            </view>
-            <view>
+            <!-- 不是换货 -->
+            <block wx:if="{{item.returnType != 4}}">
+              <!-- 不是积分商品 -->
+              <view wx:if="{{orderInfo.goodsType != 4}}">
+                <view wx:if="{{item.money > 0}}">
+                  <text class="order-item-title">退款金额：</text>
+                  <text>￥{{item.money}}</text>
+                </view>
+                <view wx:else>
+                  <view class='order-item-title' wx:if="{{item.returnMoney>0}}">
+                    <text>退款金额：</text>
+                    ￥{{item.returnMoney}}
+                  </view>
+                  <view class='order-item-title'>
+                    <text>退款积分：</text>
+                    {{item.returnScore}}积分
+                  </view>
+                </view>
+              </view>
+              <view>
+                <text class="order-item-title">运费金额：</text>
+                <text>￥{{item.shippingFee}}</text>
+              </view>
+            </block>
+            <view wx:if="{{item.refundRefuseReason != ''}}">
               <text class="order-item-title">售后说明：</text>
               <text>{{item.refundRefuseReason}}</text>
             </view>
-            <view>
+            <view wx:if="{{item.goodsImages && item.goodsImages.length>0}}">
               <text class="order-item-title">售后凭证：</text>
               <view class='return_shuom' style='float:left'>
                 <block wx:for='{{item.goodsImages}}' wx:key='index'>
@@ -73,18 +85,18 @@
               </view>
             </view>
           </block>
-          <!-- 同意了,等提交物流 -->
+          <!-- 商家同意,等待提交物流 -->
           <block wx:elif="{{item.refundStatus == 2}}">
             <view class='order-item-title'>
               <text>审核售后申请时间：</text>
-              {{item.apply_pass_time}}
+              {{item.finishTime}}
             </view>
             <view class='order-item-title'>
               <text>注：</text>
               请提交{{ item.returnType == 4 ? "换货":"退货" }}物流信息，商家会尽快处理您的订单。
             </view>
             <view class="order-item-btn">
-              <view class="item-btn" style="color:{{comColor}};border-color:{{comColor}}" bindtap="returnOrder" data-order_sn="{{order_sn}}" data-ret_id="{{item.ret_id}}" data-submit_shipping="1">
+              <view class="item-btn" style="color:{{comColor}};border-color:{{comColor}}" bindtap="returnOrder" data-return_sn="{{item.returnOrderSn}}">
                 提交物流
               </view>
             </view>
@@ -93,12 +105,12 @@
           <block wx:elif="{{item.refundStatus == 3}}">
             <view class='order-item-title'>
               <text>申请拒绝时间：</text>
-              {{item.apply_not_pass_time}}
+              {{item.finishTime}}
             </view>
-            <block wx:if="{{item.apply_not_pass_reason != null}}">
+            <block wx:if="{{item.refundRefuseReason != null}}">
               <view class='order-item-title'>
                 <text>拒绝理由：</text>
-                {{item.apply_not_pass_reason}}
+                {{item.refundRefuseReason}}
               </view>
             </block>
             <block wx:else>
@@ -112,7 +124,7 @@
           <block wx:elif="{{item.refundStatus == 4 && item.returnType == 0}}">
             <view class='order-item-title'>
               <text>申请售后时间：</text>
-              {{item.shipping_or_refund_time}}
+              {{item.createTime}}
             </view>
             <view class='order-item-title'>
               <text>售后类型：</text>
@@ -120,9 +132,9 @@
             </view>
             <view class='order-item-title'>
               <text>申请原因：</text>
-              {{item.reason}}
+              {{reasone[item.reasonType]}}
             </view>
-            <view wx:if="{{order.goods_type != 4}}" class='order-item-title'>
+            <view wx:if="{{order.goodsType != 4}}" class='order-item-title'>
               <text>退款金额：</text>
               ￥{{item.money}}
             </view>
@@ -133,21 +145,23 @@
               </view>
               <view class='order-item-title'>
                 <text>退款积分：</text>
-                {{item.return_score}}积分
+                {{item.returnScore}}积分
               </view>
             </block>
             <view class='order-item-title'>
               <text>运费金额：</text>
-              ￥{{item.can_return_free}}
+              ￥{{item.shippingFee}}
             </view>
-            <view class='order-item-title return_descs clearfix' wx:if='{{item.return_desc != "" }}'>
+            <view class='order-item-title return_descs clearfix' wx:if='{{item.reasonDesc != "" }}'>
               <text>退款说明：</text>
-              <text class='return_shuom'>{{item.return_desc}}</text>
+              <text class='return_shuom'>{{item.reasonDesc}}</text>
             </view>
-            <view class='order-item-title return_descs clearfix' wx:if='{{item.goods_images != "" && item.goods_images!=null}}'>
-              <text>退款凭证：</text>
+            <view wx:if="{{item.goodsImages && item.goodsImages.length>0}}">
+              <text class="order-item-title">退款凭证：</text>
               <view class='return_shuom' style='float:left'>
-                <image src='{{item_img}}' mode='aspectFit' wx:for='{{item.goods_images}}' wx:key='key' wx:for-item='item_img'></image>
+                <block wx:for='{{item.goodsImages}}' wx:key='index'>
+                  <image src='{{item}}' mode='aspectFit'></image>
+                </block>
               </view>
             </view>
           </block>
@@ -155,24 +169,24 @@
           <block wx:elif='{{item.refundStatus == 4 && (item.returnType == 1 || item.returnType == 4)}}'>
             <view class='order-item-title'>
               <text>提交物流时间：</text>
-              {{item.shipping_or_refund_time}}
+              {{item.createTime}}
             </view>
             <view class='order-item-title'>
               <text>物流公司：</text>
-              {{item.shipping_type}}
+              {{item.shippingType}}
             </view>
             <view class='order-item-title'>
               <text>运单号码：</text>
-              {{item.shipping_no}}
+              {{item.shippingNo}}
             </view>
             <view class='order-item-title'>
               <text>联系电话：</text>
               {{item.phone}}
             </view>
-            <view class='order-item-title return_descs clearfix' wx:if="{{item.refundStatus == 4 && item.returnType == 1&&item.voucher_images!=''&&item.voucher_images!=null}}">
-              <text>物流凭证：</text>
-              <view class='return_shuom' style='float:left'>
-                <image src='{{item_img}}' mode='aspectFit' wx:for='{{item.voucher_images}}' wx:key='key' wx:for-item='item_img'></image>
+            <view class='order-item-title return_descs clearfix' wx:if="{{item.refundStatus == 4 && item.returnType == 1&& item.voucherImages.length > 0}}">
+              <text style="float:left;">物流凭证：</text>
+              <view class='return_shuom' style='float:left' wx:for="{{item.voucherImages}}">
+                <image class="return_shuom-img" src='{{imageUrl + item}}' mode='aspectFit'></image>
               </view>
             </view>
           </block>
@@ -193,7 +207,7 @@
               </view>
               <view class='order-item-title'>
                 <text>运单号码：</text>
-                {{item.exchange.shipping_no}}
+                {{item.exchange.shippingNo}}
               </view>
               <view class='order-item-title'>
                 <text>联系电话：</text>
@@ -210,12 +224,12 @@
           <block wx:elif="{{item.refundStatus == 6}}">
             <view class='order-item-title'>
               <text>拒绝申请时间：</text>
-              {{item.refund_refuse_time}}
+              {{item.finishTime}}
             </view>
-            <block wx:if="{{item.refund_refuse_reason != null}}">
+            <block wx:if="{{item.refundRefuseReason != null}}">
               <view class='order-item-title'>
                 <text>拒绝理由：</text>
-                {{item.refund_refuse_reason}}
+                {{item.refundRefuseReason}}
               </view>
             </block>
             <block wx:else>
@@ -229,7 +243,7 @@
           <block wx:elif="{{item.refundStatus == 7}}">
             <view class='order-item-title' wx:if="{{item.refundStatus == 7}}">
               <text>撤销售后申请时间：</text>
-              {{item.refund_cancel_time}}
+              {{item.finishTime}}
             </view>
             <view class='order-item-title' wx:if="{{item.refundStatus == 7 && item.role != 2}}">
               买家主动撤销售后申请。

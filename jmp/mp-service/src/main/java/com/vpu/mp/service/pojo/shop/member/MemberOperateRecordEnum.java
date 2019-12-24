@@ -9,7 +9,7 @@ package com.vpu.mp.service.pojo.shop.member;
 public enum MemberOperateRecordEnum {
 	DEFAULT_FLAG("default:"),
 	/** 管理员操作 */
-	ADMIN_OPERATION("member.admin.operation"),
+//	ADMIN_OPERATION("member.admin.operation"),
 	/** - 兑换商品数量 */
 	EXCHANGE_GOODS_NUM("member.exchange.goods.num"),
 	/** - 门店服务次数 */
@@ -23,10 +23,6 @@ public enum MemberOperateRecordEnum {
 		this.operationInfo = operationInfo;
 	}
 	
-	public static void main(String... args) {
-		MemberOperateRecordEnum adminOperation = MemberOperateRecordEnum.ADMIN_OPERATION;
-		System.out.println(adminOperation.val());
-	}
 	
 	public String val() {
 		return this.operationInfo;

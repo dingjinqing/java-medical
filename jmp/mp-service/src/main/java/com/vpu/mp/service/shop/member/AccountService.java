@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.tables.RecordAdminAction.RECORD_ADMIN_ACTION;
 import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
 import static com.vpu.mp.service.foundation.data.JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL;
-import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.ADMIN_OPERATION;
 import static com.vpu.mp.service.pojo.shop.member.MemberOperateRecordEnum.DEFAULT_FLAG;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
@@ -130,7 +129,8 @@ public class AccountService extends ShopBaseService {
 		String remark ;
 		if (StringUtils.isBlank(param.getRemark())) {
 			/** -默认管理员操作 国际化*/
-			remark = DEFAULT_FLAG.val()+ADMIN_OPERATION.val();
+			//remark = DEFAULT_FLAG.val()+ADMIN_OPERATION.val();
+			remark = null;
 		}else {
 			remark = param.getRemark();
 		}	
