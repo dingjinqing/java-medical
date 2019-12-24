@@ -103,6 +103,7 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         List<GoodsPrdMpVo> products = goodsDetailMpBo.getProducts();
 
         // 规格会员价和图片路径处理
+        log.debug("小程序-商品详情-规格图片处理");
         products.forEach(prd-> prd.setPrdImg(imageService.getImgFullUrl(prd.getPrdImg())));
         // 商品图片和视频路径地址处理
         List<String> goodsImgs = new ArrayList<>(goodsDetailMpBo.getGoodsImgs().size()+1);
