@@ -95,7 +95,11 @@
         </view>
       </view>
       <view class="order-block-title">
-        <text class="order-header-btn">查看物流</text>
+        <navigator path='pages/result/result?nu={{orderInfo.shippingNo}}&com={{orderInfo.shippingCom}}&querysource=third_xcx' target="miniProgram" app-id='wx6885acbedba59c14' open-type="navigate" version="release" extra-data='' hover-class='none'>
+          <view class="order-header-btn" data-ex_no="{{orderInfo.shippingNo}}" data-order_sn="{{orderSn}}" data-user_id="{{userId}}">
+            查看物流
+          </view>
+        </navigator>
       </view>
     </view>
     <view class="order-info">
