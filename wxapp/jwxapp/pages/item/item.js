@@ -72,6 +72,7 @@ global.wxPage({
             this.getCouponInfo(res.content);
             this.getGoodsDescInfo(res.content);
             this.getComment(res.content)
+            this.getActivity(res.content)
             resolve(res.content);
           }
         }, {
@@ -275,7 +276,7 @@ global.wxPage({
     startTime
   }) {
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
-    let total_micro_second = Math.round((new Date(actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime).getTime() - new Date().getTime()) / 1000)
+    let total_micro_second = Math.round((actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime) / 1000)
     console.log(total_micro_second, actState, activityType)
     this.countdown(total_micro_second, actState, activityType)
   },
