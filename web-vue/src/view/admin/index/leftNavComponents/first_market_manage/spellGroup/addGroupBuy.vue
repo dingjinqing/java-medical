@@ -421,7 +421,7 @@
           <!-- 引入活动分享模块 -->
           <el-form-item
             :label="$t('groupBuy.activitySharing') + '：'"
-            prop="share.shareImg"
+            prop="shareInfo"
           >
             <!-- <actShare :shareConfig="form.share" /> -->
             <div class="shareContent">
@@ -475,11 +475,10 @@
               >
                 <span>分享图：</span>
                 <el-radio
-                  v-model="
-                form.share.shareImgAction"
+                  v-model="form.share.shareImgAction"
                   :label=1
                 >活动商品信息图</el-radio>
-                <div style="margin-left: 65px;">
+                <div style="margin-left: 60px;">
                   <el-radio
                     v-model="form.share.shareImgAction"
                     :label=2
@@ -496,7 +495,7 @@
                   >
                     <div>
                       <img
-                        v-if="form.share.shareImg === ''"
+                        v-if="form.share.shareImg === '' || form.share.shareImg === null"
                         src="http://jmpdevimg.weipubao.cn/image/admin/btn_add.png"
                         alt=""
                       >
@@ -601,10 +600,12 @@ export default {
       }
       callback()
     }
-    var shareImgValid = (rule, value, callback) => {
-      console.log('校验图片')
-      if (value === [] || value.length === 0) {
-        return callback(new Error('请选择活动图片'))
+    var shareInfoValid = (rule, value, callback) => {
+      if (this.form.share.shareAction === 2 && (this.form.share.shareDoc === '' || this.form.share.shareDoc === null)) {
+        return callback(new Error('请选择文案'))
+      }
+      if (this.form.share.shareImgAction === 2 && (this.form.share.shareImg === null || this.form.share.shareImg === '')) {
+        return callback(new Error('请选择图片'))
       }
       callback()
     }
@@ -633,7 +634,8 @@ export default {
           shareImgAction: 1,
           shareImg: ''
         },
-        product: []
+        product: [],
+        shareInfo: ''
       },
       // 校验表单
       fromRules: {
@@ -657,7 +659,7 @@ export default {
           { validator: dateValid, trigger: 'blur' }
         ],
         'share.shareDoc': [{ validator: shareDocValid, trigger: 'blur' }],
-        'share.shareImg': [{ validator: shareImgValid, trigger: 'change' }]
+        shareInfo: [{ required: true, validator: shareInfoValid, trigger: 'blur' }]
       },
       // 选中商品id
       goodsRow: {},
@@ -689,7 +691,8 @@ export default {
       activeIndex: 0,
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
+        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,
+        src3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
       },
       showImageDialog: false
     }
@@ -1087,6 +1090,7 @@ export default {
   text-align: center;
   line-height: 65px;
   margin-left: 60px;
+  border: 1px solid #e4e4e4;
   cursor: pointer;
   box-sizing: border-box;
 }
