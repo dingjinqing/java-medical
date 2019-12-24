@@ -157,7 +157,15 @@ public class ServiceOrderService extends ShopBaseService {
      */
     public PageResult<ServiceOrderListQueryVo> getPageList(ServiceOrderListQueryParam param) {
         SelectWhereStep<? extends Record> select =
-            db().select(SERVICE_ORDER.STORE_ID, SERVICE_ORDER.ORDER_ID, SERVICE_ORDER.ORDER_SN, SERVICE_ORDER.USER_ID, SERVICE_ORDER.SUBSCRIBER, STORE_SERVICE.SERVICE_NAME, SERVICE_ORDER.MOBILE, SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.TECHNICIAN_NAME, STORE_SERVICE.SERVICE_SUBSIST, SERVICE_ORDER.ADD_MESSAGE).
+            db().select(SERVICE_ORDER.STORE_ID
+                , SERVICE_ORDER.ORDER_ID
+                , SERVICE_ORDER.ORDER_SN
+                , SERVICE_ORDER.ORDER_STATUS
+                , SERVICE_ORDER.USER_ID
+                , SERVICE_ORDER.SUBSCRIBER
+                , STORE_SERVICE.SERVICE_NAME
+                , SERVICE_ORDER.MOBILE
+                , SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.TECHNICIAN_NAME, STORE_SERVICE.SERVICE_SUBSIST, SERVICE_ORDER.ADD_MESSAGE).
                 from(SERVICE_ORDER).
                 leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID));
         select = this.buildOptions(select, param);
