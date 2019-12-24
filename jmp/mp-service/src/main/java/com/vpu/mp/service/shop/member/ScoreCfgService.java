@@ -367,7 +367,6 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		String value = Util.toJson(param);
 		logger().info(value);
 		setScoreDocument(value);
-		this.set(SCORE_DOCUMENT, value);
 	}
 
 	/**
