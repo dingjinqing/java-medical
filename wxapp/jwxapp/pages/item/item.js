@@ -58,18 +58,15 @@ global.wxPage({
       activityId,
       activityType
     });
-    this.requestGoodsInfo().then(res => {
-      this.requestPledge(res);
-    });
+    this.requestGoodsInfo()
   },
   // 商品详情请求
-  requestGoodsInfo() {
-    return new Promise((resolve, reject) => {
+  async requestGoodsInfo() {
+    let result = new Promise((resolve, reject) => {
       util.api(
         "/api/wxapp/goods/detail",
         res => {
           if (res.error === 0) {
-            this.getActivity(res.content)
             this.getMediaInfo(res.content);
             this.getGoodsInfo(res.content);
             this.getCouponInfo(res.content);
@@ -87,6 +84,7 @@ global.wxPage({
         }
       );
     });
+    this.requestPledge(await result)
   },
   // 商品详情-自定义内容
   getGoodsDescInfo({
@@ -123,6 +121,7 @@ global.wxPage({
           this.setData({
             pledgeInfo: res.content
           });
+          console.log(this.data.pledgeInfo)
         }
       }, {
         goodsId: goodsId,
@@ -235,7 +234,6 @@ global.wxPage({
     activity
   }) {
     if (!activity) return
-    this.getCountDown(activity)
     this.setData({
       activity,
       'actBarInfo.actName': this.getActName(activity),
@@ -253,6 +251,7 @@ global.wxPage({
         return prdLinePrice
       }))
     })
+    this.getCountDown(activity)
   },
   // 获取actBar活动名称
   getActName({
@@ -286,7 +285,6 @@ global.wxPage({
   },
   // 倒计时
   countdown(total_micro_second, actState, activityType) {
-    this.getActCanBuy(total_micro_second,actState,activityType)
     let clock =
       total_micro_second <= 0 ?
       "已经截至" :
@@ -294,6 +292,7 @@ global.wxPage({
     this.setData({
       'actBarInfo.clock': clock
     });
+    this.getActCanBuy(total_micro_second,actState,activityType)
     if (total_micro_second <= 0) return;
     this.setData({
       actBartime: setTimeout(() => {
