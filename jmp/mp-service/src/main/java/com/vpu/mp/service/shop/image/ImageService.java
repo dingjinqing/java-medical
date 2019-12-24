@@ -386,7 +386,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
      * @return 图片绝对路径
      */
   public String getImgFullUrl(String imgPath){
-      if (imgPath == null) {
+      if (StringUtils.isBlank(imgPath)) {
           return null;
       } else {
           return imageUrl(imgPath);

@@ -9,11 +9,7 @@ import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
@@ -237,7 +233,8 @@ public class ServiceOrderService extends ShopBaseService {
         List<String> imgList = Util.json2Object(vo.getServiceImg(), new TypeReference<List<String>>() {
         }, false);
         imgList.forEach((e) -> e = domainConfig.imageUrl(e));
-        vo.setServiceImg(CollectionUtils.isNotEmpty(imgList) ? imgList.get(INTEGER_ONE) : org.apache.commons.lang3.StringUtils.EMPTY);
+        vo.setServiceImg(CollectionUtils.isNotEmpty(imgList) ? imgList.get(INTEGER_ZERO) : org.apache.commons.lang3.StringUtils.EMPTY);
+//        imgList.stream().findFirst().orElse(org.apache.commons.lang3.StringUtils.EMPTY)
         return vo;
     }
 
@@ -761,7 +758,7 @@ public class ServiceOrderService extends ShopBaseService {
     public ServiceOrderRecord getRecord(String orderSn) {
         return db().selectFrom(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_SN.eq(orderSn)).fetchOne();
     }
-    
+
     /**
      * 还有一小时就开始的预约服务
      * @return
@@ -784,6 +781,6 @@ public class ServiceOrderService extends ShopBaseService {
 		}
 		return into;
     }
-    
+
 
 }
