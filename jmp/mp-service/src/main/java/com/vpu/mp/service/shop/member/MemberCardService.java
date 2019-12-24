@@ -789,8 +789,11 @@ public class MemberCardService extends ShopBaseService {
 				cardBuilder.sendCouponType(param.getCouponType())
 						.sendCouponIds(Util.listToString(param.getCouponIds()));
 			} else if (MCARD_CTP_PACKAGE.equals(param.getCouponType())) {
-				cardBuilder.sendCouponType(param.getCouponType())
-						.sendCouponIds(String.valueOf(param.getCouponPackage()));
+				cardBuilder.sendCouponType(param.getCouponType());
+				if(param.getCouponPackage()!=null) {
+					cardBuilder.sendCouponIds(String.valueOf(param.getCouponPackage()));
+				}
+						
 			}
 		}
 	}
