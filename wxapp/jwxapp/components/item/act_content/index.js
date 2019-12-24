@@ -3,7 +3,12 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    actBarInfo:Object
+    actBarInfo:{
+      type:Object,
+      observer(val){
+        console.log(val)
+      }
+    }
   },
   /**
    * 组件的初始数据
