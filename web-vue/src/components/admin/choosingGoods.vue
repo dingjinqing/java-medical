@@ -33,12 +33,12 @@
                 :filterGoodsInfo="initSortCatParams"
                 treeType="sort"
                 :treeStyle="initPlateformWidth"
-                :selectedId.sync="requestParam.goodsSortId"
+                :selectedId.sync="requestParam.sortId"
               />
             </div>
             <div>商品标签：
               <el-select
-                v-model="requestParam.goodsLabelId"
+                v-model="requestParam.labelId"
                 placeholder="请选择商品标签"
                 size="small"
                 style="width:140px;margin-left:-4px"
@@ -57,12 +57,12 @@
               style="margin-left:30px;"
             >商品价格范围：
               <el-input
-                v-model="requestParam.shopPriceLow"
+                v-model="requestParam.lowShopPrice"
                 placeholder="请输入内容"
                 size="small"
               ></el-input>&nbsp;元至&nbsp;
               <el-input
-                v-model="requestParam.shopPriceHigh"
+                v-model="requestParam.highShopPrice"
                 placeholder="请输入内容"
                 size="small"
               ></el-input>
@@ -87,7 +87,7 @@
             </li>
             <li>商品品牌：
               <el-select
-                v-model="requestParam.goodsBrandId"
+                v-model="requestParam.brandId"
                 placeholder="请选择商品品牌"
                 size="small"
                 style="width:140px"

@@ -103,7 +103,7 @@
       </view>
     </view>
     <view class="order-info">
-      <view class="order-flex">
+      <view class="order-flex" bindtap="toNegotiation">
         <text>协商记录</text>
         <image class="order-icon" src="{{click_look}}" mode="widthFix"></image>
       </view>
