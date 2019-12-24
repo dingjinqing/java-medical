@@ -18,7 +18,6 @@
             <el-tree
               :data="newArr"
               show-checkbox
-              default-expand-all
               empty-text=''
               node-key="catId"
               ref="cardTree"
