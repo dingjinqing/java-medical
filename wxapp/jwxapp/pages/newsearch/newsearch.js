@@ -72,7 +72,7 @@ global.wxPage({
   },
   bindSearchConfirm: function (e) {
     var search_text = e.detail.value;
-    util.jumpLink('/pages1/search/search?search=' + search_text, "redirectTo");
+    util.jumpLink('/pages1/search/search?keyWords=' + search_text, "redirectTo");
   },
   save_zhi: function (e) {
     search_word = e.detail.value;
@@ -97,11 +97,11 @@ global.wxPage({
   bindSearch: function (e) {
     console.log(2);
     console.log(search_word);
-    util.jumpLink('/pages1/search/search?search=' + search_word, "redirectTo")
+    util.jumpLink('/pages1/search/search?keyWords=' + search_word, "redirectTo")
   },
   to_search: function (e) {
     var search_text = e.currentTarget.dataset.value;
-    util.jumpLink('/pages1/search/search?search=' + search_text, "redirectTo")
+    util.jumpLink('/pages1/search/search?keyWords=' + search_text, "redirectTo")
   },
 
   clear_value: function (e) {

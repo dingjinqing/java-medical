@@ -30,9 +30,15 @@ global.wxPage({
     this.setData({
       pageContent: pageContent
     });
+    // 初始化收藏有礼
+    this.renderCollectData()
   },
-  onShow: function () {
-    console.log(this._options)
+  onShow () {
+    console.log(this._options, +'111111111111' + this.data.pageContent)
+  },
+  // 收藏有礼
+  renderCollectData () {
+    console.log(this.data.pageContent)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

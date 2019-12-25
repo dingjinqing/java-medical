@@ -93,15 +93,23 @@ global.wxPage({
   },
   loadFilter(options){
     return new Promise((resolve, reject) => {
-      let target = {}
+      let target = {
+        filterData:{},
+        data:{}
+      }
       Object.keys(options).forEach(item=>{
-        target[item] = options[item]
+        if(Object.keys(this.data.filterData).includes(item)){
+          target['filterData'][item] = JSON.parse(options[item])
+        } else {
+          target['data'][item] = JSON.parse(options[item])
+        }
       })
       this.setData({
         filterData:{
           ...this.data.filterData,
-          ...target
-        }
+          ...target.filterData
+        },
+        ...target.data
       })
       resolve()
     })
