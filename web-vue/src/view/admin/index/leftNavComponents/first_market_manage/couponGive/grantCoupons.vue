@@ -671,8 +671,6 @@ export default {
       this.params.userIdList = this.formatUserIdList(val)
       this.memberNum = val.length // 把选中的数组长度赋值给已选会员数
       // 当添加会员后 发送获取人数接口
-      debugger
-      console.log(this.params)
       this.fetchUserList(this.params)
     },
     formatUserIdList (userIdList) {
