@@ -34,7 +34,7 @@ public class MiniShop_471752 extends SchemaImpl {
     /**
      * The table <code>mini_shop_4748160.b2c_pay_award_prize</code>.
      */
-    public final PayAwardPrize PAY_AWARD_PRIZE = com.vpu.mp.db.shop.tables.PayAwardPrize.PAY_AWARD_PRIZE;
+    public final PayAwardPrize PAY_AWARD_PRIZE = PayAwardPrize.PAY_AWARD_PRIZE;
 
     /**
      * The reference instance of <code>mini_shop_471752</code>

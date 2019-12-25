@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayAwardPrizeRecord extends UpdatableRecordImpl<PayAwardPrizeRecord> implements Record13<Integer, Integer, Byte, String, Integer, BigDecimal, Integer, Integer, Integer, String, String, Integer, Integer> {
 
-    private static final long serialVersionUID = -1611447775;
+    private static final long serialVersionUID = -450977921;
 
     /**
      * Setter for <code>mini_shop_4748160.b2c_pay_award_prize.id</code>.
@@ -199,14 +199,14 @@ public class PayAwardPrizeRecord extends UpdatableRecordImpl<PayAwardPrizeRecord
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award_prize.send_num</code>.
+     * Setter for <code>mini_shop_4748160.b2c_pay_award_prize.send_num</code>. 已经发送数量
      */
     public void setSendNum(Integer value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award_prize.send_num</code>.
+     * Getter for <code>mini_shop_4748160.b2c_pay_award_prize.send_num</code>. 已经发送数量
      */
     public Integer getSendNum() {
         return (Integer) get(12);
