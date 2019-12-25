@@ -207,7 +207,7 @@ public class WechatTaskService extends ShopBaseService {
             record.setType(type);
             String refDate = info.getRefDate();
             String date = refDate.substring(0,8);
-            Timestamp startTime = DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_BEGIN, date);
+    		Timestamp startTime = extracted(date);
             record.setStartTime(startTime);
             int execute = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).execute();
             if(execute>0) {
@@ -218,6 +218,15 @@ public class WechatTaskService extends ShopBaseService {
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
         }
+	}
+
+	private Timestamp extracted(String date) {
+		LocalDate ld=LocalDate.now();
+		DateTimeFormatter  dtf2=DateTimeFormatter.ofPattern("yyyyMMdd");
+		LocalDate date2=ld.parse(date,dtf2);
+		LocalDateTime localDateTime=LocalDateTime.of(date2, java.time.LocalTime.MIN);
+		Timestamp startTime = Timestamp.valueOf(localDateTime);
+		return startTime;
 	}
 
     /**

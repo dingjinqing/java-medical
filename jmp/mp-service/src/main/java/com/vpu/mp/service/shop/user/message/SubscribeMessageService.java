@@ -5,8 +5,10 @@ import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -489,7 +491,7 @@ public class SubscribeMessageService extends ShopBaseService {
             record.setType(type);
             String refDate = info.getRefDate();
             String date = refDate.substring(0,8);
-            Timestamp startTime = DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL_BEGIN, date);
+            Timestamp startTime = extracted(date);
             record.setStartTime(startTime);
             int execute = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).execute();
             if(execute>0) {
@@ -502,6 +504,15 @@ public class SubscribeMessageService extends ShopBaseService {
         } catch (WxErrorException e) {
             
         }
+	}
+	
+	private Timestamp extracted(String date) {
+		LocalDate ld=LocalDate.now();
+		DateTimeFormatter  dtf2=DateTimeFormatter.ofPattern("yyyyMMdd");
+		LocalDate date2=ld.parse(date,dtf2);
+		LocalDateTime localDateTime=LocalDateTime.of(date2, java.time.LocalTime.MIN);
+		Timestamp startTime = Timestamp.valueOf(localDateTime);
+		return startTime;
 	}
 	private Date extractedDate(Integer num) {
 		LocalDateTime localDateTime =LocalDateTime.now().plus(num,ChronoUnit.DAYS);
