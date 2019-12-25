@@ -12,6 +12,8 @@ public class EsGoodsConstant {
     public static final String LABEL_INDEX_NAME = "es_goods_label";
 
 
+    /**通用页*/
+    public static final Byte GENERAL_PAGE = 0;
     /**小程序-商品详情页*/
     public static final Byte GOODS_DETAIL_PAGE = 1;
     /**小程序-商品列表页*/

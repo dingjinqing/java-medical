@@ -46,7 +46,7 @@ public class ScheduleTask {
 	/**
 	 * 每天获取微信数据（每天6-12点每半个小时执行一次）
 	 */
-	@Scheduled(cron = "0 0/30 6,7,8,9,10,11,12 * * ?")
+    @Scheduled(cron = "0 0/30 6,7,8,9,10,11,12 * * ?")
 	public void taskDailyWechat(){
 		Result<ShopRecord> result = saas.shop.getAll();
 		result.forEach((r)->{saas.getShopApp(r.getShopId()).

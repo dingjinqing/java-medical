@@ -544,7 +544,7 @@ public class PayAwardService extends ShopBaseService {
             case GIVE_TYPE_SPLIT_COUPON:
                 logger().info("分裂优惠卷");
                 List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringToList(payAwardPrize.getCouponIds()));
-                prizeName = couponViews.stream().map(CouponView::getActName).collect(Collectors.joining(","));
+                prizeName = couponViews.stream().map(CouponView::getActName).collect(Collectors.joining(";"));
                 break;
             case GIVE_TYPE_LOTTERY:
                 logger().info("幸运大抽奖");

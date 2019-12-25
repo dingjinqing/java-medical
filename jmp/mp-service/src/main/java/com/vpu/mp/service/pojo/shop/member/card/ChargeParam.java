@@ -26,4 +26,6 @@ public class ChargeParam {
 	// 余额变动时间
 	private Timestamp startTime;
 	private Timestamp endTime;
+	
+	private String cardNo;
 }

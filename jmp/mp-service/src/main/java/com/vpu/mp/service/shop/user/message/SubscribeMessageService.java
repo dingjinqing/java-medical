@@ -1,8 +1,14 @@
 package com.vpu.mp.service.shop.user.message;
 
+import static com.vpu.mp.db.shop.tables.MpUserPortrait.MP_USER_PORTRAIT;
 import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,10 +18,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.shop.tables.records.MpUserPortraitRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.RegexUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.summary.portrait.MaPortraitResult;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
@@ -23,6 +33,7 @@ import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessage;
 import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessageData;
 import com.vpu.mp.service.shop.user.user.UserService;
 import com.vpu.mp.service.wechat.OpenPlatform;
+import com.vpu.mp.service.wechat.api.WxGetWeAnalysService;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.WxOpenSubscribeCategory;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
@@ -443,5 +454,56 @@ public class SubscribeMessageService extends ShopBaseService {
 			return false;
 		}
 		return true;
+	}
+	
+	
+	/**
+	 * 测试，一会删
+	 */
+	public void getUserPortrait() {
+		WxGetWeAnalysService service = open().getMaExtService();
+    	//昨天日期
+    	Date endDate = extractedDate(-1);
+    	//昨天
+    	logger().info("昨天");
+    	Date beginDate = extractedDate(-1);
+    	recordManage(service, beginDate, endDate,(byte)0);
+    	//7天前
+    	logger().info("7天");
+    	beginDate = extractedDate(-7);
+    	recordManage(service, beginDate, endDate,(byte)1);
+    	//30天前
+    	logger().info("30天");
+    	beginDate = extractedDate(-30);
+    	recordManage(service, beginDate, endDate,(byte)2);
+	}
+	private void recordManage(WxGetWeAnalysService service, Date beginDate, Date endDate,Byte type) {
+		MaPortraitResult info=null;
+		try {
+			String appId = saas().shop.mp.getAppIdByShopId(getShopId());
+            info = service.getUserPortrait(appId,beginDate,endDate);
+            MpUserPortraitRecord record = db().newRecord(MP_USER_PORTRAIT);
+            record.setRefDate(info.getRefDate());
+            record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
+            record.setVisitUv(Util.toJson(info.getVisitUv()));
+            record.setType(type);
+            int execute = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).execute();
+            if(execute>0) {
+            	logger().info("更新");
+            	record.update();
+            }else {
+            	logger().info("插入");
+            	record.insert();            	
+            }
+        } catch (WxErrorException e) {
+            
+        }
+	}
+	private Date extractedDate(Integer num) {
+		LocalDateTime localDateTime =LocalDateTime.now().plus(num,ChronoUnit.DAYS);
+		ZoneId zone = ZoneId.systemDefault();
+		Instant instant = localDateTime.atZone(zone).toInstant();
+		Date from = Date.from(instant);
+		return from;
 	}
 }

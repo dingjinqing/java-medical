@@ -99,17 +99,29 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor,Good
 
         int goodsNum = 0;
         for (int i = 0; i < groupBuyPrdInfos.size(); i++) {
+            // 商品拼团规格
             GroupBuyPrdMpVo vo = groupBuyPrdInfos.get(i);
-
+            //商品原规格
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(vo.getProductId());
+
             // 避免admin拼团存在逻辑bug而导致此处产生空指针
             if (goodsPrdMpVo != null) {
+                // 设置拼团规格对应的原价，便于前端使用
                 vo.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
+                // 处理商品数量不足情况
+                if (goodsPrdMpVo.getPrdNumber() < vo.getStock()) {
+                    vo.setStock(goodsPrdMpVo.getPrdNumber());
+                }
             }
 
             goodsNum+=vo.getStock();
         }
         capsule.setGoodsNumber(goodsNum);
+        if (goodsNum == 0) {
+            log.debug("小程序-商品详情-拼团商品数量已用完");
+            groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
+        }
+
         capsule.setActivity(groupBuyInfo);
     }
 
