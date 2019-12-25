@@ -168,7 +168,7 @@
       <view class="order-block-title">订单信息</view>
       <view class="order-block-content">
         <view class="order-block-detail-item">
-          <text class="activity-type-mark fl">拼团</text>
+          <text class="activity-type-mark fl" wx:if="{{activityName}}">{{activityName}}</text>
           <text class="details-item-title">订单编号：</text>
           <text>{{orderInfo.orderSn}}</text>
         </view>

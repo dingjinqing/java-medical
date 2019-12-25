@@ -1409,8 +1409,20 @@ ALTER TABLE `b2c_pay_award_record`
 ADD COLUMN `award_prize_id` int(9) NULL COMMENT '支付有礼的奖品Id' AFTER `award_id`;
 
 -- 黄壮壮 添加字段
-ALTER TABLE `b2c_user_score` 
+ALTER TABLE `b2c_user_score`
 ADD COLUMN `remark_id` varchar(100) NOT NULL COMMENT '备注模板id' AFTER `desc`;
 
-ALTER TABLE `b2c_user_score` 
+ALTER TABLE `b2c_user_score`
 ADD COLUMN `remark_data` varchar(200) DEFAULT '' COMMENT '备注模板数据' AFTER `remark_id`;
+
+
+ALTER TABLE `b2c_mp_user_portrait`
+ADD COLUMN `start_time` TIMESTAMP NOT NULL COMMENT '开始时间，ref_date前8个字符' ;
+-- 修改字段
+ALTER TABLE `b2c_coopen_activity`
+DROP COLUMN  `bg_action`,
+ADD COLUMN `bg_imgs` VARCHAR (255)   NOT NULL DEFAULT '[]' COMMENT '背景图' AFTER `is_forever`;
+
+-- 修改字段
+ALTER TABLE `b2c_coopen_activity_records`
+MODIFY COLUMN `lottery_id` int(11)  DEFAULT NULL COMMENT '抽奖id';

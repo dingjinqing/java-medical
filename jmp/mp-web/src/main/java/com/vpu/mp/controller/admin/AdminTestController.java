@@ -158,10 +158,4 @@ public class AdminTestController extends AdminBaseController {
 		return success();
 		
 	}
-	
-	@RequestMapping(value = "/api/admin/test/getUserPortrait")
-	public JsonResult getUserPortrait(){
-		subservice.getUserPortrait();
-		return success();
-	}
 }

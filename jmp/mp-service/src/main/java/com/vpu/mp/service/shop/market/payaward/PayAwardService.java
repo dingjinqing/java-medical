@@ -105,11 +105,7 @@ public class PayAwardService extends ShopBaseService {
         List<Integer> list = new ArrayList<>();
         for (PayAwardPrizeParam awardBo : param.getAwardList()) {
             PayAwardPrizeRecord payAwardPrizeRecord = db().newRecord(PAY_AWARD_PRIZE);
-            if (addFlag) {
-                payAwardPrizeRecord.setId(null);
-            } else {
-                payAwardPrizeRecord.setId(awardBo.getId());
-            }
+            awardBo.setSendNum(null);
             payAwardPrizeRecord.setPayAwardId(payAward.getId());
             if (Objects.nonNull(awardBo.getCouponIds())) {
                 payAwardPrizeRecord.setCouponIds(Util.listToString(awardBo.getCouponIds()));
@@ -141,7 +137,13 @@ public class PayAwardService extends ShopBaseService {
             if (awardBo.getAwardNumber() != null) {
                 payAwardPrizeRecord.setAwardNumber(Optional.ofNullable(awardBo.getAwardNumber()).orElse(0));
             }
-            payAwardPrizeRecord.insert();
+            if (addFlag) {
+                payAwardPrizeRecord.setId(null);
+                payAwardPrizeRecord.insert();
+            } else {
+                payAwardPrizeRecord.setId(awardBo.getId());
+                payAwardPrizeRecord.update();
+            }
             list.add(payAwardPrizeRecord.getId());
         }
         return list;
@@ -180,6 +182,7 @@ public class PayAwardService extends ShopBaseService {
         if (param.getId() != null) {
             PayAwardRecord payAward = db().newRecord(PAY_AWARD, param);
             List<Integer> payAwardPrizeIds = savePayAwardPrize(param, payAward, false);
+            payAward.setAwardList(null);
             payAward.update();
             db().delete(PAY_AWARD_PRIZE).where(PAY_AWARD_PRIZE.ID.notIn(payAwardPrizeIds)).and(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAward.getId()));
             return true;
