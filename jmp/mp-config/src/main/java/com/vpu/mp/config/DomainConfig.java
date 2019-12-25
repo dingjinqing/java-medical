@@ -85,4 +85,12 @@ public class DomainConfig {
 		}
 		return relativePath;
 	}
+	
+	/**
+	 * 获取图片域名
+	 * @return
+	 */
+	public String getImageHost() {
+		return getImageDomain();
+	}
 }
