@@ -14,9 +14,9 @@ global.wxPage({
     click_look: imageUrl + 'image/wxapp/click_look.png',
     add_img: imageUrl + '/image/wxapp/return_img_icom.png',
     dele_service: imageUrl + '/image/admin/dele_service.png',
-    orderInfo: {
-      activityType: 1
-    },
+    orderInfo: {},
+    activityName: '',
+    goodsType: '',
     returnType: 0, // 选择的操作:1退款退货、0仅退款、4换货
     orderSn: '', // 订单号
     orderId: '', // 订单id
@@ -85,10 +85,35 @@ global.wxPage({
             item.goodsImg = 'image/wxapp/no_order.png'
           }
         })
+        // 商品活动
+        let activityName = '', goodsType = '';
+        if (orderInfo.orderInfo && orderInfo.orderInfo.goodsType) {
+          let goodsTypes = orderInfo.orderInfo.goodsType.split(',')
+          for (let i = 0; i < goodsTypes.length; i++) {
+            let type = goodsTypes[i]
+            goodsType = type
+            switch (type) {
+              case 1:
+                activityName = '拼团'
+                break
+              case 3:
+                activityName = '砍价'
+                break
+              case 5:
+                activityName = '秒杀'
+                break
+              default:
+                activityName = ''
+                break
+            }
+          }
+        }
         that.setData({
           returnTypes: supportTypes,
           orderInfo: orderInfo,
-          goodsInfo: goodsInfo ? goodsInfo : []
+          goodsInfo: goodsInfo ? goodsInfo : [],
+          activityName: activityName,
+          goodsType: goodsType
         })
       }
     }, {

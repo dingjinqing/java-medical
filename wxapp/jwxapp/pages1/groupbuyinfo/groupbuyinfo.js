@@ -43,7 +43,7 @@ global.wxPage({
     let groupId = options.group_id
     let pinGroupId = options.pin_group_id
     this.setData({
-      groupId: groupId,
+      groupId: Number(groupId),
       pinGroupId: pinGroupId
     })
     // 判断用户是否登录
@@ -104,7 +104,7 @@ global.wxPage({
         });
         return;
       }
-    }, { groupId: 4 })
+    }, { groupId: this.data.groupId })
   },
 
   // 判断是否登录

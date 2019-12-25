@@ -17,6 +17,8 @@ global.wxPage({
     returnSn: '',
     orderInfo: {},
     can_shipping_fee: 0,
+    activityName: '',
+    goodsType: '' // 活动类型
   },
 
   /**
@@ -65,8 +67,33 @@ global.wxPage({
     util.api('/api/wxapp/order/refund/info', function (res) {
       if (res.error === 0) {
         orderInfo = res.content
+        // 商品活动
+        let activityName = '', goodsType = '';
+        if (orderInfo.orderInfo && orderInfo.orderInfo.goodsType) {
+          let goodsTypes = orderInfo.orderInfo.goodsType.split(',')
+          for (let i = 0; i < goodsTypes.length; i++) {
+            let type = goodsTypes[i]
+            goodsType = type
+            switch (type) {
+              case 1:
+                activityName = '拼团'
+                break
+              case 3:
+                activityName = '砍价'
+                break
+              case 5:
+                activityName = '秒杀'
+                break
+              default:
+                activityName = ''
+                break
+            }
+          }
+        }
         that.setData({
-          orderInfo: orderInfo
+          orderInfo: orderInfo,
+          activityName: activityName,
+          goodsType: goodsType
         })
       }
     }, { returnOrderSn: this.data.returnSn })
