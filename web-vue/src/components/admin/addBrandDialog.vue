@@ -290,7 +290,9 @@ export default {
       if (val.length) {
         val.forEach((itemA, index) => {
           this.tableData.forEach((itemB, index) => {
-            if (itemA.id === itemB.id) { itemB.ischeck = true }
+            if (itemA.id === itemB.id) {
+              itemB.ischeck = true
+            }
           })
         })
       } else {
