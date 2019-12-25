@@ -1707,18 +1707,21 @@ create table `b2c_user_summary_trend`
     key `ref_type` (`ref_date`, `type`) using btree
 );
 
-#drop table if exists `b2c_mp_user_portrait`;
-create table `b2c_mp_user_portrait`
-(
-    `shop_id`      int(11)    null     default '0' comment '店铺ID',
-    `ref_date`     char(30)   not null comment '时间： 如： "20180313"',
-    `visit_uv_new` longtext comment '新用户',
-    `visit_uv`     longtext comment '活跃用户',
-    `type`         tinyint(4) not null default '0' comment '0:昨天，1：最近7天，2:30天',
-    `add_time`     timestamp  not null default CURRENT_TIMESTAMP comment '添加时间',
-    key `type` (`type`) using btree,
-    key `ref_date` (`ref_date`) using btree
+-- drop table if exists `b2c_mp_user_portrait`;
+CREATE TABLE `b2c_mp_user_portrait` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ref_date` char(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '时间： 如： "20180313"',
+  `visit_uv_new` longtext COLLATE utf8mb4_unicode_ci COMMENT '新用户',
+  `visit_uv` longtext COLLATE utf8mb4_unicode_ci COMMENT '活跃用户',
+  `type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0:昨天，1：最近7天，2:30天',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开始时间，ref_date前8个字符',
+  PRIMARY KEY (`id`),
+  KEY `type` (`type`) USING BTREE,
+  KEY `ref_date` (`ref_date`) USING BTREE
 );
+
 
 #日志管理表
 #drop table if exists `b2c_log_manage`;

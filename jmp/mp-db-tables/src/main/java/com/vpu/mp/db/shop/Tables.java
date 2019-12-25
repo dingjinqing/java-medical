@@ -24,7 +24,7 @@ public class Tables {
     /**
      * The table <code>mini_shop_4748160.b2c_pay_award_prize</code>.
      */
-    public static final PayAwardPrize PAY_AWARD_PRIZE = com.vpu.mp.db.shop.tables.PayAwardPrize.PAY_AWARD_PRIZE;
+    public static final PayAwardPrize PAY_AWARD_PRIZE = PayAwardPrize.PAY_AWARD_PRIZE;
 
     /**
      * The table <code>mini_shop_4748160.b2c_cart</code>.

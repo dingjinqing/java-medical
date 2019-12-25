@@ -199,7 +199,7 @@
 
             <!-- 支付奖励 -->
             <el-form-item
-              :label="$t('payReward.payAward')"
+              :label="$t('payReward.payAward')+'：'"
               required
             >
               <el-radio-group
@@ -224,13 +224,15 @@
             </el-form-item>
 
             <!-- 普通优惠券 -->
+            <!-- prop="awardList[index].ordinaryCoupon" -->
             <el-form-item
               v-if="item.giftType===1"
               :label="$t('payReward.ordinaryCoupon')+'：'"
-              prop="awardList[index].ordinaryCoupon"
-              :rules="{
-                required: true
-              }"
+              prop="ordinaryCouponCheck"
+              :rules="[
+                { required: true, message: '请选择普通优惠券', trigger: 'blur'},
+                { validator: (rule, value, callback) => {validateOrdinaryCoupon(rule, value, callback, awardList[index].ordinaryCoupon)}, trigger:['blur']}
+              ]"
             >
               <div class="middleContainer">
                 <div
@@ -292,7 +294,7 @@
             <!-- 分裂优惠券 -->
             <el-form-item
               v-if="params.awardList[index].giftType === 2 "
-              :label="$t('payReward.splitCoupon')"
+              :label="$t('payReward.splitCoupon')+ '：'"
               prop="awardList[index].splitCoupon"
               :rules="{
                 required: true, message:'请选择分裂优惠券'
@@ -370,7 +372,7 @@
             <!-- 幸运大抽奖 -->
             <el-form-item
               v-if="item.giftType === 3"
-              label="幸运大抽奖："
+              :label="$t('payReward.luckyDraw')+'：'"
               class="luckyDraw"
               prop="awardList[index].lotteryId"
               :rules="{
@@ -396,7 +398,7 @@
             <!-- 余额 -->
             <el-form-item
               v-if="params.awardList[index].giftType === 4"
-              label="余额："
+              :label="$t('payReward.leftMoney')+'：'"
               prop='awardList[index].accountNumber'
               :rules="[{
                   required: true, message: '请选择余额', trigger: 'blur'
@@ -412,7 +414,7 @@
 
             <el-form-item
               v-if="item.giftType === 5"
-              :label="$t('payReward.award')"
+              :label="$t('payReward.award')+ '：'"
               required
             >
               <div
@@ -471,7 +473,7 @@
 
             <el-form-item
               v-if="item.giftType === 5"
-              label="赠品有效期："
+              :label="$t('payReward.giftValidity')+'：'"
               prop="awardList[idnex].keepDays"
               :rules="{
                 required: true, message:'请输入赠品有效期', trigger: 'blur'
@@ -490,7 +492,7 @@
 
             <el-form-item
               v-if="item.giftType === 6"
-              :label="$t('payReward.integral')"
+              :label="$t('payReward.integral')+'：'"
               prop="awardList[index].scoreNumber"
               :rules="{
                 required: true, message: '请输入积分', trigger: 'blur'
@@ -522,14 +524,13 @@
                     fit="contain"
                     style=" width:100%; height: 100%;"
                   ></el-image>
-                  <!-- <span class="logo_span">重新选择</span> -->
                 </div>
                 <div style="margin-top:10px">{{$t('payReward.imgSize')}}</div>
               </div>
             </el-form-item>
             <el-form-item
               v-if="item.giftType === 7"
-              :label="$t('payReward.settingLink')"
+              :label="$t('payReward.settingLink')+'：'"
               prop="awardList[index].customLink"
               :rules="{
                 required: true, message: '请选择链接', trigger: 'blur'
@@ -548,11 +549,11 @@
 
             <el-form-item
               v-if="item.giftType !== 0"
-              :label="$t('payReward.giftNumber')"
-              prop="awardList[index].awardNumber"
-              :rules="{
-                required: true, message: '请输入奖品份数', trigger:'blur'
-              }"
+              :label="$t('payReward.giftNumber')+'：'"
+              :prop="`awardList[${index}].awardNumber`"
+              :rules="[
+                { required: true, validator: (rule, value, callback)=>{validateGiftNmuber(rule, value, callback, params.awardList[index].awardNumber)}, trigger: ['blur', 'change']}
+              ]"
             >
               <div>
                 <el-input
@@ -560,7 +561,7 @@
                   size="small"
                   style="width:100px"
                 ></el-input>
-                <span>{{$t('payReward.giftTips1')}}</span>
+                <span>已发{{params.awardList[index].sendNum}}份</span>
                 <span>{{$t('payReward.giftTips2')}}</span>
                 <div class="tips">{{$t('payReward.giftTips3')}}</div>
               </div>
@@ -670,7 +671,7 @@ export default {
   },
   data () {
     var validateSiForever = (rule, value, callback) => {
-      if (value === 1 && (!this.params.startTime || !this.params.endTime)) {
+      if (this.params.timeType === 0 && (this.params.startTime === '' || this.params.endTime === '')) {
         return callback(new Error('请选择活动生效时间'))
       }
       callback()
@@ -688,14 +689,31 @@ export default {
     var validateGoodsAreaType = (rule, value, callback) => {
       console.log(value)
       // var re = /^(0|\+?[1-9][0-9]*)$/
-      if (value === 1 && this.params.goodsAreaType === null) {
-        callback(new Error('请输入支付条件'))
-      } else if (value === 2 && this.params.goodsAreaType === null) {
+      if (this.params.goodsAreaType === 2 && (this.noneBlockDiscArr[0].num.length === 0 || this.noneBlockDiscArr[1].num.length === 0 || this.noneBlockDiscArr[2].num.length === 0)) {
         callback(new Error('请选择参加活动的商品'))
+      } else if (this.params.minPayMoney === '') {
+        callback(new Error('请输入支付条件'))
       } else {
         callback()
       }
     }
+    var limitTimesValidator = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('请输入参与限制'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写0或者正整数'))
+      } else {
+        callback()
+      }
+    }
+    // var ordinaryCouponValidator = (rule, value, callback) => {
+    //   if (this.params.awardList[this.currentModelIndex].ordinaryCoupon.length === 0) {
+    //     callback(new Error('请选择普通优惠券'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       emptySelect: [],
       shopAndPlatformBackDataArr: null,
@@ -769,10 +787,11 @@ export default {
       },
       rules: {
         activityNames: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
-        timeType: [{ required: true, validator: validateSiForever }],
+        timeType: [{ required: true, validator: validateSiForever, trigger: 'blur' }],
         actFirst: { required: true, validator: validatelevel, trigger: 'blur' },
         goodsAreaType: { required: true, validator: validateGoodsAreaType, trigger: 'change' },
-        limitTimes: { required: true, message: '请输入参与限制', trigger: 'blur' }
+        limitTimes: { required: true, validator: limitTimesValidator, trigger: 'blur' }
+        // ordinaryCouponCheck: { required: true, validator: ordinaryCouponValidator, trigger: 'blur' }
         // lotteryId: { required: true, message: '请选择幸运大抽奖活动', triggger: 'blur' }
         // 'item.giftType': { required: true }
         // 'awardList[0].scoreNumber': { required: true }
@@ -811,7 +830,9 @@ export default {
         'shopCategoryIds': this.shopCategoryIds,
         'platformCategoryIds': this.platformCategoryIds,
         'couponIds': [],
-        'couponList': []
+        'couponList': [],
+        'sendNum': '',
+        'id': ''
       }
       if (this.params.awardList.length < 5) {
         this.params.awardList.push(obj)
@@ -1055,6 +1076,10 @@ export default {
             this.params.awardList[index].customImage = awad.customImage
             this.params.awardList[index].customLink = awad.customLink
             this.params.awardList[index].lotteryId = awad.lotteryId
+            this.params.awardList[index].sendNum = awad.sendNum
+            this.params.awardList[index].id = awad.id
+            console.log(this.params.awardList[index].id, 'data--')
+            console.log(awad.sendNum)
 
             // this.params.awardList[index] = awad
 
@@ -1170,6 +1195,21 @@ export default {
           this.$message.warning('更新失败')
         }
       }).catch(err => console.log(err))
+    },
+
+    validateGiftNmuber (rule, value, callback, awardNumber) {
+      console.log(value, 'value data--')
+      console.log(rule, 'rule')
+      console.log(callback, 'callback')
+      console.log(awardNumber, 'awardNumber')
+      var reNum = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('请输入奖品份数'))
+      } else if (reNum.test(value)) {
+        callback(new Error('请填写0或者正整数'))
+      } else {
+        callback()
+      }
     }
 
   }
