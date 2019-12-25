@@ -58,6 +58,7 @@ var activity_goods = {
      */
     navigateToItem (goods_id) {
       util.api("/api/wxapp/goods/detail", function (data) {
+        console.log(data, goods_id)
         if (data.error === 0) {
           util.jumpLink('/pages/item/item?goodsId=' + goods_id)
         } else {
@@ -97,6 +98,7 @@ var activity_goods = {
     },
     bindToSecKill: function (e) {
       var d = this.eventData(e);
+      console.log(d)
       if ((d.act_del_flag == 0 && d.time_state == 1 && d.act_status == 1) && d.is_on_sale == 0 || d.is_delete == 1) {
         if (d.is_on_sale == 0 || d.goods_number <= 0) {
           util.showModal('提示', '商品已下架');
@@ -118,7 +120,8 @@ var activity_goods = {
           this.navigateToItem(d.goods_id);
         }
       } else {
-        util.jumpLink("/pages/seckillitem/seckillitem?sk_id=" + d.sk_id)
+        console.log(d.sk_id)
+        util.jumpLink(`/pages/item/item?activityId=${d.sk_id}&activityType=5&goodsId=${d.goods_id}`)
       }
     },
     bindTopre: function (e) {

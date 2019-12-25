@@ -11,6 +11,7 @@ import static com.vpu.mp.db.shop.tables.MpVisitPage.MP_VISIT_PAGE;
 import static com.vpu.mp.db.shop.tables.MpWeeklyRetain.MP_WEEKLY_RETAIN;
 import static com.vpu.mp.db.shop.tables.MpWeeklyVisit.MP_WEEKLY_VISIT;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -199,20 +200,53 @@ public class WechatTaskService extends ShopBaseService {
 	private void recordManage(WxGetWeAnalysService service, Date beginDate, Date endDate,Byte type) {
 		try {
             MaPortraitResult info = service.getUserPortrait(getAppId(getShopId()),beginDate,endDate);
-            MpUserPortraitRecord record = db().newRecord(MP_USER_PORTRAIT);
-            record.setRefDate(info.getRefDate());
-            record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
-            record.setVisitUv(Util.toJson(info.getVisitUv()));
-            record.setType(type);
-            int execute = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).execute();
-            if(execute>0) {
+            MpUserPortraitRecord record = db().selectFrom(MP_USER_PORTRAIT).where(MP_USER_PORTRAIT.REF_DATE.eq(info.getRefDate())).fetchAny();
+            
+            if(record!=null) {
+            	logger().info("更新");
+            	record=assignment(type, info, record);
             	record.update();
             }else {
+            	logger().info("插入");
+            	record = db().newRecord(MP_USER_PORTRAIT);
+            	record = assignment(type, info, record);
             	record.insert();            	
             }
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
         }
+	}
+	/**
+	 * 赋值
+	 * @param type
+	 * @param info
+	 * @param record
+	 * @return
+	 */
+	private MpUserPortraitRecord assignment(Byte type, MaPortraitResult info, MpUserPortraitRecord record) {
+		record.setRefDate(info.getRefDate());
+		record.setVisitUvNew(Util.toJson(info.getVisitUvNew()));
+		record.setVisitUv(Util.toJson(info.getVisitUv()));
+		record.setType(type);
+		String refDate = info.getRefDate();
+		String date = refDate.substring(0,8);
+		Timestamp startTime = extracted(date);
+		record.setStartTime(startTime);
+		return  record;
+	}
+	
+	/**
+	 * startTime日期处理
+	 * @param date
+	 * @return
+	 */
+	private Timestamp extracted(String date) {
+		LocalDate ld=LocalDate.now();
+		DateTimeFormatter  dtf2=DateTimeFormatter.ofPattern("yyyyMMdd");
+		LocalDate date2=ld.parse(date,dtf2);
+		LocalDateTime localDateTime=LocalDateTime.of(date2, java.time.LocalTime.MIN);
+		Timestamp startTime = Timestamp.valueOf(localDateTime);
+		return startTime;
 	}
 
     /**

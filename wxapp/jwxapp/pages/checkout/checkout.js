@@ -48,14 +48,16 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = [];
-    let { goodsList } = options
+    let { goodsList,activityType,activityId} = options
     JSON.parse(goodsList).forEach(item => {
       let { goodsId, prdRealPrice: goodsPrice, goodsNum: goodsNumber, prdId: productId,isCart = 0 } = item
       goods.push({ goodsId, goodsPrice, goodsNumber, productId, isCart })
     })
     this.setData({
       'params.goods': goods,
-      'params.isCart': goods[0].isCart //购物车来源|商品详情
+      'params.isCart': goods[0].isCart, //购物车来源|商品详情
+      'params.activityType':activityType,
+      'params.activityId':activityId
     })
     this.requestOrder()
   },
@@ -328,7 +330,7 @@ global.wxPage({
   },
   // 提交订单
   confirmOrder(){
-    let { orderGoods: goods, orderAmount, paymentList } = this.data.orderInfo || {}
+    let { orderGoods: goods, orderAmount, paymentList,activityType,activityId } = this.data.orderInfo || {}
     let { useBalance: balance, useCardBalance:cardBalance, useScore: scoreDiscount} = this.data.usePayInfo
     let addressId = this.data.orderInfo.address && this.data.orderInfo.address.addressId || null
     let couponSn = this.data.orderInfo.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn || null
@@ -351,7 +353,9 @@ global.wxPage({
       deliverType: this.data.params.deliverType,
       orderPayWay:this.data.choosePayTypeIndex,
       couponSn,
-      memberCardNo
+      memberCardNo,
+      activityType,
+      activityId
     }
     util.api('/api/wxapp/order/submit',res=>{
       if(res.error === 0){

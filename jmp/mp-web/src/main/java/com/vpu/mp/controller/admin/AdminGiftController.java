@@ -1,11 +1,14 @@
 package com.vpu.mp.controller.admin;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
@@ -19,6 +22,7 @@ import com.vpu.mp.service.pojo.shop.market.gift.LevelParam;
  *
  * @author 郑保乐
  */
+@Validated
 @RestController
 @RequestMapping("/api/admin/market/gift")
 public class AdminGiftController extends AdminBaseController {
@@ -123,5 +127,24 @@ public class AdminGiftController extends AdminBaseController {
     @PostMapping("/product/{giftId}/{productId}")
     public JsonResult getProductDetail(@PathVariable Integer giftId, @PathVariable Integer productId) {
         return success(shop().gift.getProductDetail(giftId, productId));
+    }
+
+    /**
+     * 赠品叠加
+     * 当买家满足多个活动的赠品条件时:1只赠送其中优先级最高的活动赠品;0赠送满足赠品条件的所有赠品
+     */
+    @PostMapping("/cfg/get")
+    public JsonResult getCfg( ) {
+        return success(shop().config.giftConfigService.getCfg());
+    }
+
+    /**
+     * 赠品叠加
+     * 当买家满足多个活动的赠品条件时:1只赠送其中优先级最高的活动赠品;2赠送满足赠品条件的所有赠品
+     */
+    @PostMapping("/cfg/set")
+    public JsonResult setCfg(@RequestParam(value = "cfg") @NotNull Byte cfg) {
+        shop().config.giftConfigService.setCfg(cfg);
+        return success();
     }
 }

@@ -50,6 +50,9 @@ public class WxAppCartController extends WxAppBaseController {
         if (!resultMessage.getFlag()){
             return fail(resultMessage);
         }
+        //检查商品活动
+        // 活动校验
+
         //添加商品到购物车
         shop().cart.addSpecProduct(user.getUserId(),param.getPrdId(),param.getGoodsNumber());
         return success();

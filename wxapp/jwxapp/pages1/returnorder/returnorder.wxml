@@ -4,7 +4,7 @@
   <!-- 提交申请 -->
   <block>
     <view class="order-header">
-      <text class="activity-type-mark" wx:if="{{orderInfo.activityType != ''}}">拼团</text>
+      <text class="activity-type-mark" wx:if="{{activityName != ''}}">{{activityName}}</text>
       <text>订单编号：{{orderSn}}</text>
       <button class="copy-button" bindtap="copyOrder">复制</button>
     </view>
@@ -33,7 +33,8 @@
               {{item.goodsAttr}}
             </view>
             <view class="goods-price">
-              <text>价格：￥{{item.goodsPrice}}</text>
+              <text wx:if="{{goodsType == 4}}">积分：{{ item.goodsScore }}<text wx:if="{{item.money > 0}}" style="margin-left:20rpx">现金：￥{{ item.money }}</text></text>
+              <text wx:else>价格：￥{{item.goodsPrice}}</text>
               <text>可退货商品数量：{{item.returnable}}</text>
             </view>
           </view>
@@ -57,7 +58,11 @@
         </view>
       </view>
     </view>
-    <view class="order-info">
+    <view class="order-info" wx:if="{{returnType != 4}}">
+      <block wx:if="{{goodsType == 4}}">
+        <text><text class="order-place">*</text>退还积分：</text>
+        <text><text style="color:{{comColor}}">￥{{ orderInfo.returnScore }}</text></text>
+      </block>
       <text><text class="order-place">*</text>退款金额：</text>
       <text><text style="color:{{comColor}}">￥{{ returnMoney }}</text></text>
     </view>

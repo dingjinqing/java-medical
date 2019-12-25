@@ -66,6 +66,11 @@ public class GoodsConstant {
     public static final Byte OFF_SALE = 0;
 
     /**
+     * 砍价活动，指定人数砍价
+     */
+    public static final Byte BARGAIN_TYPE_FIXED = 0;
+
+    /**
      * 商品默认品牌id值
      */
     public static final Integer GOODS_DEFAULT_BRAND_ID=0;

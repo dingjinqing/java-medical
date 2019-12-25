@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardMaParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
@@ -64,12 +66,13 @@ public class WxUserCardService extends ShopBaseService {
 		
 	}
 	
-	public PageResult<ChargeVo> getUseList(CardUseListParam param) {
-		UserCardParam userCardInfo = userCardService.userCardDao.getUserCardInfo(param.getCardNo());
+	public UserCardMaParam getUseList(CardUseListParam param) {
+		Record userCardInfo = userCardService.userCardDao.getUserCardInfoBycardNo(param.getCardNo());
 		if(userCardInfo==null) {
 			//该卡不存在
 			return null;
 		}
+		UserCardMaParam into = userCardInfo.into(UserCardMaParam.class);
 		ChargeParam param2=new ChargeParam();
 		param2.setCardNo(param.getCardNo());
 		param2.setCurrentPage(param.getCurrentPage());
@@ -78,14 +81,14 @@ public class WxUserCardService extends ShopBaseService {
 		if(showType.equals(ONE)) {
 			logger().info("showType为1");
 			PageResult<ChargeVo> chargeList = userCardService.cardDao.getChargeList(param2);
-			return chargeList;
+			into.setChargeList(chargeList);
 		}
 		if(showType.equals(NEONE)) {
 			logger().info("showType为-1");
-			PageResult<ChargeVo> chargeList = userCardService.cardDao.getConsumeList(param2);
-			return chargeList;
+			PageResult<ChargeVo> consumeList = userCardService.cardDao.getConsumeList(param2);
+			into.setChargeList(consumeList);
 		}
-		return null;
+		return into;
 	}
 	
 
