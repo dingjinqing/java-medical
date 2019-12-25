@@ -132,7 +132,7 @@ global.wxComponent({
     // },
     toItem() {
       util.jumpLink(
-        `pages/item/item?goodsId=${this.data.goodsData.goodsId}`,
+        `pages/item/item?goodsId=${this.data.goodsData.goodsId}&activityType=${this.data.goodsData.activityType}&activityId=${this.data.goodsData.activityId}`,
         'navigateTo'
       );
     }

@@ -118,7 +118,7 @@ global.wxComponent({
       return false
     },
     toCheckOut() {
-      util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify([this.data.productInfo])}`, "navigateTo")
+      util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify([this.data.productInfo])}&activityType=${this.data.activity.activityType}&activityId=${this.data.activity.activityId}`, "navigateTo")
       this.triggerEvent('close')
     },
 
