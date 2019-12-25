@@ -301,10 +301,18 @@ public class UserCardDaoService extends ShopBaseService{
 	 * 获取会员卡详情
 	 */
 	public UserCardParam getUserCardInfo(String cardNo) {
+		Record extracted = getUserCardInfoBycardNo(cardNo);
+		UserCardParam param=null;
+		if(extracted!=null) {
+			param=extracted.into(WxAppUserCardVo.class);
+		}
+		return param;
+	}
+
+	public Record  getUserCardInfoBycardNo(String cardNo) {
 		return wxUserCardSelectSql()
 				.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
-				.where(USER_CARD.CARD_NO.eq(cardNo))
-				.fetchAnyInto(WxAppUserCardVo.class);
+				.where(USER_CARD.CARD_NO.eq(cardNo)).fetchOne();
 	}
 	
 	/**

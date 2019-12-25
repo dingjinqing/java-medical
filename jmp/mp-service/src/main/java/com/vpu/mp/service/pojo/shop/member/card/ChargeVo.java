@@ -24,4 +24,10 @@ public class ChargeVo {
 	private String message;
 	// 变动时间
 	private Timestamp createTime;
+	
+	
+	private BigDecimal charge;
+	private Byte type;
+	private Short count;
+	private Short exchangCount;
 }
